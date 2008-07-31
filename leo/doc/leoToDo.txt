@@ -1,604 +1,15 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20071113093057:4.5 cleanups, code reorgs, @shadow & vim bindings
-#@+node:ekr.20080730095710.60:First 4
-#@+node:ekr.20080713091247.5:Finish and document @shadow
+#@+node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
+#@+node:ekr.20080713091247.5:Finish @shadow
 @nocolor
 
 - Add new read/write @shadow nodes commands.
 
 - Improve (or better, eliminate) x.isSentinel.
 #@nonl
-#@+node:ekr.20080730095710.62:Docs for @shadow
-#@+node:ekr.20080730095710.70:Thead: Eureka?? Can we just not use sentinels?
-@nocolor
-
-On sleeping on this queston, I think the "Aha" really means that I
-should start using the shadow plugin. I *really* do not want to give
-up the advantages of sentinels: they are an important part of Leo's
-internal reliability.  Furthermore, @thin is just exactly what is
-needed to make .leo files compatible with cvs/bzr.
-
-Bernhard's plugin does, in fact, do everything that we want, and the
-possible solutions to edge conditions are exactly the same for the "do
-without sentinels" approach and the shadow plugin. So I'll start using
-this plugin soon and report my conclusions. 
-#@nonl
-#@-node:ekr.20080730095710.70:Thead: Eureka?? Can we just not use sentinels?
-#@+node:ekr.20080730095710.68:Theory of operation: from leoShadow.py: first light
-@nocolor
-
-The distinction between public (no sentinels) and private (with sentinels) files
-clarifies the code considerably by making names much shorter. In this case, the
-improvement is actually quite useful.
-
-Last night I spent about four hours studying the heart of the shadow code, the
-method called propagate_changed_lines. I believe I now understand this code in
-considerable detail, something that has *never* been true for me in the past.
-
-In this post I'll report that Aha's that made the code comprehensible.
-
-propagate_changed_lines computes new_private_lines (the changed lines
-*with* sentinels) given two arguments:
-
-- old_private_lines (containing sentinels) and
-- new_public_lines (the changed lines without sentinels)
-
-As an overview, propagate_changed_lines works as follows:
-
-1. It reconstitutes old_public_lines (the original lines without sentinels) by
-removing sentinels from old_private_lines.
-
-2. It calls difflib.SequenceMatcher(None,old_public_lines,new_public_lines) to
-create a list of diffs of the old and new versions of the lines **without**
-sentinels.
-
-3. It (very cleverly) uses the list of diffs to drive what is, in effect, a
-two-way merge of old_private_lines (with sentinels) and new_public_lines
-(without sentinels). All sentinels and unchanged regular lines come from
-old_private_lines. All inserted or replacement lines come from new_public_lines.
-
-There are a *lot* of details in the algorithm. Probably the turning point, the
-point at which I truly started to understand the algorithm, was the realization
-that the main loop involves only input from old_private_lines and
-new_public_lines. Once I saw that, I could begin to the following:
-
-Most of the indices returned by SequenceMatcher.get_opcodes are *not* used in
-the main loop. In the present code, these indices are called old_i, old_j, new_i
-and new_j.
-
-Indeed, the main loop mostly ignores these indices (I'm exaggerating a bit) and
-instead mostly relies on implied pointers into the old_private_lines and
-new_public_lines arrays. These "implied pointers" are the position of the
-corresponding reader classes used to access old_private_lines and
-new_public_lines.
-
-This lead me, finally, to the realization that the main loop is, in effect, a
-two-way merge of old_private_lines and new_public_lines arrays. It's a clever,
-tricky, merge, but (in essence) a merge is exactly what it is.
-
-There is one crucial detail that you must understand to begin to make sense of
-this merge: the mapping array.
-
-propagate_changed_lines reconstitutes old_public_lines (the original lines
-without sentinels) by removing sentinels from old_private_lines as follows::
-
-  old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
-
-As the name implies, this method not only strips sentinel lines, but it returns
-a mapping. This mapping is an array of n+1 entries, where n is
-len(old_public_lines). This mapping array is an essential part of the algorithm.
-mapping[i] is the index into old_private_lines of line i in old_public_lines.
-That is, for each i < len(old_public_lines), line i in old_public_lines ==
-old_private_lines[i]. In other words, mapping[i] tells where line i of
-old_public_lines "came from".
-
-We are now in a position to begin to understand the main loop in detail. The
-main loop processes one SequenceMatcher opcode, of the form
-tag,old_i,old_j,new_i,new_j. tag is the opcode kind. It is in
-('insert','delete','equal','replace').
-
-The following code starts the opcode loop::
-
-    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to index mapping[old_i].
-    # Because of this, nothing has to be explicitly deleted below.
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_i])
-
-Understanding this single line is essential to understanding the rest of the tag
-(opcode) handlers.
-
-This line copies only sentinel lines from the current position of the
-old_private_lines_rdr up to mapping[old_i]. As a side effect, the current
-position of the old_private_lines_rdr is advanced to mapping[old_i], so in
-effect all non-sentinel lines from the last written line to limit are deleted
-from old_private_lines. That is, those lines will never be copied to the output.
-
-Now let's take a look at the rest of the main loop::
-
-    if tag == 'equal':
-        # Copy all lines (including sentinels) from the old private file to the new private file.
-        while old_private_lines_rdr.index() <= mapping[old_j-1]:
-           line = old_private_lines_rdr.get()
-           new_private_lines_wtr.put(line)
-
-        # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-        new_public_lines_rdr.sync(new_j)
-
-Diff is telling us that old_public_lines[old_i:old_j] are the same as
-new_public_lines[new_i:new_j]. However, we can't use either of these arrays
-directly because we would lose sentinels lines. Instead we copy all lines,
-including sentinels, from the current position in old_private_lines_rdr to
-mapping[old_j-1] (I'm dubious about the -1: unit testing is required). Once we
-have done that, we skip all lines in new_public_lines up until line new_j.
-
-Note that *only* index old_j is used in this code. The old_i, new_i and new_j
-indices are not used at all. Similar remarks can be made about the other cases
-to be discussed below. The realization that most indices aren't used was an
-important Aha.
-::
-
-    elif tag in ('insert','replace'):
-        # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-        # Copy lines from new_public_lines_rdr up to new_j.
-        while new_public_lines_rdr.index() < new_j:
-            line = new_public_lines_rdr.get()
-            new_private_lines_wtr.put(line)
-
-Diff is telling us that new_public_lines[new_i:new_j] should replace
-old_public_lines[old_i:old_j]. However, the call to copy_sentinels has *already*
-skipped lines up to old_private_lines[mapping[old_i]], and these correspond (via
-the mapping) to the lines up to old_public_lines[old_i]. Thus, for both the
-'insert' and 'replace' opcodes, all we have to do is copy unwritten lines from
-new_public_llines_rdr up to index new_j.
-
-Note: we could assert that new_public_lines.index() == new_i at the start of
-this case. This assertion, and similar assertions, are true because
-SequenceMatcher returns opcodes in increasing order without gaps.
-::
-
-    elif tag=='delete':
-        # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-        # Leave new_public_lines_rdr unchanged.
-        pass
-
-Diff is telling us delete old_public_lines[old_i:old_j]. The call to
-copy_sentinels has deleted old_private_lines up to index mapping [old_i],
-**not** up to mapping [old_j]. We could call::
-
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_j])
-
-here, but there is no need to do so. The next time through the loop will do the
-equivalent. Finally, after the loop completes, the following code ensures that
-all trailing sentinels are written by calling::
-
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=old_private_lines_rdr.size())
-
-So that's it. The big picture is that the main loop is a two-way merge of
-old_private_lines (with sentinels) with new_public_lines (without sentinels).
-Unchanged lines come from old_private_lines; changed lines come from
-new_public_lines. The result of the merge forms new_private_lines.
-
-Clearly, every line of new_public_line gets written to the output. In the
-'equal' case, however, those lines actually come from old_private_lines.
-#@nonl
-#@-node:ekr.20080730095710.68:Theory of operation: from leoShadow.py: first light
-#@+node:ekr.20080730095710.71:Unit tests: from leoShadow.py: first light
-@nocolor
-
-The shadow branch now contains the first-ever usable unit-testing
-framework for @shadow.
-
-unitTest.leo contains complete unit tests for @shadow.  See the node::
-
-    @suite run @shadow-test nodes
-
-This @suite node creates and runs leoShadow.atShadowTestCase
-tests or each @shadow-test node in the @shadow-tests tree.
-Creating a new unit test is as easy as creating the following
-tree::
-
-    @shadow-test
-      old
-      new
-
-Two multi-node unit tests which demonstrate that it is impossible, in general,
-to properly place a line on the boundary between nodes. They are called::
-
-    @shadow-test-lax insert between nodes: at end of prev node
-    @shadow-test insert between nodes: at start of next node
-
-The reason one of these tests *must* fail is that both will generate
-exactly the same new_public_lines: the only difference between these
-tests is, in essence, the *expected* result.  This expected result is
-computed by the unit test from the 'new' outline, but this expected
-result is not available to the shadow code!
-
-Heuristics can not possibly help. The data available to the shadow
-code is exactly the same for both unit tests, yet the two unit tests
-ask for different results!  Thus, one test must fail.
-
-I had foreseen this situation years ago, but alas, I let this
-difficulty stop me.  In fact, this is not fatal flaw: it simply means
-that @auto must show nodes that have changed externally.
-
-Furthermore, the proximate cause of the failed unit test is an overly-
-strict test in test_propagate_changes.  A lesser test at the end of
-propagate_changed_lines succeeds for both unit tests.  This test
-ensures that the sentinel lines and non-sentinel lines *separately*
-match the expected sentinel and non-sentinel lines.  This test is
-clearly too lax because it *completely* ignores the interleaving
-between sentinel and non-sentinel lines.
-#@-node:ekr.20080730095710.71:Unit tests: from leoShadow.py: first light
-#@+node:ekr.20080730095710.69:Thread: Giant Aha: @shadow *is* safe
-@nocolor
-
-The following post is long, but imo it is one of the most important in
-Leo's long history of long posts :-)
-
-This post finally, indisputably, proves that @shadow is safe, and
-proposes a consolation prize for the long delay in implementing
-@shadow, namely @auto-shadow.
-
-This is a continuation of the thread, leoShadow.py: first light.  In
-the last post to that thread I said:
-
-QQQ
-The proximate cause of the failed unit test is an overly-strict test
-in test_propagate_changes. A lesser test at the end of
-propagate_changed_lines succeeds for both unit tests. This test
-ensures that the sentinel lines and non-sentinel lines *separately*
-match the expected sentinel and non-sentinel lines. This test is
-clearly too lax because it *completely* ignores the interleaving
-between sentinel and non-sentinel lines.
-QQQ
-
-Last night in bed, thinking about what I had just written, I realized
-that the failed unit test simply is not a problem.  There are two
-reasons for this statement:
-
-1. The public file produced by the "failed" unit test will be
-identical with the original (that is, changed) public file.  Thus,
-regardless of where @shadow puts the inserted lines, there will be no
-difference that can be seen outside of Leo.  But this 'round trip of
-public files' is the essential requirement!
-
-2. Furthermore, once the Leo user saves the @shadow file, the location
-of all newly inserted lines will be "fixed" (determined).  That is,
-the next time Leo opens the @shadow file, the @shadow code will "know
-for sure" where the line should go. The reason is simple: the line
-will be placed by the "equal" SequenceMatcher opcode, rather than the
-"insert" opcode.  Thus, once the Leo user chooses the location of
-newly inserted lines, the @shadow code will know (or remember) the
-location of those lines, because they will be part of the original,
-unchanged, *private* file.  The sentinels in the private file will
-tell where to put the line unambiguously.
-
-In short:
-
-1. **Boundary conditions do not affect public files**, the files seen
-by people who do not use Leo.
-
-2. Once an inserted line has been saved (thereby generating a new
-public file), Leo will forever afterward remember the location of the
-file.
-
-Thus, the *only* remaining detail, a minor one, is to alert the user
-when changes to a public file results in change to the Leo outline.
-But Leo already warns when such external changes are made.  If the
-user does nothing, the corresponding public file will remain as it
-was.
-
-Imo, this discussion clearly demonstrates that @shadow is safe.  This
-is a huge step forward.
-
-This Aha came, in no small part, from the change in terminology from
-"files with/without sentinels" to "private/public files". When we
-focus on what the public sees, we see that @shadow is safe.  Is just
-about that simple.
-
-So the executive summary is:
-
-Boundary problems while scanning changed public files can affect only
-*private* view of the Leo outline.  The public file will remain
-unchanged regardless of how boundary conditions are resolved. The user
-can change her private view as she likes, and once she has done so and
-saved the @shadow file, the change will become permanent: it is
-embodied in her private files.
-
-Hurray!  Clarity!  Safety!
-
-So what to do about the failed unit test?   Let's reconsider the
-opening quote:
-
-QQQ
-The proximate cause of the failed unit test is an overly- strict test
-in test_propagate_changes. A lesser test at the end of
-propagate_changed_lines succeeds for both unit tests. This test
-ensures that the sentinel lines and non-sentinel lines *separately*
-match the expected sentinel and non-sentinel lines. This test is
-clearly too lax because it *completely* ignores the interleaving
-between sentinel and non-sentinel lines.
-QQQ
-
-Now it should be clear that the essential test is the test that non-
-sentinel (public!) lines are preserved.  Thus, the test at the end of
-propagate_changed_lines is *not* too lax: the test that sentinel
-(private!) lines are preserved is nice to have, but preserving public
-lines is the acid test.
-
-So the solution to unit tests that fail at the boundary of nodes is
-simply to relax the test.  I'll do this by marking such tests with
-@shadow-test-lax, which will cause the actual UnitTest test case not
-to perform the stricter test that fails.  How easy is that?
-Naturally, I'll put comments in each @shadow-test-lax node explaining
-why a looser test is required.
-
-The Aha just discussed will make Leo famous.
-
-I have been lamenting to myself recently that I didn't see all of this
-when Bernhard Mulder first proposed shadow files.  I'm not sure how
-clearly he understood all the issues I have just discussed, but in any
-case, the responsibility for dismissing shadow files is mine and mine
-alone.
-
-However, in the spirit of 'make lemonade from lemons', it may be that
-the long delay in recognizing @shadow's true importance has had some
-benefits.  In particular, @auto might not have happened had @shadow
-been adopted earlier.
-
-What good is @auto now that we have @shadow, you ask?  I reply in two
-ways:
-
-1. @auto is useful in its own right, for study, etc, quite
-independently of whether people use @shadow.
-
-2. We can eliminate some potential problem with both @auto and @shadow
-by using @auto-shadow. Yes, I'll provide abbreviations for this.
-
-@auto-shadow does what the name implies: It uses @auto logic to import
-the file if no private (shadow) files exist for the file; otherwise it
-uses the @shadow logic. This will smooth the process of creating and
-using other people's outlines.  @auto-shadow will ensure that
-everything "just works"
-
-A great day for Leo.
-
-==================
-
-Doh!  The abbreviation should be @shadow :-)  That is, @shadow should
-work as I proposed @auto-shadow to work.
-
-===================
-
-Another important simplification was Bernhard's use of
-reader and writer classes. In an algorithm as visually complex as the
-main opcode loop, any visual simplification can be significant.
-Furthermore, these classes were perfect for adding debugging and
-tracing info.  I wouldn't willing do without them.
-#@nonl
-#@-node:ekr.20080730095710.69:Thread: Giant Aha: @shadow *is* safe
-#@+node:ekr.20080730095710.63:Thread: @shadow plugin *will* make Leo famous
-@nocolor
-#@nonl
-#@+node:ekr.20080730095710.64:Post
-Not paying more attention to Bernhard's mod_shadow plugin is probably
-the biggest mistake I have ever made with Leo.  I rejected the idea
-far too quickly: any minor problems with it can easily be solved.
-
-First, let me summarize what the mod_shadow (shadow) plugin does:
-
-1. The shadow plugin writes "shadowed" derived files in two forms: a
-"public" form without sentinels, and a "private", form with
-sentinels.  The shadow plugin writes private files to a leo-shadow
-folder.
-
-At present, a script button converts a non-shadowed file to a shadowed
-file.  We could make the process of shadowing files more automatic.
-For example, @shadow-thin and @shadow-file might create shadowed
-private files in @thin or @file formats respectively.
-
-2. Typically, only the *public* files get committed to a repository.
-This makes Leo available even in shops where Leo sentinels are
-considered odious.  I am astounded that I haven't paid more attention
-to this plugin.
-
-3. Suppose that a public file (without sentinels) changes as the
-result of a bzr merge. When Leo reads the changed *public* file, the
-shadow plugin can *deduce* what changes were made by comparing the
-changed public file and the (still unchanged) private file.
-
-This idea is a stroke of genius.  Furthermore, the implementation is
-relatively straightforward.  The shadow plugin does the following:
-
-A. Removes sentinels from the private file, thereby recreating the
-original *public* file.
-B. Uses Python's difflib.Differ class to compute line-by-line diffs
-between the original and changed public files.
-C. Uses the line-oriented diffs to update the *private* file.
-D. Uses the updated private file (containing sentinels) to load the
-derived file.
-
-My concerns were with step C.  There is a boundary problem.  Suppose a
-changed line appears on the boundary of adjacent nodes A and B.
-Should the line be inserted at the end of node A, or at the start of
-node B?
-
-At the time, I suppose I wanted absolute answers the this question.
-But that is extremely foolish, for several reasons:
-
-1. The shadow plugin could warn that there is an ambiguity, and let
-the user decide.  The easy way to do this is to guess the answer, then
-clone the ambiguous nodes so they can be presented to the user to
-change if need be.
-
-2. Furthermore, indentation often (usually?) makes clear in which node
-to insert the new line.  If A and B have the same starting indentation
-and the inserted line has a larger indentation, we should prefer to
-put the node at the end of A rather than the start of B.  Other
-heuristics could be used too.
-
-But the main point is, **the ambiguity isn't serious** as long as the
-user is informed and can easily override incorrect guesses in step C.
-#@-node:ekr.20080730095710.64:Post
-#@+node:ekr.20080730095710.65:Post
-> My impression has been that they are private to Leo.
-
-The audience is anyone who wants to share files without sentinels.
-
-True, shadow files are private.  That is, they exist only in the Leo-shadow
-folder and they would typically not be part of the repository.  But the
-*public* files, the files without sentinels, could be shared in a
-repository.  The point is that Leo can update the private files from changes
-made to public files, so that changes to the repository will "magically"
-cause changes to the Leo outline.
-
-Perhaps an example will make this clearer.  Suppose, as is indeed the case,
-that I would like to study the pypy project.
-http://codespeak.net/pypy/dist/pypy/doc/home.html
-
-This is a major project, with lots of files.  Clearly, I don't want to try
-to convince the pypy folk to change all their files.  Here is what I am
-likely to do:
-
-1.  First, I'll create @auto for all the files of the pypy project in which
-I have an interest.  An already-existing script will help me do this.  See
-test.leo:
-
-Startup-->Scripts-->create-at-auto-nodes
-
-2.  Next, I'll convert @auto nodes to @shadow nodes (details a bit fuzzy,
-but let's ignore them for now).  When I save the outline, the original files
-get written as before.  In addition, the private files containing Leo
-sentinels will be saved to the private Leo-shadow directory.
-
-3.  When I reopen the Leo file, the outline structure will come from the
-private files.  However, if any of the *public* files have changed (by the
-pypy folk), those changes will be incorporated into the Leo outline, and
-when I save the Leo outline again the changes will be written back to the
-private files.
-
-Thus, I can use Leo to read and write pypy files, but the pypy folk will
-never see Leo sentinels in "their" files.  I can use the pypy repository and
-the pypy people will not know that I am using Leo.
-
-Edward
-
-P.S.  In the usage case just described we would *not* want to add headline
-comments to the public files because that would be change the pypy sources
-too much. 
-#@nonl
-#@-node:ekr.20080730095710.65:Post
-#@+node:ekr.20080730095710.66:Post 3
-> 1.  First, I'll create @auto for all the files of the pypy project in which
-> I have an interest.  An already-existing script will help me do this.
-
-There are often minor problems that must be corrected before @auto will
-import a python file "perfectly", typically tabnanny problems or
-underindented comments.  It would be necessary to convince the pypy
-community to allow me to fix these minor problems so that I can use Leo.
-Presumably, that would be easy to do: there should be no reason why a
-project should be committed to either inconsistent whitespace or
-underindented comments. 
-#@nonl
-#@-node:ekr.20080730095710.66:Post 3
-#@+node:ekr.20080730095710.67:Post 4
-> I consider @auto to be a most happy development. In particular, @auto
-> provides an excellent *starting* point for @shadow.
-
-@auto does one (important!) thing more: it guarantees that the result of
-writing an @auto file will be identical (up to some specified 'strictness'
-level) to the original files.  For 'strict' languages such as python, the
-comparison requires substantially identical leading whitespace.
-
-In other words, @auto isn't a lax import: when it succeeds it guarantees
-that we won't be changing the original (public) files.  When it fails, it
-tells us why it failed so we could, for example, request that pypy clean up
-the offending files.  I think this is *exactly* the right balance to have
-when dealing with external projects, especially Python projects. 
-#@nonl
-#@-node:ekr.20080730095710.67:Post 4
-#@-node:ekr.20080730095710.63:Thread: @shadow plugin *will* make Leo famous
-#@-node:ekr.20080730095710.62:Docs for @shadow
-#@-node:ekr.20080713091247.5:Finish and document @shadow
-#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
-What uA should be used to specify node colors?
-
-    if the foreground / background color API uses uAs,
-    would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
-#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
-#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
-
-I'm just getting started learning how to use Leo. Now, I'd like to use
-it for some of my projects, but there's no chance that I can convert
-everyone at work to using it, so putting sentinel-filled files in our
-repository is out of the question. At the same time, my code looks
-awfully bare without sentinels because the documentation ends up in
-the section names, not the comments!
-
-So, I was wondering if there's a convenient way to pull the section
-names into a comment at the start of each section?
-
-===============
-
-Interesting question.  Am I correct in assuming you are using @nosent trees
-to generate your files?  If so, it would be easy to add support for the
-following options:
-
-@bool write_section_comments_in_at_nosent_trees
-@bool write_node_name_comments_in_at_nosent_trees
-
-The first would write a sentinel consisting of only the section name;
-the second would write a sentinel consisting only of the node's headline
-(for nodes whose headline is not a section name).
-
-These seem like they would be useful additions.  One can even imagine
-corresponding Leo directives so that the comments could be turned on or off
-within an @nosent tree.
-
-What do you think?
-
-=====================
-
-> Interesting question.  Am I correct in assuming you are using @nosent trees
-> to generate your files?  If so, it would be easy to add support for the
-> following options:
-
-> @bool write_section_comments_in_at_nosent_trees
-> @bool write_node_name_comments_in_at_nosent_trees
-
-> The first would write a sentinel consisting of only the section name;
-> the second would write a sentinel consisting only of the node's headline
-> (for nodes whose headline is not a section name).
-
-> These seem like they would be useful additions.  One can even imagine
-> corresponding Leo directives so that the comments could be turned on or off
-> within an @nosent tree.
-
-That sounds like an excellent solution. Particularly the last bit --
-if you could turn section-comments on and off as required, it would
-become very convenient to use Leo to produce source that is intended
-to also be read by non Leo users. 
-#@nonl
-#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
-#@+node:ekr.20080730095710.61:Add option to have @auto and @shadow not do "chunking"
-@nocolor
-
-What you are saying, I think, is that while chunking is a user
-preference, @auto doesn't give you the option of expressing this
-preference.  This is a perfectly valid objection.  True, using @auto
-to read an entire file into a single node seems, shall we say
-"eccentric", to me, but now the shoe is on the other foot: I am
-objecting to your preferences, which we all know is a no-no.
-
-In short, @auto and @shadow should give the user to option (possibly
-on a file-by-file basis) of importing to a single node. 
-#@nonl
-#@-node:ekr.20080730095710.61:Add option to have @auto and @shadow not do "chunking"
-#@-node:ekr.20080730095710.60:First 4
+#@-node:ekr.20080713091247.5:Finish @shadow
 #@+node:ekr.20080411091507.10:Bugs 7
 #@+node:ekr.20080517102922.1:Files bugs 5
 #@+node:ekr.20080412053100.1:Look into undefined-section behavior
@@ -1191,7 +602,84 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20031218072017.3212:importFilesCommand
 #@-node:ekr.20080313032655.1:Fix one failed unit test on Linux
 #@-node:ekr.20080411091507.10:Bugs 7
-#@+node:ekr.20080730212711.6:Features 4
+#@+node:ekr.20080730212711.6:Features 16
+#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
+What uA should be used to specify node colors?
+
+    if the foreground / background color API uses uAs,
+    would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
+#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
+#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
+
+I'm just getting started learning how to use Leo. Now, I'd like to use
+it for some of my projects, but there's no chance that I can convert
+everyone at work to using it, so putting sentinel-filled files in our
+repository is out of the question. At the same time, my code looks
+awfully bare without sentinels because the documentation ends up in
+the section names, not the comments!
+
+So, I was wondering if there's a convenient way to pull the section
+names into a comment at the start of each section?
+
+===============
+
+Interesting question.  Am I correct in assuming you are using @nosent trees
+to generate your files?  If so, it would be easy to add support for the
+following options:
+
+@bool write_section_comments_in_at_nosent_trees
+@bool write_node_name_comments_in_at_nosent_trees
+
+The first would write a sentinel consisting of only the section name;
+the second would write a sentinel consisting only of the node's headline
+(for nodes whose headline is not a section name).
+
+These seem like they would be useful additions.  One can even imagine
+corresponding Leo directives so that the comments could be turned on or off
+within an @nosent tree.
+
+What do you think?
+
+=====================
+
+> Interesting question.  Am I correct in assuming you are using @nosent trees
+> to generate your files?  If so, it would be easy to add support for the
+> following options:
+
+> @bool write_section_comments_in_at_nosent_trees
+> @bool write_node_name_comments_in_at_nosent_trees
+
+> The first would write a sentinel consisting of only the section name;
+> the second would write a sentinel consisting only of the node's headline
+> (for nodes whose headline is not a section name).
+
+> These seem like they would be useful additions.  One can even imagine
+> corresponding Leo directives so that the comments could be turned on or off
+> within an @nosent tree.
+
+That sounds like an excellent solution. Particularly the last bit --
+if you could turn section-comments on and off as required, it would
+become very convenient to use Leo to produce source that is intended
+to also be read by non Leo users. 
+#@nonl
+#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
+#@+node:ekr.20080730095710.61:Add option to have @auto and @shadow not do "chunking"
+@nocolor
+
+What you are saying, I think, is that while chunking is a user
+preference, @auto doesn't give you the option of expressing this
+preference.  This is a perfectly valid objection.  True, using @auto
+to read an entire file into a single node seems, shall we say
+"eccentric", to me, but now the shoe is on the other foot: I am
+objecting to your preferences, which we all know is a no-no.
+
+In short, @auto and @shadow should give the user to option (possibly
+on a file-by-file basis) of importing to a single node. 
+#@nonl
+#@-node:ekr.20080730095710.61:Add option to have @auto and @shadow not do "chunking"
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
 #@nonl
@@ -2010,7 +1498,628 @@ def moveUpOrDownHelper (self,event,direction,extend):
 #@nonl
 #@-node:ekr.20060113105246.1:moveUpOrDownHelper
 #@-node:ekr.20080519062109.2:Improve how Leo handles long lines
-#@-node:ekr.20080730212711.6:Features 4
+#@+node:ekr.20080729064227.5:Implement p.fileLevel
+#@+node:ekr.20080416161551.197:p.level & simpleLevel
+def level (self):
+
+    '''Return the number of p's parents.'''
+
+    p = self
+    return p.v and len(p.stack) or 0
+
+simpleLevel = level
+#@-node:ekr.20080416161551.197:p.level & simpleLevel
+#@+node:ekr.20080519062109.1:add p.fileLevel and add support for it
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6f744c2a5819e3
+
+> Let us define p.fileLevel() for any position p as follows:
+
+p.fileLevel() is 0 if p is not a descendant of any kind of @file node.
+
+Otherwise, suppose root is the position of the enclosing @file node (or @thin node, etc.)
+> p.fileLevel() is p.level() - root.level() and the "effective" column is the
+> node's column plus p.fileLevel() * c.tab_width. This could be displayed in
+> the status line.
+
+> Anyone want to try?
+
+> Edward
+
+I must admit I lack knowledge to implement this (I've got no
+experience with Python GUI programming at all). Would this feature
+appear in the next leo release?
+#@nonl
+#@-node:ekr.20080519062109.1:add p.fileLevel and add support for it
+#@-node:ekr.20080729064227.5:Implement p.fileLevel
+#@+node:ekr.20071110071126.2:Better isearch
+#@-node:ekr.20071110071126.2:Better isearch
+#@+node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20050920084036.265:scolorizer LATER
+def scolorizer (self,event,pattern=None):
+
+    '''Colorizer for incremental searches.'''
+
+    pass # not ready yet.   
+
+    # k = self.k ; w = self.w
+    # s = pattern or k.getLabel(ignorePrompt=True)
+    # # g.trace(repr(s))
+    # w.tag_delete('color','color1')
+    # if not s: return
+    # if g.app.gui.guiName() != 'tkinter':
+        # return g.es('command not ready yet',color='blue')
+
+    # ind = 0
+    # index = w.getInsertPoint()
+    # index2 = index + len(s)
+    # # g.trace(index,index2)
+    # # Colorize in the forward direction, regardless of the kind of search.
+    # while ind:
+        # try:
+            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
+        # except Exception: break
+        # if ind:
+            # i, d = ind.split('.')
+            # d = str(int(d)+len(s))
+            # # g.trace(ind)
+            # if ind in (index,index2):
+                # w.tag_add('color1',ind,'%s.%s' % (i,d))
+            # w.tag_add('color',ind,'%s.%s' % (i,d))
+            # ind = i + '.' + d
+
+    # w.tag_config('color',foreground='red')
+    # w.tag_config('color1',background='lightblue')
+#@-node:ekr.20050920084036.265:scolorizer LATER
+#@-node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20061002093442:Add opml support to new,open, save commands
+#@+node:ekr.20031218072017.2820:top level (file menu)
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    # g.trace(g.callers())
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    # c.beginUpdate()
+    # try:
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+    v = leoNodes.vnode(context=c)
+    p = leoNodes.position(v)
+    v.initHeadString("NewHeadline")
+    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+    p._linkAsRoot(oldRoot=None)
+    c.setRootVnode(v) # New in Leo 4.4.2.
+    c.editPosition(p)
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(fileName=None)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # finally:
+    # c.endUpdate(False)
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    # Force a call to c.outerUpdate.
+    # This is needed when we execute this command from a menu.
+    c.redraw_now()
+
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.2821:open
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",
+        filetypes = [("Leo files","*.leo"), ("All files","*")],
+        defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName and len(fileName) > 0:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok:
+            g.chdir(fileName)
+            g.setGlobalOpenDir(fileName)
+        if ok and closeFlag:
+            g.app.destroyWindow(c.frame)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2821:open
+#@+node:ekr.20031218072017.2823:openWith and allies
+def openWith(self,event=None,data=None):
+
+    """This routine handles the items in the Open With... menu.
+
+    These items can only be created by createOpenWithMenuFromTable().
+    Typically this would be done from the "open2" hook.
+
+    New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
+    using a list, e.g.:
+
+    openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
+    """
+
+    c = self ; p = c.currentPosition()
+    n = data and len(data) or 0
+    if n != 3:
+        g.trace('bad data, length must be 3, got %d' % n)
+        return
+    try:
+        openType,arg,ext=data
+        if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
+            g.enableIdleTimeHook(idleTimeDelay=100)
+            << set ext based on the present language >>
+            << create or reopen temp file, testing for conflicting changes >>
+            << execute a command to open path in external editor >>
+        g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
+    except Exception:
+        g.es("unexpected exception in c.openWith")
+        g.es_exception()
+
+    return "break"
+#@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
+if not ext:
+    theDict = g.scanDirectives(c)
+    language = theDict.get("language")
+    ext = g.app.language_extension_dict.get(language)
+    # g.pr(language,ext)
+    if ext == None:
+        ext = "txt"
+
+if ext[0] != ".":
+    ext = "."+ext
+
+# g.pr("ext",ext)
+#@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
+#@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+theDict = None ; path = None
+<< set dict and path if a temp file already refers to p.v.t >>
+if path:
+    << create or recreate temp file as needed >>
+else:
+    path = c.createOpenWithTempFile(p,ext)
+
+if not path:
+    return # An error has occured.
+#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+searchPath = c.openWithTempFilePath(p,ext)
+
+if g.os_path_exists(searchPath):
+    for theDict in g.app.openWithFiles:
+        if p.v == theDict.get('v') and searchPath == theDict.get("path"):
+            path = searchPath
+            break
+#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+#@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+@ We test for changes in both p and the temp file:
+
+- If only p's body text has changed, we recreate the temp file.
+- If only the temp file has changed, do nothing here.
+- If both have changed we must prompt the user to see which code to use.
+@c
+
+encoding = theDict.get("encoding")
+old_body = theDict.get("body")
+new_body = p.bodyString()
+new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
+
+old_time = theDict.get("time")
+try:
+    new_time = g.os_path_getmtime(path)
+except:
+    new_time = None
+
+body_changed = old_body != new_body
+temp_changed = old_time != new_time
+
+if body_changed and temp_changed:
+    << Raise dialog about conflict and set result >>
+    if result == "cancel": return
+    rewrite = result == "outline"
+else:
+    rewrite = body_changed
+
+if rewrite:
+    path = c.createOpenWithTempFile(p,ext)
+else:
+    g.es("reopening:",g.shortFileName(path),color="blue")
+#@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+message = (
+    "Conflicting changes in outline and temp file\n\n" +
+    "Do you want to use the code in the outline or the temp file?\n\n")
+
+result = g.app.gui.runAskYesNoCancelDialog(c,
+    "Conflict!", message,
+    yesMessage = "Outline",
+    noMessage = "File",
+    defaultButton = "Cancel")
+#@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+#@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+#@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+#@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+try:
+    if arg == None: arg = ""
+    shortPath = path # g.shortFileName(path)
+    if openType == "os.system":
+        if 1:
+            # This works, _provided_ that arg does not contain blanks.  Sheesh.
+            command = 'os.system(%s)' % (arg+shortPath)
+            os.system(arg+shortPath)
+        else:
+            # XP does not like this format!
+            command = 'os.system("%s" "%s")' % (arg,shortPath)
+            os.system('"%s" "%s"' % (arg,shortPath))
+    elif openType == "os.startfile":
+        command = "os.startfile(%s)" % (arg+shortPath)
+        os.startfile(arg+path)
+    elif openType == "exec":
+        command = "exec(%s)" % (arg+shortPath)
+        exec arg+path in {}
+    elif openType == "os.spawnl":
+        filename = g.os_path_basename(arg)
+        command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
+        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+    elif openType == "os.spawnv":
+        filename = os.path.basename(arg[0]) 
+        vtuple = arg[1:]
+        vtuple.insert(0, filename)
+            # add the name of the program as the first argument.
+            # Change suggested by Jim Sizelove.
+        vtuple.append(path)
+        command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
+        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+    # This clause by Jim Sizelove.
+    elif openType == "subprocess.Popen":
+        if isinstance(arg, basestring):
+            vtuple = arg + " " + path
+        elif isinstance(arg, (list, tuple)):
+            vtuple = arg[:]
+            vtuple.append(path)
+        command = "subprocess.Popen(%s)" % repr(vtuple)
+        if subprocess:
+            subprocess.Popen(vtuple)
+        else:
+            g.trace('Can not import subprocess.  Skipping: "%s"' % command)
+    else:
+        command="bad command:"+str(openType)
+        g.trace(command)
+except Exception:
+    g.es("exception executing:",command)
+    g.es_exception()
+#@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+#@+node:ekr.20031218072017.2830:createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    c = self
+    theFile = None # pylint complains if this is inited to ''.
+    path = c.openWithTempFilePath(p,ext)
+    try:
+        if g.os_path_exists(path):
+            g.es("recreating:  ",g.shortFileName(path),color="red")
+        else:
+            g.es("creating:  ",g.shortFileName(path),color="blue")
+        theFile = open(path,"w")
+        # Convert s to whatever encoding is in effect.
+        s = p.bodyString()
+        theDict = g.scanDirectives(c,p=p)
+        encoding = theDict.get("encoding",None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        s = g.toEncodedString(s,encoding,reportErrors=True) 
+        theFile.write(s)
+        theFile.flush()
+        theFile.close()
+        try:    time = g.os_path_getmtime(path)
+        except: time = None
+        # g.es("time: " + str(time))
+        # New in 4.3: theDict now contains both 'p' and 'v' entries, of the expected type.
+        theDict = {
+            "body":s, "c":c, "encoding":encoding,
+            "f":theFile, "path":path, "time":time,
+            "p":p, "v":p.v }
+        << remove previous entry from app.openWithFiles if it exists >>
+        g.app.openWithFiles.append(theDict)
+        return path
+    except:
+        if theFile:
+            theFile.close()
+        theFile = None
+        g.es("exception creating temp file",color="red")
+        g.es_exception()
+        return None
+#@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+for d in g.app.openWithFiles[:]:
+    p2 = d.get("p")
+    if p.v.t == p2.v.t:
+        # g.pr("removing previous entry in g.app.openWithFiles for",p.headString())
+        g.app.openWithFiles.remove(d)
+#@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+#@-node:ekr.20031218072017.2830:createOpenWithTempFile
+#@+node:ekr.20031218072017.2832:c.openWithTempFilePath
+def openWithTempFilePath (self,p,ext):
+
+    """Return the path to the temp file corresponding to p and ext."""
+
+    name = "LeoTemp_%s_%s%s" % (
+        str(id(p.v.t)),
+        g.sanitize_filename(p.headString()),
+        ext)
+
+    name = g.toUnicode(name,g.app.tkEncoding)
+
+    td = g.os_path_abspath(tempfile.gettempdir())
+
+    path = g.os_path_join(td,name)
+
+    return path
+#@-node:ekr.20031218072017.2832:c.openWithTempFilePath
+#@-node:ekr.20031218072017.2823:openWith and allies
+#@+node:ekr.20031218072017.2833:close
+def close (self,event=None):
+
+    '''Close the Leo window, prompting to save it if it has been changed.'''
+
+    g.app.closeLeoWindow(self.frame)
+#@-node:ekr.20031218072017.2833:close
+#@+node:ekr.20031218072017.2834:save (commands)
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    # c.beginUpdate()
+    # try:
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            c.fileCommands.save(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2834:save (commands)
+#@+node:ekr.20031218072017.2835:saveAs
+def saveAs (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename.'''
+
+    c = self ;  w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # c.beginUpdate()
+    # try:
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save As",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
+
+    if fileName:
+        g.trace(fileName)
+        # 7/2/02: don't change mFileName until the dialog has suceeded.
+        c.mFileName = g.ensure_extension(fileName, ".leo")
+        c.frame.title = c.mFileName
+        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+        c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.saveAs(c.mFileName)
+        c.updateRecentFiles(c.mFileName)
+        g.chdir(c.mFileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2835:saveAs
+#@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+def saveAsUnzipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is not compressed.'''
+    self.saveAsZippedHelper(False)
+
+def saveAsZipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is compressed.'''
+    self.saveAsZippedHelper(True)
+
+def saveAsZippedHelper (self,isZipped):
+
+    c = self
+    oldZipped = c.isZipped
+    c.isZipped = isZipped
+    try:
+        c.saveAs()
+    finally:
+        c.isZipped = oldZipped
+#@-node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+#@+node:ekr.20031218072017.2836:saveTo
+def saveTo (self,event=None):
+
+    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # c.beginUpdate()
+    # try:
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+
+    # set local fileName, _not_ c.mFileName
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save To",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
+
+    if fileName:
+        fileName = g.ensure_extension(fileName, ".leo")
+        c.fileCommands.saveTo(fileName)
+        c.updateRecentFiles(fileName)
+        g.chdir(fileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2836:saveTo
+#@+node:ekr.20031218072017.2837:revert
+def revert (self,event=None):
+
+    '''Revert the contents of a Leo outline to last saved contents.'''
+
+    c = self
+
+    # Make sure the user wants to Revert.
+    if not c.mFileName:
+        return
+
+    reply = g.app.gui.runAskYesNoDialog(c,"Revert",
+        "Revert to previous version of " + c.mFileName + "?")
+    c.bringToFront()
+
+    if reply=="no":
+        return
+
+    # Kludge: rename this frame so openWithFileName won't think it is open.
+    fileName = c.mFileName ; c.mFileName = ""
+
+    # Create a new frame before deleting this frame.
+    ok, frame = g.openWithFileName(fileName,c)
+    if ok:
+        frame.deiconify()
+        g.app.destroyWindow(c.frame)
+    else:
+        c.mFileName = fileName
+#@-node:ekr.20031218072017.2837:revert
+#@-node:ekr.20031218072017.2820:top level (file menu)
+#@-node:ekr.20061002093442:Add opml support to new,open, save commands
+#@+node:ekr.20070624135822:Templates for common code fragments
+# How will users be reminded of the fragments?
+#   - A dropdown menu?
+#   - "Completion" in the log pane?
+
+# Invent a way for simple keystrokes to insert fragments:
+
+Fragment 1:
+
+c.beginUpdate()
+try:
+    pass
+finally:
+    endUpdate()
+
+Fragment 2:
+
+for p in c.allNodes_iter():
+    pass
+#@-node:ekr.20070624135822:Templates for common code fragments
+#@+node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
+@nocolor
+
+http://mail.google.com/mail/#label/Leo/1182d78133aa0ecf
+
+Create a simple template myLeoSettings.leo in $HOME when you try to
+open it and it doesn't exist
+#@nonl
+#@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
+#@+node:ekr.20080705040925.1:Remember split ratios for vertically split panes
+@nocolor
+
+Every time I open up an outline file, the outline-width:body-width
+ratio is always getting set to 0.5. Even when I resize the splitter
+and save the outline and re-open it, the ratio always reverts to 0.5
+BTW - I use vertical split (tree on left, body on right, log below
+tree).
+
+@color
+#@nonl
+#@-node:ekr.20080705040925.1:Remember split ratios for vertically split panes
+#@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
+# Or give a better message.
+#@nonl
+#@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
+#@+node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
+This affects @auto imports of all "unknown" languages.
+
+For example, @auto x.css would put @language css in the root node.
+#@nonl
+#@-node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
+#@-node:ekr.20080730212711.6:Features 16
 #@+node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode
@@ -5574,631 +5683,6 @@ key to be re-executed.
 #@nonl
 #@-node:ekr.20080616110054.2:Support vim dot command
 #@-node:ekr.20080603052650.466:Fix vim problems
-#@+node:ekr.20080425054202.3:ASAP 9
-# These are useful and easy.
-#@nonl
-#@+node:ekr.20080729064227.5:Implement p.fileLevel
-#@+node:ekr.20080416161551.197:p.level & simpleLevel
-def level (self):
-
-    '''Return the number of p's parents.'''
-
-    p = self
-    return p.v and len(p.stack) or 0
-
-simpleLevel = level
-#@-node:ekr.20080416161551.197:p.level & simpleLevel
-#@+node:ekr.20080519062109.1:add p.fileLevel and add support for it
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6f744c2a5819e3
-
-> Let us define p.fileLevel() for any position p as follows:
-
-p.fileLevel() is 0 if p is not a descendant of any kind of @file node.
-
-Otherwise, suppose root is the position of the enclosing @file node (or @thin node, etc.)
-> p.fileLevel() is p.level() - root.level() and the "effective" column is the
-> node's column plus p.fileLevel() * c.tab_width. This could be displayed in
-> the status line.
-
-> Anyone want to try?
-
-> Edward
-
-I must admit I lack knowledge to implement this (I've got no
-experience with Python GUI programming at all). Would this feature
-appear in the next leo release?
-#@nonl
-#@-node:ekr.20080519062109.1:add p.fileLevel and add support for it
-#@-node:ekr.20080729064227.5:Implement p.fileLevel
-#@+node:ekr.20071110071126.2:Better isearch
-#@-node:ekr.20071110071126.2:Better isearch
-#@+node:ekr.20071128094234:Finish scolorizer
-#@+node:ekr.20050920084036.265:scolorizer LATER
-def scolorizer (self,event,pattern=None):
-
-    '''Colorizer for incremental searches.'''
-
-    pass # not ready yet.   
-
-    # k = self.k ; w = self.w
-    # s = pattern or k.getLabel(ignorePrompt=True)
-    # # g.trace(repr(s))
-    # w.tag_delete('color','color1')
-    # if not s: return
-    # if g.app.gui.guiName() != 'tkinter':
-        # return g.es('command not ready yet',color='blue')
-
-    # ind = 0
-    # index = w.getInsertPoint()
-    # index2 = index + len(s)
-    # # g.trace(index,index2)
-    # # Colorize in the forward direction, regardless of the kind of search.
-    # while ind:
-        # try:
-            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
-        # except Exception: break
-        # if ind:
-            # i, d = ind.split('.')
-            # d = str(int(d)+len(s))
-            # # g.trace(ind)
-            # if ind in (index,index2):
-                # w.tag_add('color1',ind,'%s.%s' % (i,d))
-            # w.tag_add('color',ind,'%s.%s' % (i,d))
-            # ind = i + '.' + d
-
-    # w.tag_config('color',foreground='red')
-    # w.tag_config('color1',background='lightblue')
-#@-node:ekr.20050920084036.265:scolorizer LATER
-#@-node:ekr.20071128094234:Finish scolorizer
-#@+node:ekr.20061002093442:Add opml support to new,open, save commands
-#@+node:ekr.20031218072017.2820:top level (file menu)
-#@+node:ekr.20031218072017.1623:new
-def new (self,event=None,gui=None):
-
-    '''Create a new Leo window.'''
-
-    # g.trace(g.callers())
-
-    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
-
-    # Needed for plugins.
-    g.doHook("new",old_c=self,c=c,new_c=c)
-    # Use the config params to set the size and location of the window.
-    # c.beginUpdate()
-    # try:
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-    v = leoNodes.vnode(context=c)
-    p = leoNodes.position(v)
-    v.initHeadString("NewHeadline")
-    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-    p._linkAsRoot(oldRoot=None)
-    c.setRootVnode(v) # New in Leo 4.4.2.
-    c.editPosition(p)
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
-    if not g.doHook("menu1",c=c,p=p,v=p):
-        frame.menu.createMenuBar(frame)
-        c.updateRecentFiles(fileName=None)
-        g.doHook("menu2",c=frame.c,p=p,v=p)
-        g.doHook("after-create-leo-frame",c=c)
-    # finally:
-    # c.endUpdate(False)
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-    # Force a call to c.outerUpdate.
-    # This is needed when we execute this command from a menu.
-    c.redraw_now()
-
-    return c # For unit test.
-#@-node:ekr.20031218072017.1623:new
-#@+node:ekr.20031218072017.2821:open
-def open (self,event=None):
-
-    '''Open a Leo window containing the contents of a .leo file.'''
-
-    c = self
-    << Set closeFlag if the only open window is empty >>
-
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
-        title = "Open",
-        filetypes = [("Leo files","*.leo"), ("All files","*")],
-        defaultextension = ".leo")
-    c.bringToFront()
-
-    ok = False
-    if fileName and len(fileName) > 0:
-        ok, frame = g.openWithFileName(fileName,c)
-        if ok:
-            g.chdir(fileName)
-            g.setGlobalOpenDir(fileName)
-        if ok and closeFlag:
-            g.app.destroyWindow(c.frame)
-
-    # openWithFileName sets focus if ok.
-    if not ok:
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
-@c
-
-closeFlag = (
-    c.frame.startupWindow and # The window was open on startup
-    not c.changed and not c.frame.saved and # The window has never been changed
-    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
-#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-#@-node:ekr.20031218072017.2821:open
-#@+node:ekr.20031218072017.2823:openWith and allies
-def openWith(self,event=None,data=None):
-
-    """This routine handles the items in the Open With... menu.
-
-    These items can only be created by createOpenWithMenuFromTable().
-    Typically this would be done from the "open2" hook.
-
-    New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
-    using a list, e.g.:
-
-    openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
-    """
-
-    c = self ; p = c.currentPosition()
-    n = data and len(data) or 0
-    if n != 3:
-        g.trace('bad data, length must be 3, got %d' % n)
-        return
-    try:
-        openType,arg,ext=data
-        if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
-            g.enableIdleTimeHook(idleTimeDelay=100)
-            << set ext based on the present language >>
-            << create or reopen temp file, testing for conflicting changes >>
-            << execute a command to open path in external editor >>
-        g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
-    except Exception:
-        g.es("unexpected exception in c.openWith")
-        g.es_exception()
-
-    return "break"
-#@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
-if not ext:
-    theDict = g.scanDirectives(c)
-    language = theDict.get("language")
-    ext = g.app.language_extension_dict.get(language)
-    # g.pr(language,ext)
-    if ext == None:
-        ext = "txt"
-
-if ext[0] != ".":
-    ext = "."+ext
-
-# g.pr("ext",ext)
-#@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
-#@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
-theDict = None ; path = None
-<< set dict and path if a temp file already refers to p.v.t >>
-if path:
-    << create or recreate temp file as needed >>
-else:
-    path = c.createOpenWithTempFile(p,ext)
-
-if not path:
-    return # An error has occured.
-#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
-searchPath = c.openWithTempFilePath(p,ext)
-
-if g.os_path_exists(searchPath):
-    for theDict in g.app.openWithFiles:
-        if p.v == theDict.get('v') and searchPath == theDict.get("path"):
-            path = searchPath
-            break
-#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
-#@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
-@ We test for changes in both p and the temp file:
-
-- If only p's body text has changed, we recreate the temp file.
-- If only the temp file has changed, do nothing here.
-- If both have changed we must prompt the user to see which code to use.
-@c
-
-encoding = theDict.get("encoding")
-old_body = theDict.get("body")
-new_body = p.bodyString()
-new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
-
-old_time = theDict.get("time")
-try:
-    new_time = g.os_path_getmtime(path)
-except:
-    new_time = None
-
-body_changed = old_body != new_body
-temp_changed = old_time != new_time
-
-if body_changed and temp_changed:
-    << Raise dialog about conflict and set result >>
-    if result == "cancel": return
-    rewrite = result == "outline"
-else:
-    rewrite = body_changed
-
-if rewrite:
-    path = c.createOpenWithTempFile(p,ext)
-else:
-    g.es("reopening:",g.shortFileName(path),color="blue")
-#@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
-message = (
-    "Conflicting changes in outline and temp file\n\n" +
-    "Do you want to use the code in the outline or the temp file?\n\n")
-
-result = g.app.gui.runAskYesNoCancelDialog(c,
-    "Conflict!", message,
-    yesMessage = "Outline",
-    noMessage = "File",
-    defaultButton = "Cancel")
-#@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
-#@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
-#@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
-#@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
-try:
-    if arg == None: arg = ""
-    shortPath = path # g.shortFileName(path)
-    if openType == "os.system":
-        if 1:
-            # This works, _provided_ that arg does not contain blanks.  Sheesh.
-            command = 'os.system(%s)' % (arg+shortPath)
-            os.system(arg+shortPath)
-        else:
-            # XP does not like this format!
-            command = 'os.system("%s" "%s")' % (arg,shortPath)
-            os.system('"%s" "%s"' % (arg,shortPath))
-    elif openType == "os.startfile":
-        command = "os.startfile(%s)" % (arg+shortPath)
-        os.startfile(arg+path)
-    elif openType == "exec":
-        command = "exec(%s)" % (arg+shortPath)
-        exec arg+path in {}
-    elif openType == "os.spawnl":
-        filename = g.os_path_basename(arg)
-        command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
-    elif openType == "os.spawnv":
-        filename = os.path.basename(arg[0]) 
-        vtuple = arg[1:]
-        vtuple.insert(0, filename)
-            # add the name of the program as the first argument.
-            # Change suggested by Jim Sizelove.
-        vtuple.append(path)
-        command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
-    # This clause by Jim Sizelove.
-    elif openType == "subprocess.Popen":
-        if isinstance(arg, basestring):
-            vtuple = arg + " " + path
-        elif isinstance(arg, (list, tuple)):
-            vtuple = arg[:]
-            vtuple.append(path)
-        command = "subprocess.Popen(%s)" % repr(vtuple)
-        if subprocess:
-            subprocess.Popen(vtuple)
-        else:
-            g.trace('Can not import subprocess.  Skipping: "%s"' % command)
-    else:
-        command="bad command:"+str(openType)
-        g.trace(command)
-except Exception:
-    g.es("exception executing:",command)
-    g.es_exception()
-#@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
-#@+node:ekr.20031218072017.2830:createOpenWithTempFile
-def createOpenWithTempFile (self,p,ext):
-
-    c = self
-    theFile = None # pylint complains if this is inited to ''.
-    path = c.openWithTempFilePath(p,ext)
-    try:
-        if g.os_path_exists(path):
-            g.es("recreating:  ",g.shortFileName(path),color="red")
-        else:
-            g.es("creating:  ",g.shortFileName(path),color="blue")
-        theFile = open(path,"w")
-        # Convert s to whatever encoding is in effect.
-        s = p.bodyString()
-        theDict = g.scanDirectives(c,p=p)
-        encoding = theDict.get("encoding",None)
-        if encoding == None:
-            encoding = c.config.default_derived_file_encoding
-        s = g.toEncodedString(s,encoding,reportErrors=True) 
-        theFile.write(s)
-        theFile.flush()
-        theFile.close()
-        try:    time = g.os_path_getmtime(path)
-        except: time = None
-        # g.es("time: " + str(time))
-        # New in 4.3: theDict now contains both 'p' and 'v' entries, of the expected type.
-        theDict = {
-            "body":s, "c":c, "encoding":encoding,
-            "f":theFile, "path":path, "time":time,
-            "p":p, "v":p.v }
-        << remove previous entry from app.openWithFiles if it exists >>
-        g.app.openWithFiles.append(theDict)
-        return path
-    except:
-        if theFile:
-            theFile.close()
-        theFile = None
-        g.es("exception creating temp file",color="red")
-        g.es_exception()
-        return None
-#@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
-for d in g.app.openWithFiles[:]:
-    p2 = d.get("p")
-    if p.v.t == p2.v.t:
-        # g.pr("removing previous entry in g.app.openWithFiles for",p.headString())
-        g.app.openWithFiles.remove(d)
-#@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
-#@-node:ekr.20031218072017.2830:createOpenWithTempFile
-#@+node:ekr.20031218072017.2832:c.openWithTempFilePath
-def openWithTempFilePath (self,p,ext):
-
-    """Return the path to the temp file corresponding to p and ext."""
-
-    name = "LeoTemp_%s_%s%s" % (
-        str(id(p.v.t)),
-        g.sanitize_filename(p.headString()),
-        ext)
-
-    name = g.toUnicode(name,g.app.tkEncoding)
-
-    td = g.os_path_abspath(tempfile.gettempdir())
-
-    path = g.os_path_join(td,name)
-
-    return path
-#@-node:ekr.20031218072017.2832:c.openWithTempFilePath
-#@-node:ekr.20031218072017.2823:openWith and allies
-#@+node:ekr.20031218072017.2833:close
-def close (self,event=None):
-
-    '''Close the Leo window, prompting to save it if it has been changed.'''
-
-    g.app.closeLeoWindow(self.frame)
-#@-node:ekr.20031218072017.2833:close
-#@+node:ekr.20031218072017.2834:save (commands)
-def save (self,event=None):
-
-    '''Save a Leo outline to a file.'''
-
-    c = self ; w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-        c.mFileName = ""
-
-    # c.beginUpdate()
-    # try:
-    if c.mFileName:
-        # Calls c.setChanged(False) if no error.
-        c.fileCommands.save(c.mFileName)
-    else:
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
-
-        if fileName:
-            # Don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, ".leo")
-            c.frame.title = c.mFileName
-            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-            c.fileCommands.save(c.mFileName)
-            c.updateRecentFiles(c.mFileName)
-            g.chdir(c.mFileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20031218072017.2834:save (commands)
-#@+node:ekr.20031218072017.2835:saveAs
-def saveAs (self,event=None):
-
-    '''Save a Leo outline to a file with a new filename.'''
-
-    c = self ;  w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    # c.beginUpdate()
-    # try:
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-        initialfile = c.mFileName,
-        title="Save As",
-        filetypes=[("Leo files", "*.leo")],
-        defaultextension=".leo")
-    c.bringToFront()
-
-    if fileName:
-        g.trace(fileName)
-        # 7/2/02: don't change mFileName until the dialog has suceeded.
-        c.mFileName = g.ensure_extension(fileName, ".leo")
-        c.frame.title = c.mFileName
-        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-        c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-        # Calls c.setChanged(False) if no error.
-        c.fileCommands.saveAs(c.mFileName)
-        c.updateRecentFiles(c.mFileName)
-        g.chdir(c.mFileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20031218072017.2835:saveAs
-#@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
-def saveAsUnzipped (self,event=None):
-
-    '''Save a Leo outline to a file with a new filename,
-    ensuring that the file is not compressed.'''
-    self.saveAsZippedHelper(False)
-
-def saveAsZipped (self,event=None):
-
-    '''Save a Leo outline to a file with a new filename,
-    ensuring that the file is compressed.'''
-    self.saveAsZippedHelper(True)
-
-def saveAsZippedHelper (self,isZipped):
-
-    c = self
-    oldZipped = c.isZipped
-    c.isZipped = isZipped
-    try:
-        c.saveAs()
-    finally:
-        c.isZipped = oldZipped
-#@-node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
-#@+node:ekr.20031218072017.2836:saveTo
-def saveTo (self,event=None):
-
-    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
-
-    c = self ; w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    # c.beginUpdate()
-    # try:
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-
-    # set local fileName, _not_ c.mFileName
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-        initialfile = c.mFileName,
-        title="Save To",
-        filetypes=[("Leo files", "*.leo")],
-        defaultextension=".leo")
-    c.bringToFront()
-
-    if fileName:
-        fileName = g.ensure_extension(fileName, ".leo")
-        c.fileCommands.saveTo(fileName)
-        c.updateRecentFiles(fileName)
-        g.chdir(fileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20031218072017.2836:saveTo
-#@+node:ekr.20031218072017.2837:revert
-def revert (self,event=None):
-
-    '''Revert the contents of a Leo outline to last saved contents.'''
-
-    c = self
-
-    # Make sure the user wants to Revert.
-    if not c.mFileName:
-        return
-
-    reply = g.app.gui.runAskYesNoDialog(c,"Revert",
-        "Revert to previous version of " + c.mFileName + "?")
-    c.bringToFront()
-
-    if reply=="no":
-        return
-
-    # Kludge: rename this frame so openWithFileName won't think it is open.
-    fileName = c.mFileName ; c.mFileName = ""
-
-    # Create a new frame before deleting this frame.
-    ok, frame = g.openWithFileName(fileName,c)
-    if ok:
-        frame.deiconify()
-        g.app.destroyWindow(c.frame)
-    else:
-        c.mFileName = fileName
-#@-node:ekr.20031218072017.2837:revert
-#@-node:ekr.20031218072017.2820:top level (file menu)
-#@-node:ekr.20061002093442:Add opml support to new,open, save commands
-#@+node:ekr.20070624135822:Templates for common code fragments
-# How will users be reminded of the fragments?
-#   - A dropdown menu?
-#   - "Completion" in the log pane?
-
-# Invent a way for simple keystrokes to insert fragments:
-
-Fragment 1:
-
-c.beginUpdate()
-try:
-    pass
-finally:
-    endUpdate()
-
-Fragment 2:
-
-for p in c.allNodes_iter():
-    pass
-#@-node:ekr.20070624135822:Templates for common code fragments
-#@+node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
-@nocolor
-
-http://mail.google.com/mail/#label/Leo/1182d78133aa0ecf
-
-Create a simple template myLeoSettings.leo in $HOME when you try to
-open it and it doesn't exist
-#@nonl
-#@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
-#@+node:ekr.20080705040925.1:Remember split ratios for vertically split panes
-@nocolor
-
-Every time I open up an outline file, the outline-width:body-width
-ratio is always getting set to 0.5. Even when I resize the splitter
-and save the outline and re-open it, the ratio always reverts to 0.5
-BTW - I use vertical split (tree on left, body on right, log below
-tree).
-
-@color
-#@nonl
-#@-node:ekr.20080705040925.1:Remember split ratios for vertically split panes
-#@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
-# Or give a better message.
-#@nonl
-#@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
-#@+node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
-This affects @auto imports of all "unknown" languages.
-
-For example, @auto x.css would put @language css in the root node.
-#@nonl
-#@-node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
-#@-node:ekr.20080425054202.3:ASAP 9
 #@+node:ekr.20080730212711.7:Plugins 4
 #@+node:ekr.20080604060150.1:Clean up plugins
 Some scripting says the following are in .../plugins/ but not
@@ -6556,7 +6040,7 @@ else:
 #@-node:ekr.20041005105605.161:putBody
 #@-node:ekr.20080624120440.4:Improve docs for @ignore
 #@-node:ekr.20080411091507.1:Docs
-#@-node:ekr.20071113093057:4.5 cleanups, code reorgs, @shadow & vim bindings
+#@-node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
 #@+node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20080113165010:About auto completion
 @nocolor
