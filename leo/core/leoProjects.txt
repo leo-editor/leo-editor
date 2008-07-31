@@ -19953,6 +19953,516 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
 #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
 #@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
 #@-node:ekr.20080713091247.4:(Fixed problem with 'can not read 3.x derived file' message)
+#@+node:ekr.20080730212711.53:Notesfor @shadow
+#@+node:ekr.20080730212711.54:Thead: Eureka?? Can we just not use sentinels?
+@nocolor
+
+On sleeping on this queston, I think the "Aha" really means that I
+should start using the shadow plugin. I *really* do not want to give
+up the advantages of sentinels: they are an important part of Leo's
+internal reliability.  Furthermore, @thin is just exactly what is
+needed to make .leo files compatible with cvs/bzr.
+
+Bernhard's plugin does, in fact, do everything that we want, and the
+possible solutions to edge conditions are exactly the same for the "do
+without sentinels" approach and the shadow plugin. So I'll start using
+this plugin soon and report my conclusions. 
+#@nonl
+#@-node:ekr.20080730212711.54:Thead: Eureka?? Can we just not use sentinels?
+#@+node:ekr.20080730212711.55:Theory of operation: from leoShadow.py: first light
+@nocolor
+
+The distinction between public (no sentinels) and private (with sentinels) files
+clarifies the code considerably by making names much shorter. In this case, the
+improvement is actually quite useful.
+
+Last night I spent about four hours studying the heart of the shadow code, the
+method called propagate_changed_lines. I believe I now understand this code in
+considerable detail, something that has *never* been true for me in the past.
+
+In this post I'll report that Aha's that made the code comprehensible.
+
+propagate_changed_lines computes new_private_lines (the changed lines
+*with* sentinels) given two arguments:
+
+- old_private_lines (containing sentinels) and
+- new_public_lines (the changed lines without sentinels)
+
+As an overview, propagate_changed_lines works as follows:
+
+1. It reconstitutes old_public_lines (the original lines without sentinels) by
+removing sentinels from old_private_lines.
+
+2. It calls difflib.SequenceMatcher(None,old_public_lines,new_public_lines) to
+create a list of diffs of the old and new versions of the lines **without**
+sentinels.
+
+3. It (very cleverly) uses the list of diffs to drive what is, in effect, a
+two-way merge of old_private_lines (with sentinels) and new_public_lines
+(without sentinels). All sentinels and unchanged regular lines come from
+old_private_lines. All inserted or replacement lines come from new_public_lines.
+
+There are a *lot* of details in the algorithm. Probably the turning point, the
+point at which I truly started to understand the algorithm, was the realization
+that the main loop involves only input from old_private_lines and
+new_public_lines. Once I saw that, I could begin to the following:
+
+Most of the indices returned by SequenceMatcher.get_opcodes are *not* used in
+the main loop. In the present code, these indices are called old_i, old_j, new_i
+and new_j.
+
+Indeed, the main loop mostly ignores these indices (I'm exaggerating a bit) and
+instead mostly relies on implied pointers into the old_private_lines and
+new_public_lines arrays. These "implied pointers" are the position of the
+corresponding reader classes used to access old_private_lines and
+new_public_lines.
+
+This lead me, finally, to the realization that the main loop is, in effect, a
+two-way merge of old_private_lines and new_public_lines arrays. It's a clever,
+tricky, merge, but (in essence) a merge is exactly what it is.
+
+There is one crucial detail that you must understand to begin to make sense of
+this merge: the mapping array.
+
+propagate_changed_lines reconstitutes old_public_lines (the original lines
+without sentinels) by removing sentinels from old_private_lines as follows::
+
+  old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+As the name implies, this method not only strips sentinel lines, but it returns
+a mapping. This mapping is an array of n+1 entries, where n is
+len(old_public_lines). This mapping array is an essential part of the algorithm.
+mapping[i] is the index into old_private_lines of line i in old_public_lines.
+That is, for each i < len(old_public_lines), line i in old_public_lines ==
+old_private_lines[i]. In other words, mapping[i] tells where line i of
+old_public_lines "came from".
+
+We are now in a position to begin to understand the main loop in detail. The
+main loop processes one SequenceMatcher opcode, of the form
+tag,old_i,old_j,new_i,new_j. tag is the opcode kind. It is in
+('insert','delete','equal','replace').
+
+The following code starts the opcode loop::
+
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to index mapping[old_i].
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_i])
+
+Understanding this single line is essential to understanding the rest of the tag
+(opcode) handlers.
+
+This line copies only sentinel lines from the current position of the
+old_private_lines_rdr up to mapping[old_i]. As a side effect, the current
+position of the old_private_lines_rdr is advanced to mapping[old_i], so in
+effect all non-sentinel lines from the last written line to limit are deleted
+from old_private_lines. That is, those lines will never be copied to the output.
+
+Now let's take a look at the rest of the main loop::
+
+    if tag == 'equal':
+        # Copy all lines (including sentinels) from the old private file to the new private file.
+        while old_private_lines_rdr.index() <= mapping[old_j-1]:
+           line = old_private_lines_rdr.get()
+           new_private_lines_wtr.put(line)
+
+        # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+        new_public_lines_rdr.sync(new_j)
+
+Diff is telling us that old_public_lines[old_i:old_j] are the same as
+new_public_lines[new_i:new_j]. However, we can't use either of these arrays
+directly because we would lose sentinels lines. Instead we copy all lines,
+including sentinels, from the current position in old_private_lines_rdr to
+mapping[old_j-1] (I'm dubious about the -1: unit testing is required). Once we
+have done that, we skip all lines in new_public_lines up until line new_j.
+
+Note that *only* index old_j is used in this code. The old_i, new_i and new_j
+indices are not used at all. Similar remarks can be made about the other cases
+to be discussed below. The realization that most indices aren't used was an
+important Aha.
+::
+
+    elif tag in ('insert','replace'):
+        # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+        # Copy lines from new_public_lines_rdr up to new_j.
+        while new_public_lines_rdr.index() < new_j:
+            line = new_public_lines_rdr.get()
+            new_private_lines_wtr.put(line)
+
+Diff is telling us that new_public_lines[new_i:new_j] should replace
+old_public_lines[old_i:old_j]. However, the call to copy_sentinels has *already*
+skipped lines up to old_private_lines[mapping[old_i]], and these correspond (via
+the mapping) to the lines up to old_public_lines[old_i]. Thus, for both the
+'insert' and 'replace' opcodes, all we have to do is copy unwritten lines from
+new_public_llines_rdr up to index new_j.
+
+Note: we could assert that new_public_lines.index() == new_i at the start of
+this case. This assertion, and similar assertions, are true because
+SequenceMatcher returns opcodes in increasing order without gaps.
+::
+
+    elif tag=='delete':
+        # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+        # Leave new_public_lines_rdr unchanged.
+        pass
+
+Diff is telling us delete old_public_lines[old_i:old_j]. The call to
+copy_sentinels has deleted old_private_lines up to index mapping [old_i],
+**not** up to mapping [old_j]. We could call::
+
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_j])
+
+here, but there is no need to do so. The next time through the loop will do the
+equivalent. Finally, after the loop completes, the following code ensures that
+all trailing sentinels are written by calling::
+
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=old_private_lines_rdr.size())
+
+So that's it. The big picture is that the main loop is a two-way merge of
+old_private_lines (with sentinels) with new_public_lines (without sentinels).
+Unchanged lines come from old_private_lines; changed lines come from
+new_public_lines. The result of the merge forms new_private_lines.
+
+Clearly, every line of new_public_line gets written to the output. In the
+'equal' case, however, those lines actually come from old_private_lines.
+#@nonl
+#@-node:ekr.20080730212711.55:Theory of operation: from leoShadow.py: first light
+#@+node:ekr.20080730212711.56:Unit tests: from leoShadow.py: first light
+@nocolor
+
+The shadow branch now contains the first-ever usable unit-testing
+framework for @shadow.
+
+unitTest.leo contains complete unit tests for @shadow.  See the node::
+
+    @suite run @shadow-test nodes
+
+This @suite node creates and runs leoShadow.atShadowTestCase
+tests or each @shadow-test node in the @shadow-tests tree.
+Creating a new unit test is as easy as creating the following
+tree::
+
+    @shadow-test
+      old
+      new
+
+Two multi-node unit tests which demonstrate that it is impossible, in general,
+to properly place a line on the boundary between nodes. They are called::
+
+    @shadow-test-lax insert between nodes: at end of prev node
+    @shadow-test insert between nodes: at start of next node
+
+The reason one of these tests *must* fail is that both will generate
+exactly the same new_public_lines: the only difference between these
+tests is, in essence, the *expected* result.  This expected result is
+computed by the unit test from the 'new' outline, but this expected
+result is not available to the shadow code!
+
+Heuristics can not possibly help. The data available to the shadow
+code is exactly the same for both unit tests, yet the two unit tests
+ask for different results!  Thus, one test must fail.
+
+I had foreseen this situation years ago, but alas, I let this
+difficulty stop me.  In fact, this is not fatal flaw: it simply means
+that @auto must show nodes that have changed externally.
+
+Furthermore, the proximate cause of the failed unit test is an overly-
+strict test in test_propagate_changes.  A lesser test at the end of
+propagate_changed_lines succeeds for both unit tests.  This test
+ensures that the sentinel lines and non-sentinel lines *separately*
+match the expected sentinel and non-sentinel lines.  This test is
+clearly too lax because it *completely* ignores the interleaving
+between sentinel and non-sentinel lines.
+#@-node:ekr.20080730212711.56:Unit tests: from leoShadow.py: first light
+#@+node:ekr.20080730212711.57:Thread: Giant Aha: @shadow *is* safe
+@nocolor
+
+The following post is long, but imo it is one of the most important in
+Leo's long history of long posts :-)
+
+This post finally, indisputably, proves that @shadow is safe, and
+proposes a consolation prize for the long delay in implementing
+@shadow, namely @auto-shadow.
+
+This is a continuation of the thread, leoShadow.py: first light.  In
+the last post to that thread I said:
+
+QQQ
+The proximate cause of the failed unit test is an overly-strict test
+in test_propagate_changes. A lesser test at the end of
+propagate_changed_lines succeeds for both unit tests. This test
+ensures that the sentinel lines and non-sentinel lines *separately*
+match the expected sentinel and non-sentinel lines. This test is
+clearly too lax because it *completely* ignores the interleaving
+between sentinel and non-sentinel lines.
+QQQ
+
+Last night in bed, thinking about what I had just written, I realized
+that the failed unit test simply is not a problem.  There are two
+reasons for this statement:
+
+1. The public file produced by the "failed" unit test will be
+identical with the original (that is, changed) public file.  Thus,
+regardless of where @shadow puts the inserted lines, there will be no
+difference that can be seen outside of Leo.  But this 'round trip of
+public files' is the essential requirement!
+
+2. Furthermore, once the Leo user saves the @shadow file, the location
+of all newly inserted lines will be "fixed" (determined).  That is,
+the next time Leo opens the @shadow file, the @shadow code will "know
+for sure" where the line should go. The reason is simple: the line
+will be placed by the "equal" SequenceMatcher opcode, rather than the
+"insert" opcode.  Thus, once the Leo user chooses the location of
+newly inserted lines, the @shadow code will know (or remember) the
+location of those lines, because they will be part of the original,
+unchanged, *private* file.  The sentinels in the private file will
+tell where to put the line unambiguously.
+
+In short:
+
+1. **Boundary conditions do not affect public files**, the files seen
+by people who do not use Leo.
+
+2. Once an inserted line has been saved (thereby generating a new
+public file), Leo will forever afterward remember the location of the
+file.
+
+Thus, the *only* remaining detail, a minor one, is to alert the user
+when changes to a public file results in change to the Leo outline.
+But Leo already warns when such external changes are made.  If the
+user does nothing, the corresponding public file will remain as it
+was.
+
+Imo, this discussion clearly demonstrates that @shadow is safe.  This
+is a huge step forward.
+
+This Aha came, in no small part, from the change in terminology from
+"files with/without sentinels" to "private/public files". When we
+focus on what the public sees, we see that @shadow is safe.  Is just
+about that simple.
+
+So the executive summary is:
+
+Boundary problems while scanning changed public files can affect only
+*private* view of the Leo outline.  The public file will remain
+unchanged regardless of how boundary conditions are resolved. The user
+can change her private view as she likes, and once she has done so and
+saved the @shadow file, the change will become permanent: it is
+embodied in her private files.
+
+Hurray!  Clarity!  Safety!
+
+So what to do about the failed unit test?   Let's reconsider the
+opening quote:
+
+QQQ
+The proximate cause of the failed unit test is an overly- strict test
+in test_propagate_changes. A lesser test at the end of
+propagate_changed_lines succeeds for both unit tests. This test
+ensures that the sentinel lines and non-sentinel lines *separately*
+match the expected sentinel and non-sentinel lines. This test is
+clearly too lax because it *completely* ignores the interleaving
+between sentinel and non-sentinel lines.
+QQQ
+
+Now it should be clear that the essential test is the test that non-
+sentinel (public!) lines are preserved.  Thus, the test at the end of
+propagate_changed_lines is *not* too lax: the test that sentinel
+(private!) lines are preserved is nice to have, but preserving public
+lines is the acid test.
+
+So the solution to unit tests that fail at the boundary of nodes is
+simply to relax the test.  I'll do this by marking such tests with
+@shadow-test-lax, which will cause the actual UnitTest test case not
+to perform the stricter test that fails.  How easy is that?
+Naturally, I'll put comments in each @shadow-test-lax node explaining
+why a looser test is required.
+
+The Aha just discussed will make Leo famous.
+
+I have been lamenting to myself recently that I didn't see all of this
+when Bernhard Mulder first proposed shadow files.  I'm not sure how
+clearly he understood all the issues I have just discussed, but in any
+case, the responsibility for dismissing shadow files is mine and mine
+alone.
+
+However, in the spirit of 'make lemonade from lemons', it may be that
+the long delay in recognizing @shadow's true importance has had some
+benefits.  In particular, @auto might not have happened had @shadow
+been adopted earlier.
+
+What good is @auto now that we have @shadow, you ask?  I reply in two
+ways:
+
+1. @auto is useful in its own right, for study, etc, quite
+independently of whether people use @shadow.
+
+2. We can eliminate some potential problem with both @auto and @shadow
+by using @auto-shadow. Yes, I'll provide abbreviations for this.
+
+@auto-shadow does what the name implies: It uses @auto logic to import
+the file if no private (shadow) files exist for the file; otherwise it
+uses the @shadow logic. This will smooth the process of creating and
+using other people's outlines.  @auto-shadow will ensure that
+everything "just works"
+
+A great day for Leo.
+
+==================
+
+Doh!  The abbreviation should be @shadow :-)  That is, @shadow should
+work as I proposed @auto-shadow to work.
+
+===================
+
+Another important simplification was Bernhard's use of
+reader and writer classes. In an algorithm as visually complex as the
+main opcode loop, any visual simplification can be significant.
+Furthermore, these classes were perfect for adding debugging and
+tracing info.  I wouldn't willing do without them.
+#@nonl
+#@-node:ekr.20080730212711.57:Thread: Giant Aha: @shadow *is* safe
+#@+node:ekr.20080730212711.58:Thread: @shadow plugin *will* make Leo famous
+@nocolor
+#@nonl
+#@+node:ekr.20080730212711.59:Post
+Not paying more attention to Bernhard's mod_shadow plugin is probably
+the biggest mistake I have ever made with Leo.  I rejected the idea
+far too quickly: any minor problems with it can easily be solved.
+
+First, let me summarize what the mod_shadow (shadow) plugin does:
+
+1. The shadow plugin writes "shadowed" derived files in two forms: a
+"public" form without sentinels, and a "private", form with
+sentinels.  The shadow plugin writes private files to a leo-shadow
+folder.
+
+At present, a script button converts a non-shadowed file to a shadowed
+file.  We could make the process of shadowing files more automatic.
+For example, @shadow-thin and @shadow-file might create shadowed
+private files in @thin or @file formats respectively.
+
+2. Typically, only the *public* files get committed to a repository.
+This makes Leo available even in shops where Leo sentinels are
+considered odious.  I am astounded that I haven't paid more attention
+to this plugin.
+
+3. Suppose that a public file (without sentinels) changes as the
+result of a bzr merge. When Leo reads the changed *public* file, the
+shadow plugin can *deduce* what changes were made by comparing the
+changed public file and the (still unchanged) private file.
+
+This idea is a stroke of genius.  Furthermore, the implementation is
+relatively straightforward.  The shadow plugin does the following:
+
+A. Removes sentinels from the private file, thereby recreating the
+original *public* file.
+B. Uses Python's difflib.Differ class to compute line-by-line diffs
+between the original and changed public files.
+C. Uses the line-oriented diffs to update the *private* file.
+D. Uses the updated private file (containing sentinels) to load the
+derived file.
+
+My concerns were with step C.  There is a boundary problem.  Suppose a
+changed line appears on the boundary of adjacent nodes A and B.
+Should the line be inserted at the end of node A, or at the start of
+node B?
+
+At the time, I suppose I wanted absolute answers the this question.
+But that is extremely foolish, for several reasons:
+
+1. The shadow plugin could warn that there is an ambiguity, and let
+the user decide.  The easy way to do this is to guess the answer, then
+clone the ambiguous nodes so they can be presented to the user to
+change if need be.
+
+2. Furthermore, indentation often (usually?) makes clear in which node
+to insert the new line.  If A and B have the same starting indentation
+and the inserted line has a larger indentation, we should prefer to
+put the node at the end of A rather than the start of B.  Other
+heuristics could be used too.
+
+But the main point is, **the ambiguity isn't serious** as long as the
+user is informed and can easily override incorrect guesses in step C.
+#@-node:ekr.20080730212711.59:Post
+#@+node:ekr.20080730212711.60:Post
+> My impression has been that they are private to Leo.
+
+The audience is anyone who wants to share files without sentinels.
+
+True, shadow files are private.  That is, they exist only in the Leo-shadow
+folder and they would typically not be part of the repository.  But the
+*public* files, the files without sentinels, could be shared in a
+repository.  The point is that Leo can update the private files from changes
+made to public files, so that changes to the repository will "magically"
+cause changes to the Leo outline.
+
+Perhaps an example will make this clearer.  Suppose, as is indeed the case,
+that I would like to study the pypy project.
+http://codespeak.net/pypy/dist/pypy/doc/home.html
+
+This is a major project, with lots of files.  Clearly, I don't want to try
+to convince the pypy folk to change all their files.  Here is what I am
+likely to do:
+
+1.  First, I'll create @auto for all the files of the pypy project in which
+I have an interest.  An already-existing script will help me do this.  See
+test.leo:
+
+Startup-->Scripts-->create-at-auto-nodes
+
+2.  Next, I'll convert @auto nodes to @shadow nodes (details a bit fuzzy,
+but let's ignore them for now).  When I save the outline, the original files
+get written as before.  In addition, the private files containing Leo
+sentinels will be saved to the private Leo-shadow directory.
+
+3.  When I reopen the Leo file, the outline structure will come from the
+private files.  However, if any of the *public* files have changed (by the
+pypy folk), those changes will be incorporated into the Leo outline, and
+when I save the Leo outline again the changes will be written back to the
+private files.
+
+Thus, I can use Leo to read and write pypy files, but the pypy folk will
+never see Leo sentinels in "their" files.  I can use the pypy repository and
+the pypy people will not know that I am using Leo.
+
+Edward
+
+P.S.  In the usage case just described we would *not* want to add headline
+comments to the public files because that would be change the pypy sources
+too much. 
+#@nonl
+#@-node:ekr.20080730212711.60:Post
+#@+node:ekr.20080730212711.61:Post 3
+> 1.  First, I'll create @auto for all the files of the pypy project in which
+> I have an interest.  An already-existing script will help me do this.
+
+There are often minor problems that must be corrected before @auto will
+import a python file "perfectly", typically tabnanny problems or
+underindented comments.  It would be necessary to convince the pypy
+community to allow me to fix these minor problems so that I can use Leo.
+Presumably, that would be easy to do: there should be no reason why a
+project should be committed to either inconsistent whitespace or
+underindented comments. 
+#@nonl
+#@-node:ekr.20080730212711.61:Post 3
+#@+node:ekr.20080730212711.62:Post 4
+> I consider @auto to be a most happy development. In particular, @auto
+> provides an excellent *starting* point for @shadow.
+
+@auto does one (important!) thing more: it guarantees that the result of
+writing an @auto file will be identical (up to some specified 'strictness'
+level) to the original files.  For 'strict' languages such as python, the
+comparison requires substantially identical leading whitespace.
+
+In other words, @auto isn't a lax import: when it succeeds it guarantees
+that we won't be changing the original (public) files.  When it fails, it
+tells us why it failed so we could, for example, request that pypy clean up
+the offending files.  I think this is *exactly* the right balance to have
+when dealing with external projects, especially Python projects. 
+#@nonl
+#@-node:ekr.20080730212711.62:Post 4
+#@-node:ekr.20080730212711.58:Thread: @shadow plugin *will* make Leo famous
+#@-node:ekr.20080730212711.53:Notesfor @shadow
 #@-node:ekr.20080730212711.5:Added support for @shadow
 #@-node:ekr.20080730212711.4:New features
 #@-node:ekr.20080702123133.2:4.5 b2
