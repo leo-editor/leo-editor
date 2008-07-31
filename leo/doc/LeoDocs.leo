@@ -53,21 +53,14 @@
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20080301071818.1"
+expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
+</v>
+<v t="ekr.20050831184021.2"><vh>Table of contents</vh>
+<v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20080730212711.37"><vh>Original page</vh></v>
-<v t="ekr.20050831184021.2"><vh>Table of contents</vh>
-<v t="ekr.20040414162124"><vh>@@rst html\leo_TOC.html</vh>
-<v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
-<v t="ekr.20040414163815"><vh>Table of Contents</vh></v>
-<v t="ekr.20050812134441.3"><vh>@rst-no-head end</vh></v>
-</v>
-<v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh>
-<v t="ekr.20080730212711.30"><vh>&lt;&lt;head&gt;&gt;</vh></v>
-<v t="ekr.20080730212711.36"><vh>&lt;&lt; body &gt;&gt;</vh></v>
-</v>
-</v>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -269,39 +262,48 @@
 <v t="ekr.20050828061501.30"><vh>Reference: all about directives</vh>
 <v t="ekr.20050828173234"><vh>@ and @doc</vh></v>
 <v t="ekr.20050828061501.31"><vh>@all</vh></v>
+<v t="ekr.20050828174453.2"><vh>\@asis and @noref</vh></v>
+<v t="ekr.20080730212711.47"><vh>\@auto</vh></v>
 <v t="ekr.20050828173234.1"><vh>@c and @code</vh></v>
 <v t="ekr.20050828061501.32"><vh>@color, @nocolor and @killcolor</vh></v>
 <v t="ekr.20050828061501.33"><vh>@comment</vh></v>
 <v t="ekr.20050828061501.34"><vh>@delims</vh></v>
 <v t="ekr.20050828061501.35"><vh>@encoding</vh></v>
+<v t="ekr.20050828061501.51"><vh>\@file</vh></v>
 <v t="ekr.20050828061501.36"><vh>@first</vh></v>
 <v t="ekr.20050828065955.3"><vh>@ignore</vh></v>
 <v t="ekr.20050828061501.37"><vh>@language</vh></v>
 <v t="ekr.20050828210721"><vh>@last</vh></v>
 <v t="ekr.20050828061501.38"><vh>@lineending</vh></v>
 <v t="ekr.20050828064254"><vh>@others</vh></v>
+<v t="ekr.20050828174453.1"><vh>\@nosent</vh></v>
 <v t="ekr.20050828061501.39"><vh>@path</vh></v>
 <v t="ekr.20050828210721.1"><vh>@pagewidth</vh></v>
-<v t="ekr.20050828210721.2"><vh>@tabwidth</vh></v>
 <v t="ekr.20050828061501.40"><vh>@raw and @end_raw</vh></v>
+<v t="ekr.20080730212711.51"><vh>\@root</vh></v>
 <v t="ekr.20050828061501.41"><vh>@root-code and @root-doc</vh></v>
+<v t="ekr.20080730212711.41"><vh>\@shadow</vh></v>
+<v t="ekr.20050828210721.2"><vh>@tabwidth</vh></v>
+<v t="ekr.20080730212711.44"><vh>\@thin</vh></v>
 <v t="ekr.20080729064227.3"><vh>@unit</vh></v>
 <v t="ekr.20050828061501.50"><vh>@verbose, @terse, @quiet and @silent</vh></v>
 <v t="ekr.20050828061501.42"><vh>@wrap and @nowrap</vh></v>
 </v>
-<v t="ekr.20050828062751"><vh>Reference: the seven ways of creating derived files</vh>
+<v t="ekr.20050828062751"><vh>Reference: the 8 ways of creating derived files</vh>
 <v t="ekr.20070814090306"><vh>\@auto</vh>
 <v t="ekr.20070814090306.2"><vh>Perfect import checks</vh></v>
 <v t="ekr.20070814090306.3"><vh>Commands related to @auto</vh></v>
 </v>
-<v t="ekr.20050828061501.51"><vh>\@thin and @file</vh></v>
+<v t="ekr.20050828061501.51"><vh>\@file</vh></v>
 <v t="ekr.20050828174453.1"><vh>\@nosent</vh></v>
 <v t="ekr.20050828174453.2"><vh>\@asis and @noref</vh></v>
-<v t="ekr.20050828061501.45"><vh>\@root</vh>
+<v t="ekr.20050828061501.45"><vh>\@root reference</vh>
 <v t="ekr.20050828061501.47"><vh>Sections and section definitions</vh></v>
 <v t="ekr.20050828061501.48"><vh>Tangling @root trees with the Tangle commands</vh></v>
 <v t="ekr.20050828061501.49"><vh>Untangling @root trees with the Untangle commands</vh></v>
 </v>
+<v t="ekr.20080730212711.44"><vh>\@thin</vh></v>
+<v t="ekr.20080730212711.41"><vh>\@shadow</vh></v>
 <v t="EKR.20040524104904.282"><vh>Converting @root trees to @file trees</vh></v>
 </v>
 <v t="ekr.20050828061501.43"><vh>CWEB mode</vh></v>
@@ -820,9 +822,13 @@
 <v t="TL.20080622103911.7"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080730212711.14"><vh>Chapter 23: Using @shadow files</vh>
+<v t="ekr.20080730212711.14"><vh>Chapter 23: Using @shadow</vh>
 <v t="ekr.20080730212711.15"><vh>@rst html\atShadow.html</vh>
 <v t="ekr.20080730212711.16"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080730212711.39"><vh>Overview</vh></v>
+<v t="ekr.20080730212711.42"><vh>Importing public files</vh></v>
+<v t="ekr.20080730212711.40"><vh>What the update algorithm does</vh></v>
+<v t="ekr.20080730212711.52"><vh>Aha: boundary cases don't matter</vh></v>
 <v t="ekr.20080730212711.17"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
@@ -3015,12 +3021,6 @@
 <v t="ekr.20080730095710.2"><vh>4.5 b2</vh></v>
 </v>
 </v>
-<v t="ekr.20080730212711.14"><vh>Chapter 23: Using @shadow files</vh>
-<v t="ekr.20080730212711.15"><vh>@rst html\atShadow.html</vh>
-<v t="ekr.20080730212711.16"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20080730212711.17"><vh>@rst-no-head end stuff</vh></v>
-</v>
-</v>
 <v t="ekr.20080730212711.18"><vh>About @shadow</vh>
 <v t="ekr.20080730212711.19"><vh>Docs for @shadow</vh>
 <v t="ekr.20080730212711.20"><vh>Thead: Eureka?? Can we just not use sentinels?</vh></v>
@@ -3033,6 +3033,16 @@
 <v t="ekr.20080730212711.27"><vh>Post 3</vh></v>
 <v t="ekr.20080730212711.28"><vh>Post 4</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20080730212711.14"><vh>Chapter 23: Using @shadow</vh>
+<v t="ekr.20080730212711.15"><vh>@rst html\atShadow.html</vh>
+<v t="ekr.20080730212711.16"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080730212711.39"><vh>Overview</vh></v>
+<v t="ekr.20080730212711.42"><vh>Importing public files</vh></v>
+<v t="ekr.20080730212711.40"><vh>What the update algorithm does</vh></v>
+<v t="ekr.20080730212711.52"><vh>Aha: boundary cases don't matter</vh></v>
+<v t="ekr.20080730212711.17"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
 </vnodes>
@@ -7033,101 +7043,6 @@ The following @ignore is needed so that discussions of @file, @root, etc. do not
 
 @ignore
 @tabwidth -4</t>
-<t tx="ekr.20040414162124">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = False
-verbose=True
-@c
-
-.. August 28, 2005
-
-|blank| |leo| |next|
-
-###################
-Leo's Users Guide
-###################
-
-**Important**: LeoDocs.leo (included in all Leo distributions) contains the full source code for all parts of Leo's Users Guide.
-</t>
-<t tx="ekr.20040414163815">`Front Matter`_
-
-`Preface`_
-
-`What people are saying about Leo`_
-
-`FAQ`_
-
-`Chapter 1: Installing Leo`_
-
-`Chapter 2: A Tutorial Introduction to Leo`_
-
-`Chapter 3: Using Leo's Outlines`_
-
-`Chapter 4: Writing Programs in Leo`_
-
-`Chapter 5: Using Leo's Commands`_
-
-`Chapter 6: Leo and Literate Programming`_
-
-`Chapter 7: Scripting Leo with Python`_
-
-`Chapter 8: Customizing Leo`_
-
-`Chapter 9: History of Leo`_
-
-`Chapter 10: Theory of Operation`_
-
-`Chapter 11: White Papers`_
-
-`Chapter 12: Plugins`_
-
-`Chapter 13: Writing Plugins`_
-
-`Chapter 14: Using the Rst3 Plugin`_
-
-`Chapter 15: Controlling Syntax Coloring`_
-
-`Chapter 16: Debugging with Leo`_
-
-`Chapter 17: Using ZODB with Leo`_
-
-`Chapter 18: Leo and Emacs`_
-
-`Chapter 19: Embedding Leo with the leoBridge Module`_
-
-`Chapter 20: Unit testing with Leo`_
-
-`Chapter 21: ILeo - the IPython bridge`_
-
-`Chapter 22: Using Vim with Leo`_
-
-`Chapter 23: Using @shadow files`_
-
-Appendices_
-
-Glossary_
-
-`What's new in Leo 4.4.7 and 4.4.8`_
-
-`What's new in Leo 4.4.6`_
-
-`What's new in Leo 4.4.5`_
-
-`What's new in Leo 4.4.4`_
-
-`What's new in Leo 4.4.3`_
-
-`What's new in Leo 4.4.2`_
-
-`What's new in Leo 4.4.1`_
-
-`What's new in Leo 4.4`_</t>
 <t tx="ekr.20040414172212">@ @rst-options
 code_mode=False
 generate_rst=True
@@ -9369,9 +9284,6 @@ Removes @ignore, @nocolor, @wrap directives.
 .. |next| image:: arrow_rt.gif
 	:target: customizing.html
 </t>
-<t tx="ekr.20050812134441.3">------------
-
-|leo| |next|</t>
 <t tx="ekr.20050813102008.1">###########################
 |leo| Using the rst3 plugin
 ###########################
@@ -11234,7 +11146,8 @@ However, ``@root`` trees are more flexible than ``@file`` trees:
   Moreover, the ``@unit`` directive expands the scope of section definitions in ``@root`` trees
   so that a section may be referenced in several ``@root`` trees.
 
-- The meaning of section definitions in ``@root`` trees are independent of their position within the tree.</t>
+- The meaning of section definitions in ``@root`` trees are independent of their position within the tree.
+</t>
 <t tx="ekr.20050828061501.47">Just as with ``@file`` trees, ``@root`` trees may contain code parts and doc parts.
 Code parts start with section definition lines (see below) or the ``@c`` directive.
 Doc parts start with ``@`` directive.
@@ -11451,30 +11364,10 @@ The ``@quiet`` directive is like @silent except that it does output leading sent
 Like ``@silent``, ``@quiet`` inhibits untangling. 
 ``@verbose`` is the default.
 If more than one of these directives appear in the same body text the "most verbose" of these options will be in effect.</t>
-<t tx="ekr.20050828061501.51">In most respects ``@thin`` works just like ``@file``.
-In fact, you can convert from ``@file`` to ``@thin`` simply by opening an outline,
-changing ``@file`` to ``@thin``, and saving the outline.
-
-Here are the differences between ``@file`` and ``@thin``:
-
-- Leo does not save the information contained in the ``@thin`` tree in the .leo file.  
-
-- Files derived from ``@thin`` ("thin" derived files) contain all information needed to
-  recreate the ``@thin`` tree in the outline.
-  In particular, ``@+node`` and ``@-node`` sentinels use timestamps to uniquely identify nodes.
-
-- The ``@all`` directive is valid only in ``@thin`` trees.
-
-- Thin derived files are much more friendly to cvs than files derived from ``@file`` trees.
-  Developers only need to commit thin derived files to cvs.
-
-  The cvs repository contains **reference** .leo files.
-  These reference files should containing nothing but ``@thin`` nodes.
-  Reference files will change only when new derived files get added to the project.
-
-  Developers will use local copies of reference files for their own work.
-  For example, instead of using LeoPyRef.leo directly, I use a copy called ``LeoPy.leo``.
-  My local copy can contain nodes other than ``@thin`` nodes.</t>
+<t tx="ekr.20050828061501.51">Creates a derived file containing sentinels.
+Thin derived file contains simpler sentinels than @thin.
+The @file tree in the outline contains a copy of all information in the derived file.
+</t>
 <t tx="ekr.20050828062751">In the following table all terms in each row are equivalent.
 The spelling in the first column is preferred:
 
@@ -11505,12 +11398,15 @@ You can get any combination of sentinels/no sentinels and references/no referenc
 +---------+------------+-------------------+
 | @root   | yes        | yes               |
 +---------+------------+-------------------+
+| @shadow | yes and no | yes               |
++---------+------------+-------------------+
 | @thin   | yes        | yes               |
 +---------+------------+-------------------+
 
-
 Leo can not update the outline from changes made from derived files unless those files contain sentinels.
-The primary source for ``@nosent`` and ``@asis`` trees are the outlines from which those files were derived.</t>
+The primary source for ``@nosent`` and ``@asis`` trees are the outlines from which those files were derived.
+
+@shadow trees create *two* files, a **public** file without sentinels, and a **private** file (by default in the .leo_shadow subfolder) containing sentinels.  The primary sources for @shadow trees are the private files, updated by changes to the public file.</t>
 <t tx="ekr.20050828064254">The ``@others`` directive refers to the body text of all nodes *except* section definition nodes.
 The ``@others`` directive places the body text of section definition nodes in the derived file in outline order.
 
@@ -11569,53 +11465,6 @@ is the kind of sentinel lines that Leo writes:
 `Chapter 4: Writing Programs in Leo`_ discusses the various ways of creating derived files.
 This is a highly complex subject: you should ignore these details at first.
 Just use ``@thin`` to create your `derived files`_.</t>
-<t tx="ekr.20050828112159">.. _`Front Matter`:                                 frontMatter.html
-.. _`Preface`:                                      preface.html
-.. _`What people are saying about Leo`:             testimonials.html
-.. _`FAQ`:                                          FAQ.html
-.. _`Chapter 1\: Installing Leo`:                   install.html
-.. _`Chapter 2\: A Tutorial Introduction to Leo`:   intro.html
-.. _`Chapter 3\: Using Leo's Outlines`:             outlines.html
-.. _`Chapter 4\: Writing Programs in Leo`:          directives.html
-.. _`Chapter 5\: Using Leo's Commands`:             commands.html
-.. _`Chapter 6\: Leo and Literate Programming`:     design.html
-.. _`Chapter 7\: Scripting Leo with Python`:        scripting.html
-.. _`Chapter 8\: Customizing Leo`:                  customizing.html
-.. _`Chapter 9\: History of Leo`:                   history.html
-.. _`Chapter 10\: Theory of Operation`:             theory.html
-.. _`Chapter 11\: White Papers`:                    whitepapers.html
-.. _`Chapter 12\: Plugins`:                         plugins.html
-.. _`Chapter 13\: Writing Plugins`:                 writingPlugins.html
-.. _`Chapter 14\: Using the Rst3 Plugin`:           rstplugin3.html
-.. _`Chapter 15\: Controlling Syntax Coloring`:     coloring.html
-.. _`Chapter 16\: Debugging with Leo`:              debuggers.html
-.. _`Chapter 17\: Using ZODB with Leo`:             zodb.html
-.. _`Chapter 18\: Leo and Emacs`:                   emacs.html
-.. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
-.. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
-.. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
-.. _`Chapter 22\: Using Vim with Leo`:              vimBindings.html
-.. _`Chapter 23\: Using @shadow files`:             atShadow.html
-.. _`Appendices`:                                   appendices.html
-.. _`Glossary`:                                     glossary.html
-.. _`What's new in Leo 4.4.7 and 4.4.8`:            new-4-4-8.html
-.. _`What's new in Leo 4.4.6`:                      new-4-4-6.html
-.. _`What's new in Leo 4.4.5`:                      new-4-4-5.html
-.. _`What's new in Leo 4.4.4`:                      new-4-4-4.html
-.. _`What's new in Leo 4.4.3`:                      new-4-4-3.html
-.. _`What's new in Leo 4.4.2`:                      new-4-4-2.html
-.. _`What's new in Leo 4.4.1`:                      new-4-4-1.html
-.. _`What's new in Leo 4.4`:                        new-4-4.html
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: frontMatter.html
-
-.. |blank| image:: Blank.gif</t>
 <t tx="ekr.20050828115003">------------------
 
 |back| |leo| |next|</t>
@@ -11626,7 +11475,8 @@ Just use ``@thin`` to create your `derived files`_.</t>
 
 .. Relative links...
 
-.. _front:      front.html
+.. _`@root reference`:      directives.html#id5 
+.. _front:                  front.html
 .. _`Leo's tutorial`:       intro.html
 
 .. WARNING: image targets may not have upper case letters!
@@ -11834,6 +11684,11 @@ Negative values cause Leo to convert tabs to blanks.</t>
   Copies *all* descendant nodes to the derived file.
   Not valid in ``@root`` trees.
   
+- **\@asis**
+  Creates a derived file without sentinels,
+  containing exactly the data in the ``@asis`` tree,
+  without expanding section references or ``@others`` directives.
+  
 - **\@auto**
   Imports the derived file every time Leo reads the outline.
   The read-at-auto-nodes and write-at-auto-nodes commands can
@@ -11853,6 +11708,11 @@ Negative values cause Leo to convert tabs to blanks.</t>
 
 - **\@encoding**
   Sets the Unicode encoding used in derived files.
+  
+- **\@file**
+  Creates a derived file containing sentinels.
+  Thin derived file contains simpler sentinels than @thin.
+  The @file tree in the outline contains a copy of all information in the derived file.
 
 - **\@first**
   Forces lines to appear before the first sentinel of a derived file.
@@ -11873,6 +11733,9 @@ Negative values cause Leo to convert tabs to blanks.</t>
 
 - **\@others**
   Copies all nodes *except* section definition nodes to the derived file.
+  
+- **\@nosent**
+  Same as ``@file``, but the derived file contains no sentinels.
 
 - **\@pagewidth**
   Sets the page width used to break doc parts into lines.
@@ -11887,10 +11750,20 @@ Negative values cause Leo to convert tabs to blanks.</t>
 - **\@root**, **\@root-code** and **\@root-code**
   Start an ``@root`` tree.
   The last two forms set the starting mode for body text.
+  
+- **\@shadow**
+  Creates two derived files, a **public** file without sentinels,
+  and a **private** file containing sentinels.
+  Imports the file just as ``@auto`` does if the private file does not exist.
 
 - **\@tabwidth**
   Sets the width of tabs.
   Negative tab widths cause Leo to convert tabs to spaces.
+  
+- **\@thin**
+  Creates a derived file containing sentinels.
+  Thin derived file miminizes cvs and bzr conflicts.
+  All essential information is stored in the thin derived file.
 
 - **@verbose**, **@terse**, **@quiet** and **@silent**
   Set the verbosity of sentinels in files derived from ``@root``.
@@ -13906,7 +13779,7 @@ The benefits of the new workflow:
 - test.leo is the perfect place to develop test.
   I can create and organize those tests and when I am done, ''test.leo'' is a log of my work.</t>
 <t tx="ekr.20050831184021.1">@language rest</t>
-<t tx="ekr.20050831184021.2">@language rest</t>
+<t tx="ekr.20050831184021.2">@language html</t>
 <t tx="ekr.20050831184021.3">@language rest</t>
 <t tx="ekr.20050831184021.4">@language rest</t>
 <t tx="ekr.20050831184021.5">@language rest</t>
@@ -28064,10 +27937,13 @@ two exceptions to this statement:
 1. Leo will never read (import) or write an @auto tree if
 the root @auto tree is under the influence of an @ignore directive.
 
-2. Saving a .leo file does not save @auto nodes if a) they haven't been changed
-or b) they do not contain a **significant** amount of information. An @auto tree
-contains a significant amount of information if it has  children or if the
-root node contains more than 10 characters.
+2. Saving a .leo file does not save @auto nodes if:
+
+a) they haven't been changed or,
+
+b) they do not contain a **significant** amount of information. An @auto tree
+   contains a significant amount of information if it has  children or if the
+   root node contains more than 10 characters.
 
 Leo creates @auto trees by parsing the corresponding derived file. Parsers
 create descendant nodes of the @auto tree: one node for each class, method and
@@ -31148,7 +31024,7 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080730212711.14"></t>
+<t tx="ekr.20080730212711.14">@language rest</t>
 <t tx="ekr.20080730212711.15">@ @rst-options
 code_mode=False
 generate_rst=True
@@ -31166,16 +31042,28 @@ verbose=True
 |back| |leo| |next|
 
 ############################################################
-Chapter 23: Using @shadow files
+Chapter 23: Eliminating sentinel lines with @shadow
 ############################################################
 
-This chapter describes how to use @shadow trees to eliminate Leo sentinels from public files that other people and projects use.
+This chapter describes an important new feature that debuted in Leo 4.5 b2: @shadow trees.
+These trees combine the benefits of @auto, @thin, @file and @nosent trees:
+
+- The (public) files created by @shadow trees contain no sentinels, but
+- Leo is able to update @shadow trees in the Leo outline based on changes made
+  to public files outside of Leo.
+  
+@shadow trees are often useful for studying or editing source files from projects that don't use Leo. 
+In such situations, it is convenient to import the @shadow tree from the (public) sources.
+As discussed below, Leo can import @shadow trees automatically,
+using the same algorithms used by @auto_ trees.
+  
+The crucial ideas and algorithms underlying @shadow trees are the invention of Bernhard Mulder.
 
 .. contents::
 </t>
 <t tx="ekr.20080730212711.16">.. Links
 
-.. .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
+.. _`@auto trees`:          directives.html#auto-trees    
 
 
 .. WARNING: image targets may not have upper case letters!
@@ -31679,320 +31567,6 @@ that we won't be changing the original (public) files.  When it fails, it
 tells us why it failed so we could, for example, request that pypy clean up
 the offending files.  I think this is *exactly* the right balance to have
 when dealing with external projects, especially Python projects. </t>
-<t tx="ekr.20080730212711.29">@first &lt;?xml version="1.0" encoding="utf-8" ?&gt;
-@first &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
-
-@language html
-@tabwidth -4
-
-&lt;!-- Last Modified: July 31, 2008 --&gt;
-&lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
-
-&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
-&lt;head&gt;
-&lt;&lt;head&gt;&gt;
-&lt;/head&gt;
-
-&lt;body bgcolor="#fffbdc"&gt;
-&lt;&lt; body &gt;&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-
-</t>
-<t tx="ekr.20080730212711.30">&lt;title&gt;Leo's Table of contents&lt;/title&gt;
-
-&lt;meta name="description"
-    content="This page is the table of contents for Leo."/&gt;
-
-&lt;style type="text/css"&gt;
-
-/* EKR 10/19/06 */
-/* some browsers require imported rules to precede all rulesets */
-@import url(leo_rst.css);
-@import url(silver_city.css);
-
-.first {
-  margin-top: 0 }
-
-.last {
-  margin-bottom: 0 }
-
-a.toc-backref {
-  text-decoration: none ;
-  color: black }
-
-dd {
-  margin-bottom: 0.5em }
-
-div.abstract {
-  margin: 2em 5em }
-
-div.abstract p.topic-title {
-  font-weight: bold ;
-  text-align: center }
-
-div.attention, div.caution, div.danger, div.error, div.hint,
-div.important, div.note, div.tip, div.warning, div.admonition {
-  margin: 2em ;
-  border: medium outset ;
-  padding: 1em }
-
-div.attention p.admonition-title, div.caution p.admonition-title,
-div.danger p.admonition-title, div.error p.admonition-title,
-div.warning p.admonition-title {
-  color: red ;
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.hint p.admonition-title, div.important p.admonition-title,
-div.note p.admonition-title, div.tip p.admonition-title,
-div.admonition p.admonition-title {
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.dedication {
-  margin: 2em 5em ;
-  text-align: center ;
-  font-style: italic }
-
-div.dedication p.topic-title {
-  font-weight: bold ;
-  font-style: normal }
-
-div.figure {
-  margin-left: 2em }
-
-div.footer, div.header {
-  font-size: smaller }
-
-div.sidebar {
-  margin-left: 1em ;
-  border: medium outset ;
-  padding: 0em 1em ;
-  background-color: #ffffee ;
-  width: 40% ;
-  float: right ;
-  clear: right }
-
-div.sidebar p.rubric {
-  font-family: sans-serif ;
-  font-size: medium }
-
-div.system-messages {
-  margin: 5em }
-
-div.system-messages h1 {
-  color: red }
-
-div.system-message {
-  border: medium outset ;
-  padding: 1em }
-
-div.system-message p.system-message-title {
-  color: red ;
-  font-weight: bold }
-
-div.topic {
-  margin: 2em }
-
-h1.title {
-  text-align: center }
-
-h2.subtitle {
-  text-align: center }
-
-ol.simple, ul.simple {
-  margin-bottom: 1em }
-
-ol.arabic {
-  list-style: decimal }
-
-ol.loweralpha {
-  list-style: lower-alpha }
-
-ol.upperalpha {
-  list-style: upper-alpha }
-
-ol.lowerroman {
-  list-style: lower-roman }
-
-ol.upperroman {
-  list-style: upper-roman }
-
-p.attribution {
-  text-align: right ;
-  margin-left: 50% }
-
-p.caption {
-  font-style: italic }
-
-p.credits {
-  font-style: italic ;
-  font-size: smaller }
-
-p.label {
-  white-space: nowrap }
-
-p.rubric {
-  font-weight: bold ;
-  font-size: larger ;
-  color: maroon ;
-  text-align: center }
-
-p.sidebar-title {
-  font-family: sans-serif ;
-  font-weight: bold ;
-  font-size: larger }
-
-p.sidebar-subtitle {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-p.topic-title {
-  font-weight: bold }
-
-pre.address {
-  margin-bottom: 0 ;
-  margin-top: 0 ;
-  font-family: serif ;
-  font-size: 100% }
-
-pre.line-block {
-  font-family: serif ;
-  font-size: 100% }
-
-pre.literal-block, pre.doctest-block {
-  margin-left: 2em ;
-  margin-right: 2em ;}
-  /*background-color: #eeeeee }*/
-  /*for some reason i can't overide in an import*/
-
-span.classifier {
-  font-family: sans-serif ;
-  font-style: oblique }
-
-span.classifier-delimiter {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-span.interpreted {
-  font-family: sans-serif }
-
-span.option {
-  white-space: nowrap }
-
-span.option-argument {
-  font-style: italic }
-
-span.pre {
-  white-space: pre }
-
-span.problematic {
-  color: red }
-
-table {
-  margin-top: 0.5em ;
-  margin-bottom: 0.5em }
-
-table.citation {
-  border-left: solid thin gray ;
-  padding-left: 0.5ex }
-
-table.docinfo {
-  margin: 2em 4em }
-
-table.footnote {
-  border-left: solid thin black ;
-  padding-left: 0.5ex }
-
-td, th {
-  padding-left: 0.5em ;
-  padding-right: 0.5em ;
-  vertical-align: top }
-
-th.docinfo-name, th.field-name {
-  font-weight: bold ;
-  text-align: left ;
-  white-space: nowrap }
-
-h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
-  font-size: 100% }
-
-/*for some reason, the following isn't being overridden by the imports
-at the end of this style sheet so I've commented it out*/
-/*tt {
-  background-color: #eeeeee }*/
-
-ul.auto-toc {
-  list-style-type: none }
-
-hr { /* EKR */
-  width: 100%;
-  height: 1pt;
-  color: gray;
-}
-&lt;/style&gt;
-</t>
-<t tx="ekr.20080730212711.36">&lt;div class="document"&gt;
-
-&lt;p&gt;&lt;img alt="blank" src="Blank.gif" /&gt; &lt;a class="reference" href="front.html"&gt;&lt;img alt="leo" src="leo.gif" /&gt;&lt;/a&gt; &lt;a class="reference" href="frontMatter.html"&gt;&lt;img alt="next" src="arrow_rt.gif" /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;div class="section" id="leo-s-users-guide"&gt;
-&lt;h1&gt;Leo's Users Guide&lt;/h1&gt;
-
-&lt;p&gt;&lt;strong&gt;Important&lt;/strong&gt;:
-LeoDocs.leo (included in all Leo distributions) contains the full source code for
-all parts of Leo's Users Guide.&lt;/p&gt;
-
-&lt;div class="section" id="table-of-contents"&gt;
-&lt;h2&gt;Table of Contents&lt;/h2&gt;
-
-&lt;a class="reference" href="frontMatter.html"&gt;Front Matter&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="preface.html"&gt;Preface&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="testimonials.html"&gt;What people are saying about Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="install.html"&gt;Chapter 1: Installing Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="intro.html"&gt;Chapter 2: A Tutorial Introduction to Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="outlines.html"&gt;Chapter 3: Using Leo's Outlines&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="directives.html"&gt;Chapter 4: Writing Programs in Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="commands.html"&gt;Chapter 5: Using Leo's Commands&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="design.html"&gt;Chapter 6: Leo and Literate Programming&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="scripting.html"&gt;Chapter 7: Scripting Leo with Python&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="customizing.html"&gt;Chapter 8: Customizing Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="history.html"&gt;Chapter 9: History of Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="theory.html"&gt;Chapter 10: Theory of Operation&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="whitepapers.html"&gt;Chapter 11: White Papers&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="plugins.html"&gt;Chapter 12: Plugins&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="writingPlugins.html"&gt;Chapter 13: Writing Plugins&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="rstplugin3.html"&gt;Chapter 14: Using the Rst3 Plugin&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="coloring.html"&gt;Chapter 15: Controlling Syntax Coloring&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="debuggers.html"&gt;Chapter 16: Debugging with Leo&lt;/a&gt;&lt;br&gt;
-
-&lt;a class="reference" href="zodb.html"&gt;Chapter 17: Using ZODB with Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="emacs.html"&gt;Chapter 18: Leo and Emacs&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="leoBridge.html"&gt;Chapter 19: Embedding Leo with the leoBridge Module&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="unitTesting.html"&gt;Chapter 20: Unit testing with Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="IPythonBridge.html"&gt;Chapter 21: ILeo - the IPython bridge&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="vimBindings.html"&gt;Chapter 22: Using Vim with Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="atShadow.html"&gt;Chapter 23: Using @shadow files&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="appendices.html"&gt;Appendices&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="glossary.html"&gt;Glossary&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-8.html"&gt;What's new in Leo 4.4.7 and 4.4.8&lt;/a&gt;&lt;br&gt;
-
-&lt;a class="reference" href="new-4-4-6.html"&gt;What's new in Leo 4.4.6&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-5.html"&gt;What's new in Leo 4.4.5&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-4.html"&gt;What's new in Leo 4.4.4&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-3.html"&gt;What's new in Leo 4.4.3&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-2.html"&gt;What's new in Leo 4.4.2&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-1.html"&gt;What's new in Leo 4.4.1&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4.html"&gt;What's new in Leo 4.4&lt;/a&gt;&lt;br&gt;
-
-&lt;hr class="docutils" /&gt;
-&lt;p&gt;&lt;a class="reference" href="front.html"&gt;&lt;img alt="leo" src="leo.gif" /&gt;&lt;/a&gt; &lt;a class="reference" href="frontMatter.html"&gt;&lt;img alt="next" src="arrow_rt.gif" /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;</t>
 <t tx="ekr.20080730212711.37">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
 &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
@@ -32303,6 +31877,169 @@ hr { /* EKR */
 &lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;
+</t>
+<t tx="ekr.20080730212711.39">@file and @thin nodes create derived files containing comments called sentinels.
+These sentinel lines allow Leo to recreate the outlines structure of @file and @thin trees.
+Alas, many people and organizations find these added sentinel lines unacceptable.
+@nosent nodes create derived files without sentinels, but at a cost:
+Leo can not update @nosent trees when the corresponding derived file is changed outside of Leo.
+
+@shadow trees provide a way around this dilemma.
+When Leo saves an @shadow tree, it saves two copies of the tree:
+a **public** file without sentinels, and a **private** file containing sentinels.
+(Leo writes the private file to a subfolder of the folder containing the public file:
+by default this folder is called .leo_shadow.)
+Using Bernhard Mulder's brilliant **update algorithm**,
+Leo is able to update @shadow trees in the Leo outline based *solely* on changes to public files.
+
+That's *almost* all there is to it.  The following sections discuss important details:
+
+- How to import @shadow trees initially.
+- How @shadow works its magic.
+- Why the update algorithm is sound.</t>
+<t tx="ekr.20080730212711.40">Suppose our @shadow tree is @shadow a.py.
+When Leo writes this tree it creates a public file, a.py,
+and a private file, .leo_shadow/xa.p (or just xa.p for short).
+Public files might can committed to a source code control system such as cvs or bzr.
+Private files should *not* be known to cvs or bzr.
+
+Now suppose a.py has been changed outside of Leo, say as the result of a bzr merge.
+The corresponding private file, xa.p, will *not* have been changed.
+(Private files should *never* change outside of Leo.
+
+When Leo reads the *new* (and possibly updated) public file it does the following:
+
+1. Recreates the *old* public file by removing sentinels from the (unchanged!) *private* file.
+2. Creates a set of diffs between the old and new *public* files.
+3. Uses the diffs to create a new version of the *private* file.
+4. Creates the @shadow tree using  the new *private* file.
+
+Step 3 is the clever part.
+To see all the details of how the algorithm works,
+please study the x.propagate_changed_lines method in leoShadow.py.
+This code is heavily commented.
+</t>
+<t tx="ekr.20080730212711.41">When writing an @shadow tree, Leo writes *two* files, a **public** file without sentinels,
+and a **private** file (by default in the .leo_shadow subfolder) containing sentinels.
+The primary sources for @shadow trees are the private files, updated by changes to the public file.
+
+When reading an @shadow tree,
+Leo will import the tree from the public file if the private file does not exist.
+**Important**: just as for @auto, the following exceptions apply:
+
+1. Leo will never read (import) or write an @shadow tree if
+the @shadow tree is under the influence of an @ignore directive.
+
+2. Saving a .leo file does not save @shadow nodes if:
+
+a) they haven't been changed or,
+
+b) they do not contain a **significant** amount of information. An @auto tree
+   contains a significant amount of information if it has  children or if the
+   root node contains more than 10 characters.
+   
+Leo imports shadow trees by parsing the corresponding public file,
+exactly as is done for @auto node.
+See the discussion of @auto above for details.</t>
+<t tx="ekr.20080730212711.42">When reading an @shadow tree,
+Leo will import the tree from the public file if the private file does not exist.
+The import is done exactly as is done for `@auto trees`_.
+
+**Important**: just as for @auto, the following exceptions apply:
+
+1. Leo will never read (import) or write an @shadow tree if
+   the root @shadow tree is under the influence of an @ignore directive.
+
+2. Saving a .leo file does not save @shadow nodes if:
+   a) they haven't been changed or,
+   b) they do not contain a **significant** amount of information. An @shadow tree
+   contains a significant amount of information if it has  children or if the
+   root node contains more than 10 characters, excluding Leo directives.</t>
+<t tx="ekr.20080730212711.44">Creates a derived file containing sentinels.
+Thin derived files are much more friendly to cvs than files derived from ``@file`` trees.
+Thin derived files contain all information needed to recreate the ``@thin`` tree in the outline.
+
+The ``@all`` directive is valid only in ``@thin`` trees, not ``@file`` trees.
+</t>
+<t tx="ekr.20080730212711.47">@auto trees allow people to use Leo in collaborative environments without using
+sentinels in the files Leo generates. In contrast to @nosent, @auto trees can
+change when the corresponding file changes outside of Leo.
+
+Leo will automatically recreate (import) all @auto trees when reading a .leo
+file, and will write all dirty @auto trees when saving a .leo file. There are
+two exceptions to this statement:
+    
+1. Leo will never read (import) or write an @auto tree if
+the root @auto tree is under the influence of an @ignore directive.
+
+2. Saving a .leo file does not save @auto nodes if:
+
+a) they haven't been changed or,
+
+b) they do not contain a **significant** amount of information. An @auto tree
+   contains a significant amount of information if it has  children or if the
+   root node contains more than 10 characters.
+
+Leo creates @auto trees by parsing the corresponding derived file. Parsers
+create descendant nodes of the @auto tree: one node for each class, method and
+function in the derived file.
+
+Parsers presently exist for C, elisp, Java, Javascript, Pascal, PHP, Python and xml. Leo
+determines the language using the file's extension.  Notes:
+    
+- If no parser exists for a language, the entire body of the derived file is
+  copied to the body of the @auto node.
+  
+- Javascript regexps that look like section references cause problems, but that
+  can not be helped.
+  
+- Use the @data import_xml_tags setting in leoSettings.leo to specify the xml
+  tags that create outline nodes. By default, the **organizer tags** are html,
+  body, head, and div.</t>
+<t tx="ekr.20080730212711.51">``@root`` creates derived files that are more flexible than
+``@file``, ``@thin``, ``@shadow`` or any other kind of derived file.
+
+- Sections may be defined anywhere within ``@root`` trees.
+  Moreover, the ``@unit`` directive expands the scope of section definitions in ``@root`` trees
+  so that a section may be referenced in several ``@root`` trees.
+
+- The meaning of section definitions in ``@root`` trees are independent of their position within the tree.
+
+However, this flexibility comes at a cost:
+
+- ``@file`` trees use less markup than ``@root`` trees.
+  In particular, the @others directive is valid only within ``@file`` trees.
+
+- You must explicitly tangle and untangle ``@root`` trees using the ``Tangle`` and ``Untangle`` commands.
+
+See `@root reference`_ for more details.</t>
+<t tx="ekr.20080730212711.52">There is one boundary case that the update algorithm can not resolve.
+If a line is inserted at the boundary between nodes,
+the updated algorithm can not determine whether the line should be inserted
+at the end of one node of the start of the next node.
+
+Happily, the inability of the update algorithm to distinguish between
+these two cases **does not matter**, for three very important reasons:
+
+1. No matter which choice is made, the *public* file that results is the same.
+   **The choice doesn't matter**, so the update algorithm is completely and
+   absolutely safe.
+
+2. Leo reports any nodes that were changed as the result of the update
+   algorithm. In essence, these reports are exactly the same as the reports Leo
+   makes when @file or @thin trees were changed as the result of changes made
+   externally to Leo. It is as easy for the user to review changes to @shadow
+   trees as it is to review changes to @thin or @file trees.
+
+3. Suppose the user moves a line from the end of one node to the beginning of
+   the following node, or vice versa. Once the user saves the file, the
+   *private* file records the location of the moved line. The next time the user
+   reads the @shadow file, the line will *not* be subject to the update
+   algorithm because the line has not been changed externally. The location of
+   the line (on the boundary) will be completely determined and it will never
+   need to be moved across the boundary.
+   
+Understanding these three reasons finally convinced me that @shadow could be made to work reliably.
 </t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional

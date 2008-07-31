@@ -805,6 +805,7 @@ ato
 attachLeoIcon
 attr
 author_email
+auto_
 auto_save
 autocalling
 autocomplete
@@ -1917,6 +1918,7 @@ leoScripts
 leoSetting
 leoSettings
 leoSetttings
+leoShadow
 leoTangle
 leoTest
 leoTestBridge
@@ -1936,6 +1938,7 @@ leo_header
 leo_keyword_font
 leo_pdf
 leo_rst
+leo_shadow
 leo_to_html
 leo_to_rtf
 leo_xresources
@@ -3204,6 +3207,7 @@ versioning
 vh
 vhash
 vids
+vimBindings
 vim_cmd
 vim_exe
 visibleText
@@ -3310,6 +3314,7 @@ x_main
 x_ns
 x_root
 x_setname
+xa
 xb73a876c
 xbuf
 xdb
