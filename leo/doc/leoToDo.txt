@@ -2,7 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
-#@+node:ekr.20080801071227.1:First (after b2) 7
+#@+node:ekr.20080801071227.1:First 7
 #@+node:ekr.20080801071227.2:Improve or eliminate x.isSentinel
 #@-node:ekr.20080801071227.2:Improve or eliminate x.isSentinel
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
@@ -343,7 +343,7 @@ def setHeadString (self,p,s,encoding="utf-8"):
 #@-node:ekr.20040305223225:c.setHeadString
 #@-node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
 #@-node:ekr.20080517102922.1:Files bugs 5
-#@-node:ekr.20080801071227.1:First (after b2) 7
+#@-node:ekr.20080801071227.1:First 7
 #@+node:ekr.20080411091507.10:Minor bugs (3)
 #@+node:ekr.20080709161540.1:Fix c colorizer bug
 @nocolor
@@ -602,1522 +602,6 @@ with the contents unitTest.leo.
 
 #@-node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
 #@-node:ekr.20080411091507.10:Minor bugs (3)
-#@+node:ekr.20080730212711.6:Features 16
-#@+node:ekr.20080801071227.3:First 3
-#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
-What uA should be used to specify node colors?
-
-    if the foreground / background color API uses uAs,
-    would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
-#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
-#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
-
-I'm just getting started learning how to use Leo. Now, I'd like to use
-it for some of my projects, but there's no chance that I can convert
-everyone at work to using it, so putting sentinel-filled files in our
-repository is out of the question. At the same time, my code looks
-awfully bare without sentinels because the documentation ends up in
-the section names, not the comments!
-
-So, I was wondering if there's a convenient way to pull the section
-names into a comment at the start of each section?
-
-===============
-
-Interesting question.  Am I correct in assuming you are using @nosent trees
-to generate your files?  If so, it would be easy to add support for the
-following options:
-
-@bool write_section_comments_in_at_nosent_trees
-@bool write_node_name_comments_in_at_nosent_trees
-
-The first would write a sentinel consisting of only the section name;
-the second would write a sentinel consisting only of the node's headline
-(for nodes whose headline is not a section name).
-
-These seem like they would be useful additions.  One can even imagine
-corresponding Leo directives so that the comments could be turned on or off
-within an @nosent tree.
-
-What do you think?
-
-=====================
-
-> Interesting question.  Am I correct in assuming you are using @nosent trees
-> to generate your files?  If so, it would be easy to add support for the
-> following options:
-
-> @bool write_section_comments_in_at_nosent_trees
-> @bool write_node_name_comments_in_at_nosent_trees
-
-> The first would write a sentinel consisting of only the section name;
-> the second would write a sentinel consisting only of the node's headline
-> (for nodes whose headline is not a section name).
-
-> These seem like they would be useful additions.  One can even imagine
-> corresponding Leo directives so that the comments could be turned on or off
-> within an @nosent tree.
-
-That sounds like an excellent solution. Particularly the last bit --
-if you could turn section-comments on and off as required, it would
-become very convenient to use Leo to produce source that is intended
-to also be read by non Leo users. 
-#@nonl
-#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
-#@+node:ekr.20080730095710.61:Add option to have @auto and @shadow not do "chunking"
-@nocolor
-
-What you are saying, I think, is that while chunking is a user
-preference, @auto doesn't give you the option of expressing this
-preference.  This is a perfectly valid objection.  True, using @auto
-to read an entire file into a single node seems, shall we say
-"eccentric", to me, but now the shoe is on the other foot: I am
-objecting to your preferences, which we all know is a no-no.
-
-In short, @auto and @shadow should give the user to option (possibly
-on a file-by-file basis) of importing to a single node. 
-#@nonl
-#@-node:ekr.20080730095710.61:Add option to have @auto and @shadow not do "chunking"
-#@-node:ekr.20080801071227.3:First 3
-#@+node:ekr.20080311135649.2:Allow different .leo formats
-@nocolor
-
-On Tue, Mar 11, 2008 at 7:03 AM, Kent Tenney <kten...@gmail.com> wrote:
-
-> On 3/11/08, derwisch <johannes.hues...@med.uni-heidelberg.de> wrote:
-
-> >  On 11 Mrz., 08:03, "Ville M. Vainio" <vivai...@gmail.com> wrote:
-> >  > It could also be argued that
-
-> >  > - Referring to previous cloned vnodes explicitly in XML does not
-> >  > necessarily obscure DAG - it follows the "do not repeat yourself"
-> rule
-> >  > - It will speed up reading
-> >  > - Wouldn't it be better for preserving the integrity of the XML file?
-
-> > I would lean towards this line of argumentation. A couple of days I
-> >  had my Leo extension destroy the Leo ODM file (which was still valid
-> >  according to Leo, but unreadable wrt the extension and broken uAs). I
-> >  resorted to editing the Leo file with Emacs, and was quite surprised
-> >  to see that the headStrings were attributes of vnodes.
-
-> I'll chime in with my pet peeve re: .leo file structure::
-
-> I think that putting the headstrings on vnodes and body strings on tnodes
-> obscures the informational content of the .leo file, and makes the .leo
-> file
-> format less attractive as a generalized solution to the problem of how to
-> manage head/body pairs which live in a hierarchal structure.
-
-> Thanks,
-> Kent
-
-> >  I think that
-> >  editing the file might have been a bit easier if there had been no
-> >  such redundancy. But this is more a feeling rather than a qualified
-> >  opinion.
-
-Thanks for all these comments.  I'll respond to them all here.
-
-Clearly, we should be using a standard xml parser to read .leo files.
-
-My present thoughts:
-
-- I personally like human-readable headlines in <v> elements.
-
-- I am open to putting headlines in <t> elements, as an indication that
-tnodes do indeed contain headlines and body text.
-
-- I am willing to consider only writing shared subtrees once.
-
-Oh! (An Aha)  All these are preferences.  We can allow any combination of
-these provided that headlines appear somewhere.
-
-So that's clean.  This will happen in Leo 4.5. 
-#@nonl
-#@-node:ekr.20080311135649.2:Allow different .leo formats
-#@+node:ekr.20080124083629.1:Improve @path handling
-@nocolor
-
-[quote]
-nested @paths don't do what I expected: 
-
-For a leo file in directory foo: 
-
-@path src 
-....@path tmpl
-
-should refer to foo/src and foo/src/tmpl
-
-using @path src/tmpl works fine though.
-[end quote]
-#@+node:ekr.20050121081635:Request:  cumulative @path directives
-@killcolor
-https://sourceforge.net/forum/message.php?msg_id=2936513
-By: ktenney
-
-In the @view plugin is a method, currentPath() which examines the current headline
-and body, and the headlines and bodies of it's parents, looking for @path and
-@view directives. It builds a path from them and checks for validity.
-
-if a top level node contains;
-@path /home/ktenney
-
-and a descendant of that node contains;
-@path projects/myproject
-
-Then a node further down the tree which contains;
-@view readme.txt
-
-will display /home/ktenney/projects/myproject/readme.txt
-
-I like this principle of cumulative paths, and would like other plugins to work
-the same way ... @image, @url etc.
-
-This brings me to my question, would it make sense for Leo to offer a 'Plugin'
-class to inherit from? It seems that there are some operations that are being
-re-written in many plugins.
-#@-node:ekr.20050121081635:Request:  cumulative @path directives
-#@+node:ekr.20050222045210:Better @path conventions
-See g.getBaseDirectory
-#@nonl
-#@-node:ekr.20050222045210:Better @path conventions
-#@+node:ekr.20041022083005.3:@path and other directives accept python expressions
-#@-node:ekr.20041022083005.3:@path and other directives accept python expressions
-#@-node:ekr.20080124083629.1:Improve @path handling
-#@+node:ekr.20080519062109.2:Improve how Leo handles long lines
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ae52bf0ed8e04a59
-
-'ve just downloaded leo and been very impressed.  Probably I'll use
-leo mostly for editing text (as opposed to programs).  Which means
-I've turned on text wrapping.
-
-But now, up and down arrows take me to the next line in the file, not
-the next line on the screen.  That means I'm always reaching for the
-mouse.
-
-Is there a way I can change the arrow key behaviour?
-Or should I be editing paragraphs differently (i.e., without text
-wrapping)? 
-
-Reply:
-
-I have a vague memory of writing code to get the behavior you describe, but
-all details are fuzzy.  I know what you are talking about--it may be one of
-the details I've learned to put up with.  In that case, a new option and new
-code will be a substantial improvement.  Thanks for this report.
-
-@color
-#@nonl
-#@+node:ekr.20060528100747.3:tkBody.createTextWidget
-def createTextWidget (self,parentFrame,p,name):
-
-    c = self.c
-
-    parentFrame.configure(bg='LightSteelBlue1')
-
-    wrap = c.config.getBool('body_pane_wraps')
-    wrap = g.choose(wrap,"word","none")
-
-    # Setgrid=1 cause severe problems with the font panel.
-    body = w = leoTkTextWidget (parentFrame,name='body-pane',
-        bd=2,bg="white",relief="flat",setgrid=0,wrap=wrap)
-
-    bodyBar = Tk.Scrollbar(parentFrame,name='bodyBar')
-
-    def yscrollCallback(x,y,bodyBar=bodyBar,w=w):
-        # g.trace(x,y,g.callers())
-        if hasattr(w,'leo_scrollBarSpot'):
-            w.leo_scrollBarSpot = (x,y)
-        return bodyBar.set(x,y)
-
-    body['yscrollcommand'] = yscrollCallback # bodyBar.set
-
-    bodyBar['command'] =  body.yview
-    bodyBar.pack(side="right", fill="y")
-
-    # Always create the horizontal bar.
-    bodyXBar = Tk.Scrollbar(
-        parentFrame,name='bodyXBar',orient="horizontal")
-    body['xscrollcommand'] = bodyXBar.set
-    bodyXBar['command'] = body.xview
-
-    if wrap == "none":
-        # g.trace(parentFrame)
-        bodyXBar.pack(side="bottom", fill="x")
-
-    body.pack(expand=1,fill="both")
-
-    self.wrapState = wrap
-
-    if 0: # Causes the cursor not to blink.
-        body.configure(insertofftime=0)
-
-    # Inject ivars
-    if name == '1':
-        w.leo_p = w.leo_v = None # Will be set when the second editor is created.
-    else:
-        w.leo_p = p.copy()
-        w.leo_v = w.leo_p.v
-
-    w.leo_active = True
-    # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
-    w.leo_bodyBar = bodyBar # 2007/10/31
-    w.leo_bodyXBar = bodyXBar # 2007/10/31
-    w.leo_chapter = None
-    w.leo_frame = parentFrame
-    w.leo_name = name
-    w.leo_label = None
-    w.leo_label_s = None
-    w.leo_scrollBarSpot = None
-    w.leo_insertSpot = None
-    w.leo_selection = None
-
-    return w
-#@-node:ekr.20060528100747.3:tkBody.createTextWidget
-#@+node:ekr.20050929114218:move cursor... (leoEditCommands)
-#@+node:ekr.20051218170358: helpers
-#@+node:ekr.20060113130510:extendHelper
-def extendHelper (self,w,extend,spot,upOrDown=False):
-    '''Handle the details of extending the selection.
-    This method is called for all cursor moves.
-
-    extend: Clear the selection unless this is True.
-    spot:   The *new* insert point.
-    '''
-    c = self.c ; p = c.currentPosition()
-    extend = extend or self.extendMode
-    ins = w.getInsertPoint()
-    i,j = w.getSelectionRange()
-    # g.trace('extend',extend,'ins',ins,'sel=',i,j,'spot=',spot,'moveSpot',self.moveSpot)
-
-    # Reset the move spot if needed.
-    if self.moveSpot is None or p.v.t != self.moveSpotNode:
-        # g.trace('no spot')
-        self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
-    elif extend:
-        if i == j or self.moveSpot not in (i,j):
-            # g.trace('spot not in sel')
-            self.setMoveCol(w,ins) # sets self.moveSpot.
-    else:
-        if upOrDown:
-            s = w.getAllText()
-            i2,j2 = g.getLine(s,spot)
-            line = s[i2:j2]
-            row,col = g.convertPythonIndexToRowCol(s,spot)
-            if True: #### j2 < len(s)-1:
-                n = min(self.moveCol,max(0,len(line)-1))
-            else:
-                n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
-            # g.trace('using moveCol',self.moveCol,'line',repr(line),'n',n)
-            spot = g.convertRowColToPythonIndex(s,row,n)
-        else:  # Plain move forward or back.
-            # g.trace('plain forward/back move')
-            self.setMoveCol(w,spot) # sets self.moveSpot.
-
-    if extend:
-        if spot < self.moveSpot:
-            w.setSelectionRange(spot,self.moveSpot,insert=spot)
-        else:
-            w.setSelectionRange(self.moveSpot,spot,insert=spot)
-    else:
-        w.setSelectionRange(spot,spot,insert=spot)
-
-    w.seeInsertPoint()
-    c.frame.updateStatusLine()
-#@nonl
-#@-node:ekr.20060113130510:extendHelper
-#@+node:ekr.20060113105246.1:moveUpOrDownHelper
-def moveUpOrDownHelper (self,event,direction,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-    trace = False
-
-    ins = w.getInsertPoint()
-    s = w.getAllText()
-    w.seeInsertPoint()
-
-    # Find the start of the next/prev line.
-    row,col = g.convertPythonIndexToRowCol(s,ins)
-    if trace:
-        gui_ins = w.toGuiIndex(ins)
-        bbox = w.bbox(gui_ins)
-        if bbox:
-            x,y,width,height = bbox
-            # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
-            g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
-            g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
-            g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
-            g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
-    i,j = g.getLine(s,ins)
-    if direction == 'down':
-        i2,j2 = g.getLine(s,j)
-    else:
-        i2,j2 = g.getLine(s,i-1)
-
-    # The spot is the start of the line plus the column index.
-    n = max(0,j2-i2-1) # The length of the new line.
-    col2 = min(col,n)
-    spot = i2 + col2
-    if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
-
-    self.extendHelper(w,extend,spot,upOrDown=True)
-#@nonl
-#@-node:ekr.20060113105246.1:moveUpOrDownHelper
-#@+node:ekr.20051218122116:moveToHelper
-def moveToHelper (self,event,spot,extend):
-
-    '''Common helper method for commands the move the cursor
-    in a way that can be described by a Tk Text expression.'''
-
-    c = self.c ; k = c.k ; w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-
-    # Put the request in the proper range.
-    if c.widget_name(w).startswith('mini'):
-        i,j = k.getEditableTextRange()
-        if   spot < i: spot = i
-        elif spot > j: spot = j
-
-    self.extendHelper(w,extend,spot,upOrDown=False)
-#@nonl
-#@-node:ekr.20051218122116:moveToHelper
-#@+node:ekr.20051218171457:movePastCloseHelper
-def movePastCloseHelper (self,event,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    # Scan backwards for i,j.
-    i = ins
-    while i >= 0 and s[i] != '\n':
-        if s[i] == '(': break
-        i -= 1
-    else: return
-    j = ins
-    while j >= 0 and s[j] != '\n':
-        if s[j] == '(': break
-        j -= 1
-    if i < j: return
-    # Scan forward for i2,j2.
-    i2 = ins
-    while i2 < len(s) and s[i2] != '\n':
-        if s[i2] == ')': break
-        i2 += 1
-    else: return
-    j2 = ins
-    while j2 < len(s) and s[j2] != '\n':
-        if s[j2] == ')': break
-        j2 += 1
-    if i2 > j2: return
-
-    self.moveToHelper(event,i2+1,extend)
-#@-node:ekr.20051218171457:movePastCloseHelper
-#@+node:ekr.20051218121447:moveWordHelper
-def moveWordHelper (self,event,extend,forward,end=False):
-
-    '''Move the cursor to the next word.
-    The cursor is placed at the start of the word unless end=True'''
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    s = w.getAllText() ; n = len(s)
-    i = w.getInsertPoint()
-
-    if forward:
-        # Unlike backward-word moves, there are two options...
-        if end:
-            while 0 <= i < n and not g.isWordChar(s[i]):
-                i += 1
-            while 0 <= i < n and g.isWordChar(s[i]):
-                i += 1
-        else:
-            while 0 <= i < n and g.isWordChar(s[i]):
-                i += 1
-            while 0 <= i < n and not g.isWordChar(s[i]):
-                i += 1
-    else:
-        i -= 1
-        while 0 <= i < n and not g.isWordChar(s[i]):
-            i -= 1
-        while 0 <= i < n and g.isWordChar(s[i]):
-            i -= 1
-        i += 1
-
-    self.moveToHelper(event,i,extend)
-#@nonl
-#@-node:ekr.20051218121447:moveWordHelper
-#@+node:ekr.20051213094517:backSentenceHelper
-def backSentenceHelper (self,event,extend):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    s = w.getAllText()
-    i = w.getInsertPoint()
-
-    while i >= 0:
-        if s[i] == '.': break
-        i -= 1
-    else: return
-
-    j = i-1
-    while j >= 0:
-        if s[j] == '.':
-            j += 1 ; break
-        j -= 1
-    else: j = 0
-
-    while j < i and s[j].isspace():
-        j += 1
-
-    if j < i:
-        self.moveToHelper(event,j,extend)
-#@-node:ekr.20051213094517:backSentenceHelper
-#@+node:ekr.20050920084036.137:forwardSentenceHelper
-def forwardSentenceHelper (self,event,extend):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    i = s.find('.',ins) + 1
-    i = min(i,len(s))
-    self.moveToHelper(event,i,extend)
-#@-node:ekr.20050920084036.137:forwardSentenceHelper
-#@+node:ekr.20051218133207.1:forwardParagraphHelper
-def forwardParagraphHelper (self,event,extend):
-
-    w = self.editWidget(event)
-    if not w: return
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    i,j = g.getLine(s,ins)
-    line = s[i:j]
-
-    if line.strip(): # Skip past the present paragraph.
-        self.selectParagraphHelper(w,i)
-        i,j = w.getSelectionRange()
-        j += 1
-
-    # Skip to the next non-blank line.
-    i = j
-    while j < len(s):
-        i,j = g.getLine(s,j)
-        line = s[i:j]
-        if line.strip(): break
-
-    w.setInsertPoint(ins) # Restore the original insert point.
-    self.moveToHelper(event,i,extend)
-#@-node:ekr.20051218133207.1:forwardParagraphHelper
-#@+node:ekr.20051218133207:backwardParagraphHelper
-def backwardParagraphHelper (self,event,extend):
-
-    w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText()
-    i,j = w.getSelectionRange()
-    # A hack for wx gui: set the insertion point to the end of the selection range.
-    if g.app.unitTesting:
-        w.setInsertPoint(j)
-    i,j = g.getLine(s,j)
-    line = s[i:j]
-
-    if line.strip():
-        # Find the start of the present paragraph.
-        while i > 0:
-            i,j = g.getLine(s,i-1)
-            line = s[i:j]
-            if not line.strip(): break
-
-    # Find the end of the previous paragraph.
-    while i > 0:
-        i,j = g.getLine(s,i-1)
-        line = s[i:j]
-        if line.strip():
-            i = j-1 ; break
-
-    self.moveToHelper(event,i,extend)
-#@nonl
-#@-node:ekr.20051218133207:backwardParagraphHelper
-#@+node:ekr.20060209095101:setMoveCol
-def setMoveCol (self,w,spot):
-
-    '''Set the column to which an up or down arrow will attempt to move.'''
-
-    c = self.c ; p = c.currentPosition()
-    s = w.getAllText()
-    i = w.toPythonIndex(spot)
-    junk,col = g.convertPythonIndexToRowCol(s,i)
-    # g.trace('spot,i,col',spot,i,col)
-
-    self.moveSpot = i
-    self.moveCol = col
-    self.moveSpotNode = p.v.t
-#@nonl
-#@-node:ekr.20060209095101:setMoveCol
-#@-node:ekr.20051218170358: helpers
-#@+node:ekr.20050920084036.148:buffers
-def beginningOfBuffer (self,event):
-    '''Move the cursor to the start of the body text.'''
-    self.moveToHelper(event,0,extend=False)
-
-def beginningOfBufferExtendSelection (self,event):
-    '''Extend the text selection by moving the cursor to the start of the body text.'''
-    self.moveToHelper(event,0,extend=True)
-
-def endOfBuffer (self,event):
-    '''Move the cursor to the end of the body text.'''
-    w = self.editWidget(event)
-    s = w.getAllText()
-    self.moveToHelper(event,len(s),extend=False)
-
-def endOfBufferExtendSelection (self,event):
-    '''Extend the text selection by moving the cursor to the end of the body text.'''
-    w = self.editWidget(event)
-    s = w.getAllText()
-    self.moveToHelper(event,len(s),extend=True)
-#@-node:ekr.20050920084036.148:buffers
-#@+node:ekr.20051213080533:characters
-def backCharacter (self,event):
-    '''Move the cursor back one character, extending the selection if in extend mode.'''
-    w = self.editWidget(event)
-    i = w.getInsertPoint()
-    i = max(0,i-1)
-    self.moveToHelper(event,i,extend=False)
-
-def backCharacterExtendSelection (self,event):
-    '''Extend the selection by moving the cursor back one character.'''
-    w = self.editWidget(event)
-    i = w.getInsertPoint()
-    i = max(0,i-1)
-    self.moveToHelper(event,i,extend=True)
-
-def forwardCharacter (self,event):
-    '''Move the cursor forward one character, extending the selection if in extend mode.'''
-    w = self.editWidget(event)
-    s = w.getAllText()
-    i = w.getInsertPoint()
-    i = min(i+1,len(s))
-    self.moveToHelper(event,i,extend=False)
-
-def forwardCharacterExtendSelection (self,event):
-    '''Extend the selection by moving the cursor forward one character.'''
-    w = self.editWidget(event)
-    s = w.getAllText()
-    i = w.getInsertPoint()
-    i = min(i+1,len(s))
-    self.moveToHelper(event,i,extend=True)
-#@-node:ekr.20051213080533:characters
-#@+node:ekr.20051218174113:clear/set/ToggleExtendMode
-def clearExtendMode (self,event):
-    '''Turn off extend mode: cursor movement commands do not extend the selection.'''
-    self.extendModeHelper(event,False)
-
-def setExtendMode (self,event):
-    '''Turn on extend mode: cursor movement commands do extend the selection.'''
-    self.extendModeHelper(event,True)
-
-def toggleExtendMode (self,event):
-    '''Toggle extend mode, i.e., toggle whether cursor movement commands extend the selections.'''
-    self.extendModeHelper(event,not self.extendMode)
-
-def extendModeHelper (self,event,val):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    self.extendMode = val
-    g.es('extend mode',g.choose(val,'on','off'),color='red')
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20051218174113:clear/set/ToggleExtendMode
-#@+node:ekr.20050920084036.136:exchangePointMark
-def exchangePointMark (self,event):
-
-    '''Exchange the point (insert point) with the mark (the other end of the selected text).'''
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    i,j = w.getSelectionRange(sort=False)
-    if i == j: return
-
-    ins = w.getInsertPoint()
-    ins = g.choose(ins==i,j,i)
-    w.setInsertPoint(ins)
-    w.setSelectionRange(i,j,insert=None)
-#@-node:ekr.20050920084036.136:exchangePointMark
-#@+node:ekr.20061007082956:extend-to-line
-def extendToLine (self,event):
-
-    '''Select the line at the cursor.'''
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText() ; n = len(s)
-    i = w.getInsertPoint()
-
-    while 0 <= i < n and not s[i] == '\n':
-        i -= 1
-    i += 1 ; i1 = i
-    while 0 <= i < n and not s[i] == '\n':
-        i += 1
-
-    w.setSelectionRange(i1,i)
-#@-node:ekr.20061007082956:extend-to-line
-#@+node:ekr.20061007214835.4:extend-to-sentence
-def extendToSentence (self,event):
-
-    '''Select the line at the cursor.'''
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText() ; n = len(s)
-    i = w.getInsertPoint()
-
-    i2 = 1 + s.find('.',i)
-    if i2 == -1: i2 = n
-    i1 = 1 + s.rfind('.',0,i2-1)
-
-    w.setSelectionRange(i1,i2)
-#@nonl
-#@-node:ekr.20061007214835.4:extend-to-sentence
-#@+node:ekr.20060116074839.2:extend-to-word
-def extendToWord (self,event):
-
-    '''Select the word at the cursor.'''
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText() ; n = len(s)
-    i = w.getInsertPoint()
-
-    while 0 <= i < n and not g.isWordChar(s[i]):
-        i -= 1
-    while 0 <= i < n and g.isWordChar(s[i]):
-        i -= 1
-    i += 1
-
-    # Move to the end of the word.
-    i1 = i
-    while 0 <= i < n and g.isWordChar(s[i]):
-        i += 1
-
-    w.setSelectionRange(i1,i)
-#@nonl
-#@-node:ekr.20060116074839.2:extend-to-word
-#@+node:ekr.20051218141237:lines
-def beginningOfLine (self,event):
-    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
-    w = self.editWidget(event)
-    s = w.getAllText() ; ins = w.getInsertPoint()
-    i,junk = g.getLine(s,ins)
-    if i > 0 and i == ins:
-        i,junk = g.getLine(s,i-1)
-    self.moveToHelper(event,i,extend=False)
-
-def beginningOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the start of the line.'''
-    w = self.editWidget(event)
-    s = w.getAllText() ; ins = w.getInsertPoint()
-    i,junk = g.getLine(s,ins)
-    if i > 0 and i == ins:
-        i,junk = g.getLine(s,i-1)
-    self.moveToHelper(event,i,extend=True)
-
-def endOfLine (self,event): # passed
-    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
-    w = self.editWidget(event)
-    s = w.getAllText() ; ins = w.getInsertPoint()
-    junk,i = g.getLine(s,ins)
-    if ins == i-1: junk,i = g.getLine(s,i)
-    if g.match(s,i-1,'\n'): i -= 1
-    self.moveToHelper(event,i,extend=False)
-
-def endOfLineExtendSelection (self,event): # passed
-    '''Extend the selection by moving the cursor to the end of the line.'''
-    w = self.editWidget(event)
-    s = w.getAllText() ; ins = w.getInsertPoint()
-    junk,i = g.getLine(s,ins)
-    if ins == i-1: junk,i = g.getLine(s,i)
-    if g.match(s,i-1,'\n'): i -= 1
-    self.moveToHelper(event,i,extend=True)
-
-def nextLine (self,event):
-    '''Move the cursor down, extending the selection if in extend mode.'''
-    self.moveUpOrDownHelper(event,'down',extend=False)
-
-def nextLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor down.'''
-    self.moveUpOrDownHelper(event,'down',extend=True)
-
-def prevLine (self,event):
-    '''Move the cursor up, extending the selection if in extend mode.'''
-    self.moveUpOrDownHelper(event,'up',extend=False)
-
-def prevLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor up.'''
-    self.moveUpOrDownHelper(event,'up',extend=True)
-#@-node:ekr.20051218141237:lines
-#@+node:ekr.20050920084036.140:movePastClose
-def movePastClose (self,event):
-    '''Move the cursor past the closing parenthesis.'''
-    self.movePastCloseHelper(event,extend=False)
-
-def movePastCloseExtendSelection (self,event):
-    '''Extend the selection by moving the cursor past the closing parenthesis.'''
-    self.movePastCloseHelper(event,extend=True)
-#@-node:ekr.20050920084036.140:movePastClose
-#@+node:ekr.20050920084036.102:paragraphs
-def backwardParagraph (self,event):
-    '''Move the cursor to the previous paragraph.'''
-    self.backwardParagraphHelper (event,extend=False)
-
-def backwardParagraphExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the previous paragraph.'''
-    self.backwardParagraphHelper (event,extend=True)
-
-def forwardParagraph (self,event):
-    '''Move the cursor to the next paragraph.'''
-    self.forwardParagraphHelper(event,extend=False)
-
-def forwardParagraphExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the next paragraph.'''
-    self.forwardParagraphHelper(event,extend=True)
-#@-node:ekr.20050920084036.102:paragraphs
-#@+node:ekr.20050920084036.131:sentences
-def backSentence (self,event):
-    '''Move the cursor to the previous sentence.'''
-    self.backSentenceHelper(event,extend=False)
-
-def backSentenceExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the previous sentence.'''
-    self.backSentenceHelper(event,extend=True)
-
-def forwardSentence (self,event):
-    '''Move the cursor to the next sentence.'''
-    self.forwardSentenceHelper(event,extend=False)
-
-def forwardSentenceExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the next sentence.'''
-    self.forwardSentenceHelper(event,extend=True)
-#@-node:ekr.20050920084036.131:sentences
-#@+node:ekr.20050920084036.149:words
-def backwardWord (self,event):
-    '''Move the cursor to the previous word.'''
-    self.moveWordHelper(event,extend=False,forward=False)
-
-def backwardWordExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the next word.'''
-    self.moveWordHelper(event,extend=True,forward=False)
-
-def forwardEndWord (self,event): # New in Leo 4.4.2
-    '''Move the cursor to the next word.'''
-    self.moveWordHelper(event,extend=False,forward=True,end=True)
-
-def forwardEndWordExtendSelection (self,event): # New in Leo 4.4.2
-    '''Extend the selection by moving the cursor to the previous word.'''
-    self.moveWordHelper(event,extend=True,forward=True,end=True)
-
-def forwardWord (self,event):
-    '''Move the cursor to the next word.'''
-    self.moveWordHelper(event,extend=False,forward=True)
-
-def forwardWordExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the previous word.'''
-    self.moveWordHelper(event,extend=True,forward=True)
-#@-node:ekr.20050920084036.149:words
-#@-node:ekr.20050929114218:move cursor... (leoEditCommands)
-#@+node:ekr.20060113105246.1:moveUpOrDownHelper
-def moveUpOrDownHelper (self,event,direction,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-    trace = False
-
-    ins = w.getInsertPoint()
-    s = w.getAllText()
-    w.seeInsertPoint()
-
-    # Find the start of the next/prev line.
-    row,col = g.convertPythonIndexToRowCol(s,ins)
-    if trace:
-        gui_ins = w.toGuiIndex(ins)
-        bbox = w.bbox(gui_ins)
-        if bbox:
-            x,y,width,height = bbox
-            # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
-            g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
-            g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
-            g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
-            g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
-    i,j = g.getLine(s,ins)
-    if direction == 'down':
-        i2,j2 = g.getLine(s,j)
-    else:
-        i2,j2 = g.getLine(s,i-1)
-
-    # The spot is the start of the line plus the column index.
-    n = max(0,j2-i2-1) # The length of the new line.
-    col2 = min(col,n)
-    spot = i2 + col2
-    if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
-
-    self.extendHelper(w,extend,spot,upOrDown=True)
-#@nonl
-#@-node:ekr.20060113105246.1:moveUpOrDownHelper
-#@-node:ekr.20080519062109.2:Improve how Leo handles long lines
-#@+node:ekr.20080729064227.5:Implement p.fileLevel
-#@+node:ekr.20080416161551.197:p.level & simpleLevel
-def level (self):
-
-    '''Return the number of p's parents.'''
-
-    p = self
-    return p.v and len(p.stack) or 0
-
-simpleLevel = level
-#@-node:ekr.20080416161551.197:p.level & simpleLevel
-#@+node:ekr.20080519062109.1:add p.fileLevel and add support for it
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6f744c2a5819e3
-
-> Let us define p.fileLevel() for any position p as follows:
-
-p.fileLevel() is 0 if p is not a descendant of any kind of @file node.
-
-Otherwise, suppose root is the position of the enclosing @file node (or @thin node, etc.)
-> p.fileLevel() is p.level() - root.level() and the "effective" column is the
-> node's column plus p.fileLevel() * c.tab_width. This could be displayed in
-> the status line.
-
-> Anyone want to try?
-
-> Edward
-
-I must admit I lack knowledge to implement this (I've got no
-experience with Python GUI programming at all). Would this feature
-appear in the next leo release?
-#@nonl
-#@-node:ekr.20080519062109.1:add p.fileLevel and add support for it
-#@-node:ekr.20080729064227.5:Implement p.fileLevel
-#@+node:ekr.20071110071126.2:Better isearch
-#@-node:ekr.20071110071126.2:Better isearch
-#@+node:ekr.20071128094234:Finish scolorizer
-#@+node:ekr.20050920084036.265:scolorizer LATER
-def scolorizer (self,event,pattern=None):
-
-    '''Colorizer for incremental searches.'''
-
-    pass # not ready yet.   
-
-    # k = self.k ; w = self.w
-    # s = pattern or k.getLabel(ignorePrompt=True)
-    # # g.trace(repr(s))
-    # w.tag_delete('color','color1')
-    # if not s: return
-    # if g.app.gui.guiName() != 'tkinter':
-        # return g.es('command not ready yet',color='blue')
-
-    # ind = 0
-    # index = w.getInsertPoint()
-    # index2 = index + len(s)
-    # # g.trace(index,index2)
-    # # Colorize in the forward direction, regardless of the kind of search.
-    # while ind:
-        # try:
-            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
-        # except Exception: break
-        # if ind:
-            # i, d = ind.split('.')
-            # d = str(int(d)+len(s))
-            # # g.trace(ind)
-            # if ind in (index,index2):
-                # w.tag_add('color1',ind,'%s.%s' % (i,d))
-            # w.tag_add('color',ind,'%s.%s' % (i,d))
-            # ind = i + '.' + d
-
-    # w.tag_config('color',foreground='red')
-    # w.tag_config('color1',background='lightblue')
-#@-node:ekr.20050920084036.265:scolorizer LATER
-#@-node:ekr.20071128094234:Finish scolorizer
-#@+node:ekr.20061002093442:Add opml support to new,open, save commands
-#@+node:ekr.20031218072017.2820:top level (file menu)
-#@+node:ekr.20031218072017.1623:new
-def new (self,event=None,gui=None):
-
-    '''Create a new Leo window.'''
-
-    # g.trace(g.callers())
-
-    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
-
-    # Needed for plugins.
-    g.doHook("new",old_c=self,c=c,new_c=c)
-    # Use the config params to set the size and location of the window.
-    # c.beginUpdate()
-    # try:
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-    v = leoNodes.vnode(context=c)
-    p = leoNodes.position(v)
-    v.initHeadString("NewHeadline")
-    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-    p._linkAsRoot(oldRoot=None)
-    c.setRootVnode(v) # New in Leo 4.4.2.
-    c.editPosition(p)
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
-    if not g.doHook("menu1",c=c,p=p,v=p):
-        frame.menu.createMenuBar(frame)
-        c.updateRecentFiles(fileName=None)
-        g.doHook("menu2",c=frame.c,p=p,v=p)
-        g.doHook("after-create-leo-frame",c=c)
-    # finally:
-    # c.endUpdate(False)
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-    # Force a call to c.outerUpdate.
-    # This is needed when we execute this command from a menu.
-    c.redraw_now()
-
-    return c # For unit test.
-#@-node:ekr.20031218072017.1623:new
-#@+node:ekr.20031218072017.2821:open
-def open (self,event=None):
-
-    '''Open a Leo window containing the contents of a .leo file.'''
-
-    c = self
-    << Set closeFlag if the only open window is empty >>
-
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
-        title = "Open",
-        filetypes = [("Leo files","*.leo"), ("All files","*")],
-        defaultextension = ".leo")
-    c.bringToFront()
-
-    ok = False
-    if fileName and len(fileName) > 0:
-        ok, frame = g.openWithFileName(fileName,c)
-        if ok:
-            g.chdir(fileName)
-            g.setGlobalOpenDir(fileName)
-        if ok and closeFlag:
-            g.app.destroyWindow(c.frame)
-
-    # openWithFileName sets focus if ok.
-    if not ok:
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
-@c
-
-closeFlag = (
-    c.frame.startupWindow and # The window was open on startup
-    not c.changed and not c.frame.saved and # The window has never been changed
-    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
-#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-#@-node:ekr.20031218072017.2821:open
-#@+node:ekr.20031218072017.2823:openWith and allies
-def openWith(self,event=None,data=None):
-
-    """This routine handles the items in the Open With... menu.
-
-    These items can only be created by createOpenWithMenuFromTable().
-    Typically this would be done from the "open2" hook.
-
-    New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
-    using a list, e.g.:
-
-    openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
-    """
-
-    c = self ; p = c.currentPosition()
-    n = data and len(data) or 0
-    if n != 3:
-        g.trace('bad data, length must be 3, got %d' % n)
-        return
-    try:
-        openType,arg,ext=data
-        if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
-            g.enableIdleTimeHook(idleTimeDelay=100)
-            << set ext based on the present language >>
-            << create or reopen temp file, testing for conflicting changes >>
-            << execute a command to open path in external editor >>
-        g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
-    except Exception:
-        g.es("unexpected exception in c.openWith")
-        g.es_exception()
-
-    return "break"
-#@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
-if not ext:
-    theDict = g.scanDirectives(c)
-    language = theDict.get("language")
-    ext = g.app.language_extension_dict.get(language)
-    # g.pr(language,ext)
-    if ext == None:
-        ext = "txt"
-
-if ext[0] != ".":
-    ext = "."+ext
-
-# g.pr("ext",ext)
-#@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
-#@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
-theDict = None ; path = None
-<< set dict and path if a temp file already refers to p.v.t >>
-if path:
-    << create or recreate temp file as needed >>
-else:
-    path = c.createOpenWithTempFile(p,ext)
-
-if not path:
-    return # An error has occured.
-#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
-searchPath = c.openWithTempFilePath(p,ext)
-
-if g.os_path_exists(searchPath):
-    for theDict in g.app.openWithFiles:
-        if p.v == theDict.get('v') and searchPath == theDict.get("path"):
-            path = searchPath
-            break
-#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
-#@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
-@ We test for changes in both p and the temp file:
-
-- If only p's body text has changed, we recreate the temp file.
-- If only the temp file has changed, do nothing here.
-- If both have changed we must prompt the user to see which code to use.
-@c
-
-encoding = theDict.get("encoding")
-old_body = theDict.get("body")
-new_body = p.bodyString()
-new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
-
-old_time = theDict.get("time")
-try:
-    new_time = g.os_path_getmtime(path)
-except:
-    new_time = None
-
-body_changed = old_body != new_body
-temp_changed = old_time != new_time
-
-if body_changed and temp_changed:
-    << Raise dialog about conflict and set result >>
-    if result == "cancel": return
-    rewrite = result == "outline"
-else:
-    rewrite = body_changed
-
-if rewrite:
-    path = c.createOpenWithTempFile(p,ext)
-else:
-    g.es("reopening:",g.shortFileName(path),color="blue")
-#@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
-message = (
-    "Conflicting changes in outline and temp file\n\n" +
-    "Do you want to use the code in the outline or the temp file?\n\n")
-
-result = g.app.gui.runAskYesNoCancelDialog(c,
-    "Conflict!", message,
-    yesMessage = "Outline",
-    noMessage = "File",
-    defaultButton = "Cancel")
-#@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
-#@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
-#@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
-#@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
-try:
-    if arg == None: arg = ""
-    shortPath = path # g.shortFileName(path)
-    if openType == "os.system":
-        if 1:
-            # This works, _provided_ that arg does not contain blanks.  Sheesh.
-            command = 'os.system(%s)' % (arg+shortPath)
-            os.system(arg+shortPath)
-        else:
-            # XP does not like this format!
-            command = 'os.system("%s" "%s")' % (arg,shortPath)
-            os.system('"%s" "%s"' % (arg,shortPath))
-    elif openType == "os.startfile":
-        command = "os.startfile(%s)" % (arg+shortPath)
-        os.startfile(arg+path)
-    elif openType == "exec":
-        command = "exec(%s)" % (arg+shortPath)
-        exec arg+path in {}
-    elif openType == "os.spawnl":
-        filename = g.os_path_basename(arg)
-        command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
-    elif openType == "os.spawnv":
-        filename = os.path.basename(arg[0]) 
-        vtuple = arg[1:]
-        vtuple.insert(0, filename)
-            # add the name of the program as the first argument.
-            # Change suggested by Jim Sizelove.
-        vtuple.append(path)
-        command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
-    # This clause by Jim Sizelove.
-    elif openType == "subprocess.Popen":
-        if isinstance(arg, basestring):
-            vtuple = arg + " " + path
-        elif isinstance(arg, (list, tuple)):
-            vtuple = arg[:]
-            vtuple.append(path)
-        command = "subprocess.Popen(%s)" % repr(vtuple)
-        if subprocess:
-            subprocess.Popen(vtuple)
-        else:
-            g.trace('Can not import subprocess.  Skipping: "%s"' % command)
-    else:
-        command="bad command:"+str(openType)
-        g.trace(command)
-except Exception:
-    g.es("exception executing:",command)
-    g.es_exception()
-#@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
-#@+node:ekr.20031218072017.2830:createOpenWithTempFile
-def createOpenWithTempFile (self,p,ext):
-
-    c = self
-    theFile = None # pylint complains if this is inited to ''.
-    path = c.openWithTempFilePath(p,ext)
-    try:
-        if g.os_path_exists(path):
-            g.es("recreating:  ",g.shortFileName(path),color="red")
-        else:
-            g.es("creating:  ",g.shortFileName(path),color="blue")
-        theFile = open(path,"w")
-        # Convert s to whatever encoding is in effect.
-        s = p.bodyString()
-        theDict = g.scanDirectives(c,p=p)
-        encoding = theDict.get("encoding",None)
-        if encoding == None:
-            encoding = c.config.default_derived_file_encoding
-        s = g.toEncodedString(s,encoding,reportErrors=True) 
-        theFile.write(s)
-        theFile.flush()
-        theFile.close()
-        try:    time = g.os_path_getmtime(path)
-        except: time = None
-        # g.es("time: " + str(time))
-        # New in 4.3: theDict now contains both 'p' and 'v' entries, of the expected type.
-        theDict = {
-            "body":s, "c":c, "encoding":encoding,
-            "f":theFile, "path":path, "time":time,
-            "p":p, "v":p.v }
-        << remove previous entry from app.openWithFiles if it exists >>
-        g.app.openWithFiles.append(theDict)
-        return path
-    except:
-        if theFile:
-            theFile.close()
-        theFile = None
-        g.es("exception creating temp file",color="red")
-        g.es_exception()
-        return None
-#@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
-for d in g.app.openWithFiles[:]:
-    p2 = d.get("p")
-    if p.v.t == p2.v.t:
-        # g.pr("removing previous entry in g.app.openWithFiles for",p.headString())
-        g.app.openWithFiles.remove(d)
-#@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
-#@-node:ekr.20031218072017.2830:createOpenWithTempFile
-#@+node:ekr.20031218072017.2832:c.openWithTempFilePath
-def openWithTempFilePath (self,p,ext):
-
-    """Return the path to the temp file corresponding to p and ext."""
-
-    name = "LeoTemp_%s_%s%s" % (
-        str(id(p.v.t)),
-        g.sanitize_filename(p.headString()),
-        ext)
-
-    name = g.toUnicode(name,g.app.tkEncoding)
-
-    td = g.os_path_abspath(tempfile.gettempdir())
-
-    path = g.os_path_join(td,name)
-
-    return path
-#@-node:ekr.20031218072017.2832:c.openWithTempFilePath
-#@-node:ekr.20031218072017.2823:openWith and allies
-#@+node:ekr.20031218072017.2833:close
-def close (self,event=None):
-
-    '''Close the Leo window, prompting to save it if it has been changed.'''
-
-    g.app.closeLeoWindow(self.frame)
-#@-node:ekr.20031218072017.2833:close
-#@+node:ekr.20031218072017.2834:save (commands)
-def save (self,event=None):
-
-    '''Save a Leo outline to a file.'''
-
-    c = self ; w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-        c.mFileName = ""
-
-    # c.beginUpdate()
-    # try:
-    if c.mFileName:
-        # Calls c.setChanged(False) if no error.
-        c.fileCommands.save(c.mFileName)
-    else:
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
-
-        if fileName:
-            # Don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, ".leo")
-            c.frame.title = c.mFileName
-            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-            c.fileCommands.save(c.mFileName)
-            c.updateRecentFiles(c.mFileName)
-            g.chdir(c.mFileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20031218072017.2834:save (commands)
-#@+node:ekr.20031218072017.2835:saveAs
-def saveAs (self,event=None):
-
-    '''Save a Leo outline to a file with a new filename.'''
-
-    c = self ;  w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    # c.beginUpdate()
-    # try:
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-        initialfile = c.mFileName,
-        title="Save As",
-        filetypes=[("Leo files", "*.leo")],
-        defaultextension=".leo")
-    c.bringToFront()
-
-    if fileName:
-        g.trace(fileName)
-        # 7/2/02: don't change mFileName until the dialog has suceeded.
-        c.mFileName = g.ensure_extension(fileName, ".leo")
-        c.frame.title = c.mFileName
-        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-        c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-        # Calls c.setChanged(False) if no error.
-        c.fileCommands.saveAs(c.mFileName)
-        c.updateRecentFiles(c.mFileName)
-        g.chdir(c.mFileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20031218072017.2835:saveAs
-#@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
-def saveAsUnzipped (self,event=None):
-
-    '''Save a Leo outline to a file with a new filename,
-    ensuring that the file is not compressed.'''
-    self.saveAsZippedHelper(False)
-
-def saveAsZipped (self,event=None):
-
-    '''Save a Leo outline to a file with a new filename,
-    ensuring that the file is compressed.'''
-    self.saveAsZippedHelper(True)
-
-def saveAsZippedHelper (self,isZipped):
-
-    c = self
-    oldZipped = c.isZipped
-    c.isZipped = isZipped
-    try:
-        c.saveAs()
-    finally:
-        c.isZipped = oldZipped
-#@-node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
-#@+node:ekr.20031218072017.2836:saveTo
-def saveTo (self,event=None):
-
-    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
-
-    c = self ; w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    # c.beginUpdate()
-    # try:
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-
-    # set local fileName, _not_ c.mFileName
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-        initialfile = c.mFileName,
-        title="Save To",
-        filetypes=[("Leo files", "*.leo")],
-        defaultextension=".leo")
-    c.bringToFront()
-
-    if fileName:
-        fileName = g.ensure_extension(fileName, ".leo")
-        c.fileCommands.saveTo(fileName)
-        c.updateRecentFiles(fileName)
-        g.chdir(fileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20031218072017.2836:saveTo
-#@+node:ekr.20031218072017.2837:revert
-def revert (self,event=None):
-
-    '''Revert the contents of a Leo outline to last saved contents.'''
-
-    c = self
-
-    # Make sure the user wants to Revert.
-    if not c.mFileName:
-        return
-
-    reply = g.app.gui.runAskYesNoDialog(c,"Revert",
-        "Revert to previous version of " + c.mFileName + "?")
-    c.bringToFront()
-
-    if reply=="no":
-        return
-
-    # Kludge: rename this frame so openWithFileName won't think it is open.
-    fileName = c.mFileName ; c.mFileName = ""
-
-    # Create a new frame before deleting this frame.
-    ok, frame = g.openWithFileName(fileName,c)
-    if ok:
-        frame.deiconify()
-        g.app.destroyWindow(c.frame)
-    else:
-        c.mFileName = fileName
-#@-node:ekr.20031218072017.2837:revert
-#@-node:ekr.20031218072017.2820:top level (file menu)
-#@-node:ekr.20061002093442:Add opml support to new,open, save commands
-#@+node:ekr.20070624135822:Templates for common code fragments
-# How will users be reminded of the fragments?
-#   - A dropdown menu?
-#   - "Completion" in the log pane?
-
-# Invent a way for simple keystrokes to insert fragments:
-
-Fragment 1:
-
-c.beginUpdate()
-try:
-    pass
-finally:
-    endUpdate()
-
-Fragment 2:
-
-for p in c.allNodes_iter():
-    pass
-#@-node:ekr.20070624135822:Templates for common code fragments
-#@+node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
-@nocolor
-
-http://mail.google.com/mail/#label/Leo/1182d78133aa0ecf
-
-Create a simple template myLeoSettings.leo in $HOME when you try to
-open it and it doesn't exist
-#@nonl
-#@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
-#@+node:ekr.20080705040925.1:Remember split ratios for vertically split panes
-@nocolor
-
-Every time I open up an outline file, the outline-width:body-width
-ratio is always getting set to 0.5. Even when I resize the splitter
-and save the outline and re-open it, the ratio always reverts to 0.5
-BTW - I use vertical split (tree on left, body on right, log below
-tree).
-
-@color
-#@nonl
-#@-node:ekr.20080705040925.1:Remember split ratios for vertically split panes
-#@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
-# Or give a better message.
-#@nonl
-#@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
-#@+node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
-This affects @auto imports of all "unknown" languages.
-
-For example, @auto x.css would put @language css in the root node.
-#@nonl
-#@-node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
-#@-node:ekr.20080730212711.6:Features 16
 #@+node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode
@@ -5681,6 +4165,1522 @@ key to be re-executed.
 #@nonl
 #@-node:ekr.20080616110054.2:Support vim dot command
 #@-node:ekr.20080603052650.466:Fix vim problems
+#@+node:ekr.20080730212711.6:Features 16
+#@+node:ekr.20080801071227.3:First 3
+#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
+What uA should be used to specify node colors?
+
+    if the foreground / background color API uses uAs,
+    would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
+#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
+#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
+
+I'm just getting started learning how to use Leo. Now, I'd like to use
+it for some of my projects, but there's no chance that I can convert
+everyone at work to using it, so putting sentinel-filled files in our
+repository is out of the question. At the same time, my code looks
+awfully bare without sentinels because the documentation ends up in
+the section names, not the comments!
+
+So, I was wondering if there's a convenient way to pull the section
+names into a comment at the start of each section?
+
+===============
+
+Interesting question.  Am I correct in assuming you are using @nosent trees
+to generate your files?  If so, it would be easy to add support for the
+following options:
+
+@bool write_section_comments_in_at_nosent_trees
+@bool write_node_name_comments_in_at_nosent_trees
+
+The first would write a sentinel consisting of only the section name;
+the second would write a sentinel consisting only of the node's headline
+(for nodes whose headline is not a section name).
+
+These seem like they would be useful additions.  One can even imagine
+corresponding Leo directives so that the comments could be turned on or off
+within an @nosent tree.
+
+What do you think?
+
+=====================
+
+> Interesting question.  Am I correct in assuming you are using @nosent trees
+> to generate your files?  If so, it would be easy to add support for the
+> following options:
+
+> @bool write_section_comments_in_at_nosent_trees
+> @bool write_node_name_comments_in_at_nosent_trees
+
+> The first would write a sentinel consisting of only the section name;
+> the second would write a sentinel consisting only of the node's headline
+> (for nodes whose headline is not a section name).
+
+> These seem like they would be useful additions.  One can even imagine
+> corresponding Leo directives so that the comments could be turned on or off
+> within an @nosent tree.
+
+That sounds like an excellent solution. Particularly the last bit --
+if you could turn section-comments on and off as required, it would
+become very convenient to use Leo to produce source that is intended
+to also be read by non Leo users. 
+#@nonl
+#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
+#@+node:ekr.20080730095710.61:Add option to have @auto and @shadow not do "chunking"
+@nocolor
+
+What you are saying, I think, is that while chunking is a user
+preference, @auto doesn't give you the option of expressing this
+preference.  This is a perfectly valid objection.  True, using @auto
+to read an entire file into a single node seems, shall we say
+"eccentric", to me, but now the shoe is on the other foot: I am
+objecting to your preferences, which we all know is a no-no.
+
+In short, @auto and @shadow should give the user to option (possibly
+on a file-by-file basis) of importing to a single node. 
+#@nonl
+#@-node:ekr.20080730095710.61:Add option to have @auto and @shadow not do "chunking"
+#@-node:ekr.20080801071227.3:First 3
+#@+node:ekr.20080311135649.2:Allow different .leo formats
+@nocolor
+
+On Tue, Mar 11, 2008 at 7:03 AM, Kent Tenney <kten...@gmail.com> wrote:
+
+> On 3/11/08, derwisch <johannes.hues...@med.uni-heidelberg.de> wrote:
+
+> >  On 11 Mrz., 08:03, "Ville M. Vainio" <vivai...@gmail.com> wrote:
+> >  > It could also be argued that
+
+> >  > - Referring to previous cloned vnodes explicitly in XML does not
+> >  > necessarily obscure DAG - it follows the "do not repeat yourself"
+> rule
+> >  > - It will speed up reading
+> >  > - Wouldn't it be better for preserving the integrity of the XML file?
+
+> > I would lean towards this line of argumentation. A couple of days I
+> >  had my Leo extension destroy the Leo ODM file (which was still valid
+> >  according to Leo, but unreadable wrt the extension and broken uAs). I
+> >  resorted to editing the Leo file with Emacs, and was quite surprised
+> >  to see that the headStrings were attributes of vnodes.
+
+> I'll chime in with my pet peeve re: .leo file structure::
+
+> I think that putting the headstrings on vnodes and body strings on tnodes
+> obscures the informational content of the .leo file, and makes the .leo
+> file
+> format less attractive as a generalized solution to the problem of how to
+> manage head/body pairs which live in a hierarchal structure.
+
+> Thanks,
+> Kent
+
+> >  I think that
+> >  editing the file might have been a bit easier if there had been no
+> >  such redundancy. But this is more a feeling rather than a qualified
+> >  opinion.
+
+Thanks for all these comments.  I'll respond to them all here.
+
+Clearly, we should be using a standard xml parser to read .leo files.
+
+My present thoughts:
+
+- I personally like human-readable headlines in <v> elements.
+
+- I am open to putting headlines in <t> elements, as an indication that
+tnodes do indeed contain headlines and body text.
+
+- I am willing to consider only writing shared subtrees once.
+
+Oh! (An Aha)  All these are preferences.  We can allow any combination of
+these provided that headlines appear somewhere.
+
+So that's clean.  This will happen in Leo 4.5. 
+#@nonl
+#@-node:ekr.20080311135649.2:Allow different .leo formats
+#@+node:ekr.20080124083629.1:Improve @path handling
+@nocolor
+
+[quote]
+nested @paths don't do what I expected: 
+
+For a leo file in directory foo: 
+
+@path src 
+....@path tmpl
+
+should refer to foo/src and foo/src/tmpl
+
+using @path src/tmpl works fine though.
+[end quote]
+#@+node:ekr.20050121081635:Request:  cumulative @path directives
+@killcolor
+https://sourceforge.net/forum/message.php?msg_id=2936513
+By: ktenney
+
+In the @view plugin is a method, currentPath() which examines the current headline
+and body, and the headlines and bodies of it's parents, looking for @path and
+@view directives. It builds a path from them and checks for validity.
+
+if a top level node contains;
+@path /home/ktenney
+
+and a descendant of that node contains;
+@path projects/myproject
+
+Then a node further down the tree which contains;
+@view readme.txt
+
+will display /home/ktenney/projects/myproject/readme.txt
+
+I like this principle of cumulative paths, and would like other plugins to work
+the same way ... @image, @url etc.
+
+This brings me to my question, would it make sense for Leo to offer a 'Plugin'
+class to inherit from? It seems that there are some operations that are being
+re-written in many plugins.
+#@-node:ekr.20050121081635:Request:  cumulative @path directives
+#@+node:ekr.20050222045210:Better @path conventions
+See g.getBaseDirectory
+#@nonl
+#@-node:ekr.20050222045210:Better @path conventions
+#@+node:ekr.20041022083005.3:@path and other directives accept python expressions
+#@-node:ekr.20041022083005.3:@path and other directives accept python expressions
+#@-node:ekr.20080124083629.1:Improve @path handling
+#@+node:ekr.20080519062109.2:Improve how Leo handles long lines
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ae52bf0ed8e04a59
+
+'ve just downloaded leo and been very impressed.  Probably I'll use
+leo mostly for editing text (as opposed to programs).  Which means
+I've turned on text wrapping.
+
+But now, up and down arrows take me to the next line in the file, not
+the next line on the screen.  That means I'm always reaching for the
+mouse.
+
+Is there a way I can change the arrow key behaviour?
+Or should I be editing paragraphs differently (i.e., without text
+wrapping)? 
+
+Reply:
+
+I have a vague memory of writing code to get the behavior you describe, but
+all details are fuzzy.  I know what you are talking about--it may be one of
+the details I've learned to put up with.  In that case, a new option and new
+code will be a substantial improvement.  Thanks for this report.
+
+@color
+#@nonl
+#@+node:ekr.20060528100747.3:tkBody.createTextWidget
+def createTextWidget (self,parentFrame,p,name):
+
+    c = self.c
+
+    parentFrame.configure(bg='LightSteelBlue1')
+
+    wrap = c.config.getBool('body_pane_wraps')
+    wrap = g.choose(wrap,"word","none")
+
+    # Setgrid=1 cause severe problems with the font panel.
+    body = w = leoTkTextWidget (parentFrame,name='body-pane',
+        bd=2,bg="white",relief="flat",setgrid=0,wrap=wrap)
+
+    bodyBar = Tk.Scrollbar(parentFrame,name='bodyBar')
+
+    def yscrollCallback(x,y,bodyBar=bodyBar,w=w):
+        # g.trace(x,y,g.callers())
+        if hasattr(w,'leo_scrollBarSpot'):
+            w.leo_scrollBarSpot = (x,y)
+        return bodyBar.set(x,y)
+
+    body['yscrollcommand'] = yscrollCallback # bodyBar.set
+
+    bodyBar['command'] =  body.yview
+    bodyBar.pack(side="right", fill="y")
+
+    # Always create the horizontal bar.
+    bodyXBar = Tk.Scrollbar(
+        parentFrame,name='bodyXBar',orient="horizontal")
+    body['xscrollcommand'] = bodyXBar.set
+    bodyXBar['command'] = body.xview
+
+    if wrap == "none":
+        # g.trace(parentFrame)
+        bodyXBar.pack(side="bottom", fill="x")
+
+    body.pack(expand=1,fill="both")
+
+    self.wrapState = wrap
+
+    if 0: # Causes the cursor not to blink.
+        body.configure(insertofftime=0)
+
+    # Inject ivars
+    if name == '1':
+        w.leo_p = w.leo_v = None # Will be set when the second editor is created.
+    else:
+        w.leo_p = p.copy()
+        w.leo_v = w.leo_p.v
+
+    w.leo_active = True
+    # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
+    w.leo_bodyBar = bodyBar # 2007/10/31
+    w.leo_bodyXBar = bodyXBar # 2007/10/31
+    w.leo_chapter = None
+    w.leo_frame = parentFrame
+    w.leo_name = name
+    w.leo_label = None
+    w.leo_label_s = None
+    w.leo_scrollBarSpot = None
+    w.leo_insertSpot = None
+    w.leo_selection = None
+
+    return w
+#@-node:ekr.20060528100747.3:tkBody.createTextWidget
+#@+node:ekr.20050929114218:move cursor... (leoEditCommands)
+#@+node:ekr.20051218170358: helpers
+#@+node:ekr.20060113130510:extendHelper
+def extendHelper (self,w,extend,spot,upOrDown=False):
+    '''Handle the details of extending the selection.
+    This method is called for all cursor moves.
+
+    extend: Clear the selection unless this is True.
+    spot:   The *new* insert point.
+    '''
+    c = self.c ; p = c.currentPosition()
+    extend = extend or self.extendMode
+    ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    # g.trace('extend',extend,'ins',ins,'sel=',i,j,'spot=',spot,'moveSpot',self.moveSpot)
+
+    # Reset the move spot if needed.
+    if self.moveSpot is None or p.v.t != self.moveSpotNode:
+        # g.trace('no spot')
+        self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
+    elif extend:
+        if i == j or self.moveSpot not in (i,j):
+            # g.trace('spot not in sel')
+            self.setMoveCol(w,ins) # sets self.moveSpot.
+    else:
+        if upOrDown:
+            s = w.getAllText()
+            i2,j2 = g.getLine(s,spot)
+            line = s[i2:j2]
+            row,col = g.convertPythonIndexToRowCol(s,spot)
+            if True: #### j2 < len(s)-1:
+                n = min(self.moveCol,max(0,len(line)-1))
+            else:
+                n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
+            # g.trace('using moveCol',self.moveCol,'line',repr(line),'n',n)
+            spot = g.convertRowColToPythonIndex(s,row,n)
+        else:  # Plain move forward or back.
+            # g.trace('plain forward/back move')
+            self.setMoveCol(w,spot) # sets self.moveSpot.
+
+    if extend:
+        if spot < self.moveSpot:
+            w.setSelectionRange(spot,self.moveSpot,insert=spot)
+        else:
+            w.setSelectionRange(self.moveSpot,spot,insert=spot)
+    else:
+        w.setSelectionRange(spot,spot,insert=spot)
+
+    w.seeInsertPoint()
+    c.frame.updateStatusLine()
+#@nonl
+#@-node:ekr.20060113130510:extendHelper
+#@+node:ekr.20060113105246.1:moveUpOrDownHelper
+def moveUpOrDownHelper (self,event,direction,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+    trace = False
+
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    w.seeInsertPoint()
+
+    # Find the start of the next/prev line.
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    if trace:
+        gui_ins = w.toGuiIndex(ins)
+        bbox = w.bbox(gui_ins)
+        if bbox:
+            x,y,width,height = bbox
+            # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
+            g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
+            g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
+            g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
+            g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
+    i,j = g.getLine(s,ins)
+    if direction == 'down':
+        i2,j2 = g.getLine(s,j)
+    else:
+        i2,j2 = g.getLine(s,i-1)
+
+    # The spot is the start of the line plus the column index.
+    n = max(0,j2-i2-1) # The length of the new line.
+    col2 = min(col,n)
+    spot = i2 + col2
+    if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
+
+    self.extendHelper(w,extend,spot,upOrDown=True)
+#@nonl
+#@-node:ekr.20060113105246.1:moveUpOrDownHelper
+#@+node:ekr.20051218122116:moveToHelper
+def moveToHelper (self,event,spot,extend):
+
+    '''Common helper method for commands the move the cursor
+    in a way that can be described by a Tk Text expression.'''
+
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    # Put the request in the proper range.
+    if c.widget_name(w).startswith('mini'):
+        i,j = k.getEditableTextRange()
+        if   spot < i: spot = i
+        elif spot > j: spot = j
+
+    self.extendHelper(w,extend,spot,upOrDown=False)
+#@nonl
+#@-node:ekr.20051218122116:moveToHelper
+#@+node:ekr.20051218171457:movePastCloseHelper
+def movePastCloseHelper (self,event,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    # Scan backwards for i,j.
+    i = ins
+    while i >= 0 and s[i] != '\n':
+        if s[i] == '(': break
+        i -= 1
+    else: return
+    j = ins
+    while j >= 0 and s[j] != '\n':
+        if s[j] == '(': break
+        j -= 1
+    if i < j: return
+    # Scan forward for i2,j2.
+    i2 = ins
+    while i2 < len(s) and s[i2] != '\n':
+        if s[i2] == ')': break
+        i2 += 1
+    else: return
+    j2 = ins
+    while j2 < len(s) and s[j2] != '\n':
+        if s[j2] == ')': break
+        j2 += 1
+    if i2 > j2: return
+
+    self.moveToHelper(event,i2+1,extend)
+#@-node:ekr.20051218171457:movePastCloseHelper
+#@+node:ekr.20051218121447:moveWordHelper
+def moveWordHelper (self,event,extend,forward,end=False):
+
+    '''Move the cursor to the next word.
+    The cursor is placed at the start of the word unless end=True'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    if forward:
+        # Unlike backward-word moves, there are two options...
+        if end:
+            while 0 <= i < n and not g.isWordChar(s[i]):
+                i += 1
+            while 0 <= i < n and g.isWordChar(s[i]):
+                i += 1
+        else:
+            while 0 <= i < n and g.isWordChar(s[i]):
+                i += 1
+            while 0 <= i < n and not g.isWordChar(s[i]):
+                i += 1
+    else:
+        i -= 1
+        while 0 <= i < n and not g.isWordChar(s[i]):
+            i -= 1
+        while 0 <= i < n and g.isWordChar(s[i]):
+            i -= 1
+        i += 1
+
+    self.moveToHelper(event,i,extend)
+#@nonl
+#@-node:ekr.20051218121447:moveWordHelper
+#@+node:ekr.20051213094517:backSentenceHelper
+def backSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+
+    while i >= 0:
+        if s[i] == '.': break
+        i -= 1
+    else: return
+
+    j = i-1
+    while j >= 0:
+        if s[j] == '.':
+            j += 1 ; break
+        j -= 1
+    else: j = 0
+
+    while j < i and s[j].isspace():
+        j += 1
+
+    if j < i:
+        self.moveToHelper(event,j,extend)
+#@-node:ekr.20051213094517:backSentenceHelper
+#@+node:ekr.20050920084036.137:forwardSentenceHelper
+def forwardSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = s.find('.',ins) + 1
+    i = min(i,len(s))
+    self.moveToHelper(event,i,extend)
+#@-node:ekr.20050920084036.137:forwardSentenceHelper
+#@+node:ekr.20051218133207.1:forwardParagraphHelper
+def forwardParagraphHelper (self,event,extend):
+
+    w = self.editWidget(event)
+    if not w: return
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+
+    if line.strip(): # Skip past the present paragraph.
+        self.selectParagraphHelper(w,i)
+        i,j = w.getSelectionRange()
+        j += 1
+
+    # Skip to the next non-blank line.
+    i = j
+    while j < len(s):
+        i,j = g.getLine(s,j)
+        line = s[i:j]
+        if line.strip(): break
+
+    w.setInsertPoint(ins) # Restore the original insert point.
+    self.moveToHelper(event,i,extend)
+#@-node:ekr.20051218133207.1:forwardParagraphHelper
+#@+node:ekr.20051218133207:backwardParagraphHelper
+def backwardParagraphHelper (self,event,extend):
+
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    # A hack for wx gui: set the insertion point to the end of the selection range.
+    if g.app.unitTesting:
+        w.setInsertPoint(j)
+    i,j = g.getLine(s,j)
+    line = s[i:j]
+
+    if line.strip():
+        # Find the start of the present paragraph.
+        while i > 0:
+            i,j = g.getLine(s,i-1)
+            line = s[i:j]
+            if not line.strip(): break
+
+    # Find the end of the previous paragraph.
+    while i > 0:
+        i,j = g.getLine(s,i-1)
+        line = s[i:j]
+        if line.strip():
+            i = j-1 ; break
+
+    self.moveToHelper(event,i,extend)
+#@nonl
+#@-node:ekr.20051218133207:backwardParagraphHelper
+#@+node:ekr.20060209095101:setMoveCol
+def setMoveCol (self,w,spot):
+
+    '''Set the column to which an up or down arrow will attempt to move.'''
+
+    c = self.c ; p = c.currentPosition()
+    s = w.getAllText()
+    i = w.toPythonIndex(spot)
+    junk,col = g.convertPythonIndexToRowCol(s,i)
+    # g.trace('spot,i,col',spot,i,col)
+
+    self.moveSpot = i
+    self.moveCol = col
+    self.moveSpotNode = p.v.t
+#@nonl
+#@-node:ekr.20060209095101:setMoveCol
+#@-node:ekr.20051218170358: helpers
+#@+node:ekr.20050920084036.148:buffers
+def beginningOfBuffer (self,event):
+    '''Move the cursor to the start of the body text.'''
+    self.moveToHelper(event,0,extend=False)
+
+def beginningOfBufferExtendSelection (self,event):
+    '''Extend the text selection by moving the cursor to the start of the body text.'''
+    self.moveToHelper(event,0,extend=True)
+
+def endOfBuffer (self,event):
+    '''Move the cursor to the end of the body text.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    self.moveToHelper(event,len(s),extend=False)
+
+def endOfBufferExtendSelection (self,event):
+    '''Extend the text selection by moving the cursor to the end of the body text.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    self.moveToHelper(event,len(s),extend=True)
+#@-node:ekr.20050920084036.148:buffers
+#@+node:ekr.20051213080533:characters
+def backCharacter (self,event):
+    '''Move the cursor back one character, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    i = w.getInsertPoint()
+    i = max(0,i-1)
+    self.moveToHelper(event,i,extend=False)
+
+def backCharacterExtendSelection (self,event):
+    '''Extend the selection by moving the cursor back one character.'''
+    w = self.editWidget(event)
+    i = w.getInsertPoint()
+    i = max(0,i-1)
+    self.moveToHelper(event,i,extend=True)
+
+def forwardCharacter (self,event):
+    '''Move the cursor forward one character, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+    i = min(i+1,len(s))
+    self.moveToHelper(event,i,extend=False)
+
+def forwardCharacterExtendSelection (self,event):
+    '''Extend the selection by moving the cursor forward one character.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+    i = min(i+1,len(s))
+    self.moveToHelper(event,i,extend=True)
+#@-node:ekr.20051213080533:characters
+#@+node:ekr.20051218174113:clear/set/ToggleExtendMode
+def clearExtendMode (self,event):
+    '''Turn off extend mode: cursor movement commands do not extend the selection.'''
+    self.extendModeHelper(event,False)
+
+def setExtendMode (self,event):
+    '''Turn on extend mode: cursor movement commands do extend the selection.'''
+    self.extendModeHelper(event,True)
+
+def toggleExtendMode (self,event):
+    '''Toggle extend mode, i.e., toggle whether cursor movement commands extend the selections.'''
+    self.extendModeHelper(event,not self.extendMode)
+
+def extendModeHelper (self,event,val):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    self.extendMode = val
+    g.es('extend mode',g.choose(val,'on','off'),color='red')
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20051218174113:clear/set/ToggleExtendMode
+#@+node:ekr.20050920084036.136:exchangePointMark
+def exchangePointMark (self,event):
+
+    '''Exchange the point (insert point) with the mark (the other end of the selected text).'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    i,j = w.getSelectionRange(sort=False)
+    if i == j: return
+
+    ins = w.getInsertPoint()
+    ins = g.choose(ins==i,j,i)
+    w.setInsertPoint(ins)
+    w.setSelectionRange(i,j,insert=None)
+#@-node:ekr.20050920084036.136:exchangePointMark
+#@+node:ekr.20061007082956:extend-to-line
+def extendToLine (self,event):
+
+    '''Select the line at the cursor.'''
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    while 0 <= i < n and not s[i] == '\n':
+        i -= 1
+    i += 1 ; i1 = i
+    while 0 <= i < n and not s[i] == '\n':
+        i += 1
+
+    w.setSelectionRange(i1,i)
+#@-node:ekr.20061007082956:extend-to-line
+#@+node:ekr.20061007214835.4:extend-to-sentence
+def extendToSentence (self,event):
+
+    '''Select the line at the cursor.'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    i2 = 1 + s.find('.',i)
+    if i2 == -1: i2 = n
+    i1 = 1 + s.rfind('.',0,i2-1)
+
+    w.setSelectionRange(i1,i2)
+#@nonl
+#@-node:ekr.20061007214835.4:extend-to-sentence
+#@+node:ekr.20060116074839.2:extend-to-word
+def extendToWord (self,event):
+
+    '''Select the word at the cursor.'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    while 0 <= i < n and not g.isWordChar(s[i]):
+        i -= 1
+    while 0 <= i < n and g.isWordChar(s[i]):
+        i -= 1
+    i += 1
+
+    # Move to the end of the word.
+    i1 = i
+    while 0 <= i < n and g.isWordChar(s[i]):
+        i += 1
+
+    w.setSelectionRange(i1,i)
+#@nonl
+#@-node:ekr.20060116074839.2:extend-to-word
+#@+node:ekr.20051218141237:lines
+def beginningOfLine (self,event):
+    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    i,junk = g.getLine(s,ins)
+    if i > 0 and i == ins:
+        i,junk = g.getLine(s,i-1)
+    self.moveToHelper(event,i,extend=False)
+
+def beginningOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the start of the line.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    i,junk = g.getLine(s,ins)
+    if i > 0 and i == ins:
+        i,junk = g.getLine(s,i-1)
+    self.moveToHelper(event,i,extend=True)
+
+def endOfLine (self,event): # passed
+    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    junk,i = g.getLine(s,ins)
+    if ins == i-1: junk,i = g.getLine(s,i)
+    if g.match(s,i-1,'\n'): i -= 1
+    self.moveToHelper(event,i,extend=False)
+
+def endOfLineExtendSelection (self,event): # passed
+    '''Extend the selection by moving the cursor to the end of the line.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    junk,i = g.getLine(s,ins)
+    if ins == i-1: junk,i = g.getLine(s,i)
+    if g.match(s,i-1,'\n'): i -= 1
+    self.moveToHelper(event,i,extend=True)
+
+def nextLine (self,event):
+    '''Move the cursor down, extending the selection if in extend mode.'''
+    self.moveUpOrDownHelper(event,'down',extend=False)
+
+def nextLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor down.'''
+    self.moveUpOrDownHelper(event,'down',extend=True)
+
+def prevLine (self,event):
+    '''Move the cursor up, extending the selection if in extend mode.'''
+    self.moveUpOrDownHelper(event,'up',extend=False)
+
+def prevLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor up.'''
+    self.moveUpOrDownHelper(event,'up',extend=True)
+#@-node:ekr.20051218141237:lines
+#@+node:ekr.20050920084036.140:movePastClose
+def movePastClose (self,event):
+    '''Move the cursor past the closing parenthesis.'''
+    self.movePastCloseHelper(event,extend=False)
+
+def movePastCloseExtendSelection (self,event):
+    '''Extend the selection by moving the cursor past the closing parenthesis.'''
+    self.movePastCloseHelper(event,extend=True)
+#@-node:ekr.20050920084036.140:movePastClose
+#@+node:ekr.20050920084036.102:paragraphs
+def backwardParagraph (self,event):
+    '''Move the cursor to the previous paragraph.'''
+    self.backwardParagraphHelper (event,extend=False)
+
+def backwardParagraphExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous paragraph.'''
+    self.backwardParagraphHelper (event,extend=True)
+
+def forwardParagraph (self,event):
+    '''Move the cursor to the next paragraph.'''
+    self.forwardParagraphHelper(event,extend=False)
+
+def forwardParagraphExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next paragraph.'''
+    self.forwardParagraphHelper(event,extend=True)
+#@-node:ekr.20050920084036.102:paragraphs
+#@+node:ekr.20050920084036.131:sentences
+def backSentence (self,event):
+    '''Move the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=False)
+
+def backSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=True)
+
+def forwardSentence (self,event):
+    '''Move the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=False)
+
+def forwardSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=True)
+#@-node:ekr.20050920084036.131:sentences
+#@+node:ekr.20050920084036.149:words
+def backwardWord (self,event):
+    '''Move the cursor to the previous word.'''
+    self.moveWordHelper(event,extend=False,forward=False)
+
+def backwardWordExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next word.'''
+    self.moveWordHelper(event,extend=True,forward=False)
+
+def forwardEndWord (self,event): # New in Leo 4.4.2
+    '''Move the cursor to the next word.'''
+    self.moveWordHelper(event,extend=False,forward=True,end=True)
+
+def forwardEndWordExtendSelection (self,event): # New in Leo 4.4.2
+    '''Extend the selection by moving the cursor to the previous word.'''
+    self.moveWordHelper(event,extend=True,forward=True,end=True)
+
+def forwardWord (self,event):
+    '''Move the cursor to the next word.'''
+    self.moveWordHelper(event,extend=False,forward=True)
+
+def forwardWordExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous word.'''
+    self.moveWordHelper(event,extend=True,forward=True)
+#@-node:ekr.20050920084036.149:words
+#@-node:ekr.20050929114218:move cursor... (leoEditCommands)
+#@+node:ekr.20060113105246.1:moveUpOrDownHelper
+def moveUpOrDownHelper (self,event,direction,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+    trace = False
+
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    w.seeInsertPoint()
+
+    # Find the start of the next/prev line.
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    if trace:
+        gui_ins = w.toGuiIndex(ins)
+        bbox = w.bbox(gui_ins)
+        if bbox:
+            x,y,width,height = bbox
+            # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
+            g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
+            g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
+            g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
+            g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
+    i,j = g.getLine(s,ins)
+    if direction == 'down':
+        i2,j2 = g.getLine(s,j)
+    else:
+        i2,j2 = g.getLine(s,i-1)
+
+    # The spot is the start of the line plus the column index.
+    n = max(0,j2-i2-1) # The length of the new line.
+    col2 = min(col,n)
+    spot = i2 + col2
+    if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
+
+    self.extendHelper(w,extend,spot,upOrDown=True)
+#@nonl
+#@-node:ekr.20060113105246.1:moveUpOrDownHelper
+#@-node:ekr.20080519062109.2:Improve how Leo handles long lines
+#@+node:ekr.20080729064227.5:Implement p.fileLevel
+#@+node:ekr.20080416161551.197:p.level & simpleLevel
+def level (self):
+
+    '''Return the number of p's parents.'''
+
+    p = self
+    return p.v and len(p.stack) or 0
+
+simpleLevel = level
+#@-node:ekr.20080416161551.197:p.level & simpleLevel
+#@+node:ekr.20080519062109.1:add p.fileLevel and add support for it
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6f744c2a5819e3
+
+> Let us define p.fileLevel() for any position p as follows:
+
+p.fileLevel() is 0 if p is not a descendant of any kind of @file node.
+
+Otherwise, suppose root is the position of the enclosing @file node (or @thin node, etc.)
+> p.fileLevel() is p.level() - root.level() and the "effective" column is the
+> node's column plus p.fileLevel() * c.tab_width. This could be displayed in
+> the status line.
+
+> Anyone want to try?
+
+> Edward
+
+I must admit I lack knowledge to implement this (I've got no
+experience with Python GUI programming at all). Would this feature
+appear in the next leo release?
+#@nonl
+#@-node:ekr.20080519062109.1:add p.fileLevel and add support for it
+#@-node:ekr.20080729064227.5:Implement p.fileLevel
+#@+node:ekr.20071110071126.2:Better isearch
+#@-node:ekr.20071110071126.2:Better isearch
+#@+node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20050920084036.265:scolorizer LATER
+def scolorizer (self,event,pattern=None):
+
+    '''Colorizer for incremental searches.'''
+
+    pass # not ready yet.   
+
+    # k = self.k ; w = self.w
+    # s = pattern or k.getLabel(ignorePrompt=True)
+    # # g.trace(repr(s))
+    # w.tag_delete('color','color1')
+    # if not s: return
+    # if g.app.gui.guiName() != 'tkinter':
+        # return g.es('command not ready yet',color='blue')
+
+    # ind = 0
+    # index = w.getInsertPoint()
+    # index2 = index + len(s)
+    # # g.trace(index,index2)
+    # # Colorize in the forward direction, regardless of the kind of search.
+    # while ind:
+        # try:
+            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
+        # except Exception: break
+        # if ind:
+            # i, d = ind.split('.')
+            # d = str(int(d)+len(s))
+            # # g.trace(ind)
+            # if ind in (index,index2):
+                # w.tag_add('color1',ind,'%s.%s' % (i,d))
+            # w.tag_add('color',ind,'%s.%s' % (i,d))
+            # ind = i + '.' + d
+
+    # w.tag_config('color',foreground='red')
+    # w.tag_config('color1',background='lightblue')
+#@-node:ekr.20050920084036.265:scolorizer LATER
+#@-node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20061002093442:Add opml support to new,open, save commands
+#@+node:ekr.20031218072017.2820:top level (file menu)
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    # g.trace(g.callers())
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    # c.beginUpdate()
+    # try:
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+    v = leoNodes.vnode(context=c)
+    p = leoNodes.position(v)
+    v.initHeadString("NewHeadline")
+    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+    p._linkAsRoot(oldRoot=None)
+    c.setRootVnode(v) # New in Leo 4.4.2.
+    c.editPosition(p)
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(fileName=None)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # finally:
+    # c.endUpdate(False)
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    # Force a call to c.outerUpdate.
+    # This is needed when we execute this command from a menu.
+    c.redraw_now()
+
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.2821:open
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",
+        filetypes = [("Leo files","*.leo"), ("All files","*")],
+        defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName and len(fileName) > 0:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok:
+            g.chdir(fileName)
+            g.setGlobalOpenDir(fileName)
+        if ok and closeFlag:
+            g.app.destroyWindow(c.frame)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2821:open
+#@+node:ekr.20031218072017.2823:openWith and allies
+def openWith(self,event=None,data=None):
+
+    """This routine handles the items in the Open With... menu.
+
+    These items can only be created by createOpenWithMenuFromTable().
+    Typically this would be done from the "open2" hook.
+
+    New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
+    using a list, e.g.:
+
+    openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
+    """
+
+    c = self ; p = c.currentPosition()
+    n = data and len(data) or 0
+    if n != 3:
+        g.trace('bad data, length must be 3, got %d' % n)
+        return
+    try:
+        openType,arg,ext=data
+        if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
+            g.enableIdleTimeHook(idleTimeDelay=100)
+            << set ext based on the present language >>
+            << create or reopen temp file, testing for conflicting changes >>
+            << execute a command to open path in external editor >>
+        g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
+    except Exception:
+        g.es("unexpected exception in c.openWith")
+        g.es_exception()
+
+    return "break"
+#@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
+if not ext:
+    theDict = g.scanDirectives(c)
+    language = theDict.get("language")
+    ext = g.app.language_extension_dict.get(language)
+    # g.pr(language,ext)
+    if ext == None:
+        ext = "txt"
+
+if ext[0] != ".":
+    ext = "."+ext
+
+# g.pr("ext",ext)
+#@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
+#@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+theDict = None ; path = None
+<< set dict and path if a temp file already refers to p.v.t >>
+if path:
+    << create or recreate temp file as needed >>
+else:
+    path = c.createOpenWithTempFile(p,ext)
+
+if not path:
+    return # An error has occured.
+#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+searchPath = c.openWithTempFilePath(p,ext)
+
+if g.os_path_exists(searchPath):
+    for theDict in g.app.openWithFiles:
+        if p.v == theDict.get('v') and searchPath == theDict.get("path"):
+            path = searchPath
+            break
+#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+#@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+@ We test for changes in both p and the temp file:
+
+- If only p's body text has changed, we recreate the temp file.
+- If only the temp file has changed, do nothing here.
+- If both have changed we must prompt the user to see which code to use.
+@c
+
+encoding = theDict.get("encoding")
+old_body = theDict.get("body")
+new_body = p.bodyString()
+new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
+
+old_time = theDict.get("time")
+try:
+    new_time = g.os_path_getmtime(path)
+except:
+    new_time = None
+
+body_changed = old_body != new_body
+temp_changed = old_time != new_time
+
+if body_changed and temp_changed:
+    << Raise dialog about conflict and set result >>
+    if result == "cancel": return
+    rewrite = result == "outline"
+else:
+    rewrite = body_changed
+
+if rewrite:
+    path = c.createOpenWithTempFile(p,ext)
+else:
+    g.es("reopening:",g.shortFileName(path),color="blue")
+#@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+message = (
+    "Conflicting changes in outline and temp file\n\n" +
+    "Do you want to use the code in the outline or the temp file?\n\n")
+
+result = g.app.gui.runAskYesNoCancelDialog(c,
+    "Conflict!", message,
+    yesMessage = "Outline",
+    noMessage = "File",
+    defaultButton = "Cancel")
+#@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+#@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+#@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+#@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+try:
+    if arg == None: arg = ""
+    shortPath = path # g.shortFileName(path)
+    if openType == "os.system":
+        if 1:
+            # This works, _provided_ that arg does not contain blanks.  Sheesh.
+            command = 'os.system(%s)' % (arg+shortPath)
+            os.system(arg+shortPath)
+        else:
+            # XP does not like this format!
+            command = 'os.system("%s" "%s")' % (arg,shortPath)
+            os.system('"%s" "%s"' % (arg,shortPath))
+    elif openType == "os.startfile":
+        command = "os.startfile(%s)" % (arg+shortPath)
+        os.startfile(arg+path)
+    elif openType == "exec":
+        command = "exec(%s)" % (arg+shortPath)
+        exec arg+path in {}
+    elif openType == "os.spawnl":
+        filename = g.os_path_basename(arg)
+        command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
+        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+    elif openType == "os.spawnv":
+        filename = os.path.basename(arg[0]) 
+        vtuple = arg[1:]
+        vtuple.insert(0, filename)
+            # add the name of the program as the first argument.
+            # Change suggested by Jim Sizelove.
+        vtuple.append(path)
+        command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
+        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+    # This clause by Jim Sizelove.
+    elif openType == "subprocess.Popen":
+        if isinstance(arg, basestring):
+            vtuple = arg + " " + path
+        elif isinstance(arg, (list, tuple)):
+            vtuple = arg[:]
+            vtuple.append(path)
+        command = "subprocess.Popen(%s)" % repr(vtuple)
+        if subprocess:
+            subprocess.Popen(vtuple)
+        else:
+            g.trace('Can not import subprocess.  Skipping: "%s"' % command)
+    else:
+        command="bad command:"+str(openType)
+        g.trace(command)
+except Exception:
+    g.es("exception executing:",command)
+    g.es_exception()
+#@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+#@+node:ekr.20031218072017.2830:createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    c = self
+    theFile = None # pylint complains if this is inited to ''.
+    path = c.openWithTempFilePath(p,ext)
+    try:
+        if g.os_path_exists(path):
+            g.es("recreating:  ",g.shortFileName(path),color="red")
+        else:
+            g.es("creating:  ",g.shortFileName(path),color="blue")
+        theFile = open(path,"w")
+        # Convert s to whatever encoding is in effect.
+        s = p.bodyString()
+        theDict = g.scanDirectives(c,p=p)
+        encoding = theDict.get("encoding",None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        s = g.toEncodedString(s,encoding,reportErrors=True) 
+        theFile.write(s)
+        theFile.flush()
+        theFile.close()
+        try:    time = g.os_path_getmtime(path)
+        except: time = None
+        # g.es("time: " + str(time))
+        # New in 4.3: theDict now contains both 'p' and 'v' entries, of the expected type.
+        theDict = {
+            "body":s, "c":c, "encoding":encoding,
+            "f":theFile, "path":path, "time":time,
+            "p":p, "v":p.v }
+        << remove previous entry from app.openWithFiles if it exists >>
+        g.app.openWithFiles.append(theDict)
+        return path
+    except:
+        if theFile:
+            theFile.close()
+        theFile = None
+        g.es("exception creating temp file",color="red")
+        g.es_exception()
+        return None
+#@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+for d in g.app.openWithFiles[:]:
+    p2 = d.get("p")
+    if p.v.t == p2.v.t:
+        # g.pr("removing previous entry in g.app.openWithFiles for",p.headString())
+        g.app.openWithFiles.remove(d)
+#@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+#@-node:ekr.20031218072017.2830:createOpenWithTempFile
+#@+node:ekr.20031218072017.2832:c.openWithTempFilePath
+def openWithTempFilePath (self,p,ext):
+
+    """Return the path to the temp file corresponding to p and ext."""
+
+    name = "LeoTemp_%s_%s%s" % (
+        str(id(p.v.t)),
+        g.sanitize_filename(p.headString()),
+        ext)
+
+    name = g.toUnicode(name,g.app.tkEncoding)
+
+    td = g.os_path_abspath(tempfile.gettempdir())
+
+    path = g.os_path_join(td,name)
+
+    return path
+#@-node:ekr.20031218072017.2832:c.openWithTempFilePath
+#@-node:ekr.20031218072017.2823:openWith and allies
+#@+node:ekr.20031218072017.2833:close
+def close (self,event=None):
+
+    '''Close the Leo window, prompting to save it if it has been changed.'''
+
+    g.app.closeLeoWindow(self.frame)
+#@-node:ekr.20031218072017.2833:close
+#@+node:ekr.20031218072017.2834:save (commands)
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    # c.beginUpdate()
+    # try:
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            c.fileCommands.save(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2834:save (commands)
+#@+node:ekr.20031218072017.2835:saveAs
+def saveAs (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename.'''
+
+    c = self ;  w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # c.beginUpdate()
+    # try:
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save As",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
+
+    if fileName:
+        g.trace(fileName)
+        # 7/2/02: don't change mFileName until the dialog has suceeded.
+        c.mFileName = g.ensure_extension(fileName, ".leo")
+        c.frame.title = c.mFileName
+        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+        c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.saveAs(c.mFileName)
+        c.updateRecentFiles(c.mFileName)
+        g.chdir(c.mFileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2835:saveAs
+#@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+def saveAsUnzipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is not compressed.'''
+    self.saveAsZippedHelper(False)
+
+def saveAsZipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is compressed.'''
+    self.saveAsZippedHelper(True)
+
+def saveAsZippedHelper (self,isZipped):
+
+    c = self
+    oldZipped = c.isZipped
+    c.isZipped = isZipped
+    try:
+        c.saveAs()
+    finally:
+        c.isZipped = oldZipped
+#@-node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+#@+node:ekr.20031218072017.2836:saveTo
+def saveTo (self,event=None):
+
+    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # c.beginUpdate()
+    # try:
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+
+    # set local fileName, _not_ c.mFileName
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save To",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
+
+    if fileName:
+        fileName = g.ensure_extension(fileName, ".leo")
+        c.fileCommands.saveTo(fileName)
+        c.updateRecentFiles(fileName)
+        g.chdir(fileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2836:saveTo
+#@+node:ekr.20031218072017.2837:revert
+def revert (self,event=None):
+
+    '''Revert the contents of a Leo outline to last saved contents.'''
+
+    c = self
+
+    # Make sure the user wants to Revert.
+    if not c.mFileName:
+        return
+
+    reply = g.app.gui.runAskYesNoDialog(c,"Revert",
+        "Revert to previous version of " + c.mFileName + "?")
+    c.bringToFront()
+
+    if reply=="no":
+        return
+
+    # Kludge: rename this frame so openWithFileName won't think it is open.
+    fileName = c.mFileName ; c.mFileName = ""
+
+    # Create a new frame before deleting this frame.
+    ok, frame = g.openWithFileName(fileName,c)
+    if ok:
+        frame.deiconify()
+        g.app.destroyWindow(c.frame)
+    else:
+        c.mFileName = fileName
+#@-node:ekr.20031218072017.2837:revert
+#@-node:ekr.20031218072017.2820:top level (file menu)
+#@-node:ekr.20061002093442:Add opml support to new,open, save commands
+#@+node:ekr.20070624135822:Templates for common code fragments
+# How will users be reminded of the fragments?
+#   - A dropdown menu?
+#   - "Completion" in the log pane?
+
+# Invent a way for simple keystrokes to insert fragments:
+
+Fragment 1:
+
+c.beginUpdate()
+try:
+    pass
+finally:
+    endUpdate()
+
+Fragment 2:
+
+for p in c.allNodes_iter():
+    pass
+#@-node:ekr.20070624135822:Templates for common code fragments
+#@+node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
+@nocolor
+
+http://mail.google.com/mail/#label/Leo/1182d78133aa0ecf
+
+Create a simple template myLeoSettings.leo in $HOME when you try to
+open it and it doesn't exist
+#@nonl
+#@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
+#@+node:ekr.20080705040925.1:Remember split ratios for vertically split panes
+@nocolor
+
+Every time I open up an outline file, the outline-width:body-width
+ratio is always getting set to 0.5. Even when I resize the splitter
+and save the outline and re-open it, the ratio always reverts to 0.5
+BTW - I use vertical split (tree on left, body on right, log below
+tree).
+
+@color
+#@nonl
+#@-node:ekr.20080705040925.1:Remember split ratios for vertically split panes
+#@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
+# Or give a better message.
+#@nonl
+#@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
+#@+node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
+This affects @auto imports of all "unknown" languages.
+
+For example, @auto x.css would put @language css in the root node.
+#@nonl
+#@-node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
+#@-node:ekr.20080730212711.6:Features 16
 #@+node:ekr.20080730212711.7:Plugins 4
 #@+node:ekr.20080604060150.1:Clean up plugins
 Some scripting says the following are in .../plugins/ but not

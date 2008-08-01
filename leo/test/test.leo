@@ -1223,7 +1223,10 @@ else:
     else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True</t>
-<t tx="ekr.20071105085941"></t>
+<t tx="ekr.20071105085941"># import leo.core.leoPymacs as leoPymacs
+# print leoPymacs
+import Pymacs
+print Pymacs</t>
 <t tx="ekr.20071128122043">log = c.frame.log ; tag = 'Shell'
 frame1 = log.frameDict.get(tag)
 shellKind = 'text' # in ('plain','text','canvas')

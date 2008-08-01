@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
@@ -73,15 +73,12 @@
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
 <v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e"
-marks="ekr.20060417194232.2,ekr.20041121130043,ekr.20041119204700,ekr.20070925144337.2,ekr.20040803072955.127,ekr.20040803072955.91,ekr.20031218072017.2834,ekr.20050404151753.6,"
-expanded="ekr.20031218072017.1934,"><vh>@thin leoProjects.txt</vh></v>
+marks="ekr.20060417194232.2,ekr.20041121130043,ekr.20041119204700,ekr.20070925144337.2,ekr.20040803072955.127,ekr.20040803072955.91,ekr.20031218072017.2834,ekr.20050404151753.6,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"
-marks="ekr.20080603052650.466,ekr.20031218072017.2834,"
-expanded="ekr.20080616110054.1,"><vh>@thin ../doc/leoToDo.txt</vh></v>
-<v t="ekr.20060207133601"
-marks="ekr.20041107093834,"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
+marks="ekr.20080603052650.466,ekr.20031218072017.2834,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20040629121554.1" a="M"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
@@ -108,8 +105,7 @@ marks="ekr.20050404151753.6,"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@thin leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@thin leoUndo.py</vh></v>
-<v t="ekr.20031218072017.2605"
-expanded="ekr.20031218072017.1934,"><vh>@thin runLeo.py </vh></v>
+<v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Test classes</vh>
 <v t="ekr.20080730161153.2"><vh>@thin leoBridgeTest.py</vh></v>
@@ -182,9 +178,9 @@ if 0: # Set to 1 for lint-like testing.
 
     try:
         import pychecker.checker
-        g.pr('\npychecker.checker running...')
+        print('\npychecker.checker running...')
     except Exception:
-        g.pr('\nCan not import pychecker\n')
+        print('\nCan not import pychecker\n')
 </t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
 </t>
