@@ -21,9 +21,9 @@ if 0: # Set to 1 for lint-like testing.
 
     try:
         import pychecker.checker
-        g.pr('\npychecker.checker running...')
+        print('\npychecker.checker running...')
     except Exception:
-        g.pr('\nCan not import pychecker\n')
+        print('\nCan not import pychecker\n')
 #@-node:ekr.20031218072017.2606:<< Import pychecker >>
 #@nl
 
