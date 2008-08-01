@@ -19,6 +19,10 @@ goto all
 
 :errors
 
+echo runLeo.py
+rem Harmless: W0611 (import pychecker)
+call pylint.bat leo\core\runLeo.py           --disable-msg=W0611 --rcfile=leo\test\pylint-leo-rc.txt
+
 goto done
 
 echo base64Packager.py
