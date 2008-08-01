@@ -2263,7 +2263,20 @@ class baseFileCommands:
             g.es("auto-saving outline",color="blue")
             c.save() # Must be done to set or clear tnodeList.
     #@-node:ekr.20031218072017.2012:writeAtFileNodes
-    #@+node:ekr.20031218072017.1666:writeDirtyAtFileNodes
+    #@+node:ekr.20080801071227.5:writeAtShadowNodes (fileCommands)
+    def writeAtShadowNodes (self,event=None):
+
+        '''Write all @file nodes in the selected outline.'''
+
+        c = self.c
+
+        changedFiles,atOk = c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+
+        if changedFiles:
+            g.es("auto-saving outline",color="blue")
+            c.save() # Must be done to set or clear tnodeList.
+    #@-node:ekr.20080801071227.5:writeAtShadowNodes (fileCommands)
+    #@+node:ekr.20031218072017.1666:writeDirtyAtFileNodes (fileCommands)
     def writeDirtyAtFileNodes (self,event=None):
 
         '''Write all changed @file Nodes.'''
@@ -2275,7 +2288,20 @@ class baseFileCommands:
         if changedFiles:
             g.es("auto-saving outline",color="blue")
             c.save() # Must be done to set or clear tnodeList.
-    #@-node:ekr.20031218072017.1666:writeDirtyAtFileNodes
+    #@-node:ekr.20031218072017.1666:writeDirtyAtFileNodes (fileCommands)
+    #@+node:ekr.20080801071227.6:writeDirtyAtShadowNodes (fileCommands)
+    def writeDirtyAtShadowNodes (self,event=None):
+
+        '''Write all changed @shadow Nodes.'''
+
+        c = self.c ; at = c.atFileCommands
+
+        changed = at.writeDirtyAtShadowNodes()
+
+        if changed:
+            g.es("auto-saving outline",color="blue")
+            c.save() # Must be done to set or clear tnodeList.
+    #@-node:ekr.20080801071227.6:writeDirtyAtShadowNodes (fileCommands)
     #@+node:ekr.20031218072017.2013:writeMissingAtFileNodes
     def writeMissingAtFileNodes (self,event=None):
 

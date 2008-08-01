@@ -638,6 +638,22 @@ class atFile:
 
         return isThin
     #@-node:ekr.20050103163224:scanHeaderForThin
+    #@+node:ekr.20080801071227.7:readAtShadowNodes (atFile)
+    def readAtShadowNodes (self,p):
+
+        '''Read all @shadow nodes in the p's tree.'''
+
+        at = self ; after = p.nodeAfterTree()
+        p = p.copy() # Don't change p in the caller.
+
+        while p and not p.equal(after): # Don't use iterator.
+            if p.isAtShadowFileNode():
+                fileName = p.atShadowFileNodeName()
+                at.readOneAtShadowNode (fileName,p)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+    #@-node:ekr.20080801071227.7:readAtShadowNodes (atFile)
     #@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
     def readOneAtShadowNode (self,fn,p):
 
@@ -2486,14 +2502,14 @@ class atFile:
         '''Write all @shadow nodes in the selected outline.'''
 
         at = self
-        at.writeAtShadowNodesHelper(writeDirtyOnly=False)
+        return at.writeAtShadowNodesHelper(writeDirtyOnly=False)
 
     def writeDirtyAtShadowNodes (self,event=None):
 
         '''Write all dirty @shadow nodes in the selected outline.'''
 
         at = self
-        at.writeAtShadowNodesHelper(writeDirtyOnly=True)
+        return at.writeAtShadowNodesHelper(writeDirtyOnly=True)
     #@nonl
     #@+node:ekr.20080711093251.4:writeAtShadowNodesHelper
     def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
@@ -2505,10 +2521,11 @@ class atFile:
         found = False
 
         while p and p != after:
-            if p.isAtShadowNode() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
+            if p.atShadowFileNodeName() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
                 ok = at.writeOneAtShadowNode(p,toString=toString,force=True)
                 if ok:
                     found = True
+                    g.es('wrote %s' % p.atShadowFileNodeName(),color='blue')
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
@@ -2521,6 +2538,8 @@ class atFile:
             g.es("no dirty @shadow nodes in the selected tree")
         else:
             g.es("no @shadow nodes in the selected tree")
+
+        return found
     #@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
     #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helper
     def writeOneAtShadowNode(self,p,toString,force):
