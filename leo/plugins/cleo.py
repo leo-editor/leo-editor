@@ -566,7 +566,7 @@ class cleoController:
         h = v and v.headString() or ''
 
         for f in self.file_nodes:
-            if h.find(f, 0, 5) == 0:
+            if h.startswith(f):
                 if node_is_selected:
                     bg = self.node_colours['Sel. File']
                 else:
