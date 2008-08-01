@@ -59,9 +59,6 @@ class shadowController:
 
         self.c = c
 
-        # self.print_copy_operations = False   # (not used) Tsrue: tell when files are copied.
-        # self.do_backups = False              # (Not used) True: always make backups of each file.
-
         # Configuration...
         self.shadow_subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
         self.shadow_prefix = c.config.getString('shadow_prefix') or ''
