@@ -2,7 +2,40 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
-#@+node:ekr.20080801071227.1:First 7
+#@+node:ekr.20080801071227.1:First 8
+#@+node:ekr.20080801071227.12:Investigate problems with revert
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/1bcbf6bc1e44f5a7?hl=en
+
+So I pulled a fresh branch (r711)
+
+> bzr branch lp:leo-editor shadowtest
+> cd shadowtest
+> python launchLeo.py
+
+Changed the NewHeadline text to "@shadow importTest"
+entered the following in the body
+
+---cut here---
+"#!/bin/sh
+
+DB="$1"
+URL="$2"
+
+echo "$URL $DB"
+---cut here---
+
+saved as shadowtest.leo
+
+Did Revert to Saved.
+
+Now the "#!/bin/sh" line is duplicated.  Saving and Revert to Saved
+again double it again, to 4.  Haven't been seeing problems with python
+files, although nodes are being Marked and dirtied on load and I can't
+see what changed, perhaps it's whitespace. 
+#@nonl
+#@-node:ekr.20080801071227.12:Investigate problems with revert
 #@+node:ekr.20080801071227.2:Improve or eliminate x.isSentinel
 #@-node:ekr.20080801071227.2:Improve or eliminate x.isSentinel
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
@@ -343,7 +376,7 @@ def setHeadString (self,p,s,encoding="utf-8"):
 #@-node:ekr.20040305223225:c.setHeadString
 #@-node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
 #@-node:ekr.20080517102922.1:Files bugs 5
-#@-node:ekr.20080801071227.1:First 7
+#@-node:ekr.20080801071227.1:First 8
 #@+node:ekr.20080411091507.10:Minor bugs (3)
 #@+node:ekr.20080709161540.1:Fix c colorizer bug
 @nocolor
