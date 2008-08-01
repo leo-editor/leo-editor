@@ -1231,14 +1231,23 @@ class baseCommands:
 
         c = self ; u = c.undoer ; p = c.currentPosition()
 
-        # c.beginUpdate()
-        # try:
         undoData = u.beforeChangeTree(p)
         c.fileCommands.readAtFileNodes()
         u.afterChangeTree(p,'Read @file Nodes',undoData)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
     #@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
+    #@+node:ekr.20080801071227.4:readAtShadowNodes (commands)
+    def readAtShadowNodes (self,event=None):
+
+        '''Read all @shadow nodes in the presently selected outline.'''
+
+        c = self ; u = c.undoer ; p = c.currentPosition()
+
+        undoData = u.beforeChangeTree(p)
+        c.atFileCommands.readAtShadowNodes(p)
+        u.afterChangeTree(p,'Read @shadow Nodes',undoData)
+        c.redraw() 
+    #@-node:ekr.20080801071227.4:readAtShadowNodes (commands)
     #@+node:ekr.20031218072017.1809:importDerivedFile
     def importDerivedFile (self,event=None):
 
