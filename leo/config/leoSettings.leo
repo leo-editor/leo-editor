@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="203" height="961" width="700"/>
+	<global_window_position top="10" left="345" height="961" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -334,6 +334,10 @@
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
 </v>
+<v t="ekr.20060730101451"><vh>Shadow files</vh>
+<v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
+<v t="ekr.20060730101451.5"><vh>@string shadow_subdir = .leo_shadow</vh></v>
+</v>
 </v>
 <v t="ekr.20041119034357.20" annotate="7d71002e"><vh>Find/Change panel</vh>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
@@ -440,24 +444,26 @@
 <v t="ekr.20070927173324"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20070927051742"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write...</vh>
-<v t="ekr.20071001120755"><vh>@item *&amp;check-derived-file</vh></v>
-<v t="ekr.20071001120755.1"><vh>@item *check-le&amp;o-file</vh></v>
-<v t="ekr.20071001121059"><vh>@item *compare-leo-file&amp;s</vh></v>
+<v t="ekr.20071001120755"><vh>@item *check-derived-file</vh></v>
+<v t="ekr.20071001120755.1"><vh>@item *check-leo-file</vh></v>
+<v t="ekr.20071001121059"><vh>@item *compare-leo-files</vh></v>
 <v t="ekr.20071001120755.2"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.14"><vh>@item *&amp;read-outline-only</vh></v>
-<v t="ekr.20070925144534.15"><vh>@item *write-&amp;outline-only</vh></v>
-<v t="ekr.20071001123216"><vh>@item -</vh></v>
-<v t="ekr.20071001120755.3"><vh>@item *read-&amp;file-into-node</vh></v>
-<v t="ekr.20071001120755.4"><vh>@item *writ&amp;e-file-from-node</vh></v>
-<v t="ekr.20070925144534.16"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.14"><vh>@item *read-outline-only</vh></v>
+<v t="ekr.20071001120755.3"><vh>@item *read-file-into-node</vh></v>
 <v t="ekr.20070925144534.17"><vh>@item read-at-auto-nodes</vh></v>
-<v t="ekr.20070925144534.18"><vh>@item write-at-auto-nodes</vh></v>
-<v t="ekr.20070925144534.19"><vh>@item write-dirty-at-auto-nodes</vh></v>
-<v t="ekr.20070925144534.20"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.21"><vh>@item read-at-file-nodes</vh></v>
-<v t="ekr.20070925144534.22"><vh>@item write-dirty-at-file-nodes</vh></v>
-<v t="ekr.20070925144534.23"><vh>@item write-missing-at-file-nodes</vh></v>
+<v t="ekr.20080801104153.2"><vh>@item read-at-shadow-nodes</vh></v>
+<v t="ekr.20071001123216"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.15"><vh>@item *write-outline-only</vh></v>
+<v t="ekr.20071001120755.4"><vh>@item *write-file-from-node</vh></v>
+<v t="ekr.20070925144534.18"><vh>@item write-at-auto-nodes</vh></v>
+<v t="ekr.20080801104153.3"><vh>@item write-at-shadow-nodes</vh></v>
 <v t="ekr.20070925144534.24"><vh>@item write-at-file-nodes</vh></v>
+<v t="ekr.20070925144534.16"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.19"><vh>@item write-dirty-at-auto-nodes</vh></v>
+<v t="ekr.20070925144534.22"><vh>@item write-dirty-at-file-nodes</vh></v>
+<v t="ekr.20080801104153.4"><vh>@item write-dirty-at-shadow-nodes</vh></v>
+<v t="ekr.20070925144534.23"><vh>@item write-missing-at-file-nodes</vh></v>
 </v>
 <v t="ekr.20070925144534.25"><vh>@menu Tan&amp;gle...</vh>
 <v t="ekr.20070925144534.26"><vh>@item *tangle-&amp;all</vh></v>
@@ -1120,15 +1126,6 @@
 <v t="ekr.20060930111325.7"><vh>@bool scripting-create-run-script-button = False</vh></v>
 <v t="ekr.20060930112030"><vh>@bool scripting-create-script-button-button = True</vh></v>
 <v t="ekr.20060930111325.1"><vh>@int scripting-max-button-size = 18</vh></v>
-</v>
-<v t="ekr.20060730101451"><vh>shadow plugin</vh>
-<v t="ekr.20060730101451.1"><vh>@bool shadow_active = True</vh></v>
-<v t="ekr.20060730101451.2"><vh>@bool shadow_backups = True</vh></v>
-<v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
-<v t="ekr.20060730101451.4"><vh>@bool shadow_print_copy_operations = True</vh></v>
-<v t="ekr.20060730101451.5"><vh>@string shadow_subdir = .leo_shadow</vh></v>
-<v t="ekr.20060730101451.6"><vh>@bool shadow_testing = True</vh></v>
-<v t="ekr.20060730101451.7"><vh>@int shadow_verbose = 3</vh></v>
 </v>
 <v t="bobjack.20080614084120.3"><vh>shortcut _button plugin</vh>
 <v t="bobjack.20080614084120.5"><vh>@data shortcut_button_data</vh></v>
@@ -5912,13 +5909,8 @@ menu_text_font_weight = None</t>
 <t tx="ekr.20060704090341"></t>
 <t tx="ekr.20060713101831"></t>
 <t tx="ekr.20060730101451"></t>
-<t tx="ekr.20060730101451.1"></t>
-<t tx="ekr.20060730101451.2"></t>
 <t tx="ekr.20060730101451.3"></t>
-<t tx="ekr.20060730101451.4"></t>
 <t tx="ekr.20060730101451.5"></t>
-<t tx="ekr.20060730101451.6"></t>
-<t tx="ekr.20060730101451.7"></t>
 <t tx="ekr.20060804095015">Important: the order the open_flash_brackets and close_flash_brackets settings must be consistent.</t>
 <t tx="ekr.20060804095015.1">Important: the order the open_flash_brackets and close_flash_brackets settings must be consistent.</t>
 <t tx="ekr.20060807103220"></t>
@@ -6418,14 +6410,13 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.14"></t>
 <t tx="ekr.20070925144534.15"></t>
 <t tx="ekr.20070925144534.16"></t>
-<t tx="ekr.20070925144534.17">Read @&amp;auto Nodes</t>
-<t tx="ekr.20070925144534.18">Write @a&amp;uto Nodes</t>
-<t tx="ekr.20070925144534.19">Write D&amp;irty @a&amp;uto Nodes</t>
-<t tx="ekr.20070925144534.20"></t>
-<t tx="ekr.20070925144534.21">Read @file &amp;Nodes</t>
-<t tx="ekr.20070925144534.22">Write &amp;Dirty @file Nodes</t>
-<t tx="ekr.20070925144534.23">Write &amp;Missing @file Nodes</t>
-<t tx="ekr.20070925144534.24">&amp;Write @file Nodes</t>
+<t tx="ekr.20070925144534.17">Read @auto Nodes</t>
+<t tx="ekr.20070925144534.18">Write @auto Nodes</t>
+<t tx="ekr.20070925144534.19">Write Dirty @auto Nodes</t>
+<t tx="ekr.20070925144534.21">Read @file Nodes</t>
+<t tx="ekr.20070925144534.22">Write Dirty @file Nodes</t>
+<t tx="ekr.20070925144534.23">Write Missing @file Nodes</t>
+<t tx="ekr.20070925144534.24">Write @file Nodes</t>
 <t tx="ekr.20070925144534.25"></t>
 <t tx="ekr.20070925144534.26"></t>
 <t tx="ekr.20070925144534.27"></t>
@@ -7517,6 +7508,9 @@ lcd2" "
 lcd1c" "
 lcd2c" "
 </t>
+<t tx="ekr.20080801104153.2">Read @shadow Nodes</t>
+<t tx="ekr.20080801104153.3">Write @shadow Nodes</t>
+<t tx="ekr.20080801104153.4">Write Dirty @shadow Nodes</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

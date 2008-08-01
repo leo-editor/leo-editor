@@ -1098,13 +1098,10 @@ def readAtFileNodes (self,event=None):
 
     c = self ; u = c.undoer ; p = c.currentPosition()
 
-    # c.beginUpdate()
-    # try:
     undoData = u.beforeChangeTree(p)
     c.fileCommands.readAtFileNodes()
     u.afterChangeTree(p,'Read @file Nodes',undoData)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
 #@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
 #@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
 def readAtFileNodes (self):
@@ -14156,14 +14153,23 @@ def readAtFileNodes (self,event=None):
 
     c = self ; u = c.undoer ; p = c.currentPosition()
 
-    # c.beginUpdate()
-    # try:
     undoData = u.beforeChangeTree(p)
     c.fileCommands.readAtFileNodes()
     u.afterChangeTree(p,'Read @file Nodes',undoData)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
 #@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
+#@+node:ekr.20080801071227.4:readAtShadowNodes (commands)
+def readAtShadowNodes (self,event=None):
+
+    '''Read all @shadow nodes in the presently selected outline.'''
+
+    c = self ; u = c.undoer ; p = c.currentPosition()
+
+    undoData = u.beforeChangeTree(p)
+    c.atFileCommands.readAtShadowNodes(p)
+    u.afterChangeTree(p,'Read @shadow Nodes',undoData)
+    c.redraw() 
+#@-node:ekr.20080801071227.4:readAtShadowNodes (commands)
 #@+node:ekr.20031218072017.1809:importDerivedFile
 def importDerivedFile (self,event=None):
 
@@ -16954,6 +16960,1018 @@ print\1\\\\n\2
 #@-node:ekr.20080730212711.3:Code cleanups
 #@+node:ekr.20080730212711.4:New features
 #@+node:ekr.20080730212711.5:Added support for @shadow
+#@+node:ekr.20080730212711.53: Notes for @shadow
+#@+node:ekr.20080730212711.54:Thead: Eureka?? Can we just not use sentinels?
+@nocolor
+
+On sleeping on this queston, I think the "Aha" really means that I
+should start using the shadow plugin. I *really* do not want to give
+up the advantages of sentinels: they are an important part of Leo's
+internal reliability.  Furthermore, @thin is just exactly what is
+needed to make .leo files compatible with cvs/bzr.
+
+Bernhard's plugin does, in fact, do everything that we want, and the
+possible solutions to edge conditions are exactly the same for the "do
+without sentinels" approach and the shadow plugin. So I'll start using
+this plugin soon and report my conclusions. 
+#@nonl
+#@-node:ekr.20080730212711.54:Thead: Eureka?? Can we just not use sentinels?
+#@+node:ekr.20080730212711.55:Theory of operation: from leoShadow.py: first light
+@nocolor
+
+The distinction between public (no sentinels) and private (with sentinels) files
+clarifies the code considerably by making names much shorter. In this case, the
+improvement is actually quite useful.
+
+Last night I spent about four hours studying the heart of the shadow code, the
+method called propagate_changed_lines. I believe I now understand this code in
+considerable detail, something that has *never* been true for me in the past.
+
+In this post I'll report that Aha's that made the code comprehensible.
+
+propagate_changed_lines computes new_private_lines (the changed lines
+*with* sentinels) given two arguments:
+
+- old_private_lines (containing sentinels) and
+- new_public_lines (the changed lines without sentinels)
+
+As an overview, propagate_changed_lines works as follows:
+
+1. It reconstitutes old_public_lines (the original lines without sentinels) by
+removing sentinels from old_private_lines.
+
+2. It calls difflib.SequenceMatcher(None,old_public_lines,new_public_lines) to
+create a list of diffs of the old and new versions of the lines **without**
+sentinels.
+
+3. It (very cleverly) uses the list of diffs to drive what is, in effect, a
+two-way merge of old_private_lines (with sentinels) and new_public_lines
+(without sentinels). All sentinels and unchanged regular lines come from
+old_private_lines. All inserted or replacement lines come from new_public_lines.
+
+There are a *lot* of details in the algorithm. Probably the turning point, the
+point at which I truly started to understand the algorithm, was the realization
+that the main loop involves only input from old_private_lines and
+new_public_lines. Once I saw that, I could begin to the following:
+
+Most of the indices returned by SequenceMatcher.get_opcodes are *not* used in
+the main loop. In the present code, these indices are called old_i, old_j, new_i
+and new_j.
+
+Indeed, the main loop mostly ignores these indices (I'm exaggerating a bit) and
+instead mostly relies on implied pointers into the old_private_lines and
+new_public_lines arrays. These "implied pointers" are the position of the
+corresponding reader classes used to access old_private_lines and
+new_public_lines.
+
+This lead me, finally, to the realization that the main loop is, in effect, a
+two-way merge of old_private_lines and new_public_lines arrays. It's a clever,
+tricky, merge, but (in essence) a merge is exactly what it is.
+
+There is one crucial detail that you must understand to begin to make sense of
+this merge: the mapping array.
+
+propagate_changed_lines reconstitutes old_public_lines (the original lines
+without sentinels) by removing sentinels from old_private_lines as follows::
+
+  old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+As the name implies, this method not only strips sentinel lines, but it returns
+a mapping. This mapping is an array of n+1 entries, where n is
+len(old_public_lines). This mapping array is an essential part of the algorithm.
+mapping[i] is the index into old_private_lines of line i in old_public_lines.
+That is, for each i < len(old_public_lines), line i in old_public_lines ==
+old_private_lines[i]. In other words, mapping[i] tells where line i of
+old_public_lines "came from".
+
+We are now in a position to begin to understand the main loop in detail. The
+main loop processes one SequenceMatcher opcode, of the form
+tag,old_i,old_j,new_i,new_j. tag is the opcode kind. It is in
+('insert','delete','equal','replace').
+
+The following code starts the opcode loop::
+
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to index mapping[old_i].
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_i])
+
+Understanding this single line is essential to understanding the rest of the tag
+(opcode) handlers.
+
+This line copies only sentinel lines from the current position of the
+old_private_lines_rdr up to mapping[old_i]. As a side effect, the current
+position of the old_private_lines_rdr is advanced to mapping[old_i], so in
+effect all non-sentinel lines from the last written line to limit are deleted
+from old_private_lines. That is, those lines will never be copied to the output.
+
+Now let's take a look at the rest of the main loop::
+
+    if tag == 'equal':
+        # Copy all lines (including sentinels) from the old private file to the new private file.
+        while old_private_lines_rdr.index() <= mapping[old_j-1]:
+           line = old_private_lines_rdr.get()
+           new_private_lines_wtr.put(line)
+
+        # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+        new_public_lines_rdr.sync(new_j)
+
+Diff is telling us that old_public_lines[old_i:old_j] are the same as
+new_public_lines[new_i:new_j]. However, we can't use either of these arrays
+directly because we would lose sentinels lines. Instead we copy all lines,
+including sentinels, from the current position in old_private_lines_rdr to
+mapping[old_j-1] (I'm dubious about the -1: unit testing is required). Once we
+have done that, we skip all lines in new_public_lines up until line new_j.
+
+Note that *only* index old_j is used in this code. The old_i, new_i and new_j
+indices are not used at all. Similar remarks can be made about the other cases
+to be discussed below. The realization that most indices aren't used was an
+important Aha.
+::
+
+    elif tag in ('insert','replace'):
+        # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+        # Copy lines from new_public_lines_rdr up to new_j.
+        while new_public_lines_rdr.index() < new_j:
+            line = new_public_lines_rdr.get()
+            new_private_lines_wtr.put(line)
+
+Diff is telling us that new_public_lines[new_i:new_j] should replace
+old_public_lines[old_i:old_j]. However, the call to copy_sentinels has *already*
+skipped lines up to old_private_lines[mapping[old_i]], and these correspond (via
+the mapping) to the lines up to old_public_lines[old_i]. Thus, for both the
+'insert' and 'replace' opcodes, all we have to do is copy unwritten lines from
+new_public_llines_rdr up to index new_j.
+
+Note: we could assert that new_public_lines.index() == new_i at the start of
+this case. This assertion, and similar assertions, are true because
+SequenceMatcher returns opcodes in increasing order without gaps.
+::
+
+    elif tag=='delete':
+        # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+        # Leave new_public_lines_rdr unchanged.
+        pass
+
+Diff is telling us delete old_public_lines[old_i:old_j]. The call to
+copy_sentinels has deleted old_private_lines up to index mapping [old_i],
+**not** up to mapping [old_j]. We could call::
+
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_j])
+
+here, but there is no need to do so. The next time through the loop will do the
+equivalent. Finally, after the loop completes, the following code ensures that
+all trailing sentinels are written by calling::
+
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=old_private_lines_rdr.size())
+
+So that's it. The big picture is that the main loop is a two-way merge of
+old_private_lines (with sentinels) with new_public_lines (without sentinels).
+Unchanged lines come from old_private_lines; changed lines come from
+new_public_lines. The result of the merge forms new_private_lines.
+
+Clearly, every line of new_public_line gets written to the output. In the
+'equal' case, however, those lines actually come from old_private_lines.
+#@nonl
+#@-node:ekr.20080730212711.55:Theory of operation: from leoShadow.py: first light
+#@+node:ekr.20080730212711.56:Unit tests: from leoShadow.py: first light
+@nocolor
+
+The shadow branch now contains the first-ever usable unit-testing
+framework for @shadow.
+
+unitTest.leo contains complete unit tests for @shadow.  See the node::
+
+    @suite run @shadow-test nodes
+
+This @suite node creates and runs leoShadow.atShadowTestCase
+tests or each @shadow-test node in the @shadow-tests tree.
+Creating a new unit test is as easy as creating the following
+tree::
+
+    @shadow-test
+      old
+      new
+
+Two multi-node unit tests which demonstrate that it is impossible, in general,
+to properly place a line on the boundary between nodes. They are called::
+
+    @shadow-test-lax insert between nodes: at end of prev node
+    @shadow-test insert between nodes: at start of next node
+
+The reason one of these tests *must* fail is that both will generate
+exactly the same new_public_lines: the only difference between these
+tests is, in essence, the *expected* result.  This expected result is
+computed by the unit test from the 'new' outline, but this expected
+result is not available to the shadow code!
+
+Heuristics can not possibly help. The data available to the shadow
+code is exactly the same for both unit tests, yet the two unit tests
+ask for different results!  Thus, one test must fail.
+
+I had foreseen this situation years ago, but alas, I let this
+difficulty stop me.  In fact, this is not fatal flaw: it simply means
+that @auto must show nodes that have changed externally.
+
+Furthermore, the proximate cause of the failed unit test is an overly-
+strict test in test_propagate_changes.  A lesser test at the end of
+propagate_changed_lines succeeds for both unit tests.  This test
+ensures that the sentinel lines and non-sentinel lines *separately*
+match the expected sentinel and non-sentinel lines.  This test is
+clearly too lax because it *completely* ignores the interleaving
+between sentinel and non-sentinel lines.
+#@-node:ekr.20080730212711.56:Unit tests: from leoShadow.py: first light
+#@+node:ekr.20080730212711.57:Thread: Giant Aha: @shadow *is* safe
+@nocolor
+
+The following post is long, but imo it is one of the most important in
+Leo's long history of long posts :-)
+
+This post finally, indisputably, proves that @shadow is safe, and
+proposes a consolation prize for the long delay in implementing
+@shadow, namely @auto-shadow.
+
+This is a continuation of the thread, leoShadow.py: first light.  In
+the last post to that thread I said:
+
+QQQ
+The proximate cause of the failed unit test is an overly-strict test
+in test_propagate_changes. A lesser test at the end of
+propagate_changed_lines succeeds for both unit tests. This test
+ensures that the sentinel lines and non-sentinel lines *separately*
+match the expected sentinel and non-sentinel lines. This test is
+clearly too lax because it *completely* ignores the interleaving
+between sentinel and non-sentinel lines.
+QQQ
+
+Last night in bed, thinking about what I had just written, I realized
+that the failed unit test simply is not a problem.  There are two
+reasons for this statement:
+
+1. The public file produced by the "failed" unit test will be
+identical with the original (that is, changed) public file.  Thus,
+regardless of where @shadow puts the inserted lines, there will be no
+difference that can be seen outside of Leo.  But this 'round trip of
+public files' is the essential requirement!
+
+2. Furthermore, once the Leo user saves the @shadow file, the location
+of all newly inserted lines will be "fixed" (determined).  That is,
+the next time Leo opens the @shadow file, the @shadow code will "know
+for sure" where the line should go. The reason is simple: the line
+will be placed by the "equal" SequenceMatcher opcode, rather than the
+"insert" opcode.  Thus, once the Leo user chooses the location of
+newly inserted lines, the @shadow code will know (or remember) the
+location of those lines, because they will be part of the original,
+unchanged, *private* file.  The sentinels in the private file will
+tell where to put the line unambiguously.
+
+In short:
+
+1. **Boundary conditions do not affect public files**, the files seen
+by people who do not use Leo.
+
+2. Once an inserted line has been saved (thereby generating a new
+public file), Leo will forever afterward remember the location of the
+file.
+
+Thus, the *only* remaining detail, a minor one, is to alert the user
+when changes to a public file results in change to the Leo outline.
+But Leo already warns when such external changes are made.  If the
+user does nothing, the corresponding public file will remain as it
+was.
+
+Imo, this discussion clearly demonstrates that @shadow is safe.  This
+is a huge step forward.
+
+This Aha came, in no small part, from the change in terminology from
+"files with/without sentinels" to "private/public files". When we
+focus on what the public sees, we see that @shadow is safe.  Is just
+about that simple.
+
+So the executive summary is:
+
+Boundary problems while scanning changed public files can affect only
+*private* view of the Leo outline.  The public file will remain
+unchanged regardless of how boundary conditions are resolved. The user
+can change her private view as she likes, and once she has done so and
+saved the @shadow file, the change will become permanent: it is
+embodied in her private files.
+
+Hurray!  Clarity!  Safety!
+
+So what to do about the failed unit test?   Let's reconsider the
+opening quote:
+
+QQQ
+The proximate cause of the failed unit test is an overly- strict test
+in test_propagate_changes. A lesser test at the end of
+propagate_changed_lines succeeds for both unit tests. This test
+ensures that the sentinel lines and non-sentinel lines *separately*
+match the expected sentinel and non-sentinel lines. This test is
+clearly too lax because it *completely* ignores the interleaving
+between sentinel and non-sentinel lines.
+QQQ
+
+Now it should be clear that the essential test is the test that non-
+sentinel (public!) lines are preserved.  Thus, the test at the end of
+propagate_changed_lines is *not* too lax: the test that sentinel
+(private!) lines are preserved is nice to have, but preserving public
+lines is the acid test.
+
+So the solution to unit tests that fail at the boundary of nodes is
+simply to relax the test.  I'll do this by marking such tests with
+@shadow-test-lax, which will cause the actual UnitTest test case not
+to perform the stricter test that fails.  How easy is that?
+Naturally, I'll put comments in each @shadow-test-lax node explaining
+why a looser test is required.
+
+The Aha just discussed will make Leo famous.
+
+I have been lamenting to myself recently that I didn't see all of this
+when Bernhard Mulder first proposed shadow files.  I'm not sure how
+clearly he understood all the issues I have just discussed, but in any
+case, the responsibility for dismissing shadow files is mine and mine
+alone.
+
+However, in the spirit of 'make lemonade from lemons', it may be that
+the long delay in recognizing @shadow's true importance has had some
+benefits.  In particular, @auto might not have happened had @shadow
+been adopted earlier.
+
+What good is @auto now that we have @shadow, you ask?  I reply in two
+ways:
+
+1. @auto is useful in its own right, for study, etc, quite
+independently of whether people use @shadow.
+
+2. We can eliminate some potential problem with both @auto and @shadow
+by using @auto-shadow. Yes, I'll provide abbreviations for this.
+
+@auto-shadow does what the name implies: It uses @auto logic to import
+the file if no private (shadow) files exist for the file; otherwise it
+uses the @shadow logic. This will smooth the process of creating and
+using other people's outlines.  @auto-shadow will ensure that
+everything "just works"
+
+A great day for Leo.
+
+==================
+
+Doh!  The abbreviation should be @shadow :-)  That is, @shadow should
+work as I proposed @auto-shadow to work.
+
+===================
+
+Another important simplification was Bernhard's use of
+reader and writer classes. In an algorithm as visually complex as the
+main opcode loop, any visual simplification can be significant.
+Furthermore, these classes were perfect for adding debugging and
+tracing info.  I wouldn't willing do without them.
+#@nonl
+#@-node:ekr.20080730212711.57:Thread: Giant Aha: @shadow *is* safe
+#@+node:ekr.20080730212711.58:Thread: @shadow plugin *will* make Leo famous
+@nocolor
+#@nonl
+#@+node:ekr.20080730212711.59:Post
+Not paying more attention to Bernhard's mod_shadow plugin is probably
+the biggest mistake I have ever made with Leo.  I rejected the idea
+far too quickly: any minor problems with it can easily be solved.
+
+First, let me summarize what the mod_shadow (shadow) plugin does:
+
+1. The shadow plugin writes "shadowed" derived files in two forms: a
+"public" form without sentinels, and a "private", form with
+sentinels.  The shadow plugin writes private files to a leo-shadow
+folder.
+
+At present, a script button converts a non-shadowed file to a shadowed
+file.  We could make the process of shadowing files more automatic.
+For example, @shadow-thin and @shadow-file might create shadowed
+private files in @thin or @file formats respectively.
+
+2. Typically, only the *public* files get committed to a repository.
+This makes Leo available even in shops where Leo sentinels are
+considered odious.  I am astounded that I haven't paid more attention
+to this plugin.
+
+3. Suppose that a public file (without sentinels) changes as the
+result of a bzr merge. When Leo reads the changed *public* file, the
+shadow plugin can *deduce* what changes were made by comparing the
+changed public file and the (still unchanged) private file.
+
+This idea is a stroke of genius.  Furthermore, the implementation is
+relatively straightforward.  The shadow plugin does the following:
+
+A. Removes sentinels from the private file, thereby recreating the
+original *public* file.
+B. Uses Python's difflib.Differ class to compute line-by-line diffs
+between the original and changed public files.
+C. Uses the line-oriented diffs to update the *private* file.
+D. Uses the updated private file (containing sentinels) to load the
+derived file.
+
+My concerns were with step C.  There is a boundary problem.  Suppose a
+changed line appears on the boundary of adjacent nodes A and B.
+Should the line be inserted at the end of node A, or at the start of
+node B?
+
+At the time, I suppose I wanted absolute answers the this question.
+But that is extremely foolish, for several reasons:
+
+1. The shadow plugin could warn that there is an ambiguity, and let
+the user decide.  The easy way to do this is to guess the answer, then
+clone the ambiguous nodes so they can be presented to the user to
+change if need be.
+
+2. Furthermore, indentation often (usually?) makes clear in which node
+to insert the new line.  If A and B have the same starting indentation
+and the inserted line has a larger indentation, we should prefer to
+put the node at the end of A rather than the start of B.  Other
+heuristics could be used too.
+
+But the main point is, **the ambiguity isn't serious** as long as the
+user is informed and can easily override incorrect guesses in step C.
+#@-node:ekr.20080730212711.59:Post
+#@+node:ekr.20080730212711.60:Post
+> My impression has been that they are private to Leo.
+
+The audience is anyone who wants to share files without sentinels.
+
+True, shadow files are private.  That is, they exist only in the Leo-shadow
+folder and they would typically not be part of the repository.  But the
+*public* files, the files without sentinels, could be shared in a
+repository.  The point is that Leo can update the private files from changes
+made to public files, so that changes to the repository will "magically"
+cause changes to the Leo outline.
+
+Perhaps an example will make this clearer.  Suppose, as is indeed the case,
+that I would like to study the pypy project.
+http://codespeak.net/pypy/dist/pypy/doc/home.html
+
+This is a major project, with lots of files.  Clearly, I don't want to try
+to convince the pypy folk to change all their files.  Here is what I am
+likely to do:
+
+1.  First, I'll create @auto for all the files of the pypy project in which
+I have an interest.  An already-existing script will help me do this.  See
+test.leo:
+
+Startup-->Scripts-->create-at-auto-nodes
+
+2.  Next, I'll convert @auto nodes to @shadow nodes (details a bit fuzzy,
+but let's ignore them for now).  When I save the outline, the original files
+get written as before.  In addition, the private files containing Leo
+sentinels will be saved to the private Leo-shadow directory.
+
+3.  When I reopen the Leo file, the outline structure will come from the
+private files.  However, if any of the *public* files have changed (by the
+pypy folk), those changes will be incorporated into the Leo outline, and
+when I save the Leo outline again the changes will be written back to the
+private files.
+
+Thus, I can use Leo to read and write pypy files, but the pypy folk will
+never see Leo sentinels in "their" files.  I can use the pypy repository and
+the pypy people will not know that I am using Leo.
+
+Edward
+
+P.S.  In the usage case just described we would *not* want to add headline
+comments to the public files because that would be change the pypy sources
+too much. 
+#@nonl
+#@-node:ekr.20080730212711.60:Post
+#@+node:ekr.20080730212711.61:Post 3
+> 1.  First, I'll create @auto for all the files of the pypy project in which
+> I have an interest.  An already-existing script will help me do this.
+
+There are often minor problems that must be corrected before @auto will
+import a python file "perfectly", typically tabnanny problems or
+underindented comments.  It would be necessary to convince the pypy
+community to allow me to fix these minor problems so that I can use Leo.
+Presumably, that would be easy to do: there should be no reason why a
+project should be committed to either inconsistent whitespace or
+underindented comments. 
+#@nonl
+#@-node:ekr.20080730212711.61:Post 3
+#@+node:ekr.20080730212711.62:Post 4
+> I consider @auto to be a most happy development. In particular, @auto
+> provides an excellent *starting* point for @shadow.
+
+@auto does one (important!) thing more: it guarantees that the result of
+writing an @auto file will be identical (up to some specified 'strictness'
+level) to the original files.  For 'strict' languages such as python, the
+comparison requires substantially identical leading whitespace.
+
+In other words, @auto isn't a lax import: when it succeeds it guarantees
+that we won't be changing the original (public) files.  When it fails, it
+tells us why it failed so we could, for example, request that pypy clean up
+the offending files.  I think this is *exactly* the right balance to have
+when dealing with external projects, especially Python projects. 
+#@nonl
+#@-node:ekr.20080730212711.62:Post 4
+#@-node:ekr.20080730212711.58:Thread: @shadow plugin *will* make Leo famous
+#@-node:ekr.20080730212711.53: Notes for @shadow
+#@+node:ekr.20080708094444.60: Leo overwrites
+#@+node:ekr.20080708094444.79: x.ctor
+def __init__ (self,c,trace=False,trace_writers=False):
+
+    self.c = c
+
+    # Configuration...
+    self.shadow_subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
+    self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+
+    # Debugging...
+    self.trace = trace
+    self.trace_writers = trace_writers  # True: enable traces in all sourcewriters.
+
+    # Error handling...
+    self.errors = 0
+    self.last_error  = '' # The last error message, regardless of whether it was actually shown.
+
+    # Support for goto-line-number.
+    self.line_mapping = []
+
+#@-node:ekr.20080708094444.79: x.ctor
+#@+node:ekr.20041005105605.19:openFileForReading (atFile)
+def openFileForReading(self,fn,fromString=False,atShadow=False):
+
+    at = self ; trace = True and not g.app.unitTesting ; verbose = False
+
+    if fromString:
+        if atShadow:
+            return at.error('can not call read(atShadow=True,fromString=aString)')
+        at.inputFile = g.fileLikeObject(fromString=fromString)
+    else:
+        fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
+
+        if atShadow:
+            x = at.c.shadowController
+            # readOneAtShadowNode should already have checked these.
+            shadow_fn       = x.shadowPathName(fn)
+            shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+            # x.updatePublicAndPrivate will create the public file from the private file
+            # if the public file exists. This *is* reasonable: there is nothing to import!
+            # if not g.os_path_exists(fn):
+                # g.trace('oops public',fn,g.callers())
+                # return at.error('can not happen: public file does not exist: %s' % (fn))
+            if not shadow_exists:
+                g.trace('oops private',shadow_fn,g.callers())
+                return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
+            # This method is the gateway to the essence of the shadow algorithm.
+            x.updatePublicAndPrivateFiles(fn,shadow_fn)
+            fn = shadow_fn
+
+        try:
+            # Open the file in binary mode to allow 0x1a in bodies & headlines.
+            if trace and verbose and atShadow: g.trace('opening %s file: %s' % (
+                g.choose(atShadow,'private','public'),fn))
+            at.inputFile = open(fn,'rb')
+            at.warnOnReadOnlyFile(fn)
+        except IOError:
+            at.error("can not open: '@file %s'" % (fn))
+            at.inputFile = None
+
+    return at.inputFile # for unit tests.
+#@-node:ekr.20041005105605.19:openFileForReading (atFile)
+#@+node:ekr.20041005105605.21:read (atFile)
+def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName >>
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile)
+    if at.errors: return False
+    at.openFileForReading(fileName,fromString=fromString,atShadow=atShadow)
+    if not at.inputFile: return False
+    if not g.unitTesting:
+        g.es("reading:",root.headString())
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+#@-node:ekr.20041005105605.22:<< set fileName >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+resurrected = 0
+for p in root.self_and_subtree_iter():
+
+    if not p.v.t.isVisited():
+        g.es('resurrected node:',p.headString(),color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for t in c.all_unique_tnodes_iter():
+
+    if hasattr(t,"tempBodyString"):
+        delattr(t,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20041005105605.26:readAll (atFile)
+def readAll(self,root,partialFlag=False,forceGnx=False):
+
+    """Scan vnodes, looking for @file nodes to read."""
+
+    use_tracer = False
+    if use_tracer: tt = g.startTracer()
+
+    at = self ; c = at.c
+    if partialFlag:
+        # Capture the current headline only if we aren't doing the initial read.
+        c.endEditing() 
+    anyRead = False
+    p = root.copy()
+    if partialFlag: after = p.nodeAfterTree()
+    else: after = c.nullPosition()
+    while p and not p.equal(after): # Don't use iterator.
+        # g.trace(p.headString())
+        if not p.headString().startswith('@'):
+            p.moveToThreadNext()
+        elif p.isAtIgnoreNode():
+            p.moveToNodeAfterTree()
+        elif p.isAtThinFileNode():
+            anyRead = True
+            if forceGnx: # New in Leo 4.4.2 b1: support for sax read.
+                at.forceGnxOnPosition(p)
+            at.read(p,thinFile=True)
+            p.moveToNodeAfterTree()
+        elif p.isAtAutoNode():
+            fileName = p.atAutoNodeName()
+            at.readOneAtAutoNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtShadowFileNode():
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtFileNode() or p.isAtNorefFileNode():
+            anyRead = True
+            wasOrphan = p.isOrphan()
+            ok = at.read(p)
+            if wasOrphan and not partialFlag and not ok:
+                # Remind the user to fix the problem.
+                p.setDirty()
+                c.setChanged(True)
+            p.moveToNodeAfterTree()
+        else: p.moveToThreadNext()
+    # Clear all orphan bits.
+    for v in c.all_unique_vnodes_iter():
+        v.clearOrphan()
+
+    if partialFlag and not anyRead:
+        g.es("no @file nodes in the selected tree")
+
+    if use_tracer: tt.stop()
+#@-node:ekr.20041005105605.26:readAll (atFile)
+#@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+def readOneAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c ; x = c.shadowController
+
+    if not fn == p.atShadowFileNodeName():
+        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
+            fn, p.atShadowFileNodeName()))
+
+    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+
+    fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
+    shadow_fn       = x.shadowPathName(fn)
+    shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+    # significant     = x.isSignificantPublicFile(fn)
+
+    if shadow_exists:
+        # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
+        at.read(p,atShadow=True) # Calls x.updatePublicAndPrivateFiles
+    else:
+        if not g.unitTesting: g.es("reading:",p.headString())
+        ok = at.importAtShadowNode(fn,p)
+        if ok:
+            # x.makeShadowFile(fn,p)
+            at.writeOneAtShadowNode(p,toString=False,force=True)
+#@+node:ekr.20080712080505.1:importAtShadowNode
+def importAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c  ; ic = c.importCommands
+    oldChanged = c.isChanged()
+
+    # Delete all the child nodes.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    # Import the outline, exactly as @auto does.
+    ic.createOutline(fn,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @shadow',fn,color='red')
+
+    if ic.errors or not g.os_path_exists(fn):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+
+    # else: g.doHook('after-shadow', p = p)
+
+    return ic.errors == 0
+#@-node:ekr.20080712080505.1:importAtShadowNode
+#@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+#@+node:ekr.20041005105605.27:readOpenFile
+def readOpenFile(self,root,theFile,fileName):
+
+    '''Read an open derived file.
+
+    Leo 4.5 and later can only read 4.x derived files.'''
+
+    at = self
+
+    firstLines,read_new,junk = at.scanHeader(theFile,fileName)
+
+    if read_new:
+        lastLines = at.scanText4(theFile,fileName,root)
+    else:
+        # lastLines = at.scanText3(theFile,root,[],at.endLeo)
+        lastLines = []
+        g.es('can not read 3.x derived file',fileName,color='red')
+        g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
+        g.trace('root',root and root.headString(),fileName)
+
+    if root:
+        root.v.t.setVisited() # Disable warning about set nodes.
+
+    << handle first and last lines >>
+#@+node:ekr.20041005105605.28:<< handle first and last lines >>
+try:
+    body = root.v.t.tempBodyString
+except Exception:
+    body = ""
+
+lines = body.split('\n')
+at.completeFirstDirectives(lines,firstLines)
+at.completeLastDirectives(lines,lastLines)
+s = '\n'.join(lines).replace('\r', '')
+root.v.t.tempBodyString = s
+#@-node:ekr.20041005105605.28:<< handle first and last lines >>
+#@-node:ekr.20041005105605.27:readOpenFile
+#@+node:ekr.20080711063656.1:x.File utils
+#@+node:ekr.20080711063656.7:x.baseDirName
+def baseDirName (self):
+
+    x = self ; filename = x.c.fileName()
+
+    if filename:
+        return g.os_path_dirname(g.os_path_abspath(filename))
+    else:
+        self.error('Can not compute shadow path: .leo file has not been saved')
+        return None
+#@nonl
+#@-node:ekr.20080711063656.7:x.baseDirName
+#@+node:ekr.20080711063656.4:x.dirName and pathName
+def dirName (self,filename):
+
+    '''Return the directory for filename.'''
+
+    x = self
+
+    return g.os_path_dirname(x.pathName(filename))
+
+def pathName (self,filename):
+
+    '''Return the full path name of filename.'''
+
+    x = self ; theDir = x.baseDirName()
+
+    return theDir and g.os_path_abspath(g.os_path_join(theDir,filename))
+#@nonl
+#@-node:ekr.20080711063656.4:x.dirName and pathName
+#@+node:ekr.20080712080505.3:x.isSignificantPublicFile
+def isSignificantPublicFile (self,fn):
+
+    '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
+
+    return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
+#@-node:ekr.20080712080505.3:x.isSignificantPublicFile
+#@+node:ekr.20080710082231.19:x.makeShadowDirectory
+def makeShadowDirectory (self,fn):
+
+    '''Make a shadow directory for the **public** fn.'''
+
+    x = self ; path = x.shadowDirName(fn)
+
+    if not g.os_path_exists(path):
+
+        try:
+            # g.trace('making',path)
+            os.mkdir(path)
+        except Exception:
+            x.error('unexpected exception creating %s' % path)
+            g.es_exception()
+            return False
+
+    return g.os_path_exists(path) and g.os_path_isdir(path)
+#@-node:ekr.20080710082231.19:x.makeShadowDirectory
+#@+node:ekr.20080711063656.2:x.rename
+def rename (self,src,dst,mode=None,silent=False):
+
+    x = self ; c = x.c
+
+    ok = g.utils_rename (c,src,dst,mode=mode,verbose=not silent)
+    if not ok:
+        x.error('can not rename %s to %s' % (src,dst),silent=silent)
+
+    return ok
+#@-node:ekr.20080711063656.2:x.rename
+#@+node:ekr.20080713091247.1:x.replaceFileWithString
+def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    x = self ; testing = g.app.unitTesting
+
+    exists = g.os_path_exists(fn)
+
+    if exists: # Read the file.  Return if it is the same.
+        try:
+            f = file(fn,'rb')
+            s2 = f.read()
+            f.close()
+        except IOError:
+            x.error('unexpected exception creating %s' % fn)
+            g.es_exception()
+            return False
+        if s == s2:
+            if not testing: g.es('unchanged:',fn)
+            return False
+
+    # Replace the file.
+    try:
+        f = file(fn,'wb')
+        f.write(s)
+        f.close()
+        if not testing:
+            if exists:  g.es('wrote:    ',fn)
+            else:       g.es('created:  ',fn)
+        return True
+    except IOError:
+        x.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
+#@-node:ekr.20080713091247.1:x.replaceFileWithString
+#@+node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
+def shadowDirName (self,filename):
+
+    '''Return the directory for the shadow file corresponding to filename.'''
+
+    x = self
+
+    return g.os_path_dirname(x.shadowPathName(filename))
+
+def shadowPathName (self,filename):
+
+    '''Return the full path name of filename, resolved using c.fileName()'''
+
+    x = self ; baseDir = x.baseDirName()
+    fileDir = g.os_path_dirname(filename)
+    # g.trace(baseDir)
+    # g.trace(x.shadow_subdir)
+    # g.trace(fileDir)
+
+    return baseDir and g.os_path_abspath(g.os_path_normpath(g.os_path_join(
+            baseDir,
+            fileDir, # Bug fix: honor any directories specified in filename.
+            x.shadow_subdir,
+            x.shadow_prefix + g.shortFileName(filename))))
+#@nonl
+#@-node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
+#@+node:ekr.20080711063656.3:x.unlink
+def unlink (self, filename,silent=False):
+
+    '''Unlink filename from the file system.
+    Give an error on failure.'''
+
+    x = self
+
+    ok = g.utils_remove(filename, verbose=not silent)
+    if not ok:
+        x.error('can not delete %s' % (filename),silent=silent)
+
+    return ok
+#@-node:ekr.20080711063656.3:x.unlink
+#@-node:ekr.20080711063656.1:x.File utils
+#@+node:ekr.20080712080505.3:x.isSignificantPublicFile
+def isSignificantPublicFile (self,fn):
+
+    '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
+
+    return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
+#@-node:ekr.20080712080505.3:x.isSignificantPublicFile
+#@+node:ekr.20080710082231.19:x.makeShadowDirectory
+def makeShadowDirectory (self,fn):
+
+    '''Make a shadow directory for the **public** fn.'''
+
+    x = self ; path = x.shadowDirName(fn)
+
+    if not g.os_path_exists(path):
+
+        try:
+            # g.trace('making',path)
+            os.mkdir(path)
+        except Exception:
+            x.error('unexpected exception creating %s' % path)
+            g.es_exception()
+            return False
+
+    return g.os_path_exists(path) and g.os_path_isdir(path)
+#@-node:ekr.20080710082231.19:x.makeShadowDirectory
+#@+node:ekr.20080708094444.36:x.propagate_changes
+def propagate_changes(self, old_public_file, old_private_file):
+
+    '''Propagate the changes from the public file (without_sentinels)
+    to the private file (with_sentinels)'''
+
+    x = self
+
+    old_public_lines  = file(old_public_file).readlines()
+    old_private_lines = file(old_private_file).readlines()
+    marker = x.marker_from_extension(old_public_file)
+
+    new_private_lines = x.propagate_changed_lines(
+        old_public_lines,
+        old_private_lines,
+        marker)
+
+    fn = old_private_file
+    copy = not os.path.exists(fn) or new_private_lines != old_private_lines
+
+    if copy:
+        s = ''.join(new_private_lines)
+        x.replaceFileWithString(fn,s)
+
+    return copy
+#@-node:ekr.20080708094444.36:x.propagate_changes
+#@+node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
+def updatePublicAndPrivateFiles (self,fn,shadow_fn):
+
+    '''handle crucial @shadow read logic.
+
+    This will be called only if the public and private files both exist.'''
+
+    x = self ; trace = False
+
+    if trace and not g.app.unitTesting:
+        g.trace('significant',x.isSignificantPublicFile(fn),fn)
+
+    if x.isSignificantPublicFile(fn):
+        # Update the private shadow file from the public file.
+        written = x.propagate_changes(fn,shadow_fn)
+        if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
+    else:
+        # Create the public file from the private shadow file.
+        x.copy_file_removing_sentinels(shadow_fn,fn)
+        x.message("created public %s from private %s " % (fn, shadow_fn))
+#@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+def copy_file_removing_sentinels (self,source_fn,target_fn):
+
+    '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
+
+    x = self ; marker = x.marker_from_extension(source_fn)
+
+    old_lines = file(source_fn).readlines()
+    new_lines, junk = x.separate_sentinels(old_lines,marker)
+
+    copy = not os.path.exists(target_fn) or old_lines != new_lines
+    if copy:
+        s = ''.join(new_lines)
+        x.replaceFileWithString(target_fn,s)
+#@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+#@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
+#@-node:ekr.20080708094444.60: Leo overwrites
 #@+node:ekr.20080710082231.3:(Added support for lax tests)
 #@+node:ekr.20080709062932.10:runTest (atShadowTestCase)
 def runTest (self,define_g = True):
@@ -17862,511 +18880,6 @@ def skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:gotoLineNumber and helpers
 #@-node:ekr.20080710082231.8:(Patched goto-line-number)
-#@+node:ekr.20080708094444.60:Leo overwrites
-#@+node:ekr.20080708094444.79: x.ctor
-def __init__ (self,c,trace=False,trace_writers=False):
-
-    self.c = c
-
-    # self.print_copy_operations = False   # (not used) Tsrue: tell when files are copied.
-    # self.do_backups = False              # (Not used) True: always make backups of each file.
-
-    # Configuration...
-    self.shadow_subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
-    self.shadow_prefix = c.config.getString('shadow_prefix') or ''
-
-    # Debugging...
-    self.trace = trace
-    self.trace_writers = trace_writers  # True: enable traces in all sourcewriters.
-
-    # Error handling...
-    self.errors = 0
-    self.last_error  = '' # The last error message, regardless of whether it was actually shown.
-
-    # Support for goto-line-number.
-    self.line_mapping = []
-
-#@-node:ekr.20080708094444.79: x.ctor
-#@+node:ekr.20041005105605.19:openFileForReading (atFile)
-def openFileForReading(self,fn,fromString=False,atShadow=False):
-
-    at = self ; trace = True and not g.app.unitTesting ; verbose = False
-
-    if fromString:
-        if atShadow:
-            return at.error('can not call read(atShadow=True,fromString=aString)')
-        at.inputFile = g.fileLikeObject(fromString=fromString)
-    else:
-        fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
-
-        if atShadow:
-            x = at.c.shadowController
-            # readOneAtShadowNode should already have checked these.
-            shadow_fn       = x.shadowPathName(fn)
-            shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-            # x.updatePublicAndPrivate will create the public file from the private file
-            # if the public file exists. This *is* reasonable: there is nothing to import!
-            # if not g.os_path_exists(fn):
-                # g.trace('oops public',fn,g.callers())
-                # return at.error('can not happen: public file does not exist: %s' % (fn))
-            if not shadow_exists:
-                g.trace('oops private',shadow_fn,g.callers())
-                return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
-            # This method is the gateway to the essence of the shadow algorithm.
-            x.updatePublicAndPrivateFiles(fn,shadow_fn)
-            fn = shadow_fn
-
-        try:
-            # Open the file in binary mode to allow 0x1a in bodies & headlines.
-            if trace and verbose and atShadow: g.trace('opening %s file: %s' % (
-                g.choose(atShadow,'private','public'),fn))
-            at.inputFile = open(fn,'rb')
-            at.warnOnReadOnlyFile(fn)
-        except IOError:
-            at.error("can not open: '@file %s'" % (fn))
-            at.inputFile = None
-
-    return at.inputFile # for unit tests.
-#@-node:ekr.20041005105605.19:openFileForReading (atFile)
-#@+node:ekr.20041005105605.21:read (atFile)
-def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
-
-    """Read any @thin, @file and @noref trees."""
-
-    at = self ; c = at.c
-    << set fileName >>
-    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile)
-    if at.errors: return False
-    at.openFileForReading(fileName,fromString=fromString,atShadow=atShadow)
-    if not at.inputFile: return False
-    if not g.unitTesting:
-        g.es("reading:",root.headString())
-    root.clearVisitedInTree()
-    at.scanAllDirectives(root,importing=at.importing,reading=True)
-    at.readOpenFile(root,at.inputFile,fileName)
-    at.inputFile.close()
-    root.clearDirty() # May be set dirty below.
-    if at.errors == 0:
-        << advise user to delete all unvisited nodes >>
-    if at.errors == 0 and not at.importing:
-        # Package this as a method for use by mod_labels plugin.
-        self.copyAllTempBodyStringsToTnodes(root,thinFile)
-
-    << delete all tempBodyStrings >>
-    return at.errors == 0
-#@+node:ekr.20041005105605.22:<< set fileName >>
-if fromString:
-    fileName = "<string-file>"
-elif importFileName:
-    fileName = importFileName
-elif root.isAnyAtFileNode():
-    fileName = root.anyAtFileNodeName()
-else:
-    fileName = None
-
-if not fileName:
-    at.error("Missing file name.  Restoring @file tree from .leo file.")
-    return False
-#@-node:ekr.20041005105605.22:<< set fileName >>
-#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
-resurrected = 0
-for p in root.self_and_subtree_iter():
-
-    if not p.v.t.isVisited():
-        g.es('resurrected node:',p.headString(),color='blue')
-        g.es('in file:',fileName,color='blue')
-        resurrected += 1
-
-if resurrected:
-    g.es('you may want to delete ressurected nodes')
-
-#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
-#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-for t in c.all_unique_tnodes_iter():
-
-    if hasattr(t,"tempBodyString"):
-        delattr(t,"tempBodyString")
-#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-#@-node:ekr.20041005105605.21:read (atFile)
-#@+node:ekr.20041005105605.26:readAll (atFile)
-def readAll(self,root,partialFlag=False,forceGnx=False):
-
-    """Scan vnodes, looking for @file nodes to read."""
-
-    use_tracer = False
-    if use_tracer: tt = g.startTracer()
-
-    at = self ; c = at.c
-    if partialFlag:
-        # Capture the current headline only if we aren't doing the initial read.
-        c.endEditing() 
-    anyRead = False
-    p = root.copy()
-    if partialFlag: after = p.nodeAfterTree()
-    else: after = c.nullPosition()
-    while p and not p.equal(after): # Don't use iterator.
-        # g.trace(p.headString())
-        if not p.headString().startswith('@'):
-            p.moveToThreadNext()
-        elif p.isAtIgnoreNode():
-            p.moveToNodeAfterTree()
-        elif p.isAtThinFileNode():
-            anyRead = True
-            if forceGnx: # New in Leo 4.4.2 b1: support for sax read.
-                at.forceGnxOnPosition(p)
-            at.read(p,thinFile=True)
-            p.moveToNodeAfterTree()
-        elif p.isAtAutoNode():
-            fileName = p.atAutoNodeName()
-            at.readOneAtAutoNode (fileName,p)
-            p.moveToNodeAfterTree()
-        elif p.isAtShadowFileNode():
-            fileName = p.atShadowFileNodeName()
-            at.readOneAtShadowNode (fileName,p)
-            p.moveToNodeAfterTree()
-        elif p.isAtFileNode() or p.isAtNorefFileNode():
-            anyRead = True
-            wasOrphan = p.isOrphan()
-            ok = at.read(p)
-            if wasOrphan and not partialFlag and not ok:
-                # Remind the user to fix the problem.
-                p.setDirty()
-                c.setChanged(True)
-            p.moveToNodeAfterTree()
-        else: p.moveToThreadNext()
-    # Clear all orphan bits.
-    for v in c.all_unique_vnodes_iter():
-        v.clearOrphan()
-
-    if partialFlag and not anyRead:
-        g.es("no @file nodes in the selected tree")
-
-    if use_tracer: tt.stop()
-#@-node:ekr.20041005105605.26:readAll (atFile)
-#@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
-def readOneAtShadowNode (self,fn,p):
-
-    at = self ; c = at.c ; x = c.shadowController
-
-    if not fn == p.atShadowFileNodeName():
-        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
-            fn, p.atShadowFileNodeName()))
-
-    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
-
-    fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
-    shadow_fn       = x.shadowPathName(fn)
-    shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-    # significant     = x.isSignificantPublicFile(fn)
-
-    if shadow_exists:
-        # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
-        at.read(p,atShadow=True) # Calls x.updatePublicAndPrivateFiles
-    else:
-        if not g.unitTesting: g.es("reading:",p.headString())
-        ok = at.importAtShadowNode(fn,p)
-        if ok:
-            # x.makeShadowFile(fn,p)
-            at.writeOneAtShadowNode(p,toString=False,force=True)
-#@+node:ekr.20080712080505.1:importAtShadowNode
-def importAtShadowNode (self,fn,p):
-
-    at = self ; c = at.c  ; ic = c.importCommands
-    oldChanged = c.isChanged()
-
-    # Delete all the child nodes.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    # Import the outline, exactly as @auto does.
-    ic.createOutline(fn,parent=p.copy(),atAuto=True)
-
-    if ic.errors:
-        g.es_print('errors inhibited read @shadow',fn,color='red')
-
-    if ic.errors or not g.os_path_exists(fn):
-        p.clearDirty()
-        c.setChanged(oldChanged)
-
-    # else: g.doHook('after-shadow', p = p)
-
-    return ic.errors == 0
-#@-node:ekr.20080712080505.1:importAtShadowNode
-#@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
-#@+node:ekr.20041005105605.27:readOpenFile
-def readOpenFile(self,root,theFile,fileName):
-
-    '''Read an open derived file.
-
-    Leo 4.5 and later can only read 4.x derived files.'''
-
-    at = self
-
-    firstLines,read_new,junk = at.scanHeader(theFile,fileName)
-
-    if read_new:
-        lastLines = at.scanText4(theFile,fileName,root)
-    else:
-        # lastLines = at.scanText3(theFile,root,[],at.endLeo)
-        lastLines = []
-        g.es('can not read 3.x derived file',fileName,color='red')
-        g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
-        g.trace('root',root and root.headString(),fileName)
-
-    if root:
-        root.v.t.setVisited() # Disable warning about set nodes.
-
-    << handle first and last lines >>
-#@+node:ekr.20041005105605.28:<< handle first and last lines >>
-try:
-    body = root.v.t.tempBodyString
-except Exception:
-    body = ""
-
-lines = body.split('\n')
-at.completeFirstDirectives(lines,firstLines)
-at.completeLastDirectives(lines,lastLines)
-s = '\n'.join(lines).replace('\r', '')
-root.v.t.tempBodyString = s
-#@-node:ekr.20041005105605.28:<< handle first and last lines >>
-#@-node:ekr.20041005105605.27:readOpenFile
-#@+node:ekr.20080711063656.1:x.File utils
-#@+node:ekr.20080711063656.7:x.baseDirName
-def baseDirName (self):
-
-    x = self ; filename = x.c.fileName()
-
-    if filename:
-        return g.os_path_dirname(g.os_path_abspath(filename))
-    else:
-        self.error('Can not compute shadow path: .leo file has not been saved')
-        return None
-#@nonl
-#@-node:ekr.20080711063656.7:x.baseDirName
-#@+node:ekr.20080711063656.4:x.dirName and pathName
-def dirName (self,filename):
-
-    '''Return the directory for filename.'''
-
-    x = self
-
-    return g.os_path_dirname(x.pathName(filename))
-
-def pathName (self,filename):
-
-    '''Return the full path name of filename.'''
-
-    x = self ; theDir = x.baseDirName()
-
-    return theDir and g.os_path_abspath(g.os_path_join(theDir,filename))
-#@nonl
-#@-node:ekr.20080711063656.4:x.dirName and pathName
-#@+node:ekr.20080712080505.3:x.isSignificantPublicFile
-def isSignificantPublicFile (self,fn):
-
-    '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
-
-    return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
-#@-node:ekr.20080712080505.3:x.isSignificantPublicFile
-#@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn):
-
-    '''Make a shadow directory for the **public** fn.'''
-
-    x = self ; path = x.shadowDirName(fn)
-
-    if not g.os_path_exists(path):
-
-        try:
-            # g.trace('making',path)
-            os.mkdir(path)
-        except Exception:
-            x.error('unexpected exception creating %s' % path)
-            g.es_exception()
-            return False
-
-    return g.os_path_exists(path) and g.os_path_isdir(path)
-#@-node:ekr.20080710082231.19:x.makeShadowDirectory
-#@+node:ekr.20080711063656.2:x.rename
-def rename (self,src,dst,mode=None,silent=False):
-
-    x = self ; c = x.c
-
-    ok = g.utils_rename (c,src,dst,mode=mode,verbose=not silent)
-    if not ok:
-        x.error('can not rename %s to %s' % (src,dst),silent=silent)
-
-    return ok
-#@-node:ekr.20080711063656.2:x.rename
-#@+node:ekr.20080713091247.1:x.replaceFileWithString
-def replaceFileWithString (self,fn,s):
-
-    '''Replace the file with s if s is different from theFile's contents.
-
-    Return True if theFile was changed.
-    '''
-
-    x = self ; testing = g.app.unitTesting
-
-    exists = g.os_path_exists(fn)
-
-    if exists: # Read the file.  Return if it is the same.
-        try:
-            f = file(fn,'rb')
-            s2 = f.read()
-            f.close()
-        except IOError:
-            x.error('unexpected exception creating %s' % fn)
-            g.es_exception()
-            return False
-        if s == s2:
-            if not testing: g.es('unchanged:',fn)
-            return False
-
-    # Replace the file.
-    try:
-        f = file(fn,'wb')
-        f.write(s)
-        f.close()
-        if not testing:
-            if exists:  g.es('wrote:    ',fn)
-            else:       g.es('created:  ',fn)
-        return True
-    except IOError:
-        x.error('unexpected exception writing file: %s' % (fn))
-        g.es_exception()
-        return False
-#@-node:ekr.20080713091247.1:x.replaceFileWithString
-#@+node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
-def shadowDirName (self,filename):
-
-    '''Return the directory for the shadow file corresponding to filename.'''
-
-    x = self
-
-    return g.os_path_dirname(x.shadowPathName(filename))
-
-def shadowPathName (self,filename):
-
-    '''Return the full path name of filename, resolved using c.fileName()'''
-
-    x = self ; baseDir = x.baseDirName()
-    fileDir = g.os_path_dirname(filename)
-    # g.trace(baseDir)
-    # g.trace(x.shadow_subdir)
-    # g.trace(fileDir)
-
-    return baseDir and g.os_path_abspath(g.os_path_normpath(g.os_path_join(
-            baseDir,
-            fileDir, # Bug fix: honor any directories specified in filename.
-            x.shadow_subdir,
-            x.shadow_prefix + g.shortFileName(filename))))
-#@nonl
-#@-node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
-#@+node:ekr.20080711063656.3:x.unlink
-def unlink (self, filename,silent=False):
-
-    '''Unlink filename from the file system.
-    Give an error on failure.'''
-
-    x = self
-
-    ok = g.utils_remove(filename, verbose=not silent)
-    if not ok:
-        x.error('can not delete %s' % (filename),silent=silent)
-
-    return ok
-#@-node:ekr.20080711063656.3:x.unlink
-#@-node:ekr.20080711063656.1:x.File utils
-#@+node:ekr.20080712080505.3:x.isSignificantPublicFile
-def isSignificantPublicFile (self,fn):
-
-    '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
-
-    return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
-#@-node:ekr.20080712080505.3:x.isSignificantPublicFile
-#@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn):
-
-    '''Make a shadow directory for the **public** fn.'''
-
-    x = self ; path = x.shadowDirName(fn)
-
-    if not g.os_path_exists(path):
-
-        try:
-            # g.trace('making',path)
-            os.mkdir(path)
-        except Exception:
-            x.error('unexpected exception creating %s' % path)
-            g.es_exception()
-            return False
-
-    return g.os_path_exists(path) and g.os_path_isdir(path)
-#@-node:ekr.20080710082231.19:x.makeShadowDirectory
-#@+node:ekr.20080708094444.36:x.propagate_changes
-def propagate_changes(self, old_public_file, old_private_file):
-
-    '''Propagate the changes from the public file (without_sentinels)
-    to the private file (with_sentinels)'''
-
-    x = self
-
-    old_public_lines  = file(old_public_file).readlines()
-    old_private_lines = file(old_private_file).readlines()
-    marker = x.marker_from_extension(old_public_file)
-
-    new_private_lines = x.propagate_changed_lines(
-        old_public_lines,
-        old_private_lines,
-        marker)
-
-    fn = old_private_file
-    copy = not os.path.exists(fn) or new_private_lines != old_private_lines
-
-    if copy:
-        s = ''.join(new_private_lines)
-        x.replaceFileWithString(fn,s)
-
-    return copy
-#@-node:ekr.20080708094444.36:x.propagate_changes
-#@+node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
-def updatePublicAndPrivateFiles (self,fn,shadow_fn):
-
-    '''handle crucial @shadow read logic.
-
-    This will be called only if the public and private files both exist.'''
-
-    x = self ; trace = False
-
-    if trace and not g.app.unitTesting:
-        g.trace('significant',x.isSignificantPublicFile(fn),fn)
-
-    if x.isSignificantPublicFile(fn):
-        # Update the private shadow file from the public file.
-        written = x.propagate_changes(fn,shadow_fn)
-        if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
-    else:
-        # Create the public file from the private shadow file.
-        x.copy_file_removing_sentinels(shadow_fn,fn)
-        x.message("created public %s from private %s " % (fn, shadow_fn))
-#@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
-def copy_file_removing_sentinels (self,source_fn,target_fn):
-
-    '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
-
-    x = self ; marker = x.marker_from_extension(source_fn)
-
-    old_lines = file(source_fn).readlines()
-    new_lines, junk = x.separate_sentinels(old_lines,marker)
-
-    copy = not os.path.exists(target_fn) or old_lines != new_lines
-    if copy:
-        s = ''.join(new_lines)
-        x.replaceFileWithString(target_fn,s)
-#@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
-#@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
-#@-node:ekr.20080708094444.60:Leo overwrites
 #@+node:ekr.20080712080505.2:(Patched write code)
 #@+node:ekr.20080712150045.1:at.replaceFileWithString
 def replaceFileWithString (self,fn,s):
@@ -19121,14 +19634,14 @@ def writeAtShadowNodes (self,event=None):
     '''Write all @shadow nodes in the selected outline.'''
 
     at = self
-    at.writeAtShadowNodesHelper(writeDirtyOnly=False)
+    return at.writeAtShadowNodesHelper(writeDirtyOnly=False)
 
 def writeDirtyAtShadowNodes (self,event=None):
 
     '''Write all dirty @shadow nodes in the selected outline.'''
 
     at = self
-    at.writeAtShadowNodesHelper(writeDirtyOnly=True)
+    return at.writeAtShadowNodesHelper(writeDirtyOnly=True)
 #@nonl
 #@+node:ekr.20080711093251.4:writeAtShadowNodesHelper
 def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
@@ -19140,10 +19653,11 @@ def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
     found = False
 
     while p and p != after:
-        if p.isAtShadowNode() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
+        if p.atShadowFileNodeName() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
             ok = at.writeOneAtShadowNode(p,toString=toString,force=True)
             if ok:
                 found = True
+                g.es('wrote %s' % p.atShadowFileNodeName(),color='blue')
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -19156,6 +19670,8 @@ def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
         g.es("no dirty @shadow nodes in the selected tree")
     else:
         g.es("no @shadow nodes in the selected tree")
+
+    return found
 #@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
 #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helper
 def writeOneAtShadowNode(self,p,toString,force):
@@ -19953,516 +20469,389 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
 #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
 #@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
 #@-node:ekr.20080713091247.4:(Fixed problem with 'can not read 3.x derived file' message)
-#@+node:ekr.20080730212711.53:Notesfor @shadow
-#@+node:ekr.20080730212711.54:Thead: Eureka?? Can we just not use sentinels?
-@nocolor
-
-On sleeping on this queston, I think the "Aha" really means that I
-should start using the shadow plugin. I *really* do not want to give
-up the advantages of sentinels: they are an important part of Leo's
-internal reliability.  Furthermore, @thin is just exactly what is
-needed to make .leo files compatible with cvs/bzr.
-
-Bernhard's plugin does, in fact, do everything that we want, and the
-possible solutions to edge conditions are exactly the same for the "do
-without sentinels" approach and the shadow plugin. So I'll start using
-this plugin soon and report my conclusions. 
+#@+node:ekr.20080713091247.5:Finished @shadow commands
+@ Add new read/write @shadow nodes commands.
 #@nonl
-#@-node:ekr.20080730212711.54:Thead: Eureka?? Can we just not use sentinels?
-#@+node:ekr.20080730212711.55:Theory of operation: from leoShadow.py: first light
-@nocolor
+#@+node:ekr.20050920084036.189:<< define dictionary d of names and Leo commands >>
+c = self.c ; f = c.frame
 
-The distinction between public (no sentinels) and private (with sentinels) files
-clarifies the code considerably by making names much shorter. In this case, the
-improvement is actually quite useful.
+d = {
+    'abort-edit-headline':          f.abortEditLabelCommand,
+    'about-leo':                    c.about,
+    'add-comments':                 c.addComments,     
+    'beautify-all':                 c.beautifyAllPythonCode,
+    'beautify-tree':                c.beautifyPythonTree,
+    'beautify':                     c.beautifyPythonCode,
+    'cascade-windows':              f.cascade,
+    'check-derived-file':           c.atFileCommands.checkDerivedFile,
+    'check-leo-file':               c.fileCommands.checkLeoFile,
+    'clear-recent-files':           c.clearRecentFiles,
+    'clean-recent-files':           c.cleanRecentFiles,
+    'sort-recent-files':            c.sortRecentFiles,
+    'close-window':                 c.close,
+    'contract-or-go-left':          c.contractNodeOrGoToParent,
+    'check-python-code':            c.checkPythonCode,
+    'check-all-python-code':        c.checkAllPythonCode,
+    'check-outline':                c.checkOutline,
+    'clear-recent-files':           c.clearRecentFiles,
+    'clone-node':                   c.clone,
+    'contract-node':                c.contractNode,
+    'contract-all':                 c.contractAllHeadlines,
+    'contract-parent':              c.contractParent,
+    'convert-all-blanks':           c.convertAllBlanks,
+    'convert-all-tabs':             c.convertAllTabs,
+    'convert-blanks':               c.convertBlanks,
+    'convert-tabs':                 c.convertTabs,
+    'copy-node':                    c.copyOutline,
+    'copy-text':                    f.copyText,
+    'cut-node':                     c.cutOutline,
+    'cut-text':                     f.cutText,
+    'de-hoist':                     c.dehoist,
+    'delete-comments':              c.deleteComments,
+    'delete-node':                  c.deleteOutline,
+    'demote':                       c.demote,
+    'dump-outline':                 c.dumpOutline,
+    'edit-headline':                c.editHeadline,
+    'end-edit-headline':            f.endEditLabelCommand,
+    'equal-sized-panes':            f.equalSizedPanes,
+    'execute-script':               c.executeScript,
+    'exit-leo':                     g.app.onQuit,
+    'expand-all':                   c.expandAllHeadlines,
+    'expand-next-level':            c.expandNextLevel,
+    'expand-node':                  c.expandNode,
+    'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
+    'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
+    'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
+    'expand-prev-level':            c.expandPrevLevel,
+    'expand-to-level-1':            c.expandLevel1,
+    'expand-to-level-2':            c.expandLevel2,
+    'expand-to-level-3':            c.expandLevel3,
+    'expand-to-level-4':            c.expandLevel4,
+    'expand-to-level-5':            c.expandLevel5,
+    'expand-to-level-6':            c.expandLevel6,
+    'expand-to-level-7':            c.expandLevel7,
+    'expand-to-level-8':            c.expandLevel8,
+    'expand-to-level-9':            c.expandLevel9,
+    'export-headlines':             c.exportHeadlines,
+    'extract':                      c.extract,
+    'extract-names':                c.extractSectionNames,
+    'extract-section':              c.extractSection,
+    'find-next-clone':              c.findNextClone,
+    'flatten-outline':              c.flattenOutline,
+    'go-back':                      c.goPrevVisitedNode,
+    'go-forward':                   c.goNextVisitedNode,
+    'goto-first-node':              c.goToFirstNode,
+    'goto-first-visible-node':      c.goToFirstVisibleNode,
+    'goto-first-sibling':           c.goToFirstSibling,
+    'goto-last-node':               c.goToLastNode,
+    'goto-last-sibling':            c.goToLastSibling,
+    'goto-last-visible-node':       c.goToLastVisibleNode,
+    'goto-line-number':             c.goToLineNumber,
+    'goto-next-changed':            c.goToNextDirtyHeadline,
+    'goto-next-clone':              c.goToNextClone,
+    'goto-next-marked':             c.goToNextMarkedHeadline,
+    'goto-next-node':               c.selectThreadNext,
+    'goto-next-sibling':            c.goToNextSibling,
+    'goto-next-visible':            c.selectVisNext,
+    'goto-parent':                  c.goToParent,
+    'goto-prev-node':               c.selectThreadBack,
+    'goto-prev-sibling':            c.goToPrevSibling,
+    'goto-prev-visible':            c.selectVisBack,
+    'hide-invisibles':              c.hideInvisibles,
+    'hoist':                        c.hoist,
+    'import-at-file':               c.importAtFile,
+    'import-at-root':               c.importAtRoot,
+    'import-cweb-files':            c.importCWEBFiles,
+    'import-derived-file':          c.importDerivedFile,
+    'import-flattened-outline':     c.importFlattenedOutline,
+    'import-noweb-files':           c.importNowebFiles,
+    'indent-region':                c.indentBody,
+    'insert-child':                 c.insertChild,
+    'insert-node':                  c.insertHeadline,
+    'insert-body-time':             c.insertBodyTime,
+    'insert-headline-time':         f.insertHeadlineTime,
+    'mark':                         c.markHeadline,
+    'mark-changed-items':           c.markChangedHeadlines,
+    'mark-changed-roots':           c.markChangedRoots,
+    'mark-clones':                  c.markClones,
+    'mark-subheads':                c.markSubheads,
+    'match-brackets':               c.findMatchingBracket,
+    'minimize-all':                 f.minimizeAll,
+    'move-outline-down':            c.moveOutlineDown,
+    'move-outline-left':            c.moveOutlineLeft,
+    'move-outline-right':           c.moveOutlineRight,
+    'move-outline-up':              c.moveOutlineUp,
+    'new':                          c.new,
+    'open-compare-window':          c.openCompareWindow,
+    'open-find-dialog':             c.showFindPanel, # Deprecated.
+    'open-leoDocs-leo':             c.leoDocumentation,
+    'open-leoPlugins-leo':          c.openLeoPlugins,
+    'open-leoSettings-leo':         c.openLeoSettings,
+    'open-scripts-leo':             c.openLeoScripts,
+    'open-myLeoSettings-leo':       c.openMyLeoSettings,
+    'open-online-home':             c.leoHome,
+    'open-online-tutorial':         c.leoTutorial,
+    'open-offline-tutorial':        f.leoHelp,
+    'open-outline':                 c.open,
+    'open-python-window':           c.openPythonWindow,
+    # 'open-test-leo':              c.openTest, # Doesn't work.
+    'open-users-guide':             c.leoUsersGuide,
+    'open-with':                    c.openWith,
+    'outline-to-cweb':              c.outlineToCWEB,
+    'outline-to-noweb':             c.outlineToNoweb,
+    'paste-node':                   c.pasteOutline,
+    'paste-retaining-clones':       c.pasteOutlineRetainingClones,
+    'paste-text':                   f.pasteText,
+    'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
+    'pretty-print-python-code':     c.prettyPrintPythonCode,
+    'promote':                      c.promote,
+    'read-at-auto-nodes':           c.readAtAutoNodes,
+    'read-at-file-nodes':           c.readAtFileNodes,
+    'read-at-shadow-nodes':         c.readAtShadowNodes,
+    'read-outline-only':            c.readOutlineOnly,
+    'read-file-into-node':          c.readFileIntoNode,
+    'redo':                         c.undoer.redo,
+    'reformat-paragraph':           c.reformatParagraph,
+    'remove-sentinels':             c.removeSentinels,
+    'resize-to-screen':             f.resizeToScreen,
+    'revert':                       c.revert,
+    'save-file':                    c.save,
+    'save-file-as':                 c.saveAs,
+    'save-file-as-unzipped':        c.saveAsUnzipped,
+    'save-file-as-zipped':          c.saveAsZipped,
+    'save-file-to':                 c.saveTo,
+    'settings':                     c.preferences,
+    'set-colors':                   c.colorPanel,
+    'set-font':                     c.fontPanel,
+    'show-invisibles':              c.showInvisibles,
+    'sort-children':                c.sortChildren,
+    'sort-siblings':                c.sortSiblings,
+    'tangle':                       c.tangle,
+    'tangle-all':                   c.tangleAll,
+    'tangle-marked':                c.tangleMarked,
+    'toggle-active-pane':           f.toggleActivePane,
+    'toggle-angle-brackets':        c.toggleAngleBrackets,
+    'toggle-invisibles':            c.toggleShowInvisibles,
+    'toggle-sparce-move':           c.toggleSparseMove,
+    'toggle-split-direction':       f.toggleSplitDirection,
+    'undo':                         c.undoer.undo,
+    'unindent-region':              c.dedentBody,
+    'unmark-all':                   c.unmarkAll,
+    'untangle':                     c.untangle,
+    'untangle-all':                 c.untangleAll,
+    'untangle-marked':              c.untangleMarked,
+    'weave':                        c.weave,
+    'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
+    'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+    'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
+    'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
+    'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
+    'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
+    'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
+    'write-outline-only':           c.fileCommands.writeOutlineOnly,
+    'write-file-from-node':         c.writeFileFromNode,
+}
+#@-node:ekr.20050920084036.189:<< define dictionary d of names and Leo commands >>
+#@+node:ekr.20080801071227.4:readAtShadowNodes (commands)
+def readAtShadowNodes (self,event=None):
 
-Last night I spent about four hours studying the heart of the shadow code, the
-method called propagate_changed_lines. I believe I now understand this code in
-considerable detail, something that has *never* been true for me in the past.
+    '''Read all @shadow nodes in the presently selected outline.'''
 
-In this post I'll report that Aha's that made the code comprehensible.
+    c = self ; u = c.undoer ; p = c.currentPosition()
 
-propagate_changed_lines computes new_private_lines (the changed lines
-*with* sentinels) given two arguments:
+    undoData = u.beforeChangeTree(p)
+    c.atFileCommands.readAtShadowNodes(p)
+    u.afterChangeTree(p,'Read @shadow Nodes',undoData)
+    c.redraw() 
+#@-node:ekr.20080801071227.4:readAtShadowNodes (commands)
+#@+node:ekr.20080801071227.7:readAtShadowNodes (atFile)
+def readAtShadowNodes (self,p):
 
-- old_private_lines (containing sentinels) and
-- new_public_lines (the changed lines without sentinels)
+    '''Read all @shadow nodes in the p's tree.'''
 
-As an overview, propagate_changed_lines works as follows:
+    at = self ; after = p.nodeAfterTree()
+    p = p.copy() # Don't change p in the caller.
 
-1. It reconstitutes old_public_lines (the original lines without sentinels) by
-removing sentinels from old_private_lines.
+    while p and not p.equal(after): # Don't use iterator.
+        if p.isAtShadowFileNode():
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+#@-node:ekr.20080801071227.7:readAtShadowNodes (atFile)
+#@+node:ekr.20080801071227.5:writeAtShadowNodes (fileCommands)
+def writeAtShadowNodes (self,event=None):
 
-2. It calls difflib.SequenceMatcher(None,old_public_lines,new_public_lines) to
-create a list of diffs of the old and new versions of the lines **without**
-sentinels.
+    '''Write all @file nodes in the selected outline.'''
 
-3. It (very cleverly) uses the list of diffs to drive what is, in effect, a
-two-way merge of old_private_lines (with sentinels) and new_public_lines
-(without sentinels). All sentinels and unchanged regular lines come from
-old_private_lines. All inserted or replacement lines come from new_public_lines.
+    c = self.c
 
-There are a *lot* of details in the algorithm. Probably the turning point, the
-point at which I truly started to understand the algorithm, was the realization
-that the main loop involves only input from old_private_lines and
-new_public_lines. Once I saw that, I could begin to the following:
+    changedFiles,atOk = c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
 
-Most of the indices returned by SequenceMatcher.get_opcodes are *not* used in
-the main loop. In the present code, these indices are called old_i, old_j, new_i
-and new_j.
+    if changedFiles:
+        g.es("auto-saving outline",color="blue")
+        c.save() # Must be done to set or clear tnodeList.
+#@-node:ekr.20080801071227.5:writeAtShadowNodes (fileCommands)
+#@+node:ekr.20080801071227.6:writeDirtyAtShadowNodes (fileCommands)
+def writeDirtyAtShadowNodes (self,event=None):
 
-Indeed, the main loop mostly ignores these indices (I'm exaggerating a bit) and
-instead mostly relies on implied pointers into the old_private_lines and
-new_public_lines arrays. These "implied pointers" are the position of the
-corresponding reader classes used to access old_private_lines and
-new_public_lines.
+    '''Write all changed @shadow Nodes.'''
 
-This lead me, finally, to the realization that the main loop is, in effect, a
-two-way merge of old_private_lines and new_public_lines arrays. It's a clever,
-tricky, merge, but (in essence) a merge is exactly what it is.
+    c = self.c ; at = c.atFileCommands
 
-There is one crucial detail that you must understand to begin to make sense of
-this merge: the mapping array.
+    changed = at.writeDirtyAtShadowNodes()
 
-propagate_changed_lines reconstitutes old_public_lines (the original lines
-without sentinels) by removing sentinels from old_private_lines as follows::
+    if changed:
+        g.es("auto-saving outline",color="blue")
+        c.save() # Must be done to set or clear tnodeList.
+#@-node:ekr.20080801071227.6:writeDirtyAtShadowNodes (fileCommands)
+#@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+def writeAtShadowNodes (self,event=None):
 
-  old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+    '''Write all @shadow nodes in the selected outline.'''
 
-As the name implies, this method not only strips sentinel lines, but it returns
-a mapping. This mapping is an array of n+1 entries, where n is
-len(old_public_lines). This mapping array is an essential part of the algorithm.
-mapping[i] is the index into old_private_lines of line i in old_public_lines.
-That is, for each i < len(old_public_lines), line i in old_public_lines ==
-old_private_lines[i]. In other words, mapping[i] tells where line i of
-old_public_lines "came from".
+    at = self
+    return at.writeAtShadowNodesHelper(writeDirtyOnly=False)
 
-We are now in a position to begin to understand the main loop in detail. The
-main loop processes one SequenceMatcher opcode, of the form
-tag,old_i,old_j,new_i,new_j. tag is the opcode kind. It is in
-('insert','delete','equal','replace').
+def writeDirtyAtShadowNodes (self,event=None):
 
-The following code starts the opcode loop::
+    '''Write all dirty @shadow nodes in the selected outline.'''
 
-    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to index mapping[old_i].
-    # Because of this, nothing has to be explicitly deleted below.
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_i])
-
-Understanding this single line is essential to understanding the rest of the tag
-(opcode) handlers.
-
-This line copies only sentinel lines from the current position of the
-old_private_lines_rdr up to mapping[old_i]. As a side effect, the current
-position of the old_private_lines_rdr is advanced to mapping[old_i], so in
-effect all non-sentinel lines from the last written line to limit are deleted
-from old_private_lines. That is, those lines will never be copied to the output.
-
-Now let's take a look at the rest of the main loop::
-
-    if tag == 'equal':
-        # Copy all lines (including sentinels) from the old private file to the new private file.
-        while old_private_lines_rdr.index() <= mapping[old_j-1]:
-           line = old_private_lines_rdr.get()
-           new_private_lines_wtr.put(line)
-
-        # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-        new_public_lines_rdr.sync(new_j)
-
-Diff is telling us that old_public_lines[old_i:old_j] are the same as
-new_public_lines[new_i:new_j]. However, we can't use either of these arrays
-directly because we would lose sentinels lines. Instead we copy all lines,
-including sentinels, from the current position in old_private_lines_rdr to
-mapping[old_j-1] (I'm dubious about the -1: unit testing is required). Once we
-have done that, we skip all lines in new_public_lines up until line new_j.
-
-Note that *only* index old_j is used in this code. The old_i, new_i and new_j
-indices are not used at all. Similar remarks can be made about the other cases
-to be discussed below. The realization that most indices aren't used was an
-important Aha.
-::
-
-    elif tag in ('insert','replace'):
-        # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-        # Copy lines from new_public_lines_rdr up to new_j.
-        while new_public_lines_rdr.index() < new_j:
-            line = new_public_lines_rdr.get()
-            new_private_lines_wtr.put(line)
-
-Diff is telling us that new_public_lines[new_i:new_j] should replace
-old_public_lines[old_i:old_j]. However, the call to copy_sentinels has *already*
-skipped lines up to old_private_lines[mapping[old_i]], and these correspond (via
-the mapping) to the lines up to old_public_lines[old_i]. Thus, for both the
-'insert' and 'replace' opcodes, all we have to do is copy unwritten lines from
-new_public_llines_rdr up to index new_j.
-
-Note: we could assert that new_public_lines.index() == new_i at the start of
-this case. This assertion, and similar assertions, are true because
-SequenceMatcher returns opcodes in increasing order without gaps.
-::
-
-    elif tag=='delete':
-        # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-        # Leave new_public_lines_rdr unchanged.
-        pass
-
-Diff is telling us delete old_public_lines[old_i:old_j]. The call to
-copy_sentinels has deleted old_private_lines up to index mapping [old_i],
-**not** up to mapping [old_j]. We could call::
-
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_j])
-
-here, but there is no need to do so. The next time through the loop will do the
-equivalent. Finally, after the loop completes, the following code ensures that
-all trailing sentinels are written by calling::
-
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=old_private_lines_rdr.size())
-
-So that's it. The big picture is that the main loop is a two-way merge of
-old_private_lines (with sentinels) with new_public_lines (without sentinels).
-Unchanged lines come from old_private_lines; changed lines come from
-new_public_lines. The result of the merge forms new_private_lines.
-
-Clearly, every line of new_public_line gets written to the output. In the
-'equal' case, however, those lines actually come from old_private_lines.
+    at = self
+    return at.writeAtShadowNodesHelper(writeDirtyOnly=True)
 #@nonl
-#@-node:ekr.20080730212711.55:Theory of operation: from leoShadow.py: first light
-#@+node:ekr.20080730212711.56:Unit tests: from leoShadow.py: first light
-@nocolor
-
-The shadow branch now contains the first-ever usable unit-testing
-framework for @shadow.
-
-unitTest.leo contains complete unit tests for @shadow.  See the node::
-
-    @suite run @shadow-test nodes
-
-This @suite node creates and runs leoShadow.atShadowTestCase
-tests or each @shadow-test node in the @shadow-tests tree.
-Creating a new unit test is as easy as creating the following
-tree::
-
-    @shadow-test
-      old
-      new
-
-Two multi-node unit tests which demonstrate that it is impossible, in general,
-to properly place a line on the boundary between nodes. They are called::
-
-    @shadow-test-lax insert between nodes: at end of prev node
-    @shadow-test insert between nodes: at start of next node
-
-The reason one of these tests *must* fail is that both will generate
-exactly the same new_public_lines: the only difference between these
-tests is, in essence, the *expected* result.  This expected result is
-computed by the unit test from the 'new' outline, but this expected
-result is not available to the shadow code!
-
-Heuristics can not possibly help. The data available to the shadow
-code is exactly the same for both unit tests, yet the two unit tests
-ask for different results!  Thus, one test must fail.
-
-I had foreseen this situation years ago, but alas, I let this
-difficulty stop me.  In fact, this is not fatal flaw: it simply means
-that @auto must show nodes that have changed externally.
-
-Furthermore, the proximate cause of the failed unit test is an overly-
-strict test in test_propagate_changes.  A lesser test at the end of
-propagate_changed_lines succeeds for both unit tests.  This test
-ensures that the sentinel lines and non-sentinel lines *separately*
-match the expected sentinel and non-sentinel lines.  This test is
-clearly too lax because it *completely* ignores the interleaving
-between sentinel and non-sentinel lines.
-#@-node:ekr.20080730212711.56:Unit tests: from leoShadow.py: first light
-#@+node:ekr.20080730212711.57:Thread: Giant Aha: @shadow *is* safe
-@nocolor
-
-The following post is long, but imo it is one of the most important in
-Leo's long history of long posts :-)
-
-This post finally, indisputably, proves that @shadow is safe, and
-proposes a consolation prize for the long delay in implementing
-@shadow, namely @auto-shadow.
-
-This is a continuation of the thread, leoShadow.py: first light.  In
-the last post to that thread I said:
-
-QQQ
-The proximate cause of the failed unit test is an overly-strict test
-in test_propagate_changes. A lesser test at the end of
-propagate_changed_lines succeeds for both unit tests. This test
-ensures that the sentinel lines and non-sentinel lines *separately*
-match the expected sentinel and non-sentinel lines. This test is
-clearly too lax because it *completely* ignores the interleaving
-between sentinel and non-sentinel lines.
-QQQ
-
-Last night in bed, thinking about what I had just written, I realized
-that the failed unit test simply is not a problem.  There are two
-reasons for this statement:
-
-1. The public file produced by the "failed" unit test will be
-identical with the original (that is, changed) public file.  Thus,
-regardless of where @shadow puts the inserted lines, there will be no
-difference that can be seen outside of Leo.  But this 'round trip of
-public files' is the essential requirement!
-
-2. Furthermore, once the Leo user saves the @shadow file, the location
-of all newly inserted lines will be "fixed" (determined).  That is,
-the next time Leo opens the @shadow file, the @shadow code will "know
-for sure" where the line should go. The reason is simple: the line
-will be placed by the "equal" SequenceMatcher opcode, rather than the
-"insert" opcode.  Thus, once the Leo user chooses the location of
-newly inserted lines, the @shadow code will know (or remember) the
-location of those lines, because they will be part of the original,
-unchanged, *private* file.  The sentinels in the private file will
-tell where to put the line unambiguously.
-
-In short:
-
-1. **Boundary conditions do not affect public files**, the files seen
-by people who do not use Leo.
-
-2. Once an inserted line has been saved (thereby generating a new
-public file), Leo will forever afterward remember the location of the
-file.
-
-Thus, the *only* remaining detail, a minor one, is to alert the user
-when changes to a public file results in change to the Leo outline.
-But Leo already warns when such external changes are made.  If the
-user does nothing, the corresponding public file will remain as it
-was.
-
-Imo, this discussion clearly demonstrates that @shadow is safe.  This
-is a huge step forward.
-
-This Aha came, in no small part, from the change in terminology from
-"files with/without sentinels" to "private/public files". When we
-focus on what the public sees, we see that @shadow is safe.  Is just
-about that simple.
-
-So the executive summary is:
-
-Boundary problems while scanning changed public files can affect only
-*private* view of the Leo outline.  The public file will remain
-unchanged regardless of how boundary conditions are resolved. The user
-can change her private view as she likes, and once she has done so and
-saved the @shadow file, the change will become permanent: it is
-embodied in her private files.
-
-Hurray!  Clarity!  Safety!
-
-So what to do about the failed unit test?   Let's reconsider the
-opening quote:
-
-QQQ
-The proximate cause of the failed unit test is an overly- strict test
-in test_propagate_changes. A lesser test at the end of
-propagate_changed_lines succeeds for both unit tests. This test
-ensures that the sentinel lines and non-sentinel lines *separately*
-match the expected sentinel and non-sentinel lines. This test is
-clearly too lax because it *completely* ignores the interleaving
-between sentinel and non-sentinel lines.
-QQQ
-
-Now it should be clear that the essential test is the test that non-
-sentinel (public!) lines are preserved.  Thus, the test at the end of
-propagate_changed_lines is *not* too lax: the test that sentinel
-(private!) lines are preserved is nice to have, but preserving public
-lines is the acid test.
-
-So the solution to unit tests that fail at the boundary of nodes is
-simply to relax the test.  I'll do this by marking such tests with
-@shadow-test-lax, which will cause the actual UnitTest test case not
-to perform the stricter test that fails.  How easy is that?
-Naturally, I'll put comments in each @shadow-test-lax node explaining
-why a looser test is required.
-
-The Aha just discussed will make Leo famous.
-
-I have been lamenting to myself recently that I didn't see all of this
-when Bernhard Mulder first proposed shadow files.  I'm not sure how
-clearly he understood all the issues I have just discussed, but in any
-case, the responsibility for dismissing shadow files is mine and mine
-alone.
-
-However, in the spirit of 'make lemonade from lemons', it may be that
-the long delay in recognizing @shadow's true importance has had some
-benefits.  In particular, @auto might not have happened had @shadow
-been adopted earlier.
-
-What good is @auto now that we have @shadow, you ask?  I reply in two
-ways:
-
-1. @auto is useful in its own right, for study, etc, quite
-independently of whether people use @shadow.
-
-2. We can eliminate some potential problem with both @auto and @shadow
-by using @auto-shadow. Yes, I'll provide abbreviations for this.
-
-@auto-shadow does what the name implies: It uses @auto logic to import
-the file if no private (shadow) files exist for the file; otherwise it
-uses the @shadow logic. This will smooth the process of creating and
-using other people's outlines.  @auto-shadow will ensure that
-everything "just works"
-
-A great day for Leo.
-
-==================
-
-Doh!  The abbreviation should be @shadow :-)  That is, @shadow should
-work as I proposed @auto-shadow to work.
-
-===================
-
-Another important simplification was Bernhard's use of
-reader and writer classes. In an algorithm as visually complex as the
-main opcode loop, any visual simplification can be significant.
-Furthermore, these classes were perfect for adding debugging and
-tracing info.  I wouldn't willing do without them.
-#@nonl
-#@-node:ekr.20080730212711.57:Thread: Giant Aha: @shadow *is* safe
-#@+node:ekr.20080730212711.58:Thread: @shadow plugin *will* make Leo famous
-@nocolor
-#@nonl
-#@+node:ekr.20080730212711.59:Post
-Not paying more attention to Bernhard's mod_shadow plugin is probably
-the biggest mistake I have ever made with Leo.  I rejected the idea
-far too quickly: any minor problems with it can easily be solved.
-
-First, let me summarize what the mod_shadow (shadow) plugin does:
-
-1. The shadow plugin writes "shadowed" derived files in two forms: a
-"public" form without sentinels, and a "private", form with
-sentinels.  The shadow plugin writes private files to a leo-shadow
-folder.
-
-At present, a script button converts a non-shadowed file to a shadowed
-file.  We could make the process of shadowing files more automatic.
-For example, @shadow-thin and @shadow-file might create shadowed
-private files in @thin or @file formats respectively.
-
-2. Typically, only the *public* files get committed to a repository.
-This makes Leo available even in shops where Leo sentinels are
-considered odious.  I am astounded that I haven't paid more attention
-to this plugin.
-
-3. Suppose that a public file (without sentinels) changes as the
-result of a bzr merge. When Leo reads the changed *public* file, the
-shadow plugin can *deduce* what changes were made by comparing the
-changed public file and the (still unchanged) private file.
-
-This idea is a stroke of genius.  Furthermore, the implementation is
-relatively straightforward.  The shadow plugin does the following:
-
-A. Removes sentinels from the private file, thereby recreating the
-original *public* file.
-B. Uses Python's difflib.Differ class to compute line-by-line diffs
-between the original and changed public files.
-C. Uses the line-oriented diffs to update the *private* file.
-D. Uses the updated private file (containing sentinels) to load the
-derived file.
-
-My concerns were with step C.  There is a boundary problem.  Suppose a
-changed line appears on the boundary of adjacent nodes A and B.
-Should the line be inserted at the end of node A, or at the start of
-node B?
-
-At the time, I suppose I wanted absolute answers the this question.
-But that is extremely foolish, for several reasons:
-
-1. The shadow plugin could warn that there is an ambiguity, and let
-the user decide.  The easy way to do this is to guess the answer, then
-clone the ambiguous nodes so they can be presented to the user to
-change if need be.
-
-2. Furthermore, indentation often (usually?) makes clear in which node
-to insert the new line.  If A and B have the same starting indentation
-and the inserted line has a larger indentation, we should prefer to
-put the node at the end of A rather than the start of B.  Other
-heuristics could be used too.
-
-But the main point is, **the ambiguity isn't serious** as long as the
-user is informed and can easily override incorrect guesses in step C.
-#@-node:ekr.20080730212711.59:Post
-#@+node:ekr.20080730212711.60:Post
-> My impression has been that they are private to Leo.
-
-The audience is anyone who wants to share files without sentinels.
-
-True, shadow files are private.  That is, they exist only in the Leo-shadow
-folder and they would typically not be part of the repository.  But the
-*public* files, the files without sentinels, could be shared in a
-repository.  The point is that Leo can update the private files from changes
-made to public files, so that changes to the repository will "magically"
-cause changes to the Leo outline.
-
-Perhaps an example will make this clearer.  Suppose, as is indeed the case,
-that I would like to study the pypy project.
-http://codespeak.net/pypy/dist/pypy/doc/home.html
-
-This is a major project, with lots of files.  Clearly, I don't want to try
-to convince the pypy folk to change all their files.  Here is what I am
-likely to do:
-
-1.  First, I'll create @auto for all the files of the pypy project in which
-I have an interest.  An already-existing script will help me do this.  See
-test.leo:
-
-Startup-->Scripts-->create-at-auto-nodes
-
-2.  Next, I'll convert @auto nodes to @shadow nodes (details a bit fuzzy,
-but let's ignore them for now).  When I save the outline, the original files
-get written as before.  In addition, the private files containing Leo
-sentinels will be saved to the private Leo-shadow directory.
-
-3.  When I reopen the Leo file, the outline structure will come from the
-private files.  However, if any of the *public* files have changed (by the
-pypy folk), those changes will be incorporated into the Leo outline, and
-when I save the Leo outline again the changes will be written back to the
-private files.
-
-Thus, I can use Leo to read and write pypy files, but the pypy folk will
-never see Leo sentinels in "their" files.  I can use the pypy repository and
-the pypy people will not know that I am using Leo.
-
-Edward
-
-P.S.  In the usage case just described we would *not* want to add headline
-comments to the public files because that would be change the pypy sources
-too much. 
-#@nonl
-#@-node:ekr.20080730212711.60:Post
-#@+node:ekr.20080730212711.61:Post 3
-> 1.  First, I'll create @auto for all the files of the pypy project in which
-> I have an interest.  An already-existing script will help me do this.
-
-There are often minor problems that must be corrected before @auto will
-import a python file "perfectly", typically tabnanny problems or
-underindented comments.  It would be necessary to convince the pypy
-community to allow me to fix these minor problems so that I can use Leo.
-Presumably, that would be easy to do: there should be no reason why a
-project should be committed to either inconsistent whitespace or
-underindented comments. 
-#@nonl
-#@-node:ekr.20080730212711.61:Post 3
-#@+node:ekr.20080730212711.62:Post 4
-> I consider @auto to be a most happy development. In particular, @auto
-> provides an excellent *starting* point for @shadow.
-
-@auto does one (important!) thing more: it guarantees that the result of
-writing an @auto file will be identical (up to some specified 'strictness'
-level) to the original files.  For 'strict' languages such as python, the
-comparison requires substantially identical leading whitespace.
-
-In other words, @auto isn't a lax import: when it succeeds it guarantees
-that we won't be changing the original (public) files.  When it fails, it
-tells us why it failed so we could, for example, request that pypy clean up
-the offending files.  I think this is *exactly* the right balance to have
-when dealing with external projects, especially Python projects. 
-#@nonl
-#@-node:ekr.20080730212711.62:Post 4
-#@-node:ekr.20080730212711.58:Thread: @shadow plugin *will* make Leo famous
-#@-node:ekr.20080730212711.53:Notesfor @shadow
+#@+node:ekr.20080711093251.4:writeAtShadowNodesHelper
+def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
+
+    """Write @shadow nodes in the selected outline"""
+
+    at = self ; c = at.c
+    p = c.currentPosition() ; after = p.nodeAfterTree()
+    found = False
+
+    while p and p != after:
+        if p.atShadowFileNodeName() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
+            ok = at.writeOneAtShadowNode(p,toString=toString,force=True)
+            if ok:
+                found = True
+                g.es('wrote %s' % p.atShadowFileNodeName(),color='blue')
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        else:
+            p.moveToThreadNext()
+
+    if found:
+        g.es("finished")
+    elif writeDirtyOnly:
+        g.es("no dirty @shadow nodes in the selected tree")
+    else:
+        g.es("no @shadow nodes in the selected tree")
+
+    return found
+#@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helper
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if not fn:
+        g.trace('can not happen: not an @shadow node',p.headString())
+        return False
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = g.os_path_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force):
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None,
+        nosentinels=None,thinFile=False,scriptWrite=False,
+        toString=False,write_strips_blank_lines=False)
+            # at.targetFileName not used.
+            # at.thinFile could be set to True.
+            # at.sentinels set below.
+            # toString=True creates a fileLikeObject.  We will do that below.
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,nosentinels=not sentinels,toString=False,atAuto=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        ### It may be better to compute the public file by removing sentinels from at.private_s
+        ### by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
+        ### x.isSentinel logic is used consistently by the @shadow read/write logic.
+        ### OTOH, Leo's write logic should actually dominate x.isSentinel.
+
+        # Write the public and private files.
+        private_fn = x.shadowPathName(fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName)
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helper
+#@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@-node:ekr.20080713091247.5:Finished @shadow commands
 #@-node:ekr.20080730212711.5:Added support for @shadow
 #@-node:ekr.20080730212711.4:New features
 #@-node:ekr.20080702123133.2:4.5 b2

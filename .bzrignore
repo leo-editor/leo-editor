@@ -24,6 +24,7 @@ leo/test/dirty-test.py
 leo/test/c_plus_plus_test.cpp
 leo/test/ropeProject/*.*
 leo/test/scriptFile.py
+leo/test/.leo_shadow
 
 leo/test/leoProfile.txt
 gradient.png

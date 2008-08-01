@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -210,17 +210,13 @@
 </v>
 </v>
 <v t="ekr.20080625094025.1"><vh>Drag script</vh></v>
+<v t="ekr.20080801104124.1"><vh>@@shadow shadow-test.py</vh>
+<v t="ekr.20080801104153.1"><vh>spam</vh></v>
 </v>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 <v t="ekr.20080710111404.1"><vh>mini tests for g.pr</vh></v>
-<v t="ekr.20080710111404.2"><vh>print to g.pr regex</vh></v>
-<v t="ekr.20080726123338.1"><vh>Compound documents</vh></v>
-<v t="ekr.20080729153237.1"><vh>Gc settings</vh>
-<v t="ekr.20080729153237.2"><vh>@bool trace_gc = False</vh></v>
-<v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = False</vh></v>
-<v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1658,29 +1654,12 @@ for z in aList:
 g.pr('b')
 f = open(c.fileName())
 g.pr(f)</t>
-<t tx="ekr.20080710111404.2">print[ ]+(.*)$
-g.pr(\1)
-
-# Double escapes in print statements.
-print(.*)\\n(.*)$
-print\1\\\\n\2</t>
-<t tx="ekr.20080726123338.1">http://en.wikipedia.org/wiki/Compound_document
-
-http://en.wikipedia.org/wiki/Transclusion
-
-http://en.wikipedia.org/wiki/Software_componentry
-
-http://en.wikipedia.org/wiki/Universal_Network_Objects
-
-http://udk.openoffice.org/python/python-bridge.html
-
-http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/OpenOffice.org_Developers_Guide
-
-http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Professional_UNO
-</t>
 <t tx="ekr.20080729153237.1"></t>
 <t tx="ekr.20080729153237.2"># True: calls to the garbage collector.</t>
 <t tx="ekr.20080729153237.3"># True (recommended): print a message when Leo calls gc.collect explicitly.</t>
 <t tx="ekr.20080729153237.4"># True: verbose trace the garbage collector.</t>
+<t tx="ekr.20080801104124.1">@others</t>
+<t tx="ekr.20080801104153.1">def spam():
+    pass #</t>
 </tnodes>
 </leo_file>
