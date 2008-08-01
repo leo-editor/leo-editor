@@ -266,14 +266,14 @@ to public files outside of Leo.</li>
 <p>&#64;shadow trees are often useful for studying or editing source files from projects that don't use Leo.
 In such situations, it is convenient to import the &#64;shadow tree from the (public) sources.
 As discussed below, Leo can import &#64;shadow trees automatically,
-using the same algorithms used by &#64;auto_ trees.</p>
+using the same algorithms used by <a class="reference" href="directives.html#auto">&#64;auto trees</a>.</p>
 <p>The crucial ideas and algorithms underlying &#64;shadow trees are the invention of Bernhard Mulder.</p>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference" href="#chapter-23-eliminating-sentinel-lines-with-shadow" id="id1" name="id1">Chapter 23: Eliminating sentinel lines with &#64;shadow</a><ul>
 <li><a class="reference" href="#overview" id="id2" name="id2">Overview</a></li>
-<li><a class="reference" href="#importing-public-files" id="id3" name="id3">Importing public files</a></li>
+<li><a class="reference" href="#creating-shadow-trees" id="id3" name="id3">Creating &#64;shadow trees</a></li>
 <li><a class="reference" href="#what-the-update-algorithm-does" id="id4" name="id4">What the update algorithm does</a></li>
 <li><a class="reference" href="#aha-boundary-cases-don-t-matter" id="id5" name="id5">Aha: boundary cases don't matter</a></li>
 </ul>
@@ -284,7 +284,10 @@ using the same algorithms used by &#64;auto_ trees.</p>
 <!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="overview">
 <h2><a class="toc-backref" href="#id2">Overview</a></h2>
-<p>&#64;file and &#64;thin nodes create derived files containing comments called sentinels.
+<p>Using &#64;shadow trees is the best choice when you want to have the full power of
+Leo's outlines, but wish to retain the source files in their original format,
+without Leo sentinels (markup) in comments in the source file.</p>
+<p>Leo's &#64;file and &#64;thin trees create derived files containing comments called sentinels.
 These sentinel lines allow Leo to recreate the outlines structure of &#64;file and &#64;thin trees.
 Alas, many people and organizations find these added sentinel lines unacceptable.
 &#64;nosent nodes create derived files without sentinels, but at a cost:
@@ -292,54 +295,64 @@ Leo can not update &#64;nosent trees when the corresponding derived file is chan
 <p>&#64;shadow trees provide a way around this dilemma.
 When Leo saves an &#64;shadow tree, it saves two copies of the tree:
 a <strong>public</strong> file without sentinels, and a <strong>private</strong> file containing sentinels.
-(Leo writes the private file to a subfolder of the folder containing the public file:
-by default this folder is called .leo_shadow.)
 Using Bernhard Mulder's brilliant <strong>update algorithm</strong>,
 Leo is able to update &#64;shadow trees in the Leo outline based <em>solely</em> on changes to public files.</p>
+<p>Leo writes private files to a subfolder of the folder containing the public file:
+by default this folder is called .leo_shadow.
+You can change the name of this folder using the &#64;string shadow_subdir setting.
+Note that private files need not be known to source code control systems such as bzr or cvs.</p>
 <p>That's <em>almost</em> all there is to it.  The following sections discuss important details:</p>
 <ul class="simple">
-<li>How to import &#64;shadow trees initially.</li>
-<li>How &#64;shadow works its magic.</li>
+<li>How to create &#64;shadow trees.</li>
+<li>How &#64;shadow works.</li>
 <li>Why the update algorithm is sound.</li>
 </ul>
 </div>
-<div class="section" id="importing-public-files">
-<h2><a class="toc-backref" href="#id3">Importing public files</a></h2>
-<p>When reading an &#64;shadow tree,
-Leo will import the tree from the public file if the private file does not exist.
-The import is done exactly as is done for <a class="reference" href="directives.html#auto-trees">&#64;auto trees</a>.</p>
-<p><strong>Important</strong>: just as for &#64;auto, the following exceptions apply:</p>
-<ol class="arabic simple">
-<li>Leo will never read (import) or write an &#64;shadow tree if
-the root &#64;shadow tree is under the influence of an &#64;ignore directive.</li>
-<li>Saving a .leo file does not save &#64;shadow nodes if:
-a) they haven't been changed or,
-b) they do not contain a <strong>significant</strong> amount of information. An &#64;shadow tree
-contains a significant amount of information if it has  children or if the
-root node contains more than 10 characters, excluding Leo directives.</li>
-</ol>
+<div class="section" id="creating-shadow-trees">
+<h2><a class="toc-backref" href="#id3">Creating &#64;shadow trees</a></h2>
+<p>The first step in creating an &#64;shadow tree is to create a node whose headline is
+&#64;shadow <em>&lt;filename&gt;</em>. This is always safe, even if <em>&lt;filename&gt;</em> already
+exists: Leo writes the &#64;shadow tree to the public and private files only if the
+&#64;shadow tree contains a <strong>significant</strong> amount of information. An &#64;shadow tree
+contains a significant amount of information if it has children or if the &#64;shadow node
+node contains more than 10 characters, excluding Leo directives.</p>
+<p>Thus, you can create an &#64;shadow node and save your outline, regardless of whether the original file exists.
+The next time Leo reads the &#64;shadow node, Leo will <strong>create</strong> the entire &#64;shadow tree
+using the same logic as for <a class="reference" href="directives.html#auto">&#64;auto trees</a>.
+You can cause Leo to read the &#64;shadow node in two ways:
+1) by closing and reloading the Leo outline or
+2) by selecting the &#64;shadow node and executing the <a class="reference" href="File:Read/Write:Read">File:Read/Write:Read</a> &#64;shadow Node command.</p>
+<p><strong>Important</strong>: Leo imports the private file into the &#64;shadow tree only if
+a) the public file exists and b) the private file does <em>not</em> exist.
+Thus, Leo will import code into each &#64;shadow node at most once.
+After the first import, updates are made using the update algorithm.</p>
+<p><strong>Note</strong>: just as for &#64;auto, Leo will never read (import) or write an &#64;shadow tree if
+the &#64;shadow node is under the influence of an &#64;ignore directive.</p>
 </div>
 <div class="section" id="what-the-update-algorithm-does">
 <h2><a class="toc-backref" href="#id4">What the update algorithm does</a></h2>
-<p>Suppose our &#64;shadow tree is &#64;shadow a.py.
-When Leo writes this tree it creates a public file, a.py,
-and a private file, .leo_shadow/xa.p (or just xa.p for short).
-Public files might can committed to a source code control system such as cvs or bzr.
-Private files should <em>not</em> be known to cvs or bzr.</p>
-<p>Now suppose a.py has been changed outside of Leo, say as the result of a bzr merge.
-The corresponding private file, xa.p, will <em>not</em> have been changed.
+<p>Suppose our &#64;shadow tree is &#64;shadow a.py. When Leo writes this tree it creates a
+public file, a.py, and a private file, .leo_shadow/xa.p (or just xa.p for
+short). Public files might can committed to a source code control system such as
+cvs or bzr. Private files should <em>not</em> be known to cvs or bzr.</p>
+<p>Now suppose a.py has been changed outside of Leo, say as the result of a bzr
+merge. The corresponding private file, xa.p, will <em>not</em> have been changed.
 (Private files should <em>never</em> change outside of Leo.</p>
-<p>When Leo reads the <em>new</em> (and possibly updated) public file it does the following:</p>
+<p>When Leo reads the <em>new</em> (and possibly updated) public file it does the
+following:</p>
 <ol class="arabic simple">
 <li>Recreates the <em>old</em> public file by removing sentinels from the (unchanged!) <em>private</em> file.</li>
 <li>Creates a set of diffs between the old and new <em>public</em> files.</li>
 <li>Uses the diffs to create a new version of the <em>private</em> file.</li>
 <li>Creates the &#64;shadow tree using  the new <em>private</em> file.</li>
 </ol>
-<p>Step 3 is the clever part.
-To see all the details of how the algorithm works,
-please study the x.propagate_changed_lines method in leoShadow.py.
-This code is heavily commented.</p>
+<p><strong>Important</strong>: The update algorithm never changes sentinels. This means that the
+update algorithm never inserts or deletes nodes. The user is responsible for
+creating nodes to hold new lines, or for deleting nodes that become empty as the
+result of deleting lines.</p>
+<p>Step 3 is the clever part. To see all the details of how the algorithm works,
+please study the x.propagate_changed_lines method in leoShadow.py. This code is
+heavily commented.</p>
 </div>
 <div class="section" id="aha-boundary-cases-don-t-matter">
 <h2><a class="toc-backref" href="#id5">Aha: boundary cases don't matter</a></h2>

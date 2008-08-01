@@ -254,10 +254,8 @@
 <v t="ekr.20050828061213"><vh>@rst html\directives.html</vh>
 <v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050828061501.1"><vh>@rst-no-head Intro.</vh></v>
-<v t="ekr.20050828163557"><vh>Overview: the seven ways of creating derived files</vh></v>
-<v t="ekr.20050828211507"><vh>Overview: summary of directives</vh>
-<v t="ekr.20050829083129"><vh>@rst-ignore alternate representation</vh></v>
-</v>
+<v t="ekr.20050828163557"><vh>Overview: the 8 ways of creating derived files</vh></v>
+<v t="ekr.20050828211507"><vh>Overview: summary of directives</vh></v>
 <v t="ekr.20050828061501.30"><vh>Reference: all about directives</vh>
 <v t="ekr.20050828173234"><vh>@ and @doc</vh></v>
 <v t="ekr.20050828061501.31"><vh>@all</vh></v>
@@ -825,7 +823,7 @@
 <v t="ekr.20080730212711.15"><vh>@rst html\atShadow.html</vh>
 <v t="ekr.20080730212711.16"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20080730212711.39"><vh>Overview</vh></v>
-<v t="ekr.20080730212711.42"><vh>Importing public files</vh></v>
+<v t="ekr.20080730212711.42"><vh>Creating @shadow trees</vh></v>
 <v t="ekr.20080730212711.40"><vh>What the update algorithm does</vh></v>
 <v t="ekr.20080730212711.52"><vh>Aha: boundary cases don't matter</vh></v>
 <v t="ekr.20080730212711.17"><vh>@rst-no-head end stuff</vh></v>
@@ -11453,6 +11451,7 @@ Just use ``@thin`` to create your `derived files`_.</t>
 .. _`@root reference`:      directives.html#id5 
 .. _front:                  front.html
 .. _`Leo's tutorial`:       intro.html
+.. _`@auto reference`:      directives#id1
 
 .. WARNING: image targets may not have upper case letters!
 
@@ -11496,7 +11495,7 @@ Here are the six ways of creating derived files:
     
 \@auto
   Import the derived file when Leo reads an outline.
-  See `@auto`_ for full details.
+  See the `@auto reference`_ for full details.
 
 \@thin
   Use this unless you have a good reason not to.
@@ -11544,6 +11543,12 @@ Here are the six ways of creating derived files:
   However, it is seldom necessary to suffer the drawbacks of using ``@root``.
   It is certainly never necessary when programming in Python.
   My advice is to avoid using ``@root`` unless you have a compelling reason.
+  
+\@shadow
+   This directive writes *two* derived files, a **public** file without sentinels,
+   and a **private** file (by default in the .leo_shadow subfolder) containing sentinels.
+   This allows Leo to get the benefits of @thin or @file trees,
+   without having sentinels in the public files that people care about.
 
 To complicate matters further,
 you can use `CWEB`_ markup instead of `noweb`_ markup.
@@ -11749,72 +11754,6 @@ Negative values cause Leo to convert tabs to blanks.</t>
 `Chapter 4: Writing Programs in Leo`_ is the full reference guide.
 I recommend avoiding that chapter until you have been programming with Leo for some time.
 </t>
-<t tx="ekr.20050829083129">Here is a brief summary of each directive:
-
-\@
-    Starts a doc part. ``@doc`` is a deprecated synonym.
-
-\@all
-    Copies *all* descendant nodes to the derived file.
-    Not valid in ``@root`` trees.
-
-\@c
-    Starts a code part. ``@code`` is a deprecated synonym.
-
-\@color, \@nocolor and \@killcolor
-    Control syntax coloring.
-
-\@comment
-    Sets comment delimiters in ``@root`` and ``@unit`` trees.
-
-\@delims
-    Sets comment delimiters in ``@file`` trees.
-
-\@encoding
-    Sets the Unicode encoding used in derived files.
-
-\@first
-    Forces lines to appear before the first sentinel of a derived file.
-
-\@ignore
-    Causes Leo to ignore all or part of a derived file.
-    In ``@file`` trees, only valid in the actual ``@file`` node itself.
-    May appear anywhere in ``@root`` trees.
-
-\@language
-    Sets the language used for syntax coloring and
-    sets the comment delimiters used in sentinel lines and in doc parts.
-
-\@last
-    Forces lines to appear after the last sentinel of a derived file.
-
-\@lineending
-    Sets the line ending to be used in derived files.
-
-\@others
-    Copies all nodes *except* section definition nodes to the derived file.
-
-\@pagewidth
-    Sets the page width used to break doc parts into lines.
-
-\@path
-    Set the path to be appended to filenames in descendant ``@file`` nodes.
-
-\@raw and \@end_raw
-    Delimits a section of 'raw' text.
-    Not valid in ``@root`` or ``@unit`` trees.
-
-\@root, \@root-code and \@root-code
-    Start an ``@root`` tree.
-    ``@root-code`` and ``root-doc`` specify whether body text starts in code or doc mode by default.
-
-\@tabwidth
-    Sets the width of tabs.
-    Negative tab widths cause Leo to convert tabs to spaces.
-
-\@wrap and \@nowrap
-    Enable or disable line wrapping the Leo's body pane.
-    Only the first ``@wrap`` or ``@nowrap`` directive in a node has any effect.</t>
 <t tx="ekr.20050829134901">@ @rst-options
 code_mode=False
 generate_rst=True
@@ -31030,7 +30969,7 @@ These trees combine the benefits of @auto, @thin, @file and @nosent trees:
 @shadow trees are often useful for studying or editing source files from projects that don't use Leo. 
 In such situations, it is convenient to import the @shadow tree from the (public) sources.
 As discussed below, Leo can import @shadow trees automatically,
-using the same algorithms used by @auto_ trees.
+using the same algorithms used by `@auto trees`_.
   
 The crucial ideas and algorithms underlying @shadow trees are the invention of Bernhard Mulder.
 
@@ -31038,7 +30977,7 @@ The crucial ideas and algorithms underlying @shadow trees are the invention of B
 </t>
 <t tx="ekr.20080730212711.16">.. Links
 
-.. _`@auto trees`:          directives.html#auto-trees    
+.. _`@auto trees`:          directives.html#auto    
 
 
 .. WARNING: image targets may not have upper case letters!
@@ -31366,7 +31305,11 @@ hr { /* EKR */
 &lt;/body&gt;
 &lt;/html&gt;
 </t>
-<t tx="ekr.20080730212711.39">@file and @thin nodes create derived files containing comments called sentinels.
+<t tx="ekr.20080730212711.39">Using @shadow trees is the best choice when you want to have the full power of
+Leo's outlines, but wish to retain the source files in their original format,
+without Leo sentinels (markup) in comments in the source file. 
+
+Leo's @file and @thin trees create derived files containing comments called sentinels.
 These sentinel lines allow Leo to recreate the outlines structure of @file and @thin trees.
 Alas, many people and organizations find these added sentinel lines unacceptable.
 @nosent nodes create derived files without sentinels, but at a cost:
@@ -31375,37 +31318,44 @@ Leo can not update @nosent trees when the corresponding derived file is changed 
 @shadow trees provide a way around this dilemma.
 When Leo saves an @shadow tree, it saves two copies of the tree:
 a **public** file without sentinels, and a **private** file containing sentinels.
-(Leo writes the private file to a subfolder of the folder containing the public file:
-by default this folder is called .leo_shadow.)
 Using Bernhard Mulder's brilliant **update algorithm**,
 Leo is able to update @shadow trees in the Leo outline based *solely* on changes to public files.
 
+Leo writes private files to a subfolder of the folder containing the public file:
+by default this folder is called .leo_shadow.
+You can change the name of this folder using the @string shadow_subdir setting.
+Note that private files need not be known to source code control systems such as bzr or cvs.
+
 That's *almost* all there is to it.  The following sections discuss important details:
 
-- How to import @shadow trees initially.
-- How @shadow works its magic.
+- How to create @shadow trees.
+- How @shadow works.
 - Why the update algorithm is sound.</t>
-<t tx="ekr.20080730212711.40">Suppose our @shadow tree is @shadow a.py.
-When Leo writes this tree it creates a public file, a.py,
-and a private file, .leo_shadow/xa.p (or just xa.p for short).
-Public files might can committed to a source code control system such as cvs or bzr.
-Private files should *not* be known to cvs or bzr.
+<t tx="ekr.20080730212711.40">Suppose our @shadow tree is @shadow a.py. When Leo writes this tree it creates a
+public file, a.py, and a private file, .leo_shadow/xa.p (or just xa.p for
+short). Public files might can committed to a source code control system such as
+cvs or bzr. Private files should *not* be known to cvs or bzr.
 
-Now suppose a.py has been changed outside of Leo, say as the result of a bzr merge.
-The corresponding private file, xa.p, will *not* have been changed.
+Now suppose a.py has been changed outside of Leo, say as the result of a bzr
+merge. The corresponding private file, xa.p, will *not* have been changed.
 (Private files should *never* change outside of Leo.
 
-When Leo reads the *new* (and possibly updated) public file it does the following:
+When Leo reads the *new* (and possibly updated) public file it does the
+following:
 
 1. Recreates the *old* public file by removing sentinels from the (unchanged!) *private* file.
 2. Creates a set of diffs between the old and new *public* files.
 3. Uses the diffs to create a new version of the *private* file.
 4. Creates the @shadow tree using  the new *private* file.
 
-Step 3 is the clever part.
-To see all the details of how the algorithm works,
-please study the x.propagate_changed_lines method in leoShadow.py.
-This code is heavily commented.
+**Important**: The update algorithm never changes sentinels. This means that the
+update algorithm never inserts or deletes nodes. The user is responsible for
+creating nodes to hold new lines, or for deleting nodes that become empty as the
+result of deleting lines.
+
+Step 3 is the clever part. To see all the details of how the algorithm works,
+please study the x.propagate_changed_lines method in leoShadow.py. This code is
+heavily commented.
 </t>
 <t tx="ekr.20080730212711.41">When writing an @shadow tree, Leo writes *two* files, a **public** file without sentinels,
 and a **private** file (by default in the .leo_shadow subfolder) containing sentinels.
@@ -31429,20 +31379,28 @@ b) they do not contain a **significant** amount of information. An @auto tree
 Leo imports shadow trees by parsing the corresponding public file,
 exactly as is done for @auto node.
 See the discussion of @auto above for details.</t>
-<t tx="ekr.20080730212711.42">When reading an @shadow tree,
-Leo will import the tree from the public file if the private file does not exist.
-The import is done exactly as is done for `@auto trees`_.
+<t tx="ekr.20080730212711.42">The first step in creating an @shadow tree is to create a node whose headline is
+@shadow *&lt;filename&gt;*. This is always safe, even if *&lt;filename&gt;* already
+exists: Leo writes the @shadow tree to the public and private files only if the
+@shadow tree contains a **significant** amount of information. An @shadow tree
+contains a significant amount of information if it has children or if the @shadow node
+node contains more than 10 characters, excluding Leo directives.
 
-**Important**: just as for @auto, the following exceptions apply:
+Thus, you can create an @shadow node and save your outline, regardless of whether the original file exists.
+The next time Leo reads the @shadow node, Leo will **create** the entire @shadow tree
+using the same logic as for `@auto trees`_.
+You can cause Leo to read the @shadow node in two ways:
+1) by closing and reloading the Leo outline or
+2) by selecting the @shadow node and executing the File:Read/Write:Read @shadow Node command.
 
-1. Leo will never read (import) or write an @shadow tree if
-   the root @shadow tree is under the influence of an @ignore directive.
+**Important**: Leo imports the private file into the @shadow tree only if
+a) the public file exists and b) the private file does *not* exist.
+Thus, Leo will import code into each @shadow node at most once.
+After the first import, updates are made using the update algorithm.
 
-2. Saving a .leo file does not save @shadow nodes if:
-   a) they haven't been changed or,
-   b) they do not contain a **significant** amount of information. An @shadow tree
-   contains a significant amount of information if it has  children or if the
-   root node contains more than 10 characters, excluding Leo directives.</t>
+**Note**: just as for @auto, Leo will never read (import) or write an @shadow tree if
+the @shadow node is under the influence of an @ignore directive.
+</t>
 <t tx="ekr.20080730212711.44">Creates a derived file containing sentinels.
 Thin derived files are much more friendly to cvs than files derived from ``@file`` trees.
 Thin derived files contain all information needed to recreate the ``@thin`` tree in the outline.
