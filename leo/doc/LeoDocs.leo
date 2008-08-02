@@ -425,7 +425,7 @@
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
 <v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20070317043727"><vh>Organizer nodes</vh></v>
-<v t="ekr.20080411111008.1"><vh>\@if nodes</vh></v>
+<v t="ekr.20080411111008.1"><vh>\@ignore and \@if nodes</vh></v>
 <v t="ekr.20070317043727.2"><vh>Simple settings nodes</vh></v>
 <v t="ekr.20070317043727.3"><vh>Complex settings nodes</vh></v>
 </v>
@@ -13582,6 +13582,7 @@ Flash file gets mapped to an &lt;embed&gt; tag, etc).</t>
 .. _decorator:          http://www.python.org/peps/pep-0318.html
 .. _docutils:           http://docutils.sourceforge.net/
 .. _unicode:            http://www.unicode.org/
+.. _`bzr repository`:   https//code.launchpad.net/leo-editor/
 
 .. ----- Relative links into Leo's documentation.
 

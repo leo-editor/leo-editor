@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -218,6 +218,7 @@
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 <v t="ekr.20080710111404.1"><vh>mini tests for g.pr</vh></v>
 </v>
+<v t="ekr.20080801160915.1" tnodeList="ekr.20080801160915.1,ekr.20080801160915.1"><vh>@shadow TerryBrownTest</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1661,5 +1662,11 @@ g.pr(f)</t>
 <t tx="ekr.20080801104124.1">@others</t>
 <t tx="ekr.20080801104153.1">def spam():
     pass #</t>
+<t tx="ekr.20080801160915.1">"#!/bin/sh
+
+DB="$1"
+URL="$2" #
+
+echo "$URL $DB"</t>
 </tnodes>
 </leo_file>

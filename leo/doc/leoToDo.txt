@@ -4198,7 +4198,7 @@ key to be re-executed.
 #@nonl
 #@-node:ekr.20080616110054.2:Support vim dot command
 #@-node:ekr.20080603052650.466:Fix vim problems
-#@+node:ekr.20080730212711.6:Features 16
+#@+node:ekr.20080730212711.6:Features 17
 #@+node:ekr.20080801071227.3:First 3
 #@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
 What uA should be used to specify node colors?
@@ -5713,7 +5713,9 @@ This affects @auto imports of all "unknown" languages.
 For example, @auto x.css would put @language css in the root node.
 #@nonl
 #@-node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
-#@-node:ekr.20080730212711.6:Features 16
+#@+node:ekr.20080802070659.11:Make node attributes visible, and supported by Leo's core
+#@-node:ekr.20080802070659.11:Make node attributes visible, and supported by Leo's core
+#@-node:ekr.20080730212711.6:Features 17
 #@+node:ekr.20080730212711.7:Plugins 4
 #@+node:ekr.20080604060150.1:Clean up plugins
 Some scripting says the following are in .../plugins/ but not
@@ -6072,6 +6074,1118 @@ else:
 #@-node:ekr.20080624120440.4:Improve docs for @ignore
 #@-node:ekr.20080411091507.1:Docs
 #@-node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
+#@+node:ekr.20080802070659.8:Intriguing
+#@+node:ekr.20060527184335.1:Command-line options
+#@+node:ekr.20060103101524:Improve command-line handling
+@nocolor
+https://sourceforge.net/forum/message.php?msg_id=3501995
+By: nobody
+
+::But I don't understand why it's difficult to edit leoSettings.leo
+
+--safe would use default settings,
+maybe you set all body fg/bg to the same color
+by mistake and you don't have a backup leoSettings to use. as a dumb example.
+
+another nice option would be to override a setting
+--set something=whatever
+this could breakdown easy and on (older?) windows.
+there is a limit to how many chars on a command line.
+this would add another layer of choice
+yet another chicken egg problem, 
+parsing settings before settings can be parsed.
+
+what about override @settings file, its a standard thing.
+many people will expect this is possible 
+and try it
+or even leo.py -? 
+help you get for free w/optparse.
+--keys emacs anyone? 
+especially the first time
+untill you can get a chance to edit leoSettings.leo
+
+I have already started enabling optparse
+for leo.py so I can try various profile options.
+I will post it when it works.
+
+have to check how it handles filenames with spaces
+seems that is all Leo is currently doing 
+with multiple args, if there is no problem.
+and later checking for -batch -script etc.
+
+not to minimize how much work this would be.
+parsing options is probably the least difficult part.
+
+e
+#@nonl
+#@-node:ekr.20060103101524:Improve command-line handling
+#@+node:ekr.20060110102039:--script option
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3505544
+By: nobody
+
+this topic deserves another thread, rather 
+than hijack the IPython one in the main forum.
+
+presently Leo has a few options documented,
+--script has a required parameter filename
+batch mode also requires a filename.
+why are they not documented in the same place?
+why is batch mode option called --script?
+is it too late to change to --batch ?
+
+filenames in windows that have spaces will 
+have to be quoted if they follow an option.
+otherwise there will be no telling the filename
+after a --script from a possibly 'file name.leo'
+
+luckily, there was no need to force everyone 
+on windows to quote leo names or use -fsome.leo,
+especially when other options aren't used.
+a little tricky, but I think it works.
+
+the --script could as well load the leo itself
+for that matter maybe all the args after --script 
+should be assumed to be part of the scripts options
+and Leo should only process up to the --script fname.
+maybe there can be another option to collect
+options for the script to batch process.
+not necessary to decide now.
+
+optparse can verify option parameters 
+with callbacks. like does a filename exist,
+is there enough free diskspace etc etc.
+and provide a standard usage menu on exit.
+rather than a roll your own wherever it happens.
+I am not familiar enough with Leo startup to say
+how is the best way to verify filenames or to
+pass the filenames to run or set ivars.
+import leoGlobals as I have might not be possible
+this early in startup. need to get version info too.
+
+leo -script whatever.py  error or not? typo? fixable?
+leo --script whatever.py is ['script', 'whatever.py'] 
+coming up with a comprehensive set of input args and
+expected outcomes will be necessary for testing.
+I'll do that next.
+
+what about encoding problems, should check optparse archive.
+what about py2.2 using optparse from 2.4? trust but verify.
+this also has to be well tested.
+
+--help -? or -h all work.
+wasn't able to mimic the /help  /?
+windows world method of option entry.
+probably someone knows how.
+hope its not a registry setting!
+
+profile options might only be available if you
+enter -xpert mode, to avoid confusing anyone who 
+thinks they may need to run it because it is there.
+and be removed from the help menu as well.
+
+here is the proof of concept leomain.py,
+all it does is process commandline args and 
+print what command it will run or var it will set.
+nothing is actually opened or run.
+
+$ \c\py\python22\python leomain.py some.leo
+run(some.leo)
+
+$ \c\py\python22\python leomain.py some.leo -P
+profile(leoProfile.txt,some.leo)
+
+$ python leomain.py -profile=/tmp/proFile.txt my favorite.leo
+profile(rofile=/tmp/proFile.txt,my favorite.leo)
+
+woops! not sure how to guard against that.
+verifing is valid creatable filename could help.
+that should have been:
+
+$ python leomain.py --profile=/tmp/proFile.txt my favorite.leo
+profile(/tmp/proFile.txt,my favorite.leo)
+
+$ python leomain.py --script some.py some.leo
+script some.py
+run(some.leo)
+
+$ python leomain.py --script some.py
+script some.py
+run()
+
+that's the basics.
+needless to add, some of the code default 
+choices and wording of help messages 
+will have to be fine tuned. 
+have at it.
+
+post a note if something breaks.
+I know of a few typos already.
+
+[http://rclick.netfirms.com/leomain.py.htm]
+
+e
+#@+node:ekr.20060110102239.1:leomain.py
+@color
+"""  to run, add your path to leo below if not already set.
+
+proposed modification to leo.py for hprof or hotshot profile 
+giving standard help options from the commandline
+and making additional options or combinations less work.
+
+using optparse for commandline parsing
+for py2.2 will use optik if installed, but not critical
+requires copy of optparse.py from py2.4 in leo/extensions
+no problem for py2.3+ already in the stdlib
+this also need seperate testing, unittests to follow.
+
+to use from command or shell window:
+python leomain.py some args, see what happens.
+nothing except print will happen, no open or file creation.
+presently use a copy of sys.argv but that would be mutated.
+if something is not obvious it should be fixed.
+
+
+comments presently are interspersed throughout the file
+will be collected and shortened as bugs are removed.
+getting all options and filenames correctly is complicated
+by the possibility of unicode or spaces in filenames.
+some options require filenames for later processing in run()
+and a leo may be specified or even more than one at some point
+wildcard handling is not especially cross platform compatible.
+
+want to make it possible to enter filenames w/o quoting
+but will be impossible for now for batch & script option params.
+they have to have quotes if there are spaces in the filenames on win.
+
+also somewhat ambiguous, -sscript filename
+will actually parse as --script cript filename
+this could be a source of error and questions.
+not sure if it can be avoided if there is to be longword args.
+
+another point, -script is a possible typo to document at least.
+
+a script like this could actually be some kind of leo launcher.
+an option could popup a filedialog to get a leo, so it could in Leo.
+or open the last leo that has been modified on the local filesystem.
+as well as be a test bed for optparse & profile, read from ini file.
+not dependant on changing leo.py, just import leo, then leo.run(fname)
+
+for scripting, ability to set argv should be possible somehow.
+maybe set sys.argv = [] before run
+
+maybe just breeze through argv trying to concatenate filenames
+then try to parse it. and let parseopts save a copy
+later calls to parseopts w/o argv will use the saved attribute copy.
+probably passing opts+args to run() is cleaner though.
+
+
+this is the kind of merge that can give cvs merge a bad name, 
+good luck!
+leoGlobals and change of sys.path used only for testing.
+import leoGlobals may not work for the real leo.py this early
+before g.app is created. some refactoring is inevitable
+
+why check for win before trying to make filename w/spaces?
+does other os not have problem w/spaces in argv w/o quotes?
+and why win32? is there no win64 in Leo's user base
+or does it not have the space problem w/argv
+are single and double quotes around filename the same for other os?
+for windows they don't work like double quotes.
+
+
+the order of parameters might have to be significant
+but as it is, the.leo can appear anywhere
+and on win, all unused args are joined with spaces just in case
+if you do strange stuff possibly you get what you ask for.
+
+does Leo try to find filename.leo if filename is sans the extension?
+does it cause an overwrite existing file y/n/c or pass silently overwriting?
+
+-d datadir might be useful if you want to have other than the some.leo same dir
+-set somesetting=this like for outline bg color in script playback mode
+
+if leo is started from another shell, argv[0] might not be python or might be
+it could be IPython or something else, but there might be its args
+as well as the program it started that started Leo
+so really, argv should be [find(leo.py'):]
+and for some associations or os, no .py or .pyw required
+for that matter import leo; leo.run() bypasses option parsing altogether!
+this is another problem now that I think of it...
+but only if you also expected to get --script or some other option parsed
+if you import leo you probably know what you are doing
+you would have to set some global options, args I guess is what __main__ will do.
+searching to cut back sys.argv for python or python.exe leo etc etc 
+is bound to failure, too many cross platform possibilities.
+
+__file__ can also be unreliable when started from py2exe or freeze or a zip
+
+can't so far get /h (a default windows help option) to trigger --help.
+seems like if there is no -h option defined, -hanything gets help
+could be a source of typo errors 
+if other longword no param option started w/'h' 
+optparse doesn't handle word-otherword conversion to word_otherword
+may be reading the doc wrong on that.
+but will handle -sb scriptfile batchfile combining
+says -s outfile equivalent to --script=outfile
+but what about --script outfile?
+carefully avoiding too much smart processing.
+
+
+hopefully a test suite will expose any anomalies.
+the default help output has a few more inconsistencies.
+strange there are no bug reports about it in 2 years!
+also want to give default values in help, maybe there is a %default
+
+help gets cutoff at 80 chars, 79 according to a lone bugtrack entry
+but that was for optparse, nd maybe its base0 counting.
+maybe its still bug tracked as optik.sf.net, the original project name.
+
+for future editors, and I sense there will be future edits,
+if an individual help entry is longer than ~79 it will get formated ok.
+
+
+see if we can avoid the ridiculous problem on win where on error
+you get an exit and see nothing unless started from console!
+source of some forum traffic as well.
+maybe, if sys.platform etc: raw_input('press any key to exit')
+and for pythonw maybe should popup an alert somehow...
+one can dream.
+
+proof of concept, still missing pasing args to run somehow
+or seetting an ivar or whatever to get script/batchmode filenames
+from main to where it is required. that should be easy enough.
+
+
+
+filename is be mandatory for both and it should exist
+its checked for batch in leo.py already so checking should be more generic
+haven't looked up where --script is processed
+didn't rewtrite getbatchfile or whatever its called.
+that will be replaced with a check if tobatch has a filename
+decide if optparse callback should check for valid existing file
+and exit or continue accordingly.
+
+and for an opposing view, if you are scripting leo from another script
+then want to enter script mode or batch mode
+what has to be available is to intercept the call to read the file.
+and pass it a string of the script or batch, w/o problem.
+a seperate function instead of hardwireing the read at least.
+
+
+
+if I've forgotten anything please post a note to the forums.
+beyond that, I don't know what to tell you.
+this is proto typical alpha proof of concept pseudo code
+although tested somewhat and worked as I expect it to,
+it can't be expected to do everything unforseen as well.
+and I can't be sure some transmission error hasn't occured.
+hold me harmless or hit delete now.
+
+"""
+
+#replace w/Leo's real version assuming it can be known this early
+#won't be much use if its leo.py's version
+__version__ = '4.4a5' #w06104p01:34 optparse & profile for Leo
+
+import sys, os
+
+#####for testing use only, obviously don't add to leo.py
+k = os.path.normpath(os.path.abspath(r"C:\c\leo\V43leos\leo-4-4-\src"))
+
+#path being unicode can affect less than py2.3
+if sys.version_info[:2] < (2, 3):
+    k = str(k)
+
+#might not be found in sys path on win9x, there is no unicode paths
+if k not in sys.path:
+    sys.path.append(k)
+del k
+#needed in profile()too
+import leoGlobals as g
+
+
+@others
+
+#replace from here to end, sans comments
+if __name__ == "__main__":
+
+
+@
+
+    #print os.environ #('IPYTHON') #thought they had this!
+    #there is no IPY env var when @run is used -p shell?
+    #for IPy need to trim sys.argv
+    #sys.argv = sys.argv[2:]
+@c
+
+
+    #not the final configuration FIXME FIXME, danger will robinson
+    leofile = None
+    argvtight = []
+
+    #going to have to decide to build OptionParser seperatly
+    #before parsing so concatate can have access to it.
+    #concatate() should be here but is problematic
+    #needs to know too much about options.
+
+    #no sense if there are no options or no args.
+    #there are ways this can fail though probably rare 
+    #dir name w/trailing space + filename leading minus sign
+    #and have to decide if slash is ok for option indicator
+    #assume no complains if not win argv[1] is ok
+    if sys.argv > 1:
+        if not [x for x in sys.argv if x[0] == '-']:  #in '-/'
+            if sys.platform=="win32": # 
+                leofile = ' '.join(sys.argv[1:])
+            else:
+                leofile = sys.argv[1]
+        else:
+            #just a test, don't trust it yet
+            #may not even need it after all.
+            #argvtight = concatate(sys.argv)
+            argvtight = sys.argv[1:]
+            #print 'concatate arg', argvtight
+
+    #might have to add these to g.app or some kind of global?
+    #they are needed in other parts of Leo before it completely starts
+    #may need to pass to run and through profile into run as well.
+
+    opts, args = parseopts(argvtight)
+
+    if args and not leofile: leofile = ' '.join(args)
+    elif args:
+        print >> sys.stderr, 'too many args, try --help'
+        #maybe print usage too? except its defined in parseopts
+        raise SystemExit(2)
+
+    #print 'past parse_args', `args`, 'leo=', `leofile`
+
+    #for testing only, don't merge exactly
+    if opts.tobatch:
+        #w/filename hopefully w/o spaces
+        print 'batch', opts.tobatch
+    if opts.toscript:
+        #w/filename hopefully w/o spaces
+        print 'script', opts.toscript
+
+    #assume run can get the options it needs at some later point
+    #the profile run might require other options 
+    #like print sorted stats report to file after exit
+    #maybe delay start gathering for 20 seconds but continue
+
+    #maybe should pass run a dict of the options 
+    #rather than a static function attribute or global 
+    #or just add to globals?
+
+    if opts.toprofile:
+        #will probably require filename arg
+        #can take a leofile arg as well, default to ''
+        #have to use keywords in case leofile is '' or drop coma
+        #the actual call may be different, print is for ease of testing
+        if leofile is None:  leofile = ''
+        else:  leofile  = ','+ leofile
+        #must be -P otherwise would be a string filename
+        if opts.toprofile == True: opts.toprofile = 'leoProfile.txt'
+        print 'profile(%s%s)'%(opts.toprofile, leofile)
+
+    else:
+        if leofile is None:  leofile = ''
+        print 'run(%s)'%leofile
+
+
+#e
+
+#@+node:ekr.20060110102239.2:def profile
+def profile (statfile='/tmp/leoProfile.txt', leofile= ''):
+
+    """Gather and print statistics about Leo
+    using new speedy hprof 
+    http://www.planetsoc.com
+    http://www.soton.ac.uk/~fb102/Python/hprof-0.1.0.tar.gz
+    needs a blank __init__.py in the hprof dir
+
+    or hotshot 
+    even older profile if you want to go that far back
+    add option to force profile, hotshot, hprof or lstat
+
+    valid combined w/script or batch mode as well.
+
+    may have the default args and calling sequence wrong
+    refactored too much too fast with no time for testing
+    should be easily fixed though. it did work yesterday!
+    """
+
+    #import profile, pstats
+    try:
+        from hprof.hprofile import Profile
+    except ImportError:
+        from hotshot import Profile
+
+    import time
+
+    start = time.time()
+    #print "start %s seconds"%((start))
+
+
+    prof = Profile(statfile)
+    prof.run('run(%s)' % leofile)
+    prof.close()
+
+    stop = time.time()
+    print 'Profile process ', statfile
+    print "took %7.3f seconds"%((stop-start)),
+    print "or %7.3f min"%((stop-start)/60)
+
+    #skip the profile stats output after run
+    #use scriptButton hprof in your work leo
+    #may add option to generate stats after the run
+#@-node:ekr.20060110102239.2:def profile
+#@+node:ekr.20060110102239.3:def parseopts(argv)
+def parseopts(argv):
+    """  
+    should verify leo.py is [0]? optparse ignores [:1] if no argv passed
+    except as %prog  in usage help
+    running test in commandline manually too, 
+    maybe need a maintest.py based on optik unit tests?
+
+    >>> import sys
+    >>> print 'argv:',`sys.argv`
+    'before sys set'
+    >>> sys.argv = ["leo.py", "b", "b.txt"]
+    >>> sys.argv = ["leo.py", "b", "-?"]
+    >>> print 'argv:',`sys.argv`
+    'after sys set'
+    >>> parseopts(sys.argv)
+    profile
+    """    
+    import leoGlobals as g
+    try:
+        #was the original name available for py2.2
+        import optik as optparse
+    except ImportError:
+        #using py2.3+ optparse
+        optparse = g.importExtension('optparse')
+
+    #description is in addition to normal help
+    #any way to get description to be the help w/o subclassing?
+    #later can use parser.usage= '%prog [-h,-n etc  defaults: -c ]'
+
+    #if a filename doesn't have leo extension is it assumed?
+    #I think some of the comments are starting to repeat.
+    #maybe come will get closer to the point of active choice
+    #and I can delete the impostor comments.
+
+    descript = 'Leo the python scriptable literate programming editor '
+
+    #usage  and description mutually exclusive?
+    #usage alone is printed on unknown option or maybe other error
+    #no wrap in that case
+
+    #getting this cross platform correct could be difficult
+    #especially with variations in associations
+    #and isn't and can't be complete wrt paths and pythonpath
+    #maybe point to the webspace and docs is enough
+    #.py not required for some , python not required for others
+    #maybe no choice but to generate some os specific strings
+
+    #doesn't mac also have pythonw and can we detect running under wine?
+    #has to be some way of embedding \n 
+
+    #-s file -sfile --script=file or --script file all the same?
+
+    usage = r'''options [-s/--script scriptfile -b/--batch batchfile leofile]
+        more options [-h, --help  and --version]
+        problems: try quoting any filenames
+        if there is still a problem: please report it with any details
+   http://webpages.charter.net/edreamleo/front.html  Leo version %s'''% __version__
+
+    #prog name assumed eventually to be leo.py
+    if sys.platform[:3] == 'win':
+        usage = 'python -i %%prog leofile.leo  no console pythonw leo.py'+ usage
+    else:
+        usage = 'python %%prog leofile.leo  -h or --help' + usage
+
+
+    parser = optparse.OptionParser(version='%%prog %s' % __version__, 
+                        description=descript, usage= usage)
+
+    #how to require a filename? and how to specify it is possibly w/spaces
+    #is -s:filename acceptable? that is a common arg convention.
+    #ideally tobatch would be None or be the filename
+    #and because of spaces con-cation will have to happen outside the parser
+
+    #please comment out any options that are not implemented yet.
+
+    for (l,w,a,t,d,f,h) in (
+
+        # -help does work because its just -h, gets me every time!
+        ('-?', '--hepl', "help", "", "", "",
+            "help message"),
+
+        ("-q", "--quiet", "store_true", "int", "verbose", 0,
+            "don't print status or trace messages"),
+
+        #    -script invalid option
+        ("-s", "--script", "store", "string", "toscript", None,
+            " script.py to run on startup"),
+
+        ("-b", "--batch", "store", "string", "tobatch", None,
+            "batch.py to run, no GUI"),
+
+        #if validate callback for script & batch filename exists, 
+        #could happen here if Leo is going to quit later anyway
+        #and --safe may be mutually exclusive, confused -s being --script
+        #so validate has to wait for parsing to complete, would it?
+
+        #for profile filename is it valid? have permissions/disk space?
+        #may want to force hotshot even if hprof or lprof installed
+        #maybe only show these options if expert mode is on
+        #no need to get a flood of forum reports about profile results
+        #maybe leox.py has these options. oh, the possibilitiies.
+        #this is for the 5 other people interested in this...
+        #not something you want to do every day unless under duress.
+        #combined with script and/or batch mode should be very powerful
+        ("-p", "--profile", "store", "string", "toprofile", "",
+            " save  profile results in outfile.ext       DEFAULT:\
+            hprof or hotshot"),
+
+        #a conflicting option repeat of -p won't work, so upcased it
+        ("-P", "--Profile", "store_true", "", "toprofile", 0,
+            " save  profile results in leoProfile.txt in the leo dir"),
+
+        ):
+
+
+
+        #add --settings add -home for change of home maybe -temp maybe -set
+        #--settingsneeds leo/config as well as -home which one is germain
+
+
+        if a == 'help':
+            parser.add_option(l, w, action=a)
+
+        elif a != 'store':
+            parser.add_option(l, w, action=a,
+                        dest= d, default= f, help= h )
+        else:
+            parser.add_option(l, w, action=a,
+                type= t, dest= d, default= f, help= h )
+#
+
+
+@
+
+    parser.add_option("--no-trace",action="store_false",
+                  dest="trace", 
+                  help="Don't print commands before executing them.") 
+
+
+    #may want to subclass OptionParser to provide a Leo error exit
+
+    #is there a generic way to check for / used as an option trigger?
+    #is // even valid as a trigger
+
+
+    #woops, if -h in argv a little too good
+    #better not prevent -high 20 or something similar
+    if '-h' in argv or '--help' in argv
+
+    #for the win nubiee, / is the default win option starter
+    #have to check every arg individually, py2.2 no substring in
+    #definate bug that -? is not expected as help in optparse.
+    #able to enter -? as an option though.
+
+    #can't seem to get /h to trigger help
+    for h in argv:
+        for i in ('-?', '/help', '/h', '/?'):
+            if i == h:
+                #parser.error("does this help?")
+                #parser.print_help()
+                parser.print_usage()
+                #print "didn't already exit!"
+                raise SystemExit(2)
+@c
+
+
+    (opts, args) = parser.parse_args(argv)
+
+    #can I just trap error: no such option: -? and set help=True
+
+    return opts, args
+#@nonl
+#@-node:ekr.20060110102239.3:def parseopts(argv)
+#@+node:ekr.20060110102239.4:concatate(sys.argv)
+#### may have to skip this whole concatate thing ###
+#please ignore the comments too
+def concatate(argv, paramdict={}):
+    """
+    paramdict is a dict of single letter keys and
+    item = [T/F, 'longname'] set [1] as True/False for require param
+
+    walk the list concatate anything with a space
+    to the previous item if it doesn't look like a valid option.
+    what are the valid options? we don't care...
+    is - s filename parseable as -s:filename ??
+    this has got to have generated lots of point counterpoint over the years.
+    should do some research... 
+    have to decide if will accept / as option seperator or if optparse does
+    this may not be doable if we alow options to also have spaces in filenames
+    does optparse resolve -ffilename as well as -f:filenname the same?
+
+    lets assume an options param can't have spaces, just get it working for now.
+    if you enter an option you better quote it if you need to
+    leave the space correcting behaviour for default or trailing filenames only
+
+    now there is a problem need to know which oiptions have required params
+    otherwise can't decide how to concate, unless the space was preserved (it isn't)
+    I think on win or anywhere argv[n][0] is never going to be a space
+    dito for argv[n][-1]
+    so, its a simple FSM with 2 states, an option or a param
+    cancel concatate space if previous was an option
+    but here we go again, what about options that don't have params?
+    optparse doc talks at length about options not having optional params.
+    in Leo's case we may need to pass it a list of options that have no params?
+    maybe optparse team needs to gix this not the module user
+    maybe someone filed a patch already? more study!
+    if not who is going to need optparse after this gets done?
+
+    maybe just concatate all trailing args till an option, process backward
+    its looking moore like a parser than a FSM now and I need to know too much.
+    maybe assume all options have required params for now untill imp paramdict
+    what about "-script=name, the doc implys that this may be valid?
+
+    all validm but they don't mention -file=outfile, maybe is a typo missing -?
+    <yourscript> -f outfile --quiet
+    <yourscript> --quiet --file outfile
+    <yourscript> -q -foutfile
+    <yourscript> -qfoutfile
+    damm, this is not going to even be worth trying
+    seems -script == --script criptm 
+    that could be confusing and error prone
+
+
+    >>> concatate(['1','2','3'])
+    ['1 2 3']
+    >>> concatate(['-1','2','3'])  #rule option param can't have spaces
+    ['-1', '2', '3']
+    >>> concatate(['-s','2','3' '4']) #-s has required param
+    ['-s', '2', '3 4']
+    >>> # a little trickier -ffilename default arg, 
+    >>> #optparse won't do this? getopt probably would,
+    >>> concatate(['-1',' 2','3' '4'])
+    ['-1', '2', '3 4']
+
+    >>> #fix for extra credit, user probably screwed up? should ask them?
+    >>> concatate(['1','- 2','3'])
+    ['1', '- 2', '3']
+
+    """
+
+    #preparse sys.argv concating filenames w/spaces 
+    #as appropriate for --script and --batch and any leofilename
+    #or is this something parseopts should be doing?
+    #not so simple really 
+    #if argc ==1 then no options or filename
+    #if any options start w/ - or / then it gets dicey
+    # could be a space in the last part of a directory in seperate items
+    #we may not be able to cover every concievable case
+
+    prev = ''
+    lst = []
+
+    for x in argv:
+
+        if x[0] == '-':  #or '/' or x in '/-'
+            lst.append(x)
+            if prev:
+                lst.append(prev)
+                prev = ''
+        else:
+            if prev: prev = prev + ' ' + x
+            else:    prev = x
+
+        #print 'droped thru x:prev', `x`, `prev`
+    else:
+        if prev:
+            lst.append(prev)
+
+    return lst
+
+
+#@-node:ekr.20060110102239.4:concatate(sys.argv)
+#@+node:ekr.20060110102239.5:test run manual
+@
+make into a real series of tests
+I made the name leo\smain.py because my associateions for py are to open editor
+so this could never run leo then open main.py even if I was in leo/src
+
+
+$ python leo main.py
+C:\C\PY\PYTHON~1\PYTHON.EXE: can't open file 'leo'
+
+$ python "leo main.py"
+past parse_args ['leo main.py']
+leo.run()
+
+$ python 'leo main.py'
+C:\C\PY\PYTHON~1\PYTHON.EXE: can't open file ''leo'
+
+$ python "leo main.py" filename
+past parse_args ['leo main.py', 'filename']
+leo.run()
+
+$ python "leo main.py" c:/filename /help/some.leo
+processed arg ['leo main.py', 'c:/filename', '/help/some.leo']
+past parse_args ['leo main.py', 'c:/filename', '/help/some.leo']
+leo.run()
+
+$ python "leo main.py" "c:/filename /help/some.leo"
+processed arg ['leo main.py', 'c:/filename /help/some.leo']
+past parse_args ['leo main.py', 'c:/filename /help/some.leo']
+leo.run()
+
+$ python "leo main.py" "c:/filename /help/some.leo"
+processed arg ['leo main.py', 'c:/filename /help/some.leo']
+past parse_args ['leo main.py', 'c:/filename /help/some.leo'] leo= c:/filename /
+help/some.leo
+leo.run(c:/filename /help/some.leo)
+
+$ python "leo main.py" c:/filename /help/some.leo
+processed arg ['leo main.py', 'c:/filename', '/help/some.leo']
+past parse_args ['leo main.py', 'c:/filename', '/help/some.leo'] leo= c:/filenam
+e /help/some.leo
+leo.run(c:/filename /help/some.leo)
+
+-script works for --script cript it seems
+and that could be a typo missing --script so the next filename
+gets concatated into the leo name which I guess can't be helped
+
+OTOH, if you use the default version=
+then --versions works but -v or -version doesn't
+
+
+$ \c\py\python24\python "leo main.py" test.leo -p whatever else
+concatate arg ['test.leo', '-p', 'whatever', 'else']
+past parse_args ['test.leo', 'else'] leo= 'test.leo else'
+profile(whatever, test.leo else)
+this is the thing that is still hard to avoid. on win, has to be
+$ \c\py\python24\python "leo main.py" test.leo -p "whatever else"
+
+really need to get this tested on other than old win9x,
+
+
+
+
+
+@killcolor
+#@-node:ekr.20060110102239.5:test run manual
+#@+node:ekr.20060110102239.6:notes
+@
+will it handle spaces in filenames w/o quotes?
+
+leo.py --script filename.leo is not good
+leo.py -script filename is not good, which is it a scriptfile or a leo to be?
+
+as error for -profile as an option, going to have to subclass override error
+AttributeError Values instance has no attribute 'profile' ["__module__ = 'exceptions' .", "__doc__ = 'Attribute not found.' ."] 
+this was a programmer error though, the var is toprofile
+
+little hard to test this as a script, can't control argv
+update, sys.argv = seems now to be working from doctest
+better readup, haven't used this in a while
+haven't read the docs in a while either, a good read.
+especially the origional optik.sf.net
+
+
+need to make this a function to call returning a dict maybe?
+at least to doctest it better w/o needing to create a test module 
+and then run it saving stdout
+
+its also going to be a little trickier to --script or --batch with --profile
+and what is exactly the difference with --batch and --script?
+one has no GUI maybe?
+
+
+- is valid in a filename, so primitive argv parsing
+will be difficult to distinguish in a filename w./spaces
+since the spaces cause seperate items and just a join
+is not good because you have to know if it is a valid arg
+what if it is a valid arg? this is a nightmare in any case...
+
+
+need a timer on operations while getting a profile
+expandall, contrract all so can be output with the pstats
+
+need to set options in a seperate function
+so can generate test for all functions and params on the fly
+this will be good in the general case for other programs
+
+anyone already depending on case insensitive args?
+
+default file for profile not working out
+comprimise -P as an option w/o param uses default leoProfile.txt
+
+if -p file name -s some.py will be difficult to get right w/o quoting
+will anyone ever expect a default? 
+unless thats in the leodir or something?
+dito for script and batch but what possible default could they have, 
+
+
+
+does x is None work on py2.2?
+
+#@-node:ekr.20060110102239.6:notes
+#@-node:ekr.20060110102239.1:leomain.py
+#@+node:ekr.20060110102239.7:Leo hprof script
+@color
+@
+hprof from google summer of code replace hotshot & profile
+much faster on the uptake and output!
+has compatibility modules so can use mostly the same calls
+this script uses the hprof calls. didn't mod leo.py yet
+as I am not able to compile _hotshot.c to pyd or .so
+it will use hotshot created profile ok.
+
+added psyco, need to create batch file so can automate & timeit.
+also have modified leoGlobals match and a few other things already
+and proven You can shave at lest a few seconds overall,
+
+can combine add more than one profile run to get better data
+but I don;t do that in this script.
+
+and pypy has lstat which also didn't compile for me
+and possibly isn't windows compatible yet
+along with another mentioned in this past weeks py-dev summary.
+
+
+need something to compare the diff of 2 profiles
+sorted the same way, something to add comments to the
+profile, maybe a simple flatfile to manage profiling.
+seems this would have been a project for someone already?
+
+chg leo.py profile to create hotshot profile file
+then run, copy a node from library
+expand/contract a few times then exit.
+
+takes a few minutes to process the hotshot file
+then prints enormous amout of stats...
+you see a few leoGlobals called a few hundred thousand times
+on a run of 5 or 10 minutes.
+
+        Stats('foo', 'goo').strip_dirs().sort_stats('calls').\
+                            print_stats(5).print_callers(5)
+              "calls"     : (((1,-1),              ), "call count"),
+              "cumulative": (((3,-1),              ), "cumulative time"),
+              "file"      : (((4, 1),              ), "file name"),
+              "line"      : (((5, 1),              ), "line number"),
+              "module"    : (((4, 1),              ), "file name"),
+              "name"      : (((6, 1),              ), "function name"),
+              "nfl"       : (((6, 1),(4, 1),(5, 1),), "name/file/line"),
+              "pcalls"    : (((0,-1),              ), "call count"),
+              "stdname"   : (((7, 1),              ), "standard name"),
+              "time"      : (((2,-1),              ), "internal time"),
+
+@c
+from dyna_menu import dtef
+@others 
+
+
+def showstats():
+    """ log sort of stops printing when you type! or grab scrollbars.
+    need to print to copybuffer, redirect io to log print very slow
+    may actually be faster if you minimize leo
+    also can make the log window very small
+    in Leo4.4 you can multitask a little when it starts to print.
+    """
+    import leoGlobals as g
+    #import profile, pstats
+    try:
+        from hprof.hpstats import Stats
+    except ImportError:
+        from hotshot import Stats
+    import sys
+
+    name = "/tmp/leoProfile.txt"
+    print 'processing ', name
+
+    #profile.run('leo.run()',name)
+    #prof = hotshot.Profile(name)
+    #prof.runcall(run)
+    #prof.close()
+
+    #p = pstats.Stats(name)
+    #p.strip_dirs()
+    #p.sort_stats('cum','file','name')
+    #p.print_stats()
+
+
+    #would be nicer if strip_dirs left one more level of dir
+    #or even better took an int to leave how many levels
+    #several modules have similar def names, __init__ etc
+    #will have to override that.
+
+    s = Stats(name).strip_dirs()
+
+    #need to reverse or trap stdout to file    
+    #why does g. not have a simple command to do this?
+    #whydoes stats.print not take a filename? 
+    #weird no one thinks of these things. is it just me?
+
+#    sys.stdout = g.fileLikeObject()
+
+    print 'start.sort', dtef(c),
+    s.sort_stats("time").print_stats()  #.print_callers()
+@
+    stat = sys.stdout.get()
+    sys.stdout.close()
+    sys.stdout = sys.__stdout__
+
+    #attempt to get a better strip_dirs later
+    for k,v in repdict.iteritems():
+        stat = stat.replace(k,v)
+    print stat[:400]
+@c    
+
+print 'start', dtef(c),
+showstats()
+print 'done', dtef(c)
+#@nonl
+#@+node:ekr.20060110102239.8:try: psyco
+try:
+    if 1:#1/0  If present, use psyco to accelerate the program
+        import psyco
+        psyco.full()  #carefull with this in py2.3 esp w/leo 
+        #shows alot of time in tkinter and other plain leo routines!
+        #though this was per module only 
+        #from psyco.classes import *
+
+        #psyco.log(logfile='c:/temp/sb1.log', mode='w', top=30)
+        #psyco.profile(0.2)
+        #psyco.profile( watermark=0.09, halflife=0.5, pollfreq=20,  parentframe=0.25, memory=None, time=None, memorymax=None, timemax=None) 
+        #psyco.bind(searchButton) #not in scope, put after def
+        #psyco.bind(gen_nodes)  #generators 
+except ImportError: pass
+#@-node:ekr.20060110102239.8:try: psyco
+#@-node:ekr.20060110102239.7:Leo hprof script
+#@-node:ekr.20060110102039:--script option
+#@+node:ekr.20060102092148.1:--safe option
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=3501193
+By: nobody
+
+::improving how Leo handle's arguments? 
+
+Leo only needs a few simple options.
+I don't think option handling would
+work correctly in the IPYthon case either.
+
+put optparse.py in leo/extensions for py2.2
+docutils installs it if it isn't available.
+its been the standard since py2.3
+adding new options will be much less painfull.
+some kind of --safe startup to allow editing
+of leoSettings.leo, no @buttons or @scripts
+might be a good thing.
+
+Leo should allow scripts to set sys.argv for
+commands they create. its very difficult to do now.
+
+e
+#@nonl
+#@-node:ekr.20060102092148.1:--safe option
+#@-node:ekr.20060527184335.1:Command-line options
+#@+node:ekr.20041228092223.3:Scripting
+#@+node:ekr.20031218072017.733:Execute scripts like IDE's do (does executeFile do this?)
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=2321235
+By: paulpaterson
+
+I think I understand what Samir is getting at. 
+
+In PythonWin, or other IDE's for other languages, you are able to execute the
+"current program" in a way that it will behave identically to if it had been
+run from the command line.
+
+For Python this requires,
+
+1. That the script run with __name__ == "__main__", so that the standard "if
+__name__ ..." section will be executed properly.
+
+2. You are able to pass command line parameters to the script. In some IDE's
+you are able to set default command line parameters and these are "injected"
+into the sys.argv (or equivalent) so that, as far as the program is concerned,
+it looks like you ran it from the command line with some aruments.
+
+The underlying assumption is that you want to run an entire program from Leo,
+not just a script. I would find this very useful also as I could run unit tests
+or even my entire apps by just hitting, for exampe, F5.
+
+Paul
+#@nonl
+#@+node:ekr.20041022083005.5:Define name == "__main__"
+#@-node:ekr.20041022083005.5:Define name == "__main__"
+#@-node:ekr.20031218072017.733:Execute scripts like IDE's do (does executeFile do this?)
+#@+node:EKR.20040611081747.1:Look at windows scripting
+------cut openleo.pys
+@path c:\bIn\pys\
+@lineending crnl
+@
+w04609p09:57:19 a pys to open leo and do something.
+you need the win32 extensions and you have to enable 
+the script engine. details how on google or on the win32 page.
+
+the sendkeys method can insert any test or control codes
+msdn or microsoft.com/scripting
+
+@c
+pypath = r'C:\c\py\Python233'
+py =  pypath + r'\python.exe -itOO '
+leosrc = r'c:\c\leo\leo4CVS233\src'
+name = "blank.leo"
+
+WshShell = WScript.CreateObject("WScript.Shell")
+
+#look like it comes up untitled 
+# if it cant find an existing leo of that name?
+
+WshShell.Run(py + leosrc + r'\Leo.py ../' + name)
+WScript.Sleep(4900) 
+
+wname = "untitled"
+
+WshShell.AppActivate(wname);  WScript.Sleep(2100)
+WshShell.SendKeys("%Fe");   WScript.Sleep(1300);  #^Q
+
+---end openleo.pys
+#@nonl
+#@-node:EKR.20040611081747.1:Look at windows scripting
+#@+node:ekr.20031218072017.753:Emacs comint-mode:  The improved Execute Script command does most of this
+@nocolor
+
+Michael Manti
+mmanti@mac.com
+
+P.S. I think a feature that could make Leo *the* IDE for developing in 
+interpreted languages is something like the (X)Emacs comint-mode.el for 
+interacting with the shell and interpreters.
+
+comint-mode.el serves as the basis for interactive modes for a number of
+languages--OCaml, Haskell, SML, among them. It allows for editing expressions in
+one buffer and triggering their evaluation in another buffer that has an
+interpreter running in it, along with entering commands in the interpreter
+buffer and moving back and forth through the history of their evaluation.
+
+Imagine being able to highlight a node in Leo, and have all the code in it and
+its children evaluated in an interpreter running in a separate window or pane,
+much as Leo can open a Python shell now. Users of those languages could build
+plug-ins specific to their language atop that layer, and the @language directive
+could activate that. I think that would be very cool.
+#@-node:ekr.20031218072017.753:Emacs comint-mode:  The improved Execute Script command does most of this
+#@-node:ekr.20041228092223.3:Scripting
+#@-node:ekr.20080802070659.8:Intriguing
 #@+node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20080113165010:About auto completion
 @nocolor
