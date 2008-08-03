@@ -213,15 +213,16 @@ def putVnode (self,p,isIgnore=False):
     fc = self ; c = fc.c ; v = p.v
     # Not writing @auto nodes is way too dangerous.
     isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isShadow = p.isAtShadowFileNode()
     isThin = p.isAtThinFileNode()
     isOrphan = p.isOrphan()
     if not isIgnore: isIgnore = p.isAtIgnoreNode()
 
-    # forceWrite = isIgnore or not isThin or (isThin and isOrphan)
-    if isIgnore: forceWrite = True      # Always write full @ignore trees.
-    elif isAuto: forceWrite = False     # Never write non-ignored @auto trees.
-    elif isThin: forceWrite = isOrphan  # Only write orphan @thin trees.
-    else:        forceWrite = True      # Write all other @file trees.
+    if isIgnore:   forceWrite = True      # Always write full @ignore trees.
+    elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
+    elif isShadow: forceWrite = False   # Never write non-ignored @shadow trees.
+    elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
+    else:          forceWrite = True      # Write all other @file trees.
 
     << Set gnx = tnode index >>
     attrs = []
@@ -293,10 +294,11 @@ elif hasattr(v,"unknownAttributes"):
 # New in 4.2: tnode list is in tnode.
 
 if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
-    if isThin:
-        if g.app.unitTesting:
-            g.app.unitTestDict["warning"] = True
-        g.es("deleting tnode list for",p.headString(),color="blue")
+    if isThin or isShadow:
+        if 1:
+            if g.app.unitTesting:
+                g.app.unitTestDict["warning"] = True
+            g.es("deleting tnode list for",p.headString(),color="blue")
         # This is safe: cloning can't change the type of this node!
         delattr(v.t,"tnodeList")
     else:
@@ -6072,6 +6074,27 @@ else:
 #@-node:ekr.20041005105605.163:<< handle line at s[i]  >>
 #@-node:ekr.20041005105605.161:putBody
 #@-node:ekr.20080624120440.4:Improve docs for @ignore
+#@+node:ekr.20080802070659.4:Add linux tip
+@nocolor
+
+> Depending on your path, this may work, or not.  I would appreciate any
+> suggestions for improvements.
+
+I haven't tested this, but for me, building a symbolic link into the
+python directory:
+
+sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
+
+made the message
+
+Traceback (most recent call last):
+ File "/usr/local/lib/leo/core/runLeo.py", line 464, in <module>
+   run()
+ File "/usr/local/lib/leo/core/runLeo.py", line 69, in run
+   import leo.core.leoGlobals as leoGlobals
+ImportError: No module named leo.core.leoGlobals
+#@nonl
+#@-node:ekr.20080802070659.4:Add linux tip
 #@-node:ekr.20080411091507.1:Docs
 #@-node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
 #@+node:ekr.20080802070659.8:Intriguing

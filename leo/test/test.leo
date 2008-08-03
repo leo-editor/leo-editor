@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -130,7 +130,6 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
@@ -188,37 +187,26 @@
 <v t="edreamleo.20080110130828"><vh>createWindow</vh></v>
 <v t="bob.20080111200056"><vh>@thin gtkOutlineDemo.py</vh></v>
 </v>
-</v>
-<v t="ekr.20071105085941"><vh>Tests</vh>
-<v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
+<v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
 <v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
 </v>
-<v t="ekr.20080503202744.3"><vh>Rope</vh></v>
+</v>
+<v t="ekr.20071105085941"><vh>Tests</vh>
+<v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
 <v t="ekr.20080604101239.1"><vh>Test misspelled word at index 0</vh></v>
-<v t="ekr.20080605103500.1"><vh>Screen redraw bug</vh></v>
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
-<v t="ekr.20080612061137.1"><vh>coloring after reformat paragraph</vh></v>
-<v t="ekr.20080616162655.1"><vh>Vim test</vh></v>
 <v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
-<v t="ekr.20080618093010.1"><vh>Print bindings dicts</vh></v>
-<v t="ekr.20080624141305.1"><vh>@@nosent at_ignore_test.txt</vh>
-<v t="ekr.20080624141305.2"><vh>ignored</vh>
-<v t="ekr.20080624141305.3"><vh>a</vh></v>
-</v>
-</v>
 <v t="ekr.20080625094025.1"><vh>Drag script</vh></v>
-<v t="ekr.20080801104124.1"><vh>@@shadow shadow-test.py</vh>
-<v t="ekr.20080801104153.1"><vh>spam</vh></v>
-</v>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
-<v t="ekr.20080710111404.1"><vh>mini tests for g.pr</vh></v>
+<v t="ekr.20080801160915.1"><vh>@@shadow TerryBrownTest.py</vh>
+<v t="ekr.20080803120643.1"><vh>spam</vh></v>
 </v>
-<v t="ekr.20080801160915.1" tnodeList="ekr.20080801160915.1,ekr.20080801160915.1"><vh>@shadow TerryBrownTest</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1533,25 +1521,10 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20080605103500.1">def addchild(tag, keywords):
-   p = keywords.get('new_p')
-   c = keywords.get('c')
-   c.beginUpdate()
-   try:
-       g.trace('inserting child of',p)
-       n = p.insertAsNthChild(0)
-       c.setHeadString(n, 'new')
-   finally:
-       c.endUpdate()
-
-import leo.core.leoPlugins as leoPlugins
-leoPlugins.registerHandler('select2', addchild)</t>
 <t tx="ekr.20080610144053.1">True: Wrap body text.
 
 </t>
 <t tx="ekr.20080610144233.1">aaaaaaaaaaaa bbbbbbbbbbbbbbbbbb cccccccccccccccc ddddddddddddddddddd eeeeeeeeeeeeeee ffffffffffffffffff ggggggggggggggggggggg hhhhhhhhhhhhhhhh iiiiiiiiiiiii jjjjjjjjjjjjjjjj kkkkkkkkkkkkkk llllllllllllll mmmmmmmmmmmmmmmmm nnnnnnnnnnnn ooooooooo</t>
-<t tx="ekr.20080612061137.1">This is a test.</t>
-<t tx="ekr.20080616162655.1">'stw' should "Substitute the text from the current cursorposition up To the letter 'w'".</t>
 <t tx="ekr.20080617170334.1">@first # -*- coding: utf-8 -*-
 
 import Tkinter as Tk
@@ -1578,16 +1551,6 @@ w.update()
 # top.after_idle(after)
 top.mainloop()
 </t>
-<t tx="ekr.20080618093010.1">g.pr('Ctrl+s' in c.k.bindingsDict.keys())
-g.pr(c.k.masterBindingsDict.keys())
-g.pr('&lt;Control-s&gt;' in c.k.masterGuiBindingsDict.keys())</t>
-<t tx="ekr.20080624141305.1">@others
-
-# done</t>
-<t tx="ekr.20080624141305.2">@ignore
-
-# after @ignore</t>
-<t tx="ekr.20080624141305.3"># a</t>
 <t tx="ekr.20080625094025.1">t = p.insertAfter()
 c.setHeadString(t, 'test node 1')
 t = t.insertAfter()
@@ -1651,22 +1614,13 @@ for z in aList:
         g.pr('echo .')
         g.pr('echo',name)
         g.pr('call pylint.bat core\%s' % name)</t>
-<t tx="ekr.20080710111404.1">g.pr('a',newline=False)
-g.pr('b')
-f = open(c.fileName())
-g.pr(f)</t>
 <t tx="ekr.20080729153237.1"></t>
 <t tx="ekr.20080729153237.2"># True: calls to the garbage collector.</t>
 <t tx="ekr.20080729153237.3"># True (recommended): print a message when Leo calls gc.collect explicitly.</t>
 <t tx="ekr.20080729153237.4"># True: verbose trace the garbage collector.</t>
-<t tx="ekr.20080801104124.1">@others</t>
-<t tx="ekr.20080801104153.1">def spam():
-    pass #</t>
-<t tx="ekr.20080801160915.1">"#!/bin/sh
-
-DB="$1"
-URL="$2" #
-
-echo "$URL $DB"</t>
+<t tx="ekr.20080801160915.1">@others
+</t>
+<t tx="ekr.20080803120643.1">def spam():
+    pass</t>
 </tnodes>
 </leo_file>
