@@ -1754,15 +1754,16 @@ class baseFileCommands:
         fc = self ; c = fc.c ; v = p.v
         # Not writing @auto nodes is way too dangerous.
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+        isShadow = p.isAtShadowFileNode()
         isThin = p.isAtThinFileNode()
         isOrphan = p.isOrphan()
         if not isIgnore: isIgnore = p.isAtIgnoreNode()
 
-        # forceWrite = isIgnore or not isThin or (isThin and isOrphan)
-        if isIgnore: forceWrite = True      # Always write full @ignore trees.
-        elif isAuto: forceWrite = False     # Never write non-ignored @auto trees.
-        elif isThin: forceWrite = isOrphan  # Only write orphan @thin trees.
-        else:        forceWrite = True      # Write all other @file trees.
+        if isIgnore:   forceWrite = True      # Always write full @ignore trees.
+        elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
+        elif isShadow: forceWrite = False   # Never write non-ignored @shadow trees.
+        elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
+        else:          forceWrite = True      # Write all other @file trees.
 
         #@    << Set gnx = tnode index >>
         #@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
@@ -1818,10 +1819,11 @@ class baseFileCommands:
         # New in 4.2: tnode list is in tnode.
 
         if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
-            if isThin:
-                if g.app.unitTesting:
-                    g.app.unitTestDict["warning"] = True
-                g.es("deleting tnode list for",p.headString(),color="blue")
+            if isThin or isShadow:
+                if 1:
+                    if g.app.unitTesting:
+                        g.app.unitTestDict["warning"] = True
+                    g.es("deleting tnode list for",p.headString(),color="blue")
                 # This is safe: cloning can't change the type of this node!
                 delattr(v.t,"tnodeList")
             else:

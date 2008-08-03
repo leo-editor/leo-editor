@@ -672,7 +672,10 @@ class atFile:
 
         if shadow_exists:
             # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
-            at.read(p,atShadow=True) # Calls x.updatePublicAndPrivateFiles
+            at.read(p,
+                thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
+                atShadow=True)
+                # Calls x.updatePublicAndPrivateFiles
         else:
             if not g.unitTesting: g.es("reading:",p.headString())
             ok = at.importAtShadowNode(fn,p)
@@ -2564,12 +2567,12 @@ class atFile:
 
         c.endEditing() # Capture the current headline.
         at.initWriteIvars(root,targetFileName=None,
-            nosentinels=None,thinFile=False,scriptWrite=False,
-            toString=False,write_strips_blank_lines=False)
+            nosentinels=None, # set below.  Affects only error messages (sometimes).
+            thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+            scriptWrite=False,
+            toString=False, # True: create a fileLikeObject.  This is done below.
+            write_strips_blank_lines=False)
                 # at.targetFileName not used.
-                # at.thinFile could be set to True.
-                # at.sentinels set below.
-                # toString=True creates a fileLikeObject.  We will do that below.
 
         if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
