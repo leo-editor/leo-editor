@@ -2084,6 +2084,7 @@
 <v t="ekr.20080729200342.1"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
+<v t="ekr.20080804124245.1"><vh>passed</vh></v>
 <v t="ekr.20080729200342.5"><vh>@shadow-test change middle line</vh>
 <v t="ekr.20080729200342.6"><vh>old</vh></v>
 <v t="ekr.20080729200342.7"><vh>new</vh></v>
@@ -2282,6 +2283,16 @@
 <v t="ekr.20080804121540.12" a="E"><vh>new</vh>
 <v t="ekr.20080804121540.13"><vh>node 1</vh></v>
 <v t="ekr.20080804121540.14"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804123400.1"><vh>@shadow-test verbatim sentinels-add verbatim line</vh>
+<v t="ekr.20080804123400.2" a="E"><vh>old</vh>
+<v t="ekr.20080804123400.3"><vh>node 1</vh></v>
+<v t="ekr.20080804123400.4"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804123400.5"><vh>new</vh>
+<v t="ekr.20080804123400.6"><vh>node 1</vh></v>
+<v t="ekr.20080804123400.7"><vh>node 2</vh></v>
 </v>
 </v>
 </v>
@@ -2393,6 +2404,7 @@
 <v t="ekr.20080729200342.1" a="E"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
+<v t="ekr.20080804124245.1"><vh>passed</vh></v>
 <v t="ekr.20080729200342.5"><vh>@shadow-test change middle line</vh>
 <v t="ekr.20080729200342.6"><vh>old</vh></v>
 <v t="ekr.20080729200342.7"><vh>new</vh></v>
@@ -2591,6 +2603,16 @@
 <v t="ekr.20080804121540.12" a="E"><vh>new</vh>
 <v t="ekr.20080804121540.13"><vh>node 1</vh></v>
 <v t="ekr.20080804121540.14"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804123400.1"><vh>@shadow-test verbatim sentinels-add verbatim line</vh>
+<v t="ekr.20080804123400.2" a="E"><vh>old</vh>
+<v t="ekr.20080804123400.3"><vh>node 1</vh></v>
+<v t="ekr.20080804123400.4"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804123400.5"><vh>new</vh>
+<v t="ekr.20080804123400.6"><vh>node 1</vh></v>
+<v t="ekr.20080804123400.7"><vh>node 2</vh></v>
 </v>
 </v>
 </v>
@@ -21432,5 +21454,18 @@ node 2 line 2</t>
 <t tx="ekr.20080804121540.13">node 1 line 1</t>
 <t tx="ekr.20080804121540.14">node 2 line 1
 node 2 line 2</t>
+<t tx="ekr.20080804123400.1"></t>
+<t tx="ekr.20080804123400.2">@others</t>
+<t tx="ekr.20080804123400.3">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20080804123400.4">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080804123400.5">@others</t>
+<t tx="ekr.20080804123400.6">node 1 line 1
+#@ should be handled by verbatim
+node 1 line 2</t>
+<t tx="ekr.20080804123400.7">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080804124245.1"></t>
 </tnodes>
 </leo_file>

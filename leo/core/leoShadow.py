@@ -272,6 +272,10 @@ class shadowController:
             line = reader.get()
             if x.is_sentinel(line, marker):
                 if x.is_verbatim(line,marker):
+                    # # if reader.index() < limit:
+                        # # # We are *copying* the @verbatim sentinel.
+                        # # line = reader.get()
+                        # # writer.put(line,tag='copy sent %s:%s' % (start,limit))
                     # We are *deleting* non-sentinel lines, so we must delete @verbatim sentinels!
                     # We must **extend** the limit to get the next line.
                     if reader.index() < limit + 1:
@@ -433,6 +437,8 @@ class shadowController:
                 start = new_public_lines_rdr.index()
                 while new_public_lines_rdr.index() < new_j:
                     line = new_public_lines_rdr.get()
+                    if x.is_sentinel(line,marker):
+                        new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
                     new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
             elif tag=='delete':
