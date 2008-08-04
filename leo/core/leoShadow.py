@@ -245,9 +245,10 @@ class shadowController:
             self.show_error(
                 lines1 = new_public_lines2,
                 lines2 = new_public_lines,
-                message = "Not all changes made!",
+                message = "Error in updating public file!",
                 lines1_message = "new public lines (derived from new private lines)",
                 lines2_message = "new public lines")
+            # g.trace(g.callers())
 
         if new_sentinel_lines2 != sentinel_lines:
             ok = False
@@ -468,6 +469,8 @@ class shadowController:
 
         x = self
 
+        g.trace('old_public_file',old_public_file)
+
         old_public_lines  = file(old_public_file).readlines()
         old_private_lines = file(old_private_file).readlines()
         marker = x.marker_from_extension(old_public_file)
@@ -480,7 +483,7 @@ class shadowController:
         fn = old_private_file
         copy = not os.path.exists(fn) or new_private_lines != old_private_lines
 
-        if copy:
+        if copy and x.errors == 0:
             s = ''.join(new_private_lines)
             x.replaceFileWithString(fn,s)
 
@@ -593,8 +596,8 @@ class shadowController:
         elif ext in (".bat",):
             marker = "REM@"
         else:
-            self.error("extension %s not known" % ext)
-            marker = '#'
+            self.error("extension '%s' not known" % ext)
+            marker = '#@' # Bug fix: 2008/8/4
 
         return marker
     #@-node:ekr.20080708094444.9:x.marker_from_extension
