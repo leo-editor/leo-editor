@@ -806,17 +806,18 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim with Leo</vh>
-<v t="TL.20080622103911.1"><vh>@rst html\vimBindings.html</vh>
-<v t="TL.20080622103911.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20080728151130.3"><vh>Vim bindings</vh>
-<v t="TL.20080622103911.3"><vh>Installing vim bindings</vh></v>
-<v t="TL.20080622103911.4"><vh>General commands</vh></v>
-<v t="TL.20080622103911.5"><vh>Body pane commands</vh></v>
-<v t="TL.20080622103911.6"><vh>Outline commands</vh></v>
+<v t="TL.20080804095315.1"><vh>Chapter 22: Using Vim with Leo</vh>
+<v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
+<v t="TL.20080804095315.3"><vh>@rst-no-head links</vh></v>
+<v t="TL.20080804095315.11"><vh>Vim bindings</vh>
+<v t="TL.20080804095315.4"><vh>Installing vim bindings</vh></v>
+<v t="TL.20080804095315.5"><vh>General commands</vh></v>
+<v t="TL.20080804095315.6"><vh>Body pane commands</vh></v>
+<v t="TL.20080804095315.7"><vh>Outline commands</vh></v>
+<v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
 </v>
-<v t="ekr.20080728151130.4"><vh>Using vim's modeline features</vh></v>
-<v t="TL.20080622103911.7"><vh>@rst-no-head end stuff</vh></v>
+<v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
+<v t="TL.20080804095315.10"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20080730212711.14"><vh>Chapter 23: Using @shadow</vh>
@@ -5146,7 +5147,9 @@ The code is pretty fragile; it should handle either None or "", but in fact it r
 <t tx="EKR.20040628095213.513"></t>
 <t tx="EKR.20040628100535">@killcolor</t>
 <t tx="EKR.20040628100535.1"></t>
-<t tx="TL.20080622103911.1">@ @rst-options
+<t tx="TL.20080804095315.1">@language rest
+</t>
+<t tx="TL.20080804095315.2">@ @rst-options
 code_mode=False
 generate_rst=True
 http_server_support = False
@@ -5163,15 +5166,14 @@ verbose=True
 |back| |leo| |next|
 
 ############################################################
-Chapter 22: Using Vim with Leo
+Chapter 22: Using Vim Bindings with Leo
 ############################################################
 
-This chapter describes how to use Leo with vim.
-Most of the chapter tells how to install and use vim-like bindings in Leo.
+This chapter describes Leo's vim-like bindings, including how to install them.
 
 .. contents::
 </t>
-<t tx="TL.20080622103911.2">.. Links
+<t tx="TL.20080804095315.3">.. Links
 
 .. .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
 
@@ -5185,20 +5187,20 @@ Most of the chapter tells how to install and use vim-like bindings in Leo.
     :target: front.html
 
 .. |next| image:: arrow_rt.gif
-    :target: atShadow.html
+    :target: appendices.html
 </t>
-<t tx="TL.20080622103911.3">To install vim bindings, move the node in leoSettings.leo called "Vim bindings by TL"
+<t tx="TL.20080804095315.4">To install vim bindings, move the node in leoSettings.leo called "Vim bindings by TL"
 so that it is not a descendant of the "@ignore Unused key bindings" node.
 Then restart Leo.</t>
-<t tx="TL.20080622103911.4">The following commands are always available.
+<t tx="TL.20080804095315.5">The following commands are always available.
 
 State change commands::
 
     i           Change state to insert from command state
     Esc         Change state to command from insert state
-    Ctrl-[      Change state to command from insert state
+    Ctrl-[      Same as ESC
 
-Miscellaneous commands::
+Save/Exit/Quite commands::
 
     :e          Revert
     :w&lt;return&gt;  Save '.leo' file
@@ -5206,14 +5208,38 @@ Miscellaneous commands::
     :q&lt;return&gt;  Quit Leo   (Leo will prompt if file not saved)
     ZZ          Save leo file and exit
 
+Undo/Redo commands::
+
     u           Undo previous command
     Ctrl-r      Redo previous command
+
+
+Search options::
+
+    Ctrl-/      Prompt for option to change
+                Options:
+                    a   Search all nodes (also &lt;cr&gt; key)
+                    h   Toggle headline search
+                    b   Toggle body search
+                    m   Toggle marking of nodes (specify sub-option)
+                        f   Toggle marking of nodes with found text
+                        c   Toggle marking of nodes with changed text
+                            (only supported with 'Alt-/', 'Alt-p')
+                    r   Toggle regex matches
+                        ('/' key turns off regex. 'n' key uses regex if turned on)
+    
+    Note: Whether search is limited to node's body or the node's sub-outline
+          is determined by which pane has focus when search text specified.
+          (See "Find text commands:" sub-sections in Outline/Body Pane sections)
+
+Miscellaneous commands::
 
     Tab         Toggle focus between Outline and Body pane
     =           Simulate double-click on current node's icon box
     Alt-G       Go to specified line number (relative to derived file)
+    Ctrl-:      Enter Leo's command line
 </t>
-<t tx="TL.20080622103911.5">Move cursor commands::
+<t tx="TL.20080804095315.6">Move cursor commands::
 
     h           Go back 1 character
        LtArrow  Mapped to "h" for convenience
@@ -5224,32 +5250,42 @@ Miscellaneous commands::
     l           Go forward 1 character
        RtArrow  Mapped to "l" for convenience
 
-    w           Go to the next word (stop at non-alpha characters)
+    w           Go to beginning of next word
        W        Mapped to "w" until "stop after blank characters" supported
-    b           Go to beginning of word (stop at non-alpha characters)
+    b           Go to beginning of current/previous word
        B        Mapped to "b" until "stop at blank character" supported
-    e           Go to end of word (stop at non-alpha characters)
+    e           Go to end of current/next word
        E        Mapped to "e" until "stop at blank character" supported
+
+    Note: Move by word commands stop at non-alpha characters
 
     |           Goto beginning of current line
     ^           Go to 1st non-blank character on current line
     $           Goto end of current line
+
+    %           Go to matching bracket
 
     (           Go to beginning of current sentence
     )           Go to beginning of next sentence
     {           Go to beginning of current paragraph
     }           Go to beginning of next paragraph
 
-    %           Go to matching bracket
-
     gg          Go to the first line (Cursor at column 1)
     G           Go to the last line  (Cursor at column 1)
 
     `.          Go to location of last edit (regardless of buffer)
     '.          Go to beginning of line of last edit (regardless of buffer)
-    
+
+Mark commands::
+
+    m&lt;label&gt;    Assign cursor location to a single character label
+    `&lt;label&gt;    Go to location associated with label
+
+    Note: Only character count is tracked. Any inserts or deletes will change mark.
+          Node is not tracked; "`&lt;label&gt;" key will go to location in current node.
+
 Insert/substitute commands::
-    
+
     a           Insert at cursor
     i           Mapped to "a" until "cursor on a character" supported
     A           Insert at end of line
@@ -5259,7 +5295,7 @@ Insert/substitute commands::
     R           Overwrite text
     s           Substitute character (Delete character, enter insert state)
     S           Substitute line (Delete line, enter insert state)
-    
+
 Change commands::
 
     C           Change to end of line
@@ -5273,7 +5309,8 @@ Change commands::
     c%          Change from current bracket type its matching bracket type
     ct&lt;char&gt;    Selects forward to &lt;char&gt; (follow with 'i' to change selection)
     cT&lt;char&gt;    Selects backward to &lt;char&gt; (follow with 'i' to change selection)
-    
+    c&lt;cr&gt;       Change selected text
+
 Delete commands::
 
     x           Delete next character
@@ -5288,8 +5325,10 @@ Delete commands::
     d{          Delete to start of paragraph
     d%          Delete from current bracket type to its apposing bracket
     dt&lt;ch&gt;      Delete to character (not limited to current line)
+    d&lt;cr&gt;       Delete selected text
+
     J           Join next line to end of current line (deletes carriage return)
-    
+
 Yank text commands::
 
     Y           Yank to end of line
@@ -5305,24 +5344,37 @@ Yank text commands::
     yT&lt;char&gt;    Select backward to &lt;char&gt; (use 'y&lt;cr&gt;' to yank selection)
 
     v           Toggle text select mode (Vim's "visual" mode)
-    y&lt;cr&gt;       Yank selected text (Vim uses 'y')
-    
-Paste text commands::
+    y&lt;cr&gt;       Yank selected text (Vim uses 'y' in visual mode)
 
-    Paste commands do not differentiate between yanked lines or partial lines.
-    Put cursor at beginning of line (key '|') before pasting full lines.
-    
-    P           Paste text in clipboard before cursor location
-      p         Mapped to "P" until character based cursor supported.
+Find character commands::
 
-Find commands::
-
-    /           Find next occurrence of user specified string
-    ?           Find previous occurrence of user specified string
     f           Find next occurrence of user specified character
     F           Find previous occurrence of user specified character
-    n           Find next occurrence of string specified by '/' command
-    N           Find previous occurrence of string specified by '/' command
+
+Find text commands::
+
+    /           Search forward within current node's body text
+    ?           Search backward within current node's body text
+    n           Find next (same scope, same direction)
+    N           Find next (same scope, other direction)
+
+    Note: See "Search options" section above to change options using 'Ctrl-/'
+
+Replace [and find next] commands::
+
+    Commands using Paste buffer (clipboard)
+    P           Paste text before cursor.
+    p           Mapped to "P" until character based cursor supported.
+    Ctrl-p      Paste then find next match
+                Note: Use 'pn' instead of 'Ctrl-p' in headlines (Leo limitation)
+                      Command will continue to paste when match no longer found.
+
+    Commands prompting for replace string
+    Note: Scope and search direction taken from last use of '/','?' or 'Ctrl-/'(scope only)
+    Alt-/       Prompt for search &amp; replace string
+    Alt-p       Replace then search (use after Alt-/)
+                Note: Works in headlines and body panes.
+                      Doesn't paste unless last search found a match.
 
 Indent line commands::
 
@@ -5338,7 +5390,7 @@ Indent line commands::
     &lt;(          Remove all indentation to the beginning of sentence
     &lt;}          Remove all indentation to the end of paragraph
     &lt;{          Remove all indentation to the beginning of paragraph
-    
+
 Scroll commands::
 
     Ctrl-b      Scroll text up by pane's height
@@ -5358,7 +5410,7 @@ Window commands::
        Ctrl-w j Mapped to "Ctrl-w w" (Vim: Go to window below current window)
     Ctrl-w c    Close current view in body pane (Vim: Close current window)
        Ctrl-w q Mapped to "Ctrl-w c" (Vim: Quit current window)
-    
+
 Node commands::
 
     Ctrl-j      Go to next visible node
@@ -5370,87 +5422,112 @@ Node commands::
        Ctrl-UpArrow  Mapped to "Ctrl-k" for convenience
        Ctrl-LtArrow  Mapped to "Ctrl-h" for convenience
        Ctrl-RtArrow  Mapped to "Ctrl-l" for convenience
-
-Notable vi commands **not** supported in the Body pane::
-
-    t&lt;char&gt;     Move cursor to character before specified character
-    r           Replace a single character with a single character
-    &lt;num&gt;G      Go to specified line number
-    0           Go to 1st column in current line (Use '|' instead)
-    bksp        Move one character to the left
-    m&lt;label&gt;    Mark cursor location (and "'" and "`" to return to mark)
-    ~           Toggle character's case
-    .           Repeat last editing command
-    ;           Repeat last cursor movement command
-    &lt;n&gt;&lt;cmd&gt;    Perform command 'n' number of times
-    &lt;cmd&gt;&lt;n&gt;&lt;object&gt;    Perform the command on the n'th or up to the n'th object
-    z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
 </t>
-<t tx="TL.20080622103911.6">The following commands are supported when in a headline's command mode.
+<t tx="TL.20080804095315.7">The following commands are supported when in a headline's command mode.
 
 State change commands::
 
-    Ctrl-i          Change state to command from grayed state
-    return          Change state to command from insert state
-    Ctrl-]          Change state to grayed from command state
+    Ctrl-i      Change state to command from grayed state
+    return      Change state to command from insert state
+    Ctrl-]      Change state to grayed from command state
 
-Headline editing commands::
+Cursor movement commands::
 
-    |               Go to Beginning of line
-    $               Go to end of line
-    %               Go to matching bracket
-    e               Go to end of word (stop at non-alpha characters)
-    E               Select to end of word
-    w               Go to beginning of next word
-    W               Select to beginning of next word
+    h           Go to previous character
+       LtArrow  Mapped to 'h' for convenience
+    l           Go to next character
+       RtArrow  Mapped to "l" for convenience
 
-    h               Go to previous character
-       LtArrow      Mapped to 'h' for convenience
-    l               Go to next character
-       RtArrow      Mapped to "l" for convenience
+    w           Go to beginning of next word
+       W        Mapped to "w" until "stop after blank characters" supported
+    b           Go to beginning of current/previous word
+       B        Mapped to "b" until "stop at blank character" supported
+    e           Go to end of current/next word
+       E        Mapped to "e" until "stop at blank character" supported
 
-    f               Find next occurrence of user specified character
-    /               Find next occurrence of user specified string
-    n               Find next occurrence of last search string
-    N               Find previous occurrence of last search string
+    Note: Move by word commands stop at non-alpha characters
 
-    x               Delete next character
-    delete          Delete next character
-    dd              kill-line 
+    |           Go to beginning of line
+    ^           Go to beginning of line
+    $           Go to end of line
 
-    s               Select current character
+    %           Go to matching bracket
 
-    C               Select to end of line (follow with 'i' to change text)
-    cc              Delete line (follow with 'i' to change text)
+Edit commands::
 
-    D               Select to end of line (follow with 'x' to delete text)
-    dd              Delete line
+    x           Delete next character
+    delete      Delete next character
+    dd          kill-line
 
-    Y               Select to end of line (follow with 'y&lt;return&gt;' to yank text)
-    yy              Select line (follow with 'y&lt;return&gt;' to yank text)
+    s           Select current character
 
-    v               Toggle text select mode
-    y&lt;return&gt;       Yank selected text
+    v           Toggle text select mode (issue cursor movement commands)
+    y&lt;return&gt;   Yank selected text
+
+    C           Select to end of line (follow with 'i' to change text)
+    cc          Delete line (follow with 'i' to change text)
+
+    D           Select to end of line (follow with 'x' to delete text)
+    dd          Delete line
+
+    Y           Select to end of line (follow with 'y&lt;return&gt;' to yank text)
+    yy          Select line (follow with 'y&lt;return&gt;' to yank text)
+
+Find character commands::
+
+    f           Find next occurrence of user specified character
+    F           Find previous occurrence of user specified character
+
+Find text commands::
+
+    /           Search forward within current node and its subnodes
+    n           Find next (same scope, same direction)
+    N           Find next (same scope, other direction)
+
+    Note: See "Search options" section above to change options using 'Ctrl-/'
     
-Node commands::
+Replace [and find next] commands::
 
-    G               Go to the outline's last node
-    gg              Go to the outline's first node
+    Commands that use Paste buffer (clipboard)
+    Note: Paste-then-search command not possible in headlines (Use 'pn')
+    P           Paste text before cursor.
+    p           Mapped to "P" until character based cursor supported.
 
-    Ctrl-j          Go to next visible node
-    Ctrl-k          Go to previous visible node
-    Ctrl-h          Hide sub-nodes or, if hidden, go up 1 level
-    Ctrl-l          Display sub-nodes or, if displayed, go down 1 level
+    Commands that prompt for the replace string
+    Alt-/       Prompt for search &amp; replace string
+    Alt-p       Replace then search (use after Alt-/)
+                Note: Works in headlines and body panes.
+                      Doesn't paste unless last search found a match.
 
-       j            Mapped to "Ctrl-j" for convenience
-       DnArrow      Mapped to "Ctrl-j" for convenience
-       k            Mapped to "Ctrl-k" for convenience
-       UpArrow      Mapped to "Ctrl-k" for convenience
+Node edit commands::
+
+    Ctrl-o      Insert node after current node
+
+    Ctrl-x      Delete current node
+    Ctrl-c      Yank current node
+    Ctrl-v      Paste current node
+
+Node goto commands::
+
+    G           Go to the outline's last node
+    gg          Go to the outline's first node
+
+    Ctrl-j      Go to next visible node
+    Ctrl-k      Go to previous visible node
+    Ctrl-h      Hide sub-nodes or, if hidden, go up 1 level
+    Ctrl-l      Display sub-nodes or, if displayed, go down 1 level
+
+       j        Mapped to "Ctrl-j" for convenience
+       DnArrow  Mapped to "Ctrl-j" for convenience
+       k        Mapped to "Ctrl-k" for convenience
+       UpArrow  Mapped to "Ctrl-k" for convenience
 
        Ctrl-DnArrow Mapped to "Ctrl-j" for convenience
        Ctrl-UpArrow Mapped to "Ctrl-k" for convenience
        Ctrl-LtArrow Mapped to "Ctrl-h" for convenience
        Ctrl-RtArrow Mapped to "Ctrl-l" for convenience
+
+Node move commands::
 
     Shift-Ctrl-k    Move node down
     Shift-Ctrl-h    Move node left
@@ -5462,31 +5539,79 @@ Node commands::
        Shift-Ctrl-RtArrow    Mapped to "Shift-Ctrl-l" for convenience
        Shift-Ctrl-UpArrow    Mapped to "Shift-Ctrl-j" for convenience
 
-    m               Toggle node mark
-    Ctrl-m          Go to next marked node
-    Alt-m           Clear all marked nodes
+Node mark commands::
 
-    t               Clone the current node (transclude)
-    Ctrl-t          Go to next clone of current node
+    m           Toggle node mark
+    Ctrl-m      Go to next marked node
+    Alt-m       Clear all marked nodes
 
-    Ctrl-o          Insert-node
+Node clone commands::
 
-    Ctrl-x          Delete node
-    Ctrl-c          Yank node
-    Ctrl-v          Paste node
+    t           Clone the current node (transclude)
+    Ctrl-t      Go to next clone of current node
 
-Scroll commands::
+Outline scroll commands::
 
-   Ctrl-y          Scroll outline up one line
-   Ctrl-e          scroll outline down one line
-       Ctrl-u       Mapped to Ctrl-y until scroll up by half a pane supported
-       Ctrl-d       Mapped to Ctrl-e until scroll down by half a pane supported
-       Ctrl-b       Mapped to Ctrl-y until scroll up by pane's height supported
-       Ctrl-f       Mapped to Ctrl-e until scroll down by pane's height supported
+   Ctrl-y       Scroll outline up one line
+   Ctrl-e       scroll outline down one line
+       Ctrl-u    Mapped to Ctrl-y until scroll up by half a pane supported
+       Ctrl-d    Mapped to Ctrl-e until scroll down by half a pane supported
+       Ctrl-b    Mapped to Ctrl-y until scroll up by pane's height supported
+       Ctrl-f    Mapped to Ctrl-e until scroll down by pane's height supported
 </t>
-<t tx="TL.20080622103911.7">-----------------------
+<t tx="TL.20080804095315.8">Notable missing editing commands::
+
+    t&lt;char&gt;     Move cursor to character before specified character
+    r           Replace a single character with a single character
+    0           Go to 1st column in current line (Use '|' instead)
+    bksp        Move one character to the left
+    ~           Toggle character's case
+    .           Repeat last editing command
+    ;           Repeat last cursor movement command
+    &lt;n&gt;&lt;cmd&gt;    Perform command 'n' number of times
+    &lt;cmd&gt;&lt;n&gt;&lt;object&gt;    Perform the command on the n'th or up to the n'th object
+
+Notable missing body pane commands::
+
+    &lt;num&gt;G      Go to specified line number
+    z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
+</t>
+<t tx="TL.20080804095315.9">If you use the open-with plugin to open node text in Vim and your Vim's "tag"
+file refers to derived files then there is a risk that a derived file that is
+initially displayed via the "tag" command" in Vim is accidentally edited and
+saved from the external Vim editor while your Leo session still contains the
+derived file's original text that may later recreate the original derived file
+during a Leo save operation (overwriting the changes saved from the Vim editor).
+
+To prevent this problem, modifications to derived files can be avoided by using
+Vim's "modeline" feature to disable editing of derived files.
+
+Vim's "modeline" feature scans each loaded buffer for text at the top or bottom
+of the file containing " vim:" followed by a series of Vim options. The text is
+usually embedded within a comment. The following example prevents modifications
+to a buffer in a Python file::
+
+    # vim:noma (A space is required between the '#' and "vim:noma")
+
+If this line is placed in a separate Leo node at the top or bottom of the list
+of nodes under a derived file node (ex: @thin) then any derived file saved and
+then later loaded into Vim will, by default, not be modifiable. If a derived
+file does need to be edited then modifications can be re-enabled on a
+file-by-file basis by issuing Vim's ":ma" command while viewing the derived
+file.
+
+The number of lines that Vim checks at the top and bottom of the buffer is
+configurable. The following Vim command must be placed in the vimrc file to
+allow for Leo's trailing sentinel lines::
+
+    set modelines=8
+
+Issue the ":help modeline" command within Vim for the more information about
+modelines.</t>
+<t tx="TL.20080804095315.10">-----------------------
 
 |back| |leo| |next|</t>
+<t tx="TL.20080804095315.11"></t>
 <t tx="bob.20080110214217"></t>
 <t tx="bob.20080110214217.1">gtkDialogs replaces Tk's file dialogs with Gtk file chooser dialogs.
 
@@ -30391,8 +30516,6 @@ After your branch is pushed, you can email the Leo mailing list and request it
 to be reviewed and merged to trunk.
 
 -- Ville M. Vainio - vivainio.googlepages.com</t>
-<t tx="ekr.20080611105410.147">@language rest
-</t>
 <t tx="ekr.20080624093059.1">Leo 4.5 beta 1                      June 28, 2008
 
 Leo 4.5 beta 1 is now available at:
@@ -30859,39 +30982,6 @@ reacts as if 3 is expanded and repositions to allow for all those
 actually not visible lines, but the second time you drag something in
 it's ok, as if it has an accurate count on visible lines now.
 </t>
-<t tx="ekr.20080728151130.3"></t>
-<t tx="ekr.20080728151130.4">If you use the open-with plugin to open node text in Vim and your Vim's "tag"
-file refers to derived files then there is a risk that a derived file that is
-initially displayed via the "tag" command" in Vim is accidentally edited and
-saved from the external Vim editor while your Leo session still contains the
-derived file's original text that may later recreate the original derived file
-during a Leo save operation (overwriting the changes saved from the Vim editor).
-
-To prevent this problem, modifications to derived files can be avoided by using
-Vim's "modeline" feature to disable editing of derived files.
-
-Vim's "modeline" feature scans each loaded buffer for text at the top or bottom
-of the file containing " vim:" followed by a series of Vim options. The text is
-usually embedded within a comment. The following example prevents modifications
-to a buffer in a Python file::
-
-    # vim:noma (A space is required between the '#' and "vim:noma")
-
-If this line is placed in a separate Leo node at the top or bottom of the list
-of nodes under a derived file node (ex: @thin) then any derived file saved and
-then later loaded into Vim will, by default, not be modifiable. If a derived
-file does need to be edited then modifications can be re-enabled on a
-file-by-file basis by issuing Vim's ":ma" command while viewing the derived
-file.
-
-The number of lines that Vim checks at the top and bottom of the buffer is
-configurable. The following Vim command must be placed in the vimrc file to
-allow for Leo's trailing sentinel lines::
-
-    set modelines=8
-
-Issue the ":help modeline" command within Vim for the more information about
-modelines.</t>
 <t tx="ekr.20080729064227.3">The ``@unit`` directive expands the scope of section definitions in ``@root`` trees
 so that a section may be referenced in several ``@root`` trees.
 The ``@unit`` directive is ignored outside of ``@root`` trees.</t>
