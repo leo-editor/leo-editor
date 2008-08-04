@@ -20862,6 +20862,279 @@ def shouldWriteAtShadowNode (self,p,exists,force):
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helper
 #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@-node:ekr.20080713091247.5:Finished @shadow commands
+#@+node:ekr.20080802070659.5:Use thin-like shadow nodes
+@ One unit tests generates a "bad tnode list" error.
+writeOneAtShadowNode wust update the tnode list in the root!
+#@nonl
+#@+node:ekr.20080803063553.3:Changed to make private files use thin-like sentinels
+#@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+def readOneAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c ; x = c.shadowController
+
+    if not fn == p.atShadowFileNodeName():
+        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
+            fn, p.atShadowFileNodeName()))
+
+    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+
+    fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
+    shadow_fn       = x.shadowPathName(fn)
+    shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+    # significant     = x.isSignificantPublicFile(fn)
+
+    if shadow_exists:
+        # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
+        at.read(p,
+            thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
+            atShadow=True)
+            # Calls x.updatePublicAndPrivateFiles
+    else:
+        if not g.unitTesting: g.es("reading:",p.headString())
+        ok = at.importAtShadowNode(fn,p)
+        if ok:
+            # x.makeShadowFile(fn,p)
+            at.writeOneAtShadowNode(p,toString=False,force=True)
+#@+node:ekr.20080712080505.1:importAtShadowNode
+def importAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c  ; ic = c.importCommands
+    oldChanged = c.isChanged()
+
+    # Delete all the child nodes.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    # Import the outline, exactly as @auto does.
+    ic.createOutline(fn,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @shadow',fn,color='red')
+
+    if ic.errors or not g.os_path_exists(fn):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+
+    # else: g.doHook('after-shadow', p = p)
+
+    return ic.errors == 0
+#@-node:ekr.20080712080505.1:importAtShadowNode
+#@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+#@+node:ekr.20031218072017.1863:putVnode
+def putVnode (self,p,isIgnore=False):
+
+    """Write a <v> element corresponding to a vnode."""
+
+    fc = self ; c = fc.c ; v = p.v
+    # Not writing @auto nodes is way too dangerous.
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isShadow = p.isAtShadowFileNode()
+    isThin = p.isAtThinFileNode()
+    isOrphan = p.isOrphan()
+    if not isIgnore: isIgnore = p.isAtIgnoreNode()
+
+    if isIgnore:   forceWrite = True      # Always write full @ignore trees.
+    elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
+    elif isShadow: forceWrite = False   # Never write non-ignored @shadow trees.
+    elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
+    else:          forceWrite = True      # Write all other @file trees.
+
+    << Set gnx = tnode index >>
+    attrs = []
+    << Append attribute bits to attrs >>
+    << Append tnodeList and unKnownAttributes to attrs >>
+    attrs = ''.join(attrs)
+    v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
+    # The string catentation is faster than repeated calls to fc.put.
+    if not self.usingClipboard:
+        << issue informational messages >>
+    # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+    if p.hasChildren() and (forceWrite or self.usingClipboard):
+        fc.put('%s\n' % v_head)
+        # This optimization eliminates all "recursive" copies.
+        p.moveToFirstChild()
+        while 1:
+            fc.putVnode(p,isIgnore)
+            if p.hasNext(): p.moveToNext()
+            else:           break
+        p.moveToParent() # Restore p in the caller.
+        fc.put('</v>\n')
+    else:
+        fc.put('%s</v>\n' % v_head) # Call put only once.
+#@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
+# New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+if not v.t.fileIndex:
+    v.t.fileIndex = g.app.nodeIndices.getNewIndex()
+
+gnx = g.app.nodeIndices.toString(v.t.fileIndex)
+
+if forceWrite or self.usingClipboard:
+    v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
+#@-node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
+#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren(): attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+
+    # No longer a bottleneck now that we use p.equal rather than p.__cmp__
+    # Almost 30% of the entire writing time came from here!!!
+    # if not self.use_sax:
+        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
+        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
+
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
+    if not c.fixed:
+        d['str_leo_pos'] = ','.join(aList)
+    # g.trace(aList,d)
+    v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
+#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+# Write the tnodeList only for @file nodes.
+# New in 4.2: tnode list is in tnode.
+
+if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
+    if isThin or isShadow:
+        if 1:
+            if g.app.unitTesting:
+                g.app.unitTestDict["warning"] = True
+            g.es("deleting tnode list for",p.headString(),color="blue")
+        # This is safe: cloning can't change the type of this node!
+        delattr(v.t,"tnodeList")
+    else:
+        attrs.append(fc.putTnodeList(v)) # New in 4.0
+
+if hasattr(v,"unknownAttributes"): # New in 4.0
+    attrs.append(self.putUnknownAttributes(v))
+
+if p.hasChildren() and not forceWrite and not self.usingClipboard:
+    # We put the entire tree when using the clipboard, so no need for this.
+    attrs.append(self.putDescendentUnknownAttributes(p))
+    attrs.append(self.putDescendentAttributes(p))
+#@nonl
+#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+#@+node:ekr.20040702085529:<< issue informational messages >>
+if isOrphan and isThin:
+    g.es("writing erroneous:",p.headString(),color="blue")
+    p.clearOrphan()
+#@-node:ekr.20040702085529:<< issue informational messages >>
+#@-node:ekr.20031218072017.1863:putVnode
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helper
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if not fn:
+        g.trace('can not happen: not an @shadow node',p.headString())
+        return False
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = g.os_path_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force):
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None,
+        nosentinels=None, # set below.  Affects only error messages (sometimes).
+        thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+        scriptWrite=False,
+        toString=False, # True: create a fileLikeObject.  This is done below.
+        write_strips_blank_lines=False)
+            # at.targetFileName not used.
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,nosentinels=not sentinels,toString=False,atAuto=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        ### It may be better to compute the public file by removing sentinels from at.private_s
+        ### by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
+        ### x.isSentinel logic is used consistently by the @shadow read/write logic.
+        ### OTOH, Leo's write logic should actually dominate x.isSentinel.
+
+        # Write the public and private files.
+        private_fn = x.shadowPathName(fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName)
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helper
+#@-node:ekr.20080803063553.3:Changed to make private files use thin-like sentinels
+#@-node:ekr.20080802070659.5:Use thin-like shadow nodes
 #@-node:ekr.20080730212711.5:Added support for @shadow
 #@-node:ekr.20080730212711.4:New features
 #@-node:ekr.20080702123133.2:4.5 b2

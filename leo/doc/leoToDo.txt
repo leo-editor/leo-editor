@@ -2,7 +2,180 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
-#@+node:ekr.20080801071227.1:First 8
+#@+node:ekr.20080804063523.1:Fix @shadow problems
+#@+node:ekr.20080802070659.6:Replace x.is_sentinel
+#@+node:ekr.20080802070659.7:Found: is_sentinel
+#@+node:ekr.20080708094444.37:x.copy_sentinels
+def copy_sentinels(self,reader,writer,marker,limit):
+
+    '''Copy sentinels from reader to writer while reader.index() < limit.'''
+
+    start = reader.index()
+    while reader.index() < limit:
+        line = reader.get()
+        if self.is_sentinel(line, marker):
+            writer.put(line,tag='copy sent %s:%s' % (start,limit))
+#@-node:ekr.20080708094444.37:x.copy_sentinels
+#@+node:ekr.20080708094444.34:x.strip_sentinels_with_map
+def strip_sentinels_with_map (self, lines, marker):
+
+    '''Strip sentinels from lines, a list of lines with sentinels.
+
+    Return (results,mapping)
+
+    'lines':     A list of lines containing sentinels.
+    'results':   The list of non-sentinel lines.
+    'mapping':   A list mapping each line in results to the original list.
+                results[i] comes from line mapping[i] of the origina lines.'''
+
+    mapping = [] ; results = []
+    for i in xrange(len(lines)):
+        line = lines[i]
+        if not self.is_sentinel(line,marker):
+            results.append(line)
+            mapping.append(i)
+
+    mapping.append(len(lines)) # To terminate loops.
+    return results, mapping 
+#@-node:ekr.20080708094444.34:x.strip_sentinels_with_map
+#@+node:ekr.20080708094444.11:x.is_sentinel
+def is_sentinel (self, line, marker):
+
+    '''Return true if the line is a sentinel.'''
+
+    return line.lstrip().startswith(marker)
+#@-node:ekr.20080708094444.11:x.is_sentinel
+#@+node:ekr.20080708094444.30:x.push_filter_mapping
+def push_filter_mapping (self,filelines, marker):
+    """
+    Given the lines of a file, filter out all
+    Leo sentinels, and return a mapping:
+
+      stripped file -> original file
+
+    Filtering should be the same as
+    separate_sentinels
+    """
+
+    mapping =[None]
+
+    for i, line in enumerate(filelines):
+        if not self.is_sentinel(line,marker):
+            mapping.append(i+1)
+
+    return mapping 
+#@-node:ekr.20080708094444.30:x.push_filter_mapping
+#@+node:ekr.20080708094444.29:x.separate_sentinels
+def separate_sentinels (self, lines, marker):
+
+    '''
+    Separates regular lines from sentinel lines.
+
+    Returns (regular_lines, sentinel_lines)
+    '''
+
+    x = self ; regular_lines = [] ; sentinel_lines = []
+
+    for line in lines:
+        if x.is_sentinel(line,marker):
+            sentinel_lines.append(line)
+        else:
+            regular_lines.append(line)
+
+    return regular_lines, sentinel_lines 
+#@-node:ekr.20080708094444.29:x.separate_sentinels
+#@+node:ekr.20080709062932.23:mungePrivateLines
+def mungePrivateLines (self,lines,find,replace):
+
+    x = self.shadowController
+
+    results = []
+    for line in lines:
+        if x.is_sentinel(line,self.marker):
+            new_line = line.replace(find,replace)
+            results.append(new_line)
+            # if line != new_line: g.trace(new_line)
+        else:
+            results.append(line)
+
+    return results
+#@-node:ekr.20080709062932.23:mungePrivateLines
+#@-node:ekr.20080802070659.7:Found: is_sentinel
+#@-node:ekr.20080802070659.6:Replace x.is_sentinel
+#@+node:ekr.20080803063553.5:Support revert of @shadow nodes
+#@-node:ekr.20080803063553.5:Support revert of @shadow nodes
+#@+node:ekr.20080803063553.6:Find out why lines are being duplicated
+@nocolor
+
+python launchLeo.py
+
+NewHeadline -> @shadowImport
+bodyString ->
+---cut here---
+#!/bin/sh
+
+DB="$1"
+---cut here---
+
+save as del.leo
+quit
+
+python launchLeo.py del.leo
+
+"#!/bin/sh"
+
+is duplicated
+#@-node:ekr.20080803063553.6:Find out why lines are being duplicated
+#@+node:ekr.20080804063523.2:Fix java import problems
+@nocolor
+
+> I would appreciate your help in reporting java import problems: please send
+> a description of the apparent import problem, and a url where I can get the
+> original source.  Thanks.
+
+First 'real' modification:
+
+reading: @shadow C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\FrameworkUtil.java
+warning: intermixed blanks and tabs
+warning: mismatch in leading whitespace
+first mismatched line at line 50
+original line:          private static class ImplHolder implements
+PrivilegedAction {
+generated line:     private static class ImplHolder implements
+PrivilegedAction {
+created:   C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\.leo_shadow\xFrameworkUtil.java
+wrote:     C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\FrameworkUtil.java
+
+Second 'real' modification:
+
+reading: @shadow C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\AdminPermission.java
+warning: intermixed blanks and tabs
+warning: mismatch in leading whitespace
+first mismatched line at line 148
+original line:          private static class ImplHolder implements
+PrivilegedAction {
+generated line:     private static class ImplHolder implements
+PrivilegedAction {
+created:   C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\.leo_shadow\xAdminPermission.java
+wrote:     C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\AdminPermission.java
+
+The other reported modifications are related only to "comment
+sections"
+within the java sources.
+
+Download location for OSGi Framework JAR:
+
+http://www.osgi.org/Download/Release4V41
+#@nonl
+#@-node:ekr.20080804063523.2:Fix java import problems
+#@-node:ekr.20080804063523.1:Fix @shadow problems
+#@+node:ekr.20080801071227.1:First 9
 #@+node:ekr.20080801071227.12:Investigate problems with revert
 @nocolor
 
@@ -378,7 +551,9 @@ def setHeadString (self,p,s,encoding="utf-8"):
 #@-node:ekr.20040305223225:c.setHeadString
 #@-node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
 #@-node:ekr.20080517102922.1:Files bugs 5
-#@-node:ekr.20080801071227.1:First 8
+#@+node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
+#@-node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
+#@-node:ekr.20080801071227.1:First 9
 #@+node:ekr.20080411091507.10:Minor bugs (3)
 #@+node:ekr.20080709161540.1:Fix c colorizer bug
 @nocolor
