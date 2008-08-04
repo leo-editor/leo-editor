@@ -21967,6 +21967,56 @@ def shortDescription (self):
 #@-node:ekr.20080709062932.2:atShadowTestCase
 #@-node:ekr.20080708094444.80:class shadowController
 #@-node:ekr.20080803063553.6:(Found out why lines are being duplicated)
+#@+node:ekr.20080804063523.2:Investigated java import problems
+@nocolor
+
+http://mail.google.com/mail/#label/Leo/11b7287f4a4fe771
+http://groups.google.com/group/leo-editor/browse_thread/thread/bbadb4bee49f397b
+
+> I would appreciate your help in reporting java import problems: please send
+> a description of the apparent import problem, and a url where I can get the
+> original source.  Thanks.
+
+First 'real' modification:
+
+reading: @shadow C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\FrameworkUtil.java
+warning: intermixed blanks and tabs
+warning: mismatch in leading whitespace
+first mismatched line at line 50
+original line:          private static class ImplHolder implements
+PrivilegedAction {
+generated line:     private static class ImplHolder implements
+PrivilegedAction {
+created:   C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\.leo_shadow\xFrameworkUtil.java
+wrote:     C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\FrameworkUtil.java
+
+Second 'real' modification:
+
+reading: @shadow C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework\AdminPermission.java
+warning: intermixed blanks and tabs
+warning: mismatch in leading whitespace
+first mismatched line at line 148
+original line:          private static class ImplHolder implements
+PrivilegedAction {
+generated line:     private static class ImplHolder implements
+PrivilegedAction {
+created:   C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework\.leo_shadow\xAdminPermission.java
+wrote:     C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework\AdminPermission.java
+
+The other reported modifications are related only to "comment
+sections"
+within the java sources.
+
+Download location for OSGi Framework JAR:
+
+http://www.osgi.org/Download/Release4V41
+
+@color
+#@nonl
+#@-node:ekr.20080804063523.2:Investigated java import problems
 #@-node:ekr.20080730212711.5:Added support for @shadow
 #@-node:ekr.20080730212711.4:New features
 #@-node:ekr.20080702123133.2:4.5 b2
