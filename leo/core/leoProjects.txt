@@ -16960,7 +16960,6 @@ print\1\\\\n\2
 
 #@-node:ekr.20080707093924.1:regexp for redraw branch
 #@-node:ekr.20080730212711.3:Code cleanups
-#@+node:ekr.20080730212711.4:New features
 #@+node:ekr.20080730212711.5:Added support for @shadow
 #@+node:ekr.20080730212711.53: Notes for @shadow
 #@+node:ekr.20080730212711.54:Thead: Eureka?? Can we just not use sentinels?
@@ -18020,7 +18019,7 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
        the end of a node.  However, insertions must always be done within sentinels.
     '''
 
-    x = self ; trace = False ; verbose = False
+    x = self ; trace = False ; verbose = True
     # mapping tells which line of old_private_lines each line of old_public_lines comes from.
     old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -21416,11 +21415,24 @@ def copy_sentinels(self,reader,writer,marker,limit):
 
     '''Copy sentinels from reader to writer while reader.index() < limit.'''
 
+    x = self
     start = reader.index()
     while reader.index() < limit:
         line = reader.get()
-        if self.is_sentinel(line, marker):
-            writer.put(line,tag='copy sent %s:%s' % (start,limit))
+        if x.is_sentinel(line, marker):
+            if x.is_verbatim(line,marker):
+                # We are *deleting* non-sentinel lines, so we must delete @verbatim sentinels!
+                # We must **extend** the limit to get the next line.
+                if reader.index() < limit + 1:
+                    # Skip the next line, whatever it is.
+                    # Important: this **deletes** the @verbatim sentinel,
+                    # so this is a exception to the rule that sentinels are preserved.
+                    line = reader.get()
+                else:
+                    x.verbatim_error()
+            else:
+                # g.trace('put line',repr(line))
+                writer.put(line,tag='copy sent %s:%s' % (start,limit))
 #@-node:ekr.20080708094444.37:x.copy_sentinels
 #@+node:ekr.20080708094444.38:x.propagate_changed_lines
 def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
@@ -21436,7 +21448,7 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
        the end of a node.  However, insertions must always be done within sentinels.
     '''
 
-    x = self ; trace = False ; verbose = False
+    x = self ; trace = False ; verbose = True
     # mapping tells which line of old_private_lines each line of old_public_lines comes from.
     old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -21634,14 +21646,27 @@ def strip_sentinels_with_map (self, lines, marker):
     'lines':     A list of lines containing sentinels.
     'results':   The list of non-sentinel lines.
     'mapping':   A list mapping each line in results to the original list.
-                results[i] comes from line mapping[i] of the origina lines.'''
+                results[i] comes from line mapping[i] of the original lines.'''
 
-    mapping = [] ; results = []
-    for i in xrange(len(lines)):
+    x = self
+    mapping = [] ; results = [] ; i = 0 ; n = len(lines)
+    while i < n:
         line = lines[i]
-        if not self.is_sentinel(line,marker):
+        if x.is_sentinel(line,marker):
+            if x.is_verbatim(line,marker):
+                i += 1
+                if i < n:
+                    # Not a sentinel, whatever it looks like.
+                    line = lines[i]
+                    # g.trace('not a sentinel',repr(line))
+                    results.append(line)
+                    mapping.append(i)
+                else:
+                    x.verbatim_error()
+        else:
             results.append(line)
             mapping.append(i)
+        i += 1
 
     mapping.append(len(lines)) # To terminate loops.
     return results, mapping 
@@ -21684,7 +21709,7 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
 #@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
 #@-node:ekr.20080708192807.1:x.Propagation
 #@+node:ekr.20080708094444.89:x.Utils...
-#@+node:ekr.20080708094444.85:x.error & message
+#@+node:ekr.20080708094444.85:x.error & message & verbatim_error
 def error (self,s,silent=False):
 
     x = self
@@ -21699,15 +21724,25 @@ def error (self,s,silent=False):
 def message (self,s):
 
     g.es_print(s,color='orange')
-#@nonl
-#@-node:ekr.20080708094444.85:x.error & message
-#@+node:ekr.20080708094444.11:x.is_sentinel
+
+def verbatim_error(self):
+
+    x = self
+
+    x.error('file syntax error: nothing follows verbatim sentinel')
+    g.trace(g.callers())
+#@-node:ekr.20080708094444.85:x.error & message & verbatim_error
+#@+node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
 def is_sentinel (self, line, marker):
 
     '''Return true if the line is a sentinel.'''
 
     return line.lstrip().startswith(marker)
-#@-node:ekr.20080708094444.11:x.is_sentinel
+
+def is_verbatim (self,line,marker):
+
+    return line.lstrip().startswith(marker+'verbatim')
+#@-node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
 #@+node:ekr.20080708094444.9:x.marker_from_extension
 def marker_from_extension (self,filename):
 
@@ -21737,7 +21772,7 @@ def marker_from_extension (self,filename):
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
 #@+node:ekr.20080708094444.30:x.push_filter_mapping
-def push_filter_mapping (self,filelines, marker):
+def push_filter_mapping (self,lines, marker):
     """
     Given the lines of a file, filter out all
     Leo sentinels, and return a mapping:
@@ -21748,11 +21783,25 @@ def push_filter_mapping (self,filelines, marker):
     separate_sentinels
     """
 
-    mapping =[None]
+    x = self ; mapping =[None]
 
-    for i, line in enumerate(filelines):
-        if not self.is_sentinel(line,marker):
+    i = 0 ; n = len(lines)
+    while i < n:
+        line = lines[i]
+        if x.is_sentinel(line,marker):
+            if x.is_verbatim(line,marker):
+                i += 1
+                if i < n:
+                    mapping(append(i+1))
+                else:
+                    x.verbatim_error()
+        else:
             mapping.append(i+1)
+        i += 1
+
+    # for i, line in enumerate(filelines):
+        # if not self.is_sentinel(line,marker):
+            # mapping.append(i+1)
 
     return mapping 
 #@-node:ekr.20080708094444.30:x.push_filter_mapping
@@ -21767,11 +21816,21 @@ def separate_sentinels (self, lines, marker):
 
     x = self ; regular_lines = [] ; sentinel_lines = []
 
-    for line in lines:
+    i = 0 ; n = len(lines)
+    while i < len(lines):
+        line = lines[i]
         if x.is_sentinel(line,marker):
             sentinel_lines.append(line)
+            if x.is_verbatim(line,marker):
+                i += 1
+                if i < len(lines):
+                    line = lines[i]
+                    regular_lines.append(line)
+                else:
+                    x.verbatim_error()
         else:
             regular_lines.append(line)
+        i += 1
 
     return regular_lines, sentinel_lines 
 #@-node:ekr.20080708094444.29:x.separate_sentinels
@@ -21911,16 +21970,27 @@ def makePublicLines (self,lines):
 #@+node:ekr.20080709062932.23:mungePrivateLines
 def mungePrivateLines (self,lines,find,replace):
 
-    x = self.shadowController
+    x = self.shadowController ; marker = self.marker
 
-    results = []
-    for line in lines:
+    i = 0 ; n = len(lines) ; results = []
+    while i < n:
+    # for line in lines:
+        line = lines[i]
         if x.is_sentinel(line,self.marker):
             new_line = line.replace(find,replace)
             results.append(new_line)
+            if x.is_verbatim(line,marker):
+                i += 1
+                if i < len(lines):
+                    line = lines[i]
+                    results.append(line)
+                else:
+                    x.verbatim_error()
+
             # if line != new_line: g.trace(new_line)
         else:
             results.append(line)
+        i += 1
 
     return results
 #@-node:ekr.20080709062932.23:mungePrivateLines
@@ -22017,8 +22087,519 @@ http://www.osgi.org/Download/Release4V41
 @color
 #@nonl
 #@-node:ekr.20080804063523.2:Investigated java import problems
+#@+node:ekr.20080802070659.6:(Added code to handle @verbatim sentinels correctly)
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@nonl
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.headString())
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines
+#@+node:ekr.20080709062932.2:atShadowTestCase
+class atShadowTestCase (unittest.TestCase):
+
+    '''Support @shadow-test nodes.
+
+    These nodes should have two descendant nodes: 'before' and 'after'.
+
+    '''
+
+    @others
+
+#@+node:ekr.20080709062932.6:__init__
+def __init__ (self,c,p,shadowController,lax,trace=False):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.lax = lax
+    self.p = p.copy()
+    self.shadowController=shadowController
+
+    # Hard value for now.
+    self.marker = '#@'
+
+    # For teardown...
+    self.ok = True
+
+    # Debugging
+    self.trace = trace
+#@-node:ekr.20080709062932.6:__init__
+#@+node:ekr.20080709062932.7: fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@-node:ekr.20080709062932.7: fail
+#@+node:ekr.20080709062932.8:setUp & helpers
+def setUp (self):
+
+    c = self.c ; p = self.p ; x = self.shadowController
+
+    old = self.findNode (c,p,'old')
+    new = self.findNode (c,p,'new')
+
+    self.old_private_lines = self.makePrivateLines(old)
+    self.new_private_lines = self.makePrivateLines(new)
+
+    self.old_public_lines = self.makePublicLines(self.old_private_lines)
+    self.new_public_lines = self.makePublicLines(self.new_private_lines)
+
+    # We must change node:new to node:old
+    self.expected_private_lines = self.mungePrivateLines(self.new_private_lines,'node:new','node:old')
+
+#@+node:ekr.20080709062932.19:findNode
+def findNode(self,c,p,headline):
+    p = g.findNodeInTree(c,p,headline)
+    if not p:
+        g.es_print('can not find',headline)
+        assert False
+    return p
+#@nonl
+#@-node:ekr.20080709062932.19:findNode
+#@+node:ekr.20080709062932.20:createSentinelNode
+def createSentinelNode (self,root,p):
+
+    '''Write p's tree to a string, as if to a file.'''
+
+    h = p.headString()
+    p2 = root.insertAsLastChild()
+    p2.setHeadString(h + '-sentinels')
+    return p2
+
+#@-node:ekr.20080709062932.20:createSentinelNode
+#@+node:ekr.20080709062932.21:makePrivateLines
+def makePrivateLines (self,p):
+
+    c = self.c ; at = c.atFileCommands
+
+    at.write (p,
+        nosentinels = False,
+        thinFile = False,  # Debatable.
+        scriptWrite = True,
+        toString = True,
+        write_strips_blank_lines = None,)
+
+    s = at.stringOutput
+
+    # g.trace(p.headString(),'\n',s)
+
+    return g.splitLines(s)
+#@-node:ekr.20080709062932.21:makePrivateLines
+#@+node:ekr.20080709062932.22:makePublicLines
+def makePublicLines (self,lines):
+
+    x = self.shadowController
+
+    lines,mapping = x.strip_sentinels_with_map(lines,self.marker)
+
+    # g.trace(lines)
+
+    return lines
+#@-node:ekr.20080709062932.22:makePublicLines
+#@+node:ekr.20080709062932.23:mungePrivateLines
+def mungePrivateLines (self,lines,find,replace):
+
+    x = self.shadowController ; marker = self.marker
+
+    i = 0 ; n = len(lines) ; results = []
+    while i < n:
+    # for line in lines:
+        line = lines[i]
+        if x.is_sentinel(line,self.marker):
+            new_line = line.replace(find,replace)
+            results.append(new_line)
+            if x.is_verbatim(line,marker):
+                i += 1
+                if i < len(lines):
+                    line = lines[i]
+                    results.append(line)
+                else:
+                    x.verbatim_error()
+
+            # if line != new_line: g.trace(new_line)
+        else:
+            results.append(line)
+        i += 1
+
+    return results
+#@-node:ekr.20080709062932.23:mungePrivateLines
+#@-node:ekr.20080709062932.8:setUp & helpers
+#@+node:ekr.20080709062932.9:tearDown
+def tearDown (self):
+
+    pass
+
+    # No change is made to the outline.
+    # self.c.redraw()
+#@-node:ekr.20080709062932.9:tearDown
+#@+node:ekr.20080709062932.10:runTest (atShadowTestCase)
+def runTest (self,define_g = True):
+
+    x = self.shadowController
+
+    results = x.propagate_changed_lines(
+        self.new_public_lines,
+        self.old_private_lines,
+        marker="#@",
+        p = self.p.copy())
+
+    if not self.lax and results != self.expected_private_lines:
+
+        g.pr('%s atShadowTestCase.runTest:failure' % ('*' * 40))
+        for aList,tag in ((results,'results'),(self.expected_private_lines,'expected_private_lines')):
+            g.pr('%s...' % tag)
+            for i, line in enumerate(aList):
+                g.pr('%3s %s' % (i,repr(line)))
+            g.pr('-' * 40)
+
+        assert results == self.expected_private_lines
+
+    assert self.ok
+    return self.ok
+#@nonl
+#@-node:ekr.20080709062932.10:runTest (atShadowTestCase)
+#@+node:ekr.20080709062932.11:shortDescription
+def shortDescription (self):
+
+    return self.p and self.p.headString() or '@test-shadow: no self.p'
+#@-node:ekr.20080709062932.11:shortDescription
+#@-node:ekr.20080709062932.2:atShadowTestCase
+#@+node:ekr.20080802070659.7:Found: is_sentinel
+#@+node:ekr.20080708094444.37:x.copy_sentinels
+def copy_sentinels(self,reader,writer,marker,limit):
+
+    '''Copy sentinels from reader to writer while reader.index() < limit.'''
+
+    x = self
+    start = reader.index()
+    while reader.index() < limit:
+        line = reader.get()
+        if x.is_sentinel(line, marker):
+            if x.is_verbatim(line,marker):
+                # We are *deleting* non-sentinel lines, so we must delete @verbatim sentinels!
+                # We must **extend** the limit to get the next line.
+                if reader.index() < limit + 1:
+                    # Skip the next line, whatever it is.
+                    # Important: this **deletes** the @verbatim sentinel,
+                    # so this is a exception to the rule that sentinels are preserved.
+                    line = reader.get()
+                else:
+                    x.verbatim_error()
+            else:
+                # g.trace('put line',repr(line))
+                writer.put(line,tag='copy sent %s:%s' % (start,limit))
+#@-node:ekr.20080708094444.37:x.copy_sentinels
+#@+node:ekr.20080708094444.34:x.strip_sentinels_with_map
+def strip_sentinels_with_map (self, lines, marker):
+
+    '''Strip sentinels from lines, a list of lines with sentinels.
+
+    Return (results,mapping)
+
+    'lines':     A list of lines containing sentinels.
+    'results':   The list of non-sentinel lines.
+    'mapping':   A list mapping each line in results to the original list.
+                results[i] comes from line mapping[i] of the original lines.'''
+
+    x = self
+    mapping = [] ; results = [] ; i = 0 ; n = len(lines)
+    while i < n:
+        line = lines[i]
+        if x.is_sentinel(line,marker):
+            if x.is_verbatim(line,marker):
+                i += 1
+                if i < n:
+                    # Not a sentinel, whatever it looks like.
+                    line = lines[i]
+                    # g.trace('not a sentinel',repr(line))
+                    results.append(line)
+                    mapping.append(i)
+                else:
+                    x.verbatim_error()
+        else:
+            results.append(line)
+            mapping.append(i)
+        i += 1
+
+    mapping.append(len(lines)) # To terminate loops.
+    return results, mapping 
+#@-node:ekr.20080708094444.34:x.strip_sentinels_with_map
+#@+node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
+def is_sentinel (self, line, marker):
+
+    '''Return true if the line is a sentinel.'''
+
+    return line.lstrip().startswith(marker)
+
+def is_verbatim (self,line,marker):
+
+    return line.lstrip().startswith(marker+'verbatim')
+#@-node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
+#@+node:ekr.20080708094444.30:x.push_filter_mapping
+def push_filter_mapping (self,lines, marker):
+    """
+    Given the lines of a file, filter out all
+    Leo sentinels, and return a mapping:
+
+      stripped file -> original file
+
+    Filtering should be the same as
+    separate_sentinels
+    """
+
+    x = self ; mapping =[None]
+
+    i = 0 ; n = len(lines)
+    while i < n:
+        line = lines[i]
+        if x.is_sentinel(line,marker):
+            if x.is_verbatim(line,marker):
+                i += 1
+                if i < n:
+                    mapping(append(i+1))
+                else:
+                    x.verbatim_error()
+        else:
+            mapping.append(i+1)
+        i += 1
+
+    # for i, line in enumerate(filelines):
+        # if not self.is_sentinel(line,marker):
+            # mapping.append(i+1)
+
+    return mapping 
+#@-node:ekr.20080708094444.30:x.push_filter_mapping
+#@+node:ekr.20080708094444.29:x.separate_sentinels
+def separate_sentinels (self, lines, marker):
+
+    '''
+    Separates regular lines from sentinel lines.
+
+    Returns (regular_lines, sentinel_lines)
+    '''
+
+    x = self ; regular_lines = [] ; sentinel_lines = []
+
+    i = 0 ; n = len(lines)
+    while i < len(lines):
+        line = lines[i]
+        if x.is_sentinel(line,marker):
+            sentinel_lines.append(line)
+            if x.is_verbatim(line,marker):
+                i += 1
+                if i < len(lines):
+                    line = lines[i]
+                    regular_lines.append(line)
+                else:
+                    x.verbatim_error()
+        else:
+            regular_lines.append(line)
+        i += 1
+
+    return regular_lines, sentinel_lines 
+#@-node:ekr.20080708094444.29:x.separate_sentinels
+#@+node:ekr.20080709062932.23:mungePrivateLines
+def mungePrivateLines (self,lines,find,replace):
+
+    x = self.shadowController ; marker = self.marker
+
+    i = 0 ; n = len(lines) ; results = []
+    while i < n:
+    # for line in lines:
+        line = lines[i]
+        if x.is_sentinel(line,self.marker):
+            new_line = line.replace(find,replace)
+            results.append(new_line)
+            if x.is_verbatim(line,marker):
+                i += 1
+                if i < len(lines):
+                    line = lines[i]
+                    results.append(line)
+                else:
+                    x.verbatim_error()
+
+            # if line != new_line: g.trace(new_line)
+        else:
+            results.append(line)
+        i += 1
+
+    return results
+#@-node:ekr.20080709062932.23:mungePrivateLines
+#@-node:ekr.20080802070659.7:Found: is_sentinel
+#@-node:ekr.20080802070659.6:(Added code to handle @verbatim sentinels correctly)
 #@-node:ekr.20080730212711.5:Added support for @shadow
-#@-node:ekr.20080730212711.4:New features
 #@-node:ekr.20080702123133.2:4.5 b2
 #@-all
 #@nonl

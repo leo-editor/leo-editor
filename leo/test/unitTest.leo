@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2244,6 +2244,46 @@
 <v t="ekr.20080729200342.118"><vh>node 2</vh></v>
 </v>
 </v>
+<v t="ekr.20080804101159.1"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
+<v t="ekr.20080804101159.2" a="E"><vh>old</vh>
+<v t="ekr.20080804101159.3"><vh>node 1</vh></v>
+<v t="ekr.20080804101159.4"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804101159.5" a="E"><vh>new</vh>
+<v t="ekr.20080804101159.6"><vh>node 1</vh></v>
+<v t="ekr.20080804101159.7"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804121540.1"><vh>@shadow-test verbatim sentinels-delete verbatim line: at start of node</vh>
+<v t="ekr.20080804121540.2" a="E"><vh>old</vh>
+<v t="ekr.20080804121540.4"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.3"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804121540.5" a="E"><vh>new</vh>
+<v t="ekr.20080804121540.7"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.6"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804100908.7"><vh>@shadow-test verbatim sentinels-no change</vh>
+<v t="ekr.20080804100908.1"><vh>old</vh>
+<v t="ekr.20080804100908.2"><vh>node 1</vh></v>
+<v t="ekr.20080804100908.3"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804100908.8"><vh>new</vh>
+<v t="ekr.20080804100908.9"><vh>node 1</vh></v>
+<v t="ekr.20080804100908.10"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804121540.8"><vh>@shadow-test verbatim sentinels-delete verbatim line: at end of node</vh>
+<v t="ekr.20080804121540.9" a="E"><vh>old</vh>
+<v t="ekr.20080804121540.10"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.11"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804121540.12" a="E"><vh>new</vh>
+<v t="ekr.20080804121540.13"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.14"><vh>node 2</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
@@ -2350,7 +2390,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.1"><vh>leoShadow</vh>
+<v t="ekr.20080729200342.1" a="E"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
 <v t="ekr.20080729200342.5"><vh>@shadow-test change middle line</vh>
@@ -2511,6 +2551,46 @@
 <v t="ekr.20080729200342.116"><vh>new</vh>
 <v t="ekr.20080729200342.117"><vh>node 1</vh></v>
 <v t="ekr.20080729200342.118"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804101159.1"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
+<v t="ekr.20080804101159.2" a="E"><vh>old</vh>
+<v t="ekr.20080804101159.3"><vh>node 1</vh></v>
+<v t="ekr.20080804101159.4"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804101159.5" a="E"><vh>new</vh>
+<v t="ekr.20080804101159.6"><vh>node 1</vh></v>
+<v t="ekr.20080804101159.7"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804121540.1"><vh>@shadow-test verbatim sentinels-delete verbatim line: at start of node</vh>
+<v t="ekr.20080804121540.2" a="E"><vh>old</vh>
+<v t="ekr.20080804121540.4"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.3"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804121540.5" a="E"><vh>new</vh>
+<v t="ekr.20080804121540.7"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.6"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804100908.7"><vh>@shadow-test verbatim sentinels-no change</vh>
+<v t="ekr.20080804100908.1"><vh>old</vh>
+<v t="ekr.20080804100908.2"><vh>node 1</vh></v>
+<v t="ekr.20080804100908.3"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804100908.8"><vh>new</vh>
+<v t="ekr.20080804100908.9"><vh>node 1</vh></v>
+<v t="ekr.20080804100908.10"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804121540.8"><vh>@shadow-test verbatim sentinels-delete verbatim line: at end of node</vh>
+<v t="ekr.20080804121540.9" a="E"><vh>old</vh>
+<v t="ekr.20080804121540.10"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.11"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804121540.12" a="E"><vh>new</vh>
+<v t="ekr.20080804121540.13"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.14"><vh>node 2</vh></v>
 </v>
 </v>
 </v>
@@ -21305,5 +21385,52 @@ if g.os_path_exists(shadow_dir):
     os.rmdir(shadow_dir)
     assert not os.path.exists(shadow_dir)
 </t>
+<t tx="ekr.20080804100908.1">@others</t>
+<t tx="ekr.20080804100908.2">node 1 line 1
+#@ should be handled by verbatim
+line 1 line 3</t>
+<t tx="ekr.20080804100908.3">node 2 line 1
+node 2 line 2
+node 2 line 3</t>
+<t tx="ekr.20080804100908.7"></t>
+<t tx="ekr.20080804100908.8">@others</t>
+<t tx="ekr.20080804100908.9">node 1 line 1
+#@ should be handled by verbatim
+line 1 line 3</t>
+<t tx="ekr.20080804100908.10">node 2 line 1
+node 2 line 2
+node 2 line 3</t>
+<t tx="ekr.20080804101159.1"></t>
+<t tx="ekr.20080804101159.2">@others</t>
+<t tx="ekr.20080804101159.3">node 1 line 1
+#@ should be handled by verbatim
+line 1 line 3</t>
+<t tx="ekr.20080804101159.4">node 2 line 1
+node 2 line 2
+node 2 line 3</t>
+<t tx="ekr.20080804101159.5">@others</t>
+<t tx="ekr.20080804101159.6">node 1 line 1
+line 1 line 3</t>
+<t tx="ekr.20080804101159.7">node 2 line 1
+node 2 line 2
+node 2 line 3</t>
+<t tx="ekr.20080804121540.1"></t>
+<t tx="ekr.20080804121540.2">@others</t>
+<t tx="ekr.20080804121540.3">#@ should be handled by verbatim
+node 2 line 2</t>
+<t tx="ekr.20080804121540.4">node 1 line 1</t>
+<t tx="ekr.20080804121540.5">@others</t>
+<t tx="ekr.20080804121540.6">node 2 line 2</t>
+<t tx="ekr.20080804121540.7">node 1 line 1</t>
+<t tx="ekr.20080804121540.8"></t>
+<t tx="ekr.20080804121540.9">@others</t>
+<t tx="ekr.20080804121540.10">node 1 line 1
+#@ should be handled by verbatim</t>
+<t tx="ekr.20080804121540.11">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080804121540.12">@others</t>
+<t tx="ekr.20080804121540.13">node 1 line 1</t>
+<t tx="ekr.20080804121540.14">node 2 line 1
+node 2 line 2</t>
 </tnodes>
 </leo_file>
