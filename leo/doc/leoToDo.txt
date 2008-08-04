@@ -30,54 +30,6 @@ So Leo will use @thin-like sentinels for private @shadow files unless
 some other objections are raised. 
 #@nonl
 #@-node:ekr.20080804063523.3:allow v.uA's in @thin and @shadow nodes
-#@+node:ekr.20080804063523.2:Fix java import problems
-@nocolor
-
-> I would appreciate your help in reporting java import problems: please send
-> a description of the apparent import problem, and a url where I can get the
-> original source.  Thanks.
-
-First 'real' modification:
-
-reading: @shadow C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\FrameworkUtil.java
-warning: intermixed blanks and tabs
-warning: mismatch in leading whitespace
-first mismatched line at line 50
-original line:          private static class ImplHolder implements
-PrivilegedAction {
-generated line:     private static class ImplHolder implements
-PrivilegedAction {
-created:   C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\.leo_shadow\xFrameworkUtil.java
-wrote:     C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\FrameworkUtil.java
-
-Second 'real' modification:
-
-reading: @shadow C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\AdminPermission.java
-warning: intermixed blanks and tabs
-warning: mismatch in leading whitespace
-first mismatched line at line 148
-original line:          private static class ImplHolder implements
-PrivilegedAction {
-generated line:     private static class ImplHolder implements
-PrivilegedAction {
-created:   C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\.leo_shadow\xAdminPermission.java
-wrote:     C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\AdminPermission.java
-
-The other reported modifications are related only to "comment
-sections"
-within the java sources.
-
-Download location for OSGi Framework JAR:
-
-http://www.osgi.org/Download/Release4V41
-#@nonl
-#@-node:ekr.20080804063523.2:Fix java import problems
 #@+node:ekr.20080802070659.6:Replace x.is_sentinel
 #@+node:ekr.20080802070659.7:Found: is_sentinel
 #@+node:ekr.20080708094444.37:x.copy_sentinels

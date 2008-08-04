@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4,0,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -205,6 +205,28 @@
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 <v t="ekr.20080801160915.1"><vh>@@shadow TerryBrownTest.py</vh>
 <v t="ekr.20080803120643.1"><vh>spam</vh></v>
+</v>
+</v>
+<v t="ekr.20080804094302.1" a="E"><vh>Tests of @shadow</vh>
+<v t="ekr.20080804095028.15" a="E"><vh>@tabwidth -4</vh>
+<v t="ekr.20080804094302.2"><vh>@@shadow c:\prog\osgi-framework\AdminPermission.java</vh>
+<v t="ekr.20080804095640.1"><vh>AdminPermission declarations</vh></v>
+<v t="ekr.20080804095640.2"><vh>class AdminPermission</vh>
+<v t="ekr.20080804095640.3"><vh>class PrivilegedAction</vh>
+<v t="ekr.20080804095640.4"><vh>ImplHolder</vh></v>
+<v t="ekr.20080804095640.5"><vh>run</vh></v>
+</v>
+<v t="ekr.20080804095640.6"><vh>AdminPermission</vh></v>
+<v t="ekr.20080804095640.7"><vh>AdminPermission</vh></v>
+<v t="ekr.20080804095640.8"><vh>AdminPermission</vh></v>
+<v t="ekr.20080804095640.9"><vh>createName</vh></v>
+<v t="ekr.20080804095640.10"><vh>equals</vh></v>
+<v t="ekr.20080804095640.11"><vh>hashCode</vh></v>
+<v t="ekr.20080804095640.12"><vh>getActions</vh></v>
+<v t="ekr.20080804095640.13"><vh>implies</vh></v>
+<v t="ekr.20080804095640.14"><vh>newPermissionCollection</vh></v>
+</v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -1622,5 +1644,433 @@ for z in aList:
 </t>
 <t tx="ekr.20080803120643.1">def spam():
     pass</t>
+<t tx="ekr.20080804094302.1"></t>
+<t tx="ekr.20080804094302.2">@language java
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20080804095028.15"></t>
+<t tx="ekr.20080804095640.1">/*
+ * $Header: /cvshome/build/org.osgi.framework/src/org/osgi/framework/AdminPermission.java,v 1.34 2007/02/21 16:49:05 hargrave Exp $
+ * 
+ * Copyright (c) OSGi Alliance (2000, 2007). All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.osgi.framework;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.security.*;
+
+/**
+ * A bundle's authority to perform specific privileged administrative operations
+ * on or to get sensitive information about a bundle. The actions for this
+ * permission are:
+ * 
+ * &lt;pre&gt;
+ *   Action               Methods
+ *   class                Bundle.loadClass
+ *   execute              Bundle.start
+ *                        Bundle.stop
+ *                        StartLevel.setBundleStartLevel
+ *   extensionLifecycle   BundleContext.installBundle for extension bundles
+ *                        Bundle.update for extension bundles
+ *                        Bundle.uninstall for extension bundles
+ *   lifecycle            BundleContext.installBundle
+ *                        Bundle.update
+ *                        Bundle.uninstall
+ *   listener             BundleContext.addBundleListener for SynchronousBundleListener
+ *                        BundleContext.removeBundleListener for SynchronousBundleListener
+ *   metadata             Bundle.getHeaders
+ *                        Bundle.getLocation
+ *   resolve              PackageAdmin.refreshPackages
+ *                        PackageAdmin.resolveBundles
+ *   resource             Bundle.getResource
+ *                        Bundle.getResources
+ *                        Bundle.getEntry
+ *                        Bundle.getEntryPaths
+ *                        Bundle.findEntries
+ *                        Bundle resource/entry URL creation
+ *   startlevel           StartLevel.setStartLevel
+ *                        StartLevel.setInitialBundleStartLevel 
+ *   context              Bundle.getBundleContext                     
+ *                        
+ * &lt;/pre&gt;
+ * 
+ * &lt;p&gt;
+ * The special action &amp;quot;*&amp;quot; will represent all actions.
+ * &lt;p&gt;
+ * The name of this permission is a filter expression. The filter gives access
+ * to the following parameters:
+ * &lt;ul&gt;
+ * &lt;li&gt;signer - A Distinguished Name chain used to sign a bundle. Wildcards in
+ * a DN are not matched according to the filter string rules, but according to
+ * the rules defined for a DN chain.&lt;/li&gt;
+ * &lt;li&gt;location - The location of a bundle.&lt;/li&gt;
+ * &lt;li&gt;id - The bundle ID of the designated bundle.&lt;/li&gt;
+ * &lt;li&gt;name - The symbolic name of a bundle.&lt;/li&gt;
+ * &lt;/ul&gt;
+ * 
+ * @ThreadSafe
+ * @version $Revision: 1.34 $
+ */
+
+</t>
+<t tx="ekr.20080804095640.2">public final class AdminPermission extends BasicPermission {
+	static final long					serialVersionUID	= 307051004521261705L;
+
+	/**
+	 * The action string &lt;code&gt;class&lt;/code&gt; (Value is "class").
+	 * @since 1.3
+	 */
+	public final static String			CLASS				= "class";
+	/**
+	 * The action string &lt;code&gt;execute&lt;/code&gt; (Value is "execute").
+	 * @since 1.3
+	 */
+	public final static String			EXECUTE				= "execute";
+	/**
+	 * The action string &lt;code&gt;extensionLifecycle&lt;/code&gt; (Value is
+	 * "extensionLifecycle").
+	 * @since 1.3
+	 */
+	public final static String			EXTENSIONLIFECYCLE	= "extensionLifecycle";
+	/**
+	 * The action string &lt;code&gt;lifecycle&lt;/code&gt; (Value is "lifecycle").
+	 * @since 1.3
+	 */
+	public final static String			LIFECYCLE			= "lifecycle";
+	/**
+	 * The action string &lt;code&gt;listener&lt;/code&gt; (Value is "listener").
+	 * @since 1.3
+	 */
+	public final static String			LISTENER			= "listener";
+	/**
+	 * The action string &lt;code&gt;metadata&lt;/code&gt; (Value is "metadata").
+	 * @since 1.3
+	 */
+	public final static String			METADATA			= "metadata";
+	/**
+	 * The action string &lt;code&gt;resolve&lt;/code&gt; (Value is "resolve").
+	 * @since 1.3
+	 */
+	public final static String			RESOLVE				= "resolve";
+	/**
+	 * The action string &lt;code&gt;resource&lt;/code&gt; (Value is "resource").
+	 * @since 1.3
+	 */
+	public final static String			RESOURCE			= "resource";
+	/**
+	 * The action string &lt;code&gt;startlevel&lt;/code&gt; (Value is "startlevel").
+	 * @since 1.3
+	 */
+	public final static String			STARTLEVEL			= "startlevel";
+
+	/**
+	 * The action string &lt;code&gt;context&lt;/code&gt; (Value is "context").
+	 * @since 1.4
+	 */
+	public final static String			CONTEXT				= "context";
+	
+	/*
+	 * NOTE: A framework implementor may also choose to replace this class in
+	 * their distribution with a class that directly interfaces with the
+	 * framework implementation. This replacement class MUST NOT
+	 * alter the public/protected signature of this class.
+	 */
+
+	/*
+	 * This class will load the AdminPermission class in the package named by
+	 * the org.osgi.vendor.framework package. For each instance of this class,
+	 * an instance of the vendor AdminPermission class will be created and this
+	 * class will delegate method calls to the vendor AdminPermission instance.
+	 */
+
+    @others
+}
+</t>
+<t tx="ekr.20080804095640.3">private static class ImplHolder implements PrivilegedAction {
+	private static final String			packageProperty		= "org.osgi.vendor.framework";
+	static final Constructor	initStringString;
+	static final Constructor	initBundleString;
+	static {
+		Constructor[] constructors = (Constructor[]) AccessController.doPrivileged(new ImplHolder());
+		
+		initStringString = constructors[0];
+		initBundleString = constructors[1];
+	}
+
+	private ImplHolder() {
+	}
+	
+	public Object run() {
+		String packageName = System
+		.getProperty(packageProperty);
+		if (packageName == null) {
+			throw new NoClassDefFoundError(packageProperty
+					+ " property not set");
+		}
+		
+		Class delegateClass;
+		try {
+			delegateClass = Class.forName(packageName
+					+ ".AdminPermission");
+		}
+		catch (ClassNotFoundException e) {
+			throw new NoClassDefFoundError(e.toString());
+		}
+		
+		Constructor[] result = new Constructor[2];
+		try {
+			result[0] = delegateClass
+			.getConstructor(new Class[] {String.class,
+					String.class			});
+			result[1] = delegateClass
+			.getConstructor(new Class[] {Bundle.class,
+					String.class			});
+		}
+		catch (NoSuchMethodException e) {
+			throw new NoSuchMethodError(e.toString());
+		}
+		
+		return result;
+	}
+}
+    @others
+</t>
+<t tx="ekr.20080804095640.4">
+/*
+* This is the delegate permission created by the constructor.
+*/
+private final Permission			delegate;
+
+/**
+* Creates a new &lt;code&gt;AdminPermission&lt;/code&gt; object that matches all
+* bundles and has all actions. Equivalent to AdminPermission("*","*");
+*/
+public AdminPermission() {
+this("*", "*"); //$NON-NLS-1$
+}
+
+/**
+* Create a new AdminPermission.
+* 
+* This constructor must only be used to create a permission that is going
+* to be checked.
+* &lt;p&gt;
+* Examples:
+* 
+* &lt;pre&gt;
+* (signer=\*,o=ACME,c=US)   
+* (&amp;amp;(signer=\*,o=ACME,c=US)(name=com.acme.*)(location=http://www.acme.com/bundles/*))
+* (id&amp;gt;=1)
+* &lt;/pre&gt;
+* 
+* &lt;p&gt;
+* When a signer key is used within the filter expression the signer value
+* must escape the special filter chars ('*', '(', ')').
+* &lt;p&gt;
+* Null arguments are equivalent to "*".
+* 
+* @param filter A filter expression that can use signer, location, id, and
+*        name keys. A value of &amp;quot;*&amp;quot; or &lt;code&gt;null&lt;/code&gt; matches
+*        all bundle.
+* @param actions &lt;code&gt;class&lt;/code&gt;, &lt;code&gt;execute&lt;/code&gt;,
+*        &lt;code&gt;extensionLifecycle&lt;/code&gt;, &lt;code&gt;lifecycle&lt;/code&gt;,
+*        &lt;code&gt;listener&lt;/code&gt;, &lt;code&gt;metadata&lt;/code&gt;,
+*        &lt;code&gt;resolve&lt;/code&gt;, &lt;code&gt;resource&lt;/code&gt;, 
+*        &lt;code&gt;startlevel&lt;/code&gt; or &lt;code&gt;context&lt;/code&gt;. A value of "*" or &lt;code&gt;null&lt;/code&gt;
+*        indicates all actions
+*/
+public AdminPermission(String filter, String actions) {
+// arguments will be null if called from a PermissionInfo defined with
+// no args
+super(filter == null ? "*" : filter);
+try {
+	try {
+		delegate = (Permission) ImplHolder.initStringString
+				.newInstance(new Object[] {filter, actions});
+	}
+	catch (InvocationTargetException e) {
+		throw e.getTargetException();
+	}
+}
+catch (Error e) {
+	throw e;
+}
+catch (RuntimeException e) {
+	throw e;
+}
+catch (Throwable e) {
+	throw new RuntimeException(e.toString());
+}
+}
+
+/**
+* Creates a new &lt;code&gt;AdminPermission&lt;/code&gt; object to be used by the
+* code that must check a &lt;code&gt;Permission&lt;/code&gt; object.
+* 
+* @param bundle A bundle
+* @param actions &lt;code&gt;class&lt;/code&gt;, &lt;code&gt;execute&lt;/code&gt;,
+*        &lt;code&gt;extensionLifecycle&lt;/code&gt;, &lt;code&gt;lifecycle&lt;/code&gt;,
+*        &lt;code&gt;listener&lt;/code&gt;, &lt;code&gt;metadata&lt;/code&gt;,
+*        &lt;code&gt;resolve&lt;/code&gt;, &lt;code&gt;resource&lt;/code&gt;,
+*        &lt;code&gt;startlevel&lt;/code&gt;, &lt;code&gt;context&lt;/code&gt;.
+* @since 1.3
+*/
+public AdminPermission(Bundle bundle, String actions) {
+super(createName(bundle));
+try {
+	try {
+		delegate = (Permission) ImplHolder.initBundleString
+				.newInstance(new Object[] {bundle, actions});
+	}
+	catch (InvocationTargetException e) {
+		throw e.getTargetException();
+	}
+}
+catch (Error e) {
+	throw e;
+}
+catch (RuntimeException e) {
+	throw e;
+}
+catch (Throwable e) {
+	throw new RuntimeException(e.toString());
+}
+}
+
+/**
+* Create a permission name from a Bundle
+* 
+* @param bundle Bundle to use to create permission name.
+* @return permission name.
+*/
+private static String createName(Bundle bundle) {
+StringBuffer sb = new StringBuffer();
+sb.append("(id=");
+sb.append(bundle.getBundleId());
+sb.append(")");
+return sb.toString();
+}
+
+/**
+* Determines the equality of two &lt;code&gt;AdminPermission&lt;/code&gt; objects.
+* 
+* @param obj The object being compared for equality with this object.
+* @return &lt;code&gt;true&lt;/code&gt; if &lt;code&gt;obj&lt;/code&gt; is equivalent to this
+*         &lt;code&gt;AdminPermission&lt;/code&gt;; &lt;code&gt;false&lt;/code&gt; otherwise.
+*/
+public boolean equals(Object obj) {
+if (obj == this) {
+	return true;
+}
+
+if (!(obj instanceof AdminPermission)) {
+	return false;
+}
+
+AdminPermission p = (AdminPermission) obj;
+
+return delegate.equals(p.delegate);
+}
+
+/**
+* Returns the hash code value for this object.
+* 
+* @return Hash code value for this object.
+*/
+public int hashCode() {
+return delegate.hashCode();
+}
+
+/**
+* Returns the canonical string representation of the
+* &lt;code&gt;AdminPermission&lt;/code&gt; actions.
+* 
+* &lt;p&gt;
+* Always returns present &lt;code&gt;AdminPermission&lt;/code&gt; actions in the
+* following order: &lt;code&gt;class&lt;/code&gt;, &lt;code&gt;execute&lt;/code&gt;,
+* &lt;code&gt;extensionLifecycle&lt;/code&gt;, &lt;code&gt;lifecycle&lt;/code&gt;,
+* &lt;code&gt;listener&lt;/code&gt;, &lt;code&gt;metadata&lt;/code&gt;, &lt;code&gt;resolve&lt;/code&gt;,
+* &lt;code&gt;resource&lt;/code&gt;, &lt;code&gt;startlevel&lt;/code&gt;, &lt;code&gt;context&lt;/code&gt;.
+* 
+* @return Canonical string representation of the
+*         &lt;code&gt;AdminPermission&lt;/code&gt; actions.
+*/
+public String getActions() {
+return delegate.getActions();
+}
+
+/**
+* Determines if the specified permission is implied by this object. This
+* method throws an exception if the specified permission was not
+* constructed with a bundle.
+* 
+* &lt;p&gt;
+* This method returns &lt;code&gt;true&lt;/code&gt; if the specified permission is an
+* AdminPermission AND
+* &lt;ul&gt;
+* &lt;li&gt;this object's filter matches the specified permission's bundle ID,
+* bundle symbolic name, bundle location and bundle signer distinguished
+* name chain OR&lt;/li&gt;
+* &lt;li&gt;this object's filter is "*"&lt;/li&gt;
+* &lt;/ul&gt;
+* AND this object's actions include all of the specified permission's
+* actions.
+* &lt;p&gt;
+* Special case: if the specified permission was constructed with "*"
+* filter, then this method returns &lt;code&gt;true&lt;/code&gt; if this object's
+* filter is "*" and this object's actions include all of the specified
+* permission's actions
+* 
+* @param p The permission to interrogate.
+* 
+* @return &lt;code&gt;true&lt;/code&gt; if the specified permission is implied by
+*         this object; &lt;code&gt;false&lt;/code&gt; otherwise.
+* @throws RuntimeException if specified permission was not constructed with
+*         a bundle or "*"
+*/
+public boolean implies(Permission p) {
+if (!(p instanceof AdminPermission)) {
+	return false;
+}
+
+AdminPermission pp = (AdminPermission) p;
+return delegate.implies(pp.delegate);
+}
+
+/**
+* Returns a new &lt;code&gt;PermissionCollection&lt;/code&gt; object suitable for
+* storing &lt;code&gt;AdminPermission&lt;/code&gt;s.
+* 
+* @return A new &lt;code&gt;PermissionCollection&lt;/code&gt; object.
+*/
+public PermissionCollection newPermissionCollection() {
+return delegate.newPermissionCollection();
+}
+</t>
+<t tx="ekr.20080804095640.5"></t>
+<t tx="ekr.20080804095640.6"></t>
+<t tx="ekr.20080804095640.7"></t>
+<t tx="ekr.20080804095640.8"></t>
+<t tx="ekr.20080804095640.9"></t>
+<t tx="ekr.20080804095640.10"></t>
+<t tx="ekr.20080804095640.11"></t>
+<t tx="ekr.20080804095640.12"></t>
+<t tx="ekr.20080804095640.13"></t>
+<t tx="ekr.20080804095640.14"></t>
 </tnodes>
 </leo_file>
