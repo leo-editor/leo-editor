@@ -3,6 +3,81 @@
 #@+all
 #@+node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
 #@+node:ekr.20080804063523.1:Fix @shadow problems
+#@+node:ekr.20080804063523.3:allow v.uA's in @thin and @shadow nodes
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
+
+> Terry would like a way of keeping cleo happy--that is, to associate
+> uA's with vnodes instead of tnodes.  Rather than pollute @shadow with
+> almost-identical variants, it would be best to solve this problem in a
+> more general way.  However, I don't know how to do that :-)
+
+I think it is time just to do it.  Vnodes in @thin trees may be
+anonymous, but that doesn't mean they can't be represented!
+Furthermore, @shadow trees are *guaranteed* not to change in
+structure:  the private file will be unchanged even if the public file
+changes.
+
+So now is the time to solve this problem, at least for @shadow trees
+and probably for @thin trees as well.  It shouldn't be too difficult.
+We simply represent the tree structure somehow in the @shadow node.
+We can use a list of lists (representing nodes structurally) or as a
+representation of positions (like 3.4.5.6).  Either way represents the
+vnode, so we can pin a uA to the node.
+
+So Leo will use @thin-like sentinels for private @shadow files unless
+some other objections are raised. 
+#@nonl
+#@-node:ekr.20080804063523.3:allow v.uA's in @thin and @shadow nodes
+#@+node:ekr.20080804063523.2:Fix java import problems
+@nocolor
+
+> I would appreciate your help in reporting java import problems: please send
+> a description of the apparent import problem, and a url where I can get the
+> original source.  Thanks.
+
+First 'real' modification:
+
+reading: @shadow C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\FrameworkUtil.java
+warning: intermixed blanks and tabs
+warning: mismatch in leading whitespace
+first mismatched line at line 50
+original line:          private static class ImplHolder implements
+PrivilegedAction {
+generated line:     private static class ImplHolder implements
+PrivilegedAction {
+created:   C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\.leo_shadow\xFrameworkUtil.java
+wrote:     C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\FrameworkUtil.java
+
+Second 'real' modification:
+
+reading: @shadow C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\AdminPermission.java
+warning: intermixed blanks and tabs
+warning: mismatch in leading whitespace
+first mismatched line at line 148
+original line:          private static class ImplHolder implements
+PrivilegedAction {
+generated line:     private static class ImplHolder implements
+PrivilegedAction {
+created:   C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\.leo_shadow\xAdminPermission.java
+wrote:     C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
+\AdminPermission.java
+
+The other reported modifications are related only to "comment
+sections"
+within the java sources.
+
+Download location for OSGi Framework JAR:
+
+http://www.osgi.org/Download/Release4V41
+#@nonl
+#@-node:ekr.20080804063523.2:Fix java import problems
 #@+node:ekr.20080802070659.6:Replace x.is_sentinel
 #@+node:ekr.20080802070659.7:Found: is_sentinel
 #@+node:ekr.20080708094444.37:x.copy_sentinels
@@ -104,76 +179,6 @@ def mungePrivateLines (self,lines,find,replace):
 #@-node:ekr.20080802070659.6:Replace x.is_sentinel
 #@+node:ekr.20080803063553.5:Support revert of @shadow nodes
 #@-node:ekr.20080803063553.5:Support revert of @shadow nodes
-#@+node:ekr.20080803063553.6:Find out why lines are being duplicated
-@nocolor
-
-python launchLeo.py
-
-NewHeadline -> @shadowImport
-bodyString ->
----cut here---
-#!/bin/sh
-
-DB="$1"
----cut here---
-
-save as del.leo
-quit
-
-python launchLeo.py del.leo
-
-"#!/bin/sh"
-
-is duplicated
-#@-node:ekr.20080803063553.6:Find out why lines are being duplicated
-#@+node:ekr.20080804063523.2:Fix java import problems
-@nocolor
-
-> I would appreciate your help in reporting java import problems: please send
-> a description of the apparent import problem, and a url where I can get the
-> original source.  Thanks.
-
-First 'real' modification:
-
-reading: @shadow C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\FrameworkUtil.java
-warning: intermixed blanks and tabs
-warning: mismatch in leading whitespace
-first mismatched line at line 50
-original line:          private static class ImplHolder implements
-PrivilegedAction {
-generated line:     private static class ImplHolder implements
-PrivilegedAction {
-created:   C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\.leo_shadow\xFrameworkUtil.java
-wrote:     C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\FrameworkUtil.java
-
-Second 'real' modification:
-
-reading: @shadow C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\AdminPermission.java
-warning: intermixed blanks and tabs
-warning: mismatch in leading whitespace
-first mismatched line at line 148
-original line:          private static class ImplHolder implements
-PrivilegedAction {
-generated line:     private static class ImplHolder implements
-PrivilegedAction {
-created:   C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\.leo_shadow\xAdminPermission.java
-wrote:     C:\OSGi\atshadow-test2\OSGI-OPT\src\org\osgi\framework
-\AdminPermission.java
-
-The other reported modifications are related only to "comment
-sections"
-within the java sources.
-
-Download location for OSGi Framework JAR:
-
-http://www.osgi.org/Download/Release4V41
-#@nonl
-#@-node:ekr.20080804063523.2:Fix java import problems
 #@-node:ekr.20080804063523.1:Fix @shadow problems
 #@+node:ekr.20080801071227.1:First 9
 #@+node:ekr.20080801071227.12:Investigate problems with revert
@@ -209,8 +214,6 @@ files, although nodes are being Marked and dirtied on load and I can't
 see what changed, perhaps it's whitespace. 
 #@nonl
 #@-node:ekr.20080801071227.12:Investigate problems with revert
-#@+node:ekr.20080801071227.2:Improve or eliminate x.isSentinel
-#@-node:ekr.20080801071227.2:Improve or eliminate x.isSentinel
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
 #@nonl
