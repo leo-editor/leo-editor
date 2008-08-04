@@ -266,11 +266,24 @@ class shadowController:
 
         '''Copy sentinels from reader to writer while reader.index() < limit.'''
 
+        x = self
         start = reader.index()
         while reader.index() < limit:
             line = reader.get()
-            if self.is_sentinel(line, marker):
-                writer.put(line,tag='copy sent %s:%s' % (start,limit))
+            if x.is_sentinel(line, marker):
+                if x.is_verbatim(line,marker):
+                    # We are *deleting* non-sentinel lines, so we must delete @verbatim sentinels!
+                    # We must **extend** the limit to get the next line.
+                    if reader.index() < limit + 1:
+                        # Skip the next line, whatever it is.
+                        # Important: this **deletes** the @verbatim sentinel,
+                        # so this is a exception to the rule that sentinels are preserved.
+                        line = reader.get()
+                    else:
+                        x.verbatim_error()
+                else:
+                    # g.trace('put line',repr(line))
+                    writer.put(line,tag='copy sent %s:%s' % (start,limit))
     #@-node:ekr.20080708094444.37:x.copy_sentinels
     #@+node:ekr.20080708094444.38:x.propagate_changed_lines
     def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
@@ -286,7 +299,7 @@ class shadowController:
            the end of a node.  However, insertions must always be done within sentinels.
         '''
 
-        x = self ; trace = False ; verbose = False
+        x = self ; trace = False ; verbose = True
         # mapping tells which line of old_private_lines each line of old_public_lines comes from.
         old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -499,14 +512,27 @@ class shadowController:
         'lines':     A list of lines containing sentinels.
         'results':   The list of non-sentinel lines.
         'mapping':   A list mapping each line in results to the original list.
-                    results[i] comes from line mapping[i] of the origina lines.'''
+                    results[i] comes from line mapping[i] of the original lines.'''
 
-        mapping = [] ; results = []
-        for i in xrange(len(lines)):
+        x = self
+        mapping = [] ; results = [] ; i = 0 ; n = len(lines)
+        while i < n:
             line = lines[i]
-            if not self.is_sentinel(line,marker):
+            if x.is_sentinel(line,marker):
+                if x.is_verbatim(line,marker):
+                    i += 1
+                    if i < n:
+                        # Not a sentinel, whatever it looks like.
+                        line = lines[i]
+                        # g.trace('not a sentinel',repr(line))
+                        results.append(line)
+                        mapping.append(i)
+                    else:
+                        x.verbatim_error()
+            else:
                 results.append(line)
                 mapping.append(i)
+            i += 1
 
         mapping.append(len(lines)) # To terminate loops.
         return results, mapping 
@@ -549,7 +575,7 @@ class shadowController:
     #@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
     #@-node:ekr.20080708192807.1:x.Propagation
     #@+node:ekr.20080708094444.89:x.Utils...
-    #@+node:ekr.20080708094444.85:x.error & message
+    #@+node:ekr.20080708094444.85:x.error & message & verbatim_error
     def error (self,s,silent=False):
 
         x = self
@@ -564,15 +590,25 @@ class shadowController:
     def message (self,s):
 
         g.es_print(s,color='orange')
-    #@nonl
-    #@-node:ekr.20080708094444.85:x.error & message
-    #@+node:ekr.20080708094444.11:x.is_sentinel
+
+    def verbatim_error(self):
+
+        x = self
+
+        x.error('file syntax error: nothing follows verbatim sentinel')
+        g.trace(g.callers())
+    #@-node:ekr.20080708094444.85:x.error & message & verbatim_error
+    #@+node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
     def is_sentinel (self, line, marker):
 
         '''Return true if the line is a sentinel.'''
 
         return line.lstrip().startswith(marker)
-    #@-node:ekr.20080708094444.11:x.is_sentinel
+
+    def is_verbatim (self,line,marker):
+
+        return line.lstrip().startswith(marker+'verbatim')
+    #@-node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
     #@+node:ekr.20080708094444.9:x.marker_from_extension
     def marker_from_extension (self,filename):
 
@@ -602,7 +638,7 @@ class shadowController:
         return marker
     #@-node:ekr.20080708094444.9:x.marker_from_extension
     #@+node:ekr.20080708094444.30:x.push_filter_mapping
-    def push_filter_mapping (self,filelines, marker):
+    def push_filter_mapping (self,lines, marker):
         """
         Given the lines of a file, filter out all
         Leo sentinels, and return a mapping:
@@ -613,11 +649,25 @@ class shadowController:
         separate_sentinels
         """
 
-        mapping =[None]
+        x = self ; mapping =[None]
 
-        for i, line in enumerate(filelines):
-            if not self.is_sentinel(line,marker):
+        i = 0 ; n = len(lines)
+        while i < n:
+            line = lines[i]
+            if x.is_sentinel(line,marker):
+                if x.is_verbatim(line,marker):
+                    i += 1
+                    if i < n:
+                        mapping(append(i+1))
+                    else:
+                        x.verbatim_error()
+            else:
                 mapping.append(i+1)
+            i += 1
+
+        # for i, line in enumerate(filelines):
+            # if not self.is_sentinel(line,marker):
+                # mapping.append(i+1)
 
         return mapping 
     #@-node:ekr.20080708094444.30:x.push_filter_mapping
@@ -632,11 +682,21 @@ class shadowController:
 
         x = self ; regular_lines = [] ; sentinel_lines = []
 
-        for line in lines:
+        i = 0 ; n = len(lines)
+        while i < len(lines):
+            line = lines[i]
             if x.is_sentinel(line,marker):
                 sentinel_lines.append(line)
+                if x.is_verbatim(line,marker):
+                    i += 1
+                    if i < len(lines):
+                        line = lines[i]
+                        regular_lines.append(line)
+                    else:
+                        x.verbatim_error()
             else:
                 regular_lines.append(line)
+            i += 1
 
         return regular_lines, sentinel_lines 
     #@-node:ekr.20080708094444.29:x.separate_sentinels
@@ -775,16 +835,27 @@ class shadowController:
         #@+node:ekr.20080709062932.23:mungePrivateLines
         def mungePrivateLines (self,lines,find,replace):
 
-            x = self.shadowController
+            x = self.shadowController ; marker = self.marker
 
-            results = []
-            for line in lines:
+            i = 0 ; n = len(lines) ; results = []
+            while i < n:
+            # for line in lines:
+                line = lines[i]
                 if x.is_sentinel(line,self.marker):
                     new_line = line.replace(find,replace)
                     results.append(new_line)
+                    if x.is_verbatim(line,marker):
+                        i += 1
+                        if i < len(lines):
+                            line = lines[i]
+                            results.append(line)
+                        else:
+                            x.verbatim_error()
+
                     # if line != new_line: g.trace(new_line)
                 else:
                     results.append(line)
+                i += 1
 
             return results
         #@-node:ekr.20080709062932.23:mungePrivateLines
@@ -914,7 +985,7 @@ class sourcewriter:
         self.i = 0
         self.lines =[]
         self.shadowController=shadowController
-        self.trace = self.shadowController.trace_writers
+        self.trace = False or self.shadowController.trace_writers
     #@-node:ekr.20080708094444.22:__init__
     #@+node:ekr.20080708094444.23:put
     def put(self, line, tag=''):
