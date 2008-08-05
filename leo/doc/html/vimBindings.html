@@ -253,23 +253,23 @@ hr { /* EKR */
 
 <!-- rst3: filename: html\vimBindings.html -->
 <!-- June 11, 2008 -->
-<p><a class="reference" href="IPythonBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<p><a class="reference external" href="IPythonBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference external" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference external" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>
 <div class="section" id="chapter-22-using-vim-bindings-with-leo">
 <h1><a class="toc-backref" href="#id1">Chapter 22: Using Vim Bindings with Leo</a></h1>
 <p>This chapter describes Leo's vim-like bindings, including how to install them.</p>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#chapter-22-using-vim-bindings-with-leo" id="id1" name="id1">Chapter 22: Using Vim Bindings with Leo</a><ul>
-<li><a class="reference" href="#vim-bindings" id="id2" name="id2">Vim bindings</a><ul>
-<li><a class="reference" href="#installing-vim-bindings" id="id3" name="id3">Installing vim bindings</a></li>
-<li><a class="reference" href="#general-commands" id="id4" name="id4">General commands</a></li>
-<li><a class="reference" href="#body-pane-commands" id="id5" name="id5">Body pane commands</a></li>
-<li><a class="reference" href="#outline-commands" id="id6" name="id6">Outline commands</a></li>
-<li><a class="reference" href="#commands-not-supported" id="id7" name="id7">Commands not supported</a></li>
+<li><a class="reference internal" href="#chapter-22-using-vim-bindings-with-leo" id="id1">Chapter 22: Using Vim Bindings with Leo</a><ul>
+<li><a class="reference internal" href="#vim-bindings" id="id2">Vim bindings</a><ul>
+<li><a class="reference internal" href="#installing-vim-bindings" id="id3">Installing vim bindings</a></li>
+<li><a class="reference internal" href="#general-commands" id="id4">General commands</a></li>
+<li><a class="reference internal" href="#body-pane-commands" id="id5">Body pane commands</a></li>
+<li><a class="reference internal" href="#outline-commands" id="id6">Outline commands</a></li>
+<li><a class="reference internal" href="#commands-not-supported" id="id7">Commands not supported</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#avoiding-changes-to-tag-files" id="id8" name="id8">Avoiding changes to 'tag' files</a></li>
+<li><a class="reference internal" href="#avoiding-changes-to-tag-files" id="id8">Avoiding changes to 'tag' files</a></li>
 </ul>
 </li>
 </ul>
@@ -321,7 +321,7 @@ Ctrl-/      Prompt for option to change
                 r   Toggle regex matches
                     ('/' key turns off regex. 'n' key uses regex if turned on)
 
-Note: Whether search is limited to node's body or the node's sub-outline
+Note: Whether a search is limited to node's body or the node's sub-outline
       is determined by which pane has focus when search text specified.
       (See &quot;Find text commands:&quot; sub-sections in Outline/Body Pane sections)
 </pre>
@@ -368,17 +368,19 @@ $           Goto end of current line
 
 gg          Go to the first line (Cursor at column 1)
 G           Go to the last line  (Cursor at column 1)
-
-`.          Go to location of last edit (regardless of buffer)
-'.          Go to beginning of line of last edit (regardless of buffer)
 </pre>
 <p>Mark commands:</p>
 <pre class="literal-block">
 m&lt;label&gt;    Assign cursor location to a single character label
 `&lt;label&gt;    Go to location associated with label
 
-Note: Only character count is tracked. Any inserts or deletes will change mark.
-      Node is not tracked; &quot;`&lt;label&gt;&quot; key will go to location in current node.
+  Note: Only character count is tracked. Any inserts or deletes will change mark.
+      Mark's are not node specific; `&lt;label&gt; will go to location in current node.
+</pre>
+<p>Select commands:</p>
+<pre class="literal-block">
+Ctrl-v      Toggle text select mode (Vim's &quot;visual&quot; mode)
+   V        Mapped to 'Ctrl-v' for convenience (Should toggle line select)
 </pre>
 <p>Insert/substitute commands:</p>
 <pre class="literal-block">
@@ -438,8 +440,6 @@ y{          Yank to beginning of paragraph
 y%          Yank from current bracket type to its opposing bracket
 yt&lt;char&gt;    Select forward to &lt;char&gt;  (use 'y&lt;cr&gt;' to yank selection)
 yT&lt;char&gt;    Select backward to &lt;char&gt; (use 'y&lt;cr&gt;' to yank selection)
-
-v           Toggle text select mode (Vim's &quot;visual&quot; mode)
 y&lt;cr&gt;       Yank selected text (Vim uses 'y' in visual mode)
 </pre>
 <p>Find character commands:</p>
@@ -454,7 +454,7 @@ F           Find previous occurrence of user specified character
 n           Find next (same scope, same direction)
 N           Find next (same scope, other direction)
 
-Note: See &quot;Search options&quot; section above to change options using 'Ctrl-/'
+Note: See &quot;Search options&quot; in General Commands section to change options.
 </pre>
 <p>Replace [and find next] commands:</p>
 <pre class="literal-block">
@@ -466,13 +466,13 @@ Ctrl-p      Paste then find next match
                   Command will continue to paste when match no longer found.
 
 Commands prompting for replace string
-Note: Scope and search direction taken from last use of '/','?' or 'Ctrl-/'(scope only)
+Note: Scope and direction taken from last use of '/','?' or 'Ctrl-/'(scope only)
 Alt-/       Prompt for search &amp; replace string
 Alt-p       Replace then search (use after Alt-/)
             Note: Works in headlines and body panes.
                   Doesn't paste unless last search found a match.
 </pre>
-<p>Indent line commands:</p>
+<p>Indent/Unindent line commands:</p>
 <pre class="literal-block">
 &gt;&gt;          Indent the current line
 &gt;)          Indent to the end of sentence
@@ -481,11 +481,14 @@ Alt-p       Replace then search (use after Alt-/)
 &gt;{          Indent to the beginning of paragraph
 &gt;g          Indent to the start of buffer
 &gt;G          Indent to the end of buffer
-&lt;&lt;          Remove all indentation on the current line
-&lt;)          Remove all indentation to the end of sentence
-&lt;(          Remove all indentation to the beginning of sentence
-&lt;}          Remove all indentation to the end of paragraph
-&lt;{          Remove all indentation to the beginning of paragraph
+
+&lt;&gt;          Unindent the current line
+&lt;)          Unindent to the end of sentence
+&lt;(          Unindent to the beginning of sentence
+&lt;}          Unindent to the end of paragraph
+&lt;{          Unindent to the beginning of paragraph
+&lt;g          Unindent to the start of buffer
+&lt;G          Unindent to the end of buffer
 </pre>
 <p>Scroll commands:</p>
 <pre class="literal-block">
@@ -509,15 +512,15 @@ Ctrl-w c    Close current view in body pane (Vim: Close current window)
 </pre>
 <p>Node commands:</p>
 <pre class="literal-block">
+Go to another node while focus remains in the body pane.
 Ctrl-j      Go to next visible node
 Ctrl-k      Go to previous visible node
 Ctrl-h      Hide sub-nodes or, if hidden, go up 1 level
 Ctrl-l      Display sub-nodes or, if displayed, go down 1 level
-
-   Ctrl-DnArrow  Mapped to &quot;Ctrl-j&quot; for convenience
-   Ctrl-UpArrow  Mapped to &quot;Ctrl-k&quot; for convenience
-   Ctrl-LtArrow  Mapped to &quot;Ctrl-h&quot; for convenience
-   Ctrl-RtArrow  Mapped to &quot;Ctrl-l&quot; for convenience
+   Ctrl-DnArrow    Mapped to &quot;Ctrl-j&quot; for convenience
+   Ctrl-UpArrow    Mapped to &quot;Ctrl-k&quot; for convenience
+   Ctrl-LtArrow    Mapped to &quot;Ctrl-h&quot; for convenience
+   Ctrl-RtArrow    Mapped to &quot;Ctrl-l&quot; for convenience
 </pre>
 </div>
 <div class="section" id="outline-commands">
@@ -599,7 +602,7 @@ Alt-p       Replace then search (use after Alt-/)
 </pre>
 <p>Node edit commands:</p>
 <pre class="literal-block">
-Ctrl-o      Insert node after current node
+o           Insert node after current node
 
 Ctrl-x      Delete current node
 Ctrl-c      Yank current node
@@ -676,6 +679,8 @@ bksp        Move one character to the left
 <pre class="literal-block">
 &lt;num&gt;G      Go to specified line number
 z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
+'&lt;command&gt;  Go to line of last edit, jump, ...
+`&lt;command&gt;  Go to character of last edit, jump, ...
 </pre>
 </div>
 </div>
@@ -711,7 +716,7 @@ set modelines=8
 <p>Issue the &quot;:help modeline&quot; command within Vim for the more information about
 modelines.</p>
 <hr class="docutils" />
-<p><a class="reference" href="IPythonBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<p><a class="reference external" href="IPythonBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference external" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference external" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>
 </div>
 </div>
 </div>
