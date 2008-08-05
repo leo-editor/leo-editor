@@ -9916,6 +9916,7 @@ You should see Leo's main window, something like this:
 .. _`launch Leo`:                                   install.html#running-leo
 .. _`Leo's Users Guide`:                            leo_TOC.html
 .. _`Chapter 4: Writing Programs in Leo`:           directives.html
+.. _`Chapter 5: Using Leo's Commands`:              commands.html
 .. _`Chapter 6: Leo and Literate Programming`:      design.html
 .. _`Chapter 7: Scripting Leo with Python`:         scripting.html
 .. _`Chapter 8: Customizing Leo`:                   customizing.html
@@ -10492,7 +10493,7 @@ a file with a .leo extension.
 As you can see, the main window contains three panes:
 the **outline pane** at the top left,
 the **log pane** at the top right, and the **body pane** at the bottom.
-The window also contains an **icon area** at the very top and a **status area** at the very bottom.
+The window also contains an **icon area** at the very top, a **status area** and a **mini-buffer** at the very bottom.
 
 Outline pane &amp; nodes
     The outline pane shows your project as an outline.
@@ -10526,6 +10527,9 @@ Status area
     Usually this is the **UNL** (Uniform Node Location) that describes the path in the outline
     to the selected node.
     Please select nodes at several levels of the outline to see how the UNL changes.
+
+Mini-buffer
+    It is used like the Emacs mini-buffer to invoke commands. For full details, see `Chapter 5: Using Leo's Commands`_.
 
 Now that we are familiar with Leo's main window,
 let's see how to use Leo as a simple outliner.</t>
