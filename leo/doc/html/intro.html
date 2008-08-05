@@ -252,49 +252,49 @@ hr { /* EKR */
 
 
 <!-- rst3: filename: html\intro.html -->
-<p><a class="reference external" href="install.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference external" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference external" href="outlines.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<p><a class="reference" href="install.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="outlines.html"><img alt="next" src="arrow_rt.gif" /></a></p>
 <div class="section" id="chapter-2-a-tutorial-introduction-to-leo">
 <h1><a class="toc-backref" href="#id2">Chapter 2: A Tutorial Introduction to Leo</a></h1>
 <p>This tutorial shows you Leo's basic features.
 These features are simple to use, yet they interact with each other in powerful ways.
-All Leo's features relate in some way to <a class="reference internal" href="#leo-s-main-window">outlines</a>.
-Indeed, <a class="reference internal" href="#outline-structure-is-significant-everywhere">outline structure is significant everywhere</a>.</p>
-<p><a class="reference internal" href="#quick-start-for-programmers">Quick start for programmers</a> contains the heart of this chapter.
+All Leo's features relate in some way to <a class="reference" href="#leo-s-main-window">outlines</a>.
+Indeed, <a class="reference" href="#outline-structure-is-significant-everywhere">outline structure is significant everywhere</a>.</p>
+<p><a class="reference" href="#quick-start-for-programmers">Quick start for programmers</a> contains the heart of this chapter.
 It briefly describes everything a Python programmer needs to know in order to understand Leo's source code.
-<a class="reference internal" href="#good-style-and-bad-sections-vs-others">Good style and bad</a> answers common question about when to use the features described in the <a class="reference internal" href="#quick-start-for-programmers">quickstart</a>.
-The section <a class="reference internal" href="#scripting-leo">Scripting Leo</a> is an introduction to scripting Leo with Python.
-For full details, see <a class="reference external" href="scripting.html">Chapter 7: Scripting Leo with Python</a>.</p>
+<a class="reference" href="#good-style-and-bad-sections-vs-others">Good style and bad</a> answers common question about when to use the features described in the <a class="reference" href="#quick-start-for-programmers">quickstart</a>.
+The section <a class="reference" href="#scripting-leo">Scripting Leo</a> is an introduction to scripting Leo with Python.
+For full details, see <a class="reference" href="scripting.html">Chapter 7: Scripting Leo with Python</a>.</p>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#chapter-2-a-tutorial-introduction-to-leo" id="id2">Chapter 2: A Tutorial Introduction to Leo</a><ul>
-<li><a class="reference internal" href="#introduction" id="id3">Introduction</a><ul>
-<li><a class="reference internal" href="#leo-s-main-window" id="id4">Leo's main window</a></li>
-<li><a class="reference internal" href="#using-leo-as-an-outliner" id="id5">Using Leo as an outliner</a></li>
+<li><a class="reference" href="#chapter-2-a-tutorial-introduction-to-leo" id="id2" name="id2">Chapter 2: A Tutorial Introduction to Leo</a><ul>
+<li><a class="reference" href="#introduction" id="id3" name="id3">Introduction</a><ul>
+<li><a class="reference" href="#leo-s-main-window" id="id4" name="id4">Leo's main window</a></li>
+<li><a class="reference" href="#using-leo-as-an-outliner" id="id5" name="id5">Using Leo as an outliner</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#unique-features-of-leo" id="id6">Unique features of Leo</a><ul>
-<li><a class="reference internal" href="#derived-files" id="id7">Derived files</a></li>
-<li><a class="reference internal" href="#clones-views" id="id8">Clones &amp; views</a></li>
-<li><a class="reference internal" href="#outline-structure-is-significant-everywhere" id="id9">Outline structure is significant everywhere</a></li>
-<li><a class="reference internal" href="#leo-directives" id="id10">Leo directives</a></li>
+<li><a class="reference" href="#unique-features-of-leo" id="id6" name="id6">Unique features of Leo</a><ul>
+<li><a class="reference" href="#derived-files" id="id7" name="id7">Derived files</a></li>
+<li><a class="reference" href="#clones-views" id="id8" name="id8">Clones &amp; views</a></li>
+<li><a class="reference" href="#outline-structure-is-significant-everywhere" id="id9" name="id9">Outline structure is significant everywhere</a></li>
+<li><a class="reference" href="#leo-directives" id="id10" name="id10">Leo directives</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#leo-for-programmers" id="id11">Leo for Programmers</a><ul>
-<li><a class="reference internal" href="#quick-start-for-programmers" id="id12">Quick start for programmers</a></li>
-<li><a class="reference internal" href="#beginner-s-reference-guide" id="id13">Beginner`s reference guide</a><ul>
-<li><a class="reference internal" href="#syntax-of-section-names" id="id14">Syntax of section names</a></li>
-<li><a class="reference internal" href="#code-and-doc-parts" id="id15">Code and doc parts</a></li>
-<li><a class="reference internal" href="#directives-for-programming" id="id16">Directives for programming</a></li>
-<li><a class="reference internal" href="#orphan-nodes" id="id17">Orphan nodes</a></li>
-<li><a class="reference internal" href="#sentinel-lines" id="id18">Sentinel lines</a></li>
-<li><a class="reference internal" href="#leo-and-literate-programming" id="id19">Leo and literate programming</a></li>
+<li><a class="reference" href="#leo-for-programmers" id="id11" name="id11">Leo for Programmers</a><ul>
+<li><a class="reference" href="#quick-start-for-programmers" id="id12" name="id12">Quick start for programmers</a></li>
+<li><a class="reference" href="#beginner-s-reference-guide" id="id13" name="id13">Beginner`s reference guide</a><ul>
+<li><a class="reference" href="#syntax-of-section-names" id="id14" name="id14">Syntax of section names</a></li>
+<li><a class="reference" href="#code-and-doc-parts" id="id15" name="id15">Code and doc parts</a></li>
+<li><a class="reference" href="#directives-for-programming" id="id16" name="id16">Directives for programming</a></li>
+<li><a class="reference" href="#orphan-nodes" id="id17" name="id17">Orphan nodes</a></li>
+<li><a class="reference" href="#sentinel-lines" id="id18" name="id18">Sentinel lines</a></li>
+<li><a class="reference" href="#leo-and-literate-programming" id="id19" name="id19">Leo and literate programming</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#good-style-and-bad-sections-vs-others" id="id20">Good style and bad:  sections vs. &#64;others</a></li>
-<li><a class="reference internal" href="#scripting-leo" id="id21">Scripting Leo</a></li>
-<li><a class="reference internal" href="#plugins-settings" id="id22">Plugins &amp; settings</a></li>
-<li><a class="reference internal" href="#further-study" id="id23">Further study</a></li>
+<li><a class="reference" href="#good-style-and-bad-sections-vs-others" id="id20" name="id20">Good style and bad:  sections vs. &#64;others</a></li>
+<li><a class="reference" href="#scripting-leo" id="id21" name="id21">Scripting Leo</a></li>
+<li><a class="reference" href="#plugins-settings" id="id22" name="id22">Plugins &amp; settings</a></li>
+<li><a class="reference" href="#further-study" id="id23" name="id23">Further study</a></li>
 </ul>
 </li>
 </ul>
@@ -309,9 +309,9 @@ For full details, see <a class="reference external" href="scripting.html">Chapte
 <!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="introduction">
 <h2><a class="toc-backref" href="#id3">Introduction</a></h2>
-<p><strong>Important</strong>: please <a class="reference external" href="install.html">install Leo</a> before reading this tutorial,
-If you have any problem, please do ask for help on <a class="reference external" href="http://sourceforge.net/forum/forum.php?forum_id=10227">Leo's help forum</a>.</p>
-<p>Now that you have Leo installed, please <a class="reference external" href="install.html#running-leo">launch Leo</a>.
+<p><strong>Important</strong>: please <a class="reference" href="install.html">install Leo</a> before reading this tutorial,
+If you have any problem, please do ask for help on <a class="reference" href="http://sourceforge.net/forum/forum.php?forum_id=10227">Leo's help forum</a>.</p>
+<p>Now that you have Leo installed, please <a class="reference" href="install.html#running-leo">launch Leo</a>.
 You should see Leo's main window, something like this:
 <strong>Note</strong>: the actual contents of the icon area at the top depends on what plugins are active.</p>
 <p><img alt="leoMainWinow" src="PCWindow.gif" /></p>
@@ -337,11 +337,11 @@ This icon contains a <tt class="docutils literal"><span class="pre">+</span></tt
 Clicking this <strong>expansion box</strong> expands or contracts the node.</dd>
 <dt>Body pane</dt>
 <dd>The body pane contains the body text of the node selected in the outline pane.
-You can control how Leo shows body text using <a class="reference internal" href="#leo-directives">Leo directives</a> and <a class="reference internal" href="#plugins-settings">settings</a>.
+You can control how Leo shows body text using <a class="reference" href="#leo-directives">Leo directives</a> and <a class="reference" href="#plugins-settings">settings</a>.
 For example, directives specify whether to syntax color the body text and whether to wrap the text.</dd>
 <dt>Log pane</dt>
 <dd>The log pane contains informational messages from Leo.
-<a class="reference internal" href="#scripting-leo">Scripts</a> and <a class="reference internal" href="#plugins-settings">plugins</a> may also write message to the log pane.</dd>
+<a class="reference" href="#scripting-leo">Scripts</a> and <a class="reference" href="#plugins-settings">plugins</a> may also write message to the log pane.</dd>
 <dt>Icon area</dt>
 <dd>Depending on what plugins are enabled,
 the icon area may contain buttons and other widgets that extend what Leo can do.
@@ -353,7 +353,7 @@ Usually this is the <strong>UNL</strong> (Uniform Node Location) that describes 
 to the selected node.
 Please select nodes at several levels of the outline to see how the UNL changes.</dd>
 <dt>Mini-buffer</dt>
-<dd>It is used like the Emacs mini-buffer to invoke commands. For full details, see <a class="reference external" href="commands.html">Chapter 5: Using Leo's Commands</a>.</dd>
+<dd>It is used like the Emacs mini-buffer to invoke commands. For full details, see <a class="reference" href="commands.html">Chapter 5: Using Leo's Commands</a>.</dd>
 </dl>
 <p>Now that we are familiar with Leo's main window,
 let's see how to use Leo as a simple outliner.</p>
@@ -363,19 +363,19 @@ let's see how to use Leo as a simple outliner.</p>
 <p>You can use Leo as fairly typical outliner. Play around with some of the
 commands from the Outline menu:</p>
 <ul class="simple">
-<li>Click the expansion box of <a class="reference external" href="glossary.html#nodes">nodes</a> to show and hide their children.</li>
-<li>The <tt class="docutils literal"><span class="pre">Insert</span> <span class="pre">Node</span></tt> <a class="reference external" href="commands.html">command</a> inserts a new headline into the outline.</li>
-<li>The <tt class="docutils literal"><span class="pre">Delete</span> <span class="pre">Node</span></tt> <a class="reference external" href="commands.html">command</a> deletes a headline and all its children.</li>
-<li>The <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Up</span></tt>, <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Down</span></tt>, <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Left</span></tt> and <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Right</span></tt> <a class="reference external" href="commands.html">commands</a> move the currently selected node,
+<li>Click the expansion box of <a class="reference" href="glossary.html#nodes">nodes</a> to show and hide their children.</li>
+<li>The <tt class="docutils literal"><span class="pre">Insert</span> <span class="pre">Node</span></tt> <a class="reference" href="commands.html">command</a> inserts a new headline into the outline.</li>
+<li>The <tt class="docutils literal"><span class="pre">Delete</span> <span class="pre">Node</span></tt> <a class="reference" href="commands.html">command</a> deletes a headline and all its children.</li>
+<li>The <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Up</span></tt>, <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Down</span></tt>, <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Left</span></tt> and <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Right</span></tt> <a class="reference" href="commands.html">commands</a> move the currently selected node,
 along with all its descendants.</li>
-<li>The <tt class="docutils literal"><span class="pre">Promote</span></tt> <a class="reference external" href="commands.html">command</a> makes all the <a class="reference external" href="glossary.html#child">children</a> of a headline siblings of the headline.
-The <tt class="docutils literal"><span class="pre">Demote</span></tt> <a class="reference external" href="commands.html">command</a> makes all following <a class="reference external" href="glossary.html#siblings">siblings</a> of a headline children of the headline.</li>
-<li>You can cut, copy and paste entire <a class="reference external" href="glossary.html#nodes">nodes</a> (including their descendants) with
-the Cut Node, Copy Node and Paste Node <a class="reference external" href="commands.html">commands</a>.</li>
-<li>We'll discuss the <tt class="docutils literal"><span class="pre">Clone</span> <span class="pre">Node</span></tt> <a class="reference external" href="commands.html">command</a> in the next section.</li>
+<li>The <tt class="docutils literal"><span class="pre">Promote</span></tt> <a class="reference" href="commands.html">command</a> makes all the <a class="reference" href="glossary.html#child">children</a> of a headline siblings of the headline.
+The <tt class="docutils literal"><span class="pre">Demote</span></tt> <a class="reference" href="commands.html">command</a> makes all following <a class="reference" href="glossary.html#siblings">siblings</a> of a headline children of the headline.</li>
+<li>You can cut, copy and paste entire <a class="reference" href="glossary.html#nodes">nodes</a> (including their descendants) with
+the Cut Node, Copy Node and Paste Node <a class="reference" href="commands.html">commands</a>.</li>
+<li>We'll discuss the <tt class="docutils literal"><span class="pre">Clone</span> <span class="pre">Node</span></tt> <a class="reference" href="commands.html">command</a> in the next section.</li>
 </ul>
-<p>You enter <a class="reference external" href="glossary.html#body-text">body text</a> for any node by selecting the node's headline in the
-outline pane and then typing in the body pane. Leo has a full range of <a class="reference external" href="commands.html#the-edit-menu">editing
+<p>You enter <a class="reference" href="glossary.html#body-text">body text</a> for any node by selecting the node's headline in the
+outline pane and then typing in the body pane. Leo has a full range of <a class="reference" href="commands.html#the-edit-menu">editing
 commands</a> that apply to the body pane.</p>
 </div>
 </div>
@@ -389,49 +389,49 @@ The following sections explain what makes Leo unique.</p>
 Leo allows you to store outline data in external files called <strong>derived files</strong>.
 This is useful for creating programming files, documentation files such as LaTeX files, and web pages.</p>
 <p><strong>Important</strong>:
-You can edit <a class="reference internal" href="#derived-files">derived files</a> outside of Leo.
-Leo will update the outline to reflect those changes when Leo next opens the <a class="reference internal" href="#leo-s-main-window">outline</a>.</p>
-<p>It is easy to create derived files; just put <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> <em>filename</em> in a <a class="reference external" href="glossary.html#headline">headline</a>.
+You can edit <a class="reference" href="#derived-files">derived files</a> outside of Leo.
+Leo will update the outline to reflect those changes when Leo next opens the <a class="reference" href="#leo-s-main-window">outline</a>.</p>
+<p>It is easy to create derived files; just put <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> <em>filename</em> in a <a class="reference" href="glossary.html#headline">headline</a>.
 That creates an <strong>&#64;thin node</strong>.
 The <strong>&#64;thin tree</strong> (the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> node and all its descendants) corresponds to the derived file <em>filename</em>.
-Leo writes a <a class="reference internal" href="#derived-files">derived file</a> corresponding to the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree to your hard drive when Leo saves your outline (.leo file).
-When opening a .leo file, Leo reads all the <a class="reference internal" href="#derived-files">derived files</a> corresponding to <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> nodes in the <a class="reference internal" href="#leo-s-main-window">outline</a>.</p>
+Leo writes a <a class="reference" href="#derived-files">derived file</a> corresponding to the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree to your hard drive when Leo saves your outline (.leo file).
+When opening a .leo file, Leo reads all the <a class="reference" href="#derived-files">derived files</a> corresponding to <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> nodes in the <a class="reference" href="#leo-s-main-window">outline</a>.</p>
 <p><strong>Note</strong>: you can <tt class="docutils literal"><span class="pre">&#64;file</span></tt> instead of <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> to create derived files.
 <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> is more friendly to CVS and other Source Code Control Systems.
-This tutorial only discusses <a class="reference external" href="glossary.html#thin">&#64;thin</a> <a class="reference external" href="glossary.html#nodes">nodes</a>.
-A good rule of thumb is to use <a class="reference external" href="glossary.html#thin">&#64;thin</a> <a class="reference external" href="glossary.html#nodes">nodes</a> unless you have a specific reason to do otherwise.
-See <a class="reference external" href="directives.html">Chapter 4: Writing Programs in Leo</a> for a full discussions of the various ways of creating <a class="reference internal" href="#derived-files">derived files</a>.</p>
+This tutorial only discusses <a class="reference" href="glossary.html#thin">&#64;thin</a> <a class="reference" href="glossary.html#nodes">nodes</a>.
+A good rule of thumb is to use <a class="reference" href="glossary.html#thin">&#64;thin</a> <a class="reference" href="glossary.html#nodes">nodes</a> unless you have a specific reason to do otherwise.
+See <a class="reference" href="directives.html">Chapter 4: Writing Programs in Leo</a> for a full discussions of the various ways of creating <a class="reference" href="#derived-files">derived files</a>.</p>
 <p><strong>Important</strong>:
-You must tell Leo the order in which to write data from the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree to the <a class="reference internal" href="#derived-files">derived file</a>.
+You must tell Leo the order in which to write data from the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree to the <a class="reference" href="#derived-files">derived file</a>.
 The simplest way to specify the contents of a derived file is to insert:</p>
 <pre class="literal-block">
 &#64;all
 </pre>
-<p>in the body text of the <a class="reference external" href="glossary.html#thin">&#64;thin</a> <a class="reference external" href="glossary.html#node">node</a>.
-<tt class="docutils literal"><span class="pre">&#64;all</span></tt> is a Leo <a class="reference internal" href="#leo-directives">directive</a>.</p>
-<p>When writing a <a class="reference internal" href="#derived-files">derived file</a>, Leo writes the <a class="reference external" href="glossary.html#body-text">body text</a> of the <a class="reference external" href="glossary.html#thin">&#64;thin</a> <a class="reference external" href="glossary.html#node">node</a>,
-replacing the <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive by the <a class="reference external" href="glossary.html#body-text">body text</a> of all the <a class="reference external" href="glossary.html#descendant">descendant</a> <a class="reference external" href="glossary.html#nodes">nodes</a> in <strong>outline order</strong>,
+<p>in the body text of the <a class="reference" href="glossary.html#thin">&#64;thin</a> <a class="reference" href="glossary.html#node">node</a>.
+<tt class="docutils literal"><span class="pre">&#64;all</span></tt> is a Leo <a class="reference" href="#leo-directives">directive</a>.</p>
+<p>When writing a <a class="reference" href="#derived-files">derived file</a>, Leo writes the <a class="reference" href="glossary.html#body-text">body text</a> of the <a class="reference" href="glossary.html#thin">&#64;thin</a> <a class="reference" href="glossary.html#node">node</a>,
+replacing the <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive by the <a class="reference" href="glossary.html#body-text">body text</a> of all the <a class="reference" href="glossary.html#descendant">descendant</a> <a class="reference" href="glossary.html#nodes">nodes</a> in <strong>outline order</strong>,
 the order that nodes appear on the screen when all nodes are expanded.
-<a class="reference internal" href="#leo-for-programmers">Leo for Programmers</a> discusses other, more flexible, ways of creating derived files from <a class="reference external" href="glossary.html#thin">&#64;thin</a> trees.
+<a class="reference" href="#leo-for-programmers">Leo for Programmers</a> discusses other, more flexible, ways of creating derived files from <a class="reference" href="glossary.html#thin">&#64;thin</a> trees.
 <strong>Note</strong>: Leo copies headlines to the derived file as comments.
-This means that <a class="reference external" href="glossary.html#headlines">headlines</a> do not affect the meaning of <a class="reference internal" href="#derived-files">derived files</a> and
-you can use <a class="reference external" href="glossary.html#headlines">headlines</a> to contain whatever data you wish.
-Usually, <a class="reference external" href="glossary.html#headlines">headlines</a> describe what's in the node.</p>
+This means that <a class="reference" href="glossary.html#headlines">headlines</a> do not affect the meaning of <a class="reference" href="#derived-files">derived files</a> and
+you can use <a class="reference" href="glossary.html#headlines">headlines</a> to contain whatever data you wish.
+Usually, <a class="reference" href="glossary.html#headlines">headlines</a> describe what's in the node.</p>
 </div>
 <div class="section" id="clones-views">
 <h3><a class="toc-backref" href="#id8">Clones &amp; views</a></h3>
-<p>A <strong>cloned node</strong> is a copy of a <a class="reference external" href="glossary.html#node">node</a> that changes when the original changes.
-Changes to the <a class="reference external" href="glossary.html#child">children</a>, <a class="reference external" href="glossary.html#grandchildren">grandchildren</a>, etc. of a node are simultaneously made
+<p>A <strong>cloned node</strong> is a copy of a <a class="reference" href="glossary.html#node">node</a> that changes when the original changes.
+Changes to the <a class="reference" href="glossary.html#child">children</a>, <a class="reference" href="glossary.html#grandchildren">grandchildren</a>, etc. of a node are simultaneously made
 to the corresponding nodes contained in all cloned nodes. A small red arrow in
 icon boxes marks clones.</p>
 <p>Please take a few moments to experiment with clones. Start with a single node,
-say a <a class="reference external" href="glossary.html#node">node</a> whose <a class="reference external" href="glossary.html#headline">headline</a> is A. Clone node A using the <tt class="docutils literal"><span class="pre">Clone</span> <span class="pre">Node</span></tt> <a class="reference external" href="commands.html">command</a>
+say a <a class="reference" href="glossary.html#node">node</a> whose <a class="reference" href="glossary.html#headline">headline</a> is A. Clone node A using the <tt class="docutils literal"><span class="pre">Clone</span> <span class="pre">Node</span></tt> <a class="reference" href="commands.html">command</a>
 in Leo's Outline menu. Both clones are identical; there is no distinction
 between the original node and any of its clones.</p>
 <p>Type some text into the body of either node A. The same text appears in the
-bodies of all other <a class="reference external" href="glossary.html#clones">clones</a> of A. Now insert a node, say B, as a child of any of
+bodies of all other <a class="reference" href="glossary.html#clones">clones</a> of A. Now insert a node, say B, as a child of any of
 the A nodes. All the A nodes now have a B child. See what happens if you clone
-B. See what happens if you insert, delete or move nodes that are <a class="reference external" href="glossary.html#child">children</a> of A.
+B. See what happens if you insert, delete or move nodes that are <a class="reference" href="glossary.html#child">children</a> of A.
 Verify that when the second-to-last cloned node is deleted the last cloned node
 becomes a regular node again.</p>
 <p>Clones are much more than a cute feature. <strong>Clones allow multiple views of data
@@ -468,19 +468,19 @@ ability to create multiple views of a project is most helpful.</p>
 </div>
 <div class="section" id="outline-structure-is-significant-everywhere">
 <h3><a class="toc-backref" href="#id9">Outline structure is significant everywhere</a></h3>
-<p>So far we have been focusing on Leo's outline pane: creating and <a class="reference external" href="glossary.html#clone">cloning</a> <a class="reference external" href="glossary.html#nodes">nodes</a>.
+<p>So far we have been focusing on Leo's outline pane: creating and <a class="reference" href="glossary.html#clone">cloning</a> <a class="reference" href="glossary.html#nodes">nodes</a>.
 In fact, <em>outline structure affects all aspects of Leo</em>.
 For example:</p>
 <ul class="simple">
-<li>As mentioned earlier, body text can contain <a class="reference internal" href="#leo-directives">Leo directives</a> that control how Leo works.
-By default, a Leo directive applies to a node and all its <a class="reference external" href="glossary.html#descendants">descendants</a>,
-but a Leo directive in a descendant node can <strong>override</strong> a directive in an <a class="reference external" href="glossary.html#ancestor">ancestor</a> node.</li>
-<li>Programs in <a class="reference external" href="glossary.html#body-text">body text</a> can contain optional markup consisting of <a class="reference external" href="glossary.html#section">sections</a> and section <a class="reference external" href="glossary.html#references">references</a>.
-(See <a class="reference internal" href="#quick-start-for-programmers">Quick start for programmers</a> for details.)
+<li>As mentioned earlier, body text can contain <a class="reference" href="#leo-directives">Leo directives</a> that control how Leo works.
+By default, a Leo directive applies to a node and all its <a class="reference" href="glossary.html#descendants">descendants</a>,
+but a Leo directive in a descendant node can <strong>override</strong> a directive in an <a class="reference" href="glossary.html#ancestor">ancestor</a> node.</li>
+<li>Programs in <a class="reference" href="glossary.html#body-text">body text</a> can contain optional markup consisting of <a class="reference" href="glossary.html#section">sections</a> and section <a class="reference" href="glossary.html#references">references</a>.
+(See <a class="reference" href="#quick-start-for-programmers">Quick start for programmers</a> for details.)
 Leo outlines limits the visibility of such sections:
-<a class="reference external" href="glossary.html#section">sections</a> must be defined in a node descending from the node containing the <a class="reference external" href="glossary.html#section-reference">section reference</a>.</li>
+<a class="reference" href="glossary.html#section">sections</a> must be defined in a node descending from the node containing the <a class="reference" href="glossary.html#section-reference">section reference</a>.</li>
 <li>You can organize scripts and programs using outlines, and scripts can use
-outline structure to access data. <a class="reference internal" href="#plugins-settings">Plugins</a> and <a class="reference internal" href="#scripting-leo">scripts</a> often confine their
+outline structure to access data. <a class="reference" href="#plugins-settings">Plugins</a> and <a class="reference" href="#scripting-leo">scripts</a> often confine their
 effects to the presently selected outline.</li>
 </ul>
 </div>
@@ -499,7 +499,7 @@ Leo directives start with '&#64;' in the leftmost column, followed by the name o
 &#64;killcolor
 </pre>
 <p>The following directives are useful for non-programmers;
-<a class="reference internal" href="#directives-for-programming">Directives for programming</a> lists the directives used for computer programming.</p>
+<a class="reference" href="#directives-for-programming">Directives for programming</a> lists the directives used for computer programming.</p>
 <ul class="simple">
 <li><strong>&#64;color</strong>, <strong>&#64;nocolor</strong> and <strong>&#64;killcolor</strong> control syntax coloring.</li>
 <li><strong>&#64;language</strong> sets the language used for syntax coloring.</li>
@@ -509,8 +509,8 @@ Negative tab widths cause Leo to convert tabs to spaces
 <li><strong>&#64;wrap</strong> and <strong>&#64;nowrap</strong> enable or disable line wrapping the Leo's body pane.</li>
 </ul>
 <p><strong>Note</strong>:
-You can mix <tt class="docutils literal"><span class="pre">&#64;nocolor</span></tt> and <tt class="docutils literal"><span class="pre">&#64;color</span></tt> directives in a single <a class="reference external" href="glossary.html#node">node</a>,
-but these directives apply to <a class="reference external" href="glossary.html#descendant">descendant</a> nodes only if they are <strong>unambiguous</strong>, that is,
+You can mix <tt class="docutils literal"><span class="pre">&#64;nocolor</span></tt> and <tt class="docutils literal"><span class="pre">&#64;color</span></tt> directives in a single <a class="reference" href="glossary.html#node">node</a>,
+but these directives apply to <a class="reference" href="glossary.html#descendant">descendant</a> nodes only if they are <strong>unambiguous</strong>, that is,
 only if the ancestor node contains exactly one <tt class="docutils literal"><span class="pre">&#64;color</span></tt> or <tt class="docutils literal"><span class="pre">&#64;nocolor</span></tt> directive.</p>
 </div>
 </div>
@@ -522,56 +522,56 @@ only if the ancestor node contains exactly one <tt class="docutils literal"><spa
 programs. Yes, you could create program files using the <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive, but
 the following section explain how you can take advantage of <strong>power-user</strong>
 features designed specifically for computer programmers. Even if you don't read
-manuals, please read the following short <a class="reference internal" href="#quick-start-for-programmers">Quick start for programmers</a> section.</p>
+manuals, please read the following short <a class="reference" href="#quick-start-for-programmers">Quick start for programmers</a> section.</p>
 <div class="section" id="quick-start-for-programmers">
 <h3><a class="toc-backref" href="#id12">Quick start for programmers</a></h3>
-<p><a class="reference external" href="glossary.html#thin-trees">&#64;thin trees</a> (parts of the outline whose <em>headline</em> starts with &#64;thin)
-create <a class="reference internal" href="#derived-files">derived files</a> containing your program.
+<p><a class="reference" href="glossary.html#thin-trees">&#64;thin trees</a> (parts of the outline whose <em>headline</em> starts with &#64;thin)
+create <a class="reference" href="#derived-files">derived files</a> containing your program.
 Within <tt class="docutils literal"><span class="pre">&#64;thin</span> <span class="pre">trees</span></tt> you can write <em>functional pseudo-code</em>, like this:</p>
 <pre class="literal-block">
 &lt;&lt; imports &gt;&gt;  (in body text)
 </pre>
 <p>This is a <strong>reference</strong> to a <strong>section</strong> called <tt class="docutils literal"><span class="pre">&lt;&lt;</span> <span class="pre">imports</span> <span class="pre">&gt;&gt;</span></tt>.
-When writing a <a class="reference internal" href="#derived-files">derived file</a>,
+When writing a <a class="reference" href="#derived-files">derived file</a>,
 Leo replaces all section references by their definition.
 You define sections with <strong>section definition nodes</strong>.
-A section definition node is a <a class="reference external" href="glossary.html#node">node</a> whose <a class="reference external" href="glossary.html#headline">headline</a> starts with a <a class="reference external" href="glossary.html#section-name">section name</a>:</p>
+A section definition node is a <a class="reference" href="glossary.html#node">node</a> whose <a class="reference" href="glossary.html#headline">headline</a> starts with a <a class="reference" href="glossary.html#section-name">section name</a>:</p>
 <pre class="literal-block">
 &lt;&lt; imports &gt;&gt;   (in a headline)
 </pre>
-<p>The <a class="reference external" href="glossary.html#body-text">body text</a> of this <a class="reference external" href="glossary.html#node">node</a> is its definition.  For example:</p>
+<p>The <a class="reference" href="glossary.html#body-text">body text</a> of this <a class="reference" href="glossary.html#node">node</a> is its definition.  For example:</p>
 <pre class="literal-block">
 import leo.core.leoGlobals as g
 import sys
 </pre>
-<p>As you can see, <a class="reference external" href="glossary.html#section-definitions">section definitions</a> can be <em>fragments</em> of code;
+<p>As you can see, <a class="reference" href="glossary.html#section-definitions">section definitions</a> can be <em>fragments</em> of code;
 they don't have to be complete functions or methods.</p>
 <p><strong>Notes</strong>:</p>
 <ul>
-<li><p class="first"><a class="reference external" href="glossary.html#section-definition-nodes">Section definition nodes</a> must be <a class="reference external" href="glossary.html#descendants">descendants</a> of the <a class="reference external" href="glossary.html#node">node</a> containing the <a class="reference external" href="glossary.html#section-reference">section reference</a>.
-Leo's syntax colorer underlines undefined <a class="reference external" href="glossary.html#section-references">section references</a>.</p>
+<li><p class="first"><a class="reference" href="glossary.html#section-definition-nodes">Section definition nodes</a> must be <a class="reference" href="glossary.html#descendants">descendants</a> of the <a class="reference" href="glossary.html#node">node</a> containing the <a class="reference" href="glossary.html#section-reference">section reference</a>.
+Leo's syntax colorer underlines undefined <a class="reference" href="glossary.html#section-references">section references</a>.</p>
 </li>
-<li><p class="first"><a class="reference external" href="glossary.html#section-definitions">Section definitions</a> may contain references to other <a class="reference external" href="glossary.html#section">sections</a>.</p>
+<li><p class="first"><a class="reference" href="glossary.html#section-definitions">Section definitions</a> may contain references to other <a class="reference" href="glossary.html#section">sections</a>.</p>
 </li>
-<li><p class="first">The <strong>&#64;others</strong> <a class="reference internal" href="#leo-directives">directive</a> is a special kind of <a class="reference external" href="glossary.html#section-reference">section reference</a>.
-Leo replaces the <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive by the body text of all <a class="reference external" href="glossary.html#descendant">descendant</a> <a class="reference external" href="glossary.html#nodes">nodes</a>
-<em>except</em> <a class="reference external" href="glossary.html#section-definition-nodes">section definition nodes</a>.
+<li><p class="first">The <strong>&#64;others</strong> <a class="reference" href="#leo-directives">directive</a> is a special kind of <a class="reference" href="glossary.html#section-reference">section reference</a>.
+Leo replaces the <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive by the body text of all <a class="reference" href="glossary.html#descendant">descendant</a> <a class="reference" href="glossary.html#nodes">nodes</a>
+<em>except</em> <a class="reference" href="glossary.html#section-definition-nodes">section definition nodes</a>.
 That's how <tt class="docutils literal"><span class="pre">&#64;others</span></tt> got its name.
-For example, the <a class="reference external" href="glossary.html#root">root node</a> of Python <a class="reference internal" href="#derived-files">derived files</a> typically is something like this:</p>
+For example, the <a class="reference" href="glossary.html#root">root node</a> of Python <a class="reference" href="#derived-files">derived files</a> typically is something like this:</p>
 <pre class="literal-block">
 &lt;&lt; docstring &gt;&gt;
 &lt;&lt; imports &gt;&gt;
 &#64;others
 </pre>
-<p>The <a class="reference internal" href="#derived-files">derived file</a> will contain the docstring, followed by the imports, followed by the
-the body text of all other nodes in the <tt class="docutils literal"><span class="pre">&#64;file</span></tt> tree, in <a class="reference external" href="glossary.html#outline-order">outline order</a>.</p>
+<p>The <a class="reference" href="#derived-files">derived file</a> will contain the docstring, followed by the imports, followed by the
+the body text of all other nodes in the <tt class="docutils literal"><span class="pre">&#64;file</span></tt> tree, in <a class="reference" href="glossary.html#outline-order">outline order</a>.</p>
 </li>
-<li><p class="first">A <a class="reference internal" href="#derived-files">derived file</a> may contain multiple <tt class="docutils literal"><span class="pre">&#64;others</span></tt> <a class="reference internal" href="#leo-directives">directives</a>: Each
-<tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive expands to the body text of all <a class="reference external" href="glossary.html#descendant">descendant</a> <a class="reference external" href="glossary.html#nodes">nodes</a>,
+<li><p class="first">A <a class="reference" href="#derived-files">derived file</a> may contain multiple <tt class="docutils literal"><span class="pre">&#64;others</span></tt> <a class="reference" href="#leo-directives">directives</a>: Each
+<tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive expands to the body text of all <a class="reference" href="glossary.html#descendant">descendant</a> <a class="reference" href="glossary.html#nodes">nodes</a>,
 excluding any nodes (and <em>their</em> descendants) that contain other <tt class="docutils literal"><span class="pre">&#64;others</span></tt>
-<a class="reference internal" href="#leo-directives">directives</a>. In practice, using <tt class="docutils literal"><span class="pre">&#64;others</span></tt> is easy.</p>
+<a class="reference" href="#leo-directives">directives</a>. In practice, using <tt class="docutils literal"><span class="pre">&#64;others</span></tt> is easy.</p>
 </li>
-<li><p class="first">You may precede <a class="reference external" href="glossary.html#section-references">section references</a> (including the <tt class="docutils literal"><span class="pre">&#64;others</span></tt> <a class="reference internal" href="#leo-directives">directive</a>)
+<li><p class="first">You may precede <a class="reference" href="glossary.html#section-references">section references</a> (including the <tt class="docutils literal"><span class="pre">&#64;others</span></tt> <a class="reference" href="#leo-directives">directive</a>)
 with whitespace. When expanding the section references, Leo inserts the
 preceding whitespace before every expanded line. For example, the following
 will work properly in Python:</p>
@@ -583,15 +583,15 @@ if path:
 </ul>
 <p><em>You now know enough to understand Leo's source code</em>.  Hurray!
 The following sections discuss some relatively minor details.
-However, I recommend reading <a class="reference internal" href="#good-style-and-bad-sections-vs-others">Good style and bad</a>;
+However, I recommend reading <a class="reference" href="#good-style-and-bad-sections-vs-others">Good style and bad</a>;
 you might save yourself some extra work.</p>
-<p><a class="reference external" href="directives.html#auto-trees">&#64;auto trees</a> allow you to edit derived files that do not contain sentinels.
+<p><a class="reference" href="directives.html#auto-trees">&#64;auto trees</a> allow you to edit derived files that do not contain sentinels.
 Leo imports such derived files every time Leo reads the .leo file.</p>
 </div>
 <div class="section" id="beginner-s-reference-guide">
 <h3><a class="toc-backref" href="#id13">Beginner`s reference guide</a></h3>
 <p>This section covers all the details of programming with Leo that beginners are likely to need.
-<a class="reference external" href="directives.html">Chapter 4: Writing Programs in Leo</a> is the full reference guide.
+<a class="reference" href="directives.html">Chapter 4: Writing Programs in Leo</a> is the full reference guide.
 I recommend avoiding that chapter until you have been programming with Leo for some time.</p>
 <div class="section" id="syntax-of-section-names">
 <h4><a class="toc-backref" href="#id14">Syntax of section names</a></h4>
@@ -618,7 +618,7 @@ That is, paired <tt class="docutils literal"><span class="pre">&lt;&lt;</span></
 <em>even within comments and strings</em>.
 This means that <tt class="docutils literal"><span class="pre">&lt;&lt;</span></tt> and <tt class="docutils literal"><span class="pre">&gt;&gt;</span></tt> characters that do not delimit a section name must be placed on separate lines.
 In practice, this requirement seldom causes problems.</p>
-<p>The syntax of section names is based on Norman Ramsey's <a class="reference external" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> markup language,
+<p>The syntax of section names is based on Norman Ramsey's <a class="reference" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> markup language,
 but without noweb's escape conventions.
 Eliminating these escape conventions may seem odd,
 but it has turned out to be one of the best design decisions I ever made.</p>
@@ -638,7 +638,7 @@ The next line ends the doc part
 &#64;c
 </pre>
 <p>Doc parts are entirely optional;
-you could simply use comments in the language specified by the <tt class="docutils literal"><span class="pre">&#64;language</span></tt> <a class="reference internal" href="#leo-directives">directive</a>.
+you could simply use comments in the language specified by the <tt class="docutils literal"><span class="pre">&#64;language</span></tt> <a class="reference" href="#leo-directives">directive</a>.
 Using doc parts for lengthy comments is convenient, however.
 Not only do you not need to specify comment delimiters,
 but Leo breaks doc parts into lines automatically.
@@ -659,14 +659,14 @@ However, <tt class="docutils literal"><span class="pre">&#64;</span></tt> and <t
 </ul>
 <p>declares that the preceding code part contains the list of identifiers.
 Whitespace separate the identifiers; everything else is taken to be the
-identifiers. This construct is a convention of the <a class="reference external" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> language, and will be
+identifiers. This construct is a convention of the <a class="reference" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> language, and will be
 of use <em>only</em> for those who want to create .nw output files for use with the
-official <a class="reference external" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> system.</p>
+official <a class="reference" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> system.</p>
 </div>
 <div class="section" id="directives-for-programming">
 <h4><a class="toc-backref" href="#id16">Directives for programming</a></h4>
 <p>The following directives are commonly used by Leo programmers.
-See <a class="reference external" href="directives.html">Chapter 4: Writing Programs in Leo</a> for full details.</p>
+See <a class="reference" href="directives.html">Chapter 4: Writing Programs in Leo</a> for full details.</p>
 <ul class="simple">
 <li><strong>&#64;</strong> Starts doc parts (and ends code parts).</li>
 <li><strong>&#64;all</strong> Copies <em>all</em> descendant nodes to the derived file.</li>
@@ -687,18 +687,18 @@ In particular, Leo will output Python decorators correctly, provided the name of
 </div>
 <div class="section" id="orphan-nodes">
 <h4><a class="toc-backref" href="#id17">Orphan nodes</a></h4>
-<p>An <strong>orphan node</strong> is a descendant of an <a class="reference external" href="glossary.html#thin">&#64;thin</a> <a class="reference external" href="glossary.html#node">node</a> that will not be copied
-to the <a class="reference internal" href="#derived-files">derived file</a>. Orphan nodes can arise because an <a class="reference external" href="glossary.html#thin">&#64;thin</a> tree has no
+<p>An <strong>orphan node</strong> is a descendant of an <a class="reference" href="glossary.html#thin">&#64;thin</a> <a class="reference" href="glossary.html#node">node</a> that will not be copied
+to the <a class="reference" href="#derived-files">derived file</a>. Orphan nodes can arise because an <a class="reference" href="glossary.html#thin">&#64;thin</a> tree has no
 <tt class="docutils literal"><span class="pre">&#64;others</span></tt> or <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directives. Sections that are defined but not used also
-create orphan nodes. Leo issues a warning when attempting to write an <a class="reference external" href="glossary.html#thin">&#64;thin</a>
+create orphan nodes. Leo issues a warning when attempting to write an <a class="reference" href="glossary.html#thin">&#64;thin</a>
 tree containing orphan nodes, and does not save the derived file. Instead Leo
-saves the information in the <a class="reference external" href="glossary.html#thin">&#64;thin</a> tree in the .leo file. No information is
-lost; Leo will load the <a class="reference external" href="glossary.html#thin">&#64;thin</a> tree from the .leo file the next time Leo
+saves the information in the <a class="reference" href="glossary.html#thin">&#64;thin</a> tree in the .leo file. No information is
+lost; Leo will load the <a class="reference" href="glossary.html#thin">&#64;thin</a> tree from the .leo file the next time Leo
 opens the .leo file.</p>
 </div>
 <div class="section" id="sentinel-lines">
 <h4><a class="toc-backref" href="#id18">Sentinel lines</a></h4>
-<p>When writing <a class="reference internal" href="#derived-files">derived files</a>, Leo stores information about the outline
+<p>When writing <a class="reference" href="#derived-files">derived files</a>, Leo stores information about the outline
 structure in special comments called <strong>sentinel lines</strong>. Sentinel lines are
 comment lines with '&#64;' following the comment delimiter. For example, here are
 some actual sentinel line for the derived file containing Python code:</p>
@@ -711,42 +711,42 @@ some actual sentinel line for the derived file containing Python code:</p>
 #&#64;-node:ekr.20031218072017.2794:&#64;thin leoColor.py
 #&#64;-leo
 </pre>
-<p><strong>You must not change sentinel lines</strong> when editing a <a class="reference internal" href="#derived-files">derived file</a> in another
+<p><strong>You must not change sentinel lines</strong> when editing a <a class="reference" href="#derived-files">derived file</a> in another
 editor! Doing so will corrupt the derived file and make it impossible for Leo to
 read it normally. If you do accidentally alter a sentinel line, don't panic!
-Leo's <tt class="docutils literal"><span class="pre">Import</span> <span class="pre">Derived</span> <span class="pre">File</span></tt> <a class="reference external" href="commands.html">command</a> can recover information from corrupted
+Leo's <tt class="docutils literal"><span class="pre">Import</span> <span class="pre">Derived</span> <span class="pre">File</span></tt> <a class="reference" href="commands.html">command</a> can recover information from corrupted
 derived files.</p>
-<p>The main difference between <a class="reference external" href="glossary.html#file">&#64;file</a> trees, <a class="reference external" href="glossary.html#thin">&#64;thin</a> trees (and other kinds of trees that create derived files)
+<p>The main difference between <a class="reference" href="glossary.html#file">&#64;file</a> trees, <a class="reference" href="glossary.html#thin">&#64;thin</a> trees (and other kinds of trees that create derived files)
 is the kind of sentinel lines that Leo writes:</p>
 <ul class="simple">
-<li>Sentinels in files derived from <a class="reference external" href="glossary.html#thin">&#64;thin</a> reduce spurious cvs conflicts by
+<li>Sentinels in files derived from <a class="reference" href="glossary.html#thin">&#64;thin</a> reduce spurious cvs conflicts by
 marking each node with unique, unchanging <strong>timestamp</strong> as shown above.</li>
-<li>Sentinels in files derived from <a class="reference external" href="glossary.html#file">&#64;file</a> are as friendly as possible for human readers.</li>
-<li>Files derived from <a class="reference external" href="glossary.html#nosent">&#64;nosent</a> have no sentinels at all.
+<li>Sentinels in files derived from <a class="reference" href="glossary.html#file">&#64;file</a> are as friendly as possible for human readers.</li>
+<li>Files derived from <a class="reference" href="glossary.html#nosent">&#64;nosent</a> have no sentinels at all.
 <strong>Important</strong>: without sentinels Leo can not automatically update
 <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> trees from changes made in external editors.</li>
 </ul>
-<p><a class="reference external" href="directives.html">Chapter 4: Writing Programs in Leo</a> discusses the various ways of creating derived files.
+<p><a class="reference" href="directives.html">Chapter 4: Writing Programs in Leo</a> discusses the various ways of creating derived files.
 This is a highly complex subject: you should ignore these details at first.
-Just use <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> to create your <a class="reference internal" href="#derived-files">derived files</a>.</p>
+Just use <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> to create your <a class="reference" href="#derived-files">derived files</a>.</p>
 </div>
 <div class="section" id="leo-and-literate-programming">
 <h4><a class="toc-backref" href="#id19">Leo and literate programming</a></h4>
-<p>Leo can support a style of programming similar to <a class="reference external" href="http://www.literateprogramming.com/">Literate Programming</a> (LP).
+<p>Leo can support a style of programming similar to <a class="reference" href="http://www.literateprogramming.com/">Literate Programming</a> (LP).
 LP has a bad reputation in some quarters. That's too bad; Leo fixes all the
-problems with traditional LP. See <a class="reference external" href="design.html">Chapter 6: Leo and Literate Programming</a> in
-<a class="reference external" href="leo_TOC.html">Leo's Users Guide</a> for more details. <em>Please</em> don't let the words 'Literate
+problems with traditional LP. See <a class="reference" href="design.html">Chapter 6: Leo and Literate Programming</a> in
+<a class="reference" href="leo_TOC.html">Leo's Users Guide</a> for more details. <em>Please</em> don't let the words 'Literate
 Programming' get in the way of your using Leo effectively. That would be <em>your</em>
 mistake, and a big one.</p>
 </div>
 </div>
 <div class="section" id="good-style-and-bad-sections-vs-others">
 <h3><a class="toc-backref" href="#id20">Good style and bad:  sections vs. &#64;others</a></h3>
-<p>Newcomers to Leo frequently ask when to use the <a class="reference external" href="glossary.html#others">&#64;others</a> <a class="reference internal" href="#leo-directives">directive</a> and when
-to use <a class="reference external" href="glossary.html#section">sections</a>. It is good style to use <a class="reference external" href="glossary.html#section-references">section references</a> only when the
-order of text within a <a class="reference internal" href="#derived-files">derived file</a> matters. For example, Python programmers
-put docstrings and imports at the start of files. So the <a class="reference external" href="glossary.html#body-text">body text</a> of
-<a class="reference external" href="glossary.html#file">&#64;file</a> nodes typically look something like this:</p>
+<p>Newcomers to Leo frequently ask when to use the <a class="reference" href="glossary.html#others">&#64;others</a> <a class="reference" href="#leo-directives">directive</a> and when
+to use <a class="reference" href="glossary.html#section">sections</a>. It is good style to use <a class="reference" href="glossary.html#section-references">section references</a> only when the
+order of text within a <a class="reference" href="#derived-files">derived file</a> matters. For example, Python programmers
+put docstrings and imports at the start of files. So the <a class="reference" href="glossary.html#body-text">body text</a> of
+<a class="reference" href="glossary.html#file">&#64;file</a> nodes typically look something like this:</p>
 <pre class="literal-block">
 &lt;&lt; docstring &gt;&gt;
 &#64;language python
@@ -781,7 +781,7 @@ the headline.</p>
 <li><p class="first">It is good style to <strong>put each class, function or method in its own node</strong>.
 This makes it easy to see the shape of your code.</p>
 </li>
-<li><p class="first">It is good style to use <a class="reference external" href="glossary.html#organizer-nodes">organizer nodes</a> to group related functions or methods.
+<li><p class="first">It is good style to use <a class="reference" href="glossary.html#organizer-nodes">organizer nodes</a> to group related functions or methods.
 An organizer node has no content except maybe for comments.
 Like this:</p>
 <pre class="literal-block">
@@ -804,10 +804,10 @@ This organization is far superior to using hideous comments like:</p>
 ###########
 </pre>
 </li>
-<li><p class="first">It is bad style to use <a class="reference external" href="glossary.html#others">&#64;others</a> in <a class="reference external" href="glossary.html#organizer-nodes">organizer nodes</a>.
+<li><p class="first">It is bad style to use <a class="reference" href="glossary.html#others">&#64;others</a> in <a class="reference" href="glossary.html#organizer-nodes">organizer nodes</a>.
 There is no need to do so.</p>
 </li>
-<li><p class="first">It is bad style to use <a class="reference external" href="glossary.html#others">&#64;others</a> when order does matter.
+<li><p class="first">It is bad style to use <a class="reference" href="glossary.html#others">&#64;others</a> when order does matter.
 The reason is that it is very easy to move nodes in a tree by mistake,
 say by alphabetizing nodes.
 One wants to make the meaning of a derived file immune from such movements.</p>
@@ -822,9 +822,9 @@ wise to &quot;know the rules before you break them.&quot;</p>
 <h3><a class="toc-backref" href="#id21">Scripting Leo</a></h3>
 <p>Leo is fully scriptable using the Python language.
 <strong>Leo can execute any body text as a Python script</strong>.
-To run the entire body text as a script, simply choose the node and execute the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> <a class="reference external" href="commands.html">command</a>.
-If text is selected, the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> <a class="reference external" href="commands.html">command</a> will run just the selected text as the script.</p>
-<p>The <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> <a class="reference external" href="commands.html">command</a> <strong>preprocesses</strong> the script before executing it.
+To run the entire body text as a script, simply choose the node and execute the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> <a class="reference" href="commands.html">command</a>.
+If text is selected, the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> <a class="reference" href="commands.html">command</a> will run just the selected text as the script.</p>
+<p>The <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> <a class="reference" href="commands.html">command</a> <strong>preprocesses</strong> the script before executing it.
 Leo preprocesses scripts in exactly the same way that Leo writes derived files.
 That is,
 <strong>Leo expands section references and processes &#64;others directives</strong> before executing the script.
@@ -838,7 +838,7 @@ for p in c.allNodes_iter():
 <p>Your scripts can use outline structure to avoid having to parse data.
 With a little forethought you can arrange outlines to make scripts easier to write.
 The example above is only the beginning of what scripts can do.
-See <a class="reference external" href="scripting.html">Chapter 7: Scripting Leo with Python</a> for a complete discussion of scripting.</p>
+See <a class="reference" href="scripting.html">Chapter 7: Scripting Leo with Python</a> for a complete discussion of scripting.</p>
 </div>
 <div class="section" id="plugins-settings">
 <h3><a class="toc-backref" href="#id22">Plugins &amp; settings</a></h3>
@@ -850,16 +850,16 @@ outlines whose headline is <tt class="docutils literal"><span class="pre">&#64;s
 for <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees in the outline being opened and also in various
 <tt class="docutils literal"><span class="pre">leoSettings.leo</span></tt> files. <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees allow plugins to get options without
 any further support from Leo's core code. For a full discussion of
-<tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees, see <a class="reference external" href="customizing.html">Chapter 8: Customizing Leo</a>.</p>
+<tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees, see <a class="reference" href="customizing.html">Chapter 8: Customizing Leo</a>.</p>
 </div>
 <div class="section" id="further-study">
 <h3><a class="toc-backref" href="#id23">Further study</a></h3>
 <p><tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt> (in the src subdirectory of the leo folder) contains almost all of Leo's source code.
 It provides hundreds of examples of everything discussed here.
 This file will repay close study.
-For full details on all aspects of Leo see <tt class="docutils literal"><span class="pre">LeoDocs.leo</span></tt> or <a class="reference external" href="leo_TOC.html">Leo's Users Guide</a>.</p>
+For full details on all aspects of Leo see <tt class="docutils literal"><span class="pre">LeoDocs.leo</span></tt> or <a class="reference" href="leo_TOC.html">Leo's Users Guide</a>.</p>
 <hr class="docutils" />
-<p><a class="reference external" href="install.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference external" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference external" href="outlines.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<p><a class="reference" href="install.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="outlines.html"><img alt="next" src="arrow_rt.gif" /></a></p>
 </div>
 </div>
 </div>
