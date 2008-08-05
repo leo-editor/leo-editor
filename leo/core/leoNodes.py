@@ -1096,12 +1096,24 @@ class basePosition (object):
     __repr__ = __str__
     #@-node:ekr.20040301205720:p.__str__ and p.__repr__
     #@+node:ekr.20061006092649:p.archivedPosition
-    def archivedPosition (self):
+    def archivedPosition (self,root_p=None):
 
         '''Return a representation of a position suitable for use in .leo files.'''
 
         p = self
-        aList = [z._childIndex for z in p.self_and_parents_iter()]
+
+        if root_p is None:
+            aList = [z._childIndex for z in p.self_and_parents_iter()]
+        else:
+            aList = []
+            for z in p.self_and_parents_iter():
+                if z == root_p:
+                    aList.append(0)
+                    break
+                else:
+                    aList.append(z._childIndex)
+            # g.trace(aList)
+
         aList.reverse()
         return aList
     #@nonl

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,0"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1778,6 +1778,11 @@
 <v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
 </v>
 </v>
+<v t="ekr.20080805104144.1"><vh>@test putDescendentVuas</vh>
+<v t="ekr.20080805104144.2"><vh>child</vh>
+<v t="ekr.20080805104144.3"><vh>grandChild</vh></v>
+</v>
+</v>
 <v t="ekr.20061001114236" unit_test="55046162636471002e"><vh>@test putUa</vh></v>
 <v t="ekr.20051107115231.9" annotate="7d71002e"><vh>@test Select a node when file is first loaded</vh></v>
 <v t="ekr.20061008162912"><vh>@test write .leo file with @ignore node</vh>
@@ -2401,7 +2406,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.1" a="E"><vh>leoShadow</vh>
+<v t="ekr.20080729200342.1"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
 <v t="ekr.20080804124245.1"><vh>passed</vh></v>
@@ -2642,6 +2647,36 @@
 </v>
 <v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
+<v t="ekr.20061001114637"><vh>leoFileCommands</vh>
+<v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
+<v t="ekr.20061001124008"><vh>@test minimal test of putTnodeList</vh>
+<v t="ekr.20061001124008.1"><vh>child</vh>
+<v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
+</v>
+</v>
+<v t="ekr.20061001114341" unit_test="55046162636471002e"><vh>@test putDescendentAttributes</vh>
+<v t="ekr.20061001114341.1" a="M"><vh>child</vh>
+<v t="ekr.20061001114341.2"><vh>grandChild</vh></v>
+</v>
+</v>
+<v t="ekr.20061001091616"><vh>@test putDescendentUa</vh>
+<v t="ekr.20061001091647" unit_test_child="55046162636471002e"><vh>child</vh>
+<v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
+</v>
+</v>
+<v t="ekr.20080805104144.1"><vh>@test putDescendentVuas</vh>
+<v t="ekr.20080805104144.2"><vh>child</vh>
+<v t="ekr.20080805104144.3"><vh>grandChild</vh></v>
+</v>
+</v>
+<v t="ekr.20061001114236" unit_test="55046162636471002e"><vh>@test putUa</vh></v>
+<v t="ekr.20051107115231.9" annotate="7d71002e"><vh>@test Select a node when file is first loaded</vh></v>
+<v t="ekr.20061008162912"><vh>@test write .leo file with @ignore node</vh>
+<v t="ekr.20061008162912.1"><vh>child</vh></v>
+</v>
+<v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20080805105541.1"><vh>@test p.archivedPosition TO DO</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -21467,5 +21502,29 @@ node 1 line 2</t>
 <t tx="ekr.20080804123400.7">node 2 line 1
 node 2 line 2</t>
 <t tx="ekr.20080804124245.1"></t>
+<t tx="ekr.20080805104144.1">fc = c.fileCommands
+child = p.firstChild()
+grandChild = child.firstChild()
+# Note: only tnodes can have unknown attributes.
+child.v.unknownAttributes = {'unit_test_child':'abcd'}
+grandChild.v.unknownAttributes = {'unit_test_grandchild':'wxyz'}
+
+try:
+
+    s = fc.putDescendentVnodeUas (p)
+    
+    expected = ' descendentVnodeUnknownAttributes="\
+7d7100285503302e3071017d7102550f756e69745f746573745f\
+6368696c6471035504616263647104735505302e302e3071057d\
+71065514756e69745f746573745f6772616e646368696c647107\
+55047778797a710873752e"'
+    
+    assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
+finally:
+    del child.v.unknownAttributes
+    del grandChild.v.unknownAttributes</t>
+<t tx="ekr.20080805104144.2"></t>
+<t tx="ekr.20080805104144.3"></t>
+<t tx="ekr.20080805105541.1"></t>
 </tnodes>
 </leo_file>
