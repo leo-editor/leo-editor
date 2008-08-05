@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="70" left="76" height="885" width="887"/>
+	<global_window_position top="93" left="133" height="885" width="887"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1768,17 +1768,12 @@
 <v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
 </v>
 </v>
-<v t="ekr.20061001114341" unit_test="55046162636471002e"><vh>@test putDescendentAttributes</vh>
-<v t="ekr.20061001114341.1" a="M"><vh>child</vh>
-<v t="ekr.20061001114341.2"><vh>grandChild</vh></v>
-</v>
-</v>
-<v t="ekr.20061001091616"><vh>@test putDescendentUa</vh>
+<v t="ekr.20061001091616"><vh>@test putDescendentTnodeUas</vh>
 <v t="ekr.20061001091647" unit_test_child="55046162636471002e"><vh>child</vh>
 <v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
 </v>
 </v>
-<v t="ekr.20080805104144.1"><vh>@test putDescendentVuas</vh>
+<v t="ekr.20080805104144.1"><vh>@test putDescendentVnodeUas</vh>
 <v t="ekr.20080805104144.2"><vh>child</vh>
 <v t="ekr.20080805104144.3"><vh>grandChild</vh></v>
 </v>
@@ -1789,6 +1784,13 @@
 <v t="ekr.20061008162912.1"><vh>child</vh></v>
 </v>
 <v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20080805105541.1"><vh>@test p.archivedPosition</vh>
+<v t="ekr.20080805122315.1"><vh>first child</vh></v>
+<v t="ekr.20080805122315.2" a="E" unit_test_child="55046162636471002e"><vh>second child</vh>
+<v t="ekr.20080805122315.3" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
+<v t="ekr.20080805122315.4"><vh>grandChild 2</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20071113193527"><vh>leoFind</vh>
 <v t="ekr.20051107115231.29" annotate="7d71002e"><vh>@@test Find keeps focus in body &amp; shows selected text</vh></v>
@@ -2654,17 +2656,12 @@
 <v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
 </v>
 </v>
-<v t="ekr.20061001114341" unit_test="55046162636471002e"><vh>@test putDescendentAttributes</vh>
-<v t="ekr.20061001114341.1" a="M"><vh>child</vh>
-<v t="ekr.20061001114341.2"><vh>grandChild</vh></v>
-</v>
-</v>
-<v t="ekr.20061001091616"><vh>@test putDescendentUa</vh>
+<v t="ekr.20061001091616"><vh>@test putDescendentTnodeUas</vh>
 <v t="ekr.20061001091647" unit_test_child="55046162636471002e"><vh>child</vh>
 <v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
 </v>
 </v>
-<v t="ekr.20080805104144.1"><vh>@test putDescendentVuas</vh>
+<v t="ekr.20080805104144.1"><vh>@test putDescendentVnodeUas</vh>
 <v t="ekr.20080805104144.2"><vh>child</vh>
 <v t="ekr.20080805104144.3"><vh>grandChild</vh></v>
 </v>
@@ -2675,8 +2672,14 @@
 <v t="ekr.20061008162912.1"><vh>child</vh></v>
 </v>
 <v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20080805105541.1"><vh>@test p.archivedPosition</vh>
+<v t="ekr.20080805122315.1"><vh>first child</vh></v>
+<v t="ekr.20080805122315.2" a="E" unit_test_child="55046162636471002e"><vh>second child</vh>
+<v t="ekr.20080805122315.3" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
+<v t="ekr.20080805122315.4"><vh>grandChild 2</vh></v>
 </v>
-<v t="ekr.20080805105541.1"><vh>@test p.archivedPosition TO DO</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -14120,7 +14123,7 @@ grandChild.v.t.unknownAttributes = {'unit_test_grandchild':'wxyz'}
 
 try:
 
-    s = fc.putDescendentUnknownAttributes (p)
+    s = fc.putDescendentTnodeUas (p)
     
     expected = ' descendentTnodeUnknownAttributes="\
 7d7100285514656b722e32303036313030313039313634372e3\
@@ -14141,16 +14144,6 @@ s = fc.putUnknownAttributes (p.v)
 expected = ' unit_test="55046162636471002e"'
 assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
 </t>
-<t tx="ekr.20061001114341">fc = c.fileCommands
-child = p.firstChild()
-c.setMarked(child)
-child.expand()
-s = fc.putDescendentAttributes (p)
-expected = '\nmarks="ekr.20061001114341.1,"\nexpanded="ekr.20061001114341.1,"'
-assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
-</t>
-<t tx="ekr.20061001114341.1"></t>
-<t tx="ekr.20061001114341.2"></t>
 <t tx="ekr.20061001114637"></t>
 <t tx="ekr.20061001124008">fc = c.fileCommands
 t = p.v.t
@@ -21505,7 +21498,6 @@ node 2 line 2</t>
 <t tx="ekr.20080805104144.1">fc = c.fileCommands
 child = p.firstChild()
 grandChild = child.firstChild()
-# Note: only tnodes can have unknown attributes.
 child.v.unknownAttributes = {'unit_test_child':'abcd'}
 grandChild.v.unknownAttributes = {'unit_test_grandchild':'wxyz'}
 
@@ -21525,6 +21517,29 @@ finally:
     del grandChild.v.unknownAttributes</t>
 <t tx="ekr.20080805104144.2"></t>
 <t tx="ekr.20080805104144.3"></t>
-<t tx="ekr.20080805105541.1"></t>
+<t tx="ekr.20080805105541.1">val = p.archivedPosition(root_p=p)
+assert val == [0],'expected %s, got %s' % ([0],val)
+
+i = 0
+for z in p.parent().children_iter():
+    val = z.archivedPosition(root_p=p.parent())
+    assert val == [0,i],'expected %s, got %s'%([0,i],val)
+    i += 1
+
+i = 0
+for z in p.children_iter():
+    val = z.archivedPosition(root_p=p)
+    assert val == [0,i],'expected %s, got %s'%([0,i],val)
+    i += 1
+    
+i = 0
+for z in p.firstChild().next().children_iter():
+    val = z.archivedPosition(root_p=p)
+    assert val == [0,1,i],'expected %s, got %s'%([0,1,i],val)
+    i += 1</t>
+<t tx="ekr.20080805122315.1"></t>
+<t tx="ekr.20080805122315.2"></t>
+<t tx="ekr.20080805122315.3"></t>
+<t tx="ekr.20080805122315.4"></t>
 </tnodes>
 </leo_file>

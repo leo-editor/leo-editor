@@ -3350,6 +3350,13 @@ def test_propagate_changes (self,
 
     return results # For unit tests.
 #@-node:ekr.20080708094444.83:test_propagate_changes (no longer used)
+#@+node:EKR.20040627113418:putDescendentUnknownAttributes
+def putDescendentUnknownAttributes (self,p):
+
+    return self.putDescendentTnodeUas(p)
+    # return self.putDescendentVnodeUas(p)
+
+#@-node:EKR.20040627113418:putDescendentUnknownAttributes
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

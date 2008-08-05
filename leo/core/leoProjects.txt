@@ -9488,7 +9488,8 @@ def initIvars(self):
     self.descendentExpandedList = []
     self.descendentMarksList = []
     self.forbiddenTnodes = []
-    self.descendentUnknownAttributesDictList = []
+    self.descendentTnodeUaDictList = []
+    self.descendentVnodeUaDictList = []
     self.ratio = 0.5
 
     self.currentVnode = None
@@ -12325,7 +12326,7 @@ if hasattr(v,"unknownAttributes"): # New in 4.0
 
 if p.hasChildren() and not forceWrite and not self.usingClipboard:
     # We put the entire tree when using the clipboard, so no need for this.
-    attrs.append(self.putDescendentUnknownAttributes(p))
+    attrs.append(self.putDescendentTnodeUas(p))
     attrs.append(self.putDescendentAttributes(p))
 #@nonl
 #@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
@@ -19470,7 +19471,7 @@ if hasattr(v,"unknownAttributes"): # New in 4.0
 
 if p.hasChildren() and not forceWrite and not self.usingClipboard:
     # We put the entire tree when using the clipboard, so no need for this.
-    attrs.append(self.putDescendentUnknownAttributes(p))
+    attrs.append(self.putDescendentTnodeUas(p))
     attrs.append(self.putDescendentAttributes(p))
 #@nonl
 #@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
@@ -21034,7 +21035,7 @@ if hasattr(v,"unknownAttributes"): # New in 4.0
 
 if p.hasChildren() and not forceWrite and not self.usingClipboard:
     # We put the entire tree when using the clipboard, so no need for this.
-    attrs.append(self.putDescendentUnknownAttributes(p))
+    attrs.append(self.putDescendentTnodeUas(p))
     attrs.append(self.putDescendentAttributes(p))
 #@nonl
 #@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
