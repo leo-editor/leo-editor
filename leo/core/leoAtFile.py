@@ -4205,7 +4205,7 @@ class atFile:
     #@-node:ekr.20041005105605.218:writeException
     #@-node:ekr.20041005105605.196:Writing 4.x utils...
     #@-node:ekr.20041005105605.132:at.Writing
-    #@+node:ekr.20041005105605.219:at.Uilites
+    #@+node:ekr.20041005105605.219:at.Utilites
     #@+node:ekr.20041005105605.220:atFile.error
     def error(self,message):
 
@@ -4747,7 +4747,7 @@ class atFile:
         if read_only:
             g.es("read only:",fn,color="red")
     #@-node:ekr.20041005105605.20:warnOnReadOnlyFile
-    #@-node:ekr.20041005105605.219:at.Uilites
+    #@-node:ekr.20041005105605.219:at.Utilites
     #@-others
 #@-node:ekr.20041005105605.1:@thin leoAtFile.py
 #@-leo
