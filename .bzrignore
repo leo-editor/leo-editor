@@ -32,3 +32,6 @@ leo/core/leoKeys.py
 leo/test/unittest/createdFile.txt
 leo/test/at_ignore_test.txt
 unitTestFile.py
+mod_shadow.tmp1
+mod_shadow.tmp2
+.leo_shadow
