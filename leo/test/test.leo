@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5,4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="2,6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -131,7 +131,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
@@ -193,6 +193,34 @@
 <v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
 </v>
+<v t="ekr.20080806145258.12"><vh>Prototype of Leo in Ajax</vh>
+<v t="ekr.20080806145258.13"><vh>To do</vh></v>
+<v t="ekr.20080806145258.14"><vh>@button Leo2DHTML</vh>
+<v t="ekr.20080806145258.15"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.16"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.17"><vh>escape</vh></v>
+<v t="ekr.20080806145258.18"><vh>writeAll</vh></v>
+<v t="ekr.20080806145258.19"><vh>writeBody</vh></v>
+<v t="ekr.20080806145258.20"><vh>writeHead</vh></v>
+<v t="ekr.20080806145258.21"><vh>writeContents</vh></v>
+<v t="ekr.20080806145258.22"><vh>writePreamble</vh></v>
+<v t="ekr.20080806145258.23"><vh>writePostamble</vh></v>
+</v>
+<v t="ekr.20080806145258.24" tnodeList="ekr.20080806145258.24"><vh>@file server.py</vh></v>
+<v t="ekr.20080806145258.25" tnodeList="ekr.20080806145258.25"><vh>@file hello.html</vh></v>
+<v t="ekr.20080806145258.26" tnodeList="ekr.20080806145258.26,ekr.20080806145702.1,ekr.20080806145258.27,ekr.20080806145258.28,ekr.20080806145258.29,ekr.20080806145258.30,ekr.20080806145258.31,ekr.20080806145258.32,ekr.20080806145258.33"><vh>@file cgi-bin/edward.py</vh>
+<v t="ekr.20080806145702.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.27"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.28"><vh>escape</vh></v>
+<v t="ekr.20080806145258.29"><vh>print_all</vh></v>
+<v t="ekr.20080806145258.30"><vh>print_body</vh></v>
+<v t="ekr.20080806145258.31"><vh>print_head</vh></v>
+<v t="ekr.20080806145258.32"><vh>print_leo_dot_js</vh></v>
+<v t="ekr.20080806145258.33"><vh>print_tree</vh></v>
+</v>
+<v t="ekr.20080806145258.1"><vh>@thin cgi-bin/leo.js</vh></v>
+<v t="ekr.20080806145258.34"><vh>@@thin jqueryTest.html</vh></v>
+</v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
@@ -228,34 +256,6 @@
 </v>
 </v>
 </v>
-</v>
-<v t="ekr.20080806145258.12" a="E"><vh>Prototype of Leo in Ajax</vh>
-<v t="ekr.20080806145258.13"><vh>To do</vh></v>
-<v t="ekr.20080806145258.14"><vh>@button Leo2DHTML</vh>
-<v t="ekr.20080806145258.15"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
-<v t="ekr.20080806145258.16"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
-<v t="ekr.20080806145258.17"><vh>escape</vh></v>
-<v t="ekr.20080806145258.18"><vh>writeAll</vh></v>
-<v t="ekr.20080806145258.19"><vh>writeBody</vh></v>
-<v t="ekr.20080806145258.20"><vh>writeHead</vh></v>
-<v t="ekr.20080806145258.21"><vh>writeContents</vh></v>
-<v t="ekr.20080806145258.22"><vh>writePreamble</vh></v>
-<v t="ekr.20080806145258.23"><vh>writePostamble</vh></v>
-</v>
-<v t="ekr.20080806145258.24" tnodeList="ekr.20080806145258.24"><vh>@file server.py</vh></v>
-<v t="ekr.20080806145258.25" tnodeList="ekr.20080806145258.25"><vh>@file hello.html</vh></v>
-<v t="ekr.20080806145258.26" a="E" tnodeList="ekr.20080806145258.26,ekr.20080806145702.1,ekr.20080806145258.27,ekr.20080806145258.28,ekr.20080806145258.29,ekr.20080806145258.30,ekr.20080806145258.31,ekr.20080806145258.32,ekr.20080806145258.33"><vh>@file cgi-bin/edward.py</vh>
-<v t="ekr.20080806145702.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20080806145258.27"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
-<v t="ekr.20080806145258.28"><vh>escape</vh></v>
-<v t="ekr.20080806145258.29"><vh>print_all</vh></v>
-<v t="ekr.20080806145258.30"><vh>print_body</vh></v>
-<v t="ekr.20080806145258.31"><vh>print_head</vh></v>
-<v t="ekr.20080806145258.32"><vh>print_leo_dot_js</vh></v>
-<v t="ekr.20080806145258.33"><vh>print_tree</vh></v>
-</v>
-<v t="ekr.20080806145258.1"><vh>@thin cgi-bin/leo.js</vh></v>
-<v t="ekr.20080806145258.34"><vh>@@thin jqueryTest.html</vh></v>
 </v>
 </vnodes>
 <tnodes>
