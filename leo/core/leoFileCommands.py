@@ -532,7 +532,9 @@ class baseFileCommands:
 
         self.nativeTnodeAttributes = ('tx',)
         self.nativeVnodeAttributes = (
-            'a','descendentTnodeUnknownAttributes',
+            'a',
+            'descendentTnodeUnknownAttributes',
+            'descendentVnodeUnknownAttributes', # New in Leo 4.5.
             'expanded','marks','t','tnodeList',
             # 'vtag',
         )
