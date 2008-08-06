@@ -6452,6 +6452,16 @@ For example, @auto x.css would put @language css in the root node.
 #@-node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
 #@+node:ekr.20080802070659.11:Make node attributes visible, and supported by Leo's core
 #@-node:ekr.20080802070659.11:Make node attributes visible, and supported by Leo's core
+#@+node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/76789df8aac08c70
+
+When using leo as outliner, I often use only node headlines to write
+down some data. If the headline string is too long, the cursor goes
+beyond the visible area. When modifying a node headline, is it
+possible to make leo to auto-scroll, so the cursor is always visible? 
+#@-node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
 #@-node:ekr.20080730212711.6:Features 17
 #@+node:ekr.20080730212711.7:Plugins 4
 #@+node:ekr.20080604060150.1:Clean up plugins
