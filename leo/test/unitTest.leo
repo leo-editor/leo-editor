@@ -1803,7 +1803,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080806095923.2" a="E"><vh>@@test round-trip-uAs</vh>
+<v t="ekr.20080806095923.2" a="E"><vh>@test round-trip-uAs</vh>
 <v t="ekr.20080806084924.2"
 expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
@@ -2708,7 +2708,7 @@ expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080806095923.2" a="E"><vh>@@test round-trip-uAs</vh>
+<v t="ekr.20080806095923.2" a="E"><vh>@test round-trip-uAs</vh>
 <v t="ekr.20080806084924.2"
 expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
@@ -21618,6 +21618,9 @@ for v,archivedPosition in table:
 <t tx="ekr.20080806080425.4"></t>
 <t tx="ekr.20080806095923.2"># A trick.  We assume we have *already* saved unitTest.leo.
 # This may fail the first time.  If so, we set the uA's.
+root = p.firstChild()
+uA = 'unknownAttributes'
+tag = 'round-trip-uA'
 try:
     # The root is a special case.
     v = root.v
