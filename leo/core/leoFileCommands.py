@@ -1838,6 +1838,7 @@ class baseFileCommands:
         #@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
         #@nl
         attrs = ''.join(attrs)
+        g.trace('v',v,'attrs',attrs)
         v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
         # The string catentation is faster than repeated calls to fc.put.
         if not self.usingClipboard:
@@ -2355,8 +2356,6 @@ class baseFileCommands:
 
         '''Put attribute whose name is key and value is val to the output stream.'''
 
-        # g.trace(key,repr(val),g.callers())
-
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if key.startswith('str_'):
             if type(val) == type(''):
@@ -2367,25 +2366,6 @@ class baseFileCommands:
                 return ''
         else:
             return self.pickle(torv=torv,val=val,tag=key)
-
-        # try:
-            # try:
-                # if self.python23:
-                    # # Protocol argument is new in Python 2.3
-                    # # Use protocol 1 for compatibility with bin.
-                    # s = pickle.dumps(val,protocol=1)
-                # else:
-                    # s = pickle.dumps(val,bin=True)
-                # attr = ' %s="%s"' % (key,binascii.hexlify(s))
-                # return attr
-            # except Exception:
-                # g.es('putUaHelper: unexpected pickling exception',color='red')
-                # g.es_exception()
-                # return ''
-        # except pickle.PicklingError:
-            # # New in 4.2 beta 1: keep going after error.
-            # g.es("ignoring non-pickleable attribute",key,"in",torv,color="blue")
-            # return ''
     #@-node:ekr.20050418161620.2:putUaHelper
     #@+node:EKR.20040526202501:putUnknownAttributes
     def putUnknownAttributes (self,torv):

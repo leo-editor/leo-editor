@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="8,9,0"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8,9"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -21616,6 +21616,24 @@ for v,archivedPosition in table:
 <t tx="ekr.20080806080425.2"></t>
 <t tx="ekr.20080806080425.3"></t>
 <t tx="ekr.20080806080425.4"></t>
-<t tx="ekr.20080806095923.2"></t>
+<t tx="ekr.20080806095923.2"># A trick.  We assume we have *already* saved unitTest.leo.
+# This may fail the first time.  If so, we set the uA's.
+try:
+    # The root is a special case.
+    v = root.v
+    assert hasattr(v,uA),'no uA for %s' % v
+    assert getattr(v,uA),'empty uA for %s' % v
+    for p2 in root.subtree_iter():
+        v = p2.v
+        assert hasattr(v,uA),'no uA for %s' % v
+        a = getattr(v,uA)
+        d = {tag: v.headString()}
+        assert a == d, 'expected "%s", got "%s"' % (d,a)
+except AssertionError:
+    for p2 in root.self_and_subtree_iter():
+        v = p2.v
+        v.unknownAttributes = {tag: v.headString()}
+    c.save()
+    raise</t>
 </tnodes>
 </leo_file>

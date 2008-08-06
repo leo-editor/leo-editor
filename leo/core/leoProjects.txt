@@ -12245,6 +12245,7 @@ def putVnode (self,p,isIgnore=False):
     << Append attribute bits to attrs >>
     << Append tnodeList and unKnownAttributes to attrs >>
     attrs = ''.join(attrs)
+    g.trace('v',v,'attrs',attrs)
     v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
     # The string catentation is faster than repeated calls to fc.put.
     if not self.usingClipboard:
@@ -19391,6 +19392,7 @@ def putVnode (self,p,isIgnore=False):
     << Append attribute bits to attrs >>
     << Append tnodeList and unKnownAttributes to attrs >>
     attrs = ''.join(attrs)
+    g.trace('v',v,'attrs',attrs)
     v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
     # The string catentation is faster than repeated calls to fc.put.
     if not self.usingClipboard:
@@ -20956,6 +20958,7 @@ def putVnode (self,p,isIgnore=False):
     << Append attribute bits to attrs >>
     << Append tnodeList and unKnownAttributes to attrs >>
     attrs = ''.join(attrs)
+    g.trace('v',v,'attrs',attrs)
     v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
     # The string catentation is faster than repeated calls to fc.put.
     if not self.usingClipboard:
