@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="8,9"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1803,7 +1803,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080806095923.2" a="E"><vh>@test round-trip-uAs</vh>
+<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs</vh>
 <v t="ekr.20080806084924.2"
 expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
@@ -2666,7 +2666,7 @@ expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
 <v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20061001114637" a="E"><vh>leoFileCommands</vh>
+<v t="ekr.20061001114637"><vh>leoFileCommands</vh>
 <v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
 <v t="ekr.20061001124008"><vh>@test minimal test of putTnodeList</vh>
 <v t="ekr.20061001124008.1"><vh>child</vh>
@@ -2708,7 +2708,7 @@ expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080806095923.2" a="E"><vh>@test round-trip-uAs</vh>
+<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs</vh>
 <v t="ekr.20080806084924.2"
 expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
