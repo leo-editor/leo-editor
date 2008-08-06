@@ -12228,7 +12228,6 @@ def putVnode (self,p,isIgnore=False):
     """Write a <v> element corresponding to a vnode."""
 
     fc = self ; c = fc.c ; v = p.v
-    # Not writing @auto nodes is way too dangerous.
     isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
     isShadow = p.isAtShadowFileNode()
     isThin = p.isAtThinFileNode()
@@ -12306,7 +12305,7 @@ elif hasattr(v,"unknownAttributes"):
         del d['str_leo_pos']
         v.unknownAttributes = d
 #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
 # Write the tnodeList only for @file nodes.
 # New in 4.2: tnode list is in tnode.
 
@@ -12322,14 +12321,16 @@ if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
         attrs.append(fc.putTnodeList(v)) # New in 4.0
 
 if hasattr(v,"unknownAttributes"): # New in 4.0
+    # g.trace('v',v,'v.uA',v.unknownAttributes)
     attrs.append(self.putUnknownAttributes(v))
 
 if p.hasChildren() and not forceWrite and not self.usingClipboard:
     # We put the entire tree when using the clipboard, so no need for this.
     attrs.append(self.putDescendentTnodeUas(p))
+    attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
     attrs.append(self.putDescendentAttributes(p))
 #@nonl
-#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
 #@+node:ekr.20040702085529:<< issue informational messages >>
 if isOrphan and isThin:
     g.es("writing erroneous:",p.headString(),color="blue")
@@ -19373,7 +19374,6 @@ def putVnode (self,p,isIgnore=False):
     """Write a <v> element corresponding to a vnode."""
 
     fc = self ; c = fc.c ; v = p.v
-    # Not writing @auto nodes is way too dangerous.
     isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
     isShadow = p.isAtShadowFileNode()
     isThin = p.isAtThinFileNode()
@@ -19451,7 +19451,7 @@ elif hasattr(v,"unknownAttributes"):
         del d['str_leo_pos']
         v.unknownAttributes = d
 #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
 # Write the tnodeList only for @file nodes.
 # New in 4.2: tnode list is in tnode.
 
@@ -19467,14 +19467,16 @@ if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
         attrs.append(fc.putTnodeList(v)) # New in 4.0
 
 if hasattr(v,"unknownAttributes"): # New in 4.0
+    # g.trace('v',v,'v.uA',v.unknownAttributes)
     attrs.append(self.putUnknownAttributes(v))
 
 if p.hasChildren() and not forceWrite and not self.usingClipboard:
     # We put the entire tree when using the clipboard, so no need for this.
     attrs.append(self.putDescendentTnodeUas(p))
+    attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
     attrs.append(self.putDescendentAttributes(p))
 #@nonl
-#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
 #@+node:ekr.20040702085529:<< issue informational messages >>
 if isOrphan and isThin:
     g.es("writing erroneous:",p.headString(),color="blue")
@@ -20937,7 +20939,6 @@ def putVnode (self,p,isIgnore=False):
     """Write a <v> element corresponding to a vnode."""
 
     fc = self ; c = fc.c ; v = p.v
-    # Not writing @auto nodes is way too dangerous.
     isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
     isShadow = p.isAtShadowFileNode()
     isThin = p.isAtThinFileNode()
@@ -21015,7 +21016,7 @@ elif hasattr(v,"unknownAttributes"):
         del d['str_leo_pos']
         v.unknownAttributes = d
 #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
 # Write the tnodeList only for @file nodes.
 # New in 4.2: tnode list is in tnode.
 
@@ -21031,14 +21032,16 @@ if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
         attrs.append(fc.putTnodeList(v)) # New in 4.0
 
 if hasattr(v,"unknownAttributes"): # New in 4.0
+    # g.trace('v',v,'v.uA',v.unknownAttributes)
     attrs.append(self.putUnknownAttributes(v))
 
 if p.hasChildren() and not forceWrite and not self.usingClipboard:
     # We put the entire tree when using the clipboard, so no need for this.
     attrs.append(self.putDescendentTnodeUas(p))
+    attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
     attrs.append(self.putDescendentAttributes(p))
 #@nonl
-#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
 #@+node:ekr.20040702085529:<< issue informational messages >>
 if isOrphan and isThin:
     g.es("writing erroneous:",p.headString(),color="blue")

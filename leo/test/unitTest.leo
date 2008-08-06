@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8,9,0"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1783,7 +1783,6 @@
 <v t="ekr.20061008162912"><vh>@test write .leo file with @ignore node</vh>
 <v t="ekr.20061008162912.1"><vh>child</vh></v>
 </v>
-<v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 <v t="ekr.20080805105541.1"><vh>@test p.archivedPosition</vh>
 <v t="ekr.20080805122315.1"><vh>first child</vh></v>
 <v t="ekr.20080805122315.2" a="E" unit_test_child="55046162636471002e"><vh>second child</vh>
@@ -1804,6 +1803,11 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080806095923.2" a="E"><vh>@@test round-trip-uAs</vh>
+<v t="ekr.20080806084924.2"
+expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
+</v>
+<v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113193527"><vh>leoFind</vh>
 <v t="ekr.20051107115231.29" annotate="7d71002e"><vh>@@test Find keeps focus in body &amp; shows selected text</vh></v>
@@ -2662,7 +2666,7 @@
 </v>
 <v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20061001114637"><vh>leoFileCommands</vh>
+<v t="ekr.20061001114637" a="E"><vh>leoFileCommands</vh>
 <v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
 <v t="ekr.20061001124008"><vh>@test minimal test of putTnodeList</vh>
 <v t="ekr.20061001124008.1"><vh>child</vh>
@@ -2684,7 +2688,6 @@
 <v t="ekr.20061008162912"><vh>@test write .leo file with @ignore node</vh>
 <v t="ekr.20061008162912.1"><vh>child</vh></v>
 </v>
-<v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 <v t="ekr.20080805105541.1"><vh>@test p.archivedPosition</vh>
 <v t="ekr.20080805122315.1"><vh>first child</vh></v>
 <v t="ekr.20080805122315.2" a="E" unit_test_child="55046162636471002e"><vh>second child</vh>
@@ -2705,6 +2708,11 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080806095923.2" a="E"><vh>@@test round-trip-uAs</vh>
+<v t="ekr.20080806084924.2"
+expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
+</v>
+<v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -21608,5 +21616,6 @@ for v,archivedPosition in table:
 <t tx="ekr.20080806080425.2"></t>
 <t tx="ekr.20080806080425.3"></t>
 <t tx="ekr.20080806080425.4"></t>
+<t tx="ekr.20080806095923.2"></t>
 </tnodes>
 </leo_file>

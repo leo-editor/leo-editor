@@ -1749,7 +1749,6 @@ class baseFileCommands:
         """Write a <v> element corresponding to a vnode."""
 
         fc = self ; c = fc.c ; v = p.v
-        # Not writing @auto nodes is way too dangerous.
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
         isShadow = p.isAtShadowFileNode()
         isThin = p.isAtThinFileNode()
@@ -1811,7 +1810,7 @@ class baseFileCommands:
         #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
         #@nl
         #@    << Append tnodeList and unKnownAttributes to attrs >>
-        #@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+        #@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
         # Write the tnodeList only for @file nodes.
         # New in 4.2: tnode list is in tnode.
 
@@ -1827,14 +1826,16 @@ class baseFileCommands:
                 attrs.append(fc.putTnodeList(v)) # New in 4.0
 
         if hasattr(v,"unknownAttributes"): # New in 4.0
+            # g.trace('v',v,'v.uA',v.unknownAttributes)
             attrs.append(self.putUnknownAttributes(v))
 
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # We put the entire tree when using the clipboard, so no need for this.
             attrs.append(self.putDescendentTnodeUas(p))
+            attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
             attrs.append(self.putDescendentAttributes(p))
         #@nonl
-        #@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+        #@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
         #@nl
         attrs = ''.join(attrs)
         v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
@@ -2318,7 +2319,7 @@ class baseFileCommands:
             key = '.'.join(aList2)
             d[key]=d2
 
-        # g.trace(g.dictToString(d))
+        # g.trace(p.headString(),g.dictToString(d))
 
         # Pickle and hexlify d
         return d.keys() and self.pickle(
