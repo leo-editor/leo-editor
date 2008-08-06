@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8,9"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1803,8 +1803,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs</vh>
-<v t="ekr.20080806084924.2"
+<v t="ekr.20080806095923.2"><vh>@test round-trip-uAs</vh>
+<v t="ekr.20080806084924.2" round-trip-uA="5815000000407468696e2075415f746573745f66696c652e707971002e" descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550d726f756e642d747269702d7541710358060000006368696c64317104735505302e302e3071057d71066803580b0000006772616e644368696c64317107735507302e302e302e3071087d71096803581000000067726561744772616e644368696c6431710a73752e"
 expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
 <v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
@@ -2666,7 +2666,7 @@ expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
 <v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20061001114637"><vh>leoFileCommands</vh>
+<v t="ekr.20061001114637" a="E"><vh>leoFileCommands</vh>
 <v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
 <v t="ekr.20061001124008"><vh>@test minimal test of putTnodeList</vh>
 <v t="ekr.20061001124008.1"><vh>child</vh>
@@ -2708,8 +2708,8 @@ expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs</vh>
-<v t="ekr.20080806084924.2"
+<v t="ekr.20080806095923.2"><vh>@test round-trip-uAs</vh>
+<v t="ekr.20080806084924.2" round-trip-uA="5815000000407468696e2075415f746573745f66696c652e707971002e" descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550d726f756e642d747269702d7541710358060000006368696c64317104735505302e302e3071057d71066803580b0000006772616e644368696c64317107735507302e302e302e3071087d71096803581000000067726561744772616e644368696c6431710a73752e"
 expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
 <v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
@@ -21621,16 +21621,18 @@ for v,archivedPosition in table:
 root = p.firstChild()
 uA = 'unknownAttributes'
 tag = 'round-trip-uA'
+trace = False
 try:
     # The root is a special case.
     v = root.v
     assert hasattr(v,uA),'no uA for %s' % v
     assert getattr(v,uA),'empty uA for %s' % v
-    for p2 in root.subtree_iter():
+    for p2 in root.self_and_subtree_iter():
         v = p2.v
         assert hasattr(v,uA),'no uA for %s' % v
         a = getattr(v,uA)
         d = {tag: v.headString()}
+        if trace: g.pr(d)
         assert a == d, 'expected "%s", got "%s"' % (d,a)
 except AssertionError:
     for p2 in root.self_and_subtree_iter():
