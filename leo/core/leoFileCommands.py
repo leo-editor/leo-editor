@@ -959,9 +959,10 @@ class baseFileCommands:
     #@+node:EKR.20040627120120:restoreDescendentAttributes
     def restoreDescendentAttributes (self):
 
-        c = self.c ; verbose = True and not g.unitTesting
+        c = self.c ; trace = False ; verbose = True and not g.unitTesting
 
         for resultDict in self.descendentTnodeUaDictList:
+            if trace: g.trace('t.dict',resultDict)
             for gnx in resultDict.keys():
                 tref = self.canonicalTnodeIndex(gnx)
                 t = self.tnodesDict.get(tref)
@@ -973,6 +974,7 @@ class baseFileCommands:
 
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v,resultDict in self.descendentVnodeUaDictList:
+            if trace: g.trace('v.dict',resultDict)
             for key in resultDict.keys():
                 v = self.resolveArchivedPosition(key,root_v)
                 if v:
@@ -1104,7 +1106,7 @@ class baseFileCommands:
             aDict[key] = val2
 
         if aDict:
-            # g.trace('uA',aDict)
+            g.trace('uA',aDict)
             t.unknownAttributes = aDict
     #@nonl
     #@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
@@ -2265,9 +2267,12 @@ class baseFileCommands:
     #@+node:ekr.20080805071954.1:putDescendentTnodeUas
     def putDescendentTnodeUas (self,p):
 
+        trace = False
+        if trace: g.trace(p.headString())
+
         # Create a list of all tnodes having a valid unknownAttributes dict.
         tnodes = [] ; aList = []
-        for p2 in p.subtree_iter():
+        for p2 in p.self_and_subtree_iter():
             t = p2.v.t
             if hasattr(t,"unknownAttributes"):
                 if t not in tnodes :
@@ -2289,7 +2294,7 @@ class baseFileCommands:
             gnx = nodeIndices.toString(t.fileIndex)
             d[gnx]=d2
 
-        # g.trace(g.dictToString(d))
+        if trace: g.trace(g.dictToString(d))
 
         # Pickle and hexlify d.
         return d.keys() and self.pickle(
@@ -2301,10 +2306,13 @@ class baseFileCommands:
         '''Return the a uA field for descendent vnode attributes,
         suitable for reconstituting uA's for anonymous vnodes.'''
 
+        trace = False
+        if trace: g.trace(p.headString())
+
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresonding archived positions.
         pDict = {} ; aList = []
-        for p2 in p.subtree_iter():
+        for p2 in p.self_and_subtree_iter():
             if hasattr(p2.v,"unknownAttributes"):
                 aList.append((p2.copy(),p2.v),)
                 pDict[p2.v] = p2.archivedPosition(root_p=p)
@@ -2321,7 +2329,7 @@ class baseFileCommands:
             key = '.'.join(aList2)
             d[key]=d2
 
-        # g.trace(p.headString(),g.dictToString(d))
+        if trace: g.trace(p.headString(),g.dictToString(d))
 
         # Pickle and hexlify d
         return d.keys() and self.pickle(
