@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4,0,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5,4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -207,8 +207,8 @@
 <v t="ekr.20080803120643.1"><vh>spam</vh></v>
 </v>
 </v>
-<v t="ekr.20080804094302.1" a="E"><vh>Tests of @shadow</vh>
-<v t="ekr.20080804095028.15" a="E"><vh>@tabwidth -4</vh>
+<v t="ekr.20080804094302.1"><vh>Tests of @shadow</vh>
+<v t="ekr.20080804095028.15"><vh>@tabwidth -4</vh>
 <v t="ekr.20080804094302.2"><vh>@@shadow c:\prog\osgi-framework\AdminPermission.java</vh>
 <v t="ekr.20080804095640.1"><vh>AdminPermission declarations</vh></v>
 <v t="ekr.20080804095640.2"><vh>class AdminPermission</vh>
@@ -228,6 +228,34 @@
 </v>
 </v>
 </v>
+</v>
+<v t="ekr.20080806145258.12" a="E"><vh>Prototype of Leo in Ajax</vh>
+<v t="ekr.20080806145258.13"><vh>To do</vh></v>
+<v t="ekr.20080806145258.14"><vh>@button Leo2DHTML</vh>
+<v t="ekr.20080806145258.15"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.16"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.17"><vh>escape</vh></v>
+<v t="ekr.20080806145258.18"><vh>writeAll</vh></v>
+<v t="ekr.20080806145258.19"><vh>writeBody</vh></v>
+<v t="ekr.20080806145258.20"><vh>writeHead</vh></v>
+<v t="ekr.20080806145258.21"><vh>writeContents</vh></v>
+<v t="ekr.20080806145258.22"><vh>writePreamble</vh></v>
+<v t="ekr.20080806145258.23"><vh>writePostamble</vh></v>
+</v>
+<v t="ekr.20080806145258.24" tnodeList="ekr.20080806145258.24"><vh>@file server.py</vh></v>
+<v t="ekr.20080806145258.25" tnodeList="ekr.20080806145258.25"><vh>@file hello.html</vh></v>
+<v t="ekr.20080806145258.26" a="E" tnodeList="ekr.20080806145258.26,ekr.20080806145702.1,ekr.20080806145258.27,ekr.20080806145258.28,ekr.20080806145258.29,ekr.20080806145258.30,ekr.20080806145258.31,ekr.20080806145258.32,ekr.20080806145258.33"><vh>@file cgi-bin/edward.py</vh>
+<v t="ekr.20080806145702.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.27"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.28"><vh>escape</vh></v>
+<v t="ekr.20080806145258.29"><vh>print_all</vh></v>
+<v t="ekr.20080806145258.30"><vh>print_body</vh></v>
+<v t="ekr.20080806145258.31"><vh>print_head</vh></v>
+<v t="ekr.20080806145258.32"><vh>print_leo_dot_js</vh></v>
+<v t="ekr.20080806145258.33"><vh>print_tree</vh></v>
+</v>
+<v t="ekr.20080806145258.1"><vh>@thin cgi-bin/leo.js</vh></v>
+<v t="ekr.20080806145258.34"><vh>@@thin jqueryTest.html</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2072,5 +2100,381 @@ return delegate.newPermissionCollection();
 <t tx="ekr.20080804095640.12"></t>
 <t tx="ekr.20080804095640.13"></t>
 <t tx="ekr.20080804095640.14"></t>
+<t tx="ekr.20080806145258.12">@nocolor
+
+Notes:
+    
+- button Leo2dHTML creates leo\test\x.htm, where x is the name of the .leo file
+  containing the script. The file contains javascript that allows a browser to
+  expand and contract headlines.  Leo2DHTML is *unrelated* to the other files.
+    
+- leo\test\server.py is a minimal Python server.  Invoke from a console with::
+    
+    python server.py
+
+To use this server, type this url in a web browser: http://localhost:8080/
+The server will print the contents of the directory from which it was invoked.
+Choose hello.html to see the 'Hello World' test page.
+
+- leo\test\hello.html is a test page.  It uses leo\test\cgi-bin\edward.py
+
+- leo\test\cgi-bin\edward.py is the script called from hello.leo when the user
+  hits the 'Submit Query button.
+  This is recompiled (as needed) for every query, which makes testing it easier.
+  
+  **Important** edward.py returns its result by printing (in a special format):
+  Thus, everything you print will be part of the returned form(!). You **can**
+  print debug info: just make sure you don't mess up the special conventions:
+  the best place to print debugging info is in print_all.
+
+@color</t>
+<t tx="ekr.20080806145258.13">@
+
+edward.py:
+    
+How can we get the content of an input form?</t>
+<t tx="ekr.20080806145258.14">@first # -*- coding: utf-8 -*-
+@language python
+@tabwidth -4
+
+&lt;&lt; about LeoToHTML &gt;&gt;
+import leo.core.leoGlobals as g
+&lt;&lt; define dhtml stuff &gt;&gt;
+@others
+
+fileName = c.frame.shortFileName() # Get current outline file name
+if fileName.endswith('.leo'): fileName = fileName[:-4] # Remove .leo suffix
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test',fileName)) + '.htm'
+
+# Write the file.
+f=open(path, 'w')
+writeAll(f)
+f.close() 
+g.es('wrote: %s' % (path),color="turquoise4") 
+</t>
+<t tx="ekr.20080806145258.15">@
+
+LeoToHTML by Dan Rahmel, modified by EKR.
+
+This @button script creates an .htm file containing the contents of the selected tree.
+The file is called x.htm, where x is the name of the .leo file containing the script.
+This file is written to the leo/test folder.
+
+The script inserts javascript into the page so that nodes can be expanded and contracted.
+
+The script presently works well.  This script may become the basis for a facebook app.
+
+The generated html passes html-tidy: http://www.w3.org/People/Raggett/tidy/
+</t>
+<t tx="ekr.20080806145258.16">division = """
+&lt;div STYLE="margin-left:3em;text-indent:0em;margin-top:0em; margin-bottom:0em;"&gt;
+&lt;h3 onClick="expandcontent('sc%d')" style="cursor:hand; cursor:pointer; margin-top:0em; margin-bottom:0em"&gt;+ %s&lt;/h3&gt;
+    &lt;div id="sc%d" class="switchcontent" style="margin-top:0em; margin-bottom:0em;"&gt;
+"""
+
+javascript  = """
+&lt;script src="cgi-bin/leo.js" type="text/javascript"&gt;&lt;/script&gt;
+"""
+
+style = '''
+&lt;STYLE type="text/css"&gt;
+    BODY {font:x-medium 'Verdana'; margin-right:1.5em}
+    PRE {margin:0px; display:inline}
+&lt;/STYLE&gt;
+'''
+</t>
+<t tx="ekr.20080806145258.17">def escape (s):
+
+    return s.replace('&amp;','&amp;amp;').replace('&lt;','&amp;lt;').replace('&gt;','&amp;gt;')
+</t>
+<t tx="ekr.20080806145258.18">def writeAll(f):
+
+    f.write('&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN"&gt;')
+    f.write('&lt;html&gt;')
+    writeHead(f)
+    writeBody(f)
+    f.write("&lt;/html&gt;")
+</t>
+<t tx="ekr.20080806145258.19">def writeBody(f):
+
+    f.write('&lt;body class="st" onload="format()"&gt;')
+    writeContents(f)
+    f.write("&lt;/body&gt;")
+</t>
+<t tx="ekr.20080806145258.20">def writeHead(f):
+
+    f.write('&lt;head&gt;')
+    f.write(style)
+    f.write(javascript)
+    f.write('&lt;title&gt;%s&lt;/title&gt;' % c.shortFileName())
+    f.write('&lt;/head&gt;')
+</t>
+<t tx="ekr.20080806145258.21">def writeContents(f):
+
+    div = "&lt;div class='c' STYLE='margin-left:4em;margin-top:0em; margin-bottom:0em;'&gt;\n&lt;pre&gt;\n%s\n&lt;/pre&gt;\n&lt;/div&gt;"
+    end_div = "&lt;/div&gt;\n&lt;/div&gt;\n"
+    n = 1 # The node number
+    current = c.currentPosition()
+    prev_level = current.level()
+    open_divs = 0
+    for p in current.self_and_subtree_iter():
+        h = p.headString()
+        while prev_level &gt;= p.level() and open_divs &gt; 0:
+            f.write(end_div)
+            prev_level -= 1
+            open_divs -= 1
+        body = p.bodyString().encode( "utf-8" )
+        body = body.rstrip().rstrip("\n")
+        f.write(division % (n,escape(h),n))
+        open_divs += 1
+        if body:
+            f.write(div % escape(body))
+        prev_level = p.level()
+        n += 1
+
+    # Close all divisions.
+    while open_divs &gt; 0:
+        f.write(end_div)
+        open_divs -= 1
+</t>
+<t tx="ekr.20080806145258.22"># def writePreamble(f):
+
+    # '''Write HTML header information.'''
+
+    # header_start = '''\
+
+
+# &lt;body class="st" onload="format()"&gt;
+# '''
+
+    # for s in (header_start,style,javascript,header_end):
+        # # f.write(g.adjustTripleString(s,c.tab_width))
+        # f.write(s)
+</t>
+<t tx="ekr.20080806145258.23"># def writePostamble (f):
+
+    # pass
+
+</t>
+<t tx="ekr.20080806145258.24"># A minimal python server for testing.
+# To access this server, type this url in a web browser: http://localhost:8080/
+# The server will print the contents of the directory from which it was invoked.
+# Choose hello.html to see the 'Hello World' test page.
+
+import CGIHTTPServer
+import SocketServer
+
+port = 8080
+
+Handler = CGIHTTPServer.CGIHTTPRequestHandler
+s = SocketServer.TCPServer(("", port), Handler)
+
+# def myExecutable(path):
+#    return True
+# SocketServer.executable = myExecutable
+
+s.server_name = '127.0.0.1' # represents local host.
+s.server_port = port
+
+# import os ; print 'cwd', os.getcwd()
+
+print "server.py: serving at port", port
+s.serve_forever()
+</t>
+<t tx="ekr.20080806145258.25">@language html
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;&lt;/title&gt;
+
+&lt;!-- Used by edward.old.py
+&lt;script language="JavaScript" type="text/javascript"&gt;
+   var openImg = new Image();
+   openImg.src = "open.gif";
+   var closedImg = new Image();
+   closedImg.src = "closed.gif";
+
+   function showNode(node) {
+      var objBranch = 
+         document.getElementById(node).style;
+      if(objBranch.display=="block")
+         objBranch.display="none";
+      else
+         objBranch.display="block";
+   }
+
+   function swapFolder(img) {
+      objImg = document.getElementById(img);
+      if(objImg.src.indexOf('closed.gif')&gt;-1)
+         objImg.src = openImg.src;
+      else
+         objImg.src = closedImg.src;
+   }
+&lt;/script&gt;
+--&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="cgi-bin/edward.py" method="GET"&gt;
+&lt;input type="submit" name="George"&gt;
+&lt;/form&gt;
+
+&lt;p&gt;This is the hello world test page.
+The server in server.py should be running when using this page.
+
+&lt;p&gt;The button (form) above should cause the server to send a "GET" request
+to the edward.py script, which will respond with a new page.
+
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20080806145258.26">@first #! c:\python25\python.exe
+@first # -*- coding: utf-8 -*-
+
+'''This is the cgi script called from hello.html when the user hits the button.'''
+
+### Print statements are used to return results (return the form).
+### You *can* use print statement for tracing, but only in print_all.
+# To do: use cgi.FieldStorage.
+
+@language python
+@tabwidth -4
+&lt;&lt; imports &gt;&gt;
+&lt;&lt; define dhtml stuff &gt;&gt;
+@others
+
+if 1: # Open the bridge.
+    path = os.path.abspath(os.path.join(leoParentDir,'leo','test','test.leo')) # c does not exist!
+    b = leoBridge.controller(gui='nullGui',loadPlugins=False,readSettings=False,verbose=False)
+    g = b.globals()
+    c = b.openLeoFile(path)
+    p = c.rootPosition()
+else:
+    c = None
+
+# import pdb ; pdb.Pdb() # Doesn't work.
+print_all(c)</t>
+<t tx="ekr.20080806145258.27">division = """
+&lt;div STYLE="margin-left:3em;text-indent:0em;margin-top:0em; margin-bottom:0em;"&gt;
+&lt;h3 onClick="expandcontent('sc%d')" style="cursor:hand; cursor:pointer; margin-top:0em; margin-bottom:0em"&gt;+ %s&lt;/h3&gt;
+    &lt;div id="sc%d" class="switchcontent" style="margin-top:0em; margin-bottom:0em;"&gt;
+"""
+
+style = """
+&lt;STYLE type="text/css"&gt;
+    BODY {font:x-medium 'Verdana'; margin-right:1.5em}
+    PRE {margin:0px; display:inline}
+&lt;/STYLE&gt;
+"""</t>
+<t tx="ekr.20080806145258.28">def escape (s):
+
+    return s.replace('&amp;','&amp;amp;').replace('&lt;','&amp;lt;').replace('&gt;','&amp;gt;')
+</t>
+<t tx="ekr.20080806145258.29">def print_all(c):
+
+    # This line is required (with extra newline), but does not show on the page.
+    print "Content-type:text/html\n"
+
+    print '&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN"&gt;'
+    print '&lt;html&gt;'
+    if c:
+        # Print the page.
+        print_head(c)
+        print_body(c)
+    else:
+        # Print the debugging info.
+        print '__file__',__file__
+        print 'os.getcwd()',os.getcwd()
+
+    print '&lt;/html&gt;'
+</t>
+<t tx="ekr.20080806145258.30">def print_body(c):
+
+    print '&lt;body class="st" onload="format()"&gt;'
+
+    if 0:
+        # Debugging info.
+        form = cgi.FieldStorage()
+        print repr(form)
+        # if form.has_key('name'):
+            # print 'name',form['name'].value
+        # else:
+            # print 'no name'
+    print_tree(c)
+    print '&lt;/body&gt;'
+</t>
+<t tx="ekr.20080806145258.31">def print_head(c):
+
+    print '&lt;head&gt;'
+
+    if 1: # Copy the entire leo.js file into the page.
+        print '&lt;script type="text/javascript"&gt;'
+        print_leo_dot_js(c)
+        print '&lt;/script&gt;'
+
+    else: # Possible bug in the python server??
+        # The Python says leo.js is not executable(!)
+        print '&lt;script src="leo.js" type="text/javascript"&gt;&lt;/script&gt;'
+
+    print '&lt;title&gt;%s&lt;/title&gt;' % (c.shortFileName())
+    print '&lt;/head&gt;'
+</t>
+<t tx="ekr.20080806145258.32">def print_leo_dot_js(c):
+
+    path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','cgi-bin','leo.js'))
+
+    try:
+        f = file(path)
+    except IOError:
+        print 'can not open',path
+        return
+
+    for line in f.readlines():
+        print line,
+
+    f.close()
+</t>
+<t tx="ekr.20080806145258.33">def print_tree(c):
+
+    div = "&lt;div class='c' STYLE='margin-left:4em;margin-top:0em; margin-bottom:0em;'&gt;\n&lt;pre&gt;\n%s\n&lt;/pre&gt;\n&lt;/div&gt;"
+    end_div = "&lt;/div&gt;\n&lt;/div&gt;\n"
+    n = 1 # The node number
+    prev_level = 0
+    open_divs = 0
+    for p in c.allNodes_iter():
+        h = p.headString()
+        while prev_level &gt;= p.level() and open_divs &gt; 0:
+            print end_div
+            prev_level -= 1
+            open_divs -= 1
+        body = p.bodyString().encode( "utf-8" )
+        body = body.rstrip().rstrip("\n")
+        print division % (n,escape(h),n)
+        open_divs += 1
+        if body: print div % escape(body)
+        prev_level = p.level()
+        n += 1
+
+    # Close all divisions.
+    while open_divs &gt; 0:
+        print end_div
+        open_divs -= 1
+</t>
+<t tx="ekr.20080806145258.34"></t>
+<t tx="ekr.20080806145702.1">import os
+import sys
+
+# Add the *parent* of the leo directory to sys.path.
+leoParentDir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','..','..'))
+
+if leoParentDir not in sys.path:
+    sys.path.append(leoParentDir)
+
+import leo.core.leoBridge as leoBridge
+
+import cgi
+import cgitb ; cgitb.enable()
+</t>
 </tnodes>
 </leo_file>
