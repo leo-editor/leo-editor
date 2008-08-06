@@ -5228,7 +5228,7 @@ Search options::
                     r   Toggle regex matches
                         ('/' key turns off regex. 'n' key uses regex if turned on)
     
-    Note: Whether search is limited to node's body or the node's sub-outline
+    Note: Whether a search is limited to node's body or the node's sub-outline
           is determined by which pane has focus when search text specified.
           (See "Find text commands:" sub-sections in Outline/Body Pane sections)
 
@@ -5273,16 +5273,18 @@ Miscellaneous commands::
     gg          Go to the first line (Cursor at column 1)
     G           Go to the last line  (Cursor at column 1)
 
-    `.          Go to location of last edit (regardless of buffer)
-    '.          Go to beginning of line of last edit (regardless of buffer)
-
 Mark commands::
 
     m&lt;label&gt;    Assign cursor location to a single character label
     `&lt;label&gt;    Go to location associated with label
 
-    Note: Only character count is tracked. Any inserts or deletes will change mark.
-          Node is not tracked; "`&lt;label&gt;" key will go to location in current node.
+      Note: Only character count is tracked. Any inserts or deletes will change mark.
+          Mark's are not node specific; `&lt;label&gt; will go to location in current node.
+
+Select commands::
+
+    Ctrl-v      Toggle text select mode (Vim's "visual" mode)
+       V        Mapped to 'Ctrl-v' for convenience (Should toggle line select)
 
 Insert/substitute commands::
 
@@ -5342,8 +5344,6 @@ Yank text commands::
     y%          Yank from current bracket type to its opposing bracket
     yt&lt;char&gt;    Select forward to &lt;char&gt;  (use 'y&lt;cr&gt;' to yank selection)
     yT&lt;char&gt;    Select backward to &lt;char&gt; (use 'y&lt;cr&gt;' to yank selection)
-
-    v           Toggle text select mode (Vim's "visual" mode)
     y&lt;cr&gt;       Yank selected text (Vim uses 'y' in visual mode)
 
 Find character commands::
@@ -5358,7 +5358,7 @@ Find text commands::
     n           Find next (same scope, same direction)
     N           Find next (same scope, other direction)
 
-    Note: See "Search options" section above to change options using 'Ctrl-/'
+    Note: See "Search options" in General Commands section to change options.
 
 Replace [and find next] commands::
 
@@ -5370,13 +5370,13 @@ Replace [and find next] commands::
                       Command will continue to paste when match no longer found.
 
     Commands prompting for replace string
-    Note: Scope and search direction taken from last use of '/','?' or 'Ctrl-/'(scope only)
+    Note: Scope and direction taken from last use of '/','?' or 'Ctrl-/'(scope only)
     Alt-/       Prompt for search &amp; replace string
     Alt-p       Replace then search (use after Alt-/)
                 Note: Works in headlines and body panes.
                       Doesn't paste unless last search found a match.
 
-Indent line commands::
+Indent/Unindent line commands::
 
     &gt;&gt;          Indent the current line
     &gt;)          Indent to the end of sentence
@@ -5385,11 +5385,14 @@ Indent line commands::
     &gt;{          Indent to the beginning of paragraph
     &gt;g          Indent to the start of buffer
     &gt;G          Indent to the end of buffer
-    &lt;&lt;          Remove all indentation on the current line
-    &lt;)          Remove all indentation to the end of sentence
-    &lt;(          Remove all indentation to the beginning of sentence
-    &lt;}          Remove all indentation to the end of paragraph
-    &lt;{          Remove all indentation to the beginning of paragraph
+
+    &lt;&gt;          Unindent the current line
+    &lt;)          Unindent to the end of sentence
+    &lt;(          Unindent to the beginning of sentence
+    &lt;}          Unindent to the end of paragraph
+    &lt;{          Unindent to the beginning of paragraph
+    &lt;g          Unindent to the start of buffer
+    &lt;G          Unindent to the end of buffer
 
 Scroll commands::
 
@@ -5413,15 +5416,15 @@ Window commands::
 
 Node commands::
 
+    Go to another node while focus remains in the body pane.
     Ctrl-j      Go to next visible node
     Ctrl-k      Go to previous visible node
     Ctrl-h      Hide sub-nodes or, if hidden, go up 1 level
     Ctrl-l      Display sub-nodes or, if displayed, go down 1 level
-
-       Ctrl-DnArrow  Mapped to "Ctrl-j" for convenience
-       Ctrl-UpArrow  Mapped to "Ctrl-k" for convenience
-       Ctrl-LtArrow  Mapped to "Ctrl-h" for convenience
-       Ctrl-RtArrow  Mapped to "Ctrl-l" for convenience
+       Ctrl-DnArrow    Mapped to "Ctrl-j" for convenience
+       Ctrl-UpArrow    Mapped to "Ctrl-k" for convenience
+       Ctrl-LtArrow    Mapped to "Ctrl-h" for convenience
+       Ctrl-RtArrow    Mapped to "Ctrl-l" for convenience
 </t>
 <t tx="TL.20080804095315.7">The following commands are supported when in a headline's command mode.
 
@@ -5501,7 +5504,7 @@ Replace [and find next] commands::
 
 Node edit commands::
 
-    Ctrl-o      Insert node after current node
+    o           Insert node after current node
 
     Ctrl-x      Delete current node
     Ctrl-c      Yank current node
@@ -5575,6 +5578,8 @@ Notable missing body pane commands::
 
     &lt;num&gt;G      Go to specified line number
     z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
+    '&lt;command&gt;  Go to line of last edit, jump, ...
+    `&lt;command&gt;  Go to character of last edit, jump, ...
 </t>
 <t tx="TL.20080804095315.9">If you use the open-with plugin to open node text in Vim and your Vim's "tag"
 file refers to derived files then there is a risk that a derived file that is
