@@ -1791,6 +1791,19 @@
 <v t="ekr.20080805122315.4"><vh>grandChild 2</vh></v>
 </v>
 </v>
+<v t="ekr.20080806072412.1"><vh>@test fc.resolveArchivedPosition</vh>
+<v t="ekr.20080806072412.2"><vh>first child</vh></v>
+<v t="ekr.20080806072412.3" a="E" unit_test_child="55046162636471002e"><vh>second child</vh>
+<v t="ekr.20080806072412.4" a="E" unit_test_grandchild="55047778797a71002e"><vh>grandChild1</vh>
+<v t="ekr.20080806080425.1"><vh>greatGrandChild11</vh></v>
+<v t="ekr.20080806080425.2"><vh>greatGrandChild12</vh></v>
+</v>
+<v t="ekr.20080806072412.5" a="E"><vh>grandChild 2</vh>
+<v t="ekr.20080806080425.3"><vh>greatGrandChild21</vh></v>
+<v t="ekr.20080806080425.4"><vh>greatGrandChild22</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20071113193527"><vh>leoFind</vh>
 <v t="ekr.20051107115231.29" annotate="7d71002e"><vh>@@test Find keeps focus in body &amp; shows selected text</vh></v>
@@ -2677,6 +2690,19 @@
 <v t="ekr.20080805122315.2" a="E" unit_test_child="55046162636471002e"><vh>second child</vh>
 <v t="ekr.20080805122315.3" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
 <v t="ekr.20080805122315.4"><vh>grandChild 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080806072412.1"><vh>@test fc.resolveArchivedPosition</vh>
+<v t="ekr.20080806072412.2"><vh>first child</vh></v>
+<v t="ekr.20080806072412.3" a="E" unit_test_child="55046162636471002e"><vh>second child</vh>
+<v t="ekr.20080806072412.4" a="E" unit_test_grandchild="55047778797a71002e"><vh>grandChild1</vh>
+<v t="ekr.20080806080425.1"><vh>greatGrandChild11</vh></v>
+<v t="ekr.20080806080425.2"><vh>greatGrandChild12</vh></v>
+</v>
+<v t="ekr.20080806072412.5" a="E"><vh>grandChild 2</vh>
+<v t="ekr.20080806080425.3"><vh>greatGrandChild21</vh></v>
+<v t="ekr.20080806080425.4"><vh>greatGrandChild22</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -21541,5 +21567,46 @@ for z in p.firstChild().next().children_iter():
 <t tx="ekr.20080805122315.2"></t>
 <t tx="ekr.20080805122315.3"></t>
 <t tx="ekr.20080805122315.4"></t>
+<t tx="ekr.20080806072412.1">child1 = p.firstChild()
+child2 = p.firstChild().next()
+grandChild1 = child2.firstChild()
+grandChild2 = grandChild1.next()
+greatGrandChild11 = grandChild1.firstChild()
+greatGrandChild12 = greatGrandChild11.next()
+greatGrandChild21 = grandChild2.firstChild()
+greatGrandChild22 = greatGrandChild21.next()
+root_v = p.v
+
+table = (
+    # Errors.
+    (None,'-1'),
+    (None,'1'),
+    (None,'0.2'),
+    (None,'0.0.0'),
+    (None,'0.1.2'),
+    # Valid.
+    (root_v,'0'),
+    (child1.v,'0.0'),
+    (child2.v,'0.1'),
+    (grandChild1.v,'0.1.0'),
+    (greatGrandChild11.v,'0.1.0.0'),
+    (greatGrandChild12.v,'0.1.0.1'),
+    (grandChild2.v,'0.1.1'),
+    (greatGrandChild21.v,'0.1.1.0'),
+    (greatGrandChild22.v,'0.1.1.1'),
+)
+
+for v,archivedPosition in table:
+    v2 = c.fileCommands.resolveArchivedPosition(archivedPosition,root_v)
+    assert v == v2,'got %s, expected %s' % (v2,v)
+</t>
+<t tx="ekr.20080806072412.2"></t>
+<t tx="ekr.20080806072412.3"></t>
+<t tx="ekr.20080806072412.4"></t>
+<t tx="ekr.20080806072412.5"></t>
+<t tx="ekr.20080806080425.1"></t>
+<t tx="ekr.20080806080425.2"></t>
+<t tx="ekr.20080806080425.3"></t>
+<t tx="ekr.20080806080425.4"></t>
 </tnodes>
 </leo_file>

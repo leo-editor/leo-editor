@@ -1322,9 +1322,36 @@ class baseFileCommands:
     #@+node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5)
     def resolveArchivedPosition(self,archivedPosition,root_v):
 
-        '''Return a position corresponding to the archived position relative to root node root_v.'''
+        '''Return a vnode corresponding to the archived position relative to root node root_v.'''
 
-        return None
+        def oops (message):
+            if not g.app.unitTesting:
+                g.es_print('bad archived position: %s' % (message),color='red')
+
+        try:
+            aList = [int(z) for z in archivedPosition.split('.')]
+            aList.reverse()
+        except Exception:
+            return oops('"%s"' % archivedPosition)
+
+        if not aList:
+            return oops('empty')
+
+        last_v = root_v
+        n = aList.pop()
+        if n != 0:
+            return oops('root index="%s"' % n )
+
+        while aList:
+            n = aList.pop()
+            if g.unified_nodes: children = last_v.children
+            else:               children = last_v.t.children
+            if n < len(children):
+                last_v = children[n]
+            else:
+                return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
+
+        return last_v
     #@-node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5)
     #@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
     def setPositionsFromVnodes (self):
@@ -2138,7 +2165,7 @@ class baseFileCommands:
         g.es('done',color='blue')
     #@-node:ekr.20031218072017.3050:writeOutlineOnly
     #@-node:ekr.20031218072017.3032:Writing
-    #@+node:ekr.20080805114146.2:Writing Utils
+    #@+node:ekr.20080805114146.2:Utils
     #@+node:ekr.20031218072017.1570:assignFileIndices & compactFileIndices
     def assignFileIndices (self):
 
@@ -2404,7 +2431,7 @@ class baseFileCommands:
 
         # g.trace('c.fixed',c.fixed)
     #@-node:ekr.20080412172151.2:updateFixedStatus
-    #@-node:ekr.20080805114146.2:Writing Utils
+    #@-node:ekr.20080805114146.2:Utils
     #@-others
 
 class fileCommands (baseFileCommands):

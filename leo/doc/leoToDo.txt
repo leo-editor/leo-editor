@@ -457,9 +457,36 @@ def restoreDescendentAttributes (self):
 #@+node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5)
 def resolveArchivedPosition(self,archivedPosition,root_v):
 
-    '''Return a position corresponding to the archived position relative to root node root_v.'''
+    '''Return a vnode corresponding to the archived position relative to root node root_v.'''
 
-    return None
+    def oops (message):
+        if not g.app.unitTesting:
+            g.es_print('bad archived position: %s' % (message),color='red')
+
+    try:
+        aList = [int(z) for z in archivedPosition.split('.')]
+        aList.reverse()
+    except Exception:
+        return oops('"%s"' % archivedPosition)
+
+    if not aList:
+        return oops('empty')
+
+    last_v = root_v
+    n = aList.pop()
+    if n != 0:
+        return oops('root index="%s"' % n )
+
+    while aList:
+        n = aList.pop()
+        if g.unified_nodes: children = last_v.children
+        else:               children = last_v.t.children
+        if n < len(children):
+            last_v = children[n]
+        else:
+            return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
+
+    return last_v
 #@-node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5)
 #@-node:ekr.20080805132422.2:Reading
 #@-node:ekr.20080804063523.3:allow v.uA's in @thin and @shadow nodes
