@@ -1804,7 +1804,7 @@
 </v>
 </v>
 <v t="ekr.20080806095923.2"><vh>@test round-trip-uAs</vh>
-<v t="ekr.20080806084924.2" round-trip-uA="5815000000407468696e2075415f746573745f66696c652e707971002e" descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550d726f756e642d747269702d7541710358060000006368696c64317104735505302e302e3071057d71066803580b0000006772616e644368696c64317107735507302e302e302e3071087d71096803581000000067726561744772616e644368696c6431710a73752e"
+<v t="ekr.20080806084924.2" round-trip-uA="5815000000407468696e2075415f746573745f66696c652e707971002e" descendentTnodeUnknownAttributes="7d7100285814000000656b722e32303038303830363038343932342e3571017d7102550f726f756e642d747269702d742e754171035815000000407468696e2075415f746573745f66696c652e70797104735814000000656b722e32303038303830363038343932342e3471057d710668036804735814000000656b722e32303038303830363038343932342e3371077d71086803680473752e" descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550d726f756e642d747269702d754171035815000000407468696e2075415f746573745f66696c652e70797104735505302e302e3071057d710668036804735507302e302e302e3071077d71086803680473752e"
 expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
 <v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
@@ -2709,7 +2709,7 @@ expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
 </v>
 <v t="ekr.20080806095923.2"><vh>@test round-trip-uAs</vh>
-<v t="ekr.20080806084924.2" round-trip-uA="5815000000407468696e2075415f746573745f66696c652e707971002e" descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550d726f756e642d747269702d7541710358060000006368696c64317104735505302e302e3071057d71066803580b0000006772616e644368696c64317107735507302e302e302e3071087d71096803581000000067726561744772616e644368696c6431710a73752e"
+<v t="ekr.20080806084924.2" round-trip-uA="5815000000407468696e2075415f746573745f66696c652e707971002e" descendentTnodeUnknownAttributes="7d7100285814000000656b722e32303038303830363038343932342e3571017d7102550f726f756e642d747269702d742e754171035815000000407468696e2075415f746573745f66696c652e70797104735814000000656b722e32303038303830363038343932342e3471057d710668036804735814000000656b722e32303038303830363038343932342e3371077d71086803680473752e" descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550d726f756e642d747269702d754171035815000000407468696e2075415f746573745f66696c652e70797104735505302e302e3071057d710668036804735507302e302e302e3071077d71086803680473752e"
 expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
 </v>
 <v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
@@ -21616,13 +21616,17 @@ for v,archivedPosition in table:
 <t tx="ekr.20080806080425.2"></t>
 <t tx="ekr.20080806080425.3"></t>
 <t tx="ekr.20080806080425.4"></t>
-<t tx="ekr.20080806095923.2"># A trick.  We assume we have *already* saved unitTest.leo.
-# This may fail the first time.  If so, we set the uA's.
-root = p.firstChild()
+<t tx="ekr.20080806095923.2">root = p.firstChild()
 uA = 'unknownAttributes'
-tag = 'round-trip-uA'
+tag = 'round-trip-u.uA'
+ttag = 'round-trip-t.uA'
 trace = False
-try:
+
+if 1: # Set the uA's.
+    for p2 in root.self_and_subtree_iter():
+        p2.v.unknownAttributes = {tag: p2.headString()}
+        p2.v.t.unknownAttributes = {ttag: p2.headString()}
+else: # Test the uA's.
     # The root is a special case.
     v = root.v
     assert hasattr(v,uA),'no uA for %s' % v
@@ -21633,12 +21637,12 @@ try:
         a = getattr(v,uA)
         d = {tag: v.headString()}
         if trace: g.pr(d)
-        assert a == d, 'expected "%s", got "%s"' % (d,a)
-except AssertionError:
-    for p2 in root.self_and_subtree_iter():
-        v = p2.v
-        v.unknownAttributes = {tag: v.headString()}
-    # c.save()
-    raise</t>
+        assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)
+        t = p2.v.t
+        assert hasattr(t,uA),'no uA for %s' % t
+        a = getattr(t,uA)
+        d = {ttag: v.headString()}
+        if trace: g.pr(d)
+        assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)</t>
 </tnodes>
 </leo_file>
