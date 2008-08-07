@@ -1472,6 +1472,40 @@ def next(self):
 #@-node:ekr.20040812170616:Pyrex versions of key classes
 #@-node:ekr.20061207073104:Convert bottlenecks to pyrex code
 #@-node:ekr.20070814070357:Performance
+#@+node:ekr.20080807111553.1:Scripting
+#@+node:ekr.20031218072017.753:Emacs comint-mode:  The improved Execute Script command does most of this
+@nocolor
+
+Michael Manti
+mmanti@mac.com
+
+P.S. I think a feature that could make Leo *the* IDE for developing in 
+interpreted languages is something like the (X)Emacs comint-mode.el for 
+interacting with the shell and interpreters.
+
+comint-mode.el serves as the basis for interactive modes for a number of
+languages--OCaml, Haskell, SML, among them. It allows for editing expressions in
+one buffer and triggering their evaluation in another buffer that has an
+interpreter running in it, along with entering commands in the interpreter
+buffer and moving back and forth through the history of their evaluation.
+
+Imagine being able to highlight a node in Leo, and have all the code in it and
+its children evaluated in an interpreter running in a separate window or pane,
+much as Leo can open a Python shell now. Users of those languages could build
+plug-ins specific to their language atop that layer, and the @language directive
+could activate that. I think that would be very cool.
+#@-node:ekr.20031218072017.753:Emacs comint-mode:  The improved Execute Script command does most of this
+#@+node:ekr.20070627151457:--runCommand option
+@
+
+--runCommand "leo-command-name" runs the command at idle-time after loading the file.
+
+I am not going to do this: this, in conjunction with @command nodes, is a big security hole, equivalent to @script.
+
+The only safe thing would be to disallow user-defined commands from being executed by --runCommand, but then what is the point of --runCommand.
+#@nonl
+#@-node:ekr.20070627151457:--runCommand option
+#@-node:ekr.20080807111553.1:Scripting
 #@+node:ekr.20041228092223.4:Windows
 #@+node:ekr.20050108051818:Add hyperlinks for url's
 @killcolor
@@ -1847,16 +1881,6 @@ Tree traversals will be tree traversals.
 Hope that did not muddy the waters even more ... 
 #@-node:ekr.20060329102951.2:Reply
 #@-node:ekr.20060329102951:@ref
-#@+node:ekr.20070627151457:--runCommand option
-@
-
---runCommand "leo-command-name" runs the command at idle-time after loading the file.
-
-I am not going to do this: this, in conjunction with @command nodes, is a big security hole, equivalent to @script.
-
-The only safe thing would be to disallow user-defined commands from being executed by --runCommand, but then what is the point of --runCommand.
-#@nonl
-#@-node:ekr.20070627151457:--runCommand option
 #@+node:ekr.20040220110030:Change cursor when caps lock is down
 @nocolor
 
