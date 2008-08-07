@@ -248,7 +248,7 @@ def putVnode (self,p,isIgnore=False):
 
     if isIgnore:   forceWrite = True      # Always write full @ignore trees.
     elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
-    elif isShadow: forceWrite = False   # Never write non-ignored @shadow trees.
+    elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
     elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
     else:          forceWrite = True      # Write all other @file trees.
 
@@ -322,8 +322,8 @@ elif hasattr(v,"unknownAttributes"):
 # New in 4.2: tnode list is in tnode.
 
 if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
-    if isThin or isShadow:
-        if 1:
+    if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
+        if isThin or isShadow: # Never issue warning for @auto.
             if g.app.unitTesting:
                 g.app.unitTestDict["warning"] = True
             g.es("deleting tnode list for",p.headString(),color="blue")
@@ -338,9 +338,10 @@ if hasattr(v,"unknownAttributes"): # New in 4.0
 
 if p.hasChildren() and not forceWrite and not self.usingClipboard:
     # We put the entire tree when using the clipboard, so no need for this.
-    attrs.append(self.putDescendentTnodeUas(p))
-    attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
-    attrs.append(self.putDescendentAttributes(p))
+    if not isAuto: # Bug fix: 2008/8/7.
+        attrs.append(self.putDescendentTnodeUas(p))
+        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
+        attrs.append(self.putDescendentAttributes(p))
 #@nonl
 #@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
 #@+node:ekr.20040702085529:<< issue informational messages >>
