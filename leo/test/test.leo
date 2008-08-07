@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="29" left="385" height="914" width="777"/>
+	<global_window_position top="44" left="183" height="914" width="777"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="2,6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5,3,1,5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -131,7 +131,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
@@ -193,7 +193,7 @@
 <v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
 </v>
-<v t="ekr.20080806145258.12"><vh>Prototype of Leo in Ajax</vh>
+<v t="ekr.20080806145258.12" a="E"><vh>Prototype of Leo in Ajax</vh>
 <v t="ekr.20080806145258.13"><vh>To do</vh></v>
 <v t="ekr.20080806145258.14"><vh>@button Leo2DHTML</vh>
 <v t="ekr.20080806145258.15"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
@@ -256,6 +256,17 @@
 </v>
 </v>
 </v>
+</v>
+<v t="ekr.20080806162515.47" a="E"><vh>Python Server stuff: @path c/python/Lib</vh>
+<v t="ekr.20080806163549.357"><vh>@url http://hoohoo.ncsa.uiuc.edu/cgi/primer.html</vh></v>
+<v t="ekr.20080806163310.1"><vh>@auto socket.py</vh></v>
+<v t="ekr.20080806155806.1"><vh>@auto SocketServer.py</vh></v>
+<v t="ekr.20080806162719.1" a="E"
+expanded="ekr.20080806163549.74,"><vh>@auto CGIHTTPServer.py</vh></v>
+<v t="ekr.20080806162719.47"><vh>@auto BaseHTTPServer.py</vh></v>
+<v t="ekr.20080806162719.48"><vh>@auto SimpleHTTPServer.py</vh></v>
+<v t="ekr.20080806162719.50" tnodeList="ekr.20080806162719.50,ekr.20080806163549.174,ekr.20080806163549.175,ekr.20080806163549.176,ekr.20080806163549.177,ekr.20080806163549.178,ekr.20080806163549.179,ekr.20080806163549.180,ekr.20080806163549.181,ekr.20080806163549.182,ekr.20080806163549.183,ekr.20080806163549.184,ekr.20080806163549.185,ekr.20080806163549.186,ekr.20080806163549.187,ekr.20080806163549.188,ekr.20080806163549.189,ekr.20080806163549.190,ekr.20080806163549.191,ekr.20080806163549.192,ekr.20080806163549.193,ekr.20080806163549.194,ekr.20080806163549.195,ekr.20080806163549.196,ekr.20080806163549.197,ekr.20080806163549.198,ekr.20080806163549.199,ekr.20080806163549.200,ekr.20080806163549.201,ekr.20080806163549.202,ekr.20080806163549.203,ekr.20080806163549.204,ekr.20080806163549.205,ekr.20080806163549.206,ekr.20080806163549.207,ekr.20080806163549.208,ekr.20080806163549.209,ekr.20080806163549.210,ekr.20080806163549.211,ekr.20080806163549.212,ekr.20080806163549.213,ekr.20080806163549.214,ekr.20080806163549.215,ekr.20080806163549.216,ekr.20080806163549.217,ekr.20080806163549.218,ekr.20080806163549.219,ekr.20080806163549.220,ekr.20080806163549.221,ekr.20080806163549.222,ekr.20080806163549.223,ekr.20080806163549.224,ekr.20080806163549.225,ekr.20080806163549.226,ekr.20080806163549.227,ekr.20080806163549.228,ekr.20080806163549.229,ekr.20080806163549.230,ekr.20080806163549.231,ekr.20080806163549.232,ekr.20080806163549.233,ekr.20080806163549.234,ekr.20080806163549.235,ekr.20080806163549.236,ekr.20080806163549.237,ekr.20080806163549.238,ekr.20080806163549.239,ekr.20080806163549.240,ekr.20080806163549.241,ekr.20080806163549.242,ekr.20080806163549.358,ekr.20080806163549.243,ekr.20080806163549.244,ekr.20080806163549.245,ekr.20080806163549.246,ekr.20080806163549.247,ekr.20080806163549.248,ekr.20080806163549.249,ekr.20080806163549.250,ekr.20080806163549.251,ekr.20080806163549.252,ekr.20080806163549.253,ekr.20080806163549.254,ekr.20080806163549.255,ekr.20080806163549.256,ekr.20080806163549.257,ekr.20080806163549.258,ekr.20080806163549.259,ekr.20080806163549.260,ekr.20080806163549.261,ekr.20080806163549.262,ekr.20080806163549.263,ekr.20080806163549.264,ekr.20080806163549.265"><vh>@auto httplib.py</vh></v>
+<v t="ekr.20080806162719.51"><vh>@auto htmllib.py</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2269,10 +2280,6 @@ port = 8080
 Handler = CGIHTTPServer.CGIHTTPRequestHandler
 s = SocketServer.TCPServer(("", port), Handler)
 
-# def myExecutable(path):
-#    return True
-# SocketServer.executable = myExecutable
-
 s.server_name = '127.0.0.1' # represents local host.
 s.server_port = port
 
@@ -2476,5 +2483,7 @@ import leo.core.leoBridge as leoBridge
 import cgi
 import cgitb ; cgitb.enable()
 </t>
+<t tx="ekr.20080806162515.47">@path c:/python25/Lib</t>
+<t tx="ekr.20080806163549.357"># Referenced from class CGIHTTPRequestHandler.run_cgi.</t>
 </tnodes>
 </leo_file>

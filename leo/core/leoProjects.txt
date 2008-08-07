@@ -17931,7 +17931,7 @@ def propagate_changes(self, old_public_file, old_private_file):
 
     x = self
 
-    g.trace('old_public_file',old_public_file)
+    # g.trace('old_public_file',old_public_file)
 
     old_public_lines  = file(old_public_file).readlines()
     old_private_lines = file(old_private_file).readlines()
@@ -21636,7 +21636,7 @@ def propagate_changes(self, old_public_file, old_private_file):
 
     x = self
 
-    g.trace('old_public_file',old_public_file)
+    # g.trace('old_public_file',old_public_file)
 
     old_public_lines  = file(old_public_file).readlines()
     old_private_lines = file(old_private_file).readlines()
@@ -22912,7 +22912,7 @@ def putDescendentTnodeUas (self,p):
     return d.keys() and self.pickle(
         torv=p.t,val=d,tag="descendentTnodeUnknownAttributes") or ''
 #@-node:ekr.20080805071954.1:putDescendentTnodeUas
-#@+node:ekr.20080805071954.2:putDescendentVnodeUas 
+#@+node:ekr.20080805071954.2:putDescendentVnodeUas
 def putDescendentVnodeUas (self,p):
 
     '''Return the a uA field for descendent vnode attributes,
@@ -22946,7 +22946,7 @@ def putDescendentVnodeUas (self,p):
     # Pickle and hexlify d
     return d.keys() and self.pickle(
         torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-#@-node:ekr.20080805071954.2:putDescendentVnodeUas 
+#@-node:ekr.20080805071954.2:putDescendentVnodeUas
 #@+node:ekr.20031218072017.1863:putVnode
 def putVnode (self,p,isIgnore=False):
 
