@@ -30887,7 +30887,7 @@ The contents of @button profile is::
 runProfileOnNode runs the Python profiler on the script in the selected node, then reports the stats.
 </t>
 <t tx="ekr.20080730095710.1"></t>
-<t tx="ekr.20080730095710.2">Leo 4.5 beta 2                      July 31, 2008
+<t tx="ekr.20080730095710.2">Leo 4.5 beta 2                      August 7, 2008
 
 Leo 4.5 beta 2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
