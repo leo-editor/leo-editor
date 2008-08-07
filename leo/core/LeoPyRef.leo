@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="33" left="274" height="910" width="999"/>
+	<global_window_position top="42" left="164" height="910" width="999"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -72,12 +72,12 @@
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e"
-marks="ekr.20060417194232.2,ekr.20041121130043,ekr.20041119204700,ekr.20070925144337.2,ekr.20040803072955.127,ekr.20040803072955.91,ekr.20031218072017.2834,ekr.20050404151753.6,"><vh>@thin leoProjects.txt</vh></v>
+<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573732e"
+marks="ekr.20060417194232.2,ekr.20041121130043,ekr.20041119204700,ekr.20070925144337.2,ekr.20040803072955.127,ekr.20040803072955.91,ekr.20031218072017.2834,ekr.20050404151753.6,ekr.20061006092649,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"
-marks="ekr.20080603052650.466,ekr.20031218072017.2834,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+marks="ekr.20031218072017.2834,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
@@ -99,7 +99,8 @@ marks="ekr.20060417194232.2,"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3093"
 marks="ekr.20050404151753.6,"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@thin leoImport.py</vh></v>
-<v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
+<v t="ekr.20031218072017.3320"
+marks="ekr.20061006092649,"><vh>@thin leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@thin leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@thin leoPymacs.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
@@ -110,7 +111,7 @@ marks="ekr.20050404151753.6,"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20080730161153.8"><vh>Test classes</vh>
 <v t="ekr.20080730161153.2"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@thin leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" annotate="285808000000616e6e6f7461746571007d71017471022e"><vh>@thin leoTest.py</vh></v>
+<v t="ekr.20051104075904" annotate="285808000000616e6e6f7461746571007d71017471022e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui Base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
@@ -187,7 +188,7 @@ if 0: # Set to 1 for lint-like testing.
 <t tx="ekr.20031218072017.3821"></t>
 <t tx="ekr.20040629121554.1">def getSignOnLine (self):
     c = self
-    return "Leo 4.5 b1, build %s, June 28, 2008" % c.getBuildNumber()
+    return "Leo 4.5 b2, build %s, August 7, 2008" % c.getBuildNumber()
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
