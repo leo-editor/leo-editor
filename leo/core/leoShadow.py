@@ -488,7 +488,7 @@ class shadowController:
 
         x = self
 
-        g.trace('old_public_file',old_public_file)
+        # g.trace('old_public_file',old_public_file)
 
         old_public_lines  = file(old_public_file).readlines()
         old_private_lines = file(old_private_file).readlines()
