@@ -1761,7 +1761,7 @@ class baseFileCommands:
 
         if isIgnore:   forceWrite = True      # Always write full @ignore trees.
         elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
-        elif isShadow: forceWrite = False   # Never write non-ignored @shadow trees.
+        elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
         elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
         else:          forceWrite = True      # Write all other @file trees.
 
@@ -1819,8 +1819,8 @@ class baseFileCommands:
         # New in 4.2: tnode list is in tnode.
 
         if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
-            if isThin or isShadow:
-                if 1:
+            if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
+                if isThin or isShadow: # Never issue warning for @auto.
                     if g.app.unitTesting:
                         g.app.unitTestDict["warning"] = True
                     g.es("deleting tnode list for",p.headString(),color="blue")
@@ -1835,9 +1835,10 @@ class baseFileCommands:
 
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # We put the entire tree when using the clipboard, so no need for this.
-            attrs.append(self.putDescendentTnodeUas(p))
-            attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
-            attrs.append(self.putDescendentAttributes(p))
+            if not isAuto: # Bug fix: 2008/8/7.
+                attrs.append(self.putDescendentTnodeUas(p))
+                attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
+                attrs.append(self.putDescendentAttributes(p))
         #@nonl
         #@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
         #@nl
@@ -2300,7 +2301,7 @@ class baseFileCommands:
         return d.keys() and self.pickle(
             torv=p.t,val=d,tag="descendentTnodeUnknownAttributes") or ''
     #@-node:ekr.20080805071954.1:putDescendentTnodeUas
-    #@+node:ekr.20080805071954.2:putDescendentVnodeUas 
+    #@+node:ekr.20080805071954.2:putDescendentVnodeUas
     def putDescendentVnodeUas (self,p):
 
         '''Return the a uA field for descendent vnode attributes,
@@ -2334,7 +2335,7 @@ class baseFileCommands:
         # Pickle and hexlify d
         return d.keys() and self.pickle(
             torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-    #@-node:ekr.20080805071954.2:putDescendentVnodeUas 
+    #@-node:ekr.20080805071954.2:putDescendentVnodeUas
     #@+node:ekr.20031218072017.2002:putTnodeList
     def putTnodeList (self,v):
 
@@ -2377,25 +2378,6 @@ class baseFileCommands:
                 return ''
         else:
             return self.pickle(torv=torv,val=val,tag=key)
-
-        # try:
-            # try:
-                # if self.python23:
-                    # # Protocol argument is new in Python 2.3
-                    # # Use protocol 1 for compatibility with bin.
-                    # s = pickle.dumps(val,protocol=1)
-                # else:
-                    # s = pickle.dumps(val,bin=True)
-                # attr = ' %s="%s"' % (key,binascii.hexlify(s))
-                # return attr
-            # except Exception:
-                # g.es('putUaHelper: unexpected pickling exception',color='red')
-                # g.es_exception()
-                # return ''
-        # except pickle.PicklingError:
-            # # New in 4.2 beta 1: keep going after error.
-            # g.es("ignoring non-pickleable attribute",key,"in",torv,color="blue")
-            # return ''
     #@-node:ekr.20050418161620.2:putUaHelper
     #@+node:EKR.20040526202501:putUnknownAttributes
     def putUnknownAttributes (self,torv):
