@@ -559,8 +559,6 @@ class atFile:
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
         fileName = g.os_path_join(at.default_directory,fileName)
 
-        g.trace(fileName)
-
         if not g.unitTesting:
             g.es("reading:",p.headString())
 
