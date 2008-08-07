@@ -32,8 +32,6 @@ def revert (self,event=None):
     else:
         c.mFileName = fileName
 #@-node:ekr.20031218072017.2837:revert
-#@-node:ekr.20080803063553.5:Support revert of @shadow nodes
-#@+node:ekr.20080801071227.1:First 9
 #@+node:ekr.20080801071227.12:Investigate problems with revert
 @nocolor
 
@@ -67,6 +65,8 @@ files, although nodes are being Marked and dirtied on load and I can't
 see what changed, perhaps it's whitespace. 
 #@nonl
 #@-node:ekr.20080801071227.12:Investigate problems with revert
+#@-node:ekr.20080803063553.5:Support revert of @shadow nodes
+#@+node:ekr.20080801071227.1:First 7
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
 #@nonl
@@ -410,7 +410,7 @@ def setHeadString (self,p,s,encoding="utf-8"):
 #@-node:ekr.20080517102922.1:Files bugs 5
 #@+node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
 #@-node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
-#@-node:ekr.20080801071227.1:First 9
+#@-node:ekr.20080801071227.1:First 7
 #@+node:ekr.20080411091507.10:Minor bugs (3)
 #@+node:ekr.20080709161540.1:Fix c colorizer bug
 @nocolor

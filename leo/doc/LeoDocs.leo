@@ -632,9 +632,6 @@
 <v t="ekr.20050912125735.3077"><vh>Servers</vh>
 <v t="ekr.20050912125735.3078"><vh>mod_http.py</vh></v>
 </v>
-<v t="ekr.20060823094954"><vh>Shadow files</vh>
-<v t="ekr.20060823094954.1"><vh>mod_shadow.py</vh></v>
-</v>
 <v t="ekr.20050912125735.3136"><vh>Spell checking</vh>
 <v t="ekr.20050912125735.3138"><vh>spellpyx.py</vh></v>
 </v>
@@ -18911,8 +18908,7 @@ write-dirty-at-file-nodes           = Shift+Ctrl+Q
 <t tx="ekr.20060215112429.6">The patch was reported at:
 
 http://sourceforge.net/forum/message.php?msg_id=3577681
-
-Thanks to caugm.</t>
+</t>
 <t tx="ekr.20060215112429.9">http://sourceforge.net/forum/message.php?msg_id=3573470
 
 What I did:
@@ -23477,42 +23473,6 @@ Added these settings:
 <t tx="ekr.20060822140418.88">Leo *already* outputs decorators correctly, assuming the decorator does not conflict with a Leo directive.</t>
 <t tx="ekr.20060822140418.92">http://sourceforge.net/forum/message.php?msg_id=3858363</t>
 <t tx="ekr.20060822140418.97">These were overly complicated an not useful.</t>
-<t tx="ekr.20060823094954"></t>
-<t tx="ekr.20060823094954.1">The shadow plugin allows you to use Leo with files which contain no
-Leo comments, and still have information flow in both directions:
-from the file into Leo, and from Leo into the file.
- 
-To use this plugin:
-
-1. Install the shadow script button found in leoPy.leo in the node::
-    
-    Code--&gt;Buttons and settings--&gt;@@button shadow
-    
-   That is, copy and paste this @button node to your Leo outline, and change @@button to @button.
-
-2. Position the cursor somewhere in your tree.
-
-3. Clicking the shadow button will create a shadow file for all @thin nodes
-   in the selected outline.
-
-After this initial setup, changes in Leo will be reflected both in the file
-in the Leo subfolder, and the file without sentinels.
-Conversely, changes in the file without sentinels will flow back to the file
-in the leo subfolder, and show up in Leo.
-Text insertions within a node will show up as expected. Text insertion
-at the end of the node will show up and the end of the node.
-Note that the plugin never structures input; this has to be done manually
-within Leo.
-
-You can set settings for this plugin in leoSettings.leo at::
-    
-     @settings--&gt;Plugins--&gt;shadow plugin.
-
-- @string shadow_subdir (default: LeoFolder): name of the shadow directory.
-
-- @string shadow_prefix (default: x): prefix of shadow files.
-  This prefix allows the shadow file and the original file to have different names.
-  This is useful for name-based tools like py.test.</t>
 <t tx="ekr.20060830141224">Leo 4.4.1 final                                            August 30, 2006
 
 Leo 4.4.1 final is available at:
@@ -31552,7 +31512,16 @@ What's New in Leo 4.5
 - Allow v.uA's in @thin and @shadow nodes.
   See http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
 </t>
-<t tx="ekr.20080806211440.189">- Added support for @bool fixedWindow option. Leo suppresses marks, expansion
+<t tx="ekr.20080806211440.189">- The default settings for @shadow files are now located in leoSettings.leo in the node::
+
+    @settings--&gt;File options--&gt;Shadow files
+    
+  The defaults for these settings are::
+
+    @string shadow_prefix = x
+    @string shadow_subdir = .leo_shadow
+
+- Added support for @bool fixedWindow option. Leo suppresses marks, expansion
   state, orphan bits and current position bits when writing fixed .leo files. As
   a result, all nodes will be collapsed and the root node will always be
   selected when Leo opens a fixed .leo file.

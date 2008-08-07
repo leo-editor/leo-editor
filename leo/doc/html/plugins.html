@@ -385,31 +385,27 @@ instantly hooked.</p>
 <li><a class="reference" href="#mod-http-py" id="id93" name="id93">mod_http.py</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#shadow-files" id="id94" name="id94">Shadow files</a><ul>
-<li><a class="reference" href="#mod-shadow-py" id="id95" name="id95">mod_shadow.py</a></li>
+<li><a class="reference" href="#spell-checking" id="id94" name="id94">Spell checking</a><ul>
+<li><a class="reference" href="#spellpyx-py" id="id95" name="id95">spellpyx.py</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#spell-checking" id="id96" name="id96">Spell checking</a><ul>
-<li><a class="reference" href="#spellpyx-py" id="id97" name="id97">spellpyx.py</a></li>
+<li><a class="reference" href="#text-formatting" id="id96" name="id96">Text formatting</a><ul>
+<li><a class="reference" href="#leo-to-asciidoc" id="id97" name="id97">Leo to AsciiDoc</a></li>
+<li><a class="reference" href="#rst3-py" id="id98" name="id98">rst3.py</a></li>
+<li><a class="reference" href="#xsltwithnodes-py" id="id99" name="id99">xsltWithNodes.py</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#text-formatting" id="id98" name="id98">Text formatting</a><ul>
-<li><a class="reference" href="#leo-to-asciidoc" id="id99" name="id99">Leo to AsciiDoc</a></li>
-<li><a class="reference" href="#rst3-py" id="id100" name="id100">rst3.py</a></li>
-<li><a class="reference" href="#xsltwithnodes-py" id="id101" name="id101">xsltWithNodes.py</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#windows" id="id102" name="id102">Windows</a><ul>
-<li><a class="reference" href="#cleo-py" id="id103" name="id103">cleo.py</a></li>
-<li><a class="reference" href="#footprints-py" id="id104" name="id104">footprints.py</a></li>
-<li><a class="reference" href="#editattributes-py" id="id105" name="id105">EditAttributes.py</a></li>
-<li><a class="reference" href="#maximizenewwindows-py" id="id106" name="id106">maximizeNewWindows.py</a></li>
-<li><a class="reference" href="#nodebar-py" id="id107" name="id107">nodebar.py</a></li>
-<li><a class="reference" href="#redirect-to-log-py" id="id108" name="id108">redirect_to_log.py</a></li>
-<li><a class="reference" href="#tabbedlog-py" id="id109" name="id109">TabbedLog.py</a></li>
-<li><a class="reference" href="#uasearch-py" id="id110" name="id110">UASearch.py</a></li>
-<li><a class="reference" href="#universalscrolling-py" id="id111" name="id111">UniversalScrolling.py</a></li>
-<li><a class="reference" href="#urlloader-py" id="id112" name="id112">URLloader.py</a></li>
+<li><a class="reference" href="#windows" id="id100" name="id100">Windows</a><ul>
+<li><a class="reference" href="#cleo-py" id="id101" name="id101">cleo.py</a></li>
+<li><a class="reference" href="#footprints-py" id="id102" name="id102">footprints.py</a></li>
+<li><a class="reference" href="#editattributes-py" id="id103" name="id103">EditAttributes.py</a></li>
+<li><a class="reference" href="#maximizenewwindows-py" id="id104" name="id104">maximizeNewWindows.py</a></li>
+<li><a class="reference" href="#nodebar-py" id="id105" name="id105">nodebar.py</a></li>
+<li><a class="reference" href="#redirect-to-log-py" id="id106" name="id106">redirect_to_log.py</a></li>
+<li><a class="reference" href="#tabbedlog-py" id="id107" name="id107">TabbedLog.py</a></li>
+<li><a class="reference" href="#uasearch-py" id="id108" name="id108">UASearch.py</a></li>
+<li><a class="reference" href="#universalscrolling-py" id="id109" name="id109">UniversalScrolling.py</a></li>
+<li><a class="reference" href="#urlloader-py" id="id110" name="id110">URLloader.py</a></li>
 </ul>
 </li>
 </ul>
@@ -1595,51 +1591,10 @@ file.  Start clicking :-)</p>
 </pre>
 </div>
 </div>
-<div class="section" id="shadow-files">
-<h2><a class="toc-backref" href="#id94">Shadow files</a></h2>
-<div class="section" id="mod-shadow-py">
-<h3><a class="toc-backref" href="#id95">mod_shadow.py</a></h3>
-<p>The shadow plugin allows you to use Leo with files which contain no
-Leo comments, and still have information flow in both directions:
-from the file into Leo, and from Leo into the file.</p>
-<p>To use this plugin:</p>
-<ol class="arabic">
-<li><p class="first">Install the shadow script button found in leoPy.leo in the node:</p>
-<pre class="literal-block">
-Code--&gt;Buttons and settings--&gt;&#64;&#64;button shadow
-</pre>
-<p>That is, copy and paste this &#64;button node to your Leo outline, and change &#64;&#64;button to &#64;button.</p>
-</li>
-<li><p class="first">Position the cursor somewhere in your tree.</p>
-</li>
-<li><p class="first">Clicking the shadow button will create a shadow file for all &#64;thin nodes
-in the selected outline.</p>
-</li>
-</ol>
-<p>After this initial setup, changes in Leo will be reflected both in the file
-in the Leo subfolder, and the file without sentinels.
-Conversely, changes in the file without sentinels will flow back to the file
-in the leo subfolder, and show up in Leo.
-Text insertions within a node will show up as expected. Text insertion
-at the end of the node will show up and the end of the node.
-Note that the plugin never structures input; this has to be done manually
-within Leo.</p>
-<p>You can set settings for this plugin in leoSettings.leo at:</p>
-<pre class="literal-block">
-&#64;settings--&gt;Plugins--&gt;shadow plugin.
-</pre>
-<ul class="simple">
-<li>&#64;string shadow_subdir (default: LeoFolder): name of the shadow directory.</li>
-<li>&#64;string shadow_prefix (default: x): prefix of shadow files.
-This prefix allows the shadow file and the original file to have different names.
-This is useful for name-based tools like py.test.</li>
-</ul>
-</div>
-</div>
 <div class="section" id="spell-checking">
-<h2><a class="toc-backref" href="#id96">Spell checking</a></h2>
+<h2><a class="toc-backref" href="#id94">Spell checking</a></h2>
 <div class="section" id="spellpyx-py">
-<h3><a class="toc-backref" href="#id97">spellpyx.py</a></h3>
+<h3><a class="toc-backref" href="#id95">spellpyx.py</a></h3>
 <p>aspell.pyx: Leo's new spell checking plugin that uses aspell.exe. It is much
 faster than the old mod_spelling plugin, but requires Python 2.3 or above and a
 recent version of Aspell. When properly installed and enabled, this plugin adds
@@ -1655,9 +1610,9 @@ checker without enabling the spellpyx plugin by using an <tt class="docutils lit
 </div>
 </div>
 <div class="section" id="text-formatting">
-<h2><a class="toc-backref" href="#id98">Text formatting</a></h2>
+<h2><a class="toc-backref" href="#id96">Text formatting</a></h2>
 <div class="section" id="leo-to-asciidoc">
-<h3><a class="toc-backref" href="#id99">Leo to AsciiDoc</a></h3>
+<h3><a class="toc-backref" href="#id97">Leo to AsciiDoc</a></h3>
 <p>Leo2AsciiDoc is a small Python program which has been built to be used as a
 plugin module for the Leo outlining editor.
 For more information see:  <a class="reference" href="http://www.marshallresearch.com/michael-dawson/os/leo.html">http://www.marshallresearch.com/michael-dawson/os/leo.html</a>
@@ -1680,7 +1635,7 @@ are already using Leo and DocBook. As noted later, Leo2AsciiDoc has only been
 tested on Linux</p>
 </div>
 <div class="section" id="rst3-py">
-<h3><a class="toc-backref" href="#id100">rst3.py</a></h3>
+<h3><a class="toc-backref" href="#id98">rst3.py</a></h3>
 <p>The rst3 plugin creates output files from Leo outlines containing rST
 (<a class="reference" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a>) markup. rst3 options control most aspects of this plugin's
 operations. You can set options in <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees, in headlines and in body
@@ -1747,7 +1702,7 @@ None converts the &#64;rst tree to a single reStructuredText string, as shown in
 </ul>
 </div>
 <div class="section" id="xsltwithnodes-py">
-<h3><a class="toc-backref" href="#id101">xsltWithNodes.py</a></h3>
+<h3><a class="toc-backref" href="#id99">xsltWithNodes.py</a></h3>
 <p>Adds XSLT-Node Command submenu item to the Outline menu.
 This menu contains the following items:</p>
 <dl class="docutils">
@@ -1762,21 +1717,21 @@ and creates a sibling containing the results.</dd>
 </div>
 </div>
 <div class="section" id="windows">
-<h2><a class="toc-backref" href="#id102">Windows</a></h2>
+<h2><a class="toc-backref" href="#id100">Windows</a></h2>
 <div class="section" id="cleo-py">
-<h3><a class="toc-backref" href="#id103">cleo.py</a></h3>
+<h3><a class="toc-backref" href="#id101">cleo.py</a></h3>
 <p>Cleo allows you to annotate or colour leo outlines based on priority, code
 archetype, node types or some arbitrary criteria. The annotations and colour
 coding can play a similar role like that of syntax highlighting. Right-click on
 the icon area to popup its menu to play with it.</p>
 </div>
 <div class="section" id="footprints-py">
-<h3><a class="toc-backref" href="#id104">footprints.py</a></h3>
+<h3><a class="toc-backref" href="#id102">footprints.py</a></h3>
 <p>A plugin to leave footprints! This colors the Leo nodes so that the ones you
 have visited most and most recently will stand out.</p>
 </div>
 <div class="section" id="editattributes-py">
-<h3><a class="toc-backref" href="#id105">EditAttributes.py</a></h3>
+<h3><a class="toc-backref" href="#id103">EditAttributes.py</a></h3>
 <p>A plugin that lets the user to associate text with a specific node.
 Summon it by pressing button-2 or button-3 on an icon Box in the outline. This
 will create an attribute editor where the user can add, remove and edit
@@ -1784,22 +1739,22 @@ attributes. Since attributes use the underlying tnode, clones will share the
 attributes of one another.</p>
 </div>
 <div class="section" id="maximizenewwindows-py">
-<h3><a class="toc-backref" href="#id106">maximizeNewWindows.py</a></h3>
+<h3><a class="toc-backref" href="#id104">maximizeNewWindows.py</a></h3>
 <p>Maximizes all new windows.</p>
 </div>
 <div class="section" id="nodebar-py">
-<h3><a class="toc-backref" href="#id107">nodebar.py</a></h3>
+<h3><a class="toc-backref" href="#id105">nodebar.py</a></h3>
 <p>The nodebar plugin adds buttons at the bottom of the tree canvas. The buttons
 correspond to commands found in the Outline commands. It is intended to speed up
 a new users ability to use the outline. Experienced users may find value in
 being able to quickly execute commands they do not use very often.</p>
 </div>
 <div class="section" id="redirect-to-log-py">
-<h3><a class="toc-backref" href="#id108">redirect_to_log.py</a></h3>
+<h3><a class="toc-backref" href="#id106">redirect_to_log.py</a></h3>
 <p>Send all output to the log pane.</p>
 </div>
 <div class="section" id="tabbedlog-py">
-<h3><a class="toc-backref" href="#id109">TabbedLog.py</a></h3>
+<h3><a class="toc-backref" href="#id107">TabbedLog.py</a></h3>
 <p>Turns the log into a tabbed component.  Other plugins may add tabs.
 To get a new tab in TabbedLog:</p>
 <pre class="literal-block">
@@ -1813,11 +1768,11 @@ pane = TabbedLog.getPane(name,c)
 </ul>
 </div>
 <div class="section" id="uasearch-py">
-<h3><a class="toc-backref" href="#id110">UASearch.py</a></h3>
+<h3><a class="toc-backref" href="#id108">UASearch.py</a></h3>
 <p>A plugin for searching unknownAttributes (uA's).</p>
 </div>
 <div class="section" id="universalscrolling-py">
-<h3><a class="toc-backref" href="#id111">UniversalScrolling.py</a></h3>
+<h3><a class="toc-backref" href="#id109">UniversalScrolling.py</a></h3>
 <p>A plugin that enables the user to scroll down with a left mouse click and hold,
 and to scroll up with a right mouse click and hold. Scrolling continues until
 the user releases the mouse. Originally designed as a workaround for various
@@ -1825,7 +1780,7 @@ bugs in Tkinter scrolling, this may actually be superior to wheel scrolling, in
 that there is little work a user has to do to scroll except to press a button.</p>
 </div>
 <div class="section" id="urlloader-py">
-<h3><a class="toc-backref" href="#id112">URLloader.py</a></h3>
+<h3><a class="toc-backref" href="#id110">URLloader.py</a></h3>
 <p>This plugin uses Python's urllib module to download files and import them into Leo.
 It requires the TabbedLog plugin.</p>
 <hr class="docutils" />

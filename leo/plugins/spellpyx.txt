@@ -1121,6 +1121,7 @@ csv
 csvr
 ctors
 ctypes
+curdir
 currentPosition
 currentVnode
 currentWord
@@ -1430,6 +1431,7 @@ firstChild
 firstLevel
 firstOpen
 firstPart
+fixedWindow
 flattenOutline
 fmerenda
 fn
@@ -2874,6 +2876,7 @@ stanford
 start1
 start2
 startIPython
+startTracer
 startfile
 startswith
 startupEncoding
@@ -3113,6 +3116,7 @@ undos
 unhexlify
 unibyte
 unicode
+unified_nodes
 unignored
 uninstall
 unique_tnodes_iter
