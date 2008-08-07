@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="44" left="183" height="914" width="777"/>
+	<global_window_position top="37" left="398" height="914" width="777"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -236,6 +236,14 @@
 </v>
 </v>
 <v t="ekr.20080807091001.1"><vh>@shadow python-import-test.py</vh></v>
+<v t="ekr.20080807114145.1"><vh>Active state test</vh></v>
+<v t="ekr.20080807115344.1"><vh>Windows script</vh></v>
+<v t="ekr.20080807114145.2" a="E"><vh>@button run-windows-script</vh>
+<v t="ekr.20080807115344.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080807115344.2"><vh>class MySite</vh></v>
+<v t="ekr.20080807115344.3"><vh>class Application</vh></v>
+<v t="ekr.20080807115344.4"><vh>RunCode</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2023,5 +2031,82 @@ import leo.core.leoBridge as leoBridge
 import cgi
 import cgitb ; cgitb.enable()
 </t>
+<t tx="ekr.20080807114145.1">if 0:
+    pypath = r'C:\c\py\Python25'
+    py =  pypath + r'\python.exe -itOO '
+    leosrc = r'c:\c\leo\leo4CVS233\src'
+    name = "blank.leo"
+    wname = "untitled"
+    
+    WshShell = WScript.CreateObject("WScript.Shell")
+    WshShell.Run(py + leosrc + r'\Leo.py ../' + name)
+    WScript.Sleep(4900) 
+    WshShell.AppActivate(wname);  WScript.Sleep(2100)
+    WshShell.SendKeys("%Fe");     WScript.Sleep(1300);  #^Q
+</t>
+<t tx="ekr.20080807114145.2">@
+A script button to run any body text as a Windows Script.
+See: http://en.wikipedia.org/wiki/Windows_Script_Host
+
+You need the win32 extensions and you must enable the script engine.
+Adapted from Active State examples:ch21_active_scripting:ActiveApp.py
+http://python.net/crew/mhammond/win32/
+@c
+
+&lt;&lt; imports &gt;&gt;
+
+@others
+
+RunCode("python",p.bodyString())
+</t>
+<t tx="ekr.20080807115344.1">Application.Echo("Hello from Python")
+</t>
+<t tx="ekr.20080807115344.2">class MySite(axsite.AXSite):
+    # Our error handler will simply print to the console.
+    def OnScriptError(self, activeScriptError):
+        exc = activeScriptError.GetExceptionInfo()
+        print "Exception:", exc[1]
+        try:
+            sourceText = activeScriptError.GetSourceLineText()
+        except pythoncom.com_error:
+            sourceText = None
+        if sourceText is not None: 
+            context, lineNo, charNo = activeScriptError.GetSourcePosition()
+            print sourceText
+            indent = " " * (charNo-1)
+            print indent + "^"
+        return winerror.S_OK
+</t>
+<t tx="ekr.20080807115344.3"># A named object for our namespace
+# A normal Python COM object (minus registration info)
+class Application:
+    _public_methods_ = [ 'Echo' ]
+    def Echo(self, *args):
+        print string.join(map(str, args))
+
+</t>
+<t tx="ekr.20080807115344.4"># Create the site and the engine and runs the code.
+def RunCode(engineName, code):
+
+    app = win32com.server.util.wrap( Application() )
+
+    # Create a dictionary holding our object model.
+    model = {'Application' : app,}
+
+    # Create the scripting site.
+    site = MySite(model)
+    # Create the engine and add the code.
+    engine = site.AddEngine(engineName)
+    engine.AddCode(code)
+
+    # Run the code.
+    engine.Start()
+</t>
+<t tx="ekr.20080807115344.5">import string
+import sys
+from win32com.axscript import axscript
+from win32com.axscript.server import axsite
+import pythoncom
+import win32com.server.util</t>
 </tnodes>
 </leo_file>
