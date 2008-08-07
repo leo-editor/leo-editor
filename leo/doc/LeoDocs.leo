@@ -852,6 +852,16 @@
 </v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
+<v t="ekr.20080806211440.185"><vh>What's New in Leo 4.5</vh>
+<v t="ekr.20080806211440.186"><vh>@rst html\new-4-5.html</vh>
+<v t="ekr.20080806211440.187"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080806211440.188"><vh>Major new features</vh></v>
+<v t="ekr.20080806211440.253"><vh>Major code reorganizations</vh></v>
+<v t="ekr.20080806211440.256"><vh>Minor new features</vh></v>
+<v t="ekr.20080806211440.189"><vh>New settings</vh></v>
+<v t="ekr.20080806211440.190"><vh>@rst-no-head end stuff</vh></v>
+</v>
+</v>
 <v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
 <v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
 <v t="ekr.20080314081157.122"><vh>@rst-no-head links</vh></v>
@@ -1180,107 +1190,6 @@
 </v>
 </v>
 <v t="edream.110203163054.46"><vh>Release Notes</vh>
-<v t="ekr.20060620094033"><vh>What's New...</vh>
-<v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
-<v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
-<v t="ekr.20080314081157.122"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20080314081157.124"><vh>New features</vh></v>
-<v t="ekr.20080314081157.128"><vh>New and improved plugins</vh></v>
-<v t="ekr.20080314081157.125"><vh>New settings</vh></v>
-<v t="ekr.20080314081157.126"><vh>@rst-no-head end stuff</vh></v>
-</v>
-</v>
-<v t="ekr.20071217093444"><vh>What's New in Leo 4.4.6</vh>
-<v t="ekr.20071217093444.1"><vh>@rst html\new-4-4-6.html</vh>
-<v t="ekr.20071217093444.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20071217093444.5"><vh>New commands</vh></v>
-<v t="ekr.20080116071239"><vh>New features</vh></v>
-<v t="ekr.20071217093444.6"><vh>New settings</vh></v>
-<v t="ekr.20071217093444.7"><vh>@rst-no-head end stuff</vh></v>
-</v>
-</v>
-<v t="ekr.20071116062917"><vh>What's New in Leo 4.4.5</vh>
-<v t="ekr.20071116062917.1"><vh>@rst html\new-4-4-5.html</vh>
-<v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20071116063202"><vh>Bug fixed</vh></v>
-<v t="ekr.20071116062917.3"><vh>New features</vh></v>
-<v t="ekr.20071116062917.18"><vh>New commands</vh></v>
-<v t="ekr.20071116063649"><vh>New settings</vh></v>
-<v t="ekr.20071116062917.19"><vh>@rst-no-head end stuff</vh></v>
-</v>
-</v>
-<v t="ekr.20070809145744"><vh>What's New in Leo 4.4.4</vh>
-<v t="ekr.20070809145744.1"><vh>@rst html\new-4-4-4.html</vh>
-<v t="ekr.20070809145744.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20070809145744.3"><vh>@rst-ignore Important new features</vh></v>
-<v t="ekr.20071004103659"><vh>The Great Graph Aha</vh></v>
-<v t="ekr.20070806090226.15"><vh>Added support for @auto files</vh>
-<v t="ekr.20070806095535.1"><vh>What @auto does</vh></v>
-<v t="ekr.20070809141529"><vh>Perfect import checks</vh></v>
-<v t="ekr.20070806101412"><vh>Commands related to @auto</vh></v>
-<v t="ekr.20070806100055"><vh>Extending the code: adding new parsers</vh></v>
-</v>
-<v t="ekr.20070920092716"><vh>New commands for resolving cvs conflicts</vh></v>
-<v t="ekr.20070809145744.5"><vh>New kinds of settings trees</vh>
-<v t="ekr.20071001122703"><vh>@buttons trees</vh></v>
-<v t="ekr.20071004110818"><vh>@menus trees</vh></v>
-</v>
-<v t="ekr.20070809145744.6"><vh>New plugins</vh></v>
-<v t="ekr.20071005100213"><vh>Leo's core is now compatible with jython</vh></v>
-<v t="ekr.20071026180804"><vh>Improved prototype for icons in headlines</vh></v>
-<v t="ekr.20070809145744.7"><vh>Minor improvements</vh></v>
-<v t="ekr.20070809145744.4"><vh>Summary of new commands</vh></v>
-<v t="ekr.20070809145744.8"><vh>@rst-no-head end stuff</vh></v>
-</v>
-</v>
-<v t="ekr.20070513113903"><vh>What's New in Leo 4.4.3</vh>
-<v t="ekr.20070513113931"><vh>@rst html\new-4-4-3.html</vh>
-<v t="ekr.20070513113931.1"><vh>@rst-no-head links</vh>
-<v t="ekr.20070513115832.2"><vh>Important new features</vh></v>
-<v t="ekr.20070513115832.1"><vh>New commands</vh></v>
-<v t="ekr.20070513115832.3"><vh>New settings</vh></v>
-<v t="ekr.20070513115832.4"><vh>Plugins</vh></v>
-<v t="ekr.20070513115832.5"><vh>Minor improvements</vh></v>
-</v>
-<v t="ekr.20070513113931.9"><vh>@rst-no-head end stuff</vh></v>
-</v>
-</v>
-<v t="ekr.20060928172457"><vh>What's New in Leo 4.4.2</vh>
-<v t="ekr.20060928172457.1"><vh>@rst html\new-4-4-2.html</vh>
-<v t="ekr.20060928172457.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20060929043325"><vh>A major code reorg</vh></v>
-<v t="ekr.20061009111417.18"><vh>New commands</vh></v>
-<v t="ekr.20060928172457.4"><vh>New features</vh></v>
-<v t="ekr.20060928172457.5"><vh>New and improved plugins</vh></v>
-<v t="ekr.20061009111417.11"><vh>Settings</vh></v>
-<v t="ekr.20060929043325.1"><vh>ZODB scripting</vh></v>
-<v t="ekr.20060928172457.8"><vh>@rst-no-head end stuff</vh></v>
-</v>
-</v>
-<v t="ekr.20060620094033.1"><vh>What's New in Leo 4.4.1 and 4.4.1.1</vh>
-<v t="ekr.20060620094645.310"><vh>@rst html\new-4-4-1.html</vh>
-<v t="ekr.20060621132547"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20060620130636"><vh>New commands</vh></v>
-<v t="ekr.20060620095949.15"><vh>New features</vh></v>
-<v t="ekr.20060620130943"><vh>New and improved plugins</vh></v>
-<v t="ekr.20060620095949.25"><vh>New settings</vh></v>
-<v t="ekr.20070622212732"><vh>Improved settings</vh></v>
-<v t="ekr.20060620095655"><vh>Minor improvements</vh></v>
-<v t="ekr.20060621132923"><vh>@rst-no-head end stuff</vh></v>
-</v>
-</v>
-<v t="ekr.20060620094033.2"><vh>What's New in Leo 4.4</vh>
-<v t="ekr.20060620094425"><vh>@rst html\new-4-4.html</vh>
-<v t="ekr.20060621132338"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20070622212132"><vh>New commands</vh></v>
-<v t="ekr.20060620133820.16"><vh>New features</vh></v>
-<v t="ekr.20071004101443.178"><vh>Added new convenience methods for scripts and plugins</vh></v>
-<v t="ekr.20060620140130"><vh>New and improved plugins</vh></v>
-<v t="ekr.20060620140228"><vh>New and improved settings</vh></v>
-<v t="ekr.20060621132923.1"><vh>@rst-no-head end stuff</vh></v>
-</v>
-</v>
-</v>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3016,7 +2925,12 @@
 </v>
 </v>
 <v t="edream.110203163054.63"><vh>Latest version</vh>
-<v t="ekr.20080730095710.2"><vh>4.5 b2</vh></v>
+<v t="ekr.20080730095710.2"><vh>4.5 b2</vh>
+<v t="ekr.20080806211440.188"><vh>Major new features</vh></v>
+<v t="ekr.20080806211440.253"><vh>Major code reorganizations</vh></v>
+<v t="ekr.20080806211440.256"><vh>Minor new features</vh></v>
+<v t="ekr.20080806211440.189"><vh>New settings</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -13983,7 +13897,7 @@ Glossary
 	:target: front.html
 
 .. |next| image:: arrow_rt.gif
-    :target: new-4-4-8.html
+    :target: new-4-5.html
 
 </t>
 <t tx="ekr.20050901071613">----------------------
@@ -30200,7 +30114,7 @@ What's New in Leo 4.4.7 and Leo 4.4.8
 .. WARNING: image targets may not have upper case letters!
 
 .. |prev| image:: arrow_lt.gif
-	:target: glossary.html
+	:target: new-4-5.html
 
 .. |leo|  image:: leo.gif
 	:target: front.html
@@ -31018,17 +30932,23 @@ runProfileOnNode runs the Python profiler on the script in the selected node, th
 Leo 4.5 beta 2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
-This beta 2 version includes full support for @shadow trees.  Leo's writes public
-versions of @shadow trees without sentinels.
+Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
 The highlights of Leo 4.5:
 --------------------------
-- Several reorgs of Leo's code.
-- The beginning of usable vim-like bindings.
+
 - Full support for @shadow files in Leo's core.
+- Major improvements to Leo's key binding code.
+- The beginning of usable vim-like bindings.
+- uA's may now be associated with vnodes in @thin and @shadow files.
+- Several magor reorganizations of Leo's code:
+  including sax-based parsing, support for the Graph world (unified nodes),
+  simplified drawing code.
+- Leo is now an installable package.
+- Prepared code to be ready for Python 3.0.
 - Many small improvements and bug fixes.
 
 Links:
@@ -31586,6 +31506,110 @@ these two cases **does not matter**, for three very important reasons:
    need to be moved across the boundary.
    
 Understanding these three reasons finally convinced me that @shadow could be made to work reliably.
+</t>
+<t tx="ekr.20080806211440.185">@language rest</t>
+<t tx="ekr.20080806211440.186">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = False
+verbose=True
+@c
+
+|prev| |leo| |next|
+
+#######################################
+What's New in Leo 4.5
+#######################################
+
+.. contents::</t>
+<t tx="ekr.20080806211440.187">.. Links used in this document.
+
+.. _`Chapter 23`:           atShadow.html
+
+
+.. WARNING: image targets may not have upper case letters!
+
+.. |prev| image:: arrow_lt.gif
+	:target: glossary.html
+
+.. |leo|  image:: leo.gif
+	:target: front.html
+
+.. |next| image:: arrow_rt.gif
+    :target: new-4-4-8.html
+</t>
+<t tx="ekr.20080806211440.188">- Added support for @shadow files.
+  This is a major breakthrough.
+  See `Chapter 23`_ for full details.
+  
+- Added much improved support for vim bindings.
+
+- Allow v.uA's in @thin and @shadow nodes.
+  See http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
+</t>
+<t tx="ekr.20080806211440.189">- Added support for @bool fixedWindow option. Leo suppresses marks, expansion
+  state, orphan bits and current position bits when writing fixed .leo files. As
+  a result, all nodes will be collapsed and the root node will always be
+  selected when Leo opens a fixed .leo file.
+  
+  You can optionally specify the size and position on the screen of fixed .leo
+  files by putting an '@data fixedWindowPosition' node in the
+  @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
+  **not** put such a node in the fixed .leo file itself--everyone who
+  opens the file would get that fixed position.
+
+  The body of the '@data fixedWindowPosition' node should contain
+  something like this::
+
+    # Must be four entries: width,height,left,top.
+    # Put this in myLeoSettings.leo, **not** in individual .leo files.
+    
+    1200
+    800
+    50
+    50
+
+- Added @bool cleo_color_ignore = True
+  This determines whether cleo colors @ignore headlines. The default is True.</t>
+<t tx="ekr.20080806211440.190">-----------------------
+
+|prev| |leo| |next|</t>
+<t tx="ekr.20080806211440.253">- Leo now uses a sax-based parser to read .leo files.
+  This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
+  
+- Leo now supports the so-called 'Graph World'.
+  When g.unified_nodes is True, Leo moves all information from tnodes into vnodes.
+  
+- Leo now uses a new key binding scheme.
+  This allows substantially simpler key bindings. Indeed, most per-pane bindings
+  have been eliminated.
+  Added support for kill bindings.
+  
+- Leo is now an installable package.
+  To make this work, Leo adds os.curdir to sys.path if needed on startup.
+  
+- Reorganized Leo's drawing and focus code.
+  As a result, calls to c.beginUpdate and c.endUpdate are no longer needed.
+  
+- Leo is now ready for Python 3.x:
+  Change most print statements to calls to g.pr.
+</t>
+<t tx="ekr.20080806211440.256">- Added g.Tracer class.  This is a Python 'debugger' that computes a call graph.
+  To trace a function and its callers, put the following at the function's start::
+
+    g.startTracer()
+  
+- The find-character command now finds characters across line boundaries.
+
+- Set cwd in read/write commands. This affect the following commands:
+  open, save, save-as, save-to, read-outline-only, read-file-into-node,
+  write-file-from-node and all the import/export commands.
+  
 </t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
