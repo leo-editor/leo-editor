@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5,1,4"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5,0,1,13,10"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084904.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20050315084904.2"><vh>@recentfiles </vh></v>
@@ -187,7 +187,7 @@
 </v>
 <v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
 <v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
-<v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
+<v t="ekr.20050118095021" a="E"><vh>NSIS 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
 <v t="ekr.20050118104149.1"><vh>&lt;&lt; install config files &gt;&gt;</vh></v>
@@ -236,11 +236,11 @@
 <v t="ekr.20050118103447.1"><vh>&lt;&lt; uninstall top-level files &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20050118092706"
+<v t="ekr.20050118092706" a="E"
 marks="ekr.20050118124408,ekr.20050118092706.4,"
-expanded="ekr.20050118092706.13,"><vh>@thin leo-4-3.nsi</vh></v>
+expanded="ekr.20050118092706.9,ekr.20050118092706.22,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
-<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -2504,7 +2504,7 @@ File "..\extensions\Pmw\Pmw_1_3\tests\*.*"</t>
 <t tx="ekr.20050118122404.1">; File "..\test\__init__.py"
 File "..\test\test.leo"
 File "..\test\unitTest.leo"
-File "..\test\leoBridgeTest.py"
+
 </t>
 <t tx="ekr.20050118122740"></t>
 <t tx="ekr.20050118122740.1">Delete "$INSTDIR\extensions\aspell23.pyd"
@@ -2533,7 +2533,6 @@ Delete "$INSTDIR\extensions\Pmw\Pmw_1_3\tests\*.*"</t>
 <t tx="ekr.20050118122740.3">; Delete "$INSTDIR\test\__init__.py"
 Delete "$INSTDIR\test\test.leo"
 Delete "$INSTDIR\test\unitTest.leo"
-Delete "$INSTDIR\test\leoBridgeTest.py"
 </t>
 <t tx="ekr.20050124083006">Leo 4.3 alpha 1 is now available at http://sourceforge.net/projects/leo/
 

@@ -75,7 +75,7 @@ WindowIcon off
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "LeoSetup-4-5-b2.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
-InstallDir "$PROGRAMFILES\Leo"
+InstallDir "$PROGRAMFILES\leo"
 Icon "..\Icons\leo_inst.ico"
 ; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
 ; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
@@ -428,7 +428,7 @@ Section "Leo" SEC01
   ; File "..\test\__init__.py"
   File "..\test\test.leo"
   File "..\test\unitTest.leo"
-  File "..\test\leoBridgeTest.py"
+
   ;@-node:ekr.20050118122404.1:<< install test files >>
   ;@nl
   SetOutPath "$INSTDIR\test\unittest"
@@ -463,11 +463,11 @@ SectionEnd
 ; How will Windows XP Home deal with that? 
 
 Section "Start Menu Shortcuts" SEC02
-  CreateDirectory "$SMPROGRAMS\Leo"
-  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
+  CreateDirectory "$SMPROGRAMS\leo"
+  CreateShortCut "$SMPROGRAMS\leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
 ; In Version 1.0 installer, was
-; CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\core\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+; CreateShortCut "$SMPROGRAMS\leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\core\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$SMPROGRAMS\leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
 SectionEnd
 ;@nonl
 ;@-node:ekr.20050118092706.14:<< Section "Start Menu Shortcuts"  >>
@@ -511,8 +511,8 @@ SectionEnd
 ;@+node:ekr.20050118092706.17:<< Section -AdditionalIcons >>
 Section -AdditionalIcons
   SetOutPath $INSTDIR
-  CreateDirectory "$SMPROGRAMS\Leo"
-  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  CreateDirectory "$SMPROGRAMS\leo"
+  CreateShortCut "$SMPROGRAMS\leo\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
 ;@nonl
 ;@-node:ekr.20050118092706.17:<< Section -AdditionalIcons >>
@@ -729,7 +729,6 @@ Section Uninstall
   ; Delete "$INSTDIR\test\__init__.py"
   Delete "$INSTDIR\test\test.leo"
   Delete "$INSTDIR\test\unitTest.leo"
-  Delete "$INSTDIR\test\leoBridgeTest.py"
   ;@-node:ekr.20050118122740.3:<< uninstall test files >>
   ;@nl
   ;@  << uninstall unittest files >>
@@ -812,8 +811,8 @@ Section Uninstall
   ;@nl
 
 NoDelete:
-  Delete "$SMPROGRAMS\Leo\Uninstall.lnk"
-  RMDir "$SMPROGRAMS\Leo"
+  Delete "$SMPROGRAMS\leo\Uninstall.lnk"
+  RMDir "$SMPROGRAMS\leo"
   Delete "$DESKTOP\Leo.lnk"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
