@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="10" height="685" width="848"/>
+	<global_window_position top="53" left="98" height="810" width="1093"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="2,2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084904.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20050315084904.2"><vh>@recentfiles </vh></v>
@@ -36,7 +36,7 @@
 <v t="ekr.20070620084858.1"><vh>@@button upload</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259" a="E"><vh>Annoucements</vh>
+<v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -186,8 +186,8 @@
 </v>
 </v>
 <v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
-<v t="ekr.20080402154207.1"><vh>Release files/info</vh>
-<v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
+<v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
+<v t="ekr.20050118095021" a="E"><vh>NSIS 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
 <v t="ekr.20050118104149.1"><vh>&lt;&lt; install config files &gt;&gt;</vh></v>
@@ -236,9 +236,9 @@
 <v t="ekr.20050118103447.1"><vh>&lt;&lt; uninstall top-level files &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20050118092706"
+<v t="ekr.20050118092706" a="E"
 marks="ekr.20050118124408,ekr.20050118092706.4,"
-expanded="ekr.20050118092706.9,"><vh>@thin leo-4-3.nsi</vh></v>
+expanded="ekr.20050118092706.6,ekr.20050118092706.9,ekr.20050118092706.22,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
@@ -257,6 +257,9 @@ expanded="ekr.20050118092706.9,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20050118092706.3"><vh>&lt;&lt; custom defines &gt;&gt;</vh></v>
+<v t="ekr.20050118092706.16"><vh>&lt;&lt; Section ".leo File Association" &gt;&gt;</vh></v>
+<v t="ekr.20050118092706.15"><vh>&lt;&lt; Section "Desktop Shortcut" &gt;&gt;</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519082027.32">@color
@@ -2264,6 +2267,57 @@ Leo: Literate Editor with Outlines
 Leo: http://webpages.charter.net/edreamleo/front.html
 --------------------------------------------------------------------
 </t>
+<t tx="ekr.20050118092706.3">@comment ;
+
+; hand-created defines
+; used for Windows Registry links to uninstaller
+
+!define PRODUCT_NAME_LOWER_CASE "leo"
+
+!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
+
+; On Windows NT-derived operating systems, Python.org installer for Python 2.4 
+; can be installed for all users or current user only.
+; define the following symbol to install if Python is installed only for current user. 
+; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
+
+!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system. $\nPlease install Python first. $\n$\nClick OK to cancel installation and remove installation Files."
+
+!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only. $\n$\n${PRODUCT_NAME} does not support use with Python so configured. $\n$\nClick OK to cancel installation and remove installation Files."
+
+!define PROGRAM_FILES "r'C:\Program Files'"
+!define PYTHON_C "import os; os.chdir(${PROGRAM_FILES}); import leo; leo.run()"</t>
+<t tx="ekr.20050118092706.15">Section "Desktop Shortcut" SEC03
+  ; CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\runLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$DESKTOP\Leo.lnk" 'leoOpen' '"%1"' "$INSTDIR\Icons\LeoApp.ico" 0
+  ;;;CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '-i -c "${PYTHON_C}"' "$INSTDIR\Icons\LeoApp.ico" 0
+
+SectionEnd
+</t>
+<t tx="ekr.20050118092706.16">Section ".leo File Association"
+  SectionIn 1
+  SectionIn 2
+  SectionIn 3
+
+  # back up old value of .leo in case some other program was using it
+  ReadRegStr $1 HKCR ".leo" ""
+  StrCmp $1 "" Label1
+  StrCmp $1 "LeoFile" Label1
+  WriteRegStr HKCR ".leo" "backup_val" $1
+
+Label1:
+  WriteRegStr HKCR ".leo" "" "LeoFile"
+  WriteRegStr HKCR "LeoFile" "" "Leo File"
+  WriteRegStr HKCR "LeoFile\shell" "" "open"
+; In Version 1.0 installer, the .ico reference was
+;  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico,0
+; which does not work under Windows XP Professional SP2.
+  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico
+  ; WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\core\runLeo.py" "%1"'
+  WriteRegStr HKCR "LeoFile\shell\open\command" "" 'leoOpen" "%1"'
+  ;;; WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" -i -c "${PYTHON_C}" "%1"'
+
+SectionEnd</t>
 <t tx="ekr.20050118095021"></t>
 <t tx="ekr.20050118103207">@comment ;</t>
 <t tx="ekr.20050118103207.1">File "..\__init__.py"
@@ -2285,6 +2339,8 @@ Delete "$INSTDIR\install"
 ; Delete "$INSTDIR\MANIFEST"
 ; Delete "$INSTDIR\setup.py"
 Delete "$INSTDIR\uninstall"
+Delete "$INSTDIR\*.pyc"
+Delete "$INSTDIR\*.pyo"
 </t>
 <t tx="ekr.20050118104149"></t>
 <t tx="ekr.20050118104149.1">File "..\config\leoSettings.leo"</t>
@@ -2456,7 +2512,7 @@ Delete "$INSTDIR\core\oldLeoProjects.leo"
 Delete "$INSTDIR\core\__init__.p*"
 
 Delete "$INSTDIR\core\leo*.p*"
-Delete "$INSTDIR\core\runLeo.py"</t>
+Delete "$INSTDIR\core\runLeo.p*"</t>
 <t tx="ekr.20050118104901.12"></t>
 <t tx="ekr.20050118104901.13">File "..\scripts\scripts.leo"
 File "..\scripts\leoScripts.txt"

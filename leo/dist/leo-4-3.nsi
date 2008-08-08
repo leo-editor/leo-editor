@@ -53,6 +53,9 @@ SetCompressor bzip2
 !define STRING_PYTHON_NOT_FOUND "Python is not installed on this system. $\nPlease install Python first. $\n$\nClick OK to cancel installation and remove installation Files."
 
 !define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only. $\n$\n${PRODUCT_NAME} does not support use with Python so configured. $\n$\nClick OK to cancel installation and remove installation Files."
+
+!define PROGRAM_FILES "r'C:\Program Files'"
+!define PYTHON_C "import os; os.chdir(${PROGRAM_FILES}); import leo; leo.run()"
 ;@nonl
 ;@-node:ekr.20050118092706.3:<< custom defines >>
 ;@nl
@@ -475,9 +478,11 @@ SectionEnd
 ;@<< Section "Desktop Shortcut" >>
 ;@+node:ekr.20050118092706.15:<< Section "Desktop Shortcut" >>
 Section "Desktop Shortcut" SEC03
-  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  ; CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\runLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$DESKTOP\Leo.lnk" 'leoOpen' '"%1"' "$INSTDIR\Icons\LeoApp.ico" 0
+  ;;;CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '-i -c "${PYTHON_C}"' "$INSTDIR\Icons\LeoApp.ico" 0
+
 SectionEnd
-;@nonl
 ;@-node:ekr.20050118092706.15:<< Section "Desktop Shortcut" >>
 ;@nl
 ;@<< Section ".leo File Association" >>
@@ -501,7 +506,9 @@ Label1:
 ;  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico,0
 ; which does not work under Windows XP Professional SP2.
   WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico
-  WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\core\leo.py" "%1"'
+  ; WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\core\runLeo.py" "%1"'
+  WriteRegStr HKCR "LeoFile\shell\open\command" "" 'leoOpen" "%1"'
+  ;;; WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" -i -c "${PYTHON_C}" "%1"'
 
 SectionEnd
 ;@nonl
@@ -720,7 +727,7 @@ Section Uninstall
   Delete "$INSTDIR\core\__init__.p*"
 
   Delete "$INSTDIR\core\leo*.p*"
-  Delete "$INSTDIR\core\runLeo.py"
+  Delete "$INSTDIR\core\runLeo.p*"
   ;@nonl
   ;@-node:ekr.20050118104901.11:<< uninstall core files >>
   ;@nl
@@ -752,6 +759,8 @@ Section Uninstall
   ; Delete "$INSTDIR\MANIFEST"
   ; Delete "$INSTDIR\setup.py"
   Delete "$INSTDIR\uninstall"
+  Delete "$INSTDIR\*.pyc"
+  Delete "$INSTDIR\*.pyo"
   ;@-node:ekr.20050118103447.1:<< uninstall top-level files >>
   ;@nl
   ;@  << delete folders >>
