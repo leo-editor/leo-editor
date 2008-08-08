@@ -127,7 +127,7 @@ call pylint.bat leo\core\leoTkinterMenu.py   --disable-msg=W0221 --rcfile=leo\te
 echo leoTkinterTree.py
 call pylint.bat leo\core\leoTkinterTree.py   --rcfile=leo\test\pylint-leo-rc.txt
 
-goto done
+rem goto done
 
 :good_plugins
 
@@ -256,9 +256,6 @@ call pylint.bat leo\plugins\mod_leo2ascd.py       --rcfile=leo\test\pylint-leo-r
 
 echo mod_read_dir_outline.py
 call pylint.bat leo\plugins\mod_read_dir_outline.py --rcfile=leo\test\pylint-leo-rc.txt
-
-echo mod_shadow.py
-call pylint.bat leo\plugins\mod_shadow.py         --rcfile=leo\test\pylint-leo-rc.txt
 
 echo mod_shadow_core.py
 rem                                               W0311: bad indentation
