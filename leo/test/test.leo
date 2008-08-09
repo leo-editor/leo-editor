@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8,3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -234,9 +234,18 @@
 <v t="ekr.20080801160915.1"><vh>@@shadow TerryBrownTest.py</vh>
 <v t="ekr.20080803120643.1"><vh>spam</vh></v>
 </v>
+<v t="ekr.20080808115835.1"><vh>Copy leo directory</vh>
+<v t="ekr.20080808122543.1"><vh>Path wrappers</vh></v>
+<v t="ekr.20080808122543.2"><vh>copyDir</vh></v>
 </v>
-<v t="ekr.20080807091001.1"><vh>@shadow python-import-test.py</vh></v>
-<v t="ekr.20080807114145.1"><vh>Active state test</vh></v>
+<v t="ekr.20080807091001.1"><vh>@@shadow python-import-test.py</vh>
+<v t="ekr.20080807091201.7"><vh>python-import-test declarations</vh></v>
+<v t="ekr.20080807091201.8"><vh>class Person</vh>
+<v t="ekr.20080807091201.9"><vh>talk</vh></v>
+<v t="ekr.20080807091201.10"><vh>class Meta</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20080807115344.1"><vh>Windows script</vh></v>
 <v t="ekr.20080807114145.2"><vh>@button run-windows-script</vh>
 <v t="ekr.20080807115344.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -245,11 +254,6 @@
 <v t="ekr.20080807115344.4"><vh>RunCode</vh></v>
 </v>
 <v t="ekr.20080809075513.1" a="E"><vh>Distribution experiments</vh>
-<v t="ekr.20080808115835.1"><vh>Copy leo directory</vh>
-<v t="ekr.20080808122543.1"><vh>Path wrappers</vh></v>
-<v t="ekr.20080808122543.2"><vh>copyDir</vh></v>
-</v>
-<v t="ekr.20080809075513.2"><vh>Simulate setup.py bdist_wininst</vh></v>
 <v t="ekr.20080809082944.2"><vh>C:\Python25\Lib\distutils\command\bdist_wininst.py</vh>
 <v t="ekr.20080809082944.3"><vh>bdist_wininst declarations</vh></v>
 <v t="ekr.20080809082944.4" a="E"><vh>class bdist_wininst</vh>
@@ -263,7 +267,8 @@
 </v>
 </v>
 <v t="ekr.20080809082944.13"><vh>Create installer directly from .zip file</vh>
-<v t="ekr.20080809082944.14" a="E"><vh>class createExe</vh>
+<v t="ekr.20080809105645.1"><vh>remove</vh></v>
+<v t="ekr.20080809082944.14"><vh>class createExe</vh>
 <v t="ekr.20080809082944.16"><vh>ctor</vh></v>
 <v t="ekr.20080809082944.15"><vh>create_exe</vh></v>
 <v t="ekr.20080809082944.17"><vh>escape</vh></v>
@@ -2063,19 +2068,33 @@ import leo.core.leoBridge as leoBridge
 import cgi
 import cgitb ; cgitb.enable()
 </t>
-<t tx="ekr.20080807114145.1">if 0:
-    pypath = r'C:\c\py\Python25'
-    py =  pypath + r'\python.exe -itOO '
-    leosrc = r'c:\c\leo\leo4CVS233\src'
-    name = "blank.leo"
-    wname = "untitled"
-    
-    WshShell = WScript.CreateObject("WScript.Shell")
-    WshShell.Run(py + leosrc + r'\Leo.py ../' + name)
-    WScript.Sleep(4900) 
-    WshShell.AppActivate(wname);  WScript.Sleep(2100)
-    WshShell.SendKeys("%Fe");     WScript.Sleep(1300);  #^Q
+<t tx="ekr.20080807091001.1">@language python
+@tabwidth -4
+@others
 </t>
+<t tx="ekr.20080807091201.7">#!/usr/local/bin/python
+# -*- coding: utf-8 -*-
+"""
+module docs
+"""
+
+</t>
+<t tx="ekr.20080807091201.8">class Person(object):
+   '''class docs
+   '''
+   field1 = 10
+   field2 = 20
+
+   @others
+</t>
+<t tx="ekr.20080807091201.9">def talk(self):
+    ''' this is the func doc
+    '''
+    print 'hello world'
+
+</t>
+<t tx="ekr.20080807091201.10">class Meta:
+    age = 10</t>
 <t tx="ekr.20080807114145.2">@
 A script button to run any body text as a Windows Script.
 See: http://en.wikipedia.org/wiki/Windows_Script_Host
@@ -2178,43 +2197,6 @@ def exists(path):
             print('not copied %s to %s' % (src,dst))
 </t>
 <t tx="ekr.20080809075513.1"></t>
-<t tx="ekr.20080809075513.2">'''Create a Windows installer that will install C:\prog\Leo-4-5-b2 to C:\Python25\Lib\site-customize.'''
-
-from distutils.core import setup
-
-import os
-import sys
-
-os.chdir(r'C:\prog\Leo-4-5-b2')
-
-sys.argv = ['ekr-setup-script','bdist_wininst']
-
-packages = [
-    'leo',
-    'leo.core',
-    'leo.plugins',
-    'leo.extensions.Gato','leo.extensions.Pmw','leo.extensions.Pmw.Pmw_1_3',
-    'leo.modes',
-]
-scripts = ['install','uninstall','launchLeo.py',]
-py_modules = []
-
-print ("before")
-
-setup(
-    name='leo',
-    version='4.5-b2',
-    description='Leo',
-    author='Edward K. Ream',
-    author_email='edreamleo@gmail.com',
-    url='http://webpages.charter.net/edreamleo/front.html',
-    # Packages must have __init__.py files.
-    packages=packages,
-    py_modules=py_modules,
-    scripts=scripts,
-)
-
-print ("after")</t>
 <t tx="ekr.20080809082944.2">@language python
 @tabwidth -4
 @others
@@ -2543,9 +2525,8 @@ from distutils import log
     return open(filename, "rb").read()
 </t>
 <t tx="ekr.20080809082944.13">'''Create a Windows .exe installer directly from a .zip file.
-   This code is based on create_exe in distutils/command/bdist_windinst.py.'''
+This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 
-import glob
 import os
 import struct
 import sys
@@ -2553,20 +2534,27 @@ import time
 
 @others
 
-zipFiles = glob.glob(r'c:\leo.repo\trunk\*.zip')
-n = len(zipFiles)
-if n == 0:
-    g.es_print('no zip files in the trunk')
-elif n &gt; 1:
-    g.es_print('more than one zip file in the trunk')
-else:
-    zipFile = zipFiles[0]
-    assert zipFile.endswith('.zip')
-    exeFile = zipFile[:-4]+'.exe'
-    x = createExe(exeFile,zipFile,version='4.5-b2')
-    x.create_exe()
+version = '4-5-b2-a'
+abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
+trunk = abspath(join(g.app.loadDir,'..','..'))
+zipFile = abspath(join(trunk,'Leo-%s.zip' % (version)))
+exeFile = abspath(join(trunk,'Leo-%s.exe' % (version)))
 
+if exists(zipFile): remove(zipFile)
+if exists(exeFile): remove(exeFile)
 
+commands = [
+    'cd %s' % (trunk),
+    'bzr export --root="Lib\site-packages\Leo-%s" "%s"' % (version,zipFile)
+]
+
+for z in commands:
+    print ('command: %s' % z)
+    os.system(z)
+
+x = createExe(exeFile,zipFile,version=version)
+x.create_exe()
+print('done')
 </t>
 <t tx="ekr.20080809082944.14">class createExe:
 
@@ -2603,22 +2591,19 @@ else:
 
     f.write(cfgdata)
 
-    # The 'magic number' 0x1234567B is used to make sure that the
-    # binary layout of 'cfgdata' is what the wininst.exe binary
-    # expects.  If the layout changes, increment that number, make
-    # the corresponding changes to the wininst.exe sources, and
-    # recompile them.
+    # The 'magic number' is used to make sure that the binary
+    # layout of 'cfgdata' is what the wininst.exe binary expects.
+    # If the layout changes, increment that number here and in
+    # the wininst.exe sources, and recompile.
     header = struct.pack("&lt;iii",
-        0x1234567B,       # tag
+        0x1234567B,       # Magic number.
         len(cfgdata),     # length
         bitmaplen,        # number of bytes in bitmap
     )
     f.write(header)
 
     # Now append the zip file(!!)
-    f.write(open(self.zipFile, "rb").read())
-
-</t>
+    f.write(open(self.zipFile, "rb").read())</t>
 <t tx="ekr.20080809082944.16">def __init__ (self,exeFile,zipFile,version):
 
     self.exeFile = exeFile
@@ -2667,7 +2652,7 @@ else:
     lines = self.get_setup(lines,info)
 
     result = '\n'.join(lines)
-    g.trace(result)
+    # g.trace(result)
 
     return result
 </t>
@@ -2717,20 +2702,17 @@ else:
     return lines
 </t>
 <t tx="ekr.20080809082944.21">def get_exe_bytes (self):
+
     from distutils.msvccompiler import get_build_version
     # If a target-version other than the current version has been
     # specified, then using the MSVC version from *this* build is no good.
     # Without actually finding and executing the target version and parsing
     # its sys.version, we just hard-code our knowledge of old versions.
-    # NOTE: Possible alternative is to allow "--target-version" to
-    # specify a Python executable rather than a simple version string.
-    # We can then execute this program to obtain any info we need, such
-    # as the real sys.version string for the build.
     cur_version = self.get_python_version()
 
     if self.target_version and self.target_version != cur_version:
         # If the target version is *later* than us, then we assume they
-        # use what we use
+        # use what we use.
         # string compares seem wrong, but are what sysconfig.py itself uses
         if self.target_version &gt; cur_version:
             bv = get_build_version()
@@ -2749,8 +2731,9 @@ else:
     # we must use a wininst-x.y.exe built with the same C compiler
     # used for python.  XXX What about mingw, borland, and so on?
     filename = os.path.join(directory, "wininst-%s.exe" % bv)
-    return open(filename, "rb").read()
-</t>
+
+    # g.es_print('reading %s' % filename)
+    return open(filename, "rb").read()</t>
 <t tx="ekr.20080809082944.22">def get_python_version(self):
 
     """Return a string containing the major and minor Python version,
@@ -2758,5 +2741,10 @@ else:
     or '2.2'.
     """
     return sys.version[:3]</t>
+<t tx="ekr.20080809105645.1">def remove (fileName):
+
+    g.es_print('removing',fileName)
+    os.remove(fileName)
+</t>
 </tnodes>
 </leo_file>

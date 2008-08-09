@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084904.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20050315084904.2"><vh>@recentfiles </vh></v>
@@ -257,9 +257,6 @@ expanded="ekr.20050118092706.1,ekr.20050118092706.22,"><vh>@thin leo-4-3.nsi</vh
 </v>
 </v>
 </v>
-<v t="ekr.20050118092706.3"><vh>&lt;&lt; custom defines &gt;&gt;</vh></v>
-<v t="ekr.20050118092706.16"><vh>&lt;&lt; Section ".leo File Association" &gt;&gt;</vh></v>
-<v t="ekr.20050118092706.15"><vh>&lt;&lt; Section "Desktop Shortcut" &gt;&gt;</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519082027.32">@color
@@ -2267,58 +2264,6 @@ Leo: Literate Editor with Outlines
 Leo: http://webpages.charter.net/edreamleo/front.html
 --------------------------------------------------------------------
 </t>
-<t tx="ekr.20050118092706.3">@comment ;
-
-; hand-created defines
-; used for Windows Registry links to uninstaller
-
-!define PRODUCT_NAME_LOWER_CASE "leo"
-
-!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
-
-; On Windows NT-derived operating systems, Python.org installer for Python 2.4 
-; can be installed for all users or current user only.
-; define the following symbol to install if Python is installed only for current user. 
-; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
-
-!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system. $\nPlease install Python first. $\n$\nClick OK to cancel installation and remove installation Files."
-
-!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only. $\n$\n${PRODUCT_NAME} does not support use with Python so configured. $\n$\nClick OK to cancel installation and remove installation Files."
-
-; These do not work because of problems of quoting double-quote characters.
-; !define PROGRAM_FILES "r'C:\Program Files'"
-; !define PYTHON_C "import os; os.chdir(${PROGRAM_FILES}); import leo; leo.run()"</t>
-<t tx="ekr.20050118092706.15">Section "Desktop Shortcut" SEC03
-  ; CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\runLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-  CreateShortCut "$DESKTOP\Leo.lnk" 'leoOpen' '"%1"' "$INSTDIR\Icons\LeoApp.ico" 0
-  ;;;CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '-i -c "${PYTHON_C}"' "$INSTDIR\Icons\LeoApp.ico" 0
-
-SectionEnd
-</t>
-<t tx="ekr.20050118092706.16">Section ".leo File Association"
-  SectionIn 1
-  SectionIn 2
-  SectionIn 3
-
-  # back up old value of .leo in case some other program was using it
-  ReadRegStr $1 HKCR ".leo" ""
-  StrCmp $1 "" Label1
-  StrCmp $1 "LeoFile" Label1
-  WriteRegStr HKCR ".leo" "backup_val" $1
-
-Label1:
-  WriteRegStr HKCR ".leo" "" "LeoFile"
-  WriteRegStr HKCR "LeoFile" "" "Leo File"
-  WriteRegStr HKCR "LeoFile\shell" "" "open"
-; In Version 1.0 installer, the .ico reference was
-;  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico,0
-; which does not work under Windows XP Professional SP2.
-  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico
-  ; WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\core\runLeo.py" "%1"'
-  WriteRegStr HKCR "LeoFile\shell\open\command" "" 'leoOpen" "%1"'
-  ;;; WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" -i -c "${PYTHON_C}" "%1"'
-
-SectionEnd</t>
 <t tx="ekr.20050118095021"></t>
 <t tx="ekr.20050118103207">@comment ;</t>
 <t tx="ekr.20050118103207.1">File "..\__init__.py"
@@ -5431,6 +5376,7 @@ Create leo-x.zip:
     - bzr push
     ** cd trunk
     - bzr export &lt;release-name&gt;.zip
+    - bzr export --root="Lib/site-packages/Leo-4-5-b2" Leo-4-5-b2-temp.zip
 Create and test leosetup.exe.
 	- Create leosetup.exe by right-clicking leo.nsi and choosing "compile with NSI (bz2)"
 	- Test created leosetup.exe file.
