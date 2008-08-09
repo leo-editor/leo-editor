@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="107" left="10" height="810" width="1093"/>
+	<global_window_position top="83" left="318" height="810" width="1093"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -49,9 +49,10 @@
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080809175634.2"><vh>@button create-dist-files</vh>
+<v t="ekr.20080809175634.2" a="E"><vh>@button make</vh>
+<v t="ekr.20080809180311.1"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080809175634.3"><vh>remove</vh></v>
-<v t="ekr.20080809175634.4"><vh>class createExe</vh>
+<v t="ekr.20080809175634.4" a="E"><vh>class createExe</vh>
 <v t="ekr.20080809175634.5"><vh>ctor</vh></v>
 <v t="ekr.20080809175634.6"><vh>create_exe</vh></v>
 <v t="ekr.20080809175634.7"><vh>escape</vh></v>
@@ -499,33 +500,36 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080809175634.2">'''Create a Windows .exe installer directly from a .zip file.
 This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 
-import os
-import struct
-import sys
-import time
+# To do: Leo bitmap, post-install script to associate Leo with .leo files.
 
+&lt;&lt; includes &gt;&gt;
 @others
 
 version = '4-5-b2-a'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 trunk = abspath(join(g.app.loadDir,'..','..'))
-zipFile = abspath(join(trunk,'Leo-%s.zip' % (version)))
-exeFile = abspath(join(trunk,'Leo-%s.exe' % (version)))
+zipFile =  abspath(join(trunk,'Leo-%s.zip' % (version)))
+zipFile2 = abspath(join(trunk,'Leo-%s-temp.zip' % (version)))
+exeFile =  abspath(join(trunk,'Leo-%s.exe' % (version)))
+root = abspath(join('Lib','site-packages','Leo-%s' % (version)))
 
-if exists(zipFile): remove(zipFile)
-if exists(exeFile): remove(exeFile)
+for z in (zipFile,zipFile2,exeFile):
+    if exists(z): remove(z)
 
-commands = [
+commands = (
     r'cd %s' % (trunk),
-    r'bzr export --root="Lib\site-packages\Leo-%s" "%s"' % (version,zipFile)
-]
+    r'bzr export "%s"' % (zipFile),
+    r'bzr export --root="%s" "%s"' % (root,zipFile2),
+)
 
 for z in commands:
     print ('command: %s' % z)
     os.system(z)
 
-x = createExe(exeFile,zipFile,version=version)
+x = createExe(exeFile,zipFile2,version=version)
 x.create_exe()
+remove(zipFile2)
+os.system('dir %s' % (trunk))
 print('done')
 </t>
 <t tx="ekr.20080809175634.3">def remove (fileName):
@@ -558,15 +562,11 @@ print('done')
     self.version = version
 
     # Hard-coded options from initialize options.
-    self.bdist_dir = None # temp directory.
-    self.keep_temp = 0
-    self.no_target_compile = 0
-    self.no_target_optimize = 0
+    self.no_target_compile = True
+    self.no_target_optimize = True
     self.target_version = None # Require specific python version.
-    self.dist_dir = None # directory to put final built distributions in
     self.bitmap = None # bitmap to use for the installer instead of python-powered logo
     self.title = 'Install Leo...' # title to display on the installer background instead of default
-    self.skip_build = 0
     self.install_script = None
         # basename of installation script to be run after installation or before deinstallation
     self.pre_install_script = None
@@ -718,5 +718,9 @@ print('done')
     or '2.2'.
     """
     return sys.version[:3]</t>
+<t tx="ekr.20080809180311.1">import os
+import struct
+import sys
+import time</t>
 </tnodes>
 </leo_file>
