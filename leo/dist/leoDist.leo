@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="53" left="98" height="810" width="1093"/>
+	<global_window_position top="107" left="10" height="810" width="1093"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084904.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20050315084904.2"><vh>@recentfiles </vh></v>
@@ -186,8 +186,8 @@
 </v>
 </v>
 <v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
-<v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
-<v t="ekr.20050118095021" a="E"><vh>NSIS 4.x installer</vh>
+<v t="ekr.20080402154207.1"><vh>Release files/info</vh>
+<v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
 <v t="ekr.20050118104149.1"><vh>&lt;&lt; install config files &gt;&gt;</vh></v>
@@ -236,9 +236,9 @@
 <v t="ekr.20050118103447.1"><vh>&lt;&lt; uninstall top-level files &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20050118092706" a="E"
+<v t="ekr.20050118092706"
 marks="ekr.20050118124408,ekr.20050118092706.4,"
-expanded="ekr.20050118092706.6,ekr.20050118092706.9,ekr.20050118092706.22,"><vh>@thin leo-4-3.nsi</vh></v>
+expanded="ekr.20050118092706.1,ekr.20050118092706.22,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
@@ -2285,8 +2285,9 @@ Leo: http://webpages.charter.net/edreamleo/front.html
 
 !define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only. $\n$\n${PRODUCT_NAME} does not support use with Python so configured. $\n$\nClick OK to cancel installation and remove installation Files."
 
-!define PROGRAM_FILES "r'C:\Program Files'"
-!define PYTHON_C "import os; os.chdir(${PROGRAM_FILES}); import leo; leo.run()"</t>
+; These do not work because of problems of quoting double-quote characters.
+; !define PROGRAM_FILES "r'C:\Program Files'"
+; !define PYTHON_C "import os; os.chdir(${PROGRAM_FILES}); import leo; leo.run()"</t>
 <t tx="ekr.20050118092706.15">Section "Desktop Shortcut" SEC03
   ; CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\runLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
   CreateShortCut "$DESKTOP\Leo.lnk" 'leoOpen' '"%1"' "$INSTDIR\Icons\LeoApp.ico" 0

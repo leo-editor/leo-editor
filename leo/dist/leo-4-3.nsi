@@ -54,8 +54,9 @@ SetCompressor bzip2
 
 !define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only. $\n$\n${PRODUCT_NAME} does not support use with Python so configured. $\n$\nClick OK to cancel installation and remove installation Files."
 
-!define PROGRAM_FILES "r'C:\Program Files'"
-!define PYTHON_C "import os; os.chdir(${PROGRAM_FILES}); import leo; leo.run()"
+; These do not work because of problems of quoting double-quote characters.
+; !define PROGRAM_FILES "r'C:\Program Files'"
+; !define PYTHON_C "import os; os.chdir(${PROGRAM_FILES}); import leo; leo.run()"
 ;@nonl
 ;@-node:ekr.20050118092706.3:<< custom defines >>
 ;@nl
@@ -68,7 +69,7 @@ SetCompressor bzip2
 Caption "Leo Installer"
 AutoCloseWindow false 
 SilentInstall normal
-CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
+CRCCheck on ; FIXME shouldnt this be CRCCheck force ? Why give user option of using corrupted installer?
 SetCompress auto ; FIXME this is disabled for solid compression, which comes with BZip2 and LZMA compression
 SetDatablockOptimize on
 ; SetOverwrite ifnewer
@@ -79,6 +80,7 @@ Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "LeoSetup-4-5-b2.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\leo"
+; InstallDir $PythonExecutable\Lib\Site-packages
 Icon "..\Icons\leo_inst.ico"
 ; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
 ; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
@@ -470,7 +472,7 @@ Section "Start Menu Shortcuts" SEC02
   CreateShortCut "$SMPROGRAMS\leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
 ; In Version 1.0 installer, was
 ; CreateShortCut "$SMPROGRAMS\leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\core\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-  CreateShortCut "$SMPROGRAMS\leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$SMPROGRAMS\leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\runLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
 SectionEnd
 ;@nonl
 ;@-node:ekr.20050118092706.14:<< Section "Start Menu Shortcuts"  >>
