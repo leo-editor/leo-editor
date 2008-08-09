@@ -4,6 +4,10 @@
 *.py[co]
 
 ./*.zip
+./*.exe
+./.ropeProject
+./.leo_shadow
+
 leo/*.zip
 
 leo/core/LeoPy.leo
