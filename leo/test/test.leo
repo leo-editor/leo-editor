@@ -2,7 +2,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
+<globals body_outline_ratio="0.41466083151">
 	<global_window_position top="37" left="398" height="914" width="777"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -2544,8 +2544,8 @@ if exists(zipFile): remove(zipFile)
 if exists(exeFile): remove(exeFile)
 
 commands = [
-    'cd %s' % (trunk),
-    'bzr export --root="Lib\site-packages\Leo-%s" "%s"' % (version,zipFile)
+    r'cd %s' % (trunk),
+    r'bzr export --root="Lib\site-packages\Leo-%s" "%s"' % (version,zipFile)
 ]
 
 for z in commands:
