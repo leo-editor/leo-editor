@@ -120,7 +120,6 @@ def base64Import( c ):
         ltime = os.path.getmtime( f.name )
         f.close()
         b64_data = base64.encodestring( data )
-        # c.beginUpdate()
         body = '''
             @%s
             size: %s
@@ -136,7 +135,7 @@ def base64Import( c ):
         p = npos.insertAsNthChild(0) # , payload)
         p.setBodyString(b64_data)
         p.setHeadString(pload)
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 #@-node:mork.20041020082653:base64Import
 #@+node:ekr.20050307135219.1:init
 def init ():

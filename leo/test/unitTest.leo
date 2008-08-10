@@ -16413,8 +16413,7 @@ To make unit tests, do the following:
 - Execute the command, then do the do-after script (Alt-7).
 
 @color</t>
-<t tx="ekr.20070217065840.1">c.beginUpdate()
-try:
+<t tx="ekr.20070217065840.1">try:
     p1 = p.insertAfter()
     c.setHeadString(p1,'@test ')
     body = 'import leoTest\nleoTest.runEditCommandTest(c,p)'
@@ -16424,7 +16423,7 @@ try:
         c.setHeadString(p2,s)
     p1.expand()
 finally:
-    c.endUpdate()
+    c.redraw()
     c.editPosition(p1)</t>
 <t tx="ekr.20070217065840.2">@
 p should be in tree whose root is a @test node containing 'work', 'before' and
@@ -16438,13 +16437,11 @@ range of the work in the headline of the before node.
 sel = getSel(c)
 top,work,before,after = findNodes(p)
 if top and work.bodyString():
-    c.beginUpdate()
-    try:
-        c.setBodyString(before,work.bodyString())
-        c.setBodyString(after,'')
-        putSelectionInHeadline(c,before,'before',sel)
-    finally:
-        c.endUpdate()
+
+    c.setBodyString(before,work.bodyString())
+    c.setBodyString(after,'')
+    putSelectionInHeadline(c,before,'before',sel)
+    c.redraw()
 else:
     g.es_print('do-before: not in a proper @test tree')</t>
 <t tx="ekr.20070217065840.3">def getSel(c):
@@ -16497,12 +16494,9 @@ and represent the selection range of the work node in the headline of the after 
 sel = getSel(c)
 top,work,before,after = findNodes(p)
 if top:
-    c.beginUpdate()
-    try:
-        c.setBodyString(after,work.bodyString())
-        putSelectionInHeadline(c,after,'after',sel)
-    finally:
-        c.endUpdate()
+    c.setBodyString(after,work.bodyString())
+    putSelectionInHeadline(c,after,'after',sel)
+    c.redraw()
 else:
     g.es_print('do-after: not in @test tree')</t>
 <t tx="ekr.20070217065840.8">def findNodes(p):
@@ -16910,20 +16904,18 @@ else:
     c2root = c2.rootPosition()
     c2root.initHeadString('All unit tests')
     c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
-    c2.beginUpdate()
-    try:
-        c2root.expand()
-        for p in p.self_and_subtree_iter():
-            h = p.headString()
-            if h.startswith('@test') or h.startswith('@suite'):
-                # g.pr(h)
-                # c.copyOutline is too slow.
-                p2 = p.copyTreeAfter()
-                p2.unlink()
-                p2.moveToLastChildOf(c2root)
 
-    finally:
-        c2.endUpdate(False)
+    c2root.expand()
+    for p in p.self_and_subtree_iter():
+        h = p.headString()
+        if h.startswith('@test') or h.startswith('@suite'):
+            # g.pr(h)
+            # c.copyOutline is too slow.
+            p2 = p.copyTreeAfter()
+            p2.unlink()
+            p2.moveToLastChildOf(c2root)
+
+
 </t>
 <t tx="ekr.20070626153940.3">def createFileFromOutline(c2,path):
 
@@ -18062,21 +18054,17 @@ FAILED (failures=4)
 </t>
 <t tx="ekr.20071113143523.3"># TARGETWORD
 if g.unitTesting:
-    c.beginUpdate()
-    try:
-        w = c.frame.body.bodyCtrl
 
-        for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
-            w.setInsertPoint(5)
-            c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
-            s = w.getAllText()
-            word = s[2:12]
-            assert word == result, 'Expected %s, got: %s' % (result,repr(word))
-            i = w.getInsertPoint()
-            assert i == 5, 'Expected 5, got: %d' % i
-    finally:
-        c.endUpdate(False)
-</t>
+    w = c.frame.body.bodyCtrl
+
+    for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
+        w.setInsertPoint(5)
+        c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
+        s = w.getAllText()
+        word = s[2:12]
+        assert word == result, 'Expected %s, got: %s' % (result,repr(word))
+        i = w.getInsertPoint()
+        assert i == 5, 'Expected 5, got: %d' % i</t>
 <t tx="ekr.20071113143523.4">def findWord (self,event):
 
     '''Put the cursor at the next word (on a line) that starts with a character.'''
@@ -18106,19 +18094,16 @@ if g.unitTesting:
 </t>
 <t tx="ekr.20071113143523.5"># targetWord
 if g.unitTesting:
-    c.beginUpdate()
-    try:
-        k = c.k ; w = c.frame.body.bodyCtrl
-        w.setInsertPoint(0)
-        k.arg = 'targetWord'
-        k.setState('find-word-on-line',1)
-        f = c.editCommands.findWord(event=None)
-        i,j = w.getSelectionRange()
-        s = w.getAllText()
-        word = s[i:j]
-        assert word == 'targetWord', 'got: %s' % word
-    finally:
-        c.endUpdate(False)
+
+    k = c.k ; w = c.frame.body.bodyCtrl
+    w.setInsertPoint(0)
+    k.arg = 'targetWord'
+    k.setState('find-word-on-line',1)
+    f = c.editCommands.findWord(event=None)
+    i,j = w.getSelectionRange()
+    s = w.getAllText()
+    word = s[i:j]
+    assert word == 'targetWord', 'got: %s' % word
 </t>
 <t tx="ekr.20071113143523.6">def selfInsertCommand(self,event,action='insert'):
 
@@ -18347,7 +18332,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 
     w.setSelectionRange(ins,ins,insert=ins)</t>
 <t tx="ekr.20071113143523.15">if g.unitTesting:
-    c.beginUpdate()
+
     try:
         ec = c.editCommands ; w = c.frame.body.bodyCtrl
         s = w.getAllText()
@@ -18367,12 +18352,11 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
         p.v.t.bodyString = s
         # g.trace(repr(s))
         c.recolor()
-        c.endUpdate(False)
 
 # end:
 </t>
 <t tx="ekr.20071113143523.16">if g.unitTesting:
-    c.beginUpdate()
+
     try:
         ec = c.editCommands ; w = c.frame.body.bodyCtrl
         s = w.getAllText()
@@ -18387,7 +18371,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
         p.v.t.bodyString = s
         # g.trace(repr(s))
         c.recolor()
-        c.endUpdate(False)
+
 ###abcdef</t>
 <t tx="ekr.20071113143523.17">def setMoveCol (self,w,spot):
 
@@ -18403,17 +18387,14 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
     self.moveCol = col
     self.moveSpotNode = p.v.t</t>
 <t tx="ekr.20071113143523.18">if g.unitTesting:
-    c.beginUpdate()
-    try:
-        w = c.frame.body.bodyCtrl
-        ec = c.editCommands
 
-        for spot,result in (('1.0',0),(5,5)):
-            ec.setMoveCol(w,spot)
-            assert ec.moveSpot == result
-            assert ec.moveCol == result
-    finally:
-        c.endUpdate(False)
+    w = c.frame.body.bodyCtrl
+    ec = c.editCommands
+
+    for spot,result in (('1.0',0),(5,5)):
+        ec.setMoveCol(w,spot)
+        assert ec.moveSpot == result
+        assert ec.moveCol == result
 </t>
 <t tx="ekr.20071113143523.19">creating: dynamicUnitTest.leo
 ...F.F.........
@@ -18470,18 +18451,16 @@ FAILED (failures=2)
 # line 2
 # line 3
 if g.unitTesting:
-    c.beginUpdate()
-    try:
-        w = c.frame.body.bodyCtrl
-        index = 11 # in the second line.
-        w.setInsertPoint(index)
-        before,ins,after = c.frame.body.getInsertLines()
-        assert before == '# line 1\n','Got %s' % repr(before)
-        assert ins    == '# line 2\n','Got %s' % repr(ins)
-        assert after.startswith('# line 3\n')
-        assert after.endswith('# end.')
-    finally:
-        c.endUpdate(False)
+
+    w = c.frame.body.bodyCtrl
+    index = 11 # in the second line.
+    w.setInsertPoint(index)
+    before,ins,after = c.frame.body.getInsertLines()
+    assert before == '# line 1\n','Got %s' % repr(before)
+    assert ins    == '# line 2\n','Got %s' % repr(ins)
+    assert after.startswith('# line 3\n')
+    assert after.endswith('# end.')
+
 # end.</t>
 <t tx="ekr.20071113143523.22">def pasteText (self,event=None,middleButton=False):
 
@@ -18541,7 +18520,7 @@ OnPasteFromMenu = pasteText
 </t>
 <t tx="ekr.20071113143523.23"># target
 if g.unitTesting:
-    c.beginUpdate()
+
     try:
         w = c.frame.body.bodyCtrl
         # g.pr((w))
@@ -18559,7 +18538,7 @@ if g.unitTesting:
         p.v.t.bodyString = s2
         # g.trace(repr(s))
         c.recolor()
-        c.endUpdate(False)
+
 # end5targettargettargettargettargettargettargettarget</t>
 <t tx="ekr.20071113143523.24">creating: dynamicUnitTest.leo
 

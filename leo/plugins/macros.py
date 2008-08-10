@@ -167,8 +167,6 @@ class paramClass:
 
         bodys = node.bodyString()
         # tn = leoNodes.tnode(bodys,sr)
-        # c.beginUpdate()
-        # try:
         v = current.insertAsNthChild(0) #,tn)
         v.setBodyString(bodys)
         v.setHeadString(sr)
@@ -179,8 +177,7 @@ class paramClass:
             v.insertAsNthChild(0) #,t)
             v.setBodyString(bod)
             v.setHeadString(head)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
     #@nonl
     #@-node:ekr.20040916084945.1:macros.parameterize
     #@+node:ekr.20040916084945.2:findParameters

@@ -1946,10 +1946,10 @@ if wx:
             self.svarDict = {} # Keys are ivar names, values are svar objects.
 
             for key in self.intKeys:
-                self.svarDict[key] = self.svar() # Was Tk.IntVar.
+                self.svarDict[key] = self.svar()
 
             for key in self.newStringKeys:
-                self.svarDict[key] = self.svar() # Was Tk.StringVar.
+                self.svarDict[key] = self.svar()
         #@-node:bob.20070813163332.98:initGui
         #@+node:bob.20070813163332.99:init (wxFindTab)
         # Called from leoFind.findTab.ctor.
@@ -4074,8 +4074,7 @@ if wx:
             # print
             # print
             result =  leoKeys.keyHandlerClass.masterCommand(self, *args, **kw)
-            # self.c.beginUpdate()
-            self.c.redraw() # was self.c.endUpdate()
+            self.c.redraw()
             return result
 
         #@-node:bob.20070901124034:masterCommand
@@ -7761,13 +7760,10 @@ if wx:
 
             if item > -1:
                 p = self.positionList[item]
-                # c.beginUpdate()
-                # try:
                 c.frame.tree.expandAllAncestors(p)
                 c.selectPosition(p,updateBeadList=True)
                     # A case could be made for updateBeadList=False
-                # finally:
-                c.redraw() # was c.endUpdate()
+                c.redraw()
         #@-node:bob.20080105082325.7:go
         #@+node:bob.20080105082325.8:hide
         def hide(self, event=None):
@@ -8558,9 +8554,7 @@ if wx:
             if not event:
                 return
 
-            # c.beginUpdate()
             redrawFlag = False
-            # try:
             #@    << set drop_p, childFlag >>
             #@+node:bob.20070906100746.1:<< set drop_p, childFlag >>
 
@@ -8600,9 +8594,9 @@ if wx:
             self.setCursor('default')
             self.dragging = False
             self.drag_p = None
-            # finally:
+
             # Must set self.drag_p = None first.
-            if redrawFlag: c.redraw() # was c.endUpdate(redrawFlag)
+            if redrawFlag: c.redraw()
             c.recolor_now() # Dragging can affect coloring.
         #@-node:bob.20070906100746:endDrag
         #@-node:bob.20070907050034:onEndDrag
@@ -8889,8 +8883,6 @@ if wx:
 
             p1 = c.currentPosition()
             #g.trace(source, type, p)
-            # c.beginUpdate()
-            # try:
             if not g.doHook("boxclick1", c=c, p=p, v=p, event=event):
 
                 self.endEditLabel()
@@ -8911,8 +8903,7 @@ if wx:
                     c.bodyWantsFocus()
 
             g.doHook("boxclick2", c=c, p=p, v=p, event=event)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
 
 
         #@-node:bob.20070814083933:onMouseClickBoxLeftDown
@@ -8929,8 +8920,6 @@ if wx:
             if not self.HasCapture():
                 self.CaptureMouse()
 
-            # c.beginUpdate()
-            # try:
             if not g.doHook("iconclick1", c=c, p=p, v=p, event=event):
 
                 self.endEditLabel()
@@ -8946,8 +8935,7 @@ if wx:
                     c.bodyWantsFocus()
 
             g.doHook("iconclick2", c=c, p=p, v=p, event=event)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
 
         #@-node:bob.20070814090359.1:onMouseIconBoxLeftDown
         #@+node:bob.20070906193733.1:onMouseIconBoxLeftUp
@@ -8988,8 +8976,6 @@ if wx:
             c = self.c
             c.setLog()
 
-            # c.beginUpdate()
-            # try:
             if c.isCurrentPosition(p):
 
                 self.editLabel(p)
@@ -9008,8 +8994,7 @@ if wx:
                     else:
                         c.bodyWantsFocus()
                 g.doHook("headclick2",c=c,p=p,v=p,event=event)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
 
         #@-node:bob.20070818153826:onMouseTextBoxLeftDown
         #@-node:bob.20070816213833:Text Box
@@ -9042,13 +9027,10 @@ if wx:
 
             if p:
 
-                # c.beginUpdate()
-                # try:
                 self.endEditLabel()
                 self.setEditPosition(p)
                 #g.trace('ep', self.editPosition())
-                # finally:
-                c.redraw() # was c.endUpdate()
+                c.redraw()
 
                 # Help for undo.
                 self.revertHeadline = s = p.headString()
@@ -9095,8 +9077,7 @@ if wx:
                 self.onHeadChanged(ep,undoType='Typing',s=s)
 
             self.setEditPosition(None)
-            # c.beginUpdate()
-            c.redraw() # was c.endUpdate()
+            c.redraw()
 
             if c.config.getBool('stayInTreeAfterEditHeadline'):
                 c.treeWantsFocusNow()
@@ -9394,12 +9375,9 @@ if wx:
             """React to changes in the size of the outlines display area."""
 
             c = self.c
-            # c.beginUpdate()
-            # try:
+
             self.vscrollUpdate()
             self._canvas.resize(self.GetClientSize().height)
-            # finally:
-            # c.endUpdate(False)
             event.Skip()
         #@-node:bob.20070813173446.9:onSize
         #@+node:bob.20070813173446.10:vscrollUpdate
@@ -9658,8 +9636,6 @@ if wx:
 
             c = self.c
 
-            #c.beginUpdate()     #lock out events
-            #try:
             if height is not None:
                 self._size.height = height
             if width is not None and self._size.width < width:
@@ -9673,9 +9649,6 @@ if wx:
             self._parent.hscrollUpdate()
             self.draw()
             self.refresh()
-
-            #finally:
-            #    c.endUpdate(False)
             return True
 
         redraw = resize

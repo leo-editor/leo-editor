@@ -526,10 +526,8 @@ class textTree(leoFrame.leoTree):
     pass
   #@-node:ekr.20061207074949.71:setBindings
   #@+node:ekr.20061207074949.72:beginUpdate
-  # undoc: leoCommand beginUpdate c.frame.tree.beginUpdate() ; nullTree
-  def beginUpdate(self): pass # N/A
-
-  # undoc: (only when given file) leoGlobals openWithFileName -> c.endUpdate ; leoFrame.py nullTree 
+  def beginUpdate(self):
+    pass # N/A
   #@-node:ekr.20061207074949.72:beginUpdate
   #@+node:ekr.20061207074949.73:endUpdate
   def endUpdate(self, flag, scroll=True): 

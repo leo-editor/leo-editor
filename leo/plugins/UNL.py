@@ -130,13 +130,10 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
     """try and move to unl in the commander c"""
 
     def moveToP(c, p):
-        # c.beginUpdate()
-        # try:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
         c.redraw()
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
     if depth == 0:
         nds = c.rootPosition().self_and_siblings_iter()

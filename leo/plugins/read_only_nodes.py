@@ -334,9 +334,8 @@ def insert_read_only_node (c,v,name):
             title="Open",
             filetypes=[("All files", "*")]
             )
-        # c.beginUpdate()
         c.setHeadString(v,"@read-only %s" % name)
-        c.redraw() # was c.endUpdate()
+        c.redraw()
     parse = urlparse.urlparse(name)
     try:
         if parse[0] == 'ftp':
@@ -399,7 +398,6 @@ def on_open (tag,keywords):
 
     v = c.rootVnode()
     g.es("scanning for @read-only nodes...",color="blue")
-    # c.beginUpdate()
     while v:
         h = v.headString()
         if g.match_word(h,0,"@read-only"):
@@ -411,7 +409,7 @@ def on_open (tag,keywords):
                 if not c.isChanged():
                     c.setChanged(changed)
         v = v.threadNext()
-    c.redraw() # was c.endUpdate()
+    c.redraw()
 #@nonl
 #@-node:edream.110203113231.896:on_open
 #@+node:edream.110203113231.897:on_bodykey1

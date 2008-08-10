@@ -48,12 +48,11 @@ def on_open(tag,keywords):
     c = keywords.get("c")
     if not c: return
 
-    # c.beginUpdate()
     for p in c.allNodes_iter():
         h = p.headString()
         if g.match_word(h,0,"@text"):
             readtextnode(c, p)
-    c.redraw() # was c.endUpdate()
+    c.redraw()
 #@-node:ajones.20070122160142.3:on_open
 #@+node:ajones.20070122161942:on_save
 def on_save(tag,keywords):

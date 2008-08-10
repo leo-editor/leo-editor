@@ -1001,12 +1001,11 @@ class controllerClass:
         if not node: return
         cc = self ; c = cc.c ; w = cc.LeoBodyText
 
-        # c.beginUpdate()
         if not node.isVisible(c):
             for p in node.parents_iter():
                 p.expand()
         c.selectPosition(node)
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
         if index is None: return
         w.mark_set("insert",index)

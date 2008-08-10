@@ -1321,9 +1321,8 @@ class pluginController(baseClasses.basePluginController):
                     # Bug fix 1/8/06: bind c here.
                     # This is safe because we only get called from the proper commander.
                     def jump_command(c,event, ref=ref):
-                        # c.beginUpdate()
                         c.selectPosition(ref)
-                        c.redraw() # was c.endUpdate()
+                        c.redraw()
                     menu_item=( 'Jump to: '+ self.crop(name,30), jump_command)
                     contextCommands.append( menu_item )
                 else:

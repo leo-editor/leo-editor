@@ -236,10 +236,9 @@ class Navigator:
         """Callback that selects position p."""
 
         if c.positionExists(p):
-            # c.beginUpdate()
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            c.redraw() # was c.endUpdate()
+            c.redraw()
     #@nonl
     #@-node:ekr.20040730094103:select
     #@+node:ekr.20040108091136:updateRecent
