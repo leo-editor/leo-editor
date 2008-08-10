@@ -835,11 +835,7 @@ class leoImportCommands:
         # Create the top-level headline.
         if atAuto:
             p = parent.copy()
-            # c.beginUpdate()
-            # try:
             p.setBodyString('')
-            # finally:
-            # c.endUpdate(False)
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
@@ -882,8 +878,6 @@ class leoImportCommands:
         c = self.c
         p = c.currentPosition() ; after = p.nodeAfterTree()
 
-        # c.beginUpdate()
-        # try:
         found = False
         while p and p != after:
             if p.isAtAutoNode():
@@ -898,8 +892,7 @@ class leoImportCommands:
                 p.moveToThreadNext()
         message = g.choose(found,'finished','no @auto nodes in the selected tree')
         g.es(message,color='blue')
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
     #@+node:ekr.20070807084545:readOneAtAutoNode
     def readOneAtAutoNode(self,p):
@@ -926,8 +919,6 @@ class leoImportCommands:
         at = c.atFileCommands ; current = c.currentPosition()
         self.tab_width = self.getTabWidth()
         if not paths: return
-        # c.beginUpdate()
-        # try:
         u.beforeChangeGroup(current,command)
         for fileName in paths:
             g.setGlobalOpenDir(fileName)
@@ -958,8 +949,7 @@ class leoImportCommands:
         c.selectPosition(current)
         c.setChanged(True)
         u.afterChangeGroup(p,command)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
     #@+node:ekr.20051208100903.1:forceGnxOnPosition
     def forceGnxOnPosition (self,p):
 
@@ -977,8 +967,6 @@ class leoImportCommands:
         if len(files) < 1: return
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.treeType = treeType
-        # c.beginUpdate()
-        # try: # range of update...
         if len(files) == 2:
             #@        << Create a parent for two files having a common prefix >>
             #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
@@ -1011,8 +999,7 @@ class leoImportCommands:
                 c.setChanged(True)
         c.validateOutline()
         current.expand()
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
         c.selectVnode(current)
     #@-node:ekr.20031218072017.3212:importFilesCommand
@@ -1034,8 +1021,6 @@ class leoImportCommands:
         c = self.c
         if len(strings) == 0: return None
         if not self.stringsAreValidMoreFile(strings): return None
-        # c.beginUpdate()
-        # try: # range of update...
         firstLevel, junk = self.moreHeadlineLevel(strings[0])
         lastLevel = -1 ; theRoot = last_p = None
         index = 0
@@ -1114,8 +1099,7 @@ class leoImportCommands:
         if theRoot:
             theRoot.setDirty()
             c.setChanged(True)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
         return theRoot
     #@-node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
@@ -1235,8 +1219,6 @@ class leoImportCommands:
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.webType = webType
 
-        # c.beginUpdate()
-        # try:
         for fileName in files:
             g.setGlobalOpenDir(fileName)
             v = self.createOutlineFromWeb(fileName,current)
@@ -1244,8 +1226,7 @@ class leoImportCommands:
             v.setDirty()
             c.setChanged(True)
         c.selectVnode(current)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
     #@-node:ekr.20031218072017.3226:importWebCommand
     #@+node:ekr.20031218072017.3227:findFunctionDef
     def findFunctionDef (self,s,i):
@@ -1572,8 +1553,6 @@ class leoImportCommands:
 
         c = self.c ; h = p.headString() ; old_root = p.copy()
         oldChanged = c.changed
-        # c.beginUpdate()
-        # try:
         d = g.app.unitTestDict
         expectedErrors = d.get('expectedErrors')
         expectedErrorMessage = d.get('expectedErrorMessage')
@@ -1609,9 +1588,8 @@ class leoImportCommands:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
             c.setChanged(oldChanged)
-        # finally:
         c.selectPosition(old_root)
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
         if g.app.unitTesting:
             assert ok

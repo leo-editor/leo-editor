@@ -729,8 +729,7 @@ def runTestsExternally (c,all):
             #@nonl
             #@-node:ekr.20070705065154:<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
             #@nl
-            # c2.beginUpdate()
-            # try:
+
             self.copyRoot.expand()
             for p,limit,lookForMark,lookForNodes in (
                 (p1,limit1,lookForMark1,lookForNodes1),
@@ -748,8 +747,6 @@ def runTestsExternally (c,all):
                         p.moveToNodeAfterTree()
                     else:
                         p.moveToThreadNext()
-            # finally:
-            # c2.endUpdate(False)
         #@nonl
         #@+node:ekr.20070705080413:addMarkTree
         def addMarkTree (self,p):
@@ -1629,8 +1626,6 @@ def runEditCommandTest (c,p):
     sel1,sel2 = sels
     #g.trace(repr(sels))
 
-    # c.beginUpdate()
-    # try:
     c.selectPosition(work)
     c.setBodyString(work,before.bodyString())
     #g.trace(repr(sel1[0]),repr(sel1[1]))
@@ -1651,8 +1646,7 @@ def runEditCommandTest (c,p):
     assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
     c.selectPosition(atTest)
     atTest.contract()
-    # finally:
-    # c.endUpdate(False) # Don't redraw.
+    # Don't redraw.
 #@nonl
 #@-node:ekr.20061008140603:runEditCommandTest
 #@+node:ekr.20051104075904.95:throwAssertionError

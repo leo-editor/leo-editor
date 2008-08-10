@@ -563,12 +563,8 @@ class atFile:
             g.es("reading:",p.headString())
 
         # Delete all children.
-        # c.beginUpdate()
-        # try:
         while p.hasChildren():
             p.firstChild().doDelete()
-        # finally:
-        # c.endUpdate(False)
 
         ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 
@@ -4189,11 +4185,6 @@ class atFile:
             self.outputFile = None
 
         if self.outputFileName:
-            # try: # Just delete the temp file.
-                # os.remove(self.outputFileName)
-            # except Exception:
-                # g.es("exception deleting:",self.outputFileName,color="red")
-                # g.es_exception()
             self.remove(self.outputFileName)
 
         if root:

@@ -1600,8 +1600,6 @@ class leoGtkTree (leoFrame.leoTree):
 
         c.setLog()
 
-        # c.beginUpdate()
-        # try:
         if p and not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
             c.endEditing()
             if p == p1 or self.initialClickExpandsOrContractsNode:
@@ -1615,8 +1613,7 @@ class leoGtkTree (leoFrame.leoTree):
             else:
                 c.bodyWantsFocus()
         g.doHook("boxclick2",c=c,p=p,v=p,event=event)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
     #@-node:ekr.20080112145409.387:onClickBoxClick
     #@-node:ekr.20080112145409.386:Click Box...
     #@+node:ekr.20080112145409.388:Dragging (gtkTree)
@@ -1633,8 +1630,6 @@ class leoGtkTree (leoFrame.leoTree):
         canvas = self.canvas
         if not event: return
 
-        # c.beginUpdate()
-        # try:
         #@    << set vdrag, childFlag >>
         #@+node:ekr.20080112145409.390:<< set vdrag, childFlag >>
         x,y = event.x,event.y
@@ -1677,9 +1672,8 @@ class leoGtkTree (leoFrame.leoTree):
         self.canvas['cursor'] = "arrow"
         self.dragging = False
         self.drag_p = None
-        # finally:
         # Must set self.drag_p = None first.
-        if redrawFlag: c.redraw() # was c.endUpdate(redrawFlag)
+        if redrawFlag: c.redraw()
         c.recolor_now() # Dragging can affect coloring.
     #@-node:ekr.20080112145409.389:endDrag
     #@+node:ekr.20080112145409.392:startDrag
@@ -2019,12 +2013,8 @@ class leoGtkTree (leoFrame.leoTree):
 
         # g.trace(g.callers())
 
-        # c.beginUpdate()
-        # try:
         tree.endEditLabel()
         tree.dimEditLabel()
-        # finally:
-        # c.endUpdate(False)
     #@-node:ekr.20080112145409.408:tree.OnDeactivate
     #@+node:ekr.20080112145409.409:tree.OnPopup & allies
     def OnPopup (self,p,event):
@@ -2353,11 +2343,8 @@ class leoGtkTree (leoFrame.leoTree):
             if trace:
                 g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
-            # c.beginUpdate()
-            # try:
             self.endEditLabel()
-            # finally:
-            c.redraw() # was c.endUpdate(True)
+            c.redraw()
 
         self.setEditPosition(p) # That is, self._editPosition = p
 
@@ -3109,15 +3096,10 @@ class OutlineCanvas(gtk.DrawingArea):
 
         c = self.c
 
-        #c.beginUpdate()     #lock out events
-        #try:
-
         self._createNewBuffer()
         #self._parent.hscrollUpdate()
         self.draw()
         self.refresh()
-        #finally:
-        #    c.endUpdate(False)
 
         return True
 
@@ -3252,15 +3234,11 @@ class OutlineCanvas(gtk.DrawingArea):
     def onSize(self, *args):
         """React to changes in the size of the outlines display area."""
 
-
         c = self.c
-        # c.beginUpdate()
-        # try:
+
         self.resize()
         self._parent.vscrollUpdate()
         self._parent.hscrollUpdate()
-        # finally:
-        # c.endUpdate(False)
 
 
     #@-node:bob.20080117104810.15:onSize

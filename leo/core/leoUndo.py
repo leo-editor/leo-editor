@@ -1419,12 +1419,9 @@ class undoer:
         u.redoing = True 
         u.groupCount = 0
 
-        # c.beginUpdate()
-        # try:
         c.endEditing()
         if u.redoHelper: u.redoHelper()
         else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
-        # finally:
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
@@ -1432,7 +1429,7 @@ class undoer:
         else:
             c.setCurrentPosition(c.currentPosition())
         c.setChanged(True)
-        c.redraw() # was c.endUpdate()
+        c.redraw()
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         c.redraw_now()
         c.recolor_now()
@@ -1518,8 +1515,6 @@ class undoer:
         if not hasattr(bunch,'items'):
             g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
         else:
-            # c.beginUpdate()
-            # try:
             for z in bunch.items:
                 self.setIvarsFromBunch(z)
                 if z.redoHelper:
@@ -1527,8 +1522,6 @@ class undoer:
                     z.redoHelper() ; count += 1
                 else:
                     g.trace('oops: no redo helper for %s' % u.undoType)
-            # finally:
-            # c.endUpdate(False)
 
         u.groupCount -= 1
 
@@ -1747,12 +1740,9 @@ class undoer:
         u.undoing = True
         u.groupCount = 0
 
-        # c.beginUpdate()
-        # try:
         c.endEditing()
         if u.undoHelper: u.undoHelper()
         else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
-        # finally:
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
@@ -1760,7 +1750,7 @@ class undoer:
         else:
             c.setCurrentPosition(c.currentPosition())
         c.setChanged(True)
-        c.redraw() # was c.endUpdate()
+        c.redraw()
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         c.redraw_now()
         c.recolor_now()
@@ -1852,8 +1842,6 @@ class undoer:
             # Important bug fix: 9/8/06: reverse the items first.
             reversedItems = bunch.items[:]
             reversedItems.reverse()
-            # c.beginUpdate()
-            # try:
             for z in reversedItems:
                 self.setIvarsFromBunch(z)
                 # g.trace(z.undoHelper)
@@ -1861,8 +1849,6 @@ class undoer:
                     z.undoHelper() ; count += 1
                 else:
                     g.trace('oops: no undo helper for %s' % u.undoType)
-            # finally:
-            # c.endUpdate(False)
 
         u.groupCount -= 1
 

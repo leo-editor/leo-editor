@@ -864,13 +864,10 @@ class tkinterListBoxDialog (leoTkinterDialog):
         if items:
             n = items[0]
             p = self.positionList[n]
-            # c.beginUpdate()
-            # try:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p,updateBeadList=True)
                 # A case could be made for updateBeadList=False
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
     #@-node:ekr.20031218072017.3896:go
     #@-others
 #@-node:ekr.20031218072017.3889:class tkinterListboxDialog

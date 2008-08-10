@@ -559,8 +559,6 @@ def importFilesCommand (self,files=None,treeType=None):
     if len(files) < 1: return
     self.tab_width = self.getTabWidth() # New in 4.3.
     self.treeType = treeType
-    # c.beginUpdate()
-    # try: # range of update...
     if len(files) == 2:
         << Create a parent for two files having a common prefix >>
     for fileName in files:
@@ -574,8 +572,7 @@ def importFilesCommand (self,files=None,treeType=None):
             c.setChanged(True)
     c.validateOutline()
     current.expand()
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
 
     c.selectVnode(current)
 #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
@@ -5185,8 +5182,6 @@ def new (self,event=None,gui=None):
     # Needed for plugins.
     g.doHook("new",old_c=self,c=c,new_c=c)
     # Use the config params to set the size and location of the window.
-    # c.beginUpdate()
-    # try:
     frame.setInitialWindowGeometry()
     frame.deiconify()
     frame.lift()
@@ -5205,8 +5200,7 @@ def new (self,event=None,gui=None):
         c.updateRecentFiles(fileName=None)
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
-    # finally:
-    # c.endUpdate(False)
+
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
     if c.config.getBool('use_chapters') and c.chapterController:
@@ -5513,8 +5507,6 @@ def save (self,event=None):
         c.frame.title = ""
         c.mFileName = ""
 
-    # c.beginUpdate()
-    # try:
     if c.mFileName:
         # Calls c.setChanged(False) if no error.
         c.fileCommands.save(c.mFileName)
@@ -5535,8 +5527,8 @@ def save (self,event=None):
             c.fileCommands.save(c.mFileName)
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
+
+    c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -5550,8 +5542,6 @@ def saveAs (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    # c.beginUpdate()
-    # try:
     # Make sure we never pass None to the ctor.
     if not c.mFileName:
         c.frame.title = ""
@@ -5574,8 +5564,7 @@ def saveAs (self,event=None):
         c.fileCommands.saveAs(c.mFileName)
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -5612,8 +5601,6 @@ def saveTo (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    # c.beginUpdate()
-    # try:
     # Make sure we never pass None to the ctor.
     if not c.mFileName:
         c.frame.title = ""
@@ -5631,8 +5618,7 @@ def saveTo (self,event=None):
         c.fileCommands.saveTo(fileName)
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert

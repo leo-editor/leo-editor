@@ -3068,7 +3068,6 @@ class colorizer:
         In Tk, this will cause all images to disappear.'''
 
         # for photo,image,line_index,i in self.image_references:
-            # try:
                 # s = self.allBodyText
                 # w = c.frame.body.bodyCtrl
                 # index = g.convertRowColToPythonIndex(s,line_index,i)

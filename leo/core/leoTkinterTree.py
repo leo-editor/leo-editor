@@ -14,21 +14,6 @@ The code is based on code found in Python's IDLE program.'''
 #@+node:ekr.20040803072955.1:  << About drawing >>
 #@+at
 # 
-# New in Leo 4.4a3: The 'Newer World Order':
-# 
-# - c.redraw_now() redraws the screen immediately by calling 
-# c.frame.tree.redraw_now().
-# - c.beginUpdate() and c.endUpdate() work as always.  They are the preferred 
-# way of doing redraws.
-# - No drawing is done at idle time.
-# 
-# c.redraw_now and c.endUpdate redraw all icons automatically. v.computeIcon
-# method tells what the icon should be. The v.iconVal tells what the present 
-# icon
-# is. The body key handler simply compares these two values and sets 
-# redraw_flag
-# if they don't match.
-# 
 # New in Leo 4.5: The 'Newest World Order':
 # 
 # - Redrawing the screen and setting focus only happen in c.outerUpdate.
@@ -1657,8 +1642,6 @@ class leoTkinterTree (leoFrame.leoTree):
 
         c.setLog()
 
-        # c.beginUpdate()
-        # try:
         if p and not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
             c.endEditing()
             if p == p1 or self.initialClickExpandsOrContractsNode:
@@ -1672,8 +1655,7 @@ class leoTkinterTree (leoFrame.leoTree):
             else:
                 c.bodyWantsFocus()
         g.doHook("boxclick2",c=c,p=p,v=p,event=event)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
         c.outerUpdate()
     #@-node:ekr.20040803072955.79:onClickBoxClick
@@ -1714,8 +1696,6 @@ class leoTkinterTree (leoFrame.leoTree):
         canvas = self.canvas
         if not event: return
 
-        # c.beginUpdate()
-        # try:
         #@    << set vdrag, childFlag >>
         #@+node:ekr.20040803072955.104:<< set vdrag, childFlag >>
         x,y = event.x,event.y
@@ -1758,9 +1738,8 @@ class leoTkinterTree (leoFrame.leoTree):
         self.canvas['cursor'] = "arrow"
         self.dragging = False
         self.drag_p = None
-        # finally:
+
         # Must set self.drag_p = None first.
-        # c.endUpdate(False) # redrawFlag)
         if redrawFlag:
             c.redraw_now()
         c.recolor_now() # Dragging can affect coloring.
@@ -2106,12 +2085,8 @@ class leoTkinterTree (leoFrame.leoTree):
 
         # g.trace(g.callers())
 
-        # c.beginUpdate()
-        # try:
         tree.endEditLabel()
         tree.dimEditLabel()
-        # finally:
-        # c.endUpdate(False)
         c.outerUpdate()
     #@-node:ekr.20040803072955.108:tree.OnDeactivate
     #@+node:ekr.20040803072955.110:tree.OnPopup & allies
@@ -2449,12 +2424,9 @@ class leoTkinterTree (leoFrame.leoTree):
             if trace:
                 g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
-            # c.beginUpdate()
-            # try:
             self.endEditLabel()
-            # finally:
             # This redraw *is* required so the c.edit_widget(p) will exist.
-            c.redraw() # was c.endUpdate(True)
+            c.redraw()
             c.outerUpdate()
 
         self.setEditPosition(p) # That is, self._editPosition = p

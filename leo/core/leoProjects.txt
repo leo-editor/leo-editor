@@ -1108,11 +1108,8 @@ def readAtFileNodes (self):
 
     c = self.c ; p = c.currentPosition()
 
-    # c.beginUpdate()
-    # try:
     c.atFileCommands.readAll(p,partialFlag=True)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
 
     # Force an update of the body pane.
     c.setBodyString(p,p.bodyString())
@@ -1186,12 +1183,8 @@ def readOneAtAutoNode (self,fileName,p):
         g.es("reading:",p.headString())
 
     # Delete all children.
-    # c.beginUpdate()
-    # try:
     while p.hasChildren():
         p.firstChild().doDelete()
-    # finally:
-    # c.endUpdate(False)
 
     ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 
@@ -1229,11 +1222,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     # Create the top-level headline.
     if atAuto:
         p = parent.copy()
-        # c.beginUpdate()
-        # try:
         p.setBodyString('')
-        # finally:
-        # c.endUpdate(False)
     else:
         undoData = u.beforeInsertNode(parent)
         p = parent.insertAsLastChild()
@@ -1474,8 +1463,6 @@ def openWithFileName(fileName,old_c,
     c.isZipped = isZipped
     frame.log.enable(enableLog)
     g.app.writeWaitingLog() # New in 4.3: write queued log first.
-    # c.beginUpdate()
-    # try:
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
         c.setLog()
         app.lockLog()
@@ -1496,8 +1483,7 @@ def openWithFileName(fileName,old_c,
         c.updateRecentFiles(relativeFileName or fileName)
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     assert frame.c == c and c.frame == frame
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
@@ -1901,11 +1887,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     # Create the top-level headline.
     if atAuto:
         p = parent.copy()
-        # c.beginUpdate()
-        # try:
         p.setBodyString('')
-        # finally:
-        # c.endUpdate(False)
     else:
         undoData = u.beforeInsertNode(parent)
         p = parent.insertAsLastChild()
@@ -2263,8 +2245,6 @@ def showSuccess(self,pos,newpos):
     sparseFind = c.config.getBool('collapse_nodes_during_finds')
     c.frame.bringToFront() # Needed on the Mac
     redraw = not p.isVisible(c)
-    # c.beginUpdate()
-    # try:
     if sparseFind and not c.currentPosition().isAncestorOf(p):
         # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
         for p2 in c.currentPosition().self_and_parents_iter():
@@ -2277,8 +2257,7 @@ def showSuccess(self,pos,newpos):
     p = self.p
     if not p: g.trace('can not happen: self.p is None')
     c.selectPosition(p)
-    # finally:
-    if redraw: c.redraw() # was c.endUpdate(redraw)
+    if redraw: c.redraw()
 
     if self.in_headline:
         c.editPosition(p)
@@ -2639,8 +2618,6 @@ def contractAllHeadlines (self,event=None):
 
     c = self
 
-    # c.beginUpdate()
-    # try: # update...
     for p in c.all_positions_with_unique_vnodes_iter():
         p.contract()
     # Select the topmost ancestor of the presently selected node.
@@ -2648,8 +2625,7 @@ def contractAllHeadlines (self,event=None):
     while p and p.hasParent():
         p.moveToParent()
     c.selectPosition(p)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     c.treeFocusHelper()
 
     c.expansionLevel = 1 # Reset expansion level.
@@ -5860,8 +5836,6 @@ if g.app.unitTesting:
     g.app.unitTestDict['colorized'] = True
 #@-node:ekr.20051026083733.6:<< recolor the body >>
 #@+node:ekr.20051026083733.7:<< redraw the screen if necessary >>
-# c.beginUpdate()
-# try:
 
 redraw_flag = False
 # Update dirty bits.
@@ -5875,8 +5849,7 @@ val = p.computeIcon()
 if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
     p.v.iconVal = val
     redraw_flag = True
-#finally:
-if redraw_flag: c.redraw() # was c.endUpdate(redraw_flag)
+if redraw_flag: c.redraw()
 #@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
 #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
 #@+node:ekr.20031218072017.1833:reformatParagraph
@@ -6714,8 +6687,6 @@ def new (self,event=None,gui=None):
     # Needed for plugins.
     g.doHook("new",old_c=self,c=c,new_c=c)
     # Use the config params to set the size and location of the window.
-    # c.beginUpdate()
-    # try:
     frame.setInitialWindowGeometry()
     frame.deiconify()
     frame.lift()
@@ -6734,8 +6705,7 @@ def new (self,event=None,gui=None):
         c.updateRecentFiles(fileName=None)
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
-    # finally:
-    # c.endUpdate(False)
+
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
     if c.config.getBool('use_chapters') and c.chapterController:
@@ -6862,12 +6832,9 @@ def editLabel (self,p,selectAll=False):
         if trace:
             g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
-        # c.beginUpdate()
-        # try:
         self.endEditLabel()
-        # finally:
         # This redraw *is* required so the c.edit_widget(p) will exist.
-        c.redraw() # was c.endUpdate(True)
+        c.redraw()
         c.outerUpdate()
 
     self.setEditPosition(p) # That is, self._editPosition = p
@@ -7153,8 +7120,6 @@ def new (self,event=None,gui=None):
     # Needed for plugins.
     g.doHook("new",old_c=self,c=c,new_c=c)
     # Use the config params to set the size and location of the window.
-    # c.beginUpdate()
-    # try:
     frame.setInitialWindowGeometry()
     frame.deiconify()
     frame.lift()
@@ -7173,8 +7138,7 @@ def new (self,event=None,gui=None):
         c.updateRecentFiles(fileName=None)
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
-    # finally:
-    # c.endUpdate(False)
+
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
     if c.config.getBool('use_chapters') and c.chapterController:
@@ -7328,8 +7292,6 @@ def freeTreeWidgets (self,event=None):
 def createAllCompareClones(self,inserted,deleted,changed):
 
     c = self.c # Always use the visible commander
-    # c.beginUpdate()
-    # try:
     # Create parent node at the start of the outline.
     u = c.undoer ; undoType = 'Compare .leo Files'
     u.beforeChangeGroup(c.currentPosition(),undoType)
@@ -7343,8 +7305,6 @@ def createAllCompareClones(self,inserted,deleted,changed):
         self.createCompareClones(d,kind,parent)
     c.selectPosition(parent)
     u.afterChangeGroup(parent,undoType,reportFlag=True) 
-    # finally:
-    # c.endUpdate(False)
 
     c.redraw_now()
 #@nonl
@@ -7364,7 +7324,7 @@ def createCompareClones (self,d,kind,parent):
 #@-node:ekr.20070921074410:createCompareClones
 #@-node:ekr.20070921072910:createAllCompareClones & helper
 #@+node:ekr.20031218072017.1553:getLeoFile
-# The caller should enclose this in begin/endUpdate.
+# The caller should follow this with a call to c.redraw().
 
 def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 
@@ -7729,12 +7689,9 @@ def redo (self,event=None):
     u.redoing = True 
     u.groupCount = 0
 
-    # c.beginUpdate()
-    # try:
     c.endEditing()
     if u.redoHelper: u.redoHelper()
     else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
-    # finally:
     c.frame.body.updateEditors() # New in Leo 4.4.8.
     if 0: # Don't do this: it interferes with selection ranges.
         # This strange code forces a recomputation of the root position.
@@ -7742,7 +7699,7 @@ def redo (self,event=None):
     else:
         c.setCurrentPosition(c.currentPosition())
     c.setChanged(True)
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
     c.redraw_now()
     c.recolor_now()
@@ -7828,8 +7785,6 @@ def redoGroup (self):
     if not hasattr(bunch,'items'):
         g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
     else:
-        # c.beginUpdate()
-        # try:
         for z in bunch.items:
             self.setIvarsFromBunch(z)
             if z.redoHelper:
@@ -7837,8 +7792,6 @@ def redoGroup (self):
                 z.redoHelper() ; count += 1
             else:
                 g.trace('oops: no redo helper for %s' % u.undoType)
-        # finally:
-        # c.endUpdate(False)
 
     u.groupCount -= 1
 
@@ -8057,12 +8010,9 @@ def undo (self,event=None):
     u.undoing = True
     u.groupCount = 0
 
-    # c.beginUpdate()
-    # try:
     c.endEditing()
     if u.undoHelper: u.undoHelper()
     else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
-    # finally:
     c.frame.body.updateEditors() # New in Leo 4.4.8.
     if 0: # Don't do this: it interferes with selection ranges.
         # This strange code forces a recomputation of the root position.
@@ -8070,7 +8020,7 @@ def undo (self,event=None):
     else:
         c.setCurrentPosition(c.currentPosition())
     c.setChanged(True)
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
     c.redraw_now()
     c.recolor_now()
@@ -8162,8 +8112,6 @@ def undoGroup (self):
         # Important bug fix: 9/8/06: reverse the items first.
         reversedItems = bunch.items[:]
         reversedItems.reverse()
-        # c.beginUpdate()
-        # try:
         for z in reversedItems:
             self.setIvarsFromBunch(z)
             # g.trace(z.undoHelper)
@@ -8171,8 +8119,6 @@ def undoGroup (self):
                 z.undoHelper() ; count += 1
             else:
                 g.trace('oops: no undo helper for %s' % u.undoType)
-        # finally:
-        # c.endUpdate(False)
 
     u.groupCount -= 1
 
@@ -8438,11 +8384,7 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
     if not newNode: return
 
-    # c.beginUpdate()
-    # try:
     c.endEditing() # Make sure we capture the headline for Undo.
-    # finally:
-    # c.endUpdate(False)
 
     if cc: # Special cases for @chapter and @chapters nodes.
         chapter = '@chapter ' ; chapters = '@chapters ' 
@@ -8455,16 +8397,13 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
             if name:
                 return cc.removeChapterByName(name)
 
-    # c.beginUpdate()
-    # try:
     undoData = u.beforeDeleteNode(p)
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     p.doDelete(newNode)
     c.selectPosition(newNode)
     c.setChanged(True)
     u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
 
     c.validateOutline()
 #@-node:ekr.20031218072017.1193:c.deleteOutline
@@ -8532,8 +8471,6 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 
     if s is None: s = w.getAllText()
     << truncate s if it has multiple lines >>
-    # c.beginUpdate()
-    # try:
     # Make the change official, but undo to the *old* revert point.
     oldRevert = self.revertHeadline
     changed = s != oldRevert
@@ -8551,9 +8488,8 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         dirtyVnodeList = p.setDirty()
         u.afterChangeNodeContents(p,undoType,undoData,
             dirtyVnodeList=dirtyVnodeList)
-    # finally:
     if changed:
-        c.redraw(scroll=False) # was c.endUpdate(flag=changed,scroll=False)
+        c.redraw(scroll=False)
         if self.stayInTree:
             c.treeWantsFocus()
         else:
@@ -8678,15 +8614,12 @@ def setBodyString (self,p,s,encoding="utf-8"):
 
     # Keep the body text in the tnode up-to-date.
     if v.t._bodyString != s:
-        # c.beginUpdate()
-        # try:
         v.setBodyString(s)
         v.t.setSelection(0,0)
         p.setDirty()
         if not c.isChanged():
             c.setChanged(True)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 #@-node:ekr.20040305223522:c.setBodyString
 #@+node:ekr.20060127052111.1:cutStack
 def cutStack (self):
@@ -8976,8 +8909,6 @@ def dragAfter(self,p,after):
     if not c.checkDrag(p,after): return
     if not c.checkMoveWithParentWithWarning(p,after.parent(),True): return
 
-    # c.beginUpdate()
-    # try: # In update...
     c.endEditing()
     undoData = u.beforeMoveNode(current)
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
@@ -8991,9 +8922,8 @@ def dragAfter(self,p,after):
         dirtyVnodeList.extend(dirtyVnodeList2)
     c.setChanged(True)
     u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
-    # finally:
     c.selectPosition(p) # Also sets root position.
-    c.redraw() # was c.endUpdate()
+    c.redraw()
 
     c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
 #@-node:ekr.20031218072017.2353:c.dragAfter
@@ -9007,8 +8937,6 @@ def endDrag (self,event):
     canvas = self.canvas
     if not event: return
 
-    # c.beginUpdate()
-    # try:
     << set vdrag, childFlag >>
     if self.allow_clone_drags:
         if not self.look_for_control_drag_on_mouse_down:
@@ -9024,9 +8952,8 @@ def endDrag (self,event):
     self.canvas['cursor'] = "arrow"
     self.dragging = False
     self.drag_p = None
-    # finally:
+
     # Must set self.drag_p = None first.
-    # c.endUpdate(False) # redrawFlag)
     if redrawFlag:
         c.redraw_now()
     c.recolor_now() # Dragging can affect coloring.
@@ -13467,8 +13394,6 @@ def new (self,event=None,gui=None):
     # Needed for plugins.
     g.doHook("new",old_c=self,c=c,new_c=c)
     # Use the config params to set the size and location of the window.
-    # c.beginUpdate()
-    # try:
     frame.setInitialWindowGeometry()
     frame.deiconify()
     frame.lift()
@@ -13487,8 +13412,7 @@ def new (self,event=None,gui=None):
         c.updateRecentFiles(fileName=None)
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
-    # finally:
-    # c.endUpdate(False)
+
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
     if c.config.getBool('use_chapters') and c.chapterController:
@@ -13795,8 +13719,6 @@ def save (self,event=None):
         c.frame.title = ""
         c.mFileName = ""
 
-    # c.beginUpdate()
-    # try:
     if c.mFileName:
         # Calls c.setChanged(False) if no error.
         c.fileCommands.save(c.mFileName)
@@ -13817,8 +13739,8 @@ def save (self,event=None):
             c.fileCommands.save(c.mFileName)
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
+
+    c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -13832,8 +13754,6 @@ def saveAs (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    # c.beginUpdate()
-    # try:
     # Make sure we never pass None to the ctor.
     if not c.mFileName:
         c.frame.title = ""
@@ -13856,8 +13776,7 @@ def saveAs (self,event=None):
         c.fileCommands.saveAs(c.mFileName)
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -13894,8 +13813,6 @@ def saveTo (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    # c.beginUpdate()
-    # try:
     # Make sure we never pass None to the ctor.
     if not c.mFileName:
         c.frame.title = ""
@@ -13913,8 +13830,7 @@ def saveTo (self,event=None):
         c.fileCommands.saveTo(fileName)
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert
@@ -14130,15 +14046,12 @@ def readFileIntoNode (self,event=None):
             g.chdir(fileName)
             s = theFile.read()
             s = '@nocolor\n' + s
-            # c.beginUpdate()
-            # try:
             w = c.frame.body.bodyCtrl
             p = c.insertHeadline(op_name=undoType)
             p.setHeadString('@read-file-into-node ' + fileName)
             p.setBodyString(s)
             w.setAllText(s)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
         except:
             g.es("can not open:",fileName)
 #@-node:ekr.20070915134101:readFileIntoNode
@@ -14149,13 +14062,10 @@ def readAtAutoNodes (self,event=None):
 
     c = self ; u = c.undoer ; p = c.currentPosition()
 
-    # c.beginUpdate()
-    # try:
     undoData = u.beforeChangeTree(p)
     c.importCommands.readAtAutoNodes()
     u.afterChangeTree(p,'Read @auto Nodes',undoData)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
 #@-node:ekr.20070806105721.1:readAtAutoNodes (commands)
 #@+node:ekr.20031218072017.1839:readAtFileNodes (commands)
 def readAtFileNodes (self,event=None):
@@ -14632,8 +14542,6 @@ def save (self,event=None):
         c.frame.title = ""
         c.mFileName = ""
 
-    # c.beginUpdate()
-    # try:
     if c.mFileName:
         # Calls c.setChanged(False) if no error.
         c.fileCommands.save(c.mFileName)
@@ -14654,8 +14562,8 @@ def save (self,event=None):
             c.fileCommands.save(c.mFileName)
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
+
+    c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -14669,8 +14577,6 @@ def saveAs (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    # c.beginUpdate()
-    # try:
     # Make sure we never pass None to the ctor.
     if not c.mFileName:
         c.frame.title = ""
@@ -14693,8 +14599,7 @@ def saveAs (self,event=None):
         c.fileCommands.saveAs(c.mFileName)
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20031218072017.2836:saveTo
@@ -14708,8 +14613,6 @@ def saveTo (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    # c.beginUpdate()
-    # try:
     # Make sure we never pass None to the ctor.
     if not c.mFileName:
         c.frame.title = ""
@@ -14727,8 +14630,7 @@ def saveTo (self,event=None):
         c.fileCommands.saveTo(fileName)
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2839:readOutlineOnly
@@ -14771,15 +14673,12 @@ def readFileIntoNode (self,event=None):
             g.chdir(fileName)
             s = theFile.read()
             s = '@nocolor\n' + s
-            # c.beginUpdate()
-            # try:
             w = c.frame.body.bodyCtrl
             p = c.insertHeadline(op_name=undoType)
             p.setHeadString('@read-file-into-node ' + fileName)
             p.setBodyString(s)
             w.setAllText(s)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
         except:
             g.es("can not open:",fileName)
 #@-node:ekr.20070915134101:readFileIntoNode
@@ -18945,12 +18844,9 @@ if not found:
 #@-node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
 #@-node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
 #@+node:ekr.20031218072017.2875:<< select p and make it visible >>
-# c.beginUpdate()
-# try:
 c.frame.tree.expandAllAncestors(p)
 c.selectVnode(p)
-# finally:
-c.redraw() # was c.endUpdate()
+c.redraw()
 #@-node:ekr.20031218072017.2875:<< select p and make it visible >>
 #@+node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
 s = w.getAllText()
@@ -23568,6 +23464,16 @@ def resolveArchivedPosition(self,archivedPosition,root_v):
 #@-node:ekr.20080805132422.2:Reading
 #@-node:ekr.20080804063523.3:allow v.uA's in @thin and @shadow nodes
 #@-node:ekr.20080702123133.2:4.5 b2
+#@+node:ekr.20080810085333.3:4.5 b3
+#@+node:ekr.20080810085333.4:Added new installer code
+A new script in leoDist.leo creates a .exe installer from the .zip file produced by bzr.
+#@nonl
+#@-node:ekr.20080810085333.4:Added new installer code
+#@+node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
+^[ ]*#[ ]*try:.*\n
+#@nonl
+#@-node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
+#@-node:ekr.20080810085333.3:4.5 b3
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt

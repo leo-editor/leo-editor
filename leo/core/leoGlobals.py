@@ -1633,8 +1633,6 @@ def trace (*args,**keys):
     for arg in args:
         if type(arg) == type(u""):
             pass
-            # try:    arg = str(arg) 
-            # except Exception: arg = repr(arg)
         elif type(arg) != type(""):
             arg = repr(arg)
         if len(s) > 0:
@@ -2122,8 +2120,6 @@ def openWithFileName(fileName,old_c,
     c.isZipped = isZipped
     frame.log.enable(enableLog)
     g.app.writeWaitingLog() # New in 4.3: write queued log first.
-    # c.beginUpdate()
-    # try:
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
         c.setLog()
         app.lockLog()
@@ -2144,8 +2140,7 @@ def openWithFileName(fileName,old_c,
         c.updateRecentFiles(relativeFileName or fileName)
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
     assert frame.c == c and c.frame == frame
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().

@@ -728,8 +728,6 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            # c.beginUpdate()
-            # try:
             w = self.w
             c.selectPosition(p)
             self.beginCommand('append-to-buffer: %s' % p.headString())
@@ -737,8 +735,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.setInsertPoint('end')
             w.seeInsertPoint()
             self.endCommand()
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
             c.recolor_now()
     #@nonl
     #@-node:ekr.20050920084036.35:appendToBuffer
@@ -759,15 +756,12 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            # c.beginUpdate()
-            # try:
             c.selectPosition(p)
             self.beginCommand('copy-to-buffer: %s' % p.headString())
             w.insert('end',s)
             w.setInsertPoint('end')
             self.endCommand()
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
             c.recolor_now()
     #@-node:ekr.20050920084036.36:copyToBuffer
     #@+node:ekr.20050920084036.37:insertToBuffer
@@ -787,16 +781,13 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            # c.beginUpdate()
-            # try:
             c.selectPosition(p)
             self.beginCommand('insert-to-buffer: %s' % p.headString())
             i = w.getInsertPoint()
             w.insert(i,s)
             w.seeInsertPoint()
             self.endCommand()
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
     #@-node:ekr.20050920084036.37:insertToBuffer
     #@+node:ekr.20050920084036.38:killBuffer
     def killBuffer (self,event):
@@ -861,16 +852,13 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            # c.beginUpdate()
-            # try:
             c.selectPosition(p)
             self.beginCommand('prepend-to-buffer: %s' % p.headString())
             w.insert(0,s)
             w.setInsertPoint(0)
             w.seeInsertPoint()
             self.endCommand()
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
             c.recolor_now()
     #@-node:ekr.20050920084036.39:prependToBuffer
     #@+node:ekr.20050920084036.43:renameBuffer
@@ -892,9 +880,8 @@ class bufferCommandsClass (baseEditCommandsClass):
         c = self.c ; p = self.findBuffer(self.fromName)
         if p:
             c.endEditing()
-            # c.beginUpdate()
             c.setHeadString(p,name)
-            c.redraw() # was c.endUpdate()
+            c.redraw()
     #@-node:ekr.20050920084036.43:renameBuffer
     #@+node:ekr.20050920084036.40:switchToBuffer
     def switchToBuffer (self,event):
@@ -908,11 +895,8 @@ class bufferCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = self.findBuffer(name)
         if p:
-            # c.beginUpdate()
-            # try:
             c.selectPosition(p)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
     #@-node:ekr.20050920084036.40:switchToBuffer
     #@-node:ekr.20050920084036.34:Entry points
     #@+node:ekr.20050927102133.1:Utils
@@ -2805,15 +2789,11 @@ class editCommandsClass (baseEditCommandsClass):
         w = c.frame.body.bodyCtrl
         if not w: return
 
-        # c.beginUpdate()
-        # try:
         for p in current.self_and_subtree_iter():
             c.selectPosition(p)
             w.setSelectionRange(0,0,insert=0)
             c.editCommands.cleanLines(event)
         c.selectPosition(current)
-        # finally:
-        # c.endUpdate(False)
     #@-node:ekr.20070325094935:cleanAllLines
     #@+node:ekr.20060415112257:cleanLines
     def cleanLines (self,event):
@@ -4201,11 +4181,8 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
                 p = p.threadNext()
-                # c.beginUpdate()
-                # try:
                 c.selectPosition(p)
-                # finally:
-                c.redraw() # was c.endUpdate()
+                c.redraw()
 
                 s = w.getAllText()
                 w.insert(0,lines)
@@ -4251,11 +4228,8 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
                 p = p.threadBack()
-                # c.beginUpdate()
-                # try:
                 c.selectPosition(p)
-                # finally:
-                c.redraw() # was c.endUpdate()
+                c.redraw()
 
                 s = w.getAllText()
                 if not s.endswith('\n'): w.insert('end','\n')
@@ -4877,8 +4851,6 @@ class editFileCommandsClass (baseEditCommandsClass):
     def createAllCompareClones(self,inserted,deleted,changed):
 
         c = self.c # Always use the visible commander
-        # c.beginUpdate()
-        # try:
         # Create parent node at the start of the outline.
         u = c.undoer ; undoType = 'Compare .leo Files'
         u.beforeChangeGroup(c.currentPosition(),undoType)
@@ -4892,8 +4864,6 @@ class editFileCommandsClass (baseEditCommandsClass):
             self.createCompareClones(d,kind,parent)
         c.selectPosition(parent)
         u.afterChangeGroup(parent,undoType,reportFlag=True) 
-        # finally:
-        # c.endUpdate(False)
 
         c.redraw_now()
     #@nonl
@@ -8482,8 +8452,6 @@ class spellTabHandler (leoFind.leoFind):
                 alts = aspell.processWord(word)
                 if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.headString() or 'None')
                 if alts:
-                    # c.beginUpdate()
-                    # try:
                     redraw = not p.isVisible(c)
                     # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
                     if sparseFind and not c.currentPosition().isAncestorOf(p):
@@ -8496,8 +8464,7 @@ class spellTabHandler (leoFind.leoFind):
                             redraw = True
                     # c.frame.tree.expandAllAncestors(p)
                     c.selectPosition(p)
-                    # finally:
-                    if redraw: c.redraw() # was c.endUpdate(redraw)
+                    if redraw: c.redraw()
                     w.setSelectionRange(i,j,insert=j)
                     break
         except Exception:
