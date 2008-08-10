@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="83" left="318" height="810" width="1093"/>
+	<global_window_position top="83" left="10" height="810" width="1093"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -500,7 +500,9 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080809175634.2">'''Create a Windows .exe installer directly from a .zip file.
 This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 
-# To do: Leo bitmap, post-install script to associate Leo with .leo files.
+# To do: require Python 2.5 when running this script.
+# To do: post-install script to associate Leo with .leo files.
+# To do: Leo bitmap.
 
 &lt;&lt; includes &gt;&gt;
 @others
