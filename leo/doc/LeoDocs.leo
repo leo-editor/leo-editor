@@ -5647,8 +5647,8 @@ You now have to tell windows what to do to open the file properly:
 -   Press the new button to open the ``New Action`` window.
 -   In the ``Action`` field type ``Open``, then type **one** of the following lines::
 
-    &lt;python install dir&gt;\pythonw.exe   &lt;path-to-unpacked-folder&gt;\launchLeo.py %1
-    &lt;python install dir&gt;\python.exe -i &lt;path-to-unpacked-folder&gt;\launchLeo.py %1
+    &lt;python install dir&gt;\pythonw.exe   &lt;path-to-unpacked-folder&gt;\launchLeo.py "%1"
+    &lt;python install dir&gt;\python.exe -i &lt;path-to-unpacked-folder&gt;\launchLeo.py "%1"
     
 **Important**: &lt;path-to-unpacked-folder&gt; refers to the full path to the directory with a name like Leo-x-y,
 where x and y are version numbers.
