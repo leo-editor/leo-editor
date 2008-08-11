@@ -5610,13 +5610,13 @@ please ask for help on Leo's help forum:
     fails, Leo will use the version of Pmw in the extensions folder.</t>
 <t tx="edream.110203163054.50">Download the latest version of Leo (a .zip file) from `Leo's download page`_.
    
-Unzip the downloaded .zip file into a folder in your home directory.
-The folder will be called something like leo-4-4-3-final.
+Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
+The unpacked folder will be called something like leo-4-5.
 
 You now have two choices:
     
 1. You can run Leo from your home directory.
-   Just add  ~/leo-4-4-3-final to your path.
+   Just add  ~/leo-4-5 to your path.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows::
     
@@ -5625,12 +5625,14 @@ You now have two choices:
     sudo ./install
     
 The install script will instruct you to add /usr/local/bin to your path.
+You can, instead, add the following link::
+
+    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
 
 Now you are ready to `run Leo`_.
 </t>
 <t tx="edream.110203163054.60">Leo will open .leo files automatically provided that you associate leo.py with .leo files.
 Here is how to open Leo when double-clicking a .leo file on Windows 2K or XP:
-
 
 -   In Windows 2K or XP, go to ``Start-&gt;Settings-&gt;Control panel``, open the ``Folder Options`` tab.
 -   Select the ``file types`` tab. Press the ``New`` button.
@@ -5645,9 +5647,13 @@ You now have to tell windows what to do to open the file properly:
 -   Press the new button to open the ``New Action`` window.
 -   In the ``Action`` field type ``Open``, then type **one** of the following lines::
 
-    [python install dir]\pythonw.exe   [leo install dir]\leo.py %1
-    [python install dir]\python.exe -i [leo install dir]\leo.py %1
+    &lt;python install dir&gt;\pythonw.exe   &lt;path-to-unpacked-folder&gt;\launchLeo.py %1
+    &lt;python install dir&gt;\python.exe -i &lt;path-to-unpacked-folder&gt;\launchLeo.py %1
     
+**Important**: &lt;path-to-unpacked-folder&gt; refers to the full path to the directory with a name like Leo-x-y,
+where x and y are version numbers.
+This unpacked folder must contain a folder called 'leo'.
+
 **Important**: The -i option is not valid when using pythonw.exe.
 Any call to pythonw -i will cause pythonw.exe to exit immediately.
 
@@ -11441,14 +11447,19 @@ The ``@others`` directive that occurs highest in the ``@file`` tree refers to al
   In practice this is never a problem.
 
 - The ``@others`` directive is not valid in ``@root`` or ``@unit`` trees.</t>
-<t tx="ekr.20050828065955.3">The ``@ignore`` directive is valid *only* in the root node of ``@file`` trees.
-The ``@ignore`` directive has several uses:
+<t tx="ekr.20050828065955.3">Generally speaking, ``@ignore`` directive prevents nodes from being processed.
 
-- In the root node of an ``@file`` tree, ``@ignore`` prevents Leo from writing the derived file.
+1. In the root node of any ``@auto``, ``@file``, ``@noref``, ``@nosent``, ``@root``, ``@thin`` or ``@shadow`` tree, 
+   ``@ignore`` prevents Leo from writing the derived file. 
 
-- In ``@root`` trees, ``@ignore`` excludes the ``@ignore`` tree from the derived file.
+2. ``@auto`` trees are an exception.  Everything, including ``@ignore`` directives, are written.
+   However, you can disable the writing of an ``@auto`` tree by putting an ``@ignore`` directive in an
+   ancestor of the ``@auto`` tree.
+   
+3. At present, ``@ignore`` can be used to prevent the inclusion of a node that descends from ``@others``.
+   This may be dubious behavior, but that's how Leo works.
 
-- Outside of ``@file`` and ``@root`` trees, ``@ignore`` can be used by scripts.</t>
+4. ``@ignore`` can be used by scripts and plugins as they like, but should preserve the behavior in item 1 above.</t>
 <t tx="ekr.20050828103319">When writing `derived files`_, Leo stores information about the outline
 structure in special comments called **sentinel lines**. Sentinel lines are
 comment lines with '@' following the comment delimiter. For example, here are
@@ -26738,25 +26749,27 @@ Using g.getTestVars eliminates pychecker warnings about undefined c and p variab
 To install Leo using the executable installer:
     
     1. Download the latest version of Leo's installer from `Leo's download page`_.
-       The installer will be called something like LeoSetup-4-4-3.exe.
+       The installer will be called something like LeoSetup-4-5.exe.
        
     2. Run the installer.
-       By default, the install will install Leo in your 'Program Files' directory.
+       By default, the install will install Leo an **unpacked folder** called something like Leo-4-5 in your ``Python\Lib\site-packages`` directory.
 
 To install Leo from the .zip file:
     
     1. Download the latest version of Leo (a .zip file) from `Leo's download page`_.  
 
-    2. Unzip the .zip file and place the unpacked leo folder in 
-       the 'Program Files' folder or any convenient location.
-       
-After you have installed Leo, you should add the location of your leo/src folder to your python path.
-One way to do this is adding something like the following to python/Lib/sitecustomize.py::
-      
-    import sys
-    sys.path.append(r'&lt;path-to-leo&gt;leo')
+    2. Unzip the .zip file.  The **unpacked folder** will have a name like Leo-x-y,
+       where x and y are version numbers.  For example, Leo-4-5 or Leo-4-5-b3.
+    
+    3. Place the unpacked folder in the 'Program Files' folder or any convenient location.
+    
+    4. Place the location of the unpacked folder to your python path.
+       One way to do this is adding something like the following to python/Lib/sitecustomize.py::
+
+        import sys
+        sys.path.append(r'c:\Program Files\Leo-4-5')
             
-Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
+Another way is to append the path to the unpacked folder to the Windows PYTHONPATH environment variable.
 
 Now that you have installed Leo and told Python where to find Leo,
 you are ready to `run Leo`_.
@@ -31346,15 +31359,15 @@ Leo will import the tree from the public file if the private file does not exist
 **Important**: just as for @auto, the following exceptions apply:
 
 1. Leo will never read (import) or write an @shadow tree if
-the @shadow tree is under the influence of an @ignore directive.
+   the @shadow tree is under the influence of an @ignore directive.
 
 2. Saving a .leo file does not save @shadow nodes if:
 
-a) they haven't been changed or,
+  a) they haven't been changed or,
 
-b) they do not contain a **significant** amount of information. An @auto tree
-   contains a significant amount of information if it has  children or if the
-   root node contains more than 10 characters.
+  b) they do not contain a **significant** amount of information. An @auto tree
+     contains a significant amount of information if it has  children or if the
+     root node contains more than 10 characters.
    
 Leo imports shadow trees by parsing the corresponding public file,
 exactly as is done for @auto node.

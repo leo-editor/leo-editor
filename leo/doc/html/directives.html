@@ -719,13 +719,17 @@ More than one <tt class="docutils literal"><span class="pre">&#64;first</span></
 </div>
 <div class="section" id="ignore">
 <h3><a class="toc-backref" href="#id23">&#64;ignore</a></h3>
-<p>The <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive is valid <em>only</em> in the root node of <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.
-The <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive has several uses:</p>
-<ul class="simple">
-<li>In the root node of an <tt class="docutils literal"><span class="pre">&#64;file</span></tt> tree, <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> prevents Leo from writing the derived file.</li>
-<li>In <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees, <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> excludes the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> tree from the derived file.</li>
-<li>Outside of <tt class="docutils literal"><span class="pre">&#64;file</span></tt> and <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees, <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> can be used by scripts.</li>
-</ul>
+<p>Generally speaking, <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive prevents nodes from being processed.</p>
+<ol class="arabic simple">
+<li>In the root node of any <tt class="docutils literal"><span class="pre">&#64;auto</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file</span></tt>, <tt class="docutils literal"><span class="pre">&#64;noref</span></tt>, <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt>, <tt class="docutils literal"><span class="pre">&#64;root</span></tt>, <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> or <tt class="docutils literal"><span class="pre">&#64;shadow</span></tt> tree,
+<tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> prevents Leo from writing the derived file.</li>
+<li><tt class="docutils literal"><span class="pre">&#64;auto</span></tt> trees are an exception.  Everything, including <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directives, are written.
+However, you can disable the writing of an <tt class="docutils literal"><span class="pre">&#64;auto</span></tt> tree by putting an <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive in an
+ancestor of the <tt class="docutils literal"><span class="pre">&#64;auto</span></tt> tree.</li>
+<li>At present, <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> can be used to prevent the inclusion of a node that descends from <tt class="docutils literal"><span class="pre">&#64;others</span></tt>.
+This may be dubious behavior, but that's how Leo works.</li>
+<li><tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> can be used by scripts and plugins as they like, but should preserve the behavior in item 1 above.</li>
+</ol>
 </div>
 <div class="section" id="language">
 <h3><a class="toc-backref" href="#id24">&#64;language</a></h3>
@@ -920,17 +924,19 @@ The primary sources for &#64;shadow trees are the private files, updated by chan
 <p>When reading an &#64;shadow tree,
 Leo will import the tree from the public file if the private file does not exist.
 <strong>Important</strong>: just as for &#64;auto, the following exceptions apply:</p>
-<p>1. Leo will never read (import) or write an &#64;shadow tree if
-the &#64;shadow tree is under the influence of an &#64;ignore directive.</p>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple">
+<li>Leo will never read (import) or write an &#64;shadow tree if
+the &#64;shadow tree is under the influence of an &#64;ignore directive.</li>
 <li>Saving a .leo file does not save &#64;shadow nodes if:</li>
 </ol>
+<blockquote>
 <ol class="loweralpha simple">
 <li>they haven't been changed or,</li>
 <li>they do not contain a <strong>significant</strong> amount of information. An &#64;auto tree
 contains a significant amount of information if it has  children or if the
 root node contains more than 10 characters.</li>
 </ol>
+</blockquote>
 <p>Leo imports shadow trees by parsing the corresponding public file,
 exactly as is done for &#64;auto node.
 See the discussion of &#64;auto above for details.</p>
@@ -1413,17 +1419,19 @@ The primary sources for &#64;shadow trees are the private files, updated by chan
 <p>When reading an &#64;shadow tree,
 Leo will import the tree from the public file if the private file does not exist.
 <strong>Important</strong>: just as for &#64;auto, the following exceptions apply:</p>
-<p>1. Leo will never read (import) or write an &#64;shadow tree if
-the &#64;shadow tree is under the influence of an &#64;ignore directive.</p>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple">
+<li>Leo will never read (import) or write an &#64;shadow tree if
+the &#64;shadow tree is under the influence of an &#64;ignore directive.</li>
 <li>Saving a .leo file does not save &#64;shadow nodes if:</li>
 </ol>
+<blockquote>
 <ol class="loweralpha simple">
 <li>they haven't been changed or,</li>
 <li>they do not contain a <strong>significant</strong> amount of information. An &#64;auto tree
 contains a significant amount of information if it has  children or if the
 root node contains more than 10 characters.</li>
 </ol>
+</blockquote>
 <p>Leo imports shadow trees by parsing the corresponding public file,
 exactly as is done for &#64;auto node.
 See the discussion of &#64;auto above for details.</p>

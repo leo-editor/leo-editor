@@ -23473,6 +23473,152 @@ A new script in leoDist.leo creates a .exe installer from the .zip file produced
 ^[ ]*#[ ]*try:.*\n
 #@nonl
 #@-node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
+#@+node:ekr.20080624120440.4:Improved docs for @ignore
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/a9139162dbc461a4#
+
+> The @ignore docs. are broken:...
+> But @ignore appears to be valid and useful in subtrees of @nosent files.
+
+Interesting.  It took 30 minutes to discover that @ignore 'works' while
+writing @others nodes.  Outside @others it probably has no effect within any
+kind of tree (but there could be special cases...)
+
+The new language is:
+
+Generally speaking, ``@ignore`` directive prevents nodes from being processed.
+
+1. In the root node of any ``@auto``, ``@file``, ``@noref``, ``@nosent``, ``@root`` or ``@thin`` or ``@shadow``tree, 
+``@ignore`` prevents Leo from writing the derived file. 
+
+2. ``@auto`` trees are an exception.  Everything, including ``@ignore`` directives, are written.
+   However, you can disable the writing of an ``@auto`` tree by putting an ``@ignore`` directive in an
+   ancestor of the ``@auto`` tree.
+
+3. At present, ``@ignore`` can be used to prevent the inclusion of a node that descends from ``@others``.
+   This may be dubious behavior, but that's how Leo works.
+
+4. ``@ignore`` can be used by scripts and plugins as they like, but should preserve the behavior in item 1 above.
+
+@color
+#@nonl
+#@+node:ekr.20041005105605.147:writeAll (atFile)
+def writeAll(self,
+    writeAtFileNodesFlag=False,
+    writeDirtyAtFileNodesFlag=False,
+    toString=False,
+):
+
+    """Write @file nodes in all or part of the outline"""
+
+    at = self ; c = at.c
+    writtenFiles = [] # Files that might be written again.
+    mustAutoSave = False ; atOk = True
+
+    if writeAtFileNodesFlag:
+        # Write all nodes in the selected tree.
+        p = c.currentPosition()
+        after = p.nodeAfterTree()
+    else:
+        # Write dirty nodes in the entire outline.
+        p =  c.rootPosition()
+        after = c.nullPosition()
+
+    << Clear all orphan bits >>
+    atOk = True
+    while p and p != after:
+        if p.isAnyAtFileNode() or p.isAtIgnoreNode():
+            << handle v's tree >>
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+
+    << say the command is finished >>
+    return mustAutoSave,atOk
+#@+node:ekr.20041005105605.148:<< Clear all orphan bits >>
+@ We must clear these bits because they may have been set on a previous write.
+Calls to atFile::write may set the orphan bits in @file nodes.
+If so, write_Leo_file will write the entire @file tree.
+@c
+
+for v2 in p.self_and_subtree_iter():
+    v2.clearOrphan()
+#@-node:ekr.20041005105605.148:<< Clear all orphan bits >>
+#@+node:ekr.20041005105605.149:<< handle v's tree >>
+if p.v.isDirty() or writeAtFileNodesFlag or p.v.t in writtenFiles:
+
+    at.fileChangedFlag = False
+    autoSave = False
+
+    # Tricky: @ignore not recognised in @silentfile nodes.
+    if p.isAtAsisFileNode():
+        at.asisWrite(p,toString=toString)
+        writtenFiles.append(p.v.t) ; autoSave = True
+    elif p.isAtIgnoreNode():
+        pass
+    elif p.isAtAutoNode():
+        at.writeOneAtAutoNode(p,toString=toString,force=False)
+        writtenFiles.append(p.v.t)
+    elif p.isAtNorefFileNode():
+        at.norefWrite(p,toString=toString)
+        writtenFiles.append(p.v.t) ; autoSave = True
+    elif p.isAtNoSentFileNode():
+        at.write(p,nosentinels=True,toString=toString)
+        writtenFiles.append(p.v.t) # No need for autosave
+    elif p.isAtShadowFileNode():
+        at.writeOneAtShadowNode(p,toString=toString,force=False)
+        writtenFiles.append(p.v.t) ; autoSave = True # 2008/7/29
+    elif p.isAtThinFileNode():
+        at.write(p,thinFile=True,toString=toString)
+        writtenFiles.append(p.v.t) # No need for autosave.
+    elif p.isAtFileNode():
+        at.write(p,toString=toString)
+        writtenFiles.append(p.v.t) ; autoSave = True
+
+    if at.errors: atOk = False
+
+    if at.fileChangedFlag and autoSave: # Set by replaceTargetFileIfDifferent.
+        mustAutoSave = True
+#@-node:ekr.20041005105605.149:<< handle v's tree >>
+#@+node:ekr.20041005105605.150:<< say the command is finished >>
+if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
+    if len(writtenFiles) > 0:
+        g.es("finished")
+    elif writeAtFileNodesFlag:
+        g.es("no @file nodes in the selected tree")
+    else:
+        g.es("no dirty @file nodes")
+#@-node:ekr.20041005105605.150:<< say the command is finished >>
+#@-node:ekr.20041005105605.147:writeAll (atFile)
+#@+node:ekr.20041005105605.171:inAtOthers
+def inAtOthers(self,p):
+
+    """Returns True if p should be included in the expansion of the at-others directive
+
+    in the body text of p's parent."""
+
+    # Return False if this has been expanded previously.
+    if  p.v.isVisited():
+        # g.trace("previously visited",p.v)
+        return False
+
+    # Return False if this is a definition node.
+    h = p.headString() ; i = g.skip_ws(h,0)
+    isSection,junk = self.isSectionName(h,i)
+    if isSection:
+        # g.trace("is section",p)
+        return False
+
+    # Return False if p's body contains an @ignore directive.
+    if p.isAtIgnoreNode():
+        # g.trace("is @ignore",p)
+        return False
+    else:
+        # g.trace("ok",p)
+        return True
+#@-node:ekr.20041005105605.171:inAtOthers
+#@-node:ekr.20080624120440.4:Improved docs for @ignore
 #@-node:ekr.20080810085333.3:4.5 b3
 #@-all
 #@nonl

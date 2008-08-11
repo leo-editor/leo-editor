@@ -1980,6 +1980,7 @@ literal2_font
 literal3_font
 literal4_font
 literateprogramming
+ln
 loadDir
 loadOnePlugin
 load_build
