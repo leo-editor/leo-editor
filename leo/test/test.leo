@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -28,6 +28,7 @@
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20080811112727.1"><vh>@@@bool suppress_import_parsing = True</vh></v>
 <v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
@@ -193,7 +194,7 @@
 <v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
 </v>
-<v t="ekr.20080806145258.12" a="E"><vh>Prototype of Leo in Ajax</vh>
+<v t="ekr.20080806145258.12"><vh>Prototype of Leo in Ajax</vh>
 <v t="ekr.20080806145258.13"><vh>To do</vh></v>
 <v t="ekr.20080806145258.14"><vh>@button Leo2DHTML</vh>
 <v t="ekr.20080806145258.15"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
@@ -221,6 +222,15 @@
 <v t="ekr.20080806145258.1"><vh>@thin cgi-bin/leo.js</vh></v>
 <v t="ekr.20080806145258.34"><vh>@@thin jqueryTest.html</vh></v>
 </v>
+<v t="ekr.20080811113441.2"><vh>Running body text as a windows script</vh>
+<v t="ekr.20080807115344.1"><vh>Windows script</vh></v>
+<v t="ekr.20080807114145.2"><vh>@button run-windows-script</vh>
+<v t="ekr.20080807115344.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080807115344.2"><vh>class MySite</vh></v>
+<v t="ekr.20080807115344.3"><vh>class Application</vh></v>
+<v t="ekr.20080807115344.4"><vh>RunCode</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
@@ -245,13 +255,6 @@
 <v t="ekr.20080807091201.10"><vh>class Meta</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20080807115344.1"><vh>Windows script</vh></v>
-<v t="ekr.20080807114145.2"><vh>@button run-windows-script</vh>
-<v t="ekr.20080807115344.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20080807115344.2"><vh>class MySite</vh></v>
-<v t="ekr.20080807115344.3"><vh>class Application</vh></v>
-<v t="ekr.20080807115344.4"><vh>RunCode</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1220,7 +1223,7 @@ plugins_menu.py
 # active_path.py
 # open_shell.py
 # ipython.py
-cleo.py
+# cleo.py
 rClick.py
 toolbar.py
 
@@ -2168,5 +2171,8 @@ def exists(path):
         except Exception:
             print('not copied %s to %s' % (src,dst))
 </t>
+<t tx="ekr.20080811112727.1">False: (recommended) Enable import parsing for @shadow and @auto
+True: @shadow and @auto create a single node for the entire file.</t>
+<t tx="ekr.20080811113441.2"></t>
 </tnodes>
 </leo_file>

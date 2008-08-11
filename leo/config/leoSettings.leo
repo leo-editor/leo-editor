@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="10" height="961" width="700"/>
+	<global_window_position top="41" left="237" height="961" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4,3,15"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -209,7 +209,7 @@
 </v>
 <v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
 </v>
-<v t="ekr.20041119034357.10" annotate="7d71002e"><vh>Command options</vh>
+<v t="ekr.20041119034357.10" a="E" annotate="7d71002e"><vh>Command options</vh>
 <v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
 <v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
 <v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
@@ -225,6 +225,7 @@
 <v t="ekr.20041119041019.2"><vh>@bool save_clears_undo_buffer = False</vh></v>
 <v t="ekr.20061029091403"><vh>@bool show_full_tracebacks_in_scripts = False</vh></v>
 <v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
+<v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
 <v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
 <v t="ekr.20041119050749.11"><vh>@string headline_gmt_time = None</vh></v>
 <v t="ekr.20041119050749.10"><vh>@string headline_time_format_string = %m/%d</vh></v>
@@ -7542,6 +7543,8 @@ lcd2c" "
 <t tx="ekr.20080801104153.2">Read @shadow Nodes</t>
 <t tx="ekr.20080801104153.3">Write @shadow Nodes</t>
 <t tx="ekr.20080801104153.4">Write Dirty @shadow Nodes</t>
+<t tx="ekr.20080811105020.2">False: (recommended) Enable import parsing for @shadow and @auto
+True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

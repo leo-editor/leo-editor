@@ -1235,7 +1235,9 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
 
     self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-    if ext in (".c", ".cpp", ".cxx"):
+    if c.config.getBool('suppress_import_parsing', default=False):
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+    elif ext in (".c", ".cpp", ".cxx"):
         self.scanCText(s,p,atAuto=atAuto)
     elif ext == '.c#':
         self.scanCSharpText(s,p,atAuto=atAuto)
@@ -1900,7 +1902,9 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
 
     self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-    if ext in (".c", ".cpp", ".cxx"):
+    if c.config.getBool('suppress_import_parsing', default=False):
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+    elif ext in (".c", ".cpp", ".cxx"):
         self.scanCText(s,p,atAuto=atAuto)
     elif ext == '.c#':
         self.scanCSharpText(s,p,atAuto=atAuto)
@@ -23619,6 +23623,122 @@ def inAtOthers(self,p):
         return True
 #@-node:ekr.20041005105605.171:inAtOthers
 #@-node:ekr.20080624120440.4:Improved docs for @ignore
+#@+node:ekr.20080730095710.61:Added @bool suppress_import_parsing setting 
+@nocolor
+
+When True, @auto and @shadow import the entire file into a single node.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = g.os_path_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if c.config.getBool('suppress_import_parsing', default=False):
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+    elif ext in (".c", ".cpp", ".cxx"):
+        self.scanCText(s,p,atAuto=atAuto)
+    elif ext == '.c#':
+        self.scanCSharpText(s,p,atAuto=atAuto)
+    elif ext == ".el":
+        self.scanElispText(s,p,atAuto=atAuto)
+    elif ext == ".java":
+        self.scanJavaText(s,p,atAuto=atAuto)
+    elif ext == ".js":
+        self.scanJavaScriptText(s,p,atAuto=atAuto)
+    elif ext == ".pas":
+        self.scanPascalText(s,p,atAuto=atAuto)
+    elif ext in (".py", ".pyw"):
+        self.scanPythonText(s,p,atAuto=atAuto)
+    elif ext == ".php":
+        self.scanPHPText(s,p,atAuto=atAuto)
+    elif ext in ('.html','.htm','.xml'):
+        self.scanXmlText(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = g.os_path_normpath(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    z = g.choose(atAuto,'@auto ','')
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20070713075352:scanUnknownFileType (default scanner)
+def scanUnknownFileType (self,s,p,ext,atAuto=False):
+
+    c = self.c
+    changed = c.isChanged()
+    body = g.choose(atAuto,'','@ignore\n')
+    if ext in ('.html','.htm'): body += '@language html\n'
+    if ext in ('.txt','.text'): body += '@nocolor\n'
+    c.setBodyString(p,body + self.rootLine + s)
+    if atAuto:
+        for p in p.self_and_subtree_iter():
+            p.clearDirty()
+        if not changed:
+            c.setChanged(False)
+
+    g.app.unitTestDict = {'result':True}
+#@-node:ekr.20070713075352:scanUnknownFileType (default scanner)
+#@-node:ekr.20080730095710.61:Added @bool suppress_import_parsing setting 
 #@-node:ekr.20080810085333.3:4.5 b3
 #@-all
 #@nonl

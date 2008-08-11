@@ -2,22 +2,8 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
-#@+node:ekr.20080810085333.5:Under two hours 24
-#@+node:ekr.20080810085333.6:First 4
-#@+node:ekr.20080730095710.61:Add option to have @auto and @shadow not do "chunking"
-@nocolor
-
-What you are saying, I think, is that while chunking is a user
-preference, @auto doesn't give you the option of expressing this
-preference.  This is a perfectly valid objection.  True, using @auto
-to read an entire file into a single node seems, shall we say
-"eccentric", to me, but now the shoe is on the other foot: I am
-objecting to your preferences, which we all know is a no-no.
-
-In short, @auto and @shadow should give the user to option (possibly
-on a file-by-file basis) of importing to a single node. 
-#@nonl
-#@-node:ekr.20080730095710.61:Add option to have @auto and @shadow not do "chunking"
+#@+node:ekr.20080810085333.5:Under two hours 23
+#@+node:ekr.20080810085333.6:First 3
 #@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
 What uA should be used to specify node colors?
 
@@ -39,7 +25,7 @@ Create a simple template myLeoSettings.leo in $HOME when you try to
 open it and it doesn't exist
 #@nonl
 #@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
-#@-node:ekr.20080810085333.6:First 4
+#@-node:ekr.20080810085333.6:First 3
 #@+node:ekr.20080517102922.1:Files stuff 7
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
@@ -1366,7 +1352,7 @@ possible to make leo to auto-scroll, so the cursor is always visible?
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080811075604.1:Docs (later) 2
-#@-node:ekr.20080810085333.5:Under two hours 24
+#@-node:ekr.20080810085333.5:Under two hours 23
 #@+node:ekr.20080810085333.7:Under two days 4
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor

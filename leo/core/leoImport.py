@@ -848,7 +848,9 @@ class leoImportCommands:
 
         self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-        if ext in (".c", ".cpp", ".cxx"):
+        if c.config.getBool('suppress_import_parsing', default=False):
+            self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+        elif ext in (".c", ".cpp", ".cxx"):
             self.scanCText(s,p,atAuto=atAuto)
         elif ext == '.c#':
             self.scanCSharpText(s,p,atAuto=atAuto)
