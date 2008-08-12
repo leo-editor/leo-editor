@@ -1675,14 +1675,20 @@ class leoImportCommands:
 
         scanner.run(s,parent)
     #@-node:ekr.20071214072145:scanXmlText
-    #@+node:ekr.20070713075352:scanUnknownFileType (default scanner)
+    #@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     def scanUnknownFileType (self,s,p,ext,atAuto=False):
 
         c = self.c
         changed = c.isChanged()
         body = g.choose(atAuto,'','@ignore\n')
         if ext in ('.html','.htm'): body += '@language html\n'
-        if ext in ('.txt','.text'): body += '@nocolor\n'
+        elif ext in ('.txt','.text'): body += '@nocolor\n'
+        else:
+            language = self.languageForExtension(ext)
+            if language: body += '@language %s\n' % language
+
+        g.trace(ext,language)
+
         c.setBodyString(p,body + self.rootLine + s)
         if atAuto:
             for p in p.self_and_subtree_iter():
@@ -1691,7 +1697,24 @@ class leoImportCommands:
                 c.setChanged(False)
 
         g.app.unitTestDict = {'result':True}
-    #@-node:ekr.20070713075352:scanUnknownFileType (default scanner)
+    #@+node:ekr.20080811174246.1:languageForExtension
+    def languageForExtension (self,ext):
+
+        '''Return the language corresponding to the extensiion ext.'''
+
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = ext and (
+            g.app.extra_extension_dict.get(ext) or
+            g.app.extension_dict.get(ext))
+
+        if language:
+            if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
+                    return language
+
+        return None
+    #@-node:ekr.20080811174246.1:languageForExtension
+    #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     #@-node:ekr.20071127175948.1:Import scanners
     #@-others
 #@-node:ekr.20071127175948:<< class leoImportCommands >>
