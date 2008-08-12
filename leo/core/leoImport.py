@@ -1687,8 +1687,6 @@ class leoImportCommands:
             language = self.languageForExtension(ext)
             if language: body += '@language %s\n' % language
 
-        g.trace(ext,language)
-
         c.setBodyString(p,body + self.rootLine + s)
         if atAuto:
             for p in p.self_and_subtree_iter():
