@@ -241,13 +241,21 @@ class shadowController:
 
         ok = True
         if new_public_lines2 != new_public_lines:
-            ok = False
-            self.show_error(
-                lines1 = new_public_lines2,
-                lines2 = new_public_lines,
-                message = "Error in updating public file!",
-                lines1_message = "new public lines (derived from new private lines)",
-                lines2_message = "new public lines")
+            last_line2 = new_public_lines2[-1]
+            last_line  = new_public_lines[-1]
+            if (
+                new_public_lines2[:-1] == new_public_lines[:-1] and
+                last_line2 == last_line + '\n'
+            ):
+                ok = True
+            else:
+                ok = False
+                self.show_error(
+                    lines1 = new_public_lines2,
+                    lines2 = new_public_lines,
+                    message = "Error in updating public file!",
+                    lines1_message = "new public lines (derived from new private lines)",
+                    lines2_message = "new public lines")
             # g.trace(g.callers())
 
         if new_sentinel_lines2 != sentinel_lines:
@@ -491,10 +499,12 @@ class shadowController:
         # g.trace('old_public_file',old_public_file)
 
         # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
-        # old_public_lines  = file(old_public_file).readlines()
-        s = file(old_public_file).read()
-        if s and not s.endswith('\n'): s = s + '\n'
-        old_public_lines = g.splitLines(s)
+        if 1: # We really do not want to change the public file here.
+            old_public_lines  = file(old_public_file).readlines()
+        else: # An emergency measure.
+            s = file(old_public_file).read()
+            if s and not s.endswith('\n'): s = s + '\n'
+            old_public_lines = g.splitLines(s)
         old_private_lines = file(old_private_file).readlines()
         marker = x.marker_from_extension(old_public_file)
         if not marker:
@@ -626,10 +636,11 @@ class shadowController:
         return line.lstrip().startswith(marker+'verbatim')
     #@-node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
     #@+node:ekr.20080708094444.9:x.marker_from_extension
-    def marker_from_extension (self,filename):
+    def marker_from_extension (self,filename,suppressErrors=False):
 
         '''Return the sentinel delimiter comment to be used for filename.'''
 
+        x = self
         if not filename: return None
         root,ext = g.os_path_splitext(filename)
         delims = g.comment_delims_from_extension(filename)
@@ -645,7 +656,11 @@ class shadowController:
         elif ext in ('.bat',):
             marker = "REM@"
         else:
-            self.error("extension '%s' not known" % (ext),color='blue')
+            if not suppressErrors:
+                if g.app.unitTesting:
+                    x.errors += 1
+                else:
+                    x.error("extension '%s' not known" % (ext))
             # We **must not** use a bogus marker!
             # This could cause great problems when (later), a real marker becomes known.
             marker = None
@@ -1005,10 +1020,19 @@ class sourcewriter:
     #@+node:ekr.20080708094444.23:put
     def put(self, line, tag=''):
 
+        trace = False or self.trace
+
+        # An important hack.  Make sure *all* lines end with a newline.
+        # This will cause a mismatch later in check_the_final_output,
+        # and a special case has been inserted to forgive this newline.
+        if not line.endswith('\n'):
+            if trace: g.trace('adding newline',repr(line))
+            line = line + '\n'
+
         self.lines.append(line)
         self.i+=1
-        if self.trace:
-            g.trace('%16s %s' % (tag,repr(line)))
+
+        if trace: g.trace('%16s %s' % (tag,repr(line)))
     #@-node:ekr.20080708094444.23:put
     #@+node:ekr.20080708094444.24:index
     def index (self):
