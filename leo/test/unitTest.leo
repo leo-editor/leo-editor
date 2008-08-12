@@ -2001,6 +2001,7 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 <v t="ekr.20071113145804.2"><vh>@test compareHelper</vh></v>
 <v t="ekr.20071113145804.3"><vh>@test compareHelper-warning</vh></v>
 <v t="ekr.20071119053439"><vh>@test regularizeWhitespace</vh></v>
+<v t="ekr.20080811180035.1"><vh>@test languageForExtension</vh></v>
 <v t="ekr.20071113202321.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194033.2"><vh>leoKeys</vh>
@@ -21366,5 +21367,16 @@ else: # Test the uA's.
         d = {ttag: v.headString()}
         if trace: g.pr(d)
         assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)</t>
+<t tx="ekr.20080811180035.1">for ext in g.app.extension_dict.keys():
+    language =  c.importCommands.languageForExtension(ext)
+    language2 = c.importCommands.languageForExtension('.'+ext)
+    assert language == language2
+    if language:
+        path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+        assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
+
+    if 0:
+        if language is None:
+            g.pr('no language for ext=%s' % (ext))</t>
 </tnodes>
 </leo_file>

@@ -2,20 +2,14 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
-#@+node:ekr.20080810085333.5:Under two hours 23
+#@+node:ekr.20080810085333.5:Under two hours 22
 #@+node:ekr.20080810085333.6:First 3
 #@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
 What uA should be used to specify node colors?
 
-    if the foreground / background color API uses uAs,
-    would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
+if the foreground / background color API uses uAs,
+would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
 #@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
-#@+node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
-This affects @auto imports of all "unknown" languages.
-
-For example, @auto x.css would put @language css in the root node.
-#@nonl
-#@-node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
 #@+node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
 @nocolor
 
@@ -25,6 +19,158 @@ Create a simple template myLeoSettings.leo in $HOME when you try to
 open it and it doesn't exist
 #@nonl
 #@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
+#@+node:ekr.20031218072017.733:Add support for @args list to headlines
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=2321235
+By: paulpaterson
+
+I think I understand what Samir is getting at. 
+
+In PythonWin, or other IDE's for other languages, you are able to execute the
+"current program" in a way that it will behave identically to if it had been
+run from the command line.
+
+For Python this requires,
+
+1. That the script run with __name__ == "__main__", so that the standard "if
+__name__ ..." section will be executed properly.
+
+(Done) c.executeScript does this by default because the 'define_name' argument is '__main__' by default.
+
+2. You are able to pass command line parameters to the script.
+
+To to: Support @args= to headlines (for execute-script command) and to @button, @script and @command nodes.
+
+In some IDE's you are able to set default command line parameters and these are
+"injected" into the sys.argv (or equivalent) so that, as far as the program is
+concerned, it looks like you ran it from the command line with some aruments.
+
+The underlying assumption is that you want to run an entire program from Leo,
+not just a script. I would find this very useful also as I could run unit tests
+or even my entire apps by just hitting, for exampe, F5.
+
+Paul
+
+@color
+#@nonl
+#@+node:ekr.20041022083005.5:Define name == "__main__"
+#@-node:ekr.20041022083005.5:Define name == "__main__"
+#@+node:ekr.20031218072017.3138:g.executeScript
+def executeScript (name):
+
+    """Execute a script whose short python file name is given.
+
+    This is called only from the scripts_menu plugin."""
+
+    mod_name,ext = g.os_path_splitext(name)
+    theFile = None
+    try:
+        # This code is in effect an import or a reload.
+        # This allows the user to modify scripts without leaving Leo.
+        import imp
+        theFile,filename,description = imp.find_module(mod_name)
+        imp.load_module(mod_name,theFile,filename,description)
+    except Exception:
+        g.es("exception executing",name,color="red")
+        g.es_exception()
+
+    if theFile:
+        theFile.close()
+#@-node:ekr.20031218072017.3138:g.executeScript
+#@+node:ekr.20031218072017.2140:c.executeScript & helpers
+def executeScript(self,event=None,p=None,script=None,
+    useSelectedText=True,define_g=True,define_name='__main__',silent=False):
+
+    """This executes body text as a Python script.
+
+    We execute the selected text, or the entire body text if no text is selected."""
+
+    c = self ; script1 = script
+    writeScriptFile = c.config.getBool('write_script_file')
+    if not script:
+        script = g.getScript(c,p,useSelectedText=useSelectedText)
+    self.redirectScriptOutput()
+    try:
+        log = c.frame.log
+        if script.strip():
+            sys.path.insert(0,c.frame.openDirectory)
+            script += '\n' # Make sure we end the script properly.
+            # g.pr('*** script',script)
+            try:
+                p = c.currentPosition()
+                d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+                if define_name: d['__name__'] = define_name
+                # A kludge: reset c.inCommand here to handle the case where we *never* return.
+                # (This can happen when there are multiple event loops.)
+                # This does not prevent zombie windows if the script puts up a dialog...
+                c.inCommand = False
+                # g.trace('**** before',writeScriptFile)
+                if writeScriptFile:
+                    scriptFile = self.writeScriptFile(script)
+                    execfile(scriptFile,d)
+                else:
+                    exec script in d
+                # g.trace('**** after')
+                if not script1 and not silent:
+                    # Careful: the script may have changed the log tab.
+                    tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+                    g.es("end of script",color="purple",tabName=tabName)
+            except Exception:
+                g.handleScriptException(c,p,script,script1)
+            del sys.path[0]
+        else:
+            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+            g.es("no script selected",color="blue",tabName=tabName)
+    finally:
+        self.unredirectScriptOutput()
+#@+node:ekr.20031218072017.2143:redirectScriptOutput
+def redirectScriptOutput (self):
+
+    c = self
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+#@-node:ekr.20031218072017.2143:redirectScriptOutput
+#@+node:EKR.20040627100424:unredirectScriptOutput
+def unredirectScriptOutput (self):
+
+    c = self
+
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+
+        g.restoreStderr()
+        g.restoreStdout()
+#@-node:EKR.20040627100424:unredirectScriptOutput
+#@+node:ekr.20070115135502:writeScriptFile
+def writeScriptFile (self,script):
+
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        parts = path.split('/')
+        path = g.app.loadDir
+        for part in parts:
+            path = g.os_path_abspath(g.os_path_join(path,part))
+    else:
+        path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','scriptFile.py'))
+
+    # Write the file.
+    try:
+        f = file(path,'w')
+        f.write(script)
+        f.close()
+    except Exception:
+        path = None
+
+    return path
+#@nonl
+#@-node:ekr.20070115135502:writeScriptFile
+#@-node:ekr.20031218072017.2140:c.executeScript & helpers
+#@-node:ekr.20031218072017.733:Add support for @args list to headlines
 #@-node:ekr.20080810085333.6:First 3
 #@+node:ekr.20080517102922.1:Files stuff 7
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
@@ -1346,14 +1492,10 @@ beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
 #@-node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
 #@-node:ekr.20080730212711.6:ASAP Features 8
-#@+node:ekr.20080811075604.1:Docs (later) 2
-#@+node:ekr.20071211093323:more screen shots on Leo's web site
-#@-node:ekr.20071211093323:more screen shots on Leo's web site
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
-#@-node:ekr.20080811075604.1:Docs (later) 2
-#@-node:ekr.20080810085333.5:Under two hours 23
-#@+node:ekr.20080810085333.7:Under two days 4
+#@-node:ekr.20080810085333.5:Under two hours 22
+#@+node:ekr.20080810085333.7:Under two days 3
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
 
@@ -2113,38 +2255,7 @@ def moveUpOrDownHelper (self,event,direction,extend):
 #@nonl
 #@-node:ekr.20060113105246.1:moveUpOrDownHelper
 #@-node:ekr.20080519062109.2:Improve how Leo handles long lines
-#@+node:ekr.20031218072017.733:Execute scripts like IDE's do (does executeFile do this?)
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=2321235
-By: paulpaterson
-
-I think I understand what Samir is getting at. 
-
-In PythonWin, or other IDE's for other languages, you are able to execute the
-"current program" in a way that it will behave identically to if it had been
-run from the command line.
-
-For Python this requires,
-
-1. That the script run with __name__ == "__main__", so that the standard "if
-__name__ ..." section will be executed properly.
-
-2. You are able to pass command line parameters to the script. In some IDE's
-you are able to set default command line parameters and these are "injected"
-into the sys.argv (or equivalent) so that, as far as the program is concerned,
-it looks like you ran it from the command line with some aruments.
-
-The underlying assumption is that you want to run an entire program from Leo,
-not just a script. I would find this very useful also as I could run unit tests
-or even my entire apps by just hitting, for exampe, F5.
-
-Paul
-#@nonl
-#@+node:ekr.20041022083005.5:Define name == "__main__"
-#@-node:ekr.20041022083005.5:Define name == "__main__"
-#@-node:ekr.20031218072017.733:Execute scripts like IDE's do (does executeFile do this?)
-#@-node:ekr.20080810085333.7:Under two days 4
+#@-node:ekr.20080810085333.7:Under two days 3
 #@+node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode

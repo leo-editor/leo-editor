@@ -18490,6 +18490,24 @@ self.extension_dict = {
     "w"     : "cweb",
     "xml"   : "xml",
 }
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada':  'ada95',
+    'ahk':  'ahk',
+    'awk':  'awk',
+    # 'bas':  'basic',
+    'cpp':  'c',
+    'el':   'lisp',
+    'f':    'fortran',
+    'pod':  'perl',
+    'tcl':  'tcl',
+    # 'w':  'cweb',
+}
+#@nonl
 #@-node:ekr.20031218072017.368:<< define global data structures >> app
 #@+node:ekr.20080708094444.9:x.marker_from_extension
 def marker_from_extension (self,filename):
@@ -23469,14 +23487,13 @@ def resolveArchivedPosition(self,archivedPosition,root_v):
 #@-node:ekr.20080804063523.3:allow v.uA's in @thin and @shadow nodes
 #@-node:ekr.20080702123133.2:4.5 b2
 #@+node:ekr.20080810085333.3:4.5 b3
-#@+node:ekr.20080810085333.4:Added new installer code
-A new script in leoDist.leo creates a .exe installer from the .zip file produced by bzr.
-#@nonl
-#@-node:ekr.20080810085333.4:Added new installer code
+#@+node:ekr.20080811174246.2:Cleanups
 #@+node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
 ^[ ]*#[ ]*try:.*\n
 #@nonl
 #@-node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
+#@-node:ekr.20080811174246.2:Cleanups
+#@+node:ekr.20080811174246.3:Docs
 #@+node:ekr.20080624120440.4:Improved docs for @ignore
 @nocolor
 
@@ -23623,7 +23640,13 @@ def inAtOthers(self,p):
         return True
 #@-node:ekr.20041005105605.171:inAtOthers
 #@-node:ekr.20080624120440.4:Improved docs for @ignore
-#@+node:ekr.20080730095710.61:Added @bool suppress_import_parsing setting 
+#@-node:ekr.20080811174246.3:Docs
+#@+node:ekr.20080811174246.4:Features
+#@+node:ekr.20080810085333.4:Added new installer code
+A new script in leoDist.leo creates a .exe installer from the .zip file produced by bzr.
+#@nonl
+#@-node:ekr.20080810085333.4:Added new installer code
+#@+node:ekr.20080730095710.61:Added @bool suppress_import_parsing setting
 @nocolor
 
 When True, @auto and @shadow import the entire file into a single node.
@@ -23721,14 +23744,20 @@ if s and fileName.endswith('.py'):
 s = g.toUnicode(s,self.encoding)
 #@-node:ekr.20080212092908:<< convert s to the proper encoding >>
 #@-node:ekr.20031218072017.3210:createOutline (leoImport)
-#@+node:ekr.20070713075352:scanUnknownFileType (default scanner)
+#@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
 def scanUnknownFileType (self,s,p,ext,atAuto=False):
 
     c = self.c
     changed = c.isChanged()
     body = g.choose(atAuto,'','@ignore\n')
     if ext in ('.html','.htm'): body += '@language html\n'
-    if ext in ('.txt','.text'): body += '@nocolor\n'
+    elif ext in ('.txt','.text'): body += '@nocolor\n'
+    else:
+        language = self.languageForExtension(ext)
+        if language: body += '@language %s\n' % language
+
+    g.trace(ext,language)
+
     c.setBodyString(p,body + self.rootLine + s)
     if atAuto:
         for p in p.self_and_subtree_iter():
@@ -23737,8 +23766,191 @@ def scanUnknownFileType (self,s,p,ext,atAuto=False):
             c.setChanged(False)
 
     g.app.unitTestDict = {'result':True}
-#@-node:ekr.20070713075352:scanUnknownFileType (default scanner)
-#@-node:ekr.20080730095710.61:Added @bool suppress_import_parsing setting 
+#@+node:ekr.20080811174246.1:languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extensiion ext.'''
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    language = ext and (
+        g.app.extra_extension_dict.get(ext) or
+        g.app.extension_dict.get(ext))
+
+    if language:
+        if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
+                return language
+
+    return None
+#@-node:ekr.20080811174246.1:languageForExtension
+#@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+#@-node:ekr.20080730095710.61:Added @bool suppress_import_parsing setting
+#@+node:ekr.20080425054202.1:Added @language x during @auto if modes/x.py exists
+This affects @auto imports of all "unknown" languages.
+
+For example, @auto x.css would put @language css in the root node.
+#@nonl
+#@+node:ekr.20031218072017.368:<< define global data structures >> app
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    "ada" : "--",
+    "actionscript" : "// /* */", #jason 2003-07-03
+    "autohotkey" : "; /* */", #TL - AutoHotkey language
+    "c" : "// /* */", # C, C++ or objective C.
+    "csharp" : "// /* */", # C#
+    "cpp" : "// /* */",# C++.
+    "css" : "/* */", # 4/1/04
+    "cweb" : "@q@ @>", # Use the "cweb hack"
+    "elisp" : ";",
+    "forth" : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran" : "C",
+    "fortran90" : "!",
+    "html" : "<!-- -->",
+    "java" : "// /* */",
+    "latex" : "%",
+    "lua" : "--",  # ddm 13/02/06
+    "pascal" : "// { }",
+    "perl" : "#",
+    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php" : "// /* */", # 6/23/07: was "//",
+    "plain" : "#", # We must pick something.
+    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python" : "#",
+    "rapidq" : "'", # fil 2004-march-11
+    "rebol" : ";",  # jason 2003-07-03
+    "shell" : "#",  # shell scripts
+    "tcltk" : "#",
+    "unknown" : "#", # Set when @comment is seen.
+    "xml" : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    "ada" : "ads",
+    "actionscript" : "as", #jason 2003-07-03
+    "autohotkey" : "ahk", #TL - AutoHotkey language
+    "c" : "c",
+    "cpp" : "cpp",
+    "css" : "css", # 4/1/04
+    "cweb" : "w",
+    "elisp" : "el",
+    "forth" : "forth",
+    "fortran" : "f",
+    "fortran90" : "f",
+    "html" : "html",
+    "java" : "java",
+    "latex" : "tex", # 1/8/04
+    "lua" : "lua",  # ddm 13/02/06
+    "noweb" : "nw",
+    "pascal" : "p",
+    # "perl" : "perl",
+    # "perlpod" : "perl",
+    "perl" : "pl",      # 11/7/05
+    "perlpod" : "pod",  # 11/7/05
+    "php" : "php",
+    "plain" : "txt",
+    "python" : "py",
+    "plsql" : "sql", # qt02537 2005-05-27
+    "rapidq" : "bas", # fil 2004-march-11
+    "rebol" : "r",    # jason 2003-07-03
+    "shell" : "sh",   # DS 4/1/04
+    "tex" : "tex",
+    "tcltk" : "tcl",
+    "unknown" : "txt", # Set when @comment is seen.
+    "xml": "xml",
+}
+
+self.extension_dict = {
+    "ads"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey", #TL - AutoHotkey language
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "c"     : "c",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran90", # or fortran ?
+    "html"  : "html",
+    "java"  : "java",
+    "lua" : "lua",  # ddm 13/02/06
+    "noweb" : "nw",
+    "p"     : "pascal",
+    # "perl"  : "perl",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "w"     : "cweb",
+    "xml"   : "xml",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada':  'ada95',
+    'ahk':  'ahk',
+    'awk':  'awk',
+    # 'bas':  'basic',
+    'cpp':  'c',
+    'el':   'lisp',
+    'f':    'fortran',
+    'pod':  'perl',
+    'tcl':  'tcl',
+    # 'w':  'cweb',
+}
+#@nonl
+#@-node:ekr.20031218072017.368:<< define global data structures >> app
+#@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+def scanUnknownFileType (self,s,p,ext,atAuto=False):
+
+    c = self.c
+    changed = c.isChanged()
+    body = g.choose(atAuto,'','@ignore\n')
+    if ext in ('.html','.htm'): body += '@language html\n'
+    elif ext in ('.txt','.text'): body += '@nocolor\n'
+    else:
+        language = self.languageForExtension(ext)
+        if language: body += '@language %s\n' % language
+
+    g.trace(ext,language)
+
+    c.setBodyString(p,body + self.rootLine + s)
+    if atAuto:
+        for p in p.self_and_subtree_iter():
+            p.clearDirty()
+        if not changed:
+            c.setChanged(False)
+
+    g.app.unitTestDict = {'result':True}
+#@+node:ekr.20080811174246.1:languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extensiion ext.'''
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    language = ext and (
+        g.app.extra_extension_dict.get(ext) or
+        g.app.extension_dict.get(ext))
+
+    if language:
+        if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
+                return language
+
+    return None
+#@-node:ekr.20080811174246.1:languageForExtension
+#@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+#@-node:ekr.20080425054202.1:Added @language x during @auto if modes/x.py exists
+#@-node:ekr.20080811174246.4:Features
 #@-node:ekr.20080810085333.3:4.5 b3
 #@-all
 #@nonl
