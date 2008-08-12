@@ -107,6 +107,7 @@ class LeoApp:
         #@+node:ekr.20031218072017.368:<< define global data structures >> app
         # Internally, lower case is used for all language names.
         self.language_delims_dict = {
+            # Keys are languages, values are 1,2 or 3-tuples of delims.
             "ada" : "--",
             "actionscript" : "// /* */", #jason 2003-07-03
             "autohotkey" : "; /* */", #TL - AutoHotkey language
@@ -120,6 +121,7 @@ class LeoApp:
             "fortran" : "C",
             "fortran90" : "!",
             "html" : "<!-- -->",
+            "ini": ";",
             "java" : "// /* */",
             "latex" : "%",
             "lua" : "--",  # ddm 13/02/06
@@ -139,6 +141,7 @@ class LeoApp:
         }
 
         self.language_extension_dict = {
+            # Keys are languages, values are extensions.
             "ada" : "ads",
             "actionscript" : "as", #jason 2003-07-03
             "autohotkey" : "ahk", #TL - AutoHotkey language
@@ -151,6 +154,7 @@ class LeoApp:
             "fortran" : "f",
             "fortran90" : "f",
             "html" : "html",
+            "ini": "ini",
             "java" : "java",
             "latex" : "tex", # 1/8/04
             "lua" : "lua",  # ddm 13/02/06
@@ -174,6 +178,7 @@ class LeoApp:
         }
 
         self.extension_dict = {
+            # Keys are extensions, values are languages.
             "ads"   : "ada",
             "adb"   : "ada",
             "ahk"   : "autohotkey", #TL - AutoHotkey language
@@ -185,7 +190,9 @@ class LeoApp:
             "el"    : "elisp",
             "forth" : "forth",
             "f"     : "fortran90", # or fortran ?
+            "h"     : "c",
             "html"  : "html",
+            "ini"   : "ini",
             "java"  : "java",
             "lua" : "lua",  # ddm 13/02/06
             "noweb" : "nw",
