@@ -4384,7 +4384,7 @@ class keyHandlerClass:
             return isPlain
     #@-node:ekr.20061031131434.182:isPlainKey
     #@+node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
-    def shortcutFromSetting (self,setting):
+    def shortcutFromSetting (self,setting,addKey=True):
 
         k = self
 
@@ -4445,7 +4445,7 @@ class keyHandlerClass:
                     last = last.lower()
 
                 # New in Leo 4.4.2: Alt-2 is not a key event!
-                if last.isdigit():
+                if addKey and last.isdigit():
                     last = 'Key-' + last
         else:
             # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
@@ -4528,6 +4528,7 @@ class keyHandlerClass:
                 s = '%s+%s' % ('+'.join(fields[:-1]),last)
             else:
                 s = last
+        # g.trace(stroke,s)
         return g.choose(brief,s,'<%s>' % s)
     #@-node:ekr.20061031131434.191:k.prettyPrintKey
     #@-node:ekr.20061031131434.181:Shortcuts (keyHandler)

@@ -4900,7 +4900,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
     for data in table:
         << get label & command or continue >>
         << compute commandName & accel from label & command >>
-        accelerator = stroke = k.shortcutFromSetting(accel) or ''
+        accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
         accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
         def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
             #k.clearState()

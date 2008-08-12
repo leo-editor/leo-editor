@@ -6620,7 +6620,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
     for data in table:
         << get label & command or continue >>
         << compute commandName & accel from label & command >>
-        accelerator = stroke = k.shortcutFromSetting(accel) or ''
+        accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
         accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
         def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
             #k.clearState()
@@ -23740,6 +23740,855 @@ def resolveArchivedPosition(self,archivedPosition,root_v):
 ^[ ]*#[ ]*try:.*\n
 #@nonl
 #@-node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
+#@+node:ekr.20080812072419.6:Abbreviate Alt+Key+1 to Alt+1, but *only* in menus
+@nocolor
+
+>    - Some hotkeys are listed wrong "Toggle Autocompleter - Alt+Key+1" should
+>    be "Alt+1".
+
+Strictly speaking, Alt-1 is not a key event. However, I added a hack to turn
+Alt-Key-1 to Alt-1 in menus, since accelerators must indeed be keystrokes. I'm
+going to leave the print-bindings command alone, however: it's perfectly clear
+as it is, and showing Alt-1 as a binding would, in fact, be wrong, and might be
+confusing.
+
+@color
+#@nonl
+#@+node:ekr.20080812072419.7:Found: .prettyPrintKey
+#@+node:ekr.20060417203717:helpForCommand
+def helpForCommand (self,event):
+
+    '''Prompts for a command name and prints the help message for that command.'''
+
+    k = self.k
+    k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
+
+def helpForCommandFinisher (self,commandName):
+
+    c = self.c
+    bindings = self.getBindingsForCommand(commandName)
+    func = c.commandsDict.get(commandName)
+    if func and func.__doc__:
+        s = ''.join([
+            g.choose(line.strip(),line.lstrip(),'\n')
+                for line in g.splitLines(func.__doc__)])
+    else:
+        s = 'no docstring'
+    g.es('','%s:%s\n%s\n' % (commandName,bindings,s),color='blue')
+
+def getBindingsForCommand(self,commandName):
+
+    c = self.c ; k = c.k ; d = k.bindingsDict
+    keys = d.keys() ; keys.sort()
+
+    data = [] ; n1 = 4 ; n2 = 20
+    for key in keys:
+        bunchList = d.get(key,[])
+        for b in bunchList:
+            if b.commandName == commandName:
+                pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
+                s1 = pane
+                s2 = k.prettyPrintKey(key,brief=True)
+                s3 = b.commandName
+                n1 = max(n1,len(s1))
+                n2 = max(n2,len(s2))
+                data.append((s1,s2,s3),)
+
+    data.sort(lambda x,y: cmp(x[1],y[1]))
+
+    return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
+#@nonl
+#@-node:ekr.20060417203717:helpForCommand
+#@+node:ekr.20060123125317.2: ctor (minibufferFind)
+def __init__(self,c,finder):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+
+    # g.trace('minibufferFind: finder',finder)
+
+    self.c = c
+    self.k = k = c.k
+    self.w = None
+    self.finder = finder
+    self.findTextList = []
+    self.changeTextList = []
+
+    commandName = 'replace-string'
+    s = k.getShortcutForCommandName(commandName)
+    s = k.prettyPrintKey(s)
+    s = k.shortcutFromSetting(s)
+    # g.trace('replaceStringShortcut',s)
+    self.replaceStringShortcut = s
+#@-node:ekr.20060123125317.2: ctor (minibufferFind)
+#@+node:ekr.20061031131434.119:printBindings & helper
+def printBindings (self,event=None):
+
+    '''Print all the bindings presently in effect.'''
+
+    k = self ; c = k.c
+    d = k.bindingsDict ; tabName = 'Bindings'
+    keys = d.keys() ; keys.sort()
+    c.frame.log.clearTab(tabName)
+    data = [] ; n1 = 4 ; n2 = 20
+    if not keys: return g.es('no bindings')
+    for key in keys:
+        bunchList = d.get(key,[])
+        for b in bunchList:
+            pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
+            s1 = pane
+            s2 = k.prettyPrintKey(key,brief=True)
+            s3 = b.commandName
+            n1 = max(n1,len(s1))
+            n2 = max(n2,len(s2))
+            data.append((s1,s2,s3),)
+
+    # Print keys by type:
+    sep = '-' * n1
+    for prefix in (
+        'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
+        'Ctrl+Shift', 'Ctrl', 'Shift',
+    ):
+        data2 = []
+        for item in data:
+            s1,s2,s3 = item
+            if s2.startswith(prefix):
+                data2.append(item)
+        g.es('','%s %s' % (sep, prefix),tabName=tabName)
+        self.printBindingsHelper(data2,n1,n2,prefix=prefix)
+        # Remove all the items in data2 from data.
+        # This must be done outside the iterator on data.
+        for item in data2:
+            data.remove(item)
+    # Print all plain bindings.
+    g.es('','%s %s' % (sep, 'Plain Keys',),tabName=tabName)
+    self.printBindingsHelper(data,n1,n2,prefix=None)
+    state = k.unboundKeyAction 
+    k.showStateAndMode()
+#@+node:ekr.20061031131434.120:printBindingsHelper
+def printBindingsHelper (self,data,n1,n2,prefix):
+
+    n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
+
+    data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
+        # The list of all items with only one character following the prefix.
+    data2 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+        # The list of all other items.
+
+    # This isn't perfect in variable-width fonts.
+    for data in (data1,data2):
+        data.sort(lambda x,y: cmp(x[1],y[1]))
+        for s1,s2,s3 in data:
+            g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+#@-node:ekr.20061031131434.120:printBindingsHelper
+#@-node:ekr.20061031131434.119:printBindings & helper
+#@+node:ekr.20061031131434.121:printCommands
+def printCommands (self,event=None):
+
+    '''Print all the known commands and their bindings, if any.'''
+
+    k = self ; c = k.c ; tabName = 'Commands'
+
+    c.frame.log.clearTab(tabName)
+
+    inverseBindingDict = k.computeInverseBindingDict()
+    commandNames = c.commandsDict.keys() ; commandNames.sort()
+
+    data = [] ; n1 = 4 ; n2 = 20
+    for commandName in commandNames:
+        dataList = inverseBindingDict.get(commandName,[('',''),])
+        for z in dataList:
+            pane, key = z
+            s1 = pane
+            s2 = k.prettyPrintKey(key,brief=True)
+            s3 = commandName
+            n1 = max(n1,len(s1))
+            n2 = max(n2,len(s2))
+            data.append((s1,s2,s3),)
+
+    # This isn't perfect in variable-width fonts.
+    for s1,s2,s3 in data:
+        g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName=tabName)
+#@-node:ekr.20061031131434.121:printCommands
+#@+node:ekr.20061031131434.131:k.registerCommand
+def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=True):
+
+    '''Make the function available as a minibuffer command,
+    and optionally attempt to bind a shortcut.
+
+    You can wrap any method in a callback function, so the
+    restriction to functions is not significant.
+
+    If wrap is True then func will be wrapped with c.universalCallback.
+
+    '''
+
+    # g.trace(commandName,g.callers())
+
+    k = self ; c = k.c
+
+    if wrap:
+        func = c.universalCallback(func)
+
+    f = c.commandsDict.get(commandName)
+    verbose = (False or verbose) and not g.app.unitTesting
+    if f and f.__name__ != 'dummyCallback' and verbose:
+        g.es_print('redefining',commandName, color='red')
+
+    c.commandsDict [commandName] = func
+    k.inverseCommandsDict [func.__name__] = commandName
+    # g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
+
+    if shortcut:
+        stroke = k.shortcutFromSetting(shortcut)
+    elif commandName.lower() == 'shortcut': # Causes problems.
+        stroke = None
+    else:
+        # Try to get a shortcut from leoSettings.leo.
+        junk,bunchList = c.config.getShortcut(commandName)
+        for bunch in bunchList:
+            accel2 = bunch.val ; pane2 = bunch.pane
+            if accel2 and not pane2.endswith('-mode'):
+                shortcut2 = accel2
+                stroke = k.shortcutFromSetting(shortcut2)
+                if stroke: break
+        else: stroke = None
+
+    if stroke:
+        # g.trace('stroke',stroke,'pane',pane,commandName,g.callers())
+        ok = k.bindKey (pane,stroke,func,commandName) # Must be a stroke.
+        k.makeMasterGuiBinding(stroke) # Must be a stroke.
+        if verbose and ok and not g.app.silentMode:
+            g.es_print('','@command: %s = %s' % (
+                commandName,k.prettyPrintKey(stroke)),color='blue')
+            if 0:
+                d = k.masterBindingsDict.get('button',{})
+                g.print_dict(d)
+        c.frame.tree.setBindings()
+    elif verbose and not g.app.silentMode:
+        g.es_print('','@command: %s' % (commandName),color='blue')
+
+    # Fixup any previous abbreviation to press-x-button commands.
+    if commandName.startswith('press-') and commandName.endswith('-button'):
+        d = c.config.getAbbrevDict()
+            # Keys are full command names, values are abbreviations.
+        if commandName in d.values():
+            for key in d.keys():
+                if d.get(key) == commandName:
+                    c.commandsDict [key] = c.commandsDict.get(commandName)
+                    break
+#@-node:ekr.20061031131434.131:k.registerCommand
+#@+node:ekr.20061031131434.166:modeHelpHelper
+def modeHelpHelper (self,d):
+
+    k = self ; c = k.c ; tabName = 'Mode'
+    c.frame.log.clearTab(tabName)
+    keys = d.keys() ; keys.sort()
+
+    data = [] ; n = 20
+    for key in keys:
+        if key not in ( '*entry-commands*','*command-prompt*'):
+            bunchList = d.get(key)
+            for bunch in bunchList:
+                shortcut = bunch.val
+                if shortcut not in (None,'None'):
+                    s1 = key ; s2 = k.prettyPrintKey(shortcut,brief=True)
+                    n = max(n,len(s1))
+                    data.append((s1,s2),)
+
+    data.sort()
+
+    modeName = k.inputModeName.replace('-',' ')
+    if modeName.endswith('mode'): modeName = modeName[:-4].strip()
+
+    g.es('','%s mode\n\n' % modeName,tabName=tabName)
+
+    # This isn't perfect in variable-width fonts.
+    for s1,s2 in data:
+        g.es('','%*s %s' % (n,s1,s2),tabName=tabName)
+#@-node:ekr.20061031131434.166:modeHelpHelper
+#@+node:ekr.20061031131434.175:k.computeCompletionList
+# Important: this code must not change mb_tabListPrefix.  Only doBackSpace should do that.
+
+def computeCompletionList (self,defaultTabList,backspace):
+
+    k = self ; c = k.c ; s = k.getLabel() ; tabName = 'Completion'
+    command = s [len(k.mb_prompt):]
+        # s always includes prefix, so command is well defined.
+
+    k.mb_tabList,common_prefix = g.itemsMatchingPrefixInList(command,defaultTabList)
+    c.frame.log.clearTab(tabName)
+
+    if k.mb_tabList:
+        k.mb_tabListIndex = -1 # The next item will be item 0.
+
+        if not backspace:
+            k.setLabel(k.mb_prompt + common_prefix)
+
+        inverseBindingDict = k.computeInverseBindingDict()
+        data = [] ; n1 = 20; n2 = 4
+        for commandName in k.mb_tabList:
+            dataList = inverseBindingDict.get(commandName,[('',''),])
+            for z in dataList:
+                pane,key = z
+                s1 = commandName
+                s2 = pane
+                s3 = k.prettyPrintKey(key)
+                n1 = max(n1,len(s1))
+                n2 = max(n2,len(s2))
+                data.append((s1,s2,s3),)
+        for s1,s2,s3 in data:
+            g.es('','%*s %*s %s' % (-(min(20,n1)),s1,n2,s2,s3),tabName=tabName)
+
+    c.bodyWantsFocus()
+#@-node:ekr.20061031131434.175:k.computeCompletionList
+#@+node:ekr.20061031131434.191:k.prettyPrintKey
+def prettyPrintKey (self,stroke,brief=False):
+
+    k = self
+    s = stroke and g.stripBrackets(stroke.strip())
+    if not s: return ''
+
+    shift = s.find("shift") >= 0 or s.find("shft") >= 0
+
+    # Replace all minus signs by plus signs, except a trailing minus:
+    if s.endswith('-'): s = s[:-1].replace('-','+') + '-'
+    else:               s = s.replace('-','+')
+    fields = s.split('+')
+    last = fields and fields[-1]
+    if last and len(last) == 1:
+        prev = s[:-1]
+        if last.isalpha():
+            if last.isupper():
+                if not shift:
+                    s = prev + 'Shift+' + last
+            elif last.islower():
+                if not prev and not brief:
+                    s = 'Key+' + last.upper()
+                else:
+                    s = prev + last.upper()
+    else:
+        last = k.guiBindNamesInverseDict.get(last,last)
+        if fields and fields[:-1]:
+            s = '%s+%s' % ('+'.join(fields[:-1]),last)
+        else:
+            s = last
+    # g.trace(stroke,s)
+    return g.choose(brief,s,'<%s>' % s)
+#@-node:ekr.20061031131434.191:k.prettyPrintKey
+#@+node:ekr.20031218072017.1723:createMenuEntries
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    # g.trace('c',self.c)
+
+    c = self.c ; f = c.frame ; k = c.k ; trace = False
+    if g.app.unitTesting: return
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
+        accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
+            #k.clearState()
+            #g.trace(stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+#@+node:ekr.20051021091958:<< get label & command or continue >>
+if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+#@nonl
+#@-node:ekr.20051021091958:<< get label & command or continue >>
+#@+node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                if trace: g.trace('1','%20s' % (bunch.val),commandName)
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1:<< compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@-node:ekr.20051021100806.1:<< compute emacs_name >>
+#@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+#@+node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+#@-node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+#@-node:ekr.20031218072017.1723:createMenuEntries
+#@+node:ekr.20051022043713.1:<< get label, accelerator & command or continue >>
+ok = (
+    type(data) in (type(()), type([])) and
+    len(data) in (2,3)
+)
+
+if ok:
+    if len(data) == 2:
+        label,openWithData = data ; accelerator = None
+    else:
+        label,accelerator,openWithData = data
+        accelerator = k.shortcutFromSetting(accelerator)
+        accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+else:
+    g.trace('bad data in Open With table: %s' % repr(data))
+    continue # Ignore bad data
+#@-node:ekr.20051022043713.1:<< get label, accelerator & command or continue >>
+#@+node:bob.20080115223114.4:<< get label, accelerator & command or continue >>
+ok = (
+    type(data) in (type(()), type([])) and
+    len(data) in (2,3)
+)
+
+if ok:
+    if len(data) == 2:
+        label,openWithData = data ; accelerator = None
+    else:
+        label,accelerator,openWithData = data
+        accelerator = k.shortcutFromSetting(accelerator)
+        accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+else:
+    g.trace('bad data in Open With table: %s' % repr(data))
+    continue # Ignore bad data
+#@-node:bob.20080115223114.4:<< get label, accelerator & command or continue >>
+#@-node:ekr.20080812072419.7:Found: .prettyPrintKey
+#@+node:ekr.20061031131434.191:k.prettyPrintKey
+def prettyPrintKey (self,stroke,brief=False):
+
+    k = self
+    s = stroke and g.stripBrackets(stroke.strip())
+    if not s: return ''
+
+    shift = s.find("shift") >= 0 or s.find("shft") >= 0
+
+    # Replace all minus signs by plus signs, except a trailing minus:
+    if s.endswith('-'): s = s[:-1].replace('-','+') + '-'
+    else:               s = s.replace('-','+')
+    fields = s.split('+')
+    last = fields and fields[-1]
+    if last and len(last) == 1:
+        prev = s[:-1]
+        if last.isalpha():
+            if last.isupper():
+                if not shift:
+                    s = prev + 'Shift+' + last
+            elif last.islower():
+                if not prev and not brief:
+                    s = 'Key+' + last.upper()
+                else:
+                    s = prev + last.upper()
+    else:
+        last = k.guiBindNamesInverseDict.get(last,last)
+        if fields and fields[:-1]:
+            s = '%s+%s' % ('+'.join(fields[:-1]),last)
+        else:
+            s = last
+    # g.trace(stroke,s)
+    return g.choose(brief,s,'<%s>' % s)
+#@-node:ekr.20061031131434.191:k.prettyPrintKey
+#@+node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
+def shortcutFromSetting (self,setting,addKey=True):
+
+    k = self
+
+    if not setting:
+        return None
+
+    s = g.stripBrackets(setting.strip())
+    << define cmd, ctrl, alt, shift >>
+    if k.swap_mac_keys and sys.platform == "darwin":
+        << swap cmd and ctrl keys >>
+    << convert minus signs to plus signs >>
+    << compute the last field >>
+    << compute shortcut >>
+    # g.trace(setting,shortcut)
+    return shortcut
+
+canonicalizeShortcut = shortcutFromSetting # For compatibility.
+strokeFromSetting = shortcutFromSetting
+#@+node:ekr.20061031131434.185:<< define cmd, ctrl, alt, shift >>
+s2 = s.lower()
+
+cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
+ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
+alt   = s2.find("alt") >= 0
+shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
+#@-node:ekr.20061031131434.185:<< define cmd, ctrl, alt, shift >>
+#@+node:ekr.20061031131434.186:<< swap cmd and ctrl keys >>
+if ctrl and not cmd:
+    cmd = True ; ctrl = False
+if alt and not ctrl:
+    ctrl = True ; alt = False
+#@-node:ekr.20061031131434.186:<< swap cmd and ctrl keys >>
+#@+node:ekr.20061031131434.187:<< convert minus signs to plus signs >>
+# Replace all minus signs by plus signs, except a trailing minus:
+if s.endswith('-'):
+    s = s[:-1].replace('-','+') + '-'
+else:
+    s = s.replace('-','+')
+#@-node:ekr.20061031131434.187:<< convert minus signs to plus signs >>
+#@+node:ekr.20061031131434.188:<< compute the last field >>
+if s.endswith('+'):
+    last = '+'
+else:
+    fields = s.split('+') # Don't lower this field.
+    last = fields and fields[-1]
+    if not last:
+        if not g.app.menuWarningsGiven:
+            g.pr("bad shortcut specifier:", s)
+        return None
+
+if len(last) == 1:
+    last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
+    # g.trace(last,last2)
+    if last2:
+        last = last2 ; shift = False # Ignore the shift state for these special chars.
+    else:
+        if shift:
+            last = last.upper()
+            shift = False
+        else:
+            last = last.lower()
+
+        # New in Leo 4.4.2: Alt-2 is not a key event!
+        if addKey and last.isdigit():
+            last = 'Key-' + last
+else:
+    # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
+    # This is a *one-way* translation, done only here.
+    d = k.settingsNameDict
+    last = d.get(last.lower(),last)
+#@-node:ekr.20061031131434.188:<< compute the last field >>
+#@+node:ekr.20061031131434.189:<< compute shortcut >>
+table = (
+    (alt, 'Alt+'),
+    (ctrl,'Ctrl+'),
+    (cmd, 'Command+'),
+    (shift,'Shift+'),
+    (True, last),
+)
+
+# new in 4.4b3: convert all characters to unicode first.
+shortcut = ''.join([g.toUnicode(val,g.app.tkEncoding) for flag,val in table if flag])
+#@-node:ekr.20061031131434.189:<< compute shortcut >>
+#@-node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
+#@+node:ekr.20061031131434.119:printBindings & helper
+def printBindings (self,event=None):
+
+    '''Print all the bindings presently in effect.'''
+
+    k = self ; c = k.c
+    d = k.bindingsDict ; tabName = 'Bindings'
+    keys = d.keys() ; keys.sort()
+    c.frame.log.clearTab(tabName)
+    data = [] ; n1 = 4 ; n2 = 20
+    if not keys: return g.es('no bindings')
+    for key in keys:
+        bunchList = d.get(key,[])
+        for b in bunchList:
+            pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
+            s1 = pane
+            s2 = k.prettyPrintKey(key,brief=True)
+            s3 = b.commandName
+            n1 = max(n1,len(s1))
+            n2 = max(n2,len(s2))
+            data.append((s1,s2,s3),)
+
+    # Print keys by type:
+    sep = '-' * n1
+    for prefix in (
+        'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
+        'Ctrl+Shift', 'Ctrl', 'Shift',
+    ):
+        data2 = []
+        for item in data:
+            s1,s2,s3 = item
+            if s2.startswith(prefix):
+                data2.append(item)
+        g.es('','%s %s' % (sep, prefix),tabName=tabName)
+        self.printBindingsHelper(data2,n1,n2,prefix=prefix)
+        # Remove all the items in data2 from data.
+        # This must be done outside the iterator on data.
+        for item in data2:
+            data.remove(item)
+    # Print all plain bindings.
+    g.es('','%s %s' % (sep, 'Plain Keys',),tabName=tabName)
+    self.printBindingsHelper(data,n1,n2,prefix=None)
+    state = k.unboundKeyAction 
+    k.showStateAndMode()
+#@+node:ekr.20061031131434.120:printBindingsHelper
+def printBindingsHelper (self,data,n1,n2,prefix):
+
+    n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
+
+    data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
+        # The list of all items with only one character following the prefix.
+    data2 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+        # The list of all other items.
+
+    # This isn't perfect in variable-width fonts.
+    for data in (data1,data2):
+        data.sort(lambda x,y: cmp(x[1],y[1]))
+        for s1,s2,s3 in data:
+            g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+#@-node:ekr.20061031131434.120:printBindingsHelper
+#@-node:ekr.20061031131434.119:printBindings & helper
+#@+node:ekr.20070927082205:createMenuFromConfigList
+def createMenuFromConfigList (self,parentName,aList,level=0):
+
+    table = [] ; parentMenu = self.getMenu(parentName)
+
+    for z in aList:
+        kind,val,val2 = z
+        if kind.startswith('@menu'):
+            # Menu names can be unicode without any problem.
+            name = kind[5:].strip()
+            if table:
+                self.createMenuEntries(parentMenu,table)
+            if not self.handleSpecialMenus(name,parentName,table):
+                self.createNewMenu(name,parentName) # Create submenu of parent menu.
+                self.createMenuFromConfigList(name,val,level+1)
+            table = []
+        elif kind == '@item':
+            name = str(val) # Item names must always be ascii.
+            if val2:
+                # Translated names can be unicode.
+                table.append((val2,name),)
+            else:
+                table.append(name)
+        else:
+            g.trace('can not happen: bad kind:',kind)
+
+    if table:
+        self.createMenuEntries(parentMenu,table)
+#@nonl
+#@-node:ekr.20070927082205:createMenuFromConfigList
+#@+node:ekr.20031218072017.1723:createMenuEntries
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    # g.trace('c',self.c)
+
+    c = self.c ; f = c.frame ; k = c.k ; trace = False
+    if g.app.unitTesting: return
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
+        accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
+            #k.clearState()
+            #g.trace(stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+#@+node:ekr.20051021091958:<< get label & command or continue >>
+if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+#@nonl
+#@-node:ekr.20051021091958:<< get label & command or continue >>
+#@+node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                if trace: g.trace('1','%20s' % (bunch.val),commandName)
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1:<< compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@-node:ekr.20051021100806.1:<< compute emacs_name >>
+#@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+#@+node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+#@-node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+#@-node:ekr.20031218072017.1723:createMenuEntries
+#@-node:ekr.20080812072419.6:Abbreviate Alt+Key+1 to Alt+1, but *only* in menus
+#@-node:ekr.20080811174246.2:Cleanups
 #@+node:ekr.20080812072419.3:Removed hard paths from open-with
 @nocolor
 
@@ -23753,7 +24602,7 @@ following in myLeoSettings.leo:
 @settings-->Plugins-->Open With plugin-->@openwith Idle = Alt+Shift
 +Ctrl+I
 
-Note that the body text contains the actual path. 
+Note that the body text contains the actual path.
 
 @color
 #@+node:ekr.20031218072017.2823:openWith and allies
@@ -23986,7 +24835,6 @@ def openWithTempFilePath (self,p,ext):
 #@-node:ekr.20031218072017.2832:c.openWithTempFilePath
 #@-node:ekr.20031218072017.2823:openWith and allies
 #@-node:ekr.20080812072419.3:Removed hard paths from open-with
-#@-node:ekr.20080811174246.2:Cleanups
 #@+node:ekr.20080811174246.3:Docs
 #@+node:ekr.20080624120440.4:Improved docs for @ignore
 @nocolor
