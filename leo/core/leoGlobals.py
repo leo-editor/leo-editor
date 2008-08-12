@@ -4697,7 +4697,9 @@ def computeWindowTitle (fileName):
 #@+node:ekr.20031218072017.3138:g.executeScript
 def executeScript (name):
 
-    """Execute a script whose short python file name is given"""
+    """Execute a script whose short python file name is given.
+
+    This is called only from the scripts_menu plugin."""
 
     mod_name,ext = g.os_path_splitext(name)
     theFile = None
