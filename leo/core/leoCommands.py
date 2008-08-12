@@ -1792,30 +1792,32 @@ class baseCommands:
         n = self.applyLineNumberMappingIfAny(n) #bwm
         if n==1:
             p = root ; n2 = 1 ; found = True
-        elif n >= len(lines):
-            p = root ; found = False
-            n2 = p.bodyString().count('\n')
-        elif root.isAtAsisFileNode():
+        elif root.isAtAsisFileNode() or root.isAtNoSentFileNode():
             #@        << count outline lines, setting p,n2,found >>
-            #@+node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent only)
+            #@+node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent/asis only)
             p = lastv = root
             prev = 0 ; found = False
+            isNosent = root.isAtNoSentFileNode()
 
             for p in p.self_and_subtree_iter():
                 lastv = p.copy()
                 s = p.bodyString()
-                lines = s.count('\n')
-                if len(s) > 0 and s[-1] != '\n':
-                    lines += 1
-                # g.pr(lines,prev,p)
-                if prev + lines >= n:
+                if isNosent:
+                    s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
+                n_lines = s.count('\n')
+                if len(s) > 0 and s[-1] != '\n': n_lines += 1
+                # g.trace(n,prev,n_lines,p.headString())
+                if prev + n_lines >= n:
                     found = True ; break
-                prev += lines
+                prev += n_lines
 
             p = lastv
             n2 = max(1,n-prev)
-            #@-node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent only)
+            #@-node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent/asis only)
             #@nl
+        elif n >= len(lines):
+            p = root ; found = False
+            n2 = p.bodyString().count('\n')
         else:
             vnodeName,childIndex,gnx,n2,delim = self.convertLineToVnodeNameIndexLine(lines,n,root,scriptFind)
             found = True
