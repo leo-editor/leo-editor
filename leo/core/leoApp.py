@@ -204,6 +204,24 @@ class LeoApp:
             "w"     : "cweb",
             "xml"   : "xml",
         }
+
+        # Extra language extensions, used to associate extensions with mode files.
+        # Used by importCommands.languageForExtension.
+        # Keys are extensions, values are corresponding mode file (without .py)
+        self.extra_extension_dict = {
+            'actionscript': 'actionscript',
+            'ada':  'ada95',
+            'ahk':  'ahk',
+            'awk':  'awk',
+            # 'bas':  'basic',
+            'cpp':  'c',
+            'el':   'lisp',
+            'f':    'fortran',
+            'pod':  'perl',
+            'tcl':  'tcl',
+            # 'w':  'cweb',
+        }
+        #@nonl
         #@-node:ekr.20031218072017.368:<< define global data structures >> app
         #@nl
     #@-node:ekr.20031218072017.1416:app.__init__
