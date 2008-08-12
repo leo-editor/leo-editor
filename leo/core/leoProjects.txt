@@ -18339,9 +18339,15 @@ def propagate_changes(self, old_public_file, old_private_file):
 
     # g.trace('old_public_file',old_public_file)
 
-    old_public_lines  = file(old_public_file).readlines()
+    # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
+    # old_public_lines  = file(old_public_file).readlines()
+    s = file(old_public_file).read()
+    if s and not s.endswith('\n'): s = s + '\n'
+    old_public_lines = g.splitLines(s)
     old_private_lines = file(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
+    if not marker:
+        return False
 
     new_private_lines = x.propagate_changed_lines(
         old_public_lines,
@@ -18382,7 +18388,11 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
 
     '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
 
-    x = self ; marker = x.marker_from_extension(source_fn)
+    x = self
+
+    marker = x.marker_from_extension(source_fn)
+    if not marker:
+        return
 
     old_lines = file(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
@@ -18641,6 +18651,7 @@ def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_l
 #@+node:ekr.20031218072017.368:<< define global data structures >> app
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
     "ada" : "--",
     "actionscript" : "// /* */", #jason 2003-07-03
     "autohotkey" : "; /* */", #TL - AutoHotkey language
@@ -18654,6 +18665,7 @@ self.language_delims_dict = {
     "fortran" : "C",
     "fortran90" : "!",
     "html" : "<!-- -->",
+    "ini": ";",
     "java" : "// /* */",
     "latex" : "%",
     "lua" : "--",  # ddm 13/02/06
@@ -18673,6 +18685,7 @@ self.language_delims_dict = {
 }
 
 self.language_extension_dict = {
+    # Keys are languages, values are extensions.
     "ada" : "ads",
     "actionscript" : "as", #jason 2003-07-03
     "autohotkey" : "ahk", #TL - AutoHotkey language
@@ -18685,6 +18698,7 @@ self.language_extension_dict = {
     "fortran" : "f",
     "fortran90" : "f",
     "html" : "html",
+    "ini": "ini",
     "java" : "java",
     "latex" : "tex", # 1/8/04
     "lua" : "lua",  # ddm 13/02/06
@@ -18708,6 +18722,7 @@ self.language_extension_dict = {
 }
 
 self.extension_dict = {
+    # Keys are extensions, values are languages.
     "ads"   : "ada",
     "adb"   : "ada",
     "ahk"   : "autohotkey", #TL - AutoHotkey language
@@ -18719,7 +18734,9 @@ self.extension_dict = {
     "el"    : "elisp",
     "forth" : "forth",
     "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
     "html"  : "html",
+    "ini"   : "ini",
     "java"  : "java",
     "lua" : "lua",  # ddm 13/02/06
     "noweb" : "nw",
@@ -18762,26 +18779,25 @@ def marker_from_extension (self,filename):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
+    if not filename: return None
+    root,ext = g.os_path_splitext(filename)
     delims = g.comment_delims_from_extension(filename)
     for i in (0,1):
-        if delims[i] is not None:
+        if delims[i]:
+            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
             return delims[i]+'@'
-
-    # Try some other choices.
-    root, ext = os.path.splitext(filename)
 
     if ext=='.tmp':
         root, ext = os.path.splitext(root)
-
-    if ext in('.h', '.c'):
-        marker = "//@"
-    elif ext in(".py", ".cfg", ".ksh", ".txt"):
+    if ext in('.cfg','.ksh','.txt'):
         marker = '#@'
-    elif ext in (".bat",):
+    elif ext in ('.bat',):
         marker = "REM@"
     else:
-        self.error("extension '%s' not known" % ext)
-        marker = '#@' # Bug fix: 2008/8/4
+        self.error("extension '%s' not known" % (ext),color='blue')
+        # We **must not** use a bogus marker!
+        # This could cause great problems when (later), a real marker becomes known.
+        marker = None
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -20906,7 +20922,11 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
 
     '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
 
-    x = self ; marker = x.marker_from_extension(source_fn)
+    x = self
+
+    marker = x.marker_from_extension(source_fn)
+    if not marker:
+        return
 
     old_lines = file(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
@@ -21613,26 +21633,25 @@ def marker_from_extension (self,filename):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
+    if not filename: return None
+    root,ext = g.os_path_splitext(filename)
     delims = g.comment_delims_from_extension(filename)
     for i in (0,1):
-        if delims[i] is not None:
+        if delims[i]:
+            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
             return delims[i]+'@'
-
-    # Try some other choices.
-    root, ext = os.path.splitext(filename)
 
     if ext=='.tmp':
         root, ext = os.path.splitext(root)
-
-    if ext in('.h', '.c'):
-        marker = "//@"
-    elif ext in(".py", ".cfg", ".ksh", ".txt"):
+    if ext in('.cfg','.ksh','.txt'):
         marker = '#@'
-    elif ext in (".bat",):
+    elif ext in ('.bat',):
         marker = "REM@"
     else:
-        self.error("extension '%s' not known" % ext)
-        marker = '#@' # Bug fix: 2008/8/4
+        self.error("extension '%s' not known" % (ext),color='blue')
+        # We **must not** use a bogus marker!
+        # This could cause great problems when (later), a real marker becomes known.
+        marker = None
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -22063,9 +22082,15 @@ def propagate_changes(self, old_public_file, old_private_file):
 
     # g.trace('old_public_file',old_public_file)
 
-    old_public_lines  = file(old_public_file).readlines()
+    # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
+    # old_public_lines  = file(old_public_file).readlines()
+    s = file(old_public_file).read()
+    if s and not s.endswith('\n'): s = s + '\n'
+    old_public_lines = g.splitLines(s)
     old_private_lines = file(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
+    if not marker:
+        return False
 
     new_private_lines = x.propagate_changed_lines(
         old_public_lines,
@@ -22141,7 +22166,11 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
 
     '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
 
-    x = self ; marker = x.marker_from_extension(source_fn)
+    x = self
+
+    marker = x.marker_from_extension(source_fn)
+    if not marker:
+        return
 
     old_lines = file(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
@@ -22193,26 +22222,25 @@ def marker_from_extension (self,filename):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
+    if not filename: return None
+    root,ext = g.os_path_splitext(filename)
     delims = g.comment_delims_from_extension(filename)
     for i in (0,1):
-        if delims[i] is not None:
+        if delims[i]:
+            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
             return delims[i]+'@'
-
-    # Try some other choices.
-    root, ext = os.path.splitext(filename)
 
     if ext=='.tmp':
         root, ext = os.path.splitext(root)
-
-    if ext in('.h', '.c'):
-        marker = "//@"
-    elif ext in(".py", ".cfg", ".ksh", ".txt"):
+    if ext in('.cfg','.ksh','.txt'):
         marker = '#@'
-    elif ext in (".bat",):
+    elif ext in ('.bat',):
         marker = "REM@"
     else:
-        self.error("extension '%s' not known" % ext)
-        marker = '#@' # Bug fix: 2008/8/4
+        self.error("extension '%s' not known" % (ext),color='blue')
+        # We **must not** use a bogus marker!
+        # This could cause great problems when (later), a real marker becomes known.
+        marker = None
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -23737,11 +23765,7 @@ def resolveArchivedPosition(self,archivedPosition,root_v):
 #@-node:ekr.20080804063523.3:allow v.uA's in @thin and @shadow nodes
 #@-node:ekr.20080702123133.2:4.5 b2
 #@+node:ekr.20080810085333.3:4.5 b3
-#@+node:ekr.20080811174246.2:Cleanups
-#@+node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
-^[ ]*#[ ]*try:.*\n
-#@nonl
-#@-node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
+#@+node:ekr.20080812093903.2:Bugs
 #@+node:ekr.20080812072419.6:Abbreviate Alt+Key+1 to Alt+1, but *only* in menus
 @nocolor
 
@@ -24590,7 +24614,6 @@ else:
 #@-node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
 #@-node:ekr.20031218072017.1723:createMenuEntries
 #@-node:ekr.20080812072419.6:Abbreviate Alt+Key+1 to Alt+1, but *only* in menus
-#@-node:ekr.20080811174246.2:Cleanups
 #@+node:ekr.20080812072419.3:Removed hard paths from open-with
 @nocolor
 
@@ -24837,6 +24860,274 @@ def openWithTempFilePath (self,p,ext):
 #@-node:ekr.20031218072017.2832:c.openWithTempFilePath
 #@-node:ekr.20031218072017.2823:openWith and allies
 #@-node:ekr.20080812072419.3:Removed hard paths from open-with
+#@+node:ekr.20080812093903.1:Made @shadow work for unknown extensions
+@nocolor
+
+http://mail.google.com/mail/#inbox/11bb727fb9ef788c
+
+
+@shadow test.ini
+...
+
+When I change test.ini outside Leo, the @shadow
+node doesn't reflect the change.
+
+The unknown extension seems to prevent proper syncing of
+public and shadow files.
+
+==========
+
+The fix was to avoid an error: just issue a warning.
+I also added '.ini' to the list of known extensions.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.1382:set_delims_from_language
+# Returns a tuple (single,start,end) of comment delims
+
+def set_delims_from_language(language):
+
+    # g.trace(g.callers())
+
+    val = app.language_delims_dict.get(language)
+    if val:
+        delim1,delim2,delim3 = g.set_delims_from_string(val)
+        if delim2 and not delim3:
+            return None,delim1,delim2
+        else: # 0,1 or 3 params.
+            return delim1,delim2,delim3
+    else:
+        return None, None, None # Indicate that no change should be made
+#@-node:ekr.20031218072017.1382:set_delims_from_language
+#@+node:ekr.20031218072017.368:<< define global data structures >> app
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada" : "--",
+    "actionscript" : "// /* */", #jason 2003-07-03
+    "autohotkey" : "; /* */", #TL - AutoHotkey language
+    "c" : "// /* */", # C, C++ or objective C.
+    "csharp" : "// /* */", # C#
+    "cpp" : "// /* */",# C++.
+    "css" : "/* */", # 4/1/04
+    "cweb" : "@q@ @>", # Use the "cweb hack"
+    "elisp" : ";",
+    "forth" : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran" : "C",
+    "fortran90" : "!",
+    "html" : "<!-- -->",
+    "ini": ";",
+    "java" : "// /* */",
+    "latex" : "%",
+    "lua" : "--",  # ddm 13/02/06
+    "pascal" : "// { }",
+    "perl" : "#",
+    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php" : "// /* */", # 6/23/07: was "//",
+    "plain" : "#", # We must pick something.
+    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python" : "#",
+    "rapidq" : "'", # fil 2004-march-11
+    "rebol" : ";",  # jason 2003-07-03
+    "shell" : "#",  # shell scripts
+    "tcltk" : "#",
+    "unknown" : "#", # Set when @comment is seen.
+    "xml" : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada" : "ads",
+    "actionscript" : "as", #jason 2003-07-03
+    "autohotkey" : "ahk", #TL - AutoHotkey language
+    "c" : "c",
+    "cpp" : "cpp",
+    "css" : "css", # 4/1/04
+    "cweb" : "w",
+    "elisp" : "el",
+    "forth" : "forth",
+    "fortran" : "f",
+    "fortran90" : "f",
+    "html" : "html",
+    "ini": "ini",
+    "java" : "java",
+    "latex" : "tex", # 1/8/04
+    "lua" : "lua",  # ddm 13/02/06
+    "noweb" : "nw",
+    "pascal" : "p",
+    # "perl" : "perl",
+    # "perlpod" : "perl",
+    "perl" : "pl",      # 11/7/05
+    "perlpod" : "pod",  # 11/7/05
+    "php" : "php",
+    "plain" : "txt",
+    "python" : "py",
+    "plsql" : "sql", # qt02537 2005-05-27
+    "rapidq" : "bas", # fil 2004-march-11
+    "rebol" : "r",    # jason 2003-07-03
+    "shell" : "sh",   # DS 4/1/04
+    "tex" : "tex",
+    "tcltk" : "tcl",
+    "unknown" : "txt", # Set when @comment is seen.
+    "xml": "xml",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ads"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey", #TL - AutoHotkey language
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "c"     : "c",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "lua" : "lua",  # ddm 13/02/06
+    "noweb" : "nw",
+    "p"     : "pascal",
+    # "perl"  : "perl",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "w"     : "cweb",
+    "xml"   : "xml",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada':  'ada95',
+    'ahk':  'ahk',
+    'awk':  'awk',
+    # 'bas':  'basic',
+    'cpp':  'c',
+    'el':   'lisp',
+    'f':    'fortran',
+    'pod':  'perl',
+    'tcl':  'tcl',
+    # 'w':  'cweb',
+}
+#@nonl
+#@-node:ekr.20031218072017.368:<< define global data structures >> app
+#@+node:EKR.20040504150046.4:g.comment_delims_from_extension
+def comment_delims_from_extension(filename):
+
+    """
+    Return the comment delims corresponding to the filename's extension.
+
+    >>> import leo.core.leoGlobals as g
+    >>> g.comment_delims_from_extension(".py")
+    ('#', None, None)
+
+    >>> g.comment_delims_from_extension(".c")
+    ('//', '/*', '*/')
+
+    >>> g.comment_delims_from_extension(".html")
+    (None, '<!--', '-->')
+
+    """
+
+    root, ext = os.path.splitext(filename)
+    if ext == '.tmp':
+        root, ext = os.path.splitext(root)
+
+    language = g.app.extension_dict.get(ext[1:])
+    if ext:
+        return g.set_delims_from_language(language)
+    else:
+        g.trace("unknown extension %s" % ext)
+        return None,None,None
+#@-node:EKR.20040504150046.4:g.comment_delims_from_extension
+#@+node:ekr.20080708094444.9:x.marker_from_extension
+def marker_from_extension (self,filename):
+
+    '''Return the sentinel delimiter comment to be used for filename.'''
+
+    if not filename: return None
+    root,ext = g.os_path_splitext(filename)
+    delims = g.comment_delims_from_extension(filename)
+    for i in (0,1):
+        if delims[i]:
+            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
+            return delims[i]+'@'
+
+    if ext=='.tmp':
+        root, ext = os.path.splitext(root)
+    if ext in('.cfg','.ksh','.txt'):
+        marker = '#@'
+    elif ext in ('.bat',):
+        marker = "REM@"
+    else:
+        self.error("extension '%s' not known" % (ext),color='blue')
+        # We **must not** use a bogus marker!
+        # This could cause great problems when (later), a real marker becomes known.
+        marker = None
+
+    return marker
+#@-node:ekr.20080708094444.9:x.marker_from_extension
+#@-node:ekr.20080812093903.1:Made @shadow work for unknown extensions
+#@+node:ekr.20080812093903.3:Force public @shadow files to end in a newline
+# This is an emergency measure.
+# I hope to avoid this by making the update algorithm smarter.
+#@nonl
+#@+node:ekr.20080708094444.36:x.propagate_changes
+def propagate_changes(self, old_public_file, old_private_file):
+
+    '''Propagate the changes from the public file (without_sentinels)
+    to the private file (with_sentinels)'''
+
+    x = self
+
+    # g.trace('old_public_file',old_public_file)
+
+    # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
+    # old_public_lines  = file(old_public_file).readlines()
+    s = file(old_public_file).read()
+    if s and not s.endswith('\n'): s = s + '\n'
+    old_public_lines = g.splitLines(s)
+    old_private_lines = file(old_private_file).readlines()
+    marker = x.marker_from_extension(old_public_file)
+    if not marker:
+        return False
+
+    new_private_lines = x.propagate_changed_lines(
+        old_public_lines,
+        old_private_lines,
+        marker)
+
+    fn = old_private_file
+    copy = not os.path.exists(fn) or new_private_lines != old_private_lines
+
+    if copy and x.errors == 0:
+        s = ''.join(new_private_lines)
+        x.replaceFileWithString(fn,s)
+
+    return copy
+#@-node:ekr.20080708094444.36:x.propagate_changes
+#@-node:ekr.20080812093903.3:Force public @shadow files to end in a newline
+#@-node:ekr.20080812093903.2:Bugs
+#@+node:ekr.20080811174246.2:Cleanups
+#@+node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
+^[ ]*#[ ]*try:.*\n
+#@nonl
+#@-node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
+#@-node:ekr.20080811174246.2:Cleanups
 #@+node:ekr.20080811174246.3:Docs
 #@+node:ekr.20080624120440.4:Improved docs for @ignore
 @nocolor
@@ -25135,6 +25426,7 @@ For example, @auto x.css would put @language css in the root node.
 #@+node:ekr.20031218072017.368:<< define global data structures >> app
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
     "ada" : "--",
     "actionscript" : "// /* */", #jason 2003-07-03
     "autohotkey" : "; /* */", #TL - AutoHotkey language
@@ -25148,6 +25440,7 @@ self.language_delims_dict = {
     "fortran" : "C",
     "fortran90" : "!",
     "html" : "<!-- -->",
+    "ini": ";",
     "java" : "// /* */",
     "latex" : "%",
     "lua" : "--",  # ddm 13/02/06
@@ -25167,6 +25460,7 @@ self.language_delims_dict = {
 }
 
 self.language_extension_dict = {
+    # Keys are languages, values are extensions.
     "ada" : "ads",
     "actionscript" : "as", #jason 2003-07-03
     "autohotkey" : "ahk", #TL - AutoHotkey language
@@ -25179,6 +25473,7 @@ self.language_extension_dict = {
     "fortran" : "f",
     "fortran90" : "f",
     "html" : "html",
+    "ini": "ini",
     "java" : "java",
     "latex" : "tex", # 1/8/04
     "lua" : "lua",  # ddm 13/02/06
@@ -25202,6 +25497,7 @@ self.language_extension_dict = {
 }
 
 self.extension_dict = {
+    # Keys are extensions, values are languages.
     "ads"   : "ada",
     "adb"   : "ada",
     "ahk"   : "autohotkey", #TL - AutoHotkey language
@@ -25213,7 +25509,9 @@ self.extension_dict = {
     "el"    : "elisp",
     "forth" : "forth",
     "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
     "html"  : "html",
+    "ini"   : "ini",
     "java"  : "java",
     "lua" : "lua",  # ddm 13/02/06
     "noweb" : "nw",

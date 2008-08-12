@@ -2,7 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
-#@+node:ekr.20080810085333.5:Under two hours 21
+#@+node:ekr.20080810085333.5:Under two hours 22
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
 @nocolor
 
@@ -1737,7 +1737,7 @@ possible to make leo to auto-scroll, so the cursor is always visible?
 #@-node:ekr.20080730212711.6:ASAP Features 8
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
-#@-node:ekr.20080810085333.5:Under two hours 21
+#@-node:ekr.20080810085333.5:Under two hours 22
 #@+node:ekr.20080810085333.7:Under two days 3
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
