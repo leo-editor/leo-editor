@@ -2,23 +2,13 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 code reorgs, @shadow & vim bindings
-#@+node:ekr.20080810085333.5:Under two hours 22
-#@+node:ekr.20080810085333.6:First 3
+#@+node:ekr.20080810085333.5:Under two hours 21
 #@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
 What uA should be used to specify node colors?
 
 if the foreground / background color API uses uAs,
 would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
 #@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
-#@+node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
-@nocolor
-
-http://mail.google.com/mail/#label/Leo/1182d78133aa0ecf
-
-Create a simple template myLeoSettings.leo in $HOME when you try to
-open it and it doesn't exist
-#@nonl
-#@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
 #@+node:ekr.20031218072017.733:Add support for @args list to headlines
 @nocolor
 
@@ -171,7 +161,6 @@ def writeScriptFile (self,script):
 #@-node:ekr.20070115135502:writeScriptFile
 #@-node:ekr.20031218072017.2140:c.executeScript & helpers
 #@-node:ekr.20031218072017.733:Add support for @args list to headlines
-#@-node:ekr.20080810085333.6:First 3
 #@+node:ekr.20080517102922.1:Files stuff 7
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
@@ -1494,7 +1483,7 @@ possible to make leo to auto-scroll, so the cursor is always visible?
 #@-node:ekr.20080730212711.6:ASAP Features 8
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
-#@-node:ekr.20080810085333.5:Under two hours 22
+#@-node:ekr.20080810085333.5:Under two hours 21
 #@+node:ekr.20080810085333.7:Under two days 3
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
