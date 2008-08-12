@@ -2556,7 +2556,7 @@ class atFile:
         fn = g.os_path_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
 
-        if not toString and not self.shouldWriteAtShadowNode(p,exists,force):
+        if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
             return False
 
         c.endEditing() # Capture the current headline.
@@ -2628,11 +2628,15 @@ class atFile:
     #@-at
     #@@c
 
-    def shouldWriteAtShadowNode (self,p,exists,force):
+    def shouldWriteAtShadowNode (self,p,exists,force,fn):
 
         '''Return True if we should write the @shadow node at p.'''
 
-        if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        at = self ; x = at.c.shadowController
+        if not x.marker_from_extension(fn,suppressErrors=True):
+            g.es_print('unknown extension. can not write:',p.headString(),color='red')
+            return False # Never write files with unknown extensions
+        elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
             return True
         elif not exists: # We can write a non-existent file without danger.
             return True
