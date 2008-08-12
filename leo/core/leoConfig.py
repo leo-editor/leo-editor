@@ -1845,8 +1845,71 @@ class configClass:
                     self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
                     self.setIvarsFromSettings(c)
         self.readRecentFiles(localConfigFile)
+        self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
+    #@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile
+    def createMyLeoSettingsFile (self,localConfigFile):
+
+        '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
+
+        #@    << define s, a minimalMyLeoSettings.leo string >>
+        #@+node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+        s = '''<?xml version="1.0" encoding="utf-8"?>
+        <?xml-stylesheet ekr_test?>
+        <leo_file>
+        <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+        <globals body_outline_ratio="0.5">
+        	<global_window_position top="26" left="122" height="781" width="953"/>
+        	<global_log_window_position top="0" left="0" height="0" width="0"/>
+        </globals>
+        <preferences/>
+        <find_panel_settings/>
+        <vnodes>
+        <v t="ekr.20070411164127" str_leo_pos="0"><vh>@chapters</vh>
+        <v t="ekr.20070411164127.1"><vh>@chapter trash</vh></v>
+        </v>
+        <v t="ekr.20070411164127.2"><vh>@settings</vh></v>
+        </vnodes>
+        <tnodes>
+        <t tx="ekr.20070411164127"></t>
+        <t tx="ekr.20070411164127.1">trash</t>
+        <t tx="ekr.20070411164127.2"></t>
+        </tnodes>
+        </leo_file>
+        '''
+        #@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+        #@nl
+
+        for path in (
+            localConfigFile,
+            self.myGlobalConfigFile,
+            self.myHomeConfigFile
+        ):
+            # g.trace(path)
+            if path:
+                path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+                if g.os_path_exists(path):
+                    # g.trace('exists',path)
+                    return
+
+        if g.app.homeDir:
+            path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+            try:
+                f = file(path,'wb')
+                f.write(s)
+                f.close()
+                self.myHomeConfigFile = path
+                # It's early in the startup: g.es does not work yet.
+                s = 'created: %s' % (self.myHomeConfigFile)
+                g.pr(s)
+                g.app.logWaiting.append((s+'\n','red'),)
+            except Exception:
+                s = 'can not create: %s' % (self.myHomeConfigFile)
+                g.pr(s)
+                g.app.logWaiting.append((s+'\n','red'),)
+                g.es_exception()
+    #@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile
     #@+node:ekr.20041117085625:g.app.config.openSettingsFile
     def openSettingsFile (self,path):
 
