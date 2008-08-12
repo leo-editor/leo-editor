@@ -317,7 +317,7 @@ class scriptingController:
 
         return b
     #@nonl
-    #@+node:ekr.20070926085149.1:executeScriptFromSettingButton
+    #@+node:ekr.20070926085149.1:executeScriptFromSettingButton (mod_scripting)
     def executeScriptFromSettingButton (self,b,script,buttonText):
 
         '''Called from callbacks to execute the script in node p.'''
@@ -337,11 +337,11 @@ class scriptingController:
         if 0: # Do *not* set focus here: the script may have changed the focus.
             c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:ekr.20070926085149.1:executeScriptFromSettingButton
+    #@-node:ekr.20070926085149.1:executeScriptFromSettingButton (mod_scripting)
     #@-node:ekr.20070926085149:createAtButtonFromSettingHelper & callback
     #@-node:ekr.20070926084600:handleAtButtonSetting & helper
     #@-node:ekr.20080312071248.1:createCommonButtons & helper
-    #@+node:ekr.20080312071248.2:createCommonCommands
+    #@+node:ekr.20080312071248.2:createCommonCommands (mod_scripting)
     def createCommonCommands (self):
 
         c = self.c ; k = c.k
@@ -363,7 +363,7 @@ class scriptingController:
                 g.es('global @command',self.cleanButtonText(h).lower(),
                     '',shortcut or '',color='purple')
             k.registerCommand(h,shortcut,commonCommandCallback,verbose=False)
-    #@-node:ekr.20080312071248.2:createCommonCommands
+    #@-node:ekr.20080312071248.2:createCommonCommands (mod_scripting)
     #@+node:ekr.20060328125248.20:createRunScriptIconButton 'run-script' & callback
     def createRunScriptIconButton (self):
 
@@ -376,7 +376,7 @@ class scriptingController:
             statusLine='Run script in selected node',
             bg='MistyRose1',
         )
-    #@+node:ekr.20060328125248.21:runScriptCommand
+    #@+node:ekr.20060328125248.21:runScriptCommand (mod_scripting)
     def runScriptCommand (self,event=None):
 
         '''Called when user presses the 'run-script' button or executes the run-script command.'''
@@ -388,7 +388,7 @@ class scriptingController:
             # Do not assume the script will want to remain in this commander.
             c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:ekr.20060328125248.21:runScriptCommand
+    #@-node:ekr.20060328125248.21:runScriptCommand (mod_scripting)
     #@-node:ekr.20060328125248.20:createRunScriptIconButton 'run-script' & callback
     #@+node:ekr.20060522105937:createDebugIconButton 'debug-script' & callback
     def createDebugIconButton (self):
@@ -516,7 +516,7 @@ class scriptingController:
                 '',shortcut or '', color='purple')
         b = self.createAtButtonHelper(p,h,statusLine,shortcut,verbose=False)
     #@-node:ekr.20060328125248.12:handleAtButtonNode @button
-    #@+node:ekr.20060328125248.10:handleAtCommandNode @command
+    #@+node:ekr.20060328125248.10:handleAtCommandNode @command (mod_scripting)
     def handleAtCommandNode (self,p):
 
         '''Handle @command name [@key[=]shortcut].'''
@@ -550,7 +550,7 @@ class scriptingController:
                 '',shortcut or '', color='purple')
         k.registerCommand(commandName,shortcut,atCommandCallback,verbose=False)
     #@nonl
-    #@-node:ekr.20060328125248.10:handleAtCommandNode @command
+    #@-node:ekr.20060328125248.10:handleAtCommandNode @command (mod_scripting)
     #@+node:ekr.20060328125248.13:handleAtPluginNode @plugin
     def handleAtPluginNode (self,p):
 
@@ -582,7 +582,7 @@ class scriptingController:
                 g.es("can not load plugin: %s" % (theFile),color="blue")
     #@nonl
     #@-node:ekr.20060328125248.13:handleAtPluginNode @plugin
-    #@+node:ekr.20060328125248.14:handleAtScriptNode @script
+    #@+node:ekr.20060328125248.14:handleAtScriptNode @script (mod_scripting)
     def handleAtScriptNode (self,p):
 
         '''Handle @script nodes.'''
@@ -603,7 +603,7 @@ class scriptingController:
             # Do not assume the script will want to remain in this commander.
             c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:ekr.20060328125248.14:handleAtScriptNode @script
+    #@-node:ekr.20060328125248.14:handleAtScriptNode @script (mod_scripting)
     #@-node:ekr.20060328125248.8:createAllButtons & helpers
     #@+node:ekr.20061014075212:Utils
     #@+node:ekr.20060929135558:cleanButtonText
@@ -661,7 +661,7 @@ class scriptingController:
 
         return b
     #@nonl
-    #@+node:ekr.20060328125248.28:executeScriptFromButton
+    #@+node:ekr.20060328125248.28:executeScriptFromButton (mod_scripting)
     def executeScriptFromButton (self,p,b,buttonText):
 
         '''Called from callbacks to execute the script in node p.'''
@@ -681,7 +681,7 @@ class scriptingController:
         if 0: # Do *not* set focus here: the script may have changed the focus.
             c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:ekr.20060328125248.28:executeScriptFromButton
+    #@-node:ekr.20060328125248.28:executeScriptFromButton (mod_scripting)
     #@-node:ekr.20060328125248.24:createAtButtonHelper & callback
     #@+node:ekr.20060328125248.17:createIconButton
     def createIconButton (self,text,command,shortcut,statusLine,bg):

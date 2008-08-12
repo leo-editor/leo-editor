@@ -1182,7 +1182,7 @@ scripting = mod_scripting.scriptingController
 class ToolbarScriptingController(scripting, object):
 
     #@    @+others
-    #@+node:bobjack.20080506182829.12:createAtButtonFromSettingHelper & callback
+    #@+node:bobjack.20080506182829.12:createAtButtonFromSettingHelper & callback (ToolbarScriptingController)
     def createAtButtonFromSettingHelper (self,h,script,statusLine,shortcut,bg='LightSteelBlue2'):
 
         '''Create a button from an @button node.
@@ -1237,7 +1237,7 @@ class ToolbarScriptingController(scripting, object):
             pane='button',verbose=False)
 
         return b
-    #@+node:bobjack.20080506182829.13:executeScriptFromSettingButton
+    #@+node:bobjack.20080506182829.13:executeScriptFromSettingButton (ToolbarScriptingController)
     def executeScriptFromSettingButton (self,b,script,buttonText):
 
         '''Called from callbacks to execute the script in node p.'''
@@ -1257,9 +1257,9 @@ class ToolbarScriptingController(scripting, object):
         if 0: # Do *not* set focus here: the script may have changed the focus.
             c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:bobjack.20080506182829.13:executeScriptFromSettingButton
-    #@-node:bobjack.20080506182829.12:createAtButtonFromSettingHelper & callback
-    #@+node:bobjack.20080508051801.2:createAtButtonHelper & callback
+    #@-node:bobjack.20080506182829.13:executeScriptFromSettingButton (ToolbarScriptingController)
+    #@-node:bobjack.20080506182829.12:createAtButtonFromSettingHelper & callback (ToolbarScriptingController)
+    #@+node:bobjack.20080508051801.2:createAtButtonHelper & callback (ToolbarScriptingController)
     def createAtButtonHelper (self,p,h,statusLine,shortcut,bg='LightSteelBlue1',verbose=True):
 
         '''Create a button from an @button node.
@@ -1304,7 +1304,7 @@ class ToolbarScriptingController(scripting, object):
             pane='button',verbose=verbose)
 
         return b
-    #@+node:bobjack.20080508051801.3:executeScriptFromButton
+    #@+node:bobjack.20080508051801.3:executeScriptFromButton (ToolbarScriptingController)
     def executeScriptFromButton (self,p,b,buttonText):
 
         '''Called from callbacks to execute the script in node p.'''
@@ -1324,8 +1324,8 @@ class ToolbarScriptingController(scripting, object):
         if 0: # Do *not* set focus here: the script may have changed the focus.
             c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:bobjack.20080508051801.3:executeScriptFromButton
-    #@-node:bobjack.20080508051801.2:createAtButtonHelper & callback
+    #@-node:bobjack.20080508051801.3:executeScriptFromButton (ToolbarScriptingController)
+    #@-node:bobjack.20080508051801.2:createAtButtonHelper & callback (ToolbarScriptingController)
     #@+node:bobjack.20080425135232.10:getItemData
     def getItemData(self, script):
 
