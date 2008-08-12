@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -260,6 +260,7 @@
 <v t="ekr.20080812102914.2"><vh>child</vh></v>
 </v>
 <v t="ekr.20080812112440.1"><vh>@shadow at-shadow-test.ini</vh></v>
+<v t="ekr.20080812135254.1"><vh>@shadow at-unknown-shadow-test.xyzzy</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk

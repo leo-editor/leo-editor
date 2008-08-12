@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,2,9"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2325,7 +2325,7 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.119" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>
@@ -2431,7 +2431,7 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.1" a="E"><vh>leoShadow</vh>
+<v t="ekr.20080729200342.1"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
 <v t="ekr.20080804124245.1"><vh>passed</vh></v>
@@ -2646,7 +2646,7 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.119" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>
@@ -21628,13 +21628,13 @@ table = (
     ('c','//@'),
     ('h','//@'),
     ('py','#@'),
+    ('xyzzy',None),
 )
 
 for ext,result in table:
     filename = 'x.%s' % ext
     z = x.marker_from_extension(filename)
     assert result == z, 'ext=%s, got %s, expected %s' % (ext,z,result)
-    
-    </t>
+</t>
 </tnodes>
 </leo_file>
