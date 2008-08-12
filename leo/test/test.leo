@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -255,6 +255,9 @@
 <v t="ekr.20080807091201.10"><vh>class Meta</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20080812102914.1" a="E" tnodeList="ekr.20080812102914.1,ekr.20080812102914.2"><vh>@nosent at-nosent-test.py</vh>
+<v t="ekr.20080812102914.2"><vh>child</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2175,5 +2178,10 @@ def exists(path):
 <t tx="ekr.20080811112727.1">False: (recommended) Enable import parsing for @shadow and @auto
 True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080811113441.2"></t>
+<t tx="ekr.20080812102914.1">root first line
+@others
+root last line</t>
+<t tx="ekr.20080812102914.2">child line 1
+child line 2</t>
 </tnodes>
 </leo_file>
