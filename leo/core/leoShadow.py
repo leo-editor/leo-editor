@@ -490,9 +490,15 @@ class shadowController:
 
         # g.trace('old_public_file',old_public_file)
 
-        old_public_lines  = file(old_public_file).readlines()
+        # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
+        # old_public_lines  = file(old_public_file).readlines()
+        s = file(old_public_file).read()
+        if s and not s.endswith('\n'): s = s + '\n'
+        old_public_lines = g.splitLines(s)
         old_private_lines = file(old_private_file).readlines()
         marker = x.marker_from_extension(old_public_file)
+        if not marker:
+            return False
 
         new_private_lines = x.propagate_changed_lines(
             old_public_lines,
@@ -568,7 +574,11 @@ class shadowController:
 
         '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
 
-        x = self ; marker = x.marker_from_extension(source_fn)
+        x = self
+
+        marker = x.marker_from_extension(source_fn)
+        if not marker:
+            return
 
         old_lines = file(source_fn).readlines()
         new_lines, junk = x.separate_sentinels(old_lines,marker)
@@ -620,26 +630,25 @@ class shadowController:
 
         '''Return the sentinel delimiter comment to be used for filename.'''
 
+        if not filename: return None
+        root,ext = g.os_path_splitext(filename)
         delims = g.comment_delims_from_extension(filename)
         for i in (0,1):
-            if delims[i] is not None:
+            if delims[i]:
+                # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
                 return delims[i]+'@'
-
-        # Try some other choices.
-        root, ext = os.path.splitext(filename)
 
         if ext=='.tmp':
             root, ext = os.path.splitext(root)
-
-        if ext in('.h', '.c'):
-            marker = "//@"
-        elif ext in(".py", ".cfg", ".ksh", ".txt"):
+        if ext in('.cfg','.ksh','.txt'):
             marker = '#@'
-        elif ext in (".bat",):
+        elif ext in ('.bat',):
             marker = "REM@"
         else:
-            self.error("extension '%s' not known" % ext)
-            marker = '#@' # Bug fix: 2008/8/4
+            self.error("extension '%s' not known" % (ext),color='blue')
+            # We **must not** use a bogus marker!
+            # This could cause great problems when (later), a real marker becomes known.
+            marker = None
 
         return marker
     #@-node:ekr.20080708094444.9:x.marker_from_extension
