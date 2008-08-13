@@ -1708,7 +1708,7 @@ class leoImportCommands:
 
         if language:
             if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-                    return language
+                return language
 
         return None
     #@-node:ekr.20080811174246.1:languageForExtension
