@@ -679,7 +679,7 @@ class shadowController:
         separate_sentinels
         """
 
-        x = self ; mapping =[None]
+        x = self ; mapping = [None]
 
         i = 0 ; n = len(lines)
         while i < n:
@@ -688,7 +688,7 @@ class shadowController:
                 if x.is_verbatim(line,marker):
                     i += 1
                     if i < n:
-                        mapping(append(i+1))
+                        mapping.append(i+1)
                     else:
                         x.verbatim_error()
             else:
