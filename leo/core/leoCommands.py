@@ -1629,7 +1629,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.2861:Edit Menu...
     #@+node:ekr.20031218072017.2862:Edit top level
     #@+node:ekr.20031218072017.2140:c.executeScript & helpers
-    def executeScript(self,event=None,p=None,script=None,
+    def executeScript(self,event=None,args=None,p=None,script=None,
         useSelectedText=True,define_g=True,define_name='__main__',silent=False):
 
         """This executes body text as a Python script.
@@ -1651,6 +1651,9 @@ class baseCommands:
                     p = c.currentPosition()
                     d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
                     if define_name: d['__name__'] = define_name
+                    if args:
+                        # g.trace('setting sys.argv',args)
+                        sys.argv = args
                     # A kludge: reset c.inCommand here to handle the case where we *never* return.
                     # (This can happen when there are multiple event loops.)
                     # This does not prevent zombie windows if the script puts up a dialog...
