@@ -151,6 +151,7 @@
 <v t="ekr.20060822111759"><vh>How can I reuse @button nodes in multiple files?</vh></v>
 </v>
 <v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
+<v t="ekr.20080813064908.2"><vh>My old .leo files won't load using Leo 4.5 or later. What should I do?</vh></v>
 <v t="ekr.20060210070421"><vh>@rst-ignore I can't run Leo from a cvs sandbox.  What's going on?</vh></v>
 <v t="ekr.20050908113904"><vh>Can I scroll the outline pane with the mouse wheel?</vh></v>
 <v t="ekr.20050830115714.114"><vh>Control-Shift backspace doesn't work.  What should I do?</vh></v>
@@ -31592,6 +31593,27 @@ What's New in Leo 4.5
   open, save, save-as, save-to, read-outline-only, read-file-into-node,
   write-file-from-node and all the import/export commands.
   
+</t>
+<t tx="ekr.20080813064908.2">In version 4.5, Leo changed to using a sax parser for .leo files. This can cause
+problems if your .leo file contains invalid characters.
+Bugs in previous versions of Leo permitted these bad charactgers to appear.
+
+The sax parser complains that these characters are not valid in .xml files.
+Remove these invalid characters as follows:
+
+1. Run Leo from a console, and load the .leo file.
+   Near the bottom of the error message you will see a line like::
+
+    SAXParseException: &lt;unknown&gt;:123:25: not well-formed (invalid token)
+    
+   This line reports a bad character at character 25 of line 123.
+
+2. Open the .leo file in an external editor.
+   The Scite editor, http://www.scintilla.org/SciTE.html,
+   is a good choice because it clearly shows non-printing characters.
+   Remove the invalid character, save the .leo file.
+   
+Repeat steps 1 and 2 until all invalid characters are gone.
 </t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
