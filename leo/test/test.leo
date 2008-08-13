@@ -248,6 +248,7 @@
 <v t="ekr.20080808122543.1"><vh>Path wrappers</vh></v>
 <v t="ekr.20080808122543.2"><vh>copyDir</vh></v>
 </v>
+<v t="ekr.20080813080809.1"><vh>Tests for @shadow</vh>
 <v t="ekr.20080807091001.1"><vh>@@shadow python-import-test.py</vh>
 <v t="ekr.20080807091201.7"><vh>python-import-test declarations</vh></v>
 <v t="ekr.20080807091201.8"><vh>class Person</vh>
@@ -255,12 +256,16 @@
 <v t="ekr.20080807091201.10"><vh>class Meta</vh></v>
 </v>
 </v>
+<v t="ekr.20080812112440.1"><vh>@@shadow at-shadow-test.ini</vh></v>
+<v t="ekr.20080812135254.1"><vh>@@shadow at-unknown-shadow-test.xyzzy</vh></v>
+</v>
 </v>
 <v t="ekr.20080812102914.1" tnodeList="ekr.20080812102914.1,ekr.20080812102914.2"><vh>@nosent at-nosent-test.py</vh>
 <v t="ekr.20080812102914.2"><vh>child</vh></v>
 </v>
-<v t="ekr.20080812112440.1"><vh>@shadow at-shadow-test.ini</vh></v>
-<v t="ekr.20080812135254.1"><vh>@shadow at-unknown-shadow-test.xyzzy</vh></v>
+<v t="ekr.20080813080627.1"
+marks="ekr.20080813080627.3,"><vh>@shadow at-shadow-attributes-test.py</vh></v>
+<v t="ekr.20080813100905.1"><vh>@button args-test @args = a,b,c</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2185,5 +2190,18 @@ True: @shadow and @auto create a single node for the entire file.</t>
 root last line</t>
 <t tx="ekr.20080812102914.2">child line 1
 child line 2</t>
+<t tx="ekr.20080812112440.1">@language ini
+[section]
+blah blah
+changed
+changed2
+changed3
+changed4
+change5</t>
+<t tx="ekr.20080812135254.1"># Line one
+# line two</t>
+<t tx="ekr.20080813080809.1"></t>
+<t tx="ekr.20080813100905.1">import sys
+print sys.argv</t>
 </tnodes>
 </leo_file>

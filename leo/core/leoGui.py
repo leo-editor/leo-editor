@@ -397,8 +397,8 @@ class leoGui:
         pass # Not an error.
     #@-node:ekr.20031218072017.3739:Idle time
     #@+node:ekr.20070212070820:makeScriptButton
-    def makeScriptButton (
-        self,c,
+    def makeScriptButton (self,c,
+        args=None,
         p=None,
         script=None,
         buttonText=None,

@@ -586,7 +586,9 @@ class baseLeoPlugin(object):
             color = 'grey'
         script = "c.k.simulateCommand('%s')" % self.commandName
         g.app.gui.makeScriptButton(
-            self.c, script=script, 
+            self.c,
+            args=None,
+            script=script, 
             buttonText = buttonText, bg = color)
     #@-node:ktenney.20060628092017.7:setButton
     #@-others

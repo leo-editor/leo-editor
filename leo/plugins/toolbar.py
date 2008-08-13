@@ -227,7 +227,7 @@ See the compound widgets and drag handles howto in test/testToolbar.leo
 #@-node:bobjack.20080424190906.12:<< docstring >>
 #@nl
 
-__version__ = "0.12" # EKR
+__version__ = "0.13" # EKR
 __plugin_name__ = 'Toolbar Manager'
 __plugin_id__ = 'Toolbar'
 
@@ -272,6 +272,7 @@ controllers = {}
 #     - use baseclasses in rclickPluginBaseClasses
 # 0.12 EKR: add 'font' to list of allowed keys so that font settings are 
 # honored.
+# 0.13 EKR: added support for @args list.
 #@-at
 #@-node:bobjack.20080424190906.13:<< version history >>
 #@nl
@@ -293,22 +294,23 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTkinterFrame as leoTkinterFrame
 
-import re
-import sys
-import os
+# import re
+# import sys
+# import os
 
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
 Pmw = g.importExtension("Pmw",pluginName=__name__,verbose=True,required=True)
 
-try:
-    from PIL import Image
-    from PIL import ImageTk
-except ImportError:
-    Image = ImageTk = None
+# try:
+    # from PIL import Image
+    # from PIL import ImageTk
+# except ImportError:
+    # Image = ImageTk = None
 
 mod_scripting = g.importExtension('mod_scripting',pluginName=__name__,verbose=True,required=True)
+
 import leo.core.leoTkinterFrame as leoTkinterFrame
-import leo.core.leoTkinterTree as leoTkinterTree
+# import leo.core.leoTkinterTree as leoTkinterTree
 
 import rClickBasePluginClasses as baseClasses
 #@-node:bobjack.20080424190906.15:<< imports >>
@@ -354,7 +356,7 @@ def init ():
         return False
 
     if g.app.unitTesting:
-         return False
+        return False
 
     if g.app.gui is None:
         g.app.createTkGui(__file__)
@@ -493,7 +495,7 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
             barName = keys['barName']
             del keys['barName']
         else:
-             barName = 'iconbar'
+            barName = 'iconbar'
 
         bar = self.createIconBar(barName)
 
@@ -995,10 +997,10 @@ class ToolbarIconButton(Tk.Button, object):
             dragMaster = self
 
         try:
-             if dragMaster.deleteOnRightClick:
-                 dragMaster.deleteButton()     
+            if dragMaster.deleteOnRightClick:
+                dragMaster.deleteButton()     
         except AttributeError:
-                pass
+            pass
 
     #@-node:bobjack.20080507053105.6:onRightClick
     #@+node:bobjack.20080508051801.6:deleteButton
@@ -1121,9 +1123,10 @@ class ToolbarScriptButton(ToolbarIconButton):
             s = s[1:]
         if g.match_word(s,0,'button'):
             s = s[6:]
-        i = s.find('@key')
-        if i != -1:
-            s = s[:i].strip()
+        for tag in ('@key','@args'):
+            i = s.find(tag)
+            if i != -1:
+                s = s[:i].strip()
         if 1: # Not great, but spaces, etc. interfere with tab completion.
             chars = g.toUnicode(string.letters + string.digits,g.app.tkEncoding)
             aList = [g.choose(ch in chars,ch,'-') for ch in g.toUnicode(s,g.app.tkEncoding)]
@@ -1179,7 +1182,8 @@ class ToolbarAddScriptButton(ToolbarScriptButton):
 #@-node:bobjack.20080506182829.20:class ToolbarAddScriptButton
 #@+node:bobjack.20080425135232.6:class ToolbarScriptingController
 scripting = mod_scripting.scriptingController
-class ToolbarScriptingController(scripting, object):
+
+class ToolbarScriptingController(mod_scripting.scriptingController, object):
 
     #@    @+others
     #@+node:bobjack.20080506182829.12:createAtButtonFromSettingHelper & callback (ToolbarScriptingController)
@@ -1195,6 +1199,8 @@ class ToolbarScriptingController(scripting, object):
         k = c.k
 
         buttonText = self.cleanButtonText(h)
+        args = self.getArgs(h)
+        g.trace('h',h,'args',args)
 
         data = self.getItemData(script)
 
@@ -1223,11 +1229,12 @@ class ToolbarScriptingController(scripting, object):
         def atSettingButtonCallback (
             event=None,
             self=self,
+            args=args,
             b=b,
             script=script,
             buttonText=buttonText
         ):
-            self.executeScriptFromSettingButton (b,script,buttonText)
+            self.executeScriptFromSettingButton (args,b,script,buttonText)
 
         self.iconBar.setCommandForButton(b,atSettingButtonCallback)
 
@@ -1238,7 +1245,7 @@ class ToolbarScriptingController(scripting, object):
 
         return b
     #@+node:bobjack.20080506182829.13:executeScriptFromSettingButton (ToolbarScriptingController)
-    def executeScriptFromSettingButton (self,b,script,buttonText):
+    def executeScriptFromSettingButton (self,args,b,script,buttonText):
 
         '''Called from callbacks to execute the script in node p.'''
 
@@ -1272,8 +1279,7 @@ class ToolbarScriptingController(scripting, object):
         item_data = self.getItemData(p.bodyString())
 
         buttonText = self.cleanButtonText(h)
-
-
+        args = self.getArgs(h)
 
         b = self.createIconButton(
             text=h,
@@ -1290,11 +1296,12 @@ class ToolbarScriptingController(scripting, object):
         def atButtonCallback (
             event=None,
             self=self,
+            args=args,
             p=p.copy(),
             b=b,
             buttonText=buttonText
         ):
-            self.executeScriptFromButton (p,b,buttonText)
+            self.executeScriptFromButton (p,args,b,buttonText)
 
         b.setCommand(atButtonCallback)
 
@@ -1305,7 +1312,7 @@ class ToolbarScriptingController(scripting, object):
 
         return b
     #@+node:bobjack.20080508051801.3:executeScriptFromButton (ToolbarScriptingController)
-    def executeScriptFromButton (self,p,b,buttonText):
+    def executeScriptFromButton (self,p,args,b,buttonText):
 
         '''Called from callbacks to execute the script in node p.'''
 
@@ -1315,7 +1322,7 @@ class ToolbarScriptingController(scripting, object):
             g.es(c.disableCommandsMessage,color='blue')
         else:
             g.app.scriptDict = {}
-            c.executeScript(p=p,silent=True)
+            c.executeScript(args=args,p=p,silent=True)
             # Remove the button if the script asks to be removed.
             if g.app.scriptDict.get('removeMe'):
                 g.es("Removing '%s' button at its request" % buttonText)
@@ -1648,7 +1655,7 @@ class ToolbarTkIconBarClass(iconbar, object):
 
     def setOuterFrame(self, value):
 
-       self.barHead._outerFrame = value
+        self.barHead._outerFrame = value
 
     outerFrame = property(getOuterFrame, setOuterFrame)
     #@-node:bobjack.20080430160907.5:outerFrame
@@ -1781,7 +1788,7 @@ class ToolbarTkIconBarClass(iconbar, object):
         bar = self.barHead
 
         if bar.inConfigure:
-           return
+            return
 
         if buttons is not None:
             self.updateButtons(buttons, repack=False)
@@ -2007,7 +2014,7 @@ class ToolbarTkIconBarClass(iconbar, object):
 
             if index is not None:
                 try:
-                   buttons.insert(index, widget)
+                    buttons.insert(index, widget)
                 except IndexError:
                     index = None
 
@@ -2483,7 +2490,7 @@ class pluginController(baseClasses.basePluginController):
                 bar = keywords['bar']
                 barName = bar.barName 
             except KeyError:
-                 barName = 'iconbar'
+                barName = 'iconbar'
 
             newbarName = self.uniqueBarName(barName)
 

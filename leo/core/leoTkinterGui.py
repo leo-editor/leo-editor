@@ -653,8 +653,9 @@ class tkinterGui(leoGui.leoGui):
 
         return w and isinstance(w,Tk.Text)
     #@-node:ekr.20051220144507:isTextWidget
-    #@+node:ekr.20060621164312:makeScriptButton
+    #@+node:ekr.20060621164312:makeScriptButton (tkGui)
     def makeScriptButton (self,c,
+        args=None,
         p=None, # A node containing the script.
         script=None, # The script itself.
         buttonText=None,
@@ -692,13 +693,13 @@ class tkinterGui(leoGui.leoGui):
             c.bodyWantsFocus()
 
         def executeScriptCallback (event=None,
-            b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
+            args=args,b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
 
             if c.disableCommandsMessage:
                 g.es('',c.disableCommandsMessage,color='blue')
             else:
                 g.app.scriptDict = {}
-                c.executeScript(p=p,script=script,
+                c.executeScript(args=args,p=p,script=script,
                 define_g= define_g,define_name=define_name,silent=silent)
                 # Remove the button if the script asks to be removed.
                 if g.app.scriptDict.get('removeMe'):
@@ -731,7 +732,7 @@ class tkinterGui(leoGui.leoGui):
         k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
         #@-node:ekr.20060621164312.4:<< create press-buttonText-button command >>
         #@nl
-    #@-node:ekr.20060621164312:makeScriptButton
+    #@-node:ekr.20060621164312:makeScriptButton (tkGui)
     #@+node:bobjack.20080427200147.2:killPopupMenu
     def killPopupMenu(self, event=None):
         """If there is a popup menu, destroy it."""

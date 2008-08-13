@@ -664,6 +664,7 @@ class gtkGui(leoGui.leoGui):
     #@-node:ekr.20080112145409.473:isTextWidget
     #@+node:ekr.20080112145409.474:makeScriptButton (to do)
     def makeScriptButton (self,c,
+        args=None,
         p=None, # A node containing the script.
         script=None, # The script itself.
         buttonText=None,
@@ -707,7 +708,7 @@ class gtkGui(leoGui.leoGui):
                 g.es('',c.disableCommandsMessage,color='blue')
             else:
                 g.app.scriptDict = {}
-                c.executeScript(p=p,script=script,
+                c.executeScript(args=args,p=p,script=script,
                 define_g= define_g,define_name=define_name,silent=silent)
                 # Remove the button if the script asks to be removed.
                 if g.app.scriptDict.get('removeMe'):

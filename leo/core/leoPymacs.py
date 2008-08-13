@@ -142,7 +142,7 @@ def open (fileName=None):
 
     return c
 #@-node:ekr.20061024075542.1:open
-#@+node:ekr.20061024084200:run-script
+#@+node:ekr.20061024084200:run-script (pymacs)
 def run_script(c,script,p=None):
 
     # It is possible to use script=None, in which case p must be defined.
@@ -168,7 +168,7 @@ def run_script(c,script,p=None):
 
     # g.trace('script returns: ',repr(g.app.scriptResult))
     return g.app.scriptResult
-#@-node:ekr.20061024084200:run-script
+#@-node:ekr.20061024084200:run-script (pymacs)
 #@-others
 #@nonl
 #@-node:ekr.20061024060248.1:@thin leoPymacs.py

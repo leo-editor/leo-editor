@@ -22307,7 +22307,7 @@ def push_filter_mapping (self,lines, marker):
     separate_sentinels
     """
 
-    x = self ; mapping =[None]
+    x = self ; mapping = [None]
 
     i = 0 ; n = len(lines)
     while i < n:
@@ -22316,7 +22316,7 @@ def push_filter_mapping (self,lines, marker):
             if x.is_verbatim(line,marker):
                 i += 1
                 if i < n:
-                    mapping(append(i+1))
+                    mapping.append(i+1)
                 else:
                     x.verbatim_error()
         else:
@@ -23049,7 +23049,7 @@ def push_filter_mapping (self,lines, marker):
     separate_sentinels
     """
 
-    x = self ; mapping =[None]
+    x = self ; mapping = [None]
 
     i = 0 ; n = len(lines)
     while i < n:
@@ -23058,7 +23058,7 @@ def push_filter_mapping (self,lines, marker):
             if x.is_verbatim(line,marker):
                 i += 1
                 if i < n:
-                    mapping(append(i+1))
+                    mapping.append(i+1)
                 else:
                     x.verbatim_error()
         else:
@@ -24911,6 +24911,121 @@ def openWithTempFilePath (self,p,ext):
 #@-node:ekr.20031218072017.2832:c.openWithTempFilePath
 #@-node:ekr.20031218072017.2823:openWith and allies
 #@-node:ekr.20080812072419.3:Removed hard paths from open-with
+#@+node:ekr.20080812072419.2:Investigated @shadow error message
+@nocolor
+
+When opening leo/test/unitTest.leo, I get some strange output.
+
+@enabled-plugins found in unitTest.leo
+restoreDescendentAttributes: can not find tnode (duA): gnx = ekr.
+20080806211453.4
+restoreDescendentAttributes: can not find tnode (duA): gnx = ekr.
+20080806211453.2
+restoreDescendentAttributes: can not find tnode (duA): gnx = ekr.
+20080806211453.3
+bad archived position: bad index="0", len(children)="0"
+restoreDescendentAttributes: can not find vnode (duA):
+archivedPosition: 0.0.0.0, root_v: <vnode 164044620:'@shadow
+uA_test_shadow_file.py'>
+bad archived position: bad index="0", len(children)="0"
+restoreDescendentAttributes: can not find vnode (duA):
+archivedPosition: 0.0.0, root_v: <vnode 164044620:'@shadow
+uA_test_shadow_file.py'>
+restoreDescendentAttributes: can not find tnode (expanded): gnx = ekr.
+20080806211453.2, tref: ekr.20080806211453.2
+
+@color
+#@nonl
+#@+node:EKR.20040627120120:restoreDescendentAttributes
+def restoreDescendentAttributes (self):
+
+    c = self.c ; trace = False ; verbose = True and not g.unitTesting
+
+    for resultDict in self.descendentTnodeUaDictList:
+        if trace: g.trace('t.dict',resultDict)
+        for gnx in resultDict.keys():
+            tref = self.canonicalTnodeIndex(gnx)
+            t = self.tnodesDict.get(tref)
+            if t:
+                t.unknownAttributes = resultDict[gnx]
+                t._p_changed = 1
+            elif verbose:
+                g.trace('can not find tnode (duA): gnx = %s' % (gnx),color='red')
+
+    # New in Leo 4.5: keys are archivedPositions, values are attributes.
+    for root_v,resultDict in self.descendentVnodeUaDictList:
+        if trace: g.trace('v.dict',resultDict)
+        for key in resultDict.keys():
+            v = self.resolveArchivedPosition(key,root_v)
+            if v:
+                v.unknownAttributes = resultDict[key]
+                v._p_changed = 1
+            elif verbose:
+                g.trace('can not find vnode (duA): archivedPosition: %s, root_v: %s' % (
+                    key,root_v),color='red')
+
+    marks = {} ; expanded = {}
+    for gnx in self.descendentExpandedList:
+        tref = self.canonicalTnodeIndex(gnx)
+        t = self.tnodesDict.get(gnx)
+        if t: expanded[t]=t
+        elif verbose:
+            g.trace('can not find tnode (expanded): gnx = %s, tref: %s' % (gnx,tref),color='red')
+
+    for gnx in self.descendentMarksList:
+        tref = self.canonicalTnodeIndex(gnx)
+        t = self.tnodesDict.get(gnx)
+        if t: marks[t]=t
+        elif verbose:
+            g.trace('can not find tnode (marks): gnx = %s tref: %s' % (gnx,tref),color='red')
+
+    if marks or expanded:
+        # g.trace('marks',len(marks),'expanded',len(expanded))
+        for p in c.all_positions_with_unique_vnodes_iter():
+            if marks.get(p.v.t):
+                p.v.initMarkedBit()
+                    # This was the problem: was p.setMark.
+                    # There was a big performance bug in the mark hook in the Node Navigator plugin.
+            if expanded.get(p.v.t):
+                p.expand()
+#@-node:EKR.20040627120120:restoreDescendentAttributes
+#@+node:ekr.20080805071954.1:putDescendentTnodeUas
+def putDescendentTnodeUas (self,p):
+
+    trace = False
+    if trace: g.trace(p.headString())
+
+    # Create a list of all tnodes having a valid unknownAttributes dict.
+    tnodes = [] ; aList = []
+    for p2 in p.self_and_subtree_iter():
+        t = p2.v.t
+        if hasattr(t,"unknownAttributes"):
+            if t not in tnodes :
+                # g.trace(p2.headString(),t)
+                tnodes.append(t)
+                aList.append((p2.copy(),t),)
+
+    # Create a list of pairs (t,d) where d contains only pickleable entries.
+    if aList: aList = self.createUaList(aList)
+    if not aList: return ''
+
+    # Create s, an enclosing dict to hold all the inner dicts.
+    d = {}
+    nodeIndices = g.app.nodeIndices
+    for t,d2 in aList:
+        # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+        if not t.fileIndex:
+            t.fileIndex = g.app.nodeIndices.getNewIndex()
+        gnx = nodeIndices.toString(t.fileIndex)
+        d[gnx]=d2
+
+    if trace: g.trace(g.dictToString(d))
+
+    # Pickle and hexlify d.
+    return d.keys() and self.pickle(
+        torv=p.t,val=d,tag="descendentTnodeUnknownAttributes") or ''
+#@-node:ekr.20080805071954.1:putDescendentTnodeUas
+#@-node:ekr.20080812072419.2:Investigated @shadow error message
 #@-node:ekr.20080812093903.2:Bugs
 #@+node:ekr.20080812093903.6:Shadow files
 #@+node:ekr.20080812093903.1:Made @shadow work for unknown extensions
@@ -25916,7 +26031,7 @@ def languageForExtension (self,ext):
 
     if language:
         if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-                return language
+            return language
 
     return None
 #@-node:ekr.20080811174246.1:languageForExtension
@@ -26086,7 +26201,7 @@ def languageForExtension (self,ext):
 
     if language:
         if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-                return language
+            return language
 
     return None
 #@-node:ekr.20080811174246.1:languageForExtension
@@ -26327,6 +26442,242 @@ def updateSettings (self,c,localFlag):
 #@-node:ekr.20051013161232:g.app.config.updateSettings
 #@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 #@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
+#@+node:ekr.20031218072017.733:Added support for @args list to headlines
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=2321235
+By: paulpaterson
+
+I think I understand what Samir is getting at. 
+
+In PythonWin, or other IDE's for other languages, you are able to execute the
+"current program" in a way that it will behave identically to if it had been
+run from the command line.
+
+For Python this requires,
+
+1. That the script run with __name__ == "__main__", so that the standard "if
+__name__ ..." section will be executed properly.
+
+(Done) c.executeScript does this by default because the 'define_name' argument is '__main__' by default.
+
+2. You are able to pass command line parameters to the script.
+
+(done) To to: Support @args= to headlines (for execute-script command) and to @button, @script and @command nodes.
+
+In some IDE's you are able to set default command line parameters and these are
+"injected" into the sys.argv (or equivalent) so that, as far as the program is
+concerned, it looks like you ran it from the command line with some aruments.
+
+The underlying assumption is that you want to run an entire program from Leo,
+not just a script. I would find this very useful also as I could run unit tests
+or even my entire apps by just hitting, for exampe, F5.
+
+Paul
+
+@color
+#@nonl
+#@+node:ekr.20061024084200:run-script (pymacs)
+def run_script(c,script,p=None):
+
+    # It is possible to use script=None, in which case p must be defined.
+
+    global g
+
+    init()
+
+    if c is None:
+        c,frame = g.app.newLeoCommanderAndFrame(fileName='dummy script file')
+
+    g.app.scriptResult = None
+
+    c.executeScript(
+        event=None,
+        p=p,
+        script=script,
+        useSelectedText=False,
+        define_g=True,
+        define_name='__main__',
+        silent=True,  # Don't write to the log.
+    )
+
+    # g.trace('script returns: ',repr(g.app.scriptResult))
+    return g.app.scriptResult
+#@-node:ekr.20061024084200:run-script (pymacs)
+#@+node:ekr.20080813064908.3:Changed
+#@+node:ekr.20060621164312:makeScriptButton (tkGui)
+def makeScriptButton (self,c,
+    args=None,
+    p=None, # A node containing the script.
+    script=None, # The script itself.
+    buttonText=None,
+    balloonText='Script Button',
+    shortcut=None,bg='LightSteelBlue1',
+    define_g=True,define_name='__main__',silent=False, # Passed on to c.executeScript.
+):
+
+    '''Create a script button for the script in node p.
+    The button's text defaults to p.headString'''
+
+    k = c.k
+    if p and not buttonText: buttonText = p.headString().strip()
+    if not buttonText: buttonText = 'Unnamed Script Button'
+    << create the button b >>
+    << define the callbacks for b >>
+    b.configure(command=executeScriptCallback)
+    c.bind(b,'<Button-3>',deleteButtonCallback)
+    if shortcut:
+        << bind the shortcut to executeScriptCallback >>
+    << create press-buttonText-button command >>
+#@+node:ekr.20060621164312.1:<< create the button b >>
+iconBar = c.frame.getIconBarObject()
+b = iconBar.add(text=buttonText)
+
+if balloonText and balloonText != buttonText:
+    Pmw = g.importExtension('Pmw',pluginName='gui.makeScriptButton',verbose=False)
+    if Pmw:
+        balloon = Pmw.Balloon(b,initwait=100)
+        c.bind(balloon,b,balloonText)
+
+if sys.platform == "win32":
+    width = int(len(buttonText) * 0.9)
+    b.configure(width=width,font=('verdana',7,'bold'),bg=bg)
+#@-node:ekr.20060621164312.1:<< create the button b >>
+#@+node:ekr.20060621164312.2:<< define the callbacks for b >>
+def deleteButtonCallback(event=None,b=b,c=c):
+    if b: b.pack_forget()
+    c.bodyWantsFocus()
+
+def executeScriptCallback (event=None,
+    args=args,b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
+
+    if c.disableCommandsMessage:
+        g.es('',c.disableCommandsMessage,color='blue')
+    else:
+        g.app.scriptDict = {}
+        c.executeScript(args=args,p=p,script=script,
+        define_g= define_g,define_name=define_name,silent=silent)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("removing","'%s'" % (buttonText),"button at its request")
+            b.pack_forget()
+    # Do not assume the script will want to remain in this commander.
+#@-node:ekr.20060621164312.2:<< define the callbacks for b >>
+#@+node:ekr.20060621164312.3:<< bind the shortcut to executeScriptCallback >>
+func = executeScriptCallback
+shortcut = k.canonicalizeShortcut(shortcut)
+ok = k.bindKey ('button', shortcut,func,buttonText)
+if ok:
+    g.es_print('bound @button',buttonText,'to',shortcut,color='blue')
+#@-node:ekr.20060621164312.3:<< bind the shortcut to executeScriptCallback >>
+#@+node:ekr.20060621164312.4:<< create press-buttonText-button command >>
+aList = [g.choose(ch.isalnum(),ch,'-') for ch in buttonText]
+
+buttonCommandName = ''.join(aList)
+buttonCommandName = buttonCommandName.replace('--','-')
+buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
+
+# This will use any shortcut defined in an @shortcuts node.
+k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
+#@-node:ekr.20060621164312.4:<< create press-buttonText-button command >>
+#@-node:ekr.20060621164312:makeScriptButton (tkGui)
+#@+node:ekr.20031218072017.2140:c.executeScript & helpers
+def executeScript(self,event=None,args=None,p=None,script=None,
+    useSelectedText=True,define_g=True,define_name='__main__',silent=False):
+
+    """This executes body text as a Python script.
+
+    We execute the selected text, or the entire body text if no text is selected."""
+
+    c = self ; script1 = script
+    writeScriptFile = c.config.getBool('write_script_file')
+    if not script:
+        script = g.getScript(c,p,useSelectedText=useSelectedText)
+    self.redirectScriptOutput()
+    try:
+        log = c.frame.log
+        if script.strip():
+            sys.path.insert(0,c.frame.openDirectory)
+            script += '\n' # Make sure we end the script properly.
+            # g.pr('*** script',script)
+            try:
+                p = c.currentPosition()
+                d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+                if define_name: d['__name__'] = define_name
+                if args:
+                    # g.trace('setting sys.argv',args)
+                    sys.argv = args
+                # A kludge: reset c.inCommand here to handle the case where we *never* return.
+                # (This can happen when there are multiple event loops.)
+                # This does not prevent zombie windows if the script puts up a dialog...
+                c.inCommand = False
+                # g.trace('**** before',writeScriptFile)
+                if writeScriptFile:
+                    scriptFile = self.writeScriptFile(script)
+                    execfile(scriptFile,d)
+                else:
+                    exec script in d
+                # g.trace('**** after')
+                if not script1 and not silent:
+                    # Careful: the script may have changed the log tab.
+                    tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+                    g.es("end of script",color="purple",tabName=tabName)
+            except Exception:
+                g.handleScriptException(c,p,script,script1)
+            del sys.path[0]
+        else:
+            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+            g.es("no script selected",color="blue",tabName=tabName)
+    finally:
+        self.unredirectScriptOutput()
+#@+node:ekr.20031218072017.2143:redirectScriptOutput
+def redirectScriptOutput (self):
+
+    c = self
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+#@-node:ekr.20031218072017.2143:redirectScriptOutput
+#@+node:EKR.20040627100424:unredirectScriptOutput
+def unredirectScriptOutput (self):
+
+    c = self
+
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+
+        g.restoreStderr()
+        g.restoreStdout()
+#@-node:EKR.20040627100424:unredirectScriptOutput
+#@+node:ekr.20070115135502:writeScriptFile
+def writeScriptFile (self,script):
+
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        parts = path.split('/')
+        path = g.app.loadDir
+        for part in parts:
+            path = g.os_path_abspath(g.os_path_join(path,part))
+    else:
+        path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','scriptFile.py'))
+
+    # Write the file.
+    try:
+        f = file(path,'w')
+        f.write(script)
+        f.close()
+    except Exception:
+        path = None
+
+    return path
+#@nonl
+#@-node:ekr.20070115135502:writeScriptFile
+#@-node:ekr.20031218072017.2140:c.executeScript & helpers
+#@-node:ekr.20080813064908.3:Changed
+#@-node:ekr.20031218072017.733:Added support for @args list to headlines
 #@-node:ekr.20080811174246.4:Features
 #@-node:ekr.20080810085333.3:4.5 b3
 #@-all
