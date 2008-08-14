@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -10051,6 +10051,37 @@ show_doc_parts_as_paragraphs (default: False)
     This option has no effect in rst mode.
     **Cool**: Any rST markup in doc parts included as the result of this option will be rendered properly.
 
+show_doc_parts_in_rst_mode (default: True)
+    This option is most useful for rst documents which are not computer code.
+    It allows you to use doc parts to make comments on the draft document
+    which are either excluded from the output or formatted in a way that highlights
+    their nature as comments rather than contet.  For example, you're writing a book, and
+    you want to use a doc part at the top of a section to remind yourself "need
+    to explain how Ted got to Sally's".    Note: you may need to add
+    CSS to have them formatted differently.  The option can be `True`, `False`,
+    or one or more class names.
+
+    True: doc parts have no special significance in rst mode.
+    That is, the entire doc part from the opening '@' to the closing '@c
+    and everything in between are treated as normal rST markup.
+      
+    False: doc parts are removed from the output in rst mode
+    
+    class name(s):
+    
+      The contents of the doc part is processed as it if was in an rst `container`
+      directive.  For example::
+      
+         @ @rst-options
+         show_doc_parts_in_rst_mode = notes literal
+         @c
+         
+      would wrap the doc part contents in the output in a div with classes
+      "container notes literal".  Furthermore, if one of the class names is
+      `literal`, then the doc part content will be output as a literal block
+      wrapped in a container as described above.  This allows you to use text
+      which is not valid rst as rough notes for annotating a draft document.
+    
 show_headlines (default: True)
     True: automatically generate rST sections from headlines.
     Applies to both code mode and rst mode.
@@ -10260,8 +10291,9 @@ A cool feature: In code mode, rST markup in *ordinary* doc parts will be
 rendered properly when the show_doc_parts_as_paragraphs option is in effect.
 *Important*: Regardless of the show_doc_parts_as_paragraphs option, doc parts
 have no special significance in rst mode. That is, the entire `doc part` from
-the opening '@' to the closing '@c and everything in between are treated normal
-rST markup.</t>
+the opening '@' to the closing '@c and everything in between are treated as normal
+rST markup.  *Update:* you can now use the `show_doc_parts_in_rst_mode` option
+to change this behavior and control the processing of doc parts in rst mode.</t>
 <t tx="ekr.20050818163826.9">You can set the defaults for any rst3 option in several ways:
 
 \1.  By setting options in the root node using @ @rst-options doc parts.
