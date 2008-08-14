@@ -13137,7 +13137,7 @@ if not ret:
 if sde: print sde
 #@nonl
 #@-node:Run a Lua program
-#@+node:Runniung tcl scripts from the body pane
+#@+node:Running tcl scripts from the body pane
 @language tcltk
 #@nonl
 #@+node:run tcl 
@@ -13168,7 +13168,7 @@ return [expr $x*10]
 #@nonl
 #@-node:the actual script
 #@-node:My second tcl scrip, organized with noweb markup
-#@-node:Runniung tcl scripts from the body pane
+#@-node:Running tcl scripts from the body pane
 #@+node:Script to import a file
 # Note: the source files contain mixed tabs/blanks, and that's very hard for Leo's imports to handle.
 
