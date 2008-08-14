@@ -342,8 +342,6 @@ requiredIvars = (
 allowedButtonConfigItems = ('image', 'bg', 'fg', 'font','justify', 'padx', 'pady', 'relief', 'text', 'command', 'state')
 iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
 
-
-
 #@+others
 #@+node:bobjack.20080424190906.6:Module-level
 #@+node:bobjack.20080424190906.7:init
@@ -643,10 +641,16 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
 
         c = self.c
 
-        try:
-            toolbar = self.toolbar
-        except AttributeError:
+        # Rewrite to keepy pylint happy.
+        if hasattr(self,'toolbar'):
+            toolbar = getattr(self,'toolbar')
+        else:
             toolbar = None
+
+        # try:
+            # toolbar = self.toolbar
+        # except AttributeError:
+            # toolbar = None
 
         if toolbar:
             return toolbar
@@ -809,15 +813,26 @@ class ToolbarIconButton(Tk.Button, object):
         #@    << setup command >>
         #@+node:bobjack.20080506182829.32:<< setup command >>
         command = keys.get('command')
-        commandCallback = command
 
-        if not command:
+        # Rewrite to keep pylint happy.
+        if command and isinstance(command, basestring):
+            def commandCallback(c=self.c, command=command):
+                c.executeMinibufferCommand(command)
+        elif command:
+            commandCallback = command
+        else:
             def commandCallback():
                 g.pr("command for widget %s" % self)
 
-        elif isinstance(command, basestring):
-            def commandCallback(c=self.c, command=command):
-                c.executeMinibufferCommand(command)
+        # commandCallback = command
+
+        # if not command:
+            # def commandCallback():
+                # g.pr("command for widget %s" % self)
+
+        # elif isinstance(command, basestring):
+            # def commandCallback(c=self.c, command=command):
+                # c.executeMinibufferCommand(command)
 
         keys['command'] = commandCallback
         #@-node:bobjack.20080506182829.32:<< setup command >>
@@ -1020,17 +1035,26 @@ class ToolbarIconButton(Tk.Button, object):
     #@+node:bobjack.20080508051801.7:setCommand
     def setCommand(self, command):
 
-
-        commandCallback = command
-
-        if not command:
+        # Rewrite to keep pylint happy.
+        if command and isinstance(command, basestring):
+            def commandCallback(event,command=command):
+                self.c.executeMinibufferCommand(command)
+        elif command:
+            commandCallback = command
+        else:
             def commandCallback():
                 g.pr("command for widget %s" % self)
 
-        if isinstance(command, basestring):
+        # commandCallback = command
 
-            def commandCallback(event, command=command):
-                return self.c.executeMinibufferCommand(command)
+        # if not command:
+            # def commandCallback():
+                # g.pr("command for widget %s" % self)
+
+        # if isinstance(command, basestring):
+
+            # def commandCallback(event, command=command):
+                # return self.c.executeMinibufferCommand(command)
 
         self.config(command=commandCallback) 
     #@-node:bobjack.20080508051801.7:setCommand
@@ -1367,7 +1391,7 @@ class ToolbarScriptingController(mod_scripting.scriptingController, object):
         return self.c.frame.iconBar
 
 
-    def setIconBar(*args, **kw):
+    def setIconBar(self,*args, **kw):
         pass
 
     iconBar = property(getIconBar, setIconBar)
@@ -1438,7 +1462,7 @@ class ToolbarScriptingController(mod_scripting.scriptingController, object):
 
         c = self.c
         frame = c.frame
-        p = c.currentPosition();
+        p = c.currentPosition()
         h = p.headString()
 
         buttonText = self.getButtonText(h)
@@ -1816,7 +1840,10 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         bar = barHead
         while bar and bar.buttonCount:
-            [ btn.pack_forget() for btn in bar.iconFrame.pack_slaves()]
+            # Rewrite to keep pylint happy.
+            # [ btn.pack_forget() for btn in bar.iconFrame.pack_slaves()]
+            for z in  bar.iconFrame.pack_slaves():
+                z.pack_forget()
             bar.buttonCount = 0
             bar = bar.slaveBar
 
@@ -2052,7 +2079,7 @@ class ToolbarTkIconBarClass(iconbar, object):
                 if not isinstance(drag, (tuple, list)):
                     drag = (drag,)
 
-                for dragWidget in drag:
+                for dw in drag:
                     try:
                         del dw.leoDragMaster
                         dw.unbind('<ButtonPress-1>')
@@ -2069,8 +2096,6 @@ class ToolbarTkIconBarClass(iconbar, object):
                 self.repackButtons()
 
         finally:
-            pass
-
             return widget
     #@-node:bobjack.20080501181134.3:removeWidget
     #@+node:bobjack.20080508125414.4:clear
@@ -2091,18 +2116,21 @@ class ToolbarTkIconBarClass(iconbar, object):
                     self.removeWidget(w)
             except:
                 g.es_error('can\'t delete', str(w))
-                pass
     #@-node:bobjack.20080508125414.4:clear
     #@+node:bobjack.20080426064755.76:getButton
     def getButton(self,*args,**keys):
         """Create an iconBar button."""
 
-
         if 'item_data' not in keys:
-            try:
-                data = self.item_data
-            except Exception:
+            # use hasattr & getattr to keep pylint happy.
+            if hasattr(self,'item_data'):
+                data = getattr(self,'item_data')
+            else:
                 data = {}
+            # try:
+                # data = self.item_data
+            # except Exception:
+                # data = {}
             keys['item_data'] = data
 
 
@@ -2110,8 +2138,6 @@ class ToolbarTkIconBarClass(iconbar, object):
             btn = ToolbarIconButton(self.c, {}, **keys)
         finally:
             self.item_data = None
-
-
 
         return btn
     #@-node:bobjack.20080426064755.76:getButton
@@ -2452,12 +2478,8 @@ class pluginController(baseClasses.basePluginController):
                 keywords['button'].deleteButton()
 
             except Exception, e:
-                #g.es_error(e)
                 g.es_error('failed to delete button')
-                #raise e
-                pass
-
-
+                g.es_exception()
     #@-node:bobjack.20080426190702.3:toolbar-delete-button
     #@+node:bobjack.20080428114659.11:toolbar-add-iconbar
     class addIconbarCommandClass(toolbarCommandClass):

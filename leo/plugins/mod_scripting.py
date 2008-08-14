@@ -350,27 +350,6 @@ class scriptingController:
     #@nonl
     #@-node:ekr.20070926085149.1:executeScriptFromSettingButton (mod_scripting)
     #@-node:ekr.20070926085149:createAtButtonFromSettingHelper & callback
-    #@+node:ekr.20070926085149.1:executeScriptFromSettingButton (mod_scripting)
-    def executeScriptFromSettingButton (self,args,b,script,buttonText):
-
-        '''Called from callbacks to execute the script in node p.'''
-
-        c = self.c
-
-        if c.disableCommandsMessage:
-            g.es(c.disableCommandsMessage,color='blue')
-        else:
-            g.app.scriptDict = {}
-            c.executeScript(args=args,script=script,silent=True)
-            # Remove the button if the script asks to be removed.
-            if g.app.scriptDict.get('removeMe'):
-                g.es("Removing '%s' button at its request" % buttonText)
-                self.deleteButton(b)
-
-        if 0: # Do *not* set focus here: the script may have changed the focus.
-            c.frame.bodyWantsFocus()
-    #@nonl
-    #@-node:ekr.20070926085149.1:executeScriptFromSettingButton (mod_scripting)
     #@-node:ekr.20070926084600:handleAtButtonSetting & helper
     #@-node:ekr.20080312071248.1:createCommonButtons & helper
     #@+node:ekr.20080312071248.2:createCommonCommands (mod_scripting)
