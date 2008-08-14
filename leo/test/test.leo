@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -103,6 +103,7 @@
 <v t="ekr.20060904111037.1"><vh>@@button opml-write</vh></v>
 <v t="ekr.20060904111037"><vh>@@button opml-read</vh></v>
 </v>
+<v t="ekr.20080813100905.1"><vh>@@button args-test @args = a,b,c</vh></v>
 </v>
 <v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
 </v>
@@ -269,7 +270,6 @@
 <v t="ekr.20080812102914.2"><vh>child</vh></v>
 </v>
 </v>
-<v t="ekr.20080813100905.1"><vh>@button args-test @args = a,b,c</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
