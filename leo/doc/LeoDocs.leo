@@ -10746,7 +10746,7 @@ you might save yourself some extra work.
 `@auto trees`_ allow you to edit derived files that do not contain sentinels.
 Leo imports such derived files every time Leo reads the .leo file.
 </t>
-<t tx="ekr.20050827090802">``LeoPy.leo`` (in the src subdirectory of the leo folder) contains almost all of Leo's source code.
+<t tx="ekr.20050827090802">``LeoPyRef.leo`` (in the src subdirectory of the leo folder) contains almost all of Leo's source code.
 It provides hundreds of examples of everything discussed here.
 This file will repay close study.
 For full details on all aspects of Leo see ``LeoDocs.leo`` or `Leo's Users Guide`_.</t>

@@ -968,7 +968,7 @@ w.seeInsertPoint()
 #@-node:ekr.20031218072017.2864: goToLineNumber
 #@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
 #@-node:ekr.20080411091507.10:Minor bugs 4
-#@+node:ekr.20080730212711.6:ASAP Features 10
+#@+node:ekr.20080730212711.6:ASAP Features 10 (possibly in Leo 4.5.1)
 #@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
 What uA should be used to specify node colors?
 
@@ -1549,7 +1549,7 @@ down some data. If the headline string is too long, the cursor goes
 beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
 #@-node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
-#@-node:ekr.20080730212711.6:ASAP Features 10
+#@-node:ekr.20080730212711.6:ASAP Features 10 (possibly in Leo 4.5.1)
 #@-node:ekr.20080810085333.5:Under two hours 21
 #@+node:ekr.20080810085333.7:Under two days 4
 #@+node:ekr.20080124083629.1:Improve @path handling
