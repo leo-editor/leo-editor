@@ -426,7 +426,7 @@ and clicking the [Install:] button with <tt class="docutils literal"><span class
 <li>Download Leo (platform independent source.zip) from <a class="reference" href="http://leo.sourceforge.net/">http://leo.sourceforge.net/</a></li>
 <li>Unzip the contents into a directory by double-clicking the downloaded file.
 Typically you would put the Leo folder into the <tt class="docutils literal"><span class="pre">Applications</span></tt> directory.</li>
-<li>Control-click on <tt class="docutils literal"><span class="pre">/path_to_unzipped_dir/leo/src/leo.py</span></tt> and open with <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt>.</li>
+<li>Control-click on <tt class="docutils literal"><span class="pre">/path_to_unzipped_dir/leo/core/leo.py</span></tt> and open with <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt>.</li>
 <li>It is a good idea to set <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt> as the default program to
 open python scripts by clicking on <tt class="docutils literal"><span class="pre">leo.py</span></tt>, choosing Get Info from the
 Finder's File menu, and selecting &quot;PythonLauncher&quot; as the default
@@ -450,7 +450,7 @@ for the shell script called openLeoScript.sh.</p>
 <pre class="literal-block">
 #!/bin/sh
 # $2 only works if .leo is one of the extensions.
-/usr/bin/pythonw ~/leo/src/leo.py $2
+/usr/bin/pythonw ~/leo/core/leo.py $2
 </pre>
 <p>In detail, here is how I created MacLeo:</p>
 <ol class="arabic">
@@ -517,7 +517,7 @@ bzr branch lp:leo-editor
 </pre>
 </li>
 </ol>
-<p>And that's it! You can run leo/src/leo.py directly. When you want to refresh the
+<p>And that's it! You can run leo/core/leo.py directly. When you want to refresh the
 code with latest modifications from Launchpad, run <tt class="docutils literal"><span class="pre">bzr</span> <span class="pre">pull</span></tt>.</p>
 <p>If you make modifications to Leo (with the interest in sharing them with the Leo
 community), you can check them in to your local branch by doing <tt class="docutils literal"><span class="pre">bzr</span> <span class="pre">checkin</span></tt>.
@@ -576,7 +576,7 @@ c:\python25\python &lt;path-to-leo&gt;leo\core\runLeo.py %1
 you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
 stores this identifier in the file <tt class="docutils literal"><span class="pre">.leoID.txt</span></tt>. Leo attempts to create
 <tt class="docutils literal"><span class="pre">leoID.txt</span></tt> in your home directory, then in Leo's config directory, and
-finally in Leo's src directory. You can change this identifier at any time by
+finally in Leo's core directory. You can change this identifier at any time by
 editing <tt class="docutils literal"><span class="pre">.leoID.txt</span></tt>.</p>
 </div>
 <div class="section" id="running-leo-in-batch-mode">

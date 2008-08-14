@@ -1293,12 +1293,12 @@ import leo.core.leoBridge as leoBridge
 <p>The problem is not importing leoBridge itself but (if I use 'from leo.core') the
 importing of plugins, who get a different leoGlobals from leoBridge, without
 g.app etc, and so do not work if they rely on dynamic values in g.etc.</p>
-<p>&gt; Why can't you simply add leo/src to sys.path in sitecustomize.py?</p>
+<p>&gt; Why can't you simply add leo/core to sys.path in sitecustomize.py?</p>
 <p>Putting leocore on the python path as you suggest would put forty python modules
 in the global module namespace for all python programs when I want just one.
 Also, I have a safe working copy of leo and a cvs/testing version. I would wish
 to test any programs against the testing version while using the working
-version, but both /src directories can't be exposed at the same time.</p>
+version, but both /core directories can't be exposed at the same time.</p>
 <p>&gt; Do you need plugins while running from the leoBridge?</p>
 <p>Afraid so, at least the rst3 plugin. The solution I am using now is to place:</p>
 <pre class="literal-block">

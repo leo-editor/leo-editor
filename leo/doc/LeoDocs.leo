@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -8337,7 +8337,7 @@ At present this script contains just::
 
     #!/bin/sh
     # $2 only works if .leo is one of the extensions.
-    /usr/bin/pythonw ~/leo/src/leo.py $2
+    /usr/bin/pythonw ~/leo/core/leo.py $2
 
 In detail, here is how I created MacLeo:
 
@@ -10778,7 +10778,7 @@ you might save yourself some extra work.
 `@auto trees`_ allow you to edit derived files that do not contain sentinels.
 Leo imports such derived files every time Leo reads the .leo file.
 </t>
-<t tx="ekr.20050827090802">``LeoPyRef.leo`` (in the src subdirectory of the leo folder) contains almost all of Leo's source code.
+<t tx="ekr.20050827090802">``LeoPyRef.leo`` (in the core subdirectory of the leo folder) contains almost all of Leo's source code.
 It provides hundreds of examples of everything discussed here.
 This file will repay close study.
 For full details on all aspects of Leo see ``LeoDocs.leo`` or `Leo's Users Guide`_.</t>
@@ -14946,7 +14946,7 @@ The first time you start Leo, a dialog will ask you for a unique identifier. If
 you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
 stores this identifier in the file ``.leoID.txt``. Leo attempts to create
 ``leoID.txt`` in your home directory, then in Leo's config directory, and
-finally in Leo's src directory. You can change this identifier at any time by
+finally in Leo's core directory. You can change this identifier at any time by
 editing ``.leoID.txt``.</t>
 <t tx="ekr.20050901184158">You can execute all the code in this file. Just select the code you want to
 execute and run the Execute Script command.
@@ -17024,7 +17024,7 @@ Leo’s capabilities in new ways. Leo imports all enabled plugins during startup
 The file pluginsManager.txt lists all enabled plugins.
 
 Plugins can override any class, method or function in Leo’s core, the files in
-Leo’s src subdirectory (the files derived from LeoPy.leo). Besides altering
+Leo’s core subdirectory (the files derived from LeoPy.leo). Besides altering
 Leo’s core, plugins can register functions called hooks that Leo calls at
 various times during Leo’s execution. Events that trigger hooks include key
 pressed events, screen drawing events, node selection events and many others.
@@ -26830,7 +26830,7 @@ To run Leo on Macintosh OS X 10:
 5.  Unzip the contents into a directory by double-clicking the downloaded file.
     Typically you would put the Leo folder into the ``Applications`` directory.
 
-6.  Control-click on ``/path_to_unzipped_dir/leo/src/leo.py`` and open with ``PythonLauncher``.
+6.  Control-click on ``/path_to_unzipped_dir/leo/core/leo.py`` and open with ``PythonLauncher``.
 
 7.  It is a good idea to set ``PythonLauncher`` as the default program to  
     open python scripts by clicking on ``leo.py``, choosing Get Info from the  
@@ -28021,13 +28021,13 @@ The problem is not importing leoBridge itself but (if I use 'from leo.core') the
 importing of plugins, who get a different leoGlobals from leoBridge, without
 g.app etc, and so do not work if they rely on dynamic values in g.etc.
 
-&gt; Why can't you simply add leo/src to sys.path in sitecustomize.py?  
+&gt; Why can't you simply add leo/core to sys.path in sitecustomize.py?  
  
 Putting leo\core on the python path as you suggest would put forty python modules
 in the global module namespace for all python programs when I want just one.
 Also, I have a safe working copy of leo and a cvs/testing version. I would wish
 to test any programs against the testing version while using the working
-version, but both /src directories can't be exposed at the same time.
+version, but both /core directories can't be exposed at the same time.
 
 &gt; Do you need plugins while running from the leoBridge? 
  
@@ -29939,7 +29939,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.5 b2]&lt;/a&gt;</t>
+    Download Leo[4.5 b3]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -31761,11 +31761,11 @@ If you want to access a node with arbitrary headline, add a child node '@a foo'
 
 You can see what nodes are accessible be entering (in IPython) wb.&lt;TAB&gt;. Example::
 
-    [C:leo/src]|12&gt; wb.
+    [C:leo/core]|12&gt; wb.
     wb.b           wb.tempfile    wb.rfile       wb.NewHeadline
     wb.bar         wb.Docs        wb.strlist     wb.csvr    
-    [C:leo/src]|12&gt; wb.tempfile
-               &lt;12&gt; &lt;ipy_leo.LeoNode object at 0x044B6D90&gt;
+    [C:leo/core]|12&gt; wb.tempfile
+                &lt;12&gt; &lt;ipy_leo.LeoNode object at 0x044B6D90&gt;
     
 So here, we meet the 'LeoNode' class that is your key to manipulating Leo
 content from IPython!
@@ -31779,8 +31779,8 @@ Suppose that we had a node with headline 'spam' and body::
 
 we can access it from IPython (or from scripts entered into other Leo nodes!) by doing::
 
-    C:leo/src]|19&gt; wb.spam.v
-              &lt;19&gt; ['12', 2254]
+    C:leo/core]|19&gt; wb.spam.v
+               &lt;19&gt; ['12', 2254]
     
 'v' attribute stands for 'value', which means the node contents will be run
 through 'eval' and everything you would be able to enter into IPython prompt
@@ -31822,9 +31822,9 @@ attributes are stored when you save the .leo document, and recreated when you
 open the document again. The attributes are not visible anywhere, but can be
 used for domain-specific metadata. Example::
 
-    [C:leo/src]|12&gt; wb.spam.uA['coords'] = (12,222)
-    [C:leo/src]|13&gt; wb.spam.uA
-               &lt;13&gt; {'coords': (12, 222)}    
+    [C:leo/core]|12&gt; wb.spam.uA['coords'] = (12,222)
+    [C:leo/core]|13&gt; wb.spam.uA
+                &lt;13&gt; {'coords': (12, 222)}    
 
 Accessing children with iteration and dict notation
 ---------------------------------------------------
@@ -31879,17 +31879,17 @@ Now, let's say you have node 'spam' with text::
 
 Now, in IPython, we can do this::
 
-    [C:leo/src]|22&gt; f = wb.spam.v
-    [C:leo/src]|23&gt; f
-               &lt;23&gt; &lt;StringIO.StringIO instance at 0x04E7E490&gt;
-    [C:leo/src]|24&gt; f.readline()
-               &lt;24&gt; u'hello\n'
-    [C:leo/src]|25&gt; f.readline()
-               &lt;25&gt; u'world\n'
-    [C:leo/src]|26&gt; f.readline()
-               &lt;26&gt; u'and whatever'
-    [C:leo/src]|27&gt; f.readline()
-               &lt;27&gt; u''    
+    [C:leo/core]|22&gt; f = wb.spam.v
+    [C:leo/core]|23&gt; f
+                &lt;23&gt; &lt;StringIO.StringIO instance at 0x04E7E490&gt;
+    [C:leo/core]|24&gt; f.readline()
+                &lt;24&gt; u'hello\n'
+    [C:leo/core]|25&gt; f.readline()
+                &lt;25&gt; u'world\n'
+    [C:leo/core]|26&gt; f.readline()
+                &lt;26&gt; u'and whatever'
+    [C:leo/core]|27&gt; f.readline()
+                &lt;27&gt; u''    
 
 You should declare new @cl types to make ILeo as convenient your problem domain
 as possible. For example, a "@cl etree" could return the elementtree object for
@@ -32098,16 +32098,16 @@ macro 'embleo' for later use (so that we don't have to repeat these steps)::
     IPython 0.8.3.bzr.r57   [on Py 2.5.1]
     [C:opt/Console2]|2&gt; import IPython.Shell
     [C:opt/Console2]|3&gt; IPython.Shell.hijack_tk()
-    [C:opt/Console2]|4&gt; cd c:/leo/leo/src
-    [c:leo/src]|5&gt; %run leo.py
+    [C:opt/Console2]|4&gt; cd c:/leo.repo/trunk
+    [c:leo/leo.repo/trunk]|5&gt; %run launchLeo.py
 
     reading settings in C:\leo\leo\config\leoSettings.leo
 
     ... Leo is starting at this point, but IPython prompt returns ...
 
-    [c:leo/src]|6&gt; macro embleo 2-5
+    [c:leo/leo.repo/trunk]|6&gt; macro embleo 2-5
    
-    [c:leo/src]|7&gt; store embleo
+    [c:leo/leo.repo/trunk]|7&gt; store embleo
     Stored 'embleo' (Macro)
 
 Now, in Leo, you only need to press Alt+Shift+I (launch-ipython) to actually
@@ -32130,7 +32130,7 @@ Leo.
 
      bzr branch lp:leo-editor
      
-And that's it! You can run leo/src/leo.py directly. When you want to refresh the
+And that's it! You can run leo/core/leo.py directly. When you want to refresh the
 code with latest modifications from Launchpad, run ``bzr pull``.
 
 If you make modifications to Leo (with the interest in sharing them with the Leo
