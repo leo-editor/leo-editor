@@ -772,6 +772,7 @@ class rstClass:
             'rst3_show_organizer_nodes': True,
             'rst3_show_options_nodes': False,
             'rst3_strip_at_file_prefixes': True,
+            'rst3_show_doc_parts_in_rst_mode': True,
             # Formatting options that apply only to code mode.
             'rst3_show_doc_parts_as_paragraphs': False,
             'rst3_show_leo_directives': True,
@@ -1433,6 +1434,15 @@ class rstClass:
                 retainContents=False)
             lines = self.handleSpecialDocParts(lines,'@rst-markup',
                 retainContents=self.getOption('generate_rst'))
+            if self.getOption('show_doc_parts_in_rst_mode') is True:
+                pass  # original behaviour, treat as plain text
+            elif self.getOption('show_doc_parts_in_rst_mode'):
+                # use value as class for content
+                lines = self.handleSpecialDocParts(lines,None,
+                    retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+            else:  # option evaluates to false, cut them out
+                lines = self.handleSpecialDocParts(lines,None,
+                    retainContents=False)
             lines = self.removeLeoDirectives(lines)
             if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
                 lines = self.replaceCodeBlockDirectives(lines)
@@ -1610,7 +1620,7 @@ class rstClass:
     #@nonl
     #@-node:ekr.20050811105438:removeLeoDirectives
     #@+node:ekr.20050811105438.1:handleSpecialDocParts
-    def handleSpecialDocParts (self,lines,kind,retainContents):
+    def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
         # g.trace(kind,g.listToString(lines))
 
@@ -1623,7 +1633,15 @@ class rstClass:
             elif self.isSpecialDocPart(s,kind):
                 n, lines2 = self.getDocPart(lines,n)
                 if retainContents:
-                    result.extend(lines2)
+                    result.extend([''])
+                    if asClass:
+                        result.extend(['.. container:: '+asClass, ''])
+                        if 'literal' in asClass.split():
+                            result.extend(['  ::', ''])
+                        for l2 in lines2: result.append('    '+l2)
+                    else:
+                        result.extend(lines2)
+                    result.extend([''])
             else:
                 result.append(s)
 
