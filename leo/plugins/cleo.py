@@ -30,7 +30,7 @@ import leo.core.leoPlugins as leoPlugins
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-node:tbrown.20060903121429.2:<< imports >>
 #@nl
-__version__ = "0.25.1"
+__version__ = "0.25.2"
 #@<< version history >>
 #@+node:tbrown.20060903121429.3:<< version history >>
 #@@killcolor
@@ -109,7 +109,10 @@ __version__ = "0.25.1"
 # - make leo play nice with rclick and standard tree popup on linux
 #     - post menu with g.app.postPopupMenu
 #     - destroy menu with g.app.killPopupMenu
+# 0.25.2 TNB: highlight all nodes with altered background colors, minor bug 
+# fixes
 #@-at
+#@nonl
 #@-node:tbrown.20060903121429.3:<< version history >>
 #@nl
 
@@ -564,18 +567,13 @@ class cleoController:
 
         for f in self.file_nodes:
             if h.startswith(f):
-                if node_is_selected:
-                    bg = self.node_colours['Sel. File']
-                else:
-                    bg = self.node_colours['file']
+                bg = self.node_colours['file']
 
         # set bg of @ignore type of nodes
         if self.colorIgnore:
             if h.find("@ignore") == 0:
-                if node_is_selected:
-                    bg = self.node_colours['Sel. Comments']
-                else:
-                    bg = self.node_colours['Comments']
+                bg = self.node_colours['Comments']
+        #@nonl
         #@-node:tbrown.20060903121429.27:<< auto headline colours >>
         #@nl
         #@    << node colours >>
@@ -615,8 +613,8 @@ class cleoController:
         #@nl
 
         #g.pr("> (%s,%s) %s" % (fg,bg,v.headString()))
+
         return fg,bg
-    #@nonl
     #@-node:tbrown.20060903121429.26:custom_colours
     #@-node:tbrown.20060903121429.24:colours...
     #@+node:tbrown.20060903121429.31:drawing...
@@ -861,10 +859,15 @@ class cleoController:
         fg, bg = self.custom_colours(p.v,node_is_selected=True)
 
         fg = fg or c.config.getColor("headline_text_selected_foreground_color") or 'black'
-        bg = bg or c.config.getColor("headline_text_selected_background_color") or 'grey80'
+        bg2 = c.config.getColor("headline_text_selected_background_color")
+        bg = bg or bg2 or 'gray80'
 
         try:
-            w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg)
+            if bg != bg2:
+                hl = c.config.getColor("headline_text_selected_highlight_color") or 'black'
+                w.configure(state="disabled", highlightthickness=1, highlightbackground=hl, fg=fg, bg=bg)
+            else:
+                w.configure(state="disabled", highlightthickness=0, fg=fg, bg=bg)
         except:
             g.es_exception()
     #@nonl
