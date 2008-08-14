@@ -13,37 +13,14 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-goto errors
+REM toto errors
 goto all
 
 
 :errors
 
-echo toolbar.py
-call pylint.bat leo\plugins\toolbar.py     --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
-
-echo base64Packager.py
-echo expect E1101:166:viewAsGif: Module 'Pmw' has no 'Dialog' member
-echo expect E1101:167:viewAsGif: Module 'Pmw' has no 'ScrolledCanvas' member
-call pylint.bat leo\plugins\base64Packager.py --rcfile=leo\test\pylint-leo-rc.txt
-
-echo .
-echo dtest.py
-echo expect W0611: Unused import g (may be needed for doctests)
-echo expect E1101: A pylint bug: setCommand defined in baseLeoPlugin.
-call pylint.bat leo\plugins\dtest.py         --rcfile=leo\test\pylint-leo-rc.txt
-
-echo .
-echo macros.py
-echo expect E1103:141:paramClass.parameterize: Instance of 'tkinterGui' has no 'getInsertPoint' member (but some types could not be inferred)
-echo expect E1103:141:paramClass.parameterize: Instance of 'unitTestGui' has no 'getInsertPoint' member (but some types could not be inferred)
-echo expect E1103:141:paramClass.parameterize: Instance of 'nullGui' has no 'getInsertPoint' member (but some types could not be inferred)
-call pylint.bat leo\plugins\macros.py        --rcfile=leo\test\pylint-leo-rc.txt
-
-goto done
-
 
 :all
 
@@ -129,14 +106,11 @@ call pylint.bat leo\core\leoTkinterTree.py   --rcfile=leo\test\pylint-leo-rc.txt
 :essential_plugins
 
 echo mod_scripting.py
-rem E1103:183:onCreate: Instance of 'tkinterGui' has no 'ScriptingControllerClass' member (but some types could not be inferred)
-rem E1103:183:onCreate: Instance of 'unitTestGui' has no 'ScriptingControllerClass' member (but some types could not be inferred)
-rem E1103:183:onCreate: Instance of 'nullGui' has no 'ScriptingControllerClass' member (but some types could not be inferred)
-rem E0611:461:scriptingController.runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
-call pylint.bat leo\plugins\mod_scripting.py      --rcfile=leo\test\pylint-leo-rc.txt
+rem Harmless: E0611:489:scriptingController.runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
+call pylint.bat leo\plugins\mod_scripting.py        --disable-msg=E0611 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo open_with.py
-call pylint.bat leo\plugins\open_with.py           --rcfile=leo\test\pylint-leo-rc.txt
+call pylint.bat leo\plugins\open_with.py            --rcfile=leo\test\pylint-leo-rc.txt
 
 echo rst3.py
 call pylint.bat leo\plugins\rst3.py                 --rcfile=leo\test\pylint-leo-rc.txt
@@ -145,7 +119,13 @@ echo threading_colorizer.py
 call pylint.bat leo\plugins\threading_colorizer.py  --rcfile=leo\test\pylint-leo-rc.txt
 
 echo toolbar.py
-call pylint.bat leo\plugins\toolbar.py     --rcfile=leo\test\pylint-leo-rc.txt
+rem doesn't help: cd c:\leo.repo\trunk\leo\plugins
+rem call pylint.bat toolbar.py     --rcfile=c:\leo.repo\trunk\leo\test\pylint-leo-rc.txt
+rem cd c:\leo.repo\trunk
+rem Dangerous: many erroneous E1101 errors
+rem Harmless: W0221: Arguments number differs from overridden method
+rem Harmless: W0511: Fixme and to-do.
+call pylint.bat leo\plugins\toolbar.py     --disable-msg=E1101,W0221,W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo UNL.py
 call pylint.bat leo\plugins\UNL.py                  --rcfile=leo\test\pylint-leo-rc.txt

@@ -24911,6 +24911,226 @@ def openWithTempFilePath (self,p,ext):
 #@-node:ekr.20031218072017.2832:c.openWithTempFilePath
 #@-node:ekr.20031218072017.2823:openWith and allies
 #@-node:ekr.20080812072419.3:Removed hard paths from open-with
+#@+node:ekr.20080812072419.2:Fixed the @shadow error message
+@ To do:
+
+- Remember missing shadow files and tell about them if there are missing uA's.
+#@nonl
+#@+node:ekr.20080814103428.1:Report
+@nocolor
+
+On Aug 13, 4:29 pm, "Edward K. Ream" <edream...@gmail.com> wrote:
+> Are you using the latest trunk code?
+
+Yes, and the problem persists.
+
+I will reproduce now my actions step by step, try repeating them and
+see if
+you get something different.
+
+$ cd ~
+$ rm myLeoSettings.leo
+
+I have eliminated a possible impact of personalized settings.
+
+$ cd /tmp
+$ bzr branch lp:leo-editor
+Branched 810 revision(s).
+$ cd leo-editor
+$ ls -la leo/test/ | grep .leo_shadow
+$
+
+There is no .leo_shadow file, it wasn't created yet.
+Run leo:
+
+
+$ python launchLeo.py
+reading settings in /tmp/leo-editor/leo/config/leoSettings.leo
+Using menus from leoSettings.leo
+reading settings in /home/shadow/myLeoSettings.leo
+reading /home/shadow/.leoRecentFiles.txt
+
+Now open the tests file: go to File->Open in leo's main menu; go to
+leo/test
+directory and open file unitTest.leo
+
+Here we go.
+Log from leo's log pane:
+
+reading: /tmp/leo-editor/leo/test/unitTest.leo
+reading: @thin ../test/unittest/errorTest.py
+reading: @thin ../test/unittest/batchTest.py
+reading: @thin uA_test_file.py
+reading: @shadow uA_test_shadow_file.py
+created:   /tmp/leo-editor/leo/test/.leo_shadow/
+xuA_test_shadow_file.py
+unchanged: /tmp/leo-editor/leo/test/uA_test_shadow_file.py
+bad archived position: bad index="0", len(children)="0"
+bad archived position: bad index="0", len(children)="0"
+local @command timeit
+local @command profile
+
+Log from console:
+@enabled-plugins found in unitTest.leo
+restoreDescendentAttributes: can not find tnode (duA): gnx = ekr.
+20080806211453.4
+restoreDescendentAttributes: can not find tnode (duA): gnx = ekr.
+20080806211453.2
+restoreDescendentAttributes: can not find tnode (duA): gnx = ekr.
+20080806211453.3
+bad archived position: bad index="0", len(children)="0"
+restoreDescendentAttributes: can not find vnode (duA):
+archivedPosition: 0.0.0.0, root_v: <vnode 163556236:'@shadow
+uA_test_shadow_file.py'>
+bad archived position: bad index="0", len(children)="0"
+restoreDescendentAttributes: can not find vnode (duA):
+archivedPosition: 0.0.0, root_v: <vnode 163556236:'@shadow
+uA_test_shadow_file.py'>
+restoreDescendentAttributes: can not find tnode (expanded): gnx = ekr.
+20080806211453.2, tref: ekr.20080806211453.2
+
+Is .leo_shadow present now?
+
+$ ls -la /tmp/leo-editor/leo/test/ | grep .leo_sh>
+drwxr-xr-x  2 shadow users      88 2008-08-13 17:11 .leo_shadow
+
+Does it have any content?
+
+$ ls -la /tmp/leo-editor/leo/test/.leo_shadow/
+total 5
+drwxr-xr-x 2 shadow users  88 2008-08-13 17:11 .
+drwxr-xr-x 6 shadow users 816 2008-08-13 17:11 ..
+-rw-r--r-- 1 shadow users 344 2008-08-13 17:11 xuA_test_shadow_file.py
+
+What's in xuA_test_shadow_file.py?
+
+$ cat /tmp/leo-editor/leo/test/.leo_shadow/xuA_test_shadow_file.py
+#@verbatim
+#@+leo-ver=4-thin
+#@verbatim
+#@+node:ekr.20080806211453.1:@shadow uA_test_shadow_file.py
+#@verbatim
+#@@language python
+#@verbatim
+#@@tabwidth -4
+#@verbatim
+#@+others
+#@verbatim
+#@+node:shadow.20080813170859.2:uA_test_shadow_file declarations
+pass
+pass
+pass
+#@verbatim
+#@-node:shadow.20080813170859.2:uA_test_shadow_file declarations
+#@verbatim
+#@-others
+#@verbatim
+#@-node:ekr.20080806211453.1:@shadow uA_test_shadow_file.py
+#@verbatim
+#@-leo
+
+As you can see, I don't do any changes to the trunk after getting it
+from launchpad.
+
+@color
+#@nonl
+#@-node:ekr.20080814103428.1:Report
+#@+node:ekr.20080814103428.2:The fix: remove leo\test\.leo_shadow from .bzrignore
+@nocolor
+
+Cleaned up leo\test and leo\test\.leo_shadow so that they contain only files used by unit tests.
+#@nonl
+#@-node:ekr.20080814103428.2:The fix: remove leo\test\.leo_shadow from .bzrignore
+#@+node:EKR.20040627120120:restoreDescendentAttributes
+def restoreDescendentAttributes (self):
+
+    c = self.c ; trace = False ; verbose = True and not g.unitTesting
+
+    for resultDict in self.descendentTnodeUaDictList:
+        if trace: g.trace('t.dict',resultDict)
+        for gnx in resultDict.keys():
+            tref = self.canonicalTnodeIndex(gnx)
+            t = self.tnodesDict.get(tref)
+            if t:
+                t.unknownAttributes = resultDict[gnx]
+                t._p_changed = 1
+            elif verbose:
+                g.trace('can not find tnode (duA): gnx = %s' % (gnx),color='red')
+
+    # New in Leo 4.5: keys are archivedPositions, values are attributes.
+    for root_v,resultDict in self.descendentVnodeUaDictList:
+        if trace: g.trace('v.dict',resultDict)
+        for key in resultDict.keys():
+            v = self.resolveArchivedPosition(key,root_v)
+            if v:
+                v.unknownAttributes = resultDict[key]
+                v._p_changed = 1
+            elif verbose:
+                g.trace('can not find vnode (duA): archivedPosition: %s, root_v: %s' % (
+                    key,root_v),color='red')
+
+    marks = {} ; expanded = {}
+    for gnx in self.descendentExpandedList:
+        tref = self.canonicalTnodeIndex(gnx)
+        t = self.tnodesDict.get(gnx)
+        if t: expanded[t]=t
+        elif verbose:
+            g.trace('can not find tnode (expanded): gnx = %s, tref: %s' % (gnx,tref),color='red')
+
+    for gnx in self.descendentMarksList:
+        tref = self.canonicalTnodeIndex(gnx)
+        t = self.tnodesDict.get(gnx)
+        if t: marks[t]=t
+        elif verbose:
+            g.trace('can not find tnode (marks): gnx = %s tref: %s' % (gnx,tref),color='red')
+
+    if marks or expanded:
+        # g.trace('marks',len(marks),'expanded',len(expanded))
+        for p in c.all_positions_with_unique_vnodes_iter():
+            if marks.get(p.v.t):
+                p.v.initMarkedBit()
+                    # This was the problem: was p.setMark.
+                    # There was a big performance bug in the mark hook in the Node Navigator plugin.
+            if expanded.get(p.v.t):
+                p.expand()
+#@-node:EKR.20040627120120:restoreDescendentAttributes
+#@+node:ekr.20080805071954.1:putDescendentTnodeUas
+def putDescendentTnodeUas (self,p):
+
+    trace = False
+    if trace: g.trace(p.headString())
+
+    # Create a list of all tnodes having a valid unknownAttributes dict.
+    tnodes = [] ; aList = []
+    for p2 in p.self_and_subtree_iter():
+        t = p2.v.t
+        if hasattr(t,"unknownAttributes"):
+            if t not in tnodes :
+                # g.trace(p2.headString(),t)
+                tnodes.append(t)
+                aList.append((p2.copy(),t),)
+
+    # Create a list of pairs (t,d) where d contains only pickleable entries.
+    if aList: aList = self.createUaList(aList)
+    if not aList: return ''
+
+    # Create s, an enclosing dict to hold all the inner dicts.
+    d = {}
+    nodeIndices = g.app.nodeIndices
+    for t,d2 in aList:
+        # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+        if not t.fileIndex:
+            t.fileIndex = g.app.nodeIndices.getNewIndex()
+        gnx = nodeIndices.toString(t.fileIndex)
+        d[gnx]=d2
+
+    if trace: g.trace(g.dictToString(d))
+
+    # Pickle and hexlify d.
+    return d.keys() and self.pickle(
+        torv=p.t,val=d,tag="descendentTnodeUnknownAttributes") or ''
+#@-node:ekr.20080805071954.1:putDescendentTnodeUas
+#@-node:ekr.20080812072419.2:Fixed the @shadow error message
 #@-node:ekr.20080812093903.2:Bugs
 #@+node:ekr.20080812093903.6:Shadow files
 #@+node:ekr.20080812093903.1:Made @shadow work for unknown extensions
