@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -241,9 +241,6 @@
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
-<v t="ekr.20080801160915.1"><vh>@@shadow TerryBrownTest.py</vh>
-<v t="ekr.20080803120643.1"><vh>spam</vh></v>
-</v>
 <v t="ekr.20080808115835.1"><vh>Copy leo directory</vh>
 <v t="ekr.20080808122543.1"><vh>Path wrappers</vh></v>
 <v t="ekr.20080808122543.2"><vh>copyDir</vh></v>
@@ -258,13 +255,20 @@
 </v>
 <v t="ekr.20080812112440.1"><vh>@@shadow at-shadow-test.ini</vh></v>
 <v t="ekr.20080812135254.1"><vh>@@shadow at-unknown-shadow-test.xyzzy</vh></v>
+<v t="ekr.20080801160915.1"><vh>@@shadow TerryBrownTest.py</vh>
+<v t="ekr.20080803120643.1"><vh>spam</vh></v>
+</v>
+<v t="ekr.20080813080627.1"><vh>@@shadow at-shadow-attributes-test.py</vh>
+<v t="ekr.20080813080627.2"><vh>spam</vh>
+<v t="ekr.20080813080729.1"><vh>child</vh></v>
+</v>
+<v t="ekr.20080813080627.3" a="M"><vh>eggs</vh></v>
 </v>
 </v>
-<v t="ekr.20080812102914.1" tnodeList="ekr.20080812102914.1,ekr.20080812102914.2"><vh>@nosent at-nosent-test.py</vh>
+<v t="ekr.20080812102914.1"><vh>@@nosent at-nosent-test.py</vh>
 <v t="ekr.20080812102914.2"><vh>child</vh></v>
 </v>
-<v t="ekr.20080813080627.1"
-marks="ekr.20080813080627.3,"><vh>@shadow at-shadow-attributes-test.py</vh></v>
+</v>
 <v t="ekr.20080813100905.1"><vh>@button args-test @args = a,b,c</vh></v>
 </vnodes>
 <tnodes>
@@ -2200,6 +2204,12 @@ changed4
 change5</t>
 <t tx="ekr.20080812135254.1"># Line one
 # line two</t>
+<t tx="ekr.20080813080627.1">@others</t>
+<t tx="ekr.20080813080627.2">def spam():
+    pass</t>
+<t tx="ekr.20080813080627.3">def eggs():
+    pass</t>
+<t tx="ekr.20080813080729.1"></t>
 <t tx="ekr.20080813080809.1"></t>
 <t tx="ekr.20080813100905.1">import sys
 print sys.argv</t>
