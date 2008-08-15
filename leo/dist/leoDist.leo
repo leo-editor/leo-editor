@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="102" left="198" height="810" width="1093"/>
+	<global_window_position top="102" left="120" height="810" width="1093"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -50,7 +50,7 @@
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080809175634.2"><vh>@button make</vh>
+<v t="ekr.20080809175634.2" a="E"><vh>@button make</vh>
 <v t="ekr.20080809180311.1"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080809175634.3"><vh>remove</vh></v>
 <v t="ekr.20080809175634.4" a="E"><vh>class createExe</vh>
@@ -500,25 +500,31 @@ trunk = abspath(join(g.app.loadDir,'..','..'))
 zipFile =  abspath(join(trunk,'Leo-%s.zip' % (version)))
 zipFile2 = abspath(join(trunk,'Leo-%s-temp.zip' % (version)))
 exeFile =  abspath(join(trunk,'Leo-%s.exe' % (version)))
-root = abspath(join('Lib','site-packages','Leo-%s' % (version)))
 
-for z in (zipFile,zipFile2,exeFile):
-    if exists(z): remove(z)
+# bzr export --root="Lib/site-packages/Leo-4-5-b2" Leo-4-5-b2-temp.zip 
+root = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
+g.pr('root',root)
 
-commands = (
-    r'cd %s' % (trunk),
-    r'bzr export "%s"' % (zipFile),
-    r'bzr export --root="%s" "%s"' % (root,zipFile2),
-)
+if 1:
 
-for z in commands:
-    print ('command: %s' % z)
-    os.system(z)
+    for z in (zipFile,zipFile2,exeFile):
+        if exists(z): remove(z)
 
-x = createExe(exeFile,zipFile2,version=version)
-x.create_exe()
-remove(zipFile2)
-os.system('dir %s' % (trunk))
+    commands = (
+        r'cd %s' % (trunk),
+        r'bzr export "%s"' % (zipFile),
+        r'bzr export --root="%s" "%s"' % (root,zipFile2),
+    )
+
+    for z in commands:
+        print ('command: %s' % z)
+        os.system(z)
+
+    x = createExe(exeFile,zipFile2,version=version)
+    x.create_exe()
+    #remove(zipFile2)
+    os.system('dir %s' % (trunk))
+
 print('done')
 </t>
 <t tx="ekr.20080809175634.3">def remove (fileName):
