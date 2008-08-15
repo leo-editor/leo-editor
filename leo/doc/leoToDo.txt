@@ -3,6 +3,8 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.5.1 bugs, cleanups
 #@+node:ekr.20080810085333.5:Under two hours 21
+#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
+#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
 #@+node:ekr.20080517102922.1:Files stuff 7
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
