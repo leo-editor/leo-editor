@@ -50,7 +50,7 @@
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080809175634.2" a="E"><vh>@button make</vh>
+<v t="ekr.20080809175634.2"><vh>@button make</vh>
 <v t="ekr.20080809180311.1"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080809175634.3"><vh>remove</vh></v>
 <v t="ekr.20080809175634.4" a="E"><vh>class createExe</vh>
@@ -74,7 +74,7 @@
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -b2
+Latest suffix:  -b3
 
 </t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the Python License.
@@ -247,7 +247,7 @@ c:\python22\python &lt;leopath&gt;leo.py "%1"
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.5-b2
+Version: 4.5-b3
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -500,10 +500,7 @@ trunk = abspath(join(g.app.loadDir,'..','..'))
 zipFile =  abspath(join(trunk,'Leo-%s.zip' % (version)))
 zipFile2 = abspath(join(trunk,'Leo-%s-temp.zip' % (version)))
 exeFile =  abspath(join(trunk,'Leo-%s.exe' % (version)))
-
-# bzr export --root="Lib/site-packages/Leo-4-5-b2" Leo-4-5-b2-temp.zip 
 root = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
-g.pr('root',root)
 
 if 1:
 
@@ -522,7 +519,7 @@ if 1:
 
     x = createExe(exeFile,zipFile2,version=version)
     x.create_exe()
-    #remove(zipFile2)
+    remove(zipFile2)
     os.system('dir %s' % (trunk))
 
 print('done')
