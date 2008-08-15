@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -430,11 +430,10 @@ Create leo-x.zip:
     - bzr push
     ** cd trunk
     - bzr export &lt;release-name&gt;.zip
-    - bzr export --root="Lib/site-packages/Leo-4-5-b2" Leo-4-5-b2-temp.zip
-Create and test leosetup.exe.
-	- Create leosetup.exe by right-clicking leo.nsi and choosing "compile with NSI (bz2)"
+    - bzr export --root="Lib/site-packages/Leo-4-5-b3" Leo-4-5-b3-temp.zip
+Create the windows .exe installer using @button make in leoDist.leo
 	- Test created leosetup.exe file.
-	- test the files created in c:\program files\leo
+	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
     ** Open unitTest.leo: does it open without errors?
     ** Open leoPlugins.leo: does it open without errors?
 
