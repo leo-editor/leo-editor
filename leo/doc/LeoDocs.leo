@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+	<global_window_position top="50" left="50" height="800" width="1200"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="6,1,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -29,7 +29,7 @@
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
-<v t="ekr.20080412124815.1"><vh>@bool fixedWindow = True</vh></v>
+<v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050407144342.2"><vh>@int  port = 8080</vh></v>
@@ -49,7 +49,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080412124815.1"><vh>@bool fixedWindow = True</vh></v>
+<v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
@@ -1187,7 +1187,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -2928,7 +2928,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20080815093141.89"><vh>4.5 b3</vh>
 <v t="ekr.20080815093141.90"><vh>Major new features</vh></v>
 <v t="ekr.20080815093141.91"><vh>Major code reorganizations</vh></v>
