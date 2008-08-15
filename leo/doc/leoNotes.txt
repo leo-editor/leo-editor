@@ -2089,6 +2089,17 @@ TESTS
 @color
 #@nonl
 #@-node:ekr.20031218072017.367:How to add support for a new language
+#@+node:ekr.20080814134319.1:How to create a private bzr branch
+@nocolor
+
+C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+#@-node:ekr.20080814134319.1:How to create a private bzr branch
+#@+node:ekr.20051203084725:How to expand java .jar files
+- Put whatever.jar in c:\prog
+- cd: c:\prog
+- jar xvf whatever.jar
+#@nonl
+#@-node:ekr.20051203084725:How to expand java .jar files
 #@+node:ekr.20031218072017.384:How to export syntax colored code preserving colors
 Scite has the option to "Export as html" and "export as rtf", and it will be
 full of colour and fonts - and you can define them in properties, so it will be
@@ -2110,26 +2121,6 @@ On Me you set the registry somehow.
 No information on XP.
 #@nonl
 #@-node:ekr.20031218072017.385:How to Increase environment space
-#@+node:ekr.20051203084725:How to expand java .jar files
-- Put whatever.jar in c:\prog
-- cd: c:\prog
-- jar xvf whatever.jar
-#@nonl
-#@-node:ekr.20051203084725:How to expand java .jar files
-#@+node:ekr.20051129084430:How to install jython
-@nocolor
-
-- Download jython_Release_2_2alpha1.jar and put it anywhere (say on the desktop)
-
-- Double-click the file.  This brings up an installer.  Follow the direction.
-  (I installed to c:\jython-2.2a1
-
-- Using the Control Panel, System, Advanced tab, environment variables,
-  add c:\jython-2.2a1\jython.jar to CLASSPATH (in user variables)
-#@nonl
-#@+node:ekr.20051129084430.1:@url http://www.jython.org/install.html
-#@-node:ekr.20051129084430.1:@url http://www.jython.org/install.html
-#@-node:ekr.20051129084430:How to install jython
 #@+node:ekr.20051203084725.1:How to install and run jythonShell
 Install:
 
@@ -2238,6 +2229,20 @@ Works a treat!
 Paul
 #@-node:ekr.20050317153447:jy-Leo install instructions by Paul Paterson
 #@-node:ekr.20050316092232:How to install jyLeo
+#@+node:ekr.20051129084430:How to install jython
+@nocolor
+
+- Download jython_Release_2_2alpha1.jar and put it anywhere (say on the desktop)
+
+- Double-click the file.  This brings up an installer.  Follow the direction.
+  (I installed to c:\jython-2.2a1
+
+- Using the Control Panel, System, Advanced tab, environment variables,
+  add c:\jython-2.2a1\jython.jar to CLASSPATH (in user variables)
+#@nonl
+#@+node:ekr.20051129084430.1:@url http://www.jython.org/install.html
+#@-node:ekr.20051129084430.1:@url http://www.jython.org/install.html
+#@-node:ekr.20051129084430:How to install jython
 #@+node:ekr.20070623150151:How to make Leo commands undoable
 The chapter commands provide a good example.  In this file, see the node:
 
