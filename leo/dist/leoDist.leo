@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -25,10 +25,11 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20080807093308.1"><vh>ANN: Leo 4.5 b2</vh></v>
+<v t="ekr.20080815093141.108"><vh>ANN: Leo 4.5 b3</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080807093308.2"><vh>4.5</vh>
 <v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
+<v t="ekr.20080807093308.1"><vh>ANN: Leo 4.5 b2</vh></v>
 </v>
 </v>
 </v>
@@ -49,7 +50,7 @@
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080809175634.2" a="E"><vh>@button make</vh>
+<v t="ekr.20080809175634.2"><vh>@button make</vh>
 <v t="ekr.20080809180311.1"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080809175634.3"><vh>remove</vh></v>
 <v t="ekr.20080809175634.4" a="E"><vh>class createExe</vh>
@@ -265,9 +266,9 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.5 beta 2                      August 7, 2008
+<t tx="EKR.20040519090846.9">Leo 4.5 beta 3                      August 15, 2008
 
-Leo 4.5 beta 2 is now available at:
+Leo 4.5 beta 3 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo 4.5 contains many important new features.  See below for details.
@@ -420,20 +421,9 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080628065201.2">@color
-# Run pylint
-# Run all unit tests.
-@nocolor
-** LeoDocs.leo:
-    ** Update the version number on the home page
-    - select the read-me node.
-** LeoDist.leo:
+<t tx="ekr.20080628065201.2">** LeoDist.leo:
     - Update announcement.
     - Update readme.txt
-- leoPlugins.leo: Remove top-level clones.
-- leoPy.leo:
-    - Update the version number in the Help menu.
-    - Remove top-level clones.
 Create leo-x.zip:
     - bzr commit
     - bzr tag
@@ -507,7 +497,7 @@ This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 &lt;&lt; includes &gt;&gt;
 @others
 
-version = '4-5-b2-a'
+version = '4-5-b3'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 trunk = abspath(join(g.app.loadDir,'..','..'))
 zipFile =  abspath(join(trunk,'Leo-%s.zip' % (version)))
@@ -724,5 +714,36 @@ print('done')
 import struct
 import sys
 import time</t>
+<t tx="ekr.20080815093141.108">Leo 4.5 beta 3                      August 15, 2008
+
+Leo 4.5 beta 3 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.5 contains many important new features.  See below for details.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+
+- Full support for @shadow files in Leo's core.
+- Major improvements to Leo's key binding code.
+- The beginning of usable vim-like bindings.
+- uA's may now be associated with vnodes in @thin and @shadow files.
+- Several magor reorganizations of Leo's code:
+  including sax-based parsing, support for the Graph world (unified nodes),
+  simplified drawing code.
+- Leo is now an installable package.
+- Prepared code to be ready for Python 3.0.
+- Many small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 </tnodes>
 </leo_file>

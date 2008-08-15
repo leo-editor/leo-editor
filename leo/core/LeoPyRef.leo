@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet ekr_test?>
+<?xml-stylesheet ekr_stylesheet?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="42" left="164" height="910" width="999"/>
+	<global_window_position top="31" left="354" height="910" width="903"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -73,11 +73,11 @@
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
 <v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573732e"
-marks="ekr.20060417194232.2,ekr.20041121130043,ekr.20041119204700,ekr.20070925144337.2,ekr.20040803072955.127,ekr.20040803072955.91,ekr.20031218072017.2834,ekr.20050404151753.6,ekr.20061006092649,"><vh>@thin leoProjects.txt</vh></v>
+marks="ekr.20060417194232.2,ekr.20041121130043,ekr.20041119204700,ekr.20070925144337.2,ekr.20031218072017.1723,ekr.20040803072955.127,ekr.20040803072955.91,ekr.20031218072017.2834,ekr.20050404151753.6,ekr.20061006092649,ekr.20061031131434.131,ekr.20061031131434.175,ekr.20051022043713.1,bob.20080115223114.4,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"
-marks="ekr.20031218072017.2834,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+marks="ekr.20031218072017.2834,ekr.20031218072017.1723,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
@@ -120,8 +120,10 @@ marks="ekr.20061006092649,"><vh>@thin leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3655"
 marks="ekr.20040803072955.91,"><vh>@thin leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@thin leoGui.py</vh></v>
-<v t="ekr.20061031131434"><vh>@thin leoKeys.py</vh></v>
-<v t="ekr.20031218072017.3749"><vh>@thin leoMenu.py</vh></v>
+<v t="ekr.20061031131434"
+marks="ekr.20061031131434.131,ekr.20061031131434.175,"><vh>@thin leoKeys.py</vh></v>
+<v t="ekr.20031218072017.3749"
+marks="ekr.20031218072017.1723,ekr.20051022043713.1,"><vh>@thin leoMenu.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3821"><vh>Gui Tkinter classes</vh>
 <v t="ekr.20031218072017.3838"><vh>@thin leoTkinterComparePanel.py</vh></v>
@@ -140,7 +142,8 @@ marks="ekr.20040803072955.127,"><vh>@thin leoTkinterTree.py</vh></v>
 <v t="ekr.20080112145409.53"><vh>@thin leoGtkFrame.py</vh></v>
 <v t="ekr.20080112145409.435"><vh>@thin leoGtkGui.py</vh></v>
 <v t="ekr.20080112171650"><vh>@thin leoGtkKeys.py</vh></v>
-<v t="ekr.20080112171213"><vh>@thin leoGtkMenu.py</vh></v>
+<v t="ekr.20080112171213"
+marks="bob.20080115223114.4,"><vh>@thin leoGtkMenu.py</vh></v>
 <v t="ekr.20080112170946"><vh>@thin leoGtkTree.py</vh></v>
 </v>
 </v>
@@ -188,7 +191,7 @@ if 0: # Set to 1 for lint-like testing.
 <t tx="ekr.20031218072017.3821"></t>
 <t tx="ekr.20040629121554.1">def getSignOnLine (self):
     c = self
-    return "Leo 4.5 b2, build %s, August 7, 2008" % c.getBuildNumber()
+    return "Leo 4.5 b3, build %s, August 15, 2008" % c.getBuildNumber()
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
