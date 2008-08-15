@@ -2946,10 +2946,15 @@ def pr(s,*args,**keys):
         s = repr(s)
     s2 = g.translateArgs(s,args,commas,spaces)
 
-    if newline:
-        sys.stdout.write(s2 + '\n')
-    else:
-        sys.stdout.write(s2)
+    try:
+        if newline:
+            sys.stdout.write(s2 + '\n')
+        else:
+            sys.stdout.write(s2)
+    except Exception:
+        print('unexpected Exception in g.pr')
+        g.es_exception()
+        g.trace(g.callers())
 #@-node:ekr.20080710101653.1:pr
 #@+node:ekr.20050707065530:es_trace
 def es_trace(s,*args,**keys):
