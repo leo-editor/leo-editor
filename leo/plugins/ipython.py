@@ -138,9 +138,23 @@ def onCreate (tag, keys):
 
     c = keys.get('c')
 
-    if c:
-        # Inject the controller into the commander.
-        c.ipythonController = ipythonController(c)
+    if not c:
+        return
+    
+    # Inject the controller into the commander.
+    c.ipythonController = ipythonController(c)
+    
+    try:
+        import ipy_leo
+    except ImportError:
+        return
+    try:
+        st = ipy_leo._request_immediate_connect
+    except AttributeError:
+        return
+    if st:
+        c.ipythonController.startIPython()
+        
 #@-node:ekr.20080201143145.5:onCreate
 #@-node:ekr.20080201144219:Module-level functions
 #@+node:ekr.20080201143145.6:class ipythonController

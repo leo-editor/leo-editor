@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
-<title>Chapter 22: Using Vim with Leo</title>
+<title>Chapter 22: Using Vim Bindings with Leo</title>
 <style type="text/css">
 
 /*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
@@ -254,22 +254,22 @@ hr { /* EKR */
 <!-- rst3: filename: html\vimBindings.html -->
 <!-- June 11, 2008 -->
 <p><a class="reference" href="IPythonBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-<div class="section" id="chapter-22-using-vim-with-leo">
-<h1><a class="toc-backref" href="#id1">Chapter 22: Using Vim with Leo</a></h1>
-<p>This chapter describes how to use Leo with vim.
-Most of the chapter tells how to install and use vim-like bindings in Leo.</p>
+<div class="section" id="chapter-22-using-vim-bindings-with-leo">
+<h1><a class="toc-backref" href="#id1">Chapter 22: Using Vim Bindings with Leo</a></h1>
+<p>This chapter describes Leo's vim-like bindings, including how to install them.</p>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#chapter-22-using-vim-with-leo" id="id1" name="id1">Chapter 22: Using Vim with Leo</a><ul>
+<li><a class="reference" href="#chapter-22-using-vim-bindings-with-leo" id="id1" name="id1">Chapter 22: Using Vim Bindings with Leo</a><ul>
 <li><a class="reference" href="#vim-bindings" id="id2" name="id2">Vim bindings</a><ul>
 <li><a class="reference" href="#installing-vim-bindings" id="id3" name="id3">Installing vim bindings</a></li>
 <li><a class="reference" href="#general-commands" id="id4" name="id4">General commands</a></li>
 <li><a class="reference" href="#body-pane-commands" id="id5" name="id5">Body pane commands</a></li>
 <li><a class="reference" href="#outline-commands" id="id6" name="id6">Outline commands</a></li>
+<li><a class="reference" href="#commands-not-supported" id="id7" name="id7">Commands not supported</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#using-vim-s-modeline-features" id="id7" name="id7">Using vim's modeline features</a></li>
+<li><a class="reference" href="#avoiding-changes-to-tag-files" id="id8" name="id8">Avoiding changes to 'tag' files</a></li>
 </ul>
 </li>
 </ul>
@@ -292,22 +292,45 @@ Then restart Leo.</p>
 <pre class="literal-block">
 i           Change state to insert from command state
 Esc         Change state to command from insert state
-Ctrl-[      Change state to command from insert state
+Ctrl-[      Same as ESC
 </pre>
-<p>Miscellaneous commands:</p>
+<p>Save/Exit/Quite commands:</p>
 <pre class="literal-block">
 :e          Revert
 :w&lt;return&gt;  Save '.leo' file
 :wq&lt;return&gt; Save '.leo' file and quit Leo
 :q&lt;return&gt;  Quit Leo   (Leo will prompt if file not saved)
 ZZ          Save leo file and exit
-
+</pre>
+<p>Undo/Redo commands:</p>
+<pre class="literal-block">
 u           Undo previous command
 Ctrl-r      Redo previous command
+</pre>
+<p>Search options:</p>
+<pre class="literal-block">
+Ctrl-/      Prompt for option to change
+            Options:
+                a   Search all nodes (also &lt;cr&gt; key)
+                h   Toggle headline search
+                b   Toggle body search
+                m   Toggle marking of nodes (specify sub-option)
+                    f   Toggle marking of nodes with found text
+                    c   Toggle marking of nodes with changed text
+                        (only supported with 'Alt-/', 'Alt-p')
+                r   Toggle regex matches
+                    ('/' key turns off regex. 'n' key uses regex if turned on)
 
+Note: Whether a search is limited to node's body or the node's sub-outline
+      is determined by which pane has focus when search text specified.
+      (See &quot;Find text commands:&quot; sub-sections in Outline/Body Pane sections)
+</pre>
+<p>Miscellaneous commands:</p>
+<pre class="literal-block">
 Tab         Toggle focus between Outline and Body pane
 =           Simulate double-click on current node's icon box
 Alt-G       Go to specified line number (relative to derived file)
+Ctrl-:      Enter Leo's command line
 </pre>
 </div>
 <div class="section" id="body-pane-commands">
@@ -323,29 +346,41 @@ k           Go up 1 line
 l           Go forward 1 character
    RtArrow  Mapped to &quot;l&quot; for convenience
 
-w           Go to the next word (stop at non-alpha characters)
+w           Go to beginning of next word
    W        Mapped to &quot;w&quot; until &quot;stop after blank characters&quot; supported
-b           Go to beginning of word (stop at non-alpha characters)
+b           Go to beginning of current/previous word
    B        Mapped to &quot;b&quot; until &quot;stop at blank character&quot; supported
-e           Go to end of word (stop at non-alpha characters)
+e           Go to end of current/next word
    E        Mapped to &quot;e&quot; until &quot;stop at blank character&quot; supported
+
+Note: Move by word commands stop at non-alpha characters
 
 |           Goto beginning of current line
 ^           Go to 1st non-blank character on current line
 $           Goto end of current line
+
+%           Go to matching bracket
 
 (           Go to beginning of current sentence
 )           Go to beginning of next sentence
 {           Go to beginning of current paragraph
 }           Go to beginning of next paragraph
 
-%           Go to matching bracket
-
 gg          Go to the first line (Cursor at column 1)
 G           Go to the last line  (Cursor at column 1)
+</pre>
+<p>Mark commands:</p>
+<pre class="literal-block">
+m&lt;label&gt;    Assign cursor location to a single character label
+`&lt;label&gt;    Go to location associated with label
 
-`.          Go to location of last edit (regardless of buffer)
-'.          Go to beginning of line of last edit (regardless of buffer)
+  Note: Only character count is tracked. Any inserts or deletes will change mark.
+      Mark's are not node specific; `&lt;label&gt; will go to location in current node.
+</pre>
+<p>Select commands:</p>
+<pre class="literal-block">
+Ctrl-v      Toggle text select mode (Vim's &quot;visual&quot; mode)
+   V        Mapped to 'Ctrl-v' for convenience (Should toggle line select)
 </pre>
 <p>Insert/substitute commands:</p>
 <pre class="literal-block">
@@ -372,6 +407,7 @@ c{          Delete to beginning of paragraph
 c%          Change from current bracket type its matching bracket type
 ct&lt;char&gt;    Selects forward to &lt;char&gt; (follow with 'i' to change selection)
 cT&lt;char&gt;    Selects backward to &lt;char&gt; (follow with 'i' to change selection)
+c&lt;cr&gt;       Change selected text
 </pre>
 <p>Delete commands:</p>
 <pre class="literal-block">
@@ -387,6 +423,8 @@ d}          Delete to end of paragraph
 d{          Delete to start of paragraph
 d%          Delete from current bracket type to its apposing bracket
 dt&lt;ch&gt;      Delete to character (not limited to current line)
+d&lt;cr&gt;       Delete selected text
+
 J           Join next line to end of current line (deletes carriage return)
 </pre>
 <p>Yank text commands:</p>
@@ -402,28 +440,39 @@ y{          Yank to beginning of paragraph
 y%          Yank from current bracket type to its opposing bracket
 yt&lt;char&gt;    Select forward to &lt;char&gt;  (use 'y&lt;cr&gt;' to yank selection)
 yT&lt;char&gt;    Select backward to &lt;char&gt; (use 'y&lt;cr&gt;' to yank selection)
-
-v           Toggle text select mode (Vim's &quot;visual&quot; mode)
-y&lt;cr&gt;       Yank selected text (Vim uses 'y')
+y&lt;cr&gt;       Yank selected text (Vim uses 'y' in visual mode)
 </pre>
-<p>Paste text commands:</p>
+<p>Find character commands:</p>
 <pre class="literal-block">
-Paste commands do not differentiate between yanked lines or partial lines.
-Put cursor at beginning of line (key '|') before pasting full lines.
-
-P           Paste text in clipboard before cursor location
-  p         Mapped to &quot;P&quot; until character based cursor supported.
-</pre>
-<p>Find commands:</p>
-<pre class="literal-block">
-/           Find next occurrence of user specified string
-?           Find previous occurrence of user specified string
 f           Find next occurrence of user specified character
 F           Find previous occurrence of user specified character
-n           Find next occurrence of string specified by '/' command
-N           Find previous occurrence of string specified by '/' command
 </pre>
-<p>Indent line commands:</p>
+<p>Find text commands:</p>
+<pre class="literal-block">
+/           Search forward within current node's body text
+?           Search backward within current node's body text
+n           Find next (same scope, same direction)
+N           Find next (same scope, other direction)
+
+Note: See &quot;Search options&quot; in General Commands section to change options.
+</pre>
+<p>Replace [and find next] commands:</p>
+<pre class="literal-block">
+Commands using Paste buffer (clipboard)
+P           Paste text before cursor.
+p           Mapped to &quot;P&quot; until character based cursor supported.
+Ctrl-p      Paste then find next match
+            Note: Use 'pn' instead of 'Ctrl-p' in headlines (Leo limitation)
+                  Command will continue to paste when match no longer found.
+
+Commands prompting for replace string
+Note: Scope and direction taken from last use of '/','?' or 'Ctrl-/'(scope only)
+Alt-/       Prompt for search &amp; replace string
+Alt-p       Replace then search (use after Alt-/)
+            Note: Works in headlines and body panes.
+                  Doesn't paste unless last search found a match.
+</pre>
+<p>Indent/Unindent line commands:</p>
 <pre class="literal-block">
 &gt;&gt;          Indent the current line
 &gt;)          Indent to the end of sentence
@@ -432,11 +481,14 @@ N           Find previous occurrence of string specified by '/' command
 &gt;{          Indent to the beginning of paragraph
 &gt;g          Indent to the start of buffer
 &gt;G          Indent to the end of buffer
-&lt;&lt;          Remove all indentation on the current line
-&lt;)          Remove all indentation to the end of sentence
-&lt;(          Remove all indentation to the beginning of sentence
-&lt;}          Remove all indentation to the end of paragraph
-&lt;{          Remove all indentation to the beginning of paragraph
+
+&lt;&gt;          Unindent the current line
+&lt;)          Unindent to the end of sentence
+&lt;(          Unindent to the beginning of sentence
+&lt;}          Unindent to the end of paragraph
+&lt;{          Unindent to the beginning of paragraph
+&lt;g          Unindent to the start of buffer
+&lt;G          Unindent to the end of buffer
 </pre>
 <p>Scroll commands:</p>
 <pre class="literal-block">
@@ -460,30 +512,15 @@ Ctrl-w c    Close current view in body pane (Vim: Close current window)
 </pre>
 <p>Node commands:</p>
 <pre class="literal-block">
+Go to another node while focus remains in the body pane.
 Ctrl-j      Go to next visible node
 Ctrl-k      Go to previous visible node
 Ctrl-h      Hide sub-nodes or, if hidden, go up 1 level
 Ctrl-l      Display sub-nodes or, if displayed, go down 1 level
-
-   Ctrl-DnArrow  Mapped to &quot;Ctrl-j&quot; for convenience
-   Ctrl-UpArrow  Mapped to &quot;Ctrl-k&quot; for convenience
-   Ctrl-LtArrow  Mapped to &quot;Ctrl-h&quot; for convenience
-   Ctrl-RtArrow  Mapped to &quot;Ctrl-l&quot; for convenience
-</pre>
-<p>Notable vi commands <strong>not</strong> supported in the Body pane:</p>
-<pre class="literal-block">
-t&lt;char&gt;     Move cursor to character before specified character
-r           Replace a single character with a single character
-&lt;num&gt;G      Go to specified line number
-0           Go to 1st column in current line (Use '|' instead)
-bksp        Move one character to the left
-m&lt;label&gt;    Mark cursor location (and &quot;'&quot; and &quot;`&quot; to return to mark)
-~           Toggle character's case
-.           Repeat last editing command
-;           Repeat last cursor movement command
-&lt;n&gt;&lt;cmd&gt;    Perform command 'n' number of times
-&lt;cmd&gt;&lt;n&gt;&lt;object&gt;    Perform the command on the n'th or up to the n'th object
-z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
+   Ctrl-DnArrow    Mapped to &quot;Ctrl-j&quot; for convenience
+   Ctrl-UpArrow    Mapped to &quot;Ctrl-k&quot; for convenience
+   Ctrl-LtArrow    Mapped to &quot;Ctrl-h&quot; for convenience
+   Ctrl-RtArrow    Mapped to &quot;Ctrl-l&quot; for convenience
 </pre>
 </div>
 <div class="section" id="outline-commands">
@@ -491,68 +528,108 @@ z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
 <p>The following commands are supported when in a headline's command mode.</p>
 <p>State change commands:</p>
 <pre class="literal-block">
-Ctrl-i          Change state to command from grayed state
-return          Change state to command from insert state
-Ctrl-]          Change state to grayed from command state
+Ctrl-i      Change state to command from grayed state
+return      Change state to command from insert state
+Ctrl-]      Change state to grayed from command state
 </pre>
-<p>Headline editing commands:</p>
+<p>Cursor movement commands:</p>
 <pre class="literal-block">
-|               Go to Beginning of line
-$               Go to end of line
-%               Go to matching bracket
-e               Go to end of word (stop at non-alpha characters)
-E               Select to end of word
-w               Go to beginning of next word
-W               Select to beginning of next word
+h           Go to previous character
+   LtArrow  Mapped to 'h' for convenience
+l           Go to next character
+   RtArrow  Mapped to &quot;l&quot; for convenience
 
-h               Go to previous character
-   LtArrow      Mapped to 'h' for convenience
-l               Go to next character
-   RtArrow      Mapped to &quot;l&quot; for convenience
+w           Go to beginning of next word
+   W        Mapped to &quot;w&quot; until &quot;stop after blank characters&quot; supported
+b           Go to beginning of current/previous word
+   B        Mapped to &quot;b&quot; until &quot;stop at blank character&quot; supported
+e           Go to end of current/next word
+   E        Mapped to &quot;e&quot; until &quot;stop at blank character&quot; supported
 
-f               Find next occurrence of user specified character
-/               Find next occurrence of user specified string
-n               Find next occurrence of last search string
-N               Find previous occurrence of last search string
+Note: Move by word commands stop at non-alpha characters
 
-x               Delete next character
-delete          Delete next character
-dd              kill-line
+|           Go to beginning of line
+^           Go to beginning of line
+$           Go to end of line
 
-s               Select current character
-
-C               Select to end of line (follow with 'i' to change text)
-cc              Delete line (follow with 'i' to change text)
-
-D               Select to end of line (follow with 'x' to delete text)
-dd              Delete line
-
-Y               Select to end of line (follow with 'y&lt;return&gt;' to yank text)
-yy              Select line (follow with 'y&lt;return&gt;' to yank text)
-
-v               Toggle text select mode
-y&lt;return&gt;       Yank selected text
+%           Go to matching bracket
 </pre>
-<p>Node commands:</p>
+<p>Edit commands:</p>
 <pre class="literal-block">
-G               Go to the outline's last node
-gg              Go to the outline's first node
+x           Delete next character
+delete      Delete next character
+dd          kill-line
 
-Ctrl-j          Go to next visible node
-Ctrl-k          Go to previous visible node
-Ctrl-h          Hide sub-nodes or, if hidden, go up 1 level
-Ctrl-l          Display sub-nodes or, if displayed, go down 1 level
+s           Select current character
 
-   j            Mapped to &quot;Ctrl-j&quot; for convenience
-   DnArrow      Mapped to &quot;Ctrl-j&quot; for convenience
-   k            Mapped to &quot;Ctrl-k&quot; for convenience
-   UpArrow      Mapped to &quot;Ctrl-k&quot; for convenience
+v           Toggle text select mode (issue cursor movement commands)
+y&lt;return&gt;   Yank selected text
+
+C           Select to end of line (follow with 'i' to change text)
+cc          Delete line (follow with 'i' to change text)
+
+D           Select to end of line (follow with 'x' to delete text)
+dd          Delete line
+
+Y           Select to end of line (follow with 'y&lt;return&gt;' to yank text)
+yy          Select line (follow with 'y&lt;return&gt;' to yank text)
+</pre>
+<p>Find character commands:</p>
+<pre class="literal-block">
+f           Find next occurrence of user specified character
+F           Find previous occurrence of user specified character
+</pre>
+<p>Find text commands:</p>
+<pre class="literal-block">
+/           Search forward within current node and its subnodes
+n           Find next (same scope, same direction)
+N           Find next (same scope, other direction)
+
+Note: See &quot;Search options&quot; section above to change options using 'Ctrl-/'
+</pre>
+<p>Replace [and find next] commands:</p>
+<pre class="literal-block">
+Commands that use Paste buffer (clipboard)
+Note: Paste-then-search command not possible in headlines (Use 'pn')
+P           Paste text before cursor.
+p           Mapped to &quot;P&quot; until character based cursor supported.
+
+Commands that prompt for the replace string
+Alt-/       Prompt for search &amp; replace string
+Alt-p       Replace then search (use after Alt-/)
+            Note: Works in headlines and body panes.
+                  Doesn't paste unless last search found a match.
+</pre>
+<p>Node edit commands:</p>
+<pre class="literal-block">
+o           Insert node after current node
+
+Ctrl-x      Delete current node
+Ctrl-c      Yank current node
+Ctrl-v      Paste current node
+</pre>
+<p>Node goto commands:</p>
+<pre class="literal-block">
+G           Go to the outline's last node
+gg          Go to the outline's first node
+
+Ctrl-j      Go to next visible node
+Ctrl-k      Go to previous visible node
+Ctrl-h      Hide sub-nodes or, if hidden, go up 1 level
+Ctrl-l      Display sub-nodes or, if displayed, go down 1 level
+
+   j        Mapped to &quot;Ctrl-j&quot; for convenience
+   DnArrow  Mapped to &quot;Ctrl-j&quot; for convenience
+   k        Mapped to &quot;Ctrl-k&quot; for convenience
+   UpArrow  Mapped to &quot;Ctrl-k&quot; for convenience
 
    Ctrl-DnArrow Mapped to &quot;Ctrl-j&quot; for convenience
    Ctrl-UpArrow Mapped to &quot;Ctrl-k&quot; for convenience
    Ctrl-LtArrow Mapped to &quot;Ctrl-h&quot; for convenience
    Ctrl-RtArrow Mapped to &quot;Ctrl-l&quot; for convenience
-
+</pre>
+<p>Node move commands:</p>
+<pre class="literal-block">
 Shift-Ctrl-k    Move node down
 Shift-Ctrl-h    Move node left
 Shift-Ctrl-l    Move node right
@@ -562,33 +639,53 @@ Shift-Ctrl-j    Move node up
    Shift-Ctrl-LtArrow    Mapped to &quot;Shift-Ctrl-h&quot; for convenience
    Shift-Ctrl-RtArrow    Mapped to &quot;Shift-Ctrl-l&quot; for convenience
    Shift-Ctrl-UpArrow    Mapped to &quot;Shift-Ctrl-j&quot; for convenience
-
-m               Toggle node mark
-Ctrl-m          Go to next marked node
-Alt-m           Clear all marked nodes
-
-t               Clone the current node (transclude)
-Ctrl-t          Go to next clone of current node
-
-Ctrl-o          Insert-node
-
-Ctrl-x          Delete node
-Ctrl-c          Yank node
-Ctrl-v          Paste node
 </pre>
-<p>Scroll commands:</p>
+<p>Node mark commands:</p>
 <pre class="literal-block">
-Ctrl-y          Scroll outline up one line
-Ctrl-e          scroll outline down one line
-    Ctrl-u       Mapped to Ctrl-y until scroll up by half a pane supported
-    Ctrl-d       Mapped to Ctrl-e until scroll down by half a pane supported
-    Ctrl-b       Mapped to Ctrl-y until scroll up by pane's height supported
-    Ctrl-f       Mapped to Ctrl-e until scroll down by pane's height supported
+m           Toggle node mark
+Ctrl-m      Go to next marked node
+Alt-m       Clear all marked nodes
+</pre>
+<p>Node clone commands:</p>
+<pre class="literal-block">
+t           Clone the current node (transclude)
+Ctrl-t      Go to next clone of current node
+</pre>
+<p>Outline scroll commands:</p>
+<pre class="literal-block">
+Ctrl-y       Scroll outline up one line
+Ctrl-e       scroll outline down one line
+    Ctrl-u    Mapped to Ctrl-y until scroll up by half a pane supported
+    Ctrl-d    Mapped to Ctrl-e until scroll down by half a pane supported
+    Ctrl-b    Mapped to Ctrl-y until scroll up by pane's height supported
+    Ctrl-f    Mapped to Ctrl-e until scroll down by pane's height supported
+</pre>
+</div>
+<div class="section" id="commands-not-supported">
+<h3><a class="toc-backref" href="#id7">Commands not supported</a></h3>
+<p>Notable missing editing commands:</p>
+<pre class="literal-block">
+t&lt;char&gt;     Move cursor to character before specified character
+r           Replace a single character with a single character
+0           Go to 1st column in current line (Use '|' instead)
+bksp        Move one character to the left
+~           Toggle character's case
+.           Repeat last editing command
+;           Repeat last cursor movement command
+&lt;n&gt;&lt;cmd&gt;    Perform command 'n' number of times
+&lt;cmd&gt;&lt;n&gt;&lt;object&gt;    Perform the command on the n'th or up to the n'th object
+</pre>
+<p>Notable missing body pane commands:</p>
+<pre class="literal-block">
+&lt;num&gt;G      Go to specified line number
+z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
+'&lt;command&gt;  Go to line of last edit, jump, ...
+`&lt;command&gt;  Go to character of last edit, jump, ...
 </pre>
 </div>
 </div>
-<div class="section" id="using-vim-s-modeline-features">
-<h2><a class="toc-backref" href="#id7">Using vim's modeline features</a></h2>
+<div class="section" id="avoiding-changes-to-tag-files">
+<h2><a class="toc-backref" href="#id8">Avoiding changes to 'tag' files</a></h2>
 <p>If you use the open-with plugin to open node text in Vim and your Vim's &quot;tag&quot;
 file refers to derived files then there is a risk that a derived file that is
 initially displayed via the &quot;tag&quot; command&quot; in Vim is accidentally edited and

@@ -561,8 +561,6 @@ class Template:
     def addNodes (self,c,parent,parameter="",top=False):
         """Add this template to the current"""
 
-        # c.beginUpdate()
-        # try:
         # Add this new node
         c.insertHeadline()
         c.endEditing()
@@ -581,8 +579,7 @@ class Template:
         children.reverse()
         for child in children:
             child.addNodes(c,p,parameter)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
     #@nonl
     #@-node:pap.20051010184315:addNodes
     #@+node:ekr.20060107131019:getTemplateFromNode

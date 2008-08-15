@@ -13,7 +13,7 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-REM goto errors
+REM toto errors
 goto all
 
 
@@ -21,27 +21,6 @@ goto all
 
 
 goto done
-
-echo base64Packager.py
-echo expect E1101:166:viewAsGif: Module 'Pmw' has no 'Dialog' member
-echo expect E1101:167:viewAsGif: Module 'Pmw' has no 'ScrolledCanvas' member
-call pylint.bat leo\plugins\base64Packager.py --rcfile=leo\test\pylint-leo-rc.txt
-
-echo .
-echo dtest.py
-echo expect W0611: Unused import g (may be needed for doctests)
-echo expect E1101: A pylint bug: setCommand defined in baseLeoPlugin.
-call pylint.bat leo\plugins\dtest.py         --rcfile=leo\test\pylint-leo-rc.txt
-
-echo .
-echo macros.py
-echo expect E1103:141:paramClass.parameterize: Instance of 'tkinterGui' has no 'getInsertPoint' member (but some types could not be inferred)
-echo expect E1103:141:paramClass.parameterize: Instance of 'unitTestGui' has no 'getInsertPoint' member (but some types could not be inferred)
-echo expect E1103:141:paramClass.parameterize: Instance of 'nullGui' has no 'getInsertPoint' member (but some types could not be inferred)
-call pylint.bat leo\plugins\macros.py        --rcfile=leo\test\pylint-leo-rc.txt
-
-goto done
-
 
 :all
 
@@ -92,6 +71,9 @@ call pylint.bat leo\core\leoNodes.py         --rcfile=leo\test\pylint-leo-rc.txt
 echo leoPlugins.py
 call pylint.bat leo\core\leoPlugins.py       --rcfile=leo\test\pylint-leo-rc.txt
 
+echo leoShadow.py
+call pylint.bat leo\core\leoShadow.py       --rcfile=leo\test\pylint-leo-rc.txt
+
 echo leoTangle.py
 call pylint.bat leo\core\leoTangle.py        --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -121,7 +103,40 @@ call pylint.bat leo\core\leoTkinterMenu.py   --disable-msg=W0221 --rcfile=leo\te
 echo leoTkinterTree.py
 call pylint.bat leo\core\leoTkinterTree.py   --rcfile=leo\test\pylint-leo-rc.txt
 
-REM goto done
+:essential_plugins
+
+echo mod_scripting.py
+rem Harmless: E0611:489:scriptingController.runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
+call pylint.bat leo\plugins\mod_scripting.py        --disable-msg=E0611 --rcfile=leo\test\pylint-leo-rc.txt
+
+echo open_with.py
+call pylint.bat leo\plugins\open_with.py            --rcfile=leo\test\pylint-leo-rc.txt
+
+echo rst3.py
+call pylint.bat leo\plugins\rst3.py                 --rcfile=leo\test\pylint-leo-rc.txt
+
+echo threading_colorizer.py
+call pylint.bat leo\plugins\threading_colorizer.py  --rcfile=leo\test\pylint-leo-rc.txt
+
+echo toolbar.py
+rem doesn't help: cd c:\leo.repo\trunk\leo\plugins
+rem call pylint.bat toolbar.py     --rcfile=c:\leo.repo\trunk\leo\test\pylint-leo-rc.txt
+rem cd c:\leo.repo\trunk
+rem Dangerous: many erroneous E1101 errors
+rem Harmless: W0221: Arguments number differs from overridden method
+rem Harmless: W0511: Fixme and to-do.
+call pylint.bat leo\plugins\toolbar.py     --disable-msg=E1101,W0221,W0511 --rcfile=leo\test\pylint-leo-rc.txt
+
+echo UNL.py
+call pylint.bat leo\plugins\UNL.py                  --rcfile=leo\test\pylint-leo-rc.txt
+
+echo vim.py
+call pylint.bat leo\plugins\vim.py                  --rcfile=leo\test\pylint-leo-rc.txt
+
+echo xemacs.py
+call pylint.bat leo\plugins\xemacs.py               --rcfile=leo\test\pylint-leo-rc.txt
+
+goto done
 
 :good_plugins
 
@@ -251,20 +266,6 @@ call pylint.bat leo\plugins\mod_leo2ascd.py       --rcfile=leo\test\pylint-leo-r
 echo mod_read_dir_outline.py
 call pylint.bat leo\plugins\mod_read_dir_outline.py --rcfile=leo\test\pylint-leo-rc.txt
 
-echo mod_shadow.py
-call pylint.bat leo\plugins\mod_shadow.py         --rcfile=leo\test\pylint-leo-rc.txt
-
-echo mod_shadow_core.py
-rem                                               W0311: bad indentation
-call pylint.bat leo\plugins\mod_shadow_core.py    --disable-msg=W0311 --rcfile=leo\test\pylint-leo-rc.txt
-
-echo mod_scripting.py
-rem E1103:183:onCreate: Instance of 'tkinterGui' has no 'ScriptingControllerClass' member (but some types could not be inferred)
-rem E1103:183:onCreate: Instance of 'unitTestGui' has no 'ScriptingControllerClass' member (but some types could not be inferred)
-rem E1103:183:onCreate: Instance of 'nullGui' has no 'ScriptingControllerClass' member (but some types could not be inferred)
-rem E0611:461:scriptingController.runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
-call pylint.bat leo\plugins\mod_scripting.py      --rcfile=leo\test\pylint-leo-rc.txt
-
 echo mod_tempfname.py
 call pylint.bat leo\plugins\mod_tempfname.py      --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -286,9 +287,6 @@ call pylint.bat leo\plugins\nodenavigator.py       --rcfile=leo\test\pylint-leo-
 
 echo open_shell.py
 call pylint.bat leo\plugins\open_shell.py         --rcfile=leo\test\pylint-leo-rc.txt
-
-echo open_with.py
-call pylint.bat leo\plugins\open_with.py           --rcfile=leo\test\pylint-leo-rc.txt
 
 echo outline_export.py
 call pylint.bat leo\plugins\outline_export.py      --rcfile=leo\test\pylint-leo-rc.txt
@@ -317,11 +315,8 @@ call pylint.bat leo\plugins\redirect_to_log.py      --rcfile=leo\test\pylint-leo
 echo rowcol.py
 call pylint.bat leo\plugins\rowcol.py               --rcfile=leo\test\pylint-leo-rc.txt
 
-echo rst.py
-call pylint.bat leo\plugins\rst.py                  --rcfile=leo\test\pylint-leo-rc.txt
-
-echo rst3.py
-call pylint.bat leo\plugins\rst3.py                 --rcfile=leo\test\pylint-leo-rc.txt
+REM echo rst.py
+REM call pylint.bat leo\plugins\rst.py                  --rcfile=leo\test\pylint-leo-rc.txt
 
 echo run_nodes.py
 call pylint.bat leo\plugins\run_nodes.py            --rcfile=leo\test\pylint-leo-rc.txt
@@ -353,9 +348,6 @@ call pylint.bat leo\plugins\testRegisterCommand.py  --rcfile=leo\test\pylint-leo
 echo textnode.py
 call pylint.bat leo\plugins\textnode.py             --rcfile=leo\test\pylint-leo-rc.txt
 
-echo threading_colorizer.py
-call pylint.bat leo\plugins\threading_colorizer.py  --rcfile=leo\test\pylint-leo-rc.txt
-
 echo trace_gc_plugin.py
 call pylint.bat leo\plugins\trace_gc_plugin.py      --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -371,23 +363,14 @@ call pylint.bat leo\plugins\UASearch.py             --rcfile=leo\test\pylint-leo
 echo UniversalScrolling.py
 call pylint.bat leo\plugins\UniversalScrolling.py   --rcfile=leo\test\pylint-leo-rc.txt
 
-echo UNL.py
-call pylint.bat leo\plugins\UNL.py                  --rcfile=leo\test\pylint-leo-rc.txt
-
 echo URLloader.py
 call pylint.bat leo\plugins\URLloader.py            --rcfile=leo\test\pylint-leo-rc.txt
-
-echo vim.py
-call pylint.bat leo\plugins\vim.py                  --rcfile=leo\test\pylint-leo-rc.txt
 
 echo word_count.py
 call pylint.bat leo\plugins\word_count.py           --rcfile=leo\test\pylint-leo-rc.txt
 
 echo word_export.py
 call pylint.bat leo\plugins\word_export.py          --rcfile=leo\test\pylint-leo-rc.txt
-
-echo xemacs.py
-call pylint.bat leo\plugins\xemacs.py               --rcfile=leo\test\pylint-leo-rc.txt
 
 echo xsltWithNodes.py
 rem                                              W0105:697: String statement has no effect
@@ -500,9 +483,6 @@ call pylint.bat leo\plugins\searchbox.py     disable-msg=W0221 --rcfile=leo\test
 
 echo templates.py
 call pylint.bat leo\plugins\templates.py     --rcfile=leo\test\pylint-leo-rc.txt
-
-echo toolbar.py
-call pylint.bat leo\plugins\toolbar.py     --rcfile=leo\test\pylint-leo-rc.txt
 
 echo xcc_nodes.py
 call pylint.bat leo\plugins\xcc_nodes.py     --rcfile=leo\test\pylint-leo-rc.txt

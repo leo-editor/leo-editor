@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070615131954" str_leo_pos="1,0,9,11"><vh>Startup</vh>
+<v t="ekr.20070615131954" str_leo_pos="1,0,4,16"><vh>Startup</vh>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20051020124457"><vh>Disabled buttons</vh>
@@ -230,7 +230,7 @@
 <v t="ekr.20071116114235"><vh>Print all Tango icons in wiki-markup format</vh></v>
 <v t="ekr.20080222103719"><vh>square problem</vh></v>
 </v>
-<v t="ekr.20051104082026"><vh>Important</vh>
+<v t="ekr.20051104082026" a="E"><vh>Important</vh>
 <v t="ekr.20080401065127.4"><vh>create-at-auto-nodes</vh></v>
 <v t="ekr.20080221113205"><vh>@@button print g.es stats</vh>
 <v t="ekr.20080221113205.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
@@ -391,7 +391,7 @@
 </v>
 </v>
 <v t="ekr.20060824111500"><vh>jEdit2Py</vh>
-<v t="ekr.20060824111500.1" a="E"><vh>Colorizing test scripts</vh>
+<v t="ekr.20060824111500.1"><vh>Colorizing test scripts</vh>
 <v t="ekr.20060824111500.2"><vh>@@button colorize</vh></v>
 <v t="ekr.20060824111500.3"><vh>@@button red:f1</vh></v>
 <v t="ekr.20060824111500.4"><vh>@@button blue:f2</vh></v>
@@ -401,7 +401,7 @@
 <v t="ekr.20060824111500.8"><vh>test</vh></v>
 <v t="ekr.20060824111500.9"><vh>latex keywords</vh></v>
 </v>
-<v t="ekr.20060824111500.10" a="E"><vh>Colorizer tests</vh>
+<v t="ekr.20060824111500.10"><vh>Colorizer tests</vh>
 <v t="ekr.20060824111500.11"><vh>C</vh></v>
 <v t="ekr.20060824111500.12"><vh>Python</vh></v>
 <v t="ekr.20060824111500.13"><vh>php.py</vh></v>
@@ -625,7 +625,7 @@
 <v t="ekr.20060824111500.117"><vh>class modeClass</vh>
 <v t="ekr.20060824111500.118"><vh> mode.__init__</vh></v>
 <v t="ekr.20060824111500.119"><vh> mode.__str__ &amp; __repr__</vh></v>
-<v t="ekr.20060824111500.120" a="E"><vh> Output...</vh>
+<v t="ekr.20060824111500.120"><vh> Output...</vh>
 <v t="ekr.20060827162343"><vh>fullDelegate</vh></v>
 <v t="ekr.20060824111500.121"><vh>escapeString &amp; quoteString</vh></v>
 <v t="ekr.20060824111500.122"><vh>put, putTripleString</vh></v>
@@ -729,7 +729,7 @@
 <v t="ekr.20060209173725.17"><vh>ReST2Leo</vh></v>
 </v>
 <v t="ekr.20060227124153"><vh>Run a Lua program</vh></v>
-<v t="ekr.20051025070722.1"><vh>Runniung tcl scripts from the body pane</vh>
+<v t="ekr.20051025070722.1"><vh>Running tcl scripts from the body pane</vh>
 <v t="ekr.20051024223801"><vh>run tcl </vh></v>
 <v t="ekr.20051024223801.1"><vh>My first tcl script</vh></v>
 <v t="ekr.20051025115413"><vh>My second tcl scrip, organized with noweb markup</vh>
@@ -791,7 +791,7 @@
 </v>
 </v>
 <v t="ekr.20080105135417"><vh>Delete All Icons</vh></v>
-<v t="ekr.20061220094557" a="E"><vh>Script to backup Outlook Express files</vh>
+<v t="ekr.20061220094557"><vh>Script to backup Outlook Express files</vh>
 <v t="ekr.20061220094557.1"><vh>Notes</vh></v>
 </v>
 <v t="ekr.20051110105027.106"><vh>Create diagrams using Graphviz and pydot</vh>
@@ -1024,7 +1024,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051204180404" a="E"><vh>Text editing scripts</vh>
+<v t="ekr.20051204180404"><vh>Text editing scripts</vh>
 <v t="ekr.20071213062051"><vh>@@button Create headlines from body</vh></v>
 <v t="ekr.20051213093427"><vh>add tab after each :</vh></v>
 <v t="ekr.20051213092601"><vh>add tab before each =</vh></v>
@@ -1348,8 +1348,6 @@ approach to tree walking.</t>
         v = v.next()
 
     regex = re.compile(e.get())
-    # c.beginUpdate()
-    # try: # update...
     t = tnode('','A Filtered Hoist')
     ticker = c.rootVnode().insertAfter(t)
     for z in nodes:
@@ -1358,8 +1356,7 @@ approach to tree walking.</t>
             clone.moveToNthChildOf(ticker,0)
     c.setCurrentVnode(ticker)
     ticker.moveToRoot(c.rootVnode())
-    # finally:
-    c.endUpdate()
+    c.redraw()
     c.hoist()
     fhp.withdraw()
 </t>
@@ -1437,8 +1434,6 @@ def OLDsearch(vn,regex):
 
     pat = re.compile(e.get())
 
-    # c.beginUpdate()
-    # try: # update...
     t = tnode('','A Filtered Hoist')
     newRoot = c.rootVnode().insertAfter(t)
     p = c.rootVnode()
@@ -1449,8 +1444,7 @@ def OLDsearch(vn,regex):
         p = p.threadNext()
     newRoot.moveToRoot(c.rootVnode())
     c.setCurrentVnode(newRoot)
-    # finally:
-    c.endUpdate()
+    c.redraw()
 
     c.hoist()
     fhp.withdraw()
@@ -1650,12 +1644,9 @@ def headfind():
                     # g.es(body2,color="orange")
                     return
                 else:
-                    # c.beginUpdate()
-                    # try:
                     c.frame.tree.expandAllAncestors(p)
                     c.selectVnode(p)
-                    # finally:
-                    c.endUpdate()
+                    c.redraw()
                     return
 
         g.es("no headline matches '%s'" % (s),color="blue")
@@ -7276,8 +7267,6 @@ if 0:
     def_s = "def " ; def_n = len(def_s)
     prefix_n = len(prefix)
     total = 0
-    # c.beginUpdate()
-    # try:
     for p in p.self_and_subtree_iter():
         count = 0 ; s = p.bodyString()
         printFlag = False
@@ -7293,8 +7282,7 @@ if 0:
                 p.setDirty()
         g.es("%3d %s" % (count,p.headString()))
         total += count
-    # finally:
-    c.endUpdate()
+    c.redraw()
 
     return total</t>
 <t tx="ekr.20051110105027.163">i = s.find(name,i)
@@ -7500,11 +7488,8 @@ types = (".py",) #,".c",".html",".txt")
 dir = "c:/Zope-2.6.2-src/lib/python"
 dir = "c:/Zope-2.6.2-src/lib/Components"
 
-# c.beginUpdate()
-# try:
 importFiles(dir,types,recursive=True)
-# finally:
-c.endUpdate()
+c.redraw()
 
 g.es("done",color="blue")
 </t>
@@ -7521,16 +7506,13 @@ g.es("done",color="blue")
         g.es("directory does not exist: " + dir)
         return
 
-    # c.beginUpdate()
-    # try:
     root = createLastChildOf(v,"imported files")
     try:
         importDir (dir,type,kind,recursive,root)
         root.contract()
     except:
         g.es_exception()
-    # finally:
-    c.endUpdate()</t>
+    c.redraw()</t>
 <t tx="ekr.20051110105027.168">def importDir (dir,types,kind,recursive,root):
 
     g.es("dir: " + dir,color="blue")
@@ -8284,14 +8266,11 @@ been changed.'''
 
 @others
 
-# c.beginUpdate()
-# try:
 p = c.currentPosition()
 pass1(p) # Make the changes and do p.v.t.setDirty for all changed nodes p.
 pass2() # Quickly set all @thin/@file nodes dirty if any of their descendents are dirty.
 g.es_print('done')
-# finally:
-c.endUpdate()</t>
+c.redraw()</t>
 <t tx="ekr.20060808103945.1">def pass1(root):
 
     '''Remove trailing newlines from all nodes.'''
@@ -14522,9 +14501,7 @@ f.close()
 print '%d records' % n
 </t>
 <t tx="ekr.20061029095517"></t>
-<t tx="ekr.20061029095517.1"># c.beginUpdate()
-# try:
-p1 = p.insertAfter()
+<t tx="ekr.20061029095517.1">p1 = p.insertAfter()
 c.setHeadString(p1,'@test ')
 body = 'import leoTest\nleoTest.runEditCommandTest(c,p)'
 c.setBodyString(p1,body)
@@ -14532,8 +14509,7 @@ for s in ('work','before','after'):
     p2 = p1.insertAsLastChild()
     c.setHeadString(p2,s)
 p1.expand()
-# finally:
-c.endUpdate()
+c.redraw()
 c.editPosition(p1)</t>
 <t tx="ekr.20061029095517.2">@
 p should be in tree whose root is a @test node containing 'work', 'before' and
@@ -14547,13 +14523,10 @@ range of the work in the headline of the before node.
 sel = getSel(c)
 top,work,before,after = findNodes(p)
 if top and work.bodyString():
-    # c.beginUpdate()
-    # try:
     c.setBodyString(before,work.bodyString())
     c.setBodyString(after,'')
     putSelectionInHeadline(c,before,'before',sel)
-    # finally:
-    c.endUpdate()
+    c.redraw()
 else:
     g.es_print('do-before: not in a proper @test tree')</t>
 <t tx="ekr.20061029095517.3">def getSel(c):
@@ -14608,12 +14581,9 @@ and represent the selection range of the work node in the headline of the after 
 sel = getSel(c)
 top,work,before,after = findNodes(p)
 if top:
-    # c.beginUpdate()
-    # try:
     c.setBodyString(after,work.bodyString())
     putSelectionInHeadline(c,after,'after',sel)
-    # finally:
-    c.endUpdate()
+    c.redraw()
 else:
     g.es_print('do-after: not in @test tree')</t>
 <t tx="ekr.20061029095517.7">def getSel(c):
@@ -14932,8 +14902,6 @@ data = (
         ]),
 )
 
-# c.beginUpdate()
-# try:
 for menuName,tables in data:
     # print menuName,tables
     p2 = p.insertAsLastChild()
@@ -14948,8 +14916,7 @@ for menuName,tables in data:
         for z in aList:
             p4 = p3.insertAsLastChild()
             setNode(p4,z)
-# finally:
-c.endUpdate()
+c.redraw()
 </t>
 <t tx="ekr.20070930042719.1">def setNode (p,data):
 
@@ -14983,8 +14950,6 @@ def createChild (parent,body,line):
 s = p.bodyString()
 if s.strip():
     b = c.undoer.beforeChangeTree(p)
-    # c.beginUpdate()
-    # try:
     lines = g.splitLines(s) ; body = [] ; changed = False ; lastDefLine = ''
     for line in lines:
         if g.match_word(line,0,'def'):
@@ -14998,9 +14963,8 @@ if s.strip():
         changed = True
     if changed:
         c.setChanged(True) ; c.setBodyString(p,'')
-    # finally:
     c.undoer.afterChangeTree(p,'split-defs',b)
-    c.endUpdate()</t>
+    c.redraw()</t>
 <t tx="ekr.20071104221525"></t>
 <t tx="ekr.20071104221525.1">@language lisp
 @nocolor
@@ -15608,8 +15572,6 @@ s = child.bodyString()
 lines = g.splitLines(s)
 
 seen = {}
-# c.beginUpdate()
-# try:
 for p in c.allNodes_iter():
     if not seen.get(p.v.t):
         seen[p.v.t] = True
@@ -15619,8 +15581,7 @@ for p in c.allNodes_iter():
                 print 'found',h
                 clone = p.clone()
                 clone.moveToLastChildOf(root)
-# finally:
-c.endUpdate()</t>
+c.redraw()</t>
 <t tx="ekr.20071113150213.1">@test getHandlersForTag
 @test unit testing with embedded class
 @test move-lines-up
@@ -15659,8 +15620,6 @@ c.endUpdate()</t>
 @test g.reportBadChars
 </t>
 <t tx="ekr.20071113191025">count = 0
-# c.beginUpdate()
-# try:
 p = c.rootVnode()
 while p:
     h = p.headString()
@@ -15673,8 +15632,7 @@ while p:
     else:
         if h.startswith('@thin'): print h
         p.moveToThreadNext()
-# finally:
-c.endUpdate()
+c.redraw()
 
 print '%d @test nodes deleted' % count</t>
 <t tx="ekr.20071116114235"># Prints all icons in the Icons/Tango folder in wiki-markup format.
@@ -15701,8 +15659,6 @@ s = p.bodyString()
 lines = g.splitLines(s)
 lines = [z.strip() for z in lines if z.strip()]
 
-# c.beginUpdate()
-# try:
 for line in lines:
     p2 = p.insertAsLastChild()
     while line.find('  ') &gt; -1:
@@ -15714,13 +15670,10 @@ for line in lines:
         # Put comments in the body.
         p2.initHeadString(line[:i].strip())
         c.setBodyString(p2,line[i:].strip())
-# finally:
-c.endUpdate()</t>
+c.redraw()</t>
 <t tx="ekr.20080105135417"># Same as delete-all-icons command (now removed)
 # A script seems safer because it can not be executed by mistake.
 
-# c.beginUpdate()
-# try:
 for p in c.allNodes_iter():
     if hasattr(p.v.t,"unknownAttributes"):
         a = p.v.t.unknownAttributes
@@ -15730,8 +15683,7 @@ for p in c.allNodes_iter():
             a["lineYOffset"] = 0
             p.setDirty()
             c.setChanged(True)
-# finally:
-c.endUpdate()
+c.redraw()
 </t>
 <t tx="ekr.20080124063225"># There are bugs in the guessing logic.
 # The following does not fix all of them.
@@ -15878,11 +15830,8 @@ def trace(self,s):
     # Put the results in the root node, or print them.
     if self.root:
         c.setBodyString(self.root,results)
-        # c.beginUpdate()
-        # try:
         c.selectPosition(self.root)
-        # finally:
-        c.endUpdate()
+        c.redraw()
     else:
         print 'node not found',self.rootName
         print results
@@ -16267,8 +16216,6 @@ baseDir = r'c:\Python25\Lib\distutils'
 dirs = ('','command',) # '' represents the base dir.
 print '-' * 40
 
-# c.beginUpdate()
-# try:
 for theDir in dirs:
     pattern = g.os_path_join(baseDir,theDir,'*.py')
     files = glob.glob(pattern)
@@ -16280,8 +16227,7 @@ for theDir in dirs:
         if reallyCreate:
             child = p.insertAsLastChild()
             child.initHeadString(h)
-# finally:
-c.endUpdate()
+c.redraw()
 </t>
 <t tx="ekr.20080519162425.1">change = False # True: actually make the changes.
 trace = True

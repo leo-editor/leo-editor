@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="29" left="385" height="914" width="777"/>
+	<global_window_position top="37" left="398" height="914" width="777"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="15"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -28,7 +28,8 @@
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080529111617.1" a="E"><vh>plugins</vh>
+<v t="ekr.20080811112727.1"><vh>@@@bool suppress_import_parsing = True</vh></v>
+<v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
@@ -50,6 +51,11 @@
 </v>
 </v>
 <v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+<v t="ekr.20080729153237.1"><vh>Gc settings</vh>
+<v t="ekr.20080729153237.2"><vh>@bool trace_gc = False</vh></v>
+<v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = False</vh></v>
+<v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
+</v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
@@ -97,6 +103,7 @@
 <v t="ekr.20060904111037.1"><vh>@@button opml-write</vh></v>
 <v t="ekr.20060904111037"><vh>@@button opml-read</vh></v>
 </v>
+<v t="ekr.20080813100905.1"><vh>@@button args-test @args = a,b,c</vh></v>
 </v>
 <v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
 </v>
@@ -125,7 +132,6 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
@@ -183,57 +189,88 @@
 <v t="edreamleo.20080110130828"><vh>createWindow</vh></v>
 <v t="bob.20080111200056"><vh>@thin gtkOutlineDemo.py</vh></v>
 </v>
-</v>
-<v t="ekr.20070315071830"><vh>Test files (do not delete)</vh>
-<v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
-<v t="ekr.20070626153912"><vh>@thin leoDynamicTest.py</vh></v>
-</v>
-<v t="ekr.20071105085941"><vh>Tests</vh>
-<v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
+<v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
 <v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
 </v>
-<v t="ekr.20080503202744.3"><vh>Rope</vh></v>
+<v t="ekr.20080806145258.12"><vh>Prototype of Leo in Ajax</vh>
+<v t="ekr.20080806145258.13"><vh>To do</vh></v>
+<v t="ekr.20080806145258.14"><vh>@button Leo2DHTML</vh>
+<v t="ekr.20080806145258.15"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.16"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.17"><vh>escape</vh></v>
+<v t="ekr.20080806145258.18"><vh>writeAll</vh></v>
+<v t="ekr.20080806145258.19"><vh>writeBody</vh></v>
+<v t="ekr.20080806145258.20"><vh>writeHead</vh></v>
+<v t="ekr.20080806145258.21"><vh>writeContents</vh></v>
+<v t="ekr.20080806145258.22"><vh>writePreamble</vh></v>
+<v t="ekr.20080806145258.23"><vh>writePostamble</vh></v>
+</v>
+<v t="ekr.20080806145258.24" tnodeList="ekr.20080806145258.24"><vh>@file server.py</vh></v>
+<v t="ekr.20080806145258.25" tnodeList="ekr.20080806145258.25"><vh>@file hello.html</vh></v>
+<v t="ekr.20080806145258.26" tnodeList="ekr.20080806145258.26,ekr.20080806145702.1,ekr.20080806145258.27,ekr.20080806145258.28,ekr.20080806145258.29,ekr.20080806145258.30,ekr.20080806145258.31,ekr.20080806145258.32,ekr.20080806145258.33"><vh>@file cgi-bin/edward.py</vh>
+<v t="ekr.20080806145702.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.27"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.28"><vh>escape</vh></v>
+<v t="ekr.20080806145258.29"><vh>print_all</vh></v>
+<v t="ekr.20080806145258.30"><vh>print_body</vh></v>
+<v t="ekr.20080806145258.31"><vh>print_head</vh></v>
+<v t="ekr.20080806145258.32"><vh>print_leo_dot_js</vh></v>
+<v t="ekr.20080806145258.33"><vh>print_tree</vh></v>
+</v>
+<v t="ekr.20080806145258.1"><vh>@thin cgi-bin/leo.js</vh></v>
+<v t="ekr.20080806145258.34"><vh>@@thin jqueryTest.html</vh></v>
+</v>
+<v t="ekr.20080811113441.2"><vh>Running body text as a windows script</vh>
+<v t="ekr.20080807115344.1"><vh>Windows script</vh></v>
+<v t="ekr.20080807114145.2"><vh>@button run-windows-script</vh>
+<v t="ekr.20080807115344.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080807115344.2"><vh>class MySite</vh></v>
+<v t="ekr.20080807115344.3"><vh>class Application</vh></v>
+<v t="ekr.20080807115344.4"><vh>RunCode</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20071105085941"><vh>Tests</vh>
+<v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
 <v t="ekr.20080604101239.1"><vh>Test misspelled word at index 0</vh></v>
-<v t="ekr.20080605103500.1"><vh>Screen redraw bug</vh></v>
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
-<v t="ekr.20080612061137.1"><vh>coloring after reformat paragraph</vh></v>
-<v t="ekr.20080616162655.1"><vh>Vim test</vh></v>
 <v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
-<v t="ekr.20080618093010.1"><vh>Print bindings dicts</vh></v>
-<v t="ekr.20080624141305.1"><vh>@@nosent at_ignore_test.txt</vh>
-<v t="ekr.20080624141305.2"><vh>ignored</vh>
-<v t="ekr.20080624141305.3"><vh>a</vh></v>
-</v>
-</v>
 <v t="ekr.20080625094025.1"><vh>Drag script</vh></v>
-</v>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
-<v t="ekr.20080702113207.1"><vh>demo of pylint bugs</vh>
-<v t="ekr.20080702113207.2"><vh>@thin pylintTest/baseClass.py</vh></v>
-<v t="ekr.20080702113207.3"><vh>@thin pylintTest/subClass.py</vh></v>
-<v t="ekr.20080702113207.4"><vh>@thin pylintTest/main.py</vh></v>
+<v t="ekr.20080808115835.1"><vh>Copy leo directory</vh>
+<v t="ekr.20080808122543.1"><vh>Path wrappers</vh></v>
+<v t="ekr.20080808122543.2"><vh>copyDir</vh></v>
 </v>
-<v t="ekr.20080702193741.1"><vh>@@thin c:\prog\test\shadow_test.py</vh>
-<v t="ekr.20080702193741.3"><vh>spam</vh></v>
-<v t="ekr.20080702193741.4"><vh>eggs</vh></v>
+<v t="ekr.20080813080809.1"><vh>Tests for @shadow</vh>
+<v t="ekr.20080807091001.1"><vh>@@shadow python-import-test.py</vh>
+<v t="ekr.20080807091201.7"><vh>python-import-test declarations</vh></v>
+<v t="ekr.20080807091201.8"><vh>class Person</vh>
+<v t="ekr.20080807091201.9"><vh>talk</vh></v>
+<v t="ekr.20080807091201.10"><vh>class Meta</vh></v>
 </v>
-<v t="ekr.20080702193741.2"><vh>@@button shadow</vh></v>
-<v t="ekr.20080708103735.1"><vh>shadow tests</vh>
-<v t="ekr.20080708103735.2" a="E"><vh>Data for @show tests</vh>
-<v t="ekr.20080708103735.3"><vh>old_private</vh></v>
-<v t="ekr.20080708103735.5"><vh>new_public</vh></v>
-<v t="ekr.20080708103735.4"><vh>expected_after_private</vh></v>
 </v>
-<v t="ekr.20080708103735.6"><vh>@test basic replacement test</vh></v>
+<v t="ekr.20080812112440.1"><vh>@@shadow at-shadow-test.ini</vh></v>
+<v t="ekr.20080812135254.1"><vh>@@shadow at-unknown-shadow-test.xyzzy</vh></v>
+<v t="ekr.20080801160915.1"><vh>@@shadow TerryBrownTest.py</vh>
+<v t="ekr.20080803120643.1"><vh>spam</vh></v>
 </v>
-<v t="ekr.20080710111404.1"><vh>mini tests for g.pr</vh></v>
-<v t="ekr.20080710111404.2"><vh>print to g.pr regex</vh></v>
-<v t="ekr.20080726123338.1"><vh>Compound documents</vh></v>
+<v t="ekr.20080813080627.1"><vh>@@shadow at-shadow-attributes-test.py</vh>
+<v t="ekr.20080813080627.2"><vh>spam</vh>
+<v t="ekr.20080813080729.1"><vh>child</vh></v>
+</v>
+<v t="ekr.20080813080627.3" a="M"><vh>eggs</vh></v>
+</v>
+</v>
+<v t="ekr.20080812102914.1"><vh>@@nosent at-nosent-test.py</vh>
+<v t="ekr.20080812102914.2"><vh>child</vh></v>
+</v>
+</v>
+<v t="ekr.20080815073750.1"><vh>@button write-nosent-files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -601,7 +638,6 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 </t>
 <t tx="ekr.20070305085403.1"></t>
 <t tx="ekr.20070305085403.2"></t>
-<t tx="ekr.20070315071830"># Do not remove these nodes.</t>
 <t tx="ekr.20070410063214"></t>
 <t tx="ekr.20070416075121">g.app.gui.set_focus(c,w)</t>
 <t tx="ekr.20070503085527"></t>
@@ -1203,6 +1239,7 @@ plugins_menu.py
 # open_shell.py
 # ipython.py
 # cleo.py
+# open_with.py
 rClick.py
 toolbar.py
 
@@ -1549,25 +1586,10 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20080605103500.1">def addchild(tag, keywords):
-   p = keywords.get('new_p')
-   c = keywords.get('c')
-   c.beginUpdate()
-   try:
-       g.trace('inserting child of',p)
-       n = p.insertAsNthChild(0)
-       c.setHeadString(n, 'new')
-   finally:
-       c.endUpdate()
-
-import leo.core.leoPlugins as leoPlugins
-leoPlugins.registerHandler('select2', addchild)</t>
 <t tx="ekr.20080610144053.1">True: Wrap body text.
 
 </t>
 <t tx="ekr.20080610144233.1">aaaaaaaaaaaa bbbbbbbbbbbbbbbbbb cccccccccccccccc ddddddddddddddddddd eeeeeeeeeeeeeee ffffffffffffffffff ggggggggggggggggggggg hhhhhhhhhhhhhhhh iiiiiiiiiiiii jjjjjjjjjjjjjjjj kkkkkkkkkkkkkk llllllllllllll mmmmmmmmmmmmmmmmm nnnnnnnnnnnn ooooooooo</t>
-<t tx="ekr.20080612061137.1">This is a test.</t>
-<t tx="ekr.20080616162655.1">'stw' should "Substitute the text from the current cursorposition up To the letter 'w'".</t>
 <t tx="ekr.20080617170334.1">@first # -*- coding: utf-8 -*-
 
 import Tkinter as Tk
@@ -1594,16 +1616,6 @@ w.update()
 # top.after_idle(after)
 top.mainloop()
 </t>
-<t tx="ekr.20080618093010.1">g.pr('Ctrl+s' in c.k.bindingsDict.keys())
-g.pr(c.k.masterBindingsDict.keys())
-g.pr('&lt;Control-s&gt;' in c.k.masterGuiBindingsDict.keys())</t>
-<t tx="ekr.20080624141305.1">@others
-
-# done</t>
-<t tx="ekr.20080624141305.2">@ignore
-
-# after @ignore</t>
-<t tx="ekr.20080624141305.3"># a</t>
 <t tx="ekr.20080625094025.1">t = p.insertAfter()
 c.setHeadString(t, 'test node 1')
 t = t.insertAfter()
@@ -1667,131 +1679,546 @@ for z in aList:
         g.pr('echo .')
         g.pr('echo',name)
         g.pr('call pylint.bat core\%s' % name)</t>
-<t tx="ekr.20080702113207.1"></t>
-<t tx="ekr.20080702193741.1">import leo.core.leoGlobals as leoGlobals
+<t tx="ekr.20080729153237.1"></t>
+<t tx="ekr.20080729153237.2"># True: calls to the garbage collector.</t>
+<t tx="ekr.20080729153237.3"># True (recommended): print a message when Leo calls gc.collect explicitly.</t>
+<t tx="ekr.20080729153237.4"># True: verbose trace the garbage collector.</t>
+<t tx="ekr.20080801160915.1">@others
+</t>
+<t tx="ekr.20080803120643.1">def spam():
+    pass</t>
+<t tx="ekr.20080806145258.12">@nocolor
 
-@others</t>
-<t tx="ekr.20080702193741.2">"""
-Look for @thin files in the current subtree.
-Convert those thin files into a file with a shadow file,
-if this shadow file does not exist already.
+Notes:
+    
+- button Leo2dHTML creates leo\test\x.htm, where x is the name of the .leo file
+  containing the script. The file contains javascript that allows a browser to
+  expand and contract headlines.  Leo2DHTML is *unrelated* to the other files.
+    
+- leo\test\server.py is a minimal Python server.  Invoke from a console with::
+    
+    python server.py
 
-FIXME: the line end convention is currently changed:
-      unix lineendings are converted to DOS lineendings,
-      if files are converted on Windows.
-      Not sure if that is a probem or not.
+To use this server, type this url in a web browser: http://localhost:8080/
+The server will print the contents of the directory from which it was invoked.
+Choose hello.html to see the 'Hello World' test page.
+
+- leo\test\hello.html is a test page.  It uses leo\test\cgi-bin\edward.py
+
+- leo\test\cgi-bin\edward.py is the script called from hello.leo when the user
+  hits the 'Submit Query button.
+  This is recompiled (as needed) for every query, which makes testing it easier.
+  
+  **Important** edward.py returns its result by printing (in a special format):
+  Thus, everything you print will be part of the returned form(!). You **can**
+  print debug info: just make sure you don't mess up the special conventions:
+  the best place to print debugging info is in print_all.
+
+@color</t>
+<t tx="ekr.20080806145258.13">@
+
+edward.py:
+    
+How can we get the content of an input form?</t>
+<t tx="ekr.20080806145258.14">@first # -*- coding: utf-8 -*-
+@language python
+@tabwidth -4
+
+&lt;&lt; about LeoToHTML &gt;&gt;
+import leo.core.leoGlobals as g
+&lt;&lt; define dhtml stuff &gt;&gt;
+@others
+
+fileName = c.frame.shortFileName() # Get current outline file name
+if fileName.endswith('.leo'): fileName = fileName[:-4] # Remove .leo suffix
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test',fileName)) + '.htm'
+
+# Write the file.
+f=open(path, 'w')
+writeAll(f)
+f.close() 
+g.es('wrote: %s' % (path),color="turquoise4") 
+</t>
+<t tx="ekr.20080806145258.15">@
+
+LeoToHTML by Dan Rahmel, modified by EKR.
+
+This @button script creates an .htm file containing the contents of the selected tree.
+The file is called x.htm, where x is the name of the .leo file containing the script.
+This file is written to the leo/test folder.
+
+The script inserts javascript into the page so that nodes can be expanded and contracted.
+
+The script presently works well.  This script may become the basis for a facebook app.
+
+The generated html passes html-tidy: http://www.w3.org/People/Raggett/tidy/
+</t>
+<t tx="ekr.20080806145258.16">division = """
+&lt;div STYLE="margin-left:3em;text-indent:0em;margin-top:0em; margin-bottom:0em;"&gt;
+&lt;h3 onClick="expandcontent('sc%d')" style="cursor:hand; cursor:pointer; margin-top:0em; margin-bottom:0em"&gt;+ %s&lt;/h3&gt;
+    &lt;div id="sc%d" class="switchcontent" style="margin-top:0em; margin-bottom:0em;"&gt;
 """
 
-import mod_shadow_core, os, shutil
+javascript  = """
+&lt;script src="cgi-bin/leo.js" type="text/javascript"&gt;&lt;/script&gt;
+"""
 
-def marker_from_extension(filename):
-    marker = g.comment_delims_from_extension(filename)[0]
-    return marker and marker + '@'
-
-shadow_subdir = c.config.getString("shadow_subdir").strip()
-if not shadow_subdir: assert False,'No shadow_subdir setting'
-prefix = c.config.getString("shadow_prefix")
-
-for p in p.self_and_subtree_iter():
-    h = p.headString().strip()
-    if h.startswith("@thin"):
-        start = h.find("@thin") + len("@thin")
-        leofiledir = os.path.split(c.mFileName)[0]
-        filename = h[start:].strip()
-        fullfilename = os.path.join(leofiledir, filename)
-        theDir = os.path.split(fullfilename)[0]
-        leoFolder = os.path.join(leofiledir, theDir, shadow_subdir)
-        if not os.path.exists(leoFolder):
-           os.mkdir(leoFolder)
-           assert os.path.exists(leoFolder)
-        else:
-           assert os.path.isdir(leoFolder)
-        junk, name = os.path.split(filename)
-        newname = os.path.join(leoFolder, prefix + name)
-        if os.path.exists(newname):
-            continue
-        g.es( "renaming %s to %s" % (filename, newname))
-        shutil.copy2(fullfilename, newname)
-        os.unlink(fullfilename)
-        f = file(fullfilename, "w")
-        f.close()
-        mod_shadow_core.copy_file_removing_sentinels(
-            sourcefilename=newname,
-            targetfilename=fullfilename,
-            marker_from_extension = marker_from_extension)
-        g.es("File %s is now shadowed" % filename)</t>
-<t tx="ekr.20080702193741.3">def spam():
-    g.trace()</t>
-<t tx="ekr.20080702193741.4">def eggs():
-    g.trace()</t>
-<t tx="ekr.20080708103735.1">@
-
-All the tags should be tested at least once (equal, replace, delete, insert).
-
-The replace, delete, insert operations should happen at least once:
-    1. At the beginning of a node.
-    2. In the middle of a node.
-    3. At the end of a node.
-
-For the delete and replace operators we must also test the case that the
-deletion or replacement spans more than one block.
+style = '''
+&lt;STYLE type="text/css"&gt;
+    BODY {font:x-medium 'Verdana'; margin-right:1.5em}
+    PRE {margin:0px; display:inline}
+&lt;/STYLE&gt;
+'''
 </t>
-<t tx="ekr.20080708103735.2"></t>
-<t tx="ekr.20080708103735.3">#@string1
-line 1
-line 2
+<t tx="ekr.20080806145258.17">def escape (s):
+
+    return s.replace('&amp;','&amp;amp;').replace('&lt;','&amp;lt;').replace('&gt;','&amp;gt;')
 </t>
-<t tx="ekr.20080708103735.4">#@string1
-xxx
+<t tx="ekr.20080806145258.18">def writeAll(f):
+
+    f.write('&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN"&gt;')
+    f.write('&lt;html&gt;')
+    writeHead(f)
+    writeBody(f)
+    f.write("&lt;/html&gt;")
 </t>
-<t tx="ekr.20080708103735.5">xxx
+<t tx="ekr.20080806145258.19">def writeBody(f):
+
+    f.write('&lt;body class="st" onload="format()"&gt;')
+    writeContents(f)
+    f.write("&lt;/body&gt;")
 </t>
-<t tx="ekr.20080708103735.6">import leo.core.leoShadow as leoShadow
+<t tx="ekr.20080806145258.20">def writeHead(f):
 
-def get_lines(headline):
-    p = g.findNodeAnywhere(c, headline)
-    s = p.bodyString()    
-    return g.splitLines(s)
-
-old_private_lines       = get_lines ('old_private')
-new_public_lines        = get_lines ('new_public')
-expected_private_lines  = get_lines ('expected_after_private')
-
-assert old_private_lines
-assert new_public_lines
-assert expected_private_lines
-
-x = leoShadow.shadowController(c)
-
-x.test_propagate_changes (
-    old_private_lines,      # before_with_sentinels_lines,
-    new_public_lines,       # changed_without_sentinels_lines,
-    expected_private_lines, # after_with_sentinel_lines,
-    marker="#@")
+    f.write('&lt;head&gt;')
+    f.write(style)
+    f.write(javascript)
+    f.write('&lt;title&gt;%s&lt;/title&gt;' % c.shortFileName())
+    f.write('&lt;/head&gt;')
 </t>
-<t tx="ekr.20080710111404.1">g.pr('a',newline=False)
-g.pr('b')
-f = open(c.fileName())
-g.pr(f)</t>
-<t tx="ekr.20080710111404.2">print[ ]+(.*)$
-g.pr(\1)
+<t tx="ekr.20080806145258.21">def writeContents(f):
 
-# Double escapes in print statements.
-print(.*)\\n(.*)$
-print\1\\\\n\2</t>
-<t tx="ekr.20080726123338.1">http://en.wikipedia.org/wiki/Compound_document
+    div = "&lt;div class='c' STYLE='margin-left:4em;margin-top:0em; margin-bottom:0em;'&gt;\n&lt;pre&gt;\n%s\n&lt;/pre&gt;\n&lt;/div&gt;"
+    end_div = "&lt;/div&gt;\n&lt;/div&gt;\n"
+    n = 1 # The node number
+    current = c.currentPosition()
+    prev_level = current.level()
+    open_divs = 0
+    for p in current.self_and_subtree_iter():
+        h = p.headString()
+        while prev_level &gt;= p.level() and open_divs &gt; 0:
+            f.write(end_div)
+            prev_level -= 1
+            open_divs -= 1
+        body = p.bodyString().encode( "utf-8" )
+        body = body.rstrip().rstrip("\n")
+        f.write(division % (n,escape(h),n))
+        open_divs += 1
+        if body:
+            f.write(div % escape(body))
+        prev_level = p.level()
+        n += 1
 
-http://en.wikipedia.org/wiki/Transclusion
-
-http://en.wikipedia.org/wiki/Software_componentry
-
-http://en.wikipedia.org/wiki/Universal_Network_Objects
-
-http://udk.openoffice.org/python/python-bridge.html
-
-http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/OpenOffice.org_Developers_Guide
-
-http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Professional_UNO
+    # Close all divisions.
+    while open_divs &gt; 0:
+        f.write(end_div)
+        open_divs -= 1
 </t>
+<t tx="ekr.20080806145258.22"># def writePreamble(f):
+
+    # '''Write HTML header information.'''
+
+    # header_start = '''\
+
+
+# &lt;body class="st" onload="format()"&gt;
+# '''
+
+    # for s in (header_start,style,javascript,header_end):
+        # # f.write(g.adjustTripleString(s,c.tab_width))
+        # f.write(s)
+</t>
+<t tx="ekr.20080806145258.23"># def writePostamble (f):
+
+    # pass
+
+</t>
+<t tx="ekr.20080806145258.24"># A minimal python server for testing.
+# To access this server, type this url in a web browser: http://localhost:8080/
+# The server will print the contents of the directory from which it was invoked.
+# Choose hello.html to see the 'Hello World' test page.
+
+import CGIHTTPServer
+import SocketServer
+
+port = 8080
+
+Handler = CGIHTTPServer.CGIHTTPRequestHandler
+s = SocketServer.TCPServer(("", port), Handler)
+
+s.server_name = '127.0.0.1' # represents local host.
+s.server_port = port
+
+# import os ; print 'cwd', os.getcwd()
+
+print "server.py: serving at port", port
+s.serve_forever()
+</t>
+<t tx="ekr.20080806145258.25">@language html
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;&lt;/title&gt;
+
+&lt;!-- Used by edward.old.py
+&lt;script language="JavaScript" type="text/javascript"&gt;
+   var openImg = new Image();
+   openImg.src = "open.gif";
+   var closedImg = new Image();
+   closedImg.src = "closed.gif";
+
+   function showNode(node) {
+      var objBranch = 
+         document.getElementById(node).style;
+      if(objBranch.display=="block")
+         objBranch.display="none";
+      else
+         objBranch.display="block";
+   }
+
+   function swapFolder(img) {
+      objImg = document.getElementById(img);
+      if(objImg.src.indexOf('closed.gif')&gt;-1)
+         objImg.src = openImg.src;
+      else
+         objImg.src = closedImg.src;
+   }
+&lt;/script&gt;
+--&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="cgi-bin/edward.py" method="GET"&gt;
+&lt;input type="submit" name="George"&gt;
+&lt;/form&gt;
+
+&lt;p&gt;This is the hello world test page.
+The server in server.py should be running when using this page.
+
+&lt;p&gt;The button (form) above should cause the server to send a "GET" request
+to the edward.py script, which will respond with a new page.
+
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20080806145258.26">@first #! c:\python25\python.exe
+@first # -*- coding: utf-8 -*-
+
+'''This is the cgi script called from hello.html when the user hits the button.'''
+
+### Print statements are used to return results (return the form).
+### You *can* use print statement for tracing, but only in print_all.
+# To do: use cgi.FieldStorage.
+
+@language python
+@tabwidth -4
+&lt;&lt; imports &gt;&gt;
+&lt;&lt; define dhtml stuff &gt;&gt;
+@others
+
+if 1: # Open the bridge.
+    path = os.path.abspath(os.path.join(leoParentDir,'leo','test','test.leo')) # c does not exist!
+    b = leoBridge.controller(gui='nullGui',loadPlugins=False,readSettings=False,verbose=False)
+    g = b.globals()
+    c = b.openLeoFile(path)
+    p = c.rootPosition()
+else:
+    c = None
+
+# import pdb ; pdb.Pdb() # Doesn't work.
+print_all(c)</t>
+<t tx="ekr.20080806145258.27">division = """
+&lt;div STYLE="margin-left:3em;text-indent:0em;margin-top:0em; margin-bottom:0em;"&gt;
+&lt;h3 onClick="expandcontent('sc%d')" style="cursor:hand; cursor:pointer; margin-top:0em; margin-bottom:0em"&gt;+ %s&lt;/h3&gt;
+    &lt;div id="sc%d" class="switchcontent" style="margin-top:0em; margin-bottom:0em;"&gt;
+"""
+
+style = """
+&lt;STYLE type="text/css"&gt;
+    BODY {font:x-medium 'Verdana'; margin-right:1.5em}
+    PRE {margin:0px; display:inline}
+&lt;/STYLE&gt;
+"""</t>
+<t tx="ekr.20080806145258.28">def escape (s):
+
+    return s.replace('&amp;','&amp;amp;').replace('&lt;','&amp;lt;').replace('&gt;','&amp;gt;')
+</t>
+<t tx="ekr.20080806145258.29">def print_all(c):
+
+    # This line is required (with extra newline), but does not show on the page.
+    print "Content-type:text/html\n"
+
+    print '&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN"&gt;'
+    print '&lt;html&gt;'
+    if c:
+        # Print the page.
+        print_head(c)
+        print_body(c)
+    else:
+        # Print the debugging info.
+        print '__file__',__file__
+        print 'os.getcwd()',os.getcwd()
+
+    print '&lt;/html&gt;'
+</t>
+<t tx="ekr.20080806145258.30">def print_body(c):
+
+    print '&lt;body class="st" onload="format()"&gt;'
+
+    if 0:
+        # Debugging info.
+        form = cgi.FieldStorage()
+        print repr(form)
+        # if form.has_key('name'):
+            # print 'name',form['name'].value
+        # else:
+            # print 'no name'
+    print_tree(c)
+    print '&lt;/body&gt;'
+</t>
+<t tx="ekr.20080806145258.31">def print_head(c):
+
+    print '&lt;head&gt;'
+
+    if 1: # Copy the entire leo.js file into the page.
+        print '&lt;script type="text/javascript"&gt;'
+        print_leo_dot_js(c)
+        print '&lt;/script&gt;'
+
+    else: # Possible bug in the python server??
+        # The Python says leo.js is not executable(!)
+        print '&lt;script src="leo.js" type="text/javascript"&gt;&lt;/script&gt;'
+
+    print '&lt;title&gt;%s&lt;/title&gt;' % (c.shortFileName())
+    print '&lt;/head&gt;'
+</t>
+<t tx="ekr.20080806145258.32">def print_leo_dot_js(c):
+
+    path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','cgi-bin','leo.js'))
+
+    try:
+        f = file(path)
+    except IOError:
+        print 'can not open',path
+        return
+
+    for line in f.readlines():
+        print line,
+
+    f.close()
+</t>
+<t tx="ekr.20080806145258.33">def print_tree(c):
+
+    div = "&lt;div class='c' STYLE='margin-left:4em;margin-top:0em; margin-bottom:0em;'&gt;\n&lt;pre&gt;\n%s\n&lt;/pre&gt;\n&lt;/div&gt;"
+    end_div = "&lt;/div&gt;\n&lt;/div&gt;\n"
+    n = 1 # The node number
+    prev_level = 0
+    open_divs = 0
+    for p in c.allNodes_iter():
+        h = p.headString()
+        while prev_level &gt;= p.level() and open_divs &gt; 0:
+            print end_div
+            prev_level -= 1
+            open_divs -= 1
+        body = p.bodyString().encode( "utf-8" )
+        body = body.rstrip().rstrip("\n")
+        print division % (n,escape(h),n)
+        open_divs += 1
+        if body: print div % escape(body)
+        prev_level = p.level()
+        n += 1
+
+    # Close all divisions.
+    while open_divs &gt; 0:
+        print end_div
+        open_divs -= 1
+</t>
+<t tx="ekr.20080806145258.34"></t>
+<t tx="ekr.20080806145702.1">import os
+import sys
+
+# Add the *parent* of the leo directory to sys.path.
+leoParentDir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','..','..'))
+
+if leoParentDir not in sys.path:
+    sys.path.append(leoParentDir)
+
+import leo.core.leoBridge as leoBridge
+
+import cgi
+import cgitb ; cgitb.enable()
+</t>
+<t tx="ekr.20080807091001.1">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20080807091201.7">#!/usr/local/bin/python
+# -*- coding: utf-8 -*-
+"""
+module docs
+"""
+
+</t>
+<t tx="ekr.20080807091201.8">class Person(object):
+   '''class docs
+   '''
+   field1 = 10
+   field2 = 20
+
+   @others
+</t>
+<t tx="ekr.20080807091201.9">def talk(self):
+    ''' this is the func doc
+    '''
+    print 'hello world'
+
+</t>
+<t tx="ekr.20080807091201.10">class Meta:
+    age = 10</t>
+<t tx="ekr.20080807114145.2">@
+A script button to run any body text as a Windows Script.
+See: http://en.wikipedia.org/wiki/Windows_Script_Host
+
+You need the win32 extensions and you must enable the script engine.
+Adapted from Active State examples:ch21_active_scripting:ActiveApp.py
+http://python.net/crew/mhammond/win32/
+@c
+
+&lt;&lt; imports &gt;&gt;
+
+@others
+
+RunCode("python",p.bodyString())
+</t>
+<t tx="ekr.20080807115344.1">Application.Echo("Hello from Python")
+</t>
+<t tx="ekr.20080807115344.2">class MySite(axsite.AXSite):
+    # Our error handler will simply print to the console.
+    def OnScriptError(self, activeScriptError):
+        exc = activeScriptError.GetExceptionInfo()
+        print "Exception:", exc[1]
+        try:
+            sourceText = activeScriptError.GetSourceLineText()
+        except pythoncom.com_error:
+            sourceText = None
+        if sourceText is not None: 
+            context, lineNo, charNo = activeScriptError.GetSourcePosition()
+            print sourceText
+            indent = " " * (charNo-1)
+            print indent + "^"
+        return winerror.S_OK
+</t>
+<t tx="ekr.20080807115344.3"># A named object for our namespace
+# A normal Python COM object (minus registration info)
+class Application:
+    _public_methods_ = [ 'Echo' ]
+    def Echo(self, *args):
+        print string.join(map(str, args))
+
+</t>
+<t tx="ekr.20080807115344.4"># Create the site and the engine and runs the code.
+def RunCode(engineName, code):
+
+    app = win32com.server.util.wrap( Application() )
+
+    # Create a dictionary holding our object model.
+    model = {'Application' : app,}
+
+    # Create the scripting site.
+    site = MySite(model)
+    # Create the engine and add the code.
+    engine = site.AddEngine(engineName)
+    engine.AddCode(code)
+
+    # Run the code.
+    engine.Start()
+</t>
+<t tx="ekr.20080807115344.5">import string
+import sys
+from win32com.axscript import axscript
+from win32com.axscript.server import axsite
+import pythoncom
+import win32com.server.util</t>
+<t tx="ekr.20080808115835.1">import os
+import shutil
+import sys
+
+@others
+
+try:
+    leoFolder == os.path(dirname(__file__))
+except NameError:
+    theDir = g.app.loadDir
+    leoFolder    = norm(os.path.join(theDir,'..'))
+
+assert leoFolder.endswith('leo')
+assert exists(leoFolder)
+
+pythonFolder = os.path.dirname(sys.executable)
+leoLibFolder = norm(os.path.join(pythonFolder,'Lib','site-packages','leo'))
+
+copyDir(leoFolder,leoLibFolder)
+</t>
+<t tx="ekr.20080808122543.1">def norm(path):
+    return os.path.abspath(os.path.join(path))
+
+def exists(path):
+    return os.path.exists(path)
+</t>
+<t tx="ekr.20080808122543.2">def copyDir (src,dst):
+
+    if exists(dst):
+        print('destination folder already exists: %s' % dst)
+    else:
+        try:
+            print('coping %s to %s' % (src,dst))
+            shutil.copytree(src,dst)
+        except Exception:
+            print('not copied %s to %s' % (src,dst))
+</t>
+<t tx="ekr.20080811112727.1">False: (recommended) Enable import parsing for @shadow and @auto
+True: @shadow and @auto create a single node for the entire file.</t>
+<t tx="ekr.20080811113441.2"></t>
+<t tx="ekr.20080812102914.1">root first line
+@others
+root last line</t>
+<t tx="ekr.20080812102914.2">child line 1
+child line 2</t>
+<t tx="ekr.20080812112440.1">@language ini
+[section]
+blah blah
+changed
+changed2
+changed3
+changed4
+change5</t>
+<t tx="ekr.20080812135254.1"># Line one
+# line two</t>
+<t tx="ekr.20080813080627.1">@others</t>
+<t tx="ekr.20080813080627.2">def spam():
+    pass</t>
+<t tx="ekr.20080813080627.3">def eggs():
+    pass</t>
+<t tx="ekr.20080813080729.1"></t>
+<t tx="ekr.20080813080809.1"></t>
+<t tx="ekr.20080813100905.1">import sys
+print sys.argv</t>
+<t tx="ekr.20080815073750.1">n = 0
+for p in c.allNodes_iter():
+    if p.isAtNoSentFileNode():
+        c.atFileCommands.write(p,nosentinels=True)
+        n += 1
+g.es('done: %s files written' %(n))</t>
 </tnodes>
 </leo_file>

@@ -110,19 +110,22 @@ class bridgeController:
         try:
             import leo.core.leoGlobals as leoGlobals
         except ImportError:
-            print "Error importing leoGlobals.py"
+            print("Error importing leoGlobals.py")
 
         # Create the application object.
         try:
             import leo.core.leoApp as leoApp
             leoGlobals.app = leoApp.LeoApp()
         except ImportError:
-            print "Error importing leoApp.py"
+            print("Error importing leoApp.py")
 
         # NOW we can set g.
         self.g = g = leoGlobals
         assert(g.app)
         g.app.leoID = None
+
+        # Set leoGlobals.g here, rather than in leoGlobals.
+        leoGlobals.g = leoGlobals
         #@-node:ekr.20070227093629.1:<< import leoGlobals and leoApp >>
         #@nl
         g.computeStandardDirectories()
@@ -132,13 +135,13 @@ class bridgeController:
         try:
             import leo.core.leoNodes as leoNodes
         except ImportError:
-            print "Error importing leoNodes.py"
+            print("Error importing leoNodes.py")
             import traceback ; traceback.print_exc()
 
         try:
             import leo.core.leoConfig as leoConfig
         except ImportError:
-            print "Error importing leoConfig.py"
+            print("Error importing leoConfig.py")
             import traceback ; traceback.print_exc()
         #@-node:ekr.20070227093629.2:<< import leoNodes and leoConfig >>
         #@nl
@@ -166,7 +169,7 @@ class bridgeController:
 
         #g.trace('loadDir',g.app.loadDir)
 
-        leoDirs = ('config','doc','extensions','modes','plugins','src','test')
+        leoDirs = ('config','doc','extensions','modes','plugins','core','test') # 2008/7/30
 
         for theDir in leoDirs:
             path = g.os_path_abspath(
@@ -183,8 +186,8 @@ class bridgeController:
             import leo.core.leoGui as leoGui
             import leo.core.leoFrame as leoFrame
             g.app.gui = leoGui.nullGui("nullGui")
-            # print 'createGui:','g.app:',id(g.app),g.app
-            # print 'createGui:','g.app.gui',g.app.gui
+            # g.pr('createGui:','g.app:',id(g.app),g.app)
+            # g.pr('createGui:','g.app.gui',g.app.gui)
             g.app.log = g.app.gui.log = log = leoFrame.nullLog()
             log.isNull = False
             log.enabled = True # Allow prints from nullLog.
@@ -208,22 +211,25 @@ class bridgeController:
         try:
             # This will fail if True/False are not defined.
             import leo.core.leoGlobals as g
+            # print('leoBridge:isValidPython:g',g)
+            # Set leoGlobals.g here, rather than in leoGlobals.py.
+            g.g = g
         except ImportError:
-            print "isValidPython: can not import leo.core.leoGlobals as leoGlobals"
+            print("isValidPython: can not import leo.core.leoGlobals as leoGlobals")
             return 0
         except:
-            print "isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g"
+            print("isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g")
             import traceback ; traceback.print_exc()
             return 0
         try:
             version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
             ok = g.CheckVersion(version,'2.2.1')
             if not ok:
-                print message
+                print(message)
                 g.app.gui.runAskOkDialog(None,"Python version error",message=message,text="Exit")
             return ok
         except:
-            print "isValidPython: unexpected exception: g.CheckVersion"
+            print("isValidPython: unexpected exception: g.CheckVersion")
             import traceback ; traceback.print_exc()
             return 0
     #@nonl
@@ -334,8 +340,8 @@ class bridgeController:
                 log.isNull = False
                 log.enabled = True
 
-            # print 'createGui:','g.app:',id(g.app),g.app
-            # print 'createGui:','g.app.gui',g.app.gui
+            # g.pr('createGui:','g.app:',id(g.app),g.app)
+            # g.pr('createGui:','g.app.gui',g.app.gui)
             return c
         else:
             return None

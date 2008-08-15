@@ -438,12 +438,11 @@ class Lassoer(object):
         c = self.c
 
         if self.validMove():
-            # c.beginUpdate()
             self.moveTo()
             self.copyTo()
             self.cloneTo()
             self.clear()
-            c.redraw() # was c.endUpdate()
+            c.redraw()
         else:
             g.es('No valid move',color='blue')
     #@nonl
@@ -458,9 +457,6 @@ class Lassoer(object):
             g.es('Transfer not valid',color='blue')
             return
 
-        # lassoer.c.beginUpdate()
-        # c.beginUpdate()
-        # try:
         mN = lassoer.moveNode
         for z in self.mvForCopy:
             self.copyTo(mN)
@@ -469,9 +465,8 @@ class Lassoer(object):
         if self.mvForClone:
             g.es('Ignoring clone transer',color='blue')
         self.clear()
-        # finally:
-        c.redraw() # was c.endUpdate()
-        lassoer.c.redraw() # was lassoer.c.endUpdate() # Do this last so we select the target outline.
+        c.redraw()
+        lassoer.c.redraw() # Do this last so we select the target outline.
 
     #@-node:mork.20041019125724.3:transfer
     #@-node:ekr.20060325094821:Commands

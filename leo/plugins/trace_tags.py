@@ -61,24 +61,24 @@ def trace_tags (tag,keywords):
         c = keywords.get('c')
         v = keywords.get('v')
         if not c:
-            print tagCount,tag, 'c = None'
+            g.pr(tagCount,tag, 'c = None')
         if not v:
             if tag not in ('select1','select2','select3','unselect1','unselect2'):
-                print tagCount,tag, 'v = None'
+                g.pr(tagCount,tag, 'v = None')
 
     # Hook-specific traces...
     if tag in ('command1','command2'):
-        print tagCount,tag,keywords.get('label')
+        g.pr(tagCount,tag,keywords.get('label'))
     elif tag in ('open1','open2'):
-        print tagCount,tag,keywords.get('fileName')
+        g.pr(tagCount,tag,keywords.get('fileName'))
     elif brief:
-        print tagCount,tag
+        g.pr(tagCount,tag)
     else: # Verbose
         keys = keywords.items()
         keys.sort()
         for key,value in keys:
-            print tagCount,tag,key,value
-        print
+            g.pr(tagCount,tag,key,value)
+        g.pr('')
 #@nonl
 #@-node:edream.110203113231.739:trace_tags
 #@-others

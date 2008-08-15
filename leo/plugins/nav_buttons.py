@@ -848,7 +848,7 @@ def init ():
         g.app.gui.marksDialog = marksDialog
         g.app.gui.recentSectionsDialog = recentSectionsDialog
 
-    # print 'navButtons:init','ok',ok,g.app.gui.guiName()
+    # g.pr('navButtons:init','ok',ok,g.app.gui.guiName())
 
     r = leoPlugins.registerHandler          
     r('after-create-leo-frame',onCreate)

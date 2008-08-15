@@ -567,11 +567,11 @@ class leoTkinterFrame (leoFrame.leoFrame):
         w = c.frame.bar1
         if True:
             def focusIn (event):
-                print("Focus in  %s (%s)" % (
+                g.pr("Focus in  %s (%s)" % (
                     event.widget,event.widget.winfo_class()))
 
             def focusOut (event):
-                print("Focus out %s (%s)" % (
+                g.pr("Focus out %s (%s)" % (
                     event.widget,event.widget.winfo_class()))
 
             w.bind_all("<FocusIn>", focusIn)
@@ -1170,7 +1170,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
                     return val
             else:
                 def commandCallback():
-                    print "command for widget %s" % (n)
+                    g.pr("command for widget %s" % (n))
                 command = commandCallback
 
             if imagefile or image:
@@ -2327,10 +2327,10 @@ class leoTkinterLog (leoFrame.leoLog):
 
         if sys.platform == "darwin": # Does not work on MacOS X.
             try:
-                print s, # Don't add a newline.
+                g.pr(s,newline=False) # Don't add a newline.
             except UnicodeError:
                 # g.app may not be inited during scripts!
-                print g.toEncodedString(s,'utf-8')
+                g.pr(g.toEncodedString(s,'utf-8'))
         else:
             self.logCtrl.update_idletasks()
     #@-node:ekr.20050208133438:forceLogUpdate
@@ -2351,8 +2351,8 @@ class leoTkinterLog (leoFrame.leoLog):
 
         c = self.c
 
-        # print 'tkLog.put',s
-        # print 'tkLog.put',len(s),g.callers()
+        # g.pr('tkLog.put',s)
+        # g.pr('tkLog.put',len(s),g.callers())
 
         if g.app.quitting or not c or not c.exists:
             return
@@ -2385,12 +2385,12 @@ class leoTkinterLog (leoFrame.leoLog):
             #@+node:EKR.20040423082910.1:<< put s to logWaiting and print s >>
             g.app.logWaiting.append((s,color),)
 
-            print "Null tkinter log"
+            g.pr("Null tkinter log")
 
             if type(s) == type(u""):
                 s = g.toEncodedString(s,"ascii")
 
-            print s
+            g.pr(s)
             #@-node:EKR.20040423082910.1:<< put s to logWaiting and print s >>
             #@nl
     #@-node:ekr.20031218072017.1473:put
@@ -2400,7 +2400,7 @@ class leoTkinterLog (leoFrame.leoLog):
         if g.app.quitting:
             return
 
-        # print 'tkLog.putnl' # ,g.callers()
+        # g.pr('tkLog.putnl' # ,g.callers())
 
         if tabName:
             self.selectTab(tabName)
@@ -2414,8 +2414,7 @@ class leoTkinterLog (leoFrame.leoLog):
         else:
             # Put a newline to logWaiting and print newline
             g.app.logWaiting.append(('\n',"black"),)
-            print "Null tkinter log"
-            print
+            g.pr("Null tkinter log")
     #@-node:ekr.20051016101927.1:putnl
     #@-node:ekr.20051016101927:put & putnl (tkLog)
     #@+node:ekr.20051018061932:Tab (TkLog)

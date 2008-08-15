@@ -168,7 +168,7 @@ class baseEditCommandsClass:
     #@+node:ekr.20050920084036.7:oops
     def oops (self):
 
-        print("baseEditCommandsClass oops:",
+        g.pr("baseEditCommandsClass oops:",
             g.callers(),
             "must be overridden in subclass")
     #@-node:ekr.20050920084036.7:oops
@@ -261,8 +261,8 @@ def finishCreateEditCommanders (c):
             if 0:
                 keys = d2.keys()
                 keys.sort()
-                print '----- %s' % name
-                for key in keys: print key
+                g.pr('----- %s' % name)
+                for key in keys: g.pr(key)
 
     return d
 #@-node:ekr.20050922104731:finishCreateEditCommanders (leoEditCommands module)
@@ -728,8 +728,6 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            # c.beginUpdate()
-            # try:
             w = self.w
             c.selectPosition(p)
             self.beginCommand('append-to-buffer: %s' % p.headString())
@@ -737,8 +735,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.setInsertPoint('end')
             w.seeInsertPoint()
             self.endCommand()
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
             c.recolor_now()
     #@nonl
     #@-node:ekr.20050920084036.35:appendToBuffer
@@ -759,15 +756,12 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            # c.beginUpdate()
-            # try:
             c.selectPosition(p)
             self.beginCommand('copy-to-buffer: %s' % p.headString())
             w.insert('end',s)
             w.setInsertPoint('end')
             self.endCommand()
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
             c.recolor_now()
     #@-node:ekr.20050920084036.36:copyToBuffer
     #@+node:ekr.20050920084036.37:insertToBuffer
@@ -787,16 +781,13 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            # c.beginUpdate()
-            # try:
             c.selectPosition(p)
             self.beginCommand('insert-to-buffer: %s' % p.headString())
             i = w.getInsertPoint()
             w.insert(i,s)
             w.seeInsertPoint()
             self.endCommand()
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
     #@-node:ekr.20050920084036.37:insertToBuffer
     #@+node:ekr.20050920084036.38:killBuffer
     def killBuffer (self,event):
@@ -861,16 +852,13 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            # c.beginUpdate()
-            # try:
             c.selectPosition(p)
             self.beginCommand('prepend-to-buffer: %s' % p.headString())
             w.insert(0,s)
             w.setInsertPoint(0)
             w.seeInsertPoint()
             self.endCommand()
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
             c.recolor_now()
     #@-node:ekr.20050920084036.39:prependToBuffer
     #@+node:ekr.20050920084036.43:renameBuffer
@@ -892,9 +880,8 @@ class bufferCommandsClass (baseEditCommandsClass):
         c = self.c ; p = self.findBuffer(self.fromName)
         if p:
             c.endEditing()
-            # c.beginUpdate()
             c.setHeadString(p,name)
-            c.redraw() # was c.endUpdate()
+            c.redraw()
     #@-node:ekr.20050920084036.43:renameBuffer
     #@+node:ekr.20050920084036.40:switchToBuffer
     def switchToBuffer (self,event):
@@ -908,11 +895,8 @@ class bufferCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = self.findBuffer(name)
         if p:
-            # c.beginUpdate()
-            # try:
             c.selectPosition(p)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
     #@-node:ekr.20050920084036.40:switchToBuffer
     #@-node:ekr.20050920084036.34:Entry points
     #@+node:ekr.20050927102133.1:Utils
@@ -1354,22 +1338,26 @@ class debugCommandsClass (baseEditCommandsClass):
     #@-node:ekr.20060202133313:printStats
     #@+node:ekr.20060328121145:runUnitTest commands
     def runAllUnitTestsLocally (self,event=None):
-        '''Run all unit tests contained in the presently selected outline.'''
+        '''Run all unit tests contained in the presently selected outline.
+        Tests are run in the outline's process, so tests *can* change the outline.'''
         c = self.c
         leoTest.doTests(c,all=True)
 
     def runUnitTestsLocally (self,event=None):
-        '''Run all unit tests contained in the presently selected outline.'''
+        '''Run all unit tests contained in the presently selected outline.
+        Tests are run in the outline's process, so tests *can* change the outline.'''
         c = self.c
         leoTest.doTests(c,all=False)
 
     def runAllUnitTests (self,event=None):
-        '''Run all unit tests contained in the entire outline.'''
+        '''Run all unit tests contained in the entire outline.
+        Tests are run in an external process, so tests *cannot* change the outline.'''
         c = self.c
         leoTest.runTestsExternally(c,all=True)
 
     def runUnitTests(self,event=None):
-        '''Run all unit tests contained in the presently selected outline.'''
+        '''Run all unit tests contained in the presently selected outline
+        Tests are run in an external process, so tests *cannot* change the outline.'''
         c = self.c
         leoTest.runTestsExternally(c,all=False)
     #@-node:ekr.20060328121145:runUnitTest commands
@@ -1719,7 +1707,7 @@ class editCommandsClass (baseEditCommandsClass):
             pane = body
 
         # Warning: traces mess up the focus
-        # print g.app.gui.widget_name(w),g.app.gui.widget_name(pane)
+        # g.pr(g.app.gui.widget_name(w),g.app.gui.widget_name(pane))
 
         # This works from the minibuffer *only* if there is no typing completion.
         c.widgetWantsFocusNow(pane)
@@ -1741,10 +1729,11 @@ class editCommandsClass (baseEditCommandsClass):
 
         pane = None ; w_name = g.app.gui.widget_name
         trace = False
-        if trace: print (
-            '---- w',w_name(w),id(w),
-            '#tabs',c.frame.log.numberOfVisibleTabs(),
-            'bodyCtrl',w_name(c.frame.body.bodyCtrl),id(c.frame.body.bodyCtrl))
+        if trace:
+            g.pr(
+                '---- w',w_name(w),id(w),
+                '#tabs',c.frame.log.numberOfVisibleTabs(),
+                'bodyCtrl',w_name(c.frame.body.bodyCtrl),id(c.frame.body.bodyCtrl))
 
         # w may not be the present body widget, so test its name, not its id.
         if w_name(w).startswith('body'):
@@ -1788,7 +1777,7 @@ class editCommandsClass (baseEditCommandsClass):
             pane = c.frame.body.bodyCtrl
             self.editWidgetCount = 1 ; self.logWidgetCount = 0
 
-        if trace: print 'old: %10s new: %10s' % (w_name(w),w_name(pane))
+        if trace: g.pr('old: %10s new: %10s' % (w_name(w),w_name(pane)))
 
         if pane:
             k.newMinibufferWidget = pane
@@ -2800,15 +2789,11 @@ class editCommandsClass (baseEditCommandsClass):
         w = c.frame.body.bodyCtrl
         if not w: return
 
-        # c.beginUpdate()
-        # try:
         for p in current.self_and_subtree_iter():
             c.selectPosition(p)
             w.setSelectionRange(0,0,insert=0)
             c.editCommands.cleanLines(event)
         c.selectPosition(current)
-        # finally:
-        # c.endUpdate(False)
     #@-node:ekr.20070325094935:cleanAllLines
     #@+node:ekr.20060415112257:cleanLines
     def cleanLines (self,event):
@@ -4196,11 +4181,8 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
                 p = p.threadNext()
-                # c.beginUpdate()
-                # try:
                 c.selectPosition(p)
-                # finally:
-                c.redraw() # was c.endUpdate()
+                c.redraw()
 
                 s = w.getAllText()
                 w.insert(0,lines)
@@ -4246,11 +4228,8 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
                 p = p.threadBack()
-                # c.beginUpdate()
-                # try:
                 c.selectPosition(p)
-                # finally:
-                c.redraw() # was c.endUpdate()
+                c.redraw()
 
                 s = w.getAllText()
                 if not s.endswith('\n'): w.insert('end','\n')
@@ -4872,8 +4851,6 @@ class editFileCommandsClass (baseEditCommandsClass):
     def createAllCompareClones(self,inserted,deleted,changed):
 
         c = self.c # Always use the visible commander
-        # c.beginUpdate()
-        # try:
         # Create parent node at the start of the outline.
         u = c.undoer ; undoType = 'Compare .leo Files'
         u.beforeChangeGroup(c.currentPosition(),undoType)
@@ -4887,8 +4864,6 @@ class editFileCommandsClass (baseEditCommandsClass):
             self.createCompareClones(d,kind,parent)
         c.selectPosition(parent)
         u.afterChangeGroup(parent,undoType,reportFlag=True) 
-        # finally:
-        # c.endUpdate(False)
 
         c.redraw_now()
     #@nonl
@@ -4949,10 +4924,10 @@ class editFileCommandsClass (baseEditCommandsClass):
             (deleted, 'deleted  (only in %s)' % (fileName2)),
             (changed, 'changed'),
         ):
-            print ; print kind
+            g.pr('\n',kind)
             for key in d.keys():
                 p = d.get(key)
-                print '%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii'))
+                g.pr('%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii')))
     #@-node:ekr.20070921072608.1:dumpCompareNodes
     #@-node:ekr.20070920104110:compareLeoFiles
     #@+node:ekr.20050920084036.164:deleteFile
@@ -6097,6 +6072,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'promote':                      c.promote,
             'read-at-auto-nodes':           c.readAtAutoNodes,
             'read-at-file-nodes':           c.readAtFileNodes,
+            'read-at-shadow-nodes':         c.readAtShadowNodes,
             'read-outline-only':            c.readOutlineOnly,
             'read-file-into-node':          c.readFileIntoNode,
             'redo':                         c.undoer.redo,
@@ -6132,8 +6108,10 @@ class leoCommandsClass (baseEditCommandsClass):
             'weave':                        c.weave,
             'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
             'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+            'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
             'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
             'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
+            'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
             'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
             'write-outline-only':           c.fileCommands.writeOutlineOnly,
             'write-file-from-node':         c.writeFileFromNode,
@@ -8474,8 +8452,6 @@ class spellTabHandler (leoFind.leoFind):
                 alts = aspell.processWord(word)
                 if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.headString() or 'None')
                 if alts:
-                    # c.beginUpdate()
-                    # try:
                     redraw = not p.isVisible(c)
                     # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
                     if sparseFind and not c.currentPosition().isAncestorOf(p):
@@ -8488,8 +8464,7 @@ class spellTabHandler (leoFind.leoFind):
                             redraw = True
                     # c.frame.tree.expandAllAncestors(p)
                     c.selectPosition(p)
-                    # finally:
-                    if redraw: c.redraw() # was c.endUpdate(redraw)
+                    if redraw: c.redraw()
                     w.setSelectionRange(i,j,insert=j)
                     break
         except Exception:
@@ -8659,12 +8634,12 @@ class AspellClass:
 
             sc = new_aspell_config()
             if 0:
-                print sc 
-                print aspell_config_replace(sc, "prefix", self.aspell_dir) #1/0 
-                print 'prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix"))
-                print aspell_config_retrieve(sc, "lang")
-                print aspell_config_replace(sc, "lang",self.local_language_code)
-                print aspell_config_retrieve(sc, "lang")
+                g.pr(sc )
+                g.pr(aspell_config_replace(sc, "prefix", self.aspell_dir)) #1/0
+                g.pr('prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix")))
+                g.pr(aspell_config_retrieve(sc, "lang"))
+                g.pr(aspell_config_replace(sc, "lang",self.local_language_code))
+                g.pr(aspell_config_retrieve(sc, "lang"))
 
             possible_err = aspell.new_aspell_speller(sc)
             aspell.delete_aspell_config(c_int(sc))
@@ -8788,7 +8763,7 @@ class AspellClass:
             return True
 
         except Exception, err:
-            print "unable to update local aspell dictionary:",err
+            g.pr("unable to update local aspell dictionary:",err)
             return False
     #@-node:ekr.20051025071455.11:updateDictionary
     #@-others

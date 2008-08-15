@@ -126,7 +126,7 @@ class baseTextWidget:
     #@+node:ekr.20070228074312.5:oops
     def oops (self):
 
-        print('wxGui baseTextWidget oops:',self,g.callers(),
+        g.pr('wxGui baseTextWidget oops:',self,g.callers(),
             'must be overridden in subclass')
     #@-node:ekr.20070228074312.5:oops
     #@+node:ekr.20070228074312.6:Index conversion
@@ -888,7 +888,7 @@ class leoBody:
             assert(w!=w2)
             self.selectEditor(w2)
             c.frame.body.bodyCtrl = w2
-            # print '***',g.app.gui.widget_name(w2),id(w2)
+            # g.pr('***',g.app.gui.widget_name(w2),id(w2))
 
         return 'break'
     #@-node:ekr.20060528170438:cycleEditorFocus
@@ -1026,13 +1026,10 @@ class leoBody:
                 hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
                 hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
 
-        # c.beginUpdate()
-        # try:
         # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
         c.frame.tree.expandAllAncestors(w.leo_p)
         c.selectPosition(w.leo_p,updateBeadList=True) # Calls assignPositionToEditor.
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
         c.recolor_now()
         #@    << restore the selection, insertion point and the scrollbar >>
@@ -1237,8 +1234,6 @@ class leoBody:
         self.updateEditors()
         #@    << redraw the screen if necessary >>
         #@+node:ekr.20051026083733.7:<< redraw the screen if necessary >>
-        # c.beginUpdate()
-        # try:
 
         redraw_flag = False
         # Update dirty bits.
@@ -1252,8 +1247,7 @@ class leoBody:
         if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
             redraw_flag = True
-        #finally:
-        if redraw_flag: c.redraw() # was c.endUpdate(redraw_flag)
+        if redraw_flag: c.redraw()
         #@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
         #@nl
     #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
@@ -1591,7 +1585,7 @@ class leoFrame:
     #@+node:ekr.20031218072017.3691:oops
     def oops(self):
 
-        print "leoFrame oops:", g.callers(3), "should be overridden in subclass"
+        g.pr("leoFrame oops:", g.callers(3), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3691:oops
     #@+node:ekr.20031218072017.3692:promptForSave
     def promptForSave (self):
@@ -1608,7 +1602,7 @@ class leoFrame:
             "Confirm",
             'Save changes to %s before %s' % (name,theType))
 
-        # print answer
+        # g.pr(answer)
         if answer == "cancel":
             return True # Veto.
         elif answer == "no":
@@ -1850,12 +1844,9 @@ class leoFrame:
             w.delete(0,"end")
             w.insert("end",tree.revertHeadline)
             p.initHeadString(tree.revertHeadline)
-            # c.beginUpdate()
-            # try:
             c.endEditing()
             c.selectPosition(p)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
     #@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
     #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None):
@@ -2193,7 +2184,7 @@ class leoLog:
     #@+node:ekr.20031218072017.3700:leoLog.oops
     def oops (self):
 
-        print "leoLog oops:", g.callers(), "should be overridden in subclass"
+        g.pr("leoLog oops:", g.callers(), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3700:leoLog.oops
     #@-others
 #@-node:ekr.20031218072017.3694:class leoLog
@@ -2337,8 +2328,6 @@ class leoTree:
         s = g.toUnicode(s or '',g.app.tkEncoding)
         #@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
         #@nl
-        # c.beginUpdate()
-        # try:
         # Make the change official, but undo to the *old* revert point.
         oldRevert = self.revertHeadline
         changed = s != oldRevert
@@ -2356,9 +2345,8 @@ class leoTree:
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p,undoType,undoData,
                 dirtyVnodeList=dirtyVnodeList)
-        # finally:
         if changed:
-            c.redraw(scroll=False) # was c.endUpdate(flag=changed,scroll=False)
+            c.redraw(scroll=False)
             if self.stayInTree:
                 c.treeWantsFocus()
             else:
@@ -2450,8 +2438,6 @@ class leoTree:
         c = self.c ; cc = c.chapterController ; redraw_flag = False
         # inChapter = cc and cc.inChapter()
 
-        # c.beginUpdate()
-        # try:
         for p in p.parents_iter():
             # g.trace('testing',p)
             if cc and p.headString().startswith('@chapter'):
@@ -2460,8 +2446,6 @@ class leoTree:
                 # g.trace('inChapter',inChapter,'p',p,g.callers())
                 p.expand()
                 redraw_flag = True
-        # finally:
-        # c.endUpdate(False)
 
         return redraw_flag
     #@-node:ekr.20040803072955.143:tree.expandAllAncestors
@@ -2486,11 +2470,8 @@ class leoTree:
 
             try:
                 if not g.doHook("hypercclick1",c=c,p=p,v=p,event=event):
-                    # c.beginUpdate()
-                    # try:
                     c.selectPosition(p)
-                    # finally:
-                    c.redraw() # was c.endUpdate()
+                    c.redraw()
                     c.frame.body.bodyCtrl.setInsertPoint(0) # 2007/10/27
                 g.doHook("hypercclick2",c=c,p=p,v=p,event=event)
             except:
@@ -2779,7 +2760,7 @@ class leoTree:
     #@+node:ekr.20031218072017.3718:oops
     def oops(self):
 
-        print "leoTree oops:", g.callers(), "should be overridden in subclass"
+        g.pr("leoTree oops:", g.callers(), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3718:oops
     #@-others
 #@-node:ekr.20031218072017.3704:class leoTree
@@ -2829,7 +2810,7 @@ class leoTreeTab:
     #@+node:ekr.20070317083104:oops
     def oops(self):
 
-        print "leoTreeTree oops:", g.callers(), "should be overridden in subclass"
+        g.pr("leoTreeTree oops:", g.callers(), "should be overridden in subclass")
     #@-node:ekr.20070317083104:oops
     #@-others
 #@nonl
@@ -2973,7 +2954,7 @@ class nullFrame (leoFrame):
 
         self.c = c
 
-        # print 'nullFrame'
+        # g.pr('nullFrame')
 
         # Create do-nothing component objects.
         self.tree = nullTree(frame=self)
@@ -3077,7 +3058,7 @@ class nullIconBarClass:
 
         if not command:
             def commandCallback(name=name):
-                print "command for %s" % (name)
+                g.pr("command for %s" % (name))
             command = commandCallback
 
         class nullButtonWidget:
@@ -3171,15 +3152,15 @@ class nullLog (leoLog):
         if self.enabled:
             # g.rawPrint(s)
             try:
-                print s,
+                g.pr(s,newline=False)
             except UnicodeError:
                 s = s.encode('ascii','replace')
-                print s,
+                g.pr(s,newline=False)
 
     def putnl (self,tabName='Log'):
         if self.enabled:
             # g.rawPrint("")
-            print
+            g.pr('')
     #@-node:ekr.20041012083237.3:put and putnl (nullLog)
     #@+node:ekr.20060124085830:tabs
     def clearTab        (self,tabName,wrap='none'):             pass
@@ -3273,7 +3254,7 @@ class nullTree (leoTree):
         for key in keys:
             # keys are tnodes, values are stringTextWidgets.
             w = d.get(key)
-            print 'w',w,'t._headString:',key.headString,'s:',repr(w.s)
+            g.pr('w',w,'t._headString:',key.headString,'s:',repr(w.s))
 
     #@-node:ekr.20070228173611:printWidgets
     #@+node:ekr.20031218072017.2236:Overrides
@@ -3345,11 +3326,7 @@ class nullTree (leoTree):
         c = self.c
 
         if self.editPosition() and p != self.editPosition():
-            # c.beginUpdate()
-            # try:
             self.endEditLabel()
-            # finally:
-            # c.endUpdate(False)
 
         self.setEditPosition(p) # That is, self._editPosition = p
 

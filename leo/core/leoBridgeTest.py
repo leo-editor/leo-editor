@@ -1,13 +1,14 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20070227104713:@thin leoBridgeTest.py
+#@+node:ekr.20080730161153.2:@thin leoBridgeTest.py
 '''A program to run unit tests with the leoBridge module.'''
 
-import leoBridge
-import leoTest
+import leo.core.leoBridge as leoBridge
+import leo.core.leoTest as leoTest
+
 # Do not define g here.  Use the g returned by the bridge.
 
 #@+others
-#@+node:ekr.20070227172826:main & helpers
+#@+node:ekr.20080730161153.3:main & helpers
 def main ():
 
     tag = 'leoTestBridge'
@@ -23,7 +24,7 @@ def main ():
         runUnitTests(c,g)
 
     g.pr(tag,'done')
-#@+node:ekr.20070227172648:runUnitTests
+#@+node:ekr.20080730161153.4:runUnitTests
 def runUnitTests (c,g):
 
     nodeName = 'All unit tests' # The tests to run.
@@ -43,11 +44,11 @@ def runUnitTests (c,g):
         g.es_exception()
         raise
 #@nonl
-#@-node:ekr.20070227172648:runUnitTests
-#@-node:ekr.20070227172826:main & helpers
+#@-node:ekr.20080730161153.4:runUnitTests
+#@-node:ekr.20080730161153.3:main & helpers
 #@-others
 
 if __name__ == '__main__':
     main()
-#@-node:ekr.20070227104713:@thin leoBridgeTest.py
+#@-node:ekr.20080730161153.2:@thin leoBridgeTest.py
 #@-leo

@@ -107,8 +107,6 @@ class chapterController:
             return cc.error('can not clone @chapter node')
         # g.trace('from',fromChapter.name,'to',toChapter)
 
-        # c.beginUpdate()
-        # try:
         # Open the group undo.
         c.undoer.beforeChangeGroup(p,undoType)
         # Do the clone.  c.clone handles the inner undo.
@@ -127,8 +125,6 @@ class chapterController:
         # Only the ancestors of the moved node get set dirty.
         dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
         c.undoer.afterChangeGroup(clone,undoType,reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-        # finally:
-        # c.endUpdate(False)
 
         toChapter.p = clone.copy()
         toChapter.select()
@@ -196,8 +192,6 @@ class chapterController:
             return cc.error('can not copy @chapter node')
         # g.trace('from',fromChapter.name,'to',toChapter.name)
 
-        # c.beginUpdate()
-        # try:
         # For undo, we treat the copy like a pasted (inserted) node.
         # Use parent as the node to select for undo.
         parent = cc.getChapterNode(toChapter.name)
@@ -208,8 +202,6 @@ class chapterController:
         c.selectPosition(p2)
         u.afterInsertNode(p2,undoType,undoData)
         c.setChanged(True)
-        # finally:
-        # c.endUpdate(False)
 
         toChapter.p = p2.copy()
         toChapter.select()
@@ -329,8 +321,6 @@ class chapterController:
             if fromChapter.name == 'main' and p.headString().startswith('@chapter'):
                 return cc.error('can not move @chapter node')
 
-        # c.beginUpdate()
-        # try:
         if toChapter.name == 'main':
             sel = (p.threadBack() != fromChapter.root and p.threadBack()) or p.nodeAfterTree()
         else:
@@ -356,8 +346,6 @@ class chapterController:
                 dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
                 dirtyVnodeList.extend(dirtyVnodeList2)
             u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
-        # finally:
-        # c.endUpdate(False) # toChapter.select will do the drawing.
 
         if sel:
             toChapter.p = p.copy()
@@ -390,8 +378,6 @@ class chapterController:
         theChapter = cc.chaptersDict.get(name)
         if not theChapter: return
 
-        # c.beginUpdate()
-        # try:
         savedRoot = theChapter.root
         bunch = cc.beforeRemoveChapter(c.currentPosition(),name,savedRoot)
         cc.deleteChapterNode(name)
@@ -399,8 +385,8 @@ class chapterController:
         if tt:tt.destroyTab(name)
         cc.selectChapterByName('main')
         cc.afterRemoveChapter(bunch,c.currentPosition())
-        # finally:
-        c.redraw() # was c.endUpdate()()
+        c.redraw()
+    #@nonl
     #@-node:ekr.20070606075434:cc.removeChapterByName
     #@+node:ekr.20070317085437.41:cc.renameChapter
     # newName is for unitTesting.
@@ -482,8 +468,6 @@ class chapterController:
 
         cc = self ; c = cc.c ; root = c.rootPosition()
 
-        # c.beginUpdate()
-        # try:
         # Create the node with a postion method
         # so we don't involve the undo logic.
         p = root.insertAsLastChild()
@@ -497,9 +481,6 @@ class chapterController:
         else:
             t.setFileIndex(g.app.nodeIndices.getNewIndex())
         c.setChanged(True)
-        # finally:
-        # c.endUpdate(False)
-    #@nonl
     #@-node:ekr.20070325101652:cc.createChaptersNode
     #@+node:ekr.20070325063303.2:cc.createChapterNode
     def createChapterNode (self,chapterName,p=None):
@@ -510,8 +491,6 @@ class chapterController:
         cc = self ; c = cc.c
         current = c.currentPosition() or c.rootPosition()
 
-        # c.beginUpdate()
-        # try:
         # Create the node with a postion method
         # so we don't involve the undo logic.
         root = current.insertAsLastChild()
@@ -524,8 +503,6 @@ class chapterController:
         else:
             cc.createChild(root,'%s node 1' % chapterName)
         c.setChanged(True)
-        # finally:
-        # c.endUpdate(False)
 
         return root
     #@-node:ekr.20070325063303.2:cc.createChapterNode
@@ -552,16 +529,11 @@ class chapterController:
         chapter = cc.chaptersDict.get(chapterName)
 
         if chapter:
-            # c.beginUpdate()
-            # try:
             # Do not involve undo logic.
             c.setCurrentPosition(chapter.root)
             chapter.root.doDelete()
             # The chapter selection logic will select a new node.
             c.setChanged(True)
-            # finally:
-            # c.endUpdate(False)
-    #@nonl
     #@-node:ekr.20070325063303.4:cc.deleteChapterNode
     #@-node:ekr.20070511081405:Creating/deleting nodes (chapterController)
     #@+node:ekr.20070317130648:Utils
@@ -667,9 +639,9 @@ class chapterController:
         full = True
 
         if root and full:
-            print '@chapters tree...','(in main tree: %s)' % inTree
+            g.pr('@chapters tree...','(in main tree: %s)' % inTree)
             for p in root.self_and_subtree_iter():
-                print '.'*p.level(),p.v
+                g.pr('.'*p.level(),p.v)
     #@nonl
     #@-node:ekr.20070510064813:cc.printChaptersTree
     #@+node:ekr.20070615075643:cc.selectChapterForPosition
@@ -939,14 +911,11 @@ class chapter:
                 w = self.findEditorInChapter(p)
                 c.frame.body.selectEditor(w) # Switches text.
 
-        # c.beginUpdate()
-        # try:
         if name == 'main' and cc.chaptersNode:
             cc.chaptersNode.contract()    
         c.hoistStack = self.hoistStack[:]
         c.selectPosition(p)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
         g.doHook('hoist-changed',c=c)
         c.bodyWantsFocusNow()
     #@nonl

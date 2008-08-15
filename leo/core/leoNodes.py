@@ -23,7 +23,7 @@ else:
 import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
-    # print "enabled psyco classes",__file__
+    # g.pr("enabled psyco classes",__file__)
     try: from psyco.classes import *
     except ImportError: pass
 
@@ -317,18 +317,18 @@ class vnode (baseVnode):
         v = self
 
         if label:
-            print '-'*10,label,v
+            g.pr('-'*10,label,v)
         else:
-            print "self    ",v.dumpLink(v)
-            print "len(vnodeList)",len(v.t.vnodeList)
-            print 'len(parents)',len(v.parents)
-            print 'len(children)',len(v.t.children)
+            g.pr("self    ",v.dumpLink(v))
+            g.pr("len(vnodeList)",len(v.t.vnodeList))
+            g.pr('len(parents)',len(v.parents))
+            g.pr('len(children)',len(v.t.children))
 
         if 1:
-            print "t",v.dumpLink(v.t)
-            print "vnodeList", g.listToString(v.t.vnodeList)
-            print 'parents',g.listToString(v.parents)
-            print 'children',g.listToString(v.t.children)
+            g.pr("t",v.dumpLink(v.t))
+            g.pr("vnodeList", g.listToString(v.t.vnodeList))
+            g.pr('parents',g.listToString(v.parents))
+            g.pr('children',g.listToString(v.t.children))
     #@-node:ekr.20040312145256:v.dump
     #@+node:ekr.20060910100316:v.__hash__ (only for zodb)
     if use_zodb and ZODB:
@@ -369,7 +369,8 @@ class vnode (baseVnode):
             "@thin",   "@file-thin",   "@thinfile",
             "@asis",   "@file-asis",   "@silentfile",
             "@noref",  "@file-noref",  "@rawfile",
-            "@nosent", "@file-nosent", "@nosentinelsfile")
+            "@nosent", "@file-nosent", "@nosentinelsfile",
+            "@shadow",)
 
         return self.findAtFileName(names)
     #@-node:ekr.20031218072017.3350:anyAtFileNodeName
@@ -394,6 +395,10 @@ class vnode (baseVnode):
 
     def atRawFileNodeName (self):
         names = ("@noref", "@file-noref", "@rawfile")
+        return self.findAtFileName(names)
+
+    def atShadowFileNodeName (self):
+        names = ("@shadow",)
         return self.findAtFileName(names)
 
     def atSilentFileNodeName (self):
@@ -443,6 +448,9 @@ class vnode (baseVnode):
 
     def isAtSilentFileNode (self): # @file-asis
         return g.choose(self.atSilentFileNodeName(),True,False)
+
+    def isAtShadowFileNode (self):
+        return g.choose(self.atShadowFileNodeName(),True,False)
 
     def isAtThinFileNode (self):
         return g.choose(self.atThinFileNodeName(),True,False)
@@ -1052,7 +1060,7 @@ class basePosition (object):
                 # New in 4.3: _silently_ raise the attribute error.
                 # This allows plugin code to use hasattr(p,attr) !
                 if 0:
-                    print "unknown position attribute:",attr
+                    g.pr("unknown position attribute:",attr)
                     import traceback ; traceback.print_stack()
                 raise AttributeError,attr
     #@nonl
@@ -1088,12 +1096,24 @@ class basePosition (object):
     __repr__ = __str__
     #@-node:ekr.20040301205720:p.__str__ and p.__repr__
     #@+node:ekr.20061006092649:p.archivedPosition
-    def archivedPosition (self):
+    def archivedPosition (self,root_p=None):
 
         '''Return a representation of a position suitable for use in .leo files.'''
 
         p = self
-        aList = [z._childIndex for z in p.self_and_parents_iter()]
+
+        if root_p is None:
+            aList = [z._childIndex for z in p.self_and_parents_iter()]
+        else:
+            aList = []
+            for z in p.self_and_parents_iter():
+                if z == root_p:
+                    aList.append(0)
+                    break
+                else:
+                    aList.append(z._childIndex)
+            # g.trace(aList)
+
         aList.reverse()
         return aList
     #@nonl
@@ -1117,7 +1137,7 @@ class basePosition (object):
     def dump (self,label=""):
 
         p = self
-        print '-'*10,label,p
+        g.pr('-'*10,label,p)
         if p.v:
             p.v.dump() # Don't print a label
 
@@ -1148,6 +1168,7 @@ class basePosition (object):
     def atFileNodeName            (self): return self.v.atFileNodeName()
     def atNoSentinelsFileNodeName (self): return self.v.atNoSentinelsFileNodeName()
     def atRawFileNodeName         (self): return self.v.atRawFileNodeName()
+    def atShadowFileNodeName      (self): return self.v.atShadowFileNodeName()
     def atSilentFileNodeName      (self): return self.v.atSilentFileNodeName()
     def atThinFileNodeName        (self): return self.v.atThinFileNodeName()
 
@@ -1165,6 +1186,7 @@ class basePosition (object):
     def isAtOthersNode          (self): return self.v.isAtOthersNode()
     def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
     def isAtSilentFileNode      (self): return self.v.isAtSilentFileNode()
+    def isAtShadowFileNode      (self): return self.v.isAtShadowFileNode()
     def isAtThinFileNode        (self): return self.v.isAtThinFileNode()
 
     # New names, less confusing:

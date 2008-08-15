@@ -1321,9 +1321,8 @@ class pluginController(baseClasses.basePluginController):
                     # Bug fix 1/8/06: bind c here.
                     # This is safe because we only get called from the proper commander.
                     def jump_command(c,event, ref=ref):
-                        # c.beginUpdate()
                         c.selectPosition(ref)
-                        c.redraw() # was c.endUpdate()
+                        c.redraw()
                     menu_item=( 'Jump to: '+ self.crop(name,30), jump_command)
                     contextCommands.append( menu_item )
                 else:
@@ -1384,15 +1383,14 @@ class pluginController(baseClasses.basePluginController):
                             self.show_message_as_html(title, '\n'.join(xdoc[1:]))
                             g.es('done', color='blue')
                         else:
-                            g.es(doc, color='blue')
-                            print doc
+                            g.es_print(doc, color='blue')
                             return
 
                     if 'log' in flags:
                         g.es(doc,color="blue")
 
                     if 'print' in flags:
-                        print doc
+                        g.pr(doc)
 
                 except Exception, value:
                     g.es(str(value),color="red")

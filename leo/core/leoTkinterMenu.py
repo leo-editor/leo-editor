@@ -62,7 +62,7 @@ class leoTkinterMenu (leoMenu.leoMenu):
             menu = self.getMenu(z)
             fontName = menu.cget('font')
             font = tkFont.Font(font=fontName)
-            # print '%8s' % (z),menu.winfo_reqwidth(),menu.master,menu.winfo_x()
+            # g.pr('%8s' % (z),menu.winfo_reqwidth(),menu.master,menu.winfo_x())
             d [z] = n
             # A total hack: sorta works on windows.
             n += font.measure(z+' '*4)+1
@@ -218,7 +218,7 @@ class leoTkinterMenu (leoMenu.leoMenu):
                 realName = realName.replace("&","")
                 menu.entryconfig(realName,state="disabled")
             except:
-                print "disableMenu menu,name:",menu,name
+                g.pr("disableMenu menu,name:",menu,name)
                 g.es_exception()
     #@-node:ekr.20031218072017.4119:disableMenu
     #@+node:ekr.20031218072017.4120:enableMenu
@@ -238,7 +238,7 @@ class leoTkinterMenu (leoMenu.leoMenu):
                 realName = realName.replace("&","")
                 menu.entryconfig(realName,state=state)
             except:
-                print "enableMenu menu,name,val:",menu,name,val
+                g.pr("enableMenu menu,name,val:",menu,name,val)
                 g.es_exception()
     #@nonl
     #@-node:ekr.20031218072017.4120:enableMenu
@@ -275,7 +275,7 @@ class leoTkinterMenu (leoMenu.leoMenu):
                 menu.entryconfig(realName,label=label,underline=underline)
         except:
             if not g.app.unitTesting:
-                print "setMenuLabel menu,name,label:",menu,name,label
+                g.pr("setMenuLabel menu,name,label:",menu,name,label)
                 g.es_exception()
     #@-node:ekr.20031218072017.4121:setMenuLabel
     #@-node:ekr.20031218072017.4114:Methods with other spellings (Tkmenu)

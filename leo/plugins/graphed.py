@@ -543,7 +543,7 @@ class GraphEd:
     # 
     # def editWholeTree(self, event=None):
     #     c = self.c
-    #     print c.rootPosition().headString()
+    #     g.pr(c.rootPosition().headString())
     #     self.editGraph(pos = c.rootPosition())
     #@-at
     #@-node:ekr.20071004090250.27:editWholeTree
@@ -580,8 +580,6 @@ class GraphEd:
             return str(graph.GetLabeling(i))
 
         c = self.c
-        # c.beginUpdate()
-        # try:
         tgraph = tGraph()
         gnode2nottnode = {}
         for node in graph.Vertices():
@@ -608,9 +606,8 @@ class GraphEd:
         c.contractNode()
 
         c.selectPosition(newp)
-        # finally:
         c.setChanged(True)
-        c.redraw() # was c.endUpdate()
+        c.redraw()
     #@-node:ekr.20071004090250.31:saveGraph
     #@+node:ekr.20071004090250.32:copyLink
     def copyLink(self, event = None):

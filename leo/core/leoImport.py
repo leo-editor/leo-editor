@@ -592,22 +592,22 @@ class leoImportCommands:
                 g.match(s,i,"@c") or g.match(s,i,"@p") or
                 g.match(s,i,"@d") or g.match(s,i,"@f"))
     #@-node:ekr.20031218072017.3309:isDocStart and isModuleStart
-    #@+node:ekr.20031218072017.3311:massageComment
-    def massageComment (self,s):
+    #@+node:ekr.20031218072017.3311:massageComment (leoImport)(not used)
+    # def massageComment (self,s):
 
-        '''Returns s with all runs of whitespace and newlines converted to a single blank.
+        # '''Returns s with all runs of whitespace and newlines converted to a single blank.
 
-        Also removes leading and trailing whitespace.'''
+        # Also removes leading and trailing whitespace.'''
 
-        # g.trace(g.get_line(s,0))
-        s = string.strip(s)
-        s = string.replace(s,"\n"," ")
-        s = string.replace(s,"\r"," ")
-        s = string.replace(s,"\t"," ")
-        s = string.replace(s,"  "," ")
-        s = string.strip(s)
-        return s
-    #@-node:ekr.20031218072017.3311:massageComment
+        # # g.trace(g.get_line(s,0))
+        # s = string.strip(s)
+        # s = string.replace(s,"\n"," ")
+        # s = string.replace(s,"\r"," ")
+        # s = string.replace(s,"\t"," ")
+        # s = string.replace(s,"  "," ")
+        # s = string.strip(s)
+        # return s
+    #@-node:ekr.20031218072017.3311:massageComment (leoImport)(not used)
     #@+node:ekr.20031218072017.3312:massageWebBody
     def massageWebBody (self,s):
 
@@ -825,7 +825,7 @@ class leoImportCommands:
             if line1.startswith(tag) and line1.endswith(tag2):
                 e = line1[n1:-n2].strip()
                 if e and g.isValidEncoding(e):
-                    # print 'found',e,'in',line1
+                    # g.pr('found',e,'in',line1)
                     self.encoding = e
 
         s = g.toUnicode(s,self.encoding)
@@ -835,11 +835,7 @@ class leoImportCommands:
         # Create the top-level headline.
         if atAuto:
             p = parent.copy()
-            # c.beginUpdate()
-            # try:
             p.setBodyString('')
-            # finally:
-            # c.endUpdate(False)
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
@@ -852,7 +848,9 @@ class leoImportCommands:
 
         self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-        if ext in (".c", ".cpp", ".cxx"):
+        if c.config.getBool('suppress_import_parsing', default=False):
+            self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+        elif ext in (".c", ".cpp", ".cxx"):
             self.scanCText(s,p,atAuto=atAuto)
         elif ext == '.c#':
             self.scanCSharpText(s,p,atAuto=atAuto)
@@ -882,8 +880,6 @@ class leoImportCommands:
         c = self.c
         p = c.currentPosition() ; after = p.nodeAfterTree()
 
-        # c.beginUpdate()
-        # try:
         found = False
         while p and p != after:
             if p.isAtAutoNode():
@@ -898,8 +894,7 @@ class leoImportCommands:
                 p.moveToThreadNext()
         message = g.choose(found,'finished','no @auto nodes in the selected tree')
         g.es(message,color='blue')
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
     #@+node:ekr.20070807084545:readOneAtAutoNode
     def readOneAtAutoNode(self,p):
@@ -926,8 +921,6 @@ class leoImportCommands:
         at = c.atFileCommands ; current = c.currentPosition()
         self.tab_width = self.getTabWidth()
         if not paths: return
-        # c.beginUpdate()
-        # try:
         u.beforeChangeGroup(current,command)
         for fileName in paths:
             g.setGlobalOpenDir(fileName)
@@ -958,8 +951,7 @@ class leoImportCommands:
         c.selectPosition(current)
         c.setChanged(True)
         u.afterChangeGroup(p,command)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
     #@+node:ekr.20051208100903.1:forceGnxOnPosition
     def forceGnxOnPosition (self,p):
 
@@ -977,8 +969,6 @@ class leoImportCommands:
         if len(files) < 1: return
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.treeType = treeType
-        # c.beginUpdate()
-        # try: # range of update...
         if len(files) == 2:
             #@        << Create a parent for two files having a common prefix >>
             #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
@@ -1011,8 +1001,7 @@ class leoImportCommands:
                 c.setChanged(True)
         c.validateOutline()
         current.expand()
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
         c.selectVnode(current)
     #@-node:ekr.20031218072017.3212:importFilesCommand
@@ -1034,8 +1023,6 @@ class leoImportCommands:
         c = self.c
         if len(strings) == 0: return None
         if not self.stringsAreValidMoreFile(strings): return None
-        # c.beginUpdate()
-        # try: # range of update...
         firstLevel, junk = self.moreHeadlineLevel(strings[0])
         lastLevel = -1 ; theRoot = last_p = None
         index = 0
@@ -1114,8 +1101,7 @@ class leoImportCommands:
         if theRoot:
             theRoot.setDirty()
             c.setChanged(True)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
         return theRoot
     #@-node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
@@ -1235,8 +1221,6 @@ class leoImportCommands:
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.webType = webType
 
-        # c.beginUpdate()
-        # try:
         for fileName in files:
             g.setGlobalOpenDir(fileName)
             v = self.createOutlineFromWeb(fileName,current)
@@ -1244,8 +1228,7 @@ class leoImportCommands:
             v.setDirty()
             c.setChanged(True)
         c.selectVnode(current)
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
     #@-node:ekr.20031218072017.3226:importWebCommand
     #@+node:ekr.20031218072017.3227:findFunctionDef
     def findFunctionDef (self,s,i):
@@ -1572,8 +1555,6 @@ class leoImportCommands:
 
         c = self.c ; h = p.headString() ; old_root = p.copy()
         oldChanged = c.changed
-        # c.beginUpdate()
-        # try:
         d = g.app.unitTestDict
         expectedErrors = d.get('expectedErrors')
         expectedErrorMessage = d.get('expectedErrorMessage')
@@ -1609,9 +1590,8 @@ class leoImportCommands:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
             c.setChanged(oldChanged)
-        # finally:
         c.selectPosition(old_root)
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 
         if g.app.unitTesting:
             assert ok
@@ -1675,7 +1655,7 @@ class leoImportCommands:
         # else:
             # fileName = scanner.fileName
             # if atAuto:
-                # print('seems to be mixed HTML and PHP:',fileName)
+                # g.pr('seems to be mixed HTML and PHP:',fileName)
             # else:
                 # g.es_print('seems to be mixed HTML and PHP:',fileName)
             # scanner.createHeadline(
@@ -1695,14 +1675,18 @@ class leoImportCommands:
 
         scanner.run(s,parent)
     #@-node:ekr.20071214072145:scanXmlText
-    #@+node:ekr.20070713075352:scanUnknownFileType (default scanner)
+    #@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     def scanUnknownFileType (self,s,p,ext,atAuto=False):
 
         c = self.c
         changed = c.isChanged()
         body = g.choose(atAuto,'','@ignore\n')
         if ext in ('.html','.htm'): body += '@language html\n'
-        if ext in ('.txt','.text'): body += '@nocolor\n'
+        elif ext in ('.txt','.text'): body += '@nocolor\n'
+        else:
+            language = self.languageForExtension(ext)
+            if language: body += '@language %s\n' % language
+
         c.setBodyString(p,body + self.rootLine + s)
         if atAuto:
             for p in p.self_and_subtree_iter():
@@ -1711,7 +1695,24 @@ class leoImportCommands:
                 c.setChanged(False)
 
         g.app.unitTestDict = {'result':True}
-    #@-node:ekr.20070713075352:scanUnknownFileType (default scanner)
+    #@+node:ekr.20080811174246.1:languageForExtension
+    def languageForExtension (self,ext):
+
+        '''Return the language corresponding to the extensiion ext.'''
+
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = ext and (
+            g.app.extra_extension_dict.get(ext) or
+            g.app.extension_dict.get(ext))
+
+        if language:
+            if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
+                return language
+
+        return None
+    #@-node:ekr.20080811174246.1:languageForExtension
+    #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     #@-node:ekr.20071127175948.1:Import scanners
     #@-others
 #@-node:ekr.20071127175948:<< class leoImportCommands >>
@@ -2083,20 +2084,20 @@ class baseScannerClass:
         if not g.unitTesting:
             g.es_print('inserting @ignore',color='blue')
     #@-node:ekr.20070705085335:insertIgnoreDirective
-    #@+node:ekr.20070703122141.81:massageComment
-    def massageComment (self,s):
+    #@+node:ekr.20070703122141.81:massageComment (not used)
+    # def massageComment (self,s):
 
-        '''Return s with leading and trailing whitespace removed and all other
-        runs of whitespace and newlines converted to a single blank.'''
+        # '''Return s with leading and trailing whitespace removed and all other
+        # runs of whitespace and newlines converted to a single blank.'''
 
-        s = s.strip()
-        s = s.replace('\n',' ')
-        s = s.replace('\r',' ')
-        s = s.replace('\t',' ')
-        s = s.replace('  ',' ')
-        s = s.strip()
-        return s
-    #@-node:ekr.20070703122141.81:massageComment
+        # s = s.strip()
+        # s = s.replace('\n',' ')
+        # s = s.replace('\r',' ')
+        # s = s.replace('\t',' ')
+        # s = s.replace('  ',' ')
+        # s = s.strip()
+        # return s
+    #@-node:ekr.20070703122141.81:massageComment (not used)
     #@+node:ekr.20070707113832.1:putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 
@@ -2337,7 +2338,7 @@ class baseScannerClass:
             g.es_print('error:',s,color='red')
 
     def oops (self):
-        print 'baseScannerClass oops: %s must be overridden in subclass' % g.callers()
+        g.pr('baseScannerClass oops: %s must be overridden in subclass' % g.callers())
 
     def report (self,message):
         if self.strict: self.error(message)
@@ -2527,7 +2528,7 @@ class baseScannerClass:
 
         self.error('no block')
         if 1:
-            print '** no block **'
+            g.pr('** no block **')
             i,j = g.getLine(s,start)
             g.trace(i,s[i:j])
         else:
@@ -3351,7 +3352,7 @@ class pascalScanner (baseScannerClass):
 
         self.error('no interface')
         if 1:
-            print '** no interface **'
+            g.pr('** no interface **')
             i,j = g.getLine(s,start)
             g.trace(i,s[i:j])
         else:

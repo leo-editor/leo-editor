@@ -2089,6 +2089,17 @@ TESTS
 @color
 #@nonl
 #@-node:ekr.20031218072017.367:How to add support for a new language
+#@+node:ekr.20080814134319.1:How to create a private bzr branch
+@nocolor
+
+C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+#@-node:ekr.20080814134319.1:How to create a private bzr branch
+#@+node:ekr.20051203084725:How to expand java .jar files
+- Put whatever.jar in c:\prog
+- cd: c:\prog
+- jar xvf whatever.jar
+#@nonl
+#@-node:ekr.20051203084725:How to expand java .jar files
 #@+node:ekr.20031218072017.384:How to export syntax colored code preserving colors
 Scite has the option to "Export as html" and "export as rtf", and it will be
 full of colour and fonts - and you can define them in properties, so it will be
@@ -2110,26 +2121,6 @@ On Me you set the registry somehow.
 No information on XP.
 #@nonl
 #@-node:ekr.20031218072017.385:How to Increase environment space
-#@+node:ekr.20051203084725:How to expand java .jar files
-- Put whatever.jar in c:\prog
-- cd: c:\prog
-- jar xvf whatever.jar
-#@nonl
-#@-node:ekr.20051203084725:How to expand java .jar files
-#@+node:ekr.20051129084430:How to install jython
-@nocolor
-
-- Download jython_Release_2_2alpha1.jar and put it anywhere (say on the desktop)
-
-- Double-click the file.  This brings up an installer.  Follow the direction.
-  (I installed to c:\jython-2.2a1
-
-- Using the Control Panel, System, Advanced tab, environment variables,
-  add c:\jython-2.2a1\jython.jar to CLASSPATH (in user variables)
-#@nonl
-#@+node:ekr.20051129084430.1:@url http://www.jython.org/install.html
-#@-node:ekr.20051129084430.1:@url http://www.jython.org/install.html
-#@-node:ekr.20051129084430:How to install jython
 #@+node:ekr.20051203084725.1:How to install and run jythonShell
 Install:
 
@@ -2238,6 +2229,20 @@ Works a treat!
 Paul
 #@-node:ekr.20050317153447:jy-Leo install instructions by Paul Paterson
 #@-node:ekr.20050316092232:How to install jyLeo
+#@+node:ekr.20051129084430:How to install jython
+@nocolor
+
+- Download jython_Release_2_2alpha1.jar and put it anywhere (say on the desktop)
+
+- Double-click the file.  This brings up an installer.  Follow the direction.
+  (I installed to c:\jython-2.2a1
+
+- Using the Control Panel, System, Advanced tab, environment variables,
+  add c:\jython-2.2a1\jython.jar to CLASSPATH (in user variables)
+#@nonl
+#@+node:ekr.20051129084430.1:@url http://www.jython.org/install.html
+#@-node:ekr.20051129084430.1:@url http://www.jython.org/install.html
+#@-node:ekr.20051129084430:How to install jython
 #@+node:ekr.20070623150151:How to make Leo commands undoable
 The chapter commands provide a good example.  In this file, see the node:
 
@@ -2752,6 +2757,393 @@ anything, it probably is.
 leouser
 #@nonl
 #@-node:ekr.20060111112513.1:New jyLeo notes
+#@+node:ekr.20071217231348:Pylint docs
+@nocolor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#@+node:ekr.20071217231348.1:options
+General options
+
+rcfile:	Specify a configuration file.
+init-hook:	Python code to execute, usually for sys.path manipulation such as pygtk.require().
+rpython-mode:	enable the rpython checker which is disabled by default
+errors-only:	In debug mode, checkers without error messages are disabled and for others, only the ERROR messages are displayed, and no reports are done by default
+profile:	Profiled execution.
+ignore:	Add <file or directory> to the black list. It should be a base name, not a path. You may set this option multiple times. Default: CVS
+persistent:	Pickle collected data for later comparisons. Default: yes
+cache-size:	Set the cache size for astng objects. Default: 500
+load-plugins:	List of plugins (as comma separated values of python modules names) to load, usually to register additional checkers.
+
+Commands options
+
+help-msg:	Display a help message for the given message id and exit. The value may be a comma separated list of message ids.
+list-msgs:	Generate pylint's full documentation.
+generate-rcfile:
+ 	Generate a sample configuration file according to the current configuration. You can put other options before this one to get them in the generated configuration.
+generate-man:	Generate pylint's man page.
+
+Messages control options
+
+enable-checker:	Enable only checker(s) with the given id(s). This option conflict with the disable-checker option
+disable-checker: Enable all checker(s) except those with the given id(s). This option conflict with the disable-checker option
+enable-msg-cat:	Enable all messages in the listed categories.
+disable-msg-cat: Disable all messages in the listed categories.
+enable-msg:	Enable the message(s) with the given id(s).
+disable-msg:	Disable the message(s) with the given id(s).
+
+Reports options
+
+output-format:	set the output format. Available formats are text, parseable, colorized, msvs (visual studio) and html Default: text
+include-ids:	Include message's id in output
+files-output:	Put messages in a separate file for each module / package specified on the command line instead of printing them on stdout. Reports (if any) will be written in a file name "pylint_global.[txt|html]".
+reports:	Tells wether to display a full report or only the messages Default: yes
+evaluation:	Python expression which should return a note less than 10 (10 is the highest note).You have access to the variables errors warning, statement which respectivly contain the number of errors / warnings messages and the total number of statements analyzed. This is used by the global evaluation report (R0004). Default: 10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
+comment:	Add a comment according to your evaluation note. This is used by the global evaluation report (R0004).
+enable-report:	Enable the report(s) with the given id(s).
+disable-report:	Disable the report(s) with the given id(s).
+#@nonl
+#@-node:ekr.20071217231348.1:options
+#@+node:ekr.20071217231348.2:Main messages and reports
+Main messages
+
+E0001:	Used when a syntax error is raised for a module.
+E0011:	Unrecognized file option %r Used when an unknown inline option is encountered.
+E0012:	Bad option value %r Used when a bad value for an inline option is encountered.
+
+I0001:	Unable to run raw checkers on built-in module %s Used to inform that a built-in module has not been checked using the raw checkers.
+I0010:	Unable to consider inline option %r Used when an inline option is either badly formatted or can't be used inside modules.
+I0011:	Locally disabling %s Used when an inline option disable a message or a messages category.
+I0012:	Locally enabling %s Used when an inline option enable a message or a messages category.
+I0013:	Ignoring entire file Used to inform that the file will not be checked
+F0001:	Used when an error occured preventing the analyzing of a module (unable to find it for instance).
+F0002:	%s: %s Used when an unexpected error occured while building the ASTNG representation. This is usually accomopagned by a traceback. Please report such errors !
+F0003:	ignored builtin module %s Used to indicate that the user asked to analyze a builtin module which has been skipped.
+F0004:	unexpected infered value %s Used to indicate that some value of an unexpected type has been infered.
+
+Main reports
+
+R0001:	Messages by category
+R0002:	% errors / warnings by module
+R0003:	Messages
+R0004:	Global evaluation
+#@nonl
+#@-node:ekr.20071217231348.2:Main messages and reports
+#@+node:ekr.20071217231348.3:Basic
+Basic checker
+
+Options
+
+required-attributes:
+ 	Required attributes for module, separated by a comma
+no-docstring-rgx:
+ 	Regular expression which should only match functions or classes name which do not require a docstring Default: __.*__
+module-rgx:	Regular expression which should only match correct module names Default: (([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+const-rgx:	Regular expression which should only match correct module level names Default: (([A-Z_][A-Z1-9_]*)|(__.*__))$
+class-rgx:	Regular expression which should only match correct class names Default: [A-Z_][a-zA-Z0-9]+$
+function-rgx:	Regular expression which should only match correct function names Default: [a-z_][a-z0-9_]{2,30}$
+method-rgx:	Regular expression which should only match correct method names Default: [a-z_][a-z0-9_]{2,30}$
+attr-rgx:	Regular expression which should only match correct instance attribute names Default: [a-z_][a-z0-9_]{2,30}$
+argument-rgx:	Regular expression which should only match correct argument names Default: [a-z_][a-z0-9_]{2,30}$
+variable-rgx:	Regular expression which should only match correct variable names Default: [a-z_][a-z0-9_]{2,30}$
+inlinevar-rgx:	Regular expression which should only match correct list comprehension / generator expression variable names Default: [A-Za-z_][A-Za-z0-9_]*$
+good-names:	Good variable names which should always be accepted, separated by a comma Default: i,j,k,ex,Run,_
+bad-names:	Bad variable names which should always be refused, separated by a comma Default: foo,bar,baz,toto,tutu,tata
+bad-functions:	List of builtins function names that should not be used, separated by a comma Default: map,filter,apply,input
+
+Messages
+
+E0100:	__init__ method is a generator Used when the special class method __init__ is turned into a generator by a yield in its body.
+E0101:	Explicit return in __init__ Used when the special class method __init__ has an explicit return value.
+E0102:	%s already defined line %s Used when a function / class / method is redefined.
+E0103:	%r not properly in loop Used when break or continue keywords are used outside a loop.
+E0104:	return outside function Used when a "return" statement is found outside a function or method.
+E0105:	yield outside function Used when a "yield" statement is found outside a function or method.
+E0106:	return with argument inside generator Used when a "return" statement with an argument is found outside in a generator function or method (e.g. with some "yield" statements).
+
+W0101:	Unreachable code Used when there is some code behind a "return" or "raise" statement, which will never be accessed.
+W0102:	Dangerous default value %s as argument Used when a mutable value as list or dictionary is detected in a default value for an argument.
+W0104:	Statement seems to have no effect Used when a statement doesn't have (or at least seems to) any effect.
+W0105:	String statement has no effect Used when a string is used as a statement (which of course has no effect). This is a particular case of W0104 with its own message so you can easily disable it if you're using those strings as documentation, instead of comments.
+W0106:	Unnecessary semicolon Used when a statement is endend by a semi-colon (";"), which isn't necessary (that's python, not C ;).
+W0107:	Unnecessary pass statement Used when a "pass" statement that can be avoided is encountered.)
+W0122:	Use of the exec statement Used when you use the "exec" statement, to discourage its usage. That doesn't mean you can not use it !
+W0141:	Used builtin function %r Used when a black listed builtin function is used (see the bad-function option). Usual black listed functions are the ones like map, or filter , where Python offers now some cleaner alternative like list comprehension.
+W0142:	Used * or * magic* Used when a function or method is called using *args or **kwargs to dispatch arguments. This doesn't improve readility and should be used with care.
+
+C0102:	Black listed name "%s" Used when the name is listed in the black list (unauthorized names).
+C0103:	Invalid name "%s" (should match %s) Used when the name doesn't match the regular expression associated to its type (constant, variable, class...).
+C0111:	Missing docstring Used when a module, function, class or method has no docstring. Some special methods like __init__ doesn't necessary require a docstring.
+C0112:	Empty docstring Used when a module, function, class or method has an empty docstring (it would be too easy ;).
+C0121:	Missing required attribute "%s" Used when an attribute required for modules is missing.
+
+Reports
+
+R0101:	Statistics by type
+#@-node:ekr.20071217231348.3:Basic
+#@+node:ekr.20071217231348.4:Type
+Typecheck checker
+
+Options
+
+ignore-mixin-members:
+ 	Tells wether missing members accessed in mixin class should be ignored. A mixin class is detected if its name ends with "mixin" (case insensitive). Default: yes
+zope:	When zope mode is activated, consider the acquired-members option to ignore access to some undefined attributes.
+acquired-members:
+ 	List of members which are usually get through zope's acquisition mecanism and so shouldn't trigger E0201 when accessed (need zope=yes to be considered). Default: REQUEST,acl_users,aq_parent
+
+Messages
+
+E1101:	%s %r has no %r member  A variable is accessed for an unexistant member.
+E1102:	%s is not callable      An object being called has been infered to a non callable object
+E1103:	%s %r has no %r member (but some types could not be inferred) 
+                               A variable is accessed for an unexistant member, but astng was not able to interpret all possible types of this variable.
+E1111:	Assigning to function call which doesn't return     An assigment is done on a function call but the infered function doesn't return anything.
+W1111:	Assigning to function call which only returns None  An assigment is done on a function call but the infered function returns nothing but None.
+#@nonl
+#@-node:ekr.20071217231348.4:Type
+#@+node:ekr.20071217231348.5:Variables
+Variables checker
+
+Options
+
+init-import:	Tells wether we should check for unused import in __init__ files.
+dummy-variables-rgx:
+ 	A regular expression matching names used for dummy variables (i.e. not used). Default: _|dummy
+additional-builtins:
+ 	List of additional names supposed to be defined in builtins. Remember that you should avoid to define new builtins when possible.
+
+Messages
+
+E0601:	Using variable %r before assignment Used when a local variable is accessed before it's assignment.
+E0602:	Undefined variable %r Used when an undefined variable is accessed.
+E0611:	No name %r in module %r Used when a name cannot be found in a module.
+
+W0601:	Global variable %r undefined at the module level Used when a variable is defined through the "global" statement but the variable is not defined in the module scope.
+W0602:	Using global for %r but no assigment is done Used when a variable is defined through the "global" statement but no assigment to this variable is done.
+W0603:	Using the global statement Used when you use the "global" statement to update a global variable.
+PyLint just try to discourage this usage. That doesn't mean you can not use it !
+W0604:	Using the global statement at the module level Used when you use the "global" statement at the module level since it has no effect
+W0611:	Unused import %s Used when an imported module or variable is not used.
+W0612:	Unused variable %r Used when a variable is defined but not used.
+W0613:	Unused argument %r Used when a function or method argument is not used.
+W0614:	Unused import %s from wildcard import Used when an imported module or variable is not used from a 'from X import *' style import.
+
+W????: Inline emphasis start-string without end-string.
+W0621:	Redefining name %r from outer scope (line %s) Used when a variable's name hide a name defined in the outer scope.
+W0622:	Redefining built-in %r Used when a variable or function override a built-in.
+W0631:	Using possibly undefined loop variable %r Used when an loop variable (i.e. defined by a for loop or a list comprehension or a generator expression) is used outside the loop.
+#@nonl
+#@-node:ekr.20071217231348.5:Variables
+#@+node:ekr.20071217231501:Classes
+Classes checker
+
+Options
+
+ignore-iface-methods:
+ 	List of interface methods to ignore, separated by a comma. This is used for instance to not check methods defines in Zope's Interface base class. Default: isImplementedBy,deferred,extends,names,namesAndDescriptions,queryDescriptionFor,getBases,getDescriptionFor,getDoc,getName,getTaggedValue,getTaggedValueTags,isEqualOrExtendedBy,setTaggedValue,isImplementedByInstancesOf,adaptWith,is_implemented_by
+defining-attr-methods:
+ 	List of method names used to declare (i.e. assign) instance attributes. Default: __init__,__new__,setUp
+
+Messages
+
+E0202:	An attribute inherited from %s hide this method Used when a class defines a method which is hiden by an instance attribute from an ancestor class.
+E0203:	Access to member %r before its definition line %s Used when an instance member is accessed before it's actually assigned.
+E0211:	Method has no argument Used when a method which should have the bound instance as first argument has no argument defined.
+E0213:	Method should have "self" as first argument Used when a method has an attribute different the "self" as first argument. This is considered as an error since this is a soooo common convention that you should'nt break it!
+E0221:	Interface resolved to %s is not a class Used when a class claims to implement an interface which is not a class.
+E0222:	Missing method %r from %s interface Used when a method declared in an interface is missing from a class implementing this interface
+
+W0201:	Attribute %r defined outside __init__ Used when an instance attribute is defined outside the __init__ method.
+W0211:	Static method with %r as first argument Used when a static method has "self" or "cls" as first argument.
+W0212:	Access to a protected member %s of a client class Used when a protected member (i.e. class member with a name beginning with an underscore) is access outside the class or a descendant of the class where it's defined.
+W0221:	Arguments number differs from %s method Used when a method has a different number of arguments than in the implemented interface or in an overridden method.
+W0222:	Signature differs from %s method Used when a method signature is different than in the implemented interface or in an overridden method.
+W0223:	Method %r is abstract in class %r but is not overridden Used when an abstract method (ie raise NotImplementedError) is not overridden in concrete class.
+W0231:	__init__ method from base class %r is not called Used when an ancestor class method has an __init__ method which is not called by a derived class.
+W0232:	Class has no __init__ method Used when a class has no __init__ method, neither its parent classes.
+W0233:	__init__ method from a non direct base class %r is called Used when an __init__ method is called on a class which is not in the direct ancestors for the analysed class.
+R0201:	Method could be a function Used when a method doesn't use its bound instance, and so could be written as a function.
+C0202:	Class method should have "cls" as first argument Used when a class method has an attribute different than "cls" as first argument, to easily differentiate them from regular instance methods.
+C0203:	Metaclass method should have "mcs" as first argument Used when a metaclass method has an attribute different the "mcs" as first argument.
+F0202:	Unable to check methods signature (%s / %s) Used when PyLint has been unable to check methods signature compatibility for an unexpected raison. Please report this kind if you don't make sense of it.
+F0220:	failed to resolve interfaces implemented by %s (%s) Used when a PyLint as failed to find interfaces implemented by a class
+#@-node:ekr.20071217231501:Classes
+#@+node:ekr.20071217231501.1:Design
+Design checker
+
+Options
+max-args:	Maximum number of arguments for function / method Default: 5
+max-locals:	Maximum number of locals for function / method body Default: 15
+max-returns:	Maximum number of return / yield for function / method body Default: 6
+max-branchs:	Maximum number of branch for function / method body Default: 12
+max-statements:	Maximum number of statements in function / method body Default: 50
+max-parents:	Maximum number of parents for a class (see R0901). Default: 7
+max-attributes:	Maximum number of attributes for a class (see R0902). Default: 7
+min-public-methods:
+ 	Minimum number of public methods for a class (see R0903). Default: 2
+max-public-methods:
+ 	Maximum number of public methods for a class (see R0904). Default: 20
+
+Messages
+
+R0901:	Too many ancestors (%s/%s) Used when class has too many parent classes, try to reduce this to get a more simple (and so easier to use) class.
+R0902:	Too many instance attributes (%s/%s) Used when class has too many instance attributes, try to reduce this to get a more simple (and so easier to use) class.
+R0903:	Too few public methods (%s/%s) Used when class has too few public methods, so be sure it's really worth it.
+R0904:	Too many public methods (%s/%s) Used when class has too many public methods, try to reduce this to get a more simple (and so easier to use) class.
+R0911:	Too many return statements (%s/%s) Used when a function or method has too many return statement, making it hard to follow.
+R0912:	Too many branches (%s/%s) Used when a function or method has too many branches, making it hard to follow.
+R0913:	Too many arguments (%s/%s) Used when a function or method takes too many arguments.
+R0914:	Too many local variables (%s/%s) Used when a function or method has too many local variables.
+R0915:	Too many statements (%s/%s) Used when a function or method has too many statements. You should then split it in smaller functions / methods.
+R0921:	Abstract class not referenced Used when an abstract class is not used as ancestor anywhere.
+R0922:	Abstract class is only referenced %s times Used when an abstract class is used less than X times as ancestor.
+R0923:	Interface not implemented Used when an interface class is not implemented anywhere.
+#@nonl
+#@-node:ekr.20071217231501.1:Design
+#@+node:ekr.20071217231501.2:Imports
+Imports checker
+
+Options
+
+deprecated-modules:
+ 	Deprecated modules which should not be used, separated by a comma Default: regsub,string,TERMIOS,Bastion,rexec
+import-graph:	Create a graph of every (i.e. internal and external) dependencies in the given file (report R0402 must not be disabled)
+ext-import-graph:
+ 	Create a graph of external dependencies in the given file (report R0402 must not be disabled)
+int-import-graph:
+ 	Create a graph of internal dependencies in the given file (report R0402 must not be disabled)
+
+Messages
+
+W0401:	Wildcard import %s Used when from module import * is detected.
+W0402:	Uses of a deprecated module %r Used a module marked as deprecated is imported.
+W0403:	Relative import %r Used when an import relative to the package directory is detected.
+W0404:	Reimport %r (imported line %s) Used when a module is reimported multiple times.
+W0406:	Module import itself Used when a module is importing itself.
+W0410:	__future__ import is not the first non docstring statement Python 2.5 and greater require __future__ import to be the first non docstring statement in the module.
+R0401:	Cyclic import (%s) Used when a cyclic import between two or more modules is detected.
+F0401:	Unable to import %r (%s) Used when pylint has been unable to import a module.
+
+Reports
+
+R0401:	External dependencies
+R0402:	Modules dependencies graph
+#@nonl
+#@-node:ekr.20071217231501.2:Imports
+#@+node:ekr.20071217231501.3:Newstyle
+Newstyle checker
+
+
+Messages
+
+E1001:	Use __slots__ on an old style class Used when an old style class use the __slots__ attribute.
+E1002:	Use super on an old style class Used when an old style class use the super builtin.
+E1003:	Bad first argument %r given to super class Used when another argument than the current class is given as first argument of the super builtin.
+E1010:	Raising a new style class Used when a new style class is raised since it's not possible with python < 2.5.
+W1001:	Use of "property" on an old style class Used when PyLint detect the use of the builtin "property" on an old style class while this is relying on new style classes 
+features
+W1010:	Exception doesn't inherit from standard "Exception" class Used when a custom exception class is raised but doesn't inherit from the builtin "Exception" class.
+#@nonl
+#@-node:ekr.20071217231501.3:Newstyle
+#@+node:ekr.20071217231828:Exceptions
+Exceptions checker
+
+Messages
+
+E0701:	Bad except clauses order (%s) Used when except clauses are not in the correct order (from the more specific to the more generic). If you don't fix the order, some exceptions may not be catched by the most specific handler.
+E0702:	Raising %s while only classes, instances or string are allowed Used when something which is neither a class, an instance or a string is raised (i.e. a TypeError will be raised).
+W0701:	Raising a string exception Used when a string exception is raised.
+W0702:	No exception's type specified Used when an except clause doesn't specify exceptions type to catch.
+W0703:	Catch "Exception" Used when an except catch Exception instances.
+W0704:	Except doesn't do anything Used when an except clause does nothing but "pass" and there is no "else" clause.
+W0706:	Identifier %s used to raise an exception is assigned to %s Used when a variable used to raise an exception is initially assigned to a value which can't be used as an exception.
+#@nonl
+#@-node:ekr.20071217231828:Exceptions
+#@+node:ekr.20071217231828.1:Format
+Format checker
+
+Options
+
+max-line-length:
+ 	Maximum number of characters on a single line. Default: 80
+max-module-lines:
+ 	Maximum number of lines in a module Default: 1000
+indent-string:	String used as indentation unit. This is usually " " (4 spaces) or "t" (1 tab). Default: ' '
+
+Messages
+
+W0311:	Bad indentation. Found %s %s, expected %s Used when an unexpected number of indentation's tabulations or spaces has been found.
+W0312:	Found indentation with %ss instead of %ss Used when there are some mixed tabs and spaces in a module.
+W0331:	Use of the <> operator Used when the deprecated "<>" operator is used instead of "!=".
+W0332:	Use l as long integer identifier Used when a lower case "l" is used to mark a long integer. You should use a upper case "L" since the letter "l" looks too much like the digit "1"
+C0301:	Line too long (%s/%s) Used when a line is longer than a given number of characters.
+C0302:	Too many lines in module (%s) Used when a module has too much lines, reducing its readibility.
+C0321:	More than one statement on a single line Used when more than on statement are found on the same line.
+C0322:	Operator not preceded by a space Used when one of the following operator (!= | <= | == | >= | < | > | = | += | -= | *= | /= | %) is not preceded by a space.
+C0323:	Operator not followed by a space Used when one of the following operator (!= | <= | == | >= | < | > | = | += | -= | *= | /= | %) is not followed by a space.
+C0324:	Comma not followed by a space Used when a comma (",") is not followed by a space.
+F0321:	Format detection error in %r Used when an unexpected error occured in bad format detection. Please report the error if it occurs.
+#@nonl
+#@-node:ekr.20071217231828.1:Format
+#@+node:ekr.20071217231828.2:Miscellaneous
+Miscellaneous checker
+
+Options
+
+notes:	List of note tags to take in consideration, separated by a comma. Default: FIXME,XXX,TODO
+
+Messages
+
+E0501:	Non ascii characters found but no encoding specified (PEP 263) Used when some non ascii characters are detected but now encoding is specified, as explicited in the PEP 263.
+E0502:	Wrong encoding specified (%s) Used when a known encoding is specified but the file doesn't seem to be actually in this encoding.
+E0503:	Unknown encoding specified (%s) Used when an encoding is specified, but it's unknown to Python.
+W0511:	Used when a warning note as FIXME or XXX is detected.
+#@nonl
+#@-node:ekr.20071217231828.2:Miscellaneous
+#@+node:ekr.20071217231828.3:Metrics
+Metrics checker
+
+
+Reports
+
+R0701:	Raw metrics
+#@-node:ekr.20071217231828.3:Metrics
+#@+node:ekr.20071217231828.4:Simularities
+Similarities checker
+
+min-similarity-lines:
+ 	Minimum lines number of a similarity. Default: 4
+ignore-comments:
+ 	Ignore comments when computing similarities. Default: yes
+ignore-docstrings:
+ 	Ignore docstrings when computing similarities. Default: yes
+
+Messages
+
+R0801:	Similar lines in %s files Indicates that a set of similar lines has been detected among multiple file. This usually means that the code should be refactored to avoid this duplication.
+
+Reports
+
+R0801:	Duplication
+#@-node:ekr.20071217231828.4:Simularities
+#@-node:ekr.20071217231348:Pylint docs
 #@+node:ekr.20031218072017.392:Python Notes...
 #@+node:ekr.20031218072017.398:How to call any Python method from the C API
 In general, everything you can do in Python is accessible through the C API.
@@ -2924,676 +3316,52 @@ def tkColorToWxColor (self, color):
     return d.get(color)
 #@nonl
 #@-node:ekr.20070228074312.43:tkColorToWxColor
-#@+node:ekr.20080212084648:atFile.scanDefaultAtAutoEncoding (not used)(
-def scanDefaultAtAutoEncoding(self,p):
-
-    '''Set .at_auto_encoding by scanning for @encoding directives.'''
-
-    c = self.c
-
-    for p in p.self_and_parents_iter():
-        d = g.get_directives_dict(p)
-        e = g.scanAtEncodingDirective(d)
-        if e: break
-    else:
-        # Default to the user setting.
-        e = c.config.default_at_auto_file_encoding
-
-    # g.trace('returns',e)
-    return e
-#@-node:ekr.20080212084648:atFile.scanDefaultAtAutoEncoding (not used)(
-#@+node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
-#@-node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
-#@+node:ekr.20031218072017.1939:getBatchScript (no longer used)
-def getBatchScript ():
-
-    import leo.core.leoGlobals as g
-    windowFlag = False
-
-    name = None ; i = 1 # Skip the dummy first arg.
-    while i + 1 < len(sys.argv):
-        arg = sys.argv[i].strip().lower()
-        if arg in ("--script","-script"):
-            name = sys.argv[i+1].strip() ; break
-        if arg in ("--script-window","-script-window"):
-            name = sys.argv[i+1].strip() ; windowFlag = True ; break
-        i += 1
-
-    if not name:
-        return None, windowFlag
-    name = g.os_path_join(g.app.loadDir,name)
-    try:
-        f = None
-        try:
-            f = open(name,'r')
-            script = f.read()
-            # g.trace("script",script)
-        except IOError:
-            g.es_print("can not open script file:",name, color="red")
-            script = None
-    finally:
-        if f: f.close()
-
-    # Bug fix 4/27/07: Don't put a return in a finally clause.
-    return script, windowFlag
-#@-node:ekr.20031218072017.1939:getBatchScript (no longer used)
-#@+node:ekr.20041025152343.1:class leoTkinterFind
-class leoTkinterFind (leoFind.leoFind,leoTkinterDialog.leoTkinterDialog):
-
-    """A class that implements Leo's tkinter find dialog."""
-
-    @others
-#@+node:ekr.20031218072017.3898:Birth & death
-#@+node:ekr.20031218072017.3899:__init__
-def __init__(self,c,resizeable=False,title=None,show=True):
-
-    # g.trace('leoTkinterFind',g.callers())
-
-    # Init the base classes...
-    leoFind.leoFind.__init__(self,c,title=title)
-    leoTkinterDialog.leoTkinterDialog.__init__(self,c,self.title,resizeable,show=show)
-
-    << create the tkinter intVars >>
-
-    # These are created later.
-    self.find_ctrl = None
-    self.change_ctrl = None 
-
-    self.createTopFrame() # Create the outer tkinter dialog frame.
-    self.createFrame()
-    if self.top and not show:
-        self.top.withdraw()
-    self.init(c) # New in 4.3: init only once.
-#@+node:ekr.20031218072017.3900:<< create the tkinter intVars >>
-self.svarDict = {}
-
-for key in self.intKeys:
-    self.svarDict[key] = Tk.IntVar()
-
-for key in self.newStringKeys:
-    self.svarDict[key] = Tk.StringVar()
-#@-node:ekr.20031218072017.3900:<< create the tkinter intVars >>
-#@-node:ekr.20031218072017.3899:__init__
-#@+node:ekr.20031218072017.2059:tkFind.init
-def init (self,c):
-
-    # N.B.: separate c.ivars are much more convenient than a dict.
-    for key in self.intKeys:
-        # New in 4.3: get ivars from @settings.
-        val = c.config.getBool(key)
-        setattr(self,key,val)
-        val = g.choose(val,1,0) # Work around major Tk problem.
-        self.svarDict[key].set(val)
-        # g.trace(key,val)
-
-    << set find/change widgets >>
-    << set radio buttons from ivars >>
-#@+node:ekr.20031218072017.2060:<< set find/change widgets >>
-self.find_ctrl.delete(0,"end")
-self.change_ctrl.delete(0,"end")
-
-# New in 4.3: Get setting from @settings.
-for w,setting,defaultText in (
-    (self.find_ctrl,"find_text",'<find pattern here>'),
-    (self.change_ctrl,"change_text",''),
+#@+node:ekr.20080710082231.11:Unused goto-line-number helpers from core
+#@+node:bwmulder.20041231211219:gotoLineNumberOpen (core: no longer used)
+def gotoLineNumberOpen(self, *args, **kw):
+    """
+    Hook for mod_shadow plugin.
+    """
+    theFile = open(*args, **kw)
+    lines = theFile.readlines()
+    theFile.close()
+    return lines
+#@-node:bwmulder.20041231211219:gotoLineNumberOpen (core: no longer used)
+#@+node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny (core: no longer used)
+def applyLineNumberMappingIfAny(self, n):
+    """
+    Hook for mod_shadow plugin.
+    """
+    return n
+#@-node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny (core: no longer used)
+#@-node:ekr.20080710082231.11:Unused goto-line-number helpers from core
+#@+node:ekr.20080708094444.83:test_propagate_changes (no longer used)
+def test_propagate_changes (self,
+    old_private_lines,      # with_sentinels
+    new_public_lines,       # without sentinels
+    expected_private_lines, # with sentinels
+    marker,
+    p = None
 ):
-    s = c.config.getString(setting)
-    if not s: s = defaultText
-    w.insert("end",s)
-#@-node:ekr.20031218072017.2060:<< set find/change widgets >>
-#@+node:ekr.20031218072017.2061:<< set radio buttons from ivars >>
-found = False
-for var,setting in (
-    ("pattern_match","pattern-search"),
-    ("script_search","script-search")):
-    val = self.svarDict[var].get()
-    if val:
-        self.svarDict["radio-find-type"].set(setting)
-        found = True ; break
-if not found:
-    self.svarDict["radio-find-type"].set("plain-search")
 
-found = False
-for var,setting in (
-    ("suboutline_only","suboutline-only"),
-    ("node_only","node-only"),
-    # ("selection_only","selection-only"),
-):
-    val = self.svarDict[var].get()
-    if val:
-        self.svarDict["radio-search-scope"].set(setting)
-        found = True ; break
-if not found:
-    self.svarDict["radio-search-scope"].set("entire-outline")
-#@-node:ekr.20031218072017.2061:<< set radio buttons from ivars >>
-#@-node:ekr.20031218072017.2059:tkFind.init
-#@+node:ekr.20031218072017.3901:destroySelf
-def destroySelf (self):
+    '''Check that propagate changed lines changes 'before_private_lines' to
+    'expected_private_lines' based on changes to 'changed_public_lines'.'''
 
-    self.top.destroy()
-#@-node:ekr.20031218072017.3901:destroySelf
-#@+node:ekr.20031218072017.3902:find.createFrame
-def createFrame (self):
+    results = self.propagate_changed_lines(
+        new_public_lines,   # new_lines_without_sentinels
+        old_private_lines,  # lines_with_sentinels, 
+        marker = marker,
+        p = p)
 
-    # g.trace('legacy')
+    return results # For unit tests.
+#@-node:ekr.20080708094444.83:test_propagate_changes (no longer used)
+#@+node:EKR.20040627113418:putDescendentUnknownAttributes
+def putDescendentUnknownAttributes (self,p):
 
-    c = self.c
+    return self.putDescendentTnodeUas(p)
+    # return self.putDescendentVnodeUas(p)
 
-    # Create the find panel...
-    outer = Tk.Frame(self.frame,relief="groove",bd=2)
-    outer.pack(padx=2,pady=2)
-
-    << Create the Find and Change panes >>
-    << Create four columns of radio and checkboxes >>
-    << Create two rows of buttons >>
-
-    if self.top: # self.top may not exist during unit testing.
-        self.top.protocol("WM_DELETE_WINDOW", self.onCloseWindow)
-#@+node:ekr.20031218072017.3904:<< Create the Find and Change panes >>
-fc = Tk.Frame(outer, bd="1m")
-fc.pack(anchor="n", fill="x", expand=1)
-
-# Removed unused height/width params: using fractions causes problems in some locales!
-fpane = Tk.Frame(fc, bd=1)
-cpane = Tk.Frame(fc, bd=1)
-
-fpane.pack(anchor="n", expand=1, fill="x")
-cpane.pack(anchor="s", expand=1, fill="x")
-
-# Create the labels and text fields...
-flab = Tk.Label(fpane, width=8, text="Find:")
-clab = Tk.Label(cpane, width=8, text="Change:")
-
-# Use bigger boxes for scripts.
-self.find_ctrl   = ftxt = g.app.gui.plainTextWidget(
-    fpane,bd=1,relief="groove",height=4,width=20)
-self.change_ctrl = ctxt = g.app.gui.plainTextWidget(
-    cpane,bd=1,relief="groove",height=4,width=20)
-
-<< Bind Tab and control-tab >>
-
-fBar = Tk.Scrollbar(fpane,name='findBar')
-cBar = Tk.Scrollbar(cpane,name='changeBar')
-
-# Add scrollbars.
-for bar,txt in ((fBar,ftxt),(cBar,ctxt)):
-    txt['yscrollcommand'] = bar.set
-    bar['command'] = txt.yview
-    bar.pack(side="right", fill="y")
-
-flab.pack(side="left")
-clab.pack(side="left")
-ctxt.pack(side="right", expand=1, fill="both")
-ftxt.pack(side="right", expand=1, fill="both")
-#@+node:ekr.20041026092141:<< Bind Tab and control-tab >>
-def setFocus(w):
-    c = self.c
-    c.widgetWantsFocus(w)
-    w.setSelectionRange(0,0)
-    return "break"
-
-def toFind(event,w=ftxt): return setFocus(w)
-def toChange(event,w=ctxt): return setFocus(w)
-
-def insertTab(w):
-    data = w.getSelectionRange()
-    if data: start,end = data
-    else: start = end = w.getInsertPoint()
-    w.replace(start,end,"\t")
-    return "break"
-
-def insertFindTab(event,w=ftxt): return insertTab(w)
-def insertChangeTab(event,w=ctxt): return insertTab(w)
-
-c.bind(ftxt,"<Tab>",toChange)
-c.bind(ctxt,"<Tab>",toFind)
-c.bind(ftxt,"<Control-Tab>",insertFindTab)
-c.bind(ctrxt,"<Control-Tab>",insertChangeTab)
-#@-node:ekr.20041026092141:<< Bind Tab and control-tab >>
-#@-node:ekr.20031218072017.3904:<< Create the Find and Change panes >>
-#@+node:ekr.20031218072017.3903:<< Create four columns of radio and checkboxes >>
-columnsFrame = Tk.Frame(outer,relief="groove",bd=2)
-columnsFrame.pack(anchor="e",expand=1,padx="7p",pady="2p") # Don't fill.
-
-numberOfColumns = 4 # Number of columns
-columns = [] ; radioLists = [] ; checkLists = []
-for i in xrange(numberOfColumns):
-    columns.append(Tk.Frame(columnsFrame,bd=1))
-    radioLists.append([])
-    checkLists.append([])
-
-for i in xrange(numberOfColumns):
-    columns[i].pack(side="left",padx="1p") # fill="y" Aligns to top. padx expands columns.
-
-# HotKeys used for check/radio buttons:  a,b,c,e,h,i,l,m,n,o,p,r,s,t,w
-
-radioLists[0] = [
-    (self.svarDict["radio-find-type"],"P&Lain Search","plain-search"),  
-    (self.svarDict["radio-find-type"],"&Pattern Match Search","pattern-search"),
-    (self.svarDict["radio-find-type"],"&Script Search","script-search")]
-checkLists[0] = [
-    ("Scrip&t Change",self.svarDict["script_change"])]
-checkLists[1] = [
-    ("&Whole Word",  self.svarDict["whole_word"]),
-    ("&Ignore Case", self.svarDict["ignore_case"]),
-    ("Wrap &Around", self.svarDict["wrap"]),
-    ("&Reverse",     self.svarDict["reverse"])]
-radioLists[2] = [
-    (self.svarDict["radio-search-scope"],"&Entire Outline","entire-outline"),
-    (self.svarDict["radio-search-scope"],"Suboutline &Only","suboutline-only"),  
-    (self.svarDict["radio-search-scope"],"&Node Only","node-only"),
-    # I don't know what selection-only is supposed to do.
-    (self.svarDict["radio-search-scope"],"Selection Only",None)] #,"selection-only")]
-checkLists[2] = []
-checkLists[3] = [
-    ("Search &Headline Text", self.svarDict["search_headline"]),
-    ("Search &Body Text",     self.svarDict["search_body"]),
-    ("&Mark Finds",           self.svarDict["mark_finds"]),
-    ("Mark &Changes",         self.svarDict["mark_changes"])]
-
-for i in xrange(numberOfColumns):
-    for var,name,val in radioLists[i]:
-        box = underlinedTkButton("radio",columns[i],anchor="w",text=name,variable=var,value=val)
-        box.button.pack(fill="x")
-        c.bind(box.button,"<Button-1>", self.resetWrap)
-        if val == None: box.button.configure(state="disabled")
-        box.bindHotKey(ftxt)
-        box.bindHotKey(ctxt)
-    for name,var in checkLists[i]:
-        box = underlinedTkButton("check",columns[i],anchor="w",text=name,variable=var)
-        box.button.pack(fill="x")
-        c.bind(box.button,"<Button-1>", self.resetWrap)
-        box.bindHotKey(ftxt)
-        box.bindHotKey(ctxt)
-        if var is None: box.button.configure(state="disabled")
-#@nonl
-#@-node:ekr.20031218072017.3903:<< Create four columns of radio and checkboxes >>
-#@+node:ekr.20031218072017.3905:<< Create two rows of buttons >>
-# Create the button panes
-buttons  = Tk.Frame(outer,bd=1)
-buttons2 = Tk.Frame(outer,bd=1)
-buttons.pack (anchor="n",expand=1,fill="x")
-buttons2.pack(anchor="n",expand=1,fill="x")
-
-# In 4.4 it's dubious to define these keys.  For example, Alt-x must be reserved!
-# HotKeys used for check/radio buttons:  a,b,c,e,h,i,l,m,n,o,p,r,s,t,w
-# HotKeys used for plain buttons (enter),d,g,t
-
-def findButtonCallback(event=None,self=self):
-    self.findButton()
-    return 'break'
-
-# Create the first row of buttons
-findButton=Tk.Button(buttons,
-    width=9,text="Find",bd=4,command=findButtonCallback) # The default.
-
-findButton.pack(pady="1p",padx="25p",side="left")
-
-contextBox = underlinedTkButton("check",buttons,
-    anchor="w",text="Show Conte&xt",variable=self.svarDict["batch"])
-contextBox.button.pack(pady="1p",side="left",expand=1)
-contextBox.bindHotKey(ftxt)
-contextBox.bindHotKey(ctxt)
-
-findAllButton = underlinedTkButton("button",buttons,
-    width=9,text="Fin&d All",command=self.findAllButton)
-findAllButton.button.pack(pady="1p",padx="25p",side="right",fill="x")
-findAllButton.bindHotKey(ftxt)
-findAllButton.bindHotKey(ctxt)
-
-# Create the second row of buttons
-changeButton = underlinedTkButton("button",buttons2,
-    width=10,text="Chan&Ge",command=self.changeButton)
-changeButton.button.pack(pady="1p",padx="25p",side="left")
-changeButton.bindHotKey(ftxt)
-changeButton.bindHotKey(ctxt)
-
-changeFindButton = underlinedTkButton("button",buttons2,
-    text="Change, &Then Find",command=self.changeThenFindButton)
-changeFindButton.button.pack(pady="1p",side="left",expand=1)
-changeFindButton.bindHotKey(ftxt)
-changeFindButton.bindHotKey(ctxt)
-
-changeAllButton = underlinedTkButton("button",buttons2,
-    width=10,text="Change All",command=self.changeAllButton)
-changeAllButton.button.pack(pady="1p",padx="25p",side="right")
-changeAllButton.bindHotKey(ftxt)
-changeAllButton.bindHotKey(ctxt)
-#@-node:ekr.20031218072017.3905:<< Create two rows of buttons >>
-#@-node:ekr.20031218072017.3902:find.createFrame
-#@+node:ekr.20060207080537:find.createBindings
-def createBindings (self):
-
-    # Legacy bindings.  Can be overwritten in subclasses.
-
-    c = self.c ; k = c.k
-    # g.trace('legacy')
-
-    def findButtonCallback2(event,self=self):
-        self.findButton()
-        return 'break'
-
-    for w in (self.find_ctrl, self.change_ctrl):
-
-        c.bind(w, "<Button-1>",  self.resetWrap)
-        c.bind(w, "<Key>",       self.resetWrap)
-        c.bind(w,"<Control-a>",  self.selectAllFindText)
-        c.bind(w, "<Key-Return>", findButtonCallback2)
-        c.bind(w, "<Key-Escape>", self.onCloseWindow)
-#@-node:ekr.20060207080537:find.createBindings
-#@-node:ekr.20031218072017.3898:Birth & death
-#@+node:ekr.20031218072017.3906:onCloseWindow
-def onCloseWindow(self,event=None):
-
-    # __pychecker__ = '--no-argsused' # the event param must be present.
-
-    self.top.withdraw()
-#@-node:ekr.20031218072017.3906:onCloseWindow
-#@+node:ekr.20051013084256:dismiss
-def dismiss (self):
-
-    self.top.withdraw()
-#@-node:ekr.20051013084256:dismiss
-#@+node:ekr.20031218072017.3907:bringToFront (tkFind)
-def bringToFront (self):
-
-    """Bring the tkinter Find Panel to the front."""
-
-    c = self.c ; w = self.find_ctrl
-
-    self.top.withdraw() # Helps bring the window to the front.
-    self.top.deiconify()
-    self.top.lift()
-
-    c.widgetWantsFocusNow(w)
-    w.selectAllText()
-#@-node:ekr.20031218072017.3907:bringToFront (tkFind)
-#@-node:ekr.20041025152343.1:class leoTkinterFind
-#@+node:ekr.20080514131122.4:Legacy code (leoCommands.py)
-if not g.newDrawing:
-
-    @others
-#@+node:ekr.20031218072017.2950:c.begin/endUpdate
-@
-**Important** These methods ensure that exactly zero or one (depending on the
-argument to endUpdate) redraws exist within the section of code bounded by
-c.beginUpdate and c.endUpdate. This greatly simplifies and clarifies the code.
-
-Callers should ensure that every beginUpdate is matched with an endUpdate by
-using the following pattern:
-    c.beginUpdate()
-    try:
-        << whatever >>
-    finally:
-        c.endUpdate()
-@c
-
-def beginUpdate(self):
-
-    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
-    until the matching call to endUpdate.'''
-
-    c = self
-    if c.frame and c.frame.tree:
-        c.frame.tree.beginUpdate()
-
-def endUpdate(self,flag=True,scroll=True):
-
-    '''Redraw the screen if flag is True.'''
-
-    c = self
-    if c.frame and c.frame.tree:
-        c.frame.tree.endUpdate(flag,scroll=scroll)
-
-BeginUpdate = beginUpdate # Compatibility with old scripts
-EndUpdate = endUpdate # Compatibility with old scripts
-#@-node:ekr.20031218072017.2950:c.begin/endUpdate
-#@+node:ekr.20080515053412.53:c.add_command/bind/bind2/tag_bind (new)
-def add_command (self,menu,**keys):
-
-    menu.add_command(**keys)
-
-def bind (self,w,pattern,func):
-
-    w.bind(pattern,func)
-
-def bind2 (self,w,pattern,func,**keys):
-
-    w.bind(pattern,func,**keys)
-
-def tag_bind(self,w,a,b,c):
-
-    w.tag_bind(a,b,c)
-
-#@-node:ekr.20080515053412.53:c.add_command/bind/bind2/tag_bind (new)
-#@+node:ekr.20031218072017.2951:c.bringToFront
-def bringToFront(self,set_focus=True):
-
-    # g.trace(g.callers())
-
-    c = self
-    c.frame.deiconify()
-
-    if set_focus:
-        c.frame.body.setFocus()
-
-BringToFront = bringToFront # Compatibility with old scripts
-#@-node:ekr.20031218072017.2951:c.bringToFront
-#@+node:ekr.20060205103842:c.get/request/set_focus
-def get_focus (self):
-
-    c = self
-    return g.app.gui and g.app.gui.get_focus(c)
-
-def get_requested_focus (self):
-
-    c = self
-    return c.requestedFocusWidget or c.hasFocusWidget or g.app.gui.get_focus(c)
-
-def request_focus(self,w):
-
-    c = self
-    if w: c.requestedFocusWidget = w
-    c.traceFocus(w)
-
-def set_focus (self,w,force=False):
-
-    c = self
-
-    if force: # New in Leo 4.4.2: safer.
-        c.hasFocusWidget = c.requestedFocusWidget = w
-        g.app.gui and g.app.gui.set_focus(c,w)
-        c.traceFocus(w)
-    else: # An optimization.
-        c.requestedFocusWidget = w
-        c.masterFocusHandler()
-
-    # Can't do this: it interferes with too much.
-    # if c.k: c.k.showStateAndMode(w)
-#@-node:ekr.20060205103842:c.get/request/set_focus
-#@+node:ekr.20060210103358:c.invalidateFocus
-def invalidateFocus (self):
-
-    '''Indicate that the focus is in an invalid location, or is unknown.'''
-
-    c = self
-    c.requestedFocusWidget = None
-    c.hasFocusWidget = None
-    # g.trace(g.callers())
-#@-node:ekr.20060210103358:c.invalidateFocus
-#@+node:ekr.20060207140352:c.masterFocusHandler
-def masterFocusHandler (self):
-
-    c = self
-    trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
-
-    # Give priority to later requests, but default to previously set widget.
-    w = c.requestedFocusWidget or c.hasFocusWidget
-
-    if trace: print \
-        'requested',c.widget_name(c.requestedFocusWidget),\
-        'present',c.widget_name(c.hasFocusWidget)
-
-    if c.hasFocusWidget and (
-        not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
-        if trace: print 'no change.',c.widget_name(w)
-        c.requestedFocusWidget = None
-    elif w:
-        # Ignore whatever g.app.gui.get_focus might say.
-        ok = g.app.gui.set_focus(c,w)
-        if ok: c.hasFocusWidget = w
-        c.requestedFocusWidget = None
-    else:
-        # This is not an error: it can arise because of a call to k.invalidateFocus.
-        if trace: print '*'*20,'oops: moving to body pane.'
-        c.bodyWantsFocusNow()
-
-restoreRequestedFocus = masterFocusHandler
-#@-node:ekr.20060207140352:c.masterFocusHandler
-#@+node:ekr.20080514131122.21:c.outerUpdate
-def outerUpdate (self):
-
-    pass
-#@-node:ekr.20080514131122.21:c.outerUpdate
-#@+node:ekr.20031218072017.2953:c.recolor & requestRecolor
-def recolor(self):
-
-    c = self
-    c.frame.body.recolor(c.currentPosition())
-
-def requestRecolor (self):
-
-    c = self
-    c.requestRecolorFlag = True
-#@-node:ekr.20031218072017.2953:c.recolor & requestRecolor
-#@+node:ekr.20051216171520:c.recolor_now
-def recolor_now(self,p=None,incremental=False,interruptable=True):
-
-    c = self
-    if p is None:
-        p = c.currentPosition()
-
-    c.frame.body.colorizer.colorize(p,
-        incremental=incremental,interruptable=interruptable)
-#@-node:ekr.20051216171520:c.recolor_now
-#@+node:ekr.20031218072017.2954:c.redraw and c.redraw_now
-def redraw (self):
-    c = self
-    c.beginUpdate()
-    c.endUpdate()
-
-def redraw_now (self):
-
-    c = self
-
-    if g.app.quitting or not c.exists or not hasattr(c.frame,'top'):
-        return # nullFrame's do not have a top frame.
-
-    c.frame.tree.redraw_now()
-
-    if 0: # Interferes with new colorizer.
-        c.frame.top.update_idletasks()
-
-    if c.requestRecolorFlag:
-        c.requestRecolorFlag = False
-        c.recolor()
-
-# Compatibility with old scripts
-force_redraw = redraw_now
-#@-node:ekr.20031218072017.2954:c.redraw and c.redraw_now
-#@+node:ekr.20060208143543:c.restoreFocus
-def restoreFocus (self):
-
-    '''Ensure that the focus eventually gets restored.'''
-
-    c =self
-    trace = not g.app.unitTesting and c.config.getBool('trace_focus')
-
-    if c.requestedFocusWidget:
-        c.hasFocusWidget = None # Force an update
-    elif c.hasFocusWidget:
-        c.requestedFocusWidget = c.hasFocusWidget
-        c.hasFocusWidget = None # Force an update
-    else:
-        # Should not happen, except during unit testing.
-        # c.masterFocusHandler sets c.hasFocusWidget,
-        # so if it is not set here it is because this method cleared it.
-        if not g.app.unitTesting: g.trace('oops: no requested or present widget.',g.callers())
-        c.bodyWantsFocusNow()
-
-    if c.inCommand:
-        if trace: g.trace('expecting later call to c.masterFocusHandler')
-        # A call to c.masterFocusHandler will surely happen.
-    else:
-        c.masterFocusHandler() # Do it now.
-#@-node:ekr.20060208143543:c.restoreFocus
-#@+node:ekr.20060207142332:c.traceFocus
-trace_focus_count = 0
-
-def traceFocus (self,w):
-
-    c = self
-
-    if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
-        c.trace_focus_count += 1
-        print '%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8)
-#@-node:ekr.20060207142332:c.traceFocus
-#@+node:ekr.20060205111103:c.widget_name
-def widget_name (self,widget):
-
-    c = self
-
-    return g.app.gui and g.app.gui.widget_name(widget) or ''
-#@-node:ekr.20060205111103:c.widget_name
-#@+node:ekr.20050120092028:c.xWantsFocus
-def bodyWantsFocus(self):
-    c = self ; body = c.frame.body
-    c.request_focus(body and body.bodyCtrl)
-def headlineWantsFocus(self,p):
-    c = self
-    c.request_focus(p and c.edit_widget(p))
-
-def logWantsFocus(self):
-    c = self ; log = c.frame.log
-    c.request_focus(log and log.logCtrl)
-
-def minibufferWantsFocus(self):
-    c = self ; k = c.k
-    if k: k.minibufferWantsFocus()
-
-def treeWantsFocus(self):
-    c = self ; tree = c.frame.tree
-    c.request_focus(tree and tree.canvas)
-
-def widgetWantsFocus(self,w):
-    c = self ; c.request_focus(w)
-#@-node:ekr.20050120092028:c.xWantsFocus
-#@+node:ekr.20060210102201:c.xWantsFocusNow
-def bodyWantsFocusNow(self):
-    c = self ; body = c.frame.body
-    #g.trace(body and body.bodyCtrl)
-    c.set_focus(body and body.bodyCtrl,force=True)
-
-def headlineWantsFocusNow(self,p):
-    c = self
-    c.set_focus(p and c.edit_widget(p),force=True)
-
-def logWantsFocusNow(self):
-    c = self ; log = c.frame.log
-    c.set_focus(log and log.logCtrl,force=True)
-
-def minibufferWantsFocusNow(self):
-    c = self ; k = c.k
-    if k: k.minibufferWantsFocusNow()
-
-def treeWantsFocusNow(self):
-    c = self ; tree = c.frame.tree
-    c.set_focus(tree and tree.canvas,force=True)
-
-def widgetWantsFocusNow(self,w):
-    c = self ; c.set_focus(w,force=True)
-#@-node:ekr.20060210102201:c.xWantsFocusNow
-#@-node:ekr.20080514131122.4:Legacy code (leoCommands.py)
+#@-node:EKR.20040627113418:putDescendentUnknownAttributes
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

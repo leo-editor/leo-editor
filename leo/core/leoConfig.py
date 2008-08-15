@@ -130,7 +130,7 @@ class parserBaseClass:
     #@+node:ekr.20041120103012:error
     def error (self,s):
 
-        print s
+        g.pr(s)
 
         # Does not work at present because we are using a null Gui.
         g.es(s,color="blue")
@@ -474,7 +474,7 @@ class parserBaseClass:
             if kind == '@item':
                 g.trace(level,kind,val,val2)
             else:
-                print
+                g.pr('')
                 g.trace(level,kind,'...')
                 self.dumpMenuList(val,level+1)
     #@nonl
@@ -644,7 +644,7 @@ class parserBaseClass:
             g.app.config.context_menus = {}
 
         #if popupName in g.app.config.context_menus:
-            #print '*** duplicate popup ***', popupName
+            #g.pr('*** duplicate popup ***', popupName)
 
 
         g.app.config.context_menus[popupName] = aList
@@ -794,7 +794,7 @@ class parserBaseClass:
     #@-node:ekr.20041124063257:munge
     #@+node:ekr.20041119204700.2:oops
     def oops (self):
-        print ("parserBaseClass oops:",
+        g.pr("parserBaseClass oops:",
             g.callers(),
             "must be overridden in subclass")
     #@-node:ekr.20041119204700.2:oops
@@ -1690,8 +1690,6 @@ class configClass:
 
         return self.get(c,setting,"string")
     #@-node:ekr.20041117081009.4:getString
-    #@+node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
-    #@-node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
     #@+node:ekr.20041120074536:settingsRoot
     def settingsRoot (self,c):
 
@@ -1837,7 +1835,7 @@ class configClass:
                     s = 'reading settings in %s' % path
                     # This occurs early in startup, so use the following instead of g.es_print.
                     s = g.toEncodedString(s,'ascii')
-                    print s
+                    g.pr(s)
                     g.app.logWaiting.append((s+'\n','blue'),)
 
                 c = self.openSettingsFile(path)
@@ -1847,8 +1845,71 @@ class configClass:
                     self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
                     self.setIvarsFromSettings(c)
         self.readRecentFiles(localConfigFile)
+        self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
+    #@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile
+    def createMyLeoSettingsFile (self,localConfigFile):
+
+        '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
+
+        #@    << define s, a minimalMyLeoSettings.leo string >>
+        #@+node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+        s = '''<?xml version="1.0" encoding="utf-8"?>
+        <?xml-stylesheet ekr_test?>
+        <leo_file>
+        <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+        <globals body_outline_ratio="0.5">
+        	<global_window_position top="26" left="122" height="781" width="953"/>
+        	<global_log_window_position top="0" left="0" height="0" width="0"/>
+        </globals>
+        <preferences/>
+        <find_panel_settings/>
+        <vnodes>
+        <v t="ekr.20070411164127" str_leo_pos="0"><vh>@chapters</vh>
+        <v t="ekr.20070411164127.1"><vh>@chapter trash</vh></v>
+        </v>
+        <v t="ekr.20070411164127.2"><vh>@settings</vh></v>
+        </vnodes>
+        <tnodes>
+        <t tx="ekr.20070411164127"></t>
+        <t tx="ekr.20070411164127.1">trash</t>
+        <t tx="ekr.20070411164127.2"></t>
+        </tnodes>
+        </leo_file>
+        '''
+        #@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+        #@nl
+
+        for path in (
+            localConfigFile,
+            self.myGlobalConfigFile,
+            self.myHomeConfigFile
+        ):
+            # g.trace(path)
+            if path:
+                path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+                if g.os_path_exists(path):
+                    # g.trace('exists',path)
+                    return
+
+        if g.app.homeDir:
+            path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+            try:
+                f = file(path,'wb')
+                f.write(s)
+                f.close()
+                self.myHomeConfigFile = path
+                # It's early in the startup: g.es does not work yet.
+                s = 'created: %s' % (self.myHomeConfigFile)
+                g.pr(s)
+                g.app.logWaiting.append((s+'\n','red'),)
+            except Exception:
+                s = 'can not create: %s' % (self.myHomeConfigFile)
+                g.pr(s)
+                g.app.logWaiting.append((s+'\n','red'),)
+                g.es_exception()
+    #@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile
     #@+node:ekr.20041117085625:g.app.config.openSettingsFile
     def openSettingsFile (self,path):
 
@@ -1959,7 +2020,7 @@ class configClass:
         ok = g.os_path_exists(fileName)
         if ok:
             if not g.unitTesting and not self.silent:
-                print ('reading %s' % fileName)
+                g.pr(('reading %s' % fileName))
             lines = file(fileName).readlines()
             if lines and self.munge(lines[0])=='readonly':
                 lines = lines[1:]
@@ -1995,7 +2056,7 @@ class configClass:
                 fileName = g.os_path_join(path,tag)
                 if g.os_path_exists(fileName):
                     if not self.recentFileMessageWritten:
-                        print ('wrote recent file: %s' % fileName)
+                        g.pr(('wrote recent file: %s' % fileName))
                         written = True
                     self.writeRecentFilesFileHelper(fileName)
                     # Bug fix: Leo 4.4.6: write *all* recent files.
@@ -2072,7 +2133,7 @@ class configClass:
         for key in keys:
             data = settings.get(key)
             letter,val = data
-            print '%45s = %s %s' % (key,letter,val)
+            g.pr('%45s = %s %s' % (key,letter,val))
             g.es('','%s %s = %s' % (letter,key,val))
     #@nonl
     #@+node:ekr.20070418075804:printSettingsHelper
@@ -2150,7 +2211,7 @@ class settingsTreeParser (parserBaseClass):
                 except Exception:
                     g.es_exception()
             else:
-                print "*** no handler",kind
+                g.pr("*** no handler",kind)
 
         return None
     #@-node:ekr.20041119204714:visitNode (settingsTreeParser)

@@ -2190,17 +2190,17 @@ class keyHandlerClass:
 
         k = self ; d = k.masterBindingsDict
 
-        print ; print 'k.masterBindingsDict...' ; print
+        g.pr('\nk.masterBindingsDict...\n')
         keys = d.keys()
         keys.sort()
         for key in keys:
-            print key, '-' * 40
+            g.pr(key, '-' * 40)
             d2 = d.get(key)
             keys2 = d2.keys()
             keys2.sort()
             for key2 in keys2:
                 b = d2.get(key2)
-                print '%20s %s' % (key2,b.commandName)
+                g.pr('%20s %s' % (key2,b.commandName))
     #@-node:ekr.20070218130238:dumpMasterBindingsDict
     #@+node:ekr.20061031131434.96:k.completeAllBindingsForWidget
     def completeAllBindingsForWidget (self,w):
@@ -2673,7 +2673,7 @@ class keyHandlerClass:
                 c.frame.body.onBodyChanged(undoType='Typing')
             if k.newMinibufferWidget:
                 c.widgetWantsFocusNow(k.newMinibufferWidget)
-                # print 'endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers()
+                # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
                 k.newMinibufferWidget = None
     #@-node:ekr.20061031131434.113:k.endCommand
     #@-node:ekr.20061031131434.104:Dispatching (keyHandler)
@@ -4384,7 +4384,7 @@ class keyHandlerClass:
             return isPlain
     #@-node:ekr.20061031131434.182:isPlainKey
     #@+node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
-    def shortcutFromSetting (self,setting):
+    def shortcutFromSetting (self,setting,addKey=True):
 
         k = self
 
@@ -4429,7 +4429,7 @@ class keyHandlerClass:
             last = fields and fields[-1]
             if not last:
                 if not g.app.menuWarningsGiven:
-                    print "bad shortcut specifier:", s
+                    g.pr("bad shortcut specifier:", s)
                 return None
 
         if len(last) == 1:
@@ -4445,7 +4445,7 @@ class keyHandlerClass:
                     last = last.lower()
 
                 # New in Leo 4.4.2: Alt-2 is not a key event!
-                if last.isdigit():
+                if addKey and last.isdigit():
                     last = 'Key-' + last
         else:
             # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
@@ -4528,6 +4528,7 @@ class keyHandlerClass:
                 s = '%s+%s' % ('+'.join(fields[:-1]),last)
             else:
                 s = last
+        # g.trace(stroke,s)
         return g.choose(brief,s,'<%s>' % s)
     #@-node:ekr.20061031131434.191:k.prettyPrintKey
     #@-node:ekr.20061031131434.181:Shortcuts (keyHandler)

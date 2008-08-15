@@ -505,8 +505,6 @@ class leoFind:
         saveData = self.save()
         self.initBatchCommands()
         count = 0
-        # c.beginUpdate()
-        # try: # In update...
         u.beforeChangeGroup(current,undoType)
         while 1:
             pos1, pos2 = self.findNextMatch()
@@ -520,8 +518,7 @@ class leoFind:
         p = c.currentPosition()
         u.afterChangeGroup(p,undoType,reportFlag=True)
         g.es("changed:",count,"instances")
-        # finally:
-        c.redraw() # was c.endUpdate()
+        c.redraw()
         self.restore(saveData)
     #@-node:ekr.20031218072017.3069:changeAll
     #@+node:ekr.20031218072017.3070:changeSelection
@@ -562,16 +559,13 @@ class leoFind:
         c.widgetWantsFocus(w)
 
         # No redraws here: they would destroy the headline selection.
-        # c.beginUpdate()
-        # try:
         if self.mark_changes:
             p.setMarked()
         if self.in_headline:
             c.frame.tree.onHeadChanged(p,'Change')
         else:
             c.frame.body.onBodyChanged('Change',oldSel=oldSel)
-        # finally:
-        # c.endUpdate(False)
+
         c.frame.tree.drawIcon(p) # redraw only the icon.
 
         return True
@@ -1142,8 +1136,8 @@ class leoFind:
     #@-node:ekr.20051020120306.26:bringToFront (leoFind)
     #@+node:ekr.20061111084423.1:oops (leoFind)
     def oops(self):
-        print ("leoFind oops:",
-            g.callers(10),"should be overridden in subclass")
+        g.pr(("leoFind oops:",
+            g.callers(10),"should be overridden in subclass"))
     #@-node:ekr.20061111084423.1:oops (leoFind)
     #@+node:ekr.20051020120306.27:selectAllFindText (leoFind)
     def selectAllFindText (self,event=None):
@@ -1216,7 +1210,7 @@ class leoFind:
         w.setAllText(s)
         if ins is None:
             ins = g.choose(self.reverse,len(s),0)
-            # print g.choose(self.reverse,'.','*'),
+            # g.pr(g.choose(self.reverse,'.','*'),)
         else:
             pass # g.trace('ins',ins)
         w.setInsertPoint(ins)
@@ -1341,8 +1335,6 @@ class leoFind:
         sparseFind = c.config.getBool('collapse_nodes_during_finds')
         c.frame.bringToFront() # Needed on the Mac
         redraw = not p.isVisible(c)
-        # c.beginUpdate()
-        # try:
         if sparseFind and not c.currentPosition().isAncestorOf(p):
             # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
             for p2 in c.currentPosition().self_and_parents_iter():
@@ -1355,8 +1347,7 @@ class leoFind:
         p = self.p
         if not p: g.trace('can not happen: self.p is None')
         c.selectPosition(p)
-        # finally:
-        if redraw: c.redraw() # was c.endUpdate(redraw)
+        if redraw: c.redraw()
 
         if self.in_headline:
             c.editPosition(p)

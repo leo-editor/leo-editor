@@ -30,7 +30,7 @@ import leo.core.leoPlugins as leoPlugins
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-node:tbrown.20060903121429.2:<< imports >>
 #@nl
-__version__ = "0.25.1"
+__version__ = "0.25.2"
 #@<< version history >>
 #@+node:tbrown.20060903121429.3:<< version history >>
 #@@killcolor
@@ -109,7 +109,10 @@ __version__ = "0.25.1"
 # - make leo play nice with rclick and standard tree popup on linux
 #     - post menu with g.app.postPopupMenu
 #     - destroy menu with g.app.killPopupMenu
+# 0.25.2 TNB: highlight all nodes with altered background colors, minor bug 
+# fixes
 #@-at
+#@nonl
 #@-node:tbrown.20060903121429.3:<< version history >>
 #@nl
 
@@ -299,7 +302,7 @@ class cleoController:
     #@+node:tbrown.20060903121429.17:install_drawing_overrides
     def install_drawing_overrides (self):
 
-        # print "Cleo plugin: installing overrides for",self.c.shortFileName()
+        # g.pr("Cleo plugin: installing overrides for",self.c.shortFileName())
 
         tree = self.c.frame.tree # NOT leoTkinterTree.leoTkinterTree
 
@@ -519,16 +522,13 @@ class cleoController:
     #@nonl
     #@-node:tbrown.20060903121429.25:remove_colours
     #@+node:tbrown.20071008150126:subtree_colours
-    def subtree_colours(self,v):
+    def subtree_colours(self,p):
 
-        fg = self.getat(v, 'fg')
-        bg = self.getat(v, 'bg')
-        child = v.firstChild()
-        while child:
-            self.setat(child, 'fg', fg)
-            self.setat(child, 'bg', bg)
-            self.subtree_colours(child)
-            child = child.next()
+        fg = self.getat(p.v, 'fg')
+        bg = self.getat(p.v, 'bg')
+        for n in p.subtree_iter():
+            self.setat(n.v, 'fg', fg)
+            self.setat(n.v, 'bg', bg)
         self.c.redraw()
     #@-node:tbrown.20071008150126:subtree_colours
     #@+node:tbrown.20060912130940:add_colour
@@ -566,19 +566,14 @@ class cleoController:
         h = v and v.headString() or ''
 
         for f in self.file_nodes:
-            if h.find(f, 0, 5) == 0:
-                if node_is_selected:
-                    bg = self.node_colours['Sel. File']
-                else:
-                    bg = self.node_colours['file']
+            if h.startswith(f):
+                bg = self.node_colours['file']
 
         # set bg of @ignore type of nodes
         if self.colorIgnore:
             if h.find("@ignore") == 0:
-                if node_is_selected:
-                    bg = self.node_colours['Sel. Comments']
-                else:
-                    bg = self.node_colours['Comments']
+                bg = self.node_colours['Comments']
+        #@nonl
         #@-node:tbrown.20060903121429.27:<< auto headline colours >>
         #@nl
         #@    << node colours >>
@@ -617,9 +612,9 @@ class cleoController:
         #@-node:tbrown.20060903121429.30:<< arbitary colours >>
         #@nl
 
-        #print "> (%s,%s) %s" % (fg,bg,v.headString())
+        #g.pr("> (%s,%s) %s" % (fg,bg,v.headString()))
+
         return fg,bg
-    #@nonl
     #@-node:tbrown.20060903121429.26:custom_colours
     #@-node:tbrown.20060903121429.24:colours...
     #@+node:tbrown.20060903121429.31:drawing...
@@ -864,10 +859,15 @@ class cleoController:
         fg, bg = self.custom_colours(p.v,node_is_selected=True)
 
         fg = fg or c.config.getColor("headline_text_selected_foreground_color") or 'black'
-        bg = bg or c.config.getColor("headline_text_selected_background_color") or 'grey80'
+        bg2 = c.config.getColor("headline_text_selected_background_color")
+        bg = bg or bg2 or 'gray80'
 
         try:
-            w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg)
+            if bg != bg2:
+                hl = c.config.getColor("headline_text_selected_highlight_color") or 'black'
+                w.configure(state="disabled", highlightthickness=1, highlightbackground=hl, fg=fg, bg=bg)
+            else:
+                w.configure(state="disabled", highlightthickness=0, fg=fg, bg=bg)
         except:
             g.es_exception()
     #@nonl
@@ -929,7 +929,7 @@ class cleoController:
         def cleoColorsMenuCallback():
             self.remove_colours(p.v)
         def cleoColorsMenuSubtree():
-            self.subtree_colours(p.v)
+            self.subtree_colours(p)
 
         c.add_command(parent,label='Remove Colouring', underline=0,
             command=cleoColorsMenuCallback)
@@ -996,14 +996,11 @@ class cleoController:
         self.c.sortSiblings(cmp=self.pricmp)
 
     def childrenTodo(self):
-        # self.c.beginUpdate()
-        # try:
         for p in self.pickleP.children_iter():
             if self.getat(p.v, 'priority') != 9999: continue
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
-        # finally:
-        self.c.redraw() # was self.c.endUpdate()
+        self.c.redraw()
 
     def priority_menu(self,parent,p):
 
@@ -1329,14 +1326,11 @@ class cleoController:
 
         # see if this node is a todo
         if stage != 0 and self.getat(p.v, 'priority') in self.todo_priorities:
-            # self.c.beginUpdate()
-            # try:
             if p.getParent(): 
                 self.c.selectPosition(p.getParent())
                 self.c.expandNode()
             self.c.selectPosition(p)
-            # finally:
-            self.c.redraw() # was self.c.endUpdate()
+            self.c.redraw()
             return True
 
         for nd in p.children_iter():

@@ -28,7 +28,7 @@ def applyConfiguration(config):
         options = config.options(section)
         options.sort()
         for option in options:
-            print section, option, config.get(section, option)
+            g.pr(section, option, config.get(section, option))
 #@-node:EKR.20040517080555.26:applyConfiguration
 #@+node:EKR.20040517080555.27:cmd_fn1/2/3
 def cmd_fn1(event=None):

@@ -124,7 +124,7 @@ class tkinterGui(leoGui.leoGui):
                 else:
                     g.es('','Icons','directory not found:',path, color="red")
         except:
-            print "exception setting bitmap"
+            g.pr("exception setting bitmap")
             import traceback ; traceback.print_exc()
     #@-node:ekr.20031218072017.1856:setDefaultIcon
     #@+node:ekr.20031218072017.2186:tkGui.getDefaultConfigFont
@@ -141,7 +141,7 @@ class tkinterGui(leoGui.leoGui):
             font = tkFont.Font(font=fn) 
             family = font.cget("family")
             self.defaultFontFamily = family[:]
-            # print '***** getDefaultConfigFont',repr(family)
+            # g.pr('***** getDefaultConfigFont',repr(family))
 
         config.defaultFont = None
         config.defaultFontFamily = self.defaultFontFamily
@@ -183,11 +183,11 @@ class tkinterGui(leoGui.leoGui):
         if script:
             log = g.app.log
             if log:
-                print 'Start of batch script...\n'
+                g.pr('Start of batch script...\n')
                 log.c.executeScript(script=script)
-                print 'End of batch script'
+                g.pr('End of batch script')
             else:
-                print 'no log, no commander for executeScript in tkInterGui.runMainLoop'
+                g.pr('no log, no commander for executeScript in tkInterGui.runMainLoop')
         else:
              # g.trace("tkinterGui")
             self.root.mainloop()
@@ -305,7 +305,7 @@ class tkinterGui(leoGui.leoGui):
 
     def createLeoFrame(self,title):
         """Create a new Leo frame."""
-        # print 'tkGui.createLeoFrame'
+        # g.pr('tkGui.createLeoFrame')
         gui = self
         return leoTkinterFrame.leoTkinterFrame(title,gui)
     #@-node:ekr.20031218072017.4058:tkGui panels
@@ -493,9 +493,9 @@ class tkinterGui(leoGui.leoGui):
         if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
             self.set_focus_count += 1
             # Do not call trace here: that might affect focus!
-            print 'gui.set_focus: %4d %10s %s' % (
+            g.pr('gui.set_focus: %4d %10s %s' % (
                 self.set_focus_count,c and c.shortFileName(),
-                c and c.widget_name(w)), g.callers(5)
+                c and c.widget_name(w)), g.callers(5))
 
         if w:
             try:
@@ -653,8 +653,9 @@ class tkinterGui(leoGui.leoGui):
 
         return w and isinstance(w,Tk.Text)
     #@-node:ekr.20051220144507:isTextWidget
-    #@+node:ekr.20060621164312:makeScriptButton
+    #@+node:ekr.20060621164312:makeScriptButton (tkGui)
     def makeScriptButton (self,c,
+        args=None,
         p=None, # A node containing the script.
         script=None, # The script itself.
         buttonText=None,
@@ -692,13 +693,13 @@ class tkinterGui(leoGui.leoGui):
             c.bodyWantsFocus()
 
         def executeScriptCallback (event=None,
-            b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
+            args=args,b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
 
             if c.disableCommandsMessage:
                 g.es('',c.disableCommandsMessage,color='blue')
             else:
                 g.app.scriptDict = {}
-                c.executeScript(p=p,script=script,
+                c.executeScript(args=args,p=p,script=script,
                 define_g= define_g,define_name=define_name,silent=silent)
                 # Remove the button if the script asks to be removed.
                 if g.app.scriptDict.get('removeMe'):
@@ -731,7 +732,7 @@ class tkinterGui(leoGui.leoGui):
         k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
         #@-node:ekr.20060621164312.4:<< create press-buttonText-button command >>
         #@nl
-    #@-node:ekr.20060621164312:makeScriptButton
+    #@-node:ekr.20060621164312:makeScriptButton (tkGui)
     #@+node:bobjack.20080427200147.2:killPopupMenu
     def killPopupMenu(self, event=None):
         """If there is a popup menu, destroy it."""

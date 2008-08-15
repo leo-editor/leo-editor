@@ -175,7 +175,7 @@ def onStart1 (tag, keywords):
     '''Override Leo's core colorizer classes.'''
 
     import leo.core.leoColor as leoColor
-    # print 'threading_colorizer overriding core classes'
+    # g.pr('threading_colorizer overriding core classes')
     leoColor.colorizer = colorizer
     leoColor.nullColorizer = nullColorizer
 #@-node:ekr.20071010193720.8:onStart1
@@ -895,7 +895,7 @@ class colorizer:
     #@+node:ekr.20071010193720.34:enable & disable
     def disable (self):
 
-        print "disabling all syntax coloring"
+        g.pr("disabling all syntax coloring")
         self.enabled=False
 
     def enable (self):
@@ -1005,7 +1005,7 @@ class colorizer:
 
         def report(kind,tag):
             i,j,name = tag
-            print 'computeNewTags: *** %-5s' % (kind),i,j,self.s[i:j]
+            g.pr('computeNewTags: *** %-5s' % (kind),i,j,self.s[i:j])
 
         # Compare while both lists have remaining elements.
         old_n = 0 ; new_n = 0
@@ -1118,7 +1118,7 @@ class colorizer:
         if not hasattr(self,'c') or not self.c.exists:
             return
         if not self.c.frame in g.app.windowList:
-            # print 'threading_colorizer.idleHandler: window killed %d' % n
+            # g.pr('threading_colorizer.idleHandler: window killed %d' % n)
             return
 
         # Do this after we know the ivars exist.
@@ -1449,7 +1449,7 @@ class colorizer:
         while i < len(s):
             progress = i
             if self.c.frame not in g.app.windowList:
-                # print 'threading_colorizer.fullColor: window killed'
+                # g.pr('threading_colorizer.fullColor: window killed')
                 return
             if self.killFlag:
                 if trace: g.trace('*** killed %d' % self.threadCount)

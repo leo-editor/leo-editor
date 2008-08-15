@@ -68,8 +68,6 @@ def createPasteAsHeadlinesMenu (tag,keywords):
 def paste_as_headlines(c):
     # g.es("Starting...")
 
-    # c.beginUpdate()
-    # try:
     currentPos = c.currentPosition() 
     clipText = g.app.gui.getTextFromClipboard()
     # Leo won't display curly quotes properly, so replace them with normal quotes
@@ -87,8 +85,7 @@ def paste_as_headlines(c):
             else:
                 c.setHeadString(insertNode,tempHead)
     currentPos.expand()
-    # finally:
-    c.redraw() # was c.endUpdate()
+    c.redraw()
 #@-node:danr7.20060912105041.6:paste_as_headlines
 #@-others
 

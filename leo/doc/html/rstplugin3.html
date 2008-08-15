@@ -377,6 +377,35 @@ This option has no effect in rst mode.</dd>
 <dd>True: Move doc parts outside of the code-block directive in code mode.
 This option has no effect in rst mode.
 <strong>Cool</strong>: Any rST markup in doc parts included as the result of this option will be rendered properly.</dd>
+<dt>show_doc_parts_in_rst_mode (default: True)</dt>
+<dd><p class="first">This option is most useful for rst documents which are not computer code.
+It allows you to use doc parts to make comments on the draft document
+which are either excluded from the output or formatted in a way that highlights
+their nature as comments rather than contet.  For example, you're writing a book, and
+you want to use a doc part at the top of a section to remind yourself &quot;need
+to explain how Ted got to Sally's&quot;.    Note: you may need to add
+CSS to have them formatted differently.  The option can be <cite>True</cite>, <cite>False</cite>,
+or one or more class names.</p>
+<p>True: doc parts have no special significance in rst mode.
+That is, the entire doc part from the opening '&#64;' to the closing '&#64;c
+and everything in between are treated as normal rST markup.</p>
+<p>False: doc parts are removed from the output in rst mode</p>
+<p>class name(s):</p>
+<blockquote class="last">
+<p>The contents of the doc part is processed as it if was in an rst <cite>container</cite>
+directive.  For example:</p>
+<pre class="literal-block">
+&#64; &#64;rst-options
+show_doc_parts_in_rst_mode = notes literal
+&#64;c
+</pre>
+<p>would wrap the doc part contents in the output in a div with classes
+&quot;container notes literal&quot;.  Furthermore, if one of the class names is
+<cite>literal</cite>, then the doc part content will be output as a literal block
+wrapped in a container as described above.  This allows you to use text
+which is not valid rst as rough notes for annotating a draft document.</p>
+</blockquote>
+</dd>
 <dt>show_headlines (default: True)</dt>
 <dd>True: automatically generate rST sections from headlines.
 Applies to both code mode and rst mode.
@@ -565,8 +594,9 @@ make the rst3 plugin happy.</p>
 rendered properly when the show_doc_parts_as_paragraphs option is in effect.
 <em>Important</em>: Regardless of the show_doc_parts_as_paragraphs option, doc parts
 have no special significance in rst mode. That is, the entire <cite>doc part</cite> from
-the opening '&#64;' to the closing '&#64;c and everything in between are treated normal
-rST markup.</p>
+the opening '&#64;' to the closing '&#64;c and everything in between are treated as normal
+rST markup.  <em>Update:</em> you can now use the <cite>show_doc_parts_in_rst_mode</cite> option
+to change this behavior and control the processing of doc parts in rst mode.</p>
 </div>
 <div class="section" id="setting-defaults">
 <h2><a class="toc-backref" href="#id9">Setting defaults</a></h2>

@@ -118,8 +118,7 @@ def found (porv,name):
 #@+node:ekr.20040915082303:note
 def note (s):
 
-    print s
-    g.es(s)
+    g.es_print(s)
 #@nonl
 #@-node:ekr.20040915082303:note
 #@+node:ekr.20040915075530.4:search

@@ -343,7 +343,7 @@ if wx:
             #@        @+others
             #@+node:bob.20071229151620.1:__init__ (tkFont.Font)
             def __init__(self,*args, **kw):
-                #print myclass(self), args, kw
+                #g.pr(myclass(self), args, kw)
 
                 self.kw = kw
 
@@ -735,7 +735,7 @@ if wx:
         def _appendText(self,s):
             #g.trace('stc:', _(s))
             self.widget.AppendText(s)
-            #print '\t', _(self.widget.Text)
+            #g.pr('\t', _(self.widget.Text))
 
         def _get(self,i,j):
             #g.trace( 'i: %s j:%s' %(i, j))
@@ -743,16 +743,16 @@ if wx:
             w = self.widget
             s = w.Text
             ii, jj = py(i,s),py(j,s)
-            #print '\tii=', ii, ' jj=', jj
+            #g.pr('	ii=', ii, ' jj=', jj)
             result = self.widget.GetTextRange(ii, jj)
-            #print '\n\t', type(result), 'len:', len(result)
-            #print _(result)
+            #g.pr('\n\t', type(result), 'len:', len(result))
+            #g.pr(_(result))
             return result
 
         def _getAllText(self):
             text = self.widget.Text
             #g.trace(_(text))
-            #print '\t', g.callers()
+            #g.pr('\t', g.callers())
             return text
 
         def _getFocus(self):
@@ -764,14 +764,12 @@ if wx:
         def _getInsertPoint(self):
             w = self.widget
             text = w.Text
-            # print
-            # print '---------------------'
+            # g.pr('\n---------------------')
             # g.trace(type(w.Text), type(w.TextUTF8), type(w.TextRaw))
             # g.trace(w.CurrentPos, text)
             result = self.fromStcIndex(w.CurrentPos, text)
             # g.trace(result, '[%s] [%s]' % (text[:result], text[result:]))
-            # print '---------------------'
-            # print
+            # g.pr('---------------------\n')
             return result
 
         def _getLastPosition(self):
@@ -815,7 +813,7 @@ if wx:
         def _setAllText(self,s):
             #g.trace('stc:\t', _(s))
             self.widget.SetText(s)
-            #print '\t', _(self.widget.Text)
+            #g.pr('\t', _(self.widget.Text))
 
         def _setBackgroundColor(self,color):
             #g.trace('stc:')
@@ -847,13 +845,13 @@ if wx:
 
             #print
             #g.trace( '\n\tHave FirstVisible:', first)
-            #print '\tWant FirstVisible:', wantfirst
+            #g.pr'\tWant FirstVisible:', wantfirst)
 
-            #print
             w.LineScroll(0, wantfirst - first)
-            #print '\tLines to scroll:', wantfirst - first
-            #print '\tNew FirstVisible:', w.FirstVisibleLine
-            #print
+            #g.pr('')
+            #g.pr('\tLines to scroll:', wantfirst - first)
+            #g.pr('\tNew FirstVisible:', w.FirstVisibleLine
+            #g.pr('')
         #@-node:bob.20070813163332.152:bindings (stc)
         #@+node:bob.20070813163332.153:Overrides of baseTextWidget methods
         #@+node:bob.20070901213413:toStcIndex
@@ -877,11 +875,11 @@ if wx:
                     if i == 'end':
                         i = len(s)
 
-            #print '\n\tChar-codes: [', ' | '.join([str(ord(ch)) for ch in s]), ']'
+            #g.pr('\n\tChar-codes: [', ' | '.join([str(ord(ch)) for ch in s]), ']')
 
             result =  len(s[:i].encode('utf8'))
 
-            #print '\n\t result', result
+            #g.pr('\n\t result', result)
             return result
 
         def fromStcIndex(self, i, s):
@@ -892,23 +890,23 @@ if wx:
             #g.trace('\n\tencoding:', type(s), i)
             try:
                 result = s.encode('utf8')[:i]
-                #print 'YAY encoded ok: type is ', type(result)
-                #print '\n\t len:', len(result),
-                #print '\n\t chars:[',  ' | '.join([str(ord(ch)) for ch in result]), ']'
+                #g.pr('YAY encoded ok: type is ', type(result))
+                #g.pr('\n\t len:', len(result),newline=False)
+                #g.pr('\n\t chars:[',  ' | '.join([str(ord(ch)) for ch in result]), ']')
             except:
-                print 'encoding error ============================'
-                print g.callers()
+                g.pr('encoding error ============================')
+                g.pr(g.callers())
 
             try:
                 result = result.decode('utf8')
-                #print 'YAY DECODING ok: type is ', type(result)
-                #print '\n\t len:', len(result),
-                #print '\n\t chars:[',  ' | '.join([str(ord(ch)) for ch in result]), ']'
+                #g.pr('YAY DECODING ok: type is ', type(result))
+                #g.pr('\n\t len:', len(result),newline=False)
+                #g.pr('\n\t chars:[',  ' | '.join([str(ord(ch)) for ch in result]), ']')
             except:
-                print 'decoding error #######################################'
+                g.pr('decoding error #######################################')
 
             result = len(result)
-            #print '\n\tinput:%s result:%s'%(i, result)
+            #g.pr('\n\tinput:%s result:%s'%(i, result))
             return result
 
         #@-node:bob.20070901213413:toStcIndex
@@ -917,7 +915,7 @@ if wx:
 
             #g.trace('stc:', _(s))
             self.widget.AppendText(s)
-            #print '\t', _(self.widget.Text)
+            #g.pr('\t', _(self.widget.Text))
 
         #@-node:bob.20070903082144:appendText
         #@+node:bob.20070903082228:delete
@@ -949,11 +947,11 @@ if wx:
             #line = w.LineFromPosition(w.CurrentPos)
 
             #g.trace( '\n\ttop:', w.FirstVisibleLine)
-            #print '\tcurrent line:', w.LineFromPosition(w.CurrentPos)
+            #g.pr('\tcurrent line:', w.LineFromPosition(w.CurrentPos))
 
 
             ii = self.toStcIndex(i, s)
-            #print '\ttarget line:', w.LineFromPosition(ii)
+            #g.pr('\ttarget line:', w.LineFromPosition(ii))
             w.ScrollToLine(w.LineFromPosition(ii))
 
         def seeInsertPoint(self):
@@ -975,7 +973,7 @@ if wx:
 
             #g.trace('py-index:', i, 'insert[%s]'%s)# g.callers())
 
-            #print '\t\t', g.callers()
+            #g.pr('\t\t', g.callers())
 
             w = self.widget
 
@@ -1948,10 +1946,10 @@ if wx:
             self.svarDict = {} # Keys are ivar names, values are svar objects.
 
             for key in self.intKeys:
-                self.svarDict[key] = self.svar() # Was Tk.IntVar.
+                self.svarDict[key] = self.svar()
 
             for key in self.newStringKeys:
-                self.svarDict[key] = self.svar() # Was Tk.StringVar.
+                self.svarDict[key] = self.svar()
         #@-node:bob.20070813163332.98:initGui
         #@+node:bob.20070813163332.99:init (wxFindTab)
         # Called from leoFind.findTab.ctor.
@@ -4076,8 +4074,7 @@ if wx:
             # print
             # print
             result =  leoKeys.keyHandlerClass.masterCommand(self, *args, **kw)
-            # self.c.beginUpdate()
-            self.c.redraw() # was self.c.endUpdate()
+            self.c.redraw()
             return result
 
         #@-node:bob.20070901124034:masterCommand
@@ -7763,13 +7760,10 @@ if wx:
 
             if item > -1:
                 p = self.positionList[item]
-                # c.beginUpdate()
-                # try:
                 c.frame.tree.expandAllAncestors(p)
                 c.selectPosition(p,updateBeadList=True)
                     # A case could be made for updateBeadList=False
-                # finally:
-                c.redraw() # was c.endUpdate()
+                c.redraw()
         #@-node:bob.20080105082325.7:go
         #@+node:bob.20080105082325.8:hide
         def hide(self, event=None):
@@ -8560,9 +8554,7 @@ if wx:
             if not event:
                 return
 
-            # c.beginUpdate()
             redrawFlag = False
-            # try:
             #@    << set drop_p, childFlag >>
             #@+node:bob.20070906100746.1:<< set drop_p, childFlag >>
 
@@ -8602,9 +8594,9 @@ if wx:
             self.setCursor('default')
             self.dragging = False
             self.drag_p = None
-            # finally:
+
             # Must set self.drag_p = None first.
-            if redrawFlag: c.redraw() # was c.endUpdate(redrawFlag)
+            if redrawFlag: c.redraw()
             c.recolor_now() # Dragging can affect coloring.
         #@-node:bob.20070906100746:endDrag
         #@-node:bob.20070907050034:onEndDrag
@@ -8891,8 +8883,6 @@ if wx:
 
             p1 = c.currentPosition()
             #g.trace(source, type, p)
-            # c.beginUpdate()
-            # try:
             if not g.doHook("boxclick1", c=c, p=p, v=p, event=event):
 
                 self.endEditLabel()
@@ -8913,8 +8903,7 @@ if wx:
                     c.bodyWantsFocus()
 
             g.doHook("boxclick2", c=c, p=p, v=p, event=event)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
 
 
         #@-node:bob.20070814083933:onMouseClickBoxLeftDown
@@ -8931,8 +8920,6 @@ if wx:
             if not self.HasCapture():
                 self.CaptureMouse()
 
-            # c.beginUpdate()
-            # try:
             if not g.doHook("iconclick1", c=c, p=p, v=p, event=event):
 
                 self.endEditLabel()
@@ -8948,8 +8935,7 @@ if wx:
                     c.bodyWantsFocus()
 
             g.doHook("iconclick2", c=c, p=p, v=p, event=event)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
 
         #@-node:bob.20070814090359.1:onMouseIconBoxLeftDown
         #@+node:bob.20070906193733.1:onMouseIconBoxLeftUp
@@ -8990,8 +8976,6 @@ if wx:
             c = self.c
             c.setLog()
 
-            # c.beginUpdate()
-            # try:
             if c.isCurrentPosition(p):
 
                 self.editLabel(p)
@@ -9010,8 +8994,7 @@ if wx:
                     else:
                         c.bodyWantsFocus()
                 g.doHook("headclick2",c=c,p=p,v=p,event=event)
-            # finally:
-            c.redraw() # was c.endUpdate()
+            c.redraw()
 
         #@-node:bob.20070818153826:onMouseTextBoxLeftDown
         #@-node:bob.20070816213833:Text Box
@@ -9044,13 +9027,10 @@ if wx:
 
             if p:
 
-                # c.beginUpdate()
-                # try:
                 self.endEditLabel()
                 self.setEditPosition(p)
                 #g.trace('ep', self.editPosition())
-                # finally:
-                c.redraw() # was c.endUpdate()
+                c.redraw()
 
                 # Help for undo.
                 self.revertHeadline = s = p.headString()
@@ -9097,8 +9077,7 @@ if wx:
                 self.onHeadChanged(ep,undoType='Typing',s=s)
 
             self.setEditPosition(None)
-            # c.beginUpdate()
-            c.redraw() # was c.endUpdate()
+            c.redraw()
 
             if c.config.getBool('stayInTreeAfterEditHeadline'):
                 c.treeWantsFocusNow()
@@ -9396,12 +9375,9 @@ if wx:
             """React to changes in the size of the outlines display area."""
 
             c = self.c
-            # c.beginUpdate()
-            # try:
+
             self.vscrollUpdate()
             self._canvas.resize(self.GetClientSize().height)
-            # finally:
-            # c.endUpdate(False)
             event.Skip()
         #@-node:bob.20070813173446.9:onSize
         #@+node:bob.20070813173446.10:vscrollUpdate
@@ -9660,8 +9636,6 @@ if wx:
 
             c = self.c
 
-            #c.beginUpdate()     #lock out events
-            #try:
             if height is not None:
                 self._size.height = height
             if width is not None and self._size.width < width:
@@ -9675,9 +9649,6 @@ if wx:
             self._parent.hscrollUpdate()
             self.draw()
             self.refresh()
-
-            #finally:
-            #    c.endUpdate(False)
             return True
 
         redraw = resize

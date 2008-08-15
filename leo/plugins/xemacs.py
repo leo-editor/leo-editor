@@ -81,7 +81,7 @@ def init ():
     ok = True
 
     if g.app.unitTesting:
-        # print "\nEmacs plugin installed: double clicking will start..."
+        # g.pr("\nEmacs plugin installed: double clicking will start...")
         return False
 
     if useDoubleClick: # Open on double click

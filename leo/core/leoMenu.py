@@ -49,7 +49,7 @@ class leoMenu:
     #@+node:ekr.20031218072017.3775:error and oops
     def oops (self):
 
-        print "leoMenu oops:", g.callers(), "should be overridden in subclass"
+        g.pr("leoMenu oops:", g.callers(), "should be overridden in subclass")
 
     def error (self,s):
 
@@ -1426,7 +1426,7 @@ class leoMenu:
                         g.trace('No inverse for %s' % commandName)
             #@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
             #@nl
-            accelerator = stroke = k.shortcutFromSetting(accel) or ''
+            accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
             accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
             def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
                 #k.clearState()

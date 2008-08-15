@@ -230,7 +230,6 @@ def getTemplateDialog (pos,c):
     if ok:
         # nTnd = leoNodes.tnode(bS,hS)
         pos = c.currentPosition()
-        # c.beginUpdate()
         p = pos.insertAsNthChild(0) #,nTnd)
         p.setBodyString(bS)
         p.setHeadString(hS)
@@ -238,7 +237,7 @@ def getTemplateDialog (pos,c):
         bodyCtrl.insert('insert',hS)
         bodyCtrl.event_generate('<Key>')
         bodyCtrl.update_idletasks()
-        c.redraw() # was c.endUpdate()
+        c.redraw()
 #@nonl
 #@-node:mork.20041022093042.1:getTemplateDialog
 #@+node:mork.20041022143127:colorize

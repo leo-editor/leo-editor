@@ -246,33 +246,6 @@ class extendForth:
         c = self.c
         assert(c)
 
-        # table = (
-            # (self.definingwords, "leo-forthdefwords.txt", "defining words"),
-            # (self.brackets, "leo-forthdelimiters.txt", "extra delimiter pairs"),
-            # (self.keywords, "leo-forthwords.txt", "words"),
-            # (self.stringwords, "leo-forthstringwords.txt", "string words"),
-            # (self.boldwords, "leo-forthboldwords.txt", "bold words"),
-            # (self.bolditalicwords, "leo-forthbolditalicwords.txt", "bold-italic words"),
-            # (self.italicwords, "leo-forthitalicwords.txt", "italic words"),
-        # )
-
-        # Add entries from files (if they exist) to the corresponding lists.
-        # for (lst, path, message) in table:
-            # try:
-                # extras = []
-                # path = g.os_path_join(g.app.loadDir,"..","plugins",path)
-                # for line in file(path).read().strip().split("\n"):
-                    # line = line.strip()
-                    # if line and line[0] != '\\':
-                        # extras.append(line)
-                # if extras:
-                    # if self.verbose: # I find this annoying.  YMMV.
-                        # if not g.app.unitTesting and not g.app.batchMode:
-                            # print "Found extra forth %s" % message + ": " + " ".join(extras)
-                    # lst.extend(extras)
-            # except IOError:
-                # pass # print "Not found",path
-
         table = (
             (self.definingwords, "forth-defwords"),
             (self.brackets, "forth-delimiter-pairs"),
@@ -296,7 +269,7 @@ class extendForth:
                 if extras:
                     if self.verbose:
                         if not g.app.unitTesting and not g.app.batchMode:
-                            print "Found extra forth %s" % message + ": " + " ".join(extras)
+                            g.pr("Found extra forth %s" % message + ": " + " ".join(extras))
                     ivarList.extend(extras)
 
         # Create brackets1/2 and stringwords1/2 lists.

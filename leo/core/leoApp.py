@@ -107,6 +107,7 @@ class LeoApp:
         #@+node:ekr.20031218072017.368:<< define global data structures >> app
         # Internally, lower case is used for all language names.
         self.language_delims_dict = {
+            # Keys are languages, values are 1,2 or 3-tuples of delims.
             "ada" : "--",
             "actionscript" : "// /* */", #jason 2003-07-03
             "autohotkey" : "; /* */", #TL - AutoHotkey language
@@ -120,6 +121,7 @@ class LeoApp:
             "fortran" : "C",
             "fortran90" : "!",
             "html" : "<!-- -->",
+            "ini": ";",
             "java" : "// /* */",
             "latex" : "%",
             "lua" : "--",  # ddm 13/02/06
@@ -139,6 +141,7 @@ class LeoApp:
         }
 
         self.language_extension_dict = {
+            # Keys are languages, values are extensions.
             "ada" : "ads",
             "actionscript" : "as", #jason 2003-07-03
             "autohotkey" : "ahk", #TL - AutoHotkey language
@@ -151,6 +154,7 @@ class LeoApp:
             "fortran" : "f",
             "fortran90" : "f",
             "html" : "html",
+            "ini": "ini",
             "java" : "java",
             "latex" : "tex", # 1/8/04
             "lua" : "lua",  # ddm 13/02/06
@@ -174,6 +178,7 @@ class LeoApp:
         }
 
         self.extension_dict = {
+            # Keys are extensions, values are languages.
             "ads"   : "ada",
             "adb"   : "ada",
             "ahk"   : "autohotkey", #TL - AutoHotkey language
@@ -185,7 +190,9 @@ class LeoApp:
             "el"    : "elisp",
             "forth" : "forth",
             "f"     : "fortran90", # or fortran ?
+            "h"     : "c",
             "html"  : "html",
+            "ini"   : "ini",
             "java"  : "java",
             "lua" : "lua",  # ddm 13/02/06
             "noweb" : "nw",
@@ -204,6 +211,24 @@ class LeoApp:
             "w"     : "cweb",
             "xml"   : "xml",
         }
+
+        # Extra language extensions, used to associate extensions with mode files.
+        # Used by importCommands.languageForExtension.
+        # Keys are extensions, values are corresponding mode file (without .py)
+        self.extra_extension_dict = {
+            'actionscript': 'actionscript',
+            'ada':  'ada95',
+            'ahk':  'ahk',
+            'awk':  'awk',
+            # 'bas':  'basic',
+            'cpp':  'c',
+            'el':   'lisp',
+            'f':    'fortran',
+            'pod':  'perl',
+            'tcl':  'tcl',
+            # 'w':  'cweb',
+        }
+        #@nonl
         #@-node:ekr.20031218072017.368:<< define global data structures >> app
         #@nl
     #@-node:ekr.20031218072017.1416:app.__init__
@@ -269,7 +294,7 @@ class LeoApp:
 
         if 0:
             if fileName:
-                print "Tk gui created in", g.shortFileName(fileName)
+                g.pr("Tk gui created in", g.shortFileName(fileName))
     #@-node:ekr.20031218072017.2610:app.createTkGui
     #@+node:ekr.20031218072017.2612:app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles (self):
@@ -306,9 +331,9 @@ class LeoApp:
         if path and g.os_path_exists(path):
             try:
                 os.remove(path)
-                print "deleting temp file:", g.shortFileName(path)
+                g.pr("deleting temp file:", g.shortFileName(path))
             except:
-                print "can not delete temp file:", path
+                g.pr("can not delete temp file:", path)
 
         # Remove theDict from the list so the gc can recycle the Leo window!
         g.app.openWithFiles.remove(theDict)
@@ -341,7 +366,7 @@ class LeoApp:
             g.app.gui.destroySelf()
 
         # Don't use g.trace!
-        # print 'app.finishQuit: setting g.app.killed',g.callers()
+        # g.pr('app.finishQuit: setting g.app.killed',g.callers())
 
         g.app.killed = True
             # Disable all further hooks and events.
@@ -349,7 +374,7 @@ class LeoApp:
 
         if g.app.afterHandler:
             # TK bug: This appears to have no effect, at least on Windows.
-            # print "finishQuit: cancelling",g.app.afterHandler
+            # g.pr("finishQuit: cancelling",g.app.afterHandler)
             if g.app.gui and g.app.gui.guiName() == "tkinter":
                 self.root.after_cancel(g.app.afterHandler)
             g.app.afterHandler = None
@@ -536,7 +561,7 @@ class LeoApp:
 
         """set the frame to which log messages will go"""
 
-        # print "setLog:",tag,"locked:",self.logIsLocked,log
+        # g.pr("setLog:",tag,"locked:",self.logIsLocked,log)
         if not self.logIsLocked:
             self.log = log
 
@@ -559,7 +584,7 @@ class LeoApp:
                     g.es('',s,color=color,newline=0) # The caller must write the newlines.
                 self.logWaiting = []
         else:
-            print 'writeWaitingLog: still no log!'
+            g.pr('writeWaitingLog: still no log!')
     #@-node:ekr.20031218072017.2619:app.writeWaitingLog
     #@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
     def newLeoCommanderAndFrame(self,

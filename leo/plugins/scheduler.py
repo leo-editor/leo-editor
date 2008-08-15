@@ -145,7 +145,7 @@ def viewQueue(event=None,c=None):
             sc.cancel(x)
             lb.delete(i,i)
         except:
-            print "BOOM!"
+            g.pr("BOOM!")
 
     def close(tl=tl):
 

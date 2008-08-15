@@ -388,17 +388,17 @@ class leoGui:
     #@+node:ekr.20031218072017.3739:Idle time
     def setIdleTimeHook (self,idleTimeHookHandler):
 
-        # print 'leoGui:setIdleTimeHook'
+        # g.pr('leoGui:setIdleTimeHook')
         pass # Not an error.
 
     def setIdleTimeHookAfterDelay (self,idleTimeHookHandler):
 
-        # print 'leoGui:setIdleTimeHookAfterDelay'
+        # g.pr('leoGui:setIdleTimeHookAfterDelay')
         pass # Not an error.
     #@-node:ekr.20031218072017.3739:Idle time
     #@+node:ekr.20070212070820:makeScriptButton
-    def makeScriptButton (
-        self,c,
+    def makeScriptButton (self,c,
+        args=None,
         p=None,
         script=None,
         buttonText=None,
@@ -427,7 +427,7 @@ class leoGui:
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 1:
-            print "leoGui oops", g.callers(), "should be overridden in subclass"
+            g.pr("leoGui oops", g.callers(), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3741:oops
     #@+node:ekr.20051206103652:widget_name (leoGui)
     def widget_name (self,w):
@@ -629,7 +629,7 @@ class nullGui(leoGui):
         val = self.theDict.get(key,defaultVal)
 
         if self.trace:
-            print key, val
+            g.pr(key, val)
 
         return val
     #@-node:ekr.20031218072017.3747:simulateDialog

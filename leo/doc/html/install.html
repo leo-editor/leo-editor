@@ -316,12 +316,12 @@ There are various fallback directories if there is no home directory.</p>
 <div class="section" id="how-to-install-leo-on-linux">
 <h2><a class="toc-backref" href="#id4">How to install Leo on Linux</a></h2>
 <p>Download the latest version of Leo (a .zip file) from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
-<p>Unzip the downloaded .zip file into a folder in your home directory.
-The folder will be called something like leo-4-4-3-final.</p>
+<p>Unzip the downloaded .zip file into the <strong>unpacked folder</strong> in your home directory.
+The unpacked folder will be called something like leo-4-5.</p>
 <p>You now have two choices:</p>
 <ol class="arabic">
 <li><p class="first">You can run Leo from your home directory.
-Just add  ~/leo-4-4-3-final to your path.</p>
+Just add  ~/leo-4-5 to your path.</p>
 </li>
 <li><p class="first">You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows:</p>
 <pre class="literal-block">
@@ -331,7 +331,11 @@ sudo ./install
 </pre>
 </li>
 </ol>
-<p>The install script will instruct you to add /usr/local/bin to your path.</p>
+<p>The install script will instruct you to add /usr/local/bin to your path.
+You can, instead, add the following link:</p>
+<pre class="literal-block">
+sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
+</pre>
 <p>Now you are ready to <a class="reference" href="#running-leo">run Leo</a>.</p>
 </div>
 <div class="section" id="installing-leo-on-windows">
@@ -341,26 +345,31 @@ sudo ./install
 <blockquote>
 <ol class="arabic simple">
 <li>Download the latest version of Leo's installer from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.
-The installer will be called something like LeoSetup-4-4-3.exe.</li>
+The installer will be called something like LeoSetup-4-5.exe.</li>
 <li>Run the installer.
-By default, the install will install Leo in your 'Program Files' directory.</li>
+By default, the install will install Leo an <strong>unpacked folder</strong> called something like Leo-4-5 in your <tt class="docutils literal"><span class="pre">Python\Lib\site-packages</span></tt> directory.</li>
 </ol>
 </blockquote>
 <p>To install Leo from the .zip file:</p>
 <blockquote>
-<ol class="arabic simple">
-<li>Download the latest version of Leo (a .zip file) from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</li>
-<li>Unzip the .zip file and place the unpacked leo folder in
-the 'Program Files' folder or any convenient location.</li>
-</ol>
-</blockquote>
-<p>After you have installed Leo, you should add the location of your leo/src folder to your python path.
+<ol class="arabic">
+<li><p class="first">Download the latest version of Leo (a .zip file) from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
+</li>
+<li><p class="first">Unzip the .zip file.  The <strong>unpacked folder</strong> will have a name like Leo-x-y,
+where x and y are version numbers.  For example, Leo-4-5 or Leo-4-5-b3.</p>
+</li>
+<li><p class="first">Place the unpacked folder in the 'Program Files' folder or any convenient location.</p>
+</li>
+<li><p class="first">Place the location of the unpacked folder to your python path.
 One way to do this is adding something like the following to python/Lib/sitecustomize.py:</p>
 <pre class="literal-block">
 import sys
-sys.path.append(r'&lt;path-to-leo&gt;leo')
+sys.path.append(r'c:\Program Files\Leo-4-5')
 </pre>
-<p>Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.</p>
+</li>
+</ol>
+</blockquote>
+<p>Another way is to append the path to the unpacked folder to the Windows PYTHONPATH environment variable.</p>
 <p>Now that you have installed Leo and told Python where to find Leo,
 you are ready to <a class="reference" href="#running-leo">run Leo</a>.</p>
 <p><strong>Note</strong>:
@@ -386,11 +395,14 @@ Here is how to open Leo when double-clicking a .leo file on Windows 2K or XP:</p
 </li>
 <li><p class="first">In the <tt class="docutils literal"><span class="pre">Action</span></tt> field type <tt class="docutils literal"><span class="pre">Open</span></tt>, then type <strong>one</strong> of the following lines:</p>
 <pre class="literal-block">
-[python install dir]\pythonw.exe   [leo install dir]\leo.py %1
-[python install dir]\python.exe -i [leo install dir]\leo.py %1
+&lt;python install dir&gt;\pythonw.exe   &lt;path-to-unpacked-folder&gt;\launchLeo.py &quot;%1&quot;
+&lt;python install dir&gt;\python.exe -i &lt;path-to-unpacked-folder&gt;\launchLeo.py &quot;%1&quot;
 </pre>
 </li>
 </ul>
+<p><strong>Important</strong>: &lt;path-to-unpacked-folder&gt; refers to the full path to the directory with a name like Leo-x-y,
+where x and y are version numbers.
+This unpacked folder must contain a folder called 'leo'.</p>
 <p><strong>Important</strong>: The -i option is not valid when using pythonw.exe.
 Any call to pythonw -i will cause pythonw.exe to exit immediately.</p>
 <p>The first  line opens Leo files with no console window.
@@ -414,7 +426,7 @@ and clicking the [Install:] button with <tt class="docutils literal"><span class
 <li>Download Leo (platform independent source.zip) from <a class="reference" href="http://leo.sourceforge.net/">http://leo.sourceforge.net/</a></li>
 <li>Unzip the contents into a directory by double-clicking the downloaded file.
 Typically you would put the Leo folder into the <tt class="docutils literal"><span class="pre">Applications</span></tt> directory.</li>
-<li>Control-click on <tt class="docutils literal"><span class="pre">/path_to_unzipped_dir/leo/src/leo.py</span></tt> and open with <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt>.</li>
+<li>Control-click on <tt class="docutils literal"><span class="pre">/path_to_unzipped_dir/leo/core/leo.py</span></tt> and open with <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt>.</li>
 <li>It is a good idea to set <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt> as the default program to
 open python scripts by clicking on <tt class="docutils literal"><span class="pre">leo.py</span></tt>, choosing Get Info from the
 Finder's File menu, and selecting &quot;PythonLauncher&quot; as the default
@@ -438,7 +450,7 @@ for the shell script called openLeoScript.sh.</p>
 <pre class="literal-block">
 #!/bin/sh
 # $2 only works if .leo is one of the extensions.
-/usr/bin/pythonw ~/leo/src/leo.py $2
+/usr/bin/pythonw ~/leo/core/leo.py $2
 </pre>
 <p>In detail, here is how I created MacLeo:</p>
 <ol class="arabic">
@@ -505,7 +517,7 @@ bzr branch lp:leo-editor
 </pre>
 </li>
 </ol>
-<p>And that's it! You can run leo/src/leo.py directly. When you want to refresh the
+<p>And that's it! You can run leo/core/leo.py directly. When you want to refresh the
 code with latest modifications from Launchpad, run <tt class="docutils literal"><span class="pre">bzr</span> <span class="pre">pull</span></tt>.</p>
 <p>If you make modifications to Leo (with the interest in sharing them with the Leo
 community), you can check them in to your local branch by doing <tt class="docutils literal"><span class="pre">bzr</span> <span class="pre">checkin</span></tt>.
@@ -564,7 +576,7 @@ c:\python25\python &lt;path-to-leo&gt;leo\core\runLeo.py %1
 you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
 stores this identifier in the file <tt class="docutils literal"><span class="pre">.leoID.txt</span></tt>. Leo attempts to create
 <tt class="docutils literal"><span class="pre">leoID.txt</span></tt> in your home directory, then in Leo's config directory, and
-finally in Leo's src directory. You can change this identifier at any time by
+finally in Leo's core directory. You can change this identifier at any time by
 editing <tt class="docutils literal"><span class="pre">.leoID.txt</span></tt>.</p>
 </div>
 <div class="section" id="running-leo-in-batch-mode">

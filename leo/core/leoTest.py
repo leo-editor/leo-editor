@@ -45,7 +45,7 @@ except ImportError:
 #@-node:ekr.20051104075904.1:<< leoTest imports >>
 #@nl
 
-# print 'leoTest.py.__file__',__file__
+# g.pr('leoTest.py.__file__',__file__)
 
 if g.app: # Make sure we can import this module stand-alone.
     import leo.core.leoPlugins as leoPlugins
@@ -207,14 +207,14 @@ def makeTestSuite (c,p):
     h = p.headString()
     script = g.getScript(c,p).strip()
     if not script:
-        print "no script in %s" % h
+        g.pr("no script in %s" % h)
         return None
 
     try:
         exec script + '\n' in {'c':c,'g':g,'p':p}
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print "%s script did not set g.app.scriptDict" % h
+            g.pr("%s script did not set g.app.scriptDict" % h)
         return suite
     except:
         g.trace('Exception creating test cases for %s' % p.headString())
@@ -291,7 +291,7 @@ def runGc(disable=False):
     message = "runGC"
 
     if gc is None:
-        print "@gc: can not import gc"
+        g.pr("@gc: can not import gc")
         return
 
     gc.enable()
@@ -330,7 +330,7 @@ def makeObjectList(message):
     for o in objects:
         lastObjectsDict[id(o)]=o
 
-    print "%25s: %d new, %d total objects" % (message,len(newObjects),len(objects))
+    g.pr("%25s: %d new, %d total objects" % (message,len(newObjects),len(objects)))
 #@-node:ekr.20051104075904.19:makeObjectList
 #@+node:ekr.20051104075904.20:printGc
 def printGc(message=None):
@@ -346,9 +346,9 @@ def printGc(message=None):
     n2 = len(gc.get_objects())
     delta = n2-lastObjectCount
 
-    print '-' * 30
-    print "garbage: %d" % n
-    print "%6d =%7d %s" % (delta,n2,"totals")
+    g.pr('-' * 30)
+    g.pr("garbage: %d" % n)
+    g.pr("%6d =%7d %s" % (delta,n2,"totals"))
 
     #@    << print number of each type of object >>
     #@+node:ekr.20051104075904.21:<< print number of each type of object >>
@@ -371,7 +371,7 @@ def printGc(message=None):
         n2 = typesDict.get(key,0)
         delta2 = n2-n1
         if delta2 != 0:
-            print "%+6d =%7d %s" % (delta2,n2,key)
+            g.pr("%+6d =%7d %s" % (delta2,n2,key))
 
     lastTypesDict = typesDict
     typesDict = {}
@@ -392,14 +392,14 @@ def printGc(message=None):
                 key = repr(obj) # Don't create a pointer to the object!
                 funcDict[key]=None 
                 if not lastFunctionsDict.has_key(key):
-                    print ; print obj
+                    g.pr('\n',obj)
                     args, varargs, varkw,defaults  = inspect.getargspec(obj)
-                    print "args", args
-                    if varargs: print "varargs",varargs
-                    if varkw: print "varkw",varkw
+                    g.pr("args", args)
+                    if varargs: g.pr("varargs",varargs)
+                    if varkw: g.pr("varkw",varkw)
                     if defaults:
-                        print "defaults..."
-                        for s in defaults: print s
+                        g.pr("defaults...")
+                        for s in defaults: g.pr(s)
 
         lastFunctionsDict = funcDict
         funcDict = {}
@@ -413,14 +413,14 @@ def printGc(message=None):
 def printGcRefs (verbose=True):
 
     refs = gc.get_referrers(g.app.windowList[0])
-    print '-' * 30
+    g.pr('-' * 30)
 
     if verbose:
-        print "refs of", g.app.windowList[0]
+        g.pr("refs of", g.app.windowList[0])
         for ref in refs:
-            print type(ref)
+            g.pr(type(ref))
     else:
-        print "%d referrers" % len(refs)
+        g.pr("%d referrers" % len(refs))
 #@-node:ekr.20051104075904.23:printGcRefs
 #@-node:ekr.20051104075904.16:run gc
 #@+node:ekr.20051104075904.24: class testUtils
@@ -457,32 +457,32 @@ class testUtils:
 
         if ok:
             if 0:
-                print 'compareOutlines ok',
-                if tag: print 'tag:',tag
-                else: print
-                if p1: print 'p1',p1,p1.v
-                if p2: print 'p2',p2,p2.v
+                g.pr('compareOutlines ok',newline=False)
+                if tag: g.pr('tag:',tag)
+                else: g.pr('')
+                if p1: g.pr('p1',p1,p1.v)
+                if p2: g.pr('p2',p2,p2.v)
         else:
-            print 'compareOutlines failed',
-            if tag: print 'tag:',tag
-            else: print
-            if p1: print 'p1',p1,p1.v
-            if p2: print 'p2',p2,p2.v
+            g.pr('compareOutlines failed',newline=False)
+            if tag: g.pr('tag:',tag)
+            else: g.pr('')
+            if p1: g.pr('p1',p1,p1.v)
+            if p2: g.pr('p2',p2,p2.v)
             if not p1 or not p2:
-                print 'p1 and p2'
+                g.pr('p1 and p2')
             if p1.numberOfChildren() != p2.numberOfChildren():
-                print 'p1.numberOfChildren()=%d, p2.numberOfChildren()=%d' % (
-                    p1.numberOfChildren(),p2.numberOfChildren())
+                g.pr('p1.numberOfChildren()=%d, p2.numberOfChildren()=%d' % (
+                    p1.numberOfChildren(),p2.numberOfChildren()))
             if compareHeadlines and (p1.headString() != p2.headString()):
-                print 'p1.head', p1.headString()
-                print 'p2.head', p2.headString()
+                g.pr('p1.head', p1.headString())
+                g.pr('p2.head', p2.headString())
             if p1.bodyString() != p2.bodyString():
-                print 'p1.body'
-                print repr(p1.bodyString())
-                print 'p2.body'
-                print repr(p2.bodyString())
+                g.pr('p1.body')
+                g.pr(repr(p1.bodyString()))
+                g.pr('p2.body')
+                g.pr(repr(p2.bodyString()))
             if p1.isCloned() != p2.isCloned():
-                print 'p1.isCloned() == p2.isCloned()'
+                g.pr('p1.isCloned() == p2.isCloned()')
 
         return ok
     #@-node:ekr.20051104075904.25:compareOutlines
@@ -729,8 +729,7 @@ def runTestsExternally (c,all):
             #@nonl
             #@-node:ekr.20070705065154:<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
             #@nl
-            # c2.beginUpdate()
-            # try:
+
             self.copyRoot.expand()
             for p,limit,lookForMark,lookForNodes in (
                 (p1,limit1,lookForMark1,lookForNodes1),
@@ -748,8 +747,6 @@ def runTestsExternally (c,all):
                         p.moveToNodeAfterTree()
                     else:
                         p.moveToThreadNext()
-            # finally:
-            # c2.endUpdate(False)
         #@nonl
         #@+node:ekr.20070705080413:addMarkTree
         def addMarkTree (self,p):
@@ -798,26 +795,26 @@ def runTestsExternally (c,all):
             if trace: import time
             kind = g.choose(self.all,'all ','')
             g.es('running',kind,'unit tests',color='blue')
-            print 'creating: %s' % (self.fileName)
+            g.pr('creating: %s' % (self.fileName))
             c = self.c ; p = c.currentPosition()
             if trace: t1 = time.time()
             found = self.searchOutline(p.copy())
             if trace:
-                 t2 = time.time() ; print 'find:  %0.2f' % (t2-t1)
+                 t2 = time.time() ; g.pr('find:  %0.2f' % (t2-t1))
             if found:
                 gui = leoGui.nullGui("nullGui")
                 c2 = c.new(gui=gui)
                 if trace:
-                    t3 = time.time() ; print 'gui:   %0.2f' % (t3-t2)
+                    t3 = time.time() ; g.pr('gui:   %0.2f' % (t3-t2))
                 found = self.createOutline(c2)
                 if trace:
-                    t4 = time.time() ; print 'copy:  %0.2f' % (t4-t3)
+                    t4 = time.time() ; g.pr('copy:  %0.2f' % (t4-t3))
                 self.createFileFromOutline(c2)
                 if trace:
-                    t5 = time.time() ; print 'write: %0.2f' % (t5-t4)
+                    t5 = time.time() ; g.pr('write: %0.2f' % (t5-t4))
                 self.runLeoDynamicTest()
                 if trace:
-                    t6 = time.time() ; print 'run:   %0.2f' % (t6-t5)
+                    t6 = time.time() ; g.pr('run:   %0.2f' % (t6-t5))
                 c.selectPosition(p.copy())
             else:
                 g.es_print('no @test or @suite nodes in selected outline')
@@ -827,16 +824,19 @@ def runTestsExternally (c,all):
 
             '''Run test/leoDynamicTest.py in a pristine environment.'''
 
+            # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
             path = g.os_path_abspath(g.os_path_join(
-                g.app.loadDir, '..', 'test', 'leoDynamicTest.py'))
+                # g.app.loadDir, '..', 'test', 'leoDynamicTest.py'))
+                g.app.loadDir,'leoDynamicTest.py'))
 
             if ' ' in path and sys.platform.startswith('win'): 
                 path = '"' + path + '"'
 
             args = [sys.executable, path, '--silent']  
 
-            srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src'))
-            os.chdir(srcDir)
+            # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src'))
+            # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..')
+            # os.chdir(srcDir)
 
             os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
         #@-node:ekr.20070627135336.11:runLeoDynamicTest
@@ -917,15 +917,15 @@ def runAtFileTest(c,p):
     except AssertionError:
         #@        << dump result and expected >>
         #@+node:ekr.20051104075904.45:<< dump result and expected >>
-        print ; print '-' * 20
-        print "result..."
+        g.pr('\n','-' * 20)
+        g.pr("result...")
         for line in g.splitLines(result):
-            print "%3d" % len(line),repr(line)
-        print '-' * 20
-        print "expected..."
+            g.pr("%3d" % len(line),repr(line))
+        g.pr('-' * 20)
+        g.pr("expected...")
         for line in g.splitLines(expected):
-            print "%3d" % len(line),repr(line)
-        print '-' * 20
+            g.pr("%3d" % len(line),repr(line))
+        g.pr('-' * 20)
         #@-node:ekr.20051104075904.45:<< dump result and expected >>
         #@nl
         raise
@@ -946,7 +946,7 @@ def createUnitTestsFromDoctests (modules,verbose=True):
                 suite.addTest(test)
                 created = True
                 if verbose:
-                    print "found %2d doctests for %s" % (n,module.__name__)
+                    g.pr("found %2d doctests for %s" % (n,module.__name__))
         except ValueError:
             pass # No tests found.
 
@@ -979,7 +979,7 @@ def makeEditBodySuite(c,p):
             test = editBodyTestCase(c,p,before,after,sel,ins,temp_p)
             suite.addTest(test)
         else:
-            print 'missing "before" or "after" for', p.headString()
+            g.pr('missing "before" or "after" for', p.headString())
 
     return suite
 #@-node:ekr.20051104075904.69: makeEditBodySuite
@@ -1261,95 +1261,6 @@ class importExportTestCase(unittest.TestCase):
     #@-others
 #@-node:ekr.20051104075904.79:class importExportTestCase
 #@-node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
-#@+node:ekr.20051104075904.87:Perfect Import test code (leoTest.py)
-#@+node:ekr.20051104075904.88:About the Perfect Import tests
-#@@killcolor
-#@+at
-# 
-# This code assumes that the test code contains child nodes with the following 
-# headlines:
-# 
-# -input          Contains the "before" tree, without sentinels
-# -input-after    Contains the "after" tree, without sentinels.
-# 
-# These two nodes define what the test means.
-# 
-# The following nodes must also exist.  The test code sets their contents as 
-# follows:
-# 
-# -output-sent        The result of writing the -input tree, with sentinels.
-# -output-after-sent  The result of writing the -input-after tree, with 
-# sentinels.
-# -i_lines            The i_lines list created by mu.create_mapping
-# -j_lines            The j_lines list created by stripping sentinels from 
-# -input-after's tree.
-# -result             The result of running mu.propagateDiffsToSentinelsLines, 
-# containing sentinels.
-# 
-# A test passes if and only if the body of -result matches the body of 
-# output-after-sent, ignoring the details of @+node and @-node sentinels.
-#@-at
-#@-node:ekr.20051104075904.88:About the Perfect Import tests
-#@+node:ekr.20051104075904.89:runPerfectImportTest
-def runPerfectImportTest(c,p,
-    testing=False,verbose=False,
-    ignoreSentinelsInCompare=False):
-
-    # __pychecker__ = '--no-shadowbuiltin' # input is a builtin.
-
-    # The contents of the "-input" and "-input-after" nodes define the changes.
-
-    p = c.currentPosition()
-    u = testUtils(c)
-    input           = u.findNodeInTree(p,"-input")              # i file: before the change.
-    input_ins       = u.findNodeInTree(p,"-input-after")        # j file: after the change.
-    output_sent     = u.findNodeInTree(p,"-output-sent")        # fat file -> i file.
-    out_after_sent  = u.findNodeInTree(p,"-output-after-sent")  # Should match result.
-    result          = u.findNodeInTree(p,"-result")
-    ilines          = u.findNodeInTree(p,"-i_lines")
-    jlines          = u.findNodeInTree(p,"-j_lines")
-
-    # Create the output nodes containing sentinels from the original input.
-    u.writeNodesToNode(c,input,output_sent,sentinels=True)
-    u.writeNodesToNode(c,input_ins,out_after_sent,sentinels=True)
-
-    mu = g.mulderUpdateAlgorithm(testing=testing,verbose=verbose)
-    delims = g.comment_delims_from_extension("foo.py")
-
-    fat_lines = g.splitLines(output_sent.bodyString())
-    i_lines,mapping = mu.create_mapping(fat_lines,delims)
-    if input_ins.hasChildren():
-        # Get the lines by stripping sentinels from -output-after-sent node.
-        lines = g.splitLines(out_after_sent.bodyString()) 
-        j_lines = mu.removeSentinelsFromLines(lines,delims)
-    else:
-        j_lines = g.splitLines(input_ins.bodyString()) 
-
-    # For viewing...
-    ilines.scriptSetBodyString(''.join(i_lines))
-    jlines.scriptSetBodyString(''.join(j_lines))
-    if ilines.bodyString() != input.bodyString():
-        if not ignoreSentinelsInCompare:
-            print "i_lines != input !"
-
-    # Put the resulting lines (with sentinels) into the -result node.
-    lines = mu.propagateDiffsToSentinelsLines(i_lines,j_lines,fat_lines,mapping)
-    result.scriptSetBodyString(''.join(lines))
-
-    if ignoreSentinelsInCompare:
-        sList = []
-        for s in (result.bodyString(),out_after_sent.bodyString()):
-            lines = g.splitLines(s)
-            lines = mu.removeSentinelsFromLines(lines,delims)
-            sList.append(''.join(lines))
-        return sList[0] == sList[1]
-    else:
-        return u.compareIgnoringNodeNames(
-            result.bodyString(),
-            out_after_sent.bodyString(),
-            delims,verbose=True)
-#@-node:ekr.20051104075904.89:runPerfectImportTest
-#@-node:ekr.20051104075904.87:Perfect Import test code (leoTest.py)
 #@+node:ekr.20051104075904.90:Plugin tests... (leoTest.py)
 #@+node:ekr.20051104075904.91:getAllPluginFilenames
 def getAllPluginFilenames ():
@@ -1715,8 +1626,6 @@ def runEditCommandTest (c,p):
     sel1,sel2 = sels
     #g.trace(repr(sels))
 
-    # c.beginUpdate()
-    # try:
     c.selectPosition(work)
     c.setBodyString(work,before.bodyString())
     #g.trace(repr(sel1[0]),repr(sel1[1]))
@@ -1737,8 +1646,7 @@ def runEditCommandTest (c,p):
     assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
     c.selectPosition(atTest)
     atTest.contract()
-    # finally:
-    # c.endUpdate(False) # Don't redraw.
+    # Don't redraw.
 #@nonl
 #@-node:ekr.20061008140603:runEditCommandTest
 #@+node:ekr.20051104075904.95:throwAssertionError
@@ -1876,7 +1784,7 @@ def safeImportModule (fileName):
         except Exception: # leoScriptModule.py, for example, can throw other exceptions.
             return None
     else:
-        print "Not a .py file:",fileName
+        g.pr("Not a .py file:",fileName)
         return None
 #@-node:ekr.20051104075904.103:safeImportModule
 #@-node:ekr.20051104075904.98:Utils

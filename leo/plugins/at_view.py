@@ -186,7 +186,7 @@ class View:
         if currentPath.exists():
             path = currentPath.abspath()
             s = 'currentPath: %s' % path
-            print s ; g.es(s)
+            g.es_print(s)
             filelines = path.lines()
             # Add an @ignore directive.
             lines = ['@ignore\n']

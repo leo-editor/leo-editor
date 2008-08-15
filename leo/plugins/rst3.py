@@ -81,7 +81,7 @@ try:
     import SilverCity
 except ImportError:
     if '--silent' not in sys.argv and not g.unitTesting and not g.app.batchMode:
-        print 'rst3 plugin: SilverCity not loaded'
+        g.pr('rst3 plugin: SilverCity not loaded')
     SilverCity = None
 #@-node:ekr.20050805162550.2:<< imports >>
 #@nl
@@ -202,7 +202,7 @@ def init ():
         g.plugin_signon(__name__)
     else:
         s = 'rst3 plugin not loaded: can not load docutils'
-        print s ; g.es(s,color='red')
+        g.es_print(s,color='red')
 
     return ok
 #@-node:ekr.20050805162550.5: init
@@ -420,8 +420,8 @@ class htmlParserClass (linkAnchorParserClass):
                 #@            << trace the unknownAttribute >>
                 #@+node:ekr.20050815164715.1:<< trace the unknownAttribute >>
                 if 0:
-                    print "rst3: unknownAttributes[self.http_attributename]"
-                    print "For:", self.last_position
+                    g.pr("rst3: unknownAttributes[self.http_attributename]")
+                    g.pr("For:", self.last_position)
                     pprint.pprint(mod_http.get_http_attribute(self.last_position))
                 #@nonl
                 #@-node:ekr.20050815164715.1:<< trace the unknownAttribute >>
@@ -772,6 +772,7 @@ class rstClass:
             'rst3_show_organizer_nodes': True,
             'rst3_show_options_nodes': False,
             'rst3_strip_at_file_prefixes': True,
+            'rst3_show_doc_parts_in_rst_mode': True,
             # Formatting options that apply only to code mode.
             'rst3_show_doc_parts_as_paragraphs': False,
             'rst3_show_leo_directives': True,
@@ -799,9 +800,9 @@ class rstClass:
         d = self.optionsDict
         keys = d.keys() ; keys.sort()
 
-        print 'present settings...'
+        g.pr('present settings...')
         for key in keys:
-            print '%20s %s' % (key,d.get(key))
+            g.pr('%20s %s' % (key,d.get(key)))
     #@nonl
     #@-node:ekr.20050812120933:dumpSettings (debugging)
     #@+node:ekr.20050814134351:getOption
@@ -1231,7 +1232,7 @@ class rstClass:
             output = self.writeToDocutils(self.source)
             ok = True
         except Exception:
-            print 'Exception in docutils'
+            g.pr('Exception in docutils')
             g.es_exception()
             ok = False
 
@@ -1433,6 +1434,15 @@ class rstClass:
                 retainContents=False)
             lines = self.handleSpecialDocParts(lines,'@rst-markup',
                 retainContents=self.getOption('generate_rst'))
+            if self.getOption('show_doc_parts_in_rst_mode') is True:
+                pass  # original behaviour, treat as plain text
+            elif self.getOption('show_doc_parts_in_rst_mode'):
+                # use value as class for content
+                lines = self.handleSpecialDocParts(lines,None,
+                    retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+            else:  # option evaluates to false, cut them out
+                lines = self.handleSpecialDocParts(lines,None,
+                    retainContents=False)
             lines = self.removeLeoDirectives(lines)
             if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
                 lines = self.replaceCodeBlockDirectives(lines)
@@ -1610,7 +1620,7 @@ class rstClass:
     #@nonl
     #@-node:ekr.20050811105438:removeLeoDirectives
     #@+node:ekr.20050811105438.1:handleSpecialDocParts
-    def handleSpecialDocParts (self,lines,kind,retainContents):
+    def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
         # g.trace(kind,g.listToString(lines))
 
@@ -1623,7 +1633,15 @@ class rstClass:
             elif self.isSpecialDocPart(s,kind):
                 n, lines2 = self.getDocPart(lines,n)
                 if retainContents:
-                    result.extend(lines2)
+                    result.extend([''])
+                    if asClass:
+                        result.extend(['.. container:: '+asClass, ''])
+                        if 'literal' in asClass.split():
+                            result.extend(['  ::', ''])
+                        for l2 in lines2: result.append('    '+l2)
+                    else:
+                        result.extend(lines2)
+                    result.extend([''])
             else:
                 result.append(s)
 

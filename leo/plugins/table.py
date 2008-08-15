@@ -131,7 +131,7 @@ class CSVVisualizer:
         for z in data:
             csv_write.writerow( z )
         cS.seek( 0 )
-        # self.c.beginUpdate() 
+
         if not save:
             # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str(pos.headString() ) )
             p2 = pos.insertAfter() # tnd )
@@ -139,7 +139,7 @@ class CSVVisualizer:
             p2.setHeadString("Save of Edited " + str(pos.headString()))
         else:
             pos.setTnodeText( cS.getvalue() )
-        self.c.redraw() # was self.c.endUpdate()
+        self.c.redraw()
     #@-node:ekr.20041017035937.6:writeData
     #@+node:ekr.20041017035937.7:addRow
     def addRow( self , tab ):

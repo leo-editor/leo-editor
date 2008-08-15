@@ -52,7 +52,7 @@ def onCreate (tag, keys):
     c = keys.get('c')
     if c and c.frame.log:
 
-        print 'overriding c.executeScript'
+        g.pr('overriding c.executeScript')
 
         # Inject ivars.
         log = c.frame.log
@@ -64,43 +64,18 @@ def onCreate (tag, keys):
         g.funcToMethod(newExecuteScript,c.__class__,'executeScript')
         c.k.overrideCommand('execute-script',c.executeScript)
 #@-node:ekr.20071212092332:onCreate
-#@+node:edream.110203113231.929:newEs, etc. (not used)
-# def newEnl():
-    # print
-
-# def newEcnl():
-    # print
-
-# def newEcnls(n):
-    # while n > 0:
-        # n -= 1
-        # print
-
-# def newEs(s,*args,**keys):
-    # newline = keys.get("newline",True)
-    # if type(s) != type("") and type(s) != type(u""):
-        # s = repr(s)
-    # for arg in args:
-        # if type(arg) != type("") and type(arg) != type(u""):
-            # arg = repr(arg)
-        # s = s + ", " + arg
-    # if newline:
-        # print s
-    # else:
-        # print s,
-#@-node:edream.110203113231.929:newEs, etc. (not used)
 #@+node:edream.110203113231.928:newPut and newPutNl
 # Same as frame.put except sends output to the end of the body text.
 def newPut (self,s,*args,**keys):
 
     body = self.frame.body ; w = body.bodyCtrl
 
-    # print 'newPut',repr(s),w,g.callers()
+    # g.pr('newPut',repr(s),w,g.callers())
 
     if w:
         w.insert("end",s)
         body.onBodyChanged("Typing")
-    # else: print s,
+    # else: g.pr(s,newline=False)
 
 # Same as frame.putnl except sends output to the end of the body text.
 def newPutNl (self,s,*args,**keys):
