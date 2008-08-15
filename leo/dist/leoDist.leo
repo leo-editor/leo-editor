@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="83" left="10" height="810" width="1093"/>
+	<global_window_position top="102" left="198" height="810" width="1093"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -424,14 +424,12 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080628065201.2">** LeoDist.leo:
     - Update announcement.
     - Update readme.txt
-Create leo-x.zip:
-    - bzr commit
-    - bzr tag
+Create a cvs tag:
+    - bzr tag leo-x-y
+    - bzr commit --unchanged -m "added tag"
     - bzr push
-    ** cd trunk
-    - bzr export &lt;release-name&gt;.zip
-    - bzr export --root="Lib/site-packages/Leo-4-5-b3" Leo-4-5-b3-temp.zip
-Create the windows .exe installer using @button make in leoDist.leo
+Create distribution files using @button make in leoDist.leo
+Test files
 	- Test created leosetup.exe file.
 	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
     ** Open unitTest.leo: does it open without errors?
