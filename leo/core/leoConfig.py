@@ -1435,6 +1435,15 @@ class configClass:
 
         # g.trace(setting,requestedType,bunch.toString())
         val = bunch.val
+
+        if g.isPython3:
+            isNone = val in ('None','none','',None)
+        else:
+            isNone = val in (
+                unicode('None'),unicode('none'),unicode(''),
+                'None','none','',None)
+
+
         if not self.typesMatch(bunch.kind,requestedType):
             # New in 4.4: make sure the types match.
             # A serious warning: one setting may have destroyed another!
@@ -1444,7 +1453,8 @@ class configClass:
                 g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
                 g.es_print('there may be conflicting settings!',color='red')
             return None, False
-        elif val in (u'None',u'none','None','none','',None):
+        # elif val in (u'None',u'none','None','none','',None):
+        elif isNone:
             return None, True # Exists, but is None
         else:
             # g.trace(setting,val)
@@ -1834,7 +1844,8 @@ class configClass:
                 if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                     s = 'reading settings in %s' % path
                     # This occurs early in startup, so use the following instead of g.es_print.
-                    s = g.toEncodedString(s,'ascii')
+                    if not g.isPython3:
+                        s = g.toEncodedString(s,'ascii')
                     g.pr(s)
                     g.app.logWaiting.append((s+'\n','blue'),)
 
@@ -1896,7 +1907,7 @@ class configClass:
         if g.app.homeDir:
             path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
             try:
-                f = file(path,'wb')
+                f = open(path,'wb')
                 f.write(s)
                 f.close()
                 self.myHomeConfigFile = path
@@ -2004,7 +2015,7 @@ class configClass:
             if theDir:
                 try:
                     fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                    f = file(fileName,'w')
+                    f = open(fileName,'w')
                     f.close()
                     g.es_print('created',fileName,color='red')
                     return
@@ -2021,7 +2032,7 @@ class configClass:
         if ok:
             if not g.unitTesting and not self.silent:
                 g.pr(('reading %s' % fileName))
-            lines = file(fileName).readlines()
+            lines = open(fileName).readlines()
             if lines and self.munge(lines[0])=='readonly':
                 lines = lines[1:]
             if lines:
@@ -2072,7 +2083,7 @@ class configClass:
         # Don't update the file if it begins with read-only.
         theFile = None
         try:
-            theFile = file(fileName)
+            theFile = open(fileName)
             lines = theFile.readlines()
             if lines and self.munge(lines[0])=='readonly':
                 # g.trace('read-only: %s' %fileName)
@@ -2084,7 +2095,7 @@ class configClass:
         theFile = None
         try:
             # g.trace('writing',fileName)
-            theFile = file(fileName,'w')
+            theFile = open(fileName,'w')
             if self.recentFiles:
                 lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
                 theFile.write('\n'.join(lines))
@@ -2196,11 +2207,19 @@ class settingsTreeParser (parserBaseClass):
         kind,name,val = self.parseHeadline(p.headString())
         kind = munge(kind)
 
+        if g.isPython3:
+            isNone = val in ('None','none','',None)
+        else:
+            isNone = val in (
+                unicode('None'),unicode('none'),unicode(''),
+                'None','none','',None)
+
         if kind is None: # Not an @x node. (New in Leo 4.4.4)
             pass
         if kind == "settings":
             pass
-        elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+        # elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+        elif kind in self.basic_types and isNone:
             # None is valid for all basic types.
             self.set(p,kind,name,None)
         elif kind in self.control_types or kind in self.basic_types:

@@ -580,7 +580,7 @@ class baseLeoPlugin(object):
             commandName = self.commandName       
         else:
             if commandName not in self.commandNames:
-                raise NameError, "setButton error, %s is not a commandName" % commandName
+                raise NameError("setButton error, %s is not a commandName" % commandName)
 
         if color is None:
             color = 'grey'

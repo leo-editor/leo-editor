@@ -1235,7 +1235,8 @@ try:
         os.startfile(arg+path)
     elif openType == "exec":
         command = "exec(%s)" % (arg+shortPath)
-        exec arg+path in {}
+        ### exec arg+path in {}
+        exec(arg+path,{},{})
     elif openType == "os.spawnl":
         filename = g.os_path_basename(arg)
         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
@@ -4991,7 +4992,13 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 command=masterMenuCallback,
                 underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
-if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+### if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+if g.isPython3:
+    isString = type(data) == type('a')
+else:
+    isString = type(data) in types.StringTypes
+
+if isString:
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
     s = data

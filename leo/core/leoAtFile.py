@@ -323,7 +323,11 @@ class atFile:
         else:
             self.outputFile = None # The temporary output file.
             self.stringOutput = None
-            self.targetFileName = self.outputFileName = u""
+
+            if g.isPython3:
+                self.targetFileName = self.outputFileName = ''
+            else:
+                self.targetFileName = self.outputFileName = unicode('')
         #@-node:ekr.20041005105605.16:<< init ivars for writing >>>
         #@nl
 
@@ -3600,7 +3604,13 @@ class atFile:
             s = at.stringOutput = theFile.get()
             theFile.close()
             at.outputFile = None
-            at.outputFileName = u''
+
+            # at.outputFileName = u''
+            if g.isPython3:
+                at.outputFileName = ''
+            else:
+                at.outputFileName = unicode('')
+
             at.shortFileName = ''
             at.targetFileName = None
             return s
@@ -4035,7 +4045,7 @@ class atFile:
 
         if exists: # Read the file.  Return if it is the same.
             try:
-                f = file(fn,'rb')
+                f = open(fn,'rb')
                 s2 = f.read()
                 f.close()
             except IOError:
@@ -4048,7 +4058,7 @@ class atFile:
 
         # Replace
         try:
-            f = file(fn,'wb')
+            f = open(fn,'wb')
             f.write(s)
             f.close()
             if not testing:

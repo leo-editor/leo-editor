@@ -2654,7 +2654,7 @@ class colorizer:
         # __pychecker__ = 'maxlines=500'
 
         ch = s[i] ; state = "normal"
-        assert(type(ch)==type(u""))
+        ### assert(type(ch)==type(u""))
 
         if ch in string.ascii_letters or ch == '_' or (
             (ch == '\\' and self.language=="latex") or
@@ -3237,7 +3237,10 @@ class colorizer:
     def skip_id(self,s,i,chars=None):
 
         n = len(s)
-        chars = chars and g.toUnicode(chars,encoding='ascii') or u''
+
+        if not g.isPython3:
+            chars = chars and g.toUnicode(chars,encoding='ascii') or unicode('')
+
         while i < n and (g.isWordChar(s[i]) or s[i] in chars):
                 i += 1
         return i

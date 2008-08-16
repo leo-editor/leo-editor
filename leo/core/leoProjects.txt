@@ -3568,7 +3568,8 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
@@ -3619,7 +3620,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -3926,7 +3927,8 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
@@ -3977,7 +3979,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -4102,11 +4104,19 @@ def visitNode (self,p):
     kind,name,val = self.parseHeadline(p.headString())
     kind = munge(kind)
 
+    if g.isPython3:
+        isNone = val in ('None','none','',None)
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','',None)
+
     if kind is None: # Not an @x node. (New in Leo 4.4.4)
         pass
     if kind == "settings":
         pass
-    elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+    # elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+    elif kind in self.basic_types and isNone:
         # None is valid for all basic types.
         self.set(p,kind,name,None)
     elif kind in self.control_types or kind in self.basic_types:
@@ -5261,6 +5271,15 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
 
     # g.trace(setting,requestedType,bunch.toString())
     val = bunch.val
+
+    if g.isPython3:
+        isNone = val in ('None','none','',None)
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','',None)
+
+
     if not self.typesMatch(bunch.kind,requestedType):
         # New in 4.4: make sure the types match.
         # A serious warning: one setting may have destroyed another!
@@ -5270,7 +5289,8 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
             g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
             g.es_print('there may be conflicting settings!',color='red')
         return None, False
-    elif val in (u'None',u'none','None','none','',None):
+    # elif val in (u'None',u'none','None','none','',None):
+    elif isNone:
         return None, True # Exists, but is None
     else:
         # g.trace(setting,val)
@@ -6640,7 +6660,13 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 command=masterMenuCallback,
                 underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
-if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+### if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+if g.isPython3:
+    isString = type(data) == type('a')
+else:
+    isString = type(data) in types.StringTypes
+
+if isString:
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
     s = data
@@ -7479,7 +7505,7 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
             self.rootVnode = v
             c.setRootPosition(p)
             c.changed = False
-    except BadLeoFile, message:
+    except BadLeoFile(message):
         if not silent:
             g.es_exception()
             g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
@@ -9676,7 +9702,7 @@ def createRecentFiles (self):
         if theDir:
             try:
                 fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                f = file(fileName,'w')
+                f = open(fileName,'w')
                 f.close()
                 g.es_print('created',fileName,color='red')
                 return
@@ -9693,7 +9719,7 @@ def readRecentFilesFile (self,path):
     if ok:
         if not g.unitTesting and not self.silent:
             g.pr(('reading %s' % fileName))
-        lines = file(fileName).readlines()
+        lines = open(fileName).readlines()
         if lines and self.munge(lines[0])=='readonly':
             lines = lines[1:]
         if lines:
@@ -9715,7 +9741,7 @@ def createRecentFiles (self):
         if theDir:
             try:
                 fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                f = file(fileName,'w')
+                f = open(fileName,'w')
                 f.close()
                 g.es_print('created',fileName,color='red')
                 return
@@ -9764,7 +9790,7 @@ def writeRecentFilesFileHelper (self,fileName):
     # Don't update the file if it begins with read-only.
     theFile = None
     try:
-        theFile = file(fileName)
+        theFile = open(fileName)
         lines = theFile.readlines()
         if lines and self.munge(lines[0])=='readonly':
             # g.trace('read-only: %s' %fileName)
@@ -9776,7 +9802,7 @@ def writeRecentFilesFileHelper (self,fileName):
     theFile = None
     try:
         # g.trace('writing',fileName)
-        theFile = file(fileName,'w')
+        theFile = open(fileName,'w')
         if self.recentFiles:
             lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
             theFile.write('\n'.join(lines))
@@ -11686,11 +11712,11 @@ def attrsToList (self,attrs):
 
     attrs: an Attributes item passed to startElement.'''
 
-    if 0: # check for non-unicode attributes.
-        for name in attrs.getNames():
-            val = attrs.getValue(name)
-            if type(val) != type(u''):
-                g.trace('Non-unicode attribute',name,val)
+    ### if 0: # check for non-unicode attributes.
+        ### for name in attrs.getNames():
+            ### val = attrs.getValue(name)
+            ### if type(val) != type(u''):
+            ###    g.trace('Non-unicode attribute',name,val)
 
     # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
@@ -11761,8 +11787,12 @@ def clean(self,s):
 #@+node:ekr.20060919110638.30:characters
 def characters(self,content):
 
-    if content and type(content) != type(u''):
-        g.trace('Non-unicode content',repr(content))
+    if g.isPython3:
+        if content and type(content) != type('a'):
+            g.trace('Non-unicode content',repr(content))
+    else:
+        if content and type(content) != types.UnicodeType:
+            g.trace('Non-unicode content',repr(content))
 
     content = content.replace('\r','')
     if not content: return
@@ -11775,7 +11805,6 @@ def characters(self,content):
 
     elif content.strip():
         g.pr('unexpected content:',elementName,repr(content))
-#@nonl
 #@-node:ekr.20060919110638.30:characters
 #@+node:ekr.20060919110638.31:endElement & helpers
 def endElement(self,name):
@@ -12084,8 +12113,11 @@ def es(s,*args,**keys):
 
         # Default goes to log pane *not* the presently active pane.
     if color == 'suppress': return # New in 4.3.
-    if type(s) != type("") and type(s) != type(u""):
+
+    ### if type(s) != type("") and type(s) != type(u""):
+    if not g.isString(s):
         s = repr(s)
+
     s = g.translateArgs(s,args,commas,spaces)
 
     if app.batchMode:
@@ -13090,7 +13122,8 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
@@ -13141,7 +13174,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -13786,7 +13819,8 @@ try:
         os.startfile(arg+path)
     elif openType == "exec":
         command = "exec(%s)" % (arg+shortPath)
-        exec arg+path in {}
+        ### exec arg+path in {}
+        exec(arg+path,{},{})
     elif openType == "os.spawnl":
         filename = g.os_path_basename(arg)
         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
@@ -15336,7 +15370,8 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
@@ -15387,7 +15422,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -16212,7 +16247,8 @@ def runTest (self,define_g = True):
         import pdb
         pdb.run(script+'\n',d)
     else:
-        exec script + '\n' in d
+        ### exec script + '\n' in d
+        exec(script+'\n',d)
 #@-node:ekr.20051104075904.10:runTest
 #@+node:ekr.20051104075904.11:shortDescription
 def shortDescription (self):
@@ -16240,7 +16276,8 @@ def makeTestSuite (c,p):
         return None
 
     try:
-        exec script + '\n' in {'c':c,'g':g,'p':p}
+        ### exec script + '\n' in {'c':c,'g':g,'p':p}
+        exec(script+'\n',{'c':c,'g':g,'p':p})
         suite = g.app.scriptDict.get("suite")
         if not suite:
             g.pr("%s script did not set g.app.scriptDict" % h)
@@ -18237,7 +18274,7 @@ def replaceFileWithString (self,fn,s):
 
     if exists: # Read the file.  Return if it is the same.
         try:
-            f = file(fn,'rb')
+            f = open(fn,'rb')
             s2 = f.read()
             f.close()
         except IOError:
@@ -18250,7 +18287,7 @@ def replaceFileWithString (self,fn,s):
 
     # Replace the file.
     try:
-        f = file(fn,'wb')
+        f = open(fn,'wb')
         f.write(s)
         f.close()
         if not testing:
@@ -18341,12 +18378,12 @@ def propagate_changes(self, old_public_file, old_private_file):
 
     # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
     if 1: # We really do not want to change the public file here.
-        old_public_lines  = file(old_public_file).readlines()
+        old_public_lines  = open(old_public_file).readlines()
     else: # An emergency measure.
-        s = file(old_public_file).read()
+        s = open(old_public_file).read()
         if s and not s.endswith('\n'): s = s + '\n'
         old_public_lines = g.splitLines(s)
-    old_private_lines = file(old_private_file).readlines()
+    old_private_lines = open(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
     if not marker:
         return False
@@ -18396,7 +18433,7 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
     if not marker:
         return
 
-    old_lines = file(source_fn).readlines()
+    old_lines = open(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
 
     copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -19310,12 +19347,12 @@ def gotoLineNumberOpen (self,filename):
         theDir, simplename = os.path.split(filename)
         shadow_filename = os.path.join(theDir,x.shadow_subdir,x.shadow_prefix + simplename)
         if os.path.exists(shadow_filename):
-            lines = file(shadow_filename).readlines()
+            lines = open(shadow_filename).readlines()
             c.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
             c.line_mapping = []
-            lines = file(filename).readlines()
+            lines = open(filename).readlines()
         return lines 
     except:
         # Make sure failures to open a file generate clear messages.
@@ -19368,7 +19405,7 @@ def replaceFileWithString (self,fn,s):
 
     if exists: # Read the file.  Return if it is the same.
         try:
-            f = file(fn,'rb')
+            f = open(fn,'rb')
             s2 = f.read()
             f.close()
         except IOError:
@@ -19381,7 +19418,7 @@ def replaceFileWithString (self,fn,s):
 
     # Replace
     try:
-        f = file(fn,'wb')
+        f = open(fn,'wb')
         f.write(s)
         f.close()
         if not testing:
@@ -19405,7 +19442,13 @@ def closeStringFile (self,theFile):
         s = at.stringOutput = theFile.get()
         theFile.close()
         at.outputFile = None
-        at.outputFileName = u''
+
+        # at.outputFileName = u''
+        if g.isPython3:
+            at.outputFileName = ''
+        else:
+            at.outputFileName = unicode('')
+
         at.shortFileName = ''
         at.targetFileName = None
         return s
@@ -19590,7 +19633,11 @@ if toString:
 else:
     self.outputFile = None # The temporary output file.
     self.stringOutput = None
-    self.targetFileName = self.outputFileName = u""
+
+    if g.isPython3:
+        self.targetFileName = self.outputFileName = ''
+    else:
+        self.targetFileName = self.outputFileName = unicode('')
 #@-node:ekr.20041005105605.16:<< init ivars for writing >>>
 #@-node:ekr.20041005105605.15:initWriteIvars
 #@+node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
@@ -20465,7 +20512,7 @@ def replaceFileWithString (self,fn,s):
 
     if exists: # Read the file.  Return if it is the same.
         try:
-            f = file(fn,'rb')
+            f = open(fn,'rb')
             s2 = f.read()
             f.close()
         except IOError:
@@ -20478,7 +20525,7 @@ def replaceFileWithString (self,fn,s):
 
     # Replace the file.
     try:
-        f = file(fn,'wb')
+        f = open(fn,'wb')
         f.write(s)
         f.close()
         if not testing:
@@ -20951,7 +20998,7 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
     if not marker:
         return
 
-    old_lines = file(source_fn).readlines()
+    old_lines = open(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
 
     copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -21800,7 +21847,7 @@ def replaceFileWithString (self,fn,s):
 
     if exists: # Read the file.  Return if it is the same.
         try:
-            f = file(fn,'rb')
+            f = open(fn,'rb')
             s2 = f.read()
             f.close()
         except IOError:
@@ -21813,7 +21860,7 @@ def replaceFileWithString (self,fn,s):
 
     # Replace the file.
     try:
-        f = file(fn,'wb')
+        f = open(fn,'wb')
         f.write(s)
         f.close()
         if not testing:
@@ -22128,12 +22175,12 @@ def propagate_changes(self, old_public_file, old_private_file):
 
     # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
     if 1: # We really do not want to change the public file here.
-        old_public_lines  = file(old_public_file).readlines()
+        old_public_lines  = open(old_public_file).readlines()
     else: # An emergency measure.
-        s = file(old_public_file).read()
+        s = open(old_public_file).read()
         if s and not s.endswith('\n'): s = s + '\n'
         old_public_lines = g.splitLines(s)
-    old_private_lines = file(old_private_file).readlines()
+    old_private_lines = open(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
     if not marker:
         return False
@@ -22218,7 +22265,7 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
     if not marker:
         return
 
-    old_lines = file(source_fn).readlines()
+    old_lines = open(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
 
     copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -22369,14 +22416,14 @@ def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
     g.pr("=================================")
     g.pr(lines1_message )
     g.pr("---------------------------------")
-    f1 = file("mod_shadow.tmp1", "w")
+    f1 = open("mod_shadow.tmp1", "w")
     for line in lines1:
         p(line)
     f1.close()
     g.pr("\n==================================")
     g.pr(lines2_message )
     g.pr("---------------------------------")
-    f1 = file("mod_shadow.tmp2", "w")
+    f1 = open("mod_shadow.tmp2", "w")
     for line in lines2:
         p(line)
     f1.close()
@@ -24186,7 +24233,13 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 command=masterMenuCallback,
                 underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
-if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+### if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+if g.isPython3:
+    isString = type(data) == type('a')
+else:
+    isString = type(data) in types.StringTypes
+
+if isString:
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
     s = data
@@ -24565,7 +24618,13 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 command=masterMenuCallback,
                 underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
-if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+### if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+if g.isPython3:
+    isString = type(data) == type('a')
+else:
+    isString = type(data) in types.StringTypes
+
+if isString:
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
     s = data
@@ -24810,7 +24869,8 @@ try:
         os.startfile(arg+path)
     elif openType == "exec":
         command = "exec(%s)" % (arg+shortPath)
-        exec arg+path in {}
+        ### exec arg+path in {}
+        exec(arg+path,{},{})
     elif openType == "os.spawnl":
         filename = g.os_path_basename(arg)
         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
@@ -25376,12 +25436,12 @@ def propagate_changes(self, old_public_file, old_private_file):
 
     # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
     if 1: # We really do not want to change the public file here.
-        old_public_lines  = file(old_public_file).readlines()
+        old_public_lines  = open(old_public_file).readlines()
     else: # An emergency measure.
-        s = file(old_public_file).read()
+        s = open(old_public_file).read()
         if s and not s.endswith('\n'): s = s + '\n'
         old_public_lines = g.splitLines(s)
-    old_private_lines = file(old_private_file).readlines()
+    old_private_lines = open(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
     if not marker:
         return False
@@ -25479,12 +25539,12 @@ def propagate_changes(self, old_public_file, old_private_file):
 
     # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
     if 1: # We really do not want to change the public file here.
-        old_public_lines  = file(old_public_file).readlines()
+        old_public_lines  = open(old_public_file).readlines()
     else: # An emergency measure.
-        s = file(old_public_file).read()
+        s = open(old_public_file).read()
         if s and not s.endswith('\n'): s = s + '\n'
         old_public_lines = g.splitLines(s)
-    old_private_lines = file(old_private_file).readlines()
+    old_private_lines = open(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
     if not marker:
         return False
@@ -26344,7 +26404,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -26415,7 +26475,8 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
@@ -26466,7 +26527,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -26721,7 +26782,8 @@ def executeScript(self,event=None,args=None,p=None,script=None,
                     scriptFile = self.writeScriptFile(script)
                     execfile(scriptFile,d)
                 else:
-                    exec script in d
+                    ### exec script in d
+                    exec(script,d)
                 # g.trace('**** after')
                 if not script1 and not silent:
                     # Careful: the script may have changed the log tab.
@@ -26771,7 +26833,7 @@ def writeScriptFile (self,script):
 
     # Write the file.
     try:
-        f = file(path,'w')
+        f = open(path,'w')
         f.write(script)
         f.close()
     except Exception:

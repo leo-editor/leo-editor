@@ -5,7 +5,7 @@
 #@@pagewidth 80
 
 #@<< imports >>
-#@+node:ekr.20050405141130:<< imports >>
+#@+node:ekr.20050405141130:<< imports >> (leoFileCommands)
 import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
@@ -16,11 +16,23 @@ if g.app and g.app.use_psyco:
 import leo.core.leoNodes as leoNodes
 
 import binascii
-import cStringIO
+
+try:
+    import cStringIO # Python 2.x
+    StringIO = cStringIO.StringIO
+except ImportError:
+    ### In some cases, we may want to use io.BytesIO instead
+
+    ### Hangs.
+    from io import BytesIO as cStringIO
+    # from io import StringIO as cStringIO
+    StringIO = cStringIO
+
 import os
 import pickle
 import string
 import sys
+import types
 import zipfile
 # import re
 
@@ -34,8 +46,7 @@ except Exception:
 # The following is sometimes used.
 # __pychecker__ = '--no-import'
 # import time
-#@nonl
-#@-node:ekr.20050405141130:<< imports >>
+#@-node:ekr.20050405141130:<< imports >> (leoFileCommands)
 #@nl
 
 #@<< define exception classes >>
@@ -145,11 +156,11 @@ if sys.platform != 'cli':
 
             attrs: an Attributes item passed to startElement.'''
 
-            if 0: # check for non-unicode attributes.
-                for name in attrs.getNames():
-                    val = attrs.getValue(name)
-                    if type(val) != type(u''):
-                        g.trace('Non-unicode attribute',name,val)
+            ### if 0: # check for non-unicode attributes.
+                ### for name in attrs.getNames():
+                    ### val = attrs.getValue(name)
+                    ### if type(val) != type(u''):
+                    ###    g.trace('Non-unicode attribute',name,val)
 
             # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
@@ -220,8 +231,12 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.30:characters
         def characters(self,content):
 
-            if content and type(content) != type(u''):
-                g.trace('Non-unicode content',repr(content))
+            if g.isPython3:
+                if content and type(content) != type('a'):
+                    g.trace('Non-unicode content',repr(content))
+            else:
+                if content and type(content) != types.UnicodeType:
+                    g.trace('Non-unicode content',repr(content))
 
             content = content.replace('\r','')
             if not content: return
@@ -234,7 +249,6 @@ if sys.platform != 'cli':
 
             elif content.strip():
                 g.pr('unexpected content:',elementName,repr(content))
-        #@nonl
         #@-node:ekr.20060919110638.30:characters
         #@+node:ekr.20060919110638.31:endElement & helpers
         def endElement(self,name):
@@ -604,7 +618,7 @@ class baseFileCommands:
                 theFile,isZipped = g.openLeoOrZipFile(c.mFileName)
                 self.readSaxFile(theFile,fileName='check-leo-file',silent=False,inClipboard=False,reassignIndices=False)
                 g.es_print('check-leo-file passed',color='blue')
-            except Exception, message:
+            except Exception(message):
                 # g.es_exception()
                 g.es_print('check-leo-file failed:',str(message),color='red')
         finally:
@@ -730,7 +744,7 @@ class baseFileCommands:
                 self.rootVnode = v
                 c.setRootPosition(p)
                 c.changed = False
-        except BadLeoFile, message:
+        except BadLeoFile(message):
             if not silent:
                 g.es_exception()
                 g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
@@ -802,7 +816,8 @@ class baseFileCommands:
             # Create the tnode.  Use the _original_ index as the key in tnodesDict.
             self.tnodesDict[index] = t
 
-            if type(index) not in (type(""),type(u"")):
+            ### if type(index) not in (type(""),type(u"")):
+            if not g.isString(index):
                 g.es("newTnode: unexpected index type:",type(index),index,color="red")
 
             # Convert any pre-4.1 index to a gnx.
@@ -1251,7 +1266,9 @@ class baseFileCommands:
             # Use cStringIo to avoid a crash in sax when inputFileName has unicode characters.
             if theFile:
                 s = theFile.read()
-            theFile = cStringIO.StringIO(s)
+            ### theFile = cStringIO.StringIO(s)
+            g.pdb()
+            theFile = StringIO(s)
             # g.trace(repr(inputFileName))
             node = None
             parser = xml.sax.make_parser()
@@ -1995,7 +2012,8 @@ class baseFileCommands:
                 #@nonl
                 #@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
                 #@nl
-            self.outputFile = cStringIO.StringIO()
+            ### self.outputFile = cStringIO.StringIO()
+            self.outputFile = StringIO()
             #@        << create theActualFile >>
             #@+node:ekr.20060929103258:<< create theActualFile >>
             if toString:

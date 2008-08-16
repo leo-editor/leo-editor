@@ -157,7 +157,7 @@ class shadowController:
 
         if exists: # Read the file.  Return if it is the same.
             try:
-                f = file(fn,'rb')
+                f = open(fn,'rb')
                 s2 = f.read()
                 f.close()
             except IOError:
@@ -170,7 +170,7 @@ class shadowController:
 
         # Replace the file.
         try:
-            f = file(fn,'wb')
+            f = open(fn,'wb')
             f.write(s)
             f.close()
             if not testing:
@@ -500,12 +500,12 @@ class shadowController:
 
         # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
         if 1: # We really do not want to change the public file here.
-            old_public_lines  = file(old_public_file).readlines()
+            old_public_lines  = open(old_public_file).readlines()
         else: # An emergency measure.
-            s = file(old_public_file).read()
+            s = open(old_public_file).read()
             if s and not s.endswith('\n'): s = s + '\n'
             old_public_lines = g.splitLines(s)
-        old_private_lines = file(old_private_file).readlines()
+        old_private_lines = open(old_private_file).readlines()
         marker = x.marker_from_extension(old_public_file)
         if not marker:
             return False
@@ -590,7 +590,7 @@ class shadowController:
         if not marker:
             return
 
-        old_lines = file(source_fn).readlines()
+        old_lines = open(source_fn).readlines()
         new_lines, junk = x.separate_sentinels(old_lines,marker)
 
         copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -741,14 +741,14 @@ class shadowController:
         g.pr("=================================")
         g.pr(lines1_message )
         g.pr("---------------------------------")
-        f1 = file("mod_shadow.tmp1", "w")
+        f1 = open("mod_shadow.tmp1", "w")
         for line in lines1:
             p(line)
         f1.close()
         g.pr("\n==================================")
         g.pr(lines2_message )
         g.pr("---------------------------------")
-        f1 = file("mod_shadow.tmp2", "w")
+        f1 = open("mod_shadow.tmp2", "w")
         for line in lines2:
             p(line)
         f1.close()

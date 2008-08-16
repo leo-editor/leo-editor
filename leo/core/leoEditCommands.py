@@ -18,7 +18,11 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
-import cPickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle as pickle # Note: only pickle exists in Python 3.x
+
 import difflib
 import os
 import re
@@ -1052,7 +1056,7 @@ class controlCommandsClass (baseEditCommandsClass):
             ofile.seek(0)
             okout = ofile.read()
             if okout: w.insert('insert',okout)
-        except Exception, x:
+        except Exception(x):
             w.insert('insert',x)
 
         k.setLabelGrey('finished shell-command: %s' % command)
@@ -3365,7 +3369,7 @@ class editCommandsClass (baseEditCommandsClass):
                     keeplines [n] = None
                 elif f:
                     keeplines.append(z)
-        except Exception, x:
+        except Exception(x):
             return
         if which == 'flush':
             keeplines = [x for x in keeplines if x != None]
@@ -4927,7 +4931,10 @@ class editFileCommandsClass (baseEditCommandsClass):
             g.pr('\n',kind)
             for key in d.keys():
                 p = d.get(key)
-                g.pr('%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii')))
+                if g.isPython3:
+                    g.pr('%-32s %s' % (key,p.headString()))
+                else:
+                    g.pr('%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii')))
     #@-node:ekr.20070921072608.1:dumpCompareNodes
     #@-node:ekr.20070920104110:compareLeoFiles
     #@+node:ekr.20050920084036.164:deleteFile
@@ -6226,7 +6233,7 @@ class macroCommandsClass (baseEditCommandsClass):
         '''Loads a macro file into the macros dictionary.'''
 
         k = self.k
-        macros = cPickle.load(f)
+        macros = pickle.load(f)
         for z in macros:
             k.addToDoAltX(z,macros[z])
     #@-node:ekr.20050920084036.197:_loadMacros
@@ -6261,7 +6268,7 @@ class macroCommandsClass (baseEditCommandsClass):
         if not fileName: return
 
         try:
-            f = file(fileName,'a+')
+            f = open(fileName,'a+')
             f.seek(0)
             if f:
                 self._saveMacros(f,macname)
@@ -6274,14 +6281,14 @@ class macroCommandsClass (baseEditCommandsClass):
 
         fname = f.name
         try:
-            macs = cPickle.load( f )
+            macs = pickle.load( f )
         except Exception:
             macs = {}
         f.close()
         if self.namedMacros.has_key( name ):
             macs[ name ] = self.namedMacros[ name ]
-            f = file( fname, 'w' )
-            cPickle.dump( macs, f )
+            f = open( fname, 'w' )
+            pickle.dump( macs, f )
             f.close()
     #@-node:ekr.20050920084036.200:_saveMacros
     #@-node:ekr.20050920084036.199:saveMacros & helper
@@ -8762,7 +8769,7 @@ class AspellClass:
             os.popen(cmd)
             return True
 
-        except Exception, err:
+        except Exception(err):
             g.pr("unable to update local aspell dictionary:",err)
             return False
     #@-node:ekr.20051025071455.11:updateDictionary

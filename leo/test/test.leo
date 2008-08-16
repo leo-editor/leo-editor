@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -271,6 +271,7 @@
 </v>
 </v>
 <v t="ekr.20080815073750.1"><vh>@button write-nosent-files</vh></v>
+<v t="ekr.20080816151123.1"><vh>test exec function)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2220,5 +2221,6 @@ for p in c.allNodes_iter():
         c.atFileCommands.write(p,nosentinels=True)
         n += 1
 g.es('done: %s files written' %(n))</t>
+<t tx="ekr.20080816151123.1">exec('print "hi"')</t>
 </tnodes>
 </leo_file>

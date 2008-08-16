@@ -179,7 +179,8 @@ class generalTestCase(unittest.TestCase):
             import pdb
             pdb.run(script+'\n',d)
         else:
-            exec script + '\n' in d
+            ### exec script + '\n' in d
+            exec(script+'\n',d)
     #@-node:ekr.20051104075904.10:runTest
     #@+node:ekr.20051104075904.11:shortDescription
     def shortDescription (self):
@@ -211,7 +212,8 @@ def makeTestSuite (c,p):
         return None
 
     try:
-        exec script + '\n' in {'c':c,'g':g,'p':p}
+        ### exec script + '\n' in {'c':c,'g':g,'p':p}
+        exec(script+'\n',{'c':c,'g':g,'p':p})
         suite = g.app.scriptDict.get("suite")
         if not suite:
             g.pr("%s script did not set g.app.scriptDict" % h)
@@ -1305,12 +1307,12 @@ def checkFileTabs (fileName,s):
         readline = g.readLinesClass(s).next
         tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
-    except tokenize.TokenError, msg:
+    except tokenize.TokenError(msg):
         g.es_print("Token error in",fileName,color="blue")
         g.es_print('',msg)
         assert 0, "test failed"
 
-    except tabnanny.NannyNag, nag:
+    except tabnanny.NannyNag(nag):
         badline = nag.get_lineno()
         line    = nag.get_line()
         message = nag.get_msg()
@@ -1372,8 +1374,8 @@ class reformatParagraphTest:
         for i in range(min(newLinesCount,refLinesCount)):
             assert newLines[i] == refLines[i], \
                 "Mismatch on line " + str(i) + "." \
-                + "\nExpected text: " + `refLines[i]` \
-                + "\n  Actual text: " + `newLines[i]`
+                + "\nExpected text: " + repr(refLines[i]) \
+                + "\n  Actual text: " + repr(newLines[i])
 
         assert newLinesCount == refLinesCount, \
             "Expected " + str(refLinesCount) + " lines, but " \

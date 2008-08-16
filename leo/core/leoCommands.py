@@ -721,7 +721,8 @@ class baseCommands:
                         os.startfile(arg+path)
                     elif openType == "exec":
                         command = "exec(%s)" % (arg+shortPath)
-                        exec arg+path in {}
+                        ### exec arg+path in {}
+                        exec(arg+path,{},{})
                     elif openType == "os.spawnl":
                         filename = g.os_path_basename(arg)
                         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
@@ -1663,7 +1664,8 @@ class baseCommands:
                         scriptFile = self.writeScriptFile(script)
                         execfile(scriptFile,d)
                     else:
-                        exec script in d
+                        ### exec script in d
+                        exec(script,d)
                     # g.trace('**** after')
                     if not script1 and not silent:
                         # Careful: the script may have changed the log tab.
@@ -1713,7 +1715,7 @@ class baseCommands:
 
         # Write the file.
         try:
-            f = file(path,'w')
+            f = open(path,'w')
             f.write(script)
             f.close()
         except Exception:
@@ -2148,12 +2150,12 @@ class baseCommands:
             theDir, simplename = os.path.split(filename)
             shadow_filename = os.path.join(theDir,x.shadow_subdir,x.shadow_prefix + simplename)
             if os.path.exists(shadow_filename):
-                lines = file(shadow_filename).readlines()
+                lines = open(shadow_filename).readlines()
                 c.line_mapping = x.push_filter_mapping(
                     lines, x.marker_from_extension(shadow_filename))
             else:
                 c.line_mapping = []
-                lines = file(filename).readlines()
+                lines = open(filename).readlines()
             return lines 
         except:
             # Make sure failures to open a file generate clear messages.
@@ -3673,7 +3675,7 @@ class baseCommands:
                             g.pr("p.v",p.v)
                             g.pr("v.t",v.t)
                             g.pr("p.v.t",p.v.t)
-                            raise AssertionError, "v.t == p.v.t"
+                            raise AssertionError("v.t == p.v.t")
 
                         if p.v.isCloned():
                             assert v.isCloned(), "v.isCloned"
@@ -3718,7 +3720,7 @@ class baseCommands:
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
                     #@nl
-            except AssertionError,message:
+            except AssertionError(message):
                 errors += 1
                 #@            << give test failed message >>
                 #@+node:ekr.20040314044652:<< give test failed message >>
@@ -3858,17 +3860,17 @@ class baseCommands:
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
             return
 
-        except parser.ParserError, msg:
+        except parser.ParserError(msg):
             if not suppressErrors:
                 g.es("ParserError in",headline,color="blue")
                 g.es('',str(msg))
 
-        except tokenize.TokenError, msg:
+        except tokenize.TokenError(msg):
             if not suppressErrors:
                 g.es("TokenError in",headline,color="blue")
                 g.es('',str(msg))
 
-        except tabnanny.NannyNag, nag:
+        except tabnanny.NannyNag(nag):
             if not suppressErrors:
                 badline = nag.get_lineno()
                 line    = nag.get_line()
@@ -3878,7 +3880,7 @@ class baseCommands:
                 line2 = repr(str(line))[1:-1]
                 g.es("offending line:\n",line2)
 
-        except:
+        except Exception:
             g.trace("unexpected exception")
             g.es_exception()
 

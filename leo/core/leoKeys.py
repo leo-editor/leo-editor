@@ -1318,7 +1318,7 @@ class autoCompleterClass:
 
         try:
             # Add the the class definition to the present environment.
-            exec s
+            exec(s) ###
 
             # Get the newly created object from the locals dict.
             theClass = locals().get(className)
@@ -4793,7 +4793,7 @@ class keyHandlerClass:
             # g.trace(state,stroke)
             if stroke == k.universalArgKey:
                 k.repeatCount = k.repeatCount * 4
-            elif stroke == '<Key>' and (keysym.isdigit() or keysym == u'-'):
+            elif stroke == '<Key>' and (keysym.isdigit() or keysym == '-'): ### was u'-'
                 k.updateLabel(event)
             elif stroke == '<Key>' and keysym in (
                 'Alt_L','Alt_R',
