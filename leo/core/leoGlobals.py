@@ -4349,30 +4349,55 @@ def isValidEncoding (encoding):
 #@+node:ekr.20031218072017.1501:reportBadChars
 def reportBadChars (s,encoding):
 
-    errors = 0
-    ### if type(s) == type(u""):
-    if type(s) == types.StringTypes:
-        for ch in s:
-            try: ch.encode(encoding,"strict")
-            except UnicodeEncodeError:
-                errors += 1
-        if errors:
-            s2 = "%d errors converting %s to %s" % (
-                errors, s.encode(encoding,'replace'),
-                encoding.encode('ascii','replace'))
-            if not g.unitTesting:
-                g.es(s2,color='red')
-    ### elif type(s) == type(""):
+    if g.isPython3:  ### To do
+
+        errors = 0
+        ### if type(s) == type(u""):
+        if g.isString(s):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                s2 = "%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
+        ### elif type(s) == type(""):
+        else:
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                s2 = "%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
     else:
-        for ch in s:
-            try: unicode(ch,encoding,"strict")
-            except Exception: errors += 1
-        if errors:
-            s2 = "%d errors converting %s (%s encoding) to unicode" % (
-                errors, unicode(s,encoding,'replace'),
-                encoding.encode('ascii','replace'))
-            if not g.unitTesting:
-                g.es(s2,color='red')
+        errors = 0
+        if type(s) == type(u""):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                s2 = "%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
+        elif type(s) == type(""):
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                s2 = "%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
 #@-node:ekr.20031218072017.1501:reportBadChars
 #@+node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@+node:ekr.20050208093800:toEncodedString
@@ -4455,8 +4480,6 @@ def toUnicodeWithErrorCode (s,encoding):
                 s = unicode(s,encoding,"strict")
                 return s,True
             except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
                 s = unicode(s,encoding,"replace")
                 return s,False
 

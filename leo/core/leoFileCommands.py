@@ -1267,7 +1267,6 @@ class baseFileCommands:
             if theFile:
                 s = theFile.read()
             ### theFile = cStringIO.StringIO(s)
-            g.pdb()
             theFile = StringIO(s)
             # g.trace(repr(inputFileName))
             node = None

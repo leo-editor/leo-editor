@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2430,6 +2430,46 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
+<v t="ekr.20050208051418" annotate="7d71002e"><vh> Unicode tests</vh>
+<v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
+<v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
+<v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
+<v t="ekr.20050206201145"><vh>@test % operator with unicode</vh></v>
+<v t="ekr.20050208111037"><vh>@test failure to convert unicode characters to ascii</vh></v>
+<v t="ekr.20050208104202"><vh>@test of round-tripping toUnicode &amp; toEncodedString</vh></v>
+</v>
+<v t="ekr.20071113143844.9"><vh>@test CheckVersionToInt</vh></v>
+<v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
+<v t="ekr.20040917062206"><vh>@test g.cantImport returns None</vh></v>
+<v t="ekr.20060921115303"><vh>@test g.checkVersion</vh></v>
+<v t="ekr.20071113145804.26"><vh>@test g.convertPythonIndexToRowCol</vh></v>
+<v t="ekr.20071113145804.27"><vh>@test g.convertRowColToPythonIndex</vh></v>
+<v t="ekr.20071113145804.21"><vh>@test g.create_temp_file</vh></v>
+<v t="ekr.20071113145804.20"><vh>@test g.es_exception</vh></v>
+<v t="ekr.20071113145804.22"><vh>@test g.es_trace</vh></v>
+<v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
+<v t="ekr.20061104172236.18"><vh>@test g.getLine</vh></v>
+<v t="ekr.20071113145804.28"><vh>@test g.getScript strips crlf</vh></v>
+<v t="ekr.20061104172236.11"><vh>@test g.getWord</vh></v>
+<v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
+<v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
+<v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
+<v t="ekr.20071113090055.3"><vh>@test g.scanDirectives</vh></v>
+<v t="ekr.20080323161613.10"><vh>@test g.scanAtLineendingDirective crlf</vh></v>
+<v t="ekr.20080323161613.11"><vh>@test g.scanAtLineendingDirective cr</vh></v>
+<v t="ekr.20080323161613.12"><vh>@test g.scanAtLineendingDirective lf</vh></v>
+<v t="ekr.20080323161613.13"><vh>@test g.scanAtLineendingDirective nl</vh></v>
+<v t="ekr.20080323161613.14"><vh>@test g.scanAtLineendingDirective platform</vh></v>
+<v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
+<v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
+<v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
+<v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
+<v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
+<v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
+<v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
+<v t="ekr.20071113202153.2" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </vnodes>
 <tnodes>
