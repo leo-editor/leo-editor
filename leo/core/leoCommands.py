@@ -43,9 +43,17 @@ try:
 except ImportError:
     tabnanny = None
 
+if g.isPython3:
+    pass # compiler module does not exist
+else:
+    try:
+        # IronPython has troubles with these.
+        import compiler # for Check Python command
+    except Exception:
+        pass
+
 try:
-    # IronPython has troubles with these.
-    import compiler # for Check Python command
+    # IronPython has troubles with this.
     import parser # needed only for weird Python 2.2 parser errors.
 except Exception:
     pass
@@ -260,8 +268,12 @@ class baseCommands:
         c = self
 
         g.pr('Commands...')
-        keys = c.commandsDict.keys()
-        keys.sort()
+
+        if g.isPython3:
+            keys = sorted(c.commandsDict)
+        else:
+            keys = c.commandsDict.keys() ; keys.sort()
+
         for key in keys:
             command = c.commandsDict.get(key)
             g.pr('%30s = %s' % (key,g.choose(command,command.__name__,'<None>')))
@@ -726,7 +738,8 @@ class baseCommands:
                     elif openType == "os.spawnl":
                         filename = g.os_path_basename(arg)
                         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-                        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+                        ### apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+                        os.spawnl(os.P_NOWAIT,arg,filename,path)
                     elif openType == "os.spawnv":
                         filename = os.path.basename(arg[0]) 
                         vtuple = arg[1:]
@@ -735,7 +748,8 @@ class baseCommands:
                             # Change suggested by Jim Sizelove.
                         vtuple.append(path)
                         command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-                        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+                        ### apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+                        os.spawnv(os.P_NOWAIT,arg[0],vtuple)
                     # This clause by Jim Sizelove.
                     elif openType == "subprocess.Popen":
                         if isinstance(arg, basestring):
@@ -2690,7 +2704,7 @@ class baseCommands:
         forward = ch in open_brackets
         # Find the character matching the initial bracket.
         # g.trace('index',index,'ch',repr(ch),'brackets',brackets)
-        for n in xrange(len(brackets)):
+        for n in range(len(brackets)):
             if ch == brackets[n]:
                 match_ch = matching_brackets[n]
                 break
@@ -2883,7 +2897,7 @@ class baseCommands:
                     result.append(line)
         else:
             n = len(lines)
-            for i in xrange(n):
+            for i in range(n):
                 line = lines[i]
                 if i not in (0,n-1):
                     result.append(line)
@@ -4046,7 +4060,7 @@ class baseCommands:
                     line2 = g.toEncodedString(line,encoding,reportErrors=True)
                     g.pr(line2,newline=False) # Don't add a trailing newline!)
             else:
-                for i in xrange(len(lines)):
+                for i in range(len(lines)):
                     line = lines[i]
                     line = g.toEncodedString(line,encoding,reportErrors=True)
                     g.pr("%3d" % i, repr(lines[i]))

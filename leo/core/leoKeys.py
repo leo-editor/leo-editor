@@ -1151,13 +1151,19 @@ class autoCompleterClass:
 
             if 0:
                 g.trace('watchwords...\n\n')
-                keys = self.watchwords.keys() ; keys.sort()
+                if g.isPython3:
+                    keys = sorted(self.watchwords)
+                else:
+                    keys = self.watchwords.keys() ; keys.sort()
                 for key in keys:
                     aList = self.watchwords.get(key)
                     g.trace('%s:\n\n' % (key), g.listToString(aList))
             if 0:
                 g.trace('calltips...\n\n')
-                keys = self.calltips.keys() ; keys.sort()
+                if g.isPython3:
+                    keys = sorted(self.calltips)
+                else:
+                    keys = self.calltips.keys() ; keys.sort()
                 for key in keys:
                     d = self.calltips.get(key)
                     if d:
@@ -1291,7 +1297,7 @@ class autoCompleterClass:
             # Set args to the list of required arguments.
             args = inspect.getargs(theClass.__init__.im_func.func_code)
             args = args[0] ; n = len(args)-1
-            args = [None for z in xrange(n)]
+            args = [None for z in range(n)]
 
         def dummyCtor (self):
             pass
@@ -2172,7 +2178,10 @@ class keyHandlerClass:
 
         if not c.config.getBool('warn_about_missing_settings'): return
 
-        names = c.commandsDict.keys() ; names.sort()
+        if g.isPython3:
+            names = sorted(c.commandsDict)
+        else:
+            names = c.commandsDict.keys() ; names.sort()
 
         for name in names:
             abbrev = k.abbreviationsDict.get(name)
@@ -2191,13 +2200,19 @@ class keyHandlerClass:
         k = self ; d = k.masterBindingsDict
 
         g.pr('\nk.masterBindingsDict...\n')
-        keys = d.keys()
-        keys.sort()
+        if g.isPython3:
+            keys = sorted(d)
+        else:
+            keys = d.keys() ; keys.sort()
+
         for key in keys:
             g.pr(key, '-' * 40)
             d2 = d.get(key)
-            keys2 = d2.keys()
-            keys2.sort()
+            if g.isPython3:
+                keys2 = sorted(d2)
+            else:
+                keys2 = d2.keys() ; keys2.sort()
+
             for key2 in keys2:
                 b = d2.get(key2)
                 g.pr('%20s %s' % (key2,b.commandName))
@@ -2320,7 +2335,11 @@ class keyHandlerClass:
         '''Add bindings for all entries in c.commandDict.'''
 
         k = self ; c = k.c ; d = c.commandsDict
-        keys = d.keys() ; keys.sort()
+
+        if g.isPython3:
+            keys = sorted(d)
+        else:
+            keys = d.keys() ; keys.sort()
 
         for commandName in keys:
             command = d.get(commandName)
@@ -2803,7 +2822,10 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         d = k.bindingsDict ; tabName = 'Bindings'
-        keys = d.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(d)
+        else:
+            keys = d.keys() ; keys.sort()
         c.frame.log.clearTab(tabName)
         data = [] ; n1 = 4 ; n2 = 20
         if not keys: return g.es('no bindings')
@@ -2867,7 +2889,10 @@ class keyHandlerClass:
         c.frame.log.clearTab(tabName)
 
         inverseBindingDict = k.computeInverseBindingDict()
-        commandNames = c.commandsDict.keys() ; commandNames.sort()
+        if g.isPython3:
+            commandNames = sorted(c.commandsDict)
+        else:
+            commandNames = c.commandsDict.keys() ; commandNames.sort()
 
         data = [] ; n1 = 4 ; n2 = 20
         for commandName in commandNames:
@@ -4048,7 +4073,10 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; tabName = 'Mode'
         c.frame.log.clearTab(tabName)
-        keys = d.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(d)
+        else:
+            keys = d.keys() ; keys.sort()
 
         data = [] ; n = 20
         for key in keys:
@@ -4832,7 +4860,7 @@ class keyHandlerClass:
         # g.trace('stroke',stroke,'keycode',event.keycode,'n',n)
 
         if stroke == k.fullCommandKey:
-            for z in xrange(n):
+            for z in range(n):
                 k.fullCommand()
         else:
             stroke = g.stripBrackets(stroke)
@@ -4840,7 +4868,7 @@ class keyHandlerClass:
             if bunchList:
                 b = bunchList[0]
                 g.trace('method',b.f)
-                for z in xrange(n):
+                for z in range(n):
                     if 1: # No need to do this: commands never alter events.
                         # ev = Tk.Event()
                         event = g.Bunch(
@@ -4852,7 +4880,7 @@ class keyHandlerClass:
                         )
                     k.masterCommand(event,b.f,'<%s>' % stroke)
             else:
-                for z in xrange(n):
+                for z in range(n):
                     g.app.gui.event_generate(w,'<Key>',keycode=event.keycode,keysym=event.keysym)
 
     #@-node:ekr.20061031131434.202:executeNTimes

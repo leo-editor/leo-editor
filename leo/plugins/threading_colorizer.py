@@ -933,9 +933,12 @@ class colorizer:
         val = True ; self.killcolorFlag = False
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            no_color = theDict.has_key("nocolor")
-            color = theDict.has_key("color")
-            kill_color = theDict.has_key("killcolor")
+            ### no_color = theDict.has_key("nocolor")
+            no_color = 'nocolor' in theDict
+            ### color = theDict.has_key("color")
+            color = 'color' in theDict
+            ### kill_color = theDict.has_key("killcolor")
+            kill_color = 'killcolor' in theDict
             # A killcolor anywhere disables coloring.
             if kill_color:
                 val = False ; self.killcolorFlag = True ; break
@@ -1065,7 +1068,7 @@ class colorizer:
         if trace: g.trace('len(s)',len(self.s))
         lines = g.splitLines(self.s)
         lineIndices = [0]
-        for i in xrange(1,len(lines)+1): # Add one more line
+        for i in range(1,len(lines)+1): # Add one more line
             lineIndices.append(lineIndices[i-1] + len(lines[i-1]))
         def quickConvertRowColToPyhthonIndex(row,col):
             return lineIndices[min(len(lineIndices)-1,row)] + col
@@ -1981,10 +1984,12 @@ class colorizer:
             #@+node:ekr.20071010193720.75:<< Test for @comment or @language >>
             # @comment and @language may coexist in the same node.
 
-            if theDict.has_key("comment"):
+            ### if theDict.has_key("comment"):
+            if 'comment' in theDict:
                 self.comment_string = theDict["comment"]
 
-            if theDict.has_key("language"):
+            ### if theDict.has_key("language"):
+            if 'language' in theDict:
                 s = theDict["language"]
                 # tag = "@language"
                 # assert(g.match_word(s,i,tag))
@@ -1993,14 +1998,16 @@ class colorizer:
                 j = g.skip_c_id(s,i)
                 self.language = s[i:j].lower()
 
-            if theDict.has_key("comment") or theDict.has_key("language"):
+            ### if theDict.has_key("comment") or theDict.has_key("language"):
+            if 'comment' in theDict or 'language' in theDict:
                 break
             #@nonl
             #@-node:ekr.20071010193720.75:<< Test for @comment or @language >>
             #@nl
             #@        << Test for @root, @root-doc or @root-code >>
             #@+node:ekr.20071010193720.76:<< Test for @root, @root-doc or @root-code >>
-            if theDict.has_key("root") and not self.rootMode:
+            ### if theDict.has_key("root") and not self.rootMode:
+            if 'root' in theDict and not self.rootMode:
 
                 s = theDict["root"]
                 if g.match_word(s,0,"@root-code"):

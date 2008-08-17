@@ -155,7 +155,12 @@ class textGui(leoGui.leoGui):
     import os
 
     initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
-    ret = raw_input("Open which %s file (from %s?) > " % (`filetypes`, initialdir))
+
+    if g.isPython3: get_input = input
+    else:           get_input = raw_input
+
+    ret = get_input("Open which %s file (from %s?) > " % (repr(filetypes), initialdir))
+
     if multiple:
       return [ret,]
     return ret
@@ -171,6 +176,9 @@ class textGui(leoGui.leoGui):
   def text_run(self):
     frame_idx = 0
 
+    if g.isPython3: get_input = input
+    else:           get_input = raw_input
+
     while not self.killed:
 
       # Frames can come and go.
@@ -178,7 +186,9 @@ class textGui(leoGui.leoGui):
         frame_idx = 0
       f = self.frames[frame_idx]
       g.pr(f.getTitle())
-      s = raw_input('Do what? (menu,key,body,frames,tree,quit) > ')
+
+
+      s = get_input('Do what? (menu,key,body,frames,tree,quit) > ')
 
       try:
         self.doChoice(f,s)
@@ -186,6 +196,9 @@ class textGui(leoGui.leoGui):
           g.es_exception()
   #@+node:ekr.20071212072046:doChoice
   def doChoice(self,f,s):
+
+    if g.isPython3: get_input = input
+    else:           get_input = raw_input
 
     if s in ('m','menu'):
       f.menu.text_menu()
@@ -196,7 +209,7 @@ class textGui(leoGui.leoGui):
     elif s in ('f','frames'):
       for i, f in enumerate(self.frames):
         g.pr(i, ')', f.getTitle())
-      s = raw_input('Operate on which frame? > ')
+      s = get_input('Operate on which frame? > ')
       try:
         s = int(s)
       except ValueError:
@@ -207,7 +220,6 @@ class textGui(leoGui.leoGui):
       f.tree.text_draw_tree()
     elif s in ('q','quit'):
       self.killed = True
-  #@nonl
   #@-node:ekr.20071212072046:doChoice
   #@-node:ekr.20061207074949.13:text_run & helper
   #@+node:ekr.20061207074949.10:widget_name
@@ -294,7 +306,11 @@ class textFrame(leoFrame.leoFrame):
   #@+node:ekr.20061207074949.23:text_key
   def text_key(self):
     c = self.c ; k = c.k ; w = self.body.bodyCtrl
-    key = raw_input('Keystroke > ')
+
+    if g.isPython3: get_input = input
+    else:           get_input = raw_input
+
+    key = get_input('Keystroke > ')
     if not key: return
 
     class leoTypingEvent:
@@ -362,6 +378,7 @@ class textMenu:
   #@	@+others
   #@+node:ekr.20061207074949.46:__init__
   def __init__(self):
+
     self.entries = []
 
   def delete_range(self,*args,**keys):
@@ -413,37 +430,61 @@ class textMenuSep:
   #@-node:ekr.20061207074949.54:display
   #@-others
 #@-node:ekr.20061207074949.53:class textMenuSep
-#@+node:ekr.20061207074949.55:class textLeoMenu
+#@+node:ekr.20061207074949.55:class textLeoMenu (leoMenu)
 class textLeoMenu(leoMenu.leoMenu):
+
   #@	@+others
   #@+node:ekr.20061207074949.56:createMenuBar
   def createMenuBar(self, frame):
+
+    g.trace('frame',frame,'frame.c',frame.c)
+    g.trace('self.c',self.c)
+
     self._top_menu = textMenu()
 
     self.createMenusFromTables()
   #@-node:ekr.20061207074949.56:createMenuBar
   #@+node:ekr.20061207074949.57:new_menu
-  def new_menu(self, parent, tearoff=False):
+  def new_menu(self, parent,tearoff=False):
 
-    if tearoff != False: raise NotImplementedError(`tearoff`)
+    if tearoff != False: raise NotImplementedError(repr(tearoff))
 
     # I don't know what the 'parent' argument is for; neither does the wx GUI.
 
-    return textMenu()
+    ### return textMenu()
+    menu = textLeoMenu(parent or self.frame)
+    menu.entries = []
+    return menu
   #@-node:ekr.20061207074949.57:new_menu
   #@+node:ekr.20061207074949.58:add_cascade
-  def add_cascade(self, parent, label, menu, underline):    
+  def add_cascade(self, parent, label, menu, underline):
+
+    g.trace('parent',parent)
     if parent == None:
-      parent = self._top_menu
+        parent = self._top_menu
     parent.entries.append(textMenuCascade(menu, label, underline,))
   #@-node:ekr.20061207074949.58:add_cascade
   #@+node:ekr.20061207074949.59:add_command
-  def add_command(self, menu, label, underline, command, accelerator=''):
+  ### def add_command(self, menu, label, underline, command, accelerator=''):
+
+  def add_command(self,**keys):
     # ?
     # underline - Offset into label. For those who memorised Alt, F, X rather than Alt+F4.
     # accelerator - For display only; these are implemented by Leo's key handling.
 
-    menu.entries.append(textMenuEntry(label, underline, accelerator, command))
+    g.trace(keys)
+
+    def doNothingCallback():
+      pass
+
+    label = keys.get('label') or 'no label'
+    underline = keys.get('underline') or 0
+    accelerator = keys.get('accelerator') or ''
+    command = keys.get('command') or doNothingCallback
+    menu = self
+
+    entry = textMenuEntry(label, underline, accelerator, command)
+    menu.entries.append(entry)
   #@-node:ekr.20061207074949.59:add_command
   #@+node:ekr.20061207074949.60:add_separator
   def add_separator(self, menu):
@@ -453,6 +494,9 @@ class textLeoMenu(leoMenu.leoMenu):
   def text_menu(self):
     last_menu = self._top_menu
 
+    if g.isPython3: get_input = input
+    else:           get_input = raw_input
+
     while True:
       entries = last_menu.entries
 
@@ -460,7 +504,7 @@ class textLeoMenu(leoMenu.leoMenu):
         g.pr(i, ')', entry.display())
       g.pr(len(last_menu.entries), ')', '[Prev]')
 
-      which = raw_input('Which menu entry? > ')
+      which = get_input('Which menu entry? > ')
       which = which.strip()      
       if not which: continue
 
@@ -489,7 +533,7 @@ class textLeoMenu(leoMenu.leoMenu):
         pass
   #@-node:ekr.20061207074949.61:text_menu
   #@-others
-#@-node:ekr.20061207074949.55:class textLeoMenu
+#@-node:ekr.20061207074949.55:class textLeoMenu (leoMenu)
 #@+node:ekr.20061207074949.62:class textLog
 class textLog(leoFrame.leoLog):
 	# undoc: leoKeys.py makeAllBindings c.frame.log.setTabBindings('Log') ; nullLog 

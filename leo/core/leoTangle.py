@@ -1965,8 +1965,10 @@ class baseTangleCommands:
 
         """Checks the given symbol table for defined but never referenced sections."""
 
-        keys = self.tst.keys()
-        keys.sort()
+        if g.isPython3:
+            keys = sorted(self.tst)
+        else:
+            keys = self.tst.keys() ; keys.sort()
         # g.trace(keys)
         for name in keys:
             section = self.tst[name]
@@ -1981,8 +1983,10 @@ class baseTangleCommands:
     def st_dump(self,verbose_flag=True):
 
         s = "\ndump of symbol table...\n"
-        keys = self.tst.keys()
-        keys.sort()
+        if g.isPython3:
+            keys = sorted(self.txt)
+        else:
+            keys = self.tst.keys() ; keys.sort()
         for name in keys:
             section = self.tst[name]
             if verbose_flag:
@@ -2106,8 +2110,10 @@ class baseTangleCommands:
     def ust_dump (self):
 
         s = "\n---------- Untangle Symbol Table ----------"
-        keys = self.ust.keys()
-        keys.sort()
+        if g.isPython3:
+            keys = sorted(self.ust)
+        else:
+            keys = self.ust.keys() ; keys.sort()
         for name in keys:
             section = self.ust[name]
             s += "\n\n" + section.name

@@ -2016,7 +2016,10 @@ class colorizer:
 
             # Configure fonts.
             w = c.frame.body.bodyCtrl
-            keys = default_font_dict.keys() ; keys.sort()
+            if g.isPython3:
+                keys = sorted(default_font_dict)
+            else:
+                keys = default_font_dict.keys() ; keys.sort()
             for key in keys:
                 option_name = default_font_dict[key]
                 # First, look for the language-specific setting, then the general setting.

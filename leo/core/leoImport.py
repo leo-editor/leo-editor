@@ -1849,7 +1849,7 @@ class baseScannerClass:
         # g.trace('lines2',lines2)
 
         ok = True ; bad_i = 0
-        for i in xrange(max(n1,n2)):
+        for i in range(max(n1,n2)):
             ok = self.compareHelper(lines1,lines2,i,self.strict)
             if not ok:
                 bad_i = i + 1
@@ -1967,10 +1967,10 @@ class baseScannerClass:
 
         if len(lines1) < 100:
             pr('input...')
-            for i in xrange(len(lines1)):
+            for i in range(len(lines1)):
                 pr('%3d %s' % (i,lines1[i]),newline=False)
             pr('output...')
-            for i in xrange(len(lines2)):
+            for i in range(len(lines2)):
                 pr('%3d %s' % (i,lines2[i]),newline=False)
 
         return False
@@ -3447,7 +3447,7 @@ class phpScanner (baseScannerClass):
 
         # The valid characters in an id
         self.chars = list(string.ascii_letters + string.digits)
-        extra = [chr(z) for z in xrange(127,256)]
+        extra = [chr(z) for z in range(127,256)]
         self.chars.extend(extra)
     #@-node:ekr.20070711090052.2: __init__
     #@+node:ekr.20070711094850:isPurePHP

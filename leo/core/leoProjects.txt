@@ -1040,7 +1040,7 @@ def __init__ (self,importCommands,atAuto):
 
     # The valid characters in an id
     self.chars = list(string.ascii_letters + string.digits)
-    extra = [chr(z) for z in xrange(127,256)]
+    extra = [chr(z) for z in range(127,256)]
     self.chars.extend(extra)
 #@-node:ekr.20070711090052.2: __init__
 #@+node:ekr.20070711094850:isPurePHP
@@ -1998,7 +1998,7 @@ def __init__ (self,importCommands,atAuto):
 
     # The valid characters in an id
     self.chars = list(string.ascii_letters + string.digits)
-    extra = [chr(z) for z in xrange(127,256)]
+    extra = [chr(z) for z in range(127,256)]
     self.chars.extend(extra)
 #@-node:ekr.20070711090052.2: __init__
 #@+node:ekr.20070711094850:isPurePHP
@@ -3540,6 +3540,8 @@ will read mySettings.leo and leoSettings.leo twice.
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
+    if g.isPython3: return ######
+
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
     << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -3899,6 +3901,8 @@ setString = set
 #@-node:ekr.20041118104831.1:class configSettings (leoCommands)
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
+
+    if g.isPython3: return ######
 
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
@@ -7203,11 +7207,14 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
         else:
             createNullGuiWithScript(script)
         fileName = None
-    # Load plugins. Plugins may create g.app.gui.
-    g.doHook("start1")
-    if g.app.killed: return # Support for g.app.forceShutdown.
-    # Create the default gui if needed.
-    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui', verbose=True)
+    else:
+        g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+        if g.app.killed: return # Support for g.app.forceShutdown.
+        if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     # Initialize tracing and statistics.
     g.init_sherlock(args)
     if g.app and g.app.use_psyco: startPsyco()
@@ -12971,11 +12978,14 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
         else:
             createNullGuiWithScript(script)
         fileName = None
-    # Load plugins. Plugins may create g.app.gui.
-    g.doHook("start1")
-    if g.app.killed: return # Support for g.app.forceShutdown.
-    # Create the default gui if needed.
-    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui', verbose=True)
+    else:
+        g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+        if g.app.killed: return # Support for g.app.forceShutdown.
+        if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     # Initialize tracing and statistics.
     g.init_sherlock(args)
     if g.app and g.app.use_psyco: startPsyco()
@@ -13103,6 +13113,8 @@ def scanOptions(g):
 #@-node:ekr.20080521132317.2:scanOptions
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
+
+    if g.isPython3: return ######
 
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
@@ -13460,15 +13472,19 @@ def report (self):
     g.pr('\ncallDict...')
 
     # g.pr(g.dictToString(self.callDict))
-    keys = self.callDict.keys()
-    keys.sort()
+    if g.isPython3:
+        keys = sorted(self.callDict)
+    else:
+        keys = self.callDict.keys() ; keys.sort()
     for key in keys:
         # Print the calling function.
         g.pr('%d' % (self.calledDict.get(key,0)),key)
         # Print the called functions.
         d = self.callDict.get(key)
-        keys2 = d.keys()
-        keys2.sort()
+        if g.isPython3:
+            keys2 = sorted(d)
+        else:
+            keys2 = d.keys() ; keys2.sort()
         for key2 in keys2:
             g.pr('%8d' % (d.get(key2)),key2)
 #@-node:ekr.20080531075119.4:report
@@ -13836,7 +13852,8 @@ try:
     elif openType == "os.spawnl":
         filename = g.os_path_basename(arg)
         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+        ### apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+        os.spawnl(os.P_NOWAIT,arg,filename,path)
     elif openType == "os.spawnv":
         filename = os.path.basename(arg[0]) 
         vtuple = arg[1:]
@@ -13845,7 +13862,8 @@ try:
             # Change suggested by Jim Sizelove.
         vtuple.append(path)
         command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+        ### apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+        os.spawnv(os.P_NOWAIT,arg[0],vtuple)
     # This clause by Jim Sizelove.
     elif openType == "subprocess.Popen":
         if isinstance(arg, basestring):
@@ -15352,6 +15370,8 @@ Should assigning to None clear all key bindings?
 #@+node:ekr.20041117093246:Scanning @settings (g.app.config)
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
+
+    if g.isPython3: return ######
 
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
@@ -17201,7 +17221,10 @@ for p in theIter:
     tnodes[p.v.t.fileIndex] = p.v.t
 
 # Put all tnodes in index order.
-keys = tnodes.keys() ; keys.sort()
+if g.isPython3:
+    keys = sorted(tnodes)
+else:
+    keys = tnodes.keys() ; keys.sort()
 for index in keys:
     # g.trace(index)
     t = tnodes.get(index)
@@ -23916,7 +23939,10 @@ def helpForCommandFinisher (self,commandName):
 def getBindingsForCommand(self,commandName):
 
     c = self.c ; k = c.k ; d = k.bindingsDict
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
 
     data = [] ; n1 = 4 ; n2 = 20
     for key in keys:
@@ -23964,7 +23990,10 @@ def printBindings (self,event=None):
 
     k = self ; c = k.c
     d = k.bindingsDict ; tabName = 'Bindings'
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
     c.frame.log.clearTab(tabName)
     data = [] ; n1 = 4 ; n2 = 20
     if not keys: return g.es('no bindings')
@@ -24028,7 +24057,10 @@ def printCommands (self,event=None):
     c.frame.log.clearTab(tabName)
 
     inverseBindingDict = k.computeInverseBindingDict()
-    commandNames = c.commandsDict.keys() ; commandNames.sort()
+    if g.isPython3:
+        commandNames = sorted(c.commandsDict)
+    else:
+        commandNames = c.commandsDict.keys() ; commandNames.sort()
 
     data = [] ; n1 = 4 ; n2 = 20
     for commandName in commandNames:
@@ -24119,7 +24151,10 @@ def modeHelpHelper (self,d):
 
     k = self ; c = k.c ; tabName = 'Mode'
     c.frame.log.clearTab(tabName)
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
 
     data = [] ; n = 20
     for key in keys:
@@ -24513,7 +24548,10 @@ def printBindings (self,event=None):
 
     k = self ; c = k.c
     d = k.bindingsDict ; tabName = 'Bindings'
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
     c.frame.log.clearTab(tabName)
     data = [] ; n1 = 4 ; n2 = 20
     if not keys: return g.es('no bindings')
@@ -24887,7 +24925,8 @@ try:
     elif openType == "os.spawnl":
         filename = g.os_path_basename(arg)
         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+        ### apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+        os.spawnl(os.P_NOWAIT,arg,filename,path)
     elif openType == "os.spawnv":
         filename = os.path.basename(arg[0]) 
         vtuple = arg[1:]
@@ -24896,7 +24935,8 @@ try:
             # Change suggested by Jim Sizelove.
         vtuple.append(path)
         command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+        ### apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+        os.spawnv(os.P_NOWAIT,arg[0],vtuple)
     # This clause by Jim Sizelove.
     elif openType == "subprocess.Popen":
         if isinstance(arg, basestring):
@@ -26458,6 +26498,8 @@ s = '''<?xml version="1.0" encoding="utf-8"?>
 #@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
+
+    if g.isPython3: return ######
 
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.

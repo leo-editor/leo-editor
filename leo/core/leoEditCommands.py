@@ -18,10 +18,10 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle as pickle # Note: only pickle exists in Python 3.x
+if g.isPython3:
+    import pickle # Note: only pickle exists in Python 3.x
+else:
+    import cPickle as pickle 
 
 import difflib
 import os
@@ -29,11 +29,14 @@ import re
 import string
 import sys
 
-try:
-    import ctypes
-    import ctypes.util
-except ImportError:
+if g.isPython3:
     ctypes = None
+else:
+    try:
+        import ctypes
+        import ctypes.util
+    except ImportError:
+        ctypes = None
 
 subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
 #@-node:ekr.20050710151017:<< imports >>
@@ -263,8 +266,10 @@ def finishCreateEditCommanders (c):
         if d2:
             d.update(d2)
             if 0:
-                keys = d2.keys()
-                keys.sort()
+                if g.isPython3:
+                    keys = sorted(d2)
+                else:
+                    keys = d2.keys() ; keys.sort()
                 g.pr('----- %s' % name)
                 for key in keys: g.pr(key)
 
@@ -2396,8 +2401,10 @@ class editCommandsClass (baseEditCommandsClass):
 
     def dHash(self, d):
         """Hash a dictionary"""
-        l = d.keys()
-        l.sort()
+        if g.isPython3:
+            l = sorted(d)
+        else:
+            l = d.keys() ; l.sort()
         return ''.join(['%s%s' % (str(k),str(d[k])) for k in l])
 
     def setIconList(self, p, l):
@@ -3109,11 +3116,11 @@ class editCommandsClass (baseEditCommandsClass):
 
         d = {}
         if ch in self.openBracketsList:
-            for z in xrange(len(self.openBracketsList)):
+            for z in range(len(self.openBracketsList)):
                 d [self.openBracketsList[z]] = self.closeBracketsList[z]
             reverse = False # Search forward
         else:
-            for z in xrange(len(self.openBracketsList)):
+            for z in range(len(self.openBracketsList)):
                 d [self.closeBracketsList[z]] = self.openBracketsList[z]
             reverse = True # Search backward
 
@@ -4563,7 +4570,7 @@ class editCommandsClass (baseEditCommandsClass):
             junk,j = g.getLine(s,sel_2)
             txt = s[i:j]
             columns = [w.get('%s.%s' % (z,sint2),'%s.%s' % (z,sint4))
-                for z in xrange(sint1,sint3+1)]
+                for z in range(sint1,sint3+1)]
             aList = g.splitLines(txt)
             zlist = zip(columns,aList)
             zlist.sort()
@@ -5182,7 +5189,10 @@ class helpCommandsClass (baseEditCommandsClass):
     def getBindingsForCommand(self,commandName):
 
         c = self.c ; k = c.k ; d = k.bindingsDict
-        keys = d.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(d)
+        else:
+            keys = d.keys() ; keys.sort()
 
         data = [] ; n1 = 4 ; n2 = 20
         for key in keys:
@@ -6130,7 +6140,10 @@ class leoCommandsClass (baseEditCommandsClass):
         #@nl
 
         # Create a callback for each item in d.
-        keys = d.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(d)
+        else:
+            keys = d.keys() ; keys.sort()
         for name in keys:
             f = d.get(name)
             d2 [name] = f
@@ -6652,7 +6665,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         # Change the text.
         fill = ' ' *(r4-r2)
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             w.insert('%s.%s' % (r,r2),fill)
 
@@ -6671,12 +6684,12 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('close-rectangle')
 
         # Return if any part of the selection contains something other than whitespace.
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             s = w.get('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             if s.strip(): return
 
         # Change the text.
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
 
         i = '%s.%s' % (r1,r2)
@@ -6695,7 +6708,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         w,r1,r2,r3,r4 = self.beginCommand('delete-rectangle')
 
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
 
         i = '%s.%s' % (r1,r2)
@@ -6716,7 +6729,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         self.theKillRectangle = []
 
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             s = w.get('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             self.theKillRectangle.append(s)
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
@@ -6741,7 +6754,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('open-rectangle')
 
         fill = ' ' * (r4-r2)
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.insert('%s.%s' % (r,r2),fill)
 
         i = '%s.%s' % (r1,r2)
@@ -6773,7 +6786,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w = self.w
             self.beginCommand('string-rectangle')
             r1, r2, r3, r4 = self.stringRect
-            for r in xrange(r1,r3+1):
+            for r in range(r1,r3+1):
                 w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
                 w.insert('%s.%s' % (r,r2),k.arg)
             w.setSelectionRange('%d.%d' % (r1,r2),'%d.%d' % (r3,r2+len(k.arg)))
@@ -6800,7 +6813,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('yank-rectangle')
 
         n = 0
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             # g.trace(n,r,killRect[n])
             if n >= len(killRect): break
             w.delete('%s.%s' % (r,r2), '%s.%s' % (r,r4))

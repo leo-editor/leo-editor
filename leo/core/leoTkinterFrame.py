@@ -664,7 +664,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         #g.trace(self.tree.redrawCount,args,g.callers())
 
-        apply(self.canvas.leo_treeBar.set,args,keys)
+        ### apply(self.canvas.leo_treeBar.set,args,keys)
+        self.canvas.leo_treeBar.set(*args,**keys)
 
         if self.tree.allocateOnlyVisibleNodes:
             self.tree.setVisibleArea(args)
@@ -678,7 +679,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
         if self.tree.allocateOnlyVisibleNodes:
             self.tree.allocateNodesBeforeScrolling(args)
 
-        apply(self.canvas.yview,args,keys)
+        ### apply(self.canvas.yview,args,keys)
+        self.canvas.yview(*args,**keys)
     #@nonl
     #@-node:ekr.20031218072017.998:Scrolling callbacks (tkFrame)
     #@-node:ekr.20041221071131.1:f.createTkTreeCanvas & callbacks
@@ -3182,6 +3184,7 @@ class leoTkTextWidget (Tk.Text):
         if i is None:
             g.trace('can not happen: i is None')
             return 0
+
         elif type(i) in (type('a'),type(u'a')):
             s = Tk.Text.get(w,'1.0','end') # end-1c does not work.
             i = Tk.Text.index(w,i) # Convert to row/column form.

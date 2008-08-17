@@ -1747,7 +1747,10 @@ class baseFileCommands:
             tnodes[p.v.t.fileIndex] = p.v.t
 
         # Put all tnodes in index order.
-        keys = tnodes.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(tnodes)
+        else:
+            keys = tnodes.keys() ; keys.sort()
         for index in keys:
             # g.trace(index)
             t = tnodes.get(index)

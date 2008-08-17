@@ -8,6 +8,7 @@
 
 import leo.core.leoGlobals as g
 import re
+import types
 
 #@<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414:<< Theory of operation of find/change >>
@@ -130,7 +131,7 @@ class searchWidget:
             row,col = int(row),int(col)
             row -= 1
             i = g.convertRowColToPythonIndex(self.s,row,col)
-        elif type(i) == type('9'):
+        elif type(i) == type(9):
             pass
         else:
             g.trace('can not happen: %s' % (i))

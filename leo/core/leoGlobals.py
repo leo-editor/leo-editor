@@ -357,8 +357,10 @@ def set_delims_from_string(s):
     # 9/25/02: The "perlpod hack": replace double underscores by newlines.
     for i in range(0,3):
         if delims[i]:
-            delims[i] = string.replace(delims[i],"__",'\n') 
-            delims[i] = string.replace(delims[i],'_',' ')
+            ### delims[i] = string.replace(delims[i],"__",'\n') 
+            ### delims[i] = string.replace(delims[i],'_',' ')
+            delims[i] = delims[i].replace("__",'\n') 
+            delims[i] = delims[i].replace('_',' ')
 
     return delims[0], delims[1], delims[2]
 #@-node:ekr.20031218072017.1383:set_delims_from_string
@@ -382,7 +384,8 @@ def set_language(s,i,issue_errors_flag=False):
     i = g.skip_ws(s, i)
     j = i ; i = g.skip_c_id(s,i)
     # Allow tcl/tk.
-    arg = string.lower(s[j:i])
+    ### arg = string.lower(s[j:i])
+    arg = s[j:i].lower()
     if app.language_delims_dict.get(arg):
         language = arg
         delim1, delim2, delim3 = g.set_delims_from_language(language)
@@ -486,7 +489,8 @@ def get_directives_dict(p,root=None):
                 global globalDirectiveList
 
                 if word in globalDirectiveList:
-                    if theDict.has_key(word):
+                    ### if theDict.has_key(word):
+                    if word in theDict:
                         # Ignore second value.
                         pass
                         # g.es("warning: conflicting values for",word,color="blue")
@@ -700,21 +704,25 @@ def scanDirectives(c,p=None):
         # 1/23/05: Any previous @language or @comment prevents processing up the tree.
         # This code is now like the code in tangle.scanAlldirectives.
 
-        if old.has_key("comment") or old.has_key("language"):
+        ### if old.has_key("comment") or old.has_key("language"):
+        if 'comment' in old or 'language' in old:
             pass
 
-        elif theDict.has_key("comment"):
+        ### elif theDict.has_key("comment"):
+        elif 'comment' in theDict:
             z = theDict["comment"]
             delim1,delim2,delim3 = g.set_delims_from_string(z)
 
-        elif theDict.has_key("language"):
+        ### elif theDict.has_key("language"):
+        elif 'language' in theDict:
             z = theDict["language"]
             language,delim1,delim2,delim3 = g.set_language(z,0)
         #@-node:ekr.20031218072017.1393:<< Test for @comment and @language >>
         #@nl
         #@        << Test for @encoding >>
         #@+node:ekr.20031218072017.1394:<< Test for @encoding >>
-        if not old.has_key("encoding") and theDict.has_key("encoding"):
+        ### if not old.has_key("encoding") and theDict.has_key("encoding"):
+        if 'encoding' not in old and 'encoding' in theDict:
 
             e = g.scanAtEncodingDirective(theDict)
             if e:
@@ -723,7 +731,8 @@ def scanDirectives(c,p=None):
         #@nl
         #@        << Test for @lineending >>
         #@+node:ekr.20031218072017.1395:<< Test for @lineending >>
-        if not old.has_key("lineending") and theDict.has_key("lineending"):
+        ### if not old.has_key("lineending") and theDict.has_key("lineending"):
+        if 'lineending' not in old and 'lineending' in theDict:
 
             e = g.scanAtLineendingDirective(theDict)
             if e:
@@ -732,7 +741,8 @@ def scanDirectives(c,p=None):
         #@nl
         #@        << Test for @pagewidth >>
         #@+node:ekr.20031218072017.1396:<< Test for @pagewidth >>
-        if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
+        ### if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
+        if 'pagewidth' in theDict and 'pagewidth' not in old:
 
             w = g.scanAtPagewidthDirective(theDict)
             if w and w > 0:
@@ -741,7 +751,8 @@ def scanDirectives(c,p=None):
         #@nl
         #@        << Test for @path >>
         #@+node:ekr.20031218072017.1397:<< Test for @path >> (g.scanDirectives)
-        if not path and not old.has_key("path") and theDict.has_key("path"):
+        ###if not path and not old.has_key("path") and theDict.has_key("path"):
+        if not path and 'path' not in old and 'path' in theDict:
 
             path = theDict["path"]
             path = g.computeRelativePath(path)
@@ -753,7 +764,8 @@ def scanDirectives(c,p=None):
         #@nl
         #@        << Test for @tabwidth >>
         #@+node:ekr.20031218072017.1399:<< Test for @tabwidth >>
-        if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
+        ### if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
+        if 'tabwidth' in theDict and 'tabwidth' not in old:
 
             w = g.scanAtTabwidthDirective(theDict)
             if w and w != 0:
@@ -762,11 +774,14 @@ def scanDirectives(c,p=None):
         #@nl
         #@        << Test for @wrap and @nowrap >>
         #@+node:ekr.20031218072017.1400:<< Test for @wrap and @nowrap >>
-        if not old.has_key("wrap") and not old.has_key("nowrap"):
+        ### if not old.has_key("wrap") and not old.has_key("nowrap"):
+        if 'wrap' not in old and 'nowrap' not in old:
 
-            if theDict.has_key("wrap"):
+            ### if theDict.has_key("wrap"):
+            if 'wrap' in theDict:
                 wrap = True
-            elif theDict.has_key("nowrap"):
+            ### elif theDict.has_key("nowrap"):
+            elif 'nowrap' in theDict:
                 wrap = False
         #@-node:ekr.20031218072017.1400:<< Test for @wrap and @nowrap >>
         #@nl
@@ -799,7 +814,8 @@ def scanForAtIgnore(c,p):
 
     for p in p.self_and_parents_iter():
         d = g.get_directives_dict(p)
-        if d.has_key("ignore"):
+        ### if d.has_key("ignore"):
+        if 'ignore' in d:
             return True
 
     return False
@@ -816,7 +832,8 @@ def scanForAtLanguage(c,p):
     if c and p:
         for p in p.self_and_parents_iter():
             d = g.get_directives_dict(p)
-            if d.has_key("language"):
+            ### if d.has_key("language"):
+            if 'language' in d:
                 z = d["language"]
                 language,delim1,delim2,delim3 = g.set_language(z,0)
                 return language
@@ -1473,7 +1490,10 @@ def print_dict(d,tag='',verbose=True,indent=''):
         else:   g.pr('{}')
         return
 
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
     n = 6
     for key in keys:
         if type(key) == type(''):
@@ -1494,7 +1514,10 @@ def dictToString(d,tag=None,verbose=True,indent=''):
     if not d:
         if tag: return '%s...{}' % tag
         else:   return '{}'
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
     n = 6
     for key in keys:
         ### if type(key) in (type(''),type(u'')):
@@ -1641,11 +1664,13 @@ def init_trace(args,echo=1):
         if prefix == '?':
             g.pr("trace list:", t)
         elif prefix == '+' and not arg in t:
-            t.append(string.lower(arg))
+            ### t.append(string.lower(arg))
+            t.append(arg.lower())
             if echo:
                 g.pr("enabling:", arg)
         elif prefix == '-' and arg in t:
-            t.remove(string.lower(arg))
+            ### t.remove(string.lower(arg))
+            t.remove(arg.lower())
             if echo:
                 g.pr("disabling:", arg)
         else:
@@ -1855,15 +1880,19 @@ class Tracer:
         g.pr('\ncallDict...')
 
         # g.pr(g.dictToString(self.callDict))
-        keys = self.callDict.keys()
-        keys.sort()
+        if g.isPython3:
+            keys = sorted(self.callDict)
+        else:
+            keys = self.callDict.keys() ; keys.sort()
         for key in keys:
             # Print the calling function.
             g.pr('%d' % (self.calledDict.get(key,0)),key)
             # Print the called functions.
             d = self.callDict.get(key)
-            keys2 = d.keys()
-            keys2.sort()
+            if g.isPython3:
+                keys2 = sorted(d)
+            else:
+                keys2 = d.keys() ; keys2.sort()
             for key2 in keys2:
                 g.pr('%8d' % (d.get(key2)),key2)
     #@-node:ekr.20080531075119.4:report
@@ -2512,7 +2541,10 @@ def printGcAll (tag=''):
         for z in items:
             g.pr('%40s %7d' % (z[0],z[1]))
     else: # Sort by type
-        keys = d.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(d)
+        else:
+            keys = d.keys() ; keys.sort()
         for t in keys:
             g.pr('%40s %7d' % (t,d.get(t)))
 #@-node:ekr.20060202161935:printGcAll
@@ -2599,7 +2631,8 @@ def printGcObjects(tag=''):
                 if type(obj) == types.FunctionType:
                     key = repr(obj) # Don't create a pointer to the object!
                     funcDict[key]=None 
-                    if n < 50 and not lastFunctionsDict.has_key(key):
+                    ### if n < 50 and not lastFunctionsDict.has_key(key):
+                    if n < 50 and key not in lastFunctionsDict:
                         g.pr(obj)
                         args, varargs, varkw,defaults  = inspect.getargspec(obj)
                         g.pr("args", args)
@@ -2644,8 +2677,8 @@ def printGcVerbose(tag=''):
     tag = tag or g._callerName(n=2)
     global lastObjectsDict
     objects = gc.get_objects()
-    newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
-
+    ### newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
+    newObjects = [o for o in objects if id(o) not in lastObjectsDict]
     lastObjectsDict = {}
     for o in objects:
         lastObjectsDict[id(o)]=o
@@ -3789,7 +3822,8 @@ def find_line_start(s,i):
 
     if i < 0: return 0 # New in Leo 4.4.5: add this defensive code.
     # bug fix: 11/2/02: change i to i+1 in rfind
-    i = string.rfind(s,'\n',0,i+1) # Finds the highest index in the range.
+    ### i = string.rfind(s,'\n',0,i+1) # Finds the highest index in the range.
+    i = s.rfind('\n',0,i+1) # Finds the highest index in the range.
     if i == -1: return 0
     else: return i + 1
 #@-node:ekr.20031218072017.3175:find_line_start
@@ -3866,7 +3900,8 @@ def match_c_word (s,i,name):
 def match_ignoring_case(s1,s2):
 
     if s1 == None or s2 == None: return False
-    return string.lower(s1) == string.lower(s2)
+    ### return string.lower(s1) == string.lower(s2)
+    return s1.lower() == s2.lower()
 #@-node:ekr.20031218072017.3183:match_ignoring_case
 #@+node:ekr.20031218072017.3184:match_word
 def match_word(s,i,pattern):
@@ -4632,8 +4667,8 @@ def CheckVersion (s1,s2,condition=">=",stringCompare=None,delimiter='.',trace=Fa
     vals1 = [g.CheckVersionToInt(s) for s in s1.split(delimiter)] ; n1 = len(vals1)
     vals2 = [g.CheckVersionToInt(s) for s in s2.split(delimiter)] ; n2 = len(vals2)
     n = max(n1,n2)
-    if n1 < n: vals1.extend([0 for i in xrange(n - n1)])
-    if n2 < n: vals2.extend([0 for i in xrange(n - n2)])
+    if n1 < n: vals1.extend([0 for i in range(n - n1)])
+    if n2 < n: vals2.extend([0 for i in range(n - n2)])
     for cond,val in (
         ('==', vals1 == vals2), ('!=', vals1 != vals2),
         ('<',  vals1 <  vals2), ('<=', vals1 <= vals2),
@@ -5242,6 +5277,7 @@ but this module may be missing if you get Leo from cvs.
         g.pr('Can not import %s' % moduleName)
         g.pr('Can not import Tkinter')
         g.pr('Leo must now exit')
+        g.pr(g.callers())
 #@+node:ekr.20060329083310.1:createDialogFrame
 def createDialogFrame(Tk,root,title,message):
 
@@ -5601,7 +5637,7 @@ def stripBlankLines(s):
 
     lines = g.splitLines(s)
 
-    for i in xrange(len(lines)):
+    for i in range(len(lines)):
 
         line = lines[i]
         j = g.skip_ws(line,0)

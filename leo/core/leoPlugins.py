@@ -62,7 +62,8 @@ def doHandlersForTag (tag,keywords):
     if g.app.killed:
         return None
 
-    if handlers.has_key(tag):
+    ### if handlers.has_key(tag):
+    if tag in handlers:
         bunches = handlers.get(tag)
         # Execute hooks in some random order.
         # Return if one of them returns a non-None result.
@@ -71,7 +72,8 @@ def doHandlersForTag (tag,keywords):
             if val is not None:
                 return val
 
-    if handlers.has_key("all"):
+    ### if handlers.has_key("all"):
+    if 'all' in handlers:
         bunches = handlers.get('all')
         for bunch in bunches:
             callTagHandler(bunch,tag,keywords)
@@ -268,8 +270,11 @@ def printHandlers (moduleName=None):
             tags = modules.get(name,[])
             tags.append(tag)
             modules[name] = tags
-    keys = modules.keys()
-    keys.sort()
+
+    if g.isPython3:
+        keys = sorted(modules)
+    else:
+        keys = modules.keys() ; keys.sort()
     for key in keys:
         tags = modules.get(key)
         if moduleName in (None,key):
@@ -315,7 +320,8 @@ def registerOneExclusiveHandler(tag, fn):
 
     if g.app.unitTesting: return
 
-    if handlers.has_key(tag):
+    ### if handlers.has_key(tag):
+    if tag in handlers:
         g.es("*** Two exclusive handlers for","'%s'" % (tag))
     else:
         bunch = g.Bunch(fn=fn,moduleName=moduleName,tag='handler')

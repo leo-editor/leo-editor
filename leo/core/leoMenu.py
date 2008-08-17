@@ -180,7 +180,7 @@ class leoMenu:
                 enable(menu,"Expand Next Level",hasChildren)
                 enable(menu,"Expand To Level 1",hasChildren and isExpanded)
                 enable(menu,"Expand Or Go Right",hasChildren)
-                for i in xrange(2,9):
+                for i in range(2,9):
                     frame.menu.enableMenu(menu,"Expand To Level " + str(i), hasChildren)
             #@-node:ekr.20040131171020.1:<< enable expand/Contract submenu >>
             #@nl
@@ -251,7 +251,7 @@ class leoMenu:
     def capitalizeMinibufferMenuName (self,s,removeHyphens):
 
         result = []
-        for i in xrange(len(s)):
+        for i in range(len(s)):
             ch = s[i]
             prev = i > 0 and s[i-1] or ''
             prevprev = i > 1 and s[i-2] or ''

@@ -1240,7 +1240,8 @@ try:
     elif openType == "os.spawnl":
         filename = g.os_path_basename(arg)
         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+        ### apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+        os.spawnl(os.P_NOWAIT,arg,filename,path)
     elif openType == "os.spawnv":
         filename = os.path.basename(arg[0]) 
         vtuple = arg[1:]
@@ -1249,7 +1250,8 @@ try:
             # Change suggested by Jim Sizelove.
         vtuple.append(path)
         command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+        ### apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+        os.spawnv(os.P_NOWAIT,arg[0],vtuple)
     # This clause by Jim Sizelove.
     elif openType == "subprocess.Popen":
         if isinstance(arg, basestring):
@@ -2555,7 +2557,10 @@ def modeHelpHelper (self,d):
 
     k = self ; c = k.c ; tabName = 'Mode'
     c.frame.log.clearTab(tabName)
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
 
     data = [] ; n = 20
     for key in keys:
@@ -3915,7 +3920,10 @@ def checkBindings (self):
 
     if not c.config.getBool('warn_about_missing_settings'): return
 
-    names = c.commandsDict.keys() ; names.sort()
+    if g.isPython3:
+        names = sorted(c.commandsDict)
+    else:
+        names = c.commandsDict.keys() ; names.sort()
 
     for name in names:
         abbrev = k.abbreviationsDict.get(name)
@@ -3934,13 +3942,19 @@ def dumpMasterBindingsDict (self):
     k = self ; d = k.masterBindingsDict
 
     g.pr('\nk.masterBindingsDict...\n')
-    keys = d.keys()
-    keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
+
     for key in keys:
         g.pr(key, '-' * 40)
         d2 = d.get(key)
-        keys2 = d2.keys()
-        keys2.sort()
+        if g.isPython3:
+            keys2 = sorted(d2)
+        else:
+            keys2 = d2.keys() ; keys2.sort()
+
         for key2 in keys2:
             b = d2.get(key2)
             g.pr('%20s %s' % (key2,b.commandName))
@@ -4063,7 +4077,11 @@ def makeBindingsFromCommandsDict (self):
     '''Add bindings for all entries in c.commandDict.'''
 
     k = self ; c = k.c ; d = c.commandsDict
-    keys = d.keys() ; keys.sort()
+
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
 
     for commandName in keys:
         command = d.get(commandName)
@@ -4369,7 +4387,10 @@ def modeHelpHelper (self,d):
 
     k = self ; c = k.c ; tabName = 'Mode'
     c.frame.log.clearTab(tabName)
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
 
     data = [] ; n = 20
     for key in keys:
@@ -5153,7 +5174,10 @@ def printBindings (self,event=None):
 
     k = self ; c = k.c
     d = k.bindingsDict ; tabName = 'Bindings'
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
     c.frame.log.clearTab(tabName)
     data = [] ; n1 = 4 ; n2 = 20
     if not keys: return g.es('no bindings')
@@ -5361,7 +5385,10 @@ def checkBindings (self):
 
     if not c.config.getBool('warn_about_missing_settings'): return
 
-    names = c.commandsDict.keys() ; names.sort()
+    if g.isPython3:
+        names = sorted(c.commandsDict)
+    else:
+        names = c.commandsDict.keys() ; names.sort()
 
     for name in names:
         abbrev = k.abbreviationsDict.get(name)
@@ -5380,13 +5407,19 @@ def dumpMasterBindingsDict (self):
     k = self ; d = k.masterBindingsDict
 
     g.pr('\nk.masterBindingsDict...\n')
-    keys = d.keys()
-    keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
+
     for key in keys:
         g.pr(key, '-' * 40)
         d2 = d.get(key)
-        keys2 = d2.keys()
-        keys2.sort()
+        if g.isPython3:
+            keys2 = sorted(d2)
+        else:
+            keys2 = d2.keys() ; keys2.sort()
+
         for key2 in keys2:
             b = d2.get(key2)
             g.pr('%20s %s' % (key2,b.commandName))
@@ -5509,7 +5542,11 @@ def makeBindingsFromCommandsDict (self):
     '''Add bindings for all entries in c.commandDict.'''
 
     k = self ; c = k.c ; d = c.commandsDict
-    keys = d.keys() ; keys.sort()
+
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
 
     for commandName in keys:
         command = d.get(commandName)

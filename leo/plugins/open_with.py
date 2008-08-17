@@ -223,7 +223,7 @@ def doOpenWithSettings (aList):
             data = eval(command)
             if 0:
                 g.pr(name,shortcut)
-                for i in xrange(len(data)):
+                for i in range(len(data)):
                     g.pr(i,repr(data[i]))
                 g.pr('')
             entry = name,shortcut,data

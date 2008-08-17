@@ -123,11 +123,14 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
         else:
             createNullGuiWithScript(script)
         fileName = None
-    # Load plugins. Plugins may create g.app.gui.
-    g.doHook("start1")
-    if g.app.killed: return # Support for g.app.forceShutdown.
-    # Create the default gui if needed.
-    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui', verbose=True)
+    else:
+        g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+        if g.app.killed: return # Support for g.app.forceShutdown.
+        if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     # Initialize tracing and statistics.
     g.init_sherlock(args)
     if g.app and g.app.use_psyco: startPsyco()

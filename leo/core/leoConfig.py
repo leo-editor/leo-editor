@@ -1804,6 +1804,8 @@ class configClass:
     #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
     def readSettingsFiles (self,fileName,verbose=True):
 
+        if g.isPython3: return ######
+
         seen = []
         self.write_recent_files_as_needed = False # Will be set later.
         #@    << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -2146,7 +2148,10 @@ class configClass:
         for d in self.dictList:
             self.printSettingsHelper(settings,d)
 
-        keys = settings.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(settings)
+        else:
+            keys = settings.keys() ; keys.sort()
         for key in keys:
             data = settings.get(key)
             letter,val = data
