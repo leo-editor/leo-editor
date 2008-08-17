@@ -84,6 +84,7 @@ globalDirectiveList = [
 g = None # Set by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
+isPython3 = sys.version_info >= (3,0,0)
 
 # "compile-time" constants.
 # It makes absolutely no sense to change these after Leo loads.
