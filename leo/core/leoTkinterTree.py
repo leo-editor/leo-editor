@@ -1286,7 +1286,8 @@ class leoTkinterTree (leoFrame.leoTree):
     def getIconImage (self, name):
 
         # Return the image from the cache if possible.
-        if self.iconimages.has_key(name):
+        ### if self.iconimages.has_key(name):
+        if name in self.iconimages.keys():
             return self.iconimages[name]
 
         # g.trace(name)

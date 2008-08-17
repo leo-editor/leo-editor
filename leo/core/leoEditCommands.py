@@ -5732,6 +5732,9 @@ class killBufferCommandsClass (baseEditCommandsClass):
             val = aList[i]
             self.index = i + 1
             return val
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20071003160252.2:next
         #@-others
 

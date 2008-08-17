@@ -1625,7 +1625,8 @@ class atFile:
             i += 1
         i = g.skip_c_id(s,i)
         key = s[j:i]
-        if len(key) > 0 and at.sentinelDict.has_key(key):
+        ### if len(key) > 0 and at.sentinelDict.has_key(key):
+        if len(key) > 0 and key in at.sentinelDict.keys():
             return at.sentinelDict[key]
         else:
             return at.noSentinel
@@ -4314,7 +4315,8 @@ class atFile:
             #@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
             # We set the current director to a path so future writes will go to that directory.
 
-            if not self.default_directory and not old.has_key("path") and theDict.has_key("path"):
+            ### if not self.default_directory and not old.has_key("path") and theDict.has_key("path"):
+            if not self.default_directory and not 'path' in old.keys() and 'path' in theDict.keys():
 
                 path = theDict["path"]
                 path = g.computeRelativePath(path)
@@ -4342,7 +4344,8 @@ class atFile:
             #@nl
             #@        << Test for @encoding >>
             #@+node:ekr.20041005105605.228:<< Test for @encoding >>
-            if not old.has_key("encoding") and theDict.has_key("encoding"):
+            # if not old.has_key("encoding") and theDict.has_key("encoding"):
+            if not 'encoding' in old.keys() and 'encoding' in theDict.keys():
 
                 e = g.scanAtEncodingDirective(theDict)
                 if e:

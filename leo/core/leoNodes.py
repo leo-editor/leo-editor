@@ -1757,40 +1757,21 @@ class basePosition (object):
             return self
         #@-node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
         #@+node:sps.20080331123552.5:next
-        if g.isPython3:
+        def next(self):
 
-            def __next__(self):
+            if self.first:
+                self.p = self.first
+                self.first = None
 
-                if self.first:
-                    self.p = self.first
-                    self.first = None
+            elif self.p:
+                self.moveToThreadNextUnique()
 
-                elif self.p:
-                    self.moveToThreadNextUnique()
+            if self.p:
+                return self.mapping(self.p)
 
-                if self.p:
-                    # g.trace('self.p',self.p,'self.mapping',self.mapping(self.p))
-                    return self.mapping(self.p)
+            raise StopIteration
 
-                raise StopIteration
-
-        else:
-
-                def next(self):
-
-                    if self.first:
-                        self.p = self.first
-                        self.first = None
-
-                    elif self.p:
-                        self.moveToThreadNextUnique()
-
-                    if self.p:
-                        return self.mapping(self.p)
-
-                    raise StopIteration
-
-        #__next__ = next
+        __next__ = next
         #@-node:sps.20080331123552.5:next
         #@+node:sps.20080331123552.7:moveToThreadNextUnique
         def moveToThreadNextUnique (self):

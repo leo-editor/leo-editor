@@ -355,7 +355,7 @@ def set_delims_from_string(s):
 
     # 7/8/02: The "REM hack": replace underscores by blanks.
     # 9/25/02: The "perlpod hack": replace double underscores by newlines.
-    for i in xrange(0,3):
+    for i in range(0,3):
         if delims[i]:
             delims[i] = string.replace(delims[i],"__",'\n') 
             delims[i] = string.replace(delims[i],'_',' ')
@@ -1104,7 +1104,7 @@ def getLastTracebackFileAndLineNumber():
 
     typ,val,tb = sys.exc_info()
 
-    if isPython3:
+    if g.isPython3:
         if typ in (SyntaxError,IndentationError):
             # Syntax and indentation errors are a special case.
             # extract_tb does _not_ return the proper line number!
@@ -2987,7 +2987,7 @@ def pr(s,*args,**keys):
     spaces = g.choose(
         spaces in (False,'False','false'),False,True)# default is True
 
-    if isPython3:
+    if g.isPython3:
         if not g.isString(s):
             s = repr(s)
     else:
@@ -3004,6 +3004,11 @@ def pr(s,*args,**keys):
 
     s2 = g.translateArgs(s,args,commas,spaces)
 
+    ###
+    if g.isPython3:
+        if not g.isString(s2):
+            s2 = str(s2,'utf-8')
+
     try:
         if newline:
             sys.stdout.write(s2 + '\n')
@@ -3011,6 +3016,7 @@ def pr(s,*args,**keys):
             sys.stdout.write(s2)
     except Exception:
         print('unexpected Exception in g.pr')
+        print(type(s2))
         g.es_exception()
         g.trace(g.callers())
 #@-node:ekr.20080710101653.1:pr
@@ -3052,11 +3058,14 @@ def translateString (s):
 
     '''Return the translated text of s.'''
 
-    if isPython3:
+    if g.isPython3:
+        if not g.isString(s):
+            s = str(s,'utf-8')
         if g.app.translateToUpperCase:
-            return g.toUnicode(s.upper(),'utf-8') ###
+            s = s.upper()
         else:
-            return g.toUnicode(gettext.gettext(s),'utf-8') ###
+            s = gettext.gettext(s)
+        return s
     else:
          if g.app.translateToUpperCase:
             return s.upper()
@@ -3426,7 +3435,8 @@ def skip_block_comment (s,i):
     assert(g.match(s,i,"/*"))
     j = i ; i += 2 ; n = len(s)
 
-    k = string.find(s,"*/",i)
+    ### k = string.find(s,"*/",i)
+    k = s.find("*/",i)
     if k == -1:
         g.scanError("Run on block comment: " + s[j:i])
         return n
@@ -3556,7 +3566,8 @@ def skip_pascal_block_comment(s,i):
 
     j = i
     assert(g.match(s,i,"(*"))
-    i = string.find(s,"*)",i)
+    ### i = string.find(s,"*)",i)
+    i = s.find("*)",i)
     if i > -1: return i + 2
     else:
         g.scanError("Run on comment" + s[j:i])
@@ -3701,7 +3712,8 @@ def skip_python_string(s,i,verbose=True):
 
     if g.match(s,i,"'''") or g.match(s,i,'"""'):
         j = i ; delim = s[i]*3 ; i += 3
-        k = string.find(s,delim,i)
+        ### k = string.find(s,delim,i)
+        k = s.find(delim,i)
         if k > -1: return k+3
         if verbose:
             g.scanError("Run on triple quoted string: " + s[j:i])
@@ -3785,9 +3797,11 @@ def find_line_start(s,i):
 def find_on_line(s,i,pattern):
 
     # j = g.skip_line(s,i) ; g.trace(s[i:j])
-    j = string.find(s,'\n',i)
+    ### j = string.find(s,'\n',i)
+    j = s.find('\n',i)
     if j == -1: j = len(s)
-    k = string.find(s,pattern,i,j)
+    ### k = string.find(s,pattern,i,j)
+    k = s.find(pattern,i,j)
     if k > -1: return k
     else: return None
 #@-node:ekr.20031218072017.3176:find_on_line
@@ -3837,7 +3851,8 @@ def is_ws_or_nl(s,i):
 
 def match(s,i,pattern):
 
-    return s and pattern and string.find(s,pattern,i,i+len(pattern)) == i
+    ### return s and pattern and string.find(s,pattern,i,i+len(pattern)) == i
+    return s and pattern and s.find(pattern,i,i+len(pattern)) == i
 #@-node:ekr.20031218072017.3181:match
 #@+node:ekr.20031218072017.3182:match_c_word
 def match_c_word (s,i,name):
@@ -3911,7 +3926,8 @@ def skip_line (s,i):
 
     if i >= len(s): return len(s) # Bug fix: 2007/5/22
     if i < 0: i = 0
-    i = string.find(s,'\n',i)
+    ### i = string.find(s,'\n',i)
+    i = s.find('\n',i)
     if i == -1: return len(s)
     else: return i + 1
 
@@ -3919,7 +3935,8 @@ def skip_to_end_of_line (s,i):
 
     if i >= len(s): return len(s) # Bug fix: 2007/5/22
     if i < 0: i = 0
-    i = string.find(s,'\n',i)
+    ### i = string.find(s,'\n',i)
+    i = s.find('\n',i)
     if i == -1: return len(s)
     else: return i
 
@@ -4026,14 +4043,16 @@ def skip_non_ws (s,i):
 def skip_pascal_braces(s,i):
 
     # No constructs are recognized inside Pascal block comments!
-    k = string.find(s,'}',i)
+    ### k = string.find(s,'}',i)
+    k = s.find('}',i)
     if i == -1: return len(s)
     else: return k
 #@-node:ekr.20031218072017.3192:skip_pascal_braces
 #@+node:ekr.20031218072017.3193:skip_to_char
 def skip_to_char(s,i,ch):
 
-    j = string.find(s,ch,i)
+    ### j = string.find(s,ch,i)
+    j = s.find(ch,i)
     if j == -1:
         return len(s),s[i:]
     else:
@@ -4377,7 +4396,8 @@ def reportBadChars (s,encoding):
                     g.es(s2,color='red')
     else:
         errors = 0
-        if type(s) == type(u""):
+        ### if type(s) == type(u""):
+        if type(s) == types.UnicodeType:
             for ch in s:
                 try: ch.encode(encoding,"strict")
                 except UnicodeEncodeError:
@@ -4388,7 +4408,8 @@ def reportBadChars (s,encoding):
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     g.es(s2,color='red')
-        elif type(s) == type(""):
+        ### elif type(s) == type(""):
+        elif type(s) in types.StringTypes:
             for ch in s:
                 try: unicode(ch,encoding,"strict")
                 except Exception: errors += 1
@@ -5380,6 +5401,9 @@ class readLinesClass:
             line = ''
         # g.trace(repr(line))
         return line
+
+    ###
+    __next__ = next
 #@-node:EKR.20040612114220.4:class readLinesClass
 #@-node:ekr.20040629162023:readLines class and generator
 #@-node:EKR.20040612114220:Utility classes, functions & objects...

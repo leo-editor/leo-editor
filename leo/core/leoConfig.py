@@ -410,6 +410,7 @@ class parserBaseClass:
         p = p.copy() ; after = p.nodeAfterTree()
         while p and p != after:
             h = p.headString()
+            if g.isPython3: g.trace(p.headString())
             if g.match_word(h,0,tag):
                 name = h[len(tag):].strip()
                 if name:
@@ -439,10 +440,13 @@ class parserBaseClass:
     #@+node:ekr.20070926141716:doItems
     def doItems (self,p,aList):
 
+        #### return ######
+
         p = p.copy() ; after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
             h = p.headString()
+            if g.isPython3: g.trace(p.headString())
             for tag in ('@menu','@item'):
                 if g.match_word(h,0,tag):
                     itemName = h[len(tag):].strip()
@@ -464,7 +468,6 @@ class parserBaseClass:
             else:
                 # g.trace('***skipping***',p.headString())
                 p.moveToThreadNext()
-    #@nonl
     #@-node:ekr.20070926141716:doItems
     #@+node:ekr.20070926142312:dumpMenuList
     def dumpMenuList (self,aList,level=0):
@@ -1051,7 +1054,9 @@ class parserBaseClass:
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)
-            # g.trace(result,p.headString())
+            if g.isPython3: g.trace(result,p.headString())
+            if p.headString() == 'Menus':
+                if g.isPython3: g.pdb()
             if result == "skip":
                 # g.es_print('skipping settings in',p.headString(),color='blue')
                 p.moveToNodeAfterTree()
@@ -1851,6 +1856,7 @@ class configClass:
 
                 c = self.openSettingsFile(path)
                 if c:
+                    g.trace(g.callers())
                     self.updateSettings(c,localFlag)
                     g.app.destroyWindow(c.frame)
                     self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')

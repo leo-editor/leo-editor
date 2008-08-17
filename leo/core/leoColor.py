@@ -3100,21 +3100,25 @@ class colorizer:
             #@+node:ekr.20031218072017.1378:<< Test for @comment or @language >>
             # @comment and @language may coexist in the same node.
 
-            if theDict.has_key("comment"):
+            ### if theDict.has_key("comment"):
+            if 'comment' in theDict.keys():
                 self.comment_string = theDict["comment"]
 
-            if theDict.has_key("language"):
+            ### if theDict.has_key("language"):
+            if 'language' in theDict.keys():
                 z = theDict["language"]
                 language,junk,junk,junk = g.set_language(z,0)
                 self.language = language
 
-            if theDict.has_key("comment") or theDict.has_key("language"):
+            ### if theDict.has_key("comment") or theDict.has_key("language"):
+            if 'comment' in theDict.keys() or 'language' in theDict.keys():
                 break
             #@-node:ekr.20031218072017.1378:<< Test for @comment or @language >>
             #@nl
             #@        << Test for @root, @root-doc or @root-code >>
             #@+node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-            if theDict.has_key("root") and not self.rootMode:
+            ### if theDict.has_key("root") and not self.rootMode:
+            if 'root' in theDict.keys() and not self.rootMode:
 
                 root = theDict["root"]
                 if g.match_word(root,0,"@root-code"):

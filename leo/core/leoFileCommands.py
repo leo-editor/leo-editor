@@ -21,12 +21,9 @@ try:
     import cStringIO # Python 2.x
     StringIO = cStringIO.StringIO
 except ImportError:
-    ### In some cases, we may want to use io.BytesIO instead
-
-    ### Hangs.
-    from io import BytesIO as cStringIO
-    # from io import StringIO as cStringIO
-    StringIO = cStringIO
+    import io # Pythone 3.x
+    # StringIO = io.StringIO
+    # BytesIO = io.BytesIO
 
 import os
 import pickle
@@ -1263,11 +1260,22 @@ class baseFileCommands:
         # g.trace('hiddenRootNode',c.hiddenRootNode)
 
         try:
-            # Use cStringIo to avoid a crash in sax when inputFileName has unicode characters.
-            if theFile:
-                s = theFile.read()
-            ### theFile = cStringIO.StringIO(s)
-            theFile = StringIO(s)
+            # Use StringIo to avoid a crash in sax when inputFileName has unicode characters.
+            if g.isPython3:
+                pass # theFile should already be good enough: but it's seems very slow...
+                if 0:
+                    if theFile:
+                        # theFile = s # Does not work
+                        s = theFile.read() # This produces bytes.
+                    theFile = io.BytesIO(s) ### hangs
+                # theFile = io.BufferedReader(s)
+                # g.trace('type(s)',type(s),'len(s)',len(s),s[:200],'\n')
+                g.trace('theFile',theFile)
+                ### return None ### Otherwise the parser hangs.
+            else:
+                if theFile:
+                    s = theFile.read()
+                theFile = StringIO(s)
             # g.trace(repr(inputFileName))
             node = None
             parser = xml.sax.make_parser()
@@ -1279,7 +1287,12 @@ class baseFileCommands:
                     # Hopefully the parser can figure out the encoding from the <?xml> element.
             handler = saxContentHandler(c,inputFileName,silent,inClipboard)
             parser.setContentHandler(handler)
+            # g.trace('parser.parse(%s)' % theFile)
+            ### theFile must be a byte stream
+            ### hangs in a loop in xmlreader.py near line 124.
+            ### I hacked the code to fix it.
             parser.parse(theFile) # expat does not support parseString
+            # g.trace('parsing done')
             sax_node = handler.getRootNode()
         except xml.sax.SAXParseException:
             g.es_print('error parsing',inputFileName,color='red')
