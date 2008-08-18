@@ -3734,11 +3734,14 @@ class baseCommands:
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
                     #@nl
-            except AssertionError(message):
+            except AssertionError: ### as message:
                 errors += 1
                 #@            << give test failed message >>
                 #@+node:ekr.20040314044652:<< give test failed message >>
-                s = "test failed at position %s\n%s" % (repr(p),message)
+                junk, value, junk = sys.exc_type()
+
+                s = "test failed at position %s\n%s" % (repr(p),value)
+
                 g.es_print(s,color="red")
                 #@-node:ekr.20040314044652:<< give test failed message >>
                 #@nl

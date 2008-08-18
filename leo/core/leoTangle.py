@@ -583,7 +583,8 @@ class baseTangleCommands:
             g.es("looking for a parent to tangle...")
             while p:
                 d = g.get_directives_dict(p,[self.head_root])
-                if d.has_key("root"):
+                ### if d.has_key("root"):
+                if 'root' in d:
                     g.es("tangling parent")
                     self.tangleTree(p,report_errors)
                     break
@@ -658,7 +659,8 @@ class baseTangleCommands:
             self.p = p
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            is_ignore = theDict.has_key("ignore")
+            ### is_ignore = theDict.has_key("ignore")
+            is_ignore = 'ignore' in theDict
             if is_ignore:
                 p.moveToNodeAfterTree()
                 continue
@@ -711,9 +713,12 @@ class baseTangleCommands:
         while p and p != next:
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            is_ignore = theDict.has_key("ignore")
-            is_root = theDict.has_key("root")
-            is_unit = theDict.has_key("unit")
+            # is_ignore = theDict.has_key("ignore")
+            # is_root = theDict.has_key("root")
+            # is_unit = theDict.has_key("unit")
+            is_ignore = 'ignore' in theDict
+            is_root = 'root' in theDict
+            is_unit = 'unit' in theDict
             if is_ignore:
                 p.moveToNodeAfterTree()
             elif not is_root and not is_unit:
@@ -900,9 +905,12 @@ class baseTangleCommands:
         while p and p != afterEntireTree and self.errors + g.app.scanErrors == 0:
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            ignore = theDict.has_key("ignore")
-            root = theDict.has_key("root")
-            unit = theDict.has_key("unit")
+            # ignore = theDict.has_key("ignore")
+            # root = theDict.has_key("root")
+            # unit = theDict.has_key("unit")
+            ignore = 'ignore' in theDict
+            root = 'root' in theDict
+            unit = 'unit' in theDict
             if ignore:
                 p.moveToNodeAfterTree()
             elif unit:
@@ -913,7 +921,8 @@ class baseTangleCommands:
                 while p and p != afterUnit and self.errors + g.app.scanErrors== 0:
                     self.setRootFromHeadline(p)
                     theDict = g.get_directives_dict(p,[self.head_root])
-                    root = theDict.has_key("root")
+                    ### root = theDict.has_key("root")
+                    root = 'root' in theDict
                     if root:
                         any_root_flag = True
                         end = None
@@ -2094,7 +2103,8 @@ class baseTangleCommands:
         else:
             key = self.standardize_name(name)
 
-        if self.tst.has_key(key):
+        ### if self.tst.has_key(key):
+        if key in self.tst:
             section = self.tst[key]
             # g.trace("found:" + key)
             return section
@@ -2153,7 +2163,8 @@ class baseTangleCommands:
         #@-node:ekr.20031218072017.3541:<< remove blank lines from the start and end of the text >>
         #@nl
         u = ust_node(name,code,part,of,nl_flag,False) # update_flag
-        if not self.ust.has_key(name):
+        ### if not self.ust.has_key(name):
+        if name not in self.ust:
             self.ust[name] = u
         section = self.ust[name]
         section.parts[part]=u # Parts may be defined in any order.
@@ -2170,9 +2181,11 @@ class baseTangleCommands:
             name = self.standardize_name(name)
 
         if part_number == 0: part_number = 1 # A hack: zero indicates the first part.
-        if self.ust.has_key(name):
+        ### if self.ust.has_key(name):
+        if name in self.ust:
             section = self.ust[name]
-            if section.parts.has_key(part_number):
+            ### if section.parts.has_key(part_number):
+            if part_number in section.parts:
                 part = section.parts[part_number]
                 if update_flag: part.update_flag = True
                 # g.trace("found: %d (%d)...\n" % (name,part_number,g.get_line(part.code,0)))
@@ -3473,10 +3486,12 @@ class baseTangleCommands:
             theDict = g.get_directives_dict(p)
             #@        << Test for @comment and @language >>
             #@+node:ekr.20031218072017.1362:<< Test for @comment and @language >>
-            if old.has_key("comment") or old.has_key("language"):
+            ### if old.has_key("comment") or old.has_key("language"):
+            if 'comment' in old or 'language' in old:
                 pass # Do nothing more.
 
-            elif theDict.has_key("comment"):
+            ### elif theDict.has_key("comment"):
+            elif 'comment' in theDict:
 
                 z = theDict["comment"]
                 delim1,delim2,delim3 = g.set_delims_from_string(z)
@@ -3490,7 +3505,8 @@ class baseTangleCommands:
                     if issue_error_flag:
                         g.es("ignoring: @comment",z)
 
-            elif theDict.has_key("language"):
+            ### elif theDict.has_key("language"):
+            elif 'language' in theDict:
 
                 z = theDict["language"]
                 language,delim1,delim2,delim3 = g.set_language(z,0)
@@ -3512,7 +3528,8 @@ class baseTangleCommands:
             #@nl
             #@        << Test for @encoding >>
             #@+node:ekr.20031218072017.1363:<< Test for @encoding >>
-            if not old.has_key("encoding") and theDict.has_key("encoding"):
+            ### if not old.has_key("encoding") and theDict.has_key("encoding"):
+            if 'encoding' not in old and 'encoding' in theDict:
 
                 e = g.scanAtEncodingDirective(theDict)
                 if e:
@@ -3521,7 +3538,8 @@ class baseTangleCommands:
             #@nl
             #@        << Test for @lineending >>
             #@+node:ekr.20031218072017.1364:<< Test for @lineending >>
-            if not old.has_key("lineending") and theDict.has_key("lineending"):
+            ### if not old.has_key("lineending") and theDict.has_key("lineending"):
+            if 'lineending' not in old and 'lineending' in theDict:
 
                 lineending = g.scanAtLineendingDirective(theDict)
                 if lineending:
@@ -3539,7 +3557,8 @@ class baseTangleCommands:
 
             if not print_mode_changed:
                 for name in ("verbose","terse","quiet","silent"):
-                    if theDict.has_key(name):
+                    ### if theDict.has_key(name):
+                    if name in theDict:
                         self.print_mode = name
                         print_mode_changed = True
                         break
@@ -3547,7 +3566,8 @@ class baseTangleCommands:
             #@nl
             #@        << Test for @path >>
             #@+node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-            if require_path_flag and not old.has_key("path") and theDict.has_key("path"):
+            ### if require_path_flag and not old.has_key("path") and theDict.has_key("path"):
+            if require_path_flag and 'path' not in old and 'path' in theDict:
 
                 path = theDict["path"]
                 theDir = relative_path = g.computeRelativePath(path)
@@ -3583,7 +3603,8 @@ class baseTangleCommands:
             #@nl
             #@        << Test for @pagewidth >>
             #@+node:ekr.20031218072017.1369:<< Test for @pagewidth >>
-            if not old.has_key("pagewidth") and theDict.has_key("pagewidth"):
+            ### if not old.has_key("pagewidth") and theDict.has_key("pagewidth"):
+            if 'pagewidth' not in old and 'pagewidth' in theDict:
 
                 w = g.scanAtPagewidthDirective(theDict,issue_error_flag)
                 if w and w > 0:
@@ -3600,14 +3621,17 @@ class baseTangleCommands:
             # 
             #@-at
             #@@c
-            if self.root_name == None and theDict.has_key("root"):
+            ### if self.root_name == None and theDict.has_key("root"):
+            if self.root_name == None and 'root' in theDict:
+
                 z = theDict["root"]
                 self.setRootFromText(z,issue_error_flag)
             #@-node:ekr.20031218072017.1370:<< Test for @root >>
             #@nl
             #@        << Test for @tabwidth >>
             #@+node:ekr.20031218072017.1371:<< Test for @tabwidth >>
-            if not old.has_key("tabwidth") and theDict.has_key("tabwidth"):
+            ### if not old.has_key("tabwidth") and theDict.has_key("tabwidth"):
+            if 'tabwidth' not in old and 'tabwidth' in theDict:
 
                 w = g.scanAtTabwidthDirective(theDict,issue_error_flag)
                 if w and w != 0:
@@ -3616,17 +3640,21 @@ class baseTangleCommands:
             #@nl
             #@        << Test for @header and @noheader >>
             #@+node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
-            if old.has_key("header") or old.has_key("noheader"):
+            ### if old.has_key("header") or old.has_key("noheader"):
+            if 'header' in old or 'noheader' in old:
                 pass # Do nothing more.
 
-            elif theDict.has_key("header") and theDict.has_key("noheader"):
+            ### elif theDict.has_key("header") and theDict.has_key("noheader"):
+            elif 'header' in theDict and 'noheader' in theDict:
                 if issue_error_flag:
                     g.es("conflicting @header and @noheader directives")
 
-            elif theDict.has_key("header"):
+            ### elif theDict.has_key("header"):
+            elif 'header' in theDict:
                 self.use_header_flag = True
 
-            elif theDict.has_key("noheader"):
+            ### elif theDict.has_key("noheader"):
+            elif 'noheader' in theDict:
                 self.use_header_flag = False
             #@-node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
             #@nl

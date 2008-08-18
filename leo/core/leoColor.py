@@ -3186,9 +3186,12 @@ class colorizer:
         self.killFlag = False
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            no_color = theDict.has_key("nocolor")
-            color = theDict.has_key("color")
-            kill_color = theDict.has_key("killcolor")
+            # no_color = theDict.has_key("nocolor")
+            # color = theDict.has_key("color")
+            # kill_color = theDict.has_key("killcolor")
+            no_color = 'nocolor' in theDict
+            color = 'color' in theDict
+            kill_color = 'killcolor' in theDict
             # A killcolor anywhere disables coloring.
             if kill_color:
                 self.killFlag = True

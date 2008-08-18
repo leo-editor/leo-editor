@@ -126,7 +126,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     if g.isPython3:
         # Create the curses gui.
         import leo.core.leoPlugins as leoPlugins
-        leoPlugins.loadOnePlugin ('cursesGui', verbose=True)
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     else:
         g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
         if g.app.killed: return # Support for g.app.forceShutdown.

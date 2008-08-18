@@ -705,7 +705,8 @@ class leoImportCommands:
 
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            if theDict.has_key("path"):
+            ### if theDict.has_key("path"):
+            if 'path' in theDict:
                 #@            << handle @path >>
                 #@+node:ekr.20080211085914.2:<< handle @path >>
                 # We set the current director to a path so future writes will go to that directory.

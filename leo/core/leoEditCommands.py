@@ -1061,7 +1061,7 @@ class controlCommandsClass (baseEditCommandsClass):
             ofile.seek(0)
             okout = ofile.read()
             if okout: w.insert('insert',okout)
-        except Exception(x):
+        except Exception:
             w.insert('insert',x)
 
         k.setLabelGrey('finished shell-command: %s' % command)
@@ -6301,7 +6301,8 @@ class macroCommandsClass (baseEditCommandsClass):
         except Exception:
             macs = {}
         f.close()
-        if self.namedMacros.has_key( name ):
+        ### if self.namedMacros.has_key( name ):
+        if name in self.namedMacros:
             macs[ name ] = self.namedMacros[ name ]
             f = open( fname, 'w' )
             pickle.dump( macs, f )
@@ -6392,7 +6393,8 @@ class macroCommandsClass (baseEditCommandsClass):
 
         k= self ; c = k.c
 
-        if c.commandsDict.has_key(name):
+        ### if c.commandsDict.has_key(name):
+        if name in c.commandsDict:
             return False
 
         def func (event,macro=macro):
@@ -8468,7 +8470,8 @@ class spellTabHandler (leoFind.leoFind):
                 #@-at
                 #@@c
 
-                if self.dictionary.has_key(word.lower()):
+                ### if self.dictionary.has_key(word.lower()):
+                if word.lower() in self.dictionary:
                     continue
                 #@-node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
                 #@nl

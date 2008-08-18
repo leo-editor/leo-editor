@@ -806,7 +806,8 @@ class baseFileCommands:
         if g.unified_nodes: t = leoNodes.vnode(context=c)
         else:               t = leoNodes.tnode()
 
-        if self.tnodesDict.has_key(index):
+        ### if self.tnodesDict.has_key(index):
+        if index in self.tnodesDict:
             g.es("bad tnode index:",str(index),"using empty text.")
             return t
         else:

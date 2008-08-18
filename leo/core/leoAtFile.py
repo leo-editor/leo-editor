@@ -4360,14 +4360,17 @@ class atFile:
             # 1/23/05: Any previous @language or @comment prevents processing up the tree.
             # This code is now like the code in tangle.scanAlldirectives.
 
-            if old.has_key("comment") or old.has_key("language"):
+            ### if old.has_key("comment") or old.has_key("language"):
+            if 'comment' in old or 'language' in old:
                 pass # Do nothing more.
 
-            elif theDict.has_key("comment"):
+            ### elif theDict.has_key("comment"):
+            elif 'comment' in theDict:
                 z = theDict["comment"]
                 delim1, delim2, delim3 = g.set_delims_from_string(z)
 
-            elif theDict.has_key("language"):
+            ### elif theDict.has_key("language"):
+            elif 'language' in theDict:
                 z = theDict["language"]
                 self.language,delim1,delim2,delim3 = g.set_language(z,0)
             #@-node:ekr.20041005105605.229:<< Test for @comment and @language >>
@@ -4375,13 +4378,15 @@ class atFile:
             #@        << Test for @header and @noheader >>
             #@+node:ekr.20041005105605.230:<< Test for @header and @noheader >>
             # EKR: 10/10/02: perform the sames checks done by tangle.scanAllDirectives.
-            if theDict.has_key("header") and theDict.has_key("noheader"):
+            ### if theDict.has_key("header") and theDict.has_key("noheader"):
+            if 'header' in theDict and 'noheader' in theDict:
                 g.es("conflicting @header and @noheader directives")
             #@-node:ekr.20041005105605.230:<< Test for @header and @noheader >>
             #@nl
             #@        << Test for @lineending >>
             #@+node:ekr.20041005105605.231:<< Test for @lineending >>
-            if not old.has_key("lineending") and theDict.has_key("lineending"):
+            ### if not old.has_key("lineending") and theDict.has_key("lineending"):
+            if 'lineending' not in old and 'lineending' in theDict:
 
                 lineending = g.scanAtLineendingDirective(theDict)
                 if lineending:
@@ -4392,7 +4397,8 @@ class atFile:
             #@nl
             #@        << Test for @pagewidth >>
             #@+node:ekr.20041005105605.232:<< Test for @pagewidth >>
-            if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
+            ### if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
+            if 'pagewidth' in theDict and 'pagewidth' not in old:
 
                 w = g.scanAtPagewidthDirective(theDict,issue_error_flag=True)
                 if w and w > 0:
@@ -4401,7 +4407,8 @@ class atFile:
             #@nl
             #@        << Test for @tabwidth >>
             #@+node:ekr.20041005105605.233:<< Test for @tabwidth >>
-            if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
+            ### if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
+            if 'tabwidth' in theDict and 'tabwidth' not in old:
 
                 w = g.scanAtTabwidthDirective(theDict,issue_error_flag=True)
                 if w and w != 0:
@@ -4502,7 +4509,8 @@ class atFile:
 
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            if theDict.has_key("path"):
+            ### if theDict.has_key("path"):
+            if 'path' in theDict:
                 #@            << handle @path >>
                 #@+node:ekr.20041005105605.238:<< handle @path >>
                 # We set the current director to a path so future writes will go to that directory.

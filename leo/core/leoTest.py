@@ -326,7 +326,8 @@ def makeObjectList(message):
     global lastObjectsDict
     objects = gc.get_objects()
 
-    newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
+    ### newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
+    newObjects = [o for o in objects if id(o) not in lastObjectsDict]
 
     lastObjectsDict = {}
     for o in objects:
@@ -393,7 +394,8 @@ def printGc(message=None):
             if type(obj) == types.FunctionType:
                 key = repr(obj) # Don't create a pointer to the object!
                 funcDict[key]=None 
-                if not lastFunctionsDict.has_key(key):
+                # if not lastFunctionsDict.has_key(key):
+                if key not in lastFunctionsDict:
                     g.pr('\n',obj)
                     args, varargs, varkw,defaults  = inspect.getargspec(obj)
                     g.pr("args", args)

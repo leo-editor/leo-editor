@@ -1302,7 +1302,8 @@ def scanDefaultDirectory(self,p,importing=False):
 
     for p in p.self_and_parents_iter():
         theDict = g.get_directives_dict(p)
-        if theDict.has_key("path"):
+        ### if theDict.has_key("path"):
+        if 'path' in theDict:
             << handle @path >>
             return
 
@@ -4071,6 +4072,9 @@ def updateSettings (self,c,localFlag):
 # Also called when opening an .leo file to read @settings tree.
 
 def readSettings (self,c,localFlag):
+
+    if g.isPython3:
+        return {} ###
 
     """Read settings from a file that may contain an @settings tree."""
 
@@ -7210,7 +7214,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     if g.isPython3:
         # Create the curses gui.
         import leo.core.leoPlugins as leoPlugins
-        leoPlugins.loadOnePlugin ('cursesGui', verbose=True)
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     else:
         g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
         if g.app.killed: return # Support for g.app.forceShutdown.
@@ -12981,7 +12985,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     if g.isPython3:
         # Create the curses gui.
         import leo.core.leoPlugins as leoPlugins
-        leoPlugins.loadOnePlugin ('cursesGui', verbose=True)
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     else:
         g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
         if g.app.killed: return # Support for g.app.forceShutdown.
@@ -15540,6 +15544,9 @@ def updateSettings (self,c,localFlag):
 # Also called when opening an .leo file to read @settings tree.
 
 def readSettings (self,c,localFlag):
+
+    if g.isPython3:
+        return {} ###
 
     """Read settings from a file that may contain an @settings tree."""
 
