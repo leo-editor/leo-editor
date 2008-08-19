@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="-8" left="300" height="961" width="700"/>
+	<global_window_position top="10" left="300" height="961" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4,7,9,2"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -312,7 +312,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413"><vh>File options</vh>
+<v t="ekr.20061003173413" a="E"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
@@ -335,9 +335,10 @@
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
 </v>
-<v t="ekr.20060730101451"><vh>Shadow files</vh>
+<v t="ekr.20060730101451" a="E"><vh>Shadow files</vh>
 <v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
 <v t="ekr.20060730101451.5"><vh>@string shadow_subdir = .leo_shadow</vh></v>
+<v t="ekr.20080819075811.11"><vh>@data shadow_delims</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.20" annotate="7d71002e"><vh>Find/Change panel</vh>
@@ -7549,6 +7550,20 @@ lcd2c" "
 True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080819075811.5">This node just keeps track of the accelerators in the siblings.</t>
 <t tx="ekr.20080819075811.6"></t>
+<t tx="ekr.20080819075811.11"># Comment lines starting with '#' (like this one) are ignored.
+
+# Non-comment lines associate extensions with comment delimers.
+# lines have one of the following two forms:
+#
+#    .ext delim
+#    .ext delim1 delim2
+#
+# The first form specifies the comment delimiter for single-line comments.
+# The second form specifies the comment delims for block comments.
+#
+# For example:
+
+.huh ##</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

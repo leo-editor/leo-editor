@@ -313,7 +313,9 @@ def set_delims_from_language(language):
 
     # g.trace(g.callers())
 
-    val = app.language_delims_dict.get(language)
+    val = g.app.language_delims_dict.get(language)
+    # if language.startswith('huh'): g.pdb()
+
     if val:
         delim1,delim2,delim3 = g.set_delims_from_string(val)
         if delim2 and not delim3:

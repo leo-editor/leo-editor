@@ -1706,6 +1706,10 @@ class leoImportCommands:
             g.app.extra_extension_dict.get(ext) or
             g.app.extension_dict.get(ext))
 
+        # g.trace(ext,repr(language))
+
+        return language ### return the langauge even if there is no mode for it.
+
         if language:
             if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
                 return language

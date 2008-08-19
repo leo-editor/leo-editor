@@ -2538,7 +2538,7 @@ class atFile:
 
         return found
     #@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
-    #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helper
+    #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
     def writeOneAtShadowNode(self,p,toString,force):
 
         '''Write p, an @shadow node.
@@ -2551,6 +2551,9 @@ class atFile:
         if not fn:
             g.trace('can not happen: not an @shadow node',p.headString())
             return False
+
+        # A hack to support unknown extensions.
+        c.target_language = self.adjustTargetLanguage(fn)
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
         fn = g.os_path_join(at.default_directory,fn)
@@ -2565,7 +2568,8 @@ class atFile:
             thinFile=True, # New in Leo 4.5 b2: private files are thin files.
             scriptWrite=False,
             toString=False, # True: create a fileLikeObject.  This is done below.
-            write_strips_blank_lines=False)
+            write_strips_blank_lines=False,
+        )
                 # at.targetFileName not used.
 
         if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
@@ -2649,7 +2653,29 @@ class atFile:
         else: # The @shadow tree is dirty and contains significant info.
             return True
     #@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
-    #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helper
+    #@+node:ekr.20080819075811.13:NewHeadline
+    def adjustTargetLanguage (self,fn):
+
+        """Use the language implied by fn's extension if
+        there is a conflict between it and c.target_language."""
+
+        at = self ; c = at.c
+
+        if c.target_language:
+            junk,target_ext = g.os_path_splitext(fn)  
+        else:
+            target_ext = ''
+
+        junk,ext = g.os_path_splitext(fn)
+
+        if ext:
+            if ext.startswith('.'): ext = ext[1:]
+            language = g.app.extension_dict.get(ext)
+            if language != target_ext:
+                c.target_language = language
+                # g.trace('setting target language',language)
+    #@-node:ekr.20080819075811.13:NewHeadline
+    #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
     #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     #@+node:ekr.20050506084734:writeFromString
     # This is at.write specialized for scripting.
@@ -4253,7 +4279,10 @@ class atFile:
     #@-at
     #@@c
 
-    def scanAllDirectives(self,p,scripting=False,importing=False,reading=False,forcePythonSentinels=False):
+    def scanAllDirectives(self,p,
+        scripting=False,importing=False,
+        reading=False,forcePythonSentinels=False,
+    ):
 
         """Scan position p and p's ancestors looking for directives,
         setting corresponding atFile ivars.
@@ -4270,6 +4299,7 @@ class atFile:
 
         self.default_directory = None # 8/2: will be set later.
 
+        # g.trace(c.target_language)
         if c.target_language:
             c.target_language = c.target_language.lower() # 6/20/05
         delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
@@ -4437,9 +4467,10 @@ class atFile:
                 self.endSentinelComment = delim3
             else: # Emergency!
                 # assert(0)
-                g.es("unknown language: using Python comment delimiters")
-                g.es("c.target_language:",c.target_language)
-                g.es('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+                if not g.app.unitTesting:
+                    g.es_print("unknown language: using Python comment delimiters")
+                    g.es_print("c.target_language:",c.target_language)
+                    g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
                 self.startSentinelComment = "#" # This should never happen!
                 self.endSentinelComment = ""
 

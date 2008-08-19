@@ -54,7 +54,7 @@ class shadowController:
     '''A class to manage @shadow files'''
 
     #@    @+others
-    #@+node:ekr.20080708094444.79: x.ctor
+    #@+node:ekr.20080708094444.79: x.ctor & helper
     def __init__ (self,c,trace=False,trace_writers=False):
 
         self.c = c
@@ -74,7 +74,39 @@ class shadowController:
         # Support for goto-line-number.
         self.line_mapping = []
 
-    #@-node:ekr.20080708094444.79: x.ctor
+        self.setDelims()
+
+    #@+node:ekr.20080819075811.12:x.setDelims
+    def setDelims (self):
+
+        data = self.c.config.getData('shadow_delims') or []
+
+        # g.trace('shadowController',self.delims_data)
+        if data:
+            for s in data:
+                s = s.strip()
+                if s:
+                    aList = s.split(' ')
+                    aList = [z.strip() for z in aList if z.strip()]
+                    if len(aList) == 2:
+                        ext,delim = aList
+                        delims = delim
+                    elif len(aList) == 3:
+                        ext,delim1,delim2 = aList
+                        delims = '%s %s' % (delim1,delim2)
+                    else:
+                        g.es_print('ignoring bad @data shadow_delims entry',repr(s),color='red')
+
+                    if len(aList) in (2,3):
+                        if ext.startswith('.'): ext = ext[1:]
+                        language = '%s_language' % ext
+                        if ext and not g.app.language_delims_dict.get(language):
+                            # g.trace('Adding entries for ext=%s, delims=%s' % (ext,repr(delims)))
+                            g.app.language_delims_dict[language] = delims
+                            g.app.language_extension_dict[language] = ext
+                            g.app.extension_dict[ext] = language
+    #@-node:ekr.20080819075811.12:x.setDelims
+    #@-node:ekr.20080708094444.79: x.ctor & helper
     #@+node:ekr.20080711063656.1:x.File utils
     #@+node:ekr.20080711063656.7:x.baseDirName
     def baseDirName (self):

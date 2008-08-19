@@ -142,7 +142,7 @@ class LeoApp:
 
         self.language_extension_dict = {
             # Keys are languages, values are extensions.
-            "ada" : "ads",
+            "ada" : "ada",
             "actionscript" : "as", #jason 2003-07-03
             "autohotkey" : "ahk", #TL - AutoHotkey language
             "c" : "c",
@@ -179,7 +179,7 @@ class LeoApp:
 
         self.extension_dict = {
             # Keys are extensions, values are languages.
-            "ads"   : "ada",
+            "ada"   : "ada",
             "adb"   : "ada",
             "ahk"   : "autohotkey", #TL - AutoHotkey language
             "as"    : "actionscript",
@@ -194,8 +194,8 @@ class LeoApp:
             "html"  : "html",
             "ini"   : "ini",
             "java"  : "java",
-            "lua" : "lua",  # ddm 13/02/06
-            "noweb" : "nw",
+            "lua"   : "lua",  # ddm 13/02/06
+            "nw"    : "noweb",
             "p"     : "pascal",
             # "perl"  : "perl",
             "pl"    : "perl",   # 11/7/05
@@ -215,18 +215,21 @@ class LeoApp:
         # Extra language extensions, used to associate extensions with mode files.
         # Used by importCommands.languageForExtension.
         # Keys are extensions, values are corresponding mode file (without .py)
+        # A value of 'none' is a signal to unit tests that no extension file exists.
         self.extra_extension_dict = {
             'actionscript': 'actionscript',
             'ada':  'ada95',
+            'adb':  'none',
             'ahk':  'ahk',
             'awk':  'awk',
-            # 'bas':  'basic',
+            'bas':  'none', # rapidq
             'cpp':  'c',
             'el':   'lisp',
             'f':    'fortran',
+            'nw':   'none',
             'pod':  'perl',
             'tcl':  'tcl',
-            # 'w':  'cweb',
+            'w':    'none', # cweb
         }
         #@nonl
         #@-node:ekr.20031218072017.368:<< define global data structures >> app
