@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E" str_leo_pos="2,3,1,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
@@ -107,8 +107,8 @@
 </v>
 <v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
 </v>
-<v t="ekr.20070410063214"><vh>Commands</vh>
-<v t="ekr.20060924180049"><vh>@@command clones-tab</vh>
+<v t="ekr.20070410063214" a="E"><vh>Commands</vh>
+<v t="ekr.20060924180049" a="E"><vh>@@command clones-tab</vh>
 <v t="ekr.20060924180049.1"><vh>class cloneNavigator</vh>
 <v t="ekr.20060924180049.2"><vh>init</vh></v>
 <v t="ekr.20060924180049.3"><vh>getAllClones</vh></v>
@@ -133,7 +133,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
@@ -185,9 +185,9 @@
 <v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
 <v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
 </v>
-<v t="edreamleo.20080110083531"><vh>gtk stuff</vh>
+<v t="edreamleo.20080110083531" a="E"><vh>gtk stuff</vh>
 <v t="edreamleo.20080110130828"><vh>createWindow</vh></v>
-<v t="bob.20080111200056"><vh>@thin gtkOutlineDemo.py</vh></v>
+<v t="bob.20080111200056" a="E"><vh>@thin gtkOutlineDemo.py</vh></v>
 </v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>

@@ -4380,6 +4380,30 @@ class baseCommands:
 
         c.expansionLevel = 1 # Reset expansion level.
     #@-node:ekr.20031218072017.2900:contractAllHeadlines
+    #@+node:ekr.20080819075811.3:contractAllOtherNodes & helper
+    def contractAllOtherNodes (self,event=None):
+
+        c = self ; leaveOpen = c.currentPosition()
+
+        for p in c.rootPosition().self_and_siblings_iter():
+            c.contractIfNotCurrent(p,leaveOpen)
+        c.redraw()
+
+    def contractIfNotCurrent(self,p,leaveOpen):
+
+        c = self
+
+        if p == leaveOpen or not p.isAncestorOf(leaveOpen):
+            p.contract()
+
+        for child in p.children_iter():
+            if child != leaveOpen and child.isAncestorOf(leaveOpen):
+                c.contractIfNotCurrent(child,leaveOpen)
+            else:
+                for p2 in child.self_and_subtree_iter():
+                    p2.contract()
+    #@nonl
+    #@-node:ekr.20080819075811.3:contractAllOtherNodes & helper
     #@+node:ekr.20031218072017.2901:contractNode
     def contractNode (self,event=None):
 
