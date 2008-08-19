@@ -219,14 +219,14 @@ class LeoApp:
         self.extra_extension_dict = {
             'actionscript': 'actionscript',
             'ada':  'ada95',
-            'adb':  'none',
+            'adb':  'none', # ada??
             'ahk':  'ahk',
             'awk':  'awk',
             'bas':  'none', # rapidq
             'cpp':  'c',
             'el':   'lisp',
             'f':    'fortran',
-            'nw':   'none',
+            'nw':   'none', # noweb.
             'pod':  'perl',
             'tcl':  'tcl',
             'w':    'none', # cweb
