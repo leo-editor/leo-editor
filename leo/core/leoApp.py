@@ -137,6 +137,7 @@ class LeoApp:
             "shell" : "#",  # shell scripts
             "tcltk" : "#",
             "unknown" : "#", # Set when @comment is seen.
+            "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
             "xml" : "<!-- -->",
         }
 
@@ -229,6 +230,7 @@ class LeoApp:
             'nw':   'none', # noweb.
             'pod':  'perl',
             'tcl':  'tcl',
+            'unknown_language': 'none',
             'w':    'none', # cweb
         }
         #@nonl

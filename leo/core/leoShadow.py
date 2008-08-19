@@ -54,7 +54,7 @@ class shadowController:
     '''A class to manage @shadow files'''
 
     #@    @+others
-    #@+node:ekr.20080708094444.79: x.ctor & helper
+    #@+node:ekr.20080708094444.79: x.ctor
     def __init__ (self,c,trace=False,trace_writers=False):
 
         self.c = c
@@ -73,40 +73,7 @@ class shadowController:
 
         # Support for goto-line-number.
         self.line_mapping = []
-
-        self.setDelims()
-
-    #@+node:ekr.20080819075811.12:x.setDelims
-    def setDelims (self):
-
-        data = self.c.config.getData('shadow_delims') or []
-
-        # g.trace('shadowController',self.delims_data)
-        if data:
-            for s in data:
-                s = s.strip()
-                if s:
-                    aList = s.split(' ')
-                    aList = [z.strip() for z in aList if z.strip()]
-                    if len(aList) == 2:
-                        ext,delim = aList
-                        delims = delim
-                    elif len(aList) == 3:
-                        ext,delim1,delim2 = aList
-                        delims = '%s %s' % (delim1,delim2)
-                    else:
-                        g.es_print('ignoring bad @data shadow_delims entry',repr(s),color='red')
-
-                    if len(aList) in (2,3):
-                        if ext.startswith('.'): ext = ext[1:]
-                        language = '%s_language' % ext
-                        if ext and not g.app.language_delims_dict.get(language):
-                            # g.trace('Adding entries for ext=%s, delims=%s' % (ext,repr(delims)))
-                            g.app.language_delims_dict[language] = delims
-                            g.app.language_extension_dict[language] = ext
-                            g.app.extension_dict[ext] = language
-    #@-node:ekr.20080819075811.12:x.setDelims
-    #@-node:ekr.20080708094444.79: x.ctor & helper
+    #@-node:ekr.20080708094444.79: x.ctor
     #@+node:ekr.20080711063656.1:x.File utils
     #@+node:ekr.20080711063656.7:x.baseDirName
     def baseDirName (self):
@@ -688,14 +655,11 @@ class shadowController:
         elif ext in ('.bat',):
             marker = "REM@"
         else:
-            if not suppressErrors:
-                if g.app.unitTesting:
-                    x.errors += 1
-                else:
-                    x.error("extension '%s' not known" % (ext))
-            # We **must not** use a bogus marker!
-            # This could cause great problems when (later), a real marker becomes known.
-            marker = None
+            # Yes, we *can* use a special marker for unknown languages,
+            # provided we make it impossible to type by mistake,
+            # and provided no real language will be the prefix of the comment delim.
+            marker = g.app.language_delims_dict.get('unknown_language') + '@'
+            # g.trace('unknown language marker',marker)
 
         return marker
     #@-node:ekr.20080708094444.9:x.marker_from_extension

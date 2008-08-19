@@ -1704,17 +1704,20 @@ class leoImportCommands:
 
         language = ext and (
             g.app.extra_extension_dict.get(ext) or
-            g.app.extension_dict.get(ext))
+            g.app.extension_dict.get(ext) or
+            'unknown_language'
+        )
 
         # g.trace(ext,repr(language))
 
-        return language ### return the langauge even if there is no mode for it.
+        # Return the language even if there is no colorizer mode for it.
+        return language
 
-        if language:
-            if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-                return language
+        # if language:
+            # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
+                # return language
 
-        return None
+        # return None
     #@-node:ekr.20080811174246.1:languageForExtension
     #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     #@-node:ekr.20071127175948.1:Import scanners

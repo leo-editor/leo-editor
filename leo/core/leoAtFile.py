@@ -2553,7 +2553,7 @@ class atFile:
             return False
 
         # A hack to support unknown extensions.
-        c.target_language = self.adjustTargetLanguage(fn)
+        self.adjustTargetLanguage(fn) # May set c.target_language.
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
         fn = g.os_path_join(at.default_directory,fn)
@@ -2653,7 +2653,7 @@ class atFile:
         else: # The @shadow tree is dirty and contains significant info.
             return True
     #@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
-    #@+node:ekr.20080819075811.13:NewHeadline
+    #@+node:ekr.20080819075811.13:adjustTargetLanguage
     def adjustTargetLanguage (self,fn):
 
         """Use the language implied by fn's extension if
@@ -2670,11 +2670,21 @@ class atFile:
 
         if ext:
             if ext.startswith('.'): ext = ext[1:]
+
             language = g.app.extension_dict.get(ext)
-            if language != target_ext:
-                c.target_language = language
-                # g.trace('setting target language',language)
-    #@-node:ekr.20080819075811.13:NewHeadline
+            g.trace(language)
+
+            if not language:
+                # An unknown language.
+                c.target_language = 'unknown_language'
+                g.trace('setting target language',c.target_language)
+
+            if 0: # old code
+                language = g.app.extension_dict.get(ext)
+                if language != target_ext:
+                    c.target_language = language
+                    # g.trace('setting target language',language)
+    #@-node:ekr.20080819075811.13:adjustTargetLanguage
     #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
     #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     #@+node:ekr.20050506084734:writeFromString
@@ -4300,6 +4310,7 @@ class atFile:
         self.default_directory = None # 8/2: will be set later.
 
         # g.trace(c.target_language)
+
         if c.target_language:
             c.target_language = c.target_language.lower() # 6/20/05
         delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)

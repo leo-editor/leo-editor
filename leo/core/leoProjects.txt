@@ -17888,7 +17888,7 @@ when dealing with external projects, especially Python projects.
 #@-node:ekr.20080730212711.58:Thread: @shadow plugin *will* make Leo famous
 #@-node:ekr.20080730212711.53: Notes for @shadow
 #@+node:ekr.20080708094444.60: Leo overwrites
-#@+node:ekr.20080708094444.79: x.ctor & helper
+#@+node:ekr.20080708094444.79: x.ctor
 def __init__ (self,c,trace=False,trace_writers=False):
 
     self.c = c
@@ -17907,40 +17907,7 @@ def __init__ (self,c,trace=False,trace_writers=False):
 
     # Support for goto-line-number.
     self.line_mapping = []
-
-    self.setDelims()
-
-#@+node:ekr.20080819075811.12:x.setDelims
-def setDelims (self):
-
-    data = self.c.config.getData('shadow_delims') or []
-
-    # g.trace('shadowController',self.delims_data)
-    if data:
-        for s in data:
-            s = s.strip()
-            if s:
-                aList = s.split(' ')
-                aList = [z.strip() for z in aList if z.strip()]
-                if len(aList) == 2:
-                    ext,delim = aList
-                    delims = delim
-                elif len(aList) == 3:
-                    ext,delim1,delim2 = aList
-                    delims = '%s %s' % (delim1,delim2)
-                else:
-                    g.es_print('ignoring bad @data shadow_delims entry',repr(s),color='red')
-
-                if len(aList) in (2,3):
-                    if ext.startswith('.'): ext = ext[1:]
-                    language = '%s_language' % ext
-                    if ext and not g.app.language_delims_dict.get(language):
-                        # g.trace('Adding entries for ext=%s, delims=%s' % (ext,repr(delims)))
-                        g.app.language_delims_dict[language] = delims
-                        g.app.language_extension_dict[language] = ext
-                        g.app.extension_dict[ext] = language
-#@-node:ekr.20080819075811.12:x.setDelims
-#@-node:ekr.20080708094444.79: x.ctor & helper
+#@-node:ekr.20080708094444.79: x.ctor
 #@+node:ekr.20041005105605.19:openFileForReading (atFile)
 def openFileForReading(self,fn,fromString=False,atShadow=False):
 
@@ -18723,6 +18690,7 @@ self.language_delims_dict = {
     "shell" : "#",  # shell scripts
     "tcltk" : "#",
     "unknown" : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
     "xml" : "<!-- -->",
 }
 
@@ -18815,6 +18783,7 @@ self.extra_extension_dict = {
     'nw':   'none', # noweb.
     'pod':  'perl',
     'tcl':  'tcl',
+    'unknown_language': 'none',
     'w':    'none', # cweb
 }
 #@nonl
@@ -18840,14 +18809,11 @@ def marker_from_extension (self,filename,suppressErrors=False):
     elif ext in ('.bat',):
         marker = "REM@"
     else:
-        if not suppressErrors:
-            if g.app.unitTesting:
-                x.errors += 1
-            else:
-                x.error("extension '%s' not known" % (ext))
-        # We **must not** use a bogus marker!
-        # This could cause great problems when (later), a real marker becomes known.
-        marker = None
+        # Yes, we *can* use a special marker for unknown languages,
+        # provided we make it impossible to type by mistake,
+        # and provided no real language will be the prefix of the comment delim.
+        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -20200,7 +20166,7 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     # A hack to support unknown extensions.
-    c.target_language = self.adjustTargetLanguage(fn)
+    self.adjustTargetLanguage(fn) # May set c.target_language.
 
     at.scanDefaultDirectory(p,importing=True) # Set default_directory
     fn = g.os_path_join(at.default_directory,fn)
@@ -20291,7 +20257,7 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     else: # The @shadow tree is dirty and contains significant info.
         return True
 #@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
-#@+node:ekr.20080819075811.13:NewHeadline
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
 def adjustTargetLanguage (self,fn):
 
     """Use the language implied by fn's extension if
@@ -20308,11 +20274,21 @@ def adjustTargetLanguage (self,fn):
 
     if ext:
         if ext.startswith('.'): ext = ext[1:]
+
         language = g.app.extension_dict.get(ext)
-        if language != target_ext:
-            c.target_language = language
-            # g.trace('setting target language',language)
-#@-node:ekr.20080819075811.13:NewHeadline
+        g.trace(language)
+
+        if not language:
+            # An unknown language.
+            c.target_language = 'unknown_language'
+            g.trace('setting target language',c.target_language)
+
+        if 0: # old code
+            language = g.app.extension_dict.get(ext)
+            if language != target_ext:
+                c.target_language = language
+                # g.trace('setting target language',language)
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
@@ -20330,7 +20306,7 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     # A hack to support unknown extensions.
-    c.target_language = self.adjustTargetLanguage(fn)
+    self.adjustTargetLanguage(fn) # May set c.target_language.
 
     at.scanDefaultDirectory(p,importing=True) # Set default_directory
     fn = g.os_path_join(at.default_directory,fn)
@@ -20421,7 +20397,7 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     else: # The @shadow tree is dirty and contains significant info.
         return True
 #@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
-#@+node:ekr.20080819075811.13:NewHeadline
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
 def adjustTargetLanguage (self,fn):
 
     """Use the language implied by fn's extension if
@@ -20438,11 +20414,21 @@ def adjustTargetLanguage (self,fn):
 
     if ext:
         if ext.startswith('.'): ext = ext[1:]
+
         language = g.app.extension_dict.get(ext)
-        if language != target_ext:
-            c.target_language = language
-            # g.trace('setting target language',language)
-#@-node:ekr.20080819075811.13:NewHeadline
+        g.trace(language)
+
+        if not language:
+            # An unknown language.
+            c.target_language = 'unknown_language'
+            g.trace('setting target language',c.target_language)
+
+        if 0: # old code
+            language = g.app.extension_dict.get(ext)
+            if language != target_ext:
+                c.target_language = language
+                # g.trace('setting target language',language)
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@+node:ekr.20041005105605.157:writeOpenFile
 # New in 4.3: must be inited before calling this method.
@@ -21346,7 +21332,7 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     # A hack to support unknown extensions.
-    c.target_language = self.adjustTargetLanguage(fn)
+    self.adjustTargetLanguage(fn) # May set c.target_language.
 
     at.scanDefaultDirectory(p,importing=True) # Set default_directory
     fn = g.os_path_join(at.default_directory,fn)
@@ -21437,7 +21423,7 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     else: # The @shadow tree is dirty and contains significant info.
         return True
 #@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
-#@+node:ekr.20080819075811.13:NewHeadline
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
 def adjustTargetLanguage (self,fn):
 
     """Use the language implied by fn's extension if
@@ -21454,11 +21440,21 @@ def adjustTargetLanguage (self,fn):
 
     if ext:
         if ext.startswith('.'): ext = ext[1:]
+
         language = g.app.extension_dict.get(ext)
-        if language != target_ext:
-            c.target_language = language
-            # g.trace('setting target language',language)
-#@-node:ekr.20080819075811.13:NewHeadline
+        g.trace(language)
+
+        if not language:
+            # An unknown language.
+            c.target_language = 'unknown_language'
+            g.trace('setting target language',c.target_language)
+
+        if 0: # old code
+            language = g.app.extension_dict.get(ext)
+            if language != target_ext:
+                c.target_language = language
+                # g.trace('setting target language',language)
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@-node:ekr.20080713091247.5:Finished @shadow commands
@@ -21651,7 +21647,7 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     # A hack to support unknown extensions.
-    c.target_language = self.adjustTargetLanguage(fn)
+    self.adjustTargetLanguage(fn) # May set c.target_language.
 
     at.scanDefaultDirectory(p,importing=True) # Set default_directory
     fn = g.os_path_join(at.default_directory,fn)
@@ -21742,7 +21738,7 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     else: # The @shadow tree is dirty and contains significant info.
         return True
 #@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
-#@+node:ekr.20080819075811.13:NewHeadline
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
 def adjustTargetLanguage (self,fn):
 
     """Use the language implied by fn's extension if
@@ -21759,11 +21755,21 @@ def adjustTargetLanguage (self,fn):
 
     if ext:
         if ext.startswith('.'): ext = ext[1:]
+
         language = g.app.extension_dict.get(ext)
-        if language != target_ext:
-            c.target_language = language
-            # g.trace('setting target language',language)
-#@-node:ekr.20080819075811.13:NewHeadline
+        g.trace(language)
+
+        if not language:
+            # An unknown language.
+            c.target_language = 'unknown_language'
+            g.trace('setting target language',c.target_language)
+
+        if 0: # old code
+            language = g.app.extension_dict.get(ext)
+            if language != target_ext:
+                c.target_language = language
+                # g.trace('setting target language',language)
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080803063553.3:Changed to make private files use thin-like sentinels
 #@-node:ekr.20080802070659.5:Use thin-like shadow nodes
@@ -21820,14 +21826,11 @@ def marker_from_extension (self,filename,suppressErrors=False):
     elif ext in ('.bat',):
         marker = "REM@"
     else:
-        if not suppressErrors:
-            if g.app.unitTesting:
-                x.errors += 1
-            else:
-                x.error("extension '%s' not known" % (ext))
-        # We **must not** use a bogus marker!
-        # This could cause great problems when (later), a real marker becomes known.
-        marker = None
+        # Yes, we *can* use a special marker for unknown languages,
+        # provided we make it impossible to type by mistake,
+        # and provided no real language will be the prefix of the comment delim.
+        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -21837,7 +21840,7 @@ class shadowController:
     '''A class to manage @shadow files'''
 
     @others
-#@+node:ekr.20080708094444.79: x.ctor & helper
+#@+node:ekr.20080708094444.79: x.ctor
 def __init__ (self,c,trace=False,trace_writers=False):
 
     self.c = c
@@ -21856,40 +21859,7 @@ def __init__ (self,c,trace=False,trace_writers=False):
 
     # Support for goto-line-number.
     self.line_mapping = []
-
-    self.setDelims()
-
-#@+node:ekr.20080819075811.12:x.setDelims
-def setDelims (self):
-
-    data = self.c.config.getData('shadow_delims') or []
-
-    # g.trace('shadowController',self.delims_data)
-    if data:
-        for s in data:
-            s = s.strip()
-            if s:
-                aList = s.split(' ')
-                aList = [z.strip() for z in aList if z.strip()]
-                if len(aList) == 2:
-                    ext,delim = aList
-                    delims = delim
-                elif len(aList) == 3:
-                    ext,delim1,delim2 = aList
-                    delims = '%s %s' % (delim1,delim2)
-                else:
-                    g.es_print('ignoring bad @data shadow_delims entry',repr(s),color='red')
-
-                if len(aList) in (2,3):
-                    if ext.startswith('.'): ext = ext[1:]
-                    language = '%s_language' % ext
-                    if ext and not g.app.language_delims_dict.get(language):
-                        # g.trace('Adding entries for ext=%s, delims=%s' % (ext,repr(delims)))
-                        g.app.language_delims_dict[language] = delims
-                        g.app.language_extension_dict[language] = ext
-                        g.app.extension_dict[ext] = language
-#@-node:ekr.20080819075811.12:x.setDelims
-#@-node:ekr.20080708094444.79: x.ctor & helper
+#@-node:ekr.20080708094444.79: x.ctor
 #@+node:ekr.20080711063656.1:x.File utils
 #@+node:ekr.20080711063656.7:x.baseDirName
 def baseDirName (self):
@@ -22456,14 +22426,11 @@ def marker_from_extension (self,filename,suppressErrors=False):
     elif ext in ('.bat',):
         marker = "REM@"
     else:
-        if not suppressErrors:
-            if g.app.unitTesting:
-                x.errors += 1
-            else:
-                x.error("extension '%s' not known" % (ext))
-        # We **must not** use a bogus marker!
-        # This could cause great problems when (later), a real marker becomes known.
-        marker = None
+        # Yes, we *can* use a special marker for unknown languages,
+        # provided we make it impossible to type by mistake,
+        # and provided no real language will be the prefix of the comment delim.
+        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -25379,6 +25346,7 @@ self.language_delims_dict = {
     "shell" : "#",  # shell scripts
     "tcltk" : "#",
     "unknown" : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
     "xml" : "<!-- -->",
 }
 
@@ -25471,6 +25439,7 @@ self.extra_extension_dict = {
     'nw':   'none', # noweb.
     'pod':  'perl',
     'tcl':  'tcl',
+    'unknown_language': 'none',
     'w':    'none', # cweb
 }
 #@nonl
@@ -25525,14 +25494,11 @@ def marker_from_extension (self,filename,suppressErrors=False):
     elif ext in ('.bat',):
         marker = "REM@"
     else:
-        if not suppressErrors:
-            if g.app.unitTesting:
-                x.errors += 1
-            else:
-                x.error("extension '%s' not known" % (ext))
-        # We **must not** use a bogus marker!
-        # This could cause great problems when (later), a real marker becomes known.
-        marker = None
+        # Yes, we *can* use a special marker for unknown languages,
+        # provided we make it impossible to type by mistake,
+        # and provided no real language will be the prefix of the comment delim.
+        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -25907,14 +25873,11 @@ def marker_from_extension (self,filename,suppressErrors=False):
     elif ext in ('.bat',):
         marker = "REM@"
     else:
-        if not suppressErrors:
-            if g.app.unitTesting:
-                x.errors += 1
-            else:
-                x.error("extension '%s' not known" % (ext))
-        # We **must not** use a bogus marker!
-        # This could cause great problems when (later), a real marker becomes known.
-        marker = None
+        # Yes, we *can* use a special marker for unknown languages,
+        # provided we make it impossible to type by mistake,
+        # and provided no real language will be the prefix of the comment delim.
+        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -25933,7 +25896,7 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     # A hack to support unknown extensions.
-    c.target_language = self.adjustTargetLanguage(fn)
+    self.adjustTargetLanguage(fn) # May set c.target_language.
 
     at.scanDefaultDirectory(p,importing=True) # Set default_directory
     fn = g.os_path_join(at.default_directory,fn)
@@ -26024,7 +25987,7 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     else: # The @shadow tree is dirty and contains significant info.
         return True
 #@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
-#@+node:ekr.20080819075811.13:NewHeadline
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
 def adjustTargetLanguage (self,fn):
 
     """Use the language implied by fn's extension if
@@ -26041,11 +26004,21 @@ def adjustTargetLanguage (self,fn):
 
     if ext:
         if ext.startswith('.'): ext = ext[1:]
+
         language = g.app.extension_dict.get(ext)
-        if language != target_ext:
-            c.target_language = language
-            # g.trace('setting target language',language)
-#@-node:ekr.20080819075811.13:NewHeadline
+        g.trace(language)
+
+        if not language:
+            # An unknown language.
+            c.target_language = 'unknown_language'
+            g.trace('setting target language',c.target_language)
+
+        if 0: # old code
+            language = g.app.extension_dict.get(ext)
+            if language != target_ext:
+                c.target_language = language
+                # g.trace('setting target language',language)
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080812093903.5:Don't write private files for unknown file extensions
 #@-node:ekr.20080812093903.6:Shadow files
@@ -26335,17 +26308,20 @@ def languageForExtension (self,ext):
 
     language = ext and (
         g.app.extra_extension_dict.get(ext) or
-        g.app.extension_dict.get(ext))
+        g.app.extension_dict.get(ext) or
+        'unknown_language'
+    )
 
     # g.trace(ext,repr(language))
 
-    return language ### return the langauge even if there is no mode for it.
+    # Return the language even if there is no colorizer mode for it.
+    return language
 
-    if language:
-        if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-            return language
+    # if language:
+        # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
+            # return language
 
-    return None
+    # return None
 #@-node:ekr.20080811174246.1:languageForExtension
 #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
 #@-node:ekr.20080730095710.61:Added @bool suppress_import_parsing setting
@@ -26387,6 +26363,7 @@ self.language_delims_dict = {
     "shell" : "#",  # shell scripts
     "tcltk" : "#",
     "unknown" : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
     "xml" : "<!-- -->",
 }
 
@@ -26479,6 +26456,7 @@ self.extra_extension_dict = {
     'nw':   'none', # noweb.
     'pod':  'perl',
     'tcl':  'tcl',
+    'unknown_language': 'none',
     'w':    'none', # cweb
 }
 #@nonl
@@ -26512,17 +26490,20 @@ def languageForExtension (self,ext):
 
     language = ext and (
         g.app.extra_extension_dict.get(ext) or
-        g.app.extension_dict.get(ext))
+        g.app.extension_dict.get(ext) or
+        'unknown_language'
+    )
 
     # g.trace(ext,repr(language))
 
-    return language ### return the langauge even if there is no mode for it.
+    # Return the language even if there is no colorizer mode for it.
+    return language
 
-    if language:
-        if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-            return language
+    # if language:
+        # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
+            # return language
 
-    return None
+    # return None
 #@-node:ekr.20080811174246.1:languageForExtension
 #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
 #@-node:ekr.20080425054202.1:Added @language x during @auto if modes/x.py exists
@@ -27221,6 +27202,815 @@ def contractIfNotCurrent(self,p,leaveOpen):
 #@-node:ekr.20080819075811.7:contractIfNotCurrent
 #@-node:ekr.20080819075811.3:contractAllOtherNodes & helper
 #@-node:ekr.20080819075811.2:Add contract-all-other-nodes command
+#@+node:ekr.20080819075811.1:Added support for unknown extensions in @shadow files
+#@+node:ekr.20080819075811.18:@data shadow_delims (no longer used)
+# Comment lines starting with '#' (like this one) are ignored.
+
+# Non-comment lines associate extensions with comment delimers.
+# lines have one of the following two forms:
+#
+#    .ext delim
+#    .ext delim1 delim2
+#
+# The first form specifies the comment delimiter for single-line comments.
+# The second form specifies the comment delims for block comments.
+#
+# For example:
+
+.huh ##
+#@nonl
+#@-node:ekr.20080819075811.18:@data shadow_delims (no longer used)
+#@+node:ekr.20080819075811.14:Import stuff
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = g.os_path_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if c.config.getBool('suppress_import_parsing', default=False):
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+    elif ext in (".c", ".cpp", ".cxx"):
+        self.scanCText(s,p,atAuto=atAuto)
+    elif ext == '.c#':
+        self.scanCSharpText(s,p,atAuto=atAuto)
+    elif ext == ".el":
+        self.scanElispText(s,p,atAuto=atAuto)
+    elif ext == ".java":
+        self.scanJavaText(s,p,atAuto=atAuto)
+    elif ext == ".js":
+        self.scanJavaScriptText(s,p,atAuto=atAuto)
+    elif ext == ".pas":
+        self.scanPascalText(s,p,atAuto=atAuto)
+    elif ext in (".py", ".pyw"):
+        self.scanPythonText(s,p,atAuto=atAuto)
+    elif ext == ".php":
+        self.scanPHPText(s,p,atAuto=atAuto)
+    elif ext in ('.html','.htm','.xml'):
+        self.scanXmlText(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = g.os_path_normpath(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    z = g.choose(atAuto,'@auto ','')
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+def scanUnknownFileType (self,s,p,ext,atAuto=False):
+
+    c = self.c
+    changed = c.isChanged()
+    body = g.choose(atAuto,'','@ignore\n')
+    if ext in ('.html','.htm'): body += '@language html\n'
+    elif ext in ('.txt','.text'): body += '@nocolor\n'
+    else:
+        language = self.languageForExtension(ext)
+        if language: body += '@language %s\n' % language
+
+    c.setBodyString(p,body + self.rootLine + s)
+    if atAuto:
+        for p in p.self_and_subtree_iter():
+            p.clearDirty()
+        if not changed:
+            c.setChanged(False)
+
+    g.app.unitTestDict = {'result':True}
+#@+node:ekr.20080811174246.1:languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extensiion ext.'''
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    language = ext and (
+        g.app.extra_extension_dict.get(ext) or
+        g.app.extension_dict.get(ext) or
+        'unknown_language'
+    )
+
+    # g.trace(ext,repr(language))
+
+    # Return the language even if there is no colorizer mode for it.
+    return language
+
+    # if language:
+        # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
+            # return language
+
+    # return None
+#@-node:ekr.20080811174246.1:languageForExtension
+#@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+#@+node:ekr.20080811174246.1:languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extensiion ext.'''
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    language = ext and (
+        g.app.extra_extension_dict.get(ext) or
+        g.app.extension_dict.get(ext) or
+        'unknown_language'
+    )
+
+    # g.trace(ext,repr(language))
+
+    # Return the language even if there is no colorizer mode for it.
+    return language
+
+    # if language:
+        # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
+            # return language
+
+    # return None
+#@-node:ekr.20080811174246.1:languageForExtension
+#@+node:ekr.20080708094444.9:x.marker_from_extension
+def marker_from_extension (self,filename,suppressErrors=False):
+
+    '''Return the sentinel delimiter comment to be used for filename.'''
+
+    x = self
+    if not filename: return None
+    root,ext = g.os_path_splitext(filename)
+    delims = g.comment_delims_from_extension(filename)
+    for i in (0,1):
+        if delims[i]:
+            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
+            return delims[i]+'@'
+
+    if ext=='.tmp':
+        root, ext = os.path.splitext(root)
+    if ext in('.cfg','.ksh','.txt'):
+        marker = '#@'
+    elif ext in ('.bat',):
+        marker = "REM@"
+    else:
+        # Yes, we *can* use a special marker for unknown languages,
+        # provided we make it impossible to type by mistake,
+        # and provided no real language will be the prefix of the comment delim.
+        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        # g.trace('unknown language marker',marker)
+
+    return marker
+#@-node:ekr.20080708094444.9:x.marker_from_extension
+#@-node:ekr.20080819075811.14:Import stuff
+#@+node:ekr.20080819075811.15:Support for @language unknown_language
+#@+node:ekr.20031218072017.368:<< define global data structures >> app
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada" : "--",
+    "actionscript" : "// /* */", #jason 2003-07-03
+    "autohotkey" : "; /* */", #TL - AutoHotkey language
+    "c" : "// /* */", # C, C++ or objective C.
+    "csharp" : "// /* */", # C#
+    "cpp" : "// /* */",# C++.
+    "css" : "/* */", # 4/1/04
+    "cweb" : "@q@ @>", # Use the "cweb hack"
+    "elisp" : ";",
+    "forth" : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran" : "C",
+    "fortran90" : "!",
+    "html" : "<!-- -->",
+    "ini": ";",
+    "java" : "// /* */",
+    "latex" : "%",
+    "lua" : "--",  # ddm 13/02/06
+    "pascal" : "// { }",
+    "perl" : "#",
+    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php" : "// /* */", # 6/23/07: was "//",
+    "plain" : "#", # We must pick something.
+    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python" : "#",
+    "rapidq" : "'", # fil 2004-march-11
+    "rebol" : ";",  # jason 2003-07-03
+    "shell" : "#",  # shell scripts
+    "tcltk" : "#",
+    "unknown" : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "xml" : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada" : "ada",
+    "actionscript" : "as", #jason 2003-07-03
+    "autohotkey" : "ahk", #TL - AutoHotkey language
+    "c" : "c",
+    "cpp" : "cpp",
+    "css" : "css", # 4/1/04
+    "cweb" : "w",
+    "elisp" : "el",
+    "forth" : "forth",
+    "fortran" : "f",
+    "fortran90" : "f",
+    "html" : "html",
+    "ini": "ini",
+    "java" : "java",
+    "latex" : "tex", # 1/8/04
+    "lua" : "lua",  # ddm 13/02/06
+    "noweb" : "nw",
+    "pascal" : "p",
+    # "perl" : "perl",
+    # "perlpod" : "perl",
+    "perl" : "pl",      # 11/7/05
+    "perlpod" : "pod",  # 11/7/05
+    "php" : "php",
+    "plain" : "txt",
+    "python" : "py",
+    "plsql" : "sql", # qt02537 2005-05-27
+    "rapidq" : "bas", # fil 2004-march-11
+    "rebol" : "r",    # jason 2003-07-03
+    "shell" : "sh",   # DS 4/1/04
+    "tex" : "tex",
+    "tcltk" : "tcl",
+    "unknown" : "txt", # Set when @comment is seen.
+    "xml": "xml",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey", #TL - AutoHotkey language
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "c"     : "c",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "p"     : "pascal",
+    # "perl"  : "perl",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "w"     : "cweb",
+    "xml"   : "xml",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada':  'ada95',
+    'adb':  'none', # ada??
+    'ahk':  'ahk',
+    'awk':  'awk',
+    'bas':  'none', # rapidq
+    'cpp':  'c',
+    'el':   'lisp',
+    'f':    'fortran',
+    'nw':   'none', # noweb.
+    'pod':  'perl',
+    'tcl':  'tcl',
+    'unknown_language': 'none',
+    'w':    'none', # cweb
+}
+#@nonl
+#@-node:ekr.20031218072017.368:<< define global data structures >> app
+#@+node:ekr.20080708094444.79: x.ctor
+def __init__ (self,c,trace=False,trace_writers=False):
+
+    self.c = c
+
+    # Configuration...
+    self.shadow_subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
+    self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+
+    # Debugging...
+    self.trace = trace
+    self.trace_writers = trace_writers  # True: enable traces in all sourcewriters.
+
+    # Error handling...
+    self.errors = 0
+    self.last_error  = '' # The last error message, regardless of whether it was actually shown.
+
+    # Support for goto-line-number.
+    self.line_mapping = []
+#@-node:ekr.20080708094444.79: x.ctor
+#@+node:ekr.20080708094444.9:x.marker_from_extension
+def marker_from_extension (self,filename,suppressErrors=False):
+
+    '''Return the sentinel delimiter comment to be used for filename.'''
+
+    x = self
+    if not filename: return None
+    root,ext = g.os_path_splitext(filename)
+    delims = g.comment_delims_from_extension(filename)
+    for i in (0,1):
+        if delims[i]:
+            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
+            return delims[i]+'@'
+
+    if ext=='.tmp':
+        root, ext = os.path.splitext(root)
+    if ext in('.cfg','.ksh','.txt'):
+        marker = '#@'
+    elif ext in ('.bat',):
+        marker = "REM@"
+    else:
+        # Yes, we *can* use a special marker for unknown languages,
+        # provided we make it impossible to type by mistake,
+        # and provided no real language will be the prefix of the comment delim.
+        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        # g.trace('unknown language marker',marker)
+
+    return marker
+#@-node:ekr.20080708094444.9:x.marker_from_extension
+#@-node:ekr.20080819075811.15:Support for @language unknown_language
+#@+node:ekr.20080819075811.16:Write stuff
+# 
+#@nonl
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if not fn:
+        g.trace('can not happen: not an @shadow node',p.headString())
+        return False
+
+    # A hack to support unknown extensions.
+    self.adjustTargetLanguage(fn) # May set c.target_language.
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = g.os_path_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None,
+        nosentinels=None, # set below.  Affects only error messages (sometimes).
+        thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+        scriptWrite=False,
+        toString=False, # True: create a fileLikeObject.  This is done below.
+        write_strips_blank_lines=False,
+    )
+            # at.targetFileName not used.
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,nosentinels=not sentinels,toString=False,atAuto=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        ### It may be better to compute the public file by removing sentinels from at.private_s
+        ### by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
+        ### x.isSentinel logic is used consistently by the @shadow read/write logic.
+        ### OTOH, Leo's write logic should actually dominate x.isSentinel.
+
+        # Write the public and private files.
+        private_fn = x.shadowPathName(fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName)
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force,fn):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    at = self ; x = at.c.shadowController
+    if not x.marker_from_extension(fn,suppressErrors=True):
+        g.es_print('unknown extension. can not write:',p.headString(),color='red')
+        return False # Never write files with unknown extensions
+    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        g.trace(language)
+
+        if not language:
+            # An unknown language.
+            c.target_language = 'unknown_language'
+            g.trace('setting target language',c.target_language)
+
+        if 0: # old code
+            language = g.app.extension_dict.get(ext)
+            if language != target_ext:
+                c.target_language = language
+                # g.trace('setting target language',language)
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@+node:ekr.20041005105605.15:initWriteIvars
+def initWriteIvars(self,root,targetFileName,
+    nosentinels=False,
+    thinFile=False,
+    scriptWrite=False,
+    toString=False,
+    forcePythonSentinels=None,
+    write_strips_blank_lines=None,
+):
+
+    self.initCommonIvars()
+    << init ivars for writing >>
+
+    if write_strips_blank_lines is None:
+        self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
+    else:
+        self.write_strips_blank_lines = write_strips_blank_lines
+
+    if forcePythonSentinels is None:
+        forcePythonSentinels = scriptWrite
+
+    if root:
+        self.scanAllDirectives(root,
+            scripting=scriptWrite,
+            forcePythonSentinels=forcePythonSentinels)
+
+    # g.trace(forcePythonSentinels,self.startSentinelComment,self.endSentinelComment)
+
+    if forcePythonSentinels:
+        # Force Python comment delims for g.getScript.
+        self.startSentinelComment = "#"
+        self.endSentinelComment = None
+
+    # Init state from arguments.
+    self.targetFileName = targetFileName
+    self.sentinels = not nosentinels
+    self.thinFile = thinFile
+    self.toString = toString
+    self.root = root
+
+    # Ignore config settings for unit testing.
+    if toString and g.app.unitTesting: self.output_newline = '\n'
+
+    # Init all other ivars even if there is an error.
+    if not self.errors and self.root:
+        self.root.v.t.tnodeList = []
+        self.root.v.t._p_changed = True
+#@+node:ekr.20041005105605.16:<< init ivars for writing >>>
+@
+When tangling, we first write to a temporary output file. After tangling is
+temporary file. Otherwise we delete the old target file and rename the temporary
+file to be the target file.
+@c
+
+self.docKind = None
+self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
+self.fileChangedFlag = False # True: the file has actually been updated.
+self.shortFileName = "" # short version of file name used for messages.
+self.thinFile = False
+self.force_newlines_in_at_nosent_bodies = self.c.config.getBool('force_newlines_in_at_nosent_bodies')
+
+if toString:
+    self.outputFile = g.fileLikeObject()
+    self.stringOutput = ""
+    self.targetFileName = self.outputFileName = "<string-file>"
+else:
+    self.outputFile = None # The temporary output file.
+    self.stringOutput = None
+    self.targetFileName = self.outputFileName = u""
+#@-node:ekr.20041005105605.16:<< init ivars for writing >>>
+#@-node:ekr.20041005105605.15:initWriteIvars
+#@+node:ekr.20041005105605.222:atFile.scanAllDirectives
+@ Once a directive is seen, no other related directives in nodes further up the tree have any effect.  For example, if an @color directive is seen in node p, no @color or @nocolor directives are examined in any ancestor of p.
+
+This code is similar to Commands.scanAllDirectives, but it has been modified for use by the atFile class.
+@c
+
+def scanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+):
+
+    """Scan position p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.
+    """
+
+    # __pychecker__ = '--maxlines=400'
+    # g.stat()
+
+    c = self.c
+    << Set ivars >>
+    << Set path from @file node >>
+    old = {}
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << Test for @path >>
+        << Test for @encoding >>
+        << Test for @comment and @language >>
+        << Test for @header and @noheader >>
+        << Test for @lineending >>
+        << Test for @pagewidth >>
+        << Test for @tabwidth >>
+        old.update(theDict)
+    << Set current directory >>
+    if not importing and not reading:
+        # 5/19/04: don't override comment delims when reading!
+        << Set comment strings from delims >>
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.default_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20041005105605.223:<< Set ivars >>
+self.page_width = self.c.page_width
+self.tab_width  = self.c.tab_width
+
+self.default_directory = None # 8/2: will be set later.
+
+# g.trace(c.target_language)
+
+if c.target_language:
+    c.target_language = c.target_language.lower() # 6/20/05
+delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
+self.language = c.target_language
+
+self.encoding = c.config.default_derived_file_encoding
+self.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+#@-node:ekr.20041005105605.223:<< Set ivars >>
+#@+node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName() # 4/28/04
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        self.default_directory = theDir
+    else: # 9/25/02
+        self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not self.default_directory:
+            self.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
+#@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
+# We set the current director to a path so future writes will go to that directory.
+
+if not self.default_directory and not old.has_key("path") and theDict.has_key("path"):
+
+    path = theDict["path"]
+    path = g.computeRelativePath(path)
+    if path and len(path) > 0:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = g.os_path_join(base,path)
+        if g.os_path_isabs(path):
+            << handle absolute path >>
+        else:
+            self.error("ignoring bad @path: %s" % path)
+    else:
+        self.error("ignoring empty @path")
+#@+node:ekr.20041005105605.227:<< handle absolute path >>
+# path is an absolute path.
+
+if g.os_path_exists(path):
+    self.default_directory = path
+else:
+    self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+    if not self.default_directory:
+        self.error("invalid @path: %s" % path)
+#@-node:ekr.20041005105605.227:<< handle absolute path >>
+#@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
+#@+node:ekr.20041005105605.228:<< Test for @encoding >>
+if not old.has_key("encoding") and theDict.has_key("encoding"):
+
+    e = g.scanAtEncodingDirective(theDict)
+    if e:
+        self.encoding = e
+#@-node:ekr.20041005105605.228:<< Test for @encoding >>
+#@+node:ekr.20041005105605.230:<< Test for @header and @noheader >>
+# EKR: 10/10/02: perform the sames checks done by tangle.scanAllDirectives.
+if theDict.has_key("header") and theDict.has_key("noheader"):
+    g.es("conflicting @header and @noheader directives")
+#@-node:ekr.20041005105605.230:<< Test for @header and @noheader >>
+#@+node:ekr.20041005105605.229:<< Test for @comment and @language >>
+# 10/17/02: @language and @comment may coexist in @file trees.
+# For this to be effective the @comment directive should follow the @language directive.
+
+# 1/23/05: Any previous @language or @comment prevents processing up the tree.
+# This code is now like the code in tangle.scanAlldirectives.
+
+if old.has_key("comment") or old.has_key("language"):
+    pass # Do nothing more.
+
+elif theDict.has_key("comment"):
+    z = theDict["comment"]
+    delim1, delim2, delim3 = g.set_delims_from_string(z)
+
+elif theDict.has_key("language"):
+    z = theDict["language"]
+    self.language,delim1,delim2,delim3 = g.set_language(z,0)
+#@-node:ekr.20041005105605.229:<< Test for @comment and @language >>
+#@+node:ekr.20041005105605.231:<< Test for @lineending >>
+if not old.has_key("lineending") and theDict.has_key("lineending"):
+
+    lineending = g.scanAtLineendingDirective(theDict)
+    if lineending:
+        self.explicitLineEnding = True
+        self.output_newline = lineending
+        # g.trace(p.headString(),'lineending',repr(lineending))
+#@-node:ekr.20041005105605.231:<< Test for @lineending >>
+#@+node:ekr.20041005105605.232:<< Test for @pagewidth >>
+if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
+
+    w = g.scanAtPagewidthDirective(theDict,issue_error_flag=True)
+    if w and w > 0:
+        self.page_width = w
+#@-node:ekr.20041005105605.232:<< Test for @pagewidth >>
+#@+node:ekr.20041005105605.233:<< Test for @tabwidth >>
+if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
+
+    w = g.scanAtTabwidthDirective(theDict,issue_error_flag=True)
+    if w and w != 0:
+        self.tab_width = w
+#@-node:ekr.20041005105605.233:<< Test for @tabwidth >>
+#@+node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+if c.frame and not self.default_directory:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    self.default_directory = theDir ; break
+                else: # 9/25/02
+                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+
+if not self.default_directory and not scripting and not importing:
+    # This should never happen: c.openDirectory should be a good last resort.
+    g.trace()
+    self.error("No absolute directory specified anywhere.")
+    self.default_directory = ""
+#@-node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
+#@+node:ekr.20041005105605.235:<< Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    self.language = "python"
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    self.startSentinelComment = delim1
+    self.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    self.startSentinelComment = delim2
+    self.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    self.startSentinelComment = "#" # This should never happen!
+    self.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@-node:ekr.20041005105605.235:<< Set comment strings from delims >>
+#@-node:ekr.20041005105605.222:atFile.scanAllDirectives
+#@-node:ekr.20080819075811.16:Write stuff
+#@-node:ekr.20080819075811.1:Added support for unknown extensions in @shadow files
 #@-node:ekr.20080811174246.4:Features
 #@-node:ekr.20080810085333.3:4.5 b3
 #@-all
