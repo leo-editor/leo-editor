@@ -4383,12 +4383,17 @@ class baseCommands:
     #@+node:ekr.20080819075811.3:contractAllOtherNodes & helper
     def contractAllOtherNodes (self,event=None):
 
+        '''Contract all nodes except those needed to make the
+        presently selected node visible.'''
+
         c = self ; leaveOpen = c.currentPosition()
 
         for p in c.rootPosition().self_and_siblings_iter():
             c.contractIfNotCurrent(p,leaveOpen)
+
         c.redraw()
 
+    #@+node:ekr.20080819075811.7:contractIfNotCurrent
     def contractIfNotCurrent(self,p,leaveOpen):
 
         c = self
@@ -4402,7 +4407,7 @@ class baseCommands:
             else:
                 for p2 in child.self_and_subtree_iter():
                     p2.contract()
-    #@nonl
+    #@-node:ekr.20080819075811.7:contractIfNotCurrent
     #@-node:ekr.20080819075811.3:contractAllOtherNodes & helper
     #@+node:ekr.20031218072017.2901:contractNode
     def contractNode (self,event=None):
