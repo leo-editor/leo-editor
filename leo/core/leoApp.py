@@ -125,7 +125,6 @@ class LeoApp:
             "java" : "// /* */",
             "latex" : "%",
             "lua" : "--",  # ddm 13/02/06
-            "VimOutliner" : "#", #TL - Pick something (Comments not applicable)
             "pascal" : "// { }",
             "perl" : "#",
             "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
@@ -161,7 +160,6 @@ class LeoApp:
             "latex" : "tex", # 1/8/04
             "lua" : "lua",  # ddm 13/02/06
             "noweb" : "nw",
-            "VimOutliner" : "otl", #TL - Vim's text outliner
             "pascal" : "p",
             # "perl" : "perl",
             # "perlpod" : "perl",
@@ -184,7 +182,6 @@ class LeoApp:
             # Keys are extensions, values are languages.
             "ada"   : "ada",
             "adb"   : "ada",
-            "ahk"   : "autohotkey", #TL - AutoHotkey language
             "as"    : "actionscript",
             "bas"   : "rapidq",
             "c"     : "c",
@@ -197,9 +194,8 @@ class LeoApp:
             "html"  : "html",
             "ini"   : "ini",
             "java"  : "java",
-            "lua" : "lua",  # ddm 13/02/06
-            "noweb" : "nw",
-            "otl"   : "VimOutliner",  #TL - Vim's text outliner
+            "lua"   : "lua",  # ddm 13/02/06
+            "nw"    : "noweb",
             "p"     : "pascal",
             # "perl"  : "perl",
             "pl"    : "perl",   # 11/7/05
@@ -224,6 +220,8 @@ class LeoApp:
             'actionscript': 'actionscript',
             'ada':  'ada95',
             'adb':  'none', # ada??
+            # 'ahk':  'ahk',
+            "ahk"   : "autohotkey", #TL - AutoHotkey language
             'awk':  'awk',
             'bas':  'none', # rapidq
             'cpp':  'c',
