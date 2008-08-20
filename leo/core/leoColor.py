@@ -3127,6 +3127,7 @@ class colorizer:
             #@-node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
             #@nl
 
+        # g.trace('self.language',self.language)
         return self.language # For use by external routines.
     #@-node:ekr.20031218072017.1377:scanColorDirectives (leoColor)
     #@+node:ekr.20041217041016:setFontFromConfig (colorizer)
