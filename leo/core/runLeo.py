@@ -96,6 +96,11 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
 
     # There is a circular dependency between leoCommands and leoEditCommands.
     import leo.core.leoCommands as leoCommands
+
+    # New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+    # This prevents a crash when run is called repeatedly from IPython's lleo extension.
+    import leo.core.leoPlugins as leoPlugins
+    leoPlugins.init()
     #@-node:ekr.20041219072416.1:<< import other early files>>
     #@nl
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
