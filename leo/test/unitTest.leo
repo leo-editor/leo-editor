@@ -2323,7 +2323,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.119" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>

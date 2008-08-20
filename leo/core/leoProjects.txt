@@ -18745,7 +18745,6 @@ self.extension_dict = {
     # Keys are extensions, values are languages.
     "ada"   : "ada",
     "adb"   : "ada",
-    "ahk"   : "autohotkey", #TL - AutoHotkey language
     "as"    : "actionscript",
     "bas"   : "rapidq",
     "c"     : "c",
@@ -18784,7 +18783,8 @@ self.extra_extension_dict = {
     'actionscript': 'actionscript',
     'ada':  'ada95',
     'adb':  'none', # ada??
-    'ahk':  'ahk',
+    # 'ahk':  'ahk',
+    "ahk"   : "autohotkey", #TL - AutoHotkey language
     'awk':  'awk',
     'bas':  'none', # rapidq
     'cpp':  'c',
@@ -20286,7 +20286,7 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        g.trace(language)
+        # g.trace(language)
 
         if not language:
             # An unknown language.
@@ -20426,7 +20426,7 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        g.trace(language)
+        # g.trace(language)
 
         if not language:
             # An unknown language.
@@ -21452,7 +21452,7 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        g.trace(language)
+        # g.trace(language)
 
         if not language:
             # An unknown language.
@@ -21767,7 +21767,7 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        g.trace(language)
+        # g.trace(language)
 
         if not language:
             # An unknown language.
@@ -25665,7 +25665,6 @@ self.extension_dict = {
     # Keys are extensions, values are languages.
     "ada"   : "ada",
     "adb"   : "ada",
-    "ahk"   : "autohotkey", #TL - AutoHotkey language
     "as"    : "actionscript",
     "bas"   : "rapidq",
     "c"     : "c",
@@ -25704,7 +25703,8 @@ self.extra_extension_dict = {
     'actionscript': 'actionscript',
     'ada':  'ada95',
     'adb':  'none', # ada??
-    'ahk':  'ahk',
+    # 'ahk':  'ahk',
+    "ahk"   : "autohotkey", #TL - AutoHotkey language
     'awk':  'awk',
     'bas':  'none', # rapidq
     'cpp':  'c',
@@ -26280,7 +26280,7 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        g.trace(language)
+        # g.trace(language)
 
         if not language:
             # An unknown language.
@@ -26682,7 +26682,6 @@ self.extension_dict = {
     # Keys are extensions, values are languages.
     "ada"   : "ada",
     "adb"   : "ada",
-    "ahk"   : "autohotkey", #TL - AutoHotkey language
     "as"    : "actionscript",
     "bas"   : "rapidq",
     "c"     : "c",
@@ -26721,7 +26720,8 @@ self.extra_extension_dict = {
     'actionscript': 'actionscript',
     'ada':  'ada95',
     'adb':  'none', # ada??
-    'ahk':  'ahk',
+    # 'ahk':  'ahk',
+    "ahk"   : "autohotkey", #TL - AutoHotkey language
     'awk':  'awk',
     'bas':  'none', # rapidq
     'cpp':  'c',
@@ -27764,7 +27764,6 @@ self.extension_dict = {
     # Keys are extensions, values are languages.
     "ada"   : "ada",
     "adb"   : "ada",
-    "ahk"   : "autohotkey", #TL - AutoHotkey language
     "as"    : "actionscript",
     "bas"   : "rapidq",
     "c"     : "c",
@@ -27803,7 +27802,8 @@ self.extra_extension_dict = {
     'actionscript': 'actionscript',
     'ada':  'ada95',
     'adb':  'none', # ada??
-    'ahk':  'ahk',
+    # 'ahk':  'ahk',
+    "ahk"   : "autohotkey", #TL - AutoHotkey language
     'awk':  'awk',
     'bas':  'none', # rapidq
     'cpp':  'c',
@@ -27995,7 +27995,7 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        g.trace(language)
+        # g.trace(language)
 
         if not language:
             # An unknown language.
