@@ -2672,7 +2672,7 @@ class atFile:
             if ext.startswith('.'): ext = ext[1:]
 
             language = g.app.extension_dict.get(ext)
-            g.trace(language)
+            # g.trace(language)
 
             if not language:
                 # An unknown language.
