@@ -25,6 +25,12 @@ handlers = {}
 loadedModules = {} # Keys are module names, values are modules.
 loadingModuleNameStack = [] # The stack of module names.  Top is the module being loaded.
 
+def init():
+    global handlers,loadedModules,loadedModulesNameStack
+    handlers = {}
+    loadedModules = {} # Keys are module names, values are modules.
+    loadingModuleNameStack = [] # The stack of module names.  Top is the module being loaded.
+
 #@+others
 #@+node:ekr.20050102094729:callTagHandler
 def callTagHandler (bunch,tag,keywords):
