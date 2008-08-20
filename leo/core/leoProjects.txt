@@ -7234,6 +7234,11 @@ import leo.core.leoConfig as leoConfig
 
 # There is a circular dependency between leoCommands and leoEditCommands.
 import leo.core.leoCommands as leoCommands
+
+# New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+# This prevents a crash when run is called repeatedly from IPython's lleo extension.
+import leo.core.leoPlugins as leoPlugins
+leoPlugins.init()
 #@-node:ekr.20041219072416.1:<< import other early files>>
 #@-node:ekr.20031218072017.1934:run
 #@+node:ekr.20031218072017.1623:new
@@ -12996,6 +13001,11 @@ import leo.core.leoConfig as leoConfig
 
 # There is a circular dependency between leoCommands and leoEditCommands.
 import leo.core.leoCommands as leoCommands
+
+# New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+# This prevents a crash when run is called repeatedly from IPython's lleo extension.
+import leo.core.leoPlugins as leoPlugins
+leoPlugins.init()
 #@-node:ekr.20041219072416.1:<< import other early files>>
 #@-node:ekr.20031218072017.1934:run
 #@+node:ekr.20080521132317.2:scanOptions
@@ -25270,6 +25280,270 @@ def putDescendentTnodeUas (self,p):
         torv=p.t,val=d,tag="descendentTnodeUnknownAttributes") or ''
 #@-node:ekr.20080805071954.1:putDescendentTnodeUas
 #@-node:ekr.20080812072419.2:Fixed the @shadow error message
+#@+node:ekr.20080815174457.2:Fixed bug exposed by IPython's lleo extension
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/2dd72eb49d90e51f#
+
+The cause:
+- The crash happened as the result of g.doHook('hoist-changed')
+- runLeo.run must ensure that the leoPlugin globals are inited each time.
+
+What I did:
+- Added top-level init function in leoPlugins.py.
+- runLeo.py:run() calls this function every time.
+
+> Hmm.  It looks like I'm going to have to come to speed on ileo.
+
+This one is very easy to reproduce:
+
+- Ensure ipython.py plugin is loaded
+- Have latest bzr leo and ipython
+- Launch ipython
+
+EKR: I must cd c:\leo.repo\trunk
+
+IPython 0.9.beta   [on Py 2.5.1]
+[C:opt/Console2]|1> _ip.load('ipy_leo')
+                <1> <module 'ipy_leo' from
+'c:\ipython\IPython/Extensions\ipy_leo.pyc'>
+[C:opt/Console2]|2> lleo
+reading settings in C:\p\leo\leo\config\leoSettings.leo
+
+... Leo opens ...
+
+Now close the opened leo window and launch leo again with lleo:
+
+[C:opt/Console2]|4> lleo
+reading settings in C:\p\leo\leo\config\leoSettings.leo
+Using menus from leoSettings.leo
+reading settings in c:\home\myLeoSettings.leo
+reading c:\home\.leoRecentFiles.txt
+@enabled-plugins found in myLeoSettings.leo
+Can not load c:\aspell\bin\aspell-15.dll
+Traceback (most recent call last):
+
+  File "c:\p\leo\leo\core\leoGlobals.py", line 2743, in doHook
+    return f(tag,keywords)
+
+  File "c:\p\leo\leo\core\leoPlugins.py", line 91, in doPlugins
+    return doHandlersForTag(tag,keywords)
+
+  File "c:\p\leo\leo\core\leoPlugins.py", line 70, in doHandlersForTag
+    val = callTagHandler(bunch,tag,keywords)
+
+  File "c:\p\leo\leo\core\leoPlugins.py", line 49, in callTagHandler
+    result = handler(tag,keywords)
+
+  File "C:\p\leo-editor\leo\plugins\hoist.py", line 104, in onHoistChanged
+    c.theHoistButtonsController.onHoistChanged(tag, keywords)
+
+AttributeError: Commands instance has no attribute 'theHoistButtonsController' 
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.1596:g.doHook
+@ This global function calls a hook routine.  Hooks are identified by the tag param.
+Returns the value returned by the hook routine, or None if the there is an exception.
+
+We look for a hook routine in three places:
+1. c.hookFunction
+2. app.hookFunction
+3. leoPlugins.doPlugins()
+We set app.hookError on all exceptions.  Scripts may reset app.hookError to try again.
+@c
+
+def doHook(tag,*args,**keywords):
+
+    trace = False ; verbose = False
+
+    if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
+        return None
+
+    if args:
+        # A minor error in Leo's core.
+        g.pr("***ignoring args param.  tag = %s" % tag)
+
+    if not g.app.config.use_plugins:
+        if tag in ('open0','start1'):
+            s = "Plugins disabled: use_plugins is 0 in a leoSettings.leo file."
+            g.es_print(s,color="blue")
+        return None
+
+    # Get the hook handler function.  Usually this is doPlugins.
+    c = keywords.get("c")
+    f = (c and c.hookFunction) or g.app.hookFunction
+
+    if trace and (verbose or tag != 'idle'):
+        g.trace('tag',tag,'f',f and f.__name__)
+
+    if not f:
+        import leo.core.leoPlugins as leoPlugins
+        g.app.hookFunction = f = leoPlugins.doPlugins
+
+    try:
+        # Pass the hook to the hook handler.
+        # g.pr('doHook',f.__name__,keywords.get('c'))
+        return f(tag,keywords)
+    except Exception:
+        g.es_exception()
+        g.app.hookError = True # Supress this function.
+        g.app.idleTimeHook = False # Supress idle-time hook
+        return None # No return value
+#@-node:ekr.20031218072017.1596:g.doHook
+#@+node:ekr.20031218072017.1934:run
+def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
+
+    """Initialize and run Leo"""
+
+    # __pychecker__ = '--no-argsused' # keywords not used.
+
+    import pdb ; pdb = pdb.set_trace
+
+    << import leoGlobals and leoApp >>
+    if not jyLeo and not isValidPython(): return
+    g.computeStandardDirectories()
+    adjustSysPath(g)
+    script,windowFlag = scanOptions(g)
+    if pymacs: script,windowFlag = None,False
+    verbose = script is None
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+    if not fileName:
+        fileName = getFileName()
+
+    << import other early files >>
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+    fileName,relativeFileName = completeFileName(fileName)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config.
+    # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.setEncoding()
+    if pymacs:
+        createNullGuiWithScript(None)
+    elif jyLeo:
+        import leo.core.leoSwingGui as leoSwingGui
+        g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+        fileName = None
+    # Load plugins. Plugins may create g.app.gui.
+    g.doHook("start1")
+    if g.app.killed: return # Support for g.app.forceShutdown.
+    # Create the default gui if needed.
+    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    # Initialize tracing and statistics.
+    g.init_sherlock(args)
+    if g.app and g.app.use_psyco: startPsyco()
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName)
+    if not frame: return
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+    g.app.writeWaitingLog()
+    if g.app.oneConfigFilename: g.es_print('--one-config option in effect',color='red')
+    p = c.currentPosition()
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    if not fileName:
+        c.redraw_now()
+    # Respect c's focus wishes if posssible.
+    w = g.app.gui.get_focus(c)
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+    c.outerUpdate()
+    g.app.gui.runMainLoop()
+#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+if jyLeo:
+    print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
+
+# Add the current directory to sys.path *before* importing g.
+# This will fail if the current directory contains unicode characters...
+path = os.getcwd()
+if path not in sys.path:
+    # print('appending %s to sys.path' % path)
+    sys.path.append(path)
+
+# Import leoGlobals, but do NOT set g.
+import leo.core.leoGlobals as leoGlobals
+
+# Set leoGlobals.g here, rather than in leoGlobals.py.
+leoGlobals.g = leoGlobals
+
+import leo.core.leoApp as leoApp
+
+# Create the app.
+leoGlobals.app = leoApp.LeoApp()
+
+# **now** we can set g.
+g = leoGlobals
+assert(g.app)
+
+if jyLeo:
+    startJyleo(g)
+#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+#@+node:ekr.20041219072416.1:<< import other early files>>
+import leo.core.leoNodes as leoNodes
+import leo.core.leoConfig as leoConfig
+
+# There is a circular dependency between leoCommands and leoEditCommands.
+import leo.core.leoCommands as leoCommands
+
+# New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+# This prevents a crash when run is called repeatedly from IPython's lleo extension.
+import leo.core.leoPlugins as leoPlugins
+leoPlugins.init()
+#@-node:ekr.20041219072416.1:<< import other early files>>
+#@-node:ekr.20031218072017.1934:run
+#@+node:ekr.20070423102603.1:chapterSelectHelper
+def chapterSelectHelper (self,w=None,selectEditor=True):
+
+    c = self.c ; cc = self.cc ; name = self.name
+
+    # g.trace(name,'self.p',self.p) # ,'self.root',self.root) # 'w.leo_p',w and w.leo_p)
+
+    cc.selectedChapter = self
+
+    # Next, recompute p and possibly select a new editor.
+    if w:
+        assert w == c.frame.body.bodyCtrl
+        assert w.leo_p
+        # g.trace(name,'w.leo_p',w.leo_p,'p',p)
+        self.p = p = self.findPositionInChapter(w.leo_p)
+        if p != w.leo_p: g.trace('****** can not happen: lost p',w.leo_p)
+    else:
+        # This must be done *after* switching roots.
+        target_p = self.p or self.root.firstChild() or self.root
+        #g.trace(name,'target_p',target_p)
+        #g.trace(name,'self.p',self.p,'self.root',self.root)
+        self.p = p = self.findPositionInChapter(target_p)
+        if selectEditor:
+            w = self.findEditorInChapter(p)
+            c.frame.body.selectEditor(w) # Switches text.
+
+    if name == 'main' and cc.chaptersNode:
+        cc.chaptersNode.contract()    
+    c.hoistStack = self.hoistStack[:]
+    c.selectPosition(p)
+    c.redraw()
+    g.doHook('hoist-changed',c=c)
+    c.bodyWantsFocusNow()
+#@nonl
+#@-node:ekr.20070423102603.1:chapterSelectHelper
+#@-node:ekr.20080815174457.2:Fixed bug exposed by IPython's lleo extension
 #@-node:ekr.20080812093903.2:Bugs
 #@+node:ekr.20080812093903.6:Shadow files
 #@+node:ekr.20080812093903.1:Made @shadow work for unknown extensions
