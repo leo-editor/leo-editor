@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="6,1,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -1187,7 +1187,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -2928,7 +2928,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080815093141.89"><vh>4.5 b3</vh>
 <v t="ekr.20080815093141.90"><vh>Major new features</vh></v>
 <v t="ekr.20080815093141.91"><vh>Major code reorganizations</vh></v>
@@ -6720,7 +6720,12 @@ Here is how to access data at position ``p``.
     body = p.bodyString()
     head = p.headString()
     c.setBodyString(p,body) # set body text of p to body.
-    c.setHeadString(p,head) # set headline text of p to head.</t>
+    c.setHeadString(p,head) # set headline text of p to head.
+    
+**Note**: Sometimes you want to use text that *looks* like a section reference, but isn't.
+In such cases, you can use g.angleBrackets.  For example::
+
+    g.es(g.angleBrackets('abc'))</t>
 <t tx="ekr.20040403173920.9">The proper way to traverse an outline is with an iterator.
 Iterators are defined only by the position class;
 vnodes can not have iterators because vnodes may appear in multiple places in an outline.
