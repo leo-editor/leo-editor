@@ -207,35 +207,11 @@ You could call this a problem with the original @shadow idea.  I don't know of a
 Please comment now.  I'll probably push revisions based on these remarks later today or tomorrow.
 
 Edward
-
-#@nonl
 #@-node:ekr.20080820083933.11:My summary
 #@-node:ekr.20080820083933.6:Fix settings mess
 #@+node:ekr.20080815174457.1:Only enable plugins: ignore all comments in @enabled-plugins
 #@-node:ekr.20080815174457.1:Only enable plugins: ignore all comments in @enabled-plugins
 #@-node:ekr.20080820083933.14:Settings
-#@+node:ekr.20080820083933.4:Fix the incorrect @shadow error
-@nocolor
-
-> On Mon, Aug 18, 2008 at 9:47 PM, Terry Brown <terry_n_br...@yahoo.com> wrote:
-> > reading: @shadow tables.sql Bad @+leo sentinel in: tables.sql can not
-> > read 3.x derived file tables.sql you may upgrade these file using Leo
-> > 4.0 through 4.4.x reading: @shadow maglink.py
->
-> Something is pretty fishy here.  Apparently, Leo is trying to read a
-> **private** file called tables.sql.  But private files start with 'x'
-> by default.
-
-This just happened to me.  I changed @language huh_language to
-@language c and resaved, but I forgot to change the actual .huh
-extension to .c.
-
-This kind of transition case has the potential to cause great
-confusion.  I'll see if I can do some better consistency checks...
-
-@colro
-#@nonl
-#@-node:ekr.20080820083933.4:Fix the incorrect @shadow error
 #@+node:ekr.20080815174457.3:Fix distro problems
 @nocolor
 
