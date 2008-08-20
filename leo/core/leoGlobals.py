@@ -2720,6 +2720,8 @@ def idleTimeHookHandler(*args,**keys):
 
 def doHook(tag,*args,**keywords):
 
+    trace = False ; verbose = False
+
     if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
         return None
 
@@ -2736,6 +2738,10 @@ def doHook(tag,*args,**keywords):
     # Get the hook handler function.  Usually this is doPlugins.
     c = keywords.get("c")
     f = (c and c.hookFunction) or g.app.hookFunction
+
+    if trace and (verbose or tag != 'idle'):
+        g.trace('tag',tag,'f',f and f.__name__)
+
     if not f:
         import leo.core.leoPlugins as leoPlugins
         g.app.hookFunction = f = leoPlugins.doPlugins
