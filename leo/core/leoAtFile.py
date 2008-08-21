@@ -599,7 +599,7 @@ class atFile:
                 g.trace(g.callers())
                 at.error('invalid @shadow private file',fileName)
             else:
-                g.es('can not read 3.x derived file',fileName,color='red')
+                at.error('can not read 3.x derived file',fileName)
                 g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
                 g.trace('root',root and root.headString(),fileName)
 
@@ -4242,16 +4242,26 @@ class atFile:
     #@-node:ekr.20041005105605.196:Writing 4.x utils...
     #@-node:ekr.20041005105605.132:at.Writing
     #@+node:ekr.20041005105605.219:at.Utilites
-    #@+node:ekr.20041005105605.220:atFile.error
-    def error(self,message):
+    #@+node:ekr.20041005105605.220:atFile.error & printError
+    def error(self,*args):
 
-        if message:
-            self.printError(message)
+        if args:
+            self.printError(*args)
 
         self.errors += 1
 
         # g.trace('errors',self.errors)
-    #@-node:ekr.20041005105605.220:atFile.error
+
+    def printError (self,*args):
+
+        '''Print an error message that may contain non-ascii characters.'''
+
+        if self.errors == 0:
+            g.es_error(*args)
+        else:
+            g.pr(*args)
+    #@nonl
+    #@-node:ekr.20041005105605.220:atFile.error & printError
     #@+node:ekr.20051219122720:atFile.forceGnxOnPosition
     def forceGnxOnPosition (self,p):
 
@@ -4259,30 +4269,6 @@ class atFile:
 
         self._forcedGnxPositionList.append(p.v)
     #@-node:ekr.20051219122720:atFile.forceGnxOnPosition
-    #@+node:ekr.20050206085258:atFile.printError
-    def printError (self,message):
-
-        '''Print an error message that may contain non-ascii characters.'''
-
-        if self.errors == 0:
-            g.es_error(message)
-        else:
-            try:
-                g.pr(message)
-            except UnicodeError:
-                g.pr(g.toEncodedString(message,'ascii'))
-    #@+node:ekr.20070621091727:@@test printError
-    # We typically don't enable this test.
-
-    if g.unitTesting:
-
-        c,p = g.getTestVars() # Optional: prevents pychecker warnings.
-        at = c.atFileCommands
-        at.errors = 0
-        at.printError(
-            "test of printError: Ᾱ(U+1FB9: Greek Capital Letter Alpha With Macron)")
-    #@-node:ekr.20070621091727:@@test printError
-    #@-node:ekr.20050206085258:atFile.printError
     #@+node:ekr.20041005105605.222:atFile.scanAllDirectives
     #@+at 
     #@nonl
