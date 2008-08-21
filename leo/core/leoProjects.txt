@@ -12060,38 +12060,24 @@ def dump (self):
 #@-node:ekr.20060919110638.15:class saxNodeClass
 #@-node:ekr.20060919145406:<< define sax classes >>
 #@+node:ekr.20070626132332:es & minitest
-def es(s,*args,**keys):
+def es(*args,**keys):
 
     '''Put all non-keyword args to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    # g.pr('es','app.log',repr(app.log),'log.isNull',not app.log or app.log.isNull,repr(s))
-    # g.pr('es',repr(s))
+
     log = app.log
-    if app.killed:
-        return
+    if app.killed: return
 
-    # Important: defining keyword arguments in addition to *args **does not work**.
-    # See Section 5.3.4 (Calls) of the Python reference manual.
-    # In other words, the following is about the best that can be done.
-    color = keys.get('color')
-    commas = keys.get('commas')
-    commas = g.choose( 
-        commas in (True,'True','true'),True,False)# default is False
-    newline = keys.get('newline')
-    newline = g.choose(
-        newline in (False,'False','false'),False,True)# default is True
-    spaces= keys.get('spaces')
-    spaces = g.choose(
-        spaces in (False,'False','false'),False,True)# default is True
-    tabName = keys.get('tabName','Log')
-
-        # Default goes to log pane *not* the presently active pane.
+    # Compute the effective args.
+    d = {'color':'black','commas':False,'newline':True,'spaces':True,'tabName':'Log'}
+    d = g.doKeywordArgs(keys,d)
+    color = d.get('color')
     if color == 'suppress': return # New in 4.3.
-    if type(s) != type("") and type(s) != type(u""):
-        s = repr(s)
-    s = g.translateArgs(s,args,commas,spaces)
+    tabName = d.get('tabName') or 'Log'
+    newline = d.get('newline')
+    s = g.translateArgs(args,d)
 
     if app.batchMode:
         if app.log:
@@ -13295,9 +13281,9 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
 
     at = self ; c = at.c
     << set fileName >>
-    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile)
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
     if at.errors: return False
-    at.openFileForReading(fileName,fromString=fromString,atShadow=atShadow)
+    at.openFileForReading(fileName,fromString=fromString)
     if not at.inputFile: return False
     if not g.unitTesting:
         g.es("reading:",root.headString())
@@ -17919,29 +17905,26 @@ def __init__ (self,c,trace=False,trace_writers=False):
     self.line_mapping = []
 #@-node:ekr.20080708094444.79: x.ctor
 #@+node:ekr.20041005105605.19:openFileForReading (atFile)
-def openFileForReading(self,fn,fromString=False,atShadow=False):
+def openFileForReading(self,fn,fromString=False):
 
     at = self ; trace = True and not g.app.unitTesting ; verbose = False
 
     if fromString:
-        if atShadow:
-            return at.error('can not call read(atShadow=True,fromString=aString)')
+        if at.atShadow:
+            return at.error('can not call at.read from string for @shadow files')
         at.inputFile = g.fileLikeObject(fromString=fromString)
     else:
         fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
 
-        if atShadow:
+        if at.atShadow:
             x = at.c.shadowController
             # readOneAtShadowNode should already have checked these.
             shadow_fn       = x.shadowPathName(fn)
             shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
             # x.updatePublicAndPrivate will create the public file from the private file
             # if the public file exists. This *is* reasonable: there is nothing to import!
-            # if not g.os_path_exists(fn):
-                # g.trace('oops public',fn,g.callers())
-                # return at.error('can not happen: public file does not exist: %s' % (fn))
             if not shadow_exists:
-                g.trace('oops private',shadow_fn,g.callers())
+                g.trace('can not happen: no private file',shadow_fn,g.callers())
                 return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
             # This method is the gateway to the essence of the shadow algorithm.
             x.updatePublicAndPrivateFiles(fn,shadow_fn)
@@ -17949,8 +17932,8 @@ def openFileForReading(self,fn,fromString=False,atShadow=False):
 
         try:
             # Open the file in binary mode to allow 0x1a in bodies & headlines.
-            if trace and verbose and atShadow: g.trace('opening %s file: %s' % (
-                g.choose(atShadow,'private','public'),fn))
+            if trace and verbose and at.atShadow: g.trace('opening %s file: %s' % (
+                g.choose(at.atShadow,'private','public'),fn))
             at.inputFile = open(fn,'rb')
             at.warnOnReadOnlyFile(fn)
         except IOError:
@@ -17966,9 +17949,9 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
 
     at = self ; c = at.c
     << set fileName >>
-    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile)
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
     if at.errors: return False
-    at.openFileForReading(fileName,fromString=fromString,atShadow=atShadow)
+    at.openFileForReading(fileName,fromString=fromString)
     if not at.inputFile: return False
     if not g.unitTesting:
         g.es("reading:",root.headString())
@@ -18095,7 +18078,7 @@ def readOneAtShadowNode (self,fn,p):
         at.read(p,
             thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
             atShadow=True)
-            # Calls x.updatePublicAndPrivateFiles
+            # at.openFileForReading calls x.updatePublicAndPrivateFiles
     else:
         if not g.unitTesting: g.es("reading:",p.headString())
         ok = at.importAtShadowNode(fn,p)
@@ -18134,23 +18117,29 @@ def readOpenFile(self,root,theFile,fileName):
 
     Leo 4.5 and later can only read 4.x derived files.'''
 
-    at = self
+    at = self ; ok = True
 
     firstLines,read_new,junk = at.scanHeader(theFile,fileName)
 
     if read_new:
         lastLines = at.scanText4(theFile,fileName,root)
     else:
-        # lastLines = at.scanText3(theFile,root,[],at.endLeo)
-        lastLines = []
-        g.es('can not read 3.x derived file',fileName,color='red')
-        g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
-        g.trace('root',root and root.headString(),fileName)
+        firstLines = [] ; lastLines = []
+        ok = False
+        if at.atShadow:
+            g.trace(g.callers())
+            at.error('invalid @shadow private file',fileName)
+        else:
+            g.es('can not read 3.x derived file',fileName,color='red')
+            g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
+            g.trace('root',root and root.headString(),fileName)
 
     if root:
         root.v.t.setVisited() # Disable warning about set nodes.
 
     << handle first and last lines >>
+
+    return ok
 #@+node:ekr.20041005105605.28:<< handle first and last lines >>
 try:
     body = root.v.t.tempBodyString
@@ -20658,29 +20647,26 @@ What I did:
 @color
 #@nonl
 #@+node:ekr.20041005105605.19:openFileForReading (atFile)
-def openFileForReading(self,fn,fromString=False,atShadow=False):
+def openFileForReading(self,fn,fromString=False):
 
     at = self ; trace = True and not g.app.unitTesting ; verbose = False
 
     if fromString:
-        if atShadow:
-            return at.error('can not call read(atShadow=True,fromString=aString)')
+        if at.atShadow:
+            return at.error('can not call at.read from string for @shadow files')
         at.inputFile = g.fileLikeObject(fromString=fromString)
     else:
         fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
 
-        if atShadow:
+        if at.atShadow:
             x = at.c.shadowController
             # readOneAtShadowNode should already have checked these.
             shadow_fn       = x.shadowPathName(fn)
             shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
             # x.updatePublicAndPrivate will create the public file from the private file
             # if the public file exists. This *is* reasonable: there is nothing to import!
-            # if not g.os_path_exists(fn):
-                # g.trace('oops public',fn,g.callers())
-                # return at.error('can not happen: public file does not exist: %s' % (fn))
             if not shadow_exists:
-                g.trace('oops private',shadow_fn,g.callers())
+                g.trace('can not happen: no private file',shadow_fn,g.callers())
                 return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
             # This method is the gateway to the essence of the shadow algorithm.
             x.updatePublicAndPrivateFiles(fn,shadow_fn)
@@ -20688,8 +20674,8 @@ def openFileForReading(self,fn,fromString=False,atShadow=False):
 
         try:
             # Open the file in binary mode to allow 0x1a in bodies & headlines.
-            if trace and verbose and atShadow: g.trace('opening %s file: %s' % (
-                g.choose(atShadow,'private','public'),fn))
+            if trace and verbose and at.atShadow: g.trace('opening %s file: %s' % (
+                g.choose(at.atShadow,'private','public'),fn))
             at.inputFile = open(fn,'rb')
             at.warnOnReadOnlyFile(fn)
         except IOError:
@@ -20809,9 +20795,9 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
 
     at = self ; c = at.c
     << set fileName >>
-    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile)
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
     if at.errors: return False
-    at.openFileForReading(fileName,fromString=fromString,atShadow=atShadow)
+    at.openFileForReading(fileName,fromString=fromString)
     if not at.inputFile: return False
     if not g.unitTesting:
         g.es("reading:",root.headString())
@@ -20883,7 +20869,7 @@ def readOneAtShadowNode (self,fn,p):
         at.read(p,
             thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
             atShadow=True)
-            # Calls x.updatePublicAndPrivateFiles
+            # at.openFileForReading calls x.updatePublicAndPrivateFiles
     else:
         if not g.unitTesting: g.es("reading:",p.headString())
         ok = at.importAtShadowNode(fn,p)
@@ -20922,23 +20908,29 @@ def readOpenFile(self,root,theFile,fileName):
 
     Leo 4.5 and later can only read 4.x derived files.'''
 
-    at = self
+    at = self ; ok = True
 
     firstLines,read_new,junk = at.scanHeader(theFile,fileName)
 
     if read_new:
         lastLines = at.scanText4(theFile,fileName,root)
     else:
-        # lastLines = at.scanText3(theFile,root,[],at.endLeo)
-        lastLines = []
-        g.es('can not read 3.x derived file',fileName,color='red')
-        g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
-        g.trace('root',root and root.headString(),fileName)
+        firstLines = [] ; lastLines = []
+        ok = False
+        if at.atShadow:
+            g.trace(g.callers())
+            at.error('invalid @shadow private file',fileName)
+        else:
+            g.es('can not read 3.x derived file',fileName,color='red')
+            g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
+            g.trace('root',root and root.headString(),fileName)
 
     if root:
         root.v.t.setVisited() # Disable warning about set nodes.
 
     << handle first and last lines >>
+
+    return ok
 #@+node:ekr.20041005105605.28:<< handle first and last lines >>
 try:
     body = root.v.t.tempBodyString
@@ -21494,7 +21486,7 @@ def readOneAtShadowNode (self,fn,p):
         at.read(p,
             thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
             atShadow=True)
-            # Calls x.updatePublicAndPrivateFiles
+            # at.openFileForReading calls x.updatePublicAndPrivateFiles
     else:
         if not g.unitTesting: g.es("reading:",p.headString())
         ok = at.importAtShadowNode(fn,p)
