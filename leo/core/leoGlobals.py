@@ -1627,22 +1627,14 @@ def init_trace(args,echo=1):
 
 def trace (*args,**keys):
 
-    #callers = keys.get("callers",False)
-    newline = keys.get("newline",True)
-    align =   keys.get("align",0)
+    # Compute the effective args.
+    d = {'align':0,'newline':True}
+    d = g.doKeywordArgs(keys,d)
+    newline = d.get('newline')
+    align = d.get('align')
+    if align is None: align = 0
 
-    s = ""
-    for arg in args:
-        if type(arg) == type(u""):
-            pass
-        elif type(arg) != type(""):
-            arg = repr(arg)
-        if len(s) > 0:
-            s = s + " " + arg
-        else:
-            s = arg
-    message = s
-
+    # Compute the caller name.
     try: # get the function name from the call stack.
         f1 = sys._getframe(1) # The stack frame, one level up.
         code1 = f1.f_code # The code object
@@ -1651,20 +1643,67 @@ def trace (*args,**keys):
     if name == "?":
         name = "<unknown>"
 
-    # if callers:
-        # traceback.print_stack()
-
+    # Pad the caller name.
     if align != 0 and len(name) < abs(align):
         pad = ' ' * (abs(align) - len(name))
         if align > 0: name = name + pad
         else:         name = pad + name
 
-    message = g.toEncodedString(message,'ascii') # Bug fix: 10/10/07.
+    # Munge *args into s.
+    result = []
+    for arg in args:
+        if type(arg) == type(u""):
+            pass
+        elif type(arg) != type(""):
+            arg = repr(arg)
+        if result:
+            result.append(" " + arg)
+        else:
+            result.append(arg)
+    s = ''.join(result)
+    s = g.toEncodedString(s,'ascii')
+    g.pr('%s: %s' % (name,s),newline=newline)
 
-    if newline:
-        g.pr(name + ": " + message)
-    else:
-        g.pr(name + ": " + message,)
+    if 0:
+
+        #callers = keys.get("callers",False)
+        newline = keys.get("newline",True)
+        align =   keys.get("align",0)
+
+        s = ""
+        for arg in args:
+            if type(arg) == type(u""):
+                pass
+            elif type(arg) != type(""):
+                arg = repr(arg)
+            if len(s) > 0:
+                s = s + " " + arg
+            else:
+                s = arg
+        message = s
+
+        try: # get the function name from the call stack.
+            f1 = sys._getframe(1) # The stack frame, one level up.
+            code1 = f1.f_code # The code object
+            name = code1.co_name # The code name
+        except Exception: name = ''
+        if name == "?":
+            name = "<unknown>"
+
+        # if callers:
+            # traceback.print_stack()
+
+        if align != 0 and len(name) < abs(align):
+            pad = ' ' * (abs(align) - len(name))
+            if align > 0: name = name + pad
+            else:         name = pad + name
+
+        message = g.toEncodedString(message,'ascii') # Bug fix: 10/10/07.
+
+        if newline:
+            g.pr(name + ": " + message)
+        else:
+            g.pr(name + ": " + message,)
 #@-node:ekr.20031218072017.2317:trace
 #@+node:ekr.20031218072017.2318:trace_tag
 # Convert all args to strings.
@@ -2802,38 +2841,24 @@ def enl(tabName='Log'):
         log.putnl(tabName)
 #@-node:ekr.20031218072017.1474:enl, ecnl & ecnls
 #@+node:ekr.20070626132332:es & minitest
-def es(s,*args,**keys):
+def es(*args,**keys):
 
     '''Put all non-keyword args to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    # g.pr('es','app.log',repr(app.log),'log.isNull',not app.log or app.log.isNull,repr(s))
-    # g.pr('es',repr(s))
+
     log = app.log
-    if app.killed:
-        return
+    if app.killed: return
 
-    # Important: defining keyword arguments in addition to *args **does not work**.
-    # See Section 5.3.4 (Calls) of the Python reference manual.
-    # In other words, the following is about the best that can be done.
-    color = keys.get('color')
-    commas = keys.get('commas')
-    commas = g.choose( 
-        commas in (True,'True','true'),True,False)# default is False
-    newline = keys.get('newline')
-    newline = g.choose(
-        newline in (False,'False','false'),False,True)# default is True
-    spaces= keys.get('spaces')
-    spaces = g.choose(
-        spaces in (False,'False','false'),False,True)# default is True
-    tabName = keys.get('tabName','Log')
-
-        # Default goes to log pane *not* the presently active pane.
+    # Compute the effective args.
+    d = {'color':'black','commas':False,'newline':True,'spaces':True,'tabName':'Log'}
+    d = g.doKeywordArgs(keys,d)
+    color = d.get('color')
     if color == 'suppress': return # New in 4.3.
-    if type(s) != type("") and type(s) != type(u""):
-        s = repr(s)
-    s = g.translateArgs(s,args,commas,spaces)
+    tabName = d.get('tabName') or 'Log'
+    newline = d.get('newline')
+    s = g.translateArgs(args,d)
 
     if app.batchMode:
         if app.log:
@@ -2877,125 +2902,120 @@ def es(s,*args,**keys):
 #@+node:ekr.20050707064040:es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
-def es_print(s,*args,**keys):
+def es_print(*args,**keys):
 
     '''Print all non-keyword args, and put them to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
 
-    encoding = sys.getdefaultencoding()
-
-    # Important: defining keyword arguments in addition to *args **does not work**.
-    # See Section 5.3.4 (Calls) of the Python reference manual.
-    # In other words, the following is about the best that can be done.
-    commas = keys.get('commas')
-    commas = g.choose( 
-        commas in (True,'True','true'),True,False)# default is False
-    newline = keys.get('newline')
-    newline = g.choose(
-        newline in (False,'False','false'),False,True)# default is True
-    spaces= keys.get('spaces')
-    spaces = g.choose(
-        spaces in (False,'False','false'),False,True)# default is True
-    try:
-        if type(s) != type(u''):
-            s = unicode(s,encoding)
-    except Exception:
-        s = g.toEncodedString(s,'ascii')
-
-    s2 = g.translateArgs(s,args,commas,spaces)
-
-    if newline:
-        try:
-            g.pr(s2)
-        except Exception:
-            g.pr(g.toEncodedString(s2,'ascii'))
-    else:
-        try:
-            g.pr(s2,newline=False)
-        except Exception:
-            g.pr(g.toEncodedString(s2,'ascii'),newline=False)
-
-    if g.app.gui and not g.app.gui.isNullGui and not g.unitTesting:
-        g.es(s,*args,**keys)
+    g.pr(*args,**keys)
+    g.es(*args,**keys)
 #@-node:ekr.20050707064040:es_print
+#@+node:ekr.20080821073134.2:doKeywordArgs
+def doKeywordArgs (keys,d=None):
+
+    '''Return a result dict that is a copy of the keys dict
+    with missing items replaced by defaults in d dict.'''
+
+    if d is None: d = {}
+
+    result = {}
+    for key,default_val in d.items():
+        isBool = default_val in (True,False)
+        val = keys.get(key)
+        if isBool and val in (True,'True','true'):
+            result[key] = True
+        elif isBool and val in (False,'False','false'):
+            result[key] = False
+        elif val is None:
+            result[key] = default_val
+        else:
+            result[key] = val
+
+    return result 
+#@-node:ekr.20080821073134.2:doKeywordArgs
 #@+node:ekr.20080710101653.1:pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
-def pr(s,*args,**keys):
+def pr(*args,**keys):
 
     '''Print all non-keyword args, and put them to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
 
-    encoding = sys.getdefaultencoding()
-
-    # Important: defining keyword arguments in addition to *args **does not work**.
-    # See Section 5.3.4 (Calls) of the Python reference manual.
-    # In other words, the following is about the best that can be done.
-    commas = keys.get('commas')
-    commas = g.choose( 
-        commas in (True,'True','true'),True,False)# default is False
-    newline = keys.get('newline')
-    newline = g.choose(
-        newline in (False,'False','false'),False,True)# default is True
-    spaces= keys.get('spaces')
-    spaces = g.choose(
-        spaces in (False,'False','false'),False,True)# default is True
+    # Compute the effective args.
+    d = {'commas':False,'newline':True,'spaces':True}
+    d = g.doKeywordArgs(keys,d)
+    s = g.translateArgs(args,d)
 
     try:
-        if type(s) != type(u''):
-            s = unicode(s,encoding)
-    except Exception:
-        s = g.toEncodedString(s,'ascii')
-
-    if type(s) != type("") and type(s) != type(u""):
-        s = repr(s)
-    s2 = g.translateArgs(s,args,commas,spaces)
-
-    try:
-        if newline:
-            sys.stdout.write(s2 + '\n')
+        if d.get('newline'):
+            print s
         else:
-            sys.stdout.write(s2)
+            print s,
+
     except Exception:
         print('unexpected Exception in g.pr')
         g.es_exception()
         g.trace(g.callers())
 #@-node:ekr.20080710101653.1:pr
 #@+node:ekr.20050707065530:es_trace
-def es_trace(s,*args,**keys):
+def es_trace(*args,**keys):
 
-    g.trace(g.toEncodedString(s,'ascii'))
-    g.es(s,*args,**keys)
+    if args:
+        try:
+            s = args[0]
+            g.trace(g.toEncodedString(s,'ascii'))
+        except Exception:
+            pass
+
+    g.es(*args,**keys)
 #@-node:ekr.20050707065530:es_trace
 #@+node:ekr.20080220111323:translateArgs
-def translateArgs (s,args,commas,spaces):
+### def translateArgs (s,args,commas,spaces):
+def translateArgs(args,d):
 
     '''Return the concatenation of s and all args,
 
     with odd args translated.'''
 
-    # Print the translated strings, but retain s for the later call to g.es.
-    result = []
-    if s:
-        result.append(g.translateString(s))
-    n = 1
+    result = [] ; n = 0 ; spaces = d.get('spaces')
     for arg in args:
         n += 1
         if type(arg) != type("") and type(arg) != type(u""):
             arg = repr(arg)
         elif (n % 2) == 1:
             arg = g.translateString(arg)
+        else:
+            pass # The arg is an untranslated string.
+
         if arg:
-            if result:
-                # if commas: result.append(',')
-                if spaces: result.append(' ')
+            if result and spaces: result.append(' ')
             result.append(arg)
 
     return ''.join(result)
+
+    if 0: ### old code
+        # Print the translated strings, but retain s for the later call to g.es.
+        result = []
+        if s:
+            result.append(g.translateString(s))
+        n = 1
+        for arg in args:
+            n += 1
+            if type(arg) != type("") and type(arg) != type(u""):
+                arg = repr(arg)
+            elif (n % 2) == 1:
+                arg = g.translateString(arg)
+            if arg:
+                if result:
+                    # if commas: result.append(',')
+                    if spaces: result.append(' ')
+                result.append(arg)
+
+        return ''.join(result)
 #@-node:ekr.20080220111323:translateArgs
 #@+node:ekr.20060810095921:translateString & tr
 def translateString (s):
