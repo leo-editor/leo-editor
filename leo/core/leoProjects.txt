@@ -18130,7 +18130,7 @@ def readOpenFile(self,root,theFile,fileName):
             g.trace(g.callers())
             at.error('invalid @shadow private file',fileName)
         else:
-            g.es('can not read 3.x derived file',fileName,color='red')
+            at.error('can not read 3.x derived file',fileName)
             g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
             g.trace('root',root and root.headString(),fileName)
 
@@ -20921,7 +20921,7 @@ def readOpenFile(self,root,theFile,fileName):
             g.trace(g.callers())
             at.error('invalid @shadow private file',fileName)
         else:
-            g.es('can not read 3.x derived file',fileName,color='red')
+            at.error('can not read 3.x derived file',fileName)
             g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
             g.trace('root',root and root.headString(),fileName)
 

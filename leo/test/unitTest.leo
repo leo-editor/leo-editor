@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2429,6 +2429,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
 <v t="ekr.20080729200342.1"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
@@ -6085,7 +6086,7 @@ assert(not ok)</t>
 <t tx="ekr.20050208051854">at = c.atFileCommands
 at.errors = 0
 at.printError(
-    "test of printError: Ᾱ(U+1FB9: Greek Capital Letter Alpha With Macron)")</t>
+    "test of printError","Ᾱ(U+1FB9: Greek Capital Letter Alpha With Macron)")</t>
 <t tx="ekr.20050208073718">import sys
 
 if sys.platform.startswith('win'):
