@@ -1035,12 +1035,21 @@ def es_dump (s,n = 30,title=None):
 #@nonl
 #@-node:ekr.20060917120951:es_dump
 #@+node:ekr.20031218072017.3110:es_error
-def es_error (s,color=None):
+def es_error(*args,**keys):
 
-    if color is None and g.app.config: # May not exist during initialization.
-        color = g.app.config.getColor(None,"log_error_color") or 'red'
+    color = keys.get('color')
+    if color is None and g.app.config:
+        keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
 
-    g.es(s,color=color)
+    g.es(*args,**keys)
+
+
+# def es_error (s,color=None):
+
+    # if color is None and g.app.config: # May not exist during initialization.
+        # color = g.app.config.getColor(None,"log_error_color") or 'red'
+
+    # g.es(s,color=color)
 #@-node:ekr.20031218072017.3110:es_error
 #@+node:ekr.20031218072017.3111:es_event_exception
 def es_event_exception (eventName,full=False):
@@ -2974,7 +2983,6 @@ def es_trace(*args,**keys):
     g.es(*args,**keys)
 #@-node:ekr.20050707065530:es_trace
 #@+node:ekr.20080220111323:translateArgs
-### def translateArgs (s,args,commas,spaces):
 def translateArgs(args,d):
 
     '''Return the concatenation of s and all args,
@@ -2984,6 +2992,12 @@ def translateArgs(args,d):
     result = [] ; n = 0 ; spaces = d.get('spaces')
     for arg in args:
         n += 1
+
+        # First, convert to unicode.
+        if type(arg) == type(''):
+            arg = g.toUnicode(arg,encoding='utf-8',reportErrors=False)
+
+        # Now translate.
         if type(arg) != type("") and type(arg) != type(u""):
             arg = repr(arg)
         elif (n % 2) == 1:
