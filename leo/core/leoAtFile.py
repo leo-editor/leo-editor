@@ -3838,9 +3838,6 @@ class atFile:
 
         at = self
 
-        # g.trace(g.callers())
-        # g.trace(repr(s))
-
         if s and at.outputFile:
             try:
                 s = g.toEncodedString(s,at.encoding,reportErrors=True)
@@ -4245,22 +4242,22 @@ class atFile:
     #@+node:ekr.20041005105605.220:atFile.error & printError
     def error(self,*args):
 
+        at = self
+
         if args:
-            self.printError(*args)
+            at.printError(*args)
 
-        self.errors += 1
-
-        # g.trace('errors',self.errors)
+        at.errors += 1
 
     def printError (self,*args):
 
         '''Print an error message that may contain non-ascii characters.'''
 
-        if self.errors == 0:
-            g.es_error(*args)
-        else:
-            g.pr(*args)
-    #@nonl
+        at = self
+
+        keys = {'color': g.choose(at.errors,'blue','red')}
+
+        g.es_error(*args,**keys)
     #@-node:ekr.20041005105605.220:atFile.error & printError
     #@+node:ekr.20051219122720:atFile.forceGnxOnPosition
     def forceGnxOnPosition (self,p):
