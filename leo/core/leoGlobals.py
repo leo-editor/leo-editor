@@ -1035,9 +1035,10 @@ def es_dump (s,n = 30,title=None):
 #@nonl
 #@-node:ekr.20060917120951:es_dump
 #@+node:ekr.20031218072017.3110:es_error
-def es_error(*args,**keys):
+def es_error (*args,**keys):
 
     color = keys.get('color')
+
     if color is None and g.app.config:
         keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
 
@@ -2874,7 +2875,9 @@ def es(*args,**keys):
             app.log.put(s)
     elif g.unitTesting:
         if log and not log.isNull:
-            s = g.toEncodedString(s,'ascii')
+            # New in Leo 4.5 b4: this is no longer needed.
+            # This makes the output of unit tests match the output of scripts.
+            # s = g.toEncodedString(s,'ascii')
             g.pr(s,newline=newline)
     else:
         if log and log.isNull:
@@ -2957,14 +2960,15 @@ def pr(*args,**keys):
     # Compute the effective args.
     d = {'commas':False,'newline':True,'spaces':True}
     d = g.doKeywordArgs(keys,d)
-    s = g.translateArgs(args,d)
+
+    # Important:  Python's print statement *can* handle unicode.
+    # However, the following must appear in Python\Lib\sitecustomize.py:
+    #    sys.setdefaultencoding('utf-8')
+    s = g.translateArgs(args,d) # Translates everything to unicode.
 
     try:
-        if d.get('newline'):
-            print s
-        else:
-            print s,
-
+        if d.get('newline'): print s
+        else:                print s,
     except Exception:
         print('unexpected Exception in g.pr')
         g.es_exception()
@@ -2989,16 +2993,22 @@ def translateArgs(args,d):
 
     with odd args translated.'''
 
+    if not hasattr(g,'consoleEncoding'):
+        e = sys.getdefaultencoding()
+        g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
+        # print 'translateArgs',g.consoleEncoding
+
+
     result = [] ; n = 0 ; spaces = d.get('spaces')
     for arg in args:
         n += 1
 
         # First, convert to unicode.
-        if type(arg) == type(''):
-            arg = g.toUnicode(arg,encoding='utf-8',reportErrors=False)
+        if type(arg) == type('a'):
+            arg = g.toUnicode(arg,g.consoleEncoding)
 
         # Now translate.
-        if type(arg) != type("") and type(arg) != type(u""):
+        if type(arg) not in (type(""),type(u""),):
             arg = repr(arg)
         elif (n % 2) == 1:
             arg = g.translateString(arg)
@@ -3011,25 +3021,6 @@ def translateArgs(args,d):
 
     return ''.join(result)
 
-    if 0: ### old code
-        # Print the translated strings, but retain s for the later call to g.es.
-        result = []
-        if s:
-            result.append(g.translateString(s))
-        n = 1
-        for arg in args:
-            n += 1
-            if type(arg) != type("") and type(arg) != type(u""):
-                arg = repr(arg)
-            elif (n % 2) == 1:
-                arg = g.translateString(arg)
-            if arg:
-                if result:
-                    # if commas: result.append(',')
-                    if spaces: result.append(' ')
-                result.append(arg)
-
-        return ''.join(result)
 #@-node:ekr.20080220111323:translateArgs
 #@+node:ekr.20060810095921:translateString & tr
 def translateString (s):
@@ -4880,6 +4871,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
         s = g.removeExtraLws(s,c.tab_width)
         if s.strip():
             g.app.scriptDict["script1"]=s
+            # Important: converts unicode to utf-8 encoded strings.
             script = at.writeFromString(p.copy(),s,
                 forcePythonSentinels=forcePythonSentinels,
                 useSentinels=useSentinels)
@@ -4892,7 +4884,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
         g.es_exception()
         script = ''
 
-    # g.trace(type(script),repr(script))
+    # g.trace(type(script),script)
     return script
 #@-node:EKR.20040614071102.1:g.getScript
 #@+node:ekr.20050920084036.4:g.longestCommonPrefix & g.itemsMatchingPrefixInList
@@ -5525,5 +5517,6 @@ def init_zodb (pathToZodbStorage,verbose=True):
 #@-node:ekr.20060913090832.1:g.init_zodb
 #@-node:ekr.20060913091602:ZODB support
 #@-others
+#@nonl
 #@-node:ekr.20031218072017.3093:@thin leoGlobals.py
 #@-leo
