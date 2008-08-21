@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="93" left="133" height="885" width="887"/>
+	<global_window_position top="78" left="225" height="885" width="887"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1838,9 +1838,10 @@
 <v t="ekr.20050206201145"><vh>@test % operator with unicode</vh></v>
 <v t="ekr.20050208111037"><vh>@test failure to convert unicode characters to ascii</vh></v>
 <v t="ekr.20050208104202"><vh>@test of round-tripping toUnicode &amp; toEncodedString</vh></v>
+<v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
+<v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 </v>
 <v t="ekr.20071113143844.9"><vh>@test CheckVersionToInt</vh></v>
-<v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
 <v t="ekr.20040917062206"><vh>@test g.cantImport returns None</vh></v>
 <v t="ekr.20060921115303"><vh>@test g.checkVersion</vh></v>
 <v t="ekr.20071113145804.26"><vh>@test g.convertPythonIndexToRowCol</vh></v>
@@ -1867,7 +1868,6 @@
 <v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
 <v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
-<v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 <v t="ekr.20071113202153.2" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194258"><vh>leoGui</vh>
@@ -1993,7 +1993,7 @@
 <v t="ekr.20071214075605"><vh>xml tests</vh>
 <v t="ekr.20071214075605.1"><vh>@test xml 1</vh></v>
 </v>
-<v t="ekr.20071024102639"><vh>@test checkTriailWrite</vh></v>
+<v t="ekr.20071024102639"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20071020075538.79"><vh>@test collapse-all</vh></v>
 </v>
 <v t="ekr.20071113145804.2"><vh>@test compareHelper</vh></v>
@@ -2429,7 +2429,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
 <v t="ekr.20080729200342.1"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
@@ -2672,6 +2671,7 @@
 </v>
 <v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
+<v t="ekr.20080821123427.2"><vh>Standard test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -6067,26 +6067,36 @@ assert c.page_width == 80</t>
 <t tx="ekr.20050203084930.1">w = g.app.config.get(None,'global_setting_for_unit_tests','int')
 
 assert w == 132</t>
-<t tx="ekr.20050206090416">file = u'Ỗ'
+<t tx="ekr.20050206090416">@first # -*- coding: utf-8 -*-
+
+file = u'Ỗ'
 path = g.os_path_join('Ỗ','Ỗ')
 # g.pr(g.toEncodedString(file,'utf-8'))
 
 ok,frame = g.openWithFileName(path,c)
 
 assert not ok and not frame</t>
-<t tx="ekr.20050206201145">
+<t tx="ekr.20050206201145">@first # -*- coding: utf-8 -*-
+
 s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 
 s2 = 'test: %s' % s</t>
 <t tx="ekr.20050208051418"></t>
-<t tx="ekr.20050208051418.1">old_c = c
+<t tx="ekr.20050208051418.1">@first # -*- coding: utf-8 -*-
+
+old_c = c
 filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 ok,frame = g.openWithFileName(filename,old_c)
 assert(not ok)</t>
-<t tx="ekr.20050208051854">at = c.atFileCommands
+<t tx="ekr.20050208051854">@first # -*- coding: utf-8 -*-
+
+at = c.atFileCommands
 at.errors = 0
-at.printError(
-    "test of printError","Ᾱ(U+1FB9: Greek Capital Letter Alpha With Macron)")</t>
+
+s = u'La Pe\xf1a'
+s = u'La Peña'
+# s = u'Ă: U+0102: Latin Capital Letter A With Breve'
+at.printError('test of at.printError:',s)</t>
 <t tx="ekr.20050208073718">import sys
 
 if sys.platform.startswith('win'):
@@ -6108,7 +6118,8 @@ if sys.platform.startswith('win'):
         ok,frame = g.openWithFileName(s,c)
         if frame: frame.c.close()
         assert ok and frame, 'did not open'</t>
-<t tx="ekr.20050208104202">
+<t tx="ekr.20050208104202">@first # -*- coding: utf-8 -*-
+
 for s,encoding in (
     ('a',    'utf-8'),
     ('a',    'ascii'),
@@ -6127,7 +6138,8 @@ for s,encoding in (
         s2 = g.toUnicode(s,encoding)
         s3 = g.toEncodedString(s2,encoding)
         assert s3 == s, 'Round-trip two fails for %s' %s</t>
-<t tx="ekr.20050208111037">
+<t tx="ekr.20050208111037">@first # -*- coding: utf-8 -*-
+
 encoding = 'ascii'
 
 s = '炰'
@@ -16029,7 +16041,9 @@ for direction,extend in (('up',False),('down',False),('up',True),('down',True),)
     ec.scrollHelper(event,direction,extend)
 
 </t>
-<t tx="ekr.20061104172236.8">try:
+<t tx="ekr.20061104172236.8">@first # -*- coding: utf-8 -*-
+
+try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
     
@@ -17923,7 +17937,9 @@ if sys.platform.lower().startswith('win'):
     
     c.importCommands.javaUnitTest(p,s=s,fileName=fileName,showTree=False)</t>
 <t tx="ekr.20071020075538.79">c.contractAllHeadlines()</t>
-<t tx="ekr.20071024102639">import leo.core.leoImport as leoImport
+<t tx="ekr.20071024102639">@first # -*- coding: utf-8 -*-
+
+import leo.core.leoImport as leoImport
 ic = c.importCommands
 runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
 runner.root = p.copy()
@@ -19303,7 +19319,9 @@ The new scheme:
 <t tx="ekr.20071113143844.5">assert c.atFileCommands.isSignificantTree(p)
 
 </t>
-<t tx="ekr.20071113143844.6">encoding = 'ascii'
+<t tx="ekr.20071113143844.6">@first # -*- coding: utf-8 -*-
+
+encoding = 'ascii'
 
 s = '炰'
 s2,ok = g.toUnicodeWithErrorCode(s,encoding)
@@ -19342,7 +19360,8 @@ g.app.unitTestDict ['expectedErrors'] = 0
 g.app.unitTestDict ['expectedMismatchLine'] = 1
 
 runner.compareHelper(lines1,lines2,i,strict=False)</t>
-<t tx="ekr.20071113145804.4">@language python
+<t tx="ekr.20071113145804.4">@first # -*- coding: utf-8 -*-
+@language python
 
 try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
@@ -19507,10 +19526,14 @@ theFile,theFileName = g.create_temp_file()
 assert type(theFile) == types.FileType, 'not file type'
 assert type(theFileName) in (types.StringType, types.UnicodeType), 'not string type'
 </t>
-<t tx="ekr.20071113145804.22">if 0: # Not usually enabled.
+<t tx="ekr.20071113145804.22">@first # -*- coding: utf-8 -*-
+
+if 0: # Not usually enabled.
     g.es_trace('\ntest of es_trace: Ă',color='red')
 </t>
-<t tx="ekr.20071113145804.23">for s,encoding in (
+<t tx="ekr.20071113145804.23">@first # -*- coding: utf-8 -*-
+
+for s,encoding in (
     ('aĂbĂ',  'ascii'),
     (u'aĂbĂ', 'ascii'),
     ('炰',    'ascii'),
@@ -19524,7 +19547,9 @@ assert type(theFileName) in (types.StringType, types.UnicodeType), 'not string t
 
     g.reportBadChars(s,encoding)
 </t>
-<t tx="ekr.20071113145804.24">table = [
+<t tx="ekr.20071113145804.24">@first # -*- coding: utf-8 -*-
+
+table = [
     ('a',    'utf-8'),
     ('a',    'ascii'),
     ('äöü',  'utf-8'),
@@ -21646,5 +21671,28 @@ for ext,result in table:
     z = x.marker_from_extension(filename)
     assert result == z, 'ext=%s, got %s, expected %s' % (ext,z,result)
 </t>
+<t tx="ekr.20080821123427.2">@first # -*- coding: utf-8 -*-
+
+import sys
+
+print '=' * 40
+
+e = sys.getdefaultencoding()
+print 'encoding',e
+
+table = (
+    'La Peña',
+    unicode('La Peña','utf-8'),
+    u'La Peña',
+    u'La Pe\xf1a',
+)
+
+for s in table:
+    print type(s)
+    g.es_print('g.es_print',s)
+    if type(s) != type(u'a'):
+        s = unicode(s,e)
+    print      'print     ',s
+    print      'repr(s)   ',repr(s)</t>
 </tnodes>
 </leo_file>

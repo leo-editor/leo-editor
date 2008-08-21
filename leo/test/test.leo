@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -272,7 +272,8 @@
 </v>
 <v t="ekr.20080815073750.1"><vh>@button write-nosent-files</vh></v>
 <v t="ekr.20080819095720.1"><vh>@shadow huh_extension_test.huh</vh></v>
-<v t="ekr.20080821090621.1"><vh>test of trace, g.pr, g.es, g.es_print</vh></v>
+<v t="ekr.20080821111715.1"><vh>Standard test</vh></v>
+<v t="ekr.20080821154158.1"><vh>print at.encoding</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2222,14 +2223,32 @@ for p in c.allNodes_iter():
         c.atFileCommands.write(p,nosentinels=True)
         n += 1
 g.es('done: %s files written' %(n))</t>
-<t tx="ekr.20080821090621.1">def spam():
-    g.trace('abc',1,color='red')
-    g.es_print('xzy',1,color='red')
+<t tx="ekr.20080821111715.1">@first # -*- coding: utf-8 -*-
 
-g.es('hello',color='blue')
-g.es('hello')
-g.pr('printed hello',666)
-spam()
-</t>
+# Important: see http://webpages.charter.net/edreamleo/FAQ.html#unicode-issues
+
+import sys
+
+print '=' * 40
+
+e = sys.getdefaultencoding()
+assert e.lower() == 'utf-8'
+print 'encoding',e
+
+table = (
+    'La Peña',
+    unicode('La Peña','utf-8'),
+    u'La Peña',
+    u'La Pe\xf1a',
+)
+
+for s in table:
+    print type(s)
+    g.es_print('g.es_print',s)
+    if type(s) != type(u'a'):
+        s = unicode(s,e)
+    print      'print     ',s
+    print      'repr(s)   ',repr(s)</t>
+<t tx="ekr.20080821154158.1">print c.atFileCommands.encoding</t>
 </tnodes>
 </leo_file>

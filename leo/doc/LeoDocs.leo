@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5,4,0,9,4"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -58,7 +58,7 @@
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20080730212711.37"><vh>Original page</vh></v>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
@@ -103,8 +103,8 @@
 <v t="ekr.20050830080545"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
+<v t="ekr.20050831195331.1" a="E"><vh>FAQ</vh>
+<v t="ekr.20050830115714" a="E"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20080603124653.1"><vh>How do I use bzr to get the latest sources from Leo's launchpad site?</vh></v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
@@ -168,7 +168,7 @@
 <v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
 </v>
-<v t="ekr.20071026055929"><vh>Unicode issues</vh>
+<v t="ekr.20071026055929" a="E"><vh>Unicode issues</vh>
 <v t="ekr.20061021164213"><vh>I can not enter non-ascii characters.  What can I do?</vh></v>
 <v t="ekr.20050830115714.9"><vh>Some characters in derived files look funny. What can I do?</vh></v>
 <v t="ekr.20060917130130"><vh>I get weird results when defining unicode strings in scripts.  What is going on?</vh></v>
@@ -28659,13 +28659,28 @@ http://www.diveintopython.org/xml_processing/unicode.html
  
 You must restart Python after doing this: sys.setdefaultencoding can not be called after Python starts up. 
  
-Leo's g.es_print function attempts to convert incoming arguments to unicode using the default encoding. For example, the following Leo script always prints La Peña::
+Leo's g.es_print and g.pr functions attempts to convert incoming arguments to unicode using the default encoding.
+For example, the following Leo script shows various ways of printing La Peña properly::
  
     @first # -*- coding: utf-8 -*-
-    # The line above is required for Python 2.5
-     
-    for s in (u'La Pe\xf1a','La Peña',u'La Peña'): 
-        g.es_print(s)
+
+    import sys
+    e = sys.getdefaultencoding()
+    print 'encoding',e
+    table = (
+        'La Peña',
+        unicode('La Peña','utf-8'),
+        u'La Peña',
+        u'La Pe\xf1a',
+    )
+    
+    for s in table:
+        print type(s)
+        g.es_print('g.es_print',s)
+        if type(s) != type(u'a'):
+            s = unicode(s,e)
+        print 'print     ',s
+        print 'repr(s)   ',repr(s)
  
 For still more details, see:
 http://www.diveintopython.org/xml_processing/unicode.html 

@@ -13,12 +13,15 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-REM toto errors
+goto errors
 goto all
 
 
 :errors
 
+
+echo leoGlobals.py
+call pylint.bat leo\core\leoGlobals.py       --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
