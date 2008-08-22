@@ -13,7 +13,7 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-goto errors
+REM goto errors
 goto all
 
 

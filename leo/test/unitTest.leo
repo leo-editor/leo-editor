@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2336,6 +2336,7 @@
 </v>
 <v t="ekr.20080729200342.129"><vh>@test x.replaceFileWithString</vh></v>
 <v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
+<v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
 </v>
 <v t="ekr.20080729200342.130"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
@@ -2658,6 +2659,7 @@
 </v>
 <v t="ekr.20080729200342.129"><vh>@test x.replaceFileWithString</vh></v>
 <v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
+<v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
 </v>
 <v t="ekr.20080729200342.130"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
@@ -21694,5 +21696,16 @@ for s in table:
         s = unicode(s,e)
     print      'print     ',s
     print      'repr(s)   ',repr(s)</t>
+<t tx="ekr.20080822075239.1">x = c.shadowController
+
+lines1 = ('a','b','c')
+lines2 = ('a','x','c')
+
+x.show_error(
+    lines1,lines2,
+    message = "Test of x.show_error",
+    lines1_message = "lines1",
+    lines2_message = "lines2")
+</t>
 </tnodes>
 </leo_file>
