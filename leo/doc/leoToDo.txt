@@ -211,8 +211,6 @@ Please comment now.  I'll probably push revisions based on these remarks later t
 Edward
 #@-node:ekr.20080820083933.11:My summary
 #@-node:ekr.20080820083933.6:Fix settings mess
-#@+node:ekr.20080815174457.1:Only enable plugins: ignore all comments in @enabled-plugins
-#@-node:ekr.20080815174457.1:Only enable plugins: ignore all comments in @enabled-plugins
 #@-node:ekr.20080820083933.14:Settings
 #@-node:ekr.20080820083933.13:Before b4
 #@+node:ekr.20080819075811.9:Before b5/rc1 (2)

@@ -29985,6 +29985,24 @@ def runTest (self,define_g = True):
 #@-node:ekr.20051104075904.10:runTest
 #@-node:ekr.20080821150155.1:Does execute-script convert to unicode?
 #@-node:ekr.20080821111630.1:g.pr (and print) work on Windows
+#@+node:ekr.20080815174457.1:Ignore all comments in @enabled-plugins
+# This makes the workings of @enabled-plugins nodes more intuitive.
+#@nonl
+#@+node:ekr.20070224082131:getEnabledFiles
+def getEnabledFiles (s,plugins_path):
+
+    '''Return a list of plugins mentioned in non-comment lines of s.'''
+
+    enabled_files = []
+    for s in g.splitLines(s):
+        s = s.strip()
+        if s and not s.startswith('#'):
+            path = g.os_path_abspath(g.os_path_join(plugins_path,s))
+            enabled_files.append(path)
+
+    return enabled_files
+#@-node:ekr.20070224082131:getEnabledFiles
+#@-node:ekr.20080815174457.1:Ignore all comments in @enabled-plugins
 #@-node:ekr.20080811174246.4:Features
 #@-node:ekr.20080810085333.3:4.5 b3
 #@-all

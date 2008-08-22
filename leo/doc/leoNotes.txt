@@ -3392,6 +3392,26 @@ def setDelims (self):
                         g.app.language_extension_dict[language] = ext
                         g.app.extension_dict[ext] = language
 #@-node:ekr.20080819075811.12:x.setDelims (no longer used)
+#@+node:ekr.20080822065427.23:From leoPluings.getEnabledFiles
+
+
+            if g.match(s,0,"#"):
+                s = s[1:].strip()
+                # Kludge: ignore comment lines containing a blank or not ending in '.py'.
+                if s and s.find(' ') == -1 and s[-3:] == '.py':
+                    path = g.os_path_abspath(g.os_path_join(plugins_path,s))
+                    if path not in enabled_files and path not in disabled_files:
+                        # g.pr('disabled',path)
+                        disabled_files.append(path)
+            else:
+                path = g.os_path_abspath(g.os_path_join(plugins_path,s))
+                if path not in enabled_files and path not in disabled_files:
+                    # g.pr('enabled',path)
+                    enabled_files.append(path)
+
+    return enabled_files
+#@nonl
+#@-node:ekr.20080822065427.23:From leoPluings.getEnabledFiles
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

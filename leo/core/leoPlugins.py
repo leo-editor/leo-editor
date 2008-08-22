@@ -167,27 +167,16 @@ def loadHandlers(tag):
 #@+node:ekr.20070224082131:getEnabledFiles
 def getEnabledFiles (s,plugins_path):
 
+    '''Return a list of plugins mentioned in non-comment lines of s.'''
+
     enabled_files = []
-    disabled_files = []
     for s in g.splitLines(s):
         s = s.strip()
-        if s:
-            if g.match(s,0,"#"):
-                s = s[1:].strip()
-                # Kludge: ignore comment lines containing a blank or not ending in '.py'.
-                if s and s.find(' ') == -1 and s[-3:] == '.py':
-                    path = g.os_path_abspath(g.os_path_join(plugins_path,s))
-                    if path not in enabled_files and path not in disabled_files:
-                        # g.pr('disabled',path)
-                        disabled_files.append(path)
-            else:
-                path = g.os_path_abspath(g.os_path_join(plugins_path,s))
-                if path not in enabled_files and path not in disabled_files:
-                    # g.pr('enabled',path)
-                    enabled_files.append(path)
+        if s and not s.startswith('#'):
+            path = g.os_path_abspath(g.os_path_join(plugins_path,s))
+            enabled_files.append(path)
 
     return enabled_files
-#@nonl
 #@-node:ekr.20070224082131:getEnabledFiles
 #@-node:ekr.20031218072017.3440:loadHandlers & helper
 #@+node:ekr.20041113113140:loadOnePlugin
