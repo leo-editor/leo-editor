@@ -2683,18 +2683,10 @@ class atFile:
             if ext.startswith('.'): ext = ext[1:]
 
             language = g.app.extension_dict.get(ext)
-            # g.trace(language)
-
             if not language:
                 # An unknown language.
                 c.target_language = 'unknown_language'
-                g.trace('setting target language',c.target_language)
-
-            if 0: # old code
-                language = g.app.extension_dict.get(ext)
-                if language != target_ext:
-                    c.target_language = language
-                    # g.trace('setting target language',language)
+                # g.trace('setting target language',c.target_language)
     #@-node:ekr.20080819075811.13:adjustTargetLanguage
     #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
     #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
