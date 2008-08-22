@@ -497,29 +497,23 @@ class shadowController:
 
         # g.trace('old_public_file',old_public_file)
 
-        # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
-        if 1: # We really do not want to change the public file here.
-            old_public_lines  = file(old_public_file).readlines()
-        else: # An emergency measure.
-            s = file(old_public_file).read()
-            if s and not s.endswith('\n'): s = s + '\n'
-            old_public_lines = g.splitLines(s)
+        old_public_lines  = file(old_public_file).readlines()
         old_private_lines = file(old_private_file).readlines()
         marker = x.marker_from_extension(old_public_file)
         if not marker:
             return False
 
         new_private_lines = x.propagate_changed_lines(
-            old_public_lines,
-            old_private_lines,
-            marker)
+            old_public_lines,old_private_lines,marker)
 
+        # Important bug fix: Never create the private file here!
         fn = old_private_file
-        copy = not os.path.exists(fn) or new_private_lines != old_private_lines
+        copy = os.path.exists(fn) and new_private_lines != old_private_lines
 
         if copy and x.errors == 0:
             s = ''.join(new_private_lines)
-            x.replaceFileWithString(fn,s)
+            ok = x.replaceFileWithString(fn,s)
+            # g.trace('ok',ok,'writing private file',fn)
 
         return copy
     #@-node:ekr.20080708094444.36:x.propagate_changes
@@ -575,9 +569,11 @@ class shadowController:
             written = x.propagate_changes(fn,shadow_fn)
             if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
         else:
-            # Create the public file from the private shadow file.
-            x.copy_file_removing_sentinels(shadow_fn,fn)
-            x.message("created public %s from private %s " % (fn, shadow_fn))
+            # Don't write *anything*.
+            if 0: # This causes considerable problems.
+                # Create the public file from the private shadow file.
+                x.copy_file_removing_sentinels(shadow_fn,fn)
+                x.message("created public %s from private %s " % (fn, shadow_fn))
     #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
     def copy_file_removing_sentinels (self,source_fn,target_fn):
 
