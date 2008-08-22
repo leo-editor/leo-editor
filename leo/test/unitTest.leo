@@ -2429,6 +2429,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 <v t="ekr.20080729200342.1"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
@@ -2671,7 +2672,6 @@
 </v>
 <v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20080821123427.2"><vh>Standard test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
