@@ -725,28 +725,38 @@ class shadowController:
     #@+node:ekr.20080708094444.33:x.show_error
     def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
 
-        def p(s):
-            sys.stdout.write(s)
-            f1.write(s)
-        g.pr("=================================")
-        g.pr(message)
-        g.pr("=================================")
-        g.pr(lines1_message )
-        g.pr("---------------------------------")
-        f1 = file("mod_shadow.tmp1", "w")
-        for line in lines1:
-            p(line)
-        f1.close()
-        g.pr("\n==================================")
-        g.pr(lines2_message )
-        g.pr("---------------------------------")
-        f1 = file("mod_shadow.tmp2", "w")
-        for line in lines2:
-            p(line)
-        f1.close()
-        g.pr('')
-        g.es("@shadow did not pick up the external changes correctly; please check shadow.tmp1 and shadow.tmp2 for differences")
-        # assert 0, "Malfunction of @shadow"
+        x = self
+        banner1 = '=' * 30
+        banner2 = '-' * 30
+        g.es_print('%s\n%s\n%s\n%s\n%s' % (
+            banner1,message,banner1,lines1_message,banner2))
+
+        x.show_error_lines(lines1,'shadow_errors.tmp1')
+
+        g.es_print('\n%s\n%s\n%s' % (
+            banner1,lines2_message,banner1))
+
+        x.show_error_lines(lines2,'shadow_errors.tmp2')
+
+        g.es_print('\n@shadow did not pick up the external changes correctly')
+
+        # g.es_print('Please check shadow.tmp1 and shadow.tmp2 for differences')
+    #@+node:ekr.20080822065427.4:show_error_lines
+    def show_error_lines (self,lines,fileName):
+
+        for line in lines:
+            g.es_print(line)
+
+        if False: # Only for major debugging.
+            try:
+                f1 = open(fileName, "w")
+                for line in lines:
+                    f1.write(line)
+                f1.close()
+            except IOError:
+                g.es_exception()
+                g.es_print('can not open',fileName)
+    #@-node:ekr.20080822065427.4:show_error_lines
     #@-node:ekr.20080708094444.33:x.show_error
     #@-node:ekr.20080708094444.89:x.Utils...
     #@+node:ekr.20080709062932.2:atShadowTestCase
