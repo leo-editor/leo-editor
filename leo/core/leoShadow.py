@@ -59,8 +59,11 @@ class shadowController:
         self.c = c
 
         # Configuration...
-        self.shadow_subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
+        self.shadow_subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
         self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+
+        # Munch shadow_subdir
+        self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
 
         # Debugging...
         self.trace = trace
@@ -120,13 +123,8 @@ class shadowController:
 
         if not g.os_path_exists(path):
 
-            try:
-                # g.trace('making',path)
-                os.mkdir(path)
-            except Exception:
-                x.error('unexpected exception creating %s' % path)
-                g.es_exception()
-                return False
+            # Force the creation of the directories.
+            g.makeAllNonExistentDirectories(path,c=None,force=True)
 
         return g.os_path_exists(path) and g.os_path_isdir(path)
     #@-node:ekr.20080710082231.19:x.makeShadowDirectory
