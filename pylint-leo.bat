@@ -19,9 +19,8 @@ goto all
 
 :errors
 
-
-echo leoGlobals.py
-call pylint.bat leo\core\leoGlobals.py       --rcfile=leo\test\pylint-leo-rc.txt
+echo leoShadow.py
+call pylint.bat leo\core\leoShadow.py       --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

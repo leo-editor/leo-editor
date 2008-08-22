@@ -2,6 +2,8 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080820083933.12:Leo 4.5
+#@+node:ekr.20080822065427.6:Write up trick of creating .exe installer from .zip file
+#@-node:ekr.20080822065427.6:Write up trick of creating .exe installer from .zip file
 #@+node:ekr.20080820083933.13:Before b4
 #@+node:ekr.20080820083933.14:Settings
 #@+node:ekr.20080820083933.1:Don't create myLeoSettings.leo

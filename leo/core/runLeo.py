@@ -294,7 +294,7 @@ http://python.org/download/
                 #@+node:ekr.20080822065427.8:<< define emergency dialog class >>
                 class emergencyDialog:
 
-                    """A class that creates a Tkinter dialog with a single OK button."""
+                    """A class that creates an Tkinter dialog with a single OK button."""
 
                     #@    @+others
                     #@+node:ekr.20080822065427.9:__init__ (emergencyDialog)
