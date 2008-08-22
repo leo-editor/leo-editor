@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,4,0,9,4"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5,5,0,8"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -103,8 +103,8 @@
 <v t="ekr.20050830080545"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.1" a="E"><vh>FAQ</vh>
-<v t="ekr.20050830115714" a="E"><vh>@rst html\FAQ.html</vh>
+<v t="ekr.20050831195331.1"><vh>FAQ</vh>
+<v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20080603124653.1"><vh>How do I use bzr to get the latest sources from Leo's launchpad site?</vh></v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
@@ -168,7 +168,7 @@
 <v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
 </v>
-<v t="ekr.20071026055929" a="E"><vh>Unicode issues</vh>
+<v t="ekr.20071026055929"><vh>Unicode issues</vh>
 <v t="ekr.20061021164213"><vh>I can not enter non-ascii characters.  What can I do?</vh></v>
 <v t="ekr.20050830115714.9"><vh>Some characters in derived files look funny. What can I do?</vh></v>
 <v t="ekr.20060917130130"><vh>I get weird results when defining unicode strings in scripts.  What is going on?</vh></v>
@@ -178,8 +178,8 @@
 <v t="ekr.20050906105946"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
-<v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
+<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
+<v t="edream.110203163054.48" a="E"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
 <v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
@@ -5599,7 +5599,7 @@ If you have *any* problems installing Leo,
 please ask for help on Leo's help forum:
 
 .. contents::</t>
-<t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.2.1 or later and Tk 8.4 or later.
+<t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later.
 
 -   Download the latest version of Leo from `Leo's download page`_.
 
@@ -14930,6 +14930,11 @@ splitSentences(c,p)</t>
     import leo
     leo.run() # runs Leo, opening a new outline or,
     leo.run(fileName=aFileName) # runs Leo, opening the given file name.
+    
+Another way to run Leo is as follows::
+
+    cd &lt;path-to-launchLeo.py&gt;
+    python launchLeo.py
 
 Here are some tips that may make running Leo easier:
 
@@ -14956,7 +14961,7 @@ Here are some tips that may make running Leo easier:
 The first time you start Leo, a dialog will ask you for a unique identifier. If
 you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
 stores this identifier in the file ``.leoID.txt``. Leo attempts to create
-``leoID.txt`` in your home directory, then in Leo's config directory, and
+``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
 finally in Leo's core directory. You can change this identifier at any time by
 editing ``.leoID.txt``.</t>
 <t tx="ekr.20050901184158">You can execute all the code in this file. Just select the code you want to
@@ -27241,7 +27246,7 @@ and ``Edit Headline`` commands. Those commands require interaction with the user
 For example, the following batch script reads a Leo file and prints all the
 headlines in that file::
 
-    path = r"c:\prog\leoCVS\leo\test\test.leo"
+    path = r"&lt;path-to-folder-containing-the-leo-folder&gt;\leo\test\test.leo"
    
     g.app.log.disable() # disable reading messages while opening the file
     flag,newFrame = g.openWithFileName(path,None)
@@ -30364,7 +30369,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080408060320.784">Python's HOME environment variable specifies Leo's HOME directory.
 See http://docs.python.org/lib/os-procinfo.html for details.
 
-Leo puts several files in your HOME directory:
+Leo puts several files in your HOME/.leo directory:
 .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
 There are various fallback directories if there is no home directory.
 </t>
