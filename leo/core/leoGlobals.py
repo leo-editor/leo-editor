@@ -3020,7 +3020,6 @@ def translateArgs(args,d):
             result.append(arg)
 
     return ''.join(result)
-
 #@-node:ekr.20080220111323:translateArgs
 #@+node:ekr.20060810095921:translateString & tr
 def translateString (s):
