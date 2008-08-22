@@ -214,20 +214,6 @@ Edward
 #@+node:ekr.20080815174457.1:Only enable plugins: ignore all comments in @enabled-plugins
 #@-node:ekr.20080815174457.1:Only enable plugins: ignore all comments in @enabled-plugins
 #@-node:ekr.20080820083933.14:Settings
-#@+node:ekr.20080822065427.3:Fix distro problems
-@nocolor
-
-First thing I had to go find how to start it..
-
-- Create desktop icon or start menu item?
-
-- Removed leoOpen.bat
-
-- Add to docs:
-
-    I should probably start it with C:\Python25\Lib\site-packages\Leo-4-5-b3\launchLeo.py
-#@nonl
-#@-node:ekr.20080822065427.3:Fix distro problems
 #@-node:ekr.20080820083933.13:Before b4
 #@+node:ekr.20080819075811.9:Before b5/rc1 (2)
 #@+node:ekr.20080815174457.4:Fix bug in autotrees
@@ -356,6 +342,8 @@ Ran 492 tests in 588.123s
 FAILED (failures=1)
 #@nonl
 #@-node:ekr.20080820083933.3:Failed Linux tests
+#@+node:ekr.20080822065427.3:Create desktop icon or start menu item
+#@-node:ekr.20080822065427.3:Create desktop icon or start menu item
 #@-node:ekr.20080819075811.9:Before b5/rc1 (2)
 #@-node:ekr.20080820083933.12:Leo 4.5
 #@+node:ekr.20080814103428.4:4.5.1 bugs, cleanups
