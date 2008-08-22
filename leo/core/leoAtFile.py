@@ -412,6 +412,7 @@ class atFile:
                 # readOneAtShadowNode should already have checked these.
                 shadow_fn       = x.shadowPathName(fn)
                 shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+                g.trace('fn',fn,'shadow_fn',shadow_fn)
                 # x.updatePublicAndPrivate will create the public file from the private file
                 # if the public file exists. This *is* reasonable: there is nothing to import!
                 if not shadow_exists:
@@ -430,8 +431,9 @@ class atFile:
             except IOError:
                 at.error("can not open: '@file %s'" % (fn))
                 at.inputFile = None
+                fn = None
 
-        return at.inputFile # for unit tests.
+        return fn
     #@-node:ekr.20041005105605.19:openFileForReading (atFile)
     #@+node:ekr.20041005105605.21:read (atFile)
     def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
@@ -457,7 +459,7 @@ class atFile:
         #@nl
         at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
-        at.openFileForReading(fileName,fromString=fromString)
+        fileName = at.openFileForReading(fileName,fromString=fromString)
         if not at.inputFile: return False
         if not g.unitTesting:
             g.es("reading:",root.headString())
@@ -597,6 +599,7 @@ class atFile:
             ok = False
             if at.atShadow:
                 g.trace(g.callers())
+                g.trace('invalid @shadow private file',fileName)
                 at.error('invalid @shadow private file',fileName)
             else:
                 at.error('can not read 3.x derived file',fileName)
@@ -669,10 +672,11 @@ class atFile:
         fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
         shadow_fn       = x.shadowPathName(fn)
         shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-        # significant     = x.isSignificantPublicFile(fn)
 
         if shadow_exists:
             # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
+            # This will cause an error if shadaw_fn does not, in fact, contain sentinels.
+            # g.trace('reading shadow_fn',shadow_fn)
             at.read(p,
                 thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
                 atShadow=True)
@@ -4070,6 +4074,9 @@ class atFile:
         '''
 
         at = self ; testing = g.app.unitTesting
+
+        # g.trace('fn',fn,'s','\n',s)
+        # g.trace(g.callers())
 
         exists = g.os_path_exists(fn)
 
