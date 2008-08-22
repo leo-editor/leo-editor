@@ -412,7 +412,7 @@ class atFile:
                 # readOneAtShadowNode should already have checked these.
                 shadow_fn       = x.shadowPathName(fn)
                 shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-                g.trace('fn',fn,'shadow_fn',shadow_fn)
+                # g.trace('fn',fn,'shadow_fn',shadow_fn)
                 # x.updatePublicAndPrivate will create the public file from the private file
                 # if the public file exists. This *is* reasonable: there is nothing to import!
                 if not shadow_exists:
