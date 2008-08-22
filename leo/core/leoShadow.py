@@ -38,7 +38,6 @@ import leo.core.leoGlobals as g
 
 import difflib
 import os
-import sys
 import unittest
 #@-node:ekr.20080708094444.52:<< imports >>
 #@nl
