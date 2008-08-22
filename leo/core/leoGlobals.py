@@ -2922,7 +2922,9 @@ def es_print(*args,**keys):
     '''
 
     g.pr(*args,**keys)
-    g.es(*args,**keys)
+
+    if not g.app.unitTesting:
+        g.es(*args,**keys)
 #@-node:ekr.20050707064040:es_print
 #@+node:ekr.20080821073134.2:doKeywordArgs
 def doKeywordArgs (keys,d=None):
