@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -808,6 +808,7 @@
 <v t="ekr.20080703104536.1"><vh>Other tests</vh>
 <v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
 <v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
+<v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
 <v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
@@ -1803,11 +1804,19 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080806095923.2"><vh>@test round-trip-uAs for @thin</vh>
-<v t="ekr.20080806084924.2" round-trip-u.uA="5815000000407468696e2075415f746573745f66696c652e707971002e" descendentTnodeUnknownAttributes="7d7100285814000000656b722e32303038303830363038343932342e3571017d7102550f726f756e642d747269702d742e75417103581000000067726561744772616e644368696c64317104735814000000656b722e32303038303830363038343932342e3471057d71066803580b0000006772616e644368696c64317107735814000000656b722e32303038303830363038343932342e3371087d7109680358060000006368696c6431710a735514656b722e32303038303830363038343932342e32710b7d710c68035815000000407468696e2075415f746573745f66696c652e7079710d73752e" descendentVnodeUnknownAttributes="7d71002855013071017d7102550f726f756e642d747269702d752e754171035815000000407468696e2075415f746573745f66696c652e70797104735507302e302e302e3071057d71066803581000000067726561744772616e644368696c64317107735505302e302e3071087d71096803580b0000006772616e644368696c6431710a735503302e30710b7d710c680358060000006368696c6431710d73752e"><vh>@thin uA_test_file.py</vh></v>
+<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs for @thin</vh>
+<v t="ekr.20080806084924.2" round-trip-u.uA="5815000000407468696e2075415f746573745f66696c652e707971002e"><vh>@@thin uA_test_file.py</vh>
+<v t="ekr.20080806084924.3" round-trip-u.uA="58060000006368696c643171002e"><vh>child1</vh>
+<v t="ekr.20080806084924.4" round-trip-u.uA="580b0000006772616e644368696c643171002e"><vh>grandChild1</vh>
+<v t="ekr.20080806084924.5" round-trip-u.uA="581000000067726561744772616e644368696c643171002e"><vh>greatGrandChild1</vh></v>
 </v>
-<v t="ekr.20080806211453.5"><vh>@test round-trip-uAs for @shadow</vh>
-<v t="ekr.20080806211453.1" round-trip-u.uA="581e00000040736861646f772075415f746573745f736861646f775f66696c652e707971002e" descendentTnodeUnknownAttributes="7d7100285814000000656b722e32303038303830363231313435332e3471017d7102550f726f756e642d747269702d742e75417103581000000067726561744772616e644368696c64317104735814000000656b722e32303038303830363231313435332e3271057d7106680358060000006368696c64317107735814000000656b722e32303038303830363231313435332e3371087d71096803580b0000006772616e644368696c6431710a735514656b722e32303038303830363231313435332e31710b7d710c6803581e00000040736861646f772075415f746573745f736861646f775f66696c652e7079710d73752e" descendentVnodeUnknownAttributes="7d71002855013071017d7102550f726f756e642d747269702d752e75417103581e00000040736861646f772075415f746573745f736861646f775f66696c652e70797104735507302e302e302e3071057d71066803581000000067726561744772616e644368696c64317107735505302e302e3071087d71096803580b0000006772616e644368696c6431710a735503302e30710b7d710c680358060000006368696c6431710d73752e"><vh>@shadow uA_test_shadow_file.py</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080806211453.5"><vh>@@test round-trip-uAs for @shadow</vh>
+<v t="ekr.20080806211453.1" round-trip-u.uA="581e00000040736861646f772075415f746573745f736861646f775f66696c652e707971002e"><vh>@@shadow uA_test_shadow_file.py</vh>
+<v t="ekr.20080822160527.1" round-trip-u.uA="58060000006368696c643171002e"><vh>uA_test_shadow_file declarations</vh></v>
+</v>
 </v>
 <v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
@@ -2430,7 +2439,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 <v t="ekr.20080729200342.1"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
@@ -21299,7 +21307,7 @@ if g.os_path_exists(shadow_fn):
 
 deleteShadowDir(shadow_dir)
 
-x.makeShadowDirectory(shadow_dir)
+x.makeShadowDirectory(shadow_dir,force=True)
 assert os.path.exists(shadow_dir)
 
 deleteShadowDir(shadow_dir)
@@ -21375,8 +21383,12 @@ finally:
     child.setHeadString('@@shadow %s' % fn)
     c.setChanged(changed)
     # c.redraw_now()</t>
-<t tx="ekr.20080729200342.134"># body of @shadow test node
-# The last line.</t>
+<t tx="ekr.20080729200342.134">@language python
+@tabwidth -4
+@others
+# body of @shadow test node
+# The last line.
+</t>
 <t tx="ekr.20080729200342.135">s = 'abc'
 fn = 'unitTestFile.py'
 c.atFileCommands.replaceFileWithString(fn,s)
@@ -21396,7 +21408,7 @@ try:
     fn = 'unittest/test_1.py'
     shadow_fn = x.shadowPathName(fn)
     shadow_dir = x.shadowDirName(fn)
-    x.makeShadowDirectory(shadow_dir)
+    x.makeShadowDirectory(shadow_dir,force=True)
     if g.os_path_exists(shadow_fn):
         g.utils_remove(shadow_fn,verbose=True)
     at.writeOneAtShadowNode(child,toString=True,force=True)
@@ -21580,6 +21592,11 @@ for v,archivedPosition in table:
 <t tx="ekr.20080806080425.2"></t>
 <t tx="ekr.20080806080425.3"></t>
 <t tx="ekr.20080806080425.4"></t>
+<t tx="ekr.20080806084924.2">@others</t>
+<t tx="ekr.20080806084924.3">pass</t>
+<t tx="ekr.20080806084924.4">pass
+</t>
+<t tx="ekr.20080806084924.5">pass</t>
 <t tx="ekr.20080806095923.2">root = p.firstChild()
 uA = 'unknownAttributes'
 tag = 'round-trip-u.uA'
@@ -21608,6 +21625,10 @@ else: # Test the uA's.
         d = {ttag: v.headString()}
         if trace: g.pr(d)
         assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)</t>
+<t tx="ekr.20080806211453.1">@language python
+@tabwidth -4
+@others
+</t>
 <t tx="ekr.20080806211453.5">root = p.firstChild()
 uA = 'unknownAttributes'
 tag = 'round-trip-u.uA'
@@ -21706,6 +21727,10 @@ x.show_error(
     message = "Test of x.show_error",
     lines1_message = "lines1",
     lines2_message = "lines2")
+</t>
+<t tx="ekr.20080822160527.1">pass
+pass
+pass
 </t>
 </tnodes>
 </leo_file>

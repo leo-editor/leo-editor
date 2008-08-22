@@ -274,7 +274,7 @@
 </v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 <v t="ekr.20080815073750.1"><vh>@button write-nosent-files</vh></v>
-<v t="ekr.20080819095720.1"><vh>@shadow huh_extension_test.huh</vh></v>
+<v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2224,6 +2224,10 @@ for p in c.allNodes_iter():
         c.atFileCommands.write(p,nosentinels=True)
         n += 1
 g.es('done: %s files written' %(n))</t>
+<t tx="ekr.20080819095720.1">@language unknown_language
+# huh language .................
+changed 7
+</t>
 <t tx="ekr.20080821111715.1">@first # -*- coding: utf-8 -*-
 
 # Important: see http://webpages.charter.net/edreamleo/FAQ.html#unicode-issues

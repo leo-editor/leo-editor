@@ -18215,7 +18215,7 @@ def isSignificantPublicFile (self,fn):
     return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
 #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn):
+def makeShadowDirectory (self,fn,force=False):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -18224,7 +18224,7 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None)
+        g.makeAllNonExistentDirectories(path,c=None,force=force)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -18327,7 +18327,7 @@ def isSignificantPublicFile (self,fn):
     return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
 #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn):
+def makeShadowDirectory (self,fn,force=False):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -18336,7 +18336,7 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None)
+        g.makeAllNonExistentDirectories(path,c=None,force=force)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -20223,7 +20223,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -20355,7 +20355,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -20490,7 +20490,7 @@ def isSignificantPublicFile (self,fn):
     return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
 #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn):
+def makeShadowDirectory (self,fn,force=False):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -20499,7 +20499,7 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None)
+        g.makeAllNonExistentDirectories(path,c=None,force=force)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -20595,7 +20595,7 @@ def unlink (self, filename,silent=False):
 #@-node:ekr.20080711063656.3:x.unlink
 #@-node:ekr.20080711063656.1:x.File utils
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn):
+def makeShadowDirectory (self,fn,force=False):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -20604,7 +20604,7 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None)
+        g.makeAllNonExistentDirectories(path,c=None,force=force)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -21372,7 +21372,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -21680,7 +21680,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -21881,7 +21881,7 @@ def isSignificantPublicFile (self,fn):
     return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
 #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn):
+def makeShadowDirectory (self,fn,force=False):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -21890,7 +21890,7 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None)
+        g.makeAllNonExistentDirectories(path,c=None,force=force)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -26324,7 +26324,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -26962,7 +26962,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -27097,7 +27097,7 @@ def __init__ (self,c,trace=False,trace_writers=False):
     self.line_mapping = []
 #@-node:ekr.20080708094444.79: x.ctor
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn):
+def makeShadowDirectory (self,fn,force=False):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -27106,24 +27106,25 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None)
+        g.makeAllNonExistentDirectories(path,c=None,force=force)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
 #@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 # This is a generalization of os.makedir.
 
-def makeAllNonExistentDirectories (theDir,c=None):
+def makeAllNonExistentDirectories (theDir,c=None,force=False):
 
     """Attempt to make all non-existent directories"""
 
     # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
 
-    if c:
-        if not c.config.create_nonexistent_directories:
+    if not force:
+        if c:
+            if not c.config.create_nonexistent_directories:
+                return None
+        elif not app.config.create_nonexistent_directories:
             return None
-    elif not app.config.create_nonexistent_directories:
-        return None
 
     dir1 = theDir = g.os_path_normpath(theDir)
 
@@ -28792,7 +28793,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
