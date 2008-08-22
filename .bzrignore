@@ -7,6 +7,7 @@
 ./*.exe
 ./.ropeProject
 ./.leo_shadow
+./.leo
 
 leo/*.zip
 
@@ -26,6 +27,7 @@ leo/test/clean
 leo/test/clean/*.*
 leo/test/dirty-test.py
 leo/test/c_plus_plus_test.cpp
+leo/test/.leo
 leo/test/ropeProject/*.*
 leo/test/scriptFile.py
 leo/test/leoProfile.txt
@@ -35,5 +37,3 @@ leo/core/leoKeys.py
 leo/test/unittest/createdFile.txt
 leo/test/at_ignore_test.txt
 unitTestFile.py
-mod_shadow.tmp1
-mod_shadow.tmp2

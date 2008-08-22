@@ -5,36 +5,7 @@
 #@+node:ekr.20080822065427.6:Write up trick of creating .exe installer from .zip file
 #@-node:ekr.20080822065427.6:Write up trick of creating .exe installer from .zip file
 #@+node:ekr.20080820083933.13:Before b4
-#@+node:ekr.20080820083933.14:Settings
-#@+node:ekr.20080820083933.1:Don't create myLeoSettings.leo
-@nocolor
-
-I use to keep config files for misc apps in a VCS. myLeoSettings.leo
-landed there as well. In HOME, I have a symlink to the original
-myLeoSettings.leo. leo sees the contents well, but if I open ~/
-myLeoSettings.leo (the symlink, not the original file) and save it,
-then leo overwrites the symlink with a regular file. Is there anything
-(a setting perhaps) I can do about it, or leo just doesn't handle this
-particular case correctly?
-
-g.angleBrackets(s)
-#@nonl
-#@-node:ekr.20080820083933.1:Don't create myLeoSettings.leo
-#@+node:ekr.20080820083933.2:Check these config issues
-@nocolor
-
-Does this mean that the ability to set fonts from cwd/myLeoSettings.leo
-is on a todo list?
-
-And the expectation is the cwd/myLeoSettings.leo* can configure
-(enable / disable) everything _except_ plugins?
-
-@color
-#@nonl
-#@-node:ekr.20080820083933.2:Check these config issues
-#@+node:ekr.20080820083933.5:Make sure string shadow_subdir = .leo/shadow works
-#@-node:ekr.20080820083933.5:Make sure string shadow_subdir = .leo/shadow works
-#@+node:ekr.20080820083933.6:Fix settings mess
+#@+node:ekr.20080820083933.6:Notes
 @nocolor
 
 #@+node:ekr.20080820083933.7:1
@@ -162,6 +133,8 @@ files are. Not optimal for all situations...
 #@nonl
 #@-node:ekr.20080820083933.10:4
 #@+node:ekr.20080820083933.11:My summary
+@nocolor
+
 The following post summarizes my present plans.  I'll indicates where these may be controversial.
 
 1.  Everyone seems agree that the following structure for settings files is good:
@@ -210,8 +183,11 @@ Please comment now.  I'll probably push revisions based on these remarks later t
 
 Edward
 #@-node:ekr.20080820083933.11:My summary
-#@-node:ekr.20080820083933.6:Fix settings mess
-#@-node:ekr.20080820083933.14:Settings
+#@-node:ekr.20080820083933.6:Notes
+#@+node:ekr.20080822142201.2:Make sure myLeoSettings.leo can enable plugins and set fonts
+#@-node:ekr.20080822142201.2:Make sure myLeoSettings.leo can enable plugins and set fonts
+#@+node:ekr.20080822142201.3:Put leoID.txt and myLeoSettings.leo in HOME/.leo
+#@-node:ekr.20080822142201.3:Put leoID.txt and myLeoSettings.leo in HOME/.leo
 #@-node:ekr.20080820083933.13:Before b4
 #@+node:ekr.20080819075811.9:Before b5/rc1 (2)
 #@+node:ekr.20080815174457.4:Fix bug in autotrees

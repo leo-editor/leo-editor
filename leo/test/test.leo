@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -56,6 +56,7 @@
 <v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = False</vh></v>
 <v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
+<v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
@@ -132,6 +133,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
+<v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
@@ -272,7 +274,7 @@
 </v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 <v t="ekr.20080815073750.1"><vh>@button write-nosent-files</vh></v>
-<v t="ekr.20080819095720.1"><vh>@shadow huh_extension_test.c</vh></v>
+<v t="ekr.20080819095720.1"><vh>@shadow huh_extension_test.huh</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2249,5 +2251,6 @@ for s in table:
         s = unicode(s,e)
     print      'print     ',s
     print      'repr(s)   ',repr(s)</t>
+<t tx="ekr.20080822153619.1"></t>
 </tnodes>
 </leo_file>
