@@ -124,7 +124,7 @@ class shadowController:
         if not g.os_path_exists(path):
 
             # Force the creation of the directories.
-            g.makeAllNonExistentDirectories(path,c=None,force=True)
+            g.makeAllNonExistentDirectories(path,c=None)
 
         return g.os_path_exists(path) and g.os_path_isdir(path)
     #@-node:ekr.20080710082231.19:x.makeShadowDirectory

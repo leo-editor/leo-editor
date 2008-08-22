@@ -18224,7 +18224,7 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=True)
+        g.makeAllNonExistentDirectories(path,c=None)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -18336,7 +18336,7 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=True)
+        g.makeAllNonExistentDirectories(path,c=None)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -20499,7 +20499,7 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=True)
+        g.makeAllNonExistentDirectories(path,c=None)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -20604,7 +20604,7 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=True)
+        g.makeAllNonExistentDirectories(path,c=None)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -21890,7 +21890,7 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=True)
+        g.makeAllNonExistentDirectories(path,c=None)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -27106,25 +27106,24 @@ def makeShadowDirectory (self,fn):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=True)
+        g.makeAllNonExistentDirectories(path,c=None)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
 #@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 # This is a generalization of os.makedir.
 
-def makeAllNonExistentDirectories (theDir,c=None,force=False):
+def makeAllNonExistentDirectories (theDir,c=None):
 
     """Attempt to make all non-existent directories"""
 
     # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
 
-    if not force:
-        if c:
-            if not c.config.create_nonexistent_directories:
-                return None
-        elif not app.config.create_nonexistent_directories:
+    if c:
+        if not c.config.create_nonexistent_directories:
             return None
+    elif not app.config.create_nonexistent_directories:
+        return None
 
     dir1 = theDir = g.os_path_normpath(theDir)
 
