@@ -1845,10 +1845,11 @@ class configClass:
                     self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
                     self.setIvarsFromSettings(c)
         self.readRecentFiles(localConfigFile)
-        self.createMyLeoSettingsFile(myLocalConfigFile)
+        if 0:
+            self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
-    #@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile
+    #@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
     def createMyLeoSettingsFile (self,localConfigFile):
 
         '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
@@ -1909,7 +1910,7 @@ class configClass:
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','red'),)
                 g.es_exception()
-    #@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile
+    #@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
     #@+node:ekr.20041117085625:g.app.config.openSettingsFile
     def openSettingsFile (self,path):
 
