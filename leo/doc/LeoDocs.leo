@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="6,1,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -1187,7 +1187,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -2928,7 +2928,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080815093141.89"><vh>4.5 b3</vh>
 <v t="ekr.20080815093141.90"><vh>Major new features</vh></v>
 <v t="ekr.20080815093141.91"><vh>Major code reorganizations</vh></v>
@@ -5599,7 +5599,7 @@ If you have *any* problems installing Leo,
 please ask for help on Leo's help forum:
 
 .. contents::</t>
-<t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.2.1 or later and Tk 8.4 or later.
+<t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later.
 
 -   Download the latest version of Leo from `Leo's download page`_.
 
@@ -6720,7 +6720,12 @@ Here is how to access data at position ``p``.
     body = p.bodyString()
     head = p.headString()
     c.setBodyString(p,body) # set body text of p to body.
-    c.setHeadString(p,head) # set headline text of p to head.</t>
+    c.setHeadString(p,head) # set headline text of p to head.
+    
+**Note**: Sometimes you want to use text that *looks* like a section reference, but isn't.
+In such cases, you can use g.angleBrackets.  For example::
+
+    g.es(g.angleBrackets('abc'))</t>
 <t tx="ekr.20040403173920.9">The proper way to traverse an outline is with an iterator.
 Iterators are defined only by the position class;
 vnodes can not have iterators because vnodes may appear in multiple places in an outline.
@@ -14925,6 +14930,11 @@ splitSentences(c,p)</t>
     import leo
     leo.run() # runs Leo, opening a new outline or,
     leo.run(fileName=aFileName) # runs Leo, opening the given file name.
+    
+Another way to run Leo is as follows::
+
+    cd &lt;path-to-launchLeo.py&gt;
+    python launchLeo.py
 
 Here are some tips that may make running Leo easier:
 
@@ -14951,7 +14961,7 @@ Here are some tips that may make running Leo easier:
 The first time you start Leo, a dialog will ask you for a unique identifier. If
 you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
 stores this identifier in the file ``.leoID.txt``. Leo attempts to create
-``leoID.txt`` in your home directory, then in Leo's config directory, and
+``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
 finally in Leo's core directory. You can change this identifier at any time by
 editing ``.leoID.txt``.</t>
 <t tx="ekr.20050901184158">You can execute all the code in this file. Just select the code you want to
@@ -26203,8 +26213,7 @@ The actual settings are specified in the body text.  At present, there are nine 
 - ``@enabled-plugins``
 
   The body text of the @enabled plugins node contains a list of enabled plugins, one per line.
-  The first mention of a plugin controls whether the plugin is enabled or disabled.
-  If the line starts with '#' the plugin is disabled.   Otherwise the plugin is enabled.
+  Comment lines are ignored.
  
   Notes:
 
@@ -27236,7 +27245,7 @@ and ``Edit Headline`` commands. Those commands require interaction with the user
 For example, the following batch script reads a Leo file and prints all the
 headlines in that file::
 
-    path = r"c:\prog\leoCVS\leo\test\test.leo"
+    path = r"&lt;path-to-folder-containing-the-leo-folder&gt;\leo\test\test.leo"
    
     g.app.log.disable() # disable reading messages while opening the file
     flag,newFrame = g.openWithFileName(path,None)
@@ -28654,13 +28663,28 @@ http://www.diveintopython.org/xml_processing/unicode.html
  
 You must restart Python after doing this: sys.setdefaultencoding can not be called after Python starts up. 
  
-Leo's g.es_print function attempts to convert incoming arguments to unicode using the default encoding. For example, the following Leo script always prints La Peña::
+Leo's g.es_print and g.pr functions attempts to convert incoming arguments to unicode using the default encoding.
+For example, the following Leo script shows various ways of printing La Peña properly::
  
     @first # -*- coding: utf-8 -*-
-    # The line above is required for Python 2.5
-     
-    for s in (u'La Pe\xf1a','La Peña',u'La Peña'): 
-        g.es_print(s)
+
+    import sys
+    e = sys.getdefaultencoding()
+    print 'encoding',e
+    table = (
+        'La Peña',
+        unicode('La Peña','utf-8'),
+        u'La Peña',
+        u'La Pe\xf1a',
+    )
+    
+    for s in table:
+        print type(s)
+        g.es_print('g.es_print',s)
+        if type(s) != type(u'a'):
+            s = unicode(s,e)
+        print 'print     ',s
+        print 'repr(s)   ',repr(s)
  
 For still more details, see:
 http://www.diveintopython.org/xml_processing/unicode.html 
@@ -30344,7 +30368,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080408060320.784">Python's HOME environment variable specifies Leo's HOME directory.
 See http://docs.python.org/lib/os-procinfo.html for details.
 
-Leo puts several files in your HOME directory:
+Leo puts several files in your HOME/.leo directory:
 .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
 There are various fallback directories if there is no home directory.
 </t>

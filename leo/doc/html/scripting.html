@@ -476,6 +476,11 @@ head = p.headString()
 c.setBodyString(p,body) # set body text of p to body.
 c.setHeadString(p,head) # set headline text of p to head.
 </pre>
+<p><strong>Note</strong>: Sometimes you want to use text that <em>looks</em> like a section reference, but isn't.
+In such cases, you can use g.angleBrackets.  For example:</p>
+<pre class="literal-block">
+g.es(g.angleBrackets('abc'))
+</pre>
 </div>
 <div class="section" id="ensuring-that-positions-are-valid">
 <h2><a class="toc-backref" href="#id7">Ensuring that positions are valid</a></h2>

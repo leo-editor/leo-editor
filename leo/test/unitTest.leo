@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="93" left="133" height="885" width="887"/>
+	<global_window_position top="78" left="225" height="885" width="887"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -808,6 +808,7 @@
 <v t="ekr.20080703104536.1"><vh>Other tests</vh>
 <v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
 <v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
+<v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
 <v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
@@ -1785,31 +1786,37 @@
 </v>
 <v t="ekr.20080805105541.1"><vh>@test p.archivedPosition</vh>
 <v t="ekr.20080805122315.1"><vh>first child</vh></v>
-<v t="ekr.20080805122315.2" a="E" unit_test_child="55046162636471002e"><vh>second child</vh>
+<v t="ekr.20080805122315.2" unit_test_child="55046162636471002e"><vh>second child</vh>
 <v t="ekr.20080805122315.3" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
 <v t="ekr.20080805122315.4"><vh>grandChild 2</vh></v>
 </v>
 </v>
 <v t="ekr.20080806072412.1"><vh>@test fc.resolveArchivedPosition</vh>
 <v t="ekr.20080806072412.2"><vh>first child</vh></v>
-<v t="ekr.20080806072412.3" a="E" unit_test_child="55046162636471002e"><vh>second child</vh>
-<v t="ekr.20080806072412.4" a="E" unit_test_grandchild="55047778797a71002e"><vh>grandChild1</vh>
+<v t="ekr.20080806072412.3" unit_test_child="55046162636471002e"><vh>second child</vh>
+<v t="ekr.20080806072412.4" unit_test_grandchild="55047778797a71002e"><vh>grandChild1</vh>
 <v t="ekr.20080806080425.1"><vh>greatGrandChild11</vh></v>
 <v t="ekr.20080806080425.2"><vh>greatGrandChild12</vh></v>
 </v>
-<v t="ekr.20080806072412.5" a="E"><vh>grandChild 2</vh>
+<v t="ekr.20080806072412.5"><vh>grandChild 2</vh>
 <v t="ekr.20080806080425.3"><vh>greatGrandChild21</vh></v>
 <v t="ekr.20080806080425.4"><vh>greatGrandChild22</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080806095923.2"><vh>@test round-trip-uAs for @thin</vh>
-<v t="ekr.20080806084924.2" round-trip-u.uA="5815000000407468696e2075415f746573745f66696c652e707971002e" descendentTnodeUnknownAttributes="7d7100285814000000656b722e32303038303830363038343932342e3571017d7102550f726f756e642d747269702d742e75417103581000000067726561744772616e644368696c64317104735814000000656b722e32303038303830363038343932342e3471057d71066803580b0000006772616e644368696c64317107735814000000656b722e32303038303830363038343932342e3371087d7109680358060000006368696c6431710a735514656b722e32303038303830363038343932342e32710b7d710c68035815000000407468696e2075415f746573745f66696c652e7079710d73752e" descendentVnodeUnknownAttributes="7d71002855013071017d7102550f726f756e642d747269702d752e754171035815000000407468696e2075415f746573745f66696c652e70797104735507302e302e302e3071057d71066803581000000067726561744772616e644368696c64317107735505302e302e3071087d71096803580b0000006772616e644368696c6431710a735503302e30710b7d710c680358060000006368696c6431710d73752e"
-expanded="ekr.20080806084924.3,"><vh>@thin uA_test_file.py</vh></v>
+<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs for @thin</vh>
+<v t="ekr.20080806084924.2" round-trip-u.uA="5815000000407468696e2075415f746573745f66696c652e707971002e"><vh>@@thin uA_test_file.py</vh>
+<v t="ekr.20080806084924.3" round-trip-u.uA="58060000006368696c643171002e"><vh>child1</vh>
+<v t="ekr.20080806084924.4" round-trip-u.uA="580b0000006772616e644368696c643171002e"><vh>grandChild1</vh>
+<v t="ekr.20080806084924.5" round-trip-u.uA="581000000067726561744772616e644368696c643171002e"><vh>greatGrandChild1</vh></v>
 </v>
-<v t="ekr.20080806211453.5"><vh>@test round-trip-uAs for @shadow</vh>
-<v t="ekr.20080806211453.1" round-trip-u.uA="581e00000040736861646f772075415f746573745f736861646f775f66696c652e707971002e" descendentTnodeUnknownAttributes="7d7100285814000000656b722e32303038303830363231313435332e3471017d7102550f726f756e642d747269702d742e75417103581000000067726561744772616e644368696c64317104735814000000656b722e32303038303830363231313435332e3271057d7106680358060000006368696c64317107735814000000656b722e32303038303830363231313435332e3371087d71096803580b0000006772616e644368696c6431710a735514656b722e32303038303830363231313435332e31710b7d710c6803581e00000040736861646f772075415f746573745f736861646f775f66696c652e7079710d73752e" descendentVnodeUnknownAttributes="7d71002855013071017d7102550f726f756e642d747269702d752e75417103581e00000040736861646f772075415f746573745f736861646f775f66696c652e70797104735507302e302e302e3071057d71066803581000000067726561744772616e644368696c64317107735505302e302e3071087d71096803580b0000006772616e644368696c6431710a735503302e30710b7d710c680358060000006368696c6431710d73752e"
-expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080806211453.5"><vh>@@test round-trip-uAs for @shadow</vh>
+<v t="ekr.20080806211453.1" round-trip-u.uA="581e00000040736861646f772075415f746573745f736861646f775f66696c652e707971002e"><vh>@@shadow uA_test_shadow_file.py</vh>
+<v t="ekr.20080822160527.1" round-trip-u.uA="58060000006368696c643171002e"><vh>uA_test_shadow_file declarations</vh></v>
+</v>
 </v>
 <v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
@@ -1840,9 +1847,10 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 <v t="ekr.20050206201145"><vh>@test % operator with unicode</vh></v>
 <v t="ekr.20050208111037"><vh>@test failure to convert unicode characters to ascii</vh></v>
 <v t="ekr.20050208104202"><vh>@test of round-tripping toUnicode &amp; toEncodedString</vh></v>
+<v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
+<v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 </v>
 <v t="ekr.20071113143844.9"><vh>@test CheckVersionToInt</vh></v>
-<v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
 <v t="ekr.20040917062206"><vh>@test g.cantImport returns None</vh></v>
 <v t="ekr.20060921115303"><vh>@test g.checkVersion</vh></v>
 <v t="ekr.20071113145804.26"><vh>@test g.convertPythonIndexToRowCol</vh></v>
@@ -1869,7 +1877,6 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 <v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
 <v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
-<v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 <v t="ekr.20071113202153.2" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194258"><vh>leoGui</vh>
@@ -1995,7 +2002,7 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 <v t="ekr.20071214075605"><vh>xml tests</vh>
 <v t="ekr.20071214075605.1"><vh>@test xml 1</vh></v>
 </v>
-<v t="ekr.20071024102639"><vh>@test checkTriailWrite</vh></v>
+<v t="ekr.20071024102639"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20071020075538.79"><vh>@test collapse-all</vh></v>
 </v>
 <v t="ekr.20071113145804.2"><vh>@test compareHelper</vh></v>
@@ -2275,21 +2282,21 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 </v>
 </v>
 <v t="ekr.20080804101159.1"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
-<v t="ekr.20080804101159.2" a="E"><vh>old</vh>
+<v t="ekr.20080804101159.2"><vh>old</vh>
 <v t="ekr.20080804101159.3"><vh>node 1</vh></v>
 <v t="ekr.20080804101159.4"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804101159.5" a="E"><vh>new</vh>
+<v t="ekr.20080804101159.5"><vh>new</vh>
 <v t="ekr.20080804101159.6"><vh>node 1</vh></v>
 <v t="ekr.20080804101159.7"><vh>node 2</vh></v>
 </v>
 </v>
 <v t="ekr.20080804121540.1"><vh>@shadow-test verbatim sentinels-delete verbatim line: at start of node</vh>
-<v t="ekr.20080804121540.2" a="E"><vh>old</vh>
+<v t="ekr.20080804121540.2"><vh>old</vh>
 <v t="ekr.20080804121540.4"><vh>node 1</vh></v>
 <v t="ekr.20080804121540.3"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804121540.5" a="E"><vh>new</vh>
+<v t="ekr.20080804121540.5"><vh>new</vh>
 <v t="ekr.20080804121540.7"><vh>node 1</vh></v>
 <v t="ekr.20080804121540.6"><vh>node 2</vh></v>
 </v>
@@ -2305,17 +2312,17 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 </v>
 </v>
 <v t="ekr.20080804121540.8"><vh>@shadow-test verbatim sentinels-delete verbatim line: at end of node</vh>
-<v t="ekr.20080804121540.9" a="E"><vh>old</vh>
+<v t="ekr.20080804121540.9"><vh>old</vh>
 <v t="ekr.20080804121540.10"><vh>node 1</vh></v>
 <v t="ekr.20080804121540.11"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804121540.12" a="E"><vh>new</vh>
+<v t="ekr.20080804121540.12"><vh>new</vh>
 <v t="ekr.20080804121540.13"><vh>node 1</vh></v>
 <v t="ekr.20080804121540.14"><vh>node 2</vh></v>
 </v>
 </v>
 <v t="ekr.20080804123400.1"><vh>@shadow-test verbatim sentinels-add verbatim line</vh>
-<v t="ekr.20080804123400.2" a="E"><vh>old</vh>
+<v t="ekr.20080804123400.2"><vh>old</vh>
 <v t="ekr.20080804123400.3"><vh>node 1</vh></v>
 <v t="ekr.20080804123400.4"><vh>node 2</vh></v>
 </v>
@@ -2338,6 +2345,7 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 </v>
 <v t="ekr.20080729200342.129"><vh>@test x.replaceFileWithString</vh></v>
 <v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
+<v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
 </v>
 <v t="ekr.20080729200342.130"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
@@ -2430,6 +2438,249 @@ expanded="ekr.20080806211453.2,"><vh>@shadow uA_test_shadow_file.py</vh></v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20080729200342.1"><vh>leoShadow</vh>
+<v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
+<v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
+<v t="ekr.20080804124245.1"><vh>passed</vh></v>
+<v t="ekr.20080729200342.5"><vh>@shadow-test change middle line</vh>
+<v t="ekr.20080729200342.6"><vh>old</vh></v>
+<v t="ekr.20080729200342.7"><vh>new</vh></v>
+</v>
+<v t="ekr.20080729200342.8"><vh>@shadow-test change first line</vh>
+<v t="ekr.20080729200342.9"><vh>old</vh></v>
+<v t="ekr.20080729200342.10"><vh>new</vh></v>
+</v>
+<v t="ekr.20080729200342.11"><vh>@shadow-test change last line</vh>
+<v t="ekr.20080729200342.12"><vh>old</vh></v>
+<v t="ekr.20080729200342.13"><vh>new</vh></v>
+</v>
+<v t="ekr.20080729200342.14"><vh>@shadow-test delete first line</vh>
+<v t="ekr.20080729200342.15"><vh>old</vh></v>
+<v t="ekr.20080729200342.16"><vh>new</vh></v>
+</v>
+<v t="ekr.20080729200342.17"><vh>@shadow-test delete middle line</vh>
+<v t="ekr.20080729200342.18"><vh>old</vh></v>
+<v t="ekr.20080729200342.19"><vh>new</vh></v>
+</v>
+<v t="ekr.20080729200342.20"><vh>@shadow-test delete last line</vh>
+<v t="ekr.20080729200342.21"><vh>old</vh></v>
+<v t="ekr.20080729200342.22"><vh>new</vh></v>
+</v>
+<v t="ekr.20080729200342.23"><vh>@shadow-test insert before first line</vh>
+<v t="ekr.20080729200342.24"><vh>old</vh></v>
+<v t="ekr.20080729200342.25"><vh>new</vh></v>
+</v>
+<v t="ekr.20080729200342.26"><vh>@shadow-test insert after first line</vh>
+<v t="ekr.20080729200342.27"><vh>old</vh></v>
+<v t="ekr.20080729200342.28"><vh>new</vh></v>
+</v>
+<v t="ekr.20080729200342.29"><vh>@shadow-test insert before last line</vh>
+<v t="ekr.20080729200342.30"><vh>old</vh></v>
+<v t="ekr.20080729200342.31"><vh>new</vh></v>
+</v>
+<v t="ekr.20080729200342.32"><vh>@shadow-test insert after last line</vh>
+<v t="ekr.20080729200342.33"><vh>old</vh></v>
+<v t="ekr.20080729200342.34"><vh>new</vh></v>
+</v>
+<v t="ekr.20080729200342.35"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
+<v t="ekr.20080729200342.36"><vh>old</vh>
+<v t="ekr.20080729200342.37"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.38"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.39"><vh>new</vh>
+<v t="ekr.20080729200342.40"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.41"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.42"><vh>@shadow-test insert between nodes: at start of next node</vh>
+<v t="ekr.20080729200342.43"><vh>old</vh>
+<v t="ekr.20080729200342.44"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.45"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.46"><vh>new</vh>
+<v t="ekr.20080729200342.47"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.48"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.49"><vh>@shadow-test delete between nodes: at end of prev node</vh>
+<v t="ekr.20080729200342.50"><vh>old</vh>
+<v t="ekr.20080729200342.51"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.52"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.53"><vh>new</vh>
+<v t="ekr.20080729200342.54"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.55"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.56"><vh>@shadow-test delete between nodes: at start of next node</vh>
+<v t="ekr.20080729200342.57"><vh>old</vh>
+<v t="ekr.20080729200342.58"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.59"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.60"><vh>new</vh>
+<v t="ekr.20080729200342.61"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.62"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.63"><vh>@shadow-test change end of prev node</vh>
+<v t="ekr.20080729200342.64"><vh>old</vh>
+<v t="ekr.20080729200342.65"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.66"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.67"><vh>new</vh>
+<v t="ekr.20080729200342.68"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.69"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.70"><vh>@shadow-test change start of next node</vh>
+<v t="ekr.20080729200342.71"><vh>old</vh>
+<v t="ekr.20080729200342.72"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.73"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.74"><vh>new</vh>
+<v t="ekr.20080729200342.75"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.76"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.77"><vh>@shadow-test-lax multiple-line insert between nodes: at end of prev node</vh>
+<v t="ekr.20080729200342.78"><vh>old</vh>
+<v t="ekr.20080729200342.79"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.80"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.81"><vh>new</vh>
+<v t="ekr.20080729200342.82"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.83"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.84"><vh>@shadow-test multiple-line insert between nodes: at start of next node</vh>
+<v t="ekr.20080729200342.85"><vh>old</vh>
+<v t="ekr.20080729200342.86"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.87"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.88"><vh>new</vh>
+<v t="ekr.20080729200342.89"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.90"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.91"><vh>@shadow-test multiple-line change end of prev node</vh>
+<v t="ekr.20080729200342.92"><vh>old</vh>
+<v t="ekr.20080729200342.93"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.94"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.95"><vh>new</vh>
+<v t="ekr.20080729200342.96"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.97"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.98"><vh>@shadow-test multiple-line change start of next node</vh>
+<v t="ekr.20080729200342.99"><vh>old</vh>
+<v t="ekr.20080729200342.100"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.101"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.102"><vh>new</vh>
+<v t="ekr.20080729200342.103"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.104"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.105"><vh>@shadow-test multiple-line delete between nodes: at end of prev node</vh>
+<v t="ekr.20080729200342.106"><vh>old</vh>
+<v t="ekr.20080729200342.107"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.108"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.109"><vh>new</vh>
+<v t="ekr.20080729200342.110"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.111"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.112"><vh>@shadow-test multiple-line delete between nodes: at start of next node</vh>
+<v t="ekr.20080729200342.113"><vh>old</vh>
+<v t="ekr.20080729200342.114"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.115"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080729200342.116"><vh>new</vh>
+<v t="ekr.20080729200342.117"><vh>node 1</vh></v>
+<v t="ekr.20080729200342.118"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804101159.1"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
+<v t="ekr.20080804101159.2"><vh>old</vh>
+<v t="ekr.20080804101159.3"><vh>node 1</vh></v>
+<v t="ekr.20080804101159.4"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804101159.5"><vh>new</vh>
+<v t="ekr.20080804101159.6"><vh>node 1</vh></v>
+<v t="ekr.20080804101159.7"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804121540.1"><vh>@shadow-test verbatim sentinels-delete verbatim line: at start of node</vh>
+<v t="ekr.20080804121540.2"><vh>old</vh>
+<v t="ekr.20080804121540.4"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.3"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804121540.5"><vh>new</vh>
+<v t="ekr.20080804121540.7"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.6"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804100908.7"><vh>@shadow-test verbatim sentinels-no change</vh>
+<v t="ekr.20080804100908.1"><vh>old</vh>
+<v t="ekr.20080804100908.2"><vh>node 1</vh></v>
+<v t="ekr.20080804100908.3"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804100908.8"><vh>new</vh>
+<v t="ekr.20080804100908.9"><vh>node 1</vh></v>
+<v t="ekr.20080804100908.10"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804121540.8"><vh>@shadow-test verbatim sentinels-delete verbatim line: at end of node</vh>
+<v t="ekr.20080804121540.9"><vh>old</vh>
+<v t="ekr.20080804121540.10"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.11"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804121540.12"><vh>new</vh>
+<v t="ekr.20080804121540.13"><vh>node 1</vh></v>
+<v t="ekr.20080804121540.14"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080804123400.1"><vh>@shadow-test verbatim sentinels-add verbatim line</vh>
+<v t="ekr.20080804123400.2"><vh>old</vh>
+<v t="ekr.20080804123400.3"><vh>node 1</vh></v>
+<v t="ekr.20080804123400.4"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080804123400.5"><vh>new</vh>
+<v t="ekr.20080804123400.6"><vh>node 1</vh></v>
+<v t="ekr.20080804123400.7"><vh>node 2</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
+<v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
+<v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>
+<v t="ekr.20080729200342.123"><vh>@test x.shadowPathName</vh></v>
+<v t="ekr.20080729200342.124"><vh>@test x.shadowDirName</vh></v>
+<v t="ekr.20080729200342.125"><vh>@test x.rename</vh></v>
+<v t="ekr.20080729200342.126"><vh>@test x.unlink</vh></v>
+<v t="ekr.20080729200342.127"><vh>@test x.makeShadowDirectory</vh>
+<v t="ekr.20080729200342.128"><vh>deleteShadowDir</vh></v>
+</v>
+<v t="ekr.20080729200342.129"><vh>@test x.replaceFileWithString</vh></v>
+<v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
+<v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
+</v>
+<v t="ekr.20080729200342.130"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
+<v t="ekr.20080729200342.132"><vh>@test at.openForWrite: not a shadow file</vh></v>
+<v t="ekr.20080729200342.133"><vh>@test at.readOneAtShadowNode</vh>
+<v t="ekr.20080729200342.134"><vh>@@shadow unittest/read_test.py</vh></v>
+</v>
+<v t="ekr.20080729200342.135"><vh>@test at.replaceFileWithString</vh></v>
+<v t="ekr.20080729200342.136"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20080729200342.137"><vh>@@shadow unittest/test_1.py</vh></v>
+</v>
+</v>
+<v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -5826,26 +6077,36 @@ assert c.page_width == 80</t>
 <t tx="ekr.20050203084930.1">w = g.app.config.get(None,'global_setting_for_unit_tests','int')
 
 assert w == 132</t>
-<t tx="ekr.20050206090416">file = u'Ỗ'
+<t tx="ekr.20050206090416">@first # -*- coding: utf-8 -*-
+
+file = u'Ỗ'
 path = g.os_path_join('Ỗ','Ỗ')
 # g.pr(g.toEncodedString(file,'utf-8'))
 
 ok,frame = g.openWithFileName(path,c)
 
 assert not ok and not frame</t>
-<t tx="ekr.20050206201145">
+<t tx="ekr.20050206201145">@first # -*- coding: utf-8 -*-
+
 s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 
 s2 = 'test: %s' % s</t>
 <t tx="ekr.20050208051418"></t>
-<t tx="ekr.20050208051418.1">old_c = c
+<t tx="ekr.20050208051418.1">@first # -*- coding: utf-8 -*-
+
+old_c = c
 filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 ok,frame = g.openWithFileName(filename,old_c)
 assert(not ok)</t>
-<t tx="ekr.20050208051854">at = c.atFileCommands
+<t tx="ekr.20050208051854">@first # -*- coding: utf-8 -*-
+
+at = c.atFileCommands
 at.errors = 0
-at.printError(
-    "test of printError: Ᾱ(U+1FB9: Greek Capital Letter Alpha With Macron)")</t>
+
+s = u'La Pe\xf1a'
+s = u'La Peña'
+# s = u'Ă: U+0102: Latin Capital Letter A With Breve'
+at.printError('test of at.printError:',s)</t>
 <t tx="ekr.20050208073718">import sys
 
 if sys.platform.startswith('win'):
@@ -5867,7 +6128,8 @@ if sys.platform.startswith('win'):
         ok,frame = g.openWithFileName(s,c)
         if frame: frame.c.close()
         assert ok and frame, 'did not open'</t>
-<t tx="ekr.20050208104202">
+<t tx="ekr.20050208104202">@first # -*- coding: utf-8 -*-
+
 for s,encoding in (
     ('a',    'utf-8'),
     ('a',    'ascii'),
@@ -5886,7 +6148,8 @@ for s,encoding in (
         s2 = g.toUnicode(s,encoding)
         s3 = g.toEncodedString(s2,encoding)
         assert s3 == s, 'Round-trip two fails for %s' %s</t>
-<t tx="ekr.20050208111037">
+<t tx="ekr.20050208111037">@first # -*- coding: utf-8 -*-
+
 encoding = 'ascii'
 
 s = '炰'
@@ -15788,7 +16051,9 @@ for direction,extend in (('up',False),('down',False),('up',True),('down',True),)
     ec.scrollHelper(event,direction,extend)
 
 </t>
-<t tx="ekr.20061104172236.8">try:
+<t tx="ekr.20061104172236.8">@first # -*- coding: utf-8 -*-
+
+try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
     
@@ -17682,7 +17947,9 @@ if sys.platform.lower().startswith('win'):
     
     c.importCommands.javaUnitTest(p,s=s,fileName=fileName,showTree=False)</t>
 <t tx="ekr.20071020075538.79">c.contractAllHeadlines()</t>
-<t tx="ekr.20071024102639">import leo.core.leoImport as leoImport
+<t tx="ekr.20071024102639">@first # -*- coding: utf-8 -*-
+
+import leo.core.leoImport as leoImport
 ic = c.importCommands
 runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
 runner.root = p.copy()
@@ -19062,7 +19329,9 @@ The new scheme:
 <t tx="ekr.20071113143844.5">assert c.atFileCommands.isSignificantTree(p)
 
 </t>
-<t tx="ekr.20071113143844.6">encoding = 'ascii'
+<t tx="ekr.20071113143844.6">@first # -*- coding: utf-8 -*-
+
+encoding = 'ascii'
 
 s = '炰'
 s2,ok = g.toUnicodeWithErrorCode(s,encoding)
@@ -19101,7 +19370,8 @@ g.app.unitTestDict ['expectedErrors'] = 0
 g.app.unitTestDict ['expectedMismatchLine'] = 1
 
 runner.compareHelper(lines1,lines2,i,strict=False)</t>
-<t tx="ekr.20071113145804.4">@language python
+<t tx="ekr.20071113145804.4">@first # -*- coding: utf-8 -*-
+@language python
 
 try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
@@ -19266,10 +19536,14 @@ theFile,theFileName = g.create_temp_file()
 assert type(theFile) == types.FileType, 'not file type'
 assert type(theFileName) in (types.StringType, types.UnicodeType), 'not string type'
 </t>
-<t tx="ekr.20071113145804.22">if 0: # Not usually enabled.
+<t tx="ekr.20071113145804.22">@first # -*- coding: utf-8 -*-
+
+if 0: # Not usually enabled.
     g.es_trace('\ntest of es_trace: Ă',color='red')
 </t>
-<t tx="ekr.20071113145804.23">for s,encoding in (
+<t tx="ekr.20071113145804.23">@first # -*- coding: utf-8 -*-
+
+for s,encoding in (
     ('aĂbĂ',  'ascii'),
     (u'aĂbĂ', 'ascii'),
     ('炰',    'ascii'),
@@ -19283,7 +19557,9 @@ assert type(theFileName) in (types.StringType, types.UnicodeType), 'not string t
 
     g.reportBadChars(s,encoding)
 </t>
-<t tx="ekr.20071113145804.24">table = [
+<t tx="ekr.20071113145804.24">@first # -*- coding: utf-8 -*-
+
+table = [
     ('a',    'utf-8'),
     ('a',    'ascii'),
     ('äöü',  'utf-8'),
@@ -21031,7 +21307,7 @@ if g.os_path_exists(shadow_fn):
 
 deleteShadowDir(shadow_dir)
 
-x.makeShadowDirectory(shadow_dir)
+x.makeShadowDirectory(shadow_dir,force=True)
 assert os.path.exists(shadow_dir)
 
 deleteShadowDir(shadow_dir)
@@ -21107,8 +21383,12 @@ finally:
     child.setHeadString('@@shadow %s' % fn)
     c.setChanged(changed)
     # c.redraw_now()</t>
-<t tx="ekr.20080729200342.134"># body of @shadow test node
-# The last line.</t>
+<t tx="ekr.20080729200342.134">@language python
+@tabwidth -4
+@others
+# body of @shadow test node
+# The last line.
+</t>
 <t tx="ekr.20080729200342.135">s = 'abc'
 fn = 'unitTestFile.py'
 c.atFileCommands.replaceFileWithString(fn,s)
@@ -21128,7 +21408,7 @@ try:
     fn = 'unittest/test_1.py'
     shadow_fn = x.shadowPathName(fn)
     shadow_dir = x.shadowDirName(fn)
-    x.makeShadowDirectory(shadow_dir)
+    x.makeShadowDirectory(shadow_dir,force=True)
     if g.os_path_exists(shadow_fn):
         g.utils_remove(shadow_fn,verbose=True)
     at.writeOneAtShadowNode(child,toString=True,force=True)
@@ -21312,6 +21592,11 @@ for v,archivedPosition in table:
 <t tx="ekr.20080806080425.2"></t>
 <t tx="ekr.20080806080425.3"></t>
 <t tx="ekr.20080806080425.4"></t>
+<t tx="ekr.20080806084924.2">@others</t>
+<t tx="ekr.20080806084924.3">pass</t>
+<t tx="ekr.20080806084924.4">pass
+</t>
+<t tx="ekr.20080806084924.5">pass</t>
 <t tx="ekr.20080806095923.2">root = p.firstChild()
 uA = 'unknownAttributes'
 tag = 'round-trip-u.uA'
@@ -21340,6 +21625,10 @@ else: # Test the uA's.
         d = {ttag: v.headString()}
         if trace: g.pr(d)
         assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)</t>
+<t tx="ekr.20080806211453.1">@language python
+@tabwidth -4
+@others
+</t>
 <t tx="ekr.20080806211453.5">root = p.firstChild()
 uA = 'unknownAttributes'
 tag = 'round-trip-u.uA'
@@ -21368,14 +21657,25 @@ else: # Test the uA's.
         d = {ttag: v.headString()}
         if trace: g.pr(d)
         assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)</t>
-<t tx="ekr.20080811180035.1">for ext in g.app.extension_dict.keys():
+<t tx="ekr.20080811180035.1">d = g.app.extra_extension_dict
+
+for ext in g.app.extension_dict.keys():
     language =  c.importCommands.languageForExtension(ext)
     language2 = c.importCommands.languageForExtension('.'+ext)
     assert language == language2
+    
+    # Now a many-one relationship.
     if language:
-        path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
-        assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
-
+        # Do not test extensions that have 'none' as the value of d.get(ext)
+        # Otherwise, test only d.get(ext).
+        language2 = d.get(ext)
+        if language2 in ('None','none'):  continue
+        if language2: language = language2
+        # Made-up languages do not have mode files.
+        if not language.endswith('_language'):
+            path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+            assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
+        
     if 0:
         if language is None:
             g.pr('no language for ext=%s' % (ext))</t>
@@ -21386,13 +21686,51 @@ table = (
     ('c','//@'),
     ('h','//@'),
     ('py','#@'),
-    ('xyzzy',None),
+    ('xyzzy','#--unknown-language--@'),
 )
 
 for ext,result in table:
     filename = 'x.%s' % ext
     z = x.marker_from_extension(filename)
     assert result == z, 'ext=%s, got %s, expected %s' % (ext,z,result)
+</t>
+<t tx="ekr.20080821123427.2">@first # -*- coding: utf-8 -*-
+
+import sys
+
+print '=' * 40
+
+e = sys.getdefaultencoding()
+print 'encoding',e
+
+table = (
+    'La Peña',
+    unicode('La Peña','utf-8'),
+    u'La Peña',
+    u'La Pe\xf1a',
+)
+
+for s in table:
+    print type(s)
+    g.es_print('g.es_print',s)
+    if type(s) != type(u'a'):
+        s = unicode(s,e)
+    print      'print     ',s
+    print      'repr(s)   ',repr(s)</t>
+<t tx="ekr.20080822075239.1">x = c.shadowController
+
+lines1 = ('a','b','c')
+lines2 = ('a','x','c')
+
+x.show_error(
+    lines1,lines2,
+    message = "Test of x.show_error",
+    lines1_message = "lines1",
+    lines2_message = "lines2")
+</t>
+<t tx="ekr.20080822160527.1">pass
+pass
+pass
 </t>
 </tnodes>
 </leo_file>

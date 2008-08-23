@@ -43,6 +43,7 @@ class LeoApp:
         self.hookError = False # True: suppress further calls to hooks.
         self.hookFunction = None # Application wide hook function.
         self.homeDir = None # The user's home directory.
+        self.homeLeoDir = None # The '.leo' subdirectory of the user's home directory. New in Leo 4.5b4.
         self.homeSettingsPrefix = '.' # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
         self.idle_imported = False # True: we have done an import idle
         self.idleTimeDelay = 100 # Delay in msec between calls to "idle time" hook.
@@ -137,12 +138,13 @@ class LeoApp:
             "shell" : "#",  # shell scripts
             "tcltk" : "#",
             "unknown" : "#", # Set when @comment is seen.
+            "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
             "xml" : "<!-- -->",
         }
 
         self.language_extension_dict = {
             # Keys are languages, values are extensions.
-            "ada" : "ads",
+            "ada" : "ada",
             "actionscript" : "as", #jason 2003-07-03
             "autohotkey" : "ahk", #TL - AutoHotkey language
             "c" : "c",
@@ -179,9 +181,8 @@ class LeoApp:
 
         self.extension_dict = {
             # Keys are extensions, values are languages.
-            "ads"   : "ada",
+            "ada"   : "ada",
             "adb"   : "ada",
-            "ahk"   : "autohotkey", #TL - AutoHotkey language
             "as"    : "actionscript",
             "bas"   : "rapidq",
             "c"     : "c",
@@ -194,8 +195,8 @@ class LeoApp:
             "html"  : "html",
             "ini"   : "ini",
             "java"  : "java",
-            "lua" : "lua",  # ddm 13/02/06
-            "noweb" : "nw",
+            "lua"   : "lua",  # ddm 13/02/06
+            "nw"    : "noweb",
             "p"     : "pascal",
             # "perl"  : "perl",
             "pl"    : "perl",   # 11/7/05
@@ -215,18 +216,23 @@ class LeoApp:
         # Extra language extensions, used to associate extensions with mode files.
         # Used by importCommands.languageForExtension.
         # Keys are extensions, values are corresponding mode file (without .py)
+        # A value of 'none' is a signal to unit tests that no extension file exists.
         self.extra_extension_dict = {
             'actionscript': 'actionscript',
             'ada':  'ada95',
-            'ahk':  'ahk',
+            'adb':  'none', # ada??
+            # 'ahk':  'ahk',
+            "ahk"   : "autohotkey", #TL - AutoHotkey language
             'awk':  'awk',
-            # 'bas':  'basic',
+            'bas':  'none', # rapidq
             'cpp':  'c',
             'el':   'lisp',
             'f':    'fortran',
+            'nw':   'none', # noweb.
             'pod':  'perl',
             'tcl':  'tcl',
-            # 'w':  'cweb',
+            'unknown_language': 'none',
+            'w':    'none', # cweb
         }
         #@nonl
         #@-node:ekr.20031218072017.368:<< define global data structures >> app
@@ -451,7 +457,7 @@ class LeoApp:
     def setLeoID (self,verbose=True):
 
         tag = ".leoID.txt"
-        homeDir = g.app.homeDir
+        homeLeoDir = g.app.homeLeoDir # was homeDir.
         globalConfigDir = g.app.globalConfigDir
         loadDir = g.app.loadDir
 
@@ -478,7 +484,7 @@ class LeoApp:
         #@nl
         #@    << return if we can set leoID from "leoID.txt" >>
         #@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
-        for theDir in (homeDir,globalConfigDir,loadDir):
+        for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
                 try:
@@ -538,7 +544,7 @@ class LeoApp:
         #@nl
         #@    << attempt to create leoID.txt >>
         #@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
-        for theDir in (homeDir,globalConfigDir,loadDir):
+        for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
                 try:

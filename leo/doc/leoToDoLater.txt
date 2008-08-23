@@ -1829,6 +1829,25 @@ RodrigoB.
 #@-node:ekr.20041228094138:4.5  LeoN and collaboration
 #@-node:ekr.20041228084143:Maybe never
 #@+node:ekr.20040123102724:Can't or won't
+#@+node:ekr.20080815174457.5:Consider deleting private shadow files
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/e86796831635311b
+
+I was wondering whether it would be a good idea to have leo
+automatically delete the corresponding shadow file when a @shadow node
+is deleted? Ditto for deleting the .leo_shadow dir when it is empty.
+
+Answer:
+
+My second thought is that this is too dangerous--shadow files might
+turn out to be useful emergency backups.  I would prefer to have Leo
+mess with the file system as little as possible.
+
+BTW, if you think file system changes are easy to do in Python, take a
+look at g.utils_rename. 
+#@nonl
+#@-node:ekr.20080815174457.5:Consider deleting private shadow files
 #@+node:ekr.20060329102951:@ref
 @nocolor
 

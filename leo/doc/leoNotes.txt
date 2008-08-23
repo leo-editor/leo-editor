@@ -3362,6 +3362,56 @@ def putDescendentUnknownAttributes (self,p):
     # return self.putDescendentVnodeUas(p)
 
 #@-node:EKR.20040627113418:putDescendentUnknownAttributes
+#@+node:ekr.20080819075811.12:x.setDelims (no longer used)
+def setDelims (self):
+
+    data = self.c.config.getData('shadow_delims') or []
+
+    # g.trace('shadowController',self.delims_data)
+    if data:
+        for s in data:
+            s = s.strip()
+            if s:
+                aList = s.split(' ')
+                aList = [z.strip() for z in aList if z.strip()]
+                if len(aList) == 2:
+                    ext,delim = aList
+                    delims = delim
+                elif len(aList) == 3:
+                    ext,delim1,delim2 = aList
+                    delims = '%s %s' % (delim1,delim2)
+                else:
+                    g.es_print('ignoring bad @data shadow_delims entry',repr(s),color='red')
+
+                if len(aList) in (2,3):
+                    if ext.startswith('.'): ext = ext[1:]
+                    language = '%s_language' % ext
+                    if ext and not g.app.language_delims_dict.get(language):
+                        # g.trace('Adding entries for ext=%s, delims=%s' % (ext,repr(delims)))
+                        g.app.language_delims_dict[language] = delims
+                        g.app.language_extension_dict[language] = ext
+                        g.app.extension_dict[ext] = language
+#@-node:ekr.20080819075811.12:x.setDelims (no longer used)
+#@+node:ekr.20080822065427.23:From leoPluings.getEnabledFiles
+
+
+            if g.match(s,0,"#"):
+                s = s[1:].strip()
+                # Kludge: ignore comment lines containing a blank or not ending in '.py'.
+                if s and s.find(' ') == -1 and s[-3:] == '.py':
+                    path = g.os_path_abspath(g.os_path_join(plugins_path,s))
+                    if path not in enabled_files and path not in disabled_files:
+                        # g.pr('disabled',path)
+                        disabled_files.append(path)
+            else:
+                path = g.os_path_abspath(g.os_path_join(plugins_path,s))
+                if path not in enabled_files and path not in disabled_files:
+                    # g.pr('enabled',path)
+                    enabled_files.append(path)
+
+    return enabled_files
+#@nonl
+#@-node:ekr.20080822065427.23:From leoPluings.getEnabledFiles
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

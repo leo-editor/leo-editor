@@ -38,7 +38,6 @@ import leo.core.leoGlobals as g
 
 import difflib
 import os
-import sys
 import unittest
 #@-node:ekr.20080708094444.52:<< imports >>
 #@nl
@@ -60,8 +59,11 @@ class shadowController:
         self.c = c
 
         # Configuration...
-        self.shadow_subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
+        self.shadow_subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
         self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+
+        # Munch shadow_subdir
+        self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
 
         # Debugging...
         self.trace = trace
@@ -73,7 +75,6 @@ class shadowController:
 
         # Support for goto-line-number.
         self.line_mapping = []
-
     #@-node:ekr.20080708094444.79: x.ctor
     #@+node:ekr.20080711063656.1:x.File utils
     #@+node:ekr.20080711063656.7:x.baseDirName
@@ -114,7 +115,7 @@ class shadowController:
         return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
     #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
     #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-    def makeShadowDirectory (self,fn):
+    def makeShadowDirectory (self,fn,force=False):
 
         '''Make a shadow directory for the **public** fn.'''
 
@@ -122,13 +123,8 @@ class shadowController:
 
         if not g.os_path_exists(path):
 
-            try:
-                # g.trace('making',path)
-                os.mkdir(path)
-            except Exception:
-                x.error('unexpected exception creating %s' % path)
-                g.es_exception()
-                return False
+            # Force the creation of the directories.
+            g.makeAllNonExistentDirectories(path,c=None,force=force)
 
         return g.os_path_exists(path) and g.os_path_isdir(path)
     #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -498,29 +494,23 @@ class shadowController:
 
         # g.trace('old_public_file',old_public_file)
 
-        # Bug fix: 2008/8/12: make sure the old_public lines end with a newline.
-        if 1: # We really do not want to change the public file here.
-            old_public_lines  = file(old_public_file).readlines()
-        else: # An emergency measure.
-            s = file(old_public_file).read()
-            if s and not s.endswith('\n'): s = s + '\n'
-            old_public_lines = g.splitLines(s)
+        old_public_lines  = file(old_public_file).readlines()
         old_private_lines = file(old_private_file).readlines()
         marker = x.marker_from_extension(old_public_file)
         if not marker:
             return False
 
         new_private_lines = x.propagate_changed_lines(
-            old_public_lines,
-            old_private_lines,
-            marker)
+            old_public_lines,old_private_lines,marker)
 
+        # Important bug fix: Never create the private file here!
         fn = old_private_file
-        copy = not os.path.exists(fn) or new_private_lines != old_private_lines
+        copy = os.path.exists(fn) and new_private_lines != old_private_lines
 
         if copy and x.errors == 0:
             s = ''.join(new_private_lines)
-            x.replaceFileWithString(fn,s)
+            ok = x.replaceFileWithString(fn,s)
+            # g.trace('ok',ok,'writing private file',fn)
 
         return copy
     #@-node:ekr.20080708094444.36:x.propagate_changes
@@ -576,9 +566,11 @@ class shadowController:
             written = x.propagate_changes(fn,shadow_fn)
             if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
         else:
-            # Create the public file from the private shadow file.
-            x.copy_file_removing_sentinels(shadow_fn,fn)
-            x.message("created public %s from private %s " % (fn, shadow_fn))
+            # Don't write *anything*.
+            if 0: # This causes considerable problems.
+                # Create the public file from the private shadow file.
+                x.copy_file_removing_sentinels(shadow_fn,fn)
+                x.message("created public %s from private %s " % (fn, shadow_fn))
     #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
     def copy_file_removing_sentinels (self,source_fn,target_fn):
 
@@ -656,14 +648,11 @@ class shadowController:
         elif ext in ('.bat',):
             marker = "REM@"
         else:
-            if not suppressErrors:
-                if g.app.unitTesting:
-                    x.errors += 1
-                else:
-                    x.error("extension '%s' not known" % (ext))
-            # We **must not** use a bogus marker!
-            # This could cause great problems when (later), a real marker becomes known.
-            marker = None
+            # Yes, we *can* use a special marker for unknown languages,
+            # provided we make it impossible to type by mistake,
+            # and provided no real language will be the prefix of the comment delim.
+            marker = g.app.language_delims_dict.get('unknown_language') + '@'
+            # g.trace('unknown language marker',marker)
 
         return marker
     #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -733,28 +722,38 @@ class shadowController:
     #@+node:ekr.20080708094444.33:x.show_error
     def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
 
-        def p(s):
-            sys.stdout.write(s)
-            f1.write(s)
-        g.pr("=================================")
-        g.pr(message)
-        g.pr("=================================")
-        g.pr(lines1_message )
-        g.pr("---------------------------------")
-        f1 = file("mod_shadow.tmp1", "w")
-        for line in lines1:
-            p(line)
-        f1.close()
-        g.pr("\n==================================")
-        g.pr(lines2_message )
-        g.pr("---------------------------------")
-        f1 = file("mod_shadow.tmp2", "w")
-        for line in lines2:
-            p(line)
-        f1.close()
-        g.pr('')
-        g.es("@shadow did not pick up the external changes correctly; please check shadow.tmp1 and shadow.tmp2 for differences")
-        # assert 0, "Malfunction of @shadow"
+        x = self
+        banner1 = '=' * 30
+        banner2 = '-' * 30
+        g.es_print('%s\n%s\n%s\n%s\n%s' % (
+            banner1,message,banner1,lines1_message,banner2))
+
+        x.show_error_lines(lines1,'shadow_errors.tmp1')
+
+        g.es_print('\n%s\n%s\n%s' % (
+            banner1,lines2_message,banner1))
+
+        x.show_error_lines(lines2,'shadow_errors.tmp2')
+
+        g.es_print('\n@shadow did not pick up the external changes correctly')
+
+        # g.es_print('Please check shadow.tmp1 and shadow.tmp2 for differences')
+    #@+node:ekr.20080822065427.4:show_error_lines
+    def show_error_lines (self,lines,fileName):
+
+        for line in lines:
+            g.es_print(line)
+
+        if False: # Only for major debugging.
+            try:
+                f1 = open(fileName, "w")
+                for line in lines:
+                    f1.write(line)
+                f1.close()
+            except IOError:
+                g.es_exception()
+                g.es_print('can not open',fileName)
+    #@-node:ekr.20080822065427.4:show_error_lines
     #@-node:ekr.20080708094444.33:x.show_error
     #@-node:ekr.20080708094444.89:x.Utils...
     #@+node:ekr.20080709062932.2:atShadowTestCase

@@ -162,6 +162,7 @@ class generalTestCase(unittest.TestCase):
         c = self.c ; p = self.p.copy()
         script = g.getScript(c,p).strip()
         self.assert_(script)
+        writeScriptFile = c.config.getBool('write_script_file')
 
         # import leo.core.leoGlobals as g
 
@@ -173,13 +174,22 @@ class generalTestCase(unittest.TestCase):
         else:
             d = {}
 
+        script = script + '\n'
+        # g.trace(type(script),script)
+
         # Execute the script. Let unit test handle any errors!
 
-        if 0: # debug
-            import pdb
-            pdb.run(script+'\n',d)
+        if writeScriptFile:
+            scriptFile = c.writeScriptFile(script)
+            execfile(scriptFile,d)
         else:
-            exec script + '\n' in d
+            exec script in d
+
+        # if 0: # debug
+            # import pdb
+            # pdb.run(script+'\n',d)
+        # else:
+            # exec script + '\n' in d
     #@-node:ekr.20051104075904.10:runTest
     #@+node:ekr.20051104075904.11:shortDescription
     def shortDescription (self):

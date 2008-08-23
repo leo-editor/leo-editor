@@ -13,12 +13,14 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-REM toto errors
+REM goto errors
 goto all
 
 
 :errors
 
+echo leoShadow.py
+call pylint.bat leo\core\leoShadow.py       --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

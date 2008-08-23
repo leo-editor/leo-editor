@@ -5962,6 +5962,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'clone-node':                   c.clone,
             'contract-node':                c.contractNode,
             'contract-all':                 c.contractAllHeadlines,
+            'contract-all-other-nodes':     c.contractAllOtherNodes,
             'contract-parent':              c.contractParent,
             'convert-all-blanks':           c.convertAllBlanks,
             'convert-all-tabs':             c.convertAllTabs,

@@ -4380,6 +4380,35 @@ class baseCommands:
 
         c.expansionLevel = 1 # Reset expansion level.
     #@-node:ekr.20031218072017.2900:contractAllHeadlines
+    #@+node:ekr.20080819075811.3:contractAllOtherNodes & helper
+    def contractAllOtherNodes (self,event=None):
+
+        '''Contract all nodes except those needed to make the
+        presently selected node visible.'''
+
+        c = self ; leaveOpen = c.currentPosition()
+
+        for p in c.rootPosition().self_and_siblings_iter():
+            c.contractIfNotCurrent(p,leaveOpen)
+
+        c.redraw()
+
+    #@+node:ekr.20080819075811.7:contractIfNotCurrent
+    def contractIfNotCurrent(self,p,leaveOpen):
+
+        c = self
+
+        if p == leaveOpen or not p.isAncestorOf(leaveOpen):
+            p.contract()
+
+        for child in p.children_iter():
+            if child != leaveOpen and child.isAncestorOf(leaveOpen):
+                c.contractIfNotCurrent(child,leaveOpen)
+            else:
+                for p2 in child.self_and_subtree_iter():
+                    p2.contract()
+    #@-node:ekr.20080819075811.7:contractIfNotCurrent
+    #@-node:ekr.20080819075811.3:contractAllOtherNodes & helper
     #@+node:ekr.20031218072017.2901:contractNode
     def contractNode (self,event=None):
 
@@ -5514,7 +5543,7 @@ class baseCommands:
 
     def openSettingsHelper(self,name):
         c = self
-        homeDir = g.app.homeDir
+        homeLeoDir = g.app.homeLeoDir # was homeDir
         loadDir = g.app.loadDir
         configDir = g.app.globalConfigDir
 
@@ -5525,16 +5554,16 @@ class baseCommands:
             ok, frame = g.openWithFileName(fileName,c)
             if ok: return
 
-        # Look in homeDir second.
+        # Look in homeLeoDir second.
         if configDir == loadDir:
             g.es('',name,"not found in",configDir)
         else:
-            fileName = g.os_path_join(homeDir,name)
+            fileName = g.os_path_join(homeLeoDir,name)
             ok = g.os_path_exists(fileName)
             if ok:
                 ok, frame = g.openWithFileName(fileName,c)
             if not ok:
-                g.es('',name,"not found in",configDir,"or",homeDir)
+                g.es('',name,"not found in",configDir,"or",homeLeoDir)
     #@-node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
     #@+node:ekr.20061018094539:openLeoScripts
     def openLeoScripts (self,event=None):

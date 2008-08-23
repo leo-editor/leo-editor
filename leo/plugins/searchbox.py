@@ -112,8 +112,6 @@ def onCreate(tag, keywords):
 #@+node:ekr.20080707161756.1:init
 def init():
 
-    g.pdb()
-
     if not Tk:
         return False # OK for unit testing.
 

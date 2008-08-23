@@ -244,7 +244,9 @@ class atFile:
     def initReadIvars(self,root,fileName,
         importFileName=None,
         perfectImportRoot=None,
-        thinFile=False):
+        thinFile=False,
+        atShadow=False,
+    ):
 
         importing = importFileName is not None
 
@@ -252,6 +254,7 @@ class atFile:
 
         #@    << init ivars for reading >>
         #@+node:ekr.20041005105605.14:<< init ivars for reading >>
+
         self.cloneSibCount = 0 # n > 1: Make sure n cloned sibs exists at next @+node sentinel
         self.correctedLines = 0
         self.docOut = [] # The doc part being accumulated.
@@ -286,6 +289,7 @@ class atFile:
         self.root = root
         self.targetFileName = fileName
         self.thinFile = thinFile
+        self.atShadow = atShadow
     #@-node:ekr.20041005105605.13:initReadIvars
     #@+node:ekr.20041005105605.15:initWriteIvars
     def initWriteIvars(self,root,targetFileName,
@@ -392,29 +396,27 @@ class atFile:
             g.es_print('check-derived-file passed',color='blue')
     #@-node:ekr.20070919133659:checkDerivedFile (atFile)
     #@+node:ekr.20041005105605.19:openFileForReading (atFile)
-    def openFileForReading(self,fn,fromString=False,atShadow=False):
+    def openFileForReading(self,fn,fromString=False):
 
         at = self ; trace = True and not g.app.unitTesting ; verbose = False
 
         if fromString:
-            if atShadow:
-                return at.error('can not call read(atShadow=True,fromString=aString)')
+            if at.atShadow:
+                return at.error('can not call at.read from string for @shadow files')
             at.inputFile = g.fileLikeObject(fromString=fromString)
         else:
             fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
 
-            if atShadow:
+            if at.atShadow:
                 x = at.c.shadowController
                 # readOneAtShadowNode should already have checked these.
                 shadow_fn       = x.shadowPathName(fn)
                 shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+                # g.trace('fn',fn,'shadow_fn',shadow_fn)
                 # x.updatePublicAndPrivate will create the public file from the private file
                 # if the public file exists. This *is* reasonable: there is nothing to import!
-                # if not g.os_path_exists(fn):
-                    # g.trace('oops public',fn,g.callers())
-                    # return at.error('can not happen: public file does not exist: %s' % (fn))
                 if not shadow_exists:
-                    g.trace('oops private',shadow_fn,g.callers())
+                    g.trace('can not happen: no private file',shadow_fn,g.callers())
                     return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
                 # This method is the gateway to the essence of the shadow algorithm.
                 x.updatePublicAndPrivateFiles(fn,shadow_fn)
@@ -422,15 +424,16 @@ class atFile:
 
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
-                if trace and verbose and atShadow: g.trace('opening %s file: %s' % (
-                    g.choose(atShadow,'private','public'),fn))
+                if trace and verbose and at.atShadow: g.trace('opening %s file: %s' % (
+                    g.choose(at.atShadow,'private','public'),fn))
                 at.inputFile = open(fn,'rb')
                 at.warnOnReadOnlyFile(fn)
             except IOError:
                 at.error("can not open: '@file %s'" % (fn))
                 at.inputFile = None
+                fn = None
 
-        return at.inputFile # for unit tests.
+        return fn
     #@-node:ekr.20041005105605.19:openFileForReading (atFile)
     #@+node:ekr.20041005105605.21:read (atFile)
     def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
@@ -454,9 +457,9 @@ class atFile:
             return False
         #@-node:ekr.20041005105605.22:<< set fileName >>
         #@nl
-        at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile)
+        at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
-        at.openFileForReading(fileName,fromString=fromString,atShadow=atShadow)
+        fileName = at.openFileForReading(fileName,fromString=fromString)
         if not at.inputFile: return False
         if not g.unitTesting:
             g.es("reading:",root.headString())
@@ -585,18 +588,23 @@ class atFile:
 
         Leo 4.5 and later can only read 4.x derived files.'''
 
-        at = self
+        at = self ; ok = True
 
         firstLines,read_new,junk = at.scanHeader(theFile,fileName)
 
         if read_new:
             lastLines = at.scanText4(theFile,fileName,root)
         else:
-            # lastLines = at.scanText3(theFile,root,[],at.endLeo)
-            lastLines = []
-            g.es('can not read 3.x derived file',fileName,color='red')
-            g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
-            g.trace('root',root and root.headString(),fileName)
+            firstLines = [] ; lastLines = []
+            ok = False
+            if at.atShadow:
+                g.trace(g.callers())
+                g.trace('invalid @shadow private file',fileName)
+                at.error('invalid @shadow private file',fileName)
+            else:
+                at.error('can not read 3.x derived file',fileName)
+                g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
+                g.trace('root',root and root.headString(),fileName)
 
         if root:
             root.v.t.setVisited() # Disable warning about set nodes.
@@ -615,6 +623,8 @@ class atFile:
         root.v.t.tempBodyString = s
         #@-node:ekr.20041005105605.28:<< handle first and last lines >>
         #@nl
+
+        return ok
     #@-node:ekr.20041005105605.27:readOpenFile
     #@+node:ekr.20050103163224:scanHeaderForThin
     def scanHeaderForThin (self,theFile,fileName):
@@ -662,14 +672,15 @@ class atFile:
         fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
         shadow_fn       = x.shadowPathName(fn)
         shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-        # significant     = x.isSignificantPublicFile(fn)
 
         if shadow_exists:
             # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
+            # This will cause an error if shadaw_fn does not, in fact, contain sentinels.
+            # g.trace('reading shadow_fn',shadow_fn)
             at.read(p,
                 thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
                 atShadow=True)
-                # Calls x.updatePublicAndPrivateFiles
+                # at.openFileForReading calls x.updatePublicAndPrivateFiles
         else:
             if not g.unitTesting: g.es("reading:",p.headString())
             ok = at.importAtShadowNode(fn,p)
@@ -2538,7 +2549,7 @@ class atFile:
 
         return found
     #@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
-    #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helper
+    #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
     def writeOneAtShadowNode(self,p,toString,force):
 
         '''Write p, an @shadow node.
@@ -2551,6 +2562,9 @@ class atFile:
         if not fn:
             g.trace('can not happen: not an @shadow node',p.headString())
             return False
+
+        # A hack to support unknown extensions.
+        self.adjustTargetLanguage(fn) # May set c.target_language.
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
         fn = g.os_path_join(at.default_directory,fn)
@@ -2565,7 +2579,8 @@ class atFile:
             thinFile=True, # New in Leo 4.5 b2: private files are thin files.
             scriptWrite=False,
             toString=False, # True: create a fileLikeObject.  This is done below.
-            write_strips_blank_lines=False)
+            write_strips_blank_lines=False,
+        )
                 # at.targetFileName not used.
 
         if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
@@ -2595,7 +2610,7 @@ class atFile:
 
             # Write the public and private files.
             private_fn = x.shadowPathName(fn)
-            x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+            x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
             at.replaceFileWithString(private_fn,at.private_s)
             at.replaceFileWithString(fn,at.public_s)
 
@@ -2649,7 +2664,31 @@ class atFile:
         else: # The @shadow tree is dirty and contains significant info.
             return True
     #@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
-    #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helper
+    #@+node:ekr.20080819075811.13:adjustTargetLanguage
+    def adjustTargetLanguage (self,fn):
+
+        """Use the language implied by fn's extension if
+        there is a conflict between it and c.target_language."""
+
+        at = self ; c = at.c
+
+        if c.target_language:
+            junk,target_ext = g.os_path_splitext(fn)  
+        else:
+            target_ext = ''
+
+        junk,ext = g.os_path_splitext(fn)
+
+        if ext:
+            if ext.startswith('.'): ext = ext[1:]
+
+            language = g.app.extension_dict.get(ext)
+            if not language:
+                # An unknown language.
+                c.target_language = 'unknown_language'
+                # g.trace('setting target language',c.target_language)
+    #@-node:ekr.20080819075811.13:adjustTargetLanguage
+    #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
     #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     #@+node:ekr.20050506084734:writeFromString
     # This is at.write specialized for scripting.
@@ -3795,9 +3834,6 @@ class atFile:
 
         at = self
 
-        # g.trace(g.callers())
-        # g.trace(repr(s))
-
         if s and at.outputFile:
             try:
                 s = g.toEncodedString(s,at.encoding,reportErrors=True)
@@ -4031,6 +4067,9 @@ class atFile:
 
         at = self ; testing = g.app.unitTesting
 
+        # g.trace('fn',fn,'s','\n',s)
+        # g.trace(g.callers())
+
         exists = g.os_path_exists(fn)
 
         if exists: # Read the file.  Return if it is the same.
@@ -4199,16 +4238,26 @@ class atFile:
     #@-node:ekr.20041005105605.196:Writing 4.x utils...
     #@-node:ekr.20041005105605.132:at.Writing
     #@+node:ekr.20041005105605.219:at.Utilites
-    #@+node:ekr.20041005105605.220:atFile.error
-    def error(self,message):
+    #@+node:ekr.20041005105605.220:atFile.error & printError
+    def error(self,*args):
 
-        if message:
-            self.printError(message)
+        at = self
 
-        self.errors += 1
+        if args:
+            at.printError(*args)
 
-        # g.trace('errors',self.errors)
-    #@-node:ekr.20041005105605.220:atFile.error
+        at.errors += 1
+
+    def printError (self,*args):
+
+        '''Print an error message that may contain non-ascii characters.'''
+
+        at = self
+
+        keys = {'color': g.choose(at.errors,'blue','red')}
+
+        g.es_error(*args,**keys)
+    #@-node:ekr.20041005105605.220:atFile.error & printError
     #@+node:ekr.20051219122720:atFile.forceGnxOnPosition
     def forceGnxOnPosition (self,p):
 
@@ -4216,30 +4265,6 @@ class atFile:
 
         self._forcedGnxPositionList.append(p.v)
     #@-node:ekr.20051219122720:atFile.forceGnxOnPosition
-    #@+node:ekr.20050206085258:atFile.printError
-    def printError (self,message):
-
-        '''Print an error message that may contain non-ascii characters.'''
-
-        if self.errors == 0:
-            g.es_error(message)
-        else:
-            try:
-                g.pr(message)
-            except UnicodeError:
-                g.pr(g.toEncodedString(message,'ascii'))
-    #@+node:ekr.20070621091727:@@test printError
-    # We typically don't enable this test.
-
-    if g.unitTesting:
-
-        c,p = g.getTestVars() # Optional: prevents pychecker warnings.
-        at = c.atFileCommands
-        at.errors = 0
-        at.printError(
-            "test of printError: Ᾱ(U+1FB9: Greek Capital Letter Alpha With Macron)")
-    #@-node:ekr.20070621091727:@@test printError
-    #@-node:ekr.20050206085258:atFile.printError
     #@+node:ekr.20041005105605.222:atFile.scanAllDirectives
     #@+at 
     #@nonl
@@ -4253,7 +4278,10 @@ class atFile:
     #@-at
     #@@c
 
-    def scanAllDirectives(self,p,scripting=False,importing=False,reading=False,forcePythonSentinels=False):
+    def scanAllDirectives(self,p,
+        scripting=False,importing=False,
+        reading=False,forcePythonSentinels=False,
+    ):
 
         """Scan position p and p's ancestors looking for directives,
         setting corresponding atFile ivars.
@@ -4269,6 +4297,8 @@ class atFile:
         self.tab_width  = self.c.tab_width
 
         self.default_directory = None # 8/2: will be set later.
+
+        # g.trace(c.target_language)
 
         if c.target_language:
             c.target_language = c.target_language.lower() # 6/20/05
@@ -4437,9 +4467,10 @@ class atFile:
                 self.endSentinelComment = delim3
             else: # Emergency!
                 # assert(0)
-                g.es("unknown language: using Python comment delimiters")
-                g.es("c.target_language:",c.target_language)
-                g.es('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+                if not g.app.unitTesting:
+                    g.es_print("unknown language: using Python comment delimiters")
+                    g.es_print("c.target_language:",c.target_language)
+                    g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
                 self.startSentinelComment = "#" # This should never happen!
                 self.endSentinelComment = ""
 
