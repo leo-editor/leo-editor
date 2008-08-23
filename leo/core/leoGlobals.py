@@ -142,7 +142,9 @@ def computeGlobalConfigDir():
     encoding = g.startupEncoding()
 
     # To avoid pychecker/pylint complaints that sys.leo_config_directory does not exist.
-    leo_config_dir = hasattr(sys,'leo_config_directory') and getattr(sys,'leo_config_directory')
+    leo_config_dir = (
+        hasattr(sys,'leo_config_directory') and
+        getattr(sys,'leo_config_directory'))
 
     if leo_config_dir:
         theDir = leo_config_dir
@@ -265,7 +267,7 @@ def computeMachineName():
 #@+node:ekr.20050328133444:computeStandardDirectories
 def computeStandardDirectories():
 
-    '''Set g.app.loadDir, g.app.homeDir and g.app.globalConfigDir.'''
+    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
 
     if 0:
         import sys
@@ -277,6 +279,13 @@ def computeStandardDirectories():
     g.app.leoDir = g.computeLeoDir()
 
     g.app.homeDir = g.computeHomeDir()
+
+    # New in Leo 4.5 b4: create homeLeoDir if needed.
+    g.app.homeLeoDir = homeLeoDir = g.os_path_abspath(
+        g.os_path_join(g.app.homeDir,'.leo'))
+
+    if not g.os_path_exists(homeLeoDir):
+        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
 
     g.app.extensionsDir = g.os_path_abspath(
         g.os_path_join(g.app.loadDir,'..','extensions'))

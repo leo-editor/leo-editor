@@ -5543,7 +5543,7 @@ class baseCommands:
 
     def openSettingsHelper(self,name):
         c = self
-        homeDir = g.app.homeDir
+        homeLeoDir = g.app.homeLeoDir # was homeDir
         loadDir = g.app.loadDir
         configDir = g.app.globalConfigDir
 
@@ -5554,16 +5554,16 @@ class baseCommands:
             ok, frame = g.openWithFileName(fileName,c)
             if ok: return
 
-        # Look in homeDir second.
+        # Look in homeLeoDir second.
         if configDir == loadDir:
             g.es('',name,"not found in",configDir)
         else:
-            fileName = g.os_path_join(homeDir,name)
+            fileName = g.os_path_join(homeLeoDir,name)
             ok = g.os_path_exists(fileName)
             if ok:
                 ok, frame = g.openWithFileName(fileName,c)
             if not ok:
-                g.es('',name,"not found in",configDir,"or",homeDir)
+                g.es('',name,"not found in",configDir,"or",homeLeoDir)
     #@-node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
     #@+node:ekr.20061018094539:openLeoScripts
     def openLeoScripts (self,event=None):

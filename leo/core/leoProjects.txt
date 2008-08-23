@@ -9660,7 +9660,7 @@ def readRecentFiles (self,localConfigFile):
     seen = [] 
     localConfigPath = g.os_path_dirname(localConfigFile)
     for path in (
-        g.app.homeDir,
+        g.app.homeLeoDir, # was homeDir
         g.app.globalConfigDir,
         localConfigPath,
     ):
@@ -9679,7 +9679,7 @@ def createRecentFiles (self):
     - the users home directory first,
     - Leo's config directory second.'''
 
-    for theDir in (g.app.homeDir,g.app.globalConfigDir):
+    for theDir in (g.app.homeLeoDir,g.app.globalConfigDir): # homeLeoDir was g.app.homeDir.
         if theDir:
             try:
                 fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
@@ -9718,7 +9718,7 @@ def createRecentFiles (self):
     - the users home directory first,
     - Leo's config directory second.'''
 
-    for theDir in (g.app.homeDir,g.app.globalConfigDir):
+    for theDir in (g.app.homeLeoDir,g.app.globalConfigDir): # homeLeoDir was g.app.homeDir.
         if theDir:
             try:
                 fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
@@ -9750,7 +9750,7 @@ def writeRecentFilesFile (self,c):
         localPath = None
 
     written = False
-    for path in (localPath,g.app.globalConfigDir,g.app.homeDir):
+    for path in (localPath,g.app.globalConfigDir,g.app.homeLeoDir): # homeLeoDir was homeDir.
         if path:
             fileName = g.os_path_join(path,tag)
             if g.os_path_exists(fileName):
@@ -9813,15 +9813,16 @@ def initSettingsFiles (self):
     mySettingsFile = 'myLeoSettings.leo'
     machineConfigFile = g.computeMachineName() + 'LeoSettings.leo'
 
+    # New in Leo 4.5 b4: change homeDir to homeLeoDir
     for ivar,theDir,fileName in (
         ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
-        ('homeFile',            g.app.homeDir,          settingsFile),
+        ('homeFile',            g.app.homeLeoDir,          settingsFile),
         ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
         #non-prefixed names take priority over prefixed names
-        ('myHomeConfigFile',    g.app.homeDir,          g.app.homeSettingsPrefix + mySettingsFile),
-        ('myHomeConfigFile',    g.app.homeDir,          mySettingsFile),
-        ('machineConfigFile',   g.app.homeDir,          g.app.homeSettingsPrefix + machineConfigFile),
-        ('machineConfigFile',   g.app.homeDir,          machineConfigFile),
+        ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
+        ('myHomeConfigFile',    g.app.homeLeoDir,   mySettingsFile),
+        ('machineConfigFile',   g.app.homeLeoDir,   g.app.homeSettingsPrefix + machineConfigFile),
+        ('machineConfigFile',   g.app.homeLeoDir,   machineConfigFile),
     ):
         # The same file may be assigned to multiple ivars:
         # readSettingsFiles checks for such duplications.
@@ -11257,7 +11258,7 @@ g.app.translateToUpperCase=False
 def setLeoID (self,verbose=True):
 
     tag = ".leoID.txt"
-    homeDir = g.app.homeDir
+    homeLeoDir = g.app.homeLeoDir # was homeDir.
     globalConfigDir = g.app.globalConfigDir
     loadDir = g.app.loadDir
 
@@ -11286,7 +11287,7 @@ else:
     g.app.leoID = None
 #@-node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
 #@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
-for theDir in (homeDir,globalConfigDir,loadDir):
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
     # N.B. We would use the _working_ directory if theDir is None!
     if theDir:
         try:
@@ -11340,7 +11341,7 @@ g.app.leoID = g.app.leoID.replace('.','-')
 g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
 #@-node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
 #@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
-for theDir in (homeDir,globalConfigDir,loadDir):
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
     # N.B. We would use the _working_ directory if theDir is None!
     if theDir:
         try:
@@ -11358,7 +11359,7 @@ for theDir in (homeDir,globalConfigDir,loadDir):
 #@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
 #@-node:ekr.20031218072017.1978:app.setLeoID
 #@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
-for theDir in (homeDir,globalConfigDir,loadDir):
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
     # N.B. We would use the _working_ directory if theDir is None!
     if theDir:
         try:
@@ -11383,7 +11384,7 @@ for theDir in (homeDir,globalConfigDir,loadDir):
             g.es_exception()
 #@-node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
 #@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
-for theDir in (homeDir,globalConfigDir,loadDir):
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
     # N.B. We would use the _working_ directory if theDir is None!
     if theDir:
         try:
@@ -11429,7 +11430,7 @@ def getLeoID (self):
     import sys
 
     g = self.g ; tag = ".leoID.txt"
-    homeDir = g.app.homeDir
+    homeDir = g.app.homeLeoDir # Was homeDir.
     globalConfigDir = g.app.globalConfigDir
     loadDir = g.app.loadDir
 
@@ -11498,7 +11499,7 @@ def openMyLeoSettings (self,event=None):
 
 def openSettingsHelper(self,name):
     c = self
-    homeDir = g.app.homeDir
+    homeLeoDir = g.app.homeLeoDir # was homeDir
     loadDir = g.app.loadDir
     configDir = g.app.globalConfigDir
 
@@ -11509,16 +11510,16 @@ def openSettingsHelper(self,name):
         ok, frame = g.openWithFileName(fileName,c)
         if ok: return
 
-    # Look in homeDir second.
+    # Look in homeLeoDir second.
     if configDir == loadDir:
         g.es('',name,"not found in",configDir)
     else:
-        fileName = g.os_path_join(homeDir,name)
+        fileName = g.os_path_join(homeLeoDir,name)
         ok = g.os_path_exists(fileName)
         if ok:
             ok, frame = g.openWithFileName(fileName,c)
         if not ok:
-            g.es('',name,"not found in",configDir,"or",homeDir)
+            g.es('',name,"not found in",configDir,"or",homeLeoDir)
 #@-node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
 #@+node:ekr.20041117151301:computeHomeDir
 def computeHomeDir():
@@ -27073,6 +27074,9 @@ def show_error_lines (self,lines,fileName):
 #@-node:ekr.20080708094444.33:x.show_error
 #@-node:ekr.20080822065427.1:Don't write mod_shadow.tmp1/2 files (at least not to top-level folder)
 #@+node:ekr.20080820083933.5:Made sure @string shadow_subdir = .leo/shadow works
+# Now uses g.makeAllNonExistentDirectories.
+# Now honors @bool create_nonexistent_directories setting.
+#@nonl
 #@+node:ekr.20080708094444.79: x.ctor
 def __init__ (self,c,trace=False,trace_writers=False):
 
@@ -30195,6 +30199,1522 @@ def updateSettings (self,c,localFlag):
 #@-node:ekr.20051013161232:g.app.config.updateSettings
 #@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 #@-node:ekr.20080820083933.1:Don't create myLeoSettings.leo
+#@+node:ekr.20080822142201.2:Made sure myLeoSettings.leo can enable plugins and set fonts
+# checked @font: ok.
+# checked plugins: ok
+#@nonl
+#@-node:ekr.20080822142201.2:Made sure myLeoSettings.leo can enable plugins and set fonts
+#@+node:ekr.20080822142201.3:Put leoID.txt and myLeoSettings.leo in HOME/.leo
+#@+node:ekr.20080820083933.6:Notes
+@nocolor
+
+#@+node:ekr.20080820083933.7:1
++1 for the following unix-like structure for per user leo settings:
+
+$HOME/.leo
+    leoID.txt
+    myLeoSettings.leo
+    etc..
+
+This is consistent with most other unix/linux apps, and even popular
+python programs such as ipython which places its settings in
+$HOME/.ipython
+
+IMHO, moving / renaming myLeoSettings.leo to the new structure is a
+small price for users to pay... and sure beats the hell out of
+constantly deleting $HOME/myLeoSettings.leo (as I am currently
+doing :-)
+#@nonl
+#@-node:ekr.20080820083933.7:1
+#@+node:ekr.20080820083933.8:2
+> I was under the impression that files starting with '.' are typically
+> hidden in Linux.  Is this not correct?
+
+That's correct, by convention files and dirs starting with . are
+ignored by file selection dialogs and even * as a wildcard.
+
+If you've changed the default setting on file opening preferences etc.
+then you may be seeing . files, but usually you don't.
+
+> I am worried that looking for home/.leo/myLeoSettings.leo is going to
+> break lots of people's installations.  I suppose Leo could continue to
+> look for home/myLeoSettings.leo.
+
+> So please tell me exactly what you want Leo to do...
+
+Someone mentioned something about mySettings.leo being created
+automatically, but I don't think it is, right?  Maybe that's not a key
+point.
+
+I'm all for a .leo directory.  Seems to me there are two choices:
+
+1) Leo tries to be smart and looks for both ~/[my]leoSettings.leo and
+~/.leo/[my]leoSettings.leo, uses which ever it finds and complains very
+loudly if it finds both.
+
+2) Change the default behavior so it always looks in ~/.leo, but for
+some transitional period (a year or two?) check for them in ~ and
+complain loudly telling the user to move them - force the user to move
+them by ignoring them and just explaining the problem.  I.e. "I found
+you config file but I'm not using it because it's in the wrong place".
+
+I favor option (2) because (1) has issues like
+<hostname>LeoSettings.leo. 
+#@nonl
+#@-node:ekr.20080820083933.8:2
+#@+node:ekr.20080820083933.9:3
+One issue though - myLeoSettings.leo in some arbitrary directory.
+Should that be in .leo in that directory (would match .bzr etc.) or
+in .myLeoSettings.leo, or the current myLeoSettings.leo?  I guess I
+lean towards .leo directory. 
+
+reply:
+
+Which would suggest that .leo_shadow should be .leo/shadow... 
+
+reply:
+
+Not sure if that's a good idea. The way it is now, I could add shadow
+directories to a repository. If at at certain point in time one of my
+co-developers wants to try out Leo, everything is already in place in
+his local copy of the tree. This would be difficult if the shadow
+directory were in my home directory. 
+
+reply:
+
+Sure, I wasn't talking about HOME/.leo, but what Kent's been calling
+CWD/myLeoSettings.leo.  I.e. the file that's checked for settings in
+the directory of the file being opened.
+
+I'm suggesting that that could be in a .leo directory in the
+project directory containing main.leo or whatever.  But then rather than
+Leo having .leo_shadow/ and .leo/ in the project directory, it could
+have just .leo/, which contains shadow/ and myLeoSettings.leo
+
+So if I were starting from scratch at this point, locations I'd use
+would be:
+
+INSTALL/ = the directory containing runLeo.py, i.e. core/
+HOME/ = obvious
+PROJECT/ = dir containing some project's leo file, say main.leo
+IRRELEVANT/ = dir which is current when python is started
+
+It doesn't matter whether 'INSTALL/' is core/ or one of its ancestors,
+define it how you want and adjust the relative paths below.
+
+cd IRRELEVANT/
+python INSTALL/../../launchLeo.py main.leo
+
+leo now checks for settings, in this order
+
+INSTALL/../config/leoSettings.leo
+HOME/.leo/leoSettings.leo
+PROJECT/.leo/leoSettings.leo
+INSTALL/../config/myLeoSettings.leo
+HOME/.leo/<hostname>LeoSettings.leo
+HOME/.leo/myLeoSettings.leo
+PROJECT/.leo/myLeoSettings.leo
+PROJECT/main.leo
+
+and if main.leo contains shadow files, leo uses
+
+PROJECT/.leo/shadow
+
+like I said, "if I were starting from scratch at this point".
+
+You could argue there's no need for "HOME/.leo/leoSettings.leo" and
+"PROJECT/.leo/leoSettings.leo".  But rather than remove that, just
+don't use it, unless you have some obscure need to. 
+#@nonl
+#@-node:ekr.20080820083933.9:3
+#@+node:ekr.20080820083933.10:4
+But as it is now, you require write access to the directory where the
+files are. Not optimal for all situations... 
+#@nonl
+#@-node:ekr.20080820083933.10:4
+#@+node:ekr.20080820083933.11:My summary
+@nocolor
+
+The following post summarizes my present plans.  I'll indicates where these may be controversial.
+
+1.  Everyone seems agree that the following structure for settings files is good:
+
+  $HOME/.leo
+    leoID.txt
+    myLeoSettings.leo
+    etc..
+
+2. (controversial?) There is a question of what to do about $HOME/myLeoSettings.leo.  I don't like either of the following suggestions:
+
+    QQQ
+    1) Leo tries to be smart and looks for both ~/[my]leoSettings.leo and
+    ~/.leo/[my]leoSettings.leo, uses which ever it finds and complains very
+    loudly if it finds both.
+
+    2) Change the default behavior so it always looks in ~/.leo, but for
+    some transitional period (a year or two?) check for them in ~ and
+    complain loudly telling the user to move them - force the user to move
+    them by ignoring them and just explaining the problem.  I.e. "I found
+    you config file but I'm not using it because it's in the wrong place". 
+    QQQ
+
+Imo, 1) will just cause more confusion, and 2) just delays the "day of transition" to a time when we've all forgotten the issues involved :-)  So (again, imo) the thing to do is simply to make the transition *now*, and get the pain over with.
+
+3. (controversial?) The present code does create myLeoSettings.leo, but I don't like creating files by default. This should be an options, but it can't be an option because creating myLeoSettings.leo happens too early.  So I'm going to take out this code. A create-my-leo-settings-leo command might be helpful...
+
+So much for configuration settings, per se.
+
+Let us now consider the question of directories for Leo's shadow files.
+
+1. The suggestion was to change .leo_shadow to .leo/shadow.  I suspect that this is possible now using::
+
+   @string shadow_subdir = .leo/shadow
+
+I'll make sure this is possible before Leo b4.
+
+2. Ville makes an important observation re Linux:
+
+    "as it is now, you require write access to the directory
+    where the files are. Not optimal for all situations..."
+
+You could call this a problem with the original @shadow idea.  I don't know of a solution to this problem.  Imo, putting shadow in a centralized location is a wretched idea: it will add complexity, obscurity and bugs not only to the code, but for all users as well.  I will never agree to such a scheme.  So I think the only thing for people to do is to put .leo files that use @shadow in a writable directory.
+
+Please comment now.  I'll probably push revisions based on these remarks later today or tomorrow.
+
+Edward
+#@-node:ekr.20080820083933.11:My summary
+#@-node:ekr.20080820083933.6:Notes
+#@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+def readSettingsFiles (self,fileName,verbose=True):
+
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    # g.trace(g.app.oneConfigFilename)
+    if g.app.oneConfigFilename:
+        table = ((g.app.oneConfigFilename,False),)
+    else:
+        table = (
+            (self.globalConfigFile,False),
+            (self.homeFile,False),
+            (localConfigFile,False),
+            (self.myGlobalConfigFile,False),
+            (self.myHomeConfigFile,False),
+            (self.machineConfigFile,False),
+            (myLocalConfigFile,False),
+            (fileName,True),
+        )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        if path and path.lower() not in seen:
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                s = g.toEncodedString(s,'ascii')
+                g.pr(s)
+                g.app.logWaiting.append((s+'\n','blue'),)
+
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
+                self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    if 0:
+        self.createMyLeoSettingsFile(myLocalConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because the local directory does not exits.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+def createMyLeoSettingsFile (self,localConfigFile):
+
+    '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
+
+    << define s, a minimalMyLeoSettings.leo string >>
+
+    for path in (
+        localConfigFile,
+        self.myGlobalConfigFile,
+        self.myHomeConfigFile
+    ):
+        # g.trace(path)
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            if g.os_path_exists(path):
+                # g.trace('exists',path)
+                return
+
+    if g.app.homeDir:
+        path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+        try:
+            f = file(path,'wb')
+            f.write(s)
+            f.close()
+            self.myHomeConfigFile = path
+            # It's early in the startup: g.es does not work yet.
+            s = 'created: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+        except Exception:
+            s = 'can not create: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+            g.es_exception()
+#@+node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+s = '''<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet ekr_test?>
+<leo_file>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="26" left="122" height="781" width="953"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="ekr.20070411164127" str_leo_pos="0"><vh>@chapters</vh>
+<v t="ekr.20070411164127.1"><vh>@chapter trash</vh></v>
+</v>
+<v t="ekr.20070411164127.2"><vh>@settings</vh></v>
+</vnodes>
+<tnodes>
+<t tx="ekr.20070411164127"></t>
+<t tx="ekr.20070411164127.1">trash</t>
+<t tx="ekr.20070411164127.2"></t>
+</tnodes>
+</leo_file>
+'''
+#@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+#@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+#@+node:ekr.20041117085625:g.app.config.openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:g.app.config.openSettingsFile
+#@+node:ekr.20051013161232:g.app.config.updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and d.keys())
+#@-node:ekr.20051013161232:g.app.config.updateSettings
+#@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+#@+node:ekr.20080823082100.2:Found: .homeDir
+#@+node:ekr.20031218072017.1416:app.__init__
+def __init__(self):
+
+    # These ivars are the global vars of this program.
+    self.afterHandler = None
+    self.batchMode = False # True: run in batch mode.
+    self.commandName = None # The name of the command being executed.
+    self.config = None # The leoConfig instance.
+    self.count = 0 # General purpose debugging count.
+    self.debug = False # True: enable extra debugging tests (not used at present).
+        # WARNING: this could greatly slow things down.
+    self.debugSwitch = 0
+        # 0: default behavior
+        # 1: full traces in g.es_exception.
+        # 2: call pdb.set_trace in g.es_exception, etc.
+    self.disableSave = False
+    self.enableUnitTest = True
+    self.extensionsDir = None
+    self.globalConfigDir = None # The directory that is assumed to contain the global configuration files.
+    self.globalOpenDir = None # The directory last used to open a file.
+    self.gui = None # The gui class.
+    self.hasOpenWithMenu = False # True: open with plugin has been loaded.
+    self.hookError = False # True: suppress further calls to hooks.
+    self.hookFunction = None # Application wide hook function.
+    self.homeDir = None # The user's home directory.
+    self.homeLeoDir = None # The '.leo' subdirectory of the user's home directory. New in Leo 4.5b4.
+    self.homeSettingsPrefix = '.' # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
+    self.idle_imported = False # True: we have done an import idle
+    self.idleTimeDelay = 100 # Delay in msec between calls to "idle time" hook.
+    self.idleTimeHook = False # True: the global idleTimeHookHandler will reshedule itself.
+    self.inBridge = False # True: running from leoBridge module.
+    self.initing = True # True: we are initiing the app.
+    self.killed = False # True: we are about to destroy the root window.
+    self.leoID = None # The id part of gnx's.
+    self.loadDir = None # The directory from which Leo was loaded.
+    self.loadedPlugins = [] # List of loaded plugins that have signed on.
+    self.log = None # The LeoFrame containing the present log.
+    self.logIsLocked = False # True: no changes to log are allowed.
+    self.logWaiting = [] # List of messages waiting to go to a log.
+    self.menuWarningsGiven = False # True: supress warnings in menu code.
+    self.nodeIndices = None # Singleton node indices instance.
+    self.numberOfWindows = 0 # Number of opened windows.
+    self.oneConfigFilename = '' # If non-empty, the name of a single configuration file.
+    self.openWithFiles = [] # List of data used by Open With command.
+    self.openWithFileNum = 0 # Used to generate temp file names for Open With command.
+    self.openWithTable = None # The table passed to createOpenWithMenuFromTable.
+    self.positions = 0 # Count of the number of positions generated.
+    self.quitting = False # True if quitting.  Locks out some events.
+    self.realMenuNameDict = {} # Contains translations of menu names and menu item names.
+    self.root = None # The hidden main window. Set later.
+    self.searchDict = {} # For communication between find/change scripts.
+    self.scanErrors = 0 # The number of errors seen by g.scanError.
+    self.scriptDict = {} # For communication between Execute Script command and scripts.
+    self.silentMode = False # True if signon is more silent.
+    self.statsDict = {} # Statistics dict used by g.stat, g.clear_stats, g.print_stats.
+    self.trace = False # True: enable debugging traces.
+    self.trace_gc = False # defined in run()
+    self.trace_gc_calls = False # defined in run()
+    self.trace_gc_verbose = False # defined in run()
+    self.trace_gc_inited = False
+    self.tracePositions = False
+    self.trace_list = [] # "Sherlock" argument list for tracing().
+    self.translateToUpperCase = False
+    self.tkEncoding = "utf-8"
+    self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
+    self.unitTestDict = {} # For communication between unit tests and code.
+    self.unitTesting = False # True if unit testing.
+    self.use_psyco = False # Can't be a config param because it is used before config module can be inited.
+    self.user_xresources_path = None # Resource file for Tk/tcl.
+    self.windowList = [] # Global list of all frames.  Does not include hidden root window.
+
+    # Global panels.  Destroyed when Leo ends.
+    self.pythonFrame = None
+
+    << Define global constants >>
+    << Define global data structures >>
+#@+node:ekr.20031218072017.1417:<< define global constants >>
+self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+
+# New in leo.py 3.0
+self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
+self.prolog_postfix_string = "?>"
+
+# leo.py 3.11
+self.use_unicode = True # True: use new unicode logic.
+#@-node:ekr.20031218072017.1417:<< define global constants >>
+#@+node:ekr.20031218072017.368:<< define global data structures >> app
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada" : "--",
+    "actionscript" : "// /* */", #jason 2003-07-03
+    "autohotkey" : "; /* */", #TL - AutoHotkey language
+    "c" : "// /* */", # C, C++ or objective C.
+    "csharp" : "// /* */", # C#
+    "cpp" : "// /* */",# C++.
+    "css" : "/* */", # 4/1/04
+    "cweb" : "@q@ @>", # Use the "cweb hack"
+    "elisp" : ";",
+    "forth" : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran" : "C",
+    "fortran90" : "!",
+    "html" : "<!-- -->",
+    "ini": ";",
+    "java" : "// /* */",
+    "latex" : "%",
+    "lua" : "--",  # ddm 13/02/06
+    "pascal" : "// { }",
+    "perl" : "#",
+    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php" : "// /* */", # 6/23/07: was "//",
+    "plain" : "#", # We must pick something.
+    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python" : "#",
+    "rapidq" : "'", # fil 2004-march-11
+    "rebol" : ";",  # jason 2003-07-03
+    "shell" : "#",  # shell scripts
+    "tcltk" : "#",
+    "unknown" : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "xml" : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada" : "ada",
+    "actionscript" : "as", #jason 2003-07-03
+    "autohotkey" : "ahk", #TL - AutoHotkey language
+    "c" : "c",
+    "cpp" : "cpp",
+    "css" : "css", # 4/1/04
+    "cweb" : "w",
+    "elisp" : "el",
+    "forth" : "forth",
+    "fortran" : "f",
+    "fortran90" : "f",
+    "html" : "html",
+    "ini": "ini",
+    "java" : "java",
+    "latex" : "tex", # 1/8/04
+    "lua" : "lua",  # ddm 13/02/06
+    "noweb" : "nw",
+    "pascal" : "p",
+    # "perl" : "perl",
+    # "perlpod" : "perl",
+    "perl" : "pl",      # 11/7/05
+    "perlpod" : "pod",  # 11/7/05
+    "php" : "php",
+    "plain" : "txt",
+    "python" : "py",
+    "plsql" : "sql", # qt02537 2005-05-27
+    "rapidq" : "bas", # fil 2004-march-11
+    "rebol" : "r",    # jason 2003-07-03
+    "shell" : "sh",   # DS 4/1/04
+    "tex" : "tex",
+    "tcltk" : "tcl",
+    "unknown" : "txt", # Set when @comment is seen.
+    "xml": "xml",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "c"     : "c",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "p"     : "pascal",
+    # "perl"  : "perl",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "w"     : "cweb",
+    "xml"   : "xml",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada':  'ada95',
+    'adb':  'none', # ada??
+    # 'ahk':  'ahk',
+    "ahk"   : "autohotkey", #TL - AutoHotkey language
+    'awk':  'awk',
+    'bas':  'none', # rapidq
+    'cpp':  'c',
+    'el':   'lisp',
+    'f':    'fortran',
+    'nw':   'none', # noweb.
+    'pod':  'perl',
+    'tcl':  'tcl',
+    'unknown_language': 'none',
+    'w':    'none', # cweb
+}
+#@nonl
+#@-node:ekr.20031218072017.368:<< define global data structures >> app
+#@-node:ekr.20031218072017.1416:app.__init__
+#@+node:ekr.20031218072017.1978:app.setLeoID
+def setLeoID (self,verbose=True):
+
+    tag = ".leoID.txt"
+    homeLeoDir = g.app.homeLeoDir # was homeDir.
+    globalConfigDir = g.app.globalConfigDir
+    loadDir = g.app.loadDir
+
+    verbose = not g.app.unitTesting
+    << return if we can set leoID from sys.leoID >>
+    << return if we can set leoID from "leoID.txt" >>
+    << return if we can set leoID from os.getenv('USER') >>
+    << put up a dialog requiring a valid id >>
+    << attempt to create leoID.txt >>
+#@+node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+# This would be set by in Python's sitecustomize.py file.
+
+# 7/2/04: Use hasattr & getattr to suppress pychecker warning.
+# We also have to use a "non-constant" attribute to suppress another warning!
+
+nonConstantAttr = "leoID"
+
+if hasattr(sys,nonConstantAttr):
+    g.app.leoID = getattr(sys,nonConstantAttr)
+    if verbose and not g.app.unitTesting:
+        g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
+    # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+    g.app.leoID = g.app.leoID.replace('.','-')
+    return
+else:
+    g.app.leoID = None
+#@-node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+#@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+                g.app.leoID = g.app.leoID.replace('.','-')
+                if verbose and not g.app.unitTesting:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                return
+            elif verbose and not g.app.unitTesting:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es_print('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@-node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+#@+node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+try:
+    theId = os.getenv('USER')
+    if theId:
+        if verbose and not g.app.unitTesting:
+            g.es("using os.getenv('USER'):",repr(theId),color='red')
+        g.app.leoID = theId
+        # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+        g.app.leoID = g.app.leoID.replace('.','-')
+        return
+
+except Exception:
+    pass
+#@-node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+#@+node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+# New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
+
+# Create an emergency gui and a Tk root window.
+g.app.createTkGui("startup")
+
+# Bug fix: 2/6/05: put result in g.app.leoID.
+g.app.leoID = g.app.gui.runAskLeoIDDialog()
+
+# Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+g.app.leoID = g.app.leoID.replace('.','-')
+
+# g.trace(g.app.leoID)
+g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
+#@-node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+#@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'w')
+            f.write(g.app.leoID)
+            f.close()
+            if g.os_path_exists(fn):
+                g.es_print('',tag,'created in',theDir,color='red')
+                return
+        except IOError:
+            pass
+
+        g.es('can not create',tag,'in',theDir,color='red')
+#@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+#@-node:ekr.20031218072017.1978:app.setLeoID
+#@+node:ekr.20050328133444:computeStandardDirectories
+def computeStandardDirectories():
+
+    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
+
+    if 0:
+        import sys
+        for s in sys.path: g.trace(s)
+
+    g.app.loadDir = g.computeLoadDir()
+        # Depends on g.app.tkEncoding: uses utf-8 for now.
+
+    g.app.leoDir = g.computeLeoDir()
+
+    g.app.homeDir = g.computeHomeDir()
+
+    # New in Leo 4.5 b4: create homeLeoDir if needed.
+    g.app.homeLeoDir = homeLeoDir = g.os_path_abspath(
+        g.os_path_join(g.app.homeDir,'.leo'))
+
+    if not g.os_path_exists(homeLeoDir):
+        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
+
+    g.app.extensionsDir = g.os_path_abspath(
+        g.os_path_join(g.app.loadDir,'..','extensions'))
+
+    g.app.globalConfigDir = g.computeGlobalConfigDir()
+
+    g.app.testDir = g.os_path_abspath(
+        g.os_path_join(g.app.loadDir,'..','test'))
+
+    g.app.user_xresources_path = g.os_path_join(g.app.homeDir,'.leo_xresources')
+#@-node:ekr.20050328133444:computeStandardDirectories
+#@+node:ekr.20061010121944:createRecentFiles
+def createRecentFiles (self):
+
+    '''Trye to reate .leoRecentFiles.txt in
+    - the users home directory first,
+    - Leo's config directory second.'''
+
+    for theDir in (g.app.homeLeoDir,g.app.globalConfigDir): # homeLeoDir was g.app.homeDir.
+        if theDir:
+            try:
+                fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
+                f = file(fileName,'w')
+                f.close()
+                g.es_print('created',fileName,color='red')
+                return
+            except Exception:
+                g.es_print('can not create',fileName,color='red')
+                g.es_exception()
+#@nonl
+#@-node:ekr.20061010121944:createRecentFiles
+#@+node:ekr.20070227094232:getLeoID
+def getLeoID (self):
+
+    import os
+    import sys
+
+    g = self.g ; tag = ".leoID.txt"
+    homeDir = g.app.homeLeoDir # Was homeDir.
+    globalConfigDir = g.app.globalConfigDir
+    loadDir = g.app.loadDir
+
+    verbose = False and not g.app.unitTesting
+    << try to get leoID from sys.leoID >>
+    if not g.app.leoID:
+        << try to get leoID from "leoID.txt" >>
+    if not g.app.leoID:
+        << try to get leoID from os.getenv('USER') >>
+    return g.app.leoID
+#@+node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
+# This would be set by in Python's sitecustomize.py file.
+
+# Use hasattr & getattr to suppress pychecker warning.
+# We also have to use a "non-constant" attribute to suppress another warning!
+
+nonConstantAttr = "leoID"
+
+if hasattr(sys,nonConstantAttr):
+    g.app.leoID = getattr(sys,nonConstantAttr)
+    if verbose: g.es("leoID=",g.app.leoID,spaces=False,color='red')
+#@nonl
+#@-node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
+#@+node:ekr.20070227094232.2:<< try to get leoID from "leoID.txt" >>
+for theDir in (homeDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                if verbose:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                break
+            elif verbose:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@-node:ekr.20070227094232.2:<< try to get leoID from "leoID.txt" >>
+#@+node:ekr.20070227094232.3:<< try to get leoID from os.getenv('USER') >>
+try:
+    theId = os.getenv('USER')
+    if theId:
+        if verbose: g.es_print("using os.getenv('USER'):",repr(theId),color='red')
+        g.app.leoID = theId
+
+except Exception:
+    pass
+#@-node:ekr.20070227094232.3:<< try to get leoID from os.getenv('USER') >>
+#@-node:ekr.20070227094232:getLeoID
+#@+node:ekr.20041117083857:initSettingsFiles
+def initSettingsFiles (self):
+
+    """Set self.globalConfigFile, self.homeFile, self.myGlobalConfigFile,
+    self.myHomeConfigFile, and self.machineConfigFile."""
+
+    settingsFile = 'leoSettings.leo'
+    mySettingsFile = 'myLeoSettings.leo'
+    machineConfigFile = g.computeMachineName() + 'LeoSettings.leo'
+
+    # New in Leo 4.5 b4: change homeDir to homeLeoDir
+    for ivar,theDir,fileName in (
+        ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
+        ('homeFile',            g.app.homeLeoDir,          settingsFile),
+        ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
+        #non-prefixed names take priority over prefixed names
+        ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
+        ('myHomeConfigFile',    g.app.homeLeoDir,   mySettingsFile),
+        ('machineConfigFile',   g.app.homeLeoDir,   g.app.homeSettingsPrefix + machineConfigFile),
+        ('machineConfigFile',   g.app.homeLeoDir,   machineConfigFile),
+    ):
+        # The same file may be assigned to multiple ivars:
+        # readSettingsFiles checks for such duplications.
+        path = g.os_path_join(theDir,fileName)
+        if g.os_path_exists(path):
+            setattr(self,ivar,path)
+        #else:
+            #if the path does not exist, only set to None if the ivar isn't already set.
+            #dan: IMO, it's better to set the defaults to None in configClass.__init__().
+            #     This avoids the creation of ivars in odd (non __init__) places.
+            #setattr(self,ivar, getattr(self,ivar,None))
+    if 0:
+        g.trace('global file:',self.globalConfigFile)
+        g.trace('home file:',self.homeFile)
+        g.trace('myGlobal file:',self.myGlobalConfigFile)
+        g.trace('myHome file:',self.myHomeConfigFile)
+#@nonl
+#@-node:ekr.20041117083857:initSettingsFiles
+#@+node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
+def openLeoSettings (self,event=None):
+    '''Open leoSettings.leo in a new Leo window.'''
+    self.openSettingsHelper('leoSettings.leo')
+
+def openMyLeoSettings (self,event=None):
+    '''Open myLeoSettings.leo in a new Leo window.'''
+    self.openSettingsHelper('myLeoSettings.leo')
+
+def openSettingsHelper(self,name):
+    c = self
+    homeLeoDir = g.app.homeLeoDir # was homeDir
+    loadDir = g.app.loadDir
+    configDir = g.app.globalConfigDir
+
+    # Look in configDir first.
+    fileName = g.os_path_join(configDir,name)
+    ok = g.os_path_exists(fileName)
+    if ok:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok: return
+
+    # Look in homeLeoDir second.
+    if configDir == loadDir:
+        g.es('',name,"not found in",configDir)
+    else:
+        fileName = g.os_path_join(homeLeoDir,name)
+        ok = g.os_path_exists(fileName)
+        if ok:
+            ok, frame = g.openWithFileName(fileName,c)
+        if not ok:
+            g.es('',name,"not found in",configDir,"or",homeLeoDir)
+#@-node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
+#@+node:ekr.20070224115832:readRecentFiles & helpers
+def readRecentFiles (self,localConfigFile):
+
+    '''Read all .leoRecentFiles.txt files.'''
+
+    # The order of files in this list affects the order of the recent files list.
+    seen = [] 
+    localConfigPath = g.os_path_dirname(localConfigFile)
+    for path in (
+        g.app.homeLeoDir, # was homeDir
+        g.app.globalConfigDir,
+        localConfigPath,
+    ):
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+        if path and path not in seen:
+            ok = self.readRecentFilesFile(path)
+            if ok: seen.append(path)
+    if not seen and self.write_recent_files_as_needed:
+        self.createRecentFiles()
+#@nonl
+#@+node:ekr.20061010121944:createRecentFiles
+def createRecentFiles (self):
+
+    '''Trye to reate .leoRecentFiles.txt in
+    - the users home directory first,
+    - Leo's config directory second.'''
+
+    for theDir in (g.app.homeLeoDir,g.app.globalConfigDir): # homeLeoDir was g.app.homeDir.
+        if theDir:
+            try:
+                fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
+                f = file(fileName,'w')
+                f.close()
+                g.es_print('created',fileName,color='red')
+                return
+            except Exception:
+                g.es_print('can not create',fileName,color='red')
+                g.es_exception()
+#@nonl
+#@-node:ekr.20061010121944:createRecentFiles
+#@+node:ekr.20050424115658:readRecentFilesFile
+def readRecentFilesFile (self,path):
+
+    fileName = g.os_path_join(path,'.leoRecentFiles.txt')
+    ok = g.os_path_exists(fileName)
+    if ok:
+        if not g.unitTesting and not self.silent:
+            g.pr(('reading %s' % fileName))
+        lines = file(fileName).readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            lines = lines[1:]
+        if lines:
+            lines = [g.toUnicode(g.os_path_normpath(line),'utf-8') for line in lines]
+            self.appendToRecentFiles(lines)
+
+    return ok
+#@nonl
+#@-node:ekr.20050424115658:readRecentFilesFile
+#@-node:ekr.20070224115832:readRecentFiles & helpers
+#@+node:ekr.20050424114937.2:writeRecentFilesFile & helper
+recentFileMessageWritten = False
+
+def writeRecentFilesFile (self,c):
+
+    '''Write the appropriate .leoRecentFiles.txt file.'''
+
+    tag = '.leoRecentFiles.txt'
+
+    if g.app.unitTesting:
+        return
+
+    localFileName = c.fileName()
+    if localFileName:
+        localPath,junk = g.os_path_split(localFileName)
+    else:
+        localPath = None
+
+    written = False
+    for path in (localPath,g.app.globalConfigDir,g.app.homeLeoDir): # homeLeoDir was homeDir.
+        if path:
+            fileName = g.os_path_join(path,tag)
+            if g.os_path_exists(fileName):
+                if not self.recentFileMessageWritten:
+                    g.pr(('wrote recent file: %s' % fileName))
+                    written = True
+                self.writeRecentFilesFileHelper(fileName)
+                # Bug fix: Leo 4.4.6: write *all* recent files.
+
+    if written:
+        self.recentFileMessageWritten = True
+    else:
+        pass # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
+#@+node:ekr.20050424131051:writeRecentFilesFileHelper
+def writeRecentFilesFileHelper (self,fileName):
+    # g.trace(fileName)
+
+    # Don't update the file if it begins with read-only.
+    theFile = None
+    try:
+        theFile = file(fileName)
+        lines = theFile.readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            # g.trace('read-only: %s' %fileName)
+            return
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        if theFile: theFile.close()
+
+    theFile = None
+    try:
+        # g.trace('writing',fileName)
+        theFile = file(fileName,'w')
+        if self.recentFiles:
+            lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
+            theFile.write('\n'.join(lines))
+            # g.trace(fileName,'lines\n%s' % lines)
+        else:
+            theFile.write('\n')
+
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        pass
+
+    except Exception:
+        g.es('unexpected exception writing',fileName,color='red')
+        g.es_exception()
+
+    if theFile:
+        theFile.close()
+#@-node:ekr.20050424131051:writeRecentFilesFileHelper
+#@-node:ekr.20050424114937.2:writeRecentFilesFile & helper
+#@-node:ekr.20080823082100.2:Found: .homeDir
+#@+node:ekr.20080823082100.4:Not changed
+#@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+def createMyLeoSettingsFile (self,localConfigFile):
+
+    '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
+
+    << define s, a minimalMyLeoSettings.leo string >>
+
+    for path in (
+        localConfigFile,
+        self.myGlobalConfigFile,
+        self.myHomeConfigFile
+    ):
+        # g.trace(path)
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            if g.os_path_exists(path):
+                # g.trace('exists',path)
+                return
+
+    if g.app.homeDir:
+        path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+        try:
+            f = file(path,'wb')
+            f.write(s)
+            f.close()
+            self.myHomeConfigFile = path
+            # It's early in the startup: g.es does not work yet.
+            s = 'created: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+        except Exception:
+            s = 'can not create: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+            g.es_exception()
+#@+node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+s = '''<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet ekr_test?>
+<leo_file>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="26" left="122" height="781" width="953"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="ekr.20070411164127" str_leo_pos="0"><vh>@chapters</vh>
+<v t="ekr.20070411164127.1"><vh>@chapter trash</vh></v>
+</v>
+<v t="ekr.20070411164127.2"><vh>@settings</vh></v>
+</vnodes>
+<tnodes>
+<t tx="ekr.20070411164127"></t>
+<t tx="ekr.20070411164127.1">trash</t>
+<t tx="ekr.20070411164127.2"></t>
+</tnodes>
+</leo_file>
+'''
+#@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+#@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+#@+node:ekr.20041117155521:computeGlobalConfigDir
+def computeGlobalConfigDir():
+
+    import leo.core.leoGlobals as g
+
+    encoding = g.startupEncoding()
+
+    # To avoid pychecker/pylint complaints that sys.leo_config_directory does not exist.
+    leo_config_dir = (
+        hasattr(sys,'leo_config_directory') and
+        getattr(sys,'leo_config_directory'))
+
+    if leo_config_dir:
+        theDir = leo_config_dir
+    else:
+        theDir = g.os_path_join(g.app.loadDir,"..","config")
+
+    if theDir:
+        theDir = g.os_path_abspath(theDir)
+
+    if (
+        not theDir or
+        not g.os_path_exists(theDir,encoding) or
+        not g.os_path_isdir(theDir,encoding)
+    ):
+        theDir = None
+
+    return theDir
+#@-node:ekr.20041117155521:computeGlobalConfigDir
+#@-node:ekr.20080823082100.4:Not changed
+#@+node:ekr.20080823082100.3:Changed
+#@+node:ekr.20050328133444:computeStandardDirectories
+def computeStandardDirectories():
+
+    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
+
+    if 0:
+        import sys
+        for s in sys.path: g.trace(s)
+
+    g.app.loadDir = g.computeLoadDir()
+        # Depends on g.app.tkEncoding: uses utf-8 for now.
+
+    g.app.leoDir = g.computeLeoDir()
+
+    g.app.homeDir = g.computeHomeDir()
+
+    # New in Leo 4.5 b4: create homeLeoDir if needed.
+    g.app.homeLeoDir = homeLeoDir = g.os_path_abspath(
+        g.os_path_join(g.app.homeDir,'.leo'))
+
+    if not g.os_path_exists(homeLeoDir):
+        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
+
+    g.app.extensionsDir = g.os_path_abspath(
+        g.os_path_join(g.app.loadDir,'..','extensions'))
+
+    g.app.globalConfigDir = g.computeGlobalConfigDir()
+
+    g.app.testDir = g.os_path_abspath(
+        g.os_path_join(g.app.loadDir,'..','test'))
+
+    g.app.user_xresources_path = g.os_path_join(g.app.homeDir,'.leo_xresources')
+#@-node:ekr.20050328133444:computeStandardDirectories
+#@+node:ekr.20070227094232:getLeoID
+def getLeoID (self):
+
+    import os
+    import sys
+
+    g = self.g ; tag = ".leoID.txt"
+    homeDir = g.app.homeLeoDir # Was homeDir.
+    globalConfigDir = g.app.globalConfigDir
+    loadDir = g.app.loadDir
+
+    verbose = False and not g.app.unitTesting
+    << try to get leoID from sys.leoID >>
+    if not g.app.leoID:
+        << try to get leoID from "leoID.txt" >>
+    if not g.app.leoID:
+        << try to get leoID from os.getenv('USER') >>
+    return g.app.leoID
+#@+node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
+# This would be set by in Python's sitecustomize.py file.
+
+# Use hasattr & getattr to suppress pychecker warning.
+# We also have to use a "non-constant" attribute to suppress another warning!
+
+nonConstantAttr = "leoID"
+
+if hasattr(sys,nonConstantAttr):
+    g.app.leoID = getattr(sys,nonConstantAttr)
+    if verbose: g.es("leoID=",g.app.leoID,spaces=False,color='red')
+#@nonl
+#@-node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
+#@+node:ekr.20070227094232.2:<< try to get leoID from "leoID.txt" >>
+for theDir in (homeDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                if verbose:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                break
+            elif verbose:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@-node:ekr.20070227094232.2:<< try to get leoID from "leoID.txt" >>
+#@+node:ekr.20070227094232.3:<< try to get leoID from os.getenv('USER') >>
+try:
+    theId = os.getenv('USER')
+    if theId:
+        if verbose: g.es_print("using os.getenv('USER'):",repr(theId),color='red')
+        g.app.leoID = theId
+
+except Exception:
+    pass
+#@-node:ekr.20070227094232.3:<< try to get leoID from os.getenv('USER') >>
+#@-node:ekr.20070227094232:getLeoID
+#@+node:ekr.20031218072017.1978:app.setLeoID
+def setLeoID (self,verbose=True):
+
+    tag = ".leoID.txt"
+    homeLeoDir = g.app.homeLeoDir # was homeDir.
+    globalConfigDir = g.app.globalConfigDir
+    loadDir = g.app.loadDir
+
+    verbose = not g.app.unitTesting
+    << return if we can set leoID from sys.leoID >>
+    << return if we can set leoID from "leoID.txt" >>
+    << return if we can set leoID from os.getenv('USER') >>
+    << put up a dialog requiring a valid id >>
+    << attempt to create leoID.txt >>
+#@+node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+# This would be set by in Python's sitecustomize.py file.
+
+# 7/2/04: Use hasattr & getattr to suppress pychecker warning.
+# We also have to use a "non-constant" attribute to suppress another warning!
+
+nonConstantAttr = "leoID"
+
+if hasattr(sys,nonConstantAttr):
+    g.app.leoID = getattr(sys,nonConstantAttr)
+    if verbose and not g.app.unitTesting:
+        g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
+    # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+    g.app.leoID = g.app.leoID.replace('.','-')
+    return
+else:
+    g.app.leoID = None
+#@-node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+#@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+                g.app.leoID = g.app.leoID.replace('.','-')
+                if verbose and not g.app.unitTesting:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                return
+            elif verbose and not g.app.unitTesting:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es_print('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@-node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+#@+node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+try:
+    theId = os.getenv('USER')
+    if theId:
+        if verbose and not g.app.unitTesting:
+            g.es("using os.getenv('USER'):",repr(theId),color='red')
+        g.app.leoID = theId
+        # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+        g.app.leoID = g.app.leoID.replace('.','-')
+        return
+
+except Exception:
+    pass
+#@-node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+#@+node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+# New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
+
+# Create an emergency gui and a Tk root window.
+g.app.createTkGui("startup")
+
+# Bug fix: 2/6/05: put result in g.app.leoID.
+g.app.leoID = g.app.gui.runAskLeoIDDialog()
+
+# Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+g.app.leoID = g.app.leoID.replace('.','-')
+
+# g.trace(g.app.leoID)
+g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
+#@-node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+#@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'w')
+            f.write(g.app.leoID)
+            f.close()
+            if g.os_path_exists(fn):
+                g.es_print('',tag,'created in',theDir,color='red')
+                return
+        except IOError:
+            pass
+
+        g.es('can not create',tag,'in',theDir,color='red')
+#@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+#@-node:ekr.20031218072017.1978:app.setLeoID
+#@+node:ekr.20061010121944:createRecentFiles
+def createRecentFiles (self):
+
+    '''Trye to reate .leoRecentFiles.txt in
+    - the users home directory first,
+    - Leo's config directory second.'''
+
+    for theDir in (g.app.homeLeoDir,g.app.globalConfigDir): # homeLeoDir was g.app.homeDir.
+        if theDir:
+            try:
+                fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
+                f = file(fileName,'w')
+                f.close()
+                g.es_print('created',fileName,color='red')
+                return
+            except Exception:
+                g.es_print('can not create',fileName,color='red')
+                g.es_exception()
+#@nonl
+#@-node:ekr.20061010121944:createRecentFiles
+#@+node:ekr.20041117083857:initSettingsFiles
+def initSettingsFiles (self):
+
+    """Set self.globalConfigFile, self.homeFile, self.myGlobalConfigFile,
+    self.myHomeConfigFile, and self.machineConfigFile."""
+
+    settingsFile = 'leoSettings.leo'
+    mySettingsFile = 'myLeoSettings.leo'
+    machineConfigFile = g.computeMachineName() + 'LeoSettings.leo'
+
+    # New in Leo 4.5 b4: change homeDir to homeLeoDir
+    for ivar,theDir,fileName in (
+        ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
+        ('homeFile',            g.app.homeLeoDir,          settingsFile),
+        ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
+        #non-prefixed names take priority over prefixed names
+        ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
+        ('myHomeConfigFile',    g.app.homeLeoDir,   mySettingsFile),
+        ('machineConfigFile',   g.app.homeLeoDir,   g.app.homeSettingsPrefix + machineConfigFile),
+        ('machineConfigFile',   g.app.homeLeoDir,   machineConfigFile),
+    ):
+        # The same file may be assigned to multiple ivars:
+        # readSettingsFiles checks for such duplications.
+        path = g.os_path_join(theDir,fileName)
+        if g.os_path_exists(path):
+            setattr(self,ivar,path)
+        #else:
+            #if the path does not exist, only set to None if the ivar isn't already set.
+            #dan: IMO, it's better to set the defaults to None in configClass.__init__().
+            #     This avoids the creation of ivars in odd (non __init__) places.
+            #setattr(self,ivar, getattr(self,ivar,None))
+    if 0:
+        g.trace('global file:',self.globalConfigFile)
+        g.trace('home file:',self.homeFile)
+        g.trace('myGlobal file:',self.myGlobalConfigFile)
+        g.trace('myHome file:',self.myHomeConfigFile)
+#@nonl
+#@-node:ekr.20041117083857:initSettingsFiles
+#@+node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
+def openLeoSettings (self,event=None):
+    '''Open leoSettings.leo in a new Leo window.'''
+    self.openSettingsHelper('leoSettings.leo')
+
+def openMyLeoSettings (self,event=None):
+    '''Open myLeoSettings.leo in a new Leo window.'''
+    self.openSettingsHelper('myLeoSettings.leo')
+
+def openSettingsHelper(self,name):
+    c = self
+    homeLeoDir = g.app.homeLeoDir # was homeDir
+    loadDir = g.app.loadDir
+    configDir = g.app.globalConfigDir
+
+    # Look in configDir first.
+    fileName = g.os_path_join(configDir,name)
+    ok = g.os_path_exists(fileName)
+    if ok:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok: return
+
+    # Look in homeLeoDir second.
+    if configDir == loadDir:
+        g.es('',name,"not found in",configDir)
+    else:
+        fileName = g.os_path_join(homeLeoDir,name)
+        ok = g.os_path_exists(fileName)
+        if ok:
+            ok, frame = g.openWithFileName(fileName,c)
+        if not ok:
+            g.es('',name,"not found in",configDir,"or",homeLeoDir)
+#@-node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
+#@+node:ekr.20070224115832:readRecentFiles & helpers
+def readRecentFiles (self,localConfigFile):
+
+    '''Read all .leoRecentFiles.txt files.'''
+
+    # The order of files in this list affects the order of the recent files list.
+    seen = [] 
+    localConfigPath = g.os_path_dirname(localConfigFile)
+    for path in (
+        g.app.homeLeoDir, # was homeDir
+        g.app.globalConfigDir,
+        localConfigPath,
+    ):
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+        if path and path not in seen:
+            ok = self.readRecentFilesFile(path)
+            if ok: seen.append(path)
+    if not seen and self.write_recent_files_as_needed:
+        self.createRecentFiles()
+#@nonl
+#@+node:ekr.20061010121944:createRecentFiles
+def createRecentFiles (self):
+
+    '''Trye to reate .leoRecentFiles.txt in
+    - the users home directory first,
+    - Leo's config directory second.'''
+
+    for theDir in (g.app.homeLeoDir,g.app.globalConfigDir): # homeLeoDir was g.app.homeDir.
+        if theDir:
+            try:
+                fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
+                f = file(fileName,'w')
+                f.close()
+                g.es_print('created',fileName,color='red')
+                return
+            except Exception:
+                g.es_print('can not create',fileName,color='red')
+                g.es_exception()
+#@nonl
+#@-node:ekr.20061010121944:createRecentFiles
+#@+node:ekr.20050424115658:readRecentFilesFile
+def readRecentFilesFile (self,path):
+
+    fileName = g.os_path_join(path,'.leoRecentFiles.txt')
+    ok = g.os_path_exists(fileName)
+    if ok:
+        if not g.unitTesting and not self.silent:
+            g.pr(('reading %s' % fileName))
+        lines = file(fileName).readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            lines = lines[1:]
+        if lines:
+            lines = [g.toUnicode(g.os_path_normpath(line),'utf-8') for line in lines]
+            self.appendToRecentFiles(lines)
+
+    return ok
+#@nonl
+#@-node:ekr.20050424115658:readRecentFilesFile
+#@-node:ekr.20070224115832:readRecentFiles & helpers
+#@+node:ekr.20050424114937.2:writeRecentFilesFile & helper
+recentFileMessageWritten = False
+
+def writeRecentFilesFile (self,c):
+
+    '''Write the appropriate .leoRecentFiles.txt file.'''
+
+    tag = '.leoRecentFiles.txt'
+
+    if g.app.unitTesting:
+        return
+
+    localFileName = c.fileName()
+    if localFileName:
+        localPath,junk = g.os_path_split(localFileName)
+    else:
+        localPath = None
+
+    written = False
+    for path in (localPath,g.app.globalConfigDir,g.app.homeLeoDir): # homeLeoDir was homeDir.
+        if path:
+            fileName = g.os_path_join(path,tag)
+            if g.os_path_exists(fileName):
+                if not self.recentFileMessageWritten:
+                    g.pr(('wrote recent file: %s' % fileName))
+                    written = True
+                self.writeRecentFilesFileHelper(fileName)
+                # Bug fix: Leo 4.4.6: write *all* recent files.
+
+    if written:
+        self.recentFileMessageWritten = True
+    else:
+        pass # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
+#@+node:ekr.20050424131051:writeRecentFilesFileHelper
+def writeRecentFilesFileHelper (self,fileName):
+    # g.trace(fileName)
+
+    # Don't update the file if it begins with read-only.
+    theFile = None
+    try:
+        theFile = file(fileName)
+        lines = theFile.readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            # g.trace('read-only: %s' %fileName)
+            return
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        if theFile: theFile.close()
+
+    theFile = None
+    try:
+        # g.trace('writing',fileName)
+        theFile = file(fileName,'w')
+        if self.recentFiles:
+            lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
+            theFile.write('\n'.join(lines))
+            # g.trace(fileName,'lines\n%s' % lines)
+        else:
+            theFile.write('\n')
+
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        pass
+
+    except Exception:
+        g.es('unexpected exception writing',fileName,color='red')
+        g.es_exception()
+
+    if theFile:
+        theFile.close()
+#@-node:ekr.20050424131051:writeRecentFilesFileHelper
+#@-node:ekr.20050424114937.2:writeRecentFilesFile & helper
+#@-node:ekr.20080823082100.3:Changed
+#@+node:ekr.20080823082100.5:To do: create Home .leo file if it does not exist
+#@-node:ekr.20080823082100.5:To do: create Home .leo file if it does not exist
+#@-node:ekr.20080822142201.3:Put leoID.txt and myLeoSettings.leo in HOME/.leo
 #@-node:ekr.20080811174246.4:Features
 #@-node:ekr.20080810085333.3:4.5 b3
 #@-all

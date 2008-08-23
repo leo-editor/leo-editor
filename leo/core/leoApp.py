@@ -43,6 +43,7 @@ class LeoApp:
         self.hookError = False # True: suppress further calls to hooks.
         self.hookFunction = None # Application wide hook function.
         self.homeDir = None # The user's home directory.
+        self.homeLeoDir = None # The '.leo' subdirectory of the user's home directory. New in Leo 4.5b4.
         self.homeSettingsPrefix = '.' # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
         self.idle_imported = False # True: we have done an import idle
         self.idleTimeDelay = 100 # Delay in msec between calls to "idle time" hook.
@@ -456,7 +457,7 @@ class LeoApp:
     def setLeoID (self,verbose=True):
 
         tag = ".leoID.txt"
-        homeDir = g.app.homeDir
+        homeLeoDir = g.app.homeLeoDir # was homeDir.
         globalConfigDir = g.app.globalConfigDir
         loadDir = g.app.loadDir
 
@@ -483,7 +484,7 @@ class LeoApp:
         #@nl
         #@    << return if we can set leoID from "leoID.txt" >>
         #@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
-        for theDir in (homeDir,globalConfigDir,loadDir):
+        for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
                 try:
@@ -543,7 +544,7 @@ class LeoApp:
         #@nl
         #@    << attempt to create leoID.txt >>
         #@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
-        for theDir in (homeDir,globalConfigDir,loadDir):
+        for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
                 try:

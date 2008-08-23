@@ -241,7 +241,7 @@ class bridgeController:
         import sys
 
         g = self.g ; tag = ".leoID.txt"
-        homeDir = g.app.homeDir
+        homeDir = g.app.homeLeoDir # Was homeDir.
         globalConfigDir = g.app.globalConfigDir
         loadDir = g.app.loadDir
 
