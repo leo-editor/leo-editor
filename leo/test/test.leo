@@ -275,8 +275,8 @@
 </v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
-<v t="ekr.20080823154546.1"><vh>@command auto-parse @key = Alt-5</vh></v>
-<v t="ekr.20080823154546.2"><vh>auto-parse test</vh></v>
+<v t="ekr.20080823154546.1"><vh>@command parse-python @key = Alt-5</vh></v>
+<v t="ekr.20080823154546.2"><vh>parse-python test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2258,30 +2258,38 @@ for s in table:
     print      'print     ',s
     print      'repr(s)   ',repr(s)</t>
 <t tx="ekr.20080822153619.1"></t>
-<t tx="ekr.20080823154546.1">at = c.atFileCommands ; ic = c.importCommands
-fileName = '&lt;string-file&gt;'
+<t tx="ekr.20080823154546.1">p2 = p.insertAfter()
+p2.setHeadString('inserted node')
+s = p.bodyString()
 
-at.scanDefaultDirectory(p,importing=True) # Set default_directory
-fileName = g.os_path_join(at.default_directory,fileName)
-ic.createOutline(fileName,parent=p.copy(),atAuto=True,s=p.bodyString())
+# Remove Leo directives.
+directives = ['@'+z for z in g.globalDirectiveList]
+def isDirective(s):
+    for z in directives:
+        if s.startswith(z):
+            return True
+    else: return False
+aList = [z for z in g.splitLines(s) if not isDirective(z)]
+s = ''.join(aList)
+if not s.endswith('\n'): s = s + '\n'
+
+c.importCommands.scanPythonText(s,p2.copy(),atAuto=True)
 c.redraw_now()
-
 g.pr('done')</t>
 <t tx="ekr.20080823154546.2">@tabwidth -4
-@language python
 
 class AClass:
 
-   def func1:
+   def func1():
        do1()
 
-   def func2:
+   def func2():
        do2()
 
-   def func3:
+   def func3():
        do3()
 
-   def func4:
+   def func4():
        do4()
 </t>
 </tnodes>
