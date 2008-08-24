@@ -1778,7 +1778,7 @@ class baseCommands:
             fileName = g.os_path_join(path,fileName)
 
             try:
-                lines=self.gotoLineNumberOpen(fileName) # bwm
+                lines=self.gotoLineNumberOpen(fileName)
             except:
                 g.es("not found:",fileName)
                 return
@@ -1792,7 +1792,7 @@ class baseCommands:
                 return
             #@-node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
             #@nl
-        n = self.applyLineNumberMappingIfAny(n) #bwm
+        n = self.applyLineNumberMappingIfAny(n)
         if n==1:
             p = root ; n2 = 1 ; found = True
         elif root.isAtAsisFileNode() or root.isAtNoSentFileNode():
@@ -2002,12 +2002,6 @@ class baseCommands:
             return x.line_mapping[n]
         else:
             return n
-
-        # if hasattr(self,'line_mapping') and self.line_mapping:
-            # return self.line_mapping[n]
-        # else:
-            # return n
-    #@nonl
     #@-node:ekr.20080708094444.65:applyLineNumberMappingIfAny
     #@+node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
     #@+at 
@@ -2031,7 +2025,7 @@ class baseCommands:
 
         c = self ; at = c.atFileCommands
         childIndex = 0 ; gnx = None ; newDerivedFile = False
-        thinFile = root.isAtThinFileNode()
+        thinFile = root.isAtThinFileNode() or root.isAtShadowFileNode()
         #@    << set delim, leoLine from the @+leo line >>
         #@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
         # Find the @+leo line.
@@ -2133,7 +2127,7 @@ class baseCommands:
             g.es("bad @+node sentinel")
         #@-node:ekr.20031218072017.2881:<< set vnodeName and (childIndex or gnx) from s >>
         #@nl
-        # g.trace("childIndex,offset",childIndex,offset,vnodeName)
+        # g.trace('childIndex',childIndex,'gnx',gnx,'offset',offset,'vnodeName',vnodeName)
         return vnodeName,childIndex,gnx,offset,delim
     #@-node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
     #@+node:ekr.20080708094444.63:gotoLineNumberOpen
@@ -2145,13 +2139,13 @@ class baseCommands:
         """
         try:
             c = self ; x = c.shadowController
-            theDir, simplename = os.path.split(filename)
-            shadow_filename = os.path.join(theDir,x.shadow_subdir,x.shadow_prefix + simplename)
+            shadow_filename = x.shadowPathName(filename)
             if os.path.exists(shadow_filename):
                 lines = file(shadow_filename).readlines()
-                c.line_mapping = x.push_filter_mapping(
+                x.line_mapping = x.push_filter_mapping(
                     lines, x.marker_from_extension(shadow_filename))
             else:
+                g.es_print('can not open',shadow_filename,color='red')
                 c.line_mapping = []
                 lines = file(filename).readlines()
             return lines 
