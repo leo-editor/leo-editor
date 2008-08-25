@@ -1015,6 +1015,8 @@ class basePosition (object):
         g.app.positions += 1
 
         # if g.app.tracePositions and trace: g.trace(g.callers())
+
+        self.txtOffset = None # see self.textOffset()
     #@-node:ekr.20080416161551.190: p.__init__
     #@+node:ekr.20080416161551.186:p.__cmp__, equal and isEqual
     def __cmp__(self,p2):
@@ -1415,6 +1417,51 @@ class basePosition (object):
 
     simpleLevel = level
     #@-node:ekr.20080416161551.197:p.level & simpleLevel
+    #@+node:shadow.20080825171547.2:p.textOffset
+    def textOffset(self):
+        '''
+            See http://tinyurl.com/5nescw for details
+        '''
+
+        p = self
+
+        # caching of p.textOffset, we need to calculate it only once
+        if p.txtOffset is not None:
+            return p.txtOffset
+
+        p.txtOffset = 0
+        # walk back from the current position
+        for cursor in p.self_and_parents_iter():
+            # we also need the parent, the "text offset" is relative to it
+            parent = cursor.parent()
+            if parent == None: # root reached
+                break
+            parent_bodyString = parent.bodyString()
+            if parent_bodyString == '': # organizer node
+                continue
+            parent_lines = parent_bodyString.split('\n')
+            # check out if the cursor node is a section
+            cursor_is_section = False
+            cursor_headString = cursor.headString()
+            if cursor_headString.startswith('<<'):
+                cursor_is_section = True # section node
+            for line in parent_lines:
+                if cursor_is_section == True:
+                    # find out the section in the bodyString of the parent
+                    pos = line.find(cursor_headString)
+                else:
+                    # otherwise find the "@others" directive in the bodyString of the parent
+                    pos = line.find('@others')
+                if pos > 0:
+                    # break the iteration over lines if something is found 
+                    break
+            if pos > 0:
+                p.txtOffset += pos
+            if parent.v.isAnyAtFileNode(): # do not scan upper
+                break
+
+        return p.txtOffset         
+    #@-node:shadow.20080825171547.2:p.textOffset
     #@-node:ekr.20040306212636:p.Getters
     #@+node:ekr.20040305222924:p.Setters
     #@+node:ekr.20040306220634:p.Vnode proxies
