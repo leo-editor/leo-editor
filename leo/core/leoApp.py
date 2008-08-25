@@ -139,6 +139,7 @@ class LeoApp:
             "tcltk" : "#",
             "unknown" : "#", # Set when @comment is seen.
             "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+            "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
             "xml" : "<!-- -->",
         }
 
@@ -176,6 +177,7 @@ class LeoApp:
             "tex" : "tex",
             "tcltk" : "tcl",
             "unknown" : "txt", # Set when @comment is seen.
+            "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
             "xml": "xml",
         }
 
@@ -197,6 +199,7 @@ class LeoApp:
             "java"  : "java",
             "lua"   : "lua",  # ddm 13/02/06
             "nw"    : "noweb",
+            "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
             "p"     : "pascal",
             # "perl"  : "perl",
             "pl"    : "perl",   # 11/7/05
