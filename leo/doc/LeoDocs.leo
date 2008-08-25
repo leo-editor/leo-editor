@@ -3640,7 +3640,7 @@ node has the headline ``@settings``. When opening a .leo file, Leo looks for
 - The file ``leoSettings.leo`` in the leo/config directory.
 - The file ``leoSettings.leo`` in the user's home directory.
 - The file ``myLeoSettings.leo`` in the leo/config directory.
-- The file ``myLeoSettings.leo`` in the user's home directory.
+- The file ``myLeoSettings.leo`` in the user's $HOME/.leo directory.
 - The file being loaded.
 
 Settings that appear later in the above list override settings found earlier. For
@@ -30371,9 +30371,9 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080408060320.784">Python's HOME environment variable specifies Leo's HOME directory.
 See http://docs.python.org/lib/os-procinfo.html for details.
 
-Leo puts several files in your HOME/.leo directory:
-.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
-There are various fallback directories if there is no home directory.
+Leo puts two files in your HOME/.leo directory:
+.leoID.txt, .leoRecentFiles.txt.
+In addition, Leo looks in this directory for myLeoSettings.leo.
 </t>
 <t tx="ekr.20080411111008.1">Leo ignores any subtree of an ``@settings`` tree whose headline starts with ``@ignore``.
 
