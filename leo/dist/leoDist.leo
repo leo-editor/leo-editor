@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -48,8 +48,8 @@
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
 <v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
-<v t="EKR.20040519082027.33"><vh>@file-thin ../../install</vh></v>
-<v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
+<v t="EKR.20040519082027.33"><vh>@@file-thin ../../install</vh></v>
+<v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
 <v t="ekr.20080809175634.2" a="E"><vh>@button make</vh>
@@ -72,6 +72,80 @@
 <t tx="EKR.20040519082027.32">@color
 @lineending nl
 @language shell</t>
+<t tx="EKR.20040519082027.33">@first #!/bin/sh
+
+# This script installs Leo on *nix.
+# Initial version by by Frank Merenda (fmerenda@yahoo.com)
+
+# Variables...
+LEO_PREFIX=${LEO_PREFIX:-/usr/local}
+LEO_RUN_SCRIPT_OUTPUT="${LEO_PREFIX}/bin/leo"
+
+# Bug fix: 2008/4/8: replace /lib/leo by /lib.
+LEO_LIB_DIR="${LEO_PREFIX}/lib"
+
+echo ""
+echo "Prefix directory set to \"$LEO_PREFIX\""
+
+# Make the directory structure
+if [ ! -d $LEO_LIB_DIR ] ; then
+    echo ""
+    echo Making directory structure $LEO_LIB_DIR
+
+    RESULTS=`mkdir -p -m755 $LEO_LIB_DIR 2&gt;&amp;1`
+    if [ $? -ne 0 ]; then
+        echo Failure making directory $LEO_LIB_DIR!
+        exit 1;
+    fi
+fi
+
+if [ ! -d $LEO_PREFIX/bin ] ; then
+    echo ""
+    echo Making directory structure $LEO_PREFIX/bin
+    RESULTS=`mkdir -p -m755 $LEO_PREFIX/bin 2&gt;&amp;1`
+    if [ $? -ne 0 ]; then
+        echo Failure making directory $LEO_PREFIX/bin!
+        exit 1;
+    fi
+fi
+
+# Copy the files
+cp -rp leo $LEO_LIB_DIR
+
+echo "python ${LEO_PREFIX}/lib/leo/core/runLeo.py \"$@\"" &gt; $LEO_RUN_SCRIPT_OUTPUT
+
+RESULTS=`chmod 755 $LEO_RUN_SCRIPT_OUTPUT`   
+
+echo ""
+echo "Leo installed successfully"
+echo "Make sure ${LEO_PREFIX}/bin is in your path then"
+echo "type 'leo filename.leo' to use it."   
+echo ""
+
+exit 0;
+</t>
+<t tx="EKR.20040519082027.34">@first #!/bin/sh
+
+# This script uninstalls Leo on Linux.
+#
+# Initial version by by Frank Merenda (fmerenda@yahoo.com)
+
+# Variables...
+LEO_PREFIX=${LEO_PREFIX:-/usr/local}
+LEO_RUN_SCRIPT_OUTPUT="${LEO_PREFIX}/bin/leo"
+LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
+
+# Show the commands to remove Leo.
+echo ""
+echo "Prefix directory set to \"$LEO_PREFIX\""
+echo ""
+echo "To uninstall leo check the following \"rm\" commands"
+echo "if they look ok execute them."
+echo "
+rm -fr $LEO_LIB_DIR
+rm -f  $LEO_RUN_SCRIPT_OUTPUT
+"
+</t>
 <t tx="EKR.20040519090846">@nocolor
 
 Do a search and replace on this suffix.
