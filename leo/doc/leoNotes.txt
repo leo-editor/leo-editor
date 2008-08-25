@@ -8,6 +8,14 @@
 #@+node:ekr.20080225084626:Bzr notes
 @nocolor
 
+How to create/use private branches
+
+bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+
+
 Common
 
 - No need for aliases for push, pull or commit.  do bzr info to find url.
