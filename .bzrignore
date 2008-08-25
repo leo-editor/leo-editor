@@ -9,7 +9,6 @@
 .leo_shadow
 .leo
 .ropeProject
-setup.py
 install
 uninstall
 gradient.png
