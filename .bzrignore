@@ -8,6 +8,9 @@
 ./.ropeProject
 ./.leo_shadow
 ./.leo
+./setup.py
+./install
+./uninstall
 
 leo/*.zip
 
