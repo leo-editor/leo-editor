@@ -2089,11 +2089,14 @@ TESTS
 @color
 #@nonl
 #@-node:ekr.20031218072017.367:How to add support for a new language
-#@+node:ekr.20080814134319.1:How to create a private bzr branch
+#@+node:ekr.20080814134319.1:How to create and push to a private bzr branch
 @nocolor
 
 C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
-#@-node:ekr.20080814134319.1:How to create a private bzr branch
+
+C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+#@-node:ekr.20080814134319.1:How to create and push to a private bzr branch
 #@+node:ekr.20051203084725:How to expand java .jar files
 - Put whatever.jar in c:\prog
 - cd: c:\prog
