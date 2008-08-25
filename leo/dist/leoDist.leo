@@ -25,17 +25,18 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20080815093141.108"><vh>ANN: Leo 4.5 b3</vh></v>
+<v t="ekr.20080825085446.1"><vh>ANN: Leo 4.5 b4</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080807093308.2"><vh>4.5</vh>
 <v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
 <v t="ekr.20080807093308.1"><vh>ANN: Leo 4.5 b2</vh></v>
+<v t="ekr.20080815093141.108"><vh>ANN: Leo 4.5 b3</vh></v>
 </v>
 </v>
 </v>
 <v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -401,11 +402,17 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080628065201.2">LeoPlugins.leo:
+<t tx="ekr.20080628065201.2">Testing:
+    - Run all unit tests.
+    - Run pylint-leo.bat.
+LeoDocs.leo:
+    - Remove top-level clones.
+    - Select the readme node.
+LeoPlugins.leo:
     - Remove top-level clones.
 LeoPy.leo:
     - Update version numbers.
-** LeoDist.leo:
+LeoDist.leo:
     - Update version numbers.
     - Update announcement.
     - Update readme.txt
@@ -780,5 +787,38 @@ stores this identifier in the file ``.leoID.txt``. Leo attempts to create
 ``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
 finally in Leo's core directory. You can change this identifier at any time by
 editing ``.leoID.txt``.</t>
+<t tx="ekr.20080825085446.1">Leo 4.5 beta 4                      August 25, 2008
+
+Leo 4.5 beta 4 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This beta 4 release will likely be the last release before Leo 4.5 final.
+
+Leo 4.5 contains many important new features.  See below for details.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+
+- Full support for @shadow files in Leo's core.
+- Major improvements to Leo's key binding code.
+- The beginning of usable vim-like bindings.
+- uA's may now be associated with vnodes in @thin and @shadow files.
+- Several magor reorganizations of Leo's code:
+  including sax-based parsing, support for the Graph world (unified nodes),
+  simplified drawing code.
+- Leo is now an installable package.
+- Prepared code to be ready for Python 3.0.
+- Many small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 </tnodes>
 </leo_file>
