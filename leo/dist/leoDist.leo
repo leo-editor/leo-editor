@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet ekr_test?>
+<?xml-stylesheet ekr_stylesheet?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
@@ -35,12 +35,13 @@
 </v>
 <v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
+<v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
 <v t="EKR.20040519090846.5"><vh>Windows installation</vh></v>
 <v t="EKR.20040519090846.6"><vh>MacOS installation</vh></v>
-<v t="EKR.20040519090846.7"><vh>Shell &amp; batch scripts</vh></v>
+<v t="ekr.20080825083632.263"><vh>Running Leo</vh></v>
 </v>
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
@@ -50,7 +51,7 @@
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080809175634.2"><vh>@button make</vh>
+<v t="ekr.20080809175634.2" a="E"><vh>@button make</vh>
 <v t="ekr.20080809180311.1"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080809175634.3"><vh>remove</vh></v>
 <v t="ekr.20080809175634.4" a="E"><vh>class createExe</vh>
@@ -74,7 +75,8 @@
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -b3
+Latest suffix:  -b4
+
 
 </t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the Python License.
@@ -117,23 +119,15 @@ Only use Tcl with the default "threads not enabled" case.
 Installing the leo.py on Linux
 ------------------------------
 
-Download the latest version of Leo (a .zip file) from: http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+Download the latest version of Leo (a .zip file) from `Leo's download page`_.
 
-Unzip the downloaded .zip file into a folder in your home directory.
-The folder will be called something like leo-4-4-8.
+Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
+The unpacked folder will be called something like leo-4-5.
 
-You now have two choices:
+You can run Leo from your home directory.
+You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
 
-1. You can run Leo from your home directory.
-Just add  ~/leo-4-4-8 to your path.
-
-2. You can install leo into \usr\local\lib and \usr\local\bin by running Leo's install script as follows::
-
-    cd ~/leo-4-4-8
-    chmod u+x install
-    sudo ./install
-
-The install script will instruct you to add \usr\local\bin to your path.
+    python ~/leo-4-5/launchLeo.py
 </t>
 <t tx="EKR.20040519090846.5">
 Installing the leo.py on Windows
@@ -229,25 +223,9 @@ available to Python
 
 Thanks to Randall Voth for these instructions.
 </t>
-<t tx="EKR.20040519090846.7">
-Using shell scripts and batch files to make using Leo easier
-------------------------------------------------------------
-
-On Linux, the following shell script will allow you to open foo.leo files by typing leo foo
-
-#!/bin/sh 
-python &lt;leopath&gt;/leo.py $1
-
-where &lt;leopath&gt; is replaced with the path to the leo directory. 
-
-On Windows, the equivalent batch file would be:
-
-c:\python22\python &lt;leopath&gt;leo.py "%1"
-
-</t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.5-b3
+Version: 4.5-b4
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -266,10 +244,12 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.5 beta 3                      August 15, 2008
+<t tx="EKR.20040519090846.9">Leo 4.5 beta 4                      August 25, 2008
 
-Leo 4.5 beta 3 is now available at:
+Leo 4.5 beta 4 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This beta 4 release will likely be the last release before Leo 4.5 final.
 
 Leo 4.5 contains many important new features.  See below for details.
 
@@ -421,7 +401,12 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080628065201.2">** LeoDist.leo:
+<t tx="ekr.20080628065201.2">LeoPlugins.leo:
+    - Remove top-level clones.
+LeoPy.leo:
+    - Update version numbers.
+** LeoDist.leo:
+    - Update version numbers.
     - Update announcement.
     - Update readme.txt
 Create a cvs tag:
@@ -494,7 +479,7 @@ This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 &lt;&lt; includes &gt;&gt;
 @others
 
-version = '4-5-b3'
+version = '4-5-b4'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 trunk = abspath(join(g.app.loadDir,'..','..'))
 zipFile =  abspath(join(trunk,'Leo-%s.zip' % (version)))
@@ -745,5 +730,55 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080825083632.262">Python's HOME environment variable specifies Leo's HOME directory.
+See http://docs.python.org/lib/os-procinfo.html for details.
+
+Leo puts several files in your HOME/.leo directory:
+.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+There are various fallback directories if there is no home directory.
+</t>
+<t tx="ekr.20080825083632.263">
+Running Leo
+-----------
+
+You can run Leo from a Python interpreter as follows::
+
+    import leo
+    leo.run() # runs Leo, opening a new outline or,
+    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
+
+Another way to run Leo is as follows::
+
+    cd &lt;path-to-launchLeo.py&gt;
+    python launchLeo.py
+
+Here are some tips that may make running Leo easier:
+
+**Linux**
+    The following shell script will allow you to open foo.leo files by typing leo foo::
+
+        #!/bin/sh 
+        python &lt;leopath&gt;/leo/core/runLeo.py $1
+
+    where &lt;leopath&gt; is the path to the directory containing the leo directory. 
+
+**Windows**
+    If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
+    You can also use a batch file.
+    Put the following .bat file in c:\\Windows::
+
+        cd &lt;path-to-leo&gt;
+        c:\python25\python &lt;path-to-leo&gt;leo\core\runLeo.py %1
+
+    where &lt;path-to-leo&gt; is the path to the directory containing the leo directory.
+
+    This opens the file specified by the first argument (%1).
+
+The first time you start Leo, a dialog will ask you for a unique identifier. If
+you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
+stores this identifier in the file ``.leoID.txt``. Leo attempts to create
+``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
+finally in Leo's core directory. You can change this identifier at any time by
+editing ``.leoID.txt``.</t>
 </tnodes>
 </leo_file>

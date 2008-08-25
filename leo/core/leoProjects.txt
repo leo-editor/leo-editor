@@ -23933,7 +23933,7 @@ def resolveArchivedPosition(self,archivedPosition,root_v):
 #@-node:ekr.20080804063523.3:allow v.uA's in @thin and @shadow nodes
 #@-node:ekr.20080702123133.2:4.5 b2
 #@+node:ekr.20080810085333.3:4.5 b3
-#@+node:ekr.20080822065427.5:Leo now require Python 2.4 or higher
+#@+node:ekr.20080822065427.5:Leo now requires Python 2.4 or higher
 This the start of support for Python 3.0.
 #@nonl
 #@+node:ekr.20031218072017.1936:isValidPython
@@ -24079,7 +24079,7 @@ def run (self):
 #@-node:ekr.20080822065427.16:run
 #@-node:ekr.20080822065427.8:<< define emergency dialog class >>
 #@-node:ekr.20031218072017.1936:isValidPython
-#@-node:ekr.20080822065427.5:Leo now require Python 2.4 or higher
+#@-node:ekr.20080822065427.5:Leo now requires Python 2.4 or higher
 #@+node:ekr.20080812093903.2:Bugs
 #@+node:ekr.20080812072419.6:Abbreviate Alt+Key+1 to Alt+1, but *only* in menus
 @nocolor

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="7,1,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -183,7 +183,7 @@
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
 <v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
-<v t="edream.110203163054.50" a="E"><vh>How to install Leo on Linux</vh>
+<v t="edream.110203163054.50"><vh>How to install Leo on Linux</vh>
 <v t="ekr.20080825082500.1"><vh>@rst-ignore old Linux install instructions</vh></v>
 </v>
 <v t="ekr.20070622141457"><vh>Installing Leo on Windows</vh>
@@ -1189,7 +1189,15 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="ekr.20080806211440.186"><vh>@rst html\new-4-5.html</vh>
+<v t="ekr.20080806211440.187"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080806211440.188"><vh>Major new features</vh></v>
+<v t="ekr.20080806211440.253"><vh>Major code reorganizations</vh></v>
+<v t="ekr.20080806211440.256"><vh>Minor new features</vh></v>
+<v t="ekr.20080806211440.189"><vh>New settings</vh></v>
+<v t="ekr.20080806211440.190"><vh>@rst-no-head end stuff</vh></v>
+</v>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -2928,14 +2936,20 @@
 <v t="ekr.20080806211440.256"><vh>Minor new features</vh></v>
 <v t="ekr.20080806211440.189"><vh>New settings</vh></v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080815093141.89"><vh>4.5 b3</vh>
 <v t="ekr.20080815093141.90"><vh>Major new features</vh></v>
 <v t="ekr.20080815093141.91"><vh>Major code reorganizations</vh></v>
 <v t="ekr.20080815093141.92"><vh>Minor new features</vh></v>
 <v t="ekr.20080815093141.93"><vh>New settings</vh></v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20080825083632.1"><vh>4.5 b4</vh>
+<v t="ekr.20080825083632.2"><vh>Major new features</vh></v>
+<v t="ekr.20080825083632.3"><vh>Major code reorganizations</vh></v>
+<v t="ekr.20080825083632.4"><vh>Minor new features</vh></v>
+<v t="ekr.20080825083632.5"><vh>New settings</vh></v>
 </v>
 </v>
 </v>
@@ -14942,7 +14956,7 @@ Here are some tips that may make running Leo easier:
 
         cd &lt;path-to-leo&gt;
         c:\python25\python &lt;path-to-leo&gt;leo\core\runLeo.py %1
-        
+    
     where &lt;path-to-leo&gt; is the path to the directory containing the leo directory.
 
     This opens the file specified by the first argument (%1).
@@ -31609,7 +31623,13 @@ What's New in Leo 4.5
     50
 
 - Added @bool cleo_color_ignore = True
-  This determines whether cleo colors @ignore headlines. The default is True.</t>
+  This determines whether cleo colors @ignore headlines. The default is True.
+  
+- Added @bool suppress_import_parsing setting.
+  When True, @auto and @shadow import the entire file into a single node.
+  
+- Leo now completely ignores comments in @enabled-plugins nodes.
+  Leo enables all plugins mentioned in such nodes.</t>
 <t tx="ekr.20080806211440.190">-----------------------
 
 |prev| |leo| |next|</t>
@@ -31644,6 +31664,11 @@ What's New in Leo 4.5
   open, save, save-as, save-to, read-outline-only, read-file-into-node,
   write-file-from-node and all the import/export commands.
   
+- Leo now puts various configuration files in the $HOME/.leo folder.
+
+- Added contract-all-other-nodes command.
+
+- Added support for @args list in @button and @command nodes.
 </t>
 <t tx="ekr.20080813064908.2">In version 4.5, Leo changed to using a sax parser for .leo files. This can cause
 problems if your .leo file contains invalid characters.
@@ -31803,6 +31828,127 @@ You can, instead, add the following link::
 
 Now you are ready to `run Leo`_.
 </t>
+<t tx="ekr.20080825083632.1">Leo 4.5 beta 4                      August 25, 2008
+
+Leo 4.5 beta 4 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This beta 4 release will likely be the last release before Leo 4.5 final.
+
+Leo 4.5 contains many important new features.  See below for details.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+
+- Full support for @shadow files in Leo's core.
+- Major improvements to Leo's key binding code.
+- The beginning of usable vim-like bindings.
+- uA's may now be associated with vnodes in @thin and @shadow files.
+- Several magor reorganizations of Leo's code:
+  including sax-based parsing, support for the Graph world (unified nodes),
+  simplified drawing code.
+- Leo is now an installable package.
+- Prepared code to be ready for Python 3.0.
+- Many small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080825083632.2">- Added support for @shadow files.
+  This is a major breakthrough.
+  See `Chapter 23`_ for full details.
+  
+- Added much improved support for vim bindings.
+
+- Allow v.uA's in @thin and @shadow nodes.
+  See http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
+</t>
+<t tx="ekr.20080825083632.3">- Leo now uses a sax-based parser to read .leo files.
+  This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
+  
+- Leo now supports the so-called 'Graph World'.
+  When g.unified_nodes is True, Leo moves all information from tnodes into vnodes.
+  
+- Leo now uses a new key binding scheme.
+  This allows substantially simpler key bindings. Indeed, most per-pane bindings
+  have been eliminated.
+  Added support for kill bindings.
+  
+- Leo is now an installable package.
+  To make this work, Leo adds os.curdir to sys.path if needed on startup.
+  
+- Reorganized Leo's drawing and focus code.
+  As a result, calls to c.beginUpdate and c.endUpdate are no longer needed.
+  
+- Leo is now ready for Python 3.x:
+  Change most print statements to calls to g.pr.
+</t>
+<t tx="ekr.20080825083632.4">- Added g.Tracer class.  This is a Python 'debugger' that computes a call graph.
+  To trace a function and its callers, put the following at the function's start::
+
+    g.startTracer()
+  
+- The find-character command now finds characters across line boundaries.
+
+- Set cwd in read/write commands. This affect the following commands:
+  open, save, save-as, save-to, read-outline-only, read-file-into-node,
+  write-file-from-node and all the import/export commands.
+
+- Added support for @args list for @button nodes.
+  See the docstring for the mod_scripting plugin for details.
+  
+- Leo now puts various configuration files in the $HOME/.leo folder.
+
+- Added contract-all-other-nodes command.
+
+- Added support for @args list in @button and @command nodes.
+  </t>
+<t tx="ekr.20080825083632.5">- The default settings for @shadow files are now located in leoSettings.leo in the node::
+
+    @settings--&gt;File options--&gt;Shadow files
+    
+  The defaults for these settings are::
+
+    @string shadow_prefix = x
+    @string shadow_subdir = .leo_shadow
+
+- Added support for @bool fixedWindow option. Leo suppresses marks, expansion
+  state, orphan bits and current position bits when writing fixed .leo files. As
+  a result, all nodes will be collapsed and the root node will always be
+  selected when Leo opens a fixed .leo file.
+  
+  You can optionally specify the size and position on the screen of fixed .leo
+  files by putting an '@data fixedWindowPosition' node in the
+  @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
+  **not** put such a node in the fixed .leo file itself--everyone who
+  opens the file would get that fixed position.
+
+  The body of the '@data fixedWindowPosition' node should contain
+  something like this::
+
+    # Must be four entries: width,height,left,top.
+    # Put this in myLeoSettings.leo, **not** in individual .leo files.
+    
+    1200
+    800
+    50
+    50
+
+- Added @bool cleo_color_ignore setting.
+  This determines whether cleo colors @ignore headlines. The default is True.
+  
+- Added @bool suppress_import_parsing setting.
+  When True, @auto and @shadow import the entire file into a single node.
+  
+- Leo now completely ignores comments in @enabled-plugins nodes.
+  Leo enables all plugins mentioned in such nodes.</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**
