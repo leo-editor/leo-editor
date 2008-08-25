@@ -224,8 +224,6 @@ class LeoApp:
             'actionscript': 'actionscript',
             'ada':  'ada95',
             'adb':  'none', # ada??
-            # 'ahk':  'ahk',
-            "ahk"   : "autohotkey", #TL - AutoHotkey language
             'awk':  'awk',
             'bas':  'none', # rapidq
             'cpp':  'c',

@@ -1235,26 +1235,9 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
 
     self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-    if c.config.getBool('suppress_import_parsing', default=False):
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-    elif ext in (".c", ".cpp", ".cxx"):
-        self.scanCText(s,p,atAuto=atAuto)
-    elif ext == '.c#':
-        self.scanCSharpText(s,p,atAuto=atAuto)
-    elif ext == ".el":
-        self.scanElispText(s,p,atAuto=atAuto)
-    elif ext == ".java":
-        self.scanJavaText(s,p,atAuto=atAuto)
-    elif ext == ".js":
-        self.scanJavaScriptText(s,p,atAuto=atAuto)
-    elif ext == ".pas":
-        self.scanPascalText(s,p,atAuto=atAuto)
-    elif ext in (".py", ".pyw"):
-        self.scanPythonText(s,p,atAuto=atAuto)
-    elif ext == ".php":
-        self.scanPHPText(s,p,atAuto=atAuto)
-    elif ext in ('.html','.htm','.xml'):
-        self.scanXmlText(s,p,atAuto=atAuto)
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
     else:
         self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
@@ -1902,26 +1885,9 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
 
     self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-    if c.config.getBool('suppress_import_parsing', default=False):
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-    elif ext in (".c", ".cpp", ".cxx"):
-        self.scanCText(s,p,atAuto=atAuto)
-    elif ext == '.c#':
-        self.scanCSharpText(s,p,atAuto=atAuto)
-    elif ext == ".el":
-        self.scanElispText(s,p,atAuto=atAuto)
-    elif ext == ".java":
-        self.scanJavaText(s,p,atAuto=atAuto)
-    elif ext == ".js":
-        self.scanJavaScriptText(s,p,atAuto=atAuto)
-    elif ext == ".pas":
-        self.scanPascalText(s,p,atAuto=atAuto)
-    elif ext in (".py", ".pyw"):
-        self.scanPythonText(s,p,atAuto=atAuto)
-    elif ext == ".php":
-        self.scanPHPText(s,p,atAuto=atAuto)
-    elif ext in ('.html','.htm','.xml'):
-        self.scanXmlText(s,p,atAuto=atAuto)
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
     else:
         self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
@@ -27800,26 +27766,9 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
 
     self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-    if c.config.getBool('suppress_import_parsing', default=False):
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-    elif ext in (".c", ".cpp", ".cxx"):
-        self.scanCText(s,p,atAuto=atAuto)
-    elif ext == '.c#':
-        self.scanCSharpText(s,p,atAuto=atAuto)
-    elif ext == ".el":
-        self.scanElispText(s,p,atAuto=atAuto)
-    elif ext == ".java":
-        self.scanJavaText(s,p,atAuto=atAuto)
-    elif ext == ".js":
-        self.scanJavaScriptText(s,p,atAuto=atAuto)
-    elif ext == ".pas":
-        self.scanPascalText(s,p,atAuto=atAuto)
-    elif ext in (".py", ".pyw"):
-        self.scanPythonText(s,p,atAuto=atAuto)
-    elif ext == ".php":
-        self.scanPHPText(s,p,atAuto=atAuto)
-    elif ext in ('.html','.htm','.xml'):
-        self.scanXmlText(s,p,atAuto=atAuto)
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
     else:
         self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
@@ -28837,26 +28786,9 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
 
     self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-    if c.config.getBool('suppress_import_parsing', default=False):
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-    elif ext in (".c", ".cpp", ".cxx"):
-        self.scanCText(s,p,atAuto=atAuto)
-    elif ext == '.c#':
-        self.scanCSharpText(s,p,atAuto=atAuto)
-    elif ext == ".el":
-        self.scanElispText(s,p,atAuto=atAuto)
-    elif ext == ".java":
-        self.scanJavaText(s,p,atAuto=atAuto)
-    elif ext == ".js":
-        self.scanJavaScriptText(s,p,atAuto=atAuto)
-    elif ext == ".pas":
-        self.scanPascalText(s,p,atAuto=atAuto)
-    elif ext in (".py", ".pyw"):
-        self.scanPythonText(s,p,atAuto=atAuto)
-    elif ext == ".php":
-        self.scanPHPText(s,p,atAuto=atAuto)
-    elif ext in ('.html','.htm','.xml'):
-        self.scanXmlText(s,p,atAuto=atAuto)
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
     else:
         self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 

@@ -19,7 +19,7 @@ import string
 class leoImportCommands:
 
     #@    @+others
-    #@+node:ekr.20031218072017.3207:import.__init__
+    #@+node:ekr.20031218072017.3207:import.__init__ & helper
     def __init__ (self,c):
 
         self.c = c
@@ -37,7 +37,31 @@ class leoImportCommands:
         self.treeType = "@file" # "@root" or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
-    #@-node:ekr.20031218072017.3207:import.__init__
+
+        self.createImportDispatchDict()
+    #@+node:ekr.20080825131124.3:createImportDispatchDict
+    def createImportDispatchDict (self):
+
+        self.importDispatchDict = {
+            # Keys are file extensions, values are text scanners.
+            # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
+            '.c':       self.scanCText,
+            '.cpp':     self.scanCText,
+            '.cxx':     self.scanCText,
+            '.c#':      self.scanCSharpText,
+            '.el':      self.scanElispText,
+            '.htm':     self.scanXmlText,
+            '.html':    self.scanXmlText,
+            '.java':    self.scanJavaText,
+            '.js':      self.scanJavaScriptText,
+            '.php':     self.scanPHPText,
+            '.pas':     self.scanPascalText,
+            '.py':      self.scanPythonText,
+            '.pyw':     self.scanPythonText,
+            '.xml':     self.scanXmlText,
+        }
+    #@-node:ekr.20080825131124.3:createImportDispatchDict
+    #@-node:ekr.20031218072017.3207:import.__init__ & helper
     #@+node:ekr.20031218072017.3289:Export
     #@+node:ekr.20031218072017.3290:convertCodePartToWeb
     # Headlines not containing a section reference are ignored in noweb and generate index index in cweb.
@@ -848,26 +872,9 @@ class leoImportCommands:
 
         self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-        if c.config.getBool('suppress_import_parsing', default=False):
-            self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-        elif ext in (".c", ".cpp", ".cxx"):
-            self.scanCText(s,p,atAuto=atAuto)
-        elif ext == '.c#':
-            self.scanCSharpText(s,p,atAuto=atAuto)
-        elif ext == ".el":
-            self.scanElispText(s,p,atAuto=atAuto)
-        elif ext == ".java":
-            self.scanJavaText(s,p,atAuto=atAuto)
-        elif ext == ".js":
-            self.scanJavaScriptText(s,p,atAuto=atAuto)
-        elif ext == ".pas":
-            self.scanPascalText(s,p,atAuto=atAuto)
-        elif ext in (".py", ".pyw"):
-            self.scanPythonText(s,p,atAuto=atAuto)
-        elif ext == ".php":
-            self.scanPHPText(s,p,atAuto=atAuto)
-        elif ext in ('.html','.htm','.xml'):
-            self.scanXmlText(s,p,atAuto=atAuto)
+        func = self.importDispatchDict.get(ext)
+        if func and not c.config.getBool('suppress_import_parsing',default=False):
+            func(s,p,atAuto=atAuto)
         else:
             self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
