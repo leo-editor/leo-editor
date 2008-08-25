@@ -183,7 +183,9 @@
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
 <v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
-<v t="edream.110203163054.50"><vh>How to install Leo on Linux</vh></v>
+<v t="edream.110203163054.50" a="E"><vh>How to install Leo on Linux</vh>
+<v t="ekr.20080825082500.1"><vh>@rst-ignore old Linux install instructions</vh></v>
+</v>
 <v t="ekr.20070622141457"><vh>Installing Leo on Windows</vh>
 <v t="edream.110203163054.60"><vh>How to associate Leo with .leo files on Windows</vh></v>
 </v>
@@ -5599,7 +5601,7 @@ If you have *any* problems installing Leo,
 please ask for help on Leo's help forum:
 
 .. contents::</t>
-<t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later.
+<t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.2.1 or later and Tk 8.4 or later.
 
 -   Download the latest version of Leo from `Leo's download page`_.
 
@@ -5620,23 +5622,10 @@ please ask for help on Leo's help forum:
 Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
 The unpacked folder will be called something like leo-4-5.
 
-You now have two choices:
-    
-1. You can run Leo from your home directory.
-   Just add  ~/leo-4-5 to your path.
+You can run Leo from your home directory.
+You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
 
-2. You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows::
-    
-    cd ~/leo-4-4-3-final
-    chmod u+x install
-    sudo ./install
-    
-The install script will instruct you to add /usr/local/bin to your path.
-You can, instead, add the following link::
-
-    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
-
-Now you are ready to `run Leo`_.
+    python ~/leo-4-5/launchLeo.py
 </t>
 <t tx="edream.110203163054.60">Leo will open .leo files automatically provided that you associate leo.py with .leo files.
 Here is how to open Leo when double-clicking a .leo file on Windows 2K or XP:
@@ -31791,6 +31780,29 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
   
 - Added @bool suppress_import_parsing setting
   When True, @auto and @shadow import the entire file into a single node.</t>
+<t tx="ekr.20080825082500.1">Download the latest version of Leo (a .zip file) from `Leo's download page`_.
+   
+Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
+The unpacked folder will be called something like leo-4-5.
+
+You now have two choices:
+    
+1. You can run Leo from your home directory.
+   Just add  ~/leo-4-5 to your path.
+
+2. You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows::
+    
+    cd ~/leo-4-4-3-final
+    chmod u+x install
+    sudo ./install
+    
+The install script will instruct you to add /usr/local/bin to your path.
+You can, instead, add the following link::
+
+    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
+
+Now you are ready to `run Leo`_.
+</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**
