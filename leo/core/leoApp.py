@@ -199,7 +199,7 @@ class LeoApp:
             "java"  : "java",
             "lua"   : "lua",  # ddm 13/02/06
             "nw"    : "noweb",
-            "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+            #"otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
             "p"     : "pascal",
             # "perl"  : "perl",
             "pl"    : "perl",   # 11/7/05
@@ -230,6 +230,7 @@ class LeoApp:
             'el':   'lisp',
             'f':    'fortran',
             'nw':   'none', # noweb.
+            'otl':  'vimoutline',
             'pod':  'perl',
             'tcl':  'tcl',
             'unknown_language': 'none',
