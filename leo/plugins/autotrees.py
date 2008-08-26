@@ -197,8 +197,9 @@ class BaseTreeHandler:
 
     #@    @+others
     #@+node:ekr.20050329082101.127:__init__
-    def __init__(self, node):
+    def __init__(self,node):
         """Initialise the handler"""
+        self.c = None # set in initFrom.
         self.node = node
     #@nonl
     #@-node:ekr.20050329082101.127:__init__
@@ -225,8 +226,9 @@ class BaseTreeHandler:
             self.node.firstChild().doDelete(self.node)
     #@-node:ekr.20050329082101.129:preprocessNode
     #@+node:ekr.20050329082101.130:initFrom
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Perform any initialization here"""
+        self.c = c
         self.children = []
     #@nonl
     #@-node:ekr.20050329082101.130:initFrom
@@ -234,6 +236,7 @@ class BaseTreeHandler:
     def addChildren(self, child_list, add_to_node):
         """Add all the children"""
         #import pdb; pdb.set_trace()
+        c = self.c
         for child in child_list:
             new_node = add_to_node.insertAsLastChild()
             c.setHeadString(new_node,child.headline)
@@ -330,7 +333,7 @@ class pluginController:
         """Return True if the named handler is active"""
         if self.plugin_manager:
             enable_manager = self.plugin_manager.EnableManager()
-            enable_manager.initFrom(self.handler_path) 
+            enable_manager.initFrom(self.c,self.handler_path) 
             return handler.__module__ in enable_manager.actives
         else:
             return True   
@@ -370,7 +373,7 @@ class pluginController:
                         if event_type in handler.handles:
                             g.es("Handling '%s' with '%s'" % 
                                     (handler_name, parameter), color="blue")
-                            handler.initFrom(parameter)
+                            handler.initFrom(self.c,parameter)
                             handler.refresh()
                         else:
                             g.es("'%s' not registered for '%s'" % 

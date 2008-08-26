@@ -32191,6 +32191,44 @@ s = g.toUnicode(s,self.encoding)
 #@-node:ekr.20080212092908:<< convert s to the proper encoding >>
 #@-node:ekr.20031218072017.3210:createOutline (leoImport)
 #@-node:ekr.20080825131124.4:Generalized createOutline
+#@+node:ekr.20080815174457.4:Fixed bug in autotrees
+@nocolor
+
+I've been playing around with the rss examples in the autotrees
+plugin. If I click on an @auto-rss node, I get the following:
+
+Handling 'rss' with 'http://news.bbc.co.uk/rss/newsonline_uk_edition/
+world/rss091.xml'
+Starting download
+Done!
+Traceback (most recent call last):
+ File "/home/pbienst/source/leo-editor/leo/core/leoGlobals.py", line
+2743, in doHook
+   return f(tag,keywords)
+ File "/home/pbienst/source/leo-editor/leo/core/leoPlugins.py", line
+91, in doPlugins
+   return doHandlersForTag(tag,keywords)
+ File "/home/pbienst/source/leo-editor/leo/core/leoPlugins.py", line
+70, in doHandlersForTag
+   val = callTagHandler(bunch,tag,keywords)
+ File "/home/pbienst/source/leo-editor/leo/core/leoPlugins.py", line
+49, in callTagHandler
+   result = handler(tag,keywords)
+ File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
+line 347, in onIconDoubleClick
+   self.handleEvent("icondclick1", tag, keywords)
+ File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
+line 374, in handleEvent
+   handler.refresh()
+ File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
+line 213, in refresh
+   self.addChildren(self.children, self.node)
+ File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
+line 239, in addChildren
+   c.setHeadString(new_node,child.headline)
+NameError: global name 'c' is not defined
+#@nonl
+#@-node:ekr.20080815174457.4:Fixed bug in autotrees
 #@-node:ekr.20080826074455.2:4.5 rc1
 #@-all
 #@nonl
