@@ -321,8 +321,6 @@ Platform: Windows, Linux, Macintosh
 </t>
 <t tx="EKR.20040519090846.9">Leo 4.5 release candidate 1                    August 26, 2008
 
-**CHANGED**
-
 Leo 4.5rc1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
