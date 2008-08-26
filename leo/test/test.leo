@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -121,6 +121,7 @@
 </v>
 </v>
 <v t="ekr.20080214091706.2"><vh>@@command ekr-command</vh></v>
+<v t="ekr.20080823154546.1"><vh>@@command parse-python @key = Alt-5</vh></v>
 </v>
 <v t="ekr.20071026102420.3"><vh>Scripts</vh>
 <v t="ekr.20071129103842"><vh>create-at-auto-nodes</vh></v>
@@ -274,9 +275,8 @@
 <v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
 </v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
-</v>
-<v t="ekr.20080823154546.1"><vh>@command parse-python @key = Alt-5</vh></v>
 <v t="ekr.20080823154546.2"><vh>parse-python test</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1248,6 +1248,7 @@ ipython.py
 # open_with.py
 rClick.py
 # toolbar.py
+# autotrees.py
 
 add_directives.py
 color_markup.py

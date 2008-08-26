@@ -21067,7 +21067,7 @@ if g.os_path_exists(shadow_fn):
 
 deleteShadowDir(shadow_dir)
 
-x.makeShadowDirectory(shadow_dir,force=True)
+x.makeShadowDirectory(shadow_dir)
 assert os.path.exists(shadow_dir)
 
 deleteShadowDir(shadow_dir)
@@ -21168,7 +21168,7 @@ try:
     fn = 'unittest/test_1.py'
     shadow_fn = x.shadowPathName(fn)
     shadow_dir = x.shadowDirName(fn)
-    x.makeShadowDirectory(shadow_dir,force=True)
+    x.makeShadowDirectory(shadow_dir)
     if g.os_path_exists(shadow_fn):
         g.utils_remove(shadow_fn,verbose=True)
     at.writeOneAtShadowNode(child,toString=True,force=True)
