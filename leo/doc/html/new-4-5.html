@@ -314,6 +314,12 @@ g.startTracer()
 open, save, save-as, save-to, read-outline-only, read-file-into-node,
 write-file-from-node and all the import/export commands.</p>
 </li>
+<li><p class="first">Leo now puts various configuration files in the $HOME/.leo folder.</p>
+</li>
+<li><p class="first">Added contract-all-other-nodes command.</p>
+</li>
+<li><p class="first">Added support for &#64;args list in &#64;button and &#64;command nodes.</p>
+</li>
 </ul>
 </div>
 <div class="section" id="new-settings">
@@ -352,6 +358,12 @@ something like this:</p>
 </li>
 <li><p class="first">Added &#64;bool cleo_color_ignore = True
 This determines whether cleo colors &#64;ignore headlines. The default is True.</p>
+</li>
+<li><p class="first">Added &#64;bool suppress_import_parsing setting.
+When True, &#64;auto and &#64;shadow import the entire file into a single node.</p>
+</li>
+<li><p class="first">Leo now completely ignores comments in &#64;enabled-plugins nodes.
+Leo enables all plugins mentioned in such nodes.</p>
 </li>
 </ul>
 <hr class="docutils" />

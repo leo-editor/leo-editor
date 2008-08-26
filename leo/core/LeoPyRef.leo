@@ -191,7 +191,7 @@ if 0: # Set to 1 for lint-like testing.
 <t tx="ekr.20031218072017.3821"></t>
 <t tx="ekr.20040629121554.1">def getSignOnLine (self):
     c = self
-    return "Leo 4.5 b3, build %s, August 15, 2008" % c.getBuildNumber()
+    return "Leo 4.5 b4, build %s, August 25, 2008" % c.getBuildNumber()
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
