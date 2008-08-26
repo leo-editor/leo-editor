@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5,3,0,5,10"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -53,7 +53,8 @@
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20080301071818.1"
+marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
@@ -102,8 +103,8 @@
 <v t="ekr.20050830080545"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
+<v t="ekr.20050831195331.1" a="E"><vh>FAQ</vh>
+<v t="ekr.20050830115714" a="E"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20080603124653.1"><vh>How do I use bzr to get the latest sources from Leo's launchpad site?</vh></v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
@@ -119,7 +120,7 @@
 <v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
 </v>
 <v t="ekr.20050830115714.12"><vh>How should I use Leo with bzr?</vh></v>
-<v t="ekr.20050830115714.13"><vh>Using derived files</vh>
+<v t="ekr.20050830115714.13" a="E"><vh>Using derived files</vh>
 <v t="ekr.20050830115714.14"><vh>How do I inhibit sentinels in derived files?</vh></v>
 <v t="ekr.20050830115714.16"><vh>How do I prevent Leo from expanding sections?</vh></v>
 <v t="ekr.20050830115714.18"><vh>How can I create Javascript comments?</vh></v>
@@ -29970,7 +29971,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.5 b3]&lt;/a&gt;</t>
+    Download Leo[4.5 b4]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
