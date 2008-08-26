@@ -1,9 +1,7 @@
-Leo 4.5 beta 4                      August 25, 2008
+Leo 4.5 release candidate 1                     August 26, 2008
 
-Leo 4.5 beta 4 is now available at:
+Leo 4.5rc1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-This beta 4 release will likely be the last release before Leo 4.5 final.
 
 Leo 4.5 contains many important new features.  See below for details.
 
