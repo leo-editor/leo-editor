@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet ekr_stylesheet?>
+<?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -52,19 +52,19 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080809175634.2" a="E"><vh>@button make</vh>
-<v t="ekr.20080809180311.1"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
-<v t="ekr.20080809175634.3"><vh>remove</vh></v>
-<v t="ekr.20080809175634.4" a="E"><vh>class createExe</vh>
-<v t="ekr.20080809175634.5"><vh>ctor</vh></v>
-<v t="ekr.20080809175634.6"><vh>create_exe</vh></v>
-<v t="ekr.20080809175634.7"><vh>escape</vh></v>
-<v t="ekr.20080809175634.8"><vh>get_exe_bytes</vh></v>
-<v t="ekr.20080809175634.9"><vh>get_inidata</vh>
-<v t="ekr.20080809175634.10"><vh>get_metaData</vh></v>
-<v t="ekr.20080809175634.11"><vh>get_setup</vh></v>
+<v t="ekr.20080826091039.1"><vh>@button make</vh>
+<v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
+<v t="ekr.20080826091039.3"><vh>remove</vh></v>
+<v t="ekr.20080826091039.4" a="E"><vh>class createExe</vh>
+<v t="ekr.20080826091039.5"><vh>ctor</vh></v>
+<v t="ekr.20080826091039.6"><vh>create_exe</vh></v>
+<v t="ekr.20080826091039.7"><vh>escape</vh></v>
+<v t="ekr.20080826091039.8"><vh>get_exe_bytes</vh></v>
+<v t="ekr.20080826091039.9"><vh>get_inidata</vh>
+<v t="ekr.20080826091039.10"><vh>get_metaData</vh></v>
+<v t="ekr.20080826091039.11"><vh>get_setup</vh></v>
 </v>
-<v t="ekr.20080809175634.12"><vh>get_python_version</vh></v>
+<v t="ekr.20080826091039.12"><vh>get_python_version</vh></v>
 </v>
 </v>
 </vnodes>
@@ -550,236 +550,6 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080807093308.2"></t>
-<t tx="ekr.20080809175634.2">'''Create a Windows .exe installer directly from a .zip file.
-This code is based on create_exe in distutils/command/bdist_windinst.py.'''
-
-# To do: require Python 2.5 when running this script.
-# To do: post-install script to associate Leo with .leo files.
-# To do: Leo bitmap.
-
-&lt;&lt; includes &gt;&gt;
-@others
-
-version = '4-5-b4'
-abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
-trunk = abspath(join(g.app.loadDir,'..','..'))
-zipFile =  abspath(join(trunk,'Leo-%s.zip' % (version)))
-zipFile2 = abspath(join(trunk,'Leo-%s-temp.zip' % (version)))
-exeFile =  abspath(join(trunk,'Leo-%s.exe' % (version)))
-root = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
-
-if 1:
-
-    for z in (zipFile,zipFile2,exeFile):
-        if exists(z): remove(z)
-
-    commands = (
-        r'cd %s' % (trunk),
-        r'bzr export "%s"' % (zipFile),
-        r'bzr export --root="%s" "%s"' % (root,zipFile2),
-    )
-
-    for z in commands:
-        print ('command: %s' % z)
-        os.system(z)
-
-    x = createExe(exeFile,zipFile2,version=version)
-    x.create_exe()
-    remove(zipFile2)
-    os.system('dir %s' % (trunk))
-
-print('done')
-</t>
-<t tx="ekr.20080809175634.3">def remove (fileName):
-
-    g.es_print('removing',fileName)
-    os.remove(fileName)
-</t>
-<t tx="ekr.20080809175634.4">class createExe:
-
-    @others
-</t>
-<t tx="ekr.20080809175634.5">def __init__ (self,exeFile,zipFile,version):
-
-    self.exeFile = exeFile
-    self.zipFile = zipFile
-    self.theDir = g.os_path_dirname(zipFile)
-
-    # The path to distutils.command
-    self.distutils_command_path = r'C:\Python25\Lib\distutils\command'
-
-    # Hard-code the meta-data.
-    self.author = 'Edward K. Ream'
-    self.author_email = 'edreamleo@gmail.com'
-    self.description = "Leo: a programmer's editor, and more"
-    self.long_description = ''
-    self.maintainer = ''
-    self.maintainer_email = ''
-    self.name = 'Leo'
-    self.url = 'http://webpages.charter.net/edreamleo/front.html'
-    self.version = version
-
-    # Hard-coded options from initialize options.
-    self.no_target_compile = True
-    self.no_target_optimize = True
-    self.target_version = None # Require specific python version.
-    self.bitmap = None # bitmap to use for the installer instead of python-powered logo
-    self.title = 'Install Leo...' # title to display on the installer background instead of default
-    self.install_script = None
-        # basename of installation script to be run after installation or before deinstallation
-    self.pre_install_script = None
-        # Fully qualified filename of a script to be run before any files are installed.
-        # This script need not be in the distribution
-</t>
-<t tx="ekr.20080809175634.6">def create_exe (self, bitmap=None): ### arcname, fullname, bitmap=None):
-
-    cfgdata = self.get_inidata()
-
-    g.es_print("creating %s" % self.exeFile)
-
-    f = open(self.exeFile,"wb")
-    f.write(self.get_exe_bytes())
-
-    if bitmap:
-        bitmapdata = open(bitmap, "rb").read()
-        bitmaplen = len(bitmapdata)
-        f.write(bitmapdata)
-    else:
-        bitmaplen = 0
-
-    # Convert cfgdata from unicode to ascii, mbcs encoded
-    if isinstance(cfgdata, unicode):
-        cfgdata = cfgdata.encode("mbcs")
-
-    # Append the pre-install script
-    cfgdata = cfgdata + "\0"
-
-    if self.pre_install_script:
-        script_data = open(self.pre_install_script, "r").read()
-        cfgdata = cfgdata + script_data + "\n\0"
-    else:
-        cfgdata = cfgdata + "\0"
-
-    f.write(cfgdata)
-
-    # The 'magic number' is used to make sure that the binary
-    # layout of 'cfgdata' is what the wininst.exe binary expects.
-    # If the layout changes, increment that number here and in
-    # the wininst.exe sources, and recompile.
-    header = struct.pack("&lt;iii",
-        0x1234567B,       # Magic number.
-        len(cfgdata),     # length
-        bitmaplen,        # number of bytes in bitmap
-    )
-    f.write(header)
-
-    # Now append the zip file(!!)
-    f.write(open(self.zipFile, "rb").read())</t>
-<t tx="ekr.20080809175634.7">def escape(self,s):
-
-    return s.replace("\n", "\\n")
-</t>
-<t tx="ekr.20080809175634.8">def get_exe_bytes (self):
-
-    from distutils.msvccompiler import get_build_version
-    # If a target-version other than the current version has been
-    # specified, then using the MSVC version from *this* build is no good.
-    # Without actually finding and executing the target version and parsing
-    # its sys.version, we just hard-code our knowledge of old versions.
-    cur_version = self.get_python_version()
-
-    if self.target_version and self.target_version != cur_version:
-        # If the target version is *later* than us, then we assume they
-        # use what we use.
-        # string compares seem wrong, but are what sysconfig.py itself uses
-        if self.target_version &gt; cur_version:
-            bv = get_build_version()
-        else:
-            if self.target_version &lt; "2.4":
-                bv = "6"
-            else:
-                bv = "7.1"
-    else:
-        # for current version - use authoritative check.
-        bv = get_build_version()
-
-    # wininst-x.y.exe is in the same directory as this file
-    directory = self.distutils_command_path ## os.path.dirname(__file__)
-
-    # we must use a wininst-x.y.exe built with the same C compiler
-    # used for python.  XXX What about mingw, borland, and so on?
-    filename = os.path.join(directory, "wininst-%s.exe" % bv)
-
-    # g.es_print('reading %s' % filename)
-    return open(filename, "rb").read()</t>
-<t tx="ekr.20080809175634.9">def get_inidata (self):
-    # Return data describing the installation.
-
-    lines = []
-    lines,info = self.get_metaData(lines)
-    lines = self.get_setup(lines,info)
-
-    result = '\n'.join(lines)
-    # g.trace(result)
-
-    return result
-</t>
-<t tx="ekr.20080809175634.10">def get_metaData(self,lines):
-
-    '''Create the lines of the metadata section.'''
-
-    lines.append("[metadata]")
-
-    # 'info' will be displayed in the installer's dialog box.
-    info = (self.long_description or '') + '\n'
-
-    table = (
-        "author", "author_email","description",
-        "maintainer","maintainer_email",
-        "name", "url", "version",)
-
-    for ivar in table:
-        data = self.escape(getattr(self,ivar))
-        if data:
-            info = info + ("\n    %s: %s" % (ivar.capitalize(), data))
-            lines.append("%s=%s" % (ivar, data))
-
-    return lines, info
-</t>
-<t tx="ekr.20080809175634.11">def get_setup (self,lines,info):
-
-    '''Append the lines of the setup section.'''
-
-    lines.append("\n[Setup]")
-
-    if self.install_script:
-        lines.append("install_script=%s" % self.install_script)
-
-    lines.append("info=%s" % self.escape(info))
-    lines.append("target_compile=%d" % (not self.no_target_compile))
-    lines.append("target_optimize=%d" % (not self.no_target_optimize))
-
-    if self.target_version:
-        lines.append("target_version=%s" % self.target_version)
-
-    lines.append("title=%s" % self.escape(self.title))
-
-    build_info = "Built %s with ekr-script" % (time.ctime(time.time()))
-    lines.append("build_info=%s" % build_info)
-
-    return lines
-</t>
-<t tx="ekr.20080809175634.12">def get_python_version(self):
-
-    """Return a string containing the major and minor Python version,
-    leaving off the patchlevel.  Sample return values could be '1.5'
-    or '2.2'.
-    """
-    return sys.version[:3]</t>
-<t tx="ekr.20080809180311.1">import os
-import struct
-import sys
-import time</t>
 <t tx="ekr.20080815093141.108">Leo 4.5 beta 3                      August 15, 2008
 
 Leo 4.5 beta 3 is now available at:
@@ -894,5 +664,247 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080826091039.1">'''Create a Windows .exe installer directly from a .zip file.
+This code is based on create_exe in distutils/command/bdist_windinst.py.'''
+
+# To do: require Python 2.5 when running this script.
+# To do: post-install script to associate Leo with .leo files.
+# To do: Leo bitmap.
+
+&lt;&lt; includes &gt;&gt;
+@others
+
+version = '4-5-b3'
+abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
+
+docDir = abspath(join(g.app.loadDir,'..','doc'))
+trunk = abspath(join(g.app.loadDir,'..','..'))
+zipFile =  abspath(join(trunk,'Leo-%s.zip' % (version)))
+zipFile2 = abspath(join(trunk,'Leo-%s-temp.zip' % (version)))
+exeFile =  abspath(join(trunk,'Leo-%s.exe' % (version)))
+root = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
+
+# Copy files from the doc directory to the trunk directory.
+for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+    path= abspath(join(docDir,theFile))
+    # print exists(path),path
+    shutil.copy(path,trunk)
+# os.system('dir %s' % (trunk))
+
+if 1:
+    for z in (zipFile,zipFile2,exeFile):
+        if exists(z): remove(z)
+        
+   
+    
+
+    commands = (
+        r'cd %s' % (trunk),
+        r'bzr export "%s"' % (zipFile),
+        r'bzr export --root="%s" "%s"' % (root,zipFile2),
+    )
+
+    for z in commands:
+        print ('command: %s' % z)
+        os.system(z)
+
+    x = createExe(exeFile,zipFile2,version=version)
+    x.create_exe()
+    remove(zipFile2)
+    os.system('dir %s' % (trunk))
+
+print('done')
+</t>
+<t tx="ekr.20080826091039.2">import os
+import shutil
+import struct
+import sys
+import time</t>
+<t tx="ekr.20080826091039.3">def remove (fileName):
+
+    g.es_print('removing',fileName)
+    os.remove(fileName)
+</t>
+<t tx="ekr.20080826091039.4">class createExe:
+
+    @others
+</t>
+<t tx="ekr.20080826091039.5">def __init__ (self,exeFile,zipFile,version):
+
+    self.exeFile = exeFile
+    self.zipFile = zipFile
+    self.theDir = g.os_path_dirname(zipFile)
+
+    # The path to distutils.command
+    self.distutils_command_path = r'C:\Python25\Lib\distutils\command'
+
+    # Hard-code the meta-data.
+    self.author = 'Edward K. Ream'
+    self.author_email = 'edreamleo@gmail.com'
+    self.description = "Leo: a programmer's editor, and more"
+    self.long_description = ''
+    self.maintainer = ''
+    self.maintainer_email = ''
+    self.name = 'Leo'
+    self.url = 'http://webpages.charter.net/edreamleo/front.html'
+    self.version = version
+
+    # Hard-coded options from initialize options.
+    self.no_target_compile = True
+    self.no_target_optimize = True
+    self.target_version = None # Require specific python version.
+    self.bitmap = None # bitmap to use for the installer instead of python-powered logo
+    self.title = 'Install Leo...' # title to display on the installer background instead of default
+    self.install_script = None
+        # basename of installation script to be run after installation or before deinstallation
+    self.pre_install_script = None
+        # Fully qualified filename of a script to be run before any files are installed.
+        # This script need not be in the distribution
+</t>
+<t tx="ekr.20080826091039.6">def create_exe (self, bitmap=None): ### arcname, fullname, bitmap=None):
+
+    cfgdata = self.get_inidata()
+
+    g.es_print("creating %s" % self.exeFile)
+
+    f = open(self.exeFile,"wb")
+    f.write(self.get_exe_bytes())
+
+    if bitmap:
+        bitmapdata = open(bitmap, "rb").read()
+        bitmaplen = len(bitmapdata)
+        f.write(bitmapdata)
+    else:
+        bitmaplen = 0
+
+    # Convert cfgdata from unicode to ascii, mbcs encoded
+    if isinstance(cfgdata, unicode):
+        cfgdata = cfgdata.encode("mbcs")
+
+    # Append the pre-install script
+    cfgdata = cfgdata + "\0"
+
+    if self.pre_install_script:
+        script_data = open(self.pre_install_script, "r").read()
+        cfgdata = cfgdata + script_data + "\n\0"
+    else:
+        cfgdata = cfgdata + "\0"
+
+    f.write(cfgdata)
+
+    # The 'magic number' is used to make sure that the binary
+    # layout of 'cfgdata' is what the wininst.exe binary expects.
+    # If the layout changes, increment that number here and in
+    # the wininst.exe sources, and recompile.
+    header = struct.pack("&lt;iii",
+        0x1234567B,       # Magic number.
+        len(cfgdata),     # length
+        bitmaplen,        # number of bytes in bitmap
+    )
+    f.write(header)
+
+    # Now append the zip file(!!)
+    f.write(open(self.zipFile, "rb").read())</t>
+<t tx="ekr.20080826091039.7">def escape(self,s):
+
+    return s.replace("\n", "\\n")
+</t>
+<t tx="ekr.20080826091039.8">def get_exe_bytes (self):
+
+    from distutils.msvccompiler import get_build_version
+    # If a target-version other than the current version has been
+    # specified, then using the MSVC version from *this* build is no good.
+    # Without actually finding and executing the target version and parsing
+    # its sys.version, we just hard-code our knowledge of old versions.
+    cur_version = self.get_python_version()
+
+    if self.target_version and self.target_version != cur_version:
+        # If the target version is *later* than us, then we assume they
+        # use what we use.
+        # string compares seem wrong, but are what sysconfig.py itself uses
+        if self.target_version &gt; cur_version:
+            bv = get_build_version()
+        else:
+            if self.target_version &lt; "2.4":
+                bv = "6"
+            else:
+                bv = "7.1"
+    else:
+        # for current version - use authoritative check.
+        bv = get_build_version()
+
+    # wininst-x.y.exe is in the same directory as this file
+    directory = self.distutils_command_path ## os.path.dirname(__file__)
+
+    # we must use a wininst-x.y.exe built with the same C compiler
+    # used for python.  XXX What about mingw, borland, and so on?
+    filename = os.path.join(directory, "wininst-%s.exe" % bv)
+
+    # g.es_print('reading %s' % filename)
+    return open(filename, "rb").read()</t>
+<t tx="ekr.20080826091039.9">def get_inidata (self):
+    # Return data describing the installation.
+
+    lines = []
+    lines,info = self.get_metaData(lines)
+    lines = self.get_setup(lines,info)
+
+    result = '\n'.join(lines)
+    # g.trace(result)
+
+    return result
+</t>
+<t tx="ekr.20080826091039.10">def get_metaData(self,lines):
+
+    '''Create the lines of the metadata section.'''
+
+    lines.append("[metadata]")
+
+    # 'info' will be displayed in the installer's dialog box.
+    info = (self.long_description or '') + '\n'
+
+    table = (
+        "author", "author_email","description",
+        "maintainer","maintainer_email",
+        "name", "url", "version",)
+
+    for ivar in table:
+        data = self.escape(getattr(self,ivar))
+        if data:
+            info = info + ("\n    %s: %s" % (ivar.capitalize(), data))
+            lines.append("%s=%s" % (ivar, data))
+
+    return lines, info
+</t>
+<t tx="ekr.20080826091039.11">def get_setup (self,lines,info):
+
+    '''Append the lines of the setup section.'''
+
+    lines.append("\n[Setup]")
+
+    if self.install_script:
+        lines.append("install_script=%s" % self.install_script)
+
+    lines.append("info=%s" % self.escape(info))
+    lines.append("target_compile=%d" % (not self.no_target_compile))
+    lines.append("target_optimize=%d" % (not self.no_target_optimize))
+
+    if self.target_version:
+        lines.append("target_version=%s" % self.target_version)
+
+    lines.append("title=%s" % self.escape(self.title))
+
+    build_info = "Built %s with ekr-script" % (time.ctime(time.time()))
+    lines.append("build_info=%s" % build_info)
+
+    return lines
+</t>
+<t tx="ekr.20080826091039.12">def get_python_version(self):
+
+    """Return a string containing the major and minor Python version,
+    leaving off the patchlevel.  Sample return values could be '1.5'
+    or '2.2'.
+    """
+    return sys.version[:3]</t>
 </tnodes>
 </leo_file>
