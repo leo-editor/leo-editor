@@ -35,7 +35,7 @@
 </v>
 </v>
 <v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
@@ -150,7 +150,7 @@ rm -f  $LEO_RUN_SCRIPT_OUTPUT
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -b4
+Latest suffix:  -rc1
 
 
 </t>
@@ -300,7 +300,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.5-b4
+Version: 4.5-rc1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -674,32 +674,28 @@ This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 &lt;&lt; includes &gt;&gt;
 @others
 
-version = '4-5-b3'
+version = '4-5-rc1'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 docDir = abspath(join(g.app.loadDir,'..','doc'))
-trunk = abspath(join(g.app.loadDir,'..','..'))
-zipFile =  abspath(join(trunk,'Leo-%s.zip' % (version)))
-zipFile2 = abspath(join(trunk,'Leo-%s-temp.zip' % (version)))
-exeFile =  abspath(join(trunk,'Leo-%s.exe' % (version)))
+top = abspath(join(g.app.loadDir,'..','..'))
+zipFile =  abspath(join(top,'Leo-%s.zip' % (version)))
+zipFile2 = abspath(join(top,'Leo-%s-temp.zip' % (version)))
+exeFile =  abspath(join(top,'Leo-%s.exe' % (version)))
 root = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
 
-# Copy files from the doc directory to the trunk directory.
+# Copy files from the doc directory to the top directory.
 for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
     path= abspath(join(docDir,theFile))
-    # print exists(path),path
-    shutil.copy(path,trunk)
-# os.system('dir %s' % (trunk))
+    shutil.copy(path,top)
+    print('created in %s: %s' % (top,theFile))
 
 if 1:
     for z in (zipFile,zipFile2,exeFile):
         if exists(z): remove(z)
-        
-   
-    
 
     commands = (
-        r'cd %s' % (trunk),
+        r'cd %s' % (top),
         r'bzr export "%s"' % (zipFile),
         r'bzr export --root="%s" "%s"' % (root,zipFile2),
     )
@@ -711,7 +707,7 @@ if 1:
     x = createExe(exeFile,zipFile2,version=version)
     x.create_exe()
     remove(zipFile2)
-    os.system('dir %s' % (trunk))
+    os.system('dir %s' % (top))
 
 print('done')
 </t>

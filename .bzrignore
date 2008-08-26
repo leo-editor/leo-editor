@@ -10,11 +10,6 @@
 .leo
 .ropeProject
 
-install
-uninstall
-INSTALL.TXT
-README.TXT
-PKG-INFO.TXT
 gradient.png
 
 leo/*.zip
