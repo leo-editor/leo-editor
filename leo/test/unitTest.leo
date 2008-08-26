@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="78" left="225" height="885" width="887"/>
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1011,7 +1011,7 @@
 <v t="ekr.20050618053006"><vh>@test colorizer plsql</vh>
 <v t="ekr.20050618053006.1"><vh>plsql</vh></v>
 </v>
-<v t="ekr.20040712101754.143" a="M"><vh>@test colorizer python.xml (jEdit)</vh>
+<v t="ekr.20040712101754.143"><vh>@test colorizer python.xml (jEdit)</vh>
 <v t="ekr.20040712101754.144"><vh>python.xml</vh>
 <v t="ekr.20040712101754.145"><vh>&lt;&lt; remarks &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.146"><vh>&lt;&lt; comments &gt;&gt;</vh></v>
@@ -2030,8 +2030,8 @@
 </v>
 <v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
-<v t="ekr.20040712101754.184" a="M"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
-<v t="ekr.20040712101754.208" a="M" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
+<v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
+<v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
 </v>
 <v t="ekr.20040712101754.99" annotate="7d71002e"><vh>@test c iters</vh>
 <v t="ekr.20040712101754.100"><vh>&lt;&lt; coverage tests &gt;&gt;</vh></v>
@@ -2074,7 +2074,7 @@
 <v t="ekr.20040802071519.1"><vh>child</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
-<v t="ekr.20040712101754.200" a="M" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
+<v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
@@ -4692,9 +4692,9 @@ verbose = False
 
 python_interp = sys.executable
 test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
-src_path  = g.os_path_join(g.app.loadDir,"..","core")
+src_path  = g.os_path_join(g.app.loadDir,"..","..")
 
-leo_file   = g.os_path_join(src_path,"runLeo.py")
+leo_file   = g.os_path_join(src_path,"launchLeo.py")
 batch_file = g.os_path_join(test_path,"batchTest.py")
 test_file  = g.os_path_join(test_path,"createdFile.txt")
 
