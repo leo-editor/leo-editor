@@ -496,16 +496,27 @@ This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 
 version = '4-5-b3'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
+
+docDir = abspath(join(g.app.loadDir,'..','doc'))
 trunk = abspath(join(g.app.loadDir,'..','..'))
 zipFile =  abspath(join(trunk,'Leo-%s.zip' % (version)))
 zipFile2 = abspath(join(trunk,'Leo-%s-temp.zip' % (version)))
 exeFile =  abspath(join(trunk,'Leo-%s.exe' % (version)))
 root = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
 
-if 1:
+# Copy files from the doc directory to the trunk directory.
+for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+    path= abspath(join(docDir,theFile))
+    # print exists(path),path
+    shutil.copy(path,trunk)
+# os.system('dir %s' % (trunk))
 
+if 1:
     for z in (zipFile,zipFile2,exeFile):
         if exists(z): remove(z)
+        
+   
+    
 
     commands = (
         r'cd %s' % (trunk),
@@ -711,6 +722,7 @@ print('done')
     """
     return sys.version[:3]</t>
 <t tx="ekr.20080809180311.1">import os
+import shutil
 import struct
 import sys
 import time</t>
