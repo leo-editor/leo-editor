@@ -694,7 +694,9 @@ if 1:
 
     commands = (
         r'cd %s' % (top),
+        r'bzr status',
         r'bzr commit -m "commit doc files during make"',
+        r'bzr status',
         r'bzr export "%s"' % (zipFile),
         r'bzr export --root="%s" "%s"' % (root,zipFile2),
     )
