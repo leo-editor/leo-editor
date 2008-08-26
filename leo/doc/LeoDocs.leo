@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="0" left="0" height="680" width="938"/>
+	<global_window_position top="10" left="10" height="680" width="938"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -58,7 +58,7 @@
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -1188,7 +1188,7 @@
 </v>
 </v>
 <v t="edream.110203163054.46"><vh>Release Notes</vh>
-<v t="edream.110203163054.117"><vh>Previous versions...</vh>
+<v t="edream.110203163054.117" a="E"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
 <v t="edream.110203163054.67"><vh>4.0 final</vh>
@@ -1530,7 +1530,7 @@
 <v t="EKR.20040518075457"><vh>Dangers of @file-thin</vh></v>
 </v>
 </v>
-<v t="ekr.20060206111600"><vh>4.3...@settings</vh>
+<v t="ekr.20060206111600" a="E"><vh>4.3...@settings</vh>
 <v t="ekr.20050917092557"><vh>4.3.3 final</vh>
 <v t="ekr.20050917105646"><vh>Fixes made in 4.3.3</vh></v>
 <v t="ekr.20050917092557.1"><vh>Rewrote documentation</vh></v>
@@ -13443,7 +13443,7 @@ To add support for a new language, just add another such description file.</t>
  
 -   Get cvs write access, and add the `@thin`_ file to the plugins directory.
 
--   Just send the `@thin`_ file to me at edreamleo@charter.net.
+-   Just send the `@thin`_ file to me at edreamleo@gmail.com.
     That's all you need to do.  In particular that there is no need to change ``leoPlugins.leo``.</t>
 <t tx="ekr.20050830115714.74">The Import Files dialog allows you to select multiple files provided you are running Python 2.3 or above.
 There is also an importFiles script in ``LeoPy.leo``.  You can use that script as follows::
@@ -17055,7 +17055,7 @@ presently distributed with Leo; studying these plugins is a good way of learning
 to write your own plugins.</t>
 <t tx="ekr.20050916184158.16">- Leo’s home page:  google edreamleo or http://webpages.charter.net/edreamleo/front.html
 
-- Edward K. Ream:  edreamleo@charter.net, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766</t>
+- Edward K. Ream:  edreamleo@gmail.com, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766</t>
 <t tx="ekr.20050917092557">Leo 4.3.3 final                 September 17, 2005
 
 Leo 4.3.3 fixes several bugs reported in Leo 4.3.2 final in the last several days.
