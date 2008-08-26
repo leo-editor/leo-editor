@@ -23900,7 +23900,7 @@ def resolveArchivedPosition(self,archivedPosition,root_v):
 #@-node:ekr.20080805132422.2:Reading
 #@-node:ekr.20080804063523.3:allow v.uA's in @thin and @shadow nodes
 #@-node:ekr.20080702123133.2:4.5 b2
-#@+node:ekr.20080810085333.3:4.5 b3
+#@+node:ekr.20080810085333.3:4.5 b3 & b4
 #@+node:ekr.20080822065427.5:Leo now require Python 2.4 or higher
 This the start of support for Python 3.0.
 #@nonl
@@ -32091,7 +32091,107 @@ def writeRecentFilesFileHelper (self,fileName):
 #@-node:ekr.20080823082100.5:To do: create Home .leo file if it does not exist
 #@-node:ekr.20080822142201.3:Put leoID.txt and myLeoSettings.leo in HOME/.leo
 #@-node:ekr.20080811174246.4:Features
-#@-node:ekr.20080810085333.3:4.5 b3
+#@-node:ekr.20080810085333.3:4.5 b3 & b4
+#@+node:ekr.20080826074455.2:4.5 rc1
+#@+node:ekr.20080825131124.4:Generalized createOutline
+#@+node:ekr.20080825131124.3:createImportDispatchDict
+def createImportDispatchDict (self):
+
+    self.importDispatchDict = {
+        # Keys are file extensions, values are text scanners.
+        # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
+        '.c':       self.scanCText,
+        '.cpp':     self.scanCText,
+        '.cxx':     self.scanCText,
+        '.c#':      self.scanCSharpText,
+        '.el':      self.scanElispText,
+        '.htm':     self.scanXmlText,
+        '.html':    self.scanXmlText,
+        '.java':    self.scanJavaText,
+        '.js':      self.scanJavaScriptText,
+        '.php':     self.scanPHPText,
+        '.pas':     self.scanPascalText,
+        '.py':      self.scanPythonText,
+        '.pyw':     self.scanPythonText,
+        '.xml':     self.scanXmlText,
+    }
+#@-node:ekr.20080825131124.3:createImportDispatchDict
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = g.os_path_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = g.os_path_normpath(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    z = g.choose(atAuto,'@auto ','')
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@-node:ekr.20080825131124.4:Generalized createOutline
+#@-node:ekr.20080826074455.2:4.5 rc1
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt
