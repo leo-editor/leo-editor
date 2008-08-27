@@ -684,7 +684,7 @@ zipFile             = abspath(join(top,'Leo-%s.zip' % (version)))
 zipFile2            = abspath(join(top,'Leo-%s-temp.zip' % (version)))
 exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
 pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
-install_script      = 'post-install-script.py' # Installed in Python/Scripts.
+post_install_script = None # 'post-install-script.py' # Installed in Python/Scripts.
 
 if 1:
     # Copy files from the doc directory to the top directory.
@@ -709,7 +709,7 @@ if 1:
         print ('command: %s' % z)
         os.system(z)
 
-    x = createExe(exeFile,pre_install_script,install_script,zipFile2,version=version)
+    x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
     x.create_exe()
     remove(zipFile2)
     os.system('dir %s' % (top))
