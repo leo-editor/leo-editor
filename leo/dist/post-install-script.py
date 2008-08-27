@@ -3,28 +3,45 @@
 import _winreg as wr
 import sys, os
 
-testing = True ; problems = False
+version = '4-5-rc1'
+
+testing = True ; problems = False ; verbose = False
 abspath, exists, join = os.path.abspath, os.path.exists, os.path.join
 
-# Leo path needs to come from the installer!
-if testing:             leo_path = abspath(join(g.app.loadDir,'..'))
-elif len(sys.argv) > 1: leo_path = abspath(sys.argv[1])
-else:                   leo_path = r"c:\Program Files\leo"
+# The path to Leo will be python/Lib/site-packages/leo.
+# To get this, we look for entries in sys.path whose first component starts with python.
+
+print '=' * 40 ; found = False
+for path in sys.path:
+    if found: break
+    drive,head = os.path.splitdrive(path)
+    if verbose: print 'drive',drive,'head',head
+    if not head.lower().startswith(r'\python'):
+        continue
+    while not found:
+        head,tail = os.path.split(head)
+        if verbose: print 'head',head,'tail',tail
+        head2,tail2 = os.path.split(head)
+        if verbose: print 'head2',head2,'tail2',tail2
+        if not tail2.strip():
+            python = join(drive,'\\',tail) # Don't use abspath here!
+            print '**found**',python
+            found = True
 
 # Compute paths.
-exe     = sys.executable
-top     = abspath(join(leo_path,'..'))
+exe      = abspath(join(python,'pythonw.exe'))
+top      = abspath(join(python,'Lib','site-packages','Leo-%s' % (version)))
 pythonw = abspath(join(os.path.dirname(exe), 'pythonw.exe'))
-runLeo  = abspath(join(leo_path,'core','runLeo.py'))
-icon    = abspath(join(leo_path,'icons','LeoDoc.ico'))
+runLeo  = abspath(join(top,'leo','core','runLeo.py'))
+icon    = abspath(join(top,'leo','icons','LeoDoc.ico'))
 
 if testing:
+    print ('exists %s, python:   %s' % (exists(python),python))
     print ('exists %s, top:      %s' % (exists(top), top))
-    print ('exists %s, leo_path: %s' % (exists(leo_path),leo_path))
     print ('exists %s, runLeo:   %s' % (exists(runLeo), runLeo))
     print ('exists %s, icon:     %s' % (exists(icon), icon))
 
-if 1:
+if found:
     if not problems and os.path.basename(exe) == 'python.exe': # Avoid showing the console
         exe = pythonw
 
