@@ -140,9 +140,9 @@ Here are some tips that may make running Leo easier:
     The following shell script will allow you to open foo.leo files by typing leo foo::
 
         #!/bin/sh 
-        python <leopath>/leo/core/runLeo.py $1
+        python <leopath>launchLeo.py $1
 
-    where <leopath> is the path to the directory containing the leo directory. 
+    where <leopath> is the path to the directory *containing* the leo directory. 
 
 **Windows**
     If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
@@ -150,9 +150,9 @@ Here are some tips that may make running Leo easier:
     Put the following .bat file in c:\\Windows::
 
         cd <path-to-leo>
-        c:\python25\python <path-to-leo>leo\core\runLeo.py %1
+        c:\python25\python <path-to-leo>launchLeo.py %1
 
-    where <path-to-leo> is the path to the directory containing the leo directory.
+    where <path-to-leo> is the path to the directory *containing* the leo directory.
 
     This opens the file specified by the first argument (%1).
 

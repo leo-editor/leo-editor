@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="102" left="120" height="810" width="1093"/>
+	<global_window_position top="102" left="127" height="810" width="1086"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -62,7 +62,7 @@
 <v t="ekr.20080826091039.6"><vh>create_exe</vh></v>
 <v t="ekr.20080826091039.7"><vh>escape</vh></v>
 <v t="ekr.20080826091039.8"><vh>get_exe_bytes</vh></v>
-<v t="ekr.20080826091039.9"><vh>get_inidata</vh>
+<v t="ekr.20080826091039.9" a="E"><vh>get_inidata</vh>
 <v t="ekr.20080826091039.10"><vh>get_metaData</vh></v>
 <v t="ekr.20080826091039.11"><vh>get_setup</vh></v>
 </v>
@@ -678,19 +678,23 @@ version = '4-5-rc1'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 docDir = abspath(join(g.app.loadDir,'..','doc'))
-top = abspath(join(g.app.loadDir,'..','..'))
-zipFile =  abspath(join(top,'Leo-%s.zip' % (version)))
-zipFile2 = abspath(join(top,'Leo-%s-temp.zip' % (version)))
-exeFile =  abspath(join(top,'Leo-%s.exe' % (version)))
+top         = abspath(join(g.app.loadDir,'..','..'))
+zipFile     = abspath(join(top,'Leo-%s.zip' % (version)))
+zipFile2    = abspath(join(top,'Leo-%s-temp.zip' % (version)))
+exeFile     = abspath(join(top,'Leo-%s.exe' % (version)))
+post_script = abspath(join(g.app.loadDir,'dist','post-install-script.py'))
 root = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
 
-# Copy files from the doc directory to the top directory.
-for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
-    path= abspath(join(docDir,theFile))
-    shutil.copy(path,top)
-    g.es_print('created in %s: %s' % (top,theFile))
+install_script = "r'%s'" % post_script
+print('install_script: %s' % install_script)
 
 if 1:
+    # Copy files from the doc directory to the top directory.
+    for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+        path= abspath(join(docDir,theFile))
+        shutil.copy(path,top)
+        g.es_print('created in %s: %s' % (top,theFile))
+    
     for z in (zipFile,zipFile2,exeFile):
         if exists(z): remove(z)
 
@@ -707,7 +711,7 @@ if 1:
         print ('command: %s' % z)
         os.system(z)
 
-    x = createExe(exeFile,zipFile2,version=version)
+    x = createExe(exeFile,install_script,zipFile2,version=version)
     x.create_exe()
     remove(zipFile2)
     os.system('dir %s' % (top))
@@ -728,7 +732,7 @@ import time</t>
 
     @others
 </t>
-<t tx="ekr.20080826091039.5">def __init__ (self,exeFile,zipFile,version):
+<t tx="ekr.20080826091039.5">def __init__ (self,exeFile,install_script,zipFile,version):
 
     self.exeFile = exeFile
     self.zipFile = zipFile
@@ -754,13 +758,13 @@ import time</t>
     self.target_version = None # Require specific python version.
     self.bitmap = None # bitmap to use for the installer instead of python-powered logo
     self.title = 'Install Leo...' # title to display on the installer background instead of default
-    self.install_script = None
+    self.install_script = install_script
         # basename of installation script to be run after installation or before deinstallation
     self.pre_install_script = None
         # Fully qualified filename of a script to be run before any files are installed.
         # This script need not be in the distribution
 </t>
-<t tx="ekr.20080826091039.6">def create_exe (self, bitmap=None): ### arcname, fullname, bitmap=None):
+<t tx="ekr.20080826091039.6">def create_exe (self, bitmap=None):
 
     cfgdata = self.get_inidata()
 
@@ -893,7 +897,7 @@ import time</t>
 
     lines.append("title=%s" % self.escape(self.title))
 
-    build_info = "Built %s with ekr-script" % (time.ctime(time.time()))
+    build_info = "Built at %s" % (time.ctime(time.time()))
     lines.append("build_info=%s" % build_info)
 
     return lines
