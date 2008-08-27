@@ -694,7 +694,7 @@ if 1:
         path= abspath(join(docDir,theFile))
         shutil.copy(path,top)
         g.es_print('created in %s: %s' % (top,theFile))
-    
+
     for z in (zipFile,zipFile2,exeFile):
         if exists(z): remove(z)
 
