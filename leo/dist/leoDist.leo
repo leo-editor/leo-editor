@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -47,11 +47,13 @@
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
+<v t="ekr.20080827092958.2"><vh>The script</vh></v>
 <v t="EKR.20040519082027.32" a="E"><vh>Linux install/uninstall scripts</vh>
 <v t="EKR.20040519082027.33"><vh>@@file-thin ../../install</vh></v>
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
+<v t="ekr.20080827092958.1"><vh>@thin post-install-script.py</vh></v>
 <v t="ekr.20080826091039.1" a="E"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080826091039.3"><vh>remove</vh></v>
@@ -903,5 +905,6 @@ import time</t>
     or '2.2'.
     """
     return sys.version[:3]</t>
+<t tx="ekr.20080827092958.2"></t>
 </tnodes>
 </leo_file>

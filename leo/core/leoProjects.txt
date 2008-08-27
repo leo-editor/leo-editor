@@ -32531,6 +32531,14 @@ def adjustTargetLanguage (self,fn):
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080826074455.3:Force the creation of shadow directories
+#@+node:ekr.20080827074409.1:Removed references to runLeo.py from docs
+(not a problem) ./leo/test/test.leo
+(not a problem) ./leo/test/unitTest.leo
+(fixed)./leo/dist/leoDist.leo
+(fixed)./leo/doc/INSTALL.TXT
+(fixed) ./leo/doc/LeoDocs.leo
+#@nonl
+#@-node:ekr.20080827074409.1:Removed references to runLeo.py from docs
 #@-node:ekr.20080826074455.2:4.5 rc1
 #@-all
 #@nonl
