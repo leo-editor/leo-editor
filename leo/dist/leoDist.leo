@@ -679,20 +679,18 @@ This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 version = '4-5-rc1'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
-docDir = abspath(join(g.app.loadDir,'..','doc'))
-top         = abspath(join(g.app.loadDir,'..','..'))
-zipFile     = abspath(join(top,'Leo-%s.zip' % (version)))
-zipFile2    = abspath(join(top,'Leo-%s-temp.zip' % (version)))
-exeFile     = abspath(join(top,'Leo-%s.exe' % (version)))
+root                = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
+docDir              = abspath(join(g.app.loadDir,'..','doc'))
+top                 = abspath(join(g.app.loadDir,'..','..'))
+zipFile             = abspath(join(top,'Leo-%s.zip' % (version)))
+zipFile2            = abspath(join(top,'Leo-%s-temp.zip' % (version)))
+exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
+pre_install_script  = abspath(join(g.app.loadDir,'dist','post-install-script.py'))
 
 # Must be a base name: apparently, this script is supposed to be in Python/Scripts??
 # post_script = abspath(join(g.app.loadDir,'dist','post-install-script.py'))
-post_script = 'post-install-script.py'
-root = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
-
-pre_install_script = 
-install_script = None, "r'%s'" % post_script
-print('install_script: %s' % install_script)
+# install_script = "r'%s'" % post_script
+install_script = 'post-install-script.py'
 
 if 1:
     # Copy files from the doc directory to the top directory.
