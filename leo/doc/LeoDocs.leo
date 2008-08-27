@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="10" height="680" width="938"/>
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,3,0,5,10"><vh>Startup</vh>
+<v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -29,7 +29,7 @@
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
-<v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
+<v t="ekr.20080412124815.1"><vh>@bool fixedWindow = True</vh></v>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050407144342.2"><vh>@int  port = 8080</vh></v>
@@ -49,7 +49,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
+<v t="ekr.20080412124815.1"><vh>@bool fixedWindow = True</vh></v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
@@ -59,7 +59,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -103,8 +103,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830080545"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.1" a="E"><vh>FAQ</vh>
-<v t="ekr.20050830115714" a="E"><vh>@rst html\FAQ.html</vh>
+<v t="ekr.20050831195331.1"><vh>FAQ</vh>
+<v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20080603124653.1"><vh>How do I use bzr to get the latest sources from Leo's launchpad site?</vh></v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
@@ -120,7 +120,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
 </v>
 <v t="ekr.20050830115714.12"><vh>How should I use Leo with bzr?</vh></v>
-<v t="ekr.20050830115714.13" a="E"><vh>Using derived files</vh>
+<v t="ekr.20050830115714.13"><vh>Using derived files</vh>
 <v t="ekr.20050830115714.14"><vh>How do I inhibit sentinels in derived files?</vh></v>
 <v t="ekr.20050830115714.16"><vh>How do I prevent Leo from expanding sections?</vh></v>
 <v t="ekr.20050830115714.18"><vh>How can I create Javascript comments?</vh></v>
@@ -1189,7 +1189,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="edream.110203163054.46"><vh>Release Notes</vh>
-<v t="edream.110203163054.117" a="E"><vh>Previous versions...</vh>
+<v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
 <v t="edream.110203163054.67"><vh>4.0 final</vh>
@@ -1531,7 +1531,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040518075457"><vh>Dangers of @file-thin</vh></v>
 </v>
 </v>
-<v t="ekr.20060206111600" a="E"><vh>4.3...@settings</vh>
+<v t="ekr.20060206111600"><vh>4.3...@settings</vh>
 <v t="ekr.20050917092557"><vh>4.3.3 final</vh>
 <v t="ekr.20050917105646"><vh>Fixes made in 4.3.3</vh></v>
 <v t="ekr.20050917092557.1"><vh>Rewrote documentation</vh></v>
@@ -14936,7 +14936,7 @@ splitSentences(c,p)</t>
 Another way to run Leo is as follows::
 
     cd &lt;path-to-launchLeo.py&gt;
-    python launchLeo.py
+    python launchLeo.py %1
 
 Here are some tips that may make running Leo easier:
 
@@ -14944,7 +14944,7 @@ Here are some tips that may make running Leo easier:
     The following shell script will allow you to open foo.leo files by typing leo foo::
     
         #!/bin/sh 
-        python &lt;leopath&gt;/leo/core/runLeo.py $1
+        python &lt;leopath&gt;launchLeo.py $1
     
     where &lt;leopath&gt; is the path to the directory containing the leo directory. 
 
@@ -14954,9 +14954,9 @@ Here are some tips that may make running Leo easier:
     Put the following .bat file in c:\\Windows::
 
         cd &lt;path-to-leo&gt;
-        c:\python25\python &lt;path-to-leo&gt;leo\core\runLeo.py %1
+        c:\python25\python &lt;path-to-leo&gt;launchLeo.py %1
         
-    where &lt;path-to-leo&gt; is the path to the directory containing the leo directory.
+    where &lt;path-to-leo&gt; is the path to the directory *containing* the leo directory.
 
     This opens the file specified by the first argument (%1).
 
@@ -30448,8 +30448,8 @@ Leo.
 
     bzr branch lp:leo-editor
 
-And that's it! You can run leo/core/runLeo.py directly. When you want to refresh the
-code with latest modifications from Launchpad, run ``bzr pull``.
+And that's it! You can run the launchLeo script (in the top-level branch directory) directly.
+When you want to refresh the code with latest modifications from Launchpad, run ``bzr pull``.
 
 If you make modifications to Leo (with the interest in sharing them with the Leo
 community), you can check them in to your local branch by doing ``bzr checkin``.
