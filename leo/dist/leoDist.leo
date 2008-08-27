@@ -685,7 +685,7 @@ top                 = abspath(join(g.app.loadDir,'..','..'))
 zipFile             = abspath(join(top,'Leo-%s.zip' % (version)))
 zipFile2            = abspath(join(top,'Leo-%s-temp.zip' % (version)))
 exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
-pre_install_script  = abspath(join(g.app.loadDir,'dist','post-install-script.py'))
+pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
 
 # Must be a base name: apparently, this script is supposed to be in Python/Scripts??
 # post_script = abspath(join(g.app.loadDir,'dist','post-install-script.py'))
