@@ -53,8 +53,7 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080827092958.3"><vh>@thin pre-install-script.py</vh></v>
-<v t="ekr.20080826091039.1" a="E"><vh>@button make</vh>
+<v t="ekr.20080826091039.1"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080826091039.3"><vh>remove</vh></v>
 <v t="ekr.20080826091039.4"><vh>class createExe</vh>
@@ -69,6 +68,7 @@
 <v t="ekr.20080826091039.12"><vh>get_python_version</vh></v>
 </v>
 </v>
+<v t="ekr.20080827092958.3"><vh>@thin pre-install-script.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519082027.32">@color
