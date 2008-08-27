@@ -25,13 +25,17 @@ for path in sys.path:
         if verbose: print 'head2',head2,'tail2',tail2
         if not tail2.strip():
             python = join(drive,'\\',tail) # Don't use abspath here!
-            print '**found**',python
+            if verbose: print '**found**',python
             found = True
 
-# Compute paths.
-exe      = abspath(join(python,'pythonw.exe'))
-top      = abspath(join(python,'Lib','site-packages','Leo-%s' % (version)))
+# No error is possible if not found: we simple do nothing later.
+
+# Python paths...
+exe     = abspath(join(python,'pythonw.exe'))
 pythonw = abspath(join(os.path.dirname(exe), 'pythonw.exe'))
+
+# Installed Leo paths...
+top     = abspath(join(python,'Lib','site-packages','Leo-%s' % (version)))
 runLeo  = abspath(join(top,'leo','core','runLeo.py'))
 icon    = abspath(join(top,'leo','icons','LeoDoc.ico'))
 
