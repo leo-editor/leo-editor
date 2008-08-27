@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -53,7 +53,9 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080826091039.1"><vh>@button make</vh>
+<v t="ekr.20080827130106.1"><vh>@thin post-install-script.py</vh></v>
+<v t="ekr.20080827092958.3"><vh>@thin pre-install-script.py</vh></v>
+<v t="ekr.20080826091039.1" a="E"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080826091039.3"><vh>remove</vh></v>
 <v t="ekr.20080826091039.4"><vh>class createExe</vh>
@@ -68,7 +70,6 @@
 <v t="ekr.20080826091039.12"><vh>get_python_version</vh></v>
 </v>
 </v>
-<v t="ekr.20080827092958.3"><vh>@thin pre-install-script.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519082027.32">@color
@@ -683,8 +684,7 @@ zipFile             = abspath(join(top,'Leo-%s.zip' % (version)))
 zipFile2            = abspath(join(top,'Leo-%s-temp.zip' % (version)))
 exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
 pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
-install_script      = None # r'post-install-script.py'
-    # Must be a base name relative to Python/Scripts.
+install_script      = 'post-install-script.py' # Installed in Python/Scripts.
 
 if 1:
     # Copy files from the doc directory to the top directory.
