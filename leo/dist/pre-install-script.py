@@ -4,6 +4,7 @@ import sys
 print ("This is Leo's pre-install script")
 print ("sys.executable: %s" % sys.executable)
 print ("dir(sys): %s" % dir(sys))
+print sys.argv # Generates an error so I can see sys.executable.
 # print ("sys.argv...")
 # for z in sys.argv:
     # print z

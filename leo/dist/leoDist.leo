@@ -690,7 +690,7 @@ pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script
 # Must be a base name: apparently, this script is supposed to be in Python/Scripts??
 # post_script = abspath(join(g.app.loadDir,'dist','post-install-script.py'))
 # install_script = "r'%s'" % post_script
-install_script = 'post-install-script.py'
+install_script = r'post-install-script.py'
 
 if 1:
     # Copy files from the doc directory to the top directory.
@@ -890,6 +890,7 @@ import time</t>
     lines.append("\n[Setup]")
 
     if self.install_script:
+        # The post-install script.  Apparently must be in Python/Scripts.
         lines.append("install_script=%s" % self.install_script)
 
     lines.append("info=%s" % self.escape(info))
