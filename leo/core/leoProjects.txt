@@ -32539,6 +32539,21 @@ def adjustTargetLanguage (self,fn):
 (fixed) ./leo/doc/LeoDocs.leo
 #@nonl
 #@-node:ekr.20080827074409.1:Removed references to runLeo.py from docs
+#@+node:ekr.20080826182939.1:Added registry script to .exe installer
+@language python
+@tabwidth -4
+
+@nocolor
+
+I'm not that great at the registry, but I'm not scared of it either.  Attached is a commented python script to generate the needed keys.  I tested it just now by deleting ( ! ) the leo associations from my registry and restoring them with the script.  I don't know what info you can feed to the script from your installer, but if you pass the path to the leo folder to the script as a commandline argument it should work...
+
+Well actually it will only work if Python is in the user's path (something the Python installer doesn't do for some reason).  If you do os.startfile("leo-reg.py") it will do the right thing (as long as Python is installed), but you can't pass args with startfile AFAIK.  Depending on how bad things are, you may need the user to manually run the script from the leo directory so the script can get the path using os.getcwd.
+
+EKR: added leo/dist/post-install-script.py
+
+@color
+#@nonl
+#@-node:ekr.20080826182939.1:Added registry script to .exe installer
 #@-node:ekr.20080826074455.2:4.5 rc1
 #@-all
 #@nonl
