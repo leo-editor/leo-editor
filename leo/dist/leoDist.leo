@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -481,6 +481,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
     - Run all unit tests.
     - Run pylint-leo.bat.
 LeoDocs.leo:
+    ** Update version on home page.
     - Remove top-level clones.
     - Select the readme node.
 LeoPlugins.leo:
@@ -506,10 +507,7 @@ Test files
 # **** Scan all folders &amp; files before uploading.
 @nocolor
 
-Create Release on SourceForge
-
-*** FTP no longer supported.
-*** Use: https://frs.sourceforge.net/webupload
+Create Release on SourceForge: https://frs.sourceforge.net/webupload
 
 Announcements
 - Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
