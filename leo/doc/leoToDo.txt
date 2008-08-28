@@ -2772,12 +2772,11 @@ def NEWscanAllDirectives(self,p,
     c = self.c
     << Set ivars >>
     << Set path from @file node >>
-    ### old = {}
 
     table = (
         ('encoding','encoding',g.scanAtEncodingsDirectives),
         ('lineending','explicitLineEnding',g.scanAtLineendingDirectives),
-        ('language',
+        ('language',None,scanAtCommentAndAtLanguageDirectives),
         ('pagewidth','page_width',g.scanAtPagewidthDirectives),
         ('tagwidth','tab_width',g.scanAtTabwidthDirective),
 
@@ -2951,7 +2950,7 @@ else: # Emergency!
 
 def get_directives_dict_list(p):
 
-    """Scans p and all its ancestors for @directives found in globalDirectiveList.
+    """Scans p and all its ancestors for directives.
 
     Returns a list of dicts containing pointers to the start of each directive"""
 
