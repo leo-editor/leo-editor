@@ -672,7 +672,7 @@ This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 @others
 
 assert sys.version_info &gt;= (2,5,0) and sys.version_info &lt; (2,6,0) # Require Python 2.5.
-version = '4-5-rc1-test'
+version = '4-5-rc1'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 root                = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
