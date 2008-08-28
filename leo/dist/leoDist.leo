@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -672,7 +672,7 @@ This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 @others
 
 assert sys.version_info &gt;= (2,5,0) and sys.version_info &lt; (2,6,0) # Require Python 2.5.
-version = '4-5-rc1'
+version = '4-5-rc1-test'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 root                = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
@@ -710,6 +710,11 @@ if 1:
     x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
     x.create_exe()
     remove(zipFile2)
+    
+    for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+        path= abspath(join(top,z))
+        if exists(z): remove(z)
+
     os.system('dir %s' % (top))
 
 print('done')

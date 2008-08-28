@@ -14,6 +14,8 @@ bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-edit
 
 bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
 
+bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/at-path
+
 
 
 Common
