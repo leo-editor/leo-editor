@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,1,0,2"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5,1,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -50,7 +50,7 @@
 </v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20080301071818" a="E"><vh>Home page</vh>
+<v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848" a="M"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"
 marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
@@ -58,7 +58,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -849,9 +849,9 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050901083017"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20060620094033" a="E"><vh>What's New...</vh>
-<v t="ekr.20080806211440.185" a="E"><vh>What's New in Leo 4.5</vh>
-<v t="ekr.20080806211440.186" a="E"><vh>@rst html\new-4-5.html</vh>
+<v t="ekr.20060620094033"><vh>What's New...</vh>
+<v t="ekr.20080806211440.185"><vh>What's New in Leo 4.5</vh>
+<v t="ekr.20080806211440.186"><vh>@rst html\new-4-5.html</vh>
 <v t="ekr.20080806211440.187"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20080806211440.188"><vh>Major new features</vh></v>
 <v t="ekr.20080806211440.253"><vh>Major code reorganizations</vh></v>
@@ -2935,7 +2935,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20080827175609.55" a="E"><vh>4.5 rc1</vh>
+<v t="ekr.20080827175609.55"><vh>4.5 rc1</vh>
 <v t="ekr.20080827175609.56"><vh>Major new features</vh></v>
 <v t="ekr.20080827175609.57"><vh>Major code reorganizations</vh></v>
 <v t="ekr.20080827175609.58"><vh>Minor new features</vh></v>
