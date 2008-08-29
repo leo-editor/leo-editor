@@ -2,14 +2,14 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.5.1 bugs, cleanups
-#@+node:ekr.20080810085333.5:Under two hours 21
-#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@+node:ekr.20080517102922.1:Files stuff 7
+#@+node:ekr.20080810085333.5:Under two hours 22
+#@+node:ekr.20080517102922.1:Files stuff 8
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
 #@nonl
 #@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
+#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
 #@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
 @nocolor
 
@@ -460,7 +460,7 @@ these provided that headlines appear somewhere.
 So that's clean.  This will happen in Leo 4.5. 
 #@nonl
 #@-node:ekr.20080311135649.2:Allow different .leo formats
-#@-node:ekr.20080517102922.1:Files stuff 7
+#@-node:ekr.20080517102922.1:Files stuff 8
 #@+node:ekr.20080411091507.10:Minor bugs 4
 #@+node:ekr.20080709161540.1:Fix c colorizer bug
 @nocolor
@@ -970,7 +970,7 @@ w.seeInsertPoint()
 #@-node:ekr.20031218072017.2864: goToLineNumber
 #@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
 #@-node:ekr.20080411091507.10:Minor bugs 4
-#@+node:ekr.20080730212711.6:ASAP Features 10 (possibly in Leo 4.5.1)
+#@+node:ekr.20080730212711.6:ASAP Features 10
 #@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
 What uA should be used to specify node colors?
 
@@ -1551,8 +1551,8 @@ down some data. If the headline string is too long, the cursor goes
 beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
 #@-node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
-#@-node:ekr.20080730212711.6:ASAP Features 10 (possibly in Leo 4.5.1)
-#@-node:ekr.20080810085333.5:Under two hours 21
+#@-node:ekr.20080730212711.6:ASAP Features 10
+#@-node:ekr.20080810085333.5:Under two hours 22
 #@+node:ekr.20080810085333.7:Under two days 5
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
@@ -2634,7 +2634,7 @@ def getOutputNewline (c=None,name=None):
 #@-node:ekr.20031218072017.1380:Directive utils...
 #@-node:ekr.20080827175609.54:Existing code
 #@+node:ekr.20080827175609.17:New code
-#@+node:ekr.20080827175609.39:g.NEWscanDirectives 
+#@+node:ekr.20080827175609.39:g.NEWscanDirectives
 @ Perhaps this routine should be the basis of atFile.scanAllDirectives and tangle.scanAllDirectives, but I am loath to make any further to these two already-infamous routines.  Also, this code does not check for @color and @nocolor directives: leoColor.useSyntaxColoring does that.
 @c
 
@@ -2750,7 +2750,7 @@ if not old.has_key("wrap") and not old.has_key("nowrap"):
     elif theDict.has_key("nowrap"):
         wrap = False
 #@-node:ekr.20080827175609.47:<< Test for @wrap and @nowrap >>
-#@-node:ekr.20080827175609.39:g.NEWscanDirectives 
+#@-node:ekr.20080827175609.39:g.NEWscanDirectives
 #@+node:ekr.20080827175609.18:atFile.NEWscanAllDirectives
 @ Once a directive is seen, no other related directives in nodes further up the tree have any effect.  For example, if an @color directive is seen in node p, no @color or @nocolor directives are examined in any ancestor of p.
 
