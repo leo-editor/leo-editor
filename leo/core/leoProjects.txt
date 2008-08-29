@@ -11496,7 +11496,10 @@ def computeHomeDir():
 
     encoding = g.startupEncoding()
     # dotDir = g.os_path_abspath('./',encoding)
-    home = os.getenv('HOME',default=None)
+    # home = os.getenv('HOME',default=None)
+    home = os.path.expanduser("~")
+        # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
+
     # print('computeHomeDir: %s' % repr(home))
     # print("computeHomeDir: os.path.expanduser('~'): %s" % os.path.expanduser('~'))
 
@@ -32953,6 +32956,78 @@ EKR: added leo/dist/post-install-script.py
 #@nonl
 #@-node:ekr.20080826182939.1:Added registry script to .exe installer
 #@-node:ekr.20080826074455.2:4.5 rc1
+#@+node:ekr.20080829113441.1:4.5 rc2
+#@+node:ekr.20080829101243.1:Use os.expanduser('~') to compute home directory
+Answer: .leo is created in the cwd.
+#@nonl
+#@+node:ekr.20050328133444:computeStandardDirectories
+def computeStandardDirectories():
+
+    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
+
+    if 0:
+        import sys
+        for s in sys.path: g.trace(s)
+
+    g.app.loadDir = g.computeLoadDir()
+        # Depends on g.app.tkEncoding: uses utf-8 for now.
+
+    g.app.leoDir = g.computeLeoDir()
+
+    g.app.homeDir = g.computeHomeDir()
+
+    # New in Leo 4.5 b4: create homeLeoDir if needed.
+    g.app.homeLeoDir = homeLeoDir = g.os_path_abspath(
+        g.os_path_join(g.app.homeDir,'.leo'))
+
+    if not g.os_path_exists(homeLeoDir):
+        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
+
+    g.app.extensionsDir = g.os_path_abspath(
+        g.os_path_join(g.app.loadDir,'..','extensions'))
+
+    g.app.globalConfigDir = g.computeGlobalConfigDir()
+
+    g.app.testDir = g.os_path_abspath(
+        g.os_path_join(g.app.loadDir,'..','test'))
+
+    g.app.user_xresources_path = g.os_path_join(g.app.homeDir,'.leo_xresources')
+#@-node:ekr.20050328133444:computeStandardDirectories
+#@+node:ekr.20041117151301:computeHomeDir
+def computeHomeDir():
+
+    """Returns the user's home directory."""
+
+    import leo.core.leoGlobals as g
+
+    encoding = g.startupEncoding()
+    # dotDir = g.os_path_abspath('./',encoding)
+    # home = os.getenv('HOME',default=None)
+    home = os.path.expanduser("~")
+        # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
+
+    # print('computeHomeDir: %s' % repr(home))
+    # print("computeHomeDir: os.path.expanduser('~'): %s" % os.path.expanduser('~'))
+
+    if home and len(home) > 1 and home[0]=='%' and home[-1]=='%':
+        # Get the indirect reference to the true home.
+        home = os.getenv(home[1:-1],default=None)
+
+    if home:
+        # N.B. This returns the _working_ directory if home is None!
+        # This was the source of the 4.3 .leoID.txt problems.
+        home = g.os_path_abspath(home,encoding)
+        if (
+            not g.os_path_exists(home,encoding) or
+            not g.os_path_isdir(home,encoding)
+        ):
+            home = None
+
+    # g.trace(home)
+    return home
+#@-node:ekr.20041117151301:computeHomeDir
+#@-node:ekr.20080829101243.1:Use os.expanduser('~') to compute home directory
+#@-node:ekr.20080829113441.1:4.5 rc2
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt
