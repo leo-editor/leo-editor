@@ -5,9 +5,12 @@
 
 ./*.zip
 ./*.exe
-./.ropeProject
-./.leo_shadow
-./.leo
+
+.leo_shadow
+.leo
+.ropeProject
+
+gradient.png
 
 leo/*.zip
 
@@ -31,9 +34,5 @@ leo/test/.leo
 leo/test/ropeProject/*.*
 leo/test/scriptFile.py
 leo/test/leoProfile.txt
-
-gradient.png
-leo/core/leoKeys.py
 leo/test/unittest/createdFile.txt
 leo/test/at_ignore_test.txt
-unitTestFile.py

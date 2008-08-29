@@ -39,8 +39,9 @@ __plugin_group__ = "Network"
 class Remote(BaseTreeHandler):
     """A handler for remote files"""
 
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Initialize the tree"""
+        self.c = c
         self.children = []
 
         content = StringIO.StringIO()

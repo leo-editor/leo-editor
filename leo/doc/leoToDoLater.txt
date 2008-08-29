@@ -1829,6 +1829,8 @@ RodrigoB.
 #@-node:ekr.20041228094138:4.5  LeoN and collaboration
 #@-node:ekr.20041228084143:Maybe never
 #@+node:ekr.20040123102724:Can't or won't
+#@+node:ekr.20080822065427.3:Create desktop icon or start menu item
+#@-node:ekr.20080822065427.3:Create desktop icon or start menu item
 #@+node:ekr.20080815174457.5:Consider deleting private shadow files
 @nocolor
 

@@ -8,6 +8,16 @@
 #@+node:ekr.20080225084626:Bzr notes
 @nocolor
 
+How to create/use private branches
+
+bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/at-path
+
+
+
 Common
 
 - No need for aliases for push, pull or commit.  do bzr info to find url.
@@ -2089,11 +2099,14 @@ TESTS
 @color
 #@nonl
 #@-node:ekr.20031218072017.367:How to add support for a new language
-#@+node:ekr.20080814134319.1:How to create a private bzr branch
+#@+node:ekr.20080814134319.1:How to create and push to a private bzr branch
 @nocolor
 
 C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
-#@-node:ekr.20080814134319.1:How to create a private bzr branch
+
+C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+#@-node:ekr.20080814134319.1:How to create and push to a private bzr branch
 #@+node:ekr.20051203084725:How to expand java .jar files
 - Put whatever.jar in c:\prog
 - cd: c:\prog

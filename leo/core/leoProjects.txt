@@ -1235,26 +1235,9 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
 
     self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-    if c.config.getBool('suppress_import_parsing', default=False):
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-    elif ext in (".c", ".cpp", ".cxx"):
-        self.scanCText(s,p,atAuto=atAuto)
-    elif ext == '.c#':
-        self.scanCSharpText(s,p,atAuto=atAuto)
-    elif ext == ".el":
-        self.scanElispText(s,p,atAuto=atAuto)
-    elif ext == ".java":
-        self.scanJavaText(s,p,atAuto=atAuto)
-    elif ext == ".js":
-        self.scanJavaScriptText(s,p,atAuto=atAuto)
-    elif ext == ".pas":
-        self.scanPascalText(s,p,atAuto=atAuto)
-    elif ext in (".py", ".pyw"):
-        self.scanPythonText(s,p,atAuto=atAuto)
-    elif ext == ".php":
-        self.scanPHPText(s,p,atAuto=atAuto)
-    elif ext in ('.html','.htm','.xml'):
-        self.scanXmlText(s,p,atAuto=atAuto)
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
     else:
         self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
@@ -1902,26 +1885,9 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
 
     self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-    if c.config.getBool('suppress_import_parsing', default=False):
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-    elif ext in (".c", ".cpp", ".cxx"):
-        self.scanCText(s,p,atAuto=atAuto)
-    elif ext == '.c#':
-        self.scanCSharpText(s,p,atAuto=atAuto)
-    elif ext == ".el":
-        self.scanElispText(s,p,atAuto=atAuto)
-    elif ext == ".java":
-        self.scanJavaText(s,p,atAuto=atAuto)
-    elif ext == ".js":
-        self.scanJavaScriptText(s,p,atAuto=atAuto)
-    elif ext == ".pas":
-        self.scanPascalText(s,p,atAuto=atAuto)
-    elif ext in (".py", ".pyw"):
-        self.scanPythonText(s,p,atAuto=atAuto)
-    elif ext == ".php":
-        self.scanPHPText(s,p,atAuto=atAuto)
-    elif ext in ('.html','.htm','.xml'):
-        self.scanXmlText(s,p,atAuto=atAuto)
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
     else:
         self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
@@ -11531,6 +11497,8 @@ def computeHomeDir():
     encoding = g.startupEncoding()
     # dotDir = g.os_path_abspath('./',encoding)
     home = os.getenv('HOME',default=None)
+    # print('computeHomeDir: %s' % repr(home))
+    # print("computeHomeDir: os.path.expanduser('~'): %s" % os.path.expanduser('~'))
 
     if home and len(home) > 1 and home[0]=='%' and home[-1]=='%':
         # Get the indirect reference to the true home.
@@ -18216,7 +18184,7 @@ def isSignificantPublicFile (self,fn):
     return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
 #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn,force=False):
+def makeShadowDirectory (self,fn):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -18225,7 +18193,7 @@ def makeShadowDirectory (self,fn,force=False):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=force)
+        g.makeAllNonExistentDirectories(path,c=None,force=True)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -18328,7 +18296,7 @@ def isSignificantPublicFile (self,fn):
     return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
 #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn,force=False):
+def makeShadowDirectory (self,fn):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -18337,7 +18305,7 @@ def makeShadowDirectory (self,fn,force=False):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=force)
+        g.makeAllNonExistentDirectories(path,c=None,force=True)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -18700,6 +18668,7 @@ self.language_delims_dict = {
     "tcltk" : "#",
     "unknown" : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
     "xml" : "<!-- -->",
 }
 
@@ -18737,6 +18706,7 @@ self.language_extension_dict = {
     "tex" : "tex",
     "tcltk" : "tcl",
     "unknown" : "txt", # Set when @comment is seen.
+    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
     "xml": "xml",
 }
 
@@ -18758,6 +18728,7 @@ self.extension_dict = {
     "java"  : "java",
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
     # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
@@ -18782,14 +18753,13 @@ self.extra_extension_dict = {
     'actionscript': 'actionscript',
     'ada':  'ada95',
     'adb':  'none', # ada??
-    # 'ahk':  'ahk',
-    "ahk"   : "autohotkey", #TL - AutoHotkey language
     'awk':  'awk',
     'bas':  'none', # rapidq
     'cpp':  'c',
     'el':   'lisp',
     'f':    'fortran',
     'nw':   'none', # noweb.
+    'otl':   'none', # vimoutline.
     'pod':  'perl',
     'tcl':  'tcl',
     'unknown_language': 'none',
@@ -18948,7 +18918,7 @@ def goToLineNumber (self,event=None,root=None,lines=None,n=None,scriptFind=False
         << read the file into lines >>
     if n is None:
         << get n, the line number, from a dialog >>
-    n = self.applyLineNumberMappingIfAny(n) #bwm
+    n = self.applyLineNumberMappingIfAny(n)
     if n==1:
         p = root ; n2 = 1 ; found = True
     elif root.isAtAsisFileNode() or root.isAtNoSentFileNode():
@@ -19005,7 +18975,7 @@ path = d.get("path")
 fileName = g.os_path_join(path,fileName)
 
 try:
-    lines=self.gotoLineNumberOpen(fileName) # bwm
+    lines=self.gotoLineNumberOpen(fileName)
 except:
     g.es("not found:",fileName)
     return
@@ -19185,12 +19155,6 @@ def applyLineNumberMappingIfAny(self, n):
         return x.line_mapping[n]
     else:
         return n
-
-    # if hasattr(self,'line_mapping') and self.line_mapping:
-        # return self.line_mapping[n]
-    # else:
-        # return n
-#@nonl
 #@-node:ekr.20080708094444.65:applyLineNumberMappingIfAny
 #@+node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
 @ We count "real" lines in the derived files, ignoring all sentinels that do not arise from source lines.  When the indicated line is found, we scan backwards for an @+body line, get the vnode's name from that line and set p to the indicated vnode.  This will fail if vnode names have been changed, and that can't be helped.
@@ -19207,7 +19171,7 @@ def convertLineToVnodeNameIndexLine (self,lines,n,root,scriptFind):
 
     c = self ; at = c.atFileCommands
     childIndex = 0 ; gnx = None ; newDerivedFile = False
-    thinFile = root.isAtThinFileNode()
+    thinFile = root.isAtThinFileNode() or root.isAtShadowFileNode()
     << set delim, leoLine from the @+leo line >>
     if not delim:
         g.es("bad @+leo sentinel")
@@ -19220,7 +19184,7 @@ def convertLineToVnodeNameIndexLine (self,lines,n,root,scriptFind):
     s = lines[nodeSentinelLine]
     # g.trace(s)
     << set vnodeName and (childIndex or gnx) from s >>
-    # g.trace("childIndex,offset",childIndex,offset,vnodeName)
+    # g.trace('childIndex',childIndex,'gnx',gnx,'offset',offset,'vnodeName',vnodeName)
     return vnodeName,childIndex,gnx,offset,delim
 #@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
 # Find the @+leo line.
@@ -19317,13 +19281,13 @@ def gotoLineNumberOpen (self,filename):
     """
     try:
         c = self ; x = c.shadowController
-        theDir, simplename = os.path.split(filename)
-        shadow_filename = os.path.join(theDir,x.shadow_subdir,x.shadow_prefix + simplename)
+        shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
             lines = file(shadow_filename).readlines()
-            c.line_mapping = x.push_filter_mapping(
+            x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
+            g.es_print('can not open',shadow_filename,color='red')
             c.line_mapping = []
             lines = file(filename).readlines()
         return lines 
@@ -20224,7 +20188,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -20356,7 +20320,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -20491,7 +20455,7 @@ def isSignificantPublicFile (self,fn):
     return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
 #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn,force=False):
+def makeShadowDirectory (self,fn):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -20500,7 +20464,7 @@ def makeShadowDirectory (self,fn,force=False):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=force)
+        g.makeAllNonExistentDirectories(path,c=None,force=True)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -20596,7 +20560,7 @@ def unlink (self, filename,silent=False):
 #@-node:ekr.20080711063656.3:x.unlink
 #@-node:ekr.20080711063656.1:x.File utils
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn,force=False):
+def makeShadowDirectory (self,fn):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -20605,7 +20569,7 @@ def makeShadowDirectory (self,fn,force=False):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=force)
+        g.makeAllNonExistentDirectories(path,c=None,force=True)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -21373,7 +21337,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -21681,7 +21645,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -21882,7 +21846,7 @@ def isSignificantPublicFile (self,fn):
     return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
 #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn,force=False):
+def makeShadowDirectory (self,fn):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -21891,7 +21855,7 @@ def makeShadowDirectory (self,fn,force=False):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=force)
+        g.makeAllNonExistentDirectories(path,c=None,force=True)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -23938,7 +23902,7 @@ def resolveArchivedPosition(self,archivedPosition,root_v):
 #@-node:ekr.20080805132422.2:Reading
 #@-node:ekr.20080804063523.3:allow v.uA's in @thin and @shadow nodes
 #@-node:ekr.20080702123133.2:4.5 b2
-#@+node:ekr.20080810085333.3:4.5 b3
+#@+node:ekr.20080810085333.3:4.5 b3 & b4
 #@+node:ekr.20080822065427.5:Leo now require Python 2.4 or higher
 This the start of support for Python 3.0.
 #@nonl
@@ -23950,11 +23914,14 @@ def isValidPython():
     if sys.platform == 'cli':
         return True
 
+    minimum_python_version = '2.2.1'
+
     message = """\
-Leo requires Python 2.4 or higher.
+Leo requires Python %s or higher.
 You may download Python from
 http://python.org/download/
-"""
+""" % minimum_python_version
+
     try:
         # This will fail if True/False are not defined.
         import leo.core.leoGlobals as g
@@ -23967,7 +23934,8 @@ http://python.org/download/
         return 0
     try:
         version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
-        ok = g.CheckVersion(version,'2.4.0')
+        # ok = g.CheckVersion(version,'2.4.0') # Soon.
+        ok = g.CheckVersion(version,minimum_python_version)
         if not ok:
             print(message)
             try:
@@ -25742,6 +25710,7 @@ self.language_delims_dict = {
     "tcltk" : "#",
     "unknown" : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
     "xml" : "<!-- -->",
 }
 
@@ -25779,6 +25748,7 @@ self.language_extension_dict = {
     "tex" : "tex",
     "tcltk" : "tcl",
     "unknown" : "txt", # Set when @comment is seen.
+    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
     "xml": "xml",
 }
 
@@ -25800,6 +25770,7 @@ self.extension_dict = {
     "java"  : "java",
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
     # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
@@ -25824,14 +25795,13 @@ self.extra_extension_dict = {
     'actionscript': 'actionscript',
     'ada':  'ada95',
     'adb':  'none', # ada??
-    # 'ahk':  'ahk',
-    "ahk"   : "autohotkey", #TL - AutoHotkey language
     'awk':  'awk',
     'bas':  'none', # rapidq
     'cpp':  'c',
     'el':   'lisp',
     'f':    'fortran',
     'nw':   'none', # noweb.
+    'otl':   'none', # vimoutline.
     'pod':  'perl',
     'tcl':  'tcl',
     'unknown_language': 'none',
@@ -26325,7 +26295,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -26963,7 +26933,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -27101,7 +27071,7 @@ def __init__ (self,c,trace=False,trace_writers=False):
     self.line_mapping = []
 #@-node:ekr.20080708094444.79: x.ctor
 #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-def makeShadowDirectory (self,fn,force=False):
+def makeShadowDirectory (self,fn):
 
     '''Make a shadow directory for the **public** fn.'''
 
@@ -27110,7 +27080,7 @@ def makeShadowDirectory (self,fn,force=False):
     if not g.os_path_exists(path):
 
         # Force the creation of the directories.
-        g.makeAllNonExistentDirectories(path,c=None,force=force)
+        g.makeAllNonExistentDirectories(path,c=None,force=True)
 
     return g.os_path_exists(path) and g.os_path_isdir(path)
 #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -27157,6 +27127,441 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False):
     return dir1 # All have been created.
 #@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 #@-node:ekr.20080820083933.5:Made sure @string shadow_subdir = .leo/shadow works
+#@+node:ekr.20080824093332.1:Fixed alt-g bug with @shadow
+@nocolor
+
+<Alt-g> reports
+
+no child index for @shadow image/grab.py
+not found: ktenney.20080807085542.1:@shadow image/grab.py
+
+@color
+#@nonl
+#@+node:ekr.20080710082231.10:gotoLineNumber and helpers
+#@+node:ekr.20031218072017.2864: goToLineNumber
+def goToLineNumber (self,event=None,root=None,lines=None,n=None,scriptFind=False):
+
+    '''Place the cursor on the n'th line of a derived file or script.'''
+
+    # __pychecker__ = 'maxlines=400'
+
+    c = self ; p = c.currentPosition() ; w = c.frame.body.bodyCtrl
+    root1 = root
+    if root is None:
+        << set root >>
+    if lines is None:
+        << read the file into lines >>
+    if n is None:
+        << get n, the line number, from a dialog >>
+    n = self.applyLineNumberMappingIfAny(n)
+    if n==1:
+        p = root ; n2 = 1 ; found = True
+    elif root.isAtAsisFileNode() or root.isAtNoSentFileNode():
+        << count outline lines, setting p,n2,found >>
+    elif n >= len(lines):
+        p = root ; found = False
+        n2 = p.bodyString().count('\n')
+    else:
+        vnodeName,childIndex,gnx,n2,delim = self.convertLineToVnodeNameIndexLine(lines,n,root,scriptFind)
+        found = True
+        if not vnodeName:
+            g.es("error handling:",root.headString())
+            return
+        << set p to the node given by vnodeName, etc. >>
+    << select p and make it visible >>
+    << put the cursor on line n2 of the body text >>
+#@+node:ekr.20031218072017.2865:<< set root >>
+# First look for ancestor @file node.
+fileName = None
+for p in p.self_and_parents_iter():
+    fileName = p.anyAtFileNodeName()
+    if fileName: break
+
+# New in 4.2: Search the entire tree for joined nodes.
+if not fileName:
+    p1 = c.currentPosition()
+    for p in c.all_positions_with_unique_tnodes_iter():
+        if p.v.t == p1.v.t and p != p1:
+            # Found a joined position.
+            for p in p.self_and_parents_iter():
+                fileName = p.anyAtFileNodeName()
+                # New in 4.2 b3: ignore @all nodes.
+                if fileName and not p.isAtAllNode(): break
+        if fileName: break
+
+if fileName:
+    root = p.copy()
+else:
+    # New in 4.2.1: assume the c.currentPosition is the root of a script.
+    root = c.currentPosition()
+    g.es("no ancestor @file node: using script line numbers", color="blue")
+    scriptFind = True
+    lines = g.getScript (c,root,useSelectedText=False)
+    lines = g.splitLines(lines)
+    if 0:
+        for line in lines:
+            g.pr(line,newline=False)
+#@-node:ekr.20031218072017.2865:<< set root >>
+#@+node:ekr.20031218072017.2866:<< read the file into lines >>
+# 1/26/03: calculate the full path.
+d = g.scanDirectives(c)
+path = d.get("path")
+
+fileName = g.os_path_join(path,fileName)
+
+try:
+    lines=self.gotoLineNumberOpen(fileName)
+except:
+    g.es("not found:",fileName)
+    return
+#@-node:ekr.20031218072017.2866:<< read the file into lines >>
+#@+node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
+n = g.app.gui.runAskOkCancelNumberDialog(c,"Enter Line Number","Line number:")
+if n == -1:
+    return
+#@-node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
+#@+node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent/asis only)
+p = lastv = root
+prev = 0 ; found = False
+isNosent = root.isAtNoSentFileNode()
+
+for p in p.self_and_subtree_iter():
+    lastv = p.copy()
+    s = p.bodyString()
+    if isNosent:
+        s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
+    n_lines = s.count('\n')
+    if len(s) > 0 and s[-1] != '\n': n_lines += 1
+    # g.trace(n,prev,n_lines,p.headString())
+    if prev + n_lines >= n:
+        found = True ; break
+    prev += n_lines
+
+p = lastv
+n2 = max(1,n-prev)
+#@-node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent/asis only)
+#@+node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
+if scriptFind:
+    << just scan for the node name >>
+elif gnx:
+    << 4.2: get node from gnx >>
+elif childIndex == -1:
+    << 4.x: scan for the node using tnodeList and n >>
+else:
+    << 3.x: scan for the node with the given childIndex >>
+#@+node:ekr.20041111093404:<< just scan for the node name >>
+# This is safe enough because clones are not much of an issue.
+found = False
+for p in root.self_and_subtree_iter():
+    if p.matchHeadline(vnodeName):
+        found = True ; break
+#@-node:ekr.20041111093404:<< just scan for the node name >>
+#@+node:EKR.20040609110138:<< 4.2: get node from gnx >>
+found = False
+gnx = g.app.nodeIndices.scanGnx(gnx,0)
+
+# g.trace(vnodeName)
+# g.trace(gnx)
+
+for p in root.self_and_subtree_iter():
+    if p.matchHeadline(vnodeName):
+        # g.trace(p.v.t.fileIndex)
+        if p.v.t.fileIndex == gnx:
+            found = True ; break
+
+if not found:
+    g.es("not found:",vnodeName,color="red")
+    return
+#@-node:EKR.20040609110138:<< 4.2: get node from gnx >>
+#@+node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
+# This is about the best that can be done without replicating the entire atFile write logic.
+
+ok = hasattr(root.v.t,"tnodeList")
+
+if ok:
+    # Use getattr to keep pylint happy.
+    tnodeList = getattr(root.v.t,'tnodeList')
+    << set tnodeIndex to the number of +node sentinels before line n >>
+    tnodeIndex = max(0,tnodeIndex)
+    << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
+else:
+    g.es_print("no child index for",root.headString(),color="red")
+
+if not ok:
+    # Fall back to the old logic.
+    << set p to the first node whose headline matches vnodeName >>
+#@+node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
+
+tnodeIndex = -1 # Don't count the @file node.
+scanned = 0 # count of lines scanned.
+
+for s in lines:
+    if scanned >= n:
+        break
+    i = g.skip_ws(s,0)
+    if g.match(s,i,delim):
+        i += len(delim)
+        if g.match(s,i,"+node"):
+            # g.trace(tnodeIndex,s.rstrip())
+            tnodeIndex += 1
+    scanned += 1
+#@-node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
+#@+node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+
+@ We use the tnodeList to find a _tnode_ corresponding to the proper node, so the user will for sure be editing the proper text, even if several nodes happen to have the same headline.  This is really all that we need.
+
+However, this code has no good way of distinguishing between different cloned vnodes in the file: they all have the same tnode.  So this code just picks p = t.vnodeList[0] and leaves it at that.
+
+The only way to do better is to scan the outline, replicating the write logic to determine which vnode created the given line.  That's way too difficult, and it would create an unwanted dependency in this code.
+@c
+
+# g.trace("tnodeIndex",tnodeIndex)
+if tnodeIndex < len(tnodeList):
+    t = tnodeList[tnodeIndex]
+    # Find the first vnode whose tnode is t.
+    found = False
+    for p in root.self_and_subtree_iter():
+        if p.v.t == t:
+            found = True ; break
+    if not found:
+        s = "tnode not found for " + vnodeName
+        g.es_print(s, color="red") ; ok = False
+    elif p.headString().strip() != vnodeName:
+        if 0: # Apparently this error doesn't prevent a later scan for working properly.
+            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
+            g.es_print(s, color="red")
+        ok = False
+else:
+    if root1 is None: # Kludge: disable this message when called by goToScriptLineNumber.
+        s = "Invalid computed tnodeIndex: %d" % tnodeIndex
+        g.es_print(s, color = "red")
+    ok = False
+#@-node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+#@+node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
+found = False
+for p in root.self_and_subtree_iter():
+    if p.matchHeadline(vnodeName):
+        found = True ; break
+
+if not found:
+    s = "not found: " + vnodeName
+    g.es_print(s, color="red")
+    return
+#@-node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
+#@-node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
+#@+node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
+found = False
+for p in root.self_and_subtree_iter():
+    if p.matchHeadline(vnodeName):
+        if childIndex <= 0 or p.childIndex() + 1 == childIndex:
+            found = True ; break
+
+if not found:
+    g.es("not found:",vnodeName, color="red")
+    return
+#@-node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
+#@-node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
+#@+node:ekr.20031218072017.2875:<< select p and make it visible >>
+c.frame.tree.expandAllAncestors(p)
+c.selectVnode(p)
+c.redraw()
+#@-node:ekr.20031218072017.2875:<< select p and make it visible >>
+#@+node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
+s = w.getAllText()
+if found:
+    ins = g.convertRowColToPythonIndex(s,n2-1,0)    
+    # c.frame.body.setInsertPointToStartOfLine(n2-1)
+else:
+    #c.frame.body.setInsertionPointToEnd()
+    ins = len(s)
+    g.es('only',len(lines),'lines',color="blue")
+
+w.setInsertPoint(ins)
+c.bodyWantsFocusNow()
+w.seeInsertPoint()
+#@-node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
+#@-node:ekr.20031218072017.2864: goToLineNumber
+#@+node:ekr.20080708094444.65:applyLineNumberMappingIfAny
+def applyLineNumberMappingIfAny(self, n):
+
+    c = self ; x = c.shadowController
+
+    if len(x.line_mapping) > n:
+        return x.line_mapping[n]
+    else:
+        return n
+#@-node:ekr.20080708094444.65:applyLineNumberMappingIfAny
+#@+node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
+@ We count "real" lines in the derived files, ignoring all sentinels that do not arise from source lines.  When the indicated line is found, we scan backwards for an @+body line, get the vnode's name from that line and set p to the indicated vnode.  This will fail if vnode names have been changed, and that can't be helped.
+
+Returns (vnodeName,offset)
+
+vnodeName: the name found in the previous @+body sentinel.
+offset: the offset within p of the desired line.
+@c
+
+def convertLineToVnodeNameIndexLine (self,lines,n,root,scriptFind):
+
+    """Convert a line number n to a vnode name, (child index or gnx) and line number."""
+
+    c = self ; at = c.atFileCommands
+    childIndex = 0 ; gnx = None ; newDerivedFile = False
+    thinFile = root.isAtThinFileNode() or root.isAtShadowFileNode()
+    << set delim, leoLine from the @+leo line >>
+    if not delim:
+        g.es("bad @+leo sentinel")
+        return None,None,None,None,None
+    << scan back to @+node, setting offset,nodeSentinelLine >>
+    if nodeSentinelLine == -1:
+        # The line precedes the first @+node sentinel
+        # g.trace("before first line")
+        return root.headString(),0,gnx,1,delim # 10/13/03
+    s = lines[nodeSentinelLine]
+    # g.trace(s)
+    << set vnodeName and (childIndex or gnx) from s >>
+    # g.trace('childIndex',childIndex,'gnx',gnx,'offset',offset,'vnodeName',vnodeName)
+    return vnodeName,childIndex,gnx,offset,delim
+#@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
+# Find the @+leo line.
+tag = "@+leo"
+i = 0 
+while i < len(lines) and lines[i].find(tag)==-1:
+    i += 1
+leoLine = i # Index of the line containing the leo sentinel
+
+if leoLine < len(lines):
+    s = lines[leoLine]
+    valid,newDerivedFile,start,end,derivedFileIsThin = at.parseLeoSentinel(s)
+    if valid: delim = start + '@'
+    else:     delim = None
+else:
+    delim = None
+#@-node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
+#@+node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+offset = 0 # This is essentially the Tk line number.
+nodeSentinelLine = -1
+line = n - 1
+while line >= 0:
+    s = lines[line]
+    # g.trace(s)
+    i = g.skip_ws(s,0)
+    if g.match(s,i,delim):
+        << handle delim while scanning backward >>
+    else:
+        offset += 1 # Assume the line is real.  A dubious assumption.
+    line -= 1
+#@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+if line == n:
+    g.es("line",str(n),"is a sentinel line")
+i += len(delim)
+
+if g.match(s,i,"-node"):
+    # The end of a nested section.
+    line = self.skipToMatchingNodeSentinel(lines,line,delim)
+elif g.match(s,i,"+node"):
+    nodeSentinelLine = line
+    break
+elif g.match(s,i,"<<") or g.match(s,i,"@first"):
+    offset += 1 # Count these as a "real" lines.
+#@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+#@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+#@+node:ekr.20031218072017.2881:<< set vnodeName and (childIndex or gnx) from s >>
+if scriptFind:
+    # The vnode name follows the first ':'
+    i = s.find(':',i)
+    if i > -1:
+        vnodeName = s[i+1:].strip()
+    childIndex = -1
+elif newDerivedFile:
+    i = 0
+    if thinFile:
+        # gnx is lies between the first and second ':':
+        i = s.find(':',i)
+        if i > 0:
+            i += 1
+            j = s.find(':',i)
+            if j > 0:
+                gnx = s[i:j]
+            else: i = len(s)
+        else: i = len(s)
+    # vnode name is everything following the first or second':'
+    # childIndex is -1 as a flag for later code.
+    i = s.find(':',i)
+    if i > -1: vnodeName = s[i+1:].strip()
+    else: vnodeName = None
+    childIndex = -1
+else:
+    # vnode name is everything following the third ':'
+    i = 0 ; colons = 0
+    while i < len(s) and colons < 3:
+        if s[i] == ':':
+            colons += 1
+            if colons == 1 and i+1 < len(s) and s[i+1].isdigit():
+                junk,childIndex = g.skip_long(s,i+1)
+        i += 1
+    vnodeName = s[i:].strip()
+
+# g.trace("gnx",gnx,"vnodeName:",vnodeName)
+if not vnodeName:
+    vnodeName = None
+    g.es("bad @+node sentinel")
+#@-node:ekr.20031218072017.2881:<< set vnodeName and (childIndex or gnx) from s >>
+#@-node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
+#@+node:ekr.20080708094444.63:gotoLineNumberOpen
+def gotoLineNumberOpen (self,filename):
+    """
+    Open a file for "goto linenumber" command and check if a shadow file exists.
+    Construct a line mapping. This ivar is empty i no shadow file exists.
+    Otherwise it contains a mapping shadow file number -> real file number.
+    """
+    try:
+        c = self ; x = c.shadowController
+        shadow_filename = x.shadowPathName(filename)
+        if os.path.exists(shadow_filename):
+            lines = file(shadow_filename).readlines()
+            x.line_mapping = x.push_filter_mapping(
+                lines, x.marker_from_extension(shadow_filename))
+        else:
+            g.es_print('can not open',shadow_filename,color='red')
+            c.line_mapping = []
+            lines = file(filename).readlines()
+        return lines 
+    except:
+        # Make sure failures to open a file generate clear messages.
+        g.es_exception()
+        raise
+#@nonl
+#@-node:ekr.20080708094444.63:gotoLineNumberOpen
+#@+node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
+def skipToMatchingNodeSentinel (self,lines,n,delim):
+
+    s = lines[n]
+    i = g.skip_ws(s,0)
+    assert(g.match(s,i,delim))
+    i += len(delim)
+    if g.match(s,i,"+node"):
+        start="+node" ; end="-node" ; delta=1
+    else:
+        assert(g.match(s,i,"-node"))
+        start="-node" ; end="+node" ; delta=-1
+    # Scan to matching @+-node delim.
+    n += delta ; level = 0
+    while 0 <= n < len(lines):
+        s = lines[n] ; i = g.skip_ws(s,0)
+        if g.match(s,i,delim):
+            i += len(delim)
+            if g.match(s,i,start):
+                level += 1
+            elif g.match(s,i,end):
+                if level == 0: break
+                else: level -= 1
+        n += delta
+
+    # g.trace(n)
+    return n
+#@-node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
+#@-node:ekr.20080710082231.10:gotoLineNumber and helpers
+#@-node:ekr.20080824093332.1:Fixed alt-g bug with @shadow
 #@-node:ekr.20080812093903.6:Shadow files
 #@+node:ekr.20080811174246.2:Cleanups
 #@+node:ekr.20080810085333.2:Removed commented out begin/endUpdate code
@@ -27361,26 +27766,9 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
 
     self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-    if c.config.getBool('suppress_import_parsing', default=False):
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-    elif ext in (".c", ".cpp", ".cxx"):
-        self.scanCText(s,p,atAuto=atAuto)
-    elif ext == '.c#':
-        self.scanCSharpText(s,p,atAuto=atAuto)
-    elif ext == ".el":
-        self.scanElispText(s,p,atAuto=atAuto)
-    elif ext == ".java":
-        self.scanJavaText(s,p,atAuto=atAuto)
-    elif ext == ".js":
-        self.scanJavaScriptText(s,p,atAuto=atAuto)
-    elif ext == ".pas":
-        self.scanPascalText(s,p,atAuto=atAuto)
-    elif ext in (".py", ".pyw"):
-        self.scanPythonText(s,p,atAuto=atAuto)
-    elif ext == ".php":
-        self.scanPHPText(s,p,atAuto=atAuto)
-    elif ext in ('.html','.htm','.xml'):
-        self.scanXmlText(s,p,atAuto=atAuto)
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
     else:
         self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
@@ -27500,6 +27888,7 @@ self.language_delims_dict = {
     "tcltk" : "#",
     "unknown" : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
     "xml" : "<!-- -->",
 }
 
@@ -27537,6 +27926,7 @@ self.language_extension_dict = {
     "tex" : "tex",
     "tcltk" : "tcl",
     "unknown" : "txt", # Set when @comment is seen.
+    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
     "xml": "xml",
 }
 
@@ -27558,6 +27948,7 @@ self.extension_dict = {
     "java"  : "java",
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
     # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
@@ -27582,14 +27973,13 @@ self.extra_extension_dict = {
     'actionscript': 'actionscript',
     'ada':  'ada95',
     'adb':  'none', # ada??
-    # 'ahk':  'ahk',
-    "ahk"   : "autohotkey", #TL - AutoHotkey language
     'awk':  'awk',
     'bas':  'none', # rapidq
     'cpp':  'c',
     'el':   'lisp',
     'f':    'fortran',
     'nw':   'none', # noweb.
+    'otl':   'none', # vimoutline.
     'pod':  'perl',
     'tcl':  'tcl',
     'unknown_language': 'none',
@@ -28395,26 +28785,9 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
 
     self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-    if c.config.getBool('suppress_import_parsing', default=False):
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-    elif ext in (".c", ".cpp", ".cxx"):
-        self.scanCText(s,p,atAuto=atAuto)
-    elif ext == '.c#':
-        self.scanCSharpText(s,p,atAuto=atAuto)
-    elif ext == ".el":
-        self.scanElispText(s,p,atAuto=atAuto)
-    elif ext == ".java":
-        self.scanJavaText(s,p,atAuto=atAuto)
-    elif ext == ".js":
-        self.scanJavaScriptText(s,p,atAuto=atAuto)
-    elif ext == ".pas":
-        self.scanPascalText(s,p,atAuto=atAuto)
-    elif ext in (".py", ".pyw"):
-        self.scanPythonText(s,p,atAuto=atAuto)
-    elif ext == ".php":
-        self.scanPHPText(s,p,atAuto=atAuto)
-    elif ext in ('.html','.htm','.xml'):
-        self.scanXmlText(s,p,atAuto=atAuto)
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
     else:
         self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
@@ -28583,6 +28956,7 @@ self.language_delims_dict = {
     "tcltk" : "#",
     "unknown" : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
     "xml" : "<!-- -->",
 }
 
@@ -28620,6 +28994,7 @@ self.language_extension_dict = {
     "tex" : "tex",
     "tcltk" : "tcl",
     "unknown" : "txt", # Set when @comment is seen.
+    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
     "xml": "xml",
 }
 
@@ -28641,6 +29016,7 @@ self.extension_dict = {
     "java"  : "java",
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
     # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
@@ -28665,14 +29041,13 @@ self.extra_extension_dict = {
     'actionscript': 'actionscript',
     'ada':  'ada95',
     'adb':  'none', # ada??
-    # 'ahk':  'ahk',
-    "ahk"   : "autohotkey", #TL - AutoHotkey language
     'awk':  'awk',
     'bas':  'none', # rapidq
     'cpp':  'c',
     'el':   'lisp',
     'f':    'fortran',
     'nw':   'none', # noweb.
+    'otl':   'none', # vimoutline.
     'pod':  'perl',
     'tcl':  'tcl',
     'unknown_language': 'none',
@@ -28797,7 +29172,7 @@ def writeOneAtShadowNode(self,p,toString,force):
 
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
-        x.makeShadowDirectory(fn,force=force) # makeShadowDirectory takes a *public* file name.
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
         at.replaceFileWithString(private_fn,at.private_s)
         at.replaceFileWithString(fn,at.public_s)
 
@@ -30669,6 +31044,7 @@ self.language_delims_dict = {
     "tcltk" : "#",
     "unknown" : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
     "xml" : "<!-- -->",
 }
 
@@ -30706,6 +31082,7 @@ self.language_extension_dict = {
     "tex" : "tex",
     "tcltk" : "tcl",
     "unknown" : "txt", # Set when @comment is seen.
+    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
     "xml": "xml",
 }
 
@@ -30727,6 +31104,7 @@ self.extension_dict = {
     "java"  : "java",
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
     # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
@@ -30751,14 +31129,13 @@ self.extra_extension_dict = {
     'actionscript': 'actionscript',
     'ada':  'ada95',
     'adb':  'none', # ada??
-    # 'ahk':  'ahk',
-    "ahk"   : "autohotkey", #TL - AutoHotkey language
     'awk':  'awk',
     'bas':  'none', # rapidq
     'cpp':  'c',
     'el':   'lisp',
     'f':    'fortran',
     'nw':   'none', # noweb.
+    'otl':   'none', # vimoutline.
     'pod':  'perl',
     'tcl':  'tcl',
     'unknown_language': 'none',
@@ -31715,8 +32092,867 @@ def writeRecentFilesFileHelper (self,fileName):
 #@+node:ekr.20080823082100.5:To do: create Home .leo file if it does not exist
 #@-node:ekr.20080823082100.5:To do: create Home .leo file if it does not exist
 #@-node:ekr.20080822142201.3:Put leoID.txt and myLeoSettings.leo in HOME/.leo
+#@+node:ekr.20080828074057.1:Added support for @args to scripting plugin
+#@+node:ekr.20080828074057.2:Found: c.executeScript (everywhere)
+@ c.executeScript can get @args=aList from the headline when p is known.
+
+The following changes need to be made:
+
+- executeScriptFromSettingButton needs an args argument.
+
+- createCommonCommands has access to the headline h.  Just look for @args.
+#@nonl
+#@+node:ekr.20080828074057.3:From ToolbarScriptingController
+#@+node:ekr.20080828074057.4:createAtButtonFromSettingHelper & callback (ToolbarScriptingController)
+def createAtButtonFromSettingHelper (self,h,script,statusLine,shortcut,bg='LightSteelBlue2'):
+
+    '''Create a button from an @button node.
+
+    - Calls createIconButton to do all standard button creation tasks.
+    - Binds button presses to a callback that executes the script.
+    '''
+
+    c = self.c
+    k = c.k
+
+    buttonText = self.cleanButtonText(h)
+    args = self.getArgs(h)
+    g.trace('h',h,'args',args)
+
+    data = self.getItemData(script)
+
+    if data and 'tooltip' in data:
+        statusLine = data['tooltip']
+
+
+    # We must define the callback *after* defining b,
+    # so set both command and shortcut to None here.
+
+    b = self.createIconButton(
+        text=h,
+        command=None,
+        shortcut=None,
+        statusLine=statusLine,
+        bg=bg,
+        item_data=data,
+    )
+
+    if not b:
+        return None
+
+    # Now that b is defined we can define the callback.
+    # Yes, the callback *does* use b (to delete b if requested by the script).
+
+    def atSettingButtonCallback (
+        event=None,
+        self=self,
+        args=args,
+        b=b,
+        script=script,
+        buttonText=buttonText
+    ):
+        self.executeScriptFromSettingButton (args,b,script,buttonText)
+
+    self.iconBar.setCommandForButton(b,atSettingButtonCallback)
+
+    # At last we can define the command and use the shortcut.
+    k.registerCommand(buttonText.lower(),
+        shortcut=shortcut,func=atSettingButtonCallback,
+        pane='button',verbose=False)
+
+    return b
+#@+node:ekr.20080828074057.5:executeScriptFromSettingButton (ToolbarScriptingController)
+def executeScriptFromSettingButton (self,args,b,script,buttonText):
+
+    '''Called from callbacks to execute the script in node p.'''
+
+    c = self.c
+
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+    else:
+        g.app.scriptDict = {}
+        c.executeScript(script=script,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            b.deleteButton()
+
+    if 0: # Do *not* set focus here: the script may have changed the focus.
+        c.frame.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20080828074057.5:executeScriptFromSettingButton (ToolbarScriptingController)
+#@-node:ekr.20080828074057.4:createAtButtonFromSettingHelper & callback (ToolbarScriptingController)
+#@+node:ekr.20080828074057.6:createAtButtonHelper & callback (ToolbarScriptingController)
+def createAtButtonHelper (self,p,h,statusLine,shortcut,bg='LightSteelBlue1',verbose=True):
+
+    '''Create a button from an @button node.
+
+    - Calls createIconButton to do all standard button creation tasks.
+    - Binds button presses to a callback that executes the script in node p.
+    '''
+    c = self.c ; k = c.k
+
+    item_data = self.getItemData(p.bodyString())
+
+    buttonText = self.cleanButtonText(h)
+    args = self.getArgs(h)
+
+    b = self.createIconButton(
+        text=h,
+        command=None,
+        shortcut=None,
+        statusLine=statusLine,
+        bg=bg,
+        item_data=item_data
+    )
+
+    if not b:
+        return None
+
+    def atButtonCallback (
+        event=None,
+        self=self,
+        args=args,
+        p=p.copy(),
+        b=b,
+        buttonText=buttonText
+    ):
+        self.executeScriptFromButton (p,args,b,buttonText)
+
+    b.setCommand(atButtonCallback)
+
+    # At last we can define the command and use the shortcut.
+    k.registerCommand(buttonText.lower(),
+        shortcut=shortcut,func=atButtonCallback,
+        pane='button',verbose=verbose)
+
+    return b
+#@+node:ekr.20080828074057.7:executeScriptFromButton (ToolbarScriptingController)
+def executeScriptFromButton (self,p,args,b,buttonText):
+
+    '''Called from callbacks to execute the script in node p.'''
+
+    c = self.c
+
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+    else:
+        g.app.scriptDict = {}
+        c.executeScript(args=args,p=p,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            b.deleteButton()
+
+    if 0: # Do *not* set focus here: the script may have changed the focus.
+        c.frame.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20080828074057.7:executeScriptFromButton (ToolbarScriptingController)
+#@-node:ekr.20080828074057.6:createAtButtonHelper & callback (ToolbarScriptingController)
+#@-node:ekr.20080828074057.3:From ToolbarScriptingController
+#@+node:ekr.20080828074057.8:From mod_scripting
+#@+node:ekr.20080828074057.9:executeScriptFromSettingButton (mod_scripting)
+def executeScriptFromSettingButton (self,args,b,script,buttonText):
+
+    '''Called from callbacks to execute the script in node p.'''
+
+    c = self.c
+
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+    else:
+        g.app.scriptDict = {}
+        c.executeScript(args=args,script=script,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            self.deleteButton(b)
+
+    if 0: # Do *not* set focus here: the script may have changed the focus.
+        c.frame.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20080828074057.9:executeScriptFromSettingButton (mod_scripting)
+#@+node:ekr.20080828074057.10:createCommonCommands (mod_scripting)
+def createCommonCommands (self):
+
+    c = self.c ; k = c.k
+
+    aList = c.config.getCommands()
+    if not aList: return
+
+    # g.trace(g.listToString(aList))
+
+    for z in aList:
+
+        h,script = z
+        shortcut = self.getShortcut(h)
+        args = self.getArgs(h)
+
+        def commonCommandCallback (event=None,script=script):
+            c.executeScript(args=args,script=script,silent=True)
+
+        if not g.app.unitTesting and not g.app.batchMode:
+            g.es('global @command',self.cleanButtonText(h).lower(),
+                '',shortcut or '',color='purple')
+        k.registerCommand(h,shortcut,commonCommandCallback,verbose=False)
+#@-node:ekr.20080828074057.10:createCommonCommands (mod_scripting)
+#@+node:ekr.20080828074057.11:runScriptCommand (mod_scripting)
+def runScriptCommand (self,event=None):
+
+    '''Called when user presses the 'run-script' button or executes the run-script command.'''
+
+    c = self.c
+    p = c.currentPosition()
+    h = p.headString()
+    args = self.getArgs(h)
+    c.executeScript(args=args,p=p,useSelectedText=True,silent=True)
+
+    if 0:
+        # Do not assume the script will want to remain in this commander.
+        c.frame.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20080828074057.11:runScriptCommand (mod_scripting)
+#@+node:ekr.20080828074057.12:handleAtCommandNode @command (mod_scripting)
+def handleAtCommandNode (self,p):
+
+    '''Handle @command name [@key[=]shortcut].'''
+
+    c = self.c ; k = c.keyHandler ; h = p.headString()
+    if not h.strip(): return
+
+    << get the commandName and optional shortcut >>
+    args = self.getArgs(h)
+
+    def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
+        # The 'end-of-script command messes up tabs.
+        c.executeScript(args=args,p=p,silent=True)
+
+    if not g.app.unitTesting and not g.app.batchMode:
+        g.es('local @command',self.cleanButtonText(commandName).lower(),
+            '',shortcut or '', color='purple')
+    k.registerCommand(commandName,shortcut,atCommandCallback,verbose=False)
+#@nonl
+#@+node:ekr.20080828074057.13:<< get the commandName and optional shortcut >>
+tag = '@command' ; shortcut = None
+
+i = h.find('@key')
+if i > -1:
+    commandName = h[len(tag):i].strip()
+    j = g.skip_ws(h,i+len('@key'))
+    if g.match(h,j,'='): # Make the equal sign optional.
+        j += 1
+    shortcut = h[j:].strip()
+else:
+    commandName = h[len(tag):].strip()
+#@nonl
+#@-node:ekr.20080828074057.13:<< get the commandName and optional shortcut >>
+#@-node:ekr.20080828074057.12:handleAtCommandNode @command (mod_scripting)
+#@+node:ekr.20080828074057.14:handleAtScriptNode @script (mod_scripting)
+def handleAtScriptNode (self,p):
+
+    '''Handle @script nodes.'''
+
+    c = self.c
+    tag = "@script"
+    h = p.headString()
+    assert(g.match(h,0,tag))
+    name = h[len(tag):].strip()
+    args = self.getArgs(h)
+
+    if self.atPluginNodes:
+        g.es("executing script %s" % (name),color="blue")
+        c.executeScript(arsg=args,p=p,useSelectedText=False,silent=True)
+    else:
+        g.es("disabled @script: %s" % (name),color="blue")
+
+    if 0:
+        # Do not assume the script will want to remain in this commander.
+        c.frame.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20080828074057.14:handleAtScriptNode @script (mod_scripting)
+#@+node:ekr.20080828074057.15:executeScriptFromButton (mod_scripting)
+def executeScriptFromButton (self,p,b,buttonText):
+
+    '''Called from callbacks to execute the script in node p.'''
+
+    c = self.c
+
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+    else:
+        g.trace(p)
+        g.app.scriptDict = {}
+        h = p.headString()
+        args = self.getArgs(h)
+        c.executeScript(args=args,p=p,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            self.deleteButton(b)
+
+    if 0: # Do *not* set focus here: the script may have changed the focus.
+        c.frame.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20080828074057.15:executeScriptFromButton (mod_scripting)
+#@-node:ekr.20080828074057.8:From mod_scripting
+#@-node:ekr.20080828074057.2:Found: c.executeScript (everywhere)
+#@+node:ekr.20080828074057.16:Changed
+#@+node:ekr.20080828074057.17:getArgs
+def getArgs (self,h):
+
+    args = [] ; tag = '@args'
+
+    i = h.find(tag)
+
+    if i > -1:
+        j = g.skip_ws(h,i+len(tag))
+        if g.match(h,j,'='):
+            s = h[j+1:].strip()
+            args = s.split(',')
+            args = [z.strip() for z in args]
+
+    # g.trace('args',repr(args))
+    return args
+#@-node:ekr.20080828074057.17:getArgs
+#@+node:ekr.20080828074057.18:handleAtButtonSetting & helper
+def handleAtButtonSetting (self,h,script):
+
+    '''Create a button in the icon area for a common @button node in an @setting tree.
+
+    An optional @key=shortcut defines a shortcut that is bound to the button's script.
+    The @key=shortcut does not appear in the button's name, but
+    it *does* appear in the status line shown when the mouse moves over the button.'''
+
+    c = self.c
+    shortcut = self.getShortcut(h)
+    statusLine = 'Global script button'
+    if shortcut:
+        statusLine = '%s = %s' % (statusLine,shortcut)
+
+    # This helper is also called by the script-button callback.
+    b = self.createAtButtonFromSettingHelper(h,script,statusLine,shortcut)
+#@+node:ekr.20080828074057.19:createAtButtonFromSettingHelper & callback
+def createAtButtonFromSettingHelper (self,args,h,script,statusLine,shortcut,bg='LightSteelBlue2'):
+
+    '''Create a button from an @button node.
+
+    - Calls createIconButton to do all standard button creation tasks.
+    - Binds button presses to a callback that executes the script.
+    '''
+    c = self.c ; k = c.k
+    buttonText = self.cleanButtonText(h)
+    args = self.getArgs(h)
+
+    # We must define the callback *after* defining b, so set both command and shortcut to None here.
+    b = self.createIconButton(text=h,command=None,shortcut=None,statusLine=statusLine,bg=bg)
+    if not b: return None
+
+    # Now that b is defined we can define the callback.
+    # Yes, the callback *does* use b (to delete b if requested by the script).
+    def atSettingButtonCallback (event=None,self=self,b=b,c=c,script=script,buttonText=buttonText):
+        self.executeScriptFromSettingButton (args,b,script,buttonText)
+        if c.exists: c.outerUpdate()
+
+    self.iconBar.setCommandForButton(b,atSettingButtonCallback)
+
+    # At last we can define the command and use the shortcut.
+    k.registerCommand(buttonText.lower(),
+        shortcut=shortcut,func=atSettingButtonCallback,
+        pane='button',verbose=False)
+
+    return b
+#@nonl
+#@+node:ekr.20080828074057.9:executeScriptFromSettingButton (mod_scripting)
+def executeScriptFromSettingButton (self,args,b,script,buttonText):
+
+    '''Called from callbacks to execute the script in node p.'''
+
+    c = self.c
+
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+    else:
+        g.app.scriptDict = {}
+        c.executeScript(args=args,script=script,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            self.deleteButton(b)
+
+    if 0: # Do *not* set focus here: the script may have changed the focus.
+        c.frame.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20080828074057.9:executeScriptFromSettingButton (mod_scripting)
+#@-node:ekr.20080828074057.19:createAtButtonFromSettingHelper & callback
+#@-node:ekr.20080828074057.18:handleAtButtonSetting & helper
+#@-node:ekr.20080828074057.16:Changed
+#@-node:ekr.20080828074057.1:Added support for @args to scripting plugin
 #@-node:ekr.20080811174246.4:Features
-#@-node:ekr.20080810085333.3:4.5 b3
+#@-node:ekr.20080810085333.3:4.5 b3 & b4
+#@+node:ekr.20080826074455.2:4.5 rc1
+#@+node:ekr.20080825131124.4:Generalized createOutline
+#@+node:ekr.20080825131124.3:createImportDispatchDict
+def createImportDispatchDict (self):
+
+    self.importDispatchDict = {
+        # Keys are file extensions, values are text scanners.
+        # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
+        '.c':       self.scanCText,
+        '.cpp':     self.scanCText,
+        '.cxx':     self.scanCText,
+        '.c#':      self.scanCSharpText,
+        '.el':      self.scanElispText,
+        '.htm':     self.scanXmlText,
+        '.html':    self.scanXmlText,
+        '.java':    self.scanJavaText,
+        '.js':      self.scanJavaScriptText,
+        '.php':     self.scanPHPText,
+        '.pas':     self.scanPascalText,
+        '.py':      self.scanPythonText,
+        '.pyw':     self.scanPythonText,
+        '.xml':     self.scanXmlText,
+    }
+#@-node:ekr.20080825131124.3:createImportDispatchDict
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = g.os_path_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = g.os_path_normpath(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    z = g.choose(atAuto,'@auto ','')
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@-node:ekr.20080825131124.4:Generalized createOutline
+#@+node:ekr.20080815174457.4:Fixed bug in autotrees
+@nocolor
+
+I've been playing around with the rss examples in the autotrees
+plugin. If I click on an @auto-rss node, I get the following:
+
+Handling 'rss' with 'http://news.bbc.co.uk/rss/newsonline_uk_edition/
+world/rss091.xml'
+Starting download
+Done!
+Traceback (most recent call last):
+ File "/home/pbienst/source/leo-editor/leo/core/leoGlobals.py", line
+2743, in doHook
+   return f(tag,keywords)
+ File "/home/pbienst/source/leo-editor/leo/core/leoPlugins.py", line
+91, in doPlugins
+   return doHandlersForTag(tag,keywords)
+ File "/home/pbienst/source/leo-editor/leo/core/leoPlugins.py", line
+70, in doHandlersForTag
+   val = callTagHandler(bunch,tag,keywords)
+ File "/home/pbienst/source/leo-editor/leo/core/leoPlugins.py", line
+49, in callTagHandler
+   result = handler(tag,keywords)
+ File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
+line 347, in onIconDoubleClick
+   self.handleEvent("icondclick1", tag, keywords)
+ File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
+line 374, in handleEvent
+   handler.refresh()
+ File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
+line 213, in refresh
+   self.addChildren(self.children, self.node)
+ File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
+line 239, in addChildren
+   c.setHeadString(new_node,child.headline)
+NameError: global name 'c' is not defined
+#@nonl
+#@-node:ekr.20080815174457.4:Fixed bug in autotrees
+#@+node:ekr.20080826074455.3:Force the creation of shadow directories
+#@+node:ekr.20080712150045.1:at.replaceFileWithString
+def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    at = self ; testing = g.app.unitTesting
+
+    # g.trace('fn',fn,'s','\n',s)
+    # g.trace(g.callers())
+
+    exists = g.os_path_exists(fn)
+
+    if exists: # Read the file.  Return if it is the same.
+        try:
+            f = file(fn,'rb')
+            s2 = f.read()
+            f.close()
+        except IOError:
+            at.error('unexpected exception creating %s' % fn)
+            g.es_exception()
+            return False
+        if s == s2:
+            if not testing: g.es('unchanged:',fn)
+            return False
+
+    # Replace
+    try:
+        f = file(fn,'wb')
+        f.write(s)
+        f.close()
+        if not testing:
+            if exists:
+                g.es('wrote:    ',fn)
+            else:
+                g.es('created:  ',fn)
+        return True
+    except IOError:
+        at.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
+#@-node:ekr.20080712150045.1:at.replaceFileWithString
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False):
+
+    """Attempt to make all non-existent directories"""
+
+    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
+
+    if not force:
+        if c:
+            if not c.config.create_nonexistent_directories:
+                return None
+        elif not app.config.create_nonexistent_directories:
+            return None
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                g.es_print("created directory:",path,color='red')
+            except Exception:
+                g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@+node:ekr.20041005105605.143:openFileForWritingHelper & helper
+def openFileForWritingHelper (self,fileName):
+
+    '''Open the file and return True if all went well.'''
+
+    at = self ; c = at.c
+
+    try:
+        at.shortFileName = g.shortFileName(fileName)
+        fileName = g.os_path_join(at.default_directory,fileName)
+        at.targetFileName = g.os_path_normpath(fileName)
+        path = g.os_path_dirname(at.targetFileName)
+        if not path or not g.os_path_exists(path):
+            if path:
+                path = g.makeAllNonExistentDirectories(path,c=c)
+            if not path or not g.os_path_exists(path):
+                path = g.os_path_dirname(at.targetFileName)
+                at.writeError("path does not exist: " + path)
+                return False
+    except Exception:
+        at.exception("exception creating path: %s" % repr(path))
+        g.es_exception()
+        return False
+
+    if g.os_path_exists(at.targetFileName):
+        try:
+            if not os.access(at.targetFileName,os.W_OK):
+                at.writeError("can not open: read only: " + at.targetFileName)
+                return False
+        except AttributeError:
+            pass # os.access() may not exist on all platforms.
+
+    try:
+        at.outputFileName = at.targetFileName + ".tmp"
+        at.outputFile = self.openForWrite(at.outputFileName,'wb') # bwm
+        if not at.outputFile:
+            at.writeError("can not create " + at.outputFileName)
+            return False
+    except Exception:
+        at.exception("exception creating:" + at.outputFileName)
+        return False
+
+    return True
+#@+node:bwmulder.20050101094804:openForWrite (atFile)
+def openForWrite (self, filename, wb='wb'):
+
+    '''Open a file for writes, handling shadow files.'''
+
+    c = self.c ; x = c.shadowController ; trace = True or x.trace
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+
+        if self.writing_to_shadow_directory:
+            if trace and not g.app.unitTesting: g.trace(filename,shadow_filename)
+            x.message('writing %s' % shadow_filename)
+
+        return open(open_file_name,wb)
+
+    except IOError:
+        if not g.app.unitTesting:
+            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+            g.es_exception()
+        return None
+#@-node:bwmulder.20050101094804:openForWrite (atFile)
+#@-node:ekr.20041005105605.143:openFileForWritingHelper & helper
+#@+node:ekr.20080710082231.19:x.makeShadowDirectory
+def makeShadowDirectory (self,fn):
+
+    '''Make a shadow directory for the **public** fn.'''
+
+    x = self ; path = x.shadowDirName(fn)
+
+    if not g.os_path_exists(path):
+
+        # Force the creation of the directories.
+        g.makeAllNonExistentDirectories(path,c=None,force=True)
+
+    return g.os_path_exists(path) and g.os_path_isdir(path)
+#@-node:ekr.20080710082231.19:x.makeShadowDirectory
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if not fn:
+        g.trace('can not happen: not an @shadow node',p.headString())
+        return False
+
+    # A hack to support unknown extensions.
+    self.adjustTargetLanguage(fn) # May set c.target_language.
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = g.os_path_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None,
+        nosentinels=None, # set below.  Affects only error messages (sometimes).
+        thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+        scriptWrite=False,
+        toString=False, # True: create a fileLikeObject.  This is done below.
+        write_strips_blank_lines=False,
+    )
+            # at.targetFileName not used.
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,nosentinels=not sentinels,toString=False,atAuto=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        ### It may be better to compute the public file by removing sentinels from at.private_s
+        ### by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
+        ### x.isSentinel logic is used consistently by the @shadow read/write logic.
+        ### OTOH, Leo's write logic should actually dominate x.isSentinel.
+
+        # Write the public and private files.
+        private_fn = x.shadowPathName(fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName)
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force,fn):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    at = self ; x = at.c.shadowController
+    if not x.marker_from_extension(fn,suppressErrors=True):
+        g.es_print('unknown extension. can not write:',p.headString(),color='red')
+        return False # Never write files with unknown extensions
+    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if not language:
+            # An unknown language.
+            c.target_language = 'unknown_language'
+            # g.trace('setting target language',c.target_language)
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@-node:ekr.20080826074455.3:Force the creation of shadow directories
+#@+node:ekr.20080827074409.1:Removed references to runLeo.py from docs
+(not a problem) ./leo/test/test.leo
+(not a problem) ./leo/test/unitTest.leo
+(fixed)./leo/dist/leoDist.leo
+(fixed)./leo/doc/INSTALL.TXT
+(fixed) ./leo/doc/LeoDocs.leo
+#@nonl
+#@-node:ekr.20080827074409.1:Removed references to runLeo.py from docs
+#@+node:ekr.20080826182939.1:Added registry script to .exe installer
+@language python
+@tabwidth -4
+
+@nocolor
+
+I'm not that great at the registry, but I'm not scared of it either.  Attached is a commented python script to generate the needed keys.  I tested it just now by deleting ( ! ) the leo associations from my registry and restoring them with the script.  I don't know what info you can feed to the script from your installer, but if you pass the path to the leo folder to the script as a commandline argument it should work...
+
+Well actually it will only work if Python is in the user's path (something the Python installer doesn't do for some reason).  If you do os.startfile("leo-reg.py") it will do the right thing (as long as Python is installed), but you can't pass args with startfile AFAIK.  Depending on how bad things are, you may need the user to manually run the script from the leo directory so the script can get the path using os.getcwd.
+
+EKR: added leo/dist/post-install-script.py
+
+@color
+#@nonl
+#@-node:ekr.20080826182939.1:Added registry script to .exe installer
+#@-node:ekr.20080826074455.2:4.5 rc1
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt

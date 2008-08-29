@@ -36,8 +36,9 @@ __plugin_group__ = "Coding"
 class Doc(BaseTreeHandler):
     """Handler for documentation nodes"""
 
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Initialize the tree"""
+        self.c = c
         self.children = []
         self.done = sets.Set()
         try:

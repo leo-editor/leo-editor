@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="78" left="225" height="885" width="887"/>
+	<global_window_position top="50" left="50" height="804" width="1117"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1011,7 +1011,7 @@
 <v t="ekr.20050618053006"><vh>@test colorizer plsql</vh>
 <v t="ekr.20050618053006.1"><vh>plsql</vh></v>
 </v>
-<v t="ekr.20040712101754.143" a="M"><vh>@test colorizer python.xml (jEdit)</vh>
+<v t="ekr.20040712101754.143"><vh>@test colorizer python.xml (jEdit)</vh>
 <v t="ekr.20040712101754.144"><vh>python.xml</vh>
 <v t="ekr.20040712101754.145"><vh>&lt;&lt; remarks &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.146"><vh>&lt;&lt; comments &gt;&gt;</vh></v>
@@ -2030,8 +2030,8 @@
 </v>
 <v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
-<v t="ekr.20040712101754.184" a="M"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
-<v t="ekr.20040712101754.208" a="M" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
+<v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
+<v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
 </v>
 <v t="ekr.20040712101754.99" annotate="7d71002e"><vh>@test c iters</vh>
 <v t="ekr.20040712101754.100"><vh>&lt;&lt; coverage tests &gt;&gt;</vh></v>
@@ -2074,7 +2074,7 @@
 <v t="ekr.20040802071519.1"><vh>child</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
-<v t="ekr.20040712101754.200" a="M" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
+<v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
@@ -2437,250 +2437,10 @@
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20080824191108.1"><vh>runLeo</vh>
+<v t="ekr.20080824191108.2"><vh>@test isValidPython</vh></v>
 </v>
 </v>
-<v t="ekr.20080729200342.1"><vh>leoShadow</vh>
-<v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
-<v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
-<v t="ekr.20080804124245.1"><vh>passed</vh></v>
-<v t="ekr.20080729200342.5"><vh>@shadow-test change middle line</vh>
-<v t="ekr.20080729200342.6"><vh>old</vh></v>
-<v t="ekr.20080729200342.7"><vh>new</vh></v>
-</v>
-<v t="ekr.20080729200342.8"><vh>@shadow-test change first line</vh>
-<v t="ekr.20080729200342.9"><vh>old</vh></v>
-<v t="ekr.20080729200342.10"><vh>new</vh></v>
-</v>
-<v t="ekr.20080729200342.11"><vh>@shadow-test change last line</vh>
-<v t="ekr.20080729200342.12"><vh>old</vh></v>
-<v t="ekr.20080729200342.13"><vh>new</vh></v>
-</v>
-<v t="ekr.20080729200342.14"><vh>@shadow-test delete first line</vh>
-<v t="ekr.20080729200342.15"><vh>old</vh></v>
-<v t="ekr.20080729200342.16"><vh>new</vh></v>
-</v>
-<v t="ekr.20080729200342.17"><vh>@shadow-test delete middle line</vh>
-<v t="ekr.20080729200342.18"><vh>old</vh></v>
-<v t="ekr.20080729200342.19"><vh>new</vh></v>
-</v>
-<v t="ekr.20080729200342.20"><vh>@shadow-test delete last line</vh>
-<v t="ekr.20080729200342.21"><vh>old</vh></v>
-<v t="ekr.20080729200342.22"><vh>new</vh></v>
-</v>
-<v t="ekr.20080729200342.23"><vh>@shadow-test insert before first line</vh>
-<v t="ekr.20080729200342.24"><vh>old</vh></v>
-<v t="ekr.20080729200342.25"><vh>new</vh></v>
-</v>
-<v t="ekr.20080729200342.26"><vh>@shadow-test insert after first line</vh>
-<v t="ekr.20080729200342.27"><vh>old</vh></v>
-<v t="ekr.20080729200342.28"><vh>new</vh></v>
-</v>
-<v t="ekr.20080729200342.29"><vh>@shadow-test insert before last line</vh>
-<v t="ekr.20080729200342.30"><vh>old</vh></v>
-<v t="ekr.20080729200342.31"><vh>new</vh></v>
-</v>
-<v t="ekr.20080729200342.32"><vh>@shadow-test insert after last line</vh>
-<v t="ekr.20080729200342.33"><vh>old</vh></v>
-<v t="ekr.20080729200342.34"><vh>new</vh></v>
-</v>
-<v t="ekr.20080729200342.35"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
-<v t="ekr.20080729200342.36"><vh>old</vh>
-<v t="ekr.20080729200342.37"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.38"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.39"><vh>new</vh>
-<v t="ekr.20080729200342.40"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.41"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.42"><vh>@shadow-test insert between nodes: at start of next node</vh>
-<v t="ekr.20080729200342.43"><vh>old</vh>
-<v t="ekr.20080729200342.44"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.45"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.46"><vh>new</vh>
-<v t="ekr.20080729200342.47"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.48"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.49"><vh>@shadow-test delete between nodes: at end of prev node</vh>
-<v t="ekr.20080729200342.50"><vh>old</vh>
-<v t="ekr.20080729200342.51"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.52"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.53"><vh>new</vh>
-<v t="ekr.20080729200342.54"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.55"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.56"><vh>@shadow-test delete between nodes: at start of next node</vh>
-<v t="ekr.20080729200342.57"><vh>old</vh>
-<v t="ekr.20080729200342.58"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.59"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.60"><vh>new</vh>
-<v t="ekr.20080729200342.61"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.62"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.63"><vh>@shadow-test change end of prev node</vh>
-<v t="ekr.20080729200342.64"><vh>old</vh>
-<v t="ekr.20080729200342.65"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.66"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.67"><vh>new</vh>
-<v t="ekr.20080729200342.68"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.69"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.70"><vh>@shadow-test change start of next node</vh>
-<v t="ekr.20080729200342.71"><vh>old</vh>
-<v t="ekr.20080729200342.72"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.73"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.74"><vh>new</vh>
-<v t="ekr.20080729200342.75"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.76"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.77"><vh>@shadow-test-lax multiple-line insert between nodes: at end of prev node</vh>
-<v t="ekr.20080729200342.78"><vh>old</vh>
-<v t="ekr.20080729200342.79"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.80"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.81"><vh>new</vh>
-<v t="ekr.20080729200342.82"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.83"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.84"><vh>@shadow-test multiple-line insert between nodes: at start of next node</vh>
-<v t="ekr.20080729200342.85"><vh>old</vh>
-<v t="ekr.20080729200342.86"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.87"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.88"><vh>new</vh>
-<v t="ekr.20080729200342.89"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.90"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.91"><vh>@shadow-test multiple-line change end of prev node</vh>
-<v t="ekr.20080729200342.92"><vh>old</vh>
-<v t="ekr.20080729200342.93"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.94"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.95"><vh>new</vh>
-<v t="ekr.20080729200342.96"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.97"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.98"><vh>@shadow-test multiple-line change start of next node</vh>
-<v t="ekr.20080729200342.99"><vh>old</vh>
-<v t="ekr.20080729200342.100"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.101"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.102"><vh>new</vh>
-<v t="ekr.20080729200342.103"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.104"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.105"><vh>@shadow-test multiple-line delete between nodes: at end of prev node</vh>
-<v t="ekr.20080729200342.106"><vh>old</vh>
-<v t="ekr.20080729200342.107"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.108"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.109"><vh>new</vh>
-<v t="ekr.20080729200342.110"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.111"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.112"><vh>@shadow-test multiple-line delete between nodes: at start of next node</vh>
-<v t="ekr.20080729200342.113"><vh>old</vh>
-<v t="ekr.20080729200342.114"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.115"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080729200342.116"><vh>new</vh>
-<v t="ekr.20080729200342.117"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.118"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080804101159.1"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
-<v t="ekr.20080804101159.2"><vh>old</vh>
-<v t="ekr.20080804101159.3"><vh>node 1</vh></v>
-<v t="ekr.20080804101159.4"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080804101159.5"><vh>new</vh>
-<v t="ekr.20080804101159.6"><vh>node 1</vh></v>
-<v t="ekr.20080804101159.7"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080804121540.1"><vh>@shadow-test verbatim sentinels-delete verbatim line: at start of node</vh>
-<v t="ekr.20080804121540.2"><vh>old</vh>
-<v t="ekr.20080804121540.4"><vh>node 1</vh></v>
-<v t="ekr.20080804121540.3"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080804121540.5"><vh>new</vh>
-<v t="ekr.20080804121540.7"><vh>node 1</vh></v>
-<v t="ekr.20080804121540.6"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080804100908.7"><vh>@shadow-test verbatim sentinels-no change</vh>
-<v t="ekr.20080804100908.1"><vh>old</vh>
-<v t="ekr.20080804100908.2"><vh>node 1</vh></v>
-<v t="ekr.20080804100908.3"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080804100908.8"><vh>new</vh>
-<v t="ekr.20080804100908.9"><vh>node 1</vh></v>
-<v t="ekr.20080804100908.10"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080804121540.8"><vh>@shadow-test verbatim sentinels-delete verbatim line: at end of node</vh>
-<v t="ekr.20080804121540.9"><vh>old</vh>
-<v t="ekr.20080804121540.10"><vh>node 1</vh></v>
-<v t="ekr.20080804121540.11"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080804121540.12"><vh>new</vh>
-<v t="ekr.20080804121540.13"><vh>node 1</vh></v>
-<v t="ekr.20080804121540.14"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080804123400.1"><vh>@shadow-test verbatim sentinels-add verbatim line</vh>
-<v t="ekr.20080804123400.2"><vh>old</vh>
-<v t="ekr.20080804123400.3"><vh>node 1</vh></v>
-<v t="ekr.20080804123400.4"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080804123400.5"><vh>new</vh>
-<v t="ekr.20080804123400.6"><vh>node 1</vh></v>
-<v t="ekr.20080804123400.7"><vh>node 2</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
-<v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
-<v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
-<v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>
-<v t="ekr.20080729200342.123"><vh>@test x.shadowPathName</vh></v>
-<v t="ekr.20080729200342.124"><vh>@test x.shadowDirName</vh></v>
-<v t="ekr.20080729200342.125"><vh>@test x.rename</vh></v>
-<v t="ekr.20080729200342.126"><vh>@test x.unlink</vh></v>
-<v t="ekr.20080729200342.127"><vh>@test x.makeShadowDirectory</vh>
-<v t="ekr.20080729200342.128"><vh>deleteShadowDir</vh></v>
-</v>
-<v t="ekr.20080729200342.129"><vh>@test x.replaceFileWithString</vh></v>
-<v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
-<v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
-</v>
-<v t="ekr.20080729200342.130"><vh>Unit tests for atFileCommands</vh>
-<v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
-<v t="ekr.20080729200342.132"><vh>@test at.openForWrite: not a shadow file</vh></v>
-<v t="ekr.20080729200342.133"><vh>@test at.readOneAtShadowNode</vh>
-<v t="ekr.20080729200342.134"><vh>@@shadow unittest/read_test.py</vh></v>
-</v>
-<v t="ekr.20080729200342.135"><vh>@test at.replaceFileWithString</vh></v>
-<v t="ekr.20080729200342.136"><vh>@test at.writeOneAtShadowNode</vh>
-<v t="ekr.20080729200342.137"><vh>@@shadow unittest/test_1.py</vh></v>
-</v>
-</v>
-<v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -4562,9 +4322,9 @@ verbose = False
 
 python_interp = sys.executable
 test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
-src_path  = g.os_path_join(g.app.loadDir,"..","core")
+src_path  = g.os_path_join(g.app.loadDir,"..","..")
 
-leo_file   = g.os_path_join(src_path,"runLeo.py")
+leo_file   = g.os_path_join(src_path,"launchLeo.py")
 batch_file = g.os_path_join(test_path,"batchTest.py")
 test_file  = g.os_path_join(test_path,"createdFile.txt")
 
@@ -21307,7 +21067,7 @@ if g.os_path_exists(shadow_fn):
 
 deleteShadowDir(shadow_dir)
 
-x.makeShadowDirectory(shadow_dir,force=True)
+x.makeShadowDirectory(shadow_dir)
 assert os.path.exists(shadow_dir)
 
 deleteShadowDir(shadow_dir)
@@ -21408,7 +21168,7 @@ try:
     fn = 'unittest/test_1.py'
     shadow_fn = x.shadowPathName(fn)
     shadow_dir = x.shadowDirName(fn)
-    x.makeShadowDirectory(shadow_dir,force=True)
+    x.makeShadowDirectory(shadow_dir)
     if g.os_path_exists(shadow_fn):
         g.utils_remove(shadow_fn,verbose=True)
     at.writeOneAtShadowNode(child,toString=True,force=True)
@@ -21732,5 +21492,8 @@ x.show_error(
 pass
 pass
 </t>
+<t tx="ekr.20080824191108.1"></t>
+<t tx="ekr.20080824191108.2">import leo.core.runLeo as runLeo
+assert runLeo.isValidPython()</t>
 </tnodes>
 </leo_file>

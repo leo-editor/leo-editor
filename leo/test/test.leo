@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -64,6 +64,7 @@
 </v>
 <v t="ekr.20070531102813"><vh>Disabled buttons</vh>
 <v t="ekr.20060814111542"><vh>@@button add-e</vh></v>
+<v t="ekr.20080813100905.1"><vh>@@button args-test @args = a,b,c</vh></v>
 <v t="ekr.20060918083159"><vh>@@button Clear uAs</vh></v>
 <v t="ekr.20071002150320"><vh>@@button create-canvas</vh></v>
 <v t="ekr.20060809084033"><vh>@@button cvt to g.et</vh>
@@ -80,6 +81,7 @@
 <v t="ekr.20070531104646"><vh>@@button da-comp</vh></v>
 <v t="ekr.20070531103315"><vh>@@button da-expand</vh></v>
 <v t="ekr.20070530072113"><vh>@@button hide-ch</vh></v>
+<v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
 <v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
 <v t="ekr.20071006084354"><vh>@@button print tk line number</vh></v>
 <v t="ekr.20080105115712"><vh>@@button pylint</vh>
@@ -91,6 +93,7 @@
 <v t="ekr.20060427103457"><vh>@@button settings.leo</vh></v>
 <v t="ekr.20080310111916.1"><vh>@@button Translate "can not" to "can't"</vh></v>
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
+<v t="ekr.20080815073750.1"><vh>@@button write-nosent-files</vh></v>
 <v t="ekr.20071128122043"><vh>@@command create-shell-tab @key = Alt+5</vh></v>
 <v t="ekr.20071101163934"><vh>@@command rst3</vh></v>
 <v t="ekr.20070604095313"><vh>Chapter buttons</vh>
@@ -104,9 +107,7 @@
 <v t="ekr.20060904111037.1"><vh>@@button opml-write</vh></v>
 <v t="ekr.20060904111037"><vh>@@button opml-read</vh></v>
 </v>
-<v t="ekr.20080813100905.1"><vh>@@button args-test @args = a,b,c</vh></v>
 </v>
-<v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
 </v>
 <v t="ekr.20070410063214"><vh>Commands</vh>
 <v t="ekr.20060924180049"><vh>@@command clones-tab</vh>
@@ -120,6 +121,7 @@
 </v>
 </v>
 <v t="ekr.20080214091706.2"><vh>@@command ekr-command</vh></v>
+<v t="ekr.20080823154546.1"><vh>@@command parse-python @key = Alt-5</vh></v>
 </v>
 <v t="ekr.20071026102420.3"><vh>Scripts</vh>
 <v t="ekr.20071129103842"><vh>create-at-auto-nodes</vh></v>
@@ -261,20 +263,20 @@
 <v t="ekr.20080801160915.1"><vh>@@shadow TerryBrownTest.py</vh>
 <v t="ekr.20080803120643.1"><vh>spam</vh></v>
 </v>
+<v t="ekr.20080812102914.1"><vh>@@nosent at-nosent-test.py</vh>
+<v t="ekr.20080812102914.2"><vh>child</vh></v>
+</v>
 <v t="ekr.20080813080627.1"><vh>@@shadow at-shadow-attributes-test.py</vh>
 <v t="ekr.20080813080627.2"><vh>spam</vh>
 <v t="ekr.20080813080729.1"><vh>child</vh></v>
 </v>
 <v t="ekr.20080813080627.3" a="M"><vh>eggs</vh></v>
 </v>
-</v>
-<v t="ekr.20080812102914.1"><vh>@@nosent at-nosent-test.py</vh>
-<v t="ekr.20080812102914.2"><vh>child</vh></v>
-</v>
+<v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
 </v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
-<v t="ekr.20080815073750.1"><vh>@button write-nosent-files</vh></v>
-<v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
+<v t="ekr.20080823154546.2"><vh>parse-python test</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1246,6 +1248,7 @@ ipython.py
 # open_with.py
 rClick.py
 # toolbar.py
+# autotrees.py
 
 add_directives.py
 color_markup.py
@@ -2256,5 +2259,39 @@ for s in table:
     print      'print     ',s
     print      'repr(s)   ',repr(s)</t>
 <t tx="ekr.20080822153619.1"></t>
+<t tx="ekr.20080823154546.1">p2 = p.insertAfter()
+p2.setHeadString('inserted node')
+s = p.bodyString()
+
+# Remove Leo directives.
+directives = ['@'+z for z in g.globalDirectiveList]
+def isDirective(s):
+    for z in directives:
+        if s.startswith(z):
+            return True
+    else: return False
+aList = [z for z in g.splitLines(s) if not isDirective(z)]
+s = ''.join(aList)
+if not s.endswith('\n'): s = s + '\n'
+
+c.importCommands.scanPythonText(s,p2.copy(),atAuto=True)
+c.redraw_now()
+g.pr('done')</t>
+<t tx="ekr.20080823154546.2">@tabwidth -4
+
+class AClass:
+
+   def func1():
+       do1()
+
+   def func2():
+       do2()
+
+   def func3():
+       do3()
+
+   def func4():
+       do4()
+</t>
 </tnodes>
 </leo_file>

@@ -76,8 +76,9 @@ class News(BaseTreeHandler):
 
     #@    @+others
     #@+node:ekr.20050329082101.159:initFrom
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Initialize the tree"""
+        self.c = c
         self.children = []
         #
         try:
@@ -109,8 +110,9 @@ class NewsItem(BaseTreeHandler):
 
     #@    @+others
     #@+node:ekr.20050329082101.161:initFrom
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Initialize the tree"""
+        self.c = c
         self.children = []
         #
         # Get the server name which we conveniently left in the body
