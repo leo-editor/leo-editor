@@ -31360,7 +31360,8 @@ What's New in Leo 4.5
   write-file-from-node and all the import/export commands.
   
 - Leo creates the .leo folder in the user's HOME directory, and puts several configuration files there.
-  Leo looks for myLeoSettings.leo in HOME/.leo.</t>
+  Leo looks for myLeoSettings.leo in HOME/.leo.
+  Leo uses os.path.expanduser("~") if there is no home setting.</t>
 <t tx="ekr.20080813064908.2">In version 4.5, Leo changed to using a sax parser for .leo files. This can cause
 problems if your .leo file contains invalid characters.
 Bugs in previous versions of Leo permitted these bad charactgers to appear.
