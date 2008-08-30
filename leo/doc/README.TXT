@@ -1,6 +1,6 @@
-Leo 4.5 release candidate 1                      August 28, 2008
+Leo 4.5 release candidate 2                     August 30, 2008
 
-Leo 4.5 rc1 is now available at:
+Leo 4.5 rc2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo 4.5 contains many important new features.  See below for details.

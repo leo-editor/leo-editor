@@ -517,7 +517,7 @@ class LeoApp:
             theId = os.getenv('USER')
             if theId:
                 if verbose and not g.app.unitTesting:
-                    g.es("using os.getenv('USER'):",repr(theId),color='red')
+                    g.es("setting HOME to os.getenv('USER'):",repr(theId),color='blue')
                 g.app.leoID = theId
                 # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
                 g.app.leoID = g.app.leoID.replace('.','-')

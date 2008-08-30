@@ -172,7 +172,10 @@ def computeHomeDir():
 
     encoding = g.startupEncoding()
     # dotDir = g.os_path_abspath('./',encoding)
-    home = os.getenv('HOME',default=None)
+    # home = os.getenv('HOME',default=None)
+    home = os.path.expanduser("~")
+        # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
+
     # print('computeHomeDir: %s' % repr(home))
     # print("computeHomeDir: os.path.expanduser('~'): %s" % os.path.expanduser('~'))
 
