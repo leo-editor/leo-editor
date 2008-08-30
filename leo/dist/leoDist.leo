@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -711,7 +711,7 @@ if 1:
     x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
     x.create_exe()
     remove(zipFile2)
-    
+
     for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
         path= abspath(join(top,z))
         if exists(z): remove(z)
