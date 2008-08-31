@@ -441,6 +441,64 @@ class baseCommands:
             g.trace('no such command: %s' % (commandName),color='red')
             return None
     #@-node:ekr.20051106040126:c.executeMinibufferCommand
+    #@+node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
+    def scanAllDirectives(self,p=None):
+
+        '''Scan p and ancestors for directives.
+
+        Returns a dict containing the results, including defaults.'''
+
+        c = self ; p = p or c.currentPosition()
+
+        def scanAtPathDirectivesCallback(aList,c=c):
+            return g.scanAtPathDirectives(aList,c=c)
+
+        # Set defaults
+        language = c.target_language and c.target_language.lower()
+        lang_dict = {
+            'language':language,
+            'delims':g.set_delims_from_language(language),
+        }
+        wrap = c.config.getBool("body_pane_wraps")
+
+        table = (
+            ('encoding',    None,           g.scanAtEncodingDirectives),
+            ('lineending',  None,           g.scanAtLineendingDirectives),
+            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+            ('path',        None,           scanAtPathDirectivesCallback),
+            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+            ('wrap',        wrap,           g.scanAtWrapDirectives),
+        )
+
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,default,func in table:
+            val = func(aList)
+            if val is None: val = default
+            d[key] = val
+
+        # Post process.
+        lineending  = d.get('lineending')
+        lang_dict   = d.get('lang-dict')
+        c.tab_width = d.get('tabwidth')
+        c.page_width= d.get('pagewidth')
+        self.explicitLineEnding = lineending is not None
+        self.output_newline = lineending or g.getOutputNewline(c=c)
+
+        return {
+            "delims"        : lang_dict.get('delims'),
+            "encoding"      : d.get('encoding'),
+            "language"      : lang_dict.get('language'),
+            "lineending"    : self.output_newline,
+            "pagewidth"     : d.get('pagewidth'),
+            "path"          : d.get('path'),
+            "tabwidth"      : d.get('tabwidth'),
+            "pluginsList"   : [],
+            "wrap"          : d.get('wrap'),
+        }
+    #@nonl
+    #@-node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
     #@+node:bobjack.20080509080123.2:c.universalCallback
     def universalCallback(self, function):
 

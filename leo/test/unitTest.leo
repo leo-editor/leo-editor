@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="50" height="804" width="1117"/>
+	<global_window_position top="50" left="57" height="804" width="1110"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8,1"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1865,12 +1865,24 @@
 <v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
 <v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
 <v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
-<v t="ekr.20071113090055.3"><vh>@test g.scanDirectives</vh></v>
-<v t="ekr.20080323161613.10"><vh>@test g.scanAtLineendingDirective crlf</vh></v>
-<v t="ekr.20080323161613.11"><vh>@test g.scanAtLineendingDirective cr</vh></v>
-<v t="ekr.20080323161613.12"><vh>@test g.scanAtLineendingDirective lf</vh></v>
-<v t="ekr.20080323161613.13"><vh>@test g.scanAtLineendingDirective nl</vh></v>
-<v t="ekr.20080323161613.14"><vh>@test g.scanAtLineendingDirective platform</vh></v>
+<v t="ekr.20080831093745.1"><vh>Directives, old</vh>
+<v t="ekr.20071113090055.3"><vh>@@test g.scanDirectives</vh></v>
+<v t="ekr.20080323161613.10"><vh>@@test g.scanAtLineendingDirective crlf</vh></v>
+<v t="ekr.20080323161613.11"><vh>@@test g.scanAtLineendingDirective cr</vh></v>
+<v t="ekr.20080323161613.12"><vh>@@test g.scanAtLineendingDirective lf</vh></v>
+<v t="ekr.20080323161613.13"><vh>@@test g.scanAtLineendingDirective nl</vh></v>
+<v t="ekr.20080323161613.14"><vh>@@test g.scanAtLineendingDirective platform</vh></v>
+</v>
+<v t="ekr.20080831093745.2"><vh>Directives, new</vh>
+<v t="ekr.20080831093745.3"><vh>@@test g.scanDirectives (not ready: to do: convert to c.scanAllDirectives)</vh></v>
+<v t="ekr.20080831093745.9"><vh>@test g.get_directives_dict (pass)</vh></v>
+<v t="ekr.20080831093745.10"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20080831093745.4"><vh>@test g.scanAtLineendingDirective crlf</vh></v>
+<v t="ekr.20080831093745.5"><vh>@test g.scanAtLineendingDirective cr</vh></v>
+<v t="ekr.20080831093745.6"><vh>@test g.scanAtLineendingDirective lf</vh></v>
+<v t="ekr.20080831093745.7"><vh>@test g.scanAtLineendingDirective nl</vh></v>
+<v t="ekr.20080831093745.8"><vh>@test g.scanAtLineendingDirective platform</vh></v>
+</v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
 <v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
@@ -2441,6 +2453,68 @@
 <v t="ekr.20080824191108.2"><vh>@test isValidPython</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
+<v t="ekr.20050208051418" annotate="7d71002e"><vh> Unicode tests</vh>
+<v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
+<v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
+<v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
+<v t="ekr.20050206201145"><vh>@test % operator with unicode</vh></v>
+<v t="ekr.20050208111037"><vh>@test failure to convert unicode characters to ascii</vh></v>
+<v t="ekr.20050208104202"><vh>@test of round-tripping toUnicode &amp; toEncodedString</vh></v>
+<v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
+<v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
+</v>
+<v t="ekr.20071113143844.9"><vh>@test CheckVersionToInt</vh></v>
+<v t="ekr.20040917062206"><vh>@test g.cantImport returns None</vh></v>
+<v t="ekr.20060921115303"><vh>@test g.checkVersion</vh></v>
+<v t="ekr.20071113145804.26"><vh>@test g.convertPythonIndexToRowCol</vh></v>
+<v t="ekr.20071113145804.27"><vh>@test g.convertRowColToPythonIndex</vh></v>
+<v t="ekr.20071113145804.21"><vh>@test g.create_temp_file</vh></v>
+<v t="ekr.20071113145804.20"><vh>@test g.es_exception</vh></v>
+<v t="ekr.20071113145804.22"><vh>@test g.es_trace</vh></v>
+<v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
+<v t="ekr.20061104172236.18"><vh>@test g.getLine</vh></v>
+<v t="ekr.20071113145804.28"><vh>@test g.getScript strips crlf</vh></v>
+<v t="ekr.20061104172236.11"><vh>@test g.getWord</vh></v>
+<v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
+<v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
+<v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
+<v t="ekr.20080831093745.1"><vh>Directives, old</vh>
+<v t="ekr.20071113090055.3"><vh>@@test g.scanDirectives</vh></v>
+<v t="ekr.20080323161613.10"><vh>@@test g.scanAtLineendingDirective crlf</vh></v>
+<v t="ekr.20080323161613.11"><vh>@@test g.scanAtLineendingDirective cr</vh></v>
+<v t="ekr.20080323161613.12"><vh>@@test g.scanAtLineendingDirective lf</vh></v>
+<v t="ekr.20080323161613.13"><vh>@@test g.scanAtLineendingDirective nl</vh></v>
+<v t="ekr.20080323161613.14"><vh>@@test g.scanAtLineendingDirective platform</vh></v>
+</v>
+<v t="ekr.20080831093745.2"><vh>Directives, new</vh>
+<v t="ekr.20080831093745.3"><vh>@@test g.scanDirectives (not ready: to do: convert to c.scanAllDirectives)</vh></v>
+<v t="ekr.20080831093745.9"><vh>@test g.get_directives_dict (pass)</vh></v>
+<v t="ekr.20080831093745.10"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20080831093745.4"><vh>@test g.scanAtLineendingDirective crlf</vh></v>
+<v t="ekr.20080831093745.5"><vh>@test g.scanAtLineendingDirective cr</vh></v>
+<v t="ekr.20080831093745.6"><vh>@test g.scanAtLineendingDirective lf</vh></v>
+<v t="ekr.20080831093745.7"><vh>@test g.scanAtLineendingDirective nl</vh></v>
+<v t="ekr.20080831093745.8"><vh>@test g.scanAtLineendingDirective platform</vh></v>
+</v>
+<v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
+<v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
+<v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
+<v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
+<v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
+<v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
+<v t="ekr.20071113202153.2" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20080831093745.2" a="E"><vh>Directives, new</vh>
+<v t="ekr.20080831093745.3"><vh>@@test g.scanDirectives (not ready: to do: convert to c.scanAllDirectives)</vh></v>
+<v t="ekr.20080831093745.9"><vh>@test g.get_directives_dict (pass)</vh></v>
+<v t="ekr.20080831093745.10"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20080831093745.4"><vh>@test g.scanAtLineendingDirective crlf</vh></v>
+<v t="ekr.20080831093745.5"><vh>@test g.scanAtLineendingDirective cr</vh></v>
+<v t="ekr.20080831093745.6"><vh>@test g.scanAtLineendingDirective lf</vh></v>
+<v t="ekr.20080831093745.7"><vh>@test g.scanAtLineendingDirective nl</vh></v>
+<v t="ekr.20080831093745.8"><vh>@test g.scanAtLineendingDirective platform</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -21495,5 +21569,95 @@ pass
 <t tx="ekr.20080824191108.1"></t>
 <t tx="ekr.20080824191108.2">import leo.core.runLeo as runLeo
 assert runLeo.isValidPython()</t>
+<t tx="ekr.20080831093745.1"></t>
+<t tx="ekr.20080831093745.2"></t>
+<t tx="ekr.20080831093745.3"># This will work regardless of where this method is.
+@language python
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@comment a b c
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+
+d = g.scanDirectives(c,p)
+
+assert d.get('_p') == p
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == -4
+assert d.get('pagewidth') == 72
+assert d.get('encoding') == 'utf-8'
+assert d.get('delims') == ('a','b','c',)
+# assert d.get('path').endswith('xyzzy')
+</t>
+<t tx="ekr.20080831093745.4"># This will work regardless of where this method is.
+@lineending crlf
+
+d = c.scanAllDirectives(p)
+
+assert d.get('lineending') == '\r\n'
+</t>
+<t tx="ekr.20080831093745.5"># This will work regardless of where this method is.
+@lineending cr
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\r'
+</t>
+<t tx="ekr.20080831093745.6"># This will work regardless of where this method is.
+@lineending lf
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080831093745.7"># This will work regardless of where this method is.
+@lineending nl
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080831093745.8"># This will work regardless of where this method is.
+@lineending platform
+
+d = g.scanDirectives(c,p)
+
+import sys
+
+if sys.platform.startswith('win'):
+    assert d.get('lineending') == '\r\n'
+else:
+    assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080831093745.9"># This will work regardless of where this method is.
+@language python
+@tabwidth -8
+@pagewidth 72
+@encoding utf-8
+@comment a b c
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+
+d = g.get_directives_dict(p)
+
+assert d.get('_p') == p
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == '-8'
+assert d.get('pagewidth') == '72'
+assert d.get('encoding') == 'utf-8'
+assert d.get('comment') == 'a b c'
+# assert d.get('path').endswith('xyzzy')
+</t>
+<t tx="ekr.20080831093745.10"># This will work regardless of where this method is.
+@language python
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@comment a b c
+
+d = c.scanAllDirectives(p)
+print g.dictToString(d)
+
+# assert d.get('lineending') == '\r\n'
+</t>
 </tnodes>
 </leo_file>
