@@ -33634,35 +33634,34 @@ if theDict.has_key("root") and not self.rootMode:
 #@+node:ekr.20080828103146.8:leo.color.NEWscanColorDirectives (test)
 def NEWscanColorDirectives(self,p):
 
-    """Scan position p and p's ancestors looking for @comment, @language and @root directives,
-    setting corresponding colorizer ivars.
-    """
+    '''Scan position p and p's ancestors looking for @comment, @language and @root directives,
+    setting corresponding colorizer ivars.'''
 
     c = self.c
-    if c == None: return # self.c may be None for testing.
+    if not c: return # May be None for testing.
 
     table = (
-        ('language',None,g.scanAtCommentAndAtLanguageDirectives),
-        ('root',g.scanAtRootDirectives),
+        ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+        ('root',        g.scanAtRootDirectives),
     )
 
+    # Set d by scanning all directives.
     aList = g.get_directives_dict_list(p)
-    result = {}
-    for key,ivar,func in table:
+    d = {}
+    for key,func in table:
         val = func(aList)
-        if val: result[key]=val
+        if val: d[key]=val
 
-    # Post process comment and language.
-    d = result.get('language')
-    if d:
-        self.language = d.get('language')
-        self.comment_string = d.get('comment')
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    self.rootMode   = d.get('root') or None
+
+    if lang_dict:
+        self.language       = lang_dict.get('language')
+        self.comment_string = lang_dict.get('comment')
     else:
-        self.language = c.target_language and c.target_language.lower()
+        self.language       = c.target_language and c.target_language.lower()
         self.comment_string = None
-
-    # Post process root.
-    self.rootMode = result.get('root') or None
 
     g.trace('self.language',self.language)
     return self.language # For use by external routines.
@@ -33689,26 +33688,26 @@ def scanAllDirectives(self,p=None):
 
     table = (
         ('encoding',    None,           g.scanAtEncodingDirectives),
-        ('lineending',  None,           g.scanAtLineendingDirectives),
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
         ('path',        None,           scanAtPathDirectivesCallback),
         ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
         ('wrap',        wrap,           g.scanAtWrapDirectives),
     )
 
+    # Set d by scanning all directives.
     aList = g.get_directives_dict_list(p)
     d = {}
     for key,default,func in table:
         val = func(aList)
-        if val is None: val = default
-        d[key] = val
+        d[key] = g.choose(val is None,default,val)
 
     # Post process.
-    lineending  = d.get('lineending')
-    lang_dict   = d.get('lang-dict')
-    c.tab_width = d.get('tabwidth')
-    c.page_width= d.get('pagewidth')
+    lineending      = d.get('lineending')
+    lang_dict       = d.get('lang-dict')
+    c.tab_width     = d.get('tabwidth')
+    c.page_width    = d.get('pagewidth')
     self.explicitLineEnding = lineending is not None
     self.output_newline = lineending or g.getOutputNewline(c=c)
 
@@ -33716,120 +33715,99 @@ def scanAllDirectives(self,p=None):
         "delims"        : lang_dict.get('delims'),
         "encoding"      : d.get('encoding'),
         "language"      : lang_dict.get('language'),
-        "lineending"    : self.output_newline,
-        "pagewidth"     : d.get('pagewidth'),
+        "lineending"    : c.output_newline,
+        "pagewidth"     : c.page_width,
         "path"          : d.get('path'),
-        "tabwidth"      : d.get('tabwidth'),
+        "tabwidth"      : c.tag_width,
         "pluginsList"   : [],
         "wrap"          : d.get('wrap'),
     }
 #@nonl
 #@-node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
 #@+node:ekr.20080827175609.18:atFile.NEWscanAllDirectives & helpers
-@ Once a directive is seen, no other related directives in nodes further up the tree have any effect.  For example, if an @color directive is seen in node p, no @color or @nocolor directives are examined in any ancestor of p.
-
-This code is similar to Commands.scanAllDirectives, but it has been modified for use by the atFile class.
-@c
-
 def NEWscanAllDirectives(self,p,
     scripting=False,importing=False,
     reading=False,forcePythonSentinels=False,
 ):
 
-    """Scan position p and p's ancestors looking for directives,
-    setting corresponding atFile ivars.
-    """
+    '''Scan p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.'''
 
-    # __pychecker__ = '--maxlines=400'
-    # g.stat()
-
-    at.self ; c = self.c
-    << Set ivars >>
+    at = self ; c = self.c
 
     def scanAtPathDirectivesCallback(aList,c=c):
         return g.scanAtPathDirectives(aList,c=c)
 
-    table = (
-        ('encoding','encoding',g.scanAtEncodingDirectives),
-        ('lineending',None,g.scanAtLineendingDirectives),
-        ('lang-dict',None,g.scanAtCommentAndAtLanguageDirectives),
-        ('pagewidth','page_width',g.scanAtPagewidthDirectives),
-        ('path',None,scanAtPathDirectivesCallback),
-        ('tagwidth','tab_width',g.scanAtTabwidthDirectives),
+    # Set defaults
+    delims = g.set_delims_from_language(language)
+    encoding = c.config.default_derived_file_encoding
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {'language':language,'delims':delims,}
 
+    table = (
+        ('encoding',    encoding,       g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           scanAtPathDirectivesCallback),
+        ('tagwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+
+    # Set d by scanning all directives.
     aList = g.get_directives_dict_list(p)
     d = {}
-    for key,ivar,func in table:
+    for key,default,func in table:
         val = func(aList)
-        if val:
-            d[key]=val
-            if ivar: setattr(self,ivar,val)
+        d[key] = g.choose(val is None,default,val)
 
-    e = d.get('lineending')
-    if e:
-        self.explicitLineEnding = True
-        self.output_newline = e
-    d2 = d.get('lang-dict')
-    if d2:
-        del d['lang-dict']
-        if not importing and not reading:
-            delims = d2.get('delims')
-            delim1,delim2,delim3 = delims
-            << Set comment strings from delims >>
+    # Post process.
+    lineending              = d.get('lineending')
+    lang_dict               = d.get('lang-dict')
+    at.encoding             = d.get('encoding')
+    at.explicitLineEnding   = lineending is not None
+    at.language             = lang_dict.get('language')
+    at.output_newline       = lineending or g.getOutputNewline(c=c)
+    at.page_width           = d.get('pagewidth')
+    at.tab_width            = d.get('tabwidth')
 
-    return d
-
-
-    << Set current directory >>
+    ### at.default_directory = None
+    << Set current directory >> ### Rewrite!
     if not importing and not reading:
-        # 5/19/04: don't override comment delims when reading!
+        # Don't override comment delims when reading!
+        delim1,delim2,delim3 = lang_dict.get('delims')
         << Set comment strings from delims >>
+
     # For unit testing.
     return {
-        "encoding"  : self.encoding,
-        "language"  : self.language,
-        "lineending": self.output_newline,
-        "pagewidth" : self.page_width,
-        "path"      : self.default_directory,
-        "tabwidth"  : self.tab_width,
+        "encoding"  : at.encoding,
+        "language"  : at.language,
+        "lineending": at.output_newline,
+        "pagewidth" : at.page_width,
+        "path"      : at.default_directory,
+        "tabwidth"  : at.tab_width,
     }
-#@+node:ekr.20080827175609.19:<< Set ivars >>
-self.page_width = self.c.page_width
-self.tab_width  = self.c.tab_width
-
-self.default_directory = None
-
-if c.target_language:
-    c.target_language = c.target_language.lower()
-
-delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
-self.language = c.target_language
-
-self.encoding = c.config.default_derived_file_encoding
-self.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
-#@-node:ekr.20080827175609.19:<< Set ivars >>
+#@nonl
 #@+node:ekr.20080827175609.30:<< Set comment strings from delims >>
 if forcePythonSentinels:
     # Force Python language.
     delim1,delim2,delim3 = g.set_delims_from_language("python")
-    self.language = "python"
+    at.language = "python"
 
 # Use single-line comments if we have a choice.
 # delim1,delim2,delim3 now correspond to line,start,end
 if delim1:
-    self.startSentinelComment = delim1
-    self.endSentinelComment = "" # Must not be None.
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
 elif delim2 and delim3:
-    self.startSentinelComment = delim2
-    self.endSentinelComment = delim3
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
 else: # Emergency!
     # assert(0)
     if not g.app.unitTesting:
         g.es_print("unknown language: using Python comment delimiters")
         g.es_print("c.target_language:",c.target_language)
         g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
-    self.startSentinelComment = "#" # This should never happen!
-    self.endSentinelComment = ""
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
 
 # g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
 #@-node:ekr.20080827175609.30:<< Set comment strings from delims >>
@@ -33858,64 +33836,6 @@ if not self.default_directory and not scripting and not importing:
 #@-node:ekr.20080827175609.18:atFile.NEWscanAllDirectives & helpers
 #@-node:ekr.20080831084419.1:NEW code
 #@-node:ekr.20080828103146.5:Top-level  functions
-#@+node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
-def scanAllDirectives(self,p=None):
-
-    '''Scan p and ancestors for directives.
-
-    Returns a dict containing the results, including defaults.'''
-
-    c = self ; p = p or c.currentPosition()
-
-    def scanAtPathDirectivesCallback(aList,c=c):
-        return g.scanAtPathDirectives(aList,c=c)
-
-    # Set defaults
-    language = c.target_language and c.target_language.lower()
-    lang_dict = {
-        'language':language,
-        'delims':g.set_delims_from_language(language),
-    }
-    wrap = c.config.getBool("body_pane_wraps")
-
-    table = (
-        ('encoding',    None,           g.scanAtEncodingDirectives),
-        ('lineending',  None,           g.scanAtLineendingDirectives),
-        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
-        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ('path',        None,           scanAtPathDirectivesCallback),
-        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
-        ('wrap',        wrap,           g.scanAtWrapDirectives),
-    )
-
-    aList = g.get_directives_dict_list(p)
-    d = {}
-    for key,default,func in table:
-        val = func(aList)
-        if val is None: val = default
-        d[key] = val
-
-    # Post process.
-    lineending  = d.get('lineending')
-    lang_dict   = d.get('lang-dict')
-    c.tab_width = d.get('tabwidth')
-    c.page_width= d.get('pagewidth')
-    self.explicitLineEnding = lineending is not None
-    self.output_newline = lineending or g.getOutputNewline(c=c)
-
-    return {
-        "delims"        : lang_dict.get('delims'),
-        "encoding"      : d.get('encoding'),
-        "language"      : lang_dict.get('language'),
-        "lineending"    : self.output_newline,
-        "pagewidth"     : d.get('pagewidth'),
-        "path"          : d.get('path'),
-        "tabwidth"      : d.get('tabwidth'),
-        "pluginsList"   : [],
-        "wrap"          : d.get('wrap'),
-    }
-#@nonl
-#@-node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
 #@+node:ekr.20031218072017.1380:g.Directive utils...
 #@+node:ekr.20080828103146.6:To be deleted
 #@+node:ekr.20031218072017.1391:g.scanDirectives
@@ -34912,6 +34832,211 @@ if not path and not old.has_key("path") and theDict.has_key("path"):
         path = g.os_path_join(base,path)
 #@-node:ekr.20031218072017.1397:<< Test for @path >> (g.scanDirectives)
 #@-node:ekr.20080828103146.17:Path stuff
+#@+node:ekr.20080831084419.5:New top-level functions...
+#@+node:ekr.20080828103146.8:leo.color.NEWscanColorDirectives (test)
+def NEWscanColorDirectives(self,p):
+
+    '''Scan position p and p's ancestors looking for @comment, @language and @root directives,
+    setting corresponding colorizer ivars.'''
+
+    c = self.c
+    if not c: return # May be None for testing.
+
+    table = (
+        ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+        ('root',        g.scanAtRootDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,func in table:
+        val = func(aList)
+        if val: d[key]=val
+
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    self.rootMode   = d.get('root') or None
+
+    if lang_dict:
+        self.language       = lang_dict.get('language')
+        self.comment_string = lang_dict.get('comment')
+    else:
+        self.language       = c.target_language and c.target_language.lower()
+        self.comment_string = None
+
+    g.trace('self.language',self.language)
+    return self.language # For use by external routines.
+#@-node:ekr.20080828103146.8:leo.color.NEWscanColorDirectives (test)
+#@+node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
+def scanAllDirectives(self,p=None):
+
+    '''Scan p and ancestors for directives.
+
+    Returns a dict containing the results, including defaults.'''
+
+    c = self ; p = p or c.currentPosition()
+
+    def scanAtPathDirectivesCallback(aList,c=c):
+        return g.scanAtPathDirectives(aList,c=c)
+
+    # Set defaults
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {
+        'language':language,
+        'delims':g.set_delims_from_language(language),
+    }
+    wrap = c.config.getBool("body_pane_wraps")
+
+    table = (
+        ('encoding',    None,           g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           scanAtPathDirectivesCallback),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        ('wrap',        wrap,           g.scanAtWrapDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process.
+    lineending      = d.get('lineending')
+    lang_dict       = d.get('lang-dict')
+    c.tab_width     = d.get('tabwidth')
+    c.page_width    = d.get('pagewidth')
+    self.explicitLineEnding = lineending is not None
+    self.output_newline = lineending or g.getOutputNewline(c=c)
+
+    return {
+        "delims"        : lang_dict.get('delims'),
+        "encoding"      : d.get('encoding'),
+        "language"      : lang_dict.get('language'),
+        "lineending"    : c.output_newline,
+        "pagewidth"     : c.page_width,
+        "path"          : d.get('path'),
+        "tabwidth"      : c.tag_width,
+        "pluginsList"   : [],
+        "wrap"          : d.get('wrap'),
+    }
+#@nonl
+#@-node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
+#@+node:ekr.20080827175609.18:atFile.NEWscanAllDirectives & helpers
+def NEWscanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+):
+
+    '''Scan p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.'''
+
+    at = self ; c = self.c
+
+    def scanAtPathDirectivesCallback(aList,c=c):
+        return g.scanAtPathDirectives(aList,c=c)
+
+    # Set defaults
+    delims = g.set_delims_from_language(language)
+    encoding = c.config.default_derived_file_encoding
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {'language':language,'delims':delims,}
+
+    table = (
+        ('encoding',    encoding,       g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           scanAtPathDirectivesCallback),
+        ('tagwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process.
+    lineending              = d.get('lineending')
+    lang_dict               = d.get('lang-dict')
+    at.encoding             = d.get('encoding')
+    at.explicitLineEnding   = lineending is not None
+    at.language             = lang_dict.get('language')
+    at.output_newline       = lineending or g.getOutputNewline(c=c)
+    at.page_width           = d.get('pagewidth')
+    at.tab_width            = d.get('tabwidth')
+
+    ### at.default_directory = None
+    << Set current directory >> ### Rewrite!
+    if not importing and not reading:
+        # Don't override comment delims when reading!
+        delim1,delim2,delim3 = lang_dict.get('delims')
+        << Set comment strings from delims >>
+
+    # For unit testing.
+    return {
+        "encoding"  : at.encoding,
+        "language"  : at.language,
+        "lineending": at.output_newline,
+        "pagewidth" : at.page_width,
+        "path"      : at.default_directory,
+        "tabwidth"  : at.tab_width,
+    }
+#@nonl
+#@+node:ekr.20080827175609.30:<< Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    at.language = "python"
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@-node:ekr.20080827175609.30:<< Set comment strings from delims >>
+#@+node:ekr.20080827175609.29:<< Set current directory >> (atFile.scanAllDirectives)
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+if c.frame and not self.default_directory:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    self.default_directory = theDir ; break
+                else: # 9/25/02
+                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+
+if not self.default_directory and not scripting and not importing:
+    # This should never happen: c.openDirectory should be a good last resort.
+    g.trace()
+    self.error("No absolute directory specified anywhere.")
+    self.default_directory = ""
+#@-node:ekr.20080827175609.29:<< Set current directory >> (atFile.scanAllDirectives)
+#@+node:ekr.20080828103146.13:From atFile.NEWscanAllDirectives (to be rewritten)
+#@-node:ekr.20080828103146.13:From atFile.NEWscanAllDirectives (to be rewritten)
+#@-node:ekr.20080827175609.18:atFile.NEWscanAllDirectives & helpers
+#@-node:ekr.20080831084419.5:New top-level functions...
 #@-node:ekr.20080124083629.1:Improve @path handling
 #@-node:ekr.20080828103146.1:4.5.1
 #@-all

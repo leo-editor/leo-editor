@@ -463,26 +463,26 @@ class baseCommands:
 
         table = (
             ('encoding',    None,           g.scanAtEncodingDirectives),
-            ('lineending',  None,           g.scanAtLineendingDirectives),
             ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lineending',  None,           g.scanAtLineendingDirectives),
             ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
             ('path',        None,           scanAtPathDirectivesCallback),
             ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
             ('wrap',        wrap,           g.scanAtWrapDirectives),
         )
 
+        # Set d by scanning all directives.
         aList = g.get_directives_dict_list(p)
         d = {}
         for key,default,func in table:
             val = func(aList)
-            if val is None: val = default
-            d[key] = val
+            d[key] = g.choose(val is None,default,val)
 
         # Post process.
-        lineending  = d.get('lineending')
-        lang_dict   = d.get('lang-dict')
-        c.tab_width = d.get('tabwidth')
-        c.page_width= d.get('pagewidth')
+        lineending      = d.get('lineending')
+        lang_dict       = d.get('lang-dict')
+        c.tab_width     = d.get('tabwidth')
+        c.page_width    = d.get('pagewidth')
         self.explicitLineEnding = lineending is not None
         self.output_newline = lineending or g.getOutputNewline(c=c)
 
@@ -490,10 +490,10 @@ class baseCommands:
             "delims"        : lang_dict.get('delims'),
             "encoding"      : d.get('encoding'),
             "language"      : lang_dict.get('language'),
-            "lineending"    : self.output_newline,
-            "pagewidth"     : d.get('pagewidth'),
+            "lineending"    : c.output_newline,
+            "pagewidth"     : c.page_width,
             "path"          : d.get('path'),
-            "tabwidth"      : d.get('tabwidth'),
+            "tabwidth"      : c.tag_width,
             "pluginsList"   : [],
             "wrap"          : d.get('wrap'),
         }
