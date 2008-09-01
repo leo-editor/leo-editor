@@ -77,7 +77,8 @@ globalDirectiveList = [
     "color", "comment", "encoding", "header", "ignore", "killcolor",
     "language", "lineending", "nocolor", "noheader", "nowrap",
     "pagewidth", "path", "quiet", "root", "silent",
-    "tabwidth", "terse", "unit", "verbose", "wrap"]
+    "tabwidth", "terse", "unit", "verbose", "wrap",
+]
 #@-node:EKR.20040610094819:<< define global data structures >>
 #@nl
 
@@ -498,8 +499,8 @@ def scanAtPagewidthDirective(theDict,issue_error_flag=False):
         # g.trace(val)
         return val
     else:
-        if issue_error_flag:
-            g.es("ignoring",s,color="red")
+        if issue_error_flag and not g.app.unitTesting:
+            g.es("ignoring @pagewidth",s,color="red")
         return None
 #@-node:ekr.20031218072017.1389:g.scanAtPagewidthDirective
 #@+node:ekr.20031218072017.1390:g.scanAtTabwidthDirective
@@ -873,7 +874,7 @@ def set_language(s,i,issue_errors_flag=False):
 #@+node:ekr.20080827175609.31:NEW Directive utils...
 # To do: add '_p' key to each directive dict. for error message.
 #@nonl
-#@+node:ekr.20080828103146.16:g.computeBasePath (new)
+#@+node:ekr.20080828103146.16:g.computeBasePath (NEW TEST)
 def computeBasePath (p):
 
     # An absolute path in an @file node over-rides everything else.
@@ -890,8 +891,8 @@ def computeBasePath (p):
             self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
             if not self.default_directory:
                 self.error("Directory \"%s\" does not exist" % theDir)
-#@-node:ekr.20080828103146.16:g.computeBasePath (new)
-#@+node:ekr.20080827175609.1:g.get_directives_dict_list (test)
+#@-node:ekr.20080828103146.16:g.computeBasePath (NEW TEST)
+#@+node:ekr.20080827175609.1:g.get_directives_dict_list
 # The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
 
 def get_directives_dict_list(p1):
@@ -908,33 +909,35 @@ def get_directives_dict_list(p1):
         result.append(g.get_directives_dict(p,root=root))
 
     return result
-#@-node:ekr.20080827175609.1:g.get_directives_dict_list (test)
-#@+node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives (test)
+#@-node:ekr.20080827175609.1:g.get_directives_dict_list
+#@+node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
 
-    '''Scan aList for @comment and @language directives.'''
+    '''Scan aList for @comment and @language directives.
 
-    # @language and @comment directives may appear in the same tree.
-    # For this to be effective the @comment directive should follow the @language directive.
-    # This code is now like the code in tangle.scanAlldirectives.
+    @comment should follow @language if both appear in the same node.'''
+
+    lang = None
+
     for d in aList:
 
         comment = d.get('comment')
         language = d.get('language')
 
+        # Important: assume @comment follows @language.
+        if language:
+            lang,delim1,delim2,delim3 = g.set_language(language,0)
+
         if comment:
             delim1,delim2,delim3 = g.set_delims_from_string(comment)
-            lang = None
-        elif language:
-            lang,delim1,delim2,delim3 = g.set_language(language,0)
 
         if comment or language:
             delims = delim1,delim2,delim3
             return {'language':lang,'comment':comment,'delims':delims}
 
     return None
-#@-node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives (test)
-#@+node:ekr.20080827175609.32:g.scanAtEncodingDirectives (test)
+#@-node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives
+#@+node:ekr.20080827175609.32:g.scanAtEncodingDirectives
 def scanAtEncodingDirectives(aList):
 
     '''Scan aList for @encoding directives.'''
@@ -945,22 +948,22 @@ def scanAtEncodingDirectives(aList):
             # g.trace(encoding)
             return encoding
         else:
-            g.es("invalid @encoding:",encoding,color="red")
+            if not g.app.unitTesting:
+                g.es("invalid @encoding:",encoding,color="red")
 
     return None
-#@-node:ekr.20080827175609.32:g.scanAtEncodingDirectives (test)
-#@+node:ekr.20080827175609.53:g.scanAtHeaderDirectives (test)
+#@-node:ekr.20080827175609.32:g.scanAtEncodingDirectives
+#@+node:ekr.20080827175609.53:g.scanAtHeaderDirectives
 def scanAtHeaderDirectives(aList):
 
     '''scan aList for @header and @noheader directives.'''
 
     for d in aList:
         if d.get('header') and d.get('noheader'):
-            g.es("conflicting @header and @noheader directives")
-
-    return None
-#@-node:ekr.20080827175609.53:g.scanAtHeaderDirectives (test)
-#@+node:ekr.20080827175609.33:g.scanAtLineendingDirectives (test)
+            g.es_print("conflicting @header and @noheader directives",color='red')
+#@nonl
+#@-node:ekr.20080827175609.53:g.scanAtHeaderDirectives
+#@+node:ekr.20080827175609.33:g.scanAtLineendingDirectives
 def scanAtLineendingDirectives(aList):
 
     '''Scan aList for @lineending directives.'''
@@ -975,25 +978,26 @@ def scanAtLineendingDirectives(aList):
             # g.es("invalid @lineending directive:",e,color="red")
 
     return None
-#@-node:ekr.20080827175609.33:g.scanAtLineendingDirectives (test)
-#@+node:ekr.20080827175609.34:g.scanAtPagewidthDirectives (test)
+#@-node:ekr.20080827175609.33:g.scanAtLineendingDirectives
+#@+node:ekr.20080827175609.34:g.scanAtPagewidthDirectives
 def scanAtPagewidthDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @pagewidth directives.'''
 
     for d in aList:
         s = d.get('pagewidth')
-        i, val = g.skip_long(s,0)
-        if val != None and val > 0:
-            # g.trace(val)
-            return val
-        else:
-            if issue_error_flag:
-                g.es("ignoring",s,color="red")
+        if s is not None:
+            i, val = g.skip_long(s,0)
+            if val != None and val > 0:
+                # g.trace(val)
+                return val
+            else:
+                if issue_error_flag and not g.app.unitTesting:
+                    g.es("ignoring @pagewidth",s,color="red")
 
     return None
-#@-node:ekr.20080827175609.34:g.scanAtPagewidthDirectives (test)
-#@+node:ekr.20080828103146.15:g.scanAtPathDirectives(NEW,test)
+#@-node:ekr.20080827175609.34:g.scanAtPagewidthDirectives
+#@+node:ekr.20080828103146.15:g.scanAtPathDirectives(NEW, TEST)
 def scanAtPathDirectives(aList,c):
 
     '''Scan aList for @path directives.'''
@@ -1034,8 +1038,8 @@ def scanAtPathDirectives(aList,c):
             g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
 
     return path
-#@-node:ekr.20080828103146.15:g.scanAtPathDirectives(NEW,test)
-#@+node:ekr.20080828103146.12:g.scanAtRootDirectives (new) (test)
+#@-node:ekr.20080828103146.15:g.scanAtPathDirectives(NEW, TEST)
+#@+node:ekr.20080828103146.12:g.scanAtRootDirectives (NEW, TEST)
 # Called only by scanColorDirectives.
 
 def scanAtRootDirectives(aList):
@@ -1054,39 +1058,40 @@ def scanAtRootDirectives(aList):
 
     return None
 #@nonl
-#@-node:ekr.20080828103146.12:g.scanAtRootDirectives (new) (test)
-#@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives (test)
+#@-node:ekr.20080828103146.12:g.scanAtRootDirectives (NEW, TEST)
+#@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives
 def scanAtTabwidthDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @tabwidth directives.'''
 
     for d in aList:
         s = d.get('tabwidth')
-        junk,val = g.skip_long(s,0)
+        if s is not None:
+            junk,val = g.skip_long(s,0)
 
-        if val not in (None,0):
-            g.trace(val)
-            return val
-        else:
-            if issue_error_flag:
-                g.es("ignoring",s,color="red")
+            if val not in (None,0):
+                # g.trace(val)
+                return val
+            else:
+                if issue_error_flag and not g.app.unitTesting:
+                    g.es("ignoring @tabwidth",s,color="red")
 
     return None
-#@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives (test)
-#@+node:ekr.20080831084419.4:g.scanAtWrapDirectives(test)
+#@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives
+#@+node:ekr.20080831084419.4:g.scanAtWrapDirectives
 def scanAtWrapDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @wrap and @nowrap directives.'''
 
     for d in aList:
-        if d.get('wrap'):
+        if d.get('wrap') is not None:
             return True
-        elif d.get('nowrap'):
+        elif d.get('nowrap') is not None:
             return False
 
     return None
 #@nonl
-#@-node:ekr.20080831084419.4:g.scanAtWrapDirectives(test)
+#@-node:ekr.20080831084419.4:g.scanAtWrapDirectives
 #@-node:ekr.20080827175609.31:NEW Directive utils...
 #@-node:ekr.20031218072017.1380:g.Directive utils...
 #@+node:ekr.20031218072017.3100:wrap_lines
