@@ -7477,6 +7477,7 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@-node:ekr.20080730212711.7:Plugins 4
 #@-node:ekr.20080814103428.4:4.5.1 bugs, cleanups
 #@+node:ekr.20071211093011:4.6  autocompletion
+http://orestis.gr/en/blog/2008/08/31/announcing-pysmell/
 #@+node:ekr.20080113165010:About auto completion
 @nocolor
 
