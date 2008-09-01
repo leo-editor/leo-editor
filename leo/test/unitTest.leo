@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8,12"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1885,6 +1885,8 @@
 <v t="ekr.20080831093745.8"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
 <v t="ekr.20080901123851.1"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
 <v t="ekr.20080901122212.1"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
+<v t="ekr.20080901133004.1"><vh>@test g.scanAtRootDirectives root-doc</vh></v>
+<v t="ekr.20080901133251.1"><vh>@test g.scanAtRootDirectives root-code</vh></v>
 <v t="ekr.20080901122212.3"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
 <v t="ekr.20080901122212.2"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
 <v t="ekr.20080901122840.1"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
@@ -2508,6 +2510,8 @@
 <v t="ekr.20080831093745.8"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
 <v t="ekr.20080901123851.1"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
 <v t="ekr.20080901122212.1"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
+<v t="ekr.20080901133004.1"><vh>@test g.scanAtRootDirectives root-doc</vh></v>
+<v t="ekr.20080901133251.1"><vh>@test g.scanAtRootDirectives root-code</vh></v>
 <v t="ekr.20080901122212.3"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
 <v t="ekr.20080901122212.2"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
 <v t="ekr.20080901122840.1"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
@@ -2534,6 +2538,8 @@
 <v t="ekr.20080831093745.8"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
 <v t="ekr.20080901123851.1"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
 <v t="ekr.20080901122212.1"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
+<v t="ekr.20080901133004.1"><vh>@test g.scanAtRootDirectives root-doc</vh></v>
+<v t="ekr.20080901133251.1"><vh>@test g.scanAtRootDirectives root-code</vh></v>
 <v t="ekr.20080901122212.3"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
 <v t="ekr.20080901122212.2"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
 <v t="ekr.20080901122840.1"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
@@ -21730,5 +21736,17 @@ g.scanAtHeaderDirectives(aList)
 aList = g.get_directives_dict_list(p)
 g.scanAtHeaderDirectives(aList)
 </t>
+<t tx="ekr.20080901133004.1">@root-doc
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtRootDirectives(aList,c)
+
+assert s == 'doc',repr(s)</t>
+<t tx="ekr.20080901133251.1">@root-code
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtRootDirectives(aList,c)
+
+assert s == 'code',repr(s)</t>
 </tnodes>
 </leo_file>

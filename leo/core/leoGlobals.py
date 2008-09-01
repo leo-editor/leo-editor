@@ -1039,18 +1039,18 @@ def scanAtPathDirectives(aList,c):
 
     return path
 #@-node:ekr.20080828103146.15:g.scanAtPathDirectives(NEW, TEST)
-#@+node:ekr.20080828103146.12:g.scanAtRootDirectives (NEW, TEST)
+#@+node:ekr.20080828103146.12:g.scanAtRootDirectives
 # Called only by scanColorDirectives.
 
-def scanAtRootDirectives(aList):
+def scanAtRootDirectives(aList,c):
 
     '''Scan aList for @root-code and @root-doc directives.'''
 
     for d in aList:
         root = d.get('root')
-        if g.match_word(root,0,"@root-code"):
+        if g.match_word(root,0,"-code"):
             return "code"
-        elif g.match_word(root,0,"@root-doc"):
+        elif g.match_word(root,0,"-doc"):
             return "doc"
         else:
             return g.choose(c.config.at_root_bodies_start_in_doc_mode,
@@ -1058,7 +1058,7 @@ def scanAtRootDirectives(aList):
 
     return None
 #@nonl
-#@-node:ekr.20080828103146.12:g.scanAtRootDirectives (NEW, TEST)
+#@-node:ekr.20080828103146.12:g.scanAtRootDirectives
 #@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives
 def scanAtTabwidthDirectives(aList,issue_error_flag=False):
 
