@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="8,12"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8,18"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1892,6 +1892,9 @@
 <v t="ekr.20080901122840.1"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
 <v t="ekr.20080901122840.2"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
 <v t="ekr.20080901123750.1"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
+<v t="ekr.20080901143252.1" a="E"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test.py</vh>
+<v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
+</v>
 </v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
@@ -2517,6 +2520,9 @@
 <v t="ekr.20080901122840.1"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
 <v t="ekr.20080901122840.2"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
 <v t="ekr.20080901123750.1"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
+<v t="ekr.20080901143252.1" a="E"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test.py</vh>
+<v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
+</v>
 </v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
@@ -2545,6 +2551,9 @@
 <v t="ekr.20080901122840.1"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
 <v t="ekr.20080901122840.2"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
 <v t="ekr.20080901123750.1"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
+<v t="ekr.20080901143252.1" a="E"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test.py</vh>
+<v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -21748,5 +21757,10 @@ aList = g.get_directives_dict_list(p)
 s = g.scanAtRootDirectives(aList,c)
 
 assert s == 'code',repr(s)</t>
+<t tx="ekr.20080901143252.1">aList = g.get_directives_dict_list(p.firstChild())
+s = c.scanAtPathDirectives(aList,force=True)
+g.es_print('s',s)</t>
+<t tx="ekr.20080901143252.2">@language python
+# unittest/at-path-test1.py</t>
 </tnodes>
 </leo_file>

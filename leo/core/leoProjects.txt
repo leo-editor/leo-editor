@@ -33014,6 +33014,130 @@ QQQQQQQ
 #@+node:ekr.20041022083005.3:At-path and other directives accept python expressions
 #@-node:ekr.20041022083005.3:At-path and other directives accept python expressions
 #@-node:ekr.20080828103146.2:Requests
+#@+node:ekr.20080901124540.1:c.Directive scanning
+#@+node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
+def scanAllDirectives(self,p=None):
+
+    '''Scan p and ancestors for directives.
+
+    Returns a dict containing the results, including defaults.'''
+
+    c = self ; p = p or c.currentPosition()
+
+    # Set defaults
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {
+        'language':language,
+        'delims':g.set_delims_from_language(language),
+    }
+    wrap = c.config.getBool("body_pane_wraps")
+
+    table = (
+        ('encoding',    None,           g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        ('wrap',        wrap,           g.scanAtWrapDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process.
+    lineending      = d.get('lineending')
+    lang_dict       = d.get('lang-dict')
+    c.tab_width     = d.get('tabwidth')
+    c.page_width    = d.get('pagewidth')
+    self.explicitLineEnding = lineending is not None
+    self.output_newline = lineending or g.getOutputNewline(c=c)
+
+    return {
+        "delims"        : lang_dict.get('delims'),
+        "encoding"      : d.get('encoding'),
+        "language"      : lang_dict.get('language'),
+        "lineending"    : c.output_newline,
+        "pagewidth"     : c.page_width,
+        "path"          : d.get('path'),
+        "tabwidth"      : c.tab_width,
+        "pluginsList"   : [],
+        "wrap"          : d.get('wrap'),
+    }
+#@nonl
+#@-node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives(NEW, TEST)
+def scanAtPathDirectives(self,aList,force=False):
+
+    '''Scan aList for @path directives.'''
+
+    c = self
+
+    # Step 1: Compute the starting path.
+    base = g.app.config.relative_path_base_directory
+    if base and base == "!":    base = g.app.loadDir
+    elif base and base == ".":  base = c.openDirectory
+
+    # Step 2: Look at alist for @file nodes, then @path directives.
+    fileName = None ; paths = []
+    for d in aList:
+        if fileName:
+            # Look for @path directives.
+            path = d.get('path')
+            if path:
+                # Convert "path" or <path> to path.
+                path = g.computeRelativePath(path)
+                if path: paths.append(path)
+        else:
+            # Look for any kind of @file node.
+            p = d.get('_p')
+            if p.isAnyAtFileNode():
+                fileName = p.anyAtFileNodeName()
+                paths.append(fileName)
+
+    # Step 3: Compute the full, effective, absolute path.
+    # The correct fallback directory is the absolute path to the base.
+    g.pdb()
+    absbase = g.os_path_normpath(g.os_path_abspath(g.app.loadDir,base))
+    paths.insert(0,absbase)
+    g.trace('raw paths',g.printList(paths))
+    path = g.os_path_normpath(g.os_path_join(*paths))
+    g.trace('joined paths',path)
+
+    # Step 4: Make the path if necessary.
+    if path and not g.os_path_exists(path):
+        path = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not path:
+            g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+
+    return path
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives(NEW, TEST)
+#@+node:ekr.20080828103146.12:c.scanAtRootDirectives
+# Called only by scanColorDirectives.
+
+def scanAtRootDirectives(self,aList):
+
+    '''Scan aList for @root-code and @root-doc directives.'''
+
+    c = self
+
+    for d in aList:
+        root = d.get('root')
+        if g.match_word(root,0,"-code"):
+            return "code"
+        elif g.match_word(root,0,"-doc"):
+            return "doc"
+        else:
+            return g.choose(c.config.at_root_bodies_start_in_doc_mode,
+                'doc','code')
+
+    return None
+#@-node:ekr.20080828103146.12:c.scanAtRootDirectives
+#@-node:ekr.20080901124540.1:c.Directive scanning
 #@+node:ekr.20080828103146.5:Top-level  functions
 #@+node:ekr.20080827175609.54:OLD code (Do not change)
 #@+node:ekr.20031218072017.1391:g.scanDirectives
@@ -33640,12 +33764,9 @@ def NEWscanColorDirectives(self,p):
     c = self.c
     if not c: return # May be None for testing.
 
-    def scanAtRootDirectivesCallback(aList,c=c):
-        return g.scanAtPathDirectives(aList,c=c)
-
     table = (
         ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
-        ('root',        scanAtRootDirectives),
+        ('root',        c.scanAtRootDirectives),
     )
 
     # Set d by scanning all directives.
@@ -33678,9 +33799,6 @@ def scanAllDirectives(self,p=None):
 
     c = self ; p = p or c.currentPosition()
 
-    def scanAtPathDirectivesCallback(aList,c=c):
-        return g.scanAtPathDirectives(aList,c=c)
-
     # Set defaults
     language = c.target_language and c.target_language.lower()
     lang_dict = {
@@ -33694,7 +33812,7 @@ def scanAllDirectives(self,p=None):
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ('path',        None,           scanAtPathDirectivesCallback),
+        ('path',        None,           c.scanAtPathDirectives),
         ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
         ('wrap',        wrap,           g.scanAtWrapDirectives),
     )
@@ -33738,9 +33856,6 @@ def NEWscanAllDirectives(self,p,
 
     at = self ; c = self.c
 
-    def scanAtPathDirectivesCallback(aList,c=c):
-        return g.scanAtPathDirectives(aList,c=c)
-
     # Set defaults
     delims = g.set_delims_from_language(language)
     encoding = c.config.default_derived_file_encoding
@@ -33752,7 +33867,7 @@ def NEWscanAllDirectives(self,p,
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ('path',        None,           scanAtPathDirectivesCallback),
+        ('path',        None,           c.scanAtPathDirectives),
         ('tagwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
 
     # Set d by scanning all directives.
@@ -34094,7 +34209,7 @@ def findReference(c,name,root):
     # g.trace("not found:",name,root)
     return c.nullPosition()
 #@-node:ekr.20031218072017.1385:g.findReference (unchanged)
-#@+node:ekr.20031218072017.1260:g.get_directives_dict (unchanged, except added _p entry)
+#@+node:ekr.20031218072017.1260:g.get_directives_dict (added _p entry)
 # The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
 
 def get_directives_dict(p,root=None):
@@ -34151,7 +34266,7 @@ if i < n and s[i] == '*' :
         else:
             g.es('',g.angleBrackets("*") + "= requires @root in the headline")
 #@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
-#@-node:ekr.20031218072017.1260:g.get_directives_dict (unchanged, except added _p entry)
+#@-node:ekr.20031218072017.1260:g.get_directives_dict (added _p entry)
 #@+node:ekr.20031218072017.1386:g.getOutputNewline (unchanged)
 def getOutputNewline (c=None,name=None):
 
@@ -34372,24 +34487,24 @@ def set_language(s,i,issue_errors_flag=False):
 #@+node:ekr.20080827175609.31:NEW Directive utils...
 # To do: add '_p' key to each directive dict. for error message.
 #@nonl
-#@+node:ekr.20080828103146.16:g.computeBasePath (NEW TEST)
-def computeBasePath (p):
+#@+node:ekr.20080828103146.16:g.computeBasePath (not used yet)
+# def computeBasePath (p):
 
-    # An absolute path in an @file node over-rides everything else.
-    # A relative path gets appended to the relative path by the open logic.
+    # # An absolute path in an @file node over-rides everything else.
+    # # A relative path gets appended to the relative path by the open logic.
 
-    name = p.anyAtFileNodeName() # 4/28/04
+    # name = p.anyAtFileNodeName() # 4/28/04
 
-    theDir = g.choose(name,g.os_path_dirname(name),None)
+    # theDir = g.choose(name,g.os_path_dirname(name),None)
 
-    if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
-        if g.os_path_exists(theDir):
-            self.default_directory = theDir
-        else: # 9/25/02
-            self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-            if not self.default_directory:
-                self.error("Directory \"%s\" does not exist" % theDir)
-#@-node:ekr.20080828103146.16:g.computeBasePath (NEW TEST)
+    # if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
+        # if g.os_path_exists(theDir):
+            # self.default_directory = theDir
+        # else: # 9/25/02
+            # self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+            # if not self.default_directory:
+                # self.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20080828103146.16:g.computeBasePath (not used yet)
 #@+node:ekr.20080827175609.1:g.get_directives_dict_list
 # The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
 
@@ -34495,68 +34610,6 @@ def scanAtPagewidthDirectives(aList,issue_error_flag=False):
 
     return None
 #@-node:ekr.20080827175609.34:g.scanAtPagewidthDirectives
-#@+node:ekr.20080828103146.15:g.scanAtPathDirectives(NEW, TEST)
-def scanAtPathDirectives(aList,c):
-
-    '''Scan aList for @path directives.'''
-
-    # Step 1: Compute the starting path.
-    base = app.config.relative_path_base_directory
-    if base and base == "!":    base = g.app.loadDir
-    elif base and base == ".":  base = c.openDirectory
-
-    # Step 2: Look at alist for @file nodes, then @path directives.
-    fileName = None ; paths = []
-    for d in aList:
-        if fileName:
-            # Look for @path directives.
-            path = d.get('path')
-            if path:
-                # Convert "path" or <path> to path.
-                path = g.computeRelativePath(path)
-                if path: paths.append(path)
-        else:
-            # Look for any kind of @file node.
-            p = d.get('_p')
-            if p.isAnyAtFileNode():
-                fileName = p.anyAtFileNodeName()
-                paths.append(fileName)
-
-    # Step 3: Compute the full, effective, absolute path.
-    # The correct fallback directory is the absolute path to the base.
-    paths = paths.insert(0,g.os_path_abspath(g.app.loadDir,base))
-    g.trace('raw paths',g.printList(paths))
-    path = g.os_path_join(paths)
-    g.trace('joined paths',path)
-
-    # Step 4: Make the path if necessary.
-    if not g.os_path_exists(path):
-        path = g.makeAllNonExistentDirectories(path,c=c)
-        if not path:
-            g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
-
-    return path
-#@-node:ekr.20080828103146.15:g.scanAtPathDirectives(NEW, TEST)
-#@+node:ekr.20080828103146.12:g.scanAtRootDirectives
-# Called only by scanColorDirectives.
-
-def scanAtRootDirectives(aList,c):
-
-    '''Scan aList for @root-code and @root-doc directives.'''
-
-    for d in aList:
-        root = d.get('root')
-        if g.match_word(root,0,"-code"):
-            return "code"
-        elif g.match_word(root,0,"-doc"):
-            return "doc"
-        else:
-            return g.choose(c.config.at_root_bodies_start_in_doc_mode,
-                'doc','code')
-
-    return None
-#@nonl
-#@-node:ekr.20080828103146.12:g.scanAtRootDirectives
 #@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives
 def scanAtTabwidthDirectives(aList,issue_error_flag=False):
 
@@ -34611,7 +34664,7 @@ def get_directives_dict_list(p1):
 
     return result
 #@-node:ekr.20080827175609.1:g.get_directives_dict_list
-#@+node:ekr.20031218072017.1260:g.get_directives_dict (unchanged, except added _p entry)
+#@+node:ekr.20031218072017.1260:g.get_directives_dict (added _p entry)
 # The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
 
 def get_directives_dict(p,root=None):
@@ -34668,7 +34721,7 @@ if i < n and s[i] == '*' :
         else:
             g.es('',g.angleBrackets("*") + "= requires @root in the headline")
 #@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
-#@-node:ekr.20031218072017.1260:g.get_directives_dict (unchanged, except added _p entry)
+#@-node:ekr.20031218072017.1260:g.get_directives_dict (added _p entry)
 #@+node:ekr.20071109165315:g.computeRelativePath (unchanged)
 def computeRelativePath (path):
 
@@ -34708,31 +34761,15 @@ def getBaseDirectory(c):
     else:
         return "" # No relative base given.
 #@-node:ekr.20031218072017.1264:g.getBaseDirectory (unchanged)
-#@+node:ekr.20080828103146.16:g.computeBasePath (NEW TEST)
-def computeBasePath (p):
-
-    # An absolute path in an @file node over-rides everything else.
-    # A relative path gets appended to the relative path by the open logic.
-
-    name = p.anyAtFileNodeName() # 4/28/04
-
-    theDir = g.choose(name,g.os_path_dirname(name),None)
-
-    if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
-        if g.os_path_exists(theDir):
-            self.default_directory = theDir
-        else: # 9/25/02
-            self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-            if not self.default_directory:
-                self.error("Directory \"%s\" does not exist" % theDir)
-#@-node:ekr.20080828103146.16:g.computeBasePath (NEW TEST)
-#@+node:ekr.20080828103146.15:g.scanAtPathDirectives(NEW, TEST)
-def scanAtPathDirectives(aList,c):
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives(NEW, TEST)
+def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
 
+    c = self
+
     # Step 1: Compute the starting path.
-    base = app.config.relative_path_base_directory
+    base = g.app.config.relative_path_base_directory
     if base and base == "!":    base = g.app.loadDir
     elif base and base == ".":  base = c.openDirectory
 
@@ -34755,19 +34792,21 @@ def scanAtPathDirectives(aList,c):
 
     # Step 3: Compute the full, effective, absolute path.
     # The correct fallback directory is the absolute path to the base.
-    paths = paths.insert(0,g.os_path_abspath(g.app.loadDir,base))
+    g.pdb()
+    absbase = g.os_path_normpath(g.os_path_abspath(g.app.loadDir,base))
+    paths.insert(0,absbase)
     g.trace('raw paths',g.printList(paths))
-    path = g.os_path_join(paths)
+    path = g.os_path_normpath(g.os_path_join(*paths))
     g.trace('joined paths',path)
 
     # Step 4: Make the path if necessary.
-    if not g.os_path_exists(path):
-        path = g.makeAllNonExistentDirectories(path,c=c)
+    if path and not g.os_path_exists(path):
+        path = g.makeAllNonExistentDirectories(path,c=c,force=force)
         if not path:
             g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
 
     return path
-#@-node:ekr.20080828103146.15:g.scanAtPathDirectives(NEW, TEST)
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives(NEW, TEST)
 #@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
 # We set the current director to a path so future writes will go to that directory.
 
@@ -34849,12 +34888,9 @@ def NEWscanColorDirectives(self,p):
     c = self.c
     if not c: return # May be None for testing.
 
-    def scanAtRootDirectivesCallback(aList,c=c):
-        return g.scanAtPathDirectives(aList,c=c)
-
     table = (
         ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
-        ('root',        scanAtRootDirectives),
+        ('root',        c.scanAtRootDirectives),
     )
 
     # Set d by scanning all directives.
@@ -34887,9 +34923,6 @@ def scanAllDirectives(self,p=None):
 
     c = self ; p = p or c.currentPosition()
 
-    def scanAtPathDirectivesCallback(aList,c=c):
-        return g.scanAtPathDirectives(aList,c=c)
-
     # Set defaults
     language = c.target_language and c.target_language.lower()
     lang_dict = {
@@ -34903,7 +34936,7 @@ def scanAllDirectives(self,p=None):
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ('path',        None,           scanAtPathDirectivesCallback),
+        ('path',        None,           c.scanAtPathDirectives),
         ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
         ('wrap',        wrap,           g.scanAtWrapDirectives),
     )
@@ -34947,9 +34980,6 @@ def NEWscanAllDirectives(self,p,
 
     at = self ; c = self.c
 
-    def scanAtPathDirectivesCallback(aList,c=c):
-        return g.scanAtPathDirectives(aList,c=c)
-
     # Set defaults
     delims = g.set_delims_from_language(language)
     encoding = c.config.default_derived_file_encoding
@@ -34961,7 +34991,7 @@ def NEWscanAllDirectives(self,p,
         ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ('path',        None,           scanAtPathDirectivesCallback),
+        ('path',        None,           c.scanAtPathDirectives),
         ('tagwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
 
     # Set d by scanning all directives.
