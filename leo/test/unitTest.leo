@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="8,18"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1875,6 +1875,8 @@
 </v>
 <v t="ekr.20080831093745.2"><vh>Directives, new</vh>
 <v t="ekr.20080831093745.10"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20080901133251.1"><vh>@test c.scanAtRootDirectives root-code</vh></v>
+<v t="ekr.20080901133004.1"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
 <v t="ekr.20080831093745.9"><vh>@test g.get_directives_dict</vh></v>
 <v t="ekr.20080901125338.1"><vh>@test g.scanAtHeaderDirectives header</vh></v>
 <v t="ekr.20080901125338.2"><vh>@test g.scanAtHeaderDirectives noheader</vh></v>
@@ -1885,16 +1887,19 @@
 <v t="ekr.20080831093745.8"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
 <v t="ekr.20080901123851.1"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
 <v t="ekr.20080901122212.1"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
-<v t="ekr.20080901133004.1"><vh>@test g.scanAtRootDirectives root-doc</vh></v>
-<v t="ekr.20080901133251.1"><vh>@test g.scanAtRootDirectives root-code</vh></v>
+<v t="ekr.20080901143252.1"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py</vh>
+<v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
+</v>
+<v t="ekr.20080901151220.1"><vh>@test g.scanAtPathDirectives @path ../test/unittest @file at-path-test2.py</vh>
+<v t="ekr.20080901151220.2" a="E"><vh>@path ../test/unittest</vh>
+<v t="ekr.20080901151220.3" tnodeList="ekr.20080901151220.3"><vh>@file at-path-test2.py</vh></v>
+</v>
+</v>
 <v t="ekr.20080901122212.3"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
 <v t="ekr.20080901122212.2"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
 <v t="ekr.20080901122840.1"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
 <v t="ekr.20080901122840.2"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
 <v t="ekr.20080901123750.1"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
-<v t="ekr.20080901143252.1" a="E"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test.py</vh>
-<v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
-</v>
 </v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
@@ -2503,6 +2508,8 @@
 </v>
 <v t="ekr.20080831093745.2"><vh>Directives, new</vh>
 <v t="ekr.20080831093745.10"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20080901133251.1"><vh>@test c.scanAtRootDirectives root-code</vh></v>
+<v t="ekr.20080901133004.1"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
 <v t="ekr.20080831093745.9"><vh>@test g.get_directives_dict</vh></v>
 <v t="ekr.20080901125338.1"><vh>@test g.scanAtHeaderDirectives header</vh></v>
 <v t="ekr.20080901125338.2"><vh>@test g.scanAtHeaderDirectives noheader</vh></v>
@@ -2513,16 +2520,19 @@
 <v t="ekr.20080831093745.8"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
 <v t="ekr.20080901123851.1"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
 <v t="ekr.20080901122212.1"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
-<v t="ekr.20080901133004.1"><vh>@test g.scanAtRootDirectives root-doc</vh></v>
-<v t="ekr.20080901133251.1"><vh>@test g.scanAtRootDirectives root-code</vh></v>
+<v t="ekr.20080901143252.1"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py</vh>
+<v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
+</v>
+<v t="ekr.20080901151220.1"><vh>@test g.scanAtPathDirectives @path ../test/unittest @file at-path-test2.py</vh>
+<v t="ekr.20080901151220.2" a="E"><vh>@path ../test/unittest</vh>
+<v t="ekr.20080901151220.3" tnodeList="ekr.20080901151220.3"><vh>@file at-path-test2.py</vh></v>
+</v>
+</v>
 <v t="ekr.20080901122212.3"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
 <v t="ekr.20080901122212.2"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
 <v t="ekr.20080901122840.1"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
 <v t="ekr.20080901122840.2"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
 <v t="ekr.20080901123750.1"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
-<v t="ekr.20080901143252.1" a="E"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test.py</vh>
-<v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
-</v>
 </v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
@@ -2532,8 +2542,10 @@
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
 <v t="ekr.20071113202153.2" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20080831093745.2" a="E"><vh>Directives, new</vh>
+<v t="ekr.20080831093745.2"><vh>Directives, new</vh>
 <v t="ekr.20080831093745.10"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20080901133251.1"><vh>@test c.scanAtRootDirectives root-code</vh></v>
+<v t="ekr.20080901133004.1"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
 <v t="ekr.20080831093745.9"><vh>@test g.get_directives_dict</vh></v>
 <v t="ekr.20080901125338.1"><vh>@test g.scanAtHeaderDirectives header</vh></v>
 <v t="ekr.20080901125338.2"><vh>@test g.scanAtHeaderDirectives noheader</vh></v>
@@ -2544,16 +2556,19 @@
 <v t="ekr.20080831093745.8"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
 <v t="ekr.20080901123851.1"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
 <v t="ekr.20080901122212.1"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
-<v t="ekr.20080901133004.1"><vh>@test g.scanAtRootDirectives root-doc</vh></v>
-<v t="ekr.20080901133251.1"><vh>@test g.scanAtRootDirectives root-code</vh></v>
+<v t="ekr.20080901143252.1"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py</vh>
+<v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
+</v>
+<v t="ekr.20080901151220.1"><vh>@test g.scanAtPathDirectives @path ../test/unittest @file at-path-test2.py</vh>
+<v t="ekr.20080901151220.2" a="E"><vh>@path ../test/unittest</vh>
+<v t="ekr.20080901151220.3" tnodeList="ekr.20080901151220.3"><vh>@file at-path-test2.py</vh></v>
+</v>
+</v>
 <v t="ekr.20080901122212.3"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
 <v t="ekr.20080901122212.2"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
 <v t="ekr.20080901122840.1"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
 <v t="ekr.20080901122840.2"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
 <v t="ekr.20080901123750.1"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
-<v t="ekr.20080901143252.1" a="E"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test.py</vh>
-<v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -21748,19 +21763,30 @@ g.scanAtHeaderDirectives(aList)
 <t tx="ekr.20080901133004.1">@root-doc
 
 aList = g.get_directives_dict_list(p)
-s = g.scanAtRootDirectives(aList,c)
+s = c.scanAtRootDirectives(aList)
 
 assert s == 'doc',repr(s)</t>
 <t tx="ekr.20080901133251.1">@root-code
 
 aList = g.get_directives_dict_list(p)
-s = g.scanAtRootDirectives(aList,c)
+s = c.scanAtRootDirectives(aList)
 
 assert s == 'code',repr(s)</t>
 <t tx="ekr.20080901143252.1">aList = g.get_directives_dict_list(p.firstChild())
 s = c.scanAtPathDirectives(aList,force=True)
-g.es_print('s',s)</t>
+end = g.os_path_normpath(r'leo/test/unittest/at-path-test1.py')
+
+assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080901143252.2">@language python
 # unittest/at-path-test1.py</t>
+<t tx="ekr.20080901151220.1">grandChild = p.firstChild().firstChild()
+aList = g.get_directives_dict_list(grandChild)
+s = c.scanAtPathDirectives(aList,force=True)
+end = g.os_path_normpath(r'leo/test/unittest/at-path-test2.py')
+
+assert s.endswith(end),repr(s)</t>
+<t tx="ekr.20080901151220.2"></t>
+<t tx="ekr.20080901151220.3">@language python
+# unittest/at-path-test2.py</t>
 </tnodes>
 </leo_file>

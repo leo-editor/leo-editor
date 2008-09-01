@@ -5707,15 +5707,17 @@ class baseCommands:
 
         '''Scan aList for @path directives.'''
 
-        c = self
+        c = self ; trace = False
 
         # Step 1: Compute the starting path.
+        # The correct fallback directory is the absolute path to the base.
         base = g.app.config.relative_path_base_directory
         if base and base == "!":    base = g.app.loadDir
         elif base and base == ".":  base = c.openDirectory
+        absbase = g.os_path_normpath(g.os_path_abspath(g.app.loadDir,base))
 
         # Step 2: Look at alist for @file nodes, then @path directives.
-        fileName = None ; paths = []
+        paths = [] ; fileName = None
         for d in aList:
             if fileName:
                 # Look for @path directives.
@@ -5729,16 +5731,16 @@ class baseCommands:
                 p = d.get('_p')
                 if p.isAnyAtFileNode():
                     fileName = p.anyAtFileNodeName()
-                    paths.append(fileName)
+                    if fileName: paths.append(fileName)
+
+        # Add absbase and reverse the list.
+        paths.append(absbase)
+        paths.reverse()
 
         # Step 3: Compute the full, effective, absolute path.
-        # The correct fallback directory is the absolute path to the base.
-        g.pdb()
-        absbase = g.os_path_normpath(g.os_path_abspath(g.app.loadDir,base))
-        paths.insert(0,absbase)
-        g.trace('raw paths',g.printList(paths))
+        if trace: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
         path = g.os_path_normpath(g.os_path_join(*paths))
-        g.trace('joined paths',path)
+        if trace: g.trace('joined paths:',path)
 
         # Step 4: Make the path if necessary.
         if path and not g.os_path_exists(path):
