@@ -493,7 +493,7 @@ class baseCommands:
             "lineending"    : c.output_newline,
             "pagewidth"     : c.page_width,
             "path"          : d.get('path'),
-            "tabwidth"      : c.tag_width,
+            "tabwidth"      : c.tab_width,
             "pluginsList"   : [],
             "wrap"          : d.get('wrap'),
         }

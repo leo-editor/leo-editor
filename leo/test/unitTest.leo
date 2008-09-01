@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="8,1"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -21589,45 +21589,47 @@ assert d.get('encoding') == 'utf-8'
 assert d.get('delims') == ('a','b','c',)
 # assert d.get('path').endswith('xyzzy')
 </t>
-<t tx="ekr.20080831093745.4"># This will work regardless of where this method is.
-@lineending crlf
+<t tx="ekr.20080831093745.4">@lineending crlf
 
-d = c.scanAllDirectives(p)
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+# print ('@lineending: %s'%repr(s))
 
-assert d.get('lineending') == '\r\n'
+assert s == '\r\n'
 </t>
-<t tx="ekr.20080831093745.5"># This will work regardless of where this method is.
-@lineending cr
+<t tx="ekr.20080831093745.5">@lineending cr
 
-d = g.scanDirectives(c,p)
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
 
-assert d.get('lineending') == '\r'
+assert s == '\r'
 </t>
-<t tx="ekr.20080831093745.6"># This will work regardless of where this method is.
-@lineending lf
+<t tx="ekr.20080831093745.6">@lineending lf
 
-d = g.scanDirectives(c,p)
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
 
-assert d.get('lineending') == '\n'
+assert s == '\n'
 </t>
-<t tx="ekr.20080831093745.7"># This will work regardless of where this method is.
-@lineending nl
+<t tx="ekr.20080831093745.7">@lineending nl
 
-d = g.scanDirectives(c,p)
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
 
-assert d.get('lineending') == '\n'
+assert s == '\n'
 </t>
 <t tx="ekr.20080831093745.8"># This will work regardless of where this method is.
 @lineending platform
 
-d = g.scanDirectives(c,p)
-
 import sys
 
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
 if sys.platform.startswith('win'):
-    assert d.get('lineending') == '\r\n'
+    assert s == '\r\n'
 else:
-    assert d.get('lineending') == '\n'
+    assert s == '\n'
 </t>
 <t tx="ekr.20080831093745.9"># This will work regardless of where this method is.
 @language python
