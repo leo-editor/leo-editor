@@ -5702,7 +5702,7 @@ class baseCommands:
         }
     #@nonl
     #@-node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
-    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives(NEW, TEST)
+    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives(new)
     def scanAtPathDirectives(self,aList,force=False):
 
         '''Scan aList for @path directives.'''
@@ -5749,7 +5749,7 @@ class baseCommands:
                 g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
 
         return path
-    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives(NEW, TEST)
+    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives(new)
     #@+node:ekr.20080828103146.12:c.scanAtRootDirectives
     # Called only by scanColorDirectives.
 

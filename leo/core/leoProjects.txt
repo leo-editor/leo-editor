@@ -33070,7 +33070,7 @@ def scanAllDirectives(self,p=None):
     }
 #@nonl
 #@-node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
-#@+node:ekr.20080828103146.15:c.scanAtPathDirectives(NEW, TEST)
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives(new)
 def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
@@ -33117,7 +33117,7 @@ def scanAtPathDirectives(self,aList,force=False):
             g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
 
     return path
-#@-node:ekr.20080828103146.15:c.scanAtPathDirectives(NEW, TEST)
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives(new)
 #@+node:ekr.20080828103146.12:c.scanAtRootDirectives
 # Called only by scanColorDirectives.
 
@@ -34763,7 +34763,7 @@ def getBaseDirectory(c):
     else:
         return "" # No relative base given.
 #@-node:ekr.20031218072017.1264:g.getBaseDirectory (unchanged)
-#@+node:ekr.20080828103146.15:c.scanAtPathDirectives(NEW, TEST)
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives(new)
 def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
@@ -34810,7 +34810,7 @@ def scanAtPathDirectives(self,aList,force=False):
             g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
 
     return path
-#@-node:ekr.20080828103146.15:c.scanAtPathDirectives(NEW, TEST)
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives(new)
 #@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
 # We set the current director to a path so future writes will go to that directory.
 
