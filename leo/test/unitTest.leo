@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="8,15"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1895,7 +1895,7 @@
 <v t="ekr.20080901151220.3" tnodeList="ekr.20080901151220.3"><vh>@file at-path-test2.py</vh></v>
 </v>
 </v>
-<v t="ekr.20080901195909.1" a="E"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
+<v t="ekr.20080901195909.1"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
 <v t="ekr.20080901195909.2" a="E"><vh>@path ../test</vh>
 <v t="ekr.20080901195909.3" a="E"><vh>@path unittest</vh>
 <v t="ekr.20080901195909.4" tnodeList="ekr.20080901195909.4"><vh>@file at-path-test3.py</vh></v>
@@ -2535,7 +2535,7 @@
 <v t="ekr.20080901151220.3" tnodeList="ekr.20080901151220.3"><vh>@file at-path-test2.py</vh></v>
 </v>
 </v>
-<v t="ekr.20080901195909.1" a="E"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
+<v t="ekr.20080901195909.1"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
 <v t="ekr.20080901195909.2" a="E"><vh>@path ../test</vh>
 <v t="ekr.20080901195909.3" a="E"><vh>@path unittest</vh>
 <v t="ekr.20080901195909.4" tnodeList="ekr.20080901195909.4"><vh>@file at-path-test3.py</vh></v>
@@ -2556,7 +2556,7 @@
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
 <v t="ekr.20071113202153.2" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20080831093745.2" a="E"><vh>Directives, new</vh>
+<v t="ekr.20080831093745.2"><vh>Directives, new</vh>
 <v t="ekr.20080831093745.10"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20080901133251.1"><vh>@test c.scanAtRootDirectives root-code</vh></v>
 <v t="ekr.20080901133004.1"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
@@ -2578,7 +2578,7 @@
 <v t="ekr.20080901151220.3" tnodeList="ekr.20080901151220.3"><vh>@file at-path-test2.py</vh></v>
 </v>
 </v>
-<v t="ekr.20080901195909.1" a="E"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
+<v t="ekr.20080901195909.1"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
 <v t="ekr.20080901195909.2" a="E"><vh>@path ../test</vh>
 <v t="ekr.20080901195909.3" a="E"><vh>@path unittest</vh>
 <v t="ekr.20080901195909.4" tnodeList="ekr.20080901195909.4"><vh>@file at-path-test3.py</vh></v>

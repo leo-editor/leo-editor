@@ -5647,6 +5647,8 @@ class baseCommands:
     #@-node:ekr.20031218072017.2938:Help Menu
     #@-node:ekr.20031218072017.2818:Command handlers...
     #@+node:ekr.20080901124540.1:c.Directive scanning
+    # These are all new in Leo 4.5.1.
+    #@nonl
     #@+node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
     def scanAllDirectives(self,p=None):
 
@@ -5702,7 +5704,8 @@ class baseCommands:
         }
     #@nonl
     #@-node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
-    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives(new)
+    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+
     def scanAtPathDirectives(self,aList,force=False):
 
         '''Scan aList for @path directives.'''
@@ -5749,7 +5752,7 @@ class baseCommands:
                 g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
 
         return path
-    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives(new)
+    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives
     #@+node:ekr.20080828103146.12:c.scanAtRootDirectives
     # Called only by scanColorDirectives.
 
