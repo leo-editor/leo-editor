@@ -52,7 +52,7 @@
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848" a="M"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1"
+<v t="ekr.20080301071818.1" a="E"
 marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
@@ -2938,14 +2938,20 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080827175609.58"><vh>Minor new features</vh></v>
 <v t="ekr.20080827175609.59"><vh>New settings</vh></v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20080830082008.1"><vh>4.5 rc2</vh>
 <v t="ekr.20080830082008.2"><vh>Major new features</vh></v>
 <v t="ekr.20080830082008.3"><vh>Major code reorganizations</vh></v>
 <v t="ekr.20080830082008.4"><vh>Minor new features</vh></v>
 <v t="ekr.20080830082008.5"><vh>New settings</vh></v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20080902080930.2"><vh>4.5 final</vh>
+<v t="ekr.20080902080930.3"><vh>Major new features</vh></v>
+<v t="ekr.20080902080930.4"><vh>Major code reorganizations</vh></v>
+<v t="ekr.20080902080930.5"><vh>Minor new features</vh></v>
+<v t="ekr.20080902080930.6"><vh>New settings</vh></v>
 </v>
 </v>
 </v>
@@ -29982,7 +29988,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.5 rc2]&lt;/a&gt;</t>
+    Download Leo[4.5 final]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -31686,6 +31692,121 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 - Leo creates the .leo folder in the user's HOME directory, and puts several configuration files there.
   Leo looks for myLeoSettings.leo in HOME/.leo.</t>
 <t tx="ekr.20080830082008.5">- The default settings for @shadow files are now located in leoSettings.leo in the node::
+
+    @settings--&gt;File options--&gt;Shadow files
+    
+  The defaults for these settings are::
+
+    @string shadow_prefix = x
+    @string shadow_subdir = .leo_shadow
+
+- Added support for @bool fixedWindow option. Leo suppresses marks, expansion
+  state, orphan bits and current position bits when writing fixed .leo files. As
+  a result, all nodes will be collapsed and the root node will always be
+  selected when Leo opens a fixed .leo file.
+  
+  You can optionally specify the size and position on the screen of fixed .leo
+  files by putting an '@data fixedWindowPosition' node in the
+  @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
+  **not** put such a node in the fixed .leo file itself--everyone who
+  opens the file would get that fixed position.
+
+  The body of the '@data fixedWindowPosition' node should contain
+  something like this::
+
+    # Must be four entries: width,height,left,top.
+    # Put this in myLeoSettings.leo, **not** in individual .leo files.
+    
+    1200
+    800
+    50
+    50
+
+- Added @bool cleo_color_ignore = True
+  This determines whether cleo colors @ignore headlines. The default is True.
+  
+- Added @bool suppress_import_parsing setting
+  When True, @auto and @shadow import the entire file into a single node.</t>
+<t tx="ekr.20080902080930.2">Leo 4.5 final                                  September 2, 2008
+
+Leo 4.5 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+
+- Full support for @shadow files in Leo's core.
+- Major improvements to Leo's key binding code.
+- The beginning of usable vim-like bindings.
+- uA's may now be associated with vnodes in @thin and @shadow files.
+- Several magor reorganizations of Leo's code:
+  including sax-based parsing, support for the Graph world (unified nodes),
+  and simplified drawing code.
+- Leo is now an installable package.
+- Prepared code to be ready for Python 3.0.
+- Many small improvements and bug fixes.
+
+Quote of the month:
+-------------------
+Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080902080930.3">- Added support for @shadow files.
+  This is a major breakthrough.
+  See `Chapter 23`_ for full details.
+  
+- Added much improved support for vim bindings.
+
+- Allow v.uA's in @thin and @shadow nodes.
+  See http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
+</t>
+<t tx="ekr.20080902080930.4">- Leo now uses a sax-based parser to read .leo files.
+  This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
+  
+- Leo now supports the so-called 'Graph World'.
+  When g.unified_nodes is True, Leo moves all information from tnodes into vnodes.
+  
+- Leo now uses a new key binding scheme.
+  This allows substantially simpler key bindings. Indeed, most per-pane bindings
+  have been eliminated.
+  Added support for kill bindings.
+  
+- Leo is now an installable package.
+  To make this work, Leo adds os.curdir to sys.path if needed on startup.
+  
+- Reorganized Leo's drawing and focus code.
+  As a result, calls to c.beginUpdate and c.endUpdate are no longer needed.
+  
+- Leo is now ready for Python 3.x:
+  Change most print statements to calls to g.pr.
+</t>
+<t tx="ekr.20080902080930.5">- Added g.Tracer class.  This is a Python 'debugger' that computes a call graph.
+  To trace a function and its callers, put the following at the function's start::
+
+    g.startTracer()
+  
+- The find-character command now finds characters across line boundaries.
+
+- Set cwd in read/write commands. This affect the following commands:
+  open, save, save-as, save-to, read-outline-only, read-file-into-node,
+  write-file-from-node and all the import/export commands.
+
+- Added support for @args list for @button nodes.
+  See the docstring for the mod_scripting plugin for details.
+  
+- Leo creates the .leo folder in the user's HOME directory, and puts several configuration files there.
+  Leo looks for myLeoSettings.leo in HOME/.leo.</t>
+<t tx="ekr.20080902080930.6">- The default settings for @shadow files are now located in leoSettings.leo in the node::
 
     @settings--&gt;File options--&gt;Shadow files
     
