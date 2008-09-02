@@ -315,138 +315,13 @@ def startupEncoding ():
 #@-node:ekr.20041117151301.1:startupEncoding
 #@-node:ekr.20050304072744:Compute directories... (leoGlobals)
 #@+node:ekr.20031218072017.1380:g.Directive utils...
-#@+node:ekr.20080828103146.6:To be deleted
-#@+node:ekr.20031218072017.1391:g.scanDirectives
-#@+at 
-#@nonl
-# Perhaps this routine should be the basis of atFile.scanAllDirectives and 
-# tangle.scanAllDirectives, but I am loath to make any further to these two 
-# already-infamous routines.  Also, this code does not check for @color and 
-# @nocolor directives: leoColor.useSyntaxColoring does that.
-#@-at
-#@@c
-
+#@+node:ekr.20080901195858.3:To be deleted
+#@+node:ekr.20080901195858.4:g.scanDirectives  (for compatibility only)
 def scanDirectives(c,p=None):
 
-    """Scan vnode v and v's ancestors looking for directives.
-
-    Returns a dict containing the results, including defaults."""
-
-    if p is None:
-        p = c.currentPosition()
-
-    #@    << Set local vars >>
-    #@+node:ekr.20031218072017.1392:<< Set local vars >>
-    page_width = c.page_width
-    tab_width  = c.tab_width
-    language = c.target_language
-    if c.target_language:
-        c.target_language = c.target_language.lower()
-    delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
-    path = None
-    encoding = None # 2/25/03: This must be none so that the caller can set a proper default.
-    lineending = g.getOutputNewline(c=c) # Init from config settings.
-    wrap = c.config.getBool("body_pane_wraps")
-    #@-node:ekr.20031218072017.1392:<< Set local vars >>
-    #@nl
-    old = {}
-    pluginsList = [] # 5/17/03: a list of items for use by plugins.
-    for p in p.self_and_parents_iter():
-        theDict = g.get_directives_dict(p)
-        #@        << Test for @comment and @language >>
-        #@+node:ekr.20031218072017.1393:<< Test for @comment and @language >>
-        # 1/23/05: Any previous @language or @comment prevents processing up the tree.
-        # This code is now like the code in tangle.scanAlldirectives.
-
-        if old.has_key("comment") or old.has_key("language"):
-            pass
-
-        elif theDict.has_key("comment"):
-            z = theDict["comment"]
-            delim1,delim2,delim3 = g.set_delims_from_string(z)
-
-        elif theDict.has_key("language"):
-            z = theDict["language"]
-            language,delim1,delim2,delim3 = g.set_language(z,0)
-        #@-node:ekr.20031218072017.1393:<< Test for @comment and @language >>
-        #@nl
-        #@        << Test for @encoding >>
-        #@+node:ekr.20031218072017.1394:<< Test for @encoding >>
-        if not old.has_key("encoding") and theDict.has_key("encoding"):
-
-            e = g.scanAtEncodingDirective(theDict)
-            if e:
-                encoding = e
-        #@-node:ekr.20031218072017.1394:<< Test for @encoding >>
-        #@nl
-        #@        << Test for @lineending >>
-        #@+node:ekr.20031218072017.1395:<< Test for @lineending >>
-        if not old.has_key("lineending") and theDict.has_key("lineending"):
-
-            e = g.scanAtLineendingDirective(theDict)
-            if e:
-                lineending = e
-        #@-node:ekr.20031218072017.1395:<< Test for @lineending >>
-        #@nl
-        #@        << Test for @pagewidth >>
-        #@+node:ekr.20031218072017.1396:<< Test for @pagewidth >>
-        if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
-
-            w = g.scanAtPagewidthDirective(theDict)
-            if w and w > 0:
-                page_width = w
-        #@-node:ekr.20031218072017.1396:<< Test for @pagewidth >>
-        #@nl
-        #@        << Test for @path >>
-        #@+node:ekr.20031218072017.1397:<< Test for @path >> (g.scanDirectives)
-        if not path and not old.has_key("path") and theDict.has_key("path"):
-
-            path = theDict["path"]
-            path = g.computeRelativePath(path)
-
-            if path and len(path) > 0:
-                base = g.getBaseDirectory(c) # returns "" on error.
-                path = g.os_path_join(base,path)
-        #@-node:ekr.20031218072017.1397:<< Test for @path >> (g.scanDirectives)
-        #@nl
-        #@        << Test for @tabwidth >>
-        #@+node:ekr.20031218072017.1399:<< Test for @tabwidth >>
-        if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
-
-            w = g.scanAtTabwidthDirective(theDict)
-            if w and w != 0:
-                tab_width = w
-        #@-node:ekr.20031218072017.1399:<< Test for @tabwidth >>
-        #@nl
-        #@        << Test for @wrap and @nowrap >>
-        #@+node:ekr.20031218072017.1400:<< Test for @wrap and @nowrap >>
-        if not old.has_key("wrap") and not old.has_key("nowrap"):
-
-            if theDict.has_key("wrap"):
-                wrap = True
-            elif theDict.has_key("nowrap"):
-                wrap = False
-        #@-node:ekr.20031218072017.1400:<< Test for @wrap and @nowrap >>
-        #@nl
-        g.doHook("scan-directives",c=c,p=p,v=p,s=p.bodyString(),
-            old_dict=old,dict=theDict,pluginsList=pluginsList)
-        old.update(theDict)
-
-    if path == None: path = g.getBaseDirectory(c)
-
-    # g.trace('tabwidth',tab_width)
-
-    return {
-        "delims"    : (delim1,delim2,delim3),
-        "encoding"  : encoding,
-        "language"  : language,
-        "lineending": lineending,
-        "pagewidth" : page_width,
-        "path"      : path,
-        "tabwidth"  : tab_width,
-        "pluginsList": pluginsList,
-        "wrap"      : wrap }
-#@-node:ekr.20031218072017.1391:g.scanDirectives
+    return c.scanAllDirectives(p)
+#@nonl
+#@-node:ekr.20080901195858.4:g.scanDirectives  (for compatibility only)
 #@+node:ekr.20031218072017.1387:g.scanAtEncodingDirective
 def scanAtEncodingDirective(theDict):
 
@@ -522,7 +397,7 @@ def scanAtTabwidthDirective(theDict,issue_error_flag=False):
             g.es("ignoring",s,color="red")
         return None
 #@-node:ekr.20031218072017.1390:g.scanAtTabwidthDirective
-#@-node:ekr.20080828103146.6:To be deleted
+#@-node:ekr.20080901195858.3:To be deleted
 #@+node:ekr.20080828103146.7:Unchanged
 #@+node:EKR.20040504150046.4:g.comment_delims_from_extension (unchanged)
 def comment_delims_from_extension(filename):

@@ -789,7 +789,7 @@ class leoImportCommands:
     #@+node:ekr.20031218072017.1463:setEncoding (leoImport)
     def setEncoding (self,p=None,atAuto=False):
 
-        # scanDirectives checks the encoding: may return None.
+        # c.scanAllDirectives checks the encoding: may return None.
         c = self.c
         if p is None: p = c.currentPosition()
         theDict = c.scanAllDirectives(p)

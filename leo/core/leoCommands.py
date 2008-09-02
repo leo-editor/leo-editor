@@ -3900,9 +3900,8 @@ class baseCommands:
 
         for p in c.all_positions_with_unique_tnodes_iter():
 
-            # Unlike scanDirectives, scanForAtLanguage ignores @comment.
+            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
-
                 pp.prettyPrintNode(p,dump=dump)
 
         pp.endUndo()
@@ -3926,7 +3925,7 @@ class baseCommands:
 
         for p in root.self_and_subtree_iter():
 
-            # Unlike scanDirectives, scanForAtLanguage ignores @comment.
+            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
 
                 pp.prettyPrintNode(p,dump=dump)
@@ -3948,7 +3947,7 @@ class baseCommands:
 
         pp = c.prettyPrinter(c)
 
-        # Unlike scanDirectives, scanForAtLanguage ignores @comment.
+        # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
         if g.scanForAtLanguage(c,p) == "python":
             pp.prettyPrintNode(p,dump=dump)
 
@@ -3963,7 +3962,7 @@ class baseCommands:
 
         for p in p.self_and_subtree_iter():
 
-            # Unlike scanDirectives, scanForAtLanguage ignores @comment.
+            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
 
                 pp.prettyPrintNode(p,dump=dump)
@@ -5649,7 +5648,7 @@ class baseCommands:
     #@+node:ekr.20080901124540.1:c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@nonl
-    #@+node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
+    #@+node:ekr.20080827175609.39:c.scanAllDirectives
     def scanAllDirectives(self,p=None):
 
         '''Scan p and ancestors for directives.
@@ -5685,8 +5684,6 @@ class baseCommands:
 
         # Post process: do *not* set commander ivars.
         lang_dict       = d.get('lang-dict')
-        # self.explicitLineEnding = lineending is not None
-        # self.output_newline = lineending or g.getOutputNewline(c=c)
 
         return {
             "delims"        : lang_dict.get('delims'),
@@ -5696,11 +5693,11 @@ class baseCommands:
             "pagewidth"     : d.get('pagewidth'),
             "path"          : d.get('path') or g.getBaseDirectory(c),
             "tabwidth"      : d.get('tabwidth'),
-            "pluginsList"   : [],
+            "pluginsList"   : [],  ### To do: what about scan-directives hook?
             "wrap"          : d.get('wrap'),
         }
     #@nonl
-    #@-node:ekr.20080827175609.39:c.scanAllDirectives (was g.scanDirectives)
+    #@-node:ekr.20080827175609.39:c.scanAllDirectives
     #@+node:ekr.20080828103146.15:c.scanAtPathDirectives
 
     def scanAtPathDirectives(self,aList,force=False):
