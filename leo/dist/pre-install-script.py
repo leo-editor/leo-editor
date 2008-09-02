@@ -3,7 +3,7 @@
 import _winreg as wr
 import sys, os
 
-version = '4-5-rc2'
+version = '4-5-final'
 
 testing = True ; problems = False ; verbose = False
 abspath, exists, join = os.path.abspath, os.path.exists, os.path.join

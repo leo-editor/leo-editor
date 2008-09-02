@@ -33132,6 +33132,10 @@ for theDir in (homeLeoDir,globalConfigDir,loadDir):
 #@-node:ekr.20031218072017.1978:app.setLeoID
 #@-node:ekr.20080829101243.1:Use os.expanduser('~') to compute home directory
 #@-node:ekr.20080829113441.1:4.5 rc2
+#@+node:ekr.20080901065638.1:4.5 final
+#@+node:ekr.20080901065638.2:Added sorted to list of python global functions
+#@-node:ekr.20080901065638.2:Added sorted to list of python global functions
+#@-node:ekr.20080901065638.1:4.5 final
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt

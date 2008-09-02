@@ -16,6 +16,7 @@
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
+<v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
 <v t="ekr.20070101093904"><vh>January 2007</vh></v>
 <v t="ekr.20060823090437"><vh>August 2006</vh></v>
@@ -25,7 +26,7 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20080830082008.6"><vh>ANN: Leo 4.5 rc2</vh></v>
+<v t="ekr.20080902080927.1"><vh>ANN: Leo 4.5 final</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080807093308.2"><vh>4.5</vh>
 <v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
@@ -33,6 +34,7 @@
 <v t="ekr.20080815093141.108"><vh>ANN: Leo 4.5 b3</vh></v>
 <v t="ekr.20080825085446.1"><vh>ANN: Leo 4.5 b4</vh></v>
 <v t="ekr.20080828073358.1"><vh>ANN: Leo 4.5 rc1</vh></v>
+<v t="ekr.20080830082008.6"><vh>ANN: Leo 4.5 rc2</vh></v>
 </v>
 </v>
 </v>
@@ -49,7 +51,6 @@
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
-<v t="ekr.20080827092958.2"><vh>The script</vh></v>
 <v t="EKR.20040519082027.32" a="E"><vh>Linux install/uninstall scripts</vh>
 <v t="EKR.20040519082027.33"><vh>@@file-thin ../../install</vh></v>
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
@@ -154,7 +155,7 @@ rm -f  $LEO_RUN_SCRIPT_OUTPUT
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -rc2
+Latest suffix:  -final
 
 
 </t>
@@ -304,7 +305,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.5-rc2
+Version: 4.5-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -323,12 +324,10 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.5 release candidate 2                     August 30, 2008
+<t tx="EKR.20040519090846.9">Leo 4.5 release final                     September 2, 2008
 
-Leo 4.5 rc2 is now available at:
+Leo 4.5 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -346,6 +345,11 @@ The highlights of Leo 4.5:
 - Leo is now an installable package.
 - Prepared code to be ready for Python 3.0.
 - Many small improvements and bug fixes.
+
+Quote of the month:
+-------------------
+Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.
 
 Links:
 ------
@@ -673,7 +677,7 @@ This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 @others
 
 assert sys.version_info &gt;= (2,5,0) and sys.version_info &lt; (2,6,0) # Require Python 2.5.
-version = '4-5-rc2'
+version = '4-5-final'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 root                = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
@@ -912,7 +916,6 @@ import time</t>
     or '2.2'.
     """
     return sys.version[:3]</t>
-<t tx="ekr.20080827092958.2"></t>
 <t tx="ekr.20080828073358.1">Leo 4.5 release candidate 1                      August 28, 2008
 
 Leo 4.5 rc1 is now available at:
@@ -967,6 +970,47 @@ The highlights of Leo 4.5:
 - Leo is now an installable package.
 - Prepared code to be ready for Python 3.0.
 - Many small improvements and bug fixes.
+
+Quote of the month:
+-------------------
+For me Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080901114425.2">For me Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.</t>
+<t tx="ekr.20080902080927.1">Leo 4.5 release final                     September 2, 2008
+
+Leo 4.5 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+
+- Full support for @shadow files in Leo's core.
+- Major improvements to Leo's key binding code.
+- The beginning of usable vim-like bindings.
+- uA's may now be associated with vnodes in @thin and @shadow files.
+- Several magor reorganizations of Leo's code:
+  including sax-based parsing, support for the Graph world (unified nodes),
+  and simplified drawing code.
+- Leo is now an installable package.
+- Prepared code to be ready for Python 3.0.
+- Many small improvements and bug fixes.
+
+Quote of the month:
+-------------------
+Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.
 
 Links:
 ------

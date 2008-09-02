@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="50" height="804" width="1117"/>
+	<global_window_position top="50" left="347" height="804" width="820"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1976,6 +1976,8 @@
 <v t="ekr.20071020075538.24"><vh>@test string underindent lines 2</vh></v>
 <v t="ekr.20071020075538.28"><vh>@test trailing comment</vh></v>
 <v t="ekr.20071020075538.29"><vh>@test trailing comment--outer levels</vh></v>
+<v t="ekr.20080901083414.24"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
+<v t="ekr.20080901083414.1"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
 <v t="ekr.20071020075538.33"><vh>c# tests</vh>
 <v t="ekr.20071020075538.34"><vh>@test c# namespace indent</vh></v>
@@ -21495,5 +21497,53 @@ pass
 <t tx="ekr.20080824191108.1"></t>
 <t tx="ekr.20080824191108.2">import leo.core.runLeo as runLeo
 assert runLeo.isValidPython()</t>
+<t tx="ekr.20080901083414.1">s = '''\
+
+def foo():
+    
+    error("""line1
+line2.
+""")
+
+    a = 5
+    
+def bar():
+    pass
+'''
+
+showTree = False
+keepTree = False
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
+
+if showTree:
+    try:
+        child = p.firstChild()
+        n = child.numberOfChildren()
+        assert n == 2, 'expected 2 children, got %s' % n
+    finally:
+        if keepTree:
+            h = child.headString()
+            print 'h',h
+            child.setHeadString('@'+h)
+        else:
+            while p.hasChildren():
+                p.firstChild().doDelete()
+        c.redraw_now()</t>
+<t tx="ekr.20080901083414.24">s = '''\
+
+def foo():
+    pass
+
+def bar():
+    pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
 </tnodes>
 </leo_file>

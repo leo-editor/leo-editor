@@ -1,9 +1,7 @@
-Leo 4.5 release candidate 2                     August 30, 2008
+Leo 4.5 release final                     September 2, 2008
 
-Leo 4.5 rc2 is now available at:
+Leo 4.5 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-
-Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -21,6 +19,11 @@ The highlights of Leo 4.5:
 - Leo is now an installable package.
 - Prepared code to be ready for Python 3.0.
 - Many small improvements and bug fixes.
+
+Quote of the month:
+-------------------
+Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.
 
 Links:
 ------
