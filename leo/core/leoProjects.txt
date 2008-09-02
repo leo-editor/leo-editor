@@ -5979,7 +5979,7 @@ cursor."""
         << update the body, selection & undo state >>
 #@nonl
 #@+node:ekr.20031218072017.1834:<< compute vars for reformatParagraph >>
-theDict = g.scanDirectives(c)
+theDict = c.scanAllDirectives()
 pageWidth = theDict.get("pagewidth")
 tabWidth  = theDict.get("tabwidth")
 
@@ -13659,7 +13659,7 @@ def openWith(self,event=None,data=None):
     return "break"
 #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
 if not ext:
-    theDict = g.scanDirectives(c)
+    theDict = c.scanAllDirectives()
     language = theDict.get("language")
     ext = g.app.language_extension_dict.get(language)
     # g.pr(language,ext)
@@ -13801,7 +13801,7 @@ def createOpenWithTempFile (self,p,ext):
         theFile = open(path,"w")
         # Convert s to whatever encoding is in effect.
         s = p.bodyString()
-        theDict = g.scanDirectives(c,p=p)
+        theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding",None)
         if encoding == None:
             encoding = c.config.default_derived_file_encoding
@@ -18966,8 +18966,8 @@ else:
             g.pr(line,newline=False)
 #@-node:ekr.20031218072017.2865:<< set root >>
 #@+node:ekr.20031218072017.2866:<< read the file into lines >>
-# 1/26/03: calculate the full path.
-d = g.scanDirectives(c)
+# Calculate the full path.
+d = c.scanAllDirectives()
 path = d.get("path")
 
 fileName = g.os_path_join(path,fileName)
@@ -24951,7 +24951,7 @@ def openWith(self,event=None,data=None):
     return "break"
 #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
 if not ext:
-    theDict = g.scanDirectives(c)
+    theDict = c.scanAllDirectives()
     language = theDict.get("language")
     ext = g.app.language_extension_dict.get(language)
     # g.pr(language,ext)
@@ -25093,7 +25093,7 @@ def createOpenWithTempFile (self,p,ext):
         theFile = open(path,"w")
         # Convert s to whatever encoding is in effect.
         s = p.bodyString()
-        theDict = g.scanDirectives(c,p=p)
+        theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding",None)
         if encoding == None:
             encoding = c.config.default_derived_file_encoding
@@ -27201,8 +27201,8 @@ else:
             g.pr(line,newline=False)
 #@-node:ekr.20031218072017.2865:<< set root >>
 #@+node:ekr.20031218072017.2866:<< read the file into lines >>
-# 1/26/03: calculate the full path.
-d = g.scanDirectives(c)
+# Calculate the full path.
+d = c.scanAllDirectives()
 path = d.get("path")
 
 fileName = g.os_path_join(path,fileName)
@@ -32955,12 +32955,7 @@ EKR: added leo/dist/post-install-script.py
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
 
-To do:
-
-1. change g.scanDirectives(c,p) to c.scanAllDirectives(p)
-
-2. Write a unit tests that verifies that the new and old versions give the same results,
-   except possibly for @path.
+(done) change g.scanDirectives(c,p) to c.scanAllDirectives(p)
 
 @color
 #@nonl
@@ -33014,6 +33009,26 @@ QQQQQQQ
 #@+node:ekr.20041022083005.3:At-path and other directives accept python expressions
 #@-node:ekr.20041022083005.3:At-path and other directives accept python expressions
 #@-node:ekr.20080828103146.2:Requests
+#@+node:ekr.20080901195858.2:Not used
+#@+node:ekr.20080828103146.16:g.computeBasePath (not used yet)
+# def computeBasePath (p):
+
+    # # An absolute path in an @file node over-rides everything else.
+    # # A relative path gets appended to the relative path by the open logic.
+
+    # name = p.anyAtFileNodeName() # 4/28/04
+
+    # theDir = g.choose(name,g.os_path_dirname(name),None)
+
+    # if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
+        # if g.os_path_exists(theDir):
+            # self.default_directory = theDir
+        # else: # 9/25/02
+            # self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+            # if not self.default_directory:
+                # self.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20080828103146.16:g.computeBasePath (not used yet)
+#@-node:ekr.20080901195858.2:Not used
 #@+node:ekr.20080901124540.1:c.Directive scanning
 # These are all new in Leo 4.5.1.
 #@nonl
@@ -33051,22 +33066,19 @@ def scanAllDirectives(self,p=None):
         val = func(aList)
         d[key] = g.choose(val is None,default,val)
 
-    # Post process.
-    lineending      = d.get('lineending')
+    # Post process: do *not* set commander ivars.
     lang_dict       = d.get('lang-dict')
-    c.tab_width     = d.get('tabwidth')
-    c.page_width    = d.get('pagewidth')
-    self.explicitLineEnding = lineending is not None
-    self.output_newline = lineending or g.getOutputNewline(c=c)
+    # self.explicitLineEnding = lineending is not None
+    # self.output_newline = lineending or g.getOutputNewline(c=c)
 
     return {
         "delims"        : lang_dict.get('delims'),
         "encoding"      : d.get('encoding'),
         "language"      : lang_dict.get('language'),
-        "lineending"    : c.output_newline,
-        "pagewidth"     : c.page_width,
-        "path"          : d.get('path'),
-        "tabwidth"      : c.tab_width,
+        "lineending"    : d.get('lineending'),
+        "pagewidth"     : d.get('pagewidth'),
+        "path"          : d.get('path') or g.getBaseDirectory(c),
+        "tabwidth"      : d.get('tabwidth'),
         "pluginsList"   : [],
         "wrap"          : d.get('wrap'),
     }
@@ -33116,7 +33128,7 @@ def scanAtPathDirectives(self,aList,force=False):
     # Step 4: Make the path if necessary.
     if path and not g.os_path_exists(path):
         path = g.makeAllNonExistentDirectories(path,c=c,force=force)
-        if not path:
+        if force and not path:
             g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
 
     return path
@@ -33829,22 +33841,19 @@ def scanAllDirectives(self,p=None):
         val = func(aList)
         d[key] = g.choose(val is None,default,val)
 
-    # Post process.
-    lineending      = d.get('lineending')
+    # Post process: do *not* set commander ivars.
     lang_dict       = d.get('lang-dict')
-    c.tab_width     = d.get('tabwidth')
-    c.page_width    = d.get('pagewidth')
-    self.explicitLineEnding = lineending is not None
-    self.output_newline = lineending or g.getOutputNewline(c=c)
+    # self.explicitLineEnding = lineending is not None
+    # self.output_newline = lineending or g.getOutputNewline(c=c)
 
     return {
         "delims"        : lang_dict.get('delims'),
         "encoding"      : d.get('encoding'),
         "language"      : lang_dict.get('language'),
-        "lineending"    : c.output_newline,
-        "pagewidth"     : c.page_width,
-        "path"          : d.get('path'),
-        "tabwidth"      : c.tab_width,
+        "lineending"    : d.get('lineending'),
+        "pagewidth"     : d.get('pagewidth'),
+        "path"          : d.get('path') or g.getBaseDirectory(c),
+        "tabwidth"      : d.get('tabwidth'),
         "pluginsList"   : [],
         "wrap"          : d.get('wrap'),
     }
@@ -34492,24 +34501,6 @@ def set_language(s,i,issue_errors_flag=False):
 #@+node:ekr.20080827175609.31:NEW Directive utils...
 # To do: add '_p' key to each directive dict. for error message.
 #@nonl
-#@+node:ekr.20080828103146.16:g.computeBasePath (not used yet)
-# def computeBasePath (p):
-
-    # # An absolute path in an @file node over-rides everything else.
-    # # A relative path gets appended to the relative path by the open logic.
-
-    # name = p.anyAtFileNodeName() # 4/28/04
-
-    # theDir = g.choose(name,g.os_path_dirname(name),None)
-
-    # if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
-        # if g.os_path_exists(theDir):
-            # self.default_directory = theDir
-        # else: # 9/25/02
-            # self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-            # if not self.default_directory:
-                # self.error("Directory \"%s\" does not exist" % theDir)
-#@-node:ekr.20080828103146.16:g.computeBasePath (not used yet)
 #@+node:ekr.20080827175609.1:g.get_directives_dict_list
 # The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
 
@@ -34562,12 +34553,11 @@ def scanAtEncodingDirectives(aList):
 
     for d in aList:
         encoding = d.get('encoding')
-        if g.isValidEncoding(encoding):
+        if encoding and g.isValidEncoding(encoding):
             # g.trace(encoding)
             return encoding
-        else:
-            if not g.app.unitTesting:
-                g.es("invalid @encoding:",encoding,color="red")
+        elif encoding and not g.app.unitTesting:
+            g.es("invalid @encoding:",encoding,color="red")
 
     return None
 #@-node:ekr.20080827175609.32:g.scanAtEncodingDirectives
@@ -34810,7 +34800,7 @@ def scanAtPathDirectives(self,aList,force=False):
     # Step 4: Make the path if necessary.
     if path and not g.os_path_exists(path):
         path = g.makeAllNonExistentDirectories(path,c=c,force=force)
-        if not path:
+        if force and not path:
             g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
 
     return path
@@ -34956,22 +34946,19 @@ def scanAllDirectives(self,p=None):
         val = func(aList)
         d[key] = g.choose(val is None,default,val)
 
-    # Post process.
-    lineending      = d.get('lineending')
+    # Post process: do *not* set commander ivars.
     lang_dict       = d.get('lang-dict')
-    c.tab_width     = d.get('tabwidth')
-    c.page_width    = d.get('pagewidth')
-    self.explicitLineEnding = lineending is not None
-    self.output_newline = lineending or g.getOutputNewline(c=c)
+    # self.explicitLineEnding = lineending is not None
+    # self.output_newline = lineending or g.getOutputNewline(c=c)
 
     return {
         "delims"        : lang_dict.get('delims'),
         "encoding"      : d.get('encoding'),
         "language"      : lang_dict.get('language'),
-        "lineending"    : c.output_newline,
-        "pagewidth"     : c.page_width,
-        "path"          : d.get('path'),
-        "tabwidth"      : c.tab_width,
+        "lineending"    : d.get('lineending'),
+        "pagewidth"     : d.get('pagewidth'),
+        "path"          : d.get('path') or g.getBaseDirectory(c),
+        "tabwidth"      : d.get('tabwidth'),
         "pluginsList"   : [],
         "wrap"          : d.get('wrap'),
     }

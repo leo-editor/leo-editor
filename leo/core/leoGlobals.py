@@ -874,24 +874,6 @@ def set_language(s,i,issue_errors_flag=False):
 #@+node:ekr.20080827175609.31:NEW Directive utils...
 # To do: add '_p' key to each directive dict. for error message.
 #@nonl
-#@+node:ekr.20080828103146.16:g.computeBasePath (not used yet)
-# def computeBasePath (p):
-
-    # # An absolute path in an @file node over-rides everything else.
-    # # A relative path gets appended to the relative path by the open logic.
-
-    # name = p.anyAtFileNodeName() # 4/28/04
-
-    # theDir = g.choose(name,g.os_path_dirname(name),None)
-
-    # if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
-        # if g.os_path_exists(theDir):
-            # self.default_directory = theDir
-        # else: # 9/25/02
-            # self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-            # if not self.default_directory:
-                # self.error("Directory \"%s\" does not exist" % theDir)
-#@-node:ekr.20080828103146.16:g.computeBasePath (not used yet)
 #@+node:ekr.20080827175609.1:g.get_directives_dict_list
 # The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
 
@@ -944,12 +926,11 @@ def scanAtEncodingDirectives(aList):
 
     for d in aList:
         encoding = d.get('encoding')
-        if g.isValidEncoding(encoding):
+        if encoding and g.isValidEncoding(encoding):
             # g.trace(encoding)
             return encoding
-        else:
-            if not g.app.unitTesting:
-                g.es("invalid @encoding:",encoding,color="red")
+        elif encoding and not g.app.unitTesting:
+            g.es("invalid @encoding:",encoding,color="red")
 
     return None
 #@-node:ekr.20080827175609.32:g.scanAtEncodingDirectives

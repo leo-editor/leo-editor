@@ -614,7 +614,7 @@ class baseCommands:
                 #@            << set ext based on the present language >>
                 #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
                 if not ext:
-                    theDict = g.scanDirectives(c)
+                    theDict = c.scanAllDirectives()
                     language = theDict.get("language")
                     ext = g.app.language_extension_dict.get(language)
                     # g.pr(language,ext)
@@ -775,7 +775,7 @@ class baseCommands:
             theFile = open(path,"w")
             # Convert s to whatever encoding is in effect.
             s = p.bodyString()
-            theDict = g.scanDirectives(c,p=p)
+            theDict = c.scanAllDirectives(p)
             encoding = theDict.get("encoding",None)
             if encoding == None:
                 encoding = c.config.default_derived_file_encoding
@@ -1771,8 +1771,8 @@ class baseCommands:
         if lines is None:
             #@        << read the file into lines >>
             #@+node:ekr.20031218072017.2866:<< read the file into lines >>
-            # 1/26/03: calculate the full path.
-            d = g.scanDirectives(c)
+            # Calculate the full path.
+            d = c.scanAllDirectives()
             path = d.get("path")
 
             fileName = g.os_path_join(path,fileName)
@@ -2268,7 +2268,7 @@ class baseCommands:
             c.notValidInBatchMode(undoType)
             return
 
-        d = g.scanDirectives(c)
+        d = c.scanAllDirectives()
         tabWidth  = d.get("tabwidth")
         count = 0 ; dirtyVnodeList = []
         u.beforeChangeGroup(current,undoType)
@@ -2313,7 +2313,7 @@ class baseCommands:
         if g.app.batchMode:
             c.notValidInBatchMode(undoType)
             return
-        theDict = g.scanDirectives(c)
+        theDict = c.scanAllDirectives()
         tabWidth  = theDict.get("tabwidth")
         count = 0 ; dirtyVnodeList = []
         u.beforeChangeGroup(current,undoType)
@@ -2355,7 +2355,7 @@ class baseCommands:
         head,lines,tail,oldSel,oldYview = c.getBodyLines(expandSelection=True)
 
         # Use the relative @tabwidth, not the global one.
-        theDict = g.scanDirectives(c)
+        theDict = c.scanAllDirectives()
         tabWidth  = theDict.get("tabwidth")
         if tabWidth:
             result = []
@@ -2380,7 +2380,7 @@ class baseCommands:
         head,lines,tail,oldSel,oldYview = self.getBodyLines(expandSelection=True)
 
         # Use the relative @tabwidth, not the global one.
-        theDict = g.scanDirectives(c)
+        theDict = c.scanAllDirectives()
         tabWidth  = theDict.get("tabwidth")
         if tabWidth:
             result = []
@@ -2423,7 +2423,7 @@ class baseCommands:
 
         c = self ; current = c.currentPosition() ; undoType='Unindent'
 
-        d = g.scanDirectives(c,current) # Support @tab_width directive properly.
+        d = c.scanAllDirectives(current) # Support @tab_width directive properly.
         tab_width = d.get("tabwidth",c.tab_width)
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
 
@@ -2752,7 +2752,7 @@ class baseCommands:
         specifies the column to indent to.'''
 
         c = self ; current = c.currentPosition() ; undoType='Indent Region'
-        d = g.scanDirectives(c,current) # Support @tab_width directive properly.
+        d = c.scanAllDirectives(current) # Support @tab_width directive properly.
         tab_width = d.get("tabwidth",c.tab_width)
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
 
@@ -2825,7 +2825,7 @@ class baseCommands:
         '''Convert all selected lines in the body text to comment lines.'''
 
         c = self ; p = c.currentPosition()
-        d = g.scanDirectives(c,p)
+        d = c.scanAllDirectives(p)
         d1,d2,d3 = d.get('delims') # d1 is the line delim.
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         if not lines:
@@ -2854,7 +2854,7 @@ class baseCommands:
         '''Remove one level of comment delimiters from all selected lines in the body text.'''
 
         c = self ; p = c.currentPosition()
-        d = g.scanDirectives(c,p)
+        d = c.scanAllDirectives(p)
         # d1 is the line delim.
         d1,d2,d3 = d.get('delims')
 
@@ -2927,7 +2927,7 @@ class baseCommands:
 
         #@    << compute vars for reformatParagraph >>
         #@+node:ekr.20031218072017.1834:<< compute vars for reformatParagraph >>
-        theDict = g.scanDirectives(c)
+        theDict = c.scanAllDirectives()
         pageWidth = theDict.get("pagewidth")
         tabWidth  = theDict.get("tabwidth")
 
@@ -5683,22 +5683,19 @@ class baseCommands:
             val = func(aList)
             d[key] = g.choose(val is None,default,val)
 
-        # Post process.
-        lineending      = d.get('lineending')
+        # Post process: do *not* set commander ivars.
         lang_dict       = d.get('lang-dict')
-        c.tab_width     = d.get('tabwidth')
-        c.page_width    = d.get('pagewidth')
-        self.explicitLineEnding = lineending is not None
-        self.output_newline = lineending or g.getOutputNewline(c=c)
+        # self.explicitLineEnding = lineending is not None
+        # self.output_newline = lineending or g.getOutputNewline(c=c)
 
         return {
             "delims"        : lang_dict.get('delims'),
             "encoding"      : d.get('encoding'),
             "language"      : lang_dict.get('language'),
-            "lineending"    : c.output_newline,
-            "pagewidth"     : c.page_width,
-            "path"          : d.get('path'),
-            "tabwidth"      : c.tab_width,
+            "lineending"    : d.get('lineending'),
+            "pagewidth"     : d.get('pagewidth'),
+            "path"          : d.get('path') or g.getBaseDirectory(c),
+            "tabwidth"      : d.get('tabwidth'),
             "pluginsList"   : [],
             "wrap"          : d.get('wrap'),
         }
@@ -5748,7 +5745,7 @@ class baseCommands:
         # Step 4: Make the path if necessary.
         if path and not g.os_path_exists(path):
             path = g.makeAllNonExistentDirectories(path,c=c,force=force)
-            if not path:
+            if force and not path:
                 g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
 
         return path

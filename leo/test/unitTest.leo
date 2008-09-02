@@ -1719,7 +1719,7 @@
 <v t="ekr.20070217071121.27"><vh>after sel=2.3,5.6</vh></v>
 </v>
 </v>
-<v t="ekr.20061104172236.1"><vh> Function tests</vh>
+<v t="ekr.20061104172236.1" a="E"><vh> Function tests</vh>
 <v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
 <v t="ekr.20061104172236.7"><vh>@test crollHelper</vh></v>
 <v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
@@ -1729,8 +1729,6 @@
 <v t="ekr.20061104172236.6"><vh>@test moveToHelper</vh></v>
 <v t="ekr.20061110094226"><vh>@test moveUpOrDownHelper</vh></v>
 <v t="ekr.20071113145804.6"><vh>@test scrollHelper</vh></v>
-<v t="ekr.20061104172236.8"><vh>@test selfInsertCommand-1</vh></v>
-<v t="ekr.20061107031449"><vh>@test selfInsertCommand-2 (replacing tabs)</vh></v>
 <v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
 </v>
 <v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
@@ -1891,13 +1889,13 @@
 <v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
 </v>
 <v t="ekr.20080901151220.1"><vh>@test g.scanAtPathDirectives @path ../test/unittest @file at-path-test2.py</vh>
-<v t="ekr.20080901151220.2" a="E"><vh>@path ../test/unittest</vh>
+<v t="ekr.20080901151220.2"><vh>@path ../test/unittest</vh>
 <v t="ekr.20080901151220.3" tnodeList="ekr.20080901151220.3"><vh>@file at-path-test2.py</vh></v>
 </v>
 </v>
 <v t="ekr.20080901195909.1"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
-<v t="ekr.20080901195909.2" a="E"><vh>@path ../test</vh>
-<v t="ekr.20080901195909.3" a="E"><vh>@path unittest</vh>
+<v t="ekr.20080901195909.2"><vh>@path ../test</vh>
+<v t="ekr.20080901195909.3"><vh>@path unittest</vh>
 <v t="ekr.20080901195909.4" tnodeList="ekr.20080901195909.4"><vh>@file at-path-test3.py</vh></v>
 </v>
 </v>
@@ -2479,6 +2477,64 @@
 </v>
 </v>
 </v>
+<v t="ekr.20061001114637"><vh>leoFileCommands</vh>
+<v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
+<v t="ekr.20061001124008"><vh>@test minimal test of putTnodeList</vh>
+<v t="ekr.20061001124008.1"><vh>child</vh>
+<v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
+</v>
+</v>
+<v t="ekr.20061001091616"><vh>@test putDescendentTnodeUas</vh>
+<v t="ekr.20061001091647" unit_test_child="55046162636471002e"><vh>child</vh>
+<v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
+</v>
+</v>
+<v t="ekr.20080805104144.1"><vh>@test putDescendentVnodeUas</vh>
+<v t="ekr.20080805104144.2"><vh>child</vh>
+<v t="ekr.20080805104144.3"><vh>grandChild</vh></v>
+</v>
+</v>
+<v t="ekr.20061001114236" unit_test="55046162636471002e"><vh>@test putUa</vh></v>
+<v t="ekr.20051107115231.9" annotate="7d71002e"><vh>@test Select a node when file is first loaded</vh></v>
+<v t="ekr.20061008162912"><vh>@test write .leo file with @ignore node</vh>
+<v t="ekr.20061008162912.1"><vh>child</vh></v>
+</v>
+<v t="ekr.20080805105541.1"><vh>@test p.archivedPosition</vh>
+<v t="ekr.20080805122315.1"><vh>first child</vh></v>
+<v t="ekr.20080805122315.2" unit_test_child="55046162636471002e"><vh>second child</vh>
+<v t="ekr.20080805122315.3" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
+<v t="ekr.20080805122315.4"><vh>grandChild 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080806072412.1"><vh>@test fc.resolveArchivedPosition</vh>
+<v t="ekr.20080806072412.2"><vh>first child</vh></v>
+<v t="ekr.20080806072412.3" unit_test_child="55046162636471002e"><vh>second child</vh>
+<v t="ekr.20080806072412.4" unit_test_grandchild="55047778797a71002e"><vh>grandChild1</vh>
+<v t="ekr.20080806080425.1"><vh>greatGrandChild11</vh></v>
+<v t="ekr.20080806080425.2"><vh>greatGrandChild12</vh></v>
+</v>
+<v t="ekr.20080806072412.5"><vh>grandChild 2</vh>
+<v t="ekr.20080806080425.3"><vh>greatGrandChild21</vh></v>
+<v t="ekr.20080806080425.4"><vh>greatGrandChild22</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs for @thin</vh>
+<v t="ekr.20080806084924.2" round-trip-u.uA="5815000000407468696e2075415f746573745f66696c652e707971002e"><vh>@@thin uA_test_file.py</vh>
+<v t="ekr.20080806084924.3" round-trip-u.uA="58060000006368696c643171002e"><vh>child1</vh>
+<v t="ekr.20080806084924.4" round-trip-u.uA="580b0000006772616e644368696c643171002e"><vh>grandChild1</vh>
+<v t="ekr.20080806084924.5" round-trip-u.uA="581000000067726561744772616e644368696c643171002e"><vh>greatGrandChild1</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20080806211453.5"><vh>@@test round-trip-uAs for @shadow</vh>
+<v t="ekr.20080806211453.1" round-trip-u.uA="581e00000040736861646f772075415f746573745f736861646f775f66696c652e707971002e"><vh>@@shadow uA_test_shadow_file.py</vh>
+<v t="ekr.20080822160527.1" round-trip-u.uA="58060000006368696c643171002e"><vh>uA_test_shadow_file declarations</vh></v>
+</v>
+</v>
+<v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
 <v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
 <v t="ekr.20050208051418" annotate="7d71002e"><vh> Unicode tests</vh>
 <v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
@@ -2531,13 +2587,13 @@
 <v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
 </v>
 <v t="ekr.20080901151220.1"><vh>@test g.scanAtPathDirectives @path ../test/unittest @file at-path-test2.py</vh>
-<v t="ekr.20080901151220.2" a="E"><vh>@path ../test/unittest</vh>
+<v t="ekr.20080901151220.2"><vh>@path ../test/unittest</vh>
 <v t="ekr.20080901151220.3" tnodeList="ekr.20080901151220.3"><vh>@file at-path-test2.py</vh></v>
 </v>
 </v>
 <v t="ekr.20080901195909.1"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
-<v t="ekr.20080901195909.2" a="E"><vh>@path ../test</vh>
-<v t="ekr.20080901195909.3" a="E"><vh>@path unittest</vh>
+<v t="ekr.20080901195909.2"><vh>@path ../test</vh>
+<v t="ekr.20080901195909.3"><vh>@path unittest</vh>
 <v t="ekr.20080901195909.4" tnodeList="ekr.20080901195909.4"><vh>@file at-path-test3.py</vh></v>
 </v>
 </v>
@@ -2574,13 +2630,13 @@
 <v t="ekr.20080901143252.2" tnodeList="ekr.20080901143252.2"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
 </v>
 <v t="ekr.20080901151220.1"><vh>@test g.scanAtPathDirectives @path ../test/unittest @file at-path-test2.py</vh>
-<v t="ekr.20080901151220.2" a="E"><vh>@path ../test/unittest</vh>
+<v t="ekr.20080901151220.2"><vh>@path ../test/unittest</vh>
 <v t="ekr.20080901151220.3" tnodeList="ekr.20080901151220.3"><vh>@file at-path-test2.py</vh></v>
 </v>
 </v>
 <v t="ekr.20080901195909.1"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
-<v t="ekr.20080901195909.2" a="E"><vh>@path ../test</vh>
-<v t="ekr.20080901195909.3" a="E"><vh>@path unittest</vh>
+<v t="ekr.20080901195909.2"><vh>@path ../test</vh>
+<v t="ekr.20080901195909.3"><vh>@path unittest</vh>
 <v t="ekr.20080901195909.4" tnodeList="ekr.20080901195909.4"><vh>@file at-path-test3.py</vh></v>
 </v>
 </v>
@@ -2590,6 +2646,41 @@
 <v t="ekr.20080901122840.1"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
 <v t="ekr.20080901122840.2"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
 <v t="ekr.20080901123750.1"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
+</v>
+<v t="ekr.20080901212446.1"><vh>Failed tests</vh>
+<v t="ekr.20050203001146"><vh>@test local settings (c.page_width)</vh></v>
+<v t="ekr.20061101121602.82"><vh>@test add-tab-to-lines</vh>
+<v t="ekr.20061101121602.83"><vh>work</vh></v>
+<v t="ekr.20061101121602.84"><vh>before sel=2.0,5.6</vh></v>
+<v t="ekr.20061101121602.85"><vh>after sel=2.0,5.10</vh></v>
+</v>
+<v t="ekr.20061101121602.218"><vh>@test fill-paragraph</vh>
+<v t="ekr.20061101121602.219"><vh>work</vh></v>
+<v t="ekr.20061101121602.220"><vh>before sel=3.0,3.7</vh></v>
+<v t="ekr.20061101121602.221"><vh>after sel=10.0,10.0</vh></v>
+</v>
+<v t="ekr.20071007120750.4"><vh>@test fill-region (one paragraph)</vh>
+<v t="ekr.20071007121312.1"><vh>work</vh></v>
+<v t="ekr.20071007121312.2"><vh>before sel=1.0,9.7</vh></v>
+<v t="ekr.20071007121312.3"><vh>after sel=8.0,8.0</vh></v>
+</v>
+<v t="ekr.20071007124202"><vh>@test fill-region (three paragraphs)</vh>
+<v t="ekr.20071007124202.1"><vh>work</vh></v>
+<v t="ekr.20071007124202.2"><vh>before sel=1.0,24.78</vh></v>
+<v t="ekr.20071007124202.3"><vh>after sel=18.18,18.18</vh></v>
+</v>
+<v t="ekr.20061101121602.302"><vh>@test newline-and-indent</vh>
+<v t="ekr.20061101121602.303"><vh>work</vh></v>
+<v t="ekr.20061101121602.304"><vh>before sel=2.6,2.6</vh></v>
+<v t="ekr.20061101121602.305"><vh>after sel=3.4,3.4</vh></v>
+</v>
+<v t="ekr.20061101121602.314"><vh>@test remove-tab-from-lines</vh>
+<v t="ekr.20061101121602.315"><vh>work</vh></v>
+<v t="ekr.20061101121602.316"><vh>before sel=1.0,7.0</vh></v>
+<v t="ekr.20061101121602.317"><vh>after sel=1.0,7.0</vh></v>
+</v>
+<v t="ekr.20071113145804.4"><vh>@test selfInsertCommand-1</vh></v>
+<v t="ekr.20071113145804.5"><vh>@test selfInsertCommand-2 (replacing tabs)</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -15960,28 +16051,6 @@ for direction,extend in (('up',False),('down',False),('up',True),('down',True),)
     ec.scrollHelper(event,direction,extend)
 
 </t>
-<t tx="ekr.20061104172236.8">@first # -*- coding: utf-8 -*-
-
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    
-    # This strings tests unicode, paren matching, and auto-indentation.
-    u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
-    u = u'(pdq):\n'
-    w.setInsertPoint(len(s))
-    for char in u:
-        event = g.Bunch(widget=w,char=char,keysym=None)
-        ec.selfInsertCommand(event)
-    result = w.getAllText()
-    #g.trace('result',repr(result))
-    assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor()
-
-# end:</t>
 <t tx="ekr.20061104172236.11">s = 'abc xy_z5 pdq'
 i,j = g.getWord(s,5)
 assert s[i:j] == 'xy_z5','got %s' % s[i:j]
@@ -16180,21 +16249,6 @@ assert ins    == s[start:end],'Got %s' % repr(ins)
 assert after == s[end:]
 
 # end.</t>
-<t tx="ekr.20061107031449">try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    w.setSelectionRange(len(s)-9,len(s)-6)
-    event = g.Bunch(widget=w,char='\t',keysym=None)
-    ec.selfInsertCommand(event)
-    result = w.getAllText()
-    # g.trace('result',repr(result))
-    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor()
-        
-###abcdef</t>
 <t tx="ekr.20061109172511"></t>
 <t tx="ekr.20061109172511.1">if g.app.gui.guiName() == 'tkinter':
     import leo.core.leoFrame as leoFrame
@@ -21819,5 +21873,6 @@ assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080901195909.3"></t>
 <t tx="ekr.20080901195909.4">@language python
 # unittest/at-path-test3.py</t>
+<t tx="ekr.20080901212446.1"></t>
 </tnodes>
 </leo_file>

@@ -790,8 +790,8 @@ else:
             g.pr(line,newline=False)
 #@-node:ekr.20031218072017.2865:<< set root >>
 #@+node:ekr.20031218072017.2866:<< read the file into lines >>
-# 1/26/03: calculate the full path.
-d = g.scanDirectives(c)
+# Calculate the full path.
+d = c.scanAllDirectives()
 path = d.get("path")
 
 fileName = g.os_path_join(path,fileName)
@@ -1140,7 +1140,7 @@ def openWith(self,event=None,data=None):
     return "break"
 #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
 if not ext:
-    theDict = g.scanDirectives(c)
+    theDict = c.scanAllDirectives()
     language = theDict.get("language")
     ext = g.app.language_extension_dict.get(language)
     # g.pr(language,ext)
@@ -1282,7 +1282,7 @@ def createOpenWithTempFile (self,p,ext):
         theFile = open(path,"w")
         # Convert s to whatever encoding is in effect.
         s = p.bodyString()
-        theDict = g.scanDirectives(c,p=p)
+        theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding",None)
         if encoding == None:
             encoding = c.config.default_derived_file_encoding
