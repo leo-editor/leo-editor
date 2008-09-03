@@ -19286,16 +19286,19 @@ def gotoLineNumberOpen (self,filename):
         c = self ; x = c.shadowController
         shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
+            fn = shadow_fileName
             lines = file(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
-            g.es_print('can not open',shadow_filename,color='red')
+            # Just open the original file.  This is not an error!
+            fn = filename
             c.line_mapping = []
             lines = file(filename).readlines()
         return lines 
     except:
         # Make sure failures to open a file generate clear messages.
+        g.es_print('can not open',fn,color='blue')
         g.es_exception()
         raise
 #@nonl
@@ -27521,16 +27524,19 @@ def gotoLineNumberOpen (self,filename):
         c = self ; x = c.shadowController
         shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
+            fn = shadow_fileName
             lines = file(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
-            g.es_print('can not open',shadow_filename,color='red')
+            # Just open the original file.  This is not an error!
+            fn = filename
             c.line_mapping = []
             lines = file(filename).readlines()
         return lines 
     except:
         # Make sure failures to open a file generate clear messages.
+        g.es_print('can not open',fn,color='blue')
         g.es_exception()
         raise
 #@nonl
