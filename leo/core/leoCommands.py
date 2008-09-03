@@ -2141,7 +2141,7 @@ class baseCommands:
             c = self ; x = c.shadowController
             shadow_filename = x.shadowPathName(filename)
             if os.path.exists(shadow_filename):
-                fn = shadow_fileName
+                fn = shadow_filename
                 lines = file(shadow_filename).readlines()
                 x.line_mapping = x.push_filter_mapping(
                     lines, x.marker_from_extension(shadow_filename))
