@@ -1499,6 +1499,7 @@ def clearRecentFiles (self,event=None):
 
     recentFilesMenu = f.menu.getMenu("Recent Files...")
     f.menu.deleteRecentFilesMenuItems(recentFilesMenu)
+    recentFilesMenu = f.menu.getMenu("Recent Files...")
 
     c.recentFiles = []
     g.app.config.recentFiles = [] # New in Leo 4.3.
@@ -14038,6 +14039,7 @@ def clearRecentFiles (self,event=None):
 
     recentFilesMenu = f.menu.getMenu("Recent Files...")
     f.menu.deleteRecentFilesMenuItems(recentFilesMenu)
+    recentFilesMenu = f.menu.getMenu("Recent Files...")
 
     c.recentFiles = []
     g.app.config.recentFiles = [] # New in Leo 4.3.
