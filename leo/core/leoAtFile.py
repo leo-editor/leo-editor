@@ -2560,7 +2560,7 @@ class atFile:
 
         fn = p.atShadowFileNodeName()
         if not fn:
-            g.trace('can not happen: not an @shadow node',p.headString())
+            g.es_print('can not happen: not an @shadow node',p.headString(),color='red')
             return False
 
         # A hack to support unknown extensions.
@@ -2618,7 +2618,7 @@ class atFile:
             root.clearOrphan()
             root.clearDirty()
         else:
-            g.es("not written:",at.outputFileName)
+            g.es("not written:",at.outputFileName,color='red')
             root.setDirty() # New in Leo 4.4.8.
 
         return at.errors == 0
