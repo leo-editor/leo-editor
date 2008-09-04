@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="347" height="804" width="820"/>
+	<global_window_position top="90" left="140" height="804" width="820"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2443,6 +2443,24 @@
 <v t="ekr.20080824191108.2"><vh>@test isValidPython</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
+<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
+<v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
+<v t="ekr.20080904102243.3"><vh>child</vh></v>
+</v>
+<v t="ekr.20080904110148.1"><vh>@test goto_countlines n = 3</vh></v>
+<v t="ekr.20080904110148.4"><vh>@test goto_countlines n = 20</vh></v>
+<v t="ekr.20080904110148.5"><vh>@test goto_setup root set</vh></v>
+<v t="ekr.20080904113003.2"><vh>@test goto_setup no root, no lines</vh></v>
+<v t="ekr.20080904113003.3"><vh>@test goto_setup no root, with lines</vh></v>
+<v t="ekr.20080904115518.2"><vh>@test goto_setup no root, with lines, no n</vh></v>
+<v t="ekr.20080904120258.2"><vh>@test goto_showResults found</vh></v>
+<v t="ekr.20080904120258.3"><vh>@test goto_showResults not found</vh></v>
+<v t="ekr.20080904120258.5"><vh>@test goto_scanForVnodeName</vh></v>
+<v t="ekr.20080904120258.6"><vh>@test goto_scanGnx</vh></v>
+<v t="ekr.20080904120258.7"><vh>@test goto_scanTnodeList</vh></v>
+<v t="ekr.20080904120258.4" annotate="7d71002e"><vh>@test restore the screen</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -21544,6 +21562,114 @@ def bar():
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20080904095020.1"></t>
+<t tx="ekr.20080904102243.2">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20080904102243.3">
+def child():
+    pass
+</t>
+<t tx="ekr.20080904110148.1">h = '@auto unittest/at-auto-line-number-test.py'
+root = g.findNodeAnywhere(c,h)
+assert root
+p,n,found = c.goto_countLines (root,3)
+assert found
+assert n == 3
+assert p.headString() == 'child'
+# print ('p:%s, n:%s, found: %s' % (p,n,found))</t>
+<t tx="ekr.20080904110148.4">h = '@auto unittest/at-auto-line-number-test.py'
+root = g.findNodeAnywhere(c,h)
+assert root
+p,n,found = c.goto_countLines (root,20)
+assert not found
+assert p.headString() == 'child'
+# print ('p:%s, n:%s, found: %s' % (p,n,found))</t>
+<t tx="ekr.20080904110148.5">h = '@auto unittest/at-auto-line-number-test.py'
+root = g.findNodeAnywhere(c,h)
+assert root
+assert root.isAnyAtFileNode()
+
+root,lines,n,scriptFile = c.goto_setup(p,root=root,lines=None,n=3)
+
+if 0:
+    print ('root:%s, n:%s, len(lines): %s' % (
+        root and root.headString(),n,len(lines)))</t>
+<t tx="ekr.20080904113003.2">lines = ['a','b','c']
+
+root,lines,n,scriptFile = c.goto_setup(p,root=None,lines=None,n=3)
+assert scriptFile
+
+if 0:
+    print ('root:%s, n:%s, len(lines): %s' % (
+        root and root.headString(),n,len(lines)))</t>
+<t tx="ekr.20080904113003.3">lines = ['a','b','c']
+
+root,lines,n,scriptFile = c.goto_setup(p,root=None,lines=lines,n=3)
+
+if 0:
+    print ('root:%s, n:%s, len(lines): %s' % (
+        root and root.headString(),n,len(lines)))</t>
+<t tx="ekr.20080904115518.2">lines = ['a','b','c']
+
+root,lines,n,scriptFile = c.goto_setup(p,root=None,lines=lines,n=None)
+assert n == 666 # The dummy value returned when unit testing.
+
+if 0:
+    print ('root:%s, n:%s, len(lines): %s' % (
+        root and root.headString(),n,len(lines)))</t>
+<t tx="ekr.20080904120258.2">c.goto_showResults(found=True,p=p,n=3,lines=3)</t>
+<t tx="ekr.20080904120258.3">c.goto_showResults(found=False,p=p,n=3,lines=['a','b'])
+</t>
+<t tx="ekr.20080904120258.4"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+import leo.core.leoTest as leoTest
+u = leoTest.testUtils(c) # This *is* used
+
+c.contractAllHeadlines()
+h = 'All unit tests'
+p = u.findNodeAnywhere(h)
+if p:
+    p.expand()
+    g.app.unitTestDict['restoreSelectedNode']=False
+    c.selectPosition(p)
+    c.redraw()
+        
+# g.pr('\nEnd of goto tests')</t>
+<t tx="ekr.20080904120258.5">root = p.parent()
+h = '@file unittest/at-file-line-number-test.py'
+target = g.findNodeAnywhere(c,h)
+
+p,found = c.goto_scanForVnodeName(root,h)
+assert found
+assert p == target
+
+# print ('found: %s, p:%s' % (found,p))
+
+
+</t>
+<t tx="ekr.20080904120258.6">root = p.parent()
+h = '@file unittest/at-file-line-number-test.py'
+target = g.findNodeAnywhere(c,h)
+gnx = g.app.nodeIndices.toString(target.v.t.fileIndex)
+
+p,found = c.goto_scanGnx(root,gnx,h)
+assert found
+assert p == target
+
+# print ('found: %s, p:%s' % (found,p))
+</t>
+<t tx="ekr.20080904120258.7">h = '@file unittest/at-file-line-number-test.py'
+root = g.findNodeAnywhere(c,h)
+
+lines = ['a','b']
+p,found = c.goto_scanTnodeList (root,delim='#',lines=lines,n=3,vnodeName=h)
+assert found
+assert p == root
+
+# print ('found: %s, p:%s' % (found,p))
 </t>
 </tnodes>
 </leo_file>
