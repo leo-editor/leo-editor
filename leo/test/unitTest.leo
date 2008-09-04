@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2442,6 +2442,12 @@
 <v t="ekr.20080824191108.1"><vh>runLeo</vh>
 <v t="ekr.20080824191108.2"><vh>@test isValidPython</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20080904095020.1" a="E"><vh>goto-line-number tests</vh>
+<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
+<v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
+<v t="ekr.20080904102243.3"><vh>child</vh></v>
 </v>
 </v>
 </vnodes>
@@ -21544,6 +21550,15 @@ def bar():
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20080904095020.1"></t>
+<t tx="ekr.20080904102243.2">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20080904102243.3">
+def child():
+    pass
 </t>
 </tnodes>
 </leo_file>
