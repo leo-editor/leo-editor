@@ -1729,7 +1729,7 @@ class baseCommands:
         '''Place the cursor on the n'th line of a derived file or script.'''
 
         c = self ; p = c.currentPosition()
-        root,lines,n = self.goto_setup(p,root,lines,n)
+        root,lines,n,scriptFind = self.goto_setup(p,root,lines,n,scriptFind)
         if n == -1: return
         elif n==1:
             p = root ; n2 = 1 ; found = True
@@ -1834,7 +1834,6 @@ class baseCommands:
     def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
 
         # This is about the best that can be done without replicating the entire atFile write logic.
-
         found = False
         ok = hasattr(root.v.t,"tnodeList")
 
@@ -2068,15 +2067,16 @@ class baseCommands:
     #@nonl
     #@-node:ekr.20080708094444.63:goto_open
     #@+node:ekr.20080904071003.13:goto_setup
-    def goto_setup(self,p,root,lines,n):
+    def goto_setup(self,p,root,lines,n,scriptFind=False):
 
         c = self
 
-        if root is None:
+        if root:
+            fileName = root.anyAtFileNodeName()
+        else:
             #@        << set root >>
             #@+node:ekr.20031218072017.2865:<< set root >>
             # First look for ancestor @file node.
-            fileName = None
             for p in p.self_and_parents_iter():
                 fileName = p.anyAtFileNodeName()
                 if fileName: break
@@ -2098,42 +2098,45 @@ class baseCommands:
             else:
                 # New in 4.2.1: assume the c.currentPosition is the root of a script.
                 root = c.currentPosition()
-                g.es("no ancestor @file node: using script line numbers", color="blue")
-                scriptFind = True
-                lines = g.getScript (c,root,useSelectedText=False)
-                lines = g.splitLines(lines)
-                if 0:
-                    for line in lines:
-                        g.pr(line,newline=False)
+            #@nonl
             #@-node:ekr.20031218072017.2865:<< set root >>
             #@nl
 
         if lines is None:
-            #@        << read the file into lines >>
-            #@+node:ekr.20031218072017.2866:<< read the file into lines >>
-            # 1/26/03: calculate the full path.
-            d = g.scanDirectives(c)
-            path = d.get("path")
+            if fileName:
+                #@            << read file into lines >>
+                #@+node:ekr.20080904071003.22:<< read file into lines >>
+                # Calculate the full path.
+                d = g.scanDirectives(c)
+                path = d.get("path")
 
-            fileName = g.os_path_join(path,fileName)
-
-            try:
-                lines=self.goto_open(fileName)
-            except:
-                g.es("not found:",fileName)
-                return
-            #@-node:ekr.20031218072017.2866:<< read the file into lines >>
-            #@nl
+                fileName = g.os_path_join(path,fileName)
+                try:
+                    lines=self.goto_open(fileName)
+                except Exception:
+                    g.es("not found:",fileName)
+                    lines = None
+                #@-node:ekr.20080904071003.22:<< read file into lines >>
+                #@nl
+            else:
+                scriptFind = True
+                if not g.unitTesting:
+                    g.es("no ancestor @file node: using script line numbers", color="blue")
+                lines = g.getScript (c,root,useSelectedText=False)
+                lines = g.splitLines(lines)
 
         if n is None:
-            # Get n from a dialog.
-            n = g.app.gui.runAskOkCancelNumberDialog(
-                c,"Enter Line Number","Line number:")
+            if g.unitTesting:
+                n = 666
+            else:
+                # Get n from a dialog.
+                n = g.app.gui.runAskOkCancelNumberDialog(
+                    c,"Enter Line Number","Line number:")
 
         if n > -1:     
             n = self.applyLineNumberMappingIfAny(n)
 
-        return root,lines,n
+        return root,lines,n,scriptFind
     #@-node:ekr.20080904071003.13:goto_setup
     #@+node:ekr.20080904071003.14:goto_showResults
     def goto_showResults(self,found,p,n,lines):
@@ -2151,7 +2154,8 @@ class baseCommands:
             ins = g.convertRowColToPythonIndex(s,n-1,0)    
         else:
             ins = len(s)
-            g.es('only',len(lines),'lines',color="blue")
+            if not g.unitTesting:
+                g.es('only',len(lines),'lines',color="blue")
 
         w.setInsertPoint(ins)
         c.bodyWantsFocusNow()
