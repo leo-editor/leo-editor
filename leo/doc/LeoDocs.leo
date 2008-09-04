@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,1,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,5,0,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -58,7 +58,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -198,8 +198,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050906105335"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
-<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
+<v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
+<v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050816073412.1"><vh>Introduction</vh>
 <v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
@@ -9832,7 +9832,7 @@ Now that you have Leo installed, please `launch Leo`_.
 You should see Leo's main window, something like this:
 **Note**: the actual contents of the icon area at the top depends on what plugins are active.
 
-|leoMainWinow|
+|leoMainWindow|
 </t>
 <t tx="ekr.20050816073814">.. Links used in this document...
 
@@ -9918,7 +9918,7 @@ You should see Leo's main window, something like this:
 
 .. WARNING: image targets may not have upper case letters!
 
-.. |leoMainWinow| image:: PCWindow.gif
+.. |leoMainWindow| image:: PCWindow.gif
 
 .. |back| image:: arrow_lt.gif
     :target: install.html
