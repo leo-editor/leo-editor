@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="110" left="304" height="804" width="896"/>
+	<global_window_position top="101" left="145" height="804" width="896"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1225,25 +1225,34 @@
 </v>
 <v t="ekr.20071113192611"><vh>leoEditCommands</vh>
 <v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
-<v t="ekr.20080905112230.3" a="E"><vh>goto-line-number tests: original files</vh>
+<v t="ekr.20080905125317.1"><vh>Unused</vh>
+<v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
+<v t="ekr.20080904120258.5"><vh>@@test goto_scanForVnodeName</vh></v>
+</v>
+<v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20080904102243.2" a="E" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
-<v t="ekr.20080904102243.3"><vh>child</vh></v>
+<v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
+<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
 </v>
+<v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
-<v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh></v>
-<v t="ekr.20080905113550.2" a="E"><vh>Tests with @auto as the root</vh>
+<v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
+<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
+</v>
+<v t="ekr.20080905113550.2"><vh>Tests with @auto as the root</vh>
 <v t="ekr.20080904110148.1"><vh>@test goto_countlines n = 3</vh></v>
 <v t="ekr.20080904110148.4"><vh>@test goto_countlines n = 20</vh></v>
 <v t="ekr.20080904110148.5"><vh>@test goto_setup n = 3</vh></v>
 <v t="ekr.20080904113003.2"><vh>@test goto_setup with scriptData</vh></v>
 </v>
-<v t="ekr.20080905113550.3" a="E"><vh>Tests with @file as the root</vh>
-<v t="ekr.20080904120258.6"><vh>@test goto_scanGnx</vh></v>
-<v t="ekr.20080904120258.5"><vh>@test goto_scanForVnodeName</vh></v>
-<v t="ekr.20080904120258.7"><vh>@test goto_scanTnodeList</vh></v>
+<v t="ekr.20080905113550.3"><vh>Tests with @file as the root</vh>
+<v t="ekr.20080904120258.6"><vh>@test goto_findGnx</vh></v>
+<v t="ekr.20080905130723.1"><vh>@test goto_findVnode</vh></v>
 </v>
 <v t="ekr.20080905113550.4"><vh>General tests</vh>
+<v t="ekr.20080905165432.1"><vh>@test goto_findRoot (root in ancestors)</vh></v>
+<v t="ekr.20080905165432.3"><vh>@test goto_findRoot (root not in ancestors)</vh></v>
 <v t="ekr.20080904120258.2"><vh>@test goto_showResults found</vh></v>
 <v t="ekr.20080904120258.3"><vh>@test goto_showResults not found</vh></v>
 </v>
@@ -2470,25 +2479,34 @@
 </v>
 </v>
 <v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
-<v t="ekr.20080905112230.3" a="E"><vh>goto-line-number tests: original files</vh>
+<v t="ekr.20080905125317.1"><vh>Unused</vh>
+<v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
+<v t="ekr.20080904120258.5"><vh>@@test goto_scanForVnodeName</vh></v>
+</v>
+<v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20080904102243.2" a="E" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
-<v t="ekr.20080904102243.3"><vh>child</vh></v>
+<v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
+<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
 </v>
+<v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
-<v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh></v>
-<v t="ekr.20080905113550.2" a="E"><vh>Tests with @auto as the root</vh>
+<v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
+<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
+</v>
+<v t="ekr.20080905113550.2"><vh>Tests with @auto as the root</vh>
 <v t="ekr.20080904110148.1"><vh>@test goto_countlines n = 3</vh></v>
 <v t="ekr.20080904110148.4"><vh>@test goto_countlines n = 20</vh></v>
 <v t="ekr.20080904110148.5"><vh>@test goto_setup n = 3</vh></v>
 <v t="ekr.20080904113003.2"><vh>@test goto_setup with scriptData</vh></v>
 </v>
-<v t="ekr.20080905113550.3" a="E"><vh>Tests with @file as the root</vh>
-<v t="ekr.20080904120258.6"><vh>@test goto_scanGnx</vh></v>
-<v t="ekr.20080904120258.5"><vh>@test goto_scanForVnodeName</vh></v>
-<v t="ekr.20080904120258.7"><vh>@test goto_scanTnodeList</vh></v>
+<v t="ekr.20080905113550.3"><vh>Tests with @file as the root</vh>
+<v t="ekr.20080904120258.6"><vh>@test goto_findGnx</vh></v>
+<v t="ekr.20080905130723.1"><vh>@test goto_findVnode</vh></v>
 </v>
 <v t="ekr.20080905113550.4"><vh>General tests</vh>
+<v t="ekr.20080905165432.1"><vh>@test goto_findRoot (root in ancestors)</vh></v>
+<v t="ekr.20080905165432.3"><vh>@test goto_findRoot (root not in ancestors)</vh></v>
 <v t="ekr.20080904120258.2"><vh>@test goto_showResults found</vh></v>
 <v t="ekr.20080904120258.3"><vh>@test goto_showResults not found</vh></v>
 </v>
@@ -21610,8 +21628,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 @tabwidth -4
 @others
 </t>
-<t tx="ekr.20080904102243.3">
-def child():
+<t tx="ekr.20080904102243.3">def child():
     pass
 </t>
 <t tx="ekr.20080904110148.1">root = p.parent().parent()
@@ -21622,14 +21639,14 @@ assert target
 p,n,found = c.goto_countLines (target,3)
 assert found,found
 assert n == 3,n
-assert p.headString() == 'child',p.headString()
+assert p.headString() == 'at_auto_child',p.headString()
 </t>
 <t tx="ekr.20080904110148.4">h = '@auto unittest/at-auto-line-number-test.py'
 root = g.findNodeAnywhere(c,h)
 assert root
 p,n,found = c.goto_countLines (root,20)
 assert not found
-assert p.headString() == 'child'
+assert p.headString() == 'at_auto_child'
 # print ('p:%s, n:%s, found: %s' % (p,n,found))</t>
 <t tx="ekr.20080904110148.5">h = '@auto unittest/at-auto-line-number-test.py'
 root1 = g.findNodeAnywhere(c,h)
@@ -21694,7 +21711,7 @@ assert target
 gnx = g.app.nodeIndices.toString(target.v.t.fileIndex)
 assert gnx
 
-p,found = c.goto_scanGnx(root,gnx,h)
+p,found = c.goto_findGnx(root,gnx,h)
 assert found,found
 assert p == target,'\np:     %s\ntarget:%s' % (p,target)
 </t>
@@ -21715,9 +21732,60 @@ assert p == target,'\np:     %s\ntarget:%s' % (p,target)
 print 'a
 # end</t>
 <t tx="ekr.20080905112230.3"></t>
-<t tx="ekr.20080905112230.4"></t>
+<t tx="ekr.20080905112230.4"># Can not clone @auto children!</t>
 <t tx="ekr.20080905113550.2"></t>
 <t tx="ekr.20080905113550.3"></t>
 <t tx="ekr.20080905113550.4"></t>
+<t tx="ekr.20080905125317.1"></t>
+<t tx="ekr.20080905130723.1">root = p.parent().parent()
+h = '@file unittest/at-file-line-number-test.py'
+target = g.findNodeInTree(c,root,h)
+assert target
+
+n = 2
+fileName,isRaw,lines,n,root = c.goto_setup(n,p=target)
+assert fileName == h[6:]
+# print('lines\n%s' % g.listToString(lines))
+assert root == target
+
+vnodeName,gnx,offset,delim = c.goto_findVnode (root,lines,n)
+
+assert lines
+assert not gnx,repr(gnx)
+assert offset is not None,repr(offset)
+assert vnodeName,repr(vnodeName)
+
+# g.pr('vnodeName',vnodeName,'gnx',gnx,'offset',offset,'delim',delim)
+
+</t>
+<t tx="ekr.20080905130723.4">def child():
+    pass
+</t>
+<t tx="ekr.20080905165432.1">root = p.parent().parent()
+h = '@auto unittest/at-auto-line-number-test.py'
+target = g.findNodeInTree(c,root,h)
+assert target
+child = target.firstChild()
+assert child.headString() == 'at_auto_child'
+
+p,found = c.goto_findRoot(child)
+
+assert p == target,p and p.headString()
+assert found,found
+</t>
+<t tx="ekr.20080905165432.3">root = p.parent().parent()
+
+# Find the cloned nodes that doesn't have an @file node for a parent.
+clones = g.findNodeInTree(c,root,'goto-line-number tests: clones')
+assert clones
+child = g.findNodeInTree(c,clones,'at-file-child')
+assert child and child.headString() == 'at-file-child',child
+
+h = '@file unittest/at-file-line-number-test.py'
+p,found = c.goto_findRoot(child)
+
+assert p and p.headString()==h,p and p.headString()
+assert found,found
+</t>
 </tnodes>
 </leo_file>
