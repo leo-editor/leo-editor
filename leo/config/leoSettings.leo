@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.318989071038">
-	<global_window_position top="49" left="211" height="780" width="1464"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="48" left="515" height="762" width="1160"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,7,5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4,7,4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -322,7 +322,6 @@
 <v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
 <v t="tbrown.20080904154544.1"><vh>@bool recent_files_group = False</vh></v>
 <v t="tbrown.20080904154544.3"><vh>@bool recent_files_group_always = False</vh></v>
-<v t="tbrown.20080904154544.4"><vh>@bool recent_files_omit_directories = False</vh></v>
 <v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
 <v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
@@ -7567,13 +7566,6 @@ but you can still see where things come from before you load them.
 
 False: don't use submenus for multiple path entries, unless recent_files_group
 is true (and recent_files_omit_directories is False)
-</t>
-<t tx="tbrown.20080904154544.4">True: omit the path displayed in the recent files list for file names (basenames)
-which are unique.  If recent_files_group_always is true the path won't be omitted,
-which effectively gives the original behavior, i.e. the same as have this setting 
-and the recent_files_group(_always) settings set to False.
-
-False: don't omit path display
 </t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
