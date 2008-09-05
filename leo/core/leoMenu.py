@@ -1611,8 +1611,7 @@ class leoMenu:
         # see if we're grouping when files occur in more than one place
         rf_group = c.config.getBool("recent_files_group")
         rf_always = c.config.getBool("recent_files_group_always")
-        rf_omit = c.config.getBool("recent_files_omit_directories")
-        groupedEntries = rf_group or rf_always or rf_omit
+        groupedEntries = rf_group or rf_always
 
         if groupedEntries:  # if so, make dict of groups
             dirCount = {}
@@ -1633,15 +1632,7 @@ class leoMenu:
 
                 entry = dirCount[baseName]
 
-                if rf_omit:  # no sub menus, just sparse directory text
-                    label = g.computeWindowTitle(name)
-                    if len(entry['dirs']) < 2 and not rf_always and ' in ' in label:
-                        label = label.split(' in ',1)[0]
-
-                    label = "%s %s" % (accel_ch[i], label)
-                    c.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
-
-                elif len(entry['dirs']) > 1 or rf_always:  # sub menus
+                if len(entry['dirs']) > 1 or rf_always:  # sub menus
                     if entry['entry'] is None:
                         entry['entry'] = self.createNewMenu(baseName, "Recent Files...")
                         # acts as a flag for the need to create the menu
