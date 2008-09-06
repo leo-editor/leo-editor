@@ -3,11 +3,10 @@
 #@@language python
 #@@tabwidth -4
 #@+others
-#@+node:child
-
+#@+node:at-file-child
 def child():
     pass
-#@-node:child
+#@-node:at-file-child
 #@-others
 #@-node:@file unittest/at-file-line-number-test.py
 #@-leo
