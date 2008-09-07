@@ -2108,7 +2108,6 @@ class baseCommands:
 
         '''Read the file into lines.'''
 
-
         c = self
 
         if root.isAtNoSentFileNode():

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1236,7 +1236,7 @@
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
-<v t="ekr.20080907123324.2" tnodeList="ekr.20080907123324.2,ekr.20080907123324.3"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
+<v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
 <v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
 </v>
 </v>
@@ -2501,7 +2501,7 @@
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
-<v t="ekr.20080907123324.2" tnodeList="ekr.20080907123324.2,ekr.20080907123324.3"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
+<v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
 <v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
 </v>
 </v>
@@ -21675,7 +21675,7 @@ root1 = g.findNodeAnywhere(c,h)
 assert root1
 assert root1.isAnyAtFileNode()
 
-fileName,isRaw,lines,n,root = c.goto_setup(n=3,p=root1)
+fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=3,p=root1)
 assert isRaw,isRaw
 assert fileName == h[6:],fileName
 assert root == root1
@@ -21689,7 +21689,7 @@ assert root1
 assert root1.isAnyAtFileNode()
 
 scriptData = {'p':root1.copy(),'lines':['a','b','c']}
-fileName,isRaw,lines,n,root = c.goto_setup(n=2,scriptData=scriptData)
+fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=2,scriptData=scriptData)
 
 assert isRaw,isRaw
 assert fileName == h[6:],fileName
@@ -21765,12 +21765,12 @@ target = g.findNodeInTree(c,root,h)
 assert target
 
 n = 2
-fileName,isRaw,lines,n,root = c.goto_setup(n,p=target)
+fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p=target)
 assert fileName == h[6:]
 # print('lines\n%s' % g.listToString(lines))
 assert root == target
 
-vnodeName,gnx,offset,delim = c.goto_findVnode (root,lines,n)
+vnodeName,gnx,offset,delim = c.goto_findVnode (root,lines,n,ignoreSentinels)
 
 assert lines
 assert not gnx,repr(gnx)
@@ -21815,7 +21815,7 @@ root1 = g.findNodeAnywhere(c,h)
 assert root1
 assert root1.isAnyAtFileNode()
 
-fileName,isRaw,lines,n,root = c.goto_setup(n=6,p=root1)
+fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=6,p=root1)
 assert not isRaw,isRaw
 assert fileName == h[8:],fileName
 assert root == root1
@@ -21842,8 +21842,9 @@ root1 = g.findNodeAnywhere(c,h)
 assert root1
 assert root1.isAnyAtFileNode()
 
-fileName,isRaw,lines,n,root = c.goto_setup(n=6,p=root1)
+fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n=6,p=root1)
 assert isRaw,isRaw
+assert ignoreSentinels,ignoreSentinels
 assert fileName == h[8:],fileName
 assert root == root1
 
