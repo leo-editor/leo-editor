@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1235,10 +1235,15 @@
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
+<v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
+<v t="ekr.20080907123324.2" tnodeList="ekr.20080907123324.2,ekr.20080907123324.3"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
+<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
+</v>
 </v>
 <v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
 <v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
+<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
 </v>
 <v t="ekr.20080905113550.2"><vh>Tests with @auto as the root</vh>
 <v t="ekr.20080904110148.1"><vh>@test goto_countlines n = 3</vh></v>
@@ -1249,6 +1254,12 @@
 <v t="ekr.20080905113550.3"><vh>Tests with @file as the root</vh>
 <v t="ekr.20080904120258.6"><vh>@test goto_findGnx</vh></v>
 <v t="ekr.20080905130723.1"><vh>@test goto_findVnode</vh></v>
+</v>
+<v t="ekr.20080907122804.2"><vh>Tests with @shadow as the root</vh>
+<v t="ekr.20080907122804.3"><vh>@test goto_setup n = 3 (@shadow)</vh></v>
+</v>
+<v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
+<v t="ekr.20080907123324.5"><vh>@test goto_setup n = 3 (@nosent)</vh></v>
 </v>
 <v t="ekr.20080905113550.4"><vh>General tests</vh>
 <v t="ekr.20080905165432.1"><vh>@test goto_findRoot (root in ancestors)</vh></v>
@@ -2489,10 +2500,15 @@
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
+<v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
+<v t="ekr.20080907123324.2" tnodeList="ekr.20080907123324.2,ekr.20080907123324.3"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
+<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
+</v>
 </v>
 <v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
 <v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
+<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
 </v>
 <v t="ekr.20080905113550.2"><vh>Tests with @auto as the root</vh>
 <v t="ekr.20080904110148.1"><vh>@test goto_countlines n = 3</vh></v>
@@ -2503,6 +2519,12 @@
 <v t="ekr.20080905113550.3"><vh>Tests with @file as the root</vh>
 <v t="ekr.20080904120258.6"><vh>@test goto_findGnx</vh></v>
 <v t="ekr.20080905130723.1"><vh>@test goto_findVnode</vh></v>
+</v>
+<v t="ekr.20080907122804.2"><vh>Tests with @shadow as the root</vh>
+<v t="ekr.20080907122804.3"><vh>@test goto_setup n = 3 (@shadow)</vh></v>
+</v>
+<v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
+<v t="ekr.20080907123324.5"><vh>@test goto_setup n = 3 (@nosent)</vh></v>
 </v>
 <v t="ekr.20080905113550.4"><vh>General tests</vh>
 <v t="ekr.20080905165432.1"><vh>@test goto_findRoot (root in ancestors)</vh></v>
@@ -21787,5 +21809,46 @@ p,found = c.goto_findRoot(child)
 assert p and p.headString()==h,p and p.headString()
 assert found,found
 </t>
+<t tx="ekr.20080907122804.2"></t>
+<t tx="ekr.20080907122804.3">h = '@shadow unittest/at-shadow-line-number-test.py'
+root1 = g.findNodeAnywhere(c,h)
+assert root1
+assert root1.isAnyAtFileNode()
+
+fileName,isRaw,lines,n,root = c.goto_setup(n=6,p=root1)
+assert not isRaw,isRaw
+assert fileName == h[8:],fileName
+assert root == root1
+
+if 0:
+    print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+        root and root.headString(),isRaw,n,len(lines)))</t>
+<t tx="ekr.20080907123324.2">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20080907123324.3">def child():
+    pass
+
+#
+#
+#
+#
+#
+#</t>
+<t tx="ekr.20080907123324.4"></t>
+<t tx="ekr.20080907123324.5">h = '@nosent unittest/at-nosent-line-number-test.py'
+root1 = g.findNodeAnywhere(c,h)
+assert root1
+assert root1.isAnyAtFileNode()
+
+fileName,isRaw,lines,n,root = c.goto_setup(n=6,p=root1)
+assert isRaw,isRaw
+assert fileName == h[8:],fileName
+assert root == root1
+
+if 0:
+    print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+        root and root.headString(),isRaw,n,len(lines)))</t>
 </tnodes>
 </leo_file>

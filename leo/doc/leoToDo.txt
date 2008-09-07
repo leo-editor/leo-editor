@@ -1,9 +1,139 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080814103428.4:4.5.1 bugs, cleanups
+#@+node:ekr.20080814103428.4:4.5.2 bugs, cleanups
+#@+node:ekr.20080907095552.1:Allow more general typing completion
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
+
+> As I said, all I need would be is for leo to call callback/hook with
+> signature like
+
+> def complete(line-up-to-cursor, current_node) => list of strings
+
+I missed this the first time around.  Glad you asked again.
+
+This should not be too difficult to do.  I'll do it after I fix the
+two urgent bugs.
+
+This is probably a matter of 5-20 lines of code.  More importantly,
+this suggests an alternative to "always-on" autocompletion.  It would
+be a nice generalization to allow the completion to be done anywhere
+on a line, rather than having the logic start at the beginning of what
+the code calls the autocompletion chain.
+
+Actually, there is already logic to find the start of the chain, so
+the whole thing may be quite easy to do without even having to handle
+(explicitly) the behind-the-scenes ivars.
+
+OTOH, I'm not sure how bound together the output code (writing to the
+completion tab) is with the more fundamental code.  Some refactoring
+might be required.  But probably not: at worst, the code could just
+use a "suppress output" hack.  We shall see. 
+
+@color
+#@nonl
+#@-node:ekr.20080907095552.1:Allow more general typing completion
+#@+node:ekr.20080906062507.2:Play with ishadow extension to ipython
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/42d178da972d783d
+
+On Sat, Aug 9, 2008 at 5:08 PM, Alia K <alia_kho...@yahoo.com> wrote:
+
+> Done.
+
+> http://leo.zwiki.org/CreateShadows
+
+The code in the wiki page was slightly broken (it set @path to body,
+not headline).
+
+What I really wanted to say though, is that I have added this feature
+as %lshadow magic command to ileo :-).
+
+So now, when you have ileo session open, you can do stuff like:
+
+%lshadow test
+%lshadow tools
+
+And the (previously opened) leo window has added 'test' and 'tools'
+directories as shadow trees for your entertainment.
+
+If you want to test it out immediately, grab my ipython dev branch at:
+
+bzr branch lp:~villemvainio/ipython/trunk-dev 
+#@nonl
+#@-node:ekr.20080906062507.2:Play with ishadow extension to ipython
+#@+node:ekr.20080906062507.1:Allow Leo to open .py files directly (or any other kind of file)
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
+
+I'm wondering, would it make sense for leo to do "something" when launched
+directly against a .py file, i.e.
+
+"leo test.py".
+
+Of course that's a perfectly sensible thing to do, considering that leo is,
+among other things, a python editor ;-)
+
+Perhaps it might create create a (unsaved) leo document  where the .py file
+is present as @shadow node, or something. 
+#@nonl
+#@-node:ekr.20080906062507.1:Allow Leo to open .py files directly (or any other kind of file)
+#@+node:ekr.20080906062507.3:Think of improving headline navigation
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
+
+Now that the leo is more "modeless" (I'm speaking of switching between
+outline navigation and body editing modes), which btw is a clear improvement
+to how leo used to behave, here are some things that still feel a bit
+un-intuitive:
+
+- ctrl+H (edit-headline) "locks" the user into the mode way too much.
+
+   * The headline editing mode should be cancelled when the user does:
+      - cursor up/down
+      - ESC
+
+   * Even better alternative: I find myself constantly thinking that "ok,
+now I need to edit a headline (typically not the current headline), so now
+I'll press ctrl+H". I think perhaps pressing up/down should cancel the
+current headline editing, and select the next/previous headline for editing.
+That is, I wouldn't need to navigate to the headline I want to edit before I
+start editing it.
+
+  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
+intuitive assumption is that cut will select the node that "took the place
+of the
+    current node", instead of starting to travel upwards the set of nodes.
+
+   * Typical use case is the way you usually start deleting a set of items.
+You move to the first item and start cutting repeatedly. This wont work with
+the current behaviour. 
+#@nonl
+#@-node:ekr.20080906062507.3:Think of improving headline navigation
 #@+node:ekr.20080904071003.1:abspath does a normpath?
 #@-node:ekr.20080904071003.1:abspath does a normpath?
+#@+node:ekr.20080906062507.4:Protect @shadow and @auto files?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bac65cb75484f7cb
+
+BTW, I think we should prevent shadow files from accidentally
+overwriting valuable stuff:
+
+- Store modification time of the file on shadow import
+- When you "save", check if modification time has changed and ask the
+user if they really want to overwrite the changes. Or, reuse to do it
+altogether and require explicit save-at-shadow-nodes in those
+occasions. That's considered "good form" in editors in general, and
+since pressing ctrl+S in leo has even more significant implications we
+should be absolutely certain everything happens safely. 
+#@nonl
+#@-node:ekr.20080906062507.4:Protect @shadow and @auto files?
 #@+node:ekr.20080810085333.5:Under two hours 23
 #@+node:ekr.20080901112851.3:check for syntax errors when @auto import fails
 #@-node:ekr.20080901112851.3:check for syntax errors when @auto import fails
@@ -7240,7 +7370,7 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080730212711.7:Plugins 5
-#@-node:ekr.20080814103428.4:4.5.1 bugs, cleanups
+#@-node:ekr.20080814103428.4:4.5.2 bugs, cleanups
 #@+node:ekr.20071211093011:4.6  autocompletion
 http://orestis.gr/en/blog/2008/08/31/announcing-pysmell/
 #@+node:ekr.20080113165010:About auto completion
