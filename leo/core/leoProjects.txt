@@ -18916,7 +18916,7 @@ def goToLineNumber (self,n,p=None,scriptData=None):
     c = self ; gnx = None ; vnodeName = None
     if n < 0: return
 
-    fileName,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
+    fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
 
     if n==1:
         p = root ; n2 = 1 ; found = True
@@ -18925,7 +18925,7 @@ def goToLineNumber (self,n,p=None,scriptData=None):
     elif isRaw:
         p,n2,found = c.goto_countLines(root,n)
     else:
-        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n)
+        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
         if delim:
             p,found = c.goto_findPosition(
                 root,lines,vnodeName,gnx,n,delim)
@@ -19100,7 +19100,7 @@ vnodeName: the name found in the previous @+body sentinel.
 offset: the offset within p of the desired line.
 @c
 
-def goto_findVnode (self,root,lines,n):
+def goto_findVnode (self,root,lines,n,ignoreSentinels):
 
     '''Search the lines of a derived file containing sentinels for a vnode.
     return (vnodeName,gnx,offset,delim).'''
@@ -19167,7 +19167,8 @@ elif g.match(s,i,"+node"):
     nodeSentinelLine = line
     break
 elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-    offset += 1 # Count these as a "real" lines.
+    if not ignoreSentinels:
+        offset += 1 # Count these as a "real" lines.
 #@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
 #@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
 #@+node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
@@ -19217,7 +19218,7 @@ def goto_setup (self,n,p=None,scriptData=None):
         root,fileName = c.goto_findRoot(p)
         if root and fileName:
             c.shadowController.line_mapping = [] # Set by goto_open.
-            lines = c.goto_getFileLines(fileName)
+            lines = c.goto_getFileLines(root,fileName)
             n = c.goto_applyLineNumberMapping(n)
         else:
             lines = c.goto_getScriptLines(p)
@@ -19225,12 +19226,14 @@ def goto_setup (self,n,p=None,scriptData=None):
     isRaw = not root or (
         root.isAtAsisFileNode() or root.isAtNoSentFileNode() or root.isAtAutoNode())
 
+    ignoreSentinels = root.isAtNoSentFileNode()
+
     if scriptData:
         if not root: root = p.copy()
     else:
         if not root: root = c.currentPosition()
 
-    return fileName,isRaw,lines,n,root
+    return fileName,ignoreSentinels,isRaw,lines,n,root
 #@+node:ekr.20080904071003.25:goto_findRoot
 def goto_findRoot (self,p):
 
@@ -19260,16 +19263,23 @@ def goto_findRoot (self,p):
     return None,None
 #@-node:ekr.20080904071003.25:goto_findRoot
 #@+node:ekr.20080904071003.26:goto_getFileLines
-def goto_getFileLines (self,fileName):
+def goto_getFileLines (self,root,fileName):
 
     '''Read the file into lines.'''
 
-    # Calculate the full path.
     c = self
-    d = g.scanDirectives(c)
-    path = d.get("path")
-    fileName = g.os_path_join(path,fileName)
-    lines    = c.goto_open(fileName)
+
+    if root.isAtNoSentFileNode():
+        # Write a virtual file containing sentinels.
+        at = c.atFileCommands
+        at.write(root,nosentinels=False,toString=True)
+        lines = g.splitLines(at.stringOutput)
+    else:
+        # Calculate the full path.
+        d = g.scanDirectives(c,p=root)
+        path = d.get("path")
+        fileName = g.os_path_join(path,fileName)
+        lines    = c.goto_open(fileName)
 
     return lines
 #@-node:ekr.20080904071003.26:goto_getFileLines
@@ -20125,7 +20135,7 @@ if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
         g.es("no dirty @file nodes")
 #@-node:ekr.20041005105605.150:<< say the command is finished >>
 #@-node:ekr.20041005105605.147:writeAll (atFile)
-#@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 def writeAtShadowNodes (self,event=None):
 
     '''Write all @shadow nodes in the selected outline.'''
@@ -20295,13 +20305,14 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
-#@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 def writeOneAtShadowNode(self,p,toString,force):
 
@@ -20427,10 +20438,11 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@+node:ekr.20041005105605.157:writeOpenFile
@@ -21274,7 +21286,7 @@ def writeDirtyAtShadowNodes (self,event=None):
         g.es("auto-saving outline",color="blue")
         c.save() # Must be done to set or clear tnodeList.
 #@-node:ekr.20080801071227.6:writeDirtyAtShadowNodes (fileCommands)
-#@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 def writeAtShadowNodes (self,event=None):
 
     '''Write all @shadow nodes in the selected outline.'''
@@ -21444,13 +21456,14 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
-#@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@-node:ekr.20080713091247.5:Finished @shadow commands
 #@+node:ekr.20080802070659.5:Use thin-like shadow nodes
 @ One unit tests generates a "bad tnode list" error.
@@ -21752,10 +21765,11 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080803063553.3:Changed to make private files use thin-like sentinels
@@ -26402,10 +26416,11 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080812093903.5:Don't write private files for unknown file extensions
@@ -26870,7 +26885,7 @@ def replaceFileWithString (self,fn,s):
         g.es_exception()
         return False
 #@-node:ekr.20080712150045.1:at.replaceFileWithString
-#@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 def writeAtShadowNodes (self,event=None):
 
     '''Write all @shadow nodes in the selected outline.'''
@@ -27040,13 +27055,14 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
-#@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@-node:ekr.20080820083933.4:Fixed the incorrect @shadow error
 #@+node:ekr.20080822065427.1:Don't write mod_shadow.tmp1/2 files (at least not to top-level folder)
 #@+node:ekr.20080708094444.33:x.show_error
@@ -27189,7 +27205,7 @@ def goToLineNumber (self,n,p=None,scriptData=None):
     c = self ; gnx = None ; vnodeName = None
     if n < 0: return
 
-    fileName,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
+    fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
 
     if n==1:
         p = root ; n2 = 1 ; found = True
@@ -27198,7 +27214,7 @@ def goToLineNumber (self,n,p=None,scriptData=None):
     elif isRaw:
         p,n2,found = c.goto_countLines(root,n)
     else:
-        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n)
+        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
         if delim:
             p,found = c.goto_findPosition(
                 root,lines,vnodeName,gnx,n,delim)
@@ -27373,7 +27389,7 @@ vnodeName: the name found in the previous @+body sentinel.
 offset: the offset within p of the desired line.
 @c
 
-def goto_findVnode (self,root,lines,n):
+def goto_findVnode (self,root,lines,n,ignoreSentinels):
 
     '''Search the lines of a derived file containing sentinels for a vnode.
     return (vnodeName,gnx,offset,delim).'''
@@ -27440,7 +27456,8 @@ elif g.match(s,i,"+node"):
     nodeSentinelLine = line
     break
 elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-    offset += 1 # Count these as a "real" lines.
+    if not ignoreSentinels:
+        offset += 1 # Count these as a "real" lines.
 #@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
 #@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
 #@+node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
@@ -27490,7 +27507,7 @@ def goto_setup (self,n,p=None,scriptData=None):
         root,fileName = c.goto_findRoot(p)
         if root and fileName:
             c.shadowController.line_mapping = [] # Set by goto_open.
-            lines = c.goto_getFileLines(fileName)
+            lines = c.goto_getFileLines(root,fileName)
             n = c.goto_applyLineNumberMapping(n)
         else:
             lines = c.goto_getScriptLines(p)
@@ -27498,12 +27515,14 @@ def goto_setup (self,n,p=None,scriptData=None):
     isRaw = not root or (
         root.isAtAsisFileNode() or root.isAtNoSentFileNode() or root.isAtAutoNode())
 
+    ignoreSentinels = root.isAtNoSentFileNode()
+
     if scriptData:
         if not root: root = p.copy()
     else:
         if not root: root = c.currentPosition()
 
-    return fileName,isRaw,lines,n,root
+    return fileName,ignoreSentinels,isRaw,lines,n,root
 #@+node:ekr.20080904071003.25:goto_findRoot
 def goto_findRoot (self,p):
 
@@ -27533,16 +27552,23 @@ def goto_findRoot (self,p):
     return None,None
 #@-node:ekr.20080904071003.25:goto_findRoot
 #@+node:ekr.20080904071003.26:goto_getFileLines
-def goto_getFileLines (self,fileName):
+def goto_getFileLines (self,root,fileName):
 
     '''Read the file into lines.'''
 
-    # Calculate the full path.
     c = self
-    d = g.scanDirectives(c)
-    path = d.get("path")
-    fileName = g.os_path_join(path,fileName)
-    lines    = c.goto_open(fileName)
+
+    if root.isAtNoSentFileNode():
+        # Write a virtual file containing sentinels.
+        at = c.atFileCommands
+        at.write(root,nosentinels=False,toString=True)
+        lines = g.splitLines(at.stringOutput)
+    else:
+        # Calculate the full path.
+        d = g.scanDirectives(c,p=root)
+        path = d.get("path")
+        fileName = g.os_path_join(path,fileName)
+        lines    = c.goto_open(fileName)
 
     return lines
 #@-node:ekr.20080904071003.26:goto_getFileLines
@@ -29317,10 +29343,11 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@+node:ekr.20041005105605.15:initWriteIvars
@@ -33003,10 +33030,11 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080826074455.3:Force the creation of shadow directories
@@ -33218,31 +33246,8 @@ for theDir in (homeLeoDir,globalConfigDir,loadDir):
 #@+node:ekr.20080902182134.1:Fixed line number problems
 # goToLineNumber was always complaining about a missing private shadow file.
 #@nonl
-#@+node:ekr.20080904071003.2:Report 2
-@nocolor
-
-Still not working for me with auto, I either get
-
-bad @+leo sentinel
-error handling: @auto serv.py
-
-or in a simple test case
-
-"only 5 lines"
-
-(trying to go to line 3)
-
-The "only 5 lines" was also seen on @nosent.
-
-@color
-#@-node:ekr.20080904071003.2:Report 2
-#@+node:ekr.20080904071003.23:Report 3
-@nocolor
-
-For @auto it seems to be only working for me if the @auto node itself
-is selected.  If a descendant of the @auto node is selected I get a
-traceback.
-#@-node:ekr.20080904071003.23:Report 3
+#@+node:ekr.20080907095552.2:Problems with @nosent line numbers
+#@-node:ekr.20080907095552.2:Problems with @nosent line numbers
 #@+node:ekr.20080904071003.15:No longer used
 #@+node:ekr.20080905130513.16:gotoLineNumber and helpers (original)
 #@+node:ekr.20080905130513.17: goToLineNumber
@@ -33668,253 +33673,6 @@ def skipToMatchingNodeSentinel (self,lines,n,delim):
     return n
 #@-node:ekr.20080905130513.39:skipToMatchingNodeSentinel
 #@-node:ekr.20080905130513.16:gotoLineNumber and helpers (original)
-#@+node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (nosent/asis/auto only)
-p = lastv = root
-prev = 0 ; found = False
-isNosent = root.isAtNoSentFileNode()
-isAuto = root.isAtAutoNode()
-
-for p in p.self_and_subtree_iter():
-    lastv = p.copy()
-    s = p.bodyString()
-    if isNosent or isAuto:
-        s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
-    n_lines = s.count('\n')
-    if len(s) > 0 and s[-1] != '\n': n_lines += 1
-    # g.trace(n,prev,n_lines,p.headString())
-    if prev + n_lines >= n:
-        found = True ; break
-    prev += n_lines
-
-p = lastv
-n2 = max(1,n-prev)
-#@-node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (nosent/asis/auto only)
-#@+node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
-if scriptFind:
-    << just scan for the node name >>
-elif gnx:
-    << 4.2: get node from gnx >>
-elif childIndex == -1:
-    << 4.x: scan for the node using tnodeList and n >>
-else:
-    << 3.x: scan for the node with the given childIndex >>
-#@+node:ekr.20041111093404:<< just scan for the node name >>
-# This is safe enough because clones are not much of an issue.
-found = False
-for p in root.self_and_subtree_iter():
-    if p.matchHeadline(vnodeName):
-        found = True ; break
-#@-node:ekr.20041111093404:<< just scan for the node name >>
-#@+node:EKR.20040609110138:<< 4.2: get node from gnx >>
-found = False
-gnx = g.app.nodeIndices.scanGnx(gnx,0)
-
-# g.trace(vnodeName)
-# g.trace(gnx)
-
-for p in root.self_and_subtree_iter():
-    if p.matchHeadline(vnodeName):
-        # g.trace(p.v.t.fileIndex)
-        if p.v.t.fileIndex == gnx:
-            found = True ; break
-
-if not found:
-    g.es("not found:",vnodeName,color="red")
-    return
-#@-node:EKR.20040609110138:<< 4.2: get node from gnx >>
-#@+node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
-# This is about the best that can be done without replicating the entire atFile write logic.
-
-ok = hasattr(root.v.t,"tnodeList")
-
-if ok:
-    # Use getattr to keep pylint happy.
-    tnodeList = getattr(root.v.t,'tnodeList')
-    << set tnodeIndex to the number of +node sentinels before line n >>
-    tnodeIndex = max(0,tnodeIndex)
-    << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
-else:
-    g.es_print("no child index for",root.headString(),color="red")
-
-if not ok:
-    # Fall back to the old logic.
-    << set p to the first node whose headline matches vnodeName >>
-#@+node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
-
-tnodeIndex = -1 # Don't count the @file node.
-scanned = 0 # count of lines scanned.
-
-for s in lines:
-    if scanned >= n:
-        break
-    i = g.skip_ws(s,0)
-    if g.match(s,i,delim):
-        i += len(delim)
-        if g.match(s,i,"+node"):
-            # g.trace(tnodeIndex,s.rstrip())
-            tnodeIndex += 1
-    scanned += 1
-#@-node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
-#@+node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-
-@ We use the tnodeList to find a _tnode_ corresponding to the proper node, so the user will for sure be editing the proper text, even if several nodes happen to have the same headline.  This is really all that we need.
-
-However, this code has no good way of distinguishing between different cloned vnodes in the file: they all have the same tnode.  So this code just picks p = t.vnodeList[0] and leaves it at that.
-
-The only way to do better is to scan the outline, replicating the write logic to determine which vnode created the given line.  That's way too difficult, and it would create an unwanted dependency in this code.
-@c
-
-# g.trace("tnodeIndex",tnodeIndex)
-if tnodeIndex < len(tnodeList):
-    t = tnodeList[tnodeIndex]
-    # Find the first vnode whose tnode is t.
-    found = False
-    for p in root.self_and_subtree_iter():
-        if p.v.t == t:
-            found = True ; break
-    if not found:
-        s = "tnode not found for " + vnodeName
-        g.es_print(s, color="red") ; ok = False
-    elif p.headString().strip() != vnodeName:
-        if 0: # Apparently this error doesn't prevent a later scan for working properly.
-            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
-            g.es_print(s, color="red")
-        ok = False
-else:
-    if root is None: # Kludge: disable this message when called by goToScriptLineNumber.
-        s = "Invalid computed tnodeIndex: %d" % tnodeIndex
-        g.es_print(s, color = "red")
-    ok = False
-#@-node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-#@+node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
-found = False
-for p in root.self_and_subtree_iter():
-    if p.matchHeadline(vnodeName):
-        found = True ; break
-
-if not found:
-    s = "not found: " + vnodeName
-    g.es_print(s, color="red")
-    return
-#@-node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
-#@-node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
-#@+node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
-found = False
-for p in root.self_and_subtree_iter():
-    if p.matchHeadline(vnodeName):
-        if childIndex <= 0 or p.childIndex() + 1 == childIndex:
-            found = True ; break
-
-if not found:
-    g.es("not found:",vnodeName, color="red")
-    return
-#@-node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
-#@-node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
-#@+node:ekr.20031218072017.2875:<< select p and make it visible >>
-c.frame.tree.expandAllAncestors(p)
-c.selectVnode(p)
-c.redraw()
-#@-node:ekr.20031218072017.2875:<< select p and make it visible >>
-#@+node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
-s = w.getAllText()
-if found:
-    ins = g.convertRowColToPythonIndex(s,n2-1,0)    
-else:
-    ins = len(s)
-    g.es('only',len(lines),'lines',color="blue")
-
-w.setInsertPoint(ins)
-c.bodyWantsFocusNow()
-w.seeInsertPoint()
-#@-node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
-#@+node:ekr.20080904071003.16:<< show the results >>
-# Select p and make it visible.
-c.frame.tree.expandAllAncestors(p)
-c.selectPosition(p)
-c.redraw()
-
-# Put the cursor on line n2 of the body text.
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-if found:
-    ins = g.convertRowColToPythonIndex(s,n2-1,0)    
-else:
-    ins = len(s)
-    g.es('only',len(lines),'lines',color="blue")
-
-w.setInsertPoint(ins)
-c.bodyWantsFocusNow()
-w.seeInsertPoint()
-#@-node:ekr.20080904071003.16:<< show the results >>
-#@+node:ekr.20080904071003.11:<< 3.x: scan for the node with the given childIndex >>
-found = False
-for p in root.self_and_subtree_iter():
-    if p.matchHeadline(vnodeName):
-        if childIndex <= 0 or p.childIndex() + 1 == childIndex:
-            found = True ; break
-
-if not found:
-    g.es("not found:",vnodeName, color="red")
-    return
-#@-node:ekr.20080904071003.11:<< 3.x: scan for the node with the given childIndex >>
-#@+node:ekr.20080904071003.7:<< 4.x: scan for the node using the root's tnodeList and n >>
-# This is about the best that can be done without replicating the entire atFile write logic.
-
-ok = hasattr(root.v.t,"tnodeList")
-
-if ok:
-    # Use getattr to keep pylint happy.
-    tnodeList = getattr(root.v.t,'tnodeList')
-    << set tnodeIndex to the number of +node sentinels before line n >>
-    tnodeIndex = max(0,tnodeIndex)
-    << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
-else:
-    g.es_print("no child index for",root.headString(),color="red")
-
-if not ok:
-    # Fall back to the old logic.
-    << set p to the first node whose headline matches vnodeName >>
-#@-node:ekr.20080904071003.7:<< 4.x: scan for the node using the root's tnodeList and n >>
-#@+node:ekr.20080904071003.29:<< set vnodeName and gnx from s >> (old)
-if scriptFind:
-    # The vnode name follows the first ':'
-    i = s.find(':',i)
-    if i > -1:
-        vnodeName = s[i+1:].strip()
-else:
-    # New in Leo 4.5.1: only new-style derived files are supported.
-    i = 0
-    # gnx is lies between the first and second ':':
-    i = s.find(':',i)
-    if i > 0:
-        i += 1
-        j = s.find(':',i)
-        if j > 0:
-            gnx = s[i:j]
-        else: i = len(s)
-    else: i = len(s)
-    # vnode name is everything following the first or second':'
-    i = s.find(':',i)
-    if i > -1:  vnodeName = s[i+1:].strip()
-    else:       vnodeName = None
-
-# g.trace("gnx",gnx,"vnodeName:",vnodeName)
-if not vnodeName:
-    vnodeName = None
-    g.es("bad @+node sentinel")
-#@-node:ekr.20080904071003.29:<< set vnodeName and gnx from s >> (old)
-#@+node:ekr.20080904071003.17:goto_scanForVnodeName (not used)
-def goto_scanForVnodeName(self,root,vnodeName):
-
-    found = False
-
-    # This is safe enough because clones are not much of an issue.
-    for p in root.self_and_subtree_iter():
-        if p.matchHeadline(vnodeName):
-            found = True ; break
-
-    return p,found
-#@-node:ekr.20080904071003.17:goto_scanForVnodeName (not used)
 #@-node:ekr.20080904071003.15:No longer used
 #@+node:ekr.20080904071003.24:Other methods
 #@+node:ekr.20031218072017.1997:scanGnx
@@ -34063,7 +33821,7 @@ def goToLineNumber (self,n,p=None,scriptData=None):
     c = self ; gnx = None ; vnodeName = None
     if n < 0: return
 
-    fileName,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
+    fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
 
     if n==1:
         p = root ; n2 = 1 ; found = True
@@ -34072,7 +33830,7 @@ def goToLineNumber (self,n,p=None,scriptData=None):
     elif isRaw:
         p,n2,found = c.goto_countLines(root,n)
     else:
-        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n)
+        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
         if delim:
             p,found = c.goto_findPosition(
                 root,lines,vnodeName,gnx,n,delim)
@@ -34247,7 +34005,7 @@ vnodeName: the name found in the previous @+body sentinel.
 offset: the offset within p of the desired line.
 @c
 
-def goto_findVnode (self,root,lines,n):
+def goto_findVnode (self,root,lines,n,ignoreSentinels):
 
     '''Search the lines of a derived file containing sentinels for a vnode.
     return (vnodeName,gnx,offset,delim).'''
@@ -34314,7 +34072,8 @@ elif g.match(s,i,"+node"):
     nodeSentinelLine = line
     break
 elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-    offset += 1 # Count these as a "real" lines.
+    if not ignoreSentinels:
+        offset += 1 # Count these as a "real" lines.
 #@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
 #@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
 #@+node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
@@ -34364,7 +34123,7 @@ def goto_setup (self,n,p=None,scriptData=None):
         root,fileName = c.goto_findRoot(p)
         if root and fileName:
             c.shadowController.line_mapping = [] # Set by goto_open.
-            lines = c.goto_getFileLines(fileName)
+            lines = c.goto_getFileLines(root,fileName)
             n = c.goto_applyLineNumberMapping(n)
         else:
             lines = c.goto_getScriptLines(p)
@@ -34372,12 +34131,14 @@ def goto_setup (self,n,p=None,scriptData=None):
     isRaw = not root or (
         root.isAtAsisFileNode() or root.isAtNoSentFileNode() or root.isAtAutoNode())
 
+    ignoreSentinels = root.isAtNoSentFileNode()
+
     if scriptData:
         if not root: root = p.copy()
     else:
         if not root: root = c.currentPosition()
 
-    return fileName,isRaw,lines,n,root
+    return fileName,ignoreSentinels,isRaw,lines,n,root
 #@+node:ekr.20080904071003.25:goto_findRoot
 def goto_findRoot (self,p):
 
@@ -34407,16 +34168,23 @@ def goto_findRoot (self,p):
     return None,None
 #@-node:ekr.20080904071003.25:goto_findRoot
 #@+node:ekr.20080904071003.26:goto_getFileLines
-def goto_getFileLines (self,fileName):
+def goto_getFileLines (self,root,fileName):
 
     '''Read the file into lines.'''
 
-    # Calculate the full path.
     c = self
-    d = g.scanDirectives(c)
-    path = d.get("path")
-    fileName = g.os_path_join(path,fileName)
-    lines    = c.goto_open(fileName)
+
+    if root.isAtNoSentFileNode():
+        # Write a virtual file containing sentinels.
+        at = c.atFileCommands
+        at.write(root,nosentinels=False,toString=True)
+        lines = g.splitLines(at.stringOutput)
+    else:
+        # Calculate the full path.
+        d = g.scanDirectives(c,p=root)
+        path = d.get("path")
+        fileName = g.os_path_join(path,fileName)
+        lines    = c.goto_open(fileName)
 
     return lines
 #@-node:ekr.20080904071003.26:goto_getFileLines
@@ -34516,35 +34284,401 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
     return n
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
-#@+node:ekr.20080904071003.25:goto_findRoot
-def goto_findRoot (self,p):
-
-    '''Find the closest ancestor @file node, of any type, except @all nodes.
-
-    return root, fileName.'''
-
-    c = self ; p1 = p.copy()
-
-    # First look for ancestor @file node.
-    for p in p.self_and_parents_iter():
-        fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
-        if fileName:
-            return p.copy(),fileName
-
-    # Search the entire tree for joined nodes.
-    # Bug fix: Leo 4.5.1: *must* search *all* positions.
-    for p in c.all_positions_iter():
-        # if p.v.t == p1.v.t: g.trace('p1',p1,'p',p)
-        if p.v.t == p1.v.t and p != p1:
-            # Found a joined position.
-            for p2 in p.self_and_parents_iter():
-                fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
-                if fileName:
-                    return p2.copy(),fileName
-
-    return None,None
-#@-node:ekr.20080904071003.25:goto_findRoot
 #@-node:ekr.20080902182134.1:Fixed line number problems
+#@+node:ekr.20080903090153.1:Fixed (?) problems with read/write at-shadow file
+@
+
+adjustTargetLanguage, a helper of writeOneAtShadowNode, no longer sets
+c.target_language to 'unknown_language' when the file extension is unknown.
+#@nonl
+#@+node:ekr.20080903090153.2:Report
+@nocolor
+
+My tests with @shadow notes showed me that when I read a @shadow tree
+with File/read @shadow Nodes is perfect. And the private file has the
+sentinels.
+
+ But when I reopen that leo file the whole content of the public file
+is copied one-to-one to the private file. So no sentinels are longer
+in the private file.
+
+A snippet of the reading log:
+reading settings in K:\trainingDSL\training.leo
+reading: K:\trainingDSL\training.leo
+wrote:     K:\trainingDSL\.leo_shadow\xdsl.rb
+(at that time no sentinels are in the private file)
+updated private K:\trainingDSL\.leo_shadow\xdsl.rb from public K:
+\trainingDSL\dsl.rb
+reading: @shadow dsl.rb
+Bad @+leo sentinel in: K:\trainingDSL\.leo_shadow\xdsl.rb
+invalid @shadow private file K:\trainingDSL\.leo_shadow\xdsl.rb
+
+
+I have tested it with:
+
+Leo 4.5 final, build  1.244 , August 30, 2008
+python 2.5.2, Tk 8.4.12, Pmw 1.3
+Windows 5, 1, 2600, 2, Service Pack 2
+
+Hope it helps to find the (semantic) error.
+
+Kind regards
+Sven
+#@nonl
+#@-node:ekr.20080903090153.2:Report
+#@+node:ekr.20031218072017.368:<< define global data structures >> app
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada" : "--",
+    "actionscript" : "// /* */", #jason 2003-07-03
+    "autohotkey" : "; /* */", #TL - AutoHotkey language
+    "c" : "// /* */", # C, C++ or objective C.
+    "csharp" : "// /* */", # C#
+    "cpp" : "// /* */",# C++.
+    "css" : "/* */", # 4/1/04
+    "cweb" : "@q@ @>", # Use the "cweb hack"
+    "elisp" : ";",
+    "forth" : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran" : "C",
+    "fortran90" : "!",
+    "html" : "<!-- -->",
+    "ini": ";",
+    "java" : "// /* */",
+    "latex" : "%",
+    "lua" : "--",  # ddm 13/02/06
+    "pascal" : "// { }",
+    "perl" : "#",
+    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php" : "// /* */", # 6/23/07: was "//",
+    "plain" : "#", # We must pick something.
+    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python" : "#",
+    "rapidq" : "'", # fil 2004-march-11
+    "rebol" : ";",  # jason 2003-07-03
+    "shell" : "#",  # shell scripts
+    "tcltk" : "#",
+    "unknown" : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml" : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada" : "ada",
+    "actionscript" : "as", #jason 2003-07-03
+    "autohotkey" : "ahk", #TL - AutoHotkey language
+    "c" : "c",
+    "cpp" : "cpp",
+    "css" : "css", # 4/1/04
+    "cweb" : "w",
+    "elisp" : "el",
+    "forth" : "forth",
+    "fortran" : "f",
+    "fortran90" : "f",
+    "html" : "html",
+    "ini": "ini",
+    "java" : "java",
+    "latex" : "tex", # 1/8/04
+    "lua" : "lua",  # ddm 13/02/06
+    "noweb" : "nw",
+    "pascal" : "p",
+    # "perl" : "perl",
+    # "perlpod" : "perl",
+    "perl" : "pl",      # 11/7/05
+    "perlpod" : "pod",  # 11/7/05
+    "php" : "php",
+    "plain" : "txt",
+    "python" : "py",
+    "plsql" : "sql", # qt02537 2005-05-27
+    "rapidq" : "bas", # fil 2004-march-11
+    "rebol" : "r",    # jason 2003-07-03
+    "shell" : "sh",   # DS 4/1/04
+    "tex" : "tex",
+    "tcltk" : "tcl",
+    "unknown" : "txt", # Set when @comment is seen.
+    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml": "xml",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "c"     : "c",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    # "perl"  : "perl",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "w"     : "cweb",
+    "xml"   : "xml",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada':  'ada95',
+    'adb':  'none', # ada??
+    'awk':  'awk',
+    'bas':  'none', # rapidq
+    'cpp':  'c',
+    'el':   'lisp',
+    'f':    'fortran',
+    'nw':   'none', # noweb.
+    'otl':   'none', # vimoutline.
+    'pod':  'perl',
+    'tcl':  'tcl',
+    'unknown_language': 'none',
+    'w':    'none', # cweb
+}
+#@nonl
+#@-node:ekr.20031218072017.368:<< define global data structures >> app
+#@+node:ekr.20080801071227.7:readAtShadowNodes (atFile)
+def readAtShadowNodes (self,p):
+
+    '''Read all @shadow nodes in the p's tree.'''
+
+    at = self ; after = p.nodeAfterTree()
+    p = p.copy() # Don't change p in the caller.
+
+    while p and not p.equal(after): # Don't use iterator.
+        if p.isAtShadowFileNode():
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+#@-node:ekr.20080801071227.7:readAtShadowNodes (atFile)
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
+def writeAtShadowNodes (self,event=None):
+
+    '''Write all @shadow nodes in the selected outline.'''
+
+    at = self
+    return at.writeAtShadowNodesHelper(writeDirtyOnly=False)
+
+def writeDirtyAtShadowNodes (self,event=None):
+
+    '''Write all dirty @shadow nodes in the selected outline.'''
+
+    at = self
+    return at.writeAtShadowNodesHelper(writeDirtyOnly=True)
+#@nonl
+#@+node:ekr.20080711093251.4:writeAtShadowNodesHelper
+def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
+
+    """Write @shadow nodes in the selected outline"""
+
+    at = self ; c = at.c
+    p = c.currentPosition() ; after = p.nodeAfterTree()
+    found = False
+
+    while p and p != after:
+        if p.atShadowFileNodeName() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
+            ok = at.writeOneAtShadowNode(p,toString=toString,force=True)
+            if ok:
+                found = True
+                g.es('wrote %s' % p.atShadowFileNodeName(),color='blue')
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        else:
+            p.moveToThreadNext()
+
+    if found:
+        g.es("finished")
+    elif writeDirtyOnly:
+        g.es("no dirty @shadow nodes in the selected tree")
+    else:
+        g.es("no @shadow nodes in the selected tree")
+
+    return found
+#@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if not fn:
+        g.es_print('can not happen: not an @shadow node',p.headString(),color='red')
+        return False
+
+    # A hack to support unknown extensions.
+    self.adjustTargetLanguage(fn) # May set c.target_language.
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = g.os_path_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None,
+        nosentinels=None, # set below.  Affects only error messages (sometimes).
+        thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+        scriptWrite=False,
+        toString=False, # True: create a fileLikeObject.  This is done below.
+        write_strips_blank_lines=False,
+    )
+            # at.targetFileName not used.
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,nosentinels=not sentinels,toString=False,atAuto=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        ### It may be better to compute the public file by removing sentinels from at.private_s
+        ### by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
+        ### x.isSentinel logic is used consistently by the @shadow read/write logic.
+        ### OTOH, Leo's write logic should actually dominate x.isSentinel.
+
+        # Write the public and private files.
+        private_fn = x.shadowPathName(fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName,color='red')
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force,fn):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    at = self ; x = at.c.shadowController
+    if not x.marker_from_extension(fn,suppressErrors=True):
+        g.es_print('unknown extension. can not write:',p.headString(),color='red')
+        return False # Never write files with unknown extensions
+    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@-node:ekr.20080903090153.1:Fixed (?) problems with read/write at-shadow file
 #@-node:ekr.20080903073654.1:4.5.1 final
 #@-all
 #@nonl

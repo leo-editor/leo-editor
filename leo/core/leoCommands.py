@@ -1732,7 +1732,7 @@ class baseCommands:
         c = self ; gnx = None ; vnodeName = None
         if n < 0: return
 
-        fileName,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
+        fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
 
         if n==1:
             p = root ; n2 = 1 ; found = True
@@ -1741,7 +1741,7 @@ class baseCommands:
         elif isRaw:
             p,n2,found = c.goto_countLines(root,n)
         else:
-            vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n)
+            vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
             if delim:
                 p,found = c.goto_findPosition(
                     root,lines,vnodeName,gnx,n,delim)
@@ -1937,7 +1937,7 @@ class baseCommands:
     #@-at
     #@@c
 
-    def goto_findVnode (self,root,lines,n):
+    def goto_findVnode (self,root,lines,n,ignoreSentinels):
 
         '''Search the lines of a derived file containing sentinels for a vnode.
         return (vnodeName,gnx,offset,delim).'''
@@ -1990,7 +1990,8 @@ class baseCommands:
                     nodeSentinelLine = line
                     break
                 elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-                    offset += 1 # Count these as a "real" lines.
+                    if not ignoreSentinels:
+                        offset += 1 # Count these as a "real" lines.
                 #@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
                 #@nl
             else:
@@ -2058,7 +2059,7 @@ class baseCommands:
             root,fileName = c.goto_findRoot(p)
             if root and fileName:
                 c.shadowController.line_mapping = [] # Set by goto_open.
-                lines = c.goto_getFileLines(fileName)
+                lines = c.goto_getFileLines(root,fileName)
                 n = c.goto_applyLineNumberMapping(n)
             else:
                 lines = c.goto_getScriptLines(p)
@@ -2066,12 +2067,14 @@ class baseCommands:
         isRaw = not root or (
             root.isAtAsisFileNode() or root.isAtNoSentFileNode() or root.isAtAutoNode())
 
+        ignoreSentinels = root.isAtNoSentFileNode()
+
         if scriptData:
             if not root: root = p.copy()
         else:
             if not root: root = c.currentPosition()
 
-        return fileName,isRaw,lines,n,root
+        return fileName,ignoreSentinels,isRaw,lines,n,root
     #@+node:ekr.20080904071003.25:goto_findRoot
     def goto_findRoot (self,p):
 
@@ -2101,16 +2104,23 @@ class baseCommands:
         return None,None
     #@-node:ekr.20080904071003.25:goto_findRoot
     #@+node:ekr.20080904071003.26:goto_getFileLines
-    def goto_getFileLines (self,fileName):
+    def goto_getFileLines (self,root,fileName):
 
         '''Read the file into lines.'''
 
-        # Calculate the full path.
         c = self
-        d = g.scanDirectives(c)
-        path = d.get("path")
-        fileName = g.os_path_join(path,fileName)
-        lines    = c.goto_open(fileName)
+
+        if root.isAtNoSentFileNode():
+            # Write a virtual file containing sentinels.
+            at = c.atFileCommands
+            at.write(root,nosentinels=False,toString=True)
+            lines = g.splitLines(at.stringOutput)
+        else:
+            # Calculate the full path.
+            d = g.scanDirectives(c,p=root)
+            path = d.get("path")
+            fileName = g.os_path_join(path,fileName)
+            lines    = c.goto_open(fileName)
 
         return lines
     #@-node:ekr.20080904071003.26:goto_getFileLines

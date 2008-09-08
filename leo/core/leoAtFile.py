@@ -2504,7 +2504,7 @@ class atFile:
     #@-node:ekr.20071019141745:shouldWriteAtAutoNode
     #@-node:ekr.20070806141607:writeOneAtAutoNode & helper
     #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
-    #@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+    #@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
     def writeAtShadowNodes (self,event=None):
 
         '''Write all @shadow nodes in the selected outline.'''
@@ -2683,13 +2683,14 @@ class atFile:
             if ext.startswith('.'): ext = ext[1:]
 
             language = g.app.extension_dict.get(ext)
-            if not language:
+            if language:
+                c.target_language = language
+            else:
                 # An unknown language.
-                c.target_language = 'unknown_language'
-                # g.trace('setting target language',c.target_language)
+                pass # Use the default language, **not** 'unknown_language'
     #@-node:ekr.20080819075811.13:adjustTargetLanguage
     #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
-    #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+    #@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
     #@+node:ekr.20050506084734:writeFromString
     # This is at.write specialized for scripting.
 
