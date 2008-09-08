@@ -2489,51 +2489,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
-<v t="ekr.20080905125317.1"><vh>Unused</vh>
-<v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
-<v t="ekr.20080904120258.5"><vh>@@test goto_scanForVnodeName</vh></v>
-</v>
-<v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
-<v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
-<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
-</v>
-<v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
-<v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
-<v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
-<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
-</v>
-</v>
-<v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
-<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
-<v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
-<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
-</v>
-<v t="ekr.20080905113550.2"><vh>Tests with @auto as the root</vh>
-<v t="ekr.20080904110148.1"><vh>@test goto_countlines n = 3</vh></v>
-<v t="ekr.20080904110148.4"><vh>@test goto_countlines n = 20</vh></v>
-<v t="ekr.20080904110148.5"><vh>@test goto_setup n = 3</vh></v>
-<v t="ekr.20080904113003.2"><vh>@test goto_setup with scriptData</vh></v>
-</v>
-<v t="ekr.20080905113550.3"><vh>Tests with @file as the root</vh>
-<v t="ekr.20080904120258.6"><vh>@test goto_findGnx</vh></v>
-<v t="ekr.20080905130723.1"><vh>@test goto_findVnode</vh></v>
-</v>
-<v t="ekr.20080907122804.2"><vh>Tests with @shadow as the root</vh>
-<v t="ekr.20080907122804.3"><vh>@test goto_setup n = 3 (@shadow)</vh></v>
-</v>
-<v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
-<v t="ekr.20080907123324.5"><vh>@test goto_setup n = 3 (@nosent)</vh></v>
-</v>
-<v t="ekr.20080905113550.4"><vh>General tests</vh>
-<v t="ekr.20080905165432.1"><vh>@test goto_findRoot (root in ancestors)</vh></v>
-<v t="ekr.20080905165432.3"><vh>@test goto_findRoot (root not in ancestors)</vh></v>
-<v t="ekr.20080904120258.2"><vh>@test goto_showResults found</vh></v>
-<v t="ekr.20080904120258.3"><vh>@test goto_showResults not found</vh></v>
-</v>
-<v t="ekr.20080904120258.4" annotate="7d71002e"><vh>@test restore the screen</vh></v>
-</v>
 <v t="ekr.20080905112230.1"><vh>Script mini test</vh></v>
 </vnodes>
 <tnodes>

@@ -20133,7 +20133,7 @@ if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
         g.es("no dirty @file nodes")
 #@-node:ekr.20041005105605.150:<< say the command is finished >>
 #@-node:ekr.20041005105605.147:writeAll (atFile)
-#@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 def writeAtShadowNodes (self,event=None):
 
     '''Write all @shadow nodes in the selected outline.'''
@@ -20303,13 +20303,14 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
-#@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 def writeOneAtShadowNode(self,p,toString,force):
 
@@ -20435,10 +20436,11 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@+node:ekr.20041005105605.157:writeOpenFile
@@ -21282,7 +21284,7 @@ def writeDirtyAtShadowNodes (self,event=None):
         g.es("auto-saving outline",color="blue")
         c.save() # Must be done to set or clear tnodeList.
 #@-node:ekr.20080801071227.6:writeDirtyAtShadowNodes (fileCommands)
-#@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 def writeAtShadowNodes (self,event=None):
 
     '''Write all @shadow nodes in the selected outline.'''
@@ -21452,13 +21454,14 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
-#@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@-node:ekr.20080713091247.5:Finished @shadow commands
 #@+node:ekr.20080802070659.5:Use thin-like shadow nodes
 @ One unit tests generates a "bad tnode list" error.
@@ -21760,10 +21763,11 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080803063553.3:Changed to make private files use thin-like sentinels
@@ -26410,10 +26414,11 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080812093903.5:Don't write private files for unknown file extensions
@@ -26878,7 +26883,7 @@ def replaceFileWithString (self,fn,s):
         g.es_exception()
         return False
 #@-node:ekr.20080712150045.1:at.replaceFileWithString
-#@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 def writeAtShadowNodes (self,event=None):
 
     '''Write all @shadow nodes in the selected outline.'''
@@ -27048,13 +27053,14 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
-#@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@-node:ekr.20080820083933.4:Fixed the incorrect @shadow error
 #@+node:ekr.20080822065427.1:Don't write mod_shadow.tmp1/2 files (at least not to top-level folder)
 #@+node:ekr.20080708094444.33:x.show_error
@@ -29335,10 +29341,11 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@+node:ekr.20041005105605.15:initWriteIvars
@@ -33021,10 +33028,11 @@ def adjustTargetLanguage (self,fn):
         if ext.startswith('.'): ext = ext[1:]
 
         language = g.app.extension_dict.get(ext)
-        if not language:
+        if language:
+            c.target_language = language
+        else:
             # An unknown language.
-            c.target_language = 'unknown_language'
-            # g.trace('setting target language',c.target_language)
+            pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080826074455.3:Force the creation of shadow directories
@@ -34275,6 +34283,400 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20080902182134.1:Fixed line number problems
+#@+node:ekr.20080903090153.1:Fixed (?) problems with read/write at-shadow file
+@
+
+adjustTargetLanguage, a helper of writeOneAtShadowNode, no longer sets
+c.target_language to 'unknown_language' when the file extension is unknown.
+#@nonl
+#@+node:ekr.20080903090153.2:Report
+@nocolor
+
+My tests with @shadow notes showed me that when I read a @shadow tree
+with File/read @shadow Nodes is perfect. And the private file has the
+sentinels.
+
+ But when I reopen that leo file the whole content of the public file
+is copied one-to-one to the private file. So no sentinels are longer
+in the private file.
+
+A snippet of the reading log:
+reading settings in K:\trainingDSL\training.leo
+reading: K:\trainingDSL\training.leo
+wrote:     K:\trainingDSL\.leo_shadow\xdsl.rb
+(at that time no sentinels are in the private file)
+updated private K:\trainingDSL\.leo_shadow\xdsl.rb from public K:
+\trainingDSL\dsl.rb
+reading: @shadow dsl.rb
+Bad @+leo sentinel in: K:\trainingDSL\.leo_shadow\xdsl.rb
+invalid @shadow private file K:\trainingDSL\.leo_shadow\xdsl.rb
+
+
+I have tested it with:
+
+Leo 4.5 final, build  1.244 , August 30, 2008
+python 2.5.2, Tk 8.4.12, Pmw 1.3
+Windows 5, 1, 2600, 2, Service Pack 2
+
+Hope it helps to find the (semantic) error.
+
+Kind regards
+Sven
+#@nonl
+#@-node:ekr.20080903090153.2:Report
+#@+node:ekr.20031218072017.368:<< define global data structures >> app
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada" : "--",
+    "actionscript" : "// /* */", #jason 2003-07-03
+    "autohotkey" : "; /* */", #TL - AutoHotkey language
+    "c" : "// /* */", # C, C++ or objective C.
+    "csharp" : "// /* */", # C#
+    "cpp" : "// /* */",# C++.
+    "css" : "/* */", # 4/1/04
+    "cweb" : "@q@ @>", # Use the "cweb hack"
+    "elisp" : ";",
+    "forth" : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran" : "C",
+    "fortran90" : "!",
+    "html" : "<!-- -->",
+    "ini": ";",
+    "java" : "// /* */",
+    "latex" : "%",
+    "lua" : "--",  # ddm 13/02/06
+    "pascal" : "// { }",
+    "perl" : "#",
+    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php" : "// /* */", # 6/23/07: was "//",
+    "plain" : "#", # We must pick something.
+    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python" : "#",
+    "rapidq" : "'", # fil 2004-march-11
+    "rebol" : ";",  # jason 2003-07-03
+    "shell" : "#",  # shell scripts
+    "tcltk" : "#",
+    "unknown" : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml" : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada" : "ada",
+    "actionscript" : "as", #jason 2003-07-03
+    "autohotkey" : "ahk", #TL - AutoHotkey language
+    "c" : "c",
+    "cpp" : "cpp",
+    "css" : "css", # 4/1/04
+    "cweb" : "w",
+    "elisp" : "el",
+    "forth" : "forth",
+    "fortran" : "f",
+    "fortran90" : "f",
+    "html" : "html",
+    "ini": "ini",
+    "java" : "java",
+    "latex" : "tex", # 1/8/04
+    "lua" : "lua",  # ddm 13/02/06
+    "noweb" : "nw",
+    "pascal" : "p",
+    # "perl" : "perl",
+    # "perlpod" : "perl",
+    "perl" : "pl",      # 11/7/05
+    "perlpod" : "pod",  # 11/7/05
+    "php" : "php",
+    "plain" : "txt",
+    "python" : "py",
+    "plsql" : "sql", # qt02537 2005-05-27
+    "rapidq" : "bas", # fil 2004-march-11
+    "rebol" : "r",    # jason 2003-07-03
+    "shell" : "sh",   # DS 4/1/04
+    "tex" : "tex",
+    "tcltk" : "tcl",
+    "unknown" : "txt", # Set when @comment is seen.
+    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml": "xml",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "c"     : "c",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    # "perl"  : "perl",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "w"     : "cweb",
+    "xml"   : "xml",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada':  'ada95',
+    'adb':  'none', # ada??
+    'awk':  'awk',
+    'bas':  'none', # rapidq
+    'cpp':  'c',
+    'el':   'lisp',
+    'f':    'fortran',
+    'nw':   'none', # noweb.
+    'otl':   'none', # vimoutline.
+    'pod':  'perl',
+    'tcl':  'tcl',
+    'unknown_language': 'none',
+    'w':    'none', # cweb
+}
+#@nonl
+#@-node:ekr.20031218072017.368:<< define global data structures >> app
+#@+node:ekr.20080801071227.7:readAtShadowNodes (atFile)
+def readAtShadowNodes (self,p):
+
+    '''Read all @shadow nodes in the p's tree.'''
+
+    at = self ; after = p.nodeAfterTree()
+    p = p.copy() # Don't change p in the caller.
+
+    while p and not p.equal(after): # Don't use iterator.
+        if p.isAtShadowFileNode():
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+#@-node:ekr.20080801071227.7:readAtShadowNodes (atFile)
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
+def writeAtShadowNodes (self,event=None):
+
+    '''Write all @shadow nodes in the selected outline.'''
+
+    at = self
+    return at.writeAtShadowNodesHelper(writeDirtyOnly=False)
+
+def writeDirtyAtShadowNodes (self,event=None):
+
+    '''Write all dirty @shadow nodes in the selected outline.'''
+
+    at = self
+    return at.writeAtShadowNodesHelper(writeDirtyOnly=True)
+#@nonl
+#@+node:ekr.20080711093251.4:writeAtShadowNodesHelper
+def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
+
+    """Write @shadow nodes in the selected outline"""
+
+    at = self ; c = at.c
+    p = c.currentPosition() ; after = p.nodeAfterTree()
+    found = False
+
+    while p and p != after:
+        if p.atShadowFileNodeName() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
+            ok = at.writeOneAtShadowNode(p,toString=toString,force=True)
+            if ok:
+                found = True
+                g.es('wrote %s' % p.atShadowFileNodeName(),color='blue')
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        else:
+            p.moveToThreadNext()
+
+    if found:
+        g.es("finished")
+    elif writeDirtyOnly:
+        g.es("no dirty @shadow nodes in the selected tree")
+    else:
+        g.es("no @shadow nodes in the selected tree")
+
+    return found
+#@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if not fn:
+        g.es_print('can not happen: not an @shadow node',p.headString(),color='red')
+        return False
+
+    # A hack to support unknown extensions.
+    self.adjustTargetLanguage(fn) # May set c.target_language.
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = g.os_path_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None,
+        nosentinels=None, # set below.  Affects only error messages (sometimes).
+        thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+        scriptWrite=False,
+        toString=False, # True: create a fileLikeObject.  This is done below.
+        write_strips_blank_lines=False,
+    )
+            # at.targetFileName not used.
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,nosentinels=not sentinels,toString=False,atAuto=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        ### It may be better to compute the public file by removing sentinels from at.private_s
+        ### by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
+        ### x.isSentinel logic is used consistently by the @shadow read/write logic.
+        ### OTOH, Leo's write logic should actually dominate x.isSentinel.
+
+        # Write the public and private files.
+        private_fn = x.shadowPathName(fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName,color='red')
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force,fn):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    at = self ; x = at.c.shadowController
+    if not x.marker_from_extension(fn,suppressErrors=True):
+        g.es_print('unknown extension. can not write:',p.headString(),color='red')
+        return False # Never write files with unknown extensions
+    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@-node:ekr.20080903090153.1:Fixed (?) problems with read/write at-shadow file
 #@-node:ekr.20080903073654.1:4.5.1 final
 #@-all
 #@nonl

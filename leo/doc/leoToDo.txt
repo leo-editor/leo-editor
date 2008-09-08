@@ -3,6 +3,28 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.5.2 bugs, cleanups
 #@+node:ekr.20080907095552.3:Recent
+#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+> Or am I trying to misuse leo in this way?
+
+This is certainly not a misuse of Leo--it's an extension of the rst3 plugin.
+
+Clearly, a script could expand these section references, creating a
+temporary @rst tree which then gets processed as usual.  As usual,
+scripts give complete control over what is happening.
+
+But other people might like have the rst3 plugin work in this way, so
+an expand_noweb_references option would be good.  For compatibility,
+the default for this option would be False. 
+#@nonl
+#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@+node:ekr.20080907095552.4:Add read/write-any-derived-file commands
 # Remove the old type-specific commands from the default menu.
 #@nonl
