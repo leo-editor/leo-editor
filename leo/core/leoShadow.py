@@ -653,7 +653,7 @@ class shadowController:
 
         # New in leo 4.5.1: require a single-line delim.
         if delims[0]:
-             return delims[0]+'@'
+            return delims[0]+'@'
         else:
             # Yes, we *can* use a special marker for unknown languages,
             # provided we make it impossible to type by mistake,
