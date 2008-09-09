@@ -893,7 +893,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -1223,13 +1223,13 @@
 <v t="ekr.20071113194033.1"><vh>leoDialogs</vh>
 <v t="ekr.20050210085211"><vh>@test ctors for all dialogs</vh></v>
 </v>
-<v t="ekr.20071113192611"><vh>leoEditCommands</vh>
-<v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
+<v t="ekr.20071113192611" a="E"><vh>leoEditCommands</vh>
+<v t="ekr.20080904095020.1" a="E"><vh>goto-line-number tests</vh>
 <v t="ekr.20080905125317.1"><vh>Unused</vh>
 <v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
 <v t="ekr.20080904120258.5"><vh>@@test goto_scanForVnodeName</vh></v>
 </v>
-<v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
+<v t="ekr.20080905112230.3" a="E"><vh>goto-line-number tests: original files</vh>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
@@ -2489,7 +2489,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080905112230.1"><vh>Script mini test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -21198,13 +21197,19 @@ finally:
 # body of @shadow test node
 # The last line.
 </t>
-<t tx="ekr.20080729200342.135">s = 'abc'
+<t tx="ekr.20080729200342.135">import os
+s = 'abc'
 fn = 'unitTestFile.py'
-c.atFileCommands.replaceFileWithString(fn,s)
-f = file(fn)
-s2 = f.read()
-f.close()
-assert s == s2</t>
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','unittest',fn))
+try:
+    c.atFileCommands.replaceFileWithString(path,s)
+    f = file(path)
+    s2 = f.read()
+    f.close()
+    assert s == s2
+finally:
+    if g.os_path_exists(path):
+        os.unlink(path)</t>
 <t tx="ekr.20080729200342.136">at = c.atFileCommands
 x = c.shadowController
 changed = c.changed
@@ -21705,9 +21710,6 @@ p,found = c.goto_scanTnodeList (target,delim='#',lines=lines,n=3,vnodeName=h)
 assert found,found
 assert p == target,'\np:     %s\ntarget:%s' % (p,target)
 </t>
-<t tx="ekr.20080905112230.1"># A syntax error
-print 'a
-# end</t>
 <t tx="ekr.20080905112230.3"></t>
 <t tx="ekr.20080905112230.4"># Can not clone @auto children!</t>
 <t tx="ekr.20080905113550.2"></t>
