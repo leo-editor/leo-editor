@@ -4,7 +4,8 @@ import _winreg as wr
 import sys, os
 
 version = '4-5-final'
-testing = False
+testing = True
+setRegistry = False
 
 # To uninstall.
 # Set edit .leo files to:
@@ -25,13 +26,16 @@ def findPython(path=None):
     if path: paths = [path]
     else:    paths = sys.path
 
+
     for path in paths:
         drive,tail = os.path.splitdrive(path)
-        if trace: print 'drive',drive,'tail',tail
+        result = [drive,'\\']
+        # if trace: print 'drive',drive,'tail',tail
         parts = tail.split('\\') # Hard code os.sep for Windows.
         for part in parts:
+            result.append(part)
             if part.startswith('python'):
-                python = join(drive,'\\',part) # Don't use abspath here!
+                python = join(*result) # Don't use abspath here!
                 if trace: print '**found**',python
                 return python
 
@@ -94,12 +98,12 @@ def setRegistry(python,testing):
 
 if testing: print '=' * 40
 
-# path = r'c:\xp\python25\python.exe' # Previously failed.
 path = None
+# path = r'c:\xp\python25\python.exe' # Previously failed.
 
 python = findPython(path=path)
 
-if python:
+if setRegistry and python:
     setRegistry(python,testing)
 
 if testing: print ('done')
