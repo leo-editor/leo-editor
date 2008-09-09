@@ -275,7 +275,7 @@
 <v t="ekr.20080813080627.3" a="M"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
-<v t="ekr.20080909075224.1"><vh>@@shadow ekr-shadow-test.xx</vh></v>
+<v t="ekr.20080909075224.1"><vh>@@shadow ekr-shadow-test.html</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2294,7 +2294,7 @@ class AClass:
    def func4():
        do4()
 </t>
-<t tx="ekr.20080909075224.1">@language xx
+<t tx="ekr.20080909075224.1">@language html
 ../hex6x -
 changed</t>
 </tnodes>
