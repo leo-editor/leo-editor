@@ -147,7 +147,7 @@ class shadowController:
         Return True if theFile was changed.
         '''
 
-        x = self ; testing = g.app.unitTesting
+        x = self ; testing = g.app.unitTesting ; trace = False
 
         exists = g.os_path_exists(fn)
 
@@ -168,8 +168,12 @@ class shadowController:
         try:
             f = file(fn,'wb')
             f.write(s)
+            if trace: g.trace('fn',fn,
+                '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
+                '\ncallers',g.callers(4))
             f.close()
             if not testing:
+                # g.trace('created:',fn,g.callers())
                 if exists:  g.es('wrote:    ',fn)
                 else:       g.es('created:  ',fn)
             return True
@@ -490,13 +494,20 @@ class shadowController:
         '''Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)'''
 
-        x = self
-
-        # g.trace('old_public_file',old_public_file)
+        x = self ; trace = False
 
         old_public_lines  = file(old_public_file).readlines()
         old_private_lines = file(old_private_file).readlines()
         marker = x.marker_from_extension(old_public_file)
+
+        if trace:
+            g.trace(
+                'marker',marker,
+                '\npublic_file',old_public_file,
+                '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
+                '\nprivate_file',old_private_file,
+                '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
+
         if not marker:
             return False
 
@@ -635,24 +646,19 @@ class shadowController:
         x = self
         if not filename: return None
         root,ext = g.os_path_splitext(filename)
-        delims = g.comment_delims_from_extension(filename)
-        for i in (0,1):
-            if delims[i]:
-                # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
-                return delims[i]+'@'
-
         if ext=='.tmp':
             root, ext = os.path.splitext(root)
-        if ext in('.cfg','.ksh','.txt'):
-            marker = '#@'
-        elif ext in ('.bat',):
-            marker = "REM@"
+
+        delims = g.comment_delims_from_extension(filename)
+
+        # New in leo 4.5.1: require a single-line delim.
+        if delims[0]:
+             return delims[0]+'@'
         else:
             # Yes, we *can* use a special marker for unknown languages,
             # provided we make it impossible to type by mistake,
             # and provided no real language will be the prefix of the comment delim.
             marker = g.app.language_delims_dict.get('unknown_language') + '@'
-            # g.trace('unknown language marker',marker)
 
         return marker
     #@-node:ekr.20080708094444.9:x.marker_from_extension
