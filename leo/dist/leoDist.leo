@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="102" left="127" height="810" width="888"/>
+	<global_window_position top="107" left="213" height="810" width="888"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -56,7 +56,6 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080827092958.3"><vh>@thin pre-install-script.py</vh></v>
 <v t="ekr.20080826091039.1"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080826091039.3"><vh>remove</vh></v>
@@ -72,6 +71,7 @@
 <v t="ekr.20080826091039.12"><vh>get_python_version</vh></v>
 </v>
 </v>
+<v t="ekr.20080827092958.3" a="E"><vh>@thin pre-install-script.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519082027.32">@color
