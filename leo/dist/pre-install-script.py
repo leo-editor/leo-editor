@@ -4,51 +4,66 @@ import _winreg as wr
 import sys, os
 
 version = '4-5-final'
+testing = True
+setRegistry = False
 
-testing = True ; problems = False ; verbose = False
-abspath, exists, join = os.path.abspath, os.path.exists, os.path.join
+# To uninstall.
+# Set edit .leo files to:
+#    c:\python25\python.exe c:\leo.repo\trunk\launchLeo.py %1 %2
+# Set icon to C:\leo.repo\trunk\leo\Icons\LeoDoc.ico
 
+#@+others
+#@+node:ekr.20080909112433.2:findPython
 # The path to Leo will be python/Lib/site-packages/leo.
 # To get this, we look for entries in sys.path whose first component starts with python.
 
-print '=' * 40 ; found = False
-for path in sys.path:
-    if found: break
-    drive,head = os.path.splitdrive(path)
-    if verbose: print 'drive',drive,'head',head
-    if not head.lower().startswith(r'\python'):
-        continue
-    while not found:
-        head,tail = os.path.split(head)
-        if verbose: print 'head',head,'tail',tail
-        head2,tail2 = os.path.split(head)
-        if verbose: print 'head2',head2,'tail2',tail2
-        if not tail2.strip():
-            python = join(drive,'\\',tail) # Don't use abspath here!
-            if verbose: print '**found**',python
-            found = True
+def findPython(path=None):
 
-# No error is possible if not found: we simple do nothing later.
+    trace = True
 
-# Python paths...
-exe     = abspath(join(python,'pythonw.exe'))
-pythonw = abspath(join(os.path.dirname(exe), 'pythonw.exe'))
+    abspath, exists, join = os.path.abspath, os.path.exists, os.path.join
 
-# Installed Leo paths...
-top     = abspath(join(python,'Lib','site-packages','Leo-%s' % (version)))
-runLeo  = abspath(join(top,'leo','core','runLeo.py'))
-icon    = abspath(join(top,'leo','icons','LeoDoc.ico'))
+    if path: paths = [path]
+    else:    paths = sys.path
 
-if testing:
-    print ('exists %s, python:   %s' % (exists(python),python))
-    print ('exists %s, top:      %s' % (exists(top), top))
-    print ('exists %s, runLeo:   %s' % (exists(runLeo), runLeo))
-    print ('exists %s, icon:     %s' % (exists(icon), icon))
 
-assert found
+    for path in paths:
+        drive,tail = os.path.splitdrive(path)
+        result = [drive,'\\']
+        # if trace: print 'drive',drive,'tail',tail
+        parts = tail.split('\\') # Hard code os.sep for Windows.
+        for part in parts:
+            result.append(part)
+            if part.startswith('python'):
+                python = join(*result) # Don't use abspath here!
+                if trace: print '**found**',python
+                return python
 
-if found:
-    if not problems and os.path.basename(exe) == 'python.exe': # Avoid showing the console
+    return None
+#@-node:ekr.20080909112433.2:findPython
+#@+node:ekr.20080909112433.3:def setRegistry
+def setRegistry(python,testing):
+
+    use_console = False
+
+    abspath, exists, join = os.path.abspath, os.path.exists, os.path.join
+
+    # Python paths...
+    exe     = abspath(join(python,'pythonw.exe'))
+    pythonw = abspath(join(os.path.dirname(exe), 'pythonw.exe'))
+
+    # Installed Leo paths...
+    top     = abspath(join(python,'Lib','site-packages','Leo-%s' % (version)))
+    runLeo  = abspath(join(top,'leo','core','runLeo.py'))
+    icon    = abspath(join(top,'leo','icons','LeoDoc.ico'))
+
+    if testing:
+        print ('exists %s, python:   %s' % (exists(python),python))
+        print ('exists %s, top:      %s' % (exists(top), top))
+        print ('exists %s, runLeo:   %s' % (exists(runLeo), runLeo))
+        print ('exists %s, icon:     %s' % (exists(icon), icon))
+
+    if use_console and os.path.basename(exe) == 'python.exe': # Avoid showing the console
         exe = pythonw
 
     # This is the 'pythonw.exe leo.py %1' part
@@ -56,8 +71,8 @@ if found:
         # Leo hasn't necessarily been installed anywhere: use the trunk.
         s = 'import os; os.chdir(r\'%s\'); import leo.core.runLeo as r; r.run(fileName=r\'%%1\')'
         c_option =  s % top
-        if problems: i_option = '-i'
-        else:        i_option = ''
+        if use_console: i_option = '-i'
+        else:           i_option = ''
         leo_command = '"%s" %s -c "%s"' % (exe, i_option, c_option) 
     else:
         leo_command = '"%s" "%s" "%%1"' % (exe, runLeo)
@@ -78,8 +93,19 @@ if found:
     # Point to the icon.
     wr.SetValue(h, r"LeoFile\DefaultIcon", sz, icon)
     wr.SetValue(h, r"LeoFile", sz, "Leo File") # I think this is just for explorer
+#@-node:ekr.20080909112433.3:def setRegistry
+#@-others
 
-# That's it!
+if testing: print '=' * 40
+
+path = None
+# path = r'c:\xp\python25\python.exe' # Previously failed.
+
+python = findPython(path=path)
+
+if setRegistry and python:
+    setRegistry(python,testing)
+
 if testing: print ('done')
 #@-node:ekr.20080827092958.3:@thin pre-install-script.py
 #@-leo

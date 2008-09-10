@@ -1688,7 +1688,7 @@ class leoImportCommands:
         c = self.c
         changed = c.isChanged()
         body = g.choose(atAuto,'','@ignore\n')
-        if ext in ('.html','.htm'): body += '@language html\n'
+        if ext in ('.html','.htm'):   body += '@language html\n'
         elif ext in ('.txt','.text'): body += '@nocolor\n'
         else:
             language = self.languageForExtension(ext)
@@ -1707,24 +1707,25 @@ class leoImportCommands:
 
         '''Return the language corresponding to the extensiion ext.'''
 
+        unknown = 'unknown_language'
+
         if ext.startswith('.'): ext = ext[1:]
 
-        language = ext and (
-            g.app.extra_extension_dict.get(ext) or
-            g.app.extension_dict.get(ext) or
-            'unknown_language'
-        )
+        if ext:
+            z = g.app.extra_extension_dict.get(ext)
+            if z not in (None,'none','None'):
+                language = z
+            else:
+                language = g.app.extension_dict.get(ext)
+            if language in (None,'none','None'):
+                language = unknown
+        else:
+            language = unknown
 
         # g.trace(ext,repr(language))
 
         # Return the language even if there is no colorizer mode for it.
         return language
-
-        # if language:
-            # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-                # return language
-
-        # return None
     #@-node:ekr.20080811174246.1:languageForExtension
     #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     #@-node:ekr.20071127175948.1:Import scanners

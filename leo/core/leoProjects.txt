@@ -17912,11 +17912,8 @@ def openFileForReading(self,fn,fromString=False):
         if at.atShadow:
             x = at.c.shadowController
             # readOneAtShadowNode should already have checked these.
-            shadow_fn       = x.shadowPathName(fn)
-            shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-            # g.trace('fn',fn,'shadow_fn',shadow_fn)
-            # x.updatePublicAndPrivate will create the public file from the private file
-            # if the public file exists. This *is* reasonable: there is nothing to import!
+            shadow_fn     = x.shadowPathName(fn)
+            shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
             if not shadow_exists:
                 g.trace('can not happen: no private file',shadow_fn,g.callers())
                 return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
@@ -18064,22 +18061,17 @@ def readOneAtShadowNode (self,fn,p):
     at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
     fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
-    shadow_fn       = x.shadowPathName(fn)
-    shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+    shadow_fn     = x.shadowPathName(fn)
+    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
     if shadow_exists:
-        # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
-        # This will cause an error if shadaw_fn does not, in fact, contain sentinels.
-        # g.trace('reading shadow_fn',shadow_fn)
-        at.read(p,
-            thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
-            atShadow=True)
-            # at.openFileForReading calls x.updatePublicAndPrivateFiles
+        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+        at.read(p,thinFile=True,atShadow=True)
     else:
         if not g.unitTesting: g.es("reading:",p.headString())
         ok = at.importAtShadowNode(fn,p)
         if ok:
-            # x.makeShadowFile(fn,p)
+            # Create the private file automatically.
             at.writeOneAtShadowNode(p,toString=False,force=True)
 #@+node:ekr.20080712080505.1:importAtShadowNode
 def importAtShadowNode (self,fn,p):
@@ -18221,7 +18213,7 @@ def replaceFileWithString (self,fn,s):
     Return True if theFile was changed.
     '''
 
-    x = self ; testing = g.app.unitTesting
+    x = self ; testing = g.app.unitTesting ; trace = False
 
     exists = g.os_path_exists(fn)
 
@@ -18242,8 +18234,12 @@ def replaceFileWithString (self,fn,s):
     try:
         f = file(fn,'wb')
         f.write(s)
+        if trace: g.trace('fn',fn,
+            '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
+            '\ncallers',g.callers(4))
         f.close()
         if not testing:
+            # g.trace('created:',fn,g.callers())
             if exists:  g.es('wrote:    ',fn)
             else:       g.es('created:  ',fn)
         return True
@@ -18320,13 +18316,20 @@ def propagate_changes(self, old_public_file, old_private_file):
     '''Propagate the changes from the public file (without_sentinels)
     to the private file (with_sentinels)'''
 
-    x = self
-
-    # g.trace('old_public_file',old_public_file)
+    x = self ; trace = False
 
     old_public_lines  = file(old_public_file).readlines()
     old_private_lines = file(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
+
+    if trace:
+        g.trace(
+            'marker',marker,
+            '\npublic_file',old_public_file,
+            '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
+            '\nprivate_file',old_private_file,
+            '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
+
     if not marker:
         return False
 
@@ -18643,76 +18646,80 @@ def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_l
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
     # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada" : "--",
-    "actionscript" : "// /* */", #jason 2003-07-03
-    "autohotkey" : "; /* */", #TL - AutoHotkey language
-    "c" : "// /* */", # C, C++ or objective C.
-    "csharp" : "// /* */", # C#
-    "cpp" : "// /* */",# C++.
-    "css" : "/* */", # 4/1/04
-    "cweb" : "@q@ @>", # Use the "cweb hack"
-    "elisp" : ";",
-    "forth" : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran" : "C",
-    "fortran90" : "!",
-    "html" : "<!-- -->",
-    "ini": ";",
-    "java" : "// /* */",
-    "latex" : "%",
-    "lua" : "--",  # ddm 13/02/06
-    "pascal" : "// { }",
-    "perl" : "#",
-    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php" : "// /* */", # 6/23/07: was "//",
-    "plain" : "#", # We must pick something.
-    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python" : "#",
-    "rapidq" : "'", # fil 2004-march-11
-    "rebol" : ";",  # jason 2003-07-03
-    "shell" : "#",  # shell scripts
-    "tcltk" : "#",
-    "unknown" : "#", # Set when @comment is seen.
+    "ada"           : "--",
+    "batch"         : "REM", # Leo 4.5.1
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "unknown"       : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
-    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml" : "<!-- -->",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
 }
 
 self.language_extension_dict = {
     # Keys are languages, values are extensions.
-    "ada" : "ada",
-    "actionscript" : "as", #jason 2003-07-03
-    "autohotkey" : "ahk", #TL - AutoHotkey language
-    "c" : "c",
-    "cpp" : "cpp",
-    "css" : "css", # 4/1/04
-    "cweb" : "w",
-    "elisp" : "el",
-    "forth" : "forth",
-    "fortran" : "f",
-    "fortran90" : "f",
-    "html" : "html",
-    "ini": "ini",
-    "java" : "java",
-    "latex" : "tex", # 1/8/04
-    "lua" : "lua",  # ddm 13/02/06
-    "noweb" : "nw",
-    "pascal" : "p",
-    # "perl" : "perl",
-    # "perlpod" : "perl",
-    "perl" : "pl",      # 11/7/05
-    "perlpod" : "pod",  # 11/7/05
-    "php" : "php",
-    "plain" : "txt",
-    "python" : "py",
-    "plsql" : "sql", # qt02537 2005-05-27
-    "rapidq" : "bas", # fil 2004-march-11
-    "rebol" : "r",    # jason 2003-07-03
-    "shell" : "sh",   # DS 4/1/04
-    "tex" : "tex",
-    "tcltk" : "tcl",
-    "unknown" : "txt", # Set when @comment is seen.
-    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml": "xml",
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
 }
 
 self.extension_dict = {
@@ -18721,7 +18728,9 @@ self.extension_dict = {
     "adb"   : "ada",
     "as"    : "actionscript",
     "bas"   : "rapidq",
+    "bat"   : "batch",
     "c"     : "c",
+    "cfg"   : "config",
     "cpp"   : "cpp",
     "css"   : "css",
     "el"    : "elisp",
@@ -18731,11 +18740,11 @@ self.extension_dict = {
     "html"  : "html",
     "ini"   : "ini",
     "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
     "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
-    # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
     "pod"   : "perlpod", # 11/7/05
     "php"   : "php",
@@ -18756,19 +18765,22 @@ self.extension_dict = {
 # A value of 'none' is a signal to unit tests that no extension file exists.
 self.extra_extension_dict = {
     'actionscript': 'actionscript',
-    'ada':  'ada95',
-    'adb':  'none', # ada??
-    'awk':  'awk',
-    'bas':  'none', # rapidq
-    'cpp':  'c',
-    'el':   'lisp',
-    'f':    'fortran',
-    'nw':   'none', # noweb.
-    'otl':   'none', # vimoutline.
-    'pod':  'perl',
-    'tcl':  'tcl',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
     'unknown_language': 'none',
-    'w':    'none', # cweb
+    'w'     : 'none', # cweb
 }
 #@nonl
 #@-node:ekr.20031218072017.368:<< define global data structures >> app
@@ -18780,24 +18792,19 @@ def marker_from_extension (self,filename,suppressErrors=False):
     x = self
     if not filename: return None
     root,ext = g.os_path_splitext(filename)
-    delims = g.comment_delims_from_extension(filename)
-    for i in (0,1):
-        if delims[i]:
-            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
-            return delims[i]+'@'
-
     if ext=='.tmp':
         root, ext = os.path.splitext(root)
-    if ext in('.cfg','.ksh','.txt'):
-        marker = '#@'
-    elif ext in ('.bat',):
-        marker = "REM@"
+
+    delims = g.comment_delims_from_extension(filename)
+
+    # New in leo 4.5.1: require a single-line delim.
+    if delims[0]:
+        return delims[0]+'@'
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
         marker = g.app.language_delims_dict.get('unknown_language') + '@'
-        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -19418,6 +19425,7 @@ def replaceFileWithString (self,fn,s):
             if exists:
                 g.es('wrote:    ',fn)
             else:
+                # g.trace('created:',fn,g.callers())
                 g.es('created:  ',fn)
         return True
     except IOError:
@@ -19970,7 +19978,7 @@ if isOrphan and isThin:
     p.clearOrphan()
 #@-node:ekr.20040702085529:<< issue informational messages >>
 #@-node:ekr.20031218072017.1863:putVnode
-#@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
+#@+node:ekr.20041005105605.212:at.replaceTargetFileIfDifferent & helper
 def replaceTargetFileIfDifferent (self,root):
 
     '''Create target file as follows:
@@ -20025,6 +20033,7 @@ def replaceTargetFileIfDifferent (self,root):
         # Rename the output file.
         ok = self.rename(self.outputFileName,self.targetFileName)
         if ok:
+            # g.trace('created:',self.targetFileName,g.callers())
             g.es('created:  ',self.targetFileName)
         else:
             # self.rename gives the error.
@@ -20046,7 +20055,7 @@ if (
 
     g.es("correcting line endings in:",self.targetFileName,color="blue")
 #@-node:ekr.20041019090322:<< report if the files differ only in line endings >>
-#@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
+#@-node:ekr.20041005105605.212:at.replaceTargetFileIfDifferent & helper
 #@+node:ekr.20041005105605.147:writeAll (atFile)
 def writeAll(self,
     writeAtFileNodesFlag=False,
@@ -20205,14 +20214,23 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     c.endEditing() # Capture the current headline.
-    at.initWriteIvars(root,targetFileName=None,
+    at.initWriteIvars(root,targetFileName=None, # Not used.
         nosentinels=None, # set below.  Affects only error messages (sometimes).
         thinFile=True, # New in Leo 4.5 b2: private files are thin files.
         scriptWrite=False,
         toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True, # A hack to suppress an error message.
+            # The actual sentinels will be set below.
         write_strips_blank_lines=False,
     )
-            # at.targetFileName not used.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    junk,ext = g.os_path_splitext(fn)
+    marker = x.marker_from_extension(ext)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -20338,14 +20356,23 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     c.endEditing() # Capture the current headline.
-    at.initWriteIvars(root,targetFileName=None,
+    at.initWriteIvars(root,targetFileName=None, # Not used.
         nosentinels=None, # set below.  Affects only error messages (sometimes).
         thinFile=True, # New in Leo 4.5 b2: private files are thin files.
         scriptWrite=False,
         toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True, # A hack to suppress an error message.
+            # The actual sentinels will be set below.
         write_strips_blank_lines=False,
     )
-            # at.targetFileName not used.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    junk,ext = g.os_path_splitext(fn)
+    marker = x.marker_from_extension(ext)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -20542,7 +20569,7 @@ def replaceFileWithString (self,fn,s):
     Return True if theFile was changed.
     '''
 
-    x = self ; testing = g.app.unitTesting
+    x = self ; testing = g.app.unitTesting ; trace = False
 
     exists = g.os_path_exists(fn)
 
@@ -20563,8 +20590,12 @@ def replaceFileWithString (self,fn,s):
     try:
         f = file(fn,'wb')
         f.write(s)
+        if trace: g.trace('fn',fn,
+            '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
+            '\ncallers',g.callers(4))
         f.close()
         if not testing:
+            # g.trace('created:',fn,g.callers())
             if exists:  g.es('wrote:    ',fn)
             else:       g.es('created:  ',fn)
         return True
@@ -20667,11 +20698,8 @@ def openFileForReading(self,fn,fromString=False):
         if at.atShadow:
             x = at.c.shadowController
             # readOneAtShadowNode should already have checked these.
-            shadow_fn       = x.shadowPathName(fn)
-            shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-            # g.trace('fn',fn,'shadow_fn',shadow_fn)
-            # x.updatePublicAndPrivate will create the public file from the private file
-            # if the public file exists. This *is* reasonable: there is nothing to import!
+            shadow_fn     = x.shadowPathName(fn)
+            shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
             if not shadow_exists:
                 g.trace('can not happen: no private file',shadow_fn,g.callers())
                 return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
@@ -20868,22 +20896,17 @@ def readOneAtShadowNode (self,fn,p):
     at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
     fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
-    shadow_fn       = x.shadowPathName(fn)
-    shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+    shadow_fn     = x.shadowPathName(fn)
+    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
     if shadow_exists:
-        # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
-        # This will cause an error if shadaw_fn does not, in fact, contain sentinels.
-        # g.trace('reading shadow_fn',shadow_fn)
-        at.read(p,
-            thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
-            atShadow=True)
-            # at.openFileForReading calls x.updatePublicAndPrivateFiles
+        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+        at.read(p,thinFile=True,atShadow=True)
     else:
         if not g.unitTesting: g.es("reading:",p.headString())
         ok = at.importAtShadowNode(fn,p)
         if ok:
-            # x.makeShadowFile(fn,p)
+            # Create the private file automatically.
             at.writeOneAtShadowNode(p,toString=False,force=True)
 #@+node:ekr.20080712080505.1:importAtShadowNode
 def importAtShadowNode (self,fn,p):
@@ -21356,14 +21379,23 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     c.endEditing() # Capture the current headline.
-    at.initWriteIvars(root,targetFileName=None,
+    at.initWriteIvars(root,targetFileName=None, # Not used.
         nosentinels=None, # set below.  Affects only error messages (sometimes).
         thinFile=True, # New in Leo 4.5 b2: private files are thin files.
         scriptWrite=False,
         toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True, # A hack to suppress an error message.
+            # The actual sentinels will be set below.
         write_strips_blank_lines=False,
     )
-            # at.targetFileName not used.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    junk,ext = g.os_path_splitext(fn)
+    marker = x.marker_from_extension(ext)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -21482,22 +21514,17 @@ def readOneAtShadowNode (self,fn,p):
     at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
     fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
-    shadow_fn       = x.shadowPathName(fn)
-    shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+    shadow_fn     = x.shadowPathName(fn)
+    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
     if shadow_exists:
-        # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
-        # This will cause an error if shadaw_fn does not, in fact, contain sentinels.
-        # g.trace('reading shadow_fn',shadow_fn)
-        at.read(p,
-            thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
-            atShadow=True)
-            # at.openFileForReading calls x.updatePublicAndPrivateFiles
+        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+        at.read(p,thinFile=True,atShadow=True)
     else:
         if not g.unitTesting: g.es("reading:",p.headString())
         ok = at.importAtShadowNode(fn,p)
         if ok:
-            # x.makeShadowFile(fn,p)
+            # Create the private file automatically.
             at.writeOneAtShadowNode(p,toString=False,force=True)
 #@+node:ekr.20080712080505.1:importAtShadowNode
 def importAtShadowNode (self,fn,p):
@@ -21665,14 +21692,23 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     c.endEditing() # Capture the current headline.
-    at.initWriteIvars(root,targetFileName=None,
+    at.initWriteIvars(root,targetFileName=None, # Not used.
         nosentinels=None, # set below.  Affects only error messages (sometimes).
         thinFile=True, # New in Leo 4.5 b2: private files are thin files.
         scriptWrite=False,
         toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True, # A hack to suppress an error message.
+            # The actual sentinels will be set below.
         write_strips_blank_lines=False,
     )
-            # at.targetFileName not used.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    junk,ext = g.os_path_splitext(fn)
+    marker = x.marker_from_extension(ext)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -21814,24 +21850,19 @@ def marker_from_extension (self,filename,suppressErrors=False):
     x = self
     if not filename: return None
     root,ext = g.os_path_splitext(filename)
-    delims = g.comment_delims_from_extension(filename)
-    for i in (0,1):
-        if delims[i]:
-            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
-            return delims[i]+'@'
-
     if ext=='.tmp':
         root, ext = os.path.splitext(root)
-    if ext in('.cfg','.ksh','.txt'):
-        marker = '#@'
-    elif ext in ('.bat',):
-        marker = "REM@"
+
+    delims = g.comment_delims_from_extension(filename)
+
+    # New in leo 4.5.1: require a single-line delim.
+    if delims[0]:
+        return delims[0]+'@'
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
         marker = g.app.language_delims_dict.get('unknown_language') + '@'
-        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -21935,7 +21966,7 @@ def replaceFileWithString (self,fn,s):
     Return True if theFile was changed.
     '''
 
-    x = self ; testing = g.app.unitTesting
+    x = self ; testing = g.app.unitTesting ; trace = False
 
     exists = g.os_path_exists(fn)
 
@@ -21956,8 +21987,12 @@ def replaceFileWithString (self,fn,s):
     try:
         f = file(fn,'wb')
         f.write(s)
+        if trace: g.trace('fn',fn,
+            '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
+            '\ncallers',g.callers(4))
         f.close()
         if not testing:
+            # g.trace('created:',fn,g.callers())
             if exists:  g.es('wrote:    ',fn)
             else:       g.es('created:  ',fn)
         return True
@@ -22263,13 +22298,20 @@ def propagate_changes(self, old_public_file, old_private_file):
     '''Propagate the changes from the public file (without_sentinels)
     to the private file (with_sentinels)'''
 
-    x = self
-
-    # g.trace('old_public_file',old_public_file)
+    x = self ; trace = False
 
     old_public_lines  = file(old_public_file).readlines()
     old_private_lines = file(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
+
+    if trace:
+        g.trace(
+            'marker',marker,
+            '\npublic_file',old_public_file,
+            '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
+            '\nprivate_file',old_private_file,
+            '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
+
     if not marker:
         return False
 
@@ -22408,24 +22450,19 @@ def marker_from_extension (self,filename,suppressErrors=False):
     x = self
     if not filename: return None
     root,ext = g.os_path_splitext(filename)
-    delims = g.comment_delims_from_extension(filename)
-    for i in (0,1):
-        if delims[i]:
-            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
-            return delims[i]+'@'
-
     if ext=='.tmp':
         root, ext = os.path.splitext(root)
-    if ext in('.cfg','.ksh','.txt'):
-        marker = '#@'
-    elif ext in ('.bat',):
-        marker = "REM@"
+
+    delims = g.comment_delims_from_extension(filename)
+
+    # New in leo 4.5.1: require a single-line delim.
+    if delims[0]:
+        return delims[0]+'@'
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
         marker = g.app.language_delims_dict.get('unknown_language') + '@'
-        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -25737,76 +25774,80 @@ def set_delims_from_language(language):
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
     # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada" : "--",
-    "actionscript" : "// /* */", #jason 2003-07-03
-    "autohotkey" : "; /* */", #TL - AutoHotkey language
-    "c" : "// /* */", # C, C++ or objective C.
-    "csharp" : "// /* */", # C#
-    "cpp" : "// /* */",# C++.
-    "css" : "/* */", # 4/1/04
-    "cweb" : "@q@ @>", # Use the "cweb hack"
-    "elisp" : ";",
-    "forth" : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran" : "C",
-    "fortran90" : "!",
-    "html" : "<!-- -->",
-    "ini": ";",
-    "java" : "// /* */",
-    "latex" : "%",
-    "lua" : "--",  # ddm 13/02/06
-    "pascal" : "// { }",
-    "perl" : "#",
-    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php" : "// /* */", # 6/23/07: was "//",
-    "plain" : "#", # We must pick something.
-    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python" : "#",
-    "rapidq" : "'", # fil 2004-march-11
-    "rebol" : ";",  # jason 2003-07-03
-    "shell" : "#",  # shell scripts
-    "tcltk" : "#",
-    "unknown" : "#", # Set when @comment is seen.
+    "ada"           : "--",
+    "batch"         : "REM", # Leo 4.5.1
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "unknown"       : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
-    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml" : "<!-- -->",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
 }
 
 self.language_extension_dict = {
     # Keys are languages, values are extensions.
-    "ada" : "ada",
-    "actionscript" : "as", #jason 2003-07-03
-    "autohotkey" : "ahk", #TL - AutoHotkey language
-    "c" : "c",
-    "cpp" : "cpp",
-    "css" : "css", # 4/1/04
-    "cweb" : "w",
-    "elisp" : "el",
-    "forth" : "forth",
-    "fortran" : "f",
-    "fortran90" : "f",
-    "html" : "html",
-    "ini": "ini",
-    "java" : "java",
-    "latex" : "tex", # 1/8/04
-    "lua" : "lua",  # ddm 13/02/06
-    "noweb" : "nw",
-    "pascal" : "p",
-    # "perl" : "perl",
-    # "perlpod" : "perl",
-    "perl" : "pl",      # 11/7/05
-    "perlpod" : "pod",  # 11/7/05
-    "php" : "php",
-    "plain" : "txt",
-    "python" : "py",
-    "plsql" : "sql", # qt02537 2005-05-27
-    "rapidq" : "bas", # fil 2004-march-11
-    "rebol" : "r",    # jason 2003-07-03
-    "shell" : "sh",   # DS 4/1/04
-    "tex" : "tex",
-    "tcltk" : "tcl",
-    "unknown" : "txt", # Set when @comment is seen.
-    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml": "xml",
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
 }
 
 self.extension_dict = {
@@ -25815,7 +25856,9 @@ self.extension_dict = {
     "adb"   : "ada",
     "as"    : "actionscript",
     "bas"   : "rapidq",
+    "bat"   : "batch",
     "c"     : "c",
+    "cfg"   : "config",
     "cpp"   : "cpp",
     "css"   : "css",
     "el"    : "elisp",
@@ -25825,11 +25868,11 @@ self.extension_dict = {
     "html"  : "html",
     "ini"   : "ini",
     "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
     "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
-    # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
     "pod"   : "perlpod", # 11/7/05
     "php"   : "php",
@@ -25850,19 +25893,22 @@ self.extension_dict = {
 # A value of 'none' is a signal to unit tests that no extension file exists.
 self.extra_extension_dict = {
     'actionscript': 'actionscript',
-    'ada':  'ada95',
-    'adb':  'none', # ada??
-    'awk':  'awk',
-    'bas':  'none', # rapidq
-    'cpp':  'c',
-    'el':   'lisp',
-    'f':    'fortran',
-    'nw':   'none', # noweb.
-    'otl':   'none', # vimoutline.
-    'pod':  'perl',
-    'tcl':  'tcl',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
     'unknown_language': 'none',
-    'w':    'none', # cweb
+    'w'     : 'none', # cweb
 }
 #@nonl
 #@-node:ekr.20031218072017.368:<< define global data structures >> app
@@ -25903,24 +25949,19 @@ def marker_from_extension (self,filename,suppressErrors=False):
     x = self
     if not filename: return None
     root,ext = g.os_path_splitext(filename)
-    delims = g.comment_delims_from_extension(filename)
-    for i in (0,1):
-        if delims[i]:
-            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
-            return delims[i]+'@'
-
     if ext=='.tmp':
         root, ext = os.path.splitext(root)
-    if ext in('.cfg','.ksh','.txt'):
-        marker = '#@'
-    elif ext in ('.bat',):
-        marker = "REM@"
+
+    delims = g.comment_delims_from_extension(filename)
+
+    # New in leo 4.5.1: require a single-line delim.
+    if delims[0]:
+        return delims[0]+'@'
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
         marker = g.app.language_delims_dict.get('unknown_language') + '@'
-        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -25935,13 +25976,20 @@ def propagate_changes(self, old_public_file, old_private_file):
     '''Propagate the changes from the public file (without_sentinels)
     to the private file (with_sentinels)'''
 
-    x = self
-
-    # g.trace('old_public_file',old_public_file)
+    x = self ; trace = False
 
     old_public_lines  = file(old_public_file).readlines()
     old_private_lines = file(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
+
+    if trace:
+        g.trace(
+            'marker',marker,
+            '\npublic_file',old_public_file,
+            '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
+            '\nprivate_file',old_private_file,
+            '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
+
     if not marker:
         return False
 
@@ -26032,13 +26080,20 @@ def propagate_changes(self, old_public_file, old_private_file):
     '''Propagate the changes from the public file (without_sentinels)
     to the private file (with_sentinels)'''
 
-    x = self
-
-    # g.trace('old_public_file',old_public_file)
+    x = self ; trace = False
 
     old_public_lines  = file(old_public_file).readlines()
     old_private_lines = file(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
+
+    if trace:
+        g.trace(
+            'marker',marker,
+            '\npublic_file',old_public_file,
+            '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
+            '\nprivate_file',old_private_file,
+            '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
+
     if not marker:
         return False
 
@@ -26270,24 +26325,19 @@ def marker_from_extension (self,filename,suppressErrors=False):
     x = self
     if not filename: return None
     root,ext = g.os_path_splitext(filename)
-    delims = g.comment_delims_from_extension(filename)
-    for i in (0,1):
-        if delims[i]:
-            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
-            return delims[i]+'@'
-
     if ext=='.tmp':
         root, ext = os.path.splitext(root)
-    if ext in('.cfg','.ksh','.txt'):
-        marker = '#@'
-    elif ext in ('.bat',):
-        marker = "REM@"
+
+    delims = g.comment_delims_from_extension(filename)
+
+    # New in leo 4.5.1: require a single-line delim.
+    if delims[0]:
+        return delims[0]+'@'
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
         marker = g.app.language_delims_dict.get('unknown_language') + '@'
-        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -26316,14 +26366,23 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     c.endEditing() # Capture the current headline.
-    at.initWriteIvars(root,targetFileName=None,
+    at.initWriteIvars(root,targetFileName=None, # Not used.
         nosentinels=None, # set below.  Affects only error messages (sometimes).
         thinFile=True, # New in Leo 4.5 b2: private files are thin files.
         scriptWrite=False,
         toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True, # A hack to suppress an error message.
+            # The actual sentinels will be set below.
         write_strips_blank_lines=False,
     )
-            # at.targetFileName not used.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    junk,ext = g.os_path_splitext(fn)
+    marker = x.marker_from_extension(ext)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -26510,13 +26569,20 @@ def propagate_changes(self, old_public_file, old_private_file):
     '''Propagate the changes from the public file (without_sentinels)
     to the private file (with_sentinels)'''
 
-    x = self
-
-    # g.trace('old_public_file',old_public_file)
+    x = self ; trace = False
 
     old_public_lines  = file(old_public_file).readlines()
     old_private_lines = file(old_private_file).readlines()
     marker = x.marker_from_extension(old_public_file)
+
+    if trace:
+        g.trace(
+            'marker',marker,
+            '\npublic_file',old_public_file,
+            '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
+            '\nprivate_file',old_private_file,
+            '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
+
     if not marker:
         return False
 
@@ -26634,22 +26700,17 @@ def readOneAtShadowNode (self,fn,p):
     at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
     fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
-    shadow_fn       = x.shadowPathName(fn)
-    shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+    shadow_fn     = x.shadowPathName(fn)
+    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
     if shadow_exists:
-        # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
-        # This will cause an error if shadaw_fn does not, in fact, contain sentinels.
-        # g.trace('reading shadow_fn',shadow_fn)
-        at.read(p,
-            thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
-            atShadow=True)
-            # at.openFileForReading calls x.updatePublicAndPrivateFiles
+        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+        at.read(p,thinFile=True,atShadow=True)
     else:
         if not g.unitTesting: g.es("reading:",p.headString())
         ok = at.importAtShadowNode(fn,p)
         if ok:
-            # x.makeShadowFile(fn,p)
+            # Create the private file automatically.
             at.writeOneAtShadowNode(p,toString=False,force=True)
 #@+node:ekr.20080712080505.1:importAtShadowNode
 def importAtShadowNode (self,fn,p):
@@ -26751,11 +26812,8 @@ def openFileForReading(self,fn,fromString=False):
         if at.atShadow:
             x = at.c.shadowController
             # readOneAtShadowNode should already have checked these.
-            shadow_fn       = x.shadowPathName(fn)
-            shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-            # g.trace('fn',fn,'shadow_fn',shadow_fn)
-            # x.updatePublicAndPrivate will create the public file from the private file
-            # if the public file exists. This *is* reasonable: there is nothing to import!
+            shadow_fn     = x.shadowPathName(fn)
+            shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
             if not shadow_exists:
                 g.trace('can not happen: no private file',shadow_fn,g.callers())
                 return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
@@ -26839,7 +26897,7 @@ def printError (self,*args):
 
     keys = {'color': g.choose(at.errors,'blue','red')}
 
-    g.es_error(*args,**keys)
+    g.es_print_error(*args,**keys)
 #@-node:ekr.20041005105605.220:atFile.error & printError
 #@+node:ekr.20080712150045.1:at.replaceFileWithString
 def replaceFileWithString (self,fn,s):
@@ -26878,6 +26936,7 @@ def replaceFileWithString (self,fn,s):
             if exists:
                 g.es('wrote:    ',fn)
             else:
+                # g.trace('created:',fn,g.callers())
                 g.es('created:  ',fn)
         return True
     except IOError:
@@ -26955,14 +27014,23 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     c.endEditing() # Capture the current headline.
-    at.initWriteIvars(root,targetFileName=None,
+    at.initWriteIvars(root,targetFileName=None, # Not used.
         nosentinels=None, # set below.  Affects only error messages (sometimes).
         thinFile=True, # New in Leo 4.5 b2: private files are thin files.
         scriptWrite=False,
         toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True, # A hack to suppress an error message.
+            # The actual sentinels will be set below.
         write_strips_blank_lines=False,
     )
-            # at.targetFileName not used.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    junk,ext = g.os_path_splitext(fn)
+    marker = x.marker_from_extension(ext)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -27916,7 +27984,7 @@ def scanUnknownFileType (self,s,p,ext,atAuto=False):
     c = self.c
     changed = c.isChanged()
     body = g.choose(atAuto,'','@ignore\n')
-    if ext in ('.html','.htm'): body += '@language html\n'
+    if ext in ('.html','.htm'):   body += '@language html\n'
     elif ext in ('.txt','.text'): body += '@nocolor\n'
     else:
         language = self.languageForExtension(ext)
@@ -27935,24 +28003,25 @@ def languageForExtension (self,ext):
 
     '''Return the language corresponding to the extensiion ext.'''
 
+    unknown = 'unknown_language'
+
     if ext.startswith('.'): ext = ext[1:]
 
-    language = ext and (
-        g.app.extra_extension_dict.get(ext) or
-        g.app.extension_dict.get(ext) or
-        'unknown_language'
-    )
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
 
     # g.trace(ext,repr(language))
 
     # Return the language even if there is no colorizer mode for it.
     return language
-
-    # if language:
-        # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-            # return language
-
-    # return None
 #@-node:ekr.20080811174246.1:languageForExtension
 #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
 #@-node:ekr.20080730095710.61:Added @bool suppress_import_parsing setting
@@ -27965,76 +28034,80 @@ For example, @auto x.css would put @language css in the root node.
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
     # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada" : "--",
-    "actionscript" : "// /* */", #jason 2003-07-03
-    "autohotkey" : "; /* */", #TL - AutoHotkey language
-    "c" : "// /* */", # C, C++ or objective C.
-    "csharp" : "// /* */", # C#
-    "cpp" : "// /* */",# C++.
-    "css" : "/* */", # 4/1/04
-    "cweb" : "@q@ @>", # Use the "cweb hack"
-    "elisp" : ";",
-    "forth" : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran" : "C",
-    "fortran90" : "!",
-    "html" : "<!-- -->",
-    "ini": ";",
-    "java" : "// /* */",
-    "latex" : "%",
-    "lua" : "--",  # ddm 13/02/06
-    "pascal" : "// { }",
-    "perl" : "#",
-    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php" : "// /* */", # 6/23/07: was "//",
-    "plain" : "#", # We must pick something.
-    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python" : "#",
-    "rapidq" : "'", # fil 2004-march-11
-    "rebol" : ";",  # jason 2003-07-03
-    "shell" : "#",  # shell scripts
-    "tcltk" : "#",
-    "unknown" : "#", # Set when @comment is seen.
+    "ada"           : "--",
+    "batch"         : "REM", # Leo 4.5.1
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "unknown"       : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
-    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml" : "<!-- -->",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
 }
 
 self.language_extension_dict = {
     # Keys are languages, values are extensions.
-    "ada" : "ada",
-    "actionscript" : "as", #jason 2003-07-03
-    "autohotkey" : "ahk", #TL - AutoHotkey language
-    "c" : "c",
-    "cpp" : "cpp",
-    "css" : "css", # 4/1/04
-    "cweb" : "w",
-    "elisp" : "el",
-    "forth" : "forth",
-    "fortran" : "f",
-    "fortran90" : "f",
-    "html" : "html",
-    "ini": "ini",
-    "java" : "java",
-    "latex" : "tex", # 1/8/04
-    "lua" : "lua",  # ddm 13/02/06
-    "noweb" : "nw",
-    "pascal" : "p",
-    # "perl" : "perl",
-    # "perlpod" : "perl",
-    "perl" : "pl",      # 11/7/05
-    "perlpod" : "pod",  # 11/7/05
-    "php" : "php",
-    "plain" : "txt",
-    "python" : "py",
-    "plsql" : "sql", # qt02537 2005-05-27
-    "rapidq" : "bas", # fil 2004-march-11
-    "rebol" : "r",    # jason 2003-07-03
-    "shell" : "sh",   # DS 4/1/04
-    "tex" : "tex",
-    "tcltk" : "tcl",
-    "unknown" : "txt", # Set when @comment is seen.
-    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml": "xml",
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
 }
 
 self.extension_dict = {
@@ -28043,7 +28116,9 @@ self.extension_dict = {
     "adb"   : "ada",
     "as"    : "actionscript",
     "bas"   : "rapidq",
+    "bat"   : "batch",
     "c"     : "c",
+    "cfg"   : "config",
     "cpp"   : "cpp",
     "css"   : "css",
     "el"    : "elisp",
@@ -28053,11 +28128,11 @@ self.extension_dict = {
     "html"  : "html",
     "ini"   : "ini",
     "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
     "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
-    # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
     "pod"   : "perlpod", # 11/7/05
     "php"   : "php",
@@ -28078,19 +28153,22 @@ self.extension_dict = {
 # A value of 'none' is a signal to unit tests that no extension file exists.
 self.extra_extension_dict = {
     'actionscript': 'actionscript',
-    'ada':  'ada95',
-    'adb':  'none', # ada??
-    'awk':  'awk',
-    'bas':  'none', # rapidq
-    'cpp':  'c',
-    'el':   'lisp',
-    'f':    'fortran',
-    'nw':   'none', # noweb.
-    'otl':   'none', # vimoutline.
-    'pod':  'perl',
-    'tcl':  'tcl',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
     'unknown_language': 'none',
-    'w':    'none', # cweb
+    'w'     : 'none', # cweb
 }
 #@nonl
 #@-node:ekr.20031218072017.368:<< define global data structures >> app
@@ -28100,7 +28178,7 @@ def scanUnknownFileType (self,s,p,ext,atAuto=False):
     c = self.c
     changed = c.isChanged()
     body = g.choose(atAuto,'','@ignore\n')
-    if ext in ('.html','.htm'): body += '@language html\n'
+    if ext in ('.html','.htm'):   body += '@language html\n'
     elif ext in ('.txt','.text'): body += '@nocolor\n'
     else:
         language = self.languageForExtension(ext)
@@ -28119,24 +28197,25 @@ def languageForExtension (self,ext):
 
     '''Return the language corresponding to the extensiion ext.'''
 
+    unknown = 'unknown_language'
+
     if ext.startswith('.'): ext = ext[1:]
 
-    language = ext and (
-        g.app.extra_extension_dict.get(ext) or
-        g.app.extension_dict.get(ext) or
-        'unknown_language'
-    )
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
 
     # g.trace(ext,repr(language))
 
     # Return the language even if there is no colorizer mode for it.
     return language
-
-    # if language:
-        # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-            # return language
-
-    # return None
 #@-node:ekr.20080811174246.1:languageForExtension
 #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
 #@-node:ekr.20080425054202.1:Added @language x during @auto if modes/x.py exists
@@ -28935,7 +29014,7 @@ def scanUnknownFileType (self,s,p,ext,atAuto=False):
     c = self.c
     changed = c.isChanged()
     body = g.choose(atAuto,'','@ignore\n')
-    if ext in ('.html','.htm'): body += '@language html\n'
+    if ext in ('.html','.htm'):   body += '@language html\n'
     elif ext in ('.txt','.text'): body += '@nocolor\n'
     else:
         language = self.languageForExtension(ext)
@@ -28954,24 +29033,25 @@ def languageForExtension (self,ext):
 
     '''Return the language corresponding to the extensiion ext.'''
 
+    unknown = 'unknown_language'
+
     if ext.startswith('.'): ext = ext[1:]
 
-    language = ext and (
-        g.app.extra_extension_dict.get(ext) or
-        g.app.extension_dict.get(ext) or
-        'unknown_language'
-    )
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
 
     # g.trace(ext,repr(language))
 
     # Return the language even if there is no colorizer mode for it.
     return language
-
-    # if language:
-        # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-            # return language
-
-    # return None
 #@-node:ekr.20080811174246.1:languageForExtension
 #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
 #@+node:ekr.20080811174246.1:languageForExtension
@@ -28979,24 +29059,25 @@ def languageForExtension (self,ext):
 
     '''Return the language corresponding to the extensiion ext.'''
 
+    unknown = 'unknown_language'
+
     if ext.startswith('.'): ext = ext[1:]
 
-    language = ext and (
-        g.app.extra_extension_dict.get(ext) or
-        g.app.extension_dict.get(ext) or
-        'unknown_language'
-    )
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
 
     # g.trace(ext,repr(language))
 
     # Return the language even if there is no colorizer mode for it.
     return language
-
-    # if language:
-        # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-            # return language
-
-    # return None
 #@-node:ekr.20080811174246.1:languageForExtension
 #@+node:ekr.20080708094444.9:x.marker_from_extension
 def marker_from_extension (self,filename,suppressErrors=False):
@@ -29006,24 +29087,19 @@ def marker_from_extension (self,filename,suppressErrors=False):
     x = self
     if not filename: return None
     root,ext = g.os_path_splitext(filename)
-    delims = g.comment_delims_from_extension(filename)
-    for i in (0,1):
-        if delims[i]:
-            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
-            return delims[i]+'@'
-
     if ext=='.tmp':
         root, ext = os.path.splitext(root)
-    if ext in('.cfg','.ksh','.txt'):
-        marker = '#@'
-    elif ext in ('.bat',):
-        marker = "REM@"
+
+    delims = g.comment_delims_from_extension(filename)
+
+    # New in leo 4.5.1: require a single-line delim.
+    if delims[0]:
+        return delims[0]+'@'
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
         marker = g.app.language_delims_dict.get('unknown_language') + '@'
-        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -29033,76 +29109,80 @@ def marker_from_extension (self,filename,suppressErrors=False):
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
     # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada" : "--",
-    "actionscript" : "// /* */", #jason 2003-07-03
-    "autohotkey" : "; /* */", #TL - AutoHotkey language
-    "c" : "// /* */", # C, C++ or objective C.
-    "csharp" : "// /* */", # C#
-    "cpp" : "// /* */",# C++.
-    "css" : "/* */", # 4/1/04
-    "cweb" : "@q@ @>", # Use the "cweb hack"
-    "elisp" : ";",
-    "forth" : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran" : "C",
-    "fortran90" : "!",
-    "html" : "<!-- -->",
-    "ini": ";",
-    "java" : "// /* */",
-    "latex" : "%",
-    "lua" : "--",  # ddm 13/02/06
-    "pascal" : "// { }",
-    "perl" : "#",
-    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php" : "// /* */", # 6/23/07: was "//",
-    "plain" : "#", # We must pick something.
-    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python" : "#",
-    "rapidq" : "'", # fil 2004-march-11
-    "rebol" : ";",  # jason 2003-07-03
-    "shell" : "#",  # shell scripts
-    "tcltk" : "#",
-    "unknown" : "#", # Set when @comment is seen.
+    "ada"           : "--",
+    "batch"         : "REM", # Leo 4.5.1
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "unknown"       : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
-    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml" : "<!-- -->",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
 }
 
 self.language_extension_dict = {
     # Keys are languages, values are extensions.
-    "ada" : "ada",
-    "actionscript" : "as", #jason 2003-07-03
-    "autohotkey" : "ahk", #TL - AutoHotkey language
-    "c" : "c",
-    "cpp" : "cpp",
-    "css" : "css", # 4/1/04
-    "cweb" : "w",
-    "elisp" : "el",
-    "forth" : "forth",
-    "fortran" : "f",
-    "fortran90" : "f",
-    "html" : "html",
-    "ini": "ini",
-    "java" : "java",
-    "latex" : "tex", # 1/8/04
-    "lua" : "lua",  # ddm 13/02/06
-    "noweb" : "nw",
-    "pascal" : "p",
-    # "perl" : "perl",
-    # "perlpod" : "perl",
-    "perl" : "pl",      # 11/7/05
-    "perlpod" : "pod",  # 11/7/05
-    "php" : "php",
-    "plain" : "txt",
-    "python" : "py",
-    "plsql" : "sql", # qt02537 2005-05-27
-    "rapidq" : "bas", # fil 2004-march-11
-    "rebol" : "r",    # jason 2003-07-03
-    "shell" : "sh",   # DS 4/1/04
-    "tex" : "tex",
-    "tcltk" : "tcl",
-    "unknown" : "txt", # Set when @comment is seen.
-    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml": "xml",
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
 }
 
 self.extension_dict = {
@@ -29111,7 +29191,9 @@ self.extension_dict = {
     "adb"   : "ada",
     "as"    : "actionscript",
     "bas"   : "rapidq",
+    "bat"   : "batch",
     "c"     : "c",
+    "cfg"   : "config",
     "cpp"   : "cpp",
     "css"   : "css",
     "el"    : "elisp",
@@ -29121,11 +29203,11 @@ self.extension_dict = {
     "html"  : "html",
     "ini"   : "ini",
     "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
     "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
-    # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
     "pod"   : "perlpod", # 11/7/05
     "php"   : "php",
@@ -29146,19 +29228,22 @@ self.extension_dict = {
 # A value of 'none' is a signal to unit tests that no extension file exists.
 self.extra_extension_dict = {
     'actionscript': 'actionscript',
-    'ada':  'ada95',
-    'adb':  'none', # ada??
-    'awk':  'awk',
-    'bas':  'none', # rapidq
-    'cpp':  'c',
-    'el':   'lisp',
-    'f':    'fortran',
-    'nw':   'none', # noweb.
-    'otl':   'none', # vimoutline.
-    'pod':  'perl',
-    'tcl':  'tcl',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
     'unknown_language': 'none',
-    'w':    'none', # cweb
+    'w'     : 'none', # cweb
 }
 #@nonl
 #@-node:ekr.20031218072017.368:<< define global data structures >> app
@@ -29193,24 +29278,19 @@ def marker_from_extension (self,filename,suppressErrors=False):
     x = self
     if not filename: return None
     root,ext = g.os_path_splitext(filename)
-    delims = g.comment_delims_from_extension(filename)
-    for i in (0,1):
-        if delims[i]:
-            # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
-            return delims[i]+'@'
-
     if ext=='.tmp':
         root, ext = os.path.splitext(root)
-    if ext in('.cfg','.ksh','.txt'):
-        marker = '#@'
-    elif ext in ('.bat',):
-        marker = "REM@"
+
+    delims = g.comment_delims_from_extension(filename)
+
+    # New in leo 4.5.1: require a single-line delim.
+    if delims[0]:
+        return delims[0]+'@'
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
         marker = g.app.language_delims_dict.get('unknown_language') + '@'
-        # g.trace('unknown language marker',marker)
 
     return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
@@ -29243,14 +29323,23 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     c.endEditing() # Capture the current headline.
-    at.initWriteIvars(root,targetFileName=None,
+    at.initWriteIvars(root,targetFileName=None, # Not used.
         nosentinels=None, # set below.  Affects only error messages (sometimes).
         thinFile=True, # New in Leo 4.5 b2: private files are thin files.
         scriptWrite=False,
         toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True, # A hack to suppress an error message.
+            # The actual sentinels will be set below.
         write_strips_blank_lines=False,
     )
-            # at.targetFileName not used.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    junk,ext = g.os_path_splitext(fn)
+    marker = x.marker_from_extension(ext)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -29714,7 +29803,7 @@ def trace (*args,**keys):
         else:
             g.pr(name + ": " + message,)
 #@-node:ekr.20031218072017.2317:trace
-#@+node:ekr.20031218072017.3110:es_error
+#@+node:ekr.20031218072017.3110:es_error & es_print_error
 def es_error (*args,**keys):
 
     color = keys.get('color')
@@ -29725,13 +29814,15 @@ def es_error (*args,**keys):
     g.es(*args,**keys)
 
 
-# def es_error (s,color=None):
+def es_print_error (*args,**keys):
 
-    # if color is None and g.app.config: # May not exist during initialization.
-        # color = g.app.config.getColor(None,"log_error_color") or 'red'
+    color = keys.get('color')
 
-    # g.es(s,color=color)
-#@-node:ekr.20031218072017.3110:es_error
+    if color is None and g.app.config:
+        keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
+
+    g.es_print(*args,**keys)
+#@-node:ekr.20031218072017.3110:es_error & es_print_error
 #@+node:ekr.20041005105605.220:atFile.error & printError
 def error(self,*args):
 
@@ -29750,7 +29841,7 @@ def printError (self,*args):
 
     keys = {'color': g.choose(at.errors,'blue','red')}
 
-    g.es_error(*args,**keys)
+    g.es_print_error(*args,**keys)
 #@-node:ekr.20041005105605.220:atFile.error & printError
 #@+node:ekr.20031218072017.3145:Most common functions...
 # These are guaranteed always to exist for scripts.
@@ -30188,9 +30279,9 @@ def printError (self,*args):
 
     keys = {'color': g.choose(at.errors,'blue','red')}
 
-    g.es_error(*args,**keys)
+    g.es_print_error(*args,**keys)
 #@-node:ekr.20041005105605.220:atFile.error & printError
-#@+node:ekr.20031218072017.3110:es_error
+#@+node:ekr.20031218072017.3110:es_error & es_print_error
 def es_error (*args,**keys):
 
     color = keys.get('color')
@@ -30201,13 +30292,15 @@ def es_error (*args,**keys):
     g.es(*args,**keys)
 
 
-# def es_error (s,color=None):
+def es_print_error (*args,**keys):
 
-    # if color is None and g.app.config: # May not exist during initialization.
-        # color = g.app.config.getColor(None,"log_error_color") or 'red'
+    color = keys.get('color')
 
-    # g.es(s,color=color)
-#@-node:ekr.20031218072017.3110:es_error
+    if color is None and g.app.config:
+        keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
+
+    g.es_print(*args,**keys)
+#@-node:ekr.20031218072017.3110:es_error & es_print_error
 #@+node:ekr.20080821111630.2:Standard test
 @first # -*- coding: utf-8 -*-
 
@@ -31122,76 +31215,80 @@ self.use_unicode = True # True: use new unicode logic.
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
     # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada" : "--",
-    "actionscript" : "// /* */", #jason 2003-07-03
-    "autohotkey" : "; /* */", #TL - AutoHotkey language
-    "c" : "// /* */", # C, C++ or objective C.
-    "csharp" : "// /* */", # C#
-    "cpp" : "// /* */",# C++.
-    "css" : "/* */", # 4/1/04
-    "cweb" : "@q@ @>", # Use the "cweb hack"
-    "elisp" : ";",
-    "forth" : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran" : "C",
-    "fortran90" : "!",
-    "html" : "<!-- -->",
-    "ini": ";",
-    "java" : "// /* */",
-    "latex" : "%",
-    "lua" : "--",  # ddm 13/02/06
-    "pascal" : "// { }",
-    "perl" : "#",
-    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php" : "// /* */", # 6/23/07: was "//",
-    "plain" : "#", # We must pick something.
-    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python" : "#",
-    "rapidq" : "'", # fil 2004-march-11
-    "rebol" : ";",  # jason 2003-07-03
-    "shell" : "#",  # shell scripts
-    "tcltk" : "#",
-    "unknown" : "#", # Set when @comment is seen.
+    "ada"           : "--",
+    "batch"         : "REM", # Leo 4.5.1
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "unknown"       : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
-    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml" : "<!-- -->",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
 }
 
 self.language_extension_dict = {
     # Keys are languages, values are extensions.
-    "ada" : "ada",
-    "actionscript" : "as", #jason 2003-07-03
-    "autohotkey" : "ahk", #TL - AutoHotkey language
-    "c" : "c",
-    "cpp" : "cpp",
-    "css" : "css", # 4/1/04
-    "cweb" : "w",
-    "elisp" : "el",
-    "forth" : "forth",
-    "fortran" : "f",
-    "fortran90" : "f",
-    "html" : "html",
-    "ini": "ini",
-    "java" : "java",
-    "latex" : "tex", # 1/8/04
-    "lua" : "lua",  # ddm 13/02/06
-    "noweb" : "nw",
-    "pascal" : "p",
-    # "perl" : "perl",
-    # "perlpod" : "perl",
-    "perl" : "pl",      # 11/7/05
-    "perlpod" : "pod",  # 11/7/05
-    "php" : "php",
-    "plain" : "txt",
-    "python" : "py",
-    "plsql" : "sql", # qt02537 2005-05-27
-    "rapidq" : "bas", # fil 2004-march-11
-    "rebol" : "r",    # jason 2003-07-03
-    "shell" : "sh",   # DS 4/1/04
-    "tex" : "tex",
-    "tcltk" : "tcl",
-    "unknown" : "txt", # Set when @comment is seen.
-    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml": "xml",
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
 }
 
 self.extension_dict = {
@@ -31200,7 +31297,9 @@ self.extension_dict = {
     "adb"   : "ada",
     "as"    : "actionscript",
     "bas"   : "rapidq",
+    "bat"   : "batch",
     "c"     : "c",
+    "cfg"   : "config",
     "cpp"   : "cpp",
     "css"   : "css",
     "el"    : "elisp",
@@ -31210,11 +31309,11 @@ self.extension_dict = {
     "html"  : "html",
     "ini"   : "ini",
     "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
     "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
-    # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
     "pod"   : "perlpod", # 11/7/05
     "php"   : "php",
@@ -31235,19 +31334,22 @@ self.extension_dict = {
 # A value of 'none' is a signal to unit tests that no extension file exists.
 self.extra_extension_dict = {
     'actionscript': 'actionscript',
-    'ada':  'ada95',
-    'adb':  'none', # ada??
-    'awk':  'awk',
-    'bas':  'none', # rapidq
-    'cpp':  'c',
-    'el':   'lisp',
-    'f':    'fortran',
-    'nw':   'none', # noweb.
-    'otl':   'none', # vimoutline.
-    'pod':  'perl',
-    'tcl':  'tcl',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
     'unknown_language': 'none',
-    'w':    'none', # cweb
+    'w'     : 'none', # cweb
 }
 #@nonl
 #@-node:ekr.20031218072017.368:<< define global data structures >> app
@@ -32773,6 +32875,7 @@ def replaceFileWithString (self,fn,s):
             if exists:
                 g.es('wrote:    ',fn)
             else:
+                # g.trace('created:',fn,g.callers())
                 g.es('created:  ',fn)
         return True
     except IOError:
@@ -32930,14 +33033,23 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     c.endEditing() # Capture the current headline.
-    at.initWriteIvars(root,targetFileName=None,
+    at.initWriteIvars(root,targetFileName=None, # Not used.
         nosentinels=None, # set below.  Affects only error messages (sometimes).
         thinFile=True, # New in Leo 4.5 b2: private files are thin files.
         scriptWrite=False,
         toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True, # A hack to suppress an error message.
+            # The actual sentinels will be set below.
         write_strips_blank_lines=False,
     )
-            # at.targetFileName not used.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    junk,ext = g.os_path_splitext(fn)
+    marker = x.marker_from_extension(ext)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -34294,6 +34406,8 @@ c.target_language to 'unknown_language' when the file extension is unknown.
 #@+node:ekr.20080903090153.2:Report
 @nocolor
 
+http://groups.google.com/group/leo-editor/browse_thread/thread/3a9010730ae0310e#
+
 My tests with @shadow notes showed me that when I read a @shadow tree
 with File/read @shadow Nodes is perfect. And the private file has the
 sentinels.
@@ -34330,76 +34444,80 @@ Sven
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
     # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada" : "--",
-    "actionscript" : "// /* */", #jason 2003-07-03
-    "autohotkey" : "; /* */", #TL - AutoHotkey language
-    "c" : "// /* */", # C, C++ or objective C.
-    "csharp" : "// /* */", # C#
-    "cpp" : "// /* */",# C++.
-    "css" : "/* */", # 4/1/04
-    "cweb" : "@q@ @>", # Use the "cweb hack"
-    "elisp" : ";",
-    "forth" : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran" : "C",
-    "fortran90" : "!",
-    "html" : "<!-- -->",
-    "ini": ";",
-    "java" : "// /* */",
-    "latex" : "%",
-    "lua" : "--",  # ddm 13/02/06
-    "pascal" : "// { }",
-    "perl" : "#",
-    "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php" : "// /* */", # 6/23/07: was "//",
-    "plain" : "#", # We must pick something.
-    "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python" : "#",
-    "rapidq" : "'", # fil 2004-march-11
-    "rebol" : ";",  # jason 2003-07-03
-    "shell" : "#",  # shell scripts
-    "tcltk" : "#",
-    "unknown" : "#", # Set when @comment is seen.
+    "ada"           : "--",
+    "batch"         : "REM", # Leo 4.5.1
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "unknown"       : "#", # Set when @comment is seen.
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
-    "vimoutline" : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml" : "<!-- -->",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
 }
 
 self.language_extension_dict = {
     # Keys are languages, values are extensions.
-    "ada" : "ada",
-    "actionscript" : "as", #jason 2003-07-03
-    "autohotkey" : "ahk", #TL - AutoHotkey language
-    "c" : "c",
-    "cpp" : "cpp",
-    "css" : "css", # 4/1/04
-    "cweb" : "w",
-    "elisp" : "el",
-    "forth" : "forth",
-    "fortran" : "f",
-    "fortran90" : "f",
-    "html" : "html",
-    "ini": "ini",
-    "java" : "java",
-    "latex" : "tex", # 1/8/04
-    "lua" : "lua",  # ddm 13/02/06
-    "noweb" : "nw",
-    "pascal" : "p",
-    # "perl" : "perl",
-    # "perlpod" : "perl",
-    "perl" : "pl",      # 11/7/05
-    "perlpod" : "pod",  # 11/7/05
-    "php" : "php",
-    "plain" : "txt",
-    "python" : "py",
-    "plsql" : "sql", # qt02537 2005-05-27
-    "rapidq" : "bas", # fil 2004-march-11
-    "rebol" : "r",    # jason 2003-07-03
-    "shell" : "sh",   # DS 4/1/04
-    "tex" : "tex",
-    "tcltk" : "tcl",
-    "unknown" : "txt", # Set when @comment is seen.
-    "vimoutline" : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml": "xml",
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
 }
 
 self.extension_dict = {
@@ -34408,7 +34526,9 @@ self.extension_dict = {
     "adb"   : "ada",
     "as"    : "actionscript",
     "bas"   : "rapidq",
+    "bat"   : "batch",
     "c"     : "c",
+    "cfg"   : "config",
     "cpp"   : "cpp",
     "css"   : "css",
     "el"    : "elisp",
@@ -34418,11 +34538,11 @@ self.extension_dict = {
     "html"  : "html",
     "ini"   : "ini",
     "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
     "lua"   : "lua",  # ddm 13/02/06
     "nw"    : "noweb",
     "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
     "p"     : "pascal",
-    # "perl"  : "perl",
     "pl"    : "perl",   # 11/7/05
     "pod"   : "perlpod", # 11/7/05
     "php"   : "php",
@@ -34443,19 +34563,22 @@ self.extension_dict = {
 # A value of 'none' is a signal to unit tests that no extension file exists.
 self.extra_extension_dict = {
     'actionscript': 'actionscript',
-    'ada':  'ada95',
-    'adb':  'none', # ada??
-    'awk':  'awk',
-    'bas':  'none', # rapidq
-    'cpp':  'c',
-    'el':   'lisp',
-    'f':    'fortran',
-    'nw':   'none', # noweb.
-    'otl':   'none', # vimoutline.
-    'pod':  'perl',
-    'tcl':  'tcl',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
     'unknown_language': 'none',
-    'w':    'none', # cweb
+    'w'     : 'none', # cweb
 }
 #@nonl
 #@-node:ekr.20031218072017.368:<< define global data structures >> app
@@ -34570,14 +34693,23 @@ def writeOneAtShadowNode(self,p,toString,force):
         return False
 
     c.endEditing() # Capture the current headline.
-    at.initWriteIvars(root,targetFileName=None,
+    at.initWriteIvars(root,targetFileName=None, # Not used.
         nosentinels=None, # set below.  Affects only error messages (sometimes).
         thinFile=True, # New in Leo 4.5 b2: private files are thin files.
         scriptWrite=False,
         toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True, # A hack to suppress an error message.
+            # The actual sentinels will be set below.
         write_strips_blank_lines=False,
     )
-            # at.targetFileName not used.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    junk,ext = g.os_path_splitext(fn)
+    marker = x.marker_from_extension(ext)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -34679,6 +34811,991 @@ def adjustTargetLanguage (self,fn):
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@-node:ekr.20080903090153.1:Fixed (?) problems with read/write at-shadow file
+#@+node:ekr.20080909080104.1:Fixed @shadow bug with .bat files
+@ Any special cases in marker_from_extension would be a bug.
+
+What I did:
+
+- Use x.marker_from_extension to determine the comment delims in writeOneAtShadowNode.
+
+- Removed all special cases x.marker_from_extension and importCommands.languageFromExtention:
+  these now use only the language dicts in leoApp.leo.
+
+- Added entries for .bat and .cfg and .ksh extentions (and corresponding languages) to these dicts.
+#@nonl
+#@+node:ekr.20031218072017.368:<< define global data structures >> app
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM", # Leo 4.5.1
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "w"     : "cweb",
+    "xml"   : "xml",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+#@nonl
+#@-node:ekr.20031218072017.368:<< define global data structures >> app
+#@+node:ekr.20080708094444.9:x.marker_from_extension
+def marker_from_extension (self,filename,suppressErrors=False):
+
+    '''Return the sentinel delimiter comment to be used for filename.'''
+
+    x = self
+    if not filename: return None
+    root,ext = g.os_path_splitext(filename)
+    if ext=='.tmp':
+        root, ext = os.path.splitext(root)
+
+    delims = g.comment_delims_from_extension(filename)
+
+    # New in leo 4.5.1: require a single-line delim.
+    if delims[0]:
+        return delims[0]+'@'
+    else:
+        # Yes, we *can* use a special marker for unknown languages,
+        # provided we make it impossible to type by mistake,
+        # and provided no real language will be the prefix of the comment delim.
+        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+
+    return marker
+#@-node:ekr.20080708094444.9:x.marker_from_extension
+#@+node:ekr.20080811174246.1:languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extensiion ext.'''
+
+    unknown = 'unknown_language'
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
+
+    # g.trace(ext,repr(language))
+
+    # Return the language even if there is no colorizer mode for it.
+    return language
+#@-node:ekr.20080811174246.1:languageForExtension
+#@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+def scanUnknownFileType (self,s,p,ext,atAuto=False):
+
+    c = self.c
+    changed = c.isChanged()
+    body = g.choose(atAuto,'','@ignore\n')
+    if ext in ('.html','.htm'):   body += '@language html\n'
+    elif ext in ('.txt','.text'): body += '@nocolor\n'
+    else:
+        language = self.languageForExtension(ext)
+        if language: body += '@language %s\n' % language
+
+    c.setBodyString(p,body + self.rootLine + s)
+    if atAuto:
+        for p in p.self_and_subtree_iter():
+            p.clearDirty()
+        if not changed:
+            c.setChanged(False)
+
+    g.app.unitTestDict = {'result':True}
+#@+node:ekr.20080811174246.1:languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extensiion ext.'''
+
+    unknown = 'unknown_language'
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
+
+    # g.trace(ext,repr(language))
+
+    # Return the language even if there is no colorizer mode for it.
+    return language
+#@-node:ekr.20080811174246.1:languageForExtension
+#@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+#@+node:ekr.20041005105605.129:scanHeader  (3.x and 4.x)
+def scanHeader(self,theFile,fileName):
+
+    """Scan the @+leo sentinel.
+
+    Sets self.encoding, and self.start/endSentinelComment.
+
+    Returns (firstLines,new_df,isThinDerivedFile) where:
+    firstLines        contains all @first lines,
+    new_df            is True if we are reading a new-format derived file.
+    isThinDerivedFile is True if the file is an @thin file."""
+
+    at = self
+    firstLines = [] # The lines before @+leo.
+    tag = "@+leo"
+    valid = True ; new_df = False ; isThinDerivedFile = False
+    << skip any non @+leo lines >>
+    if valid:
+        valid,new_df,start,end,isThinDerivedFile = at.parseLeoSentinel(s)
+    if valid:
+        at.startSentinelComment = start
+        at.endSentinelComment = end
+        # g.trace('start',repr(start),'end',repr(end))
+    else:
+        at.error("Bad @+leo sentinel in: %s" % fileName)
+    # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
+    return firstLines,new_df,isThinDerivedFile
+#@+node:ekr.20041005105605.130:<< skip any non @+leo lines >>
+@ Queue up the lines before the @+leo.  These will be used to add as parameters to the @first directives, if any.  Empty lines are ignored (because empty @first directives are ignored). NOTE: the function now returns a list of the lines before @+leo.
+
+We can not call sentinelKind here because that depends on the comment delimiters we set here.  @first lines are written "verbatim", so nothing more needs to be done!
+@c
+
+s = at.readLine(theFile)
+while len(s) > 0:
+    j = s.find(tag)
+    if j != -1: break
+    firstLines.append(s) # Queue the line
+    s = at.readLine(theFile)
+
+n = len(s)
+valid = n > 0
+#@-node:ekr.20041005105605.130:<< skip any non @+leo lines >>
+#@-node:ekr.20041005105605.129:scanHeader  (3.x and 4.x)
+#@+node:ekr.20080909080104.3:Read shadow file logic
+#@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+def readOneAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c ; x = c.shadowController
+
+    if not fn == p.atShadowFileNodeName():
+        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
+            fn, p.atShadowFileNodeName()))
+
+    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+
+    fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
+    shadow_fn     = x.shadowPathName(fn)
+    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+
+    if shadow_exists:
+        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+        at.read(p,thinFile=True,atShadow=True)
+    else:
+        if not g.unitTesting: g.es("reading:",p.headString())
+        ok = at.importAtShadowNode(fn,p)
+        if ok:
+            # Create the private file automatically.
+            at.writeOneAtShadowNode(p,toString=False,force=True)
+#@+node:ekr.20080712080505.1:importAtShadowNode
+def importAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c  ; ic = c.importCommands
+    oldChanged = c.isChanged()
+
+    # Delete all the child nodes.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    # Import the outline, exactly as @auto does.
+    ic.createOutline(fn,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @shadow',fn,color='red')
+
+    if ic.errors or not g.os_path_exists(fn):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+
+    # else: g.doHook('after-shadow', p = p)
+
+    return ic.errors == 0
+#@-node:ekr.20080712080505.1:importAtShadowNode
+#@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+#@+node:ekr.20041005105605.21:read (atFile)
+def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName >>
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    if at.errors: return False
+    fileName = at.openFileForReading(fileName,fromString=fromString)
+    if not at.inputFile: return False
+    if not g.unitTesting:
+        g.es("reading:",root.headString())
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+#@-node:ekr.20041005105605.22:<< set fileName >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+resurrected = 0
+for p in root.self_and_subtree_iter():
+
+    if not p.v.t.isVisited():
+        g.es('resurrected node:',p.headString(),color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for t in c.all_unique_tnodes_iter():
+
+    if hasattr(t,"tempBodyString"):
+        delattr(t,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20041005105605.19:openFileForReading (atFile)
+def openFileForReading(self,fn,fromString=False):
+
+    at = self ; trace = True and not g.app.unitTesting ; verbose = False
+
+    if fromString:
+        if at.atShadow:
+            return at.error('can not call at.read from string for @shadow files')
+        at.inputFile = g.fileLikeObject(fromString=fromString)
+    else:
+        fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
+
+        if at.atShadow:
+            x = at.c.shadowController
+            # readOneAtShadowNode should already have checked these.
+            shadow_fn     = x.shadowPathName(fn)
+            shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+            if not shadow_exists:
+                g.trace('can not happen: no private file',shadow_fn,g.callers())
+                return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
+            # This method is the gateway to the essence of the shadow algorithm.
+            x.updatePublicAndPrivateFiles(fn,shadow_fn)
+            fn = shadow_fn
+
+        try:
+            # Open the file in binary mode to allow 0x1a in bodies & headlines.
+            if trace and verbose and at.atShadow: g.trace('opening %s file: %s' % (
+                g.choose(at.atShadow,'private','public'),fn))
+            at.inputFile = open(fn,'rb')
+            at.warnOnReadOnlyFile(fn)
+        except IOError:
+            at.error("can not open: '@file %s'" % (fn))
+            at.inputFile = None
+            fn = None
+
+    return fn
+#@-node:ekr.20041005105605.19:openFileForReading (atFile)
+#@+node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
+def updatePublicAndPrivateFiles (self,fn,shadow_fn):
+
+    '''handle crucial @shadow read logic.
+
+    This will be called only if the public and private files both exist.'''
+
+    x = self ; trace = False
+
+    if trace and not g.app.unitTesting:
+        g.trace('significant',x.isSignificantPublicFile(fn),fn)
+
+    if x.isSignificantPublicFile(fn):
+        # Update the private shadow file from the public file.
+        written = x.propagate_changes(fn,shadow_fn)
+        if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
+    else:
+        # Don't write *anything*.
+        if 0: # This causes considerable problems.
+            # Create the public file from the private shadow file.
+            x.copy_file_removing_sentinels(shadow_fn,fn)
+            x.message("created public %s from private %s " % (fn, shadow_fn))
+#@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+def copy_file_removing_sentinels (self,source_fn,target_fn):
+
+    '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
+
+    x = self
+
+    marker = x.marker_from_extension(source_fn)
+    if not marker:
+        return
+
+    old_lines = file(source_fn).readlines()
+    new_lines, junk = x.separate_sentinels(old_lines,marker)
+
+    copy = not os.path.exists(target_fn) or old_lines != new_lines
+    if copy:
+        s = ''.join(new_lines)
+        x.replaceFileWithString(target_fn,s)
+#@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+#@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
+#@+node:ekr.20080708094444.36:x.propagate_changes
+def propagate_changes(self, old_public_file, old_private_file):
+
+    '''Propagate the changes from the public file (without_sentinels)
+    to the private file (with_sentinels)'''
+
+    x = self ; trace = False
+
+    old_public_lines  = file(old_public_file).readlines()
+    old_private_lines = file(old_private_file).readlines()
+    marker = x.marker_from_extension(old_public_file)
+
+    if trace:
+        g.trace(
+            'marker',marker,
+            '\npublic_file',old_public_file,
+            '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
+            '\nprivate_file',old_private_file,
+            '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
+
+    if not marker:
+        return False
+
+    new_private_lines = x.propagate_changed_lines(
+        old_public_lines,old_private_lines,marker)
+
+    # Important bug fix: Never create the private file here!
+    fn = old_private_file
+    copy = os.path.exists(fn) and new_private_lines != old_private_lines
+
+    if copy and x.errors == 0:
+        s = ''.join(new_private_lines)
+        ok = x.replaceFileWithString(fn,s)
+        # g.trace('ok',ok,'writing private file',fn)
+
+    return copy
+#@-node:ekr.20080708094444.36:x.propagate_changes
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@nonl
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.headString())
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines
+#@+node:ekr.20080708094444.37:x.copy_sentinels
+def copy_sentinels(self,reader,writer,marker,limit):
+
+    '''Copy sentinels from reader to writer while reader.index() < limit.'''
+
+    x = self
+    start = reader.index()
+    while reader.index() < limit:
+        line = reader.get()
+        if x.is_sentinel(line, marker):
+            if x.is_verbatim(line,marker):
+                # # if reader.index() < limit:
+                    # # # We are *copying* the @verbatim sentinel.
+                    # # line = reader.get()
+                    # # writer.put(line,tag='copy sent %s:%s' % (start,limit))
+                # We are *deleting* non-sentinel lines, so we must delete @verbatim sentinels!
+                # We must **extend** the limit to get the next line.
+                if reader.index() < limit + 1:
+                    # Skip the next line, whatever it is.
+                    # Important: this **deletes** the @verbatim sentinel,
+                    # so this is a exception to the rule that sentinels are preserved.
+                    line = reader.get()
+                else:
+                    x.verbatim_error()
+            else:
+                # g.trace('put line',repr(line))
+                writer.put(line,tag='copy sent %s:%s' % (start,limit))
+#@-node:ekr.20080708094444.37:x.copy_sentinels
+#@-node:ekr.20080909080104.3:Read shadow file logic
+#@+node:ekr.20080909080104.4:Write shadow file logic
+#@+node:ekr.20041005105605.15:initWriteIvars
+def initWriteIvars(self,root,targetFileName,
+    nosentinels=False,
+    thinFile=False,
+    scriptWrite=False,
+    toString=False,
+    forcePythonSentinels=None,
+    write_strips_blank_lines=None,
+):
+
+    self.initCommonIvars()
+    << init ivars for writing >>
+
+    if write_strips_blank_lines is None:
+        self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
+    else:
+        self.write_strips_blank_lines = write_strips_blank_lines
+
+    if forcePythonSentinels is None:
+        forcePythonSentinels = scriptWrite
+
+    if root:
+        self.scanAllDirectives(root,
+            scripting=scriptWrite,
+            forcePythonSentinels=forcePythonSentinels)
+
+    # g.trace(forcePythonSentinels,self.startSentinelComment,self.endSentinelComment)
+
+    if forcePythonSentinels:
+        # Force Python comment delims for g.getScript.
+        self.startSentinelComment = "#"
+        self.endSentinelComment = None
+
+    # Init state from arguments.
+    self.targetFileName = targetFileName
+    self.sentinels = not nosentinels
+    self.thinFile = thinFile
+    self.toString = toString
+    self.root = root
+
+    # Ignore config settings for unit testing.
+    if toString and g.app.unitTesting: self.output_newline = '\n'
+
+    # Init all other ivars even if there is an error.
+    if not self.errors and self.root:
+        self.root.v.t.tnodeList = []
+        self.root.v.t._p_changed = True
+#@+node:ekr.20041005105605.16:<< init ivars for writing >>>
+@
+When tangling, we first write to a temporary output file. After tangling is
+temporary file. Otherwise we delete the old target file and rename the temporary
+file to be the target file.
+@c
+
+self.docKind = None
+self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
+self.fileChangedFlag = False # True: the file has actually been updated.
+self.shortFileName = "" # short version of file name used for messages.
+self.thinFile = False
+self.force_newlines_in_at_nosent_bodies = self.c.config.getBool('force_newlines_in_at_nosent_bodies')
+
+if toString:
+    self.outputFile = g.fileLikeObject()
+    self.stringOutput = ""
+    self.targetFileName = self.outputFileName = "<string-file>"
+else:
+    self.outputFile = None # The temporary output file.
+    self.stringOutput = None
+    self.targetFileName = self.outputFileName = u""
+#@-node:ekr.20041005105605.16:<< init ivars for writing >>>
+#@-node:ekr.20041005105605.15:initWriteIvars
+#@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
+def writeAtShadowNodes (self,event=None):
+
+    '''Write all @shadow nodes in the selected outline.'''
+
+    at = self
+    return at.writeAtShadowNodesHelper(writeDirtyOnly=False)
+
+def writeDirtyAtShadowNodes (self,event=None):
+
+    '''Write all dirty @shadow nodes in the selected outline.'''
+
+    at = self
+    return at.writeAtShadowNodesHelper(writeDirtyOnly=True)
+#@nonl
+#@+node:ekr.20080711093251.4:writeAtShadowNodesHelper
+def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
+
+    """Write @shadow nodes in the selected outline"""
+
+    at = self ; c = at.c
+    p = c.currentPosition() ; after = p.nodeAfterTree()
+    found = False
+
+    while p and p != after:
+        if p.atShadowFileNodeName() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
+            ok = at.writeOneAtShadowNode(p,toString=toString,force=True)
+            if ok:
+                found = True
+                g.es('wrote %s' % p.atShadowFileNodeName(),color='blue')
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        else:
+            p.moveToThreadNext()
+
+    if found:
+        g.es("finished")
+    elif writeDirtyOnly:
+        g.es("no dirty @shadow nodes in the selected tree")
+    else:
+        g.es("no @shadow nodes in the selected tree")
+
+    return found
+#@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if not fn:
+        g.es_print('can not happen: not an @shadow node',p.headString(),color='red')
+        return False
+
+    # A hack to support unknown extensions.
+    self.adjustTargetLanguage(fn) # May set c.target_language.
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = g.os_path_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None, # Not used.
+        nosentinels=None, # set below.  Affects only error messages (sometimes).
+        thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+        scriptWrite=False,
+        toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True, # A hack to suppress an error message.
+            # The actual sentinels will be set below.
+        write_strips_blank_lines=False,
+    )
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    junk,ext = g.os_path_splitext(fn)
+    marker = x.marker_from_extension(ext)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,nosentinels=not sentinels,toString=False,atAuto=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        ### It may be better to compute the public file by removing sentinels from at.private_s
+        ### by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
+        ### x.isSentinel logic is used consistently by the @shadow read/write logic.
+        ### OTOH, Leo's write logic should actually dominate x.isSentinel.
+
+        # Write the public and private files.
+        private_fn = x.shadowPathName(fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName,color='red')
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force,fn):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    at = self ; x = at.c.shadowController
+    if not x.marker_from_extension(fn,suppressErrors=True):
+        g.es_print('unknown extension. can not write:',p.headString(),color='red')
+        return False # Never write files with unknown extensions
+    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
+#@-node:ekr.20080909080104.4:Write shadow file logic
+#@-node:ekr.20080909080104.1:Fixed @shadow bug with .bat files
 #@-node:ekr.20080903073654.1:4.5.1 final
 #@-all
 #@nonl

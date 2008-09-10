@@ -1048,7 +1048,7 @@ def es_dump (s,n = 30,title=None):
         i += n
 #@nonl
 #@-node:ekr.20060917120951:es_dump
-#@+node:ekr.20031218072017.3110:es_error
+#@+node:ekr.20031218072017.3110:es_error & es_print_error
 def es_error (*args,**keys):
 
     color = keys.get('color')
@@ -1059,13 +1059,15 @@ def es_error (*args,**keys):
     g.es(*args,**keys)
 
 
-# def es_error (s,color=None):
+def es_print_error (*args,**keys):
 
-    # if color is None and g.app.config: # May not exist during initialization.
-        # color = g.app.config.getColor(None,"log_error_color") or 'red'
+    color = keys.get('color')
 
-    # g.es(s,color=color)
-#@-node:ekr.20031218072017.3110:es_error
+    if color is None and g.app.config:
+        keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
+
+    g.es_print(*args,**keys)
+#@-node:ekr.20031218072017.3110:es_error & es_print_error
 #@+node:ekr.20031218072017.3111:es_event_exception
 def es_event_exception (eventName,full=False):
 

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="37" left="398" height="914" width="777"/>
+	<global_window_position top="37" left="401" height="914" width="774"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -250,6 +250,8 @@
 <v t="ekr.20080808122543.1"><vh>Path wrappers</vh></v>
 <v t="ekr.20080808122543.2"><vh>copyDir</vh></v>
 </v>
+<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
+<v t="ekr.20080823154546.2"><vh>parse-python test</vh></v>
 <v t="ekr.20080813080809.1"><vh>Tests for @shadow</vh>
 <v t="ekr.20080807091001.1"><vh>@@shadow python-import-test.py</vh>
 <v t="ekr.20080807091201.7"><vh>python-import-test declarations</vh></v>
@@ -273,9 +275,8 @@
 <v t="ekr.20080813080627.3" a="M"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
+<v t="ekr.20080909075224.1"><vh>@@shadow ekr-shadow-test.html</vh></v>
 </v>
-<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
-<v t="ekr.20080823154546.2"><vh>parse-python test</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2293,5 +2294,8 @@ class AClass:
    def func4():
        do4()
 </t>
+<t tx="ekr.20080909075224.1">@language html
+../hex6x -
+changed</t>
 </tnodes>
 </leo_file>

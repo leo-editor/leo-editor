@@ -410,11 +410,8 @@ class atFile:
             if at.atShadow:
                 x = at.c.shadowController
                 # readOneAtShadowNode should already have checked these.
-                shadow_fn       = x.shadowPathName(fn)
-                shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-                # g.trace('fn',fn,'shadow_fn',shadow_fn)
-                # x.updatePublicAndPrivate will create the public file from the private file
-                # if the public file exists. This *is* reasonable: there is nothing to import!
+                shadow_fn     = x.shadowPathName(fn)
+                shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
                 if not shadow_exists:
                     g.trace('can not happen: no private file',shadow_fn,g.callers())
                     return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
@@ -670,22 +667,17 @@ class atFile:
         at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
         fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
-        shadow_fn       = x.shadowPathName(fn)
-        shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+        shadow_fn     = x.shadowPathName(fn)
+        shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
         if shadow_exists:
-            # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
-            # This will cause an error if shadaw_fn does not, in fact, contain sentinels.
-            # g.trace('reading shadow_fn',shadow_fn)
-            at.read(p,
-                thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
-                atShadow=True)
-                # at.openFileForReading calls x.updatePublicAndPrivateFiles
+            # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+            at.read(p,thinFile=True,atShadow=True)
         else:
             if not g.unitTesting: g.es("reading:",p.headString())
             ok = at.importAtShadowNode(fn,p)
             if ok:
-                # x.makeShadowFile(fn,p)
+                # Create the private file automatically.
                 at.writeOneAtShadowNode(p,toString=False,force=True)
     #@+node:ekr.20080712080505.1:importAtShadowNode
     def importAtShadowNode (self,fn,p):
@@ -2574,14 +2566,23 @@ class atFile:
             return False
 
         c.endEditing() # Capture the current headline.
-        at.initWriteIvars(root,targetFileName=None,
+        at.initWriteIvars(root,targetFileName=None, # Not used.
             nosentinels=None, # set below.  Affects only error messages (sometimes).
             thinFile=True, # New in Leo 4.5 b2: private files are thin files.
             scriptWrite=False,
             toString=False, # True: create a fileLikeObject.  This is done below.
+            forcePythonSentinels=True, # A hack to suppress an error message.
+                # The actual sentinels will be set below.
             write_strips_blank_lines=False,
         )
-                # at.targetFileName not used.
+
+        # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+        #                     what is used in x.propegate changes.
+        junk,ext = g.os_path_splitext(fn)
+        marker = x.marker_from_extension(ext)
+        # g.trace('write marker',marker)
+        at.startSentinelComment = marker
+        at.endSentinelComment = None
 
         if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -4095,6 +4096,7 @@ class atFile:
                 if exists:
                     g.es('wrote:    ',fn)
                 else:
+                    # g.trace('created:',fn,g.callers())
                     g.es('created:  ',fn)
             return True
         except IOError:
@@ -4102,7 +4104,7 @@ class atFile:
             g.es_exception()
             return False
     #@-node:ekr.20080712150045.1:at.replaceFileWithString
-    #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
+    #@+node:ekr.20041005105605.212:at.replaceTargetFileIfDifferent & helper
     def replaceTargetFileIfDifferent (self,root):
 
         '''Create target file as follows:
@@ -4168,6 +4170,7 @@ class atFile:
             # Rename the output file.
             ok = self.rename(self.outputFileName,self.targetFileName)
             if ok:
+                # g.trace('created:',self.targetFileName,g.callers())
                 g.es('created:  ',self.targetFileName)
             else:
                 # self.rename gives the error.
@@ -4179,7 +4182,7 @@ class atFile:
             self.fileChangedFlag = False 
             return False
     #@nonl
-    #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
+    #@-node:ekr.20041005105605.212:at.replaceTargetFileIfDifferent & helper
     #@-node:ekr.20041005105605.211:putInitialComment
     #@+node:ekr.20041005105605.216:warnAboutOrpanAndIgnoredNodes
     # Called from writeOpenFile.
@@ -4257,7 +4260,7 @@ class atFile:
 
         keys = {'color': g.choose(at.errors,'blue','red')}
 
-        g.es_error(*args,**keys)
+        g.es_print_error(*args,**keys)
     #@-node:ekr.20041005105605.220:atFile.error & printError
     #@+node:ekr.20051219122720:atFile.forceGnxOnPosition
     def forceGnxOnPosition (self,p):
