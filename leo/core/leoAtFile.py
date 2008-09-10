@@ -2582,7 +2582,7 @@ class atFile:
         # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
         #                     what is used in x.propegate changes.
         junk,ext = g.os_path_splitext(fn)
-        marker = x.marker_from_extension(ext)
+        marker = x.marker_from_extension(ext,addAtSign=False)
         # g.trace('write marker',marker)
         at.startSentinelComment = marker
         at.endSentinelComment = None
@@ -2652,10 +2652,8 @@ class atFile:
         '''Return True if we should write the @shadow node at p.'''
 
         at = self ; x = at.c.shadowController
-        if not x.marker_from_extension(fn,suppressErrors=True):
-            g.es_print('unknown extension. can not write:',p.headString(),color='red')
-            return False # Never write files with unknown extensions
-        elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+        if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
             return True
         elif not exists: # We can write a non-existent file without danger.
             return True
