@@ -639,7 +639,7 @@ class shadowController:
         return line.lstrip().startswith(marker+'verbatim')
     #@-node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
     #@+node:ekr.20080708094444.9:x.marker_from_extension
-    def marker_from_extension (self,filename,suppressErrors=False):
+    def marker_from_extension (self,filename,addAtSign=True):
 
         '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -653,14 +653,17 @@ class shadowController:
 
         # New in leo 4.5.1: require a single-line delim.
         if delims[0]:
-            return delims[0]+'@'
+            marker = delims[0]
         else:
             # Yes, we *can* use a special marker for unknown languages,
             # provided we make it impossible to type by mistake,
             # and provided no real language will be the prefix of the comment delim.
-            marker = g.app.language_delims_dict.get('unknown_language') + '@'
+            marker = g.app.language_delims_dict.get('unknown_language')
 
-        return marker
+        if addAtSign:
+            return marker + '@'
+        else:
+            return marker
     #@-node:ekr.20080708094444.9:x.marker_from_extension
     #@+node:ekr.20080708094444.30:x.push_filter_mapping
     def push_filter_mapping (self,lines, marker):
