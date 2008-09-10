@@ -18783,7 +18783,7 @@ self.extra_extension_dict = {
 #@nonl
 #@-node:ekr.20031218072017.368:<< define global data structures >> app
 #@+node:ekr.20080708094444.9:x.marker_from_extension
-def marker_from_extension (self,filename,suppressErrors=False):
+def marker_from_extension (self,filename,addAtSign=True):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -18797,14 +18797,17 @@ def marker_from_extension (self,filename,suppressErrors=False):
 
     # New in leo 4.5.1: require a single-line delim.
     if delims[0]:
-        return delims[0]+'@'
+        marker = delims[0]
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
-        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        marker = g.app.language_delims_dict.get('unknown_language')
 
-    return marker
+    if addAtSign:
+        return marker + '@'
+    else:
+        return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
 #@-node:ekr.20080710082231.14:(Improved marker from extension)
 #@+node:ekr.20080711093251.2:(Made @shadow a kind of file node)
@@ -20225,7 +20228,7 @@ def writeOneAtShadowNode(self,p,toString,force):
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
     junk,ext = g.os_path_splitext(fn)
-    marker = x.marker_from_extension(ext)
+    marker = x.marker_from_extension(ext,addAtSign=False)
     # g.trace('write marker',marker)
     at.startSentinelComment = marker
     at.endSentinelComment = None
@@ -20286,10 +20289,8 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     '''Return True if we should write the @shadow node at p.'''
 
     at = self ; x = at.c.shadowController
-    if not x.marker_from_extension(fn,suppressErrors=True):
-        g.es_print('unknown extension. can not write:',p.headString(),color='red')
-        return False # Never write files with unknown extensions
-    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
         return True
     elif not exists: # We can write a non-existent file without danger.
         return True
@@ -20367,7 +20368,7 @@ def writeOneAtShadowNode(self,p,toString,force):
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
     junk,ext = g.os_path_splitext(fn)
-    marker = x.marker_from_extension(ext)
+    marker = x.marker_from_extension(ext,addAtSign=False)
     # g.trace('write marker',marker)
     at.startSentinelComment = marker
     at.endSentinelComment = None
@@ -20428,10 +20429,8 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     '''Return True if we should write the @shadow node at p.'''
 
     at = self ; x = at.c.shadowController
-    if not x.marker_from_extension(fn,suppressErrors=True):
-        g.es_print('unknown extension. can not write:',p.headString(),color='red')
-        return False # Never write files with unknown extensions
-    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
         return True
     elif not exists: # We can write a non-existent file without danger.
         return True
@@ -21390,7 +21389,7 @@ def writeOneAtShadowNode(self,p,toString,force):
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
     junk,ext = g.os_path_splitext(fn)
-    marker = x.marker_from_extension(ext)
+    marker = x.marker_from_extension(ext,addAtSign=False)
     # g.trace('write marker',marker)
     at.startSentinelComment = marker
     at.endSentinelComment = None
@@ -21451,10 +21450,8 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     '''Return True if we should write the @shadow node at p.'''
 
     at = self ; x = at.c.shadowController
-    if not x.marker_from_extension(fn,suppressErrors=True):
-        g.es_print('unknown extension. can not write:',p.headString(),color='red')
-        return False # Never write files with unknown extensions
-    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
         return True
     elif not exists: # We can write a non-existent file without danger.
         return True
@@ -21703,7 +21700,7 @@ def writeOneAtShadowNode(self,p,toString,force):
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
     junk,ext = g.os_path_splitext(fn)
-    marker = x.marker_from_extension(ext)
+    marker = x.marker_from_extension(ext,addAtSign=False)
     # g.trace('write marker',marker)
     at.startSentinelComment = marker
     at.endSentinelComment = None
@@ -21764,10 +21761,8 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     '''Return True if we should write the @shadow node at p.'''
 
     at = self ; x = at.c.shadowController
-    if not x.marker_from_extension(fn,suppressErrors=True):
-        g.es_print('unknown extension. can not write:',p.headString(),color='red')
-        return False # Never write files with unknown extensions
-    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
         return True
     elif not exists: # We can write a non-existent file without danger.
         return True
@@ -21841,7 +21836,7 @@ The fix:
 
 @color
 #@+node:ekr.20080708094444.9:x.marker_from_extension
-def marker_from_extension (self,filename,suppressErrors=False):
+def marker_from_extension (self,filename,addAtSign=True):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -21855,14 +21850,17 @@ def marker_from_extension (self,filename,suppressErrors=False):
 
     # New in leo 4.5.1: require a single-line delim.
     if delims[0]:
-        return delims[0]+'@'
+        marker = delims[0]
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
-        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        marker = g.app.language_delims_dict.get('unknown_language')
 
-    return marker
+    if addAtSign:
+        return marker + '@'
+    else:
+        return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
 #@+node:ekr.20080708094444.80:class shadowController
 class shadowController:
@@ -22441,7 +22439,7 @@ def is_verbatim (self,line,marker):
     return line.lstrip().startswith(marker+'verbatim')
 #@-node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
 #@+node:ekr.20080708094444.9:x.marker_from_extension
-def marker_from_extension (self,filename,suppressErrors=False):
+def marker_from_extension (self,filename,addAtSign=True):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -22455,14 +22453,17 @@ def marker_from_extension (self,filename,suppressErrors=False):
 
     # New in leo 4.5.1: require a single-line delim.
     if delims[0]:
-        return delims[0]+'@'
+        marker = delims[0]
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
-        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        marker = g.app.language_delims_dict.get('unknown_language')
 
-    return marker
+    if addAtSign:
+        return marker + '@'
+    else:
+        return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
 #@+node:ekr.20080708094444.30:x.push_filter_mapping
 def push_filter_mapping (self,lines, marker):
@@ -25940,7 +25941,7 @@ def comment_delims_from_extension(filename):
         return None,None,None
 #@-node:EKR.20040504150046.4:g.comment_delims_from_extension
 #@+node:ekr.20080708094444.9:x.marker_from_extension
-def marker_from_extension (self,filename,suppressErrors=False):
+def marker_from_extension (self,filename,addAtSign=True):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -25954,14 +25955,17 @@ def marker_from_extension (self,filename,suppressErrors=False):
 
     # New in leo 4.5.1: require a single-line delim.
     if delims[0]:
-        return delims[0]+'@'
+        marker = delims[0]
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
-        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        marker = g.app.language_delims_dict.get('unknown_language')
 
-    return marker
+    if addAtSign:
+        return marker + '@'
+    else:
+        return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
 #@-node:ekr.20080812093903.1:Made @shadow work for unknown extensions
 #@+node:ekr.20080812093903.3:Force public @shadow files to end in a newline
@@ -26316,7 +26320,7 @@ def copy_sentinels(self,reader,writer,marker,limit):
 #@-node:ekr.20080812093903.4:Avoid adding a newline to the input
 #@+node:ekr.20080812093903.5:Don't write private files for unknown file extensions
 #@+node:ekr.20080708094444.9:x.marker_from_extension
-def marker_from_extension (self,filename,suppressErrors=False):
+def marker_from_extension (self,filename,addAtSign=True):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -26330,14 +26334,17 @@ def marker_from_extension (self,filename,suppressErrors=False):
 
     # New in leo 4.5.1: require a single-line delim.
     if delims[0]:
-        return delims[0]+'@'
+        marker = delims[0]
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
-        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        marker = g.app.language_delims_dict.get('unknown_language')
 
-    return marker
+    if addAtSign:
+        return marker + '@'
+    else:
+        return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
 #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 def writeOneAtShadowNode(self,p,toString,force):
@@ -26377,7 +26384,7 @@ def writeOneAtShadowNode(self,p,toString,force):
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
     junk,ext = g.os_path_splitext(fn)
-    marker = x.marker_from_extension(ext)
+    marker = x.marker_from_extension(ext,addAtSign=False)
     # g.trace('write marker',marker)
     at.startSentinelComment = marker
     at.endSentinelComment = None
@@ -26438,10 +26445,8 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     '''Return True if we should write the @shadow node at p.'''
 
     at = self ; x = at.c.shadowController
-    if not x.marker_from_extension(fn,suppressErrors=True):
-        g.es_print('unknown extension. can not write:',p.headString(),color='red')
-        return False # Never write files with unknown extensions
-    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
         return True
     elif not exists: # We can write a non-existent file without danger.
         return True
@@ -27025,7 +27030,7 @@ def writeOneAtShadowNode(self,p,toString,force):
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
     junk,ext = g.os_path_splitext(fn)
-    marker = x.marker_from_extension(ext)
+    marker = x.marker_from_extension(ext,addAtSign=False)
     # g.trace('write marker',marker)
     at.startSentinelComment = marker
     at.endSentinelComment = None
@@ -27086,10 +27091,8 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     '''Return True if we should write the @shadow node at p.'''
 
     at = self ; x = at.c.shadowController
-    if not x.marker_from_extension(fn,suppressErrors=True):
-        g.es_print('unknown extension. can not write:',p.headString(),color='red')
-        return False # Never write files with unknown extensions
-    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
         return True
     elif not exists: # We can write a non-existent file without danger.
         return True
@@ -29078,7 +29081,7 @@ def languageForExtension (self,ext):
     return language
 #@-node:ekr.20080811174246.1:languageForExtension
 #@+node:ekr.20080708094444.9:x.marker_from_extension
-def marker_from_extension (self,filename,suppressErrors=False):
+def marker_from_extension (self,filename,addAtSign=True):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -29092,14 +29095,17 @@ def marker_from_extension (self,filename,suppressErrors=False):
 
     # New in leo 4.5.1: require a single-line delim.
     if delims[0]:
-        return delims[0]+'@'
+        marker = delims[0]
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
-        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        marker = g.app.language_delims_dict.get('unknown_language')
 
-    return marker
+    if addAtSign:
+        return marker + '@'
+    else:
+        return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
 #@-node:ekr.20080819075811.14:Import stuff
 #@+node:ekr.20080819075811.15:Support for @language unknown_language
@@ -29269,7 +29275,7 @@ def __init__ (self,c,trace=False,trace_writers=False):
     self.line_mapping = []
 #@-node:ekr.20080708094444.79: x.ctor
 #@+node:ekr.20080708094444.9:x.marker_from_extension
-def marker_from_extension (self,filename,suppressErrors=False):
+def marker_from_extension (self,filename,addAtSign=True):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -29283,14 +29289,17 @@ def marker_from_extension (self,filename,suppressErrors=False):
 
     # New in leo 4.5.1: require a single-line delim.
     if delims[0]:
-        return delims[0]+'@'
+        marker = delims[0]
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
-        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        marker = g.app.language_delims_dict.get('unknown_language')
 
-    return marker
+    if addAtSign:
+        return marker + '@'
+    else:
+        return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
 #@-node:ekr.20080819075811.15:Support for @language unknown_language
 #@+node:ekr.20080819075811.16:Write stuff
@@ -29334,7 +29343,7 @@ def writeOneAtShadowNode(self,p,toString,force):
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
     junk,ext = g.os_path_splitext(fn)
-    marker = x.marker_from_extension(ext)
+    marker = x.marker_from_extension(ext,addAtSign=False)
     # g.trace('write marker',marker)
     at.startSentinelComment = marker
     at.endSentinelComment = None
@@ -29395,10 +29404,8 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     '''Return True if we should write the @shadow node at p.'''
 
     at = self ; x = at.c.shadowController
-    if not x.marker_from_extension(fn,suppressErrors=True):
-        g.es_print('unknown extension. can not write:',p.headString(),color='red')
-        return False # Never write files with unknown extensions
-    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
         return True
     elif not exists: # We can write a non-existent file without danger.
         return True
@@ -33044,7 +33051,7 @@ def writeOneAtShadowNode(self,p,toString,force):
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
     junk,ext = g.os_path_splitext(fn)
-    marker = x.marker_from_extension(ext)
+    marker = x.marker_from_extension(ext,addAtSign=False)
     # g.trace('write marker',marker)
     at.startSentinelComment = marker
     at.endSentinelComment = None
@@ -33105,10 +33112,8 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     '''Return True if we should write the @shadow node at p.'''
 
     at = self ; x = at.c.shadowController
-    if not x.marker_from_extension(fn,suppressErrors=True):
-        g.es_print('unknown extension. can not write:',p.headString(),color='red')
-        return False # Never write files with unknown extensions
-    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
         return True
     elif not exists: # We can write a non-existent file without danger.
         return True
@@ -34704,7 +34709,7 @@ def writeOneAtShadowNode(self,p,toString,force):
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
     junk,ext = g.os_path_splitext(fn)
-    marker = x.marker_from_extension(ext)
+    marker = x.marker_from_extension(ext,addAtSign=False)
     # g.trace('write marker',marker)
     at.startSentinelComment = marker
     at.endSentinelComment = None
@@ -34765,10 +34770,8 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     '''Return True if we should write the @shadow node at p.'''
 
     at = self ; x = at.c.shadowController
-    if not x.marker_from_extension(fn,suppressErrors=True):
-        g.es_print('unknown extension. can not write:',p.headString(),color='red')
-        return False # Never write files with unknown extensions
-    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
         return True
     elif not exists: # We can write a non-existent file without danger.
         return True
@@ -34964,7 +34967,7 @@ self.extra_extension_dict = {
 #@nonl
 #@-node:ekr.20031218072017.368:<< define global data structures >> app
 #@+node:ekr.20080708094444.9:x.marker_from_extension
-def marker_from_extension (self,filename,suppressErrors=False):
+def marker_from_extension (self,filename,addAtSign=True):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -34978,14 +34981,17 @@ def marker_from_extension (self,filename,suppressErrors=False):
 
     # New in leo 4.5.1: require a single-line delim.
     if delims[0]:
-        return delims[0]+'@'
+        marker = delims[0]
     else:
         # Yes, we *can* use a special marker for unknown languages,
         # provided we make it impossible to type by mistake,
         # and provided no real language will be the prefix of the comment delim.
-        marker = g.app.language_delims_dict.get('unknown_language') + '@'
+        marker = g.app.language_delims_dict.get('unknown_language')
 
-    return marker
+    if addAtSign:
+        return marker + '@'
+    else:
+        return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
 #@+node:ekr.20080811174246.1:languageForExtension
 def languageForExtension (self,ext):
@@ -35688,7 +35694,7 @@ def writeOneAtShadowNode(self,p,toString,force):
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
     junk,ext = g.os_path_splitext(fn)
-    marker = x.marker_from_extension(ext)
+    marker = x.marker_from_extension(ext,addAtSign=False)
     # g.trace('write marker',marker)
     at.startSentinelComment = marker
     at.endSentinelComment = None
@@ -35749,10 +35755,8 @@ def shouldWriteAtShadowNode (self,p,exists,force,fn):
     '''Return True if we should write the @shadow node at p.'''
 
     at = self ; x = at.c.shadowController
-    if not x.marker_from_extension(fn,suppressErrors=True):
-        g.es_print('unknown extension. can not write:',p.headString(),color='red')
-        return False # Never write files with unknown extensions
-    elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
         return True
     elif not exists: # We can write a non-existent file without danger.
         return True
