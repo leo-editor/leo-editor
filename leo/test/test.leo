@@ -1240,6 +1240,7 @@ leoTest.doTests (c,all=False)</t>
 
 plugins_menu.py
 
+# base64Packager.py
 # searchbox.py
 
 # active_path.py
