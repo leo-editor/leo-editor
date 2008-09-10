@@ -853,18 +853,21 @@ class atFile:
         # g.trace(at.startSentinelComment)
         #@-node:ekr.20041005105605.75:<< init ivars for scanText4 >>
         #@nl
-        while at.errors == 0 and not at.done:
-            s = at.readLine(theFile)
-            self.lineNumber += 1
-            if len(s) == 0: break
-            kind = at.sentinelKind4(s)
-            # g.trace(at.sentinelName(kind),s.strip())
-            if kind == at.noSentinel:
-                i = 0
-            else:
-                i = at.skipSentinelStart4(s,0)
-            func = at.dispatch_dict[kind]
-            func(s,i)
+        try:
+            while at.errors == 0 and not at.done:
+                s = at.readLine(theFile)
+                self.lineNumber += 1
+                if len(s) == 0: break
+                kind = at.sentinelKind4(s)
+                # g.trace(at.sentinelName(kind),s.strip())
+                if kind == at.noSentinel:
+                    i = 0
+                else:
+                    i = at.skipSentinelStart4(s,0)
+                func = at.dispatch_dict[kind]
+                func(s,i)
+        except AssertionError,message:
+            at.error('unexpected assertion failure',message)
 
         if at.errors == 0 and not at.done:
             #@        << report unexpected end of text >>
