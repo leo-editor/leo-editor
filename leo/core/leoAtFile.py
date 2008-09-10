@@ -821,7 +821,7 @@ class atFile:
 
         """Scan a 4.x derived file non-recursively."""
 
-        # __pychecker__ = '--no-argsused' # fileName,verbose might be used for debugging.
+        # __pychecker__ = '--no-argsused' # verbose might be used for debugging.
 
         at = self
         #@    << init ivars for scanText4 >>
