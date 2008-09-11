@@ -821,7 +821,7 @@ class atFile:
 
         """Scan a 4.x derived file non-recursively."""
 
-        # __pychecker__ = '--no-argsused' # fileName,verbose might be used for debugging.
+        # __pychecker__ = '--no-argsused' # verbose might be used for debugging.
 
         at = self
         #@    << init ivars for scanText4 >>
@@ -853,23 +853,26 @@ class atFile:
         # g.trace(at.startSentinelComment)
         #@-node:ekr.20041005105605.75:<< init ivars for scanText4 >>
         #@nl
-        while at.errors == 0 and not at.done:
-            s = at.readLine(theFile)
-            self.lineNumber += 1
-            if len(s) == 0: break
-            kind = at.sentinelKind4(s)
-            # g.trace(at.sentinelName(kind),s.strip())
-            if kind == at.noSentinel:
-                i = 0
-            else:
-                i = at.skipSentinelStart4(s,0)
-            func = at.dispatch_dict[kind]
-            func(s,i)
+        try:
+            while at.errors == 0 and not at.done:
+                s = at.readLine(theFile)
+                self.lineNumber += 1
+                if len(s) == 0: break
+                kind = at.sentinelKind4(s)
+                # g.trace(at.sentinelName(kind),s.strip())
+                if kind == at.noSentinel:
+                    i = 0
+                else:
+                    i = at.skipSentinelStart4(s,0)
+                func = at.dispatch_dict[kind]
+                func(s,i)
+        except AssertionError,message:
+            at.error('unexpected assertion failure in',fileName,'\n',message)
 
         if at.errors == 0 and not at.done:
             #@        << report unexpected end of text >>
             #@+node:ekr.20041005105605.76:<< report unexpected end of text >>
-            assert(at.endSentinelStack)
+            assert at.endSentinelStack,'empty sentinel stack'
 
             at.readError(
                 "Unexpected end of file. Expecting %s sentinel" %
@@ -923,9 +926,9 @@ class atFile:
         j = g.skip_ws(s,i)
         leadingWs = s[i:j]
         if leadingWs:
-            assert(g.match(s,j,"@+all"))
+            assert g.match(s,j,"@+all"),'missing @+all'
         else:
-            assert(g.match(s,j,"+all"))
+            assert g.match(s,j,"+all"),'missing +all'
 
         # Make sure that the generated at-all is properly indented.
         at.out.append(leadingWs + "@all\n")
@@ -935,7 +938,7 @@ class atFile:
     #@+node:ekr.20041005105605.82:readStartAt & readStartDoc
     def readStartAt (self,s,i):
         """Read an @+at sentinel."""
-        at = self ; assert(g.match(s,i,"+at"))
+        at = self ; assert g.match(s,i,"+at"),'missing +at'
         if 0:# new code: append whatever follows the sentinel.
             i += 3 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
             at.out.append('@' + follow) ; at.docOut = []
@@ -947,7 +950,7 @@ class atFile:
 
     def readStartDoc (self,s,i):
         """Read an @+doc sentinel."""
-        at = self ; assert(g.match(s,i,"+doc"))
+        at = self ; assert g.match(s,i,"+doc"),'missing +doc'
         if 0: # new code: append whatever follows the sentinel.
             i += 4 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
             at.out.append('@' + follow) ; at.docOut = []
@@ -975,7 +978,7 @@ class atFile:
         """Read an unexpected @+leo sentinel."""
 
         at = self
-        assert(g.match(s,i,"+leo"))
+        assert g.match(s,i,"+leo"),'missing +leo sentinel'
         at.readError("Ignoring unexpected @+leo sentinel")
     #@-node:ekr.20041005105605.83:readStartLeo
     #@+node:ekr.20041005105605.84:readStartMiddle
@@ -994,10 +997,10 @@ class atFile:
 
         at = self
         if middle:
-            assert(g.match(s,i,"+middle:"))
+            assert g.match(s,i,"+middle:"),'missing +middle'
             i += 8
         else:
-            assert(g.match(s,i,"+node:"))
+            assert g.match(s,i,"+node:"),'missing +node'
             i += 6
 
         if at.thinFile:
@@ -1080,9 +1083,9 @@ class atFile:
         j = g.skip_ws(s,i)
         leadingWs = s[i:j]
         if leadingWs:
-            assert(g.match(s,j,"@+others"))
+            assert g.match(s,j,"@+others"),'missing @+others'
         else:
-            assert(g.match(s,j,"+others"))
+            assert g.match(s,j,"+others"),'missing +others'
 
         # Make sure that the generated at-others is properly indented.
         at.out.append(leadingWs + "@others\n")
@@ -1318,7 +1321,7 @@ class atFile:
         """Read an @afterref sentinel."""
 
         at = self
-        assert(g.match(s,i,"afterref"))
+        assert g.match(s,i,"afterref"),'missing afterref'
 
         # Append the next line to the text.
         s = at.readLine(at.inputFile)
@@ -1329,7 +1332,7 @@ class atFile:
 
         at = self ; tag = "clone"
 
-        assert(g.match(s,i,tag))
+        assert g.match(s,i,tag),'missing clone sentinel'
 
         # Skip the tag and whitespace.
         i = g.skip_ws(s,i+len(tag))
@@ -1347,7 +1350,7 @@ class atFile:
 
         """Read an @comment sentinel."""
 
-        assert(g.match(s,i,"comment"))
+        assert g.match(s,i,"comment"),'missing comment sentinel'
 
         # Just ignore the comment line!
     #@-node:ekr.20041005105605.104:readComment
@@ -1357,7 +1360,7 @@ class atFile:
         """Read an @delims sentinel."""
 
         at = self
-        assert(g.match(s,i-1,"@delims"))
+        assert g.match(s,i-1,"@delims"),'missing @delims'
 
         # Skip the keyword and whitespace.
         i0 = i-1
@@ -1400,7 +1403,7 @@ class atFile:
         """Read an @@sentinel."""
 
         at = self
-        assert(g.match(s,i,"@")) # The first '@' has already been eaten.
+        assert g.match(s,i,"@"),'missing @@ sentinel' # The first '@' has already been eaten.
 
         # g.trace(g.get_line(s,i))
 
@@ -1478,7 +1481,7 @@ class atFile:
         """Handle an @nonl sentinel."""
 
         at = self
-        assert(g.match(s,i,"nl"))
+        assert g.match(s,i,"nl"),'missing nl sentinel'
 
         if at.inCode:
             at.out.append('\n')
@@ -1491,7 +1494,7 @@ class atFile:
         """Handle an @nonl sentinel."""
 
         at = self
-        assert(g.match(s,i,"nonl"))
+        assert g.match(s,i,"nonl"),'missing nonl sentinel'
 
         if at.inCode:
             s = ''.join(at.out)
@@ -1531,7 +1534,7 @@ class atFile:
 
         at = self
         j = g.skip_ws(s,i)
-        assert(g.match(s,j,"<<"))
+        assert g.match(s,j,"<<"),'missing @<< sentinel'
 
         if len(at.endSentinelComment) == 0:
             line = s[i:-1] # No trailing newline
@@ -1552,7 +1555,7 @@ class atFile:
         """Read an @verbatim sentinel."""
 
         at = self
-        assert(g.match(s,i,"verbatim"))
+        assert g.match(s,i,"verbatim"),'missing verbatim sentinel'
 
         # Append the next line to the text.
         s = at.readLine(at.inputFile) 
@@ -1566,7 +1569,7 @@ class atFile:
         """Handle a mismatched ending sentinel."""
 
         at = self
-        assert(at.endSentinelStack)
+        assert at.endSentinelStack,'empty sentinel stack'
         s = "Ignoring %s sentinel.  Expecting %s" % (
             at.sentinelName(at.endSentinelStack[-1]),
             at.sentinelName(expectedKind))
@@ -2579,7 +2582,7 @@ class atFile:
         # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
         #                     what is used in x.propegate changes.
         junk,ext = g.os_path_splitext(fn)
-        marker = x.marker_from_extension(ext)
+        marker = x.marker_from_extension(ext,addAtSign=False)
         # g.trace('write marker',marker)
         at.startSentinelComment = marker
         at.endSentinelComment = None
@@ -2649,10 +2652,8 @@ class atFile:
         '''Return True if we should write the @shadow node at p.'''
 
         at = self ; x = at.c.shadowController
-        if not x.marker_from_extension(fn,suppressErrors=True):
-            g.es_print('unknown extension. can not write:',p.headString(),color='red')
-            return False # Never write files with unknown extensions
-        elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+        if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
             return True
         elif not exists: # We can write a non-existent file without danger.
             return True

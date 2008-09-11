@@ -2,7 +2,32 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.5.2 bugs, cleanups
-#@+node:ekr.20080907095552.3:Recent
+#@+node:ekr.20080907095552.3:Recent 9
+#@+node:ekr.20080910054558.2:Add -c option to specify config files
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f3f95d93bcd93b94
+
+Personally, I'd like to see another config file available via -c on
+the command line:
+(a common idiom)
+
+leo myproject.leo -c /usr/lib/myproject/myLeoSettings.leo
+
+or better yet:
+
+leo myproject.leo -c /etc/leo/style01.leo
+leo myotherproject.leo -c /etc/leo/style02.leo
+leo anotherproject.leo -c /etc/leo/style23.leo
+
+Each file opens in an editor with the shortcuts, buttons, commands,
+plugins, appearance etc.  that has been tuned for that data management task.
+
+or best yet:
+
+leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo 
+#@nonl
+#@-node:ekr.20080910054558.2:Add -c option to specify config files
 #@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 @nocolor
 
@@ -219,7 +244,7 @@ since pressing ctrl+S in leo has even more significant implications we
 should be absolutely certain everything happens safely. 
 #@nonl
 #@-node:ekr.20080906062507.4:Protect @shadow and @auto files?
-#@-node:ekr.20080907095552.3:Recent
+#@-node:ekr.20080907095552.3:Recent 9
 #@+node:ekr.20080810085333.5:Under two hours 23
 #@+node:ekr.20080901112851.3:check for syntax errors when @auto import fails
 #@-node:ekr.20080901112851.3:check for syntax errors when @auto import fails

@@ -893,7 +893,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -1223,13 +1223,13 @@
 <v t="ekr.20071113194033.1"><vh>leoDialogs</vh>
 <v t="ekr.20050210085211"><vh>@test ctors for all dialogs</vh></v>
 </v>
-<v t="ekr.20071113192611" a="E"><vh>leoEditCommands</vh>
-<v t="ekr.20080904095020.1" a="E"><vh>goto-line-number tests</vh>
+<v t="ekr.20071113192611"><vh>leoEditCommands</vh>
+<v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
 <v t="ekr.20080905125317.1"><vh>Unused</vh>
 <v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
 <v t="ekr.20080904120258.5"><vh>@@test goto_scanForVnodeName</vh></v>
 </v>
-<v t="ekr.20080905112230.3" a="E"><vh>goto-line-number tests: original files</vh>
+<v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
@@ -21215,7 +21215,6 @@ x = c.shadowController
 changed = c.changed
 child = p.firstChild()
 s = child.bodyString()
-# if not s.endswith('\n'): s = s + '\n' # Output logic adds this...
 
 try:
     child.setHeadString('@shadow unittest/test_1.py')
@@ -21226,6 +21225,8 @@ try:
     if g.os_path_exists(shadow_fn):
         g.utils_remove(shadow_fn,verbose=True)
     at.writeOneAtShadowNode(child,toString=True,force=True)
+    assert at.startSentinelComment == '#',repr(at.startSentinelComment)
+    assert at.endSentinelComment == None,repr(at.endSentinelComment)
     if 0:
         g.pr('public...\n',at.public_s)
         g.pr('private...\n',at.private_s)
@@ -21258,6 +21259,7 @@ if g.os_path_exists(shadow_dir):
             os.unlink(z)
     os.rmdir(shadow_dir)
     assert not os.path.exists(shadow_dir)
+    g.es_print('deleted directory',shadow_dir,color='red')
 </t>
 <t tx="ekr.20080804100908.1">@others</t>
 <t tx="ekr.20080804100908.2">node 1 line 1
