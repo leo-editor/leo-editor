@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4,2,0"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -56,10 +56,10 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080826091039.1"><vh>@button make</vh>
+<v t="ekr.20080826091039.1" a="E"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080826091039.3"><vh>remove</vh></v>
-<v t="ekr.20080826091039.4"><vh>class createExe</vh>
+<v t="ekr.20080826091039.4" a="E"><vh>class createExe</vh>
 <v t="ekr.20080826091039.5"><vh>ctor</vh></v>
 <v t="ekr.20080826091039.6"><vh>create_exe</vh></v>
 <v t="ekr.20080826091039.7"><vh>escape</vh></v>
@@ -764,7 +764,7 @@ import time</t>
     self.no_target_optimize = True
     self.target_version = None # Require specific python version.
     self.bitmap = None # bitmap to use for the installer instead of python-powered logo
-    self.title = 'Install Leo...' # title to display on the installer background instead of default
+    self.title = 'Leo' # title to display on the installer background instead of default
     self.install_script = install_script
         # basename of installation script to be run after installation or before deinstallation
     self.pre_install_script = pre_install_script
