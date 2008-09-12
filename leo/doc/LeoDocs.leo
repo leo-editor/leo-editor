@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="50" height="800" width="812"/>
+	<global_window_position top="91" left="271" height="800" width="812"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,1,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,11,0,1,3"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -58,7 +58,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -421,10 +421,10 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050901102400.3"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
-<v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
+<v t="EKR.20040524104904.211" a="E"><vh>Chapter 8: Customizing Leo</vh>
+<v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
+<v t="EKR.20040524104904.140" a="E"><vh>Specifying settings</vh>
 <v t="ekr.20070317043727"><vh>Organizer nodes</vh></v>
 <v t="ekr.20080411111008.1"><vh>\@ignore and \@if nodes</vh></v>
 <v t="ekr.20070317043727.2"><vh>Simple settings nodes</vh></v>
@@ -26199,6 +26199,7 @@ The type may be one of the following:
 ------------------- ---------------------------------------------------------------------
 \@buttons           Child @button nodes create global buttons
 \@commands          Child @command nodes create global buttons
+\@data              Body text contains a list of strings, one per line.
 \@enabled-plugins   Body text contains a list of enabled plugins
 \@font              Body text contains a font description
 \@menus             Child @menu and @item nodes create menus and menu items.
@@ -26208,7 +26209,7 @@ The type may be one of the following:
 \@shortcuts         Body text contains a list of shortcut specifies.
 =================== =====================================================================
 
-The actual settings are specified in the body text.  At present, there are nine kinds of complex settings nodes:
+The actual settings are specified in the body text.  At present, there are ten kinds of complex settings nodes:
     
 - ``@buttons``
 
@@ -26220,7 +26221,7 @@ The actual settings are specified in the body text.  At present, there are nine 
   
 - ``@commands``
 
-  **New in Leo 4.4.8**: An @commands tree in a settings file defines global commands.
+  An @commands tree in a settings file defines global commands.
   All @command nodes in the @commands tree create global commands.
   All @command nodes outside the commands tree create commands local to the settings file.
   
