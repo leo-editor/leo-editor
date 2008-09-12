@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -276,10 +276,10 @@
 </v>
 <v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
 <v t="ekr.20080909075224.1"><vh>@@shadow ekr-shadow-test.html</vh></v>
-</v>
-</v>
 <v t="ekr.20080911080311.1"><vh>@@shadow dummy.conf</vh></v>
-<v t="ekr.20080911112823.1" tnodeList="ekr.20080911112823.1"><vh>@nosent fix-failure.py</vh></v>
+</v>
+<v t="ekr.20080911112823.1"><vh>@@nosent fix-failure.py</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
