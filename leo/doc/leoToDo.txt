@@ -2,7 +2,11 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.5.2 bugs, cleanups
-#@+node:ekr.20080907095552.3:Recent 9
+#@+node:ekr.20080907095552.3:Recent 11
+#@+node:ekr.20080912143702.141:Document official ivars
+# Do this in top-level Code node in leoPy.leo.
+#@nonl
+#@-node:ekr.20080912143702.141:Document official ivars
 #@+node:ekr.20080910054558.2:Add -c option to specify config files
 @nocolor
 
@@ -28,6 +32,21 @@ or best yet:
 leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo 
 #@nonl
 #@-node:ekr.20080910054558.2:Add -c option to specify config files
+#@+node:ekr.20080912143702.1:Investigate settings strangeness re @string debugger_path
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/d38704eb27eb9340
+
+I find that
+@settings
+  @string debugger_path = /usr/bin/winpdb
+
+sets the config string successfully if in
+home/.leo/myLeoSettings.leo
+not if in
+cwd/myLeoSettings.leo 
+#@nonl
+#@-node:ekr.20080912143702.1:Investigate settings strangeness re @string debugger_path
 #@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 @nocolor
 
@@ -244,7 +263,7 @@ since pressing ctrl+S in leo has even more significant implications we
 should be absolutely certain everything happens safely. 
 #@nonl
 #@-node:ekr.20080906062507.4:Protect @shadow and @auto files?
-#@-node:ekr.20080907095552.3:Recent 9
+#@-node:ekr.20080907095552.3:Recent 11
 #@+node:ekr.20080810085333.5:Under two hours 23
 #@+node:ekr.20080901112851.3:check for syntax errors when @auto import fails
 #@-node:ekr.20080901112851.3:check for syntax errors when @auto import fails

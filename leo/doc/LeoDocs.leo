@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet ekr_stylesheet?>
+<?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4,11,0,1,3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5,1,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -58,7 +58,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -421,10 +421,10 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050901102400.3"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.211" a="E"><vh>Chapter 8: Customizing Leo</vh>
-<v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
+<v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
+<v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.140" a="E"><vh>Specifying settings</vh>
+<v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20070317043727"><vh>Organizer nodes</vh></v>
 <v t="ekr.20080411111008.1"><vh>\@ignore and \@if nodes</vh></v>
 <v t="ekr.20070317043727.2"><vh>Simple settings nodes</vh></v>
@@ -2944,14 +2944,19 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080830082008.4"><vh>Minor new features</vh></v>
 <v t="ekr.20080830082008.5"><vh>New settings</vh></v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20080902080930.2"><vh>4.5 final</vh>
 <v t="ekr.20080902080930.3"><vh>Major new features</vh></v>
 <v t="ekr.20080902080930.4"><vh>Major code reorganizations</vh></v>
 <v t="ekr.20080902080930.5"><vh>Minor new features</vh></v>
 <v t="ekr.20080902080930.6"><vh>New settings</vh></v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20080912143702.137"><vh>4.5.1 final</vh>
+<v t="ekr.20080912143702.138"><vh>Fixed line number problems</vh></v>
+<v t="ekr.20080912143702.139"><vh>Fixed problems with @shadow files with unknown file extensions</vh></v>
+<v t="ekr.20080912143702.140"><vh>Fixed bug in Leo's pre-install script</vh></v>
 </v>
 </v>
 </v>
@@ -29989,7 +29994,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.5 final]&lt;/a&gt;</t>
+    Download Leo[4.5.1 final]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -31843,6 +31848,53 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
   
 - Added @bool suppress_import_parsing setting
   When True, @auto and @shadow import the entire file into a single node.</t>
+<t tx="ekr.20080912143702.137">Leo 4.5.1 final                                  September 12, 2008
+
+Leo 4.5.1 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
+
+- Eliminated spurious error messages in the goto-global-line command.
+- @shadow files with unknown file extensions now work properly.
+- Leo's installer now properly finds Python's install directory.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+
+- Full support for @shadow files in Leo's core.
+- Major improvements to Leo's key binding code.
+- The beginning of usable vim-like bindings.
+- uA's may now be associated with vnodes in @thin and @shadow files.
+- Several major reorganizations of Leo's code:
+  including sax-based parsing, support for the Graph world (unified nodes),
+  and simplified drawing code.
+- Leo is now an installable package.
+- Prepared code to be ready for Python 3.0.
+- Many small improvements and bug fixes.
+
+Quote of the month:
+-------------------
+Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080912143702.138"># goToLineNumber was always complaining about a missing private shadow file.</t>
+<t tx="ekr.20080912143702.139">@
+
+adjustTargetLanguage, a helper of writeOneAtShadowNode, no longer sets
+c.target_language to 'unknown_language' when the file extension is unknown.</t>
+<t tx="ekr.20080912143702.140">The script failed for paths such as c:\xp\python25\python.exe
+for which python was not the top-most directory.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
