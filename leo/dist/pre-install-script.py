@@ -3,7 +3,7 @@
 import _winreg as wr
 import sys, os
 
-version = '4-5-final'
+version = '4-5-1-final'
 testing = True
 setRegistry = False
 

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -71,6 +71,7 @@
 <v t="ekr.20080826091039.12"><vh>get_python_version</vh></v>
 </v>
 </v>
+<v t="ekr.20080912083921.1"><vh>unintall-registery-script.py (not used yet)</vh></v>
 <v t="ekr.20080827092958.3" a="E"><vh>@thin pre-install-script.py</vh></v>
 </vnodes>
 <tnodes>
@@ -305,7 +306,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.5-final
+Version: 4.5.1-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -677,7 +678,7 @@ This code is based on create_exe in distutils/command/bdist_windinst.py.'''
 @others
 
 assert sys.version_info &gt;= (2,5,0) and sys.version_info &lt; (2,6,0) # Require Python 2.5.
-version = '4-5-final'
+version = '4-5-1-final'
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 root                = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
@@ -1019,5 +1020,28 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080912083921.1">from _winreg import *
+
+# Magic registry stuff follows...
+HKCR = ConnectRegistry(None, HKEY_CLASSES_ROOT)
+
+try:
+    # Delete the file extension association
+    DeleteKey(HKCR, ".leo")
+except WindowsError:
+    print "Failed to delete '.leo' key, does it exist?"
+
+try:
+    # Delete the 'LeoFile' file type and the file type association
+    DeleteKey(HKCR, r"LeoFile\shell\open\command")
+    DeleteKey(HKCR, r"LeoFile\shell\open")
+    DeleteKey(HKCR, r"LeoFile\shell")
+    DeleteKey(HKCR, r"LeoFile\DefaultIcon")
+    DeleteKey(HKCR, r"LeoFile")
+except WindowsError:
+    print "Failed to delete Leo associations, do they exist?"
+
+# That's it!
+</t>
 </tnodes>
 </leo_file>
