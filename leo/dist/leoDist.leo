@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -58,8 +58,9 @@
 </v>
 </v>
 <v t="ekr.20080912083921.1"><vh>unintall-registery-script.py</vh></v>
+<v t="ekr.20080913110741.1"><vh>@thin post-install-script.py</vh></v>
 <v t="ekr.20080827092958.3"><vh>@thin pre-install-script.py</vh></v>
-<v t="ekr.20080826091039.1"><vh>@button make</vh>
+<v t="ekr.20080826091039.1" a="E"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080826091039.3"><vh>remove</vh></v>
 <v t="ekr.20080826091039.4" a="E"><vh>class createExe</vh>
@@ -67,7 +68,7 @@
 <v t="ekr.20080826091039.6"><vh>create_exe</vh></v>
 <v t="ekr.20080826091039.7"><vh>escape</vh></v>
 <v t="ekr.20080826091039.8"><vh>get_exe_bytes</vh></v>
-<v t="ekr.20080826091039.9" a="E"><vh>get_inidata</vh>
+<v t="ekr.20080826091039.9"><vh>get_inidata</vh>
 <v t="ekr.20080826091039.10"><vh>get_metaData</vh></v>
 <v t="ekr.20080826091039.11"><vh>get_setup</vh></v>
 </v>
@@ -677,7 +678,9 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080826091039.1">'''Create a Windows .exe installer directly from a .zip file.
-This code is based on create_exe in distutils/command/bdist_windinst.py.'''
+This code is based on create_exe in distutils/command/bdist_windinst.py.
+
+See: http://docs.python.org/dist/postinstallation-script.html'''
 
 # To do: Leo bitmap.
 
@@ -695,7 +698,8 @@ zipFile             = abspath(join(top,'Leo-%s.zip' % (version)))
 zipFile2            = abspath(join(top,'Leo-%s-temp.zip' % (version)))
 exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
 pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
-post_install_script = None # 'post-install-script.py' # Installed in Python/Scripts.
+# post_install_script = 'post-install-script.py' # Installed in Python/Scripts.
+post_install_script = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
 
 if 1:
     # Copy files from the doc directory to the top directory.
@@ -746,7 +750,7 @@ import time</t>
 
     @others
 </t>
-<t tx="ekr.20080826091039.5">def __init__ (self,exeFile,pre_install_script,install_script,zipFile,version):
+<t tx="ekr.20080826091039.5">def __init__ (self,exeFile,pre_install_script,post_install_script,zipFile,version):
 
     self.exeFile = exeFile
     self.zipFile = zipFile
@@ -772,7 +776,7 @@ import time</t>
     self.target_version = None # Require specific python version.
     self.bitmap = None # bitmap to use for the installer instead of python-powered logo
     self.title = 'Leo' # title to display on the installer background instead of default
-    self.install_script = install_script
+    self.post_install_script = post_install_script
         # basename of installation script to be run after installation or before deinstallation
     self.pre_install_script = pre_install_script
         # Fully qualified filename of a script to be run before any files are installed.
@@ -899,9 +903,9 @@ import time</t>
 
     lines.append("\n[Setup]")
 
-    if self.install_script:
+    if self.post_install_script:
         # The post-install script.  Apparently must be in Python/Scripts.
-        lines.append("install_script=%s" % self.install_script)
+        lines.append("install_script=%s" % self.post_install_script)
 
     lines.append("info=%s" % self.escape(info))
     lines.append("target_compile=%d" % (not self.no_target_compile))
