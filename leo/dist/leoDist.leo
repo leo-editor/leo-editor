@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7,3"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -61,10 +61,10 @@
 <v t="ekr.20080827092958.3"><vh>@@thin pre-install-script.py (no longer used)</vh></v>
 <v t="ekr.20080913110741.1" a="E"
 expanded="ekr.20080913110741.4,ekr.20080913110741.6,"><vh>@thin leo-post-install-script.py</vh></v>
-<v t="ekr.20080826091039.1" a="E"><vh>@button make</vh>
+<v t="ekr.20080826091039.1"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080913110741.8"><vh>make</vh></v>
-<v t="ekr.20080826091039.4" a="E"><vh>class createExe</vh>
+<v t="ekr.20080826091039.4"><vh>class createExe</vh>
 <v t="ekr.20080826091039.5"><vh>ctor</vh></v>
 <v t="ekr.20080826091039.6"><vh>create_exe</vh></v>
 <v t="ekr.20080826091039.7"><vh>escape</vh></v>
