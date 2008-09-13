@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet ekr_stylesheet?>
+<?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="50" height="800" width="812"/>
+	<global_window_position top="91" left="271" height="800" width="812"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2944,14 +2944,19 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080830082008.4"><vh>Minor new features</vh></v>
 <v t="ekr.20080830082008.5"><vh>New settings</vh></v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20080902080930.2"><vh>4.5 final</vh>
 <v t="ekr.20080902080930.3"><vh>Major new features</vh></v>
 <v t="ekr.20080902080930.4"><vh>Major code reorganizations</vh></v>
 <v t="ekr.20080902080930.5"><vh>Minor new features</vh></v>
 <v t="ekr.20080902080930.6"><vh>New settings</vh></v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20080912143702.137"><vh>4.5.1 final</vh>
+<v t="ekr.20080912143702.138"><vh>Fixed line number problems</vh></v>
+<v t="ekr.20080912143702.139"><vh>Fixed problems with @shadow files with unknown file extensions</vh></v>
+<v t="ekr.20080912143702.140"><vh>Fixed bug in Leo's pre-install script</vh></v>
 </v>
 </v>
 </v>
@@ -26199,6 +26204,7 @@ The type may be one of the following:
 ------------------- ---------------------------------------------------------------------
 \@buttons           Child @button nodes create global buttons
 \@commands          Child @command nodes create global buttons
+\@data              Body text contains a list of strings, one per line.
 \@enabled-plugins   Body text contains a list of enabled plugins
 \@font              Body text contains a font description
 \@menus             Child @menu and @item nodes create menus and menu items.
@@ -26208,7 +26214,7 @@ The type may be one of the following:
 \@shortcuts         Body text contains a list of shortcut specifies.
 =================== =====================================================================
 
-The actual settings are specified in the body text.  At present, there are nine kinds of complex settings nodes:
+The actual settings are specified in the body text.  At present, there are ten kinds of complex settings nodes:
     
 - ``@buttons``
 
@@ -26220,7 +26226,7 @@ The actual settings are specified in the body text.  At present, there are nine 
   
 - ``@commands``
 
-  **New in Leo 4.4.8**: An @commands tree in a settings file defines global commands.
+  An @commands tree in a settings file defines global commands.
   All @command nodes in the @commands tree create global commands.
   All @command nodes outside the commands tree create commands local to the settings file.
   
@@ -29988,7 +29994,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.5 final]&lt;/a&gt;</t>
+    Download Leo[4.5.1 final]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -31842,6 +31848,53 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
   
 - Added @bool suppress_import_parsing setting
   When True, @auto and @shadow import the entire file into a single node.</t>
+<t tx="ekr.20080912143702.137">Leo 4.5.1 final                                  September 12, 2008
+
+Leo 4.5.1 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
+
+- Eliminated spurious error messages in the goto-global-line command.
+- @shadow files with unknown file extensions now work properly.
+- Leo's installer now properly finds Python's install directory.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+
+- Full support for @shadow files in Leo's core.
+- Major improvements to Leo's key binding code.
+- The beginning of usable vim-like bindings.
+- uA's may now be associated with vnodes in @thin and @shadow files.
+- Several major reorganizations of Leo's code:
+  including sax-based parsing, support for the Graph world (unified nodes),
+  and simplified drawing code.
+- Leo is now an installable package.
+- Prepared code to be ready for Python 3.0.
+- Many small improvements and bug fixes.
+
+Quote of the month:
+-------------------
+Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080912143702.138"># goToLineNumber was always complaining about a missing private shadow file.</t>
+<t tx="ekr.20080912143702.139">@
+
+adjustTargetLanguage, a helper of writeOneAtShadowNode, no longer sets
+c.target_language to 'unknown_language' when the file extension is unknown.</t>
+<t tx="ekr.20080912143702.140">The script failed for paths such as c:\xp\python25\python.exe
+for which python was not the top-most directory.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?

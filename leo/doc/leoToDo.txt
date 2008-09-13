@@ -2,7 +2,11 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.5.2 bugs, cleanups
-#@+node:ekr.20080907095552.3:Recent 9
+#@+node:ekr.20080907095552.3:Recent 11
+#@+node:ekr.20080912143702.141:Document official ivars
+# Do this in top-level Code node in leoPy.leo.
+#@nonl
+#@-node:ekr.20080912143702.141:Document official ivars
 #@+node:ekr.20080910054558.2:Add -c option to specify config files
 @nocolor
 
@@ -28,6 +32,21 @@ or best yet:
 leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo 
 #@nonl
 #@-node:ekr.20080910054558.2:Add -c option to specify config files
+#@+node:ekr.20080912143702.1:Investigate settings strangeness re @string debugger_path
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/d38704eb27eb9340
+
+I find that
+@settings
+  @string debugger_path = /usr/bin/winpdb
+
+sets the config string successfully if in
+home/.leo/myLeoSettings.leo
+not if in
+cwd/myLeoSettings.leo 
+#@nonl
+#@-node:ekr.20080912143702.1:Investigate settings strangeness re @string debugger_path
 #@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 @nocolor
 
@@ -244,7 +263,7 @@ since pressing ctrl+S in leo has even more significant implications we
 should be absolutely certain everything happens safely. 
 #@nonl
 #@-node:ekr.20080906062507.4:Protect @shadow and @auto files?
-#@-node:ekr.20080907095552.3:Recent 9
+#@-node:ekr.20080907095552.3:Recent 11
 #@+node:ekr.20080810085333.5:Under two hours 23
 #@+node:ekr.20080901112851.3:check for syntax errors when @auto import fails
 #@-node:ekr.20080901112851.3:check for syntax errors when @auto import fails
@@ -8152,6 +8171,569 @@ could specify autocompleter conventions, say in an @autocompleter node in an
 @settings tree.
 #@nonl
 #@-node:ekr.20071106083149:Recent post
+#@+node:ekr.20080912174701.1:pysmell
+pysmell: http://groups.google.com/group/leo-editor/browse_thread/thread/3b1da6ef8b047a0c#
+ctags: http://ctags.sourceforge.net/
+
+Article on static typing of dynamic languages:
+    http://orestis.gr/blog/2008/08/25/on-python-static-typing/
+
+    pyflakes:
+        https://launchpad.net/pyflakes
+#@nonl
+#@-node:ekr.20080912174701.1:pysmell
+#@+node:ekr.20080912174701.2:Suggested python compiler improved docs
+@nocolor
+
+http://bugs.python.org/file1526/compiler.visitor.txt
+
+19.4 compiler.visitor -- Walk ASTs Using Visitors
+
+compiler.visitor.ASTVisitor walks the abstract syntax tree created by the parser. The compiler package uses a variant on the visitor pattern that takes advantage of Python's introspection features to eliminate the need for much of the visitor's infrastructure.
+
+The classes being visited do not need to be programmed to accept visitors. The visitor need only define visit methods for nodes it is specifically interested in; a default visit method handles the rest.
+
+walk(tree, visitor[, walker [, verbose]])
+
+    Initiate a preorder walk of tree. visitor is an instance of a class that defines a visitNodeType method for each AST node of interest. NodeType is the name of the AST class to be visited.
+
+    walker is an instance of ASTVisitor (the default) or a subclass. This is the class that will actually walk the tree and dispatch to the visitor.
+
+    The verbose argument is used to set the VERBOSE attribute of walker. It is used by ExampleASTVisitor, not by ASTVisitor.
+
+    Note: This function is also exposed as compiler.walk().
+
+class ASTVisitor()
+
+    ASTVisitor is responsible for walking over the tree in the correct order. A walk begins with a call to preorder(). For each node, it checks the visitor argument to preorder() for a method named `visitNodeType,' where NodeType is the name of the node's class, e.g. for a While node the method visitWhile() would be called. If the visitNodeType() method exists, it is called with the node as its first argument. If the visitNodeType() method does not exist, ASTVisiter.default() is called instead.
+
+    The visitNodeType() method for a particular node type controls how child nodes are visited during the walk. Only children explicitly visited by the visitNodeType() method will be visited. The ASTVisitor modifies the visitor argument by adding a visit() method to the visitor; this method can be used to visit a particular child node.
+
+ASTVisitor objects have the following methods:
+
+default(node[, ...])
+
+    The default node handler. The dispatch() method calls default() for a node when the visitor does not define a handler for the node. The default handler visits each child node of the given node. Any extra arguments are passed to the dispatch method.
+
+dispatch(node[, ...])
+
+    Finds the handler for a node and dispatches to it. Any extra arguments are passed to the handler.
+
+preorder(tree, visitor[, ...])
+
+    Initiates a preorder walk of the tree. Any extra arguments are passed to the node handlers.
+
+
+class ExampleASTVisitor()
+
+    This subclass of ASTVisitor can be passed as the walker argument to walk. It prints information about any node that is not handled by the visitor object. This is useful for inspecting a tree and developing a visitor. Set the verbose parameter of walk to 1 or higher to get the extra output.
+
+
+Example:
+
+    from compiler import parse, walk
+    from compiler.visitor import ExampleASTVisitor
+
+    testdata = '''
+    def aFunction(anArg):
+        return anArg + 1
+    '''
+
+    class SimpleVisitor(object):
+        def visitFunction(self, parsedFunc):
+            print "Function %(name)s at %(lineno)s takes %(argnames)s " \
+                  " with code %(code)s" % parsedFunc.__dict__
+
+    if __name__ == "__main__":
+        ast = parse(testdata)
+        walk(ast, SimpleVisitor(), walker=ExampleASTVisitor(), verbose=1)
+
+
+#@-node:ekr.20080912174701.2:Suggested python compiler improved docs
+#@+node:ekr.20080912174701.3:pyflakes source code
+#@+node:ekr.20080912174701.4:checker.py
+@language python
+@tabwidth -4
+@others
+#@+node:ekr.20080912174701.5:checker declarations
+# -*- test-case-name: pyflakes -*-
+# (c) 2005-2008 Divmod, Inc.
+# See LICENSE file for details
+
+import __builtin__
+from compiler import ast
+
+from pyflakes import messages
+#@-node:ekr.20080912174701.5:checker declarations
+#@+node:ekr.20080912174701.47:Small classes
+#@+node:ekr.20080912174701.6:class Binding
+class Binding(object):
+    """
+    @ivar used: pair of (L{Scope}, line-number) indicating the scope and
+                line number that this binding was last used
+    """
+    @others
+#@+node:ekr.20080912174701.7:__init__
+def __init__(self, name, source):
+    self.name = name
+    self.source = source
+    self.used = False
+
+#@-node:ekr.20080912174701.7:__init__
+#@+node:ekr.20080912174701.8:__str__
+def __str__(self):
+    return self.name
+
+#@-node:ekr.20080912174701.8:__str__
+#@+node:ekr.20080912174701.9:__repr__
+def __repr__(self):
+    return '<%s object %r from line %r at 0x%x>' % (self.__class__.__name__,
+                                                    self.name,
+                                                    self.source.lineno,
+                                                    id(self))
+
+#@-node:ekr.20080912174701.9:__repr__
+#@-node:ekr.20080912174701.6:class Binding
+#@+node:ekr.20080912174701.10:class UnBinding
+class UnBinding(Binding):
+    '''Created by the 'del' operator.'''
+
+#@-node:ekr.20080912174701.10:class UnBinding
+#@+node:ekr.20080912174701.11:class Importation
+class Importation(Binding):
+
+    def __init__(self, name, source):
+        name = name.split('.')[0]
+        super(Importation, self).__init__(name, source)
+
+
+#@-node:ekr.20080912174701.11:class Importation
+#@+node:ekr.20080912174701.13:class Assignment
+class Assignment(Binding):
+    pass
+
+#@-node:ekr.20080912174701.13:class Assignment
+#@+node:ekr.20080912174701.14:class FunctionDefinition
+class FunctionDefinition(Binding):
+    pass
+
+
+#@-node:ekr.20080912174701.14:class FunctionDefinition
+#@+node:ekr.20080912174701.15:class Scope
+class Scope(dict):
+    importStarred = False       # set to True when import * is found
+
+    def __repr__(self):
+        return '<%s at 0x%x %s>' % (
+            self.__class__.__name__, id(self), dict.__repr__(self))
+
+    def __init__(self):
+        super(Scope, self).__init__()
+#@-node:ekr.20080912174701.15:class Scope
+#@+node:ekr.20080912174701.18:class ClassScope
+class ClassScope(Scope):
+    pass
+
+
+
+#@-node:ekr.20080912174701.18:class ClassScope
+#@+node:ekr.20080912174701.19:class FunctionScope
+class FunctionScope(Scope):
+    """
+    I represent a name scope for a function.
+
+    @ivar globals: Names declared 'global' in this function.
+    """
+
+    def __init__(self):
+        super(FunctionScope, self).__init__()
+        self.globals = {}
+
+#@nonl
+#@-node:ekr.20080912174701.19:class FunctionScope
+#@+node:ekr.20080912174701.21:class ModuleScope
+class ModuleScope(Scope):
+    pass
+
+
+#@-node:ekr.20080912174701.21:class ModuleScope
+#@-node:ekr.20080912174701.47:Small classes
+#@+node:ekr.20080912174701.22:class Checker
+class Checker(object):
+    nodeDepth = 0
+    traceTree = False
+
+    @others
+#@+node:ekr.20080912174701.23:__init__
+def __init__(self, tree, filename='(none)'):
+    self.deferred = []
+    self.dead_scopes = []
+    self.messages = []
+    self.filename = filename
+    self.scopeStack = [ModuleScope()]
+    self.futuresAllowed = True
+
+    self.handleChildren(tree)
+    for handler, scope in self.deferred:
+        self.scopeStack = scope
+        handler()
+    del self.scopeStack[1:]
+    self.popScope()
+    self.check_dead_scopes()
+
+#@-node:ekr.20080912174701.23:__init__
+#@+node:ekr.20080912174701.24:defer
+def defer(self, callable):
+    '''Schedule something to be called after just before completion.
+
+    This is used for handling function bodies, which must be deferred
+    because code later in the file might modify the global scope. When
+    `callable` is called, the scope at the time this is called will be
+    restored, however it will contain any new bindings added to it.
+    '''
+    self.deferred.append( (callable, self.scopeStack[:]) )
+
+#@-node:ekr.20080912174701.24:defer
+#@+node:ekr.20080912174701.25:scope
+def scope(self):
+    return self.scopeStack[-1]
+#@-node:ekr.20080912174701.25:scope
+#@+node:ekr.20080912174701.26:popScope
+scope = property(scope)
+
+def popScope(self):
+    self.dead_scopes.append(self.scopeStack.pop())
+
+#@-node:ekr.20080912174701.26:popScope
+#@+node:ekr.20080912174701.27:check_dead_scopes
+def check_dead_scopes(self):
+    for scope in self.dead_scopes:
+        for importation in scope.itervalues():
+            if isinstance(importation, Importation) and not importation.used:
+                self.report(messages.UnusedImport, importation.source.lineno, importation.name)
+
+#@-node:ekr.20080912174701.27:check_dead_scopes
+#@+node:ekr.20080912174701.28:pushFunctionScope
+def pushFunctionScope(self):
+    self.scopeStack.append(FunctionScope())
+
+#@-node:ekr.20080912174701.28:pushFunctionScope
+#@+node:ekr.20080912174701.29:pushClassScope
+def pushClassScope(self):
+    self.scopeStack.append(ClassScope())
+
+#@-node:ekr.20080912174701.29:pushClassScope
+#@+node:ekr.20080912174701.30:report
+def report(self, messageClass, *args, **kwargs):
+    self.messages.append(messageClass(self.filename, *args, **kwargs))
+
+#@-node:ekr.20080912174701.30:report
+#@+node:ekr.20080912174701.31:handleChildren
+def handleChildren(self, tree):
+    for node in tree.getChildNodes():
+        self.handleNode(node)
+
+STMT = PRINT = PRINTNL = TUPLE = LIST = ASSTUPLE = ASSATTR = \
+ASSLIST = GETATTR = SLICE = SLICEOBJ = IF = CALLFUNC = DISCARD = \
+RETURN = ADD = MOD = SUB = NOT = UNARYSUB = INVERT = ASSERT = COMPARE = \
+SUBSCRIPT = AND = OR = TRYEXCEPT = RAISE = YIELD = DICT = LEFTSHIFT = \
+RIGHTSHIFT = KEYWORD = TRYFINALLY = WHILE = EXEC = MUL = DIV = POWER = \
+FLOORDIV = BITAND = BITOR = BITXOR = LISTCOMPFOR = LISTCOMPIF = \
+AUGASSIGN = BACKQUOTE = UNARYADD = GENEXPR = GENEXPRFOR = GENEXPRIF = \
+IFEXP = handleChildren
+#@-node:ekr.20080912174701.31:handleChildren
+#@+node:ekr.20080912174701.32:handleNode
+def handleNode(self, node):
+
+    if self.traceTree:
+        print '  ' * self.nodeDepth + node.__class__.__name__
+
+    self.nodeDepth += 1
+    nodeType = node.__class__.__name__.upper()
+
+    if nodeType not in ('STMT', 'FROM'):
+        self.futuresAllowed = False
+
+    try:
+        handler = getattr(self, nodeType)
+        handler(node)
+    finally:
+        self.nodeDepth -= 1
+
+    if self.traceTree:
+        print '  ' * self.nodeDepth + 'end ' + node.__class__.__name__
+#@-node:ekr.20080912174701.32:handleNode
+#@+node:ekr.20080912174701.33:ignore
+def ignore(self, node):
+    pass
+
+CONST = PASS = CONTINUE = BREAK = ELLIPSIS = ignore
+#@-node:ekr.20080912174701.33:ignore
+#@+node:ekr.20080912174701.34:addBinding
+def addBinding(self, lineno, value, reportRedef=True):
+    '''Called when a binding is altered.
+
+    - `lineno` is the line of the statement responsible for the change
+    - `value` is the optional new value, a Binding instance, associated
+      with the binding; if None, the binding is deleted if it exists.
+    - if `reportRedef` is True (default), rebinding while unused will be
+      reported.
+    '''
+    if (isinstance(self.scope.get(value.name), FunctionDefinition)
+                and isinstance(value, FunctionDefinition)):
+        self.report(messages.RedefinedFunction,
+                    lineno, value.name, self.scope[value.name].source.lineno)
+
+    if not isinstance(self.scope, ClassScope):
+        for scope in self.scopeStack[::-1]:
+            if (isinstance(scope.get(value.name), Importation)
+                    and not scope[value.name].used
+                    and reportRedef):
+
+                self.report(messages.RedefinedWhileUnused,
+                            lineno, value.name, scope[value.name].source.lineno)
+
+    if isinstance(value, UnBinding):
+        try:
+            del self.scope[value.name]
+        except KeyError:
+            self.report(messages.UndefinedName, lineno, value.name)
+    else:
+        self.scope[value.name] = value
+#@-node:ekr.20080912174701.34:addBinding
+#@+node:ekr.20080912174701.48:Node handlers
+@
+
+These are called by the following cute dispatch code in handleNode:
+
+    handler = getattr(self, nodeType)
+    handler(node)
+#@nonl
+#@+node:ekr.20080912174701.35:WITH
+def WITH(self, node):
+    """
+    Handle C{with} by adding bindings for the name or tuple of names it
+    puts into scope and by continuing to process the suite within the
+    statement.
+    """
+    # for "with foo as bar", there is no AssName node for "bar".
+    # Instead, there is a Name node. If the "as" expression assigns to
+    # a tuple, it will instead be a AssTuple node of Name nodes.
+    #
+    # Of course these are assignments, not references, so we have to
+    # handle them as a special case here.
+
+    self.handleNode(node.expr)
+
+    if isinstance(node.vars, ast.AssTuple):
+        varNodes = node.vars.nodes
+    elif node.vars is not None:
+        varNodes = [node.vars]
+    else:
+        varNodes = []
+
+    for varNode in varNodes:
+        self.addBinding(varNode.lineno, Assignment(varNode.name, varNode))
+
+    self.handleChildren(node.body)
+
+
+#@-node:ekr.20080912174701.35:WITH
+#@+node:ekr.20080912174701.36:GLOBAL
+def GLOBAL(self, node):
+    """
+    Keep track of globals declarations.
+    """
+    if isinstance(self.scope, FunctionScope):
+        self.scope.globals.update(dict.fromkeys(node.names))
+
+#@-node:ekr.20080912174701.36:GLOBAL
+#@+node:ekr.20080912174701.37:LISTCOMP
+def LISTCOMP(self, node):
+    for qual in node.quals:
+        self.handleNode(qual)
+    self.handleNode(node.expr)
+
+GENEXPRINNER = LISTCOMP
+#@-node:ekr.20080912174701.37:LISTCOMP
+#@+node:ekr.20080912174701.38:FOR
+def FOR(self, node):
+    """
+    Process bindings for loop variables.
+    """
+    vars = []
+
+    def collectLoopVars(n):
+        if hasattr(n, 'name'):
+            vars.append(n.name)
+        else:
+            for c in n.getChildNodes():
+                collectLoopVars(c)
+
+    collectLoopVars(node.assign)
+
+    for varn in vars:
+        if (isinstance(self.scope.get(varn), Importation)
+                # unused ones will get an unused import warning
+                and self.scope[varn].used):
+            self.report(messages.ImportShadowedByLoopVar,
+                        node.lineno, varn, self.scope[varn].source.lineno)
+
+    self.handleChildren(node)
+
+#@-node:ekr.20080912174701.38:FOR
+#@+node:ekr.20080912174701.39:NAME
+def NAME(self, node):
+    """
+    Locate the name in locals / function / globals scopes.
+    """
+    # try local scope
+    importStarred = self.scope.importStarred
+    try:
+        self.scope[node.name].used = (self.scope, node.lineno)
+    except KeyError:
+        pass
+    else:
+        return
+
+    # try enclosing function scopes
+    for scope in self.scopeStack[-2:0:-1]:
+        importStarred = importStarred or scope.importStarred
+        if not isinstance(scope, FunctionScope):
+            continue
+        try:
+            scope[node.name].used = (self.scope, node.lineno)
+        except KeyError:
+            pass
+        else:
+            return
+
+    # try global scope
+    importStarred = importStarred or self.scopeStack[0].importStarred
+    try:
+        self.scopeStack[0][node.name].used = (self.scope, node.lineno)
+    except KeyError:
+        if ((not hasattr(__builtin__, node.name))
+                and node.name not in ['__file__']
+                and not importStarred):
+            self.report(messages.UndefinedName, node.lineno, node.name)
+#@-node:ekr.20080912174701.39:NAME
+#@+node:ekr.20080912174701.40:FUNCTION
+def FUNCTION(self, node):
+    if getattr(node, "decorators", None) is not None:
+        self.handleChildren(node.decorators)
+    self.addBinding(node.lineno, FunctionDefinition(node.name, node))
+    self.LAMBDA(node)
+
+#@-node:ekr.20080912174701.40:FUNCTION
+#@+node:ekr.20080912174701.41:LAMBDA
+def LAMBDA(self, node):
+
+    for default in node.defaults:
+        self.handleNode(default)
+
+    def runFunction():
+        args = []
+
+        def addArgs(arglist):
+            for arg in arglist:
+                if isinstance(arg, tuple):
+                    addArgs(arg)
+                else:
+                    if arg in args:
+                        self.report(messages.DuplicateArgument, node.lineno, arg)
+                    args.append(arg)
+
+        self.pushFunctionScope()
+        addArgs(node.argnames)
+        for name in args:
+            self.addBinding(node.lineno, Assignment(name, node), reportRedef=False)
+        self.handleNode(node.code)
+        self.popScope()
+
+    self.defer(runFunction)
+
+#@-node:ekr.20080912174701.41:LAMBDA
+#@+node:ekr.20080912174701.42:CLASS
+def CLASS(self, node):
+
+    self.addBinding(node.lineno, Assignment(node.name, node))
+    for baseNode in node.bases:
+        self.handleNode(baseNode)
+    self.pushClassScope()
+    self.handleChildren(node.code)
+    self.popScope()
+
+#@-node:ekr.20080912174701.42:CLASS
+#@+node:ekr.20080912174701.43:ASSNAME
+def ASSNAME(self, node):
+
+    if node.flags == 'OP_DELETE':
+        if isinstance(self.scope, FunctionScope) and node.name in self.scope.globals:
+            del self.scope.globals[node.name]
+        else:
+            self.addBinding(node.lineno, UnBinding(node.name, node))
+    else:
+        # if the name hasn't already been defined in the current scope
+        if isinstance(self.scope, FunctionScope) and node.name not in self.scope:
+            # for each function or module scope above us
+            for scope in self.scopeStack[:-1]:
+                if not isinstance(scope, (FunctionScope, ModuleScope)):
+                    continue
+                # if the name was defined in that scope, and the name has
+                # been accessed already in the current scope, and hasn't
+                # been declared global
+                if (node.name in scope
+                        and scope[node.name].used
+                        and scope[node.name].used[0] is self.scope
+                        and node.name not in self.scope.globals):
+                    # then it's probably a mistake
+                    self.report(messages.UndefinedLocal,
+                                scope[node.name].used[1],
+                                node.name,
+                                scope[node.name].source.lineno)
+                    break
+
+        self.addBinding(node.lineno, Assignment(node.name, node))
+#@-node:ekr.20080912174701.43:ASSNAME
+#@+node:ekr.20080912174701.44:ASSIGN
+def ASSIGN(self, node):
+    self.handleNode(node.expr)
+    for subnode in node.nodes[::-1]:
+        self.handleNode(subnode)
+
+#@-node:ekr.20080912174701.44:ASSIGN
+#@+node:ekr.20080912174701.45:IMPORT
+def IMPORT(self, node):
+    for name, alias in node.names:
+        name = alias or name
+        importation = Importation(name, node)
+        self.addBinding(node.lineno, importation)
+
+#@-node:ekr.20080912174701.45:IMPORT
+#@+node:ekr.20080912174701.46:FROM
+def FROM(self, node):
+    if node.modname == '__future__':
+        if not self.futuresAllowed:
+            self.report(messages.LateFutureImport, node.lineno, [n[0] for n in node.names])
+    else:
+        self.futuresAllowed = False
+
+    for name, alias in node.names:
+        if name == '*':
+            self.scope.importStarred = True
+            self.report(messages.ImportStarUsed, node.lineno, node.modname)
+            continue
+        name = alias or name
+        importation = Importation(name, node)
+        if node.modname == '__future__':
+            importation.used = (self.scope, node.lineno)
+        self.addBinding(node.lineno, importation)
+#@-node:ekr.20080912174701.46:FROM
+#@-node:ekr.20080912174701.48:Node handlers
+#@-node:ekr.20080912174701.22:class Checker
+#@-node:ekr.20080912174701.4:checker.py
+#@-node:ekr.20080912174701.3:pyflakes source code
 #@-node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20071211091355:Other/Minor
 #@+node:ekr.20071029082025:Improve distribution

@@ -1,7 +1,13 @@
-Leo 4.5 release final                     September 2, 2008
+Leo 4.5.1 final                                  September 12, 2008
 
-Leo 4.5 final is now available at:
+Leo 4.5.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
+
+Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
+
+- Eliminated spurioius error messages in the goto-global-line command.
+- @shadow files with unknown file extensions now work properly.
+- Leo's installer now properly finds Python's install directory.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html

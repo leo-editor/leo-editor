@@ -276,7 +276,9 @@
 </v>
 <v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
 <v t="ekr.20080909075224.1"><vh>@@shadow ekr-shadow-test.html</vh></v>
+<v t="ekr.20080911080311.1"><vh>@@shadow dummy.conf</vh></v>
 </v>
+<v t="ekr.20080911112823.1"><vh>@@nosent fix-failure.py</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2298,5 +2300,12 @@ class AClass:
 <t tx="ekr.20080909075224.1">@language html
 ../hex6x -
 changed</t>
+<t tx="ekr.20080911080311.1">@language conf
+; This is a comment
+P1 = 0
+</t>
+<t tx="ekr.20080911112823.1"># -*- coding: utf-8 -*-
+
+s = 'abc'.replace(u'” “', '" "')</t>
 </tnodes>
 </leo_file>
