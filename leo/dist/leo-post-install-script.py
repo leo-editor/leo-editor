@@ -36,7 +36,7 @@ def copyPostInstallScript(python):
     path = sys.argv[0]
     assert path,'leo-post-install-script: no sys.argv[0]'
     path = os.path.normpath(os.path.abspath(path))
-    print ('path',path)
+    # print ('path: %s' % path)
     scripts = os.path.join(python,'Scripts')
     shutil.copy(path,scripts)
 #@-node:ekr.20080913110741.5:copyPostInstallScript
@@ -46,7 +46,7 @@ def copyPostInstallScript(python):
 
 def findPython(path=None):
 
-    trace = True
+    trace = False
 
     if path: paths = [path]
     else:    paths = sys.path
