@@ -91,15 +91,13 @@ def setRegistry(python):
         exe = pythonw
 
     # This is the 'pythonw.exe leo.py %1' part
-    if trace:
-        # Leo hasn't necessarily been installed anywhere: use the trunk.
-        s = 'import os; os.chdir(r\'%s\'); import leo.core.runLeo as r; r.run(fileName=r\'%%1\')'
-        c_option =  s % top
-        if use_console: i_option = '-i'
-        else:           i_option = ''
-        leo_command = '"%s" %s -c "%s"' % (exe, i_option, c_option) 
-    else:
-        leo_command = '"%s" "%s" "%%1"' % (exe, runLeo)
+    s = 'import os; os.chdir(r\'%s\'); import leo.core.runLeo as r; r.run(fileName=r\'%%1\')'
+    c_option =  s % top
+    if use_console: i_option = '-i'
+    else:           i_option = ''
+    leo_command = '"%s" %s -c "%s"' % (exe, i_option, c_option) 
+    # else:
+        # leo_command = '"%s" "%s" "%%1"' % (exe, runLeo)
 
     # Magic registry stuff follows...
     # Get the handle.
