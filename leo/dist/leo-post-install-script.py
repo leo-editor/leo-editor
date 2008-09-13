@@ -6,6 +6,7 @@
 #@+node:ekr.20080913110741.3:<< imports >>
 import _winreg as wr
 import os
+import shutil
 import sys
 #@-node:ekr.20080913110741.3:<< imports >>
 #@nl
