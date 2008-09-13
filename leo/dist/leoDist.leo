@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="107" left="213" height="810" width="888"/>
+	<global_window_position top="119" left="376" height="810" width="888"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5,2,0"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -57,7 +57,6 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080827092958.3"><vh>@@thin pre-install-script.py (no longer used)</vh></v>
 <v t="ekr.20080913110741.1" a="E"
 expanded="ekr.20080913110741.4,ekr.20080913110741.6,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20080826091039.1" a="E"><vh>@button make</vh>
@@ -900,32 +899,6 @@ import time</t>
     or '2.2'.
     """
     return sys.version[:3]</t>
-<t tx="ekr.20080827092958.3">import _winreg as wr
-import sys, os
-
-version = '4-5-1-final'
-testing = True
-setRegistry = False
-
-# To uninstall.
-# Set edit .leo files to:
-#    c:\python25\python.exe c:\leo.repo\trunk\launchLeo.py %1 %2
-# Set icon to C:\leo.repo\trunk\leo\Icons\LeoDoc.ico
-
-@others
-
-if testing: print '=' * 40
-
-path = None
-# path = r'c:\xp\python25\python.exe' # Previously failed.
-
-python = findPython(path=path)
-
-if setRegistry and python:
-    setRegistry(python,testing)
-
-if testing: print ('done')
-</t>
 <t tx="ekr.20080828073358.1">Leo 4.5 release candidate 1                      August 28, 2008
 
 Leo 4.5 rc1 is now available at:

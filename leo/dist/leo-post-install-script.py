@@ -12,13 +12,13 @@ import sys
 #@nl
 
 version = '4-5-1-final'
-testing = True
 
-# To uninstall.
+# Note to EKR: To uninstall.
 # Set edit .leo files to:
 #    c:\python25\python.exe c:\leo.repo\trunk\launchLeo.py %1 %2
 # Set icon to C:\leo.repo\trunk\leo\Icons\LeoDoc.ico
 
+# Important: 'g' does not exist when this script is run.
 abspath, exists, join = os.path.abspath, os.path.exists, os.path.join
 
 #@+others
@@ -143,7 +143,8 @@ def unsetRegistery():
         try:
             wr.DeleteKey(h,key)
         except WindowsError:
-            print 'Failed to delete %s key' % key
+            pass
+            # print 'Failed to delete key: %s' % key
 #@-node:ekr.20080913110741.7:unsetRegistery
 #@-node:ekr.20080913110741.6:uninstall & helper
 #@-others
@@ -156,9 +157,10 @@ assert arg in ('-install','-remove'),'leo-post-install-script: bad sys.argv[1]: 
 
 if arg == '-install':
     install()
+    print ('leo-post-install-script("%s"): done' % (arg))
 else:
     uninstall()
-
-print ('leo-post-install-script(%s): done' % (arg))
+    # Do not print anything: it would create an annoying window.
+#@nonl
 #@-node:ekr.20080913110741.1:@thin leo-post-install-script.py
 #@-leo
