@@ -702,7 +702,7 @@ exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
 
 # pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
 pre_install_script  = None
-post_install_script = r'..\Lib\site-packages\Leo-%s\leo\dist\post-install-script.py' % version
+post_install_script = r'..\Lib\site-packages\Leo-%s\leo\dist\leo-post-install-script.py' % version
     # Installed in Python/Scripts.
 
 make()
