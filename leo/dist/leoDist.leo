@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -699,7 +699,7 @@ zipFile2            = abspath(join(top,'Leo-%s-temp.zip' % (version)))
 exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
 pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
 # post_install_script = 'post-install-script.py' # Installed in Python/Scripts.
-post_install_script = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
+post_install_script = abspath(join(g.app.loadDir,'..','dist','post-install-script.py'))
 
 if 1:
     # Copy files from the doc directory to the top directory.
