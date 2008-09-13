@@ -130,21 +130,20 @@ def unsetRegistery():
 
     h = wr.ConnectRegistry(None,wr.HKEY_CLASSES_ROOT)
 
-    try:
-        # Delete the file extension association
-        wr.DeleteKey(h, ".leo")
-    except WindowsError:
-        print "Failed to delete '.leo' key, does it exist?"
+    table = (
+        '.leo',
+        r'LeoFile\shell\open\command',
+        r'LeoFile\shell\open',
+        r'LeoFile\shell',
+        r'LeoFile\DefaultIcon',
+        r'LeoFile',
+    )
 
-    try:
-        # Delete the 'LeoFile' file type and the file type association
-        wr.DeleteKey(h, r"LeoFile\shell\open\command")
-        wr.DeleteKey(h, r"LeoFile\shell\open")
-        wr.DeleteKey(h, r"LeoFile\shell")
-        wr.DeleteKey(h, r"LeoFile\DefaultIcon")
-        wr.DeleteKey(h, r"LeoFile")
-    except WindowsError:
-        print "Failed to delete Leo associations, do they exist?"
+    for key in table:
+        try:
+            wr.DeleteKey(h,key)
+        except WindowsError:
+            print 'Failed to delete %s key' % key
 #@-node:ekr.20080913110741.7:unsetRegistery
 #@-node:ekr.20080913110741.6:uninstall & helper
 #@-others
