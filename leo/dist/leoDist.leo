@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -58,22 +58,24 @@
 </v>
 </v>
 <v t="ekr.20080912083921.1"><vh>unintall-registery-script.py</vh></v>
-<v t="ekr.20080913110741.1"><vh>@thin post-install-script.py</vh></v>
-<v t="ekr.20080827092958.3"><vh>@thin pre-install-script.py</vh></v>
+<v t="ekr.20080827092958.3"><vh>@@thin pre-install-script.py (no longer used)</vh></v>
+<v t="ekr.20080913110741.1" a="E"
+expanded="ekr.20080913110741.4,ekr.20080913110741.6,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20080826091039.1" a="E"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
-<v t="ekr.20080826091039.3"><vh>remove</vh></v>
+<v t="ekr.20080913110741.8"><vh>make</vh></v>
 <v t="ekr.20080826091039.4" a="E"><vh>class createExe</vh>
 <v t="ekr.20080826091039.5"><vh>ctor</vh></v>
 <v t="ekr.20080826091039.6"><vh>create_exe</vh></v>
 <v t="ekr.20080826091039.7"><vh>escape</vh></v>
 <v t="ekr.20080826091039.8"><vh>get_exe_bytes</vh></v>
-<v t="ekr.20080826091039.9"><vh>get_inidata</vh>
+<v t="ekr.20080826091039.9" a="E"><vh>get_inidata</vh>
 <v t="ekr.20080826091039.10"><vh>get_metaData</vh></v>
 <v t="ekr.20080826091039.11"><vh>get_setup</vh></v>
 </v>
 <v t="ekr.20080826091039.12"><vh>get_python_version</vh></v>
 </v>
+<v t="ekr.20080826091039.3"><vh>unlink</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -697,54 +699,24 @@ top                 = abspath(join(g.app.loadDir,'..','..'))
 zipFile             = abspath(join(top,'Leo-%s.zip' % (version)))
 zipFile2            = abspath(join(top,'Leo-%s-temp.zip' % (version)))
 exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
-pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
+
+# pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
+pre_install_script  = None
 post_install_script = r'..\Lib\site-packages\Leo-%s\leo\dist\post-install-script.py' % version
     # Installed in Python/Scripts.
-# post_install_script = abspath(join(g.app.loadDir,'..','dist','post-install-script.py'))
+    
+make()
 
-if 1:
-    # Copy files from the doc directory to the top directory.
-    for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
-        path= abspath(join(docDir,theFile))
-        shutil.copy(path,top)
-        g.es_print('created in %s: %s' % (top,theFile))
-
-    for z in (zipFile,zipFile2,exeFile):
-        if exists(z): remove(z)
-
-    commands = (
-        r'cd %s' % (top),
-        r'bzr status',
-        r'bzr commit -m "commit doc files during make"',
-        r'bzr status',
-        r'bzr export "%s"' % (zipFile),
-        r'bzr export --root="%s" "%s"' % (root,zipFile2),
-    )
-
-    for z in commands:
-        print ('command: %s' % z)
-        os.system(z)
-
-    x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
-    x.create_exe()
-    remove(zipFile2)
-
-    for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
-        path= abspath(join(top,z))
-        if exists(z): remove(z)
-
-    os.system('dir %s' % (top))
-
-print('done')
+print('@button make: done')
 </t>
 <t tx="ekr.20080826091039.2">import os
 import shutil
 import struct
 import sys
 import time</t>
-<t tx="ekr.20080826091039.3">def remove (fileName):
+<t tx="ekr.20080826091039.3">def unlink (fileName):
 
-    g.es_print('removing',fileName)
+    print ('removing: %s',fileName)
     os.remove(fileName)
 </t>
 <t tx="ekr.20080826091039.4">class createExe:
@@ -755,7 +727,7 @@ import time</t>
 
     self.exeFile = exeFile
     self.zipFile = zipFile
-    self.theDir = g.os_path_dirname(zipFile)
+    self.theDir = os.path.dirname(zipFile)
 
     # The path to distutils.command
     self.distutils_command_path = r'C:\Python25\Lib\distutils\command'
@@ -929,6 +901,32 @@ import time</t>
     or '2.2'.
     """
     return sys.version[:3]</t>
+<t tx="ekr.20080827092958.3">import _winreg as wr
+import sys, os
+
+version = '4-5-1-final'
+testing = True
+setRegistry = False
+
+# To uninstall.
+# Set edit .leo files to:
+#    c:\python25\python.exe c:\leo.repo\trunk\launchLeo.py %1 %2
+# Set icon to C:\leo.repo\trunk\leo\Icons\LeoDoc.ico
+
+@others
+
+if testing: print '=' * 40
+
+path = None
+# path = r'c:\xp\python25\python.exe' # Previously failed.
+
+python = findPython(path=path)
+
+if setRegistry and python:
+    setRegistry(python,testing)
+
+if testing: print ('done')
+</t>
 <t tx="ekr.20080828073358.1">Leo 4.5 release candidate 1                      August 28, 2008
 
 Leo 4.5 rc1 is now available at:
@@ -1097,5 +1095,39 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080913110741.8">def make():
+
+    # Copy files from the doc directory to the top directory.
+    for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+        path= abspath(join(docDir,theFile))
+        shutil.copy(path,top)
+        g.es_print('created in %s: %s' % (top,theFile))
+
+    for z in (zipFile,zipFile2,exeFile):
+        if exists(z): unlink(z)
+
+    commands = (
+        r'cd %s' % (top),
+        r'bzr status',
+        # This commit ensures the proper files are included in the distribution.
+        r'bzr commit -m "commit doc files during make"',
+        r'bzr status',
+        r'bzr export "%s"' % (zipFile),
+        r'bzr export --root="%s" "%s"' % (root,zipFile2),
+    )
+
+    for z in commands:
+        print ('command: %s' % z)
+        os.system(z)
+
+    x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
+    x.create_exe()
+    unlink(zipFile2)
+
+    for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+        path= abspath(join(top,z))
+        if exists(z): unlink(z)
+
+    os.system('dir %s' % (top))</t>
 </tnodes>
 </leo_file>
