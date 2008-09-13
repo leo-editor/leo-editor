@@ -37,8 +37,6 @@ def copyPostInstallScript(python):
     path = os.path.normpath(os.path.abspath(path))
     print ('path',path)
 
-
-
 #@-node:ekr.20080913110741.5:copyPostInstallScript
 #@+node:ekr.20080909112433.2:findPython
 # The path to Leo will be python/Lib/site-packages/leo.
@@ -155,8 +153,6 @@ path = None
 
 arg = sys.argv[1]
 assert arg in ('-install','-remove'),'leo-post-install-script: bad sys.argv[1]: %s' % arg
-
-print ('leo-post-install.py: __file__: %s' % __file__)
 
 if arg == '-install':
     install()
