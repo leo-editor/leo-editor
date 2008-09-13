@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="6,1,0"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7,3"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -716,7 +716,7 @@ import sys
 import time</t>
 <t tx="ekr.20080826091039.3">def unlink (fileName):
 
-    print ('removing: %s',fileName)
+    print ('removing: %s' % fileName)
     os.remove(fileName)
 </t>
 <t tx="ekr.20080826091039.4">class createExe:
