@@ -22,7 +22,7 @@ abspath, exists, join = os.path.abspath, os.path.exists, os.path.join
 
 #@+others
 #@+node:ekr.20080913110741.4:install & helpers
-def install(path):
+def install():
 
     python = findPython()
 
@@ -35,7 +35,6 @@ def copyPostInstallScript(python):
     path = sys.argv[0]
     assert path,'leo-post-install-script: no sys.argv[0]'
     path = os.path.normpath(os.path.abspath(path))
-    print ('__file__',__file__)
     print ('path',path)
 
 
@@ -156,6 +155,8 @@ path = None
 
 arg = sys.argv[1]
 assert arg in ('-install','-remove'),'leo-post-install-script: bad sys.argv[1]: %s' % arg
+
+print ('leo-post-install.py: __file__: %s' % __file__)
 
 if arg == '-install':
     install()
