@@ -29,7 +29,7 @@ def install():
 
     if python:
         copyPostInstallScript(python)
-        setRegistry(python,testing)
+        setRegistry(python)
 #@+node:ekr.20080913110741.5:copyPostInstallScript
 def copyPostInstallScript(python):
 
@@ -66,9 +66,9 @@ def findPython(path=None):
     return None
 #@-node:ekr.20080909112433.2:findPython
 #@+node:ekr.20080909112433.3:setRegistry
-def setRegistry(python,testing):
+def setRegistry(python):
 
-    use_console = False
+    use_console = False ; trace = False
 
     abspath, exists, join = os.path.abspath, os.path.exists, os.path.join
 
@@ -81,7 +81,7 @@ def setRegistry(python,testing):
     runLeo  = abspath(join(top,'leo','core','runLeo.py'))
     icon    = abspath(join(top,'leo','icons','LeoDoc.ico'))
 
-    if testing:
+    if trace:
         print ('exists %s, python:   %s' % (exists(python),python))
         print ('exists %s, top:      %s' % (exists(top), top))
         print ('exists %s, runLeo:   %s' % (exists(runLeo), runLeo))
@@ -91,7 +91,7 @@ def setRegistry(python,testing):
         exe = pythonw
 
     # This is the 'pythonw.exe leo.py %1' part
-    if testing:
+    if trace:
         # Leo hasn't necessarily been installed anywhere: use the trunk.
         s = 'import os; os.chdir(r\'%s\'); import leo.core.runLeo as r; r.run(fileName=r\'%%1\')'
         c_option =  s % top
@@ -128,12 +128,11 @@ def unsetRegistery():
 
     '''Uninstall Leo entries from the Windows registry.'''
 
-    # Magic registry stuff follows...
     h = wr.ConnectRegistry(None,wr.HKEY_CLASSES_ROOT)
 
     try:
         # Delete the file extension association
-        wr.DeleteKey(wr.HKCR, ".leo")
+        wr.DeleteKey(h, ".leo")
     except WindowsError:
         print "Failed to delete '.leo' key, does it exist?"
 
