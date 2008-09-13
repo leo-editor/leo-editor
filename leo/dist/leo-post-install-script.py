@@ -36,7 +36,8 @@ def copyPostInstallScript(python):
     assert path,'leo-post-install-script: no sys.argv[0]'
     path = os.path.normpath(os.path.abspath(path))
     print ('path',path)
-
+    scripts = os.path.join(python,'Scripts')
+    shutil.copy(path,scripts)
 #@-node:ekr.20080913110741.5:copyPostInstallScript
 #@+node:ekr.20080909112433.2:findPython
 # The path to Leo will be python/Lib/site-packages/leo.
