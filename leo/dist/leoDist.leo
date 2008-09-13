@@ -698,7 +698,8 @@ zipFile             = abspath(join(top,'Leo-%s.zip' % (version)))
 zipFile2            = abspath(join(top,'Leo-%s-temp.zip' % (version)))
 exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
 pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
-post_install_script = r'..\Lib\site-packages\Leo-%s\leo\post-install-script.py' % version # Installed in Python/Scripts.
+post_install_script = r'..\Lib\site-packages\Leo-%s\leo\dist\post-install-script.py' % version
+    # Installed in Python/Scripts.
 # post_install_script = abspath(join(g.app.loadDir,'..','dist','post-install-script.py'))
 
 if 1:
