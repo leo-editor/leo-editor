@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="6,1,0"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -704,7 +704,7 @@ exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
 pre_install_script  = None
 post_install_script = r'..\Lib\site-packages\Leo-%s\leo\dist\post-install-script.py' % version
     # Installed in Python/Scripts.
-    
+
 make()
 
 print('@button make: done')
