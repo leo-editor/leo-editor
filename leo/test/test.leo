@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -272,6 +272,7 @@
 </v>
 <v t="ekr.20080815073750.1"><vh>@button write-nosent-files</vh></v>
 <v t="ekr.20080816151123.1"><vh>test exec function)</vh></v>
+<v t="ekr.20080818090510.1"><vh>sax unit test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2222,5 +2223,24 @@ for p in c.allNodes_iter():
         n += 1
 g.es('done: %s files written' %(n))</t>
 <t tx="ekr.20080816151123.1">exec('print "hi"')</t>
+<t tx="ekr.20080818090510.1">from xml.sax.expatreader import create_parser
+from xml.sax.saxutils import XMLGenerator
+ #, escape, unescape, quoteattr, XMLFilterBase
+from test.support import findfile
+from io import StringIO,BytesIO
+
+parser = create_parser()
+# result = StringIO()
+result = BytesIO()
+print ('result',result)
+xmlgen = XMLGenerator(result)
+
+parser.setContentHandler(xmlgen)
+f = open(findfile("test.xml"))
+print ('f',f)
+parser.parse(f)
+xml_test_out = open(findfile("test.xml.out")).read()
+
+assert result.getvalue() == xml_test_out</t>
 </tnodes>
 </leo_file>

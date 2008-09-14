@@ -17,13 +17,13 @@ import leo.core.leoNodes as leoNodes
 
 import binascii
 
-try:
+if g.isPython3:
+    import io # Pythone 3.x
+    StringIO = io.StringIO
+    BytesIO = io.BytesIO
+else:
     import cStringIO # Python 2.x
     StringIO = cStringIO.StringIO
-except ImportError:
-    import io # Pythone 3.x
-    # StringIO = io.StringIO
-    # BytesIO = io.BytesIO
 
 import os
 import pickle
@@ -1261,24 +1261,16 @@ class baseFileCommands:
         # g.trace('hiddenRootNode',c.hiddenRootNode)
 
         try:
-            # Use StringIo to avoid a crash in sax when inputFileName has unicode characters.
-            if g.isPython3:
-                pass # theFile should already be good enough: but it's seems very slow...
-                if 0:
-                    if theFile:
-                        # theFile = s # Does not work
-                        s = theFile.read() # This produces bytes.
-                    theFile = io.BytesIO(s) ### hangs
-                # theFile = io.BufferedReader(s)
-                # g.trace('type(s)',type(s),'len(s)',len(s),s[:200],'\n')
-                g.trace('theFile',theFile)
-                ### return None ### Otherwise the parser hangs.
-            else:
+            ### s = theFile.read() # This produces bytes.
+            ### theFile = io.BytesIO(s) ### hangs
+            ### theFile = io.TextIOWrapper(s) ### fails in ctor.
+            ### theFile = io.BufferedReader(s)
+            if 0: # This read causes unicode errors!
                 if theFile:
                     s = theFile.read()
-                theFile = StringIO(s)
-            # g.trace(repr(inputFileName))
-            node = None
+                    print('type(s)',type(s))
+                    theFile = StringIO(s) #,'utf-8'         )
+            # g.trace('theFile',theFile)
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges,1)
                 # Include external general entities, esp. xml-stylesheet lines.
@@ -1288,10 +1280,6 @@ class baseFileCommands:
                     # Hopefully the parser can figure out the encoding from the <?xml> element.
             handler = saxContentHandler(c,inputFileName,silent,inClipboard)
             parser.setContentHandler(handler)
-            # g.trace('parser.parse(%s)' % theFile)
-            ### theFile must be a byte stream
-            ### hangs in a loop in xmlreader.py near line 124.
-            ### I hacked the code to fix it.
             parser.parse(theFile) # expat does not support parseString
             # g.trace('parsing done')
             sax_node = handler.getRootNode()
@@ -1305,7 +1293,6 @@ class baseFileCommands:
             sax_node = None
 
         return sax_node
-    #@nonl
     #@-node:ekr.20060919110638.14:parse_leo_file
     #@+node:ekr.20060919110638.3:readSaxFile
     def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):

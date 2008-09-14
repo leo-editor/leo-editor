@@ -494,6 +494,11 @@ class textLeoMenu(leoMenu.leoMenu):
   def add_separator(self, menu):
     menu.entries.append(textMenuSep())
   #@-node:ekr.20061207074949.60:add_separator
+  #@+node:ekr.20080818092003.1:delete_range
+  def delete_range (self,*args,**keys):
+
+    pass
+  #@-node:ekr.20080818092003.1:delete_range
   #@+node:ekr.20061207074949.61:show_menu
   def show_menu(self):
     last_menu = self._top_menu

@@ -104,6 +104,8 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     #@nl
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
+    if g.isPython3:
+        fileName = r'c:\leo.repo\leo-30\leo\test\test.leo' # smallTest.leo' ### testing only.
     fileName,relativeFileName = completeFileName(fileName)
     reportDirectories(verbose)
     # Read settings *after* setting g.app.config.

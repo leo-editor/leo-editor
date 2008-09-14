@@ -2234,7 +2234,8 @@ def openLeoOrZipFile (fileName):
             theFile = zipfile.ZipFile(fileName,'r')
             # g.trace('opened zip file',theFile)
         else:
-            theFile = open(fileName,'rb')
+            mode = g.choose(g.isPython3,'r','rb')
+            theFile = open(fileName,mode)
         return theFile,isZipped
     except IOError:
         # Do not use string + here: it will fail for non-ascii strings!
