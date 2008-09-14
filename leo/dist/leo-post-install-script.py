@@ -60,8 +60,10 @@ def findPython(path=None):
             result.append(part)
             if part.startswith('python'):
                 python = join(*result) # Don't use abspath here!
-                if trace: print '**found**',python
-                return python
+                # Make sure python\Scripts exists.
+                if os.path.exists(os.path.join(python,'Scripts')):
+                    if trace: print '**found**',python
+                    return python
 
     return None
 #@-node:ekr.20080909112433.2:findPython
