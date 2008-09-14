@@ -11,7 +11,7 @@ import sys
 #@-node:ekr.20080913110741.3:<< imports >>
 #@nl
 
-version = '4-5-1-final'
+version = '4-5-2-final'
 
 # Note to EKR: To uninstall.
 # Set edit .leo files to:
