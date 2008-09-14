@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -28,7 +28,7 @@
 </v>
 <v t="ekr.20080912152259.1"><vh>ANN: Leo 4.5.1 final</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
-<v t="ekr.20080807093308.2" a="E"><vh>4.5</vh>
+<v t="ekr.20080807093308.2"><vh>4.5</vh>
 <v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
 <v t="ekr.20080807093308.1"><vh>ANN: Leo 4.5 b2</vh></v>
 <v t="ekr.20080815093141.108"><vh>ANN: Leo 4.5 b3</vh></v>
@@ -334,7 +334,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
 
-- Eliminated spurioius error messages in the goto-global-line command.
+- Eliminated spurious error messages in the goto-global-line command.
 - @shadow files with unknown file extensions now work properly.
 - Leo's installer now properly finds Python's install directory.
 
@@ -348,7 +348,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -580,7 +580,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   simplified drawing code.
 - Leo is now an installable package.
@@ -663,7 +663,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   simplified drawing code.
 - Leo is now an installable package.
@@ -916,7 +916,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -947,7 +947,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -983,7 +983,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
