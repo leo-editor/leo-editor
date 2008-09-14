@@ -19,6 +19,7 @@
 #@@tabwidth -4
 
 #@+all
+#@+node:ekr.20080914111505.2:4.5 and 4.5.1
 #@+node:ekr.20080408060320.4:4.5 b1
 @
 The first 4.5 release will be 4.5 b1.
@@ -36836,6 +36837,13 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/758bd8d3d0edf8a1
 #@nonl
 #@-node:ekr.20080909112433.1:Changed pre-install script
 #@-node:ekr.20080903073654.1:4.5.1 final
+#@-node:ekr.20080914111505.2:4.5 and 4.5.1
+#@+node:ekr.20080914111505.3:4.6
+#@+node:ekr.20080914111505.4:Fixed bugs
+#@+node:ekr.20080914111505.1:Ensure that Python\Scripts exists in installer script
+#@-node:ekr.20080914111505.1:Ensure that Python\Scripts exists in installer script
+#@-node:ekr.20080914111505.4:Fixed bugs
+#@-node:ekr.20080914111505.3:4.6
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt

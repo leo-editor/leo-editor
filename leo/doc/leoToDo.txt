@@ -1,7 +1,7 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080814103428.4:4.5.2 bugs, cleanups
+#@+node:ekr.20080814103428.4:4.6
 #@+node:ekr.20080907095552.3:Recent 11
 #@+node:ekr.20080912143702.141:Document official ivars
 # Do this in top-level Code node in leoPy.leo.
@@ -7500,7 +7500,7 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080730212711.7:Plugins 5
-#@-node:ekr.20080814103428.4:4.5.2 bugs, cleanups
+#@-node:ekr.20080814103428.4:4.6
 #@+node:ekr.20071211093011:4.6  autocompletion
 http://orestis.gr/en/blog/2008/08/31/announcing-pysmell/
 #@+node:ekr.20080113165010:About auto completion

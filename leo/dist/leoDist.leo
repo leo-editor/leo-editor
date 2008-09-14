@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4,1,1"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -57,7 +57,7 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080913110741.1"
+<v t="ekr.20080913110741.1" a="E"
 expanded="ekr.20080913110741.4,ekr.20080913110741.6,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20080826091039.1"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
