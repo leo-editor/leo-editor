@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -327,7 +327,7 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.5.1 final                                  September 12, 2008
+<t tx="EKR.20040519090846.9">Leo 4.5.1 final                                  September 14, 2008
 
 Leo 4.5.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
@@ -1002,7 +1002,7 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080912152259.1">Leo 4.5.1 final                                  September 12, 2008
+<t tx="ekr.20080912152259.1">Leo 4.5.1 final                                  September 14, 2008
 
 Leo 4.5.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106

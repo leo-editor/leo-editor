@@ -1,4 +1,4 @@
-Leo 4.5.1 final                                  September 12, 2008
+Leo 4.5.1 final                                  September 14, 2008
 
 Leo 4.5.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106

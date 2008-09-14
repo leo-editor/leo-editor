@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -139,17 +139,17 @@
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
-<v t="ekr.20070929122956"><vh>Data trees</vh>
+<v t="ekr.20070929122956" a="E"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
 <v t="ekr.20070929072043"><vh>@networkx</vh>
 <v t="ekr.20070929072506.1"><vh>@nodes</vh></v>
 <v t="ekr.20070929072506"><vh>@edges</vh></v>
 </v>
-<v t="ekr.20070929070257"><vh>@graph</vh>
-<v t="ekr.20070929070257.1"><vh>@node child1</vh>
+<v t="ekr.20070929070257" a="E"><vh>@graph</vh>
+<v t="ekr.20070929070257.1" a="E"><vh>@node child1</vh>
 <v t="ekr.20070929070632"><vh>@link ('ekr', '20070929070257', 2): @node child2</vh></v>
 </v>
-<v t="ekr.20070929070257.2"><vh>@node child2</vh>
+<v t="ekr.20070929070257.2" a="E"><vh>@node child2</vh>
 <v t="ekr.20070929070632.1"><vh>@link ('ekr', '20070929070257', 1): @node child1</vh></v>
 </v>
 </v>
@@ -185,7 +185,7 @@
 <v t="ekr.20070630142904.4"><vh>@@file myModule.pyx</vh></v>
 <v t="ekr.20070630142904.5"><vh>Make myModule.c</vh></v>
 </v>
-<v t="ekr.20071026102420.2"><vh>Screen capture</vh>
+<v t="ekr.20071026102420.2"><vh>Screen capture with Wink</vh>
 <v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
 <v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
 </v>

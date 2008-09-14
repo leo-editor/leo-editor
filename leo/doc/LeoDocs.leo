@@ -31848,7 +31848,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
   
 - Added @bool suppress_import_parsing setting
   When True, @auto and @shadow import the entire file into a single node.</t>
-<t tx="ekr.20080912143702.137">Leo 4.5.1 final                                  September 12, 2008
+<t tx="ekr.20080912143702.137">Leo 4.5.1 final                                  September 14, 2008
 
 Leo 4.5.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
@@ -31857,7 +31857,7 @@ Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
 
 - Eliminated spurious error messages in the goto-global-line command.
 - @shadow files with unknown file extensions now work properly.
-- Leo's installer now properly finds Python's install directory.
+- Improved Leo's installer.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html

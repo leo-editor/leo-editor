@@ -8348,8 +8348,6 @@ class FunctionScope(Scope):
     def __init__(self):
         super(FunctionScope, self).__init__()
         self.globals = {}
-
-#@nonl
 #@-node:ekr.20080912174701.19:class FunctionScope
 #@+node:ekr.20080912174701.21:class ModuleScope
 class ModuleScope(Scope):
@@ -8736,6 +8734,12 @@ def FROM(self, node):
 #@-node:ekr.20080912174701.3:pyflakes source code
 #@-node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20071211091355:Other/Minor
+#@+node:ekr.20080913210839.1:Rewrite leoAtFile.py using mxTextTools
+May 31, 2008: http://groups.google.com/group/leo-editor/browse_thread/thread/aa61a80713bf3030?tvc=2
+
+June 1, 2008: http://groups.google.com/group/leo-editor/browse_frm/thread/b67d6fa39ce9e169#
+#@nonl
+#@-node:ekr.20080913210839.1:Rewrite leoAtFile.py using mxTextTools
 #@+node:ekr.20071029082025:Improve distribution
 #@+node:ekr.20070929125944:Emulate Orange's download philosophy
 @nocolor
