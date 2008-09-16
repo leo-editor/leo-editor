@@ -10,7 +10,7 @@
 
 How to create/use private branches
 
-===== creates a branch directly, without having to use launchpad.
+===== Do this first: creates a branch directly, **without** having to use launchpad.
 
 bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
 

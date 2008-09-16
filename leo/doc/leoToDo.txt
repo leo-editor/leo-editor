@@ -1,12 +1,92 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080814103428.4:4.5.2 bugs, cleanups
-#@+node:ekr.20080907095552.3:Recent 11
+#@+node:ekr.20080814103428.4:4.6 long-delayed items
+#@+node:ekr.20080915112342.1:First 4
+@nocolor
+
+- Fix installer.
+- Fix rst3 plugin.
+- Merge leo-30 branch.
+- Merge new trunk with all outstanding branches.
+#@nonl
+#@+node:ekr.20080915083836.2:Fix encoding problems with rst3 plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/5f5219fedd977ec2
+
+@nocolor
+
+I recently discovered leo and decided to give it a try. I'm using the
+rst3 plugin for generating latex docs. In general it works like a
+charm, but I'm having some problems with the text encoding. The most
+annoying one follows. If in my rst tree I've nodes with the character
+
+ŀ (U+0140)
+
+(or other character from the catalan alphabet) in the body text, I get
+conversion errors in the log pane when the Write-Restructured-Text
+command is executed. For instance, a node with the following body text
+
+Nuŀla
+
+causes the following error in the log pane:
+
+1 errors converting Nu?la.
+
+ to iso-8859-1
+
+If I process the generated .tex file via pdflatex the character is
+displayed as a ? symbol in the pdf.
+
+The rst-options are:
+
+@ @rst-options
+default_path=latex
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+write_intermediate_file = False
+verbose=True
+publish_argv_for_missing_stylesheets=--language=ca,--output-
+encoding=utf-8,--stylesheet=/home/vmas/.leo/custom_style.sty
+@c
+
+If, instead of using leo, I put the problematic text content in a
+plain rst file and process it via rst2latex I get no conversion
+errors. The command line is:
+
+rst2latex --language=ca --output-encoding=utf-8 --stylesheet=/home/
+vmas/.leo/custom_style.sty prova.txt prova.tex 
+#@nonl
+#@-node:ekr.20080915083836.2:Fix encoding problems with rst3 plugin
 #@+node:ekr.20080912143702.141:Document official ivars
 # Do this in top-level Code node in leoPy.leo.
 #@nonl
 #@-node:ekr.20080912143702.141:Document official ivars
+#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+> Or am I trying to misuse leo in this way?
+
+This is certainly not a misuse of Leo--it's an extension of the rst3 plugin.
+
+Clearly, a script could expand these section references, creating a
+temporary @rst tree which then gets processed as usual.  As usual,
+scripts give complete control over what is happening.
+
+But other people might like have the rst3 plugin work in this way, so
+an expand_noweb_references option would be good.  For compatibility,
+the default for this option would be False. 
+#@nonl
+#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@+node:ekr.20080910054558.2:Add -c option to specify config files
 @nocolor
 
@@ -32,6 +112,12 @@ or best yet:
 leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo 
 #@nonl
 #@-node:ekr.20080910054558.2:Add -c option to specify config files
+#@-node:ekr.20080915112342.1:First 4
+#@+node:ekr.20080907095552.3:Recent 10
+#@+node:ekr.20080915083836.1:Use os.path.expanduser in all @file name resolutions
+https://bugs.launchpad.net/leo-editor/+bug/269878
+#@nonl
+#@-node:ekr.20080915083836.1:Use os.path.expanduser in all @file name resolutions
 #@+node:ekr.20080912143702.1:Investigate settings strangeness re @string debugger_path
 @nocolor
 
@@ -47,28 +133,6 @@ not if in
 cwd/myLeoSettings.leo 
 #@nonl
 #@-node:ekr.20080912143702.1:Investigate settings strangeness re @string debugger_path
-#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-> Or am I trying to misuse leo in this way?
-
-This is certainly not a misuse of Leo--it's an extension of the rst3 plugin.
-
-Clearly, a script could expand these section references, creating a
-temporary @rst tree which then gets processed as usual.  As usual,
-scripts give complete control over what is happening.
-
-But other people might like have the rst3 plugin work in this way, so
-an expand_noweb_references option would be good.  For compatibility,
-the default for this option would be False. 
-#@nonl
-#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@+node:ekr.20080907095552.4:Add read/write-any-derived-file commands
 # Remove the old type-specific commands from the default menu.
 #@nonl
@@ -263,7 +327,7 @@ since pressing ctrl+S in leo has even more significant implications we
 should be absolutely certain everything happens safely. 
 #@nonl
 #@-node:ekr.20080906062507.4:Protect @shadow and @auto files?
-#@-node:ekr.20080907095552.3:Recent 11
+#@-node:ekr.20080907095552.3:Recent 10
 #@+node:ekr.20080810085333.5:Under two hours 23
 #@+node:ekr.20080901112851.3:check for syntax errors when @auto import fails
 #@-node:ekr.20080901112851.3:check for syntax errors when @auto import fails
@@ -7500,8 +7564,8 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080730212711.7:Plugins 5
-#@-node:ekr.20080814103428.4:4.5.2 bugs, cleanups
-#@+node:ekr.20071211093011:4.6  autocompletion
+#@-node:ekr.20080814103428.4:4.6 long-delayed items
+#@+node:ekr.20071211093011:4.7 autocompletion
 http://orestis.gr/en/blog/2008/08/31/announcing-pysmell/
 #@+node:ekr.20080113165010:About auto completion
 @nocolor
@@ -8348,8 +8412,6 @@ class FunctionScope(Scope):
     def __init__(self):
         super(FunctionScope, self).__init__()
         self.globals = {}
-
-#@nonl
 #@-node:ekr.20080912174701.19:class FunctionScope
 #@+node:ekr.20080912174701.21:class ModuleScope
 class ModuleScope(Scope):
@@ -8734,8 +8796,14 @@ def FROM(self, node):
 #@-node:ekr.20080912174701.22:class Checker
 #@-node:ekr.20080912174701.4:checker.py
 #@-node:ekr.20080912174701.3:pyflakes source code
-#@-node:ekr.20071211093011:4.6  autocompletion
+#@-node:ekr.20071211093011:4.7 autocompletion
 #@+node:ekr.20071211091355:Other/Minor
+#@+node:ekr.20080913210839.1:Rewrite leoAtFile.py using mxTextTools
+May 31, 2008: http://groups.google.com/group/leo-editor/browse_thread/thread/aa61a80713bf3030?tvc=2
+
+June 1, 2008: http://groups.google.com/group/leo-editor/browse_frm/thread/b67d6fa39ce9e169#
+#@nonl
+#@-node:ekr.20080913210839.1:Rewrite leoAtFile.py using mxTextTools
 #@+node:ekr.20071029082025:Improve distribution
 #@+node:ekr.20070929125944:Emulate Orange's download philosophy
 @nocolor

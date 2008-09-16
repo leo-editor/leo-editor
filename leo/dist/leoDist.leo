@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4,2"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -28,7 +28,7 @@
 </v>
 <v t="ekr.20080912152259.1"><vh>ANN: Leo 4.5.1 final</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
-<v t="ekr.20080807093308.2" a="E"><vh>4.5</vh>
+<v t="ekr.20080807093308.2"><vh>4.5</vh>
 <v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
 <v t="ekr.20080807093308.1"><vh>ANN: Leo 4.5 b2</vh></v>
 <v t="ekr.20080815093141.108"><vh>ANN: Leo 4.5 b3</vh></v>
@@ -57,12 +57,14 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080913110741.1"
-expanded="ekr.20080913110741.4,ekr.20080913110741.6,"><vh>@thin leo-post-install-script.py</vh></v>
+<v t="ekr.20080916084557.1" a="E"><vh>Make stuff</vh>
+<v t="ekr.20080916084557.2"><vh>&lt;&lt; make version &gt;&gt;</vh></v>
+<v t="ekr.20080913110741.1"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20080826091039.1"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
+<v t="ekr.20080916084557.2"><vh>&lt;&lt; make version &gt;&gt;</vh></v>
 <v t="ekr.20080913110741.8"><vh>make</vh></v>
-<v t="ekr.20080826091039.4" a="E"><vh>class createExe</vh>
+<v t="ekr.20080826091039.4"><vh>class createExe</vh>
 <v t="ekr.20080826091039.5"><vh>ctor</vh></v>
 <v t="ekr.20080826091039.6"><vh>create_exe</vh></v>
 <v t="ekr.20080826091039.7"><vh>escape</vh></v>
@@ -74,6 +76,7 @@ expanded="ekr.20080913110741.4,ekr.20080913110741.6,"><vh>@thin leo-post-install
 <v t="ekr.20080826091039.12"><vh>get_python_version</vh></v>
 </v>
 <v t="ekr.20080826091039.3"><vh>unlink</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -327,14 +330,14 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.5.1 final                                  September 12, 2008
+<t tx="EKR.20040519090846.9">Leo 4.5.1 final                                  September 14, 2008
 
 Leo 4.5.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
 
-- Eliminated spurioius error messages in the goto-global-line command.
+- Eliminated spurious error messages in the goto-global-line command.
 - @shadow files with unknown file extensions now work properly.
 - Leo's installer now properly finds Python's install directory.
 
@@ -348,7 +351,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -580,7 +583,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   simplified drawing code.
 - Leo is now an installable package.
@@ -663,7 +666,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   simplified drawing code.
 - Leo is now an installable package.
@@ -685,10 +688,11 @@ See: http://docs.python.org/dist/postinstallation-script.html'''
 # To do: Leo bitmap.
 
 &lt;&lt; includes &gt;&gt;
+&lt;&lt; make version &gt;&gt;
 @others
 
 assert sys.version_info &gt;= (2,5,0) and sys.version_info &lt; (2,6,0) # Require Python 2.5.
-version = '4-5-1-final'
+
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 root                = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
@@ -916,7 +920,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -947,7 +951,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -983,7 +987,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -1002,7 +1006,7 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080912152259.1">Leo 4.5.1 final                                  September 12, 2008
+<t tx="ekr.20080912152259.1">Leo 4.5.1 final                                  September 14, 2008
 
 Leo 4.5.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
@@ -1076,5 +1080,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
         if exists(z): unlink(z)
 
     os.system('dir %s' % (top))</t>
+<t tx="ekr.20080916084557.1"></t>
+<t tx="ekr.20080916084557.2">version = '4-5-1-2-final'</t>
 </tnodes>
 </leo_file>
