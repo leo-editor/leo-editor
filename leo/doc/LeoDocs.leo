@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,1,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,17,0,3"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -58,7 +58,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -667,12 +667,12 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060612104638"><vh>@rst-no-head end-of-page stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831184021.1"><vh>Chapter 14: Using the rst3 plugin</vh>
-<v t="ekr.20050818163826"><vh>@rst html\rstplugin3.html</vh>
+<v t="ekr.20050831184021.1" a="E"><vh>Chapter 14: Using the rst3 plugin</vh>
+<v t="ekr.20050818163826" a="E"><vh>@rst html\rstplugin3.html</vh>
 <v t="ekr.20050818163826.1"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050818163826.2"><vh>Overview</vh></v>
 <v t="ekr.20050818163826.3"><vh>Comparison with previous rst plugins</vh></v>
-<v t="ekr.20050818163826.4"><vh>Options</vh>
+<v t="ekr.20050818163826.4" a="E"><vh>Options</vh>
 <v t="ekr.20050818163826.5"><vh>Options supporting the http plugin</vh></v>
 <v t="ekr.20050818163826.6"><vh>Options that set command names</vh></v>
 </v>
@@ -10070,6 +10070,14 @@ doc_only_mode (default: False)
 
 default_path (default: '')
     The path to be prepended to filenames given in root nodes.
+    
+default_encoding (default: utf-8)
+    The default encoding to be used for non-ascii (unicode characters).
+    
+encoding (default: the default_encoding setting)
+    The encoding to be used for non-ascii (unicode) characters.
+    **Important**: this option has effect only in @rst-options doc parts
+    in root @rst nodes.
     
 generate_rst (default: True)
     A master switch.
