@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4,14,11,2"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -1007,7 +1007,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1069,55 +1069,57 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20071213060239"><vh>rst3 plugin</vh>
+<v t="ekr.20071213060239" a="E"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
-<v t="ekr.20071213061454"><vh>rst3_clear_http_attributes = False</vh></v>
-<v t="ekr.20071213061454.1"><vh>rst3_http_server_support = False</vh></v>
-<v t="ekr.20071213061454.2"><vh>rst3_http_attributename = rst_http_attribute</vh></v>
-<v t="ekr.20071213061454.3"><vh>rst3_node_begin_marker = http-node-marker-</vh></v>
+<v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
+<v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>
+<v t="ekr.20071213061454.2"><vh>@string rst3_http_attributename = rst_http_attribute</vh></v>
+<v t="ekr.20071213061454.3"><vh>@string rst3_node_begin_marker = http-node-marker-</vh></v>
 </v>
 <v t="ekr.20071213060239.2"><vh>rst3 path options</vh>
-<v t="ekr.20071213061504"><vh>rst3_default_path = None</vh></v>
-<v t="ekr.20071213061504.1"><vh>rst3_stylesheet_name = default.css</vh></v>
-<v t="ekr.20071213061504.2"><vh>rst3_stylesheet_path = None</vh></v>
-<v t="ekr.20071213061504.3"><vh>rst3_publish_argv_for_missing_stylesheets = None</vh></v>
+<v t="ekr.20071213061504"><vh>@string rst3_default_path = None</vh></v>
+<v t="ekr.20071213061504.1"><vh>@string rst3_stylesheet_name = default.css</vh></v>
+<v t="ekr.20071213061504.2"><vh>@string rst3_stylesheet_path = None</vh></v>
+<v t="ekr.20071213061504.3"><vh>@string rst3_publish_argv_for_missing_stylesheets = None</vh></v>
 </v>
 <v t="ekr.20071213060514"><vh>rst3 global options</vh>
-<v t="ekr.20071213061811"><vh>rst3_number_code_lines = True</vh></v>
-<v t="ekr.20071213061811.1"><vh>rst3_underline_characters = #=+*^~"'`-:&gt;&lt;_</vh></v>
-<v t="ekr.20071213061811.2"><vh>rst3_verbose = True</vh></v>
-<v t="ekr.20071213061811.3"><vh>rst3_write_intermediate_file = False</vh></v>
+<v t="ekr.20080916092417.1"><vh>@string rst3_default_encoding = uTf-8</vh></v>
+<v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
+<v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~"'`-:&gt;&lt;_</vh></v>
+<v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
+<v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = False</vh></v>
 </v>
 <v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
-<v t="ekr.20071213061923"><vh>rst3_code_mode = False</vh></v>
-<v t="ekr.20071213061923.1"><vh>rst3_doc_only_mode = False</vh></v>
-<v t="ekr.20071213061923.2"><vh>rst3_generate_rst = True</vh></v>
+<v t="ekr.20071213061923"><vh>@bool rst3_code_mode = False</vh></v>
+<v t="ekr.20071213061923.1"><vh>@bool rst3_doc_only_mode = False</vh></v>
+<v t="ekr.20071213061923.2"><vh>@bool rst3_generate_rst = True</vh></v>
 </v>
 <v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
-<v t="ekr.20071213061930.1"><vh>rst3_show_headlines = True</vh></v>
-<v t="ekr.20071213061930.2"><vh>rst3_show_organizer_nodes = True</vh></v>
-<v t="ekr.20071213061930.3"><vh>rst3_show_options_nodes = False</vh></v>
-<v t="ekr.20071213061930.4"><vh>rst3_strip_at_file_prefixes = True</vh></v>
+<v t="ekr.20071213061930.1"><vh>@bool rst3_show_headlines = True</vh></v>
+<v t="ekr.20071213061930.2"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
+<v t="ekr.20071213061930.3"><vh>@bool rst3_show_options_nodes = False</vh></v>
+<v t="ekr.20071213061930.4"><vh>@bool rst3_strip_at_file_prefixes = True</vh></v>
 </v>
 <v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
-<v t="ekr.20071213062019"><vh>rst3_show_doc_parts_as_paragraphs = False</vh></v>
-<v t="ekr.20071213062019.1"><vh>rst3_show_leo_directives = True</vh></v>
-<v t="ekr.20071213062019.2"><vh>rst3_show_markup_doc_parts = False</vh></v>
-<v t="ekr.20071213062019.3"><vh>rst3_show_options_doc_parts = False</vh></v>
+<v t="ekr.20071213062019"><vh>@bool rst3_show_doc_parts_as_paragraphs = False</vh></v>
+<v t="ekr.20071213062019.1"><vh>@bool rst3_show_leo_directives = True</vh></v>
+<v t="ekr.20071213062019.2"><vh>@bool rst3_show_markup_doc_parts = False</vh></v>
+<v t="ekr.20071213062019.3"><vh>@bool rst3_show_options_doc_parts = False</vh></v>
 </v>
 <v t="ekr.20071213060607"><vh>rst3 options: names of headline commands</vh>
-<v t="ekr.20071213062019.4"><vh>rst3_code_prefix = @rst-code</vh></v>
-<v t="ekr.20071213062019.5"><vh>rst3_doc_only_prefix = @rst-doc-only</vh></v>
-<v t="ekr.20071213062019.6"><vh>rst3_rst_prefix = @rst</vh></v>
-<v t="ekr.20071213062019.7"><vh>rst3_ignore_headline_prefix = @rst-no-head</vh></v>
-<v t="ekr.20071213062019.8"><vh>rst3_ignore_headlines_prefix = @rst-no-headlines</vh></v>
-<v t="ekr.20071213062019.9"><vh>rst3_ignore_node_prefix = @rst-ignore-node</vh></v>
-<v t="ekr.20071213062019.10"><vh>rst3_ignore_prefix = @rst-ignore</vh></v>
-<v t="ekr.20071213062019.11"><vh>rst3_ignore_tree_prefix = @rst-ignore-tree</vh></v>
-<v t="ekr.20071213062019.12"><vh>rst3_option_prefix = @rst-option</vh></v>
-<v t="ekr.20071213062019.13"><vh>rst3_options_prefix = @rst-options</vh></v>
-<v t="ekr.20071213062019.14"><vh>rst3_preformat_prefix = @rst-preformat</vh></v>
-<v t="ekr.20071213062019.15"><vh>rst3_show_headline_prefix = @rst-head</vh></v>
+<v t="ekr.20071213062019.4"><vh>@string rst3_code_prefix = @rst-code</vh></v>
+<v t="ekr.20071213062019.5"><vh>@string rst3_doc_only_prefix = @rst-doc-only</vh></v>
+<v t="ekr.20080916094157.1"><vh>@string rst3_default_encoding_prefix = @rst-default-encoding</vh></v>
+<v t="ekr.20071213062019.6"><vh>@string rst3_rst_prefix = @rst</vh></v>
+<v t="ekr.20071213062019.7"><vh>@string rst3_ignore_headline_prefix = @rst-no-head</vh></v>
+<v t="ekr.20071213062019.8"><vh>@string rst3_ignore_headlines_prefix = @rst-no-headlines</vh></v>
+<v t="ekr.20071213062019.9"><vh>@string rst3_ignore_node_prefix = @rst-ignore-node</vh></v>
+<v t="ekr.20071213062019.10"><vh>@string rst3_ignore_prefix = @rst-ignore</vh></v>
+<v t="ekr.20071213062019.11"><vh>@string rst3_ignore_tree_prefix = @rst-ignore-tree</vh></v>
+<v t="ekr.20071213062019.12"><vh>@string rst3_option_prefix = @rst-option</vh></v>
+<v t="ekr.20071213062019.13"><vh>@string rst3_options_prefix = @rst-options</vh></v>
+<v t="ekr.20071213062019.14"><vh>@string rst3_preformat_prefix = @rst-preformat</vh></v>
+<v t="ekr.20071213062019.15"><vh>@string rst3_show_headline_prefix = @rst-head</vh></v>
 </v>
 </v>
 <v t="ekr.20060930111325"><vh>scripting plugin</vh>
@@ -7549,6 +7551,8 @@ lcd2c" "
 True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080819075811.5">This node just keeps track of the accelerators in the siblings.</t>
 <t tx="ekr.20080819075811.6"></t>
+<t tx="ekr.20080916092417.1"></t>
+<t tx="ekr.20080916094157.1"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
