@@ -10,8 +10,12 @@ import shutil
 import sys
 #@-node:ekr.20080913110741.3:<< imports >>
 #@nl
-
-version = '4-5-2-final'
+#@<< make version >>
+#@+node:ekr.20080916084557.2:<< make version >>
+version = '4-5-1-2-final'
+#@nonl
+#@-node:ekr.20080916084557.2:<< make version >>
+#@nl
 
 # Note to EKR: To uninstall.
 # Set edit .leo files to:
@@ -27,9 +31,12 @@ def install():
 
     python = findPython()
 
-    if python:
-        copyPostInstallScript(python)
-        setRegistry(python)
+    assert python, 'No python installation found!'
+
+    copyPostInstallScript(python)
+    setRegistry(python)
+
+
 #@+node:ekr.20080913110741.5:copyPostInstallScript
 def copyPostInstallScript(python):
 
@@ -58,7 +65,7 @@ def findPython(path=None):
         parts = tail.split('\\') # Hard code os.sep for Windows.
         for part in parts:
             result.append(part)
-            if part.startswith('python'):
+            if part.lower().startswith('python'):
                 python = join(*result) # Don't use abspath here!
                 # Make sure python\Scripts exists.
                 if os.path.exists(os.path.join(python,'Scripts')):

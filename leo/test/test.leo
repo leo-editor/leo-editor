@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -58,7 +58,7 @@
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
-<v t="ekr.20041001211817"><vh>Buttons</vh>
+<v t="ekr.20041001211817" a="E"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
 <v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
 </v>
@@ -95,7 +95,6 @@
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
 <v t="ekr.20080815073750.1"><vh>@@button write-nosent-files</vh></v>
 <v t="ekr.20071128122043"><vh>@@command create-shell-tab @key = Alt+5</vh></v>
-<v t="ekr.20071101163934"><vh>@@command rst3</vh></v>
 <v t="ekr.20070604095313"><vh>Chapter buttons</vh>
 <v t="ekr.20070530072113.1"><vh>@@button show-ch</vh></v>
 <v t="ekr.20070603175054.1"><vh>@@button ch-main</vh></v>
@@ -108,6 +107,7 @@
 <v t="ekr.20060904111037"><vh>@@button opml-read</vh></v>
 </v>
 </v>
+<v t="ekr.20080915095329.1"><vh>@button rst3</vh></v>
 </v>
 <v t="ekr.20070410063214"><vh>Commands</vh>
 <v t="ekr.20060924180049"><vh>@@command clones-tab</vh>
@@ -280,6 +280,7 @@
 </v>
 <v t="ekr.20080911112823.1"><vh>@@nosent fix-failure.py</vh></v>
 </v>
+<v t="ekr.20080915094955.1"><vh>@rst encoding-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1272,22 +1273,6 @@ leo_to_html.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
-<t tx="ekr.20071101163934">import leoPlugins
-
-rst3 = leoPlugins.getPluginModule('rst3')
-
-if rst3:
-    controller = rst3.controllers.get(c)
-    if controller:
-        controller.processTopTree(p)
-else:
-    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-    if rst3:
-        g.es('rst3 loaded')
-        rst3.onCreate('tag',{'c':c})
-    else:
-        # Ask to be removed.
-        g.app.scriptDict['removeMe'] = True</t>
 <t tx="ekr.20071105085941"></t>
 <t tx="ekr.20071128122043">log = c.frame.log ; tag = 'Shell'
 frame1 = log.frameDict.get(tag)
@@ -2307,5 +2292,26 @@ P1 = 0
 <t tx="ekr.20080911112823.1"># -*- coding: utf-8 -*-
 
 s = 'abc'.replace(u'” “', '" "')</t>
+<t tx="ekr.20080915094955.1">@encoding utf-8
+
+Test of non-ascii characters
+
+אַ U+FB2E: Hebrew Letter Alef With Patah</t>
+<t tx="ekr.20080915095329.1">import leo.core.leoPlugins as leoPlugins
+
+rst3 = leoPlugins.getPluginModule('rst3')
+
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        controller.processTopTree(p)
+else:
+    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+    if rst3:
+        g.es('rst3 loaded')
+        rst3.onCreate('tag',{'c':c})
+    else:
+        # Ask to be removed.
+        g.app.scriptDict['removeMe'] = True</t>
 </tnodes>
 </leo_file>

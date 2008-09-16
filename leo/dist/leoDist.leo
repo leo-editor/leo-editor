@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4,2"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -57,12 +57,14 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080913110741.1" a="E"
-expanded="ekr.20080913110741.4,ekr.20080913110741.6,"><vh>@thin leo-post-install-script.py</vh></v>
+<v t="ekr.20080916084557.1" a="E"><vh>Make stuff</vh>
+<v t="ekr.20080916084557.2"><vh>&lt;&lt; make version &gt;&gt;</vh></v>
+<v t="ekr.20080913110741.1"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20080826091039.1"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
+<v t="ekr.20080916084557.2"><vh>&lt;&lt; make version &gt;&gt;</vh></v>
 <v t="ekr.20080913110741.8"><vh>make</vh></v>
-<v t="ekr.20080826091039.4" a="E"><vh>class createExe</vh>
+<v t="ekr.20080826091039.4"><vh>class createExe</vh>
 <v t="ekr.20080826091039.5"><vh>ctor</vh></v>
 <v t="ekr.20080826091039.6"><vh>create_exe</vh></v>
 <v t="ekr.20080826091039.7"><vh>escape</vh></v>
@@ -74,6 +76,7 @@ expanded="ekr.20080913110741.4,ekr.20080913110741.6,"><vh>@thin leo-post-install
 <v t="ekr.20080826091039.12"><vh>get_python_version</vh></v>
 </v>
 <v t="ekr.20080826091039.3"><vh>unlink</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -685,10 +688,11 @@ See: http://docs.python.org/dist/postinstallation-script.html'''
 # To do: Leo bitmap.
 
 &lt;&lt; includes &gt;&gt;
+&lt;&lt; make version &gt;&gt;
 @others
 
 assert sys.version_info &gt;= (2,5,0) and sys.version_info &lt; (2,6,0) # Require Python 2.5.
-version = '4-5-2-final'
+
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 root                = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
@@ -1076,5 +1080,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
         if exists(z): unlink(z)
 
     os.system('dir %s' % (top))</t>
+<t tx="ekr.20080916084557.1"></t>
+<t tx="ekr.20080916084557.2">version = '4-5-1-2-final'</t>
 </tnodes>
 </leo_file>
