@@ -6,7 +6,6 @@
 @nocolor
 
 - Fix installer.
-- Fix rst3 plugin.
 - Merge leo-30 branch.
 - Merge new trunk with all outstanding branches.
 #@nonl
