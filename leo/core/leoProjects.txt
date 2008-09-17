@@ -3838,6 +3838,10 @@ def getShortcut (self,shortcutName):
     '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
     return g.app.config.getShortcut(self.c,shortcutName)
 
+def getSettingSource(self,setting):
+    '''return the name of the file responsible for setting.'''
+    return g.app.config.getSettingSource(self.c,setting)
+
 def getString (self,setting):
     '''Return the value of @string setting.'''
     return g.app.config.getString(self.c,setting)
@@ -5269,6 +5273,23 @@ def typesMatch (self,type1,type2):
     )
 #@-node:ekr.20051015093141:typesMatch
 #@-node:ekr.20041117083141:get & allies (g.app.config)
+#@+node:ekr.20080917061525.3:getSettingSource (g.app.config)
+def getSettingSource (self,c,setting):
+
+    '''return the name of the file responsible for setting.'''
+
+    aList = [self.localOptionsDict.get(c.hash())]
+    aList.extend(self.localOptionsList)
+    aList.extend(self.dictList)
+
+    for d in aList:
+        if d:
+            bunch = d.get(setting)
+            if bunch is not None:
+                return bunch.path,bunch.val
+    else:
+        return 'unknown setting',None
+#@-node:ekr.20080917061525.3:getSettingSource (g.app.config)
 #@+node:ekr.20051011105014:exists (g.app.config)
 def exists (self,c,setting,kind):
 
@@ -5669,6 +5690,10 @@ def getRecentFiles (self):
 def getShortcut (self,shortcutName):
     '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
     return g.app.config.getShortcut(self.c,shortcutName)
+
+def getSettingSource(self,setting):
+    '''return the name of the file responsible for setting.'''
+    return g.app.config.getSettingSource(self.c,setting)
 
 def getString (self,setting):
     '''Return the value of @string setting.'''

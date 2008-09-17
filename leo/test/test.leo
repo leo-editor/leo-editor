@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -281,6 +281,7 @@
 <v t="ekr.20080911112823.1"><vh>@@nosent fix-failure.py</vh></v>
 </v>
 <v t="ekr.20080915094955.1"><vh>@rst encoding-test.txt</vh></v>
+<v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2313,5 +2314,20 @@ else:
     else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True</t>
+<t tx="ekr.20080917063615.1">aList = (
+'aspellbindir',
+'wholeword',
+'vimcmd',
+'huh',
+)
+
+for name in aList:
+    # print '%20s' % (name),g.app.config.getSettingSource(c,name)
+    kind, val = c.config.getSettingSource(name)
+    print '%-20s %-20s %s' % (name,repr(val),kind)
+
+# print g.listToString(dir(g.app.config))
+# print g.listToString(dir(c.config))
+</t>
 </tnodes>
 </leo_file>

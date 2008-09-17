@@ -26,6 +26,10 @@ bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-edit
 
 bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
 
+-- OR --
+
+bzr branch lp:leo-editor new-branch-name 
+
 ====== To resolve conflicts
 
 kdiff3 file1 file2 file3 -m

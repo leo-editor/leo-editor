@@ -1475,6 +1475,23 @@ class configClass:
         )
     #@-node:ekr.20051015093141:typesMatch
     #@-node:ekr.20041117083141:get & allies (g.app.config)
+    #@+node:ekr.20080917061525.3:getSettingSource (g.app.config)
+    def getSettingSource (self,c,setting):
+
+        '''return the name of the file responsible for setting.'''
+
+        aList = [self.localOptionsDict.get(c.hash())]
+        aList.extend(self.localOptionsList)
+        aList.extend(self.dictList)
+
+        for d in aList:
+            if d:
+                bunch = d.get(setting)
+                if bunch is not None:
+                    return bunch.path,bunch.val
+        else:
+            return 'unknown setting',None
+    #@-node:ekr.20080917061525.3:getSettingSource (g.app.config)
     #@+node:ekr.20051011105014:exists (g.app.config)
     def exists (self,c,setting,kind):
 

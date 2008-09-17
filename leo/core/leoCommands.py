@@ -7270,6 +7270,10 @@ class configSettings:
         '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
         return g.app.config.getShortcut(self.c,shortcutName)
 
+    def getSettingSource(self,setting):
+        '''return the name of the file responsible for setting.'''
+        return g.app.config.getSettingSource(self.c,setting)
+
     def getString (self,setting):
         '''Return the value of @string setting.'''
         return g.app.config.getString(self.c,setting)
