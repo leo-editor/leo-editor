@@ -1270,7 +1270,7 @@ class baseFileCommands:
                     if theFile:
                         s = theFile.read()
                     theFile = StringIO(s) # Same as cStringIO.StringIO for Python 2.x.
-	    else:
+            else:
                 if theFile:
                     s = theFile.read()
                 theFile = cStringIO.StringIO(s)

@@ -870,7 +870,7 @@ class atFile:
                     i = at.skipSentinelStart4(s,0)
                 func = at.dispatch_dict[kind]
                 func(s,i)
-        except AssertionError,message:
+        except (AssertionError,message):
             at.error('unexpected assertion failure in',fileName,'\n',message)
 
         if at.errors == 0 and not at.done:

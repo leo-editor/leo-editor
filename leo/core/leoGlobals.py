@@ -1737,7 +1737,8 @@ def trace (*args,**keys):
     # Munge *args into s.
     result = []
     for arg in args:
-        if type(arg) == type(u""):
+        ### if type(arg) == type(u""):
+        if g.isString(arg):
             pass
         elif type(arg) != type(""):
             arg = repr(arg)
@@ -1749,46 +1750,6 @@ def trace (*args,**keys):
     s = g.toEncodedString(s,'ascii')
     g.pr('%s: %s' % (name,s),newline=newline)
 
-    if 0:
-
-        #callers = keys.get("callers",False)
-        newline = keys.get("newline",True)
-        align =   keys.get("align",0)
-
-        s = ""
-        for arg in args:
-            if type(arg) == type(u""):
-                pass
-            elif type(arg) != type(""):
-                arg = repr(arg)
-            if len(s) > 0:
-                s = s + " " + arg
-            else:
-                s = arg
-        message = s
-
-        try: # get the function name from the call stack.
-            f1 = sys._getframe(1) # The stack frame, one level up.
-            code1 = f1.f_code # The code object
-            name = code1.co_name # The code name
-        except Exception: name = ''
-        if name == "?":
-            name = "<unknown>"
-
-        # if callers:
-            # traceback.print_stack()
-
-        if align != 0 and len(name) < abs(align):
-            pad = ' ' * (abs(align) - len(name))
-            if align > 0: name = name + pad
-            else:         name = pad + name
-
-        message = g.toEncodedString(message,'ascii') # Bug fix: 10/10/07.
-
-        if newline:
-            g.pr(name + ": " + message)
-        else:
-            g.pr(name + ": " + message,)
 #@-node:ekr.20031218072017.2317:trace
 #@+node:ekr.20031218072017.2318:trace_tag
 # Convert all args to strings.
@@ -3054,9 +3015,12 @@ def pr(*args,**keys):
     #    sys.setdefaultencoding('utf-8')
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
-    try:
-        if d.get('newline'): print s
-        else:                print s,
+    try: # We can't use any print keyword args in Python 2.x!
+        print(s) # Not quite right.
+        #if d.get('newline'):
+        #    os.write(sys.__stdout__,s+'\n')
+        #else:
+        #    os.write(sys.__stdout__,s)
     except Exception:
         print('unexpected Exception in g.pr')
         g.es_exception()
@@ -3096,7 +3060,8 @@ def translateArgs(args,d):
             arg = g.toUnicode(arg,g.consoleEncoding)
 
         # Now translate.
-        if type(arg) not in (type(""),type(u""),):
+        ### if type(arg) not in (type(""),type(u""),):
+        if not g.isString(arg):
             arg = repr(arg)
         elif (n % 2) == 1:
             arg = g.translateString(arg)
