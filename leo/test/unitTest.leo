@@ -1910,18 +1910,55 @@
 <v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
 <v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
 <v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
-<v t="ekr.20071113090055.3"><vh>@test g.scanDirectives</vh></v>
-<v t="ekr.20080323161613.10"><vh>@test g.scanAtLineendingDirective crlf</vh></v>
-<v t="ekr.20080323161613.11"><vh>@test g.scanAtLineendingDirective cr</vh></v>
-<v t="ekr.20080323161613.12"><vh>@test g.scanAtLineendingDirective lf</vh></v>
-<v t="ekr.20080323161613.13"><vh>@test g.scanAtLineendingDirective nl</vh></v>
-<v t="ekr.20080323161613.14"><vh>@test g.scanAtLineendingDirective platform</vh></v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
 <v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
 <v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
 <v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
+<v t="ekr.20080917151620.1"><vh>Directives, old</vh>
+<v t="ekr.20080917151620.2"><vh>@@test g.scanDirectives</vh></v>
+<v t="ekr.20080917151620.3"><vh>@@test g.scanAtLineendingDirective crlf</vh></v>
+<v t="ekr.20080917151620.4"><vh>@@test g.scanAtLineendingDirective cr</vh></v>
+<v t="ekr.20080917151620.5"><vh>@@test g.scanAtLineendingDirective lf</vh></v>
+<v t="ekr.20080917151620.6"><vh>@@test g.scanAtLineendingDirective nl</vh></v>
+<v t="ekr.20080917151620.7"><vh>@@test g.scanAtLineendingDirective platform</vh></v>
+</v>
+<v t="ekr.20080917151620.8"><vh>Directives, new</vh>
+<v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20080917151620.10"><vh>@test c.scanAtRootDirectives root-code</vh></v>
+<v t="ekr.20080917151620.11"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
+<v t="ekr.20080917151620.12"><vh>@test g.get_directives_dict</vh></v>
+<v t="ekr.20080917151620.13"><vh>@test g.scanAtHeaderDirectives header</vh></v>
+<v t="ekr.20080917151620.14"><vh>@test g.scanAtHeaderDirectives noheader</vh></v>
+<v t="ekr.20080917151620.15"><vh>@test g.scanAtLineendingDirectives cr</vh></v>
+<v t="ekr.20080917151620.16"><vh>@test g.scanAtLineendingDirectives crlf</vh></v>
+<v t="ekr.20080917151620.17"><vh>@test g.scanAtLineendingDirectives lf</vh></v>
+<v t="ekr.20080917151620.18"><vh>@test g.scanAtLineendingDirectives nl</vh></v>
+<v t="ekr.20080917151620.19"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
+<v t="ekr.20080917151620.20"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
+<v t="ekr.20080917151620.21"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
+<v t="ekr.20080917151620.22"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py</vh>
+<v t="ekr.20080917151620.23" tnodeList="ekr.20080917151620.23"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
+</v>
+<v t="ekr.20080917151620.24"><vh>@test g.scanAtPathDirectives @path ../test/unittest @file at-path-test2.py</vh>
+<v t="ekr.20080917151620.25"><vh>@path ../test/unittest</vh>
+<v t="ekr.20080917151620.26" tnodeList="ekr.20080917151620.26"><vh>@file at-path-test2.py</vh></v>
+</v>
+</v>
+<v t="ekr.20080917151620.27"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
+<v t="ekr.20080917151620.28"><vh>@path ../test</vh>
+<v t="ekr.20080917151620.29"><vh>@path unittest</vh>
+<v t="ekr.20080917151620.30" tnodeList="ekr.20080917151620.30"><vh>@file at-path-test3.py</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080917151620.31"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
+<v t="ekr.20080917151620.32"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
+<v t="ekr.20080917151620.33"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
+<v t="ekr.20080917151620.34"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
+<v t="ekr.20080917151620.35"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
+</v>
 <v t="ekr.20071113202153.2" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194258"><vh>leoGui</vh>
@@ -17980,23 +18017,6 @@ assert d.get('tabwidth') == -4
 language = c.frame.body.colorizer.scanColorDirectives(p)
 assert language == 'python','got:%s' % language
 </t>
-<t tx="ekr.20071113090055.3"># This will work regardless of where this method is.
-@language python
-@tabwidth -4
-@pagewidth 72
-@encoding utf-8
-@comment a b c
-# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
-
-d = g.scanDirectives(c,p)
-
-assert d.get('language') == 'python'
-assert d.get('tabwidth') == -4
-assert d.get('pagewidth') == 72
-assert d.get('encoding') == 'utf-8'
-assert d.get('delims') == ('a','b','c',)
-# assert d.get('path').endswith('xyzzy')
-</t>
 <t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
 @language python
 @tabwidth -4
@@ -20142,46 +20162,6 @@ c.importCommands.pascalUnitTest(p,s=s,showTree=False)</t>
 assert(gnx not in (None,'None'))
 assert(len(gnx) &gt; 1)</t>
 <t tx="ekr.20080312090030.1"></t>
-<t tx="ekr.20080323161613.10"># This will work regardless of where this method is.
-@lineending crlf
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\r\n'
-</t>
-<t tx="ekr.20080323161613.11"># This will work regardless of where this method is.
-@lineending cr
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\r'
-</t>
-<t tx="ekr.20080323161613.12"># This will work regardless of where this method is.
-@lineending lf
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\n'
-</t>
-<t tx="ekr.20080323161613.13"># This will work regardless of where this method is.
-@lineending nl
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\n'
-</t>
-<t tx="ekr.20080323161613.14"># This will work regardless of where this method is.
-@lineending platform
-
-d = g.scanDirectives(c,p)
-
-import sys
-
-if sys.platform.startswith('win'):
-    assert d.get('lineending') == '\r\n'
-else:
-    assert d.get('lineending') == '\n'
-</t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.</t>
@@ -21810,5 +21790,237 @@ assert root == root1
 if 0:
     print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
         root and root.headString(),isRaw,n,len(lines)))</t>
+<t tx="ekr.20080917151620.1"></t>
+<t tx="ekr.20080917151620.2"># This will work regardless of where this method is.
+@language python
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@comment a b c
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+
+d = g.scanDirectives(c,p)
+
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == -4
+assert d.get('pagewidth') == 72
+assert d.get('encoding') == 'utf-8'
+assert d.get('delims') == ('a','b','c',)
+# assert d.get('path').endswith('xyzzy')
+</t>
+<t tx="ekr.20080917151620.3"># This will work regardless of where this method is.
+@lineending crlf
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\r\n'
+</t>
+<t tx="ekr.20080917151620.4"># This will work regardless of where this method is.
+@lineending cr
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\r'
+</t>
+<t tx="ekr.20080917151620.5"># This will work regardless of where this method is.
+@lineending lf
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080917151620.6"># This will work regardless of where this method is.
+@lineending nl
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080917151620.7"># This will work regardless of where this method is.
+@lineending platform
+
+d = g.scanDirectives(c,p)
+
+import sys
+
+if sys.platform.startswith('win'):
+    assert d.get('lineending') == '\r\n'
+else:
+    assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080917151620.8"></t>
+<t tx="ekr.20080917151620.9">@language python
+@comment a b c
+    # @comment must follow @language
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@lineending crlf
+
+d = c.scanAllDirectives(p)
+# print g.dictToString(d)
+
+table = (
+    ('delims', ('a','b','c'),),
+    ('encoding','utf-8'),
+    ('language','python'),
+    ('lineending','\r\n'),
+    ('pagewidth',72),
+    ('tabwidth',-4),
+)
+
+for kind,expected in table:
+    got = d.get(kind)
+    assert got == expected, 'kind: %s, expected %s, got %s' % (
+        kind,repr(expected),repr(got))
+</t>
+<t tx="ekr.20080917151620.10">@root-code
+
+aList = g.get_directives_dict_list(p)
+s = c.scanAtRootDirectives(aList)
+
+assert s == 'code',repr(s)</t>
+<t tx="ekr.20080917151620.11">@root-doc
+
+aList = g.get_directives_dict_list(p)
+s = c.scanAtRootDirectives(aList)
+
+assert s == 'doc',repr(s)</t>
+<t tx="ekr.20080917151620.12">@language python
+@comment a b c
+    # @comment must follow @language.
+@tabwidth -8
+@pagewidth 72
+@encoding utf-8
+
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+
+d = g.get_directives_dict(p)
+
+assert d.get('_p') == p
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == '-8'
+assert d.get('pagewidth') == '72'
+assert d.get('encoding') == 'utf-8'
+assert d.get('comment') == 'a b c'
+# assert d.get('path').endswith('xyzzy')
+</t>
+<t tx="ekr.20080917151620.13">@header
+
+aList = g.get_directives_dict_list(p)
+g.scanAtHeaderDirectives(aList)
+</t>
+<t tx="ekr.20080917151620.14">@noheader
+
+aList = g.get_directives_dict_list(p)
+g.scanAtHeaderDirectives(aList)
+</t>
+<t tx="ekr.20080917151620.15">@lineending cr
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+assert s == '\r'
+</t>
+<t tx="ekr.20080917151620.16">@lineending crlf
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+# print ('@lineending: %s'%repr(s))
+
+assert s == '\r\n'
+</t>
+<t tx="ekr.20080917151620.17">@lineending lf
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+assert s == '\n'
+</t>
+<t tx="ekr.20080917151620.18">@lineending nl
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+assert s == '\n'
+</t>
+<t tx="ekr.20080917151620.19">@lineending platform
+
+import sys
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+if sys.platform.startswith('win'):
+    assert s == '\r\n'
+else:
+    assert s == '\n'
+</t>
+<t tx="ekr.20080917151620.20">@pagewidth -40
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtPagewidthDirectives(aList)
+
+assert n is None</t>
+<t tx="ekr.20080917151620.21">@pagewidth 40
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtPagewidthDirectives(aList)
+
+assert n == 40</t>
+<t tx="ekr.20080917151620.22">aList = g.get_directives_dict_list(p.firstChild())
+s = c.scanAtPathDirectives(aList,force=True)
+end = g.os_path_normpath(r'leo/test/unittest/at-path-test1.py')
+
+assert s.endswith(end),repr(s)</t>
+<t tx="ekr.20080917151620.23">@language python
+# unittest/at-path-test1.py </t>
+<t tx="ekr.20080917151620.24">grandChild = p.firstChild().firstChild()
+aList = g.get_directives_dict_list(grandChild)
+s = c.scanAtPathDirectives(aList,force=True)
+end = g.os_path_normpath(r'leo/test/unittest/at-path-test2.py')
+
+assert s.endswith(end),repr(s)</t>
+<t tx="ekr.20080917151620.25"></t>
+<t tx="ekr.20080917151620.26">@language python
+# unittest/at-path-test2.py</t>
+<t tx="ekr.20080917151620.27">greatGrandChild = p.firstChild().firstChild().firstChild()
+aList = g.get_directives_dict_list(greatGrandChild)
+s = c.scanAtPathDirectives(aList,force=True)
+end = g.os_path_normpath(r'leo/test/unittest/at-path-test3.py')
+
+assert s.endswith(end),repr(s)</t>
+<t tx="ekr.20080917151620.28"></t>
+<t tx="ekr.20080917151620.29"></t>
+<t tx="ekr.20080917151620.30">@language python
+# unittest/at-path-test3.py </t>
+<t tx="ekr.20080917151620.31">@tabwidth 6
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtTabwidthDirectives(aList)
+
+assert n == 6</t>
+<t tx="ekr.20080917151620.32">@tabwidth -6
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtTabwidthDirectives(aList)
+
+assert n == -6</t>
+<t tx="ekr.20080917151620.33">@nowrap
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtWrapDirectives(aList)
+
+assert s is False,repr(s)</t>
+<t tx="ekr.20080917151620.34">@wrap
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtWrapDirectives(aList)
+
+assert s is True,repr(s)</t>
+<t tx="ekr.20080917151620.35">aList = g.get_directives_dict_list(p)
+s = g.scanAtWrapDirectives(aList)
+
+assert s is None,repr(s)</t>
 </tnodes>
 </leo_file>
