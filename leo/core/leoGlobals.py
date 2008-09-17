@@ -3016,11 +3016,11 @@ def pr(*args,**keys):
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
     try: # We can't use any print keyword args in Python 2.x!
-        print(s) # Not quite right.
-        #if d.get('newline'):
-        #    os.write(sys.__stdout__,s+'\n')
-        #else:
-        #    os.write(sys.__stdout__,s)
+        # print(s) # Not quite right.
+        if d.get('newline'):
+            sys.stdout.write(s+'\n')
+        else:
+            sys.stdout.write(s)
     except Exception:
         print('unexpected Exception in g.pr')
         g.es_exception()
