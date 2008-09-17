@@ -1859,7 +1859,6 @@ class configClass:
 
                 c = self.openSettingsFile(path)
                 if c:
-                    g.trace(g.callers())
                     self.updateSettings(c,localFlag)
                     g.app.destroyWindow(c.frame)
                     self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
