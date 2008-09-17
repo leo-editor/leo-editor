@@ -5258,7 +5258,7 @@ def typesMatch (self,type1,type2):
     The following equivalences are allowed:
 
     - None matches anything.
-    - An actual type of string or strings matches anything.
+    - An actual type of string or strings matches anything *except* shortcuts.
     - Shortcut matches shortcuts.
     '''
 
@@ -5266,7 +5266,7 @@ def typesMatch (self,type1,type2):
 
     return (
         type1 == None or type2 == None or
-        type1.startswith('string') or
+        type1.startswith('string') and type2 not in shortcuts or
         type1 == 'int' and type2 == 'size' or
         (type1 in shortcuts and type2 in shortcuts) or
         type1 == type2
@@ -5492,6 +5492,7 @@ def getShortcut (self,c,shortcutName):
     key = key.replace('&','') # Allow '&' in names.
 
     bunchList = self.get(c,key,"shortcut")
+    # g.trace('bunchList',bunchList)
     if bunchList:
         bunchList = [bunch for bunch in bunchList
             if bunch.val and bunch.val.lower() != 'none']
@@ -36868,6 +36869,200 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/758bd8d3d0edf8a1
 #@+node:ekr.20080914111505.1:Ensure that Python\Scripts exists in installer script
 #@-node:ekr.20080914111505.1:Ensure that Python\Scripts exists in installer script
 #@-node:ekr.20080914111505.4:Fixed bugs
+#@+node:ekr.20080917061525.5:New features
+#@+node:ekr.20080917061525.4:Added c.config.getSettingSource
+@nocolor
+
+c.config.getSettingSource('show_full_tracebacks_in_scripts')
+returns the name of the file which Leo used to determine the setting
+
+- D indicates default settings.
+- F indicates the file being loaded
+- L indicates leoSettings.leo
+- M indicates myLeoSettings.leo
+
+theHash = d.get('_hash').lower()
+
+if letter:
+    pass
+elif theHash.endswith('myleosettings.leo'):
+    letter = '[M]'
+elif theHash.endswith('leosettings.leo'):
+    letter = ' ' * 3
+else:
+    letter = '[D]'
+
+@color
+#@nonl
+#@+node:ekr.20041118053731:Getters (c.configSettings)
+def get (self,setting,theType):
+    '''A helper function: return the commander's setting, checking the type.'''
+    return g.app.config.get(self.c,setting,theType)
+
+def getAbbrevDict (self):
+    '''return the commander's abbreviation dictionary.'''
+    return g.app.config.getAbbrevDict(self.c)
+
+def getBool (self,setting,default=None):
+    '''Return the value of @bool setting, or the default if the setting is not found.'''
+    return g.app.config.getBool(self.c,setting,default=default)
+
+def getButtons (self):
+    '''Return a list of tuples (x,y) for common @button nodes.'''
+    return g.app.config.atCommonButtonsList # unusual.
+
+def getColor (self,setting):
+    '''Return the value of @color setting.'''
+    return g.app.config.getColor(self.c,setting)
+
+def getCommands (self):
+    '''Return the list of tuples (headline,script) for common @command nodes.'''
+    return g.app.config.atCommonCommandsList # unusual.
+
+def getData (self,setting):
+    '''Return a list of non-comment strings in the body text of @data setting.'''
+    return g.app.config.getData(self.c,setting)
+
+def getDirectory (self,setting):
+    '''Return the value of @directory setting, or None if the directory does not exist.'''
+    return g.app.config.getDirectory(self.c,setting)
+
+def getFloat (self,setting):
+    '''Return the value of @float setting.'''
+    return g.app.config.getFloat(self.c,setting)
+
+def getFontFromParams (self,family,size,slant,weight,defaultSize=12):
+
+    '''Compute a font from font parameters.
+
+    Arguments are the names of settings to be use.
+    Default to size=12, slant="roman", weight="normal".
+
+    Return None if there is no family setting so we can use system default fonts.'''
+
+    return g.app.config.getFontFromParams(self.c,
+        family, size, slant, weight, defaultSize = defaultSize)
+
+def getInt (self,setting):
+    '''Return the value of @int setting.'''
+    return g.app.config.getInt(self.c,setting)
+
+def getLanguage (self,setting):
+    '''Return the value of @string setting.
+
+    The value of this setting should be a language known to Leo.'''
+    return g.app.config.getLanguage(self.c,setting)
+
+def getMenusList (self):
+    '''Return the list of entries for the @menus tree.'''
+    return g.app.config.getMenusList(self.c) # Changed in Leo 4.5.
+
+def getOpenWith (self):
+    '''Return a list of dictionaries corresponding to @openwith nodes.'''
+    return g.app.config.getOpenWith(self.c)
+
+def getRatio (self,setting):
+    '''Return the value of @float setting.
+    Warn if the value is less than 0.0 or greater than 1.0.'''
+    return g.app.config.getRatio(self.c,setting)
+
+def getRecentFiles (self):
+    '''Return the list of recently opened files.'''
+    return g.app.config.getRecentFiles()
+
+def getShortcut (self,shortcutName):
+    '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
+    return g.app.config.getShortcut(self.c,shortcutName)
+
+def getSettingSource(self,setting):
+    '''return the name of the file responsible for setting.'''
+    return g.app.config.getSettingSource(self.c,setting)
+
+def getString (self,setting):
+    '''Return the value of @string setting.'''
+    return g.app.config.getString(self.c,setting)
+#@-node:ekr.20041118053731:Getters (c.configSettings)
+#@+node:ekr.20080917061525.3:getSettingSource (g.app.config)
+def getSettingSource (self,c,setting):
+
+    '''return the name of the file responsible for setting.'''
+
+    aList = [self.localOptionsDict.get(c.hash())]
+    aList.extend(self.localOptionsList)
+    aList.extend(self.dictList)
+
+    for d in aList:
+        if d:
+            bunch = d.get(setting)
+            if bunch is not None:
+                return bunch.path,bunch.val
+    else:
+        return 'unknown setting',None
+#@-node:ekr.20080917061525.3:getSettingSource (g.app.config)
+#@+node:ekr.20070418073400:g.app.config.printSettings & helper
+def printSettings (self,c):
+
+    '''Prints the value of every setting, except key bindings and commands and open-with tables.
+    The following letters indicate where the active setting came from:
+
+    - D indicates default settings.
+    - F indicates the file being loaded,
+    - L indicates leoSettings.leo,
+    - M indicates myLeoSettings.leo,
+    '''
+
+    settings = {} # Keys are setting names, values are (letter,val)
+
+    if c:
+        d = self.localOptionsDict.get(c.hash())
+        self.printSettingsHelper(settings,d,letter='[F]')
+
+    for d in self.localOptionsList:
+        self.printSettingsHelper(settings,d)
+
+    for d in self.dictList:
+        self.printSettingsHelper(settings,d)
+
+    keys = settings.keys() ; keys.sort()
+    for key in keys:
+        data = settings.get(key)
+        letter,val = data
+        g.pr('%45s = %s %s' % (key,letter,val))
+        g.es('','%s %s = %s' % (letter,key,val))
+#@nonl
+#@+node:ekr.20070418075804:printSettingsHelper
+def printSettingsHelper(self,settings,d,letter=None):
+
+    suppressKind = ('shortcut','shortcuts','openwithtable')
+    suppressKeys = (None,'_hash','shortcut')
+
+    if d:
+        << set letter >>
+        for key in d.keys():
+            if key not in suppressKeys and key not in settings.keys():
+                bunch = d.get(key)
+                if bunch.kind not in suppressKind:
+                    settings[key] = (letter,bunch.val)
+#@nonl
+#@+node:ekr.20070418084502:<< set letter >>
+theHash = d.get('_hash').lower()
+
+if letter:
+    pass
+elif theHash.endswith('myleosettings.leo'):
+    letter = '[M]'
+elif theHash.endswith('leosettings.leo'):
+    letter = ' ' * 3
+else:
+    letter = '[D]'
+
+# g.trace(letter,theHash)
+#@nonl
+#@-node:ekr.20070418084502:<< set letter >>
+#@-node:ekr.20070418075804:printSettingsHelper
+#@-node:ekr.20070418073400:g.app.config.printSettings & helper
+#@-node:ekr.20080917061525.4:Added c.config.getSettingSource
+#@-node:ekr.20080917061525.5:New features
 #@-node:ekr.20080914111505.3:4.6
 #@-all
 #@nonl

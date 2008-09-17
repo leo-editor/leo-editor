@@ -6727,6 +6727,7 @@ def getShortcut (self,c,shortcutName):
     key = key.replace('&','') # Allow '&' in names.
 
     bunchList = self.get(c,key,"shortcut")
+    # g.trace('bunchList',bunchList)
     if bunchList:
         bunchList = [bunch for bunch in bunchList
             if bunch.val and bunch.val.lower() != 'none']

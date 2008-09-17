@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E" str_leo_pos="0,1,13"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
@@ -57,6 +57,8 @@
 <v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
+<v t="ekr.20080917071550.1"><vh>@string xxx = aaa</vh></v>
+<v t="ekr.20080917071550.2"><vh>@button xxx</vh></v>
 </v>
 <v t="ekr.20041001211817" a="E"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
@@ -2322,12 +2324,10 @@ else:
 )
 
 for name in aList:
-    # print '%20s' % (name),g.app.config.getSettingSource(c,name)
     kind, val = c.config.getSettingSource(name)
     print '%-20s %-20s %s' % (name,repr(val),kind)
-
-# print g.listToString(dir(g.app.config))
-# print g.listToString(dir(c.config))
 </t>
+<t tx="ekr.20080917071550.1"></t>
+<t tx="ekr.20080917071550.2">print 'button xxx'</t>
 </tnodes>
 </leo_file>

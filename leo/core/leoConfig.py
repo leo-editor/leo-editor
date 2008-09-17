@@ -1460,7 +1460,7 @@ class configClass:
         The following equivalences are allowed:
 
         - None matches anything.
-        - An actual type of string or strings matches anything.
+        - An actual type of string or strings matches anything *except* shortcuts.
         - Shortcut matches shortcuts.
         '''
 
@@ -1468,7 +1468,7 @@ class configClass:
 
         return (
             type1 == None or type2 == None or
-            type1.startswith('string') or
+            type1.startswith('string') and type2 not in shortcuts or
             type1 == 'int' and type2 == 'size' or
             (type1 in shortcuts and type2 in shortcuts) or
             type1 == type2
@@ -1694,6 +1694,7 @@ class configClass:
         key = key.replace('&','') # Allow '&' in names.
 
         bunchList = self.get(c,key,"shortcut")
+        # g.trace('bunchList',bunchList)
         if bunchList:
             bunchList = [bunch for bunch in bunchList
                 if bunch.val and bunch.val.lower() != 'none']
