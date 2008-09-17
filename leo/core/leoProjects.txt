@@ -5282,6 +5282,8 @@ def getSettingSource (self,c,setting):
     aList.extend(self.localOptionsList)
     aList.extend(self.dictList)
 
+    setting = self.munge(setting)
+
     for d in aList:
         if d:
             bunch = d.get(setting)
@@ -37181,6 +37183,8 @@ def getSettingSource (self,c,setting):
     aList = [self.localOptionsDict.get(c.hash())]
     aList.extend(self.localOptionsList)
     aList.extend(self.dictList)
+
+    setting = self.munge(setting)
 
     for d in aList:
         if d:

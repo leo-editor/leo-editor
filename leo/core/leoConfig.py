@@ -1484,6 +1484,8 @@ class configClass:
         aList.extend(self.localOptionsList)
         aList.extend(self.dictList)
 
+        setting = self.munge(setting)
+
         for d in aList:
             if d:
                 bunch = d.get(setting)
