@@ -1055,7 +1055,7 @@ class leoGtkFrame (leoFrame.leoFrame):
 
         c = self.c ; w = c.frame.body.bodyCtrl
 
-        theDict = g.scanDirectives(c,p)
+        theDict = c.scanAllDirectives(p)
         if not theDict: return
 
         wrap = theDict.get("wrap")

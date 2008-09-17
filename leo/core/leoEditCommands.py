@@ -2681,7 +2681,7 @@ class editCommandsClass (baseEditCommandsClass):
         if not s: return
 
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
-        d = g.scanDirectives(c) ; width = d.get('tabwidth')
+        d = c.scanAllDirectives() ; width = d.get('tabwidth')
         if ch == '\t' and width < 0: ch = ' ' * abs(width)
 
         self.beginCommand(undoType=undoType)
@@ -2727,7 +2727,7 @@ class editCommandsClass (baseEditCommandsClass):
         if wname.startswith('body'):
             self.beginCommand()
             try:
-                d = g.scanDirectives(c,p)
+                d = c.scanAllDirectives(p)
                 tab_width = d.get("tabwidth",c.tab_width)
                 changed = True
                 if i != j:
@@ -3135,7 +3135,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         # assert ch in ('(',')','[',']','{','}')
 
-        c = self.c ; d = g.scanDirectives(c,p)
+        c = self.c ; d = c.scanAllDirectives(p)
         i,j = oldSel
         language = d.get('language')
         s = w.getAllText()
@@ -3163,7 +3163,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051026171121.1:udpateAutoIndent
     def updateAutoIndent (self,p,w):
 
-        c = self.c ; d = g.scanDirectives(c,p)
+        c = self.c ; d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
         # Get the previous line.
         s = w.getAllText()
@@ -3202,7 +3202,7 @@ class editCommandsClass (baseEditCommandsClass):
     def updateTab (self,p,w):
 
         c = self.c
-        d = g.scanDirectives(c,p)
+        d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
         i,j = w.getSelectionRange()
             # Returns insert point if no selection, with i <= j.

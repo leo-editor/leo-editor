@@ -583,7 +583,8 @@ class leoImportCommands:
     #@+node:ekr.20041126042730:getTabWidth
     def getTabWidth (self,p=None):
 
-        d = g.scanDirectives(self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         w = d.get("tabwidth")
         if w not in (0,None):
             return w
@@ -788,10 +789,10 @@ class leoImportCommands:
     #@+node:ekr.20031218072017.1463:setEncoding (leoImport)
     def setEncoding (self,p=None,atAuto=False):
 
-        # scanDirectives checks the encoding: may return None.
+        # c.scanAllDirectives checks the encoding: may return None.
         c = self.c
         if p is None: p = c.currentPosition()
-        theDict = g.scanDirectives(c,p)
+        theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding")
         if encoding and g.isValidEncoding(encoding):
             self.encoding = encoding

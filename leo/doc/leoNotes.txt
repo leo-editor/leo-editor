@@ -10,30 +10,15 @@
 
 How to create/use private branches
 
-===== Do this first: creates a branch directly, **without** having to use launchpad.
+bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/at-path
 
-bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/at-path
 
-===== pushes a branch after it has been created on launchpad
 
-bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
 
-====== remembers the push
+Common
 
-bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
-
-===== creates branch on local machine: do this from leo.repo directory
-
-bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
-
--- OR --
-
-bzr branch lp:leo-editor new-branch-name 
-
-====== To resolve conflicts
-
-kdiff3 file1 file2 file3 -m
-
+- No need for aliases for push, pull or commit.  do bzr info to find url.
 
 Docs:
 - http://doc.bazaar-vcs.org/latest/en/user-guide/index.html
@@ -46,11 +31,15 @@ Docs:
 
 Windows
 
+- c:\prog\bzr-leo contains my sandbox.
+- Edward\keys contains the keys
 - Configuration file is .bazaar in XP C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0
+- To open a connection: Open pagent, then select "add key"
 
 Linux:
 
 - Configuration file is bazaar.conf in ~/.bazaar directory
+- BZR automatically 
 #@-node:ekr.20080225084626:Bzr notes
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py

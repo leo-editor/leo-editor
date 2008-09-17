@@ -614,7 +614,7 @@ class baseCommands:
                 #@            << set ext based on the present language >>
                 #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
                 if not ext:
-                    theDict = g.scanDirectives(c)
+                    theDict = c.scanAllDirectives()
                     language = theDict.get("language")
                     ext = g.app.language_extension_dict.get(language)
                     # g.pr(language,ext)
@@ -775,7 +775,7 @@ class baseCommands:
             theFile = open(path,"w")
             # Convert s to whatever encoding is in effect.
             s = p.bodyString()
-            theDict = g.scanDirectives(c,p=p)
+            theDict = c.scanAllDirectives(p)
             encoding = theDict.get("encoding",None)
             if encoding == None:
                 encoding = c.config.default_derived_file_encoding
@@ -2151,14 +2151,14 @@ class baseCommands:
             shadow_filename = x.shadowPathName(filename)
             if os.path.exists(shadow_filename):
                 fn = shadow_filename
-                lines = file(shadow_filename).readlines()
+                lines = open(shadow_filename).readlines()
                 x.line_mapping = x.push_filter_mapping(
                     lines, x.marker_from_extension(shadow_filename))
             else:
                 # Just open the original file.  This is not an error!
                 fn = filename
                 c.line_mapping = []
-                lines = file(filename).readlines()
+                lines = open(filename).readlines()
         except Exception:
             # Make sure failures to open a file generate clear messages.
             g.es_print('can not open',fn,color='blue')
@@ -2304,7 +2304,7 @@ class baseCommands:
             c.notValidInBatchMode(undoType)
             return
 
-        d = g.scanDirectives(c)
+        d = c.scanAllDirectives()
         tabWidth  = d.get("tabwidth")
         count = 0 ; dirtyVnodeList = []
         u.beforeChangeGroup(current,undoType)
@@ -2349,7 +2349,7 @@ class baseCommands:
         if g.app.batchMode:
             c.notValidInBatchMode(undoType)
             return
-        theDict = g.scanDirectives(c)
+        theDict = c.scanAllDirectives()
         tabWidth  = theDict.get("tabwidth")
         count = 0 ; dirtyVnodeList = []
         u.beforeChangeGroup(current,undoType)
@@ -2391,7 +2391,7 @@ class baseCommands:
         head,lines,tail,oldSel,oldYview = c.getBodyLines(expandSelection=True)
 
         # Use the relative @tabwidth, not the global one.
-        theDict = g.scanDirectives(c)
+        theDict = c.scanAllDirectives()
         tabWidth  = theDict.get("tabwidth")
         if tabWidth:
             result = []
@@ -2416,7 +2416,7 @@ class baseCommands:
         head,lines,tail,oldSel,oldYview = self.getBodyLines(expandSelection=True)
 
         # Use the relative @tabwidth, not the global one.
-        theDict = g.scanDirectives(c)
+        theDict = c.scanAllDirectives()
         tabWidth  = theDict.get("tabwidth")
         if tabWidth:
             result = []
@@ -2459,7 +2459,7 @@ class baseCommands:
 
         c = self ; current = c.currentPosition() ; undoType='Unindent'
 
-        d = g.scanDirectives(c,current) # Support @tab_width directive properly.
+        d = c.scanAllDirectives(current) # Support @tab_width directive properly.
         tab_width = d.get("tabwidth",c.tab_width)
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
 
@@ -2788,7 +2788,7 @@ class baseCommands:
         specifies the column to indent to.'''
 
         c = self ; current = c.currentPosition() ; undoType='Indent Region'
-        d = g.scanDirectives(c,current) # Support @tab_width directive properly.
+        d = c.scanAllDirectives(current) # Support @tab_width directive properly.
         tab_width = d.get("tabwidth",c.tab_width)
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
 
@@ -2861,7 +2861,7 @@ class baseCommands:
         '''Convert all selected lines in the body text to comment lines.'''
 
         c = self ; p = c.currentPosition()
-        d = g.scanDirectives(c,p)
+        d = c.scanAllDirectives(p)
         d1,d2,d3 = d.get('delims') # d1 is the line delim.
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         if not lines:
@@ -2890,7 +2890,7 @@ class baseCommands:
         '''Remove one level of comment delimiters from all selected lines in the body text.'''
 
         c = self ; p = c.currentPosition()
-        d = g.scanDirectives(c,p)
+        d = c.scanAllDirectives(p)
         # d1 is the line delim.
         d1,d2,d3 = d.get('delims')
 
@@ -2963,7 +2963,7 @@ class baseCommands:
 
         #@    << compute vars for reformatParagraph >>
         #@+node:ekr.20031218072017.1834:<< compute vars for reformatParagraph >>
-        theDict = g.scanDirectives(c)
+        theDict = c.scanAllDirectives()
         pageWidth = theDict.get("pagewidth")
         tabWidth  = theDict.get("tabwidth")
 
@@ -3936,9 +3936,8 @@ class baseCommands:
 
         for p in c.all_positions_with_unique_tnodes_iter():
 
-            # Unlike scanDirectives, scanForAtLanguage ignores @comment.
+            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
-
                 pp.prettyPrintNode(p,dump=dump)
 
         pp.endUndo()
@@ -3962,7 +3961,7 @@ class baseCommands:
 
         for p in root.self_and_subtree_iter():
 
-            # Unlike scanDirectives, scanForAtLanguage ignores @comment.
+            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
 
                 pp.prettyPrintNode(p,dump=dump)
@@ -3984,7 +3983,7 @@ class baseCommands:
 
         pp = c.prettyPrinter(c)
 
-        # Unlike scanDirectives, scanForAtLanguage ignores @comment.
+        # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
         if g.scanForAtLanguage(c,p) == "python":
             pp.prettyPrintNode(p,dump=dump)
 
@@ -3999,7 +3998,7 @@ class baseCommands:
 
         for p in p.self_and_subtree_iter():
 
-            # Unlike scanDirectives, scanForAtLanguage ignores @comment.
+            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
 
                 pp.prettyPrintNode(p,dump=dump)
@@ -5682,6 +5681,130 @@ class baseCommands:
     #@-node:ekr.20060613082924:leoUsersGuide
     #@-node:ekr.20031218072017.2938:Help Menu
     #@-node:ekr.20031218072017.2818:Command handlers...
+    #@+node:ekr.20080901124540.1:c.Directive scanning
+    # These are all new in Leo 4.5.1.
+    #@nonl
+    #@+node:ekr.20080827175609.39:c.scanAllDirectives
+    def scanAllDirectives(self,p=None):
+
+        '''Scan p and ancestors for directives.
+
+        Returns a dict containing the results, including defaults.'''
+
+        c = self ; p = p or c.currentPosition()
+
+        # Set defaults
+        language = c.target_language and c.target_language.lower()
+        lang_dict = {
+            'language':language,
+            'delims':g.set_delims_from_language(language),
+        }
+        wrap = c.config.getBool("body_pane_wraps")
+
+        table = (
+            ('encoding',    None,           g.scanAtEncodingDirectives),
+            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lineending',  None,           g.scanAtLineendingDirectives),
+            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+            ('path',        None,           c.scanAtPathDirectives),
+            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+            ('wrap',        wrap,           g.scanAtWrapDirectives),
+        )
+
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,default,func in table:
+            val = func(aList)
+            d[key] = g.choose(val is None,default,val)
+
+        # Post process: do *not* set commander ivars.
+        lang_dict       = d.get('lang-dict')
+
+        return {
+            "delims"        : lang_dict.get('delims'),
+            "encoding"      : d.get('encoding'),
+            "language"      : lang_dict.get('language'),
+            "lineending"    : d.get('lineending'),
+            "pagewidth"     : d.get('pagewidth'),
+            "path"          : d.get('path') or g.getBaseDirectory(c),
+            "tabwidth"      : d.get('tabwidth'),
+            "pluginsList"   : [],  ### To do: what about scan-directives hook?
+            "wrap"          : d.get('wrap'),
+        }
+    #@nonl
+    #@-node:ekr.20080827175609.39:c.scanAllDirectives
+    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+
+    def scanAtPathDirectives(self,aList,force=False):
+
+        '''Scan aList for @path directives.'''
+
+        c = self ; trace = False
+
+        # Step 1: Compute the starting path.
+        # The correct fallback directory is the absolute path to the base.
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+        absbase = g.os_path_normpath(g.os_path_abspath(g.app.loadDir,base))
+
+        # Step 2: Look at alist for @file nodes, then @path directives.
+        paths = [] ; fileName = None
+        for d in aList:
+            if fileName:
+                # Look for @path directives.
+                path = d.get('path')
+                if path:
+                    # Convert "path" or <path> to path.
+                    path = g.computeRelativePath(path)
+                    if path: paths.append(path)
+            else:
+                # Look for any kind of @file node.
+                p = d.get('_p')
+                if p.isAnyAtFileNode():
+                    fileName = p.anyAtFileNodeName()
+                    if fileName: paths.append(fileName)
+
+        # Add absbase and reverse the list.
+        paths.append(absbase)
+        paths.reverse()
+
+        # Step 3: Compute the full, effective, absolute path.
+        if trace: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
+        path = g.os_path_normpath(g.os_path_join(*paths))
+        if trace: g.trace('joined paths:',path)
+
+        # Step 4: Make the path if necessary.
+        if path and not g.os_path_exists(path):
+            path = g.makeAllNonExistentDirectories(path,c=c,force=force)
+            if force and not path:
+                g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+
+        return path
+    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+    #@+node:ekr.20080828103146.12:c.scanAtRootDirectives
+    # Called only by scanColorDirectives.
+
+    def scanAtRootDirectives(self,aList):
+
+        '''Scan aList for @root-code and @root-doc directives.'''
+
+        c = self
+
+        for d in aList:
+            root = d.get('root')
+            if g.match_word(root,0,"-code"):
+                return "code"
+            elif g.match_word(root,0,"-doc"):
+                return "doc"
+            else:
+                return g.choose(c.config.at_root_bodies_start_in_doc_mode,
+                    'doc','code')
+
+        return None
+    #@-node:ekr.20080828103146.12:c.scanAtRootDirectives
+    #@-node:ekr.20080901124540.1:c.Directive scanning
     #@+node:ekr.20031218072017.2945:Dragging (commands)
     #@+node:ekr.20031218072017.2353:c.dragAfter
     def dragAfter(self,p,after):
