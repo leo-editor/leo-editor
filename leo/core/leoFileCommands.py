@@ -1261,16 +1261,19 @@ class baseFileCommands:
         # g.trace('hiddenRootNode',c.hiddenRootNode)
 
         try:
-            ### s = theFile.read() # This produces bytes.
-            ### theFile = io.BytesIO(s) ### hangs
-            ### theFile = io.TextIOWrapper(s) ### fails in ctor.
-            ### theFile = io.BufferedReader(s)
-            if 0: # This read causes unicode errors!
+            if g.isPython3:
+                ### s = theFile.read() # This produces bytes.
+                ### theFile = io.BytesIO(s) ### hangs
+                ### theFile = io.TextIOWrapper(s) ### fails in ctor.
+                ### theFile = io.BufferedReader(s)
+                if 0: # This read causes unicode errors on Py3K, but appears essential for Python 2.5
+                    if theFile:
+                        s = theFile.read()
+                    theFile = StringIO(s) # Same as cStringIO.StringIO for Python 2.x.
+	    else:
                 if theFile:
                     s = theFile.read()
-                    print('type(s)',type(s))
-                    theFile = StringIO(s) #,'utf-8'         )
-            # g.trace('theFile',theFile)
+                theFile = cStringIO.StringIO(s)
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges,1)
                 # Include external general entities, esp. xml-stylesheet lines.
