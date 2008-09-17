@@ -13,12 +13,14 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-REM toto errors
+REM goto errors
 goto all
 
 
 :errors
 
+echo leoCommands.py
+call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
@@ -42,7 +44,7 @@ call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoEditCommands.py
 rem W0511:2380: FIXME lineYOffset is expected to be on a tnode in drawing code
-call pylint.bat leo\core\leoEditCommands.py  --rcfile=leo\test\pylint-leo-rc.txt
+call pylint.bat leo\core\leoEditCommands.py  --disable-msg=W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoFileCommands.py
 call pylint.bat leo\core\leoFileCommands.py  --rcfile=leo\test\pylint-leo-rc.txt

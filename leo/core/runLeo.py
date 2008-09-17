@@ -100,6 +100,11 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
 
     # There is a circular dependency between leoCommands and leoEditCommands.
     import leo.core.leoCommands as leoCommands
+
+    # New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+    # This prevents a crash when run is called repeatedly from IPython's lleo extension.
+    import leo.core.leoPlugins as leoPlugins
+    leoPlugins.init()
     #@-node:ekr.20041219072416.1:<< import other early files>>
     #@nl
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
@@ -271,10 +276,14 @@ def isValidPython():
     if sys.platform == 'cli':
         return True
 
+    minimum_python_version = '2.2.1'
+
     message = """\
-Leo requires Python 2.2.1 or higher.
-You may download Python from http://python.org/download/
-"""
+Leo requires Python %s or higher.
+You may download Python from
+http://python.org/download/
+""" % minimum_python_version
+
     try:
         # This will fail if True/False are not defined.
         import leo.core.leoGlobals as g
@@ -287,10 +296,121 @@ You may download Python from http://python.org/download/
         return 0
     try:
         version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
-        ok = g.CheckVersion(version,'2.2.1')
+        # ok = g.CheckVersion(version,'2.4.0') # Soon.
+        ok = g.CheckVersion(version,minimum_python_version)
         if not ok:
             print(message)
-            g.app.gui.runAskOkDialog(None,"Python version error",message=message,text="Exit")
+            try:
+                # g.app.gui does not exist yet.
+                import Tkinter as Tk
+                #@                << define emergency dialog class >>
+                #@+node:ekr.20080822065427.8:<< define emergency dialog class >>
+                class emergencyDialog:
+
+                    """A class that creates an Tkinter dialog with a single OK button."""
+
+                    #@    @+others
+                    #@+node:ekr.20080822065427.9:__init__ (emergencyDialog)
+                    def __init__(self,title,message):
+
+                        """Constructor for the leoTkinterDialog class."""
+
+                        self.answer = None # Value returned from run()
+                        self.title = title
+                        self.message=message
+
+                        self.buttonsFrame = None # Frame to hold typical dialog buttons.
+                        self.defaultButtonCommand = None  # Command to call when user closes the window by clicking the close box.
+                        self.frame = None # The outermost frame.
+                        self.root = None # Created in createTopFrame.
+                        self.top = None # The toplevel Tk widget.
+
+                        self.createTopFrame()
+                        buttons = {"text":"OK","command":self.okButton,"default":True}, # Singleton tuple.
+                        self.createButtons(buttons)
+                        self.top.bind("<Key>", self.onKey)
+                    #@-node:ekr.20080822065427.9:__init__ (emergencyDialog)
+                    #@+node:ekr.20080822065427.12:createButtons
+                    def createButtons (self,buttons):
+
+                        """Create a row of buttons.
+
+                        buttons is a list of dictionaries containing the properties of each button."""
+
+                        assert(self.frame)
+                        self.buttonsFrame = f = Tk.Frame(self.top)
+                        f.pack(side="top",padx=30)
+
+                        # Buttons is a list of dictionaries, with an empty dictionary at the end if there is only one entry.
+                        buttonList = []
+                        for d in buttons:
+                            text = d.get("text","<missing button name>")
+                            isDefault = d.get("default",False)
+                            underline = d.get("underline",0)
+                            command = d.get("command",None)
+                            bd = g.choose(isDefault,4,2)
+
+                            b = Tk.Button(f,width=6,text=text,bd=bd,underline=underline,command=command)
+                            b.pack(side="left",padx=5,pady=10)
+                            buttonList.append(b)
+
+                            if isDefault and command:
+                                self.defaultButtonCommand = command
+
+                        return buttonList
+                    #@-node:ekr.20080822065427.12:createButtons
+                    #@+node:ekr.20080822065427.14:createTopFrame
+                    def createTopFrame(self):
+
+                        """Create the Tk.Toplevel widget for a leoTkinterDialog."""
+
+                        self.root = Tk.Tk()
+                        self.top = Tk.Toplevel(self.root)
+                        self.top.title(self.title)
+                        self.root.withdraw()
+
+                        self.frame = Tk.Frame(self.top)
+                        self.frame.pack(side="top",expand=1,fill="both")
+
+                        label = Tk.Label(self.frame,text=message,bg='white')
+                        label.pack(pady=10)
+                    #@-node:ekr.20080822065427.14:createTopFrame
+                    #@+node:ekr.20080822065427.10:okButton
+                    def okButton(self):
+
+                        """Do default click action in ok button."""
+
+                        self.top.destroy()
+                        self.top = None
+
+                    #@-node:ekr.20080822065427.10:okButton
+                    #@+node:ekr.20080822065427.21:onKey
+                    def onKey(self,event):
+
+                        """Handle Key events in askOk dialogs."""
+
+                        self.okButton()
+
+                        return "break"
+                    #@-node:ekr.20080822065427.21:onKey
+                    #@+node:ekr.20080822065427.16:run
+                    def run (self):
+
+                        """Run the modal emergency dialog."""
+
+                        self.top.geometry("%dx%d%+d%+d" % (300,200,50,50))
+                        self.top.lift()
+
+                        self.top.grab_set() # Make the dialog a modal dialog.
+                        self.root.wait_window(self.top)
+                    #@-node:ekr.20080822065427.16:run
+                    #@-others
+                #@-node:ekr.20080822065427.8:<< define emergency dialog class >>
+                #@nl
+                d = emergencyDialog(title='Python Version Error',message=message)
+                d.run()
+            except Exception:
+                pass
         return ok
     except Exception:
         print("isValidPython: unexpected exception: g.CheckVersion")

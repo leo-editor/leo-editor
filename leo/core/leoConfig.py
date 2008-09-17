@@ -1331,15 +1331,16 @@ class configClass:
         mySettingsFile = 'myLeoSettings.leo'
         machineConfigFile = g.computeMachineName() + 'LeoSettings.leo'
 
+        # New in Leo 4.5 b4: change homeDir to homeLeoDir
         for ivar,theDir,fileName in (
             ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
-            ('homeFile',            g.app.homeDir,          settingsFile),
+            ('homeFile',            g.app.homeLeoDir,          settingsFile),
             ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
             #non-prefixed names take priority over prefixed names
-            ('myHomeConfigFile',    g.app.homeDir,          g.app.homeSettingsPrefix + mySettingsFile),
-            ('myHomeConfigFile',    g.app.homeDir,          mySettingsFile),
-            ('machineConfigFile',   g.app.homeDir,          g.app.homeSettingsPrefix + machineConfigFile),
-            ('machineConfigFile',   g.app.homeDir,          machineConfigFile),
+            ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
+            ('myHomeConfigFile',    g.app.homeLeoDir,   mySettingsFile),
+            ('machineConfigFile',   g.app.homeLeoDir,   g.app.homeSettingsPrefix + machineConfigFile),
+            ('machineConfigFile',   g.app.homeLeoDir,   machineConfigFile),
         ):
             # The same file may be assigned to multiple ivars:
             # readSettingsFiles checks for such duplications.
@@ -1864,10 +1865,11 @@ class configClass:
                     self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
                     self.setIvarsFromSettings(c)
         self.readRecentFiles(localConfigFile)
-        self.createMyLeoSettingsFile(myLocalConfigFile)
+        if 0:
+            self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
-    #@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile
+    #@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
     def createMyLeoSettingsFile (self,localConfigFile):
 
         '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
@@ -1928,7 +1930,7 @@ class configClass:
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','red'),)
                 g.es_exception()
-    #@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile
+    #@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
     #@+node:ekr.20041117085625:g.app.config.openSettingsFile
     def openSettingsFile (self,path):
 
@@ -2003,7 +2005,7 @@ class configClass:
         seen = [] 
         localConfigPath = g.os_path_dirname(localConfigFile)
         for path in (
-            g.app.homeDir,
+            g.app.homeLeoDir, # was homeDir
             g.app.globalConfigDir,
             localConfigPath,
         ):
@@ -2022,7 +2024,7 @@ class configClass:
         - the users home directory first,
         - Leo's config directory second.'''
 
-        for theDir in (g.app.homeDir,g.app.globalConfigDir):
+        for theDir in (g.app.homeLeoDir,g.app.globalConfigDir): # homeLeoDir was g.app.homeDir.
             if theDir:
                 try:
                     fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
@@ -2073,7 +2075,7 @@ class configClass:
             localPath = None
 
         written = False
-        for path in (localPath,g.app.globalConfigDir,g.app.homeDir):
+        for path in (localPath,g.app.globalConfigDir,g.app.homeLeoDir): # homeLeoDir was homeDir.
             if path:
                 fileName = g.os_path_join(path,tag)
                 if g.os_path_exists(fileName):

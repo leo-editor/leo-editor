@@ -2021,7 +2021,7 @@ class colorizer:
             #@-node:ekr.20071010193720.76:<< Test for @root, @root-doc or @root-code >>
             #@nl
 
-        # g.trace(self.language)
+        # g.trace('new colorizer',self.language)
 
         return self.language # For use by external routines.
     #@nonl

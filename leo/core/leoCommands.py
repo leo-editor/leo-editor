@@ -357,7 +357,7 @@ class baseCommands:
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     def getSignOnLine (self):
         c = self
-        return "Leo 4.5 b3, build %s, August 15, 2008" % c.getBuildNumber()
+        return "Leo 4.5.1 final, build %s, September 14, 2008" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -1739,278 +1739,45 @@ class baseCommands:
     #@nonl
     #@-node:ekr.20070115135502:writeScriptFile
     #@-node:ekr.20031218072017.2140:c.executeScript & helpers
-    #@+node:ekr.20080710082231.10:gotoLineNumber and helpers
-    #@+node:ekr.20031218072017.2864: goToLineNumber
-    def goToLineNumber (self,event=None,root=None,lines=None,n=None,scriptFind=False):
+    #@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+    def goToLineNumber (self,n,p=None,scriptData=None):
 
-        '''Place the cursor on the n'th line of a derived file or script.'''
+        '''Place the cursor on the n'th line of a derived file or script.
+        When present scriptData is a dict with 'root' and 'lines' keys.'''
 
-        # __pychecker__ = 'maxlines=400'
+        c = self ; gnx = None ; vnodeName = None
+        if n < 0: return
 
-        c = self ; p = c.currentPosition() ; w = c.frame.body.bodyCtrl
-        root1 = root
-        if root is None:
-            #@        << set root >>
-            #@+node:ekr.20031218072017.2865:<< set root >>
-            # First look for ancestor @file node.
-            fileName = None
-            for p in p.self_and_parents_iter():
-                fileName = p.anyAtFileNodeName()
-                if fileName: break
+        fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
 
-            # New in 4.2: Search the entire tree for joined nodes.
-            if not fileName:
-                p1 = c.currentPosition()
-                for p in c.all_positions_with_unique_tnodes_iter():
-                    if p.v.t == p1.v.t and p != p1:
-                        # Found a joined position.
-                        for p in p.self_and_parents_iter():
-                            fileName = p.anyAtFileNodeName()
-                            # New in 4.2 b3: ignore @all nodes.
-                            if fileName and not p.isAtAllNode(): break
-                    if fileName: break
-
-            if fileName:
-                root = p.copy()
-            else:
-                # New in 4.2.1: assume the c.currentPosition is the root of a script.
-                root = c.currentPosition()
-                g.es("no ancestor @file node: using script line numbers", color="blue")
-                scriptFind = True
-                lines = g.getScript (c,root,useSelectedText=False)
-                lines = g.splitLines(lines)
-                if 0:
-                    for line in lines:
-                        g.pr(line,newline=False)
-            #@-node:ekr.20031218072017.2865:<< set root >>
-            #@nl
-        if lines is None:
-            #@        << read the file into lines >>
-            #@+node:ekr.20031218072017.2866:<< read the file into lines >>
-            # 1/26/03: calculate the full path.
-            d = g.scanDirectives(c)
-            path = d.get("path")
-
-            fileName = g.os_path_join(path,fileName)
-
-            try:
-                lines=self.gotoLineNumberOpen(fileName) # bwm
-            except:
-                g.es("not found:",fileName)
-                return
-            #@-node:ekr.20031218072017.2866:<< read the file into lines >>
-            #@nl
-        if n is None:
-            #@        << get n, the line number, from a dialog >>
-            #@+node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
-            n = g.app.gui.runAskOkCancelNumberDialog(c,"Enter Line Number","Line number:")
-            if n == -1:
-                return
-            #@-node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
-            #@nl
-        n = self.applyLineNumberMappingIfAny(n) #bwm
         if n==1:
             p = root ; n2 = 1 ; found = True
-        elif root.isAtAsisFileNode() or root.isAtNoSentFileNode():
-            #@        << count outline lines, setting p,n2,found >>
-            #@+node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent/asis only)
-            p = lastv = root
-            prev = 0 ; found = False
-            isNosent = root.isAtNoSentFileNode()
-
-            for p in p.self_and_subtree_iter():
-                lastv = p.copy()
-                s = p.bodyString()
-                if isNosent:
-                    s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
-                n_lines = s.count('\n')
-                if len(s) > 0 and s[-1] != '\n': n_lines += 1
-                # g.trace(n,prev,n_lines,p.headString())
-                if prev + n_lines >= n:
-                    found = True ; break
-                prev += n_lines
-
-            p = lastv
-            n2 = max(1,n-prev)
-            #@-node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent/asis only)
-            #@nl
         elif n >= len(lines):
-            p = root ; found = False
-            n2 = p.bodyString().count('\n')
+            p = root ; n2 = root.bodyString().count('\n') ; found = False
+        elif isRaw:
+            p,n2,found = c.goto_countLines(root,n)
         else:
-            vnodeName,childIndex,gnx,n2,delim = self.convertLineToVnodeNameIndexLine(lines,n,root,scriptFind)
-            found = True
-            if not vnodeName:
-                g.es("error handling:",root.headString())
-                return
-            #@        << set p to the node given by vnodeName, etc. >>
-            #@+node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
-            if scriptFind:
-                #@    << just scan for the node name >>
-                #@+node:ekr.20041111093404:<< just scan for the node name >>
-                # This is safe enough because clones are not much of an issue.
-                found = False
-                for p in root.self_and_subtree_iter():
-                    if p.matchHeadline(vnodeName):
-                        found = True ; break
-                #@-node:ekr.20041111093404:<< just scan for the node name >>
-                #@nl
-            elif gnx:
-                #@    << 4.2: get node from gnx >>
-                #@+node:EKR.20040609110138:<< 4.2: get node from gnx >>
-                found = False
-                gnx = g.app.nodeIndices.scanGnx(gnx,0)
-
-                # g.trace(vnodeName)
-                # g.trace(gnx)
-
-                for p in root.self_and_subtree_iter():
-                    if p.matchHeadline(vnodeName):
-                        # g.trace(p.v.t.fileIndex)
-                        if p.v.t.fileIndex == gnx:
-                            found = True ; break
-
-                if not found:
-                    g.es("not found:",vnodeName,color="red")
-                    return
-                #@-node:EKR.20040609110138:<< 4.2: get node from gnx >>
-                #@nl
-            elif childIndex == -1:
-                #@    << 4.x: scan for the node using tnodeList and n >>
-                #@+node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
-                # This is about the best that can be done without replicating the entire atFile write logic.
-
-                ok = hasattr(root.v.t,"tnodeList")
-
-                if ok:
-                    # Use getattr to keep pylint happy.
-                    tnodeList = getattr(root.v.t,'tnodeList')
-                    #@    << set tnodeIndex to the number of +node sentinels before line n >>
-                    #@+node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
-
-                    tnodeIndex = -1 # Don't count the @file node.
-                    scanned = 0 # count of lines scanned.
-
-                    for s in lines:
-                        if scanned >= n:
-                            break
-                        i = g.skip_ws(s,0)
-                        if g.match(s,i,delim):
-                            i += len(delim)
-                            if g.match(s,i,"+node"):
-                                # g.trace(tnodeIndex,s.rstrip())
-                                tnodeIndex += 1
-                        scanned += 1
-                    #@-node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
-                    #@nl
-                    tnodeIndex = max(0,tnodeIndex)
-                    #@    << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
-                    #@+node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-
-                    #@+at 
-                    #@nonl
-                    # We use the tnodeList to find a _tnode_ corresponding to 
-                    # the proper node, so the user will for sure be editing 
-                    # the proper text, even if several nodes happen to have 
-                    # the same headline.  This is really all that we need.
-                    # 
-                    # However, this code has no good way of distinguishing 
-                    # between different cloned vnodes in the file: they all 
-                    # have the same tnode.  So this code just picks p = 
-                    # t.vnodeList[0] and leaves it at that.
-                    # 
-                    # The only way to do better is to scan the outline, 
-                    # replicating the write logic to determine which vnode 
-                    # created the given line.  That's way too difficult, and 
-                    # it would create an unwanted dependency in this code.
-                    #@-at
-                    #@@c
-
-                    # g.trace("tnodeIndex",tnodeIndex)
-                    if tnodeIndex < len(tnodeList):
-                        t = tnodeList[tnodeIndex]
-                        # Find the first vnode whose tnode is t.
-                        found = False
-                        for p in root.self_and_subtree_iter():
-                            if p.v.t == t:
-                                found = True ; break
-                        if not found:
-                            s = "tnode not found for " + vnodeName
-                            g.es_print(s, color="red") ; ok = False
-                        elif p.headString().strip() != vnodeName:
-                            if 0: # Apparently this error doesn't prevent a later scan for working properly.
-                                s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
-                                g.es_print(s, color="red")
-                            ok = False
-                    else:
-                        if root1 is None: # Kludge: disable this message when called by goToScriptLineNumber.
-                            s = "Invalid computed tnodeIndex: %d" % tnodeIndex
-                            g.es_print(s, color = "red")
-                        ok = False
-                    #@-node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-                    #@nl
-                else:
-                    g.es_print("no child index for",root.headString(),color="red")
-
-                if not ok:
-                    # Fall back to the old logic.
-                    #@    << set p to the first node whose headline matches vnodeName >>
-                    #@+node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
-                    found = False
-                    for p in root.self_and_subtree_iter():
-                        if p.matchHeadline(vnodeName):
-                            found = True ; break
-
-                    if not found:
-                        s = "not found: " + vnodeName
-                        g.es_print(s, color="red")
-                        return
-                    #@-node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
-                    #@nl
-                #@-node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
-                #@nl
+            vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
+            if delim:
+                p,found = c.goto_findPosition(
+                    root,lines,vnodeName,gnx,n,delim)
             else:
-                #@    << 3.x: scan for the node with the given childIndex >>
-                #@+node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
-                found = False
-                for p in root.self_and_subtree_iter():
-                    if p.matchHeadline(vnodeName):
-                        if childIndex <= 0 or p.childIndex() + 1 == childIndex:
-                            found = True ; break
+                p,found = root,False
 
-                if not found:
-                    g.es("not found:",vnodeName, color="red")
-                    return
-                #@-node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
-                #@nl
-            #@-node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
-            #@nl
-        #@    << select p and make it visible >>
-        #@+node:ekr.20031218072017.2875:<< select p and make it visible >>
-        c.frame.tree.expandAllAncestors(p)
-        c.selectVnode(p)
-        c.redraw()
-        #@-node:ekr.20031218072017.2875:<< select p and make it visible >>
+        #@    << trace gotoLineNumber results >>
+        #@+node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
+        if 0:
+            g.trace(
+                'found',found,'n2',n2,'gnx',gnx,
+                'vnodeName',vnodeName,
+                'p',p and p.headString(),
+                'root',root and root.headString())
+        #@nonl
+        #@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
         #@nl
-        #@    << put the cursor on line n2 of the body text >>
-        #@+node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
-        s = w.getAllText()
-        if found:
-            ins = g.convertRowColToPythonIndex(s,n2-1,0)    
-            # c.frame.body.setInsertPointToStartOfLine(n2-1)
-        else:
-            #c.frame.body.setInsertionPointToEnd()
-            ins = len(s)
-            g.es('only',len(lines),'lines',color="blue")
-
-        w.setInsertPoint(ins)
-        c.bodyWantsFocusNow()
-        w.seeInsertPoint()
-        #@-node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
-        #@nl
-    #@-node:ekr.20031218072017.2864: goToLineNumber
-    #@+node:ekr.20080708094444.65:applyLineNumberMappingIfAny
-    def applyLineNumberMappingIfAny(self, n):
+        c.goto_showResults(found,p or root,n2,lines)
+    #@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
+    def goto_applyLineNumberMapping(self, n):
 
         c = self ; x = c.shadowController
 
@@ -2018,36 +1785,181 @@ class baseCommands:
             return x.line_mapping[n]
         else:
             return n
+    #@-node:ekr.20080708094444.65:goto_applyLineNumberMapping
+    #@+node:ekr.20080904071003.12:goto_countLines
+    def goto_countLines (self,root,n):
 
-        # if hasattr(self,'line_mapping') and self.line_mapping:
-            # return self.line_mapping[n]
-        # else:
-            # return n
-    #@nonl
-    #@-node:ekr.20080708094444.65:applyLineNumberMappingIfAny
-    #@+node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
-    #@+at 
-    #@nonl
+        '''Scan through root's outline, looking for line n.
+        Return (p,n2,found) where p is the found node,
+        n2 is the actural line found, and found is True if the line was found.'''
+
+        p = lastv = root
+        prev = 0 ; found = False
+        isNosent = root.isAtNoSentFileNode()
+        isAuto = root.isAtAutoNode()
+
+        for p in p.self_and_subtree_iter():
+            lastv = p.copy()
+            s = p.bodyString()
+            if isNosent or isAuto:
+                s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
+            n_lines = s.count('\n')
+            if len(s) > 0 and s[-1] != '\n': n_lines += 1
+            # g.trace(n,prev,n_lines,p.headString())
+            if prev + n_lines >= n:
+                found = True ; break
+            prev += n_lines
+
+        p = lastv
+        n2 = max(1,n-prev)
+
+        return p,n2,found
+    #@-node:ekr.20080904071003.12:goto_countLines
+    #@+node:ekr.20080904071003.4:goto_findPosition & helpers
+    def goto_findPosition(self,root,lines,vnodeName,gnx,n,delim):
+
+        c = self
+
+        # if scriptFind:
+            # p,found = c.scanForVnodeName(root,vnodeName
+
+        if gnx:
+            p,found = c.goto_findGnx(root,gnx,vnodeName)
+        else:
+            p,found = c.goto_scanTnodeList(root,delim,lines,n,vnodeName)
+
+        # if not found:
+            # g.es("not found:",vnodeName,color="red")
+
+        return p,found
+    #@+node:ekr.20080904071003.18:goto_findGnx
+    def goto_findGnx (self,root,gnx,vnodeName):
+
+        '''Scan root's tree for a node with the given gnx and vnodeName.
+
+        return (p,found)'''
+
+        gnx = g.app.nodeIndices.scanGnx(gnx,0)
+
+        for p in root.self_and_subtree_iter():
+            if p.matchHeadline(vnodeName):
+                if p.v.t.fileIndex == gnx:
+                    return p.copy(),True
+
+        return None,False
+    #@-node:ekr.20080904071003.18:goto_findGnx
+    #@+node:ekr.20080904071003.19:goto_scanTnodeList
+    def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
+
+        # This is about the best that can be done without replicating the entire atFile write logic.
+        found = False
+        ok = hasattr(root.v.t,"tnodeList")
+
+        if ok:
+            # Use getattr to keep pylint happy.
+            tnodeList = getattr(root.v.t,'tnodeList')
+            #@        << set tnodeIndex to the number of +node sentinels before line n >>
+            #@+node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
+
+            tnodeIndex = -1 # Don't count the @file node.
+            scanned = 0 # count of lines scanned.
+
+            for s in lines:
+                if scanned >= n:
+                    break
+                i = g.skip_ws(s,0)
+                if g.match(s,i,delim):
+                    i += len(delim)
+                    if g.match(s,i,"+node"):
+                        # g.trace(tnodeIndex,s.rstrip())
+                        tnodeIndex += 1
+                scanned += 1
+            #@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
+            #@nl
+            tnodeIndex = max(0,tnodeIndex)
+            #@        << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
+            #@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+            #@+at 
+            #@nonl
+            # We use the tnodeList to find a _tnode_ corresponding to the 
+            # proper node, so the user will for sure be editing the proper 
+            # text, even if several nodes happen to have the same headline.  
+            # This is really all that we need.
+            # 
+            # However, this code has no good way of distinguishing between 
+            # different cloned vnodes in the file: they all have the same 
+            # tnode.  So this code just picks p = t.vnodeList[0] and leaves it 
+            # at that.
+            # 
+            # The only way to do better is to scan the outline, replicating 
+            # the write logic to determine which vnode created the given 
+            # line.  That's way too difficult, and it would create an unwanted 
+            # dependency in this code.
+            #@-at
+            #@@c
+
+            # g.trace("tnodeIndex",tnodeIndex)
+            if tnodeIndex < len(tnodeList):
+                t = tnodeList[tnodeIndex]
+                # Find the first vnode whose tnode is t.
+                for p in root.self_and_subtree_iter():
+                    if p.v.t == t:
+                        found = True ; break
+                if not found:
+                    s = "tnode not found for " + vnodeName
+                    g.es_print(s, color="red") ; ok = False
+                elif p.headString().strip() != vnodeName:
+                    if 0: # Apparently this error doesn't prevent a later scan for working properly.
+                        s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
+                        g.es_print(s, color="red")
+                    ok = False
+            else:
+                if root is None: # Kludge: disable this message when called by goToScriptLineNumber.
+                    s = "Invalid computed tnodeIndex: %d" % tnodeIndex
+                    g.es_print(s, color = "red")
+                ok = False
+            #@-node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+            #@nl
+        else:
+            g.es_print("no child index for",root.headString(),color="red")
+
+        if not ok:
+            # Fall back to the old logic.
+            #@        << set p to the first node whose headline matches vnodeName >>
+            #@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
+            for p in root.self_and_subtree_iter():
+                if p.matchHeadline(vnodeName):
+                    found = True ; break
+            #@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
+            #@nl
+
+        return p,found
+    #@-node:ekr.20080904071003.19:goto_scanTnodeList
+    #@-node:ekr.20080904071003.4:goto_findPosition & helpers
+    #@+node:ekr.20031218072017.2877:goto_findVnode
+    #@+at
     # We count "real" lines in the derived files, ignoring all sentinels that 
-    # do not arise from source lines.  When the indicated line is found, we 
-    # scan backwards for an @+body line, get the vnode's name from that line 
-    # and set p to the indicated vnode.  This will fail if vnode names have 
-    # been changed, and that can't be helped.
-    # 
-    # Returns (vnodeName,offset)
+    # do not
+    # arise from source lines. When the indicated line is found, we scan 
+    # backwards for
+    # an @+body line, get the vnode's name from that line and set p to the 
+    # indicated
+    # vnode. This will fail if vnode names have been changed, and that can't 
+    # be
+    # helped.
     # 
     # vnodeName: the name found in the previous @+body sentinel.
     # offset: the offset within p of the desired line.
     #@-at
     #@@c
 
-    def convertLineToVnodeNameIndexLine (self,lines,n,root,scriptFind):
+    def goto_findVnode (self,root,lines,n,ignoreSentinels):
 
-        """Convert a line number n to a vnode name, (child index or gnx) and line number."""
+        '''Search the lines of a derived file containing sentinels for a vnode.
+        return (vnodeName,gnx,offset,delim).'''
 
         c = self ; at = c.atFileCommands
-        childIndex = 0 ; gnx = None ; newDerivedFile = False
-        thinFile = root.isAtThinFileNode()
+        gnx = None
         #@    << set delim, leoLine from the @+leo line >>
         #@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
         # Find the @+leo line.
@@ -2057,18 +1969,20 @@ class baseCommands:
             i += 1
         leoLine = i # Index of the line containing the leo sentinel
 
+        delim = None
         if leoLine < len(lines):
             s = lines[leoLine]
-            valid,newDerivedFile,start,end,derivedFileIsThin = at.parseLeoSentinel(s)
-            if valid: delim = start + '@'
-            else:     delim = None
-        else:
-            delim = None
+            valid,newDerivedFile,start,end,thinFile = at.parseLeoSentinel(s)
+            # New in Leo 4.5.1: only support 4.x files.
+            if valid and newDerivedFile:
+                delim = start + '@'
+
         #@-node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
         #@nl
         if not delim:
-            g.es("bad @+leo sentinel")
-            return None,None,None,None,None
+            g.es('no sentinels in:',root.headString())
+            return None,None,None,None
+
         #@    << scan back to @+node, setting offset,nodeSentinelLine >>
         #@+node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
         offset = 0 # This is essentially the Tk line number.
@@ -2087,12 +2001,13 @@ class baseCommands:
 
                 if g.match(s,i,"-node"):
                     # The end of a nested section.
-                    line = self.skipToMatchingNodeSentinel(lines,line,delim)
+                    line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
                 elif g.match(s,i,"+node"):
                     nodeSentinelLine = line
                     break
                 elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-                    offset += 1 # Count these as a "real" lines.
+                    if not ignoreSentinels:
+                        offset += 1 # Count these as a "real" lines.
                 #@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
                 #@nl
             else:
@@ -2102,83 +2017,198 @@ class baseCommands:
         #@nl
         if nodeSentinelLine == -1:
             # The line precedes the first @+node sentinel
-            # g.trace("before first line")
-            return root.headString(),0,gnx,1,delim # 10/13/03
-        s = lines[nodeSentinelLine]
-        # g.trace(s)
-        #@    << set vnodeName and (childIndex or gnx) from s >>
-        #@+node:ekr.20031218072017.2881:<< set vnodeName and (childIndex or gnx) from s >>
-        if scriptFind:
-            # The vnode name follows the first ':'
-            i = s.find(':',i)
-            if i > -1:
-                vnodeName = s[i+1:].strip()
-            childIndex = -1
-        elif newDerivedFile:
-            i = 0
-            if thinFile:
-                # gnx is lies between the first and second ':':
-                i = s.find(':',i)
-                if i > 0:
-                    i += 1
-                    j = s.find(':',i)
-                    if j > 0:
-                        gnx = s[i:j]
-                    else: i = len(s)
-                else: i = len(s)
-            # vnode name is everything following the first or second':'
-            # childIndex is -1 as a flag for later code.
-            i = s.find(':',i)
-            if i > -1: vnodeName = s[i+1:].strip()
-            else: vnodeName = None
-            childIndex = -1
-        else:
-            # vnode name is everything following the third ':'
-            i = 0 ; colons = 0
-            while i < len(s) and colons < 3:
-                if s[i] == ':':
-                    colons += 1
-                    if colons == 1 and i+1 < len(s) and s[i+1].isdigit():
-                        junk,childIndex = g.skip_long(s,i+1)
-                i += 1
-            vnodeName = s[i:].strip()
+            return root.headString(),gnx,1,delim
 
-        # g.trace("gnx",gnx,"vnodeName:",vnodeName)
-        if not vnodeName:
+        s = lines[nodeSentinelLine]
+
+        #@    << set gnx and vnodeName from s >>
+        #@+node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
+        i = 0 ; gnx = None ; vnodeName = None
+
+        if thinFile:
+            # gnx is lies between the first and second ':':
+            i = s.find(':',i)
+            if i > 0:
+                i += 1
+                j = s.find(':',i)
+                if j > 0:   gnx = s[i:j]
+                else:       i = len(s) # Force an error.
+            else:
+                i = len(s) # Force an error.
+
+        # vnode name is everything following the first or second':'
+        i = s.find(':',i)
+        if i > -1:
+            vnodeName = s[i+1:].strip()
+        else:
             vnodeName = None
             g.es("bad @+node sentinel")
-        #@-node:ekr.20031218072017.2881:<< set vnodeName and (childIndex or gnx) from s >>
+        #@-node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
         #@nl
-        # g.trace("childIndex,offset",childIndex,offset,vnodeName)
-        return vnodeName,childIndex,gnx,offset,delim
-    #@-node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
-    #@+node:ekr.20080708094444.63:gotoLineNumberOpen
-    def gotoLineNumberOpen (self,filename):
+        if delim and vnodeName:
+            return vnodeName,gnx,offset,delim
+        else:
+            g.es("bad @+node sentinel")
+            return None,None,None,None
+    #@-node:ekr.20031218072017.2877:goto_findVnode
+    #@+node:ekr.20080904071003.28:goto_setup & helpers
+    def goto_setup (self,n,p=None,scriptData=None):
+
+        '''Return (fileName,isRaw,lines,n,p,root) where:
+
+        fileName is the name of the nearest @file node, or None.
+        isRaw is True if there are no sentinels in the file.
+        lines are the lines to be scanned.
+        n is the effective line number (munged for @shadow nodes).
+        root is the nearest @file node, or c.currentPosition.'''
+
+        c = self
+
+        if scriptData:
+            assert p is None
+            lines = scriptData.get('lines')
+            p = scriptData.get('p')
+            root,fileName = c.goto_findRoot(p)
+        else:
+            # p is for unit testing only!
+            if not p: p = c.currentPosition()
+            root,fileName = c.goto_findRoot(p)
+            if root and fileName:
+                c.shadowController.line_mapping = [] # Set by goto_open.
+                lines = c.goto_getFileLines(root,fileName)
+                n = c.goto_applyLineNumberMapping(n)
+            else:
+                lines = c.goto_getScriptLines(p)
+
+        isRaw = not root or (
+            root.isAtAsisFileNode() or root.isAtNoSentFileNode() or root.isAtAutoNode())
+
+        ignoreSentinels = root.isAtNoSentFileNode()
+
+        if scriptData:
+            if not root: root = p.copy()
+        else:
+            if not root: root = c.currentPosition()
+
+        return fileName,ignoreSentinels,isRaw,lines,n,root
+    #@+node:ekr.20080904071003.25:goto_findRoot
+    def goto_findRoot (self,p):
+
+        '''Find the closest ancestor @file node, of any type, except @all nodes.
+
+        return root, fileName.'''
+
+        c = self ; p1 = p.copy()
+
+        # First look for ancestor @file node.
+        for p in p.self_and_parents_iter():
+            fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
+            if fileName:
+                return p.copy(),fileName
+
+        # Search the entire tree for joined nodes.
+        # Bug fix: Leo 4.5.1: *must* search *all* positions.
+        for p in c.all_positions_iter():
+            # if p.v.t == p1.v.t: g.trace('p1',p1,'p',p)
+            if p.v.t == p1.v.t and p != p1:
+                # Found a joined position.
+                for p2 in p.self_and_parents_iter():
+                    fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
+                    if fileName:
+                        return p2.copy(),fileName
+
+        return None,None
+    #@-node:ekr.20080904071003.25:goto_findRoot
+    #@+node:ekr.20080904071003.26:goto_getFileLines
+    def goto_getFileLines (self,root,fileName):
+
+        '''Read the file into lines.'''
+
+        c = self
+
+        if root.isAtNoSentFileNode():
+            # Write a virtual file containing sentinels.
+            at = c.atFileCommands
+            at.write(root,nosentinels=False,toString=True)
+            lines = g.splitLines(at.stringOutput)
+        else:
+            # Calculate the full path.
+            d = g.scanDirectives(c,p=root)
+            path = d.get("path")
+            fileName = g.os_path_join(path,fileName)
+            lines    = c.goto_open(fileName)
+
+        return lines
+    #@-node:ekr.20080904071003.26:goto_getFileLines
+    #@+node:ekr.20080904071003.27:goto_getScriptLines
+    def goto_getScriptLines (self,p):
+
+        c = self
+
+        if not g.unitTesting:
+            g.es("no ancestor @file node: using script line numbers", color="blue")
+
+        lines = g.getScript (c,p,useSelectedText=False)
+        lines = g.splitLines(lines)
+
+        return lines
+    #@-node:ekr.20080904071003.27:goto_getScriptLines
+    #@+node:ekr.20080708094444.63:goto_open
+    def goto_open (self,filename):
         """
         Open a file for "goto linenumber" command and check if a shadow file exists.
         Construct a line mapping. This ivar is empty i no shadow file exists.
         Otherwise it contains a mapping shadow file number -> real file number.
         """
+
+        c = self ; x = c.shadowController
+
         try:
-            c = self ; x = c.shadowController
-            theDir, simplename = os.path.split(filename)
-            shadow_filename = os.path.join(theDir,x.shadow_subdir,x.shadow_prefix + simplename)
+            shadow_filename = x.shadowPathName(filename)
             if os.path.exists(shadow_filename):
-                lines = open(shadow_filename).readlines()
-                c.line_mapping = x.push_filter_mapping(
+                fn = shadow_filename
+		lines = open(shadow_filename).readlines()
+                x.line_mapping = x.push_filter_mapping(
                     lines, x.marker_from_extension(shadow_filename))
             else:
+                # Just open the original file.  This is not an error!
+                fn = filename
                 c.line_mapping = []
                 lines = open(filename).readlines()
-            return lines 
-        except:
+        except Exception:
             # Make sure failures to open a file generate clear messages.
+            g.es_print('can not open',fn,color='blue')
             g.es_exception()
-            raise
-    #@nonl
-    #@-node:ekr.20080708094444.63:gotoLineNumberOpen
-    #@+node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
-    def skipToMatchingNodeSentinel (self,lines,n,delim):
+            lines = []
+
+        return lines
+    #@-node:ekr.20080708094444.63:goto_open
+    #@-node:ekr.20080904071003.28:goto_setup & helpers
+    #@+node:ekr.20080904071003.14:goto_showResults
+    def goto_showResults(self,found,p,n,lines):
+
+        c = self ; w = c.frame.body.bodyCtrl
+
+        # Select p and make it visible.
+        c.frame.tree.expandAllAncestors(p)
+        c.selectPosition(p)
+        c.redraw()
+
+        # Put the cursor on line n2 of the body text.
+        s = w.getAllText()
+        if found:
+            ins = g.convertRowColToPythonIndex(s,n-1,0)    
+        else:
+            ins = len(s)
+            if not g.unitTesting:
+                g.es('only',len(lines),'lines',color="blue")
+
+        w.setInsertPoint(ins)
+        c.bodyWantsFocusNow()
+        w.seeInsertPoint()
+    #@-node:ekr.20080904071003.14:goto_showResults
+    #@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+    def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 
         s = lines[n]
         i = g.skip_ws(s,0)
@@ -2204,20 +2234,20 @@ class baseCommands:
 
         # g.trace(n)
         return n
-    #@-node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
-    #@-node:ekr.20080710082231.10:gotoLineNumber and helpers
-    #@+node:EKR.20040612232221:goToScriptLineNumber
-    def goToScriptLineNumber (self,root,script,n):
+    #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+    #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+    #@+node:EKR.20040612232221:c.goToScriptLineNumber
+    # Called from g.handleScriptException.
+
+    def goToScriptLineNumber (self,p,script,n):
 
         """Go to line n of a script."""
 
         c = self
 
-        # g.trace(n,root)
-
-        lines = g.splitLines(script)
-        c.goToLineNumber(root=root,lines=lines,n=n,scriptFind=True)
-    #@-node:EKR.20040612232221:goToScriptLineNumber
+        scriptData = {'p':p.copy(),'lines':g.splitLines(script)}
+        c.goToLineNumber(n=n,scriptData=scriptData)
+    #@-node:EKR.20040612232221:c.goToScriptLineNumber
     #@+node:ekr.20031218072017.2088:fontPanel
     def fontPanel (self,event=None):
 
@@ -4399,6 +4429,35 @@ class baseCommands:
 
         c.expansionLevel = 1 # Reset expansion level.
     #@-node:ekr.20031218072017.2900:contractAllHeadlines
+    #@+node:ekr.20080819075811.3:contractAllOtherNodes & helper
+    def contractAllOtherNodes (self,event=None):
+
+        '''Contract all nodes except those needed to make the
+        presently selected node visible.'''
+
+        c = self ; leaveOpen = c.currentPosition()
+
+        for p in c.rootPosition().self_and_siblings_iter():
+            c.contractIfNotCurrent(p,leaveOpen)
+
+        c.redraw()
+
+    #@+node:ekr.20080819075811.7:contractIfNotCurrent
+    def contractIfNotCurrent(self,p,leaveOpen):
+
+        c = self
+
+        if p == leaveOpen or not p.isAncestorOf(leaveOpen):
+            p.contract()
+
+        for child in p.children_iter():
+            if child != leaveOpen and child.isAncestorOf(leaveOpen):
+                c.contractIfNotCurrent(child,leaveOpen)
+            else:
+                for p2 in child.self_and_subtree_iter():
+                    p2.contract()
+    #@-node:ekr.20080819075811.7:contractIfNotCurrent
+    #@-node:ekr.20080819075811.3:contractAllOtherNodes & helper
     #@+node:ekr.20031218072017.2901:contractNode
     def contractNode (self,event=None):
 
@@ -5533,7 +5592,7 @@ class baseCommands:
 
     def openSettingsHelper(self,name):
         c = self
-        homeDir = g.app.homeDir
+        homeLeoDir = g.app.homeLeoDir # was homeDir
         loadDir = g.app.loadDir
         configDir = g.app.globalConfigDir
 
@@ -5544,16 +5603,16 @@ class baseCommands:
             ok, frame = g.openWithFileName(fileName,c)
             if ok: return
 
-        # Look in homeDir second.
+        # Look in homeLeoDir second.
         if configDir == loadDir:
             g.es('',name,"not found in",configDir)
         else:
-            fileName = g.os_path_join(homeDir,name)
+            fileName = g.os_path_join(homeLeoDir,name)
             ok = g.os_path_exists(fileName)
             if ok:
                 ok, frame = g.openWithFileName(fileName,c)
             if not ok:
-                g.es('',name,"not found in",configDir,"or",homeDir)
+                g.es('',name,"not found in",configDir,"or",homeLeoDir)
     #@-node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
     #@+node:ekr.20061018094539:openLeoScripts
     def openLeoScripts (self,event=None):

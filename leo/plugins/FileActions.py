@@ -94,7 +94,7 @@ file_directives = [
    "@asis",   "@file-asis",   "@silentfile",
    "@noref",  "@file-noref",  "@rawfile",
    "@nosent", "@file-nosent", "@nosentinelsfile",
-   "@file-ref",
+   "@file-ref", "@shadow",
 ]
 #@nonl
 #@-node:ekr.20040915110738.2:<< define the directives that are handled by this plugin >>

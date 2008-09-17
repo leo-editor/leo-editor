@@ -19,7 +19,7 @@ import string
 class leoImportCommands:
 
     #@    @+others
-    #@+node:ekr.20031218072017.3207:import.__init__
+    #@+node:ekr.20031218072017.3207:import.__init__ & helper
     def __init__ (self,c):
 
         self.c = c
@@ -37,7 +37,31 @@ class leoImportCommands:
         self.treeType = "@file" # "@root" or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
-    #@-node:ekr.20031218072017.3207:import.__init__
+
+        self.createImportDispatchDict()
+    #@+node:ekr.20080825131124.3:createImportDispatchDict
+    def createImportDispatchDict (self):
+
+        self.importDispatchDict = {
+            # Keys are file extensions, values are text scanners.
+            # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
+            '.c':       self.scanCText,
+            '.cpp':     self.scanCText,
+            '.cxx':     self.scanCText,
+            '.c#':      self.scanCSharpText,
+            '.el':      self.scanElispText,
+            '.htm':     self.scanXmlText,
+            '.html':    self.scanXmlText,
+            '.java':    self.scanJavaText,
+            '.js':      self.scanJavaScriptText,
+            '.php':     self.scanPHPText,
+            '.pas':     self.scanPascalText,
+            '.py':      self.scanPythonText,
+            '.pyw':     self.scanPythonText,
+            '.xml':     self.scanXmlText,
+        }
+    #@-node:ekr.20080825131124.3:createImportDispatchDict
+    #@-node:ekr.20031218072017.3207:import.__init__ & helper
     #@+node:ekr.20031218072017.3289:Export
     #@+node:ekr.20031218072017.3290:convertCodePartToWeb
     # Headlines not containing a section reference are ignored in noweb and generate index index in cweb.
@@ -849,26 +873,9 @@ class leoImportCommands:
 
         self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-        if c.config.getBool('suppress_import_parsing', default=False):
-            self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-        elif ext in (".c", ".cpp", ".cxx"):
-            self.scanCText(s,p,atAuto=atAuto)
-        elif ext == '.c#':
-            self.scanCSharpText(s,p,atAuto=atAuto)
-        elif ext == ".el":
-            self.scanElispText(s,p,atAuto=atAuto)
-        elif ext == ".java":
-            self.scanJavaText(s,p,atAuto=atAuto)
-        elif ext == ".js":
-            self.scanJavaScriptText(s,p,atAuto=atAuto)
-        elif ext == ".pas":
-            self.scanPascalText(s,p,atAuto=atAuto)
-        elif ext in (".py", ".pyw"):
-            self.scanPythonText(s,p,atAuto=atAuto)
-        elif ext == ".php":
-            self.scanPHPText(s,p,atAuto=atAuto)
-        elif ext in ('.html','.htm','.xml'):
-            self.scanXmlText(s,p,atAuto=atAuto)
+        func = self.importDispatchDict.get(ext)
+        if func and not c.config.getBool('suppress_import_parsing',default=False):
+            func(s,p,atAuto=atAuto)
         else:
             self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
@@ -1682,7 +1689,7 @@ class leoImportCommands:
         c = self.c
         changed = c.isChanged()
         body = g.choose(atAuto,'','@ignore\n')
-        if ext in ('.html','.htm'): body += '@language html\n'
+        if ext in ('.html','.htm'):   body += '@language html\n'
         elif ext in ('.txt','.text'): body += '@nocolor\n'
         else:
             language = self.languageForExtension(ext)
@@ -1701,17 +1708,25 @@ class leoImportCommands:
 
         '''Return the language corresponding to the extensiion ext.'''
 
+        unknown = 'unknown_language'
+
         if ext.startswith('.'): ext = ext[1:]
 
-        language = ext and (
-            g.app.extra_extension_dict.get(ext) or
-            g.app.extension_dict.get(ext))
+        if ext:
+            z = g.app.extra_extension_dict.get(ext)
+            if z not in (None,'none','None'):
+                language = z
+            else:
+                language = g.app.extension_dict.get(ext)
+            if language in (None,'none','None'):
+                language = unknown
+        else:
+            language = unknown
 
-        if language:
-            if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-                return language
+        # g.trace(ext,repr(language))
 
-        return None
+        # Return the language even if there is no colorizer mode for it.
+        return language
     #@-node:ekr.20080811174246.1:languageForExtension
     #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     #@-node:ekr.20071127175948.1:Import scanners
@@ -3556,9 +3571,10 @@ class pythonScanner (baseScannerClass):
     #@+node:ekr.20070712090019.1:skipCodeBlock (python) & helper
     def skipCodeBlock (self,s,i,kind):
 
-        trace = False ; verbose = False
+        trace = False ; verbose = True
         # if trace: g.trace('***',g.callers())
         startIndent = self.startSigIndent
+        if trace: g.trace('startIndent',startIndent)
         assert startIndent is not None
         i = start = g.skip_ws_and_nl(s,i)
         parenCount = 0
@@ -3573,7 +3589,7 @@ class pythonScanner (baseScannerClass):
                     pass # We have already made progress.
                 else:
                     if trace and verbose: g.trace(g.get_line(s,i))
-                    backslashNewline = i > 0 and g.match(s,i-1,'\\\n')
+                    backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
                     if not backslashNewline:
                         i,underIndentedStart,breakFlag = self.pythonNewlineHelper(
                             s,i,parenCount,startIndent,underIndentedStart)
@@ -3601,6 +3617,7 @@ class pythonScanner (baseScannerClass):
             g.trace('Can not happen: Python block does not end in a newline.')
             g.trace(g.get_line(s,i))
             return i,False
+
         if (trace or self.trace) and s[start:i].strip():
             g.trace('%s returns\n' % (kind) + s[start:i])
         return i,True
@@ -3610,10 +3627,12 @@ class pythonScanner (baseScannerClass):
         trace = False
         breakFlag = False
         j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
-        if trace: g.trace('startIndent',startIndent,'indent',indent,'line',repr(g.get_line(s,j)))
+        if trace: g.trace(
+            'startIndent',startIndent,'indent',indent,'parenCount',parenCount,
+            'line',repr(g.get_line(s,j)))
         if indent <= startIndent and parenCount == 0:
             # An underindented line: it ends the block *unless*
-            # it is a blank or comment line.
+            # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
             if g.match(s,j,'#'):
                 if trace: g.trace('underindent: comment')
                 if underIndentedStart is None: underIndentedStart = i
@@ -3648,7 +3667,7 @@ class pythonScanner (baseScannerClass):
                                 self.errorLines.append(j)
                                 self.underindentedComment(line)
                 underIndentedStart = None
-        if trace: g.trace('returns',i,'underIndentedStart',underIndentedStart)
+        if trace: g.trace('breakFlag',breakFlag,'returns',i,'underIndentedStart',underIndentedStart)
         return i,underIndentedStart,breakFlag
     #@-node:ekr.20070801080447:pythonNewlineHelper
     #@-node:ekr.20070712090019.1:skipCodeBlock (python) & helper

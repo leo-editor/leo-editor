@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="8" left="308" height="961" width="700"/>
+	<global_window_position top="10" left="300" height="961" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,14,12,5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4,14,11,2"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -434,6 +434,7 @@
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
 <v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
+<v t="ekr.20070927173324"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20070925144534.5"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.6"><vh>@item close-window</vh></v>
 <v t="ekr.20070925144534.7"><vh>@item save-file</vh></v>
@@ -442,7 +443,6 @@
 <v t="ekr.20070925144534.10"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20070925144534.11"><vh>@item save-file-to</vh></v>
 <v t="ekr.20070925144534.12"><vh>@item revert</vh></v>
-<v t="ekr.20070927173324"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20070927051742"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write...</vh>
 <v t="ekr.20071001120755"><vh>@item *check-derived-file</vh></v>
@@ -584,15 +584,17 @@
 <v t="ekr.20070925144534.129"><vh>@item *&amp;check-python-code</vh></v>
 </v>
 <v t="ekr.20070925144534.130"><vh>@menu E&amp;xpand/Contract...</vh>
+<v t="ekr.20080819075811.5"><vh>Accel: a,c,d,e,n,o,p,l,r,t,x</vh></v>
 <v t="ekr.20070925144534.131"><vh>@item *&amp;contract-all</vh></v>
+<v t="ekr.20080819075811.6"><vh>@item *contract-all-o&amp;ther-nodes</vh></v>
 <v t="ekr.20070925144534.132"><vh>@item *contract-&amp;node</vh></v>
 <v t="ekr.20070925144534.133"><vh>@item *contract-&amp;parent</vh></v>
 <v t="ekr.20070925144534.134"><vh>@item *contract-or-go-&amp;left</vh></v>
 <v t="ekr.20070925144534.135"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.136"><vh>@item *expand-p&amp;rev-level</vh></v>
 <v t="ekr.20070925144534.137"><vh>@item *expand-n&amp;ext-level</vh></v>
-<v t="ekr.20070925144534.138"><vh>@item *expand-and-go-right</vh></v>
-<v t="ekr.20070925144534.139"><vh>@item *expand-or-go-right</vh></v>
+<v t="ekr.20070925144534.138"><vh>@item *e&amp;xpand-and-go-right</vh></v>
+<v t="ekr.20070925144534.139"><vh>@item *expan&amp;d-or-go-right</vh></v>
 <v t="ekr.20070925144534.140"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.141"><vh>@item *expand-to-level-&amp;1</vh></v>
 <v t="ekr.20070925144534.142"><vh>@item *expand-to-level-&amp;2</vh></v>
@@ -1067,58 +1069,60 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20071213060239"><vh>rst3 plugin</vh>
+<v t="ekr.20071213060239" a="E"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
-<v t="ekr.20071213061454"><vh>rst3_clear_http_attributes = False</vh></v>
-<v t="ekr.20071213061454.1"><vh>rst3_http_server_support = False</vh></v>
-<v t="ekr.20071213061454.2"><vh>rst3_http_attributename = rst_http_attribute</vh></v>
-<v t="ekr.20071213061454.3"><vh>rst3_node_begin_marker = http-node-marker-</vh></v>
+<v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
+<v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>
+<v t="ekr.20071213061454.2"><vh>@string rst3_http_attributename = rst_http_attribute</vh></v>
+<v t="ekr.20071213061454.3"><vh>@string rst3_node_begin_marker = http-node-marker-</vh></v>
 </v>
 <v t="ekr.20071213060239.2"><vh>rst3 path options</vh>
-<v t="ekr.20071213061504"><vh>rst3_default_path = None</vh></v>
-<v t="ekr.20071213061504.1"><vh>rst3_stylesheet_name = default.css</vh></v>
-<v t="ekr.20071213061504.2"><vh>rst3_stylesheet_path = None</vh></v>
-<v t="ekr.20071213061504.3"><vh>rst3_publish_argv_for_missing_stylesheets = None</vh></v>
+<v t="ekr.20071213061504"><vh>@string rst3_default_path = None</vh></v>
+<v t="ekr.20071213061504.1"><vh>@string rst3_stylesheet_name = default.css</vh></v>
+<v t="ekr.20071213061504.2"><vh>@string rst3_stylesheet_path = None</vh></v>
+<v t="ekr.20071213061504.3"><vh>@string rst3_publish_argv_for_missing_stylesheets = None</vh></v>
 </v>
 <v t="ekr.20071213060514"><vh>rst3 global options</vh>
-<v t="ekr.20071213061811"><vh>rst3_number_code_lines = True</vh></v>
-<v t="ekr.20071213061811.1"><vh>rst3_underline_characters = #=+*^~"'`-:&gt;&lt;_</vh></v>
-<v t="ekr.20071213061811.2"><vh>rst3_verbose = True</vh></v>
-<v t="ekr.20071213061811.3"><vh>rst3_write_intermediate_file = False</vh></v>
+<v t="ekr.20080916092417.1"><vh>@string rst3_default_encoding = uTf-8</vh></v>
+<v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
+<v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~"'`-:&gt;&lt;_</vh></v>
+<v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
+<v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = False</vh></v>
 </v>
 <v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
-<v t="ekr.20071213061923"><vh>rst3_code_mode = False</vh></v>
-<v t="ekr.20071213061923.1"><vh>rst3_doc_only_mode = False</vh></v>
-<v t="ekr.20071213061923.2"><vh>rst3_generate_rst = True</vh></v>
+<v t="ekr.20071213061923"><vh>@bool rst3_code_mode = False</vh></v>
+<v t="ekr.20071213061923.1"><vh>@bool rst3_doc_only_mode = False</vh></v>
+<v t="ekr.20071213061923.2"><vh>@bool rst3_generate_rst = True</vh></v>
 </v>
 <v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
-<v t="ekr.20071213061930.1"><vh>rst3_show_headlines = True</vh></v>
-<v t="ekr.20071213061930.2"><vh>rst3_show_organizer_nodes = True</vh></v>
-<v t="ekr.20071213061930.3"><vh>rst3_show_options_nodes = False</vh></v>
-<v t="ekr.20071213061930.4"><vh>rst3_strip_at_file_prefixes = True</vh></v>
+<v t="ekr.20071213061930.1"><vh>@bool rst3_show_headlines = True</vh></v>
+<v t="ekr.20071213061930.2"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
+<v t="ekr.20071213061930.3"><vh>@bool rst3_show_options_nodes = False</vh></v>
+<v t="ekr.20071213061930.4"><vh>@bool rst3_strip_at_file_prefixes = True</vh></v>
 </v>
 <v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
-<v t="ekr.20071213062019"><vh>rst3_show_doc_parts_as_paragraphs = False</vh></v>
-<v t="ekr.20071213062019.1"><vh>rst3_show_leo_directives = True</vh></v>
-<v t="ekr.20071213062019.2"><vh>rst3_show_markup_doc_parts = False</vh></v>
-<v t="ekr.20071213062019.3"><vh>rst3_show_options_doc_parts = False</vh></v>
+<v t="ekr.20071213062019"><vh>@bool rst3_show_doc_parts_as_paragraphs = False</vh></v>
+<v t="ekr.20071213062019.1"><vh>@bool rst3_show_leo_directives = True</vh></v>
+<v t="ekr.20071213062019.2"><vh>@bool rst3_show_markup_doc_parts = False</vh></v>
+<v t="ekr.20071213062019.3"><vh>@bool rst3_show_options_doc_parts = False</vh></v>
 </v>
 <v t="ekr.20071213060607"><vh>rst3 options: names of headline commands</vh>
-<v t="ekr.20071213062019.4"><vh>rst3_code_prefix = @rst-code</vh></v>
-<v t="ekr.20071213062019.5"><vh>rst3_doc_only_prefix = @rst-doc-only</vh></v>
-<v t="ekr.20071213062019.6"><vh>rst3_rst_prefix = @rst</vh></v>
-<v t="ekr.20071213062019.7"><vh>rst3_ignore_headline_prefix = @rst-no-head</vh></v>
-<v t="ekr.20071213062019.8"><vh>rst3_ignore_headlines_prefix = @rst-no-headlines</vh></v>
-<v t="ekr.20071213062019.9"><vh>rst3_ignore_node_prefix = @rst-ignore-node</vh></v>
-<v t="ekr.20071213062019.10"><vh>rst3_ignore_prefix = @rst-ignore</vh></v>
-<v t="ekr.20071213062019.11"><vh>rst3_ignore_tree_prefix = @rst-ignore-tree</vh></v>
-<v t="ekr.20071213062019.12"><vh>rst3_option_prefix = @rst-option</vh></v>
-<v t="ekr.20071213062019.13"><vh>rst3_options_prefix = @rst-options</vh></v>
-<v t="ekr.20071213062019.14"><vh>rst3_preformat_prefix = @rst-preformat</vh></v>
-<v t="ekr.20071213062019.15"><vh>rst3_show_headline_prefix = @rst-head</vh></v>
+<v t="ekr.20071213062019.4"><vh>@string rst3_code_prefix = @rst-code</vh></v>
+<v t="ekr.20071213062019.5"><vh>@string rst3_doc_only_prefix = @rst-doc-only</vh></v>
+<v t="ekr.20080916094157.1"><vh>@string rst3_default_encoding_prefix = @rst-default-encoding</vh></v>
+<v t="ekr.20071213062019.6"><vh>@string rst3_rst_prefix = @rst</vh></v>
+<v t="ekr.20071213062019.7"><vh>@string rst3_ignore_headline_prefix = @rst-no-head</vh></v>
+<v t="ekr.20071213062019.8"><vh>@string rst3_ignore_headlines_prefix = @rst-no-headlines</vh></v>
+<v t="ekr.20071213062019.9"><vh>@string rst3_ignore_node_prefix = @rst-ignore-node</vh></v>
+<v t="ekr.20071213062019.10"><vh>@string rst3_ignore_prefix = @rst-ignore</vh></v>
+<v t="ekr.20071213062019.11"><vh>@string rst3_ignore_tree_prefix = @rst-ignore-tree</vh></v>
+<v t="ekr.20071213062019.12"><vh>@string rst3_option_prefix = @rst-option</vh></v>
+<v t="ekr.20071213062019.13"><vh>@string rst3_options_prefix = @rst-options</vh></v>
+<v t="ekr.20071213062019.14"><vh>@string rst3_preformat_prefix = @rst-preformat</vh></v>
+<v t="ekr.20071213062019.15"><vh>@string rst3_show_headline_prefix = @rst-head</vh></v>
 </v>
 </v>
-<v t="ekr.20060930111325" a="E"><vh>scripting plugin</vh>
+<v t="ekr.20060930111325"><vh>scripting plugin</vh>
 <v t="ekr.20060930111325.2"><vh>@bool scripting-at-button-nodes = True</vh></v>
 <v t="ekr.20060930111325.3"><vh>@bool scripting-at-commands-nodes = True</vh></v>
 <v t="ekr.20060930111325.4"><vh>@bool scripting-at-plugin-nodes = False</vh></v>
@@ -7545,6 +7549,10 @@ lcd2c" "
 <t tx="ekr.20080801104153.4">Write Dirty @shadow Nodes</t>
 <t tx="ekr.20080811105020.2">False: (recommended) Enable import parsing for @shadow and @auto
 True: @shadow and @auto create a single node for the entire file.</t>
+<t tx="ekr.20080819075811.5">This node just keeps track of the accelerators in the siblings.</t>
+<t tx="ekr.20080819075811.6"></t>
+<t tx="ekr.20080916092417.1"></t>
+<t tx="ekr.20080916094157.1"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

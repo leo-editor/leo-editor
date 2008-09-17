@@ -43,6 +43,7 @@ class LeoApp:
         self.hookError = False # True: suppress further calls to hooks.
         self.hookFunction = None # Application wide hook function.
         self.homeDir = None # The user's home directory.
+        self.homeLeoDir = None # The '.leo' subdirectory of the user's home directory. New in Leo 4.5b4.
         self.homeSettingsPrefix = '.' # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
         self.idle_imported = False # True: we have done an import idle
         self.idleTimeDelay = 100 # Delay in msec between calls to "idle time" hook.
@@ -108,83 +109,91 @@ class LeoApp:
         # Internally, lower case is used for all language names.
         self.language_delims_dict = {
             # Keys are languages, values are 1,2 or 3-tuples of delims.
-            "ada" : "--",
-            "actionscript" : "// /* */", #jason 2003-07-03
-            "autohotkey" : "; /* */", #TL - AutoHotkey language
-            "c" : "// /* */", # C, C++ or objective C.
-            "csharp" : "// /* */", # C#
-            "cpp" : "// /* */",# C++.
-            "css" : "/* */", # 4/1/04
-            "cweb" : "@q@ @>", # Use the "cweb hack"
-            "elisp" : ";",
-            "forth" : "\\_ _(_ _)", # Use the "REM hack"
-            "fortran" : "C",
-            "fortran90" : "!",
-            "html" : "<!-- -->",
-            "ini": ";",
-            "java" : "// /* */",
-            "latex" : "%",
-            "lua" : "--",  # ddm 13/02/06
-            "pascal" : "// { }",
-            "perl" : "#",
-            "perlpod" : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-            "php" : "// /* */", # 6/23/07: was "//",
-            "plain" : "#", # We must pick something.
-            "plsql" : "-- /* */", # SQL scripts qt02537 2005-05-27
-            "python" : "#",
-            "rapidq" : "'", # fil 2004-march-11
-            "rebol" : ";",  # jason 2003-07-03
-            "shell" : "#",  # shell scripts
-            "tcltk" : "#",
-            "unknown" : "#", # Set when @comment is seen.
-            "xml" : "<!-- -->",
+            "ada"           : "--",
+            "batch"         : "REM", # Leo 4.5.1
+            "actionscript"  : "// /* */", #jason 2003-07-03
+            "autohotkey"    : "; /* */", #TL - AutoHotkey language
+            "c"             : "// /* */", # C, C++ or objective C.
+            "config"        : "#", # Leo 4.5.1
+            "csharp"        : "// /* */", # C#
+            "cpp"           : "// /* */",# C++.
+            "css"           : "/* */", # 4/1/04
+            "cweb"          : "@q@ @>", # Use the "cweb hack"
+            "elisp"         : ";",
+            "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+            "fortran"       : "C",
+            "fortran90"     : "!",
+            "html"          : "<!-- -->",
+            "ini"           : ";",
+            "java"          : "// /* */",
+            "kshell"        : "#", # Leo 4.5.1.
+            "latex"         : "%",
+            "lua"           : "--",  # ddm 13/02/06
+            "pascal"        : "// { }",
+            "perl"          : "#",
+            "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+            "php"           : "// /* */", # 6/23/07: was "//",
+            "plain"         : "#", # We must pick something.
+            "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+            "python"        : "#",
+            "rapidq"        : "'", # fil 2004-march-11
+            "rebol"         : ";",  # jason 2003-07-03
+            "shell"         : "#",  # shell scripts
+            "tcltk"         : "#",
+            "unknown"       : "#", # Set when @comment is seen.
+            "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+            "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+            "xml"           : "<!-- -->",
         }
 
         self.language_extension_dict = {
             # Keys are languages, values are extensions.
-            "ada" : "ads",
-            "actionscript" : "as", #jason 2003-07-03
-            "autohotkey" : "ahk", #TL - AutoHotkey language
-            "c" : "c",
-            "cpp" : "cpp",
-            "css" : "css", # 4/1/04
-            "cweb" : "w",
-            "elisp" : "el",
-            "forth" : "forth",
-            "fortran" : "f",
-            "fortran90" : "f",
-            "html" : "html",
-            "ini": "ini",
-            "java" : "java",
-            "latex" : "tex", # 1/8/04
-            "lua" : "lua",  # ddm 13/02/06
-            "noweb" : "nw",
-            "pascal" : "p",
-            # "perl" : "perl",
-            # "perlpod" : "perl",
-            "perl" : "pl",      # 11/7/05
-            "perlpod" : "pod",  # 11/7/05
-            "php" : "php",
-            "plain" : "txt",
-            "python" : "py",
-            "plsql" : "sql", # qt02537 2005-05-27
-            "rapidq" : "bas", # fil 2004-march-11
-            "rebol" : "r",    # jason 2003-07-03
-            "shell" : "sh",   # DS 4/1/04
-            "tex" : "tex",
-            "tcltk" : "tcl",
-            "unknown" : "txt", # Set when @comment is seen.
-            "xml": "xml",
+            "ada"           : "ada",
+            "actionscript"  : "as", #jason 2003-07-03
+            "autohotkey"    : "ahk", #TL - AutoHotkey language
+            "batch"         : "bat", # Leo 4.5.1.
+            "c"             : "c",
+            "config"        : "cfg",
+            "cpp"           : "cpp",
+            "css"           : "css", # 4/1/04
+            "cweb"          : "w",
+            "elisp"         : "el",
+            "forth"         : "forth",
+            "fortran"       : "f",
+            "fortran90"     : "f",
+            "html"          : "html",
+            "ini"           : "ini",
+            "java"          : "java",
+            "kshell"        : "ksh", # Leo 4.5.1.
+            "latex"         : "tex", # 1/8/04
+            "lua"           : "lua",  # ddm 13/02/06
+            "noweb"         : "nw",
+            "pascal"        : "p",
+            "perl"          : "pl",      # 11/7/05
+            "perlpod"       : "pod",  # 11/7/05
+            "php"           : "php",
+            "plain"         : "txt",
+            "python"        : "py",
+            "plsql"         : "sql", # qt02537 2005-05-27
+            "rapidq"        : "bas", # fil 2004-march-11
+            "rebol"         : "r",    # jason 2003-07-03
+            "shell"         : "sh",   # DS 4/1/04
+            "tex"           : "tex",
+            "tcltk"         : "tcl",
+            "unknown"       : "txt", # Set when @comment is seen.
+            "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+            "xml"           : "xml",
         }
 
         self.extension_dict = {
             # Keys are extensions, values are languages.
-            "ads"   : "ada",
+            "ada"   : "ada",
             "adb"   : "ada",
-            "ahk"   : "autohotkey", #TL - AutoHotkey language
             "as"    : "actionscript",
             "bas"   : "rapidq",
+            "bat"   : "batch",
             "c"     : "c",
+            "cfg"   : "config",
             "cpp"   : "cpp",
             "css"   : "css",
             "el"    : "elisp",
@@ -194,10 +203,11 @@ class LeoApp:
             "html"  : "html",
             "ini"   : "ini",
             "java"  : "java",
-            "lua" : "lua",  # ddm 13/02/06
-            "noweb" : "nw",
+            "ksh"   : "kshell", # Leo 4.5.1.
+            "lua"   : "lua",  # ddm 13/02/06
+            "nw"    : "noweb",
+            "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
             "p"     : "pascal",
-            # "perl"  : "perl",
             "pl"    : "perl",   # 11/7/05
             "pod"   : "perlpod", # 11/7/05
             "php"   : "php",
@@ -215,18 +225,25 @@ class LeoApp:
         # Extra language extensions, used to associate extensions with mode files.
         # Used by importCommands.languageForExtension.
         # Keys are extensions, values are corresponding mode file (without .py)
+        # A value of 'none' is a signal to unit tests that no extension file exists.
         self.extra_extension_dict = {
             'actionscript': 'actionscript',
-            'ada':  'ada95',
-            'ahk':  'ahk',
-            'awk':  'awk',
-            # 'bas':  'basic',
-            'cpp':  'c',
-            'el':   'lisp',
-            'f':    'fortran',
-            'pod':  'perl',
-            'tcl':  'tcl',
-            # 'w':  'cweb',
+            'ada'   : 'ada95',
+            'adb'   : 'none', # ada??
+            'awk'   : 'awk',
+            'bas'   : 'none', # rapidq
+            'bat'   : 'none', # batch
+            'cfg'   : 'none', # Leo 4.5.1
+            'cpp'   : 'c',
+            'el'    : 'lisp',
+            'f'     : 'fortran',
+            'ksh'   : 'none', # Leo 4.5.1
+            'nw'    : 'none', # noweb.
+            'otl'   : 'none', # vimoutline.
+            'pod'   : 'perl',
+            'tcl'   : 'tcl',
+            'unknown_language': 'none',
+            'w'     : 'none', # cweb
         }
         #@nonl
         #@-node:ekr.20031218072017.368:<< define global data structures >> app
@@ -451,7 +468,7 @@ class LeoApp:
     def setLeoID (self,verbose=True):
 
         tag = ".leoID.txt"
-        homeDir = g.app.homeDir
+        homeLeoDir = g.app.homeLeoDir # was homeDir.
         globalConfigDir = g.app.globalConfigDir
         loadDir = g.app.loadDir
 
@@ -478,7 +495,7 @@ class LeoApp:
         #@nl
         #@    << return if we can set leoID from "leoID.txt" >>
         #@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
-        for theDir in (homeDir,globalConfigDir,loadDir):
+        for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
                 try:
@@ -509,7 +526,7 @@ class LeoApp:
             theId = os.getenv('USER')
             if theId:
                 if verbose and not g.app.unitTesting:
-                    g.es("using os.getenv('USER'):",repr(theId),color='red')
+                    g.es("setting HOME to os.getenv('USER'):",repr(theId),color='blue')
                 g.app.leoID = theId
                 # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
                 g.app.leoID = g.app.leoID.replace('.','-')
@@ -538,7 +555,7 @@ class LeoApp:
         #@nl
         #@    << attempt to create leoID.txt >>
         #@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
-        for theDir in (homeDir,globalConfigDir,loadDir):
+        for theDir in (homeLeoDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
                 try:

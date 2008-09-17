@@ -8,9 +8,28 @@
 #@+node:ekr.20080225084626:Bzr notes
 @nocolor
 
-Common
+How to create/use private branches
 
-- No need for aliases for push, pull or commit.  do bzr info to find url.
+===== Do this first: creates a branch directly, **without** having to use launchpad.
+
+bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+
+===== pushes a branch after it has been created on launchpad
+
+bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+
+====== remembers the push
+
+bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+
+===== creates branch on local machine: do this from leo.repo directory
+
+bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+
+====== To resolve conflicts
+
+kdiff3 file1 file2 file3 -m
+
 
 Docs:
 - http://doc.bazaar-vcs.org/latest/en/user-guide/index.html
@@ -23,15 +42,11 @@ Docs:
 
 Windows
 
-- c:\prog\bzr-leo contains my sandbox.
-- Edward\keys contains the keys
 - Configuration file is .bazaar in XP C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0
-- To open a connection: Open pagent, then select "add key"
 
 Linux:
 
 - Configuration file is bazaar.conf in ~/.bazaar directory
-- BZR automatically 
 #@-node:ekr.20080225084626:Bzr notes
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
@@ -2089,13 +2104,14 @@ TESTS
 @color
 #@nonl
 #@-node:ekr.20031218072017.367:How to add support for a new language
-#@+node:ekr.20080814134319.1:How to create a private bzr branch
+#@+node:ekr.20080814134319.1:How to create and push to a private bzr branch
 @nocolor
 
 C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
 
-bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-30
-#@-node:ekr.20080814134319.1:How to create a private bzr branch
+C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+#@-node:ekr.20080814134319.1:How to create and push to a private bzr branch
 #@+node:ekr.20051203084725:How to expand java .jar files
 - Put whatever.jar in c:\prog
 - cd: c:\prog
@@ -3364,6 +3380,56 @@ def putDescendentUnknownAttributes (self,p):
     # return self.putDescendentVnodeUas(p)
 
 #@-node:EKR.20040627113418:putDescendentUnknownAttributes
+#@+node:ekr.20080819075811.12:x.setDelims (no longer used)
+def setDelims (self):
+
+    data = self.c.config.getData('shadow_delims') or []
+
+    # g.trace('shadowController',self.delims_data)
+    if data:
+        for s in data:
+            s = s.strip()
+            if s:
+                aList = s.split(' ')
+                aList = [z.strip() for z in aList if z.strip()]
+                if len(aList) == 2:
+                    ext,delim = aList
+                    delims = delim
+                elif len(aList) == 3:
+                    ext,delim1,delim2 = aList
+                    delims = '%s %s' % (delim1,delim2)
+                else:
+                    g.es_print('ignoring bad @data shadow_delims entry',repr(s),color='red')
+
+                if len(aList) in (2,3):
+                    if ext.startswith('.'): ext = ext[1:]
+                    language = '%s_language' % ext
+                    if ext and not g.app.language_delims_dict.get(language):
+                        # g.trace('Adding entries for ext=%s, delims=%s' % (ext,repr(delims)))
+                        g.app.language_delims_dict[language] = delims
+                        g.app.language_extension_dict[language] = ext
+                        g.app.extension_dict[ext] = language
+#@-node:ekr.20080819075811.12:x.setDelims (no longer used)
+#@+node:ekr.20080822065427.23:From leoPluings.getEnabledFiles
+
+
+            if g.match(s,0,"#"):
+                s = s[1:].strip()
+                # Kludge: ignore comment lines containing a blank or not ending in '.py'.
+                if s and s.find(' ') == -1 and s[-3:] == '.py':
+                    path = g.os_path_abspath(g.os_path_join(plugins_path,s))
+                    if path not in enabled_files and path not in disabled_files:
+                        # g.pr('disabled',path)
+                        disabled_files.append(path)
+            else:
+                path = g.os_path_abspath(g.os_path_join(plugins_path,s))
+                if path not in enabled_files and path not in disabled_files:
+                    # g.pr('enabled',path)
+                    enabled_files.append(path)
+
+    return enabled_files
+#@nonl
+#@-node:ekr.20080822065427.23:From leoPluings.getEnabledFiles
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

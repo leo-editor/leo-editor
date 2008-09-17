@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="18" left="332" height="880" width="891"/>
+	<global_window_position top="10" left="289" height="847" width="744"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="2,6,2,0,0"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -103,7 +103,7 @@
 <v t="edream.110203113231.736"><vh>@thin trace_keys.py</vh></v>
 <v t="edream.110203113231.738"><vh>@thin trace_tags.py</vh></v>
 <v t="ekr.20040205071616"><vh>@thin mnplugins.py</vh></v>
-<v t="ekr.20060513122613"><vh>xcc plugin</vh>
+<v t="ekr.20060513122613" a="E"><vh>xcc plugin</vh>
 <v t="ekr.20060513122613.1"><vh>Examples</vh>
 <v t="ekr.20060513122613.2" xcc_cfg="7d710028550a45786563757461626c6571017d710228550a446c6c2063616c6c65727103550071045513457865637574696f6e20617267756d656e747371056804755504436f64657106680455074144445f4c4f477107680455055469746c657108680455075345545f4c4f47710968045506494e49544544710a550454727565710b5508436f6d70696c6572710c7d710d285514496e636c75646520736561726368207061746873710e6804550f4572726f7220646574656374696f6e710f6804680c6804550b557365206c69627261727971106804550e55736564206c696272617269657371116804550f446562756720617267756d656e747371126804550d436865636b2073796e7461786571136804550c4c6962726172792070617468711468045509417267756d656e7473711568045507557365207063687116680455094275696c64206578657117680455144c6962726172792073656172636820706174687371186804550c496e636c756465207061746871196804550b436f6d70696c6520706368711a680455094275696c6420646c6c711b68047555074f7074696f6e73711c7d711d28550745786563757465711e550546616c7365711f550c4372656174652066696c65737120550454727565712155134175746f20696e636c756465206865616465727122550546616c7365712355105365656b20627265616b706f696e74737124550546616c73657125550f436f6e6e65637420746f20706970657126550546616c736571275507436f6d70696c657128550546616c7365712955054465627567712a550546616c7365712b550b58636320766572626f7365712c550546616c7365712d550d46696c746572206f7574707574712e550546616c7365712f55105365656b206669727374206572726f727130550546616c73657131550c436f6c6f72697a65206c6f677132550546616c73657133755508446562756767657271347d713528550e4964656e7469667920627265616b71366804550453746f707137680455085069706520656f6c7138680468156804550e50726f6d7074207061747465726e71396804550e5175657279206c6f636174696f6e713a6804550846696e6420706964713b6804550b436c65617220627265616b713c680455084576616c75617465713d6804550f54617267657420706964207461736b713e6804550453746570713f6804550b4c69737420627265616b737140680455045461736b714168045508436f6e74696e756571426804550853746570206f757471436804550953657420627265616b71446804550d46696e64206c6f636174696f6e7145680455075374657020696e71466804683468045512526567756c61722065787072657373696f6e71476804550f427265616b20646574656374696f6e714868045502476f71496804550c53746172747570207461736b714a6804550953746570206f766572714b55046e657874714c75752e"><vh>@xcc OpenGl.h</vh>
 <v t="ekr.20060513122613.3" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e"><vh>USE_OPENGL</vh></v>
@@ -268,7 +268,8 @@
 <v t="ekr.20060513122450.86"><vh>Show</vh></v>
 </v>
 </v>
-<v t="ekr.20060513122450"><vh>@thin xcc_nodes.py</vh></v>
+<v t="ekr.20060513122450" a="E"
+expanded="ekr.20060513142641,ekr.20060513123144,ekr.20060513142641.1,"><vh>@thin xcc_nodes.py</vh></v>
 </v>
 </v>
 <v t="ekr.20060703162826"><vh>Dialogs</vh>
@@ -314,10 +315,9 @@
 <v t="ekr.20071006112739"><vh>Graph world</vh>
 <v t="ekr.20071004090250"><vh>@thin graphed.py</vh></v>
 </v>
-<v t="ekr.20070116074730" a="E"><vh>Gui plugins</vh>
+<v t="ekr.20070116074730"><vh>Gui plugins</vh>
 <v t="ekr.20061207074949"><vh>@thin cursesGui.py</vh></v>
-<v t="ekr.20070215164948" a="E"
-expanded="ekr.20070215164948.5,ekr.20070215164948.30,ekr.20070215164948.33,"><vh>@thin ironPythonGui.py</vh></v>
+<v t="ekr.20070215164948"><vh>@thin ironPythonGui.py</vh></v>
 </v>
 <v t="ekr.20040722135402"><vh>Icon and status areas</vh>
 <v t="ekr.20060328125925"><vh>@thin chapter_hoist.py</vh></v>
@@ -326,7 +326,8 @@ expanded="ekr.20070215164948.5,ekr.20070215164948.30,ekr.20070215164948.33,"><vh
 <v t="pap.20051010170720"><vh>@thin newButtons.py</vh></v>
 <v t="ekr.20040108062655"><vh>@thin nodenavigator.py</vh></v>
 <v t="ekr.20040108095351"><vh>@thin rowcol.py</vh></v>
-<v t="ekr.20040107092135.2"><vh>@thin searchbox.py</vh></v>
+<v t="ekr.20040107092135.2"
+expanded="ekr.20040107092135.6,"><vh>@thin searchbox.py</vh></v>
 <v t="ekr.20060601151845"><vh>@thin shortcut_button.py</vh></v>
 <v t="bobjack.20080424190315.2"><vh>@thin toolbar.py</vh></v>
 </v>
@@ -377,7 +378,7 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20050329082101.4"><vh>Details</vh></v>
 <v t="ekr.20050329082101.5"><vh>How do I create my own handlers?</vh></v>
 </v>
-<v t="ekr.20050329082101.6" annotate="7d71002e"><vh>Example handlers</vh>
+<v t="ekr.20050329082101.6" a="E" annotate="7d71002e"><vh>Example handlers</vh>
 <v t="ekr.20050329082101.7"><vh>Testing</vh>
 <v t="ekr.20050329082101.8" annotate="7d71002e"><vh>@auto-test something</vh>
 <v t="ekr.20050329082101.9"><vh>one</vh></v>
@@ -525,8 +526,8 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="EKR.20040517080555.35"><vh> Initial suggestion from Paul Paterson</vh></v>
 </v>
 </v>
-<v t="ekr.20071029090815"><vh> Plugins manager</vh>
-<v t="pap.20041006184225"><vh>@@thin old_plugin_manager.py</vh>
+<v t="ekr.20071029090815" a="E"><vh> Plugins manager</vh>
+<v t="pap.20041006184225" a="E"><vh>@@thin old_plugin_manager.py</vh>
 <v t="pap.20041006184225.2"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
 <v t="ekr.20050329035844"><vh>&lt;&lt; define importLeoGlobals &gt;&gt;</vh></v>
 <v t="pap.20041006184225.3"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -614,7 +615,7 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="pap.20041009235457"><vh>populateList</vh></v>
 </v>
 </v>
-<v t="pap.20041009140132.1"><vh>Implementation</vh>
+<v t="pap.20041009140132.1" a="E"><vh>Implementation</vh>
 <v t="pap.20051103001707.1"><vh>class OrderedDict</vh>
 <v t="pap.20051103002042"><vh>__init__</vh></v>
 <v t="pap.20051103001707.3"><vh>__getitem__</vh></v>
@@ -690,7 +691,7 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="pap.20041006202703"><vh>getListingPage</vh></v>
 <v t="pap.20041009021201"><vh>setEnabledStateFrom</vh></v>
 </v>
-<v t="pap.20041006232717"><vh>class EnableManager</vh>
+<v t="pap.20041006232717" a="E"><vh>class EnableManager</vh>
 <v t="pap.20041006232717.1"><vh>initFrom</vh></v>
 <v t="pap.20041009003552"><vh>writeFile</vh></v>
 <v t="pap.20041008200028"><vh>parseManagerText</vh></v>
@@ -953,7 +954,8 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20050805162550"><vh>@thin rst3.py</vh></v>
+<v t="ekr.20050805162550"
+expanded="ekr.20050805162550.8,ekr.20050809074827,ekr.20050809082854,"><vh>@thin rst3.py</vh></v>
 </v>
 <v t="ekr.20070119094733.1"><vh>@thin dtest.py</vh></v>
 </v>
@@ -1020,6 +1022,8 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 </v>
 </v>
+<v t="ekr.20050805162550" a="E"
+expanded="ekr.20050805162550.8,ekr.20050809074827,ekr.20050809082854,"><vh>@thin rst3.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040517075715"></t>

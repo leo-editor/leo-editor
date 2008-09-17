@@ -162,6 +162,7 @@ class generalTestCase(unittest.TestCase):
         c = self.c ; p = self.p.copy()
         script = g.getScript(c,p).strip()
         self.assert_(script)
+        writeScriptFile = c.config.getBool('write_script_file')
 
         # import leo.core.leoGlobals as g
 
@@ -173,14 +174,22 @@ class generalTestCase(unittest.TestCase):
         else:
             d = {}
 
+        script = script + '\n'
+        # g.trace(type(script),script)
+
         # Execute the script. Let unit test handle any errors!
 
-        if 0: # debug
-            import pdb
-            pdb.run(script+'\n',d)
+        if writeScriptFile:
+            scriptFile = c.writeScriptFile(script)
+            execfile(scriptFile,d)
         else:
-            ### exec script + '\n' in d
-            exec(script+'\n',d)
+            exec script in d
+
+        # if 0: # debug
+            # import pdb
+            # pdb.run(script+'\n',d)
+        # else:
+            # exec script + '\n' in d
     #@-node:ekr.20051104075904.10:runTest
     #@+node:ekr.20051104075904.11:shortDescription
     def shortDescription (self):
@@ -212,8 +221,7 @@ def makeTestSuite (c,p):
         return None
 
     try:
-        ### exec script + '\n' in {'c':c,'g':g,'p':p}
-        exec(script+'\n',{'c':c,'g':g,'p':p})
+        exec script + '\n' in {'c':c,'g':g,'p':p}
         suite = g.app.scriptDict.get("suite")
         if not suite:
             g.pr("%s script did not set g.app.scriptDict" % h)
@@ -326,8 +334,7 @@ def makeObjectList(message):
     global lastObjectsDict
     objects = gc.get_objects()
 
-    ### newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
-    newObjects = [o for o in objects if id(o) not in lastObjectsDict]
+    newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
 
     lastObjectsDict = {}
     for o in objects:
@@ -363,7 +370,7 @@ def printGc(message=None):
         typesDict[type(obj)] = n + 1
 
     # Create the union of all the keys.
-    keys = list(typesDict.keys()) ###
+    keys = typesDict.keys()
     for key in lastTypesDict.keys():
         if key not in keys:
             keys.append(key)
@@ -394,8 +401,7 @@ def printGc(message=None):
             if type(obj) == types.FunctionType:
                 key = repr(obj) # Don't create a pointer to the object!
                 funcDict[key]=None 
-                # if not lastFunctionsDict.has_key(key):
-                if key not in lastFunctionsDict:
+                if not lastFunctionsDict.has_key(key):
                     g.pr('\n',obj)
                     args, varargs, varkw,defaults  = inspect.getargspec(obj)
                     g.pr("args", args)
@@ -606,7 +612,7 @@ class testUtils:
             if verbose: g.trace("Different number of lines")
             return False
 
-        for i in range(len(lines2)):
+        for i in xrange(len(lines2)):
             line1 = lines1[i]
             line2 = lines2[i]
             if line1 == line2:
@@ -1309,12 +1315,12 @@ def checkFileTabs (fileName,s):
         readline = g.readLinesClass(s).next
         tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
-    except tokenize.TokenError(msg):
+    except tokenize.TokenError, msg:
         g.es_print("Token error in",fileName,color="blue")
         g.es_print('',msg)
         assert 0, "test failed"
 
-    except tabnanny.NannyNag(nag):
+    except tabnanny.NannyNag, nag:
         badline = nag.get_lineno()
         line    = nag.get_line()
         message = nag.get_msg()
@@ -1376,8 +1382,8 @@ class reformatParagraphTest:
         for i in range(min(newLinesCount,refLinesCount)):
             assert newLines[i] == refLines[i], \
                 "Mismatch on line " + str(i) + "." \
-                + "\nExpected text: " + repr(refLines[i]) \
-                + "\n  Actual text: " + repr(newLines[i])
+                + "\nExpected text: " + `refLines[i]` \
+                + "\n  Actual text: " + `newLines[i]`
 
         assert newLinesCount == refLinesCount, \
             "Expected " + str(refLinesCount) + " lines, but " \

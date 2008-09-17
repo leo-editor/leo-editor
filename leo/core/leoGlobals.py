@@ -59,6 +59,9 @@ import string
 import tempfile
 import traceback
 import types
+
+# g.pr('(types.FrameType)',repr(types.FrameType))
+# g.pr('(types.StringTypes)',repr(types.StringTypes))
 #@-node:ekr.20050208101229:<< imports >>
 #@nl
 #@<< define general constants >>
@@ -144,7 +147,9 @@ def computeGlobalConfigDir():
     encoding = g.startupEncoding()
 
     # To avoid pychecker/pylint complaints that sys.leo_config_directory does not exist.
-    leo_config_dir = hasattr(sys,'leo_config_directory') and getattr(sys,'leo_config_directory')
+    leo_config_dir = (
+        hasattr(sys,'leo_config_directory') and
+        getattr(sys,'leo_config_directory'))
 
     if leo_config_dir:
         theDir = leo_config_dir
@@ -172,7 +177,12 @@ def computeHomeDir():
 
     encoding = g.startupEncoding()
     # dotDir = g.os_path_abspath('./',encoding)
-    home = os.getenv('HOME',default=None)
+    # home = os.getenv('HOME',default=None)
+    home = os.path.expanduser("~")
+        # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
+
+    # print('computeHomeDir: %s' % repr(home))
+    # print("computeHomeDir: os.path.expanduser('~'): %s" % os.path.expanduser('~'))
 
     if home and len(home) > 1 and home[0]=='%' and home[-1]=='%':
         # Get the indirect reference to the true home.
@@ -267,7 +277,7 @@ def computeMachineName():
 #@+node:ekr.20050328133444:computeStandardDirectories
 def computeStandardDirectories():
 
-    '''Set g.app.loadDir, g.app.homeDir and g.app.globalConfigDir.'''
+    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
 
     if 0:
         import sys
@@ -279,6 +289,13 @@ def computeStandardDirectories():
     g.app.leoDir = g.computeLeoDir()
 
     g.app.homeDir = g.computeHomeDir()
+
+    # New in Leo 4.5 b4: create homeLeoDir if needed.
+    g.app.homeLeoDir = homeLeoDir = g.os_path_abspath(
+        g.os_path_join(g.app.homeDir,'.leo'))
+
+    if not g.os_path_exists(homeLeoDir):
+        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
 
     g.app.extensionsDir = g.os_path_abspath(
         g.os_path_join(g.app.loadDir,'..','extensions'))
@@ -315,7 +332,9 @@ def set_delims_from_language(language):
 
     # g.trace(g.callers())
 
-    val = app.language_delims_dict.get(language)
+    val = g.app.language_delims_dict.get(language)
+    # if language.startswith('huh'): g.pdb()
+
     if val:
         delim1,delim2,delim3 = g.set_delims_from_string(val)
         if delim2 and not delim3:
@@ -1051,14 +1070,26 @@ def es_dump (s,n = 30,title=None):
         i += n
 #@nonl
 #@-node:ekr.20060917120951:es_dump
-#@+node:ekr.20031218072017.3110:es_error
-def es_error (s,color=None):
+#@+node:ekr.20031218072017.3110:es_error & es_print_error
+def es_error (*args,**keys):
 
-    if color is None and g.app.config: # May not exist during initialization.
-        color = g.app.config.getColor(None,"log_error_color") or 'red'
+    color = keys.get('color')
 
-    g.es(s,color=color)
-#@-node:ekr.20031218072017.3110:es_error
+    if color is None and g.app.config:
+        keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
+
+    g.es(*args,**keys)
+
+
+def es_print_error (*args,**keys):
+
+    color = keys.get('color')
+
+    if color is None and g.app.config:
+        keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
+
+    g.es_print(*args,**keys)
+#@-node:ekr.20031218072017.3110:es_error & es_print_error
 #@+node:ekr.20031218072017.3111:es_event_exception
 def es_event_exception (eventName,full=False):
 
@@ -1681,24 +1712,14 @@ def init_trace(args,echo=1):
 
 def trace (*args,**keys):
 
-    #callers = keys.get("callers",False)
-    newline = keys.get("newline",True)
-    align =   keys.get("align",0)
+    # Compute the effective args.
+    d = {'align':0,'newline':True}
+    d = g.doKeywordArgs(keys,d)
+    newline = d.get('newline')
+    align = d.get('align')
+    if align is None: align = 0
 
-    s = ""
-    for arg in args:
-        ### if type(arg) == type(u""):
-        if g.isString(arg):
-            pass
-        ###elif type(arg) != type(""):
-        else:
-            arg = repr(arg)
-        if len(s) > 0:
-            s = s + " " + arg
-        else:
-            s = arg
-    message = s
-
+    # Compute the caller name.
     try: # get the function name from the call stack.
         f1 = sys._getframe(1) # The stack frame, one level up.
         code1 = f1.f_code # The code object
@@ -1707,24 +1728,67 @@ def trace (*args,**keys):
     if name == "?":
         name = "<unknown>"
 
-    # if callers:
-        # traceback.print_stack()
-
+    # Pad the caller name.
     if align != 0 and len(name) < abs(align):
         pad = ' ' * (abs(align) - len(name))
         if align > 0: name = name + pad
         else:         name = pad + name
 
-    if g.isPython3:
-        name = str(name)
-        message = str(message)
-    else:
+    # Munge *args into s.
+    result = []
+    for arg in args:
+        if type(arg) == type(u""):
+            pass
+        elif type(arg) != type(""):
+            arg = repr(arg)
+        if result:
+            result.append(" " + arg)
+        else:
+            result.append(arg)
+    s = ''.join(result)
+    s = g.toEncodedString(s,'ascii')
+    g.pr('%s: %s' % (name,s),newline=newline)
+
+    if 0:
+
+        #callers = keys.get("callers",False)
+        newline = keys.get("newline",True)
+        align =   keys.get("align",0)
+
+        s = ""
+        for arg in args:
+            if type(arg) == type(u""):
+                pass
+            elif type(arg) != type(""):
+                arg = repr(arg)
+            if len(s) > 0:
+                s = s + " " + arg
+            else:
+                s = arg
+        message = s
+
+        try: # get the function name from the call stack.
+            f1 = sys._getframe(1) # The stack frame, one level up.
+            code1 = f1.f_code # The code object
+            name = code1.co_name # The code name
+        except Exception: name = ''
+        if name == "?":
+            name = "<unknown>"
+
+        # if callers:
+            # traceback.print_stack()
+
+        if align != 0 and len(name) < abs(align):
+            pad = ' ' * (abs(align) - len(name))
+            if align > 0: name = name + pad
+            else:         name = pad + name
+
         message = g.toEncodedString(message,'ascii') # Bug fix: 10/10/07.
 
-    if newline:
-        g.pr(name + ": " + message)
-    else:
-        g.pr(name + ": " + message,newline=False)
+        if newline:
+            g.pr(name + ": " + message)
+        else:
+            g.pr(name + ": " + message,)
 #@-node:ekr.20031218072017.2317:trace
 #@+node:ekr.20031218072017.2318:trace_tag
 # Convert all args to strings.
@@ -1884,6 +1948,7 @@ class Tracer:
             keys = sorted(self.callDict)
         else:
             keys = self.callDict.keys() ; keys.sort()
+
         for key in keys:
             # Print the calling function.
             g.pr('%d' % (self.calledDict.get(key,0)),key)
@@ -2104,17 +2169,18 @@ def makePathRelativeTo (fullPath,basePath):
 #@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 # This is a generalization of os.makedir.
 
-def makeAllNonExistentDirectories (theDir,c=None):
+def makeAllNonExistentDirectories (theDir,c=None,force=False):
 
     """Attempt to make all non-existent directories"""
 
     # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
 
-    if c:
-        if not c.config.create_nonexistent_directories:
+    if not force:
+        if c:
+            if not c.config.create_nonexistent_directories:
+                return None
+        elif not app.config.create_nonexistent_directories:
             return None
-    elif not app.config.create_nonexistent_directories:
-        return None
 
     dir1 = theDir = g.os_path_normpath(theDir)
 
@@ -2137,7 +2203,7 @@ def makeAllNonExistentDirectories (theDir,c=None):
                 os.mkdir(path)
                 g.es("created directory:",path)
             except Exception:
-                g.es("exception creating directory:",path)
+                g.es_print("exception creating directory:",path,color='red')
                 g.es_exception()
                 return None
     return dir1 # All have been created.
@@ -2789,6 +2855,8 @@ def idleTimeHookHandler(*args,**keys):
 
 def doHook(tag,*args,**keywords):
 
+    trace = False ; verbose = False
+
     if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
         return None
 
@@ -2805,6 +2873,10 @@ def doHook(tag,*args,**keywords):
     # Get the hook handler function.  Usually this is doPlugins.
     c = keywords.get("c")
     f = (c and c.hookFunction) or g.app.hookFunction
+
+    if trace and (verbose or tag != 'idle'):
+        g.trace('tag',tag,'f',f and f.__name__)
+
     if not f:
         import leo.core.leoPlugins as leoPlugins
         g.app.hookFunction = f = leoPlugins.doPlugins
@@ -2865,48 +2937,33 @@ def enl(tabName='Log'):
         log.putnl(tabName)
 #@-node:ekr.20031218072017.1474:enl, ecnl & ecnls
 #@+node:ekr.20070626132332:es & minitest
-def es(s,*args,**keys):
+def es(*args,**keys):
 
     '''Put all non-keyword args to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    # g.pr('es','app.log',repr(app.log),'log.isNull',not app.log or app.log.isNull,repr(s))
-    # g.pr('es',repr(s))
+
     log = app.log
-    if app.killed:
-        return
+    if app.killed: return
 
-    # Important: defining keyword arguments in addition to *args **does not work**.
-    # See Section 5.3.4 (Calls) of the Python reference manual.
-    # In other words, the following is about the best that can be done.
-    color = keys.get('color')
-    commas = keys.get('commas')
-    commas = g.choose( 
-        commas in (True,'True','true'),True,False)# default is False
-    newline = keys.get('newline')
-    newline = g.choose(
-        newline in (False,'False','false'),False,True)# default is True
-    spaces= keys.get('spaces')
-    spaces = g.choose(
-        spaces in (False,'False','false'),False,True)# default is True
-    tabName = keys.get('tabName','Log')
-
-        # Default goes to log pane *not* the presently active pane.
+    # Compute the effective args.
+    d = {'color':'black','commas':False,'newline':True,'spaces':True,'tabName':'Log'}
+    d = g.doKeywordArgs(keys,d)
+    color = d.get('color')
     if color == 'suppress': return # New in 4.3.
-
-    ### if type(s) != type("") and type(s) != type(u""):
-    if not g.isString(s):
-        s = repr(s)
-
-    s = g.translateArgs(s,args,commas,spaces)
+    tabName = d.get('tabName') or 'Log'
+    newline = d.get('newline')
+    s = g.translateArgs(args,d)
 
     if app.batchMode:
         if app.log:
             app.log.put(s)
     elif g.unitTesting:
         if log and not log.isNull:
-            s = g.toEncodedString(s,'ascii')
+            # New in Leo 4.5 b4: this is no longer needed.
+            # This makes the output of unit tests match the output of scripts.
+            # s = g.toEncodedString(s,'ascii')
             g.pr(s,newline=newline)
     else:
         if log and log.isNull:
@@ -2943,146 +3000,111 @@ def es(s,*args,**keys):
 #@+node:ekr.20050707064040:es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
-def es_print(s,*args,**keys):
+def es_print(*args,**keys):
 
     '''Print all non-keyword args, and put them to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
 
-    encoding = sys.getdefaultencoding()
+    g.pr(*args,**keys)
 
-    # Important: defining keyword arguments in addition to *args **does not work**.
-    # See Section 5.3.4 (Calls) of the Python reference manual.
-    # In other words, the following is about the best that can be done.
-    commas = keys.get('commas')
-    commas = g.choose( 
-        commas in (True,'True','true'),True,False)# default is False
-    newline = keys.get('newline')
-    newline = g.choose(
-        newline in (False,'False','false'),False,True)# default is True
-    spaces= keys.get('spaces')
-    spaces = g.choose(
-        spaces in (False,'False','false'),False,True)# default is True
-
-    if isPython3:
-        if not g.isString(s):
-            s = repr(s)
-    else:
-        try:
-            ### if type(s) != type(u''):
-            if type(s) != types.StringType:
-                s = unicode(s,encoding)
-        except Exception:
-            s = g.toEncodedString(s,'ascii')
-
-    s2 = g.translateArgs(s,args,commas,spaces)
-
-    if isPython3:
-        g.pr(s2)
-    else:
-        if newline:
-            try:
-                g.pr(s2)
-            except Exception:
-                g.pr(g.toEncodedString(s2,'ascii'))
-        else:
-            try:
-                g.pr(s2,newline=False)
-            except Exception:
-                g.pr(g.toEncodedString(s2,'ascii'),newline=False)
-
-    if g.app.gui and not g.app.gui.isNullGui and not g.unitTesting:
-        # Use the original args, not the translated s2 arg.
-        g.es(s,*args,**keys)
+    if not g.app.unitTesting:
+        g.es(*args,**keys)
 #@-node:ekr.20050707064040:es_print
+#@+node:ekr.20080821073134.2:doKeywordArgs
+def doKeywordArgs (keys,d=None):
+
+    '''Return a result dict that is a copy of the keys dict
+    with missing items replaced by defaults in d dict.'''
+
+    if d is None: d = {}
+
+    result = {}
+    for key,default_val in d.items():
+        isBool = default_val in (True,False)
+        val = keys.get(key)
+        if isBool and val in (True,'True','true'):
+            result[key] = True
+        elif isBool and val in (False,'False','false'):
+            result[key] = False
+        elif val is None:
+            result[key] = default_val
+        else:
+            result[key] = val
+
+    return result 
+#@-node:ekr.20080821073134.2:doKeywordArgs
 #@+node:ekr.20080710101653.1:pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
-def pr(s,*args,**keys):
+def pr(*args,**keys):
 
     '''Print all non-keyword args, and put them to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
 
-    encoding = sys.getdefaultencoding()
+    # Compute the effective args.
+    d = {'commas':False,'newline':True,'spaces':True}
+    d = g.doKeywordArgs(keys,d)
 
-    # Important: defining keyword arguments in addition to *args **does not work**.
-    # See Section 5.3.4 (Calls) of the Python reference manual.
-    # In other words, the following is about the best that can be done.
-    commas = keys.get('commas')
-    commas = g.choose( 
-        commas in (True,'True','true'),True,False)# default is False
-    newline = keys.get('newline')
-    newline = g.choose(
-        newline in (False,'False','false'),False,True)# default is True
-    spaces= keys.get('spaces')
-    spaces = g.choose(
-        spaces in (False,'False','false'),False,True)# default is True
-
-    if g.isPython3:
-        if not g.isString(s):
-            s = repr(s)
-    else:
-        try:
-            ### if type(s) != type(u''):
-            if type(key) != types.UnicodeType:
-                s = unicode(s,encoding)
-        except Exception:
-            s = g.toEncodedString(s,'ascii')
-
-        ### if type(s) != type("") and type(s) != type(u""):
-        if type(s) not in types.StringTypes:
-            s = repr(s)
-
-    s2 = g.translateArgs(s,args,commas,spaces)
-
-    ###
-    if g.isPython3:
-        if not g.isString(s2):
-            s2 = str(s2,'utf-8')
+    # Important:  Python's print statement *can* handle unicode.
+    # However, the following must appear in Python\Lib\sitecustomize.py:
+    #    sys.setdefaultencoding('utf-8')
+    s = g.translateArgs(args,d) # Translates everything to unicode.
 
     try:
-        if newline:
-            sys.stdout.write(s2 + '\n')
-        else:
-            sys.stdout.write(s2)
+        if d.get('newline'): print s
+        else:                print s,
     except Exception:
         print('unexpected Exception in g.pr')
-        print(type(s2))
         g.es_exception()
         g.trace(g.callers())
 #@-node:ekr.20080710101653.1:pr
 #@+node:ekr.20050707065530:es_trace
-def es_trace(s,*args,**keys):
+def es_trace(*args,**keys):
 
-    g.trace(g.toEncodedString(s,'ascii'))
-    g.es(s,*args,**keys)
+    if args:
+        try:
+            s = args[0]
+            g.trace(g.toEncodedString(s,'ascii'))
+        except Exception:
+            pass
+
+    g.es(*args,**keys)
 #@-node:ekr.20050707065530:es_trace
 #@+node:ekr.20080220111323:translateArgs
-def translateArgs (s,args,commas,spaces):
+def translateArgs(args,d):
 
     '''Return the concatenation of s and all args,
 
     with odd args translated.'''
 
-    # Print the translated strings, but retain s for the later call to g.es.
-    result = []
-    if s:
-        result.append(g.translateString(s))
-    n = 1
+    if not hasattr(g,'consoleEncoding'):
+        e = sys.getdefaultencoding()
+        g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
+        # print 'translateArgs',g.consoleEncoding
+
+
+    result = [] ; n = 0 ; spaces = d.get('spaces')
     for arg in args:
         n += 1
-        ### if type(arg) != type("") and type(arg) != type(u""):
-        if not g.isString(arg):
+
+        # First, convert to unicode.
+        if type(arg) == type('a'):
+            arg = g.toUnicode(arg,g.consoleEncoding)
+
+        # Now translate.
+        if type(arg) not in (type(""),type(u""),):
             arg = repr(arg)
         elif (n % 2) == 1:
             arg = g.translateString(arg)
+        else:
+            pass # The arg is an untranslated string.
+
         if arg:
-            if result:
-                # if commas: result.append(',')
-                if spaces: result.append(' ')
+            if result and spaces: result.append(' ')
             result.append(arg)
 
     return ''.join(result)
@@ -5047,6 +5069,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
         s = g.removeExtraLws(s,c.tab_width)
         if s.strip():
             g.app.scriptDict["script1"]=s
+            # Important: converts unicode to utf-8 encoded strings.
             script = at.writeFromString(p.copy(),s,
                 forcePythonSentinels=forcePythonSentinels,
                 useSentinels=useSentinels)

@@ -964,7 +964,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         '''A class representing the status line.'''
 
         #@    @+others
-        #@+node:ekr.20031218072017.3961: ctor
+        #@+node:ekr.20031218072017.3961:ctor
         def __init__ (self,c,parentFrame):
 
             self.c = c
@@ -977,7 +977,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             #    self.log.colorTags.append("black")
             self.parentFrame = parentFrame
             self.statusFrame = Tk.Frame(parentFrame,bd=2)
-            text = "line 0, col 0"
+            text = "line 0, col 0, fcol 0"
             width = len(text) + 4
             self.labelWidget = Tk.Label(self.statusFrame,text=text,width=width,anchor="w")
             self.labelWidget.pack(side="left",padx=1)
@@ -993,7 +993,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             c.frame.statusFrame = self.statusFrame
             c.frame.statusLabel = self.labelWidget
             c.frame.statusText  = self.textWidget
-        #@-node:ekr.20031218072017.3961: ctor
+        #@-node:ekr.20031218072017.3961:ctor
         #@+node:ekr.20031218072017.3962:clear
         def clear (self):
 
@@ -1114,11 +1114,14 @@ class leoTkinterFrame (leoFrame.leoFrame):
                 s2 = s[index-col:index]
                 s2 = g.toUnicode(s2,g.app.tkEncoding)
                 col = g.computeWidth (s2,c.tab_width)
+            p = c.currentPosition()
+            fcol = col + p.textOffset()
 
             # Important: this does not change the focus because labels never get focus.
-            self.labelWidget.configure(text="line %d, col %d" % (row,col))
+            self.labelWidget.configure(text="line %d, col %d, fcol %d" % (row,col,fcol))
             self.lastRow = row
             self.lastCol = col
+            self.lastFcol = fcol
         #@-node:ekr.20031218072017.1733:update (statusLine)
         #@-others
     #@-node:ekr.20041223104933:class tkStatusLineClass (tkFrame)
