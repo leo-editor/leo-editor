@@ -3546,7 +3546,6 @@ def readSettingsFiles (self,fileName,verbose=True):
 
             c = self.openSettingsFile(path)
             if c:
-                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -3909,7 +3908,6 @@ def readSettingsFiles (self,fileName,verbose=True):
 
             c = self.openSettingsFile(path)
             if c:
-                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -13130,7 +13128,6 @@ def readSettingsFiles (self,fileName,verbose=True):
 
             c = self.openSettingsFile(path)
             if c:
-                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -15389,7 +15386,6 @@ def readSettingsFiles (self,fileName,verbose=True):
 
             c = self.openSettingsFile(path)
             if c:
-                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -28460,7 +28456,6 @@ def readSettingsFiles (self,fileName,verbose=True):
 
             c = self.openSettingsFile(path)
             if c:
-                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -30097,11 +30092,11 @@ def pr(*args,**keys):
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
     try: # We can't use any print keyword args in Python 2.x!
-        print(s) # Not quite right.
-        #if d.get('newline'):
-        #    os.write(sys.__stdout__,s+'\n')
-        #else:
-        #    os.write(sys.__stdout__,s)
+        # print(s) # Not quite right.
+        if d.get('newline'):
+            sys.stdout.write(s+'\n')
+        else:
+            sys.stdout.write(s)
     except Exception:
         print('unexpected Exception in g.pr')
         g.es_exception()
@@ -30395,11 +30390,11 @@ def pr(*args,**keys):
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
     try: # We can't use any print keyword args in Python 2.x!
-        print(s) # Not quite right.
-        #if d.get('newline'):
-        #    os.write(sys.__stdout__,s+'\n')
-        #else:
-        #    os.write(sys.__stdout__,s)
+        # print(s) # Not quite right.
+        if d.get('newline'):
+            sys.stdout.write(s+'\n')
+        else:
+            sys.stdout.write(s)
     except Exception:
         print('unexpected Exception in g.pr')
         g.es_exception()
@@ -30797,7 +30792,6 @@ def readSettingsFiles (self,fileName,verbose=True):
 
             c = self.openSettingsFile(path)
             if c:
-                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -31151,7 +31145,6 @@ def readSettingsFiles (self,fileName,verbose=True):
 
             c = self.openSettingsFile(path)
             if c:
-                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
