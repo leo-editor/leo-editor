@@ -6147,7 +6147,9 @@ class baseCommands:
         c = self
         c.requestRedrawFlag = True
         c.outerUpdate()
-        assert not c.requestRedrawFlag
+        if c.requestRedrawFlag:
+            g.es_print('redraw_now: can not happen',g.callers())
+        # assert not c.requestRedrawFlag
 
     # Compatibility with old scripts
     force_redraw = redraw_now
