@@ -60,10 +60,6 @@ rst2latex --language=ca --output-encoding=utf-8 --stylesheet=/home/
 vmas/.leo/custom_style.sty prova.txt prova.tex 
 #@nonl
 #@-node:ekr.20080915083836.2:Fix encoding problems with rst3 plugin
-#@+node:ekr.20080912143702.141:Document official ivars
-# Do this in top-level Code node in leoPy.leo.
-#@nonl
-#@-node:ekr.20080912143702.141:Document official ivars
 #@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 @nocolor
 

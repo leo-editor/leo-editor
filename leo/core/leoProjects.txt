@@ -36868,6 +36868,197 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/758bd8d3d0edf8a1
 #@+node:ekr.20080914111505.4:Fixed bugs
 #@+node:ekr.20080914111505.1:Ensure that Python\Scripts exists in installer script
 #@-node:ekr.20080914111505.1:Ensure that Python\Scripts exists in installer script
+#@+node:ekr.20080917061525.6:Fix config crasher
+@nocolor
+
+Latest revision from trunk.
+
+To reproduce:
+
+- open a new outline.
+- create a @settings node.
+- create two children of the @settings node with the following
+headlines "@string xxx = aaa" and "@button xxx".
+- save the outline and close it.
+- reopen the outline.
+
+I'm getting the following traceback:
+
+Traceback (most recent call last):
+ File "/home/shadow/leo/leo-current/leo/core/leoGlobals.py", line
+2818, in doHook
+   return f(tag,keywords)
+ File "/home/shadow/leo/leo-current/leo/core/leoPlugins.py", line 97,
+in doPlugins
+   return doHandlersForTag(tag,keywords)
+ File "/home/shadow/leo/leo-current/leo/core/leoPlugins.py", line 76,
+in doHandlersForTag
+   val = callTagHandler(bunch,tag,keywords)
+ File "/home/shadow/leo/leo-current/leo/core/leoPlugins.py", line 55,
+in callTagHandler
+   result = handler(tag,keywords)
+ File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
+line 197, in onCreate
+   sc.createAllButtons()
+ File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
+line 261, in createAllButtons
+   self.handleAtButtonNode(p)
+ File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
+line 533, in handleAtButtonNode
+   b =
+self.createAtButtonHelper(p,h,statusLine,shortcut,verbose=False)
+ File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
+line 681, in createAtButtonHelper
+   pane='button',verbose=verbose)
+ File "/home/shadow/leo/leo-current/leo/core/leoKeys.py", line 3161,
+in registerCommand
+   junk,bunchList = c.config.getShortcut(commandName)
+ File "/home/shadow/leo/leo-current/leo/core/leoCommands.py", line
+7271, in getShortcut
+   return g.app.config.getShortcut(self.c,shortcutName)
+ File "/home/shadow/leo/leo-current/leo/core/leoConfig.py", line
+1682, in getShortcut
+   if bunch.val and bunch.val.lower() != 'none']
+AttributeError: 'unicode' object has no attribute 'val'
+
+@color
+#@nonl
+#@+node:ekr.20051015093141:typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything *except* shortcuts.
+    - Shortcut matches shortcuts.
+    '''
+
+    shortcuts = ('shortcut','shortcuts',)
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') and type2 not in shortcuts or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
+#@-node:ekr.20051015093141:typesMatch
+#@+node:ekr.20041117062717.14:getShortcut (config)
+def getShortcut (self,c,shortcutName):
+
+    '''Return rawKey,accel for shortcutName'''
+
+    key = c.frame.menu.canonicalizeMenuName(shortcutName)
+    key = key.replace('&','') # Allow '&' in names.
+
+    bunchList = self.get(c,key,"shortcut")
+    # g.trace('bunchList',bunchList)
+    if bunchList:
+        bunchList = [bunch for bunch in bunchList
+            if bunch.val and bunch.val.lower() != 'none']
+        return key,bunchList
+    else:
+        return key,[]
+#@-node:ekr.20041117062717.14:getShortcut (config)
+#@+node:ekr.20061031131434.179:getShortcutForCommand/Name (should return lists)
+def getShortcutForCommandName (self,commandName):
+
+    k = self ; c = k.c
+
+    command = c.commandsDict.get(commandName)
+
+    if command:
+        for key in k.bindingsDict:
+            bunchList = k.bindingsDict.get(key,[])
+            for b in bunchList:
+                if b.commandName == commandName:
+                    return k.tkbindingFromStroke(key)
+    return ''
+
+def getShortcutForCommand (self,command):
+
+    k = self ; c = k.c
+
+    if command:
+        for key in k.bindingsDict:
+            bunchList = k.bindingsDict.get(key,[])
+            for b in bunchList:
+                if b.commandName == command.__name__:
+                     return k.tkbindingFromStroke(key)
+    return ''
+#@-node:ekr.20061031131434.179:getShortcutForCommand/Name (should return lists)
+#@+node:ekr.20061031131434.131:k.registerCommand
+def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=True):
+
+    '''Make the function available as a minibuffer command,
+    and optionally attempt to bind a shortcut.
+
+    You can wrap any method in a callback function, so the
+    restriction to functions is not significant.
+
+    If wrap is True then func will be wrapped with c.universalCallback.
+
+    '''
+
+    # g.trace(commandName,g.callers())
+
+    k = self ; c = k.c
+
+    if wrap:
+        func = c.universalCallback(func)
+
+    f = c.commandsDict.get(commandName)
+    verbose = (False or verbose) and not g.app.unitTesting
+    if f and f.__name__ != 'dummyCallback' and verbose:
+        g.es_print('redefining',commandName, color='red')
+
+    c.commandsDict [commandName] = func
+    k.inverseCommandsDict [func.__name__] = commandName
+    # g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
+
+    if shortcut:
+        stroke = k.shortcutFromSetting(shortcut)
+    elif commandName.lower() == 'shortcut': # Causes problems.
+        stroke = None
+    else:
+        # Try to get a shortcut from leoSettings.leo.
+        junk,bunchList = c.config.getShortcut(commandName)
+        for bunch in bunchList:
+            accel2 = bunch.val ; pane2 = bunch.pane
+            if accel2 and not pane2.endswith('-mode'):
+                shortcut2 = accel2
+                stroke = k.shortcutFromSetting(shortcut2)
+                if stroke: break
+        else: stroke = None
+
+    if stroke:
+        # g.trace('stroke',stroke,'pane',pane,commandName,g.callers())
+        ok = k.bindKey (pane,stroke,func,commandName) # Must be a stroke.
+        k.makeMasterGuiBinding(stroke) # Must be a stroke.
+        if verbose and ok and not g.app.silentMode:
+            g.es_print('','@command: %s = %s' % (
+                commandName,k.prettyPrintKey(stroke)),color='blue')
+            if 0:
+                d = k.masterBindingsDict.get('button',{})
+                g.print_dict(d)
+        c.frame.tree.setBindings()
+    elif verbose and not g.app.silentMode:
+        g.es_print('','@command: %s' % (commandName),color='blue')
+
+    # Fixup any previous abbreviation to press-x-button commands.
+    if commandName.startswith('press-') and commandName.endswith('-button'):
+        d = c.config.getAbbrevDict()
+            # Keys are full command names, values are abbreviations.
+        if commandName in d.values():
+            for key in d.keys():
+                if d.get(key) == commandName:
+                    c.commandsDict [key] = c.commandsDict.get(commandName)
+                    break
+#@-node:ekr.20061031131434.131:k.registerCommand
+#@-node:ekr.20080917061525.6:Fix config crasher
 #@-node:ekr.20080914111505.4:Fixed bugs
 #@+node:ekr.20080917061525.5:New features
 #@+node:ekr.20080917061525.4:Added c.config.getSettingSource
