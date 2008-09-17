@@ -16268,7 +16268,8 @@ def runTest (self,define_g = True):
         scriptFile = c.writeScriptFile(script)
         execfile(scriptFile,d)
     else:
-        exec script in d
+        ### exec script in d
+        exec(script,d)
 
     # if 0: # debug
         # import pdb
@@ -16302,12 +16303,13 @@ def makeTestSuite (c,p):
         return None
 
     try:
-        exec script + '\n' in {'c':c,'g':g,'p':p}
+        ### exec script + '\n' in {'c':c,'g':g,'p':p}
+        exec(script + '\n',{'c':c,'g':g,'p':p})
         suite = g.app.scriptDict.get("suite")
         if not suite:
             g.pr("%s script did not set g.app.scriptDict" % h)
         return suite
-    except:
+    except Exception:
         g.trace('Exception creating test cases for %s' % p.headString())
         g.es_exception()
         return None
@@ -16365,7 +16367,7 @@ def runTimerOnNode (c,p,count):
         result = t.timeit(count)
         ratio = "%f" % (float(result)/float(count))
         g.es_print("count:",count,"time/count:",ratio,'',p.headString())
-    except:
+    except Exception:
         t.print_exc()
 #@-node:ekr.20051104075904.15:runTimerOnNode
 #@-node:ekr.20051104075904.2:Support @profile, @suite, @test, @timer
@@ -19399,7 +19401,7 @@ def goto_open (self,filename):
         shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
             fn = shadow_filename
-	lines = open(shadow_filename).readlines()
+            lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
@@ -27794,7 +27796,7 @@ def goto_open (self,filename):
         shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
             fn = shadow_filename
-	lines = open(shadow_filename).readlines()
+            lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
@@ -29899,7 +29901,8 @@ def trace (*args,**keys):
     # Munge *args into s.
     result = []
     for arg in args:
-        if type(arg) == type(u""):
+        ### if type(arg) == type(u""):
+        if g.isString(arg):
             pass
         elif type(arg) != type(""):
             arg = repr(arg)
@@ -29911,46 +29914,6 @@ def trace (*args,**keys):
     s = g.toEncodedString(s,'ascii')
     g.pr('%s: %s' % (name,s),newline=newline)
 
-    if 0:
-
-        #callers = keys.get("callers",False)
-        newline = keys.get("newline",True)
-        align =   keys.get("align",0)
-
-        s = ""
-        for arg in args:
-            if type(arg) == type(u""):
-                pass
-            elif type(arg) != type(""):
-                arg = repr(arg)
-            if len(s) > 0:
-                s = s + " " + arg
-            else:
-                s = arg
-        message = s
-
-        try: # get the function name from the call stack.
-            f1 = sys._getframe(1) # The stack frame, one level up.
-            code1 = f1.f_code # The code object
-            name = code1.co_name # The code name
-        except Exception: name = ''
-        if name == "?":
-            name = "<unknown>"
-
-        # if callers:
-            # traceback.print_stack()
-
-        if align != 0 and len(name) < abs(align):
-            pad = ' ' * (abs(align) - len(name))
-            if align > 0: name = name + pad
-            else:         name = pad + name
-
-        message = g.toEncodedString(message,'ascii') # Bug fix: 10/10/07.
-
-        if newline:
-            g.pr(name + ": " + message)
-        else:
-            g.pr(name + ": " + message,)
 #@-node:ekr.20031218072017.2317:trace
 #@+node:ekr.20031218072017.3110:es_error & es_print_error
 def es_error (*args,**keys):
@@ -30133,9 +30096,12 @@ def pr(*args,**keys):
     #    sys.setdefaultencoding('utf-8')
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
-    try:
-        if d.get('newline'): print s
-        else:                print s,
+    try: # We can't use any print keyword args in Python 2.x!
+        print(s) # Not quite right.
+        #if d.get('newline'):
+        #    os.write(sys.__stdout__,s+'\n')
+        #else:
+        #    os.write(sys.__stdout__,s)
     except Exception:
         print('unexpected Exception in g.pr')
         g.es_exception()
@@ -30175,7 +30141,8 @@ def translateArgs(args,d):
             arg = g.toUnicode(arg,g.consoleEncoding)
 
         # Now translate.
-        if type(arg) not in (type(""),type(u""),):
+        ### if type(arg) not in (type(""),type(u""),):
+        if not g.isString(arg):
             arg = repr(arg)
         elif (n % 2) == 1:
             arg = g.translateString(arg)
@@ -30345,7 +30312,8 @@ def translateArgs(args,d):
             arg = g.toUnicode(arg,g.consoleEncoding)
 
         # Now translate.
-        if type(arg) not in (type(""),type(u""),):
+        ### if type(arg) not in (type(""),type(u""),):
+        if not g.isString(arg):
             arg = repr(arg)
         elif (n % 2) == 1:
             arg = g.translateString(arg)
@@ -30426,9 +30394,12 @@ def pr(*args,**keys):
     #    sys.setdefaultencoding('utf-8')
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
-    try:
-        if d.get('newline'): print s
-        else:                print s,
+    try: # We can't use any print keyword args in Python 2.x!
+        print(s) # Not quite right.
+        #if d.get('newline'):
+        #    os.write(sys.__stdout__,s+'\n')
+        #else:
+        #    os.write(sys.__stdout__,s)
     except Exception:
         print('unexpected Exception in g.pr')
         g.es_exception()
@@ -30743,7 +30714,8 @@ def runTest (self,define_g = True):
         scriptFile = c.writeScriptFile(script)
         execfile(scriptFile,d)
     else:
-        exec script in d
+        ### exec script in d
+        exec(script,d)
 
     # if 0: # debug
         # import pdb
@@ -34508,7 +34480,7 @@ def goto_open (self,filename):
         shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
             fn = shadow_filename
-	lines = open(shadow_filename).readlines()
+            lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
@@ -35100,7 +35072,7 @@ def goto_open (self,filename):
         shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
             fn = shadow_filename
-	lines = open(shadow_filename).readlines()
+            lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
@@ -35472,7 +35444,7 @@ def scanText4 (self,theFile,fileName,p,verbose=False):
                 i = at.skipSentinelStart4(s,0)
             func = at.dispatch_dict[kind]
             func(s,i)
-    except AssertionError,message:
+    except (AssertionError,message):
         at.error('unexpected assertion failure in',fileName,'\n',message)
 
     if at.errors == 0 and not at.done:

@@ -932,7 +932,7 @@ def shortDescription (self):
 
     try:
         return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
-    except:
+    except Exception:
         return "ImportExportTestCase"
 #@-node:ekr.20051104075904.85:shortDescription
 #@+node:ekr.20051104075904.86:tearDown
