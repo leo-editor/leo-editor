@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="37" left="398" height="914" width="777"/>
+	<global_window_position top="37" left="401" height="914" width="774"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E" str_leo_pos="0,1,13"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
@@ -57,8 +57,10 @@
 <v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
+<v t="ekr.20080917071550.1"><vh>@string xxx = aaa</vh></v>
+<v t="ekr.20080917071550.2"><vh>@button xxx</vh></v>
 </v>
-<v t="ekr.20041001211817"><vh>Buttons</vh>
+<v t="ekr.20041001211817" a="E"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
 <v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
 </v>
@@ -95,7 +97,6 @@
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
 <v t="ekr.20080815073750.1"><vh>@@button write-nosent-files</vh></v>
 <v t="ekr.20071128122043"><vh>@@command create-shell-tab @key = Alt+5</vh></v>
-<v t="ekr.20071101163934"><vh>@@command rst3</vh></v>
 <v t="ekr.20070604095313"><vh>Chapter buttons</vh>
 <v t="ekr.20070530072113.1"><vh>@@button show-ch</vh></v>
 <v t="ekr.20070603175054.1"><vh>@@button ch-main</vh></v>
@@ -108,6 +109,7 @@
 <v t="ekr.20060904111037"><vh>@@button opml-read</vh></v>
 </v>
 </v>
+<v t="ekr.20080915095329.1"><vh>@button rst3</vh></v>
 </v>
 <v t="ekr.20070410063214"><vh>Commands</vh>
 <v t="ekr.20060924180049"><vh>@@command clones-tab</vh>
@@ -139,17 +141,17 @@
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
-<v t="ekr.20070929122956"><vh>Data trees</vh>
+<v t="ekr.20070929122956" a="E"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
 <v t="ekr.20070929072043"><vh>@networkx</vh>
 <v t="ekr.20070929072506.1"><vh>@nodes</vh></v>
 <v t="ekr.20070929072506"><vh>@edges</vh></v>
 </v>
-<v t="ekr.20070929070257"><vh>@graph</vh>
-<v t="ekr.20070929070257.1"><vh>@node child1</vh>
+<v t="ekr.20070929070257" a="E"><vh>@graph</vh>
+<v t="ekr.20070929070257.1" a="E"><vh>@node child1</vh>
 <v t="ekr.20070929070632"><vh>@link ('ekr', '20070929070257', 2): @node child2</vh></v>
 </v>
-<v t="ekr.20070929070257.2"><vh>@node child2</vh>
+<v t="ekr.20070929070257.2" a="E"><vh>@node child2</vh>
 <v t="ekr.20070929070632.1"><vh>@link ('ekr', '20070929070257', 1): @node child1</vh></v>
 </v>
 </v>
@@ -185,7 +187,7 @@
 <v t="ekr.20070630142904.4"><vh>@@file myModule.pyx</vh></v>
 <v t="ekr.20070630142904.5"><vh>Make myModule.c</vh></v>
 </v>
-<v t="ekr.20071026102420.2"><vh>Screen capture</vh>
+<v t="ekr.20071026102420.2"><vh>Screen capture with Wink</vh>
 <v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
 <v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
 </v>
@@ -250,6 +252,8 @@
 <v t="ekr.20080808122543.1"><vh>Path wrappers</vh></v>
 <v t="ekr.20080808122543.2"><vh>copyDir</vh></v>
 </v>
+<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
+<v t="ekr.20080823154546.2"><vh>parse-python test</vh></v>
 <v t="ekr.20080813080809.1"><vh>Tests for @shadow</vh>
 <v t="ekr.20080807091001.1"><vh>@@shadow python-import-test.py</vh>
 <v t="ekr.20080807091201.7"><vh>python-import-test declarations</vh></v>
@@ -273,10 +277,13 @@
 <v t="ekr.20080813080627.3" a="M"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
+<v t="ekr.20080909075224.1"><vh>@@shadow ekr-shadow-test.html</vh></v>
+<v t="ekr.20080911080311.1"><vh>@@shadow dummy.conf</vh></v>
 </v>
-<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
-<v t="ekr.20080823154546.2"><vh>parse-python test</vh></v>
+<v t="ekr.20080911112823.1"><vh>@@nosent fix-failure.py</vh></v>
 </v>
+<v t="ekr.20080915094955.1"><vh>@rst encoding-test.txt</vh></v>
+<v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1239,6 +1246,7 @@ leoTest.doTests (c,all=False)</t>
 
 plugins_menu.py
 
+# base64Packager.py
 # searchbox.py
 
 # active_path.py
@@ -1268,22 +1276,6 @@ leo_to_html.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
-<t tx="ekr.20071101163934">import leoPlugins
-
-rst3 = leoPlugins.getPluginModule('rst3')
-
-if rst3:
-    controller = rst3.controllers.get(c)
-    if controller:
-        controller.processTopTree(p)
-else:
-    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-    if rst3:
-        g.es('rst3 loaded')
-        rst3.onCreate('tag',{'c':c})
-    else:
-        # Ask to be removed.
-        g.app.scriptDict['removeMe'] = True</t>
 <t tx="ekr.20071105085941"></t>
 <t tx="ekr.20071128122043">log = c.frame.log ; tag = 'Shell'
 frame1 = log.frameDict.get(tag)
@@ -2293,5 +2285,49 @@ class AClass:
    def func4():
        do4()
 </t>
+<t tx="ekr.20080909075224.1">@language html
+../hex6x -
+changed</t>
+<t tx="ekr.20080911080311.1">@language conf
+; This is a comment
+P1 = 0
+</t>
+<t tx="ekr.20080911112823.1"># -*- coding: utf-8 -*-
+
+s = 'abc'.replace(u'” “', '" "')</t>
+<t tx="ekr.20080915094955.1">@encoding utf-8
+
+Test of non-ascii characters
+
+אַ U+FB2E: Hebrew Letter Alef With Patah</t>
+<t tx="ekr.20080915095329.1">import leo.core.leoPlugins as leoPlugins
+
+rst3 = leoPlugins.getPluginModule('rst3')
+
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        controller.processTopTree(p)
+else:
+    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+    if rst3:
+        g.es('rst3 loaded')
+        rst3.onCreate('tag',{'c':c})
+    else:
+        # Ask to be removed.
+        g.app.scriptDict['removeMe'] = True</t>
+<t tx="ekr.20080917063615.1">aList = (
+'aspellbindir',
+'wholeword',
+'vimcmd',
+'huh',
+)
+
+for name in aList:
+    kind, val = c.config.getSettingSource(name)
+    print '%-20s %-20s %s' % (name,repr(val),kind)
+</t>
+<t tx="ekr.20080917071550.1"></t>
+<t tx="ekr.20080917071550.2">print 'button xxx'</t>
 </tnodes>
 </leo_file>

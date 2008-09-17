@@ -315,7 +315,8 @@ open, save, save-as, save-to, read-outline-only, read-file-into-node,
 write-file-from-node and all the import/export commands.</p>
 </li>
 <li><p class="first">Leo creates the .leo folder in the user's HOME directory, and puts several configuration files there.
-Leo looks for myLeoSettings.leo in HOME/.leo.</p>
+Leo looks for myLeoSettings.leo in HOME/.leo.
+Leo uses os.path.expanduser(&quot;~&quot;) if there is no home setting.</p>
 </li>
 </ul>
 </div>

@@ -1689,7 +1689,7 @@ class leoImportCommands:
         c = self.c
         changed = c.isChanged()
         body = g.choose(atAuto,'','@ignore\n')
-        if ext in ('.html','.htm'): body += '@language html\n'
+        if ext in ('.html','.htm'):   body += '@language html\n'
         elif ext in ('.txt','.text'): body += '@nocolor\n'
         else:
             language = self.languageForExtension(ext)
@@ -1708,24 +1708,25 @@ class leoImportCommands:
 
         '''Return the language corresponding to the extensiion ext.'''
 
+        unknown = 'unknown_language'
+
         if ext.startswith('.'): ext = ext[1:]
 
-        language = ext and (
-            g.app.extra_extension_dict.get(ext) or
-            g.app.extension_dict.get(ext) or
-            'unknown_language'
-        )
+        if ext:
+            z = g.app.extra_extension_dict.get(ext)
+            if z not in (None,'none','None'):
+                language = z
+            else:
+                language = g.app.extension_dict.get(ext)
+            if language in (None,'none','None'):
+                language = unknown
+        else:
+            language = unknown
 
         # g.trace(ext,repr(language))
 
         # Return the language even if there is no colorizer mode for it.
         return language
-
-        # if language:
-            # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-                # return language
-
-        # return None
     #@-node:ekr.20080811174246.1:languageForExtension
     #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     #@-node:ekr.20071127175948.1:Import scanners
@@ -3570,9 +3571,10 @@ class pythonScanner (baseScannerClass):
     #@+node:ekr.20070712090019.1:skipCodeBlock (python) & helper
     def skipCodeBlock (self,s,i,kind):
 
-        trace = False ; verbose = False
+        trace = False ; verbose = True
         # if trace: g.trace('***',g.callers())
         startIndent = self.startSigIndent
+        if trace: g.trace('startIndent',startIndent)
         assert startIndent is not None
         i = start = g.skip_ws_and_nl(s,i)
         parenCount = 0
@@ -3587,7 +3589,7 @@ class pythonScanner (baseScannerClass):
                     pass # We have already made progress.
                 else:
                     if trace and verbose: g.trace(g.get_line(s,i))
-                    backslashNewline = i > 0 and g.match(s,i-1,'\\\n')
+                    backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
                     if not backslashNewline:
                         i,underIndentedStart,breakFlag = self.pythonNewlineHelper(
                             s,i,parenCount,startIndent,underIndentedStart)
@@ -3615,6 +3617,7 @@ class pythonScanner (baseScannerClass):
             g.trace('Can not happen: Python block does not end in a newline.')
             g.trace(g.get_line(s,i))
             return i,False
+
         if (trace or self.trace) and s[start:i].strip():
             g.trace('%s returns\n' % (kind) + s[start:i])
         return i,True
@@ -3624,10 +3627,12 @@ class pythonScanner (baseScannerClass):
         trace = False
         breakFlag = False
         j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
-        if trace: g.trace('startIndent',startIndent,'indent',indent,'line',repr(g.get_line(s,j)))
+        if trace: g.trace(
+            'startIndent',startIndent,'indent',indent,'parenCount',parenCount,
+            'line',repr(g.get_line(s,j)))
         if indent <= startIndent and parenCount == 0:
             # An underindented line: it ends the block *unless*
-            # it is a blank or comment line.
+            # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
             if g.match(s,j,'#'):
                 if trace: g.trace('underindent: comment')
                 if underIndentedStart is None: underIndentedStart = i
@@ -3662,7 +3667,7 @@ class pythonScanner (baseScannerClass):
                                 self.errorLines.append(j)
                                 self.underindentedComment(line)
                 underIndentedStart = None
-        if trace: g.trace('returns',i,'underIndentedStart',underIndentedStart)
+        if trace: g.trace('breakFlag',breakFlag,'returns',i,'underIndentedStart',underIndentedStart)
         return i,underIndentedStart,breakFlag
     #@-node:ekr.20070801080447:pythonNewlineHelper
     #@-node:ekr.20070712090019.1:skipCodeBlock (python) & helper

@@ -410,11 +410,8 @@ class atFile:
             if at.atShadow:
                 x = at.c.shadowController
                 # readOneAtShadowNode should already have checked these.
-                shadow_fn       = x.shadowPathName(fn)
-                shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-                # g.trace('fn',fn,'shadow_fn',shadow_fn)
-                # x.updatePublicAndPrivate will create the public file from the private file
-                # if the public file exists. This *is* reasonable: there is nothing to import!
+                shadow_fn     = x.shadowPathName(fn)
+                shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
                 if not shadow_exists:
                     g.trace('can not happen: no private file',shadow_fn,g.callers())
                     return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
@@ -670,22 +667,17 @@ class atFile:
         at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
         fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
-        shadow_fn       = x.shadowPathName(fn)
-        shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+        shadow_fn     = x.shadowPathName(fn)
+        shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
         if shadow_exists:
-            # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
-            # This will cause an error if shadaw_fn does not, in fact, contain sentinels.
-            # g.trace('reading shadow_fn',shadow_fn)
-            at.read(p,
-                thinFile=True, # The shadow file contains sentinels: new in Leo 4.5 b2.
-                atShadow=True)
-                # at.openFileForReading calls x.updatePublicAndPrivateFiles
+            # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+            at.read(p,thinFile=True,atShadow=True)
         else:
             if not g.unitTesting: g.es("reading:",p.headString())
             ok = at.importAtShadowNode(fn,p)
             if ok:
-                # x.makeShadowFile(fn,p)
+                # Create the private file automatically.
                 at.writeOneAtShadowNode(p,toString=False,force=True)
     #@+node:ekr.20080712080505.1:importAtShadowNode
     def importAtShadowNode (self,fn,p):
@@ -829,7 +821,7 @@ class atFile:
 
         """Scan a 4.x derived file non-recursively."""
 
-        # __pychecker__ = '--no-argsused' # fileName,verbose might be used for debugging.
+        # __pychecker__ = '--no-argsused' # verbose might be used for debugging.
 
         at = self
         #@    << init ivars for scanText4 >>
@@ -861,23 +853,26 @@ class atFile:
         # g.trace(at.startSentinelComment)
         #@-node:ekr.20041005105605.75:<< init ivars for scanText4 >>
         #@nl
-        while at.errors == 0 and not at.done:
-            s = at.readLine(theFile)
-            self.lineNumber += 1
-            if len(s) == 0: break
-            kind = at.sentinelKind4(s)
-            # g.trace(at.sentinelName(kind),s.strip())
-            if kind == at.noSentinel:
-                i = 0
-            else:
-                i = at.skipSentinelStart4(s,0)
-            func = at.dispatch_dict[kind]
-            func(s,i)
+        try:
+            while at.errors == 0 and not at.done:
+                s = at.readLine(theFile)
+                self.lineNumber += 1
+                if len(s) == 0: break
+                kind = at.sentinelKind4(s)
+                # g.trace(at.sentinelName(kind),s.strip())
+                if kind == at.noSentinel:
+                    i = 0
+                else:
+                    i = at.skipSentinelStart4(s,0)
+                func = at.dispatch_dict[kind]
+                func(s,i)
+        except AssertionError,message:
+            at.error('unexpected assertion failure in',fileName,'\n',message)
 
         if at.errors == 0 and not at.done:
             #@        << report unexpected end of text >>
             #@+node:ekr.20041005105605.76:<< report unexpected end of text >>
-            assert(at.endSentinelStack)
+            assert at.endSentinelStack,'empty sentinel stack'
 
             at.readError(
                 "Unexpected end of file. Expecting %s sentinel" %
@@ -931,9 +926,9 @@ class atFile:
         j = g.skip_ws(s,i)
         leadingWs = s[i:j]
         if leadingWs:
-            assert(g.match(s,j,"@+all"))
+            assert g.match(s,j,"@+all"),'missing @+all'
         else:
-            assert(g.match(s,j,"+all"))
+            assert g.match(s,j,"+all"),'missing +all'
 
         # Make sure that the generated at-all is properly indented.
         at.out.append(leadingWs + "@all\n")
@@ -943,7 +938,7 @@ class atFile:
     #@+node:ekr.20041005105605.82:readStartAt & readStartDoc
     def readStartAt (self,s,i):
         """Read an @+at sentinel."""
-        at = self ; assert(g.match(s,i,"+at"))
+        at = self ; assert g.match(s,i,"+at"),'missing +at'
         if 0:# new code: append whatever follows the sentinel.
             i += 3 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
             at.out.append('@' + follow) ; at.docOut = []
@@ -955,7 +950,7 @@ class atFile:
 
     def readStartDoc (self,s,i):
         """Read an @+doc sentinel."""
-        at = self ; assert(g.match(s,i,"+doc"))
+        at = self ; assert g.match(s,i,"+doc"),'missing +doc'
         if 0: # new code: append whatever follows the sentinel.
             i += 4 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
             at.out.append('@' + follow) ; at.docOut = []
@@ -983,7 +978,7 @@ class atFile:
         """Read an unexpected @+leo sentinel."""
 
         at = self
-        assert(g.match(s,i,"+leo"))
+        assert g.match(s,i,"+leo"),'missing +leo sentinel'
         at.readError("Ignoring unexpected @+leo sentinel")
     #@-node:ekr.20041005105605.83:readStartLeo
     #@+node:ekr.20041005105605.84:readStartMiddle
@@ -1002,10 +997,10 @@ class atFile:
 
         at = self
         if middle:
-            assert(g.match(s,i,"+middle:"))
+            assert g.match(s,i,"+middle:"),'missing +middle'
             i += 8
         else:
-            assert(g.match(s,i,"+node:"))
+            assert g.match(s,i,"+node:"),'missing +node'
             i += 6
 
         if at.thinFile:
@@ -1088,9 +1083,9 @@ class atFile:
         j = g.skip_ws(s,i)
         leadingWs = s[i:j]
         if leadingWs:
-            assert(g.match(s,j,"@+others"))
+            assert g.match(s,j,"@+others"),'missing @+others'
         else:
-            assert(g.match(s,j,"+others"))
+            assert g.match(s,j,"+others"),'missing +others'
 
         # Make sure that the generated at-others is properly indented.
         at.out.append(leadingWs + "@others\n")
@@ -1326,7 +1321,7 @@ class atFile:
         """Read an @afterref sentinel."""
 
         at = self
-        assert(g.match(s,i,"afterref"))
+        assert g.match(s,i,"afterref"),'missing afterref'
 
         # Append the next line to the text.
         s = at.readLine(at.inputFile)
@@ -1337,7 +1332,7 @@ class atFile:
 
         at = self ; tag = "clone"
 
-        assert(g.match(s,i,tag))
+        assert g.match(s,i,tag),'missing clone sentinel'
 
         # Skip the tag and whitespace.
         i = g.skip_ws(s,i+len(tag))
@@ -1355,7 +1350,7 @@ class atFile:
 
         """Read an @comment sentinel."""
 
-        assert(g.match(s,i,"comment"))
+        assert g.match(s,i,"comment"),'missing comment sentinel'
 
         # Just ignore the comment line!
     #@-node:ekr.20041005105605.104:readComment
@@ -1365,7 +1360,7 @@ class atFile:
         """Read an @delims sentinel."""
 
         at = self
-        assert(g.match(s,i-1,"@delims"))
+        assert g.match(s,i-1,"@delims"),'missing @delims'
 
         # Skip the keyword and whitespace.
         i0 = i-1
@@ -1408,7 +1403,7 @@ class atFile:
         """Read an @@sentinel."""
 
         at = self
-        assert(g.match(s,i,"@")) # The first '@' has already been eaten.
+        assert g.match(s,i,"@"),'missing @@ sentinel' # The first '@' has already been eaten.
 
         # g.trace(g.get_line(s,i))
 
@@ -1486,7 +1481,7 @@ class atFile:
         """Handle an @nonl sentinel."""
 
         at = self
-        assert(g.match(s,i,"nl"))
+        assert g.match(s,i,"nl"),'missing nl sentinel'
 
         if at.inCode:
             at.out.append('\n')
@@ -1499,7 +1494,7 @@ class atFile:
         """Handle an @nonl sentinel."""
 
         at = self
-        assert(g.match(s,i,"nonl"))
+        assert g.match(s,i,"nonl"),'missing nonl sentinel'
 
         if at.inCode:
             s = ''.join(at.out)
@@ -1539,7 +1534,7 @@ class atFile:
 
         at = self
         j = g.skip_ws(s,i)
-        assert(g.match(s,j,"<<"))
+        assert g.match(s,j,"<<"),'missing @<< sentinel'
 
         if len(at.endSentinelComment) == 0:
             line = s[i:-1] # No trailing newline
@@ -1560,7 +1555,7 @@ class atFile:
         """Read an @verbatim sentinel."""
 
         at = self
-        assert(g.match(s,i,"verbatim"))
+        assert g.match(s,i,"verbatim"),'missing verbatim sentinel'
 
         # Append the next line to the text.
         s = at.readLine(at.inputFile) 
@@ -1574,7 +1569,7 @@ class atFile:
         """Handle a mismatched ending sentinel."""
 
         at = self
-        assert(at.endSentinelStack)
+        assert at.endSentinelStack,'empty sentinel stack'
         s = "Ignoring %s sentinel.  Expecting %s" % (
             at.sentinelName(at.endSentinelStack[-1]),
             at.sentinelName(expectedKind))
@@ -2560,7 +2555,7 @@ class atFile:
 
         fn = p.atShadowFileNodeName()
         if not fn:
-            g.trace('can not happen: not an @shadow node',p.headString())
+            g.es_print('can not happen: not an @shadow node',p.headString(),color='red')
             return False
 
         # A hack to support unknown extensions.
@@ -2574,14 +2569,23 @@ class atFile:
             return False
 
         c.endEditing() # Capture the current headline.
-        at.initWriteIvars(root,targetFileName=None,
+        at.initWriteIvars(root,targetFileName=None, # Not used.
             nosentinels=None, # set below.  Affects only error messages (sometimes).
             thinFile=True, # New in Leo 4.5 b2: private files are thin files.
             scriptWrite=False,
             toString=False, # True: create a fileLikeObject.  This is done below.
+            forcePythonSentinels=True, # A hack to suppress an error message.
+                # The actual sentinels will be set below.
             write_strips_blank_lines=False,
         )
-                # at.targetFileName not used.
+
+        # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+        #                     what is used in x.propegate changes.
+        junk,ext = g.os_path_splitext(fn)
+        marker = x.marker_from_extension(ext,addAtSign=False)
+        # g.trace('write marker',marker)
+        at.startSentinelComment = marker
+        at.endSentinelComment = None
 
         if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -2618,7 +2622,7 @@ class atFile:
             root.clearOrphan()
             root.clearDirty()
         else:
-            g.es("not written:",at.outputFileName)
+            g.es("not written:",at.outputFileName,color='red')
             root.setDirty() # New in Leo 4.4.8.
 
         return at.errors == 0
@@ -2648,10 +2652,8 @@ class atFile:
         '''Return True if we should write the @shadow node at p.'''
 
         at = self ; x = at.c.shadowController
-        if not x.marker_from_extension(fn,suppressErrors=True):
-            g.es_print('unknown extension. can not write:',p.headString(),color='red')
-            return False # Never write files with unknown extensions
-        elif force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+
+        if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
             return True
         elif not exists: # We can write a non-existent file without danger.
             return True
@@ -2683,10 +2685,11 @@ class atFile:
             if ext.startswith('.'): ext = ext[1:]
 
             language = g.app.extension_dict.get(ext)
-            if not language:
+            if language:
+                c.target_language = language
+            else:
                 # An unknown language.
-                c.target_language = 'unknown_language'
-                # g.trace('setting target language',c.target_language)
+                pass # Use the default language, **not** 'unknown_language'
     #@-node:ekr.20080819075811.13:adjustTargetLanguage
     #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
     #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
@@ -4074,7 +4077,7 @@ class atFile:
 
         if exists: # Read the file.  Return if it is the same.
             try:
-                f = file(fn,'rb')
+                f = open(fn,'rb')
                 s2 = f.read()
                 f.close()
             except IOError:
@@ -4087,13 +4090,14 @@ class atFile:
 
         # Replace
         try:
-            f = file(fn,'wb')
+            f = open(fn,'wb')
             f.write(s)
             f.close()
             if not testing:
                 if exists:
                     g.es('wrote:    ',fn)
                 else:
+                    # g.trace('created:',fn,g.callers())
                     g.es('created:  ',fn)
             return True
         except IOError:
@@ -4167,6 +4171,7 @@ class atFile:
             # Rename the output file.
             ok = self.rename(self.outputFileName,self.targetFileName)
             if ok:
+                # g.trace('created:',self.targetFileName,g.callers())
                 g.es('created:  ',self.targetFileName)
             else:
                 # self.rename gives the error.
@@ -4256,7 +4261,7 @@ class atFile:
 
         keys = {'color': g.choose(at.errors,'blue','red')}
 
-        g.es_error(*args,**keys)
+        g.es_print_error(*args,**keys)
     #@-node:ekr.20041005105605.220:atFile.error & printError
     #@+node:ekr.20051219122720:atFile.forceGnxOnPosition
     def forceGnxOnPosition (self,p):

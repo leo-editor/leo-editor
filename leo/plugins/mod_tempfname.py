@@ -66,7 +66,7 @@ def openWithTempFilePath (self,v,ext):
                 for ch in hs:
                     if ch in g.string.whitespace: #Convert tabs to spaces
                         hsClean += ' '
-                    elif ch in ('\\','/',':','|','<','>'): #Not in Dos/Windows
+                    elif ch in ('\\','/',':','|','<','>','*'): #Not allowed in Dos/Windows
                         hsClean += '_'
                     elif ch in ('"'): #Leo code can't handle the "
                         hsClean += '\''   #replace with '

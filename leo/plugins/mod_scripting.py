@@ -692,7 +692,6 @@ class scriptingController:
         if c.disableCommandsMessage:
             g.es(c.disableCommandsMessage,color='blue')
         else:
-            g.trace(p)
             g.app.scriptDict = {}
             h = p.headString()
             args = self.getArgs(h)
