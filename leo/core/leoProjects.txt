@@ -1041,7 +1041,7 @@ def __init__ (self,importCommands,atAuto):
 
     # The valid characters in an id
     self.chars = list(string.ascii_letters + string.digits)
-    extra = [chr(z) for z in xrange(127,256)]
+    extra = [chr(z) for z in range(127,256)]
     self.chars.extend(extra)
 #@-node:ekr.20070711090052.2: __init__
 #@+node:ekr.20070711094850:isPurePHP
@@ -1286,7 +1286,8 @@ def scanDefaultDirectory(self,p,importing=False):
 
     for p in p.self_and_parents_iter():
         theDict = g.get_directives_dict(p)
-        if theDict.has_key("path"):
+        ### if theDict.has_key("path"):
+        if 'path' in theDict:
             << handle @path >>
             return
 
@@ -1965,7 +1966,7 @@ def __init__ (self,importCommands,atAuto):
 
     # The valid characters in an id
     self.chars = list(string.ascii_letters + string.digits)
-    extra = [chr(z) for z in xrange(127,256)]
+    extra = [chr(z) for z in range(127,256)]
     self.chars.extend(extra)
 #@-node:ekr.20070711090052.2: __init__
 #@+node:ekr.20070711094850:isPurePHP
@@ -3096,7 +3097,8 @@ def drawTree(self,p,x,y,h,level,hoistFlag=False):
 def getIconImage (self, name):
 
     # Return the image from the cache if possible.
-    if self.iconimages.has_key(name):
+    ### if self.iconimages.has_key(name):
+    if name in self.iconimages.keys():
         return self.iconimages[name]
 
     # g.trace(name)
@@ -3506,6 +3508,8 @@ will read mySettings.leo and leoSettings.leo twice.
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
+    if g.isPython3: return ######
+
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
     << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -3535,12 +3539,14 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
             if c:
+                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -3587,7 +3593,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -3865,6 +3871,8 @@ setString = set
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
+    if g.isPython3: return ######
+
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
     << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -3894,12 +3902,14 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
             if c:
+                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -3946,7 +3956,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -4032,6 +4042,9 @@ def updateSettings (self,c,localFlag):
 
 def readSettings (self,c,localFlag):
 
+    if g.isPython3:
+        return {} ###
+
     """Read settings from a file that may contain an @settings tree."""
 
     # g.trace('=' * 20, c.fileName())
@@ -4071,11 +4084,19 @@ def visitNode (self,p):
     kind,name,val = self.parseHeadline(p.headString())
     kind = munge(kind)
 
+    if g.isPython3:
+        isNone = val in ('None','none','',None)
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','',None)
+
     if kind is None: # Not an @x node. (New in Leo 4.4.4)
         pass
     if kind == "settings":
         pass
-    elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+    # elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+    elif kind in self.basic_types and isNone:
         # None is valid for all basic types.
         self.set(p,kind,name,None)
     elif kind in self.control_types or kind in self.basic_types:
@@ -4482,6 +4503,7 @@ def doMenus (self,p,kind,name,val):
     p = p.copy() ; after = p.nodeAfterTree()
     while p and p != after:
         h = p.headString()
+        if g.isPython3: g.trace(p.headString())
         if g.match_word(h,0,tag):
             name = h[len(tag):].strip()
             if name:
@@ -4511,10 +4533,13 @@ def doMenus (self,p,kind,name,val):
 #@+node:ekr.20070926141716:doItems
 def doItems (self,p,aList):
 
+    #### return ######
+
     p = p.copy() ; after = p.nodeAfterTree()
     p.moveToThreadNext()
     while p and p != after:
         h = p.headString()
+        if g.isPython3: g.trace(p.headString())
         for tag in ('@menu','@item'):
             if g.match_word(h,0,tag):
                 itemName = h[len(tag):].strip()
@@ -4536,7 +4561,6 @@ def doItems (self,p,aList):
         else:
             # g.trace('***skipping***',p.headString())
             p.moveToThreadNext()
-#@nonl
 #@-node:ekr.20070926141716:doItems
 #@+node:ekr.20070926142312:dumpMenuList
 def dumpMenuList (self,aList,level=0):
@@ -5123,7 +5147,9 @@ def traverse (self):
     after = p.nodeAfterTree()
     while p and p != after:
         result = self.visitNode(p)
-        # g.trace(result,p.headString())
+        if g.isPython3: g.trace(result,p.headString())
+        if p.headString() == 'Menus':
+            if g.isPython3: g.pdb()
         if result == "skip":
             # g.es_print('skipping settings in',p.headString(),color='blue')
             p.moveToNodeAfterTree()
@@ -5230,6 +5256,15 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
 
     # g.trace(setting,requestedType,bunch.toString())
     val = bunch.val
+
+    if g.isPython3:
+        isNone = val in ('None','none','',None)
+    else:
+        isNone = val in (
+            unicode('None'),unicode('none'),unicode(''),
+            'None','none','',None)
+
+
     if not self.typesMatch(bunch.kind,requestedType):
         # New in 4.4: make sure the types match.
         # A serious warning: one setting may have destroyed another!
@@ -5239,7 +5274,8 @@ def getValFromDict (self,d,setting,requestedType,warn=True):
             g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
             g.es_print('there may be conflicting settings!',color='red')
         return None, False
-    elif val in (u'None',u'none','None','none','',None):
+    # elif val in (u'None',u'none','None','none','',None):
+    elif isNone:
         return None, True # Exists, but is None
     else:
         # g.trace(setting,val)
@@ -5510,6 +5546,7 @@ def doMenus (self,p,kind,name,val):
     p = p.copy() ; after = p.nodeAfterTree()
     while p and p != after:
         h = p.headString()
+        if g.isPython3: g.trace(p.headString())
         if g.match_word(h,0,tag):
             name = h[len(tag):].strip()
             if name:
@@ -5539,10 +5576,13 @@ def doMenus (self,p,kind,name,val):
 #@+node:ekr.20070926141716:doItems
 def doItems (self,p,aList):
 
+    #### return ######
+
     p = p.copy() ; after = p.nodeAfterTree()
     p.moveToThreadNext()
     while p and p != after:
         h = p.headString()
+        if g.isPython3: g.trace(p.headString())
         for tag in ('@menu','@item'):
             if g.match_word(h,0,tag):
                 itemName = h[len(tag):].strip()
@@ -5564,7 +5604,6 @@ def doItems (self,p,aList):
         else:
             # g.trace('***skipping***',p.headString())
             p.moveToThreadNext()
-#@nonl
 #@-node:ekr.20070926141716:doItems
 #@+node:ekr.20070926142312:dumpMenuList
 def dumpMenuList (self,aList,level=0):
@@ -6609,7 +6648,13 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 command=masterMenuCallback,
                 underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
-if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+### if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+if g.isPython3:
+    isString = type(data) == type('a')
+else:
+    isString = type(data) in types.StringTypes
+
+if isString:
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
     s = data
@@ -7116,6 +7161,8 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     << import other early files >>
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
+    if g.isPython3:
+        fileName = r'c:\leo.repo\leo-30\leo\test\test.leo' # smallTest.leo' ### testing only.
     fileName,relativeFileName = completeFileName(fileName)
     reportDirectories(verbose)
     # Read settings *after* setting g.app.config.
@@ -7135,11 +7182,14 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
         else:
             createNullGuiWithScript(script)
         fileName = None
-    # Load plugins. Plugins may create g.app.gui.
-    g.doHook("start1")
-    if g.app.killed: return # Support for g.app.forceShutdown.
-    # Create the default gui if needed.
-    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
+    else:
+        g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+        if g.app.killed: return # Support for g.app.forceShutdown.
+        if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     # Initialize tracing and statistics.
     g.init_sherlock(args)
     if g.app and g.app.use_psyco: startPsyco()
@@ -7453,7 +7503,7 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
             self.rootVnode = v
             c.setRootPosition(p)
             c.changed = False
-    except BadLeoFile, message:
+    except BadLeoFile(message):
         if not silent:
             g.es_exception()
             g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
@@ -9650,7 +9700,7 @@ def createRecentFiles (self):
         if theDir:
             try:
                 fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                f = file(fileName,'w')
+                f = open(fileName,'w')
                 f.close()
                 g.es_print('created',fileName,color='red')
                 return
@@ -9667,7 +9717,7 @@ def readRecentFilesFile (self,path):
     if ok:
         if not g.unitTesting and not self.silent:
             g.pr(('reading %s' % fileName))
-        lines = file(fileName).readlines()
+        lines = open(fileName).readlines()
         if lines and self.munge(lines[0])=='readonly':
             lines = lines[1:]
         if lines:
@@ -9689,7 +9739,7 @@ def createRecentFiles (self):
         if theDir:
             try:
                 fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                f = file(fileName,'w')
+                f = open(fileName,'w')
                 f.close()
                 g.es_print('created',fileName,color='red')
                 return
@@ -9738,7 +9788,7 @@ def writeRecentFilesFileHelper (self,fileName):
     # Don't update the file if it begins with read-only.
     theFile = None
     try:
-        theFile = file(fileName)
+        theFile = open(fileName)
         lines = theFile.readlines()
         if lines and self.munge(lines[0])=='readonly':
             # g.trace('read-only: %s' %fileName)
@@ -9750,7 +9800,7 @@ def writeRecentFilesFileHelper (self,fileName):
     theFile = None
     try:
         # g.trace('writing',fileName)
-        theFile = file(fileName,'w')
+        theFile = open(fileName,'w')
         if self.recentFiles:
             lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
             theFile.write('\n'.join(lines))
@@ -11666,11 +11716,11 @@ def attrsToList (self,attrs):
 
     attrs: an Attributes item passed to startElement.'''
 
-    if 0: # check for non-unicode attributes.
-        for name in attrs.getNames():
-            val = attrs.getValue(name)
-            if type(val) != type(u''):
-                g.trace('Non-unicode attribute',name,val)
+    ### if 0: # check for non-unicode attributes.
+        ### for name in attrs.getNames():
+            ### val = attrs.getValue(name)
+            ### if type(val) != type(u''):
+            ###    g.trace('Non-unicode attribute',name,val)
 
     # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
@@ -11741,8 +11791,12 @@ def clean(self,s):
 #@+node:ekr.20060919110638.30:characters
 def characters(self,content):
 
-    if content and type(content) != type(u''):
-        g.trace('Non-unicode content',repr(content))
+    if g.isPython3:
+        if content and type(content) != type('a'):
+            g.trace('Non-unicode content',repr(content))
+    else:
+        if content and type(content) != types.UnicodeType:
+            g.trace('Non-unicode content',repr(content))
 
     content = content.replace('\r','')
     if not content: return
@@ -11755,7 +11809,6 @@ def characters(self,content):
 
     elif content.strip():
         g.pr('unexpected content:',elementName,repr(content))
-#@nonl
 #@-node:ekr.20060919110638.30:characters
 #@+node:ekr.20060919110638.31:endElement & helpers
 def endElement(self,name):
@@ -12877,6 +12930,8 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     << import other early files >>
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
+    if g.isPython3:
+        fileName = r'c:\leo.repo\leo-30\leo\test\test.leo' # smallTest.leo' ### testing only.
     fileName,relativeFileName = completeFileName(fileName)
     reportDirectories(verbose)
     # Read settings *after* setting g.app.config.
@@ -12896,11 +12951,14 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
         else:
             createNullGuiWithScript(script)
         fileName = None
-    # Load plugins. Plugins may create g.app.gui.
-    g.doHook("start1")
-    if g.app.killed: return # Support for g.app.forceShutdown.
-    # Create the default gui if needed.
-    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
+    else:
+        g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+        if g.app.killed: return # Support for g.app.forceShutdown.
+        if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     # Initialize tracing and statistics.
     g.init_sherlock(args)
     if g.app and g.app.use_psyco: startPsyco()
@@ -13034,6 +13092,8 @@ def scanOptions(g):
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
+    if g.isPython3: return ######
+
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
     << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -13063,12 +13123,14 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
             if c:
+                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -13115,7 +13177,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -15289,6 +15351,8 @@ Should assigning to None clear all key bindings?
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
+    if g.isPython3: return ######
+
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
     << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -15318,12 +15382,14 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
             if c:
+                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -15370,7 +15436,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -15455,6 +15521,9 @@ def updateSettings (self,c,localFlag):
 # Also called when opening an .leo file to read @settings tree.
 
 def readSettings (self,c,localFlag):
+
+    if g.isPython3:
+        return {} ###
 
     """Read settings from a file that may contain an @settings tree."""
 
@@ -17144,7 +17213,10 @@ for p in theIter:
     tnodes[p.v.t.fileIndex] = p.v.t
 
 # Put all tnodes in index order.
-keys = tnodes.keys() ; keys.sort()
+if g.isPython3:
+    keys = sorted(tnodes)
+else:
+    keys = tnodes.keys() ; keys.sort()
 for index in keys:
     # g.trace(index)
     t = tnodes.get(index)
@@ -18226,7 +18298,7 @@ def replaceFileWithString (self,fn,s):
 
     if exists: # Read the file.  Return if it is the same.
         try:
-            f = file(fn,'rb')
+            f = open(fn,'rb')
             s2 = f.read()
             f.close()
         except IOError:
@@ -18239,7 +18311,7 @@ def replaceFileWithString (self,fn,s):
 
     # Replace the file.
     try:
-        f = file(fn,'wb')
+        f = open(fn,'wb')
         f.write(s)
         if trace: g.trace('fn',fn,
             '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
@@ -18387,7 +18459,7 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
     if not marker:
         return
 
-    old_lines = file(source_fn).readlines()
+    old_lines = open(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
 
     copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -19327,7 +19399,7 @@ def goto_open (self,filename):
         shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
             fn = shadow_filename
-	        lines = open(shadow_filename).readlines()
+	lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
@@ -19415,7 +19487,7 @@ def replaceFileWithString (self,fn,s):
 
     if exists: # Read the file.  Return if it is the same.
         try:
-            f = file(fn,'rb')
+            f = open(fn,'rb')
             s2 = f.read()
             f.close()
         except IOError:
@@ -19428,7 +19500,7 @@ def replaceFileWithString (self,fn,s):
 
     # Replace
     try:
-        f = file(fn,'wb')
+        f = open(fn,'wb')
         f.write(s)
         f.close()
         if not testing:
@@ -19453,7 +19525,13 @@ def closeStringFile (self,theFile):
         s = at.stringOutput = theFile.get()
         theFile.close()
         at.outputFile = None
-        at.outputFileName = u''
+
+        # at.outputFileName = u''
+        if g.isPython3:
+            at.outputFileName = ''
+        else:
+            at.outputFileName = unicode('')
+
         at.shortFileName = ''
         at.targetFileName = None
         return s
@@ -19638,7 +19716,11 @@ if toString:
 else:
     self.outputFile = None # The temporary output file.
     self.stringOutput = None
-    self.targetFileName = self.outputFileName = u""
+
+    if g.isPython3:
+        self.targetFileName = self.outputFileName = ''
+    else:
+        self.targetFileName = self.outputFileName = unicode('')
 #@-node:ekr.20041005105605.16:<< init ivars for writing >>>
 #@-node:ekr.20041005105605.15:initWriteIvars
 #@+node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
@@ -20581,7 +20663,7 @@ def replaceFileWithString (self,fn,s):
 
     if exists: # Read the file.  Return if it is the same.
         try:
-            f = file(fn,'rb')
+            f = open(fn,'rb')
             s2 = f.read()
             f.close()
         except IOError:
@@ -20594,7 +20676,7 @@ def replaceFileWithString (self,fn,s):
 
     # Replace the file.
     try:
-        f = file(fn,'wb')
+        f = open(fn,'wb')
         f.write(s)
         if trace: g.trace('fn',fn,
             '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
@@ -21067,7 +21149,7 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
     if not marker:
         return
 
-    old_lines = file(source_fn).readlines()
+    old_lines = open(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
 
     copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -21977,7 +22059,7 @@ def replaceFileWithString (self,fn,s):
 
     if exists: # Read the file.  Return if it is the same.
         try:
-            f = file(fn,'rb')
+            f = open(fn,'rb')
             s2 = f.read()
             f.close()
         except IOError:
@@ -21990,7 +22072,7 @@ def replaceFileWithString (self,fn,s):
 
     # Replace the file.
     try:
-        f = file(fn,'wb')
+        f = open(fn,'wb')
         f.write(s)
         if trace: g.trace('fn',fn,
             '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
@@ -22402,7 +22484,7 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
     if not marker:
         return
 
-    old_lines = file(source_fn).readlines()
+    old_lines = open(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
 
     copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -24196,7 +24278,10 @@ def helpForCommandFinisher (self,commandName):
 def getBindingsForCommand(self,commandName):
 
     c = self.c ; k = c.k ; d = k.bindingsDict
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
 
     data = [] ; n1 = 4 ; n2 = 20
     for key in keys:
@@ -24244,7 +24329,10 @@ def printBindings (self,event=None):
 
     k = self ; c = k.c
     d = k.bindingsDict ; tabName = 'Bindings'
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
     c.frame.log.clearTab(tabName)
     data = [] ; n1 = 4 ; n2 = 20
     if not keys: return g.es('no bindings')
@@ -24308,7 +24396,10 @@ def printCommands (self,event=None):
     c.frame.log.clearTab(tabName)
 
     inverseBindingDict = k.computeInverseBindingDict()
-    commandNames = c.commandsDict.keys() ; commandNames.sort()
+    if g.isPython3:
+        commandNames = sorted(c.commandsDict)
+    else:
+        commandNames = c.commandsDict.keys() ; commandNames.sort()
 
     data = [] ; n1 = 4 ; n2 = 20
     for commandName in commandNames:
@@ -24399,7 +24490,10 @@ def modeHelpHelper (self,d):
 
     k = self ; c = k.c ; tabName = 'Mode'
     c.frame.log.clearTab(tabName)
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
 
     data = [] ; n = 20
     for key in keys:
@@ -24526,7 +24620,13 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 command=masterMenuCallback,
                 underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
-if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+### if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+if g.isPython3:
+    isString = type(data) == type('a')
+else:
+    isString = type(data) in types.StringTypes
+
+if isString:
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
     s = data
@@ -24787,7 +24887,10 @@ def printBindings (self,event=None):
 
     k = self ; c = k.c
     d = k.bindingsDict ; tabName = 'Bindings'
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
     c.frame.log.clearTab(tabName)
     data = [] ; n1 = 4 ; n2 = 20
     if not keys: return g.es('no bindings')
@@ -24905,7 +25008,13 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 command=masterMenuCallback,
                 underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
-if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+### if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+if g.isPython3:
+    isString = type(data) == type('a')
+else:
+    isString = type(data) in types.StringTypes
+
+if isString:
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
     s = data
@@ -25608,6 +25717,8 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     << import other early files >>
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
+    if g.isPython3:
+        fileName = r'c:\leo.repo\leo-30\leo\test\test.leo' # smallTest.leo' ### testing only.
     fileName,relativeFileName = completeFileName(fileName)
     reportDirectories(verbose)
     # Read settings *after* setting g.app.config.
@@ -25627,11 +25738,14 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
         else:
             createNullGuiWithScript(script)
         fileName = None
-    # Load plugins. Plugins may create g.app.gui.
-    g.doHook("start1")
-    if g.app.killed: return # Support for g.app.forceShutdown.
-    # Create the default gui if needed.
-    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
+    else:
+        g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+        if g.app.killed: return # Support for g.app.forceShutdown.
+        if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     # Initialize tracing and statistics.
     g.init_sherlock(args)
     if g.app and g.app.use_psyco: startPsyco()
@@ -26569,7 +26683,7 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
     if not marker:
         return
 
-    old_lines = file(source_fn).readlines()
+    old_lines = open(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
 
     copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -26931,7 +27045,7 @@ def replaceFileWithString (self,fn,s):
 
     if exists: # Read the file.  Return if it is the same.
         try:
-            f = file(fn,'rb')
+            f = open(fn,'rb')
             s2 = f.read()
             f.close()
         except IOError:
@@ -26944,7 +27058,7 @@ def replaceFileWithString (self,fn,s):
 
     # Replace
     try:
-        f = file(fn,'wb')
+        f = open(fn,'wb')
         f.write(s)
         f.close()
         if not testing:
@@ -27680,7 +27794,7 @@ def goto_open (self,filename):
         shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
             fn = shadow_filename
-	        lines = open(shadow_filename).readlines()
+	lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
@@ -28264,7 +28378,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -28306,6 +28420,8 @@ s = '''<?xml version="1.0" encoding="utf-8"?>
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
+    if g.isPython3: return ######
+
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
     << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -28335,12 +28451,14 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
             if c:
+                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -28387,7 +28505,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -29525,7 +29643,11 @@ if toString:
 else:
     self.outputFile = None # The temporary output file.
     self.stringOutput = None
-    self.targetFileName = self.outputFileName = u""
+
+    if g.isPython3:
+        self.targetFileName = self.outputFileName = ''
+    else:
+        self.targetFileName = self.outputFileName = unicode('')
 #@-node:ekr.20041005105605.16:<< init ivars for writing >>>
 #@-node:ekr.20041005105605.15:initWriteIvars
 #@+node:ekr.20041005105605.222:atFile.scanAllDirectives
@@ -29608,7 +29730,8 @@ if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
 #@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
 # We set the current director to a path so future writes will go to that directory.
 
-if not self.default_directory and not old.has_key("path") and theDict.has_key("path"):
+### if not self.default_directory and not old.has_key("path") and theDict.has_key("path"):
+if not self.default_directory and not 'path' in old.keys() and 'path' in theDict.keys():
 
     path = theDict["path"]
     path = g.computeRelativePath(path)
@@ -29633,7 +29756,8 @@ else:
 #@-node:ekr.20041005105605.227:<< handle absolute path >>
 #@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
 #@+node:ekr.20041005105605.228:<< Test for @encoding >>
-if not old.has_key("encoding") and theDict.has_key("encoding"):
+# if not old.has_key("encoding") and theDict.has_key("encoding"):
+if not 'encoding' in old.keys() and 'encoding' in theDict.keys():
 
     e = g.scanAtEncodingDirective(theDict)
     if e:
@@ -29641,7 +29765,8 @@ if not old.has_key("encoding") and theDict.has_key("encoding"):
 #@-node:ekr.20041005105605.228:<< Test for @encoding >>
 #@+node:ekr.20041005105605.230:<< Test for @header and @noheader >>
 # EKR: 10/10/02: perform the sames checks done by tangle.scanAllDirectives.
-if theDict.has_key("header") and theDict.has_key("noheader"):
+### if theDict.has_key("header") and theDict.has_key("noheader"):
+if 'header' in theDict and 'noheader' in theDict:
     g.es("conflicting @header and @noheader directives")
 #@-node:ekr.20041005105605.230:<< Test for @header and @noheader >>
 #@+node:ekr.20041005105605.229:<< Test for @comment and @language >>
@@ -29651,19 +29776,23 @@ if theDict.has_key("header") and theDict.has_key("noheader"):
 # 1/23/05: Any previous @language or @comment prevents processing up the tree.
 # This code is now like the code in tangle.scanAlldirectives.
 
-if old.has_key("comment") or old.has_key("language"):
+### if old.has_key("comment") or old.has_key("language"):
+if 'comment' in old or 'language' in old:
     pass # Do nothing more.
 
-elif theDict.has_key("comment"):
+### elif theDict.has_key("comment"):
+elif 'comment' in theDict:
     z = theDict["comment"]
     delim1, delim2, delim3 = g.set_delims_from_string(z)
 
-elif theDict.has_key("language"):
+### elif theDict.has_key("language"):
+elif 'language' in theDict:
     z = theDict["language"]
     self.language,delim1,delim2,delim3 = g.set_language(z,0)
 #@-node:ekr.20041005105605.229:<< Test for @comment and @language >>
 #@+node:ekr.20041005105605.231:<< Test for @lineending >>
-if not old.has_key("lineending") and theDict.has_key("lineending"):
+### if not old.has_key("lineending") and theDict.has_key("lineending"):
+if 'lineending' not in old and 'lineending' in theDict:
 
     lineending = g.scanAtLineendingDirective(theDict)
     if lineending:
@@ -29672,14 +29801,16 @@ if not old.has_key("lineending") and theDict.has_key("lineending"):
         # g.trace(p.headString(),'lineending',repr(lineending))
 #@-node:ekr.20041005105605.231:<< Test for @lineending >>
 #@+node:ekr.20041005105605.232:<< Test for @pagewidth >>
-if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
+### if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
+if 'pagewidth' in theDict and 'pagewidth' not in old:
 
     w = g.scanAtPagewidthDirective(theDict,issue_error_flag=True)
     if w and w > 0:
         self.page_width = w
 #@-node:ekr.20041005105605.232:<< Test for @pagewidth >>
 #@+node:ekr.20041005105605.233:<< Test for @tabwidth >>
-if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
+### if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
+if 'tabwidth' in theDict and 'tabwidth' not in old:
 
     w = g.scanAtTabwidthDirective(theDict,issue_error_flag=True)
     if w and w != 0:
@@ -30656,6 +30787,8 @@ g.angleBrackets(s)
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
+    if g.isPython3: return ######
+
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
     << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -30685,12 +30818,14 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
             if c:
+                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -30737,7 +30872,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -31006,6 +31141,8 @@ Edward
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
+    if g.isPython3: return ######
+
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
     << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -31035,12 +31172,14 @@ def readSettingsFiles (self,fileName,verbose=True):
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
-                s = g.toEncodedString(s,'ascii')
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
             if c:
+                g.trace(g.callers())
                 self.updateSettings(c,localFlag)
                 g.app.destroyWindow(c.frame)
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
@@ -31087,7 +31226,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -31545,7 +31684,7 @@ def createRecentFiles (self):
         if theDir:
             try:
                 fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                f = file(fileName,'w')
+                f = open(fileName,'w')
                 f.close()
                 g.es_print('created',fileName,color='red')
                 return
@@ -31722,7 +31861,7 @@ def createRecentFiles (self):
         if theDir:
             try:
                 fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                f = file(fileName,'w')
+                f = open(fileName,'w')
                 f.close()
                 g.es_print('created',fileName,color='red')
                 return
@@ -31739,7 +31878,7 @@ def readRecentFilesFile (self,path):
     if ok:
         if not g.unitTesting and not self.silent:
             g.pr(('reading %s' % fileName))
-        lines = file(fileName).readlines()
+        lines = open(fileName).readlines()
         if lines and self.munge(lines[0])=='readonly':
             lines = lines[1:]
         if lines:
@@ -31790,7 +31929,7 @@ def writeRecentFilesFileHelper (self,fileName):
     # Don't update the file if it begins with read-only.
     theFile = None
     try:
-        theFile = file(fileName)
+        theFile = open(fileName)
         lines = theFile.readlines()
         if lines and self.munge(lines[0])=='readonly':
             # g.trace('read-only: %s' %fileName)
@@ -31802,7 +31941,7 @@ def writeRecentFilesFileHelper (self,fileName):
     theFile = None
     try:
         # g.trace('writing',fileName)
-        theFile = file(fileName,'w')
+        theFile = open(fileName,'w')
         if self.recentFiles:
             lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
             theFile.write('\n'.join(lines))
@@ -31846,7 +31985,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
     if g.app.homeDir:
         path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
-            f = file(path,'wb')
+            f = open(path,'wb')
             f.write(s)
             f.close()
             self.myHomeConfigFile = path
@@ -32129,7 +32268,7 @@ def createRecentFiles (self):
         if theDir:
             try:
                 fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                f = file(fileName,'w')
+                f = open(fileName,'w')
                 f.close()
                 g.es_print('created',fileName,color='red')
                 return
@@ -32241,7 +32380,7 @@ def createRecentFiles (self):
         if theDir:
             try:
                 fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                f = file(fileName,'w')
+                f = open(fileName,'w')
                 f.close()
                 g.es_print('created',fileName,color='red')
                 return
@@ -32258,7 +32397,7 @@ def readRecentFilesFile (self,path):
     if ok:
         if not g.unitTesting and not self.silent:
             g.pr(('reading %s' % fileName))
-        lines = file(fileName).readlines()
+        lines = open(fileName).readlines()
         if lines and self.munge(lines[0])=='readonly':
             lines = lines[1:]
         if lines:
@@ -32309,7 +32448,7 @@ def writeRecentFilesFileHelper (self,fileName):
     # Don't update the file if it begins with read-only.
     theFile = None
     try:
-        theFile = file(fileName)
+        theFile = open(fileName)
         lines = theFile.readlines()
         if lines and self.munge(lines[0])=='readonly':
             # g.trace('read-only: %s' %fileName)
@@ -32321,7 +32460,7 @@ def writeRecentFilesFileHelper (self,fileName):
     theFile = None
     try:
         # g.trace('writing',fileName)
-        theFile = file(fileName,'w')
+        theFile = open(fileName,'w')
         if self.recentFiles:
             lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
             theFile.write('\n'.join(lines))
@@ -32898,7 +33037,7 @@ def replaceFileWithString (self,fn,s):
 
     if exists: # Read the file.  Return if it is the same.
         try:
-            f = file(fn,'rb')
+            f = open(fn,'rb')
             s2 = f.read()
             f.close()
         except IOError:
@@ -32911,7 +33050,7 @@ def replaceFileWithString (self,fn,s):
 
     # Replace
     try:
-        f = file(fn,'wb')
+        f = open(fn,'wb')
         f.write(s)
         f.close()
         if not testing:
@@ -33833,7 +33972,8 @@ def scanGnx (self,s,i):
 
     """Create a gnx from its string representation"""
 
-    if type(s) not in (type(""),type(u"")):
+    ### if type(s) not in (type(""),type(u"")):
+    if not g.isString(s):
         g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
         return None,None,None
 
@@ -34368,7 +34508,7 @@ def goto_open (self,filename):
         shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
             fn = shadow_filename
-	        lines = open(shadow_filename).readlines()
+	lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
@@ -34911,7 +35051,7 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
     if not marker:
         return
 
-    old_lines = file(source_fn).readlines()
+    old_lines = open(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
 
     copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -34960,7 +35100,7 @@ def goto_open (self,filename):
         shadow_filename = x.shadowPathName(filename)
         if os.path.exists(shadow_filename):
             fn = shadow_filename
-	        lines = open(shadow_filename).readlines()
+	lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines, x.marker_from_extension(shadow_filename))
         else:
@@ -36359,7 +36499,7 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
     if not marker:
         return
 
-    old_lines = file(source_fn).readlines()
+    old_lines = open(source_fn).readlines()
     new_lines, junk = x.separate_sentinels(old_lines,marker)
 
     copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -36679,7 +36819,11 @@ if toString:
 else:
     self.outputFile = None # The temporary output file.
     self.stringOutput = None
-    self.targetFileName = self.outputFileName = u""
+
+    if g.isPython3:
+        self.targetFileName = self.outputFileName = ''
+    else:
+        self.targetFileName = self.outputFileName = unicode('')
 #@-node:ekr.20041005105605.16:<< init ivars for writing >>>
 #@-node:ekr.20041005105605.15:initWriteIvars
 #@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
