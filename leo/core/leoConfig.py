@@ -410,6 +410,7 @@ class parserBaseClass:
         p = p.copy() ; after = p.nodeAfterTree()
         while p and p != after:
             h = p.headString()
+            if g.isPython3: g.trace(p.headString())
             if g.match_word(h,0,tag):
                 name = h[len(tag):].strip()
                 if name:
@@ -439,10 +440,13 @@ class parserBaseClass:
     #@+node:ekr.20070926141716:doItems
     def doItems (self,p,aList):
 
+        if g.isPython3: return ######
+
         p = p.copy() ; after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
             h = p.headString()
+            if g.isPython3: g.trace(p.headString())
             for tag in ('@menu','@item'):
                 if g.match_word(h,0,tag):
                     itemName = h[len(tag):].strip()
@@ -464,7 +468,6 @@ class parserBaseClass:
             else:
                 # g.trace('***skipping***',p.headString())
                 p.moveToThreadNext()
-    #@nonl
     #@-node:ekr.20070926141716:doItems
     #@+node:ekr.20070926142312:dumpMenuList
     def dumpMenuList (self,aList,level=0):
@@ -1051,7 +1054,9 @@ class parserBaseClass:
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)
-            # g.trace(result,p.headString())
+            if g.isPython3: g.trace(result,p.headString())
+            if p.headString() == 'Menus':
+                if g.isPython3: g.pdb()
             if result == "skip":
                 # g.es_print('skipping settings in',p.headString(),color='blue')
                 p.moveToNodeAfterTree()
@@ -1458,6 +1463,15 @@ class configClass:
 
         # g.trace(setting,requestedType,bunch.toString())
         val = bunch.val
+
+        if g.isPython3:
+            isNone = val in ('None','none','',None)
+        else:
+            isNone = val in (
+                unicode('None'),unicode('none'),unicode(''),
+                'None','none','',None)
+
+
         if not self.typesMatch(bunch.kind,requestedType):
             # New in 4.4: make sure the types match.
             # A serious warning: one setting may have destroyed another!
@@ -1467,7 +1481,8 @@ class configClass:
                 g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
                 g.es_print('there may be conflicting settings!',color='red')
             return None, False
-        elif val in (u'None',u'none','None','none','',None):
+        # elif val in (u'None',u'none','None','none','',None):
+        elif isNone:
             return None, True # Exists, but is None
         else:
             # g.trace(setting,val)
@@ -1808,6 +1823,8 @@ class configClass:
     #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
     def readSettingsFiles (self,fileName,verbose=True):
 
+        if g.isPython3: return ######
+
         seen = []
         self.write_recent_files_as_needed = False # Will be set later.
         #@    << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -1853,7 +1870,8 @@ class configClass:
                 if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                     s = 'reading settings in %s' % path
                     # This occurs early in startup, so use the following instead of g.es_print.
-                    s = g.toEncodedString(s,'ascii')
+                    if not g.isPython3:
+                        s = g.toEncodedString(s,'ascii')
                     g.pr(s)
                     g.app.logWaiting.append((s+'\n','blue'),)
 
@@ -1916,7 +1934,7 @@ class configClass:
         if g.app.homeDir:
             path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
             try:
-                f = file(path,'wb')
+                f = open(path,'wb')
                 f.write(s)
                 f.close()
                 self.myHomeConfigFile = path
@@ -1977,6 +1995,9 @@ class configClass:
 
     def readSettings (self,c,localFlag):
 
+        if g.isPython3:
+            return {} ###
+
         """Read settings from a file that may contain an @settings tree."""
 
         # g.trace('=' * 20, c.fileName())
@@ -2024,7 +2045,7 @@ class configClass:
             if theDir:
                 try:
                     fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                    f = file(fileName,'w')
+                    f = open(fileName,'w')
                     f.close()
                     g.es_print('created',fileName,color='red')
                     return
@@ -2041,7 +2062,7 @@ class configClass:
         if ok:
             if not g.unitTesting and not self.silent:
                 g.pr(('reading %s' % fileName))
-            lines = file(fileName).readlines()
+            lines = open(fileName).readlines()
             if lines and self.munge(lines[0])=='readonly':
                 lines = lines[1:]
             if lines:
@@ -2092,7 +2113,7 @@ class configClass:
         # Don't update the file if it begins with read-only.
         theFile = None
         try:
-            theFile = file(fileName)
+            theFile = open(fileName)
             lines = theFile.readlines()
             if lines and self.munge(lines[0])=='readonly':
                 # g.trace('read-only: %s' %fileName)
@@ -2104,7 +2125,7 @@ class configClass:
         theFile = None
         try:
             # g.trace('writing',fileName)
-            theFile = file(fileName,'w')
+            theFile = open(fileName,'w')
             if self.recentFiles:
                 lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
                 theFile.write('\n'.join(lines))
@@ -2149,7 +2170,10 @@ class configClass:
         for d in self.dictList:
             self.printSettingsHelper(settings,d)
 
-        keys = settings.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(settings)
+        else:
+            keys = settings.keys() ; keys.sort()
         for key in keys:
             data = settings.get(key)
             letter,val = data
@@ -2216,11 +2240,19 @@ class settingsTreeParser (parserBaseClass):
         kind,name,val = self.parseHeadline(p.headString())
         kind = munge(kind)
 
+        if g.isPython3:
+            isNone = val in ('None','none','',None)
+        else:
+            isNone = val in (
+                unicode('None'),unicode('none'),unicode(''),
+                'None','none','',None)
+
         if kind is None: # Not an @x node. (New in Leo 4.4.4)
             pass
         if kind == "settings":
             pass
-        elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+        # elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+        elif kind in self.basic_types and isNone:
             # None is valid for all basic types.
             self.set(p,kind,name,None)
         elif kind in self.control_types or kind in self.basic_types:

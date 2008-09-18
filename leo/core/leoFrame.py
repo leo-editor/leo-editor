@@ -1640,7 +1640,8 @@ class leoFrame:
             theDict = g.get_directives_dict(p)
             #@        << set w and break on @tabwidth >>
             #@+node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
-            if theDict.has_key("tabwidth"):
+            ### if theDict.has_key("tabwidth"):
+            if 'tabwidth' in theDict.keys():
 
                 val = g.scanAtTabwidthDirective(theDict,issue_error_flag=False)
                 if val and val != 0:

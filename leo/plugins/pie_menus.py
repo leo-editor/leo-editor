@@ -115,7 +115,7 @@ class PieMenu:
 
         f = tkFont.Font( weight = tkFont.BOLD, size = -15, family = 'courier')
 
-        for i in xrange(1,8):
+        for i in range(1,8):
             w = Tk.Toplevel()
             w.withdraw()
             exec("l%d = self.l%d = w" % (i,i))

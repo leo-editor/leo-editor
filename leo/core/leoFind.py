@@ -8,6 +8,7 @@
 
 import leo.core.leoGlobals as g
 import re
+import types
 
 #@<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414:<< Theory of operation of find/change >>
@@ -119,11 +120,22 @@ class searchWidget:
         if i is None:
             return 0
 
-        elif type(i) in (type('a'),type(u'a')):
+        ###
+        if g.isPython3:
+            isString = type(i) == type('a')
+        else:
+            isString = type(i) in types.StringTypes
+
+        if isString:
             row,col = i.split('.')
             row,col = int(row),int(col)
             row -= 1
             i = g.convertRowColToPythonIndex(self.s,row,col)
+        elif type(i) == type(9):
+            pass
+        else:
+            g.trace('can not happen: %s' % (i))
+            i = 0 # Should never happen.
 
         return i
     #@-node:ekr.20070105092022.4:toPythonIndex
@@ -628,8 +640,12 @@ class leoFind:
 
         try:
             assert(self.script_change)
-            exec self.change_text in {} # Use {} to get a pristine environment.
-        except:
+            ### exec self.change_text in {} # Use {} to get a pristine environment.
+            if g.isPython3:
+                exec(self.change_text,{},{})
+            else:
+                g.trace('exec function not supported')
+        except Exception:
             g.es("exception executing change script")
             g.es_exception(full=False)
             g.app.searchDict["continue"] = False # 2/1/04
@@ -655,7 +671,11 @@ class leoFind:
     def runFindScript (self):
 
         try:
-            exec self.find_text in {} # Use {} to get a pristine environment.
+            ### exec self.find_text in {} # Use {} to get a pristine environment.
+            if g.isPython3:
+                exec(self.find_text,{},{})
+            else:
+                g.trace('exec function not supported')
         except:
             g.es("exception executing find script")
             g.es_exception(full=False)

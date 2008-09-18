@@ -260,7 +260,7 @@ def setTime():
     lk.acquire()
     lt = time.localtime()
     priority = 1
-    for i in xrange(len(commands)):
+    for i in range(len(commands)):
         z = commands[i]
         tm = svs[i].get()
         p = tm.split(':')

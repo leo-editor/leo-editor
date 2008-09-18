@@ -43,9 +43,17 @@ try:
 except ImportError:
     tabnanny = None
 
+if g.isPython3:
+    pass # compiler module does not exist
+else:
+    try:
+        # IronPython has troubles with these.
+        import compiler # for Check Python command
+    except Exception:
+        pass
+
 try:
-    # IronPython has troubles with these.
-    import compiler # for Check Python command
+    # IronPython has troubles with this.
     import parser # needed only for weird Python 2.2 parser errors.
 except Exception:
     pass
@@ -260,8 +268,12 @@ class baseCommands:
         c = self
 
         g.pr('Commands...')
-        keys = c.commandsDict.keys()
-        keys.sort()
+
+        if g.isPython3:
+            keys = sorted(c.commandsDict)
+        else:
+            keys = c.commandsDict.keys() ; keys.sort()
+
         for key in keys:
             command = c.commandsDict.get(key)
             g.pr('%30s = %s' % (key,g.choose(command,command.__name__,'<None>')))
@@ -721,11 +733,13 @@ class baseCommands:
                         os.startfile(arg+path)
                     elif openType == "exec":
                         command = "exec(%s)" % (arg+shortPath)
-                        exec arg+path in {}
+                        ### exec arg+path in {}
+                        exec(arg+path,{},{})
                     elif openType == "os.spawnl":
                         filename = g.os_path_basename(arg)
                         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-                        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+                        ### apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+                        os.spawnl(os.P_NOWAIT,arg,filename,path)
                     elif openType == "os.spawnv":
                         filename = os.path.basename(arg[0]) 
                         vtuple = arg[1:]
@@ -734,7 +748,8 @@ class baseCommands:
                             # Change suggested by Jim Sizelove.
                         vtuple.append(path)
                         command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-                        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+                        ### apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+                        os.spawnv(os.P_NOWAIT,arg[0],vtuple)
                     # This clause by Jim Sizelove.
                     elif openType == "subprocess.Popen":
                         if isinstance(arg, basestring):
@@ -1663,7 +1678,8 @@ class baseCommands:
                         scriptFile = self.writeScriptFile(script)
                         execfile(scriptFile,d)
                     else:
-                        exec script in d
+                        ### exec script in d
+                        exec(script,d)
                     # g.trace('**** after')
                     if not script1 and not silent:
                         # Careful: the script may have changed the log tab.
@@ -1713,7 +1729,7 @@ class baseCommands:
 
         # Write the file.
         try:
-            f = file(path,'w')
+            f = open(path,'w')
             f.write(script)
             f.close()
         except Exception:
@@ -2738,7 +2754,7 @@ class baseCommands:
         forward = ch in open_brackets
         # Find the character matching the initial bracket.
         # g.trace('index',index,'ch',repr(ch),'brackets',brackets)
-        for n in xrange(len(brackets)):
+        for n in range(len(brackets)):
             if ch == brackets[n]:
                 match_ch = matching_brackets[n]
                 break
@@ -2931,7 +2947,7 @@ class baseCommands:
                     result.append(line)
         else:
             n = len(lines)
-            for i in xrange(n):
+            for i in range(n):
                 line = lines[i]
                 if i not in (0,n-1):
                     result.append(line)
@@ -3723,7 +3739,7 @@ class baseCommands:
                             g.pr("p.v",p.v)
                             g.pr("v.t",v.t)
                             g.pr("p.v.t",p.v.t)
-                            raise AssertionError, "v.t == p.v.t"
+                            raise AssertionError("v.t == p.v.t")
 
                         if p.v.isCloned():
                             assert v.isCloned(), "v.isCloned"
@@ -3768,11 +3784,14 @@ class baseCommands:
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
                     #@nl
-            except AssertionError,message:
+            except AssertionError: ### as message:
                 errors += 1
                 #@            << give test failed message >>
                 #@+node:ekr.20040314044652:<< give test failed message >>
-                s = "test failed at position %s\n%s" % (repr(p),message)
+                junk, value, junk = sys.exc_type()
+
+                s = "test failed at position %s\n%s" % (repr(p),value)
+
                 g.es_print(s,color="red")
                 #@-node:ekr.20040314044652:<< give test failed message >>
                 #@nl
@@ -3908,17 +3927,17 @@ class baseCommands:
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
             return
 
-        except parser.ParserError, msg:
+        except parser.ParserError(msg):
             if not suppressErrors:
                 g.es("ParserError in",headline,color="blue")
                 g.es('',str(msg))
 
-        except tokenize.TokenError, msg:
+        except tokenize.TokenError(msg):
             if not suppressErrors:
                 g.es("TokenError in",headline,color="blue")
                 g.es('',str(msg))
 
-        except tabnanny.NannyNag, nag:
+        except tabnanny.NannyNag(nag):
             if not suppressErrors:
                 badline = nag.get_lineno()
                 line    = nag.get_line()
@@ -3928,7 +3947,7 @@ class baseCommands:
                 line2 = repr(str(line))[1:-1]
                 g.es("offending line:\n",line2)
 
-        except:
+        except Exception:
             g.trace("unexpected exception")
             g.es_exception()
 
@@ -4093,7 +4112,7 @@ class baseCommands:
                     line2 = g.toEncodedString(line,encoding,reportErrors=True)
                     g.pr(line2,newline=False) # Don't add a trailing newline!)
             else:
-                for i in xrange(len(lines)):
+                for i in range(len(lines)):
                     line = lines[i]
                     line = g.toEncodedString(line,encoding,reportErrors=True)
                     g.pr("%3d" % i, repr(lines[i]))

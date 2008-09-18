@@ -121,9 +121,9 @@ class CSVVisualizer:
         n2 = self.rows
         n = self.columns
         data = []
-        for z in xrange( n2 ):
+        for z in range( n2 ):
             ndata = []
-            for z2 in xrange( n ):
+            for z2 in range( n ):
                 ndata.append( self.arr.get( "%s,%s" % ( z, z2 ) ) )        
             data.append( ndata )
         cS = cStringIO.StringIO()
@@ -147,7 +147,7 @@ class CSVVisualizer:
         self.rows = self.rows + 1
         tab.configure( rows = self.rows )
         rc =  '%s,0' % (self.rows -1 )
-        for z in xrange( self.columns ):
+        for z in range( self.columns ):
             self.arr.set( '%s,%s' %( self.rows - 1, z ), "" ) 
         tab.activate( rc )
         tab.focus_set()
@@ -172,7 +172,7 @@ def viewTable( c ):
         buttons = [ 'Save To Current', 'Write To New', 'Close']
     )
     dbbox = dialog.component( 'buttonbox' )
-    for z in xrange( dbbox.numbuttons() ):
+    for z in range( dbbox.numbuttons() ):
         dbbox.button( z ).configure( background = 'white', foreground = 'blue')
     csvv = CSVVisualizer( c )
     sframe = Pmw.ScrolledFrame( dialog.interior() )

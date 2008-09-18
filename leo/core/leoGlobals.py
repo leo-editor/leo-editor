@@ -40,7 +40,12 @@ except ImportError: # does not exist in jython.
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
 # import pdb
 
-import exceptions
+try:
+    # No such module in Python 3.x.
+    import exceptions
+except ImportError:
+    pass
+
 import operator
 import re
 import sys
@@ -760,7 +765,8 @@ def scanForAtIgnore(c,p):
 
     for p in p.self_and_parents_iter():
         d = g.get_directives_dict(p)
-        if d.has_key("ignore"):
+        ### if d.has_key("ignore"):
+        if 'ignore' in d:
             return True
 
     return False
@@ -777,7 +783,8 @@ def scanForAtLanguage(c,p):
     if c and p:
         for p in p.self_and_parents_iter():
             d = g.get_directives_dict(p)
-            if d.has_key("language"):
+            ### if d.has_key("language"):
+            if 'language' in d:
                 z = d["language"]
                 language,delim1,delim2,delim3 = g.set_language(z,0)
                 return language
@@ -1140,29 +1147,57 @@ def getLastTracebackFileAndLineNumber():
 
     typ,val,tb = sys.exc_info()
 
-    if typ in (exceptions.SyntaxError,exceptions.IndentationError):
-        # Syntax and indentation errors are a special case.
-        # extract_tb does _not_ return the proper line number!
-        # This code is similar to the code in format_exception_only(!!)
-        try:
-            # g.es_print('',repr(val))
-            msg,(filename, lineno, offset, line) = val
-            return filename,lineno
-        except Exception:
-            g.trace("bad line number")
-            return None,0
+    if g.isPython3:
+        if typ in (SyntaxError,IndentationError):
+            # Syntax and indentation errors are a special case.
+            # extract_tb does _not_ return the proper line number!
+            # This code is similar to the code in format_exception_only(!!)
+            try:
+                # g.es_print('',repr(val))
+                msg,(filename, lineno, offset, line) = val
+                return filename,lineno
+            except Exception:
+                g.trace("bad line number")
+                return None,0
+
+        else:
+            # The proper line number is the second element in the last tuple.
+            data = traceback.extract_tb(tb)
+            if data:
+                # g.es_print('',repr(data))
+                item = data[-1]
+                filename = item[0]
+                n = item[1]
+                return filename,n
+            else:
+                return None,0
+
 
     else:
-        # The proper line number is the second element in the last tuple.
-        data = traceback.extract_tb(tb)
-        if data:
-            # g.es_print('',repr(data))
-            item = data[-1]
-            filename = item[0]
-            n = item[1]
-            return filename,n
+
+        if typ in (exceptions.SyntaxError,exceptions.IndentationError):
+            # Syntax and indentation errors are a special case.
+            # extract_tb does _not_ return the proper line number!
+            # This code is similar to the code in format_exception_only(!!)
+            try:
+                # g.es_print('',repr(val))
+                msg,(filename, lineno, offset, line) = val
+                return filename,lineno
+            except Exception:
+                g.trace("bad line number")
+                return None,0
+
         else:
-            return None,0
+            # The proper line number is the second element in the last tuple.
+            data = traceback.extract_tb(tb)
+            if data:
+                # g.es_print('',repr(data))
+                item = data[-1]
+                filename = item[0]
+                n = item[1]
+                return filename,n
+            else:
+                return None,0
 #@-node:ekr.20040731204831:getLastTracebackFileAndLineNumber
 #@+node:ekr.20031218072017.3113:printBindings
 def print_bindings (name,window):
@@ -1447,8 +1482,8 @@ def pause (s):
 
     g.pr(s)
 
-    i = 0
-    while i < 1000000L:
+    i = 0 ; n = long(1000) * long(1000)
+    while i < n:
         i += 1
 #@-node:ekr.20031218072017.3128:pause
 #@+node:ekr.20050819064157:print_obj & toString
@@ -1481,7 +1516,10 @@ def print_dict(d,tag='',verbose=True,indent=''):
         else:   g.pr('{}')
         return
 
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
     n = 6
     for key in keys:
         if type(key) == type(''):
@@ -1502,10 +1540,14 @@ def dictToString(d,tag=None,verbose=True,indent=''):
     if not d:
         if tag: return '%s...{}' % tag
         else:   return '{}'
-    keys = d.keys() ; keys.sort()
+    if g.isPython3:
+        keys = sorted(d)
+    else:
+        keys = d.keys() ; keys.sort()
     n = 6
     for key in keys:
-        if type(key) in (type(''),type(u'')):
+        ### if type(key) in (type(''),type(u'')):
+        if type(key) == types.UnicodeType:
             n = max(n,len(key))
     lines = ["%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()) for key in keys]
     s = '\n'.join(lines)
@@ -1648,11 +1690,13 @@ def init_trace(args,echo=1):
         if prefix == '?':
             g.pr("trace list:", t)
         elif prefix == '+' and not arg in t:
-            t.append(string.lower(arg))
+            ### t.append(string.lower(arg))
+            t.append(arg.lower())
             if echo:
                 g.pr("enabling:", arg)
         elif prefix == '-' and arg in t:
-            t.remove(string.lower(arg))
+            ### t.remove(string.lower(arg))
+            t.remove(arg.lower())
             if echo:
                 g.pr("disabling:", arg)
         else:
@@ -1688,7 +1732,8 @@ def trace (*args,**keys):
     # Munge *args into s.
     result = []
     for arg in args:
-        if type(arg) == type(u""):
+        ### if type(arg) == type(u""):
+        if g.isString(arg):
             pass
         elif type(arg) != type(""):
             arg = repr(arg)
@@ -1700,46 +1745,6 @@ def trace (*args,**keys):
     s = g.toEncodedString(s,'ascii')
     g.pr('%s: %s' % (name,s),newline=newline)
 
-    if 0:
-
-        #callers = keys.get("callers",False)
-        newline = keys.get("newline",True)
-        align =   keys.get("align",0)
-
-        s = ""
-        for arg in args:
-            if type(arg) == type(u""):
-                pass
-            elif type(arg) != type(""):
-                arg = repr(arg)
-            if len(s) > 0:
-                s = s + " " + arg
-            else:
-                s = arg
-        message = s
-
-        try: # get the function name from the call stack.
-            f1 = sys._getframe(1) # The stack frame, one level up.
-            code1 = f1.f_code # The code object
-            name = code1.co_name # The code name
-        except Exception: name = ''
-        if name == "?":
-            name = "<unknown>"
-
-        # if callers:
-            # traceback.print_stack()
-
-        if align != 0 and len(name) < abs(align):
-            pad = ' ' * (abs(align) - len(name))
-            if align > 0: name = name + pad
-            else:         name = pad + name
-
-        message = g.toEncodedString(message,'ascii') # Bug fix: 10/10/07.
-
-        if newline:
-            g.pr(name + ": " + message)
-        else:
-            g.pr(name + ": " + message,)
 #@-node:ekr.20031218072017.2317:trace
 #@+node:ekr.20031218072017.2318:trace_tag
 # Convert all args to strings.
@@ -1895,15 +1900,20 @@ class Tracer:
         g.pr('\ncallDict...')
 
         # g.pr(g.dictToString(self.callDict))
-        keys = self.callDict.keys()
-        keys.sort()
+        if g.isPython3:
+            keys = sorted(self.callDict)
+        else:
+            keys = self.callDict.keys() ; keys.sort()
+
         for key in keys:
             # Print the calling function.
             g.pr('%d' % (self.calledDict.get(key,0)),key)
             # Print the called functions.
             d = self.callDict.get(key)
-            keys2 = d.keys()
-            keys2.sort()
+            if g.isPython3:
+                keys2 = sorted(d)
+            else:
+                keys2 = d.keys() ; keys2.sort()
             for key2 in keys2:
                 g.pr('%8d' % (d.get(key2)),key2)
     #@-node:ekr.20080531075119.4:report
@@ -2009,7 +2019,7 @@ def create_temp_file (textMode=False):
         theFileName = tempfile.mktemp()
         try:
             mode = g.choose(textMode,'w','wb')
-            theFile = file(theFileName,mode)
+            theFile = open(theFileName,mode)
         except IOError:
             theFile,theFileName = None,''
     except Exception:
@@ -2246,7 +2256,8 @@ def openLeoOrZipFile (fileName):
             theFile = zipfile.ZipFile(fileName,'r')
             # g.trace('opened zip file',theFile)
         else:
-            theFile = file(fileName,'rb')
+            mode = g.choose(g.isPython3,'r','rb')
+            theFile = open(fileName,mode)
         return theFile,isZipped
     except IOError:
         # Do not use string + here: it will fail for non-ascii strings!
@@ -2434,7 +2445,7 @@ def utils_stat (fileName):
     '''Return the access mode of named file, removing any setuid, setgid, and sticky bits.'''
 
     try:
-        mode = (os.stat(fileName))[0] & 0777
+        mode = (os.stat(fileName))[0] & (7*8*8 + 7*8 + 7) # 0777
     except Exception:
         mode = None
 
@@ -2553,7 +2564,10 @@ def printGcAll (tag=''):
         for z in items:
             g.pr('%40s %7d' % (z[0],z[1]))
     else: # Sort by type
-        keys = d.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(d)
+        else:
+            keys = d.keys() ; keys.sort()
         for t in keys:
             g.pr('%40s %7d' % (t,d.get(t)))
 #@-node:ekr.20060202161935:printGcAll
@@ -2579,7 +2593,7 @@ def printGcObjects(tag=''):
 
         for obj in gc.get_objects():
             t = type(obj)
-            if t == 'instance' and t not in types.StringTypes:
+            if t == 'instance' and t != types.UnicodeType:
                 try: t = obj.__class__
                 except Exception: pass
             if t != types.FrameType:
@@ -2640,7 +2654,8 @@ def printGcObjects(tag=''):
                 if type(obj) == types.FunctionType:
                     key = repr(obj) # Don't create a pointer to the object!
                     funcDict[key]=None 
-                    if n < 50 and not lastFunctionsDict.has_key(key):
+                    ### if n < 50 and not lastFunctionsDict.has_key(key):
+                    if n < 50 and key not in lastFunctionsDict:
                         g.pr(obj)
                         args, varargs, varkw,defaults  = inspect.getargspec(obj)
                         g.pr("args", args)
@@ -2685,8 +2700,8 @@ def printGcVerbose(tag=''):
     tag = tag or g._callerName(n=2)
     global lastObjectsDict
     objects = gc.get_objects()
-    newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
-
+    ### newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
+    newObjects = [o for o in objects if id(o) not in lastObjectsDict]
     lastObjectsDict = {}
     for o in objects:
         lastObjectsDict[id(o)]=o
@@ -2995,9 +3010,12 @@ def pr(*args,**keys):
     #    sys.setdefaultencoding('utf-8')
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
-    try:
-        if d.get('newline'): print s
-        else:                print s,
+    try: # We can't use any print keyword args in Python 2.x!
+        # print(s) # Not quite right.
+        if d.get('newline'):
+            sys.stdout.write(s+'\n')
+        else:
+            sys.stdout.write(s)
     except Exception:
         print('unexpected Exception in g.pr')
         g.es_exception()
@@ -3037,7 +3055,8 @@ def translateArgs(args,d):
             arg = g.toUnicode(arg,g.consoleEncoding)
 
         # Now translate.
-        if type(arg) not in (type(""),type(u""),):
+        ### if type(arg) not in (type(""),type(u""),):
+        if not g.isString(arg):
             arg = repr(arg)
         elif (n % 2) == 1:
             arg = g.translateString(arg)
@@ -3055,13 +3074,21 @@ def translateString (s):
 
     '''Return the translated text of s.'''
 
-    if g.app.translateToUpperCase:
-        return s.upper()
+    if g.isPython3:
+        if not g.isString(s):
+            s = str(s,'utf-8')
+        if g.app.translateToUpperCase:
+            s = s.upper()
+        else:
+            s = gettext.gettext(s)
+        return s
     else:
-        return gettext.gettext(s)
+         if g.app.translateToUpperCase:
+            return s.upper()
+         else:
+            return gettext.gettext(s)
 
 tr = translateString
-#@nonl
 #@-node:ekr.20060810095921:translateString & tr
 #@+node:ekr.20031218072017.3148:top
 if 0: # An extremely dangerous function.
@@ -3424,7 +3451,8 @@ def skip_block_comment (s,i):
     assert(g.match(s,i,"/*"))
     j = i ; i += 2 ; n = len(s)
 
-    k = string.find(s,"*/",i)
+    ### k = string.find(s,"*/",i)
+    k = s.find("*/",i)
     if k == -1:
         g.scanError("Run on block comment: " + s[j:i])
         return n
@@ -3554,7 +3582,8 @@ def skip_pascal_block_comment(s,i):
 
     j = i
     assert(g.match(s,i,"(*"))
-    i = string.find(s,"*)",i)
+    ### i = string.find(s,"*)",i)
+    i = s.find("*)",i)
     if i > -1: return i + 2
     else:
         g.scanError("Run on comment" + s[j:i])
@@ -3699,7 +3728,8 @@ def skip_python_string(s,i,verbose=True):
 
     if g.match(s,i,"'''") or g.match(s,i,'"""'):
         j = i ; delim = s[i]*3 ; i += 3
-        k = string.find(s,delim,i)
+        ### k = string.find(s,delim,i)
+        k = s.find(delim,i)
         if k > -1: return k+3
         if verbose:
             g.scanError("Run on triple quoted string: " + s[j:i])
@@ -3775,7 +3805,8 @@ def find_line_start(s,i):
 
     if i < 0: return 0 # New in Leo 4.4.5: add this defensive code.
     # bug fix: 11/2/02: change i to i+1 in rfind
-    i = string.rfind(s,'\n',0,i+1) # Finds the highest index in the range.
+    ### i = string.rfind(s,'\n',0,i+1) # Finds the highest index in the range.
+    i = s.rfind('\n',0,i+1) # Finds the highest index in the range.
     if i == -1: return 0
     else: return i + 1
 #@-node:ekr.20031218072017.3175:find_line_start
@@ -3783,9 +3814,11 @@ def find_line_start(s,i):
 def find_on_line(s,i,pattern):
 
     # j = g.skip_line(s,i) ; g.trace(s[i:j])
-    j = string.find(s,'\n',i)
+    ### j = string.find(s,'\n',i)
+    j = s.find('\n',i)
     if j == -1: j = len(s)
-    k = string.find(s,pattern,i,j)
+    ### k = string.find(s,pattern,i,j)
+    k = s.find(pattern,i,j)
     if k > -1: return k
     else: return None
 #@-node:ekr.20031218072017.3176:find_on_line
@@ -3835,7 +3868,8 @@ def is_ws_or_nl(s,i):
 
 def match(s,i,pattern):
 
-    return s and pattern and string.find(s,pattern,i,i+len(pattern)) == i
+    ### return s and pattern and string.find(s,pattern,i,i+len(pattern)) == i
+    return s and pattern and s.find(pattern,i,i+len(pattern)) == i
 #@-node:ekr.20031218072017.3181:match
 #@+node:ekr.20031218072017.3182:match_c_word
 def match_c_word (s,i,name):
@@ -3849,7 +3883,8 @@ def match_c_word (s,i,name):
 def match_ignoring_case(s1,s2):
 
     if s1 == None or s2 == None: return False
-    return string.lower(s1) == string.lower(s2)
+    ### return string.lower(s1) == string.lower(s2)
+    return s1.lower() == s2.lower()
 #@-node:ekr.20031218072017.3183:match_ignoring_case
 #@+node:ekr.20031218072017.3184:match_word
 def match_word(s,i,pattern):
@@ -3909,7 +3944,8 @@ def skip_line (s,i):
 
     if i >= len(s): return len(s) # Bug fix: 2007/5/22
     if i < 0: i = 0
-    i = string.find(s,'\n',i)
+    ### i = string.find(s,'\n',i)
+    i = s.find('\n',i)
     if i == -1: return len(s)
     else: return i + 1
 
@@ -3917,7 +3953,8 @@ def skip_to_end_of_line (s,i):
 
     if i >= len(s): return len(s) # Bug fix: 2007/5/22
     if i < 0: i = 0
-    i = string.find(s,'\n',i)
+    ### i = string.find(s,'\n',i)
+    i = s.find('\n',i)
     if i == -1: return len(s)
     else: return i
 
@@ -3938,10 +3975,12 @@ def skip_long(s,i):
     val = 0
     i = g.skip_ws(s,i)
     n = len(s)
-    if i >= n or (not s[i].isdigit() and s[i] not in u'+-'):
+    ### if i >= n or (not s[i].isdigit() and s[i] not in u'+-'):
+    if i >= n or (not s[i].isdigit() and s[i] not in '+-'):
         return i, None
     j = i
-    if s[i] in u'+-': # Allow sign before the first digit
+    ### if s[i] in u'+-': # Allow sign before the first digit
+    if s[i] in '+-': # Allow sign before the first digit
         i +=1
     while i < n and s[i].isdigit():
         i += 1
@@ -4022,14 +4061,16 @@ def skip_non_ws (s,i):
 def skip_pascal_braces(s,i):
 
     # No constructs are recognized inside Pascal block comments!
-    k = string.find(s,'}',i)
+    ### k = string.find(s,'}',i)
+    k = s.find('}',i)
     if i == -1: return len(s)
     else: return k
 #@-node:ekr.20031218072017.3192:skip_pascal_braces
 #@+node:ekr.20031218072017.3193:skip_to_char
 def skip_to_char(s,i,ch):
 
-    j = string.find(s,ch,i)
+    ### j = string.find(s,ch,i)
+    j = s.find(ch,i)
     if j == -1:
         return len(s),s[i:]
     else:
@@ -4163,7 +4204,7 @@ def handleScriptException (c,p,script,script1):
     #@    << dump the lines near the error >>
     #@+node:EKR.20040612215018:<< dump the lines near the error >>
     if g.os_path_exists(fileName):
-        f = file(fileName)
+        f = open(fileName)
         lines = f.readlines()
         f.close()
     else:
@@ -4222,16 +4263,26 @@ def executeFile(filename, options= ''):
 #@-node:ekr.20050503112513.7:g.executeFile
 #@-node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
 #@+node:ekr.20031218072017.1498:Unicode utils...
+#@+node:ekr.20080816125725.2:g.isString
+def isString (s):
+
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) in types.StringTypes
+#@-node:ekr.20080816125725.2:g.isString
 #@+node:ekr.20061006152327:g.isWordChar & g.isWordChar1
 def isWordChar (ch):
 
     '''Return True if ch should be considered a letter.'''
 
-    return ch and (ch.isalnum() or ch == u'_')
+    ### return ch and (ch.isalnum() or ch == u'_')
+    return ch and (ch.isalnum() or ch == '_')
 
 def isWordChar1 (ch):
 
-    return ch and (ch.isalpha() or ch == u'_')
+    ### return ch and (ch.isalpha() or ch == u'_')
+    return ch and (ch.isalpha() or ch == '_')
 #@nonl
 #@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
 #@+node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
@@ -4306,7 +4357,11 @@ except Exception:
 #@+node:ekr.20031218072017.1499:isUnicode
 def isUnicode(s):
 
-    return s is None or type(s) == type(u' ')
+    ### return s is None or type(s) == type(u' ')
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) in types.StringTypes
 #@-node:ekr.20031218072017.1499:isUnicode
 #@+node:ekr.20031218072017.1500:isValidEncoding
 def isValidEncoding (encoding):
@@ -4331,40 +4386,80 @@ def isValidEncoding (encoding):
 #@+node:ekr.20031218072017.1501:reportBadChars
 def reportBadChars (s,encoding):
 
-    errors = 0
-    if type(s) == type(u""):
-        for ch in s:
-            try: ch.encode(encoding,"strict")
-            except UnicodeEncodeError:
-                errors += 1
-        if errors:
-            s2 = "%d errors converting %s to %s" % (
-                errors, s.encode(encoding,'replace'),
-                encoding.encode('ascii','replace'))
-            if not g.unitTesting:
-                g.es(s2,color='red')
-    elif type(s) == type(""):
-        for ch in s:
-            try: unicode(ch,encoding,"strict")
-            except Exception: errors += 1
-        if errors:
-            s2 = "%d errors converting %s (%s encoding) to unicode" % (
-                errors, unicode(s,encoding,'replace'),
-                encoding.encode('ascii','replace'))
-            if not g.unitTesting:
-                g.es(s2,color='red')
+    if g.isPython3:  ### To do
+
+        errors = 0
+        ### if type(s) == type(u""):
+        if g.isString(s):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                s2 = "%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
+        ### elif type(s) == type(""):
+        else:
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                s2 = "%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
+    else:
+        errors = 0
+        ### if type(s) == type(u""):
+        if type(s) == types.UnicodeType:
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                s2 = "%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
+        ### elif type(s) == type(""):
+        elif type(s) in types.StringTypes:
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                s2 = "%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
 #@-node:ekr.20031218072017.1501:reportBadChars
 #@+node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@+node:ekr.20050208093800:toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
-    if type(s) == type(u""):
-        try:
-            s = s.encode(encoding,"strict")
-        except UnicodeError:
-            if reportErrors:
-                g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
+    ### if type(s) == type(u""):
+    if isPython3:
+        if g.isString(s):
+            try:
+                s = s.encode(encoding,"strict")
+            except UnicodeError:
+                if reportErrors:
+                    g.reportBadChars(s,encoding)
+                s = s.encode(encoding,"replace")
+
+    else:
+        if type(s) == types.UnicodeType:
+            try:
+                s = s.encode(encoding,"strict")
+            except UnicodeError:
+                if reportErrors:
+                    g.reportBadChars(s,encoding)
+                s = s.encode(encoding,"replace")
     return s
 #@-node:ekr.20050208093800:toEncodedString
 #@+node:ekr.20050208093903:toEncodedStringWithErrorCode
@@ -4372,7 +4467,8 @@ def toEncodedStringWithErrorCode (s,encoding):
 
     ok = True
 
-    if type(s) == type(u""):
+    ### if type(s) == type(u""):
+    if type(s) in types.StringTypes:
         try:
             s = s.encode(encoding,"strict")
         except UnicodeError:
@@ -4384,32 +4480,65 @@ def toEncodedStringWithErrorCode (s,encoding):
 #@+node:ekr.20050208093800.1:toUnicode
 def toUnicode (s,encoding,reportErrors=False):
 
-    if s is None:
-        s = u""
-    if type(s) == type(""):
-        try:
-            s = unicode(s,encoding,"strict")
-        except UnicodeError:
-            if reportErrors:
-                g.reportBadChars(s,encoding)
-            s = unicode(s,encoding,"replace")
+    if isPython3:
+        if s is None:
+            return ''
+        if not g.isString(s):
+            s = repr(s)
+    else:
+        if s is None:
+            ### s = u""
+            return unicode('')
+        ### if type(s) == type(""):
+        if type(s) != types.UnicodeType:
+            try:
+                s = unicode(s,encoding,"strict")
+            except UnicodeError:
+                if reportErrors:
+                    g.reportBadChars(s,encoding)
+                s = unicode(s,encoding,"replace")
     return s
 #@-node:ekr.20050208093800.1:toUnicode
 #@+node:ekr.20050208095723:toUnicodeWithErrorCode
 def toUnicodeWithErrorCode (s,encoding):
 
-    ok = True
+    if isPython3:
+        if s is None:
+            return '',True
+        if not g.isString(s):
+            return repr(s),True
+    else:
+        if s is None:
+            ### s = u""
+            return unicode(''),True
+        ### if type(s) == type(""):
+        if type(s) == types.UnicodeType:
+            return s,True
+        else:
+            try:
+                s = unicode(s,encoding,"strict")
+                return s,True
+            except UnicodeError:
+                s = unicode(s,encoding,"replace")
+                return s,False
 
-    if s is None:
-        s = u""
-    if type(s) == type(""):
-        try:
-            s = unicode(s,encoding,"strict")
-        except UnicodeError:
-            s = unicode(s,encoding,"replace")
-            ok = False
+    # ok = True
+    # if s is None:
+        # ### s = u""
+        # if g.isPython3:
+            # s = ''
+        # else:
+            # s = unicode('')
 
-    return s,ok
+    # ### if type(s) == type(""):
+    # if type(s) != types.UnicodeType:
+        # try:
+            # s = unicode(s,encoding,"strict")
+        # except UnicodeError:
+            # s = unicode(s,encoding,"replace")
+            # ok = False
+
+    # return s,ok
 #@-node:ekr.20050208095723:toUnicodeWithErrorCode
 #@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@-node:ekr.20031218072017.1498:Unicode utils...
@@ -4492,7 +4621,8 @@ def maxStringListLength(aList):
 
     n = 0
     for z in aList:
-        if type(z) in (type(''),type(u'')):
+        ### if type(z) in (type(''),type(u'')):
+        if type(z) in types.StringTypes:
             n = max(n,len(z))
 
     return n
@@ -4520,8 +4650,8 @@ def CheckVersion (s1,s2,condition=">=",stringCompare=None,delimiter='.',trace=Fa
     vals1 = [g.CheckVersionToInt(s) for s in s1.split(delimiter)] ; n1 = len(vals1)
     vals2 = [g.CheckVersionToInt(s) for s in s2.split(delimiter)] ; n2 = len(vals2)
     n = max(n1,n2)
-    if n1 < n: vals1.extend([0 for i in xrange(n - n1)])
-    if n2 < n: vals2.extend([0 for i in xrange(n - n2)])
+    if n1 < n: vals1.extend([0 for i in range(n - n1)])
+    if n2 < n: vals2.extend([0 for i in range(n - n2)])
     for cond,val in (
         ('==', vals1 == vals2), ('!=', vals1 != vals2),
         ('<',  vals1 <  vals2), ('<=', vals1 <= vals2),
@@ -4530,7 +4660,7 @@ def CheckVersion (s1,s2,condition=">=",stringCompare=None,delimiter='.',trace=Fa
         if condition == cond:
             result = val ; break
     else:
-        raise EnvironmentError,"condition must be one of '>=', '>', '==', '!=', '<', or '<='."
+        raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
 
     if trace:
         # g.pr('%10s' % (repr(vals1)),'%2s' % (condition),'%10s' % (repr(vals2)),result)
@@ -4621,7 +4751,7 @@ def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0
             errMsg = "stringCompare argument must be of " +\
                  "the form \"x.x.x.x\" where each " +\
                  "'x' is either '0' or '1'."
-            raise EnvironmentError,errMsg
+            raise EnvironmentError(errMsg)
 
     # Compare the versions
     if condition == ">=":
@@ -4664,7 +4794,7 @@ def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0
         return 1 # it was equal
 
     # didn't find a condition that we expected.
-    raise EnvironmentError,"condition must be one of '>=', '>', '==', '!=', '<', or '<='."
+    raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
 #@nonl
 #@-node:ekr.20060921100435.1:oldCheckVersion (Dave Hein)
 #@-node:ekr.20031218072017.3097:CheckVersion
@@ -4912,7 +5042,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
         g.es_exception()
         script = ''
 
-    # g.trace(type(script),script)
+    # g.trace(type(script),repr(script))
     return script
 #@-node:EKR.20040614071102.1:g.getScript
 #@+node:ekr.20050920084036.4:g.longestCommonPrefix & g.itemsMatchingPrefixInList
@@ -5131,6 +5261,7 @@ but this module may be missing if you get Leo from cvs.
         g.pr('Can not import %s' % moduleName)
         g.pr('Can not import Tkinter')
         g.pr('Leo must now exit')
+        g.pr(g.callers())
 #@+node:ekr.20060329083310.1:createDialogFrame
 def createDialogFrame(Tk,root,title,message):
 
@@ -5290,6 +5421,9 @@ class readLinesClass:
             line = ''
         # g.trace(repr(line))
         return line
+
+    ###
+    __next__ = next
 #@-node:EKR.20040612114220.4:class readLinesClass
 #@-node:ekr.20040629162023:readLines class and generator
 #@-node:EKR.20040612114220:Utility classes, functions & objects...
@@ -5487,7 +5621,7 @@ def stripBlankLines(s):
 
     lines = g.splitLines(s)
 
-    for i in xrange(len(lines)):
+    for i in range(len(lines)):
 
         line = lines[i]
         j = g.skip_ws(line,0)
@@ -5545,6 +5679,5 @@ def init_zodb (pathToZodbStorage,verbose=True):
 #@-node:ekr.20060913090832.1:g.init_zodb
 #@-node:ekr.20060913091602:ZODB support
 #@-others
-#@nonl
 #@-node:ekr.20031218072017.3093:@thin leoGlobals.py
 #@-leo

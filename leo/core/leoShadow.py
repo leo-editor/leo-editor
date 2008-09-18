@@ -153,7 +153,7 @@ class shadowController:
 
         if exists: # Read the file.  Return if it is the same.
             try:
-                f = file(fn,'rb')
+                f = open(fn,'rb')
                 s2 = f.read()
                 f.close()
             except IOError:
@@ -166,7 +166,7 @@ class shadowController:
 
         # Replace the file.
         try:
-            f = file(fn,'wb')
+            f = open(fn,'wb')
             f.write(s)
             if trace: g.trace('fn',fn,
                 '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
@@ -593,7 +593,7 @@ class shadowController:
         if not marker:
             return
 
-        old_lines = file(source_fn).readlines()
+        old_lines = open(source_fn).readlines()
         new_lines, junk = x.separate_sentinels(old_lines,marker)
 
         copy = not os.path.exists(target_fn) or old_lines != new_lines
