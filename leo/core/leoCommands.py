@@ -5764,7 +5764,6 @@ class baseCommands:
 
         # Step 1: Compute the starting path.
         # The correct fallback directory is the absolute path to the base.
-
         if c.openDirectory:  # Bug fix: 2008/9/18
             base = c.openDirectory
         else:
@@ -5790,18 +5789,6 @@ class baseCommands:
                 # Convert "path" or <path> to path.
                 path = g.computeRelativePath(path)
                 if path: paths.append(path)
-
-            # Do **not** add any part of the the fileName.
-            # else:
-                # # Look for any kind of @file node.
-                # p = d.get('_p')
-                # if p.isAnyAtFileNode():
-                    # fileName = p.anyAtFileNodeName()
-                    # path = g.os_path_dirname(fileName) # Bug fix: 2008/9/18
-                    # if path:
-                        # if trace:
-                            # g.trace('appending path',path,'from',fileName)
-                        # paths.append(path)
 
         # Add absbase and reverse the list.
         paths.append(absbase)
