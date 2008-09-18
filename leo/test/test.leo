@@ -280,7 +280,9 @@
 </v>
 <v t="ekr.20080911112823.1"><vh>@@nosent fix-failure.py</vh></v>
 <v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
+<v t="ekr.20080918123632.1"><vh>@path unittest</vh>
 <v t="ekr.20080918090005.1"><vh>@@file goto-global-line-test.py</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -2324,6 +2326,7 @@ for name in aList:
 <t tx="ekr.20080918090005.1">@language python
 @tabwidth -4
 
-# This is a line</t>
+# This is a line, changed 2.</t>
+<t tx="ekr.20080918123632.1"></t>
 </tnodes>
 </leo_file>
