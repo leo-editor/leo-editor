@@ -2135,6 +2135,7 @@ class baseCommands:
             # Calculate the full path.
             d = g.scanDirectives(c,p=root)
             path = d.get("path")
+            # g.trace('path',path,'fileName',fileName)
             fileName = g.os_path_join(path,fileName)
             lines    = c.goto_open(fileName)
 
@@ -2178,7 +2179,7 @@ class baseCommands:
         except Exception:
             # Make sure failures to open a file generate clear messages.
             g.es_print('can not open',fn,color='blue')
-            g.es_exception()
+            # g.es_exception()
             lines = []
 
         return lines
