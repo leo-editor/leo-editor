@@ -4222,6 +4222,14 @@ def executeFile(filename, options= ''):
 #@-node:ekr.20050503112513.7:g.executeFile
 #@-node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
 #@+node:ekr.20031218072017.1498:Unicode utils...
+#@+node:ekr.20080918063410.2:g.isString
+def isString (s):
+
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) in types.StringTypes
+#@-node:ekr.20080918063410.2:g.isString
 #@+node:ekr.20061006152327:g.isWordChar & g.isWordChar1
 def isWordChar (ch):
 

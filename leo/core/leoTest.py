@@ -183,7 +183,8 @@ class generalTestCase(unittest.TestCase):
             scriptFile = c.writeScriptFile(script)
             execfile(scriptFile,d)
         else:
-            exec script in d
+            ### exec script in d
+            exec(script,d)
 
         # if 0: # debug
             # import pdb
@@ -221,12 +222,13 @@ def makeTestSuite (c,p):
         return None
 
     try:
-        exec script + '\n' in {'c':c,'g':g,'p':p}
+        ### exec script + '\n' in {'c':c,'g':g,'p':p}
+        exec(script + '\n',{'c':c,'g':g,'p':p})
         suite = g.app.scriptDict.get("suite")
         if not suite:
             g.pr("%s script did not set g.app.scriptDict" % h)
         return suite
-    except:
+    except Exception:
         g.trace('Exception creating test cases for %s' % p.headString())
         g.es_exception()
         return None
@@ -284,7 +286,7 @@ def runTimerOnNode (c,p,count):
         result = t.timeit(count)
         ratio = "%f" % (float(result)/float(count))
         g.es_print("count:",count,"time/count:",ratio,'',p.headString())
-    except:
+    except Exception:
         t.print_exc()
 #@-node:ekr.20051104075904.15:runTimerOnNode
 #@-node:ekr.20051104075904.2:Support @profile, @suite, @test, @timer
@@ -1243,7 +1245,7 @@ class importExportTestCase(unittest.TestCase):
 
         try:
             return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
-        except:
+        except Exception:
             return "ImportExportTestCase"
     #@-node:ekr.20051104075904.85:shortDescription
     #@+node:ekr.20051104075904.86:tearDown
@@ -1315,12 +1317,12 @@ def checkFileTabs (fileName,s):
         readline = g.readLinesClass(s).next
         tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
-    except tokenize.TokenError, msg:
+    except (tokenize.TokenError, msg):
         g.es_print("Token error in",fileName,color="blue")
         g.es_print('',msg)
         assert 0, "test failed"
 
-    except tabnanny.NannyNag, nag:
+    except (tabnanny.NannyNag, nag):
         badline = nag.get_lineno()
         line    = nag.get_line()
         message = nag.get_msg()
@@ -1330,7 +1332,7 @@ def checkFileTabs (fileName,s):
         g.es_print('',line)
         assert 0, "test failed"
 
-    except:
+    except Exception:
         g.trace("unexpected exception")
         g.es_exception()
         assert 0, "test failed"
@@ -1382,8 +1384,8 @@ class reformatParagraphTest:
         for i in range(min(newLinesCount,refLinesCount)):
             assert newLines[i] == refLines[i], \
                 "Mismatch on line " + str(i) + "." \
-                + "\nExpected text: " + `refLines[i]` \
-                + "\n  Actual text: " + `newLines[i]`
+                + "\nExpected text: " + repr(refLines[i]) \
+                + "\n  Actual text: " + repr(newLines[i])
 
         assert newLinesCount == refLinesCount, \
             "Expected " + str(refLinesCount) + " lines, but " \
