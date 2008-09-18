@@ -581,7 +581,8 @@ class leoGtkFrame (leoFrame.leoFrame):
             vList.append(p.v)
             if p.v.t:
                 key = id(p.v.t)
-                if not tDict.has_key(key):
+                ### if not tDict.has_key(key):
+                if key not in tDict.keys():
                     tDict[key] = p.v.t
 
         for key in tDict.keys():

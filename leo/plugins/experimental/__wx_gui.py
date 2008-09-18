@@ -1282,7 +1282,7 @@ if wx:
             self.wordLabel.configure(text= "Suggestions for: " + word)
             self.listBox.delete(0, "end")
 
-            for i in xrange(len(self.suggestions)):
+            for i in range(len(self.suggestions)):
                 self.listBox.insert(i, self.suggestions[i])
 
             # This doesn't show up because we don't have focus.
@@ -4474,7 +4474,7 @@ if wx:
             self.tabFrame = self.frameDict.get(tabName)
 
             nb = self.nb
-            for i in xrange(nb.GetPageCount()):
+            for i in range(nb.GetPageCount()):
                 s = nb.GetPageText(i)
                 if s == tabName:
                     nb.SetSelection(i)
@@ -4495,7 +4495,7 @@ if wx:
             c = self.c ; nb = self.nb
 
             if tabName not in ('Log','Find','Spell'):
-                for i in xrange(nb.GetPageCount()):
+                for i in range(nb.GetPageCount()):
                     s = nb.GetPageText(i)
                     if s == tabName:
                         nb.DeletePage(i)
@@ -5311,7 +5311,7 @@ if wx:
             self.imageList = imageList = wx.ImageList(21,11)
             theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','Icons'))
 
-            for i in xrange(16):
+            for i in range(16):
 
                 # Get the original bitmap.
                 fileName = g.os_path_join(theDir,'box%02d.bmp' % i)

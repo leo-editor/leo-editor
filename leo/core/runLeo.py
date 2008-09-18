@@ -34,9 +34,13 @@ if 0: # Set to 1 for lint-like testing.
 # Doing so would make g.app invalid in the imported files.
 import os
 import sys
-import Tkinter ; Tkinter.wantobjects = 0
-    # An ugly hack for Tk/Tkinter 8.5
-    # See http://sourceforge.net/forum/message.php?msg_id=4078577
+
+try:
+    import Tkinter ; Tkinter.wantobjects = 0
+        # An ugly hack for Tk/Tkinter 8.5
+        # See http://sourceforge.net/forum/message.php?msg_id=4078577
+except ImportError:
+    import tkinter ; tkinter.wantobject = 0
 
 #@+others
 #@+node:ekr.20031218072017.1934:run
@@ -105,6 +109,8 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     #@nl
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
+    if g.isPython3:
+        fileName = r'c:\leo.repo\leo-30\leo\test\test.leo' # smallTest.leo' ### testing only.
     fileName,relativeFileName = completeFileName(fileName)
     reportDirectories(verbose)
     # Read settings *after* setting g.app.config.
@@ -124,11 +130,14 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
         else:
             createNullGuiWithScript(script)
         fileName = None
-    # Load plugins. Plugins may create g.app.gui.
-    g.doHook("start1")
-    if g.app.killed: return # Support for g.app.forceShutdown.
-    # Create the default gui if needed.
-    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
+    else:
+        g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+        if g.app.killed: return # Support for g.app.forceShutdown.
+        if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     # Initialize tracing and statistics.
     g.init_sherlock(args)
     if g.app and g.app.use_psyco: startPsyco()

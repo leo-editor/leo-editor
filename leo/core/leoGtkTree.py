@@ -741,8 +741,10 @@ class leoGtkTree (leoFrame.leoTree):
             for theDict,tag,flag in ((tree.ids,"ids",True),(tree.iconIds,"icon ids",False)):
                 g.pr('=' * 60)
                 g.pr("\n%s..." % tag)
-                keys = theDict.keys()
-                keys.sort()
+                if g.isPython3:
+                    keys = sorted(theDict)
+                else:
+                    keys = theDict.keys() ; keys.sort()
                 for key in keys:
                     p = tree.ids.get(key)
                     if p is None: # For lines.
@@ -1248,7 +1250,8 @@ class leoGtkTree (leoFrame.leoTree):
     def getIconImage (self, name):
 
         # Return the image from the cache if possible.
-        if self.iconimages.has_key(name):
+        ### if self.iconimages.has_key(name):
+        if name in self.iconimages.keys():
             return self.iconimages[name]
 
         # g.trace(name)

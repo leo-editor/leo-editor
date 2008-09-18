@@ -5,7 +5,7 @@
 #@@pagewidth 80
 
 #@<< imports >>
-#@+node:ekr.20050405141130:<< imports >>
+#@+node:ekr.20050405141130:<< imports >> (leoFileCommands)
 import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
@@ -16,11 +16,20 @@ if g.app and g.app.use_psyco:
 import leo.core.leoNodes as leoNodes
 
 import binascii
-import cStringIO
+
+if g.isPython3:
+    import io # Pythone 3.x
+    StringIO = io.StringIO
+    BytesIO = io.BytesIO
+else:
+    import cStringIO # Python 2.x
+    StringIO = cStringIO.StringIO
+
 import os
 import pickle
 import string
 import sys
+import types
 import zipfile
 # import re
 
@@ -34,8 +43,7 @@ except Exception:
 # The following is sometimes used.
 # __pychecker__ = '--no-import'
 # import time
-#@nonl
-#@-node:ekr.20050405141130:<< imports >>
+#@-node:ekr.20050405141130:<< imports >> (leoFileCommands)
 #@nl
 
 #@<< define exception classes >>
@@ -145,11 +153,11 @@ if sys.platform != 'cli':
 
             attrs: an Attributes item passed to startElement.'''
 
-            if 0: # check for non-unicode attributes.
-                for name in attrs.getNames():
-                    val = attrs.getValue(name)
-                    if type(val) != type(u''):
-                        g.trace('Non-unicode attribute',name,val)
+            ### if 0: # check for non-unicode attributes.
+                ### for name in attrs.getNames():
+                    ### val = attrs.getValue(name)
+                    ### if type(val) != type(u''):
+                    ###    g.trace('Non-unicode attribute',name,val)
 
             # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
@@ -220,8 +228,12 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.30:characters
         def characters(self,content):
 
-            if content and type(content) != type(u''):
-                g.trace('Non-unicode content',repr(content))
+            if g.isPython3:
+                if content and type(content) != type('a'):
+                    g.trace('Non-unicode content',repr(content))
+            else:
+                if content and type(content) != types.UnicodeType:
+                    g.trace('Non-unicode content',repr(content))
 
             content = content.replace('\r','')
             if not content: return
@@ -234,7 +246,6 @@ if sys.platform != 'cli':
 
             elif content.strip():
                 g.pr('unexpected content:',elementName,repr(content))
-        #@nonl
         #@-node:ekr.20060919110638.30:characters
         #@+node:ekr.20060919110638.31:endElement & helpers
         def endElement(self,name):
@@ -604,7 +615,7 @@ class baseFileCommands:
                 theFile,isZipped = g.openLeoOrZipFile(c.mFileName)
                 self.readSaxFile(theFile,fileName='check-leo-file',silent=False,inClipboard=False,reassignIndices=False)
                 g.es_print('check-leo-file passed',color='blue')
-            except Exception, message:
+            except Exception(message):
                 # g.es_exception()
                 g.es_print('check-leo-file failed:',str(message),color='red')
         finally:
@@ -730,10 +741,10 @@ class baseFileCommands:
                 self.rootVnode = v
                 c.setRootPosition(p)
                 c.changed = False
-        except BadLeoFile, message:
+        except BadLeoFile(message):
             if not silent:
                 g.es_exception()
-                g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+                g.alert(self.mFileName + " is not a valid Leo file: ") ### + str(message))
             ok = False
 
         # Do this before reading derived files.
@@ -795,14 +806,16 @@ class baseFileCommands:
         if g.unified_nodes: t = leoNodes.vnode(context=c)
         else:               t = leoNodes.tnode()
 
-        if self.tnodesDict.has_key(index):
+        ### if self.tnodesDict.has_key(index):
+        if index in self.tnodesDict:
             g.es("bad tnode index:",str(index),"using empty text.")
             return t
         else:
             # Create the tnode.  Use the _original_ index as the key in tnodesDict.
             self.tnodesDict[index] = t
 
-            if type(index) not in (type(""),type(u"")):
+            ### if type(index) not in (type(""),type(u"")):
+            if not g.isString(index):
                 g.es("newTnode: unexpected index type:",type(index),index,color="red")
 
             # Convert any pre-4.1 index to a gnx.
@@ -1248,12 +1261,19 @@ class baseFileCommands:
         # g.trace('hiddenRootNode',c.hiddenRootNode)
 
         try:
-            # Use cStringIo to avoid a crash in sax when inputFileName has unicode characters.
-            if theFile:
-                s = theFile.read()
-            theFile = cStringIO.StringIO(s)
-            # g.trace(repr(inputFileName))
-            node = None
+            if g.isPython3:
+                ### s = theFile.read() # This produces bytes.
+                ### theFile = io.BytesIO(s) ### hangs
+                ### theFile = io.TextIOWrapper(s) ### fails in ctor.
+                ### theFile = io.BufferedReader(s)
+                if 0: # This read causes unicode errors on Py3K, but appears essential for Python 2.5
+                    if theFile:
+                        s = theFile.read()
+                    theFile = StringIO(s) # Same as cStringIO.StringIO for Python 2.x.
+            else:
+                if theFile:
+                    s = theFile.read()
+                theFile = cStringIO.StringIO(s)
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges,1)
                 # Include external general entities, esp. xml-stylesheet lines.
@@ -1264,6 +1284,7 @@ class baseFileCommands:
             handler = saxContentHandler(c,inputFileName,silent,inClipboard)
             parser.setContentHandler(handler)
             parser.parse(theFile) # expat does not support parseString
+            # g.trace('parsing done')
             sax_node = handler.getRootNode()
         except xml.sax.SAXParseException:
             g.es_print('error parsing',inputFileName,color='red')
@@ -1275,7 +1296,6 @@ class baseFileCommands:
             sax_node = None
 
         return sax_node
-    #@nonl
     #@-node:ekr.20060919110638.14:parse_leo_file
     #@+node:ekr.20060919110638.3:readSaxFile
     def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
@@ -1718,7 +1738,10 @@ class baseFileCommands:
             tnodes[p.v.t.fileIndex] = p.v.t
 
         # Put all tnodes in index order.
-        keys = tnodes.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(tnodes)
+        else:
+            keys = tnodes.keys() ; keys.sort()
         for index in keys:
             # g.trace(index)
             t = tnodes.get(index)
@@ -1995,7 +2018,8 @@ class baseFileCommands:
                 #@nonl
                 #@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
                 #@nl
-            self.outputFile = cStringIO.StringIO()
+            ### self.outputFile = cStringIO.StringIO()
+            self.outputFile = StringIO()
             #@        << create theActualFile >>
             #@+node:ekr.20060929103258:<< create theActualFile >>
             if toString:

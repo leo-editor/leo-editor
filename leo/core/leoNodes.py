@@ -287,8 +287,12 @@ class vnode (baseVnode):
             self.selectionStart = 0 # The start of the selected body text.
 
             # Convert everything to unicode...
-            self._headString = u''
-            self._bodyString = u''
+            if g.isPython3:
+                self._headString = ''
+                self._bodyString = ''
+            else:
+                self._headString = unicode('')
+                self._bodyString = unicode('')
 
             self.children = [] # List of all children of this node.
             self.vnodeList = []
@@ -901,7 +905,8 @@ class nodeIndices (object):
 
         """Create a gnx from its string representation"""
 
-        if type(s) not in (type(""),type(u"")):
+        ### if type(s) not in (type(""),type(u"")):
+        if not g.isString(s):
             g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
             return None,None,None
 
@@ -1026,6 +1031,7 @@ class basePosition (object):
         p1 = self
 
         # g.trace(p1.headString(),p2 and p2.headString())
+        # g.trace(repr(self),repr(p2))
 
         if p2 is None or p2.v is None:
             if p1.v is None: return 0 # equal
@@ -1038,6 +1044,8 @@ class basePosition (object):
     # isEqual and equal are deprecated.
 
     def isEqual (self,p2):
+
+        # g.trace(repr(self),repr(p2))
 
         p1 = self
         if p2 is None or p2.v is None:
@@ -1064,10 +1072,10 @@ class basePosition (object):
                 if 0:
                     g.pr("unknown position attribute:",attr)
                     import traceback ; traceback.print_stack()
-                raise AttributeError,attr
+                raise AttributeError(attr)
     #@nonl
     #@-node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
-    #@+node:ekr.20040117173448:p.__nonzero__
+    #@+node:ekr.20040117173448:p.__nonzero__ & __bool__
     #@+at
     # Tests such as 'if p' or 'if not p' are the _only_ correct ways to test 
     # whether a position p is valid.
@@ -1076,14 +1084,30 @@ class basePosition (object):
     #@-at
     #@@c
 
-    def __nonzero__ ( self):
+    if g.isPython3:
 
-        """Return True if a position is valid."""
+        def __bool__ ( self):
 
-        # if g.app.trace: "__nonzero__",self.v
+            """Return True if a position is valid."""
 
-        return self.v is not None
-    #@-node:ekr.20040117173448:p.__nonzero__
+            # if g.app.trace: "__nonzero__",self.v
+
+            # g.trace(repr(self))
+
+            return self.v is not None
+
+    else:
+
+        def __nonzero__ ( self):
+
+            """Return True if a position is valid."""
+
+            # if g.app.trace: "__nonzero__",self.v
+
+            # g.trace(repr(self))
+
+            return self.v is not None
+    #@-node:ekr.20040117173448:p.__nonzero__ & __bool__
     #@+node:ekr.20040301205720:p.__str__ and p.__repr__
     def __str__ (self):
 
@@ -1744,6 +1768,9 @@ class basePosition (object):
                 return self.mapping(self.p)
 
             raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:sps.20080331123552.2:next
         #@-others
 
@@ -1790,6 +1817,8 @@ class basePosition (object):
                 return self.mapping(self.p)
 
             raise StopIteration
+
+        __next__ = next
         #@-node:sps.20080331123552.5:next
         #@+node:sps.20080331123552.7:moveToThreadNextUnique
         def moveToThreadNextUnique (self):
@@ -1877,7 +1906,6 @@ class basePosition (object):
         #@-node:ekr.20040305173559.1:__init__ & __iter__
         #@+node:ekr.20040305173559.2:next
         def next(self):
-
             if self.first:
                 self.p = self.first
                 self.first = None
@@ -1890,6 +1918,9 @@ class basePosition (object):
                 else:         return self.p
             else:
                 raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305173559.2:next
         #@-others
 
@@ -1941,6 +1972,9 @@ class basePosition (object):
                 self.moveToThreadNextUnique()
 
             return self.mapping(self.p)
+
+        __next__ = next
+        #@nonl
         #@-node:sps.20080331123552.10:next
         #@+node:sps.20080331123552.11:moveToThreadNextUnique
         def moveToThreadNextUnique (self):
@@ -2063,6 +2097,9 @@ class basePosition (object):
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else: raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305172211.3:next
         #@-others
 
@@ -2108,6 +2145,9 @@ class basePosition (object):
                 else:         return self.p
             else:
                 raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305172855.2:next
         #@-others
 
@@ -2159,6 +2199,9 @@ class basePosition (object):
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else: raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305173343.2:next
         #@-others
 

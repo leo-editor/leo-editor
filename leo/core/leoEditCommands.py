@@ -18,18 +18,25 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
-import cPickle
+if g.isPython3:
+    import pickle # Note: only pickle exists in Python 3.x
+else:
+    import cPickle as pickle 
+
 import difflib
 import os
 import re
 import string
 import sys
 
-try:
-    import ctypes
-    import ctypes.util
-except ImportError:
+if g.isPython3:
     ctypes = None
+else:
+    try:
+        import ctypes
+        import ctypes.util
+    except ImportError:
+        ctypes = None
 
 subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
 #@-node:ekr.20050710151017:<< imports >>
@@ -259,8 +266,10 @@ def finishCreateEditCommanders (c):
         if d2:
             d.update(d2)
             if 0:
-                keys = d2.keys()
-                keys.sort()
+                if g.isPython3:
+                    keys = sorted(d2)
+                else:
+                    keys = d2.keys() ; keys.sort()
                 g.pr('----- %s' % name)
                 for key in keys: g.pr(key)
 
@@ -1052,7 +1061,7 @@ class controlCommandsClass (baseEditCommandsClass):
             ofile.seek(0)
             okout = ofile.read()
             if okout: w.insert('insert',okout)
-        except Exception, x:
+        except Exception(x):
             w.insert('insert',x)
 
         k.setLabelGrey('finished shell-command: %s' % command)
@@ -2392,8 +2401,10 @@ class editCommandsClass (baseEditCommandsClass):
 
     def dHash(self, d):
         """Hash a dictionary"""
-        l = d.keys()
-        l.sort()
+        if g.isPython3:
+            l = sorted(d)
+        else:
+            l = d.keys() ; l.sort()
         return ''.join(['%s%s' % (str(k),str(d[k])) for k in l])
 
     def setIconList(self, p, l):
@@ -3105,11 +3116,11 @@ class editCommandsClass (baseEditCommandsClass):
 
         d = {}
         if ch in self.openBracketsList:
-            for z in xrange(len(self.openBracketsList)):
+            for z in range(len(self.openBracketsList)):
                 d [self.openBracketsList[z]] = self.closeBracketsList[z]
             reverse = False # Search forward
         else:
-            for z in xrange(len(self.openBracketsList)):
+            for z in range(len(self.openBracketsList)):
                 d [self.closeBracketsList[z]] = self.openBracketsList[z]
             reverse = True # Search backward
 
@@ -3365,7 +3376,7 @@ class editCommandsClass (baseEditCommandsClass):
                     keeplines [n] = None
                 elif f:
                     keeplines.append(z)
-        except Exception, x:
+        except Exception(x):
             return
         if which == 'flush':
             keeplines = [x for x in keeplines if x != None]
@@ -4559,7 +4570,7 @@ class editCommandsClass (baseEditCommandsClass):
             junk,j = g.getLine(s,sel_2)
             txt = s[i:j]
             columns = [w.get('%s.%s' % (z,sint2),'%s.%s' % (z,sint4))
-                for z in xrange(sint1,sint3+1)]
+                for z in range(sint1,sint3+1)]
             aList = g.splitLines(txt)
             zlist = zip(columns,aList)
             zlist.sort()
@@ -4927,7 +4938,10 @@ class editFileCommandsClass (baseEditCommandsClass):
             g.pr('\n',kind)
             for key in d.keys():
                 p = d.get(key)
-                g.pr('%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii')))
+                if g.isPython3:
+                    g.pr('%-32s %s' % (key,p.headString()))
+                else:
+                    g.pr('%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii')))
     #@-node:ekr.20070921072608.1:dumpCompareNodes
     #@-node:ekr.20070920104110:compareLeoFiles
     #@+node:ekr.20050920084036.164:deleteFile
@@ -5175,7 +5189,10 @@ class helpCommandsClass (baseEditCommandsClass):
     def getBindingsForCommand(self,commandName):
 
         c = self.c ; k = c.k ; d = k.bindingsDict
-        keys = d.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(d)
+        else:
+            keys = d.keys() ; keys.sort()
 
         data = [] ; n1 = 4 ; n2 = 20
         for key in keys:
@@ -5725,6 +5742,9 @@ class killBufferCommandsClass (baseEditCommandsClass):
             val = aList[i]
             self.index = i + 1
             return val
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20071003160252.2:next
         #@-others
 
@@ -6121,7 +6141,10 @@ class leoCommandsClass (baseEditCommandsClass):
         #@nl
 
         # Create a callback for each item in d.
-        keys = d.keys() ; keys.sort()
+        if g.isPython3:
+            keys = sorted(d)
+        else:
+            keys = d.keys() ; keys.sort()
         for name in keys:
             f = d.get(name)
             d2 [name] = f
@@ -6227,7 +6250,7 @@ class macroCommandsClass (baseEditCommandsClass):
         '''Loads a macro file into the macros dictionary.'''
 
         k = self.k
-        macros = cPickle.load(f)
+        macros = pickle.load(f)
         for z in macros:
             k.addToDoAltX(z,macros[z])
     #@-node:ekr.20050920084036.197:_loadMacros
@@ -6262,7 +6285,7 @@ class macroCommandsClass (baseEditCommandsClass):
         if not fileName: return
 
         try:
-            f = file(fileName,'a+')
+            f = open(fileName,'a+')
             f.seek(0)
             if f:
                 self._saveMacros(f,macname)
@@ -6275,14 +6298,15 @@ class macroCommandsClass (baseEditCommandsClass):
 
         fname = f.name
         try:
-            macs = cPickle.load( f )
+            macs = pickle.load( f )
         except Exception:
             macs = {}
         f.close()
-        if self.namedMacros.has_key( name ):
+        ### if self.namedMacros.has_key( name ):
+        if name in self.namedMacros:
             macs[ name ] = self.namedMacros[ name ]
-            f = file( fname, 'w' )
-            cPickle.dump( macs, f )
+            f = open( fname, 'w' )
+            pickle.dump( macs, f )
             f.close()
     #@-node:ekr.20050920084036.200:_saveMacros
     #@-node:ekr.20050920084036.199:saveMacros & helper
@@ -6370,7 +6394,8 @@ class macroCommandsClass (baseEditCommandsClass):
 
         k= self ; c = k.c
 
-        if c.commandsDict.has_key(name):
+        ### if c.commandsDict.has_key(name):
+        if name in c.commandsDict:
             return False
 
         def func (event,macro=macro):
@@ -6643,7 +6668,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         # Change the text.
         fill = ' ' *(r4-r2)
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             w.insert('%s.%s' % (r,r2),fill)
 
@@ -6662,12 +6687,12 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('close-rectangle')
 
         # Return if any part of the selection contains something other than whitespace.
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             s = w.get('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             if s.strip(): return
 
         # Change the text.
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
 
         i = '%s.%s' % (r1,r2)
@@ -6686,7 +6711,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         w,r1,r2,r3,r4 = self.beginCommand('delete-rectangle')
 
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
 
         i = '%s.%s' % (r1,r2)
@@ -6707,7 +6732,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         self.theKillRectangle = []
 
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             s = w.get('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             self.theKillRectangle.append(s)
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
@@ -6732,7 +6757,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('open-rectangle')
 
         fill = ' ' * (r4-r2)
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.insert('%s.%s' % (r,r2),fill)
 
         i = '%s.%s' % (r1,r2)
@@ -6764,7 +6789,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w = self.w
             self.beginCommand('string-rectangle')
             r1, r2, r3, r4 = self.stringRect
-            for r in xrange(r1,r3+1):
+            for r in range(r1,r3+1):
                 w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
                 w.insert('%s.%s' % (r,r2),k.arg)
             w.setSelectionRange('%d.%d' % (r1,r2),'%d.%d' % (r3,r2+len(k.arg)))
@@ -6791,7 +6816,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('yank-rectangle')
 
         n = 0
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             # g.trace(n,r,killRect[n])
             if n >= len(killRect): break
             w.delete('%s.%s' % (r,r2), '%s.%s' % (r,r4))
@@ -8446,7 +8471,8 @@ class spellTabHandler (leoFind.leoFind):
                 #@-at
                 #@@c
 
-                if self.dictionary.has_key(word.lower()):
+                ### if self.dictionary.has_key(word.lower()):
+                if word.lower() in self.dictionary:
                     continue
                 #@-node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
                 #@nl
@@ -8763,7 +8789,7 @@ class AspellClass:
             os.popen(cmd)
             return True
 
-        except Exception, err:
+        except Exception(err):
             g.pr("unable to update local aspell dictionary:",err)
             return False
     #@-node:ekr.20051025071455.11:updateDictionary
