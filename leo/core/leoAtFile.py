@@ -2504,7 +2504,7 @@ class atFile:
     #@-node:ekr.20071019141745:shouldWriteAtAutoNode
     #@-node:ekr.20070806141607:writeOneAtAutoNode & helper
     #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
-    #@+node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
+    #@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     def writeAtShadowNodes (self,event=None):
 
         '''Write all @shadow nodes in the selected outline.'''
@@ -2697,7 +2697,7 @@ class atFile:
                 pass # Use the default language, **not** 'unknown_language'
     #@-node:ekr.20080819075811.13:adjustTargetLanguage
     #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
-    #@-node:ekr.20080711093251.3:writeAtShadowNodes & writeDirtyAtShadowNodes (atFile) & helpers
+    #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     #@+node:ekr.20050506084734:writeFromString
     # This is at.write specialized for scripting.
 
@@ -4116,7 +4116,7 @@ class atFile:
             g.es_exception()
             return False
     #@-node:ekr.20080712150045.1:at.replaceFileWithString
-    #@+node:ekr.20041005105605.212:at.replaceTargetFileIfDifferent & helper
+    #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     def replaceTargetFileIfDifferent (self,root):
 
         '''Create target file as follows:
@@ -4194,7 +4194,7 @@ class atFile:
             self.fileChangedFlag = False 
             return False
     #@nonl
-    #@-node:ekr.20041005105605.212:at.replaceTargetFileIfDifferent & helper
+    #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     #@-node:ekr.20041005105605.211:putInitialComment
     #@+node:ekr.20041005105605.216:warnAboutOrpanAndIgnoredNodes
     # Called from writeOpenFile.

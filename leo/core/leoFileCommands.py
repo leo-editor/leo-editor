@@ -741,10 +741,10 @@ class baseFileCommands:
                 self.rootVnode = v
                 c.setRootPosition(p)
                 c.changed = False
-        except BadLeoFile(message):
+        except BadLeoFile: ### as message:
             if not silent:
                 g.es_exception()
-                g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+                g.alert(self.mFileName + " is not a valid Leo file: ") ### + str(message))
             ok = False
 
         # Do this before reading derived files.

@@ -1398,6 +1398,28 @@ class configClass:
 
         return c.nullPosition()
     #@-node:ekr.20041123092357:config.findSettingsPosition
+    #@+node:ekr.20051011105014:exists (g.app.config)
+    def exists (self,c,setting,kind):
+
+        '''Return true if a setting of the given kind exists, even if it is None.'''
+
+        if c:
+            d = self.localOptionsDict.get(c.hash())
+            if d:
+                junk,found = self.getValFromDict(d,setting,kind)
+                if found: return True
+
+        for d in self.localOptionsList:
+            junk,found = self.getValFromDict(d,setting,kind)
+            if found: return True
+
+        for d in self.dictList:
+            junk,found = self.getValFromDict(d,setting,kind)
+            if found: return True
+
+        # g.trace('does not exist',setting,kind)
+        return False
+    #@-node:ekr.20051011105014:exists (g.app.config)
     #@+node:ekr.20041117083141:get & allies (g.app.config)
     def get (self,c,setting,kind):
 
@@ -1475,7 +1497,7 @@ class configClass:
         The following equivalences are allowed:
 
         - None matches anything.
-        - An actual type of string or strings matches anything.
+        - An actual type of string or strings matches anything *except* shortcuts.
         - Shortcut matches shortcuts.
         '''
 
@@ -1483,35 +1505,13 @@ class configClass:
 
         return (
             type1 == None or type2 == None or
-            type1.startswith('string') or
+            type1.startswith('string') and type2 not in shortcuts or
             type1 == 'int' and type2 == 'size' or
             (type1 in shortcuts and type2 in shortcuts) or
             type1 == type2
         )
     #@-node:ekr.20051015093141:typesMatch
     #@-node:ekr.20041117083141:get & allies (g.app.config)
-    #@+node:ekr.20051011105014:exists (g.app.config)
-    def exists (self,c,setting,kind):
-
-        '''Return true if a setting of the given kind exists, even if it is None.'''
-
-        if c:
-            d = self.localOptionsDict.get(c.hash())
-            if d:
-                junk,found = self.getValFromDict(d,setting,kind)
-                if found: return True
-
-        for d in self.localOptionsList:
-            junk,found = self.getValFromDict(d,setting,kind)
-            if found: return True
-
-        for d in self.dictList:
-            junk,found = self.getValFromDict(d,setting,kind)
-            if found: return True
-
-        # g.trace('does not exist',setting,kind)
-        return False
-    #@-node:ekr.20051011105014:exists (g.app.config)
     #@+node:ekr.20060608224112:getAbbrevDict
     def getAbbrevDict (self,c):
 
@@ -1539,13 +1539,6 @@ class configClass:
 
         return g.app.config.atCommonButtonsList
     #@-node:ekr.20070926082018:getButtons
-    #@+node:ekr.20080312071248.7:getCommonCommands
-    def getCommonAtCommands (self):
-
-        '''Return the list of tuples (headline,script) for common @command nodes.'''
-
-        return g.app.config.atCommonCommandsList
-    #@-node:ekr.20080312071248.7:getCommonCommands
     #@+node:ekr.20041122070339:getColor
     def getColor (self,c,setting):
 
@@ -1553,6 +1546,13 @@ class configClass:
 
         return self.get(c,setting,"color")
     #@-node:ekr.20041122070339:getColor
+    #@+node:ekr.20080312071248.7:getCommonCommands
+    def getCommonAtCommands (self):
+
+        '''Return the list of tuples (headline,script) for common @command nodes.'''
+
+        return g.app.config.atCommonCommandsList
+    #@-node:ekr.20080312071248.7:getCommonCommands
     #@+node:ekr.20071214140900.1:getData
     def getData (self,c,setting):
 
@@ -1683,6 +1683,23 @@ class configClass:
 
         return self.recentFiles
     #@-node:ekr.20041117062717.11:getRecentFiles
+    #@+node:ekr.20080917061525.3:getSettingSource (g.app.config)
+    def getSettingSource (self,c,setting):
+
+        '''return the name of the file responsible for setting.'''
+
+        aList = [self.localOptionsDict.get(c.hash())]
+        aList.extend(self.localOptionsList)
+        aList.extend(self.dictList)
+
+        for d in aList:
+            if d:
+                bunch = d.get(setting)
+                if bunch is not None:
+                    return bunch.path,bunch.val
+        else:
+            return 'unknown setting',None
+    #@-node:ekr.20080917061525.3:getSettingSource (g.app.config)
     #@+node:ekr.20041117062717.14:getShortcut (config)
     def getShortcut (self,c,shortcutName):
 
@@ -1692,6 +1709,7 @@ class configClass:
         key = key.replace('&','') # Allow '&' in names.
 
         bunchList = self.get(c,key,"shortcut")
+        # g.trace('bunchList',bunchList)
         if bunchList:
             bunchList = [bunch for bunch in bunchList
                 if bunch.val and bunch.val.lower() != 'none']

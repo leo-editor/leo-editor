@@ -1472,7 +1472,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
     def setWrap (self,p):
 
         c = self.c
-        theDict = g.scanDirectives(c,p)
+        theDict = c.scanAllDirectives(p)
         if not theDict: return
 
         wrap = theDict.get("wrap")

@@ -5,7 +5,7 @@
 #@+all
 #@+node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
 #@-node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
-#@+node:ekr.20080225084626:Bzr notes
+#@+node:ekr.20080917153158.10:Bzr notes
 @nocolor
 
 How to create/use private branches
@@ -25,6 +25,10 @@ bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-edit
 ===== creates branch on local machine: do this from leo.repo directory
 
 bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+
+-- OR --
+
+bzr branch lp:leo-editor new-branch-name 
 
 ====== To resolve conflicts
 
@@ -47,7 +51,7 @@ Windows
 Linux:
 
 - Configuration file is bazaar.conf in ~/.bazaar directory
-#@-node:ekr.20080225084626:Bzr notes
+#@-node:ekr.20080917153158.10:Bzr notes
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
 Downloading http://cheeseshop.python.org/packages/2.5/s/setuptools/setuptools-0.6c6-py2.5.egg
