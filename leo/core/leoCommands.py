@@ -1729,7 +1729,8 @@ class baseCommands:
         '''Place the cursor on the n'th line of a derived file or script.
         When present scriptData is a dict with 'root' and 'lines' keys.'''
 
-        c = self ; gnx = None ; vnodeName = None
+        c = self
+        delim = None ; gnx = None ; vnodeName = None
         if n < 0: return
 
         fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
@@ -1747,19 +1748,17 @@ class baseCommands:
                     root,lines,vnodeName,gnx,n,delim)
             else:
                 p,found = root,False
-
-        #@    << trace gotoLineNumber results >>
-        #@+node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
         if 0:
+            #@        << trace gotoLineNumber results >>
+            #@+node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
             g.trace(
-                'found',found,'n2',n2,'gnx',gnx,
-                'vnodeName',vnodeName,
-                'p',p and p.headString(),
-                'root',root and root.headString())
-        #@nonl
-        #@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
-        #@nl
-        c.goto_showResults(found,p or root,n2,lines)
+                '\n  found',found,'n2',n2,'gnx',gnx,'delim',repr(delim),
+                '\n  vnodeName',vnodeName,
+                '\n  p        ',p and p.headString(),
+                '\n  root     ',root and root.headString())
+            #@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
+            #@nl
+        c.goto_showResults(found,p or root,n,n2,lines)
     #@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
     def goto_applyLineNumberMapping(self, n):
 
@@ -1921,28 +1920,19 @@ class baseCommands:
     #@-node:ekr.20080904071003.19:goto_scanTnodeList
     #@-node:ekr.20080904071003.4:goto_findPosition & helpers
     #@+node:ekr.20031218072017.2877:goto_findVnode
-    #@+at
-    # We count "real" lines in the derived files, ignoring all sentinels that 
-    # do not
-    # arise from source lines. When the indicated line is found, we scan 
-    # backwards for
-    # an @+body line, get the vnode's name from that line and set p to the 
-    # indicated
-    # vnode. This will fail if vnode names have been changed, and that can't 
-    # be
-    # helped.
-    # 
-    # vnodeName: the name found in the previous @+body sentinel.
-    # offset: the offset within p of the desired line.
-    #@-at
-    #@@c
-
     def goto_findVnode (self,root,lines,n,ignoreSentinels):
 
         '''Search the lines of a derived file containing sentinels for a vnode.
-        return (vnodeName,gnx,offset,delim).'''
+        return (vnodeName,gnx,offset,delim):
+
+        vnodeName:  the name found in the previous @+body sentinel.
+        gnx:        the gnx of the found node.
+        offset:     the offset within the node of the desired line.
+        delim:      the comment delim from the @+leo sentinel.
+        '''
 
         c = self ; at = c.atFileCommands
+        # g.trace('lines...\n',g.listToString(lines))
         gnx = None
         #@    << set delim, leoLine from the @+leo line >>
         #@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
@@ -1953,6 +1943,7 @@ class baseCommands:
             i += 1
         leoLine = i # Index of the line containing the leo sentinel
 
+        # Set delim from the @+leo line.
         delim = None
         if leoLine < len(lines):
             s = lines[leoLine]
@@ -1960,7 +1951,6 @@ class baseCommands:
             # New in Leo 4.5.1: only support 4.x files.
             if valid and newDerivedFile:
                 delim = start + '@'
-
         #@-node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
         #@nl
         if not delim:
@@ -1969,12 +1959,25 @@ class baseCommands:
 
         #@    << scan back to @+node, setting offset,nodeSentinelLine >>
         #@+node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+        #@+at
+        # Scan backwards from the requested line, looking for an @-body line. 
+        # When found,
+        # we get the vnode's name from that line and set p to the indicated 
+        # vnode. This
+        # will fail if vnode names have been changed, and that can't be 
+        # helped.
+        # 
+        # We compute the offset of the requested line **within the found 
+        # node**.
+        #@-at
+        #@@c
+
         offset = 0 # This is essentially the Tk line number.
         nodeSentinelLine = -1
-        line = n - 1
+        line = n - 1 # Start with the requested line.
         while line >= 0:
+            progress = line
             s = lines[line]
-            # g.trace(s)
             i = g.skip_ws(s,0)
             if g.match(s,i,delim):
                 #@        << handle delim while scanning backward >>
@@ -1985,22 +1988,35 @@ class baseCommands:
 
                 if g.match(s,i,"-node"):
                     # The end of a nested section.
+                    old_line = line
                     line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
-                elif g.match(s,i,"+node"):
+                    assert line < old_line
+                    # g.trace('found',repr(lines[line]))
                     nodeSentinelLine = line
+                    offset = n-line
+                    break
+                elif g.match(s,i,"+node"):
+                    # g.trace('found',repr(lines[line]))
+                    nodeSentinelLine = line
+                    offset = n-line
                     break
                 elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-                    if not ignoreSentinels:
-                        offset += 1 # Count these as a "real" lines.
+                    # if not ignoreSentinels:
+                        # offset += 1 # Count these as a "real" lines.
+                    line -= 1
+                else:
+                    line -= 1
                 #@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
                 #@nl
             else:
-                offset += 1 # Assume the line is real.  A dubious assumption.
-            line -= 1
+                ### offset += 1 # Assume the line is real.  A dubious assumption.
+                line -= 1
+            assert line < progress
         #@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
         #@nl
         if nodeSentinelLine == -1:
             # The line precedes the first @+node sentinel
+            g.trace('no @+node!!')
             return root.headString(),gnx,1,delim
 
         s = lines[nodeSentinelLine]
@@ -2026,10 +2042,11 @@ class baseCommands:
             vnodeName = s[i+1:].strip()
         else:
             vnodeName = None
-            g.es("bad @+node sentinel")
+            g.es_print("bad @+node sentinel",color='red')
         #@-node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
         #@nl
         if delim and vnodeName:
+            # g.trace('offset',offset)
             return vnodeName,gnx,offset,delim
         else:
             g.es("bad @+node sentinel")
@@ -2067,7 +2084,7 @@ class baseCommands:
         isRaw = not root or (
             root.isAtAsisFileNode() or root.isAtNoSentFileNode() or root.isAtAutoNode())
 
-        ignoreSentinels = root.isAtNoSentFileNode()
+        ignoreSentinels = root and root.isAtNoSentFileNode()
 
         if scriptData:
             if not root: root = p.copy()
@@ -2119,6 +2136,7 @@ class baseCommands:
             # Calculate the full path.
             d = g.scanDirectives(c,p=root)
             path = d.get("path")
+            # g.trace('path',path,'fileName',fileName)
             fileName = g.os_path_join(path,fileName)
             lines    = c.goto_open(fileName)
 
@@ -2162,14 +2180,14 @@ class baseCommands:
         except Exception:
             # Make sure failures to open a file generate clear messages.
             g.es_print('can not open',fn,color='blue')
-            g.es_exception()
+            # g.es_exception()
             lines = []
 
         return lines
     #@-node:ekr.20080708094444.63:goto_open
     #@-node:ekr.20080904071003.28:goto_setup & helpers
     #@+node:ekr.20080904071003.14:goto_showResults
-    def goto_showResults(self,found,p,n,lines):
+    def goto_showResults(self,found,p,n,n2,lines):
 
         c = self ; w = c.frame.body.bodyCtrl
 
@@ -2181,11 +2199,13 @@ class baseCommands:
         # Put the cursor on line n2 of the body text.
         s = w.getAllText()
         if found:
-            ins = g.convertRowColToPythonIndex(s,n-1,0)    
+            ins = g.convertRowColToPythonIndex(s,n2-1,0)    
         else:
             ins = len(s)
-            if not g.unitTesting:
+            if len(lines) < n and not g.unitTesting:
                 g.es('only',len(lines),'lines',color="blue")
+
+        # g.trace('n',n,'ins',ins,'p',p.headString())
 
         w.setInsertPoint(ins)
         c.bodyWantsFocusNow()
@@ -5740,46 +5760,69 @@ class baseCommands:
 
         '''Scan aList for @path directives.'''
 
-        c = self ; trace = False
+        c = self ; trace = False ; verbose = False
 
         # Step 1: Compute the starting path.
         # The correct fallback directory is the absolute path to the base.
-        base = g.app.config.relative_path_base_directory
-        if base and base == "!":    base = g.app.loadDir
-        elif base and base == ".":  base = c.openDirectory
-        absbase = g.os_path_normpath(g.os_path_abspath(g.app.loadDir,base))
 
-        # Step 2: Look at alist for @file nodes, then @path directives.
+        if c.openDirectory:  # Bug fix: 2008/9/18
+            base = c.openDirectory
+        else:
+            base = g.app.config.relative_path_base_directory
+            if base and base == "!":    base = g.app.loadDir
+            elif base and base == ".":  base = c.openDirectory
+
+        if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
+
+        absbase = g.os_path_normpath(g.os_path_abspath(
+            g.os_path_join(g.app.loadDir,base))) # Bug fix: 2008/9/18
+
+        if trace and verbose: g.trace('absbase',absbase)
+
+        #### Step 2: Look at alist for @file nodes, then @path directives.
+        # Step 2: look for @path directives.
         paths = [] ; fileName = None
         for d in aList:
-            if fileName:
-                # Look for @path directives.
-                path = d.get('path')
-                if path:
-                    # Convert "path" or <path> to path.
-                    path = g.computeRelativePath(path)
-                    if path: paths.append(path)
-            else:
-                # Look for any kind of @file node.
-                p = d.get('_p')
-                if p.isAnyAtFileNode():
-                    fileName = p.anyAtFileNodeName()
-                    if fileName: paths.append(fileName)
+            ### if fileName:
+            # Look for @path directives.
+            path = d.get('path')
+            if path:
+                # Convert "path" or <path> to path.
+                path = g.computeRelativePath(path)
+                if path: paths.append(path)
+
+            # Do **not** add any part of the the fileName.
+            # else:
+                # # Look for any kind of @file node.
+                # p = d.get('_p')
+                # if p.isAnyAtFileNode():
+                    # fileName = p.anyAtFileNodeName()
+                    # path = g.os_path_dirname(fileName) # Bug fix: 2008/9/18
+                    # if path:
+                        # if trace:
+                            # g.trace('appending path',path,'from',fileName)
+                        # paths.append(path)
 
         # Add absbase and reverse the list.
         paths.append(absbase)
         paths.reverse()
 
+        if trace and verbose: g.trace('paths',paths)
+
         # Step 3: Compute the full, effective, absolute path.
-        if trace: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
+        if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
         path = g.os_path_normpath(g.os_path_join(*paths))
-        if trace: g.trace('joined paths:',path)
+        if trace and verbose: g.trace('joined path:',path)
 
         # Step 4: Make the path if necessary.
         if path and not g.os_path_exists(path):
-            path = g.makeAllNonExistentDirectories(path,c=c,force=force)
-            if force and not path:
-                g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+            if not ok:
+                if force:
+                    g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+                path = absbase # Bug fix: 2008/9/18
+
+        if trace: g.trace('returns',path)
 
         return path
     #@-node:ekr.20080828103146.15:c.scanAtPathDirectives

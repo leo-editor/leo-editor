@@ -21641,8 +21641,8 @@ assert n == 2,n
 if 0:
     print ('root:%s, n:%s, len(lines): %s' % (
         root and root.headString(),n,len(lines)))</t>
-<t tx="ekr.20080904120258.2">c.goto_showResults(found=True,p=p,n=3,lines=3)</t>
-<t tx="ekr.20080904120258.3">c.goto_showResults(found=False,p=p,n=3,lines=['a','b'])
+<t tx="ekr.20080904120258.2">c.goto_showResults(found=True,p=p,n=3,n2=3,lines=3)</t>
+<t tx="ekr.20080904120258.3">c.goto_showResults(found=False,p=p,n=3,n2=3,lines=['a','b'])
 </t>
 <t tx="ekr.20080904120258.4"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -21670,10 +21670,10 @@ assert p == target,'\np:     %s\ntarget:%s' % (p,target)
 <t tx="ekr.20080904120258.6">root = p.parent().parent()
 h = '@file unittest/at-file-line-number-test.py'
 target = g.findNodeInTree(c,root,h)
-assert target
+assert target,'no target'
 
 gnx = g.app.nodeIndices.toString(target.v.t.fileIndex)
-assert gnx
+assert gnx,'no gnx'
 
 p,found = c.goto_findGnx(root,gnx,h)
 assert found,found
@@ -21701,7 +21701,7 @@ assert p == target,'\np:     %s\ntarget:%s' % (p,target)
 <t tx="ekr.20080905130723.1">root = p.parent().parent()
 h = '@file unittest/at-file-line-number-test.py'
 target = g.findNodeInTree(c,root,h)
-assert target
+assert target,target
 
 n = 2
 fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p=target)
@@ -21711,7 +21711,7 @@ assert root == target
 
 vnodeName,gnx,offset,delim = c.goto_findVnode (root,lines,n,ignoreSentinels)
 
-assert lines
+assert lines,'no lines'
 assert not gnx,repr(gnx)
 assert offset is not None,repr(offset)
 assert vnodeName,repr(vnodeName)
@@ -21970,7 +21970,7 @@ n = g.scanAtPagewidthDirectives(aList)
 assert n == 40</t>
 <t tx="ekr.20080917151620.22">aList = g.get_directives_dict_list(p.firstChild())
 s = c.scanAtPathDirectives(aList,force=True)
-end = g.os_path_normpath(r'leo/test/unittest/at-path-test1.py')
+end = g.os_path_normpath(r'leo/test')
 
 assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080917151620.23">@language python
@@ -21978,7 +21978,7 @@ assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080917151620.24">grandChild = p.firstChild().firstChild()
 aList = g.get_directives_dict_list(grandChild)
 s = c.scanAtPathDirectives(aList,force=True)
-end = g.os_path_normpath(r'leo/test/unittest/at-path-test2.py')
+end = g.os_path_normpath(r'leo/test/unittest')
 
 assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080917151620.25"></t>
@@ -21987,7 +21987,7 @@ assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080917151620.27">greatGrandChild = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(greatGrandChild)
 s = c.scanAtPathDirectives(aList,force=True)
-end = g.os_path_normpath(r'leo/test/unittest/at-path-test3.py')
+end = g.os_path_normpath(r'leo/test/unittest')
 
 assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080917151620.28"></t>

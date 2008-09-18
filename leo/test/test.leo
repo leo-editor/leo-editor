@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -281,6 +281,7 @@
 <v t="ekr.20080911112823.1"><vh>@@nosent fix-failure.py</vh></v>
 <v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
 </v>
+<v t="ekr.20080918090005.1" tnodeList="ekr.20080918090005.1"><vh>@file goto-global-line-test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2320,5 +2321,9 @@ for name in aList:
     kind, val = c.config.getSettingSource(name)
     print '%-20s %-20s %s' % (name,repr(val),kind)
 </t>
+<t tx="ekr.20080918090005.1">@language python
+@tabwidth -4
+
+# This is a line</t>
 </tnodes>
 </leo_file>
