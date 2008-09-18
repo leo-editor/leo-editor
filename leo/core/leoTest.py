@@ -1317,12 +1317,12 @@ def checkFileTabs (fileName,s):
         readline = g.readLinesClass(s).next
         tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
-    except (tokenize.TokenError, msg):
+    except tokenize.TokenError(msg):
         g.es_print("Token error in",fileName,color="blue")
         g.es_print('',msg)
         assert 0, "test failed"
 
-    except (tabnanny.NannyNag, nag):
+    except tabnanny.NannyNag(nag):
         badline = nag.get_lineno()
         line    = nag.get_line()
         message = nag.get_msg()

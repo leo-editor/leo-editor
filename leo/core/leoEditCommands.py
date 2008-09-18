@@ -1061,7 +1061,7 @@ class controlCommandsClass (baseEditCommandsClass):
             ofile.seek(0)
             okout = ofile.read()
             if okout: w.insert('insert',okout)
-        except Exception:
+        except Exception(x):
             w.insert('insert',x)
 
         k.setLabelGrey('finished shell-command: %s' % command)

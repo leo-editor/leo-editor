@@ -2279,7 +2279,8 @@ def scanForAtIgnore(c,p):
 
     for p in p.self_and_parents_iter():
         d = g.get_directives_dict(p)
-        if d.has_key("ignore"):
+        ### if d.has_key("ignore"):
+        if 'ignore' in d:
             return True
 
     return False
@@ -2296,7 +2297,8 @@ def scanForAtLanguage(c,p):
     if c and p:
         for p in p.self_and_parents_iter():
             d = g.get_directives_dict(p)
-            if d.has_key("language"):
+            ### if d.has_key("language"):
+            if 'language' in d:
                 z = d["language"]
                 language,delim1,delim2,delim3 = g.set_language(z,0)
                 return language

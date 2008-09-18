@@ -440,7 +440,7 @@ class parserBaseClass:
     #@+node:ekr.20070926141716:doItems
     def doItems (self,p,aList):
 
-        #### return ######
+        if g.isPython3: return ######
 
         p = p.copy() ; after = p.nodeAfterTree()
         p.moveToThreadNext()
