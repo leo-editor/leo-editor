@@ -102,6 +102,57 @@ def typesMatch (self,type1,type2):
     )
 #@-node:ekr.20051015093141:typesMatch
 #@-node:ekr.20080917153158.14:Fix config crasher
+#@+node:ekr.20080915083836.2:Fixed encoding problems with rst3 plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/5f5219fedd977ec2
+
+@nocolor
+
+I recently discovered leo and decided to give it a try. I'm using the
+rst3 plugin for generating latex docs. In general it works like a
+charm, but I'm having some problems with the text encoding. The most
+annoying one follows. If in my rst tree I've nodes with the character
+
+ŀ (U+0140)
+
+(or other character from the catalan alphabet) in the body text, I get
+conversion errors in the log pane when the Write-Restructured-Text
+command is executed. For instance, a node with the following body text
+
+Nuŀla
+
+causes the following error in the log pane:
+
+1 errors converting Nu?la.
+
+ to iso-8859-1
+
+If I process the generated .tex file via pdflatex the character is
+displayed as a ? symbol in the pdf.
+
+The rst-options are:
+
+@ @rst-options
+default_path=latex
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+write_intermediate_file = False
+verbose=True
+publish_argv_for_missing_stylesheets=--language=ca,--output-
+encoding=utf-8,--stylesheet=/home/vmas/.leo/custom_style.sty
+@c
+
+If, instead of using leo, I put the problematic text content in a
+plain rst file and process it via rst2latex I get no conversion
+errors. The command line is:
+
+rst2latex --language=ca --output-encoding=utf-8 --stylesheet=/home/
+vmas/.leo/custom_style.sty prova.txt prova.tex 
+#@nonl
+#@-node:ekr.20080915083836.2:Fixed encoding problems with rst3 plugin
 #@+node:ekr.20080918122745.1:Simplified c.scanAtPathDirectives
 #@+node:ekr.20080828103146.15:c.scanAtPathDirectives
 
@@ -2765,6 +2816,14 @@ if not self.default_directory and not scripting and not importing:
 #@-node:ekr.20080827175609.18:atFile.NEWscanAllDirectives & helpers
 #@-node:ekr.20080831084419.5:New top-level functions...
 #@-node:ekr.20080124083629.1:Improved @path handling
+#@+node:ekr.20080917154206.4:Merge leo-30 branch
+@nocolor 
+
+This make's Leo's syntax compatible with Python 3.0.
+#@nonl
+#@-node:ekr.20080917154206.4:Merge leo-30 branch
+#@+node:ekr.20080918164844.1:Leo now requires Python 2.4 or higher
+#@-node:ekr.20080918164844.1:Leo now requires Python 2.4 or higher
 #@-node:ekr.20080917153158.15:New features
 #@-node:ekr.20080917153158.11:4.6
 #@-all

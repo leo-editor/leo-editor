@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -284,6 +284,7 @@
 <v t="ekr.20080918090005.1"><vh>@@file goto-global-line-test.py</vh></v>
 </v>
 </v>
+<v t="ekr.20080918180141.1"><vh>Exception syntax</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2328,5 +2329,19 @@ for name in aList:
 
 # This is a line, changed 2.</t>
 <t tx="ekr.20080918123632.1"></t>
+<t tx="ekr.20080918180141.1">import sys
+
+class MyError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+try:
+    raise MyError(2*2)
+except MyError:
+    theType, value, traceback = sys.exc_info()
+    print 'My exception occurred, value:', value
+</t>
 </tnodes>
 </leo_file>
