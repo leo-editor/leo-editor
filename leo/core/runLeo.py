@@ -276,7 +276,7 @@ def isValidPython():
     if sys.platform == 'cli':
         return True
 
-    minimum_python_version = '2.2.1'
+    minimum_python_version = '2.4'
 
     message = """\
 Leo requires Python %s or higher.
