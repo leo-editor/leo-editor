@@ -2,10 +2,8 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
-#@+node:ekr.20080915112342.1:First 5
+#@+node:ekr.20080915112342.1:First 6
 
-#@+node:ekr.20080918164844.2:Merge trunk into vim-keys branch
-#@-node:ekr.20080918164844.2:Merge trunk into vim-keys branch
 #@+node:ekr.20080918164844.15:Allow Leo to open .py files directly (or any other kind of file)
 @nocolor
 
@@ -22,7 +20,13 @@ among other things, a python editor ;-)
 Perhaps it might create create a (unsaved) leo document  where the .py file
 is present as @shadow node, or something. 
 #@nonl
+#@+node:ekr.20080919085541.1:@url http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
+#@-node:ekr.20080919085541.1:@url http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
 #@-node:ekr.20080918164844.15:Allow Leo to open .py files directly (or any other kind of file)
+#@+node:ekr.20080919085541.2:Have Leo open a default .leo file if no other is specified
+http://groups.google.com/group/leo-editor/browse_thread/thread/d6449236bc140713#
+#@nonl
+#@-node:ekr.20080919085541.2:Have Leo open a default .leo file if no other is specified
 #@+node:ekr.20080910054558.2:Add -c option to specify config files
 @nocolor
 
@@ -72,7 +76,11 @@ an expand_noweb_references option would be good.  For compatibility,
 the default for this option would be False. 
 #@nonl
 #@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-#@-node:ekr.20080915112342.1:First 5
+#@+node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
+http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
+#@nonl
+#@-node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
+#@-node:ekr.20080915112342.1:First 6
 #@+node:ekr.20080918164844.6:Recent 8
 #@+node:ekr.20080918164844.7:Investigate settings strangeness re @string debugger_path
 @nocolor
@@ -1606,6 +1614,10 @@ possible to make leo to auto-scroll, so the cursor is always visible?
 #@-node:ekr.20080730212711.6:ASAP Features 10
 #@-node:ekr.20080810085333.5:Under two hours 21
 #@+node:ekr.20080810085333.7:Under two days 5
+#@+node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
+http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
+#@nonl
+#@-node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
 #@+node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
 #@-node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
 #@+node:ekr.20080519062109.2:Improve how Leo handles long lines
