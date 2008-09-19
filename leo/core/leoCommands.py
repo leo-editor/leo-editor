@@ -5839,6 +5839,10 @@ class baseCommands:
 
         c = self
 
+        # To keep pylint happy.
+        tag = 'at_root_bodies_start_in_doc_mode'
+        start_in_doc = hasattr(tag) and getattr(c.config,tag)
+
         for d in aList:
             root = d.get('root')
             if g.match_word(root,0,"-code"):
@@ -5846,7 +5850,7 @@ class baseCommands:
             elif g.match_word(root,0,"-doc"):
                 return "doc"
             else:
-                return g.choose(c.config.at_root_bodies_start_in_doc_mode,
+                return g.choose(start_in_doc,
                     'doc','code')
 
         return None

@@ -1989,7 +1989,7 @@ class baseTangleCommands:
 
         s = "\ndump of symbol table...\n"
 
-        for name in sorted(self.txt):
+        for name in sorted(self.tst):
             section = self.tst[name]
             if verbose_flag:
                 s += self.st_dump_node(section)
