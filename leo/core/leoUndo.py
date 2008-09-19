@@ -254,13 +254,12 @@ class undoer:
 
         if 0: # Debugging.
             g.pr('-' * 40)
-            keys = bunch.keys()
-            keys.sort()
-            for key in keys:
+            for key in sorted(bunch):
                 g.trace(key,bunch.get(key))
             g.pr('-' * 20)
 
-        for key in bunch.keys():
+        # bunch is not a dict, so bunch.keys() is required.
+        for key in bunch.keys(): 
             val = bunch.get(key)
             # g.trace(key,val)
             setattr(u,key,val)

@@ -225,11 +225,9 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('absbase',absbase)
 
-    #### Step 2: Look at alist for @file nodes, then @path directives.
     # Step 2: look for @path directives.
     paths = [] ; fileName = None
     for d in aList:
-        ### if fileName:
         # Look for @path directives.
         path = d.get('path')
         if path:
@@ -336,11 +334,9 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('absbase',absbase)
 
-    #### Step 2: Look at alist for @file nodes, then @path directives.
     # Step 2: look for @path directives.
     paths = [] ; fileName = None
     for d in aList:
-        ### if fileName:
         # Look for @path directives.
         path = d.get('path')
         if path:
@@ -1086,11 +1082,9 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('absbase',absbase)
 
-    #### Step 2: Look at alist for @file nodes, then @path directives.
     # Step 2: look for @path directives.
     paths = [] ; fileName = None
     for d in aList:
-        ### if fileName:
         # Look for @path directives.
         path = d.get('path')
         if path:
@@ -1132,7 +1126,7 @@ def scanAtRootDirectives(self,aList):
 
     # To keep pylint happy.
     tag = 'at_root_bodies_start_in_doc_mode'
-    start_in_doc = hasattr(tag) and getattr(c.config,tag)
+    start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
 
     for d in aList:
         root = d.get('root')
@@ -1229,8 +1223,7 @@ if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
 #@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
 # We set the current director to a path so future writes will go to that directory.
 
-### if not self.default_directory and not old.has_key("path") and theDict.has_key("path"):
-if not self.default_directory and not 'path' in old.keys() and 'path' in theDict.keys():
+if not self.default_directory and not 'path' in old and 'path' in theDict:
 
     path = theDict["path"]
     path = g.computeRelativePath(path)
@@ -1256,7 +1249,7 @@ else:
 #@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
 #@+node:ekr.20041005105605.228:<< Test for @encoding >>
 # if not old.has_key("encoding") and theDict.has_key("encoding"):
-if not 'encoding' in old.keys() and 'encoding' in theDict.keys():
+if not 'encoding' in old and 'encoding' in theDict:
 
     e = g.scanAtEncodingDirective(theDict)
     if e:
@@ -1264,7 +1257,7 @@ if not 'encoding' in old.keys() and 'encoding' in theDict.keys():
 #@-node:ekr.20041005105605.228:<< Test for @encoding >>
 #@+node:ekr.20041005105605.230:<< Test for @header and @noheader >>
 # EKR: 10/10/02: perform the sames checks done by tangle.scanAllDirectives.
-### if theDict.has_key("header") and theDict.has_key("noheader"):
+
 if 'header' in theDict and 'noheader' in theDict:
     g.es("conflicting @header and @noheader directives")
 #@-node:ekr.20041005105605.230:<< Test for @header and @noheader >>
@@ -1275,22 +1268,18 @@ if 'header' in theDict and 'noheader' in theDict:
 # 1/23/05: Any previous @language or @comment prevents processing up the tree.
 # This code is now like the code in tangle.scanAlldirectives.
 
-### if old.has_key("comment") or old.has_key("language"):
 if 'comment' in old or 'language' in old:
     pass # Do nothing more.
 
-### elif theDict.has_key("comment"):
 elif 'comment' in theDict:
     z = theDict["comment"]
     delim1, delim2, delim3 = g.set_delims_from_string(z)
 
-### elif theDict.has_key("language"):
 elif 'language' in theDict:
     z = theDict["language"]
     self.language,delim1,delim2,delim3 = g.set_language(z,0)
 #@-node:ekr.20041005105605.229:<< Test for @comment and @language >>
 #@+node:ekr.20041005105605.231:<< Test for @lineending >>
-### if not old.has_key("lineending") and theDict.has_key("lineending"):
 if 'lineending' not in old and 'lineending' in theDict:
 
     lineending = g.scanAtLineendingDirective(theDict)
@@ -1300,7 +1289,6 @@ if 'lineending' not in old and 'lineending' in theDict:
         # g.trace(p.headString(),'lineending',repr(lineending))
 #@-node:ekr.20041005105605.231:<< Test for @lineending >>
 #@+node:ekr.20041005105605.232:<< Test for @pagewidth >>
-### if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
 if 'pagewidth' in theDict and 'pagewidth' not in old:
 
     w = g.scanAtPagewidthDirective(theDict,issue_error_flag=True)
@@ -1308,7 +1296,6 @@ if 'pagewidth' in theDict and 'pagewidth' not in old:
         self.page_width = w
 #@-node:ekr.20041005105605.232:<< Test for @pagewidth >>
 #@+node:ekr.20041005105605.233:<< Test for @tabwidth >>
-### if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
 if 'tabwidth' in theDict and 'tabwidth' not in old:
 
     w = g.scanAtTabwidthDirective(theDict,issue_error_flag=True)
@@ -1424,11 +1411,9 @@ while 1:
         break
 #@-node:ekr.20031218072017.1361:<< Collect @first attributes >>
 #@+node:ekr.20031218072017.1362:<< Test for @comment and @language >>
-### if old.has_key("comment") or old.has_key("language"):
 if 'comment' in old or 'language' in old:
     pass # Do nothing more.
 
-### elif theDict.has_key("comment"):
 elif 'comment' in theDict:
 
     z = theDict["comment"]
@@ -1443,7 +1428,6 @@ elif 'comment' in theDict:
         if issue_error_flag:
             g.es("ignoring: @comment",z)
 
-### elif theDict.has_key("language"):
 elif 'language' in theDict:
 
     z = theDict["language"]
@@ -1464,7 +1448,6 @@ elif 'language' in theDict:
     self.raw_cweb_flag = self.language == "cweb" # A new ivar.
 #@-node:ekr.20031218072017.1362:<< Test for @comment and @language >>
 #@+node:ekr.20031218072017.1363:<< Test for @encoding >>
-### if not old.has_key("encoding") and theDict.has_key("encoding"):
 if 'encoding' not in old and 'encoding' in theDict:
 
     e = g.scanAtEncodingDirective(theDict)
@@ -1472,7 +1455,6 @@ if 'encoding' not in old and 'encoding' in theDict:
         self.encoding = e
 #@-node:ekr.20031218072017.1363:<< Test for @encoding >>
 #@+node:ekr.20031218072017.1364:<< Test for @lineending >>
-### if not old.has_key("lineending") and theDict.has_key("lineending"):
 if 'lineending' not in old and 'lineending' in theDict:
 
     lineending = g.scanAtLineendingDirective(theDict)
@@ -1485,14 +1467,12 @@ if 'lineending' not in old and 'lineending' in theDict:
 
 if not print_mode_changed:
     for name in ("verbose","terse","quiet","silent"):
-        ### if theDict.has_key(name):
         if name in theDict:
             self.print_mode = name
             print_mode_changed = True
             break
 #@-node:ekr.20031218072017.1365:<< Test for print modes directives >>
 #@+node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-### if require_path_flag and not old.has_key("path") and theDict.has_key("path"):
 if require_path_flag and 'path' not in old and 'path' in theDict:
 
     path = theDict["path"]
@@ -1526,7 +1506,6 @@ else: # 11/19/02
 #@-node:ekr.20031218072017.1368:<< handle absolute @path >>
 #@-node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
 #@+node:ekr.20031218072017.1369:<< Test for @pagewidth >>
-### if not old.has_key("pagewidth") and theDict.has_key("pagewidth"):
 if 'pagewidth' not in old and 'pagewidth' in theDict:
 
     w = g.scanAtPagewidthDirective(theDict,issue_error_flag)
@@ -1537,14 +1516,12 @@ if 'pagewidth' not in old and 'pagewidth' in theDict:
 @ 10/27/02: new code:  self.root may not be defined here, so any relative directory specified in the @root node will have no effect unless we have this code.
 
 @c
-### if self.root_name == None and theDict.has_key("root"):
 if self.root_name == None and 'root' in theDict:
 
     z = theDict["root"]
     self.setRootFromText(z,issue_error_flag)
 #@-node:ekr.20031218072017.1370:<< Test for @root >>
 #@+node:ekr.20031218072017.1371:<< Test for @tabwidth >>
-### if not old.has_key("tabwidth") and theDict.has_key("tabwidth"):
 if 'tabwidth' not in old and 'tabwidth' in theDict:
 
     w = g.scanAtTabwidthDirective(theDict,issue_error_flag)
@@ -1552,20 +1529,16 @@ if 'tabwidth' not in old and 'tabwidth' in theDict:
         self.tab_width = w
 #@-node:ekr.20031218072017.1371:<< Test for @tabwidth >>
 #@+node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
-### if old.has_key("header") or old.has_key("noheader"):
 if 'header' in old or 'noheader' in old:
     pass # Do nothing more.
 
-### elif theDict.has_key("header") and theDict.has_key("noheader"):
 elif 'header' in theDict and 'noheader' in theDict:
     if issue_error_flag:
         g.es("conflicting @header and @noheader directives")
 
-### elif theDict.has_key("header"):
 elif 'header' in theDict:
     self.use_header_flag = True
 
-### elif theDict.has_key("noheader"):
 elif 'noheader' in theDict:
     self.use_header_flag = False
 #@-node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
@@ -1645,23 +1618,19 @@ def scanColorDirectives(self,p):
 #@+node:ekr.20031218072017.1378:<< Test for @comment or @language >>
 # @comment and @language may coexist in the same node.
 
-### if theDict.has_key("comment"):
-if 'comment' in theDict.keys():
+if 'comment' in theDict:
     self.comment_string = theDict["comment"]
 
-### if theDict.has_key("language"):
-if 'language' in theDict.keys():
+if 'language' in theDict:
     z = theDict["language"]
     language,junk,junk,junk = g.set_language(z,0)
     self.language = language
 
-### if theDict.has_key("comment") or theDict.has_key("language"):
-if 'comment' in theDict.keys() or 'language' in theDict.keys():
+if 'comment' in theDict or 'language' in theDict:
     break
 #@-node:ekr.20031218072017.1378:<< Test for @comment or @language >>
 #@+node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-### if theDict.has_key("root") and not self.rootMode:
-if 'root' in theDict.keys() and not self.rootMode:
+if 'root' in theDict and not self.rootMode:
 
     root = theDict["root"]
     if g.match_word(root,0,"@root-code"):
@@ -2297,7 +2266,6 @@ def scanForAtIgnore(c,p):
 
     for p in p.self_and_parents_iter():
         d = g.get_directives_dict(p)
-        ### if d.has_key("ignore"):
         if 'ignore' in d:
             return True
 
@@ -2315,7 +2283,6 @@ def scanForAtLanguage(c,p):
     if c and p:
         for p in p.self_and_parents_iter():
             d = g.get_directives_dict(p)
-            ### if d.has_key("language"):
             if 'language' in d:
                 z = d["language"]
                 language,delim1,delim2,delim3 = g.set_language(z,0)
@@ -2564,11 +2531,9 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('absbase',absbase)
 
-    #### Step 2: Look at alist for @file nodes, then @path directives.
     # Step 2: look for @path directives.
     paths = [] ; fileName = None
     for d in aList:
-        ### if fileName:
         # Look for @path directives.
         path = d.get('path')
         if path:
@@ -2602,8 +2567,7 @@ def scanAtPathDirectives(self,aList,force=False):
 #@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
 # We set the current director to a path so future writes will go to that directory.
 
-### if not self.default_directory and not old.has_key("path") and theDict.has_key("path"):
-if not self.default_directory and not 'path' in old.keys() and 'path' in theDict.keys():
+if not self.default_directory and not 'path' in old and 'path' in theDict:
 
     path = theDict["path"]
     path = g.computeRelativePath(path)
@@ -2628,7 +2592,6 @@ else:
 #@-node:ekr.20041005105605.227:<< handle absolute path >>
 #@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
 #@+node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-### if require_path_flag and not old.has_key("path") and theDict.has_key("path"):
 if require_path_flag and 'path' not in old and 'path' in theDict:
 
     path = theDict["path"]

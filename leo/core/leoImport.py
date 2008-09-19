@@ -730,7 +730,6 @@ class leoImportCommands:
 
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            ### if theDict.has_key("path"):
             if 'path' in theDict:
                 #@            << handle @path >>
                 #@+node:ekr.20080211085914.2:<< handle @path >>

@@ -3,6 +3,7 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First 6
+
 #@+node:ekr.20080918164844.2:Merge trunk into vim-keys branch
 #@-node:ekr.20080918164844.2:Merge trunk into vim-keys branch
 #@+node:ekr.20080918164844.15:Allow Leo to open .py files directly (or any other kind of file)
@@ -47,8 +48,6 @@ or best yet:
 leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo 
 #@nonl
 #@-node:ekr.20080910054558.2:Add -c option to specify config files
-#@+node:ekr.20080918164844.20:Remove ### lines
-#@-node:ekr.20080918164844.20:Remove ### lines
 #@+node:ekr.20080917154206.3:Finish at-path branch items!
 #@-node:ekr.20080917154206.3:Finish at-path branch items!
 #@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
@@ -1288,12 +1287,10 @@ try:
         os.startfile(arg+path)
     elif openType == "exec":
         command = "exec(%s)" % (arg+shortPath)
-        ### exec arg+path in {}
         exec(arg+path,{},{})
     elif openType == "os.spawnl":
         filename = g.os_path_basename(arg)
         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-        ### apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
         os.spawnl(os.P_NOWAIT,arg,filename,path)
     elif openType == "os.spawnv":
         filename = os.path.basename(arg[0]) 
@@ -1303,7 +1300,6 @@ try:
             # Change suggested by Jim Sizelove.
         vtuple.append(path)
         command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-        ### apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
         os.spawnv(os.P_NOWAIT,arg[0],vtuple)
     # This clause by Jim Sizelove.
     elif openType == "subprocess.Popen":
@@ -1734,7 +1730,7 @@ def extendHelper (self,w,extend,spot,upOrDown=False):
             i2,j2 = g.getLine(s,spot)
             line = s[i2:j2]
             row,col = g.convertPythonIndexToRowCol(s,spot)
-            if True: #### j2 < len(s)-1:
+            if True: # was j2 < len(s)-1:
                 n = min(self.moveCol,max(0,len(line)-1))
             else:
                 n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
@@ -2359,7 +2355,7 @@ def createModeBindings (self,modeName,d,w):
     # g.trace(w,g.callers())
     # g.trace(g.dictToString(d))
 
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -2545,7 +2541,7 @@ def reinitMode (self,modeName):
     else:
         # Do not set the status line here.
         k.setLabelBlue(modeName+': ',protect=True)
-        #### c.minibufferWantsFocus()
+
 #@-node:ekr.20061031131434.164:reinitMode
 #@+node:ekr.20061031131434.165:modeHelp & helper
 def modeHelp (self,event):
@@ -2779,7 +2775,7 @@ elif k.unboundKeyAction == 'command':
             # key in ('button','all')
         # ):
             # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
             # if d:
                 # b = d.get(stroke)
                 # if b:
@@ -2818,7 +2814,7 @@ for key,name in (
         key in ('button','all')
     ):
         d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
         if d:
             b = d.get(stroke)
             if b:
@@ -2878,7 +2874,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                        k.keyboardQuit(event,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -3347,7 +3343,7 @@ def createModeBindings (self,modeName,d,w):
     # g.trace(w,g.callers())
     # g.trace(g.dictToString(d))
 
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -3596,7 +3592,7 @@ elif k.unboundKeyAction == 'command':
             # key in ('button','all')
         # ):
             # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
             # if d:
                 # b = d.get(stroke)
                 # if b:
@@ -3635,7 +3631,7 @@ for key,name in (
         key in ('button','all')
     ):
         d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
         if d:
             b = d.get(stroke)
             if b:
@@ -3695,7 +3691,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                        k.keyboardQuit(event,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -3964,7 +3960,7 @@ def completeAllBindingsForWidget (self,w):
 
     # g.trace('w',w,d.has_key('Alt+Key-4'))
 
-    for stroke in d.keys():
+    for stroke in d:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.96:k.completeAllBindingsForWidget
 #@+node:ekr.20061031131434.97:k.completeAllBindings
@@ -3978,7 +3974,7 @@ def completeAllBindings (self,w=None):
     # g.trace(w)
 
     k = self
-    for stroke in k.bindingsDict.keys():
+    for stroke in k.bindingsDict:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.97:k.completeAllBindings
 #@+node:ekr.20061031131434.98:k.makeAllBindings
@@ -4006,7 +4002,7 @@ def initAbbrev (self):
 
     k = self ; c = k.c ; d = c.config.getAbbrevDict()
     if d:
-        for key in d.keys():
+        for key in d:
             commandName = d.get(key)
             if commandName.startswith('press-') and commandName.endswith('-button'):
                 pass # Must be done later in k.registerCommand.
@@ -4035,7 +4031,7 @@ def addModeCommands (self):
     d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
 
     # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-    for key in d.keys():
+    for key in d:
 
         def enterModeCallback (event=None,name=key):
             k.enterNamedMode(event,name)
@@ -4087,7 +4083,7 @@ def makeBindingsFromCommandsDict (self):
                 shortcut = k.shortcutFromSetting(accel)
                 k.bindKey(pane,shortcut,command,commandName)
 
-    # g.trace(g.listToString(k.bindingsDict.keys(),sort=True))
+    # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
 #@-node:ekr.20061031131434.102:makeBindingsFromCommandsDict
 #@+node:ekr.20061031131434.103:k.makeMasterGuiBinding
@@ -4165,7 +4161,7 @@ def createModeBindings (self,modeName,d,w):
     # g.trace(w,g.callers())
     # g.trace(g.dictToString(d))
 
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -4351,7 +4347,7 @@ def reinitMode (self,modeName):
     else:
         # Do not set the status line here.
         k.setLabelBlue(modeName+': ',protect=True)
-        #### c.minibufferWantsFocus()
+
 #@-node:ekr.20061031131434.164:reinitMode
 #@+node:ekr.20061031131434.165:modeHelp & helper
 def modeHelp (self,event):
@@ -4796,7 +4792,7 @@ elif k.unboundKeyAction == 'command':
             # key in ('button','all')
         # ):
             # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
             # if d:
                 # b = d.get(stroke)
                 # if b:
@@ -4835,7 +4831,7 @@ for key,name in (
         key in ('button','all')
     ):
         d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
         if d:
             b = d.get(stroke)
             if b:
@@ -4895,7 +4891,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                        k.keyboardQuit(event,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -5001,13 +4997,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 command=masterMenuCallback,
                 underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
-### if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
-if g.isPython3:
-    isString = type(data) == type('a')
-else:
-    isString = type(data) in types.StringTypes
-
-if isString:
+if g.isString(data):
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
     s = data
@@ -5228,7 +5218,7 @@ def createModeBindings (self,modeName,d,w):
     # g.trace(w,g.callers())
     # g.trace(g.dictToString(d))
 
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -5402,7 +5392,7 @@ def completeAllBindingsForWidget (self,w):
 
     # g.trace('w',w,d.has_key('Alt+Key-4'))
 
-    for stroke in d.keys():
+    for stroke in d:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.96:k.completeAllBindingsForWidget
 #@+node:ekr.20061031131434.97:k.completeAllBindings
@@ -5416,7 +5406,7 @@ def completeAllBindings (self,w=None):
     # g.trace(w)
 
     k = self
-    for stroke in k.bindingsDict.keys():
+    for stroke in k.bindingsDict:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.97:k.completeAllBindings
 #@+node:ekr.20061031131434.98:k.makeAllBindings
@@ -5444,7 +5434,7 @@ def initAbbrev (self):
 
     k = self ; c = k.c ; d = c.config.getAbbrevDict()
     if d:
-        for key in d.keys():
+        for key in d:
             commandName = d.get(key)
             if commandName.startswith('press-') and commandName.endswith('-button'):
                 pass # Must be done later in k.registerCommand.
@@ -5473,7 +5463,7 @@ def addModeCommands (self):
     d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
 
     # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-    for key in d.keys():
+    for key in d:
 
         def enterModeCallback (event=None,name=key):
             k.enterNamedMode(event,name)
@@ -5525,7 +5515,7 @@ def makeBindingsFromCommandsDict (self):
                 shortcut = k.shortcutFromSetting(accel)
                 k.bindKey(pane,shortcut,command,commandName)
 
-    # g.trace(g.listToString(k.bindingsDict.keys(),sort=True))
+    # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
 #@-node:ekr.20061031131434.102:makeBindingsFromCommandsDict
 #@+node:ekr.20061031131434.103:k.makeMasterGuiBinding
@@ -8244,7 +8234,7 @@ for p in c.allNodes_iter():
         if not tDict.has_key(key):
             tDict[key] = p.v.t
 
-for key in tDict.keys():
+for key in tDict:
     g.clearAllIvars(tDict[key])
 
 for v in vList:
@@ -9668,7 +9658,7 @@ def setEditorColors (self,bg,fg):
 
     ###
 
-    # for key in d.keys():
+    # for key in d:
         # w2 = d.get(key)
         # # g.trace(id(w2),bg,fg)
         # try:
@@ -10662,7 +10652,7 @@ def restoreAllState (self,d):
 
     # Restore all colors.
     colors = d.get('colors')
-    for color in colors.keys():
+    for color in colors:
         if color not in self.colorTags:
             self.colorTags.append(color)
             logCtrl.tag_config(color,foreground=color)
@@ -12583,9 +12573,7 @@ def traceIds (self,full=False):
     for theDict,tag,flag in ((tree.ids,"ids",True),(tree.iconIds,"icon ids",False)):
         print '=' * 60
         print ; print "%s..." % tag
-        keys = theDict.keys()
-        keys.sort()
-        for key in keys:
+        for key in sorted(theDict):
             p = tree.ids.get(key)
             if p is None: # For lines.
                 print "%3d None" % key

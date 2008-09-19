@@ -609,7 +609,7 @@ class autoCompleterClass:
                     if ch:
                         n = d.get(ch,0)
                         d[ch] = n + 1
-                aList = [ch+'...%d' % (d.get(ch)) for ch in d.keys()] ; aList.sort()
+                aList = [ch+'...%d' % (d.get(ch)) for ch in sorted(d)]
                 self.tabList = aList
 
         c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
@@ -1316,7 +1316,7 @@ class autoCompleterClass:
 
         try:
             # Add the the class definition to the present environment.
-            exec(s) ###
+            exec(s) ### Security violation!
 
             # Get the newly created object from the locals dict.
             theClass = locals().get(className)
@@ -1715,7 +1715,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
 
-        for name in c.commandsDict.keys():
+        for name in c.commandsDict:
             f = c.commandsDict.get(name)
             try:
                 k.inverseCommandsDict [f.__name__] = name
@@ -2049,7 +2049,7 @@ class keyHandlerClass:
 
         # Create the inverse dict.
         k.guiBindNamesInverseDict = {}
-        for key in k.guiBindNamesDict.keys():
+        for key in k.guiBindNamesDict:
             k.guiBindNamesInverseDict [k.guiBindNamesDict.get(key)] = key
 
     #@-node:ekr.20070123085931:k.defineSpecialKeys
@@ -2202,7 +2202,7 @@ class keyHandlerClass:
 
         # g.trace('w',w,d.has_key('Alt+Key-4'))
 
-        for stroke in d.keys():
+        for stroke in d:
             k.makeMasterGuiBinding(stroke,w=w)
     #@-node:ekr.20061031131434.96:k.completeAllBindingsForWidget
     #@+node:ekr.20061031131434.97:k.completeAllBindings
@@ -2216,7 +2216,7 @@ class keyHandlerClass:
         # g.trace(w)
 
         k = self
-        for stroke in k.bindingsDict.keys():
+        for stroke in k.bindingsDict:
             k.makeMasterGuiBinding(stroke,w=w)
     #@-node:ekr.20061031131434.97:k.completeAllBindings
     #@+node:ekr.20061031131434.98:k.makeAllBindings
@@ -2244,7 +2244,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; d = c.config.getAbbrevDict()
         if d:
-            for key in d.keys():
+            for key in d:
                 commandName = d.get(key)
                 if commandName.startswith('press-') and commandName.endswith('-button'):
                     pass # Must be done later in k.registerCommand.
@@ -2273,7 +2273,7 @@ class keyHandlerClass:
         d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
 
         # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-        for key in d.keys():
+        for key in d:
 
             def enterModeCallback (event=None,name=key):
                 k.enterNamedMode(event,name)
@@ -2325,7 +2325,7 @@ class keyHandlerClass:
                     shortcut = k.shortcutFromSetting(accel)
                     k.bindKey(pane,shortcut,command,commandName)
 
-        # g.trace(g.listToString(k.bindingsDict.keys(),sort=True))
+        # g.trace(g.listToString(sorted(k.bindingsDict))
         # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
     #@-node:ekr.20061031131434.102:makeBindingsFromCommandsDict
     #@+node:ekr.20061031131434.103:k.makeMasterGuiBinding
@@ -3176,7 +3176,7 @@ class keyHandlerClass:
             d = c.config.getAbbrevDict()
                 # Keys are full command names, values are abbreviations.
             if commandName in d.values():
-                for key in d.keys():
+                for key in d:
                     if d.get(key) == commandName:
                         c.commandsDict [key] = c.commandsDict.get(commandName)
                         break
@@ -3187,9 +3187,9 @@ class keyHandlerClass:
         # Override entries in c.k.masterBindingsDict
         k = self
         d = k.masterBindingsDict
-        for key in d.keys():
+        for key in d:
             d2 = d.get(key)
-            for key2 in d2.keys():
+            for key2 in d2:
                 b = d2.get(key2)
                 if b.commandName == commandName:
                     b.func=func
@@ -3356,7 +3356,7 @@ class keyHandlerClass:
                         # key in ('button','all')
                     # ):
                         # d = k.masterBindingsDict.get(key,{})
-                        # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+                        # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
                         # if d:
                             # b = d.get(stroke)
                             # if b:
@@ -3398,7 +3398,7 @@ class keyHandlerClass:
                 key in ('button','all')
             ):
                 d = k.masterBindingsDict.get(key,{})
-                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
                 if d:
                     b = d.get(stroke)
                     if b:
@@ -3463,7 +3463,7 @@ class keyHandlerClass:
                             return False # Let getArg handle it.
                         elif b.commandName not in k.singleLineCommandList:
                             if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                            k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                            k.keyboardQuit(event,hideTabs=True)
                         else:
                             if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                             c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -3823,7 +3823,7 @@ class keyHandlerClass:
         # g.trace(w,g.callers())
         # g.trace(g.dictToString(d))
 
-        for commandName in d.keys():
+        for commandName in d:
             if commandName in ('*entry-commands*','*command-prompt*'):
                 # These are special-purpose dictionary entries.
                 continue
@@ -4009,7 +4009,7 @@ class keyHandlerClass:
         else:
             # Do not set the status line here.
             k.setLabelBlue(modeName+': ',protect=True)
-            #### c.minibufferWantsFocus()
+
     #@-node:ekr.20061031131434.164:reinitMode
     #@+node:ekr.20061031131434.165:modeHelp & helper
     def modeHelp (self,event):
@@ -4104,7 +4104,7 @@ class keyHandlerClass:
         k = self ; d = {}
 
         # keys are minibuffer command names, values are shortcuts.
-        for shortcut in k.bindingsDict.keys():
+        for shortcut in k.bindingsDict:
             bunchList = k.bindingsDict.get(shortcut,[])
             for b in bunchList:
                 shortcutList = d.get(b.commandName,[])
@@ -4781,7 +4781,7 @@ class keyHandlerClass:
             # g.trace(state,stroke)
             if stroke == k.universalArgKey:
                 k.repeatCount = k.repeatCount * 4
-            elif stroke == '<Key>' and (keysym.isdigit() or keysym == '-'): ### was u'-'
+            elif stroke == '<Key>' and (keysym.isdigit() or keysym == '-'):
                 k.updateLabel(event)
             elif stroke == '<Key>' and keysym in (
                 'Alt_L','Alt_R',

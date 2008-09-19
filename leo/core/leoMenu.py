@@ -9,7 +9,6 @@
 import leo.core.leoGlobals as g
 import string
 import sys
-import types
 
 #@+others
 #@+node:ekr.20031218072017.3750:class leoMenu
@@ -1302,11 +1301,13 @@ class leoMenu:
 
     def canonicalizeTranslatedMenuName (self,name):
 
-        if g.isPython3:
-            return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r']) ###
-        else:
-            ### return ''.join([ch for ch in name.lower() if ch not in u'& \t\n\r']) ###
-            return ''.join([ch for ch in name.lower() if ch not in unicode('& \t\n\r')]) ###
+        return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
+
+        ###
+        # if g.isPython3:
+            # return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
+        # else:
+            # return ''.join([ch for ch in name.lower() if ch not in unicode('& \t\n\r')])
     #@-node:ekr.20031218072017.3783:canonicalizeMenuName & cononicalizeTranslatedMenuName
     #@+node:ekr.20051022044950:computeOldStyleShortcutKey
     def computeOldStyleShortcutKey (self,s):
@@ -1329,13 +1330,7 @@ class leoMenu:
         for data in table:
             #@        << get label & command or continue >>
             #@+node:ekr.20051021091958:<< get label & command or continue >>
-            ### if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
-            if g.isPython3:
-                isString = type(data) == type('a')
-            else:
-                isString = type(data) in types.StringTypes
-
-            if isString:
+            if g.isString(data):
                 # New in Leo 4.4.2: Can use the same string for both the label and the command string.
                 ok = True
                 s = data

@@ -276,7 +276,7 @@ class leoTkinterComparePanel (leoCompare.leoCompare,leoTkinterDialog.leoTkinterD
 
         self.countEntry = e = Tk.Entry(row,width=4)
         e.pack(side="left",padx=2)
-        e.insert(1,"1") ###
+        e.insert(1,"1")
 
         lab = Tk.Label(row,text="mismatches")
         lab.pack(side="left",padx=2)

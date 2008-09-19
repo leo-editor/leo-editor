@@ -183,7 +183,6 @@ class generalTestCase(unittest.TestCase):
             scriptFile = c.writeScriptFile(script)
             execfile(scriptFile,d)
         else:
-            ### exec script in d
             exec(script,d)
 
         # if 0: # debug
@@ -222,7 +221,6 @@ def makeTestSuite (c,p):
         return None
 
     try:
-        ### exec script + '\n' in {'c':c,'g':g,'p':p}
         exec(script + '\n',{'c':c,'g':g,'p':p})
         suite = g.app.scriptDict.get("suite")
         if not suite:
@@ -372,9 +370,8 @@ def printGc(message=None):
         typesDict[type(obj)] = n + 1
 
     # Create the union of all the keys.
-    keys = typesDict.keys()
-    for key in lastTypesDict.keys():
-        if key not in keys:
+    for key in lastTypesDict:
+        if key not in typesDict:
             keys.append(key)
 
     keys.sort()

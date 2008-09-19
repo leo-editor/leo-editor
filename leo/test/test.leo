@@ -283,8 +283,9 @@
 <v t="ekr.20080918123632.1"><vh>@path unittest</vh>
 <v t="ekr.20080918090005.1"><vh>@@file goto-global-line-test.py</vh></v>
 </v>
-</v>
 <v t="ekr.20080918180141.1"><vh>Exception syntax</vh></v>
+</v>
+<v t="ekr.20080919080736.1"><vh>dictionary stuff</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2343,5 +2344,12 @@ except MyError:
     theType, value, traceback = sys.exc_info()
     print 'My exception occurred, value:', value
 </t>
+<t tx="ekr.20080919080736.1">d = {'a':'A','b':'B',}
+
+print 'a' in d, 'A' in d
+for z in d.keys():
+    print z
+for z in d:
+    print z</t>
 </tnodes>
 </leo_file>

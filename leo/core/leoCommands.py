@@ -728,12 +728,10 @@ class baseCommands:
                         os.startfile(arg+path)
                     elif openType == "exec":
                         command = "exec(%s)" % (arg+shortPath)
-                        ### exec arg+path in {}
                         exec(arg+path,{},{})
                     elif openType == "os.spawnl":
                         filename = g.os_path_basename(arg)
                         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-                        ### apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
                         os.spawnl(os.P_NOWAIT,arg,filename,path)
                     elif openType == "os.spawnv":
                         filename = os.path.basename(arg[0]) 
@@ -743,7 +741,6 @@ class baseCommands:
                             # Change suggested by Jim Sizelove.
                         vtuple.append(path)
                         command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-                        ### apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
                         os.spawnv(os.P_NOWAIT,arg[0],vtuple)
                     # This clause by Jim Sizelove.
                     elif openType == "subprocess.Popen":
@@ -1673,7 +1670,6 @@ class baseCommands:
                         scriptFile = self.writeScriptFile(script)
                         execfile(scriptFile,d)
                     else:
-                        ### exec script in d
                         exec(script,d)
                     # g.trace('**** after')
                     if not script1 and not silent:
@@ -3307,7 +3303,7 @@ class baseCommands:
 
             for v in c.all_unique_vnodes_iter():
                 t = v.t
-                if t not in tnodeInfoDict.keys():
+                if t not in tnodeInfoDict:
                     tnodeInfoDict[t] = g.Bunch(
                         t=t,head=v.headString(),body=v.bodyString())
             #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
@@ -3331,7 +3327,7 @@ class baseCommands:
 
             # g.trace(copiedTnodeDict.keys())
 
-            for t in tnodeInfoDict.keys():
+            for t in tnodeInfoDict:
                 bunch = tnodeInfoDict.get(t)
                 if copiedTnodeDict.get(t):
                     copiedBunchList.append(bunch)
@@ -3779,7 +3775,7 @@ class baseCommands:
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
                     #@nl
-            except AssertionError: ### as message:
+            except AssertionError:
                 errors += 1
                 #@            << give test failed message >>
                 #@+node:ekr.20040314044652:<< give test failed message >>
@@ -5795,11 +5791,9 @@ class baseCommands:
 
         if trace and verbose: g.trace('absbase',absbase)
 
-        #### Step 2: Look at alist for @file nodes, then @path directives.
         # Step 2: look for @path directives.
         paths = [] ; fileName = None
         for d in aList:
-            ### if fileName:
             # Look for @path directives.
             path = d.get('path')
             if path:
@@ -5841,7 +5835,7 @@ class baseCommands:
 
         # To keep pylint happy.
         tag = 'at_root_bodies_start_in_doc_mode'
-        start_in_doc = hasattr(tag) and getattr(c.config,tag)
+        start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
 
         for d in aList:
             root = d.get('root')
@@ -7322,11 +7316,11 @@ class configSettings:
         self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
         self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
 
-        for key in g.app.config.encodingIvarsDict.keys():
+        for key in g.app.config.encodingIvarsDict:
             if key != '_hash':
                 self.initEncoding(key)
 
-        for key in g.app.config.ivarsDict.keys():
+        for key in g.app.config.ivarsDict:
             if key != '_hash':
                 self.initIvar(key)
     #@+node:ekr.20041118104240:initIvar

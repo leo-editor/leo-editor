@@ -808,7 +808,6 @@ class baseFileCommands:
         if g.unified_nodes: t = leoNodes.vnode(context=c)
         else:               t = leoNodes.tnode()
 
-        ### if self.tnodesDict.has_key(index):
         if index in self.tnodesDict:
             g.es("bad tnode index:",str(index),"using empty text.")
             return t
@@ -816,7 +815,6 @@ class baseFileCommands:
             # Create the tnode.  Use the _original_ index as the key in tnodesDict.
             self.tnodesDict[index] = t
 
-            ### if type(index) not in (type(""),type(u"")):
             if not g.isString(index):
                 g.es("newTnode: unexpected index type:",type(index),index,color="red")
 
@@ -972,7 +970,7 @@ class baseFileCommands:
 
         for resultDict in self.descendentTnodeUaDictList:
             if trace: g.trace('t.dict',resultDict)
-            for gnx in resultDict.keys():
+            for gnx in resultDict:
                 tref = self.canonicalTnodeIndex(gnx)
                 t = self.tnodesDict.get(tref)
                 if t:
@@ -984,7 +982,7 @@ class baseFileCommands:
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v,resultDict in self.descendentVnodeUaDictList:
             if trace: g.trace('v.dict',resultDict)
-            for key in resultDict.keys():
+            for key in resultDict:
                 v = self.resolveArchivedPosition(key,root_v)
                 if v:
                     v.unknownAttributes = resultDict[key]
@@ -1109,7 +1107,7 @@ class baseFileCommands:
         d = sax_node.tnodeAttributes
 
         aDict = {}
-        for key in d.keys():
+        for key in d:
             val = d.get(key)
             val2 = self.getSaxUa(key,val)
             aDict[key] = val2
@@ -1173,7 +1171,7 @@ class baseFileCommands:
             self.descendentMarksList.extend(aList)
 
         aDict = {}
-        for key in d.keys():
+        for key in d:
             if key in self.nativeVnodeAttributes:
                 if 0: g.trace('****ignoring***',key,d.get(key))
             else:
@@ -1264,10 +1262,11 @@ class baseFileCommands:
 
         try:
             if g.isPython3:
-                ### s = theFile.read() # This produces bytes.
-                ### theFile = io.BytesIO(s) ### hangs
-                ### theFile = io.TextIOWrapper(s) ### fails in ctor.
-                ### theFile = io.BufferedReader(s)
+                ### None of these work.
+                # s = theFile.read() # This produces bytes.
+                # theFile = io.BytesIO(s) ### hangs
+                # theFile = io.TextIOWrapper(s) ### fails in ctor.
+                # theFile = io.BufferedReader(s)
                 if 0: # This read causes unicode errors on Py3K, but appears essential for Python 2.5
                     if theFile:
                         s = theFile.read()
@@ -2016,7 +2015,6 @@ class baseFileCommands:
                 #@nonl
                 #@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
                 #@nl
-            ### self.outputFile = cStringIO.StringIO()
             self.outputFile = StringIO()
             #@        << create theActualFile >>
             #@+node:ekr.20060929103258:<< create theActualFile >>
@@ -2204,14 +2202,14 @@ class baseFileCommands:
                 # Create a new dict containing only entries that can be pickled.
                 d = dict(torv.unknownAttributes) # Copy the dict.
 
-                for key in d.keys():
+                for key in d:
                     # Just see if val can be pickled.  Suppress any error.
                     ok = self.pickle(torv=torv,val=d.get(key),tag=None)
                     if not ok:
                         del d[key]
                         g.es("ignoring bad unknownAttributes key",key,"in",p.headString(),color="blue")
 
-                if d.keys():
+                if d:
                     result.append((torv,d),)
 
         return result
@@ -2305,7 +2303,7 @@ class baseFileCommands:
         if trace: g.trace(g.dictToString(d))
 
         # Pickle and hexlify d.
-        return d.keys() and self.pickle(
+        return d and self.pickle(
             torv=p.t,val=d,tag="descendentTnodeUnknownAttributes") or ''
     #@-node:ekr.20080805071954.1:putDescendentTnodeUas
     #@+node:ekr.20080805071954.2:putDescendentVnodeUas
@@ -2340,7 +2338,7 @@ class baseFileCommands:
         if trace: g.trace(p.headString(),g.dictToString(d))
 
         # Pickle and hexlify d
-        return d.keys() and self.pickle(
+        return d and self.pickle(
             torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
     #@-node:ekr.20080805071954.2:putDescendentVnodeUas
     #@+node:ekr.20031218072017.2002:putTnodeList

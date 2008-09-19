@@ -1068,7 +1068,7 @@ class leoBody:
         d = self.editorWidgets
         if len(d.keys()) < 2: return # There is only the main widget.
 
-        for key in d.keys():
+        for key in d:
             w = d.get(key)
             v = w.leo_v
             if v and v == p.v and w != c.frame.body.bodyCtrl:
@@ -1129,7 +1129,7 @@ class leoBody:
         d = self.editorWidgets
 
         # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
-        for key in d.keys():
+        for key in d:
             w2 = d.get(key)
             if w2 != w and w2.leo_active:
                 w2.leo_active = False
@@ -1640,8 +1640,7 @@ class leoFrame:
             theDict = g.get_directives_dict(p)
             #@        << set w and break on @tabwidth >>
             #@+node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
-            ### if theDict.has_key("tabwidth"):
-            if 'tabwidth' in theDict.keys():
+            if 'tabwidth' in theDict:
 
                 val = g.scanAtTabwidthDirective(theDict,issue_error_flag=False)
                 if val and val != 0:
@@ -2109,7 +2108,7 @@ class leoLog:
             self.selectTab('Log')
         else:
             for d in (self.canvasDict,self.textDict,self.frameDict):
-                if tabName in d.keys():
+                if tabName in d:
                     del d[tabName]
             self.tabName = None
             self.selectTab('Log')
@@ -3251,8 +3250,8 @@ class nullTree (leoTree):
     def printWidgets(self):
 
         d = self.editWidgetsDict
-        keys = d.keys()
-        for key in keys:
+
+        for key in d:
             # keys are tnodes, values are stringTextWidgets.
             w = d.get(key)
             g.pr('w',w,'t._headString:',key.headString,'s:',repr(w.s))

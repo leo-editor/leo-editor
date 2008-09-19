@@ -765,7 +765,6 @@ def scanForAtIgnore(c,p):
 
     for p in p.self_and_parents_iter():
         d = g.get_directives_dict(p)
-        ### if d.has_key("ignore"):
         if 'ignore' in d:
             return True
 
@@ -783,7 +782,6 @@ def scanForAtLanguage(c,p):
     if c and p:
         for p in p.self_and_parents_iter():
             d = g.get_directives_dict(p)
-            ### if d.has_key("language"):
             if 'language' in d:
                 z = d["language"]
                 language,delim1,delim2,delim3 = g.set_language(z,0)
@@ -1236,7 +1234,7 @@ def printLeoModules(message=None):
 
     # Create the list.
     mods = []
-    for name in sys.modules.keys():
+    for name in sys.modules:
         if name and name[0:3] == "leo":
             mods.append(name)
 
@@ -1433,7 +1431,7 @@ def getIvarsDict(obj):
         [[key,getattr(obj,key)] for key in dir(obj)
             if type (getattr(obj,key)) != types.MethodType])
 
-    # keys = d.keys() ; keys.sort() ;g.pr(g.listToString(keys))
+    # g.pr(g.listToString(sorted(d)))
     return d
 
 def checkUnchangedIvars(obj,d,exceptions=None):
@@ -1441,7 +1439,7 @@ def checkUnchangedIvars(obj,d,exceptions=None):
     if not exceptions: exceptions = []
     ok = True
 
-    for key in d.keys():
+    for key in d:
         if key not in exceptions:
             if getattr(obj,key) != d.get(key):
                 g.trace('changed ivar: %s old: %s new: %s' % (
@@ -1532,8 +1530,7 @@ def dictToString(d,tag=None,verbose=True,indent=''):
         else:   return '{}'
     n = 6
     for key in sorted(d):
-        ### if type(key) in (type(''),type(u'')):
-        if type(key) == types.UnicodeType:
+        if g.isString(key):
             n = max(n,len(key))
     lines = ["%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip())
         for key in sorted(d)]
@@ -1677,12 +1674,10 @@ def init_trace(args,echo=1):
         if prefix == '?':
             g.pr("trace list:", t)
         elif prefix == '+' and not arg in t:
-            ### t.append(string.lower(arg))
             t.append(arg.lower())
             if echo:
                 g.pr("enabling:", arg)
         elif prefix == '-' and arg in t:
-            ### t.remove(string.lower(arg))
             t.remove(arg.lower())
             if echo:
                 g.pr("disabling:", arg)
@@ -1719,7 +1714,6 @@ def trace (*args,**keys):
     # Munge *args into s.
     result = []
     for arg in args:
-        ### if type(arg) == type(u""):
         if g.isString(arg):
             pass
         elif type(arg) != type(""):
@@ -1731,7 +1725,6 @@ def trace (*args,**keys):
     s = ''.join(result)
     s = g.toEncodedString(s,'ascii')
     g.pr('%s: %s' % (name,s),newline=newline)
-
 #@-node:ekr.20031218072017.2317:trace
 #@+node:ekr.20031218072017.2318:trace_tag
 # Convert all args to strings.
@@ -2577,10 +2570,10 @@ def printGcObjects(tag=''):
                 typesDict[r] = n + 1
 
         # Create the union of all the keys.
-        keys = typesDict.keys()
-        for key in lastTypesDict.keys():
-            if key not in keys:
-                keys.append(key)
+        keys = {}
+        for key in lastTypesDict:
+            if key not in typesDict:
+                keys[key]=None
 
         empty = True
         for key in keys:
@@ -2592,13 +2585,11 @@ def printGcObjects(tag=''):
                 break
 
         if not empty:
-            # keys = [repr(key) for key in keys]
-            keys.sort()
             g.pr('-' * 30)
             g.pr("%s: garbage: %d, objects: %d, delta: %d" % (tag,n,n2,delta))
 
             if 0:
-                for key in keys:
+                for key in sorted(keys):
                     n1 = lastTypesDict.get(key,0)
                     n2 = typesDict.get(key,0)
                     delta2 = n2-n1
@@ -2629,7 +2620,6 @@ def printGcObjects(tag=''):
                 if type(obj) == types.FunctionType:
                     key = repr(obj) # Don't create a pointer to the object!
                     funcDict[key]=None 
-                    ### if n < 50 and not lastFunctionsDict.has_key(key):
                     if n < 50 and key not in lastFunctionsDict:
                         g.pr(obj)
                         args, varargs, varkw,defaults  = inspect.getargspec(obj)
@@ -2675,7 +2665,6 @@ def printGcVerbose(tag=''):
     tag = tag or g._callerName(n=2)
     global lastObjectsDict
     objects = gc.get_objects()
-    ### newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
     newObjects = [o for o in objects if id(o) not in lastObjectsDict]
     lastObjectsDict = {}
     for o in objects:
@@ -3030,7 +3019,6 @@ def translateArgs(args,d):
             arg = g.toUnicode(arg,g.consoleEncoding)
 
         # Now translate.
-        ### if type(arg) not in (type(""),type(u""),):
         if not g.isString(arg):
             arg = repr(arg)
         elif (n % 2) == 1:
@@ -3426,7 +3414,6 @@ def skip_block_comment (s,i):
     assert(g.match(s,i,"/*"))
     j = i ; i += 2 ; n = len(s)
 
-    ### k = string.find(s,"*/",i)
     k = s.find("*/",i)
     if k == -1:
         g.scanError("Run on block comment: " + s[j:i])
@@ -3557,19 +3544,11 @@ def skip_pascal_block_comment(s,i):
 
     j = i
     assert(g.match(s,i,"(*"))
-    ### i = string.find(s,"*)",i)
     i = s.find("*)",i)
     if i > -1: return i + 2
     else:
         g.scanError("Run on comment" + s[j:i])
         return len(s)
-
-#   n = len(s)
-#   while i < n:
-#       if g.match(s,i,"*)"): return i + 2
-#       i += 1
-#   g.scanError("Run on comment" + s[j:i])
-#   return i
 #@-node:ekr.20031218072017.3164:skip_pascal_block_comment
 #@+node:ekr.20031218072017.3165:skip_pascal_string : called by tangle
 def skip_pascal_string(s,i):
@@ -3703,7 +3682,6 @@ def skip_python_string(s,i,verbose=True):
 
     if g.match(s,i,"'''") or g.match(s,i,'"""'):
         j = i ; delim = s[i]*3 ; i += 3
-        ### k = string.find(s,delim,i)
         k = s.find(delim,i)
         if k > -1: return k+3
         if verbose:
@@ -3778,9 +3756,10 @@ def escaped(s,i):
 #@+node:ekr.20031218072017.3175:find_line_start
 def find_line_start(s,i):
 
-    if i < 0: return 0 # New in Leo 4.4.5: add this defensive code.
+    if i < 0:
+        return 0 # New in Leo 4.4.5: add this defensive code.
+
     # bug fix: 11/2/02: change i to i+1 in rfind
-    ### i = string.rfind(s,'\n',0,i+1) # Finds the highest index in the range.
     i = s.rfind('\n',0,i+1) # Finds the highest index in the range.
     if i == -1: return 0
     else: return i + 1
@@ -3788,11 +3767,8 @@ def find_line_start(s,i):
 #@+node:ekr.20031218072017.3176:find_on_line
 def find_on_line(s,i,pattern):
 
-    # j = g.skip_line(s,i) ; g.trace(s[i:j])
-    ### j = string.find(s,'\n',i)
     j = s.find('\n',i)
     if j == -1: j = len(s)
-    ### k = string.find(s,pattern,i,j)
     k = s.find(pattern,i,j)
     if k > -1: return k
     else: return None
@@ -3843,7 +3819,6 @@ def is_ws_or_nl(s,i):
 
 def match(s,i,pattern):
 
-    ### return s and pattern and string.find(s,pattern,i,i+len(pattern)) == i
     return s and pattern and s.find(pattern,i,i+len(pattern)) == i
 #@-node:ekr.20031218072017.3181:match
 #@+node:ekr.20031218072017.3182:match_c_word
@@ -3858,7 +3833,7 @@ def match_c_word (s,i,name):
 def match_ignoring_case(s1,s2):
 
     if s1 == None or s2 == None: return False
-    ### return string.lower(s1) == string.lower(s2)
+
     return s1.lower() == s2.lower()
 #@-node:ekr.20031218072017.3183:match_ignoring_case
 #@+node:ekr.20031218072017.3184:match_word
@@ -3919,7 +3894,6 @@ def skip_line (s,i):
 
     if i >= len(s): return len(s) # Bug fix: 2007/5/22
     if i < 0: i = 0
-    ### i = string.find(s,'\n',i)
     i = s.find('\n',i)
     if i == -1: return len(s)
     else: return i + 1
@@ -3928,7 +3902,6 @@ def skip_to_end_of_line (s,i):
 
     if i >= len(s): return len(s) # Bug fix: 2007/5/22
     if i < 0: i = 0
-    ### i = string.find(s,'\n',i)
     i = s.find('\n',i)
     if i == -1: return len(s)
     else: return i
@@ -3950,11 +3923,9 @@ def skip_long(s,i):
     val = 0
     i = g.skip_ws(s,i)
     n = len(s)
-    ### if i >= n or (not s[i].isdigit() and s[i] not in u'+-'):
     if i >= n or (not s[i].isdigit() and s[i] not in '+-'):
         return i, None
     j = i
-    ### if s[i] in u'+-': # Allow sign before the first digit
     if s[i] in '+-': # Allow sign before the first digit
         i +=1
     while i < n and s[i].isdigit():
@@ -4036,7 +4007,6 @@ def skip_non_ws (s,i):
 def skip_pascal_braces(s,i):
 
     # No constructs are recognized inside Pascal block comments!
-    ### k = string.find(s,'}',i)
     k = s.find('}',i)
     if i == -1: return len(s)
     else: return k
@@ -4044,7 +4014,6 @@ def skip_pascal_braces(s,i):
 #@+node:ekr.20031218072017.3193:skip_to_char
 def skip_to_char(s,i,ch):
 
-    ### j = string.find(s,ch,i)
     j = s.find(ch,i)
     if j == -1:
         return len(s),s[i:]
@@ -4251,12 +4220,10 @@ def isWordChar (ch):
 
     '''Return True if ch should be considered a letter.'''
 
-    ### return ch and (ch.isalnum() or ch == u'_')
     return ch and (ch.isalnum() or ch == '_')
 
 def isWordChar1 (ch):
 
-    ### return ch and (ch.isalpha() or ch == u'_')
     return ch and (ch.isalpha() or ch == '_')
 #@nonl
 #@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
@@ -4332,7 +4299,6 @@ except Exception:
 #@+node:ekr.20031218072017.1499:isUnicode
 def isUnicode(s):
 
-    ### return s is None or type(s) == type(u' ')
     if g.isPython3:
         return type(s) == type('a')
     else:
@@ -4417,7 +4383,6 @@ def reportBadChars (s,encoding):
 #@+node:ekr.20050208093800:toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
-    ### if type(s) == type(u""):
     if isPython3:
         if g.isString(s):
             try:
@@ -4437,21 +4402,23 @@ def toEncodedString (s,encoding,reportErrors=False):
                 s = s.encode(encoding,"replace")
     return s
 #@-node:ekr.20050208093800:toEncodedString
-#@+node:ekr.20050208093903:toEncodedStringWithErrorCode
-def toEncodedStringWithErrorCode (s,encoding):
+#@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
+def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
 
     ok = True
 
-    ### if type(s) == type(u""):
-    if type(s) in types.StringTypes:
+    if type(s) == types.UnicodeType:
+
         try:
             s = s.encode(encoding,"strict")
         except UnicodeError:
+            if reportErrors:
+                g.reportBadChars(s,encoding)
             s = s.encode(encoding,"replace")
             ok = False
 
     return s,ok
-#@-node:ekr.20050208093903:toEncodedStringWithErrorCode
+#@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
 #@+node:ekr.20050208093800.1:toUnicode
 def toUnicode (s,encoding,reportErrors=False):
 
@@ -4462,9 +4429,7 @@ def toUnicode (s,encoding,reportErrors=False):
             s = repr(s)
     else:
         if s is None:
-            ### s = u""
             return unicode('')
-        ### if type(s) == type(""):
         if type(s) != types.UnicodeType:
             try:
                 s = unicode(s,encoding,"strict")
@@ -4474,47 +4439,31 @@ def toUnicode (s,encoding,reportErrors=False):
                 s = unicode(s,encoding,"replace")
     return s
 #@-node:ekr.20050208093800.1:toUnicode
-#@+node:ekr.20050208095723:toUnicodeWithErrorCode
-def toUnicodeWithErrorCode (s,encoding):
+#@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
+def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
+
+    ok = True
 
     if isPython3:
         if s is None:
-            return '',True
-        if not g.isString(s):
-            return repr(s),True
+            s = ''
+        if g.isString(s):
+            s = repr(s)
+        else:
+            pass # Leave s unchanged.
     else:
         if s is None:
-            ### s = u""
-            return unicode(''),True
-        ### if type(s) == type(""):
-        if type(s) == types.UnicodeType:
-            return s,True
-        else:
+            s = unicode('')
+        if type(s) != types.UnicodeType:
             try:
                 s = unicode(s,encoding,"strict")
-                return s,True
             except UnicodeError:
+                if reportErrors:
+                    g.reportBadChars(s,encoding)
                 s = unicode(s,encoding,"replace")
-                return s,False
-
-    # ok = True
-    # if s is None:
-        # ### s = u""
-        # if g.isPython3:
-            # s = ''
-        # else:
-            # s = unicode('')
-
-    # ### if type(s) == type(""):
-    # if type(s) != types.UnicodeType:
-        # try:
-            # s = unicode(s,encoding,"strict")
-        # except UnicodeError:
-            # s = unicode(s,encoding,"replace")
-            # ok = False
-
-    # return s,ok
-#@-node:ekr.20050208095723:toUnicodeWithErrorCode
+                ok = False
+    return s,ok
+#@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 #@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@-node:ekr.20031218072017.1498:Unicode utils...
 #@+node:ekr.20070524083513:Unit testing (leoGlobals.py)
@@ -4563,7 +4512,7 @@ def convertRowColToPythonIndex (s,row,col,lines=None):
 
     col = min(col, len(lines[row]))
 
-    #### A big bottleneck
+    # A big bottleneck
     prev = 0
     for line in lines[:row]:
         prev += len(line)
@@ -4596,8 +4545,7 @@ def maxStringListLength(aList):
 
     n = 0
     for z in aList:
-        ### if type(z) in (type(''),type(u'')):
-        if type(z) in types.StringTypes:
+        if g.isString():
             n = max(n,len(z))
 
     return n
@@ -4804,10 +4752,10 @@ class Bunch (object):
         return self.toString()
 
     def ivars(self):
-        return self.__dict__.keys()
+        return sorted(self.__dict__)
 
     def keys(self):
-        return self.__dict__.keys()
+        return sorted(self.__dict__)
 
     def toString(self):
         tag = self.__dict__.get('tag')
@@ -5397,7 +5345,6 @@ class readLinesClass:
         # g.trace(repr(line))
         return line
 
-    ###
     __next__ = next
 #@-node:EKR.20040612114220.4:class readLinesClass
 #@-node:ekr.20040629162023:readLines class and generator

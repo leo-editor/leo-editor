@@ -440,7 +440,7 @@ class parserBaseClass:
     #@+node:ekr.20070926141716:doItems
     def doItems (self,p,aList):
 
-        if g.isPython3: return ######
+        if g.isPython3: return ###
 
         p = p.copy() ; after = p.nodeAfterTree()
         p.moveToThreadNext()
@@ -1276,11 +1276,11 @@ class configClass:
     #@+node:ekr.20041117065611.2:initIvarsFromSettings & helpers
     def initIvarsFromSettings (self):
 
-        for ivar in self.encodingIvarsDict.keys():
+        for ivar in self.encodingIvarsDict:
             if ivar != '_hash':
                 self.initEncoding(ivar)
 
-        for ivar in self.ivarsDict.keys():
+        for ivar in self.ivarsDict:
             if ivar != '_hash':
                 self.initIvar(ivar)
     #@+node:ekr.20041117065611.1:initEncoding
@@ -1823,7 +1823,7 @@ class configClass:
     #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
     def readSettingsFiles (self,fileName,verbose=True):
 
-        if g.isPython3: return ######
+        if g.isPython3: return ###
 
         seen = []
         self.write_recent_files_as_needed = False # Will be set later.
@@ -2200,8 +2200,8 @@ class configClass:
             #@nonl
             #@-node:ekr.20070418084502:<< set letter >>
             #@nl
-            for key in d.keys():
-                if key not in suppressKeys and key not in settings.keys():
+            for key in d:
+                if key not in suppressKeys and key not in settings:
                     bunch = d.get(key)
                     if bunch.kind not in suppressKind:
                         settings[key] = (letter,bunch.val)

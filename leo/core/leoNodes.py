@@ -905,7 +905,6 @@ class nodeIndices (object):
 
         """Create a gnx from its string representation"""
 
-        ### if type(s) not in (type(""),type(u"")):
         if not g.isString(s):
             g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
             return None,None,None

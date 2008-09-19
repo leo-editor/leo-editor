@@ -68,7 +68,6 @@ def doHandlersForTag (tag,keywords):
     if g.app.killed:
         return None
 
-    ### if handlers.has_key(tag):
     if tag in handlers:
         bunches = handlers.get(tag)
         # Execute hooks in some random order.
@@ -78,7 +77,6 @@ def doHandlersForTag (tag,keywords):
             if val is not None:
                 return val
 
-    ### if handlers.has_key("all"):
     if 'all' in handlers:
         bunches = handlers.get('all')
         for bunch in bunches:
@@ -262,7 +260,7 @@ def printHandlers (moduleName=None):
         g.es_print('all plugin handlers...')
 
     modules = {}
-    for tag in handlers.keys():
+    for tag in handlers:
         bunches = handlers.get(tag)
         for bunch in bunches:
             name = bunch.moduleName
@@ -280,10 +278,8 @@ def printHandlers (moduleName=None):
 def printPlugins ():
 
     g.es_print('enabled plugins...')
-    keys = loadedModules.keys()
-    keys = [s.lower() for s in keys]
-    keys.sort()
-    for key in keys:
+
+    for key in sorted(loadedModules):
         g.es_print('',key)
 #@-node:ekr.20070429090122:printPlugins
 #@+node:ekr.20031218072017.3444:registerExclusiveHandler
@@ -315,7 +311,6 @@ def registerOneExclusiveHandler(tag, fn):
 
     if g.app.unitTesting: return
 
-    ### if handlers.has_key(tag):
     if tag in handlers:
         g.es("*** Two exclusive handlers for","'%s'" % (tag))
     else:
@@ -372,7 +367,7 @@ def unloadOnePlugin (moduleOrFileName,verbose=False):
             g.pr('unloading',moduleName)
         g.app.loadedPlugins.remove(moduleName)
 
-    for tag in handlers.keys():
+    for tag in handlers:
         bunches = handlers.get(tag)
         bunches = [bunch for bunch in bunches if bunch.moduleName != moduleName]
         handlers[tag] = bunches

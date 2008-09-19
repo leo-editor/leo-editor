@@ -3426,7 +3426,7 @@ class editCommandsClass (baseEditCommandsClass):
                 i2,j2 = g.getLine(s,spot)
                 line = s[i2:j2]
                 row,col = g.convertPythonIndexToRowCol(s,spot)
-                if True: #### j2 < len(s)-1:
+                if True: # was j2 < len(s)-1:
                     n = min(self.moveCol,max(0,len(line)-1))
                 else:
                     n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
@@ -4832,17 +4832,17 @@ class editFileCommandsClass (baseEditCommandsClass):
         '''Compute inserted, deleted, changed dictionaries.'''
 
         inserted = {}
-        for key in d2.keys():
+        for key in d2:
             if not d1.get(key):
                 inserted[key] = d2.get(key)
 
         deleted = {}
-        for key in d1.keys():
+        for key in d1:
             if not d2.get(key):
                 deleted[key] = d1.get(key)
 
         changed = {}
-        for key in d1.keys():
+        for key in d1:
             if d2.get(key):
                 p1 = d1.get(key)
                 p2 = d2.get(key)
@@ -4876,11 +4876,11 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         c = self.c # Always use the visible commander.
 
-        if d.keys():
+        if d:
             parent = parent.insertAsLastChild()
             c.setHeadString(parent,kind)
 
-            for key in d.keys():
+            for key in d:
                 p = d.get(key)
                 clone = p.clone()
                 clone.moveToLastChildOf(parent)
@@ -4929,7 +4929,7 @@ class editFileCommandsClass (baseEditCommandsClass):
             (changed, 'changed'),
         ):
             g.pr('\n',kind)
-            for key in d.keys():
+            for key in d:
                 p = d.get(key)
                 if g.isPython3:
                     g.pr('%-32s %s' % (key,p.headString()))
@@ -6200,7 +6200,7 @@ class macroCommandsClass (baseEditCommandsClass):
         k = self.k ; c = k.c
 
         if aList is not None:
-            aList = c.commandsDict.keys()
+            aList = c.commandsDict
 
         pmatches = [item for item in aList if item.startswith(s)]
         pmatches.sort()
@@ -6286,7 +6286,7 @@ class macroCommandsClass (baseEditCommandsClass):
         except Exception:
             macs = {}
         f.close()
-        ### if self.namedMacros.has_key( name ):
+
         if name in self.namedMacros:
             macs[ name ] = self.namedMacros[ name ]
             f = open( fname, 'w' )
@@ -6355,7 +6355,7 @@ class macroCommandsClass (baseEditCommandsClass):
                 w.event_generate('<Key>',keycode=z[0],keysym=z[1])
             else:
                 meth = g.stripBrackets(z[0])
-                bunchList = k.bindingsDict.get(meth,[]) ### Probably should not strip < and >
+                bunchList = k.bindingsDict.get(meth,[]) # Probably should not strip < and >
                 if bunchList:
                     b = bunchList [0]
                     # ev = Tk.Event()
@@ -6378,7 +6378,6 @@ class macroCommandsClass (baseEditCommandsClass):
 
         k= self ; c = k.c
 
-        ### if c.commandsDict.has_key(name):
         if name in c.commandsDict:
             return False
 
@@ -8419,7 +8418,6 @@ class spellTabHandler (leoFind.leoFind):
             # Restore the selection range.
             w.setSelectionRange(i,j,insert=ins)
             w.see(ins)
-            ### w.update() ###
         else:
             g.es("no more misspellings")
             self.tab.fillbox([])
@@ -8455,7 +8453,6 @@ class spellTabHandler (leoFind.leoFind):
                 #@-at
                 #@@c
 
-                ### if self.dictionary.has_key(word.lower()):
                 if word.lower() in self.dictionary:
                     continue
                 #@-node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>

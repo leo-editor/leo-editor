@@ -581,11 +581,10 @@ class leoGtkFrame (leoFrame.leoFrame):
             vList.append(p.v)
             if p.v.t:
                 key = id(p.v.t)
-                ### if not tDict.has_key(key):
-                if key not in tDict.keys():
+                if key not in tDict:
                     tDict[key] = p.v.t
 
-        for key in tDict.keys():
+        for key in tDict:
             g.clearAllIvars(tDict[key])
 
         for v in vList:
@@ -2009,7 +2008,7 @@ class leoGtkBody (leoFrame.leoBody):
 
         ###
 
-        # for key in d.keys():
+        # for key in d:
             # w2 = d.get(key)
             # # g.trace(id(w2),bg,fg)
             # try:
@@ -2351,7 +2350,7 @@ class leoGtkLog (leoFrame.leoLog):
 
         # Restore all colors.
         colors = d.get('colors')
-        for color in colors.keys():
+        for color in colors:
             if color not in self.colorTags:
                 self.colorTags.append(color)
                 logCtrl.tag_config(color,foreground=color)

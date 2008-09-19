@@ -8,7 +8,6 @@
 
 import leo.core.leoGlobals as g
 import re
-import types
 
 #@<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414:<< Theory of operation of find/change >>
@@ -120,13 +119,7 @@ class searchWidget:
         if i is None:
             return 0
 
-        ###
-        if g.isPython3:
-            isString = type(i) == type('a')
-        else:
-            isString = type(i) in types.StringTypes
-
-        if isString:
+        if g.isString(i):
             row,col = i.split('.')
             row,col = int(row),int(col)
             row -= 1
@@ -640,11 +633,7 @@ class leoFind:
 
         try:
             assert(self.script_change)
-            ### exec self.change_text in {} # Use {} to get a pristine environment.
-            if g.isPython3:
-                exec(self.change_text,{},{})
-            else:
-                g.trace('exec function not supported')
+            exec(self.change_text,{},{})
         except Exception:
             g.es("exception executing change script")
             g.es_exception(full=False)
@@ -671,11 +660,7 @@ class leoFind:
     def runFindScript (self):
 
         try:
-            ### exec self.find_text in {} # Use {} to get a pristine environment.
-            if g.isPython3:
-                exec(self.find_text,{},{})
-            else:
-                g.trace('exec function not supported')
+            exec(self.find_text,{},{})
         except:
             g.es("exception executing find script")
             g.es_exception(full=False)

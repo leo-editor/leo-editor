@@ -1247,7 +1247,7 @@ class leoGtkTree (leoFrame.leoTree):
 
         # Return the image from the cache if possible.
         ### if self.iconimages.has_key(name):
-        if name in self.iconimages.keys():
+        if name in self.iconimages:
             return self.iconimages[name]
 
         # g.trace(name)
