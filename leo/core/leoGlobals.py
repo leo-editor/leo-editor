@@ -1519,7 +1519,7 @@ def print_dict(d,tag='',verbose=True,indent=''):
             n = max(n,len(key))
     if tag: g.es('%s...{\n' % tag)
     else:   g.es('{\n')
-    for key in keys:
+    for key in sorted(d):
         g.pr("%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()))
     g.pr('}')
 
@@ -1535,7 +1535,8 @@ def dictToString(d,tag=None,verbose=True,indent=''):
         ### if type(key) in (type(''),type(u'')):
         if type(key) == types.UnicodeType:
             n = max(n,len(key))
-    lines = ["%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()) for key in keys]
+    lines = ["%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip())
+        for key in sorted(d)]
     s = '\n'.join(lines)
     if tag:
         return '%s...{\n%s}\n' % (tag,s)

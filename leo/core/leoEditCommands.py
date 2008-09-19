@@ -3369,7 +3369,7 @@ class editCommandsClass (baseEditCommandsClass):
                     keeplines [n] = None
                 elif f:
                     keeplines.append(z)
-        except Exception(x):
+        except Exception:
             return
         if which == 'flush':
             keeplines = [x for x in keeplines if x != None]

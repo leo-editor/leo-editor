@@ -4,14 +4,18 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First 7
 #@+node:ekr.20080918164844.17:Fix pylint warnings
-pylint-leo
 
-junk, value, junk = sys.exc_info()
-print value
+************* Module leo.core.leoCommands
+E1101:5849:baseCommands.scanAtRootDirectives:
+    Instance of 'configSettings' has no 'at_root_bodies_start_in_doc_mode' member
 
+************* Module leo.core.leoTangle
+E1101:1992:baseTangleCommands.st_dump: Instance of 'baseTangleCommands' has no 'txt' member
+#@+node:ekr.20080918201437.2:Fixed
 ************* Module leo.core.leoAtFile
 #fixed E0602:873:atFile.scanText4: Undefined variable 'message'
 #fixed E0602:874:atFile.scanText4: Undefined variable 'message'
+# fixed E0602:874:atFile.scanText4: Undefined variable 'sys'
 
 ************* Module leo.core.leoCommands
 #fixed E0602:3930:baseCommands.tabNannyNode: Undefined variable 'msg'
@@ -23,15 +27,13 @@ print value
 #fixed E0602:3943:baseCommands.tabNannyNode: Undefined variable 'nag'
 #fixed E0602:3944:baseCommands.tabNannyNode: Undefined variable 'nag'
 
-E1101:5851:baseCommands.scanAtRootDirectives:
-    Instance of 'configSettings' has no 'at_root_bodies_start_in_doc_mode' member
-
 ************* Module leo.core.leoEditCommands
 # fixed E0602:1064:controlCommandsClass.executeSubprocess: Undefined variable 'x'
 # fixed E0602:1065:controlCommandsClass.executeSubprocess: Undefined variable 'x'
 # fixed E0601:3379:editCommandsClass.linesHelper: Using variable 'x' before assignment
 # fixed E0602:8792:AspellClass.updateDictionary: Undefined variable 'err'
 # fixed E0602:8793:AspellClass.updateDictionary: Undefined variable 'err'
+# fixed E0601:3372:editCommandsClass.linesHelper: Using variable 'x' before assignment
 
 ************* Module leo.core.leoFileCommands
 # fixed E0602:618:baseFileCommands.checkLeoFile: Undefined variable 'message'
@@ -41,9 +43,10 @@ E1101:5851:baseCommands.scanAtRootDirectives:
 ************* Module leo.core.leoGlobals
 # fixed W0311:3086: Bad indentation. Found 9 spaces, expected 8
 # fixed W0311:3088: Bad indentation. Found 9 spaces, expected 8
-
-************* Module leo.core.leoTangle
-E1101:1996:baseTangleCommands.st_dump: Instance of 'baseTangleCommands' has no 'txt' member
+# fixed E0602:1522:print_dict: Undefined variable 'keys'
+# fixed E0602:1538:dictToString: Undefined variable 'keys'
+#@nonl
+#@-node:ekr.20080918201437.2:Fixed
 #@-node:ekr.20080918164844.17:Fix pylint warnings
 #@+node:ekr.20080918164844.2:Merge trunk into vim-keys branch
 #@-node:ekr.20080918164844.2:Merge trunk into vim-keys branch
