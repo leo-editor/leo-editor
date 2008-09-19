@@ -2,7 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
-#@+node:ekr.20080915112342.1:First 6
+#@+node:ekr.20080915112342.1:First 5
 
 #@+node:ekr.20080918164844.2:Merge trunk into vim-keys branch
 #@-node:ekr.20080918164844.2:Merge trunk into vim-keys branch
@@ -72,7 +72,7 @@ an expand_noweb_references option would be good.  For compatibility,
 the default for this option would be False. 
 #@nonl
 #@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-#@-node:ekr.20080915112342.1:First 6
+#@-node:ekr.20080915112342.1:First 5
 #@+node:ekr.20080918164844.6:Recent 8
 #@+node:ekr.20080918164844.7:Investigate settings strangeness re @string debugger_path
 @nocolor

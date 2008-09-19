@@ -370,12 +370,12 @@ def printGc(message=None):
         typesDict[type(obj)] = n + 1
 
     # Create the union of all the keys.
+    keys = {}
     for key in lastTypesDict:
         if key not in typesDict:
-            keys.append(key)
+            keys[key]=None
 
-    keys.sort()
-    for key in keys:
+    for key in sorted(keys):
         n1 = lastTypesDict.get(key,0)
         n2 = typesDict.get(key,0)
         delta2 = n2-n1

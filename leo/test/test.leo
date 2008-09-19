@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -284,8 +284,8 @@
 <v t="ekr.20080918090005.1"><vh>@@file goto-global-line-test.py</vh></v>
 </v>
 <v t="ekr.20080918180141.1"><vh>Exception syntax</vh></v>
-</v>
 <v t="ekr.20080919080736.1"><vh>dictionary stuff</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk

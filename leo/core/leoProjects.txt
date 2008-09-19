@@ -66,6 +66,10 @@ This removed about half of the instances of g.isPython3.
 # E1101:1992:baseTangleCommands.st_dump: Instance of 'baseTangleCommands' has no 'txt' member
 # changed to tst.
 #@-node:ekr.20080918164844.17:Fixed pylint warnings
+#@+node:ekr.20080919084526.1:Removed many calls to d.keys
+Many, but not all, of these calls are unnecessary.
+#@nonl
+#@-node:ekr.20080919084526.1:Removed many calls to d.keys
 #@-node:ekr.20080918201437.1:Cleanups
 #@+node:ekr.20080917153158.12:Fixed bugs
 #@+node:ekr.20080917153158.13:Ensure that Python\Scripts exists in installer script

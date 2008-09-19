@@ -772,12 +772,11 @@ class leoTkinterTree (leoFrame.leoTree):
                     g.pr("%3d" % key,p.headString())
             if flag and full:
                 g.pr('-' * 40)
-                values = theDict.values() ###
-                values.sort()
-                seenValues = []
-                for value in values:
+                seenValues = {}
+                for key in sorted(theDict):
+                    value = theDict.get(key)
                     if value not in seenValues:
-                        seenValues.append(value)
+                        seenValues[value]=True
                         for item in theDict.items():
                             key,val = item
                             if val and val == value:

@@ -1469,9 +1469,9 @@ class leoImportCommands:
     #@+node:ekr.20031218072017.3238:cstDump
     def cstDump (self):
 
-        self.web_st.sort()
         s = "Web Symbol Table...\n\n"
-        for name in self.web_st:
+
+        for name in sorted(self.web_st):
             s += name + "\n"
         return s
     #@-node:ekr.20031218072017.3238:cstDump
