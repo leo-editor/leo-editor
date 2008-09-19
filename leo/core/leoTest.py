@@ -611,7 +611,7 @@ class testUtils:
             if verbose: g.trace("Different number of lines")
             return False
 
-        for i in xrange(len(lines2)):
+        for i in range(len(lines2)):
             line1 = lines1[i]
             line2 = lines2[i]
             if line1 == line2:

@@ -1232,8 +1232,8 @@ class undoer:
             # Compute statistics comparing old and new ways...
             # The old doesn't often store the old text, so don't count it here.
             u.old_mem += len(newText)
-            s1 = string.join(old_middle_lines,'\n')
-            s2 = string.join(new_middle_lines,'\n')
+            s1 = '\n'.join(old_middle_lines)
+            s2 = '\n'.join(new_middle_lines)
             u.new_mem += len(s1) + len(s2)
         else:
             u.oldText = None
@@ -2007,7 +2007,7 @@ class undoer:
             s.extend(oldMidLines)
         if trailing > 0:
             s.extend(body_lines[-trailing:])
-        s = string.join(s,'\n')
+        s = '\n'.join(s)
         # Remove trailing newlines in s.
         while len(s) > 0 and s[-1] == '\n':
             s = s[:-1]

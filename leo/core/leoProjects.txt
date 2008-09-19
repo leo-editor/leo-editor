@@ -2356,7 +2356,7 @@ def set_delims_from_string(s):
 
     # 7/8/02: The "REM hack": replace underscores by blanks.
     # 9/25/02: The "perlpod hack": replace double underscores by newlines.
-    for i in xrange(0,3):
+    for i in range(0,3):
         if delims[i]:
             delims[i] = string.replace(delims[i],"__",'\n') 
             delims[i] = string.replace(delims[i],'_',' ')

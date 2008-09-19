@@ -2357,7 +2357,7 @@ class baseCommands:
                     count += 1
                     dirtyVnodeList2 = p.setDirty()
                     dirtyVnodeList.extend(dirtyVnodeList2)
-                    result = string.join(result,'\n')
+                    result = '\n'.join(result)
                     p.setBodyString(result)
                     u.afterChangeNodeContents(p,undoType,innerUndoData)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
@@ -2401,7 +2401,7 @@ class baseCommands:
                     count += 1
                     dirtyVnodeList2 = p.setDirty()
                     dirtyVnodeList.extend(dirtyVnodeList2)
-                    result = string.join(result,'\n')
+                    result = '\n'.join(result)
                     p.setBodyString(result)
                     u.afterChangeNodeContents(p,undoType,undoData)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
@@ -4403,7 +4403,7 @@ class baseCommands:
             c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
             sel = c.frame.body.getInsertPoint()
             oldBody = p.bodyString()
-            body = string.join(lines,'')
+            body = ''.join(lines)
 
             if oldBody != body:
                 if not self.changed:
@@ -7103,7 +7103,7 @@ class baseCommands:
                 i -= 1 ; changed = True
             else: break
         if changed:
-            body = string.join(body,'') + '\n' # Add back one last newline.
+            body = ''.join(body) + '\n' # Add back one last newline.
             # g.trace(body)
             c.setBodyString(p,body)
             # Don't set the dirty bit: it would just be annoying.

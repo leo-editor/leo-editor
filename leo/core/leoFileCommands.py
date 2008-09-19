@@ -18,7 +18,7 @@ import leo.core.leoNodes as leoNodes
 import binascii
 
 if g.isPython3:
-    import io # Pythone 3.x
+    import io # Python 3.x
     StringIO = io.StringIO
     BytesIO = io.BytesIO
 else:
@@ -1267,7 +1267,12 @@ class baseFileCommands:
                 # theFile = io.BytesIO(s) ### hangs
                 # theFile = io.TextIOWrapper(s) ### fails in ctor.
                 # theFile = io.BufferedReader(s)
-                if 0: # This read causes unicode errors on Py3K, but appears essential for Python 2.5
+                g.pdb()
+                # This read causes unicode errors on Py3K, but appears essential for Python 2.5
+                # g.openLeoOrZipFile now always uses binary ('rb') mode.
+                if 1:
+                    pass ### pass the **binary** stream to sax.
+                else:
                     if theFile:
                         s = theFile.read()
                     theFile = StringIO(s) # Same as cStringIO.StringIO for Python 2.x.
@@ -2264,7 +2269,7 @@ class baseFileCommands:
                         t.fileIndex = g.app.nodeIndices.getNewIndex()
                     gnx = t.fileIndex
                     sList.append("%s," % nodeIndices.toString(gnx))
-                s = string.join(sList,'')
+                s = ''.join(sList)
                 # g.trace(tag,[str(p.headString()) for p in theList])
                 result.append('\n%s="%s"' % (tag,s))
 

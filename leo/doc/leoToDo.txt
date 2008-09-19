@@ -2,7 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
-#@+node:ekr.20080915112342.1:First 6
+#@+node:ekr.20080915112342.1:First
 
 #@+node:ekr.20080918164844.15:Allow Leo to open .py files directly (or any other kind of file)
 @nocolor
@@ -76,11 +76,970 @@ an expand_noweb_references option would be good.  For compatibility,
 the default for this option would be False. 
 #@nonl
 #@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
+#@+node:ekr.20080919085541.4:Work on Leo3k
+#@+node:ekr.20080919121250.1:leoConfig
+#@+node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
+def doMenus (self,p,kind,name,val):
+
+    # __pychecker__ = '--no-argsused' # kind,name,val not used.
+
+    c = self.c ; aList = [] ; tag = '@menu'
+    p = p.copy() ; after = p.nodeAfterTree()
+    while p and p != after:
+        h = p.headString()
+        if g.isPython3: g.trace(p.headString())
+        if g.match_word(h,0,tag):
+            name = h[len(tag):].strip()
+            if name:
+                for z in aList:
+                    name2,junk,junk = z
+                    if name2 == name:
+                        self.error('Replacing previous @menu %s' % (name))
+                        break
+                aList2 = []
+                kind = '%s %s' % (tag,name)
+                self.doItems(p,aList2)
+                aList.append((kind,aList2,None),)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        else:
+            p.moveToThreadNext()
+
+    # g.trace('localFlag',self.localFlag,c)
+    if self.localFlag:
+        self.set(p,kind='menus',name='menus',val=aList)
+    else:
+        if not g.app.unitTesting:
+            g.es_print('Using menus from',c.shortFileName(),color='blue')
+        g.app.config.menusList = aList
+        g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
+#@+node:ekr.20070926141716:doItems
+def doItems (self,p,aList):
+
+    if g.isPython3: return ###
+
+    p = p.copy() ; after = p.nodeAfterTree()
+    p.moveToThreadNext()
+    while p and p != after:
+        h = p.headString()
+        if g.isPython3: g.trace(p.headString())
+        for tag in ('@menu','@item'):
+            if g.match_word(h,0,tag):
+                itemName = h[len(tag):].strip()
+                if itemName:
+                    if tag == '@menu':
+                        aList2 = []
+                        kind = '%s %s' % (tag,itemName)
+                        self.doItems(p,aList2)
+                        aList.append((kind,aList2,None),)
+                        p.moveToNodeAfterTree()
+                        break
+                    else:
+                        kind = tag
+                        head = itemName
+                        body = p.bodyString()
+                        aList.append((kind,head,body),)
+                        p.moveToThreadNext()
+                        break
+        else:
+            # g.trace('***skipping***',p.headString())
+            p.moveToThreadNext()
+#@-node:ekr.20070926141716:doItems
+#@+node:ekr.20070926142312:dumpMenuList
+def dumpMenuList (self,aList,level=0):
+
+    for z in aList:
+        kind,val,val2 = z
+        if kind == '@item':
+            g.trace(level,kind,val,val2)
+        else:
+            g.pr('')
+            g.trace(level,kind,'...')
+            self.dumpMenuList(val,level+1)
+#@nonl
+#@-node:ekr.20070926142312:dumpMenuList
+#@-node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
+#@+node:ekr.20070926141716:doItems
+def doItems (self,p,aList):
+
+    if g.isPython3: return ###
+
+    p = p.copy() ; after = p.nodeAfterTree()
+    p.moveToThreadNext()
+    while p and p != after:
+        h = p.headString()
+        if g.isPython3: g.trace(p.headString())
+        for tag in ('@menu','@item'):
+            if g.match_word(h,0,tag):
+                itemName = h[len(tag):].strip()
+                if itemName:
+                    if tag == '@menu':
+                        aList2 = []
+                        kind = '%s %s' % (tag,itemName)
+                        self.doItems(p,aList2)
+                        aList.append((kind,aList2,None),)
+                        p.moveToNodeAfterTree()
+                        break
+                    else:
+                        kind = tag
+                        head = itemName
+                        body = p.bodyString()
+                        aList.append((kind,head,body),)
+                        p.moveToThreadNext()
+                        break
+        else:
+            # g.trace('***skipping***',p.headString())
+            p.moveToThreadNext()
+#@-node:ekr.20070926141716:doItems
+#@+node:ekr.20041119204700.1:traverse (parserBaseClass)
+def traverse (self):
+
+    c = self.c
+
+    p = g.app.config.settingsRoot(c)
+    if not p:
+        # g.trace('no settings tree for %s' % c)
+        return None
+
+    self.settingsDict = {}
+    self.shortcutsDict = {}
+    after = p.nodeAfterTree()
+    while p and p != after:
+        result = self.visitNode(p)
+        if g.isPython3: g.trace(result,p.headString())
+        if p.headString() == 'Menus':
+            if g.isPython3: g.pdb()
+        if result == "skip":
+            # g.es_print('skipping settings in',p.headString(),color='blue')
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+
+    return self.settingsDict
+#@-node:ekr.20041119204700.1:traverse (parserBaseClass)
+#@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+def readSettingsFiles (self,fileName,verbose=True):
+
+    if g.isPython3: return ###
+
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    # g.trace(g.app.oneConfigFilename)
+    if g.app.oneConfigFilename:
+        table = ((g.app.oneConfigFilename,False),)
+    else:
+        table = (
+            (self.globalConfigFile,False),
+            (self.homeFile,False),
+            (localConfigFile,False),
+            (self.myGlobalConfigFile,False),
+            (self.myHomeConfigFile,False),
+            (self.machineConfigFile,False),
+            (myLocalConfigFile,False),
+            (fileName,True),
+        )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        if path and path.lower() not in seen:
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
+                g.pr(s)
+                g.app.logWaiting.append((s+'\n','blue'),)
+
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
+                self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    if 0:
+        self.createMyLeoSettingsFile(myLocalConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because the local directory does not exits.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+def createMyLeoSettingsFile (self,localConfigFile):
+
+    '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
+
+    << define s, a minimalMyLeoSettings.leo string >>
+
+    for path in (
+        localConfigFile,
+        self.myGlobalConfigFile,
+        self.myHomeConfigFile
+    ):
+        # g.trace(path)
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            if g.os_path_exists(path):
+                # g.trace('exists',path)
+                return
+
+    if g.app.homeDir:
+        path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+        try:
+            f = open(path,'wb')
+            f.write(s)
+            f.close()
+            self.myHomeConfigFile = path
+            # It's early in the startup: g.es does not work yet.
+            s = 'created: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+        except Exception:
+            s = 'can not create: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+            g.es_exception()
+#@+node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+s = '''<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet ekr_test?>
+<leo_file>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="26" left="122" height="781" width="953"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="ekr.20070411164127" str_leo_pos="0"><vh>@chapters</vh>
+<v t="ekr.20070411164127.1"><vh>@chapter trash</vh></v>
+</v>
+<v t="ekr.20070411164127.2"><vh>@settings</vh></v>
+</vnodes>
+<tnodes>
+<t tx="ekr.20070411164127"></t>
+<t tx="ekr.20070411164127.1">trash</t>
+<t tx="ekr.20070411164127.2"></t>
+</tnodes>
+</leo_file>
+'''
+#@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+#@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+#@+node:ekr.20041117085625:g.app.config.openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:g.app.config.openSettingsFile
+#@+node:ekr.20051013161232:g.app.config.updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and d.keys())
+#@-node:ekr.20051013161232:g.app.config.updateSettings
+#@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+#@+node:ekr.20041117083857.1:g.app.config.readSettings
+# Called to read all leoSettings.leo files.
+# Also called when opening an .leo file to read @settings tree.
+
+def readSettings (self,c,localFlag):
+
+    if g.isPython3: return {} ###
+
+    """Read settings from a file that may contain an @settings tree."""
+
+    # g.trace('=' * 20, c.fileName())
+
+    # Create a settings dict for c for set()
+    if c and self.localOptionsDict.get(c.hash()) is None:
+        self.localOptionsDict[c.hash()] = {}
+
+    parser = settingsTreeParser(c,localFlag)
+    d = parser.traverse()
+
+    return d
+#@-node:ekr.20041117083857.1:g.app.config.readSettings
+#@-node:ekr.20080919121250.1:leoConfig
+#@+node:ekr.20080919121250.2:leoFileCommands
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    # g.trace('hiddenRootNode',c.hiddenRootNode)
+
+    try:
+        if g.isPython3:
+            ### None of these work.
+            # s = theFile.read() # This produces bytes.
+            # theFile = io.BytesIO(s) ### hangs
+            # theFile = io.TextIOWrapper(s) ### fails in ctor.
+            # theFile = io.BufferedReader(s)
+            g.pdb()
+            # This read causes unicode errors on Py3K, but appears essential for Python 2.5
+            # g.openLeoOrZipFile now always uses binary ('rb') mode.
+            if 1:
+                pass ### pass the **binary** stream to sax.
+            else:
+                if theFile:
+                    s = theFile.read()
+                theFile = StringIO(s) # Same as cStringIO.StringIO for Python 2.x.
+        else:
+            if theFile:
+                s = theFile.read()
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@-node:ekr.20080919121250.2:leoFileCommands
+#@+node:ekr.20080919121250.3:leoPlugins
+#@+node:ekr.20041001161108:doPlugins
+def doPlugins(tag,keywords):
+
+    if g.app.killed:
+        return
+
+    if g.isPython3:
+        g.trace('ignoring all plugins')
+        return
+
+    # g.trace(tag)
+    if tag in ('start1','open0'):
+        loadHandlers(tag)
+
+    return doHandlersForTag(tag,keywords)
+#@-node:ekr.20041001161108:doPlugins
+#@-node:ekr.20080919121250.3:leoPlugins
+#@+node:ekr.20080919121250.4:runLeo
+#@+node:ekr.20031218072017.1934:run
+def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
+
+    """Initialize and run Leo"""
+
+    # __pychecker__ = '--no-argsused' # keywords not used.
+
+    import pdb ; pdb = pdb.set_trace
+
+    << import leoGlobals and leoApp >>
+    if not jyLeo and not isValidPython(): return
+    g.computeStandardDirectories()
+    adjustSysPath(g)
+    script,windowFlag = scanOptions(g)
+    if pymacs: script,windowFlag = None,False
+    verbose = script is None
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+    if not fileName:
+        fileName = getFileName()
+
+    << import other early files >>
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+    if g.isPython3:
+        fileName = r'c:\leo.repo\trunk\leo\test\test.leo' # smallTest.leo' ### testing only.
+        assert g.os_path_exists(fileName)
+    fileName,relativeFileName = completeFileName(fileName)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config.
+    # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.setEncoding()
+    if pymacs:
+        createNullGuiWithScript(None)
+    elif jyLeo:
+        import leo.core.leoSwingGui as leoSwingGui
+        g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+        fileName = None
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
+    else:
+        g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+        if g.app.killed: return # Support for g.app.forceShutdown.
+        if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    # Initialize tracing and statistics.
+    g.init_sherlock(args)
+    if g.app and g.app.use_psyco: startPsyco()
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName)
+    if not frame: return
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+    g.app.writeWaitingLog()
+    if g.app.oneConfigFilename: g.es_print('--one-config option in effect',color='red')
+    p = c.currentPosition()
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    if not fileName:
+        c.redraw_now()
+    # Respect c's focus wishes if posssible.
+    w = g.app.gui.get_focus(c)
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+    c.outerUpdate()
+    g.app.gui.runMainLoop()
+#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+if jyLeo:
+    print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
+
+# Add the current directory to sys.path *before* importing g.
+# This will fail if the current directory contains unicode characters...
+path = os.getcwd()
+if path not in sys.path:
+    # print('appending %s to sys.path' % path)
+    sys.path.append(path)
+
+# Import leoGlobals, but do NOT set g.
+import leo.core.leoGlobals as leoGlobals
+
+# Set leoGlobals.g here, rather than in leoGlobals.py.
+leoGlobals.g = leoGlobals
+
+import leo.core.leoApp as leoApp
+
+# Create the app.
+leoGlobals.app = leoApp.LeoApp()
+
+# **now** we can set g.
+g = leoGlobals
+assert(g.app)
+
+if jyLeo:
+    startJyleo(g)
+#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+#@+node:ekr.20041219072416.1:<< import other early files>>
+import leo.core.leoNodes as leoNodes
+import leo.core.leoConfig as leoConfig
+
+# There is a circular dependency between leoCommands and leoEditCommands.
+import leo.core.leoCommands as leoCommands
+
+# New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+# This prevents a crash when run is called repeatedly from IPython's lleo extension.
+import leo.core.leoPlugins as leoPlugins
+leoPlugins.init()
+#@-node:ekr.20041219072416.1:<< import other early files>>
+#@-node:ekr.20031218072017.1934:run
+#@-node:ekr.20080919121250.4:runLeo
+#@+node:ekr.20080919121250.5:Major short circuits
+#@+node:ekr.20070926141716:doItems
+def doItems (self,p,aList):
+
+    if g.isPython3: return ###
+
+    p = p.copy() ; after = p.nodeAfterTree()
+    p.moveToThreadNext()
+    while p and p != after:
+        h = p.headString()
+        if g.isPython3: g.trace(p.headString())
+        for tag in ('@menu','@item'):
+            if g.match_word(h,0,tag):
+                itemName = h[len(tag):].strip()
+                if itemName:
+                    if tag == '@menu':
+                        aList2 = []
+                        kind = '%s %s' % (tag,itemName)
+                        self.doItems(p,aList2)
+                        aList.append((kind,aList2,None),)
+                        p.moveToNodeAfterTree()
+                        break
+                    else:
+                        kind = tag
+                        head = itemName
+                        body = p.bodyString()
+                        aList.append((kind,head,body),)
+                        p.moveToThreadNext()
+                        break
+        else:
+            # g.trace('***skipping***',p.headString())
+            p.moveToThreadNext()
+#@-node:ekr.20070926141716:doItems
+#@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+def readSettingsFiles (self,fileName,verbose=True):
+
+    if g.isPython3: return ###
+
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    # g.trace(g.app.oneConfigFilename)
+    if g.app.oneConfigFilename:
+        table = ((g.app.oneConfigFilename,False),)
+    else:
+        table = (
+            (self.globalConfigFile,False),
+            (self.homeFile,False),
+            (localConfigFile,False),
+            (self.myGlobalConfigFile,False),
+            (self.myHomeConfigFile,False),
+            (self.machineConfigFile,False),
+            (myLocalConfigFile,False),
+            (fileName,True),
+        )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        if path and path.lower() not in seen:
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
+                g.pr(s)
+                g.app.logWaiting.append((s+'\n','blue'),)
+
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
+                self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    if 0:
+        self.createMyLeoSettingsFile(myLocalConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because the local directory does not exits.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+def createMyLeoSettingsFile (self,localConfigFile):
+
+    '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
+
+    << define s, a minimalMyLeoSettings.leo string >>
+
+    for path in (
+        localConfigFile,
+        self.myGlobalConfigFile,
+        self.myHomeConfigFile
+    ):
+        # g.trace(path)
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            if g.os_path_exists(path):
+                # g.trace('exists',path)
+                return
+
+    if g.app.homeDir:
+        path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+        try:
+            f = open(path,'wb')
+            f.write(s)
+            f.close()
+            self.myHomeConfigFile = path
+            # It's early in the startup: g.es does not work yet.
+            s = 'created: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+        except Exception:
+            s = 'can not create: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+            g.es_exception()
+#@+node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+s = '''<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet ekr_test?>
+<leo_file>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="26" left="122" height="781" width="953"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="ekr.20070411164127" str_leo_pos="0"><vh>@chapters</vh>
+<v t="ekr.20070411164127.1"><vh>@chapter trash</vh></v>
+</v>
+<v t="ekr.20070411164127.2"><vh>@settings</vh></v>
+</vnodes>
+<tnodes>
+<t tx="ekr.20070411164127"></t>
+<t tx="ekr.20070411164127.1">trash</t>
+<t tx="ekr.20070411164127.2"></t>
+</tnodes>
+</leo_file>
+'''
+#@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+#@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+#@+node:ekr.20041117085625:g.app.config.openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:g.app.config.openSettingsFile
+#@+node:ekr.20051013161232:g.app.config.updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and d.keys())
+#@-node:ekr.20051013161232:g.app.config.updateSettings
+#@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+#@+node:ekr.20041117083857.1:g.app.config.readSettings
+# Called to read all leoSettings.leo files.
+# Also called when opening an .leo file to read @settings tree.
+
+def readSettings (self,c,localFlag):
+
+    if g.isPython3: return {} ###
+
+    """Read settings from a file that may contain an @settings tree."""
+
+    # g.trace('=' * 20, c.fileName())
+
+    # Create a settings dict for c for set()
+    if c and self.localOptionsDict.get(c.hash()) is None:
+        self.localOptionsDict[c.hash()] = {}
+
+    parser = settingsTreeParser(c,localFlag)
+    d = parser.traverse()
+
+    return d
+#@-node:ekr.20041117083857.1:g.app.config.readSettings
+#@+node:ekr.20041001161108:doPlugins
+def doPlugins(tag,keywords):
+
+    if g.app.killed:
+        return
+
+    if g.isPython3:
+        g.trace('ignoring all plugins')
+        return
+
+    # g.trace(tag)
+    if tag in ('start1','open0'):
+        loadHandlers(tag)
+
+    return doHandlersForTag(tag,keywords)
+#@-node:ekr.20041001161108:doPlugins
+#@+node:ekr.20031218072017.1934:run
+def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
+
+    """Initialize and run Leo"""
+
+    # __pychecker__ = '--no-argsused' # keywords not used.
+
+    import pdb ; pdb = pdb.set_trace
+
+    << import leoGlobals and leoApp >>
+    if not jyLeo and not isValidPython(): return
+    g.computeStandardDirectories()
+    adjustSysPath(g)
+    script,windowFlag = scanOptions(g)
+    if pymacs: script,windowFlag = None,False
+    verbose = script is None
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+    if not fileName:
+        fileName = getFileName()
+
+    << import other early files >>
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+    if g.isPython3:
+        fileName = r'c:\leo.repo\trunk\leo\test\test.leo' # smallTest.leo' ### testing only.
+        assert g.os_path_exists(fileName)
+    fileName,relativeFileName = completeFileName(fileName)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config.
+    # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.setEncoding()
+    if pymacs:
+        createNullGuiWithScript(None)
+    elif jyLeo:
+        import leo.core.leoSwingGui as leoSwingGui
+        g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+        fileName = None
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
+    else:
+        g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+        if g.app.killed: return # Support for g.app.forceShutdown.
+        if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    # Initialize tracing and statistics.
+    g.init_sherlock(args)
+    if g.app and g.app.use_psyco: startPsyco()
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName)
+    if not frame: return
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+    g.app.writeWaitingLog()
+    if g.app.oneConfigFilename: g.es_print('--one-config option in effect',color='red')
+    p = c.currentPosition()
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    if not fileName:
+        c.redraw_now()
+    # Respect c's focus wishes if posssible.
+    w = g.app.gui.get_focus(c)
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+    c.outerUpdate()
+    g.app.gui.runMainLoop()
+#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+if jyLeo:
+    print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
+
+# Add the current directory to sys.path *before* importing g.
+# This will fail if the current directory contains unicode characters...
+path = os.getcwd()
+if path not in sys.path:
+    # print('appending %s to sys.path' % path)
+    sys.path.append(path)
+
+# Import leoGlobals, but do NOT set g.
+import leo.core.leoGlobals as leoGlobals
+
+# Set leoGlobals.g here, rather than in leoGlobals.py.
+leoGlobals.g = leoGlobals
+
+import leo.core.leoApp as leoApp
+
+# Create the app.
+leoGlobals.app = leoApp.LeoApp()
+
+# **now** we can set g.
+g = leoGlobals
+assert(g.app)
+
+if jyLeo:
+    startJyleo(g)
+#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+#@+node:ekr.20041219072416.1:<< import other early files>>
+import leo.core.leoNodes as leoNodes
+import leo.core.leoConfig as leoConfig
+
+# There is a circular dependency between leoCommands and leoEditCommands.
+import leo.core.leoCommands as leoCommands
+
+# New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+# This prevents a crash when run is called repeatedly from IPython's lleo extension.
+import leo.core.leoPlugins as leoPlugins
+leoPlugins.init()
+#@-node:ekr.20041219072416.1:<< import other early files>>
+#@-node:ekr.20031218072017.1934:run
+#@-node:ekr.20080919121250.5:Major short circuits
+#@+node:ekr.20080919121250.6:Problems opening .leo files
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    # g.trace('hiddenRootNode',c.hiddenRootNode)
+
+    try:
+        if g.isPython3:
+            ### None of these work.
+            # s = theFile.read() # This produces bytes.
+            # theFile = io.BytesIO(s) ### hangs
+            # theFile = io.TextIOWrapper(s) ### fails in ctor.
+            # theFile = io.BufferedReader(s)
+            g.pdb()
+            # This read causes unicode errors on Py3K, but appears essential for Python 2.5
+            # g.openLeoOrZipFile now always uses binary ('rb') mode.
+            if 1:
+                pass ### pass the **binary** stream to sax.
+            else:
+                if theFile:
+                    s = theFile.read()
+                theFile = StringIO(s) # Same as cStringIO.StringIO for Python 2.x.
+        else:
+            if theFile:
+                s = theFile.read()
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@+node:ekr.20070412082527:g.openLeoOrZipFile
+def openLeoOrZipFile (fileName):
+
+    try:
+        isZipped = zipfile.is_zipfile(fileName)
+        if isZipped:
+            theFile = zipfile.ZipFile(fileName,'r')
+            # g.trace('opened zip file',theFile)
+        else:
+            # mode = g.choose(g.isPython3,'r','rb')
+            # 9/19/08: always use binary mode??
+            mode = 'rb'
+            theFile = open(fileName,mode)
+        return theFile,isZipped
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.es("can not open:",fileName,color="blue")
+        return None,False
+#@nonl
+#@-node:ekr.20070412082527:g.openLeoOrZipFile
+#@-node:ekr.20080919121250.6:Problems opening .leo files
+#@-node:ekr.20080919085541.4:Work on Leo3k
 #@+node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
 #@nonl
 #@-node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
-#@-node:ekr.20080915112342.1:First 6
+#@-node:ekr.20080915112342.1:First
 #@+node:ekr.20080918164844.6:Recent 8
 #@+node:ekr.20080918164844.7:Investigate settings strangeness re @string debugger_path
 @nocolor

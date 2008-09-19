@@ -851,7 +851,7 @@ def set_delims_from_string(s):
 
     # 7/8/02: The "REM hack": replace underscores by blanks.
     # 9/25/02: The "perlpod hack": replace double underscores by newlines.
-    for i in xrange(0,3):
+    for i in range(0,3):
         if delims[i]:
             delims[i] = string.replace(delims[i],"__",'\n') 
             delims[i] = string.replace(delims[i],'_',' ')
@@ -2228,7 +2228,9 @@ def openLeoOrZipFile (fileName):
             theFile = zipfile.ZipFile(fileName,'r')
             # g.trace('opened zip file',theFile)
         else:
-            mode = g.choose(g.isPython3,'r','rb')
+            # mode = g.choose(g.isPython3,'r','rb')
+            # 9/19/08: always use binary mode??
+            mode = 'rb'
             theFile = open(fileName,mode)
         return theFile,isZipped
     except IOError:
@@ -4600,7 +4602,7 @@ def CheckVersionToInt (s):
             if ch.isdigit(): aList.append(ch)
             else: break
         if aList:
-            s = string.join(aList)
+            s = ''.join(aList)
             return int(s)
         else:
             return 0

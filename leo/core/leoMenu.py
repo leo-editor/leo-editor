@@ -1302,12 +1302,6 @@ class leoMenu:
     def canonicalizeTranslatedMenuName (self,name):
 
         return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
-
-        ###
-        # if g.isPython3:
-            # return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
-        # else:
-            # return ''.join([ch for ch in name.lower() if ch not in unicode('& \t\n\r')])
     #@-node:ekr.20031218072017.3783:canonicalizeMenuName & cononicalizeTranslatedMenuName
     #@+node:ekr.20051022044950:computeOldStyleShortcutKey
     def computeOldStyleShortcutKey (self,s):
