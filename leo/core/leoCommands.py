@@ -269,12 +269,7 @@ class baseCommands:
 
         g.pr('Commands...')
 
-        if g.isPython3:
-            keys = sorted(c.commandsDict)
-        else:
-            keys = c.commandsDict.keys() ; keys.sort()
-
-        for key in keys:
+        for key in sorted(c.commandsDict):
             command = c.commandsDict.get(key)
             g.pr('%30s = %s' % (key,g.choose(command,command.__name__,'<None>')))
         g.pr('')

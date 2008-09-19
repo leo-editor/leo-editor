@@ -1974,12 +1974,8 @@ class baseTangleCommands:
 
         """Checks the given symbol table for defined but never referenced sections."""
 
-        if g.isPython3:
-            keys = sorted(self.tst)
-        else:
-            keys = self.tst.keys() ; keys.sort()
         # g.trace(keys)
-        for name in keys:
+        for name in sorted(self.tst):
             section = self.tst[name]
             if not section.referenced:
                 lp = g.choose(self.use_noweb_flag,"<< ","@< ")
@@ -1992,11 +1988,8 @@ class baseTangleCommands:
     def st_dump(self,verbose_flag=True):
 
         s = "\ndump of symbol table...\n"
-        if g.isPython3:
-            keys = sorted(self.txt)
-        else:
-            keys = self.tst.keys() ; keys.sort()
-        for name in keys:
+
+        for name in sorted(self.txt):
             section = self.tst[name]
             if verbose_flag:
                 s += self.st_dump_node(section)
@@ -2120,18 +2113,17 @@ class baseTangleCommands:
     def ust_dump (self):
 
         s = "\n---------- Untangle Symbol Table ----------"
-        if g.isPython3:
-            keys = sorted(self.ust)
-        else:
-            keys = self.ust.keys() ; keys.sort()
-        for name in keys:
+
+        for name in sorted(self.ust):
             section = self.ust[name]
             s += "\n\n" + section.name
             for part in section.parts.values():
                 assert(part.of == section.of)
                 s += "\n----- part %d of %d -----\n" % (part.part,part.of)
                 s += repr(g.get_line(part.code,0))
+
         s += "\n--------------------"
+
         return s
     #@-node:ekr.20031218072017.3539:ust_dump
     #@+node:ekr.20031218072017.3540:ust_enter

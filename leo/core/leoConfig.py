@@ -2170,11 +2170,7 @@ class configClass:
         for d in self.dictList:
             self.printSettingsHelper(settings,d)
 
-        if g.isPython3:
-            keys = sorted(settings)
-        else:
-            keys = settings.keys() ; keys.sort()
-        for key in keys:
+        for key in sorted(settings):
             data = settings.get(key)
             letter,val = data
             g.pr('%45s = %s %s' % (key,letter,val))

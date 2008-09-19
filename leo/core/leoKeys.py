@@ -1151,20 +1151,12 @@ class autoCompleterClass:
 
             if 0:
                 g.trace('watchwords...\n\n')
-                if g.isPython3:
-                    keys = sorted(self.watchwords)
-                else:
-                    keys = self.watchwords.keys() ; keys.sort()
-                for key in keys:
+                for key in sorted(self.watchwords):
                     aList = self.watchwords.get(key)
                     g.trace('%s:\n\n' % (key), g.listToString(aList))
             if 0:
                 g.trace('calltips...\n\n')
-                if g.isPython3:
-                    keys = sorted(self.calltips)
-                else:
-                    keys = self.calltips.keys() ; keys.sort()
-                for key in keys:
+                for key in sorted(self.calltips):
                     d = self.calltips.get(key)
                     if d:
                         g.trace('%s:\n\n' % (key), g.dictToString(d))
@@ -2178,12 +2170,7 @@ class keyHandlerClass:
 
         if not c.config.getBool('warn_about_missing_settings'): return
 
-        if g.isPython3:
-            names = sorted(c.commandsDict)
-        else:
-            names = c.commandsDict.keys() ; names.sort()
-
-        for name in names:
+        for name in sorted(c.commandsDict):
             abbrev = k.abbreviationsDict.get(name)
             key = c.frame.menu.canonicalizeMenuName(abbrev or name)
             key = key.replace('&','')
@@ -2200,20 +2187,11 @@ class keyHandlerClass:
         k = self ; d = k.masterBindingsDict
 
         g.pr('\nk.masterBindingsDict...\n')
-        if g.isPython3:
-            keys = sorted(d)
-        else:
-            keys = d.keys() ; keys.sort()
 
-        for key in keys:
+        for key in sorted(d):
             g.pr(key, '-' * 40)
             d2 = d.get(key)
-            if g.isPython3:
-                keys2 = sorted(d2)
-            else:
-                keys2 = d2.keys() ; keys2.sort()
-
-            for key2 in keys2:
+            for key2 in sorted(d2):
                 b = d2.get(key2)
                 g.pr('%20s %s' % (key2,b.commandName))
     #@-node:ekr.20070218130238:dumpMasterBindingsDict
@@ -2336,12 +2314,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; d = c.commandsDict
 
-        if g.isPython3:
-            keys = sorted(d)
-        else:
-            keys = d.keys() ; keys.sort()
-
-        for commandName in keys:
+        for commandName in sorted(d):
             command = d.get(commandName)
             key, bunchList = c.config.getShortcut(commandName)
             # if commandName == 'keyboard-quit': g.trace(key,bunchList)
@@ -2822,14 +2795,10 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         d = k.bindingsDict ; tabName = 'Bindings'
-        if g.isPython3:
-            keys = sorted(d)
-        else:
-            keys = d.keys() ; keys.sort()
         c.frame.log.clearTab(tabName)
         data = [] ; n1 = 4 ; n2 = 20
-        if not keys: return g.es('no bindings')
-        for key in keys:
+        if not d: return g.es('no bindings')
+        for key in sorted(d):
             bunchList = d.get(key,[])
             for b in bunchList:
                 pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
@@ -2889,13 +2858,9 @@ class keyHandlerClass:
         c.frame.log.clearTab(tabName)
 
         inverseBindingDict = k.computeInverseBindingDict()
-        if g.isPython3:
-            commandNames = sorted(c.commandsDict)
-        else:
-            commandNames = c.commandsDict.keys() ; commandNames.sort()
 
         data = [] ; n1 = 4 ; n2 = 20
-        for commandName in commandNames:
+        for commandName in sorted(c.commandsDict):
             dataList = inverseBindingDict.get(commandName,[('',''),])
             for z in dataList:
                 pane, key = z
@@ -4073,13 +4038,8 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; tabName = 'Mode'
         c.frame.log.clearTab(tabName)
-        if g.isPython3:
-            keys = sorted(d)
-        else:
-            keys = d.keys() ; keys.sort()
-
         data = [] ; n = 20
-        for key in keys:
+        for key in sorted(d):
             if key not in ( '*entry-commands*','*command-prompt*'):
                 bunchList = d.get(key)
                 for bunch in bunchList:

@@ -1508,20 +1508,13 @@ def toString (obj,tag=None,sort=False,verbose=True,indent=''):
 #@+node:ekr.20041224080039:print_dict & dictToString
 def print_dict(d,tag='',verbose=True,indent=''):
 
-    # __pychecker__ = '--no-argsused'
-        # verbose unused, but present for compatibility with similar methods.
-
     if not d:
         if tag: g.pr('%s...{}' % tag)
         else:   g.pr('{}')
         return
 
-    if g.isPython3:
-        keys = sorted(d)
-    else:
-        keys = d.keys() ; keys.sort()
     n = 6
-    for key in keys:
+    for key in sorted(d):
         if type(key) == type(''):
             n = max(n,len(key))
     if tag: g.es('%s...{\n' % tag)
@@ -1534,18 +1527,11 @@ printDict = print_dict
 
 def dictToString(d,tag=None,verbose=True,indent=''):
 
-    # __pychecker__ = '--no-argsused'
-        # verbose unused, but present for compatibility with similar methods.
-
     if not d:
         if tag: return '%s...{}' % tag
         else:   return '{}'
-    if g.isPython3:
-        keys = sorted(d)
-    else:
-        keys = d.keys() ; keys.sort()
     n = 6
-    for key in keys:
+    for key in sorted(d):
         ### if type(key) in (type(''),type(u'')):
         if type(key) == types.UnicodeType:
             n = max(n,len(key))
@@ -1899,22 +1885,14 @@ class Tracer:
 
         g.pr('\ncallDict...')
 
-        # g.pr(g.dictToString(self.callDict))
-        if g.isPython3:
-            keys = sorted(self.callDict)
-        else:
-            keys = self.callDict.keys() ; keys.sort()
+        for key in sorted(self.callDict):
 
-        for key in keys:
             # Print the calling function.
             g.pr('%d' % (self.calledDict.get(key,0)),key)
+
             # Print the called functions.
             d = self.callDict.get(key)
-            if g.isPython3:
-                keys2 = sorted(d)
-            else:
-                keys2 = d.keys() ; keys2.sort()
-            for key2 in keys2:
+            for key2 in sorted(d):
                 g.pr('%8d' % (d.get(key2)),key2)
     #@-node:ekr.20080531075119.4:report
     #@+node:ekr.20080531075119.5:stop
@@ -2564,11 +2542,7 @@ def printGcAll (tag=''):
         for z in items:
             g.pr('%40s %7d' % (z[0],z[1]))
     else: # Sort by type
-        if g.isPython3:
-            keys = sorted(d)
-        else:
-            keys = d.keys() ; keys.sort()
-        for t in keys:
+        for t in sorted(d):
             g.pr('%40s %7d' % (t,d.get(t)))
 #@-node:ekr.20060202161935:printGcAll
 #@+node:ekr.20060127164729.1:printGcObjects   (printNewObjects=pno)
@@ -3083,9 +3057,9 @@ def translateString (s):
             s = gettext.gettext(s)
         return s
     else:
-         if g.app.translateToUpperCase:
+        if g.app.translateToUpperCase:
             return s.upper()
-         else:
+        else:
             return gettext.gettext(s)
 
 tr = translateString

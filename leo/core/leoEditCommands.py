@@ -266,12 +266,8 @@ def finishCreateEditCommanders (c):
         if d2:
             d.update(d2)
             if 0:
-                if g.isPython3:
-                    keys = sorted(d2)
-                else:
-                    keys = d2.keys() ; keys.sort()
                 g.pr('----- %s' % name)
-                for key in keys: g.pr(key)
+                for key in sorted(d2): g.pr(key)
 
     return d
 #@-node:ekr.20050922104731:finishCreateEditCommanders (leoEditCommands module)
@@ -2401,11 +2397,7 @@ class editCommandsClass (baseEditCommandsClass):
 
     def dHash(self, d):
         """Hash a dictionary"""
-        if g.isPython3:
-            l = sorted(d)
-        else:
-            l = d.keys() ; l.sort()
-        return ''.join(['%s%s' % (str(k),str(d[k])) for k in l])
+        return ''.join(['%s%s' % (str(k),str(d[k])) for k in sorted(d)])
 
     def setIconList(self, p, l):
         """Set list of icons for position p to l"""
@@ -5189,13 +5181,8 @@ class helpCommandsClass (baseEditCommandsClass):
     def getBindingsForCommand(self,commandName):
 
         c = self.c ; k = c.k ; d = k.bindingsDict
-        if g.isPython3:
-            keys = sorted(d)
-        else:
-            keys = d.keys() ; keys.sort()
-
         data = [] ; n1 = 4 ; n2 = 20
-        for key in keys:
+        for key in sorted(d):
             bunchList = d.get(key,[])
             for b in bunchList:
                 if b.commandName == commandName:
@@ -6141,11 +6128,7 @@ class leoCommandsClass (baseEditCommandsClass):
         #@nl
 
         # Create a callback for each item in d.
-        if g.isPython3:
-            keys = sorted(d)
-        else:
-            keys = d.keys() ; keys.sort()
-        for name in keys:
+        for name in sorted(d):
             f = d.get(name)
             d2 [name] = f
             k.inverseCommandsDict [f.__name__] = name

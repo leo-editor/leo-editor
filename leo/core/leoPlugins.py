@@ -270,11 +270,7 @@ def printHandlers (moduleName=None):
             tags.append(tag)
             modules[name] = tags
 
-    if g.isPython3:
-        keys = sorted(modules)
-    else:
-        keys = modules.keys() ; keys.sort()
-    for key in keys:
+    for key in sorted(modules):
         tags = modules.get(key)
         if moduleName in (None,key):
             for tag in tags:
