@@ -2358,8 +2358,7 @@ def set_delims_from_string(s):
     # 9/25/02: The "perlpod hack": replace double underscores by newlines.
     for i in range(0,3):
         if delims[i]:
-            delims[i] = string.replace(delims[i],"__",'\n') 
-            delims[i] = string.replace(delims[i],'_',' ')
+            delims[i] = delims[i].replace("__",'\n').replace('_',' ')
 
     return delims[0], delims[1], delims[2]
 #@-node:ekr.20031218072017.1383:g.set_delims_from_string
@@ -2383,7 +2382,7 @@ def set_language(s,i,issue_errors_flag=False):
     i = g.skip_ws(s, i)
     j = i ; i = g.skip_c_id(s,i)
     # Allow tcl/tk.
-    arg = string.lower(s[j:i])
+    arg = s[j:i].lower()
     if app.language_delims_dict.get(arg):
         language = arg
         delim1, delim2, delim3 = g.set_delims_from_language(language)

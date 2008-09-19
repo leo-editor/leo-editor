@@ -2178,7 +2178,7 @@ class colorizer:
 
             self.hyperCount = 0 # Number of hypertext tags
             self.count += 1
-            lines = string.split(self.allBodyText,'\n')
+            lines = self.allBodyText.split('\n')
             #@nonl
             #@-node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
             #@nl

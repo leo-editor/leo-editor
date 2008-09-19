@@ -72,7 +72,7 @@ class leoImportCommands:
         c = self.c ; nl = self.output_newline
         lb = g.choose(self.webType=="cweb","@<","<<")
         rb = g.choose(self.webType=="cweb","@>",">>")
-        h = string.strip(v.headString())
+        h = v.headString().strip()
         #@    << put v's headline ref in head_ref >>
         #@+node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
         #@+at 
@@ -85,14 +85,14 @@ class leoImportCommands:
         head_ref = None
         j = 0
         if g.match(h,j,"<<"):
-            k = string.find(h,">>",j)
+            k = h.find(">>",j)
         elif g.match(h,j,"<@"):
-            k = string.find(h,"@>",j)
+            k = h.find("@>",j)
         else:
             k = -1
 
         if k > -1:
-            head_ref = string.strip(h[j+2:k])
+            head_ref = h[j+2:k].strip()
             if len(head_ref) == 0:
                 head_ref = None
         #@-node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
@@ -100,23 +100,22 @@ class leoImportCommands:
         #@    << put name following @root or @file in file_name >>
         #@+node:ekr.20031218072017.3292:<< put name following @root or @file in file_name >>
         if g.match(h,0,"@file") or g.match(h,0,"@root"):
-            line = h[5:]
-            line = string.strip(line)
+            line = h[5:].strip()
             #@    << set file_name >>
             #@+node:ekr.20031218072017.3293:<< Set file_name >>
             # set j & k so line[j:k] is the file name.
             # g.trace(line)
 
             if g.match(line,0,"<"):
-                j = 1 ; k = string.find(line,">",1)
+                j = 1 ; k = line.find(">",1)
             elif g.match(line,0,'"'):
-                j = 1 ; k = string.find(line,'"',1)
+                j = 1 ; k = line.find('"',1)
             else:
-                j = 0 ; k = string.find(line," ",0)
+                j = 0 ; k = line.find(" ",0)
             if k == -1:
                 k = len(line)
 
-            file_name = string.strip(line[j:k])
+            file_name = line[j:k].strip()
             if file_name and len(file_name) == 0:
                 file_name = None
             #@-node:ekr.20031218072017.3293:<< Set file_name >>
@@ -198,7 +197,7 @@ class leoImportCommands:
             #@-node:ekr.20031218072017.3295:<< append head_ref >>
             #@nl
         i,result = self.copyPart(s,i,result)
-        return i, string.strip(result) + nl
+        return i, result.strip() + nl
 
     #@+at 
     #@nonl

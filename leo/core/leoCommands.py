@@ -2347,7 +2347,7 @@ class baseCommands:
                 changed = False ; result = []
                 text = p.t._bodyString
                 assert(g.isUnicode(text))
-                lines = string.split(text, '\n')
+                lines = text.split('\n')
                 for line in lines:
                     i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
                     s = g.computeLeadingWhitespace(w,abs(tabWidth)) + line[i:] # use positive width.
@@ -2391,7 +2391,7 @@ class baseCommands:
                 result = [] ; changed = False
                 text = p.t._bodyString
                 assert(g.isUnicode(text))
-                lines = string.split(text, '\n')
+                lines = text.split('\n')
                 for line in lines:
                     i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
                     s = g.computeLeadingWhitespace(w,-abs(tabWidth)) + line[i:] # use negative width.
@@ -2468,7 +2468,7 @@ class baseCommands:
         c = self
 
         if body and len(body) > 0:
-            body = string.rstrip(body)
+            body = body.rstrip()
         if not body or len(body) == 0:
             body = ""
 
@@ -2604,13 +2604,13 @@ class baseCommands:
             for s in lines:
                 #@            << Find the next section name >>
                 #@+node:ekr.20031218072017.1711:<< Find the next section name >>
-                head1 = string.find(s,"<<")
+                head1 = s.find("<<")
                 if head1 > -1:
-                    head2 = string.find(s,">>",head1)
+                    head2 = s.find(">>",head1)
                 else:
-                    head1 = string.find(s,"@<")
+                    head1 = s.find("@<")
                     if head1 > -1:
-                        head2 = string.find(s,"@>",head1)
+                        head2 = s.find("@>",head1)
 
                 if head1 == -1 or head2 == -1 or head1 > head2:
                     name = None
@@ -7093,7 +7093,7 @@ class baseCommands:
 
         c = self
         body = p.bodyString()
-        lines = string.split(body,'\n')
+        lines = body.split('\n')
         i = len(lines) - 1 ; changed = False
         while i >= 0:
             line = lines[i]

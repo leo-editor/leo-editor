@@ -1050,11 +1050,11 @@ class atFile:
 
                     if h[:5] == "@file":
                         i,junk,junk = g.scanAtFileOptions(h)
-                        fileName = string.strip(h[i:])
+                        fileName = h[i:].strip()
                         if fileName != at.targetFileName:
                             at.readError("File name in @node sentinel does not match file's name")
                     elif h[:8] == "@rawfile":
-                        fileName = string.strip(h[8:])
+                        fileName = h[8:].strip()
                         if fileName != at.targetFileName:
                             at.readError("File name in @node sentinel does not match file's name")
                     else:
@@ -1608,7 +1608,7 @@ class atFile:
         # Locally undo cweb hack here
         start = at.startSentinelComment
         if start and len(start) > 0 and start[-1] == '@':
-            s = s[:i] + string.replace(s[i:],'@@','@')
+            s = s[:i] + s[i:].replace('@@','@')
 
         # 4.0: Look ahead for @[ws]@others and @[ws]<<
         if g.match(s,i,"@"):
@@ -2016,7 +2016,7 @@ class atFile:
             #@+node:ekr.20041005105605.139:<< put optional @comment sentinel lines >>
             s2 = c.config.output_initial_comment
             if s2:
-                lines = string.split(s2,"\\n")
+                lines = s2.split("\\n")
                 for line in lines:
                     line = line.replace("@date",time.asctime())
                     if len(line)> 0:
@@ -2058,7 +2058,7 @@ class atFile:
             #@@c
 
             tag = "@last"
-            lines = string.split(root.v.t._bodyString,'\n')
+            lines = root.v.t._bodyString.split('\n')
             n = len(lines) ; j = k = n - 1
             # Don't write an empty last line.
             if j >= 0 and len(lines[j])==0:
@@ -4066,7 +4066,7 @@ class atFile:
         c = self.c
         s2 = c.config.output_initial_comment
         if s2:
-            lines = string.split(s2,"\\n")
+            lines = s2.split("\\n")
             for line in lines:
                 line = line.replace("@date",time.asctime())
                 if len(line)> 0:

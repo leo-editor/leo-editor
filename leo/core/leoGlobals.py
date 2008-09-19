@@ -853,8 +853,7 @@ def set_delims_from_string(s):
     # 9/25/02: The "perlpod hack": replace double underscores by newlines.
     for i in range(0,3):
         if delims[i]:
-            delims[i] = string.replace(delims[i],"__",'\n') 
-            delims[i] = string.replace(delims[i],'_',' ')
+            delims[i] = delims[i].replace("__",'\n').replace('_',' ')
 
     return delims[0], delims[1], delims[2]
 #@-node:ekr.20031218072017.1383:g.set_delims_from_string
@@ -878,7 +877,7 @@ def set_language(s,i,issue_errors_flag=False):
     i = g.skip_ws(s, i)
     j = i ; i = g.skip_c_id(s,i)
     # Allow tcl/tk.
-    arg = string.lower(s[j:i])
+    arg = s[j:i].lower()
     if app.language_delims_dict.get(arg):
         language = arg
         delim1, delim2, delim3 = g.set_delims_from_language(language)
@@ -4651,11 +4650,11 @@ def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0
     # __pychecker__ = 'maxreturns=20'
 
     # tokenize the stringCompare flags
-    compareFlag = string.split( stringCompare, '.' )
+    compareFlag = stringCompare.split('.')
 
     # tokenize the version strings
-    testVersion = string.split( version, delimiter )
-    testAgainst = string.split( againstVersion, delimiter )
+    testVersion = version.split(delimiter)
+    testAgainst = againstVersion.split(delimiter)
 
     # find the 'precision' of the comparison
     tokenCount = 4
@@ -5273,8 +5272,8 @@ def get_window_info (top):
 
     # Get the information about top and the screen.
     geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-    dim,x,y = string.split(geom,'+')
-    w,h = string.split(dim,'x')
+    dim,x,y = geom.split('+')
+    w,h = dim.split('x')
     w,h,x,y = int(w),int(h),int(x),int(y)
 
     return w,h,x,y
