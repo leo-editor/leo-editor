@@ -399,8 +399,8 @@ class gtkGui(leoGui.leoGui):
 
         # Get the information about top and the screen.
         geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-        dim,x,y = string.split(geom,'+')
-        w,h = string.split(dim,'x')
+        dim,x,y = geom.split('+')
+        w,h = dim.split('x')
         w,h,x,y = int(w),int(h),int(x),int(y)
 
         return w,h,x,y

@@ -148,7 +148,7 @@ class leoImportCommands:
                     result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
                     result += "@c" + nl # @c denotes a new section.
                 else: 
-                    escaped_head_ref = string.replace(head_ref,"@","@@")
+                    escaped_head_ref = head_ref.replace("@","@@")
                     result += "@<" + escaped_head_ref + "@>=" + nl
             else:
                 if not head_ref:
@@ -184,7 +184,7 @@ class leoImportCommands:
                     result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
                     result += "@c" + nl # @c denotes a new section.
                 else: 
-                    escaped_head_ref = string.replace(head_ref,"@","@@")
+                    escaped_head_ref = head_ref.replace("@","@@")
                     result += "@<" + escaped_head_ref + "@>=" + nl
             else:
                 if not head_ref:
@@ -220,9 +220,9 @@ class leoImportCommands:
         i, result2 = self.copyPart(s,i,"")
         if len(result2) > 0:
             # Break lines after periods.
-            result2 = string.replace(result2,".  ","." + nl)
-            result2 = string.replace(result2,". ","." + nl)
-            result += nl+"@"+nl+string.strip(result2)+nl+nl
+            result2 = result2.replace(".  ","." + nl)
+            result2 = result2.replace(". ","." + nl)
+            result += nl+"@"+nl+result2.strip()+nl+nl
         else:
             # All nodes should start with '@', even if the doc part is empty.
             result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
@@ -281,7 +281,7 @@ class leoImportCommands:
                 i,result = self.convertDocPartToWeb(s,i,result)
                 docSeen = True
             assert(progress < i)
-        result = string.strip(result)
+        result = result.strip()
         if len(result) > 0:
             result += nl
         return result
@@ -313,11 +313,11 @@ class leoImportCommands:
                 # Converting @others to < < @ others > >
                 i = g.skip_line(s,j) ; line = s[j:i]
                 if theType == "cweb":
-                    line = string.replace(line,"@","@@")
+                    line = line.replace("@","@@")
                 else:
                     j = g.skip_ws(line,0)
                     if g.match(line,j,"@others"):
-                        line = string.replace(line,"@others",lb + "@others" + rb)
+                        line = line.replace("@others",lb + "@others" + rb)
                     elif g.match(line,0,"@"):
                         # Special case: do not escape @ %defs.
                         k = g.skip_ws(line,1)
@@ -325,7 +325,7 @@ class leoImportCommands:
                             line = "@" + line
                 result += line
             assert(progress < i)
-        return i, string.rstrip(result)
+        return i, result.rstrip()
     #@-node:ekr.20031218072017.3299:copyPart
     #@+node:ekr.20031218072017.1462:exportHeadlines
     def exportHeadlines (self,fileName):
@@ -532,7 +532,7 @@ class leoImportCommands:
         #@nl
         for p in p.self_and_subtree_iter():
             s = p.bodyString()
-            s2 = string.strip(s)
+            s2 = s.strip()
             if s2 and len(s2) > 0:
                 f.write("-" * 60) ; f.write(nl)
                 #@            << write the context of p to f >>
@@ -557,7 +557,7 @@ class leoImportCommands:
                 #@nl
                 f.write("-" * 60) ; f.write(nl)
                 s = g.toEncodedString(s,self.encoding,reportErrors=True)
-                f.write(string.rstrip(s) + nl)
+                f.write(s.rstrip() + nl)
         f.flush()
         f.close()
     #@-node:ekr.20031218072017.1464:weave
@@ -616,22 +616,6 @@ class leoImportCommands:
                 g.match(s,i,"@c") or g.match(s,i,"@p") or
                 g.match(s,i,"@d") or g.match(s,i,"@f"))
     #@-node:ekr.20031218072017.3309:isDocStart and isModuleStart
-    #@+node:ekr.20031218072017.3311:massageComment (leoImport)(not used)
-    # def massageComment (self,s):
-
-        # '''Returns s with all runs of whitespace and newlines converted to a single blank.
-
-        # Also removes leading and trailing whitespace.'''
-
-        # # g.trace(g.get_line(s,0))
-        # s = string.strip(s)
-        # s = string.replace(s,"\n"," ")
-        # s = string.replace(s,"\r"," ")
-        # s = string.replace(s,"\t"," ")
-        # s = string.replace(s,"  "," ")
-        # s = string.strip(s)
-        # return s
-    #@-node:ekr.20031218072017.3311:massageComment (leoImport)(not used)
     #@+node:ekr.20031218072017.3312:massageWebBody
     def massageWebBody (self,s):
 
@@ -661,9 +645,9 @@ class leoImportCommands:
                     assert (i > progress2)
                 # Remove newlines from start to end.
                 doc = s[start:end]
-                doc = string.replace(doc,"\n"," ")
-                doc = string.replace(doc,"\r","")
-                doc = string.strip(doc)
+                doc = doc.replace("\n"," ")
+                doc = doc.replace("\r","")
+                doc = doc.strip()
                 if doc and len(doc) > 0:
                     if doc == "@":
                         doc = g.choose(self.webType=="cweb", "@ ","@\n")
@@ -696,7 +680,7 @@ class leoImportCommands:
             assert (i > progress)
         #@-node:ekr.20031218072017.3314:<< Replace abbreviated names with full names >>
         #@nl
-        s = string.rstrip(s)
+        s = s.rstrip()
         return s
     #@-node:ekr.20031218072017.3312:massageWebBody
     #@+node:ekr.20080211085914:scanDefaultDirectory (leoImport)
@@ -1017,8 +1001,8 @@ class leoImportCommands:
     # Used by paste logic.
 
     def convertMoreStringToOutlineAfter (self,s,first_p):
-        s = string.replace(s,"\r","")
-        strings = string.split(s,"\n")
+        s = s.replace("\r","")
+        strings = s.split("\n")
         return self.convertMoreStringsToOutlineAfter(strings,first_p)
 
     # Almost all the time spent in this command is spent here.
@@ -1127,9 +1111,9 @@ class leoImportCommands:
         try:
             theFile = open(fileName)
             s = theFile.read()
-            s = string.replace(s,"\r","")
+            s = s.replace("\r","")
             s = g.toUnicode(s,self.encoding)
-            array = string.split(s,"\n")
+            array = s.split("\n")
             theFile.close()
         except IOError:
             g.es("can not open",fileName, color="blue")
@@ -1170,8 +1154,8 @@ class leoImportCommands:
 
     def stringIsValidMoreFile (self,s):
 
-        s = string.replace(s,"\r","")
-        strings = string.split(s,"\n")
+        s = s.replace("\r","")
+        strings = s.split("\n")
         return self.stringsAreValidMoreFile(strings)
 
     def stringsAreValidMoreFile (self,strings):
@@ -1309,7 +1293,7 @@ class leoImportCommands:
                     k = g.find_on_line(s,i,">>=")
                     if k > -1:
                         ref = s[i:k+2]
-                        name = string.strip(s[i+2:k])
+                        name = s[i+2:k].strip()
                         if name != "@others":
                             return ref
                 else:
@@ -1457,13 +1441,12 @@ class leoImportCommands:
     def cstCanonicalize (self,s,lower=True):
 
         if lower:
-            s = string.lower(s)
-        s = string.replace(s,"\t"," ")
-        s = string.replace(s,"\r","")
-        s = string.replace(s,"\n"," ")
-        s = string.replace(s,"  "," ")
-        s = string.strip(s)
-        return s
+            s = s.lower()
+
+        s = s.replace("\t"," ").replace("\r","")
+        s = s.replace("\n"," ").replace("  "," ")
+
+        return s.strip()
     #@-node:ekr.20031218072017.3237:cstCanonicalize
     #@+node:ekr.20031218072017.3238:cstDump
     def cstDump (self):
@@ -1480,14 +1463,14 @@ class leoImportCommands:
     def cstEnter (self,s):
 
         # Don't enter names that end in "..."
-        s = string.rstrip(s)
+        s = s.rstrip()
         if s.endswith("..."): return
 
         # Put the section name in the symbol table, retaining capitalization.
         lower = self.cstCanonicalize(s,True)  # do lower
         upper = self.cstCanonicalize(s,False) # don't lower.
         for name in self.web_st:
-            if string.lower(name) == lower:
+            if name.lower() == lower:
                 return
         self.web_st.append(upper)
     #@-node:ekr.20031218072017.3239:cstEnter
@@ -1497,12 +1480,11 @@ class leoImportCommands:
     def cstLookup (self,target):
 
         # Do nothing if the ... convention is not used.
-        target = string.strip(target)
+        target = target.strip()
         if not target.endswith("..."): return target
         # Canonicalize the target name, and remove the trailing "..."
         ctarget = target[:-3]
-        ctarget = self.cstCanonicalize(ctarget)
-        ctarget = string.strip(ctarget)
+        ctarget = self.cstCanonicalize(ctarget).strip()
         found = False ; result = target
         for s in self.web_st:
             cs = self.cstCanonicalize(s)
@@ -2602,7 +2584,7 @@ class baseScannerClass:
             assert False
 
         # Find the closing delim.
-        k = string.find(s,delim2,i)
+        k = s.find(delim2,i)
         if k == -1:
             self.error('Run on block comment: ' + s[start:i])
             return len(s)

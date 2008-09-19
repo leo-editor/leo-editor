@@ -850,7 +850,7 @@ class baseTangleCommands:
             f = open(path)
             if f:
                 file_buf = f.read()
-                file_buf = string.replace(file_buf,g.body_ignored_newline,'')
+                file_buf = file_buf.replace(g.body_ignored_newline,'')
         except:
             if f: f.close()
             g.es("error reading:",path)
@@ -1349,7 +1349,7 @@ class baseTangleCommands:
         self.output_file.write(s)
 
     def os (self,s):
-        s = string.replace(s,g.body_ignored_newline,g.body_newline)
+        s = s.replace(g.body_ignored_newline,g.body_newline)
         s = g.toEncodedString(s,self.encoding,reportErrors=True)
         self.output_file.write(s)
 
@@ -1839,7 +1839,7 @@ class baseTangleCommands:
                             self.put_leading_ws(self.tangle_indent)
 
                         # Don't print trailing whitespace
-                        name = string.rstrip(name)
+                        name = name.rstrip()
                         if self.single_comment_string:
                             self.os(self.single_comment_string) ; self.oblank() ; self.os(name)
                             #@    << put (n of m) >>
@@ -2024,12 +2024,12 @@ class baseTangleCommands:
         section = self.st_lookup(name,is_root_flag)
         assert(section)
         if doc:
-            doc = string.rstrip(doc) # remove trailing lines.
+            doc = doc.rstrip() # remove trailing lines.
         if code:
             if self.print_mode != "silent": # @silent supresses newline processing.
                 i = g.skip_blank_lines(code,0) # remove leading lines.
                 if i > 0: code = code[i:] 
-                if code and len(code) > 0: code = string.rstrip(code) # remove trailing lines.
+                if code and len(code) > 0: code = code.rstrip() # remove trailing lines.
             if len(code) == 0: code = None
         if code:
             #@        << check for duplicate code definitions >>
@@ -2146,8 +2146,8 @@ class baseTangleCommands:
         #@+node:ekr.20031218072017.3541:<< remove blank lines from the start and end of the text >>
         i = g.skip_blank_lines(code,0)
         if i > 0:
-            code = code[i:]
-            code = string.rstrip(code)
+            code = code[i:].rstrip()
+
         #@-node:ekr.20031218072017.3541:<< remove blank lines from the start and end of the text >>
         #@nl
         u = ust_node(name,code,part,of,nl_flag,False) # update_flag
@@ -2929,7 +2929,7 @@ class baseTangleCommands:
             if ucode and g.match(ucode,j,self.comment):
                 # Skip to the end of the block comment.
                 i = j + len(self.comment)
-                i = string.find(ucode,self.comment_end,i)
+                i = ucode.find(self.comment_end,i)
                 if i == -1: ucode = None # An unreported problem in the user code.
                 else:
                     i += len(self.comment_end)
@@ -2952,9 +2952,9 @@ class baseTangleCommands:
         g.es("***Updating:",p.headString())
         i = g.skip_blank_lines(ucode,0)
         ucode = ucode[i:]
-        ucode = string.rstrip(ucode)
+        ucode = ucode.rstrip()
         # Add the trailing whitespace of code to ucode.
-        code2 = string.rstrip(code)
+        code2 = code.rstrip()
         trail_ws = code[len(code2):]
         ucode = ucode + trail_ws
         body = head + ucode + tail
@@ -3000,7 +3000,7 @@ class baseTangleCommands:
                     i2 = g.skip_ws(s2,i2)
                 elif g.match(s1,i1,delim) and g.match(s2,i2,delim):
                     return True
-                elif string.lower(ch1) == string.lower(ch2):
+                elif ch1.lower() == ch2.lower():
                     i1 += 1 ; i2 += 1
                 else: return False
             return False
@@ -3289,7 +3289,7 @@ class baseTangleCommands:
             if err_flag:
                 g.scanError("bad filename in @root " + s[:i])
         else:
-            self.root_name = string.strip(s[root1:root2])
+            self.root_name = s[root1:root2].strip()
         return i
     #@-node:ekr.20031218072017.1259:setRootFromText
     #@+node:ekr.20031218072017.3595:skip_CWEB_section_name
@@ -3401,20 +3401,20 @@ class baseTangleCommands:
         """Removes leading and trailing brackets, converts white space to a single blank and converts to lower case."""
 
         # Convert to lowercase.
-        name = string.lower(name)
         # Convert whitespace to a single space.
-        name = string.replace(name,'\t',' ')
-        name = string.replace(name,'  ',' ')
+        name = name.lower().name.replace('\t',' ').replace('  ',' ')
+
         # Remove leading '<'
         i = 0 ; n = len(name)
         while i < n and name[i] == '<':
             i += 1
         j = i
+
         # Find the first '>'
         while i < n and name [i] != '>':
             i += 1
         name = string.strip(name[j:i])
-        # g.trace(name)
+
         return name
     #@-node:ekr.20031218072017.3598:standardize_name
     #@+node:ekr.20031218072017.1360:tangle.scanAllDirectives

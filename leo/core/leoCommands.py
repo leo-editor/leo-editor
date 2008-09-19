@@ -32,7 +32,7 @@ import leo.core.leoNodes as leoNodes
 
 import keyword
 import os
-import string
+# import string
 import sys
 import tempfile
 import time

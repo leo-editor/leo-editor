@@ -21,7 +21,7 @@ import leo.core.leoTkinterTree as leoTkinterTree
 import Tkinter as Tk
 import tkFont
 import os
-import string
+# import string
 import sys
 
 Pmw = g.importExtension("Pmw",pluginName="leoTkinterFrame.py",verbose=False)
@@ -1837,8 +1837,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
             # Compute w,h
             top.update_idletasks() # Required to get proper info.
             geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-            dim,junkx,junky = string.split(geom,'+')
-            w,h = string.split(dim,'x')
+            dim,junkx,junky = geom.split('+')
+            w,h = dim.split('x')
             w,h = int(w),int(h)
 
             # Set new x,y and old w,h

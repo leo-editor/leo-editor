@@ -5,7 +5,7 @@
 #@@pagewidth 80
 
 import leo.core.leoGlobals as g
-import string
+# import string
 
 try:
     import tkinter as Tk
@@ -220,7 +220,7 @@ class tkinterAboutLeo (leoTkinterDialog):
         url = self.url ; version = self.version
 
         # Calculate the approximate height & width. (There are bugs in Tk here.)
-        lines = string.split(theCopyright,'\n')
+        lines = theCopyright.split('\n')
         height = len(lines) + 8 # Add lines for version,url,email,spacing.
         width = 0
         for line in lines:

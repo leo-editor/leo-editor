@@ -69,7 +69,7 @@
 #@nl
 
 import leo.core.leoGlobals as g
-import string
+# import string
 
 #@+others
 #@+node:ekr.20031218072017.3605:class undoer
@@ -1155,8 +1155,8 @@ class undoer:
         #@-at
         #@@c
 
-        old_lines = string.split(oldText,'\n')
-        new_lines = string.split(newText,'\n')
+        old_lines = oldText.split('\n')
+        new_lines = newText.split('\n')
         new_len = len(new_lines)
         old_len = len(old_lines)
         min_len = min(old_len,new_len)

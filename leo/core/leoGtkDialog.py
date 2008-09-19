@@ -217,7 +217,7 @@ class gtkAboutLeo (leoGtkDialog):
         url = self.url ; version = self.version
 
         # Calculate the approximate height & width.
-        lines = string.split(theCopyright,'\n')
+        lines = theCopyright.split('\n')
         height = len(lines) + 8 # Add lines for version,url,email,spacing.
         width = 0
         for line in lines:
