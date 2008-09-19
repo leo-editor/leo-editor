@@ -20,6 +20,12 @@
 
 #@+all
 #@+node:ekr.20080917153158.11:4.6
+#@+node:ekr.20080918201437.1:Cleanups
+#@+node:ekr.20080918164844.16:use sorted(dict) everywhere
+This removed about half of the instances of g.isPython3.
+#@nonl
+#@-node:ekr.20080918164844.16:use sorted(dict) everywhere
+#@-node:ekr.20080918201437.1:Cleanups
 #@+node:ekr.20080917153158.12:Fixed bugs
 #@+node:ekr.20080917153158.13:Ensure that Python\Scripts exists in installer script
 #@-node:ekr.20080917153158.13:Ensure that Python\Scripts exists in installer script

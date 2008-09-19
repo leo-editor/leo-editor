@@ -3,8 +3,6 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First 7
-#@+node:ekr.20080918164844.16:use sorted(dict) everywhere
-#@-node:ekr.20080918164844.16:use sorted(dict) everywhere
 #@+node:ekr.20080918164844.17:Fix pylint warnings
 pylint-leo
 
