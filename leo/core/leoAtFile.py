@@ -26,6 +26,7 @@ if g.app and g.app.use_psyco:
 import leo.core.leoNodes as leoNodes
 import os
 import string
+import sys
 import time
 #@-node:ekr.20041005105605.2:<< imports >>
 #@nl
