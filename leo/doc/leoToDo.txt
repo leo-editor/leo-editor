@@ -6,33 +6,37 @@
 #@+node:ekr.20080918164844.17:Fix pylint warnings
 pylint-leo
 
+junk, value, junk = sys.exc_info()
+print value
+
 ************* Module leo.core.leoAtFile
-E0602:873:atFile.scanText4: Undefined variable 'message'
-E0602:874:atFile.scanText4: Undefined variable 'message'
+#fixed E0602:873:atFile.scanText4: Undefined variable 'message'
+#fixed E0602:874:atFile.scanText4: Undefined variable 'message'
 
 ************* Module leo.core.leoCommands
-E0602:3930:baseCommands.tabNannyNode: Undefined variable 'msg'
-E0602:3933:baseCommands.tabNannyNode: Undefined variable 'msg'
-E0602:3935:baseCommands.tabNannyNode: Undefined variable 'msg'
-E0602:3938:baseCommands.tabNannyNode: Undefined variable 'msg'
-E0602:3940:baseCommands.tabNannyNode: Undefined variable 'nag'
-E0602:3942:baseCommands.tabNannyNode: Undefined variable 'nag'
-E0602:3943:baseCommands.tabNannyNode: Undefined variable 'nag'
-E0602:3944:baseCommands.tabNannyNode: Undefined variable 'nag'
+#fixed E0602:3930:baseCommands.tabNannyNode: Undefined variable 'msg'
+#fixed E0602:3933:baseCommands.tabNannyNode: Undefined variable 'msg'
+#fixed E0602:3935:baseCommands.tabNannyNode: Undefined variable 'msg'
+#fixed E0602:3938:baseCommands.tabNannyNode: Undefined variable 'msg'
+#fixed E0602:3940:baseCommands.tabNannyNode: Undefined variable 'nag'
+#fixed E0602:3942:baseCommands.tabNannyNode: Undefined variable 'nag'
+#fixed E0602:3943:baseCommands.tabNannyNode: Undefined variable 'nag'
+#fixed E0602:3944:baseCommands.tabNannyNode: Undefined variable 'nag'
+
 E1101:5851:baseCommands.scanAtRootDirectives:
     Instance of 'configSettings' has no 'at_root_bodies_start_in_doc_mode' member
 
 ************* Module leo.core.leoEditCommands
-E0602:1064:controlCommandsClass.executeSubprocess: Undefined variable 'x'
-E0602:1065:controlCommandsClass.executeSubprocess: Undefined variable 'x'
-E0601:3379:editCommandsClass.linesHelper: Using variable 'x' before assignment
-E0602:8792:AspellClass.updateDictionary: Undefined variable 'err'
-E0602:8793:AspellClass.updateDictionary: Undefined variable 'err'
+# fixed E0602:1064:controlCommandsClass.executeSubprocess: Undefined variable 'x'
+# fixed E0602:1065:controlCommandsClass.executeSubprocess: Undefined variable 'x'
+# fixed E0601:3379:editCommandsClass.linesHelper: Using variable 'x' before assignment
+# fixed E0602:8792:AspellClass.updateDictionary: Undefined variable 'err'
+# fixed E0602:8793:AspellClass.updateDictionary: Undefined variable 'err'
 
 ************* Module leo.core.leoFileCommands
-E0602:618:baseFileCommands.checkLeoFile: Undefined variable 'message'
-E0602:620:baseFileCommands.checkLeoFile: Undefined variable 'message'
-E0602:744:baseFileCommands.getLeoFile: Undefined variable 'message'
+# fixed E0602:618:baseFileCommands.checkLeoFile: Undefined variable 'message'
+# fixed E0602:620:baseFileCommands.checkLeoFile: Undefined variable 'message'
+# fixed E0602:744:baseFileCommands.getLeoFile: Undefined variable 'message'
 
 ************* Module leo.core.leoGlobals
 # fixed W0311:3086: Bad indentation. Found 9 spaces, expected 8
@@ -41,8 +45,6 @@ E0602:744:baseFileCommands.getLeoFile: Undefined variable 'message'
 ************* Module leo.core.leoTangle
 E1101:1996:baseTangleCommands.st_dump: Instance of 'baseTangleCommands' has no 'txt' member
 #@-node:ekr.20080918164844.17:Fix pylint warnings
-#@+node:ekr.20080918164844.20:Remove ### lines
-#@-node:ekr.20080918164844.20:Remove ### lines
 #@+node:ekr.20080918164844.2:Merge trunk into vim-keys branch
 #@-node:ekr.20080918164844.2:Merge trunk into vim-keys branch
 #@+node:ekr.20080918164844.15:Allow Leo to open .py files directly (or any other kind of file)
@@ -87,6 +89,8 @@ or best yet:
 leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo 
 #@nonl
 #@-node:ekr.20080910054558.2:Add -c option to specify config files
+#@+node:ekr.20080918164844.20:Remove ### lines
+#@-node:ekr.20080918164844.20:Remove ### lines
 #@+node:ekr.20080917154206.3:Finish at-path branch items!
 #@-node:ekr.20080917154206.3:Finish at-path branch items!
 #@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin

@@ -1057,7 +1057,8 @@ class controlCommandsClass (baseEditCommandsClass):
             ofile.seek(0)
             okout = ofile.read()
             if okout: w.insert('insert',okout)
-        except Exception(x):
+        except Exception:
+            junk, x, junk = sys.exc_info()
             w.insert('insert',x)
 
         k.setLabelGrey('finished shell-command: %s' % command)
@@ -8772,7 +8773,8 @@ class AspellClass:
             os.popen(cmd)
             return True
 
-        except Exception(err):
+        except Exception:
+            junk, err, junk = sys.exc_info()
             g.pr("unable to update local aspell dictionary:",err)
             return False
     #@-node:ekr.20051025071455.11:updateDictionary

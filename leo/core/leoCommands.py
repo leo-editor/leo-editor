@@ -3922,17 +3922,20 @@ class baseCommands:
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
             return
 
-        except parser.ParserError(msg):
+        except parser.ParserError:
+            junk, msg, junk = sys.exc_info()
             if not suppressErrors:
                 g.es("ParserError in",headline,color="blue")
                 g.es('',str(msg))
 
-        except tokenize.TokenError(msg):
+        except tokenize.TokenError:
+            junk, msg, junk = sys.exc_info()
             if not suppressErrors:
                 g.es("TokenError in",headline,color="blue")
                 g.es('',str(msg))
 
-        except tabnanny.NannyNag(nag):
+        except tabnanny.NannyNag:
+            junk, nag, junk = sys.exc_info()
             if not suppressErrors:
                 badline = nag.get_lineno()
                 line    = nag.get_line()

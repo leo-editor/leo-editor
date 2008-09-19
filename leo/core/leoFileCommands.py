@@ -615,7 +615,8 @@ class baseFileCommands:
                 theFile,isZipped = g.openLeoOrZipFile(c.mFileName)
                 self.readSaxFile(theFile,fileName='check-leo-file',silent=False,inClipboard=False,reassignIndices=False)
                 g.es_print('check-leo-file passed',color='blue')
-            except Exception(message):
+            except Exception:
+                junk, message, junk = sys.exc_info()
                 # g.es_exception()
                 g.es_print('check-leo-file failed:',str(message),color='red')
         finally:
@@ -741,10 +742,11 @@ class baseFileCommands:
                 self.rootVnode = v
                 c.setRootPosition(p)
                 c.changed = False
-        except BadLeoFile(message):
+        except BadLeoFile:
+            junk, message, junk = sys.exc_info()
             if not silent:
                 g.es_exception()
-                g.alert(self.mFileName + " is not a valid Leo file: ") ### + str(message))
+                g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
             ok = False
 
         # Do this before reading derived files.
