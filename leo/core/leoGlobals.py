@@ -1683,7 +1683,7 @@ def init_trace(args,echo=1):
         else:
             g.pr("ignoring:", prefix + arg)
 #@-node:ekr.20031218072017.3132:init_trace
-#@+node:ekr.20031218072017.2317:trace
+#@+node:ekr.20031218072017.2317:g.trace
 # Convert all args to strings.
 
 def trace (*args,**keys):
@@ -1711,20 +1711,28 @@ def trace (*args,**keys):
         else:         name = pad + name
 
     # Munge *args into s.
+    # print ('g.trace:args...')
+    # for z in args: print (g.isString(z),repr(z))
     result = []
     for arg in args:
         if g.isString(arg):
             pass
-        elif type(arg) != type(""):
+        elif g.isBytes(arg):
+            arg = g.toUnicode(arg,'utf-8')
+        else:
             arg = repr(arg)
         if result:
             result.append(" " + arg)
         else:
             result.append(arg)
     s = ''.join(result)
-    s = g.toEncodedString(s,'ascii')
-    g.pr('%s: %s' % (name,s),newline=newline)
-#@-node:ekr.20031218072017.2317:trace
+    try:
+        g.pr('%s: %s' % (name,s),newline=newline)
+    except Exception:
+        s = g.toEncodedString(s,'ascii')
+        g.pr('%s: %s' % (name,s),newline=newline)
+
+#@-node:ekr.20031218072017.2317:g.trace
 #@+node:ekr.20031218072017.2318:trace_tag
 # Convert all args to strings.
 # Print if tracing for name has been enabled.
@@ -4208,14 +4216,32 @@ def executeFile(filename, options= ''):
 #@-node:ekr.20050503112513.7:g.executeFile
 #@-node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
 #@+node:ekr.20031218072017.1498:Unicode utils...
-#@+node:ekr.20080816125725.2:g.isString
+#@+node:ekr.20080816125725.2:g.isBytes & g.isString
+def isBytes (s):
+
+    '''Return True if s is Python3k bytes type.
+
+    Python 3.x: s must be a unicode string, not bytes.
+    Python 2.x: always returns False.'''
+
+    if g.isPython3:
+        # Generates a pylint warning, but that can't be helped.
+        return type(s) == type(bytes('a','utf-8'))
+    else:
+        return False
+
 def isString (s):
+
+    '''Return True if s is a string.
+
+    Python 3.x: s must be a unicode string, not bytes.
+    Python 2.x: s may be either a unicode string or a regular string.'''
 
     if g.isPython3:
         return type(s) == type('a')
     else:
         return type(s) in types.StringTypes
-#@-node:ekr.20080816125725.2:g.isString
+#@-node:ekr.20080816125725.2:g.isBytes & g.isString
 #@+node:ekr.20061006152327:g.isWordChar & g.isWordChar1
 def isWordChar (ch):
 
@@ -4381,7 +4407,7 @@ def reportBadChars (s,encoding):
                     g.es(s2,color='red')
 #@-node:ekr.20031218072017.1501:reportBadChars
 #@+node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
-#@+node:ekr.20050208093800:toEncodedString
+#@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
     if isPython3:
@@ -4402,7 +4428,7 @@ def toEncodedString (s,encoding,reportErrors=False):
                     g.reportBadChars(s,encoding)
                 s = s.encode(encoding,"replace")
     return s
-#@-node:ekr.20050208093800:toEncodedString
+#@-node:ekr.20050208093800:g.toEncodedString
 #@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
 def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
 
@@ -4420,26 +4446,36 @@ def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
 
     return s,ok
 #@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
-#@+node:ekr.20050208093800.1:toUnicode
+#@+node:ekr.20050208093800.1:g.toUnicode
 def toUnicode (s,encoding,reportErrors=False):
 
     if isPython3:
         if s is None:
             return ''
-        if not g.isString(s):
-            s = repr(s)
+        elif not g.isBytes(s):
+            return s
+        else:
+            try:
+                s = s.decode(encoding)
+            except UnicodeError:
+                if reportErrors:
+                    g.reportBadChars(s,encoding)
+                s = unicode(s,encoding,"replace")
+            return s
     else:
         if s is None:
             return unicode('')
-        if type(s) != types.UnicodeType:
+        elif type(s) == types.UnicodeType:
+            return s
+        else:
             try:
                 s = unicode(s,encoding,"strict")
             except UnicodeError:
                 if reportErrors:
                     g.reportBadChars(s,encoding)
                 s = unicode(s,encoding,"replace")
-    return s
-#@-node:ekr.20050208093800.1:toUnicode
+            return s
+#@-node:ekr.20050208093800.1:g.toUnicode
 #@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
 
@@ -4847,9 +4883,14 @@ class fileLikeObject:
 
     #@    @+others
     #@+node:ekr.20050404151753: ctor
-    def __init__(self,fromString=None):
+    def __init__(self,encoding='utf-8',fromString=None):
+
+        # g.trace('g.fileLikeObject:__init__','fromString',fromString)
 
         # New in 4.2.1: allow the file to be inited from string s.
+
+        self.encoding = encoding
+
         if fromString:
             self.list = g.splitLines(fromString) # Must preserve newlines!
         else:
@@ -4899,6 +4940,9 @@ class fileLikeObject:
     def write (self,s):
 
         if s:
+            if g.isBytes(s):
+                s = g.toUnicode(s,self.encoding)
+
             self.list.append(s)
     #@-node:ekr.20050404151753.6:write
     #@-others
