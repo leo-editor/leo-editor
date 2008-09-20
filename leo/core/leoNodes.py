@@ -1022,38 +1022,30 @@ class basePosition (object):
 
         self.txtOffset = None # see self.textOffset()
     #@-node:ekr.20080416161551.190: p.__init__
-    #@+node:ekr.20080416161551.186:p.__cmp__, equal and isEqual
-    def __cmp__(self,p2):
+    #@+node:ekr.20080920052058.3:p.__eq__ & __ne__
+    def __eq__(self,p2):
 
-        """Return 0 if two postions are equivalent."""
-
-        p1 = self
-
-        # g.trace(p1.headString(),p2 and p2.headString())
-        # g.trace(repr(self),repr(p2))
-
-        if p2 is None or p2.v is None:
-            if p1.v is None: return 0 # equal
-            else:            return 1 # not equal
-        elif p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack:
-            return 0 # equal
-        else:
-            return 1 # not equal
-
-    # isEqual and equal are deprecated.
-
-    def isEqual (self,p2):
-
-        # g.trace(repr(self),repr(p2))
+        """Return True if two postions are equivalent."""
 
         p1 = self
+
+        # Don't use g.trace: it might call p.__eq__ or p.__ne__.
+        # print ('p.__eq__: %s %s' % (
+            # p1 and p1.v and p1.headString(),p2 and p2.v and p2.headString()))
+
         if p2 is None or p2.v is None:
             return p1.v is None
         else:
-            return p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack
+            return ( p1.v == p2.v and
+                p1._childIndex == p2._childIndex and
+                p1.stack == p2.stack )
 
-    equal = isEqual
-    #@-node:ekr.20080416161551.186:p.__cmp__, equal and isEqual
+    def __ne__(self,p2):
+
+        """Return True if two postions are not equivalent."""
+
+        return not self.__eq__(p2) # For possible use in Python 2.x.
+    #@-node:ekr.20080920052058.3:p.__eq__ & __ne__
     #@+node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
     if 1: # Good for compatibility, bad for finding conversion problems.
 
@@ -1089,9 +1081,8 @@ class basePosition (object):
 
             """Return True if a position is valid."""
 
-            # if g.app.trace: "__nonzero__",self.v
-
-            # g.trace(repr(self))
+            # Tracing this appears to cause unbounded prints.
+            # print("__bool__",self.v and self.v.cleanHeadString())
 
             return self.v is not None
 
@@ -1912,7 +1903,8 @@ class basePosition (object):
             elif self.p:
                 self.p.moveToThreadNext()
 
-            if self.p and not self.p.equal(self.after):
+            ### if self.p and not self.p.equal(self.after):
+            if self.p and self.p != self.after:
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else:
@@ -1990,14 +1982,16 @@ class basePosition (object):
                 # First, try to find an unmarked child
                 if p.v.t.children:
                     p.moveToFirstChild()
-                    if p.equal(self.after):
+                    ### if p.equal(self.after):
+                    if p == self.after:
                         raise StopIteration
                     while p and self.d.get(u(p)):
                         if p.hasNext():
                             p.moveToNext()
                         else:
                             p.moveToParent()
-                        if p.equal(self.after):
+                        ### if p.equal(self.after):
+                        if p == self.after:
                             raise StopIteration
 
                 # If we didn't find an unmarked child,
@@ -2005,7 +1999,8 @@ class basePosition (object):
                 if p and self.d.get(u(p)):
                     while p.hasNext():
                         p.moveToNext()
-                        if p.equal(self.after):
+                        ### if p.equal(self.after):
+                        if p == self.after:
                             raise StopIteration
                         if not self.d.get(u(p)):
                             break
@@ -2014,19 +2009,22 @@ class basePosition (object):
                 # find a parent with an unmarked sibling
                 if p and self.d.get(u(p)):
                     p.moveToParent()
-                    if p.equal(self.after):
+                    # if p.equal(self.after):
+                    if p == self.after:
                         raise StopIteration
                     while p:
                         while p.hasNext():
                             p.moveToNext()
-                            if p.equal(self.after):
+                            ### if p.equal(self.after):
+                            if p == self.after:
                                 raise StopIteration
                             if not self.d.get(u(p)):
                                 break
                         # if we run out of siblings, go to parent
                         if self.d.get(u(p)):
                             p.moveToParent()
-                            if p.equal(self.after):
+                            ### if p.equal(self.after):
+                            if p == self.after:
                                 raise StopIteration
                         else:
                             break # found

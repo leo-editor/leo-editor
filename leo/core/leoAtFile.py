@@ -516,7 +516,8 @@ class atFile:
         p = root.copy()
         if partialFlag: after = p.nodeAfterTree()
         else: after = c.nullPosition()
-        while p and not p.equal(after): # Don't use iterator.
+        ### while p and not p.equal(after): # Don't use iterator.
+        while p and p != after:
             # g.trace(p.headString())
             if not p.headString().startswith('@'):
                 p.moveToThreadNext()
@@ -652,7 +653,8 @@ class atFile:
         at = self ; after = p.nodeAfterTree()
         p = p.copy() # Don't change p in the caller.
 
-        while p and not p.equal(after): # Don't use iterator.
+        ### while p and not p.equal(after): # Don't use iterator.
+        while p and p != after: # Don't use iterator.
             if p.isAtShadowFileNode():
                 fileName = p.atShadowFileNodeName()
                 at.readOneAtShadowNode (fileName,p)

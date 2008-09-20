@@ -403,21 +403,25 @@ class parserBaseClass:
             # At present no checking is done.
             self.set(p,kind,name,val)
     #@-node:ekr.20041217132253:doInts
-    #@+node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
+    #@+node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
     def doMenus (self,p,kind,name,val):
 
         # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
-        c = self.c ; aList = [] ; tag = '@menu'
+        c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
         p = p.copy() ; after = p.nodeAfterTree()
-        if g.isPython3: g.trace('******',p.headString(),'after',after and after.headString())
+        if trace: g.trace('******',p.headString(),'after',after and after.headString())
         while p and p != after:
             self.debug_count += 1
             h = p.headString()
-            if g.isPython3:
-                g.trace('***',self.debug_count,p.headString())
-                if self.debug_count >= 1000:
-                    g.trace('*'*10,'terminating!') ; return
+            # if trace:
+                # if p.headString()==after.headString():
+                    # val = p != after
+                    # g.trace('*' * 10, 'terminating via headString',p,after)
+                    # return
+                # g.trace('***',self.debug_count,p.headString())
+                # if self.debug_count >= 1000:
+                    # g.trace('*'*10,'terminating!') ; return
             if g.match_word(h,0,tag):
                 name = h[len(tag):].strip()
                 if name:
@@ -447,20 +451,23 @@ class parserBaseClass:
     #@+node:ekr.20070926141716:doItems
     def doItems (self,p,aList):
 
-        ### if g.isPython3: return ###
-
-        if g.isPython3: g.trace(p.headString())
+        trace = False and g.isPython3
+        if trace: g.trace(p.headString())
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
-        if g.isPython3: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
+        if trace: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
         while p and p != after:
             self.debug_count += 1
             h = p.headString()
-            if g.isPython3:
-                g.trace(self.debug_count,h)
-                if self.debug_count >= 1000:
-                    g.trace('*'*10,'terminating!') ; return
+            # if trace:
+                # if p.headString()==after.headString():
+                    # val = p != after
+                    # g.trace('*' * 10, 'terminating via headString',p,after)
+                    # return
+                # g.trace(self.debug_count,h)
+                # if self.debug_count >= 1000:
+                    # g.trace('*'*10,'terminating!') ; return
             for tag in ('@menu','@item'):
                 if g.match_word(h,0,tag):
                     itemName = h[len(tag):].strip()
@@ -496,7 +503,7 @@ class parserBaseClass:
                 self.dumpMenuList(val,level+1)
     #@nonl
     #@-node:ekr.20070926142312:dumpMenuList
-    #@-node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
+    #@-node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
     #@+node:ekr.20060102103625.1:doMode (ParserBaseClass)
     def doMode(self,p,kind,name,val):
 

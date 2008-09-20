@@ -3779,7 +3779,7 @@ class baseCommands:
                 errors += 1
                 #@            << give test failed message >>
                 #@+node:ekr.20040314044652:<< give test failed message >>
-                junk, value, junk = sys.exc_type()
+                junk, value, junk = sys.exc_info()
 
                 s = "test failed at position %s\n%s" % (repr(p),value)
 
@@ -6769,7 +6769,6 @@ class baseCommands:
         if p is None or c._currentPosition is None:
             return False
         else:
-            # return p.isEqual(c._currentPosition)
             return p == c._currentPosition
     #@-node:ekr.20040803112450:c.isCurrentPosition
     #@+node:ekr.20040803112450.1:c.isRootPosition
@@ -6780,7 +6779,6 @@ class baseCommands:
         if p is None or c._rootPosition is None:
             return False
         else:
-            # return p.isEqual(c._rootPosition)
             return p == c._rootPosition
     #@nonl
     #@-node:ekr.20040803112450.1:c.isRootPosition
@@ -6840,7 +6838,8 @@ class baseCommands:
 
         while p:
             # g.trace(p.headString())
-            if p.equal(root):
+            ### if p.equal(root):
+            if p == root:
                 # g.trace('True')
                 return True
             if p.hasParent():
@@ -6973,7 +6972,8 @@ class baseCommands:
 
         if p:
             # Important: p.equal requires c._currentPosition to be non-None.
-            if c._currentPosition and p.equal(c._currentPosition):
+            ### if c._currentPosition and p.equal(c._currentPosition):
+            if c._currentPosition and p == c._currentPosition:
                 pass # We have already made a copy.
             else: # Must make a copy _now_
                 c._currentPosition = p.copy()
@@ -7040,7 +7040,8 @@ class baseCommands:
 
         if p:
             # Important: p.equal requires c._rootPosition to be non-None.
-            if c._rootPosition and p.equal(c._rootPosition):
+            ### if c._rootPosition and p.equal(c._rootPosition):
+            if c._rootPosition and p == c._rootPosition:
                 pass # We have already made a copy.
             else:
                 # We must make a copy _now_.

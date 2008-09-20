@@ -3323,117 +3323,43 @@ Brian Theado
 @language python
 @color
 #@nonl
-#@+node:ekr.20070228074312.43:tkColorToWxColor
-def tkColorToWxColor (self, color):
+#@+node:ekr.20080920052058.2:p.__cmp__ (no longer used)
+if False: ### not g.isPython3:
 
-    d = {
-        'black':        wx.BLACK,
-        "red":          wx.RED,
-        "blue":         wx.BLUE,
-        "#00aa00":      wx.GREEN,
-        "firebrick3":   wx.RED,
-        'white':        wx.WHITE,
-    }
+    # This doesn't seem to be called in Python 3.x.
 
-    return d.get(color)
-#@nonl
-#@-node:ekr.20070228074312.43:tkColorToWxColor
-#@+node:ekr.20080710082231.11:Unused goto-line-number helpers from core
-#@+node:bwmulder.20041231211219:gotoLineNumberOpen (core: no longer used)
-def gotoLineNumberOpen(self, *args, **kw):
-    """
-    Hook for mod_shadow plugin.
-    """
-    theFile = open(*args, **kw)
-    lines = theFile.readlines()
-    theFile.close()
-    return lines
-#@-node:bwmulder.20041231211219:gotoLineNumberOpen (core: no longer used)
-#@+node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny (core: no longer used)
-def applyLineNumberMappingIfAny(self, n):
-    """
-    Hook for mod_shadow plugin.
-    """
-    return n
-#@-node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny (core: no longer used)
-#@-node:ekr.20080710082231.11:Unused goto-line-number helpers from core
-#@+node:ekr.20080708094444.83:test_propagate_changes (no longer used)
-def test_propagate_changes (self,
-    old_private_lines,      # with_sentinels
-    new_public_lines,       # without sentinels
-    expected_private_lines, # with sentinels
-    marker,
-    p = None
-):
+    def __cmp__(self,p2):
 
-    '''Check that propagate changed lines changes 'before_private_lines' to
-    'expected_private_lines' based on changes to 'changed_public_lines'.'''
+        """Return 0 if two postions are equivalent."""
 
-    results = self.propagate_changed_lines(
-        new_public_lines,   # new_lines_without_sentinels
-        old_private_lines,  # lines_with_sentinels, 
-        marker = marker,
-        p = p)
+        p1 = self
 
-    return results # For unit tests.
-#@-node:ekr.20080708094444.83:test_propagate_changes (no longer used)
-#@+node:EKR.20040627113418:putDescendentUnknownAttributes
-def putDescendentUnknownAttributes (self,p):
+        # Don't use g.trace: it might call p.__cmp__ again.
+        # print ('%s %s' % (p1.v and p1.headString(),p2 and p2.v and p2.headString()))
 
-    return self.putDescendentTnodeUas(p)
-    # return self.putDescendentVnodeUas(p)
+        if p2 is None or p2.v is None:
+            if p1.v is None: return 0 # equal
+            else:            return 1 # not equal
+        elif p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack:
+            return 0 # equal
+        else:
+            return 1 # not equal
+#@-node:ekr.20080920052058.2:p.__cmp__ (no longer used)
+#@+node:ekr.20080920052058.4:p.isEqual (to be removed)
+# isEqual and equal are deprecated.
 
-#@-node:EKR.20040627113418:putDescendentUnknownAttributes
-#@+node:ekr.20080819075811.12:x.setDelims (no longer used)
-def setDelims (self):
+def isEqual (self,p2):
 
-    data = self.c.config.getData('shadow_delims') or []
+    # g.trace(repr(self),repr(p2))
 
-    # g.trace('shadowController',self.delims_data)
-    if data:
-        for s in data:
-            s = s.strip()
-            if s:
-                aList = s.split(' ')
-                aList = [z.strip() for z in aList if z.strip()]
-                if len(aList) == 2:
-                    ext,delim = aList
-                    delims = delim
-                elif len(aList) == 3:
-                    ext,delim1,delim2 = aList
-                    delims = '%s %s' % (delim1,delim2)
-                else:
-                    g.es_print('ignoring bad @data shadow_delims entry',repr(s),color='red')
+    p1 = self
+    if p2 is None or p2.v is None:
+        return p1.v is None
+    else:
+        return p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack
 
-                if len(aList) in (2,3):
-                    if ext.startswith('.'): ext = ext[1:]
-                    language = '%s_language' % ext
-                    if ext and not g.app.language_delims_dict.get(language):
-                        # g.trace('Adding entries for ext=%s, delims=%s' % (ext,repr(delims)))
-                        g.app.language_delims_dict[language] = delims
-                        g.app.language_extension_dict[language] = ext
-                        g.app.extension_dict[ext] = language
-#@-node:ekr.20080819075811.12:x.setDelims (no longer used)
-#@+node:ekr.20080822065427.23:From leoPluings.getEnabledFiles
-
-
-            if g.match(s,0,"#"):
-                s = s[1:].strip()
-                # Kludge: ignore comment lines containing a blank or not ending in '.py'.
-                if s and s.find(' ') == -1 and s[-3:] == '.py':
-                    path = g.os_path_abspath(g.os_path_join(plugins_path,s))
-                    if path not in enabled_files and path not in disabled_files:
-                        # g.pr('disabled',path)
-                        disabled_files.append(path)
-            else:
-                path = g.os_path_abspath(g.os_path_join(plugins_path,s))
-                if path not in enabled_files and path not in disabled_files:
-                    # g.pr('enabled',path)
-                    enabled_files.append(path)
-
-    return enabled_files
-#@nonl
-#@-node:ekr.20080822065427.23:From leoPluings.getEnabledFiles
+equal = isEqual
+#@-node:ekr.20080920052058.4:p.isEqual (to be removed)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

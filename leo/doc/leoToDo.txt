@@ -78,21 +78,25 @@ the default for this option would be False.
 #@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@+node:ekr.20080919085541.4:Work on Leo3k
 #@+node:ekr.20080919121250.1:leoConfig
-#@+node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
+#@+node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
 def doMenus (self,p,kind,name,val):
 
     # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
-    c = self.c ; aList = [] ; tag = '@menu'
+    c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
     p = p.copy() ; after = p.nodeAfterTree()
-    if g.isPython3: g.trace('******',p.headString(),'after',after and after.headString())
+    if trace: g.trace('******',p.headString(),'after',after and after.headString())
     while p and p != after:
         self.debug_count += 1
         h = p.headString()
-        if g.isPython3:
-            g.trace('***',self.debug_count,p.headString())
-            if self.debug_count >= 1000:
-                g.trace('*'*10,'terminating!') ; return
+        # if trace:
+            # if p.headString()==after.headString():
+                # val = p != after
+                # g.trace('*' * 10, 'terminating via headString',p,after)
+                # return
+            # g.trace('***',self.debug_count,p.headString())
+            # if self.debug_count >= 1000:
+                # g.trace('*'*10,'terminating!') ; return
         if g.match_word(h,0,tag):
             name = h[len(tag):].strip()
             if name:
@@ -122,20 +126,23 @@ def doMenus (self,p,kind,name,val):
 #@+node:ekr.20070926141716:doItems
 def doItems (self,p,aList):
 
-    ### if g.isPython3: return ###
-
-    if g.isPython3: g.trace(p.headString())
+    trace = False and g.isPython3
+    if trace: g.trace(p.headString())
     p = p.copy()
     after = p.nodeAfterTree()
     p.moveToThreadNext()
-    if g.isPython3: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
+    if trace: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
     while p and p != after:
         self.debug_count += 1
         h = p.headString()
-        if g.isPython3:
-            g.trace(self.debug_count,h)
-            if self.debug_count >= 1000:
-                g.trace('*'*10,'terminating!') ; return
+        # if trace:
+            # if p.headString()==after.headString():
+                # val = p != after
+                # g.trace('*' * 10, 'terminating via headString',p,after)
+                # return
+            # g.trace(self.debug_count,h)
+            # if self.debug_count >= 1000:
+                # g.trace('*'*10,'terminating!') ; return
         for tag in ('@menu','@item'):
             if g.match_word(h,0,tag):
                 itemName = h[len(tag):].strip()
@@ -171,24 +178,27 @@ def dumpMenuList (self,aList,level=0):
             self.dumpMenuList(val,level+1)
 #@nonl
 #@-node:ekr.20070926142312:dumpMenuList
-#@-node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
+#@-node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
 #@+node:ekr.20070926141716:doItems
 def doItems (self,p,aList):
 
-    ### if g.isPython3: return ###
-
-    if g.isPython3: g.trace(p.headString())
+    trace = False and g.isPython3
+    if trace: g.trace(p.headString())
     p = p.copy()
     after = p.nodeAfterTree()
     p.moveToThreadNext()
-    if g.isPython3: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
+    if trace: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
     while p and p != after:
         self.debug_count += 1
         h = p.headString()
-        if g.isPython3:
-            g.trace(self.debug_count,h)
-            if self.debug_count >= 1000:
-                g.trace('*'*10,'terminating!') ; return
+        # if trace:
+            # if p.headString()==after.headString():
+                # val = p != after
+                # g.trace('*' * 10, 'terminating via headString',p,after)
+                # return
+            # g.trace(self.debug_count,h)
+            # if self.debug_count >= 1000:
+                # g.trace('*'*10,'terminating!') ; return
         for tag in ('@menu','@item'):
             if g.match_word(h,0,tag):
                 itemName = h[len(tag):].strip()
@@ -612,139 +622,6 @@ leoPlugins.init()
 #@-node:ekr.20031218072017.1934:run
 #@-node:ekr.20080919121250.4:runLeo
 #@+node:ekr.20080919121250.5:Major short circuits
-#@+node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
-def doMenus (self,p,kind,name,val):
-
-    # __pychecker__ = '--no-argsused' # kind,name,val not used.
-
-    c = self.c ; aList = [] ; tag = '@menu'
-    p = p.copy() ; after = p.nodeAfterTree()
-    if g.isPython3: g.trace('******',p.headString(),'after',after and after.headString())
-    while p and p != after:
-        self.debug_count += 1
-        h = p.headString()
-        if g.isPython3:
-            g.trace('***',self.debug_count,p.headString())
-            if self.debug_count >= 1000:
-                g.trace('*'*10,'terminating!') ; return
-        if g.match_word(h,0,tag):
-            name = h[len(tag):].strip()
-            if name:
-                for z in aList:
-                    name2,junk,junk = z
-                    if name2 == name:
-                        self.error('Replacing previous @menu %s' % (name))
-                        break
-                aList2 = []
-                kind = '%s %s' % (tag,name)
-                self.doItems(p,aList2)
-                aList.append((kind,aList2,None),)
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-        else:
-            p.moveToThreadNext()
-
-    # g.trace('localFlag',self.localFlag,c)
-    if self.localFlag:
-        self.set(p,kind='menus',name='menus',val=aList)
-    else:
-        if not g.app.unitTesting:
-            g.es_print('Using menus from',c.shortFileName(),color='blue')
-        g.app.config.menusList = aList
-        g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
-#@+node:ekr.20070926141716:doItems
-def doItems (self,p,aList):
-
-    ### if g.isPython3: return ###
-
-    if g.isPython3: g.trace(p.headString())
-    p = p.copy()
-    after = p.nodeAfterTree()
-    p.moveToThreadNext()
-    if g.isPython3: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
-    while p and p != after:
-        self.debug_count += 1
-        h = p.headString()
-        if g.isPython3:
-            g.trace(self.debug_count,h)
-            if self.debug_count >= 1000:
-                g.trace('*'*10,'terminating!') ; return
-        for tag in ('@menu','@item'):
-            if g.match_word(h,0,tag):
-                itemName = h[len(tag):].strip()
-                if itemName:
-                    if tag == '@menu':
-                        aList2 = []
-                        kind = '%s %s' % (tag,itemName)
-                        self.doItems(p,aList2)
-                        aList.append((kind,aList2,None),)
-                        p.moveToNodeAfterTree()
-                        break
-                    else:
-                        kind = tag
-                        head = itemName
-                        body = p.bodyString()
-                        aList.append((kind,head,body),)
-                        p.moveToThreadNext()
-                        break
-        else:
-            # g.trace('***skipping***',p.headString())
-            p.moveToThreadNext()
-#@-node:ekr.20070926141716:doItems
-#@+node:ekr.20070926142312:dumpMenuList
-def dumpMenuList (self,aList,level=0):
-
-    for z in aList:
-        kind,val,val2 = z
-        if kind == '@item':
-            g.trace(level,kind,val,val2)
-        else:
-            g.pr('')
-            g.trace(level,kind,'...')
-            self.dumpMenuList(val,level+1)
-#@nonl
-#@-node:ekr.20070926142312:dumpMenuList
-#@-node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
-#@+node:ekr.20070926141716:doItems
-def doItems (self,p,aList):
-
-    ### if g.isPython3: return ###
-
-    if g.isPython3: g.trace(p.headString())
-    p = p.copy()
-    after = p.nodeAfterTree()
-    p.moveToThreadNext()
-    if g.isPython3: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
-    while p and p != after:
-        self.debug_count += 1
-        h = p.headString()
-        if g.isPython3:
-            g.trace(self.debug_count,h)
-            if self.debug_count >= 1000:
-                g.trace('*'*10,'terminating!') ; return
-        for tag in ('@menu','@item'):
-            if g.match_word(h,0,tag):
-                itemName = h[len(tag):].strip()
-                if itemName:
-                    if tag == '@menu':
-                        aList2 = []
-                        kind = '%s %s' % (tag,itemName)
-                        self.doItems(p,aList2)
-                        aList.append((kind,aList2,None),)
-                        p.moveToNodeAfterTree()
-                        break
-                    else:
-                        kind = tag
-                        head = itemName
-                        body = p.bodyString()
-                        aList.append((kind,head,body),)
-                        p.moveToThreadNext()
-                        break
-        else:
-            # g.trace('***skipping***',p.headString())
-            p.moveToThreadNext()
-#@-node:ekr.20070926141716:doItems
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
@@ -1374,7 +1251,7 @@ def trace (*args,**keys):
         g.pr('%s: %s' % (name,s),newline=newline)
 
 #@-node:ekr.20031218072017.2317:g.trace
-#@+node:ekr.20080710101653.1:pr
+#@+node:ekr.20080710101653.1:g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
 def pr(*args,**keys):
@@ -1403,8 +1280,292 @@ def pr(*args,**keys):
         print('unexpected Exception in g.pr')
         g.es_exception()
         g.trace(g.callers())
-#@-node:ekr.20080710101653.1:pr
+#@-node:ekr.20080710101653.1:g.pr
 #@-node:ekr.20080919153256.2:Unicode problems
+#@+node:ekr.20080920052058.1:Unbounded loops
+@
+The problem was that __cmp__ was not being called.
+It has now been replaced by the __eq__ and __ne__ operators.
+#@nonl
+#@+node:ekr.20040228094013: p.ctor & other special methods...
+#@+node:ekr.20080416161551.190: p.__init__
+def __init__ (self,v,childIndex=0,stack=None,trace=False):
+
+    '''Create a new position with the given childIndex and parent stack.'''
+
+    # __pychecker__ = '--no-argsused' # trace not used.
+
+    # To support ZODB the code must set v._p_changed = 1
+    # whenever any mutable vnode object changes.
+
+    self._childIndex = childIndex
+    self.v = v
+
+    # New in Leo 4.5: stack entries are tuples (v,childIndex).
+    if stack:
+        self.stack = stack[:] # Creating a copy here is safest and best.
+    else:
+        self.stack = []
+
+    g.app.positions += 1
+
+    # if g.app.tracePositions and trace: g.trace(g.callers())
+
+    self.txtOffset = None # see self.textOffset()
+#@-node:ekr.20080416161551.190: p.__init__
+#@+node:ekr.20080920052058.3:p.__eq__ & __ne__
+def __eq__(self,p2):
+
+    """Return True if two postions are equivalent."""
+
+    p1 = self
+
+    # Don't use g.trace: it might call p.__eq__ or p.__ne__.
+    # print ('p.__eq__: %s %s' % (
+        # p1 and p1.v and p1.headString(),p2 and p2.v and p2.headString()))
+
+    if p2 is None or p2.v is None:
+        return p1.v is None
+    else:
+        return ( p1.v == p2.v and
+            p1._childIndex == p2._childIndex and
+            p1.stack == p2.stack )
+
+def __ne__(self,p2):
+
+    """Return True if two postions are not equivalent."""
+
+    return not self.__eq__(p2) # For possible use in Python 2.x.
+#@-node:ekr.20080920052058.3:p.__eq__ & __ne__
+#@+node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
+if 1: # Good for compatibility, bad for finding conversion problems.
+
+    def __getattr__ (self,attr):
+
+        """Convert references to p.t into references to p.v.t.
+
+        N.B. This automatically keeps p.t in synch with p.v.t."""
+
+        if attr=="t":
+            return self.v.t
+        else:
+            # New in 4.3: _silently_ raise the attribute error.
+            # This allows plugin code to use hasattr(p,attr) !
+            if 0:
+                g.pr("unknown position attribute:",attr)
+                import traceback ; traceback.print_stack()
+            raise AttributeError(attr)
+#@nonl
+#@-node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
+#@+node:ekr.20040117173448:p.__nonzero__ & __bool__
+@
+Tests such as 'if p' or 'if not p' are the _only_ correct ways to test whether a position p is valid.
+In particular, tests like 'if p is None' or 'if p is not None' will not work properly.
+@c
+
+if g.isPython3:
+
+    def __bool__ ( self):
+
+        """Return True if a position is valid."""
+
+        # Tracing this appears to cause unbounded prints.
+        # print("__bool__",self.v and self.v.cleanHeadString())
+
+        return self.v is not None
+
+else:
+
+    def __nonzero__ ( self):
+
+        """Return True if a position is valid."""
+
+        # if g.app.trace: "__nonzero__",self.v
+
+        # g.trace(repr(self))
+
+        return self.v is not None
+#@-node:ekr.20040117173448:p.__nonzero__ & __bool__
+#@+node:ekr.20040301205720:p.__str__ and p.__repr__
+def __str__ (self):
+
+    p = self
+
+    if p.v:
+        return "<pos %d childIndex: %d lvl: %d [%d] %s>" % (
+            id(p),p._childIndex,p.level(),len(p.stack),p.cleanHeadString())
+    else:
+        return "<pos %d [%d] None>" % (id(p),len(p.stack))
+
+__repr__ = __str__
+#@-node:ekr.20040301205720:p.__str__ and p.__repr__
+#@+node:ekr.20061006092649:p.archivedPosition
+def archivedPosition (self,root_p=None):
+
+    '''Return a representation of a position suitable for use in .leo files.'''
+
+    p = self
+
+    if root_p is None:
+        aList = [z._childIndex for z in p.self_and_parents_iter()]
+    else:
+        aList = []
+        for z in p.self_and_parents_iter():
+            if z == root_p:
+                aList.append(0)
+                break
+            else:
+                aList.append(z._childIndex)
+        # g.trace(aList)
+
+    aList.reverse()
+    return aList
+#@nonl
+#@-node:ekr.20061006092649:p.archivedPosition
+#@+node:ekr.20040117171654:p.copy
+# Using this routine can generate huge numbers of temporary positions during a tree traversal.
+
+def copy (self):
+
+    """"Return an independent copy of a position."""
+
+    # if g.app.tracePositions: g.trace(g.callers())
+
+    return position(self.v,self._childIndex,self.stack,trace=False)
+#@-node:ekr.20040117171654:p.copy
+#@+node:ekr.20040310153624:p.dump & p.vnodeListIds
+def dumpLink (self,link):
+
+    return g.choose(link,link,"<none>")
+
+def dump (self,label=""):
+
+    p = self
+    g.pr('-'*10,label,p)
+    if p.v:
+        p.v.dump() # Don't print a label
+
+def vnodeListIds (self):
+
+    p = self
+    return [id(v) for v in p.v.t.vnodeList]
+#@-node:ekr.20040310153624:p.dump & p.vnodeListIds
+#@+node:ekr.20080416161551.191:p.key
+def key (self):
+
+    p = self
+
+    vList = [z[0] for z in p.stack]
+
+    return '%s:%s.%s' % (
+        id(p.v),
+        p._childIndex,
+        ','.join([str(id(z)) for z in vList])
+    )
+#@-node:ekr.20080416161551.191:p.key
+#@-node:ekr.20040228094013: p.ctor & other special methods...
+#@+node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
+def doMenus (self,p,kind,name,val):
+
+    # __pychecker__ = '--no-argsused' # kind,name,val not used.
+
+    c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
+    p = p.copy() ; after = p.nodeAfterTree()
+    if trace: g.trace('******',p.headString(),'after',after and after.headString())
+    while p and p != after:
+        self.debug_count += 1
+        h = p.headString()
+        # if trace:
+            # if p.headString()==after.headString():
+                # val = p != after
+                # g.trace('*' * 10, 'terminating via headString',p,after)
+                # return
+            # g.trace('***',self.debug_count,p.headString())
+            # if self.debug_count >= 1000:
+                # g.trace('*'*10,'terminating!') ; return
+        if g.match_word(h,0,tag):
+            name = h[len(tag):].strip()
+            if name:
+                for z in aList:
+                    name2,junk,junk = z
+                    if name2 == name:
+                        self.error('Replacing previous @menu %s' % (name))
+                        break
+                aList2 = []
+                kind = '%s %s' % (tag,name)
+                self.doItems(p,aList2)
+                aList.append((kind,aList2,None),)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        else:
+            p.moveToThreadNext()
+
+    # g.trace('localFlag',self.localFlag,c)
+    if self.localFlag:
+        self.set(p,kind='menus',name='menus',val=aList)
+    else:
+        if not g.app.unitTesting:
+            g.es_print('Using menus from',c.shortFileName(),color='blue')
+        g.app.config.menusList = aList
+        g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
+#@+node:ekr.20070926141716:doItems
+def doItems (self,p,aList):
+
+    trace = False and g.isPython3
+    if trace: g.trace(p.headString())
+    p = p.copy()
+    after = p.nodeAfterTree()
+    p.moveToThreadNext()
+    if trace: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
+    while p and p != after:
+        self.debug_count += 1
+        h = p.headString()
+        # if trace:
+            # if p.headString()==after.headString():
+                # val = p != after
+                # g.trace('*' * 10, 'terminating via headString',p,after)
+                # return
+            # g.trace(self.debug_count,h)
+            # if self.debug_count >= 1000:
+                # g.trace('*'*10,'terminating!') ; return
+        for tag in ('@menu','@item'):
+            if g.match_word(h,0,tag):
+                itemName = h[len(tag):].strip()
+                if itemName:
+                    if tag == '@menu':
+                        aList2 = []
+                        kind = '%s %s' % (tag,itemName)
+                        self.doItems(p,aList2)
+                        aList.append((kind,aList2,None),)
+                        p.moveToNodeAfterTree()
+                        break
+                    else:
+                        kind = tag
+                        head = itemName
+                        body = p.bodyString()
+                        aList.append((kind,head,body),)
+                        p.moveToThreadNext()
+                        break
+        else:
+            # g.trace('***skipping***',p.headString())
+            p.moveToThreadNext()
+#@-node:ekr.20070926141716:doItems
+#@+node:ekr.20070926142312:dumpMenuList
+def dumpMenuList (self,aList,level=0):
+
+    for z in aList:
+        kind,val,val2 = z
+        if kind == '@item':
+            g.trace(level,kind,val,val2)
+        else:
+            g.pr('')
+            g.trace(level,kind,'...')
+            self.dumpMenuList(val,level+1)
+#@nonl
+#@-node:ekr.20070926142312:dumpMenuList
+#@-node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
+#@-node:ekr.20080920052058.1:Unbounded loops
 #@-node:ekr.20080919085541.4:Work on Leo3k
 #@+node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691

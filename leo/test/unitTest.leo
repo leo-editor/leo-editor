@@ -4500,12 +4500,17 @@ if 0: # subtree of root node:
 if 0: # child1's tree.  child2 should not be included.
     for v in child.vnodes_iter(): g.pr(v)
     for t in child.tnodes_iter(): g.pr(t)</t>
-<t tx="ekr.20040712101754.199">assert(p == p.copy())
+<t tx="ekr.20040712101754.199">copy = p.copy()
+assert(p == copy)
 assert(p != p.threadNext())
 
 root = c.rootPosition()
-assert p.equal(p.copy()) is True
-assert p.equal(root) is False</t>
+# assert p.equal(p.copy()) is True
+# assert p.equal(root) is False
+assert p.__eq__(copy) is True
+assert p.__ne__(copy) is False
+assert p.__eq__(root) is False
+assert p.__ne__(root) is True</t>
 <t tx="ekr.20040712101754.200">for p in c.allNodes_iter():
     if p.isCloned() and p.hasChildren():
         childv = p.firstChild().v

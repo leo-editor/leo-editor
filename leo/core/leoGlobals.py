@@ -2964,7 +2964,7 @@ def doKeywordArgs (keys,d=None):
 
     return result 
 #@-node:ekr.20080821073134.2:doKeywordArgs
-#@+node:ekr.20080710101653.1:pr
+#@+node:ekr.20080710101653.1:g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
 def pr(*args,**keys):
@@ -2993,7 +2993,7 @@ def pr(*args,**keys):
         print('unexpected Exception in g.pr')
         g.es_exception()
         g.trace(g.callers())
-#@-node:ekr.20080710101653.1:pr
+#@-node:ekr.20080710101653.1:g.pr
 #@+node:ekr.20050707065530:es_trace
 def es_trace(*args,**keys):
 

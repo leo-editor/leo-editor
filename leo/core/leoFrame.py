@@ -929,7 +929,9 @@ class leoBody:
             for w in values:
                 if (
                     hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
-                    hasattr(w,'leo_p') and w.leo_p and w.leo_p.equal(p)):
+                    ### hasattr(w,'leo_p') and w.leo_p and w.leo_p.equal(p)
+                    hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
+                ):
                     # g.trace('***',id(w),'match chapter and p',p.headString())
                     return w
 
