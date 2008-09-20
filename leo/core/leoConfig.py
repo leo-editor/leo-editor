@@ -88,6 +88,8 @@ class parserBaseClass:
             'string':       self.doString,
             'strings':      self.doStrings,
         }
+
+        self.debug_count = 0
     #@-node:ekr.20041119204700: ctor (parserBaseClass)
     #@+node:ekr.20080514084054.4:computeModeName (parserBaseClass)
     def computeModeName (self,name):
@@ -408,9 +410,14 @@ class parserBaseClass:
 
         c = self.c ; aList = [] ; tag = '@menu'
         p = p.copy() ; after = p.nodeAfterTree()
+        if g.isPython3: g.trace('******',p.headString(),'after',after and after.headString())
         while p and p != after:
+            self.debug_count += 1
             h = p.headString()
-            if g.isPython3: g.trace(p.headString())
+            if g.isPython3:
+                g.trace('***',self.debug_count,p.headString())
+                if self.debug_count >= 1000:
+                    g.trace('*'*10,'terminating!') ; return
             if g.match_word(h,0,tag):
                 name = h[len(tag):].strip()
                 if name:
@@ -440,13 +447,20 @@ class parserBaseClass:
     #@+node:ekr.20070926141716:doItems
     def doItems (self,p,aList):
 
-        if g.isPython3: return ###
+        ### if g.isPython3: return ###
 
-        p = p.copy() ; after = p.nodeAfterTree()
+        if g.isPython3: g.trace(p.headString())
+        p = p.copy()
+        after = p.nodeAfterTree()
         p.moveToThreadNext()
+        if g.isPython3: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
         while p and p != after:
+            self.debug_count += 1
             h = p.headString()
-            if g.isPython3: g.trace(p.headString())
+            if g.isPython3:
+                g.trace(self.debug_count,h)
+                if self.debug_count >= 1000:
+                    g.trace('*'*10,'terminating!') ; return
             for tag in ('@menu','@item'):
                 if g.match_word(h,0,tag):
                     itemName = h[len(tag):].strip()
@@ -1054,9 +1068,9 @@ class parserBaseClass:
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)
-            if g.isPython3: g.trace(result,p.headString())
-            if p.headString() == 'Menus':
-                if g.isPython3: g.pdb()
+            # if g.isPython3:
+                # g.trace(result,p.headString())
+                # if p.headString() == 'Menus': g.pdb()
             if result == "skip":
                 # g.es_print('skipping settings in',p.headString(),color='blue')
                 p.moveToNodeAfterTree()
@@ -1823,7 +1837,7 @@ class configClass:
     #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
     def readSettingsFiles (self,fileName,verbose=True):
 
-        if g.isPython3: return ###
+        ### if g.isPython3: return ###
 
         seen = []
         self.write_recent_files_as_needed = False # Will be set later.
@@ -1995,7 +2009,7 @@ class configClass:
 
     def readSettings (self,c,localFlag):
 
-        if g.isPython3: return {} ###
+        ### if g.isPython3: return {} ###
 
         """Read settings from a file that may contain an @settings tree."""
 
