@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="300" height="961" width="700"/>
+	<global_window_position top="10" left="300" height="961" width="791"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,14,11,2"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -87,6 +87,10 @@
 <v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
+</v>
+<v t="ekr.20071010123015"><vh>@@menu 文件</vh>
+<v t="ekr.20071010123015.1"><vh>@item new</vh></v>
+<v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
 <v t="ekr.20080513060549.1"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
@@ -429,7 +433,7 @@
 </v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20070925144534"><vh>@menus</vh>
+<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
@@ -935,10 +939,6 @@
 <v t="ekr.20070925144534.426"><vh>@item *pri&amp;nt-bindings</vh></v>
 <v t="ekr.20070925144534.427"><vh>@item *print-c&amp;ommands</vh></v>
 </v>
-<v t="ekr.20071010123015"><vh>@@menu 文件</vh>
-<v t="ekr.20071010123015.1"><vh>@item new</vh></v>
-<v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
-</v>
 </v>
 <v t="ekr.20080515053412.3"><vh>@popup_menus</vh>
 <v t="ekr.20080515053412.4"><vh>Main Context Menus</vh>
@@ -977,7 +977,7 @@
 <v t="ekr.20080515053412.31"><vh>@popup iconbox</vh></v>
 <v t="ekr.20080515053412.32"><vh>@popup plusbox</vh></v>
 </v>
-<v t="ekr.20080515053412.33"><vh>Fragments</vh>
+<v t="ekr.20080515053412.33" a="E"><vh>Fragments</vh>
 <v t="ekr.20080515053412.34"><vh>@popup edit-menu</vh>
 <v t="ekr.20080515053412.35"><vh>@item rclick-cut-text</vh></v>
 <v t="ekr.20080515053412.36"><vh>@item rclick-copy-text</vh></v>
@@ -990,7 +990,7 @@
 <v t="ekr.20080515053412.42"><vh>@item *</vh></v>
 </v>
 </v>
-<v t="ekr.20080515053412.43"><vh>@popup to-chapter-fragment</vh>
+<v t="ekr.20080515053412.43" a="E"><vh>@popup to-chapter-fragment</vh>
 <v t="ekr.20080515053412.44"><vh>@menu Clone to Chapter</vh>
 <v t="ekr.20080515053412.45"><vh>@item *</vh></v>
 </v>
@@ -1000,14 +1000,14 @@
 <v t="ekr.20080515053412.48"><vh>@menu Move to Chapter</vh>
 <v t="ekr.20080515053412.49"><vh>@item *</vh></v>
 </v>
-<v t="ekr.20080515053412.50"><vh>@menu Goto to Chapter</vh>
+<v t="ekr.20080515053412.50" a="E"><vh>@menu Goto to Chapter</vh>
 <v t="ekr.20080515053412.51"><vh>@item *</vh></v>
 </v>
 </v>
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1069,7 +1069,7 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20071213060239" a="E"><vh>rst3 plugin</vh>
+<v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
 <v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>

@@ -85,9 +85,14 @@ def doMenus (self,p,kind,name,val):
 
     c = self.c ; aList = [] ; tag = '@menu'
     p = p.copy() ; after = p.nodeAfterTree()
+    if g.isPython3: g.trace('******',p.headString(),'after',after and after.headString())
     while p and p != after:
+        self.debug_count += 1
         h = p.headString()
-        if g.isPython3: g.trace(p.headString())
+        if g.isPython3:
+            g.trace('***',self.debug_count,p.headString())
+            if self.debug_count >= 1000:
+                g.trace('*'*10,'terminating!') ; return
         if g.match_word(h,0,tag):
             name = h[len(tag):].strip()
             if name:
@@ -117,13 +122,20 @@ def doMenus (self,p,kind,name,val):
 #@+node:ekr.20070926141716:doItems
 def doItems (self,p,aList):
 
-    if g.isPython3: return ###
+    ### if g.isPython3: return ###
 
-    p = p.copy() ; after = p.nodeAfterTree()
+    if g.isPython3: g.trace(p.headString())
+    p = p.copy()
+    after = p.nodeAfterTree()
     p.moveToThreadNext()
+    if g.isPython3: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
     while p and p != after:
+        self.debug_count += 1
         h = p.headString()
-        if g.isPython3: g.trace(p.headString())
+        if g.isPython3:
+            g.trace(self.debug_count,h)
+            if self.debug_count >= 1000:
+                g.trace('*'*10,'terminating!') ; return
         for tag in ('@menu','@item'):
             if g.match_word(h,0,tag):
                 itemName = h[len(tag):].strip()
@@ -163,13 +175,20 @@ def dumpMenuList (self,aList,level=0):
 #@+node:ekr.20070926141716:doItems
 def doItems (self,p,aList):
 
-    if g.isPython3: return ###
+    ### if g.isPython3: return ###
 
-    p = p.copy() ; after = p.nodeAfterTree()
+    if g.isPython3: g.trace(p.headString())
+    p = p.copy()
+    after = p.nodeAfterTree()
     p.moveToThreadNext()
+    if g.isPython3: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
     while p and p != after:
+        self.debug_count += 1
         h = p.headString()
-        if g.isPython3: g.trace(p.headString())
+        if g.isPython3:
+            g.trace(self.debug_count,h)
+            if self.debug_count >= 1000:
+                g.trace('*'*10,'terminating!') ; return
         for tag in ('@menu','@item'):
             if g.match_word(h,0,tag):
                 itemName = h[len(tag):].strip()
@@ -207,9 +226,9 @@ def traverse (self):
     after = p.nodeAfterTree()
     while p and p != after:
         result = self.visitNode(p)
-        if g.isPython3: g.trace(result,p.headString())
-        if p.headString() == 'Menus':
-            if g.isPython3: g.pdb()
+        # if g.isPython3:
+            # g.trace(result,p.headString())
+            # if p.headString() == 'Menus': g.pdb()
         if result == "skip":
             # g.es_print('skipping settings in',p.headString(),color='blue')
             p.moveToNodeAfterTree()
@@ -221,7 +240,7 @@ def traverse (self):
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
-    if g.isPython3: return ###
+    ### if g.isPython3: return ###
 
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
@@ -391,7 +410,7 @@ def updateSettings (self,c,localFlag):
 
 def readSettings (self,c,localFlag):
 
-    if g.isPython3: return {} ###
+    ### if g.isPython3: return {} ###
 
     """Read settings from a file that may contain an @settings tree."""
 
@@ -416,10 +435,13 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 
     try:
         if g.isPython3:
-            # Just use the open binary file, opened by g.openLeoOrZipFile.
-            pass
+            if theFile:
+                pass # Just use the open binary file, opened by g.openLeoOrZipFile.
+            else:
+                theFile = StringIO(s)
         else:
-            s = theFile.read()
+            if theFile:
+                s = theFile.read()
             theFile = cStringIO.StringIO(s)
         parser = xml.sax.make_parser()
         parser.setFeature(xml.sax.handler.feature_external_ges,1)
@@ -488,7 +510,8 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
     if g.isPython3:
-        fileName = r'c:\leo.repo\trunk\leo\test\test.leo' # smallTest.leo' ### testing only.
+        fileName = r'c:\leo.repo\trunk\leo\test\test.leo' # hangs at present.
+        # fileName = r'c:\leo.repo\trunk\leo\test\unittest\minimalLeoFile.leo'
         assert g.os_path_exists(fileName)
     fileName,relativeFileName = completeFileName(fileName)
     reportDirectories(verbose)
@@ -589,16 +612,117 @@ leoPlugins.init()
 #@-node:ekr.20031218072017.1934:run
 #@-node:ekr.20080919121250.4:runLeo
 #@+node:ekr.20080919121250.5:Major short circuits
+#@+node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
+def doMenus (self,p,kind,name,val):
+
+    # __pychecker__ = '--no-argsused' # kind,name,val not used.
+
+    c = self.c ; aList = [] ; tag = '@menu'
+    p = p.copy() ; after = p.nodeAfterTree()
+    if g.isPython3: g.trace('******',p.headString(),'after',after and after.headString())
+    while p and p != after:
+        self.debug_count += 1
+        h = p.headString()
+        if g.isPython3:
+            g.trace('***',self.debug_count,p.headString())
+            if self.debug_count >= 1000:
+                g.trace('*'*10,'terminating!') ; return
+        if g.match_word(h,0,tag):
+            name = h[len(tag):].strip()
+            if name:
+                for z in aList:
+                    name2,junk,junk = z
+                    if name2 == name:
+                        self.error('Replacing previous @menu %s' % (name))
+                        break
+                aList2 = []
+                kind = '%s %s' % (tag,name)
+                self.doItems(p,aList2)
+                aList.append((kind,aList2,None),)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        else:
+            p.moveToThreadNext()
+
+    # g.trace('localFlag',self.localFlag,c)
+    if self.localFlag:
+        self.set(p,kind='menus',name='menus',val=aList)
+    else:
+        if not g.app.unitTesting:
+            g.es_print('Using menus from',c.shortFileName(),color='blue')
+        g.app.config.menusList = aList
+        g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
 #@+node:ekr.20070926141716:doItems
 def doItems (self,p,aList):
 
-    if g.isPython3: return ###
+    ### if g.isPython3: return ###
 
-    p = p.copy() ; after = p.nodeAfterTree()
+    if g.isPython3: g.trace(p.headString())
+    p = p.copy()
+    after = p.nodeAfterTree()
     p.moveToThreadNext()
+    if g.isPython3: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
     while p and p != after:
+        self.debug_count += 1
         h = p.headString()
-        if g.isPython3: g.trace(p.headString())
+        if g.isPython3:
+            g.trace(self.debug_count,h)
+            if self.debug_count >= 1000:
+                g.trace('*'*10,'terminating!') ; return
+        for tag in ('@menu','@item'):
+            if g.match_word(h,0,tag):
+                itemName = h[len(tag):].strip()
+                if itemName:
+                    if tag == '@menu':
+                        aList2 = []
+                        kind = '%s %s' % (tag,itemName)
+                        self.doItems(p,aList2)
+                        aList.append((kind,aList2,None),)
+                        p.moveToNodeAfterTree()
+                        break
+                    else:
+                        kind = tag
+                        head = itemName
+                        body = p.bodyString()
+                        aList.append((kind,head,body),)
+                        p.moveToThreadNext()
+                        break
+        else:
+            # g.trace('***skipping***',p.headString())
+            p.moveToThreadNext()
+#@-node:ekr.20070926141716:doItems
+#@+node:ekr.20070926142312:dumpMenuList
+def dumpMenuList (self,aList,level=0):
+
+    for z in aList:
+        kind,val,val2 = z
+        if kind == '@item':
+            g.trace(level,kind,val,val2)
+        else:
+            g.pr('')
+            g.trace(level,kind,'...')
+            self.dumpMenuList(val,level+1)
+#@nonl
+#@-node:ekr.20070926142312:dumpMenuList
+#@-node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
+#@+node:ekr.20070926141716:doItems
+def doItems (self,p,aList):
+
+    ### if g.isPython3: return ###
+
+    if g.isPython3: g.trace(p.headString())
+    p = p.copy()
+    after = p.nodeAfterTree()
+    p.moveToThreadNext()
+    if g.isPython3: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
+    while p and p != after:
+        self.debug_count += 1
+        h = p.headString()
+        if g.isPython3:
+            g.trace(self.debug_count,h)
+            if self.debug_count >= 1000:
+                g.trace('*'*10,'terminating!') ; return
         for tag in ('@menu','@item'):
             if g.match_word(h,0,tag):
                 itemName = h[len(tag):].strip()
@@ -624,7 +748,7 @@ def doItems (self,p,aList):
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
-    if g.isPython3: return ###
+    ### if g.isPython3: return ###
 
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
@@ -794,7 +918,7 @@ def updateSettings (self,c,localFlag):
 
 def readSettings (self,c,localFlag):
 
-    if g.isPython3: return {} ###
+    ### if g.isPython3: return {} ###
 
     """Read settings from a file that may contain an @settings tree."""
 
@@ -849,7 +973,8 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
     if g.isPython3:
-        fileName = r'c:\leo.repo\trunk\leo\test\test.leo' # smallTest.leo' ### testing only.
+        fileName = r'c:\leo.repo\trunk\leo\test\test.leo' # hangs at present.
+        # fileName = r'c:\leo.repo\trunk\leo\test\unittest\minimalLeoFile.leo'
         assert g.os_path_exists(fileName)
     fileName,relativeFileName = completeFileName(fileName)
     reportDirectories(verbose)
@@ -958,10 +1083,13 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 
     try:
         if g.isPython3:
-            # Just use the open binary file, opened by g.openLeoOrZipFile.
-            pass
+            if theFile:
+                pass # Just use the open binary file, opened by g.openLeoOrZipFile.
+            else:
+                theFile = StringIO(s)
         else:
-            s = theFile.read()
+            if theFile:
+                s = theFile.read()
             theFile = cStringIO.StringIO(s)
         parser = xml.sax.make_parser()
         parser.setFeature(xml.sax.handler.feature_external_ges,1)
@@ -1008,6 +1136,275 @@ def openLeoOrZipFile (fileName):
 #@nonl
 #@-node:ekr.20070412082527:g.openLeoOrZipFile
 #@-node:ekr.20080919121250.6:Problems opening .leo files
+#@+node:ekr.20080919153256.1:Problems reading derived files
+#@+node:ekr.20041005105605.135:closeWriteFile
+# 4.0: Don't use newline-pending logic.
+
+def closeWriteFile (self):
+
+    at = self
+
+    if at.outputFile:
+        at.outputFile.flush()
+        if at.toString:
+            at.stringOutput = self.outputFile.get()
+        at.outputFile.close()
+        at.outputFile = None
+        return at.stringOutput
+    else:
+        return None
+#@-node:ekr.20041005105605.135:closeWriteFile
+#@+node:ekr.20041005105605.204:os
+def os (self,s):
+
+    """Write a string to the output stream.
+
+    All output produced by leoAtFile module goes here."""
+
+    at = self
+
+    if s and at.outputFile:
+        try:
+            s = g.toEncodedString(s,at.encoding,reportErrors=True)
+            at.outputFile.write(s)
+        except Exception:
+            at.exception("exception writing:" + s)
+#@-node:ekr.20041005105605.204:os
+#@+node:ekr.20040331083824.1:g.fileLikeObject
+# Note: we could use StringIo for this.
+
+class fileLikeObject:
+
+    """Define a file-like object for redirecting writes to a string.
+
+    The caller is responsible for handling newlines correctly."""
+
+    @others
+#@+node:ekr.20050404151753: ctor
+def __init__(self,encoding='utf-8',fromString=None):
+
+    # g.trace('g.fileLikeObject:__init__','fromString',fromString)
+
+    # New in 4.2.1: allow the file to be inited from string s.
+
+    self.encoding = encoding
+
+    if fromString:
+        self.list = g.splitLines(fromString) # Must preserve newlines!
+    else:
+        self.list = []
+
+    self.ptr = 0
+
+# In CStringIO the buffer is read-only if the initial value (fromString) is non-empty.
+#@-node:ekr.20050404151753: ctor
+#@+node:ekr.20050404151753.1:clear
+def clear (self):
+
+    self.list = []
+#@-node:ekr.20050404151753.1:clear
+#@+node:ekr.20050404151753.2:close
+def close (self):
+
+    pass
+
+    # The StringIo version free's the memory buffer.
+#@-node:ekr.20050404151753.2:close
+#@+node:ekr.20050404151753.3:flush
+def flush (self):
+
+    pass
+#@-node:ekr.20050404151753.3:flush
+#@+node:ekr.20050404151753.4:get & getvalue & read
+def get (self):
+
+    return ''.join(self.list)
+
+getvalue = get # for compatibility with StringIo
+read = get # for use by sax.
+#@-node:ekr.20050404151753.4:get & getvalue & read
+#@+node:ekr.20050404151753.5:readline
+def readline(self): # New for read-from-string (readOpenFile).
+
+    if self.ptr < len(self.list):
+        line = self.list[self.ptr]
+        # g.trace(repr(line))
+        self.ptr += 1
+        return line
+    else:
+        return ''
+#@-node:ekr.20050404151753.5:readline
+#@+node:ekr.20050404151753.6:write
+def write (self,s):
+
+    if s:
+        if g.isBytes(s):
+            s = g.toUnicode(s,self.encoding)
+
+        self.list.append(s)
+#@-node:ekr.20050404151753.6:write
+#@-node:ekr.20040331083824.1:g.fileLikeObject
+#@-node:ekr.20080919153256.1:Problems reading derived files
+#@+node:ekr.20080919153256.2:Unicode problems
+#@+node:ekr.20080816125725.2:g.isBytes & g.isString
+def isBytes (s):
+
+    '''Return True if s is Python3k bytes type.
+
+    Python 3.x: s must be a unicode string, not bytes.
+    Python 2.x: always returns False.'''
+
+    if g.isPython3:
+        # Generates a pylint warning, but that can't be helped.
+        return type(s) == type(bytes('a','utf-8'))
+    else:
+        return False
+
+def isString (s):
+
+    '''Return True if s is a string.
+
+    Python 3.x: s must be a unicode string, not bytes.
+    Python 2.x: s may be either a unicode string or a regular string.'''
+
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) in types.StringTypes
+#@-node:ekr.20080816125725.2:g.isBytes & g.isString
+#@+node:ekr.20050208093800:g.toEncodedString
+def toEncodedString (s,encoding,reportErrors=False):
+
+    if isPython3:
+        if g.isString(s):
+            try:
+                s = s.encode(encoding,"strict")
+            except UnicodeError:
+                if reportErrors:
+                    g.reportBadChars(s,encoding)
+                s = s.encode(encoding,"replace")
+
+    else:
+        if type(s) == types.UnicodeType:
+            try:
+                s = s.encode(encoding,"strict")
+            except UnicodeError:
+                if reportErrors:
+                    g.reportBadChars(s,encoding)
+                s = s.encode(encoding,"replace")
+    return s
+#@-node:ekr.20050208093800:g.toEncodedString
+#@+node:ekr.20050208093800.1:g.toUnicode
+def toUnicode (s,encoding,reportErrors=False):
+
+    if isPython3:
+        if s is None:
+            return ''
+        elif not g.isBytes(s):
+            return s
+        else:
+            try:
+                s = s.decode(encoding)
+            except UnicodeError:
+                if reportErrors:
+                    g.reportBadChars(s,encoding)
+                s = unicode(s,encoding,"replace")
+            return s
+    else:
+        if s is None:
+            return unicode('')
+        elif type(s) == types.UnicodeType:
+            return s
+        else:
+            try:
+                s = unicode(s,encoding,"strict")
+            except UnicodeError:
+                if reportErrors:
+                    g.reportBadChars(s,encoding)
+                s = unicode(s,encoding,"replace")
+            return s
+#@-node:ekr.20050208093800.1:g.toUnicode
+#@+node:ekr.20031218072017.2317:g.trace
+# Convert all args to strings.
+
+def trace (*args,**keys):
+
+    # Compute the effective args.
+    d = {'align':0,'newline':True}
+    d = g.doKeywordArgs(keys,d)
+    newline = d.get('newline')
+    align = d.get('align')
+    if align is None: align = 0
+
+    # Compute the caller name.
+    try: # get the function name from the call stack.
+        f1 = sys._getframe(1) # The stack frame, one level up.
+        code1 = f1.f_code # The code object
+        name = code1.co_name # The code name
+    except Exception: name = ''
+    if name == "?":
+        name = "<unknown>"
+
+    # Pad the caller name.
+    if align != 0 and len(name) < abs(align):
+        pad = ' ' * (abs(align) - len(name))
+        if align > 0: name = name + pad
+        else:         name = pad + name
+
+    # Munge *args into s.
+    # print ('g.trace:args...')
+    # for z in args: print (g.isString(z),repr(z))
+    result = []
+    for arg in args:
+        if g.isString(arg):
+            pass
+        elif g.isBytes(arg):
+            arg = g.toUnicode(arg,'utf-8')
+        else:
+            arg = repr(arg)
+        if result:
+            result.append(" " + arg)
+        else:
+            result.append(arg)
+    s = ''.join(result)
+    try:
+        g.pr('%s: %s' % (name,s),newline=newline)
+    except Exception:
+        s = g.toEncodedString(s,'ascii')
+        g.pr('%s: %s' % (name,s),newline=newline)
+
+#@-node:ekr.20031218072017.2317:g.trace
+#@+node:ekr.20080710101653.1:pr
+# see: http://www.diveintopython.org/xml_processing/unicode.html
+
+def pr(*args,**keys):
+
+    '''Print all non-keyword args, and put them to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
+
+    # Compute the effective args.
+    d = {'commas':False,'newline':True,'spaces':True}
+    d = g.doKeywordArgs(keys,d)
+
+    # Important:  Python's print statement *can* handle unicode.
+    # However, the following must appear in Python\Lib\sitecustomize.py:
+    #    sys.setdefaultencoding('utf-8')
+    s = g.translateArgs(args,d) # Translates everything to unicode.
+
+    try: # We can't use any print keyword args in Python 2.x!
+        # print(s) # Not quite right.
+        if d.get('newline'):
+            sys.stdout.write(s+'\n')
+        else:
+            sys.stdout.write(s)
+    except Exception:
+        print('unexpected Exception in g.pr')
+        g.es_exception()
+        g.trace(g.callers())
+#@-node:ekr.20080710101653.1:pr
+#@-node:ekr.20080919153256.2:Unicode problems
 #@-node:ekr.20080919085541.4:Work on Leo3k
 #@+node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
@@ -4825,7 +5222,7 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
             and not b2.pane.endswith('-mode')]
     for z in redefs:
         g.es_print('redefining','shortcut %20s' % (shortcut),
-            'from',z,'(%s)' % (b2.pane),
+            'from',z,'(%s)' % (pane),
             'to',commandName,'(%s)' % (pane),color='red')
 
 if not modeFlag:
@@ -6257,7 +6654,7 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
             and not b2.pane.endswith('-mode')]
     for z in redefs:
         g.es_print('redefining','shortcut %20s' % (shortcut),
-            'from',z,'(%s)' % (b2.pane),
+            'from',z,'(%s)' % (pane),
             'to',commandName,'(%s)' % (pane),color='red')
 
 if not modeFlag:
