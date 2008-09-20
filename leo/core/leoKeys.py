@@ -2109,7 +2109,7 @@ class keyHandlerClass:
                         and not b2.pane.endswith('-mode')]
                 for z in redefs:
                     g.es_print('redefining','shortcut %20s' % (shortcut),
-                        'from',z,'(%s)' % (b2.pane),
+                        'from',z,'(%s)' % (pane),
                         'to',commandName,'(%s)' % (pane),color='red')
 
             if not modeFlag:
