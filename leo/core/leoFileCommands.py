@@ -1262,10 +1262,13 @@ class baseFileCommands:
 
         try:
             if g.isPython3:
-                # Just use the open binary file, opened by g.openLeoOrZipFile.
-                pass
+                if theFile:
+                    pass # Just use the open binary file, opened by g.openLeoOrZipFile.
+                else:
+                    theFile = StringIO(s)
             else:
-                s = theFile.read()
+                if theFile:
+                    s = theFile.read()
                 theFile = cStringIO.StringIO(s)
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges,1)
