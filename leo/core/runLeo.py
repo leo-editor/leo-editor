@@ -110,7 +110,8 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
     if g.isPython3:
-        fileName = r'c:\leo.repo\trunk\leo\test\test.leo' # smallTest.leo' ### testing only.
+        fileName = r'c:\leo.repo\trunk\leo\test\test.leo' # hangs at present.
+        # fileName = r'c:\leo.repo\trunk\leo\test\unittest\minimalLeoFile.leo'
         assert g.os_path_exists(fileName)
     fileName,relativeFileName = completeFileName(fileName)
     reportDirectories(verbose)
