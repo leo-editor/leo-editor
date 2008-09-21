@@ -13,17 +13,15 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-REM goto errors
+goto errors
 goto all
 
 
 :errors
 
-echo leoCommands.py
-call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoTangle.py
-call pylint.bat leo\core\leoTangle.py        --rcfile=leo\test\pylint-leo-rc.txt
+echo runLeo.py
+rem Harmless: W0611 (import pychecker)
+call pylint.bat leo\core\runLeo.py           --disable-msg=W0611 --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

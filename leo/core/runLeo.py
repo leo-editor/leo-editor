@@ -49,62 +49,16 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     """Initialize and run Leo"""
 
     import pdb ; pdb = pdb.set_trace
-
-    #@    << import leoGlobals and leoApp >>
-    #@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
-    if jyLeo:
-        print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
-
-    # Add the current directory to sys.path *before* importing g.
-    # This will fail if the current directory contains unicode characters...
-    path = os.getcwd()
-    if path not in sys.path:
-        # print('appending %s to sys.path' % path)
-        sys.path.append(path)
-
-    # Import leoGlobals, but do NOT set g.
-    import leo.core.leoGlobals as leoGlobals
-
-    # Set leoGlobals.g here, rather than in leoGlobals.py.
-    leoGlobals.g = leoGlobals
-
-    import leo.core.leoApp as leoApp
-
-    # Create the app.
-    leoGlobals.app = leoApp.LeoApp()
-
-    # **now** we can set g.
-    g = leoGlobals
-    assert(g.app)
-
-    if jyLeo:
-        startJyleo(g)
-    #@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
-    #@nl
-    if not jyLeo and not isValidPython(): return
+    if jyLeo: print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
+    g = initGandApp()
+    if jyLeo: startJyleo()
+    if not isValidPython(): return
     g.computeStandardDirectories()
-    adjustSysPath(g)
-    script,windowFlag = scanOptions(g)
+    adjustSysPath()
+    script,windowFlag = scanOptions()
     if pymacs: script,windowFlag = None,False
     verbose = script is None
-    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
-    # fileName = getFileName(fileName,script)
-    #@    << import other early files >>
-    #@+node:ekr.20041219072416.1:<< import other early files>>
-    import leo.core.leoNodes as leoNodes
-    import leo.core.leoConfig as leoConfig
-
-    # There is a circular dependency between leoCommands and leoEditCommands.
-    import leo.core.leoCommands as leoCommands
-
-    # New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
-    # This prevents a crash when run is called repeatedly from IPython's lleo extension.
-    import leo.core.leoPlugins as leoPlugins
-    leoPlugins.init()
-    #@-node:ekr.20041219072416.1:<< import other early files>>
-    #@nl
-    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-    g.app.config = leoConfig.configClass()
+    doEarlyInits(verbose)
     fileName,relativeFileName = getFileName(fileName,script)
     reportDirectories(verbose)
     # Read settings *after* setting g.app.config and *before* opening plugins.
@@ -122,19 +76,20 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     # Create the main frame.  Show it and all queued messages.
     c,frame = createFrame(fileName,relativeFileName)
     if not frame: return
-    initApp(c)
+    finishInitApp(c)
     p = c.currentPosition()
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
-    if c.config.getBool('allow_idle_time_hook'):
-        g.enableIdleTimeHook()
+    if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
     g.app.gui.runMainLoop()
 #@-node:ekr.20031218072017.1934:run
 #@+node:ekr.20070930060755:utils
 #@+node:ekr.20070306085724:adjustSysPath
-def adjustSysPath (g):
+def adjustSysPath ():
 
     '''Adjust sys.path to enable imports as usual with Leo.'''
+
+    import leo.core.leoGlobals as g
 
     #g.trace('loadDir',g.app.loadDir)
 
@@ -219,6 +174,43 @@ def createNullGuiWithScript (script):
     g.app.gui.setScript(script)
 #@-node:ekr.20031218072017.1938:createNullGuiWithScript
 #@-node:ekr.20080921060401.4:createSpecialGui & helper
+#@+node:ekr.20080921060401.9:doEarlyInits
+def doEarlyInits(verbose):
+
+    import leo.core.leoGlobals as g
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoConfig as leoConfig
+
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+
+    # There is a circular dependency between leoCommands and leoEditCommands.
+    import leo.core.leoCommands as leoCommands
+
+    # New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+    # This prevents a crash when run is called repeatedly from IPython's lleo extension.
+    import leo.core.leoPlugins as leoPlugins
+    leoPlugins.init()
+
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+#@-node:ekr.20080921060401.9:doEarlyInits
+#@+node:ekr.20080921060401.5:finishInitApp
+def finishInitApp(c):
+
+    import leo.core.leoGlobals as g
+
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+
+    g.app.writeWaitingLog()
+
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+
+    if g.app.oneConfigFilename:
+        g.es_print('--one-config option in effect',color='red')
+#@-node:ekr.20080921060401.5:finishInitApp
 #@+node:ekr.20071117060958:getFileName & helper
 def getFileName (fileName,script):
 
@@ -265,23 +257,6 @@ def completeFileName (fileName):
     return fileName,relativeFileName
 #@-node:ekr.20041124083125:completeFileName
 #@-node:ekr.20071117060958:getFileName & helper
-#@+node:ekr.20080921060401.5:initApp (leo.py)
-def initApp(c):
-
-    import leo.core.leoGlobals as g
-
-    g.app.trace_gc          = c.config.getBool('trace_gc')
-    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
-    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
-
-    g.app.writeWaitingLog()
-
-    if g.app.disableSave:
-        g.es("disabling save commands",color="red")
-
-    if g.app.oneConfigFilename:
-        g.es_print('--one-config option in effect',color='red')
-#@-node:ekr.20080921060401.5:initApp (leo.py)
 #@+node:ekr.20080921060401.6:initFocusAndDraw
 def initFocusAndDraw(c,fileName):
 
@@ -299,6 +274,33 @@ def initFocusAndDraw(c,fileName):
 
     c.outerUpdate()
 #@-node:ekr.20080921060401.6:initFocusAndDraw
+#@+node:ekr.20080921060401.10:initGandApp
+def initGandApp ():
+
+    # Add the current directory to sys.path *before* importing g.
+    # This will fail if the current directory contains unicode characters...
+    path = os.getcwd()
+    if path not in sys.path:
+        # print('appending %s to sys.path' % path)
+        sys.path.append(path)
+
+    # Import leoGlobals, but do NOT set g.
+    import leo.core.leoGlobals as leoGlobals
+
+    # Set leoGlobals.g here, rather than in leoGlobals.py.
+    leoGlobals.g = leoGlobals
+
+    import leo.core.leoApp as leoApp
+
+    # Create the app.
+    leoGlobals.app = leoApp.LeoApp()
+
+    # **now** we can set g.
+    g = leoGlobals
+    assert(g.app)
+
+    return g
+#@-node:ekr.20080921060401.10:initGandApp
 #@+node:ekr.20031218072017.1936:isValidPython
 def isValidPython():
 
@@ -494,11 +496,12 @@ def reportDirectories(verbose):
             g.es("%s dir:" % (kind),theDir,color="blue")
 #@-node:ekr.20041130093254:reportDirectories
 #@+node:ekr.20080521132317.2:scanOptions
-def scanOptions(g):
+def scanOptions():
 
     '''Handle all options and remove them from sys.argv.'''
 
     import optparse
+    import leo.core.leoGlobals as g
 
     parser = optparse.OptionParser()
     parser.add_option('--one-config',dest="one_config_path")
@@ -554,8 +557,9 @@ def scanOptions(g):
 #@nonl
 #@-node:ekr.20080521132317.2:scanOptions
 #@+node:ekr.20070930194949:startJyleo (leo.py)
-def startJyleo (g):
+def startJyleo ():
 
+    import leo.core.leoGlobals as g
     import leo.core.leoSwingFrame as leoSwingFrame
     import leo.core.leoSwingUtils as leoSwingUtils
     import java.awt as awt

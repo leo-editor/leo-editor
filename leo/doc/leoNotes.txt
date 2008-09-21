@@ -3360,6 +3360,49 @@ def isEqual (self,p2):
 
 equal = isEqual
 #@-node:ekr.20080920052058.4:p.isEqual (to be removed)
+#@+node:ekr.20041219072416.1:<< import other early files>> (runLeo.py)
+import leo.core.leoNodes as leoNodes
+import leo.core.leoConfig as leoConfig
+
+# There is a circular dependency between leoCommands and leoEditCommands.
+import leo.core.leoCommands as leoCommands
+
+# New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+# This prevents a crash when run is called repeatedly from IPython's lleo extension.
+import leo.core.leoPlugins as leoPlugins
+leoPlugins.init()
+
+g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+g.app.config = leoConfig.configClass()
+#@nonl
+#@-node:ekr.20041219072416.1:<< import other early files>> (runLeo.py)
+#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >> (runLeo.py)
+if jyLeo:
+    print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
+
+# Add the current directory to sys.path *before* importing g.
+# This will fail if the current directory contains unicode characters...
+path = os.getcwd()
+if path not in sys.path:
+    # print('appending %s to sys.path' % path)
+    sys.path.append(path)
+
+# Import leoGlobals, but do NOT set g.
+import leo.core.leoGlobals as leoGlobals
+
+# Set leoGlobals.g here, rather than in leoGlobals.py.
+leoGlobals.g = leoGlobals
+
+import leo.core.leoApp as leoApp
+
+# Create the app.
+leoGlobals.app = leoApp.LeoApp()
+
+# **now** we can set g.
+g = leoGlobals
+assert(g.app)
+
+#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >> (runLeo.py)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
