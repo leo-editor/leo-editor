@@ -448,7 +448,7 @@ def profile_leo ():
     import leo.core.leoGlobals as g
 
     name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_finalize(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
+    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
 
     profile.run('leo.run()',name)
 
@@ -492,7 +492,7 @@ def scanOptions():
     if path:
         path = g.os_path_finalize(path)
         if not g.os_path_exists(path):
-            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+            path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:

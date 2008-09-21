@@ -325,7 +325,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
                 return
 
     if g.app.homeDir:
-        path = g.os_path_finalize(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+        path = g.os_path_finalize_join(g.app.homeDir,'myLeoSettings.leo')
         try:
             f = open(path,'wb')
             f.write(s)
@@ -843,7 +843,7 @@ def profile_leo ():
     import leo.core.leoGlobals as g
 
     name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_finalize(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
+    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
 
     profile.run('leo.run()',name)
 
@@ -887,7 +887,7 @@ def scanOptions():
     if path:
         path = g.os_path_finalize(path)
         if not g.os_path_exists(path):
-            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+            path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
@@ -1050,7 +1050,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
                 return
 
     if g.app.homeDir:
-        path = g.os_path_finalize(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+        path = g.os_path_finalize_join(g.app.homeDir,'myLeoSettings.leo')
         try:
             f = open(path,'wb')
             f.write(s)
@@ -1523,7 +1523,7 @@ def profile_leo ():
     import leo.core.leoGlobals as g
 
     name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_finalize(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
+    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
 
     profile.run('leo.run()',name)
 
@@ -1567,7 +1567,7 @@ def scanOptions():
     if path:
         path = g.os_path_finalize(path)
         if not g.os_path_exists(path):
-            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+            path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
@@ -2420,7 +2420,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_finalize(g.os_path_join(g.app.loadDir,base))
+    absbase = g.os_path_finalize_join(g.app.loadDir,base)
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -2528,7 +2528,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_finalize(g.os_path_join(g.app.loadDir,base))
+    absbase = g.os_path_finalize_join(g.app.loadDir,base)
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -3275,7 +3275,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_finalize(g.os_path_join(g.app.loadDir,base))
+    absbase = g.os_path_finalize_join(g.app.loadDir,base)
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -4722,7 +4722,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_finalize(g.os_path_join(g.app.loadDir,base))
+    absbase = g.os_path_finalize_join(g.app.loadDir,base)
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -5031,24 +5031,6 @@ if not self.default_directory and not scripting and not importing:
 This make's Leo's syntax compatible with Python 3.0.
 #@nonl
 #@-node:ekr.20080917154206.4:Merge leo-30 branch
-#@+node:ekr.20080921060401.15:Replaced g.os_path.abspath with g.os_path_finalize
-# This is the elegant, clear way to support os.path.expanduser.
-#@nonl
-#@+node:ekr.20080921060401.14:os_path_finalize
-def os_path_finalize (path,encoding=None):
-
-    '''Return path with os.path.normpath, os.path.abspath and
-       os.path.expanduser applied.
-
-    There is no corresponding os.path method'''
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return os.path.normpath(
-        os.path.abspath(
-            os.path.expanduser(path)))
-#@-node:ekr.20080921060401.14:os_path_finalize
-#@-node:ekr.20080921060401.15:Replaced g.os_path.abspath with g.os_path_finalize
 #@+node:ekr.20080919085541.2:Open a default .leo file if no other is specified
 # Added support for @string default_leo_file = ~/.leo/workbook.leo
 #@nonl
@@ -5563,7 +5545,7 @@ def profile_leo ():
     import leo.core.leoGlobals as g
 
     name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_finalize(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
+    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
 
     profile.run('leo.run()',name)
 
@@ -5607,7 +5589,7 @@ def scanOptions():
     if path:
         path = g.os_path_finalize(path)
         if not g.os_path_exists(path):
-            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+            path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
@@ -5710,7 +5692,7 @@ def scanOptions():
     if path:
         path = g.os_path_finalize(path)
         if not g.os_path_exists(path):
-            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+            path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
@@ -5756,7 +5738,11 @@ def os_path_expanduser(path,encoding=None):
 
     path = g.toUnicodeFileEncoding(path,encoding)
 
-    return os.path.expanduser(path)
+    result = os.path.normpath(os.path.expanduser(path))
+
+    # g.trace('path',path,'expanduser', result)
+
+    return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
 #@+node:ekr.20070412082527:g.openLeoOrZipFile
 def openLeoOrZipFile (fileName):
@@ -5982,7 +5968,7 @@ def scanOptions():
     if path:
         path = g.os_path_finalize(path)
         if not g.os_path_exists(path):
-            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+            path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
@@ -6100,7 +6086,7 @@ def createMyLeoSettingsFile (self,localConfigFile):
                 return
 
     if g.app.homeDir:
-        path = g.os_path_finalize(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+        path = g.os_path_finalize_join(g.app.homeDir,'myLeoSettings.leo')
         try:
             f = open(path,'wb')
             f.write(s)
@@ -6183,6 +6169,68 @@ def updateSettings (self,c,localFlag):
 #@-node:ekr.20051013161232:g.app.config.updateSettings
 #@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 #@-node:ekr.20080910054558.2:Added -c option to specify config files
+#@+node:ekr.20080921060401.15:Replaced g.os_path.abspath with g.os_path_finalize/_join
+# This is the elegant, clear way to support os.path.expanduser.
+#@nonl
+#@+node:ekr.20080921060401.13:os_path_expanduser
+def os_path_expanduser(path,encoding=None):
+
+    """wrap os.path.expanduser"""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    result = os.path.normpath(os.path.expanduser(path))
+
+    # g.trace('path',path,'expanduser', result)
+
+    return result
+#@-node:ekr.20080921060401.13:os_path_expanduser
+#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,encoding=None):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    path = g.os_path_expanduser(path,encoding=encoding)
+
+    return os.path.normpath(os.path.abspath(path))
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    path = g.os_path_join(*args,**keys)
+
+    return os.path.normpath(os.path.abspath(path))
+#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20031218072017.2154:os_path_join
+def os_path_join(*args,**keys):
+
+    encoding = keys.get("encoding")
+
+    uargs = [g.toUnicodeFileEncoding(arg,encoding) for arg in args]
+
+    # Note:  This is exactly the same convention as used by getBaseDirectory.
+    if uargs and uargs[0] == '!!':
+        uargs[0] = g.app.loadDir
+    elif uargs and uargs[0] == '.':
+        c = keys.get('c')
+        if c and c.openDirectory:
+            uargs[0] = c.openDirectory
+            # g.trace(c.openDirectory)
+
+    uargs = [os.path.expanduser(z) for z in uargs]
+
+    path = os.path.join(*uargs)
+    # May not be needed on some Pythons.
+    path = g.toUnicodeFileEncoding(path,encoding)
+    return path
+#@-node:ekr.20031218072017.2154:os_path_join
+#@-node:ekr.20080921060401.15:Replaced g.os_path.abspath with g.os_path_finalize/_join
+#@+node:ekr.20080921091311.5:Make sure '~' is handled properly in all contexts: add unit tests
+#@-node:ekr.20080921091311.5:Make sure '~' is handled properly in all contexts: add unit tests
 #@-node:ekr.20080917153158.15:New features
 #@-node:ekr.20080917153158.11:4.6
 #@-all

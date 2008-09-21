@@ -1949,7 +1949,7 @@ class configClass:
                     return
 
         if g.app.homeDir:
-            path = g.os_path_finalize(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+            path = g.os_path_finalize_join(g.app.homeDir,'myLeoSettings.leo')
             try:
                 f = open(path,'wb')
                 f.write(s)

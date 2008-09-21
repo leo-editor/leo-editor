@@ -3142,22 +3142,32 @@ def os_path_expanduser(path,encoding=None):
 
     path = g.toUnicodeFileEncoding(path,encoding)
 
-    return os.path.expanduser(path)
+    result = os.path.normpath(os.path.expanduser(path))
+
+    # g.trace('path',path,'expanduser', result)
+
+    return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080921060401.14:os_path_finalize
+#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,encoding=None):
 
-    '''Return path with os.path.normpath, os.path.abspath and
-       os.path.expanduser applied.
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
 
     There is no corresponding os.path method'''
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.os_path_expanduser(path,encoding=encoding)
 
-    return os.path.normpath(
-        os.path.abspath(
-            os.path.expanduser(path)))
-#@-node:ekr.20080921060401.14:os_path_finalize
+    return os.path.normpath(os.path.abspath(path))
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    path = g.os_path_join(*args,**keys)
+
+    return os.path.normpath(os.path.abspath(path))
+#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
 
@@ -3216,6 +3226,8 @@ def os_path_join(*args,**keys):
         if c and c.openDirectory:
             uargs[0] = c.openDirectory
             # g.trace(c.openDirectory)
+
+    uargs = [os.path.expanduser(z) for z in uargs]
 
     path = os.path.join(*uargs)
     # May not be needed on some Pythons.

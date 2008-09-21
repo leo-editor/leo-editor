@@ -1075,7 +1075,7 @@ class baseCommands:
         def munge(name):
             return g.os_path_normpath(name or '').lower()
         def munge2(name):
-            return g.os_path_finalize(g.os_path_join(g.app.loadDir,name or ''))
+            return g.os_path_finalize(g.app.loadDir,name or '')
 
         # Update the recent files list in all windows.
         if fileName:
@@ -1714,9 +1714,10 @@ class baseCommands:
             parts = path.split('/')
             path = g.app.loadDir
             for part in parts:
-                path = g.os_path_finalize(g.os_path_join(path,part))
+                path = g.os_path_finalize_join(path,part)
         else:
-            path = g.os_path_finalize(g.os_path_join(g.app.loadDir,'..','test','scriptFile.py'))
+            path = g.os_path_finalize_join(
+                g.app.loadDir,'..','test','scriptFile.py')
 
         # Write the file.
         try:
@@ -5786,7 +5787,7 @@ class baseCommands:
 
         if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-        absbase = g.os_path_finalize(g.os_path_join(g.app.loadDir,base))
+        absbase = g.os_path_finalize_join(g.app.loadDir,base)
 
         if trace and verbose: g.trace('absbase',absbase)
 

@@ -104,7 +104,7 @@ class shadowController:
 
         x = self ; theDir = x.baseDirName()
 
-        return theDir and g.os_path_finalize(g.os_path_join(theDir,filename))
+        return theDir and g.os_path_finalize_join(theDir,filename)
     #@nonl
     #@-node:ekr.20080711063656.4:x.dirName and pathName
     #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
@@ -201,11 +201,11 @@ class shadowController:
         # g.trace(x.shadow_subdir)
         # g.trace(fileDir)
 
-        return baseDir and g.os_path_finalize(g.os_path_join(
+        return baseDir and g.os_path_finalize_join(
                 baseDir,
                 fileDir, # Bug fix: honor any directories specified in filename.
                 x.shadow_subdir,
-                x.shadow_prefix + g.shortFileName(filename)))
+                x.shadow_prefix + g.shortFileName(filename))
     #@nonl
     #@-node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
     #@+node:ekr.20080711063656.3:x.unlink

@@ -2325,7 +2325,7 @@ class editCommandsClass (baseEditCommandsClass):
     def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
 
         c = self.c
-        path = g.os_path_finalize(g.os_path_join(iconDir,path))
+        path = g.os_path_finalize_join(iconDir,path)
         relPath = g.makePathRelativeTo(path,iconDir)
 
         image,image_height = self.getImage(path)
@@ -2471,8 +2471,8 @@ class editCommandsClass (baseEditCommandsClass):
         aList = self.getIconList(p)
         if not aList: return
 
-        basePath = g.os_path_finalize(g.os_path_join(g.app.loadDir,"..","Icons"))
-        absRelPath = g.os_path_finalize(g.os_path_join(basePath,relPath))
+        basePath = g.os_path_finalize_join(g.app.loadDir,"..","Icons")
+        absRelPath = g.os_path_finalize_join(basePath,relPath)
         name = g.os_path_finalize(name)
 
         newList = []
@@ -2528,7 +2528,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = c.currentPosition()
 
-        iconDir = g.os_path_finalize(g.os_path_join(g.app.loadDir,"..","Icons"))
+        iconDir = g.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
 
         paths = g.app.gui.runOpenFileDialog(
@@ -2555,7 +2555,7 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c
         if p is None: p = c.currentPosition()
 
-        iconDir = g.os_path_finalize(g.os_path_join(g.app.loadDir,"..","Icons"))
+        iconDir = g.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
 
         aList = [] ; xoffset = 2
