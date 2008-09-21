@@ -55,7 +55,7 @@ try:
 except ImportError:
     print("runLeo.py: can not import leo.core.leoGlobals")
     raise
-except:
+except Exception:
     print("runLeo.py: unexpected exception: import leo.core.leoGlobals")
     raise
 
@@ -150,7 +150,7 @@ def createFrame (fileName,relativeFileName):
         fileName = g.app.config.getString(c=None,setting='default_leo_file')
         fileName = g.os_path_finalize(fileName)
         if fileName and g.os_path_exists(fileName):
-            g.es_print('default_leo_file:',fileName,color='blue')
+            g.es_print('opening default_leo_file:',fileName,color='blue')
 
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
@@ -223,9 +223,6 @@ def finishInitApp(c):
 
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
-
-    if g.app.oneConfigFilename:
-        g.es_print('--one-config option in effect',color='red')
 #@-node:ekr.20080921060401.5:finishInitApp
 #@+node:ekr.20071117060958:getFileName & helper
 def getFileName (fileName,script):
@@ -478,9 +475,9 @@ def scanOptions():
     '''Handle all options and remove them from sys.argv.'''
 
     parser = optparse.OptionParser()
-    parser.add_option('--one-config',dest="one_config_path")
-    parser.add_option('--silent',action="store_false",dest="silent")
-    parser.add_option('--script',dest="script")
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--silent',       action="store_false",dest="silent")
+    parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
 
     # Parse the options, and remove them from sys.argv.
@@ -490,14 +487,16 @@ def scanOptions():
 
     # Handle the args...
 
-    # --one-config
+    # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+        path = g.os_path_finalize(path)
+        if not g.os_path_exists(path):
+            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
-            g.es_print('Invalid option: file not found:',path,color='red')
+            g.es_print('Invalid -c option: file not found:',path,color='red')
 
     # --script
     script_path = options.script
@@ -530,14 +529,14 @@ def scanOptions():
     return script, windowFlag
 #@nonl
 #@-node:ekr.20080521132317.2:scanOptions
-#@+node:ekr.20070930194949:startJyleo (leo.py)
+#@+node:ekr.20070930194949:startJyleo
 def startJyleo ():
 
     import leo.core.leoSwingFrame as leoSwingFrame
     import leo.core.leoSwingUtils as leoSwingUtils
     import java.awt as awt
 
-    if jyLeo: print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
+    print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
 
     if 1:
         g.app.splash = None
@@ -550,7 +549,7 @@ def startJyleo ():
 
     tk = awt.Toolkit.getDefaultToolkit()
     tk.setDynamicLayout(True)
-#@-node:ekr.20070930194949:startJyleo (leo.py)
+#@-node:ekr.20070930194949:startJyleo
 #@+node:ekr.20040411081633:startPsyco
 def startPsyco ():
 

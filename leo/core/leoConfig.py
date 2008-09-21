@@ -1844,8 +1844,6 @@ class configClass:
     #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
     def readSettingsFiles (self,fileName,verbose=True):
 
-        ### if g.isPython3: return ###
-
         seen = []
         self.write_recent_files_as_needed = False # Will be set later.
         #@    << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -1867,19 +1865,18 @@ class configClass:
         #@nl
 
         # g.trace(g.app.oneConfigFilename)
-        if g.app.oneConfigFilename:
-            table = ((g.app.oneConfigFilename,False),)
-        else:
-            table = (
-                (self.globalConfigFile,False),
-                (self.homeFile,False),
-                (localConfigFile,False),
-                (self.myGlobalConfigFile,False),
-                (self.myHomeConfigFile,False),
-                (self.machineConfigFile,False),
-                (myLocalConfigFile,False),
-                (fileName,True),
-            )
+        table = (
+            (self.globalConfigFile,False),
+            (self.homeFile,False),
+            (localConfigFile,False),
+            (self.myGlobalConfigFile,False),
+            (self.myHomeConfigFile,False),
+            (self.machineConfigFile,False),
+            (myLocalConfigFile,False),
+            # New in Leo 4.6: the -c file is in *addition* to other config files.
+            (g.app.oneConfigFilename,False),
+            (fileName,True),
+        )
 
         # Init settings from leoSettings.leo and myLeoSettings.leo files.
         for path,localFlag in table:
@@ -1903,8 +1900,7 @@ class configClass:
                     self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
                     self.setIvarsFromSettings(c)
         self.readRecentFiles(localConfigFile)
-        if 0:
-            self.createMyLeoSettingsFile(myLocalConfigFile)
+        # self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
     #@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)

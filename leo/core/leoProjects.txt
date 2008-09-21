@@ -247,26 +247,23 @@ def traverse (self):
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
-    ### if g.isPython3: return ###
-
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
     << define localDirectory, localConfigFile & myLocalConfigFile >>
 
     # g.trace(g.app.oneConfigFilename)
-    if g.app.oneConfigFilename:
-        table = ((g.app.oneConfigFilename,False),)
-    else:
-        table = (
-            (self.globalConfigFile,False),
-            (self.homeFile,False),
-            (localConfigFile,False),
-            (self.myGlobalConfigFile,False),
-            (self.myHomeConfigFile,False),
-            (self.machineConfigFile,False),
-            (myLocalConfigFile,False),
-            (fileName,True),
-        )
+    table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+        (fileName,True),
+    )
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
@@ -290,8 +287,7 @@ def readSettingsFiles (self,fileName,verbose=True):
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
                 self.setIvarsFromSettings(c)
     self.readRecentFiles(localConfigFile)
-    if 0:
-        self.createMyLeoSettingsFile(myLocalConfigFile)
+    # self.createMyLeoSettingsFile(myLocalConfigFile)
     self.inited = True
     self.setIvarsFromSettings(None)
 #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -554,7 +550,7 @@ def createFrame (fileName,relativeFileName):
         fileName = g.app.config.getString(c=None,setting='default_leo_file')
         fileName = g.os_path_finalize(fileName)
         if fileName and g.os_path_exists(fileName):
-            g.es_print('default_leo_file:',fileName,color='blue')
+            g.es_print('opening default_leo_file:',fileName,color='blue')
 
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
@@ -627,9 +623,6 @@ def finishInitApp(c):
 
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
-
-    if g.app.oneConfigFilename:
-        g.es_print('--one-config option in effect',color='red')
 #@-node:ekr.20080921060401.5:finishInitApp
 #@+node:ekr.20071117060958:getFileName & helper
 def getFileName (fileName,script):
@@ -877,9 +870,9 @@ def scanOptions():
     '''Handle all options and remove them from sys.argv.'''
 
     parser = optparse.OptionParser()
-    parser.add_option('--one-config',dest="one_config_path")
-    parser.add_option('--silent',action="store_false",dest="silent")
-    parser.add_option('--script',dest="script")
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--silent',       action="store_false",dest="silent")
+    parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
 
     # Parse the options, and remove them from sys.argv.
@@ -889,14 +882,16 @@ def scanOptions():
 
     # Handle the args...
 
-    # --one-config
+    # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+        path = g.os_path_finalize(path)
+        if not g.os_path_exists(path):
+            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
-            g.es_print('Invalid option: file not found:',path,color='red')
+            g.es_print('Invalid -c option: file not found:',path,color='red')
 
     # --script
     script_path = options.script
@@ -929,14 +924,14 @@ def scanOptions():
     return script, windowFlag
 #@nonl
 #@-node:ekr.20080521132317.2:scanOptions
-#@+node:ekr.20070930194949:startJyleo (leo.py)
+#@+node:ekr.20070930194949:startJyleo
 def startJyleo ():
 
     import leo.core.leoSwingFrame as leoSwingFrame
     import leo.core.leoSwingUtils as leoSwingUtils
     import java.awt as awt
 
-    if jyLeo: print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
+    print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
 
     if 1:
         g.app.splash = None
@@ -949,7 +944,7 @@ def startJyleo ():
 
     tk = awt.Toolkit.getDefaultToolkit()
     tk.setDynamicLayout(True)
-#@-node:ekr.20070930194949:startJyleo (leo.py)
+#@-node:ekr.20070930194949:startJyleo
 #@+node:ekr.20040411081633:startPsyco
 def startPsyco ():
 
@@ -977,26 +972,23 @@ def startPsyco ():
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 
-    ### if g.isPython3: return ###
-
     seen = []
     self.write_recent_files_as_needed = False # Will be set later.
     << define localDirectory, localConfigFile & myLocalConfigFile >>
 
     # g.trace(g.app.oneConfigFilename)
-    if g.app.oneConfigFilename:
-        table = ((g.app.oneConfigFilename,False),)
-    else:
-        table = (
-            (self.globalConfigFile,False),
-            (self.homeFile,False),
-            (localConfigFile,False),
-            (self.myGlobalConfigFile,False),
-            (self.myHomeConfigFile,False),
-            (self.machineConfigFile,False),
-            (myLocalConfigFile,False),
-            (fileName,True),
-        )
+    table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+        (fileName,True),
+    )
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
@@ -1020,8 +1012,7 @@ def readSettingsFiles (self,fileName,verbose=True):
                 self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
                 self.setIvarsFromSettings(c)
     self.readRecentFiles(localConfigFile)
-    if 0:
-        self.createMyLeoSettingsFile(myLocalConfigFile)
+    # self.createMyLeoSettingsFile(myLocalConfigFile)
     self.inited = True
     self.setIvarsFromSettings(None)
 #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -1239,7 +1230,7 @@ def createFrame (fileName,relativeFileName):
         fileName = g.app.config.getString(c=None,setting='default_leo_file')
         fileName = g.os_path_finalize(fileName)
         if fileName and g.os_path_exists(fileName):
-            g.es_print('default_leo_file:',fileName,color='blue')
+            g.es_print('opening default_leo_file:',fileName,color='blue')
 
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
@@ -1312,9 +1303,6 @@ def finishInitApp(c):
 
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
-
-    if g.app.oneConfigFilename:
-        g.es_print('--one-config option in effect',color='red')
 #@-node:ekr.20080921060401.5:finishInitApp
 #@+node:ekr.20071117060958:getFileName & helper
 def getFileName (fileName,script):
@@ -1562,9 +1550,9 @@ def scanOptions():
     '''Handle all options and remove them from sys.argv.'''
 
     parser = optparse.OptionParser()
-    parser.add_option('--one-config',dest="one_config_path")
-    parser.add_option('--silent',action="store_false",dest="silent")
-    parser.add_option('--script',dest="script")
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--silent',       action="store_false",dest="silent")
+    parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
 
     # Parse the options, and remove them from sys.argv.
@@ -1574,14 +1562,16 @@ def scanOptions():
 
     # Handle the args...
 
-    # --one-config
+    # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+        path = g.os_path_finalize(path)
+        if not g.os_path_exists(path):
+            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
-            g.es_print('Invalid option: file not found:',path,color='red')
+            g.es_print('Invalid -c option: file not found:',path,color='red')
 
     # --script
     script_path = options.script
@@ -1614,14 +1604,14 @@ def scanOptions():
     return script, windowFlag
 #@nonl
 #@-node:ekr.20080521132317.2:scanOptions
-#@+node:ekr.20070930194949:startJyleo (leo.py)
+#@+node:ekr.20070930194949:startJyleo
 def startJyleo ():
 
     import leo.core.leoSwingFrame as leoSwingFrame
     import leo.core.leoSwingUtils as leoSwingUtils
     import java.awt as awt
 
-    if jyLeo: print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
+    print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
 
     if 1:
         g.app.splash = None
@@ -1634,7 +1624,7 @@ def startJyleo ():
 
     tk = awt.Toolkit.getDefaultToolkit()
     tk.setDynamicLayout(True)
-#@-node:ekr.20070930194949:startJyleo (leo.py)
+#@-node:ekr.20070930194949:startJyleo
 #@+node:ekr.20040411081633:startPsyco
 def startPsyco ():
 
@@ -5161,9 +5151,6 @@ def finishInitApp(c):
 
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
-
-    if g.app.oneConfigFilename:
-        g.es_print('--one-config option in effect',color='red')
 #@-node:ekr.20080921060401.5:finishInitApp
 #@+node:ekr.20071117060958:getFileName & helper
 def getFileName (fileName,script):
@@ -5283,7 +5270,7 @@ def createFrame (fileName,relativeFileName):
         fileName = g.app.config.getString(c=None,setting='default_leo_file')
         fileName = g.os_path_finalize(fileName)
         if fileName and g.os_path_exists(fileName):
-            g.es_print('default_leo_file:',fileName,color='blue')
+            g.es_print('opening default_leo_file:',fileName,color='blue')
 
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
@@ -5356,9 +5343,6 @@ def finishInitApp(c):
 
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
-
-    if g.app.oneConfigFilename:
-        g.es_print('--one-config option in effect',color='red')
 #@-node:ekr.20080921060401.5:finishInitApp
 #@+node:ekr.20071117060958:getFileName & helper
 def getFileName (fileName,script):
@@ -5606,9 +5590,9 @@ def scanOptions():
     '''Handle all options and remove them from sys.argv.'''
 
     parser = optparse.OptionParser()
-    parser.add_option('--one-config',dest="one_config_path")
-    parser.add_option('--silent',action="store_false",dest="silent")
-    parser.add_option('--script',dest="script")
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--silent',       action="store_false",dest="silent")
+    parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
 
     # Parse the options, and remove them from sys.argv.
@@ -5618,14 +5602,16 @@ def scanOptions():
 
     # Handle the args...
 
-    # --one-config
+    # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+        path = g.os_path_finalize(path)
+        if not g.os_path_exists(path):
+            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
-            g.es_print('Invalid option: file not found:',path,color='red')
+            g.es_print('Invalid -c option: file not found:',path,color='red')
 
     # --script
     script_path = options.script
@@ -5658,14 +5644,14 @@ def scanOptions():
     return script, windowFlag
 #@nonl
 #@-node:ekr.20080521132317.2:scanOptions
-#@+node:ekr.20070930194949:startJyleo (leo.py)
+#@+node:ekr.20070930194949:startJyleo
 def startJyleo ():
 
     import leo.core.leoSwingFrame as leoSwingFrame
     import leo.core.leoSwingUtils as leoSwingUtils
     import java.awt as awt
 
-    if jyLeo: print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
+    print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
 
     if 1:
         g.app.splash = None
@@ -5678,7 +5664,7 @@ def startJyleo ():
 
     tk = awt.Toolkit.getDefaultToolkit()
     tk.setDynamicLayout(True)
-#@-node:ekr.20070930194949:startJyleo (leo.py)
+#@-node:ekr.20070930194949:startJyleo
 #@+node:ekr.20040411081633:startPsyco
 def startPsyco ():
 
@@ -5707,9 +5693,9 @@ def scanOptions():
     '''Handle all options and remove them from sys.argv.'''
 
     parser = optparse.OptionParser()
-    parser.add_option('--one-config',dest="one_config_path")
-    parser.add_option('--silent',action="store_false",dest="silent")
-    parser.add_option('--script',dest="script")
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--silent',       action="store_false",dest="silent")
+    parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
 
     # Parse the options, and remove them from sys.argv.
@@ -5719,14 +5705,16 @@ def scanOptions():
 
     # Handle the args...
 
-    # --one-config
+    # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+        path = g.os_path_finalize(path)
+        if not g.os_path_exists(path):
+            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
-            g.es_print('Invalid option: file not found:',path,color='red')
+            g.es_print('Invalid -c option: file not found:',path,color='red')
 
     # --script
     script_path = options.script
@@ -5883,7 +5871,7 @@ def createFrame (fileName,relativeFileName):
         fileName = g.app.config.getString(c=None,setting='default_leo_file')
         fileName = g.os_path_finalize(fileName)
         if fileName and g.os_path_exists(fileName):
-            g.es_print('default_leo_file:',fileName,color='blue')
+            g.es_print('opening default_leo_file:',fileName,color='blue')
 
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
@@ -5921,6 +5909,280 @@ def createFrame (fileName,relativeFileName):
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@-node:ekr.20080921060401.12:Support for @string default_leo_file = ~/.leo/workbook.leo
 #@-node:ekr.20080919085541.2:Open a default .leo file if no other is specified
+#@+node:ekr.20080910054558.2:Added -c option to specify config files
+@nocolor
+
+The setting is called -c or --config.  The one-config-file arg no longer exists.
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f3f95d93bcd93b94
+
+Personally, I'd like to see another config file available via -c on
+the command line:
+(a common idiom)
+
+leo myproject.leo -c /usr/lib/myproject/myLeoSettings.leo
+
+or better yet:
+
+leo myproject.leo -c /etc/leo/style01.leo
+leo myotherproject.leo -c /etc/leo/style02.leo
+leo anotherproject.leo -c /etc/leo/style23.leo
+
+Each file opens in an editor with the shortcuts, buttons, commands,
+plugins, appearance etc.  that has been tuned for that data management task.
+
+or best yet:
+
+leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo
+
+==================
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b5a736089079acaf#
+
+Please, I think each file has a distinct and required role.
+
+- config/leoSettings.leo = Edward's base, required for a sane starting point
+
+- home/.leo/myLeoSettings.leo = adjust Edwards suggestions to taste
+
+- cwd/myLeoSettings.leo = provide a customized working environment in
+this folder
+
+- leo -c /usr/lib/leo-editor/src/config/zope3_ide.leo =
+  - open this file in a specialized environments, mine or community contributed
+  - ...
+
+- currentfile/@settings =
+  - I'm working on some customization ideas
+  - Here, try out this Leo file I sent you, check out all the spiffy
+modifications 
+
+@color
+#@nonl
+#@+node:ekr.20080521132317.2:scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+
+    parser = optparse.OptionParser()
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--silent',       action="store_false",dest="silent")
+    parser.add_option('--script',       dest="script")
+    parser.add_option('--script-window',dest="script_window")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    # g.trace(sys.argv)
+
+    # Handle the args...
+
+    # -c or --config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_finalize(path)
+        if not g.os_path_exists(path):
+            path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_join(g.app.loadDir,script_name)
+        try:
+            f = None
+            try:
+                f = open(script_name,'r')
+                script = f.read()
+                # g.trace("script",script)
+            except IOError:
+                g.es_print("can not open script file:",script_name, color="red")
+                script = None
+        finally:
+            if f: f.close()
+    else:
+        script = None
+
+    # --silent
+    g.app.silentMode = options.silent
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    return script, windowFlag
+#@nonl
+#@-node:ekr.20080521132317.2:scanOptions
+#@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+def readSettingsFiles (self,fileName,verbose=True):
+
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    # g.trace(g.app.oneConfigFilename)
+    table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+        (fileName,True),
+    )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        if path:
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        if path and path.lower() not in seen:
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
+                g.pr(s)
+                g.app.logWaiting.append((s+'\n','blue'),)
+
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
+                self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    # self.createMyLeoSettingsFile(myLocalConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because the local directory does not exits.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+def createMyLeoSettingsFile (self,localConfigFile):
+
+    '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
+
+    << define s, a minimalMyLeoSettings.leo string >>
+
+    for path in (
+        localConfigFile,
+        self.myGlobalConfigFile,
+        self.myHomeConfigFile
+    ):
+        # g.trace(path)
+        if path:
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            if g.os_path_exists(path):
+                # g.trace('exists',path)
+                return
+
+    if g.app.homeDir:
+        path = g.os_path_finalize(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+        try:
+            f = open(path,'wb')
+            f.write(s)
+            f.close()
+            self.myHomeConfigFile = path
+            # It's early in the startup: g.es does not work yet.
+            s = 'created: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+        except Exception:
+            s = 'can not create: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+            g.es_exception()
+#@+node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+s = '''<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet ekr_test?>
+<leo_file>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="26" left="122" height="781" width="953"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="ekr.20070411164127" str_leo_pos="0"><vh>@chapters</vh>
+<v t="ekr.20070411164127.1"><vh>@chapter trash</vh></v>
+</v>
+<v t="ekr.20070411164127.2"><vh>@settings</vh></v>
+</vnodes>
+<tnodes>
+<t tx="ekr.20070411164127"></t>
+<t tx="ekr.20070411164127.1">trash</t>
+<t tx="ekr.20070411164127.2"></t>
+</tnodes>
+</leo_file>
+'''
+#@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+#@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+#@+node:ekr.20041117085625:g.app.config.openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:g.app.config.openSettingsFile
+#@+node:ekr.20051013161232:g.app.config.updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and d.keys())
+#@-node:ekr.20051013161232:g.app.config.updateSettings
+#@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+#@-node:ekr.20080910054558.2:Added -c option to specify config files
 #@-node:ekr.20080917153158.15:New features
 #@-node:ekr.20080917153158.11:4.6
 #@-all
