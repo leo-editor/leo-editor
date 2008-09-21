@@ -413,8 +413,6 @@ def updateSettings (self,c,localFlag):
 
 def readSettings (self,c,localFlag):
 
-    ### if g.isPython3: return {} ###
-
     """Read settings from a file that may contain an @settings tree."""
 
     # g.trace('=' * 20, c.fileName())
@@ -885,9 +883,7 @@ def scanOptions():
     # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(path)
-        if not g.os_path_exists(path):
-            path = g.os_path_finalize_join(os.getcwd(),path)
+        path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
@@ -1137,8 +1133,6 @@ def updateSettings (self,c,localFlag):
 # Also called when opening an .leo file to read @settings tree.
 
 def readSettings (self,c,localFlag):
-
-    ### if g.isPython3: return {} ###
 
     """Read settings from a file that may contain an @settings tree."""
 
@@ -1565,9 +1559,7 @@ def scanOptions():
     # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(path)
-        if not g.os_path_exists(path):
-            path = g.os_path_finalize_join(os.getcwd(),path)
+        path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
@@ -5587,9 +5579,7 @@ def scanOptions():
     # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(path)
-        if not g.os_path_exists(path):
-            path = g.os_path_finalize_join(os.getcwd(),path)
+        path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
@@ -5690,9 +5680,7 @@ def scanOptions():
     # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(path)
-        if not g.os_path_exists(path):
-            path = g.os_path_finalize_join(os.getcwd(),path)
+        path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
@@ -5966,9 +5954,7 @@ def scanOptions():
     # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(path)
-        if not g.os_path_exists(path):
-            path = g.os_path_finalize_join(os.getcwd(),path)
+        path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
