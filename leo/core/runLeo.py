@@ -490,9 +490,7 @@ def scanOptions():
     # -c or --config
     path = options.one_config_path
     if path:
-        path = g.os_path_finalize(path)
-        if not g.os_path_exists(path):
-            path = g.os_path_finalize_join(os.getcwd(),path)
+        path = g.os_path_finalize_join(os.getcwd(),path)
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
