@@ -48,8 +48,6 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
 
     """Initialize and run Leo"""
 
-    # __pychecker__ = '--no-argsused' # keywords not used.
-
     import pdb ; pdb = pdb.set_trace
 
     #@    << import leoGlobals and leoApp >>
@@ -90,9 +88,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     if pymacs: script,windowFlag = None,False
     verbose = script is None
     g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
-    if not fileName:
-        fileName = getFileName()
-
+    # fileName = getFileName(fileName,script)
     #@    << import other early files >>
     #@+node:ekr.20041219072416.1:<< import other early files>>
     import leo.core.leoNodes as leoNodes
@@ -109,64 +105,29 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     #@nl
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
-    if g.isPython3:
-        fileName = r'c:\leo.repo\trunk\leo\test\test.leo' # hangs at present.
-        # fileName = r'c:\leo.repo\trunk\leo\test\unittest\minimalLeoFile.leo'
-        assert g.os_path_exists(fileName)
-    fileName,relativeFileName = completeFileName(fileName)
+    fileName,relativeFileName = getFileName(fileName,script)
     reportDirectories(verbose)
-    # Read settings *after* setting g.app.config.
-    # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
+    # Read settings *after* setting g.app.config and *before* opening plugins.
+    # This means if-gui has effect only in per-file settings.
     g.app.config.readSettingsFiles(fileName,verbose)
     g.app.setEncoding()
-    if pymacs:
-        createNullGuiWithScript(None)
-    elif jyLeo:
-        import leo.core.leoSwingGui as leoSwingGui
-        g.app.gui = leoSwingGui.swingGui()
-    elif script:
-        if windowFlag:
-            g.app.createTkGui() # Creates global windows.
-            g.app.gui.setScript(script)
-            sys.args = []
-        else:
-            createNullGuiWithScript(script)
-        fileName = None
-    if g.isPython3:
-        # Create the curses gui.
-        import leo.core.leoPlugins as leoPlugins
-        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
-    else:
-        g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
-        if g.app.killed: return # Support for g.app.forceShutdown.
-        if g.app.gui == None: g.app.createTkGui() # Creates global windows.
-    # Initialize tracing and statistics.
-    g.init_sherlock(args)
+    createSpecialGui(jyLeo,pymacs,script,windowFlag)
+    g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+    if g.app.killed: return # Support for g.app.forceShutdown.
+    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
     # Clear g.app.initing _before_ creating the frame.
     g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
     # Create the main frame.  Show it and all queued messages.
     c,frame = createFrame(fileName,relativeFileName)
     if not frame: return
-    g.app.trace_gc          = c.config.getBool('trace_gc')
-    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
-    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
-    if g.app.disableSave:
-        g.es("disabling save commands",color="red")
-    g.app.writeWaitingLog()
-    if g.app.oneConfigFilename: g.es_print('--one-config option in effect',color='red')
+    initApp(c)
     p = c.currentPosition()
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'):
         g.enableIdleTimeHook()
-    if not fileName:
-        c.redraw_now()
-    # Respect c's focus wishes if posssible.
-    w = g.app.gui.get_focus(c)
-    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
-        c.bodyWantsFocus()
-        c.k.showStateAndMode(w)
-    c.outerUpdate()
+    initFocusAndDraw(c,fileName)
     g.app.gui.runMainLoop()
 #@-node:ekr.20031218072017.1934:run
 #@+node:ekr.20070930060755:utils
@@ -185,33 +146,7 @@ def adjustSysPath (g):
         if path not in sys.path:
             sys.path.append(path)
 #@-node:ekr.20070306085724:adjustSysPath
-#@+node:ekr.20041124083125:completeFileName (leo.py)
-def completeFileName (fileName):
-
-    import leo.core.leoGlobals as g
-
-    if not (fileName and fileName.strip()):
-        return None,None
-
-    # This does not depend on config settings.
-    try:
-        if sys.platform.lower().startswith('win'):
-            fileName = g.toUnicode(fileName,'mbcs')
-        else:
-            fileName = g.toUnicode(fileName,'utf-8')
-    except Exception: pass
-
-    relativeFileName = fileName
-    fileName = g.os_path_join(os.getcwd(),fileName)
-
-    junk,ext = g.os_path_splitext(fileName)
-    if not ext:
-        fileName = fileName + ".leo"
-        relativeFileName = relativeFileName + ".leo"
-
-    return fileName,relativeFileName
-#@-node:ekr.20041124083125:completeFileName (leo.py)
-#@+node:ekr.20031218072017.1624:createFrame (leo.py)
+#@+node:ekr.20031218072017.1624:createFrame (runLeo.py)
 def createFrame (fileName,relativeFileName):
 
     """Create a LeoFrame during Leo's startup process."""
@@ -251,8 +186,29 @@ def createFrame (fileName,relativeFileName):
         g.es("file not found:",fileName)
 
     return c,frame
-#@-node:ekr.20031218072017.1624:createFrame (leo.py)
-#@+node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)
+#@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
+#@+node:ekr.20080921060401.4:createSpecialGui & helper
+def createSpecialGui(jyLeo,pymacs,script,windowFlag):
+
+    import leo.core.leoGlobals as g
+
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
+    elif pymacs:
+        createNullGuiWithScript(None)
+    elif jyLeo:
+        import leo.core.leoSwingGui as leoSwingGui
+        g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+#@+node:ekr.20031218072017.1938:createNullGuiWithScript
 def createNullGuiWithScript (script):
 
     import leo.core.leoGlobals as g
@@ -261,15 +217,88 @@ def createNullGuiWithScript (script):
     g.app.batchMode = True
     g.app.gui = leoGui.nullGui("nullGui")
     g.app.gui.setScript(script)
-#@-node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)
-#@+node:ekr.20071117060958:getFileName
-def getFileName ():
+#@-node:ekr.20031218072017.1938:createNullGuiWithScript
+#@-node:ekr.20080921060401.4:createSpecialGui & helper
+#@+node:ekr.20071117060958:getFileName & helper
+def getFileName (fileName,script):
 
     '''Return the filename from sys.argv.'''
 
-    # Put no imports here.
-    return len(sys.argv) > 1 and sys.argv[-1]
-#@-node:ekr.20071117060958:getFileName
+    import leo.core.leoGlobals as g
+
+    if g.isPython3:
+        ### Testing only.
+        fileName = r'c:\leo.repo\trunk\leo\test\test.leo'
+        assert g.os_path_exists(fileName)
+    elif script:
+        fileName = None
+    elif fileName:
+        pass
+    else:
+        fileName = len(sys.argv) > 1 and sys.argv[-1]
+
+    return completeFileName(fileName)
+#@+node:ekr.20041124083125:completeFileName
+def completeFileName (fileName):
+
+    import leo.core.leoGlobals as g
+
+    if not (fileName and fileName.strip()):
+        return None,None
+
+    # This does not depend on config settings.
+    try:
+        if sys.platform.lower().startswith('win'):
+            fileName = g.toUnicode(fileName,'mbcs')
+        else:
+            fileName = g.toUnicode(fileName,'utf-8')
+    except Exception: pass
+
+    relativeFileName = fileName
+    fileName = g.os_path_join(os.getcwd(),fileName)
+
+    junk,ext = g.os_path_splitext(fileName)
+    if not ext:
+        fileName = fileName + ".leo"
+        relativeFileName = relativeFileName + ".leo"
+
+    return fileName,relativeFileName
+#@-node:ekr.20041124083125:completeFileName
+#@-node:ekr.20071117060958:getFileName & helper
+#@+node:ekr.20080921060401.5:initApp (leo.py)
+def initApp(c):
+
+    import leo.core.leoGlobals as g
+
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+
+    g.app.writeWaitingLog()
+
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+
+    if g.app.oneConfigFilename:
+        g.es_print('--one-config option in effect',color='red')
+#@-node:ekr.20080921060401.5:initApp (leo.py)
+#@+node:ekr.20080921060401.6:initFocusAndDraw
+def initFocusAndDraw(c,fileName):
+
+    import leo.core.leoGlobals as g
+
+    w = g.app.gui.get_focus(c)
+
+    if not fileName:
+        c.redraw_now()
+
+    # Respect c's focus wishes if posssible.
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+
+    c.outerUpdate()
+#@-node:ekr.20080921060401.6:initFocusAndDraw
 #@+node:ekr.20031218072017.1936:isValidPython
 def isValidPython():
 
