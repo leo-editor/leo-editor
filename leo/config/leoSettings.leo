@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,7"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -317,10 +317,11 @@
 </v>
 </v>
 <v t="ekr.20061003173413"><vh>File options</vh>
-<v t="ekr.20041119034357.7"><vh>.leo file options</vh>
+<v t="ekr.20041119034357.7" a="E"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
 <v t="ekr.20061004150211"><vh>@bool use_sax_based_read = False</vh></v>
+<v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
 </v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
 <v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
@@ -7553,6 +7554,7 @@ True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080819075811.6"></t>
 <t tx="ekr.20080916092417.1"></t>
 <t tx="ekr.20080916094157.1"></t>
+<t tx="ekr.20080921060401.3"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
