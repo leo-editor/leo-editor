@@ -4140,7 +4140,7 @@ class keyHandlerClass:
             k.mb_tabList = []
 
             # Clear the list: any non-tab indicates that a new prefix is in effect.
-            theDir = g.os_path_abspath(os.curdir)
+            theDir = g.os_path_finalize(os.curdir)
             k.extendLabel(theDir,select=False,protect=False)
 
             k.mb_tabListPrefix = k.getLabel()

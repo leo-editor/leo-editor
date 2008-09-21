@@ -1036,7 +1036,7 @@ class parserBaseClass:
         if bunch:
             # g.trace(key,bunch.val,bunch.path)
             path = bunch.path
-            if g.os_path_abspath(c.mFileName) != g.os_path_abspath(path):
+            if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
                 g.es("over-riding setting:",name,"from",path)
 
         # N.B.  We can't use c here: it may be destroyed!
@@ -1884,7 +1884,7 @@ class configClass:
         # Init settings from leoSettings.leo and myLeoSettings.leo files.
         for path,localFlag in table:
             if path:
-                path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+                path = g.os_path_realpath(g.os_path_finalize(path))
                 # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
             if path and path.lower() not in seen:
                 seen.append(path.lower())
@@ -1947,13 +1947,13 @@ class configClass:
         ):
             # g.trace(path)
             if path:
-                path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+                path = g.os_path_realpath(g.os_path_finalize(path))
                 if g.os_path_exists(path):
                     # g.trace('exists',path)
                     return
 
         if g.app.homeDir:
-            path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+            path = g.os_path_finalize(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
             try:
                 f = open(path,'wb')
                 f.write(s)
@@ -2047,7 +2047,7 @@ class configClass:
             localConfigPath,
         ):
             if path:
-                path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+                path = g.os_path_realpath(g.os_path_finalize(path))
             if path and path not in seen:
                 ok = self.readRecentFilesFile(path)
                 if ok: seen.append(path)

@@ -251,7 +251,7 @@ class tkinterGui(leoGui.leoGui):
 
         # __pychecker__ = '--no-argsused' # defaultextension not used.
 
-        initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
+        initialdir = g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
 
         if multiple:
             # askopenfilenames requires Python 2.3 and Tk 8.4.
@@ -281,7 +281,7 @@ class tkinterGui(leoGui.leoGui):
 
         # __pychecker__ = '--no-argsused' # defaultextension not used.
 
-        initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd()),
+        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd()),
 
         return tkFileDialog.asksaveasfilename(
             initialdir=initialdir,initialfile=initialfile,

@@ -145,9 +145,9 @@ def loadHandlers(tag):
         if not g.app.unitTesting:
             g.es_print(*args,**keys)
 
-    plugins_path = g.os_path_abspath(g.os_path_join(g.app.loadDir,"..","plugins"))
+    plugins_path = g.os_path_finalize(g.os_path_join(g.app.loadDir,"..","plugins"))
     files = glob.glob(g.os_path_join(plugins_path,"*.py"))
-    files = [g.os_path_abspath(theFile) for theFile in files]
+    files = [g.os_path_finalize(theFile) for theFile in files]
 
     s = g.app.config.getEnabledPlugins()
     if not s: return
@@ -177,7 +177,7 @@ def getEnabledFiles (s,plugins_path):
     for s in g.splitLines(s):
         s = s.strip()
         if s and not s.startswith('#'):
-            path = g.os_path_abspath(g.os_path_join(plugins_path,s))
+            path = g.os_path_finalize(g.os_path_join(plugins_path,s))
             enabled_files.append(path)
 
     return enabled_files

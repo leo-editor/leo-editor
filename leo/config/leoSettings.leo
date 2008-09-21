@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,7"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -96,7 +96,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -317,7 +317,7 @@
 </v>
 </v>
 <v t="ekr.20061003173413"><vh>File options</vh>
-<v t="ekr.20041119034357.7" a="E"><vh>.leo file options</vh>
+<v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
 <v t="ekr.20061004150211"><vh>@bool use_sax_based_read = False</vh></v>
@@ -434,7 +434,7 @@
 </v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
+<v t="ekr.20070925144534"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
@@ -978,7 +978,7 @@
 <v t="ekr.20080515053412.31"><vh>@popup iconbox</vh></v>
 <v t="ekr.20080515053412.32"><vh>@popup plusbox</vh></v>
 </v>
-<v t="ekr.20080515053412.33" a="E"><vh>Fragments</vh>
+<v t="ekr.20080515053412.33"><vh>Fragments</vh>
 <v t="ekr.20080515053412.34"><vh>@popup edit-menu</vh>
 <v t="ekr.20080515053412.35"><vh>@item rclick-cut-text</vh></v>
 <v t="ekr.20080515053412.36"><vh>@item rclick-copy-text</vh></v>
@@ -991,7 +991,7 @@
 <v t="ekr.20080515053412.42"><vh>@item *</vh></v>
 </v>
 </v>
-<v t="ekr.20080515053412.43" a="E"><vh>@popup to-chapter-fragment</vh>
+<v t="ekr.20080515053412.43"><vh>@popup to-chapter-fragment</vh>
 <v t="ekr.20080515053412.44"><vh>@menu Clone to Chapter</vh>
 <v t="ekr.20080515053412.45"><vh>@item *</vh></v>
 </v>
@@ -1001,7 +1001,7 @@
 <v t="ekr.20080515053412.48"><vh>@menu Move to Chapter</vh>
 <v t="ekr.20080515053412.49"><vh>@item *</vh></v>
 </v>
-<v t="ekr.20080515053412.50" a="E"><vh>@menu Goto to Chapter</vh>
+<v t="ekr.20080515053412.50"><vh>@menu Goto to Chapter</vh>
 <v t="ekr.20080515053412.51"><vh>@item *</vh></v>
 </v>
 </v>
@@ -1273,9 +1273,9 @@
 <v t="TL.20080806084612.8"><vh>@mode tree-double-click-node</vh></v>
 <v t="TL.20080806084612.9"><vh>@mode focus-to-tree</vh></v>
 <v t="TL.20080806084612.10"><vh>@mode focus-to-body</vh></v>
-<v t="TL.20080806084612.11" a="E"><vh>@mode body-command-line</vh>
+<v t="TL.20080806084612.11"><vh>@mode body-command-line</vh>
 <v t="TL.20080806084612.12"><vh>@mode body-command-revert</vh></v>
-<v t="TL.20080806084612.13" a="E"><vh>@mode body-command-save</vh>
+<v t="TL.20080806084612.13"><vh>@mode body-command-save</vh>
 <v t="TL.20080806084612.14"><vh>@mode body-command-save-quit</vh>
 <v t="TL.20080806084612.15"><vh>@mode body-command-save-quit-return</vh></v>
 </v>
@@ -1336,7 +1336,7 @@
 <v t="TL.20080806084612.61"><vh>@mode body-search-all-nodes</vh></v>
 <v t="TL.20080806084612.62"><vh>@mode body-search-toggle-headline</vh></v>
 <v t="TL.20080806084612.63"><vh>@mode body-search-toggle-body</vh></v>
-<v t="TL.20080806084612.64" a="E"><vh>@mode body-search-toggle-mark</vh>
+<v t="TL.20080806084612.64"><vh>@mode body-search-toggle-mark</vh>
 <v t="TL.20080806084612.65"><vh>@mode body-search-toggle-mark-finds</vh></v>
 <v t="TL.20080806084612.66"><vh>@mode body-search-toggle-mark-changes</vh></v>
 </v>
@@ -1361,7 +1361,7 @@
 <v t="TL.20080806084612.83"><vh>@mode body-delete-to-beginning-of-sentence</vh></v>
 <v t="TL.20080806084612.84"><vh>@mode body-delete-to-end-of-paragraph</vh></v>
 <v t="TL.20080806084612.85"><vh>@mode body-delete-to-beginning-of-paragraph</vh></v>
-<v t="TL.20080806084612.86" a="E"><vh>@mode body-delete-to-g-object</vh>
+<v t="TL.20080806084612.86"><vh>@mode body-delete-to-g-object</vh>
 <v t="TL.20080806084612.87"><vh>@mode body-delete-to-beginning-of-buffer</vh></v>
 </v>
 <v t="TL.20080806084612.88"><vh>@mode body-delete-to-end-of-buffer</vh></v>

@@ -250,7 +250,7 @@ def runProfileOnNode (p,outputPath=None):
     s = p.bodyString().rstrip() + '\n'
 
     if outputPath is None:
-        # outputPath = g.os_path_abspath(
+        # outputPath = g.os_path_finalize(
             # g.os_path_join(
                 # g.app.loadDir,'..','test','profileStats'))
         outputPath = name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
@@ -701,7 +701,7 @@ def runTestsExternally (c,all):
 
             '''Write c's outline to test/dynamicUnitTest.leo.'''
 
-            path = g.os_path_abspath(
+            path = g.os_path_finalize(
                 g.os_path_join(g.app.loadDir,'..','test', self.fileName))
 
             c2.selectPosition(c2.rootPosition())
@@ -834,7 +834,7 @@ def runTestsExternally (c,all):
             '''Run test/leoDynamicTest.py in a pristine environment.'''
 
             # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-            path = g.os_path_abspath(g.os_path_join(
+            path = g.os_path_finalize(g.os_path_join(
                 # g.app.loadDir, '..', 'test', 'leoDynamicTest.py'))
                 g.app.loadDir,'leoDynamicTest.py'))
 
@@ -843,8 +843,8 @@ def runTestsExternally (c,all):
 
             args = [sys.executable, path, '--silent']  
 
-            # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src'))
-            # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..')
+            # srcDir = g.os_path_finalize(g.os_path_join(g.app.loadDir,'..','src'))
+            # srcDir = g.os_path_finalize(g.os_path_join(g.app.loadDir,'..')
             # os.chdir(srcDir)
 
             os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
@@ -1277,15 +1277,14 @@ def getAllPluginFilenames ():
     path = g.os_path_join(g.app.loadDir,"..","plugins")
 
     files = glob.glob(g.os_path_join(path,"*.py"))
-    files = [g.os_path_abspath(f) for f in files]
+    files = [g.os_path_finalize(f) for f in files]
     files.sort()
     return files
 #@-node:ekr.20051104075904.91:getAllPluginFilenames
 #@+node:ekr.20051104075904.92:testPlugin (no longer used)
 def oldTestPlugin (fileName,verbose=False):
 
-    path = g.os_path_join(g.app.loadDir,"..","plugins")
-    path = g.os_path_abspath(path)
+    path = g.os.path_finalize(g.os_path_join(g.app.loadDir,"..","plugins"))
 
     module = g.importFromPath(fileName,path)
     assert module, "Can not import %s" % path
@@ -1731,7 +1730,7 @@ def findAllAtFileNodes(c):
             filename,ext = g.os_path_splitext(tail)
             if ext == ".py":
                 path = g.os_path_join(g.app.loadDir,name)
-                path = g.os_path_abspath(path)
+                path = g.os_path_finalize(path)
                 paths.append(path)
 
     return paths
@@ -1752,7 +1751,7 @@ def importAllModulesInPathList(paths):
 #@+node:ekr.20051104075904.102:importAllModulesInPath
 def importAllModulesInPath (path):
 
-    path = g.os_path_abspath(path)
+    path = g.os_path_finalize(path)
 
     if not g.os_path_exists(path):
         g.es("path does not exist:",path)
@@ -1783,7 +1782,7 @@ def importAllModulesInPath (path):
 
 def safeImportModule (fileName):
 
-    fileName = g.os_path_abspath(fileName)
+    fileName = g.os_path_finalize(fileName)
     head,tail = g.os_path_split(fileName)
     moduleName,ext = g.os_path_splitext(tail)
 

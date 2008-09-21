@@ -218,7 +218,7 @@ class gtkGui(leoGui.leoGui):
 
         """
 
-        initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
+        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
 
         if action == 'open':
             btns = (
@@ -793,7 +793,7 @@ class gtkGui(leoGui.leoGui):
         self.treeIcons = icons = []
         self.namedIcons = namedIcons = {}
 
-        path = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'Icons'))
+        path = g.os_path_finalize(g.os_path_join(g.app.loadDir, '..', 'Icons'))
         if g.os_path_exists(g.os_path_join(path, 'box01.GIF')):
             ext = '.GIF'
         else:

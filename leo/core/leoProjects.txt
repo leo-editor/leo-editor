@@ -271,7 +271,7 @@ def readSettingsFiles (self,fileName,verbose=True):
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
         if path:
-            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            path = g.os_path_realpath(g.os_path_finalize(path))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
@@ -323,13 +323,13 @@ def createMyLeoSettingsFile (self,localConfigFile):
     ):
         # g.trace(path)
         if path:
-            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            path = g.os_path_realpath(g.os_path_finalize(path))
             if g.os_path_exists(path):
                 # g.trace('exists',path)
                 return
 
     if g.app.homeDir:
-        path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+        path = g.os_path_finalize(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
             f = open(path,'wb')
             f.write(s)
@@ -562,7 +562,7 @@ def readSettingsFiles (self,fileName,verbose=True):
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
         if path:
-            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            path = g.os_path_realpath(g.os_path_finalize(path))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
@@ -614,13 +614,13 @@ def createMyLeoSettingsFile (self,localConfigFile):
     ):
         # g.trace(path)
         if path:
-            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            path = g.os_path_realpath(g.os_path_finalize(path))
             if g.os_path_exists(path):
                 # g.trace('exists',path)
                 return
 
     if g.app.homeDir:
-        path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+        path = g.os_path_finalize(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
         try:
             f = open(path,'wb')
             f.write(s)
@@ -837,7 +837,7 @@ def openLeoOrZipFile (fileName):
     except IOError:
         # Do not use string + here: it will fail for non-ascii strings!
         if not g.unitTesting:
-            g.es("can not open:",fileName,color="blue")
+            g.es_print("can not open:",fileName,color="blue")
         return None,False
 #@nonl
 #@-node:ekr.20070412082527:g.openLeoOrZipFile
@@ -1552,8 +1552,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_normpath(g.os_path_abspath(
-        g.os_path_join(g.app.loadDir,base))) # Bug fix: 2008/9/18
+    absbase = g.os_path_finalize(g.os_path_join(g.app.loadDir,base))
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -1661,8 +1660,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_normpath(g.os_path_abspath(
-        g.os_path_join(g.app.loadDir,base))) # Bug fix: 2008/9/18
+    absbase = g.os_path_finalize(g.os_path_join(g.app.loadDir,base))
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -2409,8 +2407,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_normpath(g.os_path_abspath(
-        g.os_path_join(g.app.loadDir,base))) # Bug fix: 2008/9/18
+    absbase = g.os_path_finalize(g.os_path_join(g.app.loadDir,base))
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -3857,8 +3854,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_normpath(g.os_path_abspath(
-        g.os_path_join(g.app.loadDir,base))) # Bug fix: 2008/9/18
+    absbase = g.os_path_finalize(g.os_path_join(g.app.loadDir,base))
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -4167,7 +4163,467 @@ if not self.default_directory and not scripting and not importing:
 This make's Leo's syntax compatible with Python 3.0.
 #@nonl
 #@-node:ekr.20080917154206.4:Merge leo-30 branch
+#@+node:ekr.20080921060401.15:Replaced g.os_path.abspath with g.os_path_finalize
+# This is the elegant, clear way to support os.path.expanduser.
+#@nonl
+#@+node:ekr.20080921060401.14:os_path_finalize
+def os_path_finalize (path,encoding=None):
+
+    '''Return path with os.path.normpath, os.path.abspath and
+       os.path.expanduser applied.
+
+    There is no corresponding os.path method'''
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return os.path.normpath(
+        os.path.abspath(
+            os.path.expanduser(path)))
+#@-node:ekr.20080921060401.14:os_path_finalize
+#@-node:ekr.20080921060401.15:Replaced g.os_path.abspath with g.os_path_finalize
 #@-node:ekr.20080917153158.15:New features
+#@+node:ekr.20080919085541.2:Open a default .leo file if no other is specified
+# Added support for @string default_leo_file = ~/.leo/workbook.leo
+#@nonl
+#@+node:ekr.20080921060401.7: Request
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/d6449236bc140713#
+
+Now it's easier than ever to add *quick* notes with leo. ILeo knows of
+"special" leo file ~/.ipython/ipython_notebook.leo, which is opened
+automatically when you do:
+
+lleo
+
+("launch leo" without specifying a .leo file to open. The old
+behaviour was to open untitled file, saving of which iIs pain).
+
+lno This is my note
+
+("leo note")
+
+This opens ipython_notebook.leo if leo is not running already, and
+adds a headline with "This is my note" under headline "Scratch". Of
+course the focus still remains in the ipython window, so you can
+proceed adding more notes with %lno without losing your concentration
+or touching your mouse. If you run  %lno with a note string that
+already exists, the existing note is focused instead.
+
+To enable all this goodness, you just need to add
+
+_ip.load('ipy_leo')
+
+to your ipy_user_conf.py.
+
+You also need to install leo with "setup.py develop".
+
+I guess this is leo's equivalent of Chandler's "Quick entry bar",
+described here:
+
+http://www.youtube.com/watch?v=JJBxajDwmLI 
+
+@color
+#@nonl
+#@-node:ekr.20080921060401.7: Request
+#@+node:ekr.20080921060401.11:Refactoring runLeo.run
+#@+node:ekr.20080921060401.4:createSpecialGui & helper
+def createSpecialGui(jyLeo,pymacs,script,windowFlag):
+
+    import leo.core.leoGlobals as g
+
+    if g.isPython3:
+        # Create the curses gui.
+        import leo.core.leoPlugins as leoPlugins
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
+    elif pymacs:
+        createNullGuiWithScript(None)
+    elif jyLeo:
+        import leo.core.leoSwingGui as leoSwingGui
+        g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+#@+node:ekr.20031218072017.1938:createNullGuiWithScript
+def createNullGuiWithScript (script):
+
+    import leo.core.leoGlobals as g
+    import leo.core.leoGui as leoGui
+
+    g.app.batchMode = True
+    g.app.gui = leoGui.nullGui("nullGui")
+    g.app.gui.setScript(script)
+#@-node:ekr.20031218072017.1938:createNullGuiWithScript
+#@-node:ekr.20080921060401.4:createSpecialGui & helper
+#@+node:ekr.20080921060401.9:doEarlyInits
+def doEarlyInits(verbose):
+
+    import leo.core.leoGlobals as g
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoConfig as leoConfig
+
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+
+    # There is a circular dependency between leoCommands and leoEditCommands.
+    import leo.core.leoCommands as leoCommands
+
+    # New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+    # This prevents a crash when run is called repeatedly from IPython's lleo extension.
+    import leo.core.leoPlugins as leoPlugins
+    leoPlugins.init()
+
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+#@-node:ekr.20080921060401.9:doEarlyInits
+#@+node:ekr.20080921060401.5:finishInitApp
+def finishInitApp(c):
+
+    import leo.core.leoGlobals as g
+
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+
+    g.app.writeWaitingLog()
+
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+
+    if g.app.oneConfigFilename:
+        g.es_print('--one-config option in effect',color='red')
+#@-node:ekr.20080921060401.5:finishInitApp
+#@+node:ekr.20071117060958:getFileName & helper
+def getFileName (fileName,script):
+
+    '''Return the filename from sys.argv.'''
+
+    import leo.core.leoGlobals as g
+
+    if g.isPython3:
+        ### Testing only.
+        fileName = r'c:\leo.repo\trunk\leo\test\test.leo'
+        assert g.os_path_exists(fileName)
+    elif script:
+        fileName = None
+    elif fileName:
+        pass
+    else:
+        fileName = len(sys.argv) > 1 and sys.argv[-1]
+
+    return completeFileName(fileName)
+#@+node:ekr.20041124083125:completeFileName
+def completeFileName (fileName):
+
+    import leo.core.leoGlobals as g
+
+    if not (fileName and fileName.strip()):
+        return None,None
+
+    # This does not depend on config settings.
+    try:
+        if sys.platform.lower().startswith('win'):
+            fileName = g.toUnicode(fileName,'mbcs')
+        else:
+            fileName = g.toUnicode(fileName,'utf-8')
+    except Exception: pass
+
+    relativeFileName = fileName
+    fileName = g.os_path_join(os.getcwd(),fileName)
+
+    junk,ext = g.os_path_splitext(fileName)
+    if not ext:
+        fileName = fileName + ".leo"
+        relativeFileName = relativeFileName + ".leo"
+
+    return fileName,relativeFileName
+#@-node:ekr.20041124083125:completeFileName
+#@-node:ekr.20071117060958:getFileName & helper
+#@+node:ekr.20080921060401.6:initFocusAndDraw
+def initFocusAndDraw(c,fileName):
+
+    import leo.core.leoGlobals as g
+
+    w = g.app.gui.get_focus(c)
+
+    if not fileName:
+        c.redraw_now()
+
+    # Respect c's focus wishes if posssible.
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+
+    c.outerUpdate()
+#@-node:ekr.20080921060401.6:initFocusAndDraw
+#@+node:ekr.20031218072017.1934:run
+def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
+
+    """Initialize and run Leo"""
+
+    import pdb ; pdb = pdb.set_trace
+    if jyLeo: print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
+    g = initGandApp()
+    if jyLeo: startJyleo()
+    if not isValidPython(): return
+    g.computeStandardDirectories()
+    adjustSysPath()
+    script,windowFlag = scanOptions()
+    if pymacs: script,windowFlag = None,False
+    verbose = script is None
+    doEarlyInits(verbose)
+    fileName,relativeFileName = getFileName(fileName,script)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config and *before* opening plugins.
+    # This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.setEncoding()
+    createSpecialGui(jyLeo,pymacs,script,windowFlag)
+    g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
+    if g.app.killed: return # Support for g.app.forceShutdown.
+    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    g.init_sherlock(args)  # Init tracing and statistics.
+    if g.app and g.app.use_psyco: startPsyco()
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName)
+    if not frame: return
+    finishInitApp(c)
+    p = c.currentPosition()
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
+    initFocusAndDraw(c,fileName)
+    g.app.gui.runMainLoop()
+#@-node:ekr.20031218072017.1934:run
+#@+node:ekr.20080521132317.2:scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+
+    import optparse
+    import leo.core.leoGlobals as g
+
+    parser = optparse.OptionParser()
+    parser.add_option('--one-config',dest="one_config_path")
+    parser.add_option('--silent',action="store_false",dest="silent")
+    parser.add_option('--script',dest="script")
+    parser.add_option('--script-window',dest="script_window")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    # g.trace(sys.argv)
+
+    # Handle the args...
+
+    # --one-config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid option: file not found:',path,color='red')
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_join(g.app.loadDir,script_name)
+        try:
+            f = None
+            try:
+                f = open(script_name,'r')
+                script = f.read()
+                # g.trace("script",script)
+            except IOError:
+                g.es_print("can not open script file:",script_name, color="red")
+                script = None
+        finally:
+            if f: f.close()
+    else:
+        script = None
+
+    # --silent
+    g.app.silentMode = options.silent
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    return script, windowFlag
+#@nonl
+#@-node:ekr.20080521132317.2:scanOptions
+#@-node:ekr.20080921060401.11:Refactoring runLeo.run
+#@+node:ekr.20080921060401.12:Support for @string default_leo_file = ~/.leo/workbook.leo
+#@+node:ekr.20080921060401.13:os_path_expanduser
+def os_path_expanduser(path,encoding=None):
+
+    """wrap os.path.expanduser"""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return os.path.expanduser(path)
+#@-node:ekr.20080921060401.13:os_path_expanduser
+#@+node:ekr.20070412082527:g.openLeoOrZipFile
+def openLeoOrZipFile (fileName):
+
+    try:
+        isZipped = zipfile.is_zipfile(fileName)
+        if isZipped:
+            theFile = zipfile.ZipFile(fileName,'r')
+            # g.trace('opened zip file',theFile)
+        else:
+            # mode = g.choose(g.isPython3,'r','rb')
+            # 9/19/08: always use binary mode??
+            mode = 'rb'
+            theFile = open(fileName,mode)
+        return theFile,isZipped
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None,False
+#@nonl
+#@-node:ekr.20070412082527:g.openLeoOrZipFile
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    if not fileName or len(fileName) == 0:
+        return False, None
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_finalize(fileName)
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    theList = app.windowList
+    for frame in theList:
+        if munge(fileName) == munge(frame.c.mFileName):
+            frame.bringToFront()
+            frame.c.setLog()
+            frame.c.outerUpdate()
+            return True, frame
+    if old_c:
+        # New in 4.4: We must read the file *twice*.
+        # The first time sets settings for the later call to c.finishCreate.
+        # g.trace('***** prereading',fileName)
+        c2 = g.app.config.openSettingsFile(fileName)
+        if c2: g.app.config.updateSettings(c2,localFlag=True)
+        g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile: return False, None
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+    assert frame.c == c and c.frame == frame
+    c.isZipped = isZipped
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        app.lockLog()
+        frame.c.fileCommands.open(
+            theFile,fileName,
+            readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+        app.unlockLog()
+        for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+            # The recent files list has been updated by c.updateRecentFiles.
+            z.c.config.setRecentFiles(g.app.config.recentFiles)
+    # Bug fix in 4.4.
+    frame.openDirectory = g.os_path_finalize(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    p = c.currentPosition()
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    c.redraw()
+    assert frame.c == c and c.frame == frame
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    k = c.k
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
+
+    return True, frame
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@+node:ekr.20031218072017.1624:createFrame (runLeo.py)
+def createFrame (fileName,relativeFileName):
+
+    """Create a LeoFrame during Leo's startup process."""
+
+    import leo.core.leoGlobals as g
+
+    # New in Leo 4.6: support for 'default_leo_file' setting.
+    if not fileName:
+        fileName = g.app.config.getString(c=None,setting='default_leo_file')
+        fileName = g.os_path_finalize(fileName)
+        if fileName and g.os_path_exists(fileName):
+            g.es_print('default_leo_file:',fileName,color='blue')
+
+    # Try to create a frame for the file.
+    if fileName and g.os_path_exists(fileName):
+        ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+        if ok: return frame.c,frame
+
+    # Create a _new_ frame & indicate it is the startup window.
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        initEditCommanders=True)
+    assert frame.c == c and c.frame == frame
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    frame.startupWindow = True
+    if c.chapterController:
+        c.chapterController.finishCreate()
+        c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    # Call the 'new' hook for compatibility with plugins.
+    g.doHook("new",old_c=None,c=c,new_c=c)
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=frame.c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+
+    # Report the failure to open the file.
+    if fileName:
+        g.es_print("file not found:",fileName,color='red')
+
+    return c,frame
+#@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
+#@-node:ekr.20080921060401.12:Support for @string default_leo_file = ~/.leo/workbook.leo
+#@-node:ekr.20080919085541.2:Open a default .leo file if no other is specified
 #@-node:ekr.20080917153158.11:4.6
 #@-all
 #@nonl

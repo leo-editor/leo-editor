@@ -158,7 +158,7 @@ def computeGlobalConfigDir():
         theDir = g.os_path_join(g.app.loadDir,"..","config")
 
     if theDir:
-        theDir = g.os_path_abspath(theDir)
+        theDir = g.os_path_finalize(theDir)
 
     if (
         not theDir or
@@ -177,7 +177,7 @@ def computeHomeDir():
     import leo.core.leoGlobals as g
 
     encoding = g.startupEncoding()
-    # dotDir = g.os_path_abspath('./',encoding)
+    # dotDir = g.os_path_finalize('./',encoding)
     # home = os.getenv('HOME',default=None)
     home = os.path.expanduser("~")
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
@@ -192,7 +192,7 @@ def computeHomeDir():
     if home:
         # N.B. This returns the _working_ directory if home is None!
         # This was the source of the 4.3 .leoID.txt problems.
-        home = g.os_path_abspath(home,encoding)
+        home = g.os_path_finalize(home,encoding)
         if (
             not g.os_path_exists(home,encoding) or
             not g.os_path_isdir(home,encoding)
@@ -236,7 +236,7 @@ def computeLoadDir():
                 # Convert the drive name to upper case.
                 path = path[0].upper() + path[1:]
         encoding = g.startupEncoding()
-        path = g.os_path_abspath(path,encoding)
+        path = g.os_path_finalize(path,encoding)
         if path:
             loadDir = g.os_path_dirname(path,encoding)
         else: loadDir = None
@@ -248,7 +248,7 @@ def computeLoadDir():
         ):
             loadDir = os.getcwd()
             g.pr("Exception getting load directory")
-        loadDir = g.os_path_abspath(loadDir,encoding)
+        loadDir = g.os_path_finalize(loadDir,encoding)
         # g.es("load dir:",loadDir,color="blue")
         return loadDir
     except:
@@ -292,18 +292,18 @@ def computeStandardDirectories():
     g.app.homeDir = g.computeHomeDir()
 
     # New in Leo 4.5 b4: create homeLeoDir if needed.
-    g.app.homeLeoDir = homeLeoDir = g.os_path_abspath(
+    g.app.homeLeoDir = homeLeoDir = g.os_path_finalize(
         g.os_path_join(g.app.homeDir,'.leo'))
 
     if not g.os_path_exists(homeLeoDir):
         g.makeAllNonExistentDirectories(homeLeoDir,force=True)
 
-    g.app.extensionsDir = g.os_path_abspath(
+    g.app.extensionsDir = g.os_path_finalize(
         g.os_path_join(g.app.loadDir,'..','extensions'))
 
     g.app.globalConfigDir = g.computeGlobalConfigDir()
 
-    g.app.testDir = g.os_path_abspath(
+    g.app.testDir = g.os_path_finalize(
         g.os_path_join(g.app.loadDir,'..','test'))
 
     g.app.user_xresources_path = g.os_path_join(g.app.homeDir,'.leo_xresources')
@@ -2157,7 +2157,7 @@ def openWithFileName(fileName,old_c,
 
     # Create a full, normalized, Unicode path name, preserving case.
     relativeFileName = g.os_path_normpath(fileName)
-    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
+    fileName = g.os_path_finalize(fileName)
     # g.trace(relativeFileName,'-->',fileName)
 
     # If the file is already open just bring its window to the front.
@@ -2198,7 +2198,7 @@ def openWithFileName(fileName,old_c,
             # The recent files list has been updated by c.updateRecentFiles.
             z.c.config.setRecentFiles(g.app.config.recentFiles)
     # Bug fix in 4.4.
-    frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+    frame.openDirectory = g.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     p = c.currentPosition()
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -2224,7 +2224,6 @@ def openWithFileName(fileName,old_c,
         k.showStateAndMode()
 
     return True, frame
-#@nonl
 #@-node:ekr.20031218072017.2052:g.openWithFileName
 #@+node:ekr.20070412082527:g.openLeoOrZipFile
 def openLeoOrZipFile (fileName):
@@ -2243,7 +2242,7 @@ def openLeoOrZipFile (fileName):
     except IOError:
         # Do not use string + here: it will fail for non-ascii strings!
         if not g.unitTesting:
-            g.es("can not open:",fileName,color="blue")
+            g.es_print("can not open:",fileName,color="blue")
         return None,False
 #@nonl
 #@-node:ekr.20070412082527:g.openLeoOrZipFile
@@ -3136,6 +3135,29 @@ def os_path_exists(path,encoding=None):
 
     return os.path.exists(path)
 #@-node:ekr.20031218072017.2149:os_path_exists
+#@+node:ekr.20080921060401.13:os_path_expanduser
+def os_path_expanduser(path,encoding=None):
+
+    """wrap os.path.expanduser"""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return os.path.expanduser(path)
+#@-node:ekr.20080921060401.13:os_path_expanduser
+#@+node:ekr.20080921060401.14:os_path_finalize
+def os_path_finalize (path,encoding=None):
+
+    '''Return path with os.path.normpath, os.path.abspath and
+       os.path.expanduser applied.
+
+    There is no corresponding os.path method'''
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return os.path.normpath(
+        os.path.abspath(
+            os.path.expanduser(path)))
+#@-node:ekr.20080921060401.14:os_path_finalize
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
 
@@ -3200,36 +3222,6 @@ def os_path_join(*args,**keys):
     path = g.toUnicodeFileEncoding(path,encoding)
     return path
 #@-node:ekr.20031218072017.2154:os_path_join
-#@+node:ekr.20031218072017.2155:os_path_norm NOT USED
-if 0:  # A bad idea.
-
-    def os_path_norm(path,encoding=None):
-
-        """Normalize both the path and the case."""
-
-        path = g.toUnicodeFileEncoding(path,encoding)
-
-        path = os.path.normcase(path)
-        path = os.path.normpath(path)
-
-        path = g.toUnicodeFileEncoding(path,encoding)
-
-        return path
-#@-node:ekr.20031218072017.2155:os_path_norm NOT USED
-#@+node:ekr.20041115103456:os_path_normabs NOT USED
-if 0: # A bad idea.
-
-    def os_path_normabs (path,encoding=None):
-
-        """Convert the file name to a fully normalized absolute path.
-
-        There is no exact analog to this in os.path"""
-
-        path = g.os_path_abspath(path,encoding = encoding)
-        path = g.os_path_norm(path,encoding = encoding)
-
-        return path
-#@-node:ekr.20041115103456:os_path_normabs NOT USED
 #@+node:ekr.20031218072017.2156:os_path_normcase
 def os_path_normcase(path,encoding=None):
 

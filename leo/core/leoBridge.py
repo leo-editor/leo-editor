@@ -172,7 +172,7 @@ class bridgeController:
         leoDirs = ('config','doc','extensions','modes','plugins','core','test') # 2008/7/30
 
         for theDir in leoDirs:
-            path = g.os_path_abspath(
+            path = g.os_path_finalize(
                 g.os_path_join(g.app.loadDir,'..',theDir))
             if path not in sys.path:
                 sys.path.append(path)
@@ -373,7 +373,7 @@ class bridgeController:
                 ok, frame = g.openWithFileName(fileName,None)
                 if ok: return frame.c
             else:
-                g.es('file not found', fileName,'creating new window')
+                g.es_print('file not found', fileName,'creating new window')
         # Create a new frame. Unlike leo.run, this is not a startup window.
         c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
         frame.setInitialWindowGeometry()

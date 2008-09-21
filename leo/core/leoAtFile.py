@@ -410,7 +410,7 @@ class atFile:
                 return at.error('can not call at.read from string for @shadow files')
             at.inputFile = g.fileLikeObject(fromString=fromString)
         else:
-            fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
+            fn = g.os_path_finalize(g.os_path_join(at.default_directory,fn))
 
             if at.atShadow:
                 x = at.c.shadowController
@@ -673,7 +673,7 @@ class atFile:
 
         at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
-        fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
+        fn = g.os_path_finalize(g.os_path_join(at.default_directory,fn))
         shadow_fn     = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 

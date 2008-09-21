@@ -231,7 +231,7 @@ class baseCommands:
 
         c = self
         if c.mFileName:
-            return g.os_path_abspath(c.mFileName).lower()
+            return g.os_path_finalize(c.mFileName).lower()
         else:
             return 0
     #@-node:ekr.20041130173135:c.hash
@@ -829,7 +829,7 @@ class baseCommands:
 
         name = g.toUnicode(name,g.app.tkEncoding)
 
-        td = g.os_path_abspath(tempfile.gettempdir())
+        td = g.os_path_finalize(tempfile.gettempdir())
 
         path = g.os_path_join(td,name)
 
@@ -1075,7 +1075,7 @@ class baseCommands:
         def munge(name):
             return g.os_path_normpath(name or '').lower()
         def munge2(name):
-            return g.os_path_abspath(g.os_path_join(g.app.loadDir,name or ''))
+            return g.os_path_finalize(g.os_path_join(g.app.loadDir,name or ''))
 
         # Update the recent files list in all windows.
         if fileName:
@@ -1714,9 +1714,9 @@ class baseCommands:
             parts = path.split('/')
             path = g.app.loadDir
             for part in parts:
-                path = g.os_path_abspath(g.os_path_join(path,part))
+                path = g.os_path_finalize(g.os_path_join(path,part))
         else:
-            path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','scriptFile.py'))
+            path = g.os_path_finalize(g.os_path_join(g.app.loadDir,'..','test','scriptFile.py'))
 
         # Write the file.
         try:
@@ -5701,7 +5701,7 @@ class baseCommands:
 
         import webbrowser
 
-        theFile = g.os_path_abspath(
+        theFile = g.os_path_finalize(
             g.os_path_join(
                 g.app.loadDir,'..','doc','html','leo_TOC.html'))
 
@@ -5786,8 +5786,7 @@ class baseCommands:
 
         if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-        absbase = g.os_path_normpath(g.os_path_abspath(
-            g.os_path_join(g.app.loadDir,base))) # Bug fix: 2008/9/18
+        absbase = g.os_path_finalize(g.os_path_join(g.app.loadDir,base))
 
         if trace and verbose: g.trace('absbase',absbase)
 
