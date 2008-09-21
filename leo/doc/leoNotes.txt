@@ -3323,43 +3323,6 @@ Brian Theado
 @language python
 @color
 #@nonl
-#@+node:ekr.20080920052058.2:p.__cmp__ (no longer used)
-if False: ### not g.isPython3:
-
-    # This doesn't seem to be called in Python 3.x.
-
-    def __cmp__(self,p2):
-
-        """Return 0 if two postions are equivalent."""
-
-        p1 = self
-
-        # Don't use g.trace: it might call p.__cmp__ again.
-        # print ('%s %s' % (p1.v and p1.headString(),p2 and p2.v and p2.headString()))
-
-        if p2 is None or p2.v is None:
-            if p1.v is None: return 0 # equal
-            else:            return 1 # not equal
-        elif p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack:
-            return 0 # equal
-        else:
-            return 1 # not equal
-#@-node:ekr.20080920052058.2:p.__cmp__ (no longer used)
-#@+node:ekr.20080920052058.4:p.isEqual (to be removed)
-# isEqual and equal are deprecated.
-
-def isEqual (self,p2):
-
-    # g.trace(repr(self),repr(p2))
-
-    p1 = self
-    if p2 is None or p2.v is None:
-        return p1.v is None
-    else:
-        return p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack
-
-equal = isEqual
-#@-node:ekr.20080920052058.4:p.isEqual (to be removed)
 #@+node:ekr.20041219072416.1:<< import other early files>> (runLeo.py)
 import leo.core.leoNodes as leoNodes
 import leo.core.leoConfig as leoConfig
@@ -3403,6 +3366,53 @@ g = leoGlobals
 assert(g.app)
 
 #@-node:ekr.20041219072112:<< import leoGlobals and leoApp >> (runLeo.py)
+#@+node:ekr.20080921060401.9:doEarlyInits
+def doEarlyInits(verbose):
+
+    import leo.core.leoGlobals as g
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoConfig as leoConfig
+
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+
+    # There is a circular dependency between leoCommands and leoEditCommands.
+    import leo.core.leoCommands as leoCommands
+
+    # New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+    # This prevents a crash when run is called repeatedly from IPython's lleo extension.
+    import leo.core.leoPlugins as leoPlugins
+    leoPlugins.init()
+
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+#@-node:ekr.20080921060401.9:doEarlyInits
+#@+node:ekr.20080921060401.10:initGandApp
+def initGandApp ():
+
+    # Add the current directory to sys.path *before* importing g.
+    # This will fail if the current directory contains unicode characters...
+    path = os.getcwd()
+    if path not in sys.path:
+        # print('appending %s to sys.path' % path)
+        sys.path.append(path)
+
+    # Import leoGlobals, but do NOT set g.
+    import leo.core.leoGlobals as leoGlobals
+
+    # Set leoGlobals.g here, rather than in leoGlobals.py.
+    leoGlobals.g = leoGlobals
+
+    import leo.core.leoApp as leoApp
+
+    # Create the app.
+    leoGlobals.app = leoApp.LeoApp()
+
+    # **now** we can set g.
+    g = leoGlobals
+    assert(g.app)
+
+    return g
+#@-node:ekr.20080921060401.10:initGandApp
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

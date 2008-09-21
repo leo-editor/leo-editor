@@ -2521,9 +2521,6 @@
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20080824191108.1"><vh>runLeo</vh>
-<v t="ekr.20080824191108.2"><vh>@test isValidPython</vh></v>
-</v>
 </v>
 </v>
 </vnodes>
@@ -21533,9 +21530,6 @@ x.show_error(
 pass
 pass
 </t>
-<t tx="ekr.20080824191108.1"></t>
-<t tx="ekr.20080824191108.2">import leo.core.runLeo as runLeo
-assert runLeo.isValidPython()</t>
 <t tx="ekr.20080901083414.1">s = '''\
 
 def foo():
