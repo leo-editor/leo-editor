@@ -96,7 +96,7 @@ def adjustSysPath ():
     leoDirs = ('config','doc','extensions','modes','plugins','core','test')
 
     for theDir in leoDirs:
-        path = g.os_path_abspath(
+        path = g.os_path_finalize(
             g.os_path_join(g.app.loadDir,'..',theDir))
         if path not in sys.path:
             sys.path.append(path)
@@ -107,6 +107,13 @@ def createFrame (fileName,relativeFileName):
     """Create a LeoFrame during Leo's startup process."""
 
     import leo.core.leoGlobals as g
+
+    # New in Leo 4.6: support for 'default_leo_file' setting.
+    if not fileName:
+        fileName = g.app.config.getString(c=None,setting='default_leo_file')
+        fileName = g.os_path_finalize(fileName)
+        if fileName and g.os_path_exists(fileName):
+            g.es_print('default_leo_file:',fileName,color='blue')
 
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
@@ -138,7 +145,7 @@ def createFrame (fileName,relativeFileName):
 
     # Report the failure to open the file.
     if fileName:
-        g.es("file not found:",fileName)
+        g.es_print("file not found:",fileName,color='red')
 
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
@@ -472,7 +479,7 @@ def profile_leo ():
     import leo.core.leoGlobals as g
 
     name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
+    # name = g.os_path_finalize(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
 
     profile.run('leo.run()',name)
 
@@ -519,7 +526,7 @@ def scanOptions():
     # --one-config
     path = options.one_config_path
     if path:
-        path = g.os_path_abspath(g.os_path_join(os.getcwd(),path))
+        path = g.os_path_finalize(g.os_path_join(os.getcwd(),path))
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
