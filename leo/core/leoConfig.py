@@ -2012,8 +2012,6 @@ class configClass:
 
     def readSettings (self,c,localFlag):
 
-        ### if g.isPython3: return {} ###
-
         """Read settings from a file that may contain an @settings tree."""
 
         # g.trace('=' * 20, c.fileName())
