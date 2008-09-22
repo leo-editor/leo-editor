@@ -1037,7 +1037,7 @@ class parserBaseClass:
         if bunch:
             # g.trace(key,bunch.val,bunch.path)
             path = bunch.path
-            if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
+            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:",name,"from",path)
 
         # N.B.  We can't use c here: it may be destroyed!
