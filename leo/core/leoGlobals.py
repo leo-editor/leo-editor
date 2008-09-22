@@ -177,7 +177,7 @@ def computeHomeDir():
     import leo.core.leoGlobals as g
 
     encoding = g.startupEncoding()
-    # dotDir = g.os_path_finalize('./',encoding)
+    # dotDir = g.os_path_finalize('./',encoding=encoding)
     # home = os.getenv('HOME',default=None)
     home = os.path.expanduser("~")
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
@@ -192,7 +192,7 @@ def computeHomeDir():
     if home:
         # N.B. This returns the _working_ directory if home is None!
         # This was the source of the 4.3 .leoID.txt problems.
-        home = g.os_path_finalize(home,encoding)
+        home = g.os_path_finalize(home,encoding=encoding)
         if (
             not g.os_path_exists(home,encoding) or
             not g.os_path_isdir(home,encoding)
@@ -236,7 +236,7 @@ def computeLoadDir():
                 # Convert the drive name to upper case.
                 path = path[0].upper() + path[1:]
         encoding = g.startupEncoding()
-        path = g.os_path_finalize(path,encoding)
+        path = g.os_path_finalize(path,encoding=encoding)
         if path:
             loadDir = g.os_path_dirname(path,encoding)
         else: loadDir = None
@@ -248,7 +248,7 @@ def computeLoadDir():
         ):
             loadDir = os.getcwd()
             g.pr("Exception getting load directory")
-        loadDir = g.os_path_finalize(loadDir,encoding)
+        loadDir = g.os_path_finalize(loadDir,encoding=encoding)
         # g.es("load dir:",loadDir,color="blue")
         return loadDir
     except:
@@ -2209,7 +2209,7 @@ def openWithFileName(fileName,old_c,
                 # The recent files list has been updated by c.updateRecentFiles.
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
     # Bug fix in 4.4.
-    frame.openDirectory = g.os_path_finalize(g.os_path_dirname(fileName))
+    frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     p = c.currentPosition()
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -3209,6 +3209,32 @@ def os_path_exists(path,encoding=None):
 
     return os.path.exists(path)
 #@-node:ekr.20031218072017.2149:os_path_exists
+#@+node:ekr.20080922124033.6:os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    c = keys.get('c')
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c and c.currentPosition()
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+                # g.trace('exp',exp,'val',val,'s',s)
+            except Exception:
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+
+
+#@-node:ekr.20080922124033.6:os_path_expandExpression
 #@+node:ekr.20080921060401.13:os_path_expanduser
 def os_path_expanduser(path,encoding=None):
 
@@ -3223,12 +3249,16 @@ def os_path_expanduser(path,encoding=None):
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
 #@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,encoding=None):
+def os_path_finalize (path,**keys):
 
     '''
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
 
     There is no corresponding os.path method'''
+
+    encoding = keys.get('encoding')
+
+    path = g.os_path_expandExpression(path,**keys)
 
     path = g.os_path_expanduser(path,encoding=encoding)
 
@@ -3240,7 +3270,7 @@ def os_path_finalize_join (*args,**keys):
 
     path = g.os_path_join(*args,**keys)
 
-    return os.path.normpath(os.path.abspath(path))
+    return g.os_path_finalize(path,**keys)
 #@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
@@ -3288,7 +3318,8 @@ def os_path_isfile(path,encoding=None):
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
 
-    encoding = keys.get("encoding")
+    c = keys.get('c')
+    encoding = keys.get('encoding')
 
     uargs = [g.toUnicodeFileEncoding(arg,encoding) for arg in args]
 
@@ -3301,9 +3332,12 @@ def os_path_join(*args,**keys):
             uargs[0] = c.openDirectory
             # g.trace(c.openDirectory)
 
-    uargs = [os.path.expanduser(z) for z in uargs]
+    uargs = [g.os_path_expandExpression(z,c=c) for z in uargs]
+
+    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs]
 
     path = os.path.join(*uargs)
+
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path,encoding)
     return path
