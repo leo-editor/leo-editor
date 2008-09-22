@@ -28,7 +28,7 @@ if 0: # Set to 1 for lint-like testing.
 #@nl
 #@<< imports and inits >>
 #@+node:ekr.20080921091311.1:<< imports and inits >>
-import pdb ; pdb = pdb.set_trace
+# import pdb ; pdb = pdb.set_trace
 import optparse
 import os
 import sys
@@ -117,7 +117,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     # Clear g.app.initing _before_ creating the frame.
     g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
     # Create the main frame.  Show it and all queued messages.
-    c,frame = createFrame(fileName,relativeFileName)
+    c,frame = createFrame(fileName,relativeFileName,script)
     if not frame: return
     finishInitApp(c)
     p = c.currentPosition()
@@ -141,12 +141,12 @@ def adjustSysPath ():
             sys.path.append(path)
 #@-node:ekr.20070306085724:adjustSysPath
 #@+node:ekr.20031218072017.1624:createFrame (runLeo.py)
-def createFrame (fileName,relativeFileName):
+def createFrame (fileName,relativeFileName,script):
 
     """Create a LeoFrame during Leo's startup process."""
 
     # New in Leo 4.6: support for 'default_leo_file' setting.
-    if not fileName:
+    if not fileName and not script:
         fileName = g.app.config.getString(c=None,setting='default_leo_file')
         fileName = g.os_path_finalize(fileName)
         if fileName and g.os_path_exists(fileName):
@@ -476,7 +476,7 @@ def scanOptions():
 
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest="one_config_path")
-    parser.add_option('--silent',       action="store_false",dest="silent")
+    parser.add_option('--silent',       action="store_true",dest="silent")
     parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
 
@@ -504,7 +504,7 @@ def scanOptions():
 
     script_name = script_path or script_path_w
     if script_name:
-        script_name = g.os_path_join(g.app.loadDir,script_name)
+        script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
         try:
             f = None
             try:
@@ -521,6 +521,7 @@ def scanOptions():
 
     # --silent
     g.app.silentMode = options.silent
+    # g.trace('silentMode',g.app.silentMode)
 
     # Compute the return values.
     windowFlag = script and script_path_w
