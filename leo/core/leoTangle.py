@@ -525,7 +525,7 @@ class baseTangleCommands:
             for section in self.root_list:
                 for part in section.parts:
                     if part.is_root:
-                        root_names.append(g.os_path_join(theDir,part.name))
+                        root_names.append(g.os_path_finalize_join(theDir,part.name)) ### was join
 
             if self.tangling and self.tangle_batch_flag:
                 try:
@@ -846,7 +846,7 @@ class baseTangleCommands:
         #@+node:ekr.20031218072017.3484:<< Read the file into file_buf  >> in untangleRoot
         f = None
         try:
-            path = g.os_path_join(self.tangle_directory,path)
+            path = g.os_path_finalize_join(self.tangle_directory,path) ### join
             f = open(path)
             if f:
                 file_buf = f.read()
@@ -1381,8 +1381,8 @@ class baseTangleCommands:
         for section in self.root_list:
 
             # g.trace(section.name)
-            file_name = g.os_path_join(self.tangle_directory,section.name)
-            file_name = g.os_path_normpath(file_name)
+            file_name = g.os_path_finalize_join(self.tangle_directory,section.name) ### was join
+            ###file_name = g.os_path_normpath(file_name)
             mode = c.config.output_newline
             # mode = g.choose(mode=="platform",'w','wb')
             textMode = mode == 'platform'

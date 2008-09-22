@@ -172,8 +172,7 @@ class bridgeController:
         leoDirs = ('config','doc','extensions','modes','plugins','core','test') # 2008/7/30
 
         for theDir in leoDirs:
-            path = g.os_path_finalize(
-                g.os_path_join(g.app.loadDir,'..',theDir))
+            path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
             if path not in sys.path:
                 sys.path.append(path)
     #@-node:ekr.20070302061713:adjustSysPath
@@ -355,7 +354,7 @@ class bridgeController:
 
         import os
 
-        fileName = g.os_path_join(os.getcwd(),fileName)
+        fileName = g.os_path_finalize_join(os.getcwd(),fileName) ### was join.
         head,ext = g.os_path_splitext(fileName)
         if not ext: fileName = fileName + ".leo"
 

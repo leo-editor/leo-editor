@@ -1356,7 +1356,7 @@ class configClass:
         # New in Leo 4.5 b4: change homeDir to homeLeoDir
         for ivar,theDir,fileName in (
             ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
-            ('homeFile',            g.app.homeLeoDir,          settingsFile),
+            ('homeFile',            g.app.homeLeoDir,       settingsFile),
             ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
             #non-prefixed names take priority over prefixed names
             ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),

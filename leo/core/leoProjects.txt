@@ -535,8 +535,7 @@ def adjustSysPath ():
     leoDirs = ('config','doc','extensions','modes','plugins','core','test')
 
     for theDir in leoDirs:
-        path = g.os_path_finalize(
-            g.os_path_join(g.app.loadDir,'..',theDir))
+        path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
         if path not in sys.path:
             sys.path.append(path)
 #@-node:ekr.20070306085724:adjustSysPath
@@ -656,7 +655,7 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.os_path_join(os.getcwd(),fileName)
+    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName) ### was join
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
@@ -1214,8 +1213,7 @@ def adjustSysPath ():
     leoDirs = ('config','doc','extensions','modes','plugins','core','test')
 
     for theDir in leoDirs:
-        path = g.os_path_finalize(
-            g.os_path_join(g.app.loadDir,'..',theDir))
+        path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
         if path not in sys.path:
             sys.path.append(path)
 #@-node:ekr.20070306085724:adjustSysPath
@@ -1335,7 +1333,7 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.os_path_join(os.getcwd(),fileName)
+    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName) ### was join
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
@@ -2440,7 +2438,8 @@ def scanAtPathDirectives(self,aList,force=False):
 
     # Step 3: Compute the full, effective, absolute path.
     if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    path = g.os_path_normpath(g.os_path_join(*paths))
+    ### path = g.os_path_normpath(g.os_path_join(*paths))
+    path = g.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
     # Step 4: Make the path if necessary.
@@ -2548,7 +2547,8 @@ def scanAtPathDirectives(self,aList,force=False):
 
     # Step 3: Compute the full, effective, absolute path.
     if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    path = g.os_path_normpath(g.os_path_join(*paths))
+    ### path = g.os_path_normpath(g.os_path_join(*paths))
+    path = g.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
     # Step 4: Make the path if necessary.
@@ -2994,7 +2994,7 @@ def goto_getFileLines (self,root,fileName):
         d = g.scanDirectives(c,p=root)
         path = d.get("path")
         # g.trace('path',path,'fileName',fileName)
-        fileName = g.os_path_join(path,fileName)
+        fileName = g.os_path_finalize_join(path,fileName) ### was join
         lines    = c.goto_open(fileName)
 
     return lines
@@ -3295,7 +3295,8 @@ def scanAtPathDirectives(self,aList,force=False):
 
     # Step 3: Compute the full, effective, absolute path.
     if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    path = g.os_path_normpath(g.os_path_join(*paths))
+    ### path = g.os_path_normpath(g.os_path_join(*paths))
+    path = g.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
     # Step 4: Make the path if necessary.
@@ -4742,7 +4743,8 @@ def scanAtPathDirectives(self,aList,force=False):
 
     # Step 3: Compute the full, effective, absolute path.
     if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    path = g.os_path_normpath(g.os_path_join(*paths))
+    ### path = g.os_path_normpath(g.os_path_join(*paths))
+    path = g.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
     # Step 4: Make the path if necessary.
@@ -5164,7 +5166,7 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.os_path_join(os.getcwd(),fileName)
+    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName) ### was join
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
@@ -5235,8 +5237,7 @@ def adjustSysPath ():
     leoDirs = ('config','doc','extensions','modes','plugins','core','test')
 
     for theDir in leoDirs:
-        path = g.os_path_finalize(
-            g.os_path_join(g.app.loadDir,'..',theDir))
+        path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
         if path not in sys.path:
             sys.path.append(path)
 #@-node:ekr.20070306085724:adjustSysPath
@@ -5356,7 +5357,7 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.os_path_join(os.getcwd(),fileName)
+    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName) ### was join
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
@@ -6478,7 +6479,7 @@ path = g.computeRelativePath (path)
 
 if path:
     base = g.getBaseDirectory(c) # returns "" on error.
-    path = g.os_path_join(base,path)
+    path = g.os_path_finalize_join(base,path) ### was join
 
     if g.os_path_isabs(path):
         << handle absolute path >>
@@ -6522,7 +6523,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     # New in Leo 4.4.7: honor @path directives.
 
     self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = g.os_path_join(self.default_directory,fileName)
+    fileName = g.os_path_finalize_join(self.default_directory,fileName) ### was join
     junk,self.fileName = g.os_path_split(fileName)
     self.methodName,self.fileType = g.os_path_splitext(self.fileName)
     self.setEncoding(p=parent,atAuto=atAuto)

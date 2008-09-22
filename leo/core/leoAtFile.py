@@ -563,7 +563,7 @@ class atFile:
 
         oldChanged = c.isChanged()
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fileName = g.os_path_join(at.default_directory,fileName)
+        fileName = g.os_path_finalize_join(at.default_directory,fileName)
 
         if not g.unitTesting:
             g.es("reading:",p.headString())
@@ -2119,8 +2119,9 @@ class atFile:
 
         try:
             at.shortFileName = g.shortFileName(fileName)
-            fileName = g.os_path_join(at.default_directory,fileName)
-            at.targetFileName = g.os_path_normpath(fileName)
+            ### fileName = g.os_path_join(at.default_directory,fileName)
+            ### at.targetFileName = g.os_path_normpath(fileName)
+            at.targetFileName = g.os_path_finalize_join(at.default_directory,fileName)
             path = g.os_path_dirname(at.targetFileName)
             if not path or not g.os_path_exists(path):
                 if path:
@@ -2214,7 +2215,8 @@ class atFile:
             write_strips_blank_lines = write_strips_blank_lines)
 
         if nosentinels and not scriptWrite and not toString:
-            fileName = g.os_path_normpath(g.os_path_join(at.default_directory,at.targetFileName))
+            ### fileName = g.os_path_normpath(g.os_path_join(at.default_directory,at.targetFileName))
+            fileName = g.os_path_finalize_join(at.default_directory,at.targetFileName)
             exists = g.os_path_exists(fileName)
             if not self.shouldWriteAtNosentNode(root,exists):
                 return
@@ -2438,7 +2440,7 @@ class atFile:
         if not fileName: return False
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fileName = g.os_path_join(at.default_directory,fileName)
+        fileName = g.os_path_finalize_join(at.default_directory,fileName) ### was join.
         exists = g.os_path_exists(fileName)
 
         if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
@@ -2569,7 +2571,7 @@ class atFile:
         self.adjustTargetLanguage(fn) # May set c.target_language.
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fn = g.os_path_join(at.default_directory,fn)
+        fn = g.os_path_finalize_join(at.default_directory,fn) ### was join
         exists = g.os_path_exists(fn)
 
         if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
@@ -2744,8 +2746,9 @@ class atFile:
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
                 at.targetFileName = p.anyAtFileNodeName()
                 if at.targetFileName:
-                    at.targetFileName = g.os_path_join(self.default_directory,at.targetFileName)
-                    at.targetFileName = g.os_path_normpath(at.targetFileName)
+                    ### at.targetFileName = g.os_path_join(self.default_directory,at.targetFileName)
+                    ### at.targetFileName = g.os_path_normpath(at.targetFileName)
+                    at.targetFileName = g.os_path_finalize_join(self.default_directory,at.targetFileName)
                     if not g.os_path_exists(at.targetFileName):
                         ok = at.openFileForWriting(p,at.targetFileName,toString)
                         # openFileForWriting calls p.setDirty() if there are errors.

@@ -2144,7 +2144,7 @@ class baseCommands:
             d = g.scanDirectives(c,p=root)
             path = d.get("path")
             # g.trace('path',path,'fileName',fileName)
-            fileName = g.os_path_join(path,fileName)
+            fileName = g.os_path_finalize_join(path,fileName) ### was join
             lines    = c.goto_open(fileName)
 
         return lines
@@ -5701,9 +5701,8 @@ class baseCommands:
 
         import webbrowser
 
-        theFile = g.os_path_finalize(
-            g.os_path_join(
-                g.app.loadDir,'..','doc','html','leo_TOC.html'))
+        theFile = g.os_path_finalize_join(
+                g.app.loadDir,'..','doc','html','leo_TOC.html')
 
         url = 'file:%s' % theFile
 
@@ -5808,7 +5807,8 @@ class baseCommands:
 
         # Step 3: Compute the full, effective, absolute path.
         if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-        path = g.os_path_normpath(g.os_path_join(*paths))
+        ### path = g.os_path_normpath(g.os_path_join(*paths))
+        path = g.os_path_finalize_join(*paths)
         if trace and verbose: g.trace('joined path:',path)
 
         # Step 4: Make the path if necessary.

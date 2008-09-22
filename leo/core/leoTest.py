@@ -250,9 +250,8 @@ def runProfileOnNode (p,outputPath=None):
     s = p.bodyString().rstrip() + '\n'
 
     if outputPath is None:
-        # outputPath = g.os_path_finalize(
-            # g.os_path_join(
-                # g.app.loadDir,'..','test','profileStats'))
+        # outputPath = g.os_path_finalize_join(
+            # g.app.loadDir,'..','test','profileStats')
         outputPath = name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
 
     profile.run(s,outputPath)
@@ -701,8 +700,7 @@ def runTestsExternally (c,all):
 
             '''Write c's outline to test/dynamicUnitTest.leo.'''
 
-            path = g.os_path_finalize(
-                g.os_path_join(g.app.loadDir,'..','test', self.fileName))
+            path = g.os_path_finalize_join(g.app.loadDir,'..','test', self.fileName)
 
             c2.selectPosition(c2.rootPosition())
             c2.mFileName = path
@@ -1226,7 +1224,7 @@ class importExportTestCase(unittest.TestCase):
         except AttributeError:
             fileName = g.os_path_normpath(fileName)
 
-        self.fileName = fileName = g.os_path_join(g.app.loadDir,"..",fileName)
+        self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName) ### was join
 
         if self.doImport:
             theDict = {name: [fileName]}
@@ -1283,7 +1281,7 @@ def getAllPluginFilenames ():
 #@+node:ekr.20051104075904.92:testPlugin (no longer used)
 def oldTestPlugin (fileName,verbose=False):
 
-    path = g.os.path_finalize(g.os_path_join(g.app.loadDir,"..","plugins"))
+    path = g.os.path_finalize_join(g.app.loadDir,"..","plugins")
 
     module = g.importFromPath(fileName,path)
     assert module, "Can not import %s" % path
@@ -1728,8 +1726,7 @@ def findAllAtFileNodes(c):
             head,tail = g.os_path_split(name)
             filename,ext = g.os_path_splitext(tail)
             if ext == ".py":
-                path = g.os_path_join(g.app.loadDir,name)
-                path = g.os_path_finalize(path)
+                path = g.os_path_finalize_join(g.app.loadDir,name)
                 paths.append(path)
 
     return paths

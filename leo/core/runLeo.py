@@ -135,8 +135,7 @@ def adjustSysPath ():
     leoDirs = ('config','doc','extensions','modes','plugins','core','test')
 
     for theDir in leoDirs:
-        path = g.os_path_finalize(
-            g.os_path_join(g.app.loadDir,'..',theDir))
+        path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
         if path not in sys.path:
             sys.path.append(path)
 #@-node:ekr.20070306085724:adjustSysPath
@@ -256,7 +255,7 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.os_path_join(os.getcwd(),fileName)
+    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName) ### was join
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
