@@ -4463,8 +4463,8 @@ class atFile:
 
         if not self.default_directory and not scripting and not importing:
             # This should never happen: c.openDirectory should be a good last resort.
-            g.trace()
             self.error("No absolute directory specified anywhere.")
+            g.trace(g.callers())
             self.default_directory = ""
         #@-node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
         #@nl
@@ -4594,6 +4594,7 @@ class atFile:
         if not at.default_directory and not importing:
             # This should never happen: c.openDirectory should be a good last resort.
             at.error("No absolute directory specified anywhere.")
+            g.trace(g.callers())
             at.default_directory = ""
     #@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
     #@+node:ekr.20070529083836:cleanLines
