@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -21,6 +21,7 @@
 </v>
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
@@ -58,7 +59,7 @@
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
-<v t="ekr.20041001211817" a="E"><vh>Buttons</vh>
+<v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
 <v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
 </v>
@@ -354,13 +355,10 @@
 </v>
 <v t="ekr.20080918180141.1"><vh>Exception syntax</vh></v>
 <v t="ekr.20080919080736.1"><vh>dictionary stuff</vh></v>
-</v>
-<v t="ekr.20080919153320.1"><vh>@@thin small-test</vh>
-<v t="ekr.20080919153320.2"><vh>child</vh></v>
-</v>
-<v t="ekr.20080919161858.1"><vh>g.trace test</vh></v>
+<v t="ekr.20080921165614.1"><vh>@@button open core\buttons.txt</vh></v>
 <v t="ekr.20080920101658.1"><vh>getInput</vh></v>
-<v t="ekr.20080920113159.1"><vh>Ipython stuff</vh></v>
+</v>
+<v t="ekr.20080920113159.1"><vh>Ipython stuff</vh>
 <v t="ekr.20080920172621.1"><vh>ipython-extensions\ipy_leo.py</vh>
 <v t="ekr.20080920172621.2"><vh>ipy_leo declarations</vh></v>
 <v t="ekr.20080920172621.3"><vh>init_ipython</vh></v>
@@ -427,8 +425,13 @@
 <v t="ekr.20080920172621.62"><vh>shadow_walk</vh></v>
 <v t="ekr.20080920172621.63"><vh>mkbutton</vh></v>
 </v>
+</v>
+<v t="ekr.20080922164656.1" a="E"><vh>Tests of path expressions</vh>
 <v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
-<v t="ekr.20080921165614.1"><vh>@button open core\buttons.txt</vh></v>
+<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
+<v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
+<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3784,17 +3787,6 @@ for z in d.keys():
     print z
 for z in d:
     print z</t>
-<t tx="ekr.20080919153320.1"># a small test
-
-@others
-</t>
-<t tx="ekr.20080919153320.2">def child():
-    pass</t>
-<t tx="ekr.20080919161858.1">def spam():
-    g.trace('a')
-
-spam()
-</t>
 <t tx="ekr.20080920101658.1">def getInput (event=None):
 
     '''Evaluate a Python Expression entered in the minibuffer.'''
@@ -4675,5 +4667,14 @@ print(g.os_path_finalize_join(g.app.loadDir,r'~/.leo/notebook.leo'))</t>
 fileName = g.os_path_finalize_join(g.app.loadDir,'..','modes','python.py')
 ok, frame = g.openWithFileName(fileName,c)
 </t>
+<t tx="ekr.20080922142953.1"># @string default_leo_file = ~/.leo/workbook.leo
+path = "{{c.config.getString('default_leo_file')}}"
+# print g.os_path_expandExpression(path,c=c)
+print g.os_path_finalize(path,c=c)</t>
+<t tx="ekr.20080922164255.1"></t>
+<t tx="ekr.20080922164255.2">{{c.config.getString('test')}}/eval-test.txt
+=
+c:\leo.repo\trunk\leo\test\eval-test.txt</t>
+<t tx="ekr.20080922164656.1"></t>
 </tnodes>
 </leo_file>

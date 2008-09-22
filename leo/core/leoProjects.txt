@@ -841,8 +841,8 @@ def profile_leo ():
     import pstats
     import leo.core.leoGlobals as g
 
-    name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
+    # name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+    name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
 
     profile.run('leo.run()',name)
 
@@ -1519,8 +1519,8 @@ def profile_leo ():
     import pstats
     import leo.core.leoGlobals as g
 
-    name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
+    # name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+    name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
 
     profile.run('leo.run()',name)
 
@@ -2416,7 +2416,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_finalize_join(g.app.loadDir,base)
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -2438,7 +2438,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     # Step 3: Compute the full, effective, absolute path.
     if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    path = g.os_path_finalize_join(*paths)
+    path = c.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
     # Step 4: Make the path if necessary.
@@ -2524,7 +2524,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_finalize_join(g.app.loadDir,base)
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -2546,7 +2546,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     # Step 3: Compute the full, effective, absolute path.
     if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    path = g.os_path_finalize_join(*paths)
+    path = c.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
     # Step 4: Make the path if necessary.
@@ -2992,7 +2992,7 @@ def goto_getFileLines (self,root,fileName):
         d = g.scanDirectives(c,p=root)
         path = d.get("path")
         # g.trace('path',path,'fileName',fileName)
-        fileName = g.os_path_finalize_join(path,fileName)
+        fileName = c.os_path_finalize_join(path,fileName)
         lines    = c.goto_open(fileName)
 
     return lines
@@ -3271,7 +3271,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-    absbase = g.os_path_finalize_join(g.app.loadDir,base)
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
 
     if trace and verbose: g.trace('absbase',absbase)
 
@@ -3293,7 +3293,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     # Step 3: Compute the full, effective, absolute path.
     if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    path = g.os_path_finalize_join(*paths)
+    path = c.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
     # Step 4: Make the path if necessary.
@@ -3333,6 +3333,23 @@ def scanAtRootDirectives(self,aList):
 
     return None
 #@-node:ekr.20080828103146.12:c.scanAtRootDirectives
+#@+node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+def os_path_finalize (self,path,**keys):
+
+    c = self
+
+    keys['c'] = c
+
+    return g.os_path_finalize(path,**keys)
+
+def os_path_finalize_join (self,*args,**keys):
+
+    c = self
+
+    keys['c'] = c
+
+    return g.os_path_finalize_join(*args,**keys)
+#@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
 #@-node:ekr.20080901124540.1:c.Directive scanning
 #@+node:ekr.20080828103146.5:Top-level  functions
 #@+node:ekr.20080827175609.54:OLD code (Do not change)
@@ -5295,8 +5312,8 @@ def profile_leo ():
     import pstats
     import leo.core.leoGlobals as g
 
-    name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
+    # name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+    name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
 
     profile.run('leo.run()',name)
 
@@ -5580,7 +5597,7 @@ def openWithFileName(fileName,old_c,
                 # The recent files list has been updated by c.updateRecentFiles.
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
     # Bug fix in 4.4.
-    frame.openDirectory = g.os_path_finalize(g.os_path_dirname(fileName))
+    frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     p = c.currentPosition()
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -5947,12 +5964,16 @@ def os_path_expanduser(path,encoding=None):
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
 #@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,encoding=None):
+def os_path_finalize (path,**keys):
 
     '''
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
 
     There is no corresponding os.path method'''
+
+    encoding = keys.get('encoding')
+
+    path = g.os_path_expandExpression(path,**keys)
 
     path = g.os_path_expanduser(path,encoding=encoding)
 
@@ -5964,12 +5985,13 @@ def os_path_finalize_join (*args,**keys):
 
     path = g.os_path_join(*args,**keys)
 
-    return os.path.normpath(os.path.abspath(path))
+    return g.os_path_finalize(path,**keys)
 #@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
 
-    encoding = keys.get("encoding")
+    c = keys.get('c')
+    encoding = keys.get('encoding')
 
     uargs = [g.toUnicodeFileEncoding(arg,encoding) for arg in args]
 
@@ -5982,9 +6004,12 @@ def os_path_join(*args,**keys):
             uargs[0] = c.openDirectory
             # g.trace(c.openDirectory)
 
-    uargs = [os.path.expanduser(z) for z in uargs]
+    uargs = [g.os_path_expandExpression(z,c=c) for z in uargs]
+
+    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs]
 
     path = os.path.join(*uargs)
+
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path,encoding)
     return path
@@ -6231,7 +6256,7 @@ path = g.computeRelativePath (path)
 
 if path:
     base = g.getBaseDirectory(c) # returns "" on error.
-    path = g.os_path_finalize_join(base,path)
+    path = c.os_path_finalize_join(base,path)
 
     if g.os_path_isabs(path):
         << handle absolute path >>
@@ -6275,7 +6300,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     # New in Leo 4.4.7: honor @path directives.
 
     self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = g.os_path_finalize_join(self.default_directory,fileName)
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
     junk,self.fileName = g.os_path_split(fileName)
     self.methodName,self.fileType = g.os_path_splitext(self.fileName)
     self.setEncoding(p=parent,atAuto=atAuto)
@@ -6315,7 +6340,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     return p
 #@+node:ekr.20031218072017.3211:<< Read file into s >>
 try:
-    fileName = g.os_path_finalize(fileName)
+    fileName = c.os_path_finalize(fileName)
     theFile = open(fileName)
     s = theFile.read()
     theFile.close()
@@ -6619,7 +6644,7 @@ def openWithFileName(fileName,old_c,
                 # The recent files list has been updated by c.updateRecentFiles.
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
     # Bug fix in 4.4.
-    frame.openDirectory = g.os_path_finalize(g.os_path_dirname(fileName))
+    frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     p = c.currentPosition()
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -6718,6 +6743,167 @@ leo --script c:\leo.repo\trunk\leo\test\unittest\batchTest.py
 #@nonl
 #@-node:ekr.20080921154026.6:tests
 #@-node:ekr.20080918164844.15:Allow Leo to open .py files directly (or any other kind of file)
+#@+node:ekr.20080921154026.10:Added better default fonts for Leo on Linux
+http://groups.google.com/group/leo-editor/browse_thread/thread/f1c7c5134b95c77e
+
+The suggestion: paste fonts into myLeoSettings.leo.
+
+Can they be a better default?
+#@nonl
+#@+node:ekr.20080921154026.11:Fonts
+@nocolor
+@
+
+Valid values:
+
+weight: bold, normal, None
+slant: roman, italic, None
+
+Use the show-fonts command to pick fonts, then copy the values shown
+by the show-fonts command to the values here.
+
+@c
+
+import sys ; print sys.platform
+#@+node:ekr.20080921154026.12:@font body text font
+body_text_font_family = fixed
+body_text_font_size = 11
+body_text_font_slant = None
+body_text_font_weight = None
+#@-node:ekr.20080921154026.12:@font body text font
+#@+node:ekr.20080921154026.13:@font button font
+button_text_font_family = fixed
+button_text_font_size = 8
+button_text_font_slant = roman
+button_text_font_weight = normal
+#@-node:ekr.20080921154026.13:@font button font
+#@+node:ekr.20080921154026.14:@font log font
+# The font for the log pane. Default is
+default font for Tk.Text widgets.
+# Tk translates invalid font names to another font in a system-dependent way.
+#
+# Default size is 12 for Linux, 9 otherwise.
+
+log_text_font_family = Courier
+log_text_font_size = 9
+log_text_font_slant = roman
+log_text_font_weight = normal
+#@-node:ekr.20080921154026.14:@font log font
+#@+node:ekr.20080921154026.15:@font menu text font
+menu_text_font_family = None
+menu_text_font_size = None
+menu_text_font_slant = None
+menu_text_font_weight = None
+#@nonl
+#@-node:ekr.20080921154026.15:@font menu text font
+#@+node:ekr.20080921154026.16:@font outline font
+headline_text_font_family = fixed
+headline_text_font_size = 11
+headline_text_font_slant = roman
+headline_text_font_weight = normal
+#@-node:ekr.20080921154026.16:@font outline font
+#@-node:ekr.20080921154026.11:Fonts
+#@-node:ekr.20080921154026.10:Added better default fonts for Leo on Linux
+#@+node:ekr.20080922124033.3:Enter tree pane after clone-find-all
+# It's surprisingly annoying not to be able to move the tree just created.
+#@nonl
+#@-node:ekr.20080922124033.3:Enter tree pane after clone-find-all
+#@+node:ekr.20080921154026.7:Added support for {{exp}}
+#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    encoding = keys.get('encoding')
+
+    path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path,encoding=encoding)
+
+    return os.path.normpath(os.path.abspath(path))
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    path = g.os_path_join(*args,**keys)
+
+    return g.os_path_finalize(path,**keys)
+#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20031218072017.2154:os_path_join
+def os_path_join(*args,**keys):
+
+    c = keys.get('c')
+    encoding = keys.get('encoding')
+
+    uargs = [g.toUnicodeFileEncoding(arg,encoding) for arg in args]
+
+    # Note:  This is exactly the same convention as used by getBaseDirectory.
+    if uargs and uargs[0] == '!!':
+        uargs[0] = g.app.loadDir
+    elif uargs and uargs[0] == '.':
+        c = keys.get('c')
+        if c and c.openDirectory:
+            uargs[0] = c.openDirectory
+            # g.trace(c.openDirectory)
+
+    uargs = [g.os_path_expandExpression(z,c=c) for z in uargs]
+
+    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs]
+
+    path = os.path.join(*uargs)
+
+    # May not be needed on some Pythons.
+    path = g.toUnicodeFileEncoding(path,encoding)
+    return path
+#@-node:ekr.20031218072017.2154:os_path_join
+#@+node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+def os_path_finalize (self,path,**keys):
+
+    c = self
+
+    keys['c'] = c
+
+    return g.os_path_finalize(path,**keys)
+
+def os_path_finalize_join (self,*args,**keys):
+
+    c = self
+
+    keys['c'] = c
+
+    return g.os_path_finalize_join(*args,**keys)
+#@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+#@+node:ekr.20080922124033.6:os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    c = keys.get('c')
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c and c.currentPosition()
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+                # g.trace('exp',exp,'val',val,'s',s)
+            except Exception:
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+
+
+#@-node:ekr.20080922124033.6:os_path_expandExpression
+#@-node:ekr.20080921154026.7:Added support for {{exp}}
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
