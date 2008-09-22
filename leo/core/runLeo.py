@@ -446,8 +446,8 @@ def profile_leo ():
     import pstats
     import leo.core.leoGlobals as g
 
-    name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
+    # name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+    name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
 
     profile.run('leo.run()',name)
 
