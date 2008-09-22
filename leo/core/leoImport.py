@@ -688,8 +688,9 @@ class leoImportCommands:
 
         """Set .default_directory by looking for @path directives."""
 
-        c = self.c
+        c = self.c ; p1 = p.copy()
         self.default_directory = None
+        if not p: return
         #@    << Set path from @file node >>
         #@+node:ekr.20080211085914.1:<< Set path from @file node >>
         # An absolute path in an @file node over-rides everything else.
@@ -764,9 +765,11 @@ class leoImportCommands:
                             self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
         #@-node:ekr.20080211085914.4:<< Set current directory >>
         #@nl
-        if not self.default_directory:
+        if not self.default_directory and p1.anyAtFileNodeName():
+            # Don't issue a warning if p is not, in fact, an @file node.
             # This should never happen: c.openDirectory should be a good last resort.
             self.error("No absolute directory specified anywhere.")
+            g.trace(g.callers())
             self.default_directory = ""
     #@-node:ekr.20080211085914:scanDefaultDirectory (leoImport)
     #@+node:ekr.20031218072017.1463:setEncoding (leoImport)
@@ -847,6 +850,7 @@ class leoImportCommands:
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
+
             if self.treeType == "@file":
                 p.initHeadString("@file " + fileName)
             else:

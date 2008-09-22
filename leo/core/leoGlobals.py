@@ -2158,45 +2158,56 @@ def openWithFileName(fileName,old_c,
     # Create a full, normalized, Unicode path name, preserving case.
     relativeFileName = g.os_path_normpath(fileName)
     fileName = g.os_path_finalize(fileName)
+    isZipped = fileName and zipfile.is_zipfile(fileName)
+    isLeo = isZipped or fileName.endswith('.leo')
     # g.trace(relativeFileName,'-->',fileName)
 
     # If the file is already open just bring its window to the front.
-    theList = app.windowList
-    for frame in theList:
-        if munge(fileName) == munge(frame.c.mFileName):
-            frame.bringToFront()
-            frame.c.setLog()
-            frame.c.outerUpdate()
-            return True, frame
-    if old_c:
-        # New in 4.4: We must read the file *twice*.
-        # The first time sets settings for the later call to c.finishCreate.
-        # g.trace('***** prereading',fileName)
-        c2 = g.app.config.openSettingsFile(fileName)
-        if c2: g.app.config.updateSettings(c2,localFlag=True)
-        g.doHook('open0')
+    if isLeo:
+        theList = app.windowList
+        for frame in theList:
+            if munge(fileName) == munge(frame.c.mFileName):
+                frame.bringToFront()
+                frame.c.setLog()
+                frame.c.outerUpdate()
+                return True, frame
+        if old_c:
+            # New in 4.4: We must read the file *twice*.
+            # The first time sets settings for the later call to c.finishCreate.
+            # g.trace('***** prereading',fileName)
+            c2 = g.app.config.openSettingsFile(fileName)
+            if c2: g.app.config.updateSettings(c2,localFlag=True)
+            g.doHook('open0')
 
-    # Open the file in binary mode to allow 0x1a in bodies & headlines.
-    theFile,isZipped = g.openLeoOrZipFile(fileName)
-    if not theFile: return False, None
-    c,frame = app.newLeoCommanderAndFrame(
-        fileName=fileName,
-        relativeFileName=relativeFileName,
-        gui=gui)
+        # Open the file in binary mode to allow 0x1a in bodies & headlines.
+        theFile,isZipped = g.openLeoOrZipFile(fileName)
+        if not theFile: return False, None
+        c,frame = app.newLeoCommanderAndFrame(
+            fileName=fileName,
+            relativeFileName=relativeFileName,
+            gui=gui)
+    else:
+        c,frame = g.openWrapperLeoFile(fileName,gui)
+        if not c: return False,None
+
     assert frame.c == c and c.frame == frame
     c.isZipped = isZipped
     frame.log.enable(enableLog)
     g.app.writeWaitingLog() # New in 4.3: write queued log first.
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
         c.setLog()
-        app.lockLog()
-        frame.c.fileCommands.open(
-            theFile,fileName,
-            readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-        app.unlockLog()
-        for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-            # The recent files list has been updated by c.updateRecentFiles.
-            z.c.config.setRecentFiles(g.app.config.recentFiles)
+        if isLeo:
+            app.lockLog()
+            ok = frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            if not ok:
+                g.app.closeLeoWindow(frame)
+                return False,frame
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
     # Bug fix in 4.4.
     frame.openDirectory = g.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
@@ -2246,6 +2257,26 @@ def openLeoOrZipFile (fileName):
         return None,False
 #@nonl
 #@-node:ekr.20070412082527:g.openLeoOrZipFile
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
+def openWrapperLeoFile (fileName,gui):
+
+    '''Open a wrapper .leo file for the given file,
+    and import the file into .leo file.'''
+
+    if g.os_path_exists(fileName):
+        c,frame = g.app.newLeoCommanderAndFrame(
+            fileName=None,relativeFileName=None,gui=gui)
+
+        c.newHelper(c,frame,importFileName=fileName)
+        return c,frame
+
+    else:
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None,None
+
+#@nonl
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
 #@+at 
 #@nonl

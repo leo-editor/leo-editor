@@ -613,7 +613,9 @@ class baseFileCommands:
             try:
                 # self.getAllLeoElements(fileName='check-leo-file',silent=False)
                 theFile,isZipped = g.openLeoOrZipFile(c.mFileName)
-                self.readSaxFile(theFile,fileName='check-leo-file',silent=False,inClipboard=False,reassignIndices=False)
+                self.readSaxFile(
+                    theFile,fileName='check-leo-file',
+                    silent=False,inClipboard=False,reassignIndices=False)
                 g.es_print('check-leo-file passed',color='blue')
             except Exception:
                 junk, message, junk = sys.exc_info()
@@ -842,29 +844,17 @@ class baseFileCommands:
 
         c = self.c ; frame = c.frame
 
-        #@    << Set the default directory >>
-        #@+node:ekr.20031218072017.2298:<< Set the default directory >>
-        #@+at 
-        #@nonl
-        # The most natural default directory is the directory containing the 
-        # .leo file that we are about to open.  If the user has specified the 
-        # "Default Directory" preference that will over-ride what we are about 
-        # to set.
-        #@-at
-        #@@c
-
+        # Set c.openDirectory
         theDir = g.os_path_dirname(fileName)
-
-        if len(theDir) > 0:
-            c.openDirectory = theDir
-        #@-node:ekr.20031218072017.2298:<< Set the default directory >>
-        #@nl
+        if theDir: c.openDirectory = theDir
 
         ok, ratio = self.getLeoFile(
             theFile,fileName,
             readAtFileNodesFlag=readAtFileNodesFlag,
             silent=silent)
-        frame.resizePanesToRatio(ratio,frame.secondary_ratio)
+
+        if ok:
+            frame.resizePanesToRatio(ratio,frame.secondary_ratio)
 
         return ok
     #@-node:ekr.20031218072017.2297:open (leoFileCommands)

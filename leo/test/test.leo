@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -428,6 +428,7 @@
 <v t="ekr.20080920172621.63"><vh>mkbutton</vh></v>
 </v>
 <v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
+<v t="ekr.20080921165614.1"><vh>@button open core\buttons.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -4670,5 +4671,9 @@ def edit_macro(obj,varname):
 <t tx="ekr.20080921144924.1">print(g.os_path_finalize(r'~/.leo/notebook.leo'))
 print(g.os_path_finalize(g.os_path_join(g.app.loadDir,r'~/.leo/notebook.leo')))
 print(g.os_path_finalize_join(g.app.loadDir,r'~/.leo/notebook.leo'))</t>
+<t tx="ekr.20080921165614.1"># fileName = g.os_path_finalize_join(g.app.loadDir,'buttons.txt')
+fileName = g.os_path_finalize_join(g.app.loadDir,'..','modes','python.py')
+ok, frame = g.openWithFileName(fileName,c)
+</t>
 </tnodes>
 </leo_file>

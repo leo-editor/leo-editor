@@ -503,7 +503,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.2818:Command handlers...
     #@+node:ekr.20031218072017.2819:File Menu
     #@+node:ekr.20031218072017.2820:top level (file menu)
-    #@+node:ekr.20031218072017.1623:new
+    #@+node:ekr.20031218072017.1623:c.new & helper
     def new (self,event=None,gui=None):
 
         '''Create a new Leo window.'''
@@ -512,44 +512,72 @@ class baseCommands:
 
         c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
 
+        self.newHelper(c,frame)
+
+        return c # For unit test.
+    #@+node:ekr.20080921154026.2:c.newHelper
+    def newHelper (self,c,frame,importFileName=None):
+
         # Needed for plugins.
-        g.doHook("new",old_c=self,c=c,new_c=c)
+        if not importFileName:
+            g.doHook("new",old_c=self,c=c,new_c=c)
         # Use the config params to set the size and location of the window.
         frame.setInitialWindowGeometry()
         frame.deiconify()
         frame.lift()
         frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.editPosition(p)
+
+        if importFileName:
+            junk,ext = g.os_path_splitext(importFileName)
+            p = c.currentPosition()
+            p = c.importCommands.createOutline(importFileName,parent=p,atAuto=False,ext=ext)
+            c.setCurrentPosition(p)
+            c.moveOutlineLeft()
+            p = c.currentPosition()
+            c.setCurrentPosition(p.back())
+            c.deleteOutline(op_name=None)
+            p = c.currentPosition()
+            p.expand()
+        else:
+            v = leoNodes.vnode(context=c)
+            v.initHeadString(g.choose(importFileName,importFileName,'NewHeadline'))
+            p = leoNodes.position(v)
+            p._linkAsRoot(oldRoot=None)
+                # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+            c.setRootVnode(v) # New in Leo 4.4.2.
+            c.setCurrentPosition(p)
+            c.editPosition(p)
+
         # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
         p = c.currentPosition()
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
+
+        if not importFileName:
+            # We will do this later if we are importing.
+            if not g.doHook("menu1",c=c,p=p,v=p):
+                frame.menu.createMenuBar(frame)
+                c.updateRecentFiles(fileName=None)
+                g.doHook("menu2",c=frame.c,p=p,v=p)
+                g.doHook("after-create-leo-frame",c=c)
 
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
         if c.config.getBool('use_chapters') and c.chapterController:
             c.chapterController.finishCreate()
             frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+
+        if importFileName: frame.c.setChanged(True)
+
         if c.config.getBool('outline_pane_has_initial_focus'):
             c.treeWantsFocusNow()
         else:
             c.bodyWantsFocusNow()
         # Force a call to c.outerUpdate.
         # This is needed when we execute this command from a menu.
-        c.redraw_now()
 
-        return c # For unit test.
-    #@-node:ekr.20031218072017.1623:new
-    #@+node:ekr.20031218072017.2821:open
+        c.redraw_now()
+    #@-node:ekr.20080921154026.2:c.newHelper
+    #@-node:ekr.20031218072017.1623:c.new & helper
+    #@+node:ekr.20031218072017.2821:c.open
     def open (self,event=None):
 
         '''Open a Leo window containing the contents of a .leo file.'''
@@ -580,7 +608,7 @@ class baseCommands:
         c.bringToFront()
 
         ok = False
-        if fileName and len(fileName) > 0:
+        if fileName:
             ok, frame = g.openWithFileName(fileName,c)
             if ok:
                 g.chdir(fileName)
@@ -594,7 +622,7 @@ class baseCommands:
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
-    #@-node:ekr.20031218072017.2821:open
+    #@-node:ekr.20031218072017.2821:c.open
     #@+node:ekr.20031218072017.2823:openWith and allies
     def openWith(self,event=None,data=None):
 
