@@ -281,7 +281,7 @@ class tkinterGui(leoGui.leoGui):
 
         # __pychecker__ = '--no-argsused' # defaultextension not used.
 
-        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd()),
+        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
 
         return tkFileDialog.asksaveasfilename(
             initialdir=initialdir,initialfile=initialfile,
