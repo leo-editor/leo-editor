@@ -812,7 +812,7 @@ class leoImportCommands:
             #@        << Read file into s >>
             #@+node:ekr.20031218072017.3211:<< Read file into s >>
             try:
-                fileName = g.os_path_normpath(fileName)
+                fileName = g.os_path_finalize(fileName)
                 theFile = open(fileName)
                 s = theFile.read()
                 theFile.close()
