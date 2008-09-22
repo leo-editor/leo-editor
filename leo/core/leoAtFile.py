@@ -403,14 +403,15 @@ class atFile:
     #@+node:ekr.20041005105605.19:openFileForReading (atFile)
     def openFileForReading(self,fn,fromString=False):
 
-        at = self ; trace = True and not g.app.unitTesting ; verbose = False
+        at = self ; c = at.c
+        trace = False and not g.app.unitTesting ; verbose = False
 
         if fromString:
             if at.atShadow:
                 return at.error('can not call at.read from string for @shadow files')
             at.inputFile = g.fileLikeObject(fromString=fromString)
         else:
-            fn = g.os_path_finalize_join(at.default_directory,fn)
+            fn = c.os_path_finalize_join(at.default_directory,fn)
 
             if at.atShadow:
                 x = at.c.shadowController
@@ -562,7 +563,7 @@ class atFile:
 
         oldChanged = c.isChanged()
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fileName = g.os_path_finalize_join(at.default_directory,fileName)
+        fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
         if not g.unitTesting:
             g.es("reading:",p.headString())
@@ -671,7 +672,7 @@ class atFile:
 
         at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
-        fn = g.os_path_finalize_join(at.default_directory,fn)
+        fn = c.os_path_finalize_join(at.default_directory,fn)
         shadow_fn     = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
@@ -2117,7 +2118,7 @@ class atFile:
 
         try:
             at.shortFileName = g.shortFileName(fileName)
-            at.targetFileName = g.os_path_finalize_join(at.default_directory,fileName)
+            at.targetFileName = c.os_path_finalize_join(at.default_directory,fileName)
             path = g.os_path_dirname(at.targetFileName)
             if not path or not g.os_path_exists(path):
                 if path:
@@ -2211,7 +2212,7 @@ class atFile:
             write_strips_blank_lines = write_strips_blank_lines)
 
         if nosentinels and not scriptWrite and not toString:
-            fileName = g.os_path_finalize_join(at.default_directory,at.targetFileName)
+            fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
             exists = g.os_path_exists(fileName)
             if not self.shouldWriteAtNosentNode(root,exists):
                 return
@@ -2435,7 +2436,7 @@ class atFile:
         if not fileName: return False
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fileName = g.os_path_finalize_join(at.default_directory,fileName)
+        fileName = c.os_path_finalize_join(at.default_directory,fileName)
         exists = g.os_path_exists(fileName)
 
         if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
@@ -2566,7 +2567,7 @@ class atFile:
         self.adjustTargetLanguage(fn) # May set c.target_language.
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fn = g.os_path_finalize_join(at.default_directory,fn)
+        fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
 
         if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
@@ -2741,7 +2742,8 @@ class atFile:
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
                 at.targetFileName = p.anyAtFileNodeName()
                 if at.targetFileName:
-                    at.targetFileName = g.os_path_finalize_join(self.default_directory,at.targetFileName)
+                    at.targetFileName = c.os_path_finalize_join(
+                        self.default_directory,at.targetFileName)
                     if not g.os_path_exists(at.targetFileName):
                         ok = at.openFileForWriting(p,at.targetFileName,toString)
                         # openFileForWriting calls p.setDirty() if there are errors.
