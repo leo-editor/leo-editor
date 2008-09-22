@@ -183,7 +183,7 @@ class generalTestCase(unittest.TestCase):
             scriptFile = c.writeScriptFile(script)
             execfile(scriptFile,d)
         else:
-            exec script in d
+            exec(script,d)
 
         # if 0: # debug
             # import pdb
@@ -221,12 +221,12 @@ def makeTestSuite (c,p):
         return None
 
     try:
-        exec script + '\n' in {'c':c,'g':g,'p':p}
+        exec(script + '\n',{'c':c,'g':g,'p':p})
         suite = g.app.scriptDict.get("suite")
         if not suite:
             g.pr("%s script did not set g.app.scriptDict" % h)
         return suite
-    except:
+    except Exception:
         g.trace('Exception creating test cases for %s' % p.headString())
         g.es_exception()
         return None
@@ -250,9 +250,8 @@ def runProfileOnNode (p,outputPath=None):
     s = p.bodyString().rstrip() + '\n'
 
     if outputPath is None:
-        # outputPath = g.os_path_abspath(
-            # g.os_path_join(
-                # g.app.loadDir,'..','test','profileStats'))
+        # outputPath = g.os_path_finalize_join(
+            # g.app.loadDir,'..','test','profileStats')
         outputPath = name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
 
     profile.run(s,outputPath)
@@ -284,7 +283,7 @@ def runTimerOnNode (c,p,count):
         result = t.timeit(count)
         ratio = "%f" % (float(result)/float(count))
         g.es_print("count:",count,"time/count:",ratio,'',p.headString())
-    except:
+    except Exception:
         t.print_exc()
 #@-node:ekr.20051104075904.15:runTimerOnNode
 #@-node:ekr.20051104075904.2:Support @profile, @suite, @test, @timer
@@ -334,7 +333,7 @@ def makeObjectList(message):
     global lastObjectsDict
     objects = gc.get_objects()
 
-    newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
+    newObjects = [o for o in objects if not id(o) in lastObjectsDict]
 
     lastObjectsDict = {}
     for o in objects:
@@ -370,13 +369,12 @@ def printGc(message=None):
         typesDict[type(obj)] = n + 1
 
     # Create the union of all the keys.
-    keys = typesDict.keys()
-    for key in lastTypesDict.keys():
-        if key not in keys:
-            keys.append(key)
+    keys = {}
+    for key in lastTypesDict:
+        if key not in typesDict:
+            keys[key]=None
 
-    keys.sort()
-    for key in keys:
+    for key in sorted(keys):
         n1 = lastTypesDict.get(key,0)
         n2 = typesDict.get(key,0)
         delta2 = n2-n1
@@ -401,7 +399,7 @@ def printGc(message=None):
             if type(obj) == types.FunctionType:
                 key = repr(obj) # Don't create a pointer to the object!
                 funcDict[key]=None 
-                if not lastFunctionsDict.has_key(key):
+                if key not in lastFunctionsDict:
                     g.pr('\n',obj)
                     args, varargs, varkw,defaults  = inspect.getargspec(obj)
                     g.pr("args", args)
@@ -612,7 +610,7 @@ class testUtils:
             if verbose: g.trace("Different number of lines")
             return False
 
-        for i in xrange(len(lines2)):
+        for i in range(len(lines2)):
             line1 = lines1[i]
             line2 = lines2[i]
             if line1 == line2:
@@ -702,8 +700,7 @@ def runTestsExternally (c,all):
 
             '''Write c's outline to test/dynamicUnitTest.leo.'''
 
-            path = g.os_path_abspath(
-                g.os_path_join(g.app.loadDir,'..','test', self.fileName))
+            path = g.os_path_finalize_join(g.app.loadDir,'..','test', self.fileName)
 
             c2.selectPosition(c2.rootPosition())
             c2.mFileName = path
@@ -835,17 +832,16 @@ def runTestsExternally (c,all):
             '''Run test/leoDynamicTest.py in a pristine environment.'''
 
             # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-            path = g.os_path_abspath(g.os_path_join(
-                # g.app.loadDir, '..', 'test', 'leoDynamicTest.py'))
-                g.app.loadDir,'leoDynamicTest.py'))
+            path = g.os_path_finalize_join(
+                g.app.loadDir,'leoDynamicTest.py')
 
             if ' ' in path and sys.platform.startswith('win'): 
                 path = '"' + path + '"'
 
             args = [sys.executable, path, '--silent']  
 
-            # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src'))
-            # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..')
+            # srcDir = g.os_path_finalize_join(g.app.loadDir,'..','src')
+            # srcDir = g.os_path_finalize_join(g.app.loadDir,'..')
             # os.chdir(srcDir)
 
             os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
@@ -1228,7 +1224,7 @@ class importExportTestCase(unittest.TestCase):
         except AttributeError:
             fileName = g.os_path_normpath(fileName)
 
-        self.fileName = fileName = g.os_path_join(g.app.loadDir,"..",fileName)
+        self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
 
         if self.doImport:
             theDict = {name: [fileName]}
@@ -1243,7 +1239,7 @@ class importExportTestCase(unittest.TestCase):
 
         try:
             return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
-        except:
+        except Exception:
             return "ImportExportTestCase"
     #@-node:ekr.20051104075904.85:shortDescription
     #@+node:ekr.20051104075904.86:tearDown
@@ -1278,15 +1274,14 @@ def getAllPluginFilenames ():
     path = g.os_path_join(g.app.loadDir,"..","plugins")
 
     files = glob.glob(g.os_path_join(path,"*.py"))
-    files = [g.os_path_abspath(f) for f in files]
+    files = [g.os_path_finalize(f) for f in files]
     files.sort()
     return files
 #@-node:ekr.20051104075904.91:getAllPluginFilenames
 #@+node:ekr.20051104075904.92:testPlugin (no longer used)
 def oldTestPlugin (fileName,verbose=False):
 
-    path = g.os_path_join(g.app.loadDir,"..","plugins")
-    path = g.os_path_abspath(path)
+    path = g.os.path_finalize_join(g.app.loadDir,"..","plugins")
 
     module = g.importFromPath(fileName,path)
     assert module, "Can not import %s" % path
@@ -1315,12 +1310,12 @@ def checkFileTabs (fileName,s):
         readline = g.readLinesClass(s).next
         tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
-    except tokenize.TokenError, msg:
+    except tokenize.TokenError(msg):
         g.es_print("Token error in",fileName,color="blue")
         g.es_print('',msg)
         assert 0, "test failed"
 
-    except tabnanny.NannyNag, nag:
+    except tabnanny.NannyNag(nag):
         badline = nag.get_lineno()
         line    = nag.get_line()
         message = nag.get_msg()
@@ -1330,7 +1325,7 @@ def checkFileTabs (fileName,s):
         g.es_print('',line)
         assert 0, "test failed"
 
-    except:
+    except Exception:
         g.trace("unexpected exception")
         g.es_exception()
         assert 0, "test failed"
@@ -1382,8 +1377,8 @@ class reformatParagraphTest:
         for i in range(min(newLinesCount,refLinesCount)):
             assert newLines[i] == refLines[i], \
                 "Mismatch on line " + str(i) + "." \
-                + "\nExpected text: " + `refLines[i]` \
-                + "\n  Actual text: " + `newLines[i]`
+                + "\nExpected text: " + repr(refLines[i]) \
+                + "\n  Actual text: " + repr(newLines[i])
 
         assert newLinesCount == refLinesCount, \
             "Expected " + str(refLinesCount) + " lines, but " \
@@ -1731,8 +1726,7 @@ def findAllAtFileNodes(c):
             head,tail = g.os_path_split(name)
             filename,ext = g.os_path_splitext(tail)
             if ext == ".py":
-                path = g.os_path_join(g.app.loadDir,name)
-                path = g.os_path_abspath(path)
+                path = g.os_path_finalize_join(g.app.loadDir,name)
                 paths.append(path)
 
     return paths
@@ -1753,7 +1747,7 @@ def importAllModulesInPathList(paths):
 #@+node:ekr.20051104075904.102:importAllModulesInPath
 def importAllModulesInPath (path):
 
-    path = g.os_path_abspath(path)
+    path = g.os_path_finalize(path)
 
     if not g.os_path_exists(path):
         g.es("path does not exist:",path)
@@ -1784,7 +1778,7 @@ def importAllModulesInPath (path):
 
 def safeImportModule (fileName):
 
-    fileName = g.os_path_abspath(fileName)
+    fileName = g.os_path_finalize(fileName)
     head,tail = g.os_path_split(fileName)
     moduleName,ext = g.os_path_splitext(tail)
 

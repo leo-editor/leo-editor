@@ -10,6 +10,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 
 import sys
+import zipfile
 #@-node:ekr.20041227063801:<< imports >>
 #@nl
 
@@ -88,6 +89,8 @@ class parserBaseClass:
             'string':       self.doString,
             'strings':      self.doStrings,
         }
+
+        self.debug_count = 0
     #@-node:ekr.20041119204700: ctor (parserBaseClass)
     #@+node:ekr.20080514084054.4:computeModeName (parserBaseClass)
     def computeModeName (self,name):
@@ -401,15 +404,25 @@ class parserBaseClass:
             # At present no checking is done.
             self.set(p,kind,name,val)
     #@-node:ekr.20041217132253:doInts
-    #@+node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
+    #@+node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
     def doMenus (self,p,kind,name,val):
 
         # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
-        c = self.c ; aList = [] ; tag = '@menu'
+        c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
         p = p.copy() ; after = p.nodeAfterTree()
+        if trace: g.trace('******',p.headString(),'after',after and after.headString())
         while p and p != after:
+            self.debug_count += 1
             h = p.headString()
+            # if trace:
+                # if p.headString()==after.headString():
+                    # val = p != after
+                    # g.trace('*' * 10, 'terminating via headString',p,after)
+                    # return
+                # g.trace('***',self.debug_count,p.headString())
+                # if self.debug_count >= 1000:
+                    # g.trace('*'*10,'terminating!') ; return
             if g.match_word(h,0,tag):
                 name = h[len(tag):].strip()
                 if name:
@@ -432,17 +445,30 @@ class parserBaseClass:
         if self.localFlag:
             self.set(p,kind='menus',name='menus',val=aList)
         else:
-            if not g.app.unitTesting:
+            if not g.app.unitTesting and not g.app.silentMode:
                 g.es_print('Using menus from',c.shortFileName(),color='blue')
             g.app.config.menusList = aList
             g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
     #@+node:ekr.20070926141716:doItems
     def doItems (self,p,aList):
 
-        p = p.copy() ; after = p.nodeAfterTree()
+        trace = False and g.isPython3
+        if trace: g.trace(p.headString())
+        p = p.copy()
+        after = p.nodeAfterTree()
         p.moveToThreadNext()
+        if trace: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
         while p and p != after:
+            self.debug_count += 1
             h = p.headString()
+            # if trace:
+                # if p.headString()==after.headString():
+                    # val = p != after
+                    # g.trace('*' * 10, 'terminating via headString',p,after)
+                    # return
+                # g.trace(self.debug_count,h)
+                # if self.debug_count >= 1000:
+                    # g.trace('*'*10,'terminating!') ; return
             for tag in ('@menu','@item'):
                 if g.match_word(h,0,tag):
                     itemName = h[len(tag):].strip()
@@ -464,7 +490,6 @@ class parserBaseClass:
             else:
                 # g.trace('***skipping***',p.headString())
                 p.moveToThreadNext()
-    #@nonl
     #@-node:ekr.20070926141716:doItems
     #@+node:ekr.20070926142312:dumpMenuList
     def dumpMenuList (self,aList,level=0):
@@ -479,7 +504,7 @@ class parserBaseClass:
                 self.dumpMenuList(val,level+1)
     #@nonl
     #@-node:ekr.20070926142312:dumpMenuList
-    #@-node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
+    #@-node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
     #@+node:ekr.20060102103625.1:doMode (ParserBaseClass)
     def doMode(self,p,kind,name,val):
 
@@ -1012,7 +1037,7 @@ class parserBaseClass:
         if bunch:
             # g.trace(key,bunch.val,bunch.path)
             path = bunch.path
-            if g.os_path_abspath(c.mFileName) != g.os_path_abspath(path):
+            if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
                 g.es("over-riding setting:",name,"from",path)
 
         # N.B.  We can't use c here: it may be destroyed!
@@ -1051,7 +1076,9 @@ class parserBaseClass:
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)
-            # g.trace(result,p.headString())
+            # if g.isPython3:
+                # g.trace(result,p.headString())
+                # if p.headString() == 'Menus': g.pdb()
             if result == "skip":
                 # g.es_print('skipping settings in',p.headString(),color='blue')
                 p.moveToNodeAfterTree()
@@ -1271,11 +1298,11 @@ class configClass:
     #@+node:ekr.20041117065611.2:initIvarsFromSettings & helpers
     def initIvarsFromSettings (self):
 
-        for ivar in self.encodingIvarsDict.keys():
+        for ivar in self.encodingIvarsDict:
             if ivar != '_hash':
                 self.initEncoding(ivar)
 
-        for ivar in self.ivarsDict.keys():
+        for ivar in self.ivarsDict:
             if ivar != '_hash':
                 self.initIvar(ivar)
     #@+node:ekr.20041117065611.1:initEncoding
@@ -1329,7 +1356,7 @@ class configClass:
         # New in Leo 4.5 b4: change homeDir to homeLeoDir
         for ivar,theDir,fileName in (
             ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
-            ('homeFile',            g.app.homeLeoDir,          settingsFile),
+            ('homeFile',            g.app.homeLeoDir,       settingsFile),
             ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
             #non-prefixed names take priority over prefixed names
             ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
@@ -1393,6 +1420,28 @@ class configClass:
 
         return c.nullPosition()
     #@-node:ekr.20041123092357:config.findSettingsPosition
+    #@+node:ekr.20051011105014:exists (g.app.config)
+    def exists (self,c,setting,kind):
+
+        '''Return true if a setting of the given kind exists, even if it is None.'''
+
+        if c:
+            d = self.localOptionsDict.get(c.hash())
+            if d:
+                junk,found = self.getValFromDict(d,setting,kind)
+                if found: return True
+
+        for d in self.localOptionsList:
+            junk,found = self.getValFromDict(d,setting,kind)
+            if found: return True
+
+        for d in self.dictList:
+            junk,found = self.getValFromDict(d,setting,kind)
+            if found: return True
+
+        # g.trace('does not exist',setting,kind)
+        return False
+    #@-node:ekr.20051011105014:exists (g.app.config)
     #@+node:ekr.20041117083141:get & allies (g.app.config)
     def get (self,c,setting,kind):
 
@@ -1436,6 +1485,15 @@ class configClass:
 
         # g.trace(setting,requestedType,bunch.toString())
         val = bunch.val
+
+        if g.isPython3:
+            isNone = val in ('None','none','',None)
+        else:
+            isNone = val in (
+                unicode('None'),unicode('none'),unicode(''),
+                'None','none','',None)
+
+
         if not self.typesMatch(bunch.kind,requestedType):
             # New in 4.4: make sure the types match.
             # A serious warning: one setting may have destroyed another!
@@ -1445,7 +1503,8 @@ class configClass:
                 g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
                 g.es_print('there may be conflicting settings!',color='red')
             return None, False
-        elif val in (u'None',u'none','None','none','',None):
+        # elif val in (u'None',u'none','None','none','',None):
+        elif isNone:
             return None, True # Exists, but is None
         else:
             # g.trace(setting,val)
@@ -1460,7 +1519,7 @@ class configClass:
         The following equivalences are allowed:
 
         - None matches anything.
-        - An actual type of string or strings matches anything.
+        - An actual type of string or strings matches anything *except* shortcuts.
         - Shortcut matches shortcuts.
         '''
 
@@ -1468,35 +1527,13 @@ class configClass:
 
         return (
             type1 == None or type2 == None or
-            type1.startswith('string') or
+            type1.startswith('string') and type2 not in shortcuts or
             type1 == 'int' and type2 == 'size' or
             (type1 in shortcuts and type2 in shortcuts) or
             type1 == type2
         )
     #@-node:ekr.20051015093141:typesMatch
     #@-node:ekr.20041117083141:get & allies (g.app.config)
-    #@+node:ekr.20051011105014:exists (g.app.config)
-    def exists (self,c,setting,kind):
-
-        '''Return true if a setting of the given kind exists, even if it is None.'''
-
-        if c:
-            d = self.localOptionsDict.get(c.hash())
-            if d:
-                junk,found = self.getValFromDict(d,setting,kind)
-                if found: return True
-
-        for d in self.localOptionsList:
-            junk,found = self.getValFromDict(d,setting,kind)
-            if found: return True
-
-        for d in self.dictList:
-            junk,found = self.getValFromDict(d,setting,kind)
-            if found: return True
-
-        # g.trace('does not exist',setting,kind)
-        return False
-    #@-node:ekr.20051011105014:exists (g.app.config)
     #@+node:ekr.20060608224112:getAbbrevDict
     def getAbbrevDict (self,c):
 
@@ -1524,13 +1561,6 @@ class configClass:
 
         return g.app.config.atCommonButtonsList
     #@-node:ekr.20070926082018:getButtons
-    #@+node:ekr.20080312071248.7:getCommonCommands
-    def getCommonAtCommands (self):
-
-        '''Return the list of tuples (headline,script) for common @command nodes.'''
-
-        return g.app.config.atCommonCommandsList
-    #@-node:ekr.20080312071248.7:getCommonCommands
     #@+node:ekr.20041122070339:getColor
     def getColor (self,c,setting):
 
@@ -1538,6 +1568,13 @@ class configClass:
 
         return self.get(c,setting,"color")
     #@-node:ekr.20041122070339:getColor
+    #@+node:ekr.20080312071248.7:getCommonCommands
+    def getCommonAtCommands (self):
+
+        '''Return the list of tuples (headline,script) for common @command nodes.'''
+
+        return g.app.config.atCommonCommandsList
+    #@-node:ekr.20080312071248.7:getCommonCommands
     #@+node:ekr.20071214140900.1:getData
     def getData (self,c,setting):
 
@@ -1668,6 +1705,23 @@ class configClass:
 
         return self.recentFiles
     #@-node:ekr.20041117062717.11:getRecentFiles
+    #@+node:ekr.20080917061525.3:getSettingSource (g.app.config)
+    def getSettingSource (self,c,setting):
+
+        '''return the name of the file responsible for setting.'''
+
+        aList = [self.localOptionsDict.get(c.hash())]
+        aList.extend(self.localOptionsList)
+        aList.extend(self.dictList)
+
+        for d in aList:
+            if d:
+                bunch = d.get(setting)
+                if bunch is not None:
+                    return bunch.path,bunch.val
+        else:
+            return 'unknown setting',None
+    #@-node:ekr.20080917061525.3:getSettingSource (g.app.config)
     #@+node:ekr.20041117062717.14:getShortcut (config)
     def getShortcut (self,c,shortcutName):
 
@@ -1677,6 +1731,7 @@ class configClass:
         key = key.replace('&','') # Allow '&' in names.
 
         bunchList = self.get(c,key,"shortcut")
+        # g.trace('bunchList',bunchList)
         if bunchList:
             bunchList = [bunch for bunch in bunchList
                 if bunch.val and bunch.val.lower() != 'none']
@@ -1811,31 +1866,33 @@ class configClass:
         #@nl
 
         # g.trace(g.app.oneConfigFilename)
-        if g.app.oneConfigFilename:
-            table = ((g.app.oneConfigFilename,False),)
-        else:
-            table = (
-                (self.globalConfigFile,False),
-                (self.homeFile,False),
-                (localConfigFile,False),
-                (self.myGlobalConfigFile,False),
-                (self.myHomeConfigFile,False),
-                (self.machineConfigFile,False),
-                (myLocalConfigFile,False),
-                (fileName,True),
-            )
+        table = (
+            (self.globalConfigFile,False),
+            (self.homeFile,False),
+            (localConfigFile,False),
+            (self.myGlobalConfigFile,False),
+            (self.myHomeConfigFile,False),
+            (self.machineConfigFile,False),
+            (myLocalConfigFile,False),
+            # New in Leo 4.6: the -c file is in *addition* to other config files.
+            (g.app.oneConfigFilename,False),
+            (fileName,True),
+        )
 
         # Init settings from leoSettings.leo and myLeoSettings.leo files.
         for path,localFlag in table:
             if path:
-                path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+                path = g.os_path_realpath(g.os_path_finalize(path))
                 # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
-            if path and path.lower() not in seen:
+            isZipped = path and zipfile.is_zipfile(path)
+            isLeo = isZipped or (path and path.endswith('.leo'))
+            if isLeo and path and path.lower() not in seen:
                 seen.append(path.lower())
                 if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                     s = 'reading settings in %s' % path
                     # This occurs early in startup, so use the following instead of g.es_print.
-                    s = g.toEncodedString(s,'ascii')
+                    if not g.isPython3:
+                        s = g.toEncodedString(s,'ascii')
                     g.pr(s)
                     g.app.logWaiting.append((s+'\n','blue'),)
 
@@ -1846,8 +1903,7 @@ class configClass:
                     self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
                     self.setIvarsFromSettings(c)
         self.readRecentFiles(localConfigFile)
-        if 0:
-            self.createMyLeoSettingsFile(myLocalConfigFile)
+        # self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
     #@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
@@ -1890,15 +1946,15 @@ class configClass:
         ):
             # g.trace(path)
             if path:
-                path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+                path = g.os_path_realpath(g.os_path_finalize(path))
                 if g.os_path_exists(path):
                     # g.trace('exists',path)
                     return
 
         if g.app.homeDir:
-            path = g.os_path_abspath(g.os_path_join(g.app.homeDir,'myLeoSettings.leo'))
+            path = g.os_path_finalize_join(g.app.homeDir,'myLeoSettings.leo')
             try:
-                f = file(path,'wb')
+                f = open(path,'wb')
                 f.write(s)
                 f.close()
                 self.myHomeConfigFile = path
@@ -1988,7 +2044,7 @@ class configClass:
             localConfigPath,
         ):
             if path:
-                path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+                path = g.os_path_realpath(g.os_path_finalize(path))
             if path and path not in seen:
                 ok = self.readRecentFilesFile(path)
                 if ok: seen.append(path)
@@ -2006,7 +2062,7 @@ class configClass:
             if theDir:
                 try:
                     fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
-                    f = file(fileName,'w')
+                    f = open(fileName,'w')
                     f.close()
                     g.es_print('created',fileName,color='red')
                     return
@@ -2023,7 +2079,7 @@ class configClass:
         if ok:
             if not g.unitTesting and not self.silent:
                 g.pr(('reading %s' % fileName))
-            lines = file(fileName).readlines()
+            lines = open(fileName).readlines()
             if lines and self.munge(lines[0])=='readonly':
                 lines = lines[1:]
             if lines:
@@ -2074,7 +2130,7 @@ class configClass:
         # Don't update the file if it begins with read-only.
         theFile = None
         try:
-            theFile = file(fileName)
+            theFile = open(fileName)
             lines = theFile.readlines()
             if lines and self.munge(lines[0])=='readonly':
                 # g.trace('read-only: %s' %fileName)
@@ -2086,7 +2142,7 @@ class configClass:
         theFile = None
         try:
             # g.trace('writing',fileName)
-            theFile = file(fileName,'w')
+            theFile = open(fileName,'w')
             if self.recentFiles:
                 lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
                 theFile.write('\n'.join(lines))
@@ -2131,8 +2187,7 @@ class configClass:
         for d in self.dictList:
             self.printSettingsHelper(settings,d)
 
-        keys = settings.keys() ; keys.sort()
-        for key in keys:
+        for key in sorted(settings):
             data = settings.get(key)
             letter,val = data
             g.pr('%45s = %s %s' % (key,letter,val))
@@ -2162,8 +2217,8 @@ class configClass:
             #@nonl
             #@-node:ekr.20070418084502:<< set letter >>
             #@nl
-            for key in d.keys():
-                if key not in suppressKeys and key not in settings.keys():
+            for key in d:
+                if key not in suppressKeys and key not in settings:
                     bunch = d.get(key)
                     if bunch.kind not in suppressKind:
                         settings[key] = (letter,bunch.val)
@@ -2198,11 +2253,19 @@ class settingsTreeParser (parserBaseClass):
         kind,name,val = self.parseHeadline(p.headString())
         kind = munge(kind)
 
+        if g.isPython3:
+            isNone = val in ('None','none','',None)
+        else:
+            isNone = val in (
+                unicode('None'),unicode('none'),unicode(''),
+                'None','none','',None)
+
         if kind is None: # Not an @x node. (New in Leo 4.4.4)
             pass
         if kind == "settings":
             pass
-        elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+        # elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+        elif kind in self.basic_types and isNone:
             # None is valid for all basic types.
             self.set(p,kind,name,None)
         elif kind in self.control_types or kind in self.basic_types:

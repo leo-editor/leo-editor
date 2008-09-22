@@ -2300,6 +2300,7 @@ ouline
 out_after_sent
 outerFrame
 outerList
+outerUpdate
 outline1
 outline2
 outlineCommand
@@ -3283,6 +3284,7 @@ writeNode
 writeNodeToNode
 writeNodesToNode
 writeNormalTree
+writeOneAtShadowNode
 writeOpenFile
 writeTree
 writeTreeAsRst

@@ -21,7 +21,7 @@ import leo.core.leoTkinterTree as leoTkinterTree
 import Tkinter as Tk
 import tkFont
 import os
-import string
+# import string
 import sys
 
 Pmw = g.importExtension("Pmw",pluginName="leoTkinterFrame.py",verbose=False)
@@ -378,7 +378,7 @@ class leoTkinterBody (leoFrame.leoBody):
 
         c = self.c ; d = self.editorWidgets
 
-        for key in d.keys():
+        for key in d:
             w2 = d.get(key)
             # g.trace(id(w2),bg,fg)
             try:
@@ -663,8 +663,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         Args is a tuple of two floats describing the fraction of the visible area."""
 
         #g.trace(self.tree.redrawCount,args,g.callers())
-
-        apply(self.canvas.leo_treeBar.set,args,keys)
+        self.canvas.leo_treeBar.set(*args,**keys)
 
         if self.tree.allocateOnlyVisibleNodes:
             self.tree.setVisibleArea(args)
@@ -678,7 +677,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         if self.tree.allocateOnlyVisibleNodes:
             self.tree.allocateNodesBeforeScrolling(args)
 
-        apply(self.canvas.yview,args,keys)
+        self.canvas.yview(*args,**keys)
     #@nonl
     #@-node:ekr.20031218072017.998:Scrolling callbacks (tkFrame)
     #@-node:ekr.20041221071131.1:f.createTkTreeCanvas & callbacks
@@ -882,10 +881,10 @@ class leoTkinterFrame (leoFrame.leoFrame):
             vList.append(p.v)
             if p.v.t:
                 key = id(p.v.t)
-                if not tDict.has_key(key):
+                if key not in tDict:
                     tDict[key] = p.v.t
 
-        for key in tDict.keys():
+        for key in tDict:
             g.clearAllIvars(tDict[key])
 
         for v in vList:
@@ -1469,7 +1468,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
     def setWrap (self,p):
 
         c = self.c
-        theDict = g.scanDirectives(c,p)
+        theDict = c.scanAllDirectives(p)
         if not theDict: return
 
         wrap = theDict.get("wrap")
@@ -1838,8 +1837,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
             # Compute w,h
             top.update_idletasks() # Required to get proper info.
             geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-            dim,junkx,junky = string.split(geom,'+')
-            w,h = string.split(dim,'x')
+            dim,junkx,junky = geom.split('+')
+            w,h = dim.split('x')
             w,h = int(w),int(h)
 
             # Set new x,y and old w,h
@@ -2236,7 +2235,7 @@ class leoTkinterLog (leoFrame.leoLog):
 
         # Restore all colors.
         colors = d.get('colors')
-        for color in colors.keys():
+        for color in colors:
             if color not in self.colorTags:
                 self.colorTags.append(color)
                 logCtrl.tag_config(color,foreground=color)
@@ -3184,6 +3183,7 @@ class leoTkTextWidget (Tk.Text):
         if i is None:
             g.trace('can not happen: i is None')
             return 0
+
         elif type(i) in (type('a'),type(u'a')):
             s = Tk.Text.get(w,'1.0','end') # end-1c does not work.
             i = Tk.Text.index(w,i) # Convert to row/column form.

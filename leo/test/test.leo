@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="37" left="398" height="914" width="777"/>
+	<global_window_position top="37" left="401" height="914" width="774"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -58,7 +58,7 @@
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
-<v t="ekr.20041001211817"><vh>Buttons</vh>
+<v t="ekr.20041001211817" a="E"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
 <v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
 </v>
@@ -95,7 +95,6 @@
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
 <v t="ekr.20080815073750.1"><vh>@@button write-nosent-files</vh></v>
 <v t="ekr.20071128122043"><vh>@@command create-shell-tab @key = Alt+5</vh></v>
-<v t="ekr.20071101163934"><vh>@@command rst3</vh></v>
 <v t="ekr.20070604095313"><vh>Chapter buttons</vh>
 <v t="ekr.20070530072113.1"><vh>@@button show-ch</vh></v>
 <v t="ekr.20070603175054.1"><vh>@@button ch-main</vh></v>
@@ -108,6 +107,7 @@
 <v t="ekr.20060904111037"><vh>@@button opml-read</vh></v>
 </v>
 </v>
+<v t="ekr.20080915095329.1"><vh>@button rst3</vh></v>
 </v>
 <v t="ekr.20070410063214"><vh>Commands</vh>
 <v t="ekr.20060924180049"><vh>@@command clones-tab</vh>
@@ -139,17 +139,17 @@
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
-<v t="ekr.20070929122956"><vh>Data trees</vh>
+<v t="ekr.20070929122956" a="E"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
 <v t="ekr.20070929072043"><vh>@networkx</vh>
 <v t="ekr.20070929072506.1"><vh>@nodes</vh></v>
 <v t="ekr.20070929072506"><vh>@edges</vh></v>
 </v>
-<v t="ekr.20070929070257"><vh>@graph</vh>
-<v t="ekr.20070929070257.1"><vh>@node child1</vh>
+<v t="ekr.20070929070257" a="E"><vh>@graph</vh>
+<v t="ekr.20070929070257.1" a="E"><vh>@node child1</vh>
 <v t="ekr.20070929070632"><vh>@link ('ekr', '20070929070257', 2): @node child2</vh></v>
 </v>
-<v t="ekr.20070929070257.2"><vh>@node child2</vh>
+<v t="ekr.20070929070257.2" a="E"><vh>@node child2</vh>
 <v t="ekr.20070929070632.1"><vh>@link ('ekr', '20070929070257', 1): @node child1</vh></v>
 </v>
 </v>
@@ -185,13 +185,71 @@
 <v t="ekr.20070630142904.4"><vh>@@file myModule.pyx</vh></v>
 <v t="ekr.20070630142904.5"><vh>Make myModule.c</vh></v>
 </v>
-<v t="ekr.20071026102420.2"><vh>Screen capture</vh>
+<v t="ekr.20071026102420.2"><vh>Screen capture with Wink</vh>
 <v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
 <v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
 </v>
 <v t="edreamleo.20080110083531"><vh>gtk stuff</vh>
 <v t="edreamleo.20080110130828"><vh>createWindow</vh></v>
-<v t="bob.20080111200056"><vh>@thin gtkOutlineDemo.py</vh></v>
+<v t="bob.20080111200056"><vh>@@thin gtkOutlineDemo.py</vh>
+<v t="bob.20080111194559"><vh>GtkLeoTreeDemo</vh>
+<v t="bob.20080113184034"><vh>__init__</vh></v>
+<v t="bob.20080113183321"><vh>onButtonPress</vh></v>
+<v t="bob.20080113183321.1"><vh>onButtonRelease</vh></v>
+</v>
+<v t="bob.20080113170657"><vh>loadIcon</vh></v>
+<v t="bob.20080113133525"><vh>loadIcons</vh></v>
+<v t="bob.20080113141134"><vh>name2Color</vh></v>
+<v t="bob.20080113170041"><vh>getImage</vh></v>
+<v t="bob.20080114060133"><vh>getHeadlineFont</vh></v>
+<v t="bob.20080111201957.77"><vh>class OutlineCanvasPanel</vh>
+<v t="bob.20080111201957.78"><vh>__init__</vh></v>
+<v t="bob.20080111201957.79"><vh>showEntry</vh></v>
+<v t="bob.20080111201957.80"><vh>hideEntry</vh></v>
+<v t="bob.20080111201957.81"><vh>getPositions</vh></v>
+<v t="bob.20080111201957.87"><vh>onScrollVertical</vh></v>
+<v t="bob.20080113090336"><vh>onScrollHorizontal</vh></v>
+<v t="bob.20080111201957.88"><vh>onScrollRelative</vh></v>
+<v t="bob.20080111201957.90"><vh>vscrollUpdate</vh></v>
+<v t="bob.20080111201957.91"><vh>hscrollUpdate</vh></v>
+<v t="bob.20080111201957.92"><vh>update</vh></v>
+<v t="bob.20080111201957.93"><vh>redraw</vh></v>
+<v t="bob.20080111201957.94"><vh>refresh</vh></v>
+<v t="bob.20080111201957.95"><vh>GetName</vh></v>
+</v>
+<v t="bob.20080111201957.96"><vh>class OutlineCanvas</vh>
+<v t="bob.20080111201957.97"><vh>__init__</vh>
+<v t="bob.20080111201957.98"><vh>&lt;&lt; define ivars &gt;&gt;</vh></v>
+<v t="bob.20080111201957.99"><vh>&lt;&lt; create bindings &gt;&gt;</vh></v>
+</v>
+<v t="bob.20080111201957.101"><vh>hitTest</vh></v>
+<v t="bob.20080111201957.102"><vh>_createNewBuffer</vh></v>
+<v t="bob.20080111201957.103"><vh>vscrollTo</vh></v>
+<v t="bob.20080113073006"><vh>hscrollTo</vh></v>
+<v t="bob.20080111201957.104"><vh>resize</vh></v>
+<v t="bob.20080112173505"><vh>redraw</vh></v>
+<v t="bob.20080111201957.106"><vh>update</vh>
+<v t="bob.20080111201957.107"><vh>&lt;&lt; find height of tree and position of currentNode &gt;&gt;</vh></v>
+</v>
+<v t="bob.20080111201957.109"><vh>onPaint</vh></v>
+<v t="bob.20080112090335"><vh>onMap</vh></v>
+<v t="bob.20080112224841"><vh>onSize</vh></v>
+<v t="bob.20080111201957.105"><vh>refresh</vh></v>
+<v t="bob.20080111201957.110"><vh>contextChanged</vh></v>
+<v t="bob.20080111201957.111"><vh>requestLineHeight</vh></v>
+<v t="bob.20080111201957.112"><vh>def draw</vh>
+<v t="bob.20080111201957.113"><vh>&lt;&lt; draw tree &gt;&gt;</vh>
+<v t="bob.20080111201957.114"><vh>&lt;&lt; set up object &gt;&gt;</vh></v>
+<v t="bob.20080111201957.115"><vh>&lt;&lt; draw text &gt;&gt;</vh>
+<v t="bob.20080111201957.116"><vh>&lt;&lt; draw user icons &gt;&gt;</vh></v>
+</v>
+<v t="bob.20080111201957.117"><vh>&lt;&lt; draw lines &gt;&gt;</vh></v>
+<v t="bob.20080111201957.118"><vh>&lt;&lt; draw bitmaps &gt;&gt;</vh></v>
+<v t="bob.20080111201957.119"><vh>&lt;&lt; draw focus &gt;&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
@@ -212,9 +270,9 @@
 <v t="ekr.20080806145258.22"><vh>writePreamble</vh></v>
 <v t="ekr.20080806145258.23"><vh>writePostamble</vh></v>
 </v>
-<v t="ekr.20080806145258.24" tnodeList="ekr.20080806145258.24"><vh>@file server.py</vh></v>
-<v t="ekr.20080806145258.25" tnodeList="ekr.20080806145258.25"><vh>@file hello.html</vh></v>
-<v t="ekr.20080806145258.26" tnodeList="ekr.20080806145258.26,ekr.20080806145702.1,ekr.20080806145258.27,ekr.20080806145258.28,ekr.20080806145258.29,ekr.20080806145258.30,ekr.20080806145258.31,ekr.20080806145258.32,ekr.20080806145258.33"><vh>@file cgi-bin/edward.py</vh>
+<v t="ekr.20080806145258.24"><vh>@@file server.py</vh></v>
+<v t="ekr.20080806145258.25"><vh>@@file hello.html</vh></v>
+<v t="ekr.20080806145258.26"><vh>@@file cgi-bin/edward.py</vh>
 <v t="ekr.20080806145702.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20080806145258.27"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
 <v t="ekr.20080806145258.28"><vh>escape</vh></v>
@@ -224,7 +282,18 @@
 <v t="ekr.20080806145258.32"><vh>print_leo_dot_js</vh></v>
 <v t="ekr.20080806145258.33"><vh>print_tree</vh></v>
 </v>
-<v t="ekr.20080806145258.1"><vh>@thin cgi-bin/leo.js</vh></v>
+<v t="ekr.20080806145258.1"><vh>@@thin cgi-bin/leo.js</vh>
+<v t="ekr.20080806145258.2"><vh>getElementbyClass</vh></v>
+<v t="ekr.20080806145258.3"><vh>contractcontent</vh></v>
+<v t="ekr.20080806145258.4"><vh>expandcontent</vh></v>
+<v t="ekr.20080806145258.5"><vh>revivecontent</vh></v>
+<v t="ekr.20080806145258.6"><vh>get_cookie</vh></v>
+<v t="ekr.20080806145258.7"><vh>getselectedItem</vh></v>
+<v t="ekr.20080806145258.8"><vh>saveswitchstate</vh></v>
+<v t="ekr.20080806145258.9"><vh>do_onload</vh></v>
+<v t="ekr.20080806145258.10"><vh>format</vh></v>
+<v t="ekr.20080806145258.11"><vh>formatText</vh></v>
+</v>
 <v t="ekr.20080806145258.34"><vh>@@thin jqueryTest.html</vh></v>
 </v>
 <v t="ekr.20080811113441.2"><vh>Running body text as a windows script</vh>
@@ -250,6 +319,8 @@
 <v t="ekr.20080808122543.1"><vh>Path wrappers</vh></v>
 <v t="ekr.20080808122543.2"><vh>copyDir</vh></v>
 </v>
+<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
+<v t="ekr.20080823154546.2"><vh>parse-python test</vh></v>
 <v t="ekr.20080813080809.1"><vh>Tests for @shadow</vh>
 <v t="ekr.20080807091001.1"><vh>@@shadow python-import-test.py</vh>
 <v t="ekr.20080807091201.7"><vh>python-import-test declarations</vh></v>
@@ -273,12 +344,1249 @@
 <v t="ekr.20080813080627.3" a="M"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
+<v t="ekr.20080909075224.1"><vh>@@shadow ekr-shadow-test.html</vh></v>
+<v t="ekr.20080911080311.1"><vh>@@shadow dummy.conf</vh></v>
 </v>
-<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
-<v t="ekr.20080823154546.2"><vh>parse-python test</vh></v>
+<v t="ekr.20080911112823.1"><vh>@@nosent fix-failure.py</vh></v>
+<v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
+<v t="ekr.20080918123632.1"><vh>@path unittest</vh>
+<v t="ekr.20080918090005.1"><vh>@@file goto-global-line-test.py</vh></v>
 </v>
+<v t="ekr.20080918180141.1"><vh>Exception syntax</vh></v>
+<v t="ekr.20080919080736.1"><vh>dictionary stuff</vh></v>
+</v>
+<v t="ekr.20080919153320.1"><vh>@@thin small-test</vh>
+<v t="ekr.20080919153320.2"><vh>child</vh></v>
+</v>
+<v t="ekr.20080919161858.1"><vh>g.trace test</vh></v>
+<v t="ekr.20080920101658.1"><vh>getInput</vh></v>
+<v t="ekr.20080920113159.1"><vh>Ipython stuff</vh></v>
+<v t="ekr.20080920172621.1"><vh>ipython-extensions\ipy_leo.py</vh>
+<v t="ekr.20080920172621.2"><vh>ipy_leo declarations</vh></v>
+<v t="ekr.20080920172621.3"><vh>init_ipython</vh></v>
+<v t="ekr.20080920172621.4"><vh>update_commander</vh></v>
+<v t="ekr.20080920172621.5"><vh>es</vh></v>
+<v t="ekr.20080920172621.6"><vh>format_for_leo</vh></v>
+<v t="ekr.20080920172621.7"><vh>valid_attribute</vh></v>
+<v t="ekr.20080920172621.8"><vh>rootnode</vh></v>
+<v t="ekr.20080920172621.9"><vh>all_cells</vh></v>
+<v t="ekr.20080920172621.10"><vh>eval_node</vh></v>
+<v t="ekr.20080920172621.11"><vh>class LeoNode</vh>
+<v t="ekr.20080920172621.12"><vh>__init__</vh></v>
+<v t="ekr.20080920172621.13"><vh>__str__</vh></v>
+<v t="ekr.20080920172621.14"><vh>__get_h</vh></v>
+<v t="ekr.20080920172621.15"><vh>__set_h</vh></v>
+<v t="ekr.20080920172621.16"><vh>__get_b</vh></v>
+<v t="ekr.20080920172621.17"><vh>__set_b</vh></v>
+<v t="ekr.20080920172621.18"><vh>__set_val</vh></v>
+<v t="ekr.20080920172621.19"><vh>__set_l</vh></v>
+<v t="ekr.20080920172621.20"><vh>__iter__</vh></v>
+<v t="ekr.20080920172621.21"><vh>__children</vh></v>
+<v t="ekr.20080920172621.22"><vh>keys</vh></v>
+<v t="ekr.20080920172621.23"><vh>__getitem__</vh></v>
+<v t="ekr.20080920172621.24"><vh>__setitem__</vh></v>
+<v t="ekr.20080920172621.25"><vh>__delitem__</vh></v>
+<v t="ekr.20080920172621.26"><vh>ipush</vh></v>
+<v t="ekr.20080920172621.27"><vh>go</vh></v>
+<v t="ekr.20080920172621.28"><vh>append</vh></v>
+<v t="ekr.20080920172621.29"><vh>script</vh></v>
+<v t="ekr.20080920172621.30"><vh>__get_uA</vh></v>
+</v>
+<v t="ekr.20080920172621.31"><vh>class LeoWorkbook</vh>
+<v t="ekr.20080920172621.32"><vh>__getattr__</vh></v>
+<v t="ekr.20080920172621.33"><vh>__str__</vh></v>
+<v t="ekr.20080920172621.34"><vh>__setattr__</vh></v>
+<v t="ekr.20080920172621.35"><vh>__iter__</vh></v>
+<v t="ekr.20080920172621.36"><vh>match_h</vh></v>
+<v t="ekr.20080920172621.37"><vh>require</vh></v>
+</v>
+<v t="ekr.20080920172621.38"><vh>workbook_complete</vh></v>
+<v t="ekr.20080920172621.39"><vh>add_var</vh></v>
+<v t="ekr.20080920172621.40"><vh>add_file</vh></v>
+<v t="ekr.20080920172621.41"><vh>expose_ileo_push</vh></v>
+<v t="ekr.20080920172621.42"><vh>push_ipython_script</vh></v>
+<v t="ekr.20080920172621.43"><vh>eval_body</vh></v>
+<v t="ekr.20080920172621.44"><vh>push_plain_python</vh></v>
+<v t="ekr.20080920172621.45"><vh>push_cl_node</vh></v>
+<v t="ekr.20080920172621.46"><vh>push_ev_node</vh></v>
+<v t="ekr.20080920172621.47"><vh>push_mark_req</vh></v>
+<v t="ekr.20080920172621.48"><vh>push_position_from_leo</vh></v>
+<v t="ekr.20080920172621.49"><vh>edit_object_in_leo</vh></v>
+<v t="ekr.20080920172621.50"><vh>edit_macro</vh></v>
+<v t="ekr.20080920172621.51"><vh>get_history</vh></v>
+<v t="ekr.20080920172621.52"><vh>lee_f</vh></v>
+<v t="ekr.20080920172621.53"><vh>leoref_f</vh></v>
+<v t="ekr.20080920172621.54"><vh>mb_f</vh></v>
+<v t="ekr.20080920172621.55"><vh>mb_completer</vh></v>
+<v t="ekr.20080920172621.56"><vh>ileo_pre_prompt_hook</vh></v>
+<v t="ekr.20080920172621.57"><vh>show_welcome</vh></v>
+<v t="ekr.20080920172621.58"><vh>run_leo_startup_node</vh></v>
+<v t="ekr.20080920172621.59"><vh>lleo_f</vh></v>
+<v t="ekr.20080920172621.60"><vh>lno_f</vh></v>
+<v t="ekr.20080920172621.61"><vh>lshadow_f</vh></v>
+<v t="ekr.20080920172621.62"><vh>shadow_walk</vh></v>
+<v t="ekr.20080920172621.63"><vh>mkbutton</vh></v>
+</v>
+<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
+<v t="ekr.20080921165614.1"><vh>@button open core\buttons.txt</vh></v>
 </vnodes>
 <tnodes>
+<t tx="bob.20080111194559">@first
+
+
+class GtkLeoTreeDemo(object):
+
+
+    @others</t>
+<t tx="bob.20080111200056">@first #!/usr/bin/python
+import sys, os
+
+
+
+import pygtk
+pygtk.require('2.0')
+import gtk
+
+import pango
+import cairo
+
+@others
+
+def abspath(*args):
+    return os.path.abspath(os.path.join(*args))
+
+
+
+if __name__ == "__main__": 
+
+    leoDir = abspath(sys.path[0],'..')
+    sys.path[1:1] = [abspath(leoDir, '..')]
+
+    import leo.core.leoGlobals as g
+    g.g = g
+
+    import leo.core.leoBridge as leoBridge
+
+    controller = leoBridge.controller(gui='nullGui')
+    c = controller.openLeoFile(abspath(leoDir, 'test', 'unitTest.leo'))
+
+    outlineFont = ''
+
+    colors = g.importExtension('colors')
+
+    GtkLeoTreeDemo()
+
+    gtk.main()
+
+
+</t>
+<t tx="bob.20080111201957.77">
+class OutlineCanvasPanel(object):
+    """A class to mimic a scrolled window to contain an OutlineCanvas."""
+
+    @others
+</t>
+<t tx="bob.20080111201957.78">
+def __init__(self, parent, leoTree, name):
+    """Create an OutlineCanvasPanel instance."""
+
+    #g.trace('OutlineCanvasPanel')
+
+    #self._leoTree = leoTree
+    #self.c = leoTree.c
+    self.c = c
+
+    self._x = 0
+    self._y = 0
+
+    self._canvas = canvas = OutlineCanvas(self)
+    #canvas.resize(400, 300)
+
+    self._table = gtk.Table(2,2)
+
+    self._hscrollbar = gtk.HScrollbar()
+    self._vscrollbar = gtk.VScrollbar()
+
+    self._hadj = h = self._hscrollbar.get_adjustment()
+    self._vadj = v = self._vscrollbar.get_adjustment()
+
+    self._hscrollbar.set_range(0, 10)
+    self._vscrollbar.set_range(0, 20)
+
+
+    v.connect('value-changed', self.onScrollVertical)
+    h.connect('value-changed', self.onScrollHorizontal)
+
+    self._table.attach(self._hscrollbar, 0, 1, 1, 2, yoptions=0)
+    self._table.attach(self._vscrollbar, 1, 2, 0, 1, xoptions=0)
+
+
+    options = gtk.SHRINK | gtk.FILL | gtk.EXPAND
+    self._table.attach(self._canvas, 0, 1, 0, 1, options, options)
+
+    parent.add(self._table)
+
+    self._canvas.set_events(
+        gtk.gdk.POINTER_MOTION_MASK |
+                gtk.gdk.POINTER_MOTION_HINT_MASK
+    )
+
+
+    #self._entry = wx.TextCtrl(self._canvas,
+    #    style = wx.SIMPLE_BORDER | wx.WANTS_CHARS
+    #)
+
+    #self._entry._virtualTop = -1000
+    #self._entry.Hide()
+    #self._canvas._widgets.append(self._entry)
+
+    #self._canvas.update()
+
+
+    # self.Bind(wx.EVT_SIZE, self.onSize)
+
+
+    #self.SetBackgroundColour(self._leoTree.outline_pane_background_color)
+
+    #self.Bind(wx.EVT_CHAR,
+    #    lambda event, self=self._leoTree: onGlobalChar(self, event)
+    #)
+
+    #self.onScroll(wx.HORIZONTAL, 0)
+
+</t>
+<t tx="bob.20080111201957.79">showcount = 0
+def showEntry(self):
+
+    # self.showcount +=1
+
+    # print
+    # g.trace(self.showcount, g.callers(20))
+    # print
+
+    entry = self._entry
+    canvas = self._canvas
+
+    ep = self._leoTree.editPosition()
+
+    if not ep:
+        return self.hideEntry()
+
+
+    for sp in canvas._positions:
+        if ep == sp:
+            break
+    else:
+        return self.hideEntry()
+
+    x, y, width, height = sp._textBoxRect
+    #g.pr('	', x, y, width , height)
+
+    entry._virtualTop = canvas._virtualTop + y -2
+
+    entry.MoveXY(x - 2, y -2)
+    entry.SetSize((max(width + 4, 100), -1))
+
+    tw = self._leoTree.headlineTextWidget
+
+    range = tw.getSelectionRange()
+    tw.setInsertPoint(0)
+    #tw.setInsertPoint(len(sp.headString()))
+    tw.setSelectionRange(*range)
+    entry.Show()
+</t>
+<t tx="bob.20080111201957.80">
+def hideEntry(self):
+
+    entry = self._entry
+    entry._virtualTop = -1000
+    entry.MoveXY(0, -1000)
+
+    entry.Hide()
+</t>
+<t tx="bob.20080111201957.81">
+def getPositions(self):
+    return self._canvas._positions</t>
+<t tx="bob.20080111201957.87">def onScrollVertical(self, adjustment):
+    """Scroll the outline vertically to a new position."""
+
+    self._canvas.vscrollTo(int(adjustment.value))</t>
+<t tx="bob.20080111201957.88">
+def onScrollRelative(self, orient, value):
+
+    return self.onScroll(orient, self.GetScrollPos(orient) + value)
+</t>
+<t tx="bob.20080111201957.90">
+def vscrollUpdate(self):
+    """Set the vertical scroll bar to match current conditions."""
+
+    canvas = self._canvas
+
+    oldtop = top = canvas._virtualTop
+    canvasHeight = canvas.get_allocation().height
+    treeHeight = canvas._treeHeight
+
+    if (treeHeight - top) &lt; canvasHeight:
+        top = treeHeight - canvasHeight
+
+    if top &lt; 0 :
+        top = 0
+
+    if oldtop != top:
+        canvas._virtualTop = top
+        canvas.redraw()
+        top = canvas._virtualTop
+
+    #self.showEntry()
+
+    self._vadj.set_all(
+        top, #value
+        0, #lower
+        treeHeight, #upper
+        canvasHeight * 0.1, #step_increment
+        canvasHeight * 0.9, #page_increment
+        canvasHeight #page-size
+    )
+
+
+</t>
+<t tx="bob.20080111201957.91">
+def hscrollUpdate(self):
+    """Set the vertical scroll bar to match current conditions."""
+
+    canvas = self._canvas
+
+    oldleft = left = canvas._virtualLeft
+    canvasWidth = canvas.get_allocation().width
+    treeWidth = canvas._treeWidth
+
+    if (treeWidth - left) &lt; canvasWidth:
+        left = treeWidth - canvasWidth
+
+    if left &lt; 0 :
+        left = 0
+
+    if oldleft != left:
+        canvas._virtualLeft = left
+        canvas.redraw()
+        left = canvas._virtualLeft
+
+    #self.showEntry()
+
+    self._hadj.set_all(
+        left, #value
+        0, #lower
+        treeWidth, #upper
+        canvasWidth * 0.1, #step_increment
+        canvasWidth * 0.9, #page_increment
+        canvasWidth #page-size
+    )
+
+</t>
+<t tx="bob.20080111201957.92">
+def update(self):
+    self._canvas.update()
+
+
+</t>
+<t tx="bob.20080111201957.93">
+def redraw(self):
+    self._canvas.redraw()</t>
+<t tx="bob.20080111201957.94">def refresh(self):
+    self._canvas.refresh()</t>
+<t tx="bob.20080111201957.95">def GetName(self):
+    return 'canvas'
+
+getName = GetName</t>
+<t tx="bob.20080111201957.96">class OutlineCanvas(gtk.DrawingArea):
+    """Implements a virtual view of a leo outline tree.
+
+    The class uses an off-screen buffer for drawing which it
+    blits to the window during paint calls for expose events, etc,
+
+    A redraw is only required when the size of the canvas changes,
+    a scroll event occurs, or if the outline changes.
+
+    """
+    @others
+</t>
+<t tx="bob.20080111201957.97">def __init__(self, parent):
+    """Create an OutlineCanvas instance."""
+
+    #g.trace('OutlineCanvas')
+
+    self.c = c = parent.c
+
+    self._parent = parent
+    #self.leoTree = parent.leoTree
+
+
+    &lt;&lt; define ivars &gt;&gt;
+
+    gtk.DrawingArea.__init__(self)
+    self._pangoLayout = self.create_pango_layout("Wq")
+
+
+    # g.trace()
+
+
+    self._font = pango.FontDescription(outlineFont)
+
+    self._pangoLayout.set_font_description(self._font)
+
+
+    self._buffer = None
+
+    self.contextChanged()
+
+    #self.Bind(wx.EVT_PAINT, self.onPaint)
+
+    self.connect('map-event', self.onMap)
+
+
+    #for o in (self, parent):
+    #    &lt;&lt; create  bindings &gt;&gt;
+
+@
+self.box_padding = 5 # extra padding between box and icon
+self.box_width = 9 + self.box_padding
+self.icon_width = 20
+self.text_indent = 4 # extra padding between icon and tex
+
+self.hline_y = 7 # Vertical offset of horizontal line
+self.root_left = 7 + self.box_width
+self.root_top = 2
+
+self.default_line_height = 17 + 2 # default if can't set line_height from font.
+self.line_height = self.default_line_height
+
+</t>
+<t tx="bob.20080111201957.98">#self._icons = icons
+
+self._widgets = []
+
+self.drag_p = None
+
+self._size =  [1000, 1000]
+
+self._virtualTop = 0
+self._virtualLeft = 0
+
+self._textIndent = 30
+
+self._xPad = 30
+self._yPad = 2
+
+self._treeHeight = 500
+self._treeWidth = 500
+
+self._positions = []
+
+self._fontHeight = None
+self._iconSize = [20, 11]
+
+self._clickBoxSize = None
+self._lineHeight =  10
+self._requestedLineHeight = 10
+
+self._yTextOffset = None
+self._yIconOffset = None
+
+self._clickBoxCenterOffset = None
+
+self._clickBoxOffset = None
+
+
+</t>
+<t tx="bob.20080111201957.99"># onmouse = self._leoTree.onMouse
+
+# for e, s in (
+   # ( wx.EVT_LEFT_DOWN,     'LeftDown'),
+   # ( wx.EVT_LEFT_UP,       'LeftUp'),
+   # ( wx.EVT_LEFT_DCLICK,   'LeftDoubleClick'),
+   # ( wx.EVT_MIDDLE_DOWN,   'MiddleDown'),
+   # ( wx.EVT_MIDDLE_UP,     'MiddleUp'),
+   # ( wx.EVT_MIDDLE_DCLICK, 'MiddleDoubleClick'),
+   # ( wx.EVT_RIGHT_DOWN,    'RightDown'),
+   # ( wx.EVT_RIGHT_UP,      'RightUp'),
+   # ( wx.EVT_RIGHT_DCLICK,  'RightDoubleClick'),
+   # ( wx.EVT_MOTION,        'Motion')
+# ):
+    # o.Bind(e, lambda event, type=s: onmouse(event, type))
+
+
+
+# #self.Bind(wx.EVT_KEY_UP, self._leoTree.onChar)
+# #self.Bind(wx.EVT_KEY_DOWN, lambda event: self._leoTree.onKeyDown(event))
+
+# self.Bind(wx.EVT_CHAR,
+    # lambda event, self=self._leoTree: onGlobalChar(self, event)
+# )
+
+</t>
+<t tx="bob.20080111201957.101">def hitTest(self, x, y):
+    result = self._hitTest(point)
+    g.trace(result)
+    return result
+
+def hitTest(self, xx, yy):
+
+    for sp in self._positions:
+
+        if yy &lt; (sp._top + self._lineHeight):
+
+            x, y, w, h = sp._clickBoxRect
+            if xx &gt; x  and xx &lt; (x + w) and yy &gt; y and yy &lt; (y + h):
+                return sp, 'ClickBox'
+
+            x, y, w, h = sp._iconBoxRect
+            if xx &gt; x  and xx &lt; (x + w) and yy &gt; y and yy &lt; (y + h):
+                return sp, 'IconBox'
+
+            x, y, w, h = sp._textBoxRect
+            if xx &gt; x  and xx &lt; (x + w) and yy &gt; y and yy &lt; (y + h): 
+                return sp, 'TextBox'
+
+            i = -1  
+            for x, y, w, h in sp._headStringIcons:
+                i += 1
+                if xx &gt; x  and xx &lt; (x + w) and yy &gt; y and yy &lt;(y + h):
+                   return sp, i
+
+            return sp, 'Headline'
+
+    return None, 'Canvas'
+
+</t>
+<t tx="bob.20080111201957.102">def _createNewBuffer(self):
+    """Create a new buffer for drawing."""
+
+
+    if not self.window:
+        g.trace('no window !!!!!!!!!!!!!!!!')
+        g.trace(g.callers())
+        return
+
+
+    w, h = self.window.get_size()
+    #g.trace(g.callers())
+
+
+    if self._buffer:
+        bw, bh = self._buffer.get_size()
+        if bw &gt;= w and bh &gt;= h:
+            return
+
+    self._buffer = gtk.gdk.Pixmap(self.window, w, h)
+
+
+
+
+
+</t>
+<t tx="bob.20080111201957.103">
+def vscrollTo(self, pos):
+    """Scroll the canvas vertically to the specified position."""
+
+    canvasHeight = self.get_allocation().height
+    if (self._treeHeight - canvasHeight) &lt; pos :
+        pos = self._treeHeight - canvasHeight
+
+    pos = max(0, pos)
+
+    self._virtualTop = pos
+
+    self.redraw()
+</t>
+<t tx="bob.20080111201957.104">
+def resize(self):
+    """Resize the outline canvas and, if required, create and draw on a new buffer."""
+
+    c = self.c
+
+    #c.beginUpdate()     #lock out events
+    if 1: #try:
+
+        self._createNewBuffer()
+
+        #self._parent.hscrollUpdate()
+
+
+        self.draw()
+        self.refresh()
+
+
+    #finally:
+    #    c.endUpdate(False)
+
+
+    return True
+
+
+
+
+
+</t>
+<t tx="bob.20080111201957.105">
+#def refresh(self):
+    # """Renders the offscreen buffer to the outline canvas."""
+    # return
+
+    # #g.pr('refresh')
+    # wx.ClientDC(self).BlitPointSize((0,0), self._size, self._buffer, (0, 0))
+
+refresh = onPaint</t>
+<t tx="bob.20080111201957.106">
+def update(self):
+    """Do a full update assuming the tree has been changed."""
+
+    c = self.c
+
+    canvasHeight = self.get_allocation().height
+
+    hoistFlag = bool(self.c.hoistStack)
+
+    if hoistFlag:
+        stk = [self.c.hoistStack[-1].p]
+    else:
+        stk = [self.c.rootPosition()]
+
+    &lt;&lt; find height of tree and position of currentNode &gt;&gt;
+
+    if (self._treeHeight - self._virtualTop) &lt; canvasHeight:
+        self._virtualTop = self._treeHeight - canvasHeight
+
+    # if (self._treeHeight - self._virtualTop) &lt; canvasHeight:
+        # self._virtualTop = self._treeHeight - canvasHeight
+
+    self.contextChanged()
+
+    self.redraw()
+    self._parent.vscrollUpdate()
+    self._parent.hscrollUpdate()
+
+
+</t>
+<t tx="bob.20080111201957.107">
+# Find the number of visible nodes in the outline.
+
+cp = c.currentPosition().copy()
+cpCount = None
+
+count = 0
+while stk:
+
+    p = stk.pop()
+
+    while p:
+
+
+        if stk or not hoistFlag:
+            newp = p.next()
+        else:
+            newp = None
+
+        if cp and cp == p:
+            cpCount = count
+            cp = False
+
+        count += 1
+
+        if p.isExpanded() and p.hasFirstChild():
+            stk.append(newp)
+            p = p.firstChild()
+            continue
+
+        p = newp
+
+lineHeight = self._lineHeight
+
+self._treeHeight = count * lineHeight
+g.trace( 'treeheight ', self._treeHeight)
+
+if cpCount is not None:
+    cpTop = cpCount * lineHeight
+
+    if cpTop &lt; self._virtualTop:
+        self._virtualTop = cpTop
+
+    elif cpTop + lineHeight &gt; self._virtualTop + canvasHeight:
+        self._virtualTop += (cpTop + lineHeight) - (self._virtualTop + canvasHeight)
+
+
+
+</t>
+<t tx="bob.20080111201957.109">
+def onPaint(self, *args):
+    """Renders the off-screen buffer to the outline canvas."""
+
+    # w, h are needed because the buffer may be bigger than the window.
+
+    w, h = self.window.get_size()
+
+    # We use self.style.black_gc only because we need a gc, it has no relavence.
+
+    self.window.draw_drawable(self.style.black_gc ,self._buffer, 0, 0, 0, 0, w, h)
+</t>
+<t tx="bob.20080111201957.110">def contextChanged(self):
+    """Adjust canvas attributes after a change in context.
+
+    This should be called after setting or changing fonts or icon size or
+    anything that effects the tree display.
+
+    """
+
+    self._pangoLayout.set_text('Wy')
+    self._fontHeight = self._pangoLayout.get_pixel_size()[1]
+    self._iconSize = (20, 11) #(icons[0].GetWidth(), icons[0].GetHeight())
+
+    self._clickBoxSize = (9, 9) #(plusBoxIcon.GetWidth(), plusBoxIcon.GetHeight())
+
+    self._lineHeight = max(
+        self._fontHeight,
+        self._iconSize[1],
+        self._requestedLineHeight
+    ) + 2 * self._yPad
+
+    # y offsets
+
+    self._yTextOffset = (self._lineHeight - self._fontHeight)//2
+
+    self._yIconOffset = (self._lineHeight - self._iconSize[1])//2
+
+    self._clickBoxCenterOffset = (
+        -self._textIndent*2 + self._iconSize[0]//2,
+        self._lineHeight//2
+    )
+
+    self._clickBoxOffset = (
+        self._clickBoxCenterOffset[0] - self._clickBoxSize[0]//2,
+        (self._lineHeight  - self._clickBoxSize[1])//2
+    )
+
+
+</t>
+<t tx="bob.20080111201957.111">def requestLineHeight(height):
+    """Request a minimum height for lines."""
+
+    assert int(height) and height &lt; 200
+    self.requestedHeight = height
+    self.beginUpdate()
+    self.endUpdate()
+</t>
+<t tx="bob.20080111201957.112">
+def draw(self, *args):
+    """Draw the outline on the off-screen buffer."""
+
+    r, g, b = colors.getColorRGB('leoyellow')
+    r, g, b = r/255.0, g/255.0, b/255.0
+
+    x, y, canvasWidth, canvasHeight = self.get_allocation()
+
+
+    pangoLayout = self._pangoLayout
+
+
+    cr = self._buffer.cairo_create()
+
+
+    cr.set_source_rgb(r, g, b)
+    cr.rectangle(x, y, canvasWidth, canvasHeight)
+    cr.fill()
+
+    c = self.c
+
+
+    top = self._virtualTop
+    if top &lt; 0:
+        self._virtualTop = top = 0
+
+    left = self._virtualLeft
+    if left &lt; 0:
+        self._virtualLeft = left = 0   
+
+
+    bottom = top + canvasHeight
+
+
+    textIndent = self._textIndent
+    treeWidth = self._treeWidth
+
+    yPad = self._yPad
+    xPad = self._xPad - left
+
+    yIconOffset = self._yIconOffset
+
+    yTextOffset = self._yTextOffset
+
+    clickBoxOffset_x, clickBoxOffset_y = self._clickBoxOffset
+
+    clickBoxCenterOffset_x, clickBoxCenterOffset_y = \
+        self._clickBoxCenterOffset
+
+    clickBoxSize_w, clickBoxSize_h = self._clickBoxSize
+
+    iconSize_w, iconSize_h = self._iconSize
+
+    lineHeight = self._lineHeight
+    halfLineHeight = lineHeight//2
+
+    &lt;&lt; draw tree &gt;&gt;
+
+    #self._parent.showEntry()
+
+    return True
+
+
+
+
+
+
+</t>
+<t tx="bob.20080111201957.113">y = 0
+
+hoistFlag = bool(c.hoistStack)
+
+if hoistFlag:
+    stk = [c.hoistStack[-1].p]
+else:
+    stk = [c.rootPosition()]
+
+self._positions = positions = []
+
+@
+My original reason for writing the loop this way was to make it as fast as
+possible. Perhaps I was being a bit too paranoid and we should change back to
+more conventional iterations, on the other hand if it ain't broke don't fix it.
+@c
+
+
+while stk:
+
+    p = stk.pop()
+
+    while p:
+
+        if stk or not hoistFlag:
+            newp = p.next()
+        else:
+            newp = None
+
+        mytop = y
+        y = y + lineHeight
+
+        if mytop &gt; bottom:
+            stk = []
+            p = None
+            break
+
+        if y &gt; top:
+
+            sp = p.copy()
+
+            &lt;&lt; setup object &gt;&gt;
+
+            positions.append(sp)
+
+            treeWidth = max(
+                treeWidth,
+                textSize_w + xTextOffset + left
+            )
+
+        if p.isExpanded() and p.hasFirstChild():
+            stk.append(newp)
+            p = p.firstChild()
+            continue
+
+        p = newp
+
+if treeWidth &gt; self._treeWidth:
+    # theoretically this could be recursive
+    # but its unlikely ...
+    self._treeWidth = treeWidth
+    self._parent.hscrollUpdate()
+
+if not positions:
+    #g.trace('No positions!')
+    return
+
+self._virtualTop =  positions[0]._virtualTop
+
+
+# try:
+    # result = self._leoTree.drawTreeHook(self)
+    # g.pr('result =', result)
+# except:
+    # result = False
+    # g.pr('result is False')
+
+# if hasattr(self._leoTree, 'drawTreeHook'):
+    # try:
+        # result = self._leoTree.drawTreeHook(self)
+    # except:
+        # result = False
+# else:
+    # #g.pr('drawTreeHook not known')
+    # result = None
+
+# if not result:
+if 1:
+    &lt;&lt; draw text &gt;&gt;
+    &lt;&lt; draw lines &gt;&gt;
+    &lt;&lt; draw bitmaps &gt;&gt;
+
+    &lt;&lt; draw focus &gt;&gt;
+
+
+
+
+</t>
+<t tx="bob.20080111201957.114"># depth: the depth of indentation relative to the current hoist.
+sp._depth = len(stk)
+
+# virtualTop: top of the line in virtual canvas coordinates
+sp._virtualTop =  mytop
+
+# top: top of the line in real canvas coordinates
+sp._top = mytop - top
+
+
+pangoLayout.set_text(sp.headString())
+
+textSize_w, textSize_h = pangoLayout.get_pixel_size()
+
+xTextOffset = ((sp._depth +1) * textIndent) + xPad
+
+textPos_x = xTextOffset # - self._hadj.value
+textPos_y =  sp._top + yTextOffset
+
+iconPos_x = textPos_x - textIndent
+iconPos_y = textPos_y + yIconOffset
+
+clickBoxPos_x = textPos_x + clickBoxOffset_x
+clickBoxPos_y = textPos_y + clickBoxOffset_y
+
+sp._clickBoxCenter_x = clickBoxPos_x + clickBoxCenterOffset_x
+sp._clickBoxCenter_y = clickBoxPos_y + clickBoxCenterOffset_y
+
+sp._textBoxRect = [textPos_x, textPos_y, textSize_w, textSize_h]
+sp._iconBoxRect = [iconPos_x, iconPos_y, iconSize_w, iconSize_h]
+sp._clickBoxRect = [clickBoxPos_x, clickBoxPos_y, clickBoxSize_w, clickBoxSize_h]
+
+sp._icon = icons[p.v.computeIcon()]
+
+
+if sp.hasFirstChild():
+    sp._clickBoxIcon = plusBoxIcon
+    if sp.isExpanded():
+        sp._clickBoxIcon = minusBoxIcon
+else:
+    sp._clickBoxIcon = None
+
+sp._clickRegions = []
+
+</t>
+<t tx="bob.20080111201957.115">
+current = c.currentPosition()
+
+
+
+for sp in positions:
+
+    &lt;&lt; draw user icons &gt;&gt;
+
+    # if current and current == sp:
+        # dc.SetBrush(wx.LIGHT_GREY_BRUSH)
+        # dc.SetPen(wx.LIGHT_GREY_PEN)
+        # dc.DrawRectangleRect(
+            # wx.Rect(*sp._textBoxRect).Inflate(3, 3)
+        # )
+        # current = False
+        # #dc.SetBrush(wx.TRANSPARENT_BRUSH)
+        # #dc.SetPen(wx.BLACK_PEN)
+
+
+    pangoLayout.set_text(sp.headString())
+    x, y, w, h = sp._textBoxRect
+    cr.set_source_rgb(0, 0, 0)
+    cr.move_to(x, y)
+    #cr.update_layout(pangoLayout)
+    cr.show_layout(pangoLayout)
+
+
+</t>
+<t tx="bob.20080111201957.116">
+
+try:
+    headStringIcons = sp.v.t.unknownAttributes.get('icons', [])
+except:
+    headStringIcons = None
+
+sp._headStringIcons = hsi = []
+
+if headStringIcons:
+
+    for headStringIcon in headStringIcons:
+        try:
+            image = globalImages[headStringIcon['relPath']]
+        except KeyError:
+            path = headStringIcon['relPath']
+            image = getImage(path)
+            if image is None:
+                return
+
+
+        x, y, w, h = sp._textBoxRect
+
+        hsi.append((x, y, image.get_width(), image.get_height()))       
+
+        cr.set_source_pixbuf(image, x, y)
+        cr.paint()
+
+        sp._textBoxRect[0] = x + image.get_width() + 5
+
+</t>
+<t tx="bob.20080111201957.117"></t>
+<t tx="bob.20080111201957.118">
+for sp in positions:
+
+    x, y, w, h = sp._iconBoxRect
+
+    cr.set_source_pixbuf(sp._icon,x,y)
+    cr.paint()
+    #cr.stroke()
+
+    if sp._clickBoxIcon:
+        x, y, w, h = sp._clickBoxRect
+        cr.set_source_pixbuf(sp._clickBoxIcon, x, y)
+        cr.paint()
+
+@
+  ctx = da.window.cairo_create()
+  # You can put ctx.scale(..) or ctx.rotate(..) here, if you need some
+  ct = gtk.gdk.CairoContext(ctx)
+  ct.set_source_pixbuf(pixbuf,0,0)
+  ctx.paint()
+  ctx.stroke()
+
+
+
+
+</t>
+<t tx="bob.20080111201957.119">if 0:
+    dc.SetBrush(wx.TRANSPARENT_BRUSH)
+    if self._leoTree.hasFocus():
+        dc.SetPen(wx.BLACK_PEN)
+    #else:
+    #    dc.SetPen(wx.GREEN_PEN)
+        dc.DrawRectanglePointSize( (0,0), self.GetSize())</t>
+<t tx="bob.20080112090335">def onMap(self, *args):
+    self._createNewBuffer()
+    self.update()
+    self.connect('expose-event', self.onPaint)
+    self.connect("size-allocate", self.onSize)
+</t>
+<t tx="bob.20080112173505">def redraw(self):
+    self.draw()
+    self.refresh()
+</t>
+<t tx="bob.20080112224841">def onSize(self, *args):
+    """React to changes in the size of the outlines display area."""
+
+
+    c = self.c
+    c.beginUpdate()
+    try:
+        self.resize()
+        self._parent.vscrollUpdate()
+        self._parent.hscrollUpdate()
+    finally:
+        c.endUpdate(False)
+
+
+</t>
+<t tx="bob.20080113073006">def hscrollTo(self, pos):
+    """Scroll the canvas vertically to the specified position."""
+
+    canvasWidth = self.get_allocation().width
+
+    #g.trace(pos)
+
+    if (self._treeWidth - canvasWidth) &lt; pos :
+        pos = min(0, self._treeWidth - canvasWidth)
+
+    pos = max( 0, pos)
+
+    self._virtualLeft = pos
+
+    self.redraw()
+</t>
+<t tx="bob.20080113090336">def onScrollHorizontal(self, adjustment):
+    """Scroll the outline horizontally to a new position.
+
+    """
+    self._canvas.hscrollTo(int(adjustment.value))
+</t>
+<t tx="bob.20080113133525">def loadIcons():
+
+    global icons, plusBoxIcon, minusBoxIcon, appIcon, namedIcons, globalImages
+
+    import cStringIO
+
+
+
+    icons = []
+    namedIcons = {}
+
+
+    path = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'Icons'))
+    if g.os_path_exists(g.os_path_join(path, 'box01.GIF')):
+        ext = '.GIF'
+    else:
+        ext = '.gif'
+
+    for i in range(16):
+        icon = loadIcon(g.os_path_join(path, 'box%02d'%i + ext))
+        icons.append(icon)
+
+
+
+    for name in (
+        'lt_arrow_enabled',
+        'rt_arrow_enabled',
+        'lt_arrow_disabled',
+        'rt_arrow_disabled',
+        'plusnode',
+        'minusnode'
+    ):
+        icon = loadIcon(g.os_path_join(path, name + '.gif'))
+        if icon:
+            namedIcons[name] = icon
+
+    plusBoxIcon = namedIcons['plusnode']
+    minusBoxIcon = namedIcons['minusnode']
+
+    globalImages = {}
+
+</t>
+<t tx="bob.20080113141134">
+
+def name2color(name, default=None, cairo=False):
+
+
+
+
+    if isinstance(name, cls ):
+        return name
+
+    color = colors.getColorRGB(name)
+
+    if color is None:
+        if default:
+            return name2color(default)
+        else:
+            return None
+
+    r, g, b = color
+
+    if cairo:
+        return r/255.0, g/255.0, b/255.0 
+
+    return gtk.gdk.Color(r,g,b)
+</t>
+<t tx="bob.20080113170041">def getImage (relPath, force=False):
+
+
+    if not force and relPath in globalImages:
+        image = globalImages[relPath]
+        g.es('cach ', image, image.get_height(), getColor('magenta'))
+        return image, image.get_height()
+
+    try:
+        path = g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons", relPath))
+        globalImages[relPath] = image = loadIcon(path)
+        return image
+
+    except Exception:
+        pass
+
+    try:
+        path = g.os_path_normpath(relPath)
+        localImages[relPath] =  image = loadIcon(path)
+        return image
+    except Exception:
+        pass
+
+    return None
+</t>
+<t tx="bob.20080113170657">def loadIcon(fname):
+
+    try:
+        icon = gtk.gdk.pixbuf_new_from_file(fname)
+    except:
+        icon = None
+
+    if icon and icon.get_width()&gt;0:
+        return icon
+
+    g.pr('Can not load icon from', fname)
+</t>
+<t tx="bob.20080113183321">def onButtonPress(self, w, event, *args):
+
+    codes = {
+        gtk.gdk.BUTTON_PRESS: 'click',
+        gtk.gdk._2BUTTON_PRESS: 'double_click',
+        gtk.gdk._3BUTTON_PRESS: 'triple_click',
+        gtk.gdk.BUTTON_RELEASE: 'release'
+    }
+
+
+    sp, item = self.canvas.hitTest(event.x, event.y)
+    g.pr(
+        codes[event.type], '%s[%s]: %s'%(
+            g.choose(isinstance(item, int), 'headStringIcon[%s]'%item, item),
+            'button-%s'%event.button,
+            sp.headString()
+        ))
+
+    if item == 'ClickBox' and event.button == 1:
+        if sp.isExpanded():
+            sp.contract()
+        else:
+            sp.expand()
+
+        self.canvas.update()
+</t>
+<t tx="bob.20080113183321.1"></t>
+<t tx="bob.20080113184034">def __init__(self):
+
+    #for n in c.allNodes_iter():
+    #    g.pr(n.headString())
+
+
+    window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+    window.set_title("gtkLeo Outline Widget Demo")
+    window.connect("destroy", lambda w: gtk.main_quit())
+    window.set_size_request(10, 10)
+    window.resize(400, 300)
+
+    loadIcons()
+
+    self.panel = OutlineCanvasPanel(window, c, 'canvas')
+
+    self.canvas = canvas = self.panel._canvas
+    g.trace(canvas)
+
+    canvas.set_events(gtk.gdk.ALL_EVENTS_MASK)
+    canvas.connect('button_press_event', self.onButtonPress)
+    #canvas.connect('button_release_event', self.onButtonPress)
+
+    window.show_all()
+
+
+
+</t>
+<t tx="bob.20080114060133"></t>
 <t tx="edreamleo.20080110083531">import gtk
 
 @others
@@ -1239,6 +2547,7 @@ leoTest.doTests (c,all=False)</t>
 
 plugins_menu.py
 
+# base64Packager.py
 # searchbox.py
 
 # active_path.py
@@ -1268,22 +2577,6 @@ leo_to_html.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
-<t tx="ekr.20071101163934">import leoPlugins
-
-rst3 = leoPlugins.getPluginModule('rst3')
-
-if rst3:
-    controller = rst3.controllers.get(c)
-    if controller:
-        controller.processTopTree(p)
-else:
-    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-    if rst3:
-        g.es('rst3 loaded')
-        rst3.onCreate('tag',{'c':c})
-    else:
-        # Ask to be removed.
-        g.app.scriptDict['removeMe'] = True</t>
 <t tx="ekr.20071105085941"></t>
 <t tx="ekr.20071128122043">log = c.frame.log ; tag = 'Shell'
 frame1 = log.frameDict.get(tag)
@@ -1694,6 +2987,140 @@ for z in aList:
 </t>
 <t tx="ekr.20080803120643.1">def spam():
     pass</t>
+<t tx="ekr.20080806145258.1">@language javascript
+
+/**********************************************
+* Contractible Headers script- © Dynamic Drive (www.dynamicdrive.com)
+* This notice must stay intact for legal use. Last updated Mar 23rd, 2004.
+* Visit http://www.dynamicdrive.com/ for full source code
+***********************************************/
+
+// alert("start");
+
+var enablepersist="on" //Enable saving state of content structure using session cookies? (on/off)
+var collapseprevious="no" //Collapse previously open content when opening present? (yes/no)
+
+if (document.getElementById){
+    document.write('&lt;style type="text/css"&gt;')
+    document.write('.switchcontent{display:none;}')
+    document.write('&lt;\/style&gt;')
+}
+
+@others</t>
+<t tx="ekr.20080806145258.2">function getElementbyClass(classname){
+    ccollect=new Array()
+    var inc=0
+    var alltags=document.all? document.all : document.getElementsByTagName("*")
+    for (i=0; i&lt;alltags.length; i++){
+        if (alltags[i].className==classname)
+            ccollect[inc++]=alltags[i]
+    }
+}
+
+</t>
+<t tx="ekr.20080806145258.3">function contractcontent(omit){
+    var inc=0
+    while (ccollect[inc]){
+        if (ccollect[inc].id!=omit)
+        ccollect[inc].style.display="none"
+        inc++
+    }
+}
+</t>
+<t tx="ekr.20080806145258.4">function expandcontent(cid){
+    if (typeof ccollect!="undefined"){
+        if (collapseprevious=="yes")
+            contractcontent(cid)
+        document.getElementById(cid).style.display=(document.getElementById(cid).style.display!="block")? "block" : "none"
+    }
+}
+</t>
+<t tx="ekr.20080806145258.5">function revivecontent(){
+    contractcontent("omitnothing")
+    selectedItem=getselectedItem()
+    selectedComponents=selectedItem.split("|")
+    for (i=0; i&lt;selectedComponents.length-1; i++)
+        document.getElementById(selectedComponents[i]).style.display="block"
+}
+
+</t>
+<t tx="ekr.20080806145258.6">function get_cookie(Name) { 
+    var search = Name + "="
+    var returnvalue = "";
+    if (document.cookie.length &gt; 0) {
+        offset = document.cookie.indexOf(search)
+        if (offset != -1) { 
+            offset += search.length
+            end = document.cookie.indexOf(";", offset);
+            if (end == -1) end = document.cookie.length;
+            returnvalue=unescape(document.cookie.substring(offset, end))
+        }
+    }
+    return returnvalue;
+}
+
+</t>
+<t tx="ekr.20080806145258.7">function getselectedItem(){
+    if (get_cookie(window.location.pathname) != ""){
+        selectedItem=get_cookie(window.location.pathname)
+        return selectedItem
+    }
+    else
+        return ""
+}
+
+</t>
+<t tx="ekr.20080806145258.8">function saveswitchstate(){
+    var inc=0, selectedItem=""
+    while (ccollect[inc]){
+        if (ccollect[inc].style.display=="block")
+            selectedItem+=ccollect[inc].id+"|"
+        inc++
+    }
+    document.cookie=window.location.pathname+"="+selectedItem
+}
+
+</t>
+<t tx="ekr.20080806145258.9">function do_onload(){
+    // alert("do_onload");
+    uniqueidn=window.location.pathname+"firsttimeload"
+    getElementbyClass("switchcontent")
+    if (enablepersist=="on" &amp;&amp; typeof ccollect!="undefined"){
+        document.cookie=(get_cookie(uniqueidn)=="")? uniqueidn+"=1" : uniqueidn+"=0" 
+        firsttimeload=(get_cookie(uniqueidn)==1)? 1 : 0 //check if this is 1st page load
+        if (!firsttimeload)
+        revivecontent()
+    }
+}
+
+if (window.addEventListener)
+    window.addEventListener("load", do_onload, false)
+else if (window.attachEvent)
+    window.attachEvent("onload", do_onload)
+else if (document.getElementById)
+    window.onload=do_onload
+
+if (enablepersist=="on" &amp;&amp; document.getElementById)
+    window.onunload=saveswitchstate
+
+</t>
+<t tx="ekr.20080806145258.10">function format() {
+
+    return;
+
+    // var sections = document.getElementsByTagName("pre");  // EKR: was span.
+    // //alert("format:" + sections.length + "sections")
+    // for(i=0; i &lt; sections.length; i++) {
+        // formatText(sections[i]);
+    // }
+}
+</t>
+<t tx="ekr.20080806145258.11">function formatText(item) {
+
+    ;
+    // alert(item);
+}
+</t>
 <t tx="ekr.20080806145258.12">@nocolor
 
 Notes:
@@ -2292,6 +3719,961 @@ class AClass:
 
    def func4():
        do4()
+</t>
+<t tx="ekr.20080909075224.1">@language html
+../hex6x -
+changed</t>
+<t tx="ekr.20080911080311.1">@language conf
+; This is a comment
+P1 = 0
+</t>
+<t tx="ekr.20080911112823.1"># -*- coding: utf-8 -*-
+
+s = 'abc'.replace(u'” “', '" "')</t>
+<t tx="ekr.20080915095329.1">import leo.core.leoPlugins as leoPlugins
+
+rst3 = leoPlugins.getPluginModule('rst3')
+
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        controller.processTopTree(p)
+else:
+    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+    if rst3:
+        g.es('rst3 loaded')
+        rst3.onCreate('tag',{'c':c})
+    else:
+        # Ask to be removed.
+        g.app.scriptDict['removeMe'] = True</t>
+<t tx="ekr.20080917063615.1">aList = (
+'aspellbindir',
+'wholeword',
+'Whole-Word',
+'vimcmd',
+'huh',
+)
+
+for name in aList:
+    kind, val = c.config.getSettingSource(name)
+    print '%-20s %-20s %s' % (name,repr(val),kind)
+</t>
+<t tx="ekr.20080918090005.1">@language python
+@tabwidth -4
+
+# This is a line, changed 2.</t>
+<t tx="ekr.20080918123632.1"></t>
+<t tx="ekr.20080918180141.1">import sys
+
+class MyError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+try:
+    raise MyError(2*2)
+except MyError:
+    theType, value, traceback = sys.exc_info()
+    print 'My exception occurred, value:', value
+</t>
+<t tx="ekr.20080919080736.1">d = {'a':'A','b':'B',}
+
+print 'a' in d, 'A' in d
+for z in d.keys():
+    print z
+for z in d:
+    print z</t>
+<t tx="ekr.20080919153320.1"># a small test
+
+@others
+</t>
+<t tx="ekr.20080919153320.2">def child():
+    pass</t>
+<t tx="ekr.20080919161858.1">def spam():
+    g.trace('a')
+
+spam()
+</t>
+<t tx="ekr.20080920101658.1">def getInput (event=None):
+
+    '''Evaluate a Python Expression entered in the minibuffer.'''
+
+    stateName = 'get-input'
+    k = c.k ; state = k.getState(stateName)
+
+    if state == 0:
+        k.setLabelBlue('Input: ',protect=True)
+        k.getArg(event,stateName,1,getInput)
+    else:
+        k.clearState()
+        g.es_print('input:',k.arg)
+
+getInput()
+</t>
+<t tx="ekr.20080920113159.1"># 1+2
+# print "hello"
+# 3+4
+
+# def f(x):
+    # return x.upper()
+
+# f('hello world')
+
+import IPython
+ip = IPython.ipapi.get()
+g.es_print(dir(ip))
+</t>
+<t tx="ekr.20080920172621.1">@language python
+@tabwidth -4
+@others
+@ignore</t>
+<t tx="ekr.20080920172621.2">""" ILeo - Leo plugin for IPython
+
+   
+"""
+import IPython.ipapi
+import IPython.genutils
+import IPython.generics
+from IPython.hooks import CommandChainDispatcher
+import re
+import UserDict
+from IPython.ipapi import TryNext 
+import IPython.macro
+import IPython.Shell
+
+_leo_push_history = set()
+
+wb = None
+
+</t>
+<t tx="ekr.20080920172621.3">def init_ipython(ipy):
+    """ This will be run by _ip.load('ipy_leo') 
+    
+    Leo still needs to run update_commander() after this.
+    
+    """
+    global ip
+    ip = ipy
+    IPython.Shell.hijack_tk()
+    ip.set_hook('complete_command', mb_completer, str_key = '%mb')
+    ip.expose_magic('mb',mb_f)
+    ip.expose_magic('lee',lee_f)
+    ip.expose_magic('leoref',leoref_f)
+    ip.expose_magic('lleo',lleo_f)    
+    ip.expose_magic('lshadow', lshadow_f)
+    ip.expose_magic('lno', lno_f)    
+    # Note that no other push command should EVER have lower than 0
+    expose_ileo_push(push_mark_req, -1)
+    expose_ileo_push(push_cl_node,100)
+    # this should be the LAST one that will be executed, and it will never raise TryNext
+    expose_ileo_push(push_ipython_script, 1000)
+    expose_ileo_push(push_plain_python, 100)
+    expose_ileo_push(push_ev_node, 100)
+    ip.set_hook('pre_prompt_hook', ileo_pre_prompt_hook)     
+    global wb
+    wb = LeoWorkbook()
+    ip.user_ns['wb'] = wb
+    
+    
+
+</t>
+<t tx="ekr.20080920172621.4">first_launch = True
+
+c,g = None, None
+
+def update_commander(new_leox):
+    """ Set the Leo commander to use
+    
+    This will be run every time Leo does ipython-launch; basically,
+    when the user switches the document he is focusing on, he should do
+    ipython-launch to tell ILeo what document the commands apply to.
+    
+    """
+
+    global first_launch
+    if first_launch:
+        show_welcome()
+        first_launch = False
+
+    global c,g
+    c,g = new_leox.c, new_leox.g
+    print "Set Leo Commander:",c.frame.getTitle()
+    
+    # will probably be overwritten by user, but handy for experimentation early on
+    ip.user_ns['c'] = c
+    ip.user_ns['g'] = g
+    ip.user_ns['_leo'] = new_leox
+    
+    new_leox.push = push_position_from_leo
+    run_leo_startup_node()
+    ip.user_ns['_prompt_title'] = 'ileo'
+
+</t>
+<t tx="ekr.20080920172621.5">from IPython.external.simplegeneric import generic 
+import pprint
+
+def es(s):    
+    g.es(s, tabName = 'IPython')
+    pass
+
+</t>
+<t tx="ekr.20080920172621.6">@generic
+def format_for_leo(obj):
+    """ Convert obj to string representiation (for editing in Leo)"""
+    return pprint.pformat(obj)
+
+</t>
+<t tx="ekr.20080920172621.7"># Just an example - note that this is a bad to actually do!
+#@format_for_leo.when_type(list)
+#def format_list(obj):
+#    return "\n".join(str(s) for s in obj)
+  
+
+attribute_re = re.compile('^[a-zA-Z_][a-zA-Z0-9_]*$')
+def valid_attribute(s):
+    return attribute_re.match(s)    
+
+</t>
+<t tx="ekr.20080920172621.8">_rootnode = None
+def rootnode():
+    """ Get ileo root node (@ipy-root) 
+    
+    if node has become invalid or has not been set, return None
+    
+    Note that the root is the *first* @ipy-root item found    
+    """
+    global _rootnode
+    if _rootnode is None:
+        return None
+    if c.positionExists(_rootnode.p):
+        return _rootnode
+    _rootnode = None
+    return None  
+
+</t>
+<t tx="ekr.20080920172621.9">def all_cells():
+    global _rootnode
+    d = {}
+    r = rootnode() 
+    if r is not None:
+        nodes = r.p.children_iter()
+    else:
+        nodes = c.allNodes_iter()
+
+    for p in nodes:
+        h = p.headString()
+        if h.strip() == '@ipy-root':
+            # update root node (found it for the first time)
+            _rootnode = LeoNode(p)            
+            # the next recursive call will use the children of new root
+            return all_cells()
+        
+        if h.startswith('@a '):
+            d[h.lstrip('@a ').strip()] = p.parent().copy()
+        elif not valid_attribute(h):
+            continue 
+        d[h] = p.copy()
+    return d    
+
+</t>
+<t tx="ekr.20080920172621.10">def eval_node(n):
+    body = n.b    
+    if not body.startswith('@cl'):
+        # plain python repr node, just eval it
+        return ip.ev(n.b)
+    # @cl nodes deserve special treatment - first eval the first line (minus cl), then use it to call the rest of body
+    first, rest = body.split('\n',1)
+    tup = first.split(None, 1)
+    # @cl alone SPECIAL USE-&gt; dump var to user_ns
+    if len(tup) == 1:
+        val = ip.ev(rest)
+        ip.user_ns[n.h] = val
+        es("%s = %s" % (n.h, repr(val)[:20]  )) 
+        return val
+
+    cl, hd = tup 
+
+    xformer = ip.ev(hd.strip())
+    es('Transform w/ %s' % repr(xformer))
+    return xformer(rest, n)
+
+</t>
+<t tx="ekr.20080920172621.11">class LeoNode(object, UserDict.DictMixin):
+    """ Node in Leo outline
+    
+    Most important attributes (getters/setters available:
+     .v     - evaluate node, can also be alligned 
+     .b, .h - body string, headline string
+     .l     - value as string list
+    
+    Also supports iteration, 
+    
+    setitem / getitem (indexing):  
+     wb.foo['key'] = 12
+     assert wb.foo['key'].v == 12
+    
+    Note the asymmetry on setitem and getitem! Also other
+    dict methods are available. 
+    
+    .ipush() - run push-to-ipython
+
+    Minibuffer command access (tab completion works):
+    
+     mb save-to-file
+    
+    """
+    @others
+    uA = property(__get_uA, doc = "Access persistent unknownAttributes of node")
+        
+
+</t>
+<t tx="ekr.20080920172621.12">def __init__(self,p):
+    self.p = p.copy()
+
+</t>
+<t tx="ekr.20080920172621.13">def __str__(self):
+    return "&lt;LeoNode %s&gt;" % str(self.p)
+
+</t>
+<t tx="ekr.20080920172621.14">__repr__ = __str__
+
+def __get_h(self): return self.p.headString()
+</t>
+<t tx="ekr.20080920172621.15">def __set_h(self,val):
+    c.setHeadString(self.p,val)
+    LeoNode.last_edited = self
+    c.redraw()
+    
+</t>
+<t tx="ekr.20080920172621.16">h = property( __get_h, __set_h, doc = "Node headline string")  
+
+def __get_b(self): return self.p.bodyString()
+</t>
+<t tx="ekr.20080920172621.17">def __set_b(self,val):
+    c.setBodyString(self.p, val)
+    LeoNode.last_edited = self
+    c.redraw()
+
+</t>
+<t tx="ekr.20080920172621.18">b = property(__get_b, __set_b, doc = "Nody body string")
+
+def __set_val(self, val):        
+    self.b = format_for_leo(val)
+    
+</t>
+<t tx="ekr.20080920172621.19">v = property(lambda self: eval_node(self), __set_val, doc = "Node evaluated value")
+
+def __set_l(self,val):
+    self.b = '\n'.join(val )
+</t>
+<t tx="ekr.20080920172621.20">l = property(lambda self : IPython.genutils.SList(self.b.splitlines()), 
+             __set_l, doc = "Node value as string list")
+
+def __iter__(self):
+    """ Iterate through nodes direct children """
+    
+    return (LeoNode(p) for p in self.p.children_iter())
+
+</t>
+<t tx="ekr.20080920172621.21">def __children(self):
+    d = {}
+    for child in self:
+        head = child.h
+        tup = head.split(None,1)
+        if len(tup) &gt; 1 and tup[0] == '@k':
+            d[tup[1]] = child
+            continue
+        
+        if not valid_attribute(head):
+            d[head] = child
+            continue
+    return d
+</t>
+<t tx="ekr.20080920172621.22">def keys(self):
+    d = self.__children()
+    return d.keys()
+</t>
+<t tx="ekr.20080920172621.23">def __getitem__(self, key):
+    """ wb.foo['Some stuff'] Return a child node with headline 'Some stuff'
+    
+    If key is a valid python name (e.g. 'foo'), look for headline '@k foo' as well
+    """  
+    key = str(key)
+    d = self.__children()
+    return d[key]
+</t>
+<t tx="ekr.20080920172621.24">def __setitem__(self, key, val):
+    """ You can do wb.foo['My Stuff'] = 12 to create children 
+    
+    This will create 'My Stuff' as a child of foo (if it does not exist), and 
+    do .v = 12 assignment.
+    
+    Exception:
+    
+    wb.foo['bar'] = 12
+    
+    will create a child with headline '@k bar', because bar is a valid python name
+    and we don't want to crowd the WorkBook namespace with (possibly numerous) entries
+    """
+    key = str(key)
+    d = self.__children()
+    if key in d:
+        d[key].v = val
+        return
+    
+    if not valid_attribute(key):
+        head = key
+    else:
+        head = '@k ' + key
+    p = c.createLastChildNode(self.p, head, '')
+    LeoNode(p).v = val
+    
+</t>
+<t tx="ekr.20080920172621.25">def __delitem__(self, key):
+    """ Remove child
+    
+    Allows stuff like wb.foo.clear() to remove all children
+    """
+    self[key].p.doDelete()
+    c.redraw()
+
+</t>
+<t tx="ekr.20080920172621.26">def ipush(self):
+    """ Does push-to-ipython on the node """
+    push_from_leo(self)
+    
+</t>
+<t tx="ekr.20080920172621.27">def go(self):
+    """ Set node as current node (to quickly see it in Outline) """
+    c.setCurrentPosition(self.p)
+
+</t>
+<t tx="ekr.20080920172621.28"># argh, there should be another way
+c.redraw()
+s = self.p.bodyString()
+c.setBodyString(self.p,s)
+    
+
+    
+def append(self):
+    """ Add new node as the last child, return the new node """
+    p = self.p.insertAsLastChild()
+    return LeoNode(p)
+    
+    
+</t>
+<t tx="ekr.20080920172621.29">def script(self):
+    """ Method to get the 'tangled' contents of the node
+    
+    (parse @others, &lt;&lt; section &gt;&gt; references etc.)
+    """
+    return g.getScript(c,self.p,useSelectedText=False,useSentinels=False)
+
+</t>
+<t tx="ekr.20080920172621.30">def __get_uA(self):
+    p = self.p
+    # Create the uA if necessary.
+    if not hasattr(p.v.t,'unknownAttributes'):
+        p.v.t.unknownAttributes = {}        
+    
+    d = p.v.t.unknownAttributes.setdefault('ipython', {})
+    return d        
+
+</t>
+<t tx="ekr.20080920172621.31">class LeoWorkbook:
+    """ class for 'advanced' node access 
+    
+    Has attributes for all "discoverable" nodes. Node is discoverable if it 
+    either
+    
+    - has a valid python name (Foo, bar_12)
+    - is a parent of an anchor node (if it has a child '@a foo', it is visible as foo)
+    
+    """
+    @others
+</t>
+<t tx="ekr.20080920172621.32">def __getattr__(self, key):
+    if key.startswith('_') or key == 'trait_names' or not valid_attribute(key):
+        raise AttributeError
+    cells = all_cells()
+    p = cells.get(key, None)
+    if p is None:
+        return add_var(key)
+
+    return LeoNode(p)
+
+</t>
+<t tx="ekr.20080920172621.33">def __str__(self):
+    return "&lt;LeoWorkbook&gt;"
+</t>
+<t tx="ekr.20080920172621.34">def __setattr__(self,key, val):
+    raise AttributeError("Direct assignment to workbook denied, try wb.%s.v = %s" % (key,val))
+    
+</t>
+<t tx="ekr.20080920172621.35">__repr__ = __str__
+
+def __iter__(self):
+    """ Iterate all (even non-exposed) nodes """
+    cells = all_cells()
+    return (LeoNode(p) for p in c.allNodes_iter())
+
+</t>
+<t tx="ekr.20080920172621.36">current = property(lambda self: LeoNode(c.currentPosition()), doc = "Currently selected node")
+
+def match_h(self, regex):
+    cmp = re.compile(regex)
+    for node in self:
+        if re.match(cmp, node.h, re.IGNORECASE):
+            yield node
+    return
+
+</t>
+<t tx="ekr.20080920172621.37">def require(self, req):
+    """ Used to control node push dependencies 
+    
+    Call this as first statement in nodes. If node has not been pushed, it will be pushed before proceeding
+    
+    E.g. wb.require('foo') will do wb.foo.ipush() if it hasn't been done already
+    """
+    
+    if req not in _leo_push_history:
+        es('Require: ' + req)
+        getattr(self,req).ipush()
+ 
+
+</t>
+<t tx="ekr.20080920172621.38">@IPython.generics.complete_object.when_type(LeoWorkbook)
+def workbook_complete(obj, prev):
+    return all_cells().keys() + [s for s in prev if not s.startswith('_')]
+    
+
+</t>
+<t tx="ekr.20080920172621.39">def add_var(varname):
+    r = rootnode()
+    try:
+        if r is None:
+            p2 = g.findNodeAnywhere(c,varname)
+        else:
+            p2 = g.findNodeInChildren(c, r.p, varname)
+        if p2:
+            return LeoNode(p2)
+
+        if r is not None:
+            p2 = r.p.insertAsLastChild()
+        
+        else:
+            p2 =  c.currentPosition().insertAfter()
+        
+        c.setHeadString(p2,varname)
+        return LeoNode(p2)
+    finally:
+        c.redraw()
+
+</t>
+<t tx="ekr.20080920172621.40">def add_file(self,fname):
+    p2 = c.currentPosition().insertAfter()
+
+</t>
+<t tx="ekr.20080920172621.41">push_from_leo = CommandChainDispatcher()
+
+def expose_ileo_push(f, prio = 0):
+    push_from_leo.add(f, prio)
+
+</t>
+<t tx="ekr.20080920172621.42">def push_ipython_script(node):
+    """ Execute the node body in IPython, as if it was entered in interactive prompt """
+    try:
+        ohist = ip.IP.output_hist 
+        hstart = len(ip.IP.input_hist)
+        script = node.script()
+                
+        # The current node _p needs to handle wb.require() and recursive ipushes
+        old_p = ip.user_ns.get('_p',None)
+        ip.user_ns['_p'] = node
+        ip.runlines(script)
+        ip.user_ns['_p'] = old_p
+        if old_p is None:
+            del ip.user_ns['_p']
+        
+        has_output = False
+        for idx in range(hstart,len(ip.IP.input_hist)):
+            val = ohist.get(idx,None)
+            if val is None:
+                continue
+            has_output = True
+            inp = ip.IP.input_hist[idx]
+            if inp.strip():
+                es('In: %s' % (inp[:40], ))
+                
+            es('&lt;%d&gt; %s' % (idx, pprint.pformat(ohist[idx],width = 40)))
+        
+        if not has_output:
+            es('ipy run: %s (%d LL)' %( node.h,len(script)))
+    finally:
+        c.redraw()
+
+    
+</t>
+<t tx="ekr.20080920172621.43">def eval_body(body):
+    try:
+        val = ip.ev(body)
+    except:
+        # just use stringlist if it's not completely legal python expression
+        val = IPython.genutils.SList(body.splitlines())
+    return val 
+    
+</t>
+<t tx="ekr.20080920172621.44">def push_plain_python(node):
+    if not node.h.endswith('P'):
+        raise TryNext
+    script = node.script()
+    lines = script.count('\n')
+    try:
+        exec script in ip.user_ns
+    except:
+        print " -- Exception in script:\n"+script + "\n --"
+        raise
+    es('ipy plain: %s (%d LL)' % (node.h,lines))
+    
+
+</t>
+<t tx="ekr.20080920172621.45">def push_cl_node(node):
+    """ If node starts with @cl, eval it
+    
+    The result is put as last child of @ipy-results node, if it exists
+    """
+    if not node.b.startswith('@cl'):
+        raise TryNext
+        
+    p2 = g.findNodeAnywhere(c,'@ipy-results')
+    val = node.v
+    if p2:
+        es("=&gt; @ipy-results")
+        LeoNode(p2).v = val
+    es(val)
+
+</t>
+<t tx="ekr.20080920172621.46">def push_ev_node(node):
+    """ If headline starts with @ev, eval it and put result in body """
+    if not node.h.startswith('@ev '):
+        raise TryNext
+    expr = node.h.lstrip('@ev ')
+    es('ipy eval ' + expr)
+    res = ip.ev(expr)
+    node.v = res
+    
+</t>
+<t tx="ekr.20080920172621.47">def push_mark_req(node):
+    """ This should be the first one that gets called.
+    
+    It will mark the node as 'pushed', for wb.require.
+    """
+    _leo_push_history.add(node.h)
+    raise TryNext
+    
+    
+</t>
+<t tx="ekr.20080920172621.48">def push_position_from_leo(p):
+    try:
+        push_from_leo(LeoNode(p))
+    except AttributeError,e:
+        if e.args == ("Commands instance has no attribute 'frame'",):
+            es("Error: ILeo not associated with .leo document")
+            es("Press alt+shift+I to fix!")
+        else:
+            raise
+
+</t>
+<t tx="ekr.20080920172621.49">@generic
+def edit_object_in_leo(obj, varname):
+    """ Make it @cl node so it can be pushed back directly by alt+I """
+    node = add_var(varname)
+    formatted = format_for_leo(obj)
+    if not formatted.startswith('@cl'):
+        formatted = '@cl\n' + formatted
+    node.b = formatted 
+    node.go()
+    
+</t>
+<t tx="ekr.20080920172621.50">@edit_object_in_leo.when_type(IPython.macro.Macro)
+def edit_macro(obj,varname):
+    bod = '_ip.defmacro("""\\\n' + obj.value + '""")'
+    node = add_var('Macro_' + varname)
+    node.b = bod
+    node.go()
+
+</t>
+<t tx="ekr.20080920172621.51">def get_history(hstart = 0):
+    res = []
+    ohist = ip.IP.output_hist 
+
+    for idx in range(hstart, len(ip.IP.input_hist)):
+        val = ohist.get(idx,None)
+        has_output = True
+        inp = ip.IP.input_hist_raw[idx]
+        if inp.strip():
+            res.append('In [%d]: %s' % (idx, inp))
+        if val:
+            res.append(pprint.pformat(val))
+            res.append('\n')    
+    return ''.join(res)
+    
+    
+</t>
+<t tx="ekr.20080920172621.52">def lee_f(self,s):
+    """ Open file(s)/objects in Leo
+    
+    - %lee hist -&gt; open full session history in leo
+    - Takes an object. l = [1,2,"hello"]; %lee l. Alt+I in leo pushes the object back
+    - Takes an mglob pattern, e.g. '%lee *.cpp' or %lee 'rec:*.cpp'
+    - Takes input history indices:  %lee 4 6-8 10 12-47
+    """
+    import os
+        
+    try:
+        if s == 'hist':
+            wb.ipython_history.b = get_history()
+            wb.ipython_history.go()
+            return
+        
+            
+        if s and s[0].isdigit():
+            # numbers; push input slices to leo
+            lines = self.extract_input_slices(s.strip().split(), True)
+            v = add_var('stored_ipython_input')
+            v.b = '\n'.join(lines)
+            return
+            
+        
+        # try editing the object directly
+        obj = ip.user_ns.get(s, None)
+        if obj is not None:
+            edit_object_in_leo(obj,s)
+            return
+     
+        
+        # if it's not object, it's a file name / mglob pattern
+        from IPython.external import mglob
+        
+        files = (os.path.abspath(f) for f in mglob.expand(s))
+        for fname in files:
+            p = g.findNodeAnywhere(c,'@auto ' + fname)
+            if not p:
+                p = c.currentPosition().insertAfter()
+            
+            p.setHeadString('@auto ' + fname)
+            if os.path.isfile(fname):
+                c.setBodyString(p,open(fname).read())
+            c.selectPosition(p)
+        print "Editing file(s), press ctrl+shift+w in Leo to write @auto nodes"
+    finally:
+        c.redraw()
+
+</t>
+<t tx="ekr.20080920172621.53">def leoref_f(self,s):
+    """ Quick reference for ILeo """
+    import textwrap
+    print textwrap.dedent("""\
+    %lee file/object - open file / object in leo
+    %lleo Launch leo (use if you started ipython first!)
+    wb.foo.v  - eval node foo (i.e. headstring is 'foo' or '@ipy foo')
+    wb.foo.v = 12 - assign to body of node foo
+    wb.foo.b - read or write the body of node foo
+    wb.foo.l - body of node foo as string list
+    
+    for el in wb.foo:
+      print el.v
+       
+    """
+    )
+
+
+
+</t>
+<t tx="ekr.20080920172621.54">def mb_f(self, arg):
+    """ Execute leo minibuffer commands 
+    
+    Example:
+     mb save-to-file
+    """
+    c.executeMinibufferCommand(arg)
+
+</t>
+<t tx="ekr.20080920172621.55">def mb_completer(self,event):
+    """ Custom completer for minibuffer """
+    cmd_param = event.line.split()
+    if event.line.endswith(' '):
+        cmd_param.append('')
+    if len(cmd_param) &gt; 2:
+        return ip.IP.Completer.file_matches(event.symbol)
+    cmds = c.commandsDict.keys()
+    cmds.sort()
+    return cmds
+
+</t>
+<t tx="ekr.20080920172621.56">def ileo_pre_prompt_hook(self):
+    # this will fail if leo is not running yet
+    try:
+        c.outerUpdate()
+    except (NameError, AttributeError):
+        pass
+    raise TryNext
+    
+
+
+</t>
+<t tx="ekr.20080920172621.57">def show_welcome():
+    print "------------------"
+    print "Welcome to Leo-enabled IPython session!"
+    print "Try %leoref for quick reference."
+    import IPython.platutils
+    IPython.platutils.set_term_title('ILeo')
+    IPython.platutils.freeze_term_title()
+
+</t>
+<t tx="ekr.20080920172621.58">def run_leo_startup_node():
+    p = g.findNodeAnywhere(c,'@ipy-startup')
+    if p:
+        print "Running @ipy-startup nodes"
+        for n in LeoNode(p):
+            push_from_leo(n)
+
+</t>
+<t tx="ekr.20080920172621.59">def lleo_f(selg,  args):
+    """ Launch leo from within IPython
+
+    This command will return immediately when Leo has been
+    launched, leaving a Leo session that is connected 
+    with current IPython session (once you press alt+I in leo)
+
+    Usage::
+      lleo foo.leo
+      lleo 
+    """
+    
+    import shlex, sys,os
+    argv = shlex.split(args)
+
+    # when run without args, leo will open ipython_notebook for 
+    # quick note taking / experimentation
+    
+    if not argv:
+    argv = [os.path.join(ip.options.ipythondir,'ipython_notebook.leo')]
+    
+    sys.argv = ['leo'] + argv
+    # if this var exists and is true, leo will "launch" (connect)
+    # ipython immediately when it's started
+    global _request_immediate_connect
+    _request_immediate_connect = True
+    import leo.core.runLeo
+    leo.core.runLeo.run()
+
+</t>
+<t tx="ekr.20080920172621.60">def lno_f(self, arg):
+    """ %lno [note text]
+    
+    Gather quick notes to leo notebook
+    
+    """
+    
+    
+    import time
+    try:
+    scr = wb.Scratch
+    except AttributeError:
+    print "No leo yet, attempt launch of notebook..."
+    lleo_f(self,'')
+    scr = wb.Scratch
+    
+    child = scr.get(arg, None)
+    if child is None:
+    scr[arg] = time.asctime()
+    child = scr[arg]
+    
+    child.go()
+
+
+</t>
+<t tx="ekr.20080920172621.61">def lshadow_f(self, arg):
+    """ lshadow [path] 
+    
+    Create shadow nodes for path (default .)
+    
+    """
+    if not arg.split():
+    arg = '.'
+
+    p = c.currentPosition().insertAfter()
+    c.setCurrentPosition(p)
+    shadow_walk(arg)
+    c.redraw()
+
+
+</t>
+<t tx="ekr.20080920172621.62">def shadow_walk(directory, parent=None, isroot=True):
+    """ source: http://leo.zwiki.org/CreateShadows
+    
+    """
+
+    from os import listdir
+    from os.path import join, abspath, basename, normpath, isfile
+    from fnmatch import fnmatch
+
+    RELATIVE_PATHS = False
+
+    patterns_to_ignore = ['*.pyc', '*.leo', '*.gif', '*.png', '*.jpg', '*.json']
+
+    match = lambda s: any(fnmatch(s, p) for p in patterns_to_ignore)
+
+    is_ignorable = lambda s: any([ s.startswith('.'), match(s) ])
+
+    p = c.currentPosition()
+    
+    if not RELATIVE_PATHS: directory = abspath(directory)
+    if isroot:
+        body = "@path %s" % normpath(directory)
+        c.setHeadString(p, body)
+    for name in listdir(directory):
+        if is_ignorable(name):
+            continue
+        path = join(directory, name)
+        if isfile(path):
+            g.es('file:', path)
+            headline = '@shadow %s' % basename(path)
+            if parent:
+                node = parent
+            else:
+                node = p
+            child = node.insertAsLastChild()
+            child.initHeadString(headline)
+        else:
+            g.es('dir:', path)
+            headline = basename(path)
+            body = "@path %s" % normpath(path)
+            if parent:
+                node = parent
+            else:
+                node = p
+            child = node.insertAsLastChild()
+            child.initHeadString(headline)
+            child.initBodyString(body)
+            shadow_walk(path, parent=child, isroot=False)
+
+</t>
+<t tx="ekr.20080920172621.63">def mkbutton(text, node_to_push):
+    ib = c.frame.getIconBarObject()
+    ib.add(text = text, command = node_to_push.ipush)
+    
+
+
+</t>
+<t tx="ekr.20080921144924.1">print(g.os_path_finalize(r'~/.leo/notebook.leo'))
+print(g.os_path_finalize(g.os_path_join(g.app.loadDir,r'~/.leo/notebook.leo')))
+print(g.os_path_finalize_join(g.app.loadDir,r'~/.leo/notebook.leo'))</t>
+<t tx="ekr.20080921165614.1"># fileName = g.os_path_finalize_join(g.app.loadDir,'buttons.txt')
+fileName = g.os_path_finalize_join(g.app.loadDir,'..','modes','python.py')
+ok, frame = g.openWithFileName(fileName,c)
 </t>
 </tnodes>
 </leo_file>

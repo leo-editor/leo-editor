@@ -5,22 +5,35 @@
 #@+all
 #@+node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
 #@-node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
-#@+node:ekr.20080225084626:Bzr notes
+#@+node:ekr.20080917153158.10:Bzr notes
 @nocolor
 
 How to create/use private branches
 
-bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+===== Do this first: creates a branch directly, **without** having to use launchpad.
 
-bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
 
-bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/at-path
+===== pushes a branch after it has been created on launchpad
 
+bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
 
+====== remembers the push
 
-Common
+bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
 
-- No need for aliases for push, pull or commit.  do bzr info to find url.
+===== creates branch on local machine: do this from leo.repo directory
+
+bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+
+-- OR --
+
+bzr branch lp:leo-editor new-branch-name 
+
+====== To resolve conflicts
+
+kdiff3 file1 file2 file3 -m
+
 
 Docs:
 - http://doc.bazaar-vcs.org/latest/en/user-guide/index.html
@@ -33,16 +46,12 @@ Docs:
 
 Windows
 
-- c:\prog\bzr-leo contains my sandbox.
-- Edward\keys contains the keys
 - Configuration file is .bazaar in XP C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0
-- To open a connection: Open pagent, then select "add key"
 
 Linux:
 
 - Configuration file is bazaar.conf in ~/.bazaar directory
-- BZR automatically 
-#@-node:ekr.20080225084626:Bzr notes
+#@-node:ekr.20080917153158.10:Bzr notes
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
 Downloading http://cheeseshop.python.org/packages/2.5/s/setuptools/setuptools-0.6c6-py2.5.egg
@@ -1318,7 +1327,7 @@ by faking that all IGNORABLE characters before POSITION were removed.
         ignore[character] = None
     counter = 0
     for character in text[:position]:
-        if ignore.has_key(character):
+        if character in ignore:
             counter = counter + 1
     self.position = position - counter
 
@@ -1338,7 +1347,7 @@ If LATEST is true, return the biggest possible value instead of the smallest.
     position = 0
     if latest:
         for character in text:
-            if ignore.has_key(character):
+            if character in ignore:
                 counter = counter + 1
             else:
                 if position == self.position:
@@ -1346,7 +1355,7 @@ If LATEST is true, return the biggest possible value instead of the smallest.
                 position = position + 1
     elif self.position > 0:
         for character in text:
-            if ignore.has_key(character):
+            if character in ignore:
                 counter = counter + 1
             else:
                 position = position + 1
@@ -1380,7 +1389,7 @@ first line of the comment text.  If the third line is shorter, it represents
 an end comment string to be bundled at the end of the comment text, and
 refilled with it.
 """
-    assert not template_registry.has_key(style), \
+    assert style not in template_registry, \
            "Style %d defined more than once" % style
     self.style = style
     self.weight = weight
@@ -3314,117 +3323,157 @@ Brian Theado
 @language python
 @color
 #@nonl
-#@+node:ekr.20070228074312.43:tkColorToWxColor
-def tkColorToWxColor (self, color):
+#@+node:ekr.20041219072416.1:<< import other early files>> (runLeo.py)
+import leo.core.leoNodes as leoNodes
+import leo.core.leoConfig as leoConfig
 
-    d = {
-        'black':        wx.BLACK,
-        "red":          wx.RED,
-        "blue":         wx.BLUE,
-        "#00aa00":      wx.GREEN,
-        "firebrick3":   wx.RED,
-        'white':        wx.WHITE,
-    }
+# There is a circular dependency between leoCommands and leoEditCommands.
+import leo.core.leoCommands as leoCommands
 
-    return d.get(color)
+# New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+# This prevents a crash when run is called repeatedly from IPython's lleo extension.
+import leo.core.leoPlugins as leoPlugins
+leoPlugins.init()
+
+g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+g.app.config = leoConfig.configClass()
 #@nonl
-#@-node:ekr.20070228074312.43:tkColorToWxColor
-#@+node:ekr.20080710082231.11:Unused goto-line-number helpers from core
-#@+node:bwmulder.20041231211219:gotoLineNumberOpen (core: no longer used)
-def gotoLineNumberOpen(self, *args, **kw):
-    """
-    Hook for mod_shadow plugin.
-    """
-    theFile = open(*args, **kw)
-    lines = theFile.readlines()
-    theFile.close()
-    return lines
-#@-node:bwmulder.20041231211219:gotoLineNumberOpen (core: no longer used)
-#@+node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny (core: no longer used)
-def applyLineNumberMappingIfAny(self, n):
-    """
-    Hook for mod_shadow plugin.
-    """
-    return n
-#@-node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny (core: no longer used)
-#@-node:ekr.20080710082231.11:Unused goto-line-number helpers from core
-#@+node:ekr.20080708094444.83:test_propagate_changes (no longer used)
-def test_propagate_changes (self,
-    old_private_lines,      # with_sentinels
-    new_public_lines,       # without sentinels
-    expected_private_lines, # with sentinels
-    marker,
-    p = None
-):
+#@-node:ekr.20041219072416.1:<< import other early files>> (runLeo.py)
+#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >> (runLeo.py)
+if jyLeo:
+    print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
 
-    '''Check that propagate changed lines changes 'before_private_lines' to
-    'expected_private_lines' based on changes to 'changed_public_lines'.'''
+# Add the current directory to sys.path *before* importing g.
+# This will fail if the current directory contains unicode characters...
+path = os.getcwd()
+if path not in sys.path:
+    # print('appending %s to sys.path' % path)
+    sys.path.append(path)
 
-    results = self.propagate_changed_lines(
-        new_public_lines,   # new_lines_without_sentinels
-        old_private_lines,  # lines_with_sentinels, 
-        marker = marker,
-        p = p)
+# Import leoGlobals, but do NOT set g.
+import leo.core.leoGlobals as leoGlobals
 
-    return results # For unit tests.
-#@-node:ekr.20080708094444.83:test_propagate_changes (no longer used)
-#@+node:EKR.20040627113418:putDescendentUnknownAttributes
-def putDescendentUnknownAttributes (self,p):
+# Set leoGlobals.g here, rather than in leoGlobals.py.
+leoGlobals.g = leoGlobals
 
-    return self.putDescendentTnodeUas(p)
-    # return self.putDescendentVnodeUas(p)
+import leo.core.leoApp as leoApp
 
-#@-node:EKR.20040627113418:putDescendentUnknownAttributes
-#@+node:ekr.20080819075811.12:x.setDelims (no longer used)
-def setDelims (self):
+# Create the app.
+leoGlobals.app = leoApp.LeoApp()
 
-    data = self.c.config.getData('shadow_delims') or []
+# **now** we can set g.
+g = leoGlobals
+assert(g.app)
 
-    # g.trace('shadowController',self.delims_data)
-    if data:
-        for s in data:
-            s = s.strip()
-            if s:
-                aList = s.split(' ')
-                aList = [z.strip() for z in aList if z.strip()]
-                if len(aList) == 2:
-                    ext,delim = aList
-                    delims = delim
-                elif len(aList) == 3:
-                    ext,delim1,delim2 = aList
-                    delims = '%s %s' % (delim1,delim2)
-                else:
-                    g.es_print('ignoring bad @data shadow_delims entry',repr(s),color='red')
+#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >> (runLeo.py)
+#@+node:ekr.20080921060401.9:doEarlyInits
+def doEarlyInits(verbose):
 
-                if len(aList) in (2,3):
-                    if ext.startswith('.'): ext = ext[1:]
-                    language = '%s_language' % ext
-                    if ext and not g.app.language_delims_dict.get(language):
-                        # g.trace('Adding entries for ext=%s, delims=%s' % (ext,repr(delims)))
-                        g.app.language_delims_dict[language] = delims
-                        g.app.language_extension_dict[language] = ext
-                        g.app.extension_dict[ext] = language
-#@-node:ekr.20080819075811.12:x.setDelims (no longer used)
-#@+node:ekr.20080822065427.23:From leoPluings.getEnabledFiles
+    import leo.core.leoGlobals as g
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoConfig as leoConfig
 
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
 
-            if g.match(s,0,"#"):
-                s = s[1:].strip()
-                # Kludge: ignore comment lines containing a blank or not ending in '.py'.
-                if s and s.find(' ') == -1 and s[-3:] == '.py':
-                    path = g.os_path_abspath(g.os_path_join(plugins_path,s))
-                    if path not in enabled_files and path not in disabled_files:
-                        # g.pr('disabled',path)
-                        disabled_files.append(path)
-            else:
-                path = g.os_path_abspath(g.os_path_join(plugins_path,s))
-                if path not in enabled_files and path not in disabled_files:
-                    # g.pr('enabled',path)
-                    enabled_files.append(path)
+    # There is a circular dependency between leoCommands and leoEditCommands.
+    import leo.core.leoCommands as leoCommands
 
-    return enabled_files
-#@nonl
-#@-node:ekr.20080822065427.23:From leoPluings.getEnabledFiles
+    # New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
+    # This prevents a crash when run is called repeatedly from IPython's lleo extension.
+    import leo.core.leoPlugins as leoPlugins
+    leoPlugins.init()
+
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+#@-node:ekr.20080921060401.9:doEarlyInits
+#@+node:ekr.20080921060401.10:initGandApp
+def initGandApp ():
+
+    # Add the current directory to sys.path *before* importing g.
+    # This will fail if the current directory contains unicode characters...
+    path = os.getcwd()
+    if path not in sys.path:
+        # print('appending %s to sys.path' % path)
+        sys.path.append(path)
+
+    # Import leoGlobals, but do NOT set g.
+    import leo.core.leoGlobals as leoGlobals
+
+    # Set leoGlobals.g here, rather than in leoGlobals.py.
+    leoGlobals.g = leoGlobals
+
+    import leo.core.leoApp as leoApp
+
+    # Create the app.
+    leoGlobals.app = leoApp.LeoApp()
+
+    # **now** we can set g.
+    g = leoGlobals
+    assert(g.app)
+
+    return g
+#@-node:ekr.20080921060401.10:initGandApp
+#@+node:ekr.20080921154026.2:c.newHelper
+def newHelper (self,c,frame,importFileName=None):
+
+    # Needed for plugins.
+    if not importFileName:
+        g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+
+    if importFileName:
+        junk,ext = g.os_path_splitext(importFileName)
+        p = c.currentPosition()
+        p = c.importCommands.createOutline(importFileName,parent=p,atAuto=False,ext=ext)
+        c.setCurrentPosition(p)
+        c.moveOutlineLeft()
+        p = c.currentPosition()
+        c.setCurrentPosition(p.back())
+        c.deleteOutline(op_name=None)
+        p = c.currentPosition()
+        p.expand()
+    else:
+        v = leoNodes.vnode(context=c)
+        v.initHeadString(g.choose(importFileName,importFileName,'NewHeadline'))
+        p = leoNodes.position(v)
+        p._linkAsRoot(oldRoot=None)
+            # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.setCurrentPosition(p)
+        c.editPosition(p)
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+
+    if not importFileName:
+        # We will do this later if we are importing.
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+
+    if importFileName: frame.c.setChanged(True)
+
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    # Force a call to c.outerUpdate.
+    # This is needed when we execute this command from a menu.
+
+    c.redraw_now()
+#@-node:ekr.20080921154026.2:c.newHelper
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

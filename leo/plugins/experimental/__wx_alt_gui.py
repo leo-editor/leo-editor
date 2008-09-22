@@ -2542,7 +2542,7 @@ if wx:
             self.wordLabel.configure(text= "Suggestions for: " + word)
             self.listBox.delete(0, "end")
 
-            for i in xrange(len(self.suggestions)):
+            for i in range(len(self.suggestions)):
                 self.listBox.insert(i, self.suggestions[i])
 
             # This doesn't show up because we don't have focus.
@@ -6708,7 +6708,7 @@ if wx:
         #@+node:bob.20070907223746.1:indexFromName
         def indexFromName(self, tabName):
 
-            for i in xrange(self.nb.GetPageCount()):
+            for i in range(self.nb.GetPageCount()):
                 s = self.nb.GetPageText(i)
                 if s == tabName:
                     return i

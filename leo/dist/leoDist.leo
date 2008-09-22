@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="102" left="127" height="810" width="888"/>
+	<global_window_position top="119" left="376" height="810" width="888"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4,2"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -26,7 +26,7 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20080902080927.1"><vh>ANN: Leo 4.5 final</vh></v>
+<v t="ekr.20080912152259.1"><vh>ANN: Leo 4.5.1 final</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080807093308.2"><vh>4.5</vh>
 <v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
@@ -35,6 +35,7 @@
 <v t="ekr.20080825085446.1"><vh>ANN: Leo 4.5 b4</vh></v>
 <v t="ekr.20080828073358.1"><vh>ANN: Leo 4.5 rc1</vh></v>
 <v t="ekr.20080830082008.6"><vh>ANN: Leo 4.5 rc2</vh></v>
+<v t="ekr.20080902080927.1"><vh>ANN: Leo 4.5 final</vh></v>
 </v>
 </v>
 </v>
@@ -56,10 +57,13 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080827092958.3"><vh>@thin pre-install-script.py</vh></v>
+<v t="ekr.20080916084557.1" a="E"><vh>Make stuff</vh>
+<v t="ekr.20080916084557.2"><vh>&lt;&lt; make version &gt;&gt;</vh></v>
+<v t="ekr.20080913110741.1"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20080826091039.1"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
-<v t="ekr.20080826091039.3"><vh>remove</vh></v>
+<v t="ekr.20080916084557.2"><vh>&lt;&lt; make version &gt;&gt;</vh></v>
+<v t="ekr.20080913110741.8"><vh>make</vh></v>
 <v t="ekr.20080826091039.4"><vh>class createExe</vh>
 <v t="ekr.20080826091039.5"><vh>ctor</vh></v>
 <v t="ekr.20080826091039.6"><vh>create_exe</vh></v>
@@ -70,6 +74,8 @@
 <v t="ekr.20080826091039.11"><vh>get_setup</vh></v>
 </v>
 <v t="ekr.20080826091039.12"><vh>get_python_version</vh></v>
+</v>
+<v t="ekr.20080826091039.3"><vh>unlink</vh></v>
 </v>
 </v>
 </vnodes>
@@ -305,7 +311,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.5-final
+Version: 4.5.1-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -324,10 +330,16 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.5 release final                     September 2, 2008
+<t tx="EKR.20040519090846.9">Leo 4.5.1 final                                  September 14, 2008
 
-Leo 4.5 final is now available at:
+Leo 4.5.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
+
+- Eliminated spurious error messages in the goto-global-line command.
+- @shadow files with unknown file extensions now work properly.
+- Leo's installer now properly finds Python's install directory.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -339,7 +351,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -539,7 +551,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   simplified drawing code.
 - Leo is now an installable package.
@@ -571,7 +583,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   simplified drawing code.
 - Leo is now an installable package.
@@ -654,7 +666,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   simplified drawing code.
 - Leo is now an installable package.
@@ -669,15 +681,18 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080826091039.1">'''Create a Windows .exe installer directly from a .zip file.
-This code is based on create_exe in distutils/command/bdist_windinst.py.'''
+This code is based on create_exe in distutils/command/bdist_windinst.py.
+
+See: http://docs.python.org/dist/postinstallation-script.html'''
 
 # To do: Leo bitmap.
 
 &lt;&lt; includes &gt;&gt;
+&lt;&lt; make version &gt;&gt;
 @others
 
 assert sys.version_info &gt;= (2,5,0) and sys.version_info &lt; (2,6,0) # Require Python 2.5.
-version = '4-5-final'
+
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
 root                = join('Lib','site-packages','Leo-%s' % (version)) # Do not use abspath here!
@@ -686,63 +701,35 @@ top                 = abspath(join(g.app.loadDir,'..','..'))
 zipFile             = abspath(join(top,'Leo-%s.zip' % (version)))
 zipFile2            = abspath(join(top,'Leo-%s-temp.zip' % (version)))
 exeFile             = abspath(join(top,'Leo-%s.exe' % (version)))
-pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
-post_install_script = None # 'post-install-script.py' # Installed in Python/Scripts.
 
-if 1:
-    # Copy files from the doc directory to the top directory.
-    for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
-        path= abspath(join(docDir,theFile))
-        shutil.copy(path,top)
-        g.es_print('created in %s: %s' % (top,theFile))
+# pre_install_script  = abspath(join(g.app.loadDir,'..','dist','pre-install-script.py'))
+pre_install_script  = None
+post_install_script = r'..\Lib\site-packages\Leo-%s\leo\dist\leo-post-install-script.py' % version
+    # Installed in Python/Scripts.
 
-    for z in (zipFile,zipFile2,exeFile):
-        if exists(z): remove(z)
+make()
 
-    commands = (
-        r'cd %s' % (top),
-        r'bzr status',
-        r'bzr commit -m "commit doc files during make"',
-        r'bzr status',
-        r'bzr export "%s"' % (zipFile),
-        r'bzr export --root="%s" "%s"' % (root,zipFile2),
-    )
-
-    for z in commands:
-        print ('command: %s' % z)
-        os.system(z)
-
-    x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
-    x.create_exe()
-    remove(zipFile2)
-
-    for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
-        path= abspath(join(top,z))
-        if exists(z): remove(z)
-
-    os.system('dir %s' % (top))
-
-print('done')
+print('@button make: done')
 </t>
 <t tx="ekr.20080826091039.2">import os
 import shutil
 import struct
 import sys
 import time</t>
-<t tx="ekr.20080826091039.3">def remove (fileName):
+<t tx="ekr.20080826091039.3">def unlink (fileName):
 
-    g.es_print('removing',fileName)
+    print ('removing: %s' % fileName)
     os.remove(fileName)
 </t>
 <t tx="ekr.20080826091039.4">class createExe:
 
     @others
 </t>
-<t tx="ekr.20080826091039.5">def __init__ (self,exeFile,pre_install_script,install_script,zipFile,version):
+<t tx="ekr.20080826091039.5">def __init__ (self,exeFile,pre_install_script,post_install_script,zipFile,version):
 
     self.exeFile = exeFile
     self.zipFile = zipFile
-    self.theDir = g.os_path_dirname(zipFile)
+    self.theDir = os.path.dirname(zipFile)
 
     # The path to distutils.command
     self.distutils_command_path = r'C:\Python25\Lib\distutils\command'
@@ -754,17 +741,17 @@ import time</t>
     self.long_description = ''
     self.maintainer = ''
     self.maintainer_email = ''
-    self.name = 'Leo'
+    self.name = 'Leo' # Appears as 'Python (version) Leo' in Add and Remove Programs control panel.
     self.url = 'http://webpages.charter.net/edreamleo/front.html'
     self.version = version
 
     # Hard-coded options from initialize options.
-    self.no_target_compile = True
-    self.no_target_optimize = True
+    self.no_target_compile = False # True value may interfere with uninstall.
+    self.no_target_optimize = False # True value may interfere with uninstall.
     self.target_version = None # Require specific python version.
     self.bitmap = None # bitmap to use for the installer instead of python-powered logo
-    self.title = 'Install Leo...' # title to display on the installer background instead of default
-    self.install_script = install_script
+    self.title = 'Leo' # title to display on the installer background instead of default
+    self.post_install_script = post_install_script
         # basename of installation script to be run after installation or before deinstallation
     self.pre_install_script = pre_install_script
         # Fully qualified filename of a script to be run before any files are installed.
@@ -891,9 +878,9 @@ import time</t>
 
     lines.append("\n[Setup]")
 
-    if self.install_script:
+    if self.post_install_script:
         # The post-install script.  Apparently must be in Python/Scripts.
-        lines.append("install_script=%s" % self.install_script)
+        lines.append("install_script=%s" % self.post_install_script)
 
     lines.append("info=%s" % self.escape(info))
     lines.append("target_compile=%d" % (not self.no_target_compile))
@@ -933,7 +920,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -964,7 +951,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -1000,7 +987,7 @@ The highlights of Leo 4.5:
 - Major improvements to Leo's key binding code.
 - The beginning of usable vim-like bindings.
 - uA's may now be associated with vnodes in @thin and @shadow files.
-- Several magor reorganizations of Leo's code:
+- Several major reorganizations of Leo's code:
   including sax-based parsing, support for the Graph world (unified nodes),
   and simplified drawing code.
 - Leo is now an installable package.
@@ -1019,5 +1006,81 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080912152259.1">Leo 4.5.1 final                                  September 14, 2008
+
+Leo 4.5.1 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
+
+- Eliminated spurious error messages in the goto-global-line command.
+- @shadow files with unknown file extensions now work properly.
+- Leo's installer now properly finds Python's install directory.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+
+- Full support for @shadow files in Leo's core.
+- Major improvements to Leo's key binding code.
+- The beginning of usable vim-like bindings.
+- uA's may now be associated with vnodes in @thin and @shadow files.
+- Several Major reorganizations of Leo's code:
+  including sax-based parsing, support for the Graph world (unified nodes),
+  and simplified drawing code.
+- Leo is now an installable package.
+- Prepared code to be ready for Python 3.0.
+- Many small improvements and bug fixes.
+
+Quote of the month:
+-------------------
+Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080913110741.8">def make():
+
+    # Copy files from the doc directory to the top directory.
+    for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+        path= abspath(join(docDir,theFile))
+        shutil.copy(path,top)
+        g.es_print('created in %s: %s' % (top,theFile))
+
+    for z in (zipFile,zipFile2,exeFile):
+        if exists(z): unlink(z)
+
+    commands = (
+        r'cd %s' % (top),
+        r'bzr status',
+        # This commit ensures the proper files are included in the distribution.
+        r'bzr commit -m "commit doc files during make"',
+        r'bzr status',
+        r'bzr export "%s"' % (zipFile),
+        r'bzr export --root="%s" "%s"' % (root,zipFile2),
+    )
+
+    for z in commands:
+        print ('command: %s' % z)
+        os.system(z)
+
+    x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
+    x.create_exe()
+    unlink(zipFile2)
+
+    for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+        path= abspath(join(top,z))
+        if exists(z): unlink(z)
+
+    os.system('dir %s' % (top))</t>
+<t tx="ekr.20080916084557.1"></t>
+<t tx="ekr.20080916084557.2">version = '4-5-1-2-final'</t>
 </tnodes>
 </leo_file>

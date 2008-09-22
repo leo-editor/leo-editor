@@ -2001,7 +2001,7 @@ class colorizer:
 
             if not self.incremental:
                 self.removeAllTags()
-                ### self.removeAllImages()
+                # self.removeAllImages()
 
             #@<< configure fonts >>
             #@+node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
@@ -2016,7 +2016,7 @@ class colorizer:
 
             # Configure fonts.
             w = c.frame.body.bodyCtrl
-            keys = default_font_dict.keys() ; keys.sort()
+            keys = sorted(default_font_dict)
             for key in keys:
                 option_name = default_font_dict[key]
                 # First, look for the language-specific setting, then the general setting.
@@ -2053,7 +2053,7 @@ class colorizer:
             #@+node:ekr.20031218072017.1603:<< configure tags >>
             # g.trace('configure tags',self.c.frame.body.bodyCtrl)
 
-            for name in default_colors_dict.keys(): # Python 2.1 support.
+            for name in default_colors_dict:
                 option_name,default_color = default_colors_dict[name]
                 option_color = c.config.getColor(option_name)
                 color = g.choose(option_color,option_color,default_color)
@@ -2178,7 +2178,7 @@ class colorizer:
 
             self.hyperCount = 0 # Number of hypertext tags
             self.count += 1
-            lines = string.split(self.allBodyText,'\n')
+            lines = self.allBodyText.split('\n')
             #@nonl
             #@-node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
             #@nl
@@ -2654,7 +2654,6 @@ class colorizer:
         # __pychecker__ = 'maxlines=500'
 
         ch = s[i] ; state = "normal"
-        assert(type(ch)==type(u""))
 
         if ch in string.ascii_letters or ch == '_' or (
             (ch == '\\' and self.language=="latex") or
@@ -3100,21 +3099,21 @@ class colorizer:
             #@+node:ekr.20031218072017.1378:<< Test for @comment or @language >>
             # @comment and @language may coexist in the same node.
 
-            if theDict.has_key("comment"):
+            if 'comment' in theDict:
                 self.comment_string = theDict["comment"]
 
-            if theDict.has_key("language"):
+            if 'language' in theDict:
                 z = theDict["language"]
                 language,junk,junk,junk = g.set_language(z,0)
                 self.language = language
 
-            if theDict.has_key("comment") or theDict.has_key("language"):
+            if 'comment' in theDict or 'language' in theDict:
                 break
             #@-node:ekr.20031218072017.1378:<< Test for @comment or @language >>
             #@nl
             #@        << Test for @root, @root-doc or @root-code >>
             #@+node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-            if theDict.has_key("root") and not self.rootMode:
+            if 'root' in theDict and not self.rootMode:
 
                 root = theDict["root"]
                 if g.match_word(root,0,"@root-code"):
@@ -3180,9 +3179,9 @@ class colorizer:
         self.killFlag = False
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            no_color = theDict.has_key("nocolor")
-            color = theDict.has_key("color")
-            kill_color = theDict.has_key("killcolor")
+            no_color = 'nocolor' in theDict
+            color = 'color' in theDict
+            kill_color = 'killcolor' in theDict
             # A killcolor anywhere disables coloring.
             if kill_color:
                 self.killFlag = True
@@ -3238,7 +3237,10 @@ class colorizer:
     def skip_id(self,s,i,chars=None):
 
         n = len(s)
-        chars = chars and g.toUnicode(chars,encoding='ascii') or u''
+
+        if not g.isPython3:
+            chars = chars and g.toUnicode(chars,encoding='ascii') or unicode('')
+
         while i < n and (g.isWordChar(s[i]) or s[i] in chars):
                 i += 1
         return i

@@ -68,7 +68,7 @@ def doHandlersForTag (tag,keywords):
     if g.app.killed:
         return None
 
-    if handlers.has_key(tag):
+    if tag in handlers:
         bunches = handlers.get(tag)
         # Execute hooks in some random order.
         # Return if one of them returns a non-None result.
@@ -77,7 +77,7 @@ def doHandlersForTag (tag,keywords):
             if val is not None:
                 return val
 
-    if handlers.has_key("all"):
+    if 'all' in handlers:
         bunches = handlers.get('all')
         for bunch in bunches:
             callTagHandler(bunch,tag,keywords)
@@ -88,6 +88,10 @@ def doHandlersForTag (tag,keywords):
 def doPlugins(tag,keywords):
 
     if g.app.killed:
+        return
+
+    if g.isPython3:
+        g.trace('ignoring all plugins')
         return
 
     # g.trace(tag)
@@ -141,9 +145,9 @@ def loadHandlers(tag):
         if not g.app.unitTesting:
             g.es_print(*args,**keys)
 
-    plugins_path = g.os_path_abspath(g.os_path_join(g.app.loadDir,"..","plugins"))
+    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
     files = glob.glob(g.os_path_join(plugins_path,"*.py"))
-    files = [g.os_path_abspath(theFile) for theFile in files]
+    files = [g.os_path_finalize(theFile) for theFile in files]
 
     s = g.app.config.getEnabledPlugins()
     if not s: return
@@ -173,7 +177,7 @@ def getEnabledFiles (s,plugins_path):
     for s in g.splitLines(s):
         s = s.strip()
         if s and not s.startswith('#'):
-            path = g.os_path_abspath(g.os_path_join(plugins_path,s))
+            path = g.os_path_finalize_join(plugins_path,s)
             enabled_files.append(path)
 
     return enabled_files
@@ -256,16 +260,15 @@ def printHandlers (moduleName=None):
         g.es_print('all plugin handlers...')
 
     modules = {}
-    for tag in handlers.keys():
+    for tag in handlers:
         bunches = handlers.get(tag)
         for bunch in bunches:
             name = bunch.moduleName
             tags = modules.get(name,[])
             tags.append(tag)
             modules[name] = tags
-    keys = modules.keys()
-    keys.sort()
-    for key in keys:
+
+    for key in sorted(modules):
         tags = modules.get(key)
         if moduleName in (None,key):
             for tag in tags:
@@ -275,10 +278,8 @@ def printHandlers (moduleName=None):
 def printPlugins ():
 
     g.es_print('enabled plugins...')
-    keys = loadedModules.keys()
-    keys = [s.lower() for s in keys]
-    keys.sort()
-    for key in keys:
+
+    for key in sorted(loadedModules):
         g.es_print('',key)
 #@-node:ekr.20070429090122:printPlugins
 #@+node:ekr.20031218072017.3444:registerExclusiveHandler
@@ -310,7 +311,7 @@ def registerOneExclusiveHandler(tag, fn):
 
     if g.app.unitTesting: return
 
-    if handlers.has_key(tag):
+    if tag in handlers:
         g.es("*** Two exclusive handlers for","'%s'" % (tag))
     else:
         bunch = g.Bunch(fn=fn,moduleName=moduleName,tag='handler')
@@ -366,7 +367,7 @@ def unloadOnePlugin (moduleOrFileName,verbose=False):
             g.pr('unloading',moduleName)
         g.app.loadedPlugins.remove(moduleName)
 
-    for tag in handlers.keys():
+    for tag in handlers:
         bunches = handlers.get(tag)
         bunches = [bunch for bunch in bunches if bunch.moduleName != moduleName]
         handlers[tag] = bunches
@@ -575,7 +576,7 @@ class baseLeoPlugin(object):
             commandName = self.commandName       
         else:
             if commandName not in self.commandNames:
-                raise NameError, "setButton error, %s is not a commandName" % commandName
+                raise NameError("setButton error, %s is not a commandName" % commandName)
 
         if color is None:
             color = 'grey'

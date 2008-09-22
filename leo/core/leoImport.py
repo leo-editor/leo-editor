@@ -72,7 +72,7 @@ class leoImportCommands:
         c = self.c ; nl = self.output_newline
         lb = g.choose(self.webType=="cweb","@<","<<")
         rb = g.choose(self.webType=="cweb","@>",">>")
-        h = string.strip(v.headString())
+        h = v.headString().strip()
         #@    << put v's headline ref in head_ref >>
         #@+node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
         #@+at 
@@ -85,14 +85,14 @@ class leoImportCommands:
         head_ref = None
         j = 0
         if g.match(h,j,"<<"):
-            k = string.find(h,">>",j)
+            k = h.find(">>",j)
         elif g.match(h,j,"<@"):
-            k = string.find(h,"@>",j)
+            k = h.find("@>",j)
         else:
             k = -1
 
         if k > -1:
-            head_ref = string.strip(h[j+2:k])
+            head_ref = h[j+2:k].strip()
             if len(head_ref) == 0:
                 head_ref = None
         #@-node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
@@ -100,23 +100,22 @@ class leoImportCommands:
         #@    << put name following @root or @file in file_name >>
         #@+node:ekr.20031218072017.3292:<< put name following @root or @file in file_name >>
         if g.match(h,0,"@file") or g.match(h,0,"@root"):
-            line = h[5:]
-            line = string.strip(line)
+            line = h[5:].strip()
             #@    << set file_name >>
             #@+node:ekr.20031218072017.3293:<< Set file_name >>
             # set j & k so line[j:k] is the file name.
             # g.trace(line)
 
             if g.match(line,0,"<"):
-                j = 1 ; k = string.find(line,">",1)
+                j = 1 ; k = line.find(">",1)
             elif g.match(line,0,'"'):
-                j = 1 ; k = string.find(line,'"',1)
+                j = 1 ; k = line.find('"',1)
             else:
-                j = 0 ; k = string.find(line," ",0)
+                j = 0 ; k = line.find(" ",0)
             if k == -1:
                 k = len(line)
 
-            file_name = string.strip(line[j:k])
+            file_name = line[j:k].strip()
             if file_name and len(file_name) == 0:
                 file_name = None
             #@-node:ekr.20031218072017.3293:<< Set file_name >>
@@ -149,7 +148,7 @@ class leoImportCommands:
                     result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
                     result += "@c" + nl # @c denotes a new section.
                 else: 
-                    escaped_head_ref = string.replace(head_ref,"@","@@")
+                    escaped_head_ref = head_ref.replace("@","@@")
                     result += "@<" + escaped_head_ref + "@>=" + nl
             else:
                 if not head_ref:
@@ -185,7 +184,7 @@ class leoImportCommands:
                     result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
                     result += "@c" + nl # @c denotes a new section.
                 else: 
-                    escaped_head_ref = string.replace(head_ref,"@","@@")
+                    escaped_head_ref = head_ref.replace("@","@@")
                     result += "@<" + escaped_head_ref + "@>=" + nl
             else:
                 if not head_ref:
@@ -198,7 +197,7 @@ class leoImportCommands:
             #@-node:ekr.20031218072017.3295:<< append head_ref >>
             #@nl
         i,result = self.copyPart(s,i,result)
-        return i, string.strip(result) + nl
+        return i, result.strip() + nl
 
     #@+at 
     #@nonl
@@ -221,9 +220,9 @@ class leoImportCommands:
         i, result2 = self.copyPart(s,i,"")
         if len(result2) > 0:
             # Break lines after periods.
-            result2 = string.replace(result2,".  ","." + nl)
-            result2 = string.replace(result2,". ","." + nl)
-            result += nl+"@"+nl+string.strip(result2)+nl+nl
+            result2 = result2.replace(".  ","." + nl)
+            result2 = result2.replace(". ","." + nl)
+            result += nl+"@"+nl+result2.strip()+nl+nl
         else:
             # All nodes should start with '@', even if the doc part is empty.
             result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
@@ -282,7 +281,7 @@ class leoImportCommands:
                 i,result = self.convertDocPartToWeb(s,i,result)
                 docSeen = True
             assert(progress < i)
-        result = string.strip(result)
+        result = result.strip()
         if len(result) > 0:
             result += nl
         return result
@@ -314,11 +313,11 @@ class leoImportCommands:
                 # Converting @others to < < @ others > >
                 i = g.skip_line(s,j) ; line = s[j:i]
                 if theType == "cweb":
-                    line = string.replace(line,"@","@@")
+                    line = line.replace("@","@@")
                 else:
                     j = g.skip_ws(line,0)
                     if g.match(line,j,"@others"):
-                        line = string.replace(line,"@others",lb + "@others" + rb)
+                        line = line.replace("@others",lb + "@others" + rb)
                     elif g.match(line,0,"@"):
                         # Special case: do not escape @ %defs.
                         k = g.skip_ws(line,1)
@@ -326,7 +325,7 @@ class leoImportCommands:
                             line = "@" + line
                 result += line
             assert(progress < i)
-        return i, string.rstrip(result)
+        return i, result.rstrip()
     #@-node:ekr.20031218072017.3299:copyPart
     #@+node:ekr.20031218072017.1462:exportHeadlines
     def exportHeadlines (self,fileName):
@@ -463,10 +462,10 @@ class leoImportCommands:
             if not ext:
                 ext = ".txt"
             if ext[0] == '.':
-                newFileName = g.os_path_join(path,fileName+ext)
+                newFileName = g.os_path_finalize_join(path,fileName+ext)
             else:
                 head,ext2 = g.os_path_splitext(fileName) 
-                newFileName = g.os_path_join(path,head+ext+ext2)
+                newFileName = g.os_path_finalize_join(path,head+ext+ext2)
             if toString:
                 return s
             else:
@@ -533,7 +532,7 @@ class leoImportCommands:
         #@nl
         for p in p.self_and_subtree_iter():
             s = p.bodyString()
-            s2 = string.strip(s)
+            s2 = s.strip()
             if s2 and len(s2) > 0:
                 f.write("-" * 60) ; f.write(nl)
                 #@            << write the context of p to f >>
@@ -558,7 +557,7 @@ class leoImportCommands:
                 #@nl
                 f.write("-" * 60) ; f.write(nl)
                 s = g.toEncodedString(s,self.encoding,reportErrors=True)
-                f.write(string.rstrip(s) + nl)
+                f.write(s.rstrip() + nl)
         f.flush()
         f.close()
     #@-node:ekr.20031218072017.1464:weave
@@ -583,7 +582,8 @@ class leoImportCommands:
     #@+node:ekr.20041126042730:getTabWidth
     def getTabWidth (self,p=None):
 
-        d = g.scanDirectives(self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         w = d.get("tabwidth")
         if w not in (0,None):
             return w
@@ -616,22 +616,6 @@ class leoImportCommands:
                 g.match(s,i,"@c") or g.match(s,i,"@p") or
                 g.match(s,i,"@d") or g.match(s,i,"@f"))
     #@-node:ekr.20031218072017.3309:isDocStart and isModuleStart
-    #@+node:ekr.20031218072017.3311:massageComment (leoImport)(not used)
-    # def massageComment (self,s):
-
-        # '''Returns s with all runs of whitespace and newlines converted to a single blank.
-
-        # Also removes leading and trailing whitespace.'''
-
-        # # g.trace(g.get_line(s,0))
-        # s = string.strip(s)
-        # s = string.replace(s,"\n"," ")
-        # s = string.replace(s,"\r"," ")
-        # s = string.replace(s,"\t"," ")
-        # s = string.replace(s,"  "," ")
-        # s = string.strip(s)
-        # return s
-    #@-node:ekr.20031218072017.3311:massageComment (leoImport)(not used)
     #@+node:ekr.20031218072017.3312:massageWebBody
     def massageWebBody (self,s):
 
@@ -661,9 +645,9 @@ class leoImportCommands:
                     assert (i > progress2)
                 # Remove newlines from start to end.
                 doc = s[start:end]
-                doc = string.replace(doc,"\n"," ")
-                doc = string.replace(doc,"\r","")
-                doc = string.strip(doc)
+                doc = doc.replace("\n"," ")
+                doc = doc.replace("\r","")
+                doc = doc.strip()
                 if doc and len(doc) > 0:
                     if doc == "@":
                         doc = g.choose(self.webType=="cweb", "@ ","@\n")
@@ -696,7 +680,7 @@ class leoImportCommands:
             assert (i > progress)
         #@-node:ekr.20031218072017.3314:<< Replace abbreviated names with full names >>
         #@nl
-        s = string.rstrip(s)
+        s = s.rstrip()
         return s
     #@-node:ekr.20031218072017.3312:massageWebBody
     #@+node:ekr.20080211085914:scanDefaultDirectory (leoImport)
@@ -704,8 +688,9 @@ class leoImportCommands:
 
         """Set .default_directory by looking for @path directives."""
 
-        c = self.c
+        c = self.c ; p1 = p.copy()
         self.default_directory = None
+        if not p: return
         #@    << Set path from @file node >>
         #@+node:ekr.20080211085914.1:<< Set path from @file node >>
         # An absolute path in an @file node over-rides everything else.
@@ -729,7 +714,7 @@ class leoImportCommands:
 
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            if theDict.has_key("path"):
+            if 'path' in theDict:
                 #@            << handle @path >>
                 #@+node:ekr.20080211085914.2:<< handle @path >>
                 # We set the current director to a path so future writes will go to that directory.
@@ -739,7 +724,7 @@ class leoImportCommands:
 
                 if path:
                     base = g.getBaseDirectory(c) # returns "" on error.
-                    path = g.os_path_join(base,path)
+                    path = g.os_path_finalize_join(base,path)
 
                     if g.os_path_isabs(path):
                         #@        << handle absolute path >>
@@ -780,18 +765,20 @@ class leoImportCommands:
                             self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
         #@-node:ekr.20080211085914.4:<< Set current directory >>
         #@nl
-        if not self.default_directory:
+        if not self.default_directory and p1.anyAtFileNodeName():
+            # Don't issue a warning if p is not, in fact, an @file node.
             # This should never happen: c.openDirectory should be a good last resort.
             self.error("No absolute directory specified anywhere.")
+            g.trace(g.callers())
             self.default_directory = ""
     #@-node:ekr.20080211085914:scanDefaultDirectory (leoImport)
     #@+node:ekr.20031218072017.1463:setEncoding (leoImport)
     def setEncoding (self,p=None,atAuto=False):
 
-        # scanDirectives checks the encoding: may return None.
+        # c.scanAllDirectives checks the encoding: may return None.
         c = self.c
         if p is None: p = c.currentPosition()
-        theDict = g.scanDirectives(c,p)
+        theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding")
         if encoding and g.isValidEncoding(encoding):
             self.encoding = encoding
@@ -813,7 +800,7 @@ class leoImportCommands:
         # New in Leo 4.4.7: honor @path directives.
 
         self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-        fileName = g.os_path_join(self.default_directory,fileName)
+        fileName = g.os_path_finalize_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         self.setEncoding(p=parent,atAuto=atAuto)
@@ -825,7 +812,7 @@ class leoImportCommands:
             #@        << Read file into s >>
             #@+node:ekr.20031218072017.3211:<< Read file into s >>
             try:
-                fileName = g.os_path_normpath(fileName)
+                fileName = g.os_path_finalize(fileName)
                 theFile = open(fileName)
                 s = theFile.read()
                 theFile.close()
@@ -863,6 +850,7 @@ class leoImportCommands:
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
+
             if self.treeType == "@file":
                 p.initHeadString("@file " + fileName)
             else:
@@ -1017,8 +1005,8 @@ class leoImportCommands:
     # Used by paste logic.
 
     def convertMoreStringToOutlineAfter (self,s,first_p):
-        s = string.replace(s,"\r","")
-        strings = string.split(s,"\n")
+        s = s.replace("\r","")
+        strings = s.split("\n")
         return self.convertMoreStringsToOutlineAfter(strings,first_p)
 
     # Almost all the time spent in this command is spent here.
@@ -1127,9 +1115,9 @@ class leoImportCommands:
         try:
             theFile = open(fileName)
             s = theFile.read()
-            s = string.replace(s,"\r","")
+            s = s.replace("\r","")
             s = g.toUnicode(s,self.encoding)
-            array = string.split(s,"\n")
+            array = s.split("\n")
             theFile.close()
         except IOError:
             g.es("can not open",fileName, color="blue")
@@ -1170,8 +1158,8 @@ class leoImportCommands:
 
     def stringIsValidMoreFile (self,s):
 
-        s = string.replace(s,"\r","")
-        strings = string.split(s,"\n")
+        s = s.replace("\r","")
+        strings = s.split("\n")
         return self.stringsAreValidMoreFile(strings)
 
     def stringsAreValidMoreFile (self,strings):
@@ -1309,7 +1297,7 @@ class leoImportCommands:
                     k = g.find_on_line(s,i,">>=")
                     if k > -1:
                         ref = s[i:k+2]
-                        name = string.strip(s[i+2:k])
+                        name = s[i+2:k].strip()
                         if name != "@others":
                             return ref
                 else:
@@ -1457,20 +1445,19 @@ class leoImportCommands:
     def cstCanonicalize (self,s,lower=True):
 
         if lower:
-            s = string.lower(s)
-        s = string.replace(s,"\t"," ")
-        s = string.replace(s,"\r","")
-        s = string.replace(s,"\n"," ")
-        s = string.replace(s,"  "," ")
-        s = string.strip(s)
-        return s
+            s = s.lower()
+
+        s = s.replace("\t"," ").replace("\r","")
+        s = s.replace("\n"," ").replace("  "," ")
+
+        return s.strip()
     #@-node:ekr.20031218072017.3237:cstCanonicalize
     #@+node:ekr.20031218072017.3238:cstDump
     def cstDump (self):
 
-        self.web_st.sort()
         s = "Web Symbol Table...\n\n"
-        for name in self.web_st:
+
+        for name in sorted(self.web_st):
             s += name + "\n"
         return s
     #@-node:ekr.20031218072017.3238:cstDump
@@ -1480,14 +1467,14 @@ class leoImportCommands:
     def cstEnter (self,s):
 
         # Don't enter names that end in "..."
-        s = string.rstrip(s)
+        s = s.rstrip()
         if s.endswith("..."): return
 
         # Put the section name in the symbol table, retaining capitalization.
         lower = self.cstCanonicalize(s,True)  # do lower
         upper = self.cstCanonicalize(s,False) # don't lower.
         for name in self.web_st:
-            if string.lower(name) == lower:
+            if name.lower() == lower:
                 return
         self.web_st.append(upper)
     #@-node:ekr.20031218072017.3239:cstEnter
@@ -1497,12 +1484,11 @@ class leoImportCommands:
     def cstLookup (self,target):
 
         # Do nothing if the ... convention is not used.
-        target = string.strip(target)
+        target = target.strip()
         if not target.endswith("..."): return target
         # Canonicalize the target name, and remove the trailing "..."
         ctarget = target[:-3]
-        ctarget = self.cstCanonicalize(ctarget)
-        ctarget = string.strip(ctarget)
+        ctarget = self.cstCanonicalize(ctarget).strip()
         found = False ; result = target
         for s in self.web_st:
             cs = self.cstCanonicalize(s)
@@ -1688,7 +1674,7 @@ class leoImportCommands:
         c = self.c
         changed = c.isChanged()
         body = g.choose(atAuto,'','@ignore\n')
-        if ext in ('.html','.htm'): body += '@language html\n'
+        if ext in ('.html','.htm'):   body += '@language html\n'
         elif ext in ('.txt','.text'): body += '@nocolor\n'
         else:
             language = self.languageForExtension(ext)
@@ -1707,24 +1693,25 @@ class leoImportCommands:
 
         '''Return the language corresponding to the extensiion ext.'''
 
+        unknown = 'unknown_language'
+
         if ext.startswith('.'): ext = ext[1:]
 
-        language = ext and (
-            g.app.extra_extension_dict.get(ext) or
-            g.app.extension_dict.get(ext) or
-            'unknown_language'
-        )
+        if ext:
+            z = g.app.extra_extension_dict.get(ext)
+            if z not in (None,'none','None'):
+                language = z
+            else:
+                language = g.app.extension_dict.get(ext)
+            if language in (None,'none','None'):
+                language = unknown
+        else:
+            language = unknown
 
         # g.trace(ext,repr(language))
 
         # Return the language even if there is no colorizer mode for it.
         return language
-
-        # if language:
-            # if g.os_path_exists(g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))):
-                # return language
-
-        # return None
     #@-node:ekr.20080811174246.1:languageForExtension
     #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     #@-node:ekr.20071127175948.1:Import scanners
@@ -1863,7 +1850,7 @@ class baseScannerClass:
         # g.trace('lines2',lines2)
 
         ok = True ; bad_i = 0
-        for i in xrange(max(n1,n2)):
+        for i in range(max(n1,n2)):
             ok = self.compareHelper(lines1,lines2,i,self.strict)
             if not ok:
                 bad_i = i + 1
@@ -1981,10 +1968,10 @@ class baseScannerClass:
 
         if len(lines1) < 100:
             pr('input...')
-            for i in xrange(len(lines1)):
+            for i in range(len(lines1)):
                 pr('%3d %s' % (i,lines1[i]),newline=False)
             pr('output...')
-            for i in xrange(len(lines2)):
+            for i in range(len(lines2)):
                 pr('%3d %s' % (i,lines2[i]),newline=False)
 
         return False
@@ -2601,7 +2588,7 @@ class baseScannerClass:
             assert False
 
         # Find the closing delim.
-        k = string.find(s,delim2,i)
+        k = s.find(delim2,i)
         if k == -1:
             self.error('Run on block comment: ' + s[start:i])
             return len(s)
@@ -3461,7 +3448,7 @@ class phpScanner (baseScannerClass):
 
         # The valid characters in an id
         self.chars = list(string.ascii_letters + string.digits)
-        extra = [chr(z) for z in xrange(127,256)]
+        extra = [chr(z) for z in range(127,256)]
         self.chars.extend(extra)
     #@-node:ekr.20070711090052.2: __init__
     #@+node:ekr.20070711094850:isPurePHP

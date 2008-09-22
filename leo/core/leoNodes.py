@@ -287,8 +287,12 @@ class vnode (baseVnode):
             self.selectionStart = 0 # The start of the selected body text.
 
             # Convert everything to unicode...
-            self._headString = u''
-            self._bodyString = u''
+            if g.isPython3:
+                self._headString = ''
+                self._bodyString = ''
+            else:
+                self._headString = unicode('')
+                self._bodyString = unicode('')
 
             self.children = [] # List of all children of this node.
             self.vnodeList = []
@@ -901,7 +905,7 @@ class nodeIndices (object):
 
         """Create a gnx from its string representation"""
 
-        if type(s) not in (type(""),type(u"")):
+        if not g.isString(s):
             g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
             return None,None,None
 
@@ -1018,35 +1022,30 @@ class basePosition (object):
 
         self.txtOffset = None # see self.textOffset()
     #@-node:ekr.20080416161551.190: p.__init__
-    #@+node:ekr.20080416161551.186:p.__cmp__, equal and isEqual
-    def __cmp__(self,p2):
+    #@+node:ekr.20080920052058.3:p.__eq__ & __ne__
+    def __eq__(self,p2):
 
-        """Return 0 if two postions are equivalent."""
-
-        p1 = self
-
-        # g.trace(p1.headString(),p2 and p2.headString())
-
-        if p2 is None or p2.v is None:
-            if p1.v is None: return 0 # equal
-            else:            return 1 # not equal
-        elif p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack:
-            return 0 # equal
-        else:
-            return 1 # not equal
-
-    # isEqual and equal are deprecated.
-
-    def isEqual (self,p2):
+        """Return True if two postions are equivalent."""
 
         p1 = self
+
+        # Don't use g.trace: it might call p.__eq__ or p.__ne__.
+        # print ('p.__eq__: %s %s' % (
+            # p1 and p1.v and p1.headString(),p2 and p2.v and p2.headString()))
+
         if p2 is None or p2.v is None:
             return p1.v is None
         else:
-            return p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack
+            return ( p1.v == p2.v and
+                p1._childIndex == p2._childIndex and
+                p1.stack == p2.stack )
 
-    equal = isEqual
-    #@-node:ekr.20080416161551.186:p.__cmp__, equal and isEqual
+    def __ne__(self,p2):
+
+        """Return True if two postions are not equivalent."""
+
+        return not self.__eq__(p2) # For possible use in Python 2.x.
+    #@-node:ekr.20080920052058.3:p.__eq__ & __ne__
     #@+node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
     if 1: # Good for compatibility, bad for finding conversion problems.
 
@@ -1064,10 +1063,10 @@ class basePosition (object):
                 if 0:
                     g.pr("unknown position attribute:",attr)
                     import traceback ; traceback.print_stack()
-                raise AttributeError,attr
+                raise AttributeError(attr)
     #@nonl
     #@-node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
-    #@+node:ekr.20040117173448:p.__nonzero__
+    #@+node:ekr.20040117173448:p.__nonzero__ & __bool__
     #@+at
     # Tests such as 'if p' or 'if not p' are the _only_ correct ways to test 
     # whether a position p is valid.
@@ -1076,14 +1075,29 @@ class basePosition (object):
     #@-at
     #@@c
 
-    def __nonzero__ ( self):
+    if g.isPython3:
 
-        """Return True if a position is valid."""
+        def __bool__ ( self):
 
-        # if g.app.trace: "__nonzero__",self.v
+            """Return True if a position is valid."""
 
-        return self.v is not None
-    #@-node:ekr.20040117173448:p.__nonzero__
+            # Tracing this appears to cause unbounded prints.
+            # print("__bool__",self.v and self.v.cleanHeadString())
+
+            return self.v is not None
+
+    else:
+
+        def __nonzero__ ( self):
+
+            """Return True if a position is valid."""
+
+            # if g.app.trace: "__nonzero__",self.v
+
+            # g.trace(repr(self))
+
+            return self.v is not None
+    #@-node:ekr.20040117173448:p.__nonzero__ & __bool__
     #@+node:ekr.20040301205720:p.__str__ and p.__repr__
     def __str__ (self):
 
@@ -1744,6 +1758,9 @@ class basePosition (object):
                 return self.mapping(self.p)
 
             raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:sps.20080331123552.2:next
         #@-others
 
@@ -1790,6 +1807,8 @@ class basePosition (object):
                 return self.mapping(self.p)
 
             raise StopIteration
+
+        __next__ = next
         #@-node:sps.20080331123552.5:next
         #@+node:sps.20080331123552.7:moveToThreadNextUnique
         def moveToThreadNextUnique (self):
@@ -1877,7 +1896,6 @@ class basePosition (object):
         #@-node:ekr.20040305173559.1:__init__ & __iter__
         #@+node:ekr.20040305173559.2:next
         def next(self):
-
             if self.first:
                 self.p = self.first
                 self.first = None
@@ -1885,11 +1903,14 @@ class basePosition (object):
             elif self.p:
                 self.p.moveToThreadNext()
 
-            if self.p and not self.p.equal(self.after):
+            if self.p and self.p != self.after:
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else:
                 raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305173559.2:next
         #@-others
 
@@ -1941,6 +1962,9 @@ class basePosition (object):
                 self.moveToThreadNextUnique()
 
             return self.mapping(self.p)
+
+        __next__ = next
+        #@nonl
         #@-node:sps.20080331123552.10:next
         #@+node:sps.20080331123552.11:moveToThreadNextUnique
         def moveToThreadNextUnique (self):
@@ -1957,14 +1981,14 @@ class basePosition (object):
                 # First, try to find an unmarked child
                 if p.v.t.children:
                     p.moveToFirstChild()
-                    if p.equal(self.after):
+                    if p == self.after:
                         raise StopIteration
                     while p and self.d.get(u(p)):
                         if p.hasNext():
                             p.moveToNext()
                         else:
                             p.moveToParent()
-                        if p.equal(self.after):
+                        if p == self.after:
                             raise StopIteration
 
                 # If we didn't find an unmarked child,
@@ -1972,7 +1996,7 @@ class basePosition (object):
                 if p and self.d.get(u(p)):
                     while p.hasNext():
                         p.moveToNext()
-                        if p.equal(self.after):
+                        if p == self.after:
                             raise StopIteration
                         if not self.d.get(u(p)):
                             break
@@ -1981,19 +2005,20 @@ class basePosition (object):
                 # find a parent with an unmarked sibling
                 if p and self.d.get(u(p)):
                     p.moveToParent()
-                    if p.equal(self.after):
+                    # if p.equal(self.after):
+                    if p == self.after:
                         raise StopIteration
                     while p:
                         while p.hasNext():
                             p.moveToNext()
-                            if p.equal(self.after):
+                            if p == self.after:
                                 raise StopIteration
                             if not self.d.get(u(p)):
                                 break
                         # if we run out of siblings, go to parent
                         if self.d.get(u(p)):
                             p.moveToParent()
-                            if p.equal(self.after):
+                            if p == self.after:
                                 raise StopIteration
                         else:
                             break # found
@@ -2063,6 +2088,9 @@ class basePosition (object):
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else: raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305172211.3:next
         #@-others
 
@@ -2108,6 +2136,9 @@ class basePosition (object):
                 else:         return self.p
             else:
                 raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305172855.2:next
         #@-others
 
@@ -2159,6 +2190,9 @@ class basePosition (object):
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else: raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305173343.2:next
         #@-others
 

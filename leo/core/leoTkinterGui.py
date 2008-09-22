@@ -20,7 +20,7 @@ import leo.core.leoTkinterFrame as leoTkinterFrame
 import tkFont
 import tkFileDialog
 import os
-import string
+# import string
 import sys
 import Tkinter as Tk
 
@@ -251,7 +251,7 @@ class tkinterGui(leoGui.leoGui):
 
         # __pychecker__ = '--no-argsused' # defaultextension not used.
 
-        initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
+        initialdir = g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
 
         if multiple:
             # askopenfilenames requires Python 2.3 and Tk 8.4.
@@ -281,7 +281,7 @@ class tkinterGui(leoGui.leoGui):
 
         # __pychecker__ = '--no-argsused' # defaultextension not used.
 
-        initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd()),
+        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd()),
 
         return tkFileDialog.asksaveasfilename(
             initialdir=initialdir,initialfile=initialfile,
@@ -377,8 +377,8 @@ class tkinterGui(leoGui.leoGui):
 
         # Get the information about top and the screen.
         geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-        dim,x,y = string.split(geom,'+')
-        w,h = string.split(dim,'x')
+        dim,x,y = geom.split('+')
+        w,h = dim.split('x')
         w,h,x,y = int(w),int(h),int(x),int(y)
 
         return w,h,x,y

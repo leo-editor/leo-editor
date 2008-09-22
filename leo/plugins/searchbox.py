@@ -30,7 +30,7 @@ Still to do:
 #@@language python
 #@@tabwidth -4
 
-__version__ = "0.7"
+__version__ = "0.8"
 
 #@<< version history >>
 #@+node:ekr.20040908094021.3:<< version history >>
@@ -51,14 +51,17 @@ __version__ = "0.7"
 # - Changed init_s_text to init_s_ctrl.
 #     - Changed s_text to s_ctrl.
 # 0.7 EKR: Fixed crasher in Leo 4.4 by initing self.p in Quickfind ctor.
+# 0.8 EKR: Fixed crasher by making QuickFind.s_ctrl a leoTkTextWidget and by 
+# adding
+#          ins argument to init_s_ctrl.
 #@-at
-#@nonl
 #@-node:ekr.20040908094021.3:<< version history >>
 #@nl
 #@<< imports >>
 #@+node:ekr.20040908093511.3:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+import leo.core.leoTkinterFrame as leoTkinterFrame
 
 import leo.core.leoFind as leoFind
 
@@ -265,7 +268,7 @@ class QuickFind(leoFind.leoFind):
 
         self.c = c
         self.p = c.currentPosition() # Bug fix: 5/14/06
-        self.s_ctrl = Tk.Text() # Used by find.search()
+        self.s_ctrl = leoTkinterFrame.leoTkTextWidget() # Tk.Text() # Used by find.search()
         self.__find_text = text
         self.search_option = search_option
     #@nonl
@@ -297,14 +300,19 @@ class QuickFind(leoFind.leoFind):
     #@nonl
     #@-node:ekr.20040107092135.8:update_ivars
     #@+node:ekr.20040107103252:init_s_ctrl
-    def init_s_ctrl (self,s):
+    def init_s_ctrl (self,s,ins=None):
 
         t = self.s_ctrl
         t.delete("1.0","end")
         t.insert("end",s)
-        t.mark_set("insert",g.choose(self.reverse,"end","1.0"))
+
+        if ins is None:
+            t.mark_set("insert",g.choose(self.reverse,"end","1.0"))
+        else:
+            ins = t.toGuiIndex(ins)
+            t.mark_set("insert",ins)
+
         return t
-    #@nonl
     #@-node:ekr.20040107103252:init_s_ctrl
     #@+node:ekr.20040107103339:gui_search
     def gui_search (self,t,*args,**keys):

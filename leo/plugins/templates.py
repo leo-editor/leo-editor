@@ -261,7 +261,7 @@ def addEntries (parent,num):
     """Factory for creating Pmw.EntryField instances."""
 
     efs =[]
-    for z in xrange(1,num+1):
+    for z in range(1,num+1):
         ef = Pmw.EntryField(
             parent,
             labelpos='w',label_text=z,

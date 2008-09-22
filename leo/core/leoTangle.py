@@ -525,7 +525,7 @@ class baseTangleCommands:
             for section in self.root_list:
                 for part in section.parts:
                     if part.is_root:
-                        root_names.append(g.os_path_join(theDir,part.name))
+                        root_names.append(g.os_path_finalize_join(theDir,part.name))
 
             if self.tangling and self.tangle_batch_flag:
                 try:
@@ -583,7 +583,7 @@ class baseTangleCommands:
             g.es("looking for a parent to tangle...")
             while p:
                 d = g.get_directives_dict(p,[self.head_root])
-                if d.has_key("root"):
+                if 'root' in d:
                     g.es("tangling parent")
                     self.tangleTree(p,report_errors)
                     break
@@ -658,7 +658,7 @@ class baseTangleCommands:
             self.p = p
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            is_ignore = theDict.has_key("ignore")
+            is_ignore = 'ignore' in theDict
             if is_ignore:
                 p.moveToNodeAfterTree()
                 continue
@@ -711,9 +711,9 @@ class baseTangleCommands:
         while p and p != next:
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            is_ignore = theDict.has_key("ignore")
-            is_root = theDict.has_key("root")
-            is_unit = theDict.has_key("unit")
+            is_ignore = 'ignore' in theDict
+            is_root = 'root' in theDict
+            is_unit = 'unit' in theDict
             if is_ignore:
                 p.moveToNodeAfterTree()
             elif not is_root and not is_unit:
@@ -843,11 +843,11 @@ class baseTangleCommands:
         #@+node:ekr.20031218072017.3484:<< Read the file into file_buf  >> in untangleRoot
         f = None
         try:
-            path = g.os_path_join(self.tangle_directory,path)
+            path = g.os_path_finalize_join(self.tangle_directory,path)
             f = open(path)
             if f:
                 file_buf = f.read()
-                file_buf = string.replace(file_buf,g.body_ignored_newline,'')
+                file_buf = file_buf.replace(g.body_ignored_newline,'')
         except:
             if f: f.close()
             g.es("error reading:",path)
@@ -900,9 +900,9 @@ class baseTangleCommands:
         while p and p != afterEntireTree and self.errors + g.app.scanErrors == 0:
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            ignore = theDict.has_key("ignore")
-            root = theDict.has_key("root")
-            unit = theDict.has_key("unit")
+            ignore = 'ignore' in theDict
+            root = 'root' in theDict
+            unit = 'unit' in theDict
             if ignore:
                 p.moveToNodeAfterTree()
             elif unit:
@@ -913,7 +913,7 @@ class baseTangleCommands:
                 while p and p != afterUnit and self.errors + g.app.scanErrors== 0:
                     self.setRootFromHeadline(p)
                     theDict = g.get_directives_dict(p,[self.head_root])
-                    root = theDict.has_key("root")
+                    root = 'root' in theDict
                     if root:
                         any_root_flag = True
                         end = None
@@ -1343,7 +1343,7 @@ class baseTangleCommands:
         self.output_file.write(s)
 
     def os (self,s):
-        s = string.replace(s,g.body_ignored_newline,g.body_newline)
+        s = s.replace(g.body_ignored_newline,g.body_newline)
         s = g.toEncodedString(s,self.encoding,reportErrors=True)
         self.output_file.write(s)
 
@@ -1375,10 +1375,8 @@ class baseTangleCommands:
         for section in self.root_list:
 
             # g.trace(section.name)
-            file_name = g.os_path_join(self.tangle_directory,section.name)
-            file_name = g.os_path_normpath(file_name)
+            file_name = g.os_path_finalize_join(self.tangle_directory,section.name)
             mode = c.config.output_newline
-            # mode = g.choose(mode=="platform",'w','wb')
             textMode = mode == 'platform'
             if g.unitTesting:
                 self.output_file = g.fileLikeObject()
@@ -1833,7 +1831,7 @@ class baseTangleCommands:
                             self.put_leading_ws(self.tangle_indent)
 
                         # Don't print trailing whitespace
-                        name = string.rstrip(name)
+                        name = name.rstrip()
                         if self.single_comment_string:
                             self.os(self.single_comment_string) ; self.oblank() ; self.os(name)
                             #@    << put (n of m) >>
@@ -1965,10 +1963,8 @@ class baseTangleCommands:
 
         """Checks the given symbol table for defined but never referenced sections."""
 
-        keys = self.tst.keys()
-        keys.sort()
         # g.trace(keys)
-        for name in keys:
+        for name in sorted(self.tst):
             section = self.tst[name]
             if not section.referenced:
                 lp = g.choose(self.use_noweb_flag,"<< ","@< ")
@@ -1981,9 +1977,8 @@ class baseTangleCommands:
     def st_dump(self,verbose_flag=True):
 
         s = "\ndump of symbol table...\n"
-        keys = self.tst.keys()
-        keys.sort()
-        for name in keys:
+
+        for name in sorted(self.tst):
             section = self.tst[name]
             if verbose_flag:
                 s += self.st_dump_node(section)
@@ -2021,12 +2016,12 @@ class baseTangleCommands:
         section = self.st_lookup(name,is_root_flag)
         assert(section)
         if doc:
-            doc = string.rstrip(doc) # remove trailing lines.
+            doc = doc.rstrip() # remove trailing lines.
         if code:
             if self.print_mode != "silent": # @silent supresses newline processing.
                 i = g.skip_blank_lines(code,0) # remove leading lines.
                 if i > 0: code = code[i:] 
-                if code and len(code) > 0: code = string.rstrip(code) # remove trailing lines.
+                if code and len(code) > 0: code = code.rstrip() # remove trailing lines.
             if len(code) == 0: code = None
         if code:
             #@        << check for duplicate code definitions >>
@@ -2090,7 +2085,7 @@ class baseTangleCommands:
         else:
             key = self.standardize_name(name)
 
-        if self.tst.has_key(key):
+        if key in self.tst:
             section = self.tst[key]
             # g.trace("found:" + key)
             return section
@@ -2106,16 +2101,17 @@ class baseTangleCommands:
     def ust_dump (self):
 
         s = "\n---------- Untangle Symbol Table ----------"
-        keys = self.ust.keys()
-        keys.sort()
-        for name in keys:
+
+        for name in sorted(self.ust):
             section = self.ust[name]
             s += "\n\n" + section.name
             for part in section.parts.values():
                 assert(part.of == section.of)
                 s += "\n----- part %d of %d -----\n" % (part.part,part.of)
                 s += repr(g.get_line(part.code,0))
+
         s += "\n--------------------"
+
         return s
     #@-node:ekr.20031218072017.3539:ust_dump
     #@+node:ekr.20031218072017.3540:ust_enter
@@ -2142,12 +2138,12 @@ class baseTangleCommands:
         #@+node:ekr.20031218072017.3541:<< remove blank lines from the start and end of the text >>
         i = g.skip_blank_lines(code,0)
         if i > 0:
-            code = code[i:]
-            code = string.rstrip(code)
+            code = code[i:].rstrip()
+
         #@-node:ekr.20031218072017.3541:<< remove blank lines from the start and end of the text >>
         #@nl
         u = ust_node(name,code,part,of,nl_flag,False) # update_flag
-        if not self.ust.has_key(name):
+        if name not in self.ust:
             self.ust[name] = u
         section = self.ust[name]
         section.parts[part]=u # Parts may be defined in any order.
@@ -2164,9 +2160,9 @@ class baseTangleCommands:
             name = self.standardize_name(name)
 
         if part_number == 0: part_number = 1 # A hack: zero indicates the first part.
-        if self.ust.has_key(name):
+        if name in self.ust:
             section = self.ust[name]
-            if section.parts.has_key(part_number):
+            if part_number in section.parts:
                 part = section.parts[part_number]
                 if update_flag: part.update_flag = True
                 # g.trace("found: %d (%d)...\n" % (name,part_number,g.get_line(part.code,0)))
@@ -2925,7 +2921,7 @@ class baseTangleCommands:
             if ucode and g.match(ucode,j,self.comment):
                 # Skip to the end of the block comment.
                 i = j + len(self.comment)
-                i = string.find(ucode,self.comment_end,i)
+                i = ucode.find(self.comment_end,i)
                 if i == -1: ucode = None # An unreported problem in the user code.
                 else:
                     i += len(self.comment_end)
@@ -2948,9 +2944,9 @@ class baseTangleCommands:
         g.es("***Updating:",p.headString())
         i = g.skip_blank_lines(ucode,0)
         ucode = ucode[i:]
-        ucode = string.rstrip(ucode)
+        ucode = ucode.rstrip()
         # Add the trailing whitespace of code to ucode.
-        code2 = string.rstrip(code)
+        code2 = code.rstrip()
         trail_ws = code[len(code2):]
         ucode = ucode + trail_ws
         body = head + ucode + tail
@@ -2996,7 +2992,7 @@ class baseTangleCommands:
                     i2 = g.skip_ws(s2,i2)
                 elif g.match(s1,i1,delim) and g.match(s2,i2,delim):
                     return True
-                elif string.lower(ch1) == string.lower(ch2):
+                elif ch1.lower() == ch2.lower():
                     i1 += 1 ; i2 += 1
                 else: return False
             return False
@@ -3285,7 +3281,7 @@ class baseTangleCommands:
             if err_flag:
                 g.scanError("bad filename in @root " + s[:i])
         else:
-            self.root_name = string.strip(s[root1:root2])
+            self.root_name = s[root1:root2].strip()
         return i
     #@-node:ekr.20031218072017.1259:setRootFromText
     #@+node:ekr.20031218072017.3595:skip_CWEB_section_name
@@ -3397,20 +3393,20 @@ class baseTangleCommands:
         """Removes leading and trailing brackets, converts white space to a single blank and converts to lower case."""
 
         # Convert to lowercase.
-        name = string.lower(name)
         # Convert whitespace to a single space.
-        name = string.replace(name,'\t',' ')
-        name = string.replace(name,'  ',' ')
+        name = name.lower().name.replace('\t',' ').replace('  ',' ')
+
         # Remove leading '<'
         i = 0 ; n = len(name)
         while i < n and name[i] == '<':
             i += 1
         j = i
+
         # Find the first '>'
         while i < n and name [i] != '>':
             i += 1
         name = string.strip(name[j:i])
-        # g.trace(name)
+
         return name
     #@-node:ekr.20031218072017.3598:standardize_name
     #@+node:ekr.20031218072017.1360:tangle.scanAllDirectives
@@ -3467,10 +3463,10 @@ class baseTangleCommands:
             theDict = g.get_directives_dict(p)
             #@        << Test for @comment and @language >>
             #@+node:ekr.20031218072017.1362:<< Test for @comment and @language >>
-            if old.has_key("comment") or old.has_key("language"):
+            if 'comment' in old or 'language' in old:
                 pass # Do nothing more.
 
-            elif theDict.has_key("comment"):
+            elif 'comment' in theDict:
 
                 z = theDict["comment"]
                 delim1,delim2,delim3 = g.set_delims_from_string(z)
@@ -3484,7 +3480,7 @@ class baseTangleCommands:
                     if issue_error_flag:
                         g.es("ignoring: @comment",z)
 
-            elif theDict.has_key("language"):
+            elif 'language' in theDict:
 
                 z = theDict["language"]
                 language,delim1,delim2,delim3 = g.set_language(z,0)
@@ -3506,7 +3502,7 @@ class baseTangleCommands:
             #@nl
             #@        << Test for @encoding >>
             #@+node:ekr.20031218072017.1363:<< Test for @encoding >>
-            if not old.has_key("encoding") and theDict.has_key("encoding"):
+            if 'encoding' not in old and 'encoding' in theDict:
 
                 e = g.scanAtEncodingDirective(theDict)
                 if e:
@@ -3515,7 +3511,7 @@ class baseTangleCommands:
             #@nl
             #@        << Test for @lineending >>
             #@+node:ekr.20031218072017.1364:<< Test for @lineending >>
-            if not old.has_key("lineending") and theDict.has_key("lineending"):
+            if 'lineending' not in old and 'lineending' in theDict:
 
                 lineending = g.scanAtLineendingDirective(theDict)
                 if lineending:
@@ -3533,7 +3529,7 @@ class baseTangleCommands:
 
             if not print_mode_changed:
                 for name in ("verbose","terse","quiet","silent"):
-                    if theDict.has_key(name):
+                    if name in theDict:
                         self.print_mode = name
                         print_mode_changed = True
                         break
@@ -3541,7 +3537,7 @@ class baseTangleCommands:
             #@nl
             #@        << Test for @path >>
             #@+node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-            if require_path_flag and not old.has_key("path") and theDict.has_key("path"):
+            if require_path_flag and 'path' not in old and 'path' in theDict:
 
                 path = theDict["path"]
                 theDir = relative_path = g.computeRelativePath(path)
@@ -3577,7 +3573,7 @@ class baseTangleCommands:
             #@nl
             #@        << Test for @pagewidth >>
             #@+node:ekr.20031218072017.1369:<< Test for @pagewidth >>
-            if not old.has_key("pagewidth") and theDict.has_key("pagewidth"):
+            if 'pagewidth' not in old and 'pagewidth' in theDict:
 
                 w = g.scanAtPagewidthDirective(theDict,issue_error_flag)
                 if w and w > 0:
@@ -3594,14 +3590,15 @@ class baseTangleCommands:
             # 
             #@-at
             #@@c
-            if self.root_name == None and theDict.has_key("root"):
+            if self.root_name == None and 'root' in theDict:
+
                 z = theDict["root"]
                 self.setRootFromText(z,issue_error_flag)
             #@-node:ekr.20031218072017.1370:<< Test for @root >>
             #@nl
             #@        << Test for @tabwidth >>
             #@+node:ekr.20031218072017.1371:<< Test for @tabwidth >>
-            if not old.has_key("tabwidth") and theDict.has_key("tabwidth"):
+            if 'tabwidth' not in old and 'tabwidth' in theDict:
 
                 w = g.scanAtTabwidthDirective(theDict,issue_error_flag)
                 if w and w != 0:
@@ -3610,17 +3607,17 @@ class baseTangleCommands:
             #@nl
             #@        << Test for @header and @noheader >>
             #@+node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
-            if old.has_key("header") or old.has_key("noheader"):
+            if 'header' in old or 'noheader' in old:
                 pass # Do nothing more.
 
-            elif theDict.has_key("header") and theDict.has_key("noheader"):
+            elif 'header' in theDict and 'noheader' in theDict:
                 if issue_error_flag:
                     g.es("conflicting @header and @noheader directives")
 
-            elif theDict.has_key("header"):
+            elif 'header' in theDict:
                 self.use_header_flag = True
 
-            elif theDict.has_key("noheader"):
+            elif 'noheader' in theDict:
                 self.use_header_flag = False
             #@-node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
             #@nl

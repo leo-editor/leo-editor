@@ -252,7 +252,7 @@ def getSectionReferenceMenu (pmenu,c):
     import re
     reg = re.compile("^<"+"<.+?>"+">$")
     srefs = []
-    for z in xrange(nc):
+    for z in range(nc):
         chi = p.nthChild(z)
         hl = chi.headString()
         if reg.match(hl):
@@ -300,7 +300,7 @@ def getChildrenMenu (pmenu,c):
         sb = shouldBreak()
         childnames = []
         children = {}
-        for z in xrange(p.numberOfChildren()):
+        for z in range(p.numberOfChildren()):
             child = p.nthChild(z)
             hs = child.headString()
             childnames.append(hs)
