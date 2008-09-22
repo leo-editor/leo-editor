@@ -250,9 +250,8 @@ def runProfileOnNode (p,outputPath=None):
     s = p.bodyString().rstrip() + '\n'
 
     if outputPath is None:
-        # outputPath = g.os_path_finalize_join(
-            # g.app.loadDir,'..','test','profileStats')
-        outputPath = name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+        outputPath = g.os_path_finalize_join(
+            g.app.loadDir,'..','test','profileStats')
 
     profile.run(s,outputPath)
 
