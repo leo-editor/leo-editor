@@ -231,7 +231,7 @@ class baseCommands:
 
         c = self
         if c.mFileName:
-            return g.os_path_finalize(c.mFileName).lower()
+            return c.os_path_finalize(c.mFileName).lower()
         else:
             return 0
     #@-node:ekr.20041130173135:c.hash
@@ -1069,12 +1069,14 @@ class baseCommands:
 
         """Create the RecentFiles menu.  May be called with Null fileName."""
 
+        c = self
+
         if g.app.unitTesting: return
 
         def munge(name):
-            return g.os_path_normpath(name or '').lower()
+            return c.os_path_finalize(name or '').lower()
         def munge2(name):
-            return g.os_path_finalize(g.app.loadDir,name or '')
+            return c.os_path_finalize_join(g.app.loadDir,name or '')
 
         # Update the recent files list in all windows.
         if fileName:
@@ -1713,9 +1715,9 @@ class baseCommands:
             parts = path.split('/')
             path = g.app.loadDir
             for part in parts:
-                path = g.os_path_finalize_join(path,part)
+                path = c.os_path_finalize_join(path,part)
         else:
-            path = g.os_path_finalize_join(
+            path = c.os_path_finalize_join(
                 g.app.loadDir,'..','test','scriptFile.py')
 
         # Write the file.
@@ -2144,7 +2146,7 @@ class baseCommands:
             d = g.scanDirectives(c,p=root)
             path = d.get("path")
             # g.trace('path',path,'fileName',fileName)
-            fileName = g.os_path_finalize_join(path,fileName)
+            fileName = c.os_path_finalize_join(path,fileName)
             lines    = c.goto_open(fileName)
 
         return lines
@@ -5701,8 +5703,10 @@ class baseCommands:
 
         import webbrowser
 
-        theFile = g.os_path_finalize_join(
-                g.app.loadDir,'..','doc','html','leo_TOC.html')
+        c = self
+
+        theFile = c.os_path_finalize_join(
+            g.app.loadDir,'..','doc','html','leo_TOC.html')
 
         url = 'file:%s' % theFile
 
@@ -5785,7 +5789,7 @@ class baseCommands:
 
         if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-        absbase = g.os_path_finalize_join(g.app.loadDir,base)
+        absbase = c.os_path_finalize_join(g.app.loadDir,base)
 
         if trace and verbose: g.trace('absbase',absbase)
 
@@ -5807,7 +5811,7 @@ class baseCommands:
 
         # Step 3: Compute the full, effective, absolute path.
         if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-        path = g.os_path_finalize_join(*paths)
+        path = c.os_path_finalize_join(*paths)
         if trace and verbose: g.trace('joined path:',path)
 
         # Step 4: Make the path if necessary.
@@ -5847,6 +5851,23 @@ class baseCommands:
 
         return None
     #@-node:ekr.20080828103146.12:c.scanAtRootDirectives
+    #@+node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+    def os_path_finalize (self,path,**keys):
+
+        c = self
+
+        keys['c'] = c
+
+        return g.os_path_finalize(path,**keys)
+
+    def os_path_finalize_join (self,*args,**keys):
+
+        c = self
+
+        keys['c'] = c
+
+        return g.os_path_finalize_join(*args,**keys)
+    #@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
     #@-node:ekr.20080901124540.1:c.Directive scanning
     #@+node:ekr.20031218072017.2945:Dragging (commands)
     #@+node:ekr.20031218072017.2353:c.dragAfter
