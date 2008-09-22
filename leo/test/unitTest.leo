@@ -2523,6 +2523,9 @@
 </v>
 </v>
 </v>
+<v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
+<v t="ekr.20041012084201"><vh>removeFile</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4411,7 +4414,10 @@ test_file  = g.os_path_join(test_path,"createdFile.txt")
 
 # Execute this command: python leo.py -script test\unittest\batchTest.py
 
-command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
+if 1:
+    command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
+else:
+    command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
 
 @others
 

@@ -5,18 +5,20 @@
 #@@language python
 #@@tabwidth -4
 
+trace = False
+
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","createdFile.txt")
 
-if 0:
-    g.pr("creating", path)
+if trace:
+    print("unittest/batchTest.py: creating: %s" % path)
 
-f = None
 try:
     try:
         f = open(path,"w")
-        f.write("This is a test")
+        f.write("This file was written by unittest/batchTest.py")
     except IOError:
         g.es("Can not create", path)
+        f = None
 finally:
     if f:
         f.close()
