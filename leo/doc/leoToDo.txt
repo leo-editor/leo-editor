@@ -4,46 +4,6 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First 6
 
-#@+node:ekr.20080921154026.9:Add getInput example to Leo's docs
-@color
-
-def getInput (event=None):
-
-   stateName = 'get-input'
-   k = c.k ; state = k.getState(stateName)
-
-   if state == 0:
-       k.setLabelBlue('Input: ',protect=True)
-       k.getArg(event,stateName,1,getInput)
-   else:
-       k.clearState()
-       g.es_print('input:',k.arg)
-
-getInput()
-
-@nocolor
-
-The general outline of this is as follows:
-
-1. Define a state *name* unique to your code.  In this case,
-'eval-expression'.  Outside of your code, that is, at the start of the
-code, the state will be 0.  Use k.getState(stateName) to get the
-present state.  Leo's key handling code takes care of the extremely
-complex details of handling key strokes in states.
-
-2. In state 0, put the label in the minibuffer with k.setLabel or
-k.setLabelBlue.  Set protect=True so the user can't delete the label
-by backspacing.
-
-3. In state 0, call k.getArg with the state-name, the value of the
-next state (1), and the function to call when the arg has been
-accumulated, namely the function that called getArg.
-
-4. In state 1, k.arg is the value returned by k.getArg.  Use that
-value, do what you want, then clear the state with k.clearState and
-set the label with one of the flavors of k.setLabel.
-#@nonl
-#@-node:ekr.20080921154026.9:Add getInput example to Leo's docs
 #@+node:ekr.20080921154026.10:Add better default fonts for Leo on Linux
 http://groups.google.com/group/leo-editor/browse_thread/thread/f1c7c5134b95c77e
 

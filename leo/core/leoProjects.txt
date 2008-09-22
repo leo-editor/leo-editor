@@ -6719,6 +6719,12 @@ leo --script c:\leo.repo\trunk\leo\test\unittest\batchTest.py
 #@-node:ekr.20080921154026.6:tests
 #@-node:ekr.20080918164844.15:Allow Leo to open .py files directly (or any other kind of file)
 #@-node:ekr.20080917153158.15:New features
+#@+node:ekr.20080922124033.2:Documentation
+#@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
+http://webpages.charter.net/edreamleo/scripting.html#getting-interactive-input-from-scripts
+#@nonl
+#@-node:ekr.20080921154026.9:Added getInput example to Leo's docs
+#@-node:ekr.20080922124033.2:Documentation
 #@-node:ekr.20080917153158.11:4.6
 #@-all
 #@nonl
