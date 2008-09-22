@@ -257,7 +257,8 @@ class bridgeController:
 
         if hasattr(sys,nonConstantAttr):
             g.app.leoID = getattr(sys,nonConstantAttr)
-            if verbose: g.es("leoID=",g.app.leoID,spaces=False,color='red')
+            if verbose and not g.app.silentMode:
+                g.es("leoID=",g.app.leoID,spaces=False,color='red')
         #@nonl
         #@-node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
         #@nl
@@ -274,7 +275,7 @@ class bridgeController:
                         f.close()
                         if s and len(s) > 0:
                             g.app.leoID = s.strip()
-                            if verbose:
+                            if verbose and not g.app.silentMode:
                                 g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
                             break
                         elif verbose:
