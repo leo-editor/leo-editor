@@ -2187,7 +2187,7 @@ def openWithFileName(fileName,old_c,
             relativeFileName=relativeFileName,
             gui=gui)
     else:
-        c,frame = g.openWrapperLeoFile(fileName,gui)
+        c,frame = g.openWrapperLeoFile(old_c,fileName,gui)
         if not c: return False,None
 
     assert frame.c == c and c.frame == frame
@@ -2257,26 +2257,69 @@ def openLeoOrZipFile (fileName):
         return None,False
 #@nonl
 #@-node:ekr.20070412082527:g.openLeoOrZipFile
-#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
-def openWrapperLeoFile (fileName,gui):
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile 
+def openWrapperLeoFile (old_c,fileName,gui):
 
     '''Open a wrapper .leo file for the given file,
     and import the file into .leo file.'''
 
-    if g.os_path_exists(fileName):
-        c,frame = g.app.newLeoCommanderAndFrame(
-            fileName=None,relativeFileName=None,gui=gui)
-
-        c.newHelper(c,frame,importFileName=fileName)
-        return c,frame
-
-    else:
+    # This code is similar to c.new, but different enough to be separate.
+    if not g.os_path_exists(fileName):
         if not g.unitTesting:
             g.es_print("can not open:",fileName,color="blue")
         return None,None
 
-#@nonl
-#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=old_c,c=c,new_c=c)
+
+    # Use the config params to set the size and location of the window.
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+
+    if 1: # Just read the file into the node.
+        try:
+            fileName = g.os_path_finalize(fileName)
+            f = open(fileName)
+            s = f.read()
+            f.close()
+        except IOError:
+            g.es_print("can not open: ",fileName,color='red')
+            return None,None
+        p = c.currentPosition()
+        p.setHeadString(fileName)
+        p.setBodyString(s)
+    else:  # Import the file into the new outline.
+        junk,ext = g.os_path_splitext(fileName)
+        p = c.currentPosition()
+        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
+        c.setCurrentPosition(p)
+        c.moveOutlineLeft()
+        p = c.currentPosition()
+        c.setCurrentPosition(p.back())
+        c.deleteOutline(op_name=None)
+        p = c.currentPosition()
+        p.expand()
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+
+    frame.c.setChanged(True) # Unlike new, we the outline should be marked changed.
+
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+
+    # c.redraw_now() # Only needed by menu commands.
+    return c,frame
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile 
 #@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
 #@+at 
 #@nonl
