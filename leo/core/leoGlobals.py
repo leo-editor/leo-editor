@@ -2257,7 +2257,7 @@ def openLeoOrZipFile (fileName):
         return None,False
 #@nonl
 #@-node:ekr.20070412082527:g.openLeoOrZipFile
-#@+node:ekr.20080921154026.1:g.openWrapperLeoFile 
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
     '''Open a wrapper .leo file for the given file,
@@ -2319,7 +2319,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     # c.redraw_now() # Only needed by menu commands.
     return c,frame
-#@-node:ekr.20080921154026.1:g.openWrapperLeoFile 
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
 #@+at 
 #@nonl

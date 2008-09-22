@@ -516,7 +516,6 @@ class atFile:
         p = root.copy()
         if partialFlag: after = p.nodeAfterTree()
         else: after = c.nullPosition()
-        ### while p and not p.equal(after): # Don't use iterator.
         while p and p != after:
             # g.trace(p.headString())
             if not p.headString().startswith('@'):
@@ -653,7 +652,6 @@ class atFile:
         at = self ; after = p.nodeAfterTree()
         p = p.copy() # Don't change p in the caller.
 
-        ### while p and not p.equal(after): # Don't use iterator.
         while p and p != after: # Don't use iterator.
             if p.isAtShadowFileNode():
                 fileName = p.atShadowFileNodeName()
@@ -2119,8 +2117,6 @@ class atFile:
 
         try:
             at.shortFileName = g.shortFileName(fileName)
-            ### fileName = g.os_path_join(at.default_directory,fileName)
-            ### at.targetFileName = g.os_path_normpath(fileName)
             at.targetFileName = g.os_path_finalize_join(at.default_directory,fileName)
             path = g.os_path_dirname(at.targetFileName)
             if not path or not g.os_path_exists(path):
@@ -2215,7 +2211,6 @@ class atFile:
             write_strips_blank_lines = write_strips_blank_lines)
 
         if nosentinels and not scriptWrite and not toString:
-            ### fileName = g.os_path_normpath(g.os_path_join(at.default_directory,at.targetFileName))
             fileName = g.os_path_finalize_join(at.default_directory,at.targetFileName)
             exists = g.os_path_exists(fileName)
             if not self.shouldWriteAtNosentNode(root,exists):
@@ -2440,7 +2435,7 @@ class atFile:
         if not fileName: return False
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fileName = g.os_path_finalize_join(at.default_directory,fileName) ### was join.
+        fileName = g.os_path_finalize_join(at.default_directory,fileName)
         exists = g.os_path_exists(fileName)
 
         if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
@@ -2571,7 +2566,7 @@ class atFile:
         self.adjustTargetLanguage(fn) # May set c.target_language.
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fn = g.os_path_finalize_join(at.default_directory,fn) ### was join
+        fn = g.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
 
         if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
@@ -2746,8 +2741,6 @@ class atFile:
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
                 at.targetFileName = p.anyAtFileNodeName()
                 if at.targetFileName:
-                    ### at.targetFileName = g.os_path_join(self.default_directory,at.targetFileName)
-                    ### at.targetFileName = g.os_path_normpath(at.targetFileName)
                     at.targetFileName = g.os_path_finalize_join(self.default_directory,at.targetFileName)
                     if not g.os_path_exists(at.targetFileName):
                         ok = at.openFileForWriting(p,at.targetFileName,toString)
@@ -4383,7 +4376,6 @@ class atFile:
             #@nl
             #@        << Test for @encoding >>
             #@+node:ekr.20041005105605.228:<< Test for @encoding >>
-            # if not old.has_key("encoding") and theDict.has_key("encoding"):
             if not 'encoding' in old and 'encoding' in theDict:
 
                 e = g.scanAtEncodingDirective(theDict)

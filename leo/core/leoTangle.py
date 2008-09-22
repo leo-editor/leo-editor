@@ -525,7 +525,7 @@ class baseTangleCommands:
             for section in self.root_list:
                 for part in section.parts:
                     if part.is_root:
-                        root_names.append(g.os_path_finalize_join(theDir,part.name)) ### was join
+                        root_names.append(g.os_path_finalize_join(theDir,part.name))
 
             if self.tangling and self.tangle_batch_flag:
                 try:
@@ -711,9 +711,6 @@ class baseTangleCommands:
         while p and p != next:
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            # is_ignore = theDict.has_key("ignore")
-            # is_root = theDict.has_key("root")
-            # is_unit = theDict.has_key("unit")
             is_ignore = 'ignore' in theDict
             is_root = 'root' in theDict
             is_unit = 'unit' in theDict
@@ -846,7 +843,7 @@ class baseTangleCommands:
         #@+node:ekr.20031218072017.3484:<< Read the file into file_buf  >> in untangleRoot
         f = None
         try:
-            path = g.os_path_finalize_join(self.tangle_directory,path) ### join
+            path = g.os_path_finalize_join(self.tangle_directory,path)
             f = open(path)
             if f:
                 file_buf = f.read()
@@ -903,9 +900,6 @@ class baseTangleCommands:
         while p and p != afterEntireTree and self.errors + g.app.scanErrors == 0:
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            # ignore = theDict.has_key("ignore")
-            # root = theDict.has_key("root")
-            # unit = theDict.has_key("unit")
             ignore = 'ignore' in theDict
             root = 'root' in theDict
             unit = 'unit' in theDict
@@ -1381,10 +1375,8 @@ class baseTangleCommands:
         for section in self.root_list:
 
             # g.trace(section.name)
-            file_name = g.os_path_finalize_join(self.tangle_directory,section.name) ### was join
-            ###file_name = g.os_path_normpath(file_name)
+            file_name = g.os_path_finalize_join(self.tangle_directory,section.name)
             mode = c.config.output_newline
-            # mode = g.choose(mode=="platform",'w','wb')
             textMode = mode == 'platform'
             if g.unitTesting:
                 self.output_file = g.fileLikeObject()

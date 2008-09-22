@@ -2144,7 +2144,7 @@ class baseCommands:
             d = g.scanDirectives(c,p=root)
             path = d.get("path")
             # g.trace('path',path,'fileName',fileName)
-            fileName = g.os_path_finalize_join(path,fileName) ### was join
+            fileName = g.os_path_finalize_join(path,fileName)
             lines    = c.goto_open(fileName)
 
         return lines
@@ -5807,7 +5807,6 @@ class baseCommands:
 
         # Step 3: Compute the full, effective, absolute path.
         if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-        ### path = g.os_path_normpath(g.os_path_join(*paths))
         path = g.os_path_finalize_join(*paths)
         if trace and verbose: g.trace('joined path:',path)
 
@@ -6836,10 +6835,7 @@ class baseCommands:
             root = c.rootPosition()
 
         while p:
-            # g.trace(p.headString())
-            ### if p.equal(root):
             if p == root:
-                # g.trace('True')
                 return True
             if p.hasParent():
                 p.moveToParent()
@@ -6971,7 +6967,6 @@ class baseCommands:
 
         if p:
             # Important: p.equal requires c._currentPosition to be non-None.
-            ### if c._currentPosition and p.equal(c._currentPosition):
             if c._currentPosition and p == c._currentPosition:
                 pass # We have already made a copy.
             else: # Must make a copy _now_
@@ -7039,7 +7034,6 @@ class baseCommands:
 
         if p:
             # Important: p.equal requires c._rootPosition to be non-None.
-            ### if c._rootPosition and p.equal(c._rootPosition):
             if c._rootPosition and p == c._rootPosition:
                 pass # We have already made a copy.
             else:

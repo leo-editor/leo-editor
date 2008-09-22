@@ -333,7 +333,7 @@ def makeObjectList(message):
     global lastObjectsDict
     objects = gc.get_objects()
 
-    newObjects = [o for o in objects if not lastObjectsDict.has_key(id(o))]
+    newObjects = [o for o in objects if not id(o) in lastObjectsDict]
 
     lastObjectsDict = {}
     for o in objects:
@@ -399,7 +399,7 @@ def printGc(message=None):
             if type(obj) == types.FunctionType:
                 key = repr(obj) # Don't create a pointer to the object!
                 funcDict[key]=None 
-                if not lastFunctionsDict.has_key(key):
+                if key not in lastFunctionsDict:
                     g.pr('\n',obj)
                     args, varargs, varkw,defaults  = inspect.getargspec(obj)
                     g.pr("args", args)
@@ -1224,7 +1224,7 @@ class importExportTestCase(unittest.TestCase):
         except AttributeError:
             fileName = g.os_path_normpath(fileName)
 
-        self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName) ### was join
+        self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
 
         if self.doImport:
             theDict = {name: [fileName]}

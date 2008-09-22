@@ -655,7 +655,7 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName) ### was join
+    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName)
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
@@ -1333,7 +1333,7 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName) ### was join
+    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName)
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
@@ -2438,7 +2438,6 @@ def scanAtPathDirectives(self,aList,force=False):
 
     # Step 3: Compute the full, effective, absolute path.
     if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    ### path = g.os_path_normpath(g.os_path_join(*paths))
     path = g.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
@@ -2547,7 +2546,6 @@ def scanAtPathDirectives(self,aList,force=False):
 
     # Step 3: Compute the full, effective, absolute path.
     if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    ### path = g.os_path_normpath(g.os_path_join(*paths))
     path = g.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
@@ -2994,7 +2992,7 @@ def goto_getFileLines (self,root,fileName):
         d = g.scanDirectives(c,p=root)
         path = d.get("path")
         # g.trace('path',path,'fileName',fileName)
-        fileName = g.os_path_finalize_join(path,fileName) ### was join
+        fileName = g.os_path_finalize_join(path,fileName)
         lines    = c.goto_open(fileName)
 
     return lines
@@ -3295,7 +3293,6 @@ def scanAtPathDirectives(self,aList,force=False):
 
     # Step 3: Compute the full, effective, absolute path.
     if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    ### path = g.os_path_normpath(g.os_path_join(*paths))
     path = g.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
@@ -3444,7 +3441,6 @@ else:
 #@-node:ekr.20041005105605.227:<< handle absolute path >>
 #@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
 #@+node:ekr.20041005105605.228:<< Test for @encoding >>
-# if not old.has_key("encoding") and theDict.has_key("encoding"):
 if not 'encoding' in old and 'encoding' in theDict:
 
     e = g.scanAtEncodingDirective(theDict)
@@ -4586,250 +4582,6 @@ def set_language(s,i,issue_errors_flag=False):
     return None, None, None, None,
 #@-node:ekr.20031218072017.1384:g.set_language
 #@-node:ekr.20031218072017.1380:g.Directive utils...
-#@+node:ekr.20080828103146.17:Path stuff
-#@+node:ekr.20080827175609.1:g.get_directives_dict_list (new)
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
-
-def get_directives_dict_list(p1):
-
-    """Scans p and all its ancestors for directives.
-
-    Returns a list of dicts containing pointers to the start of each directive"""
-
-    result = [] ; p1 = p1.copy()
-
-    for p in p1.self_and_parents_iter():
-        if p.hasParent(): root = None
-        else:             root = [p.copy()]
-        result.append(g.get_directives_dict(p,root=root))
-
-    return result
-#@-node:ekr.20080827175609.1:g.get_directives_dict_list (new)
-#@+node:ekr.20031218072017.1260:g.get_directives_dict
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
-
-def get_directives_dict(p,root=None):
-
-    """Scans root for @directives found in globalDirectiveList.
-
-    Returns a dict containing pointers to the start of each directive"""
-
-    global globalDirectiveList
-
-    if root: root_node = root[0]
-    d = {'_p':p.copy()}
-
-    # The headline has higher precedence because it is more visible.
-    for kind,s in (
-        ('body',p.v.t._headString),
-        ('head',p.v.t._bodyString),
-    ):
-        i = 0 ; n = len(s)
-        while i < n:
-            if s[i] == '@' and i+1 < n:
-                << set d for @ directives >>
-            elif kind == 'body' and root and g.match(s,i,"<<"):
-                << set d["root"] for noweb * chunks >>
-            i = g.skip_line(s,i)
-    return d
-#@+node:ekr.20031218072017.1261:<< set d for @ directives >>
-j = g.skip_c_id(s,i+1)
-word = s[i+1:j]
-
-if word in globalDirectiveList:
-    if d.get(word):
-        # Ignore second value.
-        pass
-        # g.es("warning: conflicting values for",word,color="blue")
-    else:
-        k = g.skip_line(s,j)
-        d[word] = s[j:k].strip()
-#@nonl
-#@-node:ekr.20031218072017.1261:<< set d for @ directives >>
-#@+node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
-@ The following looks for chunk definitions of the form < < * > > =. If found, we take this to be equivalent to @root filename if the headline has the form @root filename.
-@c
-
-i = g.skip_ws(s,i+2)
-
-if i < n and s[i] == '*' :
-    i = g.skip_ws(s,i+1) # Skip the '*'
-    if g.match(s,i,">>="):
-        # < < * > > = implies that @root should appear in the headline.
-        i += 3
-        if root_node:
-            d["root"]=0 # value not immportant
-        else:
-            g.es('',g.angleBrackets("*") + "= requires @root in the headline")
-#@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
-#@-node:ekr.20031218072017.1260:g.get_directives_dict
-#@+node:ekr.20071109165315:g.computeRelativePath
-def computeRelativePath (path):
-
-    if len(path) > 2 and (
-        (path[0]=='<' and path[-1] == '>') or
-        (path[0]=='"' and path[-1] == '"') or
-        (path[0]=="'" and path[-1] == "'")
-    ):
-        path = path[1:-1].strip()
-
-    # We want a *relative* path, not an absolute path.
-    # path = g.os_path_join(g.app.loadDir,path)
-
-    return path
-#@-node:ekr.20071109165315:g.computeRelativePath
-#@+node:ekr.20031218072017.1264:g.getBaseDirectory (unchanged)
-# Handles the conventions applying to the "relative_path_base_directory" configuration option.
-
-def getBaseDirectory(c):
-
-    base = app.config.relative_path_base_directory
-
-    if base and base == "!":
-        base = app.loadDir
-    elif base and base == ".":
-        base = c.openDirectory
-
-    # g.trace(base)
-    if base and len(base) > 0 and g.os_path_isabs(base):
-        # Set c.chdir_to_relative_path as needed.
-        if not hasattr(c,'chdir_to_relative_path'):
-            c.chdir_to_relative_path = c.config.getBool('chdir_to_relative_path')
-        # Call os.chdir if requested.
-        if c.chdir_to_relative_path:
-            os.chdir(base)
-        return base # base need not exist yet.
-    else:
-        return "" # No relative base given.
-#@-node:ekr.20031218072017.1264:g.getBaseDirectory (unchanged)
-#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
-
-def scanAtPathDirectives(self,aList,force=False):
-
-    '''Scan aList for @path directives.'''
-
-    c = self ; trace = False ; verbose = False
-
-    # Step 1: Compute the starting path.
-    # The correct fallback directory is the absolute path to the base.
-    if c.openDirectory:  # Bug fix: 2008/9/18
-        base = c.openDirectory
-    else:
-        base = g.app.config.relative_path_base_directory
-        if base and base == "!":    base = g.app.loadDir
-        elif base and base == ".":  base = c.openDirectory
-
-    if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
-
-    absbase = g.os_path_finalize_join(g.app.loadDir,base)
-
-    if trace and verbose: g.trace('absbase',absbase)
-
-    # Step 2: look for @path directives.
-    paths = [] ; fileName = None
-    for d in aList:
-        # Look for @path directives.
-        path = d.get('path')
-        if path:
-            # Convert "path" or <path> to path.
-            path = g.computeRelativePath(path)
-            if path: paths.append(path)
-
-    # Add absbase and reverse the list.
-    paths.append(absbase)
-    paths.reverse()
-
-    if trace and verbose: g.trace('paths',paths)
-
-    # Step 3: Compute the full, effective, absolute path.
-    if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-    ### path = g.os_path_normpath(g.os_path_join(*paths))
-    path = g.os_path_finalize_join(*paths)
-    if trace and verbose: g.trace('joined path:',path)
-
-    # Step 4: Make the path if necessary.
-    if path and not g.os_path_exists(path):
-        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
-        if not ok:
-            if force:
-                g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
-            path = absbase # Bug fix: 2008/9/18
-
-    if trace: g.trace('returns',path)
-
-    return path
-#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
-#@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
-# We set the current director to a path so future writes will go to that directory.
-
-if not self.default_directory and not 'path' in old and 'path' in theDict:
-
-    path = theDict["path"]
-    path = g.computeRelativePath(path)
-    if path and len(path) > 0:
-        base = g.getBaseDirectory(c) # returns "" on error.
-        path = g.os_path_join(base,path)
-        if g.os_path_isabs(path):
-            << handle absolute path >>
-        else:
-            self.error("ignoring bad @path: %s" % path)
-    else:
-        self.error("ignoring empty @path")
-#@+node:ekr.20041005105605.227:<< handle absolute path >>
-# path is an absolute path.
-
-if g.os_path_exists(path):
-    self.default_directory = path
-else:
-    self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
-    if not self.default_directory:
-        self.error("invalid @path: %s" % path)
-#@-node:ekr.20041005105605.227:<< handle absolute path >>
-#@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
-#@+node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-if require_path_flag and 'path' not in old and 'path' in theDict:
-
-    path = theDict["path"]
-    theDir = relative_path = g.computeRelativePath(path)
-
-    if len(theDir) > 0:
-        base = g.getBaseDirectory(c=c) # May return "".
-        if theDir and len(theDir) > 0:
-            theDir = g.os_path_join(base,theDir)
-            if g.os_path_isabs(theDir):
-                << handle absolute @path >>
-            elif issue_error_flag and not self.path_warning_given:
-                self.path_warning_given = True # supress future warnings
-                self.error("ignoring relative path in @path:" + theDir)
-    elif issue_error_flag and not self.path_warning_given:
-        self.path_warning_given = True # supress future warnings
-        self.error("ignoring empty @path")
-#@+node:ekr.20031218072017.1368:<< handle absolute @path >>
-if g.os_path_exists(theDir):
-    self.tangle_directory = theDir
-else: # 11/19/02
-    self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-    if not self.tangle_directory:
-        if issue_error_flag and not self.path_warning_given:
-            self.path_warning_given = True # supress future warnings
-            self.error("@path directory does not exist: " + theDir)
-            if base and len(base) > 0:
-                g.es("relative_path_base_directory:",base)
-            if relative_path and len(relative_path) > 0:
-                g.es("relative path in @path directive:",relative_path)
-#@-node:ekr.20031218072017.1368:<< handle absolute @path >>
-#@-node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-#@+node:ekr.20031218072017.1397:<< Test for @path >>
-if not path and not old.has_key("path") and theDict.has_key("path"):
-
-    path = theDict["path"]
-    path = g.computeRelativePath(path)
-
-    if path and len(path) > 0:
-        base = g.getBaseDirectory(c) # returns "" on error.
-        path = g.os_path_join(base,path)
-#@-node:ekr.20031218072017.1397:<< Test for @path >>
-#@-node:ekr.20080828103146.17:Path stuff
 #@+node:ekr.20080831084419.5:New top-level functions...
 #@+node:ekr.20080828103146.8:leo.color.NEWscanColorDirectives (test)
 def NEWscanColorDirectives(self,p):
@@ -5166,7 +4918,7 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName) ### was join
+    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName)
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
@@ -5357,7 +5109,7 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName) ### was join
+    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName)
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
@@ -6479,7 +6231,7 @@ path = g.computeRelativePath (path)
 
 if path:
     base = g.getBaseDirectory(c) # returns "" on error.
-    path = g.os_path_finalize_join(base,path) ### was join
+    path = g.os_path_finalize_join(base,path)
 
     if g.os_path_isabs(path):
         << handle absolute path >>
@@ -6523,7 +6275,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     # New in Leo 4.4.7: honor @path directives.
 
     self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = g.os_path_finalize_join(self.default_directory,fileName) ### was join
+    fileName = g.os_path_finalize_join(self.default_directory,fileName)
     junk,self.fileName = g.os_path_split(fileName)
     self.methodName,self.fileType = g.os_path_splitext(self.fileName)
     self.setEncoding(p=parent,atAuto=atAuto)
@@ -6894,7 +6646,7 @@ def openWithFileName(fileName,old_c,
 
     return True, frame
 #@-node:ekr.20031218072017.2052:g.openWithFileName
-#@+node:ekr.20080921154026.1:g.openWrapperLeoFile 
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
     '''Open a wrapper .leo file for the given file,
@@ -6956,7 +6708,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     # c.redraw_now() # Only needed by menu commands.
     return c,frame
-#@-node:ekr.20080921154026.1:g.openWrapperLeoFile 
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@-node:ekr.20080921154026.5:Changed
 #@+node:ekr.20080921154026.6:tests
 leo c:\leo.repo\trunk\leo\modes\python.py

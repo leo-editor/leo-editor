@@ -354,7 +354,7 @@ class bridgeController:
 
         import os
 
-        fileName = g.os_path_finalize_join(os.getcwd(),fileName) ### was join.
+        fileName = g.os_path_finalize_join(os.getcwd(),fileName)
         head,ext = g.os_path_splitext(fileName)
         if not ext: fileName = fileName + ".leo"
 

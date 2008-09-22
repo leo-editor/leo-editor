@@ -212,6 +212,11 @@ the default for this option would be False.
 #@-node:ekr.20080917154206.3:Finish at-path branch items!
 #@+node:ekr.20080921154026.7:Do {{exp}}
 #@-node:ekr.20080921154026.7:Do {{exp}}
+#@+node:ekr.20080922115725.1:Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+#@nonl
+#@-node:ekr.20080922115725.1:Finish @shadow
 #@-node:ekr.20080915112342.1:First 6
 #@+node:ekr.20080918164844.6:Recent 7
 #@+node:ekr.20080918164844.11:Play with ishadow extension to ipython
@@ -993,7 +998,7 @@ def setUp(self):
     except AttributeError:
         fileName = g.os_path_normpath(fileName)
 
-    self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName) ### was join
+    self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
 
     if self.doImport:
         theDict = {name: [fileName]}
@@ -4099,7 +4104,7 @@ def completeAllBindingsForWidget (self,w):
 
     k = self ; d = k.bindingsDict
 
-    # g.trace('w',w,d.has_key('Alt+Key-4'))
+    # g.trace('w',w,'Alt+Key-4' in d)
 
     for stroke in d:
         k.makeMasterGuiBinding(stroke,w=w)
@@ -5531,7 +5536,7 @@ def completeAllBindingsForWidget (self,w):
 
     k = self ; d = k.bindingsDict
 
-    # g.trace('w',w,d.has_key('Alt+Key-4'))
+    # g.trace('w',w,'Alt+Key-4' in d)
 
     for stroke in d:
         k.makeMasterGuiBinding(stroke,w=w)
@@ -8372,7 +8377,7 @@ for p in c.allNodes_iter():
     vList.append(p.v)
     if p.v.t:
         key = id(p.v.t)
-        if not tDict.has_key(key):
+        if key not in tDict:
             tDict[key] = p.v.t
 
 for key in tDict:
@@ -10397,9 +10402,11 @@ def add_command (self,menu,**keys):
 
     self.names_and_commands[ keys[ 'label' ] ] = keys[ 'command' ]
 
-    action = self.MenuRunnable( keys[ 'label' ], keys[ 'command' ], self.c, self.executor )
+    action = self.MenuRunnable(
+        keys[ 'label' ],
+        keys[ 'command' ], self.c, self.executor )
     jmenu = swing.JMenuItem( action )
-    if keys.has_key( 'accelerator' ) and keys[ 'accelerator' ]:
+    if keys.get('accelerator'):
         accel = keys[ 'accelerator' ]
         acc_list = accel.split( '+' )
         changeTo = { 'Alt': 'alt', 'Shift':'shift', #translation table
@@ -13202,7 +13209,7 @@ def drawTree(self,p,x,y,h,level,hoistFlag=False):
 def getIconImage (self, name):
 
     # Return the image from the cache if possible.
-    if self.iconimages.has_key(name):
+    if name in self.iconimages:
         return self.iconimages[name]
 
     # g.trace(name)

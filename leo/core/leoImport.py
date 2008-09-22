@@ -462,10 +462,10 @@ class leoImportCommands:
             if not ext:
                 ext = ".txt"
             if ext[0] == '.':
-                newFileName = g.os_path_finalize_join(path,fileName+ext) ### was join
+                newFileName = g.os_path_finalize_join(path,fileName+ext)
             else:
                 head,ext2 = g.os_path_splitext(fileName) 
-                newFileName = g.os_path_finalize_join(path,head+ext+ext2) ### was join
+                newFileName = g.os_path_finalize_join(path,head+ext+ext2)
             if toString:
                 return s
             else:
@@ -724,7 +724,7 @@ class leoImportCommands:
 
                 if path:
                     base = g.getBaseDirectory(c) # returns "" on error.
-                    path = g.os_path_finalize_join(base,path) ### was join
+                    path = g.os_path_finalize_join(base,path)
 
                     if g.os_path_isabs(path):
                         #@        << handle absolute path >>
@@ -800,7 +800,7 @@ class leoImportCommands:
         # New in Leo 4.4.7: honor @path directives.
 
         self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-        fileName = g.os_path_finalize_join(self.default_directory,fileName) ### was join
+        fileName = g.os_path_finalize_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         self.setEncoding(p=parent,atAuto=atAuto)

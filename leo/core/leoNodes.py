@@ -1903,7 +1903,6 @@ class basePosition (object):
             elif self.p:
                 self.p.moveToThreadNext()
 
-            ### if self.p and not self.p.equal(self.after):
             if self.p and self.p != self.after:
                 if self.copy: return self.p.copy()
                 else:         return self.p
@@ -1982,7 +1981,6 @@ class basePosition (object):
                 # First, try to find an unmarked child
                 if p.v.t.children:
                     p.moveToFirstChild()
-                    ### if p.equal(self.after):
                     if p == self.after:
                         raise StopIteration
                     while p and self.d.get(u(p)):
@@ -1990,7 +1988,6 @@ class basePosition (object):
                             p.moveToNext()
                         else:
                             p.moveToParent()
-                        ### if p.equal(self.after):
                         if p == self.after:
                             raise StopIteration
 
@@ -1999,7 +1996,6 @@ class basePosition (object):
                 if p and self.d.get(u(p)):
                     while p.hasNext():
                         p.moveToNext()
-                        ### if p.equal(self.after):
                         if p == self.after:
                             raise StopIteration
                         if not self.d.get(u(p)):
@@ -2015,7 +2011,6 @@ class basePosition (object):
                     while p:
                         while p.hasNext():
                             p.moveToNext()
-                            ### if p.equal(self.after):
                             if p == self.after:
                                 raise StopIteration
                             if not self.d.get(u(p)):
@@ -2023,7 +2018,6 @@ class basePosition (object):
                         # if we run out of siblings, go to parent
                         if self.d.get(u(p)):
                             p.moveToParent()
-                            ### if p.equal(self.after):
                             if p == self.after:
                                 raise StopIteration
                         else:

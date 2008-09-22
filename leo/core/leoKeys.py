@@ -2200,7 +2200,7 @@ class keyHandlerClass:
 
         k = self ; d = k.bindingsDict
 
-        # g.trace('w',w,d.has_key('Alt+Key-4'))
+        # g.trace('w',w,'Alt+Key-4' in d)
 
         for stroke in d:
             k.makeMasterGuiBinding(stroke,w=w)

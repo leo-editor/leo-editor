@@ -613,7 +613,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                     # w.tag_delete('found')
                     # w.tag_add('found','%s wordstart' % i1,'%s wordend' % i1)
                     # w.tag_config('found',background='yellow')
-                    # if self.abbrevs.has_key(word):
+                    # if word in self.abbrevs:
                         # k.setLabel('Replace %s with %s? y/n' % (word,self.abbrevs[word]))
                         # yield None
                         # if k.regXKey == 'y':
