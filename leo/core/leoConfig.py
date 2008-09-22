@@ -10,6 +10,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 
 import sys
+import zipfile
 #@-node:ekr.20041227063801:<< imports >>
 #@nl
 
@@ -444,7 +445,7 @@ class parserBaseClass:
         if self.localFlag:
             self.set(p,kind='menus',name='menus',val=aList)
         else:
-            if not g.app.unitTesting:
+            if not g.app.unitTesting and not g.app.silentMode:
                 g.es_print('Using menus from',c.shortFileName(),color='blue')
             g.app.config.menusList = aList
             g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
@@ -1883,7 +1884,9 @@ class configClass:
             if path:
                 path = g.os_path_realpath(g.os_path_finalize(path))
                 # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
-            if path and path.lower() not in seen:
+            isZipped = path and zipfile.is_zipfile(path)
+            isLeo = isZipped or (path and path.endswith('.leo'))
+            if isLeo and path and path.lower() not in seen:
                 seen.append(path.lower())
                 if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                     s = 'reading settings in %s' % path
