@@ -13847,12 +13847,14 @@ child2 = child.next()
 result = str(child2.bodyString())
 at.write(child,nosentinels=False,thinFile=False,scriptWrite=False,toString=True)
 s = str(at.stringOutput)
-assert s == result
-# if s != result:
-    # g.pr('-' * 30)
-    # g.pr(repr(s))
-    # g.pr(repr(result))
-    # assert False</t>
+
+if s != result:
+    print('-' * 30)
+    print(s)
+    print('-' * 30)
+    print(result)
+    
+assert s == result</t>
 <t tx="ekr.20060602195313.2">@language c
 #ifdef COMMENT
 @comment /* */ 

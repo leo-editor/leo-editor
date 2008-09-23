@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -140,17 +140,17 @@
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
-<v t="ekr.20070929122956" a="E"><vh>Data trees</vh>
+<v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
 <v t="ekr.20070929072043"><vh>@networkx</vh>
 <v t="ekr.20070929072506.1"><vh>@nodes</vh></v>
 <v t="ekr.20070929072506"><vh>@edges</vh></v>
 </v>
-<v t="ekr.20070929070257" a="E"><vh>@graph</vh>
-<v t="ekr.20070929070257.1" a="E"><vh>@node child1</vh>
+<v t="ekr.20070929070257"><vh>@graph</vh>
+<v t="ekr.20070929070257.1"><vh>@node child1</vh>
 <v t="ekr.20070929070632"><vh>@link ('ekr', '20070929070257', 2): @node child2</vh></v>
 </v>
-<v t="ekr.20070929070257.2" a="E"><vh>@node child2</vh>
+<v t="ekr.20070929070257.2"><vh>@node child2</vh>
 <v t="ekr.20070929070632.1"><vh>@link ('ekr', '20070929070257', 1): @node child1</vh></v>
 </v>
 </v>
@@ -431,11 +431,10 @@
 <v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
 <v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
-<v t="ekr.20080923073240.2" a="E"><vh>@path {{c.config.getString('test')}}</vh>
-<v t="ekr.20080923073240.1"><vh>@@shadow eval-thin-test.txt</vh></v>
+<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
+<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20080923112536.1"><vh>@language c</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -4682,6 +4681,5 @@ print g.os_path_finalize(path,c=c)</t>
 = 
 c:\leo.repo\trunk\leo\test\eval-test.txt</t>
 <t tx="ekr.20080923073240.2"></t>
-<t tx="ekr.20080923112536.1"></t>
 </tnodes>
 </leo_file>
