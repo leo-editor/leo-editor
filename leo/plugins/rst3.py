@@ -47,7 +47,7 @@ bwm_file = None
 if 0:
     bwm_file = open("bwm_file", "w")
 
-__version__ = '1.22'
+__version__ = '1.23'
 
 #@<< imports >>
 #@+node:ekr.20050805162550.2:<< imports >>
@@ -106,6 +106,7 @@ except ImportError:
 # 1.20 EKR: Registers the write-restructured-text command.
 # 1.21 EKR: Added rst3-publish-argv-for-missing-stylesheets setting.
 # 1.22 EKR: Fixed bug that caused the plugin not to find default.css.
+# 1.23 EKR: Use g.makeAllNonExistentDirectories instead of os.mkdir.
 #@-at
 #@nonl
 #@-node:ekr.20050805162550.3:<< change log >>
@@ -1138,7 +1139,7 @@ class rstClass:
         if not toString:
             # Comput the output file name *after* calling writeTree.
             self.outputFileName = self.computeOutputFileName(self.outputFileName)
-            self.outputFile = file(self.outputFileName,'w')
+            self.outputFile = open(self.outputFileName,'w')
             self.outputFile.write(self.stringOutput)
             self.outputFile.close()
     #@nonl
@@ -1202,6 +1203,7 @@ class rstClass:
     #@+node:ekr.20050805162550.21:writeSpecialTree
     def writeSpecialTree (self,p,toString,justOneFile):
 
+        c = self.c
         isHtml = self.ext in ('.html','.htm')
         if isHtml and not SilverCity:
             if not self.silverCityWarningGiven:
@@ -1219,13 +1221,19 @@ class rstClass:
             self.outputFileName = self.computeOutputFileName(self.outputFileName)
 
             # Create the directory if it doesn't exist.
-            dir, junk = g.os_path_split(self.outputFileName)
-            if not os.access(dir,os.F_OK):
-                os.mkdir(dir)
+            theDir, junk = g.os_path_split(self.outputFileName)
+            if not g.os_path_exists(theDir):
+                ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+                if not ok:
+                    g.es_print('did not create:',theDir,color='red')
+                    return
+
+            # if not os.access(theDir,os.F_OK):
+                # os.mkdir(theDir)
 
             if self.getOption('write_intermediate_file'):
                 name = self.outputFileName + '.txt'
-                f = file(name,'w')
+                f = open(name,'w')
                 f.write(self.source)
                 f.close()
                 self.report(name)
@@ -1257,13 +1265,12 @@ class rstClass:
                 self.stringOutput = output
             else:
                 # Write the file to the directory containing the .leo file.
-                f = file(self.outputFileName,'w')
+                f = open(self.outputFileName,'w')
                 f.write(output)
                 f.close()
                 self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
 
         return ok
-    #@nonl
     #@-node:ekr.20050805162550.21:writeSpecialTree
     #@+node:ekr.20050809082854.1:writeToDocutils (sets argv)
     def writeToDocutils (self,s):
@@ -1921,7 +1928,7 @@ class rstClass:
     #@+node:ekr.20050805162550.36:set_initial_http_attributes
     def set_initial_http_attributes (self,filename):
 
-        f = file(filename)
+        f = open(filename)
         parser = htmlParserClass(self)
 
         for line in f.readlines():

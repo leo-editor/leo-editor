@@ -2020,7 +2020,7 @@ def makePathRelativeTo (fullPath,basePath):
 #@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 # This is a generalization of os.makedir.
 
-def makeAllNonExistentDirectories (theDir,c=None,force=False):
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
 
     """Attempt to make all non-existent directories"""
 
@@ -2055,10 +2055,10 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False):
         if not g.os_path_exists(path):
             try:
                 os.mkdir(path)
-                g.es_print("created directory:",path,color='red')
+                if verbose: g.es_print("created directory:",path,color='red')
             except Exception:
-                g.trace(g.callers())
-                g.es_print("exception creating directory:",path,color='red')
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
                 g.es_exception()
                 return None
     return dir1 # All have been created.
