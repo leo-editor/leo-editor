@@ -2055,7 +2055,8 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
         if not g.os_path_exists(path):
             try:
                 os.mkdir(path)
-                if verbose: g.es_print("created directory:",path,color='red')
+                if verbose and not g.app.unitTesting:
+                    g.es_print("created directory:",path,color='red')
             except Exception:
                 # g.trace(g.callers())
                 if verbose: g.es_print("exception creating directory:",path,color='red')

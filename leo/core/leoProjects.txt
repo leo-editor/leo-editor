@@ -2593,7 +2593,8 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
         if not g.os_path_exists(path):
             try:
                 os.mkdir(path)
-                if verbose: g.es_print("created directory:",path,color='red')
+                if verbose and not g.app.unitTesting:
+                    g.es_print("created directory:",path,color='red')
             except Exception:
                 # g.trace(g.callers())
                 if verbose: g.es_print("exception creating directory:",path,color='red')
@@ -3098,6 +3099,136 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 # It's time.
 #@nonl
 #@-node:ekr.20080923143214.1:Removed pychecker stuff
+#@+node:ekr.20080921154026.3:Fixed new rst3 crash
+# Calls g.makeAllNonExistentDirectories instead of os.mkdir.
+#@nonl
+#@+node:ekr.20080923163444.2:Report
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/414137b93c7e4b90
+
+I receive the following traceback, when I try to create an HTML-
+File from a @rst-Node.
+
+<Traceback>
+
+Leo Log Window...
+Leo 4.5.1 final, build  1.244 , September 14, 2008
+python 2.5.2, Tk 8.4.12, Pmw 1.3
+Windows 5, 1, 2600, 2, Service Pack 3
+
+Can not load c:\aspell\bin\aspell-15.dll
+leoID=vr20080824 (in C:\Dokumente und Einstellungen\VR\.leo)
+load dir: C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
+global config dir: C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo
+\config
+home dir: C:\Dokumente und Einstellungen\VR
+reading settings in C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo
+\config\leoSettings.leo
+reading settings in C:\Dokumente und Einstellungen\VR\.leo
+\myLeoSettings.leo
+reading settings in C:\Dokumente und Einstellungen\VR\Eigene Dateien
+\Tools\Leo\Leo-20080921.leo
+rewriting empty .leo file: C:\Dokumente und Einstellungen\VR\Eigene
+Dateien\Tools\Leo\Leo-20080921.leo
+reading: C:\Dokumente und Einstellungen\VR\Eigene Dateien\Tools\Leo
+\Leo-20080921.leo
+saved: Leo-20080921.leo
+SilverCity not present so no syntax highlighting
+exception executing command
+Traceback (most recent call last):
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
+\leoCommands.py", line 309, in doCommand
+    val = command(event)
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
+\leoCommands.py", line 482, in minibufferCallback
+    retval = function(keywords)
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
+\rst3.py", line 675, in rst3PluginCallback
+    self.processTopTree(c.currentPosition())
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
+\rst3.py", line 1152, in processTopTree
+
+self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
+\rst3.py", line 1184, in processTree
+    ok =
+self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
+\rst3.py", line 1222, in writeSpecialTree
+    os.mkdir(dir)
+WindowsError: [Error 3] Das System kann den angegebenen Pfad nicht
+finden: u'C:\\Python25\\Lib\\site-packages\\Leo-4-5-1-2-final\\2008\
+\09'
+
+</Traceback>
+
+The related outline can be reduced to:
+
+Worklog-->2008-->09-->@rst WLE-2008-09-21.html
+
+The content of the right-most node is:
+
+@ @rst-options
+default_path=./2008/09
+@c
+======================
+Worklog for 2008-09-21
+======================
+
+Kind regards,
+
+Viktor 
+#@nonl
+#@-node:ekr.20080923163444.2:Report
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
+
+    if not force:
+        if c:
+            if not c.config.create_nonexistent_directories:
+                return None
+        elif not app.config.create_nonexistent_directories:
+            return None
+
+    if c:
+        theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                if verbose and not g.app.unitTesting:
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@-node:ekr.20080921154026.3:Fixed new rst3 crash
 #@-node:ekr.20080917153158.12:Fixed bugs
 #@+node:ekr.20080917153158.15:New features
 #@+node:ekr.20080917153158.16:Added c.config.getSettingSource
@@ -5758,7 +5889,8 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
         if not g.os_path_exists(path):
             try:
                 os.mkdir(path)
-                if verbose: g.es_print("created directory:",path,color='red')
+                if verbose and not g.app.unitTesting:
+                    g.es_print("created directory:",path,color='red')
             except Exception:
                 # g.trace(g.callers())
                 if verbose: g.es_print("exception creating directory:",path,color='red')

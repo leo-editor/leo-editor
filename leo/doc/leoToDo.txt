@@ -2,7 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
-#@+node:ekr.20080915112342.1:First 3
+#@+node:ekr.20080915112342.1:First 2
 
 #@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 @nocolor
@@ -31,7 +31,7 @@ the default for this option would be False.
 # Compute delims using the private shadow file, not the file extension!
 #@nonl
 #@-node:ekr.20080922115725.1:Finish @shadow
-#@-node:ekr.20080915112342.1:First 3
+#@-node:ekr.20080915112342.1:First 2
 #@+node:ekr.20080918164844.6:Recent 7
 #@+node:ekr.20080918164844.11:Play with ishadow extension to ipython
 @nocolor
@@ -6619,8 +6619,6 @@ Edward
 
 P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
 #@-node:ekr.20080628095358.1:Make each Leo command a class
-#@+node:ekr.20080630093024.2:Remove pychecker stuff (maybe)
-#@-node:ekr.20080630093024.2:Remove pychecker stuff (maybe)
 #@-node:ekr.20071211091355:Other/Minor
 #@+node:ekr.20060306194040:Leo Video
 @nocolor
