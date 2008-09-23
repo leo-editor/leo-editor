@@ -2115,8 +2115,6 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False):
         elif not app.config.create_nonexistent_directories:
             return None
 
-    g.trace(theDir)
-
     if c:
         theDir = g.os_path_expandExpression(theDir,c=c)
 
