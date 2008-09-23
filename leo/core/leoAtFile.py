@@ -4281,34 +4281,19 @@ class atFile:
 
         self._forcedGnxPositionList.append(p.v)
     #@-node:ekr.20051219122720:atFile.forceGnxOnPosition
-    #@+node:ekr.20041005105605.222:atFile.scanAllDirectives (old)
-    #@+at 
-    #@nonl
-    # Once a directive is seen, no other related directives in nodes further 
-    # up the tree have any effect.  For example, if an @color directive is 
-    # seen in node p, no @color or @nocolor directives are examined in any 
-    # ancestor of p.
-    # 
-    # This code is similar to Commands.scanAllDirectives, but it has been 
-    # modified for use by the atFile class.
-    #@-at
-    #@@c
-
+    #@+node:ekr.20080923070954.4:atFile.scanAllDirectives
     def scanAllDirectives(self,p,
         scripting=False,importing=False,
         reading=False,forcePythonSentinels=False,
     ):
 
-        """Scan position p and p's ancestors looking for directives,
-        setting corresponding atFile ivars.
-        """
+        '''Scan p and p's ancestors looking for directives,
+        setting corresponding atFile ivars.'''
 
-        # __pychecker__ = '--maxlines=400'
-        # g.stat()
+        at = self ; c = self.c
 
-        c = self.c
-        #@    << Set ivars >>
-        #@+node:ekr.20041005105605.223:<< Set ivars >>
+        #@    << set ivars >>
+        #@+node:ekr.20080923070954.14:<< Set ivars >>
         self.page_width = self.c.page_width
         self.tab_width  = self.c.tab_width
 
@@ -4317,193 +4302,98 @@ class atFile:
         # g.trace(c.target_language)
 
         if c.target_language:
-            c.target_language = c.target_language.lower() # 6/20/05
-        delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
-        self.language = c.target_language
+            c.target_language = c.target_language.lower()
 
-        self.encoding = c.config.default_derived_file_encoding
-        self.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
-        #@-node:ekr.20041005105605.223:<< Set ivars >>
+        delims = g.set_delims_from_language(c.target_language)
+        at.language = c.target_language
+
+        at.encoding = c.config.default_derived_file_encoding
+        at.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+        #@-node:ekr.20080923070954.14:<< Set ivars >>
         #@nl
-        #@    << Set path from @file node >>
-        #@+node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
-        # An absolute path in an @file node over-rides everything else.
-        # A relative path gets appended to the relative path by the open logic.
 
-        name = p.anyAtFileNodeName() # 4/28/04
+        # Set defaults
+        # if c.target_language:
+            # c.target_language = c.target_language.lower()
+        # delims = g.set_delims_from_language(c.target_language)
 
-        theDir = g.choose(name,g.os_path_dirname(name),None)
+        lang_dict = {'language':at.language,'delims':delims,}
 
-        if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
-            if g.os_path_exists(theDir):
-                self.default_directory = theDir
-            else: # 9/25/02
-                self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-                if not self.default_directory:
-                    self.error("Directory \"%s\" does not exist" % theDir)
-        #@-node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
-        #@nl
-        old = {}
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            #@        << Test for @path >>
-            #@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
-            # We set the current director to a path so future writes will go to that directory.
+        table = (
+            ('encoding',    at.encoding,    g.scanAtEncodingDirectives),
+            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lineending',  None,           g.scanAtLineendingDirectives),
+            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+            ('path',        None,           c.scanAtPathDirectives),
+            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        )
 
-            if not self.default_directory and not 'path' in old and 'path' in theDict:
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,default,func in table:
+            val = func(aList)
+            d[key] = g.choose(val is None,default,val)
 
-                path = theDict["path"]
-                path = g.computeRelativePath(path)
-                if path:
-                    base = g.getBaseDirectory(c) # returns "" on error.
-                    path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
-                    if g.os_path_isabs(path):
-                        #@            << handle absolute path >>
-                        #@+node:ekr.20041005105605.227:<< handle absolute path >>
-                        # path is an absolute path.
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        delims          = lang_dict.get('delims')
+        lang_dict       = d.get('lang-dict')
+        lineending      = d.get('lineending')
+        if lineending:
+            at.explicitLineEnding = True
+            at.output_newline = lineending
+        else:
+            at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
 
-                        if g.os_path_exists(path):
-                            self.default_directory = path
-                        else:
-                            self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
-                            if not self.default_directory:
-                                self.error("invalid @path: %s" % path)
-                        #@-node:ekr.20041005105605.227:<< handle absolute path >>
-                        #@nl
-                    else:
-                        self.error("ignoring bad @path: %s" % path)
-                else:
-                    self.error("ignoring empty @path")
-            #@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
-            #@nl
-            #@        << Test for @encoding >>
-            #@+node:ekr.20041005105605.228:<< Test for @encoding >>
-            if not 'encoding' in old and 'encoding' in theDict:
+        at.encoding             = d.get('encoding')
+        at.language             = lang_dict.get('language')
+        at.page_width           = d.get('pagewidth')
+        at.default_directory    = d.get('path')
+        at.tab_width            = d.get('tabwidth')
 
-                e = g.scanAtEncodingDirective(theDict)
-                if e:
-                    self.encoding = e
-            #@-node:ekr.20041005105605.228:<< Test for @encoding >>
-            #@nl
-            #@        << Test for @comment and @language >>
-            #@+node:ekr.20041005105605.229:<< Test for @comment and @language >>
-            # 10/17/02: @language and @comment may coexist in @file trees.
-            # For this to be effective the @comment directive should follow the @language directive.
-
-            # 1/23/05: Any previous @language or @comment prevents processing up the tree.
-            # This code is now like the code in tangle.scanAlldirectives.
-
-            if 'comment' in old or 'language' in old:
-                pass # Do nothing more.
-
-            elif 'comment' in theDict:
-                z = theDict["comment"]
-                delim1, delim2, delim3 = g.set_delims_from_string(z)
-
-            elif 'language' in theDict:
-                z = theDict["language"]
-                self.language,delim1,delim2,delim3 = g.set_language(z,0)
-            #@-node:ekr.20041005105605.229:<< Test for @comment and @language >>
-            #@nl
-            #@        << Test for @header and @noheader >>
-            #@+node:ekr.20041005105605.230:<< Test for @header and @noheader >>
-            # EKR: 10/10/02: perform the sames checks done by tangle.scanAllDirectives.
-
-            if 'header' in theDict and 'noheader' in theDict:
-                g.es("conflicting @header and @noheader directives")
-            #@-node:ekr.20041005105605.230:<< Test for @header and @noheader >>
-            #@nl
-            #@        << Test for @lineending >>
-            #@+node:ekr.20041005105605.231:<< Test for @lineending >>
-            if 'lineending' not in old and 'lineending' in theDict:
-
-                lineending = g.scanAtLineendingDirective(theDict)
-                if lineending:
-                    self.explicitLineEnding = True
-                    self.output_newline = lineending
-                    # g.trace(p.headString(),'lineending',repr(lineending))
-            #@-node:ekr.20041005105605.231:<< Test for @lineending >>
-            #@nl
-            #@        << Test for @pagewidth >>
-            #@+node:ekr.20041005105605.232:<< Test for @pagewidth >>
-            if 'pagewidth' in theDict and 'pagewidth' not in old:
-
-                w = g.scanAtPagewidthDirective(theDict,issue_error_flag=True)
-                if w and w > 0:
-                    self.page_width = w
-            #@-node:ekr.20041005105605.232:<< Test for @pagewidth >>
-            #@nl
-            #@        << Test for @tabwidth >>
-            #@+node:ekr.20041005105605.233:<< Test for @tabwidth >>
-            if 'tabwidth' in theDict and 'tabwidth' not in old:
-
-                w = g.scanAtTabwidthDirective(theDict,issue_error_flag=True)
-                if w and w != 0:
-                    self.tab_width = w
-            #@-node:ekr.20041005105605.233:<< Test for @tabwidth >>
-            #@nl
-            old.update(theDict)
-        #@    << Set current directory >>
-        #@+node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
-        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-        if c.frame and not self.default_directory:
-            base = g.getBaseDirectory(c) # returns "" on error.
-            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-                if theDir and len(theDir) > 0:
-                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        if g.os_path_exists(theDir):
-                            self.default_directory = theDir ; break
-                        else: # 9/25/02
-                            self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-
-        if not self.default_directory and not scripting and not importing:
-            # This should never happen: c.openDirectory should be a good last resort.
-            self.error("No absolute directory specified anywhere.")
-            g.trace(g.callers())
-            self.default_directory = ""
-        #@-node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
-        #@nl
         if not importing and not reading:
-            # 5/19/04: don't override comment delims when reading!
-            #@        << Set comment strings from delims >>
-            #@+node:ekr.20041005105605.235:<< Set comment strings from delims >>
+            # Don't override comment delims when reading!
+            #@        << set comment strings from delims >>
+            #@+node:ekr.20080923070954.13:<< Set comment strings from delims >>
             if forcePythonSentinels:
                 # Force Python language.
                 delim1,delim2,delim3 = g.set_delims_from_language("python")
                 self.language = "python"
+            else:
+                delim1,delim2,delim3 = delims ### g.set_delims_from_language(at.language)
 
             # Use single-line comments if we have a choice.
             # delim1,delim2,delim3 now correspond to line,start,end
             if delim1:
-                self.startSentinelComment = delim1
-                self.endSentinelComment = "" # Must not be None.
+                at.startSentinelComment = delim1
+                at.endSentinelComment = "" # Must not be None.
             elif delim2 and delim3:
-                self.startSentinelComment = delim2
-                self.endSentinelComment = delim3
+                at.startSentinelComment = delim2
+                at.endSentinelComment = delim3
             else: # Emergency!
                 # assert(0)
                 if not g.app.unitTesting:
                     g.es_print("unknown language: using Python comment delimiters")
                     g.es_print("c.target_language:",c.target_language)
                     g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
-                self.startSentinelComment = "#" # This should never happen!
-                self.endSentinelComment = ""
+                at.startSentinelComment = "#" # This should never happen!
+                at.endSentinelComment = ""
 
             # g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
-            #@-node:ekr.20041005105605.235:<< Set comment strings from delims >>
+            #@-node:ekr.20080923070954.13:<< Set comment strings from delims >>
             #@nl
+
         # For unit testing.
         return {
-            "encoding"  : self.encoding,
-            "language"  : self.language,
-            "lineending": self.output_newline,
-            "pagewidth" : self.page_width,
-            "path"      : self.default_directory,
-            "tabwidth"  : self.tab_width,
+            "encoding"  : at.encoding,
+            "language"  : at.language,
+            "lineending": at.output_newline,
+            "pagewidth" : at.page_width,
+            "path"      : at.default_directory,
+            "tabwidth"  : at.tab_width,
         }
-    #@-node:ekr.20041005105605.222:atFile.scanAllDirectives (old)
+    #@-node:ekr.20080923070954.4:atFile.scanAllDirectives
     #@+node:ekr.20041005105605.236:atFile.scanDefaultDirectory
     def scanDefaultDirectory(self,p,importing=False):
 
