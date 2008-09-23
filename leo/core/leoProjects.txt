@@ -2577,6 +2577,11 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False):
         elif not app.config.create_nonexistent_directories:
             return None
 
+    g.trace(theDir)
+
+    if c:
+        theDir = g.os_path_expandExpression(theDir,c=c)
+
     dir1 = theDir = g.os_path_normpath(theDir)
 
     # Split theDir into all its component parts.
@@ -2598,6 +2603,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False):
                 os.mkdir(path)
                 g.es_print("created directory:",path,color='red')
             except Exception:
+                g.trace(g.callers())
                 g.es_print("exception creating directory:",path,color='red')
                 g.es_exception()
                 return None
@@ -3353,7 +3359,7 @@ def os_path_finalize_join (self,*args,**keys):
 #@-node:ekr.20080901124540.1:c.Directive scanning
 #@+node:ekr.20080828103146.5:Top-level  functions
 #@+node:ekr.20080827175609.54:OLD code (Do not change)
-#@+node:ekr.20041005105605.222:atFile.scanAllDirectives
+#@+node:ekr.20041005105605.222:atFile.scanAllDirectives (old)
 @ Once a directive is seen, no other related directives in nodes further up the tree have any effect.  For example, if an @color directive is seen in node p, no @color or @nocolor directives are examined in any ancestor of p.
 
 This code is similar to Commands.scanAllDirectives, but it has been modified for use by the atFile class.
@@ -3437,9 +3443,9 @@ if not self.default_directory and not 'path' in old and 'path' in theDict:
 
     path = theDict["path"]
     path = g.computeRelativePath(path)
-    if path and len(path) > 0:
+    if path:
         base = g.getBaseDirectory(c) # returns "" on error.
-        path = g.os_path_join(base,path)
+        path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
         if g.os_path_isabs(path):
             << handle absolute path >>
         else:
@@ -3518,7 +3524,7 @@ if c.frame and not self.default_directory:
     base = g.getBaseDirectory(c) # returns "" on error.
     for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
         if theDir and len(theDir) > 0:
-            theDir = g.os_path_join(base,theDir)
+            theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
             if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
                 if g.os_path_exists(theDir):
                     self.default_directory = theDir ; break
@@ -3556,7 +3562,7 @@ else: # Emergency!
 
 # g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
 #@-node:ekr.20041005105605.235:<< Set comment strings from delims >>
-#@-node:ekr.20041005105605.222:atFile.scanAllDirectives
+#@-node:ekr.20041005105605.222:atFile.scanAllDirectives (old)
 #@+node:ekr.20031218072017.1360:tangle.scanAllDirectives
 @ Once a directive is seen, related directives in ancesors have no effect.  For example, if an @color directive is seen in node x, no @color or @nocolor directives are examined in any ancestor of x.
 @c
@@ -4088,8 +4094,6 @@ def computeRelativePath (path):
         path = path[1:-1].strip()
 
     # We want a *relative* path, not an absolute path.
-    # path = g.os_path_join(g.app.loadDir,path)
-
     return path
 #@-node:ekr.20071109165315:g.computeRelativePath
 #@+node:ekr.20031218072017.1385:g.findReference
@@ -5971,21 +5975,23 @@ def os_path_finalize (path,**keys):
 
     There is no corresponding os.path method'''
 
-    encoding = keys.get('encoding')
+    c,encoding = keys.get('c'),keys.get('encoding')
 
-    path = g.os_path_expandExpression(path,**keys)
+    if c: path = g.os_path_expandExpression(path,**keys)
 
     path = g.os_path_expanduser(path,encoding=encoding)
-
     return os.path.normpath(os.path.abspath(path))
 
 def os_path_finalize_join (*args,**keys):
 
     '''Do os.path.join(*args), then finalize the result.'''
 
-    path = g.os_path_join(*args,**keys)
+    c,encoding = keys.get('c'),keys.get('encoding')
 
-    return g.os_path_finalize(path,**keys)
+    if c: args = [g.os_path_expandExpression(path,**keys)
+        for path in args if path]
+
+    return g.os_path_join(*args,**keys) # Handles expanduser
 #@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
@@ -6004,9 +6010,7 @@ def os_path_join(*args,**keys):
             uargs[0] = c.openDirectory
             # g.trace(c.openDirectory)
 
-    uargs = [g.os_path_expandExpression(z,c=c) for z in uargs]
-
-    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs]
+    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs if z]
 
     path = os.path.join(*uargs)
 
@@ -6817,21 +6821,23 @@ def os_path_finalize (path,**keys):
 
     There is no corresponding os.path method'''
 
-    encoding = keys.get('encoding')
+    c,encoding = keys.get('c'),keys.get('encoding')
 
-    path = g.os_path_expandExpression(path,**keys)
+    if c: path = g.os_path_expandExpression(path,**keys)
 
     path = g.os_path_expanduser(path,encoding=encoding)
-
     return os.path.normpath(os.path.abspath(path))
 
 def os_path_finalize_join (*args,**keys):
 
     '''Do os.path.join(*args), then finalize the result.'''
 
-    path = g.os_path_join(*args,**keys)
+    c,encoding = keys.get('c'),keys.get('encoding')
 
-    return g.os_path_finalize(path,**keys)
+    if c: args = [g.os_path_expandExpression(path,**keys)
+        for path in args if path]
+
+    return g.os_path_join(*args,**keys) # Handles expanduser
 #@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
@@ -6850,9 +6856,7 @@ def os_path_join(*args,**keys):
             uargs[0] = c.openDirectory
             # g.trace(c.openDirectory)
 
-    uargs = [g.os_path_expandExpression(z,c=c) for z in uargs]
-
-    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs]
+    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs if z]
 
     path = os.path.join(*uargs)
 
@@ -6883,6 +6887,10 @@ def os_path_expandExpression (s,**keys):
     '''Expand {{anExpression}} in c's context.'''
 
     c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
     i = s.find('{{')
     j = s.find('}}')
     if -1 < i < j:
@@ -6891,17 +6899,15 @@ def os_path_expandExpression (s,**keys):
             try:
                 import os
                 import sys
-                p = c and c.currentPosition()
+                p = c.currentPosition()
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
                 s = s[:i] + str(val) + s[j+2:]
-                # g.trace('exp',exp,'val',val,'s',s)
             except Exception:
+                g.trace(g.callers())
                 g.es_exception(full=True, c=c, color='red')
 
     return s
-
-
 #@-node:ekr.20080922124033.6:os_path_expandExpression
 #@-node:ekr.20080921154026.7:Added support for {{exp}}
 #@-node:ekr.20080917153158.15:New features
