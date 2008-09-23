@@ -7,10 +7,6 @@ Run the unit tests in test.leo using the Execute Script command.'''
 #@@language python
 #@@tabwidth -4
 
-# __pychecker__ = '--no-import --no-reimportself --no-reimport --no-constCond --no-constant1'
-    # Disable all import warnings.
-    # Disable warnings about if 1 and if 0.
-
 #@<< leoTest imports >>
 #@+node:ekr.20051104075904.1:<< leoTest imports >>
 import leo.core.leoGlobals as g
@@ -44,8 +40,6 @@ except ImportError:
     pass
 #@-node:ekr.20051104075904.1:<< leoTest imports >>
 #@nl
-
-# g.pr('leoTest.py.__file__',__file__)
 
 if g.app: # Make sure we can import this module stand-alone.
     import leo.core.leoPlugins as leoPlugins
@@ -132,9 +126,6 @@ class generalTestCase(unittest.TestCase):
     def fail (self,msg=None):
 
         """Mark a unit test as having failed."""
-
-        # __pychecker__ = '--no-argsused'
-            #  msg needed so signature matches base class.
 
         import leo.core.leoGlobals as g
 
@@ -644,9 +635,6 @@ def fail ():
 
     """Mark a unit test as having failed."""
 
-    # __pychecker__ = '--no-argsused'
-        #  msg needed so signature matches base class.
-
     import leo.core.leoGlobals as g
 
     g.app.unitTestDict["fail"] = g.callers()
@@ -1019,9 +1007,6 @@ class editBodyTestCase(unittest.TestCase):
 
         """Mark a unit test as having failed."""
 
-        # __pychecker__ = '--no-argsused'
-            #  msg needed so signature matches base class.
-
         import leo.core.leoGlobals as g
 
         g.app.unitTestDict["fail"] = g.callers()
@@ -1167,9 +1152,6 @@ class importExportTestCase(unittest.TestCase):
     def fail (self,msg=None):
 
         """Mark a unit test as having failed."""
-
-        # __pychecker__ = '--no-argsused'
-            #  msg needed so signature matches base class.
 
         import leo.core.leoGlobals as g
 

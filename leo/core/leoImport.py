@@ -1013,8 +1013,6 @@ class leoImportCommands:
 
     def convertMoreStringsToOutlineAfter (self,strings,first_p):
 
-        # __pychecker__ = '--no-objattrs' # suppress bad warnings re last_p.
-
         c = self.c
         if len(strings) == 0: return None
         if not self.stringsAreValidMoreFile(strings): return None

@@ -3435,9 +3435,6 @@ def OLDscanAllDirectives(self,p,
     setting corresponding atFile ivars.
     """
 
-    # __pychecker__ = '--maxlines=400'
-    # g.stat()
-
     c = self.c
     << Set ivars >>
     << Set path from @file node >>
@@ -3652,8 +3649,6 @@ def OLDscanAllDirectives(self,p,require_path_flag,issue_error_flag):
     """Scan vnode p and p's ancestors looking for directives,
     setting corresponding tangle ivars and globals.
     """
-
-    # __pychecker__ = 'maxlines=500 maxbranches=100'
 
     c = self.c
     # g.trace(p)

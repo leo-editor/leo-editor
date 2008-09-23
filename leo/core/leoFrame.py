@@ -682,8 +682,6 @@ class leoBody:
 
     """The base class for the body pane in Leo windows."""
 
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
-
     #@    @+others
     #@+node:ekr.20031218072017.3657:leoBody.__init__
     def __init__ (self,frame,parentFrame):
@@ -1420,8 +1418,6 @@ class leoFrame:
 
     """The base class for all Leo windows."""
 
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
-
     instances = 0
 
     #@    @+others
@@ -1888,10 +1884,7 @@ class leoFrame:
     #@+node:ekr.20031218072017.3683:Config...
     def resizePanesToRatio (self,ratio,secondary_ratio):    self.oops()
     def setInitialWindowGeometry (self):                    self.oops()
-
-    def setTopGeometry (self,w,h,x,y,adjustSize=True):
-        # __pychecker__ = '--no-argsused' # adjustSize used in derived classes.
-        self.oops()
+    def setTopGeometry (self,w,h,x,y,adjustSize=True):      self.oops()
     #@-node:ekr.20031218072017.3683:Config...
     #@+node:ekr.20031218072017.3681:Gui-dependent commands
     # In the Edit menu...
@@ -1991,8 +1984,6 @@ class leoFrame:
 class leoLog:
 
     """The base class for the log pane in Leo windows."""
-
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
 
     #@    @+others
     #@+node:ekr.20031218072017.3695: ctor (leoLog)
@@ -2107,8 +2098,6 @@ class leoLog:
     #@+node:ekr.20070302094848.6:hideTab
     def hideTab (self,tabName):
 
-        # __pychecker__ = '--no-argsused' # tabName
-
         self.selectTab('Log')
     #@-node:ekr.20070302094848.6:hideTab
     #@+node:ekr.20070302094848.7:getSelectedTab
@@ -2183,8 +2172,6 @@ class leoLog:
 class leoTree:
 
     """The base class for the outline pane in Leo windows."""
-
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
 
     #@    @+others
     #@+node:ekr.20031218072017.3705:  tree.__init__ (base class)
@@ -2806,8 +2793,6 @@ class leoTreeTab:
 #@+node:ekr.20031218072017.2191:class nullBody (leoBody)
 class nullBody (leoBody):
 
-    # __pychecker__ = '--no-argsused' # null classes have many unused args.
-
     #@    @+others
     #@+node:ekr.20031218072017.2192: nullBody.__init__
     def __init__ (self,frame,parentFrame):
@@ -2905,8 +2890,6 @@ class nullFrame (leoFrame):
 
     """A null frame class for tests and batch execution."""
 
-    # __pychecker__ = '--no-argsused' # null classes have many unused args.
-
     #@    @+others
     #@+node:ekr.20040327105706: ctor
     def __init__ (self,title,gui,useNullUndoer=False):
@@ -2965,8 +2948,6 @@ class nullFrame (leoFrame):
     def setMinibufferBindings(self):                        pass
     #@+node:ekr.20041130065718.1:setTopGeometry
     def setTopGeometry (self,w,h,x,y,adjustSize=True):
-
-        # __pychecker__ = '--no-argsused' # adjustSize used in derived classes.
 
         self.w = w
         self.h = h
@@ -3095,8 +3076,6 @@ class nullIconBarClass:
 #@+node:ekr.20031218072017.2232:class nullLog
 class nullLog (leoLog):
 
-    # __pychecker__ = '--no-argsused' # null classes have many unused args.
-
     #@    @+others
     #@+node:ekr.20070302095500:Birth
     #@+node:ekr.20041012083237:nullLog.__init__
@@ -3214,8 +3193,6 @@ class nullStatusLineClass:
 #@-node:ekr.20070302171509:class nullStatusLineClass
 #@+node:ekr.20031218072017.2233:class nullTree
 class nullTree (leoTree):
-
-    # __pychecker__ = '--no-argsused' # null classes have many unused args.
 
     #@    @+others
     #@+node:ekr.20031218072017.2234: nullTree.__init__

@@ -1966,10 +1966,6 @@ class colorizer:
 
         """Color the body pane either incrementally or non-incrementally"""
 
-        # __pychecker__ = 'maxlines=500'
-
-        # g.trace(p and p.headString())
-
         c = self.c ; w = c.frame.body.bodyCtrl
 
         if not c.config.getBool('use_syntax_coloring'):
@@ -2650,8 +2646,6 @@ class colorizer:
     #@-node:ekr.20031218072017.1895:doLatexLine
     #@+node:ekr.20031218072017.1896:doNormalState
     def doNormalState (self,s,i):
-
-        # __pychecker__ = 'maxlines=500'
 
         ch = s[i] ; state = "normal"
 

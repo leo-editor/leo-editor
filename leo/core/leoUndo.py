@@ -271,8 +271,6 @@ class undoer:
         old_lines,old_row,old_col,old_ch, 
         new_lines,new_row,new_col,new_ch):
 
-        # __pychecker__ = '--no-argsused' # Ignore all unused arguments here.
-
         ''' A potentially user-modifiable method that should return True if the
         typing indicated by the params starts a new 'word' for the purposes of
         undo with 'word' granularity.
@@ -796,8 +794,7 @@ class undoer:
 
         '''Create an undo node for mark and unmark commands.'''
 
-        # __pychecker__ = '--no-argsused'
-            # 'command' unused, but present for compatibility with similar methods.
+        # 'command' unused, but present for compatibility with similar methods.
 
         u = self
         if u.redoing or u.undoing: return
@@ -1083,28 +1080,8 @@ class undoer:
             frame.menu.enableMenu(menu,u.redoMenuLabel,u.canRedo())
             frame.menu.enableMenu(menu,u.undoMenuLabel,u.canUndo())
     #@-node:ekr.20031218072017.3611:enableMenuItems
-    #@+node:ekr.20050525151217:getMark & rollbackToMark (no longer used)
-    if 0:
-        def getMark (self):
-
-            # __pychecker__ = '--no-classattr' # self.bead does, in fact, exist.
-
-            return self.bead
-
-        def rollbackToMark (self,n):
-
-            u = self
-
-            u.bead = n
-            u.beads = u.beads[:n+1]
-            u.setUndoTypes()
-
-        rollBackToMark = rollbackToMark
-    #@-node:ekr.20050525151217:getMark & rollbackToMark (no longer used)
     #@+node:ekr.20031218072017.1490:setUndoTypingParams
     def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):
-
-        # __pychecker__ = 'maxlines=2000' # Ignore the size of this method.
 
         '''Save enough information so a typing operation can be undone and redone.
 
@@ -1988,9 +1965,10 @@ class undoer:
         tag="undo", # "undo" or "redo"
         undoType=None):
 
-        # __pychecker__ = '--no-argsused' # newNewlines is unused, but it has symmetry.
 
         '''Handle text undo and redo: converts _new_ text into _old_ text.'''
+
+        # newNewlines is unused, but it has symmetry.
 
         u = self ; c = u.c ; w = c.frame.body.bodyCtrl
 

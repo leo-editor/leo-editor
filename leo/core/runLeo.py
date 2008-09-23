@@ -12,8 +12,6 @@
 #@+node:ekr.20031218072017.2606:<< Import pychecker >>
 #@@color
 
-__pychecker__ = '--no-argsused'
-
 # See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.
 
 if 0: # Set to 1 for lint-like testing.

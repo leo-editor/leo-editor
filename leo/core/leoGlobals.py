@@ -9,10 +9,6 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-# __pychecker__ = '--no-import --no-reimportself --no-reimport --no-constCond --no-constant1'
-    # Disable all import warnings: This module must do strange things with imports. 
-    # Disable checks for constant conditionals.
-
 #@<< imports >>
 #@+node:ekr.20050208101229:<< imports >>
 if 0:
@@ -1027,11 +1023,7 @@ def es_event_exception (eventName,full=False):
 #@+node:ekr.20031218072017.3112:es_exception
 def es_exception (full=True,c=None,color="red"):
 
-    # __pychecker__ = '--no-argsused' # c not used. retained for compatibility.
-
     typ,val,tb = sys.exc_info()
-
-    # g.trace(full,typ,tb)
 
     fileName,n = g.getLastTracebackFileAndLineNumber()
 
@@ -1911,7 +1903,6 @@ def create_temp_file (textMode=False):
 
     # mktemp is deprecated, but we can't get rid of it
     # because mkstemp does not exist in Python 2.2.1.
-    # __pychecker__ = '--no-deprecate'
     try:
         # fd is an handle to an open file as would be returned by os.open()
         fd,theFileName = tempfile.mkstemp(text=textMode)
@@ -2734,8 +2725,6 @@ def disableIdleTimeHook():
 trace_count = 0
 
 def idleTimeHookHandler(*args,**keys):
-
-    # __pychecker__ = '--no-argsused' # args & keys not used.
 
     if 0: # Do not use g.trace here!
         global trace_count ; trace_count += 1
@@ -4115,8 +4104,6 @@ joinlines = joinLines
 def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     script_search=True,script_change=True):
 
-    # __pychecker__ = '--no-argsused' # firstNode is not used.
-
     import leo.core.leoTest as leoTest
     import leo.core.leoGlobals as g
 
@@ -4299,9 +4286,6 @@ def isWordChar1 (ch):
 #@nonl
 #@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
 #@+node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
-# Suppress warning about redefining getpreferredencoding
-# __pychecker__ = '--no-reuseattr'
-
 try:
     # Use Python's version of getpreferredencoding if it exists.
     # It is new in Python 2.3.
@@ -4364,8 +4348,6 @@ except Exception:
 
         #@-node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
         #@nl
-
-# __pychecker__ = '--reuseattr'
 #@-node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
 #@+node:ekr.20031218072017.1499:isUnicode
 def isUnicode(s):
@@ -4727,8 +4709,6 @@ def CheckVersionToInt (s):
 
 def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0.0.0", delimiter='.' ):
 
-    # __pychecker__ = 'maxreturns=20'
-
     # tokenize the stringCompare flags
     compareFlag = stringCompare.split('.')
 
@@ -4867,8 +4847,6 @@ bunch = Bunch
 class nullObject:
 
     """An object that does nothing, and does it very well."""
-
-    # __pychecker__ = '--no-argsused'
 
     def __init__   (self,*args,**keys): pass
     def __call__   (self,*args,**keys): return self

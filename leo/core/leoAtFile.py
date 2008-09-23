@@ -10,10 +10,6 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-# __pychecker__ = '--no-reimport --no-constCond -- no-constant1'
-    # Reimports needed in test methods.
-    # Disable checks for if 0, if 1.
-
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
 import leo.core.leoGlobals as g
@@ -788,8 +784,6 @@ class atFile:
 
         """Return the next tnode in at.root.t.tnodeList."""
 
-        # __pychecker__ = '--no-argsused' # headline might be used for debugging.
-
         # Note: tnodeLists are used _only_ when reading @file (not @thin) nodes.
         # tnodeLists compensate (a hack) for not having gnx's in derived files! 
 
@@ -826,8 +820,6 @@ class atFile:
     def scanText4 (self,theFile,fileName,p,verbose=False):
 
         """Scan a 4.x derived file non-recursively."""
-
-        # __pychecker__ = '--no-argsused' # verbose might be used for debugging.
 
         at = self
         #@    << init ivars for scanText4 >>
@@ -1106,8 +1098,6 @@ class atFile:
 
         """Read an @-all sentinel."""
 
-        # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
         at = self
         at.popSentinelStack(at.endAll)
     #@-node:ekr.20041005105605.91:readEndAll (4.2)
@@ -1115,8 +1105,6 @@ class atFile:
     def readEndAt (self,unused_s,unused_i):
 
         """Read an @-at sentinel."""
-
-        # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
 
         at = self
         at.readLastDocLine("@")
@@ -1127,8 +1115,6 @@ class atFile:
 
         """Read an @-doc sentinel."""
 
-        # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
         at = self
         at.readLastDocLine("@doc")
         at.popSentinelStack(at.endDoc)
@@ -1138,8 +1124,6 @@ class atFile:
     def readEndLeo (self,unused_s,unused_i):
 
         """Read an @-leo sentinel."""
-
-        # __pychecker__ = '--no-argsused' # i not used, but must be present.
 
         at = self
 
@@ -1165,8 +1149,6 @@ class atFile:
     def readEndNode (self,unused_s,unused_i,middle=False):
 
         """Handle end-of-node processing for @-others and @-ref sentinels."""
-
-        # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
 
         at = self ; c = at.c
 
@@ -1259,8 +1241,6 @@ class atFile:
 
         """Read an @-others sentinel."""
 
-        # __pychecker__ = '--no-argsused' # s,i unused, but must be present.
-
         at = self
         at.popSentinelStack(at.endOthers)
     #@-node:ekr.20041005105605.98:readEndOthers
@@ -1317,8 +1297,6 @@ class atFile:
     def  ignoreOldSentinel (self,s,unused_i):
 
         """Ignore an 3.x sentinel."""
-
-        # __pychecker__ = '--no-argsused' # i unused, but must be present.
 
         g.es("ignoring 3.x sentinel:",s.strip(),color="blue")
     #@-node:ekr.20041005105605.101:ignoreOldSentinel

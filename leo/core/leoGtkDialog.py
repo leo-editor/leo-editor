@@ -269,8 +269,6 @@ class gtkAboutLeo (leoGtkDialog):
 
         """Handle clicks in the email link in an About Leo dialog."""
 
-        # __pychecker__ = '--no-argsused' # the event param must be present.
-
         try:
             import webbrowser
             webbrowser.open("mailto:" + self.email)
@@ -281,8 +279,6 @@ class gtkAboutLeo (leoGtkDialog):
     def onAboutLeoUrl(self,event=None):
 
         """Handle clicks in the url link in an About Leo dialog."""
-
-        # __pychecker__ = '--no-argsused' # the event param must be present.
 
         try:
             import webbrowser
@@ -295,15 +291,11 @@ class gtkAboutLeo (leoGtkDialog):
 
         """Set the cursor to an arrow in an About Leo dialog."""
 
-        # __pychecker__ = '--no-argsused' # the event param must be present.
-
         self.text.configure(cursor="arrow")
 
     def setDefaultCursor (self,event=None):
 
         """Set the cursor to the default cursor in an About Leo dialog."""
-
-        # __pychecker__ = '--no-argsused' # the event param must be present.
 
         self.text.configure(cursor="xterm")
     #@-node:ekr.20080112145409.16:gtkAboutLeo: setArrowCursor, setDefaultCursor
@@ -821,8 +813,6 @@ class gtkListBoxDialog (leoGtkDialog):
 
         subclasses may override to really destroy the window"""
 
-        # __pychecker__ = '--no-argsused' # event not used, but must be present.
-
         self.top.withdraw() # Don't allow this window to be destroyed.
     #@-node:ekr.20080112145409.49:destroy
     #@+node:ekr.20080112145409.50:hide
@@ -839,16 +829,12 @@ class gtkListBoxDialog (leoGtkDialog):
 
         Overridden by subclasses"""
 
-        # __pychecker__ = '--no-argsused' # the event param must be present.
-
         pass
     #@-node:ekr.20080112145409.51:fillbox
     #@+node:ekr.20080112145409.52:go
     def go(self,event=None):
 
         """Handle clicks in the "go" button in a list box dialog."""
-
-        # __pychecker__ = '--no-argsused' # the event param must be present.
 
         c = self.c ; box = self.box
 

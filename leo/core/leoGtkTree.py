@@ -559,8 +559,6 @@ class leoGtkTree (leoFrame.leoTree):
 
             """All changes to text widgets should come here."""
 
-            # __pychecker__ = '--no-argsused' # theId not used.
-
             # if self.trace_alloc: g.trace('%4d %6s %s' % (theId,self.textAddr(w),s),align=-20)
 
             state = w.cget("state")
@@ -1298,9 +1296,6 @@ class leoGtkTree (leoFrame.leoTree):
 
         """Scrolls the canvas so that p is in view."""
 
-        # __pychecker__ = '--no-argsused' # event not used.
-        # __pychecker__ = '--no-intdivide' # suppress warning about integer division.
-
         c = self.c ; frame = c.frame ; trace = True
         if not p or not c.positionExists(p):
             p = c.currentPosition()
@@ -2004,11 +1999,7 @@ class leoGtkTree (leoFrame.leoTree):
 
         """Deactivate the tree pane, dimming any headline being edited."""
 
-        # __pychecker__ = '--no-argsused' # event not used.
-
         tree = self ; c = self.c
-
-        # g.trace(g.callers())
 
         tree.endEditLabel()
         tree.dimEditLabel()
@@ -2054,14 +2045,10 @@ class leoGtkTree (leoFrame.leoTree):
 
     def OnPopupFocusLost(self,event=None):
 
-        # __pychecker__ = '--no-argsused' # event not used.
-
         self.popupMenu.unpost()
     #@-node:ekr.20080112145409.410:OnPopupFocusLost
     #@+node:ekr.20080112145409.411:createPopupMenu
     def createPopupMenu (self,event):
-
-        # __pychecker__ = '--no-argsused' # event not used.
 
         c = self.c ; frame = c.frame
 
@@ -2070,8 +2057,6 @@ class leoGtkTree (leoFrame.leoTree):
             #self.popupMenu.destroy()
             self.popupMenu = None
 
-
-        #
         self.popupMenu = menu = frame.menu.getMenu()
 
         # Add the Open With entries if they exist.
@@ -2115,8 +2100,6 @@ class leoGtkTree (leoFrame.leoTree):
     def enablePopupMenuItems (self,v,event):
 
         """Enable and disable items in the popup menu."""
-
-        # __pychecker__ = '--no-argsused' # event not used.
 
         c = self.c ; menu = self.popupMenu
 

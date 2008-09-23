@@ -8,9 +8,6 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-# __pychecker__ = '--no-constCond -- no-constant1'
-    # Disable checks for constant conditionals.
-
 #@<< imports >>
 #@+node:ekr.20040712045933:<< imports  >> (leoCommands)
 import leo.core.leoGlobals as g
@@ -61,8 +58,6 @@ except Exception:
 subprocess = g.importExtension('subprocess',None,verbose=False)
 
 # The following import _is_ used.
-# __pychecker__ = '--no-import'
-
 import token    # for Check Python command
 #@-node:ekr.20040712045933:<< imports  >> (leoCommands)
 #@nl
@@ -6465,8 +6460,6 @@ class baseCommands:
 
     def canExtractSection (self):
 
-        # __pychecker__ = '--no-implicitreturns' # Suppress bad warning.
-
         c = self ; body = c.frame.body
         if not body: return False
 
@@ -7474,8 +7467,6 @@ class configSettings:
     #@-node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
     #@+node:ekr.20041118195812.2:set & setString
     def set (self,p,setting,val):
-
-        # __pychecker__ = '--no-argsused' # p not used.
 
         return g.app.config.setString(self.c,setting,val)
 

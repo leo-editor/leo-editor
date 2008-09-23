@@ -9,8 +9,6 @@ Modelled after Emacs and Vim commands.'''
 
 #@<< imports >>
 #@+node:ekr.20050710151017:<< imports >>
-# __pychecker__ = '--no-import'
-
 import leo.core.leoGlobals as g
 
 import leo.core.leoFind as leoFind
@@ -8363,9 +8361,6 @@ class spellTabHandler (leoFind.leoFind):
     #@+node:ekr.20051025071455.38:change (spellTab)
     def change(self,event=None):
         """Make the selected change to the text"""
-
-        # __pychecker__ = '--no-override --no-argsused'
-             # event param is not used, required, and different from base class.
 
         c = self.c ; body = self.body ; w = body.bodyCtrl
 

@@ -1555,20 +1555,14 @@ class leoTkinterFrame (leoFrame.leoFrame):
     #@+node:ekr.20031218072017.3973:frame.OnControlKeyUp/Down
     def OnControlKeyDown (self,event=None):
 
-        # __pychecker__ = '--no-argsused' # event not used.
-
         self.controlKeyIsDown = True
 
     def OnControlKeyUp (self,event=None):
-
-        # __pychecker__ = '--no-argsused' # event not used.
 
         self.controlKeyIsDown = False
     #@-node:ekr.20031218072017.3973:frame.OnControlKeyUp/Down
     #@+node:ekr.20031218072017.3975:OnActivateBody (tkFrame)
     def OnActivateBody (self,event=None):
-
-        # __pychecker__ = '--no-argsused' # event not used.
 
         try:
             frame = self ; c = frame.c
@@ -1586,8 +1580,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
     def OnActivateLeoEvent(self,event=None):
 
         '''Handle a click anywhere in the Leo window.'''
-
-        # __pychecker__ = '--no-argsused' # event.
 
         self.c.setLog()
 
@@ -2537,8 +2529,6 @@ class leoTkinterLog (leoFrame.leoLog):
     #@+node:ekr.20060204124347:hideTab
     def hideTab (self,tabName):
 
-        # __pychecker__ = '--no-argsused' # tabName
-
         self.selectTab('Log')
     #@-node:ekr.20060204124347:hideTab
     #@+node:ekr.20051027114433:getSelectedTab
@@ -3120,7 +3110,6 @@ class leoTkTextWidget (Tk.Text):
     This class inherits almost all tkText methods: you call use them as usual.'''
 
     # The signatures of tag_add and insert are different from the Tk.Text signatures.
-    # __pychecker__ = '--no-override' # suppress warning about changed signature.
 
     def __repr__(self):
         name = hasattr(self,'_name') and self._name or '<no name>'

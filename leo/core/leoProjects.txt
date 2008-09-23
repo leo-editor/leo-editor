@@ -78,8 +78,6 @@ Many, but not all, of these calls are unnecessary.
 #@+node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
 def doMenus (self,p,kind,name,val):
 
-    # __pychecker__ = '--no-argsused' # kind,name,val not used.
-
     c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
     p = p.copy() ; after = p.nodeAfterTree()
     if trace: g.trace('******',p.headString(),'after',after and after.headString())
@@ -1986,8 +1984,6 @@ def __init__ (self,v,childIndex=0,stack=None,trace=False):
 
     '''Create a new position with the given childIndex and parent stack.'''
 
-    # __pychecker__ = '--no-argsused' # trace not used.
-
     # To support ZODB the code must set v._p_changed = 1
     # whenever any mutable vnode object changes.
 
@@ -2159,8 +2155,6 @@ def key (self):
 #@-node:ekr.20040228094013: p.ctor & other special methods...
 #@+node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
 def doMenus (self,p,kind,name,val):
-
-    # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
     c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
     p = p.copy() ; after = p.nodeAfterTree()

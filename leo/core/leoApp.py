@@ -296,7 +296,6 @@ class LeoApp:
     def createTkGui (self,fileName=None):
 
         # Do NOT omit fileName param: it is used in plugin code.
-        # __pychecker__ = '--no-argsused'
 
         """A convenience routines for plugins to create the default Tk gui class."""
 

@@ -1147,8 +1147,6 @@ class leoFind:
     #@+node:ekr.20051020120306.27:selectAllFindText (leoFind)
     def selectAllFindText (self,event=None):
 
-        # __pychecker__ = '--no-argsused' # event
-
         # This is called only when the user presses ctrl-a in the find panel.
 
         w = self.frame.focus_get()
@@ -1516,7 +1514,6 @@ class findTab (leoFind):
         self.oops()
 
     def createFrame (self,parent):
-        # __pychecker__ = '--no-argsused'
         self.oops()
 
     def getOption (self,ivar):
@@ -1529,7 +1526,6 @@ class findTab (leoFind):
         pass # Optional method.
 
     def setOption (self,ivar,val):
-        # __pychecker__ = '--no-argsused'
         self.oops()
 
     def toggleOption (self,ivar):
