@@ -1916,14 +1916,6 @@
 <v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
 <v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
-<v t="ekr.20080917151620.1"><vh>Directives, old</vh>
-<v t="ekr.20080917151620.2"><vh>@@test g.scanDirectives</vh></v>
-<v t="ekr.20080917151620.3"><vh>@@test g.scanAtLineendingDirective crlf</vh></v>
-<v t="ekr.20080917151620.4"><vh>@@test g.scanAtLineendingDirective cr</vh></v>
-<v t="ekr.20080917151620.5"><vh>@@test g.scanAtLineendingDirective lf</vh></v>
-<v t="ekr.20080917151620.6"><vh>@@test g.scanAtLineendingDirective nl</vh></v>
-<v t="ekr.20080917151620.7"><vh>@@test g.scanAtLineendingDirective platform</vh></v>
-</v>
 <v t="ekr.20080917151620.8"><vh>Directives, new</vh>
 <v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20080917151620.10"><vh>@test c.scanAtRootDirectives root-code</vh></v>
@@ -18348,7 +18340,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 
     # assert ch in ('(',')','[',']','{','}')
 
-    c = self.c ; d = g.scanDirectives(c,p)
+    c = self.c ; d = c.scanAllDirectives(p)
     i,j = oldSel
     language = d.get('language')
     s = w.getAllText()
@@ -18375,7 +18367,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 </t>
 <t tx="ekr.20071113143523.13">def updateAutoIndent (self,p,w):
 
-    c = self.c ; d = g.scanDirectives(c,p)
+    c = self.c ; d = c.scanAllDirectives(p)
     tab_width = d.get("tabwidth",c.tab_width)
     # Get the previous line.
     s = w.getAllText()
@@ -18413,7 +18405,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 <t tx="ekr.20071113143523.14">def updateTab (self,p,w):
 
     c = self.c
-    d = g.scanDirectives(c,p)
+    d = c.scanAllDirectives(p)
     tab_width = d.get("tabwidth",c.tab_width)
     i,j = w.getSelectionRange()
         # Returns insert point if no selection, with i &lt;= j.
@@ -21797,64 +21789,6 @@ assert root == root1
 if 0:
     print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
         root and root.headString(),isRaw,n,len(lines)))</t>
-<t tx="ekr.20080917151620.1"></t>
-<t tx="ekr.20080917151620.2"># This will work regardless of where this method is.
-@language python
-@tabwidth -4
-@pagewidth 72
-@encoding utf-8
-@comment a b c
-# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
-
-d = g.scanDirectives(c,p)
-
-assert d.get('language') == 'python'
-assert d.get('tabwidth') == -4
-assert d.get('pagewidth') == 72
-assert d.get('encoding') == 'utf-8'
-assert d.get('delims') == ('a','b','c',)
-# assert d.get('path').endswith('xyzzy')
-</t>
-<t tx="ekr.20080917151620.3"># This will work regardless of where this method is.
-@lineending crlf
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\r\n'
-</t>
-<t tx="ekr.20080917151620.4"># This will work regardless of where this method is.
-@lineending cr
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\r'
-</t>
-<t tx="ekr.20080917151620.5"># This will work regardless of where this method is.
-@lineending lf
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\n'
-</t>
-<t tx="ekr.20080917151620.6"># This will work regardless of where this method is.
-@lineending nl
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\n'
-</t>
-<t tx="ekr.20080917151620.7"># This will work regardless of where this method is.
-@lineending platform
-
-d = g.scanDirectives(c,p)
-
-import sys
-
-if sys.platform.startswith('win'):
-    assert d.get('lineending') == '\r\n'
-else:
-    assert d.get('lineending') == '\n'
-</t>
 <t tx="ekr.20080917151620.8"></t>
 <t tx="ekr.20080917151620.9">@language python
 @comment a b c

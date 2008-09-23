@@ -10,15 +10,11 @@
 
 To do:
 
-- Replace g.scanDirectives with c.scanAllDirectives
-    - Done in scripts.leo.
-    - in unitTest.leo
-    - in plugins. 
-
 - What about old scan-directives hook?
 
 Done:
 
+- Replaced g.scanDirectives with c.scanAllDirectives in scripts.leo, unitTest.leo and plugins.
 - Removed obsolete helper methods.
 - Rewrote tangle.scanAllDirectives.
 - Rewrote scanForTabWidth.
