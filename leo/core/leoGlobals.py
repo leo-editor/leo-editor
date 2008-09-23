@@ -325,6 +325,83 @@ def startupEncoding ():
 #@-node:ekr.20041117151301.1:startupEncoding
 #@-node:ekr.20050304072744:Compute directories... (leoGlobals)
 #@+node:ekr.20031218072017.1380:g.Directive utils...
+#@+node:ekr.20080923070954.2:To be deleted
+#@+node:ekr.20031218072017.1387:g.scanAtEncodingDirective (to be deleted)
+def scanAtEncodingDirective(theDict):
+
+    """Scan the @encoding directive at s[theDict["encoding"]:].
+
+    Returns the encoding name or None if the encoding name is invalid.
+    """
+
+    encoding = theDict.get('encoding')
+    if not encoding:
+        return None
+
+    if g.isValidEncoding(encoding):
+        # g.trace(encoding)
+        return encoding
+    else:
+        g.es("invalid @encoding:",encoding,color="red")
+        return None
+#@-node:ekr.20031218072017.1387:g.scanAtEncodingDirective (to be deleted)
+#@+node:ekr.20031218072017.1388:g.scanAtLineendingDirective (to be deleted)
+def scanAtLineendingDirective(theDict):
+
+    """Scan the @lineending directive at s[theDict["lineending"]:].
+
+    Returns the actual lineending or None if the name of the lineending is invalid.
+    """
+
+    e = theDict.get('lineending')
+
+    if e in ("cr","crlf","lf","nl","platform"):
+        lineending = g.getOutputNewline(name=e)
+        # g.trace(e,lineending)
+        return lineending
+    else:
+        # g.es("invalid @lineending directive:",e,color="red")
+        return None
+#@-node:ekr.20031218072017.1388:g.scanAtLineendingDirective (to be deleted)
+#@+node:ekr.20031218072017.1389:g.scanAtPagewidthDirective (to be deleted)
+def scanAtPagewidthDirective(theDict,issue_error_flag=False):
+
+    """Scan the @pagewidth directive at s[theDict["pagewidth"]:].
+
+    Returns the value of the width or None if the width is invalid.
+    """
+
+    s = theDict.get('pagewidth')
+    i, val = g.skip_long(s,0)
+
+    if val != None and val > 0:
+        # g.trace(val)
+        return val
+    else:
+        if issue_error_flag and not g.app.unitTesting:
+            g.es("ignoring @pagewidth",s,color="red")
+        return None
+#@-node:ekr.20031218072017.1389:g.scanAtPagewidthDirective (to be deleted)
+#@+node:ekr.20031218072017.1390:g.scanAtTabwidthDirective (to be deleted)
+def scanAtTabwidthDirective(theDict,issue_error_flag=False):
+
+    """Scan the @tabwidth directive at s[theDict["tabwidth"]:].
+
+    Returns the value of the width or None if the width is invalid.
+    """
+
+    s = theDict.get('tabwidth')
+    junk,val = g.skip_long(s,0)
+
+    if val != None and val != 0:
+        # g.trace(val)
+        return val
+    else:
+        if issue_error_flag:
+            g.es("ignoring",s,color="red")
+        return None
+#@-node:ekr.20031218072017.1390:g.scanAtTabwidthDirective (to be deleted)
+#@-node:ekr.20080923070954.2:To be deleted
 #@+node:EKR.20040504150046.4:g.comment_delims_from_extension
 def comment_delims_from_extension(filename):
 
@@ -521,25 +598,6 @@ def scanAtCommentAndAtLanguageDirectives(aList):
 
     return None
 #@-node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives (new)
-#@+node:ekr.20031218072017.1387:g.scanAtEncodingDirective (to be deleted)
-def scanAtEncodingDirective(theDict):
-
-    """Scan the @encoding directive at s[theDict["encoding"]:].
-
-    Returns the encoding name or None if the encoding name is invalid.
-    """
-
-    encoding = theDict.get('encoding')
-    if not encoding:
-        return None
-
-    if g.isValidEncoding(encoding):
-        # g.trace(encoding)
-        return encoding
-    else:
-        g.es("invalid @encoding:",encoding,color="red")
-        return None
-#@-node:ekr.20031218072017.1387:g.scanAtEncodingDirective (to be deleted)
 #@+node:ekr.20080827175609.32:g.scanAtEncodingDirectives (new)
 def scanAtEncodingDirectives(aList):
 
@@ -565,24 +623,6 @@ def scanAtHeaderDirectives(aList):
             g.es_print("conflicting @header and @noheader directives",color='red')
 #@nonl
 #@-node:ekr.20080827175609.53:g.scanAtHeaderDirectives (new)
-#@+node:ekr.20031218072017.1388:g.scanAtLineendingDirective (to be deleted)
-def scanAtLineendingDirective(theDict):
-
-    """Scan the @lineending directive at s[theDict["lineending"]:].
-
-    Returns the actual lineending or None if the name of the lineending is invalid.
-    """
-
-    e = theDict.get('lineending')
-
-    if e in ("cr","crlf","lf","nl","platform"):
-        lineending = g.getOutputNewline(name=e)
-        # g.trace(e,lineending)
-        return lineending
-    else:
-        # g.es("invalid @lineending directive:",e,color="red")
-        return None
-#@-node:ekr.20031218072017.1388:g.scanAtLineendingDirective (to be deleted)
 #@+node:ekr.20080827175609.33:g.scanAtLineendingDirectives (new)
 def scanAtLineendingDirectives(aList):
 
@@ -599,25 +639,6 @@ def scanAtLineendingDirectives(aList):
 
     return None
 #@-node:ekr.20080827175609.33:g.scanAtLineendingDirectives (new)
-#@+node:ekr.20031218072017.1389:g.scanAtPagewidthDirective (to be deleted)
-def scanAtPagewidthDirective(theDict,issue_error_flag=False):
-
-    """Scan the @pagewidth directive at s[theDict["pagewidth"]:].
-
-    Returns the value of the width or None if the width is invalid.
-    """
-
-    s = theDict.get('pagewidth')
-    i, val = g.skip_long(s,0)
-
-    if val != None and val > 0:
-        # g.trace(val)
-        return val
-    else:
-        if issue_error_flag and not g.app.unitTesting:
-            g.es("ignoring @pagewidth",s,color="red")
-        return None
-#@-node:ekr.20031218072017.1389:g.scanAtPagewidthDirective (to be deleted)
 #@+node:ekr.20080827175609.34:g.scanAtPagewidthDirectives (new)
 def scanAtPagewidthDirectives(aList,issue_error_flag=False):
 
@@ -676,25 +697,6 @@ def scanAtRootOptions (s,i,err_flag=False):
 
     return i,mode
 #@-node:ekr.20031218072017.3154:g.scanAtRootOptions
-#@+node:ekr.20031218072017.1390:g.scanAtTabwidthDirective (to be deleted)
-def scanAtTabwidthDirective(theDict,issue_error_flag=False):
-
-    """Scan the @tabwidth directive at s[theDict["tabwidth"]:].
-
-    Returns the value of the width or None if the width is invalid.
-    """
-
-    s = theDict.get('tabwidth')
-    junk,val = g.skip_long(s,0)
-
-    if val != None and val != 0:
-        # g.trace(val)
-        return val
-    else:
-        if issue_error_flag:
-            g.es("ignoring",s,color="red")
-        return None
-#@-node:ekr.20031218072017.1390:g.scanAtTabwidthDirective (to be deleted)
 #@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives (new)
 def scanAtTabwidthDirectives(aList,issue_error_flag=False):
 
