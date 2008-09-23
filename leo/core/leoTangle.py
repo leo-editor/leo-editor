@@ -3412,31 +3412,20 @@ class baseTangleCommands:
 
         return name
     #@-node:ekr.20031218072017.3598:standardize_name
-    #@+node:ekr.20031218072017.1360:tangle.scanAllDirectives (old)
-    #@+at 
-    #@nonl
-    # Once a directive is seen, related directives in ancesors have no 
-    # effect.  For example, if an @color directive is seen in node x, no 
-    # @color or @nocolor directives are examined in any ancestor of x.
-    #@-at
-    #@@c
-
+    #@+node:ekr.20080923124254.16:tangle.scanAllDirectives (new)
     def scanAllDirectives(self,p,require_path_flag,issue_error_flag):
 
         """Scan vnode p and p's ancestors looking for directives,
         setting corresponding tangle ivars and globals.
         """
 
-        # __pychecker__ = 'maxlines=500 maxbranches=100'
-
         c = self.c
-        # g.trace(p)
-        old = {} ; print_mode_changed = False
+        print_mode_changed = False
         self.init_directive_ivars()
         if p:
             s = p.bodyString()
             #@        << Collect @first attributes >>
-            #@+node:ekr.20031218072017.1361:<< Collect @first attributes >>
+            #@+node:ekr.20080923124254.17:<< Collect @first attributes >>
             #@+at 
             #@nonl
             # Stephen P. Schaefer 9/13/2002: Add support for @first.
@@ -3460,239 +3449,51 @@ class baseTangleCommands:
                     i = g.skip_nl(s,i)
                 if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
                     break
-            #@-node:ekr.20031218072017.1361:<< Collect @first attributes >>
+            #@-node:ekr.20080923124254.17:<< Collect @first attributes >>
             #@nl
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            #@        << Test for @comment and @language >>
-            #@+node:ekr.20031218072017.1362:<< Test for @comment and @language >>
-            if 'comment' in old or 'language' in old:
-                pass # Do nothing more.
 
-            elif 'comment' in theDict:
+        # delims = (self.single_comment_string,self.start_comment_string,self.end_comment_string)
+        lang_dict = {'language':self.language,'delims':None,} # Delims not used
 
-                z = theDict["comment"]
-                delim1,delim2,delim3 = g.set_delims_from_string(z)
-                if delim1 or delim2:
-                    self.single_comment_string = delim1
-                    self.start_comment_string = delim2
-                    self.end_comment_string = delim3
-                    # @comment effectively disables Untangle.
-                    self.language = "unknown"
-                else:
-                    if issue_error_flag:
-                        g.es("ignoring: @comment",z)
+        table = (
+            ('encoding',    self.encoding,  g.scanAtEncodingDirectives),
+            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lineending',  None,           g.scanAtLineendingDirectives),
+            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+            ('path',        None,           c.scanAtPathDirectives),
+            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        )
 
-            elif 'language' in theDict:
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,default,func in table:
+            val = func(aList)
+            d[key] = g.choose(val is None,default,val)
 
-                z = theDict["language"]
-                language,delim1,delim2,delim3 = g.set_language(z,0)
-                self.language = language
-                self.single_comment_string = delim1
-                self.start_comment_string = delim2
-                self.end_comment_string = delim3
-                if 0:
-                    g.trace(self.single_comment_string,
-                        self.start_comment_string,
-                        self.end_comment_string)
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        lineending      = d.get('lineending')
+        if lineending:
+            self.output_newline = lineending
+        self.encoding             = d.get('encoding')
+        self.language             = lang_dict.get('language')
+        self.page_width           = d.get('pagewidth')
+        self.default_directory    = d.get('path')
+        self.tab_width            = d.get('tabwidth')
 
-                # 10/30/02: These ivars must be updated here!
-                # g.trace(self.language)
-                self.use_noweb_flag = True
-                self.use_cweb_flag = False # Only raw cweb mode is ever used.
-                self.raw_cweb_flag = self.language == "cweb" # A new ivar.
-            #@-node:ekr.20031218072017.1362:<< Test for @comment and @language >>
-            #@nl
-            #@        << Test for @encoding >>
-            #@+node:ekr.20031218072017.1363:<< Test for @encoding >>
-            if 'encoding' not in old and 'encoding' in theDict:
-
-                e = g.scanAtEncodingDirective(theDict)
-                if e:
-                    self.encoding = e
-            #@-node:ekr.20031218072017.1363:<< Test for @encoding >>
-            #@nl
-            #@        << Test for @lineending >>
-            #@+node:ekr.20031218072017.1364:<< Test for @lineending >>
-            if 'lineending' not in old and 'lineending' in theDict:
-
-                lineending = g.scanAtLineendingDirective(theDict)
-                if lineending:
-                    self.output_newline = lineending
-            #@-node:ekr.20031218072017.1364:<< Test for @lineending >>
-            #@nl
-            #@        << Test for print modes directives >>
-            #@+node:ekr.20031218072017.1365:<< Test for print modes directives >>
-            #@+at 
-            #@nonl
-            # It is valid to have more than one of these directives in the 
-            # same body text: the more verbose directive takes precedence.
-            #@-at
-            #@@c
-
-            if not print_mode_changed:
-                for name in ("verbose","terse","quiet","silent"):
-                    if name in theDict:
-                        self.print_mode = name
-                        print_mode_changed = True
-                        break
-            #@-node:ekr.20031218072017.1365:<< Test for print modes directives >>
-            #@nl
-            #@        << Test for @path >>
-            #@+node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-            if require_path_flag and 'path' not in old and 'path' in theDict:
-
-                path = theDict["path"]
-                theDir = relative_path = g.computeRelativePath(path)
-
-                if len(theDir) > 0:
-                    base = g.getBaseDirectory(c=c) # May return "".
-                    if theDir and len(theDir) > 0:
-                        theDir = g.os_path_join(base,theDir)
-                        if g.os_path_isabs(theDir):
-                            #@                << handle absolute @path >>
-                            #@+node:ekr.20031218072017.1368:<< handle absolute @path >>
-                            if g.os_path_exists(theDir):
-                                self.tangle_directory = theDir
-                            else: # 11/19/02
-                                self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-                                if not self.tangle_directory:
-                                    if issue_error_flag and not self.path_warning_given:
-                                        self.path_warning_given = True # supress future warnings
-                                        self.error("@path directory does not exist: " + theDir)
-                                        if base and len(base) > 0:
-                                            g.es("relative_path_base_directory:",base)
-                                        if relative_path and len(relative_path) > 0:
-                                            g.es("relative path in @path directive:",relative_path)
-                            #@-node:ekr.20031218072017.1368:<< handle absolute @path >>
-                            #@nl
-                        elif issue_error_flag and not self.path_warning_given:
-                            self.path_warning_given = True # supress future warnings
-                            self.error("ignoring relative path in @path:" + theDir)
-                elif issue_error_flag and not self.path_warning_given:
-                    self.path_warning_given = True # supress future warnings
-                    self.error("ignoring empty @path")
-            #@-node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-            #@nl
-            #@        << Test for @pagewidth >>
-            #@+node:ekr.20031218072017.1369:<< Test for @pagewidth >>
-            if 'pagewidth' not in old and 'pagewidth' in theDict:
-
-                w = g.scanAtPagewidthDirective(theDict,issue_error_flag)
-                if w and w > 0:
-                    self.page_width = w
-            #@-node:ekr.20031218072017.1369:<< Test for @pagewidth >>
-            #@nl
-            #@        << Test for @root >>
-            #@+node:ekr.20031218072017.1370:<< Test for @root >>
-            #@+at 
-            #@nonl
-            # 10/27/02: new code:  self.root may not be defined here, so any 
-            # relative directory specified in the @root node will have no 
-            # effect unless we have this code.
-            # 
-            #@-at
-            #@@c
-            if self.root_name == None and 'root' in theDict:
-
-                z = theDict["root"]
-                self.setRootFromText(z,issue_error_flag)
-            #@-node:ekr.20031218072017.1370:<< Test for @root >>
-            #@nl
-            #@        << Test for @tabwidth >>
-            #@+node:ekr.20031218072017.1371:<< Test for @tabwidth >>
-            if 'tabwidth' not in old and 'tabwidth' in theDict:
-
-                w = g.scanAtTabwidthDirective(theDict,issue_error_flag)
-                if w and w != 0:
-                    self.tab_width = w
-            #@-node:ekr.20031218072017.1371:<< Test for @tabwidth >>
-            #@nl
-            #@        << Test for @header and @noheader >>
-            #@+node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
-            if 'header' in old or 'noheader' in old:
-                pass # Do nothing more.
-
-            elif 'header' in theDict and 'noheader' in theDict:
-                if issue_error_flag:
-                    g.es("conflicting @header and @noheader directives")
-
-            elif 'header' in theDict:
-                self.use_header_flag = True
-
-            elif 'noheader' in theDict:
-                self.use_header_flag = False
-            #@-node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
-            #@nl
-            old.update(theDict)
-        #@    << Set self.tangle_directory >>
-        #@+node:ekr.20031218072017.1373:<< Set self.tangle_directory >>
-        #@+at 
-        #@nonl
-        # This code sets self.tangle_directory if it has not already been set 
-        # by an @path directive.
-        # 
-        # An absolute file name in an @root directive will override the 
-        # directory set here.
-        # A relative file name gets appended later to the default directory.
-        # That is, the final file name will be 
-        # g.os_path_join(self.tangle_directory,fileName)
-        #@-at
-        #@@c
-
-        if c.frame and require_path_flag and not self.tangle_directory:
-            if self.root_name and len(self.root_name) > 0:
-                root_dir = g.os_path_dirname(self.root_name)
-            else:
-                root_dir = None
-            # g.pr("root_dir:", root_dir)
-
-            table = ( # This is a precedence table.
-                (root_dir,"@root"), 
-                (c.tangle_directory,"default tangle"), # Probably should be eliminated.
-                (c.frame.openDirectory,"open"))
-
-            base = g.getBaseDirectory(c=c) # May return ""
-
-            for dir2, kind in table:
-                if dir2 and len(dir2) > 0:
-                    # g.pr("base,theDir:",base,theDir)
-                    theDir = g.os_path_join(base,dir2)
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        #@                << handle absolute path >>
-                        #@+node:ekr.20031218072017.1374:<< handle absolute path >>
-                        if g.os_path_exists(theDir):
-                            if kind == "@root" and not g.os_path_isabs(root_dir):
-                                self.tangle_directory = base
-                            else:
-                                self.tangle_directory = theDir 
-                            break
-                        else: # 9/25/02
-                            self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-                            if not self.tangle_directory:
-                                # 10/27/02: It is an error for this not to exist now.
-                                self.error("@root directory does not exist:" + theDir)
-                                if base and len(base) > 0:
-                                    g.es("relative_path_base_directory:",base)
-                                if dir2 and len(dir2) > 0:
-                                    g.es('',kind,"directory:",dir2)
-                        #@-node:ekr.20031218072017.1374:<< handle absolute path >>
-                        #@nl
-
-        if not self.tangle_directory and require_path_flag: # issue_error_flag:
-            self.pathError("No absolute directory specified by @root, @path or Preferences.")
-        #@-node:ekr.20031218072017.1373:<< Set self.tangle_directory >>
-        #@nl
         # For unit testing.
         return {
             "encoding"  : self.encoding,
             "language"  : self.language,
             "lineending": self.output_newline,
             "pagewidth" : self.page_width,
-            "path"      : self.tangle_directory,
+            "path"      : self.default_directory,
             "tabwidth"  : self.tab_width,
         }
-    #@-node:ekr.20031218072017.1360:tangle.scanAllDirectives (old)
+
+    #@nonl
+    #@-node:ekr.20080923124254.16:tangle.scanAllDirectives (new)
     #@+node:ekr.20031218072017.3599:token_type
     def token_type(self,s,i,err_flag):
 
