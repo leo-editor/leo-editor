@@ -5810,7 +5810,7 @@ class baseCommands:
         if trace and verbose: g.trace('paths',paths)
 
         # Step 3: Compute the full, effective, absolute path.
-        if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
+        if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
         path = c.os_path_finalize_join(*paths)
         if trace and verbose: g.trace('joined path:',path)
 
@@ -5819,7 +5819,7 @@ class baseCommands:
             ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
             if not ok:
                 if force:
-                    g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+                    g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
                 path = absbase # Bug fix: 2008/9/18
 
         if trace: g.trace('returns',path)
@@ -5840,7 +5840,7 @@ class baseCommands:
         start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
 
         for d in aList:
-            root = d.get('root')
+            root = d.get('root') or ''
             if g.match_word(root,0,"-code"):
                 return "code"
             elif g.match_word(root,0,"-doc"):
