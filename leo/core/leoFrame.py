@@ -1630,28 +1630,15 @@ class leoFrame:
             else:
                 return True # Veto.
     #@-node:ekr.20031218072017.3692:promptForSave
-    #@+node:ekr.20031218072017.1375:scanForTabWidth
-    # Similar to code in scanAllDirectives.
-
+    #@+node:ekr.20031218072017.1375:frame.scanForTabWidth
     def scanForTabWidth (self,p):
 
         c = self.c ; w = c.tab_width
 
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            #@        << set w and break on @tabwidth >>
-            #@+node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
-            if 'tabwidth' in theDict:
-
-                val = g.scanAtTabwidthDirective(theDict,issue_error_flag=False)
-                if val and val != 0:
-                    w = val
-                    break
-            #@-node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
-            #@nl
-
-        c.frame.setTabWidth(w)
-    #@-node:ekr.20031218072017.1375:scanForTabWidth
+        aList = g.get_directives_dict_list(p)
+        w = g.scanAtTabwidthDirectives(aList)
+        c.frame.setTabWidth(w or c.tab_width)
+    #@-node:ekr.20031218072017.1375:frame.scanForTabWidth
     #@+node:ekr.20061119120006:Icon area convenience methods
     def addIconButton (self,*args,**keys):
         if self.iconBar: return self.iconBar.add(*args,**keys)
