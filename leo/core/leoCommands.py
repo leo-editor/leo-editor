@@ -5750,7 +5750,7 @@ class baseCommands:
             d[key] = g.choose(val is None,default,val)
 
         # Post process: do *not* set commander ivars.
-        lang_dict       = d.get('lang-dict')
+        lang_dict = d.get('lang-dict')
 
         return {
             "delims"        : lang_dict.get('delims'),
@@ -5760,7 +5760,7 @@ class baseCommands:
             "pagewidth"     : d.get('pagewidth'),
             "path"          : d.get('path') or g.getBaseDirectory(c),
             "tabwidth"      : d.get('tabwidth'),
-            "pluginsList"   : [],  ### To do: what about scan-directives hook?
+            "pluginsList"   : [], # No longer used.
             "wrap"          : d.get('wrap'),
         }
     #@nonl

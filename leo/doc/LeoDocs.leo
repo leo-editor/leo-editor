@@ -52,7 +52,7 @@
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848" a="M"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1" a="E"
+<v t="ekr.20080301071818.1"
 marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
@@ -2953,7 +2953,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080912143702.137"><vh>4.5.1 final</vh>
 <v t="ekr.20080912143702.138"><vh>Fixed line number problems</vh></v>
 <v t="ekr.20080912143702.139"><vh>Fixed problems with @shadow files with unknown file extensions</vh></v>
