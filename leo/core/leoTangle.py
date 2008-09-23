@@ -3412,7 +3412,7 @@ class baseTangleCommands:
 
         return name
     #@-node:ekr.20031218072017.3598:standardize_name
-    #@+node:ekr.20080923124254.16:tangle.scanAllDirectives (new)
+    #@+node:ekr.20080923124254.16:tangle.scanAllDirectives
     def scanAllDirectives(self,p,require_path_flag,issue_error_flag):
 
         """Scan vnode p and p's ancestors looking for directives,
@@ -3492,8 +3492,7 @@ class baseTangleCommands:
             "tabwidth"  : self.tab_width,
         }
 
-    #@nonl
-    #@-node:ekr.20080923124254.16:tangle.scanAllDirectives (new)
+    #@-node:ekr.20080923124254.16:tangle.scanAllDirectives
     #@+node:ekr.20031218072017.3599:token_type
     def token_type(self,s,i,err_flag):
 

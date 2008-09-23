@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,4,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -426,12 +426,12 @@
 <v t="ekr.20080920172621.63"><vh>mkbutton</vh></v>
 </v>
 </v>
-<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
+<v t="ekr.20080922164656.1" a="E"><vh>Tests of path expressions</vh>
 <v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
 <v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
 <v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
-<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
+<v t="ekr.20080923073240.2" a="E"><vh>@path {{c.config.getString('test')}}</vh>
 <v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
 </v>
 </v>
@@ -4678,7 +4678,7 @@ print g.os_path_finalize(path,c=c)</t>
 <t tx="ekr.20080922164255.2"></t>
 <t tx="ekr.20080922164656.1"></t>
 <t tx="ekr.20080923073240.1">{{c.config.getString('test')}}/eval-test.txt
-= 
+=
 c:\leo.repo\trunk\leo\test\eval-test.txt</t>
 <t tx="ekr.20080923073240.2"></t>
 </tnodes>

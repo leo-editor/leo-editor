@@ -4382,7 +4382,8 @@ def os_path_finalize_join (*args,**keys):
     if c: args = [g.os_path_expandExpression(path,**keys)
         for path in args if path]
 
-    return g.os_path_join(*args,**keys) # Handles expanduser
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
 #@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
@@ -5321,7 +5322,8 @@ def os_path_finalize_join (*args,**keys):
     if c: args = [g.os_path_expandExpression(path,**keys)
         for path in args if path]
 
-    return g.os_path_join(*args,**keys) # Handles expanduser
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
 #@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
@@ -5790,7 +5792,8 @@ def os_path_finalize_join (*args,**keys):
     if c: args = [g.os_path_expandExpression(path,**keys)
         for path in args if path]
 
-    return g.os_path_join(*args,**keys) # Handles expanduser
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
 #@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
