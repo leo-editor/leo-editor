@@ -3094,6 +3094,10 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20080918084804.1:Fixed goto-global-line crasher
+#@+node:ekr.20080923143214.1:Removed pychecker stuff
+# It's time.
+#@nonl
+#@-node:ekr.20080923143214.1:Removed pychecker stuff
 #@-node:ekr.20080917153158.12:Fixed bugs
 #@+node:ekr.20080917153158.15:New features
 #@+node:ekr.20080917153158.16:Added c.config.getSettingSource

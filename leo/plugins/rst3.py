@@ -820,7 +820,8 @@ class rstClass:
     def initCodeBlockString(self,p):
 
         # New in Leo 4.4.4: do this here, not in initWrite:
-        d = g.scanDirectives(c=self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         language = d.get('language')
         if language is None: language = 'python'
         else: language = language.lower()
@@ -1118,7 +1119,8 @@ class rstClass:
 
         # Set the encoding from any parent @encoding directive.
         # This can be overridden by @rst-option encoding=whatever.
-        d = g.scanDirectives(c=self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         self.encoding = encoding or d.get('encoding') or self.defaultEncoding
 
     #@-node:ekr.20050809075309:initWrite

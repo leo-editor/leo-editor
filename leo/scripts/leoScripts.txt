@@ -5467,7 +5467,7 @@ def __init__(self,lang,raw,title):
     if lang == 'python':
         cmtdelim = '#'
     else:
-        d = g.scanDirectives(c, p) 
+        d = c.scanAllDirectives(p) 
         cmtdelim = d.get('delims',['#'])
         cmtdelim = cmtdelim[0] or cmtdelim[1]
 
@@ -11368,7 +11368,7 @@ def __init__ (self,contentHandler,fileName):
     self.fileModeName = modeName
     self.modeName = munge(modeName).lower()
     self.outputFile = None # The open output file to which Python statements get written.
-    self.tab_width = g.scanDirectives(c).get('tab_width')
+    self.tab_width = c.scanAllDirectives().get('tab_width')
 
     # Mode statistics...
     self.numberOfAttributes = 0
@@ -14532,7 +14532,7 @@ def getAtFileName():
 
     fname = p.anyAtFileNodeName()
     if fname:
-        d = g.scanDirectives(c)
+        d = c.scanAllDirectives()
         path = d.get("path")
         fname = g.os_path_abspath(g.os_path_normpath(g.os_path_join(path, fname)))
 
@@ -14972,7 +14972,7 @@ c.redraw()
 current = c.currentPosition()
 for p in current.self_and_parents_iter():
     if p.isAnyAtFileNode():
-        d = g.scanDirectives(c,p=p)
+        d = c.scanAllDirectives(p)
         path = d.get('path')
         print g.os_path_join(path,p.atFileNodeName())
         break

@@ -115,7 +115,7 @@ class pluginController:
     def _getpath (self,p):
 
         c = self.c
-        dict = g.scanDirectives(c,p=p)
+        dict = c.scanAllDirectives(p)
         d = dict.get("path")
 
         if p.isAnyAtFileNode():
