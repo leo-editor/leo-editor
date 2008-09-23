@@ -3624,6 +3624,25 @@ else: # Emergency!
 # g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
 #@-node:ekr.20041005105605.235:<< Set comment strings from delims >>
 #@-node:ekr.20041005105605.222:atFile.OLDatFileAllDirectives
+#@+node:ekr.20080923124254.1:scanForTabWidth (old)
+def scanForTabWidth (self,p):
+
+    c = self.c ; w = c.tab_width
+
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << set w and break on @tabwidth >>
+
+    c.frame.setTabWidth(w)
+#@+node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
+if 'tabwidth' in theDict:
+
+    val = g.scanAtTabwidthDirective(theDict,issue_error_flag=False)
+    if val and val != 0:
+        w = val
+        break
+#@-node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
+#@-node:ekr.20080923124254.1:scanForTabWidth (old)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
