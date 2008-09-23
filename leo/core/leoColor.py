@@ -3077,58 +3077,41 @@ class colorizer:
 
         self.image_references = []
     #@-node:ekr.20031218072017.1944:removeAllImages (leoColor)
-    #@+node:ekr.20031218072017.1377:scanColorDirectives (leoColor)
+    #@+node:ekr.20080828103146.8:scanColorDirectives
     def scanColorDirectives(self,p):
 
-        """Scan position p and p's ancestors looking for @comment, @language and @root directives,
-        setting corresponding colorizer ivars.
-        """
+        '''Scan position p and p's ancestors looking for @comment, @language and @root directives,
+        setting corresponding colorizer ivars.'''
 
-        p = p.copy() ; c = self.c
-        if c == None: return # self.c may be None for testing.
+        c = self.c
+        if not c: return # May be None for testing.
 
-        if c.target_language:
-            c.target_language = c.target_language.lower()
-        self.language = language = c.target_language
-        self.comment_string = None
-        self.rootMode = None # None, "code" or "doc"
+        table = (
+            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+            ('root',        c.scanAtRootDirectives),
+        )
 
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            #@        << Test for @comment or @language >>
-            #@+node:ekr.20031218072017.1378:<< Test for @comment or @language >>
-            # @comment and @language may coexist in the same node.
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,func in table:
+            val = func(aList)
+            if val: d[key]=val
 
-            if 'comment' in theDict:
-                self.comment_string = theDict["comment"]
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        self.rootMode   = d.get('root') or None
 
-            if 'language' in theDict:
-                z = theDict["language"]
-                language,junk,junk,junk = g.set_language(z,0)
-                self.language = language
-
-            if 'comment' in theDict or 'language' in theDict:
-                break
-            #@-node:ekr.20031218072017.1378:<< Test for @comment or @language >>
-            #@nl
-            #@        << Test for @root, @root-doc or @root-code >>
-            #@+node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-            if 'root' in theDict and not self.rootMode:
-
-                root = theDict["root"]
-                if g.match_word(root,0,"@root-code"):
-                    self.rootMode = "code"
-                elif g.match_word(root,0,"@root-doc"):
-                    self.rootMode = "doc"
-                else:
-                    doc = c.config.at_root_bodies_start_in_doc_mode
-                    self.rootMode = g.choose(doc,"doc","code")
-            #@-node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-            #@nl
+        if lang_dict:
+            self.language       = lang_dict.get('language')
+            self.comment_string = lang_dict.get('comment')
+        else:
+            self.language       = c.target_language and c.target_language.lower()
+            self.comment_string = None
 
         # g.trace('self.language',self.language)
         return self.language # For use by external routines.
-    #@-node:ekr.20031218072017.1377:scanColorDirectives (leoColor)
+    #@-node:ekr.20080828103146.8:scanColorDirectives
     #@+node:ekr.20041217041016:setFontFromConfig (colorizer)
     def setFontFromConfig (self):
 
