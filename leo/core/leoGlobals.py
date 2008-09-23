@@ -365,8 +365,6 @@ def computeRelativePath (path):
         path = path[1:-1].strip()
 
     # We want a *relative* path, not an absolute path.
-    # path = g.os_path_join(g.app.loadDir,path)
-
     return path
 #@-node:ekr.20071109165315:g.computeRelativePath
 #@+node:ekr.20031218072017.1385:g.findReference
@@ -2117,6 +2115,11 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False):
         elif not app.config.create_nonexistent_directories:
             return None
 
+    g.trace(theDir)
+
+    if c:
+        theDir = g.os_path_expandExpression(theDir,c=c)
+
     dir1 = theDir = g.os_path_normpath(theDir)
 
     # Split theDir into all its component parts.
@@ -2138,6 +2141,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False):
                 os.mkdir(path)
                 g.es_print("created directory:",path,color='red')
             except Exception:
+                g.trace(g.callers())
                 g.es_print("exception creating directory:",path,color='red')
                 g.es_exception()
                 return None
@@ -3215,6 +3219,10 @@ def os_path_expandExpression (s,**keys):
     '''Expand {{anExpression}} in c's context.'''
 
     c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
     i = s.find('{{')
     j = s.find('}}')
     if -1 < i < j:
@@ -3223,17 +3231,15 @@ def os_path_expandExpression (s,**keys):
             try:
                 import os
                 import sys
-                p = c and c.currentPosition()
+                p = c.currentPosition()
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
                 s = s[:i] + str(val) + s[j+2:]
-                # g.trace('exp',exp,'val',val,'s',s)
             except Exception:
+                g.trace(g.callers())
                 g.es_exception(full=True, c=c, color='red')
 
     return s
-
-
 #@-node:ekr.20080922124033.6:os_path_expandExpression
 #@+node:ekr.20080921060401.13:os_path_expanduser
 def os_path_expanduser(path,encoding=None):
@@ -3256,21 +3262,23 @@ def os_path_finalize (path,**keys):
 
     There is no corresponding os.path method'''
 
-    encoding = keys.get('encoding')
+    c,encoding = keys.get('c'),keys.get('encoding')
 
-    path = g.os_path_expandExpression(path,**keys)
+    if c: path = g.os_path_expandExpression(path,**keys)
 
     path = g.os_path_expanduser(path,encoding=encoding)
-
     return os.path.normpath(os.path.abspath(path))
 
 def os_path_finalize_join (*args,**keys):
 
     '''Do os.path.join(*args), then finalize the result.'''
 
-    path = g.os_path_join(*args,**keys)
+    c,encoding = keys.get('c'),keys.get('encoding')
 
-    return g.os_path_finalize(path,**keys)
+    if c: args = [g.os_path_expandExpression(path,**keys)
+        for path in args if path]
+
+    return g.os_path_join(*args,**keys) # Handles expanduser
 #@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
@@ -3332,9 +3340,7 @@ def os_path_join(*args,**keys):
             uargs[0] = c.openDirectory
             # g.trace(c.openDirectory)
 
-    uargs = [g.os_path_expandExpression(z,c=c) for z in uargs]
-
-    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs]
+    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs if z]
 
     path = os.path.join(*uargs)
 

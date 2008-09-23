@@ -4281,7 +4281,7 @@ class atFile:
 
         self._forcedGnxPositionList.append(p.v)
     #@-node:ekr.20051219122720:atFile.forceGnxOnPosition
-    #@+node:ekr.20041005105605.222:atFile.scanAllDirectives
+    #@+node:ekr.20041005105605.222:atFile.scanAllDirectives (old)
     #@+at 
     #@nonl
     # Once a directive is seen, no other related directives in nodes further 
@@ -4354,9 +4354,9 @@ class atFile:
 
                 path = theDict["path"]
                 path = g.computeRelativePath(path)
-                if path and len(path) > 0:
+                if path:
                     base = g.getBaseDirectory(c) # returns "" on error.
-                    path = g.os_path_join(base,path)
+                    path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
                     if g.os_path_isabs(path):
                         #@            << handle absolute path >>
                         #@+node:ekr.20041005105605.227:<< handle absolute path >>
@@ -4451,7 +4451,7 @@ class atFile:
             base = g.getBaseDirectory(c) # returns "" on error.
             for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
                 if theDir and len(theDir) > 0:
-                    theDir = g.os_path_join(base,theDir)
+                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
                     if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
                         if g.os_path_exists(theDir):
                             self.default_directory = theDir ; break
@@ -4503,13 +4503,13 @@ class atFile:
             "path"      : self.default_directory,
             "tabwidth"  : self.tab_width,
         }
-    #@-node:ekr.20041005105605.222:atFile.scanAllDirectives
+    #@-node:ekr.20041005105605.222:atFile.scanAllDirectives (old)
     #@+node:ekr.20041005105605.236:atFile.scanDefaultDirectory
     def scanDefaultDirectory(self,p,importing=False):
 
         """Set default_directory ivar by looking for @path directives."""
 
-        at = self ; c = at.c
+        at = self ; c = at.c ; trace = False
         at.default_directory = None
         #@    << Set path from @file node >>
         #@+node:ekr.20041005105605.237:<< Set path from @file node >>
@@ -4533,6 +4533,7 @@ class atFile:
         #@-node:ekr.20041005105605.237:<< Set path from @file node >>
         #@nl
         if at.default_directory:
+            if trace: g.trace('returns',at.default_directory)
             return
 
         for p in p.self_and_parents_iter():
@@ -4547,7 +4548,7 @@ class atFile:
 
                 if path:
                     base = g.getBaseDirectory(c) # returns "" on error.
-                    path = g.os_path_join(base,path)
+                    path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
 
                     if g.os_path_isabs(path):
                         #@        << handle absolute path >>
@@ -4568,6 +4569,7 @@ class atFile:
                     at.error("ignoring empty @path")
                 #@-node:ekr.20041005105605.238:<< handle @path >>
                 #@nl
+                if trace: g.trace('returns',at.default_directory)
                 return
 
         #@    << Set current directory >>
@@ -4580,7 +4582,7 @@ class atFile:
             base = g.getBaseDirectory(c) # returns "" on error.
             for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
                 if theDir and len(theDir) > 0:
-                    theDir = g.os_path_join(base,theDir)
+                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
                     if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
                         if g.os_path_exists(theDir):
                             at.default_directory = theDir ; break
@@ -4593,6 +4595,8 @@ class atFile:
             at.error("No absolute directory specified anywhere.")
             g.trace(g.callers())
             at.default_directory = ""
+
+        if trace: g.trace('returns',at.default_directory)
     #@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
     #@+node:ekr.20070529083836:cleanLines
     def cleanLines (self,p,s):
