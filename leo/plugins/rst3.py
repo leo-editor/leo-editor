@@ -1142,7 +1142,8 @@ class rstClass:
             self.outputFile = open(self.outputFileName,'w')
             self.outputFile.write(self.stringOutput)
             self.outputFile.close()
-    #@nonl
+
+        return True
     #@-node:ekr.20050809080925:writeNormalTree
     #@+node:ekr.20051121102358:processTopTree
     def processTopTree (self,p,justOneFile=False):
@@ -1186,12 +1187,12 @@ class rstClass:
                     if self.ext in ('.htm','.html','.tex','.pdf'):
                         ok = self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
                     else:
-                        self.writeNormalTree(p,toString=toString)
+                        ok = self.writeNormalTree(p,toString=toString)
                     self.scanAllOptions(p) # Restore the top-level verbose setting.
                     if toString:
                         return p.copy(),self.stringOutput
                     else:
-                        self.report(self.outputFileName)
+                        if ok: self.report(self.outputFileName)
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
@@ -1222,11 +1223,12 @@ class rstClass:
 
             # Create the directory if it doesn't exist.
             theDir, junk = g.os_path_split(self.outputFileName)
+            theDir = c.os_path_finalize(theDir)
             if not g.os_path_exists(theDir):
                 ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
                 if not ok:
                     g.es_print('did not create:',theDir,color='red')
-                    return
+                    return False
 
             # if not os.access(theDir,os.F_OK):
                 # os.mkdir(theDir)

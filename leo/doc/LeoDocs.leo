@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -29,6 +29,7 @@
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
+<v t="ekr.20080923182326.1"><vh>@@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
@@ -48,6 +49,7 @@
 <v t="ekr.20051202072010"><vh>@string rst3_default_path =</vh></v>
 </v>
 </v>
+<v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
@@ -31954,6 +31956,27 @@ The following lines handle state 1::
 k.arg is the value returned by k.getArg.
 This example code just prints the value of k.arg and clears the input state.
 </t>
+<t tx="ekr.20080923181012.1">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = False
+verbose=True
+@c
+
+A test of creating directories.
+
+############
+html test
+############</t>
+<t tx="ekr.20080923182326.1">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
+
+True:  Leo attempts to create directories if they do not exist.
+False: Leo never attempts to create directories.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
