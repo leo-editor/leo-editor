@@ -493,8 +493,8 @@ class shadowController:
 
         x = self ; trace = False
 
-        old_public_lines  = file(old_public_file).readlines()
-        old_private_lines = file(old_private_file).readlines()
+        old_public_lines  = open(old_public_file).readlines()
+        old_private_lines = open(old_private_file).readlines()
         marker = x.marker_from_extension(old_public_file)
 
         if trace:
