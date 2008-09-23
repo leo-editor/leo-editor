@@ -618,7 +618,6 @@ if wx:
         '''A wrapper for wx.StyledTextCtrl.'''
 
         # The signatures of tag_add and insert are different from the Tk.Text signatures.
-        __pychecker__ = '--no-override' # suppress warning about changed signature.
 
         #@    @+others
         #@+node:bob.20070813163332.8:__init__
@@ -1032,13 +1031,7 @@ if wx:
         #@nonl
         #@-node:bob.20070813163332.156:stc.setInsertPoint
         #@+node:bob.20070813163332.157:stc.setSelectionRange
-
         def setSelectionRange (self,i,j,insert=None):
-
-            __pychecker__ = '--no-argsused' #  insert not used.
-
-
-            #g.trace(g.callers(20))
 
             py = self.toStcIndex
 
@@ -6832,8 +6825,6 @@ if wx:
         #@+node:bob.20070813163332.321:hideTab
         def hideTab (self,tabName):
 
-            __pychecker__ = '--no-argsused' # tabName
-
             self.selectTab('Log')
         #@-node:bob.20070813163332.321:hideTab
         #@+node:bob.20070813163332.322:numberOfVisibleTabs
@@ -7745,8 +7736,6 @@ if wx:
 
             """Handle clicks in the "go" button in a list box dialog."""
 
-            # __pychecker__ = '--no-argsused' # the event param must be present.
-
             c = self.c ; listbox = self.listbox
 
             # Work around an old Python bug.  Convert strings to ints.
@@ -8368,9 +8357,6 @@ if wx:
 
             Assumes that the canvas is in a valid state.
             """
-
-            __pychecker__ = '--no-argsused' # event not used.
-            __pychecker__ = '--no-intdivide' # suppress warning about integer division.
 
             c = self.c
             tree = self.treeCtrl
