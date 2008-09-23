@@ -587,9 +587,11 @@ def scanAtCommentAndAtLanguageDirectives(aList):
 
         # Important: assume @comment follows @language.
         if language:
+            # if g.unitTesting: g.trace('language',language)
             lang,delim1,delim2,delim3 = g.set_language(language,0)
 
         if comment:
+            # if g.unitTesting: g.trace('comment',comment)
             delim1,delim2,delim3 = g.set_delims_from_string(comment)
 
         if comment or language:
