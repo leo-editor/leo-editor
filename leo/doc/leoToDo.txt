@@ -2,8 +2,12 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
-#@+node:ekr.20080915112342.1:First 4
+#@+node:ekr.20080915112342.1:First 3
 
+#@+node:ekr.20080917154206.3:Finish at-path branch items
+Replace old scanDirectives routines with the new.
+#@nonl
+#@-node:ekr.20080917154206.3:Finish at-path branch items
 #@+node:ekr.20080921154026.17:rst3 stuff
 #@+node:ekr.20080921154026.3:Look into new rst3 crash
 @nocolor
@@ -107,16 +111,12 @@ the default for this option would be False.
 #@nonl
 #@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@-node:ekr.20080921154026.17:rst3 stuff
-#@+node:ekr.20080917154206.3:Finish at-path branch items
-Replace old scanDirectives routines with the new.
-#@nonl
-#@-node:ekr.20080917154206.3:Finish at-path branch items
 #@+node:ekr.20080922115725.1:Finish @shadow
 # Allow block comments in private shadow files.
 # Compute delims using the private shadow file, not the file extension!
 #@nonl
 #@-node:ekr.20080922115725.1:Finish @shadow
-#@-node:ekr.20080915112342.1:First 4
+#@-node:ekr.20080915112342.1:First 3
 #@+node:ekr.20080918164844.6:Recent 7
 #@+node:ekr.20080918164844.11:Play with ishadow extension to ipython
 @nocolor

@@ -2577,8 +2577,6 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False):
         elif not app.config.create_nonexistent_directories:
             return None
 
-    g.trace(theDir)
-
     if c:
         theDir = g.os_path_expandExpression(theDir,c=c)
 
@@ -6813,6 +6811,772 @@ headline_text_font_weight = normal
 #@nonl
 #@-node:ekr.20080922124033.3:Enter tree pane after clone-find-all
 #@+node:ekr.20080921154026.7:Added support for {{exp}}
+#@+node:ekr.20080922170408.1:Made {{exp}} work in @path
+#@+node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
+@ Note: all these methods return Unicode strings. It is up to the user to
+convert to an encoded string as needed, say when opening a file.
+#@+node:ekr.20031218072017.2146:os_path_abspath
+def os_path_abspath(path,encoding=None):
+
+    """Convert a path to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.abspath(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20031218072017.2146:os_path_abspath
+#@+node:ekr.20031218072017.2147:os_path_basename
+def os_path_basename(path,encoding=None):
+
+    """Return the second half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.basename(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20031218072017.2147:os_path_basename
+#@+node:ekr.20031218072017.2148:os_path_dirname
+def os_path_dirname(path,encoding=None):
+
+    """Return the first half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.dirname(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20031218072017.2148:os_path_dirname
+#@+node:ekr.20031218072017.2149:os_path_exists
+def os_path_exists(path,encoding=None):
+
+    """Normalize the path and convert it to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return os.path.exists(path)
+#@-node:ekr.20031218072017.2149:os_path_exists
+#@+node:ekr.20080922124033.6:os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.currentPosition()
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+#@-node:ekr.20080922124033.6:os_path_expandExpression
+#@+node:ekr.20080921060401.13:os_path_expanduser
+def os_path_expanduser(path,encoding=None):
+
+    """wrap os.path.expanduser"""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    result = os.path.normpath(os.path.expanduser(path))
+
+    # g.trace('path',path,'expanduser', result)
+
+    return result
+#@-node:ekr.20080921060401.13:os_path_expanduser
+#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c,encoding = keys.get('c'),keys.get('encoding')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path,encoding=encoding)
+    return os.path.normpath(os.path.abspath(path))
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c,encoding = keys.get('c'),keys.get('encoding')
+
+    if c: args = [g.os_path_expandExpression(path,**keys)
+        for path in args if path]
+
+    return g.os_path_join(*args,**keys) # Handles expanduser
+#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20031218072017.2150:os_path_getmtime
+def os_path_getmtime(path,encoding=None):
+
+    """Normalize the path and convert it to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return os.path.getmtime(path)
+#@-node:ekr.20031218072017.2150:os_path_getmtime
+#@+node:ekr.20080729142651.2:os_path_getsize
+def os_path_getsize (path,encoding=None):
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return os.path.getsize(path)
+#@-node:ekr.20080729142651.2:os_path_getsize
+#@+node:ekr.20031218072017.2151:os_path_isabs
+def os_path_isabs(path,encoding=None):
+
+    """Normalize the path and convert it to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return os.path.isabs(path)
+#@-node:ekr.20031218072017.2151:os_path_isabs
+#@+node:ekr.20031218072017.2152:os_path_isdir
+def os_path_isdir(path,encoding=None):
+
+    """Normalize the path and convert it to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return os.path.isdir(path)
+#@-node:ekr.20031218072017.2152:os_path_isdir
+#@+node:ekr.20031218072017.2153:os_path_isfile
+def os_path_isfile(path,encoding=None):
+
+    """Normalize the path and convert it to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return os.path.isfile(path)
+#@-node:ekr.20031218072017.2153:os_path_isfile
+#@+node:ekr.20031218072017.2154:os_path_join
+def os_path_join(*args,**keys):
+
+    c = keys.get('c')
+    encoding = keys.get('encoding')
+
+    uargs = [g.toUnicodeFileEncoding(arg,encoding) for arg in args]
+
+    # Note:  This is exactly the same convention as used by getBaseDirectory.
+    if uargs and uargs[0] == '!!':
+        uargs[0] = g.app.loadDir
+    elif uargs and uargs[0] == '.':
+        c = keys.get('c')
+        if c and c.openDirectory:
+            uargs[0] = c.openDirectory
+            # g.trace(c.openDirectory)
+
+    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs if z]
+
+    path = os.path.join(*uargs)
+
+    # May not be needed on some Pythons.
+    path = g.toUnicodeFileEncoding(path,encoding)
+    return path
+#@-node:ekr.20031218072017.2154:os_path_join
+#@+node:ekr.20031218072017.2156:os_path_normcase
+def os_path_normcase(path,encoding=None):
+
+    """Normalize the path's case."""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.normcase(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20031218072017.2156:os_path_normcase
+#@+node:ekr.20031218072017.2157:os_path_normpath
+def os_path_normpath(path,encoding=None):
+
+    """Normalize the path."""
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.normpath(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20031218072017.2157:os_path_normpath
+#@+node:ekr.20080605064555.2:os_path_realpath
+def os_path_realpath(path,encoding=None):
+
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20080605064555.2:os_path_realpath
+#@+node:ekr.20031218072017.2158:os_path_split
+def os_path_split(path,encoding=None):
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    head,tail = os.path.split(path)
+
+    head = g.toUnicodeFileEncoding(head,encoding)
+    tail = g.toUnicodeFileEncoding(tail,encoding)
+
+    return head,tail
+#@-node:ekr.20031218072017.2158:os_path_split
+#@+node:ekr.20031218072017.2159:os_path_splitext
+def os_path_splitext(path,encoding=None):
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    head,tail = os.path.splitext(path)
+
+    head = g.toUnicodeFileEncoding(head,encoding)
+    tail = g.toUnicodeFileEncoding(tail,encoding)
+
+    return head,tail
+#@-node:ekr.20031218072017.2159:os_path_splitext
+#@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
+def toUnicodeFileEncoding(path,encoding):
+
+    if path: path = path.replace('\\', os.sep)
+
+    if not encoding:
+        if sys.platform == "win32" or sys.platform.lower().startswith('java'):
+            # encoding = "mbcs" # Leo 4.2 and previous.
+            encoding = 'utf-8' # New in Leo 4.3
+        else:
+            encoding = app.tkEncoding
+
+    # Yes, this is correct.  All os_path_x functions return Unicode strings.
+    return g.toUnicode(path,encoding)
+#@-node:ekr.20031218072017.2160:toUnicodeFileEncoding
+#@-node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
+#@+node:ekr.20041005105605.222:atFile.scanAllDirectives (old)
+@ Once a directive is seen, no other related directives in nodes further up the tree have any effect.  For example, if an @color directive is seen in node p, no @color or @nocolor directives are examined in any ancestor of p.
+
+This code is similar to Commands.scanAllDirectives, but it has been modified for use by the atFile class.
+@c
+
+def scanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+):
+
+    """Scan position p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.
+    """
+
+    # __pychecker__ = '--maxlines=400'
+    # g.stat()
+
+    c = self.c
+    << Set ivars >>
+    << Set path from @file node >>
+    old = {}
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << Test for @path >>
+        << Test for @encoding >>
+        << Test for @comment and @language >>
+        << Test for @header and @noheader >>
+        << Test for @lineending >>
+        << Test for @pagewidth >>
+        << Test for @tabwidth >>
+        old.update(theDict)
+    << Set current directory >>
+    if not importing and not reading:
+        # 5/19/04: don't override comment delims when reading!
+        << Set comment strings from delims >>
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.default_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20041005105605.223:<< Set ivars >>
+self.page_width = self.c.page_width
+self.tab_width  = self.c.tab_width
+
+self.default_directory = None # 8/2: will be set later.
+
+# g.trace(c.target_language)
+
+if c.target_language:
+    c.target_language = c.target_language.lower() # 6/20/05
+delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
+self.language = c.target_language
+
+self.encoding = c.config.default_derived_file_encoding
+self.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+#@-node:ekr.20041005105605.223:<< Set ivars >>
+#@+node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName() # 4/28/04
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        self.default_directory = theDir
+    else: # 9/25/02
+        self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not self.default_directory:
+            self.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
+#@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
+# We set the current director to a path so future writes will go to that directory.
+
+if not self.default_directory and not 'path' in old and 'path' in theDict:
+
+    path = theDict["path"]
+    path = g.computeRelativePath(path)
+    if path:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
+        if g.os_path_isabs(path):
+            << handle absolute path >>
+        else:
+            self.error("ignoring bad @path: %s" % path)
+    else:
+        self.error("ignoring empty @path")
+#@+node:ekr.20041005105605.227:<< handle absolute path >>
+# path is an absolute path.
+
+if g.os_path_exists(path):
+    self.default_directory = path
+else:
+    self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+    if not self.default_directory:
+        self.error("invalid @path: %s" % path)
+#@-node:ekr.20041005105605.227:<< handle absolute path >>
+#@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
+#@+node:ekr.20041005105605.228:<< Test for @encoding >>
+if not 'encoding' in old and 'encoding' in theDict:
+
+    e = g.scanAtEncodingDirective(theDict)
+    if e:
+        self.encoding = e
+#@-node:ekr.20041005105605.228:<< Test for @encoding >>
+#@+node:ekr.20041005105605.230:<< Test for @header and @noheader >>
+# EKR: 10/10/02: perform the sames checks done by tangle.scanAllDirectives.
+
+if 'header' in theDict and 'noheader' in theDict:
+    g.es("conflicting @header and @noheader directives")
+#@-node:ekr.20041005105605.230:<< Test for @header and @noheader >>
+#@+node:ekr.20041005105605.229:<< Test for @comment and @language >>
+# 10/17/02: @language and @comment may coexist in @file trees.
+# For this to be effective the @comment directive should follow the @language directive.
+
+# 1/23/05: Any previous @language or @comment prevents processing up the tree.
+# This code is now like the code in tangle.scanAlldirectives.
+
+if 'comment' in old or 'language' in old:
+    pass # Do nothing more.
+
+elif 'comment' in theDict:
+    z = theDict["comment"]
+    delim1, delim2, delim3 = g.set_delims_from_string(z)
+
+elif 'language' in theDict:
+    z = theDict["language"]
+    self.language,delim1,delim2,delim3 = g.set_language(z,0)
+#@-node:ekr.20041005105605.229:<< Test for @comment and @language >>
+#@+node:ekr.20041005105605.231:<< Test for @lineending >>
+if 'lineending' not in old and 'lineending' in theDict:
+
+    lineending = g.scanAtLineendingDirective(theDict)
+    if lineending:
+        self.explicitLineEnding = True
+        self.output_newline = lineending
+        # g.trace(p.headString(),'lineending',repr(lineending))
+#@-node:ekr.20041005105605.231:<< Test for @lineending >>
+#@+node:ekr.20041005105605.232:<< Test for @pagewidth >>
+if 'pagewidth' in theDict and 'pagewidth' not in old:
+
+    w = g.scanAtPagewidthDirective(theDict,issue_error_flag=True)
+    if w and w > 0:
+        self.page_width = w
+#@-node:ekr.20041005105605.232:<< Test for @pagewidth >>
+#@+node:ekr.20041005105605.233:<< Test for @tabwidth >>
+if 'tabwidth' in theDict and 'tabwidth' not in old:
+
+    w = g.scanAtTabwidthDirective(theDict,issue_error_flag=True)
+    if w and w != 0:
+        self.tab_width = w
+#@-node:ekr.20041005105605.233:<< Test for @tabwidth >>
+#@+node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+if c.frame and not self.default_directory:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    self.default_directory = theDir ; break
+                else: # 9/25/02
+                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+
+if not self.default_directory and not scripting and not importing:
+    # This should never happen: c.openDirectory should be a good last resort.
+    self.error("No absolute directory specified anywhere.")
+    g.trace(g.callers())
+    self.default_directory = ""
+#@-node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
+#@+node:ekr.20041005105605.235:<< Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    self.language = "python"
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    self.startSentinelComment = delim1
+    self.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    self.startSentinelComment = delim2
+    self.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    self.startSentinelComment = "#" # This should never happen!
+    self.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@-node:ekr.20041005105605.235:<< Set comment strings from delims >>
+#@-node:ekr.20041005105605.222:atFile.scanAllDirectives (old)
+#@+node:ekr.20041005105605.236:atFile.scanDefaultDirectory
+def scanDefaultDirectory(self,p,importing=False):
+
+    """Set default_directory ivar by looking for @path directives."""
+
+    at = self ; c = at.c ; trace = False
+    at.default_directory = None
+    << Set path from @file node >>
+    if at.default_directory:
+        if trace: g.trace('returns',at.default_directory)
+        return
+
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        if 'path' in theDict:
+            << handle @path >>
+            if trace: g.trace('returns',at.default_directory)
+            return
+
+    << Set current directory >>
+    if not at.default_directory and not importing:
+        # This should never happen: c.openDirectory should be a good last resort.
+        at.error("No absolute directory specified anywhere.")
+        g.trace(g.callers())
+        at.default_directory = ""
+
+    if trace: g.trace('returns',at.default_directory)
+#@+node:ekr.20041005105605.237:<< Set path from @file node >>
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName()
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+# g.trace('at.default_directory',at.default_directory)
+# g.trace('theDir',theDir)
+
+if theDir and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        at.default_directory = theDir
+    else:
+        at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not at.default_directory:
+            at.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20041005105605.237:<< Set path from @file node >>
+#@+node:ekr.20041005105605.238:<< handle @path >>
+# We set the current director to a path so future writes will go to that directory.
+
+path = theDict["path"]
+path = g.computeRelativePath (path)
+
+if path:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
+
+    if g.os_path_isabs(path):
+        << handle absolute path >>
+    else:
+        at.error("ignoring bad @path: %s" % path)
+else:
+    at.error("ignoring empty @path")
+#@+node:ekr.20041005105605.240:<< handle absolute path >>
+# path is an absolute path.
+
+if g.os_path_exists(path):
+    at.default_directory = path
+else:
+    at.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+    if not at.default_directory:
+        at.error("invalid @path: %s" % path)
+#@-node:ekr.20041005105605.240:<< handle absolute path >>
+#@-node:ekr.20041005105605.238:<< handle @path >>
+#@+node:ekr.20041005105605.241:<< Set current directory >>
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+assert(not at.default_directory)
+
+if c.frame :
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    at.default_directory = theDir ; break
+                else:
+                    at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+#@-node:ekr.20041005105605.241:<< Set current directory >>
+#@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
+#@+node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+def os_path_finalize (self,path,**keys):
+
+    c = self
+
+    keys['c'] = c
+
+    return g.os_path_finalize(path,**keys)
+
+def os_path_finalize_join (self,*args,**keys):
+
+    c = self
+
+    keys['c'] = c
+
+    return g.os_path_finalize_join(*args,**keys)
+#@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+
+def scanAtPathDirectives(self,aList,force=False):
+
+    '''Scan aList for @path directives.'''
+
+    c = self ; trace = False ; verbose = False
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if path:
+            # Convert "path" or <path> to path.
+            path = g.computeRelativePath(path)
+            if path: paths.append(path)
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    if trace and verbose: g.trace('paths',paths)
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = c.os_path_finalize(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    z = g.choose(atAuto,'@auto ','')
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20071109165315:g.computeRelativePath
+def computeRelativePath (path):
+
+    if len(path) > 2 and (
+        (path[0]=='<' and path[-1] == '>') or
+        (path[0]=='"' and path[-1] == '"') or
+        (path[0]=="'" and path[-1] == "'")
+    ):
+        path = path[1:-1].strip()
+
+    # We want a *relative* path, not an absolute path.
+    return path
+#@-node:ekr.20071109165315:g.computeRelativePath
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False):
+
+    """Attempt to make all non-existent directories"""
+
+    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
+
+    if not force:
+        if c:
+            if not c.config.create_nonexistent_directories:
+                return None
+        elif not app.config.create_nonexistent_directories:
+            return None
+
+    if c:
+        theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                g.es_print("created directory:",path,color='red')
+            except Exception:
+                g.trace(g.callers())
+                g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 #@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
 
@@ -6864,51 +7628,56 @@ def os_path_join(*args,**keys):
     path = g.toUnicodeFileEncoding(path,encoding)
     return path
 #@-node:ekr.20031218072017.2154:os_path_join
-#@+node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
-def os_path_finalize (self,path,**keys):
+#@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+def readOneAtShadowNode (self,fn,p):
 
-    c = self
+    at = self ; c = at.c ; x = c.shadowController
 
-    keys['c'] = c
+    if not fn == p.atShadowFileNodeName():
+        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
+            fn, p.atShadowFileNodeName()))
 
-    return g.os_path_finalize(path,**keys)
+    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
-def os_path_finalize_join (self,*args,**keys):
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    shadow_fn     = x.shadowPathName(fn)
+    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
-    c = self
+    if shadow_exists:
+        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+        at.read(p,thinFile=True,atShadow=True)
+    else:
+        if not g.unitTesting: g.es("reading:",p.headString())
+        ok = at.importAtShadowNode(fn,p)
+        if ok:
+            # Create the private file automatically.
+            at.writeOneAtShadowNode(p,toString=False,force=True)
+#@+node:ekr.20080712080505.1:importAtShadowNode
+def importAtShadowNode (self,fn,p):
 
-    keys['c'] = c
+    at = self ; c = at.c  ; ic = c.importCommands
+    oldChanged = c.isChanged()
 
-    return g.os_path_finalize_join(*args,**keys)
-#@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
-#@+node:ekr.20080922124033.6:os_path_expandExpression
-def os_path_expandExpression (s,**keys):
+    # Delete all the child nodes.
+    while p.hasChildren():
+        p.firstChild().doDelete()
 
-    '''Expand {{anExpression}} in c's context.'''
+    # Import the outline, exactly as @auto does.
+    ic.createOutline(fn,parent=p.copy(),atAuto=True)
 
-    c = keys.get('c')
-    if not c:
-        g.trace('can not happen: no c',g.callers())
-        return s
+    if ic.errors:
+        g.es_print('errors inhibited read @shadow',fn,color='red')
 
-    i = s.find('{{')
-    j = s.find('}}')
-    if -1 < i < j:
-        exp = s[i+2:j].strip()
-        if exp:
-            try:
-                import os
-                import sys
-                p = c.currentPosition()
-                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
-                val = eval(exp,d)
-                s = s[:i] + str(val) + s[j+2:]
-            except Exception:
-                g.trace(g.callers())
-                g.es_exception(full=True, c=c, color='red')
+    if ic.errors or not g.os_path_exists(fn):
+        p.clearDirty()
+        c.setChanged(oldChanged)
 
-    return s
-#@-node:ekr.20080922124033.6:os_path_expandExpression
+    # else: g.doHook('after-shadow', p = p)
+
+    return ic.errors == 0
+#@-node:ekr.20080712080505.1:importAtShadowNode
+#@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+#@-node:ekr.20080922170408.1:Made {{exp}} work in @path
 #@-node:ekr.20080921154026.7:Added support for {{exp}}
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080922124033.2:Documentation

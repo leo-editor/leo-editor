@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6,5,10,23,15"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -810,7 +810,7 @@
 <v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -893,7 +893,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -1884,7 +1884,7 @@
 <v t="ekr.20061104172236.23"><vh>@test tkBody.onClick</vh></v>
 <v t="ekr.20071113202153.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194033.3" a="E"><vh>leoGlobals</vh>
+<v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
 <v t="ekr.20050208051418" annotate="7d71002e"><vh> Unicode tests</vh>
 <v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
 <v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
@@ -1924,7 +1924,7 @@
 <v t="ekr.20080917151620.6"><vh>@@test g.scanAtLineendingDirective nl</vh></v>
 <v t="ekr.20080917151620.7"><vh>@@test g.scanAtLineendingDirective platform</vh></v>
 </v>
-<v t="ekr.20080917151620.8" a="E"><vh>Directives, new</vh>
+<v t="ekr.20080917151620.8"><vh>Directives, new</vh>
 <v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20080917151620.10"><vh>@test c.scanAtRootDirectives root-code</vh></v>
 <v t="ekr.20080917151620.11"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
