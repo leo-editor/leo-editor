@@ -4312,11 +4312,6 @@ class atFile:
         #@-node:ekr.20080923070954.14:<< Set ivars >>
         #@nl
 
-        # Set defaults
-        # if c.target_language:
-            # c.target_language = c.target_language.lower()
-        # delims = g.set_delims_from_language(c.target_language)
-
         lang_dict = {'language':at.language,'delims':delims,}
 
         table = (
@@ -4338,7 +4333,6 @@ class atFile:
         # Post process.
         lang_dict       = d.get('lang-dict')
         delims          = lang_dict.get('delims')
-        lang_dict       = d.get('lang-dict')
         lineending      = d.get('lineending')
         if lineending:
             at.explicitLineEnding = True
