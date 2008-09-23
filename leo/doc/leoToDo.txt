@@ -4,10 +4,6 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First 3
 
-#@+node:ekr.20080917154206.3:Finish at-path branch items
-Replace old scanDirectives routines with the new.
-#@nonl
-#@-node:ekr.20080917154206.3:Finish at-path branch items
 #@+node:ekr.20080921154026.17:rst3 stuff
 #@+node:ekr.20080921154026.3:Look into new rst3 crash
 @nocolor

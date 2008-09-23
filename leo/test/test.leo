@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6,4,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -426,7 +426,7 @@
 <v t="ekr.20080920172621.63"><vh>mkbutton</vh></v>
 </v>
 </v>
-<v t="ekr.20080922164656.1" a="E"><vh>Tests of path expressions</vh>
+<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
 <v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
 <v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
@@ -435,6 +435,7 @@
 <v t="ekr.20080923073240.1"><vh>@@shadow eval-thin-test.txt</vh></v>
 </v>
 </v>
+<v t="ekr.20080923112536.1"><vh>@language c</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -4681,5 +4682,6 @@ print g.os_path_finalize(path,c=c)</t>
 = 
 c:\leo.repo\trunk\leo\test\eval-test.txt</t>
 <t tx="ekr.20080923073240.2"></t>
+<t tx="ekr.20080923112536.1"></t>
 </tnodes>
 </leo_file>

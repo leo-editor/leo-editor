@@ -3323,157 +3323,103 @@ Brian Theado
 @language python
 @color
 #@nonl
-#@+node:ekr.20041219072416.1:<< import other early files>> (runLeo.py)
-import leo.core.leoNodes as leoNodes
-import leo.core.leoConfig as leoConfig
+#@+node:ekr.20080923070954.8:From at.scanAllDirectives (does not include recent bug fixes!)
+#@+node:ekr.20080923070954.5:<< Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    at.language = "python"
 
-# There is a circular dependency between leoCommands and leoEditCommands.
-import leo.core.leoCommands as leoCommands
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
 
-# New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
-# This prevents a crash when run is called repeatedly from IPython's lleo extension.
-import leo.core.leoPlugins as leoPlugins
-leoPlugins.init()
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@-node:ekr.20080923070954.5:<< Set comment strings from delims >>
+#@+node:ekr.20080923070954.6:<< Set current directory >> (atFile.scanAllDirectives)
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
 
-g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-g.app.config = leoConfig.configClass()
-#@nonl
-#@-node:ekr.20041219072416.1:<< import other early files>> (runLeo.py)
-#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >> (runLeo.py)
-if jyLeo:
-    print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
+if c.frame and not self.default_directory:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    self.default_directory = theDir ; break
+                else: # 9/25/02
+                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
 
-# Add the current directory to sys.path *before* importing g.
-# This will fail if the current directory contains unicode characters...
-path = os.getcwd()
-if path not in sys.path:
-    # print('appending %s to sys.path' % path)
-    sys.path.append(path)
+if not self.default_directory and not scripting and not importing:
+    # This should never happen: c.openDirectory should be a good last resort.
+    g.trace()
+    self.error("No absolute directory specified anywhere.")
+    self.default_directory = ""
+#@-node:ekr.20080923070954.6:<< Set current directory >> (atFile.scanAllDirectives)
+#@-node:ekr.20080923070954.8:From at.scanAllDirectives (does not include recent bug fixes!)
+#@+node:ekr.20031218072017.1377:OLDscanColorDirectives (leoColor) (old)
+def OLDscanColorDirectives(self,p):
 
-# Import leoGlobals, but do NOT set g.
-import leo.core.leoGlobals as leoGlobals
+    """Scan position p and p's ancestors looking for @comment, @language and @root directives,
+    setting corresponding colorizer ivars.
+    """
 
-# Set leoGlobals.g here, rather than in leoGlobals.py.
-leoGlobals.g = leoGlobals
+    p = p.copy() ; c = self.c
+    if c == None: return # self.c may be None for testing.
 
-import leo.core.leoApp as leoApp
+    if c.target_language:
+        c.target_language = c.target_language.lower()
+    self.language = language = c.target_language
+    self.comment_string = None
+    self.rootMode = None # None, "code" or "doc"
 
-# Create the app.
-leoGlobals.app = leoApp.LeoApp()
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << Test for @comment or @language >>
+        << Test for @root, @root-doc or @root-code >>
 
-# **now** we can set g.
-g = leoGlobals
-assert(g.app)
+    # g.trace('self.language',self.language)
+    return self.language # For use by external routines.
+#@+node:ekr.20031218072017.1378:<< Test for @comment or @language >>
+# @comment and @language may coexist in the same node.
 
-#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >> (runLeo.py)
-#@+node:ekr.20080921060401.9:doEarlyInits
-def doEarlyInits(verbose):
+if 'comment' in theDict:
+    self.comment_string = theDict["comment"]
 
-    import leo.core.leoGlobals as g
-    import leo.core.leoNodes as leoNodes
-    import leo.core.leoConfig as leoConfig
+if 'language' in theDict:
+    z = theDict["language"]
+    language,junk,junk,junk = g.set_language(z,0)
+    self.language = language
 
-    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+if 'comment' in theDict or 'language' in theDict:
+    break
+#@-node:ekr.20031218072017.1378:<< Test for @comment or @language >>
+#@+node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
+if 'root' in theDict and not self.rootMode:
 
-    # There is a circular dependency between leoCommands and leoEditCommands.
-    import leo.core.leoCommands as leoCommands
-
-    # New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
-    # This prevents a crash when run is called repeatedly from IPython's lleo extension.
-    import leo.core.leoPlugins as leoPlugins
-    leoPlugins.init()
-
-    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-    g.app.config = leoConfig.configClass()
-#@-node:ekr.20080921060401.9:doEarlyInits
-#@+node:ekr.20080921060401.10:initGandApp
-def initGandApp ():
-
-    # Add the current directory to sys.path *before* importing g.
-    # This will fail if the current directory contains unicode characters...
-    path = os.getcwd()
-    if path not in sys.path:
-        # print('appending %s to sys.path' % path)
-        sys.path.append(path)
-
-    # Import leoGlobals, but do NOT set g.
-    import leo.core.leoGlobals as leoGlobals
-
-    # Set leoGlobals.g here, rather than in leoGlobals.py.
-    leoGlobals.g = leoGlobals
-
-    import leo.core.leoApp as leoApp
-
-    # Create the app.
-    leoGlobals.app = leoApp.LeoApp()
-
-    # **now** we can set g.
-    g = leoGlobals
-    assert(g.app)
-
-    return g
-#@-node:ekr.20080921060401.10:initGandApp
-#@+node:ekr.20080921154026.2:c.newHelper
-def newHelper (self,c,frame,importFileName=None):
-
-    # Needed for plugins.
-    if not importFileName:
-        g.doHook("new",old_c=self,c=c,new_c=c)
-    # Use the config params to set the size and location of the window.
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-
-    if importFileName:
-        junk,ext = g.os_path_splitext(importFileName)
-        p = c.currentPosition()
-        p = c.importCommands.createOutline(importFileName,parent=p,atAuto=False,ext=ext)
-        c.setCurrentPosition(p)
-        c.moveOutlineLeft()
-        p = c.currentPosition()
-        c.setCurrentPosition(p.back())
-        c.deleteOutline(op_name=None)
-        p = c.currentPosition()
-        p.expand()
+    root = theDict["root"]
+    if g.match_word(root,0,"@root-code"):
+        self.rootMode = "code"
+    elif g.match_word(root,0,"@root-doc"):
+        self.rootMode = "doc"
     else:
-        v = leoNodes.vnode(context=c)
-        v.initHeadString(g.choose(importFileName,importFileName,'NewHeadline'))
-        p = leoNodes.position(v)
-        p._linkAsRoot(oldRoot=None)
-            # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.setCurrentPosition(p)
-        c.editPosition(p)
-
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
-
-    if not importFileName:
-        # We will do this later if we are importing.
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
-
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-
-    if importFileName: frame.c.setChanged(True)
-
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-    # Force a call to c.outerUpdate.
-    # This is needed when we execute this command from a menu.
-
-    c.redraw_now()
-#@-node:ekr.20080921154026.2:c.newHelper
+        doc = c.config.at_root_bodies_start_in_doc_mode
+        self.rootMode = g.choose(doc,"doc","code")
+#@-node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
+#@-node:ekr.20031218072017.1377:OLDscanColorDirectives (leoColor) (old)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
