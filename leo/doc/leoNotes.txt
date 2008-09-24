@@ -3957,6 +3957,47 @@ def scanAtTabwidthDirective(theDict,issue_error_flag=False):
             g.es("ignoring",s,color="red")
         return None
 #@-node:ekr.20031218072017.1390:g.scanAtTabwidthDirective (to be deleted)
+#@+node:ekr.20080924032842.4:NEWfindAnchor & helper
+def NEWfindAnchor(self,w): # was generalFindAnchor.
+
+    s = w.getAllText()
+    i = j = w.getInsertPoint() ; kind = 'none'
+    while i > 1:
+        j,word = self.findAnchorHelper(s,i) ; kind = 'findAnchor'
+        if word: break
+
+        # if g.is_ws(s[i-1]):
+            # j = i ; word = s[i:len(s)].strip() ; kind = 'ws'
+            # break
+        else: i -= 1
+
+    # if not word:
+        # j,word = 'all',0,s.strip() ; kind = 'all'
+
+    g.trace('kind:',kind,j,repr(word))
+
+    return j,word
+#@+node:ekr.20061031131434.32:findAnchorHelper (was findAnchor)
+def findAnchorHelper (self,s,i): # was w
+
+    '''Returns (j,word) where j is a Python index.'''
+
+    # i = j = w.getInsertPoint()
+    # s = w.getAllText()
+    j = i
+
+    # New in Leo 4.5: Fix a hanger by stopping when i <= 1.
+    while i > 1 and s[i-1] == '.':
+        i,j = g.getWord(s,i-2)
+
+    word = s[i:j]
+    if word == '.': word = None
+
+    # g.trace(i,j,repr(word))
+    return j,word
+#@nonl
+#@-node:ekr.20061031131434.32:findAnchorHelper (was findAnchor)
+#@-node:ekr.20080924032842.4:NEWfindAnchor & helper
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
