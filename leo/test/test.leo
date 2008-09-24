@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="37" left="401" height="914" width="774"/>
+	<global_window_position top="35" left="566" height="914" width="697"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -367,7 +367,11 @@
 <v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
 </v>
 </v>
+<v t="ekr.20080924033317.1"><vh>@@shadow weird-extension.C</vh>
+<v t="ekr.20080924033317.2"><vh>spam</vh></v>
 </v>
+</v>
+<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3762,5 +3766,25 @@ c:\leo.repo\trunk\leo\test\eval-test.txt</t>
 @
 
 ''text''                # write text in italics</t>
+<t tx="ekr.20080924033317.1">@language c
+
+@others</t>
+<t tx="ekr.20080924033317.2">int spam():
+    ;</t>
+<t tx="ekr.20080924081821.1"># c.k.ab
+
+# Test this code using the execute-script command.
+
+s = p.bodyString()
+lines = g.splitLines(s)
+s = lines[0]
+
+theObject,aList = c.k.autoCompleter.getExternalCompletions(s)
+
+print '='*20
+print 'theObject',theObject and theObject.__class__
+print 'len(completions)',len(aList)
+print g.listToString(aList, tag='completion list', sort=True, indent='')
+</t>
 </tnodes>
 </leo_file>
