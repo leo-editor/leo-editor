@@ -879,7 +879,7 @@ So that's clean.  This will happen in Leo 4.5.
 #@nonl
 #@-node:ekr.20080311135649.2:Allow different .leo formats
 #@-node:ekr.20080517102922.1:Files stuff 10
-#@+node:ekr.20080730212711.6:ASAP Features 10
+#@+node:ekr.20080730212711.6:ASAP Features 11
 #@+node:ekr.20080918164844.12:Think of improving headline navigation
 @nocolor
 
@@ -1492,7 +1492,7 @@ down some data. If the headline string is too long, the cursor goes
 beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
 #@-node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
-#@-node:ekr.20080730212711.6:ASAP Features 10
+#@-node:ekr.20080730212711.6:ASAP Features 11
 #@+node:ekr.20080810085333.7:Under two days 5
 #@+node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
