@@ -339,7 +339,6 @@ class autoCompleterClass:
 
         # Init the ivars...
         self.language = p and g.scanForAtLanguage(c,p) or language
-        # self.objectDict = {}
         self.tabName = ''
         old_enable = c.k.enable_autocompleter
 
