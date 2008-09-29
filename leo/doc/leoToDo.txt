@@ -4,53 +4,6 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
 
-#@+node:ekr.20080924032842.2:Fix c syntax-coloring
-#@+node:ekr.20080709161540.1:Bug 1
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/707a910f975f3715
-
-Coloring of macro definitions is not extended after '\'.
-
-More than that - refer again to the screenshot and look at the
-comments and #defines at the bottom. The comments after the multi-line
-macro are either not coloured or are coloured incorrectly. At the top,
-the '#define ADDPRIM_CO' macro is only partially coloured. The macros
-below the multi-line macro are incorrectly comment-coloured.
-
-@color
-#@nonl
-#@+node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
-#@-node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
-#@-node:ekr.20080709161540.1:Bug 1
-#@+node:ekr.20080924032842.1:Bug 2
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/74c6ab4809bde980
-
-I've noticed a strange behaviour of the "@language cplusplus" mode
-using doxygen style comments.
-I wrote this code doxygen java-like commenting style:
-
-/**
- * first comment
- */
-
-/**
- * second comment
- */
-
-now I've the string "first comment" highlited as code and the string
-"second comment" highlithed as comment.
-Qt-style doxygen comments have the same behaviour and if I don't use
-doxygen comments it's all ok.
-I'm using leo 4.5.1 final on Windows XP.
-It's a bug or I haven't understood something?
-
-@color
-#@nonl
-#@-node:ekr.20080924032842.1:Bug 2
-#@-node:ekr.20080924032842.2:Fix c syntax-coloring
 #@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 @nocolor
 

@@ -4804,6 +4804,90 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
     return dir1 # All have been created.
 #@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 #@-node:ekr.20080921154026.3:Fixed new rst3 crash
+#@+node:ekr.20080924032842.2:Fixed two c syntax-coloring bugs
+@
+There were two separate bugs:
+
+1. The eol_span and eol_span_regex now honor the mode's escape character.
+
+2. colorRangeWithTag now colors delegates with the default tag color.
+
+Happily, no changes were required in the modes/c.py or modes/c.xml.
+#@nonl
+#@+node:ekr.20080709161540.1:Bug 1
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/707a910f975f3715
+
+Coloring of macro definitions is not extended after '\'.
+
+More than that - refer again to the screenshot and look at the
+comments and #defines at the bottom. The comments after the multi-line
+macro are either not coloured or are coloured incorrectly. At the top,
+the '#define ADDPRIM_CO' macro is only partially coloured. The macros
+below the multi-line macro are incorrectly comment-coloured.
+
+@color
+#@nonl
+#@+node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
+#@-node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
+#@-node:ekr.20080709161540.1:Bug 1
+#@+node:ekr.20080924032842.1:Bug 2
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/74c6ab4809bde980
+
+I've noticed a strange behaviour of the "@language cplusplus" mode
+using doxygen style comments.
+I wrote this code doxygen java-like commenting style:
+
+/**
+ * first comment
+ */
+
+/**
+ * second comment
+ */
+
+now I've the string "first comment" highlited as code and the string
+"second comment" highlithed as comment.
+Qt-style doxygen comments have the same behaviour and if I don't use
+doxygen comments it's all ok.
+I'm using leo 4.5.1 final on Windows XP.
+It's a bug or I haven't understood something?
+
+@color
+#@nonl
+#@-node:ekr.20080924032842.1:Bug 2
+#@+node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
+@ These methods skip to the next newline, regardless of whether the newline may be preceeded by a backslash. Consequently, they should be used only when we know that we are not in a preprocessor directive or string.
+@c
+
+def skip_line (s,i):
+
+    if i >= len(s): return len(s) # Bug fix: 2007/5/22
+    if i < 0: i = 0
+    i = s.find('\n',i)
+    if i == -1: return len(s)
+    else: return i + 1
+
+def skip_to_end_of_line (s,i):
+
+    if i >= len(s): return len(s) # Bug fix: 2007/5/22
+    if i < 0: i = 0
+    i = s.find('\n',i)
+    if i == -1: return len(s)
+    else: return i
+
+def skip_to_start_of_line (s,i):
+
+    if i >= len(s): return len(s)
+    if i <= 0:      return 0
+    i = s.rfind('\n',0,i) # Don't find s[i], so it doesn't matter if s[i] is a newline.
+    if i == -1: return 0
+    else:       return i + 1
+#@-node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
+#@-node:ekr.20080924032842.2:Fixed two c syntax-coloring bugs
 #@-node:ekr.20080917153158.12:Fixed bugs
 #@+node:ekr.20080917153158.15:New features
 #@+node:ekr.20080917153158.16:Added c.config.getSettingSource

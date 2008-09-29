@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -372,6 +372,7 @@
 </v>
 </v>
 <v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
+<v t="ekr.20080929072551.1"><vh>test of c syntax coloring</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3786,5 +3787,23 @@ print 'theObject',theObject and theObject.__class__
 print 'len(completions)',len(aList)
 print g.listToString(aList, tag='completion list', sort=True, indent='')
 </t>
+<t tx="ekr.20080929072551.1">@language c
+
+// Test.
+
+/**
+ * first comment
+ */
+
+/**
+ * second comment
+ */
+ 
+a = 5
+
+#define abc\
+xyz
+
+b - 6</t>
 </tnodes>
 </leo_file>
