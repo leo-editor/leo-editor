@@ -1314,20 +1314,11 @@ class rstClass:
         rel_stylesheet_path = self.getOption('stylesheet_path') or ''
 
         # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
-        stylesheet_path = g.os_path_abspath(g.os_path_join(
-            self.c.frame.openDirectory,rel_stylesheet_path))
+        stylesheet_path = g.os_path_finalize_join(
+            self.c.frame.openDirectory,rel_stylesheet_path)
 
-        path = g.os_path_abspath(g.os_path_join(
-            stylesheet_path,self.getOption('stylesheet_name')))
-
-        # stylesheet_path = g.os_path_abspath(rel_stylesheet_path)
-
-        # # Allow relative paths.
-        # path = g.os_path_abspath(g.os_path_join(
-            # stylesheet_path,self.getOption('stylesheet_name')))
-
-        # g.trace('stylesheet_path',stylesheet_path)
-        # g.trace('path',path)
+        path = g.os_path_finalize_join(
+            stylesheet_path,self.getOption('stylesheet_name'))
 
         if g.os_path_exists(path):
             if self.ext == '.pdf':
@@ -1824,16 +1815,16 @@ class rstClass:
         default_path = self.getOption('default_path')
 
         if default_path:
-            default_path = g.os_path_abspath(default_path)
+            default_path = g.os_path_finalize(default_path)
 
         # g.trace('default_path',default_path,'fileName',fileName)
 
         if default_path:
-            path = g.os_path_join(default_path,fileName)
+            path = g.os_path_finalize_join(default_path,fileName)
         elif openDirectory:
-            path = g.os_path_join(openDirectory,fileName)
+            path = g.os_path_finalize_join(openDirectory,fileName)
         else:
-            path = fileName
+            path = g.os_path_finalize(fileName)
 
         # g.trace('path',path)
 
@@ -1851,7 +1842,7 @@ class rstClass:
 
         if self.getOption('verbose'):
 
-            name = g.os_path_abspath(name)
+            name = g.os_path_finalize(name)
 
             g.es_print('wrote: %s' % (name),color="blue")
     #@nonl
