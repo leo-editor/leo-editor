@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -373,6 +373,11 @@
 </v>
 <v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
 <v t="ekr.20080929072551.1"><vh>test of c syntax coloring</vh></v>
+<v t="ekr.20080929112400.1"><vh>qt proto</vh></v>
+<v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
+<v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
+<v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
+<v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3805,5 +3810,21 @@ a = 5
 xyz
 
 b - 6</t>
+<t tx="ekr.20080929112400.1">import PyQt4.Qt as qt
+import sys
+
+a=qt.QApplication(sys.argv)
+parent = None
+w=qt.QPushButton("Hello World",parent) # No parent: top-level.
+# a.setMainWidget(w)
+w.show()
+print g.listToString(dir(a),sort=True)
+a.exec_()
+</t>
+<t tx="ekr.20080930080501.1">c.frame.iconBar.addRow()
+c.frame.addIconButton(text="New")</t>
+<t tx="ekr.20080930083052.1">c.frame.hideIconBar()</t>
+<t tx="ekr.20080930083052.2">c.frame.showIconBar()</t>
+<t tx="ekr.20080930085514.1">c.frame.clearIconBar()</t>
 </tnodes>
 </leo_file>

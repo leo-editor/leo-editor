@@ -1463,11 +1463,14 @@ class leoFrame:
 
         # Icon bar convenience methods.    
         'addIconButton',
+        'addIconRow',
         'clearIconBar',
         'createIconBar',
         'getIconBar',
         'getIconBarObject',
+        'getNewIconFrame',
         'hideIconBar',
+        'showIconBar',
 
     )
     #@nonl
@@ -1640,6 +1643,12 @@ class leoFrame:
         if self.iconBar: return self.iconBar.add(*args,**keys)
         else: return None
 
+    def addIconRow(self):
+        if self.iconBar: return self.iconBar.addRow()
+
+    def addIconWidget(self,w):
+        if self.iconBar: return self.iconBar.addWidget(w)
+
     def clearIconBar (self):
         if self.iconBar: self.iconBar.clear()
 
@@ -1655,9 +1664,16 @@ class leoFrame:
 
     getIconBarObject = getIconBar
 
+    def getNewIconFrame (self):
+        if not self.iconBar:
+            self.iconBar = self.iconBarClass(self.c,self.outerFrame)
+        return self.iconBar.getNewFrame()
+
     def hideIconBar (self):
         if self.iconBar: self.iconBar.hide()
-    #@nonl
+
+    def showIconBar (self):
+        if self.iconBar: self.iconBar.show()
     #@-node:ekr.20061119120006:Icon area convenience methods
     #@+node:ekr.20041223105114.1:Status line convenience methods
     def createStatusLine (self):
