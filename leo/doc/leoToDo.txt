@@ -16,7 +16,7 @@ I find that
 sets the config string successfully if in
 home/.leo/myLeoSettings.leo
 not if in
-cwd/myLeoSettings.leo 
+cwd/myLeoSettings.leo
 #@nonl
 #@-node:ekr.20080918164844.7:Investigate settings strangeness re @string debugger_path
 #@+node:ekr.20080918164844.9:Should relative paths be used for recent file list??
@@ -75,10 +75,194 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 #@+node:ekr.20080922115725.1:Finish @shadow
 # Allow block comments in private shadow files.
 # Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
 #@nonl
+#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
+#@nonl
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@nonl
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.headString())
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines
+#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
 #@-node:ekr.20080922115725.1:Finish @shadow
-#@-node:ekr.20080915112342.1:First
-#@+node:ekr.20080411091507.10:Minor bugs 4
+#@+node:ekr.20080411091507.10:Minor bugs 3
 #@+node:ekr.20080313032655.1:Fix one failed unit test on Linux
 #@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
 #@+node:ekr.20051104075904.78:makeImportExportSuite
@@ -352,8 +536,81 @@ to get the correct node and line.
 #@-node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
 #@-node:ekr.20031218072017.2864: goToLineNumber
 #@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
-#@-node:ekr.20080411091507.10:Minor bugs 4
-#@+node:ekr.20080517102922.1:Files stuff 10
+#@-node:ekr.20080411091507.10:Minor bugs 3
+#@+node:ekr.20080930072519.9:File bugs 2
+#@+node:ekr.20080330085343.3:Fix bug in atFile.write
+The code should save/restore, just as in the clean_file function (from scripts.leo)
+#@nonl
+#@+node:ekr.20080330085343.1:clean_file
+def clean_file(p):
+
+    at = c.atFileCommands
+
+    if hasattr(p.v.t,'tnodeList'):
+        has_list = True
+        old_list =  p.v.t.tnodeList[:]
+    else:
+        has_list = False
+
+    at.write(
+        root=p,nosentinels=True,
+        thinFile=False,
+        scriptWrite=True,
+        toString=True,
+        write_strips_blank_lines=False)
+
+    if has_list:
+        p.v.t.tnodeList = old_list
+
+    fileName = g.os_path_normpath(g.os_path_join(
+        at.default_directory,
+        'clean',
+        g.os_path_basename(p.anyAtFileNodeName())))
+
+    # g.trace(p.headString(),len(at.stringOutput),fileName)
+
+    # Adapted from at.openFileForWritingHelper
+    path = g.os_path_dirname(fileName)
+    if not g.os_path_exists(path):
+        g.es('clean directory does not exist',path)
+        return
+
+    try:
+        f = file(fileName,'w')
+        f.write(at.stringOutput)
+        f.close()
+        g.es_print('wrote',fileName)
+    except IOError:
+        g.es_print('can not write',fileName,color='red')
+        g.es_exception()
+#@-node:ekr.20080330085343.1:clean_file
+#@-node:ekr.20080330085343.3:Fix bug in atFile.write
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+@nocolor
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.  Once I saw my
+nodes were overwritten unitTest.leo, I copied somedoc.leo to
+somedoc.leo.bak because I wanted to do a save to see what would
+happen.  The somedoc.leo file ended up with the contents of
+unitTest.leo as I suspected.  To my surprise, I also lost
+somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
+backup copy to revert to.  If leo is making use of a .bak file during
+saving, then should it give a warning if that file already exists?
+
+To duplicate:
+
+1. Open a leo file that you don't care about losing.
+2. From the file->open menu open leo/test/unitTest.leo
+3. Select a unit test and run it with Alt-4 (I chose the Position
+tests described above)
+4. Switch back to the original leo document and you should see the
+contents of unitTest.leo instead of the original document contents.
+#@nonl
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@-node:ekr.20080930072519.9:File bugs 2
+#@-node:ekr.20080915112342.1:First
+#@+node:ekr.20080517102922.1:Files stuff 8
 #@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
 # Remove the old type-specific commands from the default menu.
 #@nonl
@@ -465,315 +722,6 @@ intended behavior. The correct behavior would be to save the file,
 give me the warning about the undefined section, and exit.
 #@nonl
 #@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@+node:ekr.20080330085343.3:Fix bug in atFile.write
-The code should save/restore, just as in the clean_file function (from scripts.leo)
-#@nonl
-#@+node:ekr.20080330085343.1:clean_file
-def clean_file(p):
-
-    at = c.atFileCommands
-
-    if hasattr(p.v.t,'tnodeList'):
-        has_list = True
-        old_list =  p.v.t.tnodeList[:]
-    else:
-        has_list = False
-
-    at.write(
-        root=p,nosentinels=True,
-        thinFile=False,
-        scriptWrite=True,
-        toString=True,
-        write_strips_blank_lines=False)
-
-    if has_list:
-        p.v.t.tnodeList = old_list
-
-    fileName = g.os_path_normpath(g.os_path_join(
-        at.default_directory,
-        'clean',
-        g.os_path_basename(p.anyAtFileNodeName())))
-
-    # g.trace(p.headString(),len(at.stringOutput),fileName)
-
-    # Adapted from at.openFileForWritingHelper
-    path = g.os_path_dirname(fileName)
-    if not g.os_path_exists(path):
-        g.es('clean directory does not exist',path)
-        return
-
-    try:
-        f = file(fileName,'w')
-        f.write(at.stringOutput)
-        f.close()
-        g.es_print('wrote',fileName)
-    except IOError:
-        g.es_print('can not write',fileName,color='red')
-        g.es_exception()
-#@-node:ekr.20080330085343.1:clean_file
-#@-node:ekr.20080330085343.3:Fix bug in atFile.write
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-@nocolor
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.  Once I saw my
-nodes were overwritten unitTest.leo, I copied somedoc.leo to
-somedoc.leo.bak because I wanted to do a save to see what would
-happen.  The somedoc.leo file ended up with the contents of
-unitTest.leo as I suspected.  To my surprise, I also lost
-somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
-backup copy to revert to.  If leo is making use of a .bak file during
-saving, then should it give a warning if that file already exists?
-
-To duplicate:
-
-1. Open a leo file that you don't care about losing.
-2. From the file->open menu open leo/test/unitTest.leo
-3. Select a unit test and run it with Alt-4 (I chose the Position
-tests described above)
-4. Switch back to the original leo document and you should see the
-contents of unitTest.leo instead of the original document contents.
-#@nonl
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
-@nocolor
-
-Note: at present the only change is to c.setHeadString.  It's unlikely this will make a difference.
-
-So reading all the file names in my home directory into leo as
-headlines while playing with my active_path plugin, I got some odd
-characters in a filename into leo, it saved the file fine, but wouldn't
-read it:
-
-error parsing /media/usr1/usr1/home/tbrown/files.leo
-Traceback (most recent call last):
-
- File
-"/media/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/active_path/leo/core/leoFileCommands.py",
-line 1240, in parse_leo_file parser.parse(theFile) # expat does not
-support parseString
-
- File "/usr/lib/python2.5/xml/sax/expatreader.py", line 107, in parse
-   xmlreader.IncrementalParser.parse(self, source)
-
- File "/usr/lib/python2.5/xml/sax/xmlreader.py", line 123, in parse
-   self.feed(buffer)
-
- File "/usr/lib/python2.5/xml/sax/expatreader.py", line 211, in feed
-   self._err_handler.fatalError(exc)
-
- File "/usr/lib/python2.5/xml/sax/handler.py", line 38, in fatalError
-   raise exception
-
-SAXParseException: <unknown>:732:58: not well-formed (invalid token)
-
-
-emacs shows the offending line as:
-
-<v t="tbrown.20080618141617.720"
-a="M"><vh>coppertop_mapYI .2006_04_09_14_16_22.0</vh></v>
-
-...of course it looks different in my mail composer window :-) but
-there's a ^H after the I.
-
-So, garbage in, garbage out, I get that, but is it the intent that leo
-save a file without comment and then fail to read it in these cases?
-
-I'm not saying it should do one thing or the other, but just wanted to
-point out the possibility.
-
-Cheers -Terry
-
-@color
-#@nonl
-#@+node:ekr.20031218072017.1577:putTnode
-def putTnode (self,t):
-
-    # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-    if not t.fileIndex:
-        g.trace('can not happen: no index for tnode',t)
-        t.fileIndex = g.app.nodeIndices.getNewIndex()
-
-    # New in Leo 4.4.2 b2: call put just once.
-    gnx = g.app.nodeIndices.toString(t.fileIndex)
-    ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
-    body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
-    self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
-#@-node:ekr.20031218072017.1577:putTnode
-#@+node:ekr.20031218072017.1863:putVnode
-def putVnode (self,p,isIgnore=False):
-
-    """Write a <v> element corresponding to a vnode."""
-
-    fc = self ; c = fc.c ; v = p.v
-    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
-    isShadow = p.isAtShadowFileNode()
-    isThin = p.isAtThinFileNode()
-    isOrphan = p.isOrphan()
-    if not isIgnore: isIgnore = p.isAtIgnoreNode()
-
-    if isIgnore:   forceWrite = True      # Always write full @ignore trees.
-    elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
-    elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
-    elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
-    else:          forceWrite = True      # Write all other @file trees.
-
-    << Set gnx = tnode index >>
-    attrs = []
-    << Append attribute bits to attrs >>
-    << Append tnodeList and unKnownAttributes to attrs >>
-    attrs = ''.join(attrs)
-    v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
-    # The string catentation is faster than repeated calls to fc.put.
-    if not self.usingClipboard:
-        << issue informational messages >>
-    # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
-    if p.hasChildren() and (forceWrite or self.usingClipboard):
-        fc.put('%s\n' % v_head)
-        # This optimization eliminates all "recursive" copies.
-        p.moveToFirstChild()
-        while 1:
-            fc.putVnode(p,isIgnore)
-            if p.hasNext(): p.moveToNext()
-            else:           break
-        p.moveToParent() # Restore p in the caller.
-        fc.put('</v>\n')
-    else:
-        fc.put('%s</v>\n' % v_head) # Call put only once.
-#@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
-# New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-if not v.t.fileIndex:
-    v.t.fileIndex = g.app.nodeIndices.getNewIndex()
-
-gnx = g.app.nodeIndices.toString(v.t.fileIndex)
-
-if forceWrite or self.usingClipboard:
-    v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
-#@-node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
-#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-# These string catenations are benign because they rarely happen.
-attr = ""
-# New in Leo 4.5: support fixed .leo files.
-if not c.fixed:
-    if v.isExpanded() and v.hasChildren(): attr += "E"
-    if v.isMarked():   attr += "M"
-    if v.isOrphan():   attr += "O"
-
-    # No longer a bottleneck now that we use p.equal rather than p.__cmp__
-    # Almost 30% of the entire writing time came from here!!!
-    # if not self.use_sax:
-        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
-
-    if attr:
-        attrs.append(' a="%s"' % attr)
-
-# Put the archived *current* position in the *root* positions <v> element.
-if p == self.rootPosition:
-    aList = [str(z) for z in self.currentPosition.archivedPosition()]
-    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
-    if not c.fixed:
-        d['str_leo_pos'] = ','.join(aList)
-    # g.trace(aList,d)
-    v.unknownAttributes = d
-elif hasattr(v,"unknownAttributes"):
-    d = v.unknownAttributes
-    if d and not c.fixed and d.get('str_leo_pos'):
-        # g.trace("clearing str_leo_pos",v)
-        del d['str_leo_pos']
-        v.unknownAttributes = d
-#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
-# Write the tnodeList only for @file nodes.
-# New in 4.2: tnode list is in tnode.
-
-if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
-    if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
-        if isThin or isShadow: # Never issue warning for @auto.
-            if g.app.unitTesting:
-                g.app.unitTestDict["warning"] = True
-            g.es("deleting tnode list for",p.headString(),color="blue")
-        # This is safe: cloning can't change the type of this node!
-        delattr(v.t,"tnodeList")
-    else:
-        attrs.append(fc.putTnodeList(v)) # New in 4.0
-
-if hasattr(v,"unknownAttributes"): # New in 4.0
-    # g.trace('v',v,'v.uA',v.unknownAttributes)
-    attrs.append(self.putUnknownAttributes(v))
-
-if p.hasChildren() and not forceWrite and not self.usingClipboard:
-    # We put the entire tree when using the clipboard, so no need for this.
-    if not isAuto: # Bug fix: 2008/8/7.
-        attrs.append(self.putDescendentTnodeUas(p))
-        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
-        attrs.append(self.putDescendentAttributes(p))
-#@nonl
-#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
-#@+node:ekr.20040702085529:<< issue informational messages >>
-if isOrphan and isThin:
-    g.es("writing erroneous:",p.headString(),color="blue")
-    p.clearOrphan()
-#@-node:ekr.20040702085529:<< issue informational messages >>
-#@-node:ekr.20031218072017.1863:putVnode
-#@+node:ekr.20031218072017.1470:put
-def put (self,s):
-
-    '''Put string s to self.outputFile. All output eventually comes here.'''
-
-    # Improved code: self.outputFile (a cStringIO object) always exists.
-    if s:
-        self.putCount += 1
-        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-        self.outputFile.write(s)
-
-def put_dquote (self):
-    self.put('"')
-
-def put_dquoted_bool (self,b):
-    if b: self.put('"1"')
-    else: self.put('"0"')
-
-def put_flag (self,a,b):
-    if a:
-        self.put(" ") ; self.put(b) ; self.put('="1"')
-
-def put_in_dquotes (self,a):
-    self.put('"')
-    if a: self.put(a) # will always be True if we use backquotes.
-    else: self.put('0')
-    self.put('"')
-
-def put_nl (self):
-    self.put("\n")
-
-def put_tab (self):
-    self.put("\t")
-
-def put_tabs (self,n):
-    while n > 0:
-        self.put("\t")
-        n -= 1
-#@nonl
-#@-node:ekr.20031218072017.1470:put
-#@+node:ekr.20040305223225:c.setHeadString
-def setHeadString (self,p,s,encoding="utf-8"):
-
-    c = self
-    w = c.edit_widget(p) # w only exists for the Tk gui.
-
-    p.initHeadString(s,encoding)
-
-    if w:
-        s = g.toUnicode(s,encoding)
-        w.setAllText(s)
-        width = c.frame.tree.headWidth(p=None,s=s)
-        w.setWidth(width)
-
-    p.setDirty()
-#@nonl
-#@-node:ekr.20040305223225:c.setHeadString
-#@-node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
 #@+node:ekr.20080311135649.2:Allow different .leo formats
 @nocolor
 
@@ -831,89 +779,6 @@ these provided that headlines appear somewhere.
 So that's clean.  This will happen in Leo 4.5. 
 #@nonl
 #@-node:ekr.20080311135649.2:Allow different .leo formats
-#@-node:ekr.20080517102922.1:Files stuff 10
-#@+node:ekr.20080730212711.6:ASAP Features 11
-#@+node:ekr.20080918164844.12:Think of improving headline navigation
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
-
-Now that the leo is more "modeless" (I'm speaking of switching between
-outline navigation and body editing modes), which btw is a clear improvement
-to how leo used to behave, here are some things that still feel a bit
-un-intuitive:
-
-- ctrl+H (edit-headline) "locks" the user into the mode way too much.
-
-   * The headline editing mode should be cancelled when the user does:
-      - cursor up/down
-      - ESC
-
-   * Even better alternative: I find myself constantly thinking that "ok,
-now I need to edit a headline (typically not the current headline), so now
-I'll press ctrl+H". I think perhaps pressing up/down should cancel the
-current headline editing, and select the next/previous headline for editing.
-That is, I wouldn't need to navigate to the headline I want to edit before I
-start editing it.
-
-  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
-intuitive assumption is that cut will select the node that "took the place
-of the
-    current node", instead of starting to travel upwards the set of nodes.
-
-   * Typical use case is the way you usually start deleting a set of items.
-You move to the first item and start cutting repeatedly. This wont work with
-the current behaviour. 
-#@nonl
-#@-node:ekr.20080918164844.12:Think of improving headline navigation
-#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
-What uA should be used to specify node colors?
-
-if the foreground / background color API uses uAs,
-would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
-#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
-#@+node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
-#@-node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
-#@+node:ekr.20071110071126.2:Better isearch
-#@-node:ekr.20071110071126.2:Better isearch
-#@+node:ekr.20071128094234:Finish scolorizer
-#@+node:ekr.20050920084036.265:scolorizer LATER
-def scolorizer (self,event,pattern=None):
-
-    '''Colorizer for incremental searches.'''
-
-    pass # not ready yet.   
-
-    # k = self.k ; w = self.w
-    # s = pattern or k.getLabel(ignorePrompt=True)
-    # # g.trace(repr(s))
-    # w.tag_delete('color','color1')
-    # if not s: return
-    # if g.app.gui.guiName() != 'tkinter':
-        # return g.es('command not ready yet',color='blue')
-
-    # ind = 0
-    # index = w.getInsertPoint()
-    # index2 = index + len(s)
-    # # g.trace(index,index2)
-    # # Colorize in the forward direction, regardless of the kind of search.
-    # while ind:
-        # try:
-            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
-        # except Exception: break
-        # if ind:
-            # i, d = ind.split('.')
-            # d = str(int(d)+len(s))
-            # # g.trace(ind)
-            # if ind in (index,index2):
-                # w.tag_add('color1',ind,'%s.%s' % (i,d))
-            # w.tag_add('color',ind,'%s.%s' % (i,d))
-            # ind = i + '.' + d
-
-    # w.tag_config('color',foreground='red')
-    # w.tag_config('color1',background='lightblue')
-#@-node:ekr.20050920084036.265:scolorizer LATER
-#@-node:ekr.20071128094234:Finish scolorizer
 #@+node:ekr.20061002093442:Add opml support to new,open, save commands
 #@+node:ekr.20031218072017.2820:top level (file menu)
 #@+node:ekr.20031218072017.1623:c.new
@@ -1397,6 +1262,51 @@ def revert (self,event=None):
 #@-node:ekr.20031218072017.2837:revert
 #@-node:ekr.20031218072017.2820:top level (file menu)
 #@-node:ekr.20061002093442:Add opml support to new,open, save commands
+#@-node:ekr.20080517102922.1:Files stuff 8
+#@+node:ekr.20080730212711.6:ASAP Features 10
+#@+node:ekr.20071110071126.2:Better isearch
+#@-node:ekr.20071110071126.2:Better isearch
+#@+node:ekr.20080918164844.12:Improve headline navigation
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
+
+Now that the leo is more "modeless" (I'm speaking of switching between
+outline navigation and body editing modes), which btw is a clear improvement
+to how leo used to behave, here are some things that still feel a bit
+un-intuitive:
+
+- ctrl+H (edit-headline) "locks" the user into the mode way too much.
+
+   * The headline editing mode should be cancelled when the user does:
+      - cursor up/down
+      - ESC
+
+   * Even better alternative: I find myself constantly thinking that "ok,
+now I need to edit a headline (typically not the current headline), so now
+I'll press ctrl+H". I think perhaps pressing up/down should cancel the
+current headline editing, and select the next/previous headline for editing.
+That is, I wouldn't need to navigate to the headline I want to edit before I
+start editing it.
+
+  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
+intuitive assumption is that cut will select the node that "took the place
+of the
+    current node", instead of starting to travel upwards the set of nodes.
+
+   * Typical use case is the way you usually start deleting a set of items.
+You move to the first item and start cutting repeatedly. This wont work with
+the current behaviour. 
+#@nonl
+#@-node:ekr.20080918164844.12:Improve headline navigation
+#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
+What uA should be used to specify node colors?
+
+if the foreground / background color API uses uAs,
+would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
+#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
+#@+node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
+#@-node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
 #@+node:ekr.20070624135822:Templates for common code fragments
 # How will users be reminded of the fragments?
 #   - A dropdown menu?
@@ -1445,7 +1355,45 @@ down some data. If the headline string is too long, the cursor goes
 beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
 #@-node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
-#@-node:ekr.20080730212711.6:ASAP Features 11
+#@+node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20050920084036.265:scolorizer LATER
+def scolorizer (self,event,pattern=None):
+
+    '''Colorizer for incremental searches.'''
+
+    pass # not ready yet.   
+
+    # k = self.k ; w = self.w
+    # s = pattern or k.getLabel(ignorePrompt=True)
+    # # g.trace(repr(s))
+    # w.tag_delete('color','color1')
+    # if not s: return
+    # if g.app.gui.guiName() != 'tkinter':
+        # return g.es('command not ready yet',color='blue')
+
+    # ind = 0
+    # index = w.getInsertPoint()
+    # index2 = index + len(s)
+    # # g.trace(index,index2)
+    # # Colorize in the forward direction, regardless of the kind of search.
+    # while ind:
+        # try:
+            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
+        # except Exception: break
+        # if ind:
+            # i, d = ind.split('.')
+            # d = str(int(d)+len(s))
+            # # g.trace(ind)
+            # if ind in (index,index2):
+                # w.tag_add('color1',ind,'%s.%s' % (i,d))
+            # w.tag_add('color',ind,'%s.%s' % (i,d))
+            # ind = i + '.' + d
+
+    # w.tag_config('color',foreground='red')
+    # w.tag_config('color1',background='lightblue')
+#@-node:ekr.20050920084036.265:scolorizer LATER
+#@-node:ekr.20071128094234:Finish scolorizer
+#@-node:ekr.20080730212711.6:ASAP Features 10
 #@+node:ekr.20080810085333.7:Under two days 5
 #@+node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691

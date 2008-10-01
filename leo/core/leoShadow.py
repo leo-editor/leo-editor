@@ -195,7 +195,9 @@ class shadowController:
 
         '''Return the full path name of filename, resolved using c.fileName()'''
 
-        x = self ; c = x.c ; baseDir = x.baseDirName()
+        x = self ; c = x.c
+
+        baseDir = x.baseDirName()
         fileDir = g.os_path_dirname(filename)
 
         return baseDir and c.os_path_finalize_join(
@@ -203,7 +205,6 @@ class shadowController:
                 fileDir, # Bug fix: honor any directories specified in filename.
                 x.shadow_subdir,
                 x.shadow_prefix + g.shortFileName(filename))
-    #@nonl
     #@-node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
     #@+node:ekr.20080711063656.3:x.unlink
     def unlink (self, filename,silent=False):

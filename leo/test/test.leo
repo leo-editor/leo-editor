@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="35" left="566" height="914" width="697"/>
+	<global_window_position top="35" left="407" height="914" width="856"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,0,0,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -136,7 +136,6 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
@@ -306,6 +305,7 @@
 <v t="ekr.20080807115344.4"><vh>RunCode</vh></v>
 </v>
 </v>
+<v t="ekr.20080929112400.1"><vh>qt proto</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
@@ -332,7 +332,7 @@
 </v>
 <v t="ekr.20080812112440.1"><vh>@@shadow at-shadow-test.ini</vh></v>
 <v t="ekr.20080812135254.1"><vh>@@shadow at-unknown-shadow-test.xyzzy</vh></v>
-<v t="ekr.20080801160915.1"><vh>@@shadow TerryBrownTest.py</vh>
+<v t="ekr.20080801160915.1" a="E"><vh>@@shadow TerryBrownTest.py</vh>
 <v t="ekr.20080803120643.1"><vh>spam</vh></v>
 </v>
 <v t="ekr.20080812102914.1"><vh>@@nosent at-nosent-test.py</vh>
@@ -370,14 +370,22 @@
 <v t="ekr.20080924033317.1"><vh>@@shadow weird-extension.C</vh>
 <v t="ekr.20080924033317.2"><vh>spam</vh></v>
 </v>
-</v>
-<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
-<v t="ekr.20080929072551.1"><vh>test of c syntax coloring</vh></v>
-<v t="ekr.20080929112400.1"><vh>qt proto</vh></v>
+<v t="ekr.20080930114036.1"><vh>icon stuff</vh>
 <v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
 <v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
 <v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
 <v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
+</v>
+<v t="ekr.20080929072551.1"><vh>test of c syntax coloring</vh></v>
+<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
+</v>
+<v t="ekr.20081001110047.1"><vh>@shadow mark-changed-nodes-test.py</vh></v>
+<v t="ekr.20081001112706.3"><vh>Nested at-path directives</vh></v>
+<v t="ekr.20081001112706.4" a="E"><vh>@path path_test</vh>
+<v t="ekr.20081001112706.5" a="E"><vh>@path subdir</vh>
+<v t="ekr.20081001112706.1" a="E"><vh>@shadow subpath-test.py</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3826,5 +3834,9 @@ c.frame.addIconButton(text="New")</t>
 <t tx="ekr.20080930083052.1">c.frame.hideIconBar()</t>
 <t tx="ekr.20080930083052.2">c.frame.showIconBar()</t>
 <t tx="ekr.20080930085514.1">c.frame.clearIconBar()</t>
+<t tx="ekr.20080930114036.1"></t>
+<t tx="ekr.20081001112706.3"></t>
+<t tx="ekr.20081001112706.4"></t>
+<t tx="ekr.20081001112706.5"></t>
 </tnodes>
 </leo_file>

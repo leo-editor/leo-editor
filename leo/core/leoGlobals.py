@@ -723,6 +723,90 @@ def scanForAtSettings(p):
 
     return False
 #@-node:ekr.20041123094807:g.scanForAtSettings
+#@+node:ekr.20081001062423.9:g.setDefaultDirectory
+# This is a refactoring, used by leoImport.scanDefaultDirectory and
+# atFile.scanDefault directory
+
+def setDefaultDirectory(c,p,importing=False):
+
+    '''Set default_directory by scanning @path directives.
+    Return (default_directory,error_message).'''
+
+    default_directory = '' ; error = ''
+    if not p: return default_directory,error
+
+    #@    << Set path from @file node >>
+    #@+node:ekr.20081001062423.10:<< Set path from @file node >>
+    # An absolute path in an @file node over-rides everything else.
+    # A relative path gets appended to the relative path by the open logic.
+
+    name = p.anyAtFileNodeName()
+    theDir = g.choose(name,g.os_path_dirname(name),None)
+
+    if theDir and g.os_path_isabs(theDir):
+        if g.os_path_exists(theDir):
+            default_directory = theDir
+        else:
+            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+            if not default_directory:
+                error = "Directory \"%s\" does not exist" % theDir
+    #@-node:ekr.20081001062423.10:<< Set path from @file node >>
+    #@nl
+
+    if not default_directory:
+        # Scan for @path directives.
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        if path:
+            #@            << handle @path >>
+            #@+node:ekr.20081001062423.11:<< handle @path >>
+            path = g.computeRelativePath (path)
+
+            if path:
+                base = g.getBaseDirectory(c) # returns "" on error.
+                path = c.os_path_finalize_join(base,path)
+
+                if g.os_path_isabs(path):
+                    if g.os_path_exists(path):
+                        default_directory = path
+                    else:
+                        default_directory = g.makeAllNonExistentDirectories(path,c=c)
+                        if not default_directory:
+                            error = "invalid @path: %s" % path
+                        else:
+                            error = "ignoring bad @path: %s" % path
+            else:
+                error = "ignoring empty @path"
+            #@-node:ekr.20081001062423.11:<< handle @path >>
+            #@nl
+
+    if not default_directory:
+        #@        << Set current directory >>
+        #@+node:ekr.20081001062423.12:<< Set current directory >>
+        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+        assert(not default_directory)
+
+        if c.frame:
+            base = g.getBaseDirectory(c) # returns "" on error.
+            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+                if theDir and len(theDir) > 0:
+                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                        if g.os_path_exists(theDir):
+                            default_directory = theDir ; break
+                        else:
+                            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        #@-node:ekr.20081001062423.12:<< Set current directory >>
+        #@nl
+
+    if not default_directory and not importing:
+        # This should never happen: c.openDirectory should be a good last resort.
+        error = "No absolute directory specified anywhere."
+
+    # g.trace('returns',default_directory)
+    return default_directory, error
+#@-node:ekr.20081001062423.9:g.setDefaultDirectory
 #@+node:ekr.20031218072017.1382:g.set_delims_from_language
 # Returns a tuple (single,start,end) of comment delims
 
@@ -2056,6 +2140,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
             try:
                 os.mkdir(path)
                 if verbose and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
                     g.es_print("created directory:",path,color='red')
             except Exception:
                 # g.trace(g.callers())

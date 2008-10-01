@@ -692,7 +692,7 @@ class atFile:
             p.firstChild().doDelete()
 
         # Import the outline, exactly as @auto does.
-        ic.createOutline(fn,parent=p.copy(),atAuto=True)
+        ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
 
         if ic.errors:
             g.es_print('errors inhibited read @shadow',fn,color='red')
@@ -4369,96 +4369,13 @@ class atFile:
     #@+node:ekr.20041005105605.236:atFile.scanDefaultDirectory
     def scanDefaultDirectory(self,p,importing=False):
 
-        """Set default_directory ivar by looking for @path directives."""
+        """Set the default_directory ivar by looking for @path directives."""
 
-        at = self ; c = at.c ; trace = False
-        at.default_directory = None
-        #@    << Set path from @file node >>
-        #@+node:ekr.20041005105605.237:<< Set path from @file node >>
-        # An absolute path in an @file node over-rides everything else.
-        # A relative path gets appended to the relative path by the open logic.
+        at = self ; c = at.c
 
-        name = p.anyAtFileNodeName()
+        at.default_directory,error = g.setDefaultDirectory(c,p,importing)
 
-        theDir = g.choose(name,g.os_path_dirname(name),None)
-
-        # g.trace('at.default_directory',at.default_directory)
-        # g.trace('theDir',theDir)
-
-        if theDir and g.os_path_isabs(theDir):
-            if g.os_path_exists(theDir):
-                at.default_directory = theDir
-            else:
-                at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-                if not at.default_directory:
-                    at.error("Directory \"%s\" does not exist" % theDir)
-        #@-node:ekr.20041005105605.237:<< Set path from @file node >>
-        #@nl
-        if at.default_directory:
-            if trace: g.trace('returns',at.default_directory)
-            return
-
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            if 'path' in theDict:
-                #@            << handle @path >>
-                #@+node:ekr.20041005105605.238:<< handle @path >>
-                # We set the current director to a path so future writes will go to that directory.
-
-                path = theDict["path"]
-                path = g.computeRelativePath (path)
-
-                if path:
-                    base = g.getBaseDirectory(c) # returns "" on error.
-                    path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
-
-                    if g.os_path_isabs(path):
-                        #@        << handle absolute path >>
-                        #@+node:ekr.20041005105605.240:<< handle absolute path >>
-                        # path is an absolute path.
-
-                        if g.os_path_exists(path):
-                            at.default_directory = path
-                        else:
-                            at.default_directory = g.makeAllNonExistentDirectories(path,c=c)
-                            if not at.default_directory:
-                                at.error("invalid @path: %s" % path)
-                        #@-node:ekr.20041005105605.240:<< handle absolute path >>
-                        #@nl
-                    else:
-                        at.error("ignoring bad @path: %s" % path)
-                else:
-                    at.error("ignoring empty @path")
-                #@-node:ekr.20041005105605.238:<< handle @path >>
-                #@nl
-                if trace: g.trace('returns',at.default_directory)
-                return
-
-        #@    << Set current directory >>
-        #@+node:ekr.20041005105605.241:<< Set current directory >>
-        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-        assert(not at.default_directory)
-
-        if c.frame :
-            base = g.getBaseDirectory(c) # returns "" on error.
-            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-                if theDir and len(theDir) > 0:
-                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        if g.os_path_exists(theDir):
-                            at.default_directory = theDir ; break
-                        else:
-                            at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-        #@-node:ekr.20041005105605.241:<< Set current directory >>
-        #@nl
-        if not at.default_directory and not importing:
-            # This should never happen: c.openDirectory should be a good last resort.
-            at.error("No absolute directory specified anywhere.")
-            g.trace(g.callers())
-            at.default_directory = ""
-
-        if trace: g.trace('returns',at.default_directory)
+        if error: at.error(error)
     #@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
     #@+node:ekr.20070529083836:cleanLines
     def cleanLines (self,p,s):
