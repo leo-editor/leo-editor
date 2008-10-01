@@ -235,7 +235,14 @@ def getFileName (fileName,script):
     elif fileName:
         pass
     else:
-        fileName = len(sys.argv) > 1 and sys.argv[-1]
+        # Bug fix: 2008/10/1
+        if sys.platform.startswith('win'):
+            if len(sys.argv) > 1:
+                fileName = ' '.join(sys.argv[1:])
+            else:
+                fileName = None
+        else:
+            fileName = len(sys.argv) > 1 and sys.argv[-1]
 
     return completeFileName(fileName)
 #@+node:ekr.20041124083125:completeFileName
@@ -253,7 +260,8 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName)
+    ### fileName = g.os_path_finalize_join(os.getcwd(),fileName)
+    fileName = g.os_path_finalize(fileName)
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
