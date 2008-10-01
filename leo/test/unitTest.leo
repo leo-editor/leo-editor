@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6,5,14,6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -810,7 +810,7 @@
 <v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -893,7 +893,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -2095,7 +2095,7 @@
 <v t="ekr.20060203181203.2"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20071113202410" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
@@ -2187,6 +2187,13 @@
 <v t="ekr.20040712101754.179"><vh>moreHead</vh></v>
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
+</v>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
+<v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
+<v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
+<v t="ekr.20081001094920.6"><vh>@test section node</vh></v>
+<v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 <v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
@@ -21963,5 +21970,100 @@ assert s is True,repr(s)</t>
 s = g.scanAtWrapDirectives(aList)
 
 assert s is None,repr(s)</t>
+<t tx="ekr.20081001094920.2"></t>
+<t tx="ekr.20081001094920.3">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+
+try:
+    
+    p1 = p.insertAsLastChild()
+    assert p1.textOffset() == 0
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode = None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.4">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+
+try:
+    
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    assert p1.textOffset() == 0
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode = None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.5">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+
+try:
+    
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    p2 = p1.insertAsLastChild()
+    assert p1.textOffset() == 0
+    assert p2.textOffset() == 0
+    
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode = None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.6">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+    
+try:
+    
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    body = '''   %s
+    ''' % (g.angleBrackets(' section '))
+    p1.setBodyString(body)
+    p2 = p1.insertAsLastChild()
+    head = g.angleBrackets(' section ')
+    p2.setHeadString(head)
+    assert p1.textOffset() == 0
+    assert p2.textOffset() == 3
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode = None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.7">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+
+try:
+    
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    body = '''     %s
+    ''' % (chr(64) + 'others') # ugly hack
+    p1.setBodyString(body)
+    p2 = p1.insertAsLastChild()
+    assert p1.textOffset() == 0
+    assert p2.textOffset() == 5
+    root.firstChild().doDelete(newNode = None)
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode = None)
+    c.redraw_now()
+</t>
 </tnodes>
 </leo_file>
