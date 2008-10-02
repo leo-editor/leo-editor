@@ -4,6 +4,10 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
 
+#@+node:ekr.20081001140516.1:The nav_buttons arrows don't work as expected
+# The 'Recent' list is acting strangely.
+#@nonl
+#@-node:ekr.20081001140516.1:The nav_buttons arrows don't work as expected
 #@+node:ekr.20080918164844.7:Investigate settings strangeness re @string debugger_path
 @nocolor
 
