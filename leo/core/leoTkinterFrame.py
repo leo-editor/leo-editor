@@ -1178,7 +1178,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
                         c.outerUpdate()
                     return val
             else:
-                def commandCallback():
+                def commandCallback(n=g.app.iconWidgetCount):
                     g.pr("command for widget %s" % (n))
                 command = commandCallback
 

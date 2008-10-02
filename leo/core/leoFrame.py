@@ -3065,6 +3065,12 @@ class nullIconBarClass:
         return b
     #@-node:ekr.20070301164543.2:add
     #@+node:ekr.20070301165343:do nothing
+    def addRow(self,height=None):
+        pass
+
+    def addWidget (self,w):
+        pass
+
     def clear(self):
         g.app.iconWidgetCount = 0
         g.app.iconImageRefs = []
@@ -3073,6 +3079,9 @@ class nullIconBarClass:
         pass
 
     def getFrame (self):
+        return None
+
+    def getNewFrame (self):
         return None
 
     def pack (self):
