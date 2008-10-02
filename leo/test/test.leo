@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6,0,0,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -342,7 +342,7 @@
 <v t="ekr.20080813080627.2"><vh>spam</vh>
 <v t="ekr.20080813080729.1"><vh>child</vh></v>
 </v>
-<v t="ekr.20080813080627.3" a="M"><vh>eggs</vh></v>
+<v t="ekr.20080813080627.3"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
 <v t="ekr.20080909075224.1"><vh>@@shadow ekr-shadow-test.html</vh></v>
@@ -381,9 +381,9 @@
 </v>
 <v t="ekr.20081001110047.1"><vh>@shadow mark-changed-nodes-test.py</vh></v>
 <v t="ekr.20081001112706.3"><vh>Nested at-path directives</vh></v>
-<v t="ekr.20081001112706.4" a="E"><vh>@path path_test</vh>
+<v t="ekr.20081001112706.4" a="M"><vh>@path path_test</vh>
 <v t="ekr.20081001112706.5" a="E"><vh>@path subdir</vh>
-<v t="ekr.20081001112706.1" a="E"><vh>@shadow subpath-test.py</vh></v>
+<v t="ekr.20081001112706.1"><vh>@shadow subpath-test.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2525,6 +2525,7 @@ open_with.py
 mod_scripting.py
 
 nav_buttons.py
+nodenavigator.py
 # hoist.py
 image.py
 leo_to_html.py

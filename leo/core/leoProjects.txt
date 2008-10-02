@@ -10962,6 +10962,390 @@ def createControl (self):
 #@-node:ekr.20080930072519.7:New/changed code
 #@-node:ekr.20080930072519.1:Added support for @int icon_bar_widgets_per_row setting
 #@-node:ekr.20080930072519.8:New options
+#@+node:ekr.20081001140516.16:Plugins
+#@+node:ekr.20081001140516.1:Improved nav_buttons plugin and corresponding nodeHistory class
+#@+node:ekr.20031218072017.2997:c.selectPosition
+def selectPosition(self,p,updateBeadList=True):
+
+    """Select a new position."""
+
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+
+    # g.trace(p.headString(),g.callers())
+
+    c.frame.tree.select(p,updateBeadList)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@-node:ekr.20031218072017.2997:c.selectPosition
+#@+node:ekr.20070615134813:goNext/Prev
+def goNext (self):
+
+    '''Return the next visited node, or None.'''
+    if self.beadPointer + 1 < len(self.beadList):
+        self.beadPointer += 1
+        p,chapter = self.beadList[self.beadPointer]
+        self.selectChapter(chapter)
+        return p
+    else:
+        return None
+
+def goPrev (self):
+
+    '''Return the previous visited node, or None.'''
+    if self.beadPointer > 0:
+        self.beadPointer -= 1
+        p,chapter = self.beadList[self.beadPointer]
+        self.selectChapter(chapter)
+        return p
+    else:
+        return None
+#@-node:ekr.20070615134813:goNext/Prev
+#@+node:ekr.20031218072017.1627:goPrevVisitedNode
+def goPrevVisitedNode (self,event=None):
+
+    '''Select the previously visited node.'''
+
+    c = self
+
+    p = c.nodeHistory.goPrev()
+    # g.trace(p)
+    if p:
+        c.frame.tree.expandAllAncestors(p)
+        c.selectPosition(p)
+        c.redraw_now()
+#@-node:ekr.20031218072017.1627:goPrevVisitedNode
+#@+node:ekr.20031218072017.1628:goNextVisitedNode
+def goNextVisitedNode (self,event=None):
+
+    '''Select the next visited node.'''
+
+    c = self
+
+    p = c.nodeHistory.goNext()
+    # g.trace(p)
+    if p:
+        c.frame.tree.expandAllAncestors(p)
+        c.selectPosition(p)
+        c.redraw_now()
+#@-node:ekr.20031218072017.1628:goNextVisitedNode
+#@+node:ekr.20040803072955.128:leoTree.select & helper
+tree_select_lockout = False
+
+def select (self,p,updateBeadList=True,scroll=True):
+
+    '''Select a node.  Never redraws outline, but may change coloring of individual headlines.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        val = 'break'
+        self.tree_select_lockout = True
+        val = self.treeSelectHelper(p,updateBeadList,scroll)
+    finally:
+        self.tree_select_lockout = False
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:treeSelectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def treeSelectHelper (self,p,updateBeadList,scroll):
+
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    old_p = c.currentPosition()
+
+    if not p:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    # g.trace('      ===',id(w),p and p.headString())
+    if self.trace_select and not g.app.unitTesting: g.trace('tree',g.callers())
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.currentPosition() here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p,updateBeadList) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if not body: g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+
+yview = body.getYScrollPosition()
+insertSpot = c.frame.body.getInsertPoint()
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p) # 12/17/04
+
+if c.edit_widget(old_p):
+    old_p.v.t.scrollBarSpot = yview
+    old_p.v.t.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.headString()
+frame.setWrap(p)
+
+# Always do this.  Otherwise there can be problems with trailing newlines.
+
+s = g.toUnicode(p.v.t._bodyString,"utf-8")
+old_s = w.getAllText()
+
+if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+    pass
+else:
+    # This destroys all color tags, so do a full recolor.
+    w.setAllText(s)
+    self.frame.body.recolor_now(p) # recolor now uses p.copy(), so this is safe.
+
+if p.v and p.v.t.scrollBarSpot != None:
+    first,last = p.v.t.scrollBarSpot
+    w.setYScrollPosition(first)
+
+if p.v and p.v.t.insertSpot != None:
+    spot = p.v.t.insertSpot
+    w.setInsertPoint(spot)
+    w.see(spot)
+else:
+    w.setInsertPoint(0)
+
+# g.trace("select:",p.headString())
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+# g.trace('selecting',p,'edit_widget',c.edit_widget(p))
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:treeSelectHelper
+#@-node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20070615131604:class nodeHistory
+class nodeHistory:
+
+    '''A class encapsulating knowledge of visited nodes.'''
+
+    @others
+#@+node:ekr.20070615131604.1: ctor (nodeHistory)
+def __init__ (self,c):
+
+    self.c = c
+
+    self.beadList = [] # list of (position,chapter) tuples for nav_buttons plugin.
+    self.beadPointer = -1
+    self.trace = False
+    self.visitedList = [] # list of (position,chapter) tuples for nodenavigator plugin.
+#@-node:ekr.20070615131604.1: ctor (nodeHistory)
+#@+node:ekr.20070615131604.3:canGoToNext/Prev
+def canGoToNextVisited (self):
+
+    if self.trace:
+        g.trace(
+            self.beadPointer + 1 < len(self.beadList),
+            self.beadPointer,len(self.beadList))
+
+    return self.beadPointer + 1 < len(self.beadList)
+
+def canGoToPrevVisited (self):
+
+    if self.trace:
+        g.trace(self.beadPointer > 0,
+            self.beadPointer,len(self.beadList))
+
+    return self.beadPointer > 0
+#@-node:ekr.20070615131604.3:canGoToNext/Prev
+#@+node:ekr.20070615132939:clear
+def clear (self):
+
+    self.beadList = []
+    self.beadPointer = -1
+#@-node:ekr.20070615132939:clear
+#@+node:ekr.20070615134813:goNext/Prev
+def goNext (self):
+
+    '''Return the next visited node, or None.'''
+    if self.beadPointer + 1 < len(self.beadList):
+        self.beadPointer += 1
+        p,chapter = self.beadList[self.beadPointer]
+        self.selectChapter(chapter)
+        return p
+    else:
+        return None
+
+def goPrev (self):
+
+    '''Return the previous visited node, or None.'''
+    if self.beadPointer > 0:
+        self.beadPointer -= 1
+        p,chapter = self.beadList[self.beadPointer]
+        self.selectChapter(chapter)
+        return p
+    else:
+        return None
+#@-node:ekr.20070615134813:goNext/Prev
+#@+node:ekr.20070615132939.1:remove
+def remove (self,p):
+
+    '''Remove an item from the nav_buttons list.'''
+
+    c = self.c ; root = c.rootPosition()
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    n = 0       # The number of previous valid entries.
+    n2 = 0      # The number of previous entries.
+    aList = []  # The new beadList.
+    found = -1
+    for data in self.beadList:
+        p2,chapter = data
+        if c.positionExists(p2,root=root):
+            data = p2,theChapter
+            if p == p2:
+                found = n
+                self.beadPointer = n-1
+            else:
+                aList.append(data)
+            n += 1
+        elif found == -1 and n2 <= self.beadPointer:
+            self.beadPointer -= 1 # Adjust for missing entries.
+        n2 += 1
+
+    if found > -1: self.beadPointer = found
+    self.beadList = aList
+
+    if self.trace:
+        g.trace('bead list',p.headString())
+        g.pr([z[0].headString() for z in self.beadList])
+#@-node:ekr.20070615132939.1:remove
+#@+node:ekr.20070615140032:selectChapter
+def selectChapter (self,chapter):
+
+    c = self.c ; cc = c.chapterController
+    if not cc or not chapter: return
+
+    if chapter != cc.getSelectedChapter():
+        cc.selectChapterByName(chapter.name)
+#@-node:ekr.20070615140032:selectChapter
+#@+node:ekr.20070615131604.2:update & helpers
+def update (self,p,updateBeadList):
+
+    #if True or updateBeadList:
+    self.updatePositionList(p)
+
+    self.updateVisitedList(p)
+#@+node:ekr.20040803072955.131:updatePositionList
+def updatePositionList (self,p):
+
+    '''Update the position list used by nav_buttons plugin.'''
+
+    c = self.c ; root = c.rootPosition()
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+
+    # Recreate the list, and set found if p is in the list
+    n = 0       # The number of previous valid entries.
+    n2 = 0      # The number of previous entries.
+    aList = []  # The new beadList.
+    found = -1
+    for data in self.beadList:
+        p2,chapter = data
+        if c.positionExists(p2,root=root):
+            data = p2,theChapter
+            aList.append(data)
+            if p == p2: found = n
+            n += 1
+        elif n2 <= self.beadPointer:
+            self.beadPointer -= 1 # Adjust for missing entries.
+        n2 += 1
+
+    if found == -1:
+        data = p.copy(),theChapter
+        self.beadList.append(data)
+        self.beadPointer = len(self.beadList) -1
+    else:
+        self.beadPointer = found
+        self.beadList = aList
+
+    if self.trace:
+        g.trace('bead list',p.headString())
+        g.pr([z[0].headString() for z in self.beadList])
+#@-node:ekr.20040803072955.131:updatePositionList
+#@+node:ekr.20040803072955.132:updateVisitedList
+def updateVisitedList (self,p):
+
+    '''Make p the most recently visited position.'''
+
+    c = self.c ; root=c.rootPosition()
+    cc = c.chapterController
+
+    # Remove non-existent entries.
+    self.visitedList = [z for z in self.visitedList if
+        c.positionExists(z[0],root=root)]
+
+    # Append p to the list only if it is not present.
+    for data in self.visitedList:
+        p2,chapter = data
+        if p2 == p: break
+    else:
+        data = p.copy(),cc and cc.getSelectedChapter()
+        self.visitedList.insert(0,data)
+
+    if self.trace:
+        g.trace('len(c.visitedList)',len(self.visitedList))
+        g.pr([z[0].headString()[:10] for z in self.visitedList]) # don't assign to p!
+#@-node:ekr.20040803072955.132:updateVisitedList
+#@-node:ekr.20070615131604.2:update & helpers
+#@+node:ekr.20070615140655:visitedPositions
+def visitedPositions (self):
+
+    return [p.copy() for p,chapter in self.visitedList]
+#@-node:ekr.20070615140655:visitedPositions
+#@-node:ekr.20070615131604:class nodeHistory
+#@-node:ekr.20081001140516.1:Improved nav_buttons plugin and corresponding nodeHistory class
+#@-node:ekr.20081001140516.16:Plugins
 #@-node:ekr.20080917153158.11:4.6
 #@-all
 #@nonl
