@@ -2172,6 +2172,11 @@ class atFile:
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
 
+        if hasattr(root.v.t,'tnodeList'):# 2008/10/3
+            has_list,old_list = True,root.v.t.tnodeList[:]
+        else:
+            has_list,old_list = False,[]
+
         #@    << set at.targetFileName >>
         #@+node:ekr.20041005105605.145:<< set at.targetFileName >>
         if toString:
@@ -2222,6 +2227,7 @@ class atFile:
                     at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
                 #@-node:ekr.20041005105605.146:<< set dirty and orphan bits on error >>
                 #@nl
+                if has_list: root.v.t.tnodeList = old_list # 2008/10/3
         except Exception:
             if toString:
                 at.exception("exception preprocessing script")
@@ -2229,6 +2235,7 @@ class atFile:
                 at.root.v.t._p_changed = True
             else:
                 at.writeException() # Sets dirty and orphan bits.
+                if has_list: root.v.t.tnodeList = old_list # 2008/10/3
     #@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
     #@+at 
     #@nonl
