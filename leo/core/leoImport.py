@@ -1804,7 +1804,6 @@ class baseScannerClass:
             g.es_print('first mismatched line at line',str(i+1))
             g.es_print('original line: ',line1)
             g.es_print('generated line:',line2)
-            g.pdb() ###
 
         d = g.app.unitTestDict
         expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
