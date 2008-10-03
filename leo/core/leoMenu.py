@@ -1602,23 +1602,64 @@ class leoMenu:
 
         # Create all the other entries (a maximum of 36).
         accel_ch = string.digits + string.ascii_uppercase # Not a unicode problem.
-        i = 0 ; n = len(accel_ch)
+        i = 0
+        n = len(accel_ch)
+
+        # see if we're grouping when files occur in more than one place
+        rf_group = c.config.getBool("recent_files_group")
+        rf_always = c.config.getBool("recent_files_group_always")
+        groupedEntries = rf_group or rf_always
+
+        if groupedEntries:  # if so, make dict of groups
+            dirCount = {}
+            for fileName in c.recentFiles[:n]:
+                dirName, baseName = g.os_path_split(fileName)
+                if baseName not in dirCount:
+                    dirCount[baseName] = {'dirs':[], 'entry': None}
+                dirCount[baseName]['dirs'].append(dirName)
+
         for name in c.recentFiles[:n]:
             if name.strip() == "": continue  # happens with empty list/new file
             def recentFilesCallback (event=None,c=c,name=name):
                 c.openRecentFile(name)
-            label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
-            c.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
+
+            if groupedEntries:
+                dirName, baseName = g.os_path_split(name)
+
+                entry = dirCount[baseName]
+
+                if len(entry['dirs']) > 1 or rf_always:  # sub menus
+                    if entry['entry'] is None:
+                        entry['entry'] = self.createNewMenu(baseName, "Recent Files...")
+                        # acts as a flag for the need to create the menu
+                    c.add_command(self.getMenu(baseName), label=dirName,
+                        command=recentFilesCallback, underline=0)
+                else:  # single occurence, no submenu
+                    c.add_command(recentFilesMenu,label=baseName,command=recentFilesCallback,underline=0)
+            else:  # original behavior
+                label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
+                c.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
             i += 1
+
+        if groupedEntries:  # store so we can delete them later
+            self.groupedMenus = [i for i in dirCount
+                                 if dirCount[i]['entry'] is not None]
     #@-node:ekr.20031218072017.2078:createRecentFilesMenuItems (leoMenu)
     #@+node:tbrown.20080509212202.7:deleteRecentFilesMenuItems
     def deleteRecentFilesMenuItems(self,menu):
         """Delete recent file menu entries"""
+
         toDrop = len(self.c.recentFiles)
         if hasattr(self, 'recentFilesStatic'):
             toDrop += len(self.recentFilesStatic)
         self.delete_range(menu,0,toDrop)
-    #@nonl
+
+        if hasattr(self, 'groupedMenus'):
+            for i in self.groupedMenus:
+                menu = self.getMenu(i)
+                if menu:
+                    self.destroy(menu)
+                    self.destroyMenu(i)
     #@-node:tbrown.20080509212202.7:deleteRecentFilesMenuItems
     #@+node:ekr.20031218072017.4117:defineMenuCallback
     def defineMenuCallback(self,command,name,minibufferCommand):
