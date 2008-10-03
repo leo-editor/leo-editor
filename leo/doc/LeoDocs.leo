@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -265,7 +265,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050828174453.2"><vh>\@asis and @noref</vh></v>
 <v t="ekr.20080730212711.47"><vh>\@auto</vh></v>
 <v t="ekr.20050828173234.1"><vh>@c and @code</vh></v>
-<v t="ekr.20050828061501.32"><vh>@color, @nocolor and @killcolor</vh></v>
+<v t="ekr.20050828061501.32"><vh>@color, @nocolor, @nocolor-node and @killcolor</vh></v>
 <v t="ekr.20050828061501.33"><vh>@comment</vh></v>
 <v t="ekr.20050828061501.34"><vh>@delims</vh></v>
 <v t="ekr.20050828061501.35"><vh>@encoding</vh></v>
@@ -10999,6 +10999,9 @@ will control the syntax coloring.
 **Ambiguous nodes**, nodes containing both the ``@color`` and ``@nocolor`` directives,
 never affect the coloring of their offspring.
 
+The ``@nocolor-node`` directive completely disables coloring for that node only.
+Descedant nodes are not affected.
+
 The ``@killcolor`` directive completely disables the colorizer for that node.
 The result much faster syntax coloring of large body text.
 As usual ``@killcolor`` may itself be overridden in descendant nodes.
@@ -11009,9 +11012,9 @@ The differences between ``@killcolor`` and ``@nocolor``:
 - ``@killcolor`` overrides ``@nocolor`` and ``@color`` directives.
   Any node containing @killcolor is unambiguously a ``@killcolor`` node regardless of
   whether that node also contains ``@color`` or ``@nocolor`` directives.
-
+  
 **Note**:
-the ``@color``, ``@nocolor`` and ``@killcolor`` directives do not affect the ``Tangle`` commands in any way.
+These directives do not affect the ``Tangle`` commands in any way.
 In particular, the ``Tangle`` commands will recognize section definitions as usual even
 after an ``@nocolor`` directive is seen.</t>
 <t tx="ekr.20050828061501.33">**Note**:
@@ -11811,7 +11814,7 @@ Negative values cause Leo to convert tabs to blanks.</t>
 - **\@c**
   Starts a code part. ``@code`` is a deprecated synonym.
 
-- **\@color**, **\@nocolor** and **\@killcolor**
+- **\@color**, **\@nocolor**, **\@nocolor-node** and **\@killcolor**
   Control syntax coloring.
 
 - **\@comment**
