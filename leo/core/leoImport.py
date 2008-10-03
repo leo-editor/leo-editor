@@ -1784,6 +1784,7 @@ class baseScannerClass:
             # g.trace('expected',d.get('expectedMismatchLine'),'actual',d.get('actualMismatchLine'))
             ok = d.get('expectedMismatchLine') == d.get('actualMismatchLine')
             # Unit tests do not generate errors unless the mismatch line does not match.
+            if not ok: d['fail'] = g.callers() # 2008/10/3
 
         if not ok:
             self.reportMismatch(lines1,lines2,bad_i)
@@ -1803,6 +1804,7 @@ class baseScannerClass:
             g.es_print('first mismatched line at line',str(i+1))
             g.es_print('original line: ',line1)
             g.es_print('generated line:',line2)
+            g.pdb() ###
 
         d = g.app.unitTestDict
         expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')

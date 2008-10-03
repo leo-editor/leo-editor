@@ -2,7 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
-#@+node:ekr.20080915112342.1:First
+#@+node:ekr.20080915112342.1:First 5
 
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
 @nocolor
@@ -251,7 +251,6 @@ self.check_the_final_output(
 #@-node:ekr.20080708094444.38:x.propagate_changed_lines
 #@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
 #@-node:ekr.20080922115725.1:Finish @shadow
-#@+node:ekr.20080930072519.9:File bugs 2
 #@+node:ekr.20080330085343.3:Fix bug in atFile.write
 The code should save/restore, just as in the clean_file function (from scripts.leo)
 #@nonl
@@ -322,8 +321,7 @@ tests described above)
 contents of unitTest.leo instead of the original document contents.
 #@nonl
 #@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@-node:ekr.20080930072519.9:File bugs 2
-#@-node:ekr.20080915112342.1:First
+#@-node:ekr.20080915112342.1:First 5
 #@+node:ekr.20080517102922.1:Files stuff 8
 #@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
 # Remove the old type-specific commands from the default menu.

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -893,7 +893,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -2095,7 +2095,7 @@
 <v t="ekr.20060203181203.2"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20071113202410" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
@@ -2154,7 +2154,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2521,6 +2521,134 @@
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20071113193624.1"><vh>leoImport</vh>
+<v t="ekr.20040712101754.7" annotate="7d71002e"><vh> Export tests</vh>
+<v t="ekr.20040712101754.9" annotate="7d71002e"><vh>@suite Export tests</vh></v>
+<v t="ekr.20040712101754.24" annotate="7d71002e"><vh>exportTests</vh>
+<v t="ekr.20040712101754.25"><vh>tempNode</vh></v>
+<v t="ekr.20040712101754.26"><vh>exportHeadlines</vh>
+<v t="ekr.20040712101754.27"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20040712101754.28"><vh>flattenOutline</vh>
+<v t="ekr.20040712101754.29"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20040712101754.30"><vh>weave</vh>
+<v t="ekr.20040712101754.31"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20040712101754.32"><vh>outlineToNoweb</vh>
+<v t="ekr.20040712101754.33"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20040712101754.34"><vh>outlineToCWEB</vh>
+<v t="ekr.20040712101754.35"><vh>dialog</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20070711063849"><vh> Import tests</vh>
+<v t="ekr.20040712101754.8" annotate="7d71002e"><vh>@suite Import tests</vh></v>
+<v t="ekr.20040712101754.10" annotate="7d71002e"><vh>importTests</vh>
+<v t="ekr.20040712101754.11" annotate="7d71002e"><vh>tempNode</vh></v>
+<v t="ekr.20040712101754.12" annotate="7d71002e"><vh>importAtRoot</vh>
+<v t="ekr.20040712101754.13"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20040831095833" annotate="7d71002e"><vh>importDerivedFile</vh>
+<v t="ekr.20040831095833.1"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20040712101754.16" annotate="7d71002e"><vh>importNowebFiles</vh>
+<v t="ekr.20040712101754.17"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20040712101754.18" annotate="7d71002e"><vh>importFlattenedOutline</vh>
+<v t="ekr.20040712101754.19"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20040712101754.20" annotate="7d71002e"><vh>importCWEBFiles</vh>
+<v t="ekr.20040712101754.21"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20040712101754.22" annotate="7d71002e"><vh>removeSentinels</vh>
+<v t="ekr.20040712101754.23"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20040712101754.14" annotate="7d71002e"><vh>importAtFile</vh>
+<v t="ekr.20040712101754.15"><vh>dialog</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20071020075538"><vh> Tests of @auto</vh>
+<v t="ekr.20071020075538.1"><vh>C tests</vh>
+<v t="ekr.20071020075538.2"><vh>@test c class 1</vh></v>
+<v t="ekr.20071020075538.3"><vh>@test c class--underindented line</vh></v>
+<v t="ekr.20071020075538.4"><vh>@test defaultImporter</vh></v>
+<v t="ekr.20071020075538.5"><vh>@test c test--comment follows arg list</vh></v>
+<v t="ekr.20071020075538.6"><vh>@test c test--comment follows block delim</vh></v>
+<v t="ekr.20071020075538.7"><vh>@test c test--intermixed blanks and tabs</vh></v>
+<v t="ekr.20071020075538.8"><vh>@test c old-style decl 1</vh></v>
+<v t="ekr.20071020075538.9"><vh>@test c old-style decl 2</vh></v>
+<v t="ekr.20071108082844"><vh>@test c extern</vh></v>
+</v>
+<v t="ekr.20080211092326"><vh>Pascal tests</vh>
+<v t="ekr.20080211092326.1"><vh>@test pascal-to-delphi interface</vh></v>
+</v>
+<v t="ekr.20071020075538.10"><vh>Python tests</vh>
+<v t="ekr.20071020075538.31"><vh>@@test nested class</vh></v>
+<v t="ekr.20071020075538.30"><vh>@test comment after dict assign</vh></v>
+<v t="ekr.20071201071535"><vh>@test decorator test</vh></v>
+<v t="ekr.20071020075538.25"><vh>@test def inside def</vh></v>
+<v t="ekr.20080121080011"><vh>@test docstring only</vh></v>
+<v t="ekr.20071020075538.27"><vh>@test overindent def--no following def</vh></v>
+<v t="ekr.20071020075538.26"><vh>@test overindent def--one following def</vh></v>
+<v t="ekr.20071101074443"><vh>@test overindented def 3</vh></v>
+<v t="ekr.20071020075538.11"><vh>@test python bad class test</vh></v>
+<v t="ekr.20071020075538.14"><vh>@test python class test 2</vh></v>
+<v t="ekr.20071020075538.13"><vh>@test python class tests 1</vh></v>
+<v t="ekr.20071020075538.15"><vh>@test python decls test 1</vh></v>
+<v t="ekr.20071020075538.20"><vh>@test python def test 1</vh></v>
+<v t="ekr.20071020075538.21"><vh>@test python def test 2</vh></v>
+<v t="ekr.20071020075538.16"><vh>@test python empty decls</vh></v>
+<v t="ekr.20071020075538.12"><vh>@test python extra leading ws test</vh></v>
+<v t="ekr.20071107085755"><vh>@test python indent decls</vh></v>
+<v t="ekr.20071020075538.17"><vh>@test python minimal class 1</vh></v>
+<v t="ekr.20071020075538.18"><vh>@test python minimal class 2</vh></v>
+<v t="ekr.20071020075538.19"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20071020075538.32"><vh>@test scanPythonText: leoImportNosent.py</vh></v>
+<v t="ekr.20071020075538.22"><vh>@test string test: extra indent</vh></v>
+<v t="ekr.20071020075538.23"><vh>@test string underindent lines</vh></v>
+<v t="ekr.20071020075538.24"><vh>@test string underindent lines 2</vh></v>
+<v t="ekr.20071020075538.28"><vh>@test trailing comment</vh></v>
+<v t="ekr.20071020075538.29"><vh>@test trailing comment--outer levels</vh></v>
+<v t="ekr.20080901083414.24"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
+<v t="ekr.20080901083414.1"><vh>@test unindent in triple string does not end function</vh></v>
+</v>
+<v t="ekr.20071020075538.33"><vh>c# tests</vh>
+<v t="ekr.20071020075538.34"><vh>@test c# namespace indent</vh></v>
+<v t="ekr.20071020075538.50"><vh>@test c# namespace no indent</vh></v>
+<v t="ekr.20071020075538.63"><vh>@@test c# ref card</vh></v>
+</v>
+<v t="ekr.20071020075538.64"><vh>Java tests</vh>
+<v t="ekr.20071020075538.65"><vh>@test java interface test1</vh></v>
+<v t="ekr.20071020075538.66"><vh>@test java interface test2</vh></v>
+<v t="ekr.20071020075538.67"><vh>@@test constants.java</vh></v>
+<v t="ekr.20071020075538.77"><vh>@test from AdminPermission.java</vh></v>
+<v t="ekr.20071020075538.78"><vh>@@test AdminPermission.java</vh></v>
+<v t="ekr.20071030111427"><vh>Test BundleException.java</vh>
+<v t="ekr.20071030111256"><vh>@test from BundleException.java</vh></v>
+</v>
+</v>
+<v t="ekr.20071215121511"><vh>Javascript tests</vh>
+<v t="ekr.20071215135125"><vh>Problems</vh></v>
+<v t="ekr.20071215121835"><vh>@test Javascript-regex-1</vh></v>
+<v t="ekr.20071215121952"><vh>@test Javascript-2</vh></v>
+<v t="ekr.20071215123831"><vh>@test Javascript-3</vh></v>
+<v t="ekr.20071215134411"><vh>@@test javascript-test-js</vh></v>
+</v>
+<v t="ekr.20071214075605"><vh>xml tests</vh>
+<v t="ekr.20071214075605.1"><vh>@test xml 1</vh></v>
+</v>
+<v t="ekr.20071024102639"><vh>@test checkTrialWrite</vh></v>
+<v t="ekr.20071020075538.79"><vh>@test collapse-all</vh></v>
+</v>
+<v t="ekr.20071113145804.2"><vh>@test compareHelper</vh></v>
+<v t="ekr.20071113145804.3"><vh>@test compareHelper-warning</vh></v>
+<v t="ekr.20071119053439"><vh>@test regularizeWhitespace</vh></v>
+<v t="ekr.20080811180035.1"><vh>@test languageForExtension</vh></v>
+<v t="ekr.20071113202321.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </vnodes>
 <tnodes>
