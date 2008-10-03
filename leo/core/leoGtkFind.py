@@ -216,12 +216,12 @@ class gtkFindTab (leoFind.findTab):
 
         numberOfColumns = 2 # Number of columns
         columns = [] ; radioLists = [] ; checkLists = []
-        for i in xrange(numberOfColumns):
+        for i in range(numberOfColumns):
             columns.append(gtk.Frame(columnsFrame,bd=1))
             radioLists.append([])
             checkLists.append([])
 
-        for i in xrange(numberOfColumns):
+        for i in range(numberOfColumns):
             columns[i].pack(side="left",padx="1p") # fill="y" Aligns to top. padx expands columns.
 
         radioLists[0] = []
@@ -248,7 +248,7 @@ class gtkFindTab (leoFind.findTab):
             ("Mark &Changes",    self.svarDict["mark_changes"]),
         ]
 
-        for i in xrange(numberOfColumns):
+        for i in range(numberOfColumns):
             for var,name,val in radioLists[i]:
                 box = underlinedTkButton(
                     "radio",columns[i],anchor="w",text=name,variable=var,value=val,background=bg)
@@ -671,7 +671,7 @@ class gtkSpellTab:
         self.wordLabel.configure(text= "Suggestions for: " + word)
         self.listBox.delete(0, "end")
 
-        for i in xrange(len(self.suggestions)):
+        for i in range(len(self.suggestions)):
             self.listBox.insert(i, self.suggestions[i])
 
         # This doesn't show up because we don't have focus.
@@ -695,22 +695,6 @@ class gtkSpellTab:
         else:
             return None
     #@-node:ekr.20080112173119.59:getSuggestion
-    #@+node:ekr.20080112173119.60:update (no longer used)
-    # def update(self,show=True,fill=False):
-
-        # """Update the Spell Check dialog."""
-
-        # c = self.c
-
-        # if fill:
-            # self.fillbox([])
-
-        # self.updateButtons()
-
-        # if show:
-            # self.bringToFront()
-            # c.bodyWantsFocus()
-    #@-node:ekr.20080112173119.60:update (no longer used)
     #@+node:ekr.20080112173119.61:updateButtons (spellTab)
     def updateButtons (self):
 

@@ -122,7 +122,7 @@ def writeNodeAndTree (c, word, header_style, level,
     if vnode is None:
         vnode = c.currentVnode()
     #
-    dict = g.scanDirectives(c,p=vnode)
+    dict = c.scanAllDirectives(p=vnode)
     encoding = dict.get("encoding",None)
     if encoding == None:
         # encoding = c.config.default_derived_file_encoding

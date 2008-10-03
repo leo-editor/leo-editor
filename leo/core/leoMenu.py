@@ -16,8 +16,6 @@ class leoMenu:
 
     """The base class for all Leo menus."""
 
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
-
     #@    @+others
     #@+node:ekr.20031218072017.3751: leoMenu.__init__
     def __init__ (self,frame):
@@ -179,7 +177,7 @@ class leoMenu:
                 enable(menu,"Expand Next Level",hasChildren)
                 enable(menu,"Expand To Level 1",hasChildren and isExpanded)
                 enable(menu,"Expand Or Go Right",hasChildren)
-                for i in xrange(2,9):
+                for i in range(2,9):
                     frame.menu.enableMenu(menu,"Expand To Level " + str(i), hasChildren)
             #@-node:ekr.20040131171020.1:<< enable expand/Contract submenu >>
             #@nl
@@ -250,7 +248,7 @@ class leoMenu:
     def capitalizeMinibufferMenuName (self,s,removeHyphens):
 
         result = []
-        for i in xrange(len(s)):
+        for i in range(len(s)):
             ch = s[i]
             prev = i > 0 and s[i-1] or ''
             prevprev = i > 1 and s[i-2] or ''
@@ -1301,8 +1299,7 @@ class leoMenu:
 
     def canonicalizeTranslatedMenuName (self,name):
 
-        return ''.join([ch for ch in name.lower() if ch not in u'& \t\n\r'])
-
+        return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
     #@-node:ekr.20031218072017.3783:canonicalizeMenuName & cononicalizeTranslatedMenuName
     #@+node:ekr.20051022044950:computeOldStyleShortcutKey
     def computeOldStyleShortcutKey (self,s):
@@ -1325,7 +1322,7 @@ class leoMenu:
         for data in table:
             #@        << get label & command or continue >>
             #@+node:ekr.20051021091958:<< get label & command or continue >>
-            if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+            if g.isString(data):
                 # New in Leo 4.4.2: Can use the same string for both the label and the command string.
                 ok = True
                 s = data
@@ -1624,7 +1621,6 @@ class leoMenu:
         for name in c.recentFiles[:n]:
             if name.strip() == "": continue  # happens with empty list/new file
             def recentFilesCallback (event=None,c=c,name=name):
-                # __pychecker__ = '--no-argsused' # event not used, but must be present.
                 c.openRecentFile(name)
 
             if groupedEntries:
@@ -1675,8 +1671,6 @@ class leoMenu:
 
             # The first parameter must be event, and it must default to None.
             def minibufferMenuCallback(event=event,self=self,command=command,label=name):
-                # __pychecker__ = '--no-argsused' # event not used, and must be present.
-
                 c = self.c
                 return c.doCommand(command,label,event)
 
@@ -1686,8 +1680,6 @@ class leoMenu:
 
             # The first parameter must be event, and it must default to None.
             def legacyMenuCallback(event=None,self=self,command=command,label=name):
-                # __pychecker__ = '--no-argsused' # event not used, and must be present.
-
                 c = self.c
                 return c.doCommand(command,label)
 
@@ -1826,7 +1818,6 @@ class leoMenu:
         return None
 
     def getMenuLabel (self,menu):
-        # __pychecker__ = '--no-argsused' # menu not used.
         self.oops()
 
     def setMenuLabel (self,menu,name,label,underline=-1):
@@ -1839,8 +1830,6 @@ class leoMenu:
 class nullMenu(leoMenu):
 
     """A null menu class for testing and batch execution."""
-
-    # __pychecker__ = '--no-argsused' # This calss has many unused args.
 
     #@    @+others
     #@+node:ekr.20050104094308:ctor

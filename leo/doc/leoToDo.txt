@@ -1,70 +1,50 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080814103428.4:4.6 long-delayed items
-#@+node:ekr.20080915112342.1:First 4
+#@+node:ekr.20080814103428.4:4.6 bugs, cleanups
+#@+node:ekr.20080915112342.1:First
+
+#@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
 @nocolor
 
-- Fix installer.
-- Fix rst3 plugin.
-- Merge leo-30 branch.
-- Merge new trunk with all outstanding branches.
+A pretty feeble start for support for goto-global-line for @nosent files.
+A better solution would be to create a string file containing sentinels,
+offset the line number by scanned sentinels, then use the existing logic
+to get the correct node and line.
+
+@color
 #@nonl
-#@+node:ekr.20080915083836.2:Fix encoding problems with rst3 plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/5f5219fedd977ec2
-
-@nocolor
-
-I recently discovered leo and decided to give it a try. I'm using the
-rst3 plugin for generating latex docs. In general it works like a
-charm, but I'm having some problems with the text encoding. The most
-annoying one follows. If in my rst tree I've nodes with the character
-
-ŀ (U+0140)
-
-(or other character from the catalan alphabet) in the body text, I get
-conversion errors in the log pane when the Write-Restructured-Text
-command is executed. For instance, a node with the following body text
-
-Nuŀla
-
-causes the following error in the log pane:
-
-1 errors converting Nu?la.
-
- to iso-8859-1
-
-If I process the generated .tex file via pdflatex the character is
-displayed as a ? symbol in the pdf.
-
-The rst-options are:
-
-@ @rst-options
-default_path=latex
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-write_intermediate_file = False
-verbose=True
-publish_argv_for_missing_stylesheets=--language=ca,--output-
-encoding=utf-8,--stylesheet=/home/vmas/.leo/custom_style.sty
-@c
-
-If, instead of using leo, I put the problematic text content in a
-plain rst file and process it via rst2latex I get no conversion
-errors. The command line is:
-
-rst2latex --language=ca --output-encoding=utf-8 --stylesheet=/home/
-vmas/.leo/custom_style.sty prova.txt prova.tex 
-#@nonl
-#@-node:ekr.20080915083836.2:Fix encoding problems with rst3 plugin
-#@+node:ekr.20080912143702.141:Document official ivars
-# Do this in top-level Code node in leoPy.leo.
-#@nonl
-#@-node:ekr.20080912143702.141:Document official ivars
+#@+node:ekr.20031218072017.2864: goToLineNumber
+#@+node:ekr.20031218072017.2865:<< set root >>
+#@-node:ekr.20031218072017.2865:<< set root >>
+#@+node:ekr.20031218072017.2866:<< read the file into lines >>
+#@-node:ekr.20031218072017.2866:<< read the file into lines >>
+#@+node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
+#@-node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
+#@+node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent/asis only)
+#@-node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent/asis only)
+#@+node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
+#@+node:ekr.20041111093404:<< just scan for the node name >>
+#@-node:ekr.20041111093404:<< just scan for the node name >>
+#@+node:EKR.20040609110138:<< 4.2: get node from gnx >>
+#@-node:EKR.20040609110138:<< 4.2: get node from gnx >>
+#@+node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
+#@+node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
+#@-node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
+#@+node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+#@-node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+#@+node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
+#@-node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
+#@-node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
+#@+node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
+#@-node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
+#@-node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
+#@+node:ekr.20031218072017.2875:<< select p and make it visible >>
+#@-node:ekr.20031218072017.2875:<< select p and make it visible >>
+#@+node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
+#@-node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
+#@-node:ekr.20031218072017.2864: goToLineNumber
+#@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
 #@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 @nocolor
 
@@ -74,243 +54,284 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 > would work exactly as they work for other derived files: they
 > get inserted at the place where they are referenced.
 
-> Or am I trying to misuse leo in this way?
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
 
-This is certainly not a misuse of Leo--it's an extension of the rst3 plugin.
-
-Clearly, a script could expand these section references, creating a
-temporary @rst tree which then gets processed as usual.  As usual,
-scripts give complete control over what is happening.
-
-But other people might like have the rst3 plugin work in this way, so
-an expand_noweb_references option would be good.  For compatibility,
-the default for this option would be False. 
-#@nonl
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
 #@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-#@+node:ekr.20080910054558.2:Add -c option to specify config files
+#@+node:ekr.20080922115725.1:Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@nonl
+#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
 @nocolor
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/f3f95d93bcd93b94
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
 
-Personally, I'd like to see another config file available via -c on
-the command line:
-(a common idiom)
-
-leo myproject.leo -c /usr/lib/myproject/myLeoSettings.leo
-
-or better yet:
-
-leo myproject.leo -c /etc/leo/style01.leo
-leo myotherproject.leo -c /etc/leo/style02.leo
-leo anotherproject.leo -c /etc/leo/style23.leo
-
-Each file opens in an editor with the shortcuts, buttons, commands,
-plugins, appearance etc.  that has been tuned for that data management task.
-
-or best yet:
-
-leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo 
+@color
 #@nonl
-#@-node:ekr.20080910054558.2:Add -c option to specify config files
-#@-node:ekr.20080915112342.1:First 4
-#@+node:ekr.20080907095552.3:Recent 10
-#@+node:ekr.20080915083836.1:Use os.path.expanduser in all @file name resolutions
-https://bugs.launchpad.net/leo-editor/+bug/269878
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
 #@nonl
-#@-node:ekr.20080915083836.1:Use os.path.expanduser in all @file name resolutions
-#@+node:ekr.20080912143702.1:Investigate settings strangeness re @string debugger_path
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.headString())
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines
+#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+#@-node:ekr.20080922115725.1:Finish @shadow
+#@+node:ekr.20080930072519.9:File bugs 2
+#@+node:ekr.20080330085343.3:Fix bug in atFile.write
+The code should save/restore, just as in the clean_file function (from scripts.leo)
+#@nonl
+#@+node:ekr.20080330085343.1:clean_file
+def clean_file(p):
+
+    at = c.atFileCommands
+
+    if hasattr(p.v.t,'tnodeList'):
+        has_list = True
+        old_list =  p.v.t.tnodeList[:]
+    else:
+        has_list = False
+
+    at.write(
+        root=p,nosentinels=True,
+        thinFile=False,
+        scriptWrite=True,
+        toString=True,
+        write_strips_blank_lines=False)
+
+    if has_list:
+        p.v.t.tnodeList = old_list
+
+    fileName = g.os_path_normpath(g.os_path_join(
+        at.default_directory,
+        'clean',
+        g.os_path_basename(p.anyAtFileNodeName())))
+
+    # g.trace(p.headString(),len(at.stringOutput),fileName)
+
+    # Adapted from at.openFileForWritingHelper
+    path = g.os_path_dirname(fileName)
+    if not g.os_path_exists(path):
+        g.es('clean directory does not exist',path)
+        return
+
+    try:
+        f = file(fileName,'w')
+        f.write(at.stringOutput)
+        f.close()
+        g.es_print('wrote',fileName)
+    except IOError:
+        g.es_print('can not write',fileName,color='red')
+        g.es_exception()
+#@-node:ekr.20080330085343.1:clean_file
+#@-node:ekr.20080330085343.3:Fix bug in atFile.write
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 @nocolor
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/d38704eb27eb9340
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.  Once I saw my
+nodes were overwritten unitTest.leo, I copied somedoc.leo to
+somedoc.leo.bak because I wanted to do a save to see what would
+happen.  The somedoc.leo file ended up with the contents of
+unitTest.leo as I suspected.  To my surprise, I also lost
+somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
+backup copy to revert to.  If leo is making use of a .bak file during
+saving, then should it give a warning if that file already exists?
 
-I find that
-@settings
-  @string debugger_path = /usr/bin/winpdb
+To duplicate:
 
-sets the config string successfully if in
-home/.leo/myLeoSettings.leo
-not if in
-cwd/myLeoSettings.leo 
+1. Open a leo file that you don't care about losing.
+2. From the file->open menu open leo/test/unitTest.leo
+3. Select a unit test and run it with Alt-4 (I chose the Position
+tests described above)
+4. Switch back to the original leo document and you should see the
+contents of unitTest.leo instead of the original document contents.
 #@nonl
-#@-node:ekr.20080912143702.1:Investigate settings strangeness re @string debugger_path
-#@+node:ekr.20080907095552.4:Add read/write-any-derived-file commands
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@-node:ekr.20080930072519.9:File bugs 2
+#@-node:ekr.20080915112342.1:First
+#@+node:ekr.20080517102922.1:Files stuff 8
+#@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
 # Remove the old type-specific commands from the default menu.
 #@nonl
-#@-node:ekr.20080907095552.4:Add read/write-any-derived-file commands
-#@+node:ekr.20080907095552.5:Should relative paths be used for recent file list??
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5c6653927911de0d#
-
-Code-->Core classes-->@thin runLeo.py -->utils-->createFrame (leo.py)
-
-        c.updateRecentFiles(relativeFileName or fileName)
-
-I don't think relative filenames should be passed to
-c.updateRecentFiles()?  They get stuff in the recent file list but
-don't work there.
-
-Also appears to happen here:
-
-Code-->Core classes-->@thin leoCommands.py-->class commands-->Command
-handlers...-->File Menu-->Recent Files submenu &
-allies-->clearRecentFiles
-
-c.updateRecentFiles(c.relativeFileName())
-
-and here
-
-Code-->Core classes-->@thin leoGlobals.py-->Files &
-Directories...-->g.openWithFileName
-
-c.updateRecentFiles(relativeFileName or fileName)
-
-The only way I've seen a relative path get into the list is from
-command line invocation, so I'm not sure if all these routes are
-active, but I think it should be avoided.
-
-Cheers -Terry 
-
-@color
-#@nonl
-#@-node:ekr.20080907095552.5:Should relative paths be used for recent file list??
-#@+node:ekr.20080907095552.1:Allow more general typing completion
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
-
-> As I said, all I need would be is for leo to call callback/hook with
-> signature like
-
-> def complete(line-up-to-cursor, current_node) => list of strings
-
-I missed this the first time around.  Glad you asked again.
-
-This should not be too difficult to do.  I'll do it after I fix the
-two urgent bugs.
-
-This is probably a matter of 5-20 lines of code.  More importantly,
-this suggests an alternative to "always-on" autocompletion.  It would
-be a nice generalization to allow the completion to be done anywhere
-on a line, rather than having the logic start at the beginning of what
-the code calls the autocompletion chain.
-
-Actually, there is already logic to find the start of the chain, so
-the whole thing may be quite easy to do without even having to handle
-(explicitly) the behind-the-scenes ivars.
-
-OTOH, I'm not sure how bound together the output code (writing to the
-completion tab) is with the more fundamental code.  Some refactoring
-might be required.  But probably not: at worst, the code could just
-use a "suppress output" hack.  We shall see. 
-
-@color
-#@nonl
-#@-node:ekr.20080907095552.1:Allow more general typing completion
-#@+node:ekr.20080906062507.2:Play with ishadow extension to ipython
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/42d178da972d783d
-
-On Sat, Aug 9, 2008 at 5:08 PM, Alia K <alia_kho...@yahoo.com> wrote:
-
-> Done.
-
-> http://leo.zwiki.org/CreateShadows
-
-The code in the wiki page was slightly broken (it set @path to body,
-not headline).
-
-What I really wanted to say though, is that I have added this feature
-as %lshadow magic command to ileo :-).
-
-So now, when you have ileo session open, you can do stuff like:
-
-%lshadow test
-%lshadow tools
-
-And the (previously opened) leo window has added 'test' and 'tools'
-directories as shadow trees for your entertainment.
-
-If you want to test it out immediately, grab my ipython dev branch at:
-
-bzr branch lp:~villemvainio/ipython/trunk-dev 
-
-==========================
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5ba6c260daefb6ae#
-
-Here's an example ileo snippet to get your gmail threads with "todo"
-label into leo outline (under heading MyTodo):
-
-QQQ
-import ipy_gmail
-
-gml todo
-ipy_gmail.to_leo(_, wb.MyTodo)
-QQQ
-
-Just posting this as an example of an interesting "productivity
-feature" to emphasize how ileo reduces the amount of typing and
-thinking that needs to be done. "gml" is a magic function introduced
-in ipy_gmail that searches gmails with the specified label. You still
-need to find this node and press alt+I, but once we get @button
-working with ileo we can forget about that as well ;-)
-#@nonl
-#@-node:ekr.20080906062507.2:Play with ishadow extension to ipython
-#@+node:ekr.20080906062507.1:Allow Leo to open .py files directly (or any other kind of file)
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
-
-I'm wondering, would it make sense for leo to do "something" when launched
-directly against a .py file, i.e.
-
-"leo test.py".
-
-Of course that's a perfectly sensible thing to do, considering that leo is,
-among other things, a python editor ;-)
-
-Perhaps it might create create a (unsaved) leo document  where the .py file
-is present as @shadow node, or something. 
-#@nonl
-#@-node:ekr.20080906062507.1:Allow Leo to open .py files directly (or any other kind of file)
-#@+node:ekr.20080906062507.3:Think of improving headline navigation
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
-
-Now that the leo is more "modeless" (I'm speaking of switching between
-outline navigation and body editing modes), which btw is a clear improvement
-to how leo used to behave, here are some things that still feel a bit
-un-intuitive:
-
-- ctrl+H (edit-headline) "locks" the user into the mode way too much.
-
-   * The headline editing mode should be cancelled when the user does:
-      - cursor up/down
-      - ESC
-
-   * Even better alternative: I find myself constantly thinking that "ok,
-now I need to edit a headline (typically not the current headline), so now
-I'll press ctrl+H". I think perhaps pressing up/down should cancel the
-current headline editing, and select the next/previous headline for editing.
-That is, I wouldn't need to navigate to the headline I want to edit before I
-start editing it.
-
-  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
-intuitive assumption is that cut will select the node that "took the place
-of the
-    current node", instead of starting to travel upwards the set of nodes.
-
-   * Typical use case is the way you usually start deleting a set of items.
-You move to the first item and start cutting repeatedly. This wont work with
-the current behaviour. 
-#@nonl
-#@-node:ekr.20080906062507.3:Think of improving headline navigation
-#@+node:ekr.20080904071003.1:abspath does a normpath?
-#@-node:ekr.20080904071003.1:abspath does a normpath?
-#@+node:ekr.20080906062507.4:Protect @shadow and @auto files?
+#@-node:ekr.20080918164844.8:Add read/write-any-derived-file commands
+#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
+#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
+#@+node:ekr.20080918164844.14:Protect @shadow and @auto files?
 @nocolor
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/bac65cb75484f7cb
@@ -326,18 +347,11 @@ occasions. That's considered "good form" in editors in general, and
 since pressing ctrl+S in leo has even more significant implications we
 should be absolutely certain everything happens safely. 
 #@nonl
-#@-node:ekr.20080906062507.4:Protect @shadow and @auto files?
-#@-node:ekr.20080907095552.3:Recent 10
-#@+node:ekr.20080810085333.5:Under two hours 23
-#@+node:ekr.20080901112851.3:check for syntax errors when @auto import fails
-#@-node:ekr.20080901112851.3:check for syntax errors when @auto import fails
-#@+node:ekr.20080517102922.1:Files stuff 8
+#@-node:ekr.20080918164844.14:Protect @shadow and @auto files?
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
 #@nonl
 #@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
 #@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
 @nocolor
 
@@ -422,315 +436,6 @@ intended behavior. The correct behavior would be to save the file,
 give me the warning about the undefined section, and exit.
 #@nonl
 #@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@+node:ekr.20080330085343.3:Fix bug in atFile.write
-The code should save/restore, just as in the clean_file function (from scripts.leo)
-#@nonl
-#@+node:ekr.20080330085343.1:clean_file
-def clean_file(p):
-
-    at = c.atFileCommands
-
-    if hasattr(p.v.t,'tnodeList'):
-        has_list = True
-        old_list =  p.v.t.tnodeList[:]
-    else:
-        has_list = False
-
-    at.write(
-        root=p,nosentinels=True,
-        thinFile=False,
-        scriptWrite=True,
-        toString=True,
-        write_strips_blank_lines=False)
-
-    if has_list:
-        p.v.t.tnodeList = old_list
-
-    fileName = g.os_path_normpath(g.os_path_join(
-        at.default_directory,
-        'clean',
-        g.os_path_basename(p.anyAtFileNodeName())))
-
-    # g.trace(p.headString(),len(at.stringOutput),fileName)
-
-    # Adapted from at.openFileForWritingHelper
-    path = g.os_path_dirname(fileName)
-    if not g.os_path_exists(path):
-        g.es('clean directory does not exist',path)
-        return
-
-    try:
-        f = file(fileName,'w')
-        f.write(at.stringOutput)
-        f.close()
-        g.es_print('wrote',fileName)
-    except IOError:
-        g.es_print('can not write',fileName,color='red')
-        g.es_exception()
-#@-node:ekr.20080330085343.1:clean_file
-#@-node:ekr.20080330085343.3:Fix bug in atFile.write
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-@nocolor
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.  Once I saw my
-nodes were overwritten unitTest.leo, I copied somedoc.leo to
-somedoc.leo.bak because I wanted to do a save to see what would
-happen.  The somedoc.leo file ended up with the contents of
-unitTest.leo as I suspected.  To my surprise, I also lost
-somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
-backup copy to revert to.  If leo is making use of a .bak file during
-saving, then should it give a warning if that file already exists?
-
-To duplicate:
-
-1. Open a leo file that you don't care about losing.
-2. From the file->open menu open leo/test/unitTest.leo
-3. Select a unit test and run it with Alt-4 (I chose the Position
-tests described above)
-4. Switch back to the original leo document and you should see the
-contents of unitTest.leo instead of the original document contents.
-#@nonl
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
-@nocolor
-
-Note: at present the only change is to c.setHeadString.  It's unlikely this will make a difference.
-
-So reading all the file names in my home directory into leo as
-headlines while playing with my active_path plugin, I got some odd
-characters in a filename into leo, it saved the file fine, but wouldn't
-read it:
-
-error parsing /media/usr1/usr1/home/tbrown/files.leo
-Traceback (most recent call last):
-
- File
-"/media/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/active_path/leo/core/leoFileCommands.py",
-line 1240, in parse_leo_file parser.parse(theFile) # expat does not
-support parseString
-
- File "/usr/lib/python2.5/xml/sax/expatreader.py", line 107, in parse
-   xmlreader.IncrementalParser.parse(self, source)
-
- File "/usr/lib/python2.5/xml/sax/xmlreader.py", line 123, in parse
-   self.feed(buffer)
-
- File "/usr/lib/python2.5/xml/sax/expatreader.py", line 211, in feed
-   self._err_handler.fatalError(exc)
-
- File "/usr/lib/python2.5/xml/sax/handler.py", line 38, in fatalError
-   raise exception
-
-SAXParseException: <unknown>:732:58: not well-formed (invalid token)
-
-
-emacs shows the offending line as:
-
-<v t="tbrown.20080618141617.720"
-a="M"><vh>coppertop_mapYI .2006_04_09_14_16_22.0</vh></v>
-
-...of course it looks different in my mail composer window :-) but
-there's a ^H after the I.
-
-So, garbage in, garbage out, I get that, but is it the intent that leo
-save a file without comment and then fail to read it in these cases?
-
-I'm not saying it should do one thing or the other, but just wanted to
-point out the possibility.
-
-Cheers -Terry
-
-@color
-#@nonl
-#@+node:ekr.20031218072017.1577:putTnode
-def putTnode (self,t):
-
-    # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-    if not t.fileIndex:
-        g.trace('can not happen: no index for tnode',t)
-        t.fileIndex = g.app.nodeIndices.getNewIndex()
-
-    # New in Leo 4.4.2 b2: call put just once.
-    gnx = g.app.nodeIndices.toString(t.fileIndex)
-    ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
-    body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
-    self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
-#@-node:ekr.20031218072017.1577:putTnode
-#@+node:ekr.20031218072017.1863:putVnode
-def putVnode (self,p,isIgnore=False):
-
-    """Write a <v> element corresponding to a vnode."""
-
-    fc = self ; c = fc.c ; v = p.v
-    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
-    isShadow = p.isAtShadowFileNode()
-    isThin = p.isAtThinFileNode()
-    isOrphan = p.isOrphan()
-    if not isIgnore: isIgnore = p.isAtIgnoreNode()
-
-    if isIgnore:   forceWrite = True      # Always write full @ignore trees.
-    elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
-    elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
-    elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
-    else:          forceWrite = True      # Write all other @file trees.
-
-    << Set gnx = tnode index >>
-    attrs = []
-    << Append attribute bits to attrs >>
-    << Append tnodeList and unKnownAttributes to attrs >>
-    attrs = ''.join(attrs)
-    v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
-    # The string catentation is faster than repeated calls to fc.put.
-    if not self.usingClipboard:
-        << issue informational messages >>
-    # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
-    if p.hasChildren() and (forceWrite or self.usingClipboard):
-        fc.put('%s\n' % v_head)
-        # This optimization eliminates all "recursive" copies.
-        p.moveToFirstChild()
-        while 1:
-            fc.putVnode(p,isIgnore)
-            if p.hasNext(): p.moveToNext()
-            else:           break
-        p.moveToParent() # Restore p in the caller.
-        fc.put('</v>\n')
-    else:
-        fc.put('%s</v>\n' % v_head) # Call put only once.
-#@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
-# New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-if not v.t.fileIndex:
-    v.t.fileIndex = g.app.nodeIndices.getNewIndex()
-
-gnx = g.app.nodeIndices.toString(v.t.fileIndex)
-
-if forceWrite or self.usingClipboard:
-    v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
-#@-node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
-#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-# These string catenations are benign because they rarely happen.
-attr = ""
-# New in Leo 4.5: support fixed .leo files.
-if not c.fixed:
-    if v.isExpanded() and v.hasChildren(): attr += "E"
-    if v.isMarked():   attr += "M"
-    if v.isOrphan():   attr += "O"
-
-    # No longer a bottleneck now that we use p.equal rather than p.__cmp__
-    # Almost 30% of the entire writing time came from here!!!
-    # if not self.use_sax:
-        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
-
-    if attr:
-        attrs.append(' a="%s"' % attr)
-
-# Put the archived *current* position in the *root* positions <v> element.
-if p == self.rootPosition:
-    aList = [str(z) for z in self.currentPosition.archivedPosition()]
-    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
-    if not c.fixed:
-        d['str_leo_pos'] = ','.join(aList)
-    # g.trace(aList,d)
-    v.unknownAttributes = d
-elif hasattr(v,"unknownAttributes"):
-    d = v.unknownAttributes
-    if d and not c.fixed and d.get('str_leo_pos'):
-        # g.trace("clearing str_leo_pos",v)
-        del d['str_leo_pos']
-        v.unknownAttributes = d
-#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
-# Write the tnodeList only for @file nodes.
-# New in 4.2: tnode list is in tnode.
-
-if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
-    if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
-        if isThin or isShadow: # Never issue warning for @auto.
-            if g.app.unitTesting:
-                g.app.unitTestDict["warning"] = True
-            g.es("deleting tnode list for",p.headString(),color="blue")
-        # This is safe: cloning can't change the type of this node!
-        delattr(v.t,"tnodeList")
-    else:
-        attrs.append(fc.putTnodeList(v)) # New in 4.0
-
-if hasattr(v,"unknownAttributes"): # New in 4.0
-    # g.trace('v',v,'v.uA',v.unknownAttributes)
-    attrs.append(self.putUnknownAttributes(v))
-
-if p.hasChildren() and not forceWrite and not self.usingClipboard:
-    # We put the entire tree when using the clipboard, so no need for this.
-    if not isAuto: # Bug fix: 2008/8/7.
-        attrs.append(self.putDescendentTnodeUas(p))
-        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
-        attrs.append(self.putDescendentAttributes(p))
-#@nonl
-#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
-#@+node:ekr.20040702085529:<< issue informational messages >>
-if isOrphan and isThin:
-    g.es("writing erroneous:",p.headString(),color="blue")
-    p.clearOrphan()
-#@-node:ekr.20040702085529:<< issue informational messages >>
-#@-node:ekr.20031218072017.1863:putVnode
-#@+node:ekr.20031218072017.1470:put
-def put (self,s):
-
-    '''Put string s to self.outputFile. All output eventually comes here.'''
-
-    # Improved code: self.outputFile (a cStringIO object) always exists.
-    if s:
-        self.putCount += 1
-        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-        self.outputFile.write(s)
-
-def put_dquote (self):
-    self.put('"')
-
-def put_dquoted_bool (self,b):
-    if b: self.put('"1"')
-    else: self.put('"0"')
-
-def put_flag (self,a,b):
-    if a:
-        self.put(" ") ; self.put(b) ; self.put('="1"')
-
-def put_in_dquotes (self,a):
-    self.put('"')
-    if a: self.put(a) # will always be True if we use backquotes.
-    else: self.put('0')
-    self.put('"')
-
-def put_nl (self):
-    self.put("\n")
-
-def put_tab (self):
-    self.put("\t")
-
-def put_tabs (self,n):
-    while n > 0:
-        self.put("\t")
-        n -= 1
-#@nonl
-#@-node:ekr.20031218072017.1470:put
-#@+node:ekr.20040305223225:c.setHeadString
-def setHeadString (self,p,s,encoding="utf-8"):
-
-    c = self
-    w = c.edit_widget(p) # w only exists for the Tk gui.
-
-    p.initHeadString(s,encoding)
-
-    if w:
-        s = g.toUnicode(s,encoding)
-        w.setAllText(s)
-        width = c.frame.tree.headWidth(p=None,s=s)
-        w.setWidth(width)
-
-    p.setDirty()
-#@nonl
-#@-node:ekr.20040305223225:c.setHeadString
-#@-node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
 #@+node:ekr.20080311135649.2:Allow different .leo formats
 @nocolor
 
@@ -788,330 +493,12 @@ these provided that headlines appear somewhere.
 So that's clean.  This will happen in Leo 4.5. 
 #@nonl
 #@-node:ekr.20080311135649.2:Allow different .leo formats
-#@-node:ekr.20080517102922.1:Files stuff 8
-#@+node:ekr.20080411091507.10:Minor bugs 4
-#@+node:ekr.20080709161540.1:Fix c colorizer bug
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/707a910f975f3715
-
-Coloring of macro definitions is not extended after '\'.
-
-More than that - refer again to the screenshot and look at the
-comments and #defines at the bottom. The comments after the multi-line
-macro are either not coloured or are coloured incorrectly. At the top,
-the '#define ADDPRIM_CO' macro is only partially coloured. The macros
-below the multi-line macro are incorrectly comment-coloured.
-
-@color
-#@nonl
-#@+node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
-#@-node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
-#@-node:ekr.20080709161540.1:Fix c colorizer bug
-#@+node:ekr.20080313032655.1:Fix one failed unit test on Linux
-#@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
-#@+node:ekr.20051104075904.78:makeImportExportSuite
-def makeImportExportSuite(c,parentHeadline,doImport):
-
-    """Create an Import/Export test for every descendant of testParentHeadline.."""
-
-    u = testUtils(c)
-    parent = u.findNodeAnywhere(parentHeadline)
-    assert(parent)
-    temp = u.findNodeInTree(parent,"tempNode")
-    assert(temp)
-
-    # Create the suite and add all test cases.
-    suite = unittest.makeSuite(unittest.TestCase)
-
-    for p in parent.children_iter(copy=True):
-        if p == temp: continue
-        dialog = u.findNodeInTree(p,"dialog")
-        assert(dialog)
-        test = importExportTestCase(c,p,dialog,temp,doImport)
-        suite.addTest(test)
-
-    return suite
-#@-node:ekr.20051104075904.78:makeImportExportSuite
-#@+node:ekr.20051104075904.79:class importExportTestCase
-class importExportTestCase(unittest.TestCase):
-
-    """Data-driven unit tests for Leo's edit body commands."""
-
-    @others
-#@+node:ekr.20051104075904.80:__init__
-def __init__ (self,c,p,dialog,temp_p,doImport):
-
-    # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.dialog = dialog
-    self.p = p.copy()
-    self.temp_p = temp_p.copy()
-
-    self.gui = None
-    self.oldGui = None
-    self.wasChanged = c.changed
-    self.fileName = ""
-    self.doImport = doImport
-
-    self.old_p = c.currentPosition()
-#@-node:ekr.20051104075904.80:__init__
-#@+node:ekr.20051104075904.81: fail
-def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    # __pychecker__ = '--no-argsused'
-        #  msg needed so signature matches base class.
-
-    import leo.core.leoGlobals as g
-
-    g.app.unitTestDict["fail"] = g.callers()
-#@-node:ekr.20051104075904.81: fail
-#@+node:ekr.20051104075904.82:importExport
-def importExport (self):
-
-    c = self.c ; p = self.p
-
-    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
-
-    commandName = p.headString()
-    command = getattr(c,commandName) # Will fail if command does not exist.
-    command(event=None)
-
-    failedMethod = g.app.unitTestDict.get("fail")
-    self.failIf(failedMethod,failedMethod)
-#@-node:ekr.20051104075904.82:importExport
-#@+node:ekr.20051104075904.83:runTest
-def runTest(self):
-
-    # """Import Export Test Case"""
-
-    self.importExport()
-#@-node:ekr.20051104075904.83:runTest
-#@+node:ekr.20051104075904.84:setUp
-def setUp(self):
-
-    c = self.c ; temp_p = self.temp_p ; d = self.dialog
-
-    temp_p.setBodyString('',g.app.tkEncoding)
-
-    # Create a node under temp_p.
-    child = temp_p.insertAsLastChild()
-    assert(child)
-    c.setHeadString(child,"import test: " + self.p.headString())
-    c.selectVnode(child)
-
-    assert(d)
-    s = d.bodyString()
-    lines = s.split('\n')
-    name = lines[0]
-    fileName = lines[1]
-
-    # Replace '\\' by os.path.sep in fileName
-    try:
-        # os.path.sep does not exist in Python 2.2.x.
-        sep = os.path.sep
-        fileName = fileName.replace('\\',sep)
-    except AttributeError:
-        fileName = g.os_path_normpath(fileName)
-
-    self.fileName = fileName = g.os_path_join(g.app.loadDir,"..",fileName)
-
-    if self.doImport:
-        theDict = {name: [fileName]}
-    else:
-        theDict = {name: fileName}
-
-    self.oldGui = g.app.gui
-    self.gui = leoGui.unitTestGui(theDict,trace=False)
-#@-node:ekr.20051104075904.84:setUp
-#@+node:ekr.20051104075904.85:shortDescription
-def shortDescription (self):
-
-    try:
-        return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
-    except:
-        return "ImportExportTestCase"
-#@-node:ekr.20051104075904.85:shortDescription
-#@+node:ekr.20051104075904.86:tearDown
-def tearDown (self):
-
-    c = self.c ; temp_p = self.temp_p
-
-    if self.gui:
-        self.gui.destroySelf()
-        self.gui = None
-
-    temp_p.setBodyString("",g.app.tkEncoding)
-    temp_p.clearDirty()
-
-    if not self.wasChanged:
-        c.setChanged (False)
-
-    if 1: # Delete all children of temp node.
-        while temp_p.firstChild():
-            temp_p.firstChild().doDelete()
-
-    g.app.gui = self.oldGui
-    c.selectPosition(self.old_p)
-#@-node:ekr.20051104075904.86:tearDown
-#@-node:ekr.20051104075904.79:class importExportTestCase
-#@-node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
-#@+node:ekr.20031218072017.2853:importAtFile
-def importAtFile (self,event=None):
-
-    '''Import one or more external files, creating @file trees.'''
-
-    c = self
-
-    types = [
-        ("All files","*"),
-        ("C/C++ files","*.c"),
-        ("C/C++ files","*.cpp"),
-        ("C/C++ files","*.h"),
-        ("C/C++ files","*.hpp"),
-        ("Java files","*.java"),
-        ("Lua files", "*.lua"),
-        ("Pascal files","*.pas"),
-        ("Python files","*.py") ]
-
-    names = g.app.gui.runOpenFileDialog(
-        title="Import To @file",
-        filetypes=types,
-        defaultextension=".py",
-        multiple=True)
-    c.bringToFront()
-
-    if names:
-        g.chdir(names[0])
-        c.importCommands.importFilesCommand(names,"@file")
-#@-node:ekr.20031218072017.2853:importAtFile
-#@+node:ekr.20031218072017.3212:importFilesCommand
-def importFilesCommand (self,files=None,treeType=None):
-    # Not a command.  It must *not* have an event arg.
-
-    c = self.c
-    if c == None: return
-    v = current = c.currentVnode()
-    if current == None: return
-    if len(files) < 1: return
-    self.tab_width = self.getTabWidth() # New in 4.3.
-    self.treeType = treeType
-    if len(files) == 2:
-        << Create a parent for two files having a common prefix >>
-    for fileName in files:
-        g.setGlobalOpenDir(fileName)
-        v = self.createOutline(fileName,current)
-        if v: # createOutline may fail.
-            if not g.unitTesting:
-                g.es("imported",fileName,color="blue")
-            v.contract()
-            v.setDirty()
-            c.setChanged(True)
-    c.validateOutline()
-    current.expand()
-    c.redraw()
-
-    c.selectVnode(current)
-#@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
-@ The two filenames have a common prefix everything before the last period is the same.  For example, x.h and x.cpp.
-@c
-
-name0 = files[0]
-name1 = files[1]
-prefix0, junk = g.os_path_splitext(name0)
-prefix1, junk = g.os_path_splitext(name1)
-if len(prefix0) > 0 and prefix0 == prefix1:
-    current = current.insertAsLastChild()
-    # junk, nameExt = g.os_path_split(prefix1)
-    name,junk = g.os_path_splitext(prefix1)
-    current.initHeadString(name)
-#@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
-#@-node:ekr.20031218072017.3212:importFilesCommand
-#@-node:ekr.20080313032655.1:Fix one failed unit test on Linux
-#@+node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
-@nocolor
-
-I was playing around with this and I discovered that if I open
-unitTest.leo from the File->Open menu pick of another leo outline and
-then I run a unit test, then all the nodes from unitTest.leo appear in
-the original document.  If I execute a save on the original document
-(now with the unitTest.leo nodes), then the leo file gets overwritten
-with the contents unitTest.leo.
-
-#@-node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
-#@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
-@nocolor
-
-A pretty feeble start for support for goto-global-line for @nosent files.
-A better solution would be to create a string file containing sentinels,
-offset the line number by scanned sentinels, then use the existing logic
-to get the correct node and line.
-
-@color
-#@nonl
-#@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
-#@-node:ekr.20080411091507.10:Minor bugs 4
-#@+node:ekr.20080730212711.6:ASAP Features 10
-#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
-What uA should be used to specify node colors?
-
-if the foreground / background color API uses uAs,
-would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
-#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
-#@+node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
-#@-node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
-#@+node:ekr.20071110071126.2:Better isearch
-#@-node:ekr.20071110071126.2:Better isearch
-#@+node:ekr.20071128094234:Finish scolorizer
-#@+node:ekr.20050920084036.265:scolorizer LATER
-def scolorizer (self,event,pattern=None):
-
-    '''Colorizer for incremental searches.'''
-
-    pass # not ready yet.   
-
-    # k = self.k ; w = self.w
-    # s = pattern or k.getLabel(ignorePrompt=True)
-    # # g.trace(repr(s))
-    # w.tag_delete('color','color1')
-    # if not s: return
-    # if g.app.gui.guiName() != 'tkinter':
-        # return g.es('command not ready yet',color='blue')
-
-    # ind = 0
-    # index = w.getInsertPoint()
-    # index2 = index + len(s)
-    # # g.trace(index,index2)
-    # # Colorize in the forward direction, regardless of the kind of search.
-    # while ind:
-        # try:
-            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
-        # except Exception: break
-        # if ind:
-            # i, d = ind.split('.')
-            # d = str(int(d)+len(s))
-            # # g.trace(ind)
-            # if ind in (index,index2):
-                # w.tag_add('color1',ind,'%s.%s' % (i,d))
-            # w.tag_add('color',ind,'%s.%s' % (i,d))
-            # ind = i + '.' + d
-
-    # w.tag_config('color',foreground='red')
-    # w.tag_config('color1',background='lightblue')
-#@-node:ekr.20050920084036.265:scolorizer LATER
-#@-node:ekr.20071128094234:Finish scolorizer
 #@+node:ekr.20061002093442:Add opml support to new,open, save commands
 #@+node:ekr.20031218072017.2820:top level (file menu)
-#@+node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.1623:c.new
 def new (self,event=None,gui=None):
 
     '''Create a new Leo window.'''
-
-    # g.trace(g.callers())
 
     c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
 
@@ -1151,8 +538,9 @@ def new (self,event=None,gui=None):
     c.redraw_now()
 
     return c # For unit test.
-#@-node:ekr.20031218072017.1623:new
-#@+node:ekr.20031218072017.2821:open
+#@nonl
+#@-node:ekr.20031218072017.1623:c.new
+#@+node:ekr.20031218072017.2821:c.open
 def open (self,event=None):
 
     '''Open a Leo window containing the contents of a .leo file.'''
@@ -1167,7 +555,7 @@ def open (self,event=None):
     c.bringToFront()
 
     ok = False
-    if fileName and len(fileName) > 0:
+    if fileName:
         ok, frame = g.openWithFileName(fileName,c)
         if ok:
             g.chdir(fileName)
@@ -1190,7 +578,7 @@ closeFlag = (
     not c.changed and not c.frame.saved and # The window has never been changed
     g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
 #@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-#@-node:ekr.20031218072017.2821:open
+#@-node:ekr.20031218072017.2821:c.open
 #@+node:ekr.20031218072017.2823:openWith and allies
 def openWith(self,event=None,data=None):
 
@@ -1225,7 +613,7 @@ def openWith(self,event=None,data=None):
     return "break"
 #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
 if not ext:
-    theDict = g.scanDirectives(c)
+    theDict = c.scanAllDirectives()
     language = theDict.get("language")
     ext = g.app.language_extension_dict.get(language)
     # g.pr(language,ext)
@@ -1320,11 +708,11 @@ try:
         os.startfile(arg+path)
     elif openType == "exec":
         command = "exec(%s)" % (arg+shortPath)
-        exec arg+path in {}
+        exec(arg+path,{},{})
     elif openType == "os.spawnl":
         filename = g.os_path_basename(arg)
         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+        os.spawnl(os.P_NOWAIT,arg,filename,path)
     elif openType == "os.spawnv":
         filename = os.path.basename(arg[0]) 
         vtuple = arg[1:]
@@ -1333,7 +721,7 @@ try:
             # Change suggested by Jim Sizelove.
         vtuple.append(path)
         command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+        os.spawnv(os.P_NOWAIT,arg[0],vtuple)
     # This clause by Jim Sizelove.
     elif openType == "subprocess.Popen":
         if isinstance(arg, basestring):
@@ -1367,7 +755,7 @@ def createOpenWithTempFile (self,p,ext):
         theFile = open(path,"w")
         # Convert s to whatever encoding is in effect.
         s = p.bodyString()
-        theDict = g.scanDirectives(c,p=p)
+        theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding",None)
         if encoding == None:
             encoding = c.config.default_derived_file_encoding
@@ -1413,7 +801,7 @@ def openWithTempFilePath (self,p,ext):
 
     name = g.toUnicode(name,g.app.tkEncoding)
 
-    td = g.os_path_abspath(tempfile.gettempdir())
+    td = g.os_path_finalize(tempfile.gettempdir())
 
     path = g.os_path_join(td,name)
 
@@ -1588,6 +976,51 @@ def revert (self,event=None):
 #@-node:ekr.20031218072017.2837:revert
 #@-node:ekr.20031218072017.2820:top level (file menu)
 #@-node:ekr.20061002093442:Add opml support to new,open, save commands
+#@-node:ekr.20080517102922.1:Files stuff 8
+#@+node:ekr.20080730212711.6:ASAP Features 10
+#@+node:ekr.20071110071126.2:Better isearch
+#@-node:ekr.20071110071126.2:Better isearch
+#@+node:ekr.20080918164844.12:Improve headline navigation
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
+
+Now that the leo is more "modeless" (I'm speaking of switching between
+outline navigation and body editing modes), which btw is a clear improvement
+to how leo used to behave, here are some things that still feel a bit
+un-intuitive:
+
+- ctrl+H (edit-headline) "locks" the user into the mode way too much.
+
+   * The headline editing mode should be cancelled when the user does:
+      - cursor up/down
+      - ESC
+
+   * Even better alternative: I find myself constantly thinking that "ok,
+now I need to edit a headline (typically not the current headline), so now
+I'll press ctrl+H". I think perhaps pressing up/down should cancel the
+current headline editing, and select the next/previous headline for editing.
+That is, I wouldn't need to navigate to the headline I want to edit before I
+start editing it.
+
+  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
+intuitive assumption is that cut will select the node that "took the place
+of the
+    current node", instead of starting to travel upwards the set of nodes.
+
+   * Typical use case is the way you usually start deleting a set of items.
+You move to the first item and start cutting repeatedly. This wont work with
+the current behaviour. 
+#@nonl
+#@-node:ekr.20080918164844.12:Improve headline navigation
+#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
+What uA should be used to specify node colors?
+
+if the foreground / background color API uses uAs,
+would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
+#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
+#@+node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
+#@-node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
 #@+node:ekr.20070624135822:Templates for common code fragments
 # How will users be reminded of the fragments?
 #   - A dropdown menu?
@@ -1636,1587 +1069,50 @@ down some data. If the headline string is too long, the cursor goes
 beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
 #@-node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
+#@+node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20050920084036.265:scolorizer LATER
+def scolorizer (self,event,pattern=None):
+
+    '''Colorizer for incremental searches.'''
+
+    pass # not ready yet.   
+
+    # k = self.k ; w = self.w
+    # s = pattern or k.getLabel(ignorePrompt=True)
+    # # g.trace(repr(s))
+    # w.tag_delete('color','color1')
+    # if not s: return
+    # if g.app.gui.guiName() != 'tkinter':
+        # return g.es('command not ready yet',color='blue')
+
+    # ind = 0
+    # index = w.getInsertPoint()
+    # index2 = index + len(s)
+    # # g.trace(index,index2)
+    # # Colorize in the forward direction, regardless of the kind of search.
+    # while ind:
+        # try:
+            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
+        # except Exception: break
+        # if ind:
+            # i, d = ind.split('.')
+            # d = str(int(d)+len(s))
+            # # g.trace(ind)
+            # if ind in (index,index2):
+                # w.tag_add('color1',ind,'%s.%s' % (i,d))
+            # w.tag_add('color',ind,'%s.%s' % (i,d))
+            # ind = i + '.' + d
+
+    # w.tag_config('color',foreground='red')
+    # w.tag_config('color1',background='lightblue')
+#@-node:ekr.20050920084036.265:scolorizer LATER
+#@-node:ekr.20071128094234:Finish scolorizer
 #@-node:ekr.20080730212711.6:ASAP Features 10
-#@-node:ekr.20080810085333.5:Under two hours 23
-#@+node:ekr.20080810085333.7:Under two days 6
-#@+node:ekr.20080124083629.1:Improve @path handling
-@nocolor
-
-[quote]
-nested @paths don't do what I expected: 
-
-For a leo file in directory foo: 
-
-@path src 
-....@path tmpl
-
-should refer to foo/src and foo/src/tmpl
-
-using @path src/tmpl works fine though.
-[end quote]
-
-@color
+#@+node:ekr.20080810085333.7:Under two days 5
+#@+node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
+http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
 #@nonl
-#@+node:ekr.20050121081635:Request:  cumulative @path directives
-@killcolor
-https://sourceforge.net/forum/message.php?msg_id=2936513
-By: ktenney
-
-In the @view plugin is a method, currentPath() which examines the current headline
-and body, and the headlines and bodies of it's parents, looking for @path and
-@view directives. It builds a path from them and checks for validity.
-
-if a top level node contains;
-@path /home/ktenney
-
-and a descendant of that node contains;
-@path projects/myproject
-
-Then a node further down the tree which contains;
-@view readme.txt
-
-will display /home/ktenney/projects/myproject/readme.txt
-
-I like this principle of cumulative paths, and would like other plugins to work
-the same way ... @image, @url etc.
-
-This brings me to my question, would it make sense for Leo to offer a 'Plugin'
-class to inherit from? It seems that there are some operations that are being
-re-written in many plugins.
-#@-node:ekr.20050121081635:Request:  cumulative @path directives
-#@+node:ekr.20050222045210:Better @path conventions
-See g.getBaseDirectory
-#@nonl
-#@-node:ekr.20050222045210:Better @path conventions
-#@+node:ekr.20041022083005.3:@path and other directives accept python expressions
-#@-node:ekr.20041022083005.3:@path and other directives accept python expressions
-#@+node:ekr.20080827175609.54:Existing code
-#@+node:ekr.20041005105605.222:atFile.scanAllDirectives
-@ Once a directive is seen, no other related directives in nodes further up the tree have any effect.  For example, if an @color directive is seen in node p, no @color or @nocolor directives are examined in any ancestor of p.
-
-This code is similar to Commands.scanAllDirectives, but it has been modified for use by the atFile class.
-@c
-
-def scanAllDirectives(self,p,
-    scripting=False,importing=False,
-    reading=False,forcePythonSentinels=False,
-):
-
-    """Scan position p and p's ancestors looking for directives,
-    setting corresponding atFile ivars.
-    """
-
-    # __pychecker__ = '--maxlines=400'
-    # g.stat()
-
-    c = self.c
-    << Set ivars >>
-    << Set path from @file node >>
-    old = {}
-    for p in p.self_and_parents_iter():
-        theDict = g.get_directives_dict(p)
-        << Test for @path >>
-        << Test for @encoding >>
-        << Test for @comment and @language >>
-        << Test for @header and @noheader >>
-        << Test for @lineending >>
-        << Test for @pagewidth >>
-        << Test for @tabwidth >>
-        old.update(theDict)
-    << Set current directory >>
-    if not importing and not reading:
-        # 5/19/04: don't override comment delims when reading!
-        << Set comment strings from delims >>
-    # For unit testing.
-    return {
-        "encoding"  : self.encoding,
-        "language"  : self.language,
-        "lineending": self.output_newline,
-        "pagewidth" : self.page_width,
-        "path"      : self.default_directory,
-        "tabwidth"  : self.tab_width,
-    }
-#@+node:ekr.20041005105605.223:<< Set ivars >>
-self.page_width = self.c.page_width
-self.tab_width  = self.c.tab_width
-
-self.default_directory = None # 8/2: will be set later.
-
-# g.trace(c.target_language)
-
-if c.target_language:
-    c.target_language = c.target_language.lower() # 6/20/05
-delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
-self.language = c.target_language
-
-self.encoding = c.config.default_derived_file_encoding
-self.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
-#@-node:ekr.20041005105605.223:<< Set ivars >>
-#@+node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
-# An absolute path in an @file node over-rides everything else.
-# A relative path gets appended to the relative path by the open logic.
-
-name = p.anyAtFileNodeName() # 4/28/04
-
-theDir = g.choose(name,g.os_path_dirname(name),None)
-
-if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
-    if g.os_path_exists(theDir):
-        self.default_directory = theDir
-    else: # 9/25/02
-        self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-        if not self.default_directory:
-            self.error("Directory \"%s\" does not exist" % theDir)
-#@-node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
-#@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
-# We set the current director to a path so future writes will go to that directory.
-
-if not self.default_directory and not old.has_key("path") and theDict.has_key("path"):
-
-    path = theDict["path"]
-    path = g.computeRelativePath(path)
-    if path and len(path) > 0:
-        base = g.getBaseDirectory(c) # returns "" on error.
-        path = g.os_path_join(base,path)
-        if g.os_path_isabs(path):
-            << handle absolute path >>
-        else:
-            self.error("ignoring bad @path: %s" % path)
-    else:
-        self.error("ignoring empty @path")
-#@+node:ekr.20041005105605.227:<< handle absolute path >>
-# path is an absolute path.
-
-if g.os_path_exists(path):
-    self.default_directory = path
-else:
-    self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
-    if not self.default_directory:
-        self.error("invalid @path: %s" % path)
-#@-node:ekr.20041005105605.227:<< handle absolute path >>
-#@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
-#@+node:ekr.20041005105605.228:<< Test for @encoding >>
-if not old.has_key("encoding") and theDict.has_key("encoding"):
-
-    e = g.scanAtEncodingDirective(theDict)
-    if e:
-        self.encoding = e
-#@-node:ekr.20041005105605.228:<< Test for @encoding >>
-#@+node:ekr.20041005105605.230:<< Test for @header and @noheader >>
-# EKR: 10/10/02: perform the sames checks done by tangle.scanAllDirectives.
-if theDict.has_key("header") and theDict.has_key("noheader"):
-    g.es("conflicting @header and @noheader directives")
-#@-node:ekr.20041005105605.230:<< Test for @header and @noheader >>
-#@+node:ekr.20041005105605.229:<< Test for @comment and @language >>
-# 10/17/02: @language and @comment may coexist in @file trees.
-# For this to be effective the @comment directive should follow the @language directive.
-
-# 1/23/05: Any previous @language or @comment prevents processing up the tree.
-# This code is now like the code in tangle.scanAlldirectives.
-
-if old.has_key("comment") or old.has_key("language"):
-    pass # Do nothing more.
-
-elif theDict.has_key("comment"):
-    z = theDict["comment"]
-    delim1, delim2, delim3 = g.set_delims_from_string(z)
-
-elif theDict.has_key("language"):
-    z = theDict["language"]
-    self.language,delim1,delim2,delim3 = g.set_language(z,0)
-#@-node:ekr.20041005105605.229:<< Test for @comment and @language >>
-#@+node:ekr.20041005105605.231:<< Test for @lineending >>
-if not old.has_key("lineending") and theDict.has_key("lineending"):
-
-    lineending = g.scanAtLineendingDirective(theDict)
-    if lineending:
-        self.explicitLineEnding = True
-        self.output_newline = lineending
-        # g.trace(p.headString(),'lineending',repr(lineending))
-#@-node:ekr.20041005105605.231:<< Test for @lineending >>
-#@+node:ekr.20041005105605.232:<< Test for @pagewidth >>
-if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
-
-    w = g.scanAtPagewidthDirective(theDict,issue_error_flag=True)
-    if w and w > 0:
-        self.page_width = w
-#@-node:ekr.20041005105605.232:<< Test for @pagewidth >>
-#@+node:ekr.20041005105605.233:<< Test for @tabwidth >>
-if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
-
-    w = g.scanAtTabwidthDirective(theDict,issue_error_flag=True)
-    if w and w != 0:
-        self.tab_width = w
-#@-node:ekr.20041005105605.233:<< Test for @tabwidth >>
-#@+node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
-# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-if c.frame and not self.default_directory:
-    base = g.getBaseDirectory(c) # returns "" on error.
-    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-        if theDir and len(theDir) > 0:
-            theDir = g.os_path_join(base,theDir)
-            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                if g.os_path_exists(theDir):
-                    self.default_directory = theDir ; break
-                else: # 9/25/02
-                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-
-if not self.default_directory and not scripting and not importing:
-    # This should never happen: c.openDirectory should be a good last resort.
-    g.trace()
-    self.error("No absolute directory specified anywhere.")
-    self.default_directory = ""
-#@-node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
-#@+node:ekr.20041005105605.235:<< Set comment strings from delims >>
-if forcePythonSentinels:
-    # Force Python language.
-    delim1,delim2,delim3 = g.set_delims_from_language("python")
-    self.language = "python"
-
-# Use single-line comments if we have a choice.
-# delim1,delim2,delim3 now correspond to line,start,end
-if delim1:
-    self.startSentinelComment = delim1
-    self.endSentinelComment = "" # Must not be None.
-elif delim2 and delim3:
-    self.startSentinelComment = delim2
-    self.endSentinelComment = delim3
-else: # Emergency!
-    # assert(0)
-    if not g.app.unitTesting:
-        g.es_print("unknown language: using Python comment delimiters")
-        g.es_print("c.target_language:",c.target_language)
-        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
-    self.startSentinelComment = "#" # This should never happen!
-    self.endSentinelComment = ""
-
-# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
-#@-node:ekr.20041005105605.235:<< Set comment strings from delims >>
-#@-node:ekr.20041005105605.222:atFile.scanAllDirectives
-#@+node:ekr.20031218072017.1360:tangle.scanAllDirectives
-@ Once a directive is seen, related directives in ancesors have no effect.  For example, if an @color directive is seen in node x, no @color or @nocolor directives are examined in any ancestor of x.
-@c
-
-def scanAllDirectives(self,p,require_path_flag,issue_error_flag):
-
-    """Scan vnode p and p's ancestors looking for directives,
-    setting corresponding tangle ivars and globals.
-    """
-
-    # __pychecker__ = 'maxlines=500 maxbranches=100'
-
-    c = self.c
-    # g.trace(p)
-    old = {} ; print_mode_changed = False
-    self.init_directive_ivars()
-    if p:
-        s = p.bodyString()
-        << Collect @first attributes >>
-    for p in p.self_and_parents_iter():
-        theDict = g.get_directives_dict(p)
-        << Test for @comment and @language >>
-        << Test for @encoding >>
-        << Test for @lineending >>
-        << Test for print modes directives >>
-        << Test for @path >>
-        << Test for @pagewidth >>
-        << Test for @root >>
-        << Test for @tabwidth >>
-        << Test for @header and @noheader >>
-        old.update(theDict)
-    << Set self.tangle_directory >>
-    # For unit testing.
-    return {
-        "encoding"  : self.encoding,
-        "language"  : self.language,
-        "lineending": self.output_newline,
-        "pagewidth" : self.page_width,
-        "path"      : self.tangle_directory,
-        "tabwidth"  : self.tab_width,
-    }
-#@+node:ekr.20031218072017.1361:<< Collect @first attributes >>
-@ Stephen P. Schaefer 9/13/2002: Add support for @first.
-Unlike other root attributes, does *NOT* inherit from parent nodes.
-@c
-tag = "@first"
-sizeString = len(s) # DTHEIN 13-OCT-2002: use to detect end-of-string
-i = 0
-while 1:
-    # DTHEIN 13-OCT-2002: directives must start at beginning of a line
-    if not g.match_word(s,i,tag):
-        i = g.skip_line(s,i)
-    else:
-        i = i + len(tag)
-        j = i = g.skip_ws(s,i)
-        i = g.skip_to_end_of_line(s,i)
-        if i>j:
-            self.first_lines += s[j:i] + '\n'
-        i = g.skip_nl(s,i)
-    if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
-        break
-#@-node:ekr.20031218072017.1361:<< Collect @first attributes >>
-#@+node:ekr.20031218072017.1362:<< Test for @comment and @language >>
-if old.has_key("comment") or old.has_key("language"):
-    pass # Do nothing more.
-
-elif theDict.has_key("comment"):
-
-    z = theDict["comment"]
-    delim1,delim2,delim3 = g.set_delims_from_string(z)
-    if delim1 or delim2:
-        self.single_comment_string = delim1
-        self.start_comment_string = delim2
-        self.end_comment_string = delim3
-        # @comment effectively disables Untangle.
-        self.language = "unknown"
-    else:
-        if issue_error_flag:
-            g.es("ignoring: @comment",z)
-
-elif theDict.has_key("language"):
-
-    z = theDict["language"]
-    language,delim1,delim2,delim3 = g.set_language(z,0)
-    self.language = language
-    self.single_comment_string = delim1
-    self.start_comment_string = delim2
-    self.end_comment_string = delim3
-    if 0:
-        g.trace(self.single_comment_string,
-            self.start_comment_string,
-            self.end_comment_string)
-
-    # 10/30/02: These ivars must be updated here!
-    # g.trace(self.language)
-    self.use_noweb_flag = True
-    self.use_cweb_flag = False # Only raw cweb mode is ever used.
-    self.raw_cweb_flag = self.language == "cweb" # A new ivar.
-#@-node:ekr.20031218072017.1362:<< Test for @comment and @language >>
-#@+node:ekr.20031218072017.1363:<< Test for @encoding >>
-if not old.has_key("encoding") and theDict.has_key("encoding"):
-
-    e = g.scanAtEncodingDirective(theDict)
-    if e:
-        self.encoding = e
-#@-node:ekr.20031218072017.1363:<< Test for @encoding >>
-#@+node:ekr.20031218072017.1364:<< Test for @lineending >>
-if not old.has_key("lineending") and theDict.has_key("lineending"):
-
-    lineending = g.scanAtLineendingDirective(theDict)
-    if lineending:
-        self.output_newline = lineending
-#@-node:ekr.20031218072017.1364:<< Test for @lineending >>
-#@+node:ekr.20031218072017.1365:<< Test for print modes directives >>
-@ It is valid to have more than one of these directives in the same body text: the more verbose directive takes precedence.
-@c
-
-if not print_mode_changed:
-    for name in ("verbose","terse","quiet","silent"):
-        if theDict.has_key(name):
-            self.print_mode = name
-            print_mode_changed = True
-            break
-#@-node:ekr.20031218072017.1365:<< Test for print modes directives >>
-#@+node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-if require_path_flag and not old.has_key("path") and theDict.has_key("path"):
-
-    path = theDict["path"]
-    theDir = relative_path = g.computeRelativePath(path)
-
-    if len(theDir) > 0:
-        base = g.getBaseDirectory(c=c) # May return "".
-        if theDir and len(theDir) > 0:
-            theDir = g.os_path_join(base,theDir)
-            if g.os_path_isabs(theDir):
-                << handle absolute @path >>
-            elif issue_error_flag and not self.path_warning_given:
-                self.path_warning_given = True # supress future warnings
-                self.error("ignoring relative path in @path:" + theDir)
-    elif issue_error_flag and not self.path_warning_given:
-        self.path_warning_given = True # supress future warnings
-        self.error("ignoring empty @path")
-#@+node:ekr.20031218072017.1368:<< handle absolute @path >>
-if g.os_path_exists(theDir):
-    self.tangle_directory = theDir
-else: # 11/19/02
-    self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-    if not self.tangle_directory:
-        if issue_error_flag and not self.path_warning_given:
-            self.path_warning_given = True # supress future warnings
-            self.error("@path directory does not exist: " + theDir)
-            if base and len(base) > 0:
-                g.es("relative_path_base_directory:",base)
-            if relative_path and len(relative_path) > 0:
-                g.es("relative path in @path directive:",relative_path)
-#@-node:ekr.20031218072017.1368:<< handle absolute @path >>
-#@-node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-#@+node:ekr.20031218072017.1369:<< Test for @pagewidth >>
-if not old.has_key("pagewidth") and theDict.has_key("pagewidth"):
-
-    w = g.scanAtPagewidthDirective(theDict,issue_error_flag)
-    if w and w > 0:
-        self.page_width = w
-#@-node:ekr.20031218072017.1369:<< Test for @pagewidth >>
-#@+node:ekr.20031218072017.1370:<< Test for @root >>
-@ 10/27/02: new code:  self.root may not be defined here, so any relative directory specified in the @root node will have no effect unless we have this code.
-
-@c
-if self.root_name == None and theDict.has_key("root"):
-    z = theDict["root"]
-    self.setRootFromText(z,issue_error_flag)
-#@-node:ekr.20031218072017.1370:<< Test for @root >>
-#@+node:ekr.20031218072017.1371:<< Test for @tabwidth >>
-if not old.has_key("tabwidth") and theDict.has_key("tabwidth"):
-
-    w = g.scanAtTabwidthDirective(theDict,issue_error_flag)
-    if w and w != 0:
-        self.tab_width = w
-#@-node:ekr.20031218072017.1371:<< Test for @tabwidth >>
-#@+node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
-if old.has_key("header") or old.has_key("noheader"):
-    pass # Do nothing more.
-
-elif theDict.has_key("header") and theDict.has_key("noheader"):
-    if issue_error_flag:
-        g.es("conflicting @header and @noheader directives")
-
-elif theDict.has_key("header"):
-    self.use_header_flag = True
-
-elif theDict.has_key("noheader"):
-    self.use_header_flag = False
-#@-node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
-#@+node:ekr.20031218072017.1373:<< Set self.tangle_directory >>
-@ This code sets self.tangle_directory if it has not already been set by an @path directive.
-
-An absolute file name in an @root directive will override the directory set here.
-A relative file name gets appended later to the default directory.
-That is, the final file name will be g.os_path_join(self.tangle_directory,fileName)
-@c
-
-if c.frame and require_path_flag and not self.tangle_directory:
-    if self.root_name and len(self.root_name) > 0:
-        root_dir = g.os_path_dirname(self.root_name)
-    else:
-        root_dir = None
-    # g.pr("root_dir:", root_dir)
-
-    table = ( # This is a precedence table.
-        (root_dir,"@root"), 
-        (c.tangle_directory,"default tangle"), # Probably should be eliminated.
-        (c.frame.openDirectory,"open"))
-
-    base = g.getBaseDirectory(c=c) # May return ""
-
-    for dir2, kind in table:
-        if dir2 and len(dir2) > 0:
-            # g.pr("base,theDir:",base,theDir)
-            theDir = g.os_path_join(base,dir2)
-            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                << handle absolute path >>
-
-if not self.tangle_directory and require_path_flag: # issue_error_flag:
-    self.pathError("No absolute directory specified by @root, @path or Preferences.")
-#@+node:ekr.20031218072017.1374:<< handle absolute path >>
-if g.os_path_exists(theDir):
-    if kind == "@root" and not g.os_path_isabs(root_dir):
-        self.tangle_directory = base
-    else:
-        self.tangle_directory = theDir 
-    break
-else: # 9/25/02
-    self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-    if not self.tangle_directory:
-        # 10/27/02: It is an error for this not to exist now.
-        self.error("@root directory does not exist:" + theDir)
-        if base and len(base) > 0:
-            g.es("relative_path_base_directory:",base)
-        if dir2 and len(dir2) > 0:
-            g.es('',kind,"directory:",dir2)
-#@-node:ekr.20031218072017.1374:<< handle absolute path >>
-#@-node:ekr.20031218072017.1373:<< Set self.tangle_directory >>
-#@-node:ekr.20031218072017.1360:tangle.scanAllDirectives
-#@+node:ekr.20031218072017.1377:scanColorDirectives (leoColor)
-def scanColorDirectives(self,p):
-
-    """Scan position p and p's ancestors looking for @comment, @language and @root directives,
-    setting corresponding colorizer ivars.
-    """
-
-    p = p.copy() ; c = self.c
-    if c == None: return # self.c may be None for testing.
-
-    if c.target_language:
-        c.target_language = c.target_language.lower()
-    self.language = language = c.target_language
-    self.comment_string = None
-    self.rootMode = None # None, "code" or "doc"
-
-    for p in p.self_and_parents_iter():
-        theDict = g.get_directives_dict(p)
-        << Test for @comment or @language >>
-        << Test for @root, @root-doc or @root-code >>
-
-    # g.trace('self.language',self.language)
-    return self.language # For use by external routines.
-#@+node:ekr.20031218072017.1378:<< Test for @comment or @language >>
-# @comment and @language may coexist in the same node.
-
-if theDict.has_key("comment"):
-    self.comment_string = theDict["comment"]
-
-if theDict.has_key("language"):
-    z = theDict["language"]
-    language,junk,junk,junk = g.set_language(z,0)
-    self.language = language
-
-if theDict.has_key("comment") or theDict.has_key("language"):
-    break
-#@-node:ekr.20031218072017.1378:<< Test for @comment or @language >>
-#@+node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-if theDict.has_key("root") and not self.rootMode:
-
-    root = theDict["root"]
-    if g.match_word(root,0,"@root-code"):
-        self.rootMode = "code"
-    elif g.match_word(root,0,"@root-doc"):
-        self.rootMode = "doc"
-    else:
-        doc = c.config.at_root_bodies_start_in_doc_mode
-        self.rootMode = g.choose(doc,"doc","code")
-#@-node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-#@-node:ekr.20031218072017.1377:scanColorDirectives (leoColor)
-#@+node:ekr.20031218072017.1380:Directive utils...
-#@+node:ekr.20031218072017.1381:the @language and @comment directives (leoUtils)
-#@+node:ekr.20031218072017.1382:set_delims_from_language
-# Returns a tuple (single,start,end) of comment delims
-
-def set_delims_from_language(language):
-
-    # g.trace(g.callers())
-
-    val = g.app.language_delims_dict.get(language)
-    # if language.startswith('huh'): g.pdb()
-
-    if val:
-        delim1,delim2,delim3 = g.set_delims_from_string(val)
-        if delim2 and not delim3:
-            return None,delim1,delim2
-        else: # 0,1 or 3 params.
-            return delim1,delim2,delim3
-    else:
-        return None, None, None # Indicate that no change should be made
-#@-node:ekr.20031218072017.1382:set_delims_from_language
-#@+node:ekr.20031218072017.1383:set_delims_from_string
-def set_delims_from_string(s):
-
-    """Returns (delim1, delim2, delim2), the delims following the @comment directive.
-
-    This code can be called from @language logic, in which case s can point at @comment"""
-
-    # Skip an optional @comment
-    tag = "@comment"
-    i = 0
-    if g.match_word(s,i,tag):
-        i += len(tag)
-
-    count = 0 ; delims = [None, None, None]
-    while count < 3 and i < len(s):
-        i = j = g.skip_ws(s,i)
-        while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
-            i += 1
-        if j == i: break
-        delims[count] = s[j:i]
-        count += 1
-
-    # 'rr 09/25/02
-    if count == 2: # delims[0] is always the single-line delim.
-        delims[2] = delims[1]
-        delims[1] = delims[0]
-        delims[0] = None
-
-    # 7/8/02: The "REM hack": replace underscores by blanks.
-    # 9/25/02: The "perlpod hack": replace double underscores by newlines.
-    for i in xrange(0,3):
-        if delims[i]:
-            delims[i] = string.replace(delims[i],"__",'\n') 
-            delims[i] = string.replace(delims[i],'_',' ')
-
-    return delims[0], delims[1], delims[2]
-#@-node:ekr.20031218072017.1383:set_delims_from_string
-#@+node:ekr.20031218072017.1384:set_language
-def set_language(s,i,issue_errors_flag=False):
-
-    """Scan the @language directive that appears at s[i:].
-
-    The @language may have been stripped away.
-
-    Returns (language, delim1, delim2, delim3)
-    """
-
-    tag = "@language"
-    # g.trace(g.get_line(s,i))
-    assert(i != None)
-    # assert(g.match_word(s,i,tag))
-    if g.match_word(s,i,tag):
-        i += len(tag)
-    # Get the argument.
-    i = g.skip_ws(s, i)
-    j = i ; i = g.skip_c_id(s,i)
-    # Allow tcl/tk.
-    arg = string.lower(s[j:i])
-    if app.language_delims_dict.get(arg):
-        language = arg
-        delim1, delim2, delim3 = g.set_delims_from_language(language)
-        return language, delim1, delim2, delim3
-
-    if issue_errors_flag:
-        g.es("ignoring:",g.get_line(s,i))
-
-    return None, None, None, None,
-#@-node:ekr.20031218072017.1384:set_language
-#@-node:ekr.20031218072017.1381:the @language and @comment directives (leoUtils)
-#@+node:EKR.20040504150046.4:g.comment_delims_from_extension
-def comment_delims_from_extension(filename):
-
-    """
-    Return the comment delims corresponding to the filename's extension.
-
-    >>> import leo.core.leoGlobals as g
-    >>> g.comment_delims_from_extension(".py")
-    ('#', None, None)
-
-    >>> g.comment_delims_from_extension(".c")
-    ('//', '/*', '*/')
-
-    >>> g.comment_delims_from_extension(".html")
-    (None, '<!--', '-->')
-
-    """
-
-    root, ext = os.path.splitext(filename)
-    if ext == '.tmp':
-        root, ext = os.path.splitext(root)
-
-    language = g.app.extension_dict.get(ext[1:])
-    if ext:
-        return g.set_delims_from_language(language)
-    else:
-        g.trace("unknown extension %s" % ext)
-        return None,None,None
-#@-node:EKR.20040504150046.4:g.comment_delims_from_extension
-#@+node:ekr.20071109165315:g.computeRelativePath
-def computeRelativePath (path):
-
-    if len(path) > 2 and (
-        (path[0]=='<' and path[-1] == '>') or
-        (path[0]=='"' and path[-1] == '"') or
-        (path[0]=="'" and path[-1] == "'")
-    ):
-        path = path[1:-1].strip()
-
-    # 11/14/02: we want a _relative_ path, not an absolute path.
-    # path = g.os_path_join(g.app.loadDir,path)
-
-    return path
-#@-node:ekr.20071109165315:g.computeRelativePath
-#@+node:ekr.20031218072017.1385:g.findReference
-@ We search the descendents of v looking for the definition node matching name.
-There should be exactly one such node (descendents of other definition nodes are not searched).
-@c
-
-def findReference(c,name,root):
-
-    for p in root.subtree_iter():
-        assert(p!=root)
-        if p.matchHeadline(name) and not p.isAtIgnoreNode():
-            return p
-
-    # g.trace("not found:",name,root)
-    return c.nullPosition()
-#@-node:ekr.20031218072017.1385:g.findReference
-#@+node:ekr.20031218072017.1260:g.get_directives_dict
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
-
-def get_directives_dict(p,root=None):
-
-    """Scans root for @directives found in globalDirectiveList.
-
-    Returns a dict containing pointers to the start of each directive"""
-
-    if root: root_node = root[0]
-    theDict = {}
-
-    # The headline has higher precedence because it is more visible.
-    for kind,s in (
-        ('body',p.v.t._headString),
-        ('head',p.v.t._bodyString),
-    ):
-        i = 0 ; n = len(s)
-        while i < n:
-            if s[i] == '@' and i+1 < n:
-                << set theDict for @ directives >>
-            elif kind == 'body' and root and g.match(s,i,"<<"):
-                << set theDict["root"] for noweb * chunks >>
-            i = g.skip_line(s,i)
-    return theDict
-#@+node:ekr.20031218072017.1261:<< set theDict for @ directives >>
-j = g.skip_c_id(s,i+1)
-word = s[i+1:j]
-
-global globalDirectiveList
-
-if word in globalDirectiveList:
-    if theDict.has_key(word):
-        # Ignore second value.
-        pass
-        # g.es("warning: conflicting values for",word,color="blue")
-    else:
-        # theDict [word] = i
-        k = g.skip_line(s,j)
-        theDict[word] = s[j:k].strip()
-#@nonl
-#@-node:ekr.20031218072017.1261:<< set theDict for @ directives >>
-#@+node:ekr.20031218072017.1262:<< set theDict["root"] for noweb * chunks >>
-@ The following looks for chunk definitions of the form < < * > > =. If found, we take this to be equivalent to @root filename if the headline has the form @root filename.
-@c
-
-i = g.skip_ws(s,i+2)
-
-if i < n and s[i] == '*' :
-    i = g.skip_ws(s,i+1) # Skip the '*'
-    if g.match(s,i,">>="):
-        # < < * > > = implies that @root should appear in the headline.
-        i += 3
-        if root_node:
-            theDict["root"]=0 # value not immportant
-        else:
-            g.es('',g.angleBrackets("*") + "= requires @root in the headline")
-#@-node:ekr.20031218072017.1262:<< set theDict["root"] for noweb * chunks >>
-#@-node:ekr.20031218072017.1260:g.get_directives_dict
-#@+node:ekr.20031218072017.1387:g.scanAtEncodingDirective
-def scanAtEncodingDirective(theDict):
-
-    """Scan the @encoding directive at s[theDict["encoding"]:].
-
-    Returns the encoding name or None if the encoding name is invalid.
-    """
-
-    encoding = theDict.get('encoding')
-    if not encoding:
-        return None
-
-    if g.isValidEncoding(encoding):
-        # g.trace(encoding)
-        return encoding
-    else:
-        g.es("invalid @encoding:",encoding,color="red")
-        return None
-#@-node:ekr.20031218072017.1387:g.scanAtEncodingDirective
-#@+node:ekr.20031218072017.1388:g.scanAtLineendingDirective
-def scanAtLineendingDirective(theDict):
-
-    """Scan the @lineending directive at s[theDict["lineending"]:].
-
-    Returns the actual lineending or None if the name of the lineending is invalid.
-    """
-
-    e = theDict.get('lineending')
-
-    if e in ("cr","crlf","lf","nl","platform"):
-        lineending = g.getOutputNewline(name=e)
-        # g.trace(e,lineending)
-        return lineending
-    else:
-        # g.es("invalid @lineending directive:",e,color="red")
-        return None
-#@-node:ekr.20031218072017.1388:g.scanAtLineendingDirective
-#@+node:ekr.20031218072017.1389:g.scanAtPagewidthDirective
-def scanAtPagewidthDirective(theDict,issue_error_flag=False):
-
-    """Scan the @pagewidth directive at s[theDict["pagewidth"]:].
-
-    Returns the value of the width or None if the width is invalid.
-    """
-
-    s = theDict.get('pagewidth')
-    i, val = g.skip_long(s,0)
-
-    if val != None and val > 0:
-        # g.trace(val)
-        return val
-    else:
-        if issue_error_flag:
-            g.es("ignoring",s,color="red")
-        return None
-#@-node:ekr.20031218072017.1389:g.scanAtPagewidthDirective
-#@+node:ekr.20031218072017.3154:g.scanAtRootOptions
-def scanAtRootOptions (s,i,err_flag=False):
-
-    # The @root has been eaten when called from tangle.scanAllDirectives.
-    if g.match(s,i,"@root"):
-        i += len("@root")
-        i = g.skip_ws(s,i)
-
-    mode = None 
-    while g.match(s,i,'-'):
-        << scan another @root option >>
-
-    if mode == None:
-        doc = app.config.at_root_bodies_start_in_doc_mode
-        mode = g.choose(doc,"doc","code")
-
-    return i,mode
-#@+node:ekr.20031218072017.3155:<< scan another @root option >>
-i += 1 ; err = -1
-
-if g.match_word(s,i,"code"): # Just match the prefix.
-    if not mode: mode = "code"
-    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
-elif g.match(s,i,"doc"): # Just match the prefix.
-    if not mode: mode = "doc"
-    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
-else:
-    err = i-1
-
-# Scan to the next minus sign.
-while i < len(s) and s[i] not in (' ','\t','-'):
-    i += 1
-
-if err > -1 and err_flag:
-    z_opt = s[err:i]
-    z_line = g.get_line(s,i)
-    g.es("unknown option:",z_opt,"in",z_line)
-#@-node:ekr.20031218072017.3155:<< scan another @root option >>
-#@-node:ekr.20031218072017.3154:g.scanAtRootOptions
-#@+node:ekr.20031218072017.1390:g.scanAtTabwidthDirective
-def scanAtTabwidthDirective(theDict,issue_error_flag=False):
-
-    """Scan the @tabwidth directive at s[theDict["tabwidth"]:].
-
-    Returns the value of the width or None if the width is invalid.
-    """
-
-    s = theDict.get('tabwidth')
-    junk,val = g.skip_long(s,0)
-
-    if val != None and val != 0:
-        # g.trace(val)
-        return val
-    else:
-        if issue_error_flag:
-            g.es("ignoring",s,color="red")
-        return None
-#@-node:ekr.20031218072017.1390:g.scanAtTabwidthDirective
-#@+node:ekr.20070302160802:g.scanColorDirectives
-def scanColorDirectives(c,p):
-
-    '''Return the language in effect at position p.'''
-
-    if c is None: return # c may be None for testing.
-
-    language = c.target_language and c.target_language.lower() or 'python'
-
-    p = p.copy()
-    for p in p.self_and_parents_iter():
-        d = g.get_directives_dict(p)
-        z = d.get('language')
-        if z is not None:
-            language,junk,junk,junk = g.set_language(z,0)
-            return language
-
-    return language
-#@-node:ekr.20070302160802:g.scanColorDirectives
-#@+node:ekr.20031218072017.1391:g.scanDirectives
-@ Perhaps this routine should be the basis of atFile.scanAllDirectives and tangle.scanAllDirectives, but I am loath to make any further to these two already-infamous routines.  Also, this code does not check for @color and @nocolor directives: leoColor.useSyntaxColoring does that.
-@c
-
-def scanDirectives(c,p=None):
-
-    """Scan vnode v and v's ancestors looking for directives.
-
-    Returns a dict containing the results, including defaults."""
-
-    if p is None:
-        p = c.currentPosition()
-
-    << Set local vars >>
-    old = {}
-    pluginsList = [] # 5/17/03: a list of items for use by plugins.
-    for p in p.self_and_parents_iter():
-        theDict = g.get_directives_dict(p)
-        << Test for @comment and @language >>
-        << Test for @encoding >>
-        << Test for @lineending >>
-        << Test for @pagewidth >>
-        << Test for @path >>
-        << Test for @tabwidth >>
-        << Test for @wrap and @nowrap >>
-        g.doHook("scan-directives",c=c,p=p,v=p,s=p.bodyString(),
-            old_dict=old,dict=theDict,pluginsList=pluginsList)
-        old.update(theDict)
-
-    if path == None: path = g.getBaseDirectory(c)
-
-    # g.trace('tabwidth',tab_width)
-
-    return {
-        "delims"    : (delim1,delim2,delim3),
-        "encoding"  : encoding,
-        "language"  : language,
-        "lineending": lineending,
-        "pagewidth" : page_width,
-        "path"      : path,
-        "tabwidth"  : tab_width,
-        "pluginsList": pluginsList,
-        "wrap"      : wrap }
-#@+node:ekr.20031218072017.1392:<< Set local vars >>
-page_width = c.page_width
-tab_width  = c.tab_width
-language = c.target_language
-if c.target_language:
-    c.target_language = c.target_language.lower()
-delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
-path = None
-encoding = None # 2/25/03: This must be none so that the caller can set a proper default.
-lineending = g.getOutputNewline(c=c) # Init from config settings.
-wrap = c.config.getBool("body_pane_wraps")
-#@-node:ekr.20031218072017.1392:<< Set local vars >>
-#@+node:ekr.20031218072017.1393:<< Test for @comment and @language >>
-# 1/23/05: Any previous @language or @comment prevents processing up the tree.
-# This code is now like the code in tangle.scanAlldirectives.
-
-if old.has_key("comment") or old.has_key("language"):
-    pass
-
-elif theDict.has_key("comment"):
-    z = theDict["comment"]
-    delim1,delim2,delim3 = g.set_delims_from_string(z)
-
-elif theDict.has_key("language"):
-    z = theDict["language"]
-    language,delim1,delim2,delim3 = g.set_language(z,0)
-#@-node:ekr.20031218072017.1393:<< Test for @comment and @language >>
-#@+node:ekr.20031218072017.1394:<< Test for @encoding >>
-if not old.has_key("encoding") and theDict.has_key("encoding"):
-
-    e = g.scanAtEncodingDirective(theDict)
-    if e:
-        encoding = e
-#@-node:ekr.20031218072017.1394:<< Test for @encoding >>
-#@+node:ekr.20031218072017.1395:<< Test for @lineending >>
-if not old.has_key("lineending") and theDict.has_key("lineending"):
-
-    e = g.scanAtLineendingDirective(theDict)
-    if e:
-        lineending = e
-#@-node:ekr.20031218072017.1395:<< Test for @lineending >>
-#@+node:ekr.20031218072017.1396:<< Test for @pagewidth >>
-if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
-
-    w = g.scanAtPagewidthDirective(theDict)
-    if w and w > 0:
-        page_width = w
-#@-node:ekr.20031218072017.1396:<< Test for @pagewidth >>
-#@+node:ekr.20031218072017.1397:<< Test for @path >> (g.scanDirectives)
-if not path and not old.has_key("path") and theDict.has_key("path"):
-
-    path = theDict["path"]
-    path = g.computeRelativePath(path)
-
-    if path and len(path) > 0:
-        base = g.getBaseDirectory(c) # returns "" on error.
-        path = g.os_path_join(base,path)
-#@-node:ekr.20031218072017.1397:<< Test for @path >> (g.scanDirectives)
-#@+node:ekr.20031218072017.1399:<< Test for @tabwidth >>
-if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
-
-    w = g.scanAtTabwidthDirective(theDict)
-    if w and w != 0:
-        tab_width = w
-#@-node:ekr.20031218072017.1399:<< Test for @tabwidth >>
-#@+node:ekr.20031218072017.1400:<< Test for @wrap and @nowrap >>
-if not old.has_key("wrap") and not old.has_key("nowrap"):
-
-    if theDict.has_key("wrap"):
-        wrap = True
-    elif theDict.has_key("nowrap"):
-        wrap = False
-#@-node:ekr.20031218072017.1400:<< Test for @wrap and @nowrap >>
-#@-node:ekr.20031218072017.1391:g.scanDirectives
-#@+node:ekr.20040715155607:g.scanForAtIgnore
-def scanForAtIgnore(c,p):
-
-    """Scan position p and its ancestors looking for @ignore directives."""
-
-    if g.app.unitTesting:
-        return False # For unit tests.
-
-    for p in p.self_and_parents_iter():
-        d = g.get_directives_dict(p)
-        if d.has_key("ignore"):
-            return True
-
-    return False
-#@-node:ekr.20040715155607:g.scanForAtIgnore
-#@+node:ekr.20040712084911.1:g.scanForAtLanguage
-def scanForAtLanguage(c,p):
-
-    """Scan position p and p's ancestors looking only for @language and @ignore directives.
-
-    Returns the language found, or c.target_language."""
-
-    # Unlike the code in x.scanAllDirectives, this code ignores @comment directives.
-
-    if c and p:
-        for p in p.self_and_parents_iter():
-            d = g.get_directives_dict(p)
-            if d.has_key("language"):
-                z = d["language"]
-                language,delim1,delim2,delim3 = g.set_language(z,0)
-                return language
-
-    return c.target_language
-#@-node:ekr.20040712084911.1:g.scanForAtLanguage
-#@+node:ekr.20041123094807:g.scanForAtSettings
-def scanForAtSettings(p):
-
-    """Scan position p and its ancestors looking for @settings nodes."""
-
-    for p in p.self_and_parents_iter():
-        h = p.headString()
-        h = g.app.config.canonicalizeSettingName(h)
-        if h.startswith("@settings"):
-            return True
-
-    return False
-#@-node:ekr.20041123094807:g.scanForAtSettings
-#@+node:ekr.20031218072017.1386:getOutputNewline
-def getOutputNewline (c=None,name=None):
-
-    '''Convert the name of a line ending to the line ending itself.
-
-    Priority:
-    - Use name if name given
-    - Use c.config.output_newline if c given,
-    - Otherwise use g.app.config.output_newline.'''
-
-    if name: s = name
-    elif c:  s = c.config.output_newline
-    else:    s = app.config.output_newline
-
-    if not s: s = ''
-    s = s.lower()
-    if s in ( "nl","lf"): s = '\n'
-    elif s == "cr": s = '\r'
-    elif s == "platform": s = os.linesep  # 12/2/03: emakital
-    elif s == "crlf": s = "\r\n"
-    else: s = '\n' # Default for erroneous values.
-    # g.trace(c,name,c.config.output_newline,'returns',repr(s))
-    return s
-#@-node:ekr.20031218072017.1386:getOutputNewline
-#@-node:ekr.20031218072017.1380:Directive utils...
-#@-node:ekr.20080827175609.54:Existing code
-#@+node:ekr.20080827175609.17:New code
-#@+node:ekr.20080827175609.39:g.NEWscanDirectives
-@ Perhaps this routine should be the basis of atFile.scanAllDirectives and tangle.scanAllDirectives, but I am loath to make any further to these two already-infamous routines.  Also, this code does not check for @color and @nocolor directives: leoColor.useSyntaxColoring does that.
-@c
-
-def NEWscanDirectives(c,p=None):
-
-    """Scan vnode v and v's ancestors looking for directives.
-
-    Returns a dict containing the results, including defaults."""
-
-    if p is None:
-        p = c.currentPosition()
-
-    << Set local vars >>
-    old = {}
-    pluginsList = [] # 5/17/03: a list of items for use by plugins.
-    for p in p.self_and_parents_iter():
-        theDict = g.get_directives_dict(p)
-        << Test for @comment and @language >>
-        << Test for @encoding >>
-        << Test for @lineending >>
-        << Test for @pagewidth >>
-        << Test for @path >>
-        << Test for @tabwidth >>
-        << Test for @wrap and @nowrap >>
-        g.doHook("scan-directives",c=c,p=p,v=p,s=p.bodyString(),
-            old_dict=old,dict=theDict,pluginsList=pluginsList)
-        old.update(theDict)
-
-    if path == None: path = g.getBaseDirectory(c)
-
-    # g.trace('tabwidth',tab_width)
-
-    return {
-        "delims"    : (delim1,delim2,delim3),
-        "encoding"  : encoding,
-        "language"  : language,
-        "lineending": lineending,
-        "pagewidth" : page_width,
-        "path"      : path,
-        "tabwidth"  : tab_width,
-        "pluginsList": pluginsList,
-        "wrap"      : wrap }
-#@+node:ekr.20080827175609.40:<< Set local vars >>
-page_width = c.page_width
-tab_width  = c.tab_width
-language = c.target_language
-if c.target_language:
-    c.target_language = c.target_language.lower()
-delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
-path = None
-encoding = None # 2/25/03: This must be none so that the caller can set a proper default.
-lineending = g.getOutputNewline(c=c) # Init from config settings.
-wrap = c.config.getBool("body_pane_wraps")
-#@-node:ekr.20080827175609.40:<< Set local vars >>
-#@+node:ekr.20080827175609.41:<< Test for @comment and @language >>
-# 1/23/05: Any previous @language or @comment prevents processing up the tree.
-# This code is now like the code in tangle.scanAlldirectives.
-
-if old.has_key("comment") or old.has_key("language"):
-    pass
-
-elif theDict.has_key("comment"):
-    z = theDict["comment"]
-    delim1,delim2,delim3 = g.set_delims_from_string(z)
-
-elif theDict.has_key("language"):
-    z = theDict["language"]
-    language,delim1,delim2,delim3 = g.set_language(z,0)
-#@-node:ekr.20080827175609.41:<< Test for @comment and @language >>
-#@+node:ekr.20080827175609.42:<< Test for @encoding >>
-if not old.has_key("encoding") and theDict.has_key("encoding"):
-
-    e = g.scanAtEncodingDirective(theDict)
-    if e:
-        encoding = e
-#@-node:ekr.20080827175609.42:<< Test for @encoding >>
-#@+node:ekr.20080827175609.43:<< Test for @lineending >>
-if not old.has_key("lineending") and theDict.has_key("lineending"):
-
-    e = g.scanAtLineendingDirective(theDict)
-    if e:
-        lineending = e
-#@-node:ekr.20080827175609.43:<< Test for @lineending >>
-#@+node:ekr.20080827175609.44:<< Test for @pagewidth >>
-if theDict.has_key("pagewidth") and not old.has_key("pagewidth"):
-
-    w = g.scanAtPagewidthDirective(theDict)
-    if w and w > 0:
-        page_width = w
-#@-node:ekr.20080827175609.44:<< Test for @pagewidth >>
-#@+node:ekr.20080827175609.45:<< Test for @path >> (g.scanDirectives)
-if not path and not old.has_key("path") and theDict.has_key("path"):
-
-    path = theDict["path"]
-    path = g.computeRelativePath(path)
-
-    if path and len(path) > 0:
-        base = g.getBaseDirectory(c) # returns "" on error.
-        path = g.os_path_join(base,path)
-#@-node:ekr.20080827175609.45:<< Test for @path >> (g.scanDirectives)
-#@+node:ekr.20080827175609.46:<< Test for @tabwidth >>
-if theDict.has_key("tabwidth") and not old.has_key("tabwidth"):
-
-    w = g.scanAtTabwidthDirective(theDict)
-    if w and w != 0:
-        tab_width = w
-#@-node:ekr.20080827175609.46:<< Test for @tabwidth >>
-#@+node:ekr.20080827175609.47:<< Test for @wrap and @nowrap >>
-if not old.has_key("wrap") and not old.has_key("nowrap"):
-
-    if theDict.has_key("wrap"):
-        wrap = True
-    elif theDict.has_key("nowrap"):
-        wrap = False
-#@-node:ekr.20080827175609.47:<< Test for @wrap and @nowrap >>
-#@-node:ekr.20080827175609.39:g.NEWscanDirectives
-#@+node:ekr.20080827175609.18:atFile.NEWscanAllDirectives
-@ Once a directive is seen, no other related directives in nodes further up the tree have any effect.  For example, if an @color directive is seen in node p, no @color or @nocolor directives are examined in any ancestor of p.
-
-This code is similar to Commands.scanAllDirectives, but it has been modified for use by the atFile class.
-@c
-
-def NEWscanAllDirectives(self,p,
-    scripting=False,importing=False,
-    reading=False,forcePythonSentinels=False,
-):
-
-    """Scan position p and p's ancestors looking for directives,
-    setting corresponding atFile ivars.
-    """
-
-    # __pychecker__ = '--maxlines=400'
-    # g.stat()
-
-    c = self.c
-    << Set ivars >>
-    << Set path from @file node >>
-
-    table = (
-        ('encoding','encoding',g.scanAtEncodingsDirectives),
-        ('lineending','explicitLineEnding',g.scanAtLineendingDirectives),
-        ('language',None,scanAtCommentAndAtLanguageDirectives),
-        ('pagewidth','page_width',g.scanAtPagewidthDirectives),
-        ('tagwidth','tab_width',g.scanAtTabwidthDirective),
-
-    aList = g.get_directives_dict_list(p)
-    result = {}
-    for key,ivar,func in table:
-        val = func(aList)
-        if val:
-            result[key]=val
-            if ivar:
-                setattr(self,ivar,val)
-
-    if self.explicitLineEnding:
-        self.output_newline = self.explicitLineEnding
-    return d
-
-
-
-    if 0: # old code
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            << Test for @path >>
-            << Test for @encoding >>
-            << Test for @comment and @language >>
-            << Test for @header and @noheader >>
-            << Test for @lineending >>
-            << Test for @pagewidth >>
-            << Test for @tabwidth >>
-            old.update(theDict)
-    << Set current directory >>
-    if not importing and not reading:
-        # 5/19/04: don't override comment delims when reading!
-        << Set comment strings from delims >>
-    # For unit testing.
-    return {
-        "encoding"  : self.encoding,
-        "language"  : self.language,
-        "lineending": self.output_newline,
-        "pagewidth" : self.page_width,
-        "path"      : self.default_directory,
-        "tabwidth"  : self.tab_width,
-    }
-#@+node:ekr.20080827175609.19:<< Set ivars >>
-self.page_width = self.c.page_width
-self.tab_width  = self.c.tab_width
-
-self.default_directory = None # 8/2: will be set later.
-
-# g.trace(c.target_language)
-
-if c.target_language:
-    c.target_language = c.target_language.lower() # 6/20/05
-delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
-self.language = c.target_language
-
-self.encoding = c.config.default_derived_file_encoding
-self.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
-#@-node:ekr.20080827175609.19:<< Set ivars >>
-#@+node:ekr.20080827175609.20:<< Set path from @file node >> in scanDirectory in leoGlobals.py
-# An absolute path in an @file node over-rides everything else.
-# A relative path gets appended to the relative path by the open logic.
-
-name = p.anyAtFileNodeName() # 4/28/04
-
-theDir = g.choose(name,g.os_path_dirname(name),None)
-
-if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
-    if g.os_path_exists(theDir):
-        self.default_directory = theDir
-    else: # 9/25/02
-        self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-        if not self.default_directory:
-            self.error("Directory \"%s\" does not exist" % theDir)
-#@-node:ekr.20080827175609.20:<< Set path from @file node >> in scanDirectory in leoGlobals.py
-#@+node:ekr.20080827175609.21:<< Test for @path >> (atFile.scanAllDirectives)
-# We set the current director to a path so future writes will go to that directory.
-
-if not self.default_directory and not old.has_key("path") and theDict.has_key("path"):
-
-    path = theDict["path"]
-    path = g.computeRelativePath(path)
-    if path and len(path) > 0:
-        base = g.getBaseDirectory(c) # returns "" on error.
-        path = g.os_path_join(base,path)
-        if g.os_path_isabs(path):
-            << handle absolute path >>
-        else:
-            self.error("ignoring bad @path: %s" % path)
-    else:
-        self.error("ignoring empty @path")
-#@+node:ekr.20080827175609.22:<< handle absolute path >>
-# path is an absolute path.
-
-if g.os_path_exists(path):
-    self.default_directory = path
-else:
-    self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
-    if not self.default_directory:
-        self.error("invalid @path: %s" % path)
-#@-node:ekr.20080827175609.22:<< handle absolute path >>
-#@-node:ekr.20080827175609.21:<< Test for @path >> (atFile.scanAllDirectives)
-#@+node:ekr.20080827175609.25:<< Test for @comment and @language >>
-# 10/17/02: @language and @comment may coexist in @file trees.
-# For this to be effective the @comment directive should follow the @language directive.
-
-# 1/23/05: Any previous @language or @comment prevents processing up the tree.
-# This code is now like the code in tangle.scanAlldirectives.
-
-if old.has_key("comment") or old.has_key("language"):
-    pass # Do nothing more.
-
-elif theDict.has_key("comment"):
-    z = theDict["comment"]
-    delim1, delim2, delim3 = g.set_delims_from_string(z)
-
-elif theDict.has_key("language"):
-    z = theDict["language"]
-    self.language,delim1,delim2,delim3 = g.set_language(z,0)
-#@-node:ekr.20080827175609.25:<< Test for @comment and @language >>
-#@+node:ekr.20080827175609.29:<< Set current directory >> (atFile.scanAllDirectives)
-# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-if c.frame and not self.default_directory:
-    base = g.getBaseDirectory(c) # returns "" on error.
-    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-        if theDir and len(theDir) > 0:
-            theDir = g.os_path_join(base,theDir)
-            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                if g.os_path_exists(theDir):
-                    self.default_directory = theDir ; break
-                else: # 9/25/02
-                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-
-if not self.default_directory and not scripting and not importing:
-    # This should never happen: c.openDirectory should be a good last resort.
-    g.trace()
-    self.error("No absolute directory specified anywhere.")
-    self.default_directory = ""
-#@-node:ekr.20080827175609.29:<< Set current directory >> (atFile.scanAllDirectives)
-#@+node:ekr.20080827175609.30:<< Set comment strings from delims >>
-if forcePythonSentinels:
-    # Force Python language.
-    delim1,delim2,delim3 = g.set_delims_from_language("python")
-    self.language = "python"
-
-# Use single-line comments if we have a choice.
-# delim1,delim2,delim3 now correspond to line,start,end
-if delim1:
-    self.startSentinelComment = delim1
-    self.endSentinelComment = "" # Must not be None.
-elif delim2 and delim3:
-    self.startSentinelComment = delim2
-    self.endSentinelComment = delim3
-else: # Emergency!
-    # assert(0)
-    if not g.app.unitTesting:
-        g.es_print("unknown language: using Python comment delimiters")
-        g.es_print("c.target_language:",c.target_language)
-        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
-    self.startSentinelComment = "#" # This should never happen!
-    self.endSentinelComment = ""
-
-# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
-#@-node:ekr.20080827175609.30:<< Set comment strings from delims >>
-#@-node:ekr.20080827175609.18:atFile.NEWscanAllDirectives
-#@+node:ekr.20080827175609.31:NEW Directive utils...
-# To do: add '_p' key to each directive dict. for error message.
-#@nonl
-#@+node:ekr.20080827175609.1:g.get_directives_dict_list
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
-
-def get_directives_dict_list(p):
-
-    """Scans p and all its ancestors for directives.
-
-    Returns a list of dicts containing pointers to the start of each directive"""
-
-    result = []
-
-    for p in p.self_and_parents_iter():
-        if p.hasParent(): root = None
-        else:             root = [p.copy()]
-        result.append(g.get_directives_dict(p,root=root)
-
-    return result
-#@-node:ekr.20080827175609.1:g.get_directives_dict_list
-#@+node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives (test)
-def scanAtCommentAndAtLanguageDirectives(aList):
-
-    '''Scan aList for @comment and @language directives.'''
-
-    # @language and @comment directives may appear in the same tree.
-    # For this to be effective the @comment directive should follow the @language directive.
-    # This code is now like the code in tangle.scanAlldirectives.
-    for d in aList:
-
-        comment = d.get('comment')
-        language = d.get('language')
-
-        if comment:
-            delim1,delim2,delim3 = g.set_delims_from_string(comment)
-            lang = None
-        elif language:
-            lang,delim1,delim2,delim3 = g.set_language(language,0)
-
-        if comment or language:
-            delims = delim1,delim2,delim3
-            return {'language':lang,'delims':delims}
-
-    return None
-#@-node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives (test)
-#@+node:ekr.20080827175609.32:g.scanAtEncodingDirectives (test)
-def scanAtEncodingDirectives(aList):
-
-    '''Scan aList for @encoding directives.'''
-
-    for d in aList:
-        encoding = d.get('encoding')
-        if g.isValidEncoding(encoding):
-            # g.trace(encoding)
-            return encoding
-        else:
-            g.es("invalid @encoding:",encoding,color="red")
-
-    return None
-#@-node:ekr.20080827175609.32:g.scanAtEncodingDirectives (test)
-#@+node:ekr.20080827175609.53:g.scanAtHeaderDirectives (test)
-def scanAtHeaderDirectives(aList):
-
-    '''scan aList for @header and @noheader directives.'''
-
-    for d in aList:
-        if d.get('header') and d.get('noheader'):
-            g.es("conflicting @header and @noheader directives")
-
-    return None
-#@-node:ekr.20080827175609.53:g.scanAtHeaderDirectives (test)
-#@+node:ekr.20080827175609.33:g.scanAtLineendingDirectives (test)
-def scanAtLineendingDirective(aList):
-
-    '''Scan aList for @lineending directives.'''
-
-    for d in aList:
-
-        e = d.get('lineending')
-        if e in ("cr","crlf","lf","nl","platform"):
-            lineending = g.getOutputNewline(name=e)
-            return lineending
-        # else:
-            # g.es("invalid @lineending directive:",e,color="red")
-
-    return None
-#@-node:ekr.20080827175609.33:g.scanAtLineendingDirectives (test)
-#@+node:ekr.20080827175609.34:g.scanAtPagewidthDirectives (test)
-def scanAtPagewidthDirective(aList,issue_error_flag=False):
-
-    '''Scan aList for @pagewidth directives.'''
-
-    for d in aList:
-        s = d.get('pagewidth')
-        i, val = g.skip_long(s,0)
-        if val != None and val > 0:
-            # g.trace(val)
-            return val
-        else:
-            if issue_error_flag:
-                g.es("ignoring",s,color="red")
-
-    return None
-#@-node:ekr.20080827175609.34:g.scanAtPagewidthDirectives (test)
-#@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives (test)
-def scanAtTabwidthDirective(aList,issue_error_flag=False):
-
-    '''Scan aList for @tabwidth directives.'''
-
-    for d in aList:
-        s = theDict.get('tabwidth')
-        junk,val = g.skip_long(s,0)
-
-        if val != None and val != 0:
-            # g.trace(val)
-            return val
-        else:
-            if issue_error_flag:
-                g.es("ignoring",s,color="red")
-
-    return None
-#@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives (test)
-#@+node:ekr.20080827175609.38:g.scanColorDirectives (not used?)
-# def scanColorDirectives(aList):
-
-    # '''Return the language in effect at position p.'''
-
-    # # if c is None: return None # c may be None for testing.
-
-    # # language = c.target_language and c.target_language.lower() or 'python'
-
-    # for d in aList:
-        # z = d.get('language')
-        # if z is not None:
-            # language,junk,junk,junk = g.set_language(z,0)
-            # return language
-
-    # return None
-#@-node:ekr.20080827175609.38:g.scanColorDirectives (not used?)
-#@+node:ekr.20080827175609.48:g.NEWscanForAtIgnore
-def NEWscanForAtIgnore(c,p):
-
-    """Scan position p and its ancestors looking for @ignore directives."""
-
-    if g.app.unitTesting:
-        return False # For unit tests.
-
-    for p in p.self_and_parents_iter():
-        d = g.get_directives_dict(p)
-        if d.has_key("ignore"):
-            return True
-
-    return False
-#@-node:ekr.20080827175609.48:g.NEWscanForAtIgnore
-#@+node:ekr.20080827175609.49:g.NEWscanForAtLanguage
-def NEWscanForAtLanguage(c,p):
-
-    """Scan position p and p's ancestors looking only for @language and @ignore directives.
-
-    Returns the language found, or c.target_language."""
-
-    # Unlike the code in x.scanAllDirectives, this code ignores @comment directives.
-
-    if c and p:
-        for p in p.self_and_parents_iter():
-            d = g.get_directives_dict(p)
-            if d.has_key("language"):
-                z = d["language"]
-                language,delim1,delim2,delim3 = g.set_language(z,0)
-                return language
-
-    return c.target_language
-#@-node:ekr.20080827175609.49:g.NEWscanForAtLanguage
-#@+node:ekr.20080827175609.50:g.NEWscanForAtSettings
-def NEWscanForAtSettings(p):
-
-    """Scan position p and its ancestors looking for @settings nodes."""
-
-    for p in p.self_and_parents_iter():
-        h = p.headString()
-        h = g.app.config.canonicalizeSettingName(h)
-        if h.startswith("@settings"):
-            return True
-
-    return False
-#@-node:ekr.20080827175609.50:g.NEWscanForAtSettings
-#@-node:ekr.20080827175609.31:NEW Directive utils...
-#@-node:ekr.20080827175609.17:New code
-#@-node:ekr.20080124083629.1:Improve @path handling
+#@-node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
 #@+node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
 #@-node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
 #@+node:ekr.20080519062109.2:Improve how Leo handles long lines
@@ -3341,7 +1237,7 @@ def extendHelper (self,w,extend,spot,upOrDown=False):
             i2,j2 = g.getLine(s,spot)
             line = s[i2:j2]
             row,col = g.convertPythonIndexToRowCol(s,spot)
-            if True: #### j2 < len(s)-1:
+            if True: # was j2 < len(s)-1:
                 n = min(self.moveCol,max(0,len(line)-1))
             else:
                 n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
@@ -3942,9 +1838,7 @@ code.google.com/p/python-ttk/wiki/Screenshots)
 @color
 #@nonl
 #@-node:ekr.20080826074455.1:Look into ttk for Python 2.6
-#@+node:ekr.20080901112851.1:show/hide-xml command
-#@-node:ekr.20080901112851.1:show/hide-xml command
-#@-node:ekr.20080810085333.7:Under two days 6
+#@-node:ekr.20080810085333.7:Under two days 5
 #@+node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode
@@ -3961,14 +1855,9 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
 
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
-
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -4154,7 +2043,7 @@ def reinitMode (self,modeName):
     else:
         # Do not set the status line here.
         k.setLabelBlue(modeName+': ',protect=True)
-        #### c.minibufferWantsFocus()
+
 #@-node:ekr.20061031131434.164:reinitMode
 #@+node:ekr.20061031131434.165:modeHelp & helper
 def modeHelp (self,event):
@@ -4183,10 +2072,8 @@ def modeHelpHelper (self,d):
 
     k = self ; c = k.c ; tabName = 'Mode'
     c.frame.log.clearTab(tabName)
-    keys = d.keys() ; keys.sort()
-
     data = [] ; n = 20
-    for key in keys:
+    for key in sorted(d):
         if key not in ( '*entry-commands*','*command-prompt*'):
             bunchList = d.get(key)
             for bunch in bunchList:
@@ -4390,7 +2277,7 @@ elif k.unboundKeyAction == 'command':
             # key in ('button','all')
         # ):
             # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
             # if d:
                 # b = d.get(stroke)
                 # if b:
@@ -4429,7 +2316,7 @@ for key,name in (
         key in ('button','all')
     ):
         d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
         if d:
             b = d.get(stroke)
             if b:
@@ -4489,7 +2376,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                        k.keyboardQuit(event,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -4640,8 +2527,6 @@ def endCommand (self,event,commandName):
     if commandName:
         bodyCtrl = c.frame.body.bodyCtrl
         if not k.inState():
-            # __pychecker__ = '--no-classattr --no-objattrs'
-                # initAllEditCommanders *does* exist.
             k.commandName = None
 
             # Do the import here to break a circular dependency at the top level.
@@ -4951,14 +2836,9 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
 
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
-
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -5207,7 +3087,7 @@ elif k.unboundKeyAction == 'command':
             # key in ('button','all')
         # ):
             # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
             # if d:
                 # b = d.get(stroke)
                 # if b:
@@ -5246,7 +3126,7 @@ for key,name in (
         key in ('button','all')
     ):
         d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
         if d:
             b = d.get(stroke)
             if b:
@@ -5306,7 +3186,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                        k.keyboardQuit(event,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -5495,7 +3375,7 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
             and not b2.pane.endswith('-mode')]
     for z in redefs:
         g.es_print('redefining','shortcut %20s' % (shortcut),
-            'from',z,'(%s)' % (b2.pane),
+            'from',z,'(%s)' % (pane),
             'to',commandName,'(%s)' % (pane),color='red')
 
 if not modeFlag:
@@ -5543,9 +3423,7 @@ def checkBindings (self):
 
     if not c.config.getBool('warn_about_missing_settings'): return
 
-    names = c.commandsDict.keys() ; names.sort()
-
-    for name in names:
+    for name in sorted(c.commandsDict):
         abbrev = k.abbreviationsDict.get(name)
         key = c.frame.menu.canonicalizeMenuName(abbrev or name)
         key = key.replace('&','')
@@ -5562,14 +3440,11 @@ def dumpMasterBindingsDict (self):
     k = self ; d = k.masterBindingsDict
 
     g.pr('\nk.masterBindingsDict...\n')
-    keys = d.keys()
-    keys.sort()
-    for key in keys:
+
+    for key in sorted(d):
         g.pr(key, '-' * 40)
         d2 = d.get(key)
-        keys2 = d2.keys()
-        keys2.sort()
-        for key2 in keys2:
+        for key2 in sorted(d2):
             b = d2.get(key2)
             g.pr('%20s %s' % (key2,b.commandName))
 #@-node:ekr.20070218130238:dumpMasterBindingsDict
@@ -5578,9 +3453,9 @@ def completeAllBindingsForWidget (self,w):
 
     k = self ; d = k.bindingsDict
 
-    # g.trace('w',w,d.has_key('Alt+Key-4'))
+    # g.trace('w',w,'Alt+Key-4' in d)
 
-    for stroke in d.keys():
+    for stroke in d:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.96:k.completeAllBindingsForWidget
 #@+node:ekr.20061031131434.97:k.completeAllBindings
@@ -5594,7 +3469,7 @@ def completeAllBindings (self,w=None):
     # g.trace(w)
 
     k = self
-    for stroke in k.bindingsDict.keys():
+    for stroke in k.bindingsDict:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.97:k.completeAllBindings
 #@+node:ekr.20061031131434.98:k.makeAllBindings
@@ -5622,7 +3497,7 @@ def initAbbrev (self):
 
     k = self ; c = k.c ; d = c.config.getAbbrevDict()
     if d:
-        for key in d.keys():
+        for key in d:
             commandName = d.get(key)
             if commandName.startswith('press-') and commandName.endswith('-button'):
                 pass # Must be done later in k.registerCommand.
@@ -5651,7 +3526,7 @@ def addModeCommands (self):
     d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
 
     # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-    for key in d.keys():
+    for key in d:
 
         def enterModeCallback (event=None,name=key):
             k.enterNamedMode(event,name)
@@ -5691,9 +3566,8 @@ def makeBindingsFromCommandsDict (self):
     '''Add bindings for all entries in c.commandDict.'''
 
     k = self ; c = k.c ; d = c.commandsDict
-    keys = d.keys() ; keys.sort()
 
-    for commandName in keys:
+    for commandName in sorted(d):
         command = d.get(commandName)
         key, bunchList = c.config.getShortcut(commandName)
         # if commandName == 'keyboard-quit': g.trace(key,bunchList)
@@ -5704,7 +3578,7 @@ def makeBindingsFromCommandsDict (self):
                 shortcut = k.shortcutFromSetting(accel)
                 k.bindKey(pane,shortcut,command,commandName)
 
-    # g.trace(g.listToString(k.bindingsDict.keys(),sort=True))
+    # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
 #@-node:ekr.20061031131434.102:makeBindingsFromCommandsDict
 #@+node:ekr.20061031131434.103:k.makeMasterGuiBinding
@@ -5775,14 +3649,9 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
 
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
-
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -5968,7 +3837,7 @@ def reinitMode (self,modeName):
     else:
         # Do not set the status line here.
         k.setLabelBlue(modeName+': ',protect=True)
-        #### c.minibufferWantsFocus()
+
 #@-node:ekr.20061031131434.164:reinitMode
 #@+node:ekr.20061031131434.165:modeHelp & helper
 def modeHelp (self,event):
@@ -5997,10 +3866,8 @@ def modeHelpHelper (self,d):
 
     k = self ; c = k.c ; tabName = 'Mode'
     c.frame.log.clearTab(tabName)
-    keys = d.keys() ; keys.sort()
-
     data = [] ; n = 20
-    for key in keys:
+    for key in sorted(d):
         if key not in ( '*entry-commands*','*command-prompt*'):
             bunchList = d.get(key)
             for bunch in bunchList:
@@ -6415,7 +4282,7 @@ elif k.unboundKeyAction == 'command':
             # key in ('button','all')
         # ):
             # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
             # if d:
                 # b = d.get(stroke)
                 # if b:
@@ -6454,7 +4321,7 @@ for key,name in (
         key in ('button','all')
     ):
         d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
         if d:
             b = d.get(stroke)
             if b:
@@ -6514,7 +4381,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                        k.keyboardQuit(event,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -6620,7 +4487,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 command=masterMenuCallback,
                 underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
-if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+if g.isString(data):
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
     s = data
@@ -6728,6 +4595,7 @@ def getShortcut (self,c,shortcutName):
     key = key.replace('&','') # Allow '&' in names.
 
     bunchList = self.get(c,key,"shortcut")
+    # g.trace('bunchList',bunchList)
     if bunchList:
         bunchList = [bunch for bunch in bunchList
             if bunch.val and bunch.val.lower() != 'none']
@@ -6737,10 +4605,6 @@ def getShortcut (self,c,shortcutName):
 #@-node:ekr.20041117062717.14:getShortcut (config)
 #@+node:ekr.20041120105609:doShortcuts (ParserBaseClass)
 def doShortcuts(self,p,kind,name,val,s=None):
-
-    # __pychecker__ = '--no-argsused' # kind,val.
-
-    # g.trace(self.c.fileName(),name)
 
     c = self.c ; d = self.shortcutsDict ; k = c.k
     trace = False or c.config.getBool('trace_bindings_verbose')
@@ -6775,11 +4639,10 @@ def printBindings (self,event=None):
 
     k = self ; c = k.c
     d = k.bindingsDict ; tabName = 'Bindings'
-    keys = d.keys() ; keys.sort()
     c.frame.log.clearTab(tabName)
     data = [] ; n1 = 4 ; n2 = 20
-    if not keys: return g.es('no bindings')
-    for key in keys:
+    if not d: return g.es('no bindings')
+    for key in sorted(d):
         bunchList = d.get(key,[])
         for b in bunchList:
             pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
@@ -6834,14 +4697,9 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
 
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
-
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -6935,7 +4793,7 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
             and not b2.pane.endswith('-mode')]
     for z in redefs:
         g.es_print('redefining','shortcut %20s' % (shortcut),
-            'from',z,'(%s)' % (b2.pane),
+            'from',z,'(%s)' % (pane),
             'to',commandName,'(%s)' % (pane),color='red')
 
 if not modeFlag:
@@ -6983,9 +4841,7 @@ def checkBindings (self):
 
     if not c.config.getBool('warn_about_missing_settings'): return
 
-    names = c.commandsDict.keys() ; names.sort()
-
-    for name in names:
+    for name in sorted(c.commandsDict):
         abbrev = k.abbreviationsDict.get(name)
         key = c.frame.menu.canonicalizeMenuName(abbrev or name)
         key = key.replace('&','')
@@ -7002,14 +4858,11 @@ def dumpMasterBindingsDict (self):
     k = self ; d = k.masterBindingsDict
 
     g.pr('\nk.masterBindingsDict...\n')
-    keys = d.keys()
-    keys.sort()
-    for key in keys:
+
+    for key in sorted(d):
         g.pr(key, '-' * 40)
         d2 = d.get(key)
-        keys2 = d2.keys()
-        keys2.sort()
-        for key2 in keys2:
+        for key2 in sorted(d2):
             b = d2.get(key2)
             g.pr('%20s %s' % (key2,b.commandName))
 #@-node:ekr.20070218130238:dumpMasterBindingsDict
@@ -7018,9 +4871,9 @@ def completeAllBindingsForWidget (self,w):
 
     k = self ; d = k.bindingsDict
 
-    # g.trace('w',w,d.has_key('Alt+Key-4'))
+    # g.trace('w',w,'Alt+Key-4' in d)
 
-    for stroke in d.keys():
+    for stroke in d:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.96:k.completeAllBindingsForWidget
 #@+node:ekr.20061031131434.97:k.completeAllBindings
@@ -7034,7 +4887,7 @@ def completeAllBindings (self,w=None):
     # g.trace(w)
 
     k = self
-    for stroke in k.bindingsDict.keys():
+    for stroke in k.bindingsDict:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.97:k.completeAllBindings
 #@+node:ekr.20061031131434.98:k.makeAllBindings
@@ -7062,7 +4915,7 @@ def initAbbrev (self):
 
     k = self ; c = k.c ; d = c.config.getAbbrevDict()
     if d:
-        for key in d.keys():
+        for key in d:
             commandName = d.get(key)
             if commandName.startswith('press-') and commandName.endswith('-button'):
                 pass # Must be done later in k.registerCommand.
@@ -7091,7 +4944,7 @@ def addModeCommands (self):
     d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
 
     # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-    for key in d.keys():
+    for key in d:
 
         def enterModeCallback (event=None,name=key):
             k.enterNamedMode(event,name)
@@ -7131,9 +4984,8 @@ def makeBindingsFromCommandsDict (self):
     '''Add bindings for all entries in c.commandDict.'''
 
     k = self ; c = k.c ; d = c.commandsDict
-    keys = d.keys() ; keys.sort()
 
-    for commandName in keys:
+    for commandName in sorted(d):
         command = d.get(commandName)
         key, bunchList = c.config.getShortcut(commandName)
         # if commandName == 'keyboard-quit': g.trace(key,bunchList)
@@ -7144,7 +4996,7 @@ def makeBindingsFromCommandsDict (self):
                 shortcut = k.shortcutFromSetting(accel)
                 k.bindKey(pane,shortcut,command,commandName)
 
-    # g.trace(g.listToString(k.bindingsDict.keys(),sort=True))
+    # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
 #@-node:ekr.20061031131434.102:makeBindingsFromCommandsDict
 #@+node:ekr.20061031131434.103:k.makeMasterGuiBinding
@@ -7509,8 +5361,11 @@ key to be re-executed.
 #@-node:ekr.20080616110054.2:Support vim dot command
 #@-node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20080730212711.7:Plugins 5
-#@+node:ekr.20080901112851.2:Rewrite plugins manager plugin
-#@-node:ekr.20080901112851.2:Rewrite plugins manager plugin
+#@+node:ekr.20080923200153.1:Support scan-directives hook again?
+# This affects the add_directives plugin.
+# Also, the color_markup plugin doesn't work with the threading colorizer.
+#@nonl
+#@-node:ekr.20080923200153.1:Support scan-directives hook again?
 #@+node:ekr.20080604060150.1:Clean up plugins
 Some scripting says the following are in .../plugins/ but not
 leoPluginsRef.leo:
@@ -7564,9 +5419,8 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080730212711.7:Plugins 5
-#@-node:ekr.20080814103428.4:4.6 long-delayed items
-#@+node:ekr.20071211093011:4.7 autocompletion
-http://orestis.gr/en/blog/2008/08/31/announcing-pysmell/
+#@-node:ekr.20080814103428.4:4.6 bugs, cleanups
+#@+node:ekr.20071211093011:4.7  autocompletion
 #@+node:ekr.20080113165010:About auto completion
 @nocolor
 
@@ -8235,575 +6089,8 @@ could specify autocompleter conventions, say in an @autocompleter node in an
 @settings tree.
 #@nonl
 #@-node:ekr.20071106083149:Recent post
-#@+node:ekr.20080912174701.1:pysmell
-pysmell: http://groups.google.com/group/leo-editor/browse_thread/thread/3b1da6ef8b047a0c#
-ctags: http://ctags.sourceforge.net/
-
-Article on static typing of dynamic languages:
-    http://orestis.gr/blog/2008/08/25/on-python-static-typing/
-
-    pyflakes:
-        https://launchpad.net/pyflakes
-#@nonl
-#@-node:ekr.20080912174701.1:pysmell
-#@+node:ekr.20080912174701.2:Suggested python compiler improved docs
-@nocolor
-
-http://bugs.python.org/file1526/compiler.visitor.txt
-
-19.4 compiler.visitor -- Walk ASTs Using Visitors
-
-compiler.visitor.ASTVisitor walks the abstract syntax tree created by the parser. The compiler package uses a variant on the visitor pattern that takes advantage of Python's introspection features to eliminate the need for much of the visitor's infrastructure.
-
-The classes being visited do not need to be programmed to accept visitors. The visitor need only define visit methods for nodes it is specifically interested in; a default visit method handles the rest.
-
-walk(tree, visitor[, walker [, verbose]])
-
-    Initiate a preorder walk of tree. visitor is an instance of a class that defines a visitNodeType method for each AST node of interest. NodeType is the name of the AST class to be visited.
-
-    walker is an instance of ASTVisitor (the default) or a subclass. This is the class that will actually walk the tree and dispatch to the visitor.
-
-    The verbose argument is used to set the VERBOSE attribute of walker. It is used by ExampleASTVisitor, not by ASTVisitor.
-
-    Note: This function is also exposed as compiler.walk().
-
-class ASTVisitor()
-
-    ASTVisitor is responsible for walking over the tree in the correct order. A walk begins with a call to preorder(). For each node, it checks the visitor argument to preorder() for a method named `visitNodeType,' where NodeType is the name of the node's class, e.g. for a While node the method visitWhile() would be called. If the visitNodeType() method exists, it is called with the node as its first argument. If the visitNodeType() method does not exist, ASTVisiter.default() is called instead.
-
-    The visitNodeType() method for a particular node type controls how child nodes are visited during the walk. Only children explicitly visited by the visitNodeType() method will be visited. The ASTVisitor modifies the visitor argument by adding a visit() method to the visitor; this method can be used to visit a particular child node.
-
-ASTVisitor objects have the following methods:
-
-default(node[, ...])
-
-    The default node handler. The dispatch() method calls default() for a node when the visitor does not define a handler for the node. The default handler visits each child node of the given node. Any extra arguments are passed to the dispatch method.
-
-dispatch(node[, ...])
-
-    Finds the handler for a node and dispatches to it. Any extra arguments are passed to the handler.
-
-preorder(tree, visitor[, ...])
-
-    Initiates a preorder walk of the tree. Any extra arguments are passed to the node handlers.
-
-
-class ExampleASTVisitor()
-
-    This subclass of ASTVisitor can be passed as the walker argument to walk. It prints information about any node that is not handled by the visitor object. This is useful for inspecting a tree and developing a visitor. Set the verbose parameter of walk to 1 or higher to get the extra output.
-
-
-Example:
-
-    from compiler import parse, walk
-    from compiler.visitor import ExampleASTVisitor
-
-    testdata = '''
-    def aFunction(anArg):
-        return anArg + 1
-    '''
-
-    class SimpleVisitor(object):
-        def visitFunction(self, parsedFunc):
-            print "Function %(name)s at %(lineno)s takes %(argnames)s " \
-                  " with code %(code)s" % parsedFunc.__dict__
-
-    if __name__ == "__main__":
-        ast = parse(testdata)
-        walk(ast, SimpleVisitor(), walker=ExampleASTVisitor(), verbose=1)
-
-
-#@-node:ekr.20080912174701.2:Suggested python compiler improved docs
-#@+node:ekr.20080912174701.3:pyflakes source code
-#@+node:ekr.20080912174701.4:checker.py
-@language python
-@tabwidth -4
-@others
-#@+node:ekr.20080912174701.5:checker declarations
-# -*- test-case-name: pyflakes -*-
-# (c) 2005-2008 Divmod, Inc.
-# See LICENSE file for details
-
-import __builtin__
-from compiler import ast
-
-from pyflakes import messages
-#@-node:ekr.20080912174701.5:checker declarations
-#@+node:ekr.20080912174701.47:Small classes
-#@+node:ekr.20080912174701.6:class Binding
-class Binding(object):
-    """
-    @ivar used: pair of (L{Scope}, line-number) indicating the scope and
-                line number that this binding was last used
-    """
-    @others
-#@+node:ekr.20080912174701.7:__init__
-def __init__(self, name, source):
-    self.name = name
-    self.source = source
-    self.used = False
-
-#@-node:ekr.20080912174701.7:__init__
-#@+node:ekr.20080912174701.8:__str__
-def __str__(self):
-    return self.name
-
-#@-node:ekr.20080912174701.8:__str__
-#@+node:ekr.20080912174701.9:__repr__
-def __repr__(self):
-    return '<%s object %r from line %r at 0x%x>' % (self.__class__.__name__,
-                                                    self.name,
-                                                    self.source.lineno,
-                                                    id(self))
-
-#@-node:ekr.20080912174701.9:__repr__
-#@-node:ekr.20080912174701.6:class Binding
-#@+node:ekr.20080912174701.10:class UnBinding
-class UnBinding(Binding):
-    '''Created by the 'del' operator.'''
-
-#@-node:ekr.20080912174701.10:class UnBinding
-#@+node:ekr.20080912174701.11:class Importation
-class Importation(Binding):
-
-    def __init__(self, name, source):
-        name = name.split('.')[0]
-        super(Importation, self).__init__(name, source)
-
-
-#@-node:ekr.20080912174701.11:class Importation
-#@+node:ekr.20080912174701.13:class Assignment
-class Assignment(Binding):
-    pass
-
-#@-node:ekr.20080912174701.13:class Assignment
-#@+node:ekr.20080912174701.14:class FunctionDefinition
-class FunctionDefinition(Binding):
-    pass
-
-
-#@-node:ekr.20080912174701.14:class FunctionDefinition
-#@+node:ekr.20080912174701.15:class Scope
-class Scope(dict):
-    importStarred = False       # set to True when import * is found
-
-    def __repr__(self):
-        return '<%s at 0x%x %s>' % (
-            self.__class__.__name__, id(self), dict.__repr__(self))
-
-    def __init__(self):
-        super(Scope, self).__init__()
-#@-node:ekr.20080912174701.15:class Scope
-#@+node:ekr.20080912174701.18:class ClassScope
-class ClassScope(Scope):
-    pass
-
-
-
-#@-node:ekr.20080912174701.18:class ClassScope
-#@+node:ekr.20080912174701.19:class FunctionScope
-class FunctionScope(Scope):
-    """
-    I represent a name scope for a function.
-
-    @ivar globals: Names declared 'global' in this function.
-    """
-
-    def __init__(self):
-        super(FunctionScope, self).__init__()
-        self.globals = {}
-#@-node:ekr.20080912174701.19:class FunctionScope
-#@+node:ekr.20080912174701.21:class ModuleScope
-class ModuleScope(Scope):
-    pass
-
-
-#@-node:ekr.20080912174701.21:class ModuleScope
-#@-node:ekr.20080912174701.47:Small classes
-#@+node:ekr.20080912174701.22:class Checker
-class Checker(object):
-    nodeDepth = 0
-    traceTree = False
-
-    @others
-#@+node:ekr.20080912174701.23:__init__
-def __init__(self, tree, filename='(none)'):
-    self.deferred = []
-    self.dead_scopes = []
-    self.messages = []
-    self.filename = filename
-    self.scopeStack = [ModuleScope()]
-    self.futuresAllowed = True
-
-    self.handleChildren(tree)
-    for handler, scope in self.deferred:
-        self.scopeStack = scope
-        handler()
-    del self.scopeStack[1:]
-    self.popScope()
-    self.check_dead_scopes()
-
-#@-node:ekr.20080912174701.23:__init__
-#@+node:ekr.20080912174701.24:defer
-def defer(self, callable):
-    '''Schedule something to be called after just before completion.
-
-    This is used for handling function bodies, which must be deferred
-    because code later in the file might modify the global scope. When
-    `callable` is called, the scope at the time this is called will be
-    restored, however it will contain any new bindings added to it.
-    '''
-    self.deferred.append( (callable, self.scopeStack[:]) )
-
-#@-node:ekr.20080912174701.24:defer
-#@+node:ekr.20080912174701.25:scope
-def scope(self):
-    return self.scopeStack[-1]
-#@-node:ekr.20080912174701.25:scope
-#@+node:ekr.20080912174701.26:popScope
-scope = property(scope)
-
-def popScope(self):
-    self.dead_scopes.append(self.scopeStack.pop())
-
-#@-node:ekr.20080912174701.26:popScope
-#@+node:ekr.20080912174701.27:check_dead_scopes
-def check_dead_scopes(self):
-    for scope in self.dead_scopes:
-        for importation in scope.itervalues():
-            if isinstance(importation, Importation) and not importation.used:
-                self.report(messages.UnusedImport, importation.source.lineno, importation.name)
-
-#@-node:ekr.20080912174701.27:check_dead_scopes
-#@+node:ekr.20080912174701.28:pushFunctionScope
-def pushFunctionScope(self):
-    self.scopeStack.append(FunctionScope())
-
-#@-node:ekr.20080912174701.28:pushFunctionScope
-#@+node:ekr.20080912174701.29:pushClassScope
-def pushClassScope(self):
-    self.scopeStack.append(ClassScope())
-
-#@-node:ekr.20080912174701.29:pushClassScope
-#@+node:ekr.20080912174701.30:report
-def report(self, messageClass, *args, **kwargs):
-    self.messages.append(messageClass(self.filename, *args, **kwargs))
-
-#@-node:ekr.20080912174701.30:report
-#@+node:ekr.20080912174701.31:handleChildren
-def handleChildren(self, tree):
-    for node in tree.getChildNodes():
-        self.handleNode(node)
-
-STMT = PRINT = PRINTNL = TUPLE = LIST = ASSTUPLE = ASSATTR = \
-ASSLIST = GETATTR = SLICE = SLICEOBJ = IF = CALLFUNC = DISCARD = \
-RETURN = ADD = MOD = SUB = NOT = UNARYSUB = INVERT = ASSERT = COMPARE = \
-SUBSCRIPT = AND = OR = TRYEXCEPT = RAISE = YIELD = DICT = LEFTSHIFT = \
-RIGHTSHIFT = KEYWORD = TRYFINALLY = WHILE = EXEC = MUL = DIV = POWER = \
-FLOORDIV = BITAND = BITOR = BITXOR = LISTCOMPFOR = LISTCOMPIF = \
-AUGASSIGN = BACKQUOTE = UNARYADD = GENEXPR = GENEXPRFOR = GENEXPRIF = \
-IFEXP = handleChildren
-#@-node:ekr.20080912174701.31:handleChildren
-#@+node:ekr.20080912174701.32:handleNode
-def handleNode(self, node):
-
-    if self.traceTree:
-        print '  ' * self.nodeDepth + node.__class__.__name__
-
-    self.nodeDepth += 1
-    nodeType = node.__class__.__name__.upper()
-
-    if nodeType not in ('STMT', 'FROM'):
-        self.futuresAllowed = False
-
-    try:
-        handler = getattr(self, nodeType)
-        handler(node)
-    finally:
-        self.nodeDepth -= 1
-
-    if self.traceTree:
-        print '  ' * self.nodeDepth + 'end ' + node.__class__.__name__
-#@-node:ekr.20080912174701.32:handleNode
-#@+node:ekr.20080912174701.33:ignore
-def ignore(self, node):
-    pass
-
-CONST = PASS = CONTINUE = BREAK = ELLIPSIS = ignore
-#@-node:ekr.20080912174701.33:ignore
-#@+node:ekr.20080912174701.34:addBinding
-def addBinding(self, lineno, value, reportRedef=True):
-    '''Called when a binding is altered.
-
-    - `lineno` is the line of the statement responsible for the change
-    - `value` is the optional new value, a Binding instance, associated
-      with the binding; if None, the binding is deleted if it exists.
-    - if `reportRedef` is True (default), rebinding while unused will be
-      reported.
-    '''
-    if (isinstance(self.scope.get(value.name), FunctionDefinition)
-                and isinstance(value, FunctionDefinition)):
-        self.report(messages.RedefinedFunction,
-                    lineno, value.name, self.scope[value.name].source.lineno)
-
-    if not isinstance(self.scope, ClassScope):
-        for scope in self.scopeStack[::-1]:
-            if (isinstance(scope.get(value.name), Importation)
-                    and not scope[value.name].used
-                    and reportRedef):
-
-                self.report(messages.RedefinedWhileUnused,
-                            lineno, value.name, scope[value.name].source.lineno)
-
-    if isinstance(value, UnBinding):
-        try:
-            del self.scope[value.name]
-        except KeyError:
-            self.report(messages.UndefinedName, lineno, value.name)
-    else:
-        self.scope[value.name] = value
-#@-node:ekr.20080912174701.34:addBinding
-#@+node:ekr.20080912174701.48:Node handlers
-@
-
-These are called by the following cute dispatch code in handleNode:
-
-    handler = getattr(self, nodeType)
-    handler(node)
-#@nonl
-#@+node:ekr.20080912174701.35:WITH
-def WITH(self, node):
-    """
-    Handle C{with} by adding bindings for the name or tuple of names it
-    puts into scope and by continuing to process the suite within the
-    statement.
-    """
-    # for "with foo as bar", there is no AssName node for "bar".
-    # Instead, there is a Name node. If the "as" expression assigns to
-    # a tuple, it will instead be a AssTuple node of Name nodes.
-    #
-    # Of course these are assignments, not references, so we have to
-    # handle them as a special case here.
-
-    self.handleNode(node.expr)
-
-    if isinstance(node.vars, ast.AssTuple):
-        varNodes = node.vars.nodes
-    elif node.vars is not None:
-        varNodes = [node.vars]
-    else:
-        varNodes = []
-
-    for varNode in varNodes:
-        self.addBinding(varNode.lineno, Assignment(varNode.name, varNode))
-
-    self.handleChildren(node.body)
-
-
-#@-node:ekr.20080912174701.35:WITH
-#@+node:ekr.20080912174701.36:GLOBAL
-def GLOBAL(self, node):
-    """
-    Keep track of globals declarations.
-    """
-    if isinstance(self.scope, FunctionScope):
-        self.scope.globals.update(dict.fromkeys(node.names))
-
-#@-node:ekr.20080912174701.36:GLOBAL
-#@+node:ekr.20080912174701.37:LISTCOMP
-def LISTCOMP(self, node):
-    for qual in node.quals:
-        self.handleNode(qual)
-    self.handleNode(node.expr)
-
-GENEXPRINNER = LISTCOMP
-#@-node:ekr.20080912174701.37:LISTCOMP
-#@+node:ekr.20080912174701.38:FOR
-def FOR(self, node):
-    """
-    Process bindings for loop variables.
-    """
-    vars = []
-
-    def collectLoopVars(n):
-        if hasattr(n, 'name'):
-            vars.append(n.name)
-        else:
-            for c in n.getChildNodes():
-                collectLoopVars(c)
-
-    collectLoopVars(node.assign)
-
-    for varn in vars:
-        if (isinstance(self.scope.get(varn), Importation)
-                # unused ones will get an unused import warning
-                and self.scope[varn].used):
-            self.report(messages.ImportShadowedByLoopVar,
-                        node.lineno, varn, self.scope[varn].source.lineno)
-
-    self.handleChildren(node)
-
-#@-node:ekr.20080912174701.38:FOR
-#@+node:ekr.20080912174701.39:NAME
-def NAME(self, node):
-    """
-    Locate the name in locals / function / globals scopes.
-    """
-    # try local scope
-    importStarred = self.scope.importStarred
-    try:
-        self.scope[node.name].used = (self.scope, node.lineno)
-    except KeyError:
-        pass
-    else:
-        return
-
-    # try enclosing function scopes
-    for scope in self.scopeStack[-2:0:-1]:
-        importStarred = importStarred or scope.importStarred
-        if not isinstance(scope, FunctionScope):
-            continue
-        try:
-            scope[node.name].used = (self.scope, node.lineno)
-        except KeyError:
-            pass
-        else:
-            return
-
-    # try global scope
-    importStarred = importStarred or self.scopeStack[0].importStarred
-    try:
-        self.scopeStack[0][node.name].used = (self.scope, node.lineno)
-    except KeyError:
-        if ((not hasattr(__builtin__, node.name))
-                and node.name not in ['__file__']
-                and not importStarred):
-            self.report(messages.UndefinedName, node.lineno, node.name)
-#@-node:ekr.20080912174701.39:NAME
-#@+node:ekr.20080912174701.40:FUNCTION
-def FUNCTION(self, node):
-    if getattr(node, "decorators", None) is not None:
-        self.handleChildren(node.decorators)
-    self.addBinding(node.lineno, FunctionDefinition(node.name, node))
-    self.LAMBDA(node)
-
-#@-node:ekr.20080912174701.40:FUNCTION
-#@+node:ekr.20080912174701.41:LAMBDA
-def LAMBDA(self, node):
-
-    for default in node.defaults:
-        self.handleNode(default)
-
-    def runFunction():
-        args = []
-
-        def addArgs(arglist):
-            for arg in arglist:
-                if isinstance(arg, tuple):
-                    addArgs(arg)
-                else:
-                    if arg in args:
-                        self.report(messages.DuplicateArgument, node.lineno, arg)
-                    args.append(arg)
-
-        self.pushFunctionScope()
-        addArgs(node.argnames)
-        for name in args:
-            self.addBinding(node.lineno, Assignment(name, node), reportRedef=False)
-        self.handleNode(node.code)
-        self.popScope()
-
-    self.defer(runFunction)
-
-#@-node:ekr.20080912174701.41:LAMBDA
-#@+node:ekr.20080912174701.42:CLASS
-def CLASS(self, node):
-
-    self.addBinding(node.lineno, Assignment(node.name, node))
-    for baseNode in node.bases:
-        self.handleNode(baseNode)
-    self.pushClassScope()
-    self.handleChildren(node.code)
-    self.popScope()
-
-#@-node:ekr.20080912174701.42:CLASS
-#@+node:ekr.20080912174701.43:ASSNAME
-def ASSNAME(self, node):
-
-    if node.flags == 'OP_DELETE':
-        if isinstance(self.scope, FunctionScope) and node.name in self.scope.globals:
-            del self.scope.globals[node.name]
-        else:
-            self.addBinding(node.lineno, UnBinding(node.name, node))
-    else:
-        # if the name hasn't already been defined in the current scope
-        if isinstance(self.scope, FunctionScope) and node.name not in self.scope:
-            # for each function or module scope above us
-            for scope in self.scopeStack[:-1]:
-                if not isinstance(scope, (FunctionScope, ModuleScope)):
-                    continue
-                # if the name was defined in that scope, and the name has
-                # been accessed already in the current scope, and hasn't
-                # been declared global
-                if (node.name in scope
-                        and scope[node.name].used
-                        and scope[node.name].used[0] is self.scope
-                        and node.name not in self.scope.globals):
-                    # then it's probably a mistake
-                    self.report(messages.UndefinedLocal,
-                                scope[node.name].used[1],
-                                node.name,
-                                scope[node.name].source.lineno)
-                    break
-
-        self.addBinding(node.lineno, Assignment(node.name, node))
-#@-node:ekr.20080912174701.43:ASSNAME
-#@+node:ekr.20080912174701.44:ASSIGN
-def ASSIGN(self, node):
-    self.handleNode(node.expr)
-    for subnode in node.nodes[::-1]:
-        self.handleNode(subnode)
-
-#@-node:ekr.20080912174701.44:ASSIGN
-#@+node:ekr.20080912174701.45:IMPORT
-def IMPORT(self, node):
-    for name, alias in node.names:
-        name = alias or name
-        importation = Importation(name, node)
-        self.addBinding(node.lineno, importation)
-
-#@-node:ekr.20080912174701.45:IMPORT
-#@+node:ekr.20080912174701.46:FROM
-def FROM(self, node):
-    if node.modname == '__future__':
-        if not self.futuresAllowed:
-            self.report(messages.LateFutureImport, node.lineno, [n[0] for n in node.names])
-    else:
-        self.futuresAllowed = False
-
-    for name, alias in node.names:
-        if name == '*':
-            self.scope.importStarred = True
-            self.report(messages.ImportStarUsed, node.lineno, node.modname)
-            continue
-        name = alias or name
-        importation = Importation(name, node)
-        if node.modname == '__future__':
-            importation.used = (self.scope, node.lineno)
-        self.addBinding(node.lineno, importation)
-#@-node:ekr.20080912174701.46:FROM
-#@-node:ekr.20080912174701.48:Node handlers
-#@-node:ekr.20080912174701.22:class Checker
-#@-node:ekr.20080912174701.4:checker.py
-#@-node:ekr.20080912174701.3:pyflakes source code
-#@-node:ekr.20071211093011:4.7 autocompletion
+#@-node:ekr.20071211093011:4.7  autocompletion
 #@+node:ekr.20071211091355:Other/Minor
-#@+node:ekr.20080913210839.1:Rewrite leoAtFile.py using mxTextTools
-May 31, 2008: http://groups.google.com/group/leo-editor/browse_thread/thread/aa61a80713bf3030?tvc=2
-
-June 1, 2008: http://groups.google.com/group/leo-editor/browse_frm/thread/b67d6fa39ce9e169#
-#@nonl
-#@-node:ekr.20080913210839.1:Rewrite leoAtFile.py using mxTextTools
 #@+node:ekr.20071029082025:Improve distribution
 #@+node:ekr.20070929125944:Emulate Orange's download philosophy
 @nocolor
@@ -8887,8 +6174,6 @@ Edward
 
 P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
 #@-node:ekr.20080628095358.1:Make each Leo command a class
-#@+node:ekr.20080630093024.2:Remove pychecker stuff (maybe)
-#@-node:ekr.20080630093024.2:Remove pychecker stuff (maybe)
 #@-node:ekr.20071211091355:Other/Minor
 #@+node:ekr.20060306194040:Leo Video
 @nocolor
@@ -9285,8 +6570,6 @@ def onAboutLeoEmail(self,event=None):
 
     """Handle clicks in the email link in an About Leo dialog."""
 
-    # __pychecker__ = '--no-argsused' # the event param must be present.
-
     try:
         import webbrowser
         webbrowser.open("mailto:" + self.email)
@@ -9297,8 +6580,6 @@ def onAboutLeoEmail(self,event=None):
 def onAboutLeoUrl(self,event=None):
 
     """Handle clicks in the url link in an About Leo dialog."""
-
-    # __pychecker__ = '--no-argsused' # the event param must be present.
 
     try:
         import webbrowser
@@ -9311,15 +6592,11 @@ def setArrowCursor (self,event=None):
 
     """Set the cursor to an arrow in an About Leo dialog."""
 
-    # __pychecker__ = '--no-argsused' # the event param must be present.
-
     self.text.configure(cursor="arrow")
 
 def setDefaultCursor (self,event=None):
 
     """Set the cursor to the default cursor in an About Leo dialog."""
-
-    # __pychecker__ = '--no-argsused' # the event param must be present.
 
     self.text.configure(cursor="xterm")
 #@-node:ekr.20071001092721.15:swingAboutLeo: setArrowCursor, setDefaultCursor
@@ -9828,8 +7105,6 @@ def destroy (self,event=None):
 
     subclasses may override to really destroy the window"""
 
-    # __pychecker__ = '--no-argsused' # event not used, but must be present.
-
     self.top.withdraw() # Don't allow this window to be destroyed.
 #@-node:ekr.20071001092721.48:destroy
 #@+node:ekr.20071001092721.49:hide
@@ -9846,16 +7121,12 @@ def fillbox(self,event=None):
 
     Overridden by subclasses"""
 
-    # __pychecker__ = '--no-argsused' # the event param must be present.
-
     pass
 #@-node:ekr.20071001092721.50:fillbox
 #@+node:ekr.20071001092721.51:go
 def go(self,event=None):
 
     """Handle clicks in the "go" button in a list box dialog."""
-
-    # __pychecker__ = '--no-argsused' # the event param must be present.
 
     c = self.c ; box = self.box
 
@@ -9871,8 +7142,7 @@ def go(self,event=None):
         c.beginUpdate()
         try:
             c.frame.tree.expandAllAncestors(p)
-            c.selectPosition(p,updateBeadList=True)
-                # A case could be made for updateBeadList=False
+            c.selectPosition(p)
         finally:
             c.endUpdate()
 #@-node:ekr.20071001092721.51:go
@@ -9907,7 +7177,6 @@ import string
 import sys
 
 # # The following imports _are_ used.
-# __pychecker__ = '--no-import'
 # import threading
 # import time
 #@-node:ekr.20070930105601.1:<< imports >>
@@ -10430,10 +7699,10 @@ for p in c.allNodes_iter():
     vList.append(p.v)
     if p.v.t:
         key = id(p.v.t)
-        if not tDict.has_key(key):
+        if key not in tDict:
             tDict[key] = p.v.t
 
-for key in tDict.keys():
+for key in tDict:
     g.clearAllIvars(tDict[key])
 
 for v in vList:
@@ -10952,7 +8221,7 @@ def setWrap (self,p):
 
     c = self.c ; w = c.frame.body.bodyCtrl
 
-    theDict = g.scanDirectives(c,p)
+    theDict = c.scanAllDirectives(p)
     if not theDict: return
 
     wrap = theDict.get("wrap")
@@ -11032,20 +8301,14 @@ def OnCloseLeoEvent(self):
 #@+node:ekr.20071001091231.89:frame.OnControlKeyUp/Down
 def OnControlKeyDown (self,event=None):
 
-    # __pychecker__ = '--no-argsused' # event not used.
-
     self.controlKeyIsDown = True
 
 def OnControlKeyUp (self,event=None):
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     self.controlKeyIsDown = False
 #@-node:ekr.20071001091231.89:frame.OnControlKeyUp/Down
 #@+node:ekr.20071001091231.90:OnActivateBody (swingFrame)
 def OnActivateBody (self,event=None):
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     try:
         frame = self ; c = frame.c
@@ -11063,8 +8326,6 @@ def OnActivateBody (self,event=None):
 def OnActivateLeoEvent(self,event=None):
 
     '''Handle a click anywhere in the Leo window.'''
-
-    # __pychecker__ = '--no-argsused' # event.
 
     self.c.setLog()
 
@@ -11857,7 +9118,7 @@ def setEditorColors (self,bg,fg):
 
     ###
 
-    # for key in d.keys():
+    # for key in d:
         # w2 = d.get(key)
         # # g.trace(id(w2),bg,fg)
         # try:
@@ -12455,9 +9716,11 @@ def add_command (self,menu,**keys):
 
     self.names_and_commands[ keys[ 'label' ] ] = keys[ 'command' ]
 
-    action = self.MenuRunnable( keys[ 'label' ], keys[ 'command' ], self.c, self.executor )
+    action = self.MenuRunnable(
+        keys[ 'label' ],
+        keys[ 'command' ], self.c, self.executor )
     jmenu = swing.JMenuItem( action )
-    if keys.has_key( 'accelerator' ) and keys[ 'accelerator' ]:
+    if keys.get('accelerator'):
         accel = keys[ 'accelerator' ]
         acc_list = accel.split( '+' )
         changeTo = { 'Alt': 'alt', 'Shift':'shift', #translation table
@@ -12851,7 +10114,7 @@ def restoreAllState (self,d):
 
     # Restore all colors.
     colors = d.get('colors')
-    for color in colors.keys():
+    for color in colors:
         if color not in self.colorTags:
             self.colorTags.append(color)
             logCtrl.tag_config(color,foreground=color)
@@ -13113,8 +10376,6 @@ def deleteTab (self,tabName,force=False):
 #@-node:ekr.20071001091231.147:deleteTab
 #@+node:ekr.20071001091231.148:hideTab
 def hideTab (self,tabName):
-
-    # __pychecker__ = '--no-argsused' # tabName
 
     self.selectTab('Log')
 #@-node:ekr.20071001091231.148:hideTab
@@ -13655,8 +10916,6 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
     This class inherits almost all swingText methods: you call use them as usual.'''
 
     # The signatures of tag_add and insert are different from the Tk.Text signatures.
-    # __pychecker__ = '--no-override' # suppress warning about changed signature.
-
     def __repr__(self):
         name = hasattr(self,'_name') and self._name or '<no name>'
         return 'swingTextWidget id: %s name: %s' % (id(self),name)
@@ -14595,8 +11854,6 @@ def setHeadlineText (self,theId,w,s):
 
     """All changes to text widgets should come here."""
 
-    # __pychecker__ = '--no-argsused' # theId not used.
-
     # if self.trace_alloc: g.trace('%4d %6s %s' % (theId,self.textAddr(w),s),align=-20)
 
     state = w.cget("state")
@@ -14772,9 +12029,7 @@ def traceIds (self,full=False):
     for theDict,tag,flag in ((tree.ids,"ids",True),(tree.iconIds,"icon ids",False)):
         print '=' * 60
         print ; print "%s..." % tag
-        keys = theDict.keys()
-        keys.sort()
-        for key in keys:
+        for key in sorted(theDict):
             p = tree.ids.get(key)
             if p is None: # For lines.
                 print "%3d None" % key
@@ -15262,7 +12517,7 @@ def drawTree(self,p,x,y,h,level,hoistFlag=False):
 def getIconImage (self, name):
 
     # Return the image from the cache if possible.
-    if self.iconimages.has_key(name):
+    if name in self.iconimages:
         return self.iconimages[name]
 
     # g.trace(name)
@@ -15314,9 +12569,6 @@ def numberOfVisibleNodes(self):
 def scrollTo(self,p=None):
 
     """Scrolls the canvas so that p is in view."""
-
-    # __pychecker__ = '--no-argsused' # event not used.
-    # __pychecker__ = '--no-intdivide' # suppress warning about integer division.
 
     c = self.c ; frame = c.frame ; trace = True
     if not p or not c.positionExists(p):
@@ -15996,11 +13248,7 @@ def OnDeactivate (self,event=None):
 
     """Deactivate the tree pane, dimming any headline being edited."""
 
-    # __pychecker__ = '--no-argsused' # event not used.
-
     tree = self ; c = self.c
-
-    # g.trace(g.callers())
 
     c.beginUpdate()
     try:
@@ -16040,14 +13288,10 @@ Aside: though Tk tries to be muli-platform, the interaction with different windo
 
 def OnPopupFocusLost(self,event=None):
 
-    # __pychecker__ = '--no-argsused' # event not used.
-
     self.popupMenu.unpost()
 #@-node:ekr.20071001092453.98:OnPopupFocusLost
 #@+node:ekr.20071001092453.99:createPopupMenu
 def createPopupMenu (self,event):
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     c = self.c ; frame = c.frame
 
@@ -16097,8 +13341,6 @@ table = (
 def enablePopupMenuItems (self,v,event):
 
     """Enable and disable items in the popup menu."""
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     c = self.c ; menu = self.popupMenu
 
@@ -16656,8 +13898,6 @@ def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 
     """Create and run an swing open file dialog ."""
 
-    # __pychecker__ = '--no-argsused' # defaultextension not used.
-
     initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
 
     if multiple:
@@ -16685,8 +13925,6 @@ def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
 
     """Create and run an swing save file dialog ."""
-
-    # __pychecker__ = '--no-argsused' # defaultextension not used.
 
     initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd()),
 
@@ -16888,8 +14126,6 @@ set_focus_count = 0
 
 def set_focus(self,c,w):
 
-    # __pychecker__ = '--no-argsused' # c not used at present.
-
     """Put the focus on the widget."""
 
     if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
@@ -16917,8 +14153,6 @@ def set_focus(self,c,w):
 #@+node:ekr.20070930102228.34:Font
 #@+node:ekr.20070930102228.35:swingGui.getFontFromParams
 def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
-
-    # __pychecker__ = '--no-argsused' # defaultSize not used.
 
     family_name = family
 

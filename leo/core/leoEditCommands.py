@@ -9,8 +9,6 @@ Modelled after Emacs and Vim commands.'''
 
 #@<< imports >>
 #@+node:ekr.20050710151017:<< imports >>
-# __pychecker__ = '--no-import'
-
 import leo.core.leoGlobals as g
 
 import leo.core.leoFind as leoFind
@@ -18,18 +16,25 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
-import cPickle
+if g.isPython3:
+    import pickle # Note: only pickle exists in Python 3.x
+else:
+    import cPickle as pickle 
+
 import difflib
 import os
 import re
 import string
 import sys
 
-try:
-    import ctypes
-    import ctypes.util
-except ImportError:
+if g.isPython3:
     ctypes = None
+else:
+    try:
+        import ctypes
+        import ctypes.util
+    except ImportError:
+        ctypes = None
 
 subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
 #@-node:ekr.20050710151017:<< imports >>
@@ -259,10 +264,8 @@ def finishCreateEditCommanders (c):
         if d2:
             d.update(d2)
             if 0:
-                keys = d2.keys()
-                keys.sort()
                 g.pr('----- %s' % name)
-                for key in keys: g.pr(key)
+                for key in sorted(d2): g.pr(key)
 
     return d
 #@-node:ekr.20050922104731:finishCreateEditCommanders (leoEditCommands module)
@@ -608,7 +611,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                     # w.tag_delete('found')
                     # w.tag_add('found','%s wordstart' % i1,'%s wordend' % i1)
                     # w.tag_config('found',background='yellow')
-                    # if self.abbrevs.has_key(word):
+                    # if word in self.abbrevs:
                         # k.setLabel('Replace %s with %s? y/n' % (word,self.abbrevs[word]))
                         # yield None
                         # if k.regXKey == 'y':
@@ -1052,7 +1055,8 @@ class controlCommandsClass (baseEditCommandsClass):
             ofile.seek(0)
             okout = ofile.read()
             if okout: w.insert('insert',okout)
-        except Exception, x:
+        except Exception:
+            junk, x, junk = sys.exc_info()
             w.insert('insert',x)
 
         k.setLabelGrey('finished shell-command: %s' % command)
@@ -1238,7 +1242,7 @@ class debugCommandsClass (baseEditCommandsClass):
 
         for debugger in debuggers:
             if debugger:
-                debugger = g.os_path_abspath(debugger)
+                debugger = c.os_path_finalize(debugger)
                 if g.os_path_exists(debugger):
                     return debugger
                 else:
@@ -2319,7 +2323,7 @@ class editCommandsClass (baseEditCommandsClass):
     def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
 
         c = self.c
-        path = g.os_path_abspath(g.os_path_join(iconDir,path))
+        path = c.os_path_finalize_join(iconDir,path)
         relPath = g.makePathRelativeTo(path,iconDir)
 
         image,image_height = self.getImage(path)
@@ -2392,9 +2396,7 @@ class editCommandsClass (baseEditCommandsClass):
 
     def dHash(self, d):
         """Hash a dictionary"""
-        l = d.keys()
-        l.sort()
-        return ''.join(['%s%s' % (str(k),str(d[k])) for k in l])
+        return ''.join(['%s%s' % (str(k),str(d[k])) for k in sorted(d)])
 
     def setIconList(self, p, l):
         """Set list of icons for position p to l"""
@@ -2467,14 +2469,14 @@ class editCommandsClass (baseEditCommandsClass):
         aList = self.getIconList(p)
         if not aList: return
 
-        basePath = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
-        absRelPath = g.os_path_abspath(g.os_path_normpath(g.os_path_join(basePath,relPath)))
-        name = g.os_path_abspath(name)
+        basePath = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
+        absRelPath = c.os_path_finalize_join(basePath,relPath)
+        name = c.os_path_finalize(name)
 
         newList = []
         for d in aList:
             name2 = d.get('file')
-            name2 = g.os_path_abspath(name2)
+            name2 = c.os_path_finalize(name2)
             name2rel = d.get('relPath')
             # g.trace('name',name,'\nrelPath',relPath,'\nabsRelPath',absRelPath,'\nname2',name2,'\nname2rel',name2rel)
             if not (name == name2 or absRelPath == name2 or relPath == name2rel):
@@ -2524,7 +2526,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = c.currentPosition()
 
-        iconDir = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
+        iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
 
         paths = g.app.gui.runOpenFileDialog(
@@ -2551,7 +2553,7 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c
         if p is None: p = c.currentPosition()
 
-        iconDir = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
+        iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
 
         aList = [] ; xoffset = 2
@@ -2681,7 +2683,7 @@ class editCommandsClass (baseEditCommandsClass):
         if not s: return
 
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
-        d = g.scanDirectives(c) ; width = d.get('tabwidth')
+        d = c.scanAllDirectives() ; width = d.get('tabwidth')
         if ch == '\t' and width < 0: ch = ' ' * abs(width)
 
         self.beginCommand(undoType=undoType)
@@ -2727,7 +2729,7 @@ class editCommandsClass (baseEditCommandsClass):
         if wname.startswith('body'):
             self.beginCommand()
             try:
-                d = g.scanDirectives(c,p)
+                d = c.scanAllDirectives(p)
                 tab_width = d.get("tabwidth",c.tab_width)
                 changed = True
                 if i != j:
@@ -3105,11 +3107,11 @@ class editCommandsClass (baseEditCommandsClass):
 
         d = {}
         if ch in self.openBracketsList:
-            for z in xrange(len(self.openBracketsList)):
+            for z in range(len(self.openBracketsList)):
                 d [self.openBracketsList[z]] = self.closeBracketsList[z]
             reverse = False # Search forward
         else:
-            for z in xrange(len(self.openBracketsList)):
+            for z in range(len(self.openBracketsList)):
                 d [self.closeBracketsList[z]] = self.openBracketsList[z]
             reverse = True # Search backward
 
@@ -3135,7 +3137,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         # assert ch in ('(',')','[',']','{','}')
 
-        c = self.c ; d = g.scanDirectives(c,p)
+        c = self.c ; d = c.scanAllDirectives(p)
         i,j = oldSel
         language = d.get('language')
         s = w.getAllText()
@@ -3163,7 +3165,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051026171121.1:udpateAutoIndent
     def updateAutoIndent (self,p,w):
 
-        c = self.c ; d = g.scanDirectives(c,p)
+        c = self.c ; d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
         # Get the previous line.
         s = w.getAllText()
@@ -3202,7 +3204,7 @@ class editCommandsClass (baseEditCommandsClass):
     def updateTab (self,p,w):
 
         c = self.c
-        d = g.scanDirectives(c,p)
+        d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
         i,j = w.getSelectionRange()
             # Returns insert point if no selection, with i <= j.
@@ -3365,7 +3367,7 @@ class editCommandsClass (baseEditCommandsClass):
                     keeplines [n] = None
                 elif f:
                     keeplines.append(z)
-        except Exception, x:
+        except Exception:
             return
         if which == 'flush':
             keeplines = [x for x in keeplines if x != None]
@@ -3422,7 +3424,7 @@ class editCommandsClass (baseEditCommandsClass):
                 i2,j2 = g.getLine(s,spot)
                 line = s[i2:j2]
                 row,col = g.convertPythonIndexToRowCol(s,spot)
-                if True: #### j2 < len(s)-1:
+                if True: # was j2 < len(s)-1:
                     n = min(self.moveCol,max(0,len(line)-1))
                 else:
                     n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
@@ -4559,7 +4561,7 @@ class editCommandsClass (baseEditCommandsClass):
             junk,j = g.getLine(s,sel_2)
             txt = s[i:j]
             columns = [w.get('%s.%s' % (z,sint2),'%s.%s' % (z,sint4))
-                for z in xrange(sint1,sint3+1)]
+                for z in range(sint1,sint3+1)]
             aList = g.splitLines(txt)
             zlist = zip(columns,aList)
             zlist.sort()
@@ -4828,17 +4830,17 @@ class editFileCommandsClass (baseEditCommandsClass):
         '''Compute inserted, deleted, changed dictionaries.'''
 
         inserted = {}
-        for key in d2.keys():
+        for key in d2:
             if not d1.get(key):
                 inserted[key] = d2.get(key)
 
         deleted = {}
-        for key in d1.keys():
+        for key in d1:
             if not d2.get(key):
                 deleted[key] = d1.get(key)
 
         changed = {}
-        for key in d1.keys():
+        for key in d1:
             if d2.get(key):
                 p1 = d1.get(key)
                 p2 = d2.get(key)
@@ -4872,11 +4874,11 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         c = self.c # Always use the visible commander.
 
-        if d.keys():
+        if d:
             parent = parent.insertAsLastChild()
             c.setHeadString(parent,kind)
 
-            for key in d.keys():
+            for key in d:
                 p = d.get(key)
                 clone = p.clone()
                 clone.moveToLastChildOf(parent)
@@ -4925,9 +4927,12 @@ class editFileCommandsClass (baseEditCommandsClass):
             (changed, 'changed'),
         ):
             g.pr('\n',kind)
-            for key in d.keys():
+            for key in d:
                 p = d.get(key)
-                g.pr('%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii')))
+                if g.isPython3:
+                    g.pr('%-32s %s' % (key,p.headString()))
+                else:
+                    g.pr('%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii')))
     #@-node:ekr.20070921072608.1:dumpCompareNodes
     #@-node:ekr.20070920104110:compareLeoFiles
     #@+node:ekr.20050920084036.164:deleteFile
@@ -5175,10 +5180,8 @@ class helpCommandsClass (baseEditCommandsClass):
     def getBindingsForCommand(self,commandName):
 
         c = self.c ; k = c.k ; d = k.bindingsDict
-        keys = d.keys() ; keys.sort()
-
         data = [] ; n1 = 4 ; n2 = 20
-        for key in keys:
+        for key in sorted(d):
             bunchList = d.get(key,[])
             for b in bunchList:
                 if b.commandName == commandName:
@@ -5725,6 +5728,9 @@ class killBufferCommandsClass (baseEditCommandsClass):
             val = aList[i]
             self.index = i + 1
             return val
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20071003160252.2:next
         #@-others
 
@@ -6121,8 +6127,7 @@ class leoCommandsClass (baseEditCommandsClass):
         #@nl
 
         # Create a callback for each item in d.
-        keys = d.keys() ; keys.sort()
-        for name in keys:
+        for name in sorted(d):
             f = d.get(name)
             d2 [name] = f
             k.inverseCommandsDict [f.__name__] = name
@@ -6193,7 +6198,7 @@ class macroCommandsClass (baseEditCommandsClass):
         k = self.k ; c = k.c
 
         if aList is not None:
-            aList = c.commandsDict.keys()
+            aList = c.commandsDict
 
         pmatches = [item for item in aList if item.startswith(s)]
         pmatches.sort()
@@ -6227,7 +6232,7 @@ class macroCommandsClass (baseEditCommandsClass):
         '''Loads a macro file into the macros dictionary.'''
 
         k = self.k
-        macros = cPickle.load(f)
+        macros = pickle.load(f)
         for z in macros:
             k.addToDoAltX(z,macros[z])
     #@-node:ekr.20050920084036.197:_loadMacros
@@ -6262,7 +6267,7 @@ class macroCommandsClass (baseEditCommandsClass):
         if not fileName: return
 
         try:
-            f = file(fileName,'a+')
+            f = open(fileName,'a+')
             f.seek(0)
             if f:
                 self._saveMacros(f,macname)
@@ -6275,14 +6280,15 @@ class macroCommandsClass (baseEditCommandsClass):
 
         fname = f.name
         try:
-            macs = cPickle.load( f )
+            macs = pickle.load( f )
         except Exception:
             macs = {}
         f.close()
-        if self.namedMacros.has_key( name ):
+
+        if name in self.namedMacros:
             macs[ name ] = self.namedMacros[ name ]
-            f = file( fname, 'w' )
-            cPickle.dump( macs, f )
+            f = open( fname, 'w' )
+            pickle.dump( macs, f )
             f.close()
     #@-node:ekr.20050920084036.200:_saveMacros
     #@-node:ekr.20050920084036.199:saveMacros & helper
@@ -6347,7 +6353,7 @@ class macroCommandsClass (baseEditCommandsClass):
                 w.event_generate('<Key>',keycode=z[0],keysym=z[1])
             else:
                 meth = g.stripBrackets(z[0])
-                bunchList = k.bindingsDict.get(meth,[]) ### Probably should not strip < and >
+                bunchList = k.bindingsDict.get(meth,[]) # Probably should not strip < and >
                 if bunchList:
                     b = bunchList [0]
                     # ev = Tk.Event()
@@ -6370,7 +6376,7 @@ class macroCommandsClass (baseEditCommandsClass):
 
         k= self ; c = k.c
 
-        if c.commandsDict.has_key(name):
+        if name in c.commandsDict:
             return False
 
         def func (event,macro=macro):
@@ -6643,7 +6649,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         # Change the text.
         fill = ' ' *(r4-r2)
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             w.insert('%s.%s' % (r,r2),fill)
 
@@ -6662,12 +6668,12 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('close-rectangle')
 
         # Return if any part of the selection contains something other than whitespace.
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             s = w.get('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             if s.strip(): return
 
         # Change the text.
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
 
         i = '%s.%s' % (r1,r2)
@@ -6686,7 +6692,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         w,r1,r2,r3,r4 = self.beginCommand('delete-rectangle')
 
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
 
         i = '%s.%s' % (r1,r2)
@@ -6707,7 +6713,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         self.theKillRectangle = []
 
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             s = w.get('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             self.theKillRectangle.append(s)
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
@@ -6732,7 +6738,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('open-rectangle')
 
         fill = ' ' * (r4-r2)
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.insert('%s.%s' % (r,r2),fill)
 
         i = '%s.%s' % (r1,r2)
@@ -6764,7 +6770,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w = self.w
             self.beginCommand('string-rectangle')
             r1, r2, r3, r4 = self.stringRect
-            for r in xrange(r1,r3+1):
+            for r in range(r1,r3+1):
                 w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
                 w.insert('%s.%s' % (r,r2),k.arg)
             w.setSelectionRange('%d.%d' % (r1,r2),'%d.%d' % (r3,r2+len(k.arg)))
@@ -6791,7 +6797,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('yank-rectangle')
 
         n = 0
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             # g.trace(n,r,killRect[n])
             if n >= len(killRect): break
             w.delete('%s.%s' % (r,r2), '%s.%s' % (r,r4))
@@ -7361,6 +7367,7 @@ class minibufferFind (baseEditCommandsClass):
             k.resetLabel()
             k.showStateAndMode()
             self.generalSearchHelper(k.arg,cloneFindAll=True)
+            c.treeWantsFocus()
     #@-node:ekr.20060128080201:cloneFindAll
     #@+node:ekr.20060204120158:findAgain
     def findAgain (self,event):
@@ -8355,9 +8362,6 @@ class spellTabHandler (leoFind.leoFind):
     def change(self,event=None):
         """Make the selected change to the text"""
 
-        # __pychecker__ = '--no-override --no-argsused'
-             # event param is not used, required, and different from base class.
-
         c = self.c ; body = self.body ; w = body.bodyCtrl
 
         selection = self.tab.getSuggestion()
@@ -8410,7 +8414,6 @@ class spellTabHandler (leoFind.leoFind):
             # Restore the selection range.
             w.setSelectionRange(i,j,insert=ins)
             w.see(ins)
-            ### w.update() ###
         else:
             g.es("no more misspellings")
             self.tab.fillbox([])
@@ -8446,7 +8449,7 @@ class spellTabHandler (leoFind.leoFind):
                 #@-at
                 #@@c
 
-                if self.dictionary.has_key(word.lower()):
+                if word.lower() in self.dictionary:
                     continue
                 #@-node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
                 #@nl
@@ -8556,12 +8559,12 @@ class AspellClass:
 
         self.c = c
 
-        self.aspell_dir = g.os_path_abspath(c.config.getString('aspell_dir'))
-        self.aspell_bin_dir = g.os_path_abspath(c.config.getString('aspell_bin_dir'))
+        self.aspell_dir = c.os_path_finalize(c.config.getString('aspell_dir'))
+        self.aspell_bin_dir = c.os_path_finalize(c.config.getString('aspell_bin_dir'))
         self.diagnose = c.config.getBool('diagnose-aspell-installation')
 
         self.local_language_code = local_language_code or 'en'
-        self.local_dictionary_file = g.os_path_abspath(local_dictionary_file)
+        self.local_dictionary_file = c.os_path_finalize(local_dictionary_file)
         self.local_dictionary = "%s.wl" % os.path.splitext(self.local_dictionary_file) [0]
 
         # g.trace('code',self.local_language_code,'dict',self.local_dictionary_file)
@@ -8763,7 +8766,8 @@ class AspellClass:
             os.popen(cmd)
             return True
 
-        except Exception, err:
+        except Exception:
+            junk, err, junk = sys.exc_info()
             g.pr("unable to update local aspell dictionary:",err)
             return False
     #@-node:ekr.20051025071455.11:updateDictionary

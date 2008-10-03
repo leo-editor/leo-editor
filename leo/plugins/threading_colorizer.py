@@ -933,9 +933,12 @@ class colorizer:
         val = True ; self.killcolorFlag = False
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            no_color = theDict.has_key("nocolor")
-            color = theDict.has_key("color")
-            kill_color = theDict.has_key("killcolor")
+            ### no_color = theDict.has_key("nocolor")
+            no_color = 'nocolor' in theDict
+            ### color = theDict.has_key("color")
+            color = 'color' in theDict
+            ### kill_color = theDict.has_key("killcolor")
+            kill_color = 'killcolor' in theDict
             # A killcolor anywhere disables coloring.
             if kill_color:
                 val = False ; self.killcolorFlag = True ; break
@@ -998,14 +1001,14 @@ class colorizer:
         addList: a list of new tags to be added.
 
         '''
-        trace = self.trace and self.trace_tags
+        trace = False or self.trace and self.trace_tags
         verbose = self.verbose
         old_len = len(oldList) ; new_len = len(newList)
         addList = [] ; deleteList = []
 
         def report(kind,tag):
             i,j,name = tag
-            g.pr('computeNewTags: *** %-5s' % (kind),i,j,self.s[i:j])
+            g.pr('computeNewTags: *** %-5s %10s %3d %3d' % (kind,name,i,j),repr(self.s[i:j]))
 
         # Compare while both lists have remaining elements.
         old_n = 0 ; new_n = 0
@@ -1065,7 +1068,7 @@ class colorizer:
         if trace: g.trace('len(s)',len(self.s))
         lines = g.splitLines(self.s)
         lineIndices = [0]
-        for i in xrange(1,len(lines)+1): # Add one more line
+        for i in range(1,len(lines)+1): # Add one more line
             lineIndices.append(lineIndices[i-1] + len(lines[i-1]))
         def quickConvertRowColToPyhthonIndex(row,col):
             return lineIndices[min(len(lineIndices)-1,row)] + col
@@ -1359,7 +1362,7 @@ class colorizer:
     def tag (self,name,i,j):
 
         s = self.s ; w = self.w
-        # g.trace(name,i,j,repr(s[i:j]),g.callers())
+        # g.trace(name,i,j,repr(s[i:j])) # ,g.callers())
         x1,x2 = w.toGuiIndex(i,s=s), w.toGuiIndex(j,s=s)
         w.tag_add(name,x1,x2)
     #@-node:ekr.20071010193720.47:tag & index (threadingColorizer)
@@ -1406,6 +1409,8 @@ class colorizer:
 
         '''Add an item to the globalAddList if colorizing is enabled.'''
 
+        trace = False
+
         if self.killFlag:
             if self.trace and self.verbose: g.trace('*** killed',self.threadCount)
             return
@@ -1413,7 +1418,7 @@ class colorizer:
         if not self.flag: return
 
         if delegate:
-            # g.trace(delegate,i,j,g.callers())
+            if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             # Color everything at once, using the same indices as the caller.
@@ -1426,8 +1431,14 @@ class colorizer:
                         g.trace('Can not happen: delegate matcher returns None')
                     elif n > 0:
                         # if f.__name__ != 'match_blanks': g.trace(delegate,i,f.__name__)
+                        if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
                         i += n ; break
-                else: i += 1
+                else:
+                    # New in Leo 4.6: Use the default chars for everything else.
+                    aList = self.newTagsDict.get(tag,[])
+                    aList.append((i,i+1),)
+                    self.newTagsDict[tag] = aList
+                    i += 1
                 assert i > progress
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
@@ -1436,7 +1447,6 @@ class colorizer:
             aList = self.newTagsDict.get(tag,[])
             aList.append((i,j),)
             self.newTagsDict[tag] = aList
-    #@nonl
     #@-node:ekr.20071010193720.52:colorRangeWithTag (in helper thread)
     #@+node:ekr.20071010193720.54:fullColor (in helper thread)
     def fullColor (self,s):
@@ -1520,8 +1530,8 @@ class colorizer:
             return 0 # 7/5/2008
 
         if g.match(s,i,seq):
-            #j = g.skip_to_end_of_line(s,i)
-            j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            #j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            j = self.skip_line(s,i)
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
@@ -1545,8 +1555,8 @@ class colorizer:
 
         n = self.match_regexp_helper(s,i,regexp)
         if n > 0:
-            # j = g.skip_to_end_of_line(s,i)
-            j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            # j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            j = self.skip_line(s,i)
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
@@ -1905,6 +1915,24 @@ class colorizer:
         self.trace_match(kind2,s,j,k)
         return k - i
     #@-node:ekr.20080703111151.19:match_word_and_regexp
+    #@+node:ekr.20080929035109.1:skip_line
+    def skip_line (self,s,i):
+
+        if self.escape:
+            escape = self.escape + '\n'
+            n = len(escape)
+            while i < len(s):
+                j = g.skip_line(s,i)
+                if not g.match(s,j-n,escape):
+                    return j
+                # g.trace('escape',s[i:j])
+                i = j
+            return i
+        else:
+            return g.skip_line(s,i)
+                # Include the newline so we don't get a flash at the end of the line.
+    #@nonl
+    #@-node:ekr.20080929035109.1:skip_line
     #@-node:ekr.20071010193720.58:jEdit matchers (in helper thread)
     #@+node:ekr.20071010193720.57:target (in helper thread)
     def target(self,*args,**keys):
@@ -1981,10 +2009,12 @@ class colorizer:
             #@+node:ekr.20071010193720.75:<< Test for @comment or @language >>
             # @comment and @language may coexist in the same node.
 
-            if theDict.has_key("comment"):
+            ### if theDict.has_key("comment"):
+            if 'comment' in theDict:
                 self.comment_string = theDict["comment"]
 
-            if theDict.has_key("language"):
+            ### if theDict.has_key("language"):
+            if 'language' in theDict:
                 s = theDict["language"]
                 # tag = "@language"
                 # assert(g.match_word(s,i,tag))
@@ -1993,14 +2023,16 @@ class colorizer:
                 j = g.skip_c_id(s,i)
                 self.language = s[i:j].lower()
 
-            if theDict.has_key("comment") or theDict.has_key("language"):
+            ### if theDict.has_key("comment") or theDict.has_key("language"):
+            if 'comment' in theDict or 'language' in theDict:
                 break
             #@nonl
             #@-node:ekr.20071010193720.75:<< Test for @comment or @language >>
             #@nl
             #@        << Test for @root, @root-doc or @root-code >>
             #@+node:ekr.20071010193720.76:<< Test for @root, @root-doc or @root-code >>
-            if theDict.has_key("root") and not self.rootMode:
+            ### if theDict.has_key("root") and not self.rootMode:
+            if 'root' in theDict and not self.rootMode:
 
                 s = theDict["root"]
                 if g.match_word(s,0,"@root-code"):

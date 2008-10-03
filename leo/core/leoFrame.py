@@ -682,8 +682,6 @@ class leoBody:
 
     """The base class for the body pane in Leo windows."""
 
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
-
     #@    @+others
     #@+node:ekr.20031218072017.3657:leoBody.__init__
     def __init__ (self,frame,parentFrame):
@@ -929,7 +927,8 @@ class leoBody:
             for w in values:
                 if (
                     hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
-                    hasattr(w,'leo_p') and w.leo_p and w.leo_p.equal(p)):
+                    hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
+                ):
                     # g.trace('***',id(w),'match chapter and p',p.headString())
                     return w
 
@@ -1028,7 +1027,7 @@ class leoBody:
 
         # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
         c.frame.tree.expandAllAncestors(w.leo_p)
-        c.selectPosition(w.leo_p,updateBeadList=True) # Calls assignPositionToEditor.
+        c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
         c.redraw()
 
         c.recolor_now()
@@ -1068,7 +1067,7 @@ class leoBody:
         d = self.editorWidgets
         if len(d.keys()) < 2: return # There is only the main widget.
 
-        for key in d.keys():
+        for key in d:
             w = d.get(key)
             v = w.leo_v
             if v and v == p.v and w != c.frame.body.bodyCtrl:
@@ -1129,7 +1128,7 @@ class leoBody:
         d = self.editorWidgets
 
         # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
-        for key in d.keys():
+        for key in d:
             w2 = d.get(key)
             if w2 != w and w2.leo_active:
                 w2.leo_active = False
@@ -1419,8 +1418,6 @@ class leoFrame:
 
     """The base class for all Leo windows."""
 
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
-
     instances = 0
 
     #@    @+others
@@ -1466,11 +1463,14 @@ class leoFrame:
 
         # Icon bar convenience methods.    
         'addIconButton',
+        'addIconRow',
         'clearIconBar',
         'createIconBar',
         'getIconBar',
         'getIconBarObject',
+        'getNewIconFrame',
         'hideIconBar',
+        'showIconBar',
 
     )
     #@nonl
@@ -1629,32 +1629,25 @@ class leoFrame:
             else:
                 return True # Veto.
     #@-node:ekr.20031218072017.3692:promptForSave
-    #@+node:ekr.20031218072017.1375:scanForTabWidth
-    # Similar to code in scanAllDirectives.
-
+    #@+node:ekr.20031218072017.1375:frame.scanForTabWidth
     def scanForTabWidth (self,p):
 
         c = self.c ; w = c.tab_width
 
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            #@        << set w and break on @tabwidth >>
-            #@+node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
-            if theDict.has_key("tabwidth"):
-
-                val = g.scanAtTabwidthDirective(theDict,issue_error_flag=False)
-                if val and val != 0:
-                    w = val
-                    break
-            #@-node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
-            #@nl
-
-        c.frame.setTabWidth(w)
-    #@-node:ekr.20031218072017.1375:scanForTabWidth
+        aList = g.get_directives_dict_list(p)
+        w = g.scanAtTabwidthDirectives(aList)
+        c.frame.setTabWidth(w or c.tab_width)
+    #@-node:ekr.20031218072017.1375:frame.scanForTabWidth
     #@+node:ekr.20061119120006:Icon area convenience methods
     def addIconButton (self,*args,**keys):
         if self.iconBar: return self.iconBar.add(*args,**keys)
         else: return None
+
+    def addIconRow(self):
+        if self.iconBar: return self.iconBar.addRow()
+
+    def addIconWidget(self,w):
+        if self.iconBar: return self.iconBar.addWidget(w)
 
     def clearIconBar (self):
         if self.iconBar: self.iconBar.clear()
@@ -1671,9 +1664,16 @@ class leoFrame:
 
     getIconBarObject = getIconBar
 
+    def getNewIconFrame (self):
+        if not self.iconBar:
+            self.iconBar = self.iconBarClass(self.c,self.outerFrame)
+        return self.iconBar.getNewFrame()
+
     def hideIconBar (self):
         if self.iconBar: self.iconBar.hide()
-    #@nonl
+
+    def showIconBar (self):
+        if self.iconBar: self.iconBar.show()
     #@-node:ekr.20061119120006:Icon area convenience methods
     #@+node:ekr.20041223105114.1:Status line convenience methods
     def createStatusLine (self):
@@ -1900,10 +1900,7 @@ class leoFrame:
     #@+node:ekr.20031218072017.3683:Config...
     def resizePanesToRatio (self,ratio,secondary_ratio):    self.oops()
     def setInitialWindowGeometry (self):                    self.oops()
-
-    def setTopGeometry (self,w,h,x,y,adjustSize=True):
-        # __pychecker__ = '--no-argsused' # adjustSize used in derived classes.
-        self.oops()
+    def setTopGeometry (self,w,h,x,y,adjustSize=True):      self.oops()
     #@-node:ekr.20031218072017.3683:Config...
     #@+node:ekr.20031218072017.3681:Gui-dependent commands
     # In the Edit menu...
@@ -2003,8 +2000,6 @@ class leoFrame:
 class leoLog:
 
     """The base class for the log pane in Leo windows."""
-
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
 
     #@    @+others
     #@+node:ekr.20031218072017.3695: ctor (leoLog)
@@ -2108,7 +2103,7 @@ class leoLog:
             self.selectTab('Log')
         else:
             for d in (self.canvasDict,self.textDict,self.frameDict):
-                if tabName in d.keys():
+                if tabName in d:
                     del d[tabName]
             self.tabName = None
             self.selectTab('Log')
@@ -2118,8 +2113,6 @@ class leoLog:
     #@-node:ekr.20070302094848.5:deleteTab
     #@+node:ekr.20070302094848.6:hideTab
     def hideTab (self,tabName):
-
-        # __pychecker__ = '--no-argsused' # tabName
 
         self.selectTab('Log')
     #@-node:ekr.20070302094848.6:hideTab
@@ -2195,8 +2188,6 @@ class leoLog:
 class leoTree:
 
     """The base class for the outline pane in Leo windows."""
-
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
 
     #@    @+others
     #@+node:ekr.20031218072017.3705:  tree.__init__ (base class)
@@ -2629,7 +2620,7 @@ class leoTree:
     #@+node:ekr.20040803072955.128:leoTree.select & helper
     tree_select_lockout = False
 
-    def select (self,p,updateBeadList=True,scroll=True):
+    def select (self,p,scroll=True):
 
         '''Select a node.  Never redraws outline, but may change coloring of individual headlines.'''
 
@@ -2638,7 +2629,7 @@ class leoTree:
         try:
             val = 'break'
             self.tree_select_lockout = True
-            val = self.treeSelectHelper(p,updateBeadList,scroll)
+            val = self.treeSelectHelper(p,scroll)
         finally:
             self.tree_select_lockout = False
 
@@ -2646,7 +2637,7 @@ class leoTree:
     #@+node:ekr.20070423101911:treeSelectHelper
     #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
-    def treeSelectHelper (self,p,updateBeadList,scroll):
+    def treeSelectHelper (self,p,scroll):
 
         c = self.c ; frame = c.frame
         body = w = frame.body.bodyCtrl
@@ -2726,7 +2717,7 @@ class leoTree:
                             self.scrollTo(p)
                         self.canvas.after(100,scrollCallback)
                 except Exception: pass
-            c.nodeHistory.update(p,updateBeadList) # Remember this position.
+            c.nodeHistory.update(p) # Remember this position.
         c.setCurrentPosition(p)
         #@    << set the current node >>
         #@+node:ekr.20040803072955.133:<< set the current node >>
@@ -2817,8 +2808,6 @@ class leoTreeTab:
 #@-node:ekr.20070317073627:class leoTreeTab
 #@+node:ekr.20031218072017.2191:class nullBody (leoBody)
 class nullBody (leoBody):
-
-    # __pychecker__ = '--no-argsused' # null classes have many unused args.
 
     #@    @+others
     #@+node:ekr.20031218072017.2192: nullBody.__init__
@@ -2917,8 +2906,6 @@ class nullFrame (leoFrame):
 
     """A null frame class for tests and batch execution."""
 
-    # __pychecker__ = '--no-argsused' # null classes have many unused args.
-
     #@    @+others
     #@+node:ekr.20040327105706: ctor
     def __init__ (self,title,gui,useNullUndoer=False):
@@ -2977,8 +2964,6 @@ class nullFrame (leoFrame):
     def setMinibufferBindings(self):                        pass
     #@+node:ekr.20041130065718.1:setTopGeometry
     def setTopGeometry (self,w,h,x,y,adjustSize=True):
-
-        # __pychecker__ = '--no-argsused' # adjustSize used in derived classes.
 
         self.w = w
         self.h = h
@@ -3080,6 +3065,12 @@ class nullIconBarClass:
         return b
     #@-node:ekr.20070301164543.2:add
     #@+node:ekr.20070301165343:do nothing
+    def addRow(self,height=None):
+        pass
+
+    def addWidget (self,w):
+        pass
+
     def clear(self):
         g.app.iconWidgetCount = 0
         g.app.iconImageRefs = []
@@ -3088,6 +3079,9 @@ class nullIconBarClass:
         pass
 
     def getFrame (self):
+        return None
+
+    def getNewFrame (self):
         return None
 
     def pack (self):
@@ -3106,8 +3100,6 @@ class nullIconBarClass:
 #@-node:ekr.20070301164543:class nullIconBarClass
 #@+node:ekr.20031218072017.2232:class nullLog
 class nullLog (leoLog):
-
-    # __pychecker__ = '--no-argsused' # null classes have many unused args.
 
     #@    @+others
     #@+node:ekr.20070302095500:Birth
@@ -3227,8 +3219,6 @@ class nullStatusLineClass:
 #@+node:ekr.20031218072017.2233:class nullTree
 class nullTree (leoTree):
 
-    # __pychecker__ = '--no-argsused' # null classes have many unused args.
-
     #@    @+others
     #@+node:ekr.20031218072017.2234: nullTree.__init__
     def __init__ (self,frame):
@@ -3250,15 +3240,15 @@ class nullTree (leoTree):
     def printWidgets(self):
 
         d = self.editWidgetsDict
-        keys = d.keys()
-        for key in keys:
+
+        for key in d:
             # keys are tnodes, values are stringTextWidgets.
             w = d.get(key)
             g.pr('w',w,'t._headString:',key.headString,'s:',repr(w.s))
 
     #@-node:ekr.20070228173611:printWidgets
     #@+node:ekr.20031218072017.2236:Overrides
-    def select (self,p,updateBeadList=True,scroll=True):
+    def select (self,p,scroll=True):
         pass
     #@nonl
     #@+node:ekr.20070228163350:Colors & fonts

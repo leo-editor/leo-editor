@@ -6,7 +6,7 @@
 #@@tabwidth -4
 
 __plugin_name__ = "Node Navigator"
-__version__ = "0.14"
+__version__ = "0.15"
 
 #@<< version history >>
 #@+node:ekr.20040908093511.2:<< version history >>
@@ -35,7 +35,8 @@ __version__ = "0.14"
 # 0.11 EKR: Disabled setting __name__ so that an entry is created for 
 # nodenavigator in the Plugins menu.
 # 0.13 EKR: set __plugin_name__ rather than __name__.
-# 0.14 EKR: use c.nodeHistory.visitedPositions rather than c.visitedList.
+# 0.14 EKR: use c.nodeHistory.visitedPositions.
+# 0.15 EKR: added guards for c.nodeHistory.
 #@-at
 #@nonl
 #@-node:ekr.20040908093511.2:<< version history >>
@@ -248,6 +249,7 @@ class Navigator:
 
         c = keywords.get("c")
         if c != self.c: return
+        if not c.nodeHistory: return
 
         # Clear old recent menu
         menu = self.recentMenus.get(c)

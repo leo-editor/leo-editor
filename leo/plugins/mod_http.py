@@ -42,8 +42,6 @@ __version__ = "0.99"
 # If it does not, non-ascii characters will look very strange.
 browser_encoding = 'utf-8' # A hack.  Can we query the browser for this?
 
-__pychecker__ = '--no-errors' # Suppress all pychecker errors.
-
 #@<< imports >>
 #@+node:EKR.20040517080250.3:<< imports >>
 import leo.core.leoGlobals as g

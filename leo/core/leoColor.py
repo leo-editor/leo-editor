@@ -1966,10 +1966,6 @@ class colorizer:
 
         """Color the body pane either incrementally or non-incrementally"""
 
-        # __pychecker__ = 'maxlines=500'
-
-        # g.trace(p and p.headString())
-
         c = self.c ; w = c.frame.body.bodyCtrl
 
         if not c.config.getBool('use_syntax_coloring'):
@@ -2001,7 +1997,7 @@ class colorizer:
 
             if not self.incremental:
                 self.removeAllTags()
-                ### self.removeAllImages()
+                # self.removeAllImages()
 
             #@<< configure fonts >>
             #@+node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
@@ -2016,7 +2012,7 @@ class colorizer:
 
             # Configure fonts.
             w = c.frame.body.bodyCtrl
-            keys = default_font_dict.keys() ; keys.sort()
+            keys = sorted(default_font_dict)
             for key in keys:
                 option_name = default_font_dict[key]
                 # First, look for the language-specific setting, then the general setting.
@@ -2053,7 +2049,7 @@ class colorizer:
             #@+node:ekr.20031218072017.1603:<< configure tags >>
             # g.trace('configure tags',self.c.frame.body.bodyCtrl)
 
-            for name in default_colors_dict.keys(): # Python 2.1 support.
+            for name in default_colors_dict:
                 option_name,default_color = default_colors_dict[name]
                 option_color = c.config.getColor(option_name)
                 color = g.choose(option_color,option_color,default_color)
@@ -2178,7 +2174,7 @@ class colorizer:
 
             self.hyperCount = 0 # Number of hypertext tags
             self.count += 1
-            lines = string.split(self.allBodyText,'\n')
+            lines = self.allBodyText.split('\n')
             #@nonl
             #@-node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
             #@nl
@@ -2651,10 +2647,7 @@ class colorizer:
     #@+node:ekr.20031218072017.1896:doNormalState
     def doNormalState (self,s,i):
 
-        # __pychecker__ = 'maxlines=500'
-
         ch = s[i] ; state = "normal"
-        assert(type(ch)==type(u""))
 
         if ch in string.ascii_letters or ch == '_' or (
             (ch == '\\' and self.language=="latex") or
@@ -3078,58 +3071,41 @@ class colorizer:
 
         self.image_references = []
     #@-node:ekr.20031218072017.1944:removeAllImages (leoColor)
-    #@+node:ekr.20031218072017.1377:scanColorDirectives (leoColor)
+    #@+node:ekr.20080828103146.8:scanColorDirectives
     def scanColorDirectives(self,p):
 
-        """Scan position p and p's ancestors looking for @comment, @language and @root directives,
-        setting corresponding colorizer ivars.
-        """
+        '''Scan position p and p's ancestors looking for @comment, @language and @root directives,
+        setting corresponding colorizer ivars.'''
 
-        p = p.copy() ; c = self.c
-        if c == None: return # self.c may be None for testing.
+        c = self.c
+        if not c: return # May be None for testing.
 
-        if c.target_language:
-            c.target_language = c.target_language.lower()
-        self.language = language = c.target_language
-        self.comment_string = None
-        self.rootMode = None # None, "code" or "doc"
+        table = (
+            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+            ('root',        c.scanAtRootDirectives),
+        )
 
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            #@        << Test for @comment or @language >>
-            #@+node:ekr.20031218072017.1378:<< Test for @comment or @language >>
-            # @comment and @language may coexist in the same node.
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,func in table:
+            val = func(aList)
+            if val: d[key]=val
 
-            if theDict.has_key("comment"):
-                self.comment_string = theDict["comment"]
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        self.rootMode   = d.get('root') or None
 
-            if theDict.has_key("language"):
-                z = theDict["language"]
-                language,junk,junk,junk = g.set_language(z,0)
-                self.language = language
-
-            if theDict.has_key("comment") or theDict.has_key("language"):
-                break
-            #@-node:ekr.20031218072017.1378:<< Test for @comment or @language >>
-            #@nl
-            #@        << Test for @root, @root-doc or @root-code >>
-            #@+node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-            if theDict.has_key("root") and not self.rootMode:
-
-                root = theDict["root"]
-                if g.match_word(root,0,"@root-code"):
-                    self.rootMode = "code"
-                elif g.match_word(root,0,"@root-doc"):
-                    self.rootMode = "doc"
-                else:
-                    doc = c.config.at_root_bodies_start_in_doc_mode
-                    self.rootMode = g.choose(doc,"doc","code")
-            #@-node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-            #@nl
+        if lang_dict:
+            self.language       = lang_dict.get('language')
+            self.comment_string = lang_dict.get('comment')
+        else:
+            self.language       = c.target_language and c.target_language.lower()
+            self.comment_string = None
 
         # g.trace('self.language',self.language)
         return self.language # For use by external routines.
-    #@-node:ekr.20031218072017.1377:scanColorDirectives (leoColor)
+    #@-node:ekr.20080828103146.8:scanColorDirectives
     #@+node:ekr.20041217041016:setFontFromConfig (colorizer)
     def setFontFromConfig (self):
 
@@ -3180,9 +3156,9 @@ class colorizer:
         self.killFlag = False
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            no_color = theDict.has_key("nocolor")
-            color = theDict.has_key("color")
-            kill_color = theDict.has_key("killcolor")
+            no_color = 'nocolor' in theDict
+            color = 'color' in theDict
+            kill_color = 'killcolor' in theDict
             # A killcolor anywhere disables coloring.
             if kill_color:
                 self.killFlag = True
@@ -3238,7 +3214,10 @@ class colorizer:
     def skip_id(self,s,i,chars=None):
 
         n = len(s)
-        chars = chars and g.toUnicode(chars,encoding='ascii') or u''
+
+        if not g.isPython3:
+            chars = chars and g.toUnicode(chars,encoding='ascii') or unicode('')
+
         while i < n and (g.isWordChar(s[i]) or s[i] in chars):
                 i += 1
         return i

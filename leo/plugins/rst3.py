@@ -47,7 +47,7 @@ bwm_file = None
 if 0:
     bwm_file = open("bwm_file", "w")
 
-__version__ = '1.22'
+__version__ = '1.23'
 
 #@<< imports >>
 #@+node:ekr.20050805162550.2:<< imports >>
@@ -106,6 +106,7 @@ except ImportError:
 # 1.20 EKR: Registers the write-restructured-text command.
 # 1.21 EKR: Added rst3-publish-argv-for-missing-stylesheets setting.
 # 1.22 EKR: Fixed bug that caused the plugin not to find default.css.
+# 1.23 EKR: Use g.makeAllNonExistentDirectories instead of os.mkdir.
 #@-at
 #@nonl
 #@-node:ekr.20050805162550.3:<< change log >>
@@ -820,7 +821,8 @@ class rstClass:
     def initCodeBlockString(self,p):
 
         # New in Leo 4.4.4: do this here, not in initWrite:
-        d = g.scanDirectives(c=self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         language = d.get('language')
         if language is None: language = 'python'
         else: language = language.lower()
@@ -1118,7 +1120,8 @@ class rstClass:
 
         # Set the encoding from any parent @encoding directive.
         # This can be overridden by @rst-option encoding=whatever.
-        d = g.scanDirectives(c=self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         self.encoding = encoding or d.get('encoding') or self.defaultEncoding
 
     #@-node:ekr.20050809075309:initWrite
@@ -1136,10 +1139,11 @@ class rstClass:
         if not toString:
             # Comput the output file name *after* calling writeTree.
             self.outputFileName = self.computeOutputFileName(self.outputFileName)
-            self.outputFile = file(self.outputFileName,'w')
+            self.outputFile = open(self.outputFileName,'w')
             self.outputFile.write(self.stringOutput)
             self.outputFile.close()
-    #@nonl
+
+        return True
     #@-node:ekr.20050809080925:writeNormalTree
     #@+node:ekr.20051121102358:processTopTree
     def processTopTree (self,p,justOneFile=False):
@@ -1183,12 +1187,12 @@ class rstClass:
                     if self.ext in ('.htm','.html','.tex','.pdf'):
                         ok = self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
                     else:
-                        self.writeNormalTree(p,toString=toString)
+                        ok = self.writeNormalTree(p,toString=toString)
                     self.scanAllOptions(p) # Restore the top-level verbose setting.
                     if toString:
                         return p.copy(),self.stringOutput
                     else:
-                        self.report(self.outputFileName)
+                        if ok: self.report(self.outputFileName)
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
@@ -1200,6 +1204,7 @@ class rstClass:
     #@+node:ekr.20050805162550.21:writeSpecialTree
     def writeSpecialTree (self,p,toString,justOneFile):
 
+        c = self.c
         isHtml = self.ext in ('.html','.htm')
         if isHtml and not SilverCity:
             if not self.silverCityWarningGiven:
@@ -1217,13 +1222,20 @@ class rstClass:
             self.outputFileName = self.computeOutputFileName(self.outputFileName)
 
             # Create the directory if it doesn't exist.
-            dir, junk = g.os_path_split(self.outputFileName)
-            if not os.access(dir,os.F_OK):
-                os.mkdir(dir)
+            theDir, junk = g.os_path_split(self.outputFileName)
+            theDir = c.os_path_finalize(theDir)
+            if not g.os_path_exists(theDir):
+                ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+                if not ok:
+                    g.es_print('did not create:',theDir,color='red')
+                    return False
+
+            # if not os.access(theDir,os.F_OK):
+                # os.mkdir(theDir)
 
             if self.getOption('write_intermediate_file'):
                 name = self.outputFileName + '.txt'
-                f = file(name,'w')
+                f = open(name,'w')
                 f.write(self.source)
                 f.close()
                 self.report(name)
@@ -1255,13 +1267,12 @@ class rstClass:
                 self.stringOutput = output
             else:
                 # Write the file to the directory containing the .leo file.
-                f = file(self.outputFileName,'w')
+                f = open(self.outputFileName,'w')
                 f.write(output)
                 f.close()
                 self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
 
         return ok
-    #@nonl
     #@-node:ekr.20050805162550.21:writeSpecialTree
     #@+node:ekr.20050809082854.1:writeToDocutils (sets argv)
     def writeToDocutils (self,s):
@@ -1303,20 +1314,11 @@ class rstClass:
         rel_stylesheet_path = self.getOption('stylesheet_path') or ''
 
         # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
-        stylesheet_path = g.os_path_abspath(g.os_path_join(
-            self.c.frame.openDirectory,rel_stylesheet_path))
+        stylesheet_path = g.os_path_finalize_join(
+            self.c.frame.openDirectory,rel_stylesheet_path)
 
-        path = g.os_path_abspath(g.os_path_join(
-            stylesheet_path,self.getOption('stylesheet_name')))
-
-        # stylesheet_path = g.os_path_abspath(rel_stylesheet_path)
-
-        # # Allow relative paths.
-        # path = g.os_path_abspath(g.os_path_join(
-            # stylesheet_path,self.getOption('stylesheet_name')))
-
-        # g.trace('stylesheet_path',stylesheet_path)
-        # g.trace('path',path)
+        path = g.os_path_finalize_join(
+            stylesheet_path,self.getOption('stylesheet_name'))
 
         if g.os_path_exists(path):
             if self.ext == '.pdf':
@@ -1813,16 +1815,16 @@ class rstClass:
         default_path = self.getOption('default_path')
 
         if default_path:
-            default_path = g.os_path_abspath(default_path)
+            default_path = g.os_path_finalize(default_path)
 
         # g.trace('default_path',default_path,'fileName',fileName)
 
         if default_path:
-            path = g.os_path_join(default_path,fileName)
+            path = g.os_path_finalize_join(default_path,fileName)
         elif openDirectory:
-            path = g.os_path_join(openDirectory,fileName)
+            path = g.os_path_finalize_join(openDirectory,fileName)
         else:
-            path = fileName
+            path = g.os_path_finalize(fileName)
 
         # g.trace('path',path)
 
@@ -1840,7 +1842,7 @@ class rstClass:
 
         if self.getOption('verbose'):
 
-            name = g.os_path_abspath(name)
+            name = g.os_path_finalize(name)
 
             g.es_print('wrote: %s' % (name),color="blue")
     #@nonl
@@ -1919,7 +1921,7 @@ class rstClass:
     #@+node:ekr.20050805162550.36:set_initial_http_attributes
     def set_initial_http_attributes (self,filename):
 
-        f = file(filename)
+        f = open(filename)
         parser = htmlParserClass(self)
 
         for line in f.readlines():

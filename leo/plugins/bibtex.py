@@ -240,7 +240,7 @@ def writeTreeAsBibTex(bibFile, vnode, c):
     """Write the tree under vnode to the file bibFile"""
 
     # body text of @bibtex node is ignored
-    dict = g.scanDirectives(c,p=vnode)
+    dict = c.scanAllDirectives(p=vnode)
     encoding = dict.get("encoding",None)
     if encoding == None:
         encoding = g.app.config.default_derived_file_encoding

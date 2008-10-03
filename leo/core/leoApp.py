@@ -296,7 +296,6 @@ class LeoApp:
     def createTkGui (self,fileName=None):
 
         # Do NOT omit fileName param: it is used in plugin code.
-        # __pychecker__ = '--no-argsused'
 
         """A convenience routines for plugins to create the default Tk gui class."""
 
@@ -484,7 +483,7 @@ class LeoApp:
 
         if hasattr(sys,nonConstantAttr):
             g.app.leoID = getattr(sys,nonConstantAttr)
-            if verbose and not g.app.unitTesting:
+            if verbose and not g.app.silentMode and not g.app.unitTesting:
                 g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
             # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
             g.app.leoID = g.app.leoID.replace('.','-')
@@ -507,7 +506,7 @@ class LeoApp:
                         g.app.leoID = s.strip()
                         # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
                         g.app.leoID = g.app.leoID.replace('.','-')
-                        if verbose and not g.app.unitTesting:
+                        if verbose and not g.app.silentMode and not g.app.unitTesting:
                             g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
                         return
                     elif verbose and not g.app.unitTesting:

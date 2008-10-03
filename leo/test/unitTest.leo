@@ -893,7 +893,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -1910,18 +1910,47 @@
 <v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
 <v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
 <v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
-<v t="ekr.20071113090055.3"><vh>@test g.scanDirectives</vh></v>
-<v t="ekr.20080323161613.10"><vh>@test g.scanAtLineendingDirective crlf</vh></v>
-<v t="ekr.20080323161613.11"><vh>@test g.scanAtLineendingDirective cr</vh></v>
-<v t="ekr.20080323161613.12"><vh>@test g.scanAtLineendingDirective lf</vh></v>
-<v t="ekr.20080323161613.13"><vh>@test g.scanAtLineendingDirective nl</vh></v>
-<v t="ekr.20080323161613.14"><vh>@test g.scanAtLineendingDirective platform</vh></v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
 <v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
 <v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
 <v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
+<v t="ekr.20080917151620.8"><vh>Directives, new</vh>
+<v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20080917151620.10"><vh>@test c.scanAtRootDirectives root-code</vh></v>
+<v t="ekr.20080917151620.11"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
+<v t="ekr.20080917151620.12"><vh>@test g.get_directives_dict</vh></v>
+<v t="ekr.20080917151620.13"><vh>@test g.scanAtHeaderDirectives header</vh></v>
+<v t="ekr.20080917151620.14"><vh>@test g.scanAtHeaderDirectives noheader</vh></v>
+<v t="ekr.20080917151620.15"><vh>@test g.scanAtLineendingDirectives cr</vh></v>
+<v t="ekr.20080917151620.16"><vh>@test g.scanAtLineendingDirectives crlf</vh></v>
+<v t="ekr.20080917151620.17"><vh>@test g.scanAtLineendingDirectives lf</vh></v>
+<v t="ekr.20080917151620.18"><vh>@test g.scanAtLineendingDirectives nl</vh></v>
+<v t="ekr.20080917151620.19"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
+<v t="ekr.20080917151620.20"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
+<v t="ekr.20080917151620.21"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
+<v t="ekr.20080917151620.22"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py</vh>
+<v t="ekr.20080917151620.23" tnodeList="ekr.20080917151620.23"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
+</v>
+<v t="ekr.20080917151620.24"><vh>@test g.scanAtPathDirectives @path ../test/unittest @file at-path-test2.py</vh>
+<v t="ekr.20080917151620.25"><vh>@path ../test/unittest</vh>
+<v t="ekr.20080917151620.26" tnodeList="ekr.20080917151620.26"><vh>@file at-path-test2.py</vh></v>
+</v>
+</v>
+<v t="ekr.20080917151620.27"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
+<v t="ekr.20080917151620.28"><vh>@path ../test</vh>
+<v t="ekr.20080917151620.29"><vh>@path unittest</vh>
+<v t="ekr.20080917151620.30" tnodeList="ekr.20080917151620.30"><vh>@file at-path-test3.py</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080917151620.31"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
+<v t="ekr.20080917151620.32"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
+<v t="ekr.20080917151620.33"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
+<v t="ekr.20080917151620.34"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
+<v t="ekr.20080917151620.35"><vh>@test g.scanAtWrapDirectives wrap</vh></v>
+</v>
 <v t="ekr.20071113202153.2" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194258"><vh>leoGui</vh>
@@ -2066,7 +2095,7 @@
 <v t="ekr.20060203181203.2"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20071113202410" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
@@ -2125,7 +2154,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2158,6 +2187,13 @@
 <v t="ekr.20040712101754.179"><vh>moreHead</vh></v>
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
+</v>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
+<v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
+<v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
+<v t="ekr.20081001094920.6"><vh>@test section node</vh></v>
+<v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 <v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
@@ -2483,9 +2519,6 @@
 </v>
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20080824191108.1"><vh>runLeo</vh>
-<v t="ekr.20080824191108.2"><vh>@test isValidPython</vh></v>
 </v>
 </v>
 </v>
@@ -4377,7 +4410,10 @@ test_file  = g.os_path_join(test_path,"createdFile.txt")
 
 # Execute this command: python leo.py -script test\unittest\batchTest.py
 
-command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
+if 1:
+    command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
+else:
+    command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
 
 @others
 
@@ -4463,12 +4499,17 @@ if 0: # subtree of root node:
 if 0: # child1's tree.  child2 should not be included.
     for v in child.vnodes_iter(): g.pr(v)
     for t in child.tnodes_iter(): g.pr(t)</t>
-<t tx="ekr.20040712101754.199">assert(p == p.copy())
+<t tx="ekr.20040712101754.199">copy = p.copy()
+assert(p == copy)
 assert(p != p.threadNext())
 
 root = c.rootPosition()
-assert p.equal(p.copy()) is True
-assert p.equal(root) is False</t>
+# assert p.equal(p.copy()) is True
+# assert p.equal(root) is False
+assert p.__eq__(copy) is True
+assert p.__ne__(copy) is False
+assert p.__eq__(root) is False
+assert p.__ne__(root) is True</t>
 <t tx="ekr.20040712101754.200">for p in c.allNodes_iter():
     if p.isCloned() and p.hasChildren():
         childv = p.firstChild().v
@@ -5027,7 +5068,7 @@ leoTest.runLeoTest(c,path,verbose=False,full=True)
 import leoTest
 
 leoTest.doTests(c,all=False)
-c.selectPosition(p,updateBeadList=False)</t>
+c.selectPosition(p)</t>
 <t tx="ekr.20041001211817"></t>
 <t tx="ekr.20041012084201">def removeFile(path,verbose):
 
@@ -13805,12 +13846,14 @@ child2 = child.next()
 result = str(child2.bodyString())
 at.write(child,nosentinels=False,thinFile=False,scriptWrite=False,toString=True)
 s = str(at.stringOutput)
-assert s == result
-# if s != result:
-    # g.pr('-' * 30)
-    # g.pr(repr(s))
-    # g.pr(repr(result))
-    # assert False</t>
+
+if s != result:
+    print('-' * 30)
+    print(s)
+    print('-' * 30)
+    print(result)
+    
+assert s == result</t>
 <t tx="ekr.20060602195313.2">@language c
 #ifdef COMMENT
 @comment /* */ 
@@ -16412,11 +16455,15 @@ if not g.os_path_exists(s):
 </t>
 <t tx="ekr.20070114140212">@
 
-Important.
+Important warnings:
+    
+1. Do not run tests from this file after opening unitTest.leo from another .leo
+   file. The unit tests in this file open and close many .leo files and many
+   strange things can happen if you have opened this file from another file.
 
-Some unit tests may fail if you do select other windows or other applications
-while running these tests. Therefore, you should leave your computer completely
-alone while running these unit tests.
+2. Some unit tests may fail if you do select other windows or other applications
+   while running these tests. Therefore, you should leave your computer
+   completely alone while running these unit tests.
 </t>
 <t tx="ekr.20070131162935">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
@@ -17970,7 +18017,10 @@ A
 d = c.tangleCommands.scanAllDirectives(
     p,require_path_flag=False,issue_error_flag=False)
 
+assert d.get('encoding') == 'utf-8'
 assert d.get('language') == 'python'
+assert d.get('pagewidth') == 80
+assert d.get('path') == g.os_path_finalize_join(g.app.loadDir,'..','test')
 assert d.get('tabwidth') == -4
 </t>
 <t tx="ekr.20071113090055.2"># This will work regardless of where this method is.
@@ -17979,23 +18029,6 @@ assert d.get('tabwidth') == -4
 # print 'c.frame.body.colorizer',c.frame.body.colorizer
 language = c.frame.body.colorizer.scanColorDirectives(p)
 assert language == 'python','got:%s' % language
-</t>
-<t tx="ekr.20071113090055.3"># This will work regardless of where this method is.
-@language python
-@tabwidth -4
-@pagewidth 72
-@encoding utf-8
-@comment a b c
-# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
-
-d = g.scanDirectives(c,p)
-
-assert d.get('language') == 'python'
-assert d.get('tabwidth') == -4
-assert d.get('pagewidth') == 72
-assert d.get('encoding') == 'utf-8'
-assert d.get('delims') == ('a','b','c',)
-# assert d.get('path').endswith('xyzzy')
 </t>
 <t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
 @language python
@@ -18318,7 +18351,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 
     # assert ch in ('(',')','[',']','{','}')
 
-    c = self.c ; d = g.scanDirectives(c,p)
+    c = self.c ; d = c.scanAllDirectives(p)
     i,j = oldSel
     language = d.get('language')
     s = w.getAllText()
@@ -18345,7 +18378,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 </t>
 <t tx="ekr.20071113143523.13">def updateAutoIndent (self,p,w):
 
-    c = self.c ; d = g.scanDirectives(c,p)
+    c = self.c ; d = c.scanAllDirectives(p)
     tab_width = d.get("tabwidth",c.tab_width)
     # Get the previous line.
     s = w.getAllText()
@@ -18383,7 +18416,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 <t tx="ekr.20071113143523.14">def updateTab (self,p,w):
 
     c = self.c
-    d = g.scanDirectives(c,p)
+    d = c.scanAllDirectives(p)
     tab_width = d.get("tabwidth",c.tab_width)
     i,j = w.getSelectionRange()
         # Returns insert point if no selection, with i &lt;= j.
@@ -20142,46 +20175,6 @@ c.importCommands.pascalUnitTest(p,s=s,showTree=False)</t>
 assert(gnx not in (None,'None'))
 assert(len(gnx) &gt; 1)</t>
 <t tx="ekr.20080312090030.1"></t>
-<t tx="ekr.20080323161613.10"># This will work regardless of where this method is.
-@lineending crlf
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\r\n'
-</t>
-<t tx="ekr.20080323161613.11"># This will work regardless of where this method is.
-@lineending cr
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\r'
-</t>
-<t tx="ekr.20080323161613.12"># This will work regardless of where this method is.
-@lineending lf
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\n'
-</t>
-<t tx="ekr.20080323161613.13"># This will work regardless of where this method is.
-@lineending nl
-
-d = g.scanDirectives(c,p)
-
-assert d.get('lineending') == '\n'
-</t>
-<t tx="ekr.20080323161613.14"># This will work regardless of where this method is.
-@lineending platform
-
-d = g.scanDirectives(c,p)
-
-import sys
-
-if sys.platform.startswith('win'):
-    assert d.get('lineending') == '\r\n'
-else:
-    assert d.get('lineending') == '\n'
-</t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.</t>
@@ -20296,7 +20289,7 @@ grandChild = child.insertAsNthChild(0)
 grandChild.setHeadString('grand child')
 
 try:
-    c.selectPosition(child, updateBeadList=False)
+    c.selectPosition(child)
     c.copyOutline()
     oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
     c.currentPosition().contract() # Essential
@@ -21259,7 +21252,7 @@ if g.os_path_exists(shadow_dir):
             os.unlink(z)
     os.rmdir(shadow_dir)
     assert not os.path.exists(shadow_dir)
-    g.es_print('deleted directory',shadow_dir,color='red')
+    # g.es_print('deleted directory',shadow_dir,color='red')
 </t>
 <t tx="ekr.20080804100908.1">@others</t>
 <t tx="ekr.20080804100908.2">node 1 line 1
@@ -21548,9 +21541,6 @@ x.show_error(
 pass
 pass
 </t>
-<t tx="ekr.20080824191108.1"></t>
-<t tx="ekr.20080824191108.2">import leo.core.runLeo as runLeo
-assert runLeo.isValidPython()</t>
 <t tx="ekr.20080901083414.1">s = '''\
 
 def foo():
@@ -21661,8 +21651,8 @@ assert n == 2,n
 if 0:
     print ('root:%s, n:%s, len(lines): %s' % (
         root and root.headString(),n,len(lines)))</t>
-<t tx="ekr.20080904120258.2">c.goto_showResults(found=True,p=p,n=3,lines=3)</t>
-<t tx="ekr.20080904120258.3">c.goto_showResults(found=False,p=p,n=3,lines=['a','b'])
+<t tx="ekr.20080904120258.2">c.goto_showResults(found=True,p=p,n=3,n2=3,lines=3)</t>
+<t tx="ekr.20080904120258.3">c.goto_showResults(found=False,p=p,n=3,n2=3,lines=['a','b'])
 </t>
 <t tx="ekr.20080904120258.4"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -21690,10 +21680,10 @@ assert p == target,'\np:     %s\ntarget:%s' % (p,target)
 <t tx="ekr.20080904120258.6">root = p.parent().parent()
 h = '@file unittest/at-file-line-number-test.py'
 target = g.findNodeInTree(c,root,h)
-assert target
+assert target,'no target'
 
 gnx = g.app.nodeIndices.toString(target.v.t.fileIndex)
-assert gnx
+assert gnx,'no gnx'
 
 p,found = c.goto_findGnx(root,gnx,h)
 assert found,found
@@ -21721,7 +21711,7 @@ assert p == target,'\np:     %s\ntarget:%s' % (p,target)
 <t tx="ekr.20080905130723.1">root = p.parent().parent()
 h = '@file unittest/at-file-line-number-test.py'
 target = g.findNodeInTree(c,root,h)
-assert target
+assert target,target
 
 n = 2
 fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p=target)
@@ -21731,7 +21721,7 @@ assert root == target
 
 vnodeName,gnx,offset,delim = c.goto_findVnode (root,lines,n,ignoreSentinels)
 
-assert lines
+assert lines,'no lines'
 assert not gnx,repr(gnx)
 assert offset is not None,repr(offset)
 assert vnodeName,repr(vnodeName)
@@ -21810,5 +21800,274 @@ assert root == root1
 if 0:
     print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
         root and root.headString(),isRaw,n,len(lines)))</t>
+<t tx="ekr.20080917151620.8"></t>
+<t tx="ekr.20080917151620.9">@language python
+@comment a b c
+    # @comment must follow @language
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@lineending crlf
+
+d = c.scanAllDirectives(p)
+# print g.dictToString(d)
+
+table = (
+    ('delims', ('a','b','c'),),
+    ('encoding','utf-8'),
+    ('language','python'),
+    ('lineending','\r\n'),
+    ('pagewidth',72),
+    ('tabwidth',-4),
+)
+
+for kind,expected in table:
+    got = d.get(kind)
+    assert got == expected, 'kind: %s, expected %s, got %s' % (
+        kind,repr(expected),repr(got))
+</t>
+<t tx="ekr.20080917151620.10">@root-code
+
+aList = g.get_directives_dict_list(p)
+s = c.scanAtRootDirectives(aList)
+
+assert s == 'code',repr(s)</t>
+<t tx="ekr.20080917151620.11">@root-doc
+
+aList = g.get_directives_dict_list(p)
+s = c.scanAtRootDirectives(aList)
+
+assert s == 'doc',repr(s)</t>
+<t tx="ekr.20080917151620.12">@language python
+@comment a b c
+    # @comment must follow @language.
+@tabwidth -8
+@pagewidth 72
+@encoding utf-8
+
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+
+d = g.get_directives_dict(p)
+
+assert d.get('_p') == p
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == '-8'
+assert d.get('pagewidth') == '72'
+assert d.get('encoding') == 'utf-8'
+assert d.get('comment') == 'a b c'
+# assert d.get('path').endswith('xyzzy')
+</t>
+<t tx="ekr.20080917151620.13">@header
+
+aList = g.get_directives_dict_list(p)
+g.scanAtHeaderDirectives(aList)
+</t>
+<t tx="ekr.20080917151620.14">@noheader
+
+aList = g.get_directives_dict_list(p)
+g.scanAtHeaderDirectives(aList)
+</t>
+<t tx="ekr.20080917151620.15">@lineending cr
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+assert s == '\r'
+</t>
+<t tx="ekr.20080917151620.16">@lineending crlf
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+# print ('@lineending: %s'%repr(s))
+
+assert s == '\r\n'
+</t>
+<t tx="ekr.20080917151620.17">@lineending lf
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+assert s == '\n'
+</t>
+<t tx="ekr.20080917151620.18">@lineending nl
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+assert s == '\n'
+</t>
+<t tx="ekr.20080917151620.19">@lineending platform
+
+import sys
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+if sys.platform.startswith('win'):
+    assert s == '\r\n'
+else:
+    assert s == '\n'
+</t>
+<t tx="ekr.20080917151620.20">@pagewidth -40
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtPagewidthDirectives(aList)
+
+assert n is None</t>
+<t tx="ekr.20080917151620.21">@pagewidth 40
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtPagewidthDirectives(aList)
+
+assert n == 40</t>
+<t tx="ekr.20080917151620.22">aList = g.get_directives_dict_list(p.firstChild())
+s = c.scanAtPathDirectives(aList,force=True)
+end = g.os_path_normpath(r'leo/test')
+
+assert s.endswith(end),repr(s)</t>
+<t tx="ekr.20080917151620.23">@language python
+# unittest/at-path-test1.py </t>
+<t tx="ekr.20080917151620.24">grandChild = p.firstChild().firstChild()
+aList = g.get_directives_dict_list(grandChild)
+s = c.scanAtPathDirectives(aList,force=True)
+end = g.os_path_normpath(r'leo/test/unittest')
+
+assert s.endswith(end),repr(s)</t>
+<t tx="ekr.20080917151620.25"></t>
+<t tx="ekr.20080917151620.26">@language python
+# unittest/at-path-test2.py</t>
+<t tx="ekr.20080917151620.27">greatGrandChild = p.firstChild().firstChild().firstChild()
+aList = g.get_directives_dict_list(greatGrandChild)
+s = c.scanAtPathDirectives(aList,force=True)
+end = g.os_path_normpath(r'leo/test/unittest')
+
+assert s.endswith(end),repr(s)</t>
+<t tx="ekr.20080917151620.28"></t>
+<t tx="ekr.20080917151620.29"></t>
+<t tx="ekr.20080917151620.30">@language python
+# unittest/at-path-test3.py </t>
+<t tx="ekr.20080917151620.31">@tabwidth 6
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtTabwidthDirectives(aList)
+
+assert n == 6</t>
+<t tx="ekr.20080917151620.32">@tabwidth -6
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtTabwidthDirectives(aList)
+
+assert n == -6</t>
+<t tx="ekr.20080917151620.33">@nowrap
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtWrapDirectives(aList)
+
+assert s is False,repr(s)</t>
+<t tx="ekr.20080917151620.34">@wrap
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtWrapDirectives(aList)
+
+assert s is True,repr(s)</t>
+<t tx="ekr.20080917151620.35">aList = g.get_directives_dict_list(p)
+s = g.scanAtWrapDirectives(aList)
+
+assert s is None,repr(s)</t>
+<t tx="ekr.20081001094920.2"></t>
+<t tx="ekr.20081001094920.3">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+
+try:
+    
+    p1 = p.insertAsLastChild()
+    assert p1.textOffset() == 0
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode = None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.4">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+
+try:
+    
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    assert p1.textOffset() == 0
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode = None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.5">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+
+try:
+    
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    p2 = p1.insertAsLastChild()
+    assert p1.textOffset() == 0
+    assert p2.textOffset() == 0
+    
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode = None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.6">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+    
+try:
+    
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    body = '''   %s
+    ''' % (g.angleBrackets(' section '))
+    p1.setBodyString(body)
+    p2 = p1.insertAsLastChild()
+    head = g.angleBrackets(' section ')
+    p2.setHeadString(head)
+    assert p1.textOffset() == 0
+    assert p2.textOffset() == 3
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode = None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.7">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+
+try:
+    
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    body = '''     %s
+    ''' % (chr(64) + 'others') # ugly hack
+    p1.setBodyString(body)
+    p2 = p1.insertAsLastChild()
+    assert p1.textOffset() == 0
+    assert p2.textOffset() == 5
+    root.firstChild().doDelete(newNode = None)
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode = None)
+    c.redraw_now()
+</t>
 </tnodes>
 </leo_file>

@@ -218,7 +218,7 @@ class gtkGui(leoGui.leoGui):
 
         """
 
-        initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
+        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
 
         if action == 'open':
             btns = (
@@ -399,8 +399,8 @@ class gtkGui(leoGui.leoGui):
 
         # Get the information about top and the screen.
         geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-        dim,x,y = string.split(geom,'+')
-        w,h = string.split(dim,'x')
+        dim,x,y = geom.split('+')
+        w,h = dim.split('x')
         w,h,x,y = int(w),int(h),int(x),int(y)
 
         return w,h,x,y
@@ -502,8 +502,6 @@ class gtkGui(leoGui.leoGui):
     set_focus_count = 0
 
     def set_focus(self,c,w):
-
-        # __pychecker__ = '--no-argsused' # c not used at present.
 
         """Put the focus on the widget."""
 
@@ -793,7 +791,7 @@ class gtkGui(leoGui.leoGui):
         self.treeIcons = icons = []
         self.namedIcons = namedIcons = {}
 
-        path = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'Icons'))
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
         if g.os_path_exists(g.os_path_join(path, 'box01.GIF')):
             ext = '.GIF'
         else:

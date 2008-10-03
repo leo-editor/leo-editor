@@ -119,11 +119,16 @@ class searchWidget:
         if i is None:
             return 0
 
-        elif type(i) in (type('a'),type(u'a')):
+        if g.isString(i):
             row,col = i.split('.')
             row,col = int(row),int(col)
             row -= 1
             i = g.convertRowColToPythonIndex(self.s,row,col)
+        elif type(i) == type(9):
+            pass
+        else:
+            g.trace('can not happen: %s' % (i))
+            i = 0 # Should never happen.
 
         return i
     #@-node:ekr.20070105092022.4:toPythonIndex
@@ -628,8 +633,8 @@ class leoFind:
 
         try:
             assert(self.script_change)
-            exec self.change_text in {} # Use {} to get a pristine environment.
-        except:
+            exec(self.change_text,{},{})
+        except Exception:
             g.es("exception executing change script")
             g.es_exception(full=False)
             g.app.searchDict["continue"] = False # 2/1/04
@@ -655,7 +660,7 @@ class leoFind:
     def runFindScript (self):
 
         try:
-            exec self.find_text in {} # Use {} to get a pristine environment.
+            exec(self.find_text,{},{})
         except:
             g.es("exception executing find script")
             g.es_exception(full=False)
@@ -1142,8 +1147,6 @@ class leoFind:
     #@+node:ekr.20051020120306.27:selectAllFindText (leoFind)
     def selectAllFindText (self,event=None):
 
-        # __pychecker__ = '--no-argsused' # event
-
         # This is called only when the user presses ctrl-a in the find panel.
 
         w = self.frame.focus_get()
@@ -1511,7 +1514,6 @@ class findTab (leoFind):
         self.oops()
 
     def createFrame (self,parent):
-        # __pychecker__ = '--no-argsused'
         self.oops()
 
     def getOption (self,ivar):
@@ -1524,7 +1526,6 @@ class findTab (leoFind):
         pass # Optional method.
 
     def setOption (self,ivar,val):
-        # __pychecker__ = '--no-argsused'
         self.oops()
 
     def toggleOption (self,ivar):

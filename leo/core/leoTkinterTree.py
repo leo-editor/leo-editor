@@ -568,7 +568,6 @@ class leoTkinterTree (leoFrame.leoTree):
 
             # Keys are p.key().  Entries are (w,theId)
             self.visibleText [p.key()] = w,theId
-            ### self.visibleText[id(p.v)] = w,theId
         else:
             g.trace('**** can not happen.  No p')
 
@@ -577,8 +576,6 @@ class leoTkinterTree (leoFrame.leoTree):
     def setHeadlineText (self,theId,w,s):
 
         """All changes to text widgets should come here."""
-
-        # __pychecker__ = '--no-argsused' # theId not used.
 
         # if self.trace_alloc: g.trace('%4d %6s %s' % (theId,self.textAddr(w),s),align=-20)
 
@@ -753,7 +750,7 @@ class leoTkinterTree (leoFrame.leoTree):
         if i != -1:
             return s[i+4:i+12].lower()
         else:
-            return s ### [-9:-1].lower()
+            return s
     #@-node:ekr.20040803072955.33:textAddr
     #@+node:ekr.20040803072955.34:traceIds (Not used)
     # Verbose tracing is much more useful than this because we can see the recent past.
@@ -765,9 +762,7 @@ class leoTkinterTree (leoFrame.leoTree):
         for theDict,tag,flag in ((tree.ids,"ids",True),(tree.iconIds,"icon ids",False)):
             g.pr('=' * 60)
             g.pr("\n%s..." % tag)
-            keys = theDict.keys()
-            keys.sort()
-            for key in keys:
+            for key in sorted(theDict):
                 p = tree.ids.get(key)
                 if p is None: # For lines.
                     g.pr("%3d None" % key)
@@ -775,12 +770,11 @@ class leoTkinterTree (leoFrame.leoTree):
                     g.pr("%3d" % key,p.headString())
             if flag and full:
                 g.pr('-' * 40)
-                values = theDict.values()
-                values.sort()
-                seenValues = []
-                for value in values:
+                seenValues = {}
+                for key in sorted(theDict):
+                    value = theDict.get(key)
                     if value not in seenValues:
-                        seenValues.append(value)
+                        seenValues[value]=True
                         for item in theDict.items():
                             key,val = item
                             if val and val == value:
@@ -1286,7 +1280,7 @@ class leoTkinterTree (leoFrame.leoTree):
     def getIconImage (self, name):
 
         # Return the image from the cache if possible.
-        if self.iconimages.has_key(name):
+        if name in self.iconimages:
             return self.iconimages[name]
 
         # g.trace(name)
@@ -1344,9 +1338,6 @@ class leoTkinterTree (leoFrame.leoTree):
             return
         if not hasattr(self,'c'):
             return
-
-        # __pychecker__ = '--no-argsused' # event not used.
-        # __pychecker__ = '--no-intdivide' # suppress warning about integer division.
 
         c = self.c ; frame = c.frame ; trace = False
         if not p or not c.positionExists(p):
@@ -1595,7 +1586,6 @@ class leoTkinterTree (leoFrame.leoTree):
         if p and c:
             # if trace: g.trace('h',p.headString(),'key',p.key())
             aTuple = self.visibleText.get(p.key())
-            ### aTuple = self.visibleText.get(id(p.v))
             if aTuple:
                 w,theId = aTuple
                 # if trace: g.trace('id(p.v):',id(p.v),'%4d' % (theId),self.textAddr(w),p.headString())
@@ -2079,11 +2069,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         """Deactivate the tree pane, dimming any headline being edited."""
 
-        # __pychecker__ = '--no-argsused' # event not used.
-
         tree = self ; c = self.c
-
-        # g.trace(g.callers())
 
         tree.endEditLabel()
         tree.dimEditLabel()
@@ -2130,14 +2116,10 @@ class leoTkinterTree (leoFrame.leoTree):
 
     def OnPopupFocusLost(self,event=None):
 
-        # __pychecker__ = '--no-argsused' # event not used.
-
         self.popupMenu.unpost()
     #@-node:ekr.20040803072955.111:OnPopupFocusLost
     #@+node:ekr.20040803072955.112:createPopupMenu
     def createPopupMenu (self,event):
-
-        # __pychecker__ = '--no-argsused' # event not used.
 
         c = self.c ; frame = c.frame
 
@@ -2184,8 +2166,6 @@ class leoTkinterTree (leoFrame.leoTree):
     def enablePopupMenuItems (self,v,event):
 
         """Enable and disable items in the popup menu."""
-
-        # __pychecker__ = '--no-argsused' # event not used.
 
         c = self.c ; menu = self.popupMenu
 
