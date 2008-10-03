@@ -5216,7 +5216,7 @@ class baseCommands:
         c = self
 
         p = c.nodeHistory.goNext()
-        # g.trace(p)
+
         if p:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
@@ -5230,7 +5230,7 @@ class baseCommands:
         c = self
 
         p = c.nodeHistory.goPrev()
-        # g.trace(p)
+
         if p:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
@@ -5620,7 +5620,7 @@ class baseCommands:
             if ok:
                 ok, frame = g.openWithFileName(fileName,c)
             if not ok:
-                g.es('',name,"not found in",configDir,"or",homeLeoDir)
+                g.es('',name,"not found in",configDir,"\nor",homeLeoDir)
     #@-node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
     #@+node:ekr.20061018094539:openLeoScripts
     def openLeoScripts (self,event=None):
