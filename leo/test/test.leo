@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -312,16 +312,31 @@
 <v t="ekr.20080604101239.1"><vh>Test misspelled word at index 0</vh></v>
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
 <v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
-<v t="ekr.20080625094025.1"><vh>Drag script</vh></v>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
-<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
-<v t="ekr.20080808115835.1"><vh>Copy leo directory</vh>
-<v t="ekr.20080808122543.1"><vh>Path wrappers</vh></v>
-<v t="ekr.20080808122543.2"><vh>copyDir</vh></v>
+<v t="ekr.20080920101658.1"><vh>getInput</vh></v>
+<v t="ekr.20080923173133.1"><vh>scan-directives hook</vh></v>
+<v t="ekr.20080930114036.1"><vh>icon stuff</vh>
+<v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
+<v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
+<v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
+<v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
 </v>
+<v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
+<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
+<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
+<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
-<v t="ekr.20080823154546.2"><vh>parse-python test</vh></v>
+</v>
+<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
+<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
+<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
+<v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
+<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
+<v t="ekr.20080923073240.2" a="E"><vh>@path {{c.config.getString('test')}}</vh>
+<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
+</v>
+</v>
 <v t="ekr.20080813080809.1"><vh>Tests for @shadow</vh>
 <v t="ekr.20080807091001.1"><vh>@@shadow python-import-test.py</vh>
 <v t="ekr.20080807091201.7"><vh>python-import-test declarations</vh></v>
@@ -347,43 +362,13 @@
 <v t="ekr.20080819095720.1"><vh>@@shadow huh_extension_test.huh</vh></v>
 <v t="ekr.20080909075224.1"><vh>@@shadow ekr-shadow-test.html</vh></v>
 <v t="ekr.20080911080311.1"><vh>@@shadow dummy.conf</vh></v>
-</v>
-<v t="ekr.20080911112823.1"><vh>@@nosent fix-failure.py</vh></v>
-<v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
-<v t="ekr.20080918123632.1"><vh>@path unittest</vh>
-<v t="ekr.20080918090005.1"><vh>@@file goto-global-line-test.py</vh></v>
-</v>
-<v t="ekr.20080918180141.1"><vh>Exception syntax</vh></v>
-<v t="ekr.20080919080736.1"><vh>dictionary stuff</vh></v>
-<v t="ekr.20080921165614.1"><vh>@@button open core\buttons.txt</vh></v>
-<v t="ekr.20080920101658.1"><vh>getInput</vh></v>
-<v t="ekr.20080923173133.1"><vh>scan-directives hook</vh></v>
-<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
-<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
-<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
-<v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
-<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
-<v t="ekr.20080923073240.2" a="E"><vh>@path {{c.config.getString('test')}}</vh>
-<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
-</v>
-</v>
 <v t="ekr.20080924033317.1"><vh>@@shadow weird-extension.C</vh>
 <v t="ekr.20080924033317.2"><vh>spam</vh></v>
 </v>
-<v t="ekr.20080930114036.1"><vh>icon stuff</vh>
-<v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
-<v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
-<v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
-<v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
+<v t="ekr.20081001110047.1"><vh>@@shadow mark-changed-nodes-test.py</vh>
+<v t="ekr.20081001110047.2"><vh>spam</vh></v>
+<v t="ekr.20081001110047.3"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20080929072551.1"><vh>test of c syntax coloring</vh></v>
-<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
-</v>
-<v t="ekr.20081001110047.1"><vh>@shadow mark-changed-nodes-test.py</vh></v>
-<v t="ekr.20081001112706.3"><vh>Nested at-path directives</vh></v>
-<v t="ekr.20081001112706.4" a="M"><vh>@path path_test</vh>
-<v t="ekr.20081001112706.5" a="E"><vh>@path subdir</vh>
-<v t="ekr.20081001112706.1"><vh>@shadow subpath-test.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2874,23 +2859,6 @@ w.update()
 # top.after_idle(after)
 top.mainloop()
 </t>
-<t tx="ekr.20080625094025.1">t = p.insertAfter()
-c.setHeadString(t, 'test node 1')
-t = t.insertAfter()
-c.setHeadString(t, 'test node 2')
-t = t.insertAfter()
-c.setHeadString(t, 'test area')
-for i in range(200):
-   n = t.insertAsLastChild()
-   c.setHeadString(n, str(i))
-   if i == 3: x = n
-
-for i in range(100):
-   n = x.insertAsLastChild()
-   c.setHeadString(n, str(i+500))
-
-t.expand()
-c.redraw_now()</t>
 <t tx="ekr.20080628094340.1">if 0:
     # Called when func is **defined**
     def leo_command(func):
@@ -3542,43 +3510,6 @@ from win32com.axscript import axscript
 from win32com.axscript.server import axsite
 import pythoncom
 import win32com.server.util</t>
-<t tx="ekr.20080808115835.1">import os
-import shutil
-import sys
-
-@others
-
-try:
-    leoFolder == os.path(dirname(__file__))
-except NameError:
-    theDir = g.app.loadDir
-    leoFolder    = norm(os.path.join(theDir,'..'))
-
-assert leoFolder.endswith('leo')
-assert exists(leoFolder)
-
-pythonFolder = os.path.dirname(sys.executable)
-leoLibFolder = norm(os.path.join(pythonFolder,'Lib','site-packages','leo'))
-
-copyDir(leoFolder,leoLibFolder)
-</t>
-<t tx="ekr.20080808122543.1">def norm(path):
-    return os.path.abspath(os.path.join(path))
-
-def exists(path):
-    return os.path.exists(path)
-</t>
-<t tx="ekr.20080808122543.2">def copyDir (src,dst):
-
-    if exists(dst):
-        print('destination folder already exists: %s' % dst)
-    else:
-        try:
-            print('coping %s to %s' % (src,dst))
-            shutil.copytree(src,dst)
-        except Exception:
-            print('not copied %s to %s' % (src,dst))
-</t>
 <t tx="ekr.20080811112727.1">False: (recommended) Enable import parsing for @shadow and @auto
 True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080811113441.2"></t>
@@ -3662,22 +3593,6 @@ if not s.endswith('\n'): s = s + '\n'
 c.importCommands.scanPythonText(s,p2.copy(),atAuto=True)
 c.redraw_now()
 g.pr('done')</t>
-<t tx="ekr.20080823154546.2">@tabwidth -4
-
-class AClass:
-
-   def func1():
-       do1()
-
-   def func2():
-       do2()
-
-   def func3():
-       do3()
-
-   def func4():
-       do4()
-</t>
 <t tx="ekr.20080909075224.1">@language html
 ../hex6x -
 changed</t>
@@ -3685,9 +3600,6 @@ changed</t>
 ; This is a comment
 P1 = 0
 </t>
-<t tx="ekr.20080911112823.1"># -*- coding: utf-8 -*-
-
-s = 'abc'.replace(u'” “', '" "')</t>
 <t tx="ekr.20080915095329.1">import leo.core.leoPlugins as leoPlugins
 
 rst3 = leoPlugins.getPluginModule('rst3')
@@ -3716,32 +3628,6 @@ for name in aList:
     kind, val = c.config.getSettingSource(name)
     print '%-20s %-20s %s' % (name,repr(val),kind)
 </t>
-<t tx="ekr.20080918090005.1">@language python
-@tabwidth -4
-
-# This is a line, changed 2.</t>
-<t tx="ekr.20080918123632.1"></t>
-<t tx="ekr.20080918180141.1">import sys
-
-class MyError(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-
-try:
-    raise MyError(2*2)
-except MyError:
-    theType, value, traceback = sys.exc_info()
-    print 'My exception occurred, value:', value
-</t>
-<t tx="ekr.20080919080736.1">d = {'a':'A','b':'B',}
-
-print 'a' in d, 'A' in d
-for z in d.keys():
-    print z
-for z in d:
-    print z</t>
 <t tx="ekr.20080920101658.1">def getInput (event=None):
 
     '''Evaluate a Python Expression entered in the minibuffer.'''
@@ -3761,10 +3647,6 @@ getInput()
 <t tx="ekr.20080921144924.1">print(g.os_path_finalize(r'~/.leo/notebook.leo'))
 print(g.os_path_finalize(g.os_path_join(g.app.loadDir,r'~/.leo/notebook.leo')))
 print(g.os_path_finalize_join(g.app.loadDir,r'~/.leo/notebook.leo'))</t>
-<t tx="ekr.20080921165614.1"># fileName = g.os_path_finalize_join(g.app.loadDir,'buttons.txt')
-fileName = g.os_path_finalize_join(g.app.loadDir,'..','modes','python.py')
-ok, frame = g.openWithFileName(fileName,c)
-</t>
 <t tx="ekr.20080922142953.1"># @string default_leo_file = ~/.leo/workbook.leo
 path = "{{c.config.getString('default_leo_file')}}"
 # print g.os_path_expandExpression(path,c=c)
@@ -3801,24 +3683,6 @@ print 'theObject',theObject and theObject.__class__
 print 'len(completions)',len(aList)
 print g.listToString(aList, tag='completion list', sort=True, indent='')
 </t>
-<t tx="ekr.20080929072551.1">@language c
-
-// Test.
-
-/**
- * first comment
- */
-
-/**
- * second comment
- */
- 
-a = 5
-
-#define abc\
-xyz
-
-b - 6</t>
 <t tx="ekr.20080929112400.1">import PyQt4.Qt as qt
 import sys
 
@@ -3836,8 +3700,13 @@ c.frame.addIconButton(text="New")</t>
 <t tx="ekr.20080930083052.2">c.frame.showIconBar()</t>
 <t tx="ekr.20080930085514.1">c.frame.clearIconBar()</t>
 <t tx="ekr.20080930114036.1"></t>
-<t tx="ekr.20081001112706.3"></t>
-<t tx="ekr.20081001112706.4"></t>
-<t tx="ekr.20081001112706.5"></t>
+<t tx="ekr.20081001110047.1">@others</t>
+<t tx="ekr.20081001110047.2">def spam():
+    
+    pass # changed</t>
+<t tx="ekr.20081001110047.3">def eggs():
+    
+    pass</t>
+<t tx="ekr.20081003094737.1"></t>
 </tnodes>
 </leo_file>
