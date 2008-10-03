@@ -1973,11 +1973,15 @@ class baseFileCommands:
 
             # rename fileName to fileName.bak if fileName exists.
             if not toString and g.os_path_exists(fileName):
+
                 backupName = g.os_path_join(g.app.loadDir,fileName)
                 backupName = fileName + ".bak"
+
                 if g.os_path_exists(backupName):
                     g.utils_remove(backupName)
+
                 ok = g.utils_rename(c,fileName,backupName)
+
                 if not ok:
                     if self.read_only:
                         g.es("read only",color="red")
