@@ -1027,7 +1027,7 @@ class leoBody:
 
         # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
         c.frame.tree.expandAllAncestors(w.leo_p)
-        c.selectPosition(w.leo_p,updateBeadList=True) # Calls assignPositionToEditor.
+        c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
         c.redraw()
 
         c.recolor_now()
@@ -2620,7 +2620,7 @@ class leoTree:
     #@+node:ekr.20040803072955.128:leoTree.select & helper
     tree_select_lockout = False
 
-    def select (self,p,updateBeadList=True,scroll=True):
+    def select (self,p,scroll=True):
 
         '''Select a node.  Never redraws outline, but may change coloring of individual headlines.'''
 
@@ -2629,7 +2629,7 @@ class leoTree:
         try:
             val = 'break'
             self.tree_select_lockout = True
-            val = self.treeSelectHelper(p,updateBeadList,scroll)
+            val = self.treeSelectHelper(p,scroll)
         finally:
             self.tree_select_lockout = False
 
@@ -2637,7 +2637,7 @@ class leoTree:
     #@+node:ekr.20070423101911:treeSelectHelper
     #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
-    def treeSelectHelper (self,p,updateBeadList,scroll):
+    def treeSelectHelper (self,p,scroll):
 
         c = self.c ; frame = c.frame
         body = w = frame.body.bodyCtrl
@@ -2717,7 +2717,7 @@ class leoTree:
                             self.scrollTo(p)
                         self.canvas.after(100,scrollCallback)
                 except Exception: pass
-            c.nodeHistory.update(p,updateBeadList) # Remember this position.
+            c.nodeHistory.update(p) # Remember this position.
         c.setCurrentPosition(p)
         #@    << set the current node >>
         #@+node:ekr.20040803072955.133:<< set the current node >>
@@ -3248,7 +3248,7 @@ class nullTree (leoTree):
 
     #@-node:ekr.20070228173611:printWidgets
     #@+node:ekr.20031218072017.2236:Overrides
-    def select (self,p,updateBeadList=True,scroll=True):
+    def select (self,p,scroll=True):
         pass
     #@nonl
     #@+node:ekr.20070228163350:Colors & fonts

@@ -848,8 +848,7 @@ class gtkListBoxDialog (leoGtkDialog):
             n = items[0]
             p = self.positionList[n]
             c.frame.tree.expandAllAncestors(p)
-            c.selectPosition(p,updateBeadList=True)
-                # A case could be made for updateBeadList=False
+            c.selectPosition(p)
             c.redraw()
     #@-node:ekr.20080112145409.52:go
     #@-others

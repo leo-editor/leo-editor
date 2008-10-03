@@ -7428,8 +7428,7 @@ def go(self,event=None):
         c.beginUpdate()
         try:
             c.frame.tree.expandAllAncestors(p)
-            c.selectPosition(p,updateBeadList=True)
-                # A case could be made for updateBeadList=False
+            c.selectPosition(p)
         finally:
             c.endUpdate()
 #@-node:ekr.20071001092721.51:go

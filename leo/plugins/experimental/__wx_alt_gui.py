@@ -7750,8 +7750,7 @@ if wx:
             if item > -1:
                 p = self.positionList[item]
                 c.frame.tree.expandAllAncestors(p)
-                c.selectPosition(p,updateBeadList=True)
-                    # A case could be made for updateBeadList=False
+                c.selectPosition(p)
                 c.redraw()
         #@-node:bob.20080105082325.7:go
         #@+node:bob.20080105082325.8:hide

@@ -753,22 +753,6 @@ class tkSpellTab:
         else:
             return None
     #@-node:ekr.20051025071455.48:getSuggestion
-    #@+node:ekr.20051025071455.51:update (no longer used)
-    # def update(self,show=True,fill=False):
-
-        # """Update the Spell Check dialog."""
-
-        # c = self.c
-
-        # if fill:
-            # self.fillbox([])
-
-        # self.updateButtons()
-
-        # if show:
-            # self.bringToFront()
-            # c.bodyWantsFocus()
-    #@-node:ekr.20051025071455.51:update (no longer used)
     #@+node:ekr.20051025071455.52:updateButtons (spellTab)
     def updateButtons (self):
 

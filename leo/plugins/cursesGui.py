@@ -600,7 +600,7 @@ class textTree(leoFrame.leoTree):
     leoFrame.leoTree.__init__(self, frame)
   #@-node:ekr.20061207074949.74:__init__
   #@+node:ekr.20061207074949.75:select
-  def select(self,p,updateBeadList=True,scroll=True):
+  def select(self,p,scroll=True):
     # TODO Much more here: there's four hooks and all sorts of other things called in the TK version. 
 
     c = self.c ; frame = c.frame

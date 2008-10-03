@@ -3993,144 +3993,83 @@ if c.frame:
                     self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
 #@-node:ekr.20080211085914.4:<< Set current directory >>
 #@-node:ekr.20081001062423.14:From leoImport.scanDefaultDirectory
-#@+node:ekr.20081001140516.5:class nodeHistory (old)
-class nodeHistory:
-
-    '''A class encapsulating knowledge of visited nodes.'''
-
-    @others
-#@+node:ekr.20081001140516.6: ctor (nodeHistory)
-def __init__ (self,c):
-
-    self.c = c
-
-    self.beadList = [] # list of (position,chapter) tuples for the Back and Forward commands.
-    self.beadPointer = -1
-    self.trace = False
-    self.visitedList = [] # list of (position,chapter) tuples for the Nodes dialog.
-#@-node:ekr.20081001140516.6: ctor (nodeHistory)
-#@+node:ekr.20081001140516.7:canGoToNext/Prev
-def canGoToNextVisited (self):
-
-    if self.trace:
-        g.trace(
-            self.beadPointer + 1 < len(self.beadList),
-            self.beadPointer,len(self.beadList))
-
-    return self.beadPointer + 1 < len(self.beadList)
-
-def canGoToPrevVisited (self):
-
-    if self.trace:
-        g.trace(self.beadPointer > 0,
-            self.beadPointer,len(self.beadList))
-
-    return self.beadPointer > 0
-#@-node:ekr.20081001140516.7:canGoToNext/Prev
-#@+node:ekr.20081001140516.8:clear
-def clear (self):
-
-    self.visitedList = []
-#@-node:ekr.20081001140516.8:clear
-#@+node:ekr.20081001140516.9:goNext/Prev
-def goNext (self):
-
-    '''Return the next visited node, or None.'''
-    if self.beadPointer + 1 < len(self.beadList):
-        self.beadPointer += 1
-        p,chapter = self.beadList[self.beadPointer]
-        self.selectChapter(chapter)
-        return p
-    else:
-        return None
-
-def goPrev (self):
-
-    '''Return the previous visited node, or None.'''
-    if self.beadPointer > 0:
-        self.beadPointer -= 1
-        p,chapter = self.beadList[self.beadPointer]
-        self.selectChapter(chapter)
-        return p
-    else:
-        return None
-#@-node:ekr.20081001140516.9:goNext/Prev
-#@+node:ekr.20081001140516.10:remove
-def remove (self,p):
-
-    for data in self.visitedList:
-        p2,chapter = data
-        if p == p2:
-            self.visitedList.remove(data)
-            break
-#@-node:ekr.20081001140516.10:remove
-#@+node:ekr.20081001140516.11:selectChapter
-def selectChapter (self,chapter):
-
-    c = self.c ; cc = c.chapterController
-    if not cc or not chapter: return
-
-    if chapter != cc.getSelectedChapter():
-        cc.selectChapterByName(chapter.name)
-#@-node:ekr.20081001140516.11:selectChapter
-#@+node:ekr.20081001140516.12:update & helpers
-def update (self,p,updateBeadList):
-
-    if True or updateBeadList:
-        self.updatePositionList(p)
-
-    self.updateVisitedList(p)
-#@+node:ekr.20081001140516.13:updatePositionList
+#@+node:ekr.20081001140516.17:from nodeHistory
+#@+node:ekr.20040803072955.131:updatePositionList
 def updatePositionList (self,p):
 
-    # Don't change the list if p is already in it.
-    c = self.c ; cc = c.chapterController
-    update = True
-    for data in self.beadList:
-        p2,chapter = data
-        if p2 == p:
-            update = False
-        if not c.positionExists(p2,root=c.rootPosition()):
-            self.beadList.remove(data)
-            update = True ; break
+    '''Update the position list used by nav_buttons plugin.'''
 
-    # Add the node to the end, and set the bead pointer to the end.
-    if update:
-        theChapter = cc and cc.getSelectedChapter()
-        data = p.copy(),theChapter
-        self.beadList.append(data)
-        self.beadPointer = len(self.beadList)-1
-        if self.trace:
-            g.trace('updating bead list',p.headString())
-            g.pr([z[0].headString() for z in self.beadList])
-#@-node:ekr.20081001140516.13:updatePositionList
-#@+node:ekr.20081001140516.14:updateVisitedList
+    c = self.c ; cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+
+    target = (p.copy(),theChapter)
+
+    self.beadList = [z for z in self.beadList
+                        if c.positionExists(z[0]]
+
+    try:
+        self.beadPointer = self.beadList.index(target)
+    except ValueError:
+        self.beadList.append(target)
+        self.beadPointer = len(self.beadList) -1
+
+    # c = self.c ; root = c.rootPosition()
+    # cc = c.chapterController
+    # theChapter = cc and cc.getSelectedChapter()
+
+    # # Recreate the list, and set found if p is in the list
+    # n = 0       # The number of previous valid entries.
+    # n2 = 0      # The number of previous entries.
+    # aList = []  # The new beadList.
+    # found = -1
+    # for data in self.beadList:
+        # p2,chapter = data
+        # if c.positionExists(p2,root=root):
+            # data = p2,theChapter
+            # aList.append(data)
+            # if p == p2: found = n
+            # n += 1
+        # elif n2 <= self.beadPointer:
+            # self.beadPointer -= 1 # Adjust for missing entries.
+        # n2 += 1
+
+    # if found == -1:
+        # data = p.copy(),theChapter
+        # self.beadList.append(data)
+        # self.beadPointer = len(self.beadList) -1
+    # else:
+        # self.beadPointer = found
+        # self.beadList = aList
+
+    if self.trace:
+        g.trace('bead list',p.headString())
+        g.pr([z[0].headString() for z in self.beadList])
+#@-node:ekr.20040803072955.131:updatePositionList
+#@+node:ekr.20040803072955.132:updateVisitedList
 def updateVisitedList (self,p):
 
     '''Make p the most recently visited position.'''
 
-    c = self.c ; cc = c.chapterController
+    c = self.c ; root=c.rootPosition()
+    cc = c.chapterController
+
+    # Remove non-existent entries.
+    self.visitedList = [z for z in self.visitedList if
+        c.positionExists(z[0],root=root)]
+
+    # Append p to the list only if it is not present.
     for data in self.visitedList:
         p2,chapter = data
-        if p2 == p or not c.positionExists(p2,root=c.rootPosition()): # 2008/10/2
-            self.visitedList.remove(data)
-            break
-
-    chapter = cc and cc.getSelectedChapter()
-    data = p.copy(),chapter
-    self.visitedList.insert(0,data)
+        if p2 == p: break
+    else:
+        data = p.copy(),cc and cc.getSelectedChapter()
+        self.visitedList.insert(0,data)
 
     if self.trace:
         g.trace('len(c.visitedList)',len(self.visitedList))
         g.pr([z[0].headString()[:10] for z in self.visitedList]) # don't assign to p!
-#@-node:ekr.20081001140516.14:updateVisitedList
-#@-node:ekr.20081001140516.12:update & helpers
-#@+node:ekr.20081001140516.15:visitedPositions
-def visitedPositions (self):
-
-    return [p.copy() for p,chapter in self.visitedList]
-#@-node:ekr.20081001140516.15:visitedPositions
-#@-node:ekr.20081001140516.5:class nodeHistory (old)
+#@-node:ekr.20040803072955.132:updateVisitedList
+#@-node:ekr.20081001140516.17:from nodeHistory
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
