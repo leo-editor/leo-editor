@@ -41,7 +41,6 @@ except Exception:
     pass
 
 # The following is sometimes used.
-# __pychecker__ = '--no-import'
 # import time
 #@-node:ekr.20050405141130:<< imports >> (leoFileCommands)
 #@nl
@@ -384,8 +383,6 @@ if sys.platform != 'cli':
         #@-node:ekr.20060919110638.40:startVH
         #@+node:ekr.20060919112118:startVnodes
         def startVnodes (self,unused_attrs):
-
-            # __pychecker__ = '--no-argsused'
 
             if self.inClipboard:
                 return # No need to do anything to the main window.
@@ -918,8 +915,6 @@ class baseFileCommands:
 
         This is used to record marked and expanded nodes.
         '''
-
-        # __pychecker__ = '--no-argsused' # tag used only for debugging.
 
         gnxs = s.split(',')
         result = [gnx for gnx in gnxs if len(gnx) > 0]

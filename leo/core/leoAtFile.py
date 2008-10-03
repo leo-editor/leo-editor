@@ -10,10 +10,6 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-# __pychecker__ = '--no-reimport --no-constCond -- no-constant1'
-    # Reimports needed in test methods.
-    # Disable checks for if 0, if 1.
-
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
 import leo.core.leoGlobals as g
@@ -403,14 +399,15 @@ class atFile:
     #@+node:ekr.20041005105605.19:openFileForReading (atFile)
     def openFileForReading(self,fn,fromString=False):
 
-        at = self ; trace = True and not g.app.unitTesting ; verbose = False
+        at = self ; c = at.c
+        trace = False and not g.app.unitTesting ; verbose = False
 
         if fromString:
             if at.atShadow:
                 return at.error('can not call at.read from string for @shadow files')
             at.inputFile = g.fileLikeObject(fromString=fromString)
         else:
-            fn = g.os_path_finalize_join(at.default_directory,fn)
+            fn = c.os_path_finalize_join(at.default_directory,fn)
 
             if at.atShadow:
                 x = at.c.shadowController
@@ -562,7 +559,7 @@ class atFile:
 
         oldChanged = c.isChanged()
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fileName = g.os_path_finalize_join(at.default_directory,fileName)
+        fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
         if not g.unitTesting:
             g.es("reading:",p.headString())
@@ -671,7 +668,7 @@ class atFile:
 
         at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
-        fn = g.os_path_finalize_join(at.default_directory,fn)
+        fn = c.os_path_finalize_join(at.default_directory,fn)
         shadow_fn     = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
@@ -695,7 +692,7 @@ class atFile:
             p.firstChild().doDelete()
 
         # Import the outline, exactly as @auto does.
-        ic.createOutline(fn,parent=p.copy(),atAuto=True)
+        ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
 
         if ic.errors:
             g.es_print('errors inhibited read @shadow',fn,color='red')
@@ -787,8 +784,6 @@ class atFile:
 
         """Return the next tnode in at.root.t.tnodeList."""
 
-        # __pychecker__ = '--no-argsused' # headline might be used for debugging.
-
         # Note: tnodeLists are used _only_ when reading @file (not @thin) nodes.
         # tnodeLists compensate (a hack) for not having gnx's in derived files! 
 
@@ -825,8 +820,6 @@ class atFile:
     def scanText4 (self,theFile,fileName,p,verbose=False):
 
         """Scan a 4.x derived file non-recursively."""
-
-        # __pychecker__ = '--no-argsused' # verbose might be used for debugging.
 
         at = self
         #@    << init ivars for scanText4 >>
@@ -1105,8 +1098,6 @@ class atFile:
 
         """Read an @-all sentinel."""
 
-        # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
         at = self
         at.popSentinelStack(at.endAll)
     #@-node:ekr.20041005105605.91:readEndAll (4.2)
@@ -1114,8 +1105,6 @@ class atFile:
     def readEndAt (self,unused_s,unused_i):
 
         """Read an @-at sentinel."""
-
-        # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
 
         at = self
         at.readLastDocLine("@")
@@ -1126,8 +1115,6 @@ class atFile:
 
         """Read an @-doc sentinel."""
 
-        # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
         at = self
         at.readLastDocLine("@doc")
         at.popSentinelStack(at.endDoc)
@@ -1137,8 +1124,6 @@ class atFile:
     def readEndLeo (self,unused_s,unused_i):
 
         """Read an @-leo sentinel."""
-
-        # __pychecker__ = '--no-argsused' # i not used, but must be present.
 
         at = self
 
@@ -1164,8 +1149,6 @@ class atFile:
     def readEndNode (self,unused_s,unused_i,middle=False):
 
         """Handle end-of-node processing for @-others and @-ref sentinels."""
-
-        # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
 
         at = self ; c = at.c
 
@@ -1258,8 +1241,6 @@ class atFile:
 
         """Read an @-others sentinel."""
 
-        # __pychecker__ = '--no-argsused' # s,i unused, but must be present.
-
         at = self
         at.popSentinelStack(at.endOthers)
     #@-node:ekr.20041005105605.98:readEndOthers
@@ -1316,8 +1297,6 @@ class atFile:
     def  ignoreOldSentinel (self,s,unused_i):
 
         """Ignore an 3.x sentinel."""
-
-        # __pychecker__ = '--no-argsused' # i unused, but must be present.
 
         g.es("ignoring 3.x sentinel:",s.strip(),color="blue")
     #@-node:ekr.20041005105605.101:ignoreOldSentinel
@@ -2117,7 +2096,7 @@ class atFile:
 
         try:
             at.shortFileName = g.shortFileName(fileName)
-            at.targetFileName = g.os_path_finalize_join(at.default_directory,fileName)
+            at.targetFileName = c.os_path_finalize_join(at.default_directory,fileName)
             path = g.os_path_dirname(at.targetFileName)
             if not path or not g.os_path_exists(path):
                 if path:
@@ -2211,7 +2190,7 @@ class atFile:
             write_strips_blank_lines = write_strips_blank_lines)
 
         if nosentinels and not scriptWrite and not toString:
-            fileName = g.os_path_finalize_join(at.default_directory,at.targetFileName)
+            fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
             exists = g.os_path_exists(fileName)
             if not self.shouldWriteAtNosentNode(root,exists):
                 return
@@ -2435,7 +2414,7 @@ class atFile:
         if not fileName: return False
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fileName = g.os_path_finalize_join(at.default_directory,fileName)
+        fileName = c.os_path_finalize_join(at.default_directory,fileName)
         exists = g.os_path_exists(fileName)
 
         if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
@@ -2566,7 +2545,7 @@ class atFile:
         self.adjustTargetLanguage(fn) # May set c.target_language.
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fn = g.os_path_finalize_join(at.default_directory,fn)
+        fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
 
         if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
@@ -2741,7 +2720,8 @@ class atFile:
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
                 at.targetFileName = p.anyAtFileNodeName()
                 if at.targetFileName:
-                    at.targetFileName = g.os_path_finalize_join(self.default_directory,at.targetFileName)
+                    at.targetFileName = c.os_path_finalize_join(
+                        self.default_directory,at.targetFileName)
                     if not g.os_path_exists(at.targetFileName):
                         ok = at.openFileForWriting(p,at.targetFileName,toString)
                         # openFileForWriting calls p.setDirty() if there are errors.
@@ -4279,34 +4259,19 @@ class atFile:
 
         self._forcedGnxPositionList.append(p.v)
     #@-node:ekr.20051219122720:atFile.forceGnxOnPosition
-    #@+node:ekr.20041005105605.222:atFile.scanAllDirectives
-    #@+at 
-    #@nonl
-    # Once a directive is seen, no other related directives in nodes further 
-    # up the tree have any effect.  For example, if an @color directive is 
-    # seen in node p, no @color or @nocolor directives are examined in any 
-    # ancestor of p.
-    # 
-    # This code is similar to Commands.scanAllDirectives, but it has been 
-    # modified for use by the atFile class.
-    #@-at
-    #@@c
-
+    #@+node:ekr.20080923070954.4:atFile.scanAllDirectives
     def scanAllDirectives(self,p,
         scripting=False,importing=False,
         reading=False,forcePythonSentinels=False,
     ):
 
-        """Scan position p and p's ancestors looking for directives,
-        setting corresponding atFile ivars.
-        """
+        '''Scan p and p's ancestors looking for directives,
+        setting corresponding atFile ivars.'''
 
-        # __pychecker__ = '--maxlines=400'
-        # g.stat()
+        at = self ; c = self.c
 
-        c = self.c
-        #@    << Set ivars >>
-        #@+node:ekr.20041005105605.223:<< Set ivars >>
+        #@    << set ivars >>
+        #@+node:ekr.20080923070954.14:<< Set ivars >>
         self.page_width = self.c.page_width
         self.tab_width  = self.c.tab_width
 
@@ -4315,282 +4280,102 @@ class atFile:
         # g.trace(c.target_language)
 
         if c.target_language:
-            c.target_language = c.target_language.lower() # 6/20/05
-        delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
-        self.language = c.target_language
+            c.target_language = c.target_language.lower()
 
-        self.encoding = c.config.default_derived_file_encoding
-        self.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
-        #@-node:ekr.20041005105605.223:<< Set ivars >>
+        delims = g.set_delims_from_language(c.target_language)
+        at.language = c.target_language
+
+        at.encoding = c.config.default_derived_file_encoding
+        at.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+        #@-node:ekr.20080923070954.14:<< Set ivars >>
         #@nl
-        #@    << Set path from @file node >>
-        #@+node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
-        # An absolute path in an @file node over-rides everything else.
-        # A relative path gets appended to the relative path by the open logic.
 
-        name = p.anyAtFileNodeName() # 4/28/04
+        lang_dict = {'language':at.language,'delims':delims,}
 
-        theDir = g.choose(name,g.os_path_dirname(name),None)
+        table = (
+            ('encoding',    at.encoding,    g.scanAtEncodingDirectives),
+            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lineending',  None,           g.scanAtLineendingDirectives),
+            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+            ('path',        None,           c.scanAtPathDirectives),
+            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        )
 
-        if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
-            if g.os_path_exists(theDir):
-                self.default_directory = theDir
-            else: # 9/25/02
-                self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-                if not self.default_directory:
-                    self.error("Directory \"%s\" does not exist" % theDir)
-        #@-node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
-        #@nl
-        old = {}
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            #@        << Test for @path >>
-            #@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
-            # We set the current director to a path so future writes will go to that directory.
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,default,func in table:
+            val = func(aList)
+            d[key] = g.choose(val is None,default,val)
 
-            if not self.default_directory and not 'path' in old and 'path' in theDict:
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        delims          = lang_dict.get('delims')
+        lineending      = d.get('lineending')
+        if lineending:
+            at.explicitLineEnding = True
+            at.output_newline = lineending
+        else:
+            at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
 
-                path = theDict["path"]
-                path = g.computeRelativePath(path)
-                if path and len(path) > 0:
-                    base = g.getBaseDirectory(c) # returns "" on error.
-                    path = g.os_path_join(base,path)
-                    if g.os_path_isabs(path):
-                        #@            << handle absolute path >>
-                        #@+node:ekr.20041005105605.227:<< handle absolute path >>
-                        # path is an absolute path.
+        at.encoding             = d.get('encoding')
+        at.language             = lang_dict.get('language')
+        at.page_width           = d.get('pagewidth')
+        at.default_directory    = d.get('path')
+        at.tab_width            = d.get('tabwidth')
 
-                        if g.os_path_exists(path):
-                            self.default_directory = path
-                        else:
-                            self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
-                            if not self.default_directory:
-                                self.error("invalid @path: %s" % path)
-                        #@-node:ekr.20041005105605.227:<< handle absolute path >>
-                        #@nl
-                    else:
-                        self.error("ignoring bad @path: %s" % path)
-                else:
-                    self.error("ignoring empty @path")
-            #@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
-            #@nl
-            #@        << Test for @encoding >>
-            #@+node:ekr.20041005105605.228:<< Test for @encoding >>
-            if not 'encoding' in old and 'encoding' in theDict:
-
-                e = g.scanAtEncodingDirective(theDict)
-                if e:
-                    self.encoding = e
-            #@-node:ekr.20041005105605.228:<< Test for @encoding >>
-            #@nl
-            #@        << Test for @comment and @language >>
-            #@+node:ekr.20041005105605.229:<< Test for @comment and @language >>
-            # 10/17/02: @language and @comment may coexist in @file trees.
-            # For this to be effective the @comment directive should follow the @language directive.
-
-            # 1/23/05: Any previous @language or @comment prevents processing up the tree.
-            # This code is now like the code in tangle.scanAlldirectives.
-
-            if 'comment' in old or 'language' in old:
-                pass # Do nothing more.
-
-            elif 'comment' in theDict:
-                z = theDict["comment"]
-                delim1, delim2, delim3 = g.set_delims_from_string(z)
-
-            elif 'language' in theDict:
-                z = theDict["language"]
-                self.language,delim1,delim2,delim3 = g.set_language(z,0)
-            #@-node:ekr.20041005105605.229:<< Test for @comment and @language >>
-            #@nl
-            #@        << Test for @header and @noheader >>
-            #@+node:ekr.20041005105605.230:<< Test for @header and @noheader >>
-            # EKR: 10/10/02: perform the sames checks done by tangle.scanAllDirectives.
-
-            if 'header' in theDict and 'noheader' in theDict:
-                g.es("conflicting @header and @noheader directives")
-            #@-node:ekr.20041005105605.230:<< Test for @header and @noheader >>
-            #@nl
-            #@        << Test for @lineending >>
-            #@+node:ekr.20041005105605.231:<< Test for @lineending >>
-            if 'lineending' not in old and 'lineending' in theDict:
-
-                lineending = g.scanAtLineendingDirective(theDict)
-                if lineending:
-                    self.explicitLineEnding = True
-                    self.output_newline = lineending
-                    # g.trace(p.headString(),'lineending',repr(lineending))
-            #@-node:ekr.20041005105605.231:<< Test for @lineending >>
-            #@nl
-            #@        << Test for @pagewidth >>
-            #@+node:ekr.20041005105605.232:<< Test for @pagewidth >>
-            if 'pagewidth' in theDict and 'pagewidth' not in old:
-
-                w = g.scanAtPagewidthDirective(theDict,issue_error_flag=True)
-                if w and w > 0:
-                    self.page_width = w
-            #@-node:ekr.20041005105605.232:<< Test for @pagewidth >>
-            #@nl
-            #@        << Test for @tabwidth >>
-            #@+node:ekr.20041005105605.233:<< Test for @tabwidth >>
-            if 'tabwidth' in theDict and 'tabwidth' not in old:
-
-                w = g.scanAtTabwidthDirective(theDict,issue_error_flag=True)
-                if w and w != 0:
-                    self.tab_width = w
-            #@-node:ekr.20041005105605.233:<< Test for @tabwidth >>
-            #@nl
-            old.update(theDict)
-        #@    << Set current directory >>
-        #@+node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
-        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-        if c.frame and not self.default_directory:
-            base = g.getBaseDirectory(c) # returns "" on error.
-            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-                if theDir and len(theDir) > 0:
-                    theDir = g.os_path_join(base,theDir)
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        if g.os_path_exists(theDir):
-                            self.default_directory = theDir ; break
-                        else: # 9/25/02
-                            self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-
-        if not self.default_directory and not scripting and not importing:
-            # This should never happen: c.openDirectory should be a good last resort.
-            self.error("No absolute directory specified anywhere.")
-            g.trace(g.callers())
-            self.default_directory = ""
-        #@-node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
-        #@nl
         if not importing and not reading:
-            # 5/19/04: don't override comment delims when reading!
-            #@        << Set comment strings from delims >>
-            #@+node:ekr.20041005105605.235:<< Set comment strings from delims >>
+            # Don't override comment delims when reading!
+            #@        << set comment strings from delims >>
+            #@+node:ekr.20080923070954.13:<< Set comment strings from delims >>
             if forcePythonSentinels:
                 # Force Python language.
                 delim1,delim2,delim3 = g.set_delims_from_language("python")
                 self.language = "python"
+            else:
+                delim1,delim2,delim3 = delims ### g.set_delims_from_language(at.language)
 
             # Use single-line comments if we have a choice.
             # delim1,delim2,delim3 now correspond to line,start,end
             if delim1:
-                self.startSentinelComment = delim1
-                self.endSentinelComment = "" # Must not be None.
+                at.startSentinelComment = delim1
+                at.endSentinelComment = "" # Must not be None.
             elif delim2 and delim3:
-                self.startSentinelComment = delim2
-                self.endSentinelComment = delim3
+                at.startSentinelComment = delim2
+                at.endSentinelComment = delim3
             else: # Emergency!
                 # assert(0)
                 if not g.app.unitTesting:
                     g.es_print("unknown language: using Python comment delimiters")
                     g.es_print("c.target_language:",c.target_language)
                     g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
-                self.startSentinelComment = "#" # This should never happen!
-                self.endSentinelComment = ""
+                at.startSentinelComment = "#" # This should never happen!
+                at.endSentinelComment = ""
 
             # g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
-            #@-node:ekr.20041005105605.235:<< Set comment strings from delims >>
+            #@-node:ekr.20080923070954.13:<< Set comment strings from delims >>
             #@nl
+
         # For unit testing.
         return {
-            "encoding"  : self.encoding,
-            "language"  : self.language,
-            "lineending": self.output_newline,
-            "pagewidth" : self.page_width,
-            "path"      : self.default_directory,
-            "tabwidth"  : self.tab_width,
+            "encoding"  : at.encoding,
+            "language"  : at.language,
+            "lineending": at.output_newline,
+            "pagewidth" : at.page_width,
+            "path"      : at.default_directory,
+            "tabwidth"  : at.tab_width,
         }
-    #@-node:ekr.20041005105605.222:atFile.scanAllDirectives
+    #@-node:ekr.20080923070954.4:atFile.scanAllDirectives
     #@+node:ekr.20041005105605.236:atFile.scanDefaultDirectory
     def scanDefaultDirectory(self,p,importing=False):
 
-        """Set default_directory ivar by looking for @path directives."""
+        """Set the default_directory ivar by looking for @path directives."""
 
         at = self ; c = at.c
-        at.default_directory = None
-        #@    << Set path from @file node >>
-        #@+node:ekr.20041005105605.237:<< Set path from @file node >>
-        # An absolute path in an @file node over-rides everything else.
-        # A relative path gets appended to the relative path by the open logic.
 
-        name = p.anyAtFileNodeName()
+        at.default_directory,error = g.setDefaultDirectory(c,p,importing)
 
-        theDir = g.choose(name,g.os_path_dirname(name),None)
-
-        # g.trace('at.default_directory',at.default_directory)
-        # g.trace('theDir',theDir)
-
-        if theDir and g.os_path_isabs(theDir):
-            if g.os_path_exists(theDir):
-                at.default_directory = theDir
-            else:
-                at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-                if not at.default_directory:
-                    at.error("Directory \"%s\" does not exist" % theDir)
-        #@-node:ekr.20041005105605.237:<< Set path from @file node >>
-        #@nl
-        if at.default_directory:
-            return
-
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            if 'path' in theDict:
-                #@            << handle @path >>
-                #@+node:ekr.20041005105605.238:<< handle @path >>
-                # We set the current director to a path so future writes will go to that directory.
-
-                path = theDict["path"]
-                path = g.computeRelativePath (path)
-
-                if path:
-                    base = g.getBaseDirectory(c) # returns "" on error.
-                    path = g.os_path_join(base,path)
-
-                    if g.os_path_isabs(path):
-                        #@        << handle absolute path >>
-                        #@+node:ekr.20041005105605.240:<< handle absolute path >>
-                        # path is an absolute path.
-
-                        if g.os_path_exists(path):
-                            at.default_directory = path
-                        else:
-                            at.default_directory = g.makeAllNonExistentDirectories(path,c=c)
-                            if not at.default_directory:
-                                at.error("invalid @path: %s" % path)
-                        #@-node:ekr.20041005105605.240:<< handle absolute path >>
-                        #@nl
-                    else:
-                        at.error("ignoring bad @path: %s" % path)
-                else:
-                    at.error("ignoring empty @path")
-                #@-node:ekr.20041005105605.238:<< handle @path >>
-                #@nl
-                return
-
-        #@    << Set current directory >>
-        #@+node:ekr.20041005105605.241:<< Set current directory >>
-        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-        assert(not at.default_directory)
-
-        if c.frame :
-            base = g.getBaseDirectory(c) # returns "" on error.
-            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-                if theDir and len(theDir) > 0:
-                    theDir = g.os_path_join(base,theDir)
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        if g.os_path_exists(theDir):
-                            at.default_directory = theDir ; break
-                        else:
-                            at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-        #@-node:ekr.20041005105605.241:<< Set current directory >>
-        #@nl
-        if not at.default_directory and not importing:
-            # This should never happen: c.openDirectory should be a good last resort.
-            at.error("No absolute directory specified anywhere.")
-            g.trace(g.callers())
-            at.default_directory = ""
+        if error: at.error(error)
     #@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
     #@+node:ekr.20070529083836:cleanLines
     def cleanLines (self,p,s):

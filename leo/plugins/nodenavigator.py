@@ -35,7 +35,7 @@ __version__ = "0.14"
 # 0.11 EKR: Disabled setting __name__ so that an entry is created for 
 # nodenavigator in the Plugins menu.
 # 0.13 EKR: set __plugin_name__ rather than __name__.
-# 0.14 EKR: use c.nodeHistory.visitedPositions rather than c.visitedList.
+# 0.14 EKR: use c.nodeHistory.visitedPositions.
 #@-at
 #@nonl
 #@-node:ekr.20040908093511.2:<< version history >>

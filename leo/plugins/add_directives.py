@@ -20,7 +20,7 @@ def init ():
 
     # Register the handlers...
     leoPlugins.registerHandler("start1",addPluginDirectives)
-    leoPlugins.registerHandler("scan-directives",scanPluginDirectives)
+    # leoPlugins.registerHandler("scan-directives",scanPluginDirectives)
     g.plugin_signon(__name__)
 
     return ok
@@ -40,23 +40,24 @@ def addPluginDirectives (tag,keywords):
             g.globalDirectiveList.append(s)
 #@nonl
 #@-node:edream.110203113231.742:addPluginDirectives
-#@+node:edream.110203113231.743:scanPluginDirectives
+#@+node:edream.110203113231.743:scanPluginDirectives (no longer used)
 def scanPluginDirectives (tag, keywords):
 
     """Add a tuple (d,v,s,k) to list for every directive d found"""
 
     global directives
 
-    keys = ("c","v","s","old_dict","dict","pluginsList")
-    c,v,s,old_dict,dict,pluginsList = [keywords.get(key) for key in keys]
+    keys = ("c","p","s","theDict","pluginsList")
+    c,p,s,theDict,pluginsList = [keywords.get(key) for key in keys]
 
     for d in directives:
-        if not old_dict.has_key(d) and dict.has_key(d):
+        if d in theDict:
             # Point k at whatever follows the directive.
-            s = dict.get(d)
+            s = theDict.get(d)
+            g.trace('s',s)
             kind = d
-            pluginsList.append((kind,v,s),)
-#@-node:edream.110203113231.743:scanPluginDirectives
+            pluginsList.append((kind,p.v,s),)
+#@-node:edream.110203113231.743:scanPluginDirectives (no longer used)
 #@-others
 #@-node:edream.110203113231.741:@thin add_directives.py
 #@-leo

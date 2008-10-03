@@ -168,8 +168,6 @@ class parserBaseClass:
 
         '''Handle an @buttons tree.'''
 
-        # __pychecker__ = '--no-argsused' # kind,name,val not used.
-
         aList = [] ; c = self.c ; tag = '@button'
         for p in p.subtree_with_unique_tnodes_iter():
             h = p.headString()
@@ -190,8 +188,6 @@ class parserBaseClass:
     def doCommands (self,p,kind,name,val):
 
         '''Handle an @commands tree.'''
-
-        # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
         aList = [] ; c = self.c ; tag = '@command'
         for p in p.subtree_iter():
@@ -238,8 +234,6 @@ class parserBaseClass:
     #@+node:ekr.20070224075914:doEnabledPlugins
     def doEnabledPlugins (self,p,kind,name,val):
 
-        # __pychecker__ = '--no-argsused' # kind,name,val not used.
-
         c = self.c
         s = p.bodyString()
 
@@ -264,8 +258,6 @@ class parserBaseClass:
     #@+node:ekr.20041120094940.4:doFont
     def doFont (self,p,kind,name,val):
 
-        # __pychecker__ = '--no-argsused' # kind not used.
-
         trace = False
 
         if trace: g.trace(p and p.headString(),kind,name,self.c.mFileName)
@@ -284,12 +276,10 @@ class parserBaseClass:
     #@+node:ekr.20041120103933:doIf
     def doIf(self,p,kind,name,val):
 
-        # __pychecker__ = '--no-argsused' # args not used.
-
         g.trace("'if' not supported yet")
         return None
     #@-node:ekr.20041120103933:doIf
-    #@+node:ekr.20041121125416:doIfGui
+    #@+node:ekr.20041121125416:doIfGui (can never work)
     #@+at 
     #@nonl
     # Alas, @if-gui can't be made to work. The problem is that plugins can set
@@ -303,10 +293,6 @@ class parserBaseClass:
 
         def doIfGui (self,p,kind,name,val):
 
-            # __pychecker__ = '--no-argsused' # args not used.
-
-            # g.trace(repr(name))
-
             if not g.app.gui or not g.app.gui.guiName():
                 s = '@if-gui has no effect: g.app.gui not defined yet'
                 g.es_print(s,color='blue')
@@ -315,7 +301,7 @@ class parserBaseClass:
                 return None
             else:
                 return "skip"
-    #@-node:ekr.20041121125416:doIfGui
+    #@-node:ekr.20041121125416:doIfGui (can never work)
     #@+node:dan.20080410121257.2:doIfHostname
     def doIfHostname (self,p,kind,name,val):
         """headline: @ifhostname bob,!harry,joe
@@ -325,8 +311,6 @@ class parserBaseClass:
         descends this node iff:
             h = os.environ('HOSTNAME')
             h == 'bob' and h != 'harry' and h == 'joe'"""
-
-        __pychecker__ = '--no-argsused' # args not used.
 
         h = g.computeMachineName()
         names = name.split(',')
@@ -341,10 +325,6 @@ class parserBaseClass:
     #@-node:dan.20080410121257.2:doIfHostname
     #@+node:ekr.20041120104215:doIfPlatform
     def doIfPlatform (self,p,kind,name,val):
-
-        # __pychecker__ = '--no-argsused' # args not used.
-
-        # g.trace(sys.platform,repr(name))
 
         if sys.platform.lower() == name.lower():
             return None
@@ -406,8 +386,6 @@ class parserBaseClass:
     #@-node:ekr.20041217132253:doInts
     #@+node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
     def doMenus (self,p,kind,name,val):
-
-        # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
         c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
         p = p.copy() ; after = p.nodeAfterTree()
@@ -510,8 +488,6 @@ class parserBaseClass:
 
         '''Parse an @mode node and create the enter-<name>-mode command.'''
 
-        # __pychecker__ = '--no-argsused' # val not used.
-
         c = self.c ; k = c.k ; name1 = name
 
         # g.trace('%20s' % (name),c.fileName())
@@ -586,10 +562,6 @@ class parserBaseClass:
     #@+node:ekr.20041120105609:doShortcuts (ParserBaseClass)
     def doShortcuts(self,p,kind,name,val,s=None):
 
-        # __pychecker__ = '--no-argsused' # kind,val.
-
-        # g.trace(self.c.fileName(),name)
-
         c = self.c ; d = self.shortcutsDict ; k = c.k
         trace = False or c.config.getBool('trace_bindings_verbose')
         munge = k.shortcutFromSetting
@@ -650,8 +622,6 @@ class parserBaseClass:
         """
         Handle @popup menu items in @settings trees.
         """
-
-        # __pychecker__ = '--no-argsused' # kind, not used.
 
         popupName = name
         popupType = val
@@ -1028,8 +998,6 @@ class parserBaseClass:
 
         """Init the setting for name to val."""
 
-        # __pychecker__ = '--no-argsused' # p used in subclasses, not here.
-
         c = self.c ; key = self.munge(name)
         # if kind and kind.startswith('setting'): g.trace("settingsParser %10s %15s %s" %(kind,val,name))
         d = self.settingsDict
@@ -1037,7 +1005,7 @@ class parserBaseClass:
         if bunch:
             # g.trace(key,bunch.val,bunch.path)
             path = bunch.path
-            if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
+            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:",name,"from",path)
 
         # N.B.  We can't use c here: it may be destroyed!
@@ -1092,14 +1060,10 @@ class parserBaseClass:
 
         """Give an error: val is not valid for kind."""
 
-        # __pychecker__ = '--no-argsused' # p not used, but needed.
-
         self.error("%s is not a valid %s for %s" % (val,kind,name))
     #@-node:ekr.20041120094940.10:valueError
     #@+node:ekr.20041119204700.3:visitNode (must be overwritten in subclasses)
     def visitNode (self,p):
-
-        # __pychecker__ = '--no-argsused' # p not used, but needed.
 
         self.oops()
     #@-node:ekr.20041119204700.3:visitNode (must be overwritten in subclasses)

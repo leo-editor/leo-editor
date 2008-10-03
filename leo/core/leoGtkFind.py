@@ -695,22 +695,6 @@ class gtkSpellTab:
         else:
             return None
     #@-node:ekr.20080112173119.59:getSuggestion
-    #@+node:ekr.20080112173119.60:update (no longer used)
-    # def update(self,show=True,fill=False):
-
-        # """Update the Spell Check dialog."""
-
-        # c = self.c
-
-        # if fill:
-            # self.fillbox([])
-
-        # self.updateButtons()
-
-        # if show:
-            # self.bringToFront()
-            # c.bodyWantsFocus()
-    #@-node:ekr.20080112173119.60:update (no longer used)
     #@+node:ekr.20080112173119.61:updateButtons (spellTab)
     def updateButtons (self):
 

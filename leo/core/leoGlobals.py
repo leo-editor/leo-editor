@@ -9,10 +9,6 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-# __pychecker__ = '--no-import --no-reimportself --no-reimport --no-constCond --no-constant1'
-    # Disable all import warnings: This module must do strange things with imports. 
-    # Disable checks for constant conditionals.
-
 #@<< imports >>
 #@+node:ekr.20050208101229:<< imports >>
 if 0:
@@ -177,7 +173,7 @@ def computeHomeDir():
     import leo.core.leoGlobals as g
 
     encoding = g.startupEncoding()
-    # dotDir = g.os_path_finalize('./',encoding)
+    # dotDir = g.os_path_finalize('./',encoding=encoding)
     # home = os.getenv('HOME',default=None)
     home = os.path.expanduser("~")
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
@@ -192,7 +188,7 @@ def computeHomeDir():
     if home:
         # N.B. This returns the _working_ directory if home is None!
         # This was the source of the 4.3 .leoID.txt problems.
-        home = g.os_path_finalize(home,encoding)
+        home = g.os_path_finalize(home,encoding=encoding)
         if (
             not g.os_path_exists(home,encoding) or
             not g.os_path_isdir(home,encoding)
@@ -236,7 +232,7 @@ def computeLoadDir():
                 # Convert the drive name to upper case.
                 path = path[0].upper() + path[1:]
         encoding = g.startupEncoding()
-        path = g.os_path_finalize(path,encoding)
+        path = g.os_path_finalize(path,encoding=encoding)
         if path:
             loadDir = g.os_path_dirname(path,encoding)
         else: loadDir = None
@@ -248,7 +244,7 @@ def computeLoadDir():
         ):
             loadDir = os.getcwd()
             g.pr("Exception getting load directory")
-        loadDir = g.os_path_finalize(loadDir,encoding)
+        loadDir = g.os_path_finalize(loadDir,encoding=encoding)
         # g.es("load dir:",loadDir,color="blue")
         return loadDir
     except:
@@ -365,8 +361,6 @@ def computeRelativePath (path):
         path = path[1:-1].strip()
 
     # We want a *relative* path, not an absolute path.
-    # path = g.os_path_join(g.app.loadDir,path)
-
     return path
 #@-node:ekr.20071109165315:g.computeRelativePath
 #@+node:ekr.20031218072017.1385:g.findReference
@@ -512,9 +506,11 @@ def scanAtCommentAndAtLanguageDirectives(aList):
 
         # Important: assume @comment follows @language.
         if language:
+            # if g.unitTesting: g.trace('language',language)
             lang,delim1,delim2,delim3 = g.set_language(language,0)
 
         if comment:
+            # if g.unitTesting: g.trace('comment',comment)
             delim1,delim2,delim3 = g.set_delims_from_string(comment)
 
         if comment or language:
@@ -523,25 +519,6 @@ def scanAtCommentAndAtLanguageDirectives(aList):
 
     return None
 #@-node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives (new)
-#@+node:ekr.20031218072017.1387:g.scanAtEncodingDirective (to be deleted)
-def scanAtEncodingDirective(theDict):
-
-    """Scan the @encoding directive at s[theDict["encoding"]:].
-
-    Returns the encoding name or None if the encoding name is invalid.
-    """
-
-    encoding = theDict.get('encoding')
-    if not encoding:
-        return None
-
-    if g.isValidEncoding(encoding):
-        # g.trace(encoding)
-        return encoding
-    else:
-        g.es("invalid @encoding:",encoding,color="red")
-        return None
-#@-node:ekr.20031218072017.1387:g.scanAtEncodingDirective (to be deleted)
 #@+node:ekr.20080827175609.32:g.scanAtEncodingDirectives (new)
 def scanAtEncodingDirectives(aList):
 
@@ -567,24 +544,6 @@ def scanAtHeaderDirectives(aList):
             g.es_print("conflicting @header and @noheader directives",color='red')
 #@nonl
 #@-node:ekr.20080827175609.53:g.scanAtHeaderDirectives (new)
-#@+node:ekr.20031218072017.1388:g.scanAtLineendingDirective (to be deleted)
-def scanAtLineendingDirective(theDict):
-
-    """Scan the @lineending directive at s[theDict["lineending"]:].
-
-    Returns the actual lineending or None if the name of the lineending is invalid.
-    """
-
-    e = theDict.get('lineending')
-
-    if e in ("cr","crlf","lf","nl","platform"):
-        lineending = g.getOutputNewline(name=e)
-        # g.trace(e,lineending)
-        return lineending
-    else:
-        # g.es("invalid @lineending directive:",e,color="red")
-        return None
-#@-node:ekr.20031218072017.1388:g.scanAtLineendingDirective (to be deleted)
 #@+node:ekr.20080827175609.33:g.scanAtLineendingDirectives (new)
 def scanAtLineendingDirectives(aList):
 
@@ -601,25 +560,6 @@ def scanAtLineendingDirectives(aList):
 
     return None
 #@-node:ekr.20080827175609.33:g.scanAtLineendingDirectives (new)
-#@+node:ekr.20031218072017.1389:g.scanAtPagewidthDirective (to be deleted)
-def scanAtPagewidthDirective(theDict,issue_error_flag=False):
-
-    """Scan the @pagewidth directive at s[theDict["pagewidth"]:].
-
-    Returns the value of the width or None if the width is invalid.
-    """
-
-    s = theDict.get('pagewidth')
-    i, val = g.skip_long(s,0)
-
-    if val != None and val > 0:
-        # g.trace(val)
-        return val
-    else:
-        if issue_error_flag and not g.app.unitTesting:
-            g.es("ignoring @pagewidth",s,color="red")
-        return None
-#@-node:ekr.20031218072017.1389:g.scanAtPagewidthDirective (to be deleted)
 #@+node:ekr.20080827175609.34:g.scanAtPagewidthDirectives (new)
 def scanAtPagewidthDirectives(aList,issue_error_flag=False):
 
@@ -678,25 +618,6 @@ def scanAtRootOptions (s,i,err_flag=False):
 
     return i,mode
 #@-node:ekr.20031218072017.3154:g.scanAtRootOptions
-#@+node:ekr.20031218072017.1390:g.scanAtTabwidthDirective (to be deleted)
-def scanAtTabwidthDirective(theDict,issue_error_flag=False):
-
-    """Scan the @tabwidth directive at s[theDict["tabwidth"]:].
-
-    Returns the value of the width or None if the width is invalid.
-    """
-
-    s = theDict.get('tabwidth')
-    junk,val = g.skip_long(s,0)
-
-    if val != None and val != 0:
-        # g.trace(val)
-        return val
-    else:
-        if issue_error_flag:
-            g.es("ignoring",s,color="red")
-        return None
-#@-node:ekr.20031218072017.1390:g.scanAtTabwidthDirective (to be deleted)
 #@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives (new)
 def scanAtTabwidthDirectives(aList,issue_error_flag=False):
 
@@ -802,6 +723,90 @@ def scanForAtSettings(p):
 
     return False
 #@-node:ekr.20041123094807:g.scanForAtSettings
+#@+node:ekr.20081001062423.9:g.setDefaultDirectory
+# This is a refactoring, used by leoImport.scanDefaultDirectory and
+# atFile.scanDefault directory
+
+def setDefaultDirectory(c,p,importing=False):
+
+    '''Set default_directory by scanning @path directives.
+    Return (default_directory,error_message).'''
+
+    default_directory = '' ; error = ''
+    if not p: return default_directory,error
+
+    #@    << Set path from @file node >>
+    #@+node:ekr.20081001062423.10:<< Set path from @file node >>
+    # An absolute path in an @file node over-rides everything else.
+    # A relative path gets appended to the relative path by the open logic.
+
+    name = p.anyAtFileNodeName()
+    theDir = g.choose(name,g.os_path_dirname(name),None)
+
+    if theDir and g.os_path_isabs(theDir):
+        if g.os_path_exists(theDir):
+            default_directory = theDir
+        else:
+            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+            if not default_directory:
+                error = "Directory \"%s\" does not exist" % theDir
+    #@-node:ekr.20081001062423.10:<< Set path from @file node >>
+    #@nl
+
+    if not default_directory:
+        # Scan for @path directives.
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        if path:
+            #@            << handle @path >>
+            #@+node:ekr.20081001062423.11:<< handle @path >>
+            path = g.computeRelativePath (path)
+
+            if path:
+                base = g.getBaseDirectory(c) # returns "" on error.
+                path = c.os_path_finalize_join(base,path)
+
+                if g.os_path_isabs(path):
+                    if g.os_path_exists(path):
+                        default_directory = path
+                    else:
+                        default_directory = g.makeAllNonExistentDirectories(path,c=c)
+                        if not default_directory:
+                            error = "invalid @path: %s" % path
+                        else:
+                            error = "ignoring bad @path: %s" % path
+            else:
+                error = "ignoring empty @path"
+            #@-node:ekr.20081001062423.11:<< handle @path >>
+            #@nl
+
+    if not default_directory:
+        #@        << Set current directory >>
+        #@+node:ekr.20081001062423.12:<< Set current directory >>
+        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+        assert(not default_directory)
+
+        if c.frame:
+            base = g.getBaseDirectory(c) # returns "" on error.
+            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+                if theDir and len(theDir) > 0:
+                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                        if g.os_path_exists(theDir):
+                            default_directory = theDir ; break
+                        else:
+                            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        #@-node:ekr.20081001062423.12:<< Set current directory >>
+        #@nl
+
+    if not default_directory and not importing:
+        # This should never happen: c.openDirectory should be a good last resort.
+        error = "No absolute directory specified anywhere."
+
+    # g.trace('returns',default_directory)
+    return default_directory, error
+#@-node:ekr.20081001062423.9:g.setDefaultDirectory
 #@+node:ekr.20031218072017.1382:g.set_delims_from_language
 # Returns a tuple (single,start,end) of comment delims
 
@@ -1102,11 +1107,7 @@ def es_event_exception (eventName,full=False):
 #@+node:ekr.20031218072017.3112:es_exception
 def es_exception (full=True,c=None,color="red"):
 
-    # __pychecker__ = '--no-argsused' # c not used. retained for compatibility.
-
     typ,val,tb = sys.exc_info()
-
-    # g.trace(full,typ,tb)
 
     fileName,n = g.getLastTracebackFileAndLineNumber()
 
@@ -1986,7 +1987,6 @@ def create_temp_file (textMode=False):
 
     # mktemp is deprecated, but we can't get rid of it
     # because mkstemp does not exist in Python 2.2.1.
-    # __pychecker__ = '--no-deprecate'
     try:
         # fd is an handle to an open file as would be returned by os.open()
         fd,theFileName = tempfile.mkstemp(text=textMode)
@@ -2104,7 +2104,7 @@ def makePathRelativeTo (fullPath,basePath):
 #@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 # This is a generalization of os.makedir.
 
-def makeAllNonExistentDirectories (theDir,c=None,force=False):
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
 
     """Attempt to make all non-existent directories"""
 
@@ -2116,6 +2116,9 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False):
                 return None
         elif not app.config.create_nonexistent_directories:
             return None
+
+    if c:
+        theDir = g.os_path_expandExpression(theDir,c=c)
 
     dir1 = theDir = g.os_path_normpath(theDir)
 
@@ -2136,9 +2139,12 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False):
         if not g.os_path_exists(path):
             try:
                 os.mkdir(path)
-                g.es_print("created directory:",path,color='red')
+                if verbose and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
             except Exception:
-                g.es_print("exception creating directory:",path,color='red')
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
                 g.es_exception()
                 return None
     return dir1 # All have been created.
@@ -2209,7 +2215,7 @@ def openWithFileName(fileName,old_c,
                 # The recent files list has been updated by c.updateRecentFiles.
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
     # Bug fix in 4.4.
-    frame.openDirectory = g.os_path_finalize(g.os_path_dirname(fileName))
+    frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     p = c.currentPosition()
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -2806,8 +2812,6 @@ trace_count = 0
 
 def idleTimeHookHandler(*args,**keys):
 
-    # __pychecker__ = '--no-argsused' # args & keys not used.
-
     if 0: # Do not use g.trace here!
         global trace_count ; trace_count += 1
         if 1:
@@ -3209,6 +3213,34 @@ def os_path_exists(path,encoding=None):
 
     return os.path.exists(path)
 #@-node:ekr.20031218072017.2149:os_path_exists
+#@+node:ekr.20080922124033.6:os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.currentPosition()
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+#@-node:ekr.20080922124033.6:os_path_expandExpression
 #@+node:ekr.20080921060401.13:os_path_expanduser
 def os_path_expanduser(path,encoding=None):
 
@@ -3223,24 +3255,31 @@ def os_path_expanduser(path,encoding=None):
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
 #@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,encoding=None):
+def os_path_finalize (path,**keys):
 
     '''
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
 
     There is no corresponding os.path method'''
 
-    path = g.os_path_expanduser(path,encoding=encoding)
+    c,encoding = keys.get('c'),keys.get('encoding')
 
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path,encoding=encoding)
     return os.path.normpath(os.path.abspath(path))
 
 def os_path_finalize_join (*args,**keys):
 
     '''Do os.path.join(*args), then finalize the result.'''
 
-    path = g.os_path_join(*args,**keys)
+    c,encoding = keys.get('c'),keys.get('encoding')
 
-    return os.path.normpath(os.path.abspath(path))
+    if c: args = [g.os_path_expandExpression(path,**keys)
+        for path in args if path]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
 #@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
@@ -3288,7 +3327,8 @@ def os_path_isfile(path,encoding=None):
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
 
-    encoding = keys.get("encoding")
+    c = keys.get('c')
+    encoding = keys.get('encoding')
 
     uargs = [g.toUnicodeFileEncoding(arg,encoding) for arg in args]
 
@@ -3301,9 +3341,10 @@ def os_path_join(*args,**keys):
             uargs[0] = c.openDirectory
             # g.trace(c.openDirectory)
 
-    uargs = [os.path.expanduser(z) for z in uargs]
+    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs if z]
 
     path = os.path.join(*uargs)
+
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path,encoding)
     return path
@@ -4149,8 +4190,6 @@ joinlines = joinLines
 def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     script_search=True,script_change=True):
 
-    # __pychecker__ = '--no-argsused' # firstNode is not used.
-
     import leo.core.leoTest as leoTest
     import leo.core.leoGlobals as g
 
@@ -4333,9 +4372,6 @@ def isWordChar1 (ch):
 #@nonl
 #@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
 #@+node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
-# Suppress warning about redefining getpreferredencoding
-# __pychecker__ = '--no-reuseattr'
-
 try:
     # Use Python's version of getpreferredencoding if it exists.
     # It is new in Python 2.3.
@@ -4398,8 +4434,6 @@ except Exception:
 
         #@-node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
         #@nl
-
-# __pychecker__ = '--reuseattr'
 #@-node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
 #@+node:ekr.20031218072017.1499:isUnicode
 def isUnicode(s):
@@ -4761,8 +4795,6 @@ def CheckVersionToInt (s):
 
 def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0.0.0", delimiter='.' ):
 
-    # __pychecker__ = 'maxreturns=20'
-
     # tokenize the stringCompare flags
     compareFlag = stringCompare.split('.')
 
@@ -4901,8 +4933,6 @@ bunch = Bunch
 class nullObject:
 
     """An object that does nothing, and does it very well."""
-
-    # __pychecker__ = '--no-argsused'
 
     def __init__   (self,*args,**keys): pass
     def __call__   (self,*args,**keys): return self

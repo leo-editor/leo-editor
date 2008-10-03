@@ -9,8 +9,6 @@ Modelled after Emacs and Vim commands.'''
 
 #@<< imports >>
 #@+node:ekr.20050710151017:<< imports >>
-# __pychecker__ = '--no-import'
-
 import leo.core.leoGlobals as g
 
 import leo.core.leoFind as leoFind
@@ -1244,7 +1242,7 @@ class debugCommandsClass (baseEditCommandsClass):
 
         for debugger in debuggers:
             if debugger:
-                debugger = g.os_path_finalize(debugger)
+                debugger = c.os_path_finalize(debugger)
                 if g.os_path_exists(debugger):
                     return debugger
                 else:
@@ -2325,7 +2323,7 @@ class editCommandsClass (baseEditCommandsClass):
     def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
 
         c = self.c
-        path = g.os_path_finalize_join(iconDir,path)
+        path = c.os_path_finalize_join(iconDir,path)
         relPath = g.makePathRelativeTo(path,iconDir)
 
         image,image_height = self.getImage(path)
@@ -2471,14 +2469,14 @@ class editCommandsClass (baseEditCommandsClass):
         aList = self.getIconList(p)
         if not aList: return
 
-        basePath = g.os_path_finalize_join(g.app.loadDir,"..","Icons")
-        absRelPath = g.os_path_finalize_join(basePath,relPath)
-        name = g.os_path_finalize(name)
+        basePath = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
+        absRelPath = c.os_path_finalize_join(basePath,relPath)
+        name = c.os_path_finalize(name)
 
         newList = []
         for d in aList:
             name2 = d.get('file')
-            name2 = g.os_path_finalize(name2)
+            name2 = c.os_path_finalize(name2)
             name2rel = d.get('relPath')
             # g.trace('name',name,'\nrelPath',relPath,'\nabsRelPath',absRelPath,'\nname2',name2,'\nname2rel',name2rel)
             if not (name == name2 or absRelPath == name2 or relPath == name2rel):
@@ -2528,7 +2526,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = c.currentPosition()
 
-        iconDir = g.os_path_finalize_join(g.app.loadDir,"..","Icons")
+        iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
 
         paths = g.app.gui.runOpenFileDialog(
@@ -2555,7 +2553,7 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c
         if p is None: p = c.currentPosition()
 
-        iconDir = g.os_path_finalize_join(g.app.loadDir,"..","Icons")
+        iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
 
         aList = [] ; xoffset = 2
@@ -7369,6 +7367,7 @@ class minibufferFind (baseEditCommandsClass):
             k.resetLabel()
             k.showStateAndMode()
             self.generalSearchHelper(k.arg,cloneFindAll=True)
+            c.treeWantsFocus()
     #@-node:ekr.20060128080201:cloneFindAll
     #@+node:ekr.20060204120158:findAgain
     def findAgain (self,event):
@@ -8363,9 +8362,6 @@ class spellTabHandler (leoFind.leoFind):
     def change(self,event=None):
         """Make the selected change to the text"""
 
-        # __pychecker__ = '--no-override --no-argsused'
-             # event param is not used, required, and different from base class.
-
         c = self.c ; body = self.body ; w = body.bodyCtrl
 
         selection = self.tab.getSuggestion()
@@ -8563,12 +8559,12 @@ class AspellClass:
 
         self.c = c
 
-        self.aspell_dir = g.os_path_finalize(c.config.getString('aspell_dir'))
-        self.aspell_bin_dir = g.os_path_finalize(c.config.getString('aspell_bin_dir'))
+        self.aspell_dir = c.os_path_finalize(c.config.getString('aspell_dir'))
+        self.aspell_bin_dir = c.os_path_finalize(c.config.getString('aspell_bin_dir'))
         self.diagnose = c.config.getBool('diagnose-aspell-installation')
 
         self.local_language_code = local_language_code or 'en'
-        self.local_dictionary_file = g.os_path_finalize(local_dictionary_file)
+        self.local_dictionary_file = c.os_path_finalize(local_dictionary_file)
         self.local_dictionary = "%s.wl" % os.path.splitext(self.local_dictionary_file) [0]
 
         # g.trace('code',self.local_language_code,'dict',self.local_dictionary_file)

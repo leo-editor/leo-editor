@@ -16,8 +16,6 @@ class leoMenu:
 
     """The base class for all Leo menus."""
 
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
-
     #@    @+others
     #@+node:ekr.20031218072017.3751: leoMenu.__init__
     def __init__ (self,frame):
@@ -1608,7 +1606,6 @@ class leoMenu:
         for name in c.recentFiles[:n]:
             if name.strip() == "": continue  # happens with empty list/new file
             def recentFilesCallback (event=None,c=c,name=name):
-                # __pychecker__ = '--no-argsused' # event not used, but must be present.
                 c.openRecentFile(name)
             label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
             c.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
@@ -1633,8 +1630,6 @@ class leoMenu:
 
             # The first parameter must be event, and it must default to None.
             def minibufferMenuCallback(event=event,self=self,command=command,label=name):
-                # __pychecker__ = '--no-argsused' # event not used, and must be present.
-
                 c = self.c
                 return c.doCommand(command,label,event)
 
@@ -1644,8 +1639,6 @@ class leoMenu:
 
             # The first parameter must be event, and it must default to None.
             def legacyMenuCallback(event=None,self=self,command=command,label=name):
-                # __pychecker__ = '--no-argsused' # event not used, and must be present.
-
                 c = self.c
                 return c.doCommand(command,label)
 
@@ -1784,7 +1777,6 @@ class leoMenu:
         return None
 
     def getMenuLabel (self,menu):
-        # __pychecker__ = '--no-argsused' # menu not used.
         self.oops()
 
     def setMenuLabel (self,menu,name,label,underline=-1):
@@ -1797,8 +1789,6 @@ class leoMenu:
 class nullMenu(leoMenu):
 
     """A null menu class for testing and batch execution."""
-
-    # __pychecker__ = '--no-argsused' # This calss has many unused args.
 
     #@    @+others
     #@+node:ekr.20050104094308:ctor

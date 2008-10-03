@@ -12,8 +12,6 @@
 #@+node:ekr.20031218072017.2606:<< Import pychecker >>
 #@@color
 
-__pychecker__ = '--no-argsused'
-
 # See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.
 
 if 0: # Set to 1 for lint-like testing.
@@ -237,7 +235,14 @@ def getFileName (fileName,script):
     elif fileName:
         pass
     else:
-        fileName = len(sys.argv) > 1 and sys.argv[-1]
+        # Bug fix: 2008/10/1
+        if sys.platform.startswith('win'):
+            if len(sys.argv) > 1:
+                fileName = ' '.join(sys.argv[1:])
+            else:
+                fileName = None
+        else:
+            fileName = len(sys.argv) > 1 and sys.argv[-1]
 
     return completeFileName(fileName)
 #@+node:ekr.20041124083125:completeFileName
@@ -255,7 +260,8 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    fileName = g.g.os_path_finalize_join(os.getcwd(),fileName)
+    ### fileName = g.os_path_finalize_join(os.getcwd(),fileName)
+    fileName = g.os_path_finalize(fileName)
 
     junk,ext = g.os_path_splitext(fileName)
     if not ext:
@@ -446,8 +452,8 @@ def profile_leo ():
     import pstats
     import leo.core.leoGlobals as g
 
-    name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
+    # name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+    name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
 
     profile.run('leo.run()',name)
 

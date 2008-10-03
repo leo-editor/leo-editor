@@ -3323,157 +3323,753 @@ Brian Theado
 @language python
 @color
 #@nonl
-#@+node:ekr.20041219072416.1:<< import other early files>> (runLeo.py)
-import leo.core.leoNodes as leoNodes
-import leo.core.leoConfig as leoConfig
+#@+node:ekr.20080923070954.8:From at.scanAllDirectives (does not include recent bug fixes!)
+#@+node:ekr.20080923070954.5:<< Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    at.language = "python"
 
-# There is a circular dependency between leoCommands and leoEditCommands.
-import leo.core.leoCommands as leoCommands
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
 
-# New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
-# This prevents a crash when run is called repeatedly from IPython's lleo extension.
-import leo.core.leoPlugins as leoPlugins
-leoPlugins.init()
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@-node:ekr.20080923070954.5:<< Set comment strings from delims >>
+#@+node:ekr.20080923070954.6:<< Set current directory >> (atFile.scanAllDirectives)
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
 
-g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-g.app.config = leoConfig.configClass()
-#@nonl
-#@-node:ekr.20041219072416.1:<< import other early files>> (runLeo.py)
-#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >> (runLeo.py)
-if jyLeo:
-    print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
+if c.frame and not self.default_directory:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    self.default_directory = theDir ; break
+                else: # 9/25/02
+                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
 
-# Add the current directory to sys.path *before* importing g.
-# This will fail if the current directory contains unicode characters...
-path = os.getcwd()
-if path not in sys.path:
-    # print('appending %s to sys.path' % path)
-    sys.path.append(path)
+if not self.default_directory and not scripting and not importing:
+    # This should never happen: c.openDirectory should be a good last resort.
+    g.trace()
+    self.error("No absolute directory specified anywhere.")
+    self.default_directory = ""
+#@-node:ekr.20080923070954.6:<< Set current directory >> (atFile.scanAllDirectives)
+#@-node:ekr.20080923070954.8:From at.scanAllDirectives (does not include recent bug fixes!)
+#@+node:ekr.20031218072017.1377:OLDscanColorDirectives (leoColor) (old)
+def OLDscanColorDirectives(self,p):
 
-# Import leoGlobals, but do NOT set g.
-import leo.core.leoGlobals as leoGlobals
+    """Scan position p and p's ancestors looking for @comment, @language and @root directives,
+    setting corresponding colorizer ivars.
+    """
 
-# Set leoGlobals.g here, rather than in leoGlobals.py.
-leoGlobals.g = leoGlobals
+    p = p.copy() ; c = self.c
+    if c == None: return # self.c may be None for testing.
 
-import leo.core.leoApp as leoApp
+    if c.target_language:
+        c.target_language = c.target_language.lower()
+    self.language = language = c.target_language
+    self.comment_string = None
+    self.rootMode = None # None, "code" or "doc"
 
-# Create the app.
-leoGlobals.app = leoApp.LeoApp()
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << Test for @comment or @language >>
+        << Test for @root, @root-doc or @root-code >>
 
-# **now** we can set g.
-g = leoGlobals
-assert(g.app)
+    # g.trace('self.language',self.language)
+    return self.language # For use by external routines.
+#@+node:ekr.20031218072017.1378:<< Test for @comment or @language >>
+# @comment and @language may coexist in the same node.
 
-#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >> (runLeo.py)
-#@+node:ekr.20080921060401.9:doEarlyInits
-def doEarlyInits(verbose):
+if 'comment' in theDict:
+    self.comment_string = theDict["comment"]
 
-    import leo.core.leoGlobals as g
-    import leo.core.leoNodes as leoNodes
-    import leo.core.leoConfig as leoConfig
+if 'language' in theDict:
+    z = theDict["language"]
+    language,junk,junk,junk = g.set_language(z,0)
+    self.language = language
 
-    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+if 'comment' in theDict or 'language' in theDict:
+    break
+#@-node:ekr.20031218072017.1378:<< Test for @comment or @language >>
+#@+node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
+if 'root' in theDict and not self.rootMode:
 
-    # There is a circular dependency between leoCommands and leoEditCommands.
-    import leo.core.leoCommands as leoCommands
-
-    # New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
-    # This prevents a crash when run is called repeatedly from IPython's lleo extension.
-    import leo.core.leoPlugins as leoPlugins
-    leoPlugins.init()
-
-    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-    g.app.config = leoConfig.configClass()
-#@-node:ekr.20080921060401.9:doEarlyInits
-#@+node:ekr.20080921060401.10:initGandApp
-def initGandApp ():
-
-    # Add the current directory to sys.path *before* importing g.
-    # This will fail if the current directory contains unicode characters...
-    path = os.getcwd()
-    if path not in sys.path:
-        # print('appending %s to sys.path' % path)
-        sys.path.append(path)
-
-    # Import leoGlobals, but do NOT set g.
-    import leo.core.leoGlobals as leoGlobals
-
-    # Set leoGlobals.g here, rather than in leoGlobals.py.
-    leoGlobals.g = leoGlobals
-
-    import leo.core.leoApp as leoApp
-
-    # Create the app.
-    leoGlobals.app = leoApp.LeoApp()
-
-    # **now** we can set g.
-    g = leoGlobals
-    assert(g.app)
-
-    return g
-#@-node:ekr.20080921060401.10:initGandApp
-#@+node:ekr.20080921154026.2:c.newHelper
-def newHelper (self,c,frame,importFileName=None):
-
-    # Needed for plugins.
-    if not importFileName:
-        g.doHook("new",old_c=self,c=c,new_c=c)
-    # Use the config params to set the size and location of the window.
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-
-    if importFileName:
-        junk,ext = g.os_path_splitext(importFileName)
-        p = c.currentPosition()
-        p = c.importCommands.createOutline(importFileName,parent=p,atAuto=False,ext=ext)
-        c.setCurrentPosition(p)
-        c.moveOutlineLeft()
-        p = c.currentPosition()
-        c.setCurrentPosition(p.back())
-        c.deleteOutline(op_name=None)
-        p = c.currentPosition()
-        p.expand()
+    root = theDict["root"]
+    if g.match_word(root,0,"@root-code"):
+        self.rootMode = "code"
+    elif g.match_word(root,0,"@root-doc"):
+        self.rootMode = "doc"
     else:
-        v = leoNodes.vnode(context=c)
-        v.initHeadString(g.choose(importFileName,importFileName,'NewHeadline'))
-        p = leoNodes.position(v)
-        p._linkAsRoot(oldRoot=None)
-            # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.setCurrentPosition(p)
-        c.editPosition(p)
+        doc = c.config.at_root_bodies_start_in_doc_mode
+        self.rootMode = g.choose(doc,"doc","code")
+#@-node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
+#@-node:ekr.20031218072017.1377:OLDscanColorDirectives (leoColor) (old)
+#@+node:ekr.20041005105605.222:atFile.OLDatFileAllDirectives
+@ Once a directive is seen, no other related directives in nodes further up the tree have any effect.  For example, if an @color directive is seen in node p, no @color or @nocolor directives are examined in any ancestor of p.
 
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
+This code is similar to Commands.scanAllDirectives, but it has been modified for use by the atFile class.
+@c
 
-    if not importFileName:
-        # We will do this later if we are importing.
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
+def OLDscanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+):
 
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    """Scan position p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.
+    """
 
-    if importFileName: frame.c.setChanged(True)
+    c = self.c
+    << Set ivars >>
+    << Set path from @file node >>
+    old = {}
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << Test for @path >>
+        << Test for @encoding >>
+        << Test for @comment and @language >>
+        << Test for @header and @noheader >>
+        << Test for @lineending >>
+        << Test for @pagewidth >>
+        << Test for @tabwidth >>
+        old.update(theDict)
+    << Set current directory >>
+    if not importing and not reading:
+        # 5/19/04: don't override comment delims when reading!
+        << Set comment strings from delims >>
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.default_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20041005105605.223:<< Set ivars >>
+self.page_width = self.c.page_width
+self.tab_width  = self.c.tab_width
 
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
+self.default_directory = None # 8/2: will be set later.
+
+# g.trace(c.target_language)
+
+if c.target_language:
+    c.target_language = c.target_language.lower() # 6/20/05
+delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
+self.language = c.target_language
+
+self.encoding = c.config.default_derived_file_encoding
+self.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+#@-node:ekr.20041005105605.223:<< Set ivars >>
+#@+node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName() # 4/28/04
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        self.default_directory = theDir
+    else: # 9/25/02
+        self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not self.default_directory:
+            self.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
+#@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
+# We set the current director to a path so future writes will go to that directory.
+
+if not self.default_directory and not 'path' in old and 'path' in theDict:
+
+    path = theDict["path"]
+    path = g.computeRelativePath(path)
+    if path:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
+        if g.os_path_isabs(path):
+            << handle absolute path >>
+        else:
+            self.error("ignoring bad @path: %s" % path)
     else:
-        c.bodyWantsFocusNow()
-    # Force a call to c.outerUpdate.
-    # This is needed when we execute this command from a menu.
+        self.error("ignoring empty @path")
+#@+node:ekr.20041005105605.227:<< handle absolute path >>
+# path is an absolute path.
 
-    c.redraw_now()
-#@-node:ekr.20080921154026.2:c.newHelper
+if g.os_path_exists(path):
+    self.default_directory = path
+else:
+    self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+    if not self.default_directory:
+        self.error("invalid @path: %s" % path)
+#@-node:ekr.20041005105605.227:<< handle absolute path >>
+#@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
+#@+node:ekr.20041005105605.228:<< Test for @encoding >>
+if not 'encoding' in old and 'encoding' in theDict:
+
+    e = g.scanAtEncodingDirective(theDict)
+    if e:
+        self.encoding = e
+#@-node:ekr.20041005105605.228:<< Test for @encoding >>
+#@+node:ekr.20041005105605.230:<< Test for @header and @noheader >>
+# EKR: 10/10/02: perform the sames checks done by tangle.scanAllDirectives.
+
+if 'header' in theDict and 'noheader' in theDict:
+    g.es("conflicting @header and @noheader directives")
+#@-node:ekr.20041005105605.230:<< Test for @header and @noheader >>
+#@+node:ekr.20041005105605.229:<< Test for @comment and @language >>
+# 10/17/02: @language and @comment may coexist in @file trees.
+# For this to be effective the @comment directive should follow the @language directive.
+
+# 1/23/05: Any previous @language or @comment prevents processing up the tree.
+# This code is now like the code in tangle.scanAlldirectives.
+
+if 'comment' in old or 'language' in old:
+    pass # Do nothing more.
+
+elif 'comment' in theDict:
+    z = theDict["comment"]
+    delim1, delim2, delim3 = g.set_delims_from_string(z)
+
+elif 'language' in theDict:
+    z = theDict["language"]
+    self.language,delim1,delim2,delim3 = g.set_language(z,0)
+#@-node:ekr.20041005105605.229:<< Test for @comment and @language >>
+#@+node:ekr.20041005105605.231:<< Test for @lineending >>
+if 'lineending' not in old and 'lineending' in theDict:
+
+    lineending = g.scanAtLineendingDirective(theDict)
+    if lineending:
+        self.explicitLineEnding = True
+        self.output_newline = lineending
+        # g.trace(p.headString(),'lineending',repr(lineending))
+#@-node:ekr.20041005105605.231:<< Test for @lineending >>
+#@+node:ekr.20041005105605.232:<< Test for @pagewidth >>
+if 'pagewidth' in theDict and 'pagewidth' not in old:
+
+    w = g.scanAtPagewidthDirective(theDict,issue_error_flag=True)
+    if w and w > 0:
+        self.page_width = w
+#@-node:ekr.20041005105605.232:<< Test for @pagewidth >>
+#@+node:ekr.20041005105605.233:<< Test for @tabwidth >>
+if 'tabwidth' in theDict and 'tabwidth' not in old:
+
+    w = g.scanAtTabwidthDirective(theDict,issue_error_flag=True)
+    if w and w != 0:
+        self.tab_width = w
+#@-node:ekr.20041005105605.233:<< Test for @tabwidth >>
+#@+node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+if c.frame and not self.default_directory:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    self.default_directory = theDir ; break
+                else: # 9/25/02
+                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+
+if not self.default_directory and not scripting and not importing:
+    # This should never happen: c.openDirectory should be a good last resort.
+    self.error("No absolute directory specified anywhere.")
+    g.trace(g.callers())
+    self.default_directory = ""
+#@-node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
+#@+node:ekr.20041005105605.235:<< Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    self.language = "python"
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    self.startSentinelComment = delim1
+    self.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    self.startSentinelComment = delim2
+    self.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    self.startSentinelComment = "#" # This should never happen!
+    self.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@-node:ekr.20041005105605.235:<< Set comment strings from delims >>
+#@-node:ekr.20041005105605.222:atFile.OLDatFileAllDirectives
+#@+node:ekr.20080923124254.1:scanForTabWidth (old)
+def scanForTabWidth (self,p):
+
+    c = self.c ; w = c.tab_width
+
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << set w and break on @tabwidth >>
+
+    c.frame.setTabWidth(w)
+#@+node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
+if 'tabwidth' in theDict:
+
+    val = g.scanAtTabwidthDirective(theDict,issue_error_flag=False)
+    if val and val != 0:
+        w = val
+        break
+#@-node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
+#@-node:ekr.20080923124254.1:scanForTabWidth (old)
+#@+node:ekr.20031218072017.1360:tangle.OLDscanAllDirectives (old)
+@ Once a directive is seen, related directives in ancesors have no effect.  For example, if an @color directive is seen in node x, no @color or @nocolor directives are examined in any ancestor of x.
+@c
+
+def OLDscanAllDirectives(self,p,require_path_flag,issue_error_flag):
+
+    """Scan vnode p and p's ancestors looking for directives,
+    setting corresponding tangle ivars and globals.
+    """
+
+    c = self.c
+    # g.trace(p)
+    old = {} ; print_mode_changed = False
+    self.init_directive_ivars()
+    if p:
+        s = p.bodyString()
+        << Collect @first attributes >>
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << Test for @comment and @language >>
+        << Test for @encoding >>
+        << Test for @lineending >>
+        << Test for print modes directives >>
+        << Test for @path >>
+        << Test for @pagewidth >>
+        << Test for @root >>
+        << Test for @tabwidth >>
+        << Test for @header and @noheader >>
+        old.update(theDict)
+    << Set self.tangle_directory >>
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.tangle_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20031218072017.1361:<< Collect @first attributes >>
+@ Stephen P. Schaefer 9/13/2002: Add support for @first.
+Unlike other root attributes, does *NOT* inherit from parent nodes.
+@c
+tag = "@first"
+sizeString = len(s) # DTHEIN 13-OCT-2002: use to detect end-of-string
+i = 0
+while 1:
+    # DTHEIN 13-OCT-2002: directives must start at beginning of a line
+    if not g.match_word(s,i,tag):
+        i = g.skip_line(s,i)
+    else:
+        i = i + len(tag)
+        j = i = g.skip_ws(s,i)
+        i = g.skip_to_end_of_line(s,i)
+        if i>j:
+            self.first_lines += s[j:i] + '\n'
+        i = g.skip_nl(s,i)
+    if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
+        break
+#@-node:ekr.20031218072017.1361:<< Collect @first attributes >>
+#@+node:ekr.20031218072017.1362:<< Test for @comment and @language >>
+if 'comment' in old or 'language' in old:
+    pass # Do nothing more.
+
+elif 'comment' in theDict:
+
+    z = theDict["comment"]
+    delim1,delim2,delim3 = g.set_delims_from_string(z)
+    if delim1 or delim2:
+        self.single_comment_string = delim1
+        self.start_comment_string = delim2
+        self.end_comment_string = delim3
+        # @comment effectively disables Untangle.
+        self.language = "unknown"
+    else:
+        if issue_error_flag:
+            g.es("ignoring: @comment",z)
+
+elif 'language' in theDict:
+
+    z = theDict["language"]
+    language,delim1,delim2,delim3 = g.set_language(z,0)
+    self.language = language
+    self.single_comment_string = delim1
+    self.start_comment_string = delim2
+    self.end_comment_string = delim3
+    if 0:
+        g.trace(self.single_comment_string,
+            self.start_comment_string,
+            self.end_comment_string)
+
+    # 10/30/02: These ivars must be updated here!
+    # g.trace(self.language)
+    self.use_noweb_flag = True
+    self.use_cweb_flag = False # Only raw cweb mode is ever used.
+    self.raw_cweb_flag = self.language == "cweb" # A new ivar.
+#@-node:ekr.20031218072017.1362:<< Test for @comment and @language >>
+#@+node:ekr.20031218072017.1363:<< Test for @encoding >>
+if 'encoding' not in old and 'encoding' in theDict:
+
+    e = g.scanAtEncodingDirective(theDict)
+    if e:
+        self.encoding = e
+#@-node:ekr.20031218072017.1363:<< Test for @encoding >>
+#@+node:ekr.20031218072017.1364:<< Test for @lineending >>
+if 'lineending' not in old and 'lineending' in theDict:
+
+    lineending = g.scanAtLineendingDirective(theDict)
+    if lineending:
+        self.output_newline = lineending
+#@-node:ekr.20031218072017.1364:<< Test for @lineending >>
+#@+node:ekr.20031218072017.1365:<< Test for print modes directives >>
+@ It is valid to have more than one of these directives in the same body text: the more verbose directive takes precedence.
+@c
+
+if not print_mode_changed:
+    for name in ("verbose","terse","quiet","silent"):
+        if name in theDict:
+            self.print_mode = name
+            print_mode_changed = True
+            break
+#@-node:ekr.20031218072017.1365:<< Test for print modes directives >>
+#@+node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
+if require_path_flag and 'path' not in old and 'path' in theDict:
+
+    path = theDict["path"]
+    theDir = relative_path = g.computeRelativePath(path)
+
+    if len(theDir) > 0:
+        base = g.getBaseDirectory(c=c) # May return "".
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir):
+                << handle absolute @path >>
+            elif issue_error_flag and not self.path_warning_given:
+                self.path_warning_given = True # supress future warnings
+                self.error("ignoring relative path in @path:" + theDir)
+    elif issue_error_flag and not self.path_warning_given:
+        self.path_warning_given = True # supress future warnings
+        self.error("ignoring empty @path")
+#@+node:ekr.20031218072017.1368:<< handle absolute @path >>
+if g.os_path_exists(theDir):
+    self.tangle_directory = theDir
+else: # 11/19/02
+    self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+    if not self.tangle_directory:
+        if issue_error_flag and not self.path_warning_given:
+            self.path_warning_given = True # supress future warnings
+            self.error("@path directory does not exist: " + theDir)
+            if base and len(base) > 0:
+                g.es("relative_path_base_directory:",base)
+            if relative_path and len(relative_path) > 0:
+                g.es("relative path in @path directive:",relative_path)
+#@-node:ekr.20031218072017.1368:<< handle absolute @path >>
+#@-node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
+#@+node:ekr.20031218072017.1369:<< Test for @pagewidth >>
+if 'pagewidth' not in old and 'pagewidth' in theDict:
+
+    w = g.scanAtPagewidthDirective(theDict,issue_error_flag)
+    if w and w > 0:
+        self.page_width = w
+#@-node:ekr.20031218072017.1369:<< Test for @pagewidth >>
+#@+node:ekr.20031218072017.1370:<< Test for @root >>
+@ 10/27/02: new code:  self.root may not be defined here, so any relative directory specified in the @root node will have no effect unless we have this code.
+
+@c
+if self.root_name == None and 'root' in theDict:
+
+    z = theDict["root"]
+    self.setRootFromText(z,issue_error_flag)
+#@-node:ekr.20031218072017.1370:<< Test for @root >>
+#@+node:ekr.20031218072017.1371:<< Test for @tabwidth >>
+if 'tabwidth' not in old and 'tabwidth' in theDict:
+
+    w = g.scanAtTabwidthDirective(theDict,issue_error_flag)
+    if w and w != 0:
+        self.tab_width = w
+#@-node:ekr.20031218072017.1371:<< Test for @tabwidth >>
+#@+node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
+if 'header' in old or 'noheader' in old:
+    pass # Do nothing more.
+
+elif 'header' in theDict and 'noheader' in theDict:
+    if issue_error_flag:
+        g.es("conflicting @header and @noheader directives")
+
+elif 'header' in theDict:
+    self.use_header_flag = True
+
+elif 'noheader' in theDict:
+    self.use_header_flag = False
+#@-node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
+#@+node:ekr.20031218072017.1373:<< Set self.tangle_directory >>
+@ This code sets self.tangle_directory if it has not already been set by an @path directive.
+
+An absolute file name in an @root directive will override the directory set here.
+A relative file name gets appended later to the default directory.
+That is, the final file name will be g.os_path_join(self.tangle_directory,fileName)
+@c
+
+if c.frame and require_path_flag and not self.tangle_directory:
+    if self.root_name and len(self.root_name) > 0:
+        root_dir = g.os_path_dirname(self.root_name)
+    else:
+        root_dir = None
+    # g.pr("root_dir:", root_dir)
+
+    table = ( # This is a precedence table.
+        (root_dir,"@root"), 
+        (c.tangle_directory,"default tangle"), # Probably should be eliminated.
+        (c.frame.openDirectory,"open"))
+
+    base = g.getBaseDirectory(c=c) # May return ""
+
+    for dir2, kind in table:
+        if dir2 and len(dir2) > 0:
+            # g.pr("base,theDir:",base,theDir)
+            theDir = g.os_path_join(base,dir2)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                << handle absolute path >>
+
+if not self.tangle_directory and require_path_flag: # issue_error_flag:
+    self.pathError("No absolute directory specified by @root, @path or Preferences.")
+#@+node:ekr.20031218072017.1374:<< handle absolute path >>
+if g.os_path_exists(theDir):
+    if kind == "@root" and not g.os_path_isabs(root_dir):
+        self.tangle_directory = base
+    else:
+        self.tangle_directory = theDir 
+    break
+else: # 9/25/02
+    self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+    if not self.tangle_directory:
+        # 10/27/02: It is an error for this not to exist now.
+        self.error("@root directory does not exist:" + theDir)
+        if base and len(base) > 0:
+            g.es("relative_path_base_directory:",base)
+        if dir2 and len(dir2) > 0:
+            g.es('',kind,"directory:",dir2)
+#@-node:ekr.20031218072017.1374:<< handle absolute path >>
+#@-node:ekr.20031218072017.1373:<< Set self.tangle_directory >>
+#@-node:ekr.20031218072017.1360:tangle.OLDscanAllDirectives (old)
+#@+node:ekr.20081001062423.13:From atFile.scanDefaultDirectory
+#@+node:ekr.20041005105605.237:<< Set path from @file node >>
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName()
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+# g.trace('at.default_directory',at.default_directory)
+# g.trace('theDir',theDir)
+
+if theDir and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        at.default_directory = theDir
+    else:
+        at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not at.default_directory:
+            at.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20041005105605.237:<< Set path from @file node >>
+#@+node:ekr.20041005105605.238:<< handle @path >>
+# Set the default_directory ivar so future writes will go to that directory.
+path = g.computeRelativePath (path)
+
+if path:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
+
+    if g.os_path_isabs(path):
+        if g.os_path_exists(path):
+            at.default_directory = path
+        else:
+            at.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+            if not at.default_directory:
+                at.error("invalid @path: %s" % path)
+            else:
+                at.error("ignoring bad @path: %s" % path)
+else:
+    at.error("ignoring empty @path")
+#@-node:ekr.20041005105605.238:<< handle @path >>
+#@+node:ekr.20041005105605.241:<< Set current directory >>
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+assert(not at.default_directory)
+
+if c.frame :
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    at.default_directory = theDir ; break
+                else:
+                    at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+#@-node:ekr.20041005105605.241:<< Set current directory >>
+#@-node:ekr.20081001062423.13:From atFile.scanDefaultDirectory
+#@+node:ekr.20081001062423.14:From leoImport.scanDefaultDirectory
+#@+node:ekr.20080211085914.1:<< Set path from @file node >>
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName()
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+if theDir and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        self.default_directory = theDir
+    else:
+        self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not self.default_directory:
+            self.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20080211085914.1:<< Set path from @file node >>
+#@+node:ekr.20081001062423.4:<< handle @path >>
+# Set the default_directory ivar so future writes will go to that directory.
+path = g.computeRelativePath (path)
+
+if path:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    path = c.os_path_finalize_join(base,path)
+
+    if g.os_path_isabs(path):
+        if g.os_path_exists(path):
+            self.default_directory = path
+        else:
+            self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+            if not self.default_directory:
+                self.error("invalid @path: %s" % path)
+            else:
+                self.error("ignoring bad @path: %s" % path)
+else:
+    self.error("ignoring empty @path")
+#@-node:ekr.20081001062423.4:<< handle @path >>
+#@+node:ekr.20080211085914.4:<< Set current directory >>
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+assert(not self.default_directory)
+
+if c.frame:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    self.default_directory = theDir ; break
+                else:
+                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+#@-node:ekr.20080211085914.4:<< Set current directory >>
+#@-node:ekr.20081001062423.14:From leoImport.scanDefaultDirectory
+#@+node:ekr.20081001140516.17:from nodeHistory
+#@+node:ekr.20040803072955.131:updatePositionList
+def updatePositionList (self,p):
+
+    '''Update the position list used by nav_buttons plugin.'''
+
+    c = self.c ; cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+
+    target = (p.copy(),theChapter)
+
+    self.beadList = [z for z in self.beadList
+                        if c.positionExists(z[0]]
+
+    try:
+        self.beadPointer = self.beadList.index(target)
+    except ValueError:
+        self.beadList.append(target)
+        self.beadPointer = len(self.beadList) -1
+
+    # c = self.c ; root = c.rootPosition()
+    # cc = c.chapterController
+    # theChapter = cc and cc.getSelectedChapter()
+
+    # # Recreate the list, and set found if p is in the list
+    # n = 0       # The number of previous valid entries.
+    # n2 = 0      # The number of previous entries.
+    # aList = []  # The new beadList.
+    # found = -1
+    # for data in self.beadList:
+        # p2,chapter = data
+        # if c.positionExists(p2,root=root):
+            # data = p2,theChapter
+            # aList.append(data)
+            # if p == p2: found = n
+            # n += 1
+        # elif n2 <= self.beadPointer:
+            # self.beadPointer -= 1 # Adjust for missing entries.
+        # n2 += 1
+
+    # if found == -1:
+        # data = p.copy(),theChapter
+        # self.beadList.append(data)
+        # self.beadPointer = len(self.beadList) -1
+    # else:
+        # self.beadPointer = found
+        # self.beadList = aList
+
+    if self.trace:
+        g.trace('bead list',p.headString())
+        g.pr([z[0].headString() for z in self.beadList])
+#@-node:ekr.20040803072955.131:updatePositionList
+#@+node:ekr.20040803072955.132:updateVisitedList
+def updateVisitedList (self,p):
+
+    '''Make p the most recently visited position.'''
+
+    c = self.c ; root=c.rootPosition()
+    cc = c.chapterController
+
+    # Remove non-existent entries.
+    self.visitedList = [z for z in self.visitedList if
+        c.positionExists(z[0],root=root)]
+
+    # Append p to the list only if it is not present.
+    for data in self.visitedList:
+        p2,chapter = data
+        if p2 == p: break
+    else:
+        data = p.copy(),cc and cc.getSelectedChapter()
+        self.visitedList.insert(0,data)
+
+    if self.trace:
+        g.trace('len(c.visitedList)',len(self.visitedList))
+        g.pr([z[0].headString()[:10] for z in self.visitedList]) # don't assign to p!
+#@-node:ekr.20040803072955.132:updateVisitedList
+#@-node:ekr.20081001140516.17:from nodeHistory
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

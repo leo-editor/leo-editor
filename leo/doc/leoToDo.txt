@@ -2,274 +2,8 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
-#@+node:ekr.20080915112342.1:First 6
+#@+node:ekr.20080915112342.1:First
 
-#@+node:ekr.20080921154026.9:Add getInput example to Leo's docs
-@color
-
-def getInput (event=None):
-
-   stateName = 'get-input'
-   k = c.k ; state = k.getState(stateName)
-
-   if state == 0:
-       k.setLabelBlue('Input: ',protect=True)
-       k.getArg(event,stateName,1,getInput)
-   else:
-       k.clearState()
-       g.es_print('input:',k.arg)
-
-getInput()
-
-@nocolor
-
-The general outline of this is as follows:
-
-1. Define a state *name* unique to your code.  In this case,
-'eval-expression'.  Outside of your code, that is, at the start of the
-code, the state will be 0.  Use k.getState(stateName) to get the
-present state.  Leo's key handling code takes care of the extremely
-complex details of handling key strokes in states.
-
-2. In state 0, put the label in the minibuffer with k.setLabel or
-k.setLabelBlue.  Set protect=True so the user can't delete the label
-by backspacing.
-
-3. In state 0, call k.getArg with the state-name, the value of the
-next state (1), and the function to call when the arg has been
-accumulated, namely the function that called getArg.
-
-4. In state 1, k.arg is the value returned by k.getArg.  Use that
-value, do what you want, then clear the state with k.clearState and
-set the label with one of the flavors of k.setLabel.
-#@nonl
-#@-node:ekr.20080921154026.9:Add getInput example to Leo's docs
-#@+node:ekr.20080921154026.10:Add better default fonts for Leo on Linux
-http://groups.google.com/group/leo-editor/browse_thread/thread/f1c7c5134b95c77e
-
-The suggestion: paste fonts into myLeoSettings.leo.
-
-Can they be a better default?
-#@nonl
-#@+node:ekr.20080921154026.11:Fonts
-@nocolor
-@
-
-Valid values:
-
-weight: bold, normal, None
-slant: roman, italic, None
-
-Use the show-fonts command to pick fonts, then copy the values shown
-by the show-fonts command to the values here.
-
-@c
-
-import sys ; print sys.platform
-#@+node:ekr.20080921154026.12:@font body text font
-body_text_font_family = fixed
-body_text_font_size = 11
-body_text_font_slant = None
-body_text_font_weight = None
-#@-node:ekr.20080921154026.12:@font body text font
-#@+node:ekr.20080921154026.13:@font button font
-button_text_font_family = fixed
-button_text_font_size = 8
-button_text_font_slant = roman
-button_text_font_weight = normal
-#@-node:ekr.20080921154026.13:@font button font
-#@+node:ekr.20080921154026.14:@font log font
-# The font for the log pane. Default is
-default font for Tk.Text widgets.
-# Tk translates invalid font names to another font in a system-dependent way.
-#
-# Default size is 12 for Linux, 9 otherwise.
-
-log_text_font_family = Courier
-log_text_font_size = 9
-log_text_font_slant = roman
-log_text_font_weight = normal
-#@-node:ekr.20080921154026.14:@font log font
-#@+node:ekr.20080921154026.15:@font menu text font
-menu_text_font_family = None
-menu_text_font_size = None
-menu_text_font_slant = None
-menu_text_font_weight = None
-#@nonl
-#@-node:ekr.20080921154026.15:@font menu text font
-#@+node:ekr.20080921154026.16:@font outline font
-headline_text_font_family = fixed
-headline_text_font_size = 11
-headline_text_font_slant = roman
-headline_text_font_weight = normal
-#@-node:ekr.20080921154026.16:@font outline font
-#@-node:ekr.20080921154026.11:Fonts
-#@-node:ekr.20080921154026.10:Add better default fonts for Leo on Linux
-#@+node:ekr.20080921154026.17:rst3 stuff
-#@+node:ekr.20080921154026.3:Look into new rst3 crash
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/414137b93c7e4b90
-
-I receive the following traceback, when I try to create an HTML-
-File from a @rst-Node.
-
-<Traceback>
-
-Leo Log Window...
-Leo 4.5.1 final, build  1.244 , September 14, 2008
-python 2.5.2, Tk 8.4.12, Pmw 1.3
-Windows 5, 1, 2600, 2, Service Pack 3
-
-Can not load c:\aspell\bin\aspell-15.dll
-leoID=vr20080824 (in C:\Dokumente und Einstellungen\VR\.leo)
-load dir: C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-global config dir: C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo
-\config
-home dir: C:\Dokumente und Einstellungen\VR
-reading settings in C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo
-\config\leoSettings.leo
-reading settings in C:\Dokumente und Einstellungen\VR\.leo
-\myLeoSettings.leo
-reading settings in C:\Dokumente und Einstellungen\VR\Eigene Dateien
-\Tools\Leo\Leo-20080921.leo
-rewriting empty .leo file: C:\Dokumente und Einstellungen\VR\Eigene
-Dateien\Tools\Leo\Leo-20080921.leo
-reading: C:\Dokumente und Einstellungen\VR\Eigene Dateien\Tools\Leo
-\Leo-20080921.leo
-saved: Leo-20080921.leo
-SilverCity not present so no syntax highlighting
-exception executing command
-Traceback (most recent call last):
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-\leoCommands.py", line 309, in doCommand
-    val = command(event)
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-\leoCommands.py", line 482, in minibufferCallback
-    retval = function(keywords)
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
-\rst3.py", line 675, in rst3PluginCallback
-    self.processTopTree(c.currentPosition())
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
-\rst3.py", line 1152, in processTopTree
-
-self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
-\rst3.py", line 1184, in processTree
-    ok =
-self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
-\rst3.py", line 1222, in writeSpecialTree
-    os.mkdir(dir)
-WindowsError: [Error 3] Das System kann den angegebenen Pfad nicht
-finden: u'C:\\Python25\\Lib\\site-packages\\Leo-4-5-1-2-final\\2008\
-\09'
-
-</Traceback>
-
-The related outline can be reduced to:
-
-Worklog-->2008-->09-->@rst WLE-2008-09-21.html
-
-The content of the right-most node is:
-
-@ @rst-options
-default_path=./2008/09
-@c
-======================
-Worklog for 2008-09-21
-======================
-
-Kind regards,
-
-Viktor 
-#@nonl
-#@-node:ekr.20080921154026.3:Look into new rst3 crash
-#@-node:ekr.20080921154026.17:rst3 stuff
-#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-> Or am I trying to misuse leo in this way?
-
-This is certainly not a misuse of Leo--it's an extension of the rst3 plugin.
-
-Clearly, a script could expand these section references, creating a
-temporary @rst tree which then gets processed as usual.  As usual,
-scripts give complete control over what is happening.
-
-But other people might like have the rst3 plugin work in this way, so
-an expand_noweb_references option would be good.  For compatibility,
-the default for this option would be False. 
-#@nonl
-#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-#@+node:ekr.20080917154206.3:Finish at-path branch items!
-#@-node:ekr.20080917154206.3:Finish at-path branch items!
-#@+node:ekr.20080921154026.7:Do {{exp}}
-#@-node:ekr.20080921154026.7:Do {{exp}}
-#@+node:ekr.20080922115725.1:Finish @shadow
-# Allow block comments in private shadow files.
-# Compute delims using the private shadow file, not the file extension!
-#@nonl
-#@-node:ekr.20080922115725.1:Finish @shadow
-#@-node:ekr.20080915112342.1:First 6
-#@+node:ekr.20080918164844.6:Recent 7
-#@+node:ekr.20080918164844.11:Play with ishadow extension to ipython
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/42d178da972d783d
-
-On Sat, Aug 9, 2008 at 5:08 PM, Alia K <alia_kho...@yahoo.com> wrote:
-
-> Done.
-
-> http://leo.zwiki.org/CreateShadows
-
-The code in the wiki page was slightly broken (it set @path to body,
-not headline).
-
-What I really wanted to say though, is that I have added this feature
-as %lshadow magic command to ileo :-).
-
-So now, when you have ileo session open, you can do stuff like:
-
-%lshadow test
-%lshadow tools
-
-And the (previously opened) leo window has added 'test' and 'tools'
-directories as shadow trees for your entertainment.
-
-If you want to test it out immediately, grab my ipython dev branch at:
-
-bzr branch lp:~villemvainio/ipython/trunk-dev 
-
-==========================
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5ba6c260daefb6ae#
-
-Here's an example ileo snippet to get your gmail threads with "todo"
-label into leo outline (under heading MyTodo):
-
-QQQ
-import ipy_gmail
-
-gml todo
-ipy_gmail.to_leo(_, wb.MyTodo)
-QQQ
-
-Just posting this as an example of an interesting "productivity
-feature" to emphasize how ileo reduces the amount of typing and
-thinking that needs to be done. "gml" is a magic function introduced
-in ipy_gmail that searches gmails with the specified label. You still
-need to find this node and press alt+I, but once we get @button
-working with ileo we can forget about that as well ;-)
-#@nonl
-#@-node:ekr.20080918164844.11:Play with ishadow extension to ipython
 #@+node:ekr.20080918164844.7:Investigate settings strangeness re @string debugger_path
 @nocolor
 
@@ -282,13 +16,9 @@ I find that
 sets the config string successfully if in
 home/.leo/myLeoSettings.leo
 not if in
-cwd/myLeoSettings.leo 
+cwd/myLeoSettings.leo
 #@nonl
 #@-node:ekr.20080918164844.7:Investigate settings strangeness re @string debugger_path
-#@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
-# Remove the old type-specific commands from the default menu.
-#@nonl
-#@-node:ekr.20080918164844.8:Add read/write-any-derived-file commands
 #@+node:ekr.20080918164844.9:Should relative paths be used for recent file list??
 @nocolor
 
@@ -326,568 +56,213 @@ Cheers -Terry
 @color
 #@nonl
 #@-node:ekr.20080918164844.9:Should relative paths be used for recent file list??
-#@+node:ekr.20080918164844.10:Allow more general typing completion
+#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 @nocolor
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
-> As I said, all I need would be is for leo to call callback/hook with
-> signature like
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
 
-> def complete(line-up-to-cursor, current_node) => list of strings
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
 
-I missed this the first time around.  Glad you asked again.
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
+#@+node:ekr.20080922115725.1:Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@nonl
+#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+@nocolor
 
-This should not be too difficult to do.  I'll do it after I fix the
-two urgent bugs.
-
-This is probably a matter of 5-20 lines of code.  More importantly,
-this suggests an alternative to "always-on" autocompletion.  It would
-be a nice generalization to allow the completion to be done anywhere
-on a line, rather than having the logic start at the beginning of what
-the code calls the autocompletion chain.
-
-Actually, there is already logic to find the start of the chain, so
-the whole thing may be quite easy to do without even having to handle
-(explicitly) the behind-the-scenes ivars.
-
-OTOH, I'm not sure how bound together the output code (writing to the
-completion tab) is with the more fundamental code.  Some refactoring
-might be required.  But probably not: at worst, the code could just
-use a "suppress output" hack.  We shall see. 
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
 
 @color
 #@nonl
-#@-node:ekr.20080918164844.10:Allow more general typing completion
-#@+node:ekr.20080918164844.12:Think of improving headline navigation
-@nocolor
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
 
-Now that the leo is more "modeless" (I'm speaking of switching between
-outline navigation and body editing modes), which btw is a clear improvement
-to how leo used to behave, here are some things that still feel a bit
-un-intuitive:
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
 
-- ctrl+H (edit-headline) "locks" the user into the mode way too much.
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
 
-   * The headline editing mode should be cancelled when the user does:
-      - cursor up/down
-      - ESC
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
-   * Even better alternative: I find myself constantly thinking that "ok,
-now I need to edit a headline (typically not the current headline), so now
-I'll press ctrl+H". I think perhaps pressing up/down should cancel the
-current headline editing, and select the next/previous headline for editing.
-That is, I wouldn't need to navigate to the headline I want to edit before I
-start editing it.
+    << init vars >>
+    << define print_tags >>
 
-  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
-intuitive assumption is that cut will select the node that "took the place
-of the
-    current node", instead of starting to travel upwards the set of nodes.
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
 
-   * Typical use case is the way you usually start deleting a set of items.
-You move to the first item and start cutting repeatedly. This wont work with
-the current behaviour. 
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
 #@nonl
-#@-node:ekr.20080918164844.12:Think of improving headline navigation
-#@+node:ekr.20080918164844.14:Protect @shadow and @auto files?
-@nocolor
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/bac65cb75484f7cb
+    sep1 = '=' * 10 ; sep2 = '-' * 20
 
-BTW, I think we should prevent shadow files from accidentally
-overwriting valuable stuff:
+    g.pr('\n',sep1,message,sep1,p and p.headString())
 
-- Store modification time of the file on shadow import
-- When you "save", check if modification time has changed and ask the
-user if they really want to overwrite the changes. Or, reuse to do it
-altogether and require explicit save-at-shadow-nodes in those
-occasions. That's considered "good form" in editors in general, and
-since pressing ctrl+S in leo has even more significant implications we
-should be absolutely certain everything happens safely. 
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
 #@nonl
-#@-node:ekr.20080918164844.14:Protect @shadow and @auto files?
-#@-node:ekr.20080918164844.6:Recent 7
-#@+node:ekr.20080810085333.5:Under two hours 21
-#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@+node:ekr.20080517102922.1:Files stuff 7
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
-
-I'm just getting started learning how to use Leo. Now, I'd like to use
-it for some of my projects, but there's no chance that I can convert
-everyone at work to using it, so putting sentinel-filled files in our
-repository is out of the question. At the same time, my code looks
-awfully bare without sentinels because the documentation ends up in
-the section names, not the comments!
-
-So, I was wondering if there's a convenient way to pull the section
-names into a comment at the start of each section?
-
-===============
-
-Interesting question.  Am I correct in assuming you are using @nosent trees
-to generate your files?  If so, it would be easy to add support for the
-following options:
-
-@bool write_section_comments_in_at_nosent_trees
-@bool write_node_name_comments_in_at_nosent_trees
-
-The first would write a sentinel consisting of only the section name;
-the second would write a sentinel consisting only of the node's headline
-(for nodes whose headline is not a section name).
-
-These seem like they would be useful additions.  One can even imagine
-corresponding Leo directives so that the comments could be turned on or off
-within an @nosent tree.
-
-What do you think?
-
-=====================
-
-> Interesting question.  Am I correct in assuming you are using @nosent trees
-> to generate your files?  If so, it would be easy to add support for the
-> following options:
-
-> @bool write_section_comments_in_at_nosent_trees
-> @bool write_node_name_comments_in_at_nosent_trees
-
-> The first would write a sentinel consisting of only the section name;
-> the second would write a sentinel consisting only of the node's headline
-> (for nodes whose headline is not a section name).
-
-> These seem like they would be useful additions.  One can even imagine
-> corresponding Leo directives so that the comments could be turned on or off
-> within an @nosent tree.
-
-That sounds like an excellent solution. Particularly the last bit --
-if you could turn section-comments on and off as required, it would
-become very convenient to use Leo to produce source that is intended
-to also be read by non Leo users. 
-#@nonl
-#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
-#@+node:ekr.20080412053100.1:Look into undefined-section behavior
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
-
-1) Create an @thin file based outline.
-2) In the @thin file, create an unreferenced section (something like a
-  header <<This Section Is Bogus>>).
-3) Now, File->Exit
-4) A dialog box pops up
-  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
-5) Click "Yes"
-6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
-  and in the console window, you see "undefined section: ..."
-
-However, the application is still running. The only way to really quit
-is to click "No" to the Save dialog.
-
-> Iirc, this is the intended behavior.  It would be possible to build in some
-> state behavior to only ask once, but I'd rather not do that.
-
-The point is that I can't kill Leo if I keep saying "Yes" to the
-"Save change before quitting" dialog. This is definitely not the
-intended behavior. The correct behavior would be to save the file,
-give me the warning about the undefined section, and exit.
-#@nonl
-#@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@+node:ekr.20080330085343.3:Fix bug in atFile.write
-The code should save/restore, just as in the clean_file function (from scripts.leo)
-#@nonl
-#@+node:ekr.20080330085343.1:clean_file
-def clean_file(p):
-
-    at = c.atFileCommands
-
-    if hasattr(p.v.t,'tnodeList'):
-        has_list = True
-        old_list =  p.v.t.tnodeList[:]
-    else:
-        has_list = False
-
-    at.write(
-        root=p,nosentinels=True,
-        thinFile=False,
-        scriptWrite=True,
-        toString=True,
-        write_strips_blank_lines=False)
-
-    if has_list:
-        p.v.t.tnodeList = old_list
-
-    fileName = g.os_path_normpath(g.os_path_join(
-        at.default_directory,
-        'clean',
-        g.os_path_basename(p.anyAtFileNodeName())))
-
-    # g.trace(p.headString(),len(at.stringOutput),fileName)
-
-    # Adapted from at.openFileForWritingHelper
-    path = g.os_path_dirname(fileName)
-    if not g.os_path_exists(path):
-        g.es('clean directory does not exist',path)
-        return
-
-    try:
-        f = file(fileName,'w')
-        f.write(at.stringOutput)
-        f.close()
-        g.es_print('wrote',fileName)
-    except IOError:
-        g.es_print('can not write',fileName,color='red')
-        g.es_exception()
-#@-node:ekr.20080330085343.1:clean_file
-#@-node:ekr.20080330085343.3:Fix bug in atFile.write
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-@nocolor
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.  Once I saw my
-nodes were overwritten unitTest.leo, I copied somedoc.leo to
-somedoc.leo.bak because I wanted to do a save to see what would
-happen.  The somedoc.leo file ended up with the contents of
-unitTest.leo as I suspected.  To my surprise, I also lost
-somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
-backup copy to revert to.  If leo is making use of a .bak file during
-saving, then should it give a warning if that file already exists?
-
-To duplicate:
-
-1. Open a leo file that you don't care about losing.
-2. From the file->open menu open leo/test/unitTest.leo
-3. Select a unit test and run it with Alt-4 (I chose the Position
-tests described above)
-4. Switch back to the original leo document and you should see the
-contents of unitTest.leo instead of the original document contents.
-#@nonl
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
-@nocolor
-
-Note: at present the only change is to c.setHeadString.  It's unlikely this will make a difference.
-
-So reading all the file names in my home directory into leo as
-headlines while playing with my active_path plugin, I got some odd
-characters in a filename into leo, it saved the file fine, but wouldn't
-read it:
-
-error parsing /media/usr1/usr1/home/tbrown/files.leo
-Traceback (most recent call last):
-
- File
-"/media/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/active_path/leo/core/leoFileCommands.py",
-line 1240, in parse_leo_file parser.parse(theFile) # expat does not
-support parseString
-
- File "/usr/lib/python2.5/xml/sax/expatreader.py", line 107, in parse
-   xmlreader.IncrementalParser.parse(self, source)
-
- File "/usr/lib/python2.5/xml/sax/xmlreader.py", line 123, in parse
-   self.feed(buffer)
-
- File "/usr/lib/python2.5/xml/sax/expatreader.py", line 211, in feed
-   self._err_handler.fatalError(exc)
-
- File "/usr/lib/python2.5/xml/sax/handler.py", line 38, in fatalError
-   raise exception
-
-SAXParseException: <unknown>:732:58: not well-formed (invalid token)
-
-
-emacs shows the offending line as:
-
-<v t="tbrown.20080618141617.720"
-a="M"><vh>coppertop_mapYI .2006_04_09_14_16_22.0</vh></v>
-
-...of course it looks different in my mail composer window :-) but
-there's a ^H after the I.
-
-So, garbage in, garbage out, I get that, but is it the intent that leo
-save a file without comment and then fail to read it in these cases?
-
-I'm not saying it should do one thing or the other, but just wanted to
-point out the possibility.
-
-Cheers -Terry
-
-@color
-#@nonl
-#@+node:ekr.20031218072017.1577:putTnode
-def putTnode (self,t):
-
-    # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-    if not t.fileIndex:
-        g.trace('can not happen: no index for tnode',t)
-        t.fileIndex = g.app.nodeIndices.getNewIndex()
-
-    # New in Leo 4.4.2 b2: call put just once.
-    gnx = g.app.nodeIndices.toString(t.fileIndex)
-    ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
-    body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
-    self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
-#@-node:ekr.20031218072017.1577:putTnode
-#@+node:ekr.20031218072017.1863:putVnode
-def putVnode (self,p,isIgnore=False):
-
-    """Write a <v> element corresponding to a vnode."""
-
-    fc = self ; c = fc.c ; v = p.v
-    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
-    isShadow = p.isAtShadowFileNode()
-    isThin = p.isAtThinFileNode()
-    isOrphan = p.isOrphan()
-    if not isIgnore: isIgnore = p.isAtIgnoreNode()
-
-    if isIgnore:   forceWrite = True      # Always write full @ignore trees.
-    elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
-    elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
-    elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
-    else:          forceWrite = True      # Write all other @file trees.
-
-    << Set gnx = tnode index >>
-    attrs = []
-    << Append attribute bits to attrs >>
-    << Append tnodeList and unKnownAttributes to attrs >>
-    attrs = ''.join(attrs)
-    v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
-    # The string catentation is faster than repeated calls to fc.put.
-    if not self.usingClipboard:
-        << issue informational messages >>
-    # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
-    if p.hasChildren() and (forceWrite or self.usingClipboard):
-        fc.put('%s\n' % v_head)
-        # This optimization eliminates all "recursive" copies.
-        p.moveToFirstChild()
-        while 1:
-            fc.putVnode(p,isIgnore)
-            if p.hasNext(): p.moveToNext()
-            else:           break
-        p.moveToParent() # Restore p in the caller.
-        fc.put('</v>\n')
-    else:
-        fc.put('%s</v>\n' % v_head) # Call put only once.
-#@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
-# New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-if not v.t.fileIndex:
-    v.t.fileIndex = g.app.nodeIndices.getNewIndex()
-
-gnx = g.app.nodeIndices.toString(v.t.fileIndex)
-
-if forceWrite or self.usingClipboard:
-    v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
-#@-node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
-#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-# These string catenations are benign because they rarely happen.
-attr = ""
-# New in Leo 4.5: support fixed .leo files.
-if not c.fixed:
-    if v.isExpanded() and v.hasChildren(): attr += "E"
-    if v.isMarked():   attr += "M"
-    if v.isOrphan():   attr += "O"
-
-    # No longer a bottleneck now that we use p.equal rather than p.__cmp__
-    # Almost 30% of the entire writing time came from here!!!
-    # if not self.use_sax:
-        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
-
-    if attr:
-        attrs.append(' a="%s"' % attr)
-
-# Put the archived *current* position in the *root* positions <v> element.
-if p == self.rootPosition:
-    aList = [str(z) for z in self.currentPosition.archivedPosition()]
-    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
-    if not c.fixed:
-        d['str_leo_pos'] = ','.join(aList)
-    # g.trace(aList,d)
-    v.unknownAttributes = d
-elif hasattr(v,"unknownAttributes"):
-    d = v.unknownAttributes
-    if d and not c.fixed and d.get('str_leo_pos'):
-        # g.trace("clearing str_leo_pos",v)
-        del d['str_leo_pos']
-        v.unknownAttributes = d
-#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
-# Write the tnodeList only for @file nodes.
-# New in 4.2: tnode list is in tnode.
-
-if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
-    if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
-        if isThin or isShadow: # Never issue warning for @auto.
-            if g.app.unitTesting:
-                g.app.unitTestDict["warning"] = True
-            g.es("deleting tnode list for",p.headString(),color="blue")
-        # This is safe: cloning can't change the type of this node!
-        delattr(v.t,"tnodeList")
-    else:
-        attrs.append(fc.putTnodeList(v)) # New in 4.0
-
-if hasattr(v,"unknownAttributes"): # New in 4.0
-    # g.trace('v',v,'v.uA',v.unknownAttributes)
-    attrs.append(self.putUnknownAttributes(v))
-
-if p.hasChildren() and not forceWrite and not self.usingClipboard:
-    # We put the entire tree when using the clipboard, so no need for this.
-    if not isAuto: # Bug fix: 2008/8/7.
-        attrs.append(self.putDescendentTnodeUas(p))
-        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
-        attrs.append(self.putDescendentAttributes(p))
-#@nonl
-#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
-#@+node:ekr.20040702085529:<< issue informational messages >>
-if isOrphan and isThin:
-    g.es("writing erroneous:",p.headString(),color="blue")
-    p.clearOrphan()
-#@-node:ekr.20040702085529:<< issue informational messages >>
-#@-node:ekr.20031218072017.1863:putVnode
-#@+node:ekr.20031218072017.1470:put
-def put (self,s):
-
-    '''Put string s to self.outputFile. All output eventually comes here.'''
-
-    # Improved code: self.outputFile (a cStringIO object) always exists.
-    if s:
-        self.putCount += 1
-        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-        self.outputFile.write(s)
-
-def put_dquote (self):
-    self.put('"')
-
-def put_dquoted_bool (self,b):
-    if b: self.put('"1"')
-    else: self.put('"0"')
-
-def put_flag (self,a,b):
-    if a:
-        self.put(" ") ; self.put(b) ; self.put('="1"')
-
-def put_in_dquotes (self,a):
-    self.put('"')
-    if a: self.put(a) # will always be True if we use backquotes.
-    else: self.put('0')
-    self.put('"')
-
-def put_nl (self):
-    self.put("\n")
-
-def put_tab (self):
-    self.put("\t")
-
-def put_tabs (self,n):
-    while n > 0:
-        self.put("\t")
-        n -= 1
-#@nonl
-#@-node:ekr.20031218072017.1470:put
-#@+node:ekr.20040305223225:c.setHeadString
-def setHeadString (self,p,s,encoding="utf-8"):
-
-    c = self
-    w = c.edit_widget(p) # w only exists for the Tk gui.
-
-    p.initHeadString(s,encoding)
-
-    if w:
-        s = g.toUnicode(s,encoding)
-        w.setAllText(s)
-        width = c.frame.tree.headWidth(p=None,s=s)
-        w.setWidth(width)
-
-    p.setDirty()
-#@nonl
-#@-node:ekr.20040305223225:c.setHeadString
-#@-node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
-#@+node:ekr.20080311135649.2:Allow different .leo formats
-@nocolor
-
-On Tue, Mar 11, 2008 at 7:03 AM, Kent Tenney <kten...@gmail.com> wrote:
-
-> On 3/11/08, derwisch <johannes.hues...@med.uni-heidelberg.de> wrote:
-
-> >  On 11 Mrz., 08:03, "Ville M. Vainio" <vivai...@gmail.com> wrote:
-> >  > It could also be argued that
-
-> >  > - Referring to previous cloned vnodes explicitly in XML does not
-> >  > necessarily obscure DAG - it follows the "do not repeat yourself"
-> rule
-> >  > - It will speed up reading
-> >  > - Wouldn't it be better for preserving the integrity of the XML file?
-
-> > I would lean towards this line of argumentation. A couple of days I
-> >  had my Leo extension destroy the Leo ODM file (which was still valid
-> >  according to Leo, but unreadable wrt the extension and broken uAs). I
-> >  resorted to editing the Leo file with Emacs, and was quite surprised
-> >  to see that the headStrings were attributes of vnodes.
-
-> I'll chime in with my pet peeve re: .leo file structure::
-
-> I think that putting the headstrings on vnodes and body strings on tnodes
-> obscures the informational content of the .leo file, and makes the .leo
-> file
-> format less attractive as a generalized solution to the problem of how to
-> manage head/body pairs which live in a hierarchal structure.
-
-> Thanks,
-> Kent
-
-> >  I think that
-> >  editing the file might have been a bit easier if there had been no
-> >  such redundancy. But this is more a feeling rather than a qualified
-> >  opinion.
-
-Thanks for all these comments.  I'll respond to them all here.
-
-Clearly, we should be using a standard xml parser to read .leo files.
-
-My present thoughts:
-
-- I personally like human-readable headlines in <v> elements.
-
-- I am open to putting headlines in <t> elements, as an indication that
-tnodes do indeed contain headlines and body text.
-
-- I am willing to consider only writing shared subtrees once.
-
-Oh! (An Aha)  All these are preferences.  We can allow any combination of
-these provided that headlines appear somewhere.
-
-So that's clean.  This will happen in Leo 4.5. 
-#@nonl
-#@-node:ekr.20080311135649.2:Allow different .leo formats
-#@-node:ekr.20080517102922.1:Files stuff 7
-#@+node:ekr.20080411091507.10:Minor bugs 4
-#@+node:ekr.20080709161540.1:Fix c colorizer bug
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/707a910f975f3715
-
-Coloring of macro definitions is not extended after '\'.
-
-More than that - refer again to the screenshot and look at the
-comments and #defines at the bottom. The comments after the multi-line
-macro are either not coloured or are coloured incorrectly. At the top,
-the '#define ADDPRIM_CO' macro is only partially coloured. The macros
-below the multi-line macro are incorrectly comment-coloured.
-
-@color
-#@nonl
-#@+node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
-#@-node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
-#@-node:ekr.20080709161540.1:Fix c colorizer bug
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines
+#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+#@-node:ekr.20080922115725.1:Finish @shadow
+#@+node:ekr.20080411091507.10:Minor bugs 3
 #@+node:ekr.20080313032655.1:Fix one failed unit test on Linux
 #@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
 #@+node:ekr.20051104075904.78:makeImportExportSuite
@@ -942,9 +317,6 @@ def __init__ (self,c,p,dialog,temp_p,doImport):
 def fail (self,msg=None):
 
     """Mark a unit test as having failed."""
-
-    # __pychecker__ = '--no-argsused'
-        #  msg needed so signature matches base class.
 
     import leo.core.leoGlobals as g
 
@@ -1164,56 +536,249 @@ to get the correct node and line.
 #@-node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
 #@-node:ekr.20031218072017.2864: goToLineNumber
 #@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
-#@-node:ekr.20080411091507.10:Minor bugs 4
-#@+node:ekr.20080730212711.6:ASAP Features 10
-#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
-What uA should be used to specify node colors?
+#@-node:ekr.20080411091507.10:Minor bugs 3
+#@+node:ekr.20080930072519.9:File bugs 2
+#@+node:ekr.20080330085343.3:Fix bug in atFile.write
+The code should save/restore, just as in the clean_file function (from scripts.leo)
+#@nonl
+#@+node:ekr.20080330085343.1:clean_file
+def clean_file(p):
 
-if the foreground / background color API uses uAs,
-would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
-#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
-#@+node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
-#@-node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
-#@+node:ekr.20071110071126.2:Better isearch
-#@-node:ekr.20071110071126.2:Better isearch
-#@+node:ekr.20071128094234:Finish scolorizer
-#@+node:ekr.20050920084036.265:scolorizer LATER
-def scolorizer (self,event,pattern=None):
+    at = c.atFileCommands
 
-    '''Colorizer for incremental searches.'''
+    if hasattr(p.v.t,'tnodeList'):
+        has_list = True
+        old_list =  p.v.t.tnodeList[:]
+    else:
+        has_list = False
 
-    pass # not ready yet.   
+    at.write(
+        root=p,nosentinels=True,
+        thinFile=False,
+        scriptWrite=True,
+        toString=True,
+        write_strips_blank_lines=False)
 
-    # k = self.k ; w = self.w
-    # s = pattern or k.getLabel(ignorePrompt=True)
-    # # g.trace(repr(s))
-    # w.tag_delete('color','color1')
-    # if not s: return
-    # if g.app.gui.guiName() != 'tkinter':
-        # return g.es('command not ready yet',color='blue')
+    if has_list:
+        p.v.t.tnodeList = old_list
 
-    # ind = 0
-    # index = w.getInsertPoint()
-    # index2 = index + len(s)
-    # # g.trace(index,index2)
-    # # Colorize in the forward direction, regardless of the kind of search.
-    # while ind:
-        # try:
-            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
-        # except Exception: break
-        # if ind:
-            # i, d = ind.split('.')
-            # d = str(int(d)+len(s))
-            # # g.trace(ind)
-            # if ind in (index,index2):
-                # w.tag_add('color1',ind,'%s.%s' % (i,d))
-            # w.tag_add('color',ind,'%s.%s' % (i,d))
-            # ind = i + '.' + d
+    fileName = g.os_path_normpath(g.os_path_join(
+        at.default_directory,
+        'clean',
+        g.os_path_basename(p.anyAtFileNodeName())))
 
-    # w.tag_config('color',foreground='red')
-    # w.tag_config('color1',background='lightblue')
-#@-node:ekr.20050920084036.265:scolorizer LATER
-#@-node:ekr.20071128094234:Finish scolorizer
+    # g.trace(p.headString(),len(at.stringOutput),fileName)
+
+    # Adapted from at.openFileForWritingHelper
+    path = g.os_path_dirname(fileName)
+    if not g.os_path_exists(path):
+        g.es('clean directory does not exist',path)
+        return
+
+    try:
+        f = file(fileName,'w')
+        f.write(at.stringOutput)
+        f.close()
+        g.es_print('wrote',fileName)
+    except IOError:
+        g.es_print('can not write',fileName,color='red')
+        g.es_exception()
+#@-node:ekr.20080330085343.1:clean_file
+#@-node:ekr.20080330085343.3:Fix bug in atFile.write
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+@nocolor
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.  Once I saw my
+nodes were overwritten unitTest.leo, I copied somedoc.leo to
+somedoc.leo.bak because I wanted to do a save to see what would
+happen.  The somedoc.leo file ended up with the contents of
+unitTest.leo as I suspected.  To my surprise, I also lost
+somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
+backup copy to revert to.  If leo is making use of a .bak file during
+saving, then should it give a warning if that file already exists?
+
+To duplicate:
+
+1. Open a leo file that you don't care about losing.
+2. From the file->open menu open leo/test/unitTest.leo
+3. Select a unit test and run it with Alt-4 (I chose the Position
+tests described above)
+4. Switch back to the original leo document and you should see the
+contents of unitTest.leo instead of the original document contents.
+#@nonl
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@-node:ekr.20080930072519.9:File bugs 2
+#@-node:ekr.20080915112342.1:First
+#@+node:ekr.20080517102922.1:Files stuff 8
+#@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
+# Remove the old type-specific commands from the default menu.
+#@nonl
+#@-node:ekr.20080918164844.8:Add read/write-any-derived-file commands
+#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
+#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
+#@+node:ekr.20080918164844.14:Protect @shadow and @auto files?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bac65cb75484f7cb
+
+BTW, I think we should prevent shadow files from accidentally
+overwriting valuable stuff:
+
+- Store modification time of the file on shadow import
+- When you "save", check if modification time has changed and ask the
+user if they really want to overwrite the changes. Or, reuse to do it
+altogether and require explicit save-at-shadow-nodes in those
+occasions. That's considered "good form" in editors in general, and
+since pressing ctrl+S in leo has even more significant implications we
+should be absolutely certain everything happens safely. 
+#@nonl
+#@-node:ekr.20080918164844.14:Protect @shadow and @auto files?
+#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@nonl
+#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
+
+I'm just getting started learning how to use Leo. Now, I'd like to use
+it for some of my projects, but there's no chance that I can convert
+everyone at work to using it, so putting sentinel-filled files in our
+repository is out of the question. At the same time, my code looks
+awfully bare without sentinels because the documentation ends up in
+the section names, not the comments!
+
+So, I was wondering if there's a convenient way to pull the section
+names into a comment at the start of each section?
+
+===============
+
+Interesting question.  Am I correct in assuming you are using @nosent trees
+to generate your files?  If so, it would be easy to add support for the
+following options:
+
+@bool write_section_comments_in_at_nosent_trees
+@bool write_node_name_comments_in_at_nosent_trees
+
+The first would write a sentinel consisting of only the section name;
+the second would write a sentinel consisting only of the node's headline
+(for nodes whose headline is not a section name).
+
+These seem like they would be useful additions.  One can even imagine
+corresponding Leo directives so that the comments could be turned on or off
+within an @nosent tree.
+
+What do you think?
+
+=====================
+
+> Interesting question.  Am I correct in assuming you are using @nosent trees
+> to generate your files?  If so, it would be easy to add support for the
+> following options:
+
+> @bool write_section_comments_in_at_nosent_trees
+> @bool write_node_name_comments_in_at_nosent_trees
+
+> The first would write a sentinel consisting of only the section name;
+> the second would write a sentinel consisting only of the node's headline
+> (for nodes whose headline is not a section name).
+
+> These seem like they would be useful additions.  One can even imagine
+> corresponding Leo directives so that the comments could be turned on or off
+> within an @nosent tree.
+
+That sounds like an excellent solution. Particularly the last bit --
+if you could turn section-comments on and off as required, it would
+become very convenient to use Leo to produce source that is intended
+to also be read by non Leo users. 
+#@nonl
+#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
+#@+node:ekr.20080412053100.1:Look into undefined-section behavior
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
+
+1) Create an @thin file based outline.
+2) In the @thin file, create an unreferenced section (something like a
+  header <<This Section Is Bogus>>).
+3) Now, File->Exit
+4) A dialog box pops up
+  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
+5) Click "Yes"
+6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
+  and in the console window, you see "undefined section: ..."
+
+However, the application is still running. The only way to really quit
+is to click "No" to the Save dialog.
+
+> Iirc, this is the intended behavior.  It would be possible to build in some
+> state behavior to only ask once, but I'd rather not do that.
+
+The point is that I can't kill Leo if I keep saying "Yes" to the
+"Save change before quitting" dialog. This is definitely not the
+intended behavior. The correct behavior would be to save the file,
+give me the warning about the undefined section, and exit.
+#@nonl
+#@-node:ekr.20080412053100.1:Look into undefined-section behavior
+#@+node:ekr.20080311135649.2:Allow different .leo formats
+@nocolor
+
+On Tue, Mar 11, 2008 at 7:03 AM, Kent Tenney <kten...@gmail.com> wrote:
+
+> On 3/11/08, derwisch <johannes.hues...@med.uni-heidelberg.de> wrote:
+
+> >  On 11 Mrz., 08:03, "Ville M. Vainio" <vivai...@gmail.com> wrote:
+> >  > It could also be argued that
+
+> >  > - Referring to previous cloned vnodes explicitly in XML does not
+> >  > necessarily obscure DAG - it follows the "do not repeat yourself"
+> rule
+> >  > - It will speed up reading
+> >  > - Wouldn't it be better for preserving the integrity of the XML file?
+
+> > I would lean towards this line of argumentation. A couple of days I
+> >  had my Leo extension destroy the Leo ODM file (which was still valid
+> >  according to Leo, but unreadable wrt the extension and broken uAs). I
+> >  resorted to editing the Leo file with Emacs, and was quite surprised
+> >  to see that the headStrings were attributes of vnodes.
+
+> I'll chime in with my pet peeve re: .leo file structure::
+
+> I think that putting the headstrings on vnodes and body strings on tnodes
+> obscures the informational content of the .leo file, and makes the .leo
+> file
+> format less attractive as a generalized solution to the problem of how to
+> manage head/body pairs which live in a hierarchal structure.
+
+> Thanks,
+> Kent
+
+> >  I think that
+> >  editing the file might have been a bit easier if there had been no
+> >  such redundancy. But this is more a feeling rather than a qualified
+> >  opinion.
+
+Thanks for all these comments.  I'll respond to them all here.
+
+Clearly, we should be using a standard xml parser to read .leo files.
+
+My present thoughts:
+
+- I personally like human-readable headlines in <v> elements.
+
+- I am open to putting headlines in <t> elements, as an indication that
+tnodes do indeed contain headlines and body text.
+
+- I am willing to consider only writing shared subtrees once.
+
+Oh! (An Aha)  All these are preferences.  We can allow any combination of
+these provided that headlines appear somewhere.
+
+So that's clean.  This will happen in Leo 4.5. 
+#@nonl
+#@-node:ekr.20080311135649.2:Allow different .leo formats
 #@+node:ekr.20061002093442:Add opml support to new,open, save commands
 #@+node:ekr.20031218072017.2820:top level (file menu)
 #@+node:ekr.20031218072017.1623:c.new
@@ -1697,6 +1262,51 @@ def revert (self,event=None):
 #@-node:ekr.20031218072017.2837:revert
 #@-node:ekr.20031218072017.2820:top level (file menu)
 #@-node:ekr.20061002093442:Add opml support to new,open, save commands
+#@-node:ekr.20080517102922.1:Files stuff 8
+#@+node:ekr.20080730212711.6:ASAP Features 10
+#@+node:ekr.20071110071126.2:Better isearch
+#@-node:ekr.20071110071126.2:Better isearch
+#@+node:ekr.20080918164844.12:Improve headline navigation
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
+
+Now that the leo is more "modeless" (I'm speaking of switching between
+outline navigation and body editing modes), which btw is a clear improvement
+to how leo used to behave, here are some things that still feel a bit
+un-intuitive:
+
+- ctrl+H (edit-headline) "locks" the user into the mode way too much.
+
+   * The headline editing mode should be cancelled when the user does:
+      - cursor up/down
+      - ESC
+
+   * Even better alternative: I find myself constantly thinking that "ok,
+now I need to edit a headline (typically not the current headline), so now
+I'll press ctrl+H". I think perhaps pressing up/down should cancel the
+current headline editing, and select the next/previous headline for editing.
+That is, I wouldn't need to navigate to the headline I want to edit before I
+start editing it.
+
+  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
+intuitive assumption is that cut will select the node that "took the place
+of the
+    current node", instead of starting to travel upwards the set of nodes.
+
+   * Typical use case is the way you usually start deleting a set of items.
+You move to the first item and start cutting repeatedly. This wont work with
+the current behaviour. 
+#@nonl
+#@-node:ekr.20080918164844.12:Improve headline navigation
+#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
+What uA should be used to specify node colors?
+
+if the foreground / background color API uses uAs,
+would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
+#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
+#@+node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
+#@-node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
 #@+node:ekr.20070624135822:Templates for common code fragments
 # How will users be reminded of the fragments?
 #   - A dropdown menu?
@@ -1745,8 +1355,45 @@ down some data. If the headline string is too long, the cursor goes
 beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
 #@-node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
+#@+node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20050920084036.265:scolorizer LATER
+def scolorizer (self,event,pattern=None):
+
+    '''Colorizer for incremental searches.'''
+
+    pass # not ready yet.   
+
+    # k = self.k ; w = self.w
+    # s = pattern or k.getLabel(ignorePrompt=True)
+    # # g.trace(repr(s))
+    # w.tag_delete('color','color1')
+    # if not s: return
+    # if g.app.gui.guiName() != 'tkinter':
+        # return g.es('command not ready yet',color='blue')
+
+    # ind = 0
+    # index = w.getInsertPoint()
+    # index2 = index + len(s)
+    # # g.trace(index,index2)
+    # # Colorize in the forward direction, regardless of the kind of search.
+    # while ind:
+        # try:
+            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
+        # except Exception: break
+        # if ind:
+            # i, d = ind.split('.')
+            # d = str(int(d)+len(s))
+            # # g.trace(ind)
+            # if ind in (index,index2):
+                # w.tag_add('color1',ind,'%s.%s' % (i,d))
+            # w.tag_add('color',ind,'%s.%s' % (i,d))
+            # ind = i + '.' + d
+
+    # w.tag_config('color',foreground='red')
+    # w.tag_config('color1',background='lightblue')
+#@-node:ekr.20050920084036.265:scolorizer LATER
+#@-node:ekr.20071128094234:Finish scolorizer
 #@-node:ekr.20080730212711.6:ASAP Features 10
-#@-node:ekr.20080810085333.5:Under two hours 21
 #@+node:ekr.20080810085333.7:Under two days 5
 #@+node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
@@ -2494,12 +2141,7 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
-
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
 
     for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
@@ -3171,8 +2813,6 @@ def endCommand (self,event,commandName):
     if commandName:
         bodyCtrl = c.frame.body.bodyCtrl
         if not k.inState():
-            # __pychecker__ = '--no-classattr --no-objattrs'
-                # initAllEditCommanders *does* exist.
             k.commandName = None
 
             # Do the import here to break a circular dependency at the top level.
@@ -3482,12 +3122,7 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
-
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
 
     for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
@@ -4300,12 +3935,7 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
-
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
 
     for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
@@ -5262,10 +4892,6 @@ def getShortcut (self,c,shortcutName):
 #@+node:ekr.20041120105609:doShortcuts (ParserBaseClass)
 def doShortcuts(self,p,kind,name,val,s=None):
 
-    # __pychecker__ = '--no-argsused' # kind,val.
-
-    # g.trace(self.c.fileName(),name)
-
     c = self.c ; d = self.shortcutsDict ; k = c.k
     trace = False or c.config.getBool('trace_bindings_verbose')
     munge = k.shortcutFromSetting
@@ -5357,12 +4983,7 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
-
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
 
     for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
@@ -6025,7 +5646,12 @@ key to be re-executed.
 #@nonl
 #@-node:ekr.20080616110054.2:Support vim dot command
 #@-node:ekr.20080603052650.466:Fix vim problems
-#@+node:ekr.20080730212711.7:Plugins 4
+#@+node:ekr.20080730212711.7:Plugins 5
+#@+node:ekr.20080923200153.1:Support scan-directives hook again?
+# This affects the add_directives plugin.
+# Also, the color_markup plugin doesn't work with the threading colorizer.
+#@nonl
+#@-node:ekr.20080923200153.1:Support scan-directives hook again?
 #@+node:ekr.20080604060150.1:Clean up plugins
 Some scripting says the following are in .../plugins/ but not
 leoPluginsRef.leo:
@@ -6078,7 +5704,7 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
 #@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
-#@-node:ekr.20080730212711.7:Plugins 4
+#@-node:ekr.20080730212711.7:Plugins 5
 #@-node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20071211093011:4.7  autocompletion
 #@+node:ekr.20080113165010:About auto completion
@@ -6834,8 +6460,6 @@ Edward
 
 P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
 #@-node:ekr.20080628095358.1:Make each Leo command a class
-#@+node:ekr.20080630093024.2:Remove pychecker stuff (maybe)
-#@-node:ekr.20080630093024.2:Remove pychecker stuff (maybe)
 #@-node:ekr.20071211091355:Other/Minor
 #@+node:ekr.20060306194040:Leo Video
 @nocolor
@@ -7232,8 +6856,6 @@ def onAboutLeoEmail(self,event=None):
 
     """Handle clicks in the email link in an About Leo dialog."""
 
-    # __pychecker__ = '--no-argsused' # the event param must be present.
-
     try:
         import webbrowser
         webbrowser.open("mailto:" + self.email)
@@ -7244,8 +6866,6 @@ def onAboutLeoEmail(self,event=None):
 def onAboutLeoUrl(self,event=None):
 
     """Handle clicks in the url link in an About Leo dialog."""
-
-    # __pychecker__ = '--no-argsused' # the event param must be present.
 
     try:
         import webbrowser
@@ -7258,15 +6878,11 @@ def setArrowCursor (self,event=None):
 
     """Set the cursor to an arrow in an About Leo dialog."""
 
-    # __pychecker__ = '--no-argsused' # the event param must be present.
-
     self.text.configure(cursor="arrow")
 
 def setDefaultCursor (self,event=None):
 
     """Set the cursor to the default cursor in an About Leo dialog."""
-
-    # __pychecker__ = '--no-argsused' # the event param must be present.
 
     self.text.configure(cursor="xterm")
 #@-node:ekr.20071001092721.15:swingAboutLeo: setArrowCursor, setDefaultCursor
@@ -7775,8 +7391,6 @@ def destroy (self,event=None):
 
     subclasses may override to really destroy the window"""
 
-    # __pychecker__ = '--no-argsused' # event not used, but must be present.
-
     self.top.withdraw() # Don't allow this window to be destroyed.
 #@-node:ekr.20071001092721.48:destroy
 #@+node:ekr.20071001092721.49:hide
@@ -7793,16 +7407,12 @@ def fillbox(self,event=None):
 
     Overridden by subclasses"""
 
-    # __pychecker__ = '--no-argsused' # the event param must be present.
-
     pass
 #@-node:ekr.20071001092721.50:fillbox
 #@+node:ekr.20071001092721.51:go
 def go(self,event=None):
 
     """Handle clicks in the "go" button in a list box dialog."""
-
-    # __pychecker__ = '--no-argsused' # the event param must be present.
 
     c = self.c ; box = self.box
 
@@ -7818,8 +7428,7 @@ def go(self,event=None):
         c.beginUpdate()
         try:
             c.frame.tree.expandAllAncestors(p)
-            c.selectPosition(p,updateBeadList=True)
-                # A case could be made for updateBeadList=False
+            c.selectPosition(p)
         finally:
             c.endUpdate()
 #@-node:ekr.20071001092721.51:go
@@ -7854,7 +7463,6 @@ import string
 import sys
 
 # # The following imports _are_ used.
-# __pychecker__ = '--no-import'
 # import threading
 # import time
 #@-node:ekr.20070930105601.1:<< imports >>
@@ -8979,20 +8587,14 @@ def OnCloseLeoEvent(self):
 #@+node:ekr.20071001091231.89:frame.OnControlKeyUp/Down
 def OnControlKeyDown (self,event=None):
 
-    # __pychecker__ = '--no-argsused' # event not used.
-
     self.controlKeyIsDown = True
 
 def OnControlKeyUp (self,event=None):
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     self.controlKeyIsDown = False
 #@-node:ekr.20071001091231.89:frame.OnControlKeyUp/Down
 #@+node:ekr.20071001091231.90:OnActivateBody (swingFrame)
 def OnActivateBody (self,event=None):
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     try:
         frame = self ; c = frame.c
@@ -9010,8 +8612,6 @@ def OnActivateBody (self,event=None):
 def OnActivateLeoEvent(self,event=None):
 
     '''Handle a click anywhere in the Leo window.'''
-
-    # __pychecker__ = '--no-argsused' # event.
 
     self.c.setLog()
 
@@ -11063,8 +10663,6 @@ def deleteTab (self,tabName,force=False):
 #@+node:ekr.20071001091231.148:hideTab
 def hideTab (self,tabName):
 
-    # __pychecker__ = '--no-argsused' # tabName
-
     self.selectTab('Log')
 #@-node:ekr.20071001091231.148:hideTab
 #@+node:ekr.20071001091231.149:getSelectedTab
@@ -11604,8 +11202,6 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
     This class inherits almost all swingText methods: you call use them as usual.'''
 
     # The signatures of tag_add and insert are different from the Tk.Text signatures.
-    # __pychecker__ = '--no-override' # suppress warning about changed signature.
-
     def __repr__(self):
         name = hasattr(self,'_name') and self._name or '<no name>'
         return 'swingTextWidget id: %s name: %s' % (id(self),name)
@@ -12544,8 +12140,6 @@ def setHeadlineText (self,theId,w,s):
 
     """All changes to text widgets should come here."""
 
-    # __pychecker__ = '--no-argsused' # theId not used.
-
     # if self.trace_alloc: g.trace('%4d %6s %s' % (theId,self.textAddr(w),s),align=-20)
 
     state = w.cget("state")
@@ -13262,9 +12856,6 @@ def scrollTo(self,p=None):
 
     """Scrolls the canvas so that p is in view."""
 
-    # __pychecker__ = '--no-argsused' # event not used.
-    # __pychecker__ = '--no-intdivide' # suppress warning about integer division.
-
     c = self.c ; frame = c.frame ; trace = True
     if not p or not c.positionExists(p):
         p = c.currentPosition()
@@ -13943,11 +13534,7 @@ def OnDeactivate (self,event=None):
 
     """Deactivate the tree pane, dimming any headline being edited."""
 
-    # __pychecker__ = '--no-argsused' # event not used.
-
     tree = self ; c = self.c
-
-    # g.trace(g.callers())
 
     c.beginUpdate()
     try:
@@ -13987,14 +13574,10 @@ Aside: though Tk tries to be muli-platform, the interaction with different windo
 
 def OnPopupFocusLost(self,event=None):
 
-    # __pychecker__ = '--no-argsused' # event not used.
-
     self.popupMenu.unpost()
 #@-node:ekr.20071001092453.98:OnPopupFocusLost
 #@+node:ekr.20071001092453.99:createPopupMenu
 def createPopupMenu (self,event):
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     c = self.c ; frame = c.frame
 
@@ -14044,8 +13627,6 @@ table = (
 def enablePopupMenuItems (self,v,event):
 
     """Enable and disable items in the popup menu."""
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     c = self.c ; menu = self.popupMenu
 
@@ -14603,8 +14184,6 @@ def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 
     """Create and run an swing open file dialog ."""
 
-    # __pychecker__ = '--no-argsused' # defaultextension not used.
-
     initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
 
     if multiple:
@@ -14632,8 +14211,6 @@ def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
 
     """Create and run an swing save file dialog ."""
-
-    # __pychecker__ = '--no-argsused' # defaultextension not used.
 
     initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd()),
 
@@ -14835,8 +14412,6 @@ set_focus_count = 0
 
 def set_focus(self,c,w):
 
-    # __pychecker__ = '--no-argsused' # c not used at present.
-
     """Put the focus on the widget."""
 
     if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
@@ -14864,8 +14439,6 @@ def set_focus(self,c,w):
 #@+node:ekr.20070930102228.34:Font
 #@+node:ekr.20070930102228.35:swingGui.getFontFromParams
 def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
-
-    # __pychecker__ = '--no-argsused' # defaultSize not used.
 
     family_name = family
 

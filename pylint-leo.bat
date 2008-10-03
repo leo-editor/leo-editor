@@ -16,12 +16,14 @@ REM goto bad_plugins
 REM goto errors
 goto all
 
-
 :errors
 
-echo runLeo.py
-rem Harmless: W0611 (import pychecker)
-call pylint.bat leo\core\runLeo.py           --disable-msg=W0611 --rcfile=leo\test\pylint-leo-rc.txt
+echo leoFrame.py
+call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
+
+echo leoTkinterFrame.py
+rem  Harmless: 				     W0221: mismatch between Tk.Text methods and overridden methods.
+call pylint.bat leo\core\leoTkinterFrame.py  --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

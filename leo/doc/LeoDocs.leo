@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -29,6 +29,7 @@
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
+<v t="ekr.20080923182326.1"><vh>@@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
@@ -48,11 +49,12 @@
 <v t="ekr.20051202072010"><vh>@string rst3_default_path =</vh></v>
 </v>
 </v>
+<v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848" a="M"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1" a="E"
+<v t="ekr.20080301071818.1"
 marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
@@ -418,6 +420,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20050903161843"><vh>Creating script buttons</vh></v>
 <v t="ekr.20040403173920.24" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710155043c2f613e71025d71032855263c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710455063c2f6469763e71055d710628554f3c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710755063c2f6469763e71085d710928553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a55063c2f6469763e710b5d710c2855063c626f64793e710d55073c2f626f64793e710e5d710f2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711055073c2f68746d6c3e71114e656565656555073c2f6469763e0a711255073c2f6469763e0a711355353c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7114556c3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a7115652e"><vh>Running Leo in batch mode</vh></v>
+<v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
 <v t="ekr.20050901102400.3"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
@@ -2952,7 +2955,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080912143702.137"><vh>4.5.1 final</vh>
 <v t="ekr.20080912143702.138"><vh>Fixed line number problems</vh></v>
 <v t="ekr.20080912143702.139"><vh>Fixed problems with @shadow files with unknown file extensions</vh></v>
@@ -31903,6 +31906,77 @@ adjustTargetLanguage, a helper of writeOneAtShadowNode, no longer sets
 c.target_language to 'unknown_language' when the file extension is unknown.</t>
 <t tx="ekr.20080912143702.140">The script failed for paths such as c:\xp\python25\python.exe
 for which python was not the top-most directory.</t>
+<t tx="ekr.20080922124033.1">The following code can be run from a script to get input from the user using the minibuffer::
+
+    def getInput (event=None):
+    
+       stateName = 'get-input'
+       k = c.k
+       state = k.getState(stateName)
+    
+       if state == 0:
+           k.setLabelBlue('Input: ',protect=True)
+           k.getArg(event,stateName,1,getInput)
+       else:
+           k.clearState()
+           g.es_print('input:',k.arg)
+    
+    getInput()
+    
+Let's look at this in detail.  The lines::
+
+    stateName = 'get-input'
+    k = c.k
+    state = k.getState(stateName)
+
+define a state *name*, 'get-input', unique to this code.
+k.getState returns the present state (an int) associated with this state.
+
+When getInput() is first called, the state returned by k.getState will be 0,
+so the following lines are executed::
+
+    if state == 0:
+        k.setLabelBlue('Input: ',protect=True)
+        k.getArg(event,stateName,1,getInput)
+        
+These lines put a protected label in the minibuffer:
+the user can't delete the label by backspacing.
+getArg, and the rest of Leo's key handling code, take care of the extremely
+complex details of handling key strokes in states.
+The call to getArg never returns.
+Instead, when the user has finished entering the input by typing &lt;Return&gt;
+getArg calls getInput so that k.getState will return state 1, the value
+passed as the third argument to k.getArg.
+The following lines handle state 1::
+
+    else:
+        k.clearState()
+        g.es_print('input:',k.arg)
+
+k.arg is the value returned by k.getArg.
+This example code just prints the value of k.arg and clears the input state.
+</t>
+<t tx="ekr.20080923181012.1">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = False
+verbose=True
+@c
+
+A test of creating directories.
+
+############
+html test
+############</t>
+<t tx="ekr.20080923182326.1">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
+
+True:  Leo attempts to create directories if they do not exist.
+False: Leo never attempts to create directories.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?

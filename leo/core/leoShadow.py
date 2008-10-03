@@ -80,10 +80,10 @@ class shadowController:
     #@+node:ekr.20080711063656.7:x.baseDirName
     def baseDirName (self):
 
-        x = self ; filename = x.c.fileName()
+        x = self ; c = x.c ; filename = c.fileName()
 
         if filename:
-            return g.os_path_dirname(g.os_path_finalize(filename))
+            return g.os_path_dirname(c.os_path_finalize(filename))
         else:
             self.error('Can not compute shadow path: .leo file has not been saved')
             return None
@@ -102,9 +102,9 @@ class shadowController:
 
         '''Return the full path name of filename.'''
 
-        x = self ; theDir = x.baseDirName()
+        x = self ; c = x.c ; theDir = x.baseDirName()
 
-        return theDir and g.os_path_finalize_join(theDir,filename)
+        return theDir and c.os_path_finalize_join(theDir,filename)
     #@nonl
     #@-node:ekr.20080711063656.4:x.dirName and pathName
     #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
@@ -195,18 +195,16 @@ class shadowController:
 
         '''Return the full path name of filename, resolved using c.fileName()'''
 
-        x = self ; baseDir = x.baseDirName()
-        fileDir = g.os_path_dirname(filename)
-        # g.trace(baseDir)
-        # g.trace(x.shadow_subdir)
-        # g.trace(fileDir)
+        x = self ; c = x.c
 
-        return baseDir and g.os_path_finalize_join(
+        baseDir = x.baseDirName()
+        fileDir = g.os_path_dirname(filename)
+
+        return baseDir and c.os_path_finalize_join(
                 baseDir,
                 fileDir, # Bug fix: honor any directories specified in filename.
                 x.shadow_subdir,
                 x.shadow_prefix + g.shortFileName(filename))
-    #@nonl
     #@-node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
     #@+node:ekr.20080711063656.3:x.unlink
     def unlink (self, filename,silent=False):
@@ -496,8 +494,8 @@ class shadowController:
 
         x = self ; trace = False
 
-        old_public_lines  = file(old_public_file).readlines()
-        old_private_lines = file(old_private_file).readlines()
+        old_public_lines  = open(old_public_file).readlines()
+        old_private_lines = open(old_private_file).readlines()
         marker = x.marker_from_extension(old_public_file)
 
         if trace:

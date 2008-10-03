@@ -8,9 +8,6 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-# __pychecker__ = '--no-constCond -- no-constant1'
-    # Disable checks for constant conditionals.
-
 #@<< imports >>
 #@+node:ekr.20040712045933:<< imports  >> (leoCommands)
 import leo.core.leoGlobals as g
@@ -61,8 +58,6 @@ except Exception:
 subprocess = g.importExtension('subprocess',None,verbose=False)
 
 # The following import _is_ used.
-# __pychecker__ = '--no-import'
-
 import token    # for Check Python command
 #@-node:ekr.20040712045933:<< imports  >> (leoCommands)
 #@nl
@@ -231,7 +226,7 @@ class baseCommands:
 
         c = self
         if c.mFileName:
-            return g.os_path_finalize(c.mFileName).lower()
+            return c.os_path_finalize(c.mFileName).lower()
         else:
             return 0
     #@-node:ekr.20041130173135:c.hash
@@ -1069,12 +1064,14 @@ class baseCommands:
 
         """Create the RecentFiles menu.  May be called with Null fileName."""
 
+        c = self
+
         if g.app.unitTesting: return
 
         def munge(name):
-            return g.os_path_normpath(name or '').lower()
+            return c.os_path_finalize(name or '').lower()
         def munge2(name):
-            return g.os_path_finalize(g.app.loadDir,name or '')
+            return c.os_path_finalize_join(g.app.loadDir,name or '')
 
         # Update the recent files list in all windows.
         if fileName:
@@ -1713,9 +1710,9 @@ class baseCommands:
             parts = path.split('/')
             path = g.app.loadDir
             for part in parts:
-                path = g.os_path_finalize_join(path,part)
+                path = c.os_path_finalize_join(path,part)
         else:
-            path = g.os_path_finalize_join(
+            path = c.os_path_finalize_join(
                 g.app.loadDir,'..','test','scriptFile.py')
 
         # Write the file.
@@ -2144,7 +2141,7 @@ class baseCommands:
             d = g.scanDirectives(c,p=root)
             path = d.get("path")
             # g.trace('path',path,'fileName',fileName)
-            fileName = g.os_path_finalize_join(path,fileName)
+            fileName = c.os_path_finalize_join(path,fileName)
             lines    = c.goto_open(fileName)
 
         return lines
@@ -5219,12 +5216,11 @@ class baseCommands:
         c = self
 
         p = c.nodeHistory.goNext()
-        if not p: return
-
-        if c.contractVisitedNodes:
-            p.contract()
-
-        c.treeSelectHelper(p)
+        # g.trace(p)
+        if p:
+            c.frame.tree.expandAllAncestors(p)
+            c.selectPosition(p)
+            c.redraw_now()
     #@-node:ekr.20031218072017.1628:goNextVisitedNode
     #@+node:ekr.20031218072017.1627:goPrevVisitedNode
     def goPrevVisitedNode (self,event=None):
@@ -5234,12 +5230,11 @@ class baseCommands:
         c = self
 
         p = c.nodeHistory.goPrev()
-        if not p: return
-
-        if c.contractVisitedNodes:
-            p.contract()
-
-        c.treeSelectHelper(p)
+        # g.trace(p)
+        if p:
+            c.frame.tree.expandAllAncestors(p)
+            c.selectPosition(p)
+            c.redraw_now()
     #@-node:ekr.20031218072017.1627:goPrevVisitedNode
     #@+node:ekr.20031218072017.2914:goToFirstNode
     def goToFirstNode (self,event=None):
@@ -5534,7 +5529,7 @@ class baseCommands:
 
         if p:
             c.frame.tree.expandAllAncestors(p)
-            c.selectPosition(p,updateBeadList=False)
+            c.selectPosition(p)
             if redraw: c.redraw()
 
         c.treeFocusHelper()
@@ -5701,8 +5696,10 @@ class baseCommands:
 
         import webbrowser
 
-        theFile = g.os_path_finalize_join(
-                g.app.loadDir,'..','doc','html','leo_TOC.html')
+        c = self
+
+        theFile = c.os_path_finalize_join(
+            g.app.loadDir,'..','doc','html','leo_TOC.html')
 
         url = 'file:%s' % theFile
 
@@ -5751,7 +5748,7 @@ class baseCommands:
             d[key] = g.choose(val is None,default,val)
 
         # Post process: do *not* set commander ivars.
-        lang_dict       = d.get('lang-dict')
+        lang_dict = d.get('lang-dict')
 
         return {
             "delims"        : lang_dict.get('delims'),
@@ -5761,7 +5758,7 @@ class baseCommands:
             "pagewidth"     : d.get('pagewidth'),
             "path"          : d.get('path') or g.getBaseDirectory(c),
             "tabwidth"      : d.get('tabwidth'),
-            "pluginsList"   : [],  ### To do: what about scan-directives hook?
+            "pluginsList"   : [], # No longer used.
             "wrap"          : d.get('wrap'),
         }
     #@nonl
@@ -5785,7 +5782,7 @@ class baseCommands:
 
         if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
 
-        absbase = g.os_path_finalize_join(g.app.loadDir,base)
+        absbase = c.os_path_finalize_join(g.app.loadDir,base)
 
         if trace and verbose: g.trace('absbase',absbase)
 
@@ -5806,8 +5803,8 @@ class baseCommands:
         if trace and verbose: g.trace('paths',paths)
 
         # Step 3: Compute the full, effective, absolute path.
-        if trace and verbose: g.printList(paths,tag='cscanAtPathDirectives: raw paths')
-        path = g.os_path_finalize_join(*paths)
+        if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+        path = c.os_path_finalize_join(*paths)
         if trace and verbose: g.trace('joined path:',path)
 
         # Step 4: Make the path if necessary.
@@ -5815,7 +5812,7 @@ class baseCommands:
             ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
             if not ok:
                 if force:
-                    g.es_print('scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+                    g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
                 path = absbase # Bug fix: 2008/9/18
 
         if trace: g.trace('returns',path)
@@ -5836,7 +5833,7 @@ class baseCommands:
         start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
 
         for d in aList:
-            root = d.get('root')
+            root = d.get('root') or ''
             if g.match_word(root,0,"-code"):
                 return "code"
             elif g.match_word(root,0,"-doc"):
@@ -5847,6 +5844,23 @@ class baseCommands:
 
         return None
     #@-node:ekr.20080828103146.12:c.scanAtRootDirectives
+    #@+node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+    def os_path_finalize (self,path,**keys):
+
+        c = self
+
+        keys['c'] = c
+
+        return g.os_path_finalize(path,**keys)
+
+    def os_path_finalize_join (self,*args,**keys):
+
+        c = self
+
+        keys['c'] = c
+
+        return g.os_path_finalize_join(*args,**keys)
+    #@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
     #@-node:ekr.20080901124540.1:c.Directive scanning
     #@+node:ekr.20031218072017.2945:Dragging (commands)
     #@+node:ekr.20031218072017.2353:c.dragAfter
@@ -6443,8 +6457,6 @@ class baseCommands:
     canExtractSectionNames = canExtract
 
     def canExtractSection (self):
-
-        # __pychecker__ = '--no-implicitreturns' # Suppress bad warning.
 
         c = self ; body = c.frame.body
         if not body: return False
@@ -7144,7 +7156,7 @@ class baseCommands:
             # k.showStateAndMode(w=c.frame.body.bodyCtrl)
     #@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
     #@+node:ekr.20031218072017.2997:c.selectPosition
-    def selectPosition(self,p,updateBeadList=True):
+    def selectPosition(self,p):
 
         """Select a new position."""
 
@@ -7155,7 +7167,7 @@ class baseCommands:
 
         # g.trace(p.headString(),g.callers())
 
-        c.frame.tree.select(p,updateBeadList)
+        c.frame.tree.select(p)
 
         # New in Leo 4.4.2.
         c.setCurrentPosition(p)
@@ -7454,8 +7466,6 @@ class configSettings:
     #@+node:ekr.20041118195812.2:set & setString
     def set (self,p,setting,val):
 
-        # __pychecker__ = '--no-argsused' # p not used.
-
         return g.app.config.setString(self.c,setting,val)
 
     setString = set
@@ -7469,19 +7479,40 @@ class nodeHistory:
     '''A class encapsulating knowledge of visited nodes.'''
 
     #@    @+others
+    #@+node:ekr.20070615131604.1: ctor (nodeHistory)
+    def __init__ (self,c):
+
+        self.c = c
+        self.beadList = []
+            # list of (position,chapter) tuples for
+            # nav_buttons and nodenavigator plugins.
+        self.beadPointer = -1
+        self.trace = False
+    #@nonl
+    #@-node:ekr.20070615131604.1: ctor (nodeHistory)
     #@+node:ekr.20070615131604.3:canGoToNext/Prev
     def canGoToNextVisited (self):
+
+        if self.trace:
+            g.trace(
+                self.beadPointer + 1 < len(self.beadList),
+                self.beadPointer,len(self.beadList))
 
         return self.beadPointer + 1 < len(self.beadList)
 
     def canGoToPrevVisited (self):
+
+        if self.trace:
+            g.trace(self.beadPointer > 0,
+                self.beadPointer,len(self.beadList))
 
         return self.beadPointer > 0
     #@-node:ekr.20070615131604.3:canGoToNext/Prev
     #@+node:ekr.20070615132939:clear
     def clear (self):
 
-        self.visitedList = []
+        self.beadList = []
+        self.beadPointer = -1
     #@-node:ekr.20070615132939:clear
     #@+node:ekr.20070615134813:goNext/Prev
     def goNext (self):
@@ -7506,86 +7537,62 @@ class nodeHistory:
         else:
             return None
     #@-node:ekr.20070615134813:goNext/Prev
-    #@+node:ekr.20070615131604.1:nodeHistory.ctor
-    def __init__ (self,c):
-
-        self.c = c
-
-        self.beadList = [] # list of (position,chapter) tuples for the Back and Forward commands.
-        self.beadPointer = -1
-        self.visitedList = [] # list of (position,chapter) tuples for the Nodes dialog.
-    #@-node:ekr.20070615131604.1:nodeHistory.ctor
     #@+node:ekr.20070615132939.1:remove
     def remove (self,p):
 
-        for data in self.visitedList:
-            p2,chapter = data
-            if p == p2:
-                self.visitedList.remove(data)
-                break
+        '''Remove an item from the nav_buttons list.'''
+
+        c = self.c
+        target = self.beadPointer > -1 and self.beadList[self.beadPointer]
+
+        self.beadList = [z for z in self.beadList
+                            if z[0] != p and c.positionExists(z[0])]
+
+        try:
+            self.beadPointer = self.beadList.index(target)
+        except ValueError:
+            self.beadPointer = max(0,self.beadPointer-1)
+
+        if self.trace:
+            g.trace('bead list',p.headString())
+            g.pr([z[0].headString() for z in self.beadList])
     #@-node:ekr.20070615132939.1:remove
     #@+node:ekr.20070615140032:selectChapter
     def selectChapter (self,chapter):
 
         c = self.c ; cc = c.chapterController
-        if not cc or not chapter: return
 
-        if chapter != cc.getSelectedChapter():
+        if cc and chapter and chapter != cc.getSelectedChapter():
             cc.selectChapterByName(chapter.name)
     #@-node:ekr.20070615140032:selectChapter
-    #@+node:ekr.20070615131604.2:update & helpers
-    def update (self,p,updateBeadList):
+    #@+node:ekr.20070615131604.2:update
+    def update (self,p):
 
-        if updateBeadList:
-            self.updatePositionList(p)
-        self.updateVisitedList(p)
-    #@+node:ekr.20040803072955.131:updatePositionList
-    def updatePositionList (self,p):
+        c = self.c
 
-        # Don't change the list if p is already in it.
-        c = self.c ; cc = c.chapterController
-        update = True
-        for data in self.beadList:
-            p2,chapter = data
-            if p2 == p:
-                update = False
-            if not c.positionExists(p2,root=c.rootPosition()):
-                self.beadList.remove(data)
-                update = True ; break
+        self.beadList = [z for z in self.beadList
+                            if c.positionExists(z[0])]
 
-        # Add the node to the end, and set the bead pointer to the end.
-        if update:
+        positions = [z[0] for z in self.beadList]
+
+        try:
+            self.beadPointer = positions.index(p)
+        except ValueError:
+            cc = c.chapterController
             theChapter = cc and cc.getSelectedChapter()
-            data = p.copy(),theChapter
+            data = (p.copy(),theChapter)
             self.beadList.append(data)
             self.beadPointer = len(self.beadList)-1
-            #g.trace('updating bead list',p.headString())
-            #g.pr([p.headString() for p in self.beadList])
-    #@-node:ekr.20040803072955.131:updatePositionList
-    #@+node:ekr.20040803072955.132:updateVisitedList
-    def updateVisitedList (self,p):
 
-        '''Make p the most recently visited position.'''
+        if self.trace:
+            g.trace('bead list',p.headString())
+            g.pr([z[0].headString() for z in self.beadList])
 
-        c = self.c ; cc = c.chapterController
-        for data in self.visitedList:
-            p2,chapter = data
-            if p2 == p:
-                self.visitedList.remove(data)
-                break
-
-        chapter = cc and cc.getSelectedChapter()
-        data = p.copy(),chapter
-        self.visitedList.insert(0,data)
-
-        # g.trace('len(c.visitedList)',len(c.visitedList))
-        # g.trace([z.headString()[:10] for z in self.visitedList]) # don't assign to p!
-    #@-node:ekr.20040803072955.132:updateVisitedList
-    #@-node:ekr.20070615131604.2:update & helpers
+    #@-node:ekr.20070615131604.2:update
     #@+node:ekr.20070615140655:visitedPositions
     def visitedPositions (self):
 
-        return [p.copy() for p,chapter in self.visitedList]
+        return [p.copy() for p,chapter in self.beadList]
     #@-node:ekr.20070615140655:visitedPositions
     #@-others
 #@-node:ekr.20070615131604:class nodeHistory

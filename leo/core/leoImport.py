@@ -462,10 +462,10 @@ class leoImportCommands:
             if not ext:
                 ext = ".txt"
             if ext[0] == '.':
-                newFileName = g.os_path_finalize_join(path,fileName+ext)
+                newFileName = c.os_path_finalize_join(path,fileName+ext)
             else:
                 head,ext2 = g.os_path_splitext(fileName) 
-                newFileName = g.os_path_finalize_join(path,head+ext+ext2)
+                newFileName = c.os_path_finalize_join(path,head+ext+ext2)
             if toString:
                 return s
             else:
@@ -686,91 +686,13 @@ class leoImportCommands:
     #@+node:ekr.20080211085914:scanDefaultDirectory (leoImport)
     def scanDefaultDirectory(self,p):
 
-        """Set .default_directory by looking for @path directives."""
+        """Set the default_directory ivar by looking for @path directives."""
 
-        c = self.c ; p1 = p.copy()
-        self.default_directory = None
-        if not p: return
-        #@    << Set path from @file node >>
-        #@+node:ekr.20080211085914.1:<< Set path from @file node >>
-        # An absolute path in an @file node over-rides everything else.
-        # A relative path gets appended to the relative path by the open logic.
+        c = self.c
 
-        name = p.anyAtFileNodeName()
+        self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
 
-        theDir = g.choose(name,g.os_path_dirname(name),None)
-
-        if theDir and g.os_path_isabs(theDir):
-            if g.os_path_exists(theDir):
-                self.default_directory = theDir
-            else:
-                self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-                if not self.default_directory:
-                    self.error("Directory \"%s\" does not exist" % theDir)
-        #@-node:ekr.20080211085914.1:<< Set path from @file node >>
-        #@nl
-        if self.default_directory:
-            return
-
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            if 'path' in theDict:
-                #@            << handle @path >>
-                #@+node:ekr.20080211085914.2:<< handle @path >>
-                # We set the current director to a path so future writes will go to that directory.
-
-                path = theDict["path"]
-                path = g.computeRelativePath (path)
-
-                if path:
-                    base = g.getBaseDirectory(c) # returns "" on error.
-                    path = g.os_path_finalize_join(base,path)
-
-                    if g.os_path_isabs(path):
-                        #@        << handle absolute path >>
-                        #@+node:ekr.20080211085914.3:<< handle absolute path >>
-                        # path is an absolute path.
-
-                        if g.os_path_exists(path):
-                            self.default_directory = path
-                        else:
-                            self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
-                            if not self.default_directory:
-                                self.error("invalid @path: %s" % path)
-                        #@-node:ekr.20080211085914.3:<< handle absolute path >>
-                        #@nl
-                    else:
-                        self.error("ignoring bad @path: %s" % path)
-                else:
-                    self.error("ignoring empty @path")
-                #@-node:ekr.20080211085914.2:<< handle @path >>
-                #@nl
-                return
-
-        #@    << Set current directory >>
-        #@+node:ekr.20080211085914.4:<< Set current directory >>
-        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-        assert(not self.default_directory)
-
-        if c.frame :
-            base = g.getBaseDirectory(c) # returns "" on error.
-            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-                if theDir and len(theDir) > 0:
-                    theDir = g.os_path_join(base,theDir)
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        if g.os_path_exists(theDir):
-                            self.default_directory = theDir ; break
-                        else:
-                            self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-        #@-node:ekr.20080211085914.4:<< Set current directory >>
-        #@nl
-        if not self.default_directory and p1.anyAtFileNodeName():
-            # Don't issue a warning if p is not, in fact, an @file node.
-            # This should never happen: c.openDirectory should be a good last resort.
-            self.error("No absolute directory specified anywhere.")
-            g.trace(g.callers())
-            self.default_directory = ""
+        if error: self.error(error)
     #@-node:ekr.20080211085914:scanDefaultDirectory (leoImport)
     #@+node:ekr.20031218072017.1463:setEncoding (leoImport)
     def setEncoding (self,p=None,atAuto=False):
@@ -793,14 +715,14 @@ class leoImportCommands:
     #@-node:ekr.20031218072017.3305:Utilities
     #@+node:ekr.20031218072017.3209:Import
     #@+node:ekr.20031218072017.3210:createOutline (leoImport)
-    def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+    def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=None):
 
         c = self.c ; u = c.undoer ; s1 = s
 
         # New in Leo 4.4.7: honor @path directives.
 
         self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-        fileName = g.os_path_finalize_join(self.default_directory,fileName)
+        fileName = c.os_path_finalize_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         self.setEncoding(p=parent,atAuto=atAuto)
@@ -812,14 +734,17 @@ class leoImportCommands:
             #@        << Read file into s >>
             #@+node:ekr.20031218072017.3211:<< Read file into s >>
             try:
-                fileName = g.os_path_finalize(fileName)
+                fileName = c.os_path_finalize(fileName)
                 theFile = open(fileName)
                 s = theFile.read()
                 theFile.close()
             except IOError:
-                z = g.choose(atAuto,'@auto ','')
+                if atShadow: kind = '@shadow '
+                elif atAuto: kind = '@auto '
+                else: kind = ''
                 # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-                g.es("can not open", "%s%s" % (z,fileName),color='red')
+                g.es("can not open", "%s%s" % (kind,fileName),color='red')
+                # g.trace(g.callers())
                 leoTest.fail()
                 return None
             #@-node:ekr.20031218072017.3211:<< Read file into s >>
@@ -1012,8 +937,6 @@ class leoImportCommands:
     # Almost all the time spent in this command is spent here.
 
     def convertMoreStringsToOutlineAfter (self,strings,first_p):
-
-        # __pychecker__ = '--no-objattrs' # suppress bad warnings re last_p.
 
         c = self.c
         if len(strings) == 0: return None

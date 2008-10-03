@@ -249,8 +249,6 @@ class tkinterGui(leoGui.leoGui):
 
         """Create and run an Tkinter open file dialog ."""
 
-        # __pychecker__ = '--no-argsused' # defaultextension not used.
-
         initialdir = g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
 
         if multiple:
@@ -279,9 +277,7 @@ class tkinterGui(leoGui.leoGui):
 
         """Create and run an Tkinter save file dialog ."""
 
-        # __pychecker__ = '--no-argsused' # defaultextension not used.
-
-        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd()),
+        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
 
         return tkFileDialog.asksaveasfilename(
             initialdir=initialdir,initialfile=initialfile,
@@ -485,8 +481,6 @@ class tkinterGui(leoGui.leoGui):
     set_focus_count = 0
 
     def set_focus(self,c,w):
-
-        # __pychecker__ = '--no-argsused' # c not used at present.
 
         """Put the focus on the widget."""
 

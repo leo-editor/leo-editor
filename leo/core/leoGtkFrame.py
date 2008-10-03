@@ -1134,20 +1134,14 @@ class leoGtkFrame (leoFrame.leoFrame):
     #@+node:ekr.20080112145409.120:frame.OnControlKeyUp/Down
     def OnControlKeyDown (self,event=None):
 
-        # __pychecker__ = '--no-argsused' # event not used.
-
         self.controlKeyIsDown = True
 
     def OnControlKeyUp (self,event=None):
-
-        # __pychecker__ = '--no-argsused' # event not used.
 
         self.controlKeyIsDown = False
     #@-node:ekr.20080112145409.120:frame.OnControlKeyUp/Down
     #@+node:ekr.20080112145409.121:OnActivateBody (gtkFrame)
     def OnActivateBody (self,event=None):
-
-        # __pychecker__ = '--no-argsused' # event not used.
 
         try:
             frame = self ; c = frame.c
@@ -1165,8 +1159,6 @@ class leoGtkFrame (leoFrame.leoFrame):
     def OnActivateLeoEvent(self,event=None):
 
         '''Handle a click anywhere in the Leo window.'''
-
-        # __pychecker__ = '--no-argsused' # event.
 
         self.c.setLog()
 
@@ -2616,8 +2608,6 @@ class leoGtkLog (leoFrame.leoLog):
     #@-node:ekr.20080112145409.233:deleteTab
     #@+node:ekr.20080112145409.234:hideTab
     def hideTab (self,tabName):
-
-        # __pychecker__ = '--no-argsused' # tabName
 
         self.selectTab('Log')
     #@-node:ekr.20080112145409.234:hideTab

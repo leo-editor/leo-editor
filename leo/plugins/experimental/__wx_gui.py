@@ -1609,7 +1609,6 @@ if wx:
         This class inherits almost all tkText methods: you call use them as usual.'''
 
         # The signatures of tag_add and insert are different from the Tk.Text signatures.
-        __pychecker__ = '--no-override' # suppress warning about changed signature.
 
         #@    @+others
         #@+node:ekr.20070205140140.1:stcWidget.__init__
@@ -1922,8 +1921,6 @@ if wx:
         #@-node:ekr.20070209080938.21:stc.setInsertPoint
         #@+node:ekr.20070209080938.22:stc.setSelectionRange
         def setSelectionRange (self,i,j,insert=None):
-
-            __pychecker__ = '--no-argsused' #  insert not used.
 
             w = self ; i1,j1,insert1=i,j,insert
             i = w.toGuiIndex(i)
@@ -4515,8 +4512,6 @@ if wx:
         #@-node:ekr.20061211122107.7:getSelectedTab
         #@+node:ekr.20061211122107.6:hideTab
         def hideTab (self,tabName):
-
-            __pychecker__ = '--no-argsused' # tabName
 
             self.selectTab('Log')
         #@-node:ekr.20061211122107.6:hideTab
