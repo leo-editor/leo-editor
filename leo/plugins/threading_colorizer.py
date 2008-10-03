@@ -931,13 +931,17 @@ class colorizer:
 
         p = p.copy() ; first = p.copy()
         val = True ; self.killcolorFlag = False
+
+        # New in Leo 4.6: @nocolor-node disables one node only.
+        theDict = g.get_directives_dict(p)
+        if 'nocolor-node' in theDict:
+            # g.trace('nocolor-node',p.headString())
+            return False
+
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            ### no_color = theDict.has_key("nocolor")
             no_color = 'nocolor' in theDict
-            ### color = theDict.has_key("color")
             color = 'color' in theDict
-            ### kill_color = theDict.has_key("killcolor")
             kill_color = 'killcolor' in theDict
             # A killcolor anywhere disables coloring.
             if kill_color:
@@ -953,7 +957,6 @@ class colorizer:
 
         # g.trace(first.headString(),val)
         return val
-    #@nonl
     #@-node:ekr.20071010193720.37:useSyntaxColoring
     #@+node:ekr.20071010193720.38:updateSyntaxColorer
     def updateSyntaxColorer (self,p):
@@ -2009,21 +2012,15 @@ class colorizer:
             #@+node:ekr.20071010193720.75:<< Test for @comment or @language >>
             # @comment and @language may coexist in the same node.
 
-            ### if theDict.has_key("comment"):
             if 'comment' in theDict:
                 self.comment_string = theDict["comment"]
 
-            ### if theDict.has_key("language"):
             if 'language' in theDict:
                 s = theDict["language"]
-                # tag = "@language"
-                # assert(g.match_word(s,i,tag))
-                #i = g.skip_ws(s,i+len(tag))
                 i = g.skip_ws(s,0)
                 j = g.skip_c_id(s,i)
                 self.language = s[i:j].lower()
 
-            ### if theDict.has_key("comment") or theDict.has_key("language"):
             if 'comment' in theDict or 'language' in theDict:
                 break
             #@nonl
@@ -2031,7 +2028,6 @@ class colorizer:
             #@nl
             #@        << Test for @root, @root-doc or @root-code >>
             #@+node:ekr.20071010193720.76:<< Test for @root, @root-doc or @root-code >>
-            ### if theDict.has_key("root") and not self.rootMode:
             if 'root' in theDict and not self.rootMode:
 
                 s = theDict["root"]

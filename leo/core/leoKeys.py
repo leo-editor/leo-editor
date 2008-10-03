@@ -3757,7 +3757,7 @@ class keyHandlerClass:
         if protect:
             k.protectLabel()
     #@-node:ekr.20061031170011.9:extendLabel
-    #@+node:ekr.20080408060320.790:selectAll (new)
+    #@+node:ekr.20080408060320.790:selectAll
     def selectAll (self):
 
         '''Select all the user-editable text of the minibuffer.'''
@@ -3767,7 +3767,7 @@ class keyHandlerClass:
         w.setSelectionRange(i,j,insert=j)
 
 
-    #@-node:ekr.20080408060320.790:selectAll (new)
+    #@-node:ekr.20080408060320.790:selectAll
     #@+node:ekr.20061031170011.10:setLabelBlue
     def setLabelBlue (self,label=None,protect=False):
 

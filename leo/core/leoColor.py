@@ -3154,6 +3154,12 @@ class colorizer:
 
         p = p.copy() ; first = p.copy()
         self.killFlag = False
+
+        # New in Leo 4.6: @nocolor-node disables one node only.
+        theDict = g.get_directives_dict(p)
+        if 'nocolor-node' in theDict:
+            return False
+
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
             no_color = 'nocolor' in theDict

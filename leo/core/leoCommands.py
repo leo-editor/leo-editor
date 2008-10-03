@@ -5832,15 +5832,14 @@ class baseCommands:
         tag = 'at_root_bodies_start_in_doc_mode'
         start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
 
+        # New in Leo 4.6: dashes are valid in directive names.
         for d in aList:
-            root = d.get('root') or ''
-            if g.match_word(root,0,"-code"):
-                return "code"
-            elif g.match_word(root,0,"-doc"):
-                return "doc"
-            else:
-                return g.choose(start_in_doc,
-                    'doc','code')
+            if 'root-code' in d:
+                return 'code'
+            elif 'root-doc' in d:
+                return 'doc'
+            elif 'root' in d:
+                return g.choose(start_in_doc,'doc','code')
 
         return None
     #@-node:ekr.20080828103146.12:c.scanAtRootDirectives

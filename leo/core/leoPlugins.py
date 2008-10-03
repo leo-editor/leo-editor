@@ -40,7 +40,7 @@ def callTagHandler (bunch,tag,keywords):
     # if tag != 'idle': g.pr('callTagHandler',tag,keywords.get('c'))
 
     # Make sure the new commander exists.
-    if tag == 'idle':
+    if True: ### tag == 'idle':
         for key in ('c','new_c'):
             c = keywords.get(key)
             if c:

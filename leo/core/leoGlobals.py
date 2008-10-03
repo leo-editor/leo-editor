@@ -71,6 +71,8 @@ body_ignored_newline = '\r'
 # Visible externally so plugins may add to the list of directives.
 
 globalDirectiveList = [
+    # New in Leo 4.6:
+    'nocolor-node',
     # New in Leo 4.4.4: these used to be in leoKeywords.
     'all','c','code','delims','doc','end_raw',
     'first','last','others','raw','root-code','root-doc',
@@ -407,7 +409,7 @@ def get_directives_dict(p,root=None):
             if s[i] == '@' and i+1 < n:
                 #@                << set d for @ directives >>
                 #@+node:ekr.20031218072017.1261:<< set d for @ directives >>
-                j = g.skip_c_id(s,i+1)
+                j = g.skip_id(s,i+1,chars='-')
                 word = s[i+1:j]
 
                 if word in globalDirectiveList:
@@ -448,7 +450,7 @@ def get_directives_dict(p,root=None):
             i = g.skip_line(s,i)
     return d
 #@-node:ekr.20031218072017.1260:g.get_directives_dict
-#@+node:ekr.20080827175609.1:g.get_directives_dict_list (new)
+#@+node:ekr.20080827175609.1:g.get_directives_dict_list
 # The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
 
 def get_directives_dict_list(p1):
@@ -465,7 +467,7 @@ def get_directives_dict_list(p1):
         result.append(g.get_directives_dict(p,root=root))
 
     return result
-#@-node:ekr.20080827175609.1:g.get_directives_dict_list (new)
+#@-node:ekr.20080827175609.1:g.get_directives_dict_list
 #@+node:ekr.20031218072017.1386:g.getOutputNewline
 def getOutputNewline (c=None,name=None):
 
@@ -490,7 +492,7 @@ def getOutputNewline (c=None,name=None):
     # g.trace(c,name,c.config.output_newline,'returns',repr(s))
     return s
 #@-node:ekr.20031218072017.1386:g.getOutputNewline
-#@+node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives (new)
+#@+node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
 
     '''Scan aList for @comment and @language directives.
@@ -518,8 +520,8 @@ def scanAtCommentAndAtLanguageDirectives(aList):
             return {'language':lang,'comment':comment,'delims':delims}
 
     return None
-#@-node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives (new)
-#@+node:ekr.20080827175609.32:g.scanAtEncodingDirectives (new)
+#@-node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives
+#@+node:ekr.20080827175609.32:g.scanAtEncodingDirectives
 def scanAtEncodingDirectives(aList):
 
     '''Scan aList for @encoding directives.'''
@@ -533,8 +535,8 @@ def scanAtEncodingDirectives(aList):
             g.es("invalid @encoding:",encoding,color="red")
 
     return None
-#@-node:ekr.20080827175609.32:g.scanAtEncodingDirectives (new)
-#@+node:ekr.20080827175609.53:g.scanAtHeaderDirectives (new)
+#@-node:ekr.20080827175609.32:g.scanAtEncodingDirectives
+#@+node:ekr.20080827175609.53:g.scanAtHeaderDirectives
 def scanAtHeaderDirectives(aList):
 
     '''scan aList for @header and @noheader directives.'''
@@ -543,8 +545,8 @@ def scanAtHeaderDirectives(aList):
         if d.get('header') and d.get('noheader'):
             g.es_print("conflicting @header and @noheader directives",color='red')
 #@nonl
-#@-node:ekr.20080827175609.53:g.scanAtHeaderDirectives (new)
-#@+node:ekr.20080827175609.33:g.scanAtLineendingDirectives (new)
+#@-node:ekr.20080827175609.53:g.scanAtHeaderDirectives
+#@+node:ekr.20080827175609.33:g.scanAtLineendingDirectives
 def scanAtLineendingDirectives(aList):
 
     '''Scan aList for @lineending directives.'''
@@ -559,8 +561,8 @@ def scanAtLineendingDirectives(aList):
             # g.es("invalid @lineending directive:",e,color="red")
 
     return None
-#@-node:ekr.20080827175609.33:g.scanAtLineendingDirectives (new)
-#@+node:ekr.20080827175609.34:g.scanAtPagewidthDirectives (new)
+#@-node:ekr.20080827175609.33:g.scanAtLineendingDirectives
+#@+node:ekr.20080827175609.34:g.scanAtPagewidthDirectives
 def scanAtPagewidthDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @pagewidth directives.'''
@@ -577,7 +579,7 @@ def scanAtPagewidthDirectives(aList,issue_error_flag=False):
                     g.es("ignoring @pagewidth",s,color="red")
 
     return None
-#@-node:ekr.20080827175609.34:g.scanAtPagewidthDirectives (new)
+#@-node:ekr.20080827175609.34:g.scanAtPagewidthDirectives
 #@+node:ekr.20031218072017.3154:g.scanAtRootOptions
 def scanAtRootOptions (s,i,err_flag=False):
 
@@ -618,7 +620,7 @@ def scanAtRootOptions (s,i,err_flag=False):
 
     return i,mode
 #@-node:ekr.20031218072017.3154:g.scanAtRootOptions
-#@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives (new)
+#@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives
 def scanAtTabwidthDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @tabwidth directives.'''
@@ -636,8 +638,8 @@ def scanAtTabwidthDirectives(aList,issue_error_flag=False):
                     g.es("ignoring @tabwidth",s,color="red")
 
     return None
-#@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives (new)
-#@+node:ekr.20080831084419.4:g.scanAtWrapDirectives (new)
+#@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives
+#@+node:ekr.20080831084419.4:g.scanAtWrapDirectives
 def scanAtWrapDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @wrap and @nowrap directives.'''
@@ -650,7 +652,7 @@ def scanAtWrapDirectives(aList,issue_error_flag=False):
 
     return None
 #@nonl
-#@-node:ekr.20080831084419.4:g.scanAtWrapDirectives (new)
+#@-node:ekr.20080831084419.4:g.scanAtWrapDirectives
 #@+node:ekr.20070302160802:g.scanColorDirectives
 def scanColorDirectives(c,p):
 

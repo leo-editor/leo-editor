@@ -1891,11 +1891,11 @@ class leoGtkBody (leoFrame.leoBody):
         self.forceFullRecolorFlag = True
     #@-node:ekr.20080112145409.159:forceRecolor
     #@+node:ekr.20080112145409.160:Tk bindings (gtkBbody)
-    #@+node:ekr.20080112145409.161:bind (new)
+    #@+node:ekr.20080112145409.161:bind
     def bind (self,*args,**keys):
 
         pass
-    #@-node:ekr.20080112145409.161:bind (new)
+    #@-node:ekr.20080112145409.161:bind
     #@+node:ekr.20080112145409.162:Tags (Tk spelling) (gtkBody)
     def tag_add (self,tagName,index1,index2):
         self.bodyCtrl.tag_add(tagName,index1,index2)
@@ -3355,16 +3355,16 @@ class leoGtkTextWidget(leoFrame.baseTextWidget):
                 w.setInsertPoint(insert)
     #@-node:ekr.20080112145409.281:_setSelectionRange
     #@+node:ekr.20080112145409.282:Wrapper methods (gtkTextWidget)
-    #@+node:ekr.20080112145409.283:after_idle (new)
+    #@+node:ekr.20080112145409.283:after_idle
     def after_idle(self,*args,**keys):
 
         pass
-    #@-node:ekr.20080112145409.283:after_idle (new)
-    #@+node:ekr.20080112145409.284:bind (new)
+    #@-node:ekr.20080112145409.283:after_idle
+    #@+node:ekr.20080112145409.284:bind
     def bind (self,*args,**keys):
 
         pass
-    #@-node:ekr.20080112145409.284:bind (new)
+    #@-node:ekr.20080112145409.284:bind
     #@+node:ekr.20080112145409.285:delete
     def delete(self,i,j=None):
         """Delete chars between i and j or single char at i if j is None."""
@@ -3680,13 +3680,13 @@ class leoGtkTextWidget(leoFrame.baseTextWidget):
             # gtk.Text.tag_add(w,tagName,i,j,*args)
 
     #@-node:ekr.20080112145409.308:tag_add
-    #@+node:ekr.20080112145409.309:tag_configure (NEW)
+    #@+node:ekr.20080112145409.309:tag_configure
     def tag_configure (self,*args,**keys):
 
         pass
 
     tag_config = tag_configure
-    #@-node:ekr.20080112145409.309:tag_configure (NEW)
+    #@-node:ekr.20080112145409.309:tag_configure
     #@+node:ekr.20080112145409.310:tag_ranges
     def tag_ranges(self,tagName):
 
