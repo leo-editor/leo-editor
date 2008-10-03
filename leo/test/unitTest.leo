@@ -16455,11 +16455,15 @@ if not g.os_path_exists(s):
 </t>
 <t tx="ekr.20070114140212">@
 
-Important.
+Important warnings:
+    
+1. Do not run tests from this file after opening unitTest.leo from another .leo
+   file. The unit tests in this file open and close many .leo files and many
+   strange things can happen if you have opened this file from another file.
 
-Some unit tests may fail if you do select other windows or other applications
-while running these tests. Therefore, you should leave your computer completely
-alone while running these unit tests.
+2. Some unit tests may fail if you do select other windows or other applications
+   while running these tests. Therefore, you should leave your computer
+   completely alone while running these unit tests.
 </t>
 <t tx="ekr.20070131162935">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
