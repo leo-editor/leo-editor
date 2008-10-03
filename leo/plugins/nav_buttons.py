@@ -102,7 +102,7 @@ except ImportError:
 import os
 #@-node:ekr.20050219114353:<< imports >>
 #@nl
-__version__ = "1.13" # EKR: Don't touch this coude without my permission!
+__version__ = "1.14" # EKR: Don't touch this code without my permission!
 #@<< version history >>
 #@+node:ekr.20050219114353.1:<< version history >>
 #@@killcolor
@@ -152,6 +152,7 @@ __version__ = "1.13" # EKR: Don't touch this coude without my permission!
 #     - bind prev and next buttons together if Tk and toolbar plugin enabled
 # 1.13 EKR: Reverted to organization used in Leo 4.4.5, while retaining latest 
 # code.
+# 1.14 EKR: Added guards for c.nodeHistory.
 #@-at
 #@nonl
 #@-node:ekr.20050219114353.1:<< version history >>
@@ -509,6 +510,7 @@ class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
         c = self.c
 
         h = c.nodeHistory
+        if not h: return
 
         menu_table = []
 
@@ -530,6 +532,7 @@ class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
         c = self.c
 
         h = c.nodeHistory
+        if not h: return
 
         menu_table = []
 
@@ -549,6 +552,7 @@ class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
 
         c = self.c
         h = self.c.nodeHistory
+        if not h: return
 
         p, chapter = h.beadList[ptr]
         h.beadPointer = ptr
@@ -559,7 +563,6 @@ class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
             p.contract()
 
         c.treeSelectHelper(p)
-
     #@-node:bobjack.20080411162443.4:gotoNode
     #@-node:bobjack.20080411192347.5:addGeneratorCommands
     #@+node:edream.110203113231.782:addFrameButtons
@@ -710,7 +713,8 @@ class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
         c = self.c
 
         self.positionList = []
-        c.nodeHistory.clear()
+        if c.nodeHistory:
+            c.nodeHistory.clear()
         self.fillbox()
         self.updateButtons()
 
@@ -799,6 +803,8 @@ class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
             return
 
         c = self.c
+        if not c.nodeHistory: return
+
         self.box.delete(0,"end")
         self.positionList = []
         i = 0
@@ -818,6 +824,7 @@ class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
         """Update nav buttons to reflect current state."""
 
         c = self.c
+        if not c.nodeHistory: return
 
         for b,b2,enabled_image,disabled_image,cond in (
             (
