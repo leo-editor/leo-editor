@@ -20,6 +20,1830 @@
 
 #@+all
 #@+node:ekr.20080917153158.11:4.6
+#@+node:ekr.20080917153158.12:Bugs
+#@+node:ekr.20081003084608.4:Not bugs
+@ This contains investigations which revealed no bug at present.
+#@nonl
+#@+node:ekr.20080918164844.7:Investigated settings strangeness re @string debugger_path
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/d38704eb27eb9340
+
+I find that
+@settings
+  @string debugger_path = /usr/bin/winpdb
+
+sets the config string successfully if in
+home/.leo/myLeoSettings.leo
+not if in
+cwd/myLeoSettings.leo
+
+============
+
+This works as expected, provided that by 'cwd' you mean the directory from which the .leo file was loaded.
+
+#@-node:ekr.20080918164844.7:Investigated settings strangeness re @string debugger_path
+#@+node:ekr.20080918164844.9:Don't put relative paths on the recent file list
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5c6653927911de0d#
+
+Code-->Core classes-->@thin runLeo.py -->utils-->createFrame (leo.py)
+
+        c.updateRecentFiles(relativeFileName or fileName)
+
+I don't think relative filenames should be passed to
+c.updateRecentFiles()?  They get stuff in the recent file list but
+don't work there.
+
+Also appears to happen here:
+
+Code-->Core classes-->@thin leoCommands.py-->class commands-->Command
+handlers...-->File Menu-->Recent Files submenu &
+allies-->clearRecentFiles
+
+c.updateRecentFiles(c.relativeFileName())
+
+and here
+
+Code-->Core classes-->@thin leoGlobals.py-->Files &
+Directories...-->g.openWithFileName
+
+c.updateRecentFiles(relativeFileName or fileName)
+
+The only way I've seen a relative path get into the list is from
+command line invocation, so I'm not sure if all these routes are
+active, but I think it should be avoided.
+
+Cheers -Terry 
+
+
+======
+
+c.updateRecentFiles calls g.os_path_finalize/join so only abs paths can be put on the list.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.2083:c.updateRecentFiles
+def updateRecentFiles (self,fileName):
+
+    """Create the RecentFiles menu.  May be called with Null fileName."""
+
+    c = self
+
+    if g.app.unitTesting: return
+
+    def munge(name):
+        return c.os_path_finalize(name or '').lower()
+    def munge2(name):
+        return c.os_path_finalize_join(g.app.loadDir,name or '')
+
+    # Update the recent files list in all windows.
+    if fileName:
+        compareFileName = munge(fileName)
+        # g.trace(fileName)
+        for frame in g.app.windowList:
+            c = frame.c
+            # Remove all versions of the file name.
+            for name in c.recentFiles:
+                if munge(fileName) == munge(name) or munge2(fileName) == munge2(name):
+                    c.recentFiles.remove(name)
+            c.recentFiles.insert(0,fileName)
+            # g.trace('adding',fileName)
+            # Recreate the Recent Files menu.
+            frame.menu.createRecentFilesMenuItems()
+    else:
+        for frame in g.app.windowList:
+            frame.menu.createRecentFilesMenuItems()
+#@-node:ekr.20031218072017.2083:c.updateRecentFiles
+#@-node:ekr.20080918164844.9:Don't put relative paths on the recent file list
+#@-node:ekr.20081003084608.4:Not bugs
+#@+node:ekr.20080917153158.13:Ensure that Python\Scripts exists in installer script
+#@-node:ekr.20080917153158.13:Ensure that Python\Scripts exists in installer script
+#@+node:ekr.20080917153158.14:Fix config crasher
+@nocolor
+
+Latest revision from trunk.
+
+To reproduce:
+
+- open a new outline.
+- create a @settings node.
+- create two children of the @settings node with the following
+headlines "@string xxx = aaa" and "@button xxx".
+- save the outline and close it.
+- reopen the outline.
+
+I'm getting the following traceback:
+
+Traceback (most recent call last):
+ File "/home/shadow/leo/leo-current/leo/core/leoGlobals.py", line
+2818, in doHook
+   return f(tag,keywords)
+ File "/home/shadow/leo/leo-current/leo/core/leoPlugins.py", line 97,
+in doPlugins
+   return doHandlersForTag(tag,keywords)
+ File "/home/shadow/leo/leo-current/leo/core/leoPlugins.py", line 76,
+in doHandlersForTag
+   val = callTagHandler(bunch,tag,keywords)
+ File "/home/shadow/leo/leo-current/leo/core/leoPlugins.py", line 55,
+in callTagHandler
+   result = handler(tag,keywords)
+ File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
+line 197, in onCreate
+   sc.createAllButtons()
+ File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
+line 261, in createAllButtons
+   self.handleAtButtonNode(p)
+ File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
+line 533, in handleAtButtonNode
+   b =
+self.createAtButtonHelper(p,h,statusLine,shortcut,verbose=False)
+ File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
+line 681, in createAtButtonHelper
+   pane='button',verbose=verbose)
+ File "/home/shadow/leo/leo-current/leo/core/leoKeys.py", line 3161,
+in registerCommand
+   junk,bunchList = c.config.getShortcut(commandName)
+ File "/home/shadow/leo/leo-current/leo/core/leoCommands.py", line
+7271, in getShortcut
+   return g.app.config.getShortcut(self.c,shortcutName)
+ File "/home/shadow/leo/leo-current/leo/core/leoConfig.py", line
+1682, in getShortcut
+   if bunch.val and bunch.val.lower() != 'none']
+AttributeError: 'unicode' object has no attribute 'val'
+
+@color
+#@nonl
+#@+node:ekr.20051015093141:typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything *except* shortcuts.
+    - Shortcut matches shortcuts.
+    '''
+
+    shortcuts = ('shortcut','shortcuts',)
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') and type2 not in shortcuts or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
+#@-node:ekr.20051015093141:typesMatch
+#@-node:ekr.20080917153158.14:Fix config crasher
+#@+node:ekr.20080915083836.2:Fixed encoding problems with rst3 plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/5f5219fedd977ec2
+
+@nocolor
+
+I recently discovered leo and decided to give it a try. I'm using the
+rst3 plugin for generating latex docs. In general it works like a
+charm, but I'm having some problems with the text encoding. The most
+annoying one follows. If in my rst tree I've nodes with the character
+
+ŀ (U+0140)
+
+(or other character from the catalan alphabet) in the body text, I get
+conversion errors in the log pane when the Write-Restructured-Text
+command is executed. For instance, a node with the following body text
+
+Nuŀla
+
+causes the following error in the log pane:
+
+1 errors converting Nu?la.
+
+ to iso-8859-1
+
+If I process the generated .tex file via pdflatex the character is
+displayed as a ? symbol in the pdf.
+
+The rst-options are:
+
+@ @rst-options
+default_path=latex
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+write_intermediate_file = False
+verbose=True
+publish_argv_for_missing_stylesheets=--language=ca,--output-
+encoding=utf-8,--stylesheet=/home/vmas/.leo/custom_style.sty
+@c
+
+If, instead of using leo, I put the problematic text content in a
+plain rst file and process it via rst2latex I get no conversion
+errors. The command line is:
+
+rst2latex --language=ca --output-encoding=utf-8 --stylesheet=/home/
+vmas/.leo/custom_style.sty prova.txt prova.tex 
+#@nonl
+#@-node:ekr.20080915083836.2:Fixed encoding problems with rst3 plugin
+#@+node:ekr.20080918122745.1:Simplified c.scanAtPathDirectives
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+
+def scanAtPathDirectives(self,aList,force=False):
+
+    '''Scan aList for @path directives.'''
+
+    c = self ; trace = False ; verbose = False
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if path:
+            # Convert "path" or <path> to path.
+            path = g.computeRelativePath(path)
+            if path: paths.append(path)
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    if trace and verbose: g.trace('paths',paths)
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+#@-node:ekr.20080918122745.1:Simplified c.scanAtPathDirectives
+#@+node:ekr.20080918084804.1:Fixed goto-global-line crasher
+#@+node:ekr.20080827175609.39:c.scanAllDirectives
+def scanAllDirectives(self,p=None):
+
+    '''Scan p and ancestors for directives.
+
+    Returns a dict containing the results, including defaults.'''
+
+    c = self ; p = p or c.currentPosition()
+
+    # Set defaults
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {
+        'language':language,
+        'delims':g.set_delims_from_language(language),
+    }
+    wrap = c.config.getBool("body_pane_wraps")
+
+    table = (
+        ('encoding',    None,           g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        ('wrap',        wrap,           g.scanAtWrapDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process: do *not* set commander ivars.
+    lang_dict = d.get('lang-dict')
+
+    return {
+        "delims"        : lang_dict.get('delims'),
+        "encoding"      : d.get('encoding'),
+        "language"      : lang_dict.get('language'),
+        "lineending"    : d.get('lineending'),
+        "pagewidth"     : d.get('pagewidth'),
+        "path"          : d.get('path') or g.getBaseDirectory(c),
+        "tabwidth"      : d.get('tabwidth'),
+        "pluginsList"   : [], # No longer used.
+        "wrap"          : d.get('wrap'),
+    }
+#@nonl
+#@-node:ekr.20080827175609.39:c.scanAllDirectives
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+
+def scanAtPathDirectives(self,aList,force=False):
+
+    '''Scan aList for @path directives.'''
+
+    c = self ; trace = False ; verbose = False
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if path:
+            # Convert "path" or <path> to path.
+            path = g.computeRelativePath(path)
+            if path: paths.append(path)
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    if trace and verbose: g.trace('paths',paths)
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
+
+    if not force:
+        if c:
+            if not c.config.create_nonexistent_directories:
+                return None
+        elif not app.config.create_nonexistent_directories:
+            return None
+
+    if c:
+        theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                if verbose and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+def goToLineNumber (self,n,p=None,scriptData=None):
+
+    '''Place the cursor on the n'th line of a derived file or script.
+    When present scriptData is a dict with 'root' and 'lines' keys.'''
+
+    c = self
+    delim = None ; gnx = None ; vnodeName = None
+    if n < 0: return
+
+    fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
+
+    if n==1:
+        p = root ; n2 = 1 ; found = True
+    elif n >= len(lines):
+        p = root ; n2 = root.bodyString().count('\n') ; found = False
+    elif isRaw:
+        p,n2,found = c.goto_countLines(root,n)
+    else:
+        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
+        if delim:
+            p,found = c.goto_findPosition(
+                root,lines,vnodeName,gnx,n,delim)
+        else:
+            p,found = root,False
+    if 0:
+        << trace gotoLineNumber results >>
+    c.goto_showResults(found,p or root,n,n2,lines)
+#@+node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
+g.trace(
+    '\n  found',found,'n2',n2,'gnx',gnx,'delim',repr(delim),
+    '\n  vnodeName',vnodeName,
+    '\n  p        ',p and p.headString(),
+    '\n  root     ',root and root.headString())
+#@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
+#@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
+def goto_applyLineNumberMapping(self, n):
+
+    c = self ; x = c.shadowController
+
+    if len(x.line_mapping) > n:
+        return x.line_mapping[n]
+    else:
+        return n
+#@-node:ekr.20080708094444.65:goto_applyLineNumberMapping
+#@+node:ekr.20080904071003.12:goto_countLines
+def goto_countLines (self,root,n):
+
+    '''Scan through root's outline, looking for line n.
+    Return (p,n2,found) where p is the found node,
+    n2 is the actural line found, and found is True if the line was found.'''
+
+    p = lastv = root
+    prev = 0 ; found = False
+    isNosent = root.isAtNoSentFileNode()
+    isAuto = root.isAtAutoNode()
+
+    for p in p.self_and_subtree_iter():
+        lastv = p.copy()
+        s = p.bodyString()
+        if isNosent or isAuto:
+            s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
+        n_lines = s.count('\n')
+        if len(s) > 0 and s[-1] != '\n': n_lines += 1
+        # g.trace(n,prev,n_lines,p.headString())
+        if prev + n_lines >= n:
+            found = True ; break
+        prev += n_lines
+
+    p = lastv
+    n2 = max(1,n-prev)
+
+    return p,n2,found
+#@-node:ekr.20080904071003.12:goto_countLines
+#@+node:ekr.20080904071003.4:goto_findPosition & helpers
+def goto_findPosition(self,root,lines,vnodeName,gnx,n,delim):
+
+    c = self
+
+    # if scriptFind:
+        # p,found = c.scanForVnodeName(root,vnodeName
+
+    if gnx:
+        p,found = c.goto_findGnx(root,gnx,vnodeName)
+    else:
+        p,found = c.goto_scanTnodeList(root,delim,lines,n,vnodeName)
+
+    # if not found:
+        # g.es("not found:",vnodeName,color="red")
+
+    return p,found
+#@+node:ekr.20080904071003.18:goto_findGnx
+def goto_findGnx (self,root,gnx,vnodeName):
+
+    '''Scan root's tree for a node with the given gnx and vnodeName.
+
+    return (p,found)'''
+
+    gnx = g.app.nodeIndices.scanGnx(gnx,0)
+
+    for p in root.self_and_subtree_iter():
+        if p.matchHeadline(vnodeName):
+            if p.v.t.fileIndex == gnx:
+                return p.copy(),True
+
+    return None,False
+#@-node:ekr.20080904071003.18:goto_findGnx
+#@+node:ekr.20080904071003.19:goto_scanTnodeList
+def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
+
+    # This is about the best that can be done without replicating the entire atFile write logic.
+    found = False
+    ok = hasattr(root.v.t,"tnodeList")
+
+    if ok:
+        # Use getattr to keep pylint happy.
+        tnodeList = getattr(root.v.t,'tnodeList')
+        << set tnodeIndex to the number of +node sentinels before line n >>
+        tnodeIndex = max(0,tnodeIndex)
+        << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
+    else:
+        g.es_print("no child index for",root.headString(),color="red")
+
+    if not ok:
+        # Fall back to the old logic.
+        << set p to the first node whose headline matches vnodeName >>
+
+    return p,found
+#@+node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
+
+tnodeIndex = -1 # Don't count the @file node.
+scanned = 0 # count of lines scanned.
+
+for s in lines:
+    if scanned >= n:
+        break
+    i = g.skip_ws(s,0)
+    if g.match(s,i,delim):
+        i += len(delim)
+        if g.match(s,i,"+node"):
+            # g.trace(tnodeIndex,s.rstrip())
+            tnodeIndex += 1
+    scanned += 1
+#@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
+#@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+@ We use the tnodeList to find a _tnode_ corresponding to the proper node, so the user will for sure be editing the proper text, even if several nodes happen to have the same headline.  This is really all that we need.
+
+However, this code has no good way of distinguishing between different cloned vnodes in the file: they all have the same tnode.  So this code just picks p = t.vnodeList[0] and leaves it at that.
+
+The only way to do better is to scan the outline, replicating the write logic to determine which vnode created the given line.  That's way too difficult, and it would create an unwanted dependency in this code.
+@c
+
+# g.trace("tnodeIndex",tnodeIndex)
+if tnodeIndex < len(tnodeList):
+    t = tnodeList[tnodeIndex]
+    # Find the first vnode whose tnode is t.
+    for p in root.self_and_subtree_iter():
+        if p.v.t == t:
+            found = True ; break
+    if not found:
+        s = "tnode not found for " + vnodeName
+        g.es_print(s, color="red") ; ok = False
+    elif p.headString().strip() != vnodeName:
+        if 0: # Apparently this error doesn't prevent a later scan for working properly.
+            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
+            g.es_print(s, color="red")
+        ok = False
+else:
+    if root is None: # Kludge: disable this message when called by goToScriptLineNumber.
+        s = "Invalid computed tnodeIndex: %d" % tnodeIndex
+        g.es_print(s, color = "red")
+    ok = False
+#@-node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+#@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
+for p in root.self_and_subtree_iter():
+    if p.matchHeadline(vnodeName):
+        found = True ; break
+#@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
+#@-node:ekr.20080904071003.19:goto_scanTnodeList
+#@-node:ekr.20080904071003.4:goto_findPosition & helpers
+#@+node:ekr.20031218072017.2877:goto_findVnode
+def goto_findVnode (self,root,lines,n,ignoreSentinels):
+
+    '''Search the lines of a derived file containing sentinels for a vnode.
+    return (vnodeName,gnx,offset,delim):
+
+    vnodeName:  the name found in the previous @+body sentinel.
+    gnx:        the gnx of the found node.
+    offset:     the offset within the node of the desired line.
+    delim:      the comment delim from the @+leo sentinel.
+    '''
+
+    c = self ; at = c.atFileCommands
+    # g.trace('lines...\n',g.listToString(lines))
+    gnx = None
+    << set delim, leoLine from the @+leo line >>
+    if not delim:
+        g.es('no sentinels in:',root.headString())
+        return None,None,None,None
+
+    << scan back to @+node, setting offset,nodeSentinelLine >>
+    if nodeSentinelLine == -1:
+        # The line precedes the first @+node sentinel
+        g.trace('no @+node!!')
+        return root.headString(),gnx,1,delim
+
+    s = lines[nodeSentinelLine]
+
+    << set gnx and vnodeName from s >>
+    if delim and vnodeName:
+        # g.trace('offset',offset)
+        return vnodeName,gnx,offset,delim
+    else:
+        g.es("bad @+node sentinel")
+        return None,None,None,None
+#@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
+# Find the @+leo line.
+tag = "@+leo"
+i = 0 
+while i < len(lines) and lines[i].find(tag)==-1:
+    i += 1
+leoLine = i # Index of the line containing the leo sentinel
+
+# Set delim from the @+leo line.
+delim = None
+if leoLine < len(lines):
+    s = lines[leoLine]
+    valid,newDerivedFile,start,end,thinFile = at.parseLeoSentinel(s)
+    # New in Leo 4.5.1: only support 4.x files.
+    if valid and newDerivedFile:
+        delim = start + '@'
+#@-node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
+#@+node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+@
+Scan backwards from the requested line, looking for an @-body line. When found,
+we get the vnode's name from that line and set p to the indicated vnode. This
+will fail if vnode names have been changed, and that can't be helped.
+
+We compute the offset of the requested line **within the found node**.
+@c
+
+offset = 0 # This is essentially the Tk line number.
+nodeSentinelLine = -1
+line = n - 1 # Start with the requested line.
+while line >= 0:
+    progress = line
+    s = lines[line]
+    i = g.skip_ws(s,0)
+    if g.match(s,i,delim):
+        << handle delim while scanning backward >>
+    else:
+        ### offset += 1 # Assume the line is real.  A dubious assumption.
+        line -= 1
+    assert line < progress
+#@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+if line == n:
+    g.es("line",str(n),"is a sentinel line")
+i += len(delim)
+
+if g.match(s,i,"-node"):
+    # The end of a nested section.
+    old_line = line
+    line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
+    assert line < old_line
+    # g.trace('found',repr(lines[line]))
+    nodeSentinelLine = line
+    offset = n-line
+    break
+elif g.match(s,i,"+node"):
+    # g.trace('found',repr(lines[line]))
+    nodeSentinelLine = line
+    offset = n-line
+    break
+elif g.match(s,i,"<<") or g.match(s,i,"@first"):
+    # if not ignoreSentinels:
+        # offset += 1 # Count these as a "real" lines.
+    line -= 1
+else:
+    line -= 1
+#@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+#@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+#@+node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
+i = 0 ; gnx = None ; vnodeName = None
+
+if thinFile:
+    # gnx is lies between the first and second ':':
+    i = s.find(':',i)
+    if i > 0:
+        i += 1
+        j = s.find(':',i)
+        if j > 0:   gnx = s[i:j]
+        else:       i = len(s) # Force an error.
+    else:
+        i = len(s) # Force an error.
+
+# vnode name is everything following the first or second':'
+i = s.find(':',i)
+if i > -1:
+    vnodeName = s[i+1:].strip()
+else:
+    vnodeName = None
+    g.es_print("bad @+node sentinel",color='red')
+#@-node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
+#@-node:ekr.20031218072017.2877:goto_findVnode
+#@+node:ekr.20080904071003.28:goto_setup & helpers
+def goto_setup (self,n,p=None,scriptData=None):
+
+    '''Return (fileName,isRaw,lines,n,p,root) where:
+
+    fileName is the name of the nearest @file node, or None.
+    isRaw is True if there are no sentinels in the file.
+    lines are the lines to be scanned.
+    n is the effective line number (munged for @shadow nodes).
+    root is the nearest @file node, or c.currentPosition.'''
+
+    c = self
+
+    if scriptData:
+        assert p is None
+        lines = scriptData.get('lines')
+        p = scriptData.get('p')
+        root,fileName = c.goto_findRoot(p)
+    else:
+        # p is for unit testing only!
+        if not p: p = c.currentPosition()
+        root,fileName = c.goto_findRoot(p)
+        if root and fileName:
+            c.shadowController.line_mapping = [] # Set by goto_open.
+            lines = c.goto_getFileLines(root,fileName)
+            n = c.goto_applyLineNumberMapping(n)
+        else:
+            lines = c.goto_getScriptLines(p)
+
+    isRaw = not root or (
+        root.isAtAsisFileNode() or root.isAtNoSentFileNode() or root.isAtAutoNode())
+
+    ignoreSentinels = root and root.isAtNoSentFileNode()
+
+    if scriptData:
+        if not root: root = p.copy()
+    else:
+        if not root: root = c.currentPosition()
+
+    return fileName,ignoreSentinels,isRaw,lines,n,root
+#@+node:ekr.20080904071003.25:goto_findRoot
+def goto_findRoot (self,p):
+
+    '''Find the closest ancestor @file node, of any type, except @all nodes.
+
+    return root, fileName.'''
+
+    c = self ; p1 = p.copy()
+
+    # First look for ancestor @file node.
+    for p in p.self_and_parents_iter():
+        fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
+        if fileName:
+            return p.copy(),fileName
+
+    # Search the entire tree for joined nodes.
+    # Bug fix: Leo 4.5.1: *must* search *all* positions.
+    for p in c.all_positions_iter():
+        # if p.v.t == p1.v.t: g.trace('p1',p1,'p',p)
+        if p.v.t == p1.v.t and p != p1:
+            # Found a joined position.
+            for p2 in p.self_and_parents_iter():
+                fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
+                if fileName:
+                    return p2.copy(),fileName
+
+    return None,None
+#@-node:ekr.20080904071003.25:goto_findRoot
+#@+node:ekr.20080904071003.26:goto_getFileLines
+def goto_getFileLines (self,root,fileName):
+
+    '''Read the file into lines.'''
+
+    c = self
+
+    if root.isAtNoSentFileNode():
+        # Write a virtual file containing sentinels.
+        at = c.atFileCommands
+        at.write(root,nosentinels=False,toString=True)
+        lines = g.splitLines(at.stringOutput)
+    else:
+        # Calculate the full path.
+        d = g.scanDirectives(c,p=root)
+        path = d.get("path")
+        # g.trace('path',path,'fileName',fileName)
+        fileName = c.os_path_finalize_join(path,fileName)
+        lines    = c.goto_open(fileName)
+
+    return lines
+#@-node:ekr.20080904071003.26:goto_getFileLines
+#@+node:ekr.20080904071003.27:goto_getScriptLines
+def goto_getScriptLines (self,p):
+
+    c = self
+
+    if not g.unitTesting:
+        g.es("no ancestor @file node: using script line numbers", color="blue")
+
+    lines = g.getScript (c,p,useSelectedText=False)
+    lines = g.splitLines(lines)
+
+    return lines
+#@-node:ekr.20080904071003.27:goto_getScriptLines
+#@+node:ekr.20080708094444.63:goto_open
+def goto_open (self,filename):
+    """
+    Open a file for "goto linenumber" command and check if a shadow file exists.
+    Construct a line mapping. This ivar is empty i no shadow file exists.
+    Otherwise it contains a mapping shadow file number -> real file number.
+    """
+
+    c = self ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        if os.path.exists(shadow_filename):
+            fn = shadow_filename
+            lines = open(shadow_filename).readlines()
+            x.line_mapping = x.push_filter_mapping(
+                lines, x.marker_from_extension(shadow_filename))
+        else:
+            # Just open the original file.  This is not an error!
+            fn = filename
+            c.line_mapping = []
+            lines = open(filename).readlines()
+    except Exception:
+        # Make sure failures to open a file generate clear messages.
+        g.es_print('can not open',fn,color='blue')
+        # g.es_exception()
+        lines = []
+
+    return lines
+#@-node:ekr.20080708094444.63:goto_open
+#@-node:ekr.20080904071003.28:goto_setup & helpers
+#@+node:ekr.20080904071003.14:goto_showResults
+def goto_showResults(self,found,p,n,n2,lines):
+
+    c = self ; w = c.frame.body.bodyCtrl
+
+    # Select p and make it visible.
+    c.frame.tree.expandAllAncestors(p)
+    c.selectPosition(p)
+    c.redraw()
+
+    # Put the cursor on line n2 of the body text.
+    s = w.getAllText()
+    if found:
+        ins = g.convertRowColToPythonIndex(s,n2-1,0)    
+    else:
+        ins = len(s)
+        if len(lines) < n and not g.unitTesting:
+            g.es('only',len(lines),'lines',color="blue")
+
+    # g.trace('n',n,'ins',ins,'p',p.headString())
+
+    w.setInsertPoint(ins)
+    c.bodyWantsFocusNow()
+    w.seeInsertPoint()
+#@-node:ekr.20080904071003.14:goto_showResults
+#@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
+
+    s = lines[n]
+    i = g.skip_ws(s,0)
+    assert(g.match(s,i,delim))
+    i += len(delim)
+    if g.match(s,i,"+node"):
+        start="+node" ; end="-node" ; delta=1
+    else:
+        assert(g.match(s,i,"-node"))
+        start="-node" ; end="+node" ; delta=-1
+    # Scan to matching @+-node delim.
+    n += delta ; level = 0
+    while 0 <= n < len(lines):
+        s = lines[n] ; i = g.skip_ws(s,0)
+        if g.match(s,i,delim):
+            i += len(delim)
+            if g.match(s,i,start):
+                level += 1
+            elif g.match(s,i,end):
+                if level == 0: break
+                else: level -= 1
+        n += delta
+
+    # g.trace(n)
+    return n
+#@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+#@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+#@-node:ekr.20080918084804.1:Fixed goto-global-line crasher
+#@+node:ekr.20080923143214.1:Removed pychecker stuff
+# It's time.
+#@nonl
+#@-node:ekr.20080923143214.1:Removed pychecker stuff
+#@+node:ekr.20080921154026.3:Fixed new rst3 crash
+# Calls g.makeAllNonExistentDirectories instead of os.mkdir.
+#@nonl
+#@+node:ekr.20080923163444.2:Report
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/414137b93c7e4b90
+
+I receive the following traceback, when I try to create an HTML-
+File from a @rst-Node.
+
+<Traceback>
+
+Leo Log Window...
+Leo 4.5.1 final, build  1.244 , September 14, 2008
+python 2.5.2, Tk 8.4.12, Pmw 1.3
+Windows 5, 1, 2600, 2, Service Pack 3
+
+Can not load c:\aspell\bin\aspell-15.dll
+leoID=vr20080824 (in C:\Dokumente und Einstellungen\VR\.leo)
+load dir: C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
+global config dir: C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo
+\config
+home dir: C:\Dokumente und Einstellungen\VR
+reading settings in C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo
+\config\leoSettings.leo
+reading settings in C:\Dokumente und Einstellungen\VR\.leo
+\myLeoSettings.leo
+reading settings in C:\Dokumente und Einstellungen\VR\Eigene Dateien
+\Tools\Leo\Leo-20080921.leo
+rewriting empty .leo file: C:\Dokumente und Einstellungen\VR\Eigene
+Dateien\Tools\Leo\Leo-20080921.leo
+reading: C:\Dokumente und Einstellungen\VR\Eigene Dateien\Tools\Leo
+\Leo-20080921.leo
+saved: Leo-20080921.leo
+SilverCity not present so no syntax highlighting
+exception executing command
+Traceback (most recent call last):
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
+\leoCommands.py", line 309, in doCommand
+    val = command(event)
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
+\leoCommands.py", line 482, in minibufferCallback
+    retval = function(keywords)
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
+\rst3.py", line 675, in rst3PluginCallback
+    self.processTopTree(c.currentPosition())
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
+\rst3.py", line 1152, in processTopTree
+
+self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
+\rst3.py", line 1184, in processTree
+    ok =
+self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
+  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
+\rst3.py", line 1222, in writeSpecialTree
+    os.mkdir(dir)
+WindowsError: [Error 3] Das System kann den angegebenen Pfad nicht
+finden: u'C:\\Python25\\Lib\\site-packages\\Leo-4-5-1-2-final\\2008\
+\09'
+
+</Traceback>
+
+The related outline can be reduced to:
+
+Worklog-->2008-->09-->@rst WLE-2008-09-21.html
+
+The content of the right-most node is:
+
+@ @rst-options
+default_path=./2008/09
+@c
+======================
+Worklog for 2008-09-21
+======================
+
+Kind regards,
+
+Viktor 
+#@nonl
+#@-node:ekr.20080923163444.2:Report
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
+
+    if not force:
+        if c:
+            if not c.config.create_nonexistent_directories:
+                return None
+        elif not app.config.create_nonexistent_directories:
+            return None
+
+    if c:
+        theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                if verbose and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@-node:ekr.20080921154026.3:Fixed new rst3 crash
+#@+node:ekr.20080924032842.2:Fixed two c syntax-coloring bugs
+@
+There were two separate bugs:
+
+1. The eol_span and eol_span_regex now honor the mode's escape character.
+
+2. colorRangeWithTag now colors delegates with the default tag color.
+
+Happily, no changes were required in the modes/c.py or modes/c.xml.
+#@nonl
+#@+node:ekr.20080709161540.1:Bug 1
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/707a910f975f3715
+
+Coloring of macro definitions is not extended after '\'.
+
+More than that - refer again to the screenshot and look at the
+comments and #defines at the bottom. The comments after the multi-line
+macro are either not coloured or are coloured incorrectly. At the top,
+the '#define ADDPRIM_CO' macro is only partially coloured. The macros
+below the multi-line macro are incorrectly comment-coloured.
+
+@color
+#@nonl
+#@+node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
+#@-node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
+#@-node:ekr.20080709161540.1:Bug 1
+#@+node:ekr.20080924032842.1:Bug 2
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/74c6ab4809bde980
+
+I've noticed a strange behaviour of the "@language cplusplus" mode
+using doxygen style comments.
+I wrote this code doxygen java-like commenting style:
+
+/**
+ * first comment
+ */
+
+/**
+ * second comment
+ */
+
+now I've the string "first comment" highlited as code and the string
+"second comment" highlithed as comment.
+Qt-style doxygen comments have the same behaviour and if I don't use
+doxygen comments it's all ok.
+I'm using leo 4.5.1 final on Windows XP.
+It's a bug or I haven't understood something?
+
+@color
+#@nonl
+#@-node:ekr.20080924032842.1:Bug 2
+#@+node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
+@ These methods skip to the next newline, regardless of whether the newline may be preceeded by a backslash. Consequently, they should be used only when we know that we are not in a preprocessor directive or string.
+@c
+
+def skip_line (s,i):
+
+    if i >= len(s): return len(s) # Bug fix: 2007/5/22
+    if i < 0: i = 0
+    i = s.find('\n',i)
+    if i == -1: return len(s)
+    else: return i + 1
+
+def skip_to_end_of_line (s,i):
+
+    if i >= len(s): return len(s) # Bug fix: 2007/5/22
+    if i < 0: i = 0
+    i = s.find('\n',i)
+    if i == -1: return len(s)
+    else: return i
+
+def skip_to_start_of_line (s,i):
+
+    if i >= len(s): return len(s)
+    if i <= 0:      return 0
+    i = s.rfind('\n',0,i) # Don't find s[i], so it doesn't matter if s[i] is a newline.
+    if i == -1: return 0
+    else:       return i + 1
+#@-node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
+#@-node:ekr.20080924032842.2:Fixed two c syntax-coloring bugs
+#@+node:ekr.20081001062423.3:Restored deleted unit tests for p.textOffset
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6f744c2a5819e3
+
+I was browsing the source code and I've incidentally found that the
+tests for p.textOffset() are not in the trunk. Perhaps they were lost
+during a merge.
+
+Relevant pointers:
+
+------------------------------------------------------------
+revno: 903
+committer: Edward K. Ream <edream...@gmail.com>
+branch nick: trunk
+timestamp: Mon 2008-08-25 11:14:15 -0500
+message:
+  commit after merge
+    ------------------------------------------------------------
+    revno: 899.1.3
+    committer: zpcspm zpc...@gmail.com
+    branch nick: leo-fcol
+    timestamp: Mon 2008-08-25 17:53:37 +0300
+    message:
+      commit after merge
+
+The following command shows that the tests disappeared here.
+
+$ bzr diff leo/test/unitTest.leo -r 899.1.3..903 
+#@nonl
+#@-node:ekr.20081001062423.3:Restored deleted unit tests for p.textOffset
+#@+node:ekr.20080930072519.10:Fixed bug that prevented Leo from opening files on the XP desktop
+#@+node:ekr.20071117060958:getFileName & helper
+def getFileName (fileName,script):
+
+    '''Return the filename from sys.argv.'''
+
+    if g.isPython3:
+        ### Testing only.
+        fileName = r'c:\leo.repo\trunk\leo\test\test.leo'
+        assert g.os_path_exists(fileName)
+    elif script:
+        fileName = None
+    elif fileName:
+        pass
+    else:
+        # Bug fix: 2008/10/1
+        if sys.platform.startswith('win'):
+            if len(sys.argv) > 1:
+                fileName = ' '.join(sys.argv[1:])
+            else:
+                fileName = None
+        else:
+            fileName = len(sys.argv) > 1 and sys.argv[-1]
+
+    return completeFileName(fileName)
+#@+node:ekr.20041124083125:completeFileName
+def completeFileName (fileName):
+
+    if not (fileName and fileName.strip()):
+        return None,None
+
+    # This does not depend on config settings.
+    try:
+        if sys.platform.lower().startswith('win'):
+            fileName = g.toUnicode(fileName,'mbcs')
+        else:
+            fileName = g.toUnicode(fileName,'utf-8')
+    except Exception: pass
+
+    relativeFileName = fileName
+    ### fileName = g.os_path_finalize_join(os.getcwd(),fileName)
+    fileName = g.os_path_finalize(fileName)
+
+    junk,ext = g.os_path_splitext(fileName)
+    if not ext:
+        fileName = fileName + ".leo"
+        relativeFileName = relativeFileName + ".leo"
+
+    return fileName,relativeFileName
+#@-node:ekr.20041124083125:completeFileName
+#@-node:ekr.20071117060958:getFileName & helper
+#@-node:ekr.20080930072519.10:Fixed bug that prevented Leo from opening files on the XP desktop
+#@+node:ekr.20081001062423.2:Fixed nested @path problem
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/7d8325d055cbef30
+
+I'm finding
+
+@path project
+ \
+   @shadow one.py
+   @shadow two.py
+   @path subdir
+     \
+       @shadow three.py
+
+I'm finding three.py is considered project/three.py instead of
+project/subdir/three.py 
+
+===========
+
+The problem was that leoAtFile/leoImport.scanDefaultDirectory did not support
+nested @path directives.
+
+I refactored them so all the common work is done in g.setDefaultDirectory.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = c.os_path_finalize(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    if atShadow: kind = '@shadow '
+    elif atAuto: kind = '@auto '
+    else: kind = ''
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (kind,fileName),color='red')
+    # g.trace(g.callers())
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20080211085914:scanDefaultDirectory (leoImport)
+def scanDefaultDirectory(self,p):
+
+    """Set the default_directory ivar by looking for @path directives."""
+
+    c = self.c
+
+    self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
+
+    if error: self.error(error)
+#@-node:ekr.20080211085914:scanDefaultDirectory (leoImport)
+#@+node:ekr.20041005105605.236:atFile.scanDefaultDirectory
+def scanDefaultDirectory(self,p,importing=False):
+
+    """Set the default_directory ivar by looking for @path directives."""
+
+    at = self ; c = at.c
+
+    at.default_directory,error = g.setDefaultDirectory(c,p,importing)
+
+    if error: at.error(error)
+#@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
+#@+node:ekr.20081001062423.9:g.setDefaultDirectory
+# This is a refactoring, used by leoImport.scanDefaultDirectory and
+# atFile.scanDefault directory
+
+def setDefaultDirectory(c,p,importing=False):
+
+    '''Set default_directory by scanning @path directives.
+    Return (default_directory,error_message).'''
+
+    default_directory = '' ; error = ''
+    if not p: return default_directory,error
+
+    << Set path from @file node >>
+
+    if not default_directory:
+        # Scan for @path directives.
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        if path:
+            << handle @path >>
+
+    if not default_directory:
+        << Set current directory >>
+
+    if not default_directory and not importing:
+        # This should never happen: c.openDirectory should be a good last resort.
+        error = "No absolute directory specified anywhere."
+
+    # g.trace('returns',default_directory)
+    return default_directory, error
+#@+node:ekr.20081001062423.10:<< Set path from @file node >>
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName()
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+if theDir and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        default_directory = theDir
+    else:
+        default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not default_directory:
+            error = "Directory \"%s\" does not exist" % theDir
+#@-node:ekr.20081001062423.10:<< Set path from @file node >>
+#@+node:ekr.20081001062423.11:<< handle @path >>
+path = g.computeRelativePath (path)
+
+if path:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    path = c.os_path_finalize_join(base,path)
+
+    if g.os_path_isabs(path):
+        if g.os_path_exists(path):
+            default_directory = path
+        else:
+            default_directory = g.makeAllNonExistentDirectories(path,c=c)
+            if not default_directory:
+                error = "invalid @path: %s" % path
+            else:
+                error = "ignoring bad @path: %s" % path
+else:
+    error = "ignoring empty @path"
+#@-node:ekr.20081001062423.11:<< handle @path >>
+#@+node:ekr.20081001062423.12:<< Set current directory >>
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+assert(not default_directory)
+
+if c.frame:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    default_directory = theDir ; break
+                else:
+                    default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+#@-node:ekr.20081001062423.12:<< Set current directory >>
+#@-node:ekr.20081001062423.9:g.setDefaultDirectory
+#@-node:ekr.20081001062423.2:Fixed nested @path problem
+#@+node:ekr.20080313032655.1:Fixed one failed unit test on Linux
+@
+
+This happened at line 36 of leo/test/unittest/perfectImport/formatter.py
+
+It was caused by non-Linux line-endings.
+
+I also fixed a bug that caused the unit test not to fail.
+#@nonl
+#@+node:ekr.20070703122141.104:checkTrialWrite
+def checkTrialWrite (self,s1=None,s2=None):
+
+    '''Return True if a trial write produces the original file.'''
+
+    # s1 and s2 are for unit testing.
+
+    c = self.c ; at = c.atFileCommands
+
+    if s1 is None and s2 is None:
+        at.write(self.root,
+            nosentinels=True,thinFile=False,
+            scriptWrite=False,toString=True,
+            write_strips_blank_lines=False)
+        s1,s2 = self.file_s, at.stringOutput
+
+    s1 = g.toUnicode(s1,self.encoding)
+    s2 = g.toUnicode(s2,self.encoding)
+
+    # Make sure we have a trailing newline in both strings.
+    s1 = s1.replace('\r','')
+    s2 = s2.replace('\r','')
+    if not s1.endswith('\n'): s1 = s1 + '\n'
+    if not s2.endswith('\n'): s2 = s2 + '\n'
+
+    if s1 == s2: return True
+
+    lines1 = g.splitLines(s1) ; n1 = len(lines1)
+    lines2 = g.splitLines(s2) ; n2 = len(lines2)
+
+    # g.trace('lines1',lines1)
+    # g.trace('lines2',lines2)
+
+    ok = True ; bad_i = 0
+    for i in range(max(n1,n2)):
+        ok = self.compareHelper(lines1,lines2,i,self.strict)
+        if not ok:
+            bad_i = i + 1
+            break
+
+    if g.app.unitTesting:
+        d = g.app.unitTestDict
+        # g.trace('expected',d.get('expectedMismatchLine'),'actual',d.get('actualMismatchLine'))
+        ok = d.get('expectedMismatchLine') == d.get('actualMismatchLine')
+        # Unit tests do not generate errors unless the mismatch line does not match.
+        if not ok: d['fail'] = g.callers() # 2008/10/3
+
+    if not ok:
+        self.reportMismatch(lines1,lines2,bad_i)
+
+    return ok
+#@-node:ekr.20070703122141.104:checkTrialWrite
+#@+node:ekr.20070730093735:compareHelper
+def compareHelper (self,lines1,lines2,i,strict):
+
+    '''Compare lines1[i] and lines2[i].
+    strict is True if leading whitespace is very significant.'''
+
+    def pr(*args,**keys): #compareHelper
+        g.es_print(color='blue',*args,**keys)
+
+    def pr_mismatch(i,line1,line2):
+        g.es_print('first mismatched line at line',str(i+1))
+        g.es_print('original line: ',line1)
+        g.es_print('generated line:',line2)
+
+    d = g.app.unitTestDict
+    expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
+    enableWarning = not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace
+    messageKind = None
+
+    if i >= len(lines1):
+        if i != expectedMismatch or not g.unitTesting:
+            pr('extra lines')
+            for line in lines2[i:]:
+                pr(repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    if i >= len(lines2):
+        if i != expectedMismatch or not g.unitTesting:
+            g.es_print('missing lines')
+            for line in lines2[i:]:
+                g.es_print('',repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    line1,line2 = lines1[i],lines2[i]
+
+    if line1 == line2:
+        return True # An exact match.
+    elif not line1.strip() and not line2.strip():
+        return True # Blank lines compare equal.
+    elif strict:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(
+            s1 == s2 and self.startsComment(s1,0) and self.startsComment(s2,0),
+            'comment','error')
+    else:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(s1==s2,'warning','error')
+
+    if g.unitTesting:
+        d ['actualMismatchLine'] = i+1
+        ok = i+1 == expectedMismatch
+        if not ok:  pr_mismatch(i,line1,line2)
+        return ok
+    elif strict:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            if messageKind == 'comment':
+                self.warning('mismatch in leading whitespace before comment')
+            else:
+                self.error('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind == 'comment' # Only mismatched comment lines are valid.
+    else:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            self.checkLeadingWhitespace(line1)
+            self.warning('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind in ('comment','warning') # Only errors are invalid.
+#@nonl
+#@-node:ekr.20070730093735:compareHelper
+#@+node:ekr.20070911110507:reportMismatch
+def reportMismatch (self,lines1,lines2,bad_i):
+
+    def pr(*args,**keys): # reportMismatch
+        g.es_print(color='blue',*args,**keys)
+
+    kind = g.choose(self.atAuto,'@auto','import command')
+
+    self.error(
+        '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
+            kind,self.root.headString(),bad_i,repr(lines2[bad_i-1])))
+
+    if len(lines1) < 100:
+        pr('input...')
+        for i in range(len(lines1)):
+            pr('%3d %s' % (i,lines1[i]),newline=False)
+        pr('output...')
+        for i in range(len(lines2)):
+            pr('%3d %s' % (i,lines2[i]),newline=False)
+
+    return False
+#@-node:ekr.20070911110507:reportMismatch
+#@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
+#@+node:ekr.20051104075904.78:makeImportExportSuite
+def makeImportExportSuite(c,parentHeadline,doImport):
+
+    """Create an Import/Export test for every descendant of testParentHeadline.."""
+
+    u = testUtils(c)
+    parent = u.findNodeAnywhere(parentHeadline)
+    assert(parent)
+    temp = u.findNodeInTree(parent,"tempNode")
+    assert(temp)
+
+    # Create the suite and add all test cases.
+    suite = unittest.makeSuite(unittest.TestCase)
+
+    for p in parent.children_iter(copy=True):
+        if p == temp: continue
+        dialog = u.findNodeInTree(p,"dialog")
+        assert(dialog)
+        test = importExportTestCase(c,p,dialog,temp,doImport)
+        suite.addTest(test)
+
+    return suite
+#@-node:ekr.20051104075904.78:makeImportExportSuite
+#@+node:ekr.20051104075904.79:class importExportTestCase
+class importExportTestCase(unittest.TestCase):
+
+    """Data-driven unit tests for Leo's edit body commands."""
+
+    @others
+#@+node:ekr.20051104075904.80:__init__
+def __init__ (self,c,p,dialog,temp_p,doImport):
+
+    # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.dialog = dialog
+    self.p = p.copy()
+    self.temp_p = temp_p.copy()
+
+    self.gui = None
+    self.oldGui = None
+    self.wasChanged = c.changed
+    self.fileName = ""
+    self.doImport = doImport
+
+    self.old_p = c.currentPosition()
+#@-node:ekr.20051104075904.80:__init__
+#@+node:ekr.20051104075904.81: fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@-node:ekr.20051104075904.81: fail
+#@+node:ekr.20051104075904.82:importExport
+def importExport (self):
+
+    c = self.c ; p = self.p
+
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    commandName = p.headString()
+    command = getattr(c,commandName) # Will fail if command does not exist.
+    command(event=None)
+
+    failedMethod = g.app.unitTestDict.get("fail")
+    self.failIf(failedMethod,failedMethod)
+#@-node:ekr.20051104075904.82:importExport
+#@+node:ekr.20051104075904.83:runTest
+def runTest(self):
+
+    # """Import Export Test Case"""
+
+    self.importExport()
+#@-node:ekr.20051104075904.83:runTest
+#@+node:ekr.20051104075904.84:setUp
+def setUp(self):
+
+    c = self.c ; temp_p = self.temp_p ; d = self.dialog
+
+    temp_p.setBodyString('',g.app.tkEncoding)
+
+    # Create a node under temp_p.
+    child = temp_p.insertAsLastChild()
+    assert(child)
+    c.setHeadString(child,"import test: " + self.p.headString())
+    c.selectVnode(child)
+
+    assert(d)
+    s = d.bodyString()
+    lines = s.split('\n')
+    name = lines[0]
+    fileName = lines[1]
+
+    # Replace '\\' by os.path.sep in fileName
+    try:
+        # os.path.sep does not exist in Python 2.2.x.
+        sep = os.path.sep
+        fileName = fileName.replace('\\',sep)
+    except AttributeError:
+        fileName = g.os_path_normpath(fileName)
+
+    self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
+
+    if self.doImport:
+        theDict = {name: [fileName]}
+    else:
+        theDict = {name: fileName}
+
+    self.oldGui = g.app.gui
+    self.gui = leoGui.unitTestGui(theDict,trace=False)
+#@-node:ekr.20051104075904.84:setUp
+#@+node:ekr.20051104075904.85:shortDescription
+def shortDescription (self):
+
+    try:
+        return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
+    except Exception:
+        return "ImportExportTestCase"
+#@-node:ekr.20051104075904.85:shortDescription
+#@+node:ekr.20051104075904.86:tearDown
+def tearDown (self):
+
+    c = self.c ; temp_p = self.temp_p
+
+    if self.gui:
+        self.gui.destroySelf()
+        self.gui = None
+
+    temp_p.setBodyString("",g.app.tkEncoding)
+    temp_p.clearDirty()
+
+    if not self.wasChanged:
+        c.setChanged (False)
+
+    if 1: # Delete all children of temp node.
+        while temp_p.firstChild():
+            temp_p.firstChild().doDelete()
+
+    g.app.gui = self.oldGui
+    c.selectPosition(self.old_p)
+#@-node:ekr.20051104075904.86:tearDown
+#@-node:ekr.20051104075904.79:class importExportTestCase
+#@-node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
+#@+node:ekr.20031218072017.2853:importAtFile
+def importAtFile (self,event=None):
+
+    '''Import one or more external files, creating @file trees.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import To @file",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importFilesCommand(names,"@file")
+#@-node:ekr.20031218072017.2853:importAtFile
+#@+node:ekr.20031218072017.3212:importFilesCommand
+def importFilesCommand (self,files=None,treeType=None):
+    # Not a command.  It must *not* have an event arg.
+
+    c = self.c
+    if c == None: return
+    v = current = c.currentVnode()
+    if current == None: return
+    if len(files) < 1: return
+    self.tab_width = self.getTabWidth() # New in 4.3.
+    self.treeType = treeType
+    if len(files) == 2:
+        << Create a parent for two files having a common prefix >>
+    for fileName in files:
+        g.setGlobalOpenDir(fileName)
+        v = self.createOutline(fileName,current)
+        if v: # createOutline may fail.
+            if not g.unitTesting:
+                g.es("imported",fileName,color="blue")
+            v.contract()
+            v.setDirty()
+            c.setChanged(True)
+    c.validateOutline()
+    current.expand()
+    c.redraw()
+
+    c.selectVnode(current)
+#@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
+@ The two filenames have a common prefix everything before the last period is the same.  For example, x.h and x.cpp.
+@c
+
+name0 = files[0]
+name1 = files[1]
+prefix0, junk = g.os_path_splitext(name0)
+prefix1, junk = g.os_path_splitext(name1)
+if len(prefix0) > 0 and prefix0 == prefix1:
+    current = current.insertAsLastChild()
+    # junk, nameExt = g.os_path_split(prefix1)
+    name,junk = g.os_path_splitext(prefix1)
+    current.initHeadString(name)
+#@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
+#@-node:ekr.20031218072017.3212:importFilesCommand
+#@-node:ekr.20080313032655.1:Fixed one failed unit test on Linux
+#@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
 http://webpages.charter.net/edreamleo/scripting.html#getting-interactive-input-from-scripts
@@ -3867,1454 +5691,6 @@ def dumpMenuList (self,aList,level=0):
 #@+node:ekr.20080918164844.1:Leo now requires Python 2.4 or higher
 #@-node:ekr.20080918164844.1:Leo now requires Python 2.4 or higher
 #@-node:ekr.20080918201437.1:Leo3k work
-#@+node:ekr.20080917153158.12:Fixed bugs
-#@+node:ekr.20081003084608.4:Not bugs
-@ This contains investigations which revealed no bug at present.
-#@nonl
-#@+node:ekr.20080918164844.7:Investigated settings strangeness re @string debugger_path
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/d38704eb27eb9340
-
-I find that
-@settings
-  @string debugger_path = /usr/bin/winpdb
-
-sets the config string successfully if in
-home/.leo/myLeoSettings.leo
-not if in
-cwd/myLeoSettings.leo
-
-============
-
-This works as expected, provided that by 'cwd' you mean the directory from which the .leo file was loaded.
-
-#@-node:ekr.20080918164844.7:Investigated settings strangeness re @string debugger_path
-#@+node:ekr.20080918164844.9:Don't put relative paths on the recent file list
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5c6653927911de0d#
-
-Code-->Core classes-->@thin runLeo.py -->utils-->createFrame (leo.py)
-
-        c.updateRecentFiles(relativeFileName or fileName)
-
-I don't think relative filenames should be passed to
-c.updateRecentFiles()?  They get stuff in the recent file list but
-don't work there.
-
-Also appears to happen here:
-
-Code-->Core classes-->@thin leoCommands.py-->class commands-->Command
-handlers...-->File Menu-->Recent Files submenu &
-allies-->clearRecentFiles
-
-c.updateRecentFiles(c.relativeFileName())
-
-and here
-
-Code-->Core classes-->@thin leoGlobals.py-->Files &
-Directories...-->g.openWithFileName
-
-c.updateRecentFiles(relativeFileName or fileName)
-
-The only way I've seen a relative path get into the list is from
-command line invocation, so I'm not sure if all these routes are
-active, but I think it should be avoided.
-
-Cheers -Terry 
-
-
-======
-
-c.updateRecentFiles calls g.os_path_finalize/join so only abs paths can be put on the list.
-
-@color
-#@nonl
-#@+node:ekr.20031218072017.2083:c.updateRecentFiles
-def updateRecentFiles (self,fileName):
-
-    """Create the RecentFiles menu.  May be called with Null fileName."""
-
-    c = self
-
-    if g.app.unitTesting: return
-
-    def munge(name):
-        return c.os_path_finalize(name or '').lower()
-    def munge2(name):
-        return c.os_path_finalize_join(g.app.loadDir,name or '')
-
-    # Update the recent files list in all windows.
-    if fileName:
-        compareFileName = munge(fileName)
-        # g.trace(fileName)
-        for frame in g.app.windowList:
-            c = frame.c
-            # Remove all versions of the file name.
-            for name in c.recentFiles:
-                if munge(fileName) == munge(name) or munge2(fileName) == munge2(name):
-                    c.recentFiles.remove(name)
-            c.recentFiles.insert(0,fileName)
-            # g.trace('adding',fileName)
-            # Recreate the Recent Files menu.
-            frame.menu.createRecentFilesMenuItems()
-    else:
-        for frame in g.app.windowList:
-            frame.menu.createRecentFilesMenuItems()
-#@-node:ekr.20031218072017.2083:c.updateRecentFiles
-#@-node:ekr.20080918164844.9:Don't put relative paths on the recent file list
-#@-node:ekr.20081003084608.4:Not bugs
-#@+node:ekr.20080917153158.13:Ensure that Python\Scripts exists in installer script
-#@-node:ekr.20080917153158.13:Ensure that Python\Scripts exists in installer script
-#@+node:ekr.20080917153158.14:Fix config crasher
-@nocolor
-
-Latest revision from trunk.
-
-To reproduce:
-
-- open a new outline.
-- create a @settings node.
-- create two children of the @settings node with the following
-headlines "@string xxx = aaa" and "@button xxx".
-- save the outline and close it.
-- reopen the outline.
-
-I'm getting the following traceback:
-
-Traceback (most recent call last):
- File "/home/shadow/leo/leo-current/leo/core/leoGlobals.py", line
-2818, in doHook
-   return f(tag,keywords)
- File "/home/shadow/leo/leo-current/leo/core/leoPlugins.py", line 97,
-in doPlugins
-   return doHandlersForTag(tag,keywords)
- File "/home/shadow/leo/leo-current/leo/core/leoPlugins.py", line 76,
-in doHandlersForTag
-   val = callTagHandler(bunch,tag,keywords)
- File "/home/shadow/leo/leo-current/leo/core/leoPlugins.py", line 55,
-in callTagHandler
-   result = handler(tag,keywords)
- File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
-line 197, in onCreate
-   sc.createAllButtons()
- File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
-line 261, in createAllButtons
-   self.handleAtButtonNode(p)
- File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
-line 533, in handleAtButtonNode
-   b =
-self.createAtButtonHelper(p,h,statusLine,shortcut,verbose=False)
- File "/home/shadow/leo/leo-current/leo/plugins/mod_scripting.py",
-line 681, in createAtButtonHelper
-   pane='button',verbose=verbose)
- File "/home/shadow/leo/leo-current/leo/core/leoKeys.py", line 3161,
-in registerCommand
-   junk,bunchList = c.config.getShortcut(commandName)
- File "/home/shadow/leo/leo-current/leo/core/leoCommands.py", line
-7271, in getShortcut
-   return g.app.config.getShortcut(self.c,shortcutName)
- File "/home/shadow/leo/leo-current/leo/core/leoConfig.py", line
-1682, in getShortcut
-   if bunch.val and bunch.val.lower() != 'none']
-AttributeError: 'unicode' object has no attribute 'val'
-
-@color
-#@nonl
-#@+node:ekr.20051015093141:typesMatch
-def typesMatch (self,type1,type2):
-
-    '''
-    Return True if type1, the actual type, matches type2, the requeseted type.
-
-    The following equivalences are allowed:
-
-    - None matches anything.
-    - An actual type of string or strings matches anything *except* shortcuts.
-    - Shortcut matches shortcuts.
-    '''
-
-    shortcuts = ('shortcut','shortcuts',)
-
-    return (
-        type1 == None or type2 == None or
-        type1.startswith('string') and type2 not in shortcuts or
-        type1 == 'int' and type2 == 'size' or
-        (type1 in shortcuts and type2 in shortcuts) or
-        type1 == type2
-    )
-#@-node:ekr.20051015093141:typesMatch
-#@-node:ekr.20080917153158.14:Fix config crasher
-#@+node:ekr.20080915083836.2:Fixed encoding problems with rst3 plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/5f5219fedd977ec2
-
-@nocolor
-
-I recently discovered leo and decided to give it a try. I'm using the
-rst3 plugin for generating latex docs. In general it works like a
-charm, but I'm having some problems with the text encoding. The most
-annoying one follows. If in my rst tree I've nodes with the character
-
-ŀ (U+0140)
-
-(or other character from the catalan alphabet) in the body text, I get
-conversion errors in the log pane when the Write-Restructured-Text
-command is executed. For instance, a node with the following body text
-
-Nuŀla
-
-causes the following error in the log pane:
-
-1 errors converting Nu?la.
-
- to iso-8859-1
-
-If I process the generated .tex file via pdflatex the character is
-displayed as a ? symbol in the pdf.
-
-The rst-options are:
-
-@ @rst-options
-default_path=latex
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-write_intermediate_file = False
-verbose=True
-publish_argv_for_missing_stylesheets=--language=ca,--output-
-encoding=utf-8,--stylesheet=/home/vmas/.leo/custom_style.sty
-@c
-
-If, instead of using leo, I put the problematic text content in a
-plain rst file and process it via rst2latex I get no conversion
-errors. The command line is:
-
-rst2latex --language=ca --output-encoding=utf-8 --stylesheet=/home/
-vmas/.leo/custom_style.sty prova.txt prova.tex 
-#@nonl
-#@-node:ekr.20080915083836.2:Fixed encoding problems with rst3 plugin
-#@+node:ekr.20080918122745.1:Simplified c.scanAtPathDirectives
-#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
-
-def scanAtPathDirectives(self,aList,force=False):
-
-    '''Scan aList for @path directives.'''
-
-    c = self ; trace = False ; verbose = False
-
-    # Step 1: Compute the starting path.
-    # The correct fallback directory is the absolute path to the base.
-    if c.openDirectory:  # Bug fix: 2008/9/18
-        base = c.openDirectory
-    else:
-        base = g.app.config.relative_path_base_directory
-        if base and base == "!":    base = g.app.loadDir
-        elif base and base == ".":  base = c.openDirectory
-
-    if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
-
-    absbase = c.os_path_finalize_join(g.app.loadDir,base)
-
-    if trace and verbose: g.trace('absbase',absbase)
-
-    # Step 2: look for @path directives.
-    paths = [] ; fileName = None
-    for d in aList:
-        # Look for @path directives.
-        path = d.get('path')
-        if path:
-            # Convert "path" or <path> to path.
-            path = g.computeRelativePath(path)
-            if path: paths.append(path)
-
-    # Add absbase and reverse the list.
-    paths.append(absbase)
-    paths.reverse()
-
-    if trace and verbose: g.trace('paths',paths)
-
-    # Step 3: Compute the full, effective, absolute path.
-    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
-    path = c.os_path_finalize_join(*paths)
-    if trace and verbose: g.trace('joined path:',path)
-
-    # Step 4: Make the path if necessary.
-    if path and not g.os_path_exists(path):
-        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
-        if not ok:
-            if force:
-                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
-            path = absbase # Bug fix: 2008/9/18
-
-    if trace: g.trace('returns',path)
-
-    return path
-#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
-#@-node:ekr.20080918122745.1:Simplified c.scanAtPathDirectives
-#@+node:ekr.20080918084804.1:Fixed goto-global-line crasher
-#@+node:ekr.20080827175609.39:c.scanAllDirectives
-def scanAllDirectives(self,p=None):
-
-    '''Scan p and ancestors for directives.
-
-    Returns a dict containing the results, including defaults.'''
-
-    c = self ; p = p or c.currentPosition()
-
-    # Set defaults
-    language = c.target_language and c.target_language.lower()
-    lang_dict = {
-        'language':language,
-        'delims':g.set_delims_from_language(language),
-    }
-    wrap = c.config.getBool("body_pane_wraps")
-
-    table = (
-        ('encoding',    None,           g.scanAtEncodingDirectives),
-        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
-        ('lineending',  None,           g.scanAtLineendingDirectives),
-        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-        ('path',        None,           c.scanAtPathDirectives),
-        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
-        ('wrap',        wrap,           g.scanAtWrapDirectives),
-    )
-
-    # Set d by scanning all directives.
-    aList = g.get_directives_dict_list(p)
-    d = {}
-    for key,default,func in table:
-        val = func(aList)
-        d[key] = g.choose(val is None,default,val)
-
-    # Post process: do *not* set commander ivars.
-    lang_dict = d.get('lang-dict')
-
-    return {
-        "delims"        : lang_dict.get('delims'),
-        "encoding"      : d.get('encoding'),
-        "language"      : lang_dict.get('language'),
-        "lineending"    : d.get('lineending'),
-        "pagewidth"     : d.get('pagewidth'),
-        "path"          : d.get('path') or g.getBaseDirectory(c),
-        "tabwidth"      : d.get('tabwidth'),
-        "pluginsList"   : [], # No longer used.
-        "wrap"          : d.get('wrap'),
-    }
-#@nonl
-#@-node:ekr.20080827175609.39:c.scanAllDirectives
-#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
-
-def scanAtPathDirectives(self,aList,force=False):
-
-    '''Scan aList for @path directives.'''
-
-    c = self ; trace = False ; verbose = False
-
-    # Step 1: Compute the starting path.
-    # The correct fallback directory is the absolute path to the base.
-    if c.openDirectory:  # Bug fix: 2008/9/18
-        base = c.openDirectory
-    else:
-        base = g.app.config.relative_path_base_directory
-        if base and base == "!":    base = g.app.loadDir
-        elif base and base == ".":  base = c.openDirectory
-
-    if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
-
-    absbase = c.os_path_finalize_join(g.app.loadDir,base)
-
-    if trace and verbose: g.trace('absbase',absbase)
-
-    # Step 2: look for @path directives.
-    paths = [] ; fileName = None
-    for d in aList:
-        # Look for @path directives.
-        path = d.get('path')
-        if path:
-            # Convert "path" or <path> to path.
-            path = g.computeRelativePath(path)
-            if path: paths.append(path)
-
-    # Add absbase and reverse the list.
-    paths.append(absbase)
-    paths.reverse()
-
-    if trace and verbose: g.trace('paths',paths)
-
-    # Step 3: Compute the full, effective, absolute path.
-    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
-    path = c.os_path_finalize_join(*paths)
-    if trace and verbose: g.trace('joined path:',path)
-
-    # Step 4: Make the path if necessary.
-    if path and not g.os_path_exists(path):
-        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
-        if not ok:
-            if force:
-                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
-            path = absbase # Bug fix: 2008/9/18
-
-    if trace: g.trace('returns',path)
-
-    return path
-#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
-#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-# This is a generalization of os.makedir.
-
-def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
-
-    """Attempt to make all non-existent directories"""
-
-    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
-
-    if not force:
-        if c:
-            if not c.config.create_nonexistent_directories:
-                return None
-        elif not app.config.create_nonexistent_directories:
-            return None
-
-    if c:
-        theDir = g.os_path_expandExpression(theDir,c=c)
-
-    dir1 = theDir = g.os_path_normpath(theDir)
-
-    # Split theDir into all its component parts.
-    paths = []
-    while len(theDir) > 0:
-        head,tail=g.os_path_split(theDir)
-        if len(tail) == 0:
-            paths.append(head)
-            break
-        else:
-            paths.append(tail)
-            theDir = head
-    path = ""
-    paths.reverse()
-    for s in paths:
-        path = g.os_path_join(path,s)
-        if not g.os_path_exists(path):
-            try:
-                os.mkdir(path)
-                if verbose and not g.app.unitTesting:
-                    # g.trace('***callers***',g.callers(5))
-                    g.es_print("created directory:",path,color='red')
-            except Exception:
-                # g.trace(g.callers())
-                if verbose: g.es_print("exception creating directory:",path,color='red')
-                g.es_exception()
-                return None
-    return dir1 # All have been created.
-#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-#@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
-def goToLineNumber (self,n,p=None,scriptData=None):
-
-    '''Place the cursor on the n'th line of a derived file or script.
-    When present scriptData is a dict with 'root' and 'lines' keys.'''
-
-    c = self
-    delim = None ; gnx = None ; vnodeName = None
-    if n < 0: return
-
-    fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
-
-    if n==1:
-        p = root ; n2 = 1 ; found = True
-    elif n >= len(lines):
-        p = root ; n2 = root.bodyString().count('\n') ; found = False
-    elif isRaw:
-        p,n2,found = c.goto_countLines(root,n)
-    else:
-        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
-        if delim:
-            p,found = c.goto_findPosition(
-                root,lines,vnodeName,gnx,n,delim)
-        else:
-            p,found = root,False
-    if 0:
-        << trace gotoLineNumber results >>
-    c.goto_showResults(found,p or root,n,n2,lines)
-#@+node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
-g.trace(
-    '\n  found',found,'n2',n2,'gnx',gnx,'delim',repr(delim),
-    '\n  vnodeName',vnodeName,
-    '\n  p        ',p and p.headString(),
-    '\n  root     ',root and root.headString())
-#@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
-#@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
-def goto_applyLineNumberMapping(self, n):
-
-    c = self ; x = c.shadowController
-
-    if len(x.line_mapping) > n:
-        return x.line_mapping[n]
-    else:
-        return n
-#@-node:ekr.20080708094444.65:goto_applyLineNumberMapping
-#@+node:ekr.20080904071003.12:goto_countLines
-def goto_countLines (self,root,n):
-
-    '''Scan through root's outline, looking for line n.
-    Return (p,n2,found) where p is the found node,
-    n2 is the actural line found, and found is True if the line was found.'''
-
-    p = lastv = root
-    prev = 0 ; found = False
-    isNosent = root.isAtNoSentFileNode()
-    isAuto = root.isAtAutoNode()
-
-    for p in p.self_and_subtree_iter():
-        lastv = p.copy()
-        s = p.bodyString()
-        if isNosent or isAuto:
-            s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
-        n_lines = s.count('\n')
-        if len(s) > 0 and s[-1] != '\n': n_lines += 1
-        # g.trace(n,prev,n_lines,p.headString())
-        if prev + n_lines >= n:
-            found = True ; break
-        prev += n_lines
-
-    p = lastv
-    n2 = max(1,n-prev)
-
-    return p,n2,found
-#@-node:ekr.20080904071003.12:goto_countLines
-#@+node:ekr.20080904071003.4:goto_findPosition & helpers
-def goto_findPosition(self,root,lines,vnodeName,gnx,n,delim):
-
-    c = self
-
-    # if scriptFind:
-        # p,found = c.scanForVnodeName(root,vnodeName
-
-    if gnx:
-        p,found = c.goto_findGnx(root,gnx,vnodeName)
-    else:
-        p,found = c.goto_scanTnodeList(root,delim,lines,n,vnodeName)
-
-    # if not found:
-        # g.es("not found:",vnodeName,color="red")
-
-    return p,found
-#@+node:ekr.20080904071003.18:goto_findGnx
-def goto_findGnx (self,root,gnx,vnodeName):
-
-    '''Scan root's tree for a node with the given gnx and vnodeName.
-
-    return (p,found)'''
-
-    gnx = g.app.nodeIndices.scanGnx(gnx,0)
-
-    for p in root.self_and_subtree_iter():
-        if p.matchHeadline(vnodeName):
-            if p.v.t.fileIndex == gnx:
-                return p.copy(),True
-
-    return None,False
-#@-node:ekr.20080904071003.18:goto_findGnx
-#@+node:ekr.20080904071003.19:goto_scanTnodeList
-def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
-
-    # This is about the best that can be done without replicating the entire atFile write logic.
-    found = False
-    ok = hasattr(root.v.t,"tnodeList")
-
-    if ok:
-        # Use getattr to keep pylint happy.
-        tnodeList = getattr(root.v.t,'tnodeList')
-        << set tnodeIndex to the number of +node sentinels before line n >>
-        tnodeIndex = max(0,tnodeIndex)
-        << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
-    else:
-        g.es_print("no child index for",root.headString(),color="red")
-
-    if not ok:
-        # Fall back to the old logic.
-        << set p to the first node whose headline matches vnodeName >>
-
-    return p,found
-#@+node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
-
-tnodeIndex = -1 # Don't count the @file node.
-scanned = 0 # count of lines scanned.
-
-for s in lines:
-    if scanned >= n:
-        break
-    i = g.skip_ws(s,0)
-    if g.match(s,i,delim):
-        i += len(delim)
-        if g.match(s,i,"+node"):
-            # g.trace(tnodeIndex,s.rstrip())
-            tnodeIndex += 1
-    scanned += 1
-#@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
-#@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-@ We use the tnodeList to find a _tnode_ corresponding to the proper node, so the user will for sure be editing the proper text, even if several nodes happen to have the same headline.  This is really all that we need.
-
-However, this code has no good way of distinguishing between different cloned vnodes in the file: they all have the same tnode.  So this code just picks p = t.vnodeList[0] and leaves it at that.
-
-The only way to do better is to scan the outline, replicating the write logic to determine which vnode created the given line.  That's way too difficult, and it would create an unwanted dependency in this code.
-@c
-
-# g.trace("tnodeIndex",tnodeIndex)
-if tnodeIndex < len(tnodeList):
-    t = tnodeList[tnodeIndex]
-    # Find the first vnode whose tnode is t.
-    for p in root.self_and_subtree_iter():
-        if p.v.t == t:
-            found = True ; break
-    if not found:
-        s = "tnode not found for " + vnodeName
-        g.es_print(s, color="red") ; ok = False
-    elif p.headString().strip() != vnodeName:
-        if 0: # Apparently this error doesn't prevent a later scan for working properly.
-            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
-            g.es_print(s, color="red")
-        ok = False
-else:
-    if root is None: # Kludge: disable this message when called by goToScriptLineNumber.
-        s = "Invalid computed tnodeIndex: %d" % tnodeIndex
-        g.es_print(s, color = "red")
-    ok = False
-#@-node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-#@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-for p in root.self_and_subtree_iter():
-    if p.matchHeadline(vnodeName):
-        found = True ; break
-#@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-#@-node:ekr.20080904071003.19:goto_scanTnodeList
-#@-node:ekr.20080904071003.4:goto_findPosition & helpers
-#@+node:ekr.20031218072017.2877:goto_findVnode
-def goto_findVnode (self,root,lines,n,ignoreSentinels):
-
-    '''Search the lines of a derived file containing sentinels for a vnode.
-    return (vnodeName,gnx,offset,delim):
-
-    vnodeName:  the name found in the previous @+body sentinel.
-    gnx:        the gnx of the found node.
-    offset:     the offset within the node of the desired line.
-    delim:      the comment delim from the @+leo sentinel.
-    '''
-
-    c = self ; at = c.atFileCommands
-    # g.trace('lines...\n',g.listToString(lines))
-    gnx = None
-    << set delim, leoLine from the @+leo line >>
-    if not delim:
-        g.es('no sentinels in:',root.headString())
-        return None,None,None,None
-
-    << scan back to @+node, setting offset,nodeSentinelLine >>
-    if nodeSentinelLine == -1:
-        # The line precedes the first @+node sentinel
-        g.trace('no @+node!!')
-        return root.headString(),gnx,1,delim
-
-    s = lines[nodeSentinelLine]
-
-    << set gnx and vnodeName from s >>
-    if delim and vnodeName:
-        # g.trace('offset',offset)
-        return vnodeName,gnx,offset,delim
-    else:
-        g.es("bad @+node sentinel")
-        return None,None,None,None
-#@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
-# Find the @+leo line.
-tag = "@+leo"
-i = 0 
-while i < len(lines) and lines[i].find(tag)==-1:
-    i += 1
-leoLine = i # Index of the line containing the leo sentinel
-
-# Set delim from the @+leo line.
-delim = None
-if leoLine < len(lines):
-    s = lines[leoLine]
-    valid,newDerivedFile,start,end,thinFile = at.parseLeoSentinel(s)
-    # New in Leo 4.5.1: only support 4.x files.
-    if valid and newDerivedFile:
-        delim = start + '@'
-#@-node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
-#@+node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
-@
-Scan backwards from the requested line, looking for an @-body line. When found,
-we get the vnode's name from that line and set p to the indicated vnode. This
-will fail if vnode names have been changed, and that can't be helped.
-
-We compute the offset of the requested line **within the found node**.
-@c
-
-offset = 0 # This is essentially the Tk line number.
-nodeSentinelLine = -1
-line = n - 1 # Start with the requested line.
-while line >= 0:
-    progress = line
-    s = lines[line]
-    i = g.skip_ws(s,0)
-    if g.match(s,i,delim):
-        << handle delim while scanning backward >>
-    else:
-        ### offset += 1 # Assume the line is real.  A dubious assumption.
-        line -= 1
-    assert line < progress
-#@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
-if line == n:
-    g.es("line",str(n),"is a sentinel line")
-i += len(delim)
-
-if g.match(s,i,"-node"):
-    # The end of a nested section.
-    old_line = line
-    line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
-    assert line < old_line
-    # g.trace('found',repr(lines[line]))
-    nodeSentinelLine = line
-    offset = n-line
-    break
-elif g.match(s,i,"+node"):
-    # g.trace('found',repr(lines[line]))
-    nodeSentinelLine = line
-    offset = n-line
-    break
-elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-    # if not ignoreSentinels:
-        # offset += 1 # Count these as a "real" lines.
-    line -= 1
-else:
-    line -= 1
-#@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
-#@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
-#@+node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
-i = 0 ; gnx = None ; vnodeName = None
-
-if thinFile:
-    # gnx is lies between the first and second ':':
-    i = s.find(':',i)
-    if i > 0:
-        i += 1
-        j = s.find(':',i)
-        if j > 0:   gnx = s[i:j]
-        else:       i = len(s) # Force an error.
-    else:
-        i = len(s) # Force an error.
-
-# vnode name is everything following the first or second':'
-i = s.find(':',i)
-if i > -1:
-    vnodeName = s[i+1:].strip()
-else:
-    vnodeName = None
-    g.es_print("bad @+node sentinel",color='red')
-#@-node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
-#@-node:ekr.20031218072017.2877:goto_findVnode
-#@+node:ekr.20080904071003.28:goto_setup & helpers
-def goto_setup (self,n,p=None,scriptData=None):
-
-    '''Return (fileName,isRaw,lines,n,p,root) where:
-
-    fileName is the name of the nearest @file node, or None.
-    isRaw is True if there are no sentinels in the file.
-    lines are the lines to be scanned.
-    n is the effective line number (munged for @shadow nodes).
-    root is the nearest @file node, or c.currentPosition.'''
-
-    c = self
-
-    if scriptData:
-        assert p is None
-        lines = scriptData.get('lines')
-        p = scriptData.get('p')
-        root,fileName = c.goto_findRoot(p)
-    else:
-        # p is for unit testing only!
-        if not p: p = c.currentPosition()
-        root,fileName = c.goto_findRoot(p)
-        if root and fileName:
-            c.shadowController.line_mapping = [] # Set by goto_open.
-            lines = c.goto_getFileLines(root,fileName)
-            n = c.goto_applyLineNumberMapping(n)
-        else:
-            lines = c.goto_getScriptLines(p)
-
-    isRaw = not root or (
-        root.isAtAsisFileNode() or root.isAtNoSentFileNode() or root.isAtAutoNode())
-
-    ignoreSentinels = root and root.isAtNoSentFileNode()
-
-    if scriptData:
-        if not root: root = p.copy()
-    else:
-        if not root: root = c.currentPosition()
-
-    return fileName,ignoreSentinels,isRaw,lines,n,root
-#@+node:ekr.20080904071003.25:goto_findRoot
-def goto_findRoot (self,p):
-
-    '''Find the closest ancestor @file node, of any type, except @all nodes.
-
-    return root, fileName.'''
-
-    c = self ; p1 = p.copy()
-
-    # First look for ancestor @file node.
-    for p in p.self_and_parents_iter():
-        fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
-        if fileName:
-            return p.copy(),fileName
-
-    # Search the entire tree for joined nodes.
-    # Bug fix: Leo 4.5.1: *must* search *all* positions.
-    for p in c.all_positions_iter():
-        # if p.v.t == p1.v.t: g.trace('p1',p1,'p',p)
-        if p.v.t == p1.v.t and p != p1:
-            # Found a joined position.
-            for p2 in p.self_and_parents_iter():
-                fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
-                if fileName:
-                    return p2.copy(),fileName
-
-    return None,None
-#@-node:ekr.20080904071003.25:goto_findRoot
-#@+node:ekr.20080904071003.26:goto_getFileLines
-def goto_getFileLines (self,root,fileName):
-
-    '''Read the file into lines.'''
-
-    c = self
-
-    if root.isAtNoSentFileNode():
-        # Write a virtual file containing sentinels.
-        at = c.atFileCommands
-        at.write(root,nosentinels=False,toString=True)
-        lines = g.splitLines(at.stringOutput)
-    else:
-        # Calculate the full path.
-        d = g.scanDirectives(c,p=root)
-        path = d.get("path")
-        # g.trace('path',path,'fileName',fileName)
-        fileName = c.os_path_finalize_join(path,fileName)
-        lines    = c.goto_open(fileName)
-
-    return lines
-#@-node:ekr.20080904071003.26:goto_getFileLines
-#@+node:ekr.20080904071003.27:goto_getScriptLines
-def goto_getScriptLines (self,p):
-
-    c = self
-
-    if not g.unitTesting:
-        g.es("no ancestor @file node: using script line numbers", color="blue")
-
-    lines = g.getScript (c,p,useSelectedText=False)
-    lines = g.splitLines(lines)
-
-    return lines
-#@-node:ekr.20080904071003.27:goto_getScriptLines
-#@+node:ekr.20080708094444.63:goto_open
-def goto_open (self,filename):
-    """
-    Open a file for "goto linenumber" command and check if a shadow file exists.
-    Construct a line mapping. This ivar is empty i no shadow file exists.
-    Otherwise it contains a mapping shadow file number -> real file number.
-    """
-
-    c = self ; x = c.shadowController
-
-    try:
-        shadow_filename = x.shadowPathName(filename)
-        if os.path.exists(shadow_filename):
-            fn = shadow_filename
-            lines = open(shadow_filename).readlines()
-            x.line_mapping = x.push_filter_mapping(
-                lines, x.marker_from_extension(shadow_filename))
-        else:
-            # Just open the original file.  This is not an error!
-            fn = filename
-            c.line_mapping = []
-            lines = open(filename).readlines()
-    except Exception:
-        # Make sure failures to open a file generate clear messages.
-        g.es_print('can not open',fn,color='blue')
-        # g.es_exception()
-        lines = []
-
-    return lines
-#@-node:ekr.20080708094444.63:goto_open
-#@-node:ekr.20080904071003.28:goto_setup & helpers
-#@+node:ekr.20080904071003.14:goto_showResults
-def goto_showResults(self,found,p,n,n2,lines):
-
-    c = self ; w = c.frame.body.bodyCtrl
-
-    # Select p and make it visible.
-    c.frame.tree.expandAllAncestors(p)
-    c.selectPosition(p)
-    c.redraw()
-
-    # Put the cursor on line n2 of the body text.
-    s = w.getAllText()
-    if found:
-        ins = g.convertRowColToPythonIndex(s,n2-1,0)    
-    else:
-        ins = len(s)
-        if len(lines) < n and not g.unitTesting:
-            g.es('only',len(lines),'lines',color="blue")
-
-    # g.trace('n',n,'ins',ins,'p',p.headString())
-
-    w.setInsertPoint(ins)
-    c.bodyWantsFocusNow()
-    w.seeInsertPoint()
-#@-node:ekr.20080904071003.14:goto_showResults
-#@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
-def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
-
-    s = lines[n]
-    i = g.skip_ws(s,0)
-    assert(g.match(s,i,delim))
-    i += len(delim)
-    if g.match(s,i,"+node"):
-        start="+node" ; end="-node" ; delta=1
-    else:
-        assert(g.match(s,i,"-node"))
-        start="-node" ; end="+node" ; delta=-1
-    # Scan to matching @+-node delim.
-    n += delta ; level = 0
-    while 0 <= n < len(lines):
-        s = lines[n] ; i = g.skip_ws(s,0)
-        if g.match(s,i,delim):
-            i += len(delim)
-            if g.match(s,i,start):
-                level += 1
-            elif g.match(s,i,end):
-                if level == 0: break
-                else: level -= 1
-        n += delta
-
-    # g.trace(n)
-    return n
-#@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
-#@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
-#@-node:ekr.20080918084804.1:Fixed goto-global-line crasher
-#@+node:ekr.20080923143214.1:Removed pychecker stuff
-# It's time.
-#@nonl
-#@-node:ekr.20080923143214.1:Removed pychecker stuff
-#@+node:ekr.20080921154026.3:Fixed new rst3 crash
-# Calls g.makeAllNonExistentDirectories instead of os.mkdir.
-#@nonl
-#@+node:ekr.20080923163444.2:Report
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/414137b93c7e4b90
-
-I receive the following traceback, when I try to create an HTML-
-File from a @rst-Node.
-
-<Traceback>
-
-Leo Log Window...
-Leo 4.5.1 final, build  1.244 , September 14, 2008
-python 2.5.2, Tk 8.4.12, Pmw 1.3
-Windows 5, 1, 2600, 2, Service Pack 3
-
-Can not load c:\aspell\bin\aspell-15.dll
-leoID=vr20080824 (in C:\Dokumente und Einstellungen\VR\.leo)
-load dir: C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-global config dir: C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo
-\config
-home dir: C:\Dokumente und Einstellungen\VR
-reading settings in C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo
-\config\leoSettings.leo
-reading settings in C:\Dokumente und Einstellungen\VR\.leo
-\myLeoSettings.leo
-reading settings in C:\Dokumente und Einstellungen\VR\Eigene Dateien
-\Tools\Leo\Leo-20080921.leo
-rewriting empty .leo file: C:\Dokumente und Einstellungen\VR\Eigene
-Dateien\Tools\Leo\Leo-20080921.leo
-reading: C:\Dokumente und Einstellungen\VR\Eigene Dateien\Tools\Leo
-\Leo-20080921.leo
-saved: Leo-20080921.leo
-SilverCity not present so no syntax highlighting
-exception executing command
-Traceback (most recent call last):
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-\leoCommands.py", line 309, in doCommand
-    val = command(event)
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-\leoCommands.py", line 482, in minibufferCallback
-    retval = function(keywords)
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
-\rst3.py", line 675, in rst3PluginCallback
-    self.processTopTree(c.currentPosition())
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
-\rst3.py", line 1152, in processTopTree
-
-self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
-\rst3.py", line 1184, in processTree
-    ok =
-self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
-  File "C:\Python25\Lib\site-packages\Leo-4-5-1-2-final\leo\plugins
-\rst3.py", line 1222, in writeSpecialTree
-    os.mkdir(dir)
-WindowsError: [Error 3] Das System kann den angegebenen Pfad nicht
-finden: u'C:\\Python25\\Lib\\site-packages\\Leo-4-5-1-2-final\\2008\
-\09'
-
-</Traceback>
-
-The related outline can be reduced to:
-
-Worklog-->2008-->09-->@rst WLE-2008-09-21.html
-
-The content of the right-most node is:
-
-@ @rst-options
-default_path=./2008/09
-@c
-======================
-Worklog for 2008-09-21
-======================
-
-Kind regards,
-
-Viktor 
-#@nonl
-#@-node:ekr.20080923163444.2:Report
-#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-# This is a generalization of os.makedir.
-
-def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
-
-    """Attempt to make all non-existent directories"""
-
-    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
-
-    if not force:
-        if c:
-            if not c.config.create_nonexistent_directories:
-                return None
-        elif not app.config.create_nonexistent_directories:
-            return None
-
-    if c:
-        theDir = g.os_path_expandExpression(theDir,c=c)
-
-    dir1 = theDir = g.os_path_normpath(theDir)
-
-    # Split theDir into all its component parts.
-    paths = []
-    while len(theDir) > 0:
-        head,tail=g.os_path_split(theDir)
-        if len(tail) == 0:
-            paths.append(head)
-            break
-        else:
-            paths.append(tail)
-            theDir = head
-    path = ""
-    paths.reverse()
-    for s in paths:
-        path = g.os_path_join(path,s)
-        if not g.os_path_exists(path):
-            try:
-                os.mkdir(path)
-                if verbose and not g.app.unitTesting:
-                    # g.trace('***callers***',g.callers(5))
-                    g.es_print("created directory:",path,color='red')
-            except Exception:
-                # g.trace(g.callers())
-                if verbose: g.es_print("exception creating directory:",path,color='red')
-                g.es_exception()
-                return None
-    return dir1 # All have been created.
-#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-#@-node:ekr.20080921154026.3:Fixed new rst3 crash
-#@+node:ekr.20080924032842.2:Fixed two c syntax-coloring bugs
-@
-There were two separate bugs:
-
-1. The eol_span and eol_span_regex now honor the mode's escape character.
-
-2. colorRangeWithTag now colors delegates with the default tag color.
-
-Happily, no changes were required in the modes/c.py or modes/c.xml.
-#@nonl
-#@+node:ekr.20080709161540.1:Bug 1
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/707a910f975f3715
-
-Coloring of macro definitions is not extended after '\'.
-
-More than that - refer again to the screenshot and look at the
-comments and #defines at the bottom. The comments after the multi-line
-macro are either not coloured or are coloured incorrectly. At the top,
-the '#define ADDPRIM_CO' macro is only partially coloured. The macros
-below the multi-line macro are incorrectly comment-coloured.
-
-@color
-#@nonl
-#@+node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
-#@-node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
-#@-node:ekr.20080709161540.1:Bug 1
-#@+node:ekr.20080924032842.1:Bug 2
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/74c6ab4809bde980
-
-I've noticed a strange behaviour of the "@language cplusplus" mode
-using doxygen style comments.
-I wrote this code doxygen java-like commenting style:
-
-/**
- * first comment
- */
-
-/**
- * second comment
- */
-
-now I've the string "first comment" highlited as code and the string
-"second comment" highlithed as comment.
-Qt-style doxygen comments have the same behaviour and if I don't use
-doxygen comments it's all ok.
-I'm using leo 4.5.1 final on Windows XP.
-It's a bug or I haven't understood something?
-
-@color
-#@nonl
-#@-node:ekr.20080924032842.1:Bug 2
-#@+node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
-@ These methods skip to the next newline, regardless of whether the newline may be preceeded by a backslash. Consequently, they should be used only when we know that we are not in a preprocessor directive or string.
-@c
-
-def skip_line (s,i):
-
-    if i >= len(s): return len(s) # Bug fix: 2007/5/22
-    if i < 0: i = 0
-    i = s.find('\n',i)
-    if i == -1: return len(s)
-    else: return i + 1
-
-def skip_to_end_of_line (s,i):
-
-    if i >= len(s): return len(s) # Bug fix: 2007/5/22
-    if i < 0: i = 0
-    i = s.find('\n',i)
-    if i == -1: return len(s)
-    else: return i
-
-def skip_to_start_of_line (s,i):
-
-    if i >= len(s): return len(s)
-    if i <= 0:      return 0
-    i = s.rfind('\n',0,i) # Don't find s[i], so it doesn't matter if s[i] is a newline.
-    if i == -1: return 0
-    else:       return i + 1
-#@-node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
-#@-node:ekr.20080924032842.2:Fixed two c syntax-coloring bugs
-#@+node:ekr.20081001062423.3:Restored deleted unit tests for p.textOffset
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6f744c2a5819e3
-
-I was browsing the source code and I've incidentally found that the
-tests for p.textOffset() are not in the trunk. Perhaps they were lost
-during a merge.
-
-Relevant pointers:
-
-------------------------------------------------------------
-revno: 903
-committer: Edward K. Ream <edream...@gmail.com>
-branch nick: trunk
-timestamp: Mon 2008-08-25 11:14:15 -0500
-message:
-  commit after merge
-    ------------------------------------------------------------
-    revno: 899.1.3
-    committer: zpcspm zpc...@gmail.com
-    branch nick: leo-fcol
-    timestamp: Mon 2008-08-25 17:53:37 +0300
-    message:
-      commit after merge
-
-The following command shows that the tests disappeared here.
-
-$ bzr diff leo/test/unitTest.leo -r 899.1.3..903 
-#@nonl
-#@-node:ekr.20081001062423.3:Restored deleted unit tests for p.textOffset
-#@+node:ekr.20080930072519.10:Fixed bug that prevented Leo from opening files on the XP desktop
-#@+node:ekr.20071117060958:getFileName & helper
-def getFileName (fileName,script):
-
-    '''Return the filename from sys.argv.'''
-
-    if g.isPython3:
-        ### Testing only.
-        fileName = r'c:\leo.repo\trunk\leo\test\test.leo'
-        assert g.os_path_exists(fileName)
-    elif script:
-        fileName = None
-    elif fileName:
-        pass
-    else:
-        # Bug fix: 2008/10/1
-        if sys.platform.startswith('win'):
-            if len(sys.argv) > 1:
-                fileName = ' '.join(sys.argv[1:])
-            else:
-                fileName = None
-        else:
-            fileName = len(sys.argv) > 1 and sys.argv[-1]
-
-    return completeFileName(fileName)
-#@+node:ekr.20041124083125:completeFileName
-def completeFileName (fileName):
-
-    if not (fileName and fileName.strip()):
-        return None,None
-
-    # This does not depend on config settings.
-    try:
-        if sys.platform.lower().startswith('win'):
-            fileName = g.toUnicode(fileName,'mbcs')
-        else:
-            fileName = g.toUnicode(fileName,'utf-8')
-    except Exception: pass
-
-    relativeFileName = fileName
-    ### fileName = g.os_path_finalize_join(os.getcwd(),fileName)
-    fileName = g.os_path_finalize(fileName)
-
-    junk,ext = g.os_path_splitext(fileName)
-    if not ext:
-        fileName = fileName + ".leo"
-        relativeFileName = relativeFileName + ".leo"
-
-    return fileName,relativeFileName
-#@-node:ekr.20041124083125:completeFileName
-#@-node:ekr.20071117060958:getFileName & helper
-#@-node:ekr.20080930072519.10:Fixed bug that prevented Leo from opening files on the XP desktop
-#@+node:ekr.20081001062423.2:Fixed nested @path problem
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/7d8325d055cbef30
-
-I'm finding
-
-@path project
- \
-   @shadow one.py
-   @shadow two.py
-   @path subdir
-     \
-       @shadow three.py
-
-I'm finding three.py is considered project/three.py instead of
-project/subdir/three.py 
-
-===========
-
-The problem was that leoAtFile/leoImport.scanDefaultDirectory did not support
-nested @path directives.
-
-I refactored them so all the common work is done in g.setDefaultDirectory.
-
-@color
-#@nonl
-#@+node:ekr.20031218072017.3210:createOutline (leoImport)
-def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-
-    # New in Leo 4.4.7: honor @path directives.
-
-    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = c.os_path_finalize_join(self.default_directory,fileName)
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    # g.trace(self.fileName,self.fileType)
-    # All file types except the following just get copied to the parent node.
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        << Read file into s >>
-
-    << convert s to the proper encoding >>
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        else:
-            # @root nodes don't have @root in the headline.
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
-
-    func = self.importDispatchDict.get(ext)
-    if func and not c.config.getBool('suppress_import_parsing',default=False):
-        func(s,p,atAuto=atAuto)
-    else:
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    p.contract()
-    return p
-#@+node:ekr.20031218072017.3211:<< Read file into s >>
-try:
-    fileName = c.os_path_finalize(fileName)
-    theFile = open(fileName)
-    s = theFile.read()
-    theFile.close()
-except IOError:
-    if atShadow: kind = '@shadow '
-    elif atAuto: kind = '@auto '
-    else: kind = ''
-    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-    g.es("can not open", "%s%s" % (kind,fileName),color='red')
-    # g.trace(g.callers())
-    leoTest.fail()
-    return None
-#@-node:ekr.20031218072017.3211:<< Read file into s >>
-#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
-if s and fileName.endswith('.py'):
-    # Python's encoding comments override everything else.
-    lines = g.splitLines(s)
-    tag = '# -*- coding:' ; tag2 = '-*-'
-    n1,n2 = len(tag),len(tag2)
-    line1 = lines[0].strip()
-    if line1.startswith(tag) and line1.endswith(tag2):
-        e = line1[n1:-n2].strip()
-        if e and g.isValidEncoding(e):
-            # g.pr('found',e,'in',line1)
-            self.encoding = e
-
-s = g.toUnicode(s,self.encoding)
-#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
-#@-node:ekr.20031218072017.3210:createOutline (leoImport)
-#@+node:ekr.20080211085914:scanDefaultDirectory (leoImport)
-def scanDefaultDirectory(self,p):
-
-    """Set the default_directory ivar by looking for @path directives."""
-
-    c = self.c
-
-    self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
-
-    if error: self.error(error)
-#@-node:ekr.20080211085914:scanDefaultDirectory (leoImport)
-#@+node:ekr.20041005105605.236:atFile.scanDefaultDirectory
-def scanDefaultDirectory(self,p,importing=False):
-
-    """Set the default_directory ivar by looking for @path directives."""
-
-    at = self ; c = at.c
-
-    at.default_directory,error = g.setDefaultDirectory(c,p,importing)
-
-    if error: at.error(error)
-#@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
-#@+node:ekr.20081001062423.9:g.setDefaultDirectory
-# This is a refactoring, used by leoImport.scanDefaultDirectory and
-# atFile.scanDefault directory
-
-def setDefaultDirectory(c,p,importing=False):
-
-    '''Set default_directory by scanning @path directives.
-    Return (default_directory,error_message).'''
-
-    default_directory = '' ; error = ''
-    if not p: return default_directory,error
-
-    << Set path from @file node >>
-
-    if not default_directory:
-        # Scan for @path directives.
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        if path:
-            << handle @path >>
-
-    if not default_directory:
-        << Set current directory >>
-
-    if not default_directory and not importing:
-        # This should never happen: c.openDirectory should be a good last resort.
-        error = "No absolute directory specified anywhere."
-
-    # g.trace('returns',default_directory)
-    return default_directory, error
-#@+node:ekr.20081001062423.10:<< Set path from @file node >>
-# An absolute path in an @file node over-rides everything else.
-# A relative path gets appended to the relative path by the open logic.
-
-name = p.anyAtFileNodeName()
-theDir = g.choose(name,g.os_path_dirname(name),None)
-
-if theDir and g.os_path_isabs(theDir):
-    if g.os_path_exists(theDir):
-        default_directory = theDir
-    else:
-        default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-        if not default_directory:
-            error = "Directory \"%s\" does not exist" % theDir
-#@-node:ekr.20081001062423.10:<< Set path from @file node >>
-#@+node:ekr.20081001062423.11:<< handle @path >>
-path = g.computeRelativePath (path)
-
-if path:
-    base = g.getBaseDirectory(c) # returns "" on error.
-    path = c.os_path_finalize_join(base,path)
-
-    if g.os_path_isabs(path):
-        if g.os_path_exists(path):
-            default_directory = path
-        else:
-            default_directory = g.makeAllNonExistentDirectories(path,c=c)
-            if not default_directory:
-                error = "invalid @path: %s" % path
-            else:
-                error = "ignoring bad @path: %s" % path
-else:
-    error = "ignoring empty @path"
-#@-node:ekr.20081001062423.11:<< handle @path >>
-#@+node:ekr.20081001062423.12:<< Set current directory >>
-# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-assert(not default_directory)
-
-if c.frame:
-    base = g.getBaseDirectory(c) # returns "" on error.
-    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-        if theDir and len(theDir) > 0:
-            theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
-            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                if g.os_path_exists(theDir):
-                    default_directory = theDir ; break
-                else:
-                    default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-#@-node:ekr.20081001062423.12:<< Set current directory >>
-#@-node:ekr.20081001062423.9:g.setDefaultDirectory
-#@-node:ekr.20081001062423.2:Fixed nested @path problem
-#@-node:ekr.20080917153158.12:Fixed bugs
 #@+node:ekr.20080917153158.15:New features
 #@+node:ekr.20080124083629.1:Improved @path handling
 @nocolor
