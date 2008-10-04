@@ -1994,6 +1994,36 @@ def clean_file(p):
         g.es_exception()
 #@-node:ekr.20080330085343.1:clean_file
 #@-node:ekr.20080330085343.3:Save/restore tnodeList in atFile.write
+#@+node:ekr.20081003155540.1:Fixed (?) bug in plugins dispatcher
+@nocolor-node
+
+callTagHandler now checks c.exists when possible.
+#@nonl
+#@+node:ekr.20050102094729:callTagHandler
+def callTagHandler (bunch,tag,keywords):
+
+    handler = bunch.fn ; moduleName = bunch.moduleName
+
+    # if tag != 'idle': g.pr('callTagHandler',tag,keywords.get('c'))
+
+    # Make sure the new commander exists.
+    if True: ### tag == 'idle':
+        for key in ('c','new_c'):
+            c = keywords.get(key)
+            if c:
+                # Make sure c exists and has a frame.
+                if not c.exists or not hasattr(c,'frame'):
+                    g.pr('skipping tag %s: c does not exists or does not have a frame.' % tag)
+                    return None
+
+    # Calls to registerHandler from inside the handler belong to moduleName.
+    global loadingModuleNameStack
+    loadingModuleNameStack.append(moduleName)
+    result = handler(tag,keywords)
+    loadingModuleNameStack.pop()
+    return result
+#@-node:ekr.20050102094729:callTagHandler
+#@-node:ekr.20081003155540.1:Fixed (?) bug in plugins dispatcher
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -10892,6 +10922,184 @@ def getExternalCompletions (self,s,p=None,language='python'):
     return theObject,tabList
 #@-node:ekr.20080924032842.3:getExternalCompletions
 #@-node:ekr.20080918164844.10:Added autoCompleter.getExternalCompletions
+#@+node:ekr.20081003123804.1:Added @nocolor-node directive
+# Useful: we don't need a closing @color to enable coloring in descendants.
+#@nonl
+#@+node:ekr.20031218072017.2805:useSyntaxColoring
+def useSyntaxColoring (self,p):
+
+    """Return True unless p is unambiguously under the control of @nocolor."""
+
+    p = p.copy() ; first = p.copy()
+    self.killFlag = False
+
+    # New in Leo 4.6: @nocolor-node disables one node only.
+    theDict = g.get_directives_dict(p)
+    if 'nocolor-node' in theDict:
+        return False
+
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        no_color = 'nocolor' in theDict
+        color = 'color' in theDict
+        kill_color = 'killcolor' in theDict
+        # A killcolor anywhere disables coloring.
+        if kill_color:
+            self.killFlag = True
+            return False
+        # A color anywhere in the target enables coloring.
+        elif color and p == first:
+            return True
+        # Otherwise, the @nocolor specification must be unambiguous.
+        elif no_color and not color:
+            return False
+        elif color and not no_color:
+            return True
+
+    return True
+#@-node:ekr.20031218072017.2805:useSyntaxColoring
+#@+node:EKR.20040610094819:<< define global data structures >>
+# Visible externally so plugins may add to the list of directives.
+
+globalDirectiveList = [
+    # New in Leo 4.6:
+    'nocolor-node',
+    # New in Leo 4.4.4: these used to be in leoKeywords.
+    'all','c','code','delims','doc','end_raw',
+    'first','last','others','raw','root-code','root-doc',
+    # Old.
+    "color", "comment", "encoding", "header", "ignore", "killcolor",
+    "language", "lineending", "nocolor", "noheader", "nowrap",
+    "pagewidth", "path", "quiet", "root", "silent",
+    "tabwidth", "terse", "unit", "verbose", "wrap",
+]
+#@-node:EKR.20040610094819:<< define global data structures >>
+#@+node:ekr.20040705195048:skip_id
+def skip_id(s,i,chars=None):
+
+    chars = chars and g.toUnicode(chars,encoding='ascii') or ''
+    n = len(s)
+    while i < n and (g.isWordChar(s[i]) or s[i] in chars):
+        i += 1
+    return i
+#@nonl
+#@-node:ekr.20040705195048:skip_id
+#@+node:ekr.20031218072017.1260:g.get_directives_dict
+# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
+
+def get_directives_dict(p,root=None):
+
+    """Scans root for @directives found in globalDirectiveList.
+
+    Returns a dict containing pointers to the start of each directive"""
+
+    global globalDirectiveList
+
+    if root: root_node = root[0]
+    d = {'_p':p.copy()}
+
+    # The headline has higher precedence because it is more visible.
+    for kind,s in (
+        ('body',p.v.t._headString),
+        ('head',p.v.t._bodyString),
+    ):
+        i = 0 ; n = len(s)
+        while i < n:
+            if s[i] == '@' and i+1 < n:
+                << set d for @ directives >>
+            elif kind == 'body' and root and g.match(s,i,"<<"):
+                << set d["root"] for noweb * chunks >>
+            i = g.skip_line(s,i)
+    return d
+#@+node:ekr.20031218072017.1261:<< set d for @ directives >>
+j = g.skip_id(s,i+1,chars='-')
+word = s[i+1:j]
+
+if word in globalDirectiveList:
+    if d.get(word):
+        # Ignore second value.
+        pass
+        # g.es("warning: conflicting values for",word,color="blue")
+    else:
+        k = g.skip_line(s,j)
+        d[word] = s[j:k].strip()
+#@nonl
+#@-node:ekr.20031218072017.1261:<< set d for @ directives >>
+#@+node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
+@ The following looks for chunk definitions of the form < < * > > =. If found, we take this to be equivalent to @root filename if the headline has the form @root filename.
+@c
+
+i = g.skip_ws(s,i+2)
+
+if i < n and s[i] == '*' :
+    i = g.skip_ws(s,i+1) # Skip the '*'
+    if g.match(s,i,">>="):
+        # < < * > > = implies that @root should appear in the headline.
+        i += 3
+        if root_node:
+            d["root"]=0 # value not immportant
+        else:
+            g.es('',g.angleBrackets("*") + "= requires @root in the headline")
+#@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
+#@-node:ekr.20031218072017.1260:g.get_directives_dict
+#@+node:ekr.20080827175609.1:g.get_directives_dict_list
+# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
+
+def get_directives_dict_list(p1):
+
+    """Scans p and all its ancestors for directives.
+
+    Returns a list of dicts containing pointers to the start of each directive"""
+
+    result = [] ; p1 = p1.copy()
+
+    for p in p1.self_and_parents_iter():
+        if p.hasParent(): root = None
+        else:             root = [p.copy()]
+        result.append(g.get_directives_dict(p,root=root))
+
+    return result
+#@-node:ekr.20080827175609.1:g.get_directives_dict_list
+#@+node:ekr.20081003155540.2:Failed unit test
+#@+node:ekr.20031218072017.3184:match_word
+def match_word(s,i,pattern):
+
+    if pattern == None: return False
+    j = len(pattern)
+    if j == 0: return False
+    if s.find(pattern,i,i+j) != i:
+        return False
+    if i+j >= len(s):
+        return True
+    ch = s[i+j]
+    return not g.isWordChar(ch)
+#@-node:ekr.20031218072017.3184:match_word
+#@+node:ekr.20080828103146.12:c.scanAtRootDirectives
+# Called only by scanColorDirectives.
+
+def scanAtRootDirectives(self,aList):
+
+    '''Scan aList for @root-code and @root-doc directives.'''
+
+    c = self
+
+    # To keep pylint happy.
+    tag = 'at_root_bodies_start_in_doc_mode'
+    start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
+
+    # New in Leo 4.6: dashes are valid in directive names.
+    for d in aList:
+        if 'root-code' in d:
+            return 'code'
+        elif 'root-doc' in d:
+            return 'doc'
+        elif 'root' in d:
+            return g.choose(start_in_doc,'doc','code')
+
+    return None
+#@-node:ekr.20080828103146.12:c.scanAtRootDirectives
+#@-node:ekr.20081003155540.2:Failed unit test
+#@-node:ekr.20081003123804.1:Added @nocolor-node directive
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files
