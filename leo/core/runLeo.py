@@ -191,9 +191,9 @@ def createSpecialGui(jyLeo,pymacs,script,windowFlag):
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:
         createNullGuiWithScript(None)
-    elif jyLeo:
-        import leo.core.leoSwingGui as leoSwingGui
-        g.app.gui = leoSwingGui.swingGui()
+    # elif jyLeo:
+        # import leo.core.leoSwingGui as leoSwingGui
+        # g.app.gui = leoSwingGui.swingGui()
     elif script:
         if windowFlag:
             g.app.createTkGui() # Creates global windows.
