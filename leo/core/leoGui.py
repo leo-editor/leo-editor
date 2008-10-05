@@ -425,7 +425,7 @@ class leoGui:
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 1:
-            g.pr("leoGui oops", g.callers(), "should be overridden in subclass")
+            g.pr("leoGui oops", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3741:oops
     #@+node:ekr.20051206103652:widget_name (leoGui)
     def widget_name (self,w):
@@ -535,7 +535,7 @@ class nullGui(leoGui):
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 1:
-            g.trace("nullGui",g.callers())
+            g.trace("nullGui",g.callers(4))
     #@-node:ekr.20031218072017.2230:oops
     #@+node:ekr.20070301171901:do nothings
     def attachLeoIcon (self,w):
