@@ -1452,6 +1452,7 @@ class leoFrame:
         self.title = None # Must be created by subclasses.
 
         # Objects attached to this frame.
+        self.body = None
         self.colorPanel = None 
         self.comparePanel = None
         self.findPanel = None
@@ -1459,6 +1460,7 @@ class leoFrame:
         self.iconBar = None
         self.isNullFrame = False
         self.keys = None
+        self.log = None
         self.menu = None
         self.miniBufferWidget = None
         self.outerFrame = None
