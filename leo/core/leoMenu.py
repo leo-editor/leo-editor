@@ -47,7 +47,7 @@ class leoMenu:
     #@+node:ekr.20031218072017.3775:error and oops
     def oops (self):
 
-        g.pr("leoMenu oops:", g.callers(), "should be overridden in subclass")
+        g.pr("leoMenu oops:", g.callers(4), "should be overridden in subclass")
 
     def error (self,s):
 
