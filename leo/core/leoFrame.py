@@ -126,7 +126,7 @@ class baseTextWidget:
     #@+node:ekr.20070228074312.5:oops
     def oops (self):
 
-        g.pr('wxGui baseTextWidget oops:',self,g.callers(),
+        g.pr('wxGui baseTextWidget oops:',self,g.callers(4),
             'must be overridden in subclass')
     #@-node:ekr.20070228074312.5:oops
     #@+node:ekr.20070228074312.6:Index conversion
@@ -1274,7 +1274,7 @@ class leoBody:
     #@+node:ekr.20031218072017.3658:oops
     def oops (self):
 
-        g.trace("leoBody oops:", g.callers(), "should be overridden in subclass")
+        g.trace("leoBody oops:", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3658:oops
     #@+node:ekr.20031218072017.4018:Text (leoBody)
     #@+node:ekr.20031218072017.4030:getInsertLines
@@ -1585,7 +1585,7 @@ class leoFrame:
     #@+node:ekr.20031218072017.3691:oops
     def oops(self):
 
-        g.pr("leoFrame oops:", g.callers(3), "should be overridden in subclass")
+        g.pr("leoFrame oops:", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3691:oops
     #@+node:ekr.20031218072017.3692:promptForSave
     def promptForSave (self):
@@ -2051,6 +2051,7 @@ class leoLog:
     def finishCreate (self):                        pass
     def setColorFromConfig (self):                  pass
     def setFontFromConfig (self):                   pass
+    def setTabBindings  (self,tabName):             pass
     #@+node:ekr.20070302094848.1:clearTab
     def clearTab (self,tabName,wrap='none'):
 
@@ -2169,15 +2170,15 @@ class leoLog:
     # All output to the log stream eventually comes here.
 
     def put (self,s,color=None,tabName='Log'):
-        self.oops()
+        print (s)
 
     def putnl (self,tabName='Log'):
-        self.oops()
+        pass # print ('')
     #@-node:ekr.20070302101304:Must be overridden
     #@+node:ekr.20031218072017.3700:leoLog.oops
     def oops (self):
 
-        g.pr("leoLog oops:", g.callers(), "should be overridden in subclass")
+        g.pr("leoLog oops:", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3700:leoLog.oops
     #@-others
 #@-node:ekr.20031218072017.3694:class leoLog
@@ -2247,6 +2248,9 @@ class leoTree:
     #@-node:ekr.20061109164610:leoTree.mustBeDefinedInSubclasses
     #@-node:ekr.20031218072017.3705:  tree.__init__ (base class)
     #@+node:ekr.20031218072017.3706: Must be defined in subclasses
+    # Bidings.
+    def setBindings (self):                         self.oops()
+
     # Fonts.
     def getFont(self):                              self.oops()
     def setFont(self,font=None,fontName=None):      self.oops()
@@ -2260,6 +2264,7 @@ class leoTree:
 
     # Headlines.
     def editLabel(self,v,selectAll=False):          self.oops()
+    def edit_widget (self,p):                       self.oops() ; return None
     def headWidth(self,p=None,s=''):                self.oops() ; return 0
     def setEditLabelState(self,v,selectAll=False):  self.oops()
     def setSelectedLabelState(self,p):              self.oops()
@@ -2641,6 +2646,7 @@ class leoTree:
 
         c = self.c ; frame = c.frame
         body = w = frame.body.bodyCtrl
+        if not w: return # Defensive.
         old_p = c.currentPosition()
 
         if not p:
@@ -2656,10 +2662,12 @@ class leoTree:
                 #@            << unselect the old node >>
                 #@+node:ekr.20040803072955.129:<< unselect the old node >>
                 # Remember the position of the scrollbar before making any changes.
-                if not body: g.trace('no body!','c.frame',c.frame,'old_p',old_p)
-
-                yview = body.getYScrollPosition()
-                insertSpot = c.frame.body.getInsertPoint()
+                if body:
+                    yview = body.getYScrollPosition()
+                    insertSpot = c.frame.body.getInsertPoint()
+                else:
+                    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+                    yview,insertSpot = 0,0
 
                 if old_p != p:
                     self.endEditLabel() # sets editPosition = None
@@ -2751,7 +2759,7 @@ class leoTree:
     #@+node:ekr.20031218072017.3718:oops
     def oops(self):
 
-        g.pr("leoTree oops:", g.callers(), "should be overridden in subclass")
+        g.pr("leoTree oops:", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3718:oops
     #@-others
 #@-node:ekr.20031218072017.3704:class leoTree
@@ -2801,7 +2809,7 @@ class leoTreeTab:
     #@+node:ekr.20070317083104:oops
     def oops(self):
 
-        g.pr("leoTreeTree oops:", g.callers(), "should be overridden in subclass")
+        g.pr("leoTreeTree oops:", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20070317083104:oops
     #@-others
 #@nonl
@@ -3137,7 +3145,7 @@ class nullLog (leoLog):
     #@+node:ekr.20041012083237.2:oops
     def oops(self):
 
-        g.trace("nullLog:", g.callers())
+        g.trace("nullLog:", g.callers(4))
     #@-node:ekr.20041012083237.2:oops
     #@+node:ekr.20041012083237.3:put and putnl (nullLog)
     def put (self,s,color=None,tabName='Log'):
