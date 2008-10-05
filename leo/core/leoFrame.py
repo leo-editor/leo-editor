@@ -702,6 +702,14 @@ class leoBody:
 
         # Must be overridden in subclasses...
         self.colorizer = None
+    #@+node:ekr.20081005065934.9:leoBody.mustBeDefined
+    # List of methods that must be defined either in the base class or a subclass.
+
+    mustBeDefined = (
+        'initAfterLoad',
+    )
+    #@nonl
+    #@-node:ekr.20081005065934.9:leoBody.mustBeDefined
     #@+node:ekr.20031218072017.3660:leoBody.mustBeDefinedInSubclasses
     mustBeDefinedInSubclasses = (
         # Birth, death & config.
@@ -763,6 +771,14 @@ class leoBody:
     )
     #@-node:ekr.20061109102912:define leoBody.mustBeDefinedOnlyInBaseClass
     #@-node:ekr.20031218072017.3657:leoBody.__init__
+    #@+node:ekr.20081005065934.5:leoBody.mustBeDefined
+    # List of methods that must be defined either in the base class or a subclass.
+
+    mustBeDefined = (
+        'initAfterLoad',
+    )
+    #@nonl
+    #@-node:ekr.20081005065934.5:leoBody.mustBeDefined
     #@+node:ekr.20061109173122:leoBody: must be defined in subclasses
     # Birth, death & config
     def createBindings (self,w=None):               self.oops()
@@ -1411,6 +1427,11 @@ class leoBody:
     def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
     #@-node:ekr.20070228080627:Text Wrappers (base class)
     #@-node:ekr.20061109173021:leoBody: must be defined in the base class
+    #@+node:ekr.20081005065934.6:leoBody: may be defined in subclasses
+    def initAfterLoad (self):
+        pass
+    #@nonl
+    #@-node:ekr.20081005065934.6:leoBody: may be defined in subclasses
     #@-others
 #@-node:ekr.20031218072017.3656:class leoBody
 #@+node:ekr.20031218072017.3678:class leoFrame
@@ -1470,8 +1491,8 @@ class leoFrame:
         'getIconBarObject',
         'getNewIconFrame',
         'hideIconBar',
+        'initAfterLoad',
         'showIconBar',
-
     )
     #@nonl
     #@-node:ekr.20080429051644.1:leoFrame.mustBeDefined
@@ -1953,19 +1974,6 @@ class leoFrame:
     #@-node:ekr.20031218072017.3682:Window...
     #@-node:ekr.20031218072017.3680:Must be defined in subclasses
     #@+node:ekr.20061109125528:May be defined in subclasses
-    #@+node:ekr.20031218072017.3687: setTabWidth (leoFrame)
-    def setTabWidth (self,w):
-
-        # Subclasses may override this to affect drawing.
-        self.tab_width = w
-    #@-node:ekr.20031218072017.3687: setTabWidth (leoFrame)
-    #@+node:ekr.20031218072017.3688:getTitle & setTitle
-    def getTitle (self):
-        return self.title
-
-    def setTitle (self,title):
-        self.title = title
-    #@-node:ekr.20031218072017.3688:getTitle & setTitle
     #@+node:ekr.20071027150501:event handlers (leoFrame)
     def OnBodyClick (self,event=None):
         pass
@@ -1974,6 +1982,32 @@ class leoFrame:
         pass
     #@nonl
     #@-node:ekr.20071027150501:event handlers (leoFrame)
+    #@+node:ekr.20031218072017.3688:getTitle & setTitle
+    def getTitle (self):
+        return self.title
+
+    def setTitle (self,title):
+        self.title = title
+    #@-node:ekr.20031218072017.3688:getTitle & setTitle
+    #@+node:ekr.20081005065934.3:initAfterLoad (leoFrame)
+    def initAfterLoad (self):
+
+        '''Provide offical hooks for late inits of components of Leo frames.'''
+
+        frame = self
+
+        frame.body.initAfterLoad()
+        frame.log.initAfterLoad()
+        frame.menu.initAfterLoad()
+        # if frame.miniBufferWidget: frame.miniBufferWidget.initAfterLoad()
+        frame.tree.initAfterLoad()
+    #@-node:ekr.20081005065934.3:initAfterLoad (leoFrame)
+    #@+node:ekr.20031218072017.3687:setTabWidth (leoFrame)
+    def setTabWidth (self,w):
+
+        # Subclasses may override this to affect drawing.
+        self.tab_width = w
+    #@-node:ekr.20031218072017.3687:setTabWidth (leoFrame)
     #@-node:ekr.20061109125528:May be defined in subclasses
     #@+node:ekr.20060206093313:Focus (leoFrame)
     # For compatibility with old scripts.
@@ -2049,6 +2083,7 @@ class leoLog:
     def createCanvas (self,tabName):                pass
     def createTextWidget (self,parentFrame):        return None
     def finishCreate (self):                        pass
+    def initAfterLoad (self):                       pass
     def setColorFromConfig (self):                  pass
     def setFontFromConfig (self):                   pass
     def setTabBindings  (self,tabName):             pass
@@ -2211,6 +2246,14 @@ class leoTree:
         self.canvas = None
         self.stayInTree = True
         self.trace_select = None
+    #@+node:ekr.20081005065934.7:leoTree.mustBeDefined
+    # List of methods that must be defined either in the base class or a subclass.
+
+    mustBeDefined = (
+        'initAfterLoad',
+    )
+    #@nonl
+    #@-node:ekr.20081005065934.7:leoTree.mustBeDefined
     #@+node:ekr.20061109164512:leoTree.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
         # Getters & setters.
@@ -2622,6 +2665,11 @@ class leoTree:
     #@-node:ekr.20061030161842:handleUrlInUrlNode
     #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper
     #@-node:ekr.20061109165848:Must be defined in base class
+    #@+node:ekr.20081005065934.8:May be defined in subclasses
+    def initAfterLoad (self):
+
+        pass
+    #@-node:ekr.20081005065934.8:May be defined in subclasses
     #@+node:ekr.20040803072955.128:leoTree.select & helper
     tree_select_lockout = False
 

@@ -2226,6 +2226,9 @@ def openWithFileName(fileName,old_c,
         c.updateRecentFiles(relativeFileName or fileName)
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
     c.redraw()
     assert frame.c == c and c.frame == frame
     # chapterController.finishCreate must be called after the first real redraw

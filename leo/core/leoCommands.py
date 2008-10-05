@@ -214,6 +214,14 @@ class baseCommands:
         self.config = configSettings(c)
         g.app.config.setIvarsFromSettings(c)
     #@-node:ekr.20040731071037:c.initIvars
+    #@+node:ekr.20081005065934.1:c.initAfterLoad
+    def initAfterLoad (self):
+
+        '''Provide an offical hook for late inits of the commander.'''
+
+        pass
+    #@nonl
+    #@-node:ekr.20081005065934.1:c.initAfterLoad
     #@+node:ekr.20031218072017.2814:c.__repr__ & __str__
     def __repr__ (self):
 
