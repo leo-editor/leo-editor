@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=4-thin
-#@+node:ekr.20081004102201.679:@thin experimental/swing_gui.py
+#@+node:ekr.20081004102201.679:@thin swing_gui.py
 #@@first
 
 '''The plugin part of the swing gui code.'''
@@ -36,6 +36,25 @@ import time
 #@nl
 
 #@+others
+#@+node:ekr.20081005161134.1:startJyleo
+def startJyleo ():
+
+    import java.awt as awt
+
+    print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
+
+    if 1:
+        g.app.splash = None
+    else:
+        g.app.splash = splash = leoSwingFrame.leoSplash()
+        awt.EventQueue.invokeAndWait(splash)
+
+    gct = leoSwingUtils.GCEveryOneMinute()
+    gct.run()
+
+    tk = awt.Toolkit.getDefaultToolkit()
+    tk.setDynamicLayout(True)
+#@-node:ekr.20081005161134.1:startJyleo
 #@+node:ekr.20081004102201.680:leoSwingDialog
 #@+node:ekr.20081004102201.681: class leoSwingDialog
 class leoSwingDialog:
@@ -8269,5 +8288,5 @@ class GCEveryOneMinute(java.lang.Thread):
 #@-node:ekr.20081004102201.1167:class GCEveryOneMinute
 #@-node:ekr.20081004102201.1166:leoSwingUtils
 #@-others
-#@-node:ekr.20081004102201.679:@thin experimental/swing_gui.py
+#@-node:ekr.20081004102201.679:@thin swing_gui.py
 #@-leo

@@ -824,7 +824,7 @@ class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
         """Update nav buttons to reflect current state."""
 
         c = self.c
-        if not c.nodeHistory: return
+        if not hasattr(c,'nodeHistory') or not c.nodeHistory: return
 
         for b,b2,enabled_image,disabled_image,cond in (
             (
