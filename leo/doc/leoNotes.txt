@@ -12,7 +12,9 @@ How to create/use private branches
 
 ===== Do this first: creates a branch directly, **without** having to use launchpad.
 
-bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor-team/leo-editor/whatever  (public)
+
+bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever (private)
 
 ===== pushes a branch after it has been created on launchpad
 
