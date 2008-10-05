@@ -37,7 +37,10 @@ try:
         # An ugly hack for Tk/Tkinter 8.5
         # See http://sourceforge.net/forum/message.php?msg_id=4078577
 except ImportError:
-    import tkinter ; tkinter.wantobject = 0
+    try:
+        import tkinter ; tkinter.wantobject = 0
+    except ImportError:
+        pass
 
 path = os.getcwd()
 if path not in sys.path:
