@@ -5988,6 +5988,20 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@-node:ekr.20080730212711.7:Plugins 5
 #@-node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20071211093011:4.7  autocompletion
+#@+node:ekr.20081005065934.12:Links from Ville re Scintilla
+@nocolor-node
+
+It seems Scintilla relies on externally generated api description
+files to provide autocompletion. Links that may be of interest:
+
+http://www.riverbankcomputing.co.uk/static/Docs/QScintilla2/classQsciAPIs.html#b0f824492bb0f3ca54edb4d46945a3de
+
+http://www.burgaud.com/scite-java-api/
+
+http://scintilla.sourceforge.net/tags2api.py
+
+http://www.koders.com/python/fid7000B9C96CF2C6FB5BCE9DF700365C5B2A1F36A7.aspx?s=gtk#L53
+#@-node:ekr.20081005065934.12:Links from Ville re Scintilla
 #@+node:ekr.20080113165010:About auto completion
 @nocolor
 
