@@ -21,6 +21,8 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
 
+from leo.plugins.qt_main import Ui_MainWindow
+
 import os
 import sys
 import time
@@ -119,6 +121,7 @@ def tstop():
 #@-node:ekr.20081004102201.626:tstart & tstop
 #@-node:ekr.20081004102201.623:Module level
 #@+node:ekr.20081004172422.2:class Ui_MainWindow
+"""
 class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
@@ -179,6 +182,7 @@ class Ui_MainWindow(object):
             "MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.actionIPython.setText(QtGui.QApplication.translate(
             "MainWindow", "IPython", None, QtGui.QApplication.UnicodeUTF8))
+"""
 #@-node:ekr.20081004172422.2:class Ui_MainWindow
 #@+node:ekr.20081004102201.628:class LeoQEventFilter
 class LeoQEventFilter(qt.QObject):
