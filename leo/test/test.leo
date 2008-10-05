@@ -2490,7 +2490,7 @@ leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
 # if you enable the cursesGui plugin it here
 
-# qtGui.py
+qtGui.py
 
 plugins_menu.py
 
