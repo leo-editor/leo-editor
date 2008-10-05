@@ -91,12 +91,11 @@ import leo.core.leoGui as leoGui
 
 #@+others
 #@+node:ekr.20031218072017.1934:run & helpers
-def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
+def run(fileName=None,pymacs=None,*args,**keywords):
 
     """Initialize and run Leo"""
 
     if not isValidPython(): return
-    if jyLeo: startJyleo()
     g.computeStandardDirectories()
     adjustSysPath()
     script,windowFlag = scanOptions()
@@ -109,7 +108,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     # This means if-gui has effect only in per-file settings.
     g.app.config.readSettingsFiles(fileName,verbose)
     g.app.setEncoding()
-    createSpecialGui(jyLeo,pymacs,script,windowFlag)
+    createSpecialGui(pymacs,script,windowFlag)
     g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
     if g.app.killed: return # Support for g.app.forceShutdown.
     if g.app.gui == None: g.app.createTkGui() # Creates global windows.
@@ -187,7 +186,7 @@ def createFrame (fileName,relativeFileName,script):
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
-def createSpecialGui(jyLeo,pymacs,script,windowFlag):
+def createSpecialGui(pymacs,script,windowFlag):
 
     if g.isPython3:
         # Create the curses gui.
@@ -536,27 +535,6 @@ def scanOptions():
     return script, windowFlag
 #@nonl
 #@-node:ekr.20080521132317.2:scanOptions
-#@+node:ekr.20070930194949:startJyleo
-def startJyleo ():
-
-    import leo.core.leoSwingFrame as leoSwingFrame
-    import leo.core.leoSwingUtils as leoSwingUtils
-    import java.awt as awt
-
-    print('*** run:jyLeo',sys.platform) # e.g., java1.6.0_02
-
-    if 1:
-        g.app.splash = None
-    else:
-        g.app.splash = splash = leoSwingFrame.leoSplash()
-        awt.EventQueue.invokeAndWait(splash)
-
-    gct = leoSwingUtils.GCEveryOneMinute()
-    gct.run()
-
-    tk = awt.Toolkit.getDefaultToolkit()
-    tk.setDynamicLayout(True)
-#@-node:ekr.20070930194949:startJyleo
 #@+node:ekr.20040411081633:startPsyco
 def startPsyco ():
 
