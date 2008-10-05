@@ -2104,7 +2104,7 @@ class keyHandlerClass:
     #@+node:ekr.20061101071425:oops
     def oops (self):
 
-        g.trace('Should be defined in subclass:',g.callers())
+        g.trace('Should be defined in subclass:',g.callers(4))
     #@-node:ekr.20061101071425:oops
     #@-node:ekr.20061031131434.75: Birth (keyHandler)
     #@+node:ekr.20061031131434.88:Binding (keyHandler)
