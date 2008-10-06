@@ -121,8 +121,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.ev_filt.bindings['Ctrl+H'] = self.edit_current_headline
         self.textEdit.installEventFilter(self.ev_filt)
         self.treeWidget.installEventFilter(self.ev_filt)
-        self.icon_std = None
-        path = g.os_path_join(g.app.loadDir,"..","Icons")
+        path = g.os_path_join(g.app.loadDir,"..","Icons") 
         self.icon_std = QtGui.QIcon(path + '/box00.GIF')
         self.icon_dirty = QtGui.QIcon(path + '/box01.GIF')
 
@@ -3121,9 +3120,9 @@ class leoQtGui(leoGui.leoGui):
     #@nonl
     #@-node:ekr.20081004102201.676:class leoKeyEvent
     #@+node:ekr.20081004102201.677:loadIcon
+    def loadIcon(self, fname):
 
-    def loadIcon(self, fname):        
-        return QtGui.QIcon(fname)
+        if 0: g.trace('fname',fname)
 
         # try:
             # icon = qt.gdk.pixbuf_new_from_file(fname)
@@ -4263,8 +4262,8 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter add_separator menu method."""
 
-        # if menu:
-            # menu.add_separator()
+        if menu:
+            menu.addSeparator()
     #@-node:ekr.20081004172422.866:add_separator
     #@+node:ekr.20081004172422.867:bind (not called)
     def bind (self,bind_shortcut,callback):
@@ -4304,16 +4303,16 @@ class leoQtMenu (leoMenu.leoMenu):
     #@+node:ekr.20081004172422.871:insert
     def insert (self,menuName,position,label,command,underline=None):
 
-        pass ### Not ready yet.
+        #g.trace(menuName,position,label,command)
 
-        # g.trace(menuName,position,label,command)
-
-        # menu = self.getMenu(menuName)
-        # if menu:
-            # if underline is None:
-                # menu.insert(position,'command',label=label,command=command)
-            # else:
-                # menu.insert(position,'command',label=label,command=command,underline=underline)
+        menu = self.getMenu(menuName)
+        if menu and label:
+            action = menu.addAction(label)
+            if command:
+                def insert_callback(label=label,command=command):
+                    command()
+                QtCore.QObject.connect(
+                    action,QtCore.SIGNAL("triggered()"),insert_callback)
     #@-node:ekr.20081004172422.871:insert
     #@+node:ekr.20081004172422.872:insert_cascade
     def insert_cascade (self,parent,index,label,menu,underline):
@@ -4322,6 +4321,17 @@ class leoQtMenu (leoMenu.leoMenu):
 
         # g.trace(parent,index,label,menu,underline)
         g.trace(label,menu)
+
+        menu.setTitle(label)
+        menu.leo_label = label
+
+        if parent:
+            parent.addMenu(menu)
+        else:
+            self.menuBar.addMenu(menu)
+
+        return menu
+
 
         # if parent:
             # return parent.insert_cascade(
