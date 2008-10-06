@@ -121,8 +121,9 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.textEdit.installEventFilter(self.ev_filt)
         self.treeWidget.installEventFilter(self.ev_filt)
         self.icon_std = None
-        self.icon_std = QtGui.QIcon('icons/box00.GIF')
-        self.icon_dirty = QtGui.QIcon('icons/box01.GIF')
+        path = g.os_path_join(g.app.loadDir,"..","Icons")
+        self.icon_std = QtGui.QIcon(path + '/box00.GIF')
+        self.icon_dirty = QtGui.QIcon(path + '/box01.GIF')
         self.connect(self.lineEdit,  signal("returnPressed()"),  self.minibuffer_run)
 
         # The following ivars (and more) are inherited from UiMainWindow:
@@ -246,6 +247,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         #print "text changed"
         if not self.widget_dirty:
             self.treeWidget.currentItem().setIcon(0,self.icon_dirty)
+            
         self.widget_dirty = True
 
 
@@ -3124,19 +3126,8 @@ class leoQtGui(leoGui.leoGui):
     #@nonl
     #@-node:ekr.20081004102201.676:class leoKeyEvent
     #@+node:ekr.20081004102201.677:loadIcon
-    def loadIcon(self, fname):
-
-        if 0: g.trace('fname',fname)
-
-        # try:
-            # icon = qt.gdk.pixbuf_new_from_file(fname)
-        # except:
-            # icon = None
-
-        # if icon and icon.get_width()>0:
-            # return icon
-
-        # g.trace( 'Can not load icon from', fname)
+    def loadIcon(self, fname):        
+        return QtGui.QIcon(fname)
     #@-node:ekr.20081004102201.677:loadIcon
     #@+node:ekr.20081004102201.678:loadIcons
     def loadIcons(self):
