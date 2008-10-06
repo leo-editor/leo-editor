@@ -207,7 +207,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
     #@-others
 
 #@-node:ekr.20081004102201.629:class  Window (QMainWindow,Ui_MainWindow)
-#@+node:ekr.20081004172422.502:class leoQtBody (not used yet)
+#@+node:ekr.20081004172422.502:class leoQtBody (leoBody) (not used yet)
 class leoQtBody (leoFrame.leoBody):
 
     """A class that represents the body pane of a Qt window."""
@@ -223,12 +223,18 @@ class leoQtBody (leoFrame.leoBody):
         leoFrame.leoBody.__init__(self,frame,parentFrame)
 
         c = self.c ; p = c.currentPosition()
+
+        self.bodyCtrl = None ###
         self.editor_name = None
         self.editor_v = None
 
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
-        self.bodyCtrl = self.createControl(parentFrame,p)
-        self.colorizer = leoColor.colorizer(c)
+
+        self.numberOfEditors = 1
+        self.totalNumberOfEditors = 1
+
+        # self.bodyCtrl = self.createControl(parentFrame,p)
+        # self.colorizer = leoColor.colorizer(c)
     #@-node:ekr.20081004172422.504:qtBody. __init__
     #@+node:ekr.20081004172422.505:qtBody.createBindings
     def createBindings (self,w=None):
@@ -238,6 +244,8 @@ class leoQtBody (leoFrame.leoBody):
 
         frame = self.frame ; c = self.c ; k = c.k
         if not w: w = self.bodyCtrl
+
+        return ### 
 
         c.bind(w,'<Key>', k.masterKeyHandler)
 
@@ -291,8 +299,8 @@ class leoQtBody (leoFrame.leoBody):
         c = self.c
 
         # New in 4.4.1: make the parent frame a Pmw.PanedWidget.
-        self.numberOfEditors = 1 ; name = '1'
-        self.totalNumberOfEditors = 1
+        # self.numberOfEditors = 1 ; name = '1'
+        # self.totalNumberOfEditors = 1
 
         orient = c.config.getString('editor_orientation') or 'horizontal'
         if orient not in ('horizontal','vertical'): orient = 'horizontal'
@@ -320,30 +328,30 @@ class leoQtBody (leoFrame.leoBody):
         body = w = leoQtTextWidget (parentFrame,name='body-pane',
             bd=2,bg="white",relief="flat",setgrid=0,wrap=wrap)
 
-        bodyBar = qt.Scrollbar(parentFrame,name='bodyBar')
+        # bodyBar = qt.Scrollbar(parentFrame,name='bodyBar')
 
-        def yscrollCallback(x,y,bodyBar=bodyBar,w=w):
-            # g.trace(x,y,g.callers())
-            if hasattr(w,'leo_scrollBarSpot'):
-                w.leo_scrollBarSpot = (x,y)
-            return bodyBar.set(x,y)
+        # def yscrollCallback(x,y,bodyBar=bodyBar,w=w):
+            # # g.trace(x,y,g.callers())
+            # if hasattr(w,'leo_scrollBarSpot'):
+                # w.leo_scrollBarSpot = (x,y)
+            # return bodyBar.set(x,y)
 
-        body['yscrollcommand'] = yscrollCallback # bodyBar.set
+        # body['yscrollcommand'] = yscrollCallback # bodyBar.set
 
-        bodyBar['command'] =  body.yview
-        bodyBar.pack(side="right", fill="y")
+        # bodyBar['command'] =  body.yview
+        # bodyBar.pack(side="right", fill="y")
 
-        # Always create the horizontal bar.
-        bodyXBar = qt.Scrollbar(
-            parentFrame,name='bodyXBar',orient="horizontal")
-        body['xscrollcommand'] = bodyXBar.set
-        bodyXBar['command'] = body.xview
+        # # Always create the horizontal bar.
+        # bodyXBar = qt.Scrollbar(
+            # parentFrame,name='bodyXBar',orient="horizontal")
+        # body['xscrollcommand'] = bodyXBar.set
+        # bodyXBar['command'] = body.xview
 
-        if wrap == "none":
-            # g.trace(parentFrame)
-            bodyXBar.pack(side="bottom", fill="x")
+        # if wrap == "none":
+            # # g.trace(parentFrame)
+            # bodyXBar.pack(side="bottom", fill="x")
 
-        body.pack(expand=1,fill="both")
+        # body.pack(expand=1,fill="both")
 
         self.wrapState = wrap
 
@@ -371,6 +379,7 @@ class leoQtBody (leoFrame.leoBody):
         w.leo_selection = None
 
         return w
+    #@nonl
     #@-node:ekr.20081004172422.507:qtBody.createTextWidget
     #@-node:ekr.20081004172422.503: Birth & death
     #@+node:ekr.20081004172422.508:qtBody.setColorFromConfig
@@ -445,7 +454,8 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081004172422.510:Focus (qtBody)
     def hasFocus (self):
 
-        return self.bodyCtrl == self.frame.top.focus_displayof()
+        # return self.bodyCtrl == self.frame.top.focus_displayof()
+        return None
 
     def setFocus (self):
 
@@ -456,7 +466,7 @@ class leoQtBody (leoFrame.leoBody):
 
         self.forceFullRecolorFlag = True
     #@-node:ekr.20081004172422.511:forceRecolor
-    #@+node:ekr.20081004172422.512:Qt bindings (qtBody)
+    #@+node:ekr.20081004172422.512:Qt bindings (qtBody) (TO DO)
     #@+node:ekr.20081004172422.513:Color tags (Qt spelling) (qtBody)
     def tag_add (self,tagName,index1,index2):
         pass # self.bodyCtrl.tag_add(tagName,index1,index2)
@@ -479,34 +489,40 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081004172422.514:Configuration (Qt spelling) (qtBody)
     def cget(self,*args,**keys):
 
-        val = self.bodyCtrl.cget(*args,**keys)
-
-        return val
+        return None
+        # val = self.bodyCtrl.cget(*args,**keys)
+        # return val
 
     def configure (self,*args,**keys):
 
-        return self.bodyCtrl.configure(*args,**keys)
+        pass
+        # return self.bodyCtrl.configure(*args,**keys)
     #@-node:ekr.20081004172422.514:Configuration (Qt spelling) (qtBody)
     #@+node:ekr.20081004172422.515:Height & width
     def getBodyPaneHeight (self):
 
-        return self.bodyCtrl.winfo_height()
+        # return self.bodyCtrl.winfo_height()
+        return 0
 
     def getBodyPaneWidth (self):
 
-        return self.bodyCtrl.winfo_width()
+        # return self.bodyCtrl.winfo_width()
+        return 0
     #@-node:ekr.20081004172422.515:Height & width
     #@+node:ekr.20081004172422.516:Idle time...
     def scheduleIdleTimeRoutine (self,function,*args,**keys):
 
-        if not g.app.unitTesting:
-            self.bodyCtrl.after_idle(function,*args,**keys)
+        pass
+        # if not g.app.unitTesting:
+            # self.bodyCtrl.after_idle(function,*args,**keys)
     #@-node:ekr.20081004172422.516:Idle time...
     #@+node:ekr.20081004172422.517:Menus (qtBody) (May cause problems)
     def bind (self,*args,**keys):
 
-        c = self.c
-        return self.bodyCtrl.bind(*args,**keys)
+        pass
+        # g.trace(args,keys)
+        # c = self.c
+        # return self.bodyCtrl.bind(*args,**keys)
     #@-node:ekr.20081004172422.517:Menus (qtBody) (May cause problems)
     #@+node:ekr.20081004172422.518:Text (now in base class)
     # def getAllText (self):              return self.bodyCtrl.getAllText()
@@ -527,8 +543,8 @@ class leoQtBody (leoFrame.leoBody):
         # self.bodyCtrl.setSelectionRange(i,j)
     #@nonl
     #@-node:ekr.20081004172422.518:Text (now in base class)
-    #@-node:ekr.20081004172422.512:Qt bindings (qtBody)
-    #@+node:ekr.20081004172422.519:Editors (qtBody)
+    #@-node:ekr.20081004172422.512:Qt bindings (qtBody) (TO DO)
+    #@+node:ekr.20081004172422.519:Editors (qtBody) (TO DO)
     #@+node:ekr.20081004172422.520:createEditorFrame
     def createEditorFrame (self,pane):
 
@@ -562,9 +578,9 @@ class leoQtBody (leoFrame.leoBody):
             except Exception:
                 g.es_exception()
     #@-node:ekr.20081004172422.522:setEditorColors
-    #@-node:ekr.20081004172422.519:Editors (qtBody)
+    #@-node:ekr.20081004172422.519:Editors (qtBody) (TO DO)
     #@-others
-#@-node:ekr.20081004172422.502:class leoQtBody (not used yet)
+#@-node:ekr.20081004172422.502:class leoQtBody (leoBody) (not used yet)
 #@+node:ekr.20081004102201.628:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
@@ -694,13 +710,13 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f = self ; f.c = c
 
-        f.top = Window(c)
-        f.top.show()
-
         self.bigTree           = c.config.getBool('big_outline_pane')
         self.trace_status_line = c.config.getBool('trace_status_line')
         self.use_chapters      = c.config.getBool('use_chapters')
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
+
+        f.top = Window(c)
+        f.top.show()
 
         # This must be done after creating the commander.
         f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
@@ -723,8 +739,9 @@ class leoQtFrame (leoFrame.leoFrame):
         f = self ; c = f.c
 
         f.tree  = leoQtTree(c,f)
+        f.log   = leoQtLog(f,None)
         ###  Use base class components
-        f.log   = leoFrame.leoLog(f,None)
+        # f.log   = leoFrame.leoQtLog(f,None)
         f.body  = leoFrame.leoBody(f,None)
 
         return ###
@@ -2818,8 +2835,6 @@ class leoQtLog (leoFrame.leoLog):
 
         g.trace("leoQtLog")
 
-        return ###
-
         # Call the base class constructor and calls createControl.
         leoFrame.leoLog.__init__(self,frame,parentFrame)
 
@@ -2874,12 +2889,16 @@ class leoQtLog (leoFrame.leoLog):
 
         c = self.c ; log = self
 
+        return ###
+
         c.searchCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
         log.selectTab('Log')
     #@-node:ekr.20081004172422.626:qtLog.finishCreate
     #@+node:ekr.20081004172422.627:qtLog.createCanvasWidget
     def createCanvasWidget (self,parentFrame):
+
+        return ###
 
         self.logNumber += 1
 
@@ -2907,6 +2926,8 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081004172422.627:qtLog.createCanvasWidget
     #@+node:ekr.20081004172422.628:qtLog.createTextWidget
     def createTextWidget (self,parentFrame):
+
+        return None ###
 
         self.logNumber += 1
         log = g.app.gui.plainTextWidget(
@@ -2936,6 +2957,8 @@ class leoQtLog (leoFrame.leoLog):
         '''Create a tab popup menu.'''
 
         # g.trace(tabName,g.callers())
+
+        return ###
 
         c = self.c
         hull = self.nb.component('hull') # A qt.Canvas.
@@ -2968,23 +2991,29 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.631:qtLog.configureBorder & configureFont
     def configureBorder(self,border):
 
-        self.logCtrl.configure(bd=border)
+        ### self.logCtrl.configure(bd=border)
+        pass
 
     def configureFont(self,font):
 
-        self.logCtrl.configure(font=font)
+        ### self.logCtrl.configure(font=font)
+        pass
     #@-node:ekr.20081004172422.631:qtLog.configureBorder & configureFont
     #@+node:ekr.20081004172422.632:qtLog.getFontConfig
     def getFontConfig (self):
 
-        font = self.logCtrl.cget("font")
-        # g.trace(font)
-        return font
+        return None
+
+        # font = self.logCtrl.cget("font")
+        # # g.trace(font)
+        # return font
     #@-node:ekr.20081004172422.632:qtLog.getFontConfig
     #@+node:ekr.20081004172422.633:qtLog.restoreAllState
     def restoreAllState (self,d):
 
         '''Restore the log from a dict created by saveAllState.'''
+
+        return ###
 
         logCtrl = self.logCtrl
 
@@ -3009,6 +3038,8 @@ class leoQtLog (leoFrame.leoLog):
 
         '''Return a dict containing all data needed to recreate the log in another widget.'''
 
+        return ###
+
         logCtrl = self.logCtrl ; colors = {}
 
         # Save the text
@@ -3030,6 +3061,8 @@ class leoQtLog (leoFrame.leoLog):
         c = self.c
 
         bg = c.config.getColor("log_pane_background_color") or 'white'
+
+        return ###
 
         try:
             self.logCtrl.configure(bg=bg)
@@ -3073,6 +3106,8 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.638:qtLog.onActivateLog
     def onActivateLog (self,event=None):
 
+        return ###
+
         try:
             self.c.setLog()
             self.frame.tree.OnDeactivate()
@@ -3083,10 +3118,14 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.639:qtLog.hasFocus
     def hasFocus (self):
 
-        return self.c.get_focus() == self.logCtrl
+        return None
+
+        ### return self.c.get_focus() == self.logCtrl
     #@-node:ekr.20081004172422.639:qtLog.hasFocus
     #@+node:ekr.20081004172422.640:forceLogUpdate
     def forceLogUpdate (self,s):
+
+        return ###
 
         if sys.platform == "darwin": # Does not work on MacOS X.
             try:
@@ -3102,6 +3141,9 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.642:put
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
+
+        print s ###
+        return ###
 
         c = self.c
 
@@ -3151,6 +3193,9 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.645:putnl
     def putnl (self,tabName='Log'):
 
+        ### print ###
+        return ###
+
         if g.app.quitting:
             return
 
@@ -3175,12 +3220,16 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.647:clearTab
     def clearTab (self,tabName,wrap='none'):
 
+        return ###
+
         self.selectTab(tabName,wrap=wrap)
         w = self.logCtrl
         if w: w.delete(0,'end')
     #@-node:ekr.20081004172422.647:clearTab
     #@+node:ekr.20081004172422.648:createCanvas
     def createCanvas (self,tabName=None):
+
+        return ###
 
         c = self.c ; k = c.k
 
@@ -3203,6 +3252,8 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081004172422.648:createCanvas
     #@+node:ekr.20081004172422.649:createTab
     def createTab (self,tabName,createText=True,wrap='none'):
+
+        return ###
 
         # g.trace(tabName,wrap)
 
@@ -3251,6 +3302,8 @@ class leoQtLog (leoFrame.leoLog):
 
         '''Cycle keyboard focus between the tabs in the log pane.'''
 
+        return ###
+
         c = self.c ; d = self.frameDict # Keys are page names. Values are qt.Frames.
         w = d.get(self.tabName)
         # g.trace(self.tabName,w)
@@ -3261,10 +3314,11 @@ class leoQtLog (leoFrame.leoLog):
             tabName = d.keys()[i]
             self.selectTab(tabName)
             return 
-    #@nonl
     #@-node:ekr.20081004172422.651:cycleTabFocus
     #@+node:ekr.20081004172422.652:deleteTab
     def deleteTab (self,tabName,force=False):
+
+        return ###
 
         if tabName == 'Log':
             pass
@@ -3299,17 +3353,17 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.655:lower/raiseTab
     def lowerTab (self,tabName):
 
-        if tabName:
-            b = self.nb.tab(tabName) # b is a qt.Button.
-            b.config(bg='grey80')
+        # if tabName:
+            # b = self.nb.tab(tabName) # b is a qt.Button.
+            # b.config(bg='grey80')
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
 
     def raiseTab (self,tabName):
 
-        if tabName:
-            b = self.nb.tab(tabName) # b is a qt.Button.
-            b.config(bg='LightSteelBlue1')
+        # if tabName:
+            # b = self.nb.tab(tabName) # b is a qt.Button.
+            # b.config(bg='LightSteelBlue1')
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
     #@-node:ekr.20081004172422.655:lower/raiseTab
@@ -3321,10 +3375,12 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.657:renameTab
     def renameTab (self,oldName,newName):
 
+        pass
+
         # g.trace('newName',newName)
 
-        label = self.nb.tab(oldName)
-        label.configure(text=newName)
+        # label = self.nb.tab(oldName)
+        # label.configure(text=newName)
     #@-node:ekr.20081004172422.657:renameTab
     #@+node:ekr.20081004172422.658:selectTab
     def selectTab (self,tabName,createText=True,wrap='none'):
@@ -3332,6 +3388,8 @@ class leoQtLog (leoFrame.leoLog):
         '''Create the tab if necessary and make it active.'''
 
         c = self.c
+
+        return ###
 
         tabFrame = self.frameDict.get(tabName)
         logCtrl = self.textDict.get(tabName)
@@ -3357,6 +3415,8 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081004172422.658:selectTab
     #@+node:ekr.20081004172422.659:setTabBindings
     def setTabBindings (self,tabName):
+
+        return ###
 
         c = self.c ; k = c.k
         tab = self.nb.tab(tabName)
@@ -3394,6 +3454,8 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.661:setCanvasTabBindings
     def setCanvasTabBindings (self,tabName,menu):
 
+        return ###
+
         c = self.c ; tab = self.nb.tab(tabName)
 
         def tabMenuRightClickCallback(event,menu=menu):
@@ -3411,7 +3473,7 @@ class leoQtLog (leoFrame.leoLog):
     def onRightClick (self,event,menu):
 
         c = self.c
-        menu.post(event.x_root,event.y_root)
+        # menu.post(event.x_root,event.y_root)
 
 
     def onClick (self,event,tabName):
@@ -3427,11 +3489,12 @@ class leoQtLog (leoFrame.leoLog):
         def selectTabCallback (newName):
             return self.selectTab(newName)
 
-        self.getTabName(selectTabCallback)
+        # self.getTabName(selectTabCallback)
 
     def newCanvasTabFromMenu (self):
 
-        self.createCanvas()
+        # self.createCanvas()
+        pass
     #@-node:ekr.20081004172422.664:newTabFromMenu & newCanvasTabFromMenu
     #@+node:ekr.20081004172422.665:renameTabFromMenu
     def renameTabFromMenu (self,tabName):
@@ -3446,6 +3509,8 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081004172422.665:renameTabFromMenu
     #@+node:ekr.20081004172422.666:getTabName
     def getTabName (self,exitCallback):
+
+        return ###
 
         canvas = self.nb.component('hull')
 
