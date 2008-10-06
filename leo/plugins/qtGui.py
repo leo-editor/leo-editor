@@ -223,7 +223,7 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081004172422.504:qtBody. __init__
     def __init__ (self,frame,parentFrame):
 
-        g.trace("***** leoQtBody")
+        # g.trace("***** leoQtBody")
 
         # Call the base class constructor.
         leoFrame.leoBody.__init__(self,frame,parentFrame)
@@ -248,54 +248,54 @@ class leoQtBody (leoFrame.leoBody):
         '''(qtBody) Create gui-dependent bindings.
         These are *not* made in nullBody instances.'''
 
-        frame = self.frame ; c = self.c ; k = c.k
-        if not w: w = self.bodyCtrl
-
         return ### 
 
-        c.bind(w,'<Key>', k.masterKeyHandler)
+        # frame = self.frame ; c = self.c ; k = c.k
+        # if not w: w = self.bodyCtrl
 
-        def onFocusOut(event,c=c):
-            # This interferes with inserting new nodes.
-                # c.k.setDefaultInputState()
-            self.setEditorColors(
-                bg=c.k.unselected_body_bg_color,
-                fg=c.k.unselected_body_fg_color)
-            # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
-            # But we suppress coloring in the widget.
-            oldState = k.unboundKeyAction
-            k.unboundKeyAction = k.defaultUnboundKeyAction
-            c.k.showStateAndMode(w=g.app.gui.get_focus(c))
-            k.unboundKeyAction = oldState
+        # c.bind(w,'<Key>', k.masterKeyHandler)
 
-        def onFocusIn(event,c=c):
-            # g.trace('callback')
-            c.k.setDefaultInputState()
-            c.k.showStateAndMode()  # TNB - fix color when window manager returns focus to Leo
+        # def onFocusOut(event,c=c):
+            # # This interferes with inserting new nodes.
+                # # c.k.setDefaultInputState()
+            # self.setEditorColors(
+                # bg=c.k.unselected_body_bg_color,
+                # fg=c.k.unselected_body_fg_color)
+            # # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+            # # But we suppress coloring in the widget.
+            # oldState = k.unboundKeyAction
+            # k.unboundKeyAction = k.defaultUnboundKeyAction
+            # c.k.showStateAndMode(w=g.app.gui.get_focus(c))
+            # k.unboundKeyAction = oldState
 
-        c.bind(w,'<FocusOut>', onFocusOut)
-        c.bind(w,'<FocusIn>', onFocusIn)
+        # def onFocusIn(event,c=c):
+            # # g.trace('callback')
+            # c.k.setDefaultInputState()
+            # c.k.showStateAndMode()  # TNB - fix color when window manager returns focus to Leo
 
-        table = [
-            ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
-            ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
-            ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
-            ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
-            ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-        ]
+        # c.bind(w,'<FocusOut>', onFocusOut)
+        # c.bind(w,'<FocusIn>', onFocusIn)
 
-        table2 = (
-            ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-        )
+        # table = [
+            # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+            # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+            # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+            # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+            # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+        # ]
 
-        if c.config.getBool('allow_middle_button_paste'):
-            table.extend(table2)
+        # table2 = (
+            # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+        # )
 
-        for kind,func,handler in table:
-            def bodyClickCallback(event,handler=handler,func=func):
-                return handler(event,func)
+        # if c.config.getBool('allow_middle_button_paste'):
+            # table.extend(table2)
 
-            c.bind(w,kind,bodyClickCallback)
+        # for kind,func,handler in table:
+            # def bodyClickCallback(event,handler=handler,func=func):
+                # return handler(event,func)
+
+            # c.bind(w,kind,bodyClickCallback)
     #@-node:ekr.20081004172422.505:qtBody.createBindings
     #@+node:ekr.20081004172422.506:qtBody.createControl
     def createControl (self,parentFrame,p):
@@ -308,31 +308,33 @@ class leoQtBody (leoFrame.leoBody):
         # self.numberOfEditors = 1 ; name = '1'
         # self.totalNumberOfEditors = 1
 
-        orient = c.config.getString('editor_orientation') or 'horizontal'
-        if orient not in ('horizontal','vertical'): orient = 'horizontal'
+        # orient = c.config.getString('editor_orientation') or 'horizontal'
+        # if orient not in ('horizontal','vertical'): orient = 'horizontal'
 
-        self.pb = pb = Pmw.PanedWidget(parentFrame,orient=orient)
-        parentFrame = pb.add(name)
-        pb.pack(expand=1,fill='both') # Must be done after the first page created.
+        # self.pb = pb = Pmw.PanedWidget(parentFrame,orient=orient)
+        # parentFrame = pb.add(name)
+        # pb.pack(expand=1,fill='both') # Must be done after the first page created.
 
-        w = self.createTextWidget(parentFrame,p,name)
-        self.editorWidgets[name] = w
+        # w = self.createTextWidget(parentFrame,p,name)
+        # self.editorWidgets[name] = w
 
-        return w
+        # return w
     #@-node:ekr.20081004172422.506:qtBody.createControl
     #@+node:ekr.20081004172422.507:qtBody.createTextWidget
     def createTextWidget (self,parentFrame,p,name):
 
-        c = self.c
+        return ###
 
-        parentFrame.configure(bg='LightSteelBlue1')
+        # c = self.c
 
-        wrap = c.config.getBool('body_pane_wraps')
-        wrap = g.choose(wrap,"word","none")
+        # parentFrame.configure(bg='LightSteelBlue1')
 
-        # Setgrid=1 cause severe problems with the font panel.
-        body = w = leoQtTextWidget (parentFrame,name='body-pane',
-            bd=2,bg="white",relief="flat",setgrid=0,wrap=wrap)
+        # wrap = c.config.getBool('body_pane_wraps')
+        # wrap = g.choose(wrap,"word","none")
+
+        # # Setgrid=1 cause severe problems with the font panel.
+        # body = w = leoQtTextWidget (parentFrame,name='body-pane',
+            # bd=2,bg="white",relief="flat",setgrid=0,wrap=wrap)
 
         # bodyBar = qt.Scrollbar(parentFrame,name='bodyBar')
 
@@ -385,7 +387,6 @@ class leoQtBody (leoFrame.leoBody):
         w.leo_selection = None
 
         return w
-    #@nonl
     #@-node:ekr.20081004172422.507:qtBody.createTextWidget
     #@-node:ekr.20081004172422.503: Birth & death
     #@+node:ekr.20081004172422.508:qtBody.setColorFromConfig
@@ -746,9 +747,10 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f.tree  = leoQtTree(c,f)
         f.log   = leoQtLog(f,None)
+        f.body  = leoQtBody(f,None)
         ###  Use base class components
         # f.log   = leoFrame.leoQtLog(f,None)
-        f.body  = leoFrame.leoBody(f,None)
+        # f.body  = leoFrame.leoBody(f,None)
 
         return ###
 
