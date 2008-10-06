@@ -1036,7 +1036,7 @@ class undoer:
             oldChanged = c.isChanged(),
             oldDirty = p.isDirty(),
             oldMarked = p.isMarked(),
-            oldSel = w.getSelectionRange(),
+            oldSel = w and w.getSelectionRange() or None,
             p = p.copy(),
         )
     #@-node:ekr.20050318085432.2:createCommonBunch
