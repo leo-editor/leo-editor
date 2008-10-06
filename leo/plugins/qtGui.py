@@ -123,6 +123,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.icon_std = None
         self.icon_std = QtGui.QIcon('icons/box00.GIF')
         self.icon_dirty = QtGui.QIcon('icons/box01.GIF')
+        self.connect(self.lineEdit,  signal("returnPressed()"),  self.minibuffer_run)
 
         # The following ivars (and more) are inherited from UiMainWindow:
             # self.lineEdit = QtGui.QLineEdit(self.centralwidget)
@@ -193,6 +194,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         """ Render vnodes in tree """
 
+        print "populate_tree"
         c = self.c
         self.items = {}
         self.treeitems = {}
@@ -228,6 +230,16 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
     #@-node:ekr.20081004172422.891:tree_select
     #@+node:ekr.20081004172422.892:text_changed
+
+    def minibuffer_run(self):
+
+        c = self.c
+        cmd = str(self.lineEdit.text())
+        print "minibuffer run:", cmd
+        c.executeMinibufferCommand(cmd)
+
+
+
     def text_changed(self):
         if self.selecting:
             return
@@ -235,6 +247,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         if not self.widget_dirty:
             self.treeWidget.currentItem().setIcon(0,self.icon_dirty)
         self.widget_dirty = True
+
 
     #@-node:ekr.20081004172422.892:text_changed
     #@+node:ekr.20081004172422.894:edit_current_headline
