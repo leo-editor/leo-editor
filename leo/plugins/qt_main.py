@@ -52,37 +52,49 @@ class Ui_MainWindow(object):
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1070, 22))
         self.menubar.setObjectName("menubar")
-        self.menuFile = QtGui.QMenu(self.menubar)
-        self.menuFile.setObjectName("menuFile")
+        if 0:
+            self.menuFile = QtGui.QMenu(self.menubar)
+            self.menuFile.setObjectName("menuFile")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.actionOpen = QtGui.QAction(MainWindow)
-        self.actionOpen.setObjectName("actionOpen")
-        self.actionSave = QtGui.QAction(MainWindow)
-        self.actionSave.setObjectName("actionSave")
-        self.actionIPython = QtGui.QAction(MainWindow)
-        self.actionIPython.setObjectName("actionIPython")
-        self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionIPython)
-        self.menubar.addAction(self.menuFile.menuAction())
+        if 0:
+            self.actionOpen = QtGui.QAction(MainWindow)
+            self.actionOpen.setObjectName("actionOpen")
+            self.actionSave = QtGui.QAction(MainWindow)
+            self.actionSave.setObjectName("actionSave")
+            self.actionIPython = QtGui.QAction(MainWindow)
+            self.actionIPython.setObjectName("actionIPython")
+            self.menuFile.addAction(self.actionOpen)
+            self.menuFile.addAction(self.actionSave)
+            self.menuFile.addAction(self.actionIPython)
+            self.menubar.addAction(self.menuFile.menuAction())
         self.label.setBuddy(self.lineEdit)
 
         self.retranslateUi(MainWindow)
-        QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL("itemSelectionChanged()"), MainWindow.showNormal)
+        QtCore.QObject.connect(self.treeWidget,
+            QtCore.SIGNAL("itemSelectionChanged()"), MainWindow.showNormal)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Leo", None, QtGui.QApplication.UnicodeUTF8))
-        self.treeWidget.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Tab 1", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "Tab 2", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("MainWindow", "Minibuffer", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionOpen.setText(QtGui.QApplication.translate("MainWindow", "Open", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionSave.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionIPython.setText(QtGui.QApplication.translate("MainWindow", "IPython", None, QtGui.QApplication.UnicodeUTF8))
-
+        MainWindow.setWindowTitle(QtGui.QApplication.translate(
+            "MainWindow", "Leo", None, QtGui.QApplication.UnicodeUTF8))
+        self.treeWidget.headerItem().setText(0, QtGui.QApplication.translate(
+            "MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate(
+            "MainWindow", "Tab 1", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate(
+            "MainWindow", "Tab 2", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate(
+            "MainWindow", "Minibuffer", None, QtGui.QApplication.UnicodeUTF8))
+        
+        if 0:
+            self.menuFile.setTitle(QtGui.QApplication.translate(
+                "MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
+            self.actionOpen.setText(QtGui.QApplication.translate(
+                "MainWindow", "Open", None, QtGui.QApplication.UnicodeUTF8))
+            self.actionSave.setText(QtGui.QApplication.translate(
+                "MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
+            self.actionIPython.setText(QtGui.QApplication.translate(
+                "MainWindow", "IPython", None, QtGui.QApplication.UnicodeUTF8))
 from PyQt4 import Qsci

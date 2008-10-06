@@ -10,7 +10,7 @@
 #@@pagewidth 80
 
 #@<< qt imports >>
-#@+node:ekr.20081004102201.620:<< qt imports >>
+#@+node:ekr.20081004102201.620: << qt imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoChapters as leoChapters
 import leo.core.leoColor as leoColor
@@ -21,7 +21,8 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
 
-from leo.plugins.qt_main import Ui_MainWindow
+import qt_main # Contains Ui_MainWindow class
+
 
 import os
 import sys
@@ -32,19 +33,21 @@ try:
     import PyQt4.QtCore as QtCore
     import PyQt4.QtGui as QtGui
     from PyQt4 import Qsci
-    # from PyQt4.QtGui import *
-    # from PyQt4.QtCore import *
-    # from PyQt4 import Qsci
-    # from ui_main import Ui_MainWindow
 except ImportError:
     QtCore = None
     g.es_print('can not import Qt',color='red')
 
-#@-node:ekr.20081004102201.620:<< qt imports >>
+#@-node:ekr.20081004102201.620: << qt imports >>
 #@nl
 
+#@+at
+# Notes:
+# 1. All leoQtX classes are two-way adapator classes
+#@-at
+#@@c
+
 #@+others
-#@+node:ekr.20081004102201.623:Module level
+#@+node:ekr.20081004102201.623: Module level
 
 #@+node:ekr.20081004102201.621:init
 def init():
@@ -58,8 +61,7 @@ def init():
     if g.app.gui:
         return g.app.gui.guiName() == 'qt'
     else:
-        g.app.gui = qtGui()
-        # g.app.root = g.app.gui.createRootWindow()
+        g.app.gui = leoQtGui()
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
@@ -84,56 +86,16 @@ def tstart():
 def tstop():
     print ("Time: %1.2fsec" % (time.time() - __timing))
 #@-node:ekr.20081004102201.626:tstart & tstop
-#@-node:ekr.20081004102201.623:Module level
-#@+node:ekr.20081004102201.628:class LeoQEventFilter
-class LeoQEventFilter(QtCore.QObject):
+#@-node:ekr.20081004102201.623: Module level
+#@+node:ekr.20081004102201.629:class  Window (QMainWindow,Ui_MainWindow)
+class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
-    def __init__(self):
-        QtCore.QObject.__init__(self)
-        self.bindings = {}
+    '''A class representing all parts of the main Qt window
+    as created by Designer
 
-    def eventFilter(self, obj, event):
-
-        # print "ev",obj, event
-        if event.type() == QtCore.QEvent.KeyPress:
-            return self.key_pressed(obj, event)
-        return False
-
-    #@    @+others
-    #@+node:ekr.20081004172422.897:key_pressed
-    def key_pressed(self, obj, event):
-        """ Handle key presses (on any window) """
-
-        trace = True ; verbose = False
-
-        keynum = event.key()
-        try:
-            char = chr(keynum)
-        except ValueError:
-            char = "<unknown>"
-
-        mods = []
-        if event.modifiers() & QtCore.Qt.AltModifier:
-            mods.append("Alt")
-        if event.modifiers() & QtCore.Qt.ControlModifier:
-            mods.append("Ctrl")
-        if event.modifiers() & QtCore.Qt.ShiftModifier:
-            mods.append("Shift")
-        txt = "+".join(mods) + (mods and "+" or "") + char
-
-        if trace:
-            print "Keypress: [%s]" % (txt)
-            # print , event.text(),obj, event.key(), event.modifiers()
-
-        # key was not consumed
-        cmd = self.bindings.get(txt, None)
-        if cmd: cmd()
-        return cmd is not None
-    #@-node:ekr.20081004172422.897:key_pressed
-    #@-others
-#@-node:ekr.20081004102201.628:class LeoQEventFilter
-#@+node:ekr.20081004102201.629:class Window
-class Window(QtGui.QMainWindow, Ui_MainWindow):
+    All leoQtX classes use the ivars of this Window class to
+    support operations requested by Leo's core.
+    '''
 
     #@    @+others
     #@+node:ekr.20081004172422.884: ctor (Window)
@@ -144,65 +106,76 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
         signal = QtCore.SIGNAL
         self.setupUi(self)
         self.connect(self.treeWidget,signal("itemSelectionChanged()"), self.tree_select )
-        self.connect(self.actionOpen,signal("activated()"),self.open_file)
-        self.connect(self.actionSave,signal("activated()"),self.save_file)
-        #self.connect(self.searchButton,signal("clicked()"), self.search)
+        if 0:
+            self.connect(self.actionOpen,signal("activated()"),self.open_file)
+            self.connect(self.actionSave,signal("activated()"),self.save_file)
+            #self.connect(self.searchButton,signal("clicked()"), self.search)
+            #self.connect(self.actionIPython,signal("activated()"),self.embed_ipython)
         self.connect(self.textEdit, signal("textChanged()"),self.text_changed)
-        #self.connect(self.actionIPython,signal("activated()"),self.embed_ipython)
         self.selecting = True
         self.widget_dirty = False
         lexer = Qsci.QsciLexerPython(self.textEdit)
         self.textEdit.setLexer(lexer)
-        self.ev_filt = LeoQEventFilter()
+        self.ev_filt = leoQtEventFilter()
         self.ev_filt.bindings['Ctrl+H'] = self.edit_current_headline
         self.textEdit.installEventFilter(self.ev_filt)
         self.treeWidget.installEventFilter(self.ev_filt)
         self.icon_std = None
         self.icon_std = QtGui.QIcon('icons/box00.GIF')
         self.icon_dirty = QtGui.QIcon('icons/box01.GIF')
-    #@nonl
+
+        # The following ivars (and more) are inherited from UiMainWindow:
+            # self.lineEdit = QtGui.QLineEdit(self.centralwidget)
+            # self.menubar = QtGui.QMenuBar(MainWindow)
+            # self.tabWidget = QtGui.QTabWidget(self.splitter)
+            # self.textEdit = Qsci.QsciScintilla(self.splitter_2)
+            # self.treeWidget = QtGui.QTreeWidget(self.splitter)
     #@-node:ekr.20081004172422.884: ctor (Window)
-    #@+node:ekr.20081004172422.898:File ops: to be deleted
-    #@+node:ekr.20081004172422.885:open_file
-    def open_file(self):
+    #@+node:ekr.20081004172422.898:File ops: Deleted
+    if 0:
+        #@    @+others
+        #@+node:ekr.20081004172422.885:open_file
+        def open_file(self):
 
-        fd = QtGui.QFileDialog(self)
-        fname = fd.getOpenFileName()
-        # g.trace(fname)
-        self.load_file(fname)
+            fd = QtGui.QFileDialog(self)
+            fname = fd.getOpenFileName()
+            # g.trace(fname)
+            self.load_file(fname)
 
-    #@-node:ekr.20081004172422.885:open_file
-    #@+node:ekr.20081004172422.886:load_file
-    def load_file(self,f):
+        #@-node:ekr.20081004172422.885:open_file
+        #@+node:ekr.20081004172422.886:load_file
+        def load_file(self,f):
 
-        c = self.c
-        print "Load",f
-        tstart()
-        ok,frame = g.openWithFileName(fileName=f,old_c=c)
-        tstop()
-        if ok:
-            c = frame.c
-            self.clear_model()
-            # print "Populate tree widget"
+            c = self.c
+            print "Load",f
             tstart()
-            self.populate_tree()
+            ok,frame = g.openWithFileName(fileName=f,old_c=c)
             tstop()
-            # class Leox:
-                # pass
-            # _leox = Leox()
-            # _leox.c = c
-            # _leox.g = g
-            # import ipy_leo
-            # ipy_leo.update_commander(_leox)
-    #@-node:ekr.20081004172422.886:load_file
-    #@+node:ekr.20081004172422.887:save_file
-    def save_file(self):
+            if ok:
+                c = frame.c
+                self.clear_model()
+                # print "Populate tree widget"
+                tstart()
+                self.populate_tree()
+                tstop()
+                # class Leox:
+                    # pass
+                # _leox = Leox()
+                # _leox.c = c
+                # _leox.g = g
+                # import ipy_leo
+                # ipy_leo.update_commander(_leox)
+        #@-node:ekr.20081004172422.886:load_file
+        #@+node:ekr.20081004172422.887:save_file
+        def save_file(self):
 
-        c = self.c
-        c.save()
+            c = self.c
+            c.save()
 
-    #@-node:ekr.20081004172422.887:save_file
-    #@-node:ekr.20081004172422.898:File ops: to be deleted
+        #@-node:ekr.20081004172422.887:save_file
+        #@-others
+    #@nonl
+    #@-node:ekr.20081004172422.898:File ops: Deleted
     #@+node:ekr.20081004172422.888:clear_model
     def clear_model(self):
 
@@ -272,800 +245,7 @@ class Window(QtGui.QMainWindow, Ui_MainWindow):
     #@-node:ekr.20081004172422.894:edit_current_headline
     #@-others
 
-#@-node:ekr.20081004102201.629:class Window
-#@+node:ekr.20081004102201.631:qtGui
-class qtGui(leoGui.leoGui):
-
-    """A class encapulating all calls to Qt."""
-
-    #@    @+others
-    #@+node:ekr.20081004102201.632:qtGui birth & death
-    #@+node:ekr.20081004102201.633: qtGui.__init__
-    def __init__ (self):
-
-        # Initialize the base class.
-        leoGui.leoGui.__init__(self,'qt')
-
-        self.qtApp = QtGui.QApplication(sys.argv)
-
-        self.bodyTextWidget  = leoQtTextWidget
-        self.plainTextWidget = leoQtTextWidget
-        self.loadIcons()
-
-        win32clipboard = None
-
-        ### self.qtClipboard = qt.Clipboard()
-    #@-node:ekr.20081004102201.633: qtGui.__init__
-    #@+node:ekr.20081004102201.634:createKeyHandlerClass (qtGui)
-    def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
-
-        ### Use the base class
-        return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-
-        ### return qtKeyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-    #@-node:ekr.20081004102201.634:createKeyHandlerClass (qtGui)
-    #@+node:ekr.20081004102201.635:runMainLoop (qtGui)
-    def runMainLoop(self):
-
-        '''Start the Qt main loop.'''
-
-        if self.script:
-            log = g.app.log
-            if log:
-                g.pr('Start of batch script...\n')
-                log.c.executeScript(script=self.script)
-                g.pr('End of batch script')
-            else:
-                g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
-        else:
-            sys.exit(self.qtApp.exec_())
-    #@-node:ekr.20081004102201.635:runMainLoop (qtGui)
-    #@+node:ekr.20081004102201.636:Do nothings
-    # These methods must be defined in subclasses, but they need not do anything.
-
-    def createRootWindow(self):
-        pass
-
-    def destroySelf (self):
-        pass
-
-    def killGui(self,exitFlag=True):
-        """Destroy a gui and terminate Leo if exitFlag is True."""
-        pass
-
-    def recreateRootWindow(self):
-        """A do-nothing base class to create the hidden root window of a gui
-        after a previous gui has terminated with killGui(False)."""
-        pass
-
-    #@-node:ekr.20081004102201.636:Do nothings
-    #@+node:ekr.20081004102201.637:Not used
-    # The tkinter gui ctor calls these methods.
-    # They are included here for reference.
-
-    if 0:
-        #@    @+others
-        #@+node:ekr.20081004102201.638:qtGui.setDefaultIcon
-        def setDefaultIcon(self):
-
-            """Set the icon to be used in all Leo windows.
-
-            This code does nothing for Tk versions before 8.4.3."""
-
-            gui = self
-
-            try:
-                version = gui.root.getvar("tk_patchLevel")
-                # g.trace(repr(version),g.CheckVersion(version,"8.4.3"))
-                if g.CheckVersion(version,"8.4.3") and sys.platform == "win32":
-
-                    path = g.os_path_join(g.app.loadDir,"..","Icons")
-                    if g.os_path_exists(path):
-                        theFile = g.os_path_join(path,"LeoApp16.ico")
-                        if g.os_path_exists(path):
-                            self.bitmap = QtGui.BitmapImage(theFile)
-                        else:
-                            g.es("","LeoApp16.ico","not in Icons directory",color="red")
-                    else:
-                        g.es("","Icons","directory not found:",path, color="red")
-            except:
-                g.pr("exception setting bitmap")
-                import traceback ; traceback.print_exc()
-        #@-node:ekr.20081004102201.638:qtGui.setDefaultIcon
-        #@+node:ekr.20081004102201.639:qtGui.getDefaultConfigFont
-        def getDefaultConfigFont(self,config):
-
-            """Get the default font from a new text widget."""
-
-            if not self.defaultFontFamily:
-                # WARNING: retain NO references to widgets or fonts here!
-                w = g.app.gui.plainTextWidget()
-                fn = w.cget("font")
-                font = qtFont.Font(font=fn) 
-                family = font.cget("family")
-                self.defaultFontFamily = family[:]
-                # g.pr('***** getDefaultConfigFont',repr(family))
-
-            config.defaultFont = None
-            config.defaultFontFamily = self.defaultFontFamily
-        #@-node:ekr.20081004102201.639:qtGui.getDefaultConfigFont
-        #@-others
-    #@-node:ekr.20081004102201.637:Not used
-    #@-node:ekr.20081004102201.632:qtGui birth & death
-    #@+node:ekr.20081004102201.640:qtGui dialogs & panels (test)
-    def runAboutLeoDialog(self,c,version,theCopyright,url,email):
-        """Create and run a qt About Leo dialog."""
-        d = leoGtkDialog.qtAboutLeo(c,version,theCopyright,url,email)
-        return d.run(modal=False)
-
-    def runAskLeoIDDialog(self):
-        """Create and run a dialog to get g.app.LeoID."""
-        d = leoGtkDialog.qtAskLeoID()
-        return d.run(modal=True)
-
-    def runAskOkDialog(self,c,title,message=None,text="Ok"):
-        """Create and run a qt an askOK dialog ."""
-        d = leoGtkDialog.qtAskOk(c,title,message,text)
-        return d.run(modal=True)
-
-    def runAskOkCancelNumberDialog(self,c,title,message):
-        """Create and run askOkCancelNumber dialog ."""
-        d = leoGtkDialog.qtAskOkCancelNumber(c,title,message)
-        return d.run(modal=True)
-
-    def runAskOkCancelStringDialog(self,c,title,message):
-        """Create and run askOkCancelString dialog ."""
-        d = leoGtkDialog.qtAskOkCancelString(c,title,message)
-        return d.run(modal=True)
-
-    def runAskYesNoDialog(self,c,title,message=None):
-        """Create and run an askYesNo dialog."""
-        d = leoGtkDialog.qtAskYesNo(c,title,message)
-        return d.run(modal=True)
-
-    def runAskYesNoCancelDialog(self,c,title,
-        message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
-        """Create and run an askYesNoCancel dialog ."""
-        d = leoGtkDialog.qtAskYesNoCancel(
-            c,title,message,yesMessage,noMessage,defaultButton)
-        return d.run(modal=True)
-
-    # The compare panel has no run dialog.
-
-    # def runCompareDialog(self,c):
-        # """Create and run an askYesNo dialog."""
-        # if not g.app.unitTesting:
-            # leoGtkCompareDialog(c)
-    #@+node:ekr.20081004102201.641:qtGui.createSpellTab
-    def createSpellTab(self,c,spellHandler,tabName):
-
-        return qtSpellTab(c,spellHandler,tabName)
-    #@-node:ekr.20081004102201.641:qtGui.createSpellTab
-    #@+node:ekr.20081004102201.642:qtGui file dialogs
-    #@+node:ekr.20081004102201.643:runFileDialog
-    def runFileDialog(self,
-        title='Open File',
-        filetypes=None,
-        action='open',
-        multiple=False,
-        initialFile=None
-    ):
-
-        g.trace()
-
-        """Display an open or save file dialog.
-
-        'title': The title to be shown in the dialog window.
-
-        'filetypes': A list of (name, pattern) tuples.
-
-        'action': Should be either 'save' or 'open'.
-
-        'multiple': True if multiple files may be selected.
-
-        'initialDir': The directory in which the chooser starts.
-
-        'initialFile': The initial filename for a save dialog.
-
-        """
-
-        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
-
-        if action == 'open':
-            btns = (
-                QtCore.STOCK_CANCEL, QtCore.RESPONSE_CANCEL,
-                QtCore.TOCK_OPEN, QtCore.RESPONSE_OK
-            )
-        else:
-            btns = (
-                QtCore.STOCK_CANCEL, QtCore.RESPONSE_CANCEL,
-                QtCore.STOCK_SAVE, QtCore.RESPONSE_OK
-            )
-
-        qtaction = g.choose(
-            action == 'save',
-            QtCore.FILE_CHOOSER_ACTION_SAVE, 
-            QtCore.FILE_CHOOSER_ACTION_OPEN
-        )
-
-        dialog = QtGui.FileChooserDialog(title,None,qtaction,btns)
-
-        try:
-
-            dialog.set_default_response(QtCore.RESPONSE_OK)
-            dialog.set_do_overwrite_confirmation(True)
-            dialog.set_select_multiple(multiple)
-            if initialdir:
-                dialog.set_current_folder(initialdir)
-
-            if filetypes:
-
-                for name, patern in filetypes:
-                    filter = QtGui.FileFilter()
-                    filter.set_name(name)
-                    filter.add_pattern(patern)
-                    dialog.add_filter(filter)
-
-            response = dialog.run()
-            g.pr('dialog response' , response)
-
-            if response == QtCore.RESPONSE_OK:
-
-                if multiple:
-                    result = dialog.get_filenames()
-                else:
-                    result = dialog.get_filename()
-
-            elif response == QtCore.RESPONSE_CANCEL:
-                result = None
-
-        finally:
-
-            dialog.destroy()
-
-        g.trace('dialog result' , result)
-
-        return result
-    #@-node:ekr.20081004102201.643:runFileDialog
-    #@+node:ekr.20081004102201.644:runOpenFileDialog
-    def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
-
-        """Create and run an Qt open file dialog ."""
-
-        fd = QFileDialog(self)
-        fname = fd.getOpenFileName()
-        g.trace(fname)
-        return fname
-
-        # self.load_file(fname)
-
-        # return self.runFileDialog(
-            # title=title,
-            # filetypes=filetypes,
-            # action='open',
-            # multiple=multiple,
-        # )
-    #@-node:ekr.20081004102201.644:runOpenFileDialog
-    #@+node:ekr.20081004102201.645:runSaveFileDialog
-    def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
-
-        """Create and run an Qt save file dialog ."""
-
-        # return self.runFileDialog(
-            # title=title,
-            # filetypes=filetypes,
-            # action='save',
-            # initialfile=initialfile
-        # )
-    #@nonl
-    #@-node:ekr.20081004102201.645:runSaveFileDialog
-    #@-node:ekr.20081004102201.642:qtGui file dialogs
-    #@+node:ekr.20081004102201.646:qtGui panels
-    def createComparePanel(self,c):
-        """Create a qt color picker panel."""
-        return None # This window is optional.
-        # return leoQtComparePanel(c)
-
-    def createFindTab (self,c,parentFrame):
-        """Create a qt find tab in the indicated frame."""
-        return leoQtFindTab(c,parentFrame)
-
-    def createLeoFrame(self,title):
-        """Create a new Leo frame."""
-        gui = self
-        return leoQtFrame(title,gui)
-    #@-node:ekr.20081004102201.646:qtGui panels
-    #@-node:ekr.20081004102201.640:qtGui dialogs & panels (test)
-    #@+node:ekr.20081004102201.647:qtGui utils (to do)
-    #@+node:ekr.20081004102201.648:Clipboard (qtGui)
-    #@+node:ekr.20081004102201.649:replaceClipboardWith
-    def replaceClipboardWith (self,s):
-
-        # g.app.gui.win32clipboard is always None.
-        wcb = g.app.gui.win32clipboard
-
-        if wcb:
-            try:
-                wcb.OpenClipboard(0)
-                wcb.EmptyClipboard()
-                wcb.SetClipboardText(s)
-                wcb.CloseClipboard()
-            except:
-                g.es_exception()
-        else:
-            self.root.clipboard_clear()
-            self.root.clipboard_append(s)
-    #@-node:ekr.20081004102201.649:replaceClipboardWith
-    #@+node:ekr.20081004102201.650:getTextFromClipboard
-    def getTextFromClipboard (self):
-
-        return None ###
-
-        # g.app.gui.win32clipboard is always None.
-        wcb = g.app.gui.win32clipboard
-
-        if wcb:
-            try:
-                wcb.OpenClipboard(0)
-                data = wcb.GetClipboardData()
-                wcb.CloseClipboard()
-                # g.trace(data)
-                return data
-            except TypeError:
-                # g.trace(None)
-                return None
-            except:
-                g.es_exception()
-                return None
-        else:
-            try:
-                s = self.root.selection_get(selection="CLIPBOARD")
-                return s
-            except:
-                return None
-    #@-node:ekr.20081004102201.650:getTextFromClipboard
-    #@-node:ekr.20081004102201.648:Clipboard (qtGui)
-    #@+node:ekr.20081004102201.651:color (to do)
-    # g.es calls gui.color to do the translation,
-    # so most code in Leo's core can simply use Tk color names.
-
-    def color (self,color):
-        '''Return the gui-specific color corresponding to the qt color name.'''
-        return leoColor.getco
-
-    #@-node:ekr.20081004102201.651:color (to do)
-    #@+node:ekr.20081004102201.652:Dialog (these are optional)
-    #@+node:ekr.20081004102201.653:get_window_info
-    # WARNING: Call this routine _after_ creating a dialog.
-    # (This routine inhibits the grid and pack geometry managers.)
-
-    def get_window_info (self,top):
-
-        return ###
-
-        top.update_idletasks() # Required to get proper info.
-
-        # Get the information about top and the screen.
-        geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-        dim,x,y = geom.split('+')
-        w,h = dim.split('x')
-        w,h,x,y = int(w),int(h),int(x),int(y)
-
-        return w,h,x,y
-    #@-node:ekr.20081004102201.653:get_window_info
-    #@+node:ekr.20081004102201.654:center_dialog
-    def center_dialog(self,top):
-
-        """Center the dialog on the screen.
-
-        WARNING: Call this routine _after_ creating a dialog.
-        (This routine inhibits the grid and pack geometry managers.)"""
-
-        return ###
-
-        sw = top.winfo_screenwidth()
-        sh = top.winfo_screenheight()
-        w,h,x,y = self.get_window_info(top)
-
-        # Set the new window coordinates, leaving w and h unchanged.
-        x = (sw - w)/2
-        y = (sh - h)/2
-        top.geometry("%dx%d%+d%+d" % (w,h,x,y))
-
-        return w,h,x,y
-    #@-node:ekr.20081004102201.654:center_dialog
-    #@+node:ekr.20081004102201.655:create_labeled_frame
-    # Returns frames w and f.
-    # Typically the caller would pack w into other frames, and pack content into f.
-
-    def create_labeled_frame (self,parent,
-        caption=None,relief="groove",bd=2,padx=0,pady=0):
-
-        return ###
-
-        # Create w, the master frame.
-        w = qt.Frame(parent)
-        w.grid(sticky="news")
-
-        # Configure w as a grid with 5 rows and columns.
-        # The middle of this grid will contain f, the expandable content area.
-        w.columnconfigure(1,minsize=bd)
-        w.columnconfigure(2,minsize=padx)
-        w.columnconfigure(3,weight=1)
-        w.columnconfigure(4,minsize=padx)
-        w.columnconfigure(5,minsize=bd)
-
-        w.rowconfigure(1,minsize=bd)
-        w.rowconfigure(2,minsize=pady)
-        w.rowconfigure(3,weight=1)
-        w.rowconfigure(4,minsize=pady)
-        w.rowconfigure(5,minsize=bd)
-
-        # Create the border spanning all rows and columns.
-        border = qt.Frame(w,bd=bd,relief=relief) # padx=padx,pady=pady)
-        border.grid(row=1,column=1,rowspan=5,columnspan=5,sticky="news")
-
-        # Create the content frame, f, in the center of the grid.
-        f = qt.Frame(w,bd=bd)
-        f.grid(row=3,column=3,sticky="news")
-
-        # Add the caption.
-        if caption and len(caption) > 0:
-            caption = qt.Label(parent,text=caption,highlightthickness=0,bd=0)
-            # caption.tkraise(w)
-            caption.grid(in_=w,row=0,column=2,rowspan=2,columnspan=3,padx=4,sticky="w")
-
-        return w,f
-    #@-node:ekr.20081004102201.655:create_labeled_frame
-    #@-node:ekr.20081004102201.652:Dialog (these are optional)
-    #@+node:ekr.20081004102201.656:Events (qtGui) (to do)
-    def event_generate(self,w,kind,*args,**keys):
-        '''Generate an event.'''
-        return w.event_generate(kind,*args,**keys)
-
-    def eventChar (self,event,c=None):
-        '''Return the char field of an event.'''
-        return event and event.char or ''
-
-    def eventKeysym (self,event,c=None):
-        '''Return the keysym value of an event.'''
-        return event and event.keysym
-
-    def eventWidget (self,event,c=None):
-        '''Return the widget field of an event.'''   
-        return event and event.widget
-
-    def eventXY (self,event,c=None):
-        if event:
-            return event.x,event.y
-        else:
-            return 0,0
-    #@nonl
-    #@-node:ekr.20081004102201.656:Events (qtGui) (to do)
-    #@+node:ekr.20081004102201.657:Focus (to do)
-    #@+node:ekr.20081004102201.658:qtGui.get_focus
-    def get_focus(self,c):
-
-        """Returns the widget that has focus, or body if None."""
-
-        return None ###
-
-        return c.frame.top.focus_displayof()
-    #@-node:ekr.20081004102201.658:qtGui.get_focus
-    #@+node:ekr.20081004102201.659:qtGui.set_focus
-    set_focus_count = 0
-
-    def set_focus(self,c,w):
-
-        """Put the focus on the widget."""
-
-        return None ###
-
-        if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
-            self.set_focus_count += 1
-            # Do not call trace here: that might affect focus!
-            g.pr('gui.set_focus: %4d %10s %s' % (
-                self.set_focus_count,c and c.shortFileName(),
-                c and c.widget_name(w)), g.callers(5))
-
-        if w:
-            try:
-                # It's possible that the widget doesn't exist now.
-                w.focus_set()
-                return True
-            except Exception:
-                # g.es_exception()
-                return False
-    #@-node:ekr.20081004102201.659:qtGui.set_focus
-    #@-node:ekr.20081004102201.657:Focus (to do)
-    #@+node:ekr.20081004102201.660:Font (to do)
-    #@+node:ekr.20081004102201.661:qtGui.getFontFromParams
-    def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
-
-        family_name = family
-
-        try:
-            font = qtFont.Font(family=family,size=size or defaultSize,slant=slant,weight=weight)
-            return font
-        except:
-            g.es("exception setting font from","",family_name)
-            g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
-            # g.es_exception() # This just confuses people.
-            return g.app.config.defaultFont
-    #@-node:ekr.20081004102201.661:qtGui.getFontFromParams
-    #@-node:ekr.20081004102201.660:Font (to do)
-    #@+node:ekr.20081004102201.662:getFullVersion (to do)
-    def getFullVersion (self,c):
-
-        qtLevel = '<qtLevel>' ### c.frame.top.getvar("tk_patchLevel")
-
-        return 'qt %s' % (qtLevel)
-    #@-node:ekr.20081004102201.662:getFullVersion (to do)
-    #@+node:ekr.20081004102201.663:Icons (to do)
-    #@+node:ekr.20081004102201.664:attachLeoIcon
-    def attachLeoIcon (self,w):
-
-        """Attach a Leo icon to the Leo Window."""
-
-        # if self.bitmap != None:
-            # # We don't need PIL or tkicon: this is gtk 8.3.4 or greater.
-            # try:
-                # w.wm_iconbitmap(self.bitmap)
-            # except:
-                # self.bitmap = None
-
-        # if self.bitmap == None:
-            # try:
-                # < < try to use the PIL and tkIcon packages to draw the icon > >
-            # except:
-                # # import traceback ; traceback.print_exc()
-                # # g.es_exception()
-                # self.leoIcon = None
-    #@+node:ekr.20081004102201.665:try to use the PIL and tkIcon packages to draw the icon
-    #@+at 
-    #@nonl
-    # This code requires Fredrik Lundh's PIL and tkIcon packages:
-    # 
-    # Download PIL    from http://www.pythonware.com/downloads/index.htm#pil
-    # Download tkIcon from http://www.effbot.org/downloads/#tkIcon
-    # 
-    # Many thanks to Jonathan M. Gilligan for suggesting this code.
-    #@-at
-    #@@c
-
-    # import Image
-    # import tkIcon # pychecker complains, but this *is* used.
-
-    # # Wait until the window has been drawn once before attaching the icon in OnVisiblity.
-    # def visibilityCallback(event,self=self,w=w):
-        # try: self.leoIcon.attach(w.winfo_id())
-        # except: pass
-    # c.bind(w,"<Visibility>",visibilityCallback)
-
-    # if not self.leoIcon:
-        # # Load a 16 by 16 gif.  Using .gif rather than an .ico allows us to specify transparency.
-        # icon_file_name = g.os_path_join(g.app.loadDir,'..','Icons','LeoWin.gif')
-        # icon_file_name = g.os_path_normpath(icon_file_name)
-        # icon_image = Image.open(icon_file_name)
-        # if 1: # Doesn't resize.
-            # self.leoIcon = self.createLeoIcon(icon_image)
-        # else: # Assumes 64x64
-            # self.leoIcon = tkIcon.Icon(icon_image)
-    #@-node:ekr.20081004102201.665:try to use the PIL and tkIcon packages to draw the icon
-    #@+node:ekr.20081004102201.666:createLeoIcon (a helper)
-    # This code is adapted from tkIcon.__init__
-    # Unlike the tkIcon code, this code does _not_ resize the icon file.
-
-    # def createLeoIcon (self,icon):
-
-        # try:
-            # import Image,_tkicon
-
-            # i = icon ; m = None
-            # # create transparency mask
-            # if i.mode == "P":
-                # try:
-                    # t = i.info["transparency"]
-                    # m = i.point(lambda i, t=t: i==t, "1")
-                # except KeyError: pass
-            # elif i.mode == "RGBA":
-                # # get transparency layer
-                # m = i.split()[3].point(lambda i: i == 0, "1")
-            # if not m:
-                # m = Image.new("1", i.size, 0) # opaque
-            # # clear unused parts of the original image
-            # i = i.convert("RGB")
-            # i.paste((0, 0, 0), (0, 0), m)
-            # # create icon
-            # m = m.tostring("raw", ("1", 0, 1))
-            # c = i.tostring("raw", ("BGRX", 0, -1))
-            # return _tkicon.new(i.size, c, m)
-        # except:
-            # return None
-    #@-node:ekr.20081004102201.666:createLeoIcon (a helper)
-    #@-node:ekr.20081004102201.664:attachLeoIcon
-    #@-node:ekr.20081004102201.663:Icons (to do)
-    #@+node:ekr.20081004102201.667:Idle Time (to do)
-    #@+node:ekr.20081004102201.668:qtGui.setIdleTimeHook
-    def setIdleTimeHook (self,idleTimeHookHandler):
-
-        # if self.root:
-            # self.root.after_idle(idleTimeHookHandler)
-
-        pass
-    #@nonl
-    #@-node:ekr.20081004102201.668:qtGui.setIdleTimeHook
-    #@+node:ekr.20081004102201.669:setIdleTimeHookAfterDelay
-    def setIdleTimeHookAfterDelay (self,idleTimeHookHandler):
-
-        pass
-
-        # if self.root:
-            # g.app.root.after(g.app.idleTimeDelay,idleTimeHookHandler)
-    #@-node:ekr.20081004102201.669:setIdleTimeHookAfterDelay
-    #@-node:ekr.20081004102201.667:Idle Time (to do)
-    #@+node:ekr.20081004102201.670:isTextWidget
-    def isTextWidget (self,w):
-
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
-
-        return w and isinstance(w,leoFrame.baseTextWidget)
-    #@-node:ekr.20081004102201.670:isTextWidget
-    #@+node:ekr.20081004102201.671:makeScriptButton (to do)
-    def makeScriptButton (self,c,
-        args=None,
-        p=None, # A node containing the script.
-        script=None, # The script itself.
-        buttonText=None,
-        balloonText='Script Button',
-        shortcut=None,bg='LightSteelBlue1',
-        define_g=True,define_name='__main__',silent=False, # Passed on to c.executeScript.
-    ):
-
-        '''Create a script button for the script in node p.
-        The button's text defaults to p.headString'''
-
-        k = c.k
-        if p and not buttonText: buttonText = p.headString().strip()
-        if not buttonText: buttonText = 'Unnamed Script Button'
-        #@    << create the button b >>
-        #@+node:ekr.20081004102201.672:<< create the button b >>
-        iconBar = c.frame.getIconBarObject()
-        b = iconBar.add(text=buttonText)
-        #@-node:ekr.20081004102201.672:<< create the button b >>
-        #@nl
-        #@    << define the callbacks for b >>
-        #@+node:ekr.20081004102201.673:<< define the callbacks for b >>
-        def deleteButtonCallback(event=None,b=b,c=c):
-            if b: b.pack_forget()
-            c.bodyWantsFocus()
-
-        def executeScriptCallback (event=None,
-            b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
-
-            if c.disableCommandsMessage:
-                g.es('',c.disableCommandsMessage,color='blue')
-            else:
-                g.app.scriptDict = {}
-                c.executeScript(args=args,p=p,script=script,
-                define_g= define_g,define_name=define_name,silent=silent)
-                # Remove the button if the script asks to be removed.
-                if g.app.scriptDict.get('removeMe'):
-                    g.es("removing","'%s'" % (buttonText),"button at its request")
-                    b.pack_forget()
-            # Do not assume the script will want to remain in this commander.
-        #@-node:ekr.20081004102201.673:<< define the callbacks for b >>
-        #@nl
-        b.configure(command=executeScriptCallback)
-        c.bind(b,'<3>',deleteButtonCallback)
-        if shortcut:
-            #@        << bind the shortcut to executeScriptCallback >>
-            #@+node:ekr.20081004102201.674:<< bind the shortcut to executeScriptCallback >>
-            func = executeScriptCallback
-            shortcut = k.canonicalizeShortcut(shortcut)
-            ok = k.bindKey ('button', shortcut,func,buttonText)
-            if ok:
-                g.es_print('bound @button',buttonText,'to',shortcut,color='blue')
-            #@-node:ekr.20081004102201.674:<< bind the shortcut to executeScriptCallback >>
-            #@nl
-        #@    << create press-buttonText-button command >>
-        #@+node:ekr.20081004102201.675:<< create press-buttonText-button command >>
-        aList = [g.choose(ch.isalnum(),ch,'-') for ch in buttonText]
-
-        buttonCommandName = ''.join(aList)
-        buttonCommandName = buttonCommandName.replace('--','-')
-        buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
-
-        # This will use any shortcut defined in an @shortcuts node.
-        k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
-        #@-node:ekr.20081004102201.675:<< create press-buttonText-button command >>
-        #@nl
-    #@-node:ekr.20081004102201.671:makeScriptButton (to do)
-    #@-node:ekr.20081004102201.647:qtGui utils (to do)
-    #@+node:ekr.20081004102201.676:class leoKeyEvent
-    class leoKeyEvent:
-
-        '''A gui-independent wrapper for gui events.'''
-
-        def __init__ (self,event,c):
-
-            # g.trace('leoKeyEvent(qtGui)')
-            self.actualEvent = event
-            self.c      = c # Required to access c.k tables.
-            self.char   = hasattr(event,'char') and event.char or ''
-            self.keysym = hasattr(event,'keysym') and event.keysym or ''
-            self.w      = hasattr(event,'widget') and event.widget or None
-            self.x      = hasattr(event,'x') and event.x or 0
-            self.y      = hasattr(event,'y') and event.y or 0
-            # Support for fastGotoNode plugin
-            self.x_root = hasattr(event,'x_root') and event.x_root or 0
-            self.y_root = hasattr(event,'y_root') and event.y_root or 0
-
-            if self.keysym and c.k:
-                # Translate keysyms for ascii characters to the character itself.
-                self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
-
-            self.widget = self.w
-
-        def __repr__ (self):
-
-            return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
-    #@nonl
-    #@-node:ekr.20081004102201.676:class leoKeyEvent
-    #@+node:ekr.20081004102201.677:loadIcon
-    def loadIcon(self, fname):
-
-        if 0: g.trace('fname',fname)
-
-        # try:
-            # icon = qt.gdk.pixbuf_new_from_file(fname)
-        # except:
-            # icon = None
-
-        # if icon and icon.get_width()>0:
-            # return icon
-
-        # g.trace( 'Can not load icon from', fname)
-    #@-node:ekr.20081004102201.677:loadIcon
-    #@+node:ekr.20081004102201.678:loadIcons
-    def loadIcons(self):
-        """Load icons and images and set up module level variables."""
-
-        self.treeIcons = icons = []
-        self.namedIcons = namedIcons = {}
-
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
-        if g.os_path_exists(g.os_path_join(path, 'box01.GIF')):
-            ext = '.GIF'
-        else:
-            ext = '.gif'
-
-        for i in range(16):
-            icon = self.loadIcon(g.os_path_join(path, 'box%02d'%i + ext))
-            icons.append(icon)
-
-        for name, ext in (
-            ('lt_arrow_enabled', '.gif'),
-            ('rt_arrow_enabled', '.gif'),
-            ('lt_arrow_disabled', '.gif'),
-            ('rt_arrow_disabled', '.gif'),
-            ('plusnode', '.gif'),
-            ('minusnode', '.gif'),
-            ('Leoapp', '.GIF')
-        ):
-            icon = self.loadIcon(g.os_path_join(path, name + ext))
-            namedIcons[name] = icon
-
-        self.plusBoxIcon = namedIcons.get('plusnode')
-        self.minusBoxIcon = namedIcons.get('minusnode')
-        self.appIcon = namedIcons.get('Leoapp')
-
-        self.globalImages = {}
-
-    #@-node:ekr.20081004102201.678:loadIcons
-    #@-others
-#@-node:ekr.20081004102201.631:qtGui
-#@+node:ekr.20081004172422.501:leoQtFrame
+#@-node:ekr.20081004102201.629:class  Window (QMainWindow,Ui_MainWindow)
 #@+node:ekr.20081004172422.502:class leoQtBody
 class leoQtBody (leoFrame.leoBody):
 
@@ -1429,7 +609,54 @@ class leoQtBody (leoFrame.leoBody):
     #@-node:ekr.20081004172422.519:Editors (qtBody)
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody
-#@+node:ekr.20081004172422.523:class leoQtFrame
+#@+node:ekr.20081004102201.628:class leoQtEventFilter
+class leoQtEventFilter(QtCore.QObject):
+
+    def __init__(self):
+        QtCore.QObject.__init__(self)
+        self.bindings = {}
+
+    def eventFilter(self, obj, event):
+
+        if event.type() == QtCore.QEvent.KeyPress:
+            return self.key_pressed(obj, event)
+        else:
+            return False
+
+    #@    @+others
+    #@+node:ekr.20081004172422.897:key_pressed
+    def key_pressed(self, obj, event):
+        """ Handle key presses (on any window) """
+
+        trace = True ; verbose = False
+
+        keynum = event.key()
+        try:
+            char = chr(keynum)
+        except ValueError:
+            char = "<unknown>"
+
+        mods = []
+        if event.modifiers() & QtCore.Qt.AltModifier:
+            mods.append("Alt")
+        if event.modifiers() & QtCore.Qt.ControlModifier:
+            mods.append("Ctrl")
+        if event.modifiers() & QtCore.Qt.ShiftModifier:
+            mods.append("Shift")
+        txt = "+".join(mods) + (mods and "+" or "") + char
+
+        if trace:
+            print "Keypress: [%s]" % (txt)
+            # print , event.text(),obj, event.key(), event.modifiers()
+
+        # key was not consumed
+        cmd = self.bindings.get(txt, None)
+        if cmd: cmd()
+        return cmd is not None
+    #@-node:ekr.20081004172422.897:key_pressed
+    #@-others
+#@-node:ekr.20081004102201.628:class leoQtEventFilter
+#@+node:ekr.20081004172422.523:class leoQtFrame (c.frame.top is a Window object)
 class leoQtFrame (leoFrame.leoFrame):
 
     """A class that represents a Leo window rendered in qt."""
@@ -1470,7 +697,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.statusLineComponentName = 'statusLine'
         self.statusText = None 
         self.statusLabel = None 
-        self.top = None
+        self.top = None # This will be a class Window object.
         self.tree = None
         # self.treeBar = None # Replaced by injected frame.canvas.leo_treeBar.
 
@@ -3143,7 +2370,799 @@ class leoQtFrame (leoFrame.leoFrame):
         ### self.top.update()
     #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
     #@-others
-#@-node:ekr.20081004172422.523:class leoQtFrame
+#@-node:ekr.20081004172422.523:class leoQtFrame (c.frame.top is a Window object)
+#@+node:ekr.20081004102201.631:class leoQtGui
+class leoQtGui(leoGui.leoGui):
+
+    '''A class implementing Leo's Qt gui.'''
+
+    #@    @+others
+    #@+node:ekr.20081004102201.632:qtGui birth & death
+    #@+node:ekr.20081004102201.633: qtGui.__init__
+    def __init__ (self):
+
+        # Initialize the base class.
+        leoGui.leoGui.__init__(self,'qt')
+
+        self.qtApp = QtGui.QApplication(sys.argv)
+
+        self.bodyTextWidget  = leoQtTextWidget
+        self.plainTextWidget = leoQtTextWidget
+        self.loadIcons()
+
+        win32clipboard = None
+
+        ### self.qtClipboard = qt.Clipboard()
+    #@-node:ekr.20081004102201.633: qtGui.__init__
+    #@+node:ekr.20081004102201.634:createKeyHandlerClass (qtGui)
+    def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
+
+        ### Use the base class
+        return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
+
+        ### return qtKeyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
+    #@-node:ekr.20081004102201.634:createKeyHandlerClass (qtGui)
+    #@+node:ekr.20081004102201.635:runMainLoop (qtGui)
+    def runMainLoop(self):
+
+        '''Start the Qt main loop.'''
+
+        if self.script:
+            log = g.app.log
+            if log:
+                g.pr('Start of batch script...\n')
+                log.c.executeScript(script=self.script)
+                g.pr('End of batch script')
+            else:
+                g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
+        else:
+            sys.exit(self.qtApp.exec_())
+    #@-node:ekr.20081004102201.635:runMainLoop (qtGui)
+    #@+node:ekr.20081004102201.636:Do nothings
+    # These methods must be defined in subclasses, but they need not do anything.
+
+    def createRootWindow(self):
+        pass
+
+    def destroySelf (self):
+        pass
+
+    def killGui(self,exitFlag=True):
+        """Destroy a gui and terminate Leo if exitFlag is True."""
+        pass
+
+    def recreateRootWindow(self):
+        """A do-nothing base class to create the hidden root window of a gui
+        after a previous gui has terminated with killGui(False)."""
+        pass
+
+    #@-node:ekr.20081004102201.636:Do nothings
+    #@+node:ekr.20081004102201.637:Not used
+    # The tkinter gui ctor calls these methods.
+    # They are included here for reference.
+
+    if 0:
+        #@    @+others
+        #@+node:ekr.20081004102201.638:qtGui.setDefaultIcon
+        def setDefaultIcon(self):
+
+            """Set the icon to be used in all Leo windows.
+
+            This code does nothing for Tk versions before 8.4.3."""
+
+            gui = self
+
+            try:
+                version = gui.root.getvar("tk_patchLevel")
+                # g.trace(repr(version),g.CheckVersion(version,"8.4.3"))
+                if g.CheckVersion(version,"8.4.3") and sys.platform == "win32":
+
+                    path = g.os_path_join(g.app.loadDir,"..","Icons")
+                    if g.os_path_exists(path):
+                        theFile = g.os_path_join(path,"LeoApp16.ico")
+                        if g.os_path_exists(path):
+                            self.bitmap = QtGui.BitmapImage(theFile)
+                        else:
+                            g.es("","LeoApp16.ico","not in Icons directory",color="red")
+                    else:
+                        g.es("","Icons","directory not found:",path, color="red")
+            except:
+                g.pr("exception setting bitmap")
+                import traceback ; traceback.print_exc()
+        #@-node:ekr.20081004102201.638:qtGui.setDefaultIcon
+        #@+node:ekr.20081004102201.639:qtGui.getDefaultConfigFont
+        def getDefaultConfigFont(self,config):
+
+            """Get the default font from a new text widget."""
+
+            if not self.defaultFontFamily:
+                # WARNING: retain NO references to widgets or fonts here!
+                w = g.app.gui.plainTextWidget()
+                fn = w.cget("font")
+                font = qtFont.Font(font=fn) 
+                family = font.cget("family")
+                self.defaultFontFamily = family[:]
+                # g.pr('***** getDefaultConfigFont',repr(family))
+
+            config.defaultFont = None
+            config.defaultFontFamily = self.defaultFontFamily
+        #@-node:ekr.20081004102201.639:qtGui.getDefaultConfigFont
+        #@-others
+    #@-node:ekr.20081004102201.637:Not used
+    #@-node:ekr.20081004102201.632:qtGui birth & death
+    #@+node:ekr.20081004102201.640:qtGui dialogs & panels (test)
+    def runAboutLeoDialog(self,c,version,theCopyright,url,email):
+        """Create and run a qt About Leo dialog."""
+        d = leoGtkDialog.qtAboutLeo(c,version,theCopyright,url,email)
+        return d.run(modal=False)
+
+    def runAskLeoIDDialog(self):
+        """Create and run a dialog to get g.app.LeoID."""
+        d = leoGtkDialog.qtAskLeoID()
+        return d.run(modal=True)
+
+    def runAskOkDialog(self,c,title,message=None,text="Ok"):
+        """Create and run a qt an askOK dialog ."""
+        d = leoGtkDialog.qtAskOk(c,title,message,text)
+        return d.run(modal=True)
+
+    def runAskOkCancelNumberDialog(self,c,title,message):
+        """Create and run askOkCancelNumber dialog ."""
+        d = leoGtkDialog.qtAskOkCancelNumber(c,title,message)
+        return d.run(modal=True)
+
+    def runAskOkCancelStringDialog(self,c,title,message):
+        """Create and run askOkCancelString dialog ."""
+        d = leoGtkDialog.qtAskOkCancelString(c,title,message)
+        return d.run(modal=True)
+
+    def runAskYesNoDialog(self,c,title,message=None):
+        """Create and run an askYesNo dialog."""
+        d = leoGtkDialog.qtAskYesNo(c,title,message)
+        return d.run(modal=True)
+
+    def runAskYesNoCancelDialog(self,c,title,
+        message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
+        """Create and run an askYesNoCancel dialog ."""
+        d = leoGtkDialog.qtAskYesNoCancel(
+            c,title,message,yesMessage,noMessage,defaultButton)
+        return d.run(modal=True)
+
+    # The compare panel has no run dialog.
+
+    # def runCompareDialog(self,c):
+        # """Create and run an askYesNo dialog."""
+        # if not g.app.unitTesting:
+            # leoGtkCompareDialog(c)
+    #@+node:ekr.20081004102201.641:qtGui.createSpellTab
+    def createSpellTab(self,c,spellHandler,tabName):
+
+        return qtSpellTab(c,spellHandler,tabName)
+    #@-node:ekr.20081004102201.641:qtGui.createSpellTab
+    #@+node:ekr.20081004102201.642:qtGui file dialogs
+    #@+node:ekr.20081004102201.643:runFileDialog
+    def runFileDialog(self,
+        title='Open File',
+        filetypes=None,
+        action='open',
+        multiple=False,
+        initialFile=None
+    ):
+
+        g.trace()
+
+        """Display an open or save file dialog.
+
+        'title': The title to be shown in the dialog window.
+
+        'filetypes': A list of (name, pattern) tuples.
+
+        'action': Should be either 'save' or 'open'.
+
+        'multiple': True if multiple files may be selected.
+
+        'initialDir': The directory in which the chooser starts.
+
+        'initialFile': The initial filename for a save dialog.
+
+        """
+
+        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
+
+        if action == 'open':
+            btns = (
+                QtCore.STOCK_CANCEL, QtCore.RESPONSE_CANCEL,
+                QtCore.TOCK_OPEN, QtCore.RESPONSE_OK
+            )
+        else:
+            btns = (
+                QtCore.STOCK_CANCEL, QtCore.RESPONSE_CANCEL,
+                QtCore.STOCK_SAVE, QtCore.RESPONSE_OK
+            )
+
+        qtaction = g.choose(
+            action == 'save',
+            QtCore.FILE_CHOOSER_ACTION_SAVE, 
+            QtCore.FILE_CHOOSER_ACTION_OPEN
+        )
+
+        dialog = QtGui.FileChooserDialog(title,None,qtaction,btns)
+
+        try:
+
+            dialog.set_default_response(QtCore.RESPONSE_OK)
+            dialog.set_do_overwrite_confirmation(True)
+            dialog.set_select_multiple(multiple)
+            if initialdir:
+                dialog.set_current_folder(initialdir)
+
+            if filetypes:
+
+                for name, patern in filetypes:
+                    filter = QtGui.FileFilter()
+                    filter.set_name(name)
+                    filter.add_pattern(patern)
+                    dialog.add_filter(filter)
+
+            response = dialog.run()
+            g.pr('dialog response' , response)
+
+            if response == QtCore.RESPONSE_OK:
+
+                if multiple:
+                    result = dialog.get_filenames()
+                else:
+                    result = dialog.get_filename()
+
+            elif response == QtCore.RESPONSE_CANCEL:
+                result = None
+
+        finally:
+
+            dialog.destroy()
+
+        g.trace('dialog result' , result)
+
+        return result
+    #@-node:ekr.20081004102201.643:runFileDialog
+    #@+node:ekr.20081004102201.644:runOpenFileDialog
+    def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
+
+        """Create and run an Qt open file dialog ."""
+
+        fd = QFileDialog(self)
+        fname = fd.getOpenFileName()
+        g.trace(fname)
+        return fname
+
+        # self.load_file(fname)
+
+        # return self.runFileDialog(
+            # title=title,
+            # filetypes=filetypes,
+            # action='open',
+            # multiple=multiple,
+        # )
+    #@-node:ekr.20081004102201.644:runOpenFileDialog
+    #@+node:ekr.20081004102201.645:runSaveFileDialog
+    def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
+
+        """Create and run an Qt save file dialog ."""
+
+        # return self.runFileDialog(
+            # title=title,
+            # filetypes=filetypes,
+            # action='save',
+            # initialfile=initialfile
+        # )
+    #@nonl
+    #@-node:ekr.20081004102201.645:runSaveFileDialog
+    #@-node:ekr.20081004102201.642:qtGui file dialogs
+    #@+node:ekr.20081004102201.646:qtGui panels
+    def createComparePanel(self,c):
+        """Create a qt color picker panel."""
+        return None # This window is optional.
+        # return leoQtComparePanel(c)
+
+    def createFindTab (self,c,parentFrame):
+        """Create a qt find tab in the indicated frame."""
+        return leoQtFindTab(c,parentFrame)
+
+    def createLeoFrame(self,title):
+        """Create a new Leo frame."""
+        gui = self
+        return leoQtFrame(title,gui)
+    #@-node:ekr.20081004102201.646:qtGui panels
+    #@-node:ekr.20081004102201.640:qtGui dialogs & panels (test)
+    #@+node:ekr.20081004102201.647:qtGui utils (to do)
+    #@+node:ekr.20081004102201.648:Clipboard (qtGui)
+    #@+node:ekr.20081004102201.649:replaceClipboardWith
+    def replaceClipboardWith (self,s):
+
+        # g.app.gui.win32clipboard is always None.
+        wcb = g.app.gui.win32clipboard
+
+        if wcb:
+            try:
+                wcb.OpenClipboard(0)
+                wcb.EmptyClipboard()
+                wcb.SetClipboardText(s)
+                wcb.CloseClipboard()
+            except:
+                g.es_exception()
+        else:
+            self.root.clipboard_clear()
+            self.root.clipboard_append(s)
+    #@-node:ekr.20081004102201.649:replaceClipboardWith
+    #@+node:ekr.20081004102201.650:getTextFromClipboard
+    def getTextFromClipboard (self):
+
+        return None ###
+
+        # g.app.gui.win32clipboard is always None.
+        wcb = g.app.gui.win32clipboard
+
+        if wcb:
+            try:
+                wcb.OpenClipboard(0)
+                data = wcb.GetClipboardData()
+                wcb.CloseClipboard()
+                # g.trace(data)
+                return data
+            except TypeError:
+                # g.trace(None)
+                return None
+            except:
+                g.es_exception()
+                return None
+        else:
+            try:
+                s = self.root.selection_get(selection="CLIPBOARD")
+                return s
+            except:
+                return None
+    #@-node:ekr.20081004102201.650:getTextFromClipboard
+    #@-node:ekr.20081004102201.648:Clipboard (qtGui)
+    #@+node:ekr.20081004102201.651:color (to do)
+    # g.es calls gui.color to do the translation,
+    # so most code in Leo's core can simply use Tk color names.
+
+    def color (self,color):
+        '''Return the gui-specific color corresponding to the qt color name.'''
+        return leoColor.getco
+
+    #@-node:ekr.20081004102201.651:color (to do)
+    #@+node:ekr.20081004102201.652:Dialog (these are optional)
+    #@+node:ekr.20081004102201.653:get_window_info
+    # WARNING: Call this routine _after_ creating a dialog.
+    # (This routine inhibits the grid and pack geometry managers.)
+
+    def get_window_info (self,top):
+
+        return ###
+
+        top.update_idletasks() # Required to get proper info.
+
+        # Get the information about top and the screen.
+        geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
+        dim,x,y = geom.split('+')
+        w,h = dim.split('x')
+        w,h,x,y = int(w),int(h),int(x),int(y)
+
+        return w,h,x,y
+    #@-node:ekr.20081004102201.653:get_window_info
+    #@+node:ekr.20081004102201.654:center_dialog
+    def center_dialog(self,top):
+
+        """Center the dialog on the screen.
+
+        WARNING: Call this routine _after_ creating a dialog.
+        (This routine inhibits the grid and pack geometry managers.)"""
+
+        return ###
+
+        sw = top.winfo_screenwidth()
+        sh = top.winfo_screenheight()
+        w,h,x,y = self.get_window_info(top)
+
+        # Set the new window coordinates, leaving w and h unchanged.
+        x = (sw - w)/2
+        y = (sh - h)/2
+        top.geometry("%dx%d%+d%+d" % (w,h,x,y))
+
+        return w,h,x,y
+    #@-node:ekr.20081004102201.654:center_dialog
+    #@+node:ekr.20081004102201.655:create_labeled_frame
+    # Returns frames w and f.
+    # Typically the caller would pack w into other frames, and pack content into f.
+
+    def create_labeled_frame (self,parent,
+        caption=None,relief="groove",bd=2,padx=0,pady=0):
+
+        return ###
+
+        # Create w, the master frame.
+        w = qt.Frame(parent)
+        w.grid(sticky="news")
+
+        # Configure w as a grid with 5 rows and columns.
+        # The middle of this grid will contain f, the expandable content area.
+        w.columnconfigure(1,minsize=bd)
+        w.columnconfigure(2,minsize=padx)
+        w.columnconfigure(3,weight=1)
+        w.columnconfigure(4,minsize=padx)
+        w.columnconfigure(5,minsize=bd)
+
+        w.rowconfigure(1,minsize=bd)
+        w.rowconfigure(2,minsize=pady)
+        w.rowconfigure(3,weight=1)
+        w.rowconfigure(4,minsize=pady)
+        w.rowconfigure(5,minsize=bd)
+
+        # Create the border spanning all rows and columns.
+        border = qt.Frame(w,bd=bd,relief=relief) # padx=padx,pady=pady)
+        border.grid(row=1,column=1,rowspan=5,columnspan=5,sticky="news")
+
+        # Create the content frame, f, in the center of the grid.
+        f = qt.Frame(w,bd=bd)
+        f.grid(row=3,column=3,sticky="news")
+
+        # Add the caption.
+        if caption and len(caption) > 0:
+            caption = qt.Label(parent,text=caption,highlightthickness=0,bd=0)
+            # caption.tkraise(w)
+            caption.grid(in_=w,row=0,column=2,rowspan=2,columnspan=3,padx=4,sticky="w")
+
+        return w,f
+    #@-node:ekr.20081004102201.655:create_labeled_frame
+    #@-node:ekr.20081004102201.652:Dialog (these are optional)
+    #@+node:ekr.20081004102201.656:Events (qtGui) (to do)
+    def event_generate(self,w,kind,*args,**keys):
+        '''Generate an event.'''
+        return w.event_generate(kind,*args,**keys)
+
+    def eventChar (self,event,c=None):
+        '''Return the char field of an event.'''
+        return event and event.char or ''
+
+    def eventKeysym (self,event,c=None):
+        '''Return the keysym value of an event.'''
+        return event and event.keysym
+
+    def eventWidget (self,event,c=None):
+        '''Return the widget field of an event.'''   
+        return event and event.widget
+
+    def eventXY (self,event,c=None):
+        if event:
+            return event.x,event.y
+        else:
+            return 0,0
+    #@nonl
+    #@-node:ekr.20081004102201.656:Events (qtGui) (to do)
+    #@+node:ekr.20081004102201.657:Focus (to do)
+    #@+node:ekr.20081004102201.658:qtGui.get_focus
+    def get_focus(self,c):
+
+        """Returns the widget that has focus, or body if None."""
+
+        return None ###
+
+        return c.frame.top.focus_displayof()
+    #@-node:ekr.20081004102201.658:qtGui.get_focus
+    #@+node:ekr.20081004102201.659:qtGui.set_focus
+    set_focus_count = 0
+
+    def set_focus(self,c,w):
+
+        """Put the focus on the widget."""
+
+        return None ###
+
+        if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
+            self.set_focus_count += 1
+            # Do not call trace here: that might affect focus!
+            g.pr('gui.set_focus: %4d %10s %s' % (
+                self.set_focus_count,c and c.shortFileName(),
+                c and c.widget_name(w)), g.callers(5))
+
+        if w:
+            try:
+                # It's possible that the widget doesn't exist now.
+                w.focus_set()
+                return True
+            except Exception:
+                # g.es_exception()
+                return False
+    #@-node:ekr.20081004102201.659:qtGui.set_focus
+    #@-node:ekr.20081004102201.657:Focus (to do)
+    #@+node:ekr.20081004102201.660:Font (to do)
+    #@+node:ekr.20081004102201.661:qtGui.getFontFromParams
+    def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
+
+        family_name = family
+
+        try:
+            font = qtFont.Font(family=family,size=size or defaultSize,slant=slant,weight=weight)
+            return font
+        except:
+            g.es("exception setting font from","",family_name)
+            g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
+            # g.es_exception() # This just confuses people.
+            return g.app.config.defaultFont
+    #@-node:ekr.20081004102201.661:qtGui.getFontFromParams
+    #@-node:ekr.20081004102201.660:Font (to do)
+    #@+node:ekr.20081004102201.662:getFullVersion (to do)
+    def getFullVersion (self,c):
+
+        qtLevel = '<qtLevel>' ### c.frame.top.getvar("tk_patchLevel")
+
+        return 'qt %s' % (qtLevel)
+    #@-node:ekr.20081004102201.662:getFullVersion (to do)
+    #@+node:ekr.20081004102201.663:Icons (to do)
+    #@+node:ekr.20081004102201.664:attachLeoIcon
+    def attachLeoIcon (self,w):
+
+        """Attach a Leo icon to the Leo Window."""
+
+        # if self.bitmap != None:
+            # # We don't need PIL or tkicon: this is gtk 8.3.4 or greater.
+            # try:
+                # w.wm_iconbitmap(self.bitmap)
+            # except:
+                # self.bitmap = None
+
+        # if self.bitmap == None:
+            # try:
+                # < < try to use the PIL and tkIcon packages to draw the icon > >
+            # except:
+                # # import traceback ; traceback.print_exc()
+                # # g.es_exception()
+                # self.leoIcon = None
+    #@+node:ekr.20081004102201.665:try to use the PIL and tkIcon packages to draw the icon
+    #@+at 
+    #@nonl
+    # This code requires Fredrik Lundh's PIL and tkIcon packages:
+    # 
+    # Download PIL    from http://www.pythonware.com/downloads/index.htm#pil
+    # Download tkIcon from http://www.effbot.org/downloads/#tkIcon
+    # 
+    # Many thanks to Jonathan M. Gilligan for suggesting this code.
+    #@-at
+    #@@c
+
+    # import Image
+    # import tkIcon # pychecker complains, but this *is* used.
+
+    # # Wait until the window has been drawn once before attaching the icon in OnVisiblity.
+    # def visibilityCallback(event,self=self,w=w):
+        # try: self.leoIcon.attach(w.winfo_id())
+        # except: pass
+    # c.bind(w,"<Visibility>",visibilityCallback)
+
+    # if not self.leoIcon:
+        # # Load a 16 by 16 gif.  Using .gif rather than an .ico allows us to specify transparency.
+        # icon_file_name = g.os_path_join(g.app.loadDir,'..','Icons','LeoWin.gif')
+        # icon_file_name = g.os_path_normpath(icon_file_name)
+        # icon_image = Image.open(icon_file_name)
+        # if 1: # Doesn't resize.
+            # self.leoIcon = self.createLeoIcon(icon_image)
+        # else: # Assumes 64x64
+            # self.leoIcon = tkIcon.Icon(icon_image)
+    #@-node:ekr.20081004102201.665:try to use the PIL and tkIcon packages to draw the icon
+    #@+node:ekr.20081004102201.666:createLeoIcon (a helper)
+    # This code is adapted from tkIcon.__init__
+    # Unlike the tkIcon code, this code does _not_ resize the icon file.
+
+    # def createLeoIcon (self,icon):
+
+        # try:
+            # import Image,_tkicon
+
+            # i = icon ; m = None
+            # # create transparency mask
+            # if i.mode == "P":
+                # try:
+                    # t = i.info["transparency"]
+                    # m = i.point(lambda i, t=t: i==t, "1")
+                # except KeyError: pass
+            # elif i.mode == "RGBA":
+                # # get transparency layer
+                # m = i.split()[3].point(lambda i: i == 0, "1")
+            # if not m:
+                # m = Image.new("1", i.size, 0) # opaque
+            # # clear unused parts of the original image
+            # i = i.convert("RGB")
+            # i.paste((0, 0, 0), (0, 0), m)
+            # # create icon
+            # m = m.tostring("raw", ("1", 0, 1))
+            # c = i.tostring("raw", ("BGRX", 0, -1))
+            # return _tkicon.new(i.size, c, m)
+        # except:
+            # return None
+    #@-node:ekr.20081004102201.666:createLeoIcon (a helper)
+    #@-node:ekr.20081004102201.664:attachLeoIcon
+    #@-node:ekr.20081004102201.663:Icons (to do)
+    #@+node:ekr.20081004102201.667:Idle Time (to do)
+    #@+node:ekr.20081004102201.668:qtGui.setIdleTimeHook
+    def setIdleTimeHook (self,idleTimeHookHandler):
+
+        # if self.root:
+            # self.root.after_idle(idleTimeHookHandler)
+
+        pass
+    #@nonl
+    #@-node:ekr.20081004102201.668:qtGui.setIdleTimeHook
+    #@+node:ekr.20081004102201.669:setIdleTimeHookAfterDelay
+    def setIdleTimeHookAfterDelay (self,idleTimeHookHandler):
+
+        pass
+
+        # if self.root:
+            # g.app.root.after(g.app.idleTimeDelay,idleTimeHookHandler)
+    #@-node:ekr.20081004102201.669:setIdleTimeHookAfterDelay
+    #@-node:ekr.20081004102201.667:Idle Time (to do)
+    #@+node:ekr.20081004102201.670:isTextWidget
+    def isTextWidget (self,w):
+
+        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+
+        return w and isinstance(w,leoFrame.baseTextWidget)
+    #@-node:ekr.20081004102201.670:isTextWidget
+    #@+node:ekr.20081004102201.671:makeScriptButton (to do)
+    def makeScriptButton (self,c,
+        args=None,
+        p=None, # A node containing the script.
+        script=None, # The script itself.
+        buttonText=None,
+        balloonText='Script Button',
+        shortcut=None,bg='LightSteelBlue1',
+        define_g=True,define_name='__main__',silent=False, # Passed on to c.executeScript.
+    ):
+
+        '''Create a script button for the script in node p.
+        The button's text defaults to p.headString'''
+
+        k = c.k
+        if p and not buttonText: buttonText = p.headString().strip()
+        if not buttonText: buttonText = 'Unnamed Script Button'
+        #@    << create the button b >>
+        #@+node:ekr.20081004102201.672:<< create the button b >>
+        iconBar = c.frame.getIconBarObject()
+        b = iconBar.add(text=buttonText)
+        #@-node:ekr.20081004102201.672:<< create the button b >>
+        #@nl
+        #@    << define the callbacks for b >>
+        #@+node:ekr.20081004102201.673:<< define the callbacks for b >>
+        def deleteButtonCallback(event=None,b=b,c=c):
+            if b: b.pack_forget()
+            c.bodyWantsFocus()
+
+        def executeScriptCallback (event=None,
+            b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
+
+            if c.disableCommandsMessage:
+                g.es('',c.disableCommandsMessage,color='blue')
+            else:
+                g.app.scriptDict = {}
+                c.executeScript(args=args,p=p,script=script,
+                define_g= define_g,define_name=define_name,silent=silent)
+                # Remove the button if the script asks to be removed.
+                if g.app.scriptDict.get('removeMe'):
+                    g.es("removing","'%s'" % (buttonText),"button at its request")
+                    b.pack_forget()
+            # Do not assume the script will want to remain in this commander.
+        #@-node:ekr.20081004102201.673:<< define the callbacks for b >>
+        #@nl
+        b.configure(command=executeScriptCallback)
+        c.bind(b,'<3>',deleteButtonCallback)
+        if shortcut:
+            #@        << bind the shortcut to executeScriptCallback >>
+            #@+node:ekr.20081004102201.674:<< bind the shortcut to executeScriptCallback >>
+            func = executeScriptCallback
+            shortcut = k.canonicalizeShortcut(shortcut)
+            ok = k.bindKey ('button', shortcut,func,buttonText)
+            if ok:
+                g.es_print('bound @button',buttonText,'to',shortcut,color='blue')
+            #@-node:ekr.20081004102201.674:<< bind the shortcut to executeScriptCallback >>
+            #@nl
+        #@    << create press-buttonText-button command >>
+        #@+node:ekr.20081004102201.675:<< create press-buttonText-button command >>
+        aList = [g.choose(ch.isalnum(),ch,'-') for ch in buttonText]
+
+        buttonCommandName = ''.join(aList)
+        buttonCommandName = buttonCommandName.replace('--','-')
+        buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
+
+        # This will use any shortcut defined in an @shortcuts node.
+        k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
+        #@-node:ekr.20081004102201.675:<< create press-buttonText-button command >>
+        #@nl
+    #@-node:ekr.20081004102201.671:makeScriptButton (to do)
+    #@-node:ekr.20081004102201.647:qtGui utils (to do)
+    #@+node:ekr.20081004102201.676:class leoKeyEvent
+    class leoKeyEvent:
+
+        '''A gui-independent wrapper for gui events.'''
+
+        def __init__ (self,event,c):
+
+            # g.trace('leoKeyEvent(qtGui)')
+            self.actualEvent = event
+            self.c      = c # Required to access c.k tables.
+            self.char   = hasattr(event,'char') and event.char or ''
+            self.keysym = hasattr(event,'keysym') and event.keysym or ''
+            self.w      = hasattr(event,'widget') and event.widget or None
+            self.x      = hasattr(event,'x') and event.x or 0
+            self.y      = hasattr(event,'y') and event.y or 0
+            # Support for fastGotoNode plugin
+            self.x_root = hasattr(event,'x_root') and event.x_root or 0
+            self.y_root = hasattr(event,'y_root') and event.y_root or 0
+
+            if self.keysym and c.k:
+                # Translate keysyms for ascii characters to the character itself.
+                self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
+
+            self.widget = self.w
+
+        def __repr__ (self):
+
+            return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
+    #@nonl
+    #@-node:ekr.20081004102201.676:class leoKeyEvent
+    #@+node:ekr.20081004102201.677:loadIcon
+    def loadIcon(self, fname):
+
+        if 0: g.trace('fname',fname)
+
+        # try:
+            # icon = qt.gdk.pixbuf_new_from_file(fname)
+        # except:
+            # icon = None
+
+        # if icon and icon.get_width()>0:
+            # return icon
+
+        # g.trace( 'Can not load icon from', fname)
+    #@-node:ekr.20081004102201.677:loadIcon
+    #@+node:ekr.20081004102201.678:loadIcons
+    def loadIcons(self):
+        """Load icons and images and set up module level variables."""
+
+        self.treeIcons = icons = []
+        self.namedIcons = namedIcons = {}
+
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
+        if g.os_path_exists(g.os_path_join(path, 'box01.GIF')):
+            ext = '.GIF'
+        else:
+            ext = '.gif'
+
+        for i in range(16):
+            icon = self.loadIcon(g.os_path_join(path, 'box%02d'%i + ext))
+            icons.append(icon)
+
+        for name, ext in (
+            ('lt_arrow_enabled', '.gif'),
+            ('rt_arrow_enabled', '.gif'),
+            ('lt_arrow_disabled', '.gif'),
+            ('rt_arrow_disabled', '.gif'),
+            ('plusnode', '.gif'),
+            ('minusnode', '.gif'),
+            ('Leoapp', '.GIF')
+        ):
+            icon = self.loadIcon(g.os_path_join(path, name + ext))
+            namedIcons[name] = icon
+
+        self.plusBoxIcon = namedIcons.get('plusnode')
+        self.minusBoxIcon = namedIcons.get('minusnode')
+        self.appIcon = namedIcons.get('Leoapp')
+
+        self.globalImages = {}
+
+    #@-node:ekr.20081004102201.678:loadIcons
+    #@-others
+#@-node:ekr.20081004102201.631:class leoQtGui
 #@+node:ekr.20081004172422.622:class leoQtLog
 class leoQtLog (leoFrame.leoLog):
 
@@ -4117,103 +4136,325 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081004172422.671:qtLog font tab stuff
     #@-others
 #@-node:ekr.20081004172422.622:class leoQtLog
-#@+node:ekr.20081004172422.684:class leoQtTreeTab
-class leoQtTreeTab (leoFrame.leoTreeTab):
-
-    '''A class representing a tabbed outline pane drawn with Qt.'''
+#@+node:ekr.20081004172422.856:class leoQtMenu
+class leoQtMenu (leoMenu.leoMenu):
 
     #@    @+others
-    #@+node:ekr.20081004172422.685: Birth & death
-    #@+node:ekr.20081004172422.686: ctor (leoTreeTab)
-    def __init__ (self,c,parentFrame,chapterController):
+    #@+node:ekr.20081004172422.857:Birth & death
+    #@+node:ekr.20081004172422.858:leoQtMenu.__init__
+    def __init__ (self,frame):
 
-        leoFrame.leoTreeTab.__init__ (self,c,chapterController,parentFrame)
-            # Init the base class.  Sets self.c, self.cc and self.parentFrame.
+        # Init the base class.
+        leoMenu.leoMenu.__init__(self,frame)
 
-        self.tabNames = [] # The list of tab names.  Changes when tabs are renamed.
+        self.top = frame.top
+        self.c = c = frame.c
+        self.frame = frame
 
-        self.createControl()
-    #@-node:ekr.20081004172422.686: ctor (leoTreeTab)
-    #@+node:ekr.20081004172422.687:tt.createControl
-    def createControl (self):
+        self.font = c.config.getFontFromParams(
+            'menu_text_font_family', 'menu_text_font_size',
+            'menu_text_font_slant',  'menu_text_font_weight',
+            c.config.defaultMenuFontSize)
+    #@-node:ekr.20081004172422.858:leoQtMenu.__init__
+    #@-node:ekr.20081004172422.857:Birth & death
+    #@+node:ekr.20081004172422.859:Activate menu commands
+    #@+node:ekr.20081004172422.860:qtMenu.activateMenu
+    def activateMenu (self,menuName):
+
+        c = self.c ;  top = c.frame.top
+        # topx,topy = top.winfo_rootx(),top.winfo_rooty()
+        # menu = c.frame.menu.getMenu(menuName)
+
+        # if menu:
+            # d = self.computeMenuPositions()
+            # x = d.get(menuName)
+            # if x is None:
+                # x = 0 ; g.trace('oops, no menu offset: %s' % menuName)
+
+            # menu.tk_popup(topx+d.get(menuName,0),topy) # Fix by caugm.  Thanks!
+        # else:
+            # g.trace('oops, no menu: %s' % menuName)
+    #@-node:ekr.20081004172422.860:qtMenu.activateMenu
+    #@+node:ekr.20081004172422.861:qtMenu.computeMenuPositions
+    def computeMenuPositions (self):
+
+        # A hack.  It would be better to set this when creating the menus.
+        menus = ('File','Edit','Outline','Plugins','Cmds','Window','Help')
+
+        # Compute the *approximate* x offsets of each menu.
+        d = {}
+        n = 0
+        # for z in menus:
+            # menu = self.getMenu(z)
+            # fontName = menu.cget('font')
+            # font = tkFont.Font(font=fontName)
+            # # g.pr('%8s' % (z),menu.winfo_reqwidth(),menu.master,menu.winfo_x())
+            # d [z] = n
+            # # A total hack: sorta works on windows.
+            # n += font.measure(z+' '*4)+1
+
+        return d
+    #@-node:ekr.20081004172422.861:qtMenu.computeMenuPositions
+    #@-node:ekr.20081004172422.859:Activate menu commands
+    #@+node:ekr.20081004172422.862:Tkinter menu bindings
+    # See the Tk docs for what these routines are to do
+    #@+node:ekr.20081004172422.863:Methods with Tk spellings
+    #@+node:ekr.20081004172422.864:add_cascade
+    def add_cascade (self,parent,label,menu,underline):
+
+        """Wrapper for the Tkinter add_cascade menu method."""
+
+        # if parent:
+            # return parent.add_cascade(label=label,menu=menu,underline=underline)
+    #@-node:ekr.20081004172422.864:add_cascade
+    #@+node:ekr.20081004172422.865:add_command
+    def add_command (self,menu,**keys):
+
+        """Wrapper for the Tkinter add_command menu method."""
+
+        # if menu:
+            # return self.c.add_command(menu,**keys)
+    #@-node:ekr.20081004172422.865:add_command
+    #@+node:ekr.20081004172422.866:add_separator
+    def add_separator(self,menu):
+
+        """Wrapper for the Tkinter add_separator menu method."""
+
+        # if menu:
+            # menu.add_separator()
+    #@-node:ekr.20081004172422.866:add_separator
+    #@+node:ekr.20081004172422.867:bind (not called)
+    def bind (self,bind_shortcut,callback):
+
+        """Wrapper for the Tkinter bind menu method."""
+
+        # g.trace(bind_shortcut,g.callers())
+
+        # c = self.c
+
+        # return c.bind(self.top,bind_shortcut,callback)
+    #@-node:ekr.20081004172422.867:bind (not called)
+    #@+node:ekr.20081004172422.868:delete
+    def delete (self,menu,realItemName):
+
+        """Wrapper for the Tkinter delete menu method."""
+
+        # if menu:
+            # return menu.delete(realItemName)
+    #@-node:ekr.20081004172422.868:delete
+    #@+node:ekr.20081004172422.869:delete_range
+    def delete_range (self,menu,n1,n2):
+
+        """Wrapper for the Tkinter delete menu method."""
+
+        # if menu:
+            # return menu.delete(n1,n2)
+    #@-node:ekr.20081004172422.869:delete_range
+    #@+node:ekr.20081004172422.870:destroy
+    def destroy (self,menu):
+
+        """Wrapper for the Tkinter destroy menu method."""
+
+        # if menu:
+            # return menu.destroy()
+    #@-node:ekr.20081004172422.870:destroy
+    #@+node:ekr.20081004172422.871:insert
+    def insert (self,menuName,position,label,command,underline=None):
+
+        pass
+
+        # menu = self.getMenu(menuName)
+        # if menu:
+            # if underline is None:
+                # menu.insert(position,'command',label=label,command=command)
+            # else:
+                # menu.insert(position,'command',label=label,command=command,underline=underline)
+    #@-node:ekr.20081004172422.871:insert
+    #@+node:ekr.20081004172422.872:insert_cascade
+    def insert_cascade (self,parent,index,label,menu,underline):
+
+        """Wrapper for the Tkinter insert_cascade menu method."""
+
+        # if parent:
+            # return parent.insert_cascade(
+                # index=index,label=label,
+                # menu=menu,underline=underline)
+    #@-node:ekr.20081004172422.872:insert_cascade
+    #@+node:ekr.20081004172422.873:new_menu
+    def new_menu(self,parent,tearoff=False):
+
+        """Wrapper for the Tkinter new_menu menu method."""
+
+        # if self.font:
+            # try:
+                # return Tk.Menu(parent,tearoff=tearoff,font=self.font)
+            # except Exception:
+                # g.es_exception()
+                # return Tk.Menu(parent,tearoff=tearoff)
+        # else:
+            # return Tk.Menu(parent,tearoff=tearoff)
+    #@-node:ekr.20081004172422.873:new_menu
+    #@-node:ekr.20081004172422.863:Methods with Tk spellings
+    #@+node:ekr.20081004172422.874:Methods with other spellings (Qtmenu)
+    #@+node:ekr.20081004172422.875:clearAccel
+    def clearAccel(self,menu,name):
+
+        pass
+
+        # if not menu:
+            # return
+
+        # realName = self.getRealMenuName(name)
+        # realName = realName.replace("&","")
+
+        # menu.entryconfig(realName,accelerator='')
+    #@-node:ekr.20081004172422.875:clearAccel
+    #@+node:ekr.20081004172422.876:createMenuBar (Qtmenu)
+    def createMenuBar(self,frame):
+
+        top = frame.top
+
+        # # Note: font setting has no effect here.
+        # topMenu = Tk.Menu(top,postcommand=self.updateAllMenus)
+
+        # # Do gui-independent stuff.
+        # self.setMenu("top",topMenu)
+        # self.createMenusFromTables()
+
+        # top.config(menu=topMenu) # Display the menu.
+    #@nonl
+    #@-node:ekr.20081004172422.876:createMenuBar (Qtmenu)
+    #@+node:ekr.20081004172422.877:createOpenWithMenu
+    def createOpenWithMenu(self,parent,label,index,amp_index):
+
+        '''Create a submenu.'''
+
+        # menu = Tk.Menu(parent,tearoff=0)
+        # if menu:
+            # parent.insert_cascade(index,label=label,menu=menu,underline=amp_index)
+        # return menu
+    #@-node:ekr.20081004172422.877:createOpenWithMenu
+    #@+node:ekr.20081004172422.878:disableMenu
+    def disableMenu (self,menu,name):
+
+        if not menu:
+            return
+
+        # try:
+            # menu.entryconfig(name,state="disabled")
+        # except: 
+            # try:
+                # realName = self.getRealMenuName(name)
+                # realName = realName.replace("&","")
+                # menu.entryconfig(realName,state="disabled")
+            # except:
+                # g.pr("disableMenu menu,name:",menu,name)
+                # g.es_exception()
+    #@-node:ekr.20081004172422.878:disableMenu
+    #@+node:ekr.20081004172422.879:enableMenu
+    # Fail gracefully if the item name does not exist.
+
+    def enableMenu (self,menu,name,val):
+
+        if not menu:
+            return
+
+        # state = g.choose(val,"normal","disabled")
+        # try:
+            # menu.entryconfig(name,state=state)
+        # except:
+            # try:
+                # realName = self.getRealMenuName(name)
+                # realName = realName.replace("&","")
+                # menu.entryconfig(realName,state=state)
+            # except:
+                # g.pr("enableMenu menu,name,val:",menu,name,val)
+                # g.es_exception()
+    #@nonl
+    #@-node:ekr.20081004172422.879:enableMenu
+    #@+node:ekr.20081004172422.880:getMenuLabel
+    def getMenuLabel (self,menu,name):
+
+        '''Return the index of the menu item whose name (or offset) is given.
+        Return None if there is no such menu item.'''
+
+        # try:
+            # index = menu.index(name)
+        # except:
+            # index = None
+
+        # return index
+    #@-node:ekr.20081004172422.880:getMenuLabel
+    #@+node:ekr.20081004172422.881:setMenuLabel
+    def setMenuLabel (self,menu,name,label,underline=-1):
+
+        if not menu:
+            return
+
+        # try:
+            # if type(name) == type(0):
+                # # "name" is actually an index into the menu.
+                # menu.entryconfig(name,label=label,underline=underline)
+            # else:
+                # # Bug fix: 2/16/03: use translated name.
+                # realName = self.getRealMenuName(name)
+                # realName = realName.replace("&","")
+                # # Bug fix: 3/25/03" use tranlasted label.
+                # label = self.getRealMenuName(label)
+                # label = label.replace("&","")
+                # menu.entryconfig(realName,label=label,underline=underline)
+        # except:
+            # if not g.app.unitTesting:
+                # g.pr("setMenuLabel menu,name,label:",menu,name,label)
+                # g.es_exception()
+    #@-node:ekr.20081004172422.881:setMenuLabel
+    #@-node:ekr.20081004172422.874:Methods with other spellings (Qtmenu)
+    #@-node:ekr.20081004172422.862:Tkinter menu bindings
+    #@+node:ekr.20081004172422.882:getMacHelpMenu
+    def getMacHelpMenu (self,table):
 
         return None ###
 
-        tt = self ; c = tt.c
+        defaultTable = [
+                # &: a,b,c,d,e,f,h,l,m,n,o,p,r,s,t,u
+                ('&About Leo...',           'about-leo'),
+                ('Online &Home Page',       'open-online-home'),
+                '*open-online-&tutorial',
+                '*open-&users-guide',
+                '-',
+                ('Open Leo&Docs.leo',       'open-leoDocs-leo'),
+                ('Open Leo&Plugins.leo',    'open-leoPlugins-leo'),
+                ('Open Leo&Settings.leo',   'open-leoSettings-leo'),
+                ('Open &myLeoSettings.leo', 'open-myLeoSettings-leo'),
+                ('Open scr&ipts.leo',       'open-scripts-leo'),
+                '-',
+                '*he&lp-for-minibuffer',
+                '*help-for-&command',
+                '-',
+                '*&apropos-autocompletion',
+                '*apropos-&bindings',
+                '*apropos-&debugging-commands',
+                '*apropos-&find-commands',
+                '-',
+                '*pri&nt-bindings',
+                '*print-c&ommands',
+            ]
 
-        # Create the main container, possibly in a new row.
-        tt.frame = c.frame.getNewIconFrame()
+        try:
+            topMenu = self.getMenu('top')
+            # Use the name argument to create the special Macintosh Help menu.
+            helpMenu = Tk.Menu(topMenu,name='help',tearoff=0)
+            self.add_cascade(topMenu,label='Help',menu=helpMenu,underline=0)
+            self.createMenuEntries(helpMenu,table or defaultTable)
+            return helpMenu
 
-        # Create the chapter menu.
-        self.chapterVar = var = qt.StringVar()
-        var.set('main')
-
-        tt.chapterMenu = menu = Pmw.OptionMenu(tt.frame,
-            labelpos = 'w', label_text = 'chapter',
-            menubutton_textvariable = var,
-            items = [],
-            command = tt.selectTab,
-        )
-        menu.pack(side='left',padx=5)
-
-        # Actually add tt.frame to the icon row.
-        c.frame.addIconWidget(tt.frame)
-    #@-node:ekr.20081004172422.687:tt.createControl
-    #@-node:ekr.20081004172422.685: Birth & death
-    #@+node:ekr.20081004172422.688:Tabs...
-    #@+node:ekr.20081004172422.689:tt.createTab
-    def createTab (self,tabName,select=True):
-
-        tt = self
-
-        if tabName not in tt.tabNames:
-            tt.tabNames.append(tabName)
-            tt.setNames()
-    #@-node:ekr.20081004172422.689:tt.createTab
-    #@+node:ekr.20081004172422.690:tt.destroyTab
-    def destroyTab (self,tabName):
-
-        tt = self
-
-        if tabName in tt.tabNames:
-            tt.tabNames.remove(tabName)
-            tt.setNames()
-    #@-node:ekr.20081004172422.690:tt.destroyTab
-    #@+node:ekr.20081004172422.691:tt.selectTab
-    def selectTab (self,tabName):
-
-        tt = self
-
-        if tabName not in self.tabNames:
-            tt.createTab(tabName)
-
-        tt.cc.selectChapterByName(tabName)
-
-        self.c.redraw()
-        self.c.outerUpdate()
-    #@-node:ekr.20081004172422.691:tt.selectTab
-    #@+node:ekr.20081004172422.692:tt.setTabLabel
-    def setTabLabel (self,tabName):
-
-        tt = self
-        tt.chapterVar.set(tabName)
-    #@-node:ekr.20081004172422.692:tt.setTabLabel
-    #@+node:ekr.20081004172422.693:tt.setNames
-    def setNames (self):
-
-        '''Recreate the list of items.'''
-
-        tt = self
-        names = tt.tabNames[:]
-        if 'main' in names: names.remove('main')
-        names.sort()
-        names.insert(0,'main')
-        tt.chapterMenu.setitems(names)
-    #@-node:ekr.20081004172422.693:tt.setNames
-    #@-node:ekr.20081004172422.688:Tabs...
+        except Exception:
+            g.trace('Can not get MacOS Help menu')
+            g.es_exception()
+            return None
+    #@-node:ekr.20081004172422.882:getMacHelpMenu
     #@-others
-#@nonl
-#@-node:ekr.20081004172422.684:class leoQtTreeTab
+#@-node:ekr.20081004172422.856:class leoQtMenu
 #@+node:ekr.20081004172422.694:class leoQtTextWidget
 class leoQtTextWidget:
 
@@ -4630,8 +4871,7 @@ class leoQtTextWidget:
     #@-others
 #@nonl
 #@-node:ekr.20081004172422.694:class leoQtTextWidget
-#@-node:ekr.20081004172422.501:leoQtFrame
-#@+node:ekr.20081004172422.732:leoQtTree
+#@+node:ekr.20081004172422.732:class leoQtTree
 class leoQtTree (leoFrame.leoTree):
 
     """Leo qt tree class."""
@@ -6990,326 +7230,104 @@ class leoQtTree (leoFrame.leoTree):
         #@-others
     #@-node:ekr.20081004172422.899:To be deleted
     #@-others
-#@-node:ekr.20081004172422.732:leoQtTree
-#@+node:ekr.20081004172422.856:leoQtMenu
-class leoQtMenu (leoMenu.leoMenu):
+#@-node:ekr.20081004172422.732:class leoQtTree
+#@+node:ekr.20081004172422.684:class leoQtTreeTab
+class leoQtTreeTab (leoFrame.leoTreeTab):
+
+    '''A class representing a tabbed outline pane drawn with Qt.'''
 
     #@    @+others
-    #@+node:ekr.20081004172422.857:Birth & death
-    #@+node:ekr.20081004172422.858:leoQtMenu.__init__
-    def __init__ (self,frame):
+    #@+node:ekr.20081004172422.685: Birth & death
+    #@+node:ekr.20081004172422.686: ctor (leoTreeTab)
+    def __init__ (self,c,parentFrame,chapterController):
 
-        # Init the base class.
-        leoMenu.leoMenu.__init__(self,frame)
+        leoFrame.leoTreeTab.__init__ (self,c,chapterController,parentFrame)
+            # Init the base class.  Sets self.c, self.cc and self.parentFrame.
 
-        self.top = frame.top
-        self.c = c = frame.c
-        self.frame = frame
+        self.tabNames = [] # The list of tab names.  Changes when tabs are renamed.
 
-        self.font = c.config.getFontFromParams(
-            'menu_text_font_family', 'menu_text_font_size',
-            'menu_text_font_slant',  'menu_text_font_weight',
-            c.config.defaultMenuFontSize)
-    #@-node:ekr.20081004172422.858:leoQtMenu.__init__
-    #@-node:ekr.20081004172422.857:Birth & death
-    #@+node:ekr.20081004172422.859:Activate menu commands
-    #@+node:ekr.20081004172422.860:qtMenu.activateMenu
-    def activateMenu (self,menuName):
-
-        c = self.c ;  top = c.frame.top
-        # topx,topy = top.winfo_rootx(),top.winfo_rooty()
-        # menu = c.frame.menu.getMenu(menuName)
-
-        # if menu:
-            # d = self.computeMenuPositions()
-            # x = d.get(menuName)
-            # if x is None:
-                # x = 0 ; g.trace('oops, no menu offset: %s' % menuName)
-
-            # menu.tk_popup(topx+d.get(menuName,0),topy) # Fix by caugm.  Thanks!
-        # else:
-            # g.trace('oops, no menu: %s' % menuName)
-    #@-node:ekr.20081004172422.860:qtMenu.activateMenu
-    #@+node:ekr.20081004172422.861:qtMenu.computeMenuPositions
-    def computeMenuPositions (self):
-
-        # A hack.  It would be better to set this when creating the menus.
-        menus = ('File','Edit','Outline','Plugins','Cmds','Window','Help')
-
-        # Compute the *approximate* x offsets of each menu.
-        d = {}
-        n = 0
-        # for z in menus:
-            # menu = self.getMenu(z)
-            # fontName = menu.cget('font')
-            # font = tkFont.Font(font=fontName)
-            # # g.pr('%8s' % (z),menu.winfo_reqwidth(),menu.master,menu.winfo_x())
-            # d [z] = n
-            # # A total hack: sorta works on windows.
-            # n += font.measure(z+' '*4)+1
-
-        return d
-    #@-node:ekr.20081004172422.861:qtMenu.computeMenuPositions
-    #@-node:ekr.20081004172422.859:Activate menu commands
-    #@+node:ekr.20081004172422.862:Tkinter menu bindings
-    # See the Tk docs for what these routines are to do
-    #@+node:ekr.20081004172422.863:Methods with Tk spellings
-    #@+node:ekr.20081004172422.864:add_cascade
-    def add_cascade (self,parent,label,menu,underline):
-
-        """Wrapper for the Tkinter add_cascade menu method."""
-
-        # if parent:
-            # return parent.add_cascade(label=label,menu=menu,underline=underline)
-    #@-node:ekr.20081004172422.864:add_cascade
-    #@+node:ekr.20081004172422.865:add_command
-    def add_command (self,menu,**keys):
-
-        """Wrapper for the Tkinter add_command menu method."""
-
-        # if menu:
-            # return self.c.add_command(menu,**keys)
-    #@-node:ekr.20081004172422.865:add_command
-    #@+node:ekr.20081004172422.866:add_separator
-    def add_separator(self,menu):
-
-        """Wrapper for the Tkinter add_separator menu method."""
-
-        # if menu:
-            # menu.add_separator()
-    #@-node:ekr.20081004172422.866:add_separator
-    #@+node:ekr.20081004172422.867:bind (not called)
-    def bind (self,bind_shortcut,callback):
-
-        """Wrapper for the Tkinter bind menu method."""
-
-        # g.trace(bind_shortcut,g.callers())
-
-        # c = self.c
-
-        # return c.bind(self.top,bind_shortcut,callback)
-    #@-node:ekr.20081004172422.867:bind (not called)
-    #@+node:ekr.20081004172422.868:delete
-    def delete (self,menu,realItemName):
-
-        """Wrapper for the Tkinter delete menu method."""
-
-        # if menu:
-            # return menu.delete(realItemName)
-    #@-node:ekr.20081004172422.868:delete
-    #@+node:ekr.20081004172422.869:delete_range
-    def delete_range (self,menu,n1,n2):
-
-        """Wrapper for the Tkinter delete menu method."""
-
-        # if menu:
-            # return menu.delete(n1,n2)
-    #@-node:ekr.20081004172422.869:delete_range
-    #@+node:ekr.20081004172422.870:destroy
-    def destroy (self,menu):
-
-        """Wrapper for the Tkinter destroy menu method."""
-
-        # if menu:
-            # return menu.destroy()
-    #@-node:ekr.20081004172422.870:destroy
-    #@+node:ekr.20081004172422.871:insert
-    def insert (self,menuName,position,label,command,underline=None):
-
-        pass
-
-        # menu = self.getMenu(menuName)
-        # if menu:
-            # if underline is None:
-                # menu.insert(position,'command',label=label,command=command)
-            # else:
-                # menu.insert(position,'command',label=label,command=command,underline=underline)
-    #@-node:ekr.20081004172422.871:insert
-    #@+node:ekr.20081004172422.872:insert_cascade
-    def insert_cascade (self,parent,index,label,menu,underline):
-
-        """Wrapper for the Tkinter insert_cascade menu method."""
-
-        # if parent:
-            # return parent.insert_cascade(
-                # index=index,label=label,
-                # menu=menu,underline=underline)
-    #@-node:ekr.20081004172422.872:insert_cascade
-    #@+node:ekr.20081004172422.873:new_menu
-    def new_menu(self,parent,tearoff=False):
-
-        """Wrapper for the Tkinter new_menu menu method."""
-
-        # if self.font:
-            # try:
-                # return Tk.Menu(parent,tearoff=tearoff,font=self.font)
-            # except Exception:
-                # g.es_exception()
-                # return Tk.Menu(parent,tearoff=tearoff)
-        # else:
-            # return Tk.Menu(parent,tearoff=tearoff)
-    #@-node:ekr.20081004172422.873:new_menu
-    #@-node:ekr.20081004172422.863:Methods with Tk spellings
-    #@+node:ekr.20081004172422.874:Methods with other spellings (Qtmenu)
-    #@+node:ekr.20081004172422.875:clearAccel
-    def clearAccel(self,menu,name):
-
-        pass
-
-        # if not menu:
-            # return
-
-        # realName = self.getRealMenuName(name)
-        # realName = realName.replace("&","")
-
-        # menu.entryconfig(realName,accelerator='')
-    #@-node:ekr.20081004172422.875:clearAccel
-    #@+node:ekr.20081004172422.876:createMenuBar (Qtmenu)
-    def createMenuBar(self,frame):
-
-        top = frame.top
-
-        # # Note: font setting has no effect here.
-        # topMenu = Tk.Menu(top,postcommand=self.updateAllMenus)
-
-        # # Do gui-independent stuff.
-        # self.setMenu("top",topMenu)
-        # self.createMenusFromTables()
-
-        # top.config(menu=topMenu) # Display the menu.
-    #@nonl
-    #@-node:ekr.20081004172422.876:createMenuBar (Qtmenu)
-    #@+node:ekr.20081004172422.877:createOpenWithMenu
-    def createOpenWithMenu(self,parent,label,index,amp_index):
-
-        '''Create a submenu.'''
-
-        # menu = Tk.Menu(parent,tearoff=0)
-        # if menu:
-            # parent.insert_cascade(index,label=label,menu=menu,underline=amp_index)
-        # return menu
-    #@-node:ekr.20081004172422.877:createOpenWithMenu
-    #@+node:ekr.20081004172422.878:disableMenu
-    def disableMenu (self,menu,name):
-
-        if not menu:
-            return
-
-        # try:
-            # menu.entryconfig(name,state="disabled")
-        # except: 
-            # try:
-                # realName = self.getRealMenuName(name)
-                # realName = realName.replace("&","")
-                # menu.entryconfig(realName,state="disabled")
-            # except:
-                # g.pr("disableMenu menu,name:",menu,name)
-                # g.es_exception()
-    #@-node:ekr.20081004172422.878:disableMenu
-    #@+node:ekr.20081004172422.879:enableMenu
-    # Fail gracefully if the item name does not exist.
-
-    def enableMenu (self,menu,name,val):
-
-        if not menu:
-            return
-
-        # state = g.choose(val,"normal","disabled")
-        # try:
-            # menu.entryconfig(name,state=state)
-        # except:
-            # try:
-                # realName = self.getRealMenuName(name)
-                # realName = realName.replace("&","")
-                # menu.entryconfig(realName,state=state)
-            # except:
-                # g.pr("enableMenu menu,name,val:",menu,name,val)
-                # g.es_exception()
-    #@nonl
-    #@-node:ekr.20081004172422.879:enableMenu
-    #@+node:ekr.20081004172422.880:getMenuLabel
-    def getMenuLabel (self,menu,name):
-
-        '''Return the index of the menu item whose name (or offset) is given.
-        Return None if there is no such menu item.'''
-
-        # try:
-            # index = menu.index(name)
-        # except:
-            # index = None
-
-        # return index
-    #@-node:ekr.20081004172422.880:getMenuLabel
-    #@+node:ekr.20081004172422.881:setMenuLabel
-    def setMenuLabel (self,menu,name,label,underline=-1):
-
-        if not menu:
-            return
-
-        # try:
-            # if type(name) == type(0):
-                # # "name" is actually an index into the menu.
-                # menu.entryconfig(name,label=label,underline=underline)
-            # else:
-                # # Bug fix: 2/16/03: use translated name.
-                # realName = self.getRealMenuName(name)
-                # realName = realName.replace("&","")
-                # # Bug fix: 3/25/03" use tranlasted label.
-                # label = self.getRealMenuName(label)
-                # label = label.replace("&","")
-                # menu.entryconfig(realName,label=label,underline=underline)
-        # except:
-            # if not g.app.unitTesting:
-                # g.pr("setMenuLabel menu,name,label:",menu,name,label)
-                # g.es_exception()
-    #@-node:ekr.20081004172422.881:setMenuLabel
-    #@-node:ekr.20081004172422.874:Methods with other spellings (Qtmenu)
-    #@-node:ekr.20081004172422.862:Tkinter menu bindings
-    #@+node:ekr.20081004172422.882:getMacHelpMenu
-    def getMacHelpMenu (self,table):
+        self.createControl()
+    #@-node:ekr.20081004172422.686: ctor (leoTreeTab)
+    #@+node:ekr.20081004172422.687:tt.createControl
+    def createControl (self):
 
         return None ###
 
-        defaultTable = [
-                # &: a,b,c,d,e,f,h,l,m,n,o,p,r,s,t,u
-                ('&About Leo...',           'about-leo'),
-                ('Online &Home Page',       'open-online-home'),
-                '*open-online-&tutorial',
-                '*open-&users-guide',
-                '-',
-                ('Open Leo&Docs.leo',       'open-leoDocs-leo'),
-                ('Open Leo&Plugins.leo',    'open-leoPlugins-leo'),
-                ('Open Leo&Settings.leo',   'open-leoSettings-leo'),
-                ('Open &myLeoSettings.leo', 'open-myLeoSettings-leo'),
-                ('Open scr&ipts.leo',       'open-scripts-leo'),
-                '-',
-                '*he&lp-for-minibuffer',
-                '*help-for-&command',
-                '-',
-                '*&apropos-autocompletion',
-                '*apropos-&bindings',
-                '*apropos-&debugging-commands',
-                '*apropos-&find-commands',
-                '-',
-                '*pri&nt-bindings',
-                '*print-c&ommands',
-            ]
+        tt = self ; c = tt.c
 
-        try:
-            topMenu = self.getMenu('top')
-            # Use the name argument to create the special Macintosh Help menu.
-            helpMenu = Tk.Menu(topMenu,name='help',tearoff=0)
-            self.add_cascade(topMenu,label='Help',menu=helpMenu,underline=0)
-            self.createMenuEntries(helpMenu,table or defaultTable)
-            return helpMenu
+        # Create the main container, possibly in a new row.
+        tt.frame = c.frame.getNewIconFrame()
 
-        except Exception:
-            g.trace('Can not get MacOS Help menu')
-            g.es_exception()
-            return None
-    #@-node:ekr.20081004172422.882:getMacHelpMenu
+        # Create the chapter menu.
+        self.chapterVar = var = qt.StringVar()
+        var.set('main')
+
+        tt.chapterMenu = menu = Pmw.OptionMenu(tt.frame,
+            labelpos = 'w', label_text = 'chapter',
+            menubutton_textvariable = var,
+            items = [],
+            command = tt.selectTab,
+        )
+        menu.pack(side='left',padx=5)
+
+        # Actually add tt.frame to the icon row.
+        c.frame.addIconWidget(tt.frame)
+    #@-node:ekr.20081004172422.687:tt.createControl
+    #@-node:ekr.20081004172422.685: Birth & death
+    #@+node:ekr.20081004172422.688:Tabs...
+    #@+node:ekr.20081004172422.689:tt.createTab
+    def createTab (self,tabName,select=True):
+
+        tt = self
+
+        if tabName not in tt.tabNames:
+            tt.tabNames.append(tabName)
+            tt.setNames()
+    #@-node:ekr.20081004172422.689:tt.createTab
+    #@+node:ekr.20081004172422.690:tt.destroyTab
+    def destroyTab (self,tabName):
+
+        tt = self
+
+        if tabName in tt.tabNames:
+            tt.tabNames.remove(tabName)
+            tt.setNames()
+    #@-node:ekr.20081004172422.690:tt.destroyTab
+    #@+node:ekr.20081004172422.691:tt.selectTab
+    def selectTab (self,tabName):
+
+        tt = self
+
+        if tabName not in self.tabNames:
+            tt.createTab(tabName)
+
+        tt.cc.selectChapterByName(tabName)
+
+        self.c.redraw()
+        self.c.outerUpdate()
+    #@-node:ekr.20081004172422.691:tt.selectTab
+    #@+node:ekr.20081004172422.692:tt.setTabLabel
+    def setTabLabel (self,tabName):
+
+        tt = self
+        tt.chapterVar.set(tabName)
+    #@-node:ekr.20081004172422.692:tt.setTabLabel
+    #@+node:ekr.20081004172422.693:tt.setNames
+    def setNames (self):
+
+        '''Recreate the list of items.'''
+
+        tt = self
+        names = tt.tabNames[:]
+        if 'main' in names: names.remove('main')
+        names.sort()
+        names.insert(0,'main')
+        tt.chapterMenu.setitems(names)
+    #@-node:ekr.20081004172422.693:tt.setNames
+    #@-node:ekr.20081004172422.688:Tabs...
     #@-others
-#@-node:ekr.20081004172422.856:leoQtMenu
+#@nonl
+#@-node:ekr.20081004172422.684:class leoQtTreeTab
 #@-others
 #@-node:ekr.20081004102201.619:@thin qtGui.py
 #@-leo
