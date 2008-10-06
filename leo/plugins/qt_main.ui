@@ -1,4 +1,3 @@
-
 <ui version="4.0" >
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow" >
@@ -86,8 +85,6 @@
      <height>22</height>
     </rect>
    </property>
-   
-   <!--
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>File</string>
@@ -98,8 +95,6 @@
    </widget>
    <addaction name="menuFile" />
   </widget>
-  -->
-  
   <widget class="QStatusBar" name="statusbar" />
   <action name="actionOpen" >
    <property name="text" >
