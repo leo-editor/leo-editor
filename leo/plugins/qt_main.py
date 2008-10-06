@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt_main.ui'
 #
-# Created: Mon Oct 06 18:59:40 2008
+# Created: Mon Oct 06 19:03:50 2008
 #      by: PyQt4 UI code generator 4.4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -49,12 +49,6 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.verticalLayout_2.addLayout(self.verticalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1070, 22))
-        self.menubar.setObjectName("menubar")
-        self.menuFile = QtGui.QMenu(self.menubar)
-        self.menuFile.setObjectName("menuFile")
-        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
@@ -64,10 +58,6 @@ class Ui_MainWindow(object):
         self.actionSave.setObjectName("actionSave")
         self.actionIPython = QtGui.QAction(MainWindow)
         self.actionIPython.setObjectName("actionIPython")
-        self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionIPython)
-        self.menubar.addAction(self.menuFile.menuAction())
         self.label.setBuddy(self.lineEdit)
 
         self.retranslateUi(MainWindow)
@@ -80,7 +70,6 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Tab 1", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "Tab 2", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("MainWindow", "Minibuffer", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpen.setText(QtGui.QApplication.translate("MainWindow", "Open", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.actionIPython.setText(QtGui.QApplication.translate("MainWindow", "IPython", None, QtGui.QApplication.UnicodeUTF8))

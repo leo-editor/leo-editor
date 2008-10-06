@@ -76,25 +76,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1070</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>File</string>
-    </property>
-    <addaction name="actionOpen" />
-    <addaction name="actionSave" />
-    <addaction name="actionIPython" />
-   </widget>
-   <addaction name="menuFile" />
-  </widget>
   <widget class="QStatusBar" name="statusbar" />
   <action name="actionOpen" >
    <property name="text" >
