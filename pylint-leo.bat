@@ -13,17 +13,13 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-REM goto errors
+goto recent
 goto all
 
-:errors
+:recent
 
-echo leoFrame.py
-call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoTkinterFrame.py
-rem  Harmless: 				     W0221: mismatch between Tk.Text methods and overridden methods.
-call pylint.bat leo\core\leoTkinterFrame.py  --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+echo leoCommands.py
+call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

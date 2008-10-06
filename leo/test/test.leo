@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="220" left="194" height="500" width="867"/>
+	<global_window_position top="18" left="390" height="809" width="867"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -370,9 +370,7 @@
 <v t="ekr.20081001110047.3"><vh>eggs</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20081003162730.1" a="E"><vh>test of @nocolor-node</vh>
-<v t="ekr.20081003162730.2"><vh>NewHeadline</vh></v>
+<v t="ekr.20081006070847.2"><vh>path convenience methods</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3713,8 +3711,15 @@ c.frame.addIconButton(text="New")</t>
     
     pass</t>
 <t tx="ekr.20081003094737.1"></t>
-<t tx="ekr.20081003162730.1">@nocolor-node
-@ test</t>
-<t tx="ekr.20081003162730.2">@ </t>
+<t tx="ekr.20081006070847.2"># aList = g.get_directives_dict_list(p)
+# path = c.scanAtPathDirectives(aList)
+# filename = p.isAnyAtFileNode()
+# print g.os_path_finalize_join(path,filename)
+
+print c.getNodePath (p)
+
+print c.getNodeFileName(p)
+
+</t>
 </tnodes>
 </leo_file>

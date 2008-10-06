@@ -5868,7 +5868,7 @@ class baseCommands:
 
         return g.os_path_finalize_join(*args,**keys)
     #@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
-    #@+node:ekr.20081006100835.1:c.getNodePath & c.getNodePileName
+    #@+node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
     def getNodePath (self,p):
 
         '''Return the path in effect at node p.'''
@@ -5890,8 +5890,7 @@ class baseCommands:
         path = c.scanAtPathDirectives(aList)
         filename = p.isAnyAtFileNode()
         return filename and g.os_path_finalize_join(path,filename) or None
-    #@nonl
-    #@-node:ekr.20081006100835.1:c.getNodePath & c.getNodePileName
+    #@-node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
     #@-node:ekr.20080901124540.1:c.Directive scanning
     #@+node:ekr.20031218072017.2945:Dragging (commands)
     #@+node:ekr.20031218072017.2353:c.dragAfter
