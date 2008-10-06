@@ -758,11 +758,9 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f = self ; c = f.c
 
-        g.trace('***** creating window: %s' % c)
         f.top = Window(c)
         f.top.show()
 
-        # f.top = top = qt.Toplevel()
         # g.app.gui.attachLeoIcon(top)
         # top.title(f.title)
         # top.minsize(30,10) # In grid units.
@@ -2904,7 +2902,11 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081004102201.662:getFullVersion (to do)
     def getFullVersion (self,c):
 
-        qtLevel = '<qtLevel>' ### c.frame.top.getvar("tk_patchLevel")
+        try:
+            qtLevel = 'version %s' % QtCore.QT_VERSION
+        except Exception:
+            g.es_exception()
+            qtLevel = '<qtLevel>'
 
         return 'qt %s' % (qtLevel)
     #@-node:ekr.20081004102201.662:getFullVersion (to do)
@@ -4265,17 +4267,6 @@ class leoQtMenu (leoMenu.leoMenu):
         if menu:
             menu.addSeparator()
     #@-node:ekr.20081004172422.866:add_separator
-    #@+node:ekr.20081004172422.867:bind (not called)
-    def bind (self,bind_shortcut,callback):
-
-        """Wrapper for the Tkinter bind menu method."""
-
-        # g.trace(bind_shortcut,g.callers())
-
-        # c = self.c
-
-        # return c.bind(self.top,bind_shortcut,callback)
-    #@-node:ekr.20081004172422.867:bind (not called)
     #@+node:ekr.20081004172422.868:delete
     def delete (self,menu,realItemName):
 
@@ -4319,7 +4310,6 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter insert_cascade menu method."""
 
-        # g.trace(parent,index,label,menu,underline)
         g.trace(label,menu)
 
         menu.setTitle(label)
@@ -4331,12 +4321,6 @@ class leoQtMenu (leoMenu.leoMenu):
             self.menuBar.addMenu(menu)
 
         return menu
-
-
-        # if parent:
-            # return parent.insert_cascade(
-                # index=index,label=label,
-                # menu=menu,underline=underline)
     #@-node:ekr.20081004172422.872:insert_cascade
     #@+node:ekr.20081004172422.873:new_menu
     def new_menu(self,parent,tearoff=False):
@@ -4374,17 +4358,19 @@ class leoQtMenu (leoMenu.leoMenu):
         '''Create all top-level menus.
         The menuBar itself has already been created.'''
 
-        # Do gui-independent stuff.
-        ### self.setMenu("top",self.menuBar)
-
         self.createMenusFromTables()
-
-        # top.config(menu=topMenu) # Display the menu.
     #@-node:ekr.20081004172422.876:createMenuBar (Qtmenu)
     #@+node:ekr.20081004172422.877:createOpenWithMenu
     def createOpenWithMenu(self,parent,label,index,amp_index):
 
         '''Create a submenu.'''
+
+        c = self.c ; leoFrame = c.frame
+
+        g.trace()
+
+        # menu = qtMenuWrapper(c,leoFrame,parent)
+        # self.insert_cascade(parent,index,label,menu,underline=amp_index)
 
         # menu = Tk.Menu(parent,tearoff=0)
         # if menu:
