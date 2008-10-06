@@ -3135,49 +3135,19 @@ class leoQtLog (leoFrame.leoLog):
             contents = w.toHtml()
             w.setHtml(contents + s)
         else:
+            # put s to logWaiting and print s
+            g.app.logWaiting.append((s,color),)
+            if type(s) == type(u""):
+                s = g.toEncodedString(s,"ascii")
             print s
 
-        if 0:
-            if w:
-                #@            << put s to log control >>
-                #@+node:ekr.20081004172422.643:<< put s to log control >>
-                if color:
-                    if color not in self.colorTags:
-                        self.colorTags.append(color)
-                        w.tag_config(color,foreground=color)
-                    w.insert("end",s)
-                    w.tag_add(color,"end-%dc" % (len(s)+1),"end-1c")
-                    w.tag_add("black","end")
-                else:
-                    w.insert("end",s)
 
-                w.see('end')
-                self.forceLogUpdate(s)
-                #@-node:ekr.20081004172422.643:<< put s to log control >>
-                #@nl
-            else:
-                #@            << put s to logWaiting and print s >>
-                #@+node:ekr.20081004172422.644:<< put s to logWaiting and print s >>
-                g.app.logWaiting.append((s,color),)
-
-                g.pr("Null qt log")
-
-                if type(s) == type(u""):
-                    s = g.toEncodedString(s,"ascii")
-
-                g.pr(s)
-                #@-node:ekr.20081004172422.644:<< put s to logWaiting and print s >>
-                #@nl
     #@-node:ekr.20081004172422.642:put
     #@+node:ekr.20081004172422.645:putnl
     def putnl (self,tabName='Log'):
 
-        return ###
-
         if g.app.quitting:
             return
-
-        # g.pr('qtLog.putnl' # ,g.callers())
 
         if tabName:
             self.selectTab(tabName)
@@ -3185,13 +3155,11 @@ class leoQtLog (leoFrame.leoLog):
         w = self.logCtrl
 
         if w:
-            w.insert("end",'\n')
-            w.see('end')
-            self.forceLogUpdate('\n')
+            contents = w.toHtml()
+            w.setHtml(contents + '\n')
         else:
-            # Put a newline to logWaiting and print newline
-            g.app.logWaiting.append(('\n',"black"),)
-            g.pr("Null qt log")
+            # put s to logWaiting and print  a newline
+            g.app.logWaiting.append((s,color),)
     #@-node:ekr.20081004172422.645:putnl
     #@-node:ekr.20081004172422.641:put & putnl (qtLog)
     #@+node:ekr.20081004172422.646:Tab (QtLog)
@@ -3299,27 +3267,28 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.652:deleteTab
     def deleteTab (self,tabName,force=False):
 
-        return ###
+        c = self.c ; w = self.tabWidget
 
-        if tabName == 'Log':
-            pass
+        if tabName not in ('Log','Find','Spell'):
+            for i in range(w.count()):
+                if tabName == w.tabText(i):
+                    w.removeTab(i)
+                    break
 
-        elif tabName in ('Find','Spell') and not force:
-            self.selectTab('Log')
+        self.selectTab('Log')
 
-        elif tabName in self.tabWidget.pagenames():
-            # g.trace(tabName,force)
-            self.tabWidget.delete(tabName)
-            self.colorTagsDict [tabName] = []
-            self.canvasDict [tabName ] = None
-            self.textDict [tabName] = None
-            self.frameDict [tabName] = None
-            self.tabName = None
-            self.selectTab('Log')
+        # elif tabName in self.tabWidget.pagenames():
+            # # g.trace(tabName,force)
+            # self.tabWidget.delete(tabName)
+            # self.colorTagsDict [tabName] = []
+            # self.canvasDict [tabName ] = None
+            # self.textDict [tabName] = None
+            # self.frameDict [tabName] = None
+            # self.tabName = None
+            # self.selectTab('Log')
 
-        # New in Leo 4.4b1.
-        self.c.invalidateFocus()
-        self.c.bodyWantsFocus()
+        c.invalidateFocus()
+        c.bodyWantsFocus()
     #@-node:ekr.20081004172422.652:deleteTab
     #@+node:ekr.20081004172422.653:hideTab
     def hideTab (self,tabName):
