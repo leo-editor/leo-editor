@@ -4253,8 +4253,8 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter add_separator menu method."""
 
-        # if menu:
-            # menu.add_separator()
+        if menu:
+            menu.addSeparator()
     #@-node:ekr.20081004172422.866:add_separator
     #@+node:ekr.20081004172422.867:bind (not called)
     def bind (self,bind_shortcut,callback):
