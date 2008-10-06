@@ -1315,7 +1315,7 @@ class leoMenu:
         New in 4.4: this method shows the shortcut in the menu,
         but this method **never** binds any shortcuts.'''
 
-        # g.trace('c',self.c)
+        # g.trace('menu',menu)
 
         c = self.c ; f = c.frame ; k = c.k ; trace = False
         if g.app.unitTesting: return
