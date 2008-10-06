@@ -2859,6 +2859,7 @@ class leoQtLog (leoFrame.leoLog):
         self.tabWidget.clear() # Remove any tabs created by QtDesigner.
         self.setFontFromConfig()
         self.setColorFromConfig()
+
     #@-node:ekr.20081004172422.624:qtLog.__init__
     #@+node:ekr.20081004172422.626:qtLog.finishCreate
     def finishCreate (self):
@@ -2870,6 +2871,9 @@ class leoQtLog (leoFrame.leoLog):
         # c.searchCommands.openFindTab(show=False)
         # c.spellCommands.openSpellTab()
         log.selectTab('Log')
+        log.selectTab('Test',createText=False)
+        log.selectTab('Log')
+    #@nonl
     #@-node:ekr.20081004172422.626:qtLog.finishCreate
     #@+node:ekr.20081004172422.627:qtLog.createCanvasWidget
     def createCanvasWidget (self,parentFrame):
@@ -3368,10 +3372,14 @@ class leoQtLog (leoFrame.leoLog):
 
         for i in range(w.count()):
             if tabName == w.tabText(i):
-                # w.setTabPosition(tabName)
+                w.setCurrentIndex(i)
                 return
 
-        contents = QtGui.QTextEdit()
+        if createText:
+            contents = QtGui.QTextEdit()
+        else:
+            contents = QtGui.QWidget() # QtGui.QPainter()
+
         w.addTab(contents,tabName)
         if tabName == 'Log':
             self.logCtrl = contents
