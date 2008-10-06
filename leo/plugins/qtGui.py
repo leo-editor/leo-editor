@@ -2833,55 +2833,27 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.624:qtLog.__init__
     def __init__ (self,frame,parentFrame):
 
-        g.trace("leoQtLog")
+        # g.trace("leoQtLog")
 
         # Call the base class constructor and calls createControl.
         leoFrame.leoLog.__init__(self,frame,parentFrame)
 
         self.c = c = frame.c # Also set in the base constructor, but we need it here.
-
+        self.logCtrl = None # The text area for log messages.
+        self.colorTagsDict = {} # Keys are page names.  Values are saved colorTags lists.
         self.colorTags = []
             # The list of color names used as tags in present tab.
-            # This gest switched by selectTab.
+            # This gets switched by selectTab.
 
+        self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
+        self.tabWidget = c.frame.top.tabWidget # The Qt.TabWidget that holds all the tabs.
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
-        # New in 4.4a2: The log pane is a Pmw.Notebook...
-
-        self.nb = None      # The Pmw.Notebook that holds all the tabs.
-        self.colorTagsDict = {} # Keys are page names.  Values are saved colorTags lists.
-        self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
-
-        self.logCtrl = self.createControl(parentFrame)
+        # Initial setup.
+        self.tabWidget.clear() # Remove any tabs created by QtDesigner.
         self.setFontFromConfig()
         self.setColorFromConfig()
     #@-node:ekr.20081004172422.624:qtLog.__init__
-    #@+node:ekr.20081004172422.625:qtLog.createControl
-    def createControl (self,parentFrame):
-
-        c = self.c
-
-        return None ###
-
-        self.nb = Pmw.NoteBook(parentFrame,
-            borderwidth = 1, pagemargin = 0,
-            raisecommand = self.raiseTab,
-            lowercommand = self.lowerTab,
-            arrownavigation = 0,
-        )
-
-        menu = self.makeTabMenu(tabName=None)
-
-        def hullMenuCallback(event):
-            return self.onRightClick(event,menu)
-
-        c.bind(self.nb,'<Button-3>',hullMenuCallback)
-
-        self.nb.pack(fill='both',expand=1)
-        self.selectTab('Log') # Create and activate the default tabs.
-
-        return self.logCtrl
-    #@-node:ekr.20081004172422.625:qtLog.createControl
     #@+node:ekr.20081004172422.626:qtLog.finishCreate
     def finishCreate (self):
 
@@ -2889,10 +2861,8 @@ class leoQtLog (leoFrame.leoLog):
 
         c = self.c ; log = self
 
-        return ###
-
-        c.searchCommands.openFindTab(show=False)
-        c.spellCommands.openSpellTab()
+        # c.searchCommands.openFindTab(show=False)
+        # c.spellCommands.openSpellTab()
         log.selectTab('Log')
     #@-node:ekr.20081004172422.626:qtLog.finishCreate
     #@+node:ekr.20081004172422.627:qtLog.createCanvasWidget
@@ -2956,14 +2926,13 @@ class leoQtLog (leoFrame.leoLog):
 
         '''Create a tab popup menu.'''
 
+        c = self.c
+
         # g.trace(tabName,g.callers())
 
         return ###
 
-        c = self.c
-        hull = self.nb.component('hull') # A qt.Canvas.
-
-        menu = qt.Menu(hull,tearoff=0)
+        menu = QtGui.QMenu(hull,tearoff=0)
         c.add_command(menu,label='New Tab',command=self.newTabFromMenu)
         c.add_command(menu,label='New CanvasTab',command=self.newCanvasTabFromMenu)
 
@@ -3106,14 +3075,14 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.638:qtLog.onActivateLog
     def onActivateLog (self,event=None):
 
-        return ###
+        pass
 
-        try:
-            self.c.setLog()
-            self.frame.tree.OnDeactivate()
-            self.c.logWantsFocus()
-        except:
-            g.es_event_exception("activate log")
+        # try:
+            # self.c.setLog()
+            # self.frame.tree.OnDeactivate()
+            # self.c.logWantsFocus()
+        # except:
+            # g.es_event_exception("activate log")
     #@-node:ekr.20081004172422.638:qtLog.onActivateLog
     #@+node:ekr.20081004172422.639:qtLog.hasFocus
     def hasFocus (self):
@@ -3125,16 +3094,16 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.640:forceLogUpdate
     def forceLogUpdate (self,s):
 
-        return ###
+        pass
 
-        if sys.platform == "darwin": # Does not work on MacOS X.
-            try:
-                g.pr(s,newline=False) # Don't add a newline.
-            except UnicodeError:
-                # g.app may not be inited during scripts!
-                g.pr(g.toEncodedString(s,'utf-8'))
-        else:
-            self.logCtrl.update_idletasks()
+        # if sys.platform == "darwin": # Does not work on MacOS X.
+            # try:
+                # g.pr(s,newline=False) # Don't add a newline.
+            # except UnicodeError:
+                # # g.app may not be inited during scripts!
+                # g.pr(g.toEncodedString(s,'utf-8'))
+        # else:
+            # self.logCtrl.update_idletasks()
     #@-node:ekr.20081004172422.640:forceLogUpdate
     #@-node:ekr.20081004172422.637:Focus & update (qtLog)
     #@+node:ekr.20081004172422.641:put & putnl (qtLog)
@@ -3142,14 +3111,7 @@ class leoQtLog (leoFrame.leoLog):
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
 
-        print s ###
-        return ###
-
         c = self.c
-
-        # g.pr('qtLog.put',s)
-        # g.pr('qtLog.put',len(s),g.callers())
-
         if g.app.quitting or not c or not c.exists:
             return
 
@@ -3159,41 +3121,47 @@ class leoQtLog (leoFrame.leoLog):
         # Note: this must be done after the call to selectTab.
         w = self.logCtrl
         if w:
-            #@        << put s to log control >>
-            #@+node:ekr.20081004172422.643:<< put s to log control >>
-            if color:
-                if color not in self.colorTags:
-                    self.colorTags.append(color)
-                    w.tag_config(color,foreground=color)
-                w.insert("end",s)
-                w.tag_add(color,"end-%dc" % (len(s)+1),"end-1c")
-                w.tag_add("black","end")
-            else:
-                w.insert("end",s)
-
-            w.see('end')
-            self.forceLogUpdate(s)
-            #@-node:ekr.20081004172422.643:<< put s to log control >>
-            #@nl
-            self.logCtrl.update_idletasks()
+            # To do: add color tags.
+            contents = w.toHtml()
+            w.setHtml(contents + s)
         else:
-            #@        << put s to logWaiting and print s >>
-            #@+node:ekr.20081004172422.644:<< put s to logWaiting and print s >>
-            g.app.logWaiting.append((s,color),)
+            print s
 
-            g.pr("Null qt log")
+        if 0:
+            if w:
+                #@            << put s to log control >>
+                #@+node:ekr.20081004172422.643:<< put s to log control >>
+                if color:
+                    if color not in self.colorTags:
+                        self.colorTags.append(color)
+                        w.tag_config(color,foreground=color)
+                    w.insert("end",s)
+                    w.tag_add(color,"end-%dc" % (len(s)+1),"end-1c")
+                    w.tag_add("black","end")
+                else:
+                    w.insert("end",s)
 
-            if type(s) == type(u""):
-                s = g.toEncodedString(s,"ascii")
+                w.see('end')
+                self.forceLogUpdate(s)
+                #@-node:ekr.20081004172422.643:<< put s to log control >>
+                #@nl
+            else:
+                #@            << put s to logWaiting and print s >>
+                #@+node:ekr.20081004172422.644:<< put s to logWaiting and print s >>
+                g.app.logWaiting.append((s,color),)
 
-            g.pr(s)
-            #@-node:ekr.20081004172422.644:<< put s to logWaiting and print s >>
-            #@nl
+                g.pr("Null qt log")
+
+                if type(s) == type(u""):
+                    s = g.toEncodedString(s,"ascii")
+
+                g.pr(s)
+                #@-node:ekr.20081004172422.644:<< put s to logWaiting and print s >>
+                #@nl
     #@-node:ekr.20081004172422.642:put
     #@+node:ekr.20081004172422.645:putnl
     def putnl (self,tabName='Log'):
 
-        ### print ###
         return ###
 
         if g.app.quitting:
@@ -3237,7 +3205,7 @@ class leoQtLog (leoFrame.leoLog):
             self.logNumber += 1
             tabName = 'Canvas %d' % self.logNumber
 
-        tabFrame = self.nb.add(tabName)
+        tabFrame = self.tabWidget.add(tabName)
         menu = self.makeTabMenu(tabName,allowRename=False)
 
         w = self.createCanvasWidget(tabFrame)
@@ -3253,13 +3221,16 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.649:createTab
     def createTab (self,tabName,createText=True,wrap='none'):
 
-        return ###
-
-        # g.trace(tabName,wrap)
-
         c = self.c ; k = c.k
-        tabFrame = self.nb.add(tabName)
+
+        g.trace(tabName)
+
+        tabFrame = self.tabWidget.addTab(tabName)
+
+        return ### 
+
         self.menu = self.makeTabMenu(tabName)
+
         if createText:
             #@        << Create the tab's text widget >>
             #@+node:ekr.20081004172422.650:<< Create the tab's text widget >>
@@ -3326,9 +3297,9 @@ class leoQtLog (leoFrame.leoLog):
         elif tabName in ('Find','Spell') and not force:
             self.selectTab('Log')
 
-        elif tabName in self.nb.pagenames():
+        elif tabName in self.tabWidget.pagenames():
             # g.trace(tabName,force)
-            self.nb.delete(tabName)
+            self.tabWidget.delete(tabName)
             self.colorTagsDict [tabName] = []
             self.canvasDict [tabName ] = None
             self.textDict [tabName] = None
@@ -3354,7 +3325,7 @@ class leoQtLog (leoFrame.leoLog):
     def lowerTab (self,tabName):
 
         # if tabName:
-            # b = self.nb.tab(tabName) # b is a qt.Button.
+            # b = self.tabWidget.tab(tabName) # b is a qt.Button.
             # b.config(bg='grey80')
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
@@ -3362,7 +3333,7 @@ class leoQtLog (leoFrame.leoLog):
     def raiseTab (self,tabName):
 
         # if tabName:
-            # b = self.nb.tab(tabName) # b is a qt.Button.
+            # b = self.tabWidget.tab(tabName) # b is a qt.Button.
             # b.config(bg='LightSteelBlue1')
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
@@ -3379,7 +3350,7 @@ class leoQtLog (leoFrame.leoLog):
 
         # g.trace('newName',newName)
 
-        # label = self.nb.tab(oldName)
+        # label = self.tabWidget.tab(oldName)
         # label.configure(text=newName)
     #@-node:ekr.20081004172422.657:renameTab
     #@+node:ekr.20081004172422.658:selectTab
@@ -3387,31 +3358,39 @@ class leoQtLog (leoFrame.leoLog):
 
         '''Create the tab if necessary and make it active.'''
 
-        c = self.c
+        c = self.c ; w = self.tabWidget
 
-        return ###
+        for i in range(w.count()):
+            if tabName == w.tabText(i):
+                # w.setTabPosition(tabName)
+                return
 
-        tabFrame = self.frameDict.get(tabName)
-        logCtrl = self.textDict.get(tabName)
+        contents = QtGui.QTextEdit()
+        w.addTab(contents,tabName)
+        if tabName == 'Log':
+            self.logCtrl = contents
 
-        if tabFrame and logCtrl:
-            # Switch to a new colorTags list.
-            newColorTags = self.colorTagsDict.get(tabName)
-            self.colorTagsDict [self.tabName] = self.colorTags [:]
-            self.colorTags = newColorTags
-        elif not tabFrame:
-            self.createTab(tabName,createText=createText,wrap=wrap)
+        # tabFrame = self.frameDict.get(tabName)
+        # logCtrl = self.textDict.get(tabName)
 
-        self.nb.selectpage(tabName)
-        # Update the status vars.
-        self.tabName = tabName
-        w = self.textDict.get(tabName)
-        if w: self.logCtrl = w
-        self.tabFrame = self.frameDict.get(tabName)
+        # if tabFrame and logCtrl:
+            # # Switch to a new colorTags list.
+            # newColorTags = self.colorTagsDict.get(tabName)
+            # self.colorTagsDict [self.tabName] = self.colorTags [:]
+            # self.colorTags = newColorTags
+        # elif not tabFrame:
+            # self.createTab(tabName,createText=createText,wrap=wrap)
 
-        if 0: # Absolutely do not do this here!  It is a cause of the 'sticky focus' problem.
-            c.widgetWantsFocusNow(self.logCtrl)
-        return tabFrame
+        # self.tabWidget.selectpage(tabName)
+        # # Update the status vars.
+        # self.tabName = tabName
+        # w = self.textDict.get(tabName)
+        # if w: self.logCtrl = w
+        # self.tabFrame = self.frameDict.get(tabName)
+
+        # if 0: # Absolutely do not do this here!  It is a cause of the 'sticky focus' problem.
+            # c.widgetWantsFocusNow(self.logCtrl)
+        # return tabFrame
     #@-node:ekr.20081004172422.658:selectTab
     #@+node:ekr.20081004172422.659:setTabBindings
     def setTabBindings (self,tabName):
@@ -3419,7 +3398,7 @@ class leoQtLog (leoFrame.leoLog):
         return ###
 
         c = self.c ; k = c.k
-        tab = self.nb.tab(tabName)
+        tab = self.tabWidget.tab(tabName)
         w = self.textDict.get(tabName) or self.frameDict.get(tabName)
 
         def logTextRightClickCallback(event):
@@ -3456,7 +3435,7 @@ class leoQtLog (leoFrame.leoLog):
 
         return ###
 
-        c = self.c ; tab = self.nb.tab(tabName)
+        c = self.c ; tab = self.tabWidget.tab(tabName)
 
         def tabMenuRightClickCallback(event,menu=menu):
             return self.onRightClick(event,menu)
@@ -3512,7 +3491,7 @@ class leoQtLog (leoFrame.leoLog):
 
         return ###
 
-        canvas = self.nb.component('hull')
+        canvas = self.tabWidget.component('hull')
 
         # Overlay what is there!
         c = self.c
