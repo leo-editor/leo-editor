@@ -112,6 +112,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
             #self.connect(self.searchButton,signal("clicked()"), self.search)
             #self.connect(self.actionIPython,signal("activated()"),self.embed_ipython)
         self.connect(self.textEdit, signal("textChanged()"),self.text_changed)
+        self.connect(self.lineEdit,  signal("returnPressed()"),  self.minibuffer_run)
         self.selecting = True
         self.widget_dirty = False
         lexer = Qsci.QsciLexerPython(self.textEdit)
@@ -206,6 +207,14 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
             self.items[p.v] = it
             self.treeitems[id(it)] = p.t
             it.setText(0, p.headString())
+            
+    def minibuffer_run(self):
+
+        c = self.c
+        cmd = str(self.lineEdit.text())
+        print "minibuffer run:", cmd
+        c.executeMinibufferCommand(cmd)
+            
     #@-node:ekr.20081004172422.889:populate_tree
     #@+node:ekr.20081004172422.890:flush_current_tnode
     def flush_current_tnode(self):
