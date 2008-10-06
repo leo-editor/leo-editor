@@ -21,22 +21,19 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
 
-import qt_main # Contains Ui_MainWindow class
-
-
 import os
 import sys
 import time
 
 try:
     # import PyQt4.Qt as Qt # Loads all modules of Qt.
+    import qt_main # Contains Ui_MainWindow class
     import PyQt4.QtCore as QtCore
     import PyQt4.QtGui as QtGui
     from PyQt4 import Qsci
 except ImportError:
     QtCore = None
     g.es_print('can not import Qt',color='red')
-
 #@-node:ekr.20081004102201.620: << qt imports >>
 #@nl
 
@@ -131,51 +128,6 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
             # self.textEdit = Qsci.QsciScintilla(self.splitter_2)
             # self.treeWidget = QtGui.QTreeWidget(self.splitter)
     #@-node:ekr.20081004172422.884: ctor (Window)
-    #@+node:ekr.20081004172422.898:File ops: Deleted
-    if 0:
-        #@    @+others
-        #@+node:ekr.20081004172422.885:open_file
-        def open_file(self):
-
-            fd = QtGui.QFileDialog(self)
-            fname = fd.getOpenFileName()
-            # g.trace(fname)
-            self.load_file(fname)
-
-        #@-node:ekr.20081004172422.885:open_file
-        #@+node:ekr.20081004172422.886:load_file
-        def load_file(self,f):
-
-            c = self.c
-            print "Load",f
-            tstart()
-            ok,frame = g.openWithFileName(fileName=f,old_c=c)
-            tstop()
-            if ok:
-                c = frame.c
-                self.clear_model()
-                # print "Populate tree widget"
-                tstart()
-                self.populate_tree()
-                tstop()
-                # class Leox:
-                    # pass
-                # _leox = Leox()
-                # _leox.c = c
-                # _leox.g = g
-                # import ipy_leo
-                # ipy_leo.update_commander(_leox)
-        #@-node:ekr.20081004172422.886:load_file
-        #@+node:ekr.20081004172422.887:save_file
-        def save_file(self):
-
-            c = self.c
-            c.save()
-
-        #@-node:ekr.20081004172422.887:save_file
-        #@-others
-    #@nonl
-    #@-node:ekr.20081004172422.898:File ops: Deleted
     #@+node:ekr.20081004172422.888:clear_model
     def clear_model(self):
 
@@ -246,7 +198,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
     #@-others
 
 #@-node:ekr.20081004102201.629:class  Window (QMainWindow,Ui_MainWindow)
-#@+node:ekr.20081004172422.502:class leoQtBody
+#@+node:ekr.20081004172422.502:class leoQtBody (not used yet)
 class leoQtBody (leoFrame.leoBody):
 
     """A class that represents the body pane of a Qt window."""
@@ -256,7 +208,7 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081004172422.504:qtBody. __init__
     def __init__ (self,frame,parentFrame):
 
-        # g.trace("leoQtBody")
+        g.trace("***** leoQtBody")
 
         # Call the base class constructor.
         leoFrame.leoBody.__init__(self,frame,parentFrame)
@@ -498,36 +450,31 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081004172422.512:Qt bindings (qtBody)
     #@+node:ekr.20081004172422.513:Color tags (Qt spelling) (qtBody)
     def tag_add (self,tagName,index1,index2):
-        self.bodyCtrl.tag_add(tagName,index1,index2)
+        pass # self.bodyCtrl.tag_add(tagName,index1,index2)
 
     def tag_bind (self,tagName,event,callback):
-        self.c.tag_bind(self.bodyCtrl,tagName,event,callback)
+        pass # self.c.tag_bind(self.bodyCtrl,tagName,event,callback)
 
     def tag_configure (self,colorName,**keys):
-        self.bodyCtrl.tag_configure(colorName,keys)
+        pass # self.bodyCtrl.tag_configure(colorName,keys)
 
     def tag_delete(self,tagName):
-        self.bodyCtrl.tag_delete(tagName)
+        pass # self.bodyCtrl.tag_delete(tagName)
 
     def tag_names(self,*args): # New in Leo 4.4.1.
-        return self.bodyCtrl.tag_names(*args)
+        pass # return self.bodyCtrl.tag_names(*args)
 
     def tag_remove (self,tagName,index1,index2):
-        return self.bodyCtrl.tag_remove(tagName,index1,index2)
+        pass # return self.bodyCtrl.tag_remove(tagName,index1,index2)
     #@-node:ekr.20081004172422.513:Color tags (Qt spelling) (qtBody)
     #@+node:ekr.20081004172422.514:Configuration (Qt spelling) (qtBody)
     def cget(self,*args,**keys):
 
         val = self.bodyCtrl.cget(*args,**keys)
 
-        if g.app.trace:
-            g.trace(val,args,keys)
-
         return val
 
     def configure (self,*args,**keys):
-
-        # g.trace(args,keys)
 
         return self.bodyCtrl.configure(*args,**keys)
     #@-node:ekr.20081004172422.514:Configuration (Qt spelling) (qtBody)
@@ -608,7 +555,7 @@ class leoQtBody (leoFrame.leoBody):
     #@-node:ekr.20081004172422.522:setEditorColors
     #@-node:ekr.20081004172422.519:Editors (qtBody)
     #@-others
-#@-node:ekr.20081004172422.502:class leoQtBody
+#@-node:ekr.20081004172422.502:class leoQtBody (not used yet)
 #@+node:ekr.20081004102201.628:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
@@ -717,11 +664,29 @@ class leoQtFrame (leoFrame.leoFrame):
 
         return "<leoQtFrame: %s>" % self.title
     #@-node:ekr.20081004172422.527:__repr__ (qtFrame)
+    #@+node:ekr.20081004172422.537:f.setCanvasColorFromConfig
+    def setCanvasColorFromConfig (self,canvas):
+
+        g.trace(canvas)
+        return ###
+
+        c = self.c
+
+        bg = c.config.getColor("outline_pane_background_color") or 'white'
+
+        try:
+            canvas.configure(bg=bg)
+        except:
+            g.es("exception setting outline pane background color")
+            g.es_exception()
+    #@-node:ekr.20081004172422.537:f.setCanvasColorFromConfig
     #@+node:ekr.20081004172422.528:qtFrame.finishCreate & helpers
     def finishCreate (self,c):
 
         f = self ; f.c = c
-        # g.trace('qtFrame','c',c,g.callers())
+
+        f.top = Window(c)
+        f.top.show()
 
         self.bigTree           = c.config.getBool('big_outline_pane')
         self.trace_status_line = c.config.getBool('trace_status_line')
@@ -730,50 +695,19 @@ class leoQtFrame (leoFrame.leoFrame):
 
         # This must be done after creating the commander.
         f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
-        f.createOuterFrames()
-        f.createIconBar()
-        f.createLeoSplitters(f.outerFrame)
+        # # f.createOuterFrames()
+        # # f.createIconBar()
+        # # f.createLeoSplitters(f.outerFrame)
         f.createSplitterComponents()
-        f.createStatusLine()
-        f.createFirstTreeNode()
+        # # f.createStatusLine()
+        # # f.createFirstTreeNode()
         f.menu = leoQtMenu(f)
-            # c.finishCreate calls f.createMenuBar later.
         c.setLog()
         g.app.windowList.append(f)
         c.initVersion()
         c.signOnWithVersion()
         f.miniBufferWidget = f.createMiniBufferWidget()
         c.bodyWantsFocusNow()
-    #@+node:ekr.20081004172422.529:createOuterFrames
-    def createOuterFrames (self):
-
-        f = self ; c = f.c
-
-        f.top = Window(c)
-        f.top.show()
-
-        # g.app.gui.attachLeoIcon(top)
-        # top.title(f.title)
-        # top.minsize(30,10) # In grid units.
-
-        # if g.os_path_exists(g.app.user_xresources_path):
-            # f.top.option_readfile(g.app.user_xresources_path)
-
-        # f.top.protocol("WM_DELETE_WINDOW", f.OnCloseLeoEvent)
-        # c.bind(f.top,"<Button-1>", f.OnActivateLeoEvent)
-
-        # c.bind(f.top,"<Control-KeyPress>",f.OnControlKeyDown)
-        # c.bind(f.top,"<Control-KeyRelease>",f.OnControlKeyUp)
-
-        # # These don't work on Windows. Because of bugs in window managers,
-        # # there is NO WAY to know which window is on top!
-        # # c.bind(f.top,"<Activate>",f.OnActivateLeoEvent)
-        # # c.bind(f.top,"<Deactivate>",f.OnDeactivateLeoEvent)
-
-        # # Create the outer frame, the 'hull' component.
-        # f.outerFrame = qt.Frame(top)
-        # f.outerFrame.pack(expand=1,fill="both")
-    #@-node:ekr.20081004172422.529:createOuterFrames
     #@+node:ekr.20081004172422.530:createSplitterComponents (qtFrame) (removed frame.bodyCtrl ivar)
     def createSplitterComponents (self):
 
@@ -816,300 +750,7 @@ class leoQtFrame (leoFrame.leoFrame):
         f.body.setFontFromConfig()
         f.body.setColorFromConfig()
     #@-node:ekr.20081004172422.530:createSplitterComponents (qtFrame) (removed frame.bodyCtrl ivar)
-    #@+node:ekr.20081004172422.531:createFirstTreeNode
-    def createFirstTreeNode (self):
-
-        return ###
-
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        c.setRootPosition(p) # New in 4.4.2.
-        c.editPosition(p)
-    #@-node:ekr.20081004172422.531:createFirstTreeNode
     #@-node:ekr.20081004172422.528:qtFrame.finishCreate & helpers
-    #@+node:ekr.20081004172422.533:qtFrame.createCanvas & helpers
-    def createCanvas (self,parentFrame,pack=True):
-
-        c = self.c
-
-        return ###
-
-        scrolls = c.config.getBool('outline_pane_scrolls_horizontally')
-        scrolls = g.choose(scrolls,1,0)
-        canvas = self.createQtTreeCanvas(parentFrame,scrolls,pack)
-        self.setCanvasColorFromConfig(canvas)
-
-        return canvas
-    #@+node:ekr.20081004172422.534:f.createQtTreeCanvas & callbacks
-    def createQtTreeCanvas (self,parentFrame,scrolls,pack):
-
-        return ###
-
-        frame = self ; c = frame.c
-
-        canvas = qt.Canvas(parentFrame,name="canvas",
-            bd=0,bg="white",relief="flat")
-
-        treeBar = qt.Scrollbar(parentFrame,name="treeBar")
-
-        # New in Leo 4.4.3 b1: inject the ivar into the canvas.
-        canvas.leo_treeBar = treeBar
-
-        # Bind mouse wheel event to canvas
-        if sys.platform != "win32": # Works on 98, crashes on XP.
-            c.bind(canvas,"<MouseWheel>", frame.OnMouseWheel)
-            if 1: # New in 4.3.
-                #@            << workaround for mouse-wheel problems >>
-                #@+node:ekr.20081004172422.535:<< workaround for mouse-wheel problems >>
-                # Handle mapping of mouse-wheel to buttons 4 and 5.
-
-                def mapWheel(e):
-                    if e.num == 4: # Button 4
-                        e.delta = 120
-                        return frame.OnMouseWheel(e)
-                    elif e.num == 5: # Button 5
-                        e.delta = -120
-                        return frame.OnMouseWheel(e)
-
-                c.bind2(canvas,"<ButtonPress>",mapWheel,add=1)
-                #@-node:ekr.20081004172422.535:<< workaround for mouse-wheel problems >>
-                #@nl
-
-        canvas['yscrollcommand'] = self.setCallback
-        treeBar['command']     = self.yviewCallback
-        treeBar.pack(side="right", fill="y")
-        if scrolls: 
-            treeXBar = qt.Scrollbar( 
-                parentFrame,name='treeXBar',orient="horizontal") 
-            canvas['xscrollcommand'] = treeXBar.set 
-            treeXBar['command'] = canvas.xview 
-            treeXBar.pack(side="bottom", fill="x")
-
-        if pack:
-            canvas.pack(expand=1,fill="both")
-
-        c.bind(canvas,"<Button-1>", frame.OnActivateTree)
-
-        # Handle mouse wheel in the outline pane.
-        if sys.platform == "linux2": # This crashes tcl83.dll
-            c.bind(canvas,"<MouseWheel>", frame.OnMouseWheel)
-
-        # g.print_bindings("canvas",canvas)
-        return canvas
-    #@+node:ekr.20081004172422.536:Scrolling callbacks (qtFrame)
-    def setCallback (self,*args,**keys):
-
-        """Callback to adjust the scrollbar.
-
-        Args is a tuple of two floats describing the fraction of the visible area."""
-
-        #g.trace(self.tree.redrawCount,args,g.callers())
-        self.canvas.leo_treeBar.set(*args,**keys)
-
-        if self.tree.allocateOnlyVisibleNodes:
-            self.tree.setVisibleArea(args)
-
-    def yviewCallback (self,*args,**keys):
-
-        """Tell the canvas to scroll"""
-
-        #g.trace(vyiewCallback,args,keys,g.callers())
-
-        if self.tree.allocateOnlyVisibleNodes:
-            self.tree.allocateNodesBeforeScrolling(args)
-
-        self.canvas.yview(*args,**keys)
-    #@nonl
-    #@-node:ekr.20081004172422.536:Scrolling callbacks (qtFrame)
-    #@-node:ekr.20081004172422.534:f.createQtTreeCanvas & callbacks
-    #@+node:ekr.20081004172422.537:f.setCanvasColorFromConfig
-    def setCanvasColorFromConfig (self,canvas):
-
-        return ###
-
-        c = self.c
-
-        bg = c.config.getColor("outline_pane_background_color") or 'white'
-
-        try:
-            canvas.configure(bg=bg)
-        except:
-            g.es("exception setting outline pane background color")
-            g.es_exception()
-    #@-node:ekr.20081004172422.537:f.setCanvasColorFromConfig
-    #@-node:ekr.20081004172422.533:qtFrame.createCanvas & helpers
-    #@+node:ekr.20081004172422.538:qtFrame.createLeoSplitters & helpers
-    #@+at 
-    #@nonl
-    # The key invariants used throughout this code:
-    # 
-    # 1. self.splitVerticalFlag tells the alignment of the main splitter and
-    # 2. not self.splitVerticalFlag tells the alignment of the secondary 
-    # splitter.
-    # 
-    # Only the general-purpose divideAnySplitter routine doesn't know about 
-    # these
-    # invariants. So most of this code is specialized for Leo's window. OTOH, 
-    # creating
-    # a single splitter window would be much easier than this code.
-    #@-at
-    #@@c
-
-    def createLeoSplitters (self,parentFrame):
-
-        # Splitter 1 is the main splitter.
-        f1,bar1,split1Pane1,split1Pane2 = self.createLeoQtSplitter(
-            parentFrame,self.splitVerticalFlag,'splitter1')
-
-        self.f1,self.bar1 = f1,bar1
-        self.split1Pane1,self.split1Pane2 = split1Pane1,split1Pane2
-
-        # ** new **
-        split2parent = g.choose(self.bigTree,split1Pane2,split1Pane1)
-
-        # Splitter 2 is the secondary splitter.
-        f2,bar2,split2Pane1,split2Pane2 = self.createLeoQtSplitter(
-            # split1Pane1,not self.splitVerticalFlag,'splitter2')
-            split2parent,not self.splitVerticalFlag,'splitter2')
-
-        self.f2,self.bar2 = f2,bar2
-        self.split2Pane1,self.split2Pane2 = split2Pane1,split2Pane2
-    #@+node:ekr.20081004172422.539:createLeoQtSplitter
-    def createLeoQtSplitter (self,parent,verticalFlag,componentName):
-
-        c = self.c
-
-        return None,None,None,None ###
-
-        # Create the frames.
-        f = qt.Frame(parent,bd=0,relief="flat")
-        f.pack(expand=1,fill="both",pady=1)
-
-        f1 = qt.Frame(f)
-        f2 = qt.Frame(f)
-        bar = qt.Frame(f,bd=2,relief="raised",bg="LightSteelBlue2")
-
-        # Configure and place the frames.
-        self.configureBar(bar,verticalFlag)
-        self.bindBar(bar,verticalFlag)
-        self.placeSplitter(bar,f1,f2,verticalFlag)
-
-        return f, bar, f1, f2
-    #@-node:ekr.20081004172422.539:createLeoQtSplitter
-    #@+node:ekr.20081004172422.540:bindBar
-    def bindBar (self, bar, verticalFlag):
-
-        c = self.c
-
-        if verticalFlag == self.splitVerticalFlag:
-            c.bind(bar,"<B1-Motion>", self.onDragMainSplitBar)
-
-        else:
-            c.bind(bar,"<B1-Motion>", self.onDragSecondarySplitBar)
-    #@-node:ekr.20081004172422.540:bindBar
-    #@+node:ekr.20081004172422.541:divideAnySplitter
-    # This is the general-purpose placer for splitters.
-    # It is the only general-purpose splitter code in Leo.
-
-    def divideAnySplitter (self, frac, verticalFlag, bar, pane1, pane2):
-
-        return ###
-
-        # if self.bigTree:
-            # pane1,pane2 = pane2,pane1
-
-        if verticalFlag:
-            # Panes arranged vertically; horizontal splitter bar
-            bar.place(rely=frac)
-            pane1.place(relheight=frac)
-            pane2.place(relheight=1-frac)
-        else:
-            # Panes arranged horizontally; vertical splitter bar
-            bar.place(relx=frac)
-            pane1.place(relwidth=frac)
-            pane2.place(relwidth=1-frac)
-    #@-node:ekr.20081004172422.541:divideAnySplitter
-    #@+node:ekr.20081004172422.542:divideLeoSplitter
-    # Divides the main or secondary splitter, using the key invariant.
-    def divideLeoSplitter (self, verticalFlag, frac):
-
-        if self.splitVerticalFlag == verticalFlag:
-            self.divideLeoSplitter1(frac,verticalFlag)
-            self.ratio = frac # Ratio of body pane to tree pane.
-        else:
-            self.divideLeoSplitter2(frac,verticalFlag)
-            self.secondary_ratio = frac # Ratio of tree pane to log pane.
-
-    # Divides the main splitter.
-    def divideLeoSplitter1 (self, frac, verticalFlag): 
-        self.divideAnySplitter(frac, verticalFlag,
-            self.bar1, self.split1Pane1, self.split1Pane2)
-
-    # Divides the secondary splitter.
-    def divideLeoSplitter2 (self, frac, verticalFlag): 
-        self.divideAnySplitter (frac, verticalFlag,
-            self.bar2, self.split2Pane1, self.split2Pane2)
-    #@nonl
-    #@-node:ekr.20081004172422.542:divideLeoSplitter
-    #@+node:ekr.20081004172422.543:onDrag...
-    def onDragMainSplitBar (self, event):
-        self.onDragSplitterBar(event,self.splitVerticalFlag)
-
-    def onDragSecondarySplitBar (self, event):
-        self.onDragSplitterBar(event,not self.splitVerticalFlag)
-
-    def onDragSplitterBar (self, event, verticalFlag):
-
-        # x and y are the coordinates of the cursor relative to the bar, not the main window.
-        bar = event.widget
-        x = event.x
-        y = event.y
-        top = bar.winfo_toplevel()
-
-        if verticalFlag:
-            # Panes arranged vertically; horizontal splitter bar
-            wRoot = top.winfo_rooty()
-            barRoot = bar.winfo_rooty()
-            wMax = top.winfo_height()
-            offset = float(barRoot) + y - wRoot
-        else:
-            # Panes arranged horizontally; vertical splitter bar
-            wRoot = top.winfo_rootx()
-            barRoot = bar.winfo_rootx()
-            wMax = top.winfo_width()
-            offset = float(barRoot) + x - wRoot
-
-        # Adjust the pixels, not the frac.
-        if offset < 3: offset = 3
-        if offset > wMax - 2: offset = wMax - 2
-        # Redraw the splitter as the drag is occuring.
-        frac = float(offset) / wMax
-        # g.trace(frac)
-        self.divideLeoSplitter(verticalFlag, frac)
-    #@-node:ekr.20081004172422.543:onDrag...
-    #@+node:ekr.20081004172422.544:placeSplitter
-    def placeSplitter (self,bar,pane1,pane2,verticalFlag):
-
-        # if self.bigTree:
-            # pane1,pane2 = pane2,pane1
-
-        if verticalFlag:
-            # Panes arranged vertically; horizontal splitter bar
-            pane1.place(relx=0.5, rely =   0, anchor="n", relwidth=1.0, relheight=0.5)
-            pane2.place(relx=0.5, rely = 1.0, anchor="s", relwidth=1.0, relheight=0.5)
-            bar.place  (relx=0.5, rely = 0.5, anchor="c", relwidth=1.0)
-        else:
-            # Panes arranged horizontally; vertical splitter bar
-            # adj gives tree pane more room when tiling vertically.
-            adj = g.choose(verticalFlag != self.splitVerticalFlag,0.65,0.5)
-            pane1.place(rely=0.5, relx =   0, anchor="w", relheight=1.0, relwidth=adj)
-            pane2.place(rely=0.5, relx = 1.0, anchor="e", relheight=1.0, relwidth=1.0-adj)
-            bar.place  (rely=0.5, relx = adj, anchor="c", relheight=1.0)
-    #@-node:ekr.20081004172422.544:placeSplitter
-    #@-node:ekr.20081004172422.538:qtFrame.createLeoSplitters & helpers
     #@+node:ekr.20081004172422.545:Destroying the qtFrame
     #@+node:ekr.20081004172422.546:destroyAllObjects
     def destroyAllObjects (self):
@@ -1177,25 +818,15 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20081004172422.549:destroySelf (qtFrame)
     def destroySelf (self):
 
-        # g.trace(self)
-
         # Remember these: we are about to destroy all of our ivars!
-        top = self.top 
-        c = self.c
+        c,top = self.c,self.top 
 
         # Indicate that the commander is no longer valid.
         c.exists = False
 
-        # New in Leo 4.4.8: Finish all window tasks before killing the window.
-        top.update()
-
-        # g.trace(self)
-
         # Important: this destroys all the objects of the commander too.
-        self.destroyAllObjects()
-
-        # New in Leo 4.4.8: Finish all window tasks before killing the window.
-        top.update()
+        if 0:
+            self.destroyAllObjects()
 
         c.exists = False # Make sure this one ivar has not been destroyed.
 
@@ -1852,11 +1483,12 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20081004172422.589:resizePanesToRatio (qtFrame)
     def resizePanesToRatio(self,ratio,ratio2):
 
+        pass
+
         # g.trace(ratio,ratio2,g.callers())
 
-        self.divideLeoSplitter(self.splitVerticalFlag,ratio)
-        self.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
-    #@nonl
+        # self.divideLeoSplitter(self.splitVerticalFlag,ratio)
+        # self.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
     #@-node:ekr.20081004172422.589:resizePanesToRatio (qtFrame)
     #@-node:ekr.20081004172422.580:Configuration (qtFrame)
     #@+node:ekr.20081004172422.590:Event handlers (qtFrame)
@@ -2890,17 +2522,17 @@ class leoQtGui(leoGui.leoGui):
             return g.app.config.defaultFont
     #@-node:ekr.20081004102201.661:qtGui.getFontFromParams
     #@-node:ekr.20081004102201.660:Font (to do)
-    #@+node:ekr.20081004102201.662:getFullVersion (to do)
+    #@+node:ekr.20081004102201.662:getFullVersion
     def getFullVersion (self,c):
 
         try:
             qtLevel = 'version %s' % QtCore.QT_VERSION
         except Exception:
-            g.es_exception()
+            # g.es_exception()
             qtLevel = '<qtLevel>'
 
         return 'qt %s' % (qtLevel)
-    #@-node:ekr.20081004102201.662:getFullVersion (to do)
+    #@-node:ekr.20081004102201.662:getFullVersion
     #@+node:ekr.20081004102201.663:Icons (to do)
     #@+node:ekr.20081004102201.664:attachLeoIcon
     def attachLeoIcon (self,w):
@@ -3175,9 +2807,9 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.624:qtLog.__init__
     def __init__ (self,frame,parentFrame):
 
-        return ###
+        g.trace("leoQtLog")
 
-        # g.trace("leoQtLog")
+        return ###
 
         # Call the base class constructor and calls createControl.
         leoFrame.leoLog.__init__(self,frame,parentFrame)
@@ -3199,9 +2831,6 @@ class leoQtLog (leoFrame.leoLog):
         self.logCtrl = self.createControl(parentFrame)
         self.setFontFromConfig()
         self.setColorFromConfig()
-
-
-
     #@-node:ekr.20081004172422.624:qtLog.__init__
     #@+node:ekr.20081004172422.625:qtLog.createControl
     def createControl (self,parentFrame):
