@@ -112,8 +112,14 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.connect(self.lineEdit,  signal("returnPressed()"),  self.minibuffer_run)
         self.selecting = True
         self.widget_dirty = False
+        # XXX todo. this just makes the text editor a bit friendlier for
+        # python. Eventually, it will be configurable the leo way
         lexer = Qsci.QsciLexerPython(self.textEdit)
         self.textEdit.setLexer(lexer)
+        self.textEdit.setIndentationWidth(4)
+        self.textEdit.setIndentationsUseTabs(False)
+        self.textEdit.setAutoIndent(True)
+
         self.ev_filt = leoQtEventFilter()
         self.ev_filt.bindings['Ctrl+H'] = self.edit_current_headline
         self.textEdit.installEventFilter(self.ev_filt)
