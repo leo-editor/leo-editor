@@ -2493,38 +2493,38 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081004102201.640:qtGui dialogs & panels (test)
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
         """Create and run a qt About Leo dialog."""
-        d = leoGtkDialog.qtAboutLeo(c,version,theCopyright,url,email)
+        d = qtAboutLeo(c,version,theCopyright,url,email)
         return d.run(modal=False)
 
     def runAskLeoIDDialog(self):
         """Create and run a dialog to get g.app.LeoID."""
-        d = leoGtkDialog.qtAskLeoID()
+        d = qtAskLeoID()
         return d.run(modal=True)
 
     def runAskOkDialog(self,c,title,message=None,text="Ok"):
         """Create and run a qt an askOK dialog ."""
-        d = leoGtkDialog.qtAskOk(c,title,message,text)
+        d = qtAskOk(c,title,message,text)
         return d.run(modal=True)
 
     def runAskOkCancelNumberDialog(self,c,title,message):
         """Create and run askOkCancelNumber dialog ."""
-        d = leoGtkDialog.qtAskOkCancelNumber(c,title,message)
+        d = qtAskOkCancelNumber(c,title,message)
         return d.run(modal=True)
 
     def runAskOkCancelStringDialog(self,c,title,message):
         """Create and run askOkCancelString dialog ."""
-        d = leoGtkDialog.qtAskOkCancelString(c,title,message)
+        d = qtAskOkCancelString(c,title,message)
         return d.run(modal=True)
 
     def runAskYesNoDialog(self,c,title,message=None):
         """Create and run an askYesNo dialog."""
-        d = leoGtkDialog.qtAskYesNo(c,title,message)
+        d = qtAskYesNo(c,title,message)
         return d.run(modal=True)
 
     def runAskYesNoCancelDialog(self,c,title,
         message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
         """Create and run an askYesNoCancel dialog ."""
-        d = leoGtkDialog.qtAskYesNoCancel(
+        d = qtAskYesNoCancel(
             c,title,message,yesMessage,noMessage,defaultButton)
         return d.run(modal=True)
 
@@ -4140,23 +4140,32 @@ class leoQtLog (leoFrame.leoLog):
 class leoQtMenu (leoMenu.leoMenu):
 
     #@    @+others
-    #@+node:ekr.20081004172422.857:Birth & death
     #@+node:ekr.20081004172422.858:leoQtMenu.__init__
     def __init__ (self,frame):
+
+        assert frame
+        assert frame.c
 
         # Init the base class.
         leoMenu.leoMenu.__init__(self,frame)
 
-        self.top = frame.top
-        self.c = c = frame.c
         self.frame = frame
+        self.c = c = frame.c
+        self.leo_label = '<no leo_label>'
 
-        self.font = c.config.getFontFromParams(
-            'menu_text_font_family', 'menu_text_font_size',
-            'menu_text_font_slant',  'menu_text_font_weight',
-            c.config.defaultMenuFontSize)
+        self.menuBar = c.frame.top.menubar
+        assert self.menuBar
+
+        # if not wrapper: self.menuBar.addMenu('File')
+
+        if 0:
+            self.font = c.config.getFontFromParams(
+                'menu_text_font_family', 'menu_text_font_size',
+                'menu_text_font_slant',  'menu_text_font_weight',
+                c.config.defaultMenuFontSize)
     #@-node:ekr.20081004172422.858:leoQtMenu.__init__
-    #@-node:ekr.20081004172422.857:Birth & death
+    #@+node:ekr.20081006073635.35:leoQtMenu.__repr__
+    #@-node:ekr.20081006073635.35:leoQtMenu.__repr__
     #@+node:ekr.20081004172422.859:Activate menu commands
     #@+node:ekr.20081004172422.860:qtMenu.activateMenu
     def activateMenu (self,menuName):
@@ -4202,18 +4211,42 @@ class leoQtMenu (leoMenu.leoMenu):
     #@+node:ekr.20081004172422.864:add_cascade
     def add_cascade (self,parent,label,menu,underline):
 
-        """Wrapper for the Tkinter add_cascade menu method."""
+        """Wrapper for the Tkinter add_cascade menu method.
 
-        # if parent:
-            # return parent.add_cascade(label=label,menu=menu,underline=underline)
+        Adds a submenu to the parent menu, or the menubar."""
+
+        c = self.c ; leoFrame = c.frame
+
+        menu.setTitle(label)
+        menu.leo_label = label
+
+        if parent:
+            parent.addMenu(menu)
+        else:
+            self.menuBar.addMenu(menu)
+
+        return menu
     #@-node:ekr.20081004172422.864:add_cascade
     #@+node:ekr.20081004172422.865:add_command
-    def add_command (self,menu,**keys):
+    def add_command (self,**keys):
 
         """Wrapper for the Tkinter add_command menu method."""
 
-        # if menu:
-            # return self.c.add_command(menu,**keys)
+        label = keys.get('label')
+        command = keys.get('command')
+        underline = keys.get('underline')
+
+        menu = keys.get('menu') or self
+
+        if label:
+            action = menu.addAction(label)
+            if command:
+                def add_command_callback(label=label,command=command):
+                    g.trace(label,command)
+                    command()
+
+                QtCore.QObject.connect(
+                    action,QtCore.SIGNAL("triggered()"),add_command_callback)
     #@-node:ekr.20081004172422.865:add_command
     #@+node:ekr.20081004172422.866:add_separator
     def add_separator(self,menu):
@@ -4261,7 +4294,9 @@ class leoQtMenu (leoMenu.leoMenu):
     #@+node:ekr.20081004172422.871:insert
     def insert (self,menuName,position,label,command,underline=None):
 
-        pass
+        pass ### Not ready yet.
+
+        # g.trace(menuName,position,label,command)
 
         # menu = self.getMenu(menuName)
         # if menu:
@@ -4275,6 +4310,9 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter insert_cascade menu method."""
 
+        # g.trace(parent,index,label,menu,underline)
+        g.trace(label,menu)
+
         # if parent:
             # return parent.insert_cascade(
                 # index=index,label=label,
@@ -4285,14 +4323,15 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter new_menu menu method."""
 
-        # if self.font:
-            # try:
-                # return Tk.Menu(parent,tearoff=tearoff,font=self.font)
-            # except Exception:
-                # g.es_exception()
-                # return Tk.Menu(parent,tearoff=tearoff)
-        # else:
-            # return Tk.Menu(parent,tearoff=tearoff)
+        c = self.c ; leoFrame = self.frame
+
+        # g.trace(parent)
+
+        # Parent can be None, in which case it will be added to the menuBar.
+        menu = qtMenuWrapper(c,leoFrame,parent)
+
+        return menu
+    #@nonl
     #@-node:ekr.20081004172422.873:new_menu
     #@-node:ekr.20081004172422.863:Methods with Tk spellings
     #@+node:ekr.20081004172422.874:Methods with other spellings (Qtmenu)
@@ -4312,17 +4351,15 @@ class leoQtMenu (leoMenu.leoMenu):
     #@+node:ekr.20081004172422.876:createMenuBar (Qtmenu)
     def createMenuBar(self,frame):
 
-        top = frame.top
+        '''Create all top-level menus.
+        The menuBar itself has already been created.'''
 
-        # # Note: font setting has no effect here.
-        # topMenu = Tk.Menu(top,postcommand=self.updateAllMenus)
+        # Do gui-independent stuff.
+        ### self.setMenu("top",self.menuBar)
 
-        # # Do gui-independent stuff.
-        # self.setMenu("top",topMenu)
-        # self.createMenusFromTables()
+        self.createMenusFromTables()
 
         # top.config(menu=topMenu) # Display the menu.
-    #@nonl
     #@-node:ekr.20081004172422.876:createMenuBar (Qtmenu)
     #@+node:ekr.20081004172422.877:createOpenWithMenu
     def createOpenWithMenu(self,parent,label,index,amp_index):
@@ -4886,8 +4923,6 @@ class leoQtTree (leoFrame.leoTree):
         # Init the base class.
         leoFrame.leoTree.__init__(self,frame)
 
-        return ####
-
         # Configuration and debugging settings.
         # These must be defined here to eliminate memory leaks.
         self.allow_clone_drags          = c.config.getBool('allow_clone_drags')
@@ -4935,6 +4970,8 @@ class leoQtTree (leoFrame.leoTree):
         self.trace_select   = c.config.getBool('trace_select')
         self.trace_stats    = c.config.getBool('show_tree_stats')
         self.use_chapters   = c.config.getBool('use_chapters')
+
+        return ###
 
         # Objects associated with this tree.
         self.canvas = canvas
@@ -5034,7 +5071,6 @@ class leoQtTree (leoFrame.leoTree):
         self.freeUserIcons = {}
 
         self._block_canvas_menu = False
-    #@nonl
     #@-node:ekr.20081004172422.738:__init__ (qtTree)
     #@+node:ekr.20081004172422.742:qtTtree.setBindings & helper
     def setBindings (self):
@@ -7328,6 +7364,20 @@ class leoQtTreeTab (leoFrame.leoTreeTab):
     #@-others
 #@nonl
 #@-node:ekr.20081004172422.684:class leoQtTreeTab
+#@+node:ekr.20081006073635.34:class qtMenuWrapper (QtMenu,leoQtMenu)
+class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
+
+    def __init__ (self,c,frame,parent):
+
+        assert c
+        assert frame
+        QtGui.QMenu.__init__(self,parent)
+        leoQtMenu.__init__(self,frame)
+
+    def __repr__(self):
+
+        return '<qtMenuWrapper %s>' % self.leo_label or 'unlabeled'
+#@-node:ekr.20081006073635.34:class qtMenuWrapper (QtMenu,leoQtMenu)
 #@-others
 #@-node:ekr.20081004102201.619:@thin qtGui.py
 #@-leo
