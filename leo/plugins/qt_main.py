@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt_main.ui'
 #
-# Created: Mon Oct 06 22:33:38 2008
+# Created: Mon Oct 06 23:54:38 2008
 #      by: PyQt4 UI code generator 4.4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,6 +31,11 @@ class Ui_MainWindow(object):
         self.tabWidget.setObjectName("tabWidget")
         self.tab = QtGui.QWidget()
         self.tab.setObjectName("tab")
+        self.verticalLayout_3 = QtGui.QVBoxLayout(self.tab)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.textBrowser = QtGui.QTextBrowser(self.tab)
+        self.textBrowser.setObjectName("textBrowser")
+        self.verticalLayout_3.addWidget(self.textBrowser)
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName("tab_2")
@@ -65,6 +70,7 @@ class Ui_MainWindow(object):
         self.label.setBuddy(self.lineEdit)
 
         self.retranslateUi(MainWindow)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL("itemSelectionChanged()"), MainWindow.showNormal)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
