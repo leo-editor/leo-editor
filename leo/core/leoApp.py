@@ -94,14 +94,12 @@ class LeoApp:
 
         #@    << Define global constants >>
         #@+node:ekr.20031218072017.1417:<< define global constants >>
-        self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 
-        # New in leo.py 3.0
         self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
         self.prolog_postfix_string = "?>"
-
-        # leo.py 3.11
-        self.use_unicode = True # True: use new unicode logic.
+        self.prolog_namespace_string = 'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
+        #@nonl
         #@-node:ekr.20031218072017.1417:<< define global constants >>
         #@nl
         #@    << Define global data structures >>
