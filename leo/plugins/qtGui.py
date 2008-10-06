@@ -28,7 +28,7 @@ import sys
 import time
 
 try:
-    import PyQt4.Qt as qt
+    # import PyQt4.Qt as Qt # Loads all modules of Qt.
     import PyQt4.QtCore as QtCore
     import PyQt4.QtGui as QtGui
     from PyQt4 import Qsci
@@ -37,8 +37,8 @@ try:
     # from PyQt4 import Qsci
     # from ui_main import Ui_MainWindow
 except ImportError:
-    qt = None
-    g.es_print('can not import qt',color='red')
+    QtCore = None
+    g.es_print('can not import Qt',color='red')
 
 #@-node:ekr.20081004102201.620:<< qt imports >>
 #@nl
@@ -46,48 +46,13 @@ except ImportError:
 #@+others
 #@+node:ekr.20081004102201.623:Module level
 
-#@+node:ekr.20081004102201.1783:Not used
-if 0:
-    #@    @+others
-    #@+node:ekr.20081004102201.624:main
-    def main():
-
-        argv = sys.argv
-        app = QApplication(sys.argv)
-        window = Window()
-        window.show()
-
-        if 0:
-            timer = QTimer()
-            timer.setInterval(1)
-            timer.setSingleShot(True)
-            timer.connect(timer, SIGNAL("timeout()"), window.startup_ops)
-
-        QTimer.singleShot(1, window.startup_ops)
-
-        embed_ipython()
-        sys.exit(app.exec_())
-    #@-node:ekr.20081004102201.624:main
-    #@+node:ekr.20081004102201.625:startleo
-    def startleo():
-
-        global c,g, controller
-        from leo.core import leoBridge
-        controller = leoBridge.controller(gui='nullGui')
-        g = controller.globals()
-        c = None
-    #@nonl
-    #@-node:ekr.20081004102201.625:startleo
-    #@-others
-#@nonl
-#@-node:ekr.20081004102201.1783:Not used
 #@+node:ekr.20081004102201.621:init
 def init():
 
     if g.app.unitTesting: # Not Ok for unit testing!
         return False
 
-    if not qt:
+    if not QtCore:
         return False
 
     if g.app.gui:
@@ -120,81 +85,17 @@ def tstop():
     print ("Time: %1.2fsec" % (time.time() - __timing))
 #@-node:ekr.20081004102201.626:tstart & tstop
 #@-node:ekr.20081004102201.623:Module level
-#@+node:ekr.20081004172422.2:class Ui_MainWindow
-"""
-class Ui_MainWindow(object):
-
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1339, 649)
-        self.centralwidget = QtGui.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.horizontalLayout = QtGui.QHBoxLayout(self.centralwidget)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.splitter_2 = QtGui.QSplitter(self.centralwidget)
-        self.splitter_2.setOrientation(QtCore.Qt.Vertical)
-        self.splitter_2.setObjectName("splitter_2")
-        self.splitter = QtGui.QSplitter(self.splitter_2)
-        self.splitter.setOrientation(QtCore.Qt.Horizontal)
-        self.splitter.setObjectName("splitter")
-        self.treeWidget = QtGui.QTreeWidget(self.splitter)
-        self.treeWidget.setObjectName("treeWidget")
-        self.logView = QtGui.QTextEdit(self.splitter)
-        self.logView.setObjectName("logView")
-        self.textEdit = Qsci.QsciScintilla(self.splitter_2)
-        self.textEdit.setObjectName("textEdit")
-        self.horizontalLayout.addWidget(self.splitter_2)
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1339, 27))
-        self.menubar.setObjectName("menubar")
-        self.menuFile = QtGui.QMenu(self.menubar)
-        self.menuFile.setObjectName("menuFile")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-        self.actionOpen = QtGui.QAction(MainWindow)
-        self.actionOpen.setObjectName("actionOpen")
-        self.actionSave = QtGui.QAction(MainWindow)
-        self.actionSave.setObjectName("actionSave")
-        self.actionIPython = QtGui.QAction(MainWindow)
-        self.actionIPython.setObjectName("actionIPython")
-        self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionIPython)
-        self.menubar.addAction(self.menuFile.menuAction())
-
-        self.retranslateUi(MainWindow)
-        QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL("itemSelectionChanged()"), MainWindow.showNormal)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate(
-            "MainWindow", "QLeoLite", None, QtGui.QApplication.UnicodeUTF8))
-        self.treeWidget.headerItem().setText(0,
-            QtGui.QApplication.translate("MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuFile.setTitle(QtGui.QApplication.translate(
-            "MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionOpen.setText(QtGui.QApplication.translate(
-            "MainWindow", "Open", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionSave.setText(QtGui.QApplication.translate(
-            "MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionIPython.setText(QtGui.QApplication.translate(
-            "MainWindow", "IPython", None, QtGui.QApplication.UnicodeUTF8))
-"""
-#@-node:ekr.20081004172422.2:class Ui_MainWindow
 #@+node:ekr.20081004102201.628:class LeoQEventFilter
-class LeoQEventFilter(qt.QObject):
+class LeoQEventFilter(QtCore.QObject):
 
     def __init__(self):
-        qt.QObject.__init__(self)
+        QtCore.QObject.__init__(self)
         self.bindings = {}
 
     def eventFilter(self, obj, event):
 
         # print "ev",obj, event
-        if event.type() == qt.QEvent.KeyPress:
+        if event.type() == QtCore.QEvent.KeyPress:
             return self.key_pressed(obj, event)
         return False
 
@@ -212,11 +113,11 @@ class LeoQEventFilter(qt.QObject):
             char = "<unknown>"
 
         mods = []
-        if event.modifiers() & qt.Qt.AltModifier:
+        if event.modifiers() & QtCore.Qt.AltModifier:
             mods.append("Alt")
-        if event.modifiers() & qt.Qt.ControlModifier:
+        if event.modifiers() & QtCore.Qt.ControlModifier:
             mods.append("Ctrl")
-        if event.modifiers() & qt.Qt.ShiftModifier:
+        if event.modifiers() & QtCore.Qt.ShiftModifier:
             mods.append("Shift")
         txt = "+".join(mods) + (mods and "+" or "") + char
 
@@ -232,15 +133,15 @@ class LeoQEventFilter(qt.QObject):
     #@-others
 #@-node:ekr.20081004102201.628:class LeoQEventFilter
 #@+node:ekr.20081004102201.629:class Window
-class Window(qt.QMainWindow, Ui_MainWindow):
+class Window(QtGui.QMainWindow, Ui_MainWindow):
 
     #@    @+others
     #@+node:ekr.20081004172422.884: ctor (Window)
     def __init__(self, c,parent = None):
 
         self.c = c
-        qt.QWidget.__init__(self, parent)
-        signal = qt.SIGNAL
+        QtGui.QWidget.__init__(self, parent)
+        signal = QtCore.SIGNAL
         self.setupUi(self)
         self.connect(self.treeWidget,signal("itemSelectionChanged()"), self.tree_select )
         self.connect(self.actionOpen,signal("activated()"),self.open_file)
@@ -257,17 +158,17 @@ class Window(qt.QMainWindow, Ui_MainWindow):
         self.textEdit.installEventFilter(self.ev_filt)
         self.treeWidget.installEventFilter(self.ev_filt)
         self.icon_std = None
-        self.icon_std = qt.QIcon('icons/box00.GIF')
-        self.icon_dirty = qt.QIcon('icons/box01.GIF')
+        self.icon_std = QtGui.QIcon('icons/box00.GIF')
+        self.icon_dirty = QtGui.QIcon('icons/box01.GIF')
     #@nonl
     #@-node:ekr.20081004172422.884: ctor (Window)
     #@+node:ekr.20081004172422.898:File ops: to be deleted
     #@+node:ekr.20081004172422.885:open_file
     def open_file(self):
 
-        fd = qt.QFileDialog(self)
+        fd = QtGui.QFileDialog(self)
         fname = fd.getOpenFileName()
-        print `fname`
+        # g.trace(fname)
         self.load_file(fname)
 
     #@-node:ekr.20081004172422.885:open_file
@@ -282,7 +183,7 @@ class Window(qt.QMainWindow, Ui_MainWindow):
         if ok:
             c = frame.c
             self.clear_model()
-            print "Populate tree widget"
+            # print "Populate tree widget"
             tstart()
             self.populate_tree()
             tstop()
@@ -325,9 +226,9 @@ class Window(qt.QMainWindow, Ui_MainWindow):
         self.treeWidget.clear()
         for p in c.allNodes_iter():
             parent = self.items.get(p.parent().v,self.treeWidget)
-            it = qt.QTreeWidgetItem(parent)
+            it = QtGui.QTreeWidgetItem(parent)
             it.setIcon(0, self.icon_std)
-            it.setFlags(it.flags() | qt.Qt.ItemIsEditable)
+            it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
             self.items[p.v] = it
             self.treeitems[id(it)] = p.t
             it.setText(0, p.headString())
@@ -363,13 +264,6 @@ class Window(qt.QMainWindow, Ui_MainWindow):
         self.widget_dirty = True
 
     #@-node:ekr.20081004172422.892:text_changed
-    #@+node:ekr.20081004172422.893:startup_ops
-    # def startup_ops(self):
-        # print "startup"
-        # if len(argv) > 1:
-            # self.load_file(argv[1])
-
-    #@-node:ekr.20081004172422.893:startup_ops
     #@+node:ekr.20081004172422.894:edit_current_headline
     def edit_current_headline(self):
         #self.treeWidget.openPersistentEditor(self.treeWidget.currentItem())
@@ -382,7 +276,7 @@ class Window(qt.QMainWindow, Ui_MainWindow):
 #@+node:ekr.20081004102201.631:qtGui
 class qtGui(leoGui.leoGui):
 
-    """A class encapulating all calls to qt."""
+    """A class encapulating all calls to Qt."""
 
     #@    @+others
     #@+node:ekr.20081004102201.632:qtGui birth & death
@@ -392,7 +286,7 @@ class qtGui(leoGui.leoGui):
         # Initialize the base class.
         leoGui.leoGui.__init__(self,'qt')
 
-        self.qtApp = qt.QApplication(sys.argv)
+        self.qtApp = QtGui.QApplication(sys.argv)
 
         self.bodyTextWidget  = leoQtTextWidget
         self.plainTextWidget = leoQtTextWidget
@@ -413,7 +307,7 @@ class qtGui(leoGui.leoGui):
     #@+node:ekr.20081004102201.635:runMainLoop (qtGui)
     def runMainLoop(self):
 
-        '''Start the qt main loop.'''
+        '''Start the Qt main loop.'''
 
         if self.script:
             log = g.app.log
@@ -469,7 +363,7 @@ class qtGui(leoGui.leoGui):
                     if g.os_path_exists(path):
                         theFile = g.os_path_join(path,"LeoApp16.ico")
                         if g.os_path_exists(path):
-                            self.bitmap = qt.BitmapImage(theFile)
+                            self.bitmap = QtGui.BitmapImage(theFile)
                         else:
                             g.es("","LeoApp16.ico","not in Icons directory",color="red")
                     else:
@@ -579,31 +473,26 @@ class qtGui(leoGui.leoGui):
 
         if action == 'open':
             btns = (
-                qt.STOCK_CANCEL, qt.RESPONSE_CANCEL,
-                qt.STOCK_OPEN, qt.RESPONSE_OK
+                QtCore.STOCK_CANCEL, QtCore.RESPONSE_CANCEL,
+                QtCore.TOCK_OPEN, QtCore.RESPONSE_OK
             )
         else:
             btns = (
-                qt.STOCK_CANCEL, qt.RESPONSE_CANCEL,
-                qt.STOCK_SAVE, qt.RESPONSE_OK
+                QtCore.STOCK_CANCEL, QtCore.RESPONSE_CANCEL,
+                QtCore.STOCK_SAVE, QtCore.RESPONSE_OK
             )
 
         qtaction = g.choose(
             action == 'save',
-            qt.FILE_CHOOSER_ACTION_SAVE, 
-            qt.FILE_CHOOSER_ACTION_OPEN
+            QtCore.FILE_CHOOSER_ACTION_SAVE, 
+            QtCore.FILE_CHOOSER_ACTION_OPEN
         )
 
-        dialog = qt.FileChooserDialog(
-            title,
-            None,
-            qtaction,
-            btns
-        )
+        dialog = QtGui.FileChooserDialog(title,None,qtaction,btns)
 
         try:
 
-            dialog.set_default_response(qt.RESPONSE_OK)
+            dialog.set_default_response(QtCore.RESPONSE_OK)
             dialog.set_do_overwrite_confirmation(True)
             dialog.set_select_multiple(multiple)
             if initialdir:
@@ -612,7 +501,7 @@ class qtGui(leoGui.leoGui):
             if filetypes:
 
                 for name, patern in filetypes:
-                    filter = qt.FileFilter()
+                    filter = QtGui.FileFilter()
                     filter.set_name(name)
                     filter.add_pattern(patern)
                     dialog.add_filter(filter)
@@ -620,28 +509,28 @@ class qtGui(leoGui.leoGui):
             response = dialog.run()
             g.pr('dialog response' , response)
 
-            if response == qt.RESPONSE_OK:
+            if response == QtCore.RESPONSE_OK:
 
                 if multiple:
                     result = dialog.get_filenames()
                 else:
                     result = dialog.get_filename()
 
-            elif response == qt.RESPONSE_CANCEL:
+            elif response == QtCore.RESPONSE_CANCEL:
                 result = None
 
         finally:
 
             dialog.destroy()
 
-        g.pr('dialog result' , result)
+        g.trace('dialog result' , result)
 
         return result
     #@-node:ekr.20081004102201.643:runFileDialog
     #@+node:ekr.20081004102201.644:runOpenFileDialog
     def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 
-        """Create and run an qt open file dialog ."""
+        """Create and run an Qt open file dialog ."""
 
         fd = QFileDialog(self)
         fname = fd.getOpenFileName()
@@ -660,7 +549,7 @@ class qtGui(leoGui.leoGui):
     #@+node:ekr.20081004102201.645:runSaveFileDialog
     def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
 
-        """Create and run an qt save file dialog ."""
+        """Create and run an Qt save file dialog ."""
 
         # return self.runFileDialog(
             # title=title,
