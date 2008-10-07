@@ -556,7 +556,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@-node:ekr.20081004172422.897:key_pressed
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
-#@+node:ekr.20081007015817.56:class leoQtFindTab class (findTab)
+#@+node:ekr.20081007015817.56:class leoQtFindTab (findTab)
 class leoQtFindTab (leoFind.findTab):
 
     '''A subclass of the findTab class containing all Qt Gui code.'''
@@ -933,7 +933,7 @@ class leoQtFindTab (leoFind.findTab):
     #@-node:ekr.20081007015817.72:Support for minibufferFind class (qtFindTab)
     #@-others
 #@nonl
-#@-node:ekr.20081007015817.56:class leoQtFindTab class (findTab)
+#@-node:ekr.20081007015817.56:class leoQtFindTab (findTab)
 #@+node:ekr.20081004172422.523:class leoQtFrame (c.frame.top is a Window object)
 class leoQtFrame (leoFrame.leoFrame):
 
@@ -4410,6 +4410,7 @@ class leoQtSpellTab:
 
         self.createFrame()
         self.createBindings()
+
         ###self.fillbox([])
     #@-node:ekr.20081007015817.36:leoQtSpellTab.__init__
     #@+node:ekr.20081007015817.37:createBindings TO DO
@@ -4444,7 +4445,7 @@ class leoQtSpellTab:
         self.listBox.bind("<Map>",self.onMap)
     #@nonl
     #@-node:ekr.20081007015817.37:createBindings TO DO
-    #@+node:ekr.20081007015817.38:createFrame TO DO
+    #@+node:ekr.20081007015817.38:createFrame (to be done in Qt designer)
     def createFrame (self):
 
         return ###
@@ -4526,7 +4527,7 @@ class leoQtSpellTab:
 
         # Pack last so buttons don't get squished.
         self.outerScrolledFrame.pack(expand=1,fill='both',padx=2,pady=2)
-    #@-node:ekr.20081007015817.38:createFrame TO DO
+    #@-node:ekr.20081007015817.38:createFrame (to be done in Qt designer)
     #@+node:ekr.20081007015817.42:Event handlers
     #@+node:ekr.20081007015817.43:onAddButton
     def onAddButton(self):
