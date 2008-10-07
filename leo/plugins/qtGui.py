@@ -131,6 +131,8 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         path = g.os_path_join(g.app.loadDir,"..","Icons") 
         self.icon_std = QtGui.QIcon(path + '/box00.GIF')
         self.icon_dirty = QtGui.QIcon(path + '/box01.GIF')
+        self.buttons = self.addToolBar("Buttons")
+        self.buttons.addAction(self.actionSave)
 
         # The following ivars (and more) are inherited from UiMainWindow:
             # self.lineEdit = QtGui.QLineEdit(self.centralwidget)
