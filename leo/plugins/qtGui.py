@@ -121,7 +121,11 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.textEdit.setAutoIndent(True)
 
         self.ev_filt = leoQtEventFilter()
-        self.ev_filt.bindings['Ctrl+H'] = self.edit_current_headline
+
+        # Use Tk-style bindings
+        # self.ev_filt.bindings['Ctrl+H'] = self.edit_current_headline
+        self.ev_filt.bindings['Control-H'] = self.edit_current_headline
+
         self.textEdit.installEventFilter(self.ev_filt)
         self.treeWidget.installEventFilter(self.ev_filt)
         path = g.os_path_join(g.app.loadDir,"..","Icons") 
@@ -418,201 +422,25 @@ class leoQtBody (leoFrame.leoBody):
         g.trace('qtBody',g.callers(3))
     #@nonl
     #@-node:ekr.20081007015817.78: oops
-    #@+node:ekr.20081004172422.517:Bind & helper
+    #@+node:ekr.20081004172422.517:Bind
     def bind (self,stroke,command,**keys):
 
-        c = self.c
+        c = self.c ; w = c.frame.top
 
-        stroke = self.toQtStroke(stroke)
+        assert w
 
-        # g.trace(stroke)
+        # stroke = self.toQtStroke(stroke)
 
-        # return self.widget.bind(*args,**keys)
+        # Only strip matching angle brackets.
+        if stroke.startswith('<') and stroke.endswith('>'):
+            stroke = stroke[1:-1]
 
-    #@+node:ekr.20081007015817.103:Rules for bindings
-    #@@nocolor-node
-    #@+at 
-    #@nonl
-    # Here are the rules for translating key bindings:
-    # 
-    # 1. The case of plain letters is significant:  a is not A.
-    # 
-    # 2. The Shift- prefix can be applied *only* to letters. Leo will ignore 
-    # (with a
-    # warning) the shift prefix applied to any other binding, e.g., 
-    # Ctrl-Shift-(
-    # 
-    # 3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
-    # significant. Thus, the Shift- prefix is required if you want an 
-    # upper-case
-    # letter (with the exception of 'bare' uppercase letters.)
-    # 
-    # The following table illustrates these rules. In each row, the first 
-    # entry is the
-    # key (for k.bindingsDict) and the other entries are equivalents that the 
-    # user may
-    # specify in leoSettings.leo:
-    # 
-    # a, Key-a, Key-A
-    # A, Shift-A
-    # Alt-a, Alt-A
-    # Alt-A, Alt-Shift-a, Alt-Shift-A
-    # Ctrl-a, Ctrl-A
-    # Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
-    # !, Key-!,Key-exclam,exclam
-    # 
-    # This table is consistent Tk's key-event specifiers.
-    #@-at
-    #@nonl
-    #@-node:ekr.20081007015817.103:Rules for bindings
-    #@+node:ekr.20081007015817.102:toQtStroke
-    def toQtStroke (self,stroke):
-
-        '''Convert a Tk keystroke to a Qt keystoke that
-           can be sent to a Qt widget.'''
-    #@-node:ekr.20081007015817.102:toQtStroke
-    #@+node:ekr.20081007015817.105:Shortcuts (keyHandler)
-    #@+node:ekr.20081007015817.106:isPlainKey
-    def isPlainKey (self,shortcut):
-
-        '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
-
-        k = self ; shortcut = shortcut or ''
-
-        for s in ('Alt','Ctrl','Command'):
-            if shortcut.find(s) != -1:
-                return False
-        else:
-            # Careful, allow bare angle brackets for unit tests.
-            if shortcut.startswith('<') and shortcut.endswith('>'):
-                shortcut = shortcut[1:-1]
-
-            isPlain = (
-                len(shortcut) == 1 or
-                len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
-                # A hack: allow Return to be bound to command.
-                shortcut == 'Tab'
-            )
-
-            # g.trace(isPlain,repr(shortcut))
-            return isPlain
-    #@-node:ekr.20081007015817.106:isPlainKey
-    #@+node:ekr.20081007015817.107:shortcutFromSetting (uses k.guiBindNamesDict)
-    def shortcutFromSetting (self,setting,addKey=True):
-
-        k = self
-
-        if not setting:
-            return None
-
-        s = g.stripBrackets(setting.strip())
-        #@    << define cmd, ctrl, alt, shift >>
-        #@+node:ekr.20081007015817.108:<< define cmd, ctrl, alt, shift >>
-        s2 = s.lower()
-
-        cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
-        ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
-        alt   = s2.find("alt") >= 0
-        shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
-        #@-node:ekr.20081007015817.108:<< define cmd, ctrl, alt, shift >>
-        #@nl
-        if k.swap_mac_keys and sys.platform == "darwin":
-            #@        << swap cmd and ctrl keys >>
-            #@+node:ekr.20081007015817.109:<< swap cmd and ctrl keys >>
-            if ctrl and not cmd:
-                cmd = True ; ctrl = False
-            if alt and not ctrl:
-                ctrl = True ; alt = False
-            #@-node:ekr.20081007015817.109:<< swap cmd and ctrl keys >>
-            #@nl
-        #@    << convert minus signs to plus signs >>
-        #@+node:ekr.20081007015817.110:<< convert minus signs to plus signs >>
-        # Replace all minus signs by plus signs, except a trailing minus:
-        if s.endswith('-'):
-            s = s[:-1].replace('-','+') + '-'
-        else:
-            s = s.replace('-','+')
-        #@-node:ekr.20081007015817.110:<< convert minus signs to plus signs >>
-        #@nl
-        #@    << compute the last field >>
-        #@+node:ekr.20081007015817.111:<< compute the last field >>
-        if s.endswith('+'):
-            last = '+'
-        else:
-            fields = s.split('+') # Don't lower this field.
-            last = fields and fields[-1]
-            if not last:
-                if not g.app.menuWarningsGiven:
-                    g.pr("bad shortcut specifier:", s)
-                return None
-
-        if len(last) == 1:
-            last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
-            # g.trace(last,last2)
-            if last2:
-                last = last2 ; shift = False # Ignore the shift state for these special chars.
-            else:
-                if shift:
-                    last = last.upper()
-                    shift = False
-                else:
-                    last = last.lower()
-
-                # New in Leo 4.4.2: Alt-2 is not a key event!
-                if addKey and last.isdigit():
-                    last = 'Key-' + last
-        else:
-            # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
-            # This is a *one-way* translation, done only here.
-            d = k.settingsNameDict
-            last = d.get(last.lower(),last)
-        #@-node:ekr.20081007015817.111:<< compute the last field >>
-        #@nl
-        #@    << compute shortcut >>
-        #@+node:ekr.20081007015817.112:<< compute shortcut >>
-        table = (
-            (alt, 'Alt+'),
-            (ctrl,'Ctrl+'),
-            (cmd, 'Command+'),
-            (shift,'Shift+'),
-            (True, last),
-        )
-
-        # new in 4.4b3: convert all characters to unicode first.
-        shortcut = ''.join([g.toUnicode(val,g.app.tkEncoding) for flag,val in table if flag])
-        #@-node:ekr.20081007015817.112:<< compute shortcut >>
-        #@nl
-        # g.trace(setting,shortcut)
-        return shortcut
-
-    canonicalizeShortcut = shortcutFromSetting # For compatibility.
-    strokeFromSetting = shortcutFromSetting
-    #@-node:ekr.20081007015817.107:shortcutFromSetting (uses k.guiBindNamesDict)
-    #@+node:ekr.20081007015817.113:k.tkbindingFromStroke
-    def tkbindingFromStroke (self,stroke):
-
-        '''Convert a stroke (key to k.bindingsDict) to an actual Tk binding.'''
-
-        stroke = g.stripBrackets(stroke)
-
-        for a,b in (
-            ('Alt+','Alt-'),
-            ('Ctrl-','Control-'),
-            ('Ctrl+','Control-'), # New in Leo 4.5.
-            ('Shift+','Shift-'),
-            ('Command+','Command-'),
-            ('DnArrow','Down'), # New in Leo 4.5.
-            ('LtArrow','Left'), # New in Leo 4.5.
-            ('RtArrow','Right'),# New in Leo 4.5.
-            ('UpArrow','Up'),   # New in Leo 4.5.
-        ):
-            stroke = stroke.replace(a,b)
-
-        # g.trace('<%s>' % stroke)
-        return '<%s>' % stroke
-    #@-node:ekr.20081007015817.113:k.tkbindingFromStroke
-    #@-node:ekr.20081007015817.105:Shortcuts (keyHandler)
-    #@-node:ekr.20081004172422.517:Bind & helper
+        stroke = stroke.strip()
+        if stroke:
+            w.ev_filt.bindings[stroke]=command
+            if stroke.lower().find('return') > -1:
+                g.trace(stroke,command)
+    #@-node:ekr.20081004172422.517:Bind
     #@+node:ekr.20081007015817.100:Config
     #@+node:ekr.20081004172422.514:cget and configure
     # Exceptions can arise because of user errors.
@@ -890,30 +718,38 @@ class leoQtEventFilter(QtCore.QObject):
     def key_pressed(self, obj, event):
         """ Handle key presses (on any window) """
 
-        trace = True ; verbose = False
-
         keynum = event.key()
         try:
             char = chr(keynum)
         except ValueError:
-            char = "<unknown>"
+            ch = event.text()
+            if ch:
+                if ch in ('\r','\n'): ch = 'Return' # Use the Tk spelling.
+                char = ch
+            else:
+                char = "<unknown char: %s>" % (keynum)
+            # g.trace(event.text(),obj, event.key(), event.modifiers())
 
+        # Convert to **Tk** style binding.
         mods = []
         if event.modifiers() & QtCore.Qt.AltModifier:
             mods.append("Alt")
         if event.modifiers() & QtCore.Qt.ControlModifier:
-            mods.append("Ctrl")
+            mods.append("Control") # "Ctrl")
         if event.modifiers() & QtCore.Qt.ShiftModifier:
             mods.append("Shift")
-        txt = "+".join(mods) + (mods and "+" or "") + char
+        # txt = "+".join(mods) + (mods and "+" or "") + char
+        txt = "-".join(mods) + (mods and "-" or "") + char
 
-        if trace:
-            print "Keypress: [%s]" % (txt)
-            # print , event.text(),obj, event.key(), event.modifiers()
+        # g.trace(event.text(),obj, event.key(), event.modifiers())
 
         # key was not consumed
         cmd = self.bindings.get(txt, None)
-        if cmd: cmd()
+        if cmd:
+            g.trace(txt,cmd.__name__)
+            cmd(event)
+        else:
+            g.trace(txt)
         return cmd is not None
     #@-node:ekr.20081004172422.897:key_pressed
     #@-others
