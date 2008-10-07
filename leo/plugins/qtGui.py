@@ -120,7 +120,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.textEdit.setIndentationsUseTabs(False)
         self.textEdit.setAutoIndent(True)
 
-        self.ev_filt = leoQtEventFilter()
+        self.ev_filt = leoQtEventFilter(c)
 
         # Use Tk-style bindings
         # self.ev_filt.bindings['Ctrl+H'] = self.edit_current_headline
@@ -225,6 +225,37 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
     #@-others
 
 #@-node:ekr.20081004102201.629:class  Window (QMainWindow,Ui_MainWindow)
+#@+node:ekr.20081004102201.676:class leoKeyEvent
+class leoKeyEvent:
+
+    '''A gui-independent wrapper for gui events.'''
+
+    def __init__ (self,event,c,w,char,ch2,keynum):
+
+        # g.trace('leoKeyEvent(qtGui)',w)
+        self.actualEvent = event
+        self.c      = c # Required to access c.k tables.
+        self.char   = hasattr(event,'char') and event.char or ''
+        self.keynum = keynum
+        self.keysym = hasattr(event,'keysym') and event.keysym or ''
+        self.w      = w # hasattr(event,'widget') and event.widget or None
+        self.x      = hasattr(event,'x') and event.x or 0
+        self.y      = hasattr(event,'y') and event.y or 0
+        # Support for fastGotoNode plugin
+        self.x_root = hasattr(event,'x_root') and event.x_root or 0
+        self.y_root = hasattr(event,'y_root') and event.y_root or 0
+
+        # if self.keysym and c.k:
+            # # Translate keysyms for ascii characters to the character itself.
+            # self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
+
+        self.widget = self.w
+
+    def __repr__ (self):
+
+        return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
+#@nonl
+#@-node:ekr.20081004102201.676:class leoKeyEvent
 #@+node:ekr.20081004172422.502:class leoQtBody (leoBody)
 class leoQtBody (leoFrame.leoBody):
 
@@ -531,6 +562,28 @@ class leoQtBody (leoFrame.leoBody):
         # if not g.app.unitTesting:
             # self.widget.after_idle(function,*args,**keys)
     #@-node:ekr.20081004172422.516:Idle time
+    #@+node:ekr.20081007115148.7:Indices
+    def toPythonIndex (self,index):
+
+        w = self
+
+        if type(index) == type(99):
+            return index
+        elif index == '1.0':
+            return 0
+        elif index == 'end':
+            return w.getLastPosition()
+        else:
+            # g.trace(repr(index))
+            s = w.getAllText()
+            row,col = index.split('.')
+            row,col = int(row),int(col)
+            i = g.convertRowColToPythonIndex(s,row,col)
+            # g.trace(index,row,col,i,g.callers(6))
+            return i
+
+    toGuiIndex = toPythonIndex
+    #@-node:ekr.20081007115148.7:Indices
     #@+node:ekr.20081007015817.76:Insert point and selection
     #@+node:ekr.20081007015817.83:getInsertPoint
     def getInsertPoint(self):
@@ -598,7 +651,7 @@ class leoQtBody (leoFrame.leoBody):
         w.setCursorPosition(row,col)
     #@-node:ekr.20081007015817.95:setInsertPoint
     #@+node:ekr.20081007015817.96:setSelectionRange
-    def setSelectionRange(self,i,j):
+    def setSelectionRange(self,i,j,insert=None):
 
         w = self.widget
         s = self.getAllText()
@@ -608,6 +661,9 @@ class leoQtBody (leoFrame.leoBody):
 
         g.trace(row_i,col_i,row_j,col_j)
         w.setSelection(row_i,col_i,row_j,col_j)
+
+        if insert is not None:
+            self.setInsertPoint(insert)
     #@-node:ekr.20081007015817.96:setSelectionRange
     #@-node:ekr.20081007015817.76:Insert point and selection
     #@+node:ekr.20081007015817.98:Scrolling & hit test
@@ -625,9 +681,13 @@ class leoQtBody (leoFrame.leoBody):
     def scrollLines(self,n):
         self.oops()
     #@-node:ekr.20081007015817.90:scrollLines
-    #@+node:ekr.20081007015817.91:see
-    def see(self,i):                   self.oops()
-    #@-node:ekr.20081007015817.91:see
+    #@+node:ekr.20081007015817.91:see & seeInsertPoint
+    def see(self,i):
+        self.oops()
+
+    def seeInsertPoint (self):
+        return self.see(self.getInsertPoint())
+    #@-node:ekr.20081007015817.91:see & seeInsertPoint
     #@+node:ekr.20081007015817.97:setYScrollPosition
     def setYScrollPosition(self,i):    self.oops()
     #@-node:ekr.20081007015817.97:setYScrollPosition
@@ -702,7 +762,8 @@ class leoQtBody (leoFrame.leoBody):
 #@+node:ekr.20081004102201.628:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
-    def __init__(self):
+    def __init__(self,c):
+        self.c = c
         QtCore.QObject.__init__(self)
         self.bindings = {}
 
@@ -718,6 +779,52 @@ class leoQtEventFilter(QtCore.QObject):
     def key_pressed(self, obj, event):
         """ Handle key presses (on any window) """
 
+        #@    << about internal bindings >>
+        #@+node:ekr.20081007115148.6:<< about internal bindings >>
+        #@@nocolor-node
+        #@+at
+        # 
+        # Here are the rules for translating key bindings (in leoSettings.leo) 
+        # into keys for k.bindingsDict:
+        # 
+        # 1.  The case of plain letters is significant:  a is not A.
+        # 
+        # 2. The Shift- prefix can be applied *only* to letters. Leo will 
+        # ignore (with a
+        # warning) the shift prefix applied to any other binding, e.g., 
+        # Ctrl-Shift-(
+        # 
+        # 3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is 
+        # *not*
+        # significant. Thus, the Shift- prefix is required if you want an 
+        # upper-case
+        # letter (with the exception of 'bare' uppercase letters.)
+        # 
+        # The following table illustrates these rules. In each row, the first 
+        # entry is the
+        # key (for k.bindingsDict) and the other entries are equivalents that 
+        # the user may
+        # specify in leoSettings.leo:
+        # 
+        # a, Key-a, Key-A
+        # A, Shift-A
+        # Alt-a, Alt-A
+        # Alt-A, Alt-Shift-a, Alt-Shift-A
+        # Ctrl-a, Ctrl-A
+        # Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+        # !, Key-!,Key-exclam,exclam
+        # 
+        # This table is consistent with how Leo already works (because it is 
+        # consistent
+        # with Tk's key-event specifiers). It is also, I think, the least 
+        # confusing set of
+        # rules.
+        #@-at
+        #@nonl
+        #@-node:ekr.20081007115148.6:<< about internal bindings >>
+        #@nl
+        c = self.c ; k = c.k
+        w = obj
         keynum = event.key()
         try:
             char = chr(keynum)
@@ -730,27 +837,39 @@ class leoQtEventFilter(QtCore.QObject):
                 char = "<unknown char: %s>" % (keynum)
             # g.trace(event.text(),obj, event.key(), event.modifiers())
 
-        # Convert to **Tk** style binding.
+        # Convert characters to special tk character names.
+        ch2 = k.guiBindNamesDict.get(char)
+        if ch2: char = ch2 
+
+        # Convert to Tk style binding.
         mods = []
         if event.modifiers() & QtCore.Qt.AltModifier:
             mods.append("Alt")
         if event.modifiers() & QtCore.Qt.ControlModifier:
             mods.append("Control") # "Ctrl")
         if event.modifiers() & QtCore.Qt.ShiftModifier:
-            mods.append("Shift")
+            if not ch2: # Don't add shift to special characters.
+                mods.append("Shift")
+        else:
+            if len(char) == 1: char = char.lower()
         # txt = "+".join(mods) + (mods and "+" or "") + char
         txt = "-".join(mods) + (mods and "-" or "") + char
 
         # g.trace(event.text(),obj, event.key(), event.modifiers())
 
-        # key was not consumed
-        cmd = self.bindings.get(txt, None)
+        event = leoKeyEvent(event,c,w,char,ch2,keynum)
+        cmd = self.bindings.get(txt)
         if cmd:
-            g.trace(txt,cmd.__name__)
+            g.trace('bound',txt,cmd.__name__,)
             cmd(event)
+            return True
         else:
-            g.trace(txt)
-        return cmd is not None
+            return False
+            g.trace('unbound',txt)
+            c.k.masterKeyHandler(event,stroke=char)
+
+        return True # Indicate that the key has been handled.
+        # return cmd is not None
     #@-node:ekr.20081004172422.897:key_pressed
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
@@ -3245,36 +3364,6 @@ class leoQtGui(leoGui.leoGui):
         #@nl
     #@-node:ekr.20081004102201.671:makeScriptButton (to do)
     #@-node:ekr.20081004102201.647:qtGui utils (to do)
-    #@+node:ekr.20081004102201.676:class leoKeyEvent
-    class leoKeyEvent:
-
-        '''A gui-independent wrapper for gui events.'''
-
-        def __init__ (self,event,c):
-
-            # g.trace('leoKeyEvent(qtGui)')
-            self.actualEvent = event
-            self.c      = c # Required to access c.k tables.
-            self.char   = hasattr(event,'char') and event.char or ''
-            self.keysym = hasattr(event,'keysym') and event.keysym or ''
-            self.w      = hasattr(event,'widget') and event.widget or None
-            self.x      = hasattr(event,'x') and event.x or 0
-            self.y      = hasattr(event,'y') and event.y or 0
-            # Support for fastGotoNode plugin
-            self.x_root = hasattr(event,'x_root') and event.x_root or 0
-            self.y_root = hasattr(event,'y_root') and event.y_root or 0
-
-            if self.keysym and c.k:
-                # Translate keysyms for ascii characters to the character itself.
-                self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
-
-            self.widget = self.w
-
-        def __repr__ (self):
-
-            return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
-    #@nonl
-    #@-node:ekr.20081004102201.676:class leoKeyEvent
     #@+node:ekr.20081004102201.677:loadIcon
     def loadIcon(self, fname):
 

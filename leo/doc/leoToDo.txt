@@ -2690,9 +2690,9 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = (True or self.trace_masterKeyHandler) and not g.app.unitTesting
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = False
+    verbose = True
 
     if keysym in special_keys:
         if verbose: g.trace('keysym',keysym)
@@ -2962,7 +2962,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
 
     k = self ; c = k.c
     modesTuple = ('insert','overwrite')
-    trace = False
+    trace = True
 
     if trace:
         # if stroke: g.trace('***unexpected stroke***')
@@ -3500,9 +3500,9 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = (True or self.trace_masterKeyHandler) and not g.app.unitTesting
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = False
+    verbose = True
 
     if keysym in special_keys:
         if verbose: g.trace('keysym',keysym)
@@ -3772,7 +3772,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
 
     k = self ; c = k.c
     modesTuple = ('insert','overwrite')
-    trace = False
+    trace = True
 
     if trace:
         # if stroke: g.trace('***unexpected stroke***')
@@ -4695,9 +4695,9 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = (True or self.trace_masterKeyHandler) and not g.app.unitTesting
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = False
+    verbose = True
 
     if keysym in special_keys:
         if verbose: g.trace('keysym',keysym)
@@ -4967,7 +4967,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
 
     k = self ; c = k.c
     modesTuple = ('insert','overwrite')
-    trace = False
+    trace = True
 
     if trace:
         # if stroke: g.trace('***unexpected stroke***')
