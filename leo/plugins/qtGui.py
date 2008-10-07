@@ -220,22 +220,24 @@ class leoQtBody (leoFrame.leoBody):
 
     #@    @+others
     #@+node:ekr.20081004172422.503: Birth
-    #@+node:ekr.20081004172422.504:qtBody. __init__
+    #@+node:ekr.20081004172422.504: ctor (qtBody)
     def __init__ (self,frame,parentFrame):
 
         # Call the base class constructor.
         leoFrame.leoBody.__init__(self,frame,parentFrame)
 
         c = self.c ; p = c.currentPosition()
+        assert c.frame == frame and frame.c == c
 
-        self.widget = c.frame.top.textEdit
-        self.bodyCtrl = None
-            # Setting this causes problems.
-            # Leo's core calls bodyCtrl.bind, but that does not exist.
+        self.widget = c.frame.top.textEdit # The actual gui widget.
+        self.bodyCtrl = self # The widget as seen from Leo's core.
 
-        # g.trace("***** leoQtBody")
-
+        # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
+        wrap = c.config.getBool('body_pane_wraps')
+        wrap = g.choose(wrap,"word","none")
+        self.wrapState = wrap
+        # parentFrame.configure(bg='LightSteelBlue1')
 
         # For multiple body editors.
         self.editor_name = None
@@ -243,17 +245,20 @@ class leoQtBody (leoFrame.leoBody):
         self.numberOfEditors = 1
         self.totalNumberOfEditors = 1
 
-        # self.bodyCtrl = self.createControl(parentFrame,p)
-        # self.colorizer = leoColor.colorizer(c)
-    #@-node:ekr.20081004172422.504:qtBody. __init__
-    #@+node:ekr.20081004172422.505:qtBody.createBindings
+        # Finish initing.
+        self.colorizer = leoColor.nullColorizer(c)
+        self.injectIvars()
+        self.setFontFromConfig()
+        self.setColorFromConfig()
+    #@-node:ekr.20081004172422.504: ctor (qtBody)
+    #@+node:ekr.20081004172422.505:createBindings (qtBody)
     def createBindings (self,w=None):
 
         '''(qtBody) Create gui-dependent bindings.
         These are *not* made in nullBody instances.'''
 
         # frame = self.frame ; c = self.c ; k = c.k
-        # if not w: w = self.bodyCtrl
+        # if not w: w = self.widget
 
         # c.bind(w,'<Key>', k.masterKeyHandler)
 
@@ -298,22 +303,43 @@ class leoQtBody (leoFrame.leoBody):
                 # return handler(event,func)
 
             # c.bind(w,kind,bodyClickCallback)
-    #@-node:ekr.20081004172422.505:qtBody.createBindings
-    #@-node:ekr.20081004172422.503: Birth
-    #@+node:ekr.20081006163726.5:Config
-    #@+node:ekr.20081004172422.508:qtBody.setColorFromConfig
+    #@-node:ekr.20081004172422.505:createBindings (qtBody)
+    #@+node:ekr.20081007015817.77:injectIvars
+    def injectIvars (self,name='1',parentFrame=None):
+
+        w = self
+
+        if name == '1':
+            w.leo_p = w.leo_v = None # Will be set when the second editor is created.
+        else:
+            w.leo_p = p.copy()
+            w.leo_v = w.leo_p.v
+
+        w.leo_active = True
+
+        # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
+        w.leo_bodyBar = None ### bodyBar
+        w.leo_bodyXBar = None ### bodyXBar
+        w.leo_chapter = None
+        w.leo_frame = None ### parentFrame
+        w.leo_name = name
+        w.leo_label = None
+        w.leo_label_s = None
+        w.leo_scrollBarSpot = None
+        w.leo_insertSpot = None
+        w.leo_selection = None
+
+        return w
+    #@-node:ekr.20081007015817.77:injectIvars
+    #@+node:ekr.20081004172422.508:setColorFromConfig
     def setColorFromConfig (self,w=None):
 
-        return ###
+        '''Set the font in the widget w (a body editor).'''
 
         c = self.c
-        if w is None: w = self.bodyCtrl
-
-        g.trace(w)
+        if w is None: w = self.widget
 
         bg = c.config.getColor("body_text_background_color") or 'white'
-        # g.trace(id(w),bg)
-
         try:
             pass ### w.configure(bg=bg)
         except:
@@ -349,24 +375,23 @@ class leoQtBody (leoFrame.leoBody):
             g.es("exception setting body pane text selection foreground color")
             g.es_exception()
 
-        if sys.platform != "win32": # Maybe a Windows bug.
-            fg = c.config.getColor("body_cursor_foreground_color")
-            bg = c.config.getColor("body_cursor_background_color")
-            if fg and bg:
-                cursor="xterm" + " " + fg + " " + bg
-                try:
-                    pass ### w.configure(cursor=cursor)
-                except:
-                    import traceback ; traceback.print_exc()
-    #@-node:ekr.20081004172422.508:qtBody.setColorFromConfig
-    #@+node:ekr.20081004172422.509:qtBody.setFontFromConfig
+        # if sys.platform != "win32": # Maybe a Windows bug.
+            # fg = c.config.getColor("body_cursor_foreground_color")
+            # bg = c.config.getColor("body_cursor_background_color")
+            # if fg and bg:
+                # cursor="xterm" + " " + fg + " " + bg
+                # try:
+                    # pass ### w.configure(cursor=cursor)
+                # except:
+                    # import traceback ; traceback.print_exc()
+    #@-node:ekr.20081004172422.508:setColorFromConfig
+    #@+node:ekr.20081004172422.509:setFontFromConfig
     def setFontFromConfig (self,w=None):
 
-        return ###
+        '''Set the font in the widget w (a body editor).'''
 
         c = self.c
-
-        if not w: w = self.bodyCtrl
+        if not w: w = self.widget
 
         font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
@@ -377,102 +402,50 @@ class leoQtBody (leoFrame.leoBody):
         # w.configure(font=font)
 
         # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
-    #@-node:ekr.20081004172422.509:qtBody.setFontFromConfig
-    #@-node:ekr.20081006163726.5:Config
-    #@+node:ekr.20081004172422.510:Focus (qtBody)
-    def hasFocus (self):
+    #@-node:ekr.20081004172422.509:setFontFromConfig
+    #@-node:ekr.20081004172422.503: Birth
+    #@+node:ekr.20081004172422.512:Interface with Leo's core
+    #@+node:ekr.20081007015817.78: oops
+    def oops (self):
+        g.trace('qtBody',g.callers(3))
+    #@nonl
+    #@-node:ekr.20081007015817.78: oops
+    #@+node:ekr.20081004172422.517:Bind
+    def bind (self,*args,**keys):
 
-        # return self.bodyCtrl == self.frame.top.focus_displayof()
-        return None
+        c = self.c
 
-    def setFocus (self):
+        if 0: # Called to create the actual bindings.
+            g.trace(args,keys)
+            # return self.widget.bind(*args,**keys)
+    #@-node:ekr.20081004172422.517:Bind
+    #@+node:ekr.20081007015817.100:Config
+    #@+node:ekr.20081004172422.514:cget and configure
+    # Exceptions can arise because of user errors.
 
-        self.c.widgetWantsFocus(self.bodyCtrl)
-    #@-node:ekr.20081004172422.510:Focus (qtBody)
-    #@+node:ekr.20081004172422.511:forceRecolor
-    def forceFullRecolor (self):
-
-        self.forceFullRecolorFlag = True
-    #@-node:ekr.20081004172422.511:forceRecolor
-    #@+node:ekr.20081004172422.512:Qt bindings (qtBody) (TO DO)
-    #@+node:ekr.20081004172422.513:Color tags (Qt spelling) (qtBody)
-    def tag_add (self,tagName,index1,index2):
-        pass # self.bodyCtrl.tag_add(tagName,index1,index2)
-
-    def tag_bind (self,tagName,event,callback):
-        pass # self.c.tag_bind(self.bodyCtrl,tagName,event,callback)
-
-    def tag_configure (self,colorName,**keys):
-        pass # self.bodyCtrl.tag_configure(colorName,keys)
-
-    def tag_delete(self,tagName):
-        pass # self.bodyCtrl.tag_delete(tagName)
-
-    def tag_names(self,*args): # New in Leo 4.4.1.
-        pass # return self.bodyCtrl.tag_names(*args)
-
-    def tag_remove (self,tagName,index1,index2):
-        pass # return self.bodyCtrl.tag_remove(tagName,index1,index2)
-    #@-node:ekr.20081004172422.513:Color tags (Qt spelling) (qtBody)
-    #@+node:ekr.20081004172422.514:Configuration (Qt spelling) (qtBody)
     def cget(self,*args,**keys):
 
-        return None
-        # val = self.bodyCtrl.cget(*args,**keys)
-        # return val
+        g.trace(args,keys)
+
+        try:
+            return None
+            # val = self.widget.cget(*args,**keys)
+            # return val
+        except Exception:
+            return None
 
     def configure (self,*args,**keys):
 
-        pass
-        # return self.bodyCtrl.configure(*args,**keys)
-    #@-node:ekr.20081004172422.514:Configuration (Qt spelling) (qtBody)
-    #@+node:ekr.20081004172422.515:Height & width
-    def getBodyPaneHeight (self):
+        g.trace(args,keys)
 
-        # return self.bodyCtrl.winfo_height()
-        return 0
-
-    def getBodyPaneWidth (self):
-
-        # return self.bodyCtrl.winfo_width()
-        return 0
-    #@-node:ekr.20081004172422.515:Height & width
-    #@+node:ekr.20081004172422.516:Idle time...
-    def scheduleIdleTimeRoutine (self,function,*args,**keys):
-
-        pass
-        # if not g.app.unitTesting:
-            # self.bodyCtrl.after_idle(function,*args,**keys)
-    #@-node:ekr.20081004172422.516:Idle time...
-    #@+node:ekr.20081004172422.517:Menus (qtBody) (May cause problems)
-    def bind (self,*args,**keys):
-
-        pass
-        # g.trace(args,keys)
-        # c = self.c
-        # return self.bodyCtrl.bind(*args,**keys)
-    #@-node:ekr.20081004172422.517:Menus (qtBody) (May cause problems)
-    #@+node:ekr.20081004172422.518:Text (now in base class)
-    # def getAllText (self):              return self.bodyCtrl.getAllText()
-    # def getInsertPoint(self):           return self.bodyCtrl.getInsertPoint()
-    # def getSelectedText (self):         return self.bodyCtrl.getSelectedText()
-    # def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
-    # def hasTextSelection (self):        return self.bodyCtrl.hasSelection()
-    # # def scrollDown (self):            g.app.gui.yscroll(self.bodyCtrl,1,'units')
-    # # def scrollUp (self):              g.app.gui.yscroll(self.bodyCtrl,-1,'units')
-    # def see (self,index):               self.bodyCtrl.see(index)
-    # def seeInsertPoint (self):          self.bodyCtrl.seeInsertPoint()
-    # def selectAllText (self,event=None):
-        # w = g.app.gui.eventWidget(event) or self.bodyCtrl
-        # return w.selectAllText()
-    # def setInsertPoint (self,pos):      return self.bodyCtrl.getInsertPoint(pos)
-    # def setSelectionRange (self,sel):
-        # i,j = sel
-        # self.bodyCtrl.setSelectionRange(i,j)
-    #@nonl
-    #@-node:ekr.20081004172422.518:Text (now in base class)
-    #@-node:ekr.20081004172422.512:Qt bindings (qtBody) (TO DO)
-    #@+node:ekr.20081004172422.519:Editors (qtBody) (TO DO)
+        try:
+            pass
+            # return self.widget.configure(*args,**keys)
+        except Exception:
+            pass
+    #@-node:ekr.20081004172422.514:cget and configure
+    #@-node:ekr.20081007015817.100:Config
+    #@+node:ekr.20081004172422.519:Editors (To do)
     #@+node:ekr.20081004172422.520:createEditorFrame
     def createEditorFrame (self,pane):
 
@@ -506,7 +479,207 @@ class leoQtBody (leoFrame.leoBody):
             except Exception:
                 g.es_exception()
     #@-node:ekr.20081004172422.522:setEditorColors
-    #@-node:ekr.20081004172422.519:Editors (qtBody) (TO DO)
+    #@-node:ekr.20081004172422.519:Editors (To do)
+    #@+node:ekr.20081004172422.510:Focus
+    def getFocus(self):
+        self.oops() ; return None
+
+    findFocus = getFocus
+
+    def hasFocus (self):
+
+        # return self.widget == self.frame.top.focus_displayof()
+        return None
+
+    def setFocus (self):
+
+        self.c.widgetWantsFocus(self.widget)
+    #@-node:ekr.20081004172422.510:Focus
+    #@+node:ekr.20081004172422.515:Height & width
+    def getBodyPaneHeight (self):
+
+        # return self.widget.winfo_height()
+        return 0
+
+    def getBodyPaneWidth (self):
+
+        # return self.widget.winfo_width()
+        return 0
+    #@-node:ekr.20081004172422.515:Height & width
+    #@+node:ekr.20081004172422.516:Idle time
+    def scheduleIdleTimeRoutine (self,function,*args,**keys):
+
+        pass
+        # if not g.app.unitTesting:
+            # self.widget.after_idle(function,*args,**keys)
+    #@-node:ekr.20081004172422.516:Idle time
+    #@+node:ekr.20081007015817.76:Insert point and selection
+    #@+node:ekr.20081007015817.83:getInsertPoint
+    def getInsertPoint(self):
+
+        w = self.widget
+        s = w.text()
+        row,col = w.getCursorPosition()  
+        i = g.convertRowColToPythonIndex(s, row, col)
+
+        g.trace(i)
+
+        return i
+    #@-node:ekr.20081007015817.83:getInsertPoint
+    #@+node:ekr.20081007015817.84:getLastPosition
+    def getLastPosition(self):
+
+        w = self.widget
+        n = len(w.text())
+
+        g.trace(n)
+
+        return n
+    #@-node:ekr.20081007015817.84:getLastPosition
+    #@+node:ekr.20081007015817.85:getSelectedText
+    def getSelectedText(self):
+
+        w = self.widget
+
+        i,j = self.getSelectionRange()
+        if i == j:
+            g.trace('')
+            return ''
+        else:
+            s = w.text()
+            g.trace(repr(s[i:j]))
+            return s[i:j]
+    #@-node:ekr.20081007015817.85:getSelectedText
+    #@+node:ekr.20081007015817.86:getSelectionRange
+    def getSelectionRange(self):
+
+        w = self.widget
+
+        if w.hasSelectedText():
+            s = w.text()
+            row_i,col_i,row_j,col_j = w.getSelection()
+            i = g.convertRowColToPythonIndex(s, row_i, col_i)
+            j = g.convertRowColToPythonIndex(s, row_j, col_j)
+        else:
+            i = j = self.getInsertPoint()
+
+        g.trace(i,j)
+
+        return i,j
+
+    #@-node:ekr.20081007015817.86:getSelectionRange
+    #@+node:ekr.20081007015817.93:setBackgroundColor
+    def setBackgroundColor(self,color):
+        self.oops()
+
+    def setForegroundColor(self,color):
+        self.oops()
+    #@-node:ekr.20081007015817.93:setBackgroundColor
+    #@+node:ekr.20081007015817.95:setInsertPoint
+    def setInsertPoint(self,i):
+
+        w = self.widget
+        s = w.text()
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        g.trace('i,row,col',i,row,col)
+        w.setCursorPosition(row,col)
+    #@-node:ekr.20081007015817.95:setInsertPoint
+    #@+node:ekr.20081007015817.96:setSelectionRange
+    def setSelectionRange(self,i,j):
+
+        w = self.widget
+        s = w.text()
+        row_i,col_i = g.convertPythonIndexToRowCol(s,i)
+        row_j,col_j = g.convertPythonIndexToRowCol(s,j)
+        g.trace(row_i,col_i,row_j,col_j)
+        w.setSelection(row_i,col_i,row_j,col_j)
+
+    #@-node:ekr.20081007015817.96:setSelectionRange
+    #@-node:ekr.20081007015817.76:Insert point and selection
+    #@+node:ekr.20081007015817.98:Scrolling & hit test
+    #@+node:ekr.20081007015817.87:getYScrollPosition
+    def getYScrollPosition(self):
+
+        return None # A flag
+    #@-node:ekr.20081007015817.87:getYScrollPosition
+    #@+node:ekr.20081007015817.88:hitTest
+    def hitTest(self,pos):
+
+        self.oops()
+    #@-node:ekr.20081007015817.88:hitTest
+    #@+node:ekr.20081007015817.90:scrollLines
+    def scrollLines(self,n):
+        self.oops()
+    #@-node:ekr.20081007015817.90:scrollLines
+    #@+node:ekr.20081007015817.91:see
+    def see(self,i):                   self.oops()
+    #@-node:ekr.20081007015817.91:see
+    #@+node:ekr.20081007015817.97:setYScrollPosition
+    def setYScrollPosition(self,i):    self.oops()
+    #@-node:ekr.20081007015817.97:setYScrollPosition
+    #@-node:ekr.20081007015817.98:Scrolling & hit test
+    #@+node:ekr.20081004172422.511:Syntax coloring
+    #@+node:ekr.20081004172422.513:Color tags (not used)
+    if 0: # Called only by the old colorizer.
+
+        def tag_add (self,tagName,index1,index2):
+            self.widget.tag_add(tagName,index1,index2)
+
+        def tag_bind (self,tagName,event,callback):
+            self.widget.tag_bind(self.widget,tagName,event,callback)
+
+        def tag_configure (self,colorName,**keys):
+            self.widget.tag_configure(colorName,keys)
+
+        def tag_delete(self,tagName):
+            self.widget.tag_delete(tagName)
+
+        def tag_names(self,*args):
+            return self.widget.tag_names(*args)
+
+        def tag_remove (self,tagName,index1,index2):
+            return self.widget.tag_remove(tagName,index1,index2)
+    #@-node:ekr.20081004172422.513:Color tags (not used)
+    #@+node:ekr.20081007015817.101:forceFullRecolor
+    def forceFullRecolor (self):
+
+        pass # This is called from Leo's core, but should not be needed.
+
+        # self.forceFullRecolorFlag = True
+    #@-node:ekr.20081007015817.101:forceFullRecolor
+    #@-node:ekr.20081004172422.511:Syntax coloring
+    #@+node:ekr.20081007015817.99:Text getters/settters
+    #@+node:ekr.20081007015817.79:appendText
+    def appendText(self,s):
+        self.oops()
+    #@-node:ekr.20081007015817.79:appendText
+    #@+node:ekr.20081007015817.80:get
+    def get(self,i,j):
+        self.oops() ; return ''
+
+    #@-node:ekr.20081007015817.80:get
+    #@+node:ekr.20081007015817.81:getAllText
+    def getAllText(self):
+
+        w = self.widget
+
+        g.trace(len(w.text()))
+
+        return w.text()
+
+    #@-node:ekr.20081007015817.81:getAllText
+    #@+node:ekr.20081007015817.89:insertText
+    def insertText(self,i,s):          self.oops()
+    #@-node:ekr.20081007015817.89:insertText
+    #@+node:ekr.20081007015817.92:setAllText
+    def setAllText(self,s):
+
+        g.trace(len(s))
+
+        self.widget.setText(s)
+    #@-node:ekr.20081007015817.92:setAllText
+    #@-node:ekr.20081007015817.99:Text getters/settters
+    #@-node:ekr.20081004172422.512:Interface with Leo's core
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
 #@+node:ekr.20081004102201.628:class leoQtEventFilter
