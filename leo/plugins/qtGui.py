@@ -162,7 +162,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
             it.setIcon(0, self.icon_std)
             it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
             self.items[p.v] = it
-            self.treeitems[id(it)] = p.t
+            self.treeitems[id(it)] = p.copy() ###p.t
             it.setText(0, p.headString())
 
     def minibuffer_run(self):
@@ -183,13 +183,21 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
     #@+node:ekr.20081004172422.891:tree_select
     def tree_select(self):
         #print "tree selected!"
+        c = self.c
         self.selecting = True
 
         if self.widget_dirty:
             self.flush_current_tnode()
 
-        self.cur_tnode = self.treeitems[id(self.treeWidget.currentItem())]
-        self.textEdit.setText(self.cur_tnode.bodyString())
+        #### self.cur_tnode = self.treeitems[id(self.treeWidget.currentItem())]
+        p = self.treeitems[id(self.treeWidget.currentItem())]
+        self.cur_tnode = p.v.t
+
+        g.trace(p and p.headString())
+        c.frame.tree.select(p) # The crucial hook.
+
+        # Should be done in tree.select.
+        ### self.textEdit.setText(self.cur_tnode.bodyString())
         self.selecting = False
         self.widget_dirty = False
 
@@ -444,6 +452,13 @@ class leoQtBody (leoFrame.leoBody):
         except Exception:
             pass
     #@-node:ekr.20081004172422.514:cget and configure
+    #@+node:ekr.20081007015817.93:setBackground/ForeGroundColor
+    def setBackgroundColor(self,color):
+        self.oops()
+
+    def setForegroundColor(self,color):
+        self.oops()
+    #@-node:ekr.20081007015817.93:setBackground/ForeGroundColor
     #@-node:ekr.20081007015817.100:Config
     #@+node:ekr.20081004172422.519:Editors (To do)
     #@+node:ekr.20081004172422.520:createEditorFrame
@@ -480,7 +495,7 @@ class leoQtBody (leoFrame.leoBody):
                 g.es_exception()
     #@-node:ekr.20081004172422.522:setEditorColors
     #@-node:ekr.20081004172422.519:Editors (To do)
-    #@+node:ekr.20081004172422.510:Focus
+    #@+node:ekr.20081004172422.510:Focus (To do)
     def getFocus(self):
         self.oops() ; return None
 
@@ -494,18 +509,7 @@ class leoQtBody (leoFrame.leoBody):
     def setFocus (self):
 
         self.c.widgetWantsFocus(self.widget)
-    #@-node:ekr.20081004172422.510:Focus
-    #@+node:ekr.20081004172422.515:Height & width
-    def getBodyPaneHeight (self):
-
-        # return self.widget.winfo_height()
-        return 0
-
-    def getBodyPaneWidth (self):
-
-        # return self.widget.winfo_width()
-        return 0
-    #@-node:ekr.20081004172422.515:Height & width
+    #@-node:ekr.20081004172422.510:Focus (To do)
     #@+node:ekr.20081004172422.516:Idle time
     def scheduleIdleTimeRoutine (self,function,*args,**keys):
 
@@ -518,12 +522,12 @@ class leoQtBody (leoFrame.leoBody):
     def getInsertPoint(self):
 
         w = self.widget
-        s = w.text()
+        s = self.getAllText()
+
         row,col = w.getCursorPosition()  
         i = g.convertRowColToPythonIndex(s, row, col)
 
-        g.trace(i)
-
+        # g.trace(i)
         return i
     #@-node:ekr.20081007015817.83:getInsertPoint
     #@+node:ekr.20081007015817.84:getLastPosition
@@ -568,20 +572,15 @@ class leoQtBody (leoFrame.leoBody):
         return i,j
 
     #@-node:ekr.20081007015817.86:getSelectionRange
-    #@+node:ekr.20081007015817.93:setBackgroundColor
-    def setBackgroundColor(self,color):
-        self.oops()
-
-    def setForegroundColor(self,color):
-        self.oops()
-    #@-node:ekr.20081007015817.93:setBackgroundColor
     #@+node:ekr.20081007015817.95:setInsertPoint
     def setInsertPoint(self,i):
 
         w = self.widget
         s = w.text()
+
         row,col = g.convertPythonIndexToRowCol(s,i)
-        g.trace('i,row,col',i,row,col)
+
+        # g.trace('i,row,col',i,row,col)
         w.setCursorPosition(row,col)
     #@-node:ekr.20081007015817.95:setInsertPoint
     #@+node:ekr.20081007015817.96:setSelectionRange
@@ -589,8 +588,10 @@ class leoQtBody (leoFrame.leoBody):
 
         w = self.widget
         s = w.text()
+
         row_i,col_i = g.convertPythonIndexToRowCol(s,i)
         row_j,col_j = g.convertPythonIndexToRowCol(s,j)
+
         g.trace(row_i,col_i,row_j,col_j)
         w.setSelection(row_i,col_i,row_j,col_j)
 
@@ -662,10 +663,11 @@ class leoQtBody (leoFrame.leoBody):
     def getAllText(self):
 
         w = self.widget
+        s = w.text()
+        s = g.toUnicode(s,g.app.tkEncoding)
 
-        g.trace(len(w.text()))
-
-        return w.text()
+        # g.trace(len(s))
+        return s
 
     #@-node:ekr.20081007015817.81:getAllText
     #@+node:ekr.20081007015817.89:insertText
