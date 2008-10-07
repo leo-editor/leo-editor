@@ -418,15 +418,201 @@ class leoQtBody (leoFrame.leoBody):
         g.trace('qtBody',g.callers(3))
     #@nonl
     #@-node:ekr.20081007015817.78: oops
-    #@+node:ekr.20081004172422.517:Bind
-    def bind (self,*args,**keys):
+    #@+node:ekr.20081004172422.517:Bind & helper
+    def bind (self,stroke,command,**keys):
 
         c = self.c
 
-        if 0: # Called to create the actual bindings.
-            g.trace(args,keys)
-            # return self.widget.bind(*args,**keys)
-    #@-node:ekr.20081004172422.517:Bind
+        stroke = self.toQtStroke(stroke)
+
+        # g.trace(stroke)
+
+        # return self.widget.bind(*args,**keys)
+
+    #@+node:ekr.20081007015817.103:Rules for bindings
+    #@@nocolor-node
+    #@+at 
+    #@nonl
+    # Here are the rules for translating key bindings:
+    # 
+    # 1. The case of plain letters is significant:  a is not A.
+    # 
+    # 2. The Shift- prefix can be applied *only* to letters. Leo will ignore 
+    # (with a
+    # warning) the shift prefix applied to any other binding, e.g., 
+    # Ctrl-Shift-(
+    # 
+    # 3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+    # significant. Thus, the Shift- prefix is required if you want an 
+    # upper-case
+    # letter (with the exception of 'bare' uppercase letters.)
+    # 
+    # The following table illustrates these rules. In each row, the first 
+    # entry is the
+    # key (for k.bindingsDict) and the other entries are equivalents that the 
+    # user may
+    # specify in leoSettings.leo:
+    # 
+    # a, Key-a, Key-A
+    # A, Shift-A
+    # Alt-a, Alt-A
+    # Alt-A, Alt-Shift-a, Alt-Shift-A
+    # Ctrl-a, Ctrl-A
+    # Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+    # !, Key-!,Key-exclam,exclam
+    # 
+    # This table is consistent Tk's key-event specifiers.
+    #@-at
+    #@nonl
+    #@-node:ekr.20081007015817.103:Rules for bindings
+    #@+node:ekr.20081007015817.102:toQtStroke
+    def toQtStroke (self,stroke):
+
+        '''Convert a Tk keystroke to a Qt keystoke that
+           can be sent to a Qt widget.'''
+    #@-node:ekr.20081007015817.102:toQtStroke
+    #@+node:ekr.20081007015817.105:Shortcuts (keyHandler)
+    #@+node:ekr.20081007015817.106:isPlainKey
+    def isPlainKey (self,shortcut):
+
+        '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
+
+        k = self ; shortcut = shortcut or ''
+
+        for s in ('Alt','Ctrl','Command'):
+            if shortcut.find(s) != -1:
+                return False
+        else:
+            # Careful, allow bare angle brackets for unit tests.
+            if shortcut.startswith('<') and shortcut.endswith('>'):
+                shortcut = shortcut[1:-1]
+
+            isPlain = (
+                len(shortcut) == 1 or
+                len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
+                # A hack: allow Return to be bound to command.
+                shortcut == 'Tab'
+            )
+
+            # g.trace(isPlain,repr(shortcut))
+            return isPlain
+    #@-node:ekr.20081007015817.106:isPlainKey
+    #@+node:ekr.20081007015817.107:shortcutFromSetting (uses k.guiBindNamesDict)
+    def shortcutFromSetting (self,setting,addKey=True):
+
+        k = self
+
+        if not setting:
+            return None
+
+        s = g.stripBrackets(setting.strip())
+        #@    << define cmd, ctrl, alt, shift >>
+        #@+node:ekr.20081007015817.108:<< define cmd, ctrl, alt, shift >>
+        s2 = s.lower()
+
+        cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
+        ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
+        alt   = s2.find("alt") >= 0
+        shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
+        #@-node:ekr.20081007015817.108:<< define cmd, ctrl, alt, shift >>
+        #@nl
+        if k.swap_mac_keys and sys.platform == "darwin":
+            #@        << swap cmd and ctrl keys >>
+            #@+node:ekr.20081007015817.109:<< swap cmd and ctrl keys >>
+            if ctrl and not cmd:
+                cmd = True ; ctrl = False
+            if alt and not ctrl:
+                ctrl = True ; alt = False
+            #@-node:ekr.20081007015817.109:<< swap cmd and ctrl keys >>
+            #@nl
+        #@    << convert minus signs to plus signs >>
+        #@+node:ekr.20081007015817.110:<< convert minus signs to plus signs >>
+        # Replace all minus signs by plus signs, except a trailing minus:
+        if s.endswith('-'):
+            s = s[:-1].replace('-','+') + '-'
+        else:
+            s = s.replace('-','+')
+        #@-node:ekr.20081007015817.110:<< convert minus signs to plus signs >>
+        #@nl
+        #@    << compute the last field >>
+        #@+node:ekr.20081007015817.111:<< compute the last field >>
+        if s.endswith('+'):
+            last = '+'
+        else:
+            fields = s.split('+') # Don't lower this field.
+            last = fields and fields[-1]
+            if not last:
+                if not g.app.menuWarningsGiven:
+                    g.pr("bad shortcut specifier:", s)
+                return None
+
+        if len(last) == 1:
+            last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
+            # g.trace(last,last2)
+            if last2:
+                last = last2 ; shift = False # Ignore the shift state for these special chars.
+            else:
+                if shift:
+                    last = last.upper()
+                    shift = False
+                else:
+                    last = last.lower()
+
+                # New in Leo 4.4.2: Alt-2 is not a key event!
+                if addKey and last.isdigit():
+                    last = 'Key-' + last
+        else:
+            # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
+            # This is a *one-way* translation, done only here.
+            d = k.settingsNameDict
+            last = d.get(last.lower(),last)
+        #@-node:ekr.20081007015817.111:<< compute the last field >>
+        #@nl
+        #@    << compute shortcut >>
+        #@+node:ekr.20081007015817.112:<< compute shortcut >>
+        table = (
+            (alt, 'Alt+'),
+            (ctrl,'Ctrl+'),
+            (cmd, 'Command+'),
+            (shift,'Shift+'),
+            (True, last),
+        )
+
+        # new in 4.4b3: convert all characters to unicode first.
+        shortcut = ''.join([g.toUnicode(val,g.app.tkEncoding) for flag,val in table if flag])
+        #@-node:ekr.20081007015817.112:<< compute shortcut >>
+        #@nl
+        # g.trace(setting,shortcut)
+        return shortcut
+
+    canonicalizeShortcut = shortcutFromSetting # For compatibility.
+    strokeFromSetting = shortcutFromSetting
+    #@-node:ekr.20081007015817.107:shortcutFromSetting (uses k.guiBindNamesDict)
+    #@+node:ekr.20081007015817.113:k.tkbindingFromStroke
+    def tkbindingFromStroke (self,stroke):
+
+        '''Convert a stroke (key to k.bindingsDict) to an actual Tk binding.'''
+
+        stroke = g.stripBrackets(stroke)
+
+        for a,b in (
+            ('Alt+','Alt-'),
+            ('Ctrl-','Control-'),
+            ('Ctrl+','Control-'), # New in Leo 4.5.
+            ('Shift+','Shift-'),
+            ('Command+','Command-'),
+            ('DnArrow','Down'), # New in Leo 4.5.
+            ('LtArrow','Left'), # New in Leo 4.5.
+            ('RtArrow','Right'),# New in Leo 4.5.
+            ('UpArrow','Up'),   # New in Leo 4.5.
+        ):
+            stroke = stroke.replace(a,b)
+
+        # g.trace('<%s>' % stroke)
+        return '<%s>' % stroke
+    #@-node:ekr.20081007015817.113:k.tkbindingFromStroke
+    #@-node:ekr.20081007015817.105:Shortcuts (keyHandler)
+    #@-node:ekr.20081004172422.517:Bind & helper
     #@+node:ekr.20081007015817.100:Config
     #@+node:ekr.20081004172422.514:cget and configure
     # Exceptions can arise because of user errors.
@@ -534,7 +720,7 @@ class leoQtBody (leoFrame.leoBody):
     def getLastPosition(self):
 
         w = self.widget
-        n = len(w.text())
+        n = len(self.getAllText())
 
         g.trace(n)
 
@@ -550,7 +736,7 @@ class leoQtBody (leoFrame.leoBody):
             g.trace('')
             return ''
         else:
-            s = w.text()
+            s = self.getAllText()
             g.trace(repr(s[i:j]))
             return s[i:j]
     #@-node:ekr.20081007015817.85:getSelectedText
@@ -560,7 +746,7 @@ class leoQtBody (leoFrame.leoBody):
         w = self.widget
 
         if w.hasSelectedText():
-            s = w.text()
+            s = self.getAllText()
             row_i,col_i,row_j,col_j = w.getSelection()
             i = g.convertRowColToPythonIndex(s, row_i, col_i)
             j = g.convertRowColToPythonIndex(s, row_j, col_j)
@@ -576,7 +762,7 @@ class leoQtBody (leoFrame.leoBody):
     def setInsertPoint(self,i):
 
         w = self.widget
-        s = w.text()
+        s = self.getAllText()
 
         row,col = g.convertPythonIndexToRowCol(s,i)
 
@@ -587,14 +773,13 @@ class leoQtBody (leoFrame.leoBody):
     def setSelectionRange(self,i,j):
 
         w = self.widget
-        s = w.text()
+        s = self.getAllText()
 
         row_i,col_i = g.convertPythonIndexToRowCol(s,i)
         row_j,col_j = g.convertPythonIndexToRowCol(s,j)
 
         g.trace(row_i,col_i,row_j,col_j)
         w.setSelection(row_i,col_i,row_j,col_j)
-
     #@-node:ekr.20081007015817.96:setSelectionRange
     #@-node:ekr.20081007015817.76:Insert point and selection
     #@+node:ekr.20081007015817.98:Scrolling & hit test
@@ -652,10 +837,12 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081007015817.99:Text getters/settters
     #@+node:ekr.20081007015817.79:appendText
     def appendText(self,s):
+
         self.oops()
     #@-node:ekr.20081007015817.79:appendText
     #@+node:ekr.20081007015817.80:get
     def get(self,i,j):
+
         self.oops() ; return ''
 
     #@-node:ekr.20081007015817.80:get
@@ -3336,6 +3523,7 @@ class leoQtLog (leoFrame.leoLog):
         self.setFontFromConfig()
         self.setColorFromConfig()
 
+
     #@-node:ekr.20081004172422.624:qtLog.__init__
     #@+node:ekr.20081004172422.626:qtLog.finishCreate
     def finishCreate (self):
@@ -3577,7 +3765,7 @@ class leoQtLog (leoFrame.leoLog):
             w.setHtml(contents + '\n')
         else:
             # put s to logWaiting and print  a newline
-            g.app.logWaiting.append((s,color),)
+            g.app.logWaiting.append(('\n','black'),)
     #@-node:ekr.20081004172422.645:putnl
     #@-node:ekr.20081004172422.641:put & putnl (qtLog)
     #@+node:ekr.20081004172422.646:Tab (QtLog)
@@ -3617,52 +3805,59 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.649:createTab
     def createTab (self,tabName,createText=True,wrap='none'):
 
-        c = self.c ; k = c.k
-
-        g.trace(tabName)
-
-        tabFrame = self.tabWidget.addTab(tabName)
-
-        return ### 
-
-        self.menu = self.makeTabMenu(tabName)
+        c = self.c ; w = self.tabWidget
 
         if createText:
-            #@        << Create the tab's text widget >>
-            #@+node:ekr.20081004172422.650:<< Create the tab's text widget >>
-            w = self.createTextWidget(tabFrame)
-
-            # Set the background color.
-            configName = 'log_pane_%s_tab_background_color' % tabName
-            bg = c.config.getColor(configName) or 'MistyRose1'
-
-            if wrap not in ('none','char','word'): wrap = 'none'
-            try: w.configure(bg=bg,wrap=wrap)
-            except Exception: pass # Could be a user error.
-
-            self.SetWidgetFontFromConfig(logCtrl=w)
-
-            self.canvasDict [tabName ] = None
-            self.frameDict [tabName] = tabFrame
-            self.textDict [tabName] = w
-
-            # Switch to a new colorTags list.
-            if self.tabName:
-                self.colorTagsDict [self.tabName] = self.colorTags [:]
-
-            self.colorTags = ['black']
-            self.colorTagsDict [tabName] = self.colorTags
-            #@-node:ekr.20081004172422.650:<< Create the tab's text widget >>
-            #@nl
+            contents = QtGui.QTextEdit()
+            # Install event filter.
+            w2 = c.frame.top
+            contents.installEventFilter(w2.ev_filt)
         else:
-            self.canvasDict [tabName] = None
-            self.textDict [tabName] = None
-            self.frameDict [tabName] = tabFrame
+            contents = QtGui.QWidget()
 
-        if tabName != 'Log':
-            # c.k doesn't exist when the log pane is created.
-            # k.makeAllBindings will call setTabBindings('Log')
-            self.setTabBindings(tabName)
+        w.addTab(contents,tabName)
+        if tabName == 'Log':
+            self.logCtrl = contents
+
+        if 0: # Old code: creates canvasDict, textDict, frameDict.
+            self.menu = self.makeTabMenu(tabName)
+
+            if createText:
+                #@            << Create the tab's text widget >>
+                #@+node:ekr.20081004172422.650:<< Create the tab's text widget >>
+                w = self.createTextWidget(tabFrame)
+
+                # Set the background color.
+                configName = 'log_pane_%s_tab_background_color' % tabName
+                bg = c.config.getColor(configName) or 'MistyRose1'
+
+                if wrap not in ('none','char','word'): wrap = 'none'
+                try: w.configure(bg=bg,wrap=wrap)
+                except Exception: pass # Could be a user error.
+
+                self.SetWidgetFontFromConfig(logCtrl=w)
+
+                self.canvasDict [tabName ] = None
+                self.frameDict [tabName] = tabFrame
+                self.textDict [tabName] = w
+
+                # Switch to a new colorTags list.
+                if self.tabName:
+                    self.colorTagsDict [self.tabName] = self.colorTags [:]
+
+                self.colorTags = ['black']
+                self.colorTagsDict [tabName] = self.colorTags
+                #@-node:ekr.20081004172422.650:<< Create the tab's text widget >>
+                #@nl
+            else:
+                self.canvasDict [tabName] = None
+                self.textDict [tabName] = None
+                self.frameDict [tabName] = tabFrame
+
+            if tabName != 'Log':
+                # c.k doesn't exist when the log pane is created.
+                # k.makeAllBindings will call setTabBindings('Log')
+                self.setTabBindings(tabName)
     #@-node:ekr.20081004172422.649:createTab
     #@+node:ekr.20081004172422.651:cycleTabFocus
     def cycleTabFocus (self,event=None,stop_w = None):
@@ -3761,37 +3956,8 @@ class leoQtLog (leoFrame.leoLog):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
                 return
-
-        if createText:
-            contents = QtGui.QTextEdit()
         else:
-            contents = QtGui.QWidget() # QtGui.QPainter()
-
-        w.addTab(contents,tabName)
-        if tabName == 'Log':
-            self.logCtrl = contents
-
-        # tabFrame = self.frameDict.get(tabName)
-        # logCtrl = self.textDict.get(tabName)
-
-        # if tabFrame and logCtrl:
-            # # Switch to a new colorTags list.
-            # newColorTags = self.colorTagsDict.get(tabName)
-            # self.colorTagsDict [self.tabName] = self.colorTags [:]
-            # self.colorTags = newColorTags
-        # elif not tabFrame:
-            # self.createTab(tabName,createText=createText,wrap=wrap)
-
-        # self.tabWidget.selectpage(tabName)
-        # # Update the status vars.
-        # self.tabName = tabName
-        # w = self.textDict.get(tabName)
-        # if w: self.logCtrl = w
-        # self.tabFrame = self.frameDict.get(tabName)
-
-        # if 0: # Absolutely do not do this here!  It is a cause of the 'sticky focus' problem.
-            # c.widgetWantsFocusNow(self.logCtrl)
-        # return tabFrame
+            self.createTab(tabName,createText,wrap)
     #@-node:ekr.20081004172422.658:selectTab
     #@+node:ekr.20081004172422.659:setTabBindings
     def setTabBindings (self,tabName):
