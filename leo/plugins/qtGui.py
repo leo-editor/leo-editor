@@ -213,29 +213,33 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
     #@-others
 
 #@-node:ekr.20081004102201.629:class  Window (QMainWindow,Ui_MainWindow)
-#@+node:ekr.20081004172422.502:class leoQtBody (leoBody) (not used yet)
+#@+node:ekr.20081004172422.502:class leoQtBody (leoBody)
 class leoQtBody (leoFrame.leoBody):
 
     """A class that represents the body pane of a Qt window."""
 
     #@    @+others
-    #@+node:ekr.20081004172422.503: Birth & death
+    #@+node:ekr.20081004172422.503: Birth
     #@+node:ekr.20081004172422.504:qtBody. __init__
     def __init__ (self,frame,parentFrame):
-
-        # g.trace("***** leoQtBody")
 
         # Call the base class constructor.
         leoFrame.leoBody.__init__(self,frame,parentFrame)
 
         c = self.c ; p = c.currentPosition()
 
-        self.bodyCtrl = None ###
-        self.editor_name = None
-        self.editor_v = None
+        self.widget = c.frame.top.textEdit
+        self.bodyCtrl = None
+            # Setting this causes problems.
+            # Leo's core calls bodyCtrl.bind, but that does not exist.
+
+        # g.trace("***** leoQtBody")
 
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
 
+        # For multiple body editors.
+        self.editor_name = None
+        self.editor_v = None
         self.numberOfEditors = 1
         self.totalNumberOfEditors = 1
 
@@ -247,8 +251,6 @@ class leoQtBody (leoFrame.leoBody):
 
         '''(qtBody) Create gui-dependent bindings.
         These are *not* made in nullBody instances.'''
-
-        return ### 
 
         # frame = self.frame ; c = self.c ; k = c.k
         # if not w: w = self.bodyCtrl
@@ -297,98 +299,8 @@ class leoQtBody (leoFrame.leoBody):
 
             # c.bind(w,kind,bodyClickCallback)
     #@-node:ekr.20081004172422.505:qtBody.createBindings
-    #@+node:ekr.20081004172422.506:qtBody.createControl
-    def createControl (self,parentFrame,p):
-
-        return ###
-
-        c = self.c
-
-        # New in 4.4.1: make the parent frame a Pmw.PanedWidget.
-        # self.numberOfEditors = 1 ; name = '1'
-        # self.totalNumberOfEditors = 1
-
-        # orient = c.config.getString('editor_orientation') or 'horizontal'
-        # if orient not in ('horizontal','vertical'): orient = 'horizontal'
-
-        # self.pb = pb = Pmw.PanedWidget(parentFrame,orient=orient)
-        # parentFrame = pb.add(name)
-        # pb.pack(expand=1,fill='both') # Must be done after the first page created.
-
-        # w = self.createTextWidget(parentFrame,p,name)
-        # self.editorWidgets[name] = w
-
-        # return w
-    #@-node:ekr.20081004172422.506:qtBody.createControl
-    #@+node:ekr.20081004172422.507:qtBody.createTextWidget
-    def createTextWidget (self,parentFrame,p,name):
-
-        return ###
-
-        # c = self.c
-
-        # parentFrame.configure(bg='LightSteelBlue1')
-
-        # wrap = c.config.getBool('body_pane_wraps')
-        # wrap = g.choose(wrap,"word","none")
-
-        # # Setgrid=1 cause severe problems with the font panel.
-        # body = w = leoQtTextWidget (parentFrame,name='body-pane',
-            # bd=2,bg="white",relief="flat",setgrid=0,wrap=wrap)
-
-        # bodyBar = qt.Scrollbar(parentFrame,name='bodyBar')
-
-        # def yscrollCallback(x,y,bodyBar=bodyBar,w=w):
-            # # g.trace(x,y,g.callers())
-            # if hasattr(w,'leo_scrollBarSpot'):
-                # w.leo_scrollBarSpot = (x,y)
-            # return bodyBar.set(x,y)
-
-        # body['yscrollcommand'] = yscrollCallback # bodyBar.set
-
-        # bodyBar['command'] =  body.yview
-        # bodyBar.pack(side="right", fill="y")
-
-        # # Always create the horizontal bar.
-        # bodyXBar = qt.Scrollbar(
-            # parentFrame,name='bodyXBar',orient="horizontal")
-        # body['xscrollcommand'] = bodyXBar.set
-        # bodyXBar['command'] = body.xview
-
-        # if wrap == "none":
-            # # g.trace(parentFrame)
-            # bodyXBar.pack(side="bottom", fill="x")
-
-        # body.pack(expand=1,fill="both")
-
-        self.wrapState = wrap
-
-        if 0: # Causes the cursor not to blink.
-            body.configure(insertofftime=0)
-
-        # Inject ivars
-        if name == '1':
-            w.leo_p = w.leo_v = None # Will be set when the second editor is created.
-        else:
-            w.leo_p = p.copy()
-            w.leo_v = w.leo_p.v
-
-        w.leo_active = True
-        # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
-        w.leo_bodyBar = bodyBar # 2007/10/31
-        w.leo_bodyXBar = bodyXBar # 2007/10/31
-        w.leo_chapter = None
-        w.leo_frame = parentFrame
-        w.leo_name = name
-        w.leo_label = None
-        w.leo_label_s = None
-        w.leo_scrollBarSpot = None
-        w.leo_insertSpot = None
-        w.leo_selection = None
-
-        return w
-    #@-node:ekr.20081004172422.507:qtBody.createTextWidget
-    #@-node:ekr.20081004172422.503: Birth & death
+    #@-node:ekr.20081004172422.503: Birth
+    #@+node:ekr.20081006163726.5:Config
     #@+node:ekr.20081004172422.508:qtBody.setColorFromConfig
     def setColorFromConfig (self,w=None):
 
@@ -397,35 +309,42 @@ class leoQtBody (leoFrame.leoBody):
         c = self.c
         if w is None: w = self.bodyCtrl
 
+        g.trace(w)
+
         bg = c.config.getColor("body_text_background_color") or 'white'
         # g.trace(id(w),bg)
 
-        try: w.configure(bg=bg)
+        try:
+            pass ### w.configure(bg=bg)
         except:
             g.es("exception setting body text background color")
             g.es_exception()
 
         fg = c.config.getColor("body_text_foreground_color") or 'black'
-        try: w.configure(fg=fg)
+        try:
+            pass ### w.configure(fg=fg)
         except:
             g.es("exception setting body textforeground color")
             g.es_exception()
 
         bg = c.config.getColor("body_insertion_cursor_color")
         if bg:
-            try: w.configure(insertbackground=bg)
+            try:
+                pass ### w.configure(insertbackground=bg)
             except:
                 g.es("exception setting body pane cursor color")
                 g.es_exception()
 
         sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
-        try: w.configure(selectbackground=sel_bg)
+        try:
+            pass ### w.configure(selectbackground=sel_bg)
         except Exception:
             g.es("exception setting body pane text selection background color")
             g.es_exception()
 
         sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
-        try: w.configure(selectforeground=sel_fg)
+        try:
+            pass ### w.configure(selectforeground=sel_fg)
         except Exception:
             g.es("exception setting body pane text selection foreground color")
             g.es_exception()
@@ -435,7 +354,8 @@ class leoQtBody (leoFrame.leoBody):
             bg = c.config.getColor("body_cursor_background_color")
             if fg and bg:
                 cursor="xterm" + " " + fg + " " + bg
-                try: w.configure(cursor=cursor)
+                try:
+                    pass ### w.configure(cursor=cursor)
                 except:
                     import traceback ; traceback.print_exc()
     #@-node:ekr.20081004172422.508:qtBody.setColorFromConfig
@@ -454,10 +374,11 @@ class leoQtBody (leoFrame.leoBody):
             c.config.defaultBodyFontSize)
 
         self.fontRef = font # ESSENTIAL: retain a link to font.
-        w.configure(font=font)
+        # w.configure(font=font)
 
         # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
     #@-node:ekr.20081004172422.509:qtBody.setFontFromConfig
+    #@-node:ekr.20081006163726.5:Config
     #@+node:ekr.20081004172422.510:Focus (qtBody)
     def hasFocus (self):
 
@@ -587,7 +508,7 @@ class leoQtBody (leoFrame.leoBody):
     #@-node:ekr.20081004172422.522:setEditorColors
     #@-node:ekr.20081004172422.519:Editors (qtBody) (TO DO)
     #@-others
-#@-node:ekr.20081004172422.502:class leoQtBody (leoBody) (not used yet)
+#@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
 #@+node:ekr.20081004102201.628:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
