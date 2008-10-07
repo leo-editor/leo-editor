@@ -3496,9 +3496,6 @@ if wx:
         SetFocus = setFocus
         getFocus = hasFocus
 
-        def getBodyPaneHeight (self):           return self.bodyCtrl.GetCharHeight() # widget specific
-        def getBodyPaneWidth (self):            return self.bodyCtrl.GetCharWidth()  # widget specific
-
         def scheduleIdleTimeRoutine (self,function,*args,**keys):   g.trace()
 
         def tag_add (self,*args,**keys):        return self.bodyCtrl.tag_add(*args,**keys)
