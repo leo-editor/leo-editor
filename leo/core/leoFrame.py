@@ -57,8 +57,6 @@ import re
 #@+node:ekr.20070228074228:<< define text classes >>
 #@+others
 #@+node:ekr.20070228074312:class baseTextWidget
-# Subclassing from wx.EvtHandler allows methods of this and derived class to be event handlers.
-
 class baseTextWidget:
 
     '''The base class for all wrapper classes for leo Text widgets.'''

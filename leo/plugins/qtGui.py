@@ -556,6 +556,384 @@ class leoQtEventFilter(QtCore.QObject):
     #@-node:ekr.20081004172422.897:key_pressed
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
+#@+node:ekr.20081007015817.56:class leoQtFindTab class (findTab)
+class leoQtFindTab (leoFind.findTab):
+
+    '''A subclass of the findTab class containing all Qt Gui code.'''
+
+    #@    @+others
+    #@+node:ekr.20081007015817.57:Birth
+    #@+node:ekr.20081007015817.58:qtFindTab.ctor
+    if 0: # We can use the base-class ctor.
+
+        def __init__ (self,c,parentFrame):
+
+            leoFind.findTab.__init__(self,c,parentFrame)
+                # Init the base class.
+                # Calls initGui, createFrame, createBindings & init(c), in that order.
+    #@-node:ekr.20081007015817.58:qtFindTab.ctor
+    #@+node:ekr.20081007015817.59:initGui
+    # Called from leoFind.findTab.ctor.
+
+    def initGui (self):
+
+        # g.trace('wxFindTab')
+
+        self.svarDict = {} # Keys are ivar names, values are svar objects.
+
+        for key in self.intKeys:
+            self.svarDict[key] = self.svar()
+
+        for key in self.newStringKeys:
+            self.svarDict[key] = self.svar()
+    #@-node:ekr.20081007015817.59:initGui
+    #@+node:ekr.20081007015817.60:init (qtFindTab)
+    # Called from leoFind.findTab.ctor.
+    # We must override leoFind.init to init the checkboxes 'by hand' here. 
+
+    def init (self,c):
+
+        return ###
+
+        # Separate c.ivars are much more convenient than a svarDict.
+        for key in self.intKeys:
+            # Get ivars from @settings.
+            val = c.config.getBool(key)
+            setattr(self,key,val)
+            val = g.choose(val,1,0)
+            svar = self.svarDict.get(key)
+            if svar: svar.set(val)
+            #g.trace(key,val)
+
+        #@    << set find/change widgets >>
+        #@+node:ekr.20081007015817.61:<< set find/change widgets >>
+        self.find_ctrl.delete(0,"end")
+        self.change_ctrl.delete(0,"end")
+
+        # Get setting from @settings.
+        for w,setting,defaultText in (
+            (self.find_ctrl,"find_text",'<find pattern here>'),
+            (self.change_ctrl,"change_text",''),
+        ):
+            s = c.config.getString(setting)
+            if not s: s = defaultText
+            w.insert("end",s)
+        #@-node:ekr.20081007015817.61:<< set find/change widgets >>
+        #@nl
+        #@    << set radio buttons from ivars >>
+        #@+node:ekr.20081007015817.62:<< set radio buttons from ivars >>
+        # In Tk, setting the var also sets the widget.
+        # Here, we do so explicitly.
+        d = self.widgetsDict
+        for ivar,key in (
+            ("pattern_match","pattern-search"),
+            #("script_search","script-search")
+        ):
+            svar = self.svarDict[ivar].get()
+            if svar:
+                self.svarDict["radio-find-type"].set(key)
+                w = d.get(key)
+                if w: w.SetValue(True)
+                break
+        else:
+            self.svarDict["radio-find-type"].set("plain-search")
+
+        for ivar,key in (
+            ("suboutline_only","suboutline-only"),
+            ("node_only","node-only"),
+            # ("selection_only","selection-only")
+        ):
+            svar = self.svarDict[ivar].get()
+            if svar:
+                self.svarDict["radio-search-scope"].set(key)
+                break
+        else:
+            key = 'entire-outline'
+            self.svarDict["radio-search-scope"].set(key)
+            w = self.widgetsDict.get(key)
+            if w: w.SetValue(True)
+        #@-node:ekr.20081007015817.62:<< set radio buttons from ivars >>
+        #@nl
+        #@    << set checkboxes from ivars >>
+        #@+node:ekr.20081007015817.63:<< set checkboxes from ivars >>
+        for ivar in (
+            'ignore_case',
+            'mark_changes',
+            'mark_finds',
+            'pattern_match',
+            'reverse',
+            'search_body',
+            'search_headline',
+            'whole_word',
+            'wrap',
+        ):
+            svar = self.svarDict[ivar].get()
+            if svar:
+                w = self.widgetsDict.get(ivar)
+                if w: w.SetValue(True)
+        #@-node:ekr.20081007015817.63:<< set checkboxes from ivars >>
+        #@nl
+    #@-node:ekr.20081007015817.60:init (qtFindTab)
+    #@-node:ekr.20081007015817.57:Birth
+    #@+node:ekr.20081007015817.64:class svar
+    class svar:
+        '''A class like Tk's IntVar and StringVar classes.'''
+        def __init__(self):
+            self.val = None
+        def get (self):
+            return self.val
+        def set (self,val):
+            self.val = val
+    #@-node:ekr.20081007015817.64:class svar
+    #@+node:ekr.20081007015817.65:createFrame (wxFindTab)
+    def createFrame (self,parentFrame):
+
+        return ###
+
+        self.parentFrame = self.top = parentFrame
+
+        self.createFindChangeAreas()
+        self.createBoxes()
+        self.createButtons()
+        self.layout()
+        self.createBindings()
+    #@+node:ekr.20081007015817.66:createFindChangeAreas
+    def createFindChangeAreas (self):
+
+        f = self.top
+
+        self.fLabel = wx.StaticText(f,label='Find',  style=wx.ALIGN_RIGHT)
+        self.cLabel = wx.StaticText(f,label='Change',style=wx.ALIGN_RIGHT)
+
+        self.find_ctrl = plainTextWidget(self.c,f,name='find-text',  size=(300,-1))
+        self.change_ctrl = plainTextWidget(self.c,f,name='change-text',size=(300,-1))
+    #@-node:ekr.20081007015817.66:createFindChangeAreas
+    #@+node:ekr.20081007015817.67:layout
+    def layout (self):
+
+        f = self.top
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.AddSpacer(10)
+
+        sizer2 = wx.FlexGridSizer(2, 2, vgap=10,hgap=5)
+
+        sizer2.Add(self.fLabel,0,wx.EXPAND)
+        sizer2.Add(self.find_ctrl.widget,1,wx.EXPAND,border=5)
+        sizer2.Add(self.cLabel,0,wx.EXPAND)
+        sizer2.Add(self.change_ctrl.widget,1,wx.EXPAND,border=5)
+
+        sizer.Add(sizer2,0,wx.EXPAND)
+        sizer.AddSpacer(10)
+
+        #label = wx.StaticBox(f,label='Find Options')
+        #boxes = wx.StaticBoxSizer(label,wx.HORIZONTAL)
+
+        boxes = wx.BoxSizer(wx.HORIZONTAL)
+        lt_col = wx.BoxSizer(wx.VERTICAL)
+        rt_col = wx.BoxSizer(wx.VERTICAL)
+
+        for w in self.boxes [:6]:
+            lt_col.Add(w,0,wx.EXPAND,border=5)
+            lt_col.AddSpacer(5)
+        for w in self.boxes [6:]:
+            rt_col.Add(w,0,wx.EXPAND,border=5)
+            rt_col.AddSpacer(5)
+
+        boxes.Add(lt_col,0,wx.EXPAND)
+        boxes.AddSpacer(20)
+        boxes.Add(rt_col,0,wx.EXPAND)
+        sizer.Add(boxes,0) #,wx.EXPAND)
+
+        f.SetSizer(sizer)
+    #@nonl
+    #@-node:ekr.20081007015817.67:layout
+    #@+node:ekr.20081007015817.68:createBoxes
+    def createBoxes (self):
+
+        '''Create two columns of radio buttons & check boxes.'''
+
+        c = self.c ; f = self.parentFrame
+        self.boxes = []
+        self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.
+
+        data = ( # Leading star denotes a radio button.
+            ('Whole &Word', 'whole_word',),
+            ('&Ignore Case','ignore_case'),
+            ('Wrap &Around','wrap'),
+            ('&Reverse',    'reverse'),
+            ('Rege&xp',     'pattern_match'),
+            ('Mark &Finds', 'mark_finds'),
+            ("*&Entire Outline","entire-outline"),
+            ("*&Suboutline Only","suboutline-only"),  
+            ("*&Node Only","node-only"),
+            ('Search &Headline','search_headline'),
+            ('Search &Body','search_body'),
+            ('Mark &Changes','mark_changes'),
+        )
+
+        # Important: changing these controls merely changes entries in self.svarDict.
+        # First, leoFind.update_ivars sets the find ivars from self.svarDict.
+        # Second, self.init sets the values of widgets from the ivars.
+        inGroup = False
+        for label,ivar in data:
+            if label.startswith('*'):
+                label = label[1:]
+                style = g.choose(inGroup,0,wx.RB_GROUP)
+                inGroup = True
+                w = wx.RadioButton(f,label=label,style=style)
+                self.widgetsDict[ivar] = w
+                def radioButtonCallback(event=None,ivar=ivar):
+                    svar = self.svarDict["radio-search-scope"]
+                    svar.set(ivar)
+                w.Bind(wx.EVT_RADIOBUTTON,radioButtonCallback)
+            else:
+                w = wx.CheckBox(f,label=label)
+                self.widgetsDict[ivar] = w
+                def checkBoxCallback(event=None,ivar=ivar):
+                    svar = self.svarDict.get(ivar)
+                    val = svar.get()
+                    svar.set(g.choose(val,False,True))
+                    # g.trace(ivar,val)
+                w.Bind(wx.EVT_CHECKBOX,checkBoxCallback)
+            self.boxes.append(w)
+    #@nonl
+    #@-node:ekr.20081007015817.68:createBoxes
+    #@+node:ekr.20081007015817.69:createBindings TO DO
+    def createBindings (self):
+
+        return ### not ready yet
+
+        def setFocus(w):
+            c = self.c
+            c.widgetWantsFocusNow(w)
+            w.setSelectionRange(0,0)
+            return "break"
+
+        def toFind(event,w=ftxt): return setFocus(w)
+        def toChange(event,w=ctxt): return setFocus(w)
+
+        def insertTab(w):
+            data = w.getSelectionRange()
+            if data: start,end = data
+            else: start = end = w.getInsertPoint()
+            w.replace(start,end,"\t")
+            return "break"
+
+        def insertFindTab(event,w=ftxt): return insertTab(w)
+        def insertChangeTab(event,w=ctxt): return insertTab(w)
+
+        ftxt.bind("<Tab>",toChange)
+        ctxt.bind("<Tab>",toFind)
+        ftxt.bind("<Control-Tab>",insertFindTab)
+        ctxt.bind("<Control-Tab>",insertChangeTab)
+    #@-node:ekr.20081007015817.69:createBindings TO DO
+    #@+node:ekr.20081007015817.70:createButtons (does nothing)
+    def createButtons (self):
+
+        '''Create two columns of buttons.'''
+
+        # # Create the alignment panes.
+        # buttons  = Tk.Frame(outer,background=bg)
+        # buttons1 = Tk.Frame(buttons,bd=1,background=bg)
+        # buttons2 = Tk.Frame(buttons,bd=1,background=bg)
+        # buttons.pack(side='top',expand=1)
+        # buttons1.pack(side='left')
+        # buttons2.pack(side='right')
+
+        # width = 15 ; defaultText = 'Find' ; buttons = []
+
+        # for text,boxKind,frame,callback in (
+            # # Column 1...
+            # ('Find','button',buttons1,self.findButtonCallback),
+            # ('Find All','button',buttons1,self.findAllButton),
+            # # Column 2...
+            # ('Change','button',buttons2,self.changeButton),
+            # ('Change, Then Find','button',buttons2,self.changeThenFindButton),
+            # ('Change All','button',buttons2,self.changeAllButton),
+        # ):
+            # w = underlinedTkButton(boxKind,frame,
+                # text=text,command=callback)
+            # buttons.append(w)
+            # if text == defaultText:
+                # w.button.configure(width=width-1,bd=4)
+            # elif boxKind != 'check':
+                # w.button.configure(width=width)
+            # w.button.pack(side='top',anchor='w',pady=2,padx=2)
+    #@-node:ekr.20081007015817.70:createButtons (does nothing)
+    #@-node:ekr.20081007015817.65:createFrame (wxFindTab)
+    #@+node:ekr.20081007015817.71:createBindings (wsFindTab) TO DO
+    def createBindings (self):
+
+        return ### not ready yet.
+
+        c = self.c ; k = c.k
+
+        def resetWrapCallback(event,self=self,k=k):
+            self.resetWrap(event)
+            return k.masterKeyHandler(event)
+
+        def findButtonBindingCallback(event=None,self=self):
+            self.findButton()
+            return 'break'
+
+        table = (
+            ('<Button-1>',  k.masterClickHandler),
+            ('<Double-1>',  k.masterClickHandler),
+            ('<Button-3>',  k.masterClickHandler),
+            ('<Double-3>',  k.masterClickHandler),
+            ('<Key>',       resetWrapCallback),
+            ('<Return>',    findButtonBindingCallback),
+            ("<Escape>",    self.hideTab),
+        )
+
+        for w in (self.find_ctrl,self.change_ctrl):
+            for event, callback in table:
+                w.bind(event,callback)
+    #@-node:ekr.20081007015817.71:createBindings (wsFindTab) TO DO
+    #@+node:ekr.20081007015817.72:Support for minibufferFind class (qtFindTab)
+    # This is the same as the Tk code because we simulate Tk svars.
+    #@nonl
+    #@+node:ekr.20081007015817.73:getOption
+    def getOption (self,ivar):
+
+        var = self.svarDict.get(ivar)
+
+        if var:
+            val = var.get()
+            # g.trace('%s = %s' % (ivar,val))
+            return val
+        else:
+            g.trace('bad ivar name: %s' % ivar)
+            return None
+    #@-node:ekr.20081007015817.73:getOption
+    #@+node:ekr.20081007015817.74:setOption
+    def setOption (self,ivar,val):
+
+        if ivar in self.intKeys:
+            if val is not None:
+                var = self.svarDict.get(ivar)
+                var.set(val)
+                # g.trace('%s = %s' % (ivar,val))
+
+        elif not g.app.unitTesting:
+            g.trace('oops: bad find ivar %s' % ivar)
+    #@-node:ekr.20081007015817.74:setOption
+    #@+node:ekr.20081007015817.75:toggleOption
+    def toggleOption (self,ivar):
+
+        if ivar in self.intKeys:
+            var = self.svarDict.get(ivar)
+            val = not var.get()
+            var.set(val)
+            # g.trace('%s = %s' % (ivar,val),var)
+        else:
+            g.trace('oops: bad find ivar %s' % ivar)
+    #@-node:ekr.20081007015817.75:toggleOption
+    #@-node:ekr.20081007015817.72:Support for minibufferFind class (qtFindTab)
+    #@-others
+#@nonl
+#@-node:ekr.20081007015817.56:class leoQtFindTab class (findTab)
 #@+node:ekr.20081004172422.523:class leoQtFrame (c.frame.top is a Window object)
 class leoQtFrame (leoFrame.leoFrame):
 
@@ -2122,7 +2500,7 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081004102201.641:qtGui.createSpellTab
     def createSpellTab(self,c,spellHandler,tabName):
 
-        return qtSpellTab(c,spellHandler,tabName)
+        return leoQtSpellTab(c,spellHandler,tabName)
     #@-node:ekr.20081004102201.641:qtGui.createSpellTab
     #@+node:ekr.20081004102201.642:qtGui file dialogs
     #@+node:ekr.20081004102201.643:runFileDialog
@@ -2787,73 +3165,15 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.626:qtLog.finishCreate
     def finishCreate (self):
 
-        # g.trace('qtLog')
-
         c = self.c ; log = self
 
-        # c.searchCommands.openFindTab(show=False)
-        # c.spellCommands.openSpellTab()
         log.selectTab('Log')
         log.selectTab('Test',createText=False)
         log.selectTab('Log')
-    #@nonl
+
+        c.searchCommands.openFindTab(show=False)
+        c.spellCommands.openSpellTab()
     #@-node:ekr.20081004172422.626:qtLog.finishCreate
-    #@+node:ekr.20081004172422.627:qtLog.createCanvasWidget
-    def createCanvasWidget (self,parentFrame):
-
-        return ###
-
-        self.logNumber += 1
-
-        w = qt.Canvas(parentFrame)
-
-        logBar = qt.Scrollbar(parentFrame,name="logBar")
-        w['yscrollcommand'] = logBar.set
-        logBar['command'] = w.yview
-        logBar.pack(side="right", fill="y")
-
-        logXBar = qt.Scrollbar(parentFrame,name='logXBar',orient="horizontal") 
-        w['xscrollcommand'] = logXBar.set 
-        logXBar['command'] = w.xview 
-        logXBar.pack(side="bottom", fill="x")
-
-        w.pack(expand=1, fill="both")
-
-        # Set the background color.
-        configName = 'log_canvas_pane_tab_background_color'
-        bg = self.c.config.getColor(configName) or 'MistyRose1'
-        try: w.configure(bg=bg)
-        except Exception: pass # Could be a user error.
-
-        return w
-    #@-node:ekr.20081004172422.627:qtLog.createCanvasWidget
-    #@+node:ekr.20081004172422.628:qtLog.createTextWidget
-    def createTextWidget (self,parentFrame):
-
-        return None ###
-
-        self.logNumber += 1
-        log = g.app.gui.plainTextWidget(
-            parentFrame,name="log-%d" % self.logNumber,
-            setgrid=0,wrap=self.wrap,bd=2,bg="white",relief="flat")
-
-        logBar = qt.Scrollbar(parentFrame,name="logBar")
-
-        log['yscrollcommand'] = logBar.set
-        logBar['command'] = log.yview
-
-        logBar.pack(side="right", fill="y")
-        # rr 8/14/02 added horizontal elevator 
-        if self.wrap == "none": 
-            logXBar = qt.Scrollbar( 
-                parentFrame,name='logXBar',orient="horizontal") 
-            log['xscrollcommand'] = logXBar.set 
-            logXBar['command'] = log.xview 
-            logXBar.pack(side="bottom", fill="x")
-        log.pack(expand=1, fill="both")
-
-        return log
-    #@-node:ekr.20081004172422.628:qtLog.createTextWidget
     #@+node:ekr.20081004172422.629:qtLog.makeTabMenu
     def makeTabMenu (self,tabName=None,allowRename=True):
 
@@ -4077,10 +4397,289 @@ class leoQtMenu (leoMenu.leoMenu):
     #@-node:ekr.20081004172422.882:getMacHelpMenu
     #@-others
 #@-node:ekr.20081004172422.856:class leoQtMenu
+#@+node:ekr.20081007015817.35:class leoQtSpellTab
+class leoQtSpellTab:
+
+    #@    @+others
+    #@+node:ekr.20081007015817.36:leoQtSpellTab.__init__
+    def __init__ (self,c,handler,tabName):
+
+        self.c = c
+        self.handler = handler
+        self.tabName = tabName
+
+        self.createFrame()
+        self.createBindings()
+        ###self.fillbox([])
+    #@-node:ekr.20081007015817.36:leoQtSpellTab.__init__
+    #@+node:ekr.20081007015817.37:createBindings TO DO
+    def createBindings (self):
+
+        return ### 
+
+        c = self.c ; k = c.k
+        widgets = (self.listBox, self.outerFrame)
+
+        for w in widgets:
+
+            # Bind shortcuts for the following commands...
+            for commandName,func in (
+                ('full-command',            k.fullCommand),
+                ('hide-spell-tab',          self.handler.hide),
+                ('spell-add',               self.handler.add),
+                ('spell-find',              self.handler.find),
+                ('spell-ignore',            self.handler.ignore),
+                ('spell-change-then-find',  self.handler.changeThenFind),
+            ):
+                junk, bunchList = c.config.getShortcut(commandName)
+                for bunch in bunchList:
+                    accel = bunch.val
+                    shortcut = k.shortcutFromSetting(accel)
+                    if shortcut:
+                        # g.trace(shortcut,commandName)
+                        w.bind(shortcut,func)
+
+        self.listBox.bind("<Double-1>",self.onChangeThenFindButton)
+        self.listBox.bind("<Button-1>",self.onSelectListBox)
+        self.listBox.bind("<Map>",self.onMap)
+    #@nonl
+    #@-node:ekr.20081007015817.37:createBindings TO DO
+    #@+node:ekr.20081007015817.38:createFrame TO DO
+    def createFrame (self):
+
+        return ###
+
+        c = self.c ; log = c.frame.log ; tabName = self.tabName
+
+        parentFrame = log.frameDict.get(tabName)
+        w = log.textDict.get(tabName)
+        w.pack_forget()
+
+        # Set the common background color.
+        bg = c.config.getColor('log_pane_Spell_tab_background_color') or 'LightSteelBlue2'
+
+        #@    << Create the outer frames >>
+        #@+node:ekr.20081007015817.39:<< Create the outer frames >>
+        self.outerScrolledFrame = Pmw.ScrolledFrame(
+            parentFrame,usehullsize = 1)
+
+        self.outerFrame = outer = self.outerScrolledFrame.component('frame')
+        self.outerFrame.configure(background=bg)
+
+        for z in ('borderframe','clipper','frame','hull'):
+            self.outerScrolledFrame.component(z).configure(
+                relief='flat',background=bg)
+        #@-node:ekr.20081007015817.39:<< Create the outer frames >>
+        #@nl
+        #@    << Create the text and suggestion panes >>
+        #@+node:ekr.20081007015817.40:<< Create the text and suggestion panes >>
+        f2 = Tk.Frame(outer,bg=bg)
+        f2.pack(side='top',expand=0,fill='x')
+
+        self.wordLabel = Tk.Label(f2,text="Suggestions for:")
+        self.wordLabel.pack(side='left')
+        self.wordLabel.configure(font=('verdana',10,'bold'))
+
+        fpane = Tk.Frame(outer,bg=bg,bd=2)
+        fpane.pack(side='top',expand=1,fill='both')
+
+        self.listBox = Tk.Listbox(fpane,height=6,width=10,selectmode="single")
+        self.listBox.pack(side='left',expand=1,fill='both')
+        self.listBox.configure(font=('verdana',11,'normal'))
+
+        listBoxBar = Tk.Scrollbar(fpane,name='listBoxBar')
+
+        bar, txt = listBoxBar, self.listBox
+        txt ['yscrollcommand'] = bar.set
+        bar ['command'] = txt.yview
+        bar.pack(side='right',fill='y')
+        #@-node:ekr.20081007015817.40:<< Create the text and suggestion panes >>
+        #@nl
+        #@    << Create the spelling buttons >>
+        #@+node:ekr.20081007015817.41:<< Create the spelling buttons >>
+        # Create the alignment panes
+        buttons1 = Tk.Frame(outer,bd=1,bg=bg)
+        buttons2 = Tk.Frame(outer,bd=1,bg=bg)
+        buttons3 = Tk.Frame(outer,bd=1,bg=bg)
+        for w in (buttons1,buttons2,buttons3):
+            w.pack(side='top',expand=0,fill='x')
+
+        buttonList = [] ; font = ('verdana',9,'normal') ; width = 12
+        for frame, text, command in (
+            (buttons1,"Find",self.onFindButton),
+            (buttons1,"Add",self.onAddButton),
+            (buttons2,"Change",self.onChangeButton),
+            (buttons2,"Change, Find",self.onChangeThenFindButton),
+            (buttons3,"Ignore",self.onIgnoreButton),
+            (buttons3,"Hide",self.onHideButton),
+        ):
+            b = Tk.Button(frame,font=font,width=width,text=text,command=command)
+            b.pack(side='left',expand=0,fill='none')
+            buttonList.append(b)
+
+        # Used to enable or disable buttons.
+        (self.findButton,self.addButton,
+         self.changeButton, self.changeFindButton,
+         self.ignoreButton, self.hideButton) = buttonList
+        #@-node:ekr.20081007015817.41:<< Create the spelling buttons >>
+        #@nl
+
+        # Pack last so buttons don't get squished.
+        self.outerScrolledFrame.pack(expand=1,fill='both',padx=2,pady=2)
+    #@-node:ekr.20081007015817.38:createFrame TO DO
+    #@+node:ekr.20081007015817.42:Event handlers
+    #@+node:ekr.20081007015817.43:onAddButton
+    def onAddButton(self):
+        """Handle a click in the Add button in the Check Spelling dialog."""
+
+        self.handler.add()
+    #@-node:ekr.20081007015817.43:onAddButton
+    #@+node:ekr.20081007015817.44:onChangeButton & onChangeThenFindButton
+    def onChangeButton(self,event=None):
+
+        """Handle a click in the Change button in the Spell tab."""
+
+        self.handler.change()
+        self.updateButtons()
+
+
+    def onChangeThenFindButton(self,event=None):
+
+        """Handle a click in the "Change, Find" button in the Spell tab."""
+
+        if self.change():
+            self.find()
+        self.updateButtons()
+    #@-node:ekr.20081007015817.44:onChangeButton & onChangeThenFindButton
+    #@+node:ekr.20081007015817.45:onFindButton
+    def onFindButton(self):
+
+        """Handle a click in the Find button in the Spell tab."""
+
+        c = self.c
+        self.handler.find()
+        self.updateButtons()
+        c.invalidateFocus()
+        c.bodyWantsFocusNow()
+    #@-node:ekr.20081007015817.45:onFindButton
+    #@+node:ekr.20081007015817.46:onHideButton
+    def onHideButton(self):
+
+        """Handle a click in the Hide button in the Spell tab."""
+
+        self.handler.hide()
+    #@-node:ekr.20081007015817.46:onHideButton
+    #@+node:ekr.20081007015817.47:onIgnoreButton
+    def onIgnoreButton(self,event=None):
+
+        """Handle a click in the Ignore button in the Check Spelling dialog."""
+
+        self.handler.ignore()
+    #@-node:ekr.20081007015817.47:onIgnoreButton
+    #@+node:ekr.20081007015817.48:onMap
+    def onMap (self, event=None):
+        """Respond to a Tk <Map> event."""
+
+        self.update(show= False, fill= False)
+    #@-node:ekr.20081007015817.48:onMap
+    #@+node:ekr.20081007015817.49:onSelectListBox
+    def onSelectListBox(self, event=None):
+        """Respond to a click in the selection listBox."""
+
+        c = self.c
+        self.updateButtons()
+        c.bodyWantsFocus()
+    #@-node:ekr.20081007015817.49:onSelectListBox
+    #@-node:ekr.20081007015817.42:Event handlers
+    #@+node:ekr.20081007015817.50:Helpers
+    #@+node:ekr.20081007015817.51:bringToFront
+    def bringToFront (self):
+
+        self.c.frame.log.selectTab('Spell')
+    #@-node:ekr.20081007015817.51:bringToFront
+    #@+node:ekr.20081007015817.52:fillbox
+    def fillbox(self, alts, word=None):
+        """Update the suggestions listBox in the Check Spelling dialog."""
+
+        self.suggestions = alts
+
+        if not word:
+            word = ""
+
+        self.wordLabel.configure(text= "Suggestions for: " + word)
+        self.listBox.delete(0, "end")
+
+        for i in range(len(self.suggestions)):
+            self.listBox.insert(i, self.suggestions[i])
+
+        # This doesn't show up because we don't have focus.
+        if len(self.suggestions):
+            self.listBox.select_set(1)
+    #@-node:ekr.20081007015817.52:fillbox
+    #@+node:ekr.20081007015817.53:getSuggestion
+    def getSuggestion(self):
+        """Return the selected suggestion from the listBox."""
+
+        # Work around an old Python bug.  Convert strings to ints.
+        items = self.listBox.curselection()
+        try:
+            items = map(int, items)
+        except ValueError: pass
+
+        if items:
+            n = items[0]
+            suggestion = self.suggestions[n]
+            return suggestion
+        else:
+            return None
+    #@-node:ekr.20081007015817.53:getSuggestion
+    #@+node:ekr.20081007015817.54:update
+    def update(self,show=True,fill=False):
+
+        """Update the Spell Check dialog."""
+
+        c = self.c
+
+        if fill:
+            self.fillbox([])
+
+        self.updateButtons()
+
+        if show:
+            self.bringToFront()
+            c.bodyWantsFocus()
+    #@-node:ekr.20081007015817.54:update
+    #@+node:ekr.20081007015817.55:updateButtons (spellTab)
+    def updateButtons (self):
+
+        """Enable or disable buttons in the Check Spelling dialog."""
+
+        c = self.c ; w = c.frame.body.bodyCtrl
+
+        start, end = w.getSelectionRange()
+        state = g.choose(self.suggestions and start,"normal","disabled")
+
+        self.changeButton.configure(state=state)
+        self.changeFindButton.configure(state=state)
+
+        # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
+        # self.redoButton.configure(state=state)
+        # state = g.choose(self.c.undoer.canUndo(),"normal","disabled")
+        # self.undoButton.configure(state=state)
+
+        self.addButton.configure(state='normal')
+        self.ignoreButton.configure(state='normal')
+    #@-node:ekr.20081007015817.55:updateButtons (spellTab)
+    #@-node:ekr.20081007015817.50:Helpers
+    #@-others
+#@-node:ekr.20081007015817.35:class leoQtSpellTab
 #@+node:ekr.20081004172422.694:class leoQtTextWidget
 class leoQtTextWidget:
 
     '''A class to wrap the qt text widget.'''
+
+    def __init__ (self,frame):
+        self.frame = frame # a Window object.
 
     def __repr__(self):
         name = hasattr(self,'_name') and self._name or '<no name>'
@@ -4491,7 +5090,6 @@ class leoQtTextWidget:
     #@-node:ekr.20081004172422.729:xyToGui/PythonIndex
     #@-node:ekr.20081004172422.700:Wrapper methods (leoTextWidget)
     #@-others
-#@nonl
 #@-node:ekr.20081004172422.694:class leoQtTextWidget
 #@+node:ekr.20081004172422.732:class leoQtTree
 class leoQtTree (leoFrame.leoTree):
@@ -6963,6 +7561,20 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
 
         return '<qtMenuWrapper %s>' % self.leo_label or 'unlabeled'
 #@-node:ekr.20081006073635.34:class qtMenuWrapper (QtMenu,leoQtMenu)
+#@+node:ekr.20081007015817.34:class qtSearchWidget
+class qtSearchWidget:
+
+    """A dummy widget class to pass to Leo's core find code."""
+
+    def __init__ (self):
+
+        self.insertPoint = 0
+        self.selection = 0,0
+        self.bodyCtrl = self
+        self.body = self
+        self.text = None
+#@nonl
+#@-node:ekr.20081007015817.34:class qtSearchWidget
 #@-others
 #@-node:ekr.20081004102201.619:@thin qtGui.py
 #@-leo
