@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1070</width>
+    <width>849</width>
     <height>750</height>
    </rect>
   </property>
@@ -50,6 +50,117 @@
            <attribute name="title" >
             <string>Tab 2</string>
            </attribute>
+           <layout class="QGridLayout" name="gridLayout" >
+            <item row="0" column="1" >
+             <widget class="QLineEdit" name="findPattern" />
+            </item>
+            <item row="1" column="1" >
+             <widget class="QLineEdit" name="findChange" />
+            </item>
+            <item row="2" column="0" >
+             <widget class="QCheckBox" name="checkBoxWholeWord" >
+              <property name="text" >
+               <string>Whole Word</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" >
+             <widget class="QCheckBox" name="checkBoxEntireOutline" >
+              <property name="text" >
+               <string>Entire Outline</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0" >
+             <widget class="QCheckBox" name="checkBoxIgnoreCase" >
+              <property name="text" >
+               <string>Ignore Case</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1" >
+             <widget class="QCheckBox" name="checkBoxSubroutineOnly" >
+              <property name="text" >
+               <string>Subroutine Only</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0" >
+             <widget class="QCheckBox" name="checkBoxWrapAround" >
+              <property name="text" >
+               <string>Wrap Around</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1" >
+             <widget class="QCheckBox" name="checkBoxNodeOnly" >
+              <property name="text" >
+               <string>Node Only</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0" >
+             <widget class="QCheckBox" name="checkBoxReverse" >
+              <property name="text" >
+               <string>Reverse</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1" >
+             <widget class="QCheckBox" name="checkBoxSearchHeadline" >
+              <property name="text" >
+               <string>Search Headline</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0" >
+             <widget class="QCheckBox" name="checkBoxRexexp" >
+              <property name="text" >
+               <string>Regexp</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1" >
+             <widget class="QCheckBox" name="checkBoxSearchBody" >
+              <property name="text" >
+               <string>Search Body</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0" >
+             <widget class="QCheckBox" name="checkBoxMarkFinds" >
+              <property name="text" >
+               <string>Mark Finds</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1" >
+             <widget class="QCheckBox" name="checkBoxMarkChanges" >
+              <property name="text" >
+               <string>Mark Changes</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="label_2" >
+              <property name="text" >
+               <string>Find:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="label_3" >
+              <property name="text" >
+               <string>Change:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_3" >
+           <attribute name="title" >
+            <string>Page</string>
+           </attribute>
           </widget>
          </widget>
         </widget>
@@ -89,7 +200,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1070</width>
+     <width>849</width>
      <height>22</height>
     </rect>
    </property>
