@@ -312,13 +312,13 @@ class leoTkinterBody (leoFrame.leoBody):
         return self.bodyCtrl.configure(*args,**keys)
     #@-node:ekr.20031218072017.2184:Configuration (Tk spelling) (tkBody)
     #@+node:ekr.20031218072017.4004:Height & width
-    def getBodyPaneHeight (self):
+    # def getBodyPaneHeight (self):
 
-        return self.bodyCtrl.winfo_height()
+        # return self.bodyCtrl.winfo_height()
 
-    def getBodyPaneWidth (self):
+    # def getBodyPaneWidth (self):
 
-        return self.bodyCtrl.winfo_width()
+        # return self.bodyCtrl.winfo_width()
     #@-node:ekr.20031218072017.4004:Height & width
     #@+node:ekr.20031218072017.4005:Idle time...
     def scheduleIdleTimeRoutine (self,function,*args,**keys):

@@ -2784,7 +2784,7 @@ class leoTree:
 
         if self.use_chapters:
             cc = c.chapterController
-            theChapter = cc.getSelectedChapter()
+            theChapter = cc and cc.getSelectedChapter()
             if theChapter:
                 theChapter.p = p.copy()
                 # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
@@ -2945,8 +2945,6 @@ class nullBody (leoBody):
     def forceFullRecolor (self,*args,**keys):   pass
     def scheduleIdleTimeRoutine (self,function,*args,**keys): pass
     # Low-level gui...
-    def getBodyPaneHeight (self):               return 500
-    def getBodyPaneWidth (self):                return 600
     def hasFocus (self):                        pass
     def setFocus (self):                        pass
     def tag_add (self,tagName,index1,index2):   pass
