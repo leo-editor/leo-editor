@@ -2437,7 +2437,7 @@ class keyHandlerClass:
         All commands and keystrokes pass through here.'''
 
         k = self ; c = k.c ; gui = g.app.gui
-        trace = True or k.traceMasterCommand
+        trace = False or k.traceMasterCommand
         traceGC = False
         if traceGC: g.printNewObjects('masterCom 1')
 
@@ -3279,7 +3279,7 @@ class keyHandlerClass:
         #@nonl
         #@-node:ekr.20061031131434.147:<< define vars >>
         #@nl
-        trace = (True or self.trace_masterKeyHandler) and not g.app.unitTesting
+        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
 
@@ -3527,7 +3527,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         modesTuple = ('insert','overwrite')
-        trace = True
+        trace = False
 
         if trace:
             # if stroke: g.trace('***unexpected stroke***')

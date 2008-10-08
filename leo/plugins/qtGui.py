@@ -841,11 +841,11 @@ class leoQtEventFilter(QtCore.QObject):
         #@-node:ekr.20081007115148.6:<< about internal bindings >>
         #@nl
 
-        trace = True
+        trace = True ; verbose = False ; dump = False
 
-        # if trace and not self.dumped:
-            # self.dumped = True
-            # g.trace(g.listToString(self.bindings.keys()))
+        if trace and dump and not self.dumped:
+            self.dumped = True
+            g.trace(g.listToString(self.bindings.keys()))
 
         tkKey,event = self.toTkKey(event,obj)
 
@@ -856,25 +856,26 @@ class leoQtEventFilter(QtCore.QObject):
             cmd(event)
             return True # The key has been handled.
         else:
-            if trace: g.trace('unbound',tkKey)
+            if trace and verbose: g.trace('unbound',tkKey)
             return False # The key has not been handled.
     #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event,obj):
 
-        c = self.c ; k = c.k ; trace = True
-        w = obj
+        c = self.c ; k = c.k ; w = obj ; trace = True
         keynum = event.key()
         try:
             ch = chr(keynum)
         except ValueError:
             ch = event.text()
-            if ch:
-                ch = g.toUnicode(ch,g.app.tkEncoding)
-            else:
+            if not ch:
+                ch = QtGui.QKeySequence(keynum).toString()
+            if not ch:
                 ch = "<unknown char: %s>" % (keynum)
+            ch = g.toUnicode(ch,g.app.tkEncoding)
+            if trace: g.trace('special',ch) # munge.
 
         # Convert special characters to Tk Spellings.
-        if ch in ('\r','\n'): ch = 'Return'
+        if   ch in ('\r','\n'): ch = 'Return'
         elif ch == '\t': ch = 'Tab'
         elif ch == '\b': ch = 'BackSpace'
         else:
@@ -886,18 +887,16 @@ class leoQtEventFilter(QtCore.QObject):
         if event.modifiers() & QtCore.Qt.AltModifier:
             mods.append("Alt")
         if event.modifiers() & QtCore.Qt.ControlModifier:
-            mods.append("Control") # "Ctrl")
+            mods.append("Control")
         if event.modifiers() & QtCore.Qt.ShiftModifier:
             if not ch2: # Don't add shift to special characters.
                 mods.append("Shift")
-        else:
-            if len(ch) == 1: ch = ch.lower()
+        elif len(ch) == 1: ch = ch.lower()
 
         tkKey = "-".join(mods) + (mods and "-" or "") + ch
-
         if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
 
-        event = leoKeyEvent(event,c,w,tkKey) ### ch,keynum)
+        event = leoKeyEvent(event,c,w,tkKey)
         return tkKey,event
     #@-node:ekr.20081008084746.1:toTkKey
     #@-node:ekr.20081004172422.897:key_pressed
