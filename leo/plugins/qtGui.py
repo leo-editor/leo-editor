@@ -736,12 +736,10 @@ class leoQtBody (leoFrame.leoBody):
         w = self.widget
         s = self.getAllText()
 
-        if j in (None,i):
-            s = s[:i] + s[i+1:]
-        else:
-            if i > j: i,j = j,i
-            s = s[:i] + s[j+1]
+        if j is None: j = i
+        if i > j: i,j = j,i
 
+        s = s[:i] + s[j+1:]
         w.setText(s)
         return i
     #@-node:ekr.20081008084746.6:delete
