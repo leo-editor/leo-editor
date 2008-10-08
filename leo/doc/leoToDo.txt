@@ -2,8 +2,174 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
-#@+node:ekr.20080915112342.1:First 5
+#@+node:ekr.20080915112342.1:First 6
 
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+@nocolor
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.
+
+EKR: Either use mkstemp or always write to a string first.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.3046:write_Leo_file
+def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
+
+    c = self.c
+    self.putCount = 0
+    self.toString = toString
+    theActualFile = None
+    toZip = False
+    atOk = True
+
+    if c.config.getBool('check_outline_before_save'):
+        g.trace('@bool check_outline_before_save = True',color='blue')
+        errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+        if errors > 0:
+            g.es_print('outline not written',color='red')
+            return False
+
+    if not outlineOnlyFlag or toOPML:
+        # Update .leoRecentFiles.txt if possible.
+        g.app.config.writeRecentFilesFile(c)
+        << write all @file nodes >>
+    << return if the .leo file is read-only >>
+    try:
+        << create backup file >>
+        self.mFileName = fileName
+        if toOPML:
+            << ensure that filename ends with .opml >>
+        self.outputFile = StringIO()
+        << create theActualFile >>
+        # t1 = time.clock()
+        if toOPML:
+            self.putToOPML()
+        else:
+            # An important optimization: we have already assign the file indices.
+            self.putLeoFile()
+        # t2 = time.clock()
+        s = self.outputFile.getvalue()
+        # g.trace(self.leo_file_encoding)
+        if toZip:
+            self.writeZipFile(s)
+        elif toString:
+            # For support of chapters plugin.
+            g.app.write_Leo_file_string = s
+        else:
+            theActualFile.write(s)
+            theActualFile.close()
+            << delete backup file >>
+            # t3 = time.clock()
+            # g.es_print('len',len(s),'putCount',self.putCount) # 'put',t2-t1,'write&close',t3-t2)
+        self.outputFile = None
+        self.toString = False
+        return atOk
+    except Exception:
+        g.es("exception writing:",fileName)
+        g.es_exception(full=True)
+        if theActualFile: theActualFile.close()
+        self.outputFile = None
+        if backupName:
+            << delete fileName >>
+            << rename backupName to fileName >>
+        self.toString = False
+        return False
+
+write_LEO_file = write_Leo_file # For compatibility with old plugins.
+#@+node:ekr.20040324080359:<< write all @file nodes >>
+try:
+    # Write all @file nodes and set orphan bits.
+    # An important optimization: we have already assign the file indices.
+    changedFiles,atOk = c.atFileCommands.writeAll()
+except Exception:
+    g.es_error("exception writing derived files")
+    g.es_exception()
+    return False
+#@-node:ekr.20040324080359:<< write all @file nodes >>
+#@+node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
+# self.read_only is not valid for Save As and Save To commands.
+
+if g.os_path_exists(fileName):
+    try:
+        if not os.access(fileName,os.W_OK):
+            g.es("can not write: read only:",fileName,color="red")
+            return False
+    except Exception:
+        pass # os.access() may not exist on all platforms.
+#@-node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
+#@+node:ekr.20031218072017.3047:<< create backup file >>
+backupName = None
+
+# rename fileName to fileName.bak if fileName exists.
+if not toString and g.os_path_exists(fileName):
+
+    backupName = g.os_path_join(g.app.loadDir,fileName)
+    backupName = fileName + ".bak"
+
+    if g.os_path_exists(backupName):
+        g.utils_remove(backupName)
+
+    ok = g.utils_rename(c,fileName,backupName)
+
+    if not ok:
+        if self.read_only:
+            g.es("read only",color="red")
+        return False
+#@nonl
+#@-node:ekr.20031218072017.3047:<< create backup file >>
+#@+node:ekr.20060919070145:<< ensure that filename ends with .opml >>
+if not self.mFileName.endswith('opml'):
+    self.mFileName = self.mFileName + '.opml'
+fileName = self.mFileName
+#@nonl
+#@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
+#@+node:ekr.20060929103258:<< create theActualFile >>
+if toString:
+    theActualFile = None
+elif c.isZipped:
+    self.toString = toString = True
+    theActualFile = None
+    toZip = True
+else:
+    theActualFile = open(fileName, 'wb')
+#@-node:ekr.20060929103258:<< create theActualFile >>
+#@+node:ekr.20031218072017.3048:<< delete backup file >>
+if backupName and g.os_path_exists(backupName):
+
+    self.deleteFileWithMessage(backupName,'backup')
+#@-node:ekr.20031218072017.3048:<< delete backup file >>
+#@+node:ekr.20050405103712:<< delete fileName >>
+if fileName and g.os_path_exists(fileName):
+
+    self.deleteFileWithMessage(fileName,'')
+#@-node:ekr.20050405103712:<< delete fileName >>
+#@+node:ekr.20050405103712.1:<< rename backupName to fileName >>
+if backupName:
+    g.es("restoring",fileName,"from",backupName)
+    g.utils_rename(c,backupName,fileName)
+#@-node:ekr.20050405103712.1:<< rename backupName to fileName >>
+#@+node:ekr.20070412095520:writeZipFile
+def writeZipFile (self,s):
+
+    # The name of the file in the archive.
+    contentsName = g.toEncodedString(
+        g.shortFileName(self.mFileName),
+        self.leo_file_encoding,reportErrors=True)
+
+    # The name of the archive itself.
+    fileName = g.toEncodedString(
+        self.mFileName,
+        self.leo_file_encoding,reportErrors=True)
+
+    # Write the archive.
+    theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
+    theFile.writestr(contentsName,s)
+    theFile.close()
+#@-node:ekr.20070412095520:writeZipFile
+#@-node:ekr.20031218072017.3046:write_Leo_file
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
 #@nonl
@@ -1104,172 +1270,8 @@ self.check_the_final_output(
 #@-node:ekr.20080708094444.38:x.propagate_changed_lines
 #@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
 #@-node:ekr.20080922115725.1:Finish @shadow
-#@-node:ekr.20080915112342.1:First 5
+#@-node:ekr.20080915112342.1:First 6
 #@+node:ekr.20080517102922.1:Files stuff 8
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files?
-@nocolor
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.
-
-@color
-#@nonl
-#@+node:ekr.20031218072017.3046:write_Leo_file
-def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
-
-    c = self.c
-    self.putCount = 0
-    self.toString = toString
-    theActualFile = None
-    toZip = False
-    atOk = True
-
-    if c.config.getBool('check_outline_before_save'):
-        g.trace('@bool check_outline_before_save = True',color='blue')
-        errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-        if errors > 0:
-            g.es_print('outline not written',color='red')
-            return False
-
-    if not outlineOnlyFlag or toOPML:
-        # Update .leoRecentFiles.txt if possible.
-        g.app.config.writeRecentFilesFile(c)
-        << write all @file nodes >>
-    << return if the .leo file is read-only >>
-    try:
-        << create backup file >>
-        self.mFileName = fileName
-        if toOPML:
-            << ensure that filename ends with .opml >>
-        self.outputFile = StringIO()
-        << create theActualFile >>
-        # t1 = time.clock()
-        if toOPML:
-            self.putToOPML()
-        else:
-            # An important optimization: we have already assign the file indices.
-            self.putLeoFile()
-        # t2 = time.clock()
-        s = self.outputFile.getvalue()
-        # g.trace(self.leo_file_encoding)
-        if toZip:
-            self.writeZipFile(s)
-        elif toString:
-            # For support of chapters plugin.
-            g.app.write_Leo_file_string = s
-        else:
-            theActualFile.write(s)
-            theActualFile.close()
-            << delete backup file >>
-            # t3 = time.clock()
-            # g.es_print('len',len(s),'putCount',self.putCount) # 'put',t2-t1,'write&close',t3-t2)
-        self.outputFile = None
-        self.toString = False
-        return atOk
-    except Exception:
-        g.es("exception writing:",fileName)
-        g.es_exception(full=True)
-        if theActualFile: theActualFile.close()
-        self.outputFile = None
-        if backupName:
-            << delete fileName >>
-            << rename backupName to fileName >>
-        self.toString = False
-        return False
-
-write_LEO_file = write_Leo_file # For compatibility with old plugins.
-#@+node:ekr.20040324080359:<< write all @file nodes >>
-try:
-    # Write all @file nodes and set orphan bits.
-    # An important optimization: we have already assign the file indices.
-    changedFiles,atOk = c.atFileCommands.writeAll()
-except Exception:
-    g.es_error("exception writing derived files")
-    g.es_exception()
-    return False
-#@-node:ekr.20040324080359:<< write all @file nodes >>
-#@+node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
-# self.read_only is not valid for Save As and Save To commands.
-
-if g.os_path_exists(fileName):
-    try:
-        if not os.access(fileName,os.W_OK):
-            g.es("can not write: read only:",fileName,color="red")
-            return False
-    except Exception:
-        pass # os.access() may not exist on all platforms.
-#@-node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
-#@+node:ekr.20031218072017.3047:<< create backup file >>
-backupName = None
-
-# rename fileName to fileName.bak if fileName exists.
-if not toString and g.os_path_exists(fileName):
-
-    backupName = g.os_path_join(g.app.loadDir,fileName)
-    backupName = fileName + ".bak"
-
-    if g.os_path_exists(backupName):
-        g.utils_remove(backupName)
-
-    ok = g.utils_rename(c,fileName,backupName)
-
-    if not ok:
-        if self.read_only:
-            g.es("read only",color="red")
-        return False
-#@nonl
-#@-node:ekr.20031218072017.3047:<< create backup file >>
-#@+node:ekr.20060919070145:<< ensure that filename ends with .opml >>
-if not self.mFileName.endswith('opml'):
-    self.mFileName = self.mFileName + '.opml'
-fileName = self.mFileName
-#@nonl
-#@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
-#@+node:ekr.20060929103258:<< create theActualFile >>
-if toString:
-    theActualFile = None
-elif c.isZipped:
-    self.toString = toString = True
-    theActualFile = None
-    toZip = True
-else:
-    theActualFile = open(fileName, 'wb')
-#@-node:ekr.20060929103258:<< create theActualFile >>
-#@+node:ekr.20031218072017.3048:<< delete backup file >>
-if backupName and g.os_path_exists(backupName):
-
-    self.deleteFileWithMessage(backupName,'backup')
-#@-node:ekr.20031218072017.3048:<< delete backup file >>
-#@+node:ekr.20050405103712:<< delete fileName >>
-if fileName and g.os_path_exists(fileName):
-
-    self.deleteFileWithMessage(fileName,'')
-#@-node:ekr.20050405103712:<< delete fileName >>
-#@+node:ekr.20050405103712.1:<< rename backupName to fileName >>
-if backupName:
-    g.es("restoring",fileName,"from",backupName)
-    g.utils_rename(c,backupName,fileName)
-#@-node:ekr.20050405103712.1:<< rename backupName to fileName >>
-#@+node:ekr.20070412095520:writeZipFile
-def writeZipFile (self,s):
-
-    # The name of the file in the archive.
-    contentsName = g.toEncodedString(
-        g.shortFileName(self.mFileName),
-        self.leo_file_encoding,reportErrors=True)
-
-    # The name of the archive itself.
-    fileName = g.toEncodedString(
-        self.mFileName,
-        self.leo_file_encoding,reportErrors=True)
-
-    # Write the archive.
-    theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
-    theFile.writestr(contentsName,s)
-    theFile.close()
-#@-node:ekr.20070412095520:writeZipFile
-#@-node:ekr.20031218072017.3046:write_Leo_file
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files?
 #@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
 # Remove the old type-specific commands from the default menu.
 #@nonl
