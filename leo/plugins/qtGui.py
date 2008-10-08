@@ -123,8 +123,8 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.ev_filt = leoQtEventFilter(c)
 
         # Use Tk-style bindings
-        # self.ev_filt.bindings['Ctrl+H'] = self.edit_current_headline
-        self.ev_filt.bindings['Control-H'] = self.edit_current_headline
+        # Not needed now: we already have this binding.
+        # self.ev_filt.bindings['Control-h'] = self.edit_current_headline
 
         self.textEdit.installEventFilter(self.ev_filt)
         self.treeWidget.installEventFilter(self.ev_filt)
@@ -232,15 +232,15 @@ class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
 
-    def __init__ (self,event,c,w,char,ch2,keynum):
+    def __init__ (self,event,c,w,tkKey): ###ch,keynum):
 
         # g.trace('leoKeyEvent(qtGui)',w)
         self.actualEvent = event
         self.c      = c # Required to access c.k tables.
-        self.char   = hasattr(event,'char') and event.char or ''
-        self.keynum = keynum
-        self.keysym = hasattr(event,'keysym') and event.keysym or ''
+        self.char   = tkKey #  hasattr(event,'char') and event.char or ''
+        self.keysym = tkKey # The 'stroke' ### hasattr(event,'keysym') and event.keysym or ''
         self.w      = w # hasattr(event,'widget') and event.widget or None
+
         self.x      = hasattr(event,'x') and event.x or 0
         self.y      = hasattr(event,'y') and event.y or 0
         # Support for fastGotoNode plugin
@@ -256,7 +256,6 @@ class leoKeyEvent:
     def __repr__ (self):
 
         return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
-#@nonl
 #@-node:ekr.20081004102201.676:class leoKeyEvent
 #@+node:ekr.20081004172422.502:class leoQtBody (leoBody)
 class leoQtBody (leoFrame.leoBody):
@@ -783,6 +782,7 @@ class leoQtEventFilter(QtCore.QObject):
         self.c = c
         QtCore.QObject.__init__(self)
         self.bindings = {}
+        self.dumped = False # True if bindings dict has been dumped.
 
     def eventFilter(self, obj, event):
 
@@ -843,6 +843,10 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = True
 
+        # if trace and not self.dumped:
+            # self.dumped = True
+            # g.trace(g.listToString(self.bindings.keys()))
+
         tkKey,event = self.toTkKey(event,obj)
 
         cmd = self.bindings.get(tkKey)
@@ -857,7 +861,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event,obj):
 
-        c = self.c ; k = c.k
+        c = self.c ; k = c.k ; trace = True
         w = obj
         keynum = event.key()
         try:
@@ -866,18 +870,16 @@ class leoQtEventFilter(QtCore.QObject):
             ch = event.text()
             if ch:
                 ch = g.toUnicode(ch,g.app.tkEncoding)
-                # Convert special characters to Tk Spellings.
-                if ch in ('\r','\n'): ch = 'Return'
-                elif ch == '\t': ch = 'Tab'
-                elif ch == '\b': ch = 'BackSpace'
             else:
                 ch = "<unknown char: %s>" % (keynum)
 
-        # Convert characters to special tk character names.
-        ch2 = k.guiBindNamesDict.get(ch)
-        if ch2: ch = ch2
-
-        g.trace('ch',repr(ch),'ch2',repr(ch2))
+        # Convert special characters to Tk Spellings.
+        if ch in ('\r','\n'): ch = 'Return'
+        elif ch == '\t': ch = 'Tab'
+        elif ch == '\b': ch = 'BackSpace'
+        else:
+            ch2 = k.guiBindNamesDict.get(ch)
+            if ch2: ch = ch2
 
         # Convert to Tk style binding.
         mods = []
@@ -893,7 +895,9 @@ class leoQtEventFilter(QtCore.QObject):
 
         tkKey = "-".join(mods) + (mods and "-" or "") + ch
 
-        event = leoKeyEvent(event,c,w,ch,ch2,keynum)  ### should use tkKey
+        if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
+
+        event = leoKeyEvent(event,c,w,tkKey) ### ch,keynum)
         return tkKey,event
     #@-node:ekr.20081008084746.1:toTkKey
     #@-node:ekr.20081004172422.897:key_pressed
