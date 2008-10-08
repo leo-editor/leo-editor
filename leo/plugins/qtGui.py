@@ -730,6 +730,21 @@ class leoQtBody (leoFrame.leoBody):
 
         self.oops()
     #@-node:ekr.20081007015817.79:appendText
+    #@+node:ekr.20081008084746.6:delete
+    def delete (self,i,j=None):
+
+        w = self.widget
+        s = self.getAllText()
+
+        if j in (None,i):
+            s = s[:i] + s[i+1:]
+        else:
+            if i > j: i,j = j,i
+            s = s[:i] + s[j+1]
+
+        w.setText(s)
+        return i
+    #@-node:ekr.20081008084746.6:delete
     #@+node:ekr.20081007015817.80:get
     def get(self,i,j):
 
@@ -748,7 +763,9 @@ class leoQtBody (leoFrame.leoBody):
 
     #@-node:ekr.20081007015817.81:getAllText
     #@+node:ekr.20081007015817.89:insertText
-    def insertText(self,i,s):          self.oops()
+    def insertText(self,i,s):
+
+        self.oops()
     #@-node:ekr.20081007015817.89:insertText
     #@+node:ekr.20081007015817.92:setAllText
     def setAllText(self,s):
@@ -825,23 +842,44 @@ class leoQtEventFilter(QtCore.QObject):
         #@nonl
         #@-node:ekr.20081007115148.6:<< about internal bindings >>
         #@nl
+
+        trace = True
+
+        tkKey,event = self.toTkKey(event,obj)
+
+        cmd = self.bindings.get(tkKey)
+
+        if cmd:
+            if trace: g.trace('bound',tkKey,cmd.__name__,)
+            cmd(event)
+            return True # The key has been handled.
+        else:
+            if trace: g.trace('unbound',tkKey)
+            return False # The key has not been handled.
+    #@+node:ekr.20081008084746.1:toTkKey
+    def toTkKey (self,event,obj):
+
         c = self.c ; k = c.k
         w = obj
         keynum = event.key()
         try:
-            char = chr(keynum)
+            ch = chr(keynum)
         except ValueError:
             ch = event.text()
             if ch:
-                if ch in ('\r','\n'): ch = 'Return' # Use the Tk spelling.
-                char = ch
+                ch = g.toUnicode(ch,g.app.tkEncoding)
+                # Convert special characters to Tk Spellings.
+                if ch in ('\r','\n'): ch = 'Return'
+                elif ch == '\t': ch = 'Tab'
+                elif ch == '\b': ch = 'BackSpace'
             else:
-                char = "<unknown char: %s>" % (keynum)
-            # g.trace(event.text(),obj, event.key(), event.modifiers())
+                ch = "<unknown char: %s>" % (keynum)
 
         # Convert characters to special tk character names.
-        ch2 = k.guiBindNamesDict.get(char)
-        if ch2: char = ch2 
+        ch2 = k.guiBindNamesDict.get(ch)
+        if ch2: ch = ch2
+
+        g.trace('ch',repr(ch),'ch2',repr(ch2))
 
         # Convert to Tk style binding.
         mods = []
@@ -853,25 +891,13 @@ class leoQtEventFilter(QtCore.QObject):
             if not ch2: # Don't add shift to special characters.
                 mods.append("Shift")
         else:
-            if len(char) == 1: char = char.lower()
-        # txt = "+".join(mods) + (mods and "+" or "") + char
-        txt = "-".join(mods) + (mods and "-" or "") + char
+            if len(ch) == 1: ch = ch.lower()
 
-        # g.trace(event.text(),obj, event.key(), event.modifiers())
+        tkKey = "-".join(mods) + (mods and "-" or "") + ch
 
-        event = leoKeyEvent(event,c,w,char,ch2,keynum)
-        cmd = self.bindings.get(txt)
-        if cmd:
-            g.trace('bound',txt,cmd.__name__,)
-            cmd(event)
-            return True
-        else:
-            return False
-            g.trace('unbound',txt)
-            c.k.masterKeyHandler(event,stroke=char)
-
-        return True # Indicate that the key has been handled.
-        # return cmd is not None
+        event = leoKeyEvent(event,c,w,ch,ch2,keynum)  ### should use tkKey
+        return tkKey,event
+    #@-node:ekr.20081008084746.1:toTkKey
     #@-node:ekr.20081004172422.897:key_pressed
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
