@@ -102,16 +102,34 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         QtGui.QWidget.__init__(self, parent)
         signal = QtCore.SIGNAL
         self.setupUi(self)
-        self.connect(self.treeWidget,signal("itemSelectionChanged()"), self.tree_select )
-        if 0:
+
+        # The following ivars (and more) are inherited from UiMainWindow:
+            # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
+            # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
+            # self.tabWidget  = QtGui.QTabWidget(self.splitter)     # The log pane.
+            # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
+            # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
+
+        if 0: # Now done in leoQtTree
+            self.connect(self.treeWidget,
+                signal("itemSelectionChanged()"), self.tree_select )
+
+        if 0: # Now done from official menus.
             self.connect(self.actionOpen,signal("activated()"),self.open_file)
             self.connect(self.actionSave,signal("activated()"),self.save_file)
             #self.connect(self.searchButton,signal("clicked()"), self.search)
             #self.connect(self.actionIPython,signal("activated()"),self.embed_ipython)
-        self.connect(self.textEdit, signal("textChanged()"),self.text_changed)
-        self.connect(self.lineEdit,  signal("returnPressed()"),  self.minibuffer_run)
-        self.selecting = True
-        self.widget_dirty = False
+
+        if 0: # Should be done in Leo's core.
+            self.connect(self.textEdit, signal("textChanged()"),self.text_changed)
+
+        self.connect(self.lineEdit,
+            signal("returnPressed()"),  self.minibuffer_run)
+
+        if 0: # No longer used.
+            self.selecting = True
+            self.widget_dirty = False
+
         # XXX todo. this just makes the text editor a bit friendlier for
         # python. Eventually, it will be configurable the leo way
         lexer = Qsci.QsciLexerPython(self.textEdit)
@@ -120,7 +138,11 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.textEdit.setIndentationsUseTabs(False)
         self.textEdit.setAutoIndent(True)
 
-        if 0: # Now done in individual widgets.
+        if 0: # Single event filter.
+            self.ev_filter = leoQtEventFilter(c,w=self,tag='main-window')
+            self.installEventFilter(self.ev_filter)
+
+        if 0: # Body pane filter.
             self.ev_filt = leoQtEventFilter(c)
             # Use Tk-style bindings
             # Not needed now: we already have this binding.
@@ -131,48 +153,43 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
             self.ev_filt = leoQtEventFilter(c)
             self.treeWidget.installEventFilter(self.ev_filt)
 
-        path = g.os_path_join(g.app.loadDir,"..","Icons") 
-        self.icon_std = QtGui.QIcon(path + '/box00.GIF')
-        self.icon_dirty = QtGui.QIcon(path + '/box01.GIF')
+        if 0: # Now done in leoQtTree
+            path = g.os_path_join(g.app.loadDir,"..","Icons") 
+            self.icon_std = QtGui.QIcon(path + '/box00.GIF')
+            self.icon_dirty = QtGui.QIcon(path + '/box01.GIF')
+
         self.buttons = self.addToolBar("Buttons")
         self.buttons.addAction(self.actionSave)
-
-        # The following ivars (and more) are inherited from UiMainWindow:
-            # self.lineEdit = QtGui.QLineEdit(self.centralwidget)
-            # self.menubar = QtGui.QMenuBar(MainWindow)
-            # self.tabWidget = QtGui.QTabWidget(self.splitter)
-            # self.textEdit = Qsci.QsciScintilla(self.splitter_2)
-            # self.treeWidget = QtGui.QTreeWidget(self.splitter)
     #@-node:ekr.20081004172422.884: ctor (Window)
     #@+node:ekr.20081004172422.888:clear_model
-    def clear_model(self):
+    # def clear_model(self):
 
-        c = self.c
-        self.treeWidget.clear()
-        self.items = {}
-        self.treeitems = {}
-        if c:
-            c.close()
-            c = None
+        # c = self.c
+        # self.treeWidget.clear()
+        # self.items = {}
+        # self.treeitems = {}
+        # if c:
+            # c.close()
+            # c = None
 
     #@-node:ekr.20081004172422.888:clear_model
     #@+node:ekr.20081004172422.889:populate_tree
-    def populate_tree(self, parent=None):
+    # def populate_tree(self, parent=None):
 
-        """ Render vnodes in tree """
+        # """ Render vnodes in tree """
 
-        c = self.c
-        self.items = {}
-        self.treeitems = {}
-        self.treeWidget.clear()
-        for p in c.allNodes_iter():
-            parent = self.items.get(p.parent().v,self.treeWidget)
-            it = QtGui.QTreeWidgetItem(parent)
-            it.setIcon(0, self.icon_std)
-            it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
-            self.items[p.v] = it
-            self.treeitems[id(it)] = p.copy() ###p.t
-            it.setText(0, p.headString())
+        # c = self.c
+        # self.items = {}
+        # self.treeitems = {}
+        # self.treeWidget.clear()
+        # for p in c.allNodes_iter():
+            # parent = self.items.get(p.parent().v,self.treeWidget)
+            # it = QtGui.QTreeWidgetItem(parent)
+            # it.setIcon(0, self.icon_std)
+            # it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
+            # self.items[p.v] = it
+            # self.treeitems[id(it)] = p.copy() ###p.t
+            # it.setText(0, p.headString())
 
     def minibuffer_run(self):
 
@@ -180,51 +197,50 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         cmd = str(self.lineEdit.text())
         print "minibuffer run:", cmd
         c.executeMinibufferCommand(cmd)
-
     #@-node:ekr.20081004172422.889:populate_tree
     #@+node:ekr.20081004172422.890:flush_current_tnode
-    def flush_current_tnode(self):
+    # def flush_current_tnode(self):
 
-        text = str(self.textEdit.text())
-        self.cur_tnode.setBodyString(text)
+        # text = str(self.textEdit.text())
+        # self.cur_tnode.setBodyString(text)
 
     #@-node:ekr.20081004172422.890:flush_current_tnode
     #@+node:ekr.20081004172422.891:tree_select
-    def tree_select(self):
-        #print "tree selected!"
-        c = self.c
-        self.selecting = True
+    # def tree_select(self):
+        # #print "tree selected!"
+        # c = self.c
+        # self.selecting = True
 
-        if self.widget_dirty:
-            self.flush_current_tnode()
+        # if self.widget_dirty:
+            # self.flush_current_tnode()
 
-        #### self.cur_tnode = self.treeitems[id(self.treeWidget.currentItem())]
-        p = self.treeitems[id(self.treeWidget.currentItem())]
-        self.cur_tnode = p.v.t
+        # #### self.cur_tnode = self.treeitems[id(self.treeWidget.currentItem())]
+        # p = self.treeitems[id(self.treeWidget.currentItem())]
+        # self.cur_tnode = p.v.t
 
-        g.trace(p and p.headString())
-        c.frame.tree.select(p) # The crucial hook.
+        # g.trace(p and p.headString())
+        # c.frame.tree.select(p) # The crucial hook.
 
-        # Should be done in tree.select.
-        ### self.textEdit.setText(self.cur_tnode.bodyString())
-        self.selecting = False
-        self.widget_dirty = False
+        # # Should be done in tree.select.
+        # ### self.textEdit.setText(self.cur_tnode.bodyString())
+        # self.selecting = False
+        # self.widget_dirty = False
 
     #@-node:ekr.20081004172422.891:tree_select
     #@+node:ekr.20081004172422.892:text_changed
-    def text_changed(self):
-        if self.selecting:
-            return
-        #print "text changed"
-        if not self.widget_dirty:
-            self.treeWidget.currentItem().setIcon(0,self.icon_dirty)
-        self.widget_dirty = True
+    # def text_changed(self):
+        # if self.selecting:
+            # return
+        # #print "text changed"
+        # if not self.widget_dirty:
+            # self.treeWidget.currentItem().setIcon(0,self.icon_dirty)
+        # self.widget_dirty = True
 
     #@-node:ekr.20081004172422.892:text_changed
     #@+node:ekr.20081004172422.894:edit_current_headline
-    def edit_current_headline(self):
-        #self.treeWidget.openPersistentEditor(self.treeWidget.currentItem())
-        self.treeWidget.editItem(self.treeWidget.currentItem())
+    # def edit_current_headline(self):
+        # #self.treeWidget.openPersistentEditor(self.treeWidget.currentItem())
+        # self.treeWidget.editItem(self.treeWidget.currentItem())
     #@nonl
     #@-node:ekr.20081004172422.894:edit_current_headline
     #@-others
@@ -293,6 +309,7 @@ class leoQtBody (leoFrame.leoBody):
         self.injectIvars()
         self.setFontFromConfig()
         self.setColorFromConfig()
+
         self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
         self.widget.installEventFilter(self.ev_filter)
     #@-node:ekr.20081004172422.504: ctor (qtBody)
@@ -458,20 +475,22 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081004172422.517:Bind
     def bind (self,stroke,command,**keys):
 
-        c = self.c ### w = c.frame.top
+        # Let the event filter handle all keys.
+        pass
 
-        # stroke = self.toQtStroke(stroke)
+        # c = self.c ### w = c.frame.top
 
-        # Only strip matching angle brackets.
-        if stroke.startswith('<') and stroke.endswith('>'):
-            stroke = stroke[1:-1]
+        # # stroke = self.toQtStroke(stroke)
 
-        stroke = stroke.strip()
-        if stroke:
-            ### was w.ev_filter
-            self.ev_filter.bindings[stroke]=command
-            # g.trace('stroke',stroke)
-    #@nonl
+        # # Only strip matching angle brackets.
+        # if stroke.startswith('<') and stroke.endswith('>'):
+            # stroke = stroke[1:-1]
+
+        # stroke = stroke.strip()
+        # if stroke:
+            # ### was w.ev_filter
+            # self.ev_filter.bindings[stroke]=command
+            # # g.trace('stroke',stroke)
     #@-node:ekr.20081004172422.517:Bind
     #@+node:ekr.20081007015817.100:Config
     #@+node:ekr.20081004172422.514:cget and configure
@@ -636,53 +655,48 @@ class leoQtBody (leoFrame.leoBody):
     def selectAllText(self):
 
         w = self.widget
-        s = self.getAllText()
+        w.selectAll()
 
-        row_i,col_i = g.convertPythonIndexToRowCol(s,0)
-        row_j,col_j = g.convertPythonIndexToRowCol(s,len(s))
+        # Works, but is costly.
 
-        # g.trace(row_i,col_i,row_j,col_j)
-        w.setSelection(row_i,col_i,row_j,col_j)
+            # s = self.getAllText()
+            # row_i,col_i = g.convertPythonIndexToRowCol(s,0)
+            # row_j,col_j = g.convertPythonIndexToRowCol(s,len(s))
+            # w.setSelection(row_i,col_i,row_j,col_j)
     #@-node:ekr.20081008175216.5:selectAllText
     #@+node:ekr.20081007015817.95:setInsertPoint
     def setInsertPoint(self,i):
 
         w = self.widget
-        s = self.getAllText()
+        w.SendScintilla(w.SCI_SETCURRENTPOS,i)
+        w.SendScintilla(w.SCI_SETANCHOR,i)
 
-        row,col = g.convertPythonIndexToRowCol(s,i)
+        # Works, but is *much* slower, and allocates lots of strings.
 
-        # g.trace('i,row,col',i,row,col)
-        w.setCursorPosition(row,col)
+            # s = self.getAllText()
+            # row,col = g.convertPythonIndexToRowCol(s,i)
+            # w.setCursorPosition(row,col)
     #@-node:ekr.20081007015817.95:setInsertPoint
     #@+node:ekr.20081007015817.96:setSelectionRange
     def setSelectionRange(self,i,j,insert=None):
 
-        w = self.widget
-        s = self.getAllText()
-        if i > j: i,j = j,i
-        row_i,col_i = g.convertPythonIndexToRowCol(s,i)
-        row_j,col_j = g.convertPythonIndexToRowCol(s,j)
-
         # g.trace(i,j,insert)
 
-        if insert is not None:
-            # Set insert point at end of selection.
-            self.setInsertPoint(insert)
-            w.setSelection(row_i,col_i,row_j,col_j)
-
-
-            # self.setInsertPoint(insert)
-            # ins = self.getInsertPoint()
-            # if ins == i: ### This doesn't work.
-                # # Set insert point at start of selection. 
-                # w.setSelection(row_j,col_j,row_i,col_i)
-            # else:
-                # # Set insert point at end of selection.
-                # w.setSelection(row_i,col_i,row_j,col_j)
+        w = self.widget
+        if i > j: i,j = j,i
+        if insert in (j,None):
+            self.setInsertPoint(j)
+            w.SendScintilla(w.SCI_SETANCHOR,i)
         else:
-            # Set insert point at end of selection.
-            w.setSelection(row_i,col_i,row_j,col_j)
+            self.setInsertPoint(i)
+            w.SendScintilla(w.SCI_SETANCHOR,j)
+
+        # Hurray: we don't need this kind of code:
+
+            # s = self.getAllText()
+            # row_i,col_i = g.convertPythonIndexToRowCol(s,i)
+            # row_j,col_j = g.convertPythonIndexToRowCol(s,j)
+            # w.setSelection(row_i,col_i,row_j,col_j)
     #@-node:ekr.20081007015817.96:setSelectionRange
     #@-node:ekr.20081007015817.76:Insert point and selection
     #@+node:ekr.20081007015817.98:Scrolling & hit test
@@ -702,11 +716,17 @@ class leoQtBody (leoFrame.leoBody):
     def see(self,i):
 
         w = self.widget
+
+        # Ok for now.  Using SCI_SETYCARETPOLICY might be much better.
         s = self.getAllText()
         row,col = g.convertPythonIndexToRowCol(s,i)
         w.ensureLineVisible(row)
 
+        # Requires line.
+        # w.SendScintilla(w.SCI_ENSUREVISIBLE,i)
+
     def seeInsertPoint (self):
+
         return self.see(self.getInsertPoint())
     #@-node:ekr.20081007015817.91:see & seeInsertPoint
     #@+node:ekr.20081007015817.97:setYScrollPosition
@@ -801,20 +821,31 @@ class leoQtEventFilter(QtCore.QObject):
         self.c = c
         self.w = w # this is a leoQtX object, *not* a Qt object.
         QtCore.QObject.__init__(self)
-        self.bindings = {}
+        # self.bindings = {}
         self.dumped = False # True if bindings dict has been dumped.
         self.tag = tag
 
     def eventFilter(self, obj, event):
 
-        if event.type() == QtCore.QEvent.KeyPress:
+        traceTypes = (
+            # (QtCore.QEvent.KeyPress,'key-press'),
+            (QtCore.QEvent.KeyRelease,'key-release'),
+        )
+        eventType = event.type()
+        for val,kind in traceTypes:
+            if eventType == val:
+                p = self.c.currentPosition()
+                g.trace(kind,p and p.headString() or '<no current p>')
+
+        if event.type() in (QtCore.QEvent.KeyRelease,):
             return self.key_pressed(obj, event)
         else:
             return False
 
     #@    @+others
     #@+node:ekr.20081004172422.897:key_pressed
-    def key_pressed(self, obj, event):
+    def key_pressed(self, obj, event): # obj not used.
+
         """ Handle key presses (on any window) """
 
         #@    << about internal bindings >>
@@ -863,29 +894,37 @@ class leoQtEventFilter(QtCore.QObject):
         #@nl
 
         trace = False ; verbose = False ; dump = False
-        c = self.c ; w = self.w
+        c = self.c ; k = c.k ; w = self.w
 
         if trace and dump and not self.dumped:
             self.dumped = True
-            g.trace(g.listToString(self.bindings.keys(),sort=True))
+            # g.trace(g.listToString(self.bindings.keys(),sort=True))
             # g.trace(c.k.masterBindingsDict)
+            # g.trace(len(self.bindings.keys()))
+            g.trace(len(k.masterGuiBindingsDict.keys()))
 
-        tkKey = self.toTkKey(event,obj)
-        cmd = self.bindings.get(tkKey)
+        tkKey = self.toTkKey(event)
+        # cmd = self.bindings.get(tkKey)
+        # cmd(event)
 
-        if cmd:
-            if trace: g.trace(self.tag,'bound',tkKey,cmd.__name__,)
+        # aList is the list of leoQtX widgets for which the key is bound.
+        aList = k.masterGuiBindingsDict.get(tkKey)
+
+        if aList:
+            if trace: g.trace(self.tag,'bound',tkKey,w) # ,cmd.__name__,)
+            if trace and verbose: g.trace(aList)
             # Create a standard Leo event.
             event = leoKeyEvent(event,c,w,tkKey)
-            cmd(event)
+            k.masterKeyHandler(event,stroke=tkKey)
+            # g.trace('masterKeyHandler returns',val)
             return True # The key has been handled.
         else:
             if trace and verbose: g.trace(self.tag,'unbound',tkKey)
             return False # The key has not been handled.
     #@+node:ekr.20081008084746.1:toTkKey
-    def toTkKey (self,event,obj):
+    def toTkKey (self,event):
 
-        c = self.c ; k = c.k ; w = obj ; trace = False
+        c = self.c ; k = c.k ; trace = False
         allowShift = True ; isKnown = False
         keynum = event.key()
         try:
@@ -926,7 +965,8 @@ class leoQtEventFilter(QtCore.QObject):
                 mods.append("Shift")
         elif len(ch) == 1: ch = ch.lower()
 
-        tkKey = "-".join(mods) + (mods and "-" or "") + ch
+        # tkKey = "-".join(mods) + (mods and "-" or "") + ch
+        tkKey = '<%s%s%s>' % ('-'.join(mods),mods and '-' or '',ch)
         if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
 
         return tkKey
@@ -3797,6 +3837,122 @@ class leoQtLog (leoFrame.leoLog):
 
         return w
     #@-node:ekr.20081004172422.648:createCanvas
+    #@+node:ekr.20081009055104.6:createFindTab
+    #@+at
+    # <widget class="QWidget" name="tab_2" >
+    #  <attribute name="title" >
+    #   <string>Tab 2</string>
+    #  </attribute>
+    #  <layout class="QGridLayout" name="gridLayout" >
+    #   <item row="0" column="1" >
+    #    <widget class="QLineEdit" name="findPattern" />
+    #   </item>
+    #   <item row="1" column="1" >
+    #    <widget class="QLineEdit" name="findChange" />
+    #   </item>
+    #   <item row="2" column="0" >
+    #    <widget class="QCheckBox" name="checkBoxWholeWord" >
+    #     <property name="text" >
+    #      <string>Whole Word</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="2" column="1" >
+    #    <widget class="QCheckBox" name="checkBoxEntireOutline" >
+    #     <property name="text" >
+    #      <string>Entire Outline</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="3" column="0" >
+    #    <widget class="QCheckBox" name="checkBoxIgnoreCase" >
+    #     <property name="text" >
+    #      <string>Ignore Case</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="3" column="1" >
+    #    <widget class="QCheckBox" name="checkBoxSubroutineOnly" >
+    #     <property name="text" >
+    #      <string>Subroutine Only</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="4" column="0" >
+    #    <widget class="QCheckBox" name="checkBoxWrapAround" >
+    #     <property name="text" >
+    #      <string>Wrap Around</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="4" column="1" >
+    #    <widget class="QCheckBox" name="checkBoxNodeOnly" >
+    #     <property name="text" >
+    #      <string>Node Only</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="5" column="0" >
+    #    <widget class="QCheckBox" name="checkBoxReverse" >
+    #     <property name="text" >
+    #      <string>Reverse</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="5" column="1" >
+    #    <widget class="QCheckBox" name="checkBoxSearchHeadline" >
+    #     <property name="text" >
+    #      <string>Search Headline</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="6" column="0" >
+    #    <widget class="QCheckBox" name="checkBoxRexexp" >
+    #     <property name="text" >
+    #      <string>Regexp</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="6" column="1" >
+    #    <widget class="QCheckBox" name="checkBoxSearchBody" >
+    #     <property name="text" >
+    #      <string>Search Body</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="7" column="0" >
+    #    <widget class="QCheckBox" name="checkBoxMarkFinds" >
+    #     <property name="text" >
+    #      <string>Mark Finds</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="7" column="1" >
+    #    <widget class="QCheckBox" name="checkBoxMarkChanges" >
+    #     <property name="text" >
+    #      <string>Mark Changes</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="0" column="0" >
+    #    <widget class="QLabel" name="label_2" >
+    #     <property name="text" >
+    #      <string>Find:</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #   <item row="1" column="0" >
+    #    <widget class="QLabel" name="label_3" >
+    #     <property name="text" >
+    #      <string>Change:</string>
+    #     </property>
+    #    </widget>
+    #   </item>
+    #  </layout>
+    # </widget>
+    #@-at
+    #@nonl
+    #@-node:ekr.20081009055104.6:createFindTab
     #@+node:ekr.20081004172422.649:createTab
     def createTab (self,tabName,createText=True,wrap='none'):
 
@@ -3806,7 +3962,7 @@ class leoQtLog (leoFrame.leoLog):
             contents = QtGui.QTextEdit()
             # Install event filter.
             w2 = c.frame.top
-            contents.installEventFilter(self.ev_filter)
+            # contents.installEventFilter(self.ev_filter)
         else:
             contents = QtGui.QWidget()
 
@@ -4481,16 +4637,18 @@ class leoQtMenu (leoMenu.leoMenu):
         accel = keys.get('accelerator') or ''
         label = keys.get('label')
         command = keys.get('command')
-        underline = keys.get('underline')
-
+        n = keys.get('underline')
         menu = keys.get('menu') or self
 
         if label:
+            if n > -1:
+                label = label[:n] + '&' + label[n:]
+                # g.trace(label)
             action = menu.addAction(label)
             if accel: action.setShortcut(accel)
             if command:
                 def add_command_callback(label=label,command=command):
-                    g.trace(label,command)
+                    # g.trace(label,command)
                     command()
 
                 QtCore.QObject.connect(
@@ -4531,10 +4689,12 @@ class leoQtMenu (leoMenu.leoMenu):
     #@+node:ekr.20081004172422.871:insert
     def insert (self,menuName,position,label,command,underline=None):
 
-        #g.trace(menuName,position,label,command)
+        # g.trace(menuName,position,label,command)
 
         menu = self.getMenu(menuName)
         if menu and label:
+            if underline > -1:
+                label = label[:underline] + '&' + lable[underline:]
             action = menu.addAction(label)
             if command:
                 def insert_callback(label=label,command=command):
@@ -5455,18 +5615,118 @@ class leoQtTree (leoFrame.leoTree):
 
     """Leo qt tree class."""
 
-    callbacksInjected = False
+    callbacksInjected = False # A class var.
 
     #@    @+others
     #@+node:ekr.20081004172422.737: Birth... (qt Tree)
     #@+node:ekr.20081004172422.738:__init__ (qtTree)
-    def __init__(self,c,frame): # ,canvas):
+    def __init__(self,c,frame):
+
+        g.trace('**** leoQtTree')
 
         # Init the base class.
         leoFrame.leoTree.__init__(self,frame)
 
-        # Configuration and debugging settings.
-        # These must be defined here to eliminate memory leaks.
+        self.dragging = False
+        self.generation = 0
+        self.prevPositions = 0
+        self.redrawing = False
+        self.redrawCount = 0 # Count for debugging.
+        self.revertHeadline = None # Previous headline text for abortEditLabel.
+        self.selecting = False
+        self.treeWidget = None # Set in initAfterLoad.
+
+        self.setConfigIvars()
+        self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
+
+        if 0: # old code
+
+            # Objects associated with this tree.
+            self.canvas = canvas
+
+            #@        << define drawing constants >>
+            #@+node:ekr.20081004172422.739:<< define drawing constants >>
+            self.box_padding = 5 # extra padding between box and icon
+            self.box_width = 9 + self.box_padding
+            self.icon_width = 20
+            self.text_indent = 4 # extra padding between icon and tex
+
+            self.hline_y = 7 # Vertical offset of horizontal line
+            self.root_left = 7 + self.box_width
+            self.root_top = 2
+
+            self.default_line_height = 17 + 2 # default if can't set line_height from font.
+            self.line_height = self.default_line_height
+            #@-node:ekr.20081004172422.739:<< define drawing constants >>
+            #@nl
+            #@        << old ivars >>
+            #@+node:ekr.20081004172422.740:<< old ivars >>
+            # Miscellaneous info.
+            self.iconimages = {} # Image cache set by getIconImage().
+            self.active = False # True if present headline is active
+            self._editPosition = None # Returned by leoTree.editPosition()
+            self.lineyoffset = 0 # y offset for this headline.
+            self.lastClickFrameId = None # id of last entered clickBox.
+            self.lastColoredText = None # last colored text widget.
+
+            # Set self.font and self.fontName.
+            self.setFontFromConfig()
+
+            # Drag and drop
+            self.drag_p = None
+            self.controlDrag = False # True: control was down when drag started.
+
+            # Keep track of popup menu so we can handle behavior better on Linux Context menu
+            self.popupMenu = None
+
+            # Incremental redraws:
+            self.allocateOnlyVisibleNodes = False # True: enable incremental redraws.
+            self.prevMoveToFrac = 0.0
+            self.visibleArea = None
+            self.expandedVisibleArea = None
+
+            if self.allocateOnlyVisibleNodes:
+                c.bind(self.frame.bar1,"<Button-1-ButtonRelease>", self.redraw_now)
+            #@-node:ekr.20081004172422.740:<< old ivars >>
+            #@nl
+
+            # New in 4.4: We should stay in the tree to use per-pane bindings.
+            self.textBindings = [] # Set in setBindings.
+            self.textNumber = 0 # To make names unique.
+            self.updateCount = 0 # Drawing is enabled only if self.updateCount <= 0
+            self.verbose = True
+
+            self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
+
+            # Keys are id's, values are positions...
+            self.ids = {}
+            self.iconIds = {}
+
+            # Lists of visible (in-use) widgets...
+            self.visibleBoxes = []
+            self.visibleClickBoxes = []
+            self.visibleIcons = []
+            self.visibleLines = []
+            self.visibleText  = {}
+                # Pre 4.4b2: Keys are vnodes, values are Qt.Text widgets.
+                #     4.4b2: Keys are p.key(), values are Qt.Text widgets.
+            self.visibleUserIcons = []
+
+            # Dictionaries of free, hidden widgets...
+            # Keys are id's, values are widgets.
+            self.freeBoxes = {}
+            self.freeClickBoxes = {}
+            self.freeIcons = {}
+            self.freeLines = {}
+            self.freeText = {} # New in 4.4b2: a list of free Qt.Text widgets
+
+            self.freeUserIcons = {}
+
+            self._block_canvas_menu = False
+    #@+node:ekr.20081009055104.7:setConfigIvars
+    def setConfigIvars (self):
+
+        c = self.c
         self.allow_clone_drags          = c.config.getBool('allow_clone_drags')
         self.center_selected_tree_node  = c.config.getBool('center_selected_tree_node')
         self.enable_drag_messages       = c.config.getBool("enable_drag_messages")
@@ -5512,107 +5772,7 @@ class leoQtTree (leoFrame.leoTree):
         self.trace_select   = c.config.getBool('trace_select')
         self.trace_stats    = c.config.getBool('show_tree_stats')
         self.use_chapters   = c.config.getBool('use_chapters')
-
-        return ###
-
-        # Objects associated with this tree.
-        self.canvas = canvas
-
-        #@    << define drawing constants >>
-        #@+node:ekr.20081004172422.739:<< define drawing constants >>
-        self.box_padding = 5 # extra padding between box and icon
-        self.box_width = 9 + self.box_padding
-        self.icon_width = 20
-        self.text_indent = 4 # extra padding between icon and tex
-
-        self.hline_y = 7 # Vertical offset of horizontal line
-        self.root_left = 7 + self.box_width
-        self.root_top = 2
-
-        self.default_line_height = 17 + 2 # default if can't set line_height from font.
-        self.line_height = self.default_line_height
-        #@-node:ekr.20081004172422.739:<< define drawing constants >>
-        #@nl
-        #@    << old ivars >>
-        #@+node:ekr.20081004172422.740:<< old ivars >>
-        # Miscellaneous info.
-        self.iconimages = {} # Image cache set by getIconImage().
-        self.active = False # True if present headline is active
-        self._editPosition = None # Returned by leoTree.editPosition()
-        self.lineyoffset = 0 # y offset for this headline.
-        self.lastClickFrameId = None # id of last entered clickBox.
-        self.lastColoredText = None # last colored text widget.
-
-        # Set self.font and self.fontName.
-        self.setFontFromConfig()
-
-        # Drag and drop
-        self.drag_p = None
-        self.controlDrag = False # True: control was down when drag started.
-
-        # Keep track of popup menu so we can handle behavior better on Linux Context menu
-        self.popupMenu = None
-
-        # Incremental redraws:
-        self.allocateOnlyVisibleNodes = False # True: enable incremental redraws.
-        self.prevMoveToFrac = 0.0
-        self.visibleArea = None
-        self.expandedVisibleArea = None
-
-        if self.allocateOnlyVisibleNodes:
-            c.bind(self.frame.bar1,"<Button-1-ButtonRelease>", self.redraw_now)
-        #@-node:ekr.20081004172422.740:<< old ivars >>
-        #@nl
-        #@    << inject callbacks into the position class >>
-        #@+node:ekr.20081004172422.741:<< inject callbacks into the position class >>
-        # The new code injects 3 callbacks for the colorizer.
-
-        if not leoQtinterTree.callbacksInjected: # Class var.
-            leoQtinterTree.callbacksInjected = True
-            self.injectCallbacks()
-        #@-node:ekr.20081004172422.741:<< inject callbacks into the position class >>
-        #@nl
-
-        self.dragging = False
-        self.generation = 0
-        self.prevPositions = 0
-        self.redrawing = False # Used only to disable traces.
-        self.redrawCount = 0 # Count for debugging.
-        self.revertHeadline = None # Previous headline text for abortEditLabel.
-
-        # New in 4.4: We should stay in the tree to use per-pane bindings.
-        self.textBindings = [] # Set in setBindings.
-        self.textNumber = 0 # To make names unique.
-        self.updateCount = 0 # Drawing is enabled only if self.updateCount <= 0
-        self.verbose = True
-
-        self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
-
-        # Keys are id's, values are positions...
-        self.ids = {}
-        self.iconIds = {}
-
-        # Lists of visible (in-use) widgets...
-        self.visibleBoxes = []
-        self.visibleClickBoxes = []
-        self.visibleIcons = []
-        self.visibleLines = []
-        self.visibleText  = {}
-            # Pre 4.4b2: Keys are vnodes, values are Qt.Text widgets.
-            #     4.4b2: Keys are p.key(), values are Qt.Text widgets.
-        self.visibleUserIcons = []
-
-        # Dictionaries of free, hidden widgets...
-        # Keys are id's, values are widgets.
-        self.freeBoxes = {}
-        self.freeClickBoxes = {}
-        self.freeIcons = {}
-        self.freeLines = {}
-        self.freeText = {} # New in 4.4b2: a list of free Qt.Text widgets
-
-        self.freeUserIcons = {}
-
-        self._block_canvas_menu = False
+    #@-node:ekr.20081009055104.7:setConfigIvars
     #@-node:ekr.20081004172422.738:__init__ (qtTree)
     #@+node:ekr.20081004172422.742:qtTtree.setBindings & helper
     def setBindings (self):
@@ -5712,12 +5872,24 @@ class leoQtTree (leoFrame.leoTree):
     def initAfterLoad (self):
 
         c = self.c ; frame = c.frame
-        frame.top.populate_tree(parent=None)
 
-        self.treeWidget = w = frame.top.treeWidget
+        self.treeWidget = frame.top.treeWidget
+        g.trace('****',self.treeWidget)
+
+        if not leoQtTree.callbacksInjected:
+            leoQtTree.callbacksInjected = True
+            self.injectCallbacks() # A base class method.
+
+        c.frame.top.connect(self.treeWidget,
+            QtCore.SIGNAL("itemSelectionChanged()"), self.onTreeSelect)
+
+        # Temp.
+        path = g.os_path_join(g.app.loadDir,"..","Icons") 
+        self.icon_std   = QtGui.QIcon(g.os_path_join(path,'box00.GIF'))
+        self.icon_dirty = QtGui.QIcon(g.os_path_join(path,'/box01.GIF'))
 
         self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
-        w.installEventFilter(self.ev_filter)
+        self.treeWidget.installEventFilter(self.ev_filter)
     #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
     #@-node:ekr.20081004172422.737: Birth... (qt Tree)
     #@+node:ekr.20081004172422.767:tree.redraw_now
@@ -5725,10 +5897,68 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-        pass
+        c = self.c ; w = self.treeWidget
+        if not w: return
+        if self.redrawing:
+            return g.trace('already drawing')
+
+        self.redrawing = True
+        try:
+            self.redrawCount += 1
+            current = c.currentPosition()
+            g.trace(self.redrawCount,current)
+            self.items = {}
+            self.treeitems = {}
+            w.clear()
+            for p in c.allNodes_iter():
+                parent = self.items.get(p.parent().v,w)
+                it = QtGui.QTreeWidgetItem(parent)
+                it.setIcon(0, self.icon_std)
+                it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
+                self.items[p.v] = it
+                self.treeitems[id(it)] = p.copy()
+                it.setText(0, p.headString())
+                if p.hasChildren() and p.isExpanded():
+                    w.expandItem(it)
+                else:
+                    w.collapseItem(it)
+                if p == current:
+                    w.setCurrentItem(it)
+                    g.trace('found current',p.headString(),it)
+        finally:
+            self.redrawing = False
 
     redraw = redraw_now # Compatibility
     #@-node:ekr.20081004172422.767:tree.redraw_now
+    #@+node:ekr.20081009055104.8:tree.onTreeSelect & helpers
+    def onTreeSelect(self):
+
+        c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
+
+        if self.selecting:
+            return g.trace('already selecting')
+
+        self.selecting = True
+        try:
+            it = w.currentItem()
+            if trace and verbose: g.trace('it 1',it)
+            p = self.treeitems.get(id(it))
+            if p:
+                if trace: g.trace(p and p.headString())
+                c.frame.tree.select(p) # The crucial hook.
+            else:
+                self.redraw_now() # Regen the tree.
+                # Try again
+                it = w.currentItem()
+                if trace and verbose: g.trace('it 2',it)
+                p = self.treeitems.get(id(it))
+                if p:
+                    c.frame.tree.select(p) # The crucial hook.
+                else:
+                    g.trace('no p for item: %s' % it)
+        finally:
+            self.selecting = False
+    #@-node:ekr.20081009055104.8:tree.onTreeSelect & helpers
     #@+node:ekr.20081004172422.758:Config & Measuring...
     #@+node:ekr.20081004172422.759:tree.getFont,setFont,setFontFromConfig
     def getFont (self):
@@ -6722,1096 +6952,6 @@ class leoQtTree (leoFrame.leoTree):
         return 'break'
     #@-node:ekr.20081004172422.836:onTreeRightClick
     #@-node:ekr.20081004172422.795:Event handlers (qtTree)
-    #@+node:ekr.20081004172422.899:To be deleted
-    if 0:
-
-        #@    @+others
-        #@+node:ekr.20081004172422.747:Allocation...
-        #@+node:ekr.20081004172422.748:newBox
-        def newBox (self,p,x,y,image):
-
-            canvas = self.canvas ; tag = "plusBox"
-
-            if self.freeBoxes:
-                # theId = self.freeBoxes.pop(0)
-                d = self.freeBoxes ; theId = d.keys()[0] ; del d[theId]
-                canvas.coords(theId,x,y)
-                canvas.itemconfigure(theId,image=image)
-            else:
-                theId = canvas.create_image(x,y,image=image,tag=tag)
-                if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
-
-            if theId not in self.visibleBoxes: 
-                self.visibleBoxes.append(theId)
-
-            if p:
-                self.ids[theId] = p
-
-            return theId
-        #@-node:ekr.20081004172422.748:newBox
-        #@+node:ekr.20081004172422.749:newClickBox
-        def newClickBox (self,p,x1,y1,x2,y2):
-
-            canvas = self.canvas ; defaultColor = ""
-            tag = g.choose(p.hasChildren(),'clickBox','selectBox')
-
-            if self.freeClickBoxes:
-                # theId = self.freeClickBoxes.pop(0)
-                d = self.freeClickBoxes ; theId = d.keys()[0] ; del d[theId]
-                canvas.coords(theId,x1,y1,x2,y2)
-                canvas.itemconfig(theId,tag=tag)
-            else:
-                theId = self.canvas.create_rectangle(x1,y1,x2,y2,tag=tag)
-                canvas.itemconfig(theId,fill=defaultColor,outline=defaultColor)
-                if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
-
-            if theId not in self.visibleClickBoxes:
-                self.visibleClickBoxes.append(theId)
-            if p:
-                self.ids[theId] = p
-
-            return theId
-        #@-node:ekr.20081004172422.749:newClickBox
-        #@+node:ekr.20081004172422.750:newIcon
-        def newIcon (self,p,x,y,image):
-
-            canvas = self.canvas ; tag = "iconBox"
-
-            if self.freeIcons:
-                # theId = self.freeIcons.pop(0)
-                d = self.freeIcons ; theId = d.keys()[0] ; del d[theId]
-                canvas.itemconfigure(theId,image=image)
-                canvas.coords(theId,x,y)
-            else:
-                theId = canvas.create_image(x,y,image=image,anchor="nw",tag=tag)
-                if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
-
-            if theId not in self.visibleIcons:
-                self.visibleIcons.append(theId)
-
-            if p:
-                data = p,self.generation
-                self.iconIds[theId] = data # Remember which vnode belongs to the icon.
-                self.ids[theId] = p
-
-            return theId
-        #@-node:ekr.20081004172422.750:newIcon
-        #@+node:ekr.20081004172422.751:newLine
-        def newLine (self,p,x1,y1,x2,y2):
-
-            canvas = self.canvas
-
-            if self.freeLines:
-                # theId = self.freeLines.pop(0)
-                d = self.freeLines ; theId = d.keys()[0] ; del d[theId]
-                canvas.coords(theId,x1,y1,x2,y2)
-            else:
-                theId = canvas.create_line(x1,y1,x2,y2,tag="lines",fill="gray50") # stipple="gray25")
-                if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
-
-            if p:
-                self.ids[theId] = p
-
-            if theId not in self.visibleLines:
-                self.visibleLines.append(theId)
-
-            return theId
-        #@-node:ekr.20081004172422.751:newLine
-        #@+node:ekr.20081004172422.752:newText (qtTree) and helper
-        def newText (self,p,x,y):
-
-            canvas = self.canvas ; tag = "textBox"
-            c = self.c ;  k = c.k
-            if self.freeText:
-                # w,theId = self.freeText.pop()
-                d = self.freeText ; data = d.keys()[0] ; w,theId = data ; del d[data]
-                canvas.coords(theId,x,y) # Make the window visible again.
-                    # theId is the id of the *window* not the text.
-            else:
-                # Tags are not valid in Qt.Text widgets.
-                self.textNumber += 1
-                w = g.app.gui.plainTextWidget(
-                    canvas,name='head-%d' % self.textNumber,
-                    state="normal",font=self.font,bd=0,relief="flat",height=1)
-                w.bindtags(self.textBindings) # Set the bindings for this widget.
-
-                if 0: # Crashes on XP.
-                    #@            << patch by Maciej Kalisiak to handle scroll-wheel events >>
-                    #@+node:ekr.20081004172422.753:<< patch by Maciej Kalisiak  to handle scroll-wheel events >>
-                    def PropagateButton4(e):
-                        canvas.event_generate("<Button-4>")
-                        return "break"
-
-                    def PropagateButton5(e):
-                        canvas.event_generate("<Button-5>")
-                        return "break"
-
-                    def PropagateMouseWheel(e):
-                        canvas.event_generate("<MouseWheel>")
-                        return "break"
-
-                    instance_tag = w.bindtags()[0]
-                    w.bind_class(instance_tag, "<Button-4>", PropagateButton4)
-                    w.bind_class(instance_tag, "<Button-5>", PropagateButton5)
-                    w.bind_class(instance_tag, "<MouseWheel>",PropagateMouseWheel)
-                    #@-node:ekr.20081004172422.753:<< patch by Maciej Kalisiak  to handle scroll-wheel events >>
-                    #@nl
-
-                theId = canvas.create_window(x,y,anchor="nw",window=w,tag=tag)
-                w.leo_window_id = theId # Never changes.
-
-                if self.trace_alloc: g.trace('%3d %6s' % (theId,id(w)),align=-20)
-
-            # Common configuration.
-            if 0: # Doesn't seem to work.
-                balloon = Pmw.Balloon(canvas,initwait=700)
-                balloon.tagbind(canvas,theId,balloonHelp='Headline')
-
-            if p:
-                self.ids[theId] = p # Add the id of the *window*
-                self.setHeadlineText(theId,w,p.headString())
-                w.configure(width=self.headWidth(p=p))
-                w.leo_position = p # This p never changes.
-                    # *Required*: onHeadlineClick uses w.leo_position to get p.
-
-                # Keys are p.key().  Entries are (w,theId)
-                self.visibleText [p.key()] = w,theId
-            else:
-                g.trace('**** can not happen.  No p')
-
-            return w
-        #@+node:ekr.20081004172422.754:tree.setHeadlineText
-        def setHeadlineText (self,theId,w,s):
-
-            """All changes to text widgets should come here."""
-
-            # if self.trace_alloc: g.trace('%4d %6s %s' % (theId,self.textAddr(w),s),align=-20)
-
-            state = w.cget("state")
-            if state != "normal":
-                w.configure(state="normal")
-            w.delete(0,"end")
-            # Important: do not allow newlines in headlines.
-            while s.endswith('\n') or s.endswith('\r'):
-                s = s[:-1]
-            w.insert("end",s)
-            # g.trace(repr(s))
-            if state != "normal":
-                w.configure(state=state)
-        #@-node:ekr.20081004172422.754:tree.setHeadlineText
-        #@-node:ekr.20081004172422.752:newText (qtTree) and helper
-        #@+node:ekr.20081004172422.755:recycleWidgets
-        def recycleWidgets (self):
-
-            canvas = self.canvas
-
-            for theId in self.visibleBoxes:
-                # if theId not in self.freeBoxes:
-                    # self.freeBoxes.append(theId)
-                self.freeBoxes[theId] = theId
-                canvas.coords(theId,-100,-100)
-            self.visibleBoxes = []
-
-            for theId in self.visibleClickBoxes:
-                # if theId not in self.freeClickBoxes:
-                    # self.freeClickBoxes.append(theId)
-                self.freeClickBoxes[theId] = theId
-                canvas.coords(theId,-100,-100,-100,-100)
-            self.visibleClickBoxes = []
-
-            for theId in self.visibleIcons:
-                # if theId not in self.freeIcons:
-                    # self.freeIcons.append(theId)
-                self.freeIcons[theId] = theId
-                canvas.coords(theId,-100,-100)
-            self.visibleIcons = []
-
-            for theId in self.visibleLines:
-                # if theId not in self.freeLines:
-                    # self.freeLines.append(theId)
-                self.freeLines[theId] = theId
-                canvas.coords(theId,-100,-100,-100,-100)
-            self.visibleLines = []
-
-            aList = self.visibleText.values()
-            for data in aList:
-                w,theId = data
-                # assert theId == w.leo_window_id
-                canvas.coords(theId,-100,-100)
-                w.leo_position = None # Allow the position to be freed.
-                # if data not in self.freeText:
-                    # self.freeText.append(data)
-                self.freeText[data] = data
-            self.visibleText = {}
-
-            # g.trace('deleting visible user icons!')
-            for theId in self.visibleUserIcons:
-                # The present code does not recycle user Icons.
-                self.canvas.delete(theId)
-            self.visibleUserIcons = []
-        #@-node:ekr.20081004172422.755:recycleWidgets
-        #@+node:ekr.20081004172422.756:destroyWidgets
-        def destroyWidgets (self):
-
-            self.ids = {}
-
-            self.visibleBoxes = []
-            self.visibleClickBoxes = []
-            self.visibleIcons = []
-            self.visibleLines = []
-            self.visibleUserIcons = []
-
-            self.visibleText = {}
-
-            self.freeText = {}
-            self.freeBoxes = {}
-            self.freeClickBoxes = {}
-            self.freeIcons = {}
-            self.freeLines = {}
-
-            self.canvas.delete("all")
-        #@-node:ekr.20081004172422.756:destroyWidgets
-        #@+node:ekr.20081004172422.757:showStats
-        def showStats (self):
-
-            z = []
-            for kind,a,b in (
-                ('boxes',self.visibleBoxes,self.freeBoxes),
-                ('clickBoxes',self.visibleClickBoxes,self.freeClickBoxes),
-                ('icons',self.visibleIcons,self.freeIcons),
-                ('lines',self.visibleLines,self.freeLines),
-                ('tesxt',self.visibleText.values(),self.freeText),
-            ):
-                z.append('%10s used: %4d free: %4d' % (kind,len(a),len(b)))
-
-            s = '\n' + '\n'.join(z)
-            g.es_print('',s)
-        #@-node:ekr.20081004172422.757:showStats
-        #@-node:ekr.20081004172422.747:Allocation...
-        #@+node:ekr.20081004172422.762:Debugging...
-        #@+node:ekr.20081004172422.763:textAddr
-        def textAddr(self,w):
-
-            """Return the address part of repr(Qt.Text)."""
-
-            s = repr(w)
-            i = s.find('id: ')
-            if i != -1:
-                return s[i+4:i+12].lower()
-            else:
-                return s
-        #@-node:ekr.20081004172422.763:textAddr
-        #@+node:ekr.20081004172422.764:traceIds (Not used)
-        # Verbose tracing is much more useful than this because we can see the recent past.
-
-        def traceIds (self,full=False):
-
-            tree = self
-
-            for theDict,tag,flag in ((tree.ids,"ids",True),(tree.iconIds,"icon ids",False)):
-                g.pr('=' * 60)
-                g.pr("\n%s..." % tag)
-                for key in sorted(theDict):
-                    p = tree.ids.get(key)
-                    if p is None: # For lines.
-                        g.pr("%3d None" % key)
-                    else:
-                        g.pr("%3d" % key,p.headString())
-                if flag and full:
-                    g.pr('-' * 40)
-                    seenValues = {}
-                    for key in sorted(theDict):
-                        value = theDict.get(key)
-                        if value not in seenValues:
-                            seenValues[value]=True
-                            for item in theDict.items():
-                                key,val = item
-                                if val and val == value:
-                                    g.pr("%3d" % key,val.headString())
-        #@-node:ekr.20081004172422.764:traceIds (Not used)
-        #@-node:ekr.20081004172422.762:Debugging...
-        #@+node:ekr.20081004172422.765:Drawing... (qtTree)
-        #@+node:ekr.20081004172422.766:tree.begin/endUpdate
-        def beginUpdate (self):
-            g.trace('should not be called')
-
-        def endUpdate (self,flag,scroll=False):
-
-            g.trace('should not be called')
-        #@-node:ekr.20081004172422.766:tree.begin/endUpdate
-        #@+node:ekr.20081004172422.768:redrawHelper
-        def redrawHelper (self,scroll=True,forceDraw=False):
-
-            # This can be called at idle time, so there are shutdown issues.
-            if g.app.quitting or self.frame not in g.app.windowList:
-                return
-            if self.drag_p and not forceDraw:
-                return
-            if not hasattr(self,'c'):
-                return
-
-            c = self.c ; trace = False
-            oldcursor = self.canvas['cursor']
-            self.canvas['cursor'] = "watch"
-
-            if not g.doHook("redraw-entire-outline",c=c):
-
-                c.setTopVnode(None)
-                self.setVisibleAreaToFullCanvas()
-                self.drawTopTree()
-                # Set up the scroll region after the tree has been redrawn.
-                bbox = self.canvas.bbox('all')
-                if trace: g.trace('bbox',bbox,g.callers())
-                if bbox is None:
-                    x0,y0,x1,y1 = 0,0,100,100
-                else:
-                    x0, y0, x1, y1 = bbox
-                self.canvas.configure(scrollregion=(0, 0, x1, y1))
-                if scroll:
-                    self.canvas.update_idletasks() # Essential.
-                    self.scrollTo()
-
-            g.doHook("after-redraw-outline",c=c)
-
-            self.canvas['cursor'] = oldcursor
-        #@-node:ekr.20081004172422.768:redrawHelper
-        #@+node:ekr.20081004172422.769:idle_second_redraw
-        def idle_second_redraw (self):
-
-            c = self.c
-
-            # Erase and redraw the entire tree the SECOND time.
-            # This ensures that all visible nodes are allocated.
-            c.setTopVnode(None)
-            args = self.canvas.yview()
-            self.setVisibleArea(args)
-
-            if 0:
-                self.canvas.delete("all")
-
-            self.drawTopTree()
-
-            if self.trace:
-                g.trace(self.redrawCount)
-        #@-node:ekr.20081004172422.769:idle_second_redraw
-        #@+node:ekr.20081004172422.770:drawX...
-        #@+node:ekr.20081004172422.771:drawBox
-        def drawBox (self,p,x,y):
-
-            tree = self ; c = self.c
-            y += 7 # draw the box at x, y+7
-
-            theId = g.doHook("draw-outline-box",tree=tree,c=c,p=p,v=p,x=x,y=y)
-
-            if theId is None:
-                # if self.trace_gc: g.printNewObjects(tag='box 1')
-                iconname = g.choose(p.isExpanded(),"minusnode.gif", "plusnode.gif")
-                image = self.getIconImage(iconname)
-                theId = self.newBox(p,x,y+self.lineyoffset,image)
-                # if self.trace_gc: g.printNewObjects(tag='box 2')
-                return theId
-            else:
-                return theId
-        #@-node:ekr.20081004172422.771:drawBox
-        #@+node:ekr.20081004172422.772:drawClickBox
-        def drawClickBox (self,p,y):
-
-            h = self.line_height
-
-            # Define a slighly larger rect to catch clicks.
-            if self.expanded_click_area:
-                self.newClickBox(p,0,y,1000,y+h-2)
-        #@-node:ekr.20081004172422.772:drawClickBox
-        #@+node:ekr.20081004172422.773:drawIcon
-        def drawIcon(self,p,x=None,y=None):
-
-            """Draws icon for position p at x,y, or at p.v.iconx,p.v.icony if x,y = None,None"""
-
-            # if self.trace_gc: g.printNewObjects(tag='icon 1')
-
-            c = self.c ; v = p.v
-            #@    << compute x,y and iconVal >>
-            #@+node:ekr.20081004172422.774:<< compute x,y and iconVal >>
-            if x is None and y is None:
-                try:
-                    x,y = v.iconx, v.icony
-                except:
-                    # Inject the ivars.
-                    x,y = v.iconx, v.icony = 0,0
-            else:
-                # Inject the ivars.
-                v.iconx, v.icony = x,y
-
-            y += 2 # draw icon at y + 2
-
-            # Always recompute v.iconVal.
-            # This is an important drawing optimization.
-            val = v.computeIcon()
-            assert(0 <= val <= 15)
-            # g.trace(v,val)
-            #@nonl
-            #@-node:ekr.20081004172422.774:<< compute x,y and iconVal >>
-            #@nl
-            v.iconVal = val
-
-            if not g.doHook("draw-outline-icon",tree=self,c=c,p=p,v=p,x=x,y=y):
-
-                # Get the image.
-                imagename = "box%02d.GIF" % val
-                image = self.getIconImage(imagename)
-                self.newIcon(p,x,y+self.lineyoffset,image)
-
-            return 0,self.icon_width # dummy icon height,width
-        #@-node:ekr.20081004172422.773:drawIcon
-        #@+node:ekr.20081004172422.775:drawLine
-        def drawLine (self,p,x1,y1,x2,y2):
-
-            theId = self.newLine(p,x1,y1,x2,y2)
-
-            return theId
-        #@-node:ekr.20081004172422.775:drawLine
-        #@+node:ekr.20081004172422.776:drawNode & force_draw_node (good trace)
-        def drawNode(self,p,x,y):
-
-            c = self.c
-
-            # g.trace(x,y,p,id(self.canvas))
-
-            data = g.doHook("draw-outline-node",tree=self,c=c,p=p,v=p,x=x,y=y)
-            if data is not None: return data
-
-            if 1:
-                self.lineyoffset = 0
-            else:
-                if hasattr(p.v.t,"unknownAttributes"):
-                    self.lineyoffset = p.v.t.unknownAttributes.get("lineYOffset",0)
-                else:
-                    self.lineyoffset = 0
-
-            # Draw the horizontal line.
-            self.drawLine(p,
-                x,y+7+self.lineyoffset,
-                x+self.box_width,y+7+self.lineyoffset)
-
-            if self.inVisibleArea(y):
-                return self.force_draw_node(p,x,y)
-            else:
-                return self.line_height,0
-        #@+node:ekr.20081004172422.777:force_draw_node
-        def force_draw_node(self,p,x,y):
-
-            h = 0 # The total height of the line.
-            indent = 0 # The amount to indent this line.
-
-            h2,w2 = self.drawUserIcons(p,"beforeBox",x,y)
-            h = max(h,h2) ; x += w2 ; indent += w2
-
-            if p.hasChildren():
-                self.drawBox(p,x,y)
-
-            indent += self.box_width
-            x += self.box_width # even if box isn't drawn.
-
-            h2,w2 = self.drawUserIcons(p,"beforeIcon",x,y)
-            h = max(h,h2) ; x += w2 ; indent += w2
-
-            h2,w2 = self.drawIcon(p,x,y)
-            h = max(h,h2) ; x += w2 ; indent += w2/2
-
-            # Nothing after here affects indentation.
-            h2,w2 = self.drawUserIcons(p,"beforeHeadline",x,y)
-            h = max(h,h2) ; x += w2
-
-            h2 = self.drawText(p,x,y)
-            h = max(h,h2)
-            x += self.widthInPixels(p.headString())
-
-            h2,w2 = self.drawUserIcons(p,"afterHeadline",x,y)
-            h = max(h,h2)
-
-            self.drawClickBox(p,y)
-
-            return h,indent
-        #@-node:ekr.20081004172422.777:force_draw_node
-        #@-node:ekr.20081004172422.776:drawNode & force_draw_node (good trace)
-        #@+node:ekr.20081004172422.778:drawText
-        def drawText(self,p,x,y):
-
-            """draw text for position p at nominal coordinates x,y."""
-
-            assert(p)
-
-            c = self.c
-            x += self.text_indent
-
-            data = g.doHook("draw-outline-text-box",tree=self,c=c,p=p,v=p,x=x,y=y)
-            if data is not None: return data
-
-            self.newText(p,x,y+self.lineyoffset)
-
-            self.configureTextState(p)
-
-            return self.line_height
-        #@-node:ekr.20081004172422.778:drawText
-        #@+node:ekr.20081004172422.779:drawUserIcons & helper
-        def drawUserIcons(self,p,where,x,y):
-
-            """Draw any icons specified by p.v.t.unknownAttributes["icons"]."""
-
-            h,w = 0,0 ; t = p.v.t
-
-            com = self.c.editCommands
-            iconsList = com.getIconList(p)
-            if not iconsList:
-                return h,w
-
-            try:
-                for theDict in iconsList:
-                    h2,w2 = self.drawUserIcon(p,where,x,y,w,theDict)
-                    h = max(h,h2) ; w += w2
-            except:
-                g.es_exception()
-
-            # g.trace(where,h,w)
-
-            return h,w
-        #@+node:ekr.20081004172422.780:drawUserIcon
-        def drawUserIcon (self,p,where,x,y,w2,theDict):
-
-            c = self.c ; h,w = 0,0
-
-            if where != theDict.get("where","beforeHeadline"):
-                return h,w
-
-            # if self.trace_gc: g.printNewObjects(tag='userIcon 1')
-
-            # g.trace(where,x,y,theDict)
-
-            #@    << set offsets and pads >>
-            #@+node:ekr.20081004172422.781:<< set offsets and pads >>
-            xoffset = theDict.get("xoffset")
-            try:    xoffset = int(xoffset)
-            except: xoffset = 0
-
-            yoffset = theDict.get("yoffset")
-            try:    yoffset = int(yoffset)
-            except: yoffset = 0
-
-            xpad = theDict.get("xpad")
-            try:    xpad = int(xpad)
-            except: xpad = 0
-
-            ypad = theDict.get("ypad")
-            try:    ypad = int(ypad)
-            except: ypad = 0
-            #@-node:ekr.20081004172422.781:<< set offsets and pads >>
-            #@nl
-            theType = theDict.get("type")
-            if theType == "icon":
-                ### not ready yet.
-                # s = theDict.get("icon")
-                pass
-            elif theType == "file":
-                theFile = theDict.get("file")
-                relPath = theDict.get('relPath')
-                #@        << draw the icon at file >>
-                #@+node:ekr.20081004172422.782:<< draw the icon at file >>
-                if relPath:
-                    fullname = g.os_path_join(g.app.loadDir,"..","Icons",relPath)
-                else:
-                    fullname = g.os_path_join(g.app.loadDir,"..","Icons",theFile)
-                fullname = g.os_path_normpath(fullname)
-
-                # Bug fix: the key must include distinguish nodes.
-                key = (fullname,p.v.t)
-                image = self.iconimages.get(key)
-
-                if not image:
-                    try:
-                        from PIL import Image, ImageTk
-                        image1 = Image.open(fullname)
-                        image = ImageTk.PhotoImage(image1)
-                        self.iconimages[key] = image
-                    except Exception:
-                        #g.es_exception()
-                        image = None
-
-                if not image:
-                    try:
-                        image = Tk.PhotoImage(master=self.canvas,file=fullname)
-                        self.iconimages[key] = image
-                    except Exception:
-                        #g.es_exception()
-                        image = None
-
-                if image:
-                    theId = self.canvas.create_image(
-                        x+xoffset+w2,y+yoffset,
-                        anchor="nw",image=image)
-
-                    tag='userIcon-%s' % theId
-                    self.canvas.itemconfigure(theId,tag=(tag,'userIcon')) #BJ
-                    self.ids[theId] = p.copy()
-
-                    def deleteButtonCallback(event=None,c=c,p=p,fullname=fullname,relPath=relPath):
-                        #g.trace()
-                        c.editCommands.deleteIconByName(p,fullname,relPath)
-                        self._block_canvas_menu = True
-                        return 'break'
-
-                    c.tag_bind(self.canvas,tag,'<3>',deleteButtonCallback)
-
-                    # assert(theId not in self.visibleIcons)
-                    self.visibleUserIcons.append(theId)
-
-                    h = image.height() + yoffset + ypad
-                    w = image.width()  + xoffset + xpad
-                #@-node:ekr.20081004172422.782:<< draw the icon at file >>
-                #@nl
-            elif theType == "url":
-                ## url = theDict.get("url")
-                #@        << draw the icon at url >>
-                #@+node:ekr.20081004172422.783:<< draw the icon at url >>
-                pass
-                #@-node:ekr.20081004172422.783:<< draw the icon at url >>
-                #@nl
-
-            # Allow user to specify height, width explicitly.
-            h = theDict.get("height",h)
-            w = theDict.get("width",w)
-
-            # if self.trace_gc: g.printNewObjects(tag='userIcon 2')
-
-            return h,w
-        #@-node:ekr.20081004172422.780:drawUserIcon
-        #@-node:ekr.20081004172422.779:drawUserIcons & helper
-        #@+node:ekr.20081004172422.784:drawTopTree
-        def drawTopTree (self):
-
-            """Draws the top-level tree, taking into account the hoist state."""
-
-            c = self.c ; canvas = self.canvas
-            trace = False or self.trace or self.trace_redraw
-
-            self.redrawing = True
-
-            # Recycle all widgets and clear all widget lists.
-            self.recycleWidgets()
-            # Clear all ids so invisible id's don't confuse eventToPosition & findPositionWithIconId
-            self.ids = {}
-            self.iconIds = {}
-            self.generation += 1
-            self.redrawCount += 1
-            self.drag_p = None # Disable drags across redraws.
-            self.dragging = False
-            if trace:
-                g.trace('redrawCount',self.redrawCount,g.callers()) # 'len(c.hoistStack)',len(c.hoistStack))
-                if 0:
-                    delta = g.app.positions - self.prevPositions
-                    g.trace("**** gen: %-3d positions: %5d +%4d" % (
-                        self.generation,g.app.positions,delta),g.callers())
-
-            self.prevPositions = g.app.positions
-            if self.trace_gc: g.printNewObjects(tag='top 1')
-
-            hoistFlag = c.hoistStack
-            if c.hoistStack:
-                bunch = c.hoistStack[-1] ; p = bunch.p
-                h = p.headString()
-                if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
-                    p = p.firstChild()
-                    hoistFlag = False
-            else:
-                p = c.rootPosition()
-
-            self.drawTree(p,self.root_left,self.root_top,0,0,hoistFlag=hoistFlag)
-
-            if self.trace_gc: g.printNewObjects(tag='top 2')
-            if self.trace_stats: self.showStats()
-
-            canvas.lower("lines")  # Lowest.
-            canvas.lift("textBox") # Not the Qt.Text widget: it should be low.
-
-            canvas.lift("clickBox")
-            canvas.lift("clickExpandBox")
-            canvas.lift("iconBox") # Higest. BJ:Not now
-            canvas.lift("plusBox")
-            canvas.lift("userIcon")
-            self.redrawing = False
-        #@-node:ekr.20081004172422.784:drawTopTree
-        #@+node:ekr.20081004172422.785:drawTree
-        def drawTree(self,p,x,y,h,level,hoistFlag=False):
-
-            tree = self ; c = self.c
-            yfirst = ylast = y ; h1 = None
-            data = g.doHook("draw-sub-outline",tree=tree,
-                c=c,p=p,v=p,x=x,y=y,h=h,level=level,hoistFlag=hoistFlag)
-            if data is not None: return data
-
-            while p: # Do not use iterator.
-                # This is the ONLY copy of p that needs to be made;
-                # no other drawing routine calls any p.moveTo method.
-                const_p = p.copy()
-                h,indent = self.drawNode(const_p,x,y)
-                if h1 is None: h1 = h # Set h1 *after* calling drawNode.
-                y += h ; ylast = y
-                if p.isExpanded() and p.hasFirstChild():
-                    # Must make an additional copy here by calling firstChild.
-                    y = self.drawTree(p.firstChild(),x+indent,y,h,level+1)
-                if hoistFlag: break
-                else:         p = p.next()
-            # Draw the vertical line.
-            if h1 is None: h1 = h
-            y2 = g.choose(level==0,yfirst+(h1-1)/2,yfirst-h1/2-1)
-            self.drawLine(None,x,y2,x,ylast+self.hline_y-h)
-            return y
-        #@-node:ekr.20081004172422.785:drawTree
-        #@-node:ekr.20081004172422.770:drawX...
-        #@+node:ekr.20081004172422.786:Helpers...
-        #@+node:ekr.20081004172422.787:getIconImage
-        def getIconImage (self, name):
-
-            # Return the image from the cache if possible.
-            if name in self.iconimages:
-                return self.iconimages[name]
-
-            # g.trace(name)
-
-            try:
-                fullname = g.os_path_join(g.app.loadDir,"..","Icons",name)
-                fullname = g.os_path_normpath(fullname)
-                image = Qt.PhotoImage(master=self.canvas,file=fullname)
-                self.iconimages[name] = image
-                return image
-            except:
-                g.es("exception loading:",fullname)
-                g.es_exception()
-                return None
-        #@-node:ekr.20081004172422.787:getIconImage
-        #@+node:ekr.20081004172422.788:inVisibleArea & inExpandedVisibleArea
-        def inVisibleArea (self,y1):
-
-            if self.allocateOnlyVisibleNodes:
-                if self.visibleArea:
-                    vis1,vis2 = self.visibleArea
-                    y2 = y1 + self.line_height
-                    return y2 >= vis1 and y1 <= vis2
-                else: return False
-            else:
-                return True # This forces all nodes to be allocated on all redraws.
-
-        def inExpandedVisibleArea (self,y1):
-
-            if self.expandedVisibleArea:
-                vis1,vis2 = self.expandedVisibleArea
-                y2 = y1 + self.line_height
-                return y2 >= vis1 and y1 <= vis2
-            else:
-                return False
-        #@-node:ekr.20081004172422.788:inVisibleArea & inExpandedVisibleArea
-        #@+node:ekr.20081004172422.789:numberOfVisibleNodes
-        def numberOfVisibleNodes(self):
-
-            c = self.c
-
-            n = 0 ; p = self.c.rootPosition()
-            while p:
-                n += 1
-                p.moveToVisNext(c)
-            return n
-        #@-node:ekr.20081004172422.789:numberOfVisibleNodes
-        #@+node:ekr.20081004172422.790:scrollTo
-        def scrollTo(self,p=None):
-
-            """Scrolls the canvas so that p is in view."""
-
-            # This can be called at idle time, so there are shutdown issues.
-            if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
-                return
-            if not hasattr(self,'c'):
-                return
-
-            c = self.c ; frame = c.frame ; trace = False
-            if not p or not c.positionExists(p):
-                p = c.currentPosition()
-                if trace: g.trace('*** current position',p,p.stack)
-            if not p or not c.positionExists(p):
-                if trace: g.trace('current p does not exist',p)
-                p = c.rootPosition()
-            if not p or not c.positionExists(p):
-                if trace: g.trace('no position')
-                return
-            try:
-                if trace: g.trace('***',p,p.stack,'exists',c.positionExists(p))
-                h1 = self.yoffset(p)
-                if self.center_selected_tree_node: # New in Leo 4.4.3.
-                    #@            << compute frac0 >>
-                    #@+node:ekr.20081004172422.791:<< compute frac0 >>
-                    # frac0 attempt to put the 
-                    scrollRegion = self.canvas.cget('scrollregion')
-                    geom = self.canvas.winfo_geometry()
-
-                    if scrollRegion and geom:
-                        scrollRegion = scrollRegion.split(' ')
-                        # if trace: g.trace('scrollRegion',repr(scrollRegion))
-                        htot = int(scrollRegion[3])
-                        wh,junk,junk = geom.split('+')
-                        junk,h = wh.split('x')
-                        if h: wtot = int(h)
-                        else: wtot = 500
-                        # if trace: g.trace('geom',geom,'wtot',wtot,'htot',htot)
-                        if htot > 0.1:
-                            frac0 = float(h1-wtot/2)/float(htot)
-                            frac0 = max(min(frac0,1.0),0.0)
-                        else:
-                            frac0 = 0.0
-                    else:
-                        frac0 = 0.0 ; htot = wtot = 0
-                    #@-node:ekr.20081004172422.791:<< compute frac0 >>
-                    #@nl
-                    delta = abs(self.prevMoveToFrac-frac0)
-                    if trace: g.trace('delta',delta)
-                    if delta > 0.0:
-                        self.prevMoveToFrac = frac0
-                        self.canvas.yview("moveto",frac0)
-                        if trace: g.trace("frac0 %1.2f h1 %3d htot %3d wtot %3d" % (
-                            frac0,h1,htot,wtot),g.callers())
-                else:
-                    last = c.lastVisible()
-                    nextToLast = last.visBack(c)
-                    h2 = self.yoffset(last)
-                    #@            << compute approximate line height >>
-                    #@+node:ekr.20081004172422.792:<< compute approximate line height >>
-                    if nextToLast: # 2/2/03: compute approximate line height.
-                        lineHeight = h2 - self.yoffset(nextToLast)
-                    else:
-                        lineHeight = 20 # A reasonable default.
-                    #@-node:ekr.20081004172422.792:<< compute approximate line height >>
-                    #@nl
-                    #@            << Compute the fractions to scroll down/up >>
-                    #@+node:ekr.20081004172422.793:<< Compute the fractions to scroll down/up >>
-                    data = frame.canvas.leo_treeBar.get() # Get the previous values of the scrollbar.
-                    try: lo, hi = data
-                    except: lo,hi = 0.0,1.0
-
-                    # h1 and h2 are the y offsets of the present and last nodes.
-                    if h2 > 0.1:
-                        frac = float(h1)/float(h2) # For scrolling down.
-                        frac2 = float(h1+lineHeight/2)/float(h2) # For scrolling up.
-                        frac2 = frac2 - (hi - lo)
-                    else:
-                        frac = frac2 = 0.0 # probably any value would work here.
-
-                    frac =  max(min(frac,1.0),0.0)
-                    frac2 = max(min(frac2,1.0),0.0)
-                    #@nonl
-                    #@-node:ekr.20081004172422.793:<< Compute the fractions to scroll down/up >>
-                    #@nl
-                    if frac <= lo: # frac is for scrolling down.
-                        if self.prevMoveToFrac != frac:
-                            self.prevMoveToFrac = frac
-                            self.canvas.yview("moveto",frac)
-                            if trace: g.trace("frac  %1.2f h1 %3d h2 %3d lo %1.2f hi %1.2f" % (
-                                frac, h1,h2,lo,hi),g.callers())
-                    elif frac2 + (hi - lo) >= hi: # frac2 is for scrolling up.
-                        if self.prevMoveToFrac != frac2:
-                            self.prevMoveToFrac = frac2
-                            self.canvas.yview("moveto",frac2)
-                            if trace: g.trace("frac2 %1.2f h1 %3d h2 %3d lo %1.2f hi %1.2f" % (
-                                frac2,h1,h2,lo,hi),g.callers())
-
-                if self.allocateOnlyVisibleNodes:
-                    self.canvas.after_idle(self.idle_second_redraw)
-
-                c.setTopVnode(p) # 1/30/04: remember a pseudo "top" node.
-
-            except:
-                g.es_exception()
-
-        idle_scrollTo = scrollTo # For compatibility.
-        #@-node:ekr.20081004172422.790:scrollTo
-        #@+node:ekr.20081004172422.794:yoffset (qtTree)
-        #@+at 
-        #@nonl
-        # We can't just return icony because the tree hasn't been redrawn yet.
-        # For the same reason we can't rely on any TK canvas methods here.
-        #@-at
-        #@@c
-
-        def yoffset(self,p1):
-            # if not p1.isVisible(): g.pr("yoffset not visible:",p1)
-            if not p1: return 0
-            c = self.c
-            if c.hoistStack:
-                bunch = c.hoistStack[-1]
-                root = bunch.p.copy()
-            else:
-                root = self.c.rootPosition()
-            if root:
-                h,flag = self.yoffsetTree(root,p1,isTop=True)
-                # flag can be False during initialization.
-                # if not flag: g.pr("*** yoffset fails:",'root',root,'p1',p1,'returns',h)
-                return h
-            else:
-                return 0
-
-        def yoffsetTree(self,p,p1,isTop):
-            c = self.c ; h = 0 ; trace = False ; verbose = True
-            if trace: g.trace('entry','root',p,p.stack,'target',p1,p1.stack)
-            if not c.positionExists(p):
-                if trace: g.trace('*** does not exist',p.headString())
-                return h,False # An extra precaution.
-            p = p.copy()
-            if trace and verbose and isTop and c.hoistStack:
-                g.trace('c.hoistStack',c.hoistStack[-1].p.headString())
-            if isTop and c.hoistStack:
-                if p.firstChild():  theIter = [p.firstChild()]
-                else:               theIter = []
-            else:
-                theIter = p.self_and_siblings_iter() # Bug fix 10/27/07: was p.siblings_iter()
-
-            for p2 in theIter:
-                if trace and p1.headString() == p2.headString():
-                    g.trace('loop',p1,p2)
-                    g.trace(p1.stack,p2.stack)
-                if p2 == p1:
-                    if trace and verbose: g.trace('returns',h,p1.headString())
-                    return h, True
-                h += self.line_height
-                if p2.isExpanded() and p2.hasChildren():
-                    child = p2.firstChild()
-                    if trace and verbose: g.trace('recursive call')
-                    h2, flag = self.yoffsetTree(child,p1,isTop=False)
-                    h += h2
-                    if flag:
-                        if trace and verbose: g.trace('returns',h,p1.headString())
-                        return h, True
-
-            if trace: g.trace('not found',h,p1.headString())
-            return h, False
-        #@-node:ekr.20081004172422.794:yoffset (qtTree)
-        #@-node:ekr.20081004172422.786:Helpers...
-        #@-node:ekr.20081004172422.765:Drawing... (qtTree)
-        #@+node:ekr.20081004172422.837:Incremental drawing...
-        #@+node:ekr.20081004172422.838:allocateNodes
-        def allocateNodes(self,where,lines):
-
-            """Allocate Qt widgets in nodes that will become visible as the result of an upcoming scroll"""
-
-            assert(where in ("above","below"))
-
-            # g.pr("allocateNodes: %d lines %s visible area" % (lines,where))
-
-            # Expand the visible area: a little extra delta is safer.
-            delta = lines * (self.line_height + 4)
-            y1,y2 = self.visibleArea
-
-            if where == "below":
-                y2 += delta
-            else:
-                y1 = max(0.0,y1-delta)
-
-            self.expandedVisibleArea=y1,y2
-            # g.pr("expandedArea:   %5.1f %5.1f" % (y1,y2))
-
-            # Allocate all nodes in expanded visible area.
-            self.updatedNodeCount = 0
-            self.updateTree(self.c.rootPosition(),self.root_left,self.root_top,0,0)
-            # if self.updatedNodeCount: g.pr("updatedNodeCount:", self.updatedNodeCount)
-        #@-node:ekr.20081004172422.838:allocateNodes
-        #@+node:ekr.20081004172422.839:allocateNodesBeforeScrolling
-        def allocateNodesBeforeScrolling (self, args):
-
-            """Calculate the nodes that will become visible as the result of an upcoming scroll.
-
-            args is the tuple passed to the Qt.Canvas.yview method"""
-
-            if not self.allocateOnlyVisibleNodes: return
-
-            # g.pr("allocateNodesBeforeScrolling:",self.redrawCount,args)
-
-            assert(self.visibleArea)
-            assert(len(args)==2 or len(args)==3)
-            kind = args[0] ; n = args[1]
-            lines = 2 # Update by 2 lines to account for rounding.
-            if len(args) == 2:
-                assert(kind=="moveto")
-                frac1,frac2 = args
-                if float(n) != frac1:
-                    where = g.choose(n<frac1,"above","below")
-                    self.allocateNodes(where=where,lines=lines)
-            else:
-                assert(kind=="scroll")
-                linesPerPage = self.canvas.winfo_height()/self.line_height + 2
-                n = int(n) ; assert(abs(n)==1)
-                where = g.choose(n == 1,"below","above")
-                lines = g.choose(args[2] == "pages",linesPerPage,lines)
-                self.allocateNodes(where=where,lines=lines)
-        #@-node:ekr.20081004172422.839:allocateNodesBeforeScrolling
-        #@+node:ekr.20081004172422.840:updateNode
-        def updateNode (self,p,x,y):
-
-            """Draw a node that may have become visible as a result of a scrolling operation"""
-
-            c = self.c
-
-            if self.inExpandedVisibleArea(y):
-                # This check is a major optimization.
-                if not c.edit_widget(p):
-                    return self.force_draw_node(p,x,y)
-                else:
-                    return self.line_height
-
-            return self.line_height
-        #@-node:ekr.20081004172422.840:updateNode
-        #@+node:ekr.20081004172422.841:setVisibleAreaToFullCanvas
-        def setVisibleAreaToFullCanvas(self):
-
-            if self.visibleArea:
-                y1,y2 = self.visibleArea
-                y2 = max(y2,y1 + self.canvas.winfo_height())
-                self.visibleArea = y1,y2
-        #@-node:ekr.20081004172422.841:setVisibleAreaToFullCanvas
-        #@+node:ekr.20081004172422.842:setVisibleArea
-        def setVisibleArea (self,args):
-
-            r1,r2 = args
-            r1,r2 = float(r1),float(r2)
-            # g.pr("scroll ratios:",r1,r2)
-
-            try:
-                s = self.canvas.cget("scrollregion")
-                x1,y1,x2,y2 = g.scanf(s,"%d %d %d %d")
-                x1,y1,x2,y2 = int(x1),int(y1),int(x2),int(y2)
-            except:
-                self.visibleArea = None
-                return
-
-            scroll_h = y2-y1
-            # g.pr("height of scrollregion:", scroll_h)
-
-            vy1 = y1 + (scroll_h*r1)
-            vy2 = y1 + (scroll_h*r2)
-            self.visibleArea = vy1,vy2
-            # g.pr("setVisibleArea: %5.1f %5.1f" % (vy1,vy2))
-        #@-node:ekr.20081004172422.842:setVisibleArea
-        #@+node:ekr.20081004172422.843:tree.updateTree
-        def updateTree (self,v,x,y,h,level):
-
-            yfirst = y
-            if level==0: yfirst += 10
-            while v:
-                # g.trace(x,y,v)
-                h,indent = self.updateNode(v,x,y)
-                y += h
-                if v.isExpanded() and v.firstChild():
-                    y = self.updateTree(v.firstChild(),x+indent,y,h,level+1)
-                v = v.next()
-            return y
-        #@-node:ekr.20081004172422.843:tree.updateTree
-        #@-node:ekr.20081004172422.837:Incremental drawing...
-        #@-others
-    #@-node:ekr.20081004172422.899:To be deleted
     #@-others
 #@-node:ekr.20081004172422.732:class leoQtTree
 #@+node:ekr.20081004172422.684:class leoQtTreeTab
