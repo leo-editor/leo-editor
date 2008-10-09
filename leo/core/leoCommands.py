@@ -6046,7 +6046,7 @@ class baseCommands:
         c = self ; callers = g.callers()
 
         def bindCallback(event,c=c,func=func,callers=callers):
-            # g.trace('w',w,'func',func.__name__,) # 'binding callers',callers)
+            # g.trace('func',func.__name__)
             val = func(event)
             # Careful: func may destroy c.
             if c.exists: c.outerUpdate()

@@ -332,25 +332,6 @@ class leoTkinterBody (leoFrame.leoBody):
         c = self.c
         return self.bodyCtrl.bind(*args,**keys)
     #@-node:ekr.20031218072017.4017:Menus (tkBody) (May cause problems)
-    #@+node:ekr.20070228081242:Text (now in base class)
-    # def getAllText (self):              return self.bodyCtrl.getAllText()
-    # def getInsertPoint(self):           return self.bodyCtrl.getInsertPoint()
-    # def getSelectedText (self):         return self.bodyCtrl.getSelectedText()
-    # def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
-    # def hasTextSelection (self):        return self.bodyCtrl.hasSelection()
-    # # def scrollDown (self):            g.app.gui.yscroll(self.bodyCtrl,1,'units')
-    # # def scrollUp (self):              g.app.gui.yscroll(self.bodyCtrl,-1,'units')
-    # def see (self,index):               self.bodyCtrl.see(index)
-    # def seeInsertPoint (self):          self.bodyCtrl.seeInsertPoint()
-    # def selectAllText (self,event=None):
-        # w = g.app.gui.eventWidget(event) or self.bodyCtrl
-        # return w.selectAllText()
-    # def setInsertPoint (self,pos):      return self.bodyCtrl.getInsertPoint(pos)
-    # def setSelectionRange (self,sel):
-        # i,j = sel
-        # self.bodyCtrl.setSelectionRange(i,j)
-    #@nonl
-    #@-node:ekr.20070228081242:Text (now in base class)
     #@-node:ekr.20031218072017.4000:Tk bindings (tkBody)
     #@+node:ekr.20070424053629.2:Editors (tkBody)
     #@+node:ekr.20070424054235:createEditorFrame

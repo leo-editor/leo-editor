@@ -2402,7 +2402,7 @@ class keyHandlerClass:
 
         # This is the only real key callback.
         def masterBindKeyCallback (event,k=k,stroke=stroke):
-            # g.trace(stroke)
+            # g.trace(stroke,event.w)
             return k.masterKeyHandler(event,stroke=stroke)
 
         if 0:
@@ -3284,7 +3284,7 @@ class keyHandlerClass:
         verbose = True
 
         if keysym in special_keys:
-            if verbose: g.trace('keysym',keysym)
+            if trace and verbose: g.trace('keysym',keysym)
             return None
         if traceGC: g.printNewObjects('masterKey 1')
         if trace:
@@ -3421,6 +3421,7 @@ class keyHandlerClass:
 
         # g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
         # g.trace('button',k.masterBindingsDict.get('button'))
+        # g.trace('stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
         for key,name in (
             # Order here is similar to bindtags order.
