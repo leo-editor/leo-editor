@@ -667,16 +667,25 @@ class leoQtBody (leoFrame.leoBody):
         w = self.widget
         s = self.getAllText()
 
+        if i > j: i,j = j,i
         row_i,col_i = g.convertPythonIndexToRowCol(s,i)
         row_j,col_j = g.convertPythonIndexToRowCol(s,j)
 
-        # g.trace(i,j,row_i,col_i,row_j,col_j)
+        # g.trace(i,j,insert)
 
-        w.setSelection(row_i,col_i,row_j,col_j)
-
-        # Apparently, this clears the selection.
-        # if insert is not None:
-            # self.setInsertPoint(insert)
+        if insert is not None:
+            self.setInsertPoint(insert)
+            ins = self.getInsertPoint()
+            if ins == i:
+                # Set insert point at start of selection. (Doesn't work.)
+                # g.trace('start')
+                w.setSelection(row_j,col_j,row_i,col_i)
+            else:
+                # Set insert point at end of selection.
+                w.setSelection(row_i,col_i,row_j,col_j)
+        else:
+            # Set insert point at end of selection.
+            w.setSelection(row_i,col_i,row_j,col_j)
     #@-node:ekr.20081007015817.96:setSelectionRange
     #@-node:ekr.20081007015817.76:Insert point and selection
     #@+node:ekr.20081007015817.98:Scrolling & hit test
@@ -694,7 +703,11 @@ class leoQtBody (leoFrame.leoBody):
     #@-node:ekr.20081007015817.90:scrollLines
     #@+node:ekr.20081007015817.91:see & seeInsertPoint
     def see(self,i):
-        pass # This may happen automatically.  Or not.
+
+        w = self.widget
+        s = self.getAllText()
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        w.ensureLineVisible(row)
 
     def seeInsertPoint (self):
         return self.see(self.getInsertPoint())
@@ -5005,10 +5018,16 @@ class leoQtTextWidget:
 
     '''A class to wrap the qt text widget.'''
 
-    def __init__ (self,frame):
+    def __init__ (self,frame,name='<leoQtTextWidget>'):
         # g.trace('leoQtTextWidget',g.callers(4))
+        # self.c = frame.c
         self.frame = frame # a Window object.
+        self.name = name
         self.widget = self
+
+        # Not yet: c does not exist.
+        # self.ev_filter = leoQtEventFilter(c,w=self,tag='leoQtTextWidget')
+        # self.widget.installEventFilter(self.ev_filter)
 
     def __repr__(self):
         name = hasattr(self,'_name') and self._name or '<no name>'
@@ -5100,7 +5119,25 @@ class leoQtTextWidget:
     #@nonl
     #@-node:ekr.20081004172422.699:w.rowColToGuiIndex
     #@-node:ekr.20081004172422.696:Index conversion (leoTextWidget)
-    #@+node:ekr.20081004172422.700:NOT USED Wrapper methods (leoTextWidget)
+    #@+node:ekr.20081004172422.700:Wrapper methods (leoTextWidget) NOT READY YET
+    #@+node:ekr.20081008175216.7:Bind
+    def bind (self,stroke,command,**keys):
+
+        c = self.c ### w = c.frame.top
+
+        # stroke = self.toQtStroke(stroke)
+
+        # Only strip matching angle brackets.
+        if stroke.startswith('<') and stroke.endswith('>'):
+            stroke = stroke[1:-1]
+
+        stroke = stroke.strip()
+        if stroke:
+            ### was w.ev_filter
+            self.ev_filter.bindings[stroke]=command
+            # g.trace('stroke',stroke)
+    #@nonl
+    #@-node:ekr.20081008175216.7:Bind
     #@+node:ekr.20081004172422.701:delete
     def delete(self,i,j=None):
 
@@ -5411,7 +5448,7 @@ class leoQtTextWidget:
         i = w.toPythonIndex(i)
         return i
     #@-node:ekr.20081004172422.729:xyToGui/PythonIndex
-    #@-node:ekr.20081004172422.700:NOT USED Wrapper methods (leoTextWidget)
+    #@-node:ekr.20081004172422.700:Wrapper methods (leoTextWidget) NOT READY YET
     #@-others
 #@-node:ekr.20081004172422.694:class leoQtTextWidget
 #@+node:ekr.20081004172422.732:class leoQtTree
@@ -5583,9 +5620,9 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Create master bindings for all headlines.'''
 
-        return ###
-
         tree = self ; k = self.c.k
+
+        return ###
 
         # g.trace('self',self,'canvas',self.canvas)
 
