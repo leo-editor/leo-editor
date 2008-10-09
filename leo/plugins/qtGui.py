@@ -601,12 +601,7 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081007015817.84:getLastPosition
     def getLastPosition(self):
 
-        w = self.widget
-        n = len(self.getAllText())
-
-        g.trace(n)
-
-        return n
+        return len(self.getAllText())
     #@-node:ekr.20081007015817.84:getLastPosition
     #@+node:ekr.20081007015817.85:getSelectedText
     def getSelectedText(self):
@@ -615,7 +610,6 @@ class leoQtBody (leoFrame.leoBody):
 
         i,j = self.getSelectionRange()
         if i == j:
-            g.trace('')
             return ''
         else:
             s = self.getAllText()
@@ -666,7 +660,6 @@ class leoQtBody (leoFrame.leoBody):
 
         w = self.widget
         s = self.getAllText()
-
         if i > j: i,j = j,i
         row_i,col_i = g.convertPythonIndexToRowCol(s,i)
         row_j,col_j = g.convertPythonIndexToRowCol(s,j)
@@ -674,15 +667,19 @@ class leoQtBody (leoFrame.leoBody):
         # g.trace(i,j,insert)
 
         if insert is not None:
+            # Set insert point at end of selection.
             self.setInsertPoint(insert)
-            ins = self.getInsertPoint()
-            if ins == i:
-                # Set insert point at start of selection. (Doesn't work.)
-                # g.trace('start')
-                w.setSelection(row_j,col_j,row_i,col_i)
-            else:
-                # Set insert point at end of selection.
-                w.setSelection(row_i,col_i,row_j,col_j)
+            w.setSelection(row_i,col_i,row_j,col_j)
+
+
+            # self.setInsertPoint(insert)
+            # ins = self.getInsertPoint()
+            # if ins == i: ### This doesn't work.
+                # # Set insert point at start of selection. 
+                # w.setSelection(row_j,col_j,row_i,col_i)
+            # else:
+                # # Set insert point at end of selection.
+                # w.setSelection(row_i,col_i,row_j,col_j)
         else:
             # Set insert point at end of selection.
             w.setSelection(row_i,col_i,row_j,col_j)
@@ -4481,6 +4478,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter add_command menu method."""
 
+        accel = keys.get('accelerator') or ''
         label = keys.get('label')
         command = keys.get('command')
         underline = keys.get('underline')
@@ -4489,6 +4487,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         if label:
             action = menu.addAction(label)
+            if accel: action.setShortcut(accel)
             if command:
                 def add_command_callback(label=label,command=command):
                     g.trace(label,command)
