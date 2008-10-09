@@ -1418,8 +1418,9 @@ class leoBody:
     def see (self,index):                   self.bodyCtrl.see(index)
     def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
     def selectAllText (self,event=None): # This is a command.
-        w = g.app.gui.eventWidget(event) or self.bodyCtrl
-        return w.selectAllText()
+        return self.bodyCtrl.selectAllText()
+        # w = g.app.gui.eventWidget(event) or self.bodyCtrl
+        # return w.selectAllText()
     def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos) # was getInsertPoint.
     def setFocus(self):                     return self.bodyCtrl.setFocus()
     def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
