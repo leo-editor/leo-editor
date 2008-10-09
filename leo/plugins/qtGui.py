@@ -120,14 +120,17 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.textEdit.setIndentationsUseTabs(False)
         self.textEdit.setAutoIndent(True)
 
-        self.ev_filt = leoQtEventFilter(c)
+        if 0: # Now done in individual widgets.
+            self.ev_filt = leoQtEventFilter(c)
+            # Use Tk-style bindings
+            # Not needed now: we already have this binding.
+            # self.ev_filt.bindings['Control-h'] = self.edit_current_headline
+            self.textEdit.installEventFilter(self.ev_filt)
 
-        # Use Tk-style bindings
-        # Not needed now: we already have this binding.
-        # self.ev_filt.bindings['Control-h'] = self.edit_current_headline
+        if 0: # Now done in individual widgets.
+            self.ev_filt = leoQtEventFilter(c)
+            self.treeWidget.installEventFilter(self.ev_filt)
 
-        self.textEdit.installEventFilter(self.ev_filt)
-        self.treeWidget.installEventFilter(self.ev_filt)
         path = g.os_path_join(g.app.loadDir,"..","Icons") 
         self.icon_std = QtGui.QIcon(path + '/box00.GIF')
         self.icon_dirty = QtGui.QIcon(path + '/box01.GIF')
@@ -232,26 +235,22 @@ class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
 
-    def __init__ (self,event,c,w,tkKey): ###ch,keynum):
+    def __init__ (self,event,c,w,tkKey):
 
-        # g.trace('leoKeyEvent(qtGui)',w)
+        # The main ivars.
         self.actualEvent = event
-        self.c      = c # Required to access c.k tables.
-        self.char   = tkKey #  hasattr(event,'char') and event.char or ''
-        self.keysym = tkKey # The 'stroke' ### hasattr(event,'keysym') and event.keysym or ''
-        self.w      = w # hasattr(event,'widget') and event.widget or None
+        self.c      = c
+        self.char   = tkKey 
+        self.keysym = tkKey
+        self.w = self.widget = w # A leoQtX object
 
+        # Auxiliary info.
         self.x      = hasattr(event,'x') and event.x or 0
         self.y      = hasattr(event,'y') and event.y or 0
         # Support for fastGotoNode plugin
         self.x_root = hasattr(event,'x_root') and event.x_root or 0
         self.y_root = hasattr(event,'y_root') and event.y_root or 0
 
-        # if self.keysym and c.k:
-            # # Translate keysyms for ascii characters to the character itself.
-            # self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
-
-        self.widget = self.w
 
     def __repr__ (self):
 
@@ -294,6 +293,8 @@ class leoQtBody (leoFrame.leoBody):
         self.injectIvars()
         self.setFontFromConfig()
         self.setColorFromConfig()
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
+        self.widget.installEventFilter(self.ev_filter)
     #@-node:ekr.20081004172422.504: ctor (qtBody)
     #@+node:ekr.20081004172422.505:createBindings (qtBody)
     def createBindings (self,w=None):
@@ -448,7 +449,7 @@ class leoQtBody (leoFrame.leoBody):
         # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
     #@-node:ekr.20081004172422.509:setFontFromConfig
     #@-node:ekr.20081004172422.503: Birth
-    #@+node:ekr.20081004172422.512:Interface with Leo's core
+    #@+node:ekr.20081004172422.512:Interface with Leo's core (qtBody)
     #@+node:ekr.20081007015817.78: oops
     def oops (self):
         g.trace('qtBody',g.callers(3))
@@ -457,9 +458,7 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081004172422.517:Bind
     def bind (self,stroke,command,**keys):
 
-        c = self.c ; w = c.frame.top
-
-        assert w
+        c = self.c ### w = c.frame.top
 
         # stroke = self.toQtStroke(stroke)
 
@@ -469,9 +468,10 @@ class leoQtBody (leoFrame.leoBody):
 
         stroke = stroke.strip()
         if stroke:
-            w.ev_filt.bindings[stroke]=command
-            if stroke.lower().find('return') > -1:
-                g.trace(stroke,command)
+            ### was w.ev_filter
+            self.ev_filter.bindings[stroke]=command
+            # g.trace('stroke',stroke)
+    #@nonl
     #@-node:ekr.20081004172422.517:Bind
     #@+node:ekr.20081007015817.100:Config
     #@+node:ekr.20081004172422.514:cget and configure
@@ -619,7 +619,7 @@ class leoQtBody (leoFrame.leoBody):
             return ''
         else:
             s = self.getAllText()
-            g.trace(repr(s[i:j]))
+            # g.trace(repr(s[i:j]))
             return s[i:j]
     #@-node:ekr.20081007015817.85:getSelectedText
     #@+node:ekr.20081007015817.86:getSelectionRange
@@ -635,11 +635,21 @@ class leoQtBody (leoFrame.leoBody):
         else:
             i = j = self.getInsertPoint()
 
-        g.trace(i,j)
-
         return i,j
 
     #@-node:ekr.20081007015817.86:getSelectionRange
+    #@+node:ekr.20081008175216.5:selectAllText
+    def selectAllText(self):
+
+        w = self.widget
+        s = self.getAllText()
+
+        row_i,col_i = g.convertPythonIndexToRowCol(s,0)
+        row_j,col_j = g.convertPythonIndexToRowCol(s,len(s))
+
+        # g.trace(row_i,col_i,row_j,col_j)
+        w.setSelection(row_i,col_i,row_j,col_j)
+    #@-node:ekr.20081008175216.5:selectAllText
     #@+node:ekr.20081007015817.95:setInsertPoint
     def setInsertPoint(self,i):
 
@@ -660,37 +670,38 @@ class leoQtBody (leoFrame.leoBody):
         row_i,col_i = g.convertPythonIndexToRowCol(s,i)
         row_j,col_j = g.convertPythonIndexToRowCol(s,j)
 
-        g.trace(row_i,col_i,row_j,col_j)
+        # g.trace(i,j,row_i,col_i,row_j,col_j)
+
         w.setSelection(row_i,col_i,row_j,col_j)
 
-        if insert is not None:
-            self.setInsertPoint(insert)
+        # Apparently, this clears the selection.
+        # if insert is not None:
+            # self.setInsertPoint(insert)
     #@-node:ekr.20081007015817.96:setSelectionRange
     #@-node:ekr.20081007015817.76:Insert point and selection
     #@+node:ekr.20081007015817.98:Scrolling & hit test
     #@+node:ekr.20081007015817.87:getYScrollPosition
     def getYScrollPosition(self):
-
         return None # A flag
     #@-node:ekr.20081007015817.87:getYScrollPosition
     #@+node:ekr.20081007015817.88:hitTest
     def hitTest(self,pos):
-
-        self.oops()
+        pass
     #@-node:ekr.20081007015817.88:hitTest
     #@+node:ekr.20081007015817.90:scrollLines
     def scrollLines(self,n):
-        self.oops()
+        pass
     #@-node:ekr.20081007015817.90:scrollLines
     #@+node:ekr.20081007015817.91:see & seeInsertPoint
     def see(self,i):
-        self.oops()
+        pass # This may happen automatically.  Or not.
 
     def seeInsertPoint (self):
         return self.see(self.getInsertPoint())
     #@-node:ekr.20081007015817.91:see & seeInsertPoint
     #@+node:ekr.20081007015817.97:setYScrollPosition
-    def setYScrollPosition(self,i):    self.oops()
+    def setYScrollPosition(self,i):
+        pass
     #@-node:ekr.20081007015817.97:setYScrollPosition
     #@-node:ekr.20081007015817.98:Scrolling & hit test
     #@+node:ekr.20081004172422.511:Syntax coloring
@@ -767,22 +778,22 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081007015817.92:setAllText
     def setAllText(self,s):
 
-        g.trace(len(s))
-
         self.widget.setText(s)
     #@-node:ekr.20081007015817.92:setAllText
     #@-node:ekr.20081007015817.99:Text getters/settters
-    #@-node:ekr.20081004172422.512:Interface with Leo's core
+    #@-node:ekr.20081004172422.512:Interface with Leo's core (qtBody)
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
 #@+node:ekr.20081004102201.628:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
-    def __init__(self,c):
+    def __init__(self,c,w,tag=''):
         self.c = c
+        self.w = w # this is a leoQtX object, *not* a Qt object.
         QtCore.QObject.__init__(self)
         self.bindings = {}
         self.dumped = False # True if bindings dict has been dumped.
+        self.tag = tag
 
     def eventFilter(self, obj, event):
 
@@ -841,27 +852,31 @@ class leoQtEventFilter(QtCore.QObject):
         #@-node:ekr.20081007115148.6:<< about internal bindings >>
         #@nl
 
-        trace = True ; verbose = False ; dump = False
+        trace = False ; verbose = False ; dump = False
+        c = self.c ; w = self.w
 
         if trace and dump and not self.dumped:
             self.dumped = True
-            g.trace(g.listToString(self.bindings.keys()))
+            g.trace(g.listToString(self.bindings.keys(),sort=True))
+            # g.trace(c.k.masterBindingsDict)
 
-        tkKey,event = self.toTkKey(event,obj)
-
+        tkKey = self.toTkKey(event,obj)
         cmd = self.bindings.get(tkKey)
 
         if cmd:
-            if trace: g.trace('bound',tkKey,cmd.__name__,)
+            if trace: g.trace(self.tag,'bound',tkKey,cmd.__name__,)
+            # Create a standard Leo event.
+            event = leoKeyEvent(event,c,w,tkKey)
             cmd(event)
             return True # The key has been handled.
         else:
-            if trace and verbose: g.trace('unbound',tkKey)
+            if trace and verbose: g.trace(self.tag,'unbound',tkKey)
             return False # The key has not been handled.
     #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event,obj):
 
-        c = self.c ; k = c.k ; w = obj ; trace = True
+        c = self.c ; k = c.k ; w = obj ; trace = False
+        allowShift = True ; isKnown = False
         keynum = event.key()
         try:
             ch = chr(keynum)
@@ -869,10 +884,11 @@ class leoQtEventFilter(QtCore.QObject):
             ch = event.text()
             if not ch:
                 ch = QtGui.QKeySequence(keynum).toString()
+                isKnown = True
             if not ch:
                 ch = "<unknown char: %s>" % (keynum)
             ch = g.toUnicode(ch,g.app.tkEncoding)
-            if trace: g.trace('special',ch) # munge.
+            # if trace: g.trace('special',ch) # munge.
 
         # Convert special characters to Tk Spellings.
         if   ch in ('\r','\n'): ch = 'Return'
@@ -880,7 +896,9 @@ class leoQtEventFilter(QtCore.QObject):
         elif ch == '\b': ch = 'BackSpace'
         else:
             ch2 = k.guiBindNamesDict.get(ch)
-            if ch2: ch = ch2
+            if ch2:
+                if not isKnown: allowShift = False
+                ch = ch2
 
         # Convert to Tk style binding.
         mods = []
@@ -889,15 +907,19 @@ class leoQtEventFilter(QtCore.QObject):
         if event.modifiers() & QtCore.Qt.ControlModifier:
             mods.append("Control")
         if event.modifiers() & QtCore.Qt.ShiftModifier:
-            if not ch2: # Don't add shift to special characters.
+            # g.trace('allowShift',allowShift,'ch')
+            if not allowShift:
+                pass
+            elif len(ch) == 1:
+                ch = ch.upper()
+            else:
                 mods.append("Shift")
         elif len(ch) == 1: ch = ch.lower()
 
         tkKey = "-".join(mods) + (mods and "-" or "") + ch
         if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
 
-        event = leoKeyEvent(event,c,w,tkKey)
-        return tkKey,event
+        return tkKey
     #@-node:ekr.20081008084746.1:toTkKey
     #@-node:ekr.20081004172422.897:key_pressed
     #@-others
@@ -3125,30 +3147,30 @@ class leoQtGui(leoGui.leoGui):
         return w,f
     #@-node:ekr.20081004102201.655:create_labeled_frame
     #@-node:ekr.20081004102201.652:Dialog (these are optional)
-    #@+node:ekr.20081004102201.656:Events (qtGui) (to do)
-    def event_generate(self,w,kind,*args,**keys):
-        '''Generate an event.'''
-        return w.event_generate(kind,*args,**keys)
+    #@+node:ekr.20081004102201.656:Events (qtGui)  (to be deleted?)
+    # def event_generate(self,w,kind,*args,**keys):
+        # '''Generate an event.'''
+        # return w.event_generate(kind,*args,**keys)
 
-    def eventChar (self,event,c=None):
-        '''Return the char field of an event.'''
-        return event and event.char or ''
+    # def eventChar (self,event,c=None):
+        # '''Return the char field of an event.'''
+        # return event and event.char or ''
 
-    def eventKeysym (self,event,c=None):
-        '''Return the keysym value of an event.'''
-        return event and event.keysym
+    # def eventKeysym (self,event,c=None):
+        # '''Return the keysym value of an event.'''
+        # return event and event.keysym
 
-    def eventWidget (self,event,c=None):
-        '''Return the widget field of an event.'''   
-        return event and event.widget
+    # def eventWidget (self,event,c=None):
+        # '''Return the widget field of an event.'''   
+        # return event and event.widget
 
-    def eventXY (self,event,c=None):
-        if event:
-            return event.x,event.y
-        else:
-            return 0,0
+    # def eventXY (self,event,c=None):
+        # if event:
+            # return event.x,event.y
+        # else:
+            # return 0,0
     #@nonl
-    #@-node:ekr.20081004102201.656:Events (qtGui) (to do)
+    #@-node:ekr.20081004102201.656:Events (qtGui)  (to be deleted?)
     #@+node:ekr.20081004102201.657:Focus (to do)
     #@+node:ekr.20081004102201.658:qtGui.get_focus
     def get_focus(self,c):
@@ -3320,7 +3342,14 @@ class leoQtGui(leoGui.leoGui):
 
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
 
-        return w and isinstance(w,leoFrame.baseTextWidget)
+        if not w: return False
+
+        return (
+            isinstance(w,leoFrame.baseTextWidget) or
+            isinstance(w,leoQtBody) or
+            isinstance(w,leoQtTextWidget)
+        )
+
     #@-node:ekr.20081004102201.670:isTextWidget
     #@+node:ekr.20081004102201.671:makeScriptButton (to do)
     def makeScriptButton (self,c,
@@ -3473,6 +3502,7 @@ class leoQtLog (leoFrame.leoLog):
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
         # Initial setup.
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='log')
         self.tabWidget.clear() # Remove any tabs created by QtDesigner.
         self.setFontFromConfig()
         self.setColorFromConfig()
@@ -3490,6 +3520,7 @@ class leoQtLog (leoFrame.leoLog):
 
         c.searchCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
+
     #@-node:ekr.20081004172422.626:qtLog.finishCreate
     #@+node:ekr.20081004172422.629:qtLog.makeTabMenu
     def makeTabMenu (self,tabName=None,allowRename=True):
@@ -3765,7 +3796,7 @@ class leoQtLog (leoFrame.leoLog):
             contents = QtGui.QTextEdit()
             # Install event filter.
             w2 = c.frame.top
-            contents.installEventFilter(w2.ev_filt)
+            contents.installEventFilter(self.ev_filter)
         else:
             contents = QtGui.QWidget()
 
@@ -4975,7 +5006,9 @@ class leoQtTextWidget:
     '''A class to wrap the qt text widget.'''
 
     def __init__ (self,frame):
+        # g.trace('leoQtTextWidget',g.callers(4))
         self.frame = frame # a Window object.
+        self.widget = self
 
     def __repr__(self):
         name = hasattr(self,'_name') and self._name or '<no name>'
@@ -5067,7 +5100,7 @@ class leoQtTextWidget:
     #@nonl
     #@-node:ekr.20081004172422.699:w.rowColToGuiIndex
     #@-node:ekr.20081004172422.696:Index conversion (leoTextWidget)
-    #@+node:ekr.20081004172422.700:Wrapper methods (leoTextWidget)
+    #@+node:ekr.20081004172422.700:NOT USED Wrapper methods (leoTextWidget)
     #@+node:ekr.20081004172422.701:delete
     def delete(self,i,j=None):
 
@@ -5216,13 +5249,6 @@ class leoQtTextWidget:
         qt.Text.insert(w,i,s)
 
     #@-node:ekr.20081004172422.713:insert
-    #@+node:ekr.20081004172422.714:mark_set NO LONGER USED
-    # def mark_set(self,markName,i):
-
-        # w = self
-        # i = w.toGuiIndex(i)
-        # qt.Text.mark_set(w,markName,i)
-    #@-node:ekr.20081004172422.714:mark_set NO LONGER USED
     #@+node:ekr.20081004172422.715:replace
     def replace (self,i,j,s): # qtTextWidget
 
@@ -5250,7 +5276,8 @@ class leoQtTextWidget:
 
         '''Select all text of the widget, *not* including the extra newline.'''
 
-        w = self ; s = w.getAllText()
+        w = self
+        s = w.getAllText()
         if insert is None: insert = len(s)
         w.setSelectionRange(0,len(s),insert=insert)
     #@-node:ekr.20081004172422.718:selectAllText
@@ -5384,7 +5411,7 @@ class leoQtTextWidget:
         i = w.toPythonIndex(i)
         return i
     #@-node:ekr.20081004172422.729:xyToGui/PythonIndex
-    #@-node:ekr.20081004172422.700:Wrapper methods (leoTextWidget)
+    #@-node:ekr.20081004172422.700:NOT USED Wrapper methods (leoTextWidget)
     #@-others
 #@-node:ekr.20081004172422.694:class leoQtTextWidget
 #@+node:ekr.20081004172422.732:class leoQtTree
@@ -5648,8 +5675,13 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081005065934.10:qtTree.initAfterLoad
     def initAfterLoad (self):
 
-        frame = self.c.frame
+        c = self.c ; frame = c.frame
         frame.top.populate_tree(parent=None)
+
+        self.treeWidget = w = frame.top.treeWidget
+
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+        w.installEventFilter(self.ev_filter)
     #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
     #@-node:ekr.20081004172422.737: Birth... (qt Tree)
     #@+node:ekr.20081004172422.767:tree.redraw_now
