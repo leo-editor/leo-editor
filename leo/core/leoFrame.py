@@ -2251,7 +2251,8 @@ class leoTree:
     # List of methods that must be defined either in the base class or a subclass.
 
     mustBeDefined = (
-        'initAfterLoad',
+        'initAfterLoad', # New in Leo 4.6.
+        'treeSelectHint', # New in Leo 4.6.
     )
     #@nonl
     #@-node:ekr.20081005065934.7:leoTree.mustBeDefined
@@ -2667,7 +2668,19 @@ class leoTree:
     #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper
     #@-node:ekr.20061109165848:Must be defined in base class
     #@+node:ekr.20081005065934.8:May be defined in subclasses
+    # These are new in Leo 4.6.
+
     def initAfterLoad (self):
+
+        '''Do late initialization.
+
+        Called in g.openWithFileName after a successful load.'''
+
+        pass
+
+    def treeSelectHint (self,p):
+
+        '''Called at end of tree.select.'''
 
         pass
     #@-node:ekr.20081005065934.8:May be defined in subclasses
@@ -2789,6 +2802,8 @@ class leoTree:
             if theChapter:
                 theChapter.p = p.copy()
                 # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
+
+        c.frame.tree.selectHint(p) # New in Leo 4.6.
 
         if self.stayInTree:
             c.treeWantsFocus()
