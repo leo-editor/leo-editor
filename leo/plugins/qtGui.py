@@ -96,12 +96,16 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
     #@    @+others
     #@+node:ekr.20081004172422.884: ctor (Window)
-    def __init__(self, c,parent = None):
+    # Called from leoQtFrame.finishCreate.
+
+    def __init__(self,c,parent=None):
+
+        '''Create Leo's main window, c.frame.top'''
 
         self.c = c
-        QtGui.QWidget.__init__(self, parent)
-        signal = QtCore.SIGNAL
-        self.setupUi(self)
+
+        QtGui.QWidget.__init__(self,parent) # Init the base class.
+        self.setupUi(self) # Init the gui.
 
         # The following ivars (and more) are inherited from UiMainWindow:
             # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
@@ -110,139 +114,21 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
             # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
             # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
 
-        if 0: # Now done in leoQtTree
-            self.connect(self.treeWidget,
-                signal("itemSelectionChanged()"), self.tree_select )
-
-        if 0: # Now done from official menus.
-            self.connect(self.actionOpen,signal("activated()"),self.open_file)
-            self.connect(self.actionSave,signal("activated()"),self.save_file)
-            #self.connect(self.searchButton,signal("clicked()"), self.search)
-            #self.connect(self.actionIPython,signal("activated()"),self.embed_ipython)
-
-        if 0: # Should be done in Leo's core.
-            self.connect(self.textEdit, signal("textChanged()"),self.text_changed)
-
+        # Doesn't work.
         self.connect(self.lineEdit,
-            signal("returnPressed()"),  self.minibuffer_run)
-
-        if 0: # No longer used.
-            self.selecting = True
-            self.widget_dirty = False
-
-        # XXX todo. this just makes the text editor a bit friendlier for
-        # python. Eventually, it will be configurable the leo way
-        lexer = Qsci.QsciLexerPython(self.textEdit)
-        self.textEdit.setLexer(lexer)
-        self.textEdit.setIndentationWidth(4)
-        self.textEdit.setIndentationsUseTabs(False)
-        self.textEdit.setAutoIndent(True)
-
-        if 0: # Single event filter.
-            self.ev_filter = leoQtEventFilter(c,w=self,tag='main-window')
-            self.installEventFilter(self.ev_filter)
-
-        if 0: # Body pane filter.
-            self.ev_filt = leoQtEventFilter(c)
-            # Use Tk-style bindings
-            # Not needed now: we already have this binding.
-            # self.ev_filt.bindings['Control-h'] = self.edit_current_headline
-            self.textEdit.installEventFilter(self.ev_filt)
-
-        if 0: # Now done in individual widgets.
-            self.ev_filt = leoQtEventFilter(c)
-            self.treeWidget.installEventFilter(self.ev_filt)
-
-        if 0: # Now done in leoQtTree
-            path = g.os_path_join(g.app.loadDir,"..","Icons") 
-            self.icon_std = QtGui.QIcon(path + '/box00.GIF')
-            self.icon_dirty = QtGui.QIcon(path + '/box01.GIF')
+            QtCore.SIGNAL("returnPressed()"),self.minibuffer_run)
 
         self.buttons = self.addToolBar("Buttons")
         self.buttons.addAction(self.actionSave)
     #@-node:ekr.20081004172422.884: ctor (Window)
-    #@+node:ekr.20081004172422.888:clear_model
-    # def clear_model(self):
-
-        # c = self.c
-        # self.treeWidget.clear()
-        # self.items = {}
-        # self.treeitems = {}
-        # if c:
-            # c.close()
-            # c = None
-
-    #@-node:ekr.20081004172422.888:clear_model
-    #@+node:ekr.20081004172422.889:populate_tree
-    # def populate_tree(self, parent=None):
-
-        # """ Render vnodes in tree """
-
-        # c = self.c
-        # self.items = {}
-        # self.treeitems = {}
-        # self.treeWidget.clear()
-        # for p in c.allNodes_iter():
-            # parent = self.items.get(p.parent().v,self.treeWidget)
-            # it = QtGui.QTreeWidgetItem(parent)
-            # it.setIcon(0, self.icon_std)
-            # it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
-            # self.items[p.v] = it
-            # self.treeitems[id(it)] = p.copy() ###p.t
-            # it.setText(0, p.headString())
-
+    #@+node:ekr.20081010070648.8:minibuffer_run
     def minibuffer_run(self):
 
         c = self.c
         cmd = str(self.lineEdit.text())
-        print "minibuffer run:", cmd
+        g.trace(cmd)
         c.executeMinibufferCommand(cmd)
-    #@-node:ekr.20081004172422.889:populate_tree
-    #@+node:ekr.20081004172422.890:flush_current_tnode
-    # def flush_current_tnode(self):
-
-        # text = str(self.textEdit.text())
-        # self.cur_tnode.setBodyString(text)
-
-    #@-node:ekr.20081004172422.890:flush_current_tnode
-    #@+node:ekr.20081004172422.891:tree_select
-    # def tree_select(self):
-        # #print "tree selected!"
-        # c = self.c
-        # self.selecting = True
-
-        # if self.widget_dirty:
-            # self.flush_current_tnode()
-
-        # #### self.cur_tnode = self.treeitems[id(self.treeWidget.currentItem())]
-        # p = self.treeitems[id(self.treeWidget.currentItem())]
-        # self.cur_tnode = p.v.t
-
-        # g.trace(p and p.headString())
-        # c.frame.tree.select(p) # The crucial hook.
-
-        # # Should be done in tree.select.
-        # ### self.textEdit.setText(self.cur_tnode.bodyString())
-        # self.selecting = False
-        # self.widget_dirty = False
-
-    #@-node:ekr.20081004172422.891:tree_select
-    #@+node:ekr.20081004172422.892:text_changed
-    # def text_changed(self):
-        # if self.selecting:
-            # return
-        # #print "text changed"
-        # if not self.widget_dirty:
-            # self.treeWidget.currentItem().setIcon(0,self.icon_dirty)
-        # self.widget_dirty = True
-
-    #@-node:ekr.20081004172422.892:text_changed
-    #@+node:ekr.20081004172422.894:edit_current_headline
-    # def edit_current_headline(self):
-        # #self.treeWidget.openPersistentEditor(self.treeWidget.currentItem())
-        # self.treeWidget.editItem(self.treeWidget.currentItem())
-    #@nonl
-    #@-node:ekr.20081004172422.894:edit_current_headline
+    #@-node:ekr.20081010070648.8:minibuffer_run
     #@-others
 
 #@-node:ekr.20081004102201.629:class  Window (QMainWindow,Ui_MainWindow)
@@ -296,6 +182,12 @@ class leoQtBody (leoFrame.leoBody):
         wrap = c.config.getBool('body_pane_wraps')
         wrap = g.choose(wrap,"word","none")
         self.wrapState = wrap
+        # To do: make this configurable the leo way
+        lexer = Qsci.QsciLexerPython(self.widget)
+        self.widget.setLexer(lexer)
+        self.widget.setIndentationWidth(4)
+        self.widget.setIndentationsUseTabs(False)
+        self.widget.setAutoIndent(True)
         # parentFrame.configure(bg='LightSteelBlue1')
 
         # For multiple body editors.
@@ -3048,24 +2940,22 @@ class leoQtGui(leoGui.leoGui):
     #@-node:ekr.20081004102201.640:qtGui dialogs & panels (test)
     #@+node:ekr.20081004102201.647:qtGui utils (to do)
     #@+node:ekr.20081004102201.648:Clipboard (qtGui)
-    #@+node:ekr.20081004102201.649:replaceClipboardWith
     def replaceClipboardWith (self,s):
 
-        cb = QtGui.QApplication.clipboard()
+        '''Replace the clipboard with the string s.'''
 
+        cb = QtGui.QApplication.clipboard()
         if cb:
             cb.clear()
             cb.setText(s)
-    #@-node:ekr.20081004102201.649:replaceClipboardWith
-    #@+node:ekr.20081004102201.650:getTextFromClipboard
+
     def getTextFromClipboard (self):
 
+        '''Get a unicode string from the clipboard.'''
+
         cb = QtGui.QApplication.clipboard()
-
         s = cb and cb.text() or ''
-
         return g.toUnicode(s,g.app.tkEncoding)
-    #@-node:ekr.20081004102201.650:getTextFromClipboard
     #@-node:ekr.20081004102201.648:Clipboard (qtGui)
     #@+node:ekr.20081004102201.651:color (to do)
     # g.es calls gui.color to do the translation,
@@ -5585,7 +5475,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081004172422.738:__init__ (qtTree)
     def __init__(self,c,frame):
 
-        g.trace('**** leoQtTree')
+        # g.trace('**** leoQtTree')
 
         # Init the base class.
         leoFrame.leoTree.__init__(self,frame)
@@ -5840,7 +5730,7 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c ; frame = c.frame
 
         self.treeWidget = frame.top.treeWidget
-        g.trace('****',self.treeWidget)
+        # g.trace('****',self.treeWidget)
 
         if not leoQtTree.callbacksInjected:
             leoQtTree.callbacksInjected = True
@@ -5863,19 +5753,21 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-        c = self.c ; w = self.treeWidget ; trace = True
+        c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
         if not w: return
         if self.redrawing:
             return g.trace('already drawing')
 
+        self.redrawCount += 1
+        current = c.currentPosition()
+        found_current = False
+        if trace: g.trace(self.redrawCount,current and current.headString())
+        self.vnodeDict = {} # keys are vnodes, values are (p,it)
+        self.itemsDict = {} # keys are items, values are positions
+        parentsDict = {}
+
         self.redrawing = True
         try:
-            self.redrawCount += 1
-            current = c.currentPosition()
-            if trace: g.trace(self.redrawCount,current)
-            self.vnodeDict = {} # keys are vnodes, values are (p,it)
-            self.itemsDict = {} # keys are items, values are positions
-            parentsDict = {}
             w.clear()
             for p in c.allNodes_iter():
                 it = parentsDict.get(p.parent().v,w)
@@ -5895,9 +5787,10 @@ class leoQtTree (leoFrame.leoTree):
                 else:
                     w.collapseItem(it)
                 if p == current:
-                    w.setCurrentItem(it)
-                    if trace: g.trace('found current',p.headString(),it)
+                    w.setCurrentItem(it) ; found_current = True
         finally:
+            if not found_current:
+                g.trace('** no current item: %s' % (p and p.headString()))
             self.redrawing = False
 
     redraw = redraw_now # Compatibility
@@ -5905,10 +5798,14 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081009055104.8:tree.onTreeSelect & helpers
     def onTreeSelect(self):
 
-        c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
+        '''Select the proper position when a tree node is selected.'''
+
+        c = self.c ; w = self.treeWidget ; trace = False ; verbose = False
 
         if self.selecting:
             return g.trace('already selecting')
+        if self.redrawing:
+            return
 
         self.selecting = True
         try:
@@ -5919,15 +5816,8 @@ class leoQtTree (leoFrame.leoTree):
                 if trace: g.trace(p and p.headString())
                 c.frame.tree.select(p) # The crucial hook.
             else:
-                if 0:
-                    self.redraw_now() # Regen the tree.
-                    # Try again
-                    it = w.currentItem()
-                    if trace and verbose: g.trace('it 2',it)
-                    p = self.itemsDict.get(id(it))
-                    if p:
-                        c.frame.tree.select(p) # The crucial hook.
-                    g.trace('no p for item: %s' % it)
+                # This is an error if we are not redrawing.
+                g.trace('no p for item: %s' % it)
         finally:
             self.selecting = False
     #@-node:ekr.20081009055104.8:tree.onTreeSelect & helpers
@@ -5996,7 +5886,6 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081009055104.11:tree.selectHint
     def selectHint (self,p):
 
-        # Not proper
         w = self.treeWidget ; trace = False
         aList = self.vnodeDict.get(p.v,[])
         h = p.headString()
@@ -6007,7 +5896,9 @@ class leoQtTree (leoFrame.leoTree):
                 w.setCurrentItem(it)
                 break
         else:
-             g.trace('not found %s in %s' % (aList,h))
+            # Don't give a warning unless aList exists.
+            if aList:
+                g.trace('not found %s in %s' % (aList,h))
     #@-node:ekr.20081009055104.11:tree.selectHint
     #@+node:ekr.20081004172422.845:dimEditLabel, undimEditLabel
     # Convenience methods so the caller doesn't have to know the present edit node.
@@ -6059,6 +5950,8 @@ class leoQtTree (leoFrame.leoTree):
 
         c = self.c ; w = c.edit_widget(p)
 
+        g.trace(p and p.headString(),w)
+
         if p and w:
             c.widgetWantsFocusNow(w)
             self.setEditHeadlineColors(p)
@@ -6077,26 +5970,21 @@ class leoQtTree (leoFrame.leoTree):
 
     def setSelectedLabelState (self,p): # selected, disabled
 
-        c = self.c
+        c = self.c ; w = c.edit_widget(p)
 
-        # g.trace(p,c.edit_widget(p))
+        # g.trace(p and p.headString(),w)
 
-
-        if p and c.edit_widget(p):
-
-            if 0:
-                g.trace(self.trace_n,c.edit_widget(p),p)
-                # g.trace(g.callers(6))
-                self.trace_n += 1
-
+        if p and w:
             self.setDisabledHeadlineColors(p)
     #@-node:ekr.20081004172422.849:setSelectedLabelState
     #@+node:ekr.20081004172422.850:setUnselectedLabelState
     def setUnselectedLabelState (self,p): # not selected.
 
-        c = self.c
+        c = self.c ; w = c.edit_widget(p)
 
-        if p and c.edit_widget(p):
+        # g.trace(p and p.headString(),c)
+
+        if p and w:
             self.setUnselectedHeadlineColors(p)
     #@-node:ekr.20081004172422.850:setUnselectedLabelState
     #@+node:ekr.20081004172422.851:setDisabledHeadlineColors
@@ -6104,59 +5992,55 @@ class leoQtTree (leoFrame.leoTree):
 
         c = self.c ; w = c.edit_widget(p)
 
-        if False or (self.trace and self.verbose):
-            g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
-            # import traceback ; traceback.print_stack(limit=6)
+        g.trace(p and p.headString())
 
-        fg = self.headline_text_selected_foreground_color or 'black'
-        bg = self.headline_text_selected_background_color or 'grey80'
-        selfg = self.headline_text_editing_selection_foreground_color
-        selbg = self.headline_text_editing_selection_background_color
+        if w:
+            fg = self.headline_text_selected_foreground_color or 'black'
+            bg = self.headline_text_selected_background_color or 'grey80'
+            selfg = self.headline_text_editing_selection_foreground_color
+            selbg = self.headline_text_editing_selection_background_color
 
-        try:
-            w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg,
-                selectbackground=bg,selectforeground=fg,highlightbackground=bg)
-        except:
-            g.es_exception()
+            try:
+                w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg,
+                    selectbackground=bg,selectforeground=fg,highlightbackground=bg)
+            except:
+                g.es_exception()
     #@-node:ekr.20081004172422.851:setDisabledHeadlineColors
     #@+node:ekr.20081004172422.852:setEditHeadlineColors
     def setEditHeadlineColors (self,p):
 
         c = self.c ; w = c.edit_widget(p)
 
-        if self.trace and self.verbose:
-            if not self.redrawing:
-                g.pr("%10s %d %s" % ("edit",id(2),p.headString()))
+        g.trace(p and p.headString())
 
-        fg    = self.headline_text_editing_foreground_color or 'black'
-        bg    = self.headline_text_editing_background_color or 'white'
-        selfg = self.headline_text_editing_selection_foreground_color or 'white'
-        selbg = self.headline_text_editing_selection_background_color or 'black'
+        if w:
+            fg    = self.headline_text_editing_foreground_color or 'black'
+            bg    = self.headline_text_editing_background_color or 'white'
+            selfg = self.headline_text_editing_selection_foreground_color or 'white'
+            selbg = self.headline_text_editing_selection_background_color or 'black'
 
-        try: # Use system defaults for selection foreground/background
-            w.configure(state="normal",highlightthickness=1,
-            fg=fg,bg=bg,selectforeground=selfg,selectbackground=selbg)
-        except:
-            g.es_exception()
+            try: # Use system defaults for selection foreground/background
+                w.configure(state="normal",highlightthickness=1,
+                fg=fg,bg=bg,selectforeground=selfg,selectbackground=selbg)
+            except Exception:
+                g.es_exception()
     #@-node:ekr.20081004172422.852:setEditHeadlineColors
     #@+node:ekr.20081004172422.853:setUnselectedHeadlineColors
     def setUnselectedHeadlineColors (self,p):
 
         c = self.c ; w = c.edit_widget(p)
 
-        if self.trace and self.verbose:
-            if not self.redrawing:
-                g.pr("%10s %d %s" % ("unselect",id(w),p.headString()))
-                # import traceback ; traceback.print_stack(limit=6)
+        g.trace(p and p.headString())
 
-        fg = self.headline_text_unselected_foreground_color or 'black'
-        bg = self.headline_text_unselected_background_color or 'white'
+        if w:
+            fg = self.headline_text_unselected_foreground_color or 'black'
+            bg = self.headline_text_unselected_background_color or 'white'
 
-        try:
-            w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg,
-                selectbackground=bg,selectforeground=fg,highlightbackground=bg)
-        except:
-            g.es_exception()
+            try:
+                w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg,
+                    selectbackground=bg,selectforeground=fg,highlightbackground=bg)
+            except Exception:
+                g.es_exception()
     #@-node:ekr.20081004172422.853:setUnselectedHeadlineColors
     #@-node:ekr.20081004172422.847:tree.set...LabelState
     #@+node:ekr.20081004172422.854:tree.setHeadline (qtTree)
