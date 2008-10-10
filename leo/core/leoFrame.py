@@ -2678,7 +2678,7 @@ class leoTree:
 
         pass
 
-    def treeSelectHint (self,p):
+    def selectHint (self,p):
 
         '''Called at end of tree.select.'''
 
