@@ -5691,7 +5691,7 @@ class leoQtTree (leoFrame.leoTree):
                 it = parentsDict.get(p.parent().v,w)
                 it = QtGui.QTreeWidgetItem(it)
                 icon = self.getIcon(p)
-                it.setIcon(0,icon)
+                if icon: it.setIcon(0,icon)
                 it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
                 self.itemsDict[id(it)] = p.copy() # Valid.
                 parentsDict[p.v] = it # Just barely valid for drawing.
@@ -5737,7 +5737,8 @@ class leoQtTree (leoFrame.leoTree):
             image = QtGui.QIcon(fullname)
             self.iconimages[name] = image
             return image
-        except:
+
+        except Exception:
             g.es("exception loading:",fullname)
             g.es_exception()
             return None
