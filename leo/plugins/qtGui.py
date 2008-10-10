@@ -5475,162 +5475,53 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081004172422.738:__init__ (qtTree)
     def __init__(self,c,frame):
 
-        # g.trace('**** leoQtTree')
-
         # Init the base class.
         leoFrame.leoTree.__init__(self,frame)
 
+        # Components.
+        self.c = c
+        self.treeWidget = None # Set in initAfterLoad.
+
+        # Status ivars.
         self.dragging = False
         self.generation = 0
-        self.prevPositions = 0
         self.redrawing = False
         self.redrawCount = 0 # Count for debugging.
         self.revertHeadline = None # Previous headline text for abortEditLabel.
         self.selecting = False
-        self.treeWidget = None # Set in initAfterLoad.
 
+        # Drawing ivars.
+        self.iconimages = {} # Image cache set by getIconImage().
         self.vnodeDict = {} # keys are vnodes, values are lists of (p,it)
         self.itemsDict = {} # keys are items, values are positions
 
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
-
-        if 0: # old code
-
-            # Objects associated with this tree.
-            self.canvas = canvas
-
-            #@        << define drawing constants >>
-            #@+node:ekr.20081004172422.739:<< define drawing constants >>
-            self.box_padding = 5 # extra padding between box and icon
-            self.box_width = 9 + self.box_padding
-            self.icon_width = 20
-            self.text_indent = 4 # extra padding between icon and tex
-
-            self.hline_y = 7 # Vertical offset of horizontal line
-            self.root_left = 7 + self.box_width
-            self.root_top = 2
-
-            self.default_line_height = 17 + 2 # default if can't set line_height from font.
-            self.line_height = self.default_line_height
-            #@-node:ekr.20081004172422.739:<< define drawing constants >>
-            #@nl
-            #@        << old ivars >>
-            #@+node:ekr.20081004172422.740:<< old ivars >>
-            # Miscellaneous info.
-            self.iconimages = {} # Image cache set by getIconImage().
-            self.active = False # True if present headline is active
-            self._editPosition = None # Returned by leoTree.editPosition()
-            self.lineyoffset = 0 # y offset for this headline.
-            self.lastClickFrameId = None # id of last entered clickBox.
-            self.lastColoredText = None # last colored text widget.
-
-            # Set self.font and self.fontName.
-            self.setFontFromConfig()
-
-            # Drag and drop
-            self.drag_p = None
-            self.controlDrag = False # True: control was down when drag started.
-
-            # Keep track of popup menu so we can handle behavior better on Linux Context menu
-            self.popupMenu = None
-
-            # Incremental redraws:
-            self.allocateOnlyVisibleNodes = False # True: enable incremental redraws.
-            self.prevMoveToFrac = 0.0
-            self.visibleArea = None
-            self.expandedVisibleArea = None
-
-            if self.allocateOnlyVisibleNodes:
-                c.bind(self.frame.bar1,"<Button-1-ButtonRelease>", self.redraw_now)
-            #@-node:ekr.20081004172422.740:<< old ivars >>
-            #@nl
-
-            # New in 4.4: We should stay in the tree to use per-pane bindings.
-            self.textBindings = [] # Set in setBindings.
-            self.textNumber = 0 # To make names unique.
-            self.updateCount = 0 # Drawing is enabled only if self.updateCount <= 0
-            self.verbose = True
-
-            self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
-
-            # Keys are id's, values are positions...
-            self.ids = {}
-            self.iconIds = {}
-
-            # Lists of visible (in-use) widgets...
-            self.visibleBoxes = []
-            self.visibleClickBoxes = []
-            self.visibleIcons = []
-            self.visibleLines = []
-            self.visibleText  = {}
-                # Pre 4.4b2: Keys are vnodes, values are Qt.Text widgets.
-                #     4.4b2: Keys are p.key(), values are Qt.Text widgets.
-            self.visibleUserIcons = []
-
-            # Dictionaries of free, hidden widgets...
-            # Keys are id's, values are widgets.
-            self.freeBoxes = {}
-            self.freeClickBoxes = {}
-            self.freeIcons = {}
-            self.freeLines = {}
-            self.freeText = {} # New in 4.4b2: a list of free Qt.Text widgets
-
-            self.freeUserIcons = {}
-
-            self._block_canvas_menu = False
-    #@+node:ekr.20081009055104.7:setConfigIvars
-    def setConfigIvars (self):
-
-        c = self.c
-        self.allow_clone_drags          = c.config.getBool('allow_clone_drags')
-        self.center_selected_tree_node  = c.config.getBool('center_selected_tree_node')
-        self.enable_drag_messages       = c.config.getBool("enable_drag_messages")
-        self.expanded_click_area        = c.config.getBool('expanded_click_area')
-        self.gc_before_redraw           = c.config.getBool('gc_before_redraw')
-
-        self.headline_text_editing_foreground_color = c.config.getColor(
-            'headline_text_editing_foreground_color')
-        self.headline_text_editing_background_color = c.config.getColor(
-            'headline_text_editing_background_color')
-        self.headline_text_editing_selection_foreground_color = c.config.getColor(
-            'headline_text_editing_selection_foreground_color')
-        self.headline_text_editing_selection_background_color = c.config.getColor(
-            'headline_text_editing_selection_background_color')
-        self.headline_text_selected_foreground_color = c.config.getColor(
-            "headline_text_selected_foreground_color")
-        self.headline_text_selected_background_color = c.config.getColor(
-            "headline_text_selected_background_color")
-        self.headline_text_editing_selection_foreground_color = c.config.getColor(
-            "headline_text_editing_selection_foreground_color")
-        self.headline_text_editing_selection_background_color = c.config.getColor(
-            "headline_text_editing_selection_background_color")
-        self.headline_text_unselected_foreground_color = c.config.getColor(
-            'headline_text_unselected_foreground_color')
-        self.headline_text_unselected_background_color = c.config.getColor(
-            'headline_text_unselected_background_color')
-
-        self.idle_redraw = c.config.getBool('idle_redraw')
-        self.initialClickExpandsOrContractsNode = c.config.getBool(
-            'initialClickExpandsOrContractsNode')
-        self.look_for_control_drag_on_mouse_down = c.config.getBool(
-            'look_for_control_drag_on_mouse_down')
-        self.select_all_text_when_editing_headlines = c.config.getBool(
-            'select_all_text_when_editing_headlines')
-
-        self.stayInTree     = c.config.getBool('stayInTreeAfterSelect')
-        self.trace          = c.config.getBool('trace_tree')
-        self.trace_alloc    = c.config.getBool('trace_tree_alloc')
-        self.trace_chapters = c.config.getBool('trace_chapters')
-        self.trace_edit     = c.config.getBool('trace_tree_edit')
-        self.trace_gc       = c.config.getBool('trace_tree_gc')
-        self.trace_redraw   = c.config.getBool('trace_tree_redraw')
-        self.trace_select   = c.config.getBool('trace_select')
-        self.trace_stats    = c.config.getBool('show_tree_stats')
-        self.use_chapters   = c.config.getBool('use_chapters')
-    #@-node:ekr.20081009055104.7:setConfigIvars
     #@-node:ekr.20081004172422.738:__init__ (qtTree)
-    #@+node:ekr.20081004172422.742:qtTtree.setBindings & helper
+    #@+node:ekr.20081005065934.10:qtTree.initAfterLoad
+    def initAfterLoad (self):
+
+        c = self.c ; frame = c.frame
+
+        self.treeWidget = frame.top.treeWidget
+        # g.trace('****',self.treeWidget)
+
+        if not leoQtTree.callbacksInjected:
+            leoQtTree.callbacksInjected = True
+            self.injectCallbacks() # A base class method.
+
+        c.frame.top.connect(self.treeWidget,
+            QtCore.SIGNAL("itemSelectionChanged()"), self.onTreeSelect)
+
+        # Temp.
+        path = g.os_path_join(g.app.loadDir,"..","Icons") 
+        self.icon_std   = QtGui.QIcon(g.os_path_join(path,'box00.GIF'))
+        self.icon_dirty = QtGui.QIcon(g.os_path_join(path,'/box01.GIF'))
+
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+        self.treeWidget.installEventFilter(self.ev_filter)
+    #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
+    #@+node:ekr.20081004172422.742:qtTree.setBindings & helper
     def setBindings (self):
 
         '''Create master bindings for all headlines.'''
@@ -5674,7 +5565,7 @@ class leoQtTree (leoFrame.leoTree):
 
         self.textBindings = w.bindtags()
     #@-node:ekr.20081004172422.743:qtTree.setBindingsHelper
-    #@-node:ekr.20081004172422.742:qtTtree.setBindings & helper
+    #@-node:ekr.20081004172422.742:qtTree.setBindings & helper
     #@+node:ekr.20081004172422.744:qtTree.setCanvasBindings
     def setCanvasBindings (self,canvas):
 
@@ -5724,31 +5615,58 @@ class leoQtTree (leoFrame.leoTree):
         #@-node:ekr.20081004172422.746:<< create baloon bindings for tagged items on the canvas >>
         #@nl
     #@-node:ekr.20081004172422.744:qtTree.setCanvasBindings
-    #@+node:ekr.20081005065934.10:qtTree.initAfterLoad
-    def initAfterLoad (self):
+    #@+node:ekr.20081009055104.7:qtTree.setConfigIvars
+    def setConfigIvars (self):
 
-        c = self.c ; frame = c.frame
+        c = self.c
+        self.allow_clone_drags          = c.config.getBool('allow_clone_drags')
+        self.center_selected_tree_node  = c.config.getBool('center_selected_tree_node')
+        self.enable_drag_messages       = c.config.getBool("enable_drag_messages")
+        self.expanded_click_area        = c.config.getBool('expanded_click_area')
+        self.gc_before_redraw           = c.config.getBool('gc_before_redraw')
 
-        self.treeWidget = frame.top.treeWidget
-        # g.trace('****',self.treeWidget)
+        self.headline_text_editing_foreground_color = c.config.getColor(
+            'headline_text_editing_foreground_color')
+        self.headline_text_editing_background_color = c.config.getColor(
+            'headline_text_editing_background_color')
+        self.headline_text_editing_selection_foreground_color = c.config.getColor(
+            'headline_text_editing_selection_foreground_color')
+        self.headline_text_editing_selection_background_color = c.config.getColor(
+            'headline_text_editing_selection_background_color')
+        self.headline_text_selected_foreground_color = c.config.getColor(
+            "headline_text_selected_foreground_color")
+        self.headline_text_selected_background_color = c.config.getColor(
+            "headline_text_selected_background_color")
+        self.headline_text_editing_selection_foreground_color = c.config.getColor(
+            "headline_text_editing_selection_foreground_color")
+        self.headline_text_editing_selection_background_color = c.config.getColor(
+            "headline_text_editing_selection_background_color")
+        self.headline_text_unselected_foreground_color = c.config.getColor(
+            'headline_text_unselected_foreground_color')
+        self.headline_text_unselected_background_color = c.config.getColor(
+            'headline_text_unselected_background_color')
 
-        if not leoQtTree.callbacksInjected:
-            leoQtTree.callbacksInjected = True
-            self.injectCallbacks() # A base class method.
+        self.idle_redraw = c.config.getBool('idle_redraw')
+        self.initialClickExpandsOrContractsNode = c.config.getBool(
+            'initialClickExpandsOrContractsNode')
+        self.look_for_control_drag_on_mouse_down = c.config.getBool(
+            'look_for_control_drag_on_mouse_down')
+        self.select_all_text_when_editing_headlines = c.config.getBool(
+            'select_all_text_when_editing_headlines')
 
-        c.frame.top.connect(self.treeWidget,
-            QtCore.SIGNAL("itemSelectionChanged()"), self.onTreeSelect)
-
-        # Temp.
-        path = g.os_path_join(g.app.loadDir,"..","Icons") 
-        self.icon_std   = QtGui.QIcon(g.os_path_join(path,'box00.GIF'))
-        self.icon_dirty = QtGui.QIcon(g.os_path_join(path,'/box01.GIF'))
-
-        self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
-        self.treeWidget.installEventFilter(self.ev_filter)
-    #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
+        self.stayInTree     = c.config.getBool('stayInTreeAfterSelect')
+        self.trace          = c.config.getBool('trace_tree')
+        self.trace_alloc    = c.config.getBool('trace_tree_alloc')
+        self.trace_chapters = c.config.getBool('trace_chapters')
+        self.trace_edit     = c.config.getBool('trace_tree_edit')
+        self.trace_gc       = c.config.getBool('trace_tree_gc')
+        self.trace_redraw   = c.config.getBool('trace_tree_redraw')
+        self.trace_select   = c.config.getBool('trace_select')
+        self.trace_stats    = c.config.getBool('show_tree_stats')
+        self.use_chapters   = c.config.getBool('use_chapters')
+    #@-node:ekr.20081009055104.7:qtTree.setConfigIvars
     #@-node:ekr.20081004172422.737: Birth... (qt Tree)
-    #@+node:ekr.20081004172422.767:tree.redraw_now
+    #@+node:ekr.20081004172422.767:tree.redraw_now & helpers
     def redraw_now (self,scroll=False,forceDraw=False):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
@@ -5772,7 +5690,8 @@ class leoQtTree (leoFrame.leoTree):
             for p in c.allNodes_iter():
                 it = parentsDict.get(p.parent().v,w)
                 it = QtGui.QTreeWidgetItem(it)
-                it.setIcon(0, self.icon_std)
+                icon = self.getIcon(p)
+                it.setIcon(0,icon)
                 it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
                 self.itemsDict[id(it)] = p.copy() # Valid.
                 parentsDict[p.v] = it # Just barely valid for drawing.
@@ -5794,7 +5713,36 @@ class leoQtTree (leoFrame.leoTree):
             self.redrawing = False
 
     redraw = redraw_now # Compatibility
-    #@-node:ekr.20081004172422.767:tree.redraw_now
+    #@+node:ekr.20081010070648.14:tree.getIcon
+    def getIcon(self,p):
+
+        '''Return the proper icon for position p.'''
+
+        p.v.iconVal = val = p.v.computeIcon()
+
+        imagename = "box%02d.GIF" % val
+        image = self.getIconImage(imagename)
+
+        return image
+    #@-node:ekr.20081010070648.14:tree.getIcon
+    #@+node:ekr.20081010070648.12:tree.getIconImage
+    def getIconImage (self,name):
+
+        # Return the image from the cache if possible.
+        if name in self.iconimages:
+            return self.iconimages.get(name)
+
+        try:
+            fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
+            image = QtGui.QIcon(fullname)
+            self.iconimages[name] = image
+            return image
+        except:
+            g.es("exception loading:",fullname)
+            g.es_exception()
+            return None
+    #@-node:ekr.20081010070648.12:tree.getIconImage
+    #@-node:ekr.20081004172422.767:tree.redraw_now & helpers
     #@+node:ekr.20081009055104.8:tree.onTreeSelect & helpers
     def onTreeSelect(self):
 
@@ -6043,6 +5991,7 @@ class leoQtTree (leoFrame.leoTree):
                 g.es_exception()
     #@-node:ekr.20081004172422.853:setUnselectedHeadlineColors
     #@-node:ekr.20081004172422.847:tree.set...LabelState
+    #@-node:ekr.20081004172422.844:Selecting & editing... (qtTree)
     #@+node:ekr.20081004172422.854:tree.setHeadline (qtTree)
     def setHeadline (self,p,s):
 
@@ -6062,7 +6011,6 @@ class leoQtTree (leoFrame.leoTree):
         else:
             g.trace('-'*20,'oops')
     #@-node:ekr.20081004172422.854:tree.setHeadline (qtTree)
-    #@-node:ekr.20081004172422.844:Selecting & editing... (qtTree)
     #@+node:ekr.20081004172422.795:Event handlers (qtTree)
     #@+node:ekr.20081004172422.796:Helpers
     #@+node:ekr.20081004172422.797:checkWidgetList
