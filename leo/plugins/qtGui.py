@@ -827,15 +827,16 @@ class leoQtEventFilter(QtCore.QObject):
 
     def eventFilter(self, obj, event):
 
+        c = self.c ; tag = self.tag ; trace = False
         traceTypes = (
             # (QtCore.QEvent.KeyPress,'key-press'),
             (QtCore.QEvent.KeyRelease,'key-release'),
         )
         eventType = event.type()
         for val,kind in traceTypes:
-            if eventType == val:
-                p = self.c.currentPosition()
-                g.trace(kind,p and p.headString() or '<no current p>')
+            if trace and eventType == val:
+                p = c.currentPosition()
+                g.trace(tag,kind,p and p.headString() or '<no current p>')
 
         if event.type() in (QtCore.QEvent.KeyRelease,):
             return self.key_pressed(obj, event)
@@ -898,21 +899,14 @@ class leoQtEventFilter(QtCore.QObject):
 
         if trace and dump and not self.dumped:
             self.dumped = True
-            # g.trace(g.listToString(self.bindings.keys(),sort=True))
-            # g.trace(c.k.masterBindingsDict)
-            # g.trace(len(self.bindings.keys()))
             g.trace(len(k.masterGuiBindingsDict.keys()))
 
         tkKey = self.toTkKey(event)
-        # cmd = self.bindings.get(tkKey)
-        # cmd(event)
-
-        # aList is the list of leoQtX widgets for which the key is bound.
         aList = k.masterGuiBindingsDict.get(tkKey)
+            # A list of leoQtX widgets for which the key is bound.
 
         if aList:
-            if trace: g.trace(self.tag,'bound',tkKey,w) # ,cmd.__name__,)
-            if trace and verbose: g.trace(aList)
+            if trace: g.trace(self.tag,'bound',tkKey)
             # Create a standard Leo event.
             event = leoKeyEvent(event,c,w,tkKey)
             k.masterKeyHandler(event,stroke=tkKey)
@@ -5636,6 +5630,9 @@ class leoQtTree (leoFrame.leoTree):
         self.selecting = False
         self.treeWidget = None # Set in initAfterLoad.
 
+        self.vnodeDict = {} # keys are vnodes, values are lists of (p,it)
+        self.itemsDict = {} # keys are items, values are positions
+
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
 
@@ -5897,7 +5894,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-        c = self.c ; w = self.treeWidget
+        c = self.c ; w = self.treeWidget ; trace = False
         if not w: return
         if self.redrawing:
             return g.trace('already drawing')
@@ -5906,17 +5903,23 @@ class leoQtTree (leoFrame.leoTree):
         try:
             self.redrawCount += 1
             current = c.currentPosition()
-            g.trace(self.redrawCount,current)
-            self.items = {}
-            self.treeitems = {}
+            if trace: g.trace(self.redrawCount,current)
+            self.vnodeDict = {} # keys are vnodes, values are (p,it)
+            self.itemsDict = {} # keys are items, values are positions
+            parentsDict = {}
             w.clear()
             for p in c.allNodes_iter():
-                parent = self.items.get(p.parent().v,w)
-                it = QtGui.QTreeWidgetItem(parent)
+                it = parentsDict.get(p.parent().v,w)
+                it = QtGui.QTreeWidgetItem(it)
                 it.setIcon(0, self.icon_std)
                 it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
-                self.items[p.v] = it
-                self.treeitems[id(it)] = p.copy()
+                self.itemsDict[id(it)] = p.copy() # Valid.
+                parentsDict[p.v] = it # Just barely valid for drawing.
+                # More accurate info, for use by selectHint.
+                aList = self.vnodeDict.get(p.v,[])
+                data = p.copy(),it
+                aList.append(data)
+                self.vnodeDict[p.v] = aList
                 it.setText(0, p.headString())
                 if p.hasChildren() and p.isExpanded():
                     w.expandItem(it)
@@ -5924,7 +5927,7 @@ class leoQtTree (leoFrame.leoTree):
                     w.collapseItem(it)
                 if p == current:
                     w.setCurrentItem(it)
-                    g.trace('found current',p.headString(),it)
+                    if trace: g.trace('found current',p.headString(),it)
         finally:
             self.redrawing = False
 
@@ -5942,19 +5945,19 @@ class leoQtTree (leoFrame.leoTree):
         try:
             it = w.currentItem()
             if trace and verbose: g.trace('it 1',it)
-            p = self.treeitems.get(id(it))
+            p = self.itemsDict.get(id(it))
             if p:
                 if trace: g.trace(p and p.headString())
                 c.frame.tree.select(p) # The crucial hook.
             else:
-                self.redraw_now() # Regen the tree.
-                # Try again
-                it = w.currentItem()
-                if trace and verbose: g.trace('it 2',it)
-                p = self.treeitems.get(id(it))
-                if p:
-                    c.frame.tree.select(p) # The crucial hook.
-                else:
+                if 0:
+                    self.redraw_now() # Regen the tree.
+                    # Try again
+                    it = w.currentItem()
+                    if trace and verbose: g.trace('it 2',it)
+                    p = self.itemsDict.get(id(it))
+                    if p:
+                        c.frame.tree.select(p) # The crucial hook.
                     g.trace('no p for item: %s' % it)
         finally:
             self.selecting = False
@@ -6021,6 +6024,22 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081004172422.761:setLineHeight
     #@-node:ekr.20081004172422.758:Config & Measuring...
     #@+node:ekr.20081004172422.844:Selecting & editing... (qtTree)
+    #@+node:ekr.20081009055104.11:tree.selectHint
+    def selectHint (self,p):
+
+        # Not proper
+        w = self.treeWidget ; trace = False
+        aList = self.vnodeDict.get(p.v,[])
+        h = p.headString()
+
+        for p2,it in aList:
+            if p == p2:
+                if trace: g.trace('found it: %s for h: %s' % (it,h))
+                w.setCurrentItem(it)
+                break
+        else:
+             g.trace('not found %s in %s' % (aList,h))
+    #@-node:ekr.20081009055104.11:tree.selectHint
     #@+node:ekr.20081004172422.845:dimEditLabel, undimEditLabel
     # Convenience methods so the caller doesn't have to know the present edit node.
 
@@ -6269,6 +6288,8 @@ class leoQtTree (leoFrame.leoTree):
     def findEditWidget (self,p):
 
         """Return the Qt.Text item corresponding to p."""
+
+        # g.trace(p)
 
         return None
 
