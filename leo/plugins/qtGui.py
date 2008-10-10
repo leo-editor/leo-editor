@@ -2765,9 +2765,6 @@ class leoQtGui(leoGui.leoGui):
         self.plainTextWidget = leoQtTextWidget
         self.loadIcons()
 
-        win32clipboard = None
-
-        ### self.qtClipboard = qt.Clipboard()
     #@-node:ekr.20081004102201.633: qtGui.__init__
     #@+node:ekr.20081004102201.634:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
@@ -3054,48 +3051,20 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081004102201.649:replaceClipboardWith
     def replaceClipboardWith (self,s):
 
-        # g.app.gui.win32clipboard is always None.
-        wcb = g.app.gui.win32clipboard
+        cb = QtGui.QApplication.clipboard()
 
-        if wcb:
-            try:
-                wcb.OpenClipboard(0)
-                wcb.EmptyClipboard()
-                wcb.SetClipboardText(s)
-                wcb.CloseClipboard()
-            except:
-                g.es_exception()
-        else:
-            self.root.clipboard_clear()
-            self.root.clipboard_append(s)
+        if cb:
+            cb.clear()
+            cb.setText(s)
     #@-node:ekr.20081004102201.649:replaceClipboardWith
     #@+node:ekr.20081004102201.650:getTextFromClipboard
     def getTextFromClipboard (self):
 
-        return None ###
+        cb = QtGui.QApplication.clipboard()
 
-        # g.app.gui.win32clipboard is always None.
-        wcb = g.app.gui.win32clipboard
+        s = cb and cb.text() or ''
 
-        if wcb:
-            try:
-                wcb.OpenClipboard(0)
-                data = wcb.GetClipboardData()
-                wcb.CloseClipboard()
-                # g.trace(data)
-                return data
-            except TypeError:
-                # g.trace(None)
-                return None
-            except:
-                g.es_exception()
-                return None
-        else:
-            try:
-                s = self.root.selection_get(selection="CLIPBOARD")
-                return s
-            except:
-                return None
+        return g.toUnicode(s,g.app.tkEncoding)
     #@-node:ekr.20081004102201.650:getTextFromClipboard
     #@-node:ekr.20081004102201.648:Clipboard (qtGui)
     #@+node:ekr.20081004102201.651:color (to do)
@@ -5894,7 +5863,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-        c = self.c ; w = self.treeWidget ; trace = False
+        c = self.c ; w = self.treeWidget ; trace = True
         if not w: return
         if self.redrawing:
             return g.trace('already drawing')
