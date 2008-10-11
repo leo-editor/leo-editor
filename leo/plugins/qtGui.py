@@ -3114,13 +3114,18 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081004102201.661:qtGui.getFontFromParams
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
 
-        try:
-            size = int(size)
-        except Exception:
-            size = 0
+        try: size = int(size)
+        except Exception: size = 0
         if size < 1: size = defaultSize
-        if weight == 'normal': weight_val = QtGui.QFont.Normal
-        else: weight_val = QtGui.QFont.Bold
+
+        d = {
+            'black':QtGui.QFont.Black,
+            'bold':QtGui.QFont.Bold,
+            'demibold':QtGui.QFont.DemiBold,
+            'light':QtGui.QFont.Light,
+            'normal':QtGui.QFont.Normal,
+        }
+        weight_val = d.get(weight.lower(),QtGui.QFont.Normal)
         italic = slant == 'italic'
 
         try:
