@@ -120,6 +120,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         self.buttons = self.addToolBar("Buttons")
         self.buttons.addAction(self.actionSave)
+        g.es("log test")
     #@-node:ekr.20081004172422.884: ctor (Window)
     #@+node:ekr.20081010070648.8:minibuffer_run
     def minibuffer_run(self):
@@ -653,6 +654,11 @@ class leoQtBody (leoFrame.leoBody):
             # row_j,col_j = g.convertPythonIndexToRowCol(s,j)
             # w.setSelection(row_i,col_i,row_j,col_j)
     #@-node:ekr.20081007015817.96:setSelectionRange
+    #@+node:ville.20081011134505.6:hasSelection
+    def hasSelection(self):
+        return self.widget.hasSelectedText()
+    #@nonl
+    #@-node:ville.20081011134505.6:hasSelection
     #@-node:ekr.20081007015817.76:Insert point and selection
     #@+node:ekr.20081007015817.98:Scrolling & hit test
     #@+node:ekr.20081007015817.87:getYScrollPosition
@@ -2662,9 +2668,10 @@ class leoQtFrame (leoFrame.leoFrame):
     #@-node:ekr.20081004172422.620:Delayed Focus (qtFrame)
     #@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
     def bringToFront (self):
+        pass
         # g.trace(g.callers())
-        self.top.deiconify()
-        self.top.lift()
+        #self.top.deiconify()
+        #self.top.lift()
 
     def getFocus(self):
         """Returns the widget that has focus, or body if None."""
@@ -2966,10 +2973,10 @@ class leoQtGui(leoGui.leoGui):
 
         """Create and run an Qt open file dialog ."""
 
-        fd = QFileDialog(self)
+        fd = QtGui.QFileDialog()
         fname = fd.getOpenFileName()
         g.trace(fname)
-        return fname
+        return str(fname)
 
         # self.load_file(fname)
 
@@ -2985,13 +2992,17 @@ class leoQtGui(leoGui.leoGui):
 
         """Create and run an Qt save file dialog ."""
 
+        fd = QtGui.QFileDialog()
+        fname = fd.getSaveFileName()
+        g.trace(fname)
+        return str(fname)
+
         # return self.runFileDialog(
             # title=title,
             # filetypes=filetypes,
             # action='save',
             # initialfile=initialfile
         # )
-    #@nonl
     #@-node:ekr.20081004102201.645:runSaveFileDialog
     #@-node:ekr.20081004102201.642:qtGui file dialogs
     #@+node:ekr.20081004102201.646:qtGui panels
@@ -3700,6 +3711,7 @@ class leoQtLog (leoFrame.leoLog):
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
 
+
         c = self.c
         if g.app.quitting or not c or not c.exists:
             return
@@ -3711,8 +3723,14 @@ class leoQtLog (leoFrame.leoLog):
         w = self.logCtrl
         if w:
             # To do: add color tags.
-            contents = w.toHtml()
-            w.setHtml(contents + s)
+            #contents = w.toHtml()
+            if color:
+                s = '<font color="%s">%s</font>' % (color, s)
+            w.append(s)
+            w.moveCursor(QtGui.QTextCursor.End)
+
+            #w.ensureCursorVisible()
+            #w.setHtml(contents + s)
         else:
             # put s to logWaiting and print s
             g.app.logWaiting.append((s,color),)
@@ -3724,10 +3742,13 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081004172422.642:put
     #@+node:ekr.20081004172422.645:putnl
     def putnl (self,tabName='Log'):
-
+        # nothing to do here
+        return
+        """
         if g.app.quitting:
             return
 
+        self.
         if tabName:
             self.selectTab(tabName)
 
@@ -3739,6 +3760,8 @@ class leoQtLog (leoFrame.leoLog):
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
+        """
+    #@nonl
     #@-node:ekr.20081004172422.645:putnl
     #@-node:ekr.20081004172422.641:put & putnl (qtLog)
     #@+node:ekr.20081004172422.646:Tab (QtLog)
@@ -3897,7 +3920,7 @@ class leoQtLog (leoFrame.leoLog):
         c = self.c ; w = self.tabWidget
 
         if createText:
-            contents = QtGui.QTextEdit()
+            contents = QtGui.QTextBrowser()
             # Install event filter.
             w2 = c.frame.top
             # contents.installEventFilter(self.ev_filter)
@@ -6303,7 +6326,12 @@ class leoQtTree (leoFrame.leoTree):
 
         """Start editing p's headline."""
 
-        # c = self.c
+        c = self.c
+        w = self.treeWidget
+        it = self.vnodeDict[p.v][0][1]
+
+        w.editItem(it)
+        print "edit",p
         # trace = (False or self.trace_edit)
 
         # if p and p != self.editPosition():
