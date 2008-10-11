@@ -6399,6 +6399,38 @@ class qtSearchWidget:
         self.text = None
 #@nonl
 #@-node:ekr.20081007015817.34:class qtSearchWidget
+#@+node:ville.20081011134505.13:Non-essential
+#@+node:ville.20081011134505.11:class LeoQuickSearchWidget
+import qt_quicksearch
+
+def install_qt_quicksearch_tab(c):
+    tabw = c.frame.top.tabWidget
+    wdg = LeoQuickSearchWidget(c,tabw)
+    tabw.addTab(wdg, "QuickSearch")
+
+g.ins = install_qt_quicksearch_tab
+
+class LeoQuickSearchWidget(QtGui.QWidget, qt_quicksearch.Ui_LeoQuickSearchWidget):
+    """ Real-time search widget """
+    #@    @+others
+    #@+node:ville.20081011134505.12:methods
+    import qt_quicksearch
+    def __init__(self, c, parent = None):
+        QtGui.QWidget.__init__(self, parent)
+        self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
+        self.ui.setupUi(self)
+
+    def insstall(self, c):
+        """ Install to running leo session """
+
+
+
+
+
+    #@-node:ville.20081011134505.12:methods
+    #@-others
+#@-node:ville.20081011134505.11:class LeoQuickSearchWidget
+#@-node:ville.20081011134505.13:Non-essential
 #@-others
 #@-node:ekr.20081004102201.619:@thin qtGui.py
 #@-leo

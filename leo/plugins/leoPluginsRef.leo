@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="64" left="481" height="847" width="696"/>
+	<global_window_position top="224" left="757" height="760" width="696"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="2,2,17,0"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -56,12 +56,12 @@
 </v>
 </v>
 </v>
-<v t="ekr.20040722135402.1"><vh>Body pane</vh>
+<v t="ekr.20040722135402.1" a="E"><vh>Body pane</vh>
 <v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 <v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
-<v t="ekr.20080619090226.4"><vh>rClick plugin</vh>
-<v t="bobjack.20080321133958.6"><vh>@thin rClick.py</vh></v>
+<v t="ekr.20080619090226.4" a="E"><vh>rClick plugin</vh>
+<v t="bobjack.20080321133958.6" a="E"><vh>@thin rClick.py</vh></v>
 <v t="bobjack.20080614200920.7"><vh>@thin rClickBasePluginClasses.py</vh></v>
 </v>
 <v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
@@ -316,11 +316,11 @@
 <v t="ekr.20070116074730"><vh>Gui plugins</vh>
 <v t="ekr.20061207074949"><vh>@thin cursesGui.py</vh></v>
 <v t="ekr.20070215164948"><vh>@thin ironPythonGui.py</vh></v>
-<v t="ekr.20081006073635.1" a="E"><vh>qt gui stuff</vh>
+<v t="ekr.20081006073635.1"><vh>qt gui stuff</vh>
 <v t="ekr.20081006073123.6"><vh>@auto qt_main.ui</vh></v>
 <v t="ekr.20081006072952.1"><vh>@auto qt_main.py</vh></v>
-<v t="ekr.20081004102201.619"
-expanded="ekr.20081004102201.648,ekr.20081004102201.652,ekr.20081004102201.657,ekr.20081004172422.524,ekr.20081004172422.528,ekr.20081004172422.770,"><vh>@thin qtGui.py</vh></v>
+<v t="ekr.20081004102201.619" a="E"
+expanded="ekr.20081004172422.512,ekr.20081007015817.57,ekr.20081007015817.60,ekr.20081004172422.524,ekr.20081004172422.528,ekr.20081004102201.632,ekr.20081004102201.652,ekr.20081004102201.657,ekr.20081004172422.622,ekr.20081004172422.623,ekr.20081004172422.844,ville.20081011134505.13,ville.20081011134505.11,"><vh>@thin qtGui.py</vh></v>
 </v>
 <v t="ekr.20081004102201.679"><vh>@thin swing_gui.py</vh></v>
 </v>
@@ -1025,11 +1025,11 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 </v>
 </v>
-<v t="ekr.20081006073635.1"><vh>qt gui stuff</vh>
+<v t="ekr.20081006073635.1" a="E"><vh>qt gui stuff</vh>
 <v t="ekr.20081006073123.6"><vh>@auto qt_main.ui</vh></v>
 <v t="ekr.20081006072952.1"><vh>@auto qt_main.py</vh></v>
-<v t="ekr.20081004102201.619"
-expanded="ekr.20081004102201.648,ekr.20081004102201.652,ekr.20081004102201.657,ekr.20081004172422.524,ekr.20081004172422.528,ekr.20081004172422.770,"><vh>@thin qtGui.py</vh></v>
+<v t="ekr.20081004102201.619" a="E"
+expanded="ekr.20081004172422.512,ekr.20081007015817.57,ekr.20081007015817.60,ekr.20081004172422.524,ekr.20081004172422.528,ekr.20081004102201.632,ekr.20081004102201.652,ekr.20081004102201.657,ekr.20081004172422.622,ekr.20081004172422.623,ekr.20081004172422.844,ville.20081011134505.13,ville.20081011134505.11,"><vh>@thin qtGui.py</vh></v>
 </v>
 </vnodes>
 <tnodes>
