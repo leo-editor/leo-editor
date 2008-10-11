@@ -6423,6 +6423,10 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         self.connect(self.ui.lineEdit,
                     QtCore.SIGNAL("textChanged(const QString&)"),
                       self.textChanged)
+        self.connect(self.ui.tableWidget,
+                    QtCore.SIGNAL("cellClicked(int, int)"),
+                      self.cellClicked)
+
         self.c = c                  
         self.ps = {} # item=> pos
 
@@ -6432,12 +6436,20 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         self.ui.tableWidget.clear()
         for p in self.match_headlines(str(self.ui.lineEdit.text())):
             it = QtGui.QTableWidgetItem(p.headString())
-            self.ps[it] = p.copy()
+            self.ps[idx] = p.copy()
             self.ui.tableWidget.setItem(idx, 0, it)
             idx+=1
+
         self.ui.tableWidget.setRowCount(idx)
 
         print "Matches",idx
+
+    def cellClicked (self, row, column ) :
+        p = self.ps[row]
+        print "Go to pos",p
+        self.c.setCurrentPosition(p)
+
+
     def match_headlines(self, pat):
 
         c = self.c
