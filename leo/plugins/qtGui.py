@@ -3633,6 +3633,7 @@ class leoQtLog (leoFrame.leoLog):
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
 
+
         c = self.c
         if g.app.quitting or not c or not c.exists:
             return
@@ -3645,6 +3646,8 @@ class leoQtLog (leoFrame.leoLog):
         if w:
             # To do: add color tags.
             contents = w.toHtml()
+            if color:
+                s = '<font color="%s">%s</font>' % (color, s)
             w.setHtml(contents + s)
         else:
             # put s to logWaiting and print s
