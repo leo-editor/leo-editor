@@ -602,6 +602,8 @@ class vnode (baseVnode):
     #@+node:ekr.20031218072017.3370:v.isExpanded
     def isExpanded (self):
 
+        # g.trace( ( self.statusBits & self.expandedBit ) != 0, g.callers())
+
         return ( self.statusBits & self.expandedBit ) != 0
     #@-node:ekr.20031218072017.3370:v.isExpanded
     #@+node:ekr.20031218072017.3371:v.isMarked
@@ -681,19 +683,19 @@ class vnode (baseVnode):
     #@+node:ekr.20031218072017.3395:v.contract & expand & initExpandedBit
     def contract(self):
 
-        self.statusBits &= ~ self.expandedBit
+        # g.trace(self,g.callers(4))
 
-        # g.trace(self.statusBits)
+        self.statusBits &= ~ self.expandedBit
 
     def expand(self):
 
+        # g.trace(self,g.callers(4))
+
         self.statusBits |= self.expandedBit
 
-        # g.trace(self,g.callers())
-
-        # g.trace(self.statusBits)
-
     def initExpandedBit (self):
+
+        # g.trace(self.t._headString)
 
         self.statusBits |= self.expandedBit
     #@-node:ekr.20031218072017.3395:v.contract & expand & initExpandedBit
@@ -1388,7 +1390,7 @@ class basePosition (object):
     def isVisible (self,c):
 
         p = self
-        trace = False
+        trace = True
         limit,limitIsVisible = c.visLimit()
         limit_v = limit and limit.v or None
         if p.v == limit_v:
@@ -1410,7 +1412,7 @@ class basePosition (object):
                 else: # Ignore the expansion state of @chapter nodes.
                     return True
             if not v.isExpanded():
-                if trace: g.trace('*** non-limit parent is not expanded',v)
+                if trace: g.trace('*** non-limit parent is not expanded:',v.t._headString,p.headString())
                 return False
             n -= 1
             assert progress > n

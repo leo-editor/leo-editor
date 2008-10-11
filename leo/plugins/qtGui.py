@@ -182,12 +182,6 @@ class leoQtBody (leoFrame.leoBody):
         wrap = c.config.getBool('body_pane_wraps')
         wrap = g.choose(wrap,"word","none")
         self.wrapState = wrap
-        # To do: make this configurable the leo way
-        lexer = Qsci.QsciLexerPython(self.widget)
-        self.widget.setLexer(lexer)
-        self.widget.setIndentationWidth(4)
-        self.widget.setIndentationsUseTabs(False)
-        self.widget.setAutoIndent(True)
         # parentFrame.configure(bg='LightSteelBlue1')
 
         # For multiple body editors.
@@ -199,11 +193,16 @@ class leoQtBody (leoFrame.leoBody):
         # Finish initing.
         self.colorizer = leoColor.nullColorizer(c)
         self.injectIvars()
+        self.setBodyConfig()
         self.setFontFromConfig()
         self.setColorFromConfig()
 
+        # Hook up qt events.
         self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
         self.widget.installEventFilter(self.ev_filter)
+
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("textChanged()"),self.onTextChanged)
     #@-node:ekr.20081004172422.504: ctor (qtBody)
     #@+node:ekr.20081004172422.505:createBindings (qtBody)
     def createBindings (self,w=None):
@@ -285,6 +284,16 @@ class leoQtBody (leoFrame.leoBody):
 
         return w
     #@-node:ekr.20081007015817.77:injectIvars
+    #@+node:ekr.20081011035036.10:setBodyConfig
+    def setBodyConfig (self):
+
+        # To do: make this configurable the leo way
+        lexer = Qsci.QsciLexerPython(self.widget)
+        self.widget.setLexer(lexer)
+        self.widget.setIndentationWidth(4)
+        self.widget.setIndentationsUseTabs(False)
+        self.widget.setAutoIndent(True)
+    #@-node:ekr.20081011035036.10:setBodyConfig
     #@+node:ekr.20081004172422.508:setColorFromConfig
     def setColorFromConfig (self,w=None):
 
@@ -358,32 +367,71 @@ class leoQtBody (leoFrame.leoBody):
         # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
     #@-node:ekr.20081004172422.509:setFontFromConfig
     #@-node:ekr.20081004172422.503: Birth
+    #@+node:ekr.20081011035036.8:Event handlers
+    #@+node:ekr.20081011035036.1:onTextChanged
+    def onTextChanged (self): ###,undoType,oldSel=None,oldText=None,oldYview=None):
+
+        '''Update Leo after the body has been changed.'''
+
+        c = self.c ; w = self ; trace = True
+        p = c.currentPosition() # Dubious.
+
+        if c.frame.tree.selecting:
+            if trace: g.trace('selecting')
+            return
+        if c.frame.tree.redrawing:
+            if trace: g.trace('redrawing')
+            return
+
+        return ###
+
+        newInsert = w.getInsertPoint()
+        newSel = w.getSelectionRange()
+        newText = w.getAllText() # Converts to unicode.
+
+        # Get the previous values from the tnode.
+        oldText = p.v.t._bodyString or ''
+        oldIns  = p.v.t.insertSpot
+        i,j = p.v.t.selectionStart,p.v.t.selectionLength
+        oldSel  = (i,j-i)
+        oldYview = None ###
+
+        changed = oldText != newText
+        if trace and changed:
+            g.trace('changed',p and p.headString(),len(oldText),len(newText))
+        if not changed: return
+
+        # Dubious.
+        undoType = 'changed event'
+        c.undoer.setUndoTypingParams(p,undoType,
+            oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+
+        # Update the tnode.
+        p.v.setBodyString(newText)
+        p.v.t.insertSpot = newInsert
+        i,j = newSel
+        if i > j: i,j = j,i
+        p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
+
+        # No need to recolor the body.
+        # No need to redraw the screen.
+        if not c.changed: c.setChanged(True)
+        self.updateEditors()
+        c.frame.tree.updateIcon(p)
+    #@-node:ekr.20081011035036.1:onTextChanged
+    #@-node:ekr.20081011035036.8:Event handlers
     #@+node:ekr.20081004172422.512:Interface with Leo's core (qtBody)
     #@+node:ekr.20081007015817.78: oops
     def oops (self):
         g.trace('qtBody',g.callers(3))
     #@nonl
     #@-node:ekr.20081007015817.78: oops
-    #@+node:ekr.20081004172422.517:Bind
+    #@+node:ekr.20081004172422.517:Binding
     def bind (self,stroke,command,**keys):
 
         # Let the event filter handle all keys.
         pass
-
-        # c = self.c ### w = c.frame.top
-
-        # # stroke = self.toQtStroke(stroke)
-
-        # # Only strip matching angle brackets.
-        # if stroke.startswith('<') and stroke.endswith('>'):
-            # stroke = stroke[1:-1]
-
-        # stroke = stroke.strip()
-        # if stroke:
-            # ### was w.ev_filter
-            # self.ev_filter.bindings[stroke]=command
-            # # g.trace('stroke',stroke)
-    #@-node:ekr.20081004172422.517:Bind
+    #@-node:ekr.20081004172422.517:Binding
     #@+node:ekr.20081007015817.100:Config
     #@+node:ekr.20081004172422.514:cget and configure
     # Exceptions can arise because of user errors.
@@ -609,13 +657,11 @@ class leoQtBody (leoFrame.leoBody):
 
         w = self.widget
 
-        # Ok for now.  Using SCI_SETYCARETPOLICY might be much better.
+        # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
         s = self.getAllText()
         row,col = g.convertPythonIndexToRowCol(s,i)
         w.ensureLineVisible(row)
 
-        # Requires line.
-        # w.SendScintilla(w.SCI_ENSUREVISIBLE,i)
 
     def seeInsertPoint (self):
 
@@ -5746,6 +5792,15 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081010070648.17:setTreeFont
     #@-node:ekr.20081004172422.758:Config... (qtTree)
     #@+node:ekr.20081010070648.19:Drawing... (qtTree)
+    #@+node:ekr.20081011035036.12:allAncestorsExpanded
+    def allAncestorsExpanded (self,p):
+
+        for p in p.self_and_parents_iter():
+            if not p.isExpanded():
+                return False
+        else:
+            return True
+    #@-node:ekr.20081011035036.12:allAncestorsExpanded
     #@+node:ekr.20081010070648.14:getIcon
     def getIcon(self,p):
 
@@ -5793,7 +5848,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # Loop init.
         found_current = False
-        self.vnodeDict = {} # keys are vnodes, values are (p,it)
+        self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
         self.itemsDict = {} # keys are items, values are positions
         parentsDict = {}
 
@@ -5813,10 +5868,12 @@ class leoQtTree (leoFrame.leoTree):
                 data = p.copy(),it
                 aList.append(data)
                 self.vnodeDict[p.v] = aList
-                it.setText(0, p.headString())
-                if p.hasChildren() and p.isExpanded():
+                it.setText(0,p.headString())
+                if p.hasChildren() and p.isExpanded() and self.allAncestorsExpanded(p):
+                    # g.trace('***expanded',p.headString())
                     w.expandItem(it)
                 else:
+                    # g.trace('not expanded',p.headString())
                     w.collapseItem(it)
                 if p == current:
                     w.setCurrentItem(it) ; found_current = True
@@ -5827,6 +5884,18 @@ class leoQtTree (leoFrame.leoTree):
 
     redraw = redraw_now # Compatibility
     #@-node:ekr.20081004172422.767:redraw_now
+    #@+node:ekr.20081011035036.11:updateIcon
+    def updateIcon (self,p):
+
+        '''Update p's icon in response to a change in the body.'''
+
+        aList = self.vnodeDict.get(p.v)
+        icon = self.getIcon(p)
+
+        for p,it in aList:
+            # g.trace(p.headString(),it)
+            it.setIcon(0,icon)
+    #@-node:ekr.20081011035036.11:updateIcon
     #@-node:ekr.20081010070648.19:Drawing... (qtTree)
     #@+node:ekr.20081004172422.795:Event handlers... (qtTree)
     #@+node:ekr.20081009055104.8:onTreeSelect
@@ -5912,6 +5981,8 @@ class leoQtTree (leoFrame.leoTree):
     def onClickBoxClick (self,event,p=None):
 
         c = self.c ; p1 = c.currentPosition()
+
+        g.trace(p and p.headString())
 
         if not p: p = self.eventToPosition(event)
         if not p: return

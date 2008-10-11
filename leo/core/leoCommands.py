@@ -5492,6 +5492,8 @@ class baseCommands:
 
         p.moveToVisBack(c)
 
+        # g.trace(p)
+
         if p:
             redraw = not p.isVisible(c)
             if not redraw: c.frame.tree.setSelectedLabelState(c.currentPosition())
@@ -5510,6 +5512,8 @@ class baseCommands:
         if not c.canSelectVisNext(): return
 
         p.moveToVisNext(c)
+
+        # g.trace(p)
 
         if p:
             redraw = not p.isVisible(c)

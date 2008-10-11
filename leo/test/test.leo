@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="0" left="0" height="0" width="0"/>
+	<global_window_position top="185" left="212" height="575" width="809"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="0,1,13"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E" str_leo_pos="0,1,3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
