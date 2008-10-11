@@ -3830,7 +3830,7 @@ class leoQtLog (leoFrame.leoLog):
         c = self.c ; w = self.tabWidget
 
         if createText:
-            contents = QtGui.QTextEdit()
+            contents = QtGui.QTextBrowser()
             # Install event filter.
             w2 = c.frame.top
             # contents.installEventFilter(self.ev_filter)
