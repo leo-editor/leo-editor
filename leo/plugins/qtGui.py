@@ -3651,10 +3651,14 @@ class leoQtLog (leoFrame.leoLog):
         w = self.logCtrl
         if w:
             # To do: add color tags.
-            contents = w.toHtml()
+            #contents = w.toHtml()
             if color:
                 s = '<font color="%s">%s</font>' % (color, s)
-            w.setHtml(contents + s)
+            w.append(s)
+            w.moveCursor(QtGui.QTextCursor.End)
+
+            #w.ensureCursorVisible()
+            #w.setHtml(contents + s)
         else:
             # put s to logWaiting and print s
             g.app.logWaiting.append((s,color),)
@@ -3666,10 +3670,13 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081004172422.642:put
     #@+node:ekr.20081004172422.645:putnl
     def putnl (self,tabName='Log'):
-
+        # nothing to do here
+        return
+        """
         if g.app.quitting:
             return
 
+        self.
         if tabName:
             self.selectTab(tabName)
 
@@ -3681,6 +3688,8 @@ class leoQtLog (leoFrame.leoLog):
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
+        """
+    #@nonl
     #@-node:ekr.20081004172422.645:putnl
     #@-node:ekr.20081004172422.641:put & putnl (qtLog)
     #@+node:ekr.20081004172422.646:Tab (QtLog)
