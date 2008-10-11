@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="0,1,13"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -58,6 +58,7 @@
 <v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
+<v t="ekr.20081010203027.1"><vh>@font outline font</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
@@ -2508,7 +2509,7 @@ rClick.py
 
 # add_directives.py # scan-directives hook not ready.
 # color_markup.py # Does not work with threading colorizer.
-threading_colorizer.py
+### threading_colorizer.py ### problems with fonts: use scintilla colorizer instead.
 rst3.py
 UNL.py
 open_with.py
@@ -3716,5 +3717,10 @@ c.frame.addIconButton(text="New")</t>
 <t tx="ekr.20081003162730.1">@nocolor-node
 @ test</t>
 <t tx="ekr.20081003162730.2">@ </t>
+<t tx="ekr.20081010203027.1">headline_text_font_family = SansSerif
+headline_text_font_size = 10
+headline_text_font_slant = roman
+headline_text_font_weight = bold
+</t>
 </tnodes>
 </leo_file>

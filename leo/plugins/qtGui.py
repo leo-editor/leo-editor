@@ -3114,13 +3114,21 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081004102201.661:qtGui.getFontFromParams
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
 
-        family_name = family
+        try:
+            size = int(size)
+        except Exception:
+            size = 0
+        if size < 1: size = defaultSize
+        if weight == 'normal': weight_val = QtGui.QFont.Normal
+        else: weight_val = QtGui.QFont.Bold
+        italic = slant == 'italic'
 
         try:
-            font = qtFont.Font(family=family,size=size or defaultSize,slant=slant,weight=weight)
+            font = QtGui.QFont(family,size,weight_val,italic)
+            # g.trace(family,size,slant,weight,'returns',font)
             return font
         except:
-            g.es("exception setting font from","",family_name)
+            g.es("exception setting font")
             g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
@@ -5614,67 +5622,8 @@ class leoQtTree (leoFrame.leoTree):
         #@nl
     #@-node:ekr.20081004172422.744:qtTree.setCanvasBindings
     #@-node:ekr.20081004172422.737: Birth... (qt Tree)
-    #@+node:ekr.20081004172422.758:Config & Measuring... (qtTree)
-    #@+node:ekr.20081004172422.759:getFont,setFont,setFontFromConfig
-    def getFont (self):
-
-        return self.font
-
-    def setFont (self,font=None, fontName=None):
-
-        return ###
-
-        # ESSENTIAL: retain a link to font.
-        if fontName:
-            self.fontName = fontName
-            self.font = tkFont.Font(font=fontName)
-        else:
-            self.fontName = None
-            self.font = font
-
-        self.setLineHeight(self.font)
-
-    # Called by ctor and when config params are reloaded.
-    def setFontFromConfig (self):
-        c = self.c
-        # g.trace()
-        font = c.config.getFontFromParams(
-            "headline_text_font_family", "headline_text_font_size",
-            "headline_text_font_slant",  "headline_text_font_weight",
-            c.config.defaultTreeFontSize)
-
-        self.setFont(font)
-    #@-node:ekr.20081004172422.759:getFont,setFont,setFontFromConfig
-    #@+node:ekr.20081004172422.760:headWidth & widthInPixels
-    def headWidth(self,p=None,s=''):
-
-        """Returns the proper width of the entry widget for the headline."""
-
-        if p: s = p.headString()
-
-        return self.font.measure(s)/self.font.measure('0')+1
-
-
-    def widthInPixels(self,s):
-
-        s = g.toEncodedString(s,g.app.tkEncoding)
-
-        return self.font.measure(s)
-    #@-node:ekr.20081004172422.760:headWidth & widthInPixels
-    #@+node:ekr.20081004172422.761:setLineHeight
-    def setLineHeight (self,font):
-
-        try:
-            metrics = font.metrics()
-            linespace = metrics ["linespace"]
-            self.line_height = linespace + 5 # Same as before for the default font on Windows.
-            # g.pr(metrics)
-        except:
-            self.line_height = self.default_line_height
-            g.es("exception setting outline line height")
-            g.es_exception()
-    #@-node:ekr.20081004172422.761:setLineHeight
-    #@+node:ekr.20081010070648.18:unused config stuff
+    #@+node:ekr.20081004172422.758:Config... (qtTree)
+    #@+node:ekr.20081010070648.18:do-nothin config stuff
     # These can be do-nothings, replaced by QTree settings.
 
     def setEditLabelState (self,p,selectAll=False): pass
@@ -5687,7 +5636,7 @@ class leoQtTree (leoFrame.leoTree):
 
     setNormalLabelState = setEditLabelState # For compatibility.
     #@nonl
-    #@-node:ekr.20081010070648.18:unused config stuff
+    #@-node:ekr.20081010070648.18:do-nothin config stuff
     #@+node:ekr.20081009055104.7:setConfigIvars
     def setConfigIvars (self):
 
@@ -5778,15 +5727,51 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081010070648.17:setTreeFont
     def setTreeFont (self):
 
-        w = self.treeWidget
+        c = self.c ; w = self.treeWidget
 
-        font = QtGui.QFont("SansSerif", 12, QtGui.QFont.Normal)
+        font = c.config.getFontFromParams(
+            "headline_text_font_family", "headline_text_font_size",
+            "headline_text_font_slant",  "headline_text_font_weight",
+            c.config.defaultTreeFontSize)
+
+        if not font:
+            font = QtGui.QFont("SansSerif",12, QtGui.QFont.Normal)
 
         w.setFont(font)
     #@-node:ekr.20081010070648.17:setTreeFont
-    #@-node:ekr.20081004172422.758:Config & Measuring... (qtTree)
-    #@+node:ekr.20081010070648.19:Drawing
-    #@+node:ekr.20081004172422.767:tree.redraw_now & helpers
+    #@-node:ekr.20081004172422.758:Config... (qtTree)
+    #@+node:ekr.20081010070648.19:Drawing... (qtTree)
+    #@+node:ekr.20081010070648.14:getIcon
+    def getIcon(self,p):
+
+        '''Return the proper icon for position p.'''
+
+        p.v.iconVal = val = p.v.computeIcon()
+
+        imagename = "box%02d.GIF" % val
+        image = self.getIconImage(imagename)
+
+        return image
+    #@-node:ekr.20081010070648.14:getIcon
+    #@+node:ekr.20081010070648.12:getIconImage
+    def getIconImage (self,name):
+
+        # Return the image from the cache if possible.
+        if name in self.iconimages:
+            return self.iconimages.get(name)
+
+        try:
+            fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
+            image = QtGui.QIcon(fullname)
+            self.iconimages[name] = image
+            return image
+
+        except Exception:
+            g.es("exception loading:",fullname)
+            g.es_exception()
+            return None
+    #@-node:ekr.20081010070648.12:getIconImage
+    #@+node:ekr.20081004172422.767:redraw_now
     def redraw_now (self,scroll=False,forceDraw=False):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
@@ -5796,10 +5781,13 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing:
             return g.trace('already drawing')
 
+        # Traces...
         self.redrawCount += 1
         current = c.currentPosition()
-        found_current = False
         if trace: g.trace(self.redrawCount,current and current.headString())
+
+        # Loop init.
+        found_current = False
         self.vnodeDict = {} # keys are vnodes, values are (p,it)
         self.itemsDict = {} # keys are items, values are positions
         parentsDict = {}
@@ -5833,52 +5821,9 @@ class leoQtTree (leoFrame.leoTree):
             self.redrawing = False
 
     redraw = redraw_now # Compatibility
-    #@+node:ekr.20081010070648.14:tree.getIcon
-    def getIcon(self,p):
-
-        '''Return the proper icon for position p.'''
-
-        p.v.iconVal = val = p.v.computeIcon()
-
-        imagename = "box%02d.GIF" % val
-        image = self.getIconImage(imagename)
-
-        return image
-    #@-node:ekr.20081010070648.14:tree.getIcon
-    #@+node:ekr.20081010070648.12:tree.getIconImage
-    def getIconImage (self,name):
-
-        # Return the image from the cache if possible.
-        if name in self.iconimages:
-            return self.iconimages.get(name)
-
-        try:
-            fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
-            image = QtGui.QIcon(fullname)
-            self.iconimages[name] = image
-            return image
-
-        except Exception:
-            g.es("exception loading:",fullname)
-            g.es_exception()
-            return None
-    #@-node:ekr.20081010070648.12:tree.getIconImage
-    #@-node:ekr.20081004172422.767:tree.redraw_now & helpers
-    #@+node:ekr.20081004172422.845:dimEditLabel, undimEditLabel
-    # Convenience methods so the caller doesn't have to know the present edit node.
-
-    # def dimEditLabel (self):
-
-        # p = self.c.currentPosition()
-        # self.setSelectedLabelState(p)
-
-    # def undimEditLabel (self):
-
-        # p = self.c.currentPosition()
-        # self.setSelectedLabelState(p)
-    #@-node:ekr.20081004172422.845:dimEditLabel, undimEditLabel
-    #@-node:ekr.20081010070648.19:Drawing
-    #@+node:ekr.20081004172422.795:Event handlers (qtTree)
+    #@-node:ekr.20081004172422.767:redraw_now
+    #@-node:ekr.20081010070648.19:Drawing... (qtTree)
+    #@+node:ekr.20081004172422.795:Event handlers... (qtTree)
     #@+node:ekr.20081009055104.8:onTreeSelect
     def onTreeSelect(self):
 
@@ -5922,774 +5867,326 @@ class leoQtTree (leoFrame.leoTree):
             if aList:
                 g.trace('not found %s in %s' % (aList,h))
     #@-node:ekr.20081009055104.11:selectHint
-    #@+node:ekr.20081010070648.20:Not used (qtTree event handlers)
-    if 0:
+    #@+node:ekr.20081004172422.801:findEditWidget
+    def findEditWidget (self,p):
 
-        #@    @+others
-        #@+node:ekr.20081004172422.796:Helpers
-        #@+node:ekr.20081004172422.797:checkWidgetList
-        def checkWidgetList (self,tag):
+        """Return the Qt.Text item corresponding to p."""
 
-            return True # This will fail when the headline actually changes!
-        #@-node:ekr.20081004172422.797:checkWidgetList
-        #@+node:ekr.20081004172422.798:dumpWidgetList
-        def dumpWidgetList (self,tag):
+        # g.trace(p)
 
-            g.pr("\ncheckWidgetList: %s" % tag)
+        return None
 
-            for w in self.visibleText:
+        c = self.c ; trace = False
 
-                p = w.leo_position
-                if p:
-                    s = w.getAllText().strip()
-                    h = p.headString().strip()
+        # if trace: g.trace(g.callers())
 
-                    addr = self.textAddr(w)
-                    g.pr("p:",addr,h)
-                    if h != s:
-                        g.pr("w:",'*' * len(addr),s)
-                else:
-                    g.pr("w.leo_position == None",w)
-        #@-node:ekr.20081004172422.798:dumpWidgetList
-        #@+node:ekr.20081004172422.799:tree.edit_widget
-        def edit_widget (self,p):
-
-            """Returns the Qt.Edit widget for position p."""
-
-            return self.findEditWidget(p)
-        #@nonl
-        #@-node:ekr.20081004172422.799:tree.edit_widget
-        #@+node:ekr.20081004172422.800:eventToPosition
-        def eventToPosition (self,event):
-
-            canvas = self.canvas
-            x,y = event.x,event.y
-            x = canvas.canvasx(x) 
-            y = canvas.canvasy(y)
-            if self.trace: g.trace(x,y)
-            item = canvas.find_overlapping(x,y,x,y)
-            if not item: return None
-
-            # Item may be a tuple, possibly empty.
-            try:    theId = item[0]
-            except: theId = item
-            if not theId: return None
-
-            p = self.ids.get(theId)
-
-            # A kludge: p will be None for vertical lines.
-            if not p:
-                item = canvas.find_overlapping(x+1,y,x+1,y)
-                try:    theId = item[0]
-                except: theId = item
-                if not theId:
-                    g.es_print('oops:','eventToPosition','failed')
-                    return None
-                p = self.ids.get(theId)
-                # g.trace("was vertical line",p)
-
-            if self.trace and self.verbose:
-                if p:
-                    w = self.findEditWidget(p)
-                    g.trace("%3d %3d %3d %d" % (theId,x,y,id(w)),p.headString())
-                else:
-                    g.trace("%3d %3d %3d" % (theId,x,y),None)
-
-            # defensive programming: this copy is not needed.
-            if p: return p.copy() # Make _sure_ nobody changes this table!
-            else: return None
-        #@-node:ekr.20081004172422.800:eventToPosition
-        #@+node:ekr.20081004172422.801:findEditWidget (qtTree)
-        def findEditWidget (self,p):
-
-            """Return the Qt.Text item corresponding to p."""
-
-            # g.trace(p)
-
-            return None
-
-            c = self.c ; trace = False
-
-            # if trace: g.trace(g.callers())
-
-            if p and c:
-                # if trace: g.trace('h',p.headString(),'key',p.key())
-                aTuple = self.visibleText.get(p.key())
-                if aTuple:
-                    w,theId = aTuple
-                    # if trace: g.trace('id(p.v):',id(p.v),'%4d' % (theId),self.textAddr(w),p.headString())
-                    return w
-                else:
-                    if trace: g.trace('oops: not found',p,g.callers())
-                    return None
-
-            if trace: g.trace('not found',p and p.headString())
-            return None
-        #@-node:ekr.20081004172422.801:findEditWidget (qtTree)
-        #@+node:ekr.20081004172422.802:findVnodeWithIconId
-        def findPositionWithIconId (self,theId):
-
-            # Due to an old bug, theId may be a tuple.
-            try:
-                data = self.iconIds.get(theId[0])
-            except:
-                data = self.iconIds.get(theId)
-
-            if data:
-                p,generation = data
-                if generation==self.generation:
-                    if self.trace and self.verbose:
-                        g.trace(theId,p.headString())
-                    return p
-                else:
-                    if self.trace and self.verbose:
-                        g.trace("*** wrong generation: %d ***" % theId)
-                    return None
+        if p and c:
+            # if trace: g.trace('h',p.headString(),'key',p.key())
+            aTuple = self.visibleText.get(p.key())
+            if aTuple:
+                w,theId = aTuple
+                # if trace: g.trace('id(p.v):',id(p.v),'%4d' % (theId),self.textAddr(w),p.headString())
+                return w
             else:
-                if self.trace and self.verbose: g.trace(theId,None)
+                if trace: g.trace('oops: not found',p,g.callers())
                 return None
-        #@-node:ekr.20081004172422.802:findVnodeWithIconId
-        #@-node:ekr.20081004172422.796:Helpers
-        #@+node:ekr.20081004172422.803:Click Box...
-        #@+node:ekr.20081004172422.804:onClickBoxClick
-        def onClickBoxClick (self,event,p=None):
 
-            c = self.c ; p1 = c.currentPosition()
-
-            if not p: p = self.eventToPosition(event)
-            if not p: return
-
-            c.setLog()
-
-            if p and not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
-                c.endEditing()
-                if p == p1 or self.initialClickExpandsOrContractsNode:
-                    if p.isExpanded(): p.contract()
-                    else:              p.expand()
-                self.select(p)
-                if c.frame.findPanel:
-                    c.frame.findPanel.handleUserClick(p)
-                if self.stayInTree:
-                    c.treeWantsFocus()
-                else:
-                    c.bodyWantsFocus()
-            g.doHook("boxclick2",c=c,p=p,v=p,event=event)
-            c.redraw()
-
-            c.outerUpdate()
-        #@-node:ekr.20081004172422.804:onClickBoxClick
-        #@+node:ekr.20081004172422.805:onClickBoxRightClick
-        def onClickBoxRightClick(self, event, p=None):
-            #g.trace()
-            return 'break'
-        #@nonl
-        #@-node:ekr.20081004172422.805:onClickBoxRightClick
-        #@+node:ekr.20081004172422.806:onPlusBoxRightClick
-        def onPlusBoxRightClick (self,event,p=None):
-
-            c = self.c
-
-            self._block_canvas_menu = True
-
-            if not p: p = self.eventToPosition(event)
-            if not p: return
-
-            self.OnActivateHeadline(p)
-            self.endEditLabel()
-
-            g.doHook('rclick-popup',c=c,p=p,event=event,context_menu='plusbox')
-
-            c.outerUpdate()
-
-            return 'break'
-        #@-node:ekr.20081004172422.806:onPlusBoxRightClick
-        #@-node:ekr.20081004172422.803:Click Box...
-        #@+node:ekr.20081004172422.807:Dragging (qtTree)
-        #@+node:ekr.20081004172422.808:endDrag
-        def endDrag (self,event):
-
-            """The official helper of the onEndDrag event handler."""
-
-            c = self.c ; p = self.drag_p
-            c.setLog()
-            canvas = self.canvas
-            if not event: return
-
-            #@    << set vdrag, childFlag >>
-            #@+node:ekr.20081004172422.809:<< set vdrag, childFlag >>
-            x,y = event.x,event.y
-            canvas_x = canvas.canvasx(x)
-            canvas_y = canvas.canvasy(y)
-
-            theId = self.canvas.find_closest(canvas_x,canvas_y)
-            # theId = self.canvas.find_overlapping(canvas_x,canvas_y,canvas_x,canvas_y)
-
-            vdrag = self.findPositionWithIconId(theId)
-            childFlag = vdrag and vdrag.hasChildren() and vdrag.isExpanded()
-            #@-node:ekr.20081004172422.809:<< set vdrag, childFlag >>
-            #@nl
-            if self.allow_clone_drags:
-                if not self.look_for_control_drag_on_mouse_down:
-                    self.controlDrag = c.frame.controlKeyIsDown
-
-            redrawFlag = vdrag and vdrag.v.t != p.v.t
-            if redrawFlag: # Disallow drag to joined node.
-                #@        << drag p to vdrag >>
-                #@+node:ekr.20081004172422.810:<< drag p to vdrag >>
-                # g.trace("*** end drag   ***",theId,x,y,p.headString(),vdrag.headString())
-
-                if self.controlDrag: # Clone p and move the clone.
-                    if childFlag:
-                        c.dragCloneToNthChildOf(p,vdrag,0)
-                    else:
-                        c.dragCloneAfter(p,vdrag)
-                else: # Just drag p.
-                    if childFlag:
-                        p = c.dragToNthChildOf(p,vdrag,0)
-                    else:
-                        p = c.dragAfter(p,vdrag)
-                #@-node:ekr.20081004172422.810:<< drag p to vdrag >>
-                #@nl
-            elif self.trace and self.verbose:
-                g.trace("Cancel drag")
-
-            # Reset the old cursor by brute force.
-            self.canvas['cursor'] = "arrow"
-            self.dragging = False
-            self.drag_p = None
-
-            # Must set self.drag_p = None first.
-            if redrawFlag:
-                c.redraw_now()
-            c.recolor_now() # Dragging can affect coloring.
-
-            # g.trace(redrawFlag)
-        #@-node:ekr.20081004172422.808:endDrag
-        #@+node:ekr.20081004172422.811:startDrag
-        # This precomputes numberOfVisibleNodes(), a significant optimization.
-        # We also indicate where findPositionWithIconId() should start looking for tree id's.
-
-        def startDrag (self,event,p=None):
-
-            """The official helper of the onDrag event handler."""
-
-            c = self.c ; canvas = self.canvas
-
-            if not p:
-                assert(not self.drag_p)
-                x = canvas.canvasx(event.x)
-                y = canvas.canvasy(event.y)
-                theId = canvas.find_closest(x,y)
-                # theId = canvas.find_overlapping(canvas_x,canvas_y,canvas_x,canvas_y)
-                if theId is None: return
-                try: theId = theId[0]
-                except: pass
-                p = self.ids.get(theId)
-            if not p: return
-            c.setLog()
-            self.drag_p = p.copy() # defensive programming: not needed.
-            self.dragging = True
-            # g.trace("*** start drag ***",theId,self.drag_p.headString())
-            # Only do this once: greatly speeds drags.
-            self.savedNumberOfVisibleNodes = self.numberOfVisibleNodes()
-            # g.trace('self.controlDrag',self.controlDrag)
-            if self.allow_clone_drags:
-                self.controlDrag = c.frame.controlKeyIsDown
-                if self.look_for_control_drag_on_mouse_down:
-                    if self.enable_drag_messages:
-                        if self.controlDrag:
-                            g.es("dragged node will be cloned")
-                        else:
-                            g.es("dragged node will be moved")
-            else: self.controlDrag = False
-            self.canvas['cursor'] = "hand2" # "center_ptr"
-        #@-node:ekr.20081004172422.811:startDrag
-        #@+node:ekr.20081004172422.812:onContinueDrag
-        def onContinueDrag(self,event):
-
-            c = self.c ; p = self.drag_p
-            if not p: return
-
-            try:
-                canvas = self.canvas ; frame = c.frame
-                if event:
-                    x,y = event.x,event.y
-                else:
-                    x,y = frame.top.winfo_pointerx(),frame.top.winfo_pointery()
-                    # Stop the scrolling if we go outside the entire window.
-                    if x == -1 or y == -1: return 
-                if self.dragging: # This gets cleared by onEndDrag()
-                    #@            << scroll the canvas as needed >>
-                    #@+node:ekr.20081004172422.813:<< scroll the canvas as needed >>
-                    # Scroll the screen up or down one line if the cursor (y) is outside the canvas.
-                    h = canvas.winfo_height()
-
-                    if y < 0 or y > h:
-                        lo, hi = frame.canvas.leo_treeBar.get()
-                        n = self.savedNumberOfVisibleNodes
-                        line_frac = 1.0 / float(n)
-                        frac = g.choose(y < 0, lo - line_frac, lo + line_frac)
-                        frac = min(frac,1.0)
-                        frac = max(frac,0.0)
-                        canvas.yview("moveto", frac)
-
-                        # Queue up another event to keep scrolling while the cursor is outside the canvas.
-                        lo, hi = frame.canvas.leo_treeBar.get()
-                        if (y < 0 and lo > 0.1) or (y > h and hi < 0.9):
-                            canvas.after_idle(self.onContinueDrag,None) # Don't propagate the event.
-                    #@-node:ekr.20081004172422.813:<< scroll the canvas as needed >>
-                    #@nl
-            except:
-                g.es_event_exception("continue drag")
-        #@-node:ekr.20081004172422.812:onContinueDrag
-        #@+node:ekr.20081004172422.814:onDrag
-        def onDrag(self,event):
-
-            c = self.c ; p = self.drag_p
-            if not event: return
-
-            c.setLog()
-
-            if not self.dragging:
-                if not g.doHook("drag1",c=c,p=p,v=p,event=event):
-                    self.startDrag(event)
-                g.doHook("drag2",c=c,p=p,v=p,event=event)
-
-            if not g.doHook("dragging1",c=c,p=p,v=p,event=event):
-                self.onContinueDrag(event)
-            g.doHook("dragging2",c=c,p=p,v=p,event=event)
-        #@-node:ekr.20081004172422.814:onDrag
-        #@+node:ekr.20081004172422.815:onEndDrag
-        def onEndDrag(self,event):
-
-            """Tree end-of-drag handler called from vnode event handler."""
-
-            c = self.c ; p = self.drag_p
-            if not p: return
-
-            c.setLog()
-
-            if not g.doHook("enddrag1",c=c,p=p,v=p,event=event):
-                self.endDrag(event)
-            g.doHook("enddrag2",c=c,p=p,v=p,event=event)
-        #@-node:ekr.20081004172422.815:onEndDrag
-        #@-node:ekr.20081004172422.807:Dragging (qtTree)
-        #@+node:ekr.20081004172422.816:Icon Box...
-        #@+node:ekr.20081004172422.817:onIconBoxClick
-        def onIconBoxClick (self,event,p=None):
-
-            c = self.c ; tree = self
-
-            if not p: p = self.eventToPosition(event)
-            if not p:
-                return
-
-            c.setLog()
-
-            if self.trace and self.verbose: g.trace()
-
-            if not g.doHook("iconclick1",c=c,p=p,v=p,event=event):
-                if event:
-                    self.onDrag(event)
-                tree.endEditLabel()
-                tree.select(p,scroll=False)
-                if c.frame.findPanel:
-                    c.frame.findPanel.handleUserClick(p)
-            g.doHook("iconclick2",c=c,p=p,v=p,event=event)
-
-            return "break" # disable expanded box handling.
-        #@-node:ekr.20081004172422.817:onIconBoxClick
-        #@+node:ekr.20081004172422.818:onIconBoxRightClick
-        def onIconBoxRightClick (self,event,p=None):
-
-            """Handle a right click in any outline widget."""
-
-            #g.trace()
-
-            c = self.c
-
-            if not p: p = self.eventToPosition(event)
-            if not p:
-                c.outerUpdate()
-                return
-
-            c.setLog()
-
-            try:
-                if not g.doHook("iconrclick1",c=c,p=p,v=p,event=event):
-                    self.OnActivateHeadline(p)
-                    self.endEditLabel()
-                    if not g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='iconbox'):
-                        self.OnPopup(p,event)
-                g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
-            except:
-                g.es_event_exception("iconrclick")
-
-            self._block_canvas_menu = True
-
-            c.outerUpdate()
-            return 'break'
-        #@-node:ekr.20081004172422.818:onIconBoxRightClick
-        #@+node:ekr.20081004172422.819:onIconBoxDoubleClick
-        def onIconBoxDoubleClick (self,event,p=None):
-
-            c = self.c
-
-            if not p: p = self.eventToPosition(event)
-            if not p:
-                c.outerUpdate()
-                return
-
-            c.setLog()
-
-            if self.trace and self.verbose: g.trace()
-
-            try:
-                if not g.doHook("icondclick1",c=c,p=p,v=p,event=event):
-                    self.endEditLabel() # Bug fix: 11/30/05
-                    self.OnIconDoubleClick(p) # Call the method in the base class.
-                g.doHook("icondclick2",c=c,p=p,v=p,event=event)
-            except:
-                g.es_event_exception("icondclick")
-
-            c.outerUpdate()
-            return 'break'
-        #@-node:ekr.20081004172422.819:onIconBoxDoubleClick
-        #@-node:ekr.20081004172422.816:Icon Box...
-        #@+node:ekr.20081004172422.820:OnActivateHeadline (qtTree)
-        def OnActivateHeadline (self,p,event=None):
-
-            '''Handle common process when any part of a headline is clicked.'''
-
-            # g.trace(p.headString())
-
-            returnVal = 'break' # Default: do nothing more.
-            trace = False
-
-            try:
-                c = self.c
-                c.setLog()
-                #@        << activate this window >>
-                #@+node:ekr.20081004172422.821:<< activate this window >>
-                if p == c.currentPosition():
-
-                    if trace: g.trace('current','active',self.active)
-                    self.editLabel(p) # sets focus.
-                    # If we are active, pass the event along so the click gets handled.
-                    # Otherwise, do *not* pass the event along so the focus stays the same.
-                    returnVal = g.choose(self.active,'continue','break')
-                    self.active = True
-                else:
-                    if trace: g.trace("not current")
-                    self.select(p,scroll=False)
-                    w  = c.frame.body.bodyCtrl
-                    if c.frame.findPanel:
-                        c.frame.findPanel.handleUserClick(p)
-                    if p.v.t.insertSpot != None:
-                        spot = p.v.t.insertSpot
-                        w.setInsertPoint(spot)
-                        w.see(spot)
-                    else:
-                        w.setInsertPoint(0)
-                    # An important detail.
-                    # The *canvas* (not the headline) gets the focus so that
-                    # tree bindings take priority over text bindings.
-                    c.treeWantsFocusNow() # Now. New in Leo 4.5.
-                    c.outerUpdate()
-                    self.active = False
-                    returnVal = 'break'
-                #@nonl
-                #@-node:ekr.20081004172422.821:<< activate this window >>
-                #@nl
-            except:
-                g.es_event_exception("activate tree")
-
-            return returnVal
-        #@-node:ekr.20081004172422.820:OnActivateHeadline (qtTree)
-        #@+node:ekr.20081004172422.822:Text Box...
-        #@+node:ekr.20081004172422.823:configureTextState
-        def configureTextState (self,p):
-
-            c = self.c
-
-            if not p: return
-
-            # g.trace(c.isCurrentPosition(p),self.c._currentPosition,p)
-
-            if c.isCurrentPosition(p):
-                if p == self.editPosition():
-                    self.setEditLabelState(p) # selected, editing.
-                else:
-                    self.setSelectedLabelState(p) # selected, not editing.
+        if trace: g.trace('not found',p and p.headString())
+        return None
+    #@-node:ekr.20081004172422.801:findEditWidget
+    #@+node:ekr.20081004172422.799:edit_widget
+    def edit_widget (self,p):
+
+        """Returns the Qt.Edit widget for position p."""
+
+        return self.findEditWidget(p)
+    #@nonl
+    #@-node:ekr.20081004172422.799:edit_widget
+    #@+node:ekr.20081004172422.803:Click Box...
+    #@+node:ekr.20081004172422.804:onClickBoxClick
+    def onClickBoxClick (self,event,p=None):
+
+        c = self.c ; p1 = c.currentPosition()
+
+        if not p: p = self.eventToPosition(event)
+        if not p: return
+
+        c.setLog()
+
+        if p and not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
+            c.endEditing()
+            if p == p1 or self.initialClickExpandsOrContractsNode:
+                if p.isExpanded(): p.contract()
+                else:              p.expand()
+            self.select(p)
+            if c.frame.findPanel:
+                c.frame.findPanel.handleUserClick(p)
+            if self.stayInTree:
+                c.treeWantsFocus()
             else:
-                self.setUnselectedLabelState(p) # unselected
-        #@-node:ekr.20081004172422.823:configureTextState
-        #@+node:ekr.20081004172422.824:onCtontrolT
-        # This works around an apparent Qt bug.
+                c.bodyWantsFocus()
+        g.doHook("boxclick2",c=c,p=p,v=p,event=event)
+        c.redraw()
 
-        def onControlT (self,event=None):
+        c.outerUpdate()
+    #@-node:ekr.20081004172422.804:onClickBoxClick
+    #@+node:ekr.20081004172422.805:onClickBoxRightClick
+    def onClickBoxRightClick(self, event, p=None):
+        #g.trace()
+        return 'break'
+    #@nonl
+    #@-node:ekr.20081004172422.805:onClickBoxRightClick
+    #@+node:ekr.20081004172422.806:onPlusBoxRightClick
+    def onPlusBoxRightClick (self,event,p=None):
 
-            # If we don't inhibit further processing the Tx.Text widget switches characters!
-            return "break"
-        #@-node:ekr.20081004172422.824:onCtontrolT
-        #@+node:ekr.20081004172422.825:onHeadlineClick
-        def onHeadlineClick (self,event,p=None):
+        c = self.c
 
-            # g.trace('p',p)
-            c = self.c ; w = event.widget
+        self._block_canvas_menu = True
 
-            if not p:
-                try:
-                    p = w.leo_position
-                except AttributeError:
-                    g.trace('*'*20,'oops')
-            if not p: return 'break'
+        if not p: p = self.eventToPosition(event)
+        if not p: return
 
-            # g.trace(g.app.gui.widget_name(w),p and p.headString())
+        self.OnActivateHeadline(p)
+        self.endEditLabel()
 
-            c.setLog()
+        g.doHook('rclick-popup',c=c,p=p,event=event,context_menu='plusbox')
 
-            try:
-                if not g.doHook("headclick1",c=c,p=p,v=p,event=event):
-                    returnVal = self.OnActivateHeadline(p)
-                g.doHook("headclick2",c=c,p=p,v=p,event=event)
-            except:
-                returnVal = 'break'
-                g.es_event_exception("headclick")
+        c.outerUpdate()
 
-            # 'continue' is sometimes correct here.
-            # 'break' would make it impossible to unselect the headline text.
-            # g.trace('returnVal',returnVal,'stayInTree',self.stayInTree)
-            return returnVal
-        #@-node:ekr.20081004172422.825:onHeadlineClick
-        #@+node:ekr.20081004172422.826:onHeadlineRightClick
-        def onHeadlineRightClick (self,event):
+        return 'break'
+    #@-node:ekr.20081004172422.806:onPlusBoxRightClick
+    #@-node:ekr.20081004172422.803:Click Box...
+    #@+node:ekr.20081004172422.816:Icon Box...
+    #@+node:ekr.20081004172422.817:onIconBoxClick
+    def onIconBoxClick (self,event,p=None):
 
-            """Handle a right click in any outline widget."""
+        c = self.c ; tree = self
 
-            c = self.c ; w = event.widget
+        if not p: p = self.eventToPosition(event)
+        if not p:
+            return
 
-            try:
-                p = w.leo_position
-            except AttributeError:
-                g.trace('*'*20,'oops')
-                return 'break'
+        c.setLog()
 
-            c.setLog()
+        if self.trace and self.verbose: g.trace()
 
-            try:
-                if not g.doHook("headrclick1",c=c,p=p,v=p,event=event):
-                    self.OnActivateHeadline(p)
-                    self.endEditLabel()
-                    if not g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='headline'):
-                        self.OnPopup(p,event)
-                g.doHook("headrclick2",c=c,p=p,v=p,event=event)
-            except:
-                g.es_event_exception("headrclick")
-
-            # 'continue' *is* correct here.
-            # 'break' would make it impossible to unselect the headline text.
-
-            return 'continue'
-        #@-node:ekr.20081004172422.826:onHeadlineRightClick
-        #@-node:ekr.20081004172422.822:Text Box...
-        #@+node:ekr.20081004172422.827:tree.OnDeactivate
-        def OnDeactivate (self,event=None):
-
-            """Deactivate the tree pane, dimming any headline being edited."""
-
-            tree = self ; c = self.c
-
+        if not g.doHook("iconclick1",c=c,p=p,v=p,event=event):
+            if event:
+                self.onDrag(event)
             tree.endEditLabel()
-            tree.dimEditLabel()
+            tree.select(p,scroll=False)
+            if c.frame.findPanel:
+                c.frame.findPanel.handleUserClick(p)
+        g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+
+        return "break" # disable expanded box handling.
+    #@-node:ekr.20081004172422.817:onIconBoxClick
+    #@+node:ekr.20081004172422.818:onIconBoxRightClick
+    def onIconBoxRightClick (self,event,p=None):
+
+        """Handle a right click in any outline widget."""
+
+        #g.trace()
+
+        c = self.c
+
+        if not p: p = self.eventToPosition(event)
+        if not p:
             c.outerUpdate()
-        #@-node:ekr.20081004172422.827:tree.OnDeactivate
-        #@+node:ekr.20081004172422.828:tree.OnPopup & allies
-        def OnPopup (self,p,event):
+            return
 
-            """Handle right-clicks in the outline.
+        c.setLog()
 
-            This is *not* an event handler: it is called from other event handlers."""
+        try:
+            if not g.doHook("iconrclick1",c=c,p=p,v=p,event=event):
+                self.OnActivateHeadline(p)
+                self.endEditLabel()
+                if not g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='iconbox'):
+                    self.OnPopup(p,event)
+            g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
+        except:
+            g.es_event_exception("iconrclick")
 
-            # Note: "headrclick" hooks handled by vnode callback routine.
+        self._block_canvas_menu = True
 
-            if event != None:
-                c = self.c
-                c.setLog()
+        c.outerUpdate()
+        return 'break'
+    #@-node:ekr.20081004172422.818:onIconBoxRightClick
+    #@+node:ekr.20081004172422.819:onIconBoxDoubleClick
+    def onIconBoxDoubleClick (self,event,p=None):
 
-                if not g.doHook("create-popup-menu",c=c,p=p,v=p,event=event):
-                    self.createPopupMenu(event)
-                if not g.doHook("enable-popup-menu-items",c=c,p=p,v=p,event=event):
-                    self.enablePopupMenuItems(p,event)
-                if not g.doHook("show-popup-menu",c=c,p=p,v=p,event=event):
-                    self.showPopupMenu(event)
+        c = self.c
 
-            return "break"
-        #@+node:ekr.20081004172422.829:OnPopupFocusLost
-        #@+at 
-        #@nonl
-        # On Linux we must do something special to make the popup menu 
-        # "unpost" if the mouse is clicked elsewhere.  So we have to catch the 
-        # <FocusOut> event and explicitly unpost.  In order to process the 
-        # <FocusOut> event, we need to be able to find the reference to the 
-        # popup window again, so this needs to be an attribute of the tree 
-        # object; hence, "self.popupMenu".
-        # 
-        # Aside: though Qt tries to be muli-platform, the interaction with 
-        # different window managers does cause small differences that will 
-        # need to be compensated by system specific application code. :-(
-        #@-at
-        #@@c
+        if not p: p = self.eventToPosition(event)
+        if not p:
+            c.outerUpdate()
+            return
 
-        # 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
+        c.setLog()
 
-        def OnPopupFocusLost(self,event=None):
+        if self.trace and self.verbose: g.trace()
 
-            self.popupMenu.unpost()
-        #@-node:ekr.20081004172422.829:OnPopupFocusLost
-        #@+node:ekr.20081004172422.830:createPopupMenu
-        def createPopupMenu (self,event):
+        try:
+            if not g.doHook("icondclick1",c=c,p=p,v=p,event=event):
+                self.endEditLabel() # Bug fix: 11/30/05
+                self.OnIconDoubleClick(p) # Call the method in the base class.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        except:
+            g.es_event_exception("icondclick")
 
-            c = self.c ; frame = c.frame
+        c.outerUpdate()
+        return 'break'
+    #@-node:ekr.20081004172422.819:onIconBoxDoubleClick
+    #@-node:ekr.20081004172422.816:Icon Box...
+    #@+node:ekr.20081004172422.828:tree.OnPopup & allies
+    def OnPopup (self,p,event):
+
+        """Handle right-clicks in the outline.
+
+        This is *not* an event handler: it is called from other event handlers."""
+
+        # Note: "headrclick" hooks handled by vnode callback routine.
+
+        if event != None:
+            c = self.c
+            c.setLog()
+
+            if not g.doHook("create-popup-menu",c=c,p=p,v=p,event=event):
+                self.createPopupMenu(event)
+            if not g.doHook("enable-popup-menu-items",c=c,p=p,v=p,event=event):
+                self.enablePopupMenuItems(p,event)
+            if not g.doHook("show-popup-menu",c=c,p=p,v=p,event=event):
+                self.showPopupMenu(event)
+
+        return "break"
+    #@+node:ekr.20081004172422.829:OnPopupFocusLost
+    #@+at 
+    #@nonl
+    # On Linux we must do something special to make the popup menu "unpost" if 
+    # the mouse is clicked elsewhere.  So we have to catch the <FocusOut> 
+    # event and explicitly unpost.  In order to process the <FocusOut> event, 
+    # we need to be able to find the reference to the popup window again, so 
+    # this needs to be an attribute of the tree object; hence, 
+    # "self.popupMenu".
+    # 
+    # Aside: though Qt tries to be muli-platform, the interaction with 
+    # different window managers does cause small differences that will need to 
+    # be compensated by system specific application code. :-(
+    #@-at
+    #@@c
+
+    # 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
+
+    def OnPopupFocusLost(self,event=None):
+
+        self.popupMenu.unpost()
+    #@-node:ekr.20081004172422.829:OnPopupFocusLost
+    #@+node:ekr.20081004172422.830:createPopupMenu
+    def createPopupMenu (self,event):
+
+        c = self.c ; frame = c.frame
 
 
-            self.popupMenu = menu = Qt.Menu(g.app.root, tearoff=0)
+        self.popupMenu = menu = Qt.Menu(g.app.root, tearoff=0)
 
-            # Add the Open With entries if they exist.
-            if g.app.openWithTable:
-                frame.menu.createOpenWithMenuItemsFromTable(menu,g.app.openWithTable)
-                table = (("-",None,None),)
-                frame.menu.createMenuEntries(menu,table)
-
-            #@    << Create the menu table >>
-            #@+node:ekr.20081004172422.831:<< Create the menu table >>
-            table = (
-                ("&Read @file Nodes",c.readAtFileNodes),
-                ("&Write @file Nodes",c.fileCommands.writeAtFileNodes),
-                ("-",None),
-                ("&Tangle",c.tangle),
-                ("&Untangle",c.untangle),
-                ("-",None),
-                ("Toggle Angle &Brackets",c.toggleAngleBrackets),
-                ("-",None),
-                ("Cut Node",c.cutOutline),
-                ("Copy Node",c.copyOutline),
-                ("&Paste Node",c.pasteOutline),
-                ("&Delete Node",c.deleteOutline),
-                ("-",None),
-                ("&Insert Node",c.insertHeadline),
-                ("&Clone Node",c.clone),
-                ("Sort C&hildren",c.sortChildren),
-                ("&Sort Siblings",c.sortSiblings),
-                ("-",None),
-                ("Contract Parent",c.contractParent),
-            )
-            #@-node:ekr.20081004172422.831:<< Create the menu table >>
-            #@nl
-
-            # New in 4.4.  There is no need for a dontBind argument because
-            # Bindings from tables are ignored.
+        # Add the Open With entries if they exist.
+        if g.app.openWithTable:
+            frame.menu.createOpenWithMenuItemsFromTable(menu,g.app.openWithTable)
+            table = (("-",None,None),)
             frame.menu.createMenuEntries(menu,table)
-        #@-node:ekr.20081004172422.830:createPopupMenu
-        #@+node:ekr.20081004172422.832:enablePopupMenuItems
-        def enablePopupMenuItems (self,v,event):
 
-            """Enable and disable items in the popup menu."""
+        #@    << Create the menu table >>
+        #@+node:ekr.20081004172422.831:<< Create the menu table >>
+        table = (
+            ("&Read @file Nodes",c.readAtFileNodes),
+            ("&Write @file Nodes",c.fileCommands.writeAtFileNodes),
+            ("-",None),
+            ("&Tangle",c.tangle),
+            ("&Untangle",c.untangle),
+            ("-",None),
+            ("Toggle Angle &Brackets",c.toggleAngleBrackets),
+            ("-",None),
+            ("Cut Node",c.cutOutline),
+            ("Copy Node",c.copyOutline),
+            ("&Paste Node",c.pasteOutline),
+            ("&Delete Node",c.deleteOutline),
+            ("-",None),
+            ("&Insert Node",c.insertHeadline),
+            ("&Clone Node",c.clone),
+            ("Sort C&hildren",c.sortChildren),
+            ("&Sort Siblings",c.sortSiblings),
+            ("-",None),
+            ("Contract Parent",c.contractParent),
+        )
+        #@-node:ekr.20081004172422.831:<< Create the menu table >>
+        #@nl
 
-            c = self.c ; menu = self.popupMenu
+        # New in 4.4.  There is no need for a dontBind argument because
+        # Bindings from tables are ignored.
+        frame.menu.createMenuEntries(menu,table)
+    #@-node:ekr.20081004172422.830:createPopupMenu
+    #@+node:ekr.20081004172422.832:enablePopupMenuItems
+    def enablePopupMenuItems (self,v,event):
 
-            #@    << set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
-            #@+node:ekr.20081004172422.833:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
-            isAtFile = False
-            isAtRoot = False
+        """Enable and disable items in the popup menu."""
 
-            for v2 in v.self_and_subtree_iter():
-                if isAtFile and isAtRoot:
-                    break
-                if (v2.isAtFileNode() or
-                    v2.isAtNorefFileNode() or
-                    v2.isAtAsisFileNode() or
-                    v2.isAtNoSentFileNode()
-                ):
-                    isAtFile = True
+        c = self.c ; menu = self.popupMenu
 
-                isRoot,junk = g.is_special(v2.bodyString(),0,"@root")
-                if isRoot:
-                    isAtRoot = True
-            #@-node:ekr.20081004172422.833:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
-            #@nl
-            isAtFile = g.choose(isAtFile,1,0)
-            isAtRoot = g.choose(isAtRoot,1,0)
-            canContract = v.parent() != None
-            canContract = g.choose(canContract,1,0)
+        #@    << set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
+        #@+node:ekr.20081004172422.833:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
+        isAtFile = False
+        isAtRoot = False
 
-            enable = self.frame.menu.enableMenu
+        for v2 in v.self_and_subtree_iter():
+            if isAtFile and isAtRoot:
+                break
+            if (v2.isAtFileNode() or
+                v2.isAtNorefFileNode() or
+                v2.isAtAsisFileNode() or
+                v2.isAtNoSentFileNode()
+            ):
+                isAtFile = True
 
-            for name in ("Read @file Nodes", "Write @file Nodes"):
-                enable(menu,name,isAtFile)
-            for name in ("Tangle", "Untangle"):
-                enable(menu,name,isAtRoot)
+            isRoot,junk = g.is_special(v2.bodyString(),0,"@root")
+            if isRoot:
+                isAtRoot = True
+        #@-node:ekr.20081004172422.833:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
+        #@nl
+        isAtFile = g.choose(isAtFile,1,0)
+        isAtRoot = g.choose(isAtRoot,1,0)
+        canContract = v.parent() != None
+        canContract = g.choose(canContract,1,0)
 
-            enable(menu,"Cut Node",c.canCutOutline())
-            enable(menu,"Delete Node",c.canDeleteHeadline())
-            enable(menu,"Paste Node",c.canPasteOutline())
-            enable(menu,"Sort Children",c.canSortChildren())
-            enable(menu,"Sort Siblings",c.canSortSiblings())
-            enable(menu,"Contract Parent",c.canContractParent())
-        #@-node:ekr.20081004172422.832:enablePopupMenuItems
-        #@+node:ekr.20081004172422.834:showPopupMenu
-        def showPopupMenu (self,event):
+        enable = self.frame.menu.enableMenu
 
-            """Show a popup menu."""
+        for name in ("Read @file Nodes", "Write @file Nodes"):
+            enable(menu,name,isAtFile)
+        for name in ("Tangle", "Untangle"):
+            enable(menu,name,isAtRoot)
 
-            c = self.c ; menu = self.popupMenu
+        enable(menu,"Cut Node",c.canCutOutline())
+        enable(menu,"Delete Node",c.canDeleteHeadline())
+        enable(menu,"Paste Node",c.canPasteOutline())
+        enable(menu,"Sort Children",c.canSortChildren())
+        enable(menu,"Sort Siblings",c.canSortSiblings())
+        enable(menu,"Contract Parent",c.canContractParent())
+    #@-node:ekr.20081004172422.832:enablePopupMenuItems
+    #@+node:ekr.20081004172422.834:showPopupMenu
+    def showPopupMenu (self,event):
 
-            g.app.gui.postPopupMenu(c, menu, event.x_root, event.y_root)
+        """Show a popup menu."""
 
-            self.popupMenu = None
+        c = self.c ; menu = self.popupMenu
 
-            # Set the focus immediately so we know when we lose it.
-            #c.widgetWantsFocus(menu)
-        #@-node:ekr.20081004172422.834:showPopupMenu
-        #@-node:ekr.20081004172422.828:tree.OnPopup & allies
-        #@+node:ekr.20081004172422.835:onTreeClick
-        def onTreeClick (self,event=None):
+        g.app.gui.postPopupMenu(c, menu, event.x_root, event.y_root)
 
-            '''Handle an event in the tree canvas, outside of any tree widget.'''
+        self.popupMenu = None
 
-            c = self.c
-
-            # New in Leo 4.4.2: a kludge: disable later event handling after a double-click.
-            # This allows focus to stick in newly-opened files opened by double-clicking an @url node.
-            if c.doubleClickFlag:
-                c.doubleClickFlag = False
-            else:
-                c.treeWantsFocusNow()
-
-            g.app.gui.killPopupMenu()
-            c.outerUpdate()
-
-            return 'break'
-        #@-node:ekr.20081004172422.835:onTreeClick
-        #@+node:ekr.20081004172422.836:onTreeRightClick
-        def onTreeRightClick (self,event=None):
-
-            c = self.c
-
-            if not c.exists: return
-
-            if self._block_canvas_menu:
-                self._block_canvas_menu = False
-                return 'break'
-
-            g.doHook('rclick-popup',c=c,event=event,context_menu='canvas')
-
-            c.outerUpdate()
-            return 'break'
-        #@-node:ekr.20081004172422.836:onTreeRightClick
-        #@-others
-    #@-node:ekr.20081010070648.20:Not used (qtTree event handlers)
-    #@-node:ekr.20081004172422.795:Event handlers (qtTree)
+        # Set the focus immediately so we know when we lose it.
+        #c.widgetWantsFocus(menu)
+    #@-node:ekr.20081004172422.834:showPopupMenu
+    #@-node:ekr.20081004172422.828:tree.OnPopup & allies
+    #@-node:ekr.20081004172422.795:Event handlers... (qtTree)
     #@+node:ekr.20081004172422.844:Selecting & editing... (qtTree)
     #@+node:ekr.20081004172422.846:editLabel
     def editLabel (self,p,selectAll=False):
