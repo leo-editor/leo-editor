@@ -120,6 +120,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         self.buttons = self.addToolBar("Buttons")
         self.buttons.addAction(self.actionSave)
+        g.es("log test")
     #@-node:ekr.20081004172422.884: ctor (Window)
     #@+node:ekr.20081010070648.8:minibuffer_run
     def minibuffer_run(self):
@@ -590,6 +591,11 @@ class leoQtBody (leoFrame.leoBody):
             # row_j,col_j = g.convertPythonIndexToRowCol(s,j)
             # w.setSelection(row_i,col_i,row_j,col_j)
     #@-node:ekr.20081007015817.96:setSelectionRange
+    #@+node:ville.20081011134505.6:hasSelection
+    def hasSelection(self):
+        return self.widget.hasSelectedText()
+    #@nonl
+    #@-node:ville.20081011134505.6:hasSelection
     #@-node:ekr.20081007015817.76:Insert point and selection
     #@+node:ekr.20081007015817.98:Scrolling & hit test
     #@+node:ekr.20081007015817.87:getYScrollPosition
