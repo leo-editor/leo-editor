@@ -6221,7 +6221,12 @@ class leoQtTree (leoFrame.leoTree):
 
         """Start editing p's headline."""
 
-        # c = self.c
+        c = self.c
+        w = self.treeWidget
+        it = self.vnodeDict[p.v][0][1]
+
+        w.editItem(it)
+        print "edit",p
         # trace = (False or self.trace_edit)
 
         # if p and p != self.editPosition():
