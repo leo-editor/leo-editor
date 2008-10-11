@@ -6408,9 +6408,9 @@ def install_qt_quicksearch_tab(c):
     wdg = LeoQuickSearchWidget(c,tabw)
     tabw.addTab(wdg, "QuickSearch")
 
-g.ins = install_qt_quicksearch_tab
+g.insqs = install_qt_quicksearch_tab
 
-class LeoQuickSearchWidget(QtGui.QWidget, qt_quicksearch.Ui_LeoQuickSearchWidget):
+class LeoQuickSearchWidget(QtGui.QWidget):
     """ Real-time search widget """
     #@    @+others
     #@+node:ville.20081011134505.12:methods
@@ -6420,9 +6420,32 @@ class LeoQuickSearchWidget(QtGui.QWidget, qt_quicksearch.Ui_LeoQuickSearchWidget
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)
 
-    def insstall(self, c):
-        """ Install to running leo session """
+        self.connect(self.ui.lineEdit,
+                    QtCore.SIGNAL("textChanged(const QString&)"),
+                      self.textChanged)
+        self.c = c                  
+        self.ps = {} # item=> pos
 
+    def textChanged(self):
+        print "New text", self.ui.lineEdit.text()
+        idx = 0
+        self.ui.tableWidget.clear()
+        for p in self.match_headlines(str(self.ui.lineEdit.text())):
+            it = QtGui.QTableWidgetItem(p.headString())
+            self.ps[it] = p.copy()
+            self.ui.tableWidget.setItem(idx, 0, it)
+            idx+=1
+        self.ui.tableWidget.setRowCount(idx)
+
+        print "Matches",idx
+    def match_headlines(self, pat):
+
+        c = self.c
+        pat = pat.lower()
+        for p in c.allNodes_iter():
+            if pat in p.headString():
+                yield p
+        return 
 
 
 
