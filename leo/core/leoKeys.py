@@ -2569,7 +2569,7 @@ class keyHandlerClass:
         k = self ; c = k.c
         w = event and event.widget
         name = c.widget_name(w)
-        trace = False
+        trace = True
 
         if trace: g.trace('stroke',stroke)
 
@@ -3289,7 +3289,7 @@ class keyHandlerClass:
         if traceGC: g.printNewObjects('masterKey 1')
         if trace:
             g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
-            g.trace('callers',g.callers(5))
+            # g.trace('callers',g.callers(5))
                 # 'state.kind:',k.state.kind),'\n',g.callers())
             # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -3368,7 +3368,7 @@ class keyHandlerClass:
                             k.masterCommand(event,b.func,b.stroke,b.commandName)
                             return 'break'
 
-                if trace: g.trace('%s in %s mode' % (stroke,k.unboundKeyAction))
+                if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
                 k.masterCommand(event,func=None,stroke=stroke,commandName=None)
                 return 'break'
 
@@ -3422,7 +3422,7 @@ class keyHandlerClass:
 
         # g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
         # g.trace('button',k.masterBindingsDict.get('button'))
-        g.trace('stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+        # g.trace('stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
         for key,name in (
             # Order here is similar to bindtags order.
@@ -3446,8 +3446,8 @@ class keyHandlerClass:
                 key in ('button','all')
             ):
                 d = k.masterBindingsDict.get(key,{})
-                g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-                g.trace('keys',d.keys()[:5])
+                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                # g.trace('keys',d.keys()[:5])
                 if d:
                     b = d.get(stroke)
                     if b:

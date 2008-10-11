@@ -1904,7 +1904,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20070504080933">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
 
 True:  Leo attempts to create directories if they do not exist.
-False: Leo never attempts to create directories.</t>
+False: Leo never attempts to create directories</t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui

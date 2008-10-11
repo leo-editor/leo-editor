@@ -59,6 +59,14 @@ def init():
         return g.app.gui.guiName() == 'qt'
     else:
         g.app.gui = leoQtGui()
+
+        def qtHandleDefaultChar(self,event,stroke):
+            pass ; g.trace(stroke)
+
+        # Override handleDefaultChar method.
+        h = leoKeys.keyHandlerClass
+        g.funcToMethod(qtHandleDefaultChar,h,"handleDefaultChar")
+
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
@@ -154,7 +162,6 @@ class leoKeyEvent:
         self.x_root = hasattr(event,'x_root') and event.x_root or 0
         self.y_root = hasattr(event,'y_root') and event.y_root or 0
 
-
     def __repr__ (self):
 
         return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
@@ -203,8 +210,8 @@ class leoQtBody (leoFrame.leoBody):
         self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
         self.widget.installEventFilter(self.ev_filter)
 
-        self.widget.connect(self.widget,
-            QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+        # self.widget.connect(self.widget,
+            # QtCore.SIGNAL("textChanged()"),self.onTextChanged)
     #@-node:ekr.20081004172422.504: ctor (qtBody)
     #@+node:ekr.20081004172422.505:createBindings (qtBody)
     def createBindings (self,w=None):
@@ -379,6 +386,8 @@ class leoQtBody (leoFrame.leoBody):
     def onTextChanged (self): ###,undoType,oldSel=None,oldText=None,oldYview=None):
 
         '''Update Leo after the body has been changed.'''
+
+        return ###
 
         c = self.c ; tree = c.frame.tree ; w = self
         trace = True ; verbose = False
@@ -738,7 +747,7 @@ class leoQtBody (leoFrame.leoBody):
         if j is None: j = i
         if i > j: i,j = j,i
 
-        g.trace(len(s))
+        g.trace(i,j,len(s))
 
         s = s[:i] + s[j+1:]
         w.setText(s)
@@ -872,20 +881,23 @@ class leoQtEventFilter(QtCore.QObject):
             self.dumped = True
             g.trace(len(k.masterGuiBindingsDict.keys()))
 
-        tkKey = self.toTkKey(event)
+        tkKey,ch = self.toTkKey(event)
         aList = k.masterGuiBindingsDict.get('<%s>' %tkKey)
             # A list of leoQtX widgets for which the key is bound.
 
         if aList:
-            if trace: g.trace(self.tag,'bound',tkKey)
+            event.accept() # The key has been handled.
+            stroke = self.toStroke(tkKey,ch)
+            if trace: g.trace(self.tag,'bound',tkKey,stroke)
             # Create a standard Leo event.
-            event = leoKeyEvent(event,c,w,tkKey)
-            k.masterKeyHandler(event,stroke=tkKey)
-            # g.trace('masterKeyHandler returns',val)
-            return True # The key has been handled.
+            leoEvent = leoKeyEvent(event,c,w,stroke)
+            k.masterKeyHandler(leoEvent,stroke=stroke)
+            return True
         else:
             if trace and verbose: g.trace(self.tag,'unbound',tkKey)
-            return False # The key has not been handled.
+            # The key has not been handled.
+            event.ignore()
+            return True
     #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event):
 
@@ -933,8 +945,23 @@ class leoQtEventFilter(QtCore.QObject):
         tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
         if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
 
-        return tkKey
+        return tkKey,ch
     #@-node:ekr.20081008084746.1:toTkKey
+    #@+node:ekr.20081011152302.10:toStroke
+    def toStroke (self,tkKey,ch):
+
+        k = self.c.k
+
+        s = tkKey
+        ch2 = k.guiBindNamesInverseDict.get(ch)
+        if ch2: s = s.replace(ch,ch2)
+
+        return (
+            s.replace('Alt-','Alt+').
+            replace('Control-','Ctrl+').
+            replace('Shift-','Shift+')
+        )
+    #@-node:ekr.20081011152302.10:toStroke
     #@-node:ekr.20081004172422.897:key_pressed
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
@@ -4603,12 +4630,19 @@ class leoQtMenu (leoMenu.leoMenu):
         n = keys.get('underline')
         menu = keys.get('menu') or self
 
+        d = {'Return':'Rtn','BackSpace':'BkSp',}
+
         if label:
             if n > -1:
                 label = label[:n] + '&' + label[n:]
                 # g.trace(label)
             action = menu.addAction(label)
-            # if accel: action.setShortcut(accel)
+            if accel:
+                accel2 = d.get(accel)
+                if accel2:
+                    # g.trace(accel,accel2)
+                    accel = accel2
+                # action.setShortcut(accel)
             if command:
                 def add_command_callback(label=label,command=command):
                     g.trace('====',label,command)
