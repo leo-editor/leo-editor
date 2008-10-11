@@ -6037,6 +6037,7 @@ class baseCommands:
                 if c.exists: c.outerUpdate()
                 return val
 
+            # Replace the previous command with a wrapper.
             keys ['command'] = add_commandCallback
 
             menu.add_command(**keys)
