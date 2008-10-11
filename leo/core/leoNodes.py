@@ -1390,7 +1390,7 @@ class basePosition (object):
     def isVisible (self,c):
 
         p = self
-        trace = True
+        trace = False
         limit,limitIsVisible = c.visLimit()
         limit_v = limit and limit.v or None
         if p.v == limit_v:
