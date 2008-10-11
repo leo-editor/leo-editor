@@ -6506,6 +6506,73 @@ class qtSearchWidget:
         self.text = None
 #@nonl
 #@-node:ekr.20081007015817.34:class qtSearchWidget
+#@+node:ville.20081011134505.13:Non-essential
+#@+node:ville.20081011134505.11:class LeoQuickSearchWidget
+import qt_quicksearch
+
+def install_qt_quicksearch_tab(c):
+    tabw = c.frame.top.tabWidget
+    wdg = LeoQuickSearchWidget(c,tabw)
+    tabw.addTab(wdg, "QuickSearch")
+
+g.insqs = install_qt_quicksearch_tab
+
+class LeoQuickSearchWidget(QtGui.QWidget):
+    """ Real-time search widget """
+    #@    @+others
+    #@+node:ville.20081011134505.12:methods
+    import qt_quicksearch
+    def __init__(self, c, parent = None):
+        QtGui.QWidget.__init__(self, parent)
+        self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
+        self.ui.setupUi(self)
+
+        self.connect(self.ui.lineEdit,
+                    QtCore.SIGNAL("textChanged(const QString&)"),
+                      self.textChanged)
+        self.connect(self.ui.tableWidget,
+                    QtCore.SIGNAL("cellClicked(int, int)"),
+                      self.cellClicked)
+
+        self.c = c                  
+        self.ps = {} # item=> pos
+
+    def textChanged(self):
+        print "New text", self.ui.lineEdit.text()
+        idx = 0
+        self.ui.tableWidget.clear()
+        for p in self.match_headlines(str(self.ui.lineEdit.text())):
+            it = QtGui.QTableWidgetItem(p.headString())
+            self.ps[idx] = p.copy()
+            self.ui.tableWidget.setItem(idx, 0, it)
+            idx+=1
+
+        self.ui.tableWidget.setRowCount(idx)
+
+        print "Matches",idx
+
+    def cellClicked (self, row, column ) :
+        p = self.ps[row]
+        print "Go to pos",p
+        self.c.selectPosition(p)
+
+
+    def match_headlines(self, pat):
+
+        c = self.c
+        pat = pat.lower()
+        for p in c.allNodes_iter():
+            if pat in p.headString():
+                yield p
+        return 
+
+
+
+
+    #@-node:ville.20081011134505.12:methods
+    #@-others
+#@-node:ville.20081011134505.11:class LeoQuickSearchWidget
+#@-node:ville.20081011134505.13:Non-essential
 #@-others
 #@-node:ekr.20081004102201.619:@thin qtGui.py
 #@-leo
