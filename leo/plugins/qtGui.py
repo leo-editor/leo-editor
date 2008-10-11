@@ -2894,7 +2894,7 @@ class leoQtGui(leoGui.leoGui):
 
         """Create and run an Qt open file dialog ."""
 
-        fd = QFileDialog(self)
+        fd = QtGui.QFileDialog()
         fname = fd.getOpenFileName()
         g.trace(fname)
         return fname
