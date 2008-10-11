@@ -3279,7 +3279,7 @@ class keyHandlerClass:
         #@nonl
         #@-node:ekr.20061031131434.147:<< define vars >>
         #@nl
-        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+        trace = (True or self.trace_masterKeyHandler) and not g.app.unitTesting
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
 
@@ -3289,6 +3289,7 @@ class keyHandlerClass:
         if traceGC: g.printNewObjects('masterKey 1')
         if trace:
             g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
+            g.trace('callers',g.callers(5))
                 # 'state.kind:',k.state.kind),'\n',g.callers())
             # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -3421,7 +3422,7 @@ class keyHandlerClass:
 
         # g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
         # g.trace('button',k.masterBindingsDict.get('button'))
-        # g.trace('stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+        g.trace('stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
         for key,name in (
             # Order here is similar to bindtags order.
@@ -3445,7 +3446,8 @@ class keyHandlerClass:
                 key in ('button','all')
             ):
                 d = k.masterBindingsDict.get(key,{})
-                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                g.trace('keys',d.keys()[:5])
                 if d:
                     b = d.get(stroke)
                     if b:
@@ -3528,7 +3530,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         modesTuple = ('insert','overwrite')
-        trace = False
+        trace = True
 
         if trace:
             # if stroke: g.trace('***unexpected stroke***')
