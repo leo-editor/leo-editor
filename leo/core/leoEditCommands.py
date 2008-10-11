@@ -2724,7 +2724,7 @@ class editCommandsClass (baseEditCommandsClass):
         wname = c.widget_name(w)
         ins = w.getInsertPoint()
         i,j = w.getSelectionRange()
-        # g.trace(wname,i,j,ins)
+        g.trace(wname,i,j,ins)
 
         if wname.startswith('body'):
             self.beginCommand()
@@ -3020,7 +3020,7 @@ class editCommandsClass (baseEditCommandsClass):
         #@nonl
         #@-node:ekr.20061103114242:<< set local vars >>
         #@nl
-        #g.trace('ch',repr(ch))
+        g.trace('ch',repr(ch))
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
             return "break" # The hook claims to have handled the event.
         if ch == '\t':

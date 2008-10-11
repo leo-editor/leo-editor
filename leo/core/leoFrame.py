@@ -2678,9 +2678,9 @@ class leoTree:
 
         pass
 
-    def selectHint (self,p):
+    def selectHint (self,p,old_p):
 
-        '''Called at end of tree.select.'''
+        '''Called at end of tree.select, just after calling c.selectPosition(p).'''
 
         pass
     #@-node:ekr.20081005065934.8:May be defined in subclasses
@@ -2743,6 +2743,9 @@ class leoTree:
 
         g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
 
+        c.frame.tree.selectHint(p,old_p)
+            # New in Leo 4.6: warn that the position is about to change.
+
         if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
             #@        << select the new node >>
             #@+node:ekr.20040803072955.130:<< select the new node >>
@@ -2802,8 +2805,6 @@ class leoTree:
             if theChapter:
                 theChapter.p = p.copy()
                 # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
-
-        c.frame.tree.selectHint(p) # New in Leo 4.6.
 
         if self.stayInTree:
             c.treeWantsFocus()

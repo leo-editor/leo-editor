@@ -171,11 +171,12 @@ class leoQtBody (leoFrame.leoBody):
         # Call the base class constructor.
         leoFrame.leoBody.__init__(self,frame,parentFrame)
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c
         assert c.frame == frame and frame.c == c
 
         self.widget = c.frame.top.textEdit # The actual gui widget.
         self.bodyCtrl = self # The widget as seen from Leo's core.
+        self.body_p = None
 
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
@@ -257,6 +258,11 @@ class leoQtBody (leoFrame.leoBody):
 
             # c.bind(w,kind,bodyClickCallback)
     #@-node:ekr.20081004172422.505:createBindings (qtBody)
+    #@+node:ekr.20081011035036.13:get_name
+    def getName (self):
+
+        return 'body-widget'
+    #@-node:ekr.20081011035036.13:get_name
     #@+node:ekr.20081007015817.77:injectIvars
     def injectIvars (self,name='1',parentFrame=None):
 
@@ -373,35 +379,44 @@ class leoQtBody (leoFrame.leoBody):
 
         '''Update Leo after the body has been changed.'''
 
-        c = self.c ; w = self ; trace = True
-        p = c.currentPosition() # Dubious.
-
-        if c.frame.tree.selecting:
-            if trace: g.trace('selecting')
+        c = self.c ; tree = c.frame.tree ; w = self
+        trace = True ; verbose = False
+        old_p,new_p = tree.old_p,tree.new_p
+        if tree.selecting:
+            if trace and verbose: g.trace('selecting')
             return
-        if c.frame.tree.redrawing:
-            if trace: g.trace('redrawing')
+        if tree.redrawing:
+            if trace and verbose: g.trace('redrawing')
             return
-
-        return ###
 
         newInsert = w.getInsertPoint()
         newSel = w.getSelectionRange()
         newText = w.getAllText() # Converts to unicode.
 
+        select = new_p and new_p != self.body_p
+        if select:
+            if trace and verbose:
+                g.trace('** select',tree.new_p.headString())
+            self.body_p = new_p.copy()
+            return
+
+        p = self.body_p
+        if not p:
+            g.trace('oops: no p')
+            return
+
         # Get the previous values from the tnode.
-        oldText = p.v.t._bodyString or ''
+        oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
         oldIns  = p.v.t.insertSpot
         i,j = p.v.t.selectionStart,p.v.t.selectionLength
         oldSel  = (i,j-i)
-        oldYview = None ###
+        oldYview = None
 
-        changed = oldText != newText
-        if trace and changed:
-            g.trace('changed',p and p.headString(),len(oldText),len(newText))
-        if not changed: return
+        if oldText == newText:
+            return
+        else:
+            if trace: g.trace('****changed',p.headString(),len(oldText),len(newText))
 
-        # Dubious.
         undoType = 'changed event'
         c.undoer.setUndoTypingParams(p,undoType,
             oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
@@ -411,7 +426,7 @@ class leoQtBody (leoFrame.leoBody):
         p.v.t.insertSpot = newInsert
         i,j = newSel
         if i > j: i,j = j,i
-        p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
+        new_p.v.t.selectionStart,new_p.v.t.selectionLength = (i,j-i)
 
         # No need to recolor the body.
         # No need to redraw the screen.
@@ -717,32 +732,44 @@ class leoQtBody (leoFrame.leoBody):
         if j is None: j = i
         if i > j: i,j = j,i
 
+        g.trace(len(s))
+
         s = s[:i] + s[j+1:]
         w.setText(s)
         return i
     #@-node:ekr.20081008084746.6:delete
     #@+node:ekr.20081007015817.80:get
-    def get(self,i,j):
+    def get(self,i,j=None):
 
-        self.oops() ; return ''
+        w = self.widget
+        s = self.getAllText()
 
+        if j is None: j = i+1
+
+        return s[i:j]
     #@-node:ekr.20081007015817.80:get
     #@+node:ekr.20081007015817.81:getAllText
     def getAllText(self):
 
         w = self.widget
         s = w.text()
-        s = g.toUnicode(s,g.app.tkEncoding)
+        s = g.toUnicode(s,'utf-8')
 
         # g.trace(len(s))
         return s
 
     #@-node:ekr.20081007015817.81:getAllText
-    #@+node:ekr.20081007015817.89:insertText
-    def insertText(self,i,s):
+    #@+node:ekr.20081007015817.89:insert
+    def insert(self,i,s2):
 
-        self.oops()
-    #@-node:ekr.20081007015817.89:insertText
+        w = self.widget
+        s = self.getAllText()
+
+        s = s[:i] + s2 + s[i+1:]
+        w.setText(s)
+
+        return i
+    #@-node:ekr.20081007015817.89:insert
     #@+node:ekr.20081007015817.92:setAllText
     def setAllText(self,s):
 
@@ -897,7 +924,6 @@ class leoQtEventFilter(QtCore.QObject):
                 mods.append("Shift")
         elif len(ch) == 1: ch = ch.lower()
 
-        # tkKey = "-".join(mods) + (mods and "-" or "") + ch
         tkKey = '<%s%s%s>' % ('-'.join(mods),mods and '-' or '',ch)
         if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
 
@@ -5544,6 +5570,7 @@ class leoQtTree (leoFrame.leoTree):
         # Status ivars.
         self.dragging = False
         self.generation = 0
+        self.prev_p = None
         self.redrawing = False
         self.redrawCount = 0 # Count for debugging.
         self.revertHeadline = None # Previous headline text for abortEditLabel.
@@ -5889,7 +5916,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Update p's icon in response to a change in the body.'''
 
-        aList = self.vnodeDict.get(p.v)
+        aList = self.vnodeDict.get(p.v,[])
         icon = self.getIcon(p)
 
         for p,it in aList:
@@ -5906,8 +5933,10 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c ; w = self.treeWidget ; trace = False ; verbose = False
 
         if self.selecting:
-            return g.trace('already selecting')
+            if trace: g.trace('already selecting')
+            return
         if self.redrawing:
+            if trace: g.trace('drawing')
             return
 
         self.selecting = True
@@ -5919,21 +5948,26 @@ class leoQtTree (leoFrame.leoTree):
                 if trace: g.trace(p and p.headString())
                 c.frame.tree.select(p) # The crucial hook.
             else:
-                # This is an error if we are not redrawing.
+                # An error: we are not redrawing.
                 g.trace('no p for item: %s' % it)
         finally:
             self.selecting = False
     #@-node:ekr.20081009055104.8:onTreeSelect
     #@+node:ekr.20081009055104.11:selectHint
-    def selectHint (self,p):
+    def selectHint (self,p,old_p):
 
         w = self.treeWidget ; trace = False
         aList = self.vnodeDict.get(p.v,[])
         h = p.headString()
 
+        self.new_p = p.copy()
+        self.old_p = old_p.copy()
+
+        if trace: g.trace(p and p.headString(),old_p and old_p.headString())
+
         for p2,it in aList:
             if p == p2:
-                if trace: g.trace('found it: %s for h: %s' % (it,h))
+                # if trace: g.trace('found it: %s for h: %s' % (it,h))
                 w.setCurrentItem(it)
                 break
         else:
