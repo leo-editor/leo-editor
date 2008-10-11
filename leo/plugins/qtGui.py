@@ -2590,9 +2590,10 @@ class leoQtFrame (leoFrame.leoFrame):
     #@-node:ekr.20081004172422.620:Delayed Focus (qtFrame)
     #@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
     def bringToFront (self):
+        pass
         # g.trace(g.callers())
-        self.top.deiconify()
-        self.top.lift()
+        #self.top.deiconify()
+        #self.top.lift()
 
     def getFocus(self):
         """Returns the widget that has focus, or body if None."""
@@ -2897,7 +2898,7 @@ class leoQtGui(leoGui.leoGui):
         fd = QtGui.QFileDialog()
         fname = fd.getOpenFileName()
         g.trace(fname)
-        return fname
+        return str(fname)
 
         # self.load_file(fname)
 
@@ -2913,13 +2914,17 @@ class leoQtGui(leoGui.leoGui):
 
         """Create and run an Qt save file dialog ."""
 
+        fd = QtGui.QFileDialog()
+        fname = fd.getSaveFileName()
+        g.trace(fname)
+        return str(fname)
+
         # return self.runFileDialog(
             # title=title,
             # filetypes=filetypes,
             # action='save',
             # initialfile=initialfile
         # )
-    #@nonl
     #@-node:ekr.20081004102201.645:runSaveFileDialog
     #@-node:ekr.20081004102201.642:qtGui file dialogs
     #@+node:ekr.20081004102201.646:qtGui panels
