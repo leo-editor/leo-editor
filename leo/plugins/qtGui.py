@@ -865,7 +865,7 @@ class leoQtEventFilter(QtCore.QObject):
         #@-node:ekr.20081007115148.6:<< about internal bindings >>
         #@nl
 
-        trace = False ; verbose = False ; dump = False
+        trace = True ; verbose = True ; dump = False
         c = self.c ; k = c.k ; w = self.w
 
         if trace and dump and not self.dumped:
@@ -873,7 +873,7 @@ class leoQtEventFilter(QtCore.QObject):
             g.trace(len(k.masterGuiBindingsDict.keys()))
 
         tkKey = self.toTkKey(event)
-        aList = k.masterGuiBindingsDict.get(tkKey)
+        aList = k.masterGuiBindingsDict.get('<%s>' %tkKey)
             # A list of leoQtX widgets for which the key is bound.
 
         if aList:
@@ -930,7 +930,7 @@ class leoQtEventFilter(QtCore.QObject):
                 mods.append("Shift")
         elif len(ch) == 1: ch = ch.lower()
 
-        tkKey = '<%s%s%s>' % ('-'.join(mods),mods and '-' or '',ch)
+        tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
         if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
 
         return tkKey
@@ -3501,7 +3501,9 @@ class leoQtLog (leoFrame.leoLog):
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
         # Initial setup.
-        self.ev_filter = leoQtEventFilter(c,w=self,tag='log')
+        # self.ev_filter = leoQtEventFilter(c,w=self,tag='log')
+        # self.widget.installEventFilter(self.ev_filter)
+
         self.tabWidget.clear() # Remove any tabs created by QtDesigner.
         self.setFontFromConfig()
         self.setColorFromConfig()
@@ -4606,10 +4608,10 @@ class leoQtMenu (leoMenu.leoMenu):
                 label = label[:n] + '&' + label[n:]
                 # g.trace(label)
             action = menu.addAction(label)
-            if accel: action.setShortcut(accel)
+            # if accel: action.setShortcut(accel)
             if command:
                 def add_command_callback(label=label,command=command):
-                    # g.trace(label,command)
+                    g.trace('====',label,command)
                     command()
 
                 QtCore.QObject.connect(
@@ -5622,8 +5624,8 @@ class leoQtTree (leoFrame.leoTree):
         c.frame.top.connect(self.treeWidget,
             QtCore.SIGNAL("itemSelectionChanged()"), self.onTreeSelect)
 
-        self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
-        self.treeWidget.installEventFilter(self.ev_filter)
+        # self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+        # self.treeWidget.installEventFilter(self.ev_filter)
 
         self.setTreeColors()
         self.setTreeFont()
