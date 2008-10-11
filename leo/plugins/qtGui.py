@@ -6447,7 +6447,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
     def cellClicked (self, row, column ) :
         p = self.ps[row]
         print "Go to pos",p
-        self.c.setCurrentPosition(p)
+        self.c.selectPosition(p)
 
 
     def match_headlines(self, pat):
