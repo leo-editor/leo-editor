@@ -858,6 +858,7 @@ class leoQtEventFilter(QtCore.QObject):
         eventType = event.type()
         self.traceEvent(obj,event)
 
+        trigger = e.KeyPress # KeyRelease
         if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
             tkKey,ch = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
@@ -865,7 +866,7 @@ class leoQtEventFilter(QtCore.QObject):
         else:
             override = False
 
-        if eventType == e.KeyRelease:
+        if eventType == trigger:
             if override:
                 # junk = self.key_pressed(aList,tkKey) # obj, event)
                 stroke = self.toStroke(tkKey,ch)
@@ -4654,10 +4655,9 @@ class leoQtMenu (leoMenu.leoMenu):
                 if accel2:
                     # g.trace(accel,accel2)
                     accel = accel2
-                # action.setShortcut(accel)
+                action.setShortcut(accel)
             if command:
                 def add_command_callback(label=label,command=command):
-                    g.trace('====',label,command)
                     command()
 
                 QtCore.QObject.connect(
@@ -5670,8 +5670,8 @@ class leoQtTree (leoFrame.leoTree):
         c.frame.top.connect(self.treeWidget,
             QtCore.SIGNAL("itemSelectionChanged()"), self.onTreeSelect)
 
-        # self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
-        # self.treeWidget.installEventFilter(self.ev_filter)
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+        self.treeWidget.installEventFilter(self.ev_filter)
 
         self.setTreeColors()
         self.setTreeFont()
