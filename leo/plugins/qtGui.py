@@ -210,8 +210,8 @@ class leoQtBody (leoFrame.leoBody):
         self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
         self.widget.installEventFilter(self.ev_filter)
 
-        # self.widget.connect(self.widget,
-            # QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("textChanged()"),self.onTextChanged)
     #@-node:ekr.20081004172422.504: ctor (qtBody)
     #@+node:ekr.20081004172422.505:createBindings (qtBody)
     def createBindings (self,w=None):
@@ -386,6 +386,8 @@ class leoQtBody (leoFrame.leoBody):
     def onTextChanged (self): ###,undoType,oldSel=None,oldText=None,oldYview=None):
 
         '''Update Leo after the body has been changed.'''
+
+        g.trace()
 
         return ###
 
@@ -807,7 +809,7 @@ class leoQtEventFilter(QtCore.QObject):
 
     def eventFilter(self, obj, event):
 
-        c = self.c ; tag = self.tag ; trace = False
+        c = self.c ; tag = self.tag ; trace = True
         traceTypes = (
             # (QtCore.QEvent.KeyPress,'key-press'),
             (QtCore.QEvent.KeyRelease,'key-release'),
@@ -892,7 +894,7 @@ class leoQtEventFilter(QtCore.QObject):
             # Create a standard Leo event.
             leoEvent = leoKeyEvent(event,c,w,stroke)
             k.masterKeyHandler(leoEvent,stroke=stroke)
-            return True
+            return False
         else:
             if trace and verbose: g.trace(self.tag,'unbound',tkKey)
             # The key has not been handled.
