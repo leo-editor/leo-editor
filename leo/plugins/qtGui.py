@@ -210,8 +210,8 @@ class leoQtBody (leoFrame.leoBody):
         self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
         self.widget.installEventFilter(self.ev_filter)
 
-        # self.widget.connect(self.widget,
-            # QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("textChanged()"),self.onTextChanged)
     #@-node:ekr.20081004172422.504: ctor (qtBody)
     #@+node:ekr.20081004172422.505:createBindings (qtBody)
     def createBindings (self,w=None):
@@ -387,11 +387,13 @@ class leoQtBody (leoFrame.leoBody):
 
         '''Update Leo after the body has been changed.'''
 
-        return ###
 
         c = self.c ; tree = c.frame.tree ; w = self
-        trace = True ; verbose = False
+        trace = False ; verbose = False
         old_p,new_p = tree.old_p,tree.new_p
+
+        return ###
+
         if tree.selecting:
             if trace and verbose: g.trace('selecting')
             return
@@ -799,31 +801,55 @@ class leoQtEventFilter(QtCore.QObject):
 
     def __init__(self,c,w,tag=''):
         self.c = c
-        self.w = w # this is a leoQtX object, *not* a Qt object.
+        self.w = w # A leoQtX object, *not* a Qt object.
         QtCore.QObject.__init__(self)
-        # self.bindings = {}
         self.dumped = False # True if bindings dict has been dumped.
         self.tag = tag
 
     def eventFilter(self, obj, event):
 
-        c = self.c ; tag = self.tag ; trace = False
-        traceTypes = (
-            # (QtCore.QEvent.KeyPress,'key-press'),
-            (QtCore.QEvent.KeyRelease,'key-release'),
+        c = self.c ; k = c.k ; e = QtCore.QEvent ; trace = False
+        ignore = (
+            e.ToolTip,
+            e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+            e.MetaCall,e.Move,e.Paint,e.Resize,
+            e.Polish,e.PolishRequest,
+        )
+        show = (
+            (e.KeyPress,'key-press'),
+            (e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
         )
         eventType = event.type()
-        for val,kind in traceTypes:
-            if trace and eventType == val:
-                p = c.currentPosition()
-                g.trace(tag,kind,p and p.headString() or '<no current p>')
 
-        if event.type() in (QtCore.QEvent.KeyRelease,):
-            return self.key_pressed(obj, event)
+        if trace:
+            for val,kind in show:
+                if eventType == val:
+                    p = c.currentPosition()
+                    g.trace('%3s:%s' % (val,kind))
+                    break
+            else:
+                if eventType not in ignore:
+                    g.trace('%3s:%s' % (eventType,'unknown'))
+
+        # return eventType != QtCore.QEvent.FocusIn
+            # Return True (handled) for all other events.
+
+        if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
+            tkKey,ch = self.toTkKey(event)
+            aList = k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+            override = len(aList)
         else:
-            return False
+            override = False
+
+        if eventType == e.KeyRelease:
+            junk = self.key_pressed(obj, event)
+
+        return override
 
     #@    @+others
+    #@+node:ekr.20081013143507.10:shortcut_override
+    #@-node:ekr.20081013143507.10:shortcut_override
     #@+node:ekr.20081004172422.897:key_pressed
     def key_pressed(self, obj, event): # obj not used.
 
@@ -886,7 +912,7 @@ class leoQtEventFilter(QtCore.QObject):
             # A list of leoQtX widgets for which the key is bound.
 
         if aList:
-            event.accept() # The key has been handled.
+            # event.accept() # The key has been handled.
             stroke = self.toStroke(tkKey,ch)
             if trace: g.trace(self.tag,'bound',tkKey,stroke)
             # Create a standard Leo event.
@@ -896,8 +922,8 @@ class leoQtEventFilter(QtCore.QObject):
         else:
             if trace and verbose: g.trace(self.tag,'unbound',tkKey)
             # The key has not been handled.
-            event.ignore()
-            return True
+            # event.ignore()
+            return False
     #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event):
 
