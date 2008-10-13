@@ -848,8 +848,6 @@ class leoQtEventFilter(QtCore.QObject):
         return override
 
     #@    @+others
-    #@+node:ekr.20081013143507.10:shortcut_override
-    #@-node:ekr.20081013143507.10:shortcut_override
     #@+node:ekr.20081004172422.897:key_pressed
     def key_pressed(self, obj, event): # obj not used.
 
