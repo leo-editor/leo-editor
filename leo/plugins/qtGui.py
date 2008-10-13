@@ -63,9 +63,9 @@ def init():
         def qtHandleDefaultChar(self,event,stroke):
             pass ; g.trace(stroke)
 
-        # Override handleDefaultChar method.
-        h = leoKeys.keyHandlerClass
-        g.funcToMethod(qtHandleDefaultChar,h,"handleDefaultChar")
+        if 0: # Override handleDefaultChar method.
+            h = leoKeys.keyHandlerClass
+            g.funcToMethod(qtHandleDefaultChar,h,"handleDefaultChar")
 
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
@@ -391,8 +391,6 @@ class leoQtBody (leoFrame.leoBody):
         c = self.c ; tree = c.frame.tree ; w = self
         trace = False ; verbose = False
         old_p,new_p = tree.old_p,tree.new_p
-
-        return ###
 
         if tree.selecting:
             if trace and verbose: g.trace('selecting')
@@ -749,7 +747,7 @@ class leoQtBody (leoFrame.leoBody):
         if j is None: j = i
         if i > j: i,j = j,i
 
-        g.trace(i,j,len(s))
+        # g.trace(i,j,len(s))
 
         s = s[:i] + s[j+1:]
         w.setText(s)
@@ -799,129 +797,101 @@ class leoQtBody (leoFrame.leoBody):
 #@+node:ekr.20081004102201.628:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
+    #@    << about internal bindings >>
+    #@+node:ekr.20081007115148.6:<< about internal bindings >>
+    #@@nocolor-node
+    #@+at
+    # 
+    # Here are the rules for translating key bindings (in leoSettings.leo) 
+    # into keys for k.bindingsDict:
+    # 
+    # 1.  The case of plain letters is significant:  a is not A.
+    # 
+    # 2. The Shift- prefix can be applied *only* to letters. Leo will ignore 
+    # (with a
+    # warning) the shift prefix applied to any other binding, e.g., 
+    # Ctrl-Shift-(
+    # 
+    # 3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+    # significant. Thus, the Shift- prefix is required if you want an 
+    # upper-case
+    # letter (with the exception of 'bare' uppercase letters.)
+    # 
+    # The following table illustrates these rules. In each row, the first 
+    # entry is the
+    # key (for k.bindingsDict) and the other entries are equivalents that the 
+    # user may
+    # specify in leoSettings.leo:
+    # 
+    # a, Key-a, Key-A
+    # A, Shift-A
+    # Alt-a, Alt-A
+    # Alt-A, Alt-Shift-a, Alt-Shift-A
+    # Ctrl-a, Ctrl-A
+    # Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+    # !, Key-!,Key-exclam,exclam
+    # 
+    # This table is consistent with how Leo already works (because it is 
+    # consistent
+    # with Tk's key-event specifiers). It is also, I think, the least 
+    # confusing set of
+    # rules.
+    #@-at
+    #@nonl
+    #@-node:ekr.20081007115148.6:<< about internal bindings >>
+    #@nl
+
     def __init__(self,c,w,tag=''):
+
         self.c = c
         self.w = w # A leoQtX object, *not* a Qt object.
         QtCore.QObject.__init__(self)
         self.dumped = False # True if bindings dict has been dumped.
         self.tag = tag
 
+    #@    @+others
+    #@+node:ekr.20081013143507.12:eventFilter
     def eventFilter(self, obj, event):
 
-        c = self.c ; k = c.k ; e = QtCore.QEvent ; trace = False
-        ignore = (
-            e.ToolTip,
-            e.FocusIn,e.FocusOut,e.Enter,e.Leave,
-            e.MetaCall,e.Move,e.Paint,e.Resize,
-            e.Polish,e.PolishRequest,
-        )
-        show = (
-            (e.KeyPress,'key-press'),
-            (e.KeyRelease,'key-release'),
-            (e.ShortcutOverride,'shortcut-override'),
-        )
+        c = self.c ; k = c.k ; e = QtCore.QEvent ; w = self.w
+        trace = False ; verbose = True
         eventType = event.type()
-
-        if trace:
-            for val,kind in show:
-                if eventType == val:
-                    p = c.currentPosition()
-                    g.trace('%3s:%s' % (val,kind))
-                    break
-            else:
-                if eventType not in ignore:
-                    g.trace('%3s:%s' % (eventType,'unknown'))
-
-        # return eventType != QtCore.QEvent.FocusIn
-            # Return True (handled) for all other events.
+        self.traceEvent(obj,event)
 
         if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
             tkKey,ch = self.toTkKey(event)
-            aList = k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-            override = len(aList)
+            aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+            override = len(aList) > 0
         else:
             override = False
 
         if eventType == e.KeyRelease:
-            junk = self.key_pressed(obj, event)
+            if override:
+                # junk = self.key_pressed(aList,tkKey) # obj, event)
+                stroke = self.toStroke(tkKey,ch)
+                leoEvent = leoKeyEvent(event,c,w,stroke)
+                ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+                if trace: g.trace(self.tag,'bound',tkKey,'ret',ret)
+            else:
+                if trace and verbose: g.trace(self.tag,'unbound',tkKey)
 
         return override
+    #@-node:ekr.20081013143507.12:eventFilter
+    #@+node:ekr.20081011152302.10:toStroke
+    def toStroke (self,tkKey,ch):
 
-    #@    @+others
-    #@+node:ekr.20081004172422.897:key_pressed
-    def key_pressed(self, obj, event): # obj not used.
+        k = self.c.k
 
-        """ Handle key presses (on any window) """
+        s = tkKey
+        ch2 = k.guiBindNamesInverseDict.get(ch)
+        if ch2: s = s.replace(ch,ch2)
 
-        #@    << about internal bindings >>
-        #@+node:ekr.20081007115148.6:<< about internal bindings >>
-        #@@nocolor-node
-        #@+at
-        # 
-        # Here are the rules for translating key bindings (in leoSettings.leo) 
-        # into keys for k.bindingsDict:
-        # 
-        # 1.  The case of plain letters is significant:  a is not A.
-        # 
-        # 2. The Shift- prefix can be applied *only* to letters. Leo will 
-        # ignore (with a
-        # warning) the shift prefix applied to any other binding, e.g., 
-        # Ctrl-Shift-(
-        # 
-        # 3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is 
-        # *not*
-        # significant. Thus, the Shift- prefix is required if you want an 
-        # upper-case
-        # letter (with the exception of 'bare' uppercase letters.)
-        # 
-        # The following table illustrates these rules. In each row, the first 
-        # entry is the
-        # key (for k.bindingsDict) and the other entries are equivalents that 
-        # the user may
-        # specify in leoSettings.leo:
-        # 
-        # a, Key-a, Key-A
-        # A, Shift-A
-        # Alt-a, Alt-A
-        # Alt-A, Alt-Shift-a, Alt-Shift-A
-        # Ctrl-a, Ctrl-A
-        # Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
-        # !, Key-!,Key-exclam,exclam
-        # 
-        # This table is consistent with how Leo already works (because it is 
-        # consistent
-        # with Tk's key-event specifiers). It is also, I think, the least 
-        # confusing set of
-        # rules.
-        #@-at
-        #@nonl
-        #@-node:ekr.20081007115148.6:<< about internal bindings >>
-        #@nl
-
-        trace = True ; verbose = True ; dump = False
-        c = self.c ; k = c.k ; w = self.w
-
-        if trace and dump and not self.dumped:
-            self.dumped = True
-            g.trace(len(k.masterGuiBindingsDict.keys()))
-
-        tkKey,ch = self.toTkKey(event)
-        aList = k.masterGuiBindingsDict.get('<%s>' %tkKey)
-            # A list of leoQtX widgets for which the key is bound.
-
-        if aList:
-            # event.accept() # The key has been handled.
-            stroke = self.toStroke(tkKey,ch)
-            if trace: g.trace(self.tag,'bound',tkKey,stroke)
-            # Create a standard Leo event.
-            leoEvent = leoKeyEvent(event,c,w,stroke)
-            k.masterKeyHandler(leoEvent,stroke=stroke)
-            return True
-        else:
-            if trace and verbose: g.trace(self.tag,'unbound',tkKey)
-            # The key has not been handled.
-            # event.ignore()
-            return False
+        return (
+            s.replace('Alt-','Alt+').
+            replace('Control-','Ctrl+').
+            replace('Shift-','Shift+')
+        )
+    #@-node:ekr.20081011152302.10:toStroke
     #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event):
 
@@ -971,22 +941,40 @@ class leoQtEventFilter(QtCore.QObject):
 
         return tkKey,ch
     #@-node:ekr.20081008084746.1:toTkKey
-    #@+node:ekr.20081011152302.10:toStroke
-    def toStroke (self,tkKey,ch):
+    #@+node:ekr.20081013143507.11:traceEvent
+    def traceEvent (self,obj,event):
 
-        k = self.c.k
+        c = self.c ; e = QtCore.QEvent ; trace = False
 
-        s = tkKey
-        ch2 = k.guiBindNamesInverseDict.get(ch)
-        if ch2: s = s.replace(ch,ch2)
+        if not trace: return
 
-        return (
-            s.replace('Alt-','Alt+').
-            replace('Control-','Ctrl+').
-            replace('Shift-','Shift+')
+        eventType = event.type()
+
+        if dump and not self.dumped:
+            self.dumped = True
+            g.trace(len(k.masterGuiBindingsDict.keys()))
+
+        ignore = (
+            e.ToolTip,
+            e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+            e.MetaCall,e.Move,e.Paint,e.Resize,
+            e.Polish,e.PolishRequest,
         )
-    #@-node:ekr.20081011152302.10:toStroke
-    #@-node:ekr.20081004172422.897:key_pressed
+        show = (
+            (e.KeyPress,'key-press'),
+            (e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
+        )
+
+        for val,kind in show:
+            if eventType == val:
+                p = c.currentPosition()
+                g.trace('%3s:%s' % (val,kind))
+                break
+        else:
+            if eventType not in ignore:
+                g.trace('%3s:%s' % (eventType,'unknown'))
+    #@-node:ekr.20081013143507.11:traceEvent
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
 #@+node:ekr.20081007015817.56:class leoQtFindTab (findTab)

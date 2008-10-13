@@ -2724,7 +2724,7 @@ class editCommandsClass (baseEditCommandsClass):
         wname = c.widget_name(w)
         ins = w.getInsertPoint()
         i,j = w.getSelectionRange()
-        g.trace(wname,i,j,ins)
+        # g.trace(wname,i,j,ins)
 
         if wname.startswith('body'):
             self.beginCommand()
