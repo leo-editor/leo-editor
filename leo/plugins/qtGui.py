@@ -5670,6 +5670,9 @@ class leoQtTree (leoFrame.leoTree):
         c.frame.top.connect(self.treeWidget,
             QtCore.SIGNAL("itemSelectionChanged()"), self.onTreeSelect)
 
+        c.frame.top.connect(self.treeWidget,
+            QtCore.SIGNAL("itemChanged(QTreeWidgetItem*, int)"), self.sig_itemChanged)
+
         self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
         self.treeWidget.installEventFilter(self.ev_filter)
 
@@ -6024,6 +6027,19 @@ class leoQtTree (leoFrame.leoTree):
         finally:
             self.selecting = False
     #@-node:ekr.20081009055104.8:onTreeSelect
+    #@+node:ville.20081014172405.10:sig_itemChanged
+    def sig_itemChanged(self, item, col):
+        # we get tons of item changes when redrawing, ignore
+        if self.redrawing:
+            return
+
+        p = self.itemsDict[id(item)]
+        # so far, col is always 0
+        h = str(item.text(col))
+        p.setHeadString(h)
+        print "edited: ",p
+    #@nonl
+    #@-node:ville.20081014172405.10:sig_itemChanged
     #@+node:ekr.20081009055104.11:selectHint
     def selectHint (self,p,old_p):
 
