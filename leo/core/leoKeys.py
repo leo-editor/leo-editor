@@ -2569,7 +2569,7 @@ class keyHandlerClass:
         k = self ; c = k.c
         w = event and event.widget
         name = c.widget_name(w)
-        trace = True
+        trace = False
 
         if trace: g.trace('stroke',stroke)
 
