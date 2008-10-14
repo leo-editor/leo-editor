@@ -1312,8 +1312,7 @@ class baseFileCommands:
                     if t:
                         # g.trace(tnx,t)
                         result.append(t)
-                    else:
-                        g.trace('No tnode for %s' % tnx)
+                    # else: g.trace('No tnode for %s' % tnx)
                 p.v.t.tnodeList = result
                 delattr(p.v,'tempTnodeList')
     #@nonl
