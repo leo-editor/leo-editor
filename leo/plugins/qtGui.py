@@ -5937,6 +5937,8 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
+        import traceback
+        traceback.print_stack()
         c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
         if not w: return
         if self.redrawing:
@@ -6634,6 +6636,41 @@ class LeoQuickSearchWidget(QtGui.QWidget):
     #@-node:ville.20081011134505.12:methods
     #@-others
 #@-node:ville.20081011134505.11:class LeoQuickSearchWidget
+#@+node:ville.20081014172405.11:quickheadlines
+def install_qt_quickheadlines_tab(c):
+    global __qh
+    __qh = QuickHeadlines(c)
+
+g.insqh = install_qt_quickheadlines_tab
+
+class QuickHeadlines:
+    def __init__(self, c):
+        self.c = c
+        tabw = c.frame.top.tabWidget
+        self.listWidget = QtGui.QListWidget(tabw)
+        tabw.addTab(self.listWidget, "Headlines")
+        c.frame.top.connect(c.frame.top.treeWidget,
+          QtCore.SIGNAL("itemSelectionChanged()"), self.req_update)
+        self.requested = False
+    def req_update(self):
+        """ prevent too frequent updates (only one/100 msec) """
+        if self.requested:
+            return
+        QtCore.QTimer.singleShot(100, self.update)
+        self.requested = True
+
+    def update(self):
+
+        print "quickheadlines update"
+        self.requested = False
+        self.listWidget.clear()
+        p = self.c.currentPosition()
+        for n in p.children_iter():
+            self.listWidget.addItem(n.headString())
+
+
+
+#@-node:ville.20081014172405.11:quickheadlines
 #@-node:ville.20081011134505.13:Non-essential
 #@-others
 #@-node:ekr.20081004102201.619:@thin qtGui.py
