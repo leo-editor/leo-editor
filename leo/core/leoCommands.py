@@ -3516,7 +3516,7 @@ class baseCommands:
         c.selectPosition(p)
         c.setChanged(True)
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-        c.redraw()
+        c.redraw_now()
 
         c.editPosition(p,selectAll=True)
 
