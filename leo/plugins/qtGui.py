@@ -5937,8 +5937,6 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-        import traceback
-        traceback.print_stack()
         c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
         if not w: return
         if self.redrawing:
@@ -5950,7 +5948,7 @@ class leoQtTree (leoFrame.leoTree):
         if trace: g.trace(self.redrawCount,current and current.headString())
 
         # Loop init.
-        found_current = False
+        found_current = None
         self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
         self.itemsDict = {} # keys are items, values are positions
         parentsDict = {}
@@ -5979,10 +5977,13 @@ class leoQtTree (leoFrame.leoTree):
                     # g.trace('not expanded',p.headString())
                     w.collapseItem(it)
                 if p == current:
-                    w.setCurrentItem(it) ; found_current = True
+                    w.setCurrentItem(it) ; found_current = it
         finally:
-            if not found_current:
+            if found_current is None:
                 g.trace('** no current item: %s' % (p and p.headString()))
+            else:
+                w.scrollToItem(found_current)
+
             self.redrawing = False
 
     redraw = redraw_now # Compatibility
