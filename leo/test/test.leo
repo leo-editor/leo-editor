@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -3717,7 +3717,11 @@ c.frame.addIconButton(text="New")</t>
 <t tx="ekr.20081003094737.1"></t>
 <t tx="ekr.20081003162730.1">@nocolor-node
 @ test</t>
-<t tx="ekr.20081003162730.2">@ </t>
+<t tx="ekr.20081003162730.2">tkKey = 'Return'
+aList = c.k.masterGuiBindingsDict.get('&lt;%s&gt;' %tkKey,[])
+for z in aList:
+    print '==='
+    print z</t>
 <t tx="ekr.20081010203027.1">headline_text_font_family = SansSerif
 headline_text_font_size = 10
 headline_text_font_slant = roman

@@ -92,11 +92,13 @@ def tstop():
     print ("Time: %1.2fsec" % (time.time() - __timing))
 #@-node:ekr.20081004102201.626:tstart & tstop
 #@-node:ekr.20081004102201.623: Module level
-#@+node:ekr.20081004102201.629:class  Window (QMainWindow,Ui_MainWindow)
+#@+node:ekr.20081004102201.629:class  Window
 class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
     '''A class representing all parts of the main Qt window
-    as created by Designer
+    as created by Designer.
+
+    c.frame.top is a Window object.
 
     All leoQtX classes use the ivars of this Window class to
     support operations requested by Leo's core.
@@ -140,7 +142,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
     #@-node:ekr.20081010070648.8:minibuffer_run
     #@-others
 
-#@-node:ekr.20081004102201.629:class  Window (QMainWindow,Ui_MainWindow)
+#@-node:ekr.20081004102201.629:class  Window
 #@+node:ekr.20081004102201.676:class leoKeyEvent
 class leoKeyEvent:
 
@@ -525,21 +527,21 @@ class leoQtBody (leoFrame.leoBody):
                 g.es_exception()
     #@-node:ekr.20081004172422.522:setEditorColors
     #@-node:ekr.20081004172422.519:Editors (To do)
-    #@+node:ekr.20081004172422.510:Focus (To do)
+    #@+node:ekr.20081004172422.510:Focus (qtBody)
     def getFocus(self):
-        self.oops() ; return None
+
+        return g.app.gui.get_focus()
 
     findFocus = getFocus
 
     def hasFocus (self):
 
-        # return self.widget == self.frame.top.focus_displayof()
-        return None
+        return self.widget == g.app.gui.get_focus(self.c)
 
     def setFocus (self):
 
-        self.c.widgetWantsFocus(self.widget)
-    #@-node:ekr.20081004172422.510:Focus (To do)
+        g.app.gui.set_focus(self.c,self.widget)
+    #@-node:ekr.20081004172422.510:Focus (qtBody)
     #@+node:ekr.20081004172422.516:Idle time
     def scheduleIdleTimeRoutine (self,function,*args,**keys):
 
@@ -858,7 +860,6 @@ class leoQtEventFilter(QtCore.QObject):
         eventType = event.type()
         self.traceEvent(obj,event)
 
-        trigger = e.KeyPress # KeyRelease
         if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
             tkKey,ch = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
@@ -866,9 +867,8 @@ class leoQtEventFilter(QtCore.QObject):
         else:
             override = False
 
-        if eventType == trigger:
+        if eventType == e.KeyPress:
             if override:
-                # junk = self.key_pressed(aList,tkKey) # obj, event)
                 stroke = self.toStroke(tkKey,ch)
                 leoEvent = leoKeyEvent(event,c,w,stroke)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
@@ -1356,7 +1356,7 @@ class leoQtFindTab (leoFind.findTab):
     #@-others
 #@nonl
 #@-node:ekr.20081007015817.56:class leoQtFindTab (findTab)
-#@+node:ekr.20081004172422.523:class leoQtFrame (c.frame.top is a Window object)
+#@+node:ekr.20081004172422.523:class leoQtFrame
 class leoQtFrame (leoFrame.leoFrame):
 
     """A class that represents a Leo window rendered in qt."""
@@ -1444,6 +1444,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
         f.top = Window(c)
+        g.app.gui.attachLeoIcon(f.top)
         f.top.show()
 
         # This must be done after creating the commander.
@@ -2756,7 +2757,7 @@ class leoQtFrame (leoFrame.leoFrame):
         ### self.top.update()
     #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
     #@-others
-#@-node:ekr.20081004172422.523:class leoQtFrame (c.frame.top is a Window object)
+#@-node:ekr.20081004172422.523:class leoQtFrame
 #@+node:ekr.20081004102201.631:class leoQtGui
 class leoQtGui(leoGui.leoGui):
 
@@ -2774,8 +2775,9 @@ class leoQtGui(leoGui.leoGui):
 
         self.bodyTextWidget  = leoQtTextWidget
         self.plainTextWidget = leoQtTextWidget
-        self.loadIcons()
 
+        self.iconimages = {} # Image cache set by getIconImage().
+        # self.loadIcons()
     #@-node:ekr.20081004102201.633: qtGui.__init__
     #@+node:ekr.20081004102201.634:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
@@ -2820,60 +2822,8 @@ class leoQtGui(leoGui.leoGui):
         pass
 
     #@-node:ekr.20081004102201.636:Do nothings
-    #@+node:ekr.20081004102201.637:Not used
-    # The tkinter gui ctor calls these methods.
-    # They are included here for reference.
-
-    if 0:
-        #@    @+others
-        #@+node:ekr.20081004102201.638:qtGui.setDefaultIcon
-        def setDefaultIcon(self):
-
-            """Set the icon to be used in all Leo windows.
-
-            This code does nothing for Tk versions before 8.4.3."""
-
-            gui = self
-
-            try:
-                version = gui.root.getvar("tk_patchLevel")
-                # g.trace(repr(version),g.CheckVersion(version,"8.4.3"))
-                if g.CheckVersion(version,"8.4.3") and sys.platform == "win32":
-
-                    path = g.os_path_join(g.app.loadDir,"..","Icons")
-                    if g.os_path_exists(path):
-                        theFile = g.os_path_join(path,"LeoApp16.ico")
-                        if g.os_path_exists(path):
-                            self.bitmap = QtGui.BitmapImage(theFile)
-                        else:
-                            g.es("","LeoApp16.ico","not in Icons directory",color="red")
-                    else:
-                        g.es("","Icons","directory not found:",path, color="red")
-            except:
-                g.pr("exception setting bitmap")
-                import traceback ; traceback.print_exc()
-        #@-node:ekr.20081004102201.638:qtGui.setDefaultIcon
-        #@+node:ekr.20081004102201.639:qtGui.getDefaultConfigFont
-        def getDefaultConfigFont(self,config):
-
-            """Get the default font from a new text widget."""
-
-            if not self.defaultFontFamily:
-                # WARNING: retain NO references to widgets or fonts here!
-                w = g.app.gui.plainTextWidget()
-                fn = w.cget("font")
-                font = qtFont.Font(font=fn) 
-                family = font.cget("family")
-                self.defaultFontFamily = family[:]
-                # g.pr('***** getDefaultConfigFont',repr(family))
-
-            config.defaultFont = None
-            config.defaultFontFamily = self.defaultFontFamily
-        #@-node:ekr.20081004102201.639:qtGui.getDefaultConfigFont
-        #@-others
-    #@-node:ekr.20081004102201.637:Not used
     #@-node:ekr.20081004102201.632:qtGui birth & death
-    #@+node:ekr.20081004102201.640:qtGui dialogs & panels (test)
+    #@+node:ekr.20081004102201.640:qtGui dialogs & panels
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
         """Create and run a qt About Leo dialog."""
         d = qtAboutLeo(c,version,theCopyright,url,email)
@@ -3060,9 +3010,8 @@ class leoQtGui(leoGui.leoGui):
         gui = self
         return leoQtFrame(title,gui)
     #@-node:ekr.20081004102201.646:qtGui panels
-    #@-node:ekr.20081004102201.640:qtGui dialogs & panels (test)
-    #@+node:ekr.20081004102201.647:qtGui utils (to do)
-    #@+node:ekr.20081004102201.648:Clipboard (qtGui)
+    #@-node:ekr.20081004102201.640:qtGui dialogs & panels
+    #@+node:ekr.20081004102201.648:Clipboard
     def replaceClipboardWith (self,s):
 
         '''Replace the clipboard with the string s.'''
@@ -3079,17 +3028,18 @@ class leoQtGui(leoGui.leoGui):
         cb = QtGui.QApplication.clipboard()
         s = cb and cb.text() or ''
         return g.toUnicode(s,g.app.tkEncoding)
-    #@-node:ekr.20081004102201.648:Clipboard (qtGui)
-    #@+node:ekr.20081004102201.651:color (to do)
+    #@-node:ekr.20081004102201.648:Clipboard
+    #@+node:ekr.20081004102201.651:Color (to do)
     # g.es calls gui.color to do the translation,
     # so most code in Leo's core can simply use Tk color names.
 
     def color (self,color):
-        '''Return the gui-specific color corresponding to the qt color name.'''
-        return leoColor.getco
 
-    #@-node:ekr.20081004102201.651:color (to do)
-    #@+node:ekr.20081004102201.652:Dialog (these are optional)
+        '''Return the gui-specific color corresponding to the Tk color name.'''
+
+        return None
+    #@-node:ekr.20081004102201.651:Color (to do)
+    #@+node:ekr.20081004102201.652:Dialog (optional)
     #@+node:ekr.20081004102201.653:get_window_info
     # WARNING: Call this routine _after_ creating a dialog.
     # (This routine inhibits the grid and pack geometry managers.)
@@ -3172,68 +3122,26 @@ class leoQtGui(leoGui.leoGui):
 
         return w,f
     #@-node:ekr.20081004102201.655:create_labeled_frame
-    #@-node:ekr.20081004102201.652:Dialog (these are optional)
-    #@+node:ekr.20081004102201.656:Events (qtGui)  (to be deleted?)
-    # def event_generate(self,w,kind,*args,**keys):
-        # '''Generate an event.'''
-        # return w.event_generate(kind,*args,**keys)
+    #@-node:ekr.20081004102201.652:Dialog (optional)
+    #@+node:ekr.20081004102201.657:Focus (qtGui)
+    def get_focus(self,c=None):
 
-    # def eventChar (self,event,c=None):
-        # '''Return the char field of an event.'''
-        # return event and event.char or ''
+        """Returns the widget that has focus."""
 
-    # def eventKeysym (self,event,c=None):
-        # '''Return the keysym value of an event.'''
-        # return event and event.keysym
-
-    # def eventWidget (self,event,c=None):
-        # '''Return the widget field of an event.'''   
-        # return event and event.widget
-
-    # def eventXY (self,event,c=None):
-        # if event:
-            # return event.x,event.y
-        # else:
-            # return 0,0
-    #@nonl
-    #@-node:ekr.20081004102201.656:Events (qtGui)  (to be deleted?)
-    #@+node:ekr.20081004102201.657:Focus (to do)
-    #@+node:ekr.20081004102201.658:qtGui.get_focus
-    def get_focus(self,c):
-
-        """Returns the widget that has focus, or body if None."""
-
-        return None ###
-
-        return c.frame.top.focus_displayof()
-    #@-node:ekr.20081004102201.658:qtGui.get_focus
-    #@+node:ekr.20081004102201.659:qtGui.set_focus
-    set_focus_count = 0
+        w = QtGui.QApplication.focusWidget()
+        # g.trace(w)
+        return w
 
     def set_focus(self,c,w):
 
         """Put the focus on the widget."""
 
-        return None ###
-
-        if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
-            self.set_focus_count += 1
-            # Do not call trace here: that might affect focus!
-            g.pr('gui.set_focus: %4d %10s %s' % (
-                self.set_focus_count,c and c.shortFileName(),
-                c and c.widget_name(w)), g.callers(5))
-
         if w:
-            try:
-                # It's possible that the widget doesn't exist now.
-                w.focus_set()
-                return True
-            except Exception:
-                # g.es_exception()
-                return False
-    #@-node:ekr.20081004102201.659:qtGui.set_focus
-    #@-node:ekr.20081004102201.657:Focus (to do)
-    #@+node:ekr.20081004102201.660:Font (to do)
+            # g.trace(w)
+            w.setFocus() # QtCore.Qt.OtherFocusReason)
+
+    #@-node:ekr.20081004102201.657:Focus (qtGui)
+    #@+node:ekr.20081004102201.660:Font
     #@+node:ekr.20081004102201.661:qtGui.getFontFromParams
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
 
@@ -3261,7 +3169,7 @@ class leoQtGui(leoGui.leoGui):
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
     #@-node:ekr.20081004102201.661:qtGui.getFontFromParams
-    #@-node:ekr.20081004102201.660:Font (to do)
+    #@-node:ekr.20081004102201.660:Font
     #@+node:ekr.20081004102201.662:getFullVersion
     def getFullVersion (self,c):
 
@@ -3273,90 +3181,37 @@ class leoQtGui(leoGui.leoGui):
 
         return 'qt %s' % (qtLevel)
     #@-node:ekr.20081004102201.662:getFullVersion
-    #@+node:ekr.20081004102201.663:Icons (to do)
+    #@+node:ekr.20081004102201.663:Icons
     #@+node:ekr.20081004102201.664:attachLeoIcon
-    def attachLeoIcon (self,w):
+    def attachLeoIcon (self,window):
 
-        """Attach a Leo icon to the Leo Window."""
+        """Attach a Leo icon to the window."""
 
-        # if self.bitmap != None:
-            # # We don't need PIL or tkicon: this is gtk 8.3.4 or greater.
-            # try:
-                # w.wm_iconbitmap(self.bitmap)
-            # except:
-                # self.bitmap = None
+        icon = self.getIconImage('leoApp.ico')
 
-        # if self.bitmap == None:
-            # try:
-                # < < try to use the PIL and tkIcon packages to draw the icon > >
-            # except:
-                # # import traceback ; traceback.print_exc()
-                # # g.es_exception()
-                # self.leoIcon = None
-    #@+node:ekr.20081004102201.665:try to use the PIL and tkIcon packages to draw the icon
-    #@+at 
-    #@nonl
-    # This code requires Fredrik Lundh's PIL and tkIcon packages:
-    # 
-    # Download PIL    from http://www.pythonware.com/downloads/index.htm#pil
-    # Download tkIcon from http://www.effbot.org/downloads/#tkIcon
-    # 
-    # Many thanks to Jonathan M. Gilligan for suggesting this code.
-    #@-at
-    #@@c
-
-    # import Image
-    # import tkIcon # pychecker complains, but this *is* used.
-
-    # # Wait until the window has been drawn once before attaching the icon in OnVisiblity.
-    # def visibilityCallback(event,self=self,w=w):
-        # try: self.leoIcon.attach(w.winfo_id())
-        # except: pass
-    # c.bind(w,"<Visibility>",visibilityCallback)
-
-    # if not self.leoIcon:
-        # # Load a 16 by 16 gif.  Using .gif rather than an .ico allows us to specify transparency.
-        # icon_file_name = g.os_path_join(g.app.loadDir,'..','Icons','LeoWin.gif')
-        # icon_file_name = g.os_path_normpath(icon_file_name)
-        # icon_image = Image.open(icon_file_name)
-        # if 1: # Doesn't resize.
-            # self.leoIcon = self.createLeoIcon(icon_image)
-        # else: # Assumes 64x64
-            # self.leoIcon = tkIcon.Icon(icon_image)
-    #@-node:ekr.20081004102201.665:try to use the PIL and tkIcon packages to draw the icon
-    #@+node:ekr.20081004102201.666:createLeoIcon (a helper)
-    # This code is adapted from tkIcon.__init__
-    # Unlike the tkIcon code, this code does _not_ resize the icon file.
-
-    # def createLeoIcon (self,icon):
-
-        # try:
-            # import Image,_tkicon
-
-            # i = icon ; m = None
-            # # create transparency mask
-            # if i.mode == "P":
-                # try:
-                    # t = i.info["transparency"]
-                    # m = i.point(lambda i, t=t: i==t, "1")
-                # except KeyError: pass
-            # elif i.mode == "RGBA":
-                # # get transparency layer
-                # m = i.split()[3].point(lambda i: i == 0, "1")
-            # if not m:
-                # m = Image.new("1", i.size, 0) # opaque
-            # # clear unused parts of the original image
-            # i = i.convert("RGB")
-            # i.paste((0, 0, 0), (0, 0), m)
-            # # create icon
-            # m = m.tostring("raw", ("1", 0, 1))
-            # c = i.tostring("raw", ("BGRX", 0, -1))
-            # return _tkicon.new(i.size, c, m)
-        # except:
-            # return None
-    #@-node:ekr.20081004102201.666:createLeoIcon (a helper)
+        window.setWindowIcon(icon)
     #@-node:ekr.20081004102201.664:attachLeoIcon
-    #@-node:ekr.20081004102201.663:Icons (to do)
+    #@+node:ekr.20081010070648.12:getIconImage
+    def getIconImage (self,name):
+
+        '''Load the icon and return it.'''
+
+        # Return the image from the cache if possible.
+        if name in self.iconimages:
+            return self.iconimages.get(name)
+
+        try:
+            fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
+            image = QtGui.QIcon(fullname)
+            self.iconimages[name] = image
+            return image
+
+        except Exception:
+            g.es("exception loading:",fullname)
+            g.es_exception()
+            return None
+    #@-node:ekr.20081010070648.12:getIconImage
+    #@-node:ekr.20081004102201.663:Icons
     #@+node:ekr.20081004102201.667:Idle Time (to do)
     #@+node:ekr.20081004102201.668:qtGui.setIdleTimeHook
     def setIdleTimeHook (self,idleTimeHookHandler):
@@ -3460,58 +3315,6 @@ class leoQtGui(leoGui.leoGui):
         #@-node:ekr.20081004102201.675:<< create press-buttonText-button command >>
         #@nl
     #@-node:ekr.20081004102201.671:makeScriptButton (to do)
-    #@-node:ekr.20081004102201.647:qtGui utils (to do)
-    #@+node:ekr.20081004102201.677:loadIcon
-    def loadIcon(self, fname):
-
-        if 0: g.trace('fname',fname)
-
-        # try:
-            # icon = qt.gdk.pixbuf_new_from_file(fname)
-        # except:
-            # icon = None
-
-        # if icon and icon.get_width()>0:
-            # return icon
-
-        # g.trace( 'Can not load icon from', fname)
-    #@-node:ekr.20081004102201.677:loadIcon
-    #@+node:ekr.20081004102201.678:loadIcons
-    def loadIcons(self):
-        """Load icons and images and set up module level variables."""
-
-        self.treeIcons = icons = []
-        self.namedIcons = namedIcons = {}
-
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
-        if g.os_path_exists(g.os_path_join(path, 'box01.GIF')):
-            ext = '.GIF'
-        else:
-            ext = '.gif'
-
-        for i in range(16):
-            icon = self.loadIcon(g.os_path_join(path, 'box%02d'%i + ext))
-            icons.append(icon)
-
-        for name, ext in (
-            ('lt_arrow_enabled', '.gif'),
-            ('rt_arrow_enabled', '.gif'),
-            ('lt_arrow_disabled', '.gif'),
-            ('rt_arrow_disabled', '.gif'),
-            ('plusnode', '.gif'),
-            ('minusnode', '.gif'),
-            ('Leoapp', '.GIF')
-        ):
-            icon = self.loadIcon(g.os_path_join(path, name + ext))
-            namedIcons[name] = icon
-
-        self.plusBoxIcon = namedIcons.get('plusnode')
-        self.minusBoxIcon = namedIcons.get('minusnode')
-        self.appIcon = namedIcons.get('Leoapp')
-
-        self.globalImages = {}
-
-    #@-node:ekr.20081004102201.678:loadIcons
     #@-others
 #@-node:ekr.20081004102201.631:class leoQtGui
 #@+node:ekr.20081004172422.622:class leoQtLog
@@ -5648,7 +5451,6 @@ class leoQtTree (leoFrame.leoTree):
         self.selecting = False
 
         # Drawing ivars.
-        self.iconimages = {} # Image cache set by getIconImage().
         self.vnodeDict = {} # keys are vnodes, values are lists of (p,it)
         self.itemsDict = {} # keys are items, values are positions
 
@@ -5660,8 +5462,7 @@ class leoQtTree (leoFrame.leoTree):
 
         c = self.c ; frame = c.frame
 
-        self.treeWidget = frame.top.treeWidget
-        # g.trace('****',self.treeWidget)
+        self.treeWidget = w = frame.top.treeWidget
 
         if not leoQtTree.callbacksInjected:
             leoQtTree.callbacksInjected = True
@@ -5773,6 +5574,11 @@ class leoQtTree (leoFrame.leoTree):
         #@-node:ekr.20081004172422.746:<< create baloon bindings for tagged items on the canvas >>
         #@nl
     #@-node:ekr.20081004172422.744:qtTree.setCanvasBindings
+    #@+node:ekr.20081014095718.15:get_name (qtTree)
+    def getName (self):
+
+        return 'canvas(tree)' # Must start with 'canvas'
+    #@-node:ekr.20081014095718.15:get_name (qtTree)
     #@-node:ekr.20081004172422.737: Birth... (qt Tree)
     #@+node:ekr.20081004172422.758:Config... (qtTree)
     #@+node:ekr.20081010070648.18:do-nothin config stuff
@@ -5910,28 +5716,10 @@ class leoQtTree (leoFrame.leoTree):
         p.v.iconVal = val = p.v.computeIcon()
 
         imagename = "box%02d.GIF" % val
-        image = self.getIconImage(imagename)
+        image = g.app.gui.getIconImage(imagename)
 
         return image
     #@-node:ekr.20081010070648.14:getIcon
-    #@+node:ekr.20081010070648.12:getIconImage
-    def getIconImage (self,name):
-
-        # Return the image from the cache if possible.
-        if name in self.iconimages:
-            return self.iconimages.get(name)
-
-        try:
-            fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
-            image = QtGui.QIcon(fullname)
-            self.iconimages[name] = image
-            return image
-
-        except Exception:
-            g.es("exception loading:",fullname)
-            g.es_exception()
-            return None
-    #@-node:ekr.20081010070648.12:getIconImage
     #@+node:ekr.20081004172422.767:redraw_now
     def redraw_now (self,scroll=False,forceDraw=False):
 

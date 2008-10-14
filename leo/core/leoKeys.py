@@ -3380,38 +3380,6 @@ class keyHandlerClass:
                 if not g.app.gui.isTextWidget(w):
                     c.onCanvasKey(event)
                     return 'break'
-
-            # elif k.unboundKeyAction == 'command':
-                # # In command mode we must disallow all keys except those actually bound in command-state.
-                # # That is, we cannot use general per-pane mode bindings.
-                # for key,name in (
-                    # # Order here is similar to bindtags order.
-                    # ('command',None),
-                    # ('button',None),
-                    # ('body','body'),
-                    # ('text','head'), # Important: text bindings in head before tree bindings.
-                    # ('tree','head'),
-                    # ('tree','canvas'),
-                    # ('log', 'log'),
-                    # ('text','log'),
-                    # ('text',None),
-                    # ('all',None),
-                # ):
-                    # if (
-                        # name and w_name.startswith(name) or
-                        # key in ('text','all') and g.app.gui.isTextWidget(w) or
-                        # key in ('button','all')
-                    # ):
-                        # d = k.masterBindingsDict.get(key,{})
-                        # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-                        # if d:
-                            # b = d.get(stroke)
-                            # if b:
-                                # if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                                # return k.masterCommand(event,b.func,b.stroke,b.commandName)
-                # else:
-                    # if trace: g.trace('ignoring %s in command mode' % b.stroke)
-                    # return 'break' # Disallow all unbound plain keys in command mode.
             #@nonl
             #@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
             #@nl
@@ -3420,8 +3388,7 @@ class keyHandlerClass:
         #@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
         keyStatesTuple = ('command','insert','overwrite')
 
-        # g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
-        # g.trace('button',k.masterBindingsDict.get('button'))
+        # g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
         # g.trace('stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
         for key,name in (
@@ -3447,7 +3414,7 @@ class keyHandlerClass:
             ):
                 d = k.masterBindingsDict.get(key,{})
                 # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-                # g.trace('keys',d.keys()[:5])
+                # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
                 if d:
                     b = d.get(stroke)
                     if b:
