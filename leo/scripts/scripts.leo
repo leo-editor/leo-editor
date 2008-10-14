@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="152" left="330" height="656" width="923"/>
+	<global_window_position top="21" left="303" height="896" width="923"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070615131954" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070615131954" str_leo_pos="3,0"><vh>Startup</vh>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20051020124457"><vh>Disabled buttons</vh>
@@ -612,7 +612,7 @@
 </v>
 <v t="ekr.20060824111500.106"><vh>import from modes</vh></v>
 <v t="ekr.20060824111500.107"><vh>errors</vh></v>
-<v t="ekr.20060824111500.108"><vh>@@button jEdit2Py</vh>
+<v t="ekr.20060824111500.108"><vh>@button jEdit2Py</vh>
 <v t="ekr.20060824111500.109"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20060824111500.110"><vh>&lt;&lt; to do &gt;&gt;</vh></v>
 <v t="ekr.20060824111500.111"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
@@ -639,6 +639,7 @@
 <v t="ekr.20060824111500.130"><vh>putBadRule</vh></v>
 <v t="ekr.20060824111500.131"><vh>putEolSpan</vh></v>
 <v t="ekr.20060824111500.132"><vh>putEolSpanRegexp</vh></v>
+<v t="ekr.20081014061508.15"><vh>putEverything</vh></v>
 <v t="ekr.20060824111500.133"><vh>putImport</vh></v>
 <v t="ekr.20060824111500.134"><vh>putKeywords</vh></v>
 <v t="ekr.20060824111500.135"><vh>putMarkFollowing</vh></v>
@@ -684,7 +685,7 @@
 <v t="ekr.20060824111500.169"><vh>printStartElement</vh></v>
 <v t="ekr.20060824111500.170"><vh>printSummary</vh></v>
 </v>
-<v t="ekr.20060824111500.171"><vh>sax over-rides</vh>
+<v t="ekr.20060824111500.171" a="E"><vh>sax over-rides</vh>
 <v t="ekr.20060824111500.172"><vh> Do nothing...</vh>
 <v t="ekr.20060824111500.173"><vh>other methods</vh></v>
 <v t="ekr.20060824111500.174"><vh>endDocument</vh></v>
@@ -1049,6 +1050,320 @@
 </v>
 </v>
 </v>
+</v>
+<v t="ekr.20060824111500"><vh>jEdit2Py</vh>
+<v t="ekr.20060824111500.1"><vh>Colorizing test scripts</vh>
+<v t="ekr.20060824111500.2"><vh>@@button colorize</vh></v>
+<v t="ekr.20060824111500.3"><vh>@@button red:f1</vh></v>
+<v t="ekr.20060824111500.4"><vh>@@button blue:f2</vh></v>
+<v t="ekr.20060824111500.5"><vh>@@button print tags</vh></v>
+<v t="ekr.20060824111500.6"><vh>@@button remove tags</vh></v>
+<v t="ekr.20060824111500.7"><vh>@@button print f1</vh></v>
+<v t="ekr.20060824111500.8"><vh>test</vh></v>
+<v t="ekr.20060824111500.9"><vh>latex keywords</vh></v>
+</v>
+<v t="ekr.20060824111500.10"><vh>Colorizer tests</vh>
+<v t="ekr.20060824111500.11"><vh>C</vh></v>
+<v t="ekr.20060824111500.12"><vh>Python</vh></v>
+<v t="ekr.20060824111500.13"><vh>php.py</vh></v>
+</v>
+<v t="ekr.20060824111500.14"><vh>jEdit docs...</vh>
+<v t="ekr.20060824111500.15"><vh>@url http://www.jedit.org/42docs/users-guide/writing-modes-part.html</vh></v>
+<v t="ekr.20060824111500.16"><vh>Rule ordering</vh></v>
+<v t="ekr.20060824111500.17"><vh>Attributes</vh>
+<v t="ekr.20060824111500.18"><vh> Documentation of attributes</vh>
+<v t="ekr.20060824111500.19"><vh>AT_xxx</vh>
+<v t="ekr.20060824111500.20"><vh>AT_LINE_START (bool)</vh></v>
+<v t="ekr.20060824111500.21"><vh>AT_WHITESPACE_END (bool)</vh></v>
+<v t="ekr.20060824111500.22"><vh>AT_WORD_START (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.23"><vh>AT_CHAR (int)</vh></v>
+<v t="ekr.20060824111500.24"><vh>EXCLUDE_MATCH (bool)</vh></v>
+<v t="ekr.20060824111500.25"><vh>NO_xxx</vh>
+<v t="ekr.20060824111500.26"><vh>NO_WORD_BREAK (bool)</vh></v>
+<v t="ekr.20060824111500.27"><vh>NO_LINE_BREAK (bool)</vh></v>
+<v t="ekr.20060824111500.28"><vh>NO_ESCAPE (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.29"><vh> For 'rules' only</vh>
+<v t="ekr.20060824111500.30"><vh>DEFAULT</vh></v>
+<v t="ekr.20060824111500.31"><vh>DIGIT_RE (re) &amp; HIGHLIGHT_DIGITS  (bool)</vh></v>
+<v t="ekr.20060824111500.32"><vh>IGNORE_CASE (bool)</vh></v>
+<v t="ekr.20060824111500.33"><vh>SET</vh></v>
+<v t="ekr.20060824111500.34"><vh>NO_WORD_SEP</vh></v>
+</v>
+<v t="ekr.20060824111500.35"><vh>DELEGATE</vh></v>
+<v t="ekr.20060824111500.36"><vh>HASH_CHAR (char) For 'regx'</vh></v>
+<v t="ekr.20060824111500.37"><vh>TYPE (Token Types)</vh></v>
+</v>
+<v t="ekr.20060824111500.38"><vh>Attributes for 'begin' &amp; 'end'</vh></v>
+<v t="ekr.20060824111500.39"><vh>Attributes for 'import': delegate</vh></v>
+<v t="ekr.20060824111500.40"><vh>Attributes for 'mark' </vh></v>
+<v t="ekr.20060824111500.41"><vh>Attributes for 'property': name, value</vh></v>
+<v t="ekr.20060824111500.42"><vh>Attributes for 'rules'</vh></v>
+<v t="ekr.20060824111500.43"><vh>Attributes for 'span'</vh></v>
+<v t="ekr.20060824111500.44"><vh>Attributes for 'seq' </vh></v>
+</v>
+<v t="ekr.20060824111500.45"><vh>Elements</vh>
+<v t="ekr.20060824111500.46"><vh>Spans and seqs...</vh>
+<v t="ekr.20060824111500.47"><vh>eol_span</vh></v>
+<v t="ekr.20060824111500.48"><vh>eol_span_regexp</vh></v>
+<v t="ekr.20060824111500.49"><vh>mark_following</vh></v>
+<v t="ekr.20060824111500.50"><vh>mark_previous</vh></v>
+<v t="ekr.20060824111500.51"><vh>seq</vh></v>
+<v t="ekr.20060824111500.52"><vh>seq_regexp</vh></v>
+<v t="ekr.20060824111500.53"><vh>span</vh></v>
+<v t="ekr.20060824111500.54"><vh>span_regexp</vh></v>
+</v>
+<v t="ekr.20060824111500.55"><vh>All others...</vh>
+<v t="ekr.20060824111500.56"><vh>import</vh></v>
+<v t="ekr.20060824111500.57"><vh>keywords (done)</vh></v>
+<v t="ekr.20060824111500.58"><vh>mode (done)</vh></v>
+<v t="ekr.20060824111500.59"><vh>props &amp; property  (for auto-indent)</vh></v>
+<v t="ekr.20060824111500.60"><vh>rules</vh></v>
+<v t="ekr.20060824111500.61"><vh>terminate</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20060824111500.62"><vh>Refactored jEdit docs...</vh>
+<v t="ekr.20060824111500.63"><vh>@url http://www.jedit.org/42docs/users-guide/writing-modes-part.html</vh></v>
+<v t="ekr.20060824111500.64"><vh>Rule ordering</vh></v>
+<v t="ekr.20060824111500.65"><vh>Attributes</vh>
+<v t="ekr.20060824111500.66"><vh>AT_CHAR (int)</vh></v>
+<v t="ekr.20060824111500.19"><vh>AT_xxx</vh>
+<v t="ekr.20060824111500.20"><vh>AT_LINE_START (bool)</vh></v>
+<v t="ekr.20060824111500.21"><vh>AT_WHITESPACE_END (bool)</vh></v>
+<v t="ekr.20060824111500.22"><vh>AT_WORD_START (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.35"><vh>DELEGATE</vh></v>
+<v t="ekr.20060824111500.24"><vh>EXCLUDE_MATCH (bool)</vh></v>
+<v t="ekr.20060824111500.67"><vh>For rules only</vh>
+<v t="ekr.20060824111500.68"><vh>DEFAULT (token type)</vh></v>
+<v t="ekr.20060824111500.69"><vh>HIGHLIGHT_DIGITS  &amp;DIGITS_RE (bool)</vh></v>
+<v t="ekr.20060824111500.70"><vh>IGNORE_CASE (bool)</vh></v>
+<v t="ekr.20060824111500.71"><vh>SET (string)</vh></v>
+<v t="ekr.20060824111500.72"><vh>NO_WORD_SEP</vh></v>
+</v>
+<v t="ekr.20060824111500.73"><vh>HASH_CHAR (char)</vh></v>
+<v t="ekr.20060824111500.74"><vh>NAME and VALUE</vh></v>
+<v t="ekr.20060824111500.25"><vh>NO_xxx</vh>
+<v t="ekr.20060824111500.26"><vh>NO_WORD_BREAK (bool)</vh></v>
+<v t="ekr.20060824111500.27"><vh>NO_LINE_BREAK (bool)</vh></v>
+<v t="ekr.20060824111500.28"><vh>NO_ESCAPE (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.75"><vh>TYPE (Token Types)</vh></v>
+</v>
+<v t="ekr.20060824111500.76"><vh>Elements (children are attributes)</vh>
+<v t="ekr.20060824111500.77"><vh>begin &amp; end</vh>
+<v t="ekr.20060824111500.19"><vh>AT_xxx</vh>
+<v t="ekr.20060824111500.20"><vh>AT_LINE_START (bool)</vh></v>
+<v t="ekr.20060824111500.21"><vh>AT_WHITESPACE_END (bool)</vh></v>
+<v t="ekr.20060824111500.22"><vh>AT_WORD_START (bool)</vh></v>
+</v>
+</v>
+<v t="ekr.20060824111500.78"><vh>eol_span (can use DELEGATE)</vh>
+<v t="ekr.20060824111500.19"><vh>AT_xxx</vh>
+<v t="ekr.20060824111500.20"><vh>AT_LINE_START (bool)</vh></v>
+<v t="ekr.20060824111500.21"><vh>AT_WHITESPACE_END (bool)</vh></v>
+<v t="ekr.20060824111500.22"><vh>AT_WORD_START (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.35"><vh>DELEGATE</vh></v>
+<v t="ekr.20060824111500.24"><vh>EXCLUDE_MATCH (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.79"><vh>eol_span_regexp (can use DELEGATE)</vh>
+<v t="ekr.20060824111500.19"><vh>AT_xxx</vh>
+<v t="ekr.20060824111500.20"><vh>AT_LINE_START (bool)</vh></v>
+<v t="ekr.20060824111500.21"><vh>AT_WHITESPACE_END (bool)</vh></v>
+<v t="ekr.20060824111500.22"><vh>AT_WORD_START (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.35"><vh>DELEGATE</vh></v>
+<v t="ekr.20060824111500.24"><vh>EXCLUDE_MATCH (bool)</vh></v>
+<v t="ekr.20060824111500.73"><vh>HASH_CHAR (char)</vh></v>
+</v>
+<v t="ekr.20060824111500.80"><vh>import</vh>
+<v t="ekr.20060824111500.35"><vh>DELEGATE</vh></v>
+</v>
+<v t="ekr.20060824111500.81"><vh>keywords</vh></v>
+<v t="ekr.20060824111500.82"><vh>mark_following &amp; mark_previous</vh>
+<v t="ekr.20060824111500.19"><vh>AT_xxx</vh>
+<v t="ekr.20060824111500.20"><vh>AT_LINE_START (bool)</vh></v>
+<v t="ekr.20060824111500.21"><vh>AT_WHITESPACE_END (bool)</vh></v>
+<v t="ekr.20060824111500.22"><vh>AT_WORD_START (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.24"><vh>EXCLUDE_MATCH (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.83"><vh>mode</vh></v>
+<v t="ekr.20060824111500.84"><vh>props &amp; property</vh>
+<v t="ekr.20060824111500.74"><vh>NAME and VALUE</vh></v>
+<v t="ekr.20060824111500.85"><vh>Properties for comment strings</vh></v>
+<v t="ekr.20060824111500.86"><vh>Properties for auto-indent</vh>
+<v t="ekr.20060824111500.87"><vh>indentCloseBrackets and indentOpenBrackets</vh></v>
+<v t="ekr.20060824111500.88"><vh>doubleBracketIndent</vh></v>
+</v>
+<v t="ekr.20060824111500.89"><vh>Buffer-Local Properties</vh>
+<v t="ekr.20060824111500.90"><vh>collapseFolds</vh></v>
+<v t="ekr.20060824111500.91"><vh>deepIndent</vh></v>
+<v t="ekr.20060824111500.92"><vh>folding</vh></v>
+<v t="ekr.20060824111500.93"><vh>indentSize</vh></v>
+<v t="ekr.20060824111500.94"><vh>maxLineLen</vh></v>
+<v t="ekr.20060824111500.95"><vh>mode</vh></v>
+<v t="ekr.20060824111500.96"><vh>noTabs</vh></v>
+<v t="ekr.20060824111500.97"><vh>noWordSep</vh></v>
+<v t="ekr.20060824111500.98"><vh>wordBreakChars</vh></v>
+<v t="ekr.20060824111500.99"><vh>wrap</vh></v>
+</v>
+</v>
+<v t="ekr.20060824111500.100"><vh>rules</vh>
+<v t="ekr.20060824111500.67"><vh>For rules only</vh>
+<v t="ekr.20060824111500.68"><vh>DEFAULT (token type)</vh></v>
+<v t="ekr.20060824111500.69"><vh>HIGHLIGHT_DIGITS  &amp;DIGITS_RE (bool)</vh></v>
+<v t="ekr.20060824111500.70"><vh>IGNORE_CASE (bool)</vh></v>
+<v t="ekr.20060824111500.71"><vh>SET (string)</vh></v>
+<v t="ekr.20060824111500.72"><vh>NO_WORD_SEP</vh></v>
+</v>
+</v>
+<v t="ekr.20060824111500.101"><vh>seq (can use DELEGATE)</vh>
+<v t="ekr.20060824111500.19"><vh>AT_xxx</vh>
+<v t="ekr.20060824111500.20"><vh>AT_LINE_START (bool)</vh></v>
+<v t="ekr.20060824111500.21"><vh>AT_WHITESPACE_END (bool)</vh></v>
+<v t="ekr.20060824111500.22"><vh>AT_WORD_START (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.35"><vh>DELEGATE</vh></v>
+</v>
+<v t="ekr.20060824111500.102"><vh>seq_regexp (can use DELEGATE)</vh>
+<v t="ekr.20060824111500.19"><vh>AT_xxx</vh>
+<v t="ekr.20060824111500.20"><vh>AT_LINE_START (bool)</vh></v>
+<v t="ekr.20060824111500.21"><vh>AT_WHITESPACE_END (bool)</vh></v>
+<v t="ekr.20060824111500.22"><vh>AT_WORD_START (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.35"><vh>DELEGATE</vh></v>
+</v>
+<v t="ekr.20060824111500.103"><vh>span  (can use DELEGATE)</vh>
+<v t="ekr.20060824111500.19"><vh>AT_xxx</vh>
+<v t="ekr.20060824111500.20"><vh>AT_LINE_START (bool)</vh></v>
+<v t="ekr.20060824111500.21"><vh>AT_WHITESPACE_END (bool)</vh></v>
+<v t="ekr.20060824111500.22"><vh>AT_WORD_START (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.35"><vh>DELEGATE</vh></v>
+<v t="ekr.20060824111500.24"><vh>EXCLUDE_MATCH (bool)</vh></v>
+<v t="ekr.20060824111500.25"><vh>NO_xxx</vh>
+<v t="ekr.20060824111500.26"><vh>NO_WORD_BREAK (bool)</vh></v>
+<v t="ekr.20060824111500.27"><vh>NO_LINE_BREAK (bool)</vh></v>
+<v t="ekr.20060824111500.28"><vh>NO_ESCAPE (bool)</vh></v>
+</v>
+</v>
+<v t="ekr.20060824111500.104"><vh>span_regexp  (can use DELEGATE)</vh>
+<v t="ekr.20060824111500.19"><vh>AT_xxx</vh>
+<v t="ekr.20060824111500.20"><vh>AT_LINE_START (bool)</vh></v>
+<v t="ekr.20060824111500.21"><vh>AT_WHITESPACE_END (bool)</vh></v>
+<v t="ekr.20060824111500.22"><vh>AT_WORD_START (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.35"><vh>DELEGATE</vh></v>
+<v t="ekr.20060824111500.24"><vh>EXCLUDE_MATCH (bool)</vh></v>
+<v t="ekr.20060824111500.25"><vh>NO_xxx</vh>
+<v t="ekr.20060824111500.26"><vh>NO_WORD_BREAK (bool)</vh></v>
+<v t="ekr.20060824111500.27"><vh>NO_LINE_BREAK (bool)</vh></v>
+<v t="ekr.20060824111500.28"><vh>NO_ESCAPE (bool)</vh></v>
+</v>
+<v t="ekr.20060824111500.73"><vh>HASH_CHAR (char)</vh></v>
+</v>
+<v t="ekr.20060824111500.105"><vh>terminate</vh>
+<v t="ekr.20060824111500.66"><vh>AT_CHAR (int)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20060824111500.106"><vh>import from modes</vh></v>
+<v t="ekr.20060824111500.107"><vh>errors</vh></v>
+<v t="ekr.20060824111500.108"><vh>@button jEdit2Py</vh>
+<v t="ekr.20060824111500.109"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20060824111500.110"><vh>&lt;&lt; to do &gt;&gt;</vh></v>
+<v t="ekr.20060824111500.111"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
+<v t="ekr.20060824111500.112"><vh>&lt;&lt; set files to convert &gt;&gt;</vh></v>
+<v t="ekr.20060824111500.113"><vh>top-level</vh>
+<v t="ekr.20060824111500.114"><vh>convert</vh></v>
+<v t="ekr.20060824111500.115"><vh>parse_jEdit_file</vh></v>
+<v t="ekr.20060824111500.116"><vh>munge</vh></v>
+</v>
+<v t="ekr.20060824111500.117"><vh>class modeClass</vh>
+<v t="ekr.20060824111500.118"><vh> mode.__init__</vh></v>
+<v t="ekr.20060824111500.119"><vh> mode.__str__ &amp; __repr__</vh></v>
+<v t="ekr.20060824111500.120"><vh> Output...</vh>
+<v t="ekr.20060827162343"><vh>fullDelegate</vh></v>
+<v t="ekr.20060824111500.121"><vh>escapeString &amp; quoteString</vh></v>
+<v t="ekr.20060824111500.122"><vh>put, putTripleString</vh></v>
+<v t="ekr.20060824111500.123"><vh>putAttributes</vh></v>
+<v t="ekr.20060824111500.124"><vh>putDict &amp; putDictOfLists</vh></v>
+<v t="ekr.20060824111500.125"><vh>putImportDict</vh></v>
+<v t="ekr.20060824111500.126"><vh>putKeywordsData</vh></v>
+<v t="ekr.20060824111500.127"><vh>putList</vh></v>
+<v t="ekr.20060824111500.128"><vh>putModeProperties</vh></v>
+<v t="ekr.20060824111500.129"><vh>putRule &amp; rule creators</vh>
+<v t="ekr.20060824111500.130"><vh>putBadRule</vh></v>
+<v t="ekr.20060824111500.131"><vh>putEolSpan</vh></v>
+<v t="ekr.20060824111500.132"><vh>putEolSpanRegexp</vh></v>
+<v t="ekr.20081014061508.15"><vh>putEverything</vh></v>
+<v t="ekr.20060824111500.133"><vh>putImport</vh></v>
+<v t="ekr.20060824111500.134"><vh>putKeywords</vh></v>
+<v t="ekr.20060824111500.135"><vh>putMarkFollowing</vh></v>
+<v t="ekr.20060824111500.136"><vh>putMarkPrevious</vh></v>
+<v t="ekr.20060824111500.137"><vh>putSeq</vh></v>
+<v t="ekr.20060824111500.138"><vh>putSeqRegexp</vh></v>
+<v t="ekr.20060824111500.139"><vh>putSpan</vh></v>
+<v t="ekr.20060824111500.140"><vh>putSpanRegexp</vh></v>
+<v t="ekr.20060824111500.141"><vh>putTerminate</vh></v>
+</v>
+<v t="ekr.20060824111500.142"><vh>putRules</vh></v>
+<v t="ekr.20060824111500.143"><vh>write</vh></v>
+</v>
+<v t="ekr.20060824111500.144"><vh> Printing...</vh>
+<v t="ekr.20060824111500.145"><vh>printModeAttributes, printRulesetAttributes &amp; printAttributesHelper</vh></v>
+<v t="ekr.20060824111500.146"><vh>printProperty</vh></v>
+<v t="ekr.20060824111500.147"><vh>printRule</vh></v>
+<v t="ekr.20060824111500.148"><vh>printRuleset</vh></v>
+<v t="ekr.20060824111500.149"><vh>printSummary</vh></v>
+</v>
+<v t="ekr.20060824111500.150"><vh>doAttribute</vh></v>
+<v t="ekr.20060824111500.151"><vh>doContent</vh></v>
+<v t="ekr.20060824111500.152"><vh>endElement</vh></v>
+<v t="ekr.20060824111500.153"><vh>error</vh></v>
+<v t="ekr.20060824111500.154"><vh>getters</vh></v>
+<v t="ekr.20060824111500.155"><vh>inRule</vh></v>
+<v t="ekr.20060824111500.156"><vh>startElement</vh></v>
+</v>
+<v t="ekr.20060824111500.157"><vh>class rulesetClass</vh>
+<v t="ekr.20060824111500.158"><vh>ctor &amp; __str__</vh></v>
+</v>
+<v t="ekr.20060824111500.159"><vh>class ruleClass</vh>
+<v t="ekr.20060824111500.160"><vh>ctor &amp; __str__</vh></v>
+<v t="ekr.20060824111500.161"><vh>rule.getters</vh></v>
+</v>
+<v t="ekr.20060824111500.162"><vh>class contentHandler (xml.sax.saxutils.XMLGenerator)</vh>
+<v t="ekr.20060824111500.163"><vh> __init__ &amp; helpers</vh></v>
+<v t="ekr.20060824111500.164"><vh>helpers</vh>
+<v t="ekr.20060824111500.165"><vh>attrsToList</vh></v>
+<v t="ekr.20060824111500.166"><vh>attrsToString</vh></v>
+<v t="ekr.20060824111500.167"><vh>clean</vh></v>
+<v t="ekr.20060824111500.168"><vh>error</vh></v>
+<v t="ekr.20060824111500.169"><vh>printStartElement</vh></v>
+<v t="ekr.20060824111500.170"><vh>printSummary</vh></v>
+</v>
+<v t="ekr.20060824111500.171" a="E"><vh>sax over-rides</vh>
+<v t="ekr.20060824111500.172"><vh> Do nothing...</vh>
+<v t="ekr.20060824111500.173"><vh>other methods</vh></v>
+<v t="ekr.20060824111500.174"><vh>endDocument</vh></v>
+<v t="ekr.20060824111500.175"><vh>startDocument</vh></v>
+</v>
+<v t="ekr.20060824111500.176"><vh>characters</vh></v>
+<v t="ekr.20060824111500.177"><vh>endElement</vh></v>
+<v t="ekr.20060824111500.178"><vh>startElement</vh></v>
+</v>
+<v t="ekr.20060824111500.179"><vh>doStartElement</vh></v>
+<v t="ekr.20060824111500.180"><vh>doEndElement</vh></v>
+<v t="ekr.20060824111500.181"><vh>getMode</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20081014061508.2" a="E"><vh>@nosent C:\leo.repo\trunk\leo\modes\phpsection.xml</vh>
+<v t="ekr.20081014061508.3"><vh>phpsection declarations</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -13122,14 +13437,13 @@ both elements has the same effect as setting them on the SPAN element.</t>
 8/26/06 EKR: No need for hash_char in pattern matchers, because they are called only if the hash_char matches.
 9/4/06  EKR: Added support for ESCAPE attribute of RULES element.
              This is required so the new colorizer plugin can support the no_escape argument to pattern matchers.</t>
-<t tx="ekr.20060824111500.112"># theDir = r'c:\prog\tigris-cvs\leo\modes'
-theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','modes'))
+<t tx="ekr.20060824111500.112">theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
 fixed = ['antlr','applescript','apacheconf','bibtex','cil','pl1','shell','shellscript','ssharp','text']
 errors = [] # 'cil',] # End keyword not matched by start.
 errors = [r'%s\%s.xml' % (theDir,s) for s in errors]
 # for s in errors: print s
-if 0: # A a list of files.
-    files = [r'%s\%s.xml' % (theDir,s) for s in ('perl',)] # 'rest','perl',
+if 1: # A a list of files.
+    files = [r'%s\%s.xml' % (theDir,s) for s in ('phpsection',)]
 elif 1: # translate all files.
     files = glob.glob(g.os_path_abspath(g.os_path_join(theDir,'*.xml')))
 elif 1: # error files
@@ -13231,7 +13545,7 @@ else: # translate two representative files.
 
     # List of elements that start a rule.
     self.ruleElements = [
-        'eol_span','eol_span_regexp','import','keywords',
+        'eol_span','eol_span_regexp','everything','import','keywords',
         'mark_following','mark_previous','seq','seq_regexp',
         'span','span_regexp','terminate',]
 
@@ -13429,6 +13743,7 @@ def putDictOfLists (self,name,theDict,strings=False):
     d = {
         'eol_span':         self.putEolSpan,
         'eol_span_regexp':  self.putEolSpanRegexp,
+        # 'everything':       self.putEverything,
         'import':           self.putImport,
         'keywords':         self.putKeywords,
         'mark_following':   self.putMarkFollowing,
@@ -16262,5 +16577,2795 @@ for p in p.self_and_subtree_iter():
         c.setBodyString(p,result)
 
 </t>
+<t tx="ekr.20081014061508.2">@language xml
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081014061508.3">&lt;?xml version="1.0"?&gt;
+
+&lt;!DOCTYPE MODE SYSTEM "xmode.dtd"&gt;
+
+&lt;MODE&gt;
+	&lt;PROPS&gt;
+		&lt;PROPERTY NAME="indentOpenBrackets" VALUE="{" /&gt;
+		&lt;PROPERTY NAME="indentCloseBrackets" VALUE="}" /&gt;
+		&lt;PROPERTY NAME="lineUpClosingBracket" VALUE="true" /&gt;
+		&lt;PROPERTY NAME="commentStart" VALUE="&amp;lt;!--" /&gt;
+		&lt;PROPERTY NAME="commentEnd" VALUE="--&amp;gt;" /&gt;
+        &lt;PROPERTY NAME="initialModeDelegate" VALUE="phpsection::PHP" /&gt;
+	&lt;/PROPS&gt;
+
+	&lt;RULES IGNORE_CASE="TRUE"&gt;
+		&lt;SPAN TYPE="MARKUP" DELEGATE="PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;?php&lt;/BEGIN&gt;
+			&lt;END&gt;?&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="MARKUP" DELEGATE="PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;?&lt;/BEGIN&gt;
+			&lt;END&gt;?&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="MARKUP" DELEGATE="PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;%=&lt;/BEGIN&gt;
+			&lt;END&gt;%&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;!-- SGML comment --&gt;
+		&lt;SPAN TYPE="COMMENT1"&gt;
+			&lt;BEGIN&gt;&amp;lt;!--&lt;/BEGIN&gt;
+			&lt;END&gt;--&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;!-- JavaScript --&gt;
+		&lt;!-- EKR: was HASH_CHAR="&lt;" --&gt;
+		&lt;SPAN_REGEXP HASH_CHAR="&amp;lt; " TYPE="MARKUP" DELEGATE="PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;SCRIPT\s+LANGUAGE="?PHP"?&amp;gt;&lt;/BEGIN&gt;
+			&lt;END&gt;&amp;lt;/SCRIPT&amp;gt;&lt;/END&gt;
+		&lt;/SPAN_REGEXP&gt;
+
+		&lt;SPAN TYPE="MARKUP" DELEGATE="JAVASCRIPT"&gt;
+			&lt;BEGIN&gt;&amp;lt;SCRIPT&lt;/BEGIN&gt;
+			&lt;END&gt;&amp;lt;/SCRIPT&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;!-- stylesheet --&gt;
+		&lt;SPAN TYPE="MARKUP" DELEGATE="html::CSS"&gt;
+			&lt;BEGIN&gt;&amp;lt;STYLE&lt;/BEGIN&gt;
+			&lt;END&gt;&amp;lt;/STYLE&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;!-- DTD instructions --&gt;
+		&lt;SPAN TYPE="KEYWORD2" DELEGATE="xml::DTD-TAGS"&gt;
+			&lt;BEGIN&gt;&amp;lt;!&lt;/BEGIN&gt;
+			&lt;END&gt;&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;!-- markup tags --&gt;
+		&lt;SPAN TYPE="MARKUP" DELEGATE="TAGS"&gt;
+			&lt;BEGIN&gt;&amp;lt;&lt;/BEGIN&gt;
+			&lt;END&gt;&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;!-- SGML entities --&gt;
+		&lt;SPAN TYPE="LITERAL2" NO_WORD_BREAK="TRUE"&gt;
+			&lt;BEGIN&gt;&amp;amp;&lt;/BEGIN&gt;
+			&lt;END&gt;;&lt;/END&gt;
+		&lt;/SPAN&gt;
+	&lt;/RULES&gt;
+
+	&lt;RULES SET="TAGS" DEFAULT="MARKUP"&gt;
+		&lt;SPAN TYPE="MARKUP" DELEGATE="PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;?php&lt;/BEGIN&gt;
+			&lt;END&gt;?&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="MARKUP" DELEGATE="PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;?&lt;/BEGIN&gt;
+			&lt;END&gt;?&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="MARKUP" DELEGATE="PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;%=&lt;/BEGIN&gt;
+			&lt;END&gt;%&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="LITERAL1" DELEGATE="TAGS_LITERAL"&gt;
+			&lt;BEGIN&gt;"&lt;/BEGIN&gt;
+			&lt;END&gt;"&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="LITERAL1" DELEGATE="TAGS_LITERAL"&gt;
+			&lt;BEGIN&gt;'&lt;/BEGIN&gt;
+			&lt;END&gt;'&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SEQ TYPE="OPERATOR"&gt;=&lt;/SEQ&gt;
+	&lt;/RULES&gt;
+
+	&lt;RULES SET="TAGS_LITERAL" DEFAULT="LITERAL1"&gt;
+		&lt;SPAN TYPE="MARKUP" DELEGATE="PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;?php&lt;/BEGIN&gt;
+			&lt;END&gt;?&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="MARKUP" DELEGATE="PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;?&lt;/BEGIN&gt;
+			&lt;END&gt;?&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="MARKUP" DELEGATE="PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;%=&lt;/BEGIN&gt;
+			&lt;END&gt;%&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+	&lt;/RULES&gt;
+
+	&lt;RULES SET="PHP" ESCAPE="\" HIGHLIGHT_DIGITS="TRUE"&gt;
+		&lt;PROPS&gt;
+			&lt;PROPERTY NAME="commentStart" VALUE="/*" /&gt;
+			&lt;PROPERTY NAME="commentEnd" VALUE="*/" /&gt;
+			&lt;PROPERTY NAME="lineComment" VALUE="//" /&gt;
+		&lt;/PROPS&gt;
+
+		&lt;!-- PHPdoc comment --&gt;
+		&lt;SPAN TYPE="COMMENT3" DELEGATE="PHPDOC"&gt;
+			&lt;BEGIN&gt;/**&lt;/BEGIN&gt;
+			&lt;END&gt;*/&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="COMMENT1"&gt;
+			&lt;BEGIN&gt;/*&lt;/BEGIN&gt;
+			&lt;END&gt;*/&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="LITERAL1" DELEGATE="PHP_LITERAL"&gt;
+			&lt;BEGIN&gt;"&lt;/BEGIN&gt;
+			&lt;END&gt;"&lt;/END&gt;
+		&lt;/SPAN&gt;
+		&lt;SPAN TYPE="LITERAL1"&gt;
+			&lt;BEGIN&gt;'&lt;/BEGIN&gt;
+			&lt;END&gt;'&lt;/END&gt;
+		&lt;/SPAN&gt;
+		&lt;SPAN TYPE="LITERAL1" DELEGATE="PHP_LITERAL"&gt;
+			&lt;BEGIN&gt;`&lt;/BEGIN&gt;
+			&lt;END&gt;`&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;EOL_SPAN TYPE="COMMENT2"&gt;//&lt;/EOL_SPAN&gt;
+		&lt;EOL_SPAN TYPE="COMMENT1"&gt;#&lt;/EOL_SPAN&gt;
+
+		&lt;!-- Readins --&gt;
+		&lt;!-- EKR: was HASH_CHAR="&lt;" --&gt;
+		&lt;SPAN_REGEXP HASH_CHAR="&amp;lt; " TYPE="LITERAL1" DELEGATE="PHP_LITERAL"&gt;
+			&lt;BEGIN&gt;&lt;![CDATA[&lt;&lt;&lt;[[:space:]'"]*([[:alnum:]_]+)[[:space:]'"]*]]&gt;&lt;/BEGIN&gt;
+			&lt;END&gt;$1&lt;/END&gt;
+		&lt;/SPAN_REGEXP&gt;
+
+		&lt;MARK_FOLLOWING TYPE="KEYWORD3"&gt;$&lt;/MARK_FOLLOWING&gt;
+
+		&lt;SEQ TYPE="OPERATOR"&gt;=&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;-&amp;gt;&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;!&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;&amp;gt;=&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;&amp;lt;=&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;=&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;+&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;-&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;/&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;*&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;&amp;gt;&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;&amp;lt;&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;%&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;&amp;amp;&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;|&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;^&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;~&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;.&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;}&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;{&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;,&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;;&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;]&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;[&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;?&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;@&lt;/SEQ&gt;
+		&lt;SEQ TYPE="OPERATOR"&gt;:&lt;/SEQ&gt;
+
+		&lt;MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE"&gt;(&lt;/MARK_PREVIOUS&gt;
+
+		&lt;!-- &lt;MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE"
+			NO_WORD_BREAK="TRUE"&gt; (&lt;/MARK_PREVIOUS&gt; --&gt;
+
+		&lt;!-- &lt;MARK_FOLLOWING TYPE="FUNCTION" EXCLUDE_MATCH="TRUE"
+			NO_WORD_BREAK="TRUE"&gt;class &lt;/MARK_FOLLOWING&gt; --&gt;
+
+		&lt;KEYWORDS&gt;
+			&lt;OPERATOR&gt;and&lt;/OPERATOR&gt;
+			&lt;OPERATOR&gt;or&lt;/OPERATOR&gt;
+			&lt;OPERATOR&gt;instanceof&lt;/OPERATOR&gt;
+			&lt;!-- Language constructs (24) --&gt;
+			&lt;KEYWORD1&gt;if&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;elseif&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;else&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;endif&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;for&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;endfor&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;while&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;endwhile&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;switch&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;case&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;endswitch&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;break&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;continue&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;return&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;define&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;include&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;include_once&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;require&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;require_once&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;declare&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;function&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;class&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;new&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;do&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;old_function&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;default&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;global&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;static&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;foreach&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;as&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;endforeach&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;extends&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;empty&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;array&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;list&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;isset&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;echo&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;var&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;public&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;private&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;protected&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;implements&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;interface&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;abstract&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;final&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;const&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;clone&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;try&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;throw&lt;/KEYWORD1&gt;
+			&lt;KEYWORD1&gt;catch&lt;/KEYWORD1&gt;
+
+			&lt;KEYWORD3&gt;__LINE__&lt;/KEYWORD3&gt;
+			&lt;KEYWORD3&gt;__FILE__&lt;/KEYWORD3&gt;
+			&lt;KEYWORD3&gt;__METHOD__&lt;/KEYWORD3&gt;
+			&lt;KEYWORD3&gt;__FUNCTION__&lt;/KEYWORD3&gt;
+			&lt;KEYWORD3&gt;__CLASS__&lt;/KEYWORD3&gt;
+			&lt;KEYWORD3&gt;true&lt;/KEYWORD3&gt;
+			&lt;KEYWORD3&gt;false&lt;/KEYWORD3&gt;
+			&lt;KEYWORD3&gt;null&lt;/KEYWORD3&gt;
+
+			&lt;KEYWORD2&gt;COM_invoke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;COM_load&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;abs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;accept_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;acos&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;add&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;add&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;add_iovec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;addaction&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;addcolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;addcslashes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;addentry&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;addfill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;addshape&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;addslashes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;addstring&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;addstring&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;align&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;apache_child_terminate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;apache_lookup_uri&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;apache_lookup_uri&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;apache_note&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;apache_sub_req&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_combine&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_count_values&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_diff&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_diff_assoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_diff_uassoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_intersect_assoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_filter&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_flip&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_intersect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_keys&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_map&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_merge&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_merge_recursive&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_multisort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_pad&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_pop&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_push&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_rand&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_reduce&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_reverse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_search&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_shift&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_slice&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_splice&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_sum&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_udiff&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_udiff_assoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_udiff_uassoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_unique&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_unshift&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_values&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_walk&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;array_walk_recursive&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;arsort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;asin&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;asort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;aspell_check&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;aspell_check_raw&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;aspell_new&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;aspell_suggest&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;assert&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;assert_options&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;atan&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;atan2&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;base64_decode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;base64_encode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;base_convert&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;basename&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bcadd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bccomp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bcdiv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bcmod&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bcmul&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bcpow&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bcscale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bcsqrt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bcsub&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bin2hex&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bind&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bindec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bindtextdomain&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;build_iovec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bzclose&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bzcompress&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bzdecompress&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bzerrno&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bzerror&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bzerrstr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bzflush&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bzopen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bzread&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;bzwrite&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;call_user_func&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;call_user_func_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;call_user_method&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;call_user_method_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_add&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_auth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_command&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_count&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_delete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_done&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_init&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_lookup&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_new&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_report&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_return&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_reverse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_sale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_status&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_textvalue&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ccvs_void&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ceil&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;chdir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;checkdate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;checkdnsrr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;checkdnsrr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;chgrp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;chmod&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;chop&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;chown&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;chr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;chroot&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;chroot&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;chunk_split&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;class_exists&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;clearstatcache&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;closedir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;closelog&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;com_get&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;com_propget&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;com_propput&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;com_propset&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;com_set&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;compact&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;confirm_cybermut_compiled&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;confirm_extname_compiled&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;connection_aborted&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;connection_status&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;constant&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;convert_cyr_string&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;convert_uudecode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;convert_uuencode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;copy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cos&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;count&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;count_chars&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_add_annotation&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_add_outline&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_arc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_begin_text&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_circle&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_clip&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_closepath&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_closepath_fill_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_closepath_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_continue_text&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_curveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_end_text&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_fill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_fill_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_finalize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_finalize_page&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_global_set_document_limits&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_import_jpeg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_lineto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_moveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_newpath&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_output_buffer&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_page_init&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_place_inline_image&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_rect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_restore&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_rlineto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_rmoveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_rotate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_rotate_text&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_save&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_save_to_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_scale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_action_url&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_char_spacing&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_creator&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_current_page&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_font&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_font_directories&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_font_map_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_horiz_scaling&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_keywords&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_leading&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_page_animation&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_subject&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_text_matrix&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_text_pos&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_text_rendering&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_text_rise&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_title&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_viewer_preferences&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_set_word_spacing&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setdash&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setflat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setgray&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setgray_fill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setgray_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setlinecap&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setlinejoin&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setlinewidth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setmiterlimit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setrgbcolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setrgbcolor_fill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_setrgbcolor_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_show&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_show_xy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_stringwidth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_text&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cpdf_translate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;crack_check&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;crack_closedict&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;crack_getlastmessage&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;crack_opendict&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;crash&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;crc32&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;create_function&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;crypt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;crypt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_alnum&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_alpha&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_cntrl&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_digit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_graph&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_lower&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_print&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_punct&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_space&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_upper&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ctype_xdigit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;curl_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;curl_errno&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;curl_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;curl_exec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;curl_getinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;curl_getinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;curl_init&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;curl_setopt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;curl_version&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;current&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_add&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_auth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_command&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_count&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_delete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_done&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_init&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_lookup&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_new&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_report&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_return&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_reverse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_sale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_status&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_textvalue&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cv_void&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cybercash_base64_decode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cybercash_base64_encode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cybercash_decr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cybercash_encr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cybermut_creerformulairecm&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cybermut_creerreponsecm&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;cybermut_testmac&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;date&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_delete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_exists&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_fetch&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_firstkey&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_insert&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_nextkey&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_optimize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_popen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_replace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dba_sync&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_add_record&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_create&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_delete_record&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_get_record&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_get_record_with_names&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_numfields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_numrecords&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_pack&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbase_replace_record&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dblist&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbmclose&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbmdelete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbmexists&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbmfetch&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbmfirstkey&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbminsert&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbmnextkey&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbmopen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbmreplace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbx_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbx_cmp_asc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbx_cmp_desc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbx_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbx_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbx_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dbx_sort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dcgettext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;decbin&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dechex&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;decoct&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;debug_backtrace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;debug_print_backtrace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;define&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;define_syslog_variables&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;defined&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;deg2rad&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;delete_iovec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dgettext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;die&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dirname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;diskfreespace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;display_disabled_function&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;dl&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_add_root&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_attributes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_children&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_dumpmem&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_elem_get_attribute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_elem_set_attribute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_get_attribute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_getattr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_new_child&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_new_xmldoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_node&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_node_attributes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_node_children&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_node_new_child&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_node_set_content&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_node_unlink_node&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_root&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_set_attribute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_setattr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_unlink_node&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;domxml_version&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;doubleval&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;drawarc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;drawcircle&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;drawcubic&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;drawcubicto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;drawcurve&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;drawcurveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;drawglyph&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;drawline&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;drawlineto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;each&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;easter_date&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;easter_days&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;end&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ereg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ereg_replace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;eregi&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;eregi_replace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;error_log&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;error_reporting&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;escapeshellarg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;escapeshellcmd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;exec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;exit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;exp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;explode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;extension_loaded&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;extract&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ezmlm_hash&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ezmlm_hash&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_affected_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_autocommit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_commit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_create_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_data_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_database&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_database_password&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_db_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_drop_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_errno&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_fetch_assoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_fetch_field&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_fetch_lengths&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_field_flags&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_field_len&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_field_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_field_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_field_table&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_field_type&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_hostname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_insert_id&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_list_dbs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_list_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_list_tables&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_next_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_password&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_rollback&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_select_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_start_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_stop_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_username&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fbsql_warnings&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fclose&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fd_alloc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fd_clear&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fd_dealloc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fd_isset&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fd_set&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fd_zero&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_add_template&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_create&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_get_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_get_status&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_get_value&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_next_field_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_save&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_set_ap&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_set_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_set_flags&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_set_javascript_action&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_set_opt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_set_status&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_set_submit_form_action&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fdf_set_value&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;feof&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fetch_iovec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fflush&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fgetc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fgetcsv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fgets&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fgetss&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;file_exists&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;file_get_contents&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;file_put_contents&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fileatime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filectime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filegroup&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fileinode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filemtime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fileowner&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fileperms&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filepro&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filepro_fieldcount&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filepro_fieldname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filepro_fieldtype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filepro_fieldwidth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filepro_retrieve&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filepro_rowcount&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filesize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;filetype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;floatval&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;flock&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;floor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;flush&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fopen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fopenstream&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fopenstream&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fpassthru&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fputs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fread&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;free_iovec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;frenchtojd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fribidi_log2vis&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fscanf&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fseek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fsockopen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fstat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftell&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_alloc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_cdup&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_chdir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_delete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_exec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_fget&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_fput&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_get&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_login&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_mdtm&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_mkdir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_nlist&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_pasv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_put&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_pwd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_quit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_rawlist&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_rename&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_rmdir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_site&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_ssl_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftp_systype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ftruncate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;func_get_arg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;func_get_args&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;func_num_args&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;function_exists&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;fwrite&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gd_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_all_headers&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_browser&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_cfg_var&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_class&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_class_methods&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_class_vars&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_current_user&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_declared_classes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_declared_interfaces&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_defined_functions&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_defined_vars&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_extension_funcs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_headers&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_html_translation_table&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_included_files&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_loaded_extensions&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_magic_quotes_gpc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_magic_quotes_runtime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_meta_tags&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_object_vars&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_parent_class&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_required_files&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;get_resource_type&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getallheaders&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getallheaders&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getascent&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getascent&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getcwd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getdate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getdescent&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getdescent&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getenv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getheight&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gethostbyaddr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gethostbyaddr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gethostbyname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gethostbyname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gethostbynamel&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getimagesize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getlastmod&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getleading&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getleading&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getmxrr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getmxrr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getmyinode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getmypid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getmyuid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getopt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getpeername&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getprotobyname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getprotobynumber&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getrandmax&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getrusage&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getrusage&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getservbyname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getservbyport&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getshape1&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getshape2&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getsockname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getsockopt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gettext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gettimeofday&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gettype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getwidth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getwidth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;getwidth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmdate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmmktime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_abs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_add&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_and&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_clrbit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_cmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_com&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_div&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_div_q&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_div_qr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_div_r&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_divexact&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_fact&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_gcd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_gcdext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_hamdist&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_init&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_intval&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_invert&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_jacobi&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_legendre&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_mod&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_mul&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_neg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_or&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_perfect_square&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_popcount&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_pow&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_powm&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_prob_prime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_random&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_scan0&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_scan1&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_setbit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_sign&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_sqrt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_sqrtrem&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_strval&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_sub&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmp_xor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmstrftime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gmstrftime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gregoriantojd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzclose&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzcompress&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzdeflate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzencode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzeof&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzfile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzgetc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzgets&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzgetss&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzinflate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzopen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzpassthru&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzputs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzread&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzrewind&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzseek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gztell&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzuncompress&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;gzwrite&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;header&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;headers_list&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;headers_sent&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hebrev&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hebrevc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hexdec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;highlight_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;highlight_string&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;htmlentities&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;htmlspecialchars&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;http_build_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_array2objrec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_changeobject&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_children&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_childrenobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_connection_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_cp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_deleteobject&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_docbyanchor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_docbyanchorobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_document_attributes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_document_bodytag&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_document_content&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_document_setcontent&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_document_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_dummy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_edittext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_errormsg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_free_document&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getanchors&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getanchorsobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getandlock&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getcgi&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getchildcoll&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getchildcollobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getchilddoccoll&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getchilddoccollobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getobject&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getobjectbyftquery&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getobjectbyftquerycoll&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getobjectbyftquerycollobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getobjectbyftqueryobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getobjectbyquery&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getobjectbyquerycoll&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getobjectbyquerycollobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getobjectbyqueryobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getparents&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getparentsobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getrellink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getremote&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getremotechildren&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getsrcbydestobj&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_gettext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_getusername&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_identify&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_incollections&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_inscoll&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_insdoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_insertanchors&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_insertdocument&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_insertobject&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_mapid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_modifyobject&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_mv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_new_document&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_new_document_from_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_objrec2array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_output_document&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_pipecgi&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_pipedocument&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_root&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_setlinkroot&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_stat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_unlock&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;hw_who&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_blob_add&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_blob_cancel&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_blob_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_blob_create&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_blob_echo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_blob_get&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_blob_import&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_blob_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_blob_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_commit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_errmsg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_execute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_field_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_free_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_prepare&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_rollback&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_timefmt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ibase_trans&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_create_calendar&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_delete_calendar&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_delete_event&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_fetch_event&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_list_alarms&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_list_events&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_popen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_rename_calendar&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_reopen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_snooze&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;icap_store_event&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iconv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iconv_get_encoding&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iconv_set_encoding&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;idate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_affected_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_blobinfile_mode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_byteasvarchar&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_copy_blob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_create_blob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_create_char&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_do&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_errormsg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_fieldproperties&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_fieldtypes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_free_blob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_free_char&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_get_blob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_get_char&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_getsqlca&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_htmltbl_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_nullformat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_prepare&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_textasvarchar&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_update_blob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifx_update_char&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifxus_close_slob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifxus_create_slob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifxus_free_slob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifxus_open_slob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifxus_read_slob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifxus_seek_slob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifxus_tell_slob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ifxus_write_slob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ignore_user_abort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_addserver&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_getdirsecurity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_getscriptmap&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_getserverbycomment&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_getserverbypath&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_getserverright&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_getservicestate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_removeserver&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_setappsettings&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_setdirsecurity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_setscriptmap&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_setserverright&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_startserver&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_startservice&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_stopserver&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iis_stopservice&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;image_type_to_extension&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;image2wbmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagealphablending&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagearc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagechar&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecharup&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorallocate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorclosest&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorclosestalpha&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorclosesthwb&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolordeallocate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorexact&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorexactalpha&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolormatch&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorresolve&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorresolvealpha&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorset&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorsforindex&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolorstotal&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecolortransparent&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecopy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecopymerge&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecopymergegray&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecopyresampled&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecopyresized&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecreate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecreatefromgif&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecreatefromjpeg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecreatefrompng&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecreatefromstring&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecreatefromwbmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecreatefromxbm&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecreatefromxpm&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagecreatetruecolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagedashedline&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagedestroy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imageellipse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagefill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagefilledarc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagefilledellipse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagefilledpolygon&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagefilledrectangle&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagefilltoborder&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagefilter&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagefontheight&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagefontwidth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagegammacorrect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagegif&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imageinterlace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagejpeg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagelayereffect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imageline&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imageloadfont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepalettecopy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepng&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepolygon&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepsbbox&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepscopyfont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepsencodefont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepsextendfont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepsfreefont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepsloadfont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepsslantfont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagepstext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagerectangle&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagerotate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagesetbrush&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagesetpixel&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagesetstyle&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagesetthickness&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagesettile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagestring&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagestringup&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagesx&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagesy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagetruecolortopalette&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagettfbbox&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagettftext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagetypes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imagewbmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_8bit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_alerts&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_append&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_base64&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_binary&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_body&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_bodystruct&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_check&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_clearflag_full&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_create&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_createmailbox&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_delete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_deletemailbox&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_errors&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_expunge&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_fetch_overview&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_fetchbody&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_fetchheader&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_fetchstructure&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_fetchtext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_get_quota&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_getmailboxes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_getsubscribed&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_header&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_headerinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_headers&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_last_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_list&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_listmailbox&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_listsubscribed&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_lsub&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_mail&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_mail&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_mail_compose&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_mail_copy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_mail_move&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_mailboxmsginfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_mime_header_decode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_msgno&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_num_msg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_num_recent&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_ping&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_popen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_qprint&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_rename&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_renamemailbox&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_reopen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_rfc822_parse_adrlist&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_rfc822_parse_headers&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_rfc822_write_address&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_scan&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_scanmailbox&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_search&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_set_quota&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_setflag_full&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_sort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_status&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_subscribe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_uid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_undelete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_unsubscribe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_utf7_decode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_utf7_encode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;imap_utf8&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;implode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;in_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_autocommit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_commit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_field_length&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_field_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_field_nullable&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_field_precision&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_field_scale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_field_type&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ingres_rollback&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ini_alter&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ini_get&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ini_restore&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ini_set&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;intval&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ip2long&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iptcembed&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;iptcparse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_channel_mode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_disconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_html_encode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_ignore_add&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_ignore_del&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_is_conn_alive&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_join&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_kick&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_lookup_format_messages&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_msg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_nick&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_nickname_escape&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_nickname_unescape&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_notice&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_part&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_register_format_messages&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_set_current&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_topic&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ircg_whois&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_bool&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_dir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_double&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_executable&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_float&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_int&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_integer&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_link&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_long&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_null&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_numeric&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_readable&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_real&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_resource&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_scalar&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_string&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_subclass_of&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_uploaded_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_writable&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;is_writeable&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;java_last_exception_clear&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;java_last_exception_get&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;jddayofweek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;jdmonthname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;jdtofrench&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;jdtogregorian&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;jdtojewish&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;jdtojulian&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;jdtounix&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;jewishtojd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;join&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;jpeg2wbmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;juliantojd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;key&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;krsort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ksort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;labelframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;labelframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;lcg_value&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_8859_to_t61&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_add&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_bind&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_compare&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_count_entries&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_delete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_dn2ufn&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_err2str&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_errno&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_explode_dn&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_first_attribute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_first_entry&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_first_reference&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_get_attributes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_get_dn&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_get_entries&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_get_option&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_get_values&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_get_values_len&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_list&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_mod_add&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_mod_del&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_mod_replace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_modify&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_next_attribute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_next_entry&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_next_reference&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_parse_reference&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_parse_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_read&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_rename&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_search&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_set_option&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_t61_to_8859&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ldap_unbind&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;leak&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;levenshtein&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;link&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;link&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;linkinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;linkinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;listen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;localeconv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;localtime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;log&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;log10&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;long2ip&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;lstat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ltrim&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;magic_quotes_runtime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mail&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mail&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;max&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mb_convert_case&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mb_strtolower&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mb_strtoupper&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_append_event&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_create_calendar&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_date_compare&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_date_valid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_day_of_week&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_day_of_year&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_days_in_month&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_delete_calendar&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_delete_event&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_add_attribute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_init&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_alarm&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_category&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_class&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_description&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_end&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_recur_daily&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_recur_monthly_mday&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_recur_monthly_wday&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_recur_none&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_recur_weekly&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_recur_yearly&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_start&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_event_set_title&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_fetch_current_stream_event&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_fetch_event&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_is_leap_year&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_list_alarms&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_list_events&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_next_recurrence&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_popen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_rename_calendar&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_reopen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_snooze&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_store_event&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_time_valid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcal_week_of_year&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_cbc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_cfb&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_create_iv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_decrypt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_ecb&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_enc_get_algorithms_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_enc_get_block_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_enc_get_iv_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_enc_get_key_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_enc_get_modes_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_enc_get_supported_key_sizes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_enc_is_block_algorithm&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_enc_is_block_algorithm_mode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_enc_is_block_mode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_enc_self_test&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_encrypt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_generic&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_generic_deinit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_generic_end&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_generic_init&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_get_block_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_get_cipher_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_get_iv_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_get_key_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_list_algorithms&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_list_modes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_module_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_module_get_algo_block_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_module_get_algo_key_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_module_get_supported_key_sizes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_module_is_block_algorithm&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_module_is_block_algorithm_mode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_module_is_block_mode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_module_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_module_self_test&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mcrypt_ofb&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;md5&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;md5_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mdecrypt_generic&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;metaphone&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;method_exists&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mhash&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mhash_count&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mhash_get_block_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mhash_get_hash_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mhash_keygen_s2k&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;microtime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;min&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ming_setcubicthreshold&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ming_setscale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mkdir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mktime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;move&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;move_uploaded_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;movepen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;movepento&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;moveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;moveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;moveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_affected_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_create_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_createdb&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_data_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_db_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_dbname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_drop_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_dropdb&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_fetch_field&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_field_flags&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_field_len&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_field_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_field_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_field_table&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_field_type&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_fieldflags&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_fieldlen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_fieldname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_fieldtable&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_fieldtype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_freeresult&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_list_dbs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_list_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_list_tables&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_listdbs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_listfields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_listtables&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_numfields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_numrows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_regcase&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_select_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_selectdb&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;msql_tablename&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_affected_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_affected_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_data_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_data_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_data_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_batch&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_field&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_field&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_field&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_field_length&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_field_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_field_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_field_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_field_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_field_type&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_get_last_message&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_get_last_message&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_get_last_message&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_min_client_severity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_min_error_severity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_min_error_severity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_min_message_severity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_min_message_severity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_min_server_severity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_next_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_rows_affected&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_select_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_select_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mssql_select_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mt_getrandmax&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mt_rand&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mt_srand&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;multcolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;muscat_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;muscat_get&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;muscat_give&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;muscat_setup&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;muscat_setup_net&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_affected_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_create_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_createdb&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_data_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_db_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_db_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_dbname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_drop_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_dropdb&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_errno&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_escape_string&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fetch_assoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fetch_field&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fetch_lengths&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_field_flags&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_field_len&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_field_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_field_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_field_table&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_field_type&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fieldflags&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fieldlen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fieldname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fieldtable&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_fieldtype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_freeresult&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_get_client_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_get_host_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_get_proto_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_get_server_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_insert_id&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_list_dbs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_list_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_list_tables&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_listdbs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_listfields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_listtables&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_numfields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_numrows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_select_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_selectdb&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_tablename&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;mysql_unbuffered_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;natcasesort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;natsort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;new_xmldoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;next&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;nextframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;nextframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;nl2br&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_body&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_copy_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_create_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_create_note&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_drop_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_find_note&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_header_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_list_msgs&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_mark_read&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_mark_unread&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_nav_create&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_search&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_unread&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;notes_version&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;number_format&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_end_clean&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_end_flush&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_get_clean&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_get_contents&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_get_flush&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_get_length&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_gzhandler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_iconv_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_implicit_flush&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_list_handlers&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ob_start&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocibindbyname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicancel&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicollappend&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicollassign&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicollassignelem&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolldateappendelem&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolldateassignelem&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolldategetelem&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicollgetelem&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicollmax&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicollsize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolltrim&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolumnisnull&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolumnname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolumnprecision&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolumnscale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolumnsize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolumntype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicolumntyperaw&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocicommit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocidefinebyname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocierror&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ociexecute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocifetch&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocifetchinto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocifetchstatement&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocifreecoll&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocifreecursor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocifreedesc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocifreestatement&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ociinternaldebug&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ociloadlob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocilogoff&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocilogon&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocinewcollection&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocinewcursor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocinewdescriptor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocinlogon&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocinumcols&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ociparse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ociplogon&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ociresult&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocirollback&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocirowcount&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocisavelob&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocisavelobfile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ociserverversion&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocisetprefetch&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ocistatementtype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ociwritelobtofile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;octdec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_autocommit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_binmode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_close_all&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_columnprivileges&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_columns&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_commit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_cursor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_data_source&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_do&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_errormsg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_exec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_execute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_fetch_into&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_field_len&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_field_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_field_num&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_field_precision&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_field_scale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_field_type&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_foreignkeys&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_gettypeinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_longreadlen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_next_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_prepare&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_primarykeys&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_procedurecolumns&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_procedures&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_result_all&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_rollback&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_setoption&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_specialcolumns&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_statistics&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_tableprivileges&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;odbc_tables&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;open_listen_sock&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;opendir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openlog&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_error_string&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_free_key&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_get_privatekey&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_get_publickey&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_pkcs7_decrypt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_pkcs7_encrypt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_pkcs7_sign&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_pkcs7_verify&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_seal&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_sign&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_verify&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_x509_checkpurpose&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_x509_free&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_x509_parse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;openssl_x509_read&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_bind&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_columnname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_columnsize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_columntype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_commit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_commitoff&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_commiton&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_do&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_errorcode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_exec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_fetch&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_fetch_into&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_getcolumn&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_logoff&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_logon&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_numcols&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_numrows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_parse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_plogon&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ora_rollback&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;orbit_caught_exception&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;orbit_exception_id&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;orbit_exception_value&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;orbit_get_repository_id&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;orbit_load_idl&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ord&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;output&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_close_all&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_commit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_cursor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_exec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_execute&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_fetch_into&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_field_len&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_field_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_field_num&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_field_type&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_longreadlen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_prepare&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_result_all&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ovrimos_rollback&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pack&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;parse_ini_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;parse_str&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;parse_url&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;passthru&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pathinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pclose&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_add_annotation&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_add_bookmark&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_add_launchlink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_add_locallink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_add_note&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_add_outline&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_add_pdflink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_add_thumbnail&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_add_weblink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_arc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_arcn&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_attach_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_begin_page&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_begin_pattern&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_begin_template&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_circle&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_clip&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_close_image&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_close_pdi&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_close_pdi_page&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_closepath&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_closepath_fill_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_closepath_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_concat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_continue_text&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_curveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_delete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_end_page&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_end_pattern&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_end_template&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_endpath&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_fill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_fill_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_findfont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_get_buffer&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_get_font&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_get_fontname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_get_fontsize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_get_image_height&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_get_image_width&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_get_parameter&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_get_pdi_parameter&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_get_pdi_value&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_get_value&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_initgraphics&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_lineto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_makespotcolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_moveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_new&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_ccitt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_gif&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_image&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_image_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_jpeg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_memory_image&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_pdi&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_pdi_page&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_png&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_open_tiff&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_place_image&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_place_pdi_page&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_rect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_restore&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_rotate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_save&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_scale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_border_color&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_border_dash&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_border_style&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_char_spacing&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_duration&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_font&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_horiz_scaling&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_info_author&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_info_creator&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_info_keywords&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_info_subject&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_info_title&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_leading&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_parameter&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_text_pos&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_text_rendering&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_text_rise&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_transition&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_value&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_set_word_spacing&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setcolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setdash&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setflat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setfont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setgray&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setgray_fill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setgray_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setlinecap&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setlinejoin&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setlinewidth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setmatrix&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setmiterlimit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setpolydash&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setrgbcolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setrgbcolor_fill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_setrgbcolor_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_show&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_show_boxed&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_show_xy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_skew&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_stringwidth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_stroke&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pdf_translate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pfpro_cleanup&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pfpro_init&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pfpro_process&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pfpro_process_raw&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pfpro_version&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pfsockopen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_client_encoding&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_clientencoding&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_cmdtuples&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_convert&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_dbname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_delete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_end_copy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_errormessage&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_exec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fetch_all&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fetch_assoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fieldisnull&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fieldname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fieldnum&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fieldprtlen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fieldsize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_fieldtype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_freeresult&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_getlastoid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_get_notify&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_get_pid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_host&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_insert&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_loclose&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_locreate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_loexport&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_loimport&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_loopen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_loread&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_loreadall&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_lounlink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_lowrite&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_numfields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_numrows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_meta_data&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_options&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_ping&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_port&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_put_line&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_result_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_select&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_set_client_encoding&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_setclientencoding&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_trace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_tty&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_unescape_bytea&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_untrace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pg_update&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;php_logo_guid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;php_sapi_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;php_uname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;phpcredits&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;phpinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;phpversion&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pi&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;png2wbmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;popen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pos&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_ctermid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getcwd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getegid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_geteuid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getgid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getgrgid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getgrnam&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getgroups&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getlogin&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getpgid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getpgrp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getpid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getppid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getpwnam&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getpwuid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getrlimit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getsid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_getuid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_isatty&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_kill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_mkfifo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_setegid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_seteuid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_setgid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_setpgid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_setsid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_setuid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_times&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_ttyname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;posix_uname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pow&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;preg_grep&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;preg_match&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;preg_match_all&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;preg_quote&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;preg_replace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;preg_replace_callback&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;preg_split&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;prev&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;print_r&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_abort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_create_brush&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_create_dc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_create_font&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_create_pen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_delete_brush&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_delete_dc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_delete_font&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_delete_pen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_draw_bmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_draw_chord&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_draw_elipse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_draw_line&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_draw_pie&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_draw_rectangle&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_draw_roundrect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_draw_text&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_end_doc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_end_page&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_get_option&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_list&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_logical_fontheight&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_select_brush&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_select_font&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_select_pen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_set_option&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_start_doc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_start_page&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printer_write&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;printf&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_add_to_personal&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_add_to_session&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_check&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_clear_session&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_config_create&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_config_ignore&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_config_mode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_config_personal&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_config_repl&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_config_runtogether&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_config_save_repl&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_new&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_new_config&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_new_personal&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_save_wordlist&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_store_replacement&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;pspell_suggest&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;putenv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;putenv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;qdom_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;qdom_tree&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;quoted_printable_decode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;quotemeta&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rad2deg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rand&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;range&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rawurldecode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rawurlencode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;read&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;read_exif_data&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readdir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readfile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readgzfile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readline&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readline_add_history&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readline_clear_history&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readline_completion_function&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readline_info&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readline_list_history&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readline_list_history&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readline_read_history&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readline_write_history&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readlink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readlink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;readv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;realpath&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;realpath&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;recode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;recode_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;recode_string&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;recv&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;recvfrom&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;recvmsg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;register_shutdown_function&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;register_tick_function&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;remove&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;remove&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rename&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;reset&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;restore_error_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rewind&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rewinddir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rmdir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rotate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rotateto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rotateto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;round&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rsort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;rtrim&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;satellite_caught_exception&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;satellite_exception_id&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;satellite_exception_value&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;satellite_get_repository_id&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;satellite_load_idl&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;save&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;savetofile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;scale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;scaleto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;scaleto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;scandir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;select&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sem_acquire&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sem_get&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sem_release&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;send&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sendmsg&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sendto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;serialize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_cache_limiter&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_decode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_destroy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_encode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_get_cookie_params&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_id&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_is_registered&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_module_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_register&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_save_path&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_set_cookie_params&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_set_save_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_start&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_unregister&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_unset&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;session_write_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;set_content&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;set_error_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;set_file_buffer&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;set_iovec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;set_magic_quotes_runtime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;set_nonblock&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;set_socket_blocking&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;set_time_limit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setaction&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setbackground&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setbounds&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setcolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setcolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setcookie&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setdepth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setdimension&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setdown&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setfont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setfont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setframes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setframes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setheight&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setheight&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sethit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setindentation&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setleftfill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setleftmargin&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setline&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setlinespacing&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setlocale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setmargins&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setmatrix&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setover&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setrate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setratio&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setrightfill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setrightmargin&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setsockopt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setspacing&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;settype&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;setup&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sha1&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sha1_file&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shell_exec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shm_attach&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shm_detach&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shm_get_var&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shm_put_var&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shm_remove&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shm_remove_var&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shmop_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shmop_delete&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shmop_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shmop_read&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shmop_size&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shmop_write&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;show_source&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shuffle&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;shutdown&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;signal&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;similar_text&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sin&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sizeof&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;skewx&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;skewxto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;skewxto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;skewy&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;skewyto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;skewyto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sleep&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;snmp_get_quick_print&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;snmp_set_quick_print&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;snmpget&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;snmpget&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;snmprealwalk&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;snmpset&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;snmpwalk&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;snmpwalk&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;snmpwalkoid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;socket&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;socket_get_status&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;socket_set_blocking&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;socket_set_timeout&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;socket_set_timeout&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stream_get_status&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stream_set_blocking&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stream_set_timeout&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stream_set_timeout&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stream_context_create&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stream_context_set_params&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stream_context_set_option&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stream_filter_prepend&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stream_filter_append&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stream_select&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;socketpair&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;soundex&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;split&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;spliti&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sprintf&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sql_regcase&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sqrt&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;srand&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sscanf&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;str_pad&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;str_rot13&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;str_repeat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;str_replace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;str_split&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strpbrk&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strcasecmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strchr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strcmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strcoll&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strcoll&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strcspn&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;streammp3&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strerror&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strftime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strftime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strip_tags&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stripcslashes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stripos&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stripslashes&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;stristr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strlen&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strnatcasecmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strnatcmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strncasecmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strncmp&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strpos&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strrchr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strrev&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strrpos&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strspn&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strstr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strtok&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strtolower&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strtotime&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strtoupper&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strtr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;strval&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;str_word_count&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;substr&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;substr_compare&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;substr_count&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;substr_replace&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_actiongeturl&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_actiongotoframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_actiongotolabel&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_actionnextframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_actionplay&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_actionprevframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_actionsettarget&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_actionstop&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_actiontogglequality&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_actionwaitforframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_addbuttonrecord&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_addcolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_closefile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_definebitmap&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_definefont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_defineline&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_definepoly&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_definerect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_definetext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_endbutton&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_enddoaction&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_endshape&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_endsymbol&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_fontsize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_fontslant&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_fonttracking&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_getbitmapinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_getfontinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_getframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_labelframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_lookat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_modifyobject&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_mulcolor&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_nextid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_oncondition&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_openfile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_ortho&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_ortho2&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_perspective&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_placeobject&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_polarview&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_popmatrix&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_posround&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_pushmatrix&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_removeobject&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_rotate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_scale&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_setfont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_setframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_shapearc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_shapecurveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_shapecurveto3&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_shapefillbitmapclip&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_shapefillbitmaptile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_shapefilloff&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_shapefillsolid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_shapelinesolid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_shapelineto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_shapemoveto&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_showframe&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_startbutton&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_startdoaction&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_startshape&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_startsymbol&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_textwidth&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_translate&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swf_viewport&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swfaction&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swfbitmap&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swfbutton&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swfbutton_keypress&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swffill&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swffont&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swfgradient&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swfmorph&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swfmovie&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swfshape&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swfsprite&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swftext&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;swftextfield&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_affected_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_affected_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_data_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_data_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_fetch_array&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_fetch_field&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_fetch_field&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_fetch_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_fetch_row&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_field_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_field_seek&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_free_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_get_last_message&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_get_last_message&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_min_client_severity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_min_error_severity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_min_message_severity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_min_server_severity&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_num_fields&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_num_rows&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_pconnect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_query&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_select_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;sybase_select_db&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;symlink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;symlink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;syslog&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;system&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;tan&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;tempnam&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;textdomain&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;time&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;time_nanosleep&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;tmpfile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;touch&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;trigger_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;trim&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;uasort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ucfirst&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;ucwords&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_add_search_limit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_alloc_agent&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_api_version&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_clear_search_limits&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_errno&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_find&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_free_agent&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_free_ispell_data&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_free_res&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_get_doc_count&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_get_res_field&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_get_res_param&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_load_ispell_data&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;udm_set_agent_param&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;uksort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;umask&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;uniqid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;uniqid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;unixtojd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;unlink&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;unpack&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;unregister_tick_function&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;unserialize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;unset&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;urldecode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;urlencode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;user_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;usleep&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;usort&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;utf8_decode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;utf8_encode&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;var_dump&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_autocommit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_commit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_exec&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_fetch&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_fieldname&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_fieldnum&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_freeresult&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_off_autocommit&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;velocis_rollback&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;virtual&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_add_alias_domain&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_add_alias_domain_ex&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_add_domain&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_add_domain_ex&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_add_user&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_auth_user&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_del_domain&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_del_domain_ex&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_del_user&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_passwd&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;vpopmail_set_user_quota&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;wddx_add_vars&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;wddx_deserialize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;wddx_packet_end&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;wddx_packet_start&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;wddx_serialize_value&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;wddx_serialize_vars&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;wordwrap&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;write&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;writev&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_error_string&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_get_current_byte_index&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_get_current_column_number&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_get_current_line_number&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_get_error_code&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_parse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_parse_into_struct&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_parser_create&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_parser_create_ns&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_parser_free&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_parser_get_option&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_parser_set_option&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_set_character_data_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_set_default_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_set_element_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_set_end_namespace_decl_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_set_external_entity_ref_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_set_notation_decl_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_set_object&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_set_processing_instruction_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_set_start_namespace_decl_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xml_set_unparsed_entity_decl_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xmldoc&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xmldocfile&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xmltree&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xpath_eval&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xpath_eval_expression&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xptr_eval&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_closelog&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_create&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_errno&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_fetch_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_free&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_openlog&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_output_begintransform&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_output_endtransform&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_process&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_run&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_set_base&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_set_encoding&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_set_error_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_set_sax_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_set_scheme_handler&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;xslt_transform&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_addinfo&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_ccl_conf&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_ccl_parse&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_connect&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_database&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_element&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_errno&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_error&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_hits&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_itemorder&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_present&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_range&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_record&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_scan&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_scan_result&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_search&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_syntax&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yaz_wait&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yp_all&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yp_cat&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yp_err_string&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yp_errno&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yp_first&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yp_get_default_domain&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yp_master&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yp_match&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yp_next&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;yp_order&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zend_logo_guid&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zend_test_func&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zend_version&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zzip_close&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zzip_closedir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zzip_entry_compressedsize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zzip_entry_compressionmethod&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zzip_entry_filesize&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zzip_entry_name&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zzip_open&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zzip_opendir&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zzip_read&lt;/KEYWORD2&gt;
+			&lt;KEYWORD2&gt;zzip_readdir&lt;/KEYWORD2&gt;
+		&lt;/KEYWORDS&gt;
+	&lt;/RULES&gt;
+
+	&lt;RULES SET="PHP_LITERAL" ESCAPE="\" DEFAULT="LITERAL1"&gt;
+		&lt;MARK_FOLLOWING TYPE="KEYWORD3"&gt;$&lt;/MARK_FOLLOWING&gt;
+	&lt;/RULES&gt;
+
+	&lt;RULES SET="JAVASCRIPT" DEFAULT="MARKUP" IGNORE_CASE="TRUE"&gt;
+		&lt;SEQ TYPE="MARKUP" DELEGATE="JAVASCRIPT+PHP"&gt;&amp;gt;&lt;/SEQ&gt;
+		&lt;!-- handle &lt;SCRIPT SRC="..."&gt; properly --&gt;
+		&lt;SEQ TYPE="MARKUP" DELEGATE="BACK_TO_HTML"&gt;SRC=&lt;/SEQ&gt;
+	&lt;/RULES&gt;
+
+	&lt;RULES SET="JAVASCRIPT+PHP"&gt;
+		&lt;!-- PHP code, copied from php.xml by Chris Petersen --&gt;
+		&lt;SPAN TYPE="MARKUP" DELEGATE="php::PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;?php&lt;/BEGIN&gt;
+			&lt;END&gt;?&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="MARKUP" DELEGATE="php::PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;?&lt;/BEGIN&gt;
+			&lt;END&gt;?&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;SPAN TYPE="MARKUP" DELEGATE="php::PHP"&gt;
+			&lt;BEGIN&gt;&amp;lt;%=&lt;/BEGIN&gt;
+			&lt;END&gt;%&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;IMPORT DELEGATE="javascript::MAIN"/&gt;
+	&lt;/RULES&gt;
+
+	&lt;RULES SET="PHPDOC" DEFAULT="COMMENT3" IGNORE_CASE="TRUE"&gt;
+		&lt;!-- so that @link{...} is highlighted --&gt;
+		&lt;SEQ TYPE="COMMENT3"&gt;{&lt;/SEQ&gt;
+
+		&lt;!-- so that *@param is highlighted --&gt;
+		&lt;SEQ TYPE="COMMENT3"&gt;*&lt;/SEQ&gt;
+
+		&lt;!-- HTML comments --&gt;
+		&lt;SPAN TYPE="COMMENT2"&gt;
+			&lt;BEGIN&gt;&amp;lt;!--&lt;/BEGIN&gt;
+			&lt;END&gt;--&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;!-- PHPdoc allows this --&gt;
+		&lt;SEQ TYPE="COMMENT3"&gt;&amp;lt;&amp;lt;&lt;/SEQ&gt;
+		&lt;SEQ TYPE="COMMENT3"&gt;&amp;lt;=&lt;/SEQ&gt;
+		&lt;SEQ TYPE="COMMENT3"&gt;&amp;lt; &lt;/SEQ&gt;
+
+		&lt;!-- HTML tags --&gt;
+		&lt;SPAN TYPE="MARKUP" DELEGATE="xml::TAGS"
+			NO_LINE_BREAK="TRUE"&gt;
+			&lt;BEGIN&gt;&amp;lt;&lt;/BEGIN&gt;
+			&lt;END&gt;&amp;gt;&lt;/END&gt;
+		&lt;/SPAN&gt;
+
+		&lt;KEYWORDS&gt;
+			&lt;LABEL&gt;@abstract&lt;/LABEL&gt;
+			&lt;LABEL&gt;@access&lt;/LABEL&gt;
+			&lt;LABEL&gt;@author&lt;/LABEL&gt;
+			&lt;LABEL&gt;@category&lt;/LABEL&gt;
+			&lt;LABEL&gt;@copyright&lt;/LABEL&gt;
+			&lt;LABEL&gt;@deprecated&lt;/LABEL&gt;
+			&lt;LABEL&gt;@example&lt;/LABEL&gt;
+			&lt;LABEL&gt;@final&lt;/LABEL&gt;
+			&lt;LABEL&gt;@filesource&lt;/LABEL&gt;
+			&lt;LABEL&gt;@global&lt;/LABEL&gt;
+			&lt;LABEL&gt;@ignore&lt;/LABEL&gt;
+			&lt;LABEL&gt;@internal&lt;/LABEL&gt;
+			&lt;LABEL&gt;@license&lt;/LABEL&gt;
+			&lt;LABEL&gt;@link&lt;/LABEL&gt;
+			&lt;LABEL&gt;@name&lt;/LABEL&gt;
+			&lt;LABEL&gt;@package&lt;/LABEL&gt;
+			&lt;LABEL&gt;@param&lt;/LABEL&gt;
+			&lt;LABEL&gt;@return&lt;/LABEL&gt;
+			&lt;LABEL&gt;@see&lt;/LABEL&gt;
+			&lt;LABEL&gt;@since&lt;/LABEL&gt;
+			&lt;LABEL&gt;@static&lt;/LABEL&gt;
+			&lt;LABEL&gt;@staticvar&lt;/LABEL&gt;
+			&lt;LABEL&gt;@subpackage&lt;/LABEL&gt;
+			&lt;LABEL&gt;@todo&lt;/LABEL&gt;
+			&lt;LABEL&gt;@tutorial&lt;/LABEL&gt;
+			&lt;LABEL&gt;@uses&lt;/LABEL&gt;
+			&lt;LABEL&gt;@var&lt;/LABEL&gt;
+			&lt;LABEL&gt;@version&lt;/LABEL&gt;
+
+			&lt;LABEL&gt;@id&lt;/LABEL&gt;
+			&lt;LABEL&gt;@inheritdoc&lt;/LABEL&gt;
+			&lt;LABEL&gt;@source&lt;/LABEL&gt;
+			&lt;LABEL&gt;@toc&lt;/LABEL&gt;
+		&lt;/KEYWORDS&gt;
+	&lt;/RULES&gt;
+&lt;/MODE&gt;
+</t>
+<t tx="ekr.20081014061508.15"># def putEverything (self,rule):
+
+    # quote = self.quoteString
+    # seq = rule.getSeq(rule.name)
+
+    # s = '''\n\
+# def %s_rule%d(colorer, s, i):
+    # return colorer.match_everything(s,i,kind=%s,delegate=%s)''' % (
+        # self.fileModeName,
+        # self.handlerCount,
+        # quote(rule.getStrAttrib('type').lower()),
+        # quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
+    # )
+
+    # self.putTripleString(s)
+    # return seq[0]</t>
 </tnodes>
 </leo_file>

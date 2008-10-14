@@ -11201,7 +11201,7 @@ Traceback (most recent call last):
 TypeError: int argument required
 #@nonl
 #@-node:errors
-#@+node:@@button jEdit2Py
+#@+node:@button jEdit2Py
 '''Convert jEdit language description file to an equivalent .py file.'''
 
 @language python
@@ -11261,14 +11261,13 @@ both elements has the same effect as setting them on the SPAN element.
 #@nonl
 #@-node:<< version history >>
 #@+node:<< set files to convert >>
-# theDir = r'c:\prog\tigris-cvs\leo\modes'
-theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','modes'))
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
 fixed = ['antlr','applescript','apacheconf','bibtex','cil','pl1','shell','shellscript','ssharp','text']
 errors = [] # 'cil',] # End keyword not matched by start.
 errors = [r'%s\%s.xml' % (theDir,s) for s in errors]
 # for s in errors: print s
-if 0: # A a list of files.
-    files = [r'%s\%s.xml' % (theDir,s) for s in ('perl',)] # 'rest','perl',
+if 1: # A a list of files.
+    files = [r'%s\%s.xml' % (theDir,s) for s in ('phpsection',)]
 elif 1: # translate all files.
     files = glob.glob(g.os_path_abspath(g.os_path_join(theDir,'*.xml')))
 elif 1: # error files
@@ -11385,7 +11384,7 @@ def __init__ (self,contentHandler,fileName):
 
     # List of elements that start a rule.
     self.ruleElements = [
-        'eol_span','eol_span_regexp','import','keywords',
+        'eol_span','eol_span_regexp','everything','import','keywords',
         'mark_following','mark_previous','seq','seq_regexp',
         'span','span_regexp','terminate',]
 
@@ -11627,6 +11626,7 @@ def putRule (self, rule):
     d = {
         'eol_span':         self.putEolSpan,
         'eol_span_regexp':  self.putEolSpanRegexp,
+        # 'everything':       self.putEverything,
         'import':           self.putImport,
         'keywords':         self.putKeywords,
         'mark_following':   self.putMarkFollowing,
@@ -11706,6 +11706,25 @@ def %s_rule%d(colorer, s, i):
     return hash_char  # Bug fix: was seq[0]
 #@nonl
 #@-node:putEolSpanRegexp
+#@+node:putEverything
+# def putEverything (self,rule):
+
+    # quote = self.quoteString
+    # seq = rule.getSeq(rule.name)
+
+    # s = '''\n\
+# def %s_rule%d(colorer, s, i):
+    # return colorer.match_everything(s,i,kind=%s,delegate=%s)''' % (
+        # self.fileModeName,
+        # self.handlerCount,
+        # quote(rule.getStrAttrib('type').lower()),
+        # quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
+    # )
+
+    # self.putTripleString(s)
+    # return seq[0]
+#@nonl
+#@-node:putEverything
 #@+node:putImport
 # Do nothing here: putImportDict creates x.importDict.
 
@@ -12570,7 +12589,7 @@ def getMode (self):
 #@nonl
 #@-node:getMode
 #@-node:class contentHandler (xml.sax.saxutils.XMLGenerator)
-#@-node:@@button jEdit2Py
+#@-node:@button jEdit2Py
 #@-node:jEdit2Py
 #@+node:Print missing docstrings
 # Print all commands that do not have a docstring.

@@ -748,6 +748,14 @@ class colorizer:
             # Do this after 'officially' initing the mode, to limit recursion.
             self.addImportedRules(mode,self.rulesDict,rulesetName)
             self.updateDelimsTables()
+
+            initialDelegate = self.properties.get('initialModeDelegate')
+            if initialDelegate:
+                # g.trace('initialDelegate',initialDelegate)
+                # Replace the original mode by the delegate mode.
+                self.init_mode(initialDelegate)
+                language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
+                self.modes[rulesetName] = self.modes.get(rulesetName2)
             return True
     #@+node:ekr.20071010193720.27:nameToRulesetName
     def nameToRulesetName (self,name):
@@ -1173,6 +1181,7 @@ class colorizer:
         self.prev = None
         self.tagsRemoved = False
 
+        # g.trace(self.language)
         self.init_mode(self.language)
         self.configure_tags() # Must do this every time to support multiple editors.
 
@@ -1568,6 +1577,17 @@ class colorizer:
             return 0
     #@nonl
     #@-node:ekr.20071010193720.60:match_eol_span_regexp
+    #@+node:ekr.20081014064755.1:match_everything
+    # def match_everything (self,s,i,kind,delegate):
+
+        # '''A hack for phpsection mode: match the entire text and color with delegate.'''
+
+        # j = len(s)
+
+        # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+
+        # return j-i
+    #@-node:ekr.20081014064755.1:match_everything
     #@+node:ekr.20071010193720.61:match_keywords
     # This is a time-critical method.
     def match_keywords (self,s,i):

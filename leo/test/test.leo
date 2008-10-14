@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="18" left="390" height="809" width="867"/>
+	<global_window_position top="68" left="269" height="809" width="867"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4,0,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -371,6 +371,11 @@
 </v>
 </v>
 <v t="ekr.20081006070847.2"><vh>path convenience methods</vh></v>
+</v>
+<v t="ekr.20081014071610.2" a="E"><vh>Php test</vh>
+<v t="ekr.20081014071610.3" a="E"><vh>actions.class declarations</vh>
+<v t="ekr.20081014071610.4"><vh>executeGroupEditGroupsSave</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -3721,5 +3726,32 @@ print c.getNodePath (p)
 print c.getNodeFileName(p)
 
 </t>
+<t tx="ekr.20081014071610.2">@language php
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081014071610.3">@language php
+&lt;?php
+
+class pagerActions extends sfActions
+{
+    public function executeGroupEditGroupsSave($request)
+    {		
+        $this-&gt;getUser()-&gt;setFlash('notice', "Groups Saved");	
+        $this-&gt;redirect("pager/index");
+    }
+    @others
+}
+
+?&gt;</t>
+<t tx="ekr.20081014071610.4">@language phpsection
+
+&lt;!-- This should be colored as php, not html. --&gt;
+
+public function executeGroupEditGroupsSave($request)
+{		
+    $this-&gt;getUser()-&gt;setFlash('notice', "Groups Saved");	
+    $this-&gt;redirect("pager/index");
+}</t>
 </tnodes>
 </leo_file>
