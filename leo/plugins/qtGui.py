@@ -2720,43 +2720,15 @@ class leoQtFrame (leoFrame.leoFrame):
     #@-at
     #@-node:ekr.20081004172422.620:Delayed Focus (qtFrame)
     #@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
-    def bringToFront (self):
-        pass
-        # g.trace(g.callers())
-        #self.top.deiconify()
-        #self.top.lift()
-
-    def getFocus(self):
-
-        return g.app.gui.get_focus()
-
-    def getTitle (self):
-        return '<frame title>'
-        ### return self.top.title()
-
-    def setTitle (self,title):
-        return '<frame title>'
-        ### return self.top.title(title)
-
-    def get_window_info(self):
-        return 0,0,0,0
-        ### return g.app.gui.get_window_info(self.top)
-
-    def iconify(self):
-        pass
-        ### self.top.iconify()
-
-    def deiconify (self):
-        pass
-        ### self.top.deiconify()
-
-    def lift (self):
-        pass
-        ### self.top.lift()
-
-    def update (self):
-        pass
-        ### self.top.update()
+    def bringToFront (self):        pass 
+    def deiconify (self):           pass
+    def getFocus(self):             return g.app.gui.get_focus() 
+    def getTitle (self):            return self.top.windowTitle()
+    def get_window_info(self):      return 0,0,0,0
+    def iconify(self):              pass
+    def lift (self):                pass
+    def setTitle (self,title):      set.top.windowTitle(title)
+    def update (self):              pass
     #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
     #@-others
 #@-node:ekr.20081004172422.523:class leoQtFrame
