@@ -3497,7 +3497,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         modesTuple = ('insert','overwrite')
-        trace = True
+        trace = False
 
         if trace:
             # if stroke: g.trace('***unexpected stroke***')
