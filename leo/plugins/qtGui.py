@@ -9,6 +9,8 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
+safe_mode = True # True: Bypass k.masterKeyHandler for problem keys or visible characters.
+
 #@<< qt imports >>
 #@+node:ekr.20081004102201.620: << qt imports >>
 import leo.core.leoGlobals as g
@@ -63,7 +65,7 @@ def init():
         def qtHandleDefaultChar(self,event,stroke):
             pass ; g.trace(stroke)
 
-        if 0: # Override handleDefaultChar method.
+        if safe_mode: # Override handleDefaultChar method.
             h = leoKeys.keyHandlerClass
             g.funcToMethod(qtHandleDefaultChar,h,"handleDefaultChar")
 
@@ -867,13 +869,16 @@ class leoQtEventFilter(QtCore.QObject):
         if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
             tkKey,ch = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-            override = len(aList) > 0
+            if safe_mode:
+                override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
+            else:
+                override = len(aList) > 0
         else:
             override = False
 
         if eventType == e.KeyPress:
             if override:
-                w = g.app.gui.getFocus() # *not* self.w!
+                w = g.app.gui.get_focus() # *not* self.w!
                 g.trace(w)
                 stroke = self.toStroke(tkKey,ch)
                 leoEvent = leoKeyEvent(event,c,w,stroke)
@@ -883,6 +888,26 @@ class leoQtEventFilter(QtCore.QObject):
                 if trace and verbose: g.trace(self.tag,'unbound',tkKey)
 
         return override
+    #@+node:ekr.20081015132934.10:isDangerous
+    def isDangerous (self,tkKey,ch):
+
+        aList = (
+            'return','tab','backspace',
+            'period',
+            'left','right','up','down',
+            'home','end',
+            'shift-right','shift-left','shift-up','shift-down',
+            'shift-right','shift-left','shift-up','shift-down',
+        )
+
+        key = tkKey.lower()
+        ch = ch.lower()
+
+        val = key in aList or (ch in aList and key.find('alt') > -1)
+
+        # g.trace(tkKey,ch,val)
+        return val
+    #@-node:ekr.20081015132934.10:isDangerous
     #@-node:ekr.20081013143507.12:eventFilter
     #@+node:ekr.20081011152302.10:toStroke
     def toStroke (self,tkKey,ch):
@@ -2723,11 +2748,11 @@ class leoQtFrame (leoFrame.leoFrame):
     def bringToFront (self):        pass 
     def deiconify (self):           pass
     def getFocus(self):             return g.app.gui.get_focus() 
-    def getTitle (self):            return self.top.windowTitle()
+    def getTitle (self):            return g.toUnicode(self.top.windowTitle(),'utf-8')
     def get_window_info(self):      return 0,0,0,0
     def iconify(self):              pass
     def lift (self):                pass
-    def setTitle (self,title):      set.top.windowTitle(title)
+    def setTitle (self,title):      self.top.setWindowTitle(title)
     def update (self):              pass
     #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
     #@-others
