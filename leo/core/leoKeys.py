@@ -3289,7 +3289,7 @@ class keyHandlerClass:
         if traceGC: g.printNewObjects('masterKey 1')
         if trace:
             g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
-            # g.trace('callers',g.callers(5))
+            g.trace('callers',g.callers(5))
                 # 'state.kind:',k.state.kind),'\n',g.callers())
             # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -3612,8 +3612,10 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.155:masterMenuHandler
     def masterMenuHandler (self,stroke,func,commandName):
 
-        k = self ; c = k.c ; w = c.frame.getFocus()
+        k = self ; c = k.c
+        w = c.frame.getFocus()
 
+        # g.trace('focus',w)
         # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
 
         # Create a minimal event for commands that require them.

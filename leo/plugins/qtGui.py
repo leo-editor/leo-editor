@@ -530,16 +530,20 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081004172422.510:Focus (qtBody)
     def getFocus(self):
 
+        g.trace('leoQtBody',self.widget,g.callers(4))
         return g.app.gui.get_focus()
 
     findFocus = getFocus
 
     def hasFocus (self):
 
-        return self.widget == g.app.gui.get_focus(self.c)
+        val = self.widget == g.app.gui.get_focus(self.c)
+        # g.trace('leoQtBody returns',val,self.widget,g.callers(4))
+        return val
 
     def setFocus (self):
 
+        # g.trace('leoQtBody',self.widget,g.callers(4))
         g.app.gui.set_focus(self.c,self.widget)
     #@-node:ekr.20081004172422.510:Focus (qtBody)
     #@+node:ekr.20081004172422.516:Idle time
@@ -855,7 +859,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081013143507.12:eventFilter
     def eventFilter(self, obj, event):
 
-        c = self.c ; k = c.k ; e = QtCore.QEvent ; w = self.w
+        c = self.c ; k = c.k ; e = QtCore.QEvent 
         trace = False ; verbose = True
         eventType = event.type()
         self.traceEvent(obj,event)
@@ -869,6 +873,8 @@ class leoQtEventFilter(QtCore.QObject):
 
         if eventType == e.KeyPress:
             if override:
+                w = g.app.gui.getFocus() # *not* self.w!
+                g.trace(w)
                 stroke = self.toStroke(tkKey,ch)
                 leoEvent = leoKeyEvent(event,c,w,stroke)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
@@ -951,9 +957,21 @@ class leoQtEventFilter(QtCore.QObject):
 
         eventType = event.type()
 
-        if dump and not self.dumped:
+        if False and not self.dumped:
             self.dumped = True
             g.trace(len(k.masterGuiBindingsDict.keys()))
+
+        if 1: # Show focus events.
+            show = (
+                (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+                (e.Enter,'enter'),(e.Leave,'leave'),
+            )
+
+        else:
+            show = (
+                (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
+                (e.ShortcutOverride,'shortcut-override'),
+            )
 
         ignore = (
             e.ToolTip,
@@ -961,20 +979,14 @@ class leoQtEventFilter(QtCore.QObject):
             e.MetaCall,e.Move,e.Paint,e.Resize,
             e.Polish,e.PolishRequest,
         )
-        show = (
-            (e.KeyPress,'key-press'),
-            (e.KeyRelease,'key-release'),
-            (e.ShortcutOverride,'shortcut-override'),
-        )
 
         for val,kind in show:
             if eventType == val:
-                p = c.currentPosition()
-                g.trace('%3s:%s' % (val,kind))
-                break
-        else:
-            if eventType not in ignore:
-                g.trace('%3s:%s' % (eventType,'unknown'))
+                g.trace('%3s:%s:obj:%s' % (val,kind,obj))
+                return
+
+        if False and eventType not in ignore:
+            g.trace('%3s:%s' % (eventType,'unknown'))
     #@-node:ekr.20081013143507.11:traceEvent
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
@@ -2715,18 +2727,8 @@ class leoQtFrame (leoFrame.leoFrame):
         #self.top.lift()
 
     def getFocus(self):
-        """Returns the widget that has focus, or body if None."""
-        try:
-            # This method is unreliable while focus is changing.
-            # The call to update_idletasks may help.  Or not.
-            self.top.update_idletasks()
-            f = self.top.focus_displayof()
-        except Exception:
-            f = None
-        if f:
-            return f
-        else:
-            return self.body.bodyCtrl # 2007/10/25
+
+        return g.app.gui.get_focus()
 
     def getTitle (self):
         return '<frame title>'
@@ -2764,7 +2766,7 @@ class leoQtGui(leoGui.leoGui):
     '''A class implementing Leo's Qt gui.'''
 
     #@    @+others
-    #@+node:ekr.20081004102201.632:qtGui birth & death
+    #@+node:ekr.20081004102201.632:  Birth & death (qtGui)
     #@+node:ekr.20081004102201.633: qtGui.__init__
     def __init__ (self):
 
@@ -2777,7 +2779,6 @@ class leoQtGui(leoGui.leoGui):
         self.plainTextWidget = leoQtTextWidget
 
         self.iconimages = {} # Image cache set by getIconImage().
-        # self.loadIcons()
     #@-node:ekr.20081004102201.633: qtGui.__init__
     #@+node:ekr.20081004102201.634:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
@@ -2822,8 +2823,36 @@ class leoQtGui(leoGui.leoGui):
         pass
 
     #@-node:ekr.20081004102201.636:Do nothings
-    #@-node:ekr.20081004102201.632:qtGui birth & death
-    #@+node:ekr.20081004102201.640:qtGui dialogs & panels
+    #@-node:ekr.20081004102201.632:  Birth & death (qtGui)
+    #@+node:ekr.20081004102201.648:Clipboard
+    def replaceClipboardWith (self,s):
+
+        '''Replace the clipboard with the string s.'''
+
+        cb = QtGui.QApplication.clipboard()
+        if cb:
+            cb.clear()
+            cb.setText(s)
+
+    def getTextFromClipboard (self):
+
+        '''Get a unicode string from the clipboard.'''
+
+        cb = QtGui.QApplication.clipboard()
+        s = cb and cb.text() or ''
+        return g.toUnicode(s,g.app.tkEncoding)
+    #@-node:ekr.20081004102201.648:Clipboard
+    #@+node:ekr.20081004102201.651:Color (to do)
+    # g.es calls gui.color to do the translation,
+    # so most code in Leo's core can simply use Tk color names.
+
+    def color (self,color):
+
+        '''Return the gui-specific color corresponding to the Tk color name.'''
+
+        return None
+    #@-node:ekr.20081004102201.651:Color (to do)
+    #@+node:ekr.20081004102201.640:Dialogs & panels
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
         """Create and run a qt About Leo dialog."""
         d = qtAboutLeo(c,version,theCopyright,url,email)
@@ -2867,6 +2896,90 @@ class leoQtGui(leoGui.leoGui):
         # """Create and run an askYesNo dialog."""
         # if not g.app.unitTesting:
             # leoGtkCompareDialog(c)
+    #@+node:ekr.20081004102201.652:Dialog (optional)
+    #@+node:ekr.20081004102201.653:get_window_info
+    # WARNING: Call this routine _after_ creating a dialog.
+    # (This routine inhibits the grid and pack geometry managers.)
+
+    def get_window_info (self,top):
+
+        return ###
+
+        top.update_idletasks() # Required to get proper info.
+
+        # Get the information about top and the screen.
+        geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
+        dim,x,y = geom.split('+')
+        w,h = dim.split('x')
+        w,h,x,y = int(w),int(h),int(x),int(y)
+
+        return w,h,x,y
+    #@-node:ekr.20081004102201.653:get_window_info
+    #@+node:ekr.20081004102201.654:center_dialog
+    def center_dialog(self,top):
+
+        """Center the dialog on the screen.
+
+        WARNING: Call this routine _after_ creating a dialog.
+        (This routine inhibits the grid and pack geometry managers.)"""
+
+        return ###
+
+        sw = top.winfo_screenwidth()
+        sh = top.winfo_screenheight()
+        w,h,x,y = self.get_window_info(top)
+
+        # Set the new window coordinates, leaving w and h unchanged.
+        x = (sw - w)/2
+        y = (sh - h)/2
+        top.geometry("%dx%d%+d%+d" % (w,h,x,y))
+
+        return w,h,x,y
+    #@-node:ekr.20081004102201.654:center_dialog
+    #@+node:ekr.20081004102201.655:create_labeled_frame
+    # Returns frames w and f.
+    # Typically the caller would pack w into other frames, and pack content into f.
+
+    def create_labeled_frame (self,parent,
+        caption=None,relief="groove",bd=2,padx=0,pady=0):
+
+        return ###
+
+        # Create w, the master frame.
+        w = qt.Frame(parent)
+        w.grid(sticky="news")
+
+        # Configure w as a grid with 5 rows and columns.
+        # The middle of this grid will contain f, the expandable content area.
+        w.columnconfigure(1,minsize=bd)
+        w.columnconfigure(2,minsize=padx)
+        w.columnconfigure(3,weight=1)
+        w.columnconfigure(4,minsize=padx)
+        w.columnconfigure(5,minsize=bd)
+
+        w.rowconfigure(1,minsize=bd)
+        w.rowconfigure(2,minsize=pady)
+        w.rowconfigure(3,weight=1)
+        w.rowconfigure(4,minsize=pady)
+        w.rowconfigure(5,minsize=bd)
+
+        # Create the border spanning all rows and columns.
+        border = qt.Frame(w,bd=bd,relief=relief) # padx=padx,pady=pady)
+        border.grid(row=1,column=1,rowspan=5,columnspan=5,sticky="news")
+
+        # Create the content frame, f, in the center of the grid.
+        f = qt.Frame(w,bd=bd)
+        f.grid(row=3,column=3,sticky="news")
+
+        # Add the caption.
+        if caption and len(caption) > 0:
+            caption = qt.Label(parent,text=caption,highlightthickness=0,bd=0)
+            # caption.tkraise(w)
+            caption.grid(in_=w,row=0,column=2,rowspan=2,columnspan=3,padx=4,sticky="w")
+
+        return w,f
+    #@-node:ekr.20081004102201.655:create_labeled_frame
+    #@-node:ekr.20081004102201.652:Dialog (optional)
     #@+node:ekr.20081004102201.641:qtGui.createSpellTab
     def createSpellTab(self,c,spellHandler,tabName):
 
@@ -3010,126 +3123,14 @@ class leoQtGui(leoGui.leoGui):
         gui = self
         return leoQtFrame(title,gui)
     #@-node:ekr.20081004102201.646:qtGui panels
-    #@-node:ekr.20081004102201.640:qtGui dialogs & panels
-    #@+node:ekr.20081004102201.648:Clipboard
-    def replaceClipboardWith (self,s):
-
-        '''Replace the clipboard with the string s.'''
-
-        cb = QtGui.QApplication.clipboard()
-        if cb:
-            cb.clear()
-            cb.setText(s)
-
-    def getTextFromClipboard (self):
-
-        '''Get a unicode string from the clipboard.'''
-
-        cb = QtGui.QApplication.clipboard()
-        s = cb and cb.text() or ''
-        return g.toUnicode(s,g.app.tkEncoding)
-    #@-node:ekr.20081004102201.648:Clipboard
-    #@+node:ekr.20081004102201.651:Color (to do)
-    # g.es calls gui.color to do the translation,
-    # so most code in Leo's core can simply use Tk color names.
-
-    def color (self,color):
-
-        '''Return the gui-specific color corresponding to the Tk color name.'''
-
-        return None
-    #@-node:ekr.20081004102201.651:Color (to do)
-    #@+node:ekr.20081004102201.652:Dialog (optional)
-    #@+node:ekr.20081004102201.653:get_window_info
-    # WARNING: Call this routine _after_ creating a dialog.
-    # (This routine inhibits the grid and pack geometry managers.)
-
-    def get_window_info (self,top):
-
-        return ###
-
-        top.update_idletasks() # Required to get proper info.
-
-        # Get the information about top and the screen.
-        geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-        dim,x,y = geom.split('+')
-        w,h = dim.split('x')
-        w,h,x,y = int(w),int(h),int(x),int(y)
-
-        return w,h,x,y
-    #@-node:ekr.20081004102201.653:get_window_info
-    #@+node:ekr.20081004102201.654:center_dialog
-    def center_dialog(self,top):
-
-        """Center the dialog on the screen.
-
-        WARNING: Call this routine _after_ creating a dialog.
-        (This routine inhibits the grid and pack geometry managers.)"""
-
-        return ###
-
-        sw = top.winfo_screenwidth()
-        sh = top.winfo_screenheight()
-        w,h,x,y = self.get_window_info(top)
-
-        # Set the new window coordinates, leaving w and h unchanged.
-        x = (sw - w)/2
-        y = (sh - h)/2
-        top.geometry("%dx%d%+d%+d" % (w,h,x,y))
-
-        return w,h,x,y
-    #@-node:ekr.20081004102201.654:center_dialog
-    #@+node:ekr.20081004102201.655:create_labeled_frame
-    # Returns frames w and f.
-    # Typically the caller would pack w into other frames, and pack content into f.
-
-    def create_labeled_frame (self,parent,
-        caption=None,relief="groove",bd=2,padx=0,pady=0):
-
-        return ###
-
-        # Create w, the master frame.
-        w = qt.Frame(parent)
-        w.grid(sticky="news")
-
-        # Configure w as a grid with 5 rows and columns.
-        # The middle of this grid will contain f, the expandable content area.
-        w.columnconfigure(1,minsize=bd)
-        w.columnconfigure(2,minsize=padx)
-        w.columnconfigure(3,weight=1)
-        w.columnconfigure(4,minsize=padx)
-        w.columnconfigure(5,minsize=bd)
-
-        w.rowconfigure(1,minsize=bd)
-        w.rowconfigure(2,minsize=pady)
-        w.rowconfigure(3,weight=1)
-        w.rowconfigure(4,minsize=pady)
-        w.rowconfigure(5,minsize=bd)
-
-        # Create the border spanning all rows and columns.
-        border = qt.Frame(w,bd=bd,relief=relief) # padx=padx,pady=pady)
-        border.grid(row=1,column=1,rowspan=5,columnspan=5,sticky="news")
-
-        # Create the content frame, f, in the center of the grid.
-        f = qt.Frame(w,bd=bd)
-        f.grid(row=3,column=3,sticky="news")
-
-        # Add the caption.
-        if caption and len(caption) > 0:
-            caption = qt.Label(parent,text=caption,highlightthickness=0,bd=0)
-            # caption.tkraise(w)
-            caption.grid(in_=w,row=0,column=2,rowspan=2,columnspan=3,padx=4,sticky="w")
-
-        return w,f
-    #@-node:ekr.20081004102201.655:create_labeled_frame
-    #@-node:ekr.20081004102201.652:Dialog (optional)
+    #@-node:ekr.20081004102201.640:Dialogs & panels
     #@+node:ekr.20081004102201.657:Focus (qtGui)
     def get_focus(self,c=None):
 
         """Returns the widget that has focus."""
 
         w = QtGui.QApplication.focusWidget()
-        # g.trace(w)
+        # g.trace('leoQtGui',w)
         return w
 
     def set_focus(self,c,w):
@@ -3137,7 +3138,7 @@ class leoQtGui(leoGui.leoGui):
         """Put the focus on the widget."""
 
         if w:
-            # g.trace(w)
+            # g.trace('leoQtGui',w,g.callers(4))
             w.setFocus() # QtCore.Qt.OtherFocusReason)
 
     #@-node:ekr.20081004102201.657:Focus (qtGui)
@@ -3245,6 +3246,26 @@ class leoQtGui(leoGui.leoGui):
         )
 
     #@-node:ekr.20081004102201.670:isTextWidget
+    #@+node:ekr.20081015062931.11:widget_name (qtGui
+    def widget_name (self,w):
+
+        # First try the widget's getName method.
+        if not 'w':
+            name = '<no widget>'
+        elif hasattr(w,'objectName'):
+            name = str(w.objectName())
+            if name == 'treeWidget':
+                name = 'canvas(treeWidget)'
+        elif hasattr(w,'getName'):
+            name = w.getName()
+        elif hasattr(w,'_name'):
+            name = w._name
+        else:
+            name = repr(w)
+
+        # g.trace(name,w)
+        return name
+    #@-node:ekr.20081015062931.11:widget_name (qtGui
     #@+node:ekr.20081004102201.671:makeScriptButton (to do)
     def makeScriptButton (self,c,
         args=None,
@@ -4461,6 +4482,7 @@ class leoQtMenu (leoMenu.leoMenu):
                 action.setShortcut(accel)
             if command:
                 def add_command_callback(label=label,command=command):
+                    # g.trace('***qtGui.add_command: command',command)
                     command()
 
                 QtCore.QObject.connect(
@@ -5439,6 +5461,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # Components.
         self.c = c
+        self.canvas = None # Used by Leo's core, set in initAfterLoad.
         self.treeWidget = None # Set in initAfterLoad.
 
         # Status ivars.
@@ -5462,7 +5485,8 @@ class leoQtTree (leoFrame.leoTree):
 
         c = self.c ; frame = c.frame
 
-        self.treeWidget = w = frame.top.treeWidget
+        # .canvas is an official ivar.  self.treeWidget is used in this class.
+        self.canvas = self.treeWidget = w = frame.top.treeWidget
 
         if not leoQtTree.callbacksInjected:
             leoQtTree.callbacksInjected = True

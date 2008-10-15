@@ -2700,7 +2700,7 @@ def masterKeyHandler (self,event,stroke=None):
     if traceGC: g.printNewObjects('masterKey 1')
     if trace:
         g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
-        # g.trace('callers',g.callers(5))
+        g.trace('callers',g.callers(5))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -3480,7 +3480,7 @@ def masterKeyHandler (self,event,stroke=None):
     if traceGC: g.printNewObjects('masterKey 1')
     if trace:
         g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
-        # g.trace('callers',g.callers(5))
+        g.trace('callers',g.callers(5))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -4645,7 +4645,7 @@ def masterKeyHandler (self,event,stroke=None):
     if traceGC: g.printNewObjects('masterKey 1')
     if trace:
         g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
-        # g.trace('callers',g.callers(5))
+        g.trace('callers',g.callers(5))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -4918,14 +4918,31 @@ def add_command (self,menu,**keys):
 
     if command:
 
-        def add_commandCallback(c=c,command=command):
-            val = command()
-            # Careful: func may destroy c.
-            if c.exists: c.outerUpdate()
-            return val
+        if 0: # Use a class to help out the qt plugin.
+            class add_commandCallback:
+                def __init__ (self,c,command):
+                    self.c,self.command=c,command
+                def __call__(self,event=None):
+                    c,command = self.c,self.command
+                    g.trace('***add_commandCallback: command',command)
+                    val = command(event=event)
+                    # Careful: func may destroy c.
+                    if c.exists: c.outerUpdate()
+                    return val
 
-        # Replace the previous command with a wrapper.
-        keys ['command'] = add_commandCallback
+            # Replace the previous command with a wrapper class.
+            keys ['command'] = add_commandCallback(c,command)
+
+        else: # The old way.
+            def add_commandCallback(c=c,command=command):
+                # g.trace('***c.add_command: command',command)
+                val = command()
+                # Careful: func may destroy c.
+                if c.exists: c.outerUpdate()
+                return val
+
+            # Replace the previous command with a wrapper function.
+            keys ['command'] = add_commandCallback
 
         menu.add_command(**keys)
 
@@ -4948,7 +4965,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
         << compute commandName & accel from label & command >>
         accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
         accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
-        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
+        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
             #k.clearState()
             #g.trace(stroke)
             return k.masterMenuHandler(stroke,command,commandName)

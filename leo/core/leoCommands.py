@@ -6031,14 +6031,31 @@ class baseCommands:
 
         if command:
 
-            def add_commandCallback(c=c,command=command):
-                val = command()
-                # Careful: func may destroy c.
-                if c.exists: c.outerUpdate()
-                return val
+            if 0: # Use a class to help out the qt plugin.
+                class add_commandCallback:
+                    def __init__ (self,c,command):
+                        self.c,self.command=c,command
+                    def __call__(self,event=None):
+                        c,command = self.c,self.command
+                        g.trace('***add_commandCallback: command',command)
+                        val = command(event=event)
+                        # Careful: func may destroy c.
+                        if c.exists: c.outerUpdate()
+                        return val
 
-            # Replace the previous command with a wrapper.
-            keys ['command'] = add_commandCallback
+                # Replace the previous command with a wrapper class.
+                keys ['command'] = add_commandCallback(c,command)
+
+            else: # The old way.
+                def add_commandCallback(c=c,command=command):
+                    # g.trace('***c.add_command: command',command)
+                    val = command()
+                    # Careful: func may destroy c.
+                    if c.exists: c.outerUpdate()
+                    return val
+
+                # Replace the previous command with a wrapper function.
+                keys ['command'] = add_commandCallback
 
             menu.add_command(**keys)
 

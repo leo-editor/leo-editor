@@ -16816,7 +16816,7 @@ after</t>
 # Plugins_manager is not functional at present.
 # plugin_manager.py
 
-qtGui.py
+# qtGui.py
 
 
 plugins_menu.py
