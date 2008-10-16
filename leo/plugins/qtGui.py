@@ -148,24 +148,42 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         app = g.app.gui.qtApp
 
-        sheet = '''\
+    # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+    # #CAE1FF; Leo's traditional lightSteelBlue1
 
-    /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
+
+    # Warning: comments aren't valid after a setting.
+
+        sheet = '''\
 
     /* A QWidget: supports only background attributes.*/
     QSplitter::handle {
+
         background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
     }
 
     QSplitter {
-        border-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+        border-color: white;
         background-color: white;
         border-width: 3px;
         border-style: solid;
     }
+
+    QTreeWidget {
+        background-color: #ffffec; /* Leo's traditional tree color */
+    }
+
+    /* Not supported. */
+    QsciScintilla {
+        background-color: pink;
+    }
+
     '''
 
         app.setStyleSheet(sheet)
+
+    #@+at
+    #@-at
     #@-node:ekr.20081016072304.14:setStyleSheets (Window)
     #@-others
 
