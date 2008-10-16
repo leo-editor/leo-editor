@@ -132,7 +132,8 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         self.buttons = self.addToolBar("Buttons")
         self.buttons.addAction(self.actionSave)
-        g.es("log test")
+
+        self.setStyleSheets()
     #@-node:ekr.20081004172422.884: ctor (Window)
     #@+node:ekr.20081010070648.8:minibuffer_run
     def minibuffer_run(self):
@@ -142,6 +143,30 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         g.trace(cmd)
         c.executeMinibufferCommand(cmd)
     #@-node:ekr.20081010070648.8:minibuffer_run
+    #@+node:ekr.20081016072304.14:setStyleSheets (Window)
+    def setStyleSheets(self):
+
+        app = g.app.gui.qtApp
+
+        sheet = '''\
+
+    /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
+
+    /* A QWidget: supports only background attributes.*/
+    QSplitter::handle {
+        background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+    }
+
+    QSplitter {
+        border-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+        background-color: white;
+        border-width: 3px;
+        border-style: solid;
+    }
+    '''
+
+        app.setStyleSheet(sheet)
+    #@-node:ekr.20081016072304.14:setStyleSheets (Window)
     #@-others
 
 #@-node:ekr.20081004102201.629:class  Window
@@ -5661,7 +5686,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-        c = self.c ; w = self.treeWidget ; trace = False ; verbose = False
+        c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
         if not w: return
         if self.redrawing:
             return g.trace('already drawing')
