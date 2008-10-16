@@ -149,10 +149,6 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         app = g.app.gui.qtApp
 
     # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
-    # #CAE1FF; Leo's traditional lightSteelBlue1
-
-
-    # Warning: comments aren't valid after a setting.
 
         sheet = '''\
 
