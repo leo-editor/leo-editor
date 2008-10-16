@@ -4,6 +4,41 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First 6
 
+#@+node:ekr.20081015151532.1:Protect against overwriting changed files using timestamps
+@nocolor-node
+
+>> I wonder if there is a way to avoid this problem without relying on
+>> people to reload .leo or derived files?
+>
+> Yes - retaining timestamps of derived files (on read time) and
+> checking them before writing, with a loud complaint if they differ
+> (like many editors do).
+
+I'm convinced.  I'll put this near the top of the list.
+#@nonl
+#@-node:ekr.20081015151532.1:Protect against overwriting changed files using timestamps
+#@+node:ekr.20081016073652.1:Allow gui to be specified on the command line.
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/aba668908d7b5dd
+
+> I think it would be nice to have the option of choosing the GUI from
+> command line, at leo startup.
+
+Thanks for this suggestion.  It comes at a perfect time and solves
+several problems.  I'll definitely do this.
+
+I have been thinking that plugins that require a particular gui should
+reside in leo\plugins\tkinter or leo\plugins\qt, etc and that gui
+plugins should be treated differently because they should be loaded
+first.
+
+The only remaining problem is which gui to use by default if none is
+specified on the command line.  I think this may have to be a
+module-level switch in runLeo.py rather than being a setting.
+(Settings are likely handled too late for this).
+#@nonl
+#@-node:ekr.20081016073652.1:Allow gui to be specified on the command line.
 #@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 @nocolor
 
