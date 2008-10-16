@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4,1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -374,6 +374,7 @@
 </v>
 <v t="ekr.20081003162730.1" a="E"><vh>test of @nocolor-node</vh>
 <v t="ekr.20081003162730.2"><vh>NewHeadline</vh></v>
+<v t="ekr.20081016102648.1"><vh>Test node</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3727,5 +3728,6 @@ headline_text_font_size = 10
 headline_text_font_slant = roman
 headline_text_font_weight = bold
 </t>
+<t tx="ekr.20081016102648.1"></t>
 </tnodes>
 </leo_file>
