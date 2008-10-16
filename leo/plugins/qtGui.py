@@ -547,7 +547,7 @@ class leoQtBody (leoFrame.leoBody):
             row,col = int(row),int(col)
             i = g.convertRowColToPythonIndex(s,row,col)
             # g.trace(index,row,col,i,g.callers(6))
-            self.indexWarning('leoQtBody.toPythonIndex')
+            if i > 0: self.indexWarning('leoQtBody.toPythonIndex')
             return i
 
     toGuiIndex = toPythonIndex
@@ -562,7 +562,7 @@ class leoQtBody (leoFrame.leoBody):
         row,col = w.getCursorPosition()  
         i = g.convertRowColToPythonIndex(s, row, col)
 
-        self.indexWarning('leoQtBody.getInsertPoint')
+        if i > 0: self.indexWarning('leoQtBody.getInsertPoint')
         return i
     #@-node:ekr.20081007015817.83:getInsertPoint
     #@+node:ekr.20081007015817.84:getLastPosition
@@ -596,7 +596,7 @@ class leoQtBody (leoFrame.leoBody):
         else:
             i = j = self.getInsertPoint()
 
-        self.indexWarning('leoQtBody.getSelectionRange')
+        if i > 0 or j > 0: self.indexWarning('leoQtBody.getSelectionRange')
         return i,j
 
     #@-node:ekr.20081007015817.86:getSelectionRange
@@ -665,7 +665,7 @@ class leoQtBody (leoFrame.leoBody):
         s = s[:i] + s[j+1:]
         w.setText(s)
 
-        self.indexWarning('leoQtBody.delete')
+        if i > 0 or j > 0: self.indexWarning('leoQtBody.delete')
         return i
     #@-node:ekr.20081008084746.6:delete
     #@+node:ekr.20081007015817.80:get
@@ -675,7 +675,7 @@ class leoQtBody (leoFrame.leoBody):
         s = self.getAllText()
         if j is None: j = i+1
 
-        self.indexWarning('leoQtBody.get')
+        if i > 0 or j > 1: self.indexWarning('leoQtBody.get')
         return s[i:j]
     #@-node:ekr.20081007015817.80:get
     #@+node:ekr.20081007015817.81:getAllText
@@ -692,7 +692,7 @@ class leoQtBody (leoFrame.leoBody):
         s2 = self.getAllText()
         self.setAllText(s2[:i] + s + s2[i+1:])
 
-        self.indexWarning('leoQtBody.insert')
+        if i > 0: self.indexWarning('leoQtBody.insert')
         return i
     #@-node:ekr.20081007015817.89:insert
     #@+node:ekr.20081007015817.92:setAllText
