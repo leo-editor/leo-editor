@@ -1,0 +1,4220 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20081016072304.13:@thin qtNotes.txt
+#@+all
+#@+node:ekr.20081010070648.5:  To do
+@nocolor-node
+
+- Put these notes in a file so others can see them.
+- Can we use a string for stylesheets?
+
+First:
+    - Only create visible widgets in the tree.
+    - Integrate minibuffer with Leo's core.
+    - Integrate find tab with Leo's core.
+
+Next:
+    - Finish leoQtTextWidget class.
+    - Widget style sheets
+    - Fix all failing unit tests.
+
+Later:
+    - Scintilla doesn't know about Leo markup.
+#@-node:ekr.20081010070648.5:  To do
+#@+node:ekr.20081014095718.13: Recent
+#@+node:ekr.20081010070648.7:Dumps
+#@+node:ekr.20081008084746.7:Contents of bindings dict
+@nocolor-node
+
+Cases to be tested.
+
+u'Alt-A'  i.e., Alt-Shift-A.
+u'Alt-Control-a'
+
+u'Alt-Control-equal'
+u'Alt-Control-minus'
+u'Alt-Delete'
+u'Alt-Down'
+u'Alt-End'
+u'Alt-F4'
+u'Alt-Home'
+u'Alt-Key-1'
+u'Alt-Key-2'
+u'Alt-Key-3'
+u'Alt-Key-4'
+u'Alt-Left'
+u'Alt-Q'
+u'Alt-Right'
+u'Alt-Shift-Down'
+u'Alt-Shift-Left'
+u'Alt-Shift-Right'
+u'Alt-Shift-Up'
+u'Alt-Shift-braceright'
+u'Alt-Up'
+u'Alt-a' etc.
+u'Alt-braceright'
+u'Alt-bracketright'
+u'Alt-minus'
+u'Alt-parenright'
+u'BackSpace'
+u'Control-A' etc.
+u'Control-End'
+u'Control-Home'
+u'Control-Left'
+u'Control-Right'
+u'Control-Shift-End'
+u'Control-Shift-Home'
+u'Control-Shift-Left'
+u'Control-Shift-Right'
+u'Control-Shift-Tab'
+u'Control-Tab'
+u'Control-a' etc.
+u'Control-braceleft'
+u'Control-braceright'
+u'Control-bracketleft'
+u'Control-bracketright'
+u'Control-equal'
+u'Control-minus'
+u'Control-parenleft'
+u'Control-parenright'
+u'Control-quoteleft'
+u'Control-space'
+u'Delete'
+u'Down'
+u'End'
+u'F1'
+u'F2'
+u'F3'
+u'F7'
+u'Home'
+u'Left'
+u'Next'
+u'Prior'
+u'Return'
+u'Right'
+u'Shift-Down'
+u'Shift-End'
+u'Shift-Home'
+u'Shift-Left'
+u'Shift-Next'
+u'Shift-Prior'
+u'Shift-Right'
+u'Shift-Up'
+u'Up'
+u'parenleft'
+u'period'
+#@-node:ekr.20081008084746.7:Contents of bindings dict
+#@+node:ekr.20081008175216.6:MasterBindingsDict
+@nocolor-node
+
+key_pressed: [
+u'Alt-A'
+u'Alt-B'
+u'Alt-Control-a'
+u'Alt-Control-b'
+u'Alt-Control-c'
+u'Alt-Control-e'
+u'Alt-Control-equal'
+u'Alt-Control-f'
+u'Alt-Control-h'
+u'Alt-Control-i'
+u'Alt-Control-minus'
+u'Alt-Control-n'
+u'Alt-Control-r'
+u'Alt-Control-s'
+u'Alt-Control-w'
+u'Alt-Control-x'
+u'Alt-Delete'
+u'Alt-Down'
+u'Alt-End'
+u'Alt-F4'
+u'Alt-Home'
+u'Alt-Key-1'
+u'Alt-Key-2'
+u'Alt-Key-3'
+u'Alt-Key-4'
+u'Alt-Left'
+u'Alt-Q'
+u'Alt-Right'
+u'Alt-Shift-Down'
+u'Alt-Shift-Left'
+u'Alt-Shift-Right'
+u'Alt-Shift-Up'
+u'Alt-Shift-braceright'
+u'Alt-Up'
+u'Alt-a'
+u'Alt-b'
+u'Alt-braceright'
+u'Alt-bracketright'
+u'Alt-c'
+u'Alt-d'
+u'Alt-e'
+u'Alt-f'
+u'Alt-g'
+u'Alt-h'
+u'Alt-l'
+u'Alt-m'
+u'Alt-minus'
+u'Alt-n'
+u'Alt-o'
+u'Alt-p'
+u'Alt-parenright'
+u'Alt-q'
+u'Alt-r'
+u'Alt-s'
+u'Alt-t'
+u'Alt-u'
+u'Alt-w'
+u'Alt-x'
+u'Alt-y'
+u'Alt-z'
+u'BackSpace'
+u'Control-A'
+u'Control-C'
+u'Control-D'
+u'Control-E'
+u'Control-End'
+u'Control-Home'
+u'Control-Left'
+u'Control-N'
+u'Control-P'
+u'Control-Q'
+u'Control-R'
+u'Control-Right'
+u'Control-S'
+u'Control-Shift-End'
+u'Control-Shift-Home'
+u'Control-Shift-Left'
+u'Control-Shift-Right'
+u'Control-Shift-Tab'
+u'Control-Tab'
+u'Control-V'
+u'Control-W'
+u'Control-X'
+u'Control-Z'
+u'Control-a'
+u'Control-b'
+u'Control-braceleft'
+u'Control-braceright'
+u'Control-bracketleft'
+u'Control-bracketright'
+u'Control-c'
+u'Control-d'
+u'Control-e'
+u'Control-equal'
+u'Control-f'
+u'Control-g'
+u'Control-h'
+u'Control-i'
+u'Control-j'
+u'Control-k'
+u'Control-l'
+u'Control-m'
+u'Control-minus'
+u'Control-n'
+u'Control-o'
+u'Control-p'
+u'Control-parenleft'
+u'Control-parenright'
+u'Control-q'
+u'Control-quoteleft'
+u'Control-r'
+u'Control-s'
+u'Control-space'
+u'Control-t'
+u'Control-u'
+u'Control-v'
+u'Control-w'
+u'Control-x'
+u'Control-y'
+u'Control-z'
+u'Delete'
+u'Down'
+u'End'
+u'F1'
+u'F2'
+u'F3'
+u'F7'
+u'Home'
+u'Left'
+u'Next'
+u'Prior'
+u'Return'
+u'Right'
+u'Shift-Down'
+u'Shift-End'
+u'Shift-Home'
+u'Shift-Left'
+u'Shift-Next'
+u'Shift-Prior'
+u'Shift-Right'
+u'Shift-Up'
+u'Up'
+u'parenleft'
+u'period']
+key_pressed: {u'body': {u'Return': Bunch...
+commandName: insert-newline
+func: <bound method editCommandsClass.insertNewLine of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: body
+stroke: Return
+}, u'text': {u'Shift+Up': Bunch...
+commandName: previous-line-extend-selection
+func: <bound method editCommandsClass.prevLineExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: text
+stroke: Shift+Up
+, u'Shift+Left': Bunch...
+commandName: back-char-extend-selection
+func: <bound method editCommandsClass.backCharacterExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: text
+stroke: Shift+Left
+, u'Right': Bunch...
+commandName: forward-char
+func: <bound method editCommandsClass.forwardCharacter of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: text
+stroke: Right
+, u'Shift+Down': Bunch...
+commandName: next-line-extend-selection
+func: <bound method editCommandsClass.nextLineExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: text
+stroke: Shift+Down
+, u'Up': Bunch...
+commandName: previous-line
+func: <bound method editCommandsClass.prevLine of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: text
+stroke: Up
+, u'Down': Bunch...
+commandName: next-line
+func: <bound method editCommandsClass.nextLine of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: text
+stroke: Down
+, u'Shift+Right': Bunch...
+commandName: forward-char-extend-selection
+func: <bound method editCommandsClass.forwardCharacterExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>
+>
+pane: text
+stroke: Shift+Right
+, u'Left': Bunch...
+commandName: back-char
+func: <bound method editCommandsClass.backCharacter of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: text
+stroke: Left
+}, 'all': {u'Ctrl+A': Bunch...
+commandName: beginning-of-line-extend-selection
+func: <bound method editCommandsClass.beginningOfLineExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+
+pane: all
+stroke: Ctrl+A
+, u'Ctrl+C': Bunch...
+commandName: copy-node
+func: <bound method Commands.copyOutline of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+C
+, u'Ctrl+D': Bunch...
+commandName: extract
+func: <bound method Commands.extract of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+D
+, u'Ctrl+E': Bunch...
+commandName: end-of-line-extend-selection
+func: <bound method editCommandsClass.endOfLineExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+E
+, u'Ctrl+N': Bunch...
+commandName: extract-names
+func: <bound method Commands.extractSectionNames of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+N
+, u'Ctrl+P': Bunch...
+commandName: reformat-paragraph
+func: <bound method Commands.reformatParagraph of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+P
+, u'Ctrl+Q': Bunch...
+commandName: write-dirty-at-file-nodes
+func: <bound method fileCommands.writeDirtyAtFileNodes of <leo.core.leoFileCommands.fileCommands instance at 0x016B6440>>
+pane: all
+stroke: Ctrl+Q
+, u'Ctrl+R': Bunch...
+commandName: replace-string
+func: <bound method searchCommandsClass.replaceString of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Ctrl+R
+, u'Ctrl+S': Bunch...
+commandName: extract-section
+func: <bound method Commands.extractSection of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+S
+, u'Ctrl+V': Bunch...
+commandName: paste-node
+func: <bound method Commands.pasteOutline of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+V
+, u'Ctrl+W': Bunch...
+commandName: write-at-file-nodes
+func: <bound method fileCommands.writeAtFileNodes of <leo.core.leoFileCommands.fileCommands instance at 0x016B6440>>
+pane: all
+stroke: Ctrl+W
+, u'Ctrl+X': Bunch...
+commandName: cut-node
+func: <bound method Commands.cutOutline of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+X
+, u'Ctrl+Z': Bunch...
+commandName: redo
+func: <bound method undoer.redo of <leo.core.leoUndo.undoer instance at 0x016B67B0>>
+pane: all
+stroke: Ctrl+Z
+, u'Ctrl+bracketright': Bunch...
+commandName: indent-region
+func: <bound method Commands.indentBody of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+bracketright
+, u'Ctrl+a': Bunch...
+commandName: beginning-of-line
+func: <bound method editCommandsClass.beginningOfLine of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+a
+, u'Ctrl+b': Bunch...
+commandName: execute-script
+func: <bound method Commands.executeScript of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+b
+, u'Ctrl+c': Bunch...
+commandName: copy-text
+func: <bound method leoQtFrame.copyText of <leoQtFrame: test.leo in C:\leo.repo\qt-plugin\leo\test>>
+pane: all
+stroke: Ctrl+c
+, u'Ctrl+d': Bunch...
+commandName: move-outline-down
+func: <bound method Commands.moveOutlineDown of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+d
+, u'Ctrl+e': Bunch...
+commandName: end-of-line
+func: <bound method editCommandsClass.endOfLine of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+e
+, u'Ctrl+f': Bunch...
+commandName: search-with-present-options
+func: <bound method searchCommandsClass.searchWithPresentOptions of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Ctrl+f
+, u'Ctrl+g': Bunch...
+commandName: keyboard-quit
+func: <bound method keyHandlerClass.keyboardQuit of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Ctrl+g
+, u'Ctrl+h': Bunch...
+commandName: edit-headline
+func: <bound method Commands.editHeadline of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+h
+, u'Ctrl+i': Bunch...
+commandName: insert-node
+func: <bound method Commands.insertHeadline of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+i
+, u'Ctrl+j': Bunch...
+commandName: newline-and-indent
+func: <bound method editCommandsClass.insertNewLineAndTab of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+j
+, u'Ctrl+k': Bunch...
+commandName: kill-line
+func: <bound method killBufferCommandsClass.killLine of <leo.core.leoEditCommands.killBufferCommandsClass instance at 0x016B6328>>
+pane: all
+stroke: Ctrl+k
+, u'Ctrl+l': Bunch...
+commandName: move-outline-left
+func: <bound method Commands.moveOutlineLeft of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+l
+, u'Ctrl+m': Bunch...
+commandName: mark
+func: <bound method Commands.markHeadline of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+m
+, u'Ctrl+n': Bunch...
+commandName: new
+func: <bound method Commands.new of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+n
+, u'Ctrl+o': Bunch...
+commandName: open-outline
+func: <bound method Commands.open of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+o
+, u'Ctrl+p': Bunch...
+commandName: repeat-complex-command
+func: <bound method keyHandlerClass.repeatComplexCommand of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Ctrl+p
+, u'Ctrl+q': Bunch...
+commandName: exit-leo
+func: <bound method LeoApp.onQuit of <leo.core.leoApp.LeoApp instance at 0x00BBBEE0>>
+pane: all
+stroke: Ctrl+q
+, u'Alt+Shift+braceright': Bunch...
+commandName: forward-paragraph-extend-selection
+func: <bound method editCommandsClass.forwardParagraphExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>
+>
+pane: all
+stroke: Alt+Shift+braceright
+, u'Ctrl+s': Bunch...
+commandName: save-file
+func: <bound method Commands.save of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+s
+, u'Ctrl+t': Bunch...
+commandName: toggle-active-pane
+func: <bound method leoQtFrame.toggleActivePane of <leoQtFrame: test.leo in C:\leo.repo\qt-plugin\leo\test>>
+pane: all
+stroke: Ctrl+t
+, u'Ctrl+u': Bunch...
+commandName: move-outline-up
+func: <bound method Commands.moveOutlineUp of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+u
+, u'Ctrl+v': Bunch...
+commandName: paste-text
+func: <bound method leoQtFrame.pasteText of <leoQtFrame: test.leo in C:\leo.repo\qt-plugin\leo\test>>
+pane: all
+stroke: Ctrl+v
+, u'Ctrl+w': Bunch...
+commandName: extend-to-word
+func: <bound method editCommandsClass.extendToWord of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+w
+, u'Ctrl+x': Bunch...
+commandName: cut-text
+func: <bound method leoQtFrame.cutText of <leoQtFrame: test.leo in C:\leo.repo\qt-plugin\leo\test>>
+pane: all
+stroke: Ctrl+x
+, u'Ctrl+y': Bunch...
+commandName: yank
+func: <bound method killBufferCommandsClass.yank of <leo.core.leoEditCommands.killBufferCommandsClass instance at 0x016B6328>>
+pane: all
+stroke: Ctrl+y
+, u'Ctrl+z': Bunch...
+commandName: undo
+func: <bound method undoer.undo of <leo.core.leoUndo.undoer instance at 0x016B67B0>>
+pane: all
+stroke: Ctrl+z
+, u'Alt+e': Bunch...
+commandName: propagate-key-event
+func: <bound method keyHandlerClass.propagateKeyEvent of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Alt+e
+, u'Ctrl+braceleft': Bunch...
+commandName: promote
+func: <bound method Commands.promote of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+braceleft
+, u'Alt+A': Bunch...
+commandName: select-all
+func: <bound method editCommandsClass.selectAllText of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+A
+, u'Alt+B': Bunch...
+commandName: back-word-extend-selection
+func: <bound method editCommandsClass.backwardWordExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+B
+, u'Alt+Up': Bunch...
+commandName: goto-prev-visible
+func: <bound method Commands.selectVisBack of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+Up
+, u'Alt+Key-2': Bunch...
+commandName: toggle-calltips
+func: <bound method autoCompleterClass.toggleCalltips of <leo.core.leoKeys.autoCompleterClass instance at 0x016B6710>>
+pane: all
+stroke: Alt+Key-2
+, u'Ctrl+Shift+Tab': Bunch...
+commandName: cycle-all-focus
+func: <bound method editCommandsClass.cycleAllFocus of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+Shift+Tab
+, u'Alt+a': Bunch...
+commandName: sort-siblings
+func: <bound method Commands.sortSiblings of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+a
+, u'Alt+F4': Bunch...
+commandName: close-window
+func: <bound method Commands.close of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+F4
+, u'Alt+d': Bunch...
+commandName: focus-to-body
+func: <bound method editCommandsClass.focusToBody of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+d
+, u'Alt+g': Bunch...
+commandName: goto-global-line
+func: <bound method editCommandsClass.gotoGlobalLine of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+g
+, u'Alt+f': Bunch...
+commandName: propagate-key-event
+func: <bound method keyHandlerClass.propagateKeyEvent of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Alt+f
+, u'Ctrl+equal': Bunch...
+commandName: change
+func: <bound method searchCommandsClass.findTabChange of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Ctrl+equal
+, u'Alt+c': Bunch...
+commandName: propagate-key-event
+func: <bound method keyHandlerClass.propagateKeyEvent of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Alt+c
+, u'Alt+b': Bunch...
+commandName: back-word
+func: <bound method editCommandsClass.backwardWord of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+b
+, u'Alt+m': Bunch...
+commandName: exchange-point-mark
+func: <bound method editCommandsClass.exchangePointMark of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+m
+, u'Alt+l': Bunch...
+commandName: extend-to-line
+func: <bound method editCommandsClass.extendToLine of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+l
+, u'Alt+o': Bunch...
+commandName: propagate-key-event
+func: <bound method keyHandlerClass.propagateKeyEvent of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Alt+o
+, u'Alt+n': Bunch...
+commandName: goto-next-clone
+func: <bound method Commands.goToNextClone of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+n
+, u'Alt+Key-3': Bunch...
+commandName: toggle-extend-mode
+func: <bound method editCommandsClass.toggleExtendMode of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+Key-3
+, u'Alt+h': Bunch...
+commandName: propagate-key-event
+func: <bound method keyHandlerClass.propagateKeyEvent of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Alt+h
+, u'Alt+Key-1': Bunch...
+commandName: toggle-autocompleter
+func: <bound method autoCompleterClass.toggleAutocompleter of <leo.core.leoKeys.autoCompleterClass instance at 0x016B6710>>
+pane: all
+stroke: Alt+Key-1
+, u'Shift+End': Bunch...
+commandName: end-of-line-extend-selection
+func: <bound method editCommandsClass.endOfLineExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Shift+End
+, u'Alt+u': Bunch...
+commandName: universal-argument
+func: <bound method keyHandlerClass.universalArgument of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Alt+u
+, u'Alt+t': Bunch...
+commandName: focus-to-tree
+func: <bound method editCommandsClass.focusToTree of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+t
+, u'Alt+w': Bunch...
+commandName: propagate-key-event
+func: <bound method keyHandlerClass.propagateKeyEvent of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Alt+w
+, u'Alt+q': Bunch...
+commandName: backward-find-character
+func: <bound method editCommandsClass.backwardFindCharacter of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+q
+, u'Alt+p': Bunch...
+commandName: propagate-key-event
+func: <bound method keyHandlerClass.propagateKeyEvent of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Alt+p
+, u'Alt+s': Bunch...
+commandName: isearch-forward
+func: <bound method searchCommandsClass.isearchForward of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+s
+, u'Alt+r': Bunch...
+commandName: isearch-backward
+func: <bound method searchCommandsClass.isearchBackward of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+r
+, u'Alt+braceright': Bunch...
+commandName: forward-paragraph
+func: <bound method editCommandsClass.forwardParagraph of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+braceright
+, u'Alt+y': Bunch...
+commandName: yank-pop
+func: <bound method killBufferCommandsClass.yankPop of <leo.core.leoEditCommands.killBufferCommandsClass instance at 0x016B6328>>
+pane: all
+stroke: Alt+y
+, u'Alt+x': Bunch...
+commandName: full-command
+func: <bound method keyHandlerClass.fullCommand of <leo.core.leoKeys.keyHandlerClass instance at 0x016B6C10>>
+pane: all
+stroke: Alt+x
+, u'Alt+z': Bunch...
+commandName: zap-to-character
+func: <bound method killBufferCommandsClass.zapToCharacter of <leo.core.leoEditCommands.killBufferCommandsClass instance at 0x016B6328>>
+pane: all
+stroke: Alt+z
+, u'Alt+Key-4': Bunch...
+commandName: run-unit-tests-locally
+func: <bound method debugCommandsClass.runUnitTestsLocally of <leo.core.leoEditCommands.debugCommandsClass instance at 0x016B6260>>
+pane: all
+stroke: Alt+Key-4
+, u'Alt+parenright': Bunch...
+commandName: move-past-close
+func: <bound method editCommandsClass.movePastClose of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Alt+parenright
+, u'Ctrl+parenleft': Bunch...
+commandName: add-comments
+func: <bound method Commands.addComments of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+parenleft
+, u'Alt+Ctrl+minus': Bunch...
+commandName: contract-pane
+func: <bound method leoQtFrame.contractPane of <leoQtFrame: test.leo in C:\leo.repo\qt-plugin\leo\test>>
+pane: all
+stroke: Alt+Ctrl+minus
+, u'Next': Bunch...
+commandName: scroll-down
+func: <bound method editCommandsClass.scrollDown of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Next
+, u'Alt+bracketright': Bunch...
+commandName: expand-node
+func: <bound method Commands.expandNode of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+bracketright
+, u'Alt+Ctrl+h': Bunch...
+commandName: toggle-find-in-headline-option
+func: <bound method searchCommandsClass.toggleSearchHeadlineOption of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+
+pane: all
+stroke: Alt+Ctrl+h
+, u'Alt+Ctrl+i': Bunch...
+commandName: toggle-find-ignore-case-option
+func: <bound method searchCommandsClass.toggleIgnoreCaseOption of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+Ctrl+i
+, u'Alt+Ctrl+e': Bunch...
+commandName: set-find-everywhere
+func: <bound method searchCommandsClass.setFindScopeEveryWhere of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+Ctrl+e
+, u'Alt+Ctrl+f': Bunch...
+commandName: toggle-find-mark-finds-option
+func: <bound method searchCommandsClass.toggleMarkFindsOption of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+Ctrl+f
+, u'Alt+Ctrl+a': Bunch...
+commandName: toggle-find-wrap-around-option
+func: <bound method searchCommandsClass.toggleWrapSearchOption of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+Ctrl+a
+, u'Alt+Ctrl+b': Bunch...
+commandName: toggle-find-in-body-option
+func: <bound method searchCommandsClass.toggleSearchBodyOption of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+Ctrl+b
+, u'Alt+Ctrl+c': Bunch...
+commandName: toggle-find-mark-changes-option
+func: <bound method searchCommandsClass.toggleMarkChangesOption of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+Ctrl+c
+, u'Alt+Ctrl+x': Bunch...
+commandName: toggle-find-regex-option
+func: <bound method searchCommandsClass.toggleRegexOption of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+Ctrl+x
+, u'Alt+Ctrl+w': Bunch...
+commandName: toggle-find-word-option
+func: <bound method searchCommandsClass.toggleWholeWordOption of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+Ctrl+w
+, u'Alt+Ctrl+r': Bunch...
+commandName: toggle-find-reverse-option
+func: <bound method searchCommandsClass.toggleReverseOption of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+Ctrl+r
+, u'Alt+Ctrl+s': Bunch...
+commandName: set-find-suboutline-only
+func: <bound method searchCommandsClass.setFindScopeSuboutlineOnly of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+
+pane: all
+stroke: Alt+Ctrl+s
+, u'Shift+Next': Bunch...
+commandName: scroll-down-extend-selection
+func: <bound method editCommandsClass.scrollDownExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Shift+Next
+, u'Prior': Bunch...
+commandName: scroll-up
+func: <bound method editCommandsClass.scrollUp of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Prior
+, u'Alt+Delete': Bunch...
+commandName: backward-kill-word
+func: <bound method killBufferCommandsClass.backwardKillWord of <leo.core.leoEditCommands.killBufferCommandsClass instance at 0x016B6328>>
+pane: all
+stroke: Alt+Delete
+, u'Delete': Bunch...
+commandName: delete-char
+func: <bound method editCommandsClass.deleteNextChar of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Delete
+, u'Alt+Ctrl+equal': Bunch...
+commandName: expand-pane
+func: <bound method leoQtFrame.expandPane of <leoQtFrame: test.leo in C:\leo.repo\qt-plugin\leo\test>>
+pane: all
+stroke: Alt+Ctrl+equal
+, u'Alt+Home': Bunch...
+commandName: goto-first-visible-node
+func: <bound method Commands.goToFirstVisibleNode of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+Home
+, u'Home': Bunch...
+commandName: beginning-of-line
+func: <bound method editCommandsClass.beginningOfLine of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Home
+, u'Alt+End': Bunch...
+commandName: goto-last-visible-node
+func: <bound method Commands.goToLastVisibleNode of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+End
+, u'period': Bunch...
+commandName: auto-complete
+func: <bound method autoCompleterClass.autoComplete of <leo.core.leoKeys.autoCompleterClass instance at 0x016B6710>>
+pane: all
+stroke: period
+, u'Alt+Shift+Up': Bunch...
+commandName: move-outline-up
+func: <bound method Commands.moveOutlineUp of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+Shift+Up
+, u'Ctrl+Shift+Left': Bunch...
+commandName: back-word-extend-selection
+func: <bound method editCommandsClass.backwardWordExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+Shift+Left
+, u'End': Bunch...
+commandName: end-of-line
+func: <bound method editCommandsClass.endOfLine of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: End
+, u'Ctrl+Tab': Bunch...
+commandName: cycle-focus
+func: <bound method editCommandsClass.cycleFocus of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+Tab
+, u'parenleft': Bunch...
+commandName: show-calltips
+func: <bound method autoCompleterClass.showCalltips of <leo.core.leoKeys.autoCompleterClass instance at 0x016B6710>>
+pane: all
+stroke: parenleft
+, u'Ctrl+r': Bunch...
+commandName: move-outline-right
+func: <bound method Commands.moveOutlineRight of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+r
+, u'Ctrl+Left': Bunch...
+commandName: back-word
+func: <bound method editCommandsClass.backwardWord of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+Left
+, u'Ctrl+Home': Bunch...
+commandName: beginning-of-buffer
+func: <bound method editCommandsClass.beginningOfBuffer of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+Home
+, u'Alt+Shift+Right': Bunch...
+commandName: move-outline-right
+func: <bound method Commands.moveOutlineRight of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+Shift+Right
+, u'Alt+Left': Bunch...
+commandName: contract-or-go-left
+func: <bound method Commands.contractNodeOrGoToParent of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+Left
+, u'Ctrl+Shift+Home': Bunch...
+commandName: beginning-of-buffer-extend-selection
+func: <bound method editCommandsClass.beginningOfBufferExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300
+>>
+pane: all
+stroke: Ctrl+Shift+Home
+, u'Ctrl+Right': Bunch...
+commandName: forward-word
+func: <bound method editCommandsClass.forwardWord of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+Right
+, u'F1': Bunch...
+commandName: help-for-command
+func: <bound method helpCommandsClass.helpForCommand of <leo.core.leoEditCommands.helpCommandsClass instance at 0x016B6620>>
+pane: all
+stroke: F1
+, u'F2': Bunch...
+commandName: find-prev
+func: <bound method searchCommandsClass.findTabFindPrev of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: F2
+, u'F3': Bunch...
+commandName: find-next
+func: <bound method searchCommandsClass.findTabFindNext of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: F3
+, u'F7': Bunch...
+commandName: open-spell-tab
+func: <bound method spellCommandsClass.openSpellTab of <leo.core.leoEditCommands.spellCommandsClass instance at 0x016B6940>>
+pane: all
+stroke: F7
+, u'Alt+Right': Bunch...
+commandName: expand-and-go-right
+func: <bound method Commands.expandNodeAndGoToFirstChild of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+Right
+, u'Alt+Down': Bunch...
+commandName: goto-next-visible
+func: <bound method Commands.selectVisNext of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+Down
+, u'Ctrl+braceright': Bunch...
+commandName: demote
+func: <bound method Commands.demote of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+braceright
+, u'Ctrl+space': Bunch...
+commandName: back-to-indentation
+func: <bound method editCommandsClass.backToIndentation of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+space
+, u'Ctrl+minus': Bunch...
+commandName: change-then-find
+func: <bound method searchCommandsClass.findTabChangeThenFind of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Ctrl+minus
+, u'Ctrl+Shift+Right': Bunch...
+commandName: forward-word-extend-selection
+func: <bound method editCommandsClass.forwardWordExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+Shift+Right
+, u'Ctrl+Shift+End': Bunch...
+commandName: end-of-buffer-extend-selection
+func: <bound method editCommandsClass.endOfBufferExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+Shift+End
+, u'Ctrl+quoteleft': Bunch...
+commandName: clone-node
+func: <bound method Commands.clone of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+quoteleft
+, u'Alt+Shift+Left': Bunch...
+commandName: move-outline-left
+func: <bound method Commands.moveOutlineLeft of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+Shift+Left
+, u'Shift+Prior': Bunch...
+commandName: scroll-up-extend-selection
+func: <bound method editCommandsClass.scrollUpExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Shift+Prior
+, u'BackSpace': Bunch...
+commandName: backward-delete-char
+func: <bound method editCommandsClass.backwardDeleteCharacter of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: BackSpace
+, u'Shift+Home': Bunch...
+commandName: beginning-of-line-extend-selection
+func: <bound method editCommandsClass.beginningOfLineExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+
+pane: all
+stroke: Shift+Home
+, u'Alt+Shift+Down': Bunch...
+commandName: move-outline-down
+func: <bound method Commands.moveOutlineDown of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+Shift+Down
+, u'Alt+Ctrl+n': Bunch...
+commandName: set-find-node-only
+func: <bound method searchCommandsClass.setFindScopeNodeOnly of <leo.core.leoEditCommands.searchCommandsClass instance at 0x016B6828>>
+pane: all
+stroke: Alt+Ctrl+n
+, u'Ctrl+End': Bunch...
+commandName: end-of-buffer
+func: <bound method editCommandsClass.endOfBuffer of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B6300>>
+pane: all
+stroke: Ctrl+End
+, u'Ctrl+bracketleft': Bunch...
+commandName: unindent-region
+func: <bound method Commands.dedentBody of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+bracketleft
+, u'Ctrl+parenright': Bunch...
+commandName: delete-comments
+func: <bound method Commands.deleteComments of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Ctrl+parenright
+, u'Alt+minus': Bunch...
+commandName: contract-all
+func: <bound method Commands.contractAllHeadlines of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: all
+stroke: Alt+minus
+, u'Alt+Q': Bunch...
+commandName: backward-find-character-extend-selection
+func: <bound method editCommandsClass.backwardFindCharacterExtendSelection of <leo.core.leoEditCommands.editCommandsClass instance at 0x016B
+6300>>
+pane: all
+stroke: Alt+Q
+}, u'tree': {u'Shift+Up': Bunch...
+commandName: move-outline-up
+func: <bound method Commands.moveOutlineUp of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: tree
+stroke: Shift+Up
+, u'Shift+Left': Bunch...
+commandName: move-outline-left
+func: <bound method Commands.moveOutlineLeft of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: tree
+stroke: Shift+Left
+, u'Right': Bunch...
+commandName: expand-and-go-right
+func: <bound method Commands.expandNodeAndGoToFirstChild of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: tree
+stroke: Right
+, u'Return': Bunch...
+commandName: end-edit-headline
+func: <bound method leoQtFrame.endEditLabelCommand of <leoQtFrame: test.leo in C:\leo.repo\qt-plugin\leo\test>>
+pane: tree
+stroke: Return
+, u'Shift+Down': Bunch...
+commandName: move-outline-down
+func: <bound method Commands.moveOutlineDown of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: tree
+stroke: Shift+Down
+, u'Up': Bunch...
+commandName: goto-prev-visible
+func: <bound method Commands.selectVisBack of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: tree
+stroke: Up
+, u'Down': Bunch...
+commandName: goto-next-visible
+func: <bound method Commands.selectVisNext of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: tree
+stroke: Down
+, u'Shift+Right': Bunch...
+commandName: move-outline-right
+func: <bound method Commands.moveOutlineRight of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: tree
+stroke: Shift+Right
+, u'Left': Bunch...
+commandName: contract-or-go-left
+func: <bound method Commands.contractNodeOrGoToParent of Commander 22814392: u'C:\\leo.repo\\qt-plugin\\leo\\test\\test.leo'>
+pane: tree
+stroke: Left
+}}
+key_pressed: body bound Up bindCallback
+masterKeyHandler: stroke: u'Up' keysym: 'Up' ch: 'Up' state 0
+C:\leo.repo\qt-plugin>
+#@nonl
+#@-node:ekr.20081008175216.6:MasterBindingsDict
+#@-node:ekr.20081010070648.7:Dumps
+#@+node:ekr.20081011101649.6:Key problems
+#@+node:ekr.20081004172422.865:add_command
+def add_command (self,**keys):
+
+    """Wrapper for the Tkinter add_command menu method."""
+
+    accel = keys.get('accelerator') or ''
+    label = keys.get('label')
+    command = keys.get('command')
+    n = keys.get('underline')
+    menu = keys.get('menu') or self
+
+    d = {'Return':'Rtn','BackSpace':'BkSp',}
+
+    if label:
+        if n > -1:
+            label = label[:n] + '&' + label[n:]
+            # g.trace(label)
+        action = menu.addAction(label)
+        if accel:
+            accel2 = d.get(accel)
+            if accel2:
+                # g.trace(accel,accel2)
+                accel = accel2
+            action.setShortcut(accel)
+        if command:
+            def add_command_callback(label=label,command=command):
+                # g.trace('***qtGui.add_command: command',command)
+                command()
+
+            QtCore.QObject.connect(
+                action,QtCore.SIGNAL("triggered()"),add_command_callback)
+#@-node:ekr.20081004172422.865:add_command
+#@+node:ekr.20081011035036.1: onTextChanged
+def onTextChanged (self):
+
+    '''Update Leo after the body has been changed.'''
+
+    c = self.c ; tree = c.frame.tree ; w = self
+    trace = False ; verbose = False
+    old_p,new_p = tree.old_p,tree.new_p
+
+    if tree.selecting:
+        if trace and verbose: g.trace('selecting')
+        return
+    if tree.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+
+    newInsert = w.getInsertPoint()
+    newSel = w.getSelectionRange()
+    newText = w.getAllText() # Converts to unicode.
+
+    select = new_p and new_p != self.body_p
+    if select:
+        if trace and verbose:
+            g.trace('** select',tree.new_p.headString())
+        self.body_p = new_p.copy()
+        return
+
+    p = self.body_p
+    if not p: return g.trace('oops: no p')
+
+    # Get the previous values from the tnode.
+    oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
+    if oldText == newText: return
+
+    if trace: g.trace('****changed',p.headString(),len(oldText),len(newText))
+
+    oldIns  = p.v.t.insertSpot
+    i,j = p.v.t.selectionStart,p.v.t.selectionLength
+    oldSel  = (i,j-i)
+    oldYview = None
+    undoType = 'changed event'
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,
+        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+
+    # Update the tnode.
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = newInsert
+    i,j = newSel
+    if i > j: i,j = j,i
+    new_p.v.t.selectionStart,new_p.v.t.selectionLength = (i,j-i)
+
+    # No need to recolor the body.
+    # No need to redraw the screen.
+    if not c.changed: c.setChanged(True)
+    self.updateEditors()
+    c.frame.tree.updateIcon(p)
+#@-node:ekr.20081011035036.1: onTextChanged
+#@+node:ekr.20081004102201.628:class leoQtEventFilter
+class leoQtEventFilter(QtCore.QObject):
+
+    << about internal bindings >>
+
+    def __init__(self,c,w,tag=''):
+
+        self.c = c
+        self.w = w # A leoQtX object, *not* a Qt object.
+        QtCore.QObject.__init__(self)
+        self.dumped = False # True if bindings dict has been dumped.
+        self.tag = tag
+
+    @others
+#@+node:ekr.20081007115148.6:<< about internal bindings >>
+@nocolor-node
+@
+
+Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
+
+1.  The case of plain letters is significant:  a is not A.
+
+2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
+warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+significant. Thus, the Shift- prefix is required if you want an upper-case
+letter (with the exception of 'bare' uppercase letters.)
+
+The following table illustrates these rules. In each row, the first entry is the
+key (for k.bindingsDict) and the other entries are equivalents that the user may
+specify in leoSettings.leo:
+
+a, Key-a, Key-A
+A, Shift-A
+Alt-a, Alt-A
+Alt-A, Alt-Shift-a, Alt-Shift-A
+Ctrl-a, Ctrl-A
+Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+!, Key-!,Key-exclam,exclam
+
+This table is consistent with how Leo already works (because it is consistent
+with Tk's key-event specifiers). It is also, I think, the least confusing set of
+rules.
+#@nonl
+#@-node:ekr.20081007115148.6:<< about internal bindings >>
+#@+node:ekr.20081013143507.12:eventFilter
+def eventFilter(self, obj, event):
+
+    c = self.c ; k = c.k ; e = QtCore.QEvent 
+    trace = False ; verbose = True
+    eventType = event.type()
+    self.traceEvent(obj,event)
+
+    if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
+        tkKey,ch = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if safe_mode:
+            override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
+        else:
+            override = len(aList) > 0
+    else:
+        override = False
+
+    if eventType == e.KeyPress:
+        if override:
+            w = g.app.gui.get_focus() # *not* self.w!
+            g.trace(w)
+            stroke = self.toStroke(tkKey,ch)
+            leoEvent = leoKeyEvent(event,c,w,stroke)
+            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            if trace: g.trace(self.tag,'bound',tkKey,'ret',ret)
+        else:
+            if trace and verbose: g.trace(self.tag,'unbound',tkKey)
+
+    return override
+#@+node:ekr.20081015132934.10:isDangerous
+def isDangerous (self,tkKey,ch):
+
+    aList = (
+        'return','tab','backspace',
+        'period',
+        'left','right','up','down',
+        'home','end',
+        'shift-right','shift-left','shift-up','shift-down',
+        'shift-right','shift-left','shift-up','shift-down',
+    )
+
+    key = tkKey.lower()
+    ch = ch.lower()
+
+    val = key in aList or (ch in aList and key.find('alt') > -1)
+
+    # g.trace(tkKey,ch,val)
+    return val
+#@-node:ekr.20081015132934.10:isDangerous
+#@-node:ekr.20081013143507.12:eventFilter
+#@+node:ekr.20081011152302.10:toStroke
+def toStroke (self,tkKey,ch):
+
+    k = self.c.k
+
+    s = tkKey
+    ch2 = k.guiBindNamesInverseDict.get(ch)
+    if ch2: s = s.replace(ch,ch2)
+
+    return (
+        s.replace('Alt-','Alt+').
+        replace('Control-','Ctrl+').
+        replace('Shift-','Shift+')
+    )
+#@-node:ekr.20081011152302.10:toStroke
+#@+node:ekr.20081008084746.1:toTkKey
+def toTkKey (self,event):
+
+    c = self.c ; k = c.k ; trace = False
+    allowShift = True ; isKnown = False
+    keynum = event.key()
+    try:
+        ch = chr(keynum)
+    except ValueError:
+        ch = event.text()
+        if not ch:
+            ch = QtGui.QKeySequence(keynum).toString()
+            isKnown = True
+        if not ch:
+            ch = "<unknown char: %s>" % (keynum)
+        ch = g.toUnicode(ch,g.app.tkEncoding)
+        # if trace: g.trace('special',ch) # munge.
+
+    # Convert special characters to Tk Spellings.
+    if   ch in ('\r','\n'): ch = 'Return'
+    elif ch == '\t': ch = 'Tab'
+    elif ch == '\b': ch = 'BackSpace'
+    else:
+        ch2 = k.guiBindNamesDict.get(ch)
+        if ch2:
+            if not isKnown: allowShift = False
+            ch = ch2
+
+    # Convert to Tk style binding.
+    mods = []
+    if event.modifiers() & QtCore.Qt.AltModifier:
+        mods.append("Alt")
+    if event.modifiers() & QtCore.Qt.ControlModifier:
+        mods.append("Control")
+    if event.modifiers() & QtCore.Qt.ShiftModifier:
+        # g.trace('allowShift',allowShift,'ch')
+        if not allowShift:
+            pass
+        elif len(ch) == 1:
+            ch = ch.upper()
+        else:
+            mods.append("Shift")
+    elif len(ch) == 1: ch = ch.lower()
+
+    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+    if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
+
+    return tkKey,ch
+#@-node:ekr.20081008084746.1:toTkKey
+#@+node:ekr.20081013143507.11:traceEvent
+def traceEvent (self,obj,event):
+
+    c = self.c ; e = QtCore.QEvent ; trace = False
+
+    if not trace: return
+
+    eventType = event.type()
+
+    if False and not self.dumped:
+        self.dumped = True
+        g.trace(len(k.masterGuiBindingsDict.keys()))
+
+    if 1: # Show focus events.
+        show = (
+            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            (e.Enter,'enter'),(e.Leave,'leave'),
+        )
+
+    else:
+        show = (
+            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
+        )
+
+    ignore = (
+        e.ToolTip,
+        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.Polish,e.PolishRequest,
+    )
+
+    for val,kind in show:
+        if eventType == val:
+            g.trace('%3s:%s:obj:%s' % (val,kind,obj))
+            return
+
+    if False and eventType not in ignore:
+        g.trace('%3s:%s' % (eventType,'unknown'))
+#@-node:ekr.20081013143507.11:traceEvent
+#@-node:ekr.20081004102201.628:class leoQtEventFilter
+#@-node:ekr.20081011101649.6:Key problems
+#@+node:ekr.20081013210935.1:Unit tests
+@killcolor
+
+*** Skipped leoColor
+#@nonl
+#@+node:ekr.20081013210935.2:Pass
+#@+node:ekr.20081013210935.3:Doctests
+*** Doctests
+
+found  2 doctests for leoGlobals
+found  1 doctests for leoTest
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.094s
+
+OK
+#@-node:ekr.20081013210935.3:Doctests
+#@+node:ekr.20081013210935.4:Unit tests for .leo files.
+*** Unit tests for .leo files.
+
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+........
+----------------------------------------------------------------------
+Ran 8 tests in 26.156s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.4:Unit tests for .leo files.
+#@+node:ekr.20081013210935.5:Check base classes
+*** Check base classes
+
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.046s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.5:Check base classes
+#@+node:ekr.20081013210935.6:General
+*** General
+
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+...
+End of general unit tests
+.
+----------------------------------------------------------------------
+Ran 4 tests in 3.453s
+
+OK
+#@-node:ekr.20081013210935.6:General
+#@+node:ekr.20081013210935.7:leoBridge
+*** leoBridge
+
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.7:leoBridge
+#@+node:ekr.20081013210935.8:leoConfig
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+...
+End of leoConfig tests
+.
+----------------------------------------------------------------------
+Ran 4 tests in 0.015s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.8:leoConfig
+#@+node:ekr.20081013210935.9:leoDialog
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.9:leoDialog
+#@+node:ekr.20081013210935.26:leoGlobals (no tnodeList)
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+----- read error. line: 1, file: ../test/unittest/at-path-test1.py
+no tnodeList for <vnode 25482160:'@file ../test/unittest/at-path-test1.py'>
+findChild4: no tnodeList for  <vnode 25482160:'@file ../test/unittest/at-path-test1.py'> openWithFileName,open,getLeoFile,readAll,read,readO
+penFile,scanText4,readStartNode
+----- read error. line: 1, file: at-path-test2.py
+no tnodeList for <vnode 25482480:'@file at-path-test2.py'>
+findChild4: no tnodeList for  <vnode 25482480:'@file at-path-test2.py'> openWithFileName,open,getLeoFile,readAll,read,readOpenFile,scanText4
+,readStartNode
+----- read error. line: 1, file: at-path-test3.py
+no tnodeList for <vnode 25482896:'@file at-path-test3.py'>
+findChild4: no tnodeList for  <vnode 25482896:'@file at-path-test3.py'> openWithFileName,open,getLeoFile,readAll,read,readOpenFile,scanText4
+,readStartNode
+..test of at.printError: La Pe├▒a
+.................................................
+----------------------------------------------------------------------
+Ran 51 tests in 0.359s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.26:leoGlobals (no tnodeList)
+#@+node:ekr.20081013210935.27:leoGui
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.016s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.27:leoGui
+#@+node:ekr.20081013210935.28:leoKeys
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.031s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.28:leoKeys
+#@+node:ekr.20081013210935.29:leoPlugins
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.29:leoPlugins
+#@+node:ekr.20081013210935.30:leoTangle
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.30:leoTangle
+#@+node:ekr.20081013210935.31:leoTest
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.015s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.31:leoTest
+#@-node:ekr.20081013210935.2:Pass
+#@+node:ekr.20081013210935.32:Fail
+#@+node:ekr.20081013210935.10:plugins
+*** Unit tests for plugins 
+
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+@suite run all plugin test routines
+unexpected exception in g.importFromPath(dyna_menu)
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\dyna_menu.py", line 72, in <module>
+    Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\dyna_menu.py", line 72, in <module>
+    Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5300, in importExtension
+    module = g.importModule(moduleName,pluginName=pluginName,verbose=False)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5300, in importExtension
+    module = g.importModule(moduleName,pluginName=pluginName,verbose=False)
+
+AttributeError: 'NoneType' object has no attribute 'importModule'
+
+AttributeError: 'NoneType' object has no attribute 'importModule'
+
+unexpected exception in g.importFromPath(dynacommon)
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\dynacommon.py", line 1164, in <module>
+    pypath = g.os_path_split(sys.executable)[0]
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\dynacommon.py", line 1164, in <module>
+    pypath = g.os_path_split(sys.executable)[0]
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 3398, in os_path_split
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 3398, in os_path_split
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+AttributeError: 'NoneType' object has no attribute 'toUnicodeFileEncoding'
+
+AttributeError: 'NoneType' object has no attribute 'toUnicodeFileEncoding'
+
+unexpected exception in g.importFromPath(newButtons)
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\newButtons.py", line 385
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\newButtons.py", line 385
+
+    self.getResult = lambda None:None
+
+    self.getResult = lambda None:None
+
+SyntaxError: assignment to None
+
+SyntaxError: assignment to None
+
+unexpected exception in g.importFromPath(override_commands)
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\override_commands.py", line 22, in <module>
+    if not g.app.unitTesting: # Not for unit testing: overrides core methods.
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\override_commands.py", line 22, in <module>
+    if not g.app.unitTesting: # Not for unit testing: overrides core methods.
+
+AttributeError: 'NoneType' object has no attribute 'unitTesting'
+
+AttributeError: 'NoneType' object has no attribute 'unitTesting'
+
+unexpected exception in g.importFromPath(rst)
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\rst.py", line 224, in <module>
+    g.plugin_signon(__name__)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\rst.py", line 224, in <module>
+    g.plugin_signon(__name__)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 2909, in plugin_signon
+    m = g.Bunch()
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 2909, in plugin_signon
+    m = g.Bunch()
+
+AttributeError: 'NoneType' object has no attribute 'Bunch'
+
+AttributeError: 'NoneType' object has no attribute 'Bunch'
+
+unexpected exception in g.importFromPath(rst2)
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\rst2.py", line 1030, in <module>
+    g.plugin_signon(__name__)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\rst2.py", line 1030, in <module>
+    g.plugin_signon(__name__)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 2909, in plugin_signon
+    m = g.Bunch()
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 2909, in plugin_signon
+    m = g.Bunch()
+
+AttributeError: 'NoneType' object has no attribute 'Bunch'
+
+AttributeError: 'NoneType' object has no attribute 'Bunch'
+
+unexpected exception in g.importFromPath(usetemacs)
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 5457, in importFromPath
+    module = imp.load_module(moduleName,theFile,pathname,description)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\usetemacs.py", line 53, in <module>
+    g.es( "temacs not loadable. Aborting load of usetemacs because of: " + str( x ))
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\usetemacs.py", line 53, in <module>
+    g.es( "temacs not loadable. Aborting load of usetemacs because of: " + str( x ))
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 2958, in es
+    log = app.log
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 2958, in es
+    log = app.log
+
+AttributeError: 'NoneType' object has no attribute 'log'
+
+AttributeError: 'NoneType' object has no attribute 'log'
+
+makeTestSuite: Exception creating test cases for @suite plugins tests
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 215, in makeTestSuite
+    exec(script + '\n',{'c':c,'g':g,'p':p})
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 215, in makeTestSuite
+    exec(script + '\n',{'c':c,'g':g,'p':p})
+
+  File "<string>", line 106
+
+  File "<string>", line 106
+
+    self.openFlag,'opening','open')
+
+    self.openFlag,'opening','open')
+
+       ^
+
+       ^
+
+SyntaxError: invalid syntax
+
+SyntaxError: invalid syntax
+
+@suite test syntax of all plugins
+
+All plugins tests complete.
+..........................................................................................................................F...
+End of plugins unit tests
+.
+======================================================================
+FAIL: @test openURL
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 9, in <module>
+    assert url == 'http://webpages.charter.net/edreamleo/front.html','Got:%s' % repr(url)
+AssertionError: Got:None
+
+----------------------------------------------------------------------
+Ran 127 tests in 9.578s
+
+FAILED (failures=1)
+
+
+All plugins tests complete.
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.10:plugins
+#@+node:ekr.20081013210935.11:leoAtFile (gnx's don't match)
+*** leoAtFile
+
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+......
+ --------------------
+result...
+ 18 u'#@+leo-ver=4-thin\n'
+ 38 u'#@+node:ekr.20081013210925.115:#@thin\n'
+  7 u'Line 1\n'
+  1 u'\n'
+  8 u'#@@last\n'
+  7 u'#@nonl\n'
+ 38 u'#@-node:ekr.20081013210925.115:#@thin\n'
+  7 u'#@-leo\n'
+ 23 u'last line 1: no newline'
+--------------------
+expected...
+ 18 u'#@+leo-ver=4-thin\n'
+ 37 u'#@+node:ekr.20040707141957.13:#@thin\n'
+  7 u'Line 1\n'
+  1 u'\n'
+  8 u'#@@last\n'
+  7 u'#@nonl\n'
+ 37 u'#@-node:ekr.20040707141957.13:#@thin\n'
+  7 u'#@-leo\n'
+ 23 u'last line 1: no newline'
+--------------------
+F.....wrote:     C:\leo.repo\qt-plugin\leo\test\xyzzy2
+.unchanged: C:\leo.repo\qt-plugin\leo\test\xyzzy2
+.created:   C:\leo.repo\qt-plugin\leo\test\xyzzy2
+...
+End of leoAtFile tests
+.
+======================================================================
+FAIL: @test @thin
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    leoTest.runAtFileTest(c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 909, in runAtFileTest
+    assert(result == expected)
+AssertionError
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.141s
+
+FAILED (failures=1)
+#@-node:ekr.20081013210935.11:leoAtFile (gnx's don't match)
+#@+node:ekr.20081013210935.12:leoCommands
+*** LeoCommands
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+.................................F.\End of leoColor tests
+.
+======================================================================
+FAIL: @test scanColorDirectives
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 8, in <module>
+    assert language == 'python','got:%s' % language
+AssertionError: got:None
+
+----------------------------------------------------------------------
+Ran 36 tests in 0.188s
+
+FAILED (failures=1)
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+.......the current node is not a clone
+....FFFFFFFFFFFFFF........
+End of leoCommands tests
+.
+======================================================================
+FAIL: @test noTrailingNewline (pass)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    leoTest.singleParagraphTest(c,p,2,24)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1474, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1483, in runTest
+    self.checkText()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1362, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'This line is over forty characters long,\n'
+  Actual text: u'This line is over forty characters long, at least it seems to be.'
+
+======================================================================
+FAIL: @test trailingNewline (pass)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 8, in <module>
+    leoTest.singleParagraphTest(c,p,3,0)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1474, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1483, in runTest
+    self.checkText()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1362, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'This line is over forty characters long,\n'
+  Actual text: u'This line is over forty characters long, at least it seems to be.\n'
+
+======================================================================
+FAIL: @test mixedLineLengths
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    leoTest.singleParagraphTest(c,p,4,10)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1474, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1483, in runTest
+    self.checkText()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1362, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'This line is over forty characters long,\n'
+  Actual text: u'This line is over forty characters long, at least it seems to be.\n'
+
+======================================================================
+FAIL: @test mixedLinesWithLeadingWS
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    leoTest.singleParagraphTest(c,p,4,12)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1474, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1483, in runTest
+    self.checkText()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1362, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'This line is over forty characters long,\n'
+  Actual text: u'This line is over forty characters long, at least it seems to be.\n'
+
+======================================================================
+FAIL: @test noChangeRequired
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    leoTest.singleParagraphTest(c,p,1,28)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1474, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1484, in runTest
+    self.checkPosition(self.finalRow,self.finalCol)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1345, in checkPosition
+    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
+AssertionError: Got column 0.  Expected 28
+
+======================================================================
+FAIL: @test honorLeadingWS
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    leoTest.singleParagraphTest(c,p,5,16)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1474, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1483, in runTest
+    self.checkText()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1362, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'   This line is over forty characters\n'
+  Actual text: u'   This line is over forty characters long, at least it seems to be.\n'
+
+======================================================================
+FAIL: @test honorLeadingWSVar1
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    leoTest.singleParagraphTest(c,p,5,16)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1474, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1483, in runTest
+    self.checkText()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1362, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'   This line is over forty characters\n'
+  Actual text: u'   This line is over forty characters long, at least it seems to be.\n'
+
+======================================================================
+FAIL: @test simpleHangingIndent
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    leoTest.singleParagraphTest(c,p,5,8)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1474, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1483, in runTest
+    self.checkText()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1362, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'Honor this line that has a hanging\n'
+  Actual text: u'Honor this line that has a hanging indentation, please.  Hanging\n'
+
+======================================================================
+FAIL: @test testSimpleHangingIndentVar1
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    leoTest.singleParagraphTest(c,p,5,8)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1474, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1483, in runTest
+    self.checkText()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1362, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'Honor this line that has a hanging\n'
+  Actual text: u'Honor this line that has\n'
+
+======================================================================
+FAIL: @test simpleHangingIndentVar2
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    leoTest.singleParagraphTest(c,p,5,8)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1474, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1483, in runTest
+    self.checkText()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1362, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'Honor this line that has a hanging\n'
+  Actual text: u'Honor this line that \n'
+
+======================================================================
+FAIL: @test multiParagraphTest
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    leoTest.multiParagraphTest(c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1496, in runTest
+    self.checkPosition(13,0)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1347, in checkPosition
+    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
+AssertionError: Got row 1.  Expected 13
+
+======================================================================
+FAIL: @test multiParagraphWithListTest
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 8, in <module>
+    leoTest.multiParagraphWithListTest(c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1518, in runTest
+    self.checkPosition(4,0)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1347, in checkPosition
+    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
+AssertionError: Got row 1.  Expected 4
+
+======================================================================
+FAIL: @test leadingWSOnEmptyLinesTest
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 18, in <module>
+    leoTest.leadingWSOnEmptyLinesTest(c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1544, in runTest
+    self.checkPosition(4,0)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1347, in checkPosition
+    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
+AssertionError: Got row 1.  Expected 4
+
+======================================================================
+FAIL: @test directiveBreaksParagraphTest
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    leoTest.directiveBreaksParagraphTest(c,p)
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1329, in __init__
+    self.go()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1336, in go
+    self.runTest()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1570, in runTest
+    self.checkPosition(13,0) # at next paragraph
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1347, in checkPosition
+    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
+AssertionError: Got row 1.  Expected 13
+
+----------------------------------------------------------------------
+Ran 34 tests in 0.313s
+
+FAILED (failures=14)
+#@nonl
+#@-node:ekr.20081013210935.12:leoCommands
+#@+node:ekr.20081013210935.13:leoEditCommands
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+EFFFEEFFEE...........................................................................................FF............F..EF.....F....FFFFFFFFFF
+FFTraceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 4710, in showStateColors
+    w.configure(bg=bg,fg=fg)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 4710, in showStateColors
+    w.configure(bg=bg,fg=fg)
+
+AttributeError: stringTextWidget instance has no attribute 'configure'
+
+AttributeError: stringTextWidget instance has no attribute 'configure'
+
+..FFF.
+End of leoEditCommands tests.
+.
+======================================================================
+ERROR: @test goto_countlines n = 3
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    target = g.findNodeInTree(c,root,h)
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 4248, in findNodeInTree
+    for p in p.subtree_iter():
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1916, in subtree_iter
+    return self.subtree_iter_class(self,copy,includeSelf=False)
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1880, in __init__
+    elif p.hasChildren():
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1256, in hasChildren
+    return len(p.v.t.children) > 0
+AttributeError: 'NoneType' object has no attribute 't'
+
+======================================================================
+ERROR: @test goto_findGnx
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    target = g.findNodeInTree(c,root,h)
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 4248, in findNodeInTree
+    for p in p.subtree_iter():
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1916, in subtree_iter
+    return self.subtree_iter_class(self,copy,includeSelf=False)
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1880, in __init__
+    elif p.hasChildren():
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1256, in hasChildren
+    return len(p.v.t.children) > 0
+AttributeError: 'NoneType' object has no attribute 't'
+
+======================================================================
+ERROR: @test goto_findVnode
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    target = g.findNodeInTree(c,root,h)
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 4248, in findNodeInTree
+    for p in p.subtree_iter():
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1916, in subtree_iter
+    return self.subtree_iter_class(self,copy,includeSelf=False)
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1880, in __init__
+    elif p.hasChildren():
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1256, in hasChildren
+    return len(p.v.t.children) > 0
+AttributeError: 'NoneType' object has no attribute 't'
+
+======================================================================
+ERROR: @test goto_findRoot (root in ancestors)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    target = g.findNodeInTree(c,root,h)
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 4248, in findNodeInTree
+    for p in p.subtree_iter():
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1916, in subtree_iter
+    return self.subtree_iter_class(self,copy,includeSelf=False)
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1880, in __init__
+    elif p.hasChildren():
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1256, in hasChildren
+    return len(p.v.t.children) > 0
+AttributeError: 'NoneType' object has no attribute 't'
+
+======================================================================
+ERROR: @test goto_findRoot (root not in ancestors)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 6, in <module>
+    clones = g.findNodeInTree(c,root,'goto-line-number tests: clones')
+  File "C:\leo.repo\qt-plugin\leo\core\leoGlobals.py", line 4248, in findNodeInTree
+    for p in p.subtree_iter():
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1916, in subtree_iter
+    return self.subtree_iter_class(self,copy,includeSelf=False)
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1880, in __init__
+    elif p.hasChildren():
+  File "C:\leo.repo\qt-plugin\leo\core\leoNodes.py", line 1256, in hasChildren
+    return len(p.v.t.children) > 0
+AttributeError: 'NoneType' object has no attribute 't'
+
+======================================================================
+ERROR: @test findWordInLine
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 14, in <module>
+    assert i == 2, 'expected 2, got' % (i)
+TypeError: not all arguments converted during string formatting
+
+======================================================================
+FAIL: @test goto_countlines n = 20
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    assert root
+AssertionError
+
+======================================================================
+FAIL: @test goto_setup n = 3
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    assert root1
+AssertionError
+
+======================================================================
+FAIL: @test goto_setup with scriptData
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    assert root1
+AssertionError
+
+======================================================================
+FAIL: @test goto_setup n = 3 (@shadow)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    assert root1
+AssertionError
+
+======================================================================
+FAIL: @test goto_setup n = 3 (@nosent)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
+    assert root1
+AssertionError
+
+======================================================================
+FAIL: @test selfInsertCommand-2 (replacing tabs)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 13, in <module>
+    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
+AssertionError: last line:u''
+
+======================================================================
+FAIL: @test set-fill-prefix
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 9, in <module>
+    assert c.editCommands.fillPrefix == 'xxxx.yyyy'
+AssertionError
+
+======================================================================
+FAIL: @test capitalizeHelper
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 12, in <module>
+    assert word == result, 'Expected %s, got: %s' % (result,repr(word))
+AssertionError: Expected Targetword, got: u'fore\naaaY1'
+
+======================================================================
+FAIL: @test findWord
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 14, in <module>
+    assert i == 10, 'expected 15, got %s' % (i)
+AssertionError: expected 15, got 0
+
+======================================================================
+FAIL: @test selfInsertCommand-2 (replacing tabs)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 11, in <module>
+    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
+AssertionError: last line:u'after'
+
+======================================================================
+FAIL: @test paste at end of headline
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 9, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test typing and undo in headline - at end
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 10, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test paste and undo in headline - at end
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 8, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test paste and undo in headline - with selection
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 8, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test selecting new node retains typing in headline
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 10, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test paste from menu into body sticks
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 8, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test paste from menu into headline sticks
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 6, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test paste from menu to body recolors the body
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test typing in headline recomputes width
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test selecting new node retains paste in headline
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 8, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test typing in empty body text redraws the screen (and icon)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test typing in non-empty body text does not redraw the screen
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 7, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test undoing insert node restores previous node's body text
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 6, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test <Delete> key sticks in body
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 6, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+======================================================================
+FAIL: @test <Delete> key sticks in headline
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 6, in <module>
+    assert p,'node not found: %s' % h
+AssertionError: node not found: Test headline abc
+
+----------------------------------------------------------------------
+Ran 149 tests in 1.171s
+
+FAILED (failures=25, errors=6)
+#@nonl
+#@-node:ekr.20081013210935.13:leoEditCommands
+#@+node:ekr.20081013210935.14:leoFileCommands
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+.FF......
+End of leoFileCommands tests.
+.
+======================================================================
+FAIL: @test minimal test of putTnodeList
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 15, in <module>
+    assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
+AssertionError: expected: ' tnodeList="ekr.20061001124008,ekr.20061001124008.1,ekr.20061001124008.2"', got: ' tnodeList="ekr.20081013210925.
+762,ekr.20081013210925.763,ekr.20081013210925.764"'
+
+======================================================================
+FAIL: @test putDescendentTnodeUas
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 21, in <module>
+    assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
+AssertionError: expected: ' descendentTnodeUnknownAttributes="7d7100285514656b722e32303036313030313039313634372e3171017d71025514756e69745f74
+6573745f6772616e646368696c64710355047778797a7104735512656b722e323030363130303130393136343771057d7106550f756e69745f746573745f6368696c64710755
+0461626364710873752e"', got: ' descendentTnodeUnknownAttributes="7d7100285516656b722e32303038313031333231303932352e37363771017d71025514756e6
+9745f746573745f6772616e646368696c64710355047778797a7104735516656b722e32303038313031333231303932352e37363671057d7106550f756e69745f746573745f6
+368696c647107550461626364710873752e"'
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.125s
+
+FAILED (failures=2)
+#@nonl
+#@-node:ekr.20081013210935.14:leoFileCommands
+#@+node:ekr.20081013210935.24:leoFind
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+EEEE.
+======================================================================
+ERROR: @test minbuffer find commands
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 14, in <module>
+    c.k.simulateCommand(command)
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3045, in simulateCommand
+    k.masterCommand(event,func,stroke)
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 2534, in masterCommand
+    c.doCommand(func,commandName,event=event)
+  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 319, in doCommand
+    val = command(event)
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7909, in reSearchForward
+    self.getHandler().reSearchForward(event)
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7808, in getHandler
+    self.openFindTab(show=show)
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7749, in openFindTab
+    self.findTabHandler = g.app.gui.createFindTab(c,f)
+  File "C:\leo.repo\qt-plugin\leo\core\leoGui.py", line 582, in createFindTab
+    return leoFind.nullFindTab(c,parentFrame)
+  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1437, in __init__
+    self.init(c) # New in 4.3: init only once.
+  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1624, in init
+    svar = self.svarDict[ivar].get()
+KeyError: 'entire-outline'
+
+======================================================================
+ERROR: @test set find mode commands
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 13, in <module>
+    c.k.simulateCommand(command)
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3045, in simulateCommand
+    k.masterCommand(event,func,stroke)
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 2534, in masterCommand
+    c.doCommand(func,commandName,event=event)
+  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 319, in doCommand
+    val = command(event)
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7820, in setFindScopeEveryWhere
+    return self.setFindScope('entire-outline')
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7875, in setFindScope
+    def setFindScope (self, where):  self.getHandler().setFindScope(where)
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7215, in setFindScope
+    var = h.svarDict['radio-search-scope'].get()
+AttributeError: 'NoneType' object has no attribute 'svarDict'
+
+======================================================================
+ERROR: @test show-find-options
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 3, in <module>
+    c.k.simulateCommand('show-find-options')
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3045, in simulateCommand
+    k.masterCommand(event,func,stroke)
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 2534, in masterCommand
+    c.doCommand(func,commandName,event=event)
+  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 319, in doCommand
+    val = command(event)
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7832, in showFindOptions
+    self.getHandler().showFindOptions()
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7235, in showFindOptions
+    head  = self.getOption('search_headline')
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7224, in getOption
+    def getOption (self,ivar):          return self.finder.getOption(ivar)
+AttributeError: 'NoneType' object has no attribute 'getOption'
+
+======================================================================
+ERROR: @test togle find options commands
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 17, in <module>
+    c.k.simulateCommand(command)
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3045, in simulateCommand
+    k.masterCommand(event,func,stroke)
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 2534, in masterCommand
+    c.doCommand(func,commandName,event=event)
+  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 319, in doCommand
+    val = command(event)
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7844, in toggleIgnoreCaseOption
+    return self.toggleOption('ignore_case')
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7876, in toggleOption
+    def toggleOption (self, ivar):   self.getHandler().toggleOption(ivar)
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7226, in toggleOption
+    def toggleOption (self,ivar):       self.finder.toggleOption(ivar)
+AttributeError: 'NoneType' object has no attribute 'toggleOption'
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.047s
+
+FAILED (errors=4)
+#@nonl
+#@-node:ekr.20081013210935.24:leoFind
+#@+node:ekr.20081013210935.25:leoFrame **
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+..FFF....
+======================================================================
+FAIL: @test c.frame.pasteText
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 13, in <module>
+    assert len(s2) == len(s) + len('target')
+AssertionError
+
+======================================================================
+FAIL: @test c.frame.pasteText 2
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 10, in <module>
+    assert s == s2, 'w.getAllText() != p.bodyString(): len(w)=%d, len(p)=%d' % (len(s),len(s2))
+AssertionError: w.getAllText() != p.bodyString(): len(w)=0, len(p)=611
+
+======================================================================
+FAIL: @test leoBody.getInsertLines
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 11, in <module>
+    assert before == '# line 1\n','Got %s' % repr(before)
+AssertionError: Got u''
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.046s
+
+FAILED (failures=3)
+#@nonl
+#@-node:ekr.20081013210935.25:leoFrame **
+#@+node:ekr.20081013210935.33:leoImport
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+makeTestSuite: Exception creating test cases for @suite Export tests
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 215, in makeTestSuite
+    exec(script + '\n',{'c':c,'g':g,'p':p})
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 215, in makeTestSuite
+    exec(script + '\n',{'c':c,'g':g,'p':p})
+
+  File "<string>", line 12, in <module>
+
+  File "<string>", line 12, in <module>
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1110, in makeImportExportSuite
+    assert(parent)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1110, in makeImportExportSuite
+    assert(parent)
+
+AssertionError
+
+AssertionError
+
+makeTestSuite: Exception creating test cases for @suite Import tests
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 215, in makeTestSuite
+    exec(script + '\n',{'c':c,'g':g,'p':p})
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 215, in makeTestSuite
+    exec(script + '\n',{'c':c,'g':g,'p':p})
+
+  File "<string>", line 11, in <module>
+
+  File "<string>", line 11, in <module>
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1110, in makeImportExportSuite
+    assert(parent)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1110, in makeImportExportSuite
+    assert(parent)
+
+AssertionError
+
+AssertionError
+
+..........................................first mismatched line at line 36
+original line:          /**
+
+generated line:     /**
+
+input...
+  0 /*
+  1  * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
+  2  *
+  3  * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
+  4  *
+  5  * This program and the accompanying materials are made available under the
+  6  * terms of the Eclipse Public License v1.0 which accompanies this
+  7  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
+  8  */
+  9
+ 10 package org.osgi.framework;
+ 11
+ 12 /**
+ 13  * A Framework exception used to indicate that a bundle lifecycle problem
+ 14  * occurred.
+ 15  *
+ 16  * <p>
+ 17  * <code>BundleException</code> object is created by the Framework to denote
+ 18  * an exception condition in the lifecycle of a bundle.
+ 19  * <code>BundleException</code>s should not be created by bundle developers.
+ 20  *
+ 21  * <p>
+ 22  * This exception is updated to conform to the general purpose exception
+ 23  * chaining mechanism.
+ 24  *
+ 25  * @version $Revision: 1.247 $
+ 26  */
+ 27
+ 28 public class BundleException extends Exception {
+ 29     static final long       serialVersionUID        = 3571095144220455665L;
+ 30     /**
+ 31      * Nested exception.
+ 32      */
+ 33     private Throwable       cause;
+ 34
+ 35     /**
+ 36      * Creates a <code>BundleException</code> that wraps another exception.
+ 37      *
+ 38      * @param msg The associated message.
+ 39      * @param cause The cause of this exception.
+ 40      */
+ 41     public BundleException(String msg, Throwable cause) {
+ 42             super(msg);
+ 43             this.cause = cause;
+ 44     }
+ 45 }
+ 46
+output...
+  0 /*
+  1  * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
+  2  *
+  3  * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
+  4  *
+  5  * This program and the accompanying materials are made available under the
+  6  * terms of the Eclipse Public License v1.0 which accompanies this
+  7  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
+  8  */
+  9
+ 10 package org.osgi.framework;
+ 11
+ 12 /**
+ 13  * A Framework exception used to indicate that a bundle lifecycle problem
+ 14  * occurred.
+ 15  *
+ 16  * <p>
+ 17  * <code>BundleException</code> object is created by the Framework to denote
+ 18  * an exception condition in the lifecycle of a bundle.
+ 19  * <code>BundleException</code>s should not be created by bundle developers.
+ 20  *
+ 21  * <p>
+ 22  * This exception is updated to conform to the general purpose exception
+ 23  * chaining mechanism.
+ 24  *
+ 25  * @version $Revision: 1.247 $
+ 26  */
+ 27
+ 28 public class BundleException extends Exception {
+ 29     static final long       serialVersionUID        = 3571095144220455665L;
+ 30     /**
+ 31      * Nested exception.
+ 32      */
+ 33     private Throwable       cause;
+ 34
+ 35     /**
+ 36      * Creates a <code>BundleException</code> that wraps another exception.
+ 37      *
+ 38      * @param msg The associated message.
+ 39      * @param cause The cause of this exception.
+ 40      */
+ 41     public BundleException(String msg, Throwable cause) {
+ 42             super(msg);
+ 43             this.cause = cause;
+ 44     }
+ 45 }
+ 46
+scannerUnitTest: result False actualErrors 1 expectedErrors 0 actualMismatchLine 36 expectedMismatchLine None
+actualErrorMessage   import command did not import @file C:\leo.repo\qt-plugin\leo\test\from BundleException.java perfectly
+first mismatched line: 36
+u'    /**\n'
+expectedErrorMessage None
+F..........
+End of leoImport tests.
+.
+======================================================================
+FAIL: @test from BundleException.java
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 57, in <module>
+    c.importCommands.javaUnitTest(p,s=s,showTree=False)
+  File "C:\leo.repo\qt-plugin\leo\core\leoImport.py", line 1444, in javaUnitTest
+    return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.java')
+  File "C:\leo.repo\qt-plugin\leo\core\leoImport.py", line 1513, in scannerUnitTest
+    assert ok
+AssertionError
+
+----------------------------------------------------------------------
+Ran 54 tests in 1.954s
+
+FAILED (failures=1)
+#@nonl
+#@-node:ekr.20081013210935.33:leoImport
+#@+node:ekr.20081013210935.34:leoNodes
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+..................F......E.F................
+End of leoNodes tests.
+.
+======================================================================
+ERROR: @test create-chapter
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 13, in <module>
+    c.chapterController.createChapterByName('new-chapter',p,undoType)
+AttributeError: 'NoneType' object has no attribute 'createChapterByName'
+
+======================================================================
+FAIL: @test p.setBodyStringOrPane
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 15, in <module>
+    "c.setBodyString failed: %s, %s" % (repr(s),repr(after))
+AssertionError: c.setBodyString failed: u'', 'after'
+
+======================================================================
+FAIL: @test deleting the root should select another node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 18, in <module>
+    assert next.headString() == 'Startup', 'fail 2: next: %s' % next
+AssertionError: fail 2: next: <pos 25416400 childIndex: 1 lvl: 0 [0] All unit tests>
+
+----------------------------------------------------------------------
+Ran 45 tests in 0.390s
+
+FAILED (failures=2, errors=1)
+#@nonl
+#@-node:ekr.20081013210935.34:leoNodes
+#@+node:ekr.20081013210935.35:leoShadow (can't find test)
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+makeTestSuite: Exception creating test cases for @suite run @shadow-test nodes in the @shadow-tests tree
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 215, in makeTestSuite
+    exec(script + '\n',{'c':c,'g':g,'p':p})
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 215, in makeTestSuite
+    exec(script + '\n',{'c':c,'g':g,'p':p})
+
+  File "<string>", line 13, in <module>
+
+  File "<string>", line 13, in <module>
+
+AssertionError: Node not found: @shadow-tests
+
+AssertionError: Node not found: @shadow-tests
+
+................
+----------------------------------------------------------------------
+Ran 16 tests in 0.125s
+
+OK
+#@nonl
+#@-node:ekr.20081013210935.35:leoShadow (can't find test)
+#@+node:ekr.20081013210935.36:leoUndo
+creating: dynamicUnitTest.leo
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+no text selected
+compareOutlines failed
+p1 <pos 25434576 childIndex: 0 lvl: 3 [3] tempNode> <vnode 25416784:'tempNode'>
+p2 <pos 25476752 childIndex: 1 lvl: 4 [4] after> <vnode 25417104:'after'>
+p1.body
+u'@language python\n\ndef addCommentTest():\n\n    if 1:\n        a = 2\n        b = 3\n        \n    pass'
+p2.body
+u'@language python\n\ndef addCommentTest():\n\n    # if 1:\n        # a = 2\n        # b = 3\n        \n    pass'
+FcompareOutlines failed
+p1 <pos 25435632 childIndex: 0 lvl: 3 [3] tempNode> <vnode 25416784:'tempNode'>
+p2 <pos 25476752 childIndex: 1 lvl: 4 [4] after> <vnode 25417488:'after'>
+p1.body
+u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
+p2.body
+u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
+FcompareOutlines failed
+p1 <pos 25435856 childIndex: 0 lvl: 3 [3] tempNode> <vnode 25416784:'tempNode'>
+p2 <pos 25476752 childIndex: 1 lvl: 4 [4] after> <vnode 25417872:'after'>
+p1.body
+u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
+p2.body
+u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
+FcompareOutlines failed
+p1 <pos 25435632 childIndex: 0 lvl: 3 [3] tempNode> <vnode 25416784:'tempNode'>
+p2 <pos 25476752 childIndex: 1 lvl: 4 [4] after> <vnode 25418256:'after'>
+p1.body
+u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
+p2.body
+u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
+FcompareOutlines failed
+p1 <pos 25435568 childIndex: 0 lvl: 3 [3] tempNode> <vnode 25416784:'tempNode'>
+p2 <pos 25476752 childIndex: 1 lvl: 4 [4] after> <vnode 25418640:'after'>
+p1.body
+u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
+p2.body
+u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
+FcompareOutlines failed
+p1 <pos 25435600 childIndex: 0 lvl: 3 [3] tempNode> <vnode 25416784:'tempNode'>
+p2 <pos 25476752 childIndex: 1 lvl: 4 [4] after> <vnode 25419024:'after'>
+p1.body
+u'line 1\n    line 2\n    line 3\nline 4'
+p2.body
+u'line 1\nline 2\nline 3\nline 4'
+Fno text selected
+compareOutlines failed
+p1 <pos 25435888 childIndex: 0 lvl: 3 [3] tempNode> <vnode 25416784:'tempNode'>
+p2 <pos 25476752 childIndex: 1 lvl: 4 [4] after> <vnode 25419408:'after'>
+p1.body
+u'@language python\n\ndef deleteCommentTest():\n\n    # if 1:\n        # a = 2\n        # b = 3\n        \n    pass'
+p2.body
+u'@language python\n\ndef deleteCommentTest():\n\n    if 1:\n        a = 2\n        b = 3\n        \n    pass'
+FcompareOutlines failed
+p1 <pos 25435888 childIndex: 0 lvl: 3 [3] tempNode> <vnode 25416784:'tempNode'>
+p2 <pos 25435632 childIndex: 1 lvl: 4 [4] after> <vnode 25473072:'after'>
+p1.numberOfChildren()=0, p2.numberOfChildren()=1
+p1.body
+u'before\n    << section >>\n    sec line 1\n        sec line 2 indented\nsec line 3\nafter'
+p2.body
+u'before\nafter'
+F.compareOutlines failed
+p1 <pos 25435632 childIndex: 0 lvl: 3 [3] tempNode> <vnode 25416784:'tempNode'>
+p2 <pos 25476752 childIndex: 1 lvl: 4 [4] after> <vnode 25473936:'after'>
+p1.numberOfChildren()=0, p2.numberOfChildren()=1
+p1.body
+u'before\n    << section >>\n    sec line 1\n        sec line 2 indented\nsec line 3\nafter'
+p2.body
+u'before\n    << section >>\nafter'
+F.
+End of leoUndo tests.
+.
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: addComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertAllBlanks: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertAllTabs: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertBlanks: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertTabs: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: dedentBody: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: deleteComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: extract: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: extractSection: before undo1
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.031s
+
+FAILED (failures=9)
+#@-node:ekr.20081013210935.36:leoUndo
+#@-node:ekr.20081013210935.32:Fail
+#@-node:ekr.20081013210935.1:Unit tests
+#@+node:ekr.20081014095718.16:Dump key dicts
+tkKey = 'Return'
+aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+for z in aList:
+    print '==='
+    print z
+#@nonl
+#@-node:ekr.20081014095718.16:Dump key dicts
+#@+node:ekr.20081015062931.10:Focus stuff...
+#@+node:ekr.20081014095718.15:get_name (qtTree)
+def getName (self):
+
+    return 'canvas(tree)' # Must start with 'canvas'
+#@-node:ekr.20081014095718.15:get_name (qtTree)
+#@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
+def bringToFront (self):        pass 
+def deiconify (self):           pass
+def getFocus(self):             return g.app.gui.get_focus() 
+def getTitle (self):            return g.toUnicode(self.top.windowTitle(),'utf-8')
+def get_window_info(self):      return 0,0,0,0
+def iconify(self):              pass
+def lift (self):                pass
+def setTitle (self,title):      self.top.setWindowTitle(title)
+def update (self):              pass
+#@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
+#@+node:ekr.20081004172422.865:add_command
+def add_command (self,**keys):
+
+    """Wrapper for the Tkinter add_command menu method."""
+
+    accel = keys.get('accelerator') or ''
+    label = keys.get('label')
+    command = keys.get('command')
+    n = keys.get('underline')
+    menu = keys.get('menu') or self
+
+    d = {'Return':'Rtn','BackSpace':'BkSp',}
+
+    if label:
+        if n > -1:
+            label = label[:n] + '&' + label[n:]
+            # g.trace(label)
+        action = menu.addAction(label)
+        if accel:
+            accel2 = d.get(accel)
+            if accel2:
+                # g.trace(accel,accel2)
+                accel = accel2
+            action.setShortcut(accel)
+        if command:
+            def add_command_callback(label=label,command=command):
+                # g.trace('***qtGui.add_command: command',command)
+                command()
+
+            QtCore.QObject.connect(
+                action,QtCore.SIGNAL("triggered()"),add_command_callback)
+#@-node:ekr.20081004172422.865:add_command
+#@+node:ekr.20081004102201.676:class leoKeyEvent
+class leoKeyEvent:
+
+    '''A gui-independent wrapper for gui events.'''
+
+    def __init__ (self,event,c,w,tkKey):
+
+        # The main ivars.
+        self.actualEvent = event
+        self.c      = c
+        self.char   = tkKey 
+        self.keysym = tkKey
+        self.w = self.widget = w # A leoQtX object
+
+        # Auxiliary info.
+        self.x      = hasattr(event,'x') and event.x or 0
+        self.y      = hasattr(event,'y') and event.y or 0
+        # Support for fastGotoNode plugin
+        self.x_root = hasattr(event,'x_root') and event.x_root or 0
+        self.y_root = hasattr(event,'y_root') and event.y_root or 0
+
+    def __repr__ (self):
+
+        return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
+#@-node:ekr.20081004102201.676:class leoKeyEvent
+#@+node:ekr.20081004172422.510:Focus (qtBody)
+def getFocus(self):
+
+    g.trace('leoQtBody',self.widget,g.callers(4))
+    return g.app.gui.get_focus()
+
+findFocus = getFocus
+
+def hasFocus (self):
+
+    val = self.widget == g.app.gui.get_focus(self.c)
+    # g.trace('leoQtBody returns',val,self.widget,g.callers(4))
+    return val
+
+def setFocus (self):
+
+    # g.trace('leoQtBody',self.widget,g.callers(4))
+    g.app.gui.set_focus(self.c,self.widget)
+#@-node:ekr.20081004172422.510:Focus (qtBody)
+#@+node:ekr.20081004102201.657:Focus (qtGui)
+def get_focus(self,c=None):
+
+    """Returns the widget that has focus."""
+
+    w = QtGui.QApplication.focusWidget()
+    # g.trace('leoQtGui',w)
+    return w
+
+def set_focus(self,c,w):
+
+    """Put the focus on the widget."""
+
+    if w:
+        # g.trace('leoQtGui',w,g.callers(4))
+        w.setFocus()
+#@-node:ekr.20081004102201.657:Focus (qtGui)
+#@+node:ekr.20081015062931.11:widget_name (qtGui
+def widget_name (self,w):
+
+    # First try the widget's getName method.
+    if not 'w':
+        name = '<no widget>'
+    elif hasattr(w,'objectName'):
+        name = str(w.objectName())
+        if name == 'treeWidget':
+            name = 'canvas(treeWidget)'
+    elif hasattr(w,'getName'):
+        name = w.getName()
+    elif hasattr(w,'_name'):
+        name = w._name
+    else:
+        name = repr(w)
+
+    # g.trace(name,w)
+    return name
+#@-node:ekr.20081015062931.11:widget_name (qtGui
+#@+node:ekr.20081004102201.628:class leoQtEventFilter
+class leoQtEventFilter(QtCore.QObject):
+
+    << about internal bindings >>
+
+    def __init__(self,c,w,tag=''):
+
+        self.c = c
+        self.w = w # A leoQtX object, *not* a Qt object.
+        QtCore.QObject.__init__(self)
+        self.dumped = False # True if bindings dict has been dumped.
+        self.tag = tag
+
+    @others
+#@+node:ekr.20081007115148.6:<< about internal bindings >>
+@nocolor-node
+@
+
+Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
+
+1.  The case of plain letters is significant:  a is not A.
+
+2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
+warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+significant. Thus, the Shift- prefix is required if you want an upper-case
+letter (with the exception of 'bare' uppercase letters.)
+
+The following table illustrates these rules. In each row, the first entry is the
+key (for k.bindingsDict) and the other entries are equivalents that the user may
+specify in leoSettings.leo:
+
+a, Key-a, Key-A
+A, Shift-A
+Alt-a, Alt-A
+Alt-A, Alt-Shift-a, Alt-Shift-A
+Ctrl-a, Ctrl-A
+Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+!, Key-!,Key-exclam,exclam
+
+This table is consistent with how Leo already works (because it is consistent
+with Tk's key-event specifiers). It is also, I think, the least confusing set of
+rules.
+#@nonl
+#@-node:ekr.20081007115148.6:<< about internal bindings >>
+#@+node:ekr.20081013143507.12:eventFilter
+def eventFilter(self, obj, event):
+
+    c = self.c ; k = c.k ; e = QtCore.QEvent 
+    trace = False ; verbose = True
+    eventType = event.type()
+    self.traceEvent(obj,event)
+
+    if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
+        tkKey,ch = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if safe_mode:
+            override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
+        else:
+            override = len(aList) > 0
+    else:
+        override = False
+
+    if eventType == e.KeyPress:
+        if override:
+            w = g.app.gui.get_focus() # *not* self.w!
+            g.trace(w)
+            stroke = self.toStroke(tkKey,ch)
+            leoEvent = leoKeyEvent(event,c,w,stroke)
+            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            if trace: g.trace(self.tag,'bound',tkKey,'ret',ret)
+        else:
+            if trace and verbose: g.trace(self.tag,'unbound',tkKey)
+
+    return override
+#@+node:ekr.20081015132934.10:isDangerous
+def isDangerous (self,tkKey,ch):
+
+    aList = (
+        'return','tab','backspace',
+        'period',
+        'left','right','up','down',
+        'home','end',
+        'shift-right','shift-left','shift-up','shift-down',
+        'shift-right','shift-left','shift-up','shift-down',
+    )
+
+    key = tkKey.lower()
+    ch = ch.lower()
+
+    val = key in aList or (ch in aList and key.find('alt') > -1)
+
+    # g.trace(tkKey,ch,val)
+    return val
+#@-node:ekr.20081015132934.10:isDangerous
+#@-node:ekr.20081013143507.12:eventFilter
+#@+node:ekr.20081011152302.10:toStroke
+def toStroke (self,tkKey,ch):
+
+    k = self.c.k
+
+    s = tkKey
+    ch2 = k.guiBindNamesInverseDict.get(ch)
+    if ch2: s = s.replace(ch,ch2)
+
+    return (
+        s.replace('Alt-','Alt+').
+        replace('Control-','Ctrl+').
+        replace('Shift-','Shift+')
+    )
+#@-node:ekr.20081011152302.10:toStroke
+#@+node:ekr.20081008084746.1:toTkKey
+def toTkKey (self,event):
+
+    c = self.c ; k = c.k ; trace = False
+    allowShift = True ; isKnown = False
+    keynum = event.key()
+    try:
+        ch = chr(keynum)
+    except ValueError:
+        ch = event.text()
+        if not ch:
+            ch = QtGui.QKeySequence(keynum).toString()
+            isKnown = True
+        if not ch:
+            ch = "<unknown char: %s>" % (keynum)
+        ch = g.toUnicode(ch,g.app.tkEncoding)
+        # if trace: g.trace('special',ch) # munge.
+
+    # Convert special characters to Tk Spellings.
+    if   ch in ('\r','\n'): ch = 'Return'
+    elif ch == '\t': ch = 'Tab'
+    elif ch == '\b': ch = 'BackSpace'
+    else:
+        ch2 = k.guiBindNamesDict.get(ch)
+        if ch2:
+            if not isKnown: allowShift = False
+            ch = ch2
+
+    # Convert to Tk style binding.
+    mods = []
+    if event.modifiers() & QtCore.Qt.AltModifier:
+        mods.append("Alt")
+    if event.modifiers() & QtCore.Qt.ControlModifier:
+        mods.append("Control")
+    if event.modifiers() & QtCore.Qt.ShiftModifier:
+        # g.trace('allowShift',allowShift,'ch')
+        if not allowShift:
+            pass
+        elif len(ch) == 1:
+            ch = ch.upper()
+        else:
+            mods.append("Shift")
+    elif len(ch) == 1: ch = ch.lower()
+
+    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+    if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
+
+    return tkKey,ch
+#@-node:ekr.20081008084746.1:toTkKey
+#@+node:ekr.20081013143507.11:traceEvent
+def traceEvent (self,obj,event):
+
+    c = self.c ; e = QtCore.QEvent ; trace = False
+
+    if not trace: return
+
+    eventType = event.type()
+
+    if False and not self.dumped:
+        self.dumped = True
+        g.trace(len(k.masterGuiBindingsDict.keys()))
+
+    if 1: # Show focus events.
+        show = (
+            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            (e.Enter,'enter'),(e.Leave,'leave'),
+        )
+
+    else:
+        show = (
+            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
+        )
+
+    ignore = (
+        e.ToolTip,
+        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.Polish,e.PolishRequest,
+    )
+
+    for val,kind in show:
+        if eventType == val:
+            g.trace('%3s:%s:obj:%s' % (val,kind,obj))
+            return
+
+    if False and eventType not in ignore:
+        g.trace('%3s:%s' % (eventType,'unknown'))
+#@-node:ekr.20081013143507.11:traceEvent
+#@-node:ekr.20081004102201.628:class leoQtEventFilter
+#@+node:ekr.20081004172422.846:editLabel
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c
+    w = self.treeWidget
+    it = self.vnodeDict[p.v][0][1]
+
+    w.editItem(it)
+
+    # A nice hack: just clear the focus request.
+    c.requestedFocusWidget = None
+
+    # g.trace('leoQtTree','it',it,p and p.headString())
+
+    # if p and p != self.editPosition():
+        # self.endEditLabel()
+        # # This redraw *is* required so the c.edit_widget(p) will exist.
+        # c.redraw()
+        # c.outerUpdate()
+
+    # self.setEditPosition(p) # That is, self._editPosition = p
+    # w = c.edit_widget(p)
+    # if p and w:
+        # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+        # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        # c.headlineWantsFocus(p) # Make sure the focus sticks.
+        # c.k.showStateAndMode(w)
+#@-node:ekr.20081004172422.846:editLabel
+#@-node:ekr.20081015062931.10:Focus stuff...
+#@-node:ekr.20081014095718.13: Recent
+#@+node:ekr.20081004102201.637: Unused
+#@+node:ekr.20081014095718.11:From qtGui
+#@+node:ekr.20081004102201.638:qtGui.setDefaultIcon
+def setDefaultIcon(self):
+
+    """Set the icon to be used in all Leo windows.
+
+    This code does nothing for Tk versions before 8.4.3."""
+
+    gui = self
+
+    try:
+        version = gui.root.getvar("tk_patchLevel")
+        # g.trace(repr(version),g.CheckVersion(version,"8.4.3"))
+        if g.CheckVersion(version,"8.4.3") and sys.platform == "win32":
+
+            path = g.os_path_join(g.app.loadDir,"..","Icons")
+            if g.os_path_exists(path):
+                theFile = g.os_path_join(path,"LeoApp16.ico")
+                if g.os_path_exists(path):
+                    self.bitmap = QtGui.BitmapImage(theFile)
+                else:
+                    g.es("","LeoApp16.ico","not in Icons directory",color="red")
+            else:
+                g.es("","Icons","directory not found:",path, color="red")
+    except:
+        g.pr("exception setting bitmap")
+        import traceback ; traceback.print_exc()
+#@-node:ekr.20081004102201.638:qtGui.setDefaultIcon
+#@+node:ekr.20081004102201.639:qtGui.getDefaultConfigFont
+def getDefaultConfigFont(self,config):
+
+    """Get the default font from a new text widget."""
+
+    if not self.defaultFontFamily:
+        # WARNING: retain NO references to widgets or fonts here!
+        w = g.app.gui.plainTextWidget()
+        fn = w.cget("font")
+        font = qtFont.Font(font=fn) 
+        family = font.cget("family")
+        self.defaultFontFamily = family[:]
+        # g.pr('***** getDefaultConfigFont',repr(family))
+
+    config.defaultFont = None
+    config.defaultFontFamily = self.defaultFontFamily
+#@-node:ekr.20081004102201.639:qtGui.getDefaultConfigFont
+#@-node:ekr.20081014095718.11:From qtGui
+#@+node:ekr.20081004102201.656:Events (qtGui)
+# def event_generate(self,w,kind,*args,**keys):
+    # '''Generate an event.'''
+    # return w.event_generate(kind,*args,**keys)
+
+# def eventChar (self,event,c=None):
+    # '''Return the char field of an event.'''
+    # return event and event.char or ''
+
+# def eventKeysym (self,event,c=None):
+    # '''Return the keysym value of an event.'''
+    # return event and event.keysym
+
+# def eventWidget (self,event,c=None):
+    # '''Return the widget field of an event.'''   
+    # return event and event.widget
+
+# def eventXY (self,event,c=None):
+    # if event:
+        # return event.x,event.y
+    # else:
+        # return 0,0
+#@nonl
+#@-node:ekr.20081004102201.656:Events (qtGui)
+#@+node:ekr.20081014095718.18:Unused tree binding stuff
+    Bind <Return> key to special case.
+    retAct = QtGui.QAction(w)
+    retAct.setObjectName("<Return> action")
+    retAct.setShortcut("Return")
+    w.connect(retAct, QtCore.SIGNAL("keyPressed()"),self.onReturn)
+    d = c.k.masterBindingsDict.get('tree',{})
+    stroke = 'Return'
+    if not d.get(stroke):
+        d[stroke] = g.Bunch('tree-return',self.onReturn,'tree',stroke)
+        c.k.masterBindingsDict['tree'] = d
+#@nonl
+#@-node:ekr.20081014095718.18:Unused tree binding stuff
+#@-node:ekr.20081004102201.637: Unused
+#@+node:ekr.20081014095718.10:QDesigner files
+#@+node:ekr.20081011152109.3:@auto ../test/qtui_generate.py
+@language python
+@tabwidth -4
+@others
+#@+node:ekr.20081016072304.1:qtui_generate declarations
+import os
+os.chdir('../plugins')
+os.system('pyuic4 -o qt_main.py qt_main.ui')
+os.system('pyuic4 -o qt_quicksearch.py qt_quicksearch.ui')
+#@-node:ekr.20081016072304.1:qtui_generate declarations
+#@-node:ekr.20081011152109.3:@auto ../test/qtui_generate.py
+#@+node:ekr.20081006072952.1:@auto qt_main.py
+@language python
+@tabwidth -4
+@others
+from PyQt4 import Qsci
+#@+node:ekr.20081016072304.2:qt_main declarations
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'qt_main.ui'
+#
+# Created: Sat Oct 11 16:42:52 2008
+#      by: PyQt4 UI code generator 4.4.3
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+
+#@-node:ekr.20081016072304.2:qt_main declarations
+#@+node:ekr.20081016072304.3:class Ui_MainWindow
+class Ui_MainWindow(object):
+    @others
+#@+node:ekr.20081016072304.4:setupUi
+def setupUi(self, MainWindow):
+    MainWindow.setObjectName("MainWindow")
+    MainWindow.resize(849, 750)
+    self.centralwidget = QtGui.QWidget(MainWindow)
+    self.centralwidget.setObjectName("centralwidget")
+    self.verticalLayout_2 = QtGui.QVBoxLayout(self.centralwidget)
+    self.verticalLayout_2.setObjectName("verticalLayout_2")
+    self.verticalLayout = QtGui.QVBoxLayout()
+    self.verticalLayout.setObjectName("verticalLayout")
+    self.splitter_2 = QtGui.QSplitter(self.centralwidget)
+    self.splitter_2.setOrientation(QtCore.Qt.Vertical)
+    self.splitter_2.setObjectName("splitter_2")
+    self.splitter = QtGui.QSplitter(self.splitter_2)
+    self.splitter.setOrientation(QtCore.Qt.Horizontal)
+    self.splitter.setObjectName("splitter")
+    self.treeWidget = QtGui.QTreeWidget(self.splitter)
+    self.treeWidget.setObjectName("treeWidget")
+    self.tabWidget = QtGui.QTabWidget(self.splitter)
+    self.tabWidget.setObjectName("tabWidget")
+    self.tab = QtGui.QWidget()
+    self.tab.setObjectName("tab")
+    self.verticalLayout_3 = QtGui.QVBoxLayout(self.tab)
+    self.verticalLayout_3.setObjectName("verticalLayout_3")
+    self.textBrowser = QtGui.QTextBrowser(self.tab)
+    self.textBrowser.setObjectName("textBrowser")
+    self.verticalLayout_3.addWidget(self.textBrowser)
+    self.tabWidget.addTab(self.tab, "")
+    self.tab_2 = QtGui.QWidget()
+    self.tab_2.setObjectName("tab_2")
+    self.gridLayout = QtGui.QGridLayout(self.tab_2)
+    self.gridLayout.setObjectName("gridLayout")
+    self.findPattern = QtGui.QLineEdit(self.tab_2)
+    self.findPattern.setObjectName("findPattern")
+    self.gridLayout.addWidget(self.findPattern, 0, 1, 1, 1)
+    self.findChange = QtGui.QLineEdit(self.tab_2)
+    self.findChange.setObjectName("findChange")
+    self.gridLayout.addWidget(self.findChange, 1, 1, 1, 1)
+    self.checkBoxWholeWord = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxWholeWord.setObjectName("checkBoxWholeWord")
+    self.gridLayout.addWidget(self.checkBoxWholeWord, 2, 0, 1, 1)
+    self.checkBoxEntireOutline = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxEntireOutline.setObjectName("checkBoxEntireOutline")
+    self.gridLayout.addWidget(self.checkBoxEntireOutline, 2, 1, 1, 1)
+    self.checkBoxIgnoreCase = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxIgnoreCase.setObjectName("checkBoxIgnoreCase")
+    self.gridLayout.addWidget(self.checkBoxIgnoreCase, 3, 0, 1, 1)
+    self.checkBoxSubroutineOnly = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxSubroutineOnly.setObjectName("checkBoxSubroutineOnly")
+    self.gridLayout.addWidget(self.checkBoxSubroutineOnly, 3, 1, 1, 1)
+    self.checkBoxWrapAround = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxWrapAround.setObjectName("checkBoxWrapAround")
+    self.gridLayout.addWidget(self.checkBoxWrapAround, 4, 0, 1, 1)
+    self.checkBoxNodeOnly = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxNodeOnly.setObjectName("checkBoxNodeOnly")
+    self.gridLayout.addWidget(self.checkBoxNodeOnly, 4, 1, 1, 1)
+    self.checkBoxReverse = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxReverse.setObjectName("checkBoxReverse")
+    self.gridLayout.addWidget(self.checkBoxReverse, 5, 0, 1, 1)
+    self.checkBoxSearchHeadline = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxSearchHeadline.setObjectName("checkBoxSearchHeadline")
+    self.gridLayout.addWidget(self.checkBoxSearchHeadline, 5, 1, 1, 1)
+    self.checkBoxRexexp = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxRexexp.setObjectName("checkBoxRexexp")
+    self.gridLayout.addWidget(self.checkBoxRexexp, 6, 0, 1, 1)
+    self.checkBoxSearchBody = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxSearchBody.setObjectName("checkBoxSearchBody")
+    self.gridLayout.addWidget(self.checkBoxSearchBody, 6, 1, 1, 1)
+    self.checkBoxMarkFinds = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxMarkFinds.setObjectName("checkBoxMarkFinds")
+    self.gridLayout.addWidget(self.checkBoxMarkFinds, 7, 0, 1, 1)
+    self.checkBoxMarkChanges = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxMarkChanges.setObjectName("checkBoxMarkChanges")
+    self.gridLayout.addWidget(self.checkBoxMarkChanges, 7, 1, 1, 1)
+    self.label_2 = QtGui.QLabel(self.tab_2)
+    self.label_2.setObjectName("label_2")
+    self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
+    self.label_3 = QtGui.QLabel(self.tab_2)
+    self.label_3.setObjectName("label_3")
+    self.gridLayout.addWidget(self.label_3, 1, 0, 1, 1)
+    self.tabWidget.addTab(self.tab_2, "")
+    self.tab_3 = QtGui.QWidget()
+    self.tab_3.setObjectName("tab_3")
+    self.tabWidget.addTab(self.tab_3, "")
+    self.textEdit = Qsci.QsciScintilla(self.splitter_2)
+    self.textEdit.setObjectName("textEdit")
+    self.verticalLayout.addWidget(self.splitter_2)
+    self.horizontalLayout = QtGui.QHBoxLayout()
+    self.horizontalLayout.setObjectName("horizontalLayout")
+    self.label = QtGui.QLabel(self.centralwidget)
+    self.label.setObjectName("label")
+    self.horizontalLayout.addWidget(self.label)
+    self.lineEdit = QtGui.QLineEdit(self.centralwidget)
+    self.lineEdit.setObjectName("lineEdit")
+    self.horizontalLayout.addWidget(self.lineEdit)
+    self.verticalLayout.addLayout(self.horizontalLayout)
+    self.verticalLayout_2.addLayout(self.verticalLayout)
+    MainWindow.setCentralWidget(self.centralwidget)
+    self.menubar = QtGui.QMenuBar(MainWindow)
+    self.menubar.setGeometry(QtCore.QRect(0, 0, 849, 22))
+    self.menubar.setObjectName("menubar")
+    MainWindow.setMenuBar(self.menubar)
+    self.statusbar = QtGui.QStatusBar(MainWindow)
+    self.statusbar.setObjectName("statusbar")
+    MainWindow.setStatusBar(self.statusbar)
+    self.actionOpen = QtGui.QAction(MainWindow)
+    self.actionOpen.setObjectName("actionOpen")
+    self.actionSave = QtGui.QAction(MainWindow)
+    self.actionSave.setObjectName("actionSave")
+    self.actionIPython = QtGui.QAction(MainWindow)
+    self.actionIPython.setObjectName("actionIPython")
+    self.label.setBuddy(self.lineEdit)
+
+    self.retranslateUi(MainWindow)
+    self.tabWidget.setCurrentIndex(0)
+    QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL("itemSelectionChanged()"), MainWindow.showNormal)
+    QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+#@-node:ekr.20081016072304.4:setupUi
+#@+node:ekr.20081016072304.5:retranslateUi
+def retranslateUi(self, MainWindow):
+    MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Leo", None, QtGui.QApplication.UnicodeUTF8))
+    self.treeWidget.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
+    self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Tab 1", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxWholeWord.setText(QtGui.QApplication.translate("MainWindow", "Whole Word", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxEntireOutline.setText(QtGui.QApplication.translate("MainWindow", "Entire Outline", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxIgnoreCase.setText(QtGui.QApplication.translate("MainWindow", "Ignore Case", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxSubroutineOnly.setText(QtGui.QApplication.translate("MainWindow", "Subroutine Only", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxWrapAround.setText(QtGui.QApplication.translate("MainWindow", "Wrap Around", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxNodeOnly.setText(QtGui.QApplication.translate("MainWindow", "Node Only", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxReverse.setText(QtGui.QApplication.translate("MainWindow", "Reverse", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxSearchHeadline.setText(QtGui.QApplication.translate("MainWindow", "Search Headline", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxRexexp.setText(QtGui.QApplication.translate("MainWindow", "Regexp", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxSearchBody.setText(QtGui.QApplication.translate("MainWindow", "Search Body", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxMarkFinds.setText(QtGui.QApplication.translate("MainWindow", "Mark Finds", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBoxMarkChanges.setText(QtGui.QApplication.translate("MainWindow", "Mark Changes", None, QtGui.QApplication.UnicodeUTF8))
+    self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Find:", None, QtGui.QApplication.UnicodeUTF8))
+    self.label_3.setText(QtGui.QApplication.translate("MainWindow", "Change:", None, QtGui.QApplication.UnicodeUTF8))
+    self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "Tab 2", None, QtGui.QApplication.UnicodeUTF8))
+    self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QtGui.QApplication.translate("MainWindow", "Page", None, QtGui.QApplication.UnicodeUTF8))
+    self.label.setText(QtGui.QApplication.translate("MainWindow", "Minibuffer", None, QtGui.QApplication.UnicodeUTF8))
+    self.actionOpen.setText(QtGui.QApplication.translate("MainWindow", "Open", None, QtGui.QApplication.UnicodeUTF8))
+    self.actionSave.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
+    self.actionIPython.setText(QtGui.QApplication.translate("MainWindow", "IPython", None, QtGui.QApplication.UnicodeUTF8))
+
+#@-node:ekr.20081016072304.5:retranslateUi
+#@-node:ekr.20081016072304.3:class Ui_MainWindow
+#@-node:ekr.20081006072952.1:@auto qt_main.py
+#@+node:ekr.20081006073123.6:@auto qt_main.ui
+@language unknown_language
+<ui version="4.0" >
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>849</width>
+    <height>750</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Leo</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <layout class="QVBoxLayout" name="verticalLayout_2" >
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout" >
+      <item>
+       <widget class="QSplitter" name="splitter_2" >
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <widget class="QSplitter" name="splitter" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <widget class="QTreeWidget" name="treeWidget" >
+          <column>
+           <property name="text" >
+            <string>1</string>
+           </property>
+          </column>
+         </widget>
+         <widget class="QTabWidget" name="tabWidget" >
+          <property name="currentIndex" >
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab" >
+           <attribute name="title" >
+            <string>Tab 1</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_3" >
+            <item>
+             <widget class="QTextBrowser" name="textBrowser" />
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_2" >
+           <attribute name="title" >
+            <string>Tab 2</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout" >
+            <item row="0" column="1" >
+             <widget class="QLineEdit" name="findPattern" />
+            </item>
+            <item row="1" column="1" >
+             <widget class="QLineEdit" name="findChange" />
+            </item>
+            <item row="2" column="0" >
+             <widget class="QCheckBox" name="checkBoxWholeWord" >
+              <property name="text" >
+               <string>Whole Word</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" >
+             <widget class="QCheckBox" name="checkBoxEntireOutline" >
+              <property name="text" >
+               <string>Entire Outline</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0" >
+             <widget class="QCheckBox" name="checkBoxIgnoreCase" >
+              <property name="text" >
+               <string>Ignore Case</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1" >
+             <widget class="QCheckBox" name="checkBoxSubroutineOnly" >
+              <property name="text" >
+               <string>Subroutine Only</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0" >
+             <widget class="QCheckBox" name="checkBoxWrapAround" >
+              <property name="text" >
+               <string>Wrap Around</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1" >
+             <widget class="QCheckBox" name="checkBoxNodeOnly" >
+              <property name="text" >
+               <string>Node Only</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0" >
+             <widget class="QCheckBox" name="checkBoxReverse" >
+              <property name="text" >
+               <string>Reverse</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1" >
+             <widget class="QCheckBox" name="checkBoxSearchHeadline" >
+              <property name="text" >
+               <string>Search Headline</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0" >
+             <widget class="QCheckBox" name="checkBoxRexexp" >
+              <property name="text" >
+               <string>Regexp</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1" >
+             <widget class="QCheckBox" name="checkBoxSearchBody" >
+              <property name="text" >
+               <string>Search Body</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0" >
+             <widget class="QCheckBox" name="checkBoxMarkFinds" >
+              <property name="text" >
+               <string>Mark Finds</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1" >
+             <widget class="QCheckBox" name="checkBoxMarkChanges" >
+              <property name="text" >
+               <string>Mark Changes</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="label_2" >
+              <property name="text" >
+               <string>Find:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="label_3" >
+              <property name="text" >
+               <string>Change:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_3" >
+           <attribute name="title" >
+            <string>Page</string>
+           </attribute>
+          </widget>
+         </widget>
+        </widget>
+        <widget class="QsciScintilla" name="textEdit" >
+         <property name="toolTip" >
+          <string/>
+         </property>
+         <property name="whatsThis" >
+          <string/>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout" >
+        <item>
+         <widget class="QLabel" name="label" >
+          <property name="text" >
+           <string>Minibuffer</string>
+          </property>
+          <property name="buddy" >
+           <cstring>lineEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit" />
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>849</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar" />
+  <action name="actionOpen" >
+   <property name="text" >
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave" >
+   <property name="text" >
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionIPython" >
+   <property name="text" >
+    <string>IPython</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QsciScintilla</class>
+   <extends>QFrame</extends>
+   <header>Qsci/qsciscintilla.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showNormal()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>491</x>
+     <y>111</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>669</x>
+     <y>324</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
+#@-node:ekr.20081006073123.6:@auto qt_main.ui
+#@+node:ekr.20081011152109.1:@auto qt_quicksearch.py
+@language python
+@tabwidth -4
+@others
+#@+node:ekr.20081016072304.6:qt_quicksearch declarations
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'qt_quicksearch.ui'
+#
+# Created: Sat Oct 11 16:42:52 2008
+#      by: PyQt4 UI code generator 4.4.3
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+
+#@-node:ekr.20081016072304.6:qt_quicksearch declarations
+#@+node:ekr.20081016072304.7:class Ui_LeoQuickSearchWidget
+class Ui_LeoQuickSearchWidget(object):
+    @others
+#@+node:ekr.20081016072304.8:setupUi
+def setupUi(self, LeoQuickSearchWidget):
+    LeoQuickSearchWidget.setObjectName("LeoQuickSearchWidget")
+    LeoQuickSearchWidget.resize(400, 300)
+    self.gridLayout = QtGui.QGridLayout(LeoQuickSearchWidget)
+    self.gridLayout.setObjectName("gridLayout")
+    self.lineEdit = QtGui.QLineEdit(LeoQuickSearchWidget)
+    self.lineEdit.setObjectName("lineEdit")
+    self.gridLayout.addWidget(self.lineEdit, 0, 0, 1, 1)
+    self.checkBox = QtGui.QCheckBox(LeoQuickSearchWidget)
+    self.checkBox.setObjectName("checkBox")
+    self.gridLayout.addWidget(self.checkBox, 0, 1, 1, 1)
+    self.tableWidget = QtGui.QTableWidget(LeoQuickSearchWidget)
+    self.tableWidget.setObjectName("tableWidget")
+    self.tableWidget.setColumnCount(2)
+    self.tableWidget.setRowCount(0)
+    item = QtGui.QTableWidgetItem()
+    self.tableWidget.setHorizontalHeaderItem(0, item)
+    item = QtGui.QTableWidgetItem()
+    self.tableWidget.setHorizontalHeaderItem(1, item)
+    self.gridLayout.addWidget(self.tableWidget, 1, 0, 1, 2)
+
+    self.retranslateUi(LeoQuickSearchWidget)
+    QtCore.QMetaObject.connectSlotsByName(LeoQuickSearchWidget)
+
+#@-node:ekr.20081016072304.8:setupUi
+#@+node:ekr.20081016072304.9:retranslateUi
+def retranslateUi(self, LeoQuickSearchWidget):
+    LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget", "Form", None, QtGui.QApplication.UnicodeUTF8))
+    self.checkBox.setText(QtGui.QApplication.translate("LeoQuickSearchWidget", "Bodies", None, QtGui.QApplication.UnicodeUTF8))
+    self.tableWidget.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("LeoQuickSearchWidget", "Headline", None, QtGui.QApplication.UnicodeUTF8))
+    self.tableWidget.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("LeoQuickSearchWidget", "Match", None, QtGui.QApplication.UnicodeUTF8))
+
+#@-node:ekr.20081016072304.9:retranslateUi
+#@-node:ekr.20081016072304.7:class Ui_LeoQuickSearchWidget
+#@-node:ekr.20081011152109.1:@auto qt_quicksearch.py
+#@+node:ekr.20081011152109.2:@auto qt_quicksearch.ui
+@language unknown_language
+<ui version="4.0" >
+ <class>LeoQuickSearchWidget</class>
+ <widget class="QWidget" name="LeoQuickSearchWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" >
+    <widget class="QLineEdit" name="lineEdit" />
+   </item>
+   <item row="0" column="1" >
+    <widget class="QCheckBox" name="checkBox" >
+     <property name="text" >
+      <string>Bodies</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QTableWidget" name="tableWidget" >
+     <column>
+      <property name="text" >
+       <string>Headline</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Match</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
+#@-node:ekr.20081011152109.2:@auto qt_quicksearch.ui
+#@-node:ekr.20081014095718.10:QDesigner files
+#@-all
+#@nonl
+#@-node:ekr.20081016072304.13:@thin qtNotes.txt
+#@-leo
