@@ -5790,7 +5790,7 @@ class leoQtTree (leoFrame.leoTree):
             if found_current is None:
                 g.trace('** no current item: %s' % (p and p.headString()))
             else:
-                w.scrollToItem(found_current)
+                w.scrollToItem(found_current, QtGui.QAbstractItemView.PositionAtCenter)
 
             self.redrawing = False
 
