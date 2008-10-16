@@ -3136,8 +3136,7 @@ class leoQtGui(leoGui.leoGui):
 
         if w:
             # g.trace('leoQtGui',w,g.callers(4))
-            w.setFocus() # QtCore.Qt.OtherFocusReason)
-
+            w.setFocus()
     #@-node:ekr.20081004102201.657:Focus (qtGui)
     #@+node:ekr.20081004102201.660:Font
     #@+node:ekr.20081004102201.661:qtGui.getFontFromParams
@@ -6207,14 +6206,13 @@ class leoQtTree (leoFrame.leoTree):
         it = self.vnodeDict[p.v][0][1]
 
         w.editItem(it)
-        print "edit",p
-        # trace = (False or self.trace_edit)
+
+        # A nice hack: just clear the focus request.
+        c.requestedFocusWidget = None
+
+        # g.trace('leoQtTree','it',it,p and p.headString())
 
         # if p and p != self.editPosition():
-
-            # if trace:
-                # g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
-
             # self.endEditLabel()
             # # This redraw *is* required so the c.edit_widget(p) will exist.
             # c.redraw()
@@ -6222,16 +6220,11 @@ class leoQtTree (leoFrame.leoTree):
 
         # self.setEditPosition(p) # That is, self._editPosition = p
         # w = c.edit_widget(p)
-
-        # if trace: g.trace('1','w',w,'focus',g.app.gui.get_focus(c))
-
         # if p and w:
             # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
             # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
             # c.headlineWantsFocus(p) # Make sure the focus sticks.
             # c.k.showStateAndMode(w)
-
-        # if trace: g.trace('w',w,'focus',g.app.gui.get_focus(c))
     #@-node:ekr.20081004172422.846:editLabel
     #@+node:ekr.20081004172422.854:setHeadline
     def setHeadline (self,p,s):
