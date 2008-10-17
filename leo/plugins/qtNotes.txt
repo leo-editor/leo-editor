@@ -4,13 +4,13 @@
 #@+node:ekr.20081010070648.5:  To do
 @nocolor-node
 
-In Progress:
-     - Integrate minibuffer with Leo's core.
+First:
+    - Ctrl-g puts garbage into minibuffer.
+    - File:Exit doesn't quit the main loop.
+    - Integrate find tab with Leo's core.
 
 Next:
     - Allow Leo to choose gui from the command line.
-    - Integrate find tab with Leo's core.
-    - File:Exit doesn't quit the main loop.
     - Fix dialogs.
     - Finish leoQtTextWidget class.
     - Fix all failing unit tests.
@@ -2711,6 +2711,163 @@ def OnMouseWheel(self, event=None):
 
     return "break"
 #@-node:ekr.20081004172422.598:OnMouseWheel (Tomaz Ficko)
+#@+node:ekr.20081004172422.662:Tab menu callbacks & helpers
+#@+node:ekr.20081004172422.663:onRightClick & onClick
+def onRightClick (self,event,menu):
+
+    c = self.c
+    # menu.post(event.x_root,event.y_root)
+
+
+def onClick (self,event,tabName):
+
+    self.selectTab(tabName)
+#@-node:ekr.20081004172422.663:onRightClick & onClick
+#@+node:ekr.20081004172422.664:newTabFromMenu & newCanvasTabFromMenu
+# def newTabFromMenu (self,tabName='Log'):
+
+    # self.selectTab(tabName)
+
+    # # This is called by getTabName.
+    # def selectTabCallback (newName):
+        # return self.selectTab(newName)
+
+# def newCanvasTabFromMenu (self):
+
+    # pass
+#@-node:ekr.20081004172422.664:newTabFromMenu & newCanvasTabFromMenu
+#@+node:ekr.20081004172422.665:renameTabFromMenu
+# def renameTabFromMenu (self,tabName):
+
+    # if tabName in ('Log','Completions'):
+        # g.es('can not rename',tabName,'tab',color='blue')
+    # else:
+        # def renameTabCallback (newName):
+            # return self.renameTab(tabName,newName)
+
+        # self.getTabName(renameTabCallback)
+#@-node:ekr.20081004172422.665:renameTabFromMenu
+#@+node:ekr.20081004172422.666:getTabName
+# def getTabName (self,exitCallback):
+
+    # return
+#@-node:ekr.20081004172422.666:getTabName
+#@-node:ekr.20081004172422.662:Tab menu callbacks & helpers
+#@+node:ekr.20081009055104.6:createFindTab QtDesigner xml
+@
+<widget class="QWidget" name="tab_2" >
+ <attribute name="title" >
+  <string>Tab 2</string>
+ </attribute>
+ <layout class="QGridLayout" name="gridLayout" >
+  <item row="0" column="1" >
+   <widget class="QLineEdit" name="findPattern" />
+  </item>
+  <item row="1" column="1" >
+   <widget class="QLineEdit" name="findChange" />
+  </item>
+  <item row="2" column="0" >
+   <widget class="QCheckBox" name="checkBoxWholeWord" >
+    <property name="text" >
+     <string>Whole Word</string>
+    </property>
+   </widget>
+  </item>
+  <item row="2" column="1" >
+   <widget class="QCheckBox" name="checkBoxEntireOutline" >
+    <property name="text" >
+     <string>Entire Outline</string>
+    </property>
+   </widget>
+  </item>
+  <item row="3" column="0" >
+   <widget class="QCheckBox" name="checkBoxIgnoreCase" >
+    <property name="text" >
+     <string>Ignore Case</string>
+    </property>
+   </widget>
+  </item>
+  <item row="3" column="1" >
+   <widget class="QCheckBox" name="checkBoxSubroutineOnly" >
+    <property name="text" >
+     <string>Subroutine Only</string>
+    </property>
+   </widget>
+  </item>
+  <item row="4" column="0" >
+   <widget class="QCheckBox" name="checkBoxWrapAround" >
+    <property name="text" >
+     <string>Wrap Around</string>
+    </property>
+   </widget>
+  </item>
+  <item row="4" column="1" >
+   <widget class="QCheckBox" name="checkBoxNodeOnly" >
+    <property name="text" >
+     <string>Node Only</string>
+    </property>
+   </widget>
+  </item>
+  <item row="5" column="0" >
+   <widget class="QCheckBox" name="checkBoxReverse" >
+    <property name="text" >
+     <string>Reverse</string>
+    </property>
+   </widget>
+  </item>
+  <item row="5" column="1" >
+   <widget class="QCheckBox" name="checkBoxSearchHeadline" >
+    <property name="text" >
+     <string>Search Headline</string>
+    </property>
+   </widget>
+  </item>
+  <item row="6" column="0" >
+   <widget class="QCheckBox" name="checkBoxRexexp" >
+    <property name="text" >
+     <string>Regexp</string>
+    </property>
+   </widget>
+  </item>
+  <item row="6" column="1" >
+   <widget class="QCheckBox" name="checkBoxSearchBody" >
+    <property name="text" >
+     <string>Search Body</string>
+    </property>
+   </widget>
+  </item>
+  <item row="7" column="0" >
+   <widget class="QCheckBox" name="checkBoxMarkFinds" >
+    <property name="text" >
+     <string>Mark Finds</string>
+    </property>
+   </widget>
+  </item>
+  <item row="7" column="1" >
+   <widget class="QCheckBox" name="checkBoxMarkChanges" >
+    <property name="text" >
+     <string>Mark Changes</string>
+    </property>
+   </widget>
+  </item>
+  <item row="0" column="0" >
+   <widget class="QLabel" name="label_2" >
+    <property name="text" >
+     <string>Find:</string>
+    </property>
+   </widget>
+  </item>
+  <item row="1" column="0" >
+   <widget class="QLabel" name="label_3" >
+    <property name="text" >
+     <string>Change:</string>
+    </property>
+   </widget>
+  </item>
+ </layout>
+</widget>
+#@nonl
+#@-node:ekr.20081009055104.6:createFindTab QtDesigner xml
 #@-node:ekr.20081004102201.637: Unused
 #@+node:ekr.20081017015442.15:pylint errors
 
