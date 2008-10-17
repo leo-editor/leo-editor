@@ -63,7 +63,8 @@ def init():
         g.app.gui = leoQtGui()
 
         def qtHandleDefaultChar(self,event,stroke):
-            pass ; g.trace(stroke)
+           g.trace(stroke,g.callers())
+           return False
 
         if safe_mode: # Override handleDefaultChar method.
             h = leoKeys.keyHandlerClass
@@ -449,6 +450,8 @@ class leoQtBody (leoFrame.leoBody):
 
     def indexWarning (self,s):
 
+        return #
+
         if s not in self.warningsDict:
             g.es_print('warning: using dubious indices in %s' % (s),color='red')
             g.es_print('callers',g.callers(5))
@@ -819,10 +822,10 @@ class leoQtEventFilter(QtCore.QObject):
         c = self.c ; k = c.k ; e = QtCore.QEvent 
         trace = False ; verbose = True
         eventType = event.type()
-        self.traceEvent(obj,event)
 
         if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
             tkKey,ch = self.toTkKey(event)
+            # if trace and verbose: g.trace(tkKey,ch)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
             if k.inState():
                 override = True # allow all keystroke.
@@ -831,7 +834,7 @@ class leoQtEventFilter(QtCore.QObject):
             else:
                 override = len(aList) > 0
         else:
-            override = False
+            override = False ; tkKey = '<no key>'
 
         if eventType == e.KeyPress:
             if override:
@@ -844,23 +847,26 @@ class leoQtEventFilter(QtCore.QObject):
             else:
                 if trace and verbose: g.trace(self.tag,'unbound',tkKey)
 
+        if trace: self.traceEvent(obj,event,tkKey,override)
+
         return override
     #@+node:ekr.20081015132934.10:isDangerous
     def isDangerous (self,tkKey,ch):
 
-        aList = (
-            'return','tab','backspace',
-            'period',
-            'left','right','up','down',
-            'home','end',
-            'shift-right','shift-left','shift-up','shift-down',
-            'shift-right','shift-left','shift-up','shift-down',
-        )
+        arrows = ('home','end','left','right','up','down')
+        special = ('tab','backspace','period')
 
         key = tkKey.lower()
         ch = ch.lower()
+        isAlt = key.find('alt') > -1
+        w = g.app.gui.get_focus()
+        tree = self.c.frame.tree.treeWidget
 
-        val = key in aList or (ch in aList and key.find('alt') > -1)
+        val = (
+            key in special or
+            ch in arrows and not isAlt or
+            key == 'return' and w != tree # Just barely works.
+        )
 
         # g.trace(tkKey,ch,val)
         return val
@@ -931,11 +937,9 @@ class leoQtEventFilter(QtCore.QObject):
         return tkKey,ch
     #@-node:ekr.20081008084746.1:toTkKey
     #@+node:ekr.20081013143507.11:traceEvent
-    def traceEvent (self,obj,event):
+    def traceEvent (self,obj,event,tkKey,override):
 
-        c = self.c ; e = QtCore.QEvent ; trace = False
-
-        if not trace: return
+        c = self.c ; e = QtCore.QEvent
 
         eventType = event.type()
 
@@ -943,7 +947,7 @@ class leoQtEventFilter(QtCore.QObject):
             self.dumped = True
             g.trace(len(k.masterGuiBindingsDict.keys()))
 
-        if 1: # Show focus events.
+        if 0: # Show focus events.
             show = (
                 (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
                 (e.Enter,'enter'),(e.Leave,'leave'),
@@ -964,7 +968,9 @@ class leoQtEventFilter(QtCore.QObject):
 
         for val,kind in show:
             if eventType == val:
-                g.trace('%3s:%s:obj:%s' % (val,kind,obj))
+                g.trace(
+                    # 'val: %-3s' %(val),
+                    'kind',kind,'key',tkKey,'override',override)
                 return
 
         if False and eventType not in ignore:
@@ -4422,26 +4428,27 @@ class leoQtMenu (leoMenu.leoMenu):
         n = keys.get('underline')
         menu = keys.get('menu') or self
 
-        d = {'Return':'Rtn','BackSpace':'BkSp',}
+        # d = {'Return':'Rtn','BackSpace':'BkSp',}
 
         if label:
             if n > -1:
                 label = label[:n] + '&' + label[n:]
+                if accel: label = '%s\t%s' % (label,accel)
             action = menu.addAction(label)
-            if accel:
-                # if accel in ('Ctrl+B','Ctrl+]','Ctrl+['): g.trace(accel,label)
-                accel2 = d.get(accel)
-                if accel2: accel = accel2
-                if c.menuAccels.get(accel):
-                    pass # g.trace('ignoring duplicate accel',accel)
-                else:
-                    c.menuAccels[accel]=True
-                    action.setShortcut(accel)
+            # if accel:
+                # # if accel in ('Ctrl+B','Ctrl+]','Ctrl+['): g.trace(accel,label)
+                # accel2 = d.get(accel)
+                # if accel2: accel = accel2
+                # if c.menuAccels.get(accel):
+                    # pass # g.trace('ignoring duplicate accel',accel)
+                # else:
+                    # c.menuAccels[accel]=True
+                    # # action.setShortcut(accel)
             if command:
                 def add_command_callback(label=label,command=command):
-                    # g.trace('***qtGui.add_command: command',command)
-                    command()
-
+                    val = command()
+                    # g.trace('command',command,'val',val)
+                    return val
                 QtCore.QObject.connect(
                     action,QtCore.SIGNAL("triggered()"),add_command_callback)
     #@-node:ekr.20081004172422.865:add_command
