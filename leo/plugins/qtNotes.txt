@@ -4,8 +4,7 @@
 #@+node:ekr.20081010070648.5:  To do
 @nocolor-node
 
-- Put these notes in a file so others can see them.
-- Can we use a string for stylesheets?
+- Fix menu shortcuts so ctrl-b works.
 
 First:
     - Only create visible widgets in the tree.
@@ -14,7 +13,6 @@ First:
 
 Next:
     - Finish leoQtTextWidget class.
-    - Widget style sheets
     - Fix all failing unit tests.
 
 Later:
@@ -3680,19 +3678,19 @@ def getDefaultConfigFont(self,config):
 @language python
 @tabwidth -4
 @others
-#@+node:ekr.20081016072304.1:qtui_generate declarations
+#@+node:ekr.20081017015442.1:qtui_generate declarations
 import os
 os.chdir('../plugins')
 os.system('pyuic4 -o qt_main.py qt_main.ui')
 os.system('pyuic4 -o qt_quicksearch.py qt_quicksearch.ui')
-#@-node:ekr.20081016072304.1:qtui_generate declarations
+#@-node:ekr.20081017015442.1:qtui_generate declarations
 #@-node:ekr.20081011152109.3:@auto ../test/qtui_generate.py
 #@+node:ekr.20081006072952.1:@auto qt_main.py
 @language python
 @tabwidth -4
 @others
 from PyQt4 import Qsci
-#@+node:ekr.20081016072304.2:qt_main declarations
+#@+node:ekr.20081017015442.2:qt_main declarations
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'qt_main.ui'
@@ -3704,11 +3702,11 @@ from PyQt4 import Qsci
 
 from PyQt4 import QtCore, QtGui
 
-#@-node:ekr.20081016072304.2:qt_main declarations
-#@+node:ekr.20081016072304.3:class Ui_MainWindow
+#@-node:ekr.20081017015442.2:qt_main declarations
+#@+node:ekr.20081017015442.3:class Ui_MainWindow
 class Ui_MainWindow(object):
     @others
-#@+node:ekr.20081016072304.4:setupUi
+#@+node:ekr.20081017015442.4:setupUi
 def setupUi(self, MainWindow):
     MainWindow.setObjectName("MainWindow")
     MainWindow.resize(849, 750)
@@ -3826,8 +3824,8 @@ def setupUi(self, MainWindow):
     QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL("itemSelectionChanged()"), MainWindow.showNormal)
     QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-#@-node:ekr.20081016072304.4:setupUi
-#@+node:ekr.20081016072304.5:retranslateUi
+#@-node:ekr.20081017015442.4:setupUi
+#@+node:ekr.20081017015442.5:retranslateUi
 def retranslateUi(self, MainWindow):
     MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Leo", None, QtGui.QApplication.UnicodeUTF8))
     self.treeWidget.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
@@ -3853,8 +3851,8 @@ def retranslateUi(self, MainWindow):
     self.actionSave.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
     self.actionIPython.setText(QtGui.QApplication.translate("MainWindow", "IPython", None, QtGui.QApplication.UnicodeUTF8))
 
-#@-node:ekr.20081016072304.5:retranslateUi
-#@-node:ekr.20081016072304.3:class Ui_MainWindow
+#@-node:ekr.20081017015442.5:retranslateUi
+#@-node:ekr.20081017015442.3:class Ui_MainWindow
 #@-node:ekr.20081006072952.1:@auto qt_main.py
 #@+node:ekr.20081006073123.6:@auto qt_main.ui
 @language unknown_language
@@ -4114,7 +4112,7 @@ def retranslateUi(self, MainWindow):
 @language python
 @tabwidth -4
 @others
-#@+node:ekr.20081016072304.6:qt_quicksearch declarations
+#@+node:ekr.20081017015442.6:qt_quicksearch declarations
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'qt_quicksearch.ui'
@@ -4126,11 +4124,11 @@ def retranslateUi(self, MainWindow):
 
 from PyQt4 import QtCore, QtGui
 
-#@-node:ekr.20081016072304.6:qt_quicksearch declarations
-#@+node:ekr.20081016072304.7:class Ui_LeoQuickSearchWidget
+#@-node:ekr.20081017015442.6:qt_quicksearch declarations
+#@+node:ekr.20081017015442.7:class Ui_LeoQuickSearchWidget
 class Ui_LeoQuickSearchWidget(object):
     @others
-#@+node:ekr.20081016072304.8:setupUi
+#@+node:ekr.20081017015442.8:setupUi
 def setupUi(self, LeoQuickSearchWidget):
     LeoQuickSearchWidget.setObjectName("LeoQuickSearchWidget")
     LeoQuickSearchWidget.resize(400, 300)
@@ -4155,16 +4153,16 @@ def setupUi(self, LeoQuickSearchWidget):
     self.retranslateUi(LeoQuickSearchWidget)
     QtCore.QMetaObject.connectSlotsByName(LeoQuickSearchWidget)
 
-#@-node:ekr.20081016072304.8:setupUi
-#@+node:ekr.20081016072304.9:retranslateUi
+#@-node:ekr.20081017015442.8:setupUi
+#@+node:ekr.20081017015442.9:retranslateUi
 def retranslateUi(self, LeoQuickSearchWidget):
     LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget", "Form", None, QtGui.QApplication.UnicodeUTF8))
     self.checkBox.setText(QtGui.QApplication.translate("LeoQuickSearchWidget", "Bodies", None, QtGui.QApplication.UnicodeUTF8))
     self.tableWidget.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("LeoQuickSearchWidget", "Headline", None, QtGui.QApplication.UnicodeUTF8))
     self.tableWidget.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("LeoQuickSearchWidget", "Match", None, QtGui.QApplication.UnicodeUTF8))
 
-#@-node:ekr.20081016072304.9:retranslateUi
-#@-node:ekr.20081016072304.7:class Ui_LeoQuickSearchWidget
+#@-node:ekr.20081017015442.9:retranslateUi
+#@-node:ekr.20081017015442.7:class Ui_LeoQuickSearchWidget
 #@-node:ekr.20081011152109.1:@auto qt_quicksearch.py
 #@+node:ekr.20081011152109.2:@auto qt_quicksearch.ui
 @language unknown_language
