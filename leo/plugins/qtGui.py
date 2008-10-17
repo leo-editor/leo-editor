@@ -854,7 +854,7 @@ class leoQtEventFilter(QtCore.QObject):
     def isDangerous (self,tkKey,ch):
 
         arrows = ('home','end','left','right','up','down')
-        special = ('tab','backspace','period')
+        special = ('tab','backspace','period','parenright','parenleft')
 
         key = tkKey.lower()
         ch = ch.lower()
