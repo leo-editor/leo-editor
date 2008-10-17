@@ -4,13 +4,12 @@
 #@+node:ekr.20081010070648.5:  To do
 @nocolor-node
 
-First:
-    * Can we use g.pdb() ??
-    - Integrate minibuffer with Leo's core.
-    - Integrate find tab with Leo's core.
+In Progress:
+     - Integrate minibuffer with Leo's core.
 
 Next:
-    - Clean up unused tree code.
+    - Allow Leo to choose gui from the command line.
+    - Integrate find tab with Leo's core.
     - File:Exit doesn't quit the main loop.
     - Fix dialogs.
     - Finish leoQtTextWidget class.
