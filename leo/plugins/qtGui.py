@@ -21,7 +21,6 @@ import leo.core.leoFind as leoFind
 import leo.core.leoGui as leoGui
 import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
-import leo.core.leoNodes as leoNodes
 
 import os
 import sys
@@ -62,9 +61,17 @@ def init():
     else:
         g.app.gui = leoQtGui()
 
+        # Override g.pdb
+        def qtPdb():
+            import pdb
+            QtCore.pyqtRemoveInputHook()
+            pdb.set_trace()
+        g.pdb = qtPdb
+
         def qtHandleDefaultChar(self,event,stroke):
-           g.trace(stroke,g.callers())
-           return False
+            # This is an error.
+            g.trace(stroke,g.callers())
+            return False
 
         if safe_mode: # Override handleDefaultChar method.
             h = leoKeys.keyHandlerClass
@@ -945,7 +952,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         if False and not self.dumped:
             self.dumped = True
-            g.trace(len(k.masterGuiBindingsDict.keys()))
+            g.trace(len(c.k.masterGuiBindingsDict.keys()))
 
         if 0: # Show focus events.
             show = (
@@ -1124,50 +1131,50 @@ class leoQtFindTab (leoFind.findTab):
 
         f = self.top
 
-        self.fLabel = wx.StaticText(f,label='Find',  style=wx.ALIGN_RIGHT)
-        self.cLabel = wx.StaticText(f,label='Change',style=wx.ALIGN_RIGHT)
+        # self.fLabel = wx.StaticText(f,label='Find',  style=wx.ALIGN_RIGHT)
+        # self.cLabel = wx.StaticText(f,label='Change',style=wx.ALIGN_RIGHT)
 
-        self.find_ctrl = plainTextWidget(self.c,f,name='find-text',  size=(300,-1))
-        self.change_ctrl = plainTextWidget(self.c,f,name='change-text',size=(300,-1))
+        # self.find_ctrl = plainTextWidget(self.c,f,name='find-text',  size=(300,-1))
+        # self.change_ctrl = plainTextWidget(self.c,f,name='change-text',size=(300,-1))
     #@-node:ekr.20081007015817.66:createFindChangeAreas
     #@+node:ekr.20081007015817.67:layout
     def layout (self):
 
         f = self.top
 
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.AddSpacer(10)
+        # sizer = wx.BoxSizer(wx.VERTICAL)
+        # sizer.AddSpacer(10)
 
-        sizer2 = wx.FlexGridSizer(2, 2, vgap=10,hgap=5)
+        # sizer2 = wx.FlexGridSizer(2, 2, vgap=10,hgap=5)
 
-        sizer2.Add(self.fLabel,0,wx.EXPAND)
-        sizer2.Add(self.find_ctrl.widget,1,wx.EXPAND,border=5)
-        sizer2.Add(self.cLabel,0,wx.EXPAND)
-        sizer2.Add(self.change_ctrl.widget,1,wx.EXPAND,border=5)
+        # sizer2.Add(self.fLabel,0,wx.EXPAND)
+        # sizer2.Add(self.find_ctrl.widget,1,wx.EXPAND,border=5)
+        # sizer2.Add(self.cLabel,0,wx.EXPAND)
+        # sizer2.Add(self.change_ctrl.widget,1,wx.EXPAND,border=5)
 
-        sizer.Add(sizer2,0,wx.EXPAND)
-        sizer.AddSpacer(10)
+        # sizer.Add(sizer2,0,wx.EXPAND)
+        # sizer.AddSpacer(10)
 
-        #label = wx.StaticBox(f,label='Find Options')
-        #boxes = wx.StaticBoxSizer(label,wx.HORIZONTAL)
+        # #label = wx.StaticBox(f,label='Find Options')
+        # #boxes = wx.StaticBoxSizer(label,wx.HORIZONTAL)
 
-        boxes = wx.BoxSizer(wx.HORIZONTAL)
-        lt_col = wx.BoxSizer(wx.VERTICAL)
-        rt_col = wx.BoxSizer(wx.VERTICAL)
+        # boxes = wx.BoxSizer(wx.HORIZONTAL)
+        # lt_col = wx.BoxSizer(wx.VERTICAL)
+        # rt_col = wx.BoxSizer(wx.VERTICAL)
 
-        for w in self.boxes [:6]:
-            lt_col.Add(w,0,wx.EXPAND,border=5)
-            lt_col.AddSpacer(5)
-        for w in self.boxes [6:]:
-            rt_col.Add(w,0,wx.EXPAND,border=5)
-            rt_col.AddSpacer(5)
+        # for w in self.boxes [:6]:
+            # lt_col.Add(w,0,wx.EXPAND,border=5)
+            # lt_col.AddSpacer(5)
+        # for w in self.boxes [6:]:
+            # rt_col.Add(w,0,wx.EXPAND,border=5)
+            # rt_col.AddSpacer(5)
 
-        boxes.Add(lt_col,0,wx.EXPAND)
-        boxes.AddSpacer(20)
-        boxes.Add(rt_col,0,wx.EXPAND)
-        sizer.Add(boxes,0) #,wx.EXPAND)
+        # boxes.Add(lt_col,0,wx.EXPAND)
+        # boxes.AddSpacer(20)
+        # boxes.Add(rt_col,0,wx.EXPAND)
+        # sizer.Add(boxes,0) #,wx.EXPAND)
 
-        f.SetSizer(sizer)
+        # f.SetSizer(sizer)
     #@nonl
     #@-node:ekr.20081007015817.67:layout
     #@+node:ekr.20081007015817.68:createBoxes
@@ -1175,80 +1182,80 @@ class leoQtFindTab (leoFind.findTab):
 
         '''Create two columns of radio buttons & check boxes.'''
 
-        c = self.c ; f = self.parentFrame
-        self.boxes = []
-        self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.
+        # c = self.c ; f = self.parentFrame
+        # self.boxes = []
+        # self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.
 
-        data = ( # Leading star denotes a radio button.
-            ('Whole &Word', 'whole_word',),
-            ('&Ignore Case','ignore_case'),
-            ('Wrap &Around','wrap'),
-            ('&Reverse',    'reverse'),
-            ('Rege&xp',     'pattern_match'),
-            ('Mark &Finds', 'mark_finds'),
-            ("*&Entire Outline","entire-outline"),
-            ("*&Suboutline Only","suboutline-only"),  
-            ("*&Node Only","node-only"),
-            ('Search &Headline','search_headline'),
-            ('Search &Body','search_body'),
-            ('Mark &Changes','mark_changes'),
-        )
+        # data = ( # Leading star denotes a radio button.
+            # ('Whole &Word', 'whole_word',),
+            # ('&Ignore Case','ignore_case'),
+            # ('Wrap &Around','wrap'),
+            # ('&Reverse',    'reverse'),
+            # ('Rege&xp',     'pattern_match'),
+            # ('Mark &Finds', 'mark_finds'),
+            # ("*&Entire Outline","entire-outline"),
+            # ("*&Suboutline Only","suboutline-only"),  
+            # ("*&Node Only","node-only"),
+            # ('Search &Headline','search_headline'),
+            # ('Search &Body','search_body'),
+            # ('Mark &Changes','mark_changes'),
+        # )
 
-        # Important: changing these controls merely changes entries in self.svarDict.
-        # First, leoFind.update_ivars sets the find ivars from self.svarDict.
-        # Second, self.init sets the values of widgets from the ivars.
-        inGroup = False
-        for label,ivar in data:
-            if label.startswith('*'):
-                label = label[1:]
-                style = g.choose(inGroup,0,wx.RB_GROUP)
-                inGroup = True
-                w = wx.RadioButton(f,label=label,style=style)
-                self.widgetsDict[ivar] = w
-                def radioButtonCallback(event=None,ivar=ivar):
-                    svar = self.svarDict["radio-search-scope"]
-                    svar.set(ivar)
-                w.Bind(wx.EVT_RADIOBUTTON,radioButtonCallback)
-            else:
-                w = wx.CheckBox(f,label=label)
-                self.widgetsDict[ivar] = w
-                def checkBoxCallback(event=None,ivar=ivar):
-                    svar = self.svarDict.get(ivar)
-                    val = svar.get()
-                    svar.set(g.choose(val,False,True))
-                    # g.trace(ivar,val)
-                w.Bind(wx.EVT_CHECKBOX,checkBoxCallback)
-            self.boxes.append(w)
+        # # Important: changing these controls merely changes entries in self.svarDict.
+        # # First, leoFind.update_ivars sets the find ivars from self.svarDict.
+        # # Second, self.init sets the values of widgets from the ivars.
+        # inGroup = False
+        # for label,ivar in data:
+            # if label.startswith('*'):
+                # label = label[1:]
+                # style = g.choose(inGroup,0,wx.RB_GROUP)
+                # inGroup = True
+                # w = wx.RadioButton(f,label=label,style=style)
+                # self.widgetsDict[ivar] = w
+                # def radioButtonCallback(event=None,ivar=ivar):
+                    # svar = self.svarDict["radio-search-scope"]
+                    # svar.set(ivar)
+                # w.Bind(wx.EVT_RADIOBUTTON,radioButtonCallback)
+            # else:
+                # w = wx.CheckBox(f,label=label)
+                # self.widgetsDict[ivar] = w
+                # def checkBoxCallback(event=None,ivar=ivar):
+                    # svar = self.svarDict.get(ivar)
+                    # val = svar.get()
+                    # svar.set(g.choose(val,False,True))
+                    # # g.trace(ivar,val)
+                # w.Bind(wx.EVT_CHECKBOX,checkBoxCallback)
+            # self.boxes.append(w)
     #@nonl
     #@-node:ekr.20081007015817.68:createBoxes
     #@+node:ekr.20081007015817.69:createBindings TO DO
     def createBindings (self):
 
-        return ### not ready yet
+        return 
 
-        def setFocus(w):
-            c = self.c
-            c.widgetWantsFocusNow(w)
-            w.setSelectionRange(0,0)
-            return "break"
+        # def setFocus(w):
+            # c = self.c
+            # c.widgetWantsFocusNow(w)
+            # w.setSelectionRange(0,0)
+            # return "break"
 
-        def toFind(event,w=ftxt): return setFocus(w)
-        def toChange(event,w=ctxt): return setFocus(w)
+        # def toFind(event,w=ftxt): return setFocus(w)
+        # def toChange(event,w=ctxt): return setFocus(w)
 
-        def insertTab(w):
-            data = w.getSelectionRange()
-            if data: start,end = data
-            else: start = end = w.getInsertPoint()
-            w.replace(start,end,"\t")
-            return "break"
+        # def insertTab(w):
+            # data = w.getSelectionRange()
+            # if data: start,end = data
+            # else: start = end = w.getInsertPoint()
+            # w.replace(start,end,"\t")
+            # return "break"
 
-        def insertFindTab(event,w=ftxt): return insertTab(w)
-        def insertChangeTab(event,w=ctxt): return insertTab(w)
+        # def insertFindTab(event,w=ftxt): return insertTab(w)
+        # def insertChangeTab(event,w=ctxt): return insertTab(w)
 
-        ftxt.bind("<Tab>",toChange)
-        ctxt.bind("<Tab>",toFind)
-        ftxt.bind("<Control-Tab>",insertFindTab)
-        ctxt.bind("<Control-Tab>",insertChangeTab)
+        # ftxt.bind("<Tab>",toChange)
+        # ctxt.bind("<Tab>",toFind)
+        # ftxt.bind("<Control-Tab>",insertFindTab)
+        # ctxt.bind("<Control-Tab>",insertChangeTab)
     #@-node:ekr.20081007015817.69:createBindings TO DO
     #@+node:ekr.20081007015817.70:createButtons (does nothing)
     def createButtons (self):
@@ -1287,31 +1294,31 @@ class leoQtFindTab (leoFind.findTab):
     #@+node:ekr.20081007015817.71:createBindings (wsFindTab) TO DO
     def createBindings (self):
 
-        return ### not ready yet.
+        return
 
-        c = self.c ; k = c.k
+        # c = self.c ; k = c.k
 
-        def resetWrapCallback(event,self=self,k=k):
-            self.resetWrap(event)
-            return k.masterKeyHandler(event)
+        # def resetWrapCallback(event,self=self,k=k):
+            # self.resetWrap(event)
+            # return k.masterKeyHandler(event)
 
-        def findButtonBindingCallback(event=None,self=self):
-            self.findButton()
-            return 'break'
+        # def findButtonBindingCallback(event=None,self=self):
+            # self.findButton()
+            # return 'break'
 
-        table = (
-            ('<Button-1>',  k.masterClickHandler),
-            ('<Double-1>',  k.masterClickHandler),
-            ('<Button-3>',  k.masterClickHandler),
-            ('<Double-3>',  k.masterClickHandler),
-            ('<Key>',       resetWrapCallback),
-            ('<Return>',    findButtonBindingCallback),
-            ("<Escape>",    self.hideTab),
-        )
+        # table = (
+            # ('<Button-1>',  k.masterClickHandler),
+            # ('<Double-1>',  k.masterClickHandler),
+            # ('<Button-3>',  k.masterClickHandler),
+            # ('<Double-3>',  k.masterClickHandler),
+            # ('<Key>',       resetWrapCallback),
+            # ('<Return>',    findButtonBindingCallback),
+            # ("<Escape>",    self.hideTab),
+        # )
 
-        for w in (self.find_ctrl,self.change_ctrl):
-            for event, callback in table:
-                w.bind(event,callback)
+        # for w in (self.find_ctrl,self.change_ctrl):
+            # for event, callback in table:
+                # w.bind(event,callback)
     #@-node:ekr.20081007015817.71:createBindings (wsFindTab) TO DO
     #@+node:ekr.20081007015817.72:Support for minibufferFind class (qtFindTab)
     # This is the same as the Tk code because we simulate Tk svars.
@@ -4423,34 +4430,21 @@ class leoQtMenu (leoMenu.leoMenu):
 
         c = self.c
         accel = keys.get('accelerator') or ''
-        label = keys.get('label')
         command = keys.get('command')
+        label = keys.get('label')
         n = keys.get('underline')
         menu = keys.get('menu') or self
+        if not label: return
 
-        # d = {'Return':'Rtn','BackSpace':'BkSp',}
+        if n > -1: label = label[:n] + '&' + label[n:]
+        if accel: label = '%s\t%s' % (label,accel)
+        action = menu.addAction(label)
+        if command:
+            def add_command_callback(label=label,command=command):
+                return command()
 
-        if label:
-            if n > -1:
-                label = label[:n] + '&' + label[n:]
-                if accel: label = '%s\t%s' % (label,accel)
-            action = menu.addAction(label)
-            # if accel:
-                # # if accel in ('Ctrl+B','Ctrl+]','Ctrl+['): g.trace(accel,label)
-                # accel2 = d.get(accel)
-                # if accel2: accel = accel2
-                # if c.menuAccels.get(accel):
-                    # pass # g.trace('ignoring duplicate accel',accel)
-                # else:
-                    # c.menuAccels[accel]=True
-                    # # action.setShortcut(accel)
-            if command:
-                def add_command_callback(label=label,command=command):
-                    val = command()
-                    # g.trace('command',command,'val',val)
-                    return val
-                QtCore.QObject.connect(
-                    action,QtCore.SIGNAL("triggered()"),add_command_callback)
+            QtCore.QObject.connect(action,
+                QtCore.SIGNAL("triggered()"),add_command_callback)
     #@-node:ekr.20081004172422.865:add_command
     #@+node:ekr.20081004172422.866:add_separator
     def add_separator(self,menu):
@@ -4991,29 +4985,6 @@ class leoQtTextWidget:
         return 'leoQtTextWidget id: %s name: %s' % (id(self),name)
 
     #@    @+others
-    #@+node:ekr.20081004172422.695:bindings (not used)
-    # Specify the names of widget-specific methods.
-    # These particular names are the names of wx.TextCtrl methods.
-
-    # def _appendText(self,s):            return self.widget.insert(s)
-    # def _get(self,i,j):                 return self.widget.get(i,j)
-    # def _getAllText(self):              return self.widget.get('1.0','end')
-    # def _getFocus(self):                return self.widget.focus_get()
-    # def _getInsertPoint(self):          return self.widget.index('insert')
-    # def _getLastPosition(self):         return self.widget.index('end')
-    # def _getSelectedText(self):         return self.widget.get('sel.start','sel.end')
-    # def _getSelectionRange(self):       return self.widget.index('sel.start'),self.widget.index('sel.end')
-    # def _hitTest(self,pos):             pass
-    # def _insertText(self,i,s):          return self.widget.insert(i,s)
-    # def _scrollLines(self,n):           pass
-    # def _see(self,i):                   return self.widget.see(i)
-    # def _setAllText(self,s):            self.widget.delete('1.0','end') ; self.widget.insert('1.0',s)
-    # def _setBackgroundColor(self,color): return self.widget.configure(background=color)
-    # def _setForegroundColor(self,color): return self.widget.configure(background=color)
-    # def _setFocus(self):                return self.widget.focus_set()
-    # def _setInsertPoint(self,i):        return self.widget.mark_set('insert',i)
-    # def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
-    #@-node:ekr.20081004172422.695:bindings (not used)
     #@+node:ekr.20081004172422.696:Index conversion (leoTextWidget)
     #@+node:ekr.20081004172422.697:w.toGuiIndex
     def toGuiIndex (self,i,s=None):

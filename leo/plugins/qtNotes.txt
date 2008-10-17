@@ -4,8 +4,6 @@
 #@+node:ekr.20081010070648.5:  To do
 @nocolor-node
 
-- Make arrows work in the body pane.
-
 First:
     * Can we use g.pdb() ??
     - Integrate minibuffer with Leo's core.
@@ -13,6 +11,7 @@ First:
 
 Next:
     - Clean up unused tree code.
+    - File:Exit doesn't quit the main loop.
     - Fix dialogs.
     - Finish leoQtTextWidget class.
     - Fix all failing unit tests.
@@ -21,6 +20,29 @@ Later:
     - Only create visible widgets in the tree.
         - This won't work: expand or contract doesn't redraw the tree!
     - Scintilla doesn't know about Leo markup.
+#@+node:ekr.20081004172422.695:bindings (baseTextWidget)
+# Specify the names of widget-specific methods.
+# These particular names are the names of wx.TextCtrl methods.
+
+# def _appendText(self,s):            return self.widget.insert(s)
+# def _get(self,i,j):                 return self.widget.get(i,j)
+# def _getAllText(self):              return self.widget.get('1.0','end')
+# def _getFocus(self):                return self.widget.focus_get()
+# def _getInsertPoint(self):          return self.widget.index('insert')
+# def _getLastPosition(self):         return self.widget.index('end')
+# def _getSelectedText(self):         return self.widget.get('sel.start','sel.end')
+# def _getSelectionRange(self):       return self.widget.index('sel.start'),self.widget.index('sel.end')
+# def _hitTest(self,pos):             pass
+# def _insertText(self,i,s):          return self.widget.insert(i,s)
+# def _scrollLines(self,n):           pass
+# def _see(self,i):                   return self.widget.see(i)
+# def _setAllText(self,s):            self.widget.delete('1.0','end') ; self.widget.insert('1.0',s)
+# def _setBackgroundColor(self,color): return self.widget.configure(background=color)
+# def _setForegroundColor(self,color): return self.widget.configure(background=color)
+# def _setFocus(self):                return self.widget.focus_set()
+# def _setInsertPoint(self,i):        return self.widget.mark_set('insert',i)
+# def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
+#@-node:ekr.20081004172422.695:bindings (baseTextWidget)
 #@-node:ekr.20081010070648.5:  To do
 #@+node:ekr.20081014095718.13: Recent
 #@+node:ekr.20081010070648.7:Dumps
@@ -1041,34 +1063,21 @@ def add_command (self,**keys):
 
     c = self.c
     accel = keys.get('accelerator') or ''
-    label = keys.get('label')
     command = keys.get('command')
+    label = keys.get('label')
     n = keys.get('underline')
     menu = keys.get('menu') or self
+    if not label: return
 
-    # d = {'Return':'Rtn','BackSpace':'BkSp',}
+    if n > -1: label = label[:n] + '&' + label[n:]
+    if accel: label = '%s\t%s' % (label,accel)
+    action = menu.addAction(label)
+    if command:
+        def add_command_callback(label=label,command=command):
+            return command()
 
-    if label:
-        if n > -1:
-            label = label[:n] + '&' + label[n:]
-            if accel: label = '%s\t%s' % (label,accel)
-        action = menu.addAction(label)
-        # if accel:
-            # # if accel in ('Ctrl+B','Ctrl+]','Ctrl+['): g.trace(accel,label)
-            # accel2 = d.get(accel)
-            # if accel2: accel = accel2
-            # if c.menuAccels.get(accel):
-                # pass # g.trace('ignoring duplicate accel',accel)
-            # else:
-                # c.menuAccels[accel]=True
-                # # action.setShortcut(accel)
-        if command:
-            def add_command_callback(label=label,command=command):
-                val = command()
-                # g.trace('command',command,'val',val)
-                return val
-            QtCore.QObject.connect(
-                action,QtCore.SIGNAL("triggered()"),add_command_callback)
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL("triggered()"),add_command_callback)
 #@-node:ekr.20081004172422.865:add_command
 #@+node:ekr.20081011035036.1: onTextChanged
 def onTextChanged (self):
@@ -1303,7 +1312,7 @@ def traceEvent (self,obj,event,tkKey,override):
 
     if False and not self.dumped:
         self.dumped = True
-        g.trace(len(k.masterGuiBindingsDict.keys()))
+        g.trace(len(c.k.masterGuiBindingsDict.keys()))
 
     if 0: # Show focus events.
         show = (
@@ -3261,34 +3270,21 @@ def add_command (self,**keys):
 
     c = self.c
     accel = keys.get('accelerator') or ''
-    label = keys.get('label')
     command = keys.get('command')
+    label = keys.get('label')
     n = keys.get('underline')
     menu = keys.get('menu') or self
+    if not label: return
 
-    # d = {'Return':'Rtn','BackSpace':'BkSp',}
+    if n > -1: label = label[:n] + '&' + label[n:]
+    if accel: label = '%s\t%s' % (label,accel)
+    action = menu.addAction(label)
+    if command:
+        def add_command_callback(label=label,command=command):
+            return command()
 
-    if label:
-        if n > -1:
-            label = label[:n] + '&' + label[n:]
-            if accel: label = '%s\t%s' % (label,accel)
-        action = menu.addAction(label)
-        # if accel:
-            # # if accel in ('Ctrl+B','Ctrl+]','Ctrl+['): g.trace(accel,label)
-            # accel2 = d.get(accel)
-            # if accel2: accel = accel2
-            # if c.menuAccels.get(accel):
-                # pass # g.trace('ignoring duplicate accel',accel)
-            # else:
-                # c.menuAccels[accel]=True
-                # # action.setShortcut(accel)
-        if command:
-            def add_command_callback(label=label,command=command):
-                val = command()
-                # g.trace('command',command,'val',val)
-                return val
-            QtCore.QObject.connect(
-                action,QtCore.SIGNAL("triggered()"),add_command_callback)
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL("triggered()"),add_command_callback)
 #@-node:ekr.20081004172422.865:add_command
 #@+node:ekr.20081004102201.676:class leoKeyEvent
 class leoKeyEvent:
@@ -3546,7 +3542,7 @@ def traceEvent (self,obj,event,tkKey,override):
 
     if False and not self.dumped:
         self.dumped = True
-        g.trace(len(k.masterGuiBindingsDict.keys()))
+        g.trace(len(c.k.masterGuiBindingsDict.keys()))
 
     if 0: # Show focus events.
         show = (
