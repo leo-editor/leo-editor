@@ -7,6 +7,7 @@
 - Fix menu shortcuts so ctrl-b works.
 
 First:
+    - Fix dialogs.
     - Only create visible widgets in the tree.
     - Integrate minibuffer with Leo's core.
     - Integrate find tab with Leo's core.
@@ -1035,6 +1036,7 @@ def add_command (self,**keys):
 
     """Wrapper for the Tkinter add_command menu method."""
 
+    c = self.c
     accel = keys.get('accelerator') or ''
     label = keys.get('label')
     command = keys.get('command')
@@ -1046,14 +1048,16 @@ def add_command (self,**keys):
     if label:
         if n > -1:
             label = label[:n] + '&' + label[n:]
-            # g.trace(label)
         action = menu.addAction(label)
         if accel:
+            # if accel in ('Ctrl+B','Ctrl+]','Ctrl+['): g.trace(accel,label)
             accel2 = d.get(accel)
-            if accel2:
-                # g.trace(accel,accel2)
-                accel = accel2
-            action.setShortcut(accel)
+            if accel2: accel = accel2
+            if c.menuAccels.get(accel):
+                pass # g.trace('ignoring duplicate accel',accel)
+            else:
+                c.menuAccels[accel]=True
+                action.setShortcut(accel)
         if command:
             def add_command_callback(label=label,command=command):
                 # g.trace('***qtGui.add_command: command',command)
@@ -3246,6 +3250,7 @@ def add_command (self,**keys):
 
     """Wrapper for the Tkinter add_command menu method."""
 
+    c = self.c
     accel = keys.get('accelerator') or ''
     label = keys.get('label')
     command = keys.get('command')
@@ -3257,14 +3262,16 @@ def add_command (self,**keys):
     if label:
         if n > -1:
             label = label[:n] + '&' + label[n:]
-            # g.trace(label)
         action = menu.addAction(label)
         if accel:
+            # if accel in ('Ctrl+B','Ctrl+]','Ctrl+['): g.trace(accel,label)
             accel2 = d.get(accel)
-            if accel2:
-                # g.trace(accel,accel2)
-                accel = accel2
-            action.setShortcut(accel)
+            if accel2: accel = accel2
+            if c.menuAccels.get(accel):
+                pass # g.trace('ignoring duplicate accel',accel)
+            else:
+                c.menuAccels[accel]=True
+                action.setShortcut(accel)
         if command:
             def add_command_callback(label=label,command=command):
                 # g.trace('***qtGui.add_command: command',command)

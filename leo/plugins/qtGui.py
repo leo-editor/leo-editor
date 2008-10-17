@@ -4329,6 +4329,8 @@ class leoQtMenu (leoMenu.leoMenu):
         # Init the base class.
         leoMenu.leoMenu.__init__(self,frame)
 
+        # g.trace('leoQtMenu',g.callers(4))
+
         self.frame = frame
         self.c = c = frame.c
         self.leo_label = '<no leo_label>'
@@ -4336,7 +4338,9 @@ class leoQtMenu (leoMenu.leoMenu):
         self.menuBar = c.frame.top.menubar
         assert self.menuBar
 
-        # if not wrapper: self.menuBar.addMenu('File')
+        # Inject this dict into the commander.
+        if not hasattr(c,'menuAccels'):
+            setattr(c,'menuAccels',{})
 
         if 0:
             self.font = c.config.getFontFromParams(
@@ -4412,6 +4416,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter add_command menu method."""
 
+        c = self.c
         accel = keys.get('accelerator') or ''
         label = keys.get('label')
         command = keys.get('command')
@@ -4423,14 +4428,16 @@ class leoQtMenu (leoMenu.leoMenu):
         if label:
             if n > -1:
                 label = label[:n] + '&' + label[n:]
-                # g.trace(label)
             action = menu.addAction(label)
             if accel:
+                # if accel in ('Ctrl+B','Ctrl+]','Ctrl+['): g.trace(accel,label)
                 accel2 = d.get(accel)
-                if accel2:
-                    # g.trace(accel,accel2)
-                    accel = accel2
-                action.setShortcut(accel)
+                if accel2: accel = accel2
+                if c.menuAccels.get(accel):
+                    pass # g.trace('ignoring duplicate accel',accel)
+                else:
+                    c.menuAccels[accel]=True
+                    action.setShortcut(accel)
             if command:
                 def add_command_callback(label=label,command=command):
                     # g.trace('***qtGui.add_command: command',command)
@@ -4479,7 +4486,7 @@ class leoQtMenu (leoMenu.leoMenu):
         menu = self.getMenu(menuName)
         if menu and label:
             if underline > -1:
-                label = label[:underline] + '&' + lable[underline:]
+                label = label[:underline] + '&' + label[underline:]
             action = menu.addAction(label)
             if command:
                 def insert_callback(label=label,command=command):
