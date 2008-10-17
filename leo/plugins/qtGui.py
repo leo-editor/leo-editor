@@ -126,9 +126,9 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
             # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
             # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
 
-        # Doesn't work.
-        self.connect(self.lineEdit,
-            QtCore.SIGNAL("returnPressed()"),self.minibuffer_run)
+        # Use leoQtMinibuffer instead.
+        # self.connect(self.lineEdit,
+            # QtCore.SIGNAL("returnPressed()"),self.minibuffer_run)
 
         self.buttons = self.addToolBar("Buttons")
         self.buttons.addAction(self.actionSave)
@@ -136,12 +136,12 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.setStyleSheets()
     #@-node:ekr.20081004172422.884: ctor (Window)
     #@+node:ekr.20081010070648.8:minibuffer_run
-    def minibuffer_run(self):
+    # def minibuffer_run(self):
 
-        c = self.c
-        cmd = str(self.lineEdit.text())
-        g.trace(cmd)
-        c.executeMinibufferCommand(cmd)
+        # c = self.c
+        # cmd = str(self.lineEdit.text())
+        # g.trace(cmd)
+        # c.executeMinibufferCommand(cmd)
     #@-node:ekr.20081010070648.8:minibuffer_run
     #@+node:ekr.20081016072304.14:setStyleSheets (Window)
     def setStyleSheets(self):
@@ -824,7 +824,9 @@ class leoQtEventFilter(QtCore.QObject):
         if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
             tkKey,ch = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-            if safe_mode:
+            if k.inState():
+                override = True # allow all keystroke.
+            elif safe_mode:
                 override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
             else:
                 override = len(aList) > 0
@@ -834,11 +836,11 @@ class leoQtEventFilter(QtCore.QObject):
         if eventType == e.KeyPress:
             if override:
                 w = g.app.gui.get_focus() # *not* self.w!
-                g.trace(w)
                 stroke = self.toStroke(tkKey,ch)
                 leoEvent = leoKeyEvent(event,c,w,stroke)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-                if trace: g.trace(self.tag,'bound',tkKey,'ret',ret)
+                if trace: g.trace(self.tag,
+                    g.choose(k.inState(),'in-state','bound'),tkKey,'ret',ret)
             else:
                 if trace and verbose: g.trace(self.tag,'unbound',tkKey)
 
@@ -1403,28 +1405,14 @@ class leoQtFrame (leoFrame.leoFrame):
         self.scrollWay = None
         #@-node:ekr.20081004172422.526:<< set the leoQtFrame ivars >> (removed frame.bodyCtrl ivar)
         #@nl
+
+        self.minibufferVisible = True
     #@-node:ekr.20081004172422.525:__init__ (qtFrame)
     #@+node:ekr.20081004172422.527:__repr__ (qtFrame)
     def __repr__ (self):
 
         return "<leoQtFrame: %s>" % self.title
     #@-node:ekr.20081004172422.527:__repr__ (qtFrame)
-    #@+node:ekr.20081004172422.537:f.setCanvasColorFromConfig
-    def setCanvasColorFromConfig (self,canvas):
-
-        g.trace(canvas)
-        return ###
-
-        c = self.c
-
-        bg = c.config.getColor("outline_pane_background_color") or 'white'
-
-        try:
-            canvas.configure(bg=bg)
-        except:
-            g.es("exception setting outline pane background color")
-            g.es_exception()
-    #@-node:ekr.20081004172422.537:f.setCanvasColorFromConfig
     #@+node:ekr.20081004172422.528:qtFrame.finishCreate & helpers
     def finishCreate (self,c):
 
@@ -1452,7 +1440,7 @@ class leoQtFrame (leoFrame.leoFrame):
         g.app.windowList.append(f)
         c.initVersion()
         c.signOnWithVersion()
-        f.miniBufferWidget = f.createMiniBufferWidget()
+        f.miniBufferWidget = leoQtMinibuffer(c)
         c.bodyWantsFocusNow()
     #@+node:ekr.20081004172422.530:createSplitterComponents (qtFrame)
     def createSplitterComponents (self):
@@ -1462,9 +1450,6 @@ class leoQtFrame (leoFrame.leoFrame):
         f.tree  = leoQtTree(c,f)
         f.log   = leoQtLog(f,None)
         f.body  = leoQtBody(f,None)
-        ###  Use base class components
-        # f.log   = leoFrame.leoQtLog(f,None)
-        # f.body  = leoFrame.leoBody(f,None)
 
         return ###
 
@@ -1980,77 +1965,54 @@ class leoQtFrame (leoFrame.leoFrame):
 
         '''Make the minibuffer visible.'''
 
-        frame = self
+        # frame = self
 
-        if not frame.minibufferVisible:
-            frame.minibufferFrame.pack(side='bottom',fill='x')
-            frame.minibufferVisible = True
+        # if not frame.minibufferVisible:
+            # frame.minibufferFrame.pack(side='bottom',fill='x')
+            # frame.minibufferVisible = True
     #@-node:ekr.20081004172422.576:showMinibuffer
     #@+node:ekr.20081004172422.577:hideMinibuffer
     def hideMinibuffer (self):
 
         '''Hide the minibuffer.'''
 
-        frame = self
-        if frame.minibufferVisible:
-            frame.minibufferFrame.pack_forget()
-            frame.minibufferVisible = False
+        # frame = self
+
+        # if frame.minibufferVisible:
+            # frame.minibufferFrame.pack_forget()
+            # frame.minibufferVisible = False
     #@-node:ekr.20081004172422.577:hideMinibuffer
-    #@+node:ekr.20081004172422.578:f.createMiniBufferWidget
-    def createMiniBufferWidget (self):
-
-        '''Create the minbuffer below the status line.'''
-
-        frame = self ; c = frame.c
-
-        return None ###
-
-        frame.minibufferFrame = f = qt.Frame(frame.outerFrame,relief='flat',borderwidth=0)
-        if c.showMinibuffer:
-            f.pack(side='bottom',fill='x')
-
-        lab = qt.Label(f,text='mini-buffer',justify='left',anchor='nw',foreground='blue')
-        lab.pack(side='left')
-
-        label = g.app.gui.plainTextWidget(
-            f,height=1,relief='groove',background='lightgrey',name='minibuffer')
-        label.pack(side='left',fill='x',expand=1,padx=2,pady=1)
-
-        frame.minibufferVisible = c.showMinibuffer
-
-        return label
-    #@-node:ekr.20081004172422.578:f.createMiniBufferWidget
     #@+node:ekr.20081004172422.579:f.setMinibufferBindings
     def setMinibufferBindings (self):
 
         '''Create bindings for the minibuffer..'''
 
-        return ###
+        # return ###
 
-        f = self ; c = f.c ; k = c.k ; w = f.miniBufferWidget
+        # f = self ; c = f.c ; k = c.k ; w = f.miniBufferWidget
 
-        table = [
-            ('<Key>',           k.masterKeyHandler),
-            ('<Button-1>',      k.masterClickHandler),
-            ('<Button-3>',      k.masterClick3Handler),
-            ('<Double-1>',      k.masterDoubleClickHandler),
-            ('<Double-3>',      k.masterDoubleClick3Handler),
-        ]
+        # table = [
+            # ('<Key>',           k.masterKeyHandler),
+            # ('<Button-1>',      k.masterClickHandler),
+            # ('<Button-3>',      k.masterClick3Handler),
+            # ('<Double-1>',      k.masterDoubleClickHandler),
+            # ('<Double-3>',      k.masterDoubleClick3Handler),
+        # ]
 
-        table2 = (
-            ('<Button-2>',      k.masterClickHandler),
-        )
+        # table2 = (
+            # ('<Button-2>',      k.masterClickHandler),
+        # )
 
-        if c.config.getBool('allow_middle_button_paste'):
-            table.extend(table2)
+        # if c.config.getBool('allow_middle_button_paste'):
+            # table.extend(table2)
 
-        for kind,callback in table:
-            c.bind(w,kind,callback)
+        # for kind,callback in table:
+            # c.bind(w,kind,callback)
 
-        if 0:
-            if sys.platform.startswith('win'):
-                # Support Linux middle-button paste easter egg.
-                c.bind(w,"<Button-2>",f.OnPaste)
+        # if 0:
+            # if sys.platform.startswith('win'):
+                # # Support Linux middle-button paste easter egg.
+                # c.bind(w,"<Button-2>",f.OnPaste)
     #@-node:ekr.20081004172422.579:f.setMinibufferBindings
     #@-node:ekr.20081004172422.575:Minibuffer methods
     #@+node:ekr.20081004172422.580:Configuration (qtFrame)
@@ -4316,6 +4278,43 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081004172422.671:qtLog font tab stuff
     #@-others
 #@-node:ekr.20081004172422.622:class leoQtLog
+#@+node:ekr.20081017015442.12:class leoQtMinibuffer (baseTextWidget)
+class leoQtMinibuffer (leoFrame.baseTextWidget):
+
+    def __init__ (self,c):
+        self.c = c
+        self.w = c.frame.top.lineEdit # QLineEdit
+        # Init the base class.
+        leoFrame.baseTextWidget.__init__(self,c,
+            baseClassName='leoQtMinibuffer',name='minibuffer',widget=None)
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
+        self.w.installEventFilter(self.ev_filter)
+
+    def bind (self,stroke,func):
+        if 0: g.trace(stroke,func.__name__)
+
+    def setBackgroundColor(self,color):
+        self.w.setStyleSheet('background-color:%s' % color)
+
+    def setForegroundColor(self,color): pass
+
+    def _getAllText(self):          return g.toUnicode(self.w.text(),'utf-8')
+    def _getInsertPoint(self):      return self.w.cursorPosition()
+    def _getSelectionRange(self):
+        i = self.w.selectionStart()
+        if i == -1:
+            i = self.w.cursorPosition()
+            return i,i
+        else:
+            return i,i+len(self.w.selectedText())
+    def _insertText(self,i,s):
+        s2 = self._getAllText()
+        if i == -1: self.w.setText(s2+s)
+        else:       self.w.setText(s2[:i]+s+s2[i:])
+    def _setAllText(self,s):        self.w.setText(s)
+    def _setFocus(self):            self.w.setFocus()
+    def _setInsertPoint(self,i):    self.w.setSelection(i,0)
+#@-node:ekr.20081017015442.12:class leoQtMinibuffer (baseTextWidget)
 #@+node:ekr.20081004172422.856:class leoQtMenu
 class leoQtMenu (leoMenu.leoMenu):
 
@@ -5741,11 +5740,10 @@ class leoQtTree (leoFrame.leoTree):
                 self.vnodeDict[p.v] = aList
                 it.setText(0,p.headString())
                 if p.hasChildren() and p.isExpanded() and self.allAncestorsExpanded(p):
-                    # g.trace('***expanded',p.headString())
                     w.expandItem(it)
                 else:
-                    # g.trace('not expanded',p.headString())
                     w.collapseItem(it)
+
                 if p == current:
                     w.setCurrentItem(it) ; found_current = it
         finally:

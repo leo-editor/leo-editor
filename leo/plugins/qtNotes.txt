@@ -4,19 +4,20 @@
 #@+node:ekr.20081010070648.5:  To do
 @nocolor-node
 
-- Fix menu shortcuts so ctrl-b works.
-
 First:
-    - Fix dialogs.
-    - Only create visible widgets in the tree.
+    * Can we use g.pdb() ??
     - Integrate minibuffer with Leo's core.
     - Integrate find tab with Leo's core.
 
 Next:
+    - Clean up unused tree code.
+    - Fix dialogs.
     - Finish leoQtTextWidget class.
     - Fix all failing unit tests.
 
 Later:
+    - Only create visible widgets in the tree.
+        - This won't work: expand or contract doesn't redraw the tree!
     - Scintilla doesn't know about Leo markup.
 #@-node:ekr.20081010070648.5:  To do
 #@+node:ekr.20081014095718.13: Recent
@@ -1181,7 +1182,9 @@ def eventFilter(self, obj, event):
     if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
         tkKey,ch = self.toTkKey(event)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-        if safe_mode:
+        if k.inState():
+            override = True # allow all keystroke.
+        elif safe_mode:
             override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
         else:
             override = len(aList) > 0
@@ -1191,11 +1194,11 @@ def eventFilter(self, obj, event):
     if eventType == e.KeyPress:
         if override:
             w = g.app.gui.get_focus() # *not* self.w!
-            g.trace(w)
             stroke = self.toStroke(tkKey,ch)
             leoEvent = leoKeyEvent(event,c,w,stroke)
             ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-            if trace: g.trace(self.tag,'bound',tkKey,'ret',ret)
+            if trace: g.trace(self.tag,
+                g.choose(k.inState(),'in-state','bound'),tkKey,'ret',ret)
         else:
             if trace and verbose: g.trace(self.tag,'unbound',tkKey)
 
@@ -3418,7 +3421,9 @@ def eventFilter(self, obj, event):
     if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
         tkKey,ch = self.toTkKey(event)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-        if safe_mode:
+        if k.inState():
+            override = True # allow all keystroke.
+        elif safe_mode:
             override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
         else:
             override = len(aList) > 0
@@ -3428,11 +3433,11 @@ def eventFilter(self, obj, event):
     if eventType == e.KeyPress:
         if override:
             w = g.app.gui.get_focus() # *not* self.w!
-            g.trace(w)
             stroke = self.toStroke(tkKey,ch)
             leoEvent = leoKeyEvent(event,c,w,stroke)
             ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-            if trace: g.trace(self.tag,'bound',tkKey,'ret',ret)
+            if trace: g.trace(self.tag,
+                g.choose(k.inState(),'in-state','bound'),tkKey,'ret',ret)
         else:
             if trace and verbose: g.trace(self.tag,'unbound',tkKey)
 
@@ -3679,6 +3684,22 @@ def getDefaultConfigFont(self,config):
         c.k.masterBindingsDict['tree'] = d
 #@nonl
 #@-node:ekr.20081014095718.18:Unused tree binding stuff
+#@+node:ekr.20081004172422.537:f.setCanvasColorFromConfig
+def setCanvasColorFromConfig (self,canvas):
+
+    g.trace(canvas)
+    return ###
+
+    c = self.c
+
+    bg = c.config.getColor("outline_pane_background_color") or 'white'
+
+    try:
+        canvas.configure(bg=bg)
+    except:
+        g.es("exception setting outline pane background color")
+        g.es_exception()
+#@-node:ekr.20081004172422.537:f.setCanvasColorFromConfig
 #@-node:ekr.20081004102201.637: Unused
 #@+node:ekr.20081014095718.10:QDesigner files
 #@+node:ekr.20081011152109.3:@auto ../test/qtui_generate.py

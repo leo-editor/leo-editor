@@ -1318,7 +1318,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         #@-node:ekr.20031218072017.3955:unpack (hide)
         #@-others
     #@-node:ekr.20041223102225:class tkIconBarClass
-    #@+node:ekr.20051014154752:Minibuffer methods
+    #@+node:ekr.20051014154752:Minibuffer methods (tkFrame)
     #@+node:ekr.20060203115311:showMinibuffer
     def showMinibuffer (self):
 
@@ -1392,7 +1392,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
                 # Support Linux middle-button paste easter egg.
                 c.bind(w,"<Button-2>",f.OnPaste)
     #@-node:ekr.20060203114017:f.setMinibufferBindings
-    #@-node:ekr.20051014154752:Minibuffer methods
+    #@-node:ekr.20051014154752:Minibuffer methods (tkFrame)
     #@+node:ekr.20031218072017.3967:Configuration (tkFrame)
     #@+node:ekr.20031218072017.3968:configureBar (tkFrame)
     def configureBar (self,bar,verticalFlag):

@@ -2602,7 +2602,7 @@ class keyHandlerClass:
         state = k.getState('full-command')
         helpPrompt = 'Help for command: '
         keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-        trace = False or c.config.getBool('trace_modes')
+        trace = False or c.config.getBool('trace_modes') ; verbose = True
         if trace: g.trace('state',state,keysym)
         if state == 0:
             k.mb_event = event # Save the full event for later.
@@ -2618,6 +2618,7 @@ class keyHandlerClass:
         elif keysym == 'Escape':
             k.keyboardQuit(event)
         elif keysym == 'Return':
+            if trace and verbose: g.trace('***Return')
             c.frame.log.deleteTab('Completion')
             if k.mb_help:
                 s = k.getLabel()
@@ -2628,9 +2629,11 @@ class keyHandlerClass:
             else:
                 k.callAltXFunction(k.mb_event)
         elif keysym == 'Tab':
+            if trace and verbose: g.trace('***Tab')
             k.doTabCompletion(c.commandsDict.keys())
             c.minibufferWantsFocus()
         elif keysym == 'BackSpace':
+            if trace and verbose: g.trace('***BackSpace')
             k.doBackSpace(c.commandsDict.keys())
             c.minibufferWantsFocus()
         elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
@@ -2670,6 +2673,7 @@ class keyHandlerClass:
             k.endCommand(event,commandName)
         else:
             if 1: # Useful.
+                g.trace('*** tab completion')
                 k.doTabCompletion(c.commandsDict.keys())
             else: # Annoying.
                 k.keyboardQuit(event)
@@ -3070,7 +3074,7 @@ class keyHandlerClass:
         k = self ; c = k.c ; gui  = g.app.gui
         state = k.getState('getArg')
         keysym = gui.eventKeysym(event)
-        trace = False or (c.config.getBool('trace_modes') and not g.app.unitTesting)
+        trace = True or (c.config.getBool('trace_modes') and not g.app.unitTesting)
         if trace: g.trace(
             'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
             'completion', state==0 and completion or state!=0 and k.arg_completion)
@@ -3288,8 +3292,8 @@ class keyHandlerClass:
             return None
         if traceGC: g.printNewObjects('masterKey 1')
         if trace:
-            g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
-            g.trace('callers',g.callers(5))
+            g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',state)
+            # g.trace('callers',g.callers(5))
                 # 'state.kind:',k.state.kind),'\n',g.callers())
             # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -4302,6 +4306,7 @@ class keyHandlerClass:
         # Step 1: actually delete the character.
         ins = w.getInsertPoint()
         s = w.getAllText()
+        # g.trace('ins',ins,'prefix',k.mb_prefix)
         if ins <= len(k.mb_prefix):
             # g.trace('at start')
             return
