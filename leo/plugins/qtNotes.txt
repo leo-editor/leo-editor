@@ -5,17 +5,24 @@
 @nocolor-node
 
 First:
-    - File:Exit doesn't quit the main loop.
-    - Integrate find tab with Leo's core.
+    - Fix dialogs.
+    - Complete headline handling.
+    - Paste doesn't work in body.
 
 Next:
     - Allow Leo to choose gui from the command line.
         - Make tkinter code a plugin.
         - If nothing specified, use the first gui that can be imported.
-    - Fix dialogs.
-    - Finish leoQtTextWidget class.
     - Fix all failing unit tests.
+        - Do gui-dependent commands (in leoQtFrame)
 
+Cleanup:
+     - Fix Stubborn bugs.
+        - Menu accelerators are not shown and do not work.
+        - File:Exit doesn't quit the main loop.
+    - Clean up text classes.
+        - Finish leoQtTextWidget class.
+        - Add subclasses for QLineEdit, QScintilla, etc.
 Later:
     - Only create visible widgets in the tree.
     - Make Scintilla handle Leo markup.
@@ -108,14 +115,6 @@ class leoQtEventFilter(QtCore.QObject):
 
     << about internal bindings >>
 
-    def __init__(self,c,w,tag=''):
-
-        self.c = c
-        self.w = w # A leoQtX object, *not* a Qt object.
-        QtCore.QObject.__init__(self)
-        self.dumped = False # True if bindings dict has been dumped.
-        self.tag = tag
-
     @others
 #@+node:ekr.20081007115148.6:<< about internal bindings >>
 @nocolor-node
@@ -149,6 +148,16 @@ with Tk's key-event specifiers). It is also, I think, the least confusing set of
 rules.
 #@nonl
 #@-node:ekr.20081007115148.6:<< about internal bindings >>
+#@+node:ekr.20081018155359.10: ctor
+def __init__(self,c,w,tag=''):
+
+    # Init the base class.
+    QtCore.QObject.__init__(self)
+
+    self.c = c
+    self.w = w      # A leoQtX object, *not* a Qt object.
+    self.tag = tag
+#@-node:ekr.20081018155359.10: ctor
 #@+node:ekr.20081013143507.12:eventFilter
 def eventFilter(self, obj, event):
 
@@ -171,7 +180,7 @@ def eventFilter(self, obj, event):
 
     if eventType == e.KeyPress:
         if override:
-            w = g.app.gui.get_focus() # *not* self.w!
+            w = self.w # Pass the wrapper class, not the wrapped widget.
             stroke = self.toStroke(tkKey,ch)
             leoEvent = leoKeyEvent(event,c,w,stroke)
             ret = k.masterKeyHandler(leoEvent,stroke=stroke)
@@ -2342,14 +2351,6 @@ class leoQtEventFilter(QtCore.QObject):
 
     << about internal bindings >>
 
-    def __init__(self,c,w,tag=''):
-
-        self.c = c
-        self.w = w # A leoQtX object, *not* a Qt object.
-        QtCore.QObject.__init__(self)
-        self.dumped = False # True if bindings dict has been dumped.
-        self.tag = tag
-
     @others
 #@+node:ekr.20081007115148.6:<< about internal bindings >>
 @nocolor-node
@@ -2383,6 +2384,16 @@ with Tk's key-event specifiers). It is also, I think, the least confusing set of
 rules.
 #@nonl
 #@-node:ekr.20081007115148.6:<< about internal bindings >>
+#@+node:ekr.20081018155359.10: ctor
+def __init__(self,c,w,tag=''):
+
+    # Init the base class.
+    QtCore.QObject.__init__(self)
+
+    self.c = c
+    self.w = w      # A leoQtX object, *not* a Qt object.
+    self.tag = tag
+#@-node:ekr.20081018155359.10: ctor
 #@+node:ekr.20081013143507.12:eventFilter
 def eventFilter(self, obj, event):
 
@@ -2405,7 +2416,7 @@ def eventFilter(self, obj, event):
 
     if eventType == e.KeyPress:
         if override:
-            w = g.app.gui.get_focus() # *not* self.w!
+            w = self.w # Pass the wrapper class, not the wrapped widget.
             stroke = self.toStroke(tkKey,ch)
             leoEvent = leoKeyEvent(event,c,w,stroke)
             ret = k.masterKeyHandler(leoEvent,stroke=stroke)

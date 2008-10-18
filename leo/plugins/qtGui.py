@@ -817,15 +817,17 @@ class leoQtEventFilter(QtCore.QObject):
     #@-node:ekr.20081007115148.6:<< about internal bindings >>
     #@nl
 
+    #@    @+others
+    #@+node:ekr.20081018155359.10: ctor
     def __init__(self,c,w,tag=''):
 
-        self.c = c
-        self.w = w # A leoQtX object, *not* a Qt object.
+        # Init the base class.
         QtCore.QObject.__init__(self)
-        self.dumped = False # True if bindings dict has been dumped.
-        self.tag = tag
 
-    #@    @+others
+        self.c = c
+        self.w = w      # A leoQtX object, *not* a Qt object.
+        self.tag = tag
+    #@-node:ekr.20081018155359.10: ctor
     #@+node:ekr.20081013143507.12:eventFilter
     def eventFilter(self, obj, event):
 
@@ -848,7 +850,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         if eventType == e.KeyPress:
             if override:
-                w = g.app.gui.get_focus() # *not* self.w!
+                w = self.w # Pass the wrapper class, not the wrapped widget.
                 stroke = self.toStroke(tkKey,ch)
                 leoEvent = leoKeyEvent(event,c,w,stroke)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
@@ -1010,22 +1012,24 @@ class leoQtFindTab (leoFind.findTab):
 
     #@    @+others
     #@+node:ekr.20081018053140.14: Birth: called from leoFind ctor
-    # leoFind.__init__ calls initGui, createFrame, createBindings & init, in that order.
-    #@+node:ekr.20081007015817.59:nitGui
-    # Called from leoFind.findTab.ctor.
-
+    #@+at
+    # 
+    # leoFind.__init__ calls initGui, createFrame, createBindings & init, in 
+    # that order.
+    #@-at
+    #@+node:ekr.20081007015817.59:initGui
     def initGui (self):
 
-        # g.trace('leoQtFindTab','intKeys',self.intKeys,'stringKeys',self.newStringKeys)
-
-        self.svarDict = {} # Keys are ivar names, values are svar objects.
+        self.svarDict = {}
+            # Keys are ivar names, values are svar objects.
 
         for key in self.intKeys:
             self.svarDict[key] = self.svar()
 
         for key in self.newStringKeys:
             self.svarDict[key] = self.svar()
-    #@-node:ekr.20081007015817.59:nitGui
+    #@nonl
+    #@-node:ekr.20081007015817.59:initGui
     #@+node:ekr.20081007015817.60:init (qtFindTab) & helpers
     def init (self,c):
 
@@ -1090,6 +1094,7 @@ class leoQtFindTab (leoFind.findTab):
             (self.find_ctrl,    "find_text",    '<find pattern here>'),
             (self.change_ctrl,  "change_text",  ''),
         )
+
         for w,setting,defaultText in table:
             # w is a textWrapper object
             w.setAllText(c.config.getString(setting) or defaultText)
@@ -1097,7 +1102,6 @@ class leoQtFindTab (leoFind.findTab):
     #@+node:ekr.20081018053140.17:initCheckBoxes
     def initCheckBoxes (self):
 
-        # w is a QCheckBox.
         for ivar,key in (
             ("pattern_match","pattern-search"),
         ):
@@ -1118,13 +1122,13 @@ class leoQtFindTab (leoFind.findTab):
         for ivar in aList:
             svar = self.svarDict[ivar].get()
             if svar:
+                # w is a QCheckBox.
                 w = self.widgetsDict.get(ivar)
                 if w: w.setChecked(True)
     #@-node:ekr.20081018053140.17:initCheckBoxes
     #@+node:ekr.20081018130812.11:initRadioButtons
     def initRadioButtons (self):
 
-        # XXX At present w is a QCheckbox, not a QRadioButton.
         for ivar,key in (
             ("suboutline_only","suboutline-only"),
             ("node_only","node-only"),
@@ -1137,6 +1141,7 @@ class leoQtFindTab (leoFind.findTab):
         else:
             key = 'entire-outline'
             self.svarDict["radio-search-scope"].set(key)
+            # XXX At present w is a QCheckbox, not a QRadioButton.
             w = self.widgetsDict.get(key)
             if w: w.setChecked(True)
     #@-node:ekr.20081018130812.11:initRadioButtons
@@ -2605,18 +2610,18 @@ class leoQtGui(leoGui.leoGui):
 
         '''Replace the clipboard with the string s.'''
 
-        cb = QtGui.QApplication.clipboard()
+        cb = self.qtApp.clipboard()
         if cb:
             cb.clear()
-            cb.setText(s)
+            cb.setText(g.toEncodedString(s,'utf-8'))
 
     def getTextFromClipboard (self):
 
         '''Get a unicode string from the clipboard.'''
 
-        cb = QtGui.QApplication.clipboard()
+        cb = self.qtApp.clipboard()
         s = cb and cb.text() or ''
-        return g.toUnicode(s,g.app.tkEncoding)
+        return g.toUnicode(s,'utf-8')
     #@-node:ekr.20081004102201.648:Clipboard
     #@+node:ekr.20081004102201.651:Do nothings
     def color (self,color):         return None
@@ -5039,7 +5044,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-        c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
+        c = self.c ; w = self.treeWidget ; trace = False ; verbose = False
         if not w: return
         if self.redrawing:
             return g.trace('already drawing')
