@@ -6692,7 +6692,7 @@ class baseCommands:
 
         c = self
 
-        if c._currentPosition:
+        if hasattr(c,'_currentPosition') and c._currentPosition:
             # New in Leo 4.4.2: *always* return a copy.
             return c._currentPosition.copy()
         else:
@@ -6893,7 +6893,7 @@ class baseCommands:
 
         c = self
 
-        if self._rootPosition:
+        if hasattr(self,'_rootPosition') and self._rootPosition:
             return self._rootPosition.copy()
         else:
             return  c.nullPosition()
