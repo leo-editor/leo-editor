@@ -3074,7 +3074,7 @@ class keyHandlerClass:
         k = self ; c = k.c ; gui  = g.app.gui
         state = k.getState('getArg')
         keysym = gui.eventKeysym(event)
-        trace = True or (c.config.getBool('trace_modes') and not g.app.unitTesting)
+        trace = False or (c.config.getBool('trace_modes') and not g.app.unitTesting)
         if trace: g.trace(
             'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
             'completion', state==0 and completion or state!=0 and k.arg_completion)

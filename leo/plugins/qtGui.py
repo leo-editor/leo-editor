@@ -138,23 +138,11 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
             # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
             # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
 
-        # Use leoQtMinibuffer instead.
-        # self.connect(self.lineEdit,
-            # QtCore.SIGNAL("returnPressed()"),self.minibuffer_run)
-
         self.buttons = self.addToolBar("Buttons")
         self.buttons.addAction(self.actionSave)
 
         self.setStyleSheets()
     #@-node:ekr.20081004172422.884: ctor (Window)
-    #@+node:ekr.20081010070648.8:minibuffer_run
-    # def minibuffer_run(self):
-
-        # c = self.c
-        # cmd = str(self.lineEdit.text())
-        # g.trace(cmd)
-        # c.executeMinibufferCommand(cmd)
-    #@-node:ekr.20081010070648.8:minibuffer_run
     #@+node:ekr.20081016072304.14:setStyleSheets (Window)
     def setStyleSheets(self):
 
@@ -196,8 +184,6 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
         if sheet: sheet = '\n'.join(sheet)
-        g.trace(sheet)
-
         g.app.gui.qtApp.setStyleSheet(sheet or default_sheet)
 
     #@+at
@@ -1011,23 +997,26 @@ class leoQtFindTab (leoFind.findTab):
 
     '''A subclass of the findTab class containing all Qt Gui code.'''
 
-    #@    @+others
-    #@+node:ekr.20081007015817.57:Birth
-    #@+node:ekr.20081007015817.58:qtFindTab.ctor
     if 0: # We can use the base-class ctor.
-
         def __init__ (self,c,parentFrame):
-
             leoFind.findTab.__init__(self,c,parentFrame)
                 # Init the base class.
                 # Calls initGui, createFrame, createBindings & init(c), in that order.
-    #@-node:ekr.20081007015817.58:qtFindTab.ctor
-    #@+node:ekr.20081007015817.59:initGui
+
+    # Define these to suppress oops messages.
+    def createBindings (self): pass
+    def createFindTab (self,c,parentFrame): pass
+    def createFrame (self,parentFrame): pass
+
+    #@    @+others
+    #@+node:ekr.20081018053140.14: Birth: called from leoFind ctor
+    # leoFind.__init__ calls initGui, createFrame, createBindings & init, in that order.
+    #@+node:ekr.20081007015817.59:nitGui
     # Called from leoFind.findTab.ctor.
 
     def initGui (self):
 
-        # g.trace('wxFindTab')
+        # g.trace('leoQtFindTab','intKeys',self.intKeys,'stringKeys',self.newStringKeys)
 
         self.svarDict = {} # Keys are ivar names, values are svar objects.
 
@@ -1036,297 +1025,123 @@ class leoQtFindTab (leoFind.findTab):
 
         for key in self.newStringKeys:
             self.svarDict[key] = self.svar()
-    #@-node:ekr.20081007015817.59:initGui
-    #@+node:ekr.20081007015817.60:init (qtFindTab)
-    # Called from leoFind.findTab.ctor.
-    # We must override leoFind.init to init the checkboxes 'by hand' here. 
-
+    #@-node:ekr.20081007015817.59:nitGui
+    #@+node:ekr.20081007015817.60:init (qtFindTab) & helpers
     def init (self,c):
 
-        pass
+        '''Init the widgets of the 'Find' tab.'''
 
-        # # Separate c.ivars are much more convenient than a svarDict.
-        # for key in self.intKeys:
-            # # Get ivars from @settings.
-            # val = c.config.getBool(key)
-            # setattr(self,key,val)
-            # val = g.choose(val,1,0)
-            # svar = self.svarDict.get(key)
-            # if svar: svar.set(val)
-            # #g.trace(key,val)
+        self.createIvars()
+        self.initIvars()
+        self.initTextWidgets()
+        self.initCheckBoxes()
+        self.initRadioButtons()
+    #@+node:ekr.20081018053140.19:createIvars
+    def createIvars (self):
 
-        #@    << set find/change widgets >>
-        #@+node:ekr.20081007015817.61:<< set find/change widgets >>
-        # self.find_ctrl.delete(0,"end")
-        # self.change_ctrl.delete(0,"end")
+        c = self.c ; w = c.frame.top # A Window object.
 
-        # # Get setting from @settings.
-        # for w,setting,defaultText in (
-            # (self.find_ctrl,"find_text",'<find pattern here>'),
-            # (self.change_ctrl,"change_text",''),
-        # ):
-            # s = c.config.getString(setting)
-            # if not s: s = defaultText
-            # w.insert("end",s)
-        #@-node:ekr.20081007015817.61:<< set find/change widgets >>
-        #@nl
-        #@    << set radio buttons from ivars >>
-        #@+node:ekr.20081007015817.62:<< set radio buttons from ivars >>
-        # # In Tk, setting the var also sets the widget.
-        # # Here, we do so explicitly.
-        # d = self.widgetsDict
-        # for ivar,key in (
-            # ("pattern_match","pattern-search"),
-            # #("script_search","script-search")
-        # ):
-            # svar = self.svarDict[ivar].get()
-            # if svar:
-                # self.svarDict["radio-find-type"].set(key)
-                # w = d.get(key)
-                # if w: w.SetValue(True)
-                # break
-        # else:
-            # self.svarDict["radio-find-type"].set("plain-search")
+        # Bind boxes to Window objects.
+        self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
+        data = (
+            ('find_ctrl',       self.findTextWrapper(c,w.findPattern)),
+            ('change_ctrl',     self.findTextWrapper(c,w.findChange)),
+            ('whole_world',     w.checkBoxWholeWord),
+            ('ignore_case',     w.checkBoxIgnoreCase),
+            ('wrap',            w.checkBoxWrapAround),
+            ('reverse',         w.checkBoxReverse),
+            ('pattern_match',   w.checkBoxRexexp),
+            ('mark_finds',      w.checkBoxMarkFinds),
+            ('entire-outline',  w.checkBoxEntireOutline),
+            ('suboutline-only', w.checkBoxSubroutineOnly),  
+            ('node-only',       w.checkBoxNodeOnly),
+            ('search_headline', w.checkBoxSearchHeadline),
+            ('search_body',     w.checkBoxSearchBody),
+            ('mark_changes',    w.checkBoxMarkChanges),
+        )
+        for ivar,widget in data:
+            setattr(self,ivar,widget)
+            self.widgetsDict[ivar] = widget
+            # g.trace(ivar,widget)
+    #@-node:ekr.20081018053140.19:createIvars
+    #@+node:ekr.20081018053140.16:initIvars
+    def initIvars(self):
 
-        # for ivar,key in (
-            # ("suboutline_only","suboutline-only"),
-            # ("node_only","node-only"),
-            # # ("selection_only","selection-only")
-        # ):
-            # svar = self.svarDict[ivar].get()
-            # if svar:
-                # self.svarDict["radio-search-scope"].set(key)
-                # break
-        # else:
-            # key = 'entire-outline'
-            # self.svarDict["radio-search-scope"].set(key)
-            # w = self.widgetsDict.get(key)
-            # if w: w.SetValue(True)
-        #@-node:ekr.20081007015817.62:<< set radio buttons from ivars >>
-        #@nl
-        #@    << set checkboxes from ivars >>
-        #@+node:ekr.20081007015817.63:<< set checkboxes from ivars >>
-        # for ivar in (
-            # 'ignore_case',
-            # 'mark_changes',
-            # 'mark_finds',
-            # 'pattern_match',
-            # 'reverse',
-            # 'search_body',
-            # 'search_headline',
-            # 'whole_word',
-            # 'wrap',
-        # ):
-            # svar = self.svarDict[ivar].get()
-            # if svar:
-                # w = self.widgetsDict.get(ivar)
-                # if w: w.SetValue(True)
-        #@-node:ekr.20081007015817.63:<< set checkboxes from ivars >>
-        #@nl
-    #@-node:ekr.20081007015817.60:init (qtFindTab)
-    #@+node:ekr.20081007015817.65:createFrame (qtFindTab)
-    def createFrame (self,parentFrame):
+        c = self.c
 
-        pass
+        # Separate c.ivars are much more convenient than a svarDict.
+        for key in self.intKeys:
+            # Get ivars from @settings.
+            val = c.config.getBool(key)
+            setattr(self,key,val)
+            val = g.choose(val,1,0)
+            svar = self.svarDict.get(key)
+            if svar: svar.set(val)
+            # g.trace('qtFindTab',key,val)
+    #@-node:ekr.20081018053140.16:initIvars
+    #@+node:ekr.20081018130812.10:initTextWidgets
+    def initTextWidgets(self):
 
-        # self.parentFrame = self.top = parentFrame
+        '''Init the find/change text areas.'''
 
-        # self.createFindChangeAreas()
-        # self.createBoxes()
-        # self.createButtons()
-        # self.layout()
-        # self.createBindings()
-    #@+node:ekr.20081007015817.66:createFindChangeAreas
-    # def createFindChangeAreas (self):
+        c = self.c
 
-        # f = self.top
+        table = (
+            (self.find_ctrl,    "find_text",    '<find pattern here>'),
+            (self.change_ctrl,  "change_text",  ''),
+        )
+        for w,setting,defaultText in table:
+            # w is a textWrapper object
+            w.setAllText(c.config.getString(setting) or defaultText)
+    #@-node:ekr.20081018130812.10:initTextWidgets
+    #@+node:ekr.20081018053140.17:initCheckBoxes
+    def initCheckBoxes (self):
 
-        # self.fLabel = wx.StaticText(f,label='Find',  style=wx.ALIGN_RIGHT)
-        # self.cLabel = wx.StaticText(f,label='Change',style=wx.ALIGN_RIGHT)
+        # w is a QCheckBox.
+        for ivar,key in (
+            ("pattern_match","pattern-search"),
+        ):
+            svar = self.svarDict[ivar].get()
+            if svar:
+                self.svarDict["radio-find-type"].set(key)
+                w = widgetsDict.get(key)
+                if w: w.setChecked(True)
+                break
+        else:
+            self.svarDict["radio-find-type"].set("plain-search")
 
-        # self.find_ctrl = plainTextWidget(self.c,f,name='find-text',  size=(300,-1))
-        # self.change_ctrl = plainTextWidget(self.c,f,name='change-text',size=(300,-1))
-    #@-node:ekr.20081007015817.66:createFindChangeAreas
-    #@+node:ekr.20081007015817.67:layout
-    # def layout (self):
+        aList = (
+            'ignore_case','mark_changes','mark_finds',
+            'pattern_match','reverse','search_body','search_headline',
+            'whole_word','wrap')
 
-        # f = self.top
+        for ivar in aList:
+            svar = self.svarDict[ivar].get()
+            if svar:
+                w = self.widgetsDict.get(ivar)
+                if w: w.setChecked(True)
+    #@-node:ekr.20081018053140.17:initCheckBoxes
+    #@+node:ekr.20081018130812.11:initRadioButtons
+    def initRadioButtons (self):
 
-        # sizer = wx.BoxSizer(wx.VERTICAL)
-        # sizer.AddSpacer(10)
-
-        # sizer2 = wx.FlexGridSizer(2, 2, vgap=10,hgap=5)
-
-        # sizer2.Add(self.fLabel,0,wx.EXPAND)
-        # sizer2.Add(self.find_ctrl.widget,1,wx.EXPAND,border=5)
-        # sizer2.Add(self.cLabel,0,wx.EXPAND)
-        # sizer2.Add(self.change_ctrl.widget,1,wx.EXPAND,border=5)
-
-        # sizer.Add(sizer2,0,wx.EXPAND)
-        # sizer.AddSpacer(10)
-
-        # #label = wx.StaticBox(f,label='Find Options')
-        # #boxes = wx.StaticBoxSizer(label,wx.HORIZONTAL)
-
-        # boxes = wx.BoxSizer(wx.HORIZONTAL)
-        # lt_col = wx.BoxSizer(wx.VERTICAL)
-        # rt_col = wx.BoxSizer(wx.VERTICAL)
-
-        # for w in self.boxes [:6]:
-            # lt_col.Add(w,0,wx.EXPAND,border=5)
-            # lt_col.AddSpacer(5)
-        # for w in self.boxes [6:]:
-            # rt_col.Add(w,0,wx.EXPAND,border=5)
-            # rt_col.AddSpacer(5)
-
-        # boxes.Add(lt_col,0,wx.EXPAND)
-        # boxes.AddSpacer(20)
-        # boxes.Add(rt_col,0,wx.EXPAND)
-        # sizer.Add(boxes,0) #,wx.EXPAND)
-
-        # f.SetSizer(sizer)
-    #@nonl
-    #@-node:ekr.20081007015817.67:layout
-    #@+node:ekr.20081007015817.68:createBoxes
-    def createBoxes (self):
-
-        '''Create two columns of radio buttons & check boxes.'''
-
-        # c = self.c ; f = self.parentFrame
-        # self.boxes = []
-        # self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.
-
-        # data = ( # Leading star denotes a radio button.
-            # ('Whole &Word', 'whole_word',),
-            # ('&Ignore Case','ignore_case'),
-            # ('Wrap &Around','wrap'),
-            # ('&Reverse',    'reverse'),
-            # ('Rege&xp',     'pattern_match'),
-            # ('Mark &Finds', 'mark_finds'),
-            # ("*&Entire Outline","entire-outline"),
-            # ("*&Suboutline Only","suboutline-only"),  
-            # ("*&Node Only","node-only"),
-            # ('Search &Headline','search_headline'),
-            # ('Search &Body','search_body'),
-            # ('Mark &Changes','mark_changes'),
-        # )
-
-        # # Important: changing these controls merely changes entries in self.svarDict.
-        # # First, leoFind.update_ivars sets the find ivars from self.svarDict.
-        # # Second, self.init sets the values of widgets from the ivars.
-        # inGroup = False
-        # for label,ivar in data:
-            # if label.startswith('*'):
-                # label = label[1:]
-                # style = g.choose(inGroup,0,wx.RB_GROUP)
-                # inGroup = True
-                # w = wx.RadioButton(f,label=label,style=style)
-                # self.widgetsDict[ivar] = w
-                # def radioButtonCallback(event=None,ivar=ivar):
-                    # svar = self.svarDict["radio-search-scope"]
-                    # svar.set(ivar)
-                # w.Bind(wx.EVT_RADIOBUTTON,radioButtonCallback)
-            # else:
-                # w = wx.CheckBox(f,label=label)
-                # self.widgetsDict[ivar] = w
-                # def checkBoxCallback(event=None,ivar=ivar):
-                    # svar = self.svarDict.get(ivar)
-                    # val = svar.get()
-                    # svar.set(g.choose(val,False,True))
-                    # # g.trace(ivar,val)
-                # w.Bind(wx.EVT_CHECKBOX,checkBoxCallback)
-            # self.boxes.append(w)
-    #@nonl
-    #@-node:ekr.20081007015817.68:createBoxes
-    #@+node:ekr.20081007015817.69:createBindings TO DO
-    def createBindings (self):
-
-        return 
-
-        # def setFocus(w):
-            # c = self.c
-            # c.widgetWantsFocusNow(w)
-            # w.setSelectionRange(0,0)
-            # return "break"
-
-        # def toFind(event,w=ftxt): return setFocus(w)
-        # def toChange(event,w=ctxt): return setFocus(w)
-
-        # def insertTab(w):
-            # data = w.getSelectionRange()
-            # if data: start,end = data
-            # else: start = end = w.getInsertPoint()
-            # w.replace(start,end,"\t")
-            # return "break"
-
-        # def insertFindTab(event,w=ftxt): return insertTab(w)
-        # def insertChangeTab(event,w=ctxt): return insertTab(w)
-
-        # ftxt.bind("<Tab>",toChange)
-        # ctxt.bind("<Tab>",toFind)
-        # ftxt.bind("<Control-Tab>",insertFindTab)
-        # ctxt.bind("<Control-Tab>",insertChangeTab)
-
-        # c = self.c ; k = c.k
-
-        # def resetWrapCallback(event,self=self,k=k):
-            # self.resetWrap(event)
-            # return k.masterKeyHandler(event)
-
-        # def findButtonBindingCallback(event=None,self=self):
-            # self.findButton()
-            # return 'break'
-
-        # table = (
-            # ('<Button-1>',  k.masterClickHandler),
-            # ('<Double-1>',  k.masterClickHandler),
-            # ('<Button-3>',  k.masterClickHandler),
-            # ('<Double-3>',  k.masterClickHandler),
-            # ('<Key>',       resetWrapCallback),
-            # ('<Return>',    findButtonBindingCallback),
-            # ("<Escape>",    self.hideTab),
-        # )
-
-        # for w in (self.find_ctrl,self.change_ctrl):
-            # for event, callback in table:
-                # w.bind(event,callback)
-
-    #@-node:ekr.20081007015817.69:createBindings TO DO
-    #@+node:ekr.20081007015817.70:createButtons (does nothing)
-    def createButtons (self):
-
-        '''Create two columns of buttons.'''
-
-        # # Create the alignment panes.
-        # buttons  = Tk.Frame(outer,background=bg)
-        # buttons1 = Tk.Frame(buttons,bd=1,background=bg)
-        # buttons2 = Tk.Frame(buttons,bd=1,background=bg)
-        # buttons.pack(side='top',expand=1)
-        # buttons1.pack(side='left')
-        # buttons2.pack(side='right')
-
-        # width = 15 ; defaultText = 'Find' ; buttons = []
-
-        # for text,boxKind,frame,callback in (
-            # # Column 1...
-            # ('Find','button',buttons1,self.findButtonCallback),
-            # ('Find All','button',buttons1,self.findAllButton),
-            # # Column 2...
-            # ('Change','button',buttons2,self.changeButton),
-            # ('Change, Then Find','button',buttons2,self.changeThenFindButton),
-            # ('Change All','button',buttons2,self.changeAllButton),
-        # ):
-            # w = underlinedTkButton(boxKind,frame,
-                # text=text,command=callback)
-            # buttons.append(w)
-            # if text == defaultText:
-                # w.button.configure(width=width-1,bd=4)
-            # elif boxKind != 'check':
-                # w.button.configure(width=width)
-            # w.button.pack(side='top',anchor='w',pady=2,padx=2)
-    #@-node:ekr.20081007015817.70:createButtons (does nothing)
-    #@-node:ekr.20081007015817.65:createFrame (qtFindTab)
-    #@-node:ekr.20081007015817.57:Birth
+        # XXX At present w is a QCheckbox, not a QRadioButton.
+        for ivar,key in (
+            ("suboutline_only","suboutline-only"),
+            ("node_only","node-only"),
+            # ("selection_only","selection-only")
+        ):
+            svar = self.svarDict[ivar].get()
+            if svar:
+                self.svarDict["radio-search-scope"].set(key)
+                break
+        else:
+            key = 'entire-outline'
+            self.svarDict["radio-search-scope"].set(key)
+            w = self.widgetsDict.get(key)
+            if w: w.setChecked(True)
+    #@-node:ekr.20081018130812.11:initRadioButtons
+    #@-node:ekr.20081007015817.60:init (qtFindTab) & helpers
+    #@-node:ekr.20081018053140.14: Birth: called from leoFind ctor
     #@+node:ekr.20081007015817.64:class svar
     class svar:
         '''A class like Tk's IntVar and StringVar classes.'''
@@ -1337,6 +1152,34 @@ class leoQtFindTab (leoFind.findTab):
         def set (self,val):
             self.val = val
     #@-node:ekr.20081007015817.64:class svar
+    #@+node:ekr.20081018130812.12:class findTextWrapper
+    class findTextWrapper:
+
+        '''A wrapper for QLineEdit widgets.'''
+
+        def __init__ (self,c,qtWidget):
+            self.c = c
+            self.w = qtWidget
+
+        def insert(self,i,s):
+            s2 = self.getAllText()
+            self.w.clear()
+            if i == 'end': i = len(s)
+            self.setAllText(s2[:i] + s + s2[i:])
+
+        def delete(self,i,j):
+            s = self.getAllText()
+            self.w.clear()
+            if j == 'end': j = len(s)
+            self.setAllText(s[:i] + s[j:])
+
+        def getAllText (self):
+            return g.toUnicode(self.w.text(),'utf-8')
+
+        def setAllText (self,s):
+            self.w.clear()
+            self.w.setText(s)
+    #@-node:ekr.20081018130812.12:class findTextWrapper
     #@+node:ekr.20081007015817.72:Support for minibufferFind class (qtFindTab)
     # This is the same as the Tk code because we simulate Tk svars.
     #@nonl
@@ -1378,7 +1221,6 @@ class leoQtFindTab (leoFind.findTab):
     #@-node:ekr.20081007015817.75:toggleOption
     #@-node:ekr.20081007015817.72:Support for minibufferFind class (qtFindTab)
     #@-others
-#@nonl
 #@-node:ekr.20081007015817.56:class leoQtFindTab (findTab)
 #@+node:ekr.20081004172422.523:class leoQtFrame
 class leoQtFrame (leoFrame.leoFrame):
@@ -1594,6 +1436,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         c.exists = False # Make sure this one ivar has not been destroyed.
 
+        g.trace('qtFrame','top',top)
         top.destroy()
     #@-node:ekr.20081004172422.549:destroySelf (qtFrame)
     #@-node:ekr.20081004172422.545:Destroying the qtFrame
@@ -2750,25 +2593,12 @@ class leoQtGui(leoGui.leoGui):
         else:
             sys.exit(self.qtApp.exec_())
     #@-node:ekr.20081004102201.635:runMainLoop (qtGui)
-    #@+node:ekr.20081004102201.636:Do nothings
-    # These methods must be defined in subclasses, but they need not do anything.
-
-    def createRootWindow(self):
-        pass
-
+    #@+node:ekr.20081004102201.636:destroySelf
     def destroySelf (self):
-        pass
-
-    def killGui(self,exitFlag=True):
-        """Destroy a gui and terminate Leo if exitFlag is True."""
-        pass
-
-    def recreateRootWindow(self):
-        """A do-nothing base class to create the hidden root window of a gui
-        after a previous gui has terminated with killGui(False)."""
-        pass
-
-    #@-node:ekr.20081004102201.636:Do nothings
+        g.trace()
+        QtCore.pyqtRemoveInputHook()
+        # self.qtApp.closeAllWindows()
+    #@-node:ekr.20081004102201.636:destroySelf
     #@-node:ekr.20081004102201.632:  Birth & death (qtGui)
     #@+node:ekr.20081004102201.648:Clipboard
     def replaceClipboardWith (self,s):
@@ -2788,16 +2618,20 @@ class leoQtGui(leoGui.leoGui):
         s = cb and cb.text() or ''
         return g.toUnicode(s,g.app.tkEncoding)
     #@-node:ekr.20081004102201.648:Clipboard
-    #@+node:ekr.20081004102201.651:Color (to do)
-    # g.es calls gui.color to do the translation,
-    # so most code in Leo's core can simply use Tk color names.
+    #@+node:ekr.20081004102201.651:Do nothings
+    def color (self,color):         return None
 
-    def color (self,color):
+    def createRootWindow(self):     pass
 
-        '''Return the gui-specific color corresponding to the Tk color name.'''
+    def killGui(self,exitFlag=True):
+        """Destroy a gui and terminate Leo if exitFlag is True."""
 
-        return None
-    #@-node:ekr.20081004102201.651:Color (to do)
+    def recreateRootWindow(self):
+        """Create the hidden root window of a gui
+        after a previous gui has terminated with killGui(False)."""
+
+
+    #@-node:ekr.20081004102201.651:Do nothings
     #@+node:ekr.20081004102201.640:Dialogs & panels
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
         """Create and run a qt About Leo dialog."""
@@ -3296,7 +3130,6 @@ class leoQtLog (leoFrame.leoLog):
         self.tabWidget = c.frame.top.tabWidget # The Qt.TabWidget that holds all the tabs.
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
-        self.tabWidget.clear() # Remove any tabs created by QtDesigner.
         self.setFontFromConfig()
         self.setColorFromConfig()
 
@@ -3305,15 +3138,35 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081004172422.626:qtLog.finishCreate
     def finishCreate (self):
 
-        c = self.c ; log = self
+        c = self.c ; log = self ; w = self.tabWidget
 
+        # Remove unneeded tabs.
+        for name in ('Tab 1','Page'):
+            for i in range(w.count()):
+                if name == w.tabText(i):
+                    w.removeTab(i)
+                    break
+
+        # Rename the 'Tab 2' tab to 'Find'.
+        for i in range(w.count()):
+            if w.tabText(i) == 'Tab 2':
+                # g.trace('found Tab 2',w.currentWidget())
+                w.setTabText(i,'Find')
+                self.contentsDict['Find'] = w.currentWidget()
+                break
+
+        # Create the log tab as the leftmost tab.
         log.selectTab('Log')
-        log.selectTab('Test',createText=False)
-        log.selectTab('Log')
+
+        logWidget = self.contentsDict.get('Log')
+        for i in range(w.count()):
+            if w.tabText(i) == 'Log':
+                w.removeTab(i)
+                w.insertTab(0,logWidget,'Log')
+                break
 
         c.searchCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
-
     #@-node:ekr.20081004172422.626:qtLog.finishCreate
     #@-node:ekr.20081004172422.623:qtLog Birth
     #@+node:ekr.20081017015442.30:Do nothings
@@ -3797,44 +3650,6 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081004172422.671:qtLog font tab stuff
     #@-others
 #@-node:ekr.20081004172422.622:class leoQtLog
-#@+node:ekr.20081017015442.12:class leoQtMinibuffer (baseTextWidget)
-class leoQtMinibuffer (leoFrame.baseTextWidget):
-
-    def __init__ (self,c):
-        self.c = c
-        self.w = c.frame.top.lineEdit # QLineEdit
-        # Init the base class.
-        leoFrame.baseTextWidget.__init__(self,c,
-            baseClassName='leoQtMinibuffer',name='minibuffer',widget=None)
-
-        self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
-        self.w.installEventFilter(self.ev_filter)
-
-    def bind (self,kind,*args,**keys):
-        if 0: g.trace(kind,args,keys)
-
-    def setBackgroundColor(self,color):
-        self.w.setStyleSheet('background-color:%s' % color)
-
-    def setForegroundColor(self,color): pass
-
-    def _getAllText(self):          return g.toUnicode(self.w.text(),'utf-8')
-    def _getInsertPoint(self):      return self.w.cursorPosition()
-    def _getSelectionRange(self):
-        i = self.w.selectionStart()
-        if i == -1:
-            i = self.w.cursorPosition()
-            return i,i
-        else:
-            return i,i+len(self.w.selectedText())
-    def _insertText(self,i,s):
-        s2 = self._getAllText()
-        if i == -1: self.w.setText(s2+s)
-        else:       self.w.setText(s2[:i]+s+s2[i:])
-    def _setAllText(self,s):        self.w.setText(s)
-    def _setFocus(self):            self.w.setFocus()
-    def _setInsertPoint(self,i):    self.w.setSelection(i,0)
-#@-node:ekr.20081017015442.12:class leoQtMinibuffer (baseTextWidget)
 #@+node:ekr.20081004172422.856:class leoQtMenu (leoMenu)
 class leoQtMenu (leoMenu.leoMenu):
 
@@ -4194,6 +4009,47 @@ class leoQtMenu (leoMenu.leoMenu):
     #@-node:ekr.20081004172422.882:getMacHelpMenu
     #@-others
 #@-node:ekr.20081004172422.856:class leoQtMenu (leoMenu)
+#@+node:ekr.20081017015442.12:class leoQtMinibuffer (baseTextWidget)
+class leoQtMinibuffer (leoFrame.baseTextWidget):
+
+    def __init__ (self,c):
+        self.c = c
+        self.w = c.frame.top.lineEdit # QLineEdit
+        # Init the base class.
+        leoFrame.baseTextWidget.__init__(self,c,
+            baseClassName='leoQtMinibuffer',name='minibuffer',widget=None)
+
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
+        self.w.installEventFilter(self.ev_filter)
+
+    def bind (self,kind,*args,**keys):
+        if 0: g.trace(kind,args,keys)
+
+    def setBackgroundColor(self,color):
+        self.w.setStyleSheet('background-color:%s' % color)
+
+    def setForegroundColor(self,color): pass
+
+    def _getAllText(self):          return g.toUnicode(self.w.text(),'utf-8')
+    def _getInsertPoint(self):      return self.w.cursorPosition()
+    def _getLastPosition(self):     return len(self._getAllText())
+    def _getSelectionRange(self):
+        i = self.w.selectionStart()
+        if i == -1:
+            i = self.w.cursorPosition()
+            return i,i
+        else:
+            return i,i+len(self.w.selectedText())
+    def _insertText(self,i,s):
+        s2 = self._getAllText()
+        if i == -1: self.w.setText(s2+s)
+        else:       self.w.setText(s2[:i]+s+s2[i:])
+    def _setAllText(self,s):        self.w.setText(s)
+    def _setFocus(self):            self.w.setFocus()
+    def _setInsertPoint(self,i):    self.w.setSelection(i,0)
+    def _setSelectionRange(self,i,j,insert=None):
+        self.w.setSelection(i,j)
+#@-node:ekr.20081017015442.12:class leoQtMinibuffer (baseTextWidget)
 #@+node:ekr.20081007015817.35:class leoQtSpellTab
 class leoQtSpellTab:
 

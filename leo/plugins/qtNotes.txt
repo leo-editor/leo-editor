@@ -5,13 +5,13 @@
 @nocolor-node
 
 First:
-    - Ctrl-g puts garbage into minibuffer.
-    - Support @data qt-plugin-style-sheet
     - File:Exit doesn't quit the main loop.
     - Integrate find tab with Leo's core.
 
 Next:
     - Allow Leo to choose gui from the command line.
+        - Make tkinter code a plugin.
+        - If nothing specified, use the first gui that can be imported.
     - Fix dialogs.
     - Finish leoQtTextWidget class.
     - Fix all failing unit tests.
@@ -19,29 +19,6 @@ Next:
 Later:
     - Only create visible widgets in the tree.
     - Make Scintilla handle Leo markup.
-#@+node:ekr.20081004172422.695:bindings (baseTextWidget)
-# Specify the names of widget-specific methods.
-# These particular names are the names of wx.TextCtrl methods.
-
-# def _appendText(self,s):            return self.widget.insert(s)
-# def _get(self,i,j):                 return self.widget.get(i,j)
-# def _getAllText(self):              return self.widget.get('1.0','end')
-# def _getFocus(self):                return self.widget.focus_get()
-# def _getInsertPoint(self):          return self.widget.index('insert')
-# def _getLastPosition(self):         return self.widget.index('end')
-# def _getSelectedText(self):         return self.widget.get('sel.start','sel.end')
-# def _getSelectionRange(self):       return self.widget.index('sel.start'),self.widget.index('sel.end')
-# def _hitTest(self,pos):             pass
-# def _insertText(self,i,s):          return self.widget.insert(i,s)
-# def _scrollLines(self,n):           pass
-# def _see(self,i):                   return self.widget.see(i)
-# def _setAllText(self,s):            self.widget.delete('1.0','end') ; self.widget.insert('1.0',s)
-# def _setBackgroundColor(self,color): return self.widget.configure(background=color)
-# def _setForegroundColor(self,color): return self.widget.configure(background=color)
-# def _setFocus(self):                return self.widget.focus_set()
-# def _setInsertPoint(self,i):        return self.widget.mark_set('insert',i)
-# def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
-#@-node:ekr.20081004172422.695:bindings (baseTextWidget)
 #@-node:ekr.20081010070648.5:  To do
 #@+node:ekr.20081014095718.13: Recent
 #@+node:ekr.20081011101649.6:Key problems
@@ -2876,6 +2853,282 @@ def onClick (self,event,tabName):
 </widget>
 #@nonl
 #@-node:ekr.20081009055104.6:createFindTab QtDesigner xml
+#@+node:ekr.20081004172422.695:bindings (baseTextWidget)
+# Specify the names of widget-specific methods.
+# These particular names are the names of wx.TextCtrl methods.
+
+# def _appendText(self,s):            return self.widget.insert(s)
+# def _get(self,i,j):                 return self.widget.get(i,j)
+# def _getAllText(self):              return self.widget.get('1.0','end')
+# def _getFocus(self):                return self.widget.focus_get()
+# def _getInsertPoint(self):          return self.widget.index('insert')
+# def _getLastPosition(self):         return self.widget.index('end')
+# def _getSelectedText(self):         return self.widget.get('sel.start','sel.end')
+# def _getSelectionRange(self):       return self.widget.index('sel.start'),self.widget.index('sel.end')
+# def _hitTest(self,pos):             pass
+# def _insertText(self,i,s):          return self.widget.insert(i,s)
+# def _scrollLines(self,n):           pass
+# def _see(self,i):                   return self.widget.see(i)
+# def _setAllText(self,s):            self.widget.delete('1.0','end') ; self.widget.insert('1.0',s)
+# def _setBackgroundColor(self,color): return self.widget.configure(background=color)
+# def _setForegroundColor(self,color): return self.widget.configure(background=color)
+# def _setFocus(self):                return self.widget.focus_set()
+# def _setInsertPoint(self,i):        return self.widget.mark_set('insert',i)
+# def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
+#@-node:ekr.20081004172422.695:bindings (baseTextWidget)
+#@+node:ekr.20081018053140.18:unused from qtFindTab
+#@+node:ekr.20081007015817.66:createFindChangeAreas
+# def createFindChangeAreas (self):
+
+    # f = self.top
+
+    # self.fLabel = wx.StaticText(f,label='Find',  style=wx.ALIGN_RIGHT)
+    # self.cLabel = wx.StaticText(f,label='Change',style=wx.ALIGN_RIGHT)
+
+    # self.find_ctrl = plainTextWidget(self.c,f,name='find-text',  size=(300,-1))
+    # self.change_ctrl = plainTextWidget(self.c,f,name='change-text',size=(300,-1))
+#@-node:ekr.20081007015817.66:createFindChangeAreas
+#@+node:ekr.20081007015817.67:layout
+# def layout (self):
+
+    # f = self.top
+
+    # sizer = wx.BoxSizer(wx.VERTICAL)
+    # sizer.AddSpacer(10)
+
+    # sizer2 = wx.FlexGridSizer(2, 2, vgap=10,hgap=5)
+
+    # sizer2.Add(self.fLabel,0,wx.EXPAND)
+    # sizer2.Add(self.find_ctrl.widget,1,wx.EXPAND,border=5)
+    # sizer2.Add(self.cLabel,0,wx.EXPAND)
+    # sizer2.Add(self.change_ctrl.widget,1,wx.EXPAND,border=5)
+
+    # sizer.Add(sizer2,0,wx.EXPAND)
+    # sizer.AddSpacer(10)
+
+    # #label = wx.StaticBox(f,label='Find Options')
+    # #boxes = wx.StaticBoxSizer(label,wx.HORIZONTAL)
+
+    # boxes = wx.BoxSizer(wx.HORIZONTAL)
+    # lt_col = wx.BoxSizer(wx.VERTICAL)
+    # rt_col = wx.BoxSizer(wx.VERTICAL)
+
+    # for w in self.boxes [:6]:
+        # lt_col.Add(w,0,wx.EXPAND,border=5)
+        # lt_col.AddSpacer(5)
+    # for w in self.boxes [6:]:
+        # rt_col.Add(w,0,wx.EXPAND,border=5)
+        # rt_col.AddSpacer(5)
+
+    # boxes.Add(lt_col,0,wx.EXPAND)
+    # boxes.AddSpacer(20)
+    # boxes.Add(rt_col,0,wx.EXPAND)
+    # sizer.Add(boxes,0) #,wx.EXPAND)
+
+    # f.SetSizer(sizer)
+#@nonl
+#@-node:ekr.20081007015817.67:layout
+#@+node:ekr.20081007015817.68:createBoxes
+# def createBoxes (self):
+
+    # '''Create two columns of radio buttons & check boxes.'''
+
+    # c = self.c ; f = self.parentFrame
+    # self.boxes = []
+    # self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.
+
+    # data = ( # Leading star denotes a radio button.
+        # ('Whole &Word', 'whole_word',),
+        # ('&Ignore Case','ignore_case'),
+        # ('Wrap &Around','wrap'),
+        # ('&Reverse',    'reverse'),
+        # ('Rege&xp',     'pattern_match'),
+        # ('Mark &Finds', 'mark_finds'),
+        # ("*&Entire Outline","entire-outline"),
+        # ("*&Suboutline Only","suboutline-only"),  
+        # ("*&Node Only","node-only"),
+        # ('Search &Headline','search_headline'),
+        # ('Search &Body','search_body'),
+        # ('Mark &Changes','mark_changes'),
+    # )
+
+    # # Important: changing these controls merely changes entries in self.svarDict.
+    # # First, leoFind.update_ivars sets the find ivars from self.svarDict.
+    # # Second, self.init sets the values of widgets from the ivars.
+    # inGroup = False
+    # for label,ivar in data:
+        # if label.startswith('*'):
+            # label = label[1:]
+            # style = g.choose(inGroup,0,wx.RB_GROUP)
+            # inGroup = True
+            # w = wx.RadioButton(f,label=label,style=style)
+            # self.widgetsDict[ivar] = w
+            # def radioButtonCallback(event=None,ivar=ivar):
+                # svar = self.svarDict["radio-search-scope"]
+                # svar.set(ivar)
+            # w.Bind(wx.EVT_RADIOBUTTON,radioButtonCallback)
+        # else:
+            # w = wx.CheckBox(f,label=label)
+            # self.widgetsDict[ivar] = w
+            # def checkBoxCallback(event=None,ivar=ivar):
+                # svar = self.svarDict.get(ivar)
+                # val = svar.get()
+                # svar.set(g.choose(val,False,True))
+                # # g.trace(ivar,val)
+            # w.Bind(wx.EVT_CHECKBOX,checkBoxCallback)
+        # self.boxes.append(w)
+#@nonl
+#@-node:ekr.20081007015817.68:createBoxes
+#@+node:ekr.20081007015817.69:createBindings TO DO
+def createBindings (self):
+
+    return 
+
+    # def setFocus(w):
+        # c = self.c
+        # c.widgetWantsFocusNow(w)
+        # w.setSelectionRange(0,0)
+        # return "break"
+
+    # def toFind(event,w=ftxt): return setFocus(w)
+    # def toChange(event,w=ctxt): return setFocus(w)
+
+    # def insertTab(w):
+        # data = w.getSelectionRange()
+        # if data: start,end = data
+        # else: start = end = w.getInsertPoint()
+        # w.replace(start,end,"\t")
+        # return "break"
+
+    # def insertFindTab(event,w=ftxt): return insertTab(w)
+    # def insertChangeTab(event,w=ctxt): return insertTab(w)
+
+    # ftxt.bind("<Tab>",toChange)
+    # ctxt.bind("<Tab>",toFind)
+    # ftxt.bind("<Control-Tab>",insertFindTab)
+    # ctxt.bind("<Control-Tab>",insertChangeTab)
+
+    # c = self.c ; k = c.k
+
+    # def resetWrapCallback(event,self=self,k=k):
+        # self.resetWrap(event)
+        # return k.masterKeyHandler(event)
+
+    # def findButtonBindingCallback(event=None,self=self):
+        # self.findButton()
+        # return 'break'
+
+    # table = (
+        # ('<Button-1>',  k.masterClickHandler),
+        # ('<Double-1>',  k.masterClickHandler),
+        # ('<Button-3>',  k.masterClickHandler),
+        # ('<Double-3>',  k.masterClickHandler),
+        # ('<Key>',       resetWrapCallback),
+        # ('<Return>',    findButtonBindingCallback),
+        # ("<Escape>",    self.hideTab),
+    # )
+
+    # for w in (self.find_ctrl,self.change_ctrl):
+        # for event, callback in table:
+            # w.bind(event,callback)
+
+#@-node:ekr.20081007015817.69:createBindings TO DO
+#@+node:ekr.20081007015817.70:createButtons (does nothing)
+def createButtons (self):
+
+    '''Create two columns of buttons.'''
+
+    # # Create the alignment panes.
+    # buttons  = Tk.Frame(outer,background=bg)
+    # buttons1 = Tk.Frame(buttons,bd=1,background=bg)
+    # buttons2 = Tk.Frame(buttons,bd=1,background=bg)
+    # buttons.pack(side='top',expand=1)
+    # buttons1.pack(side='left')
+    # buttons2.pack(side='right')
+
+    # width = 15 ; defaultText = 'Find' ; buttons = []
+
+    # for text,boxKind,frame,callback in (
+        # # Column 1...
+        # ('Find','button',buttons1,self.findButtonCallback),
+        # ('Find All','button',buttons1,self.findAllButton),
+        # # Column 2...
+        # ('Change','button',buttons2,self.changeButton),
+        # ('Change, Then Find','button',buttons2,self.changeThenFindButton),
+        # ('Change All','button',buttons2,self.changeAllButton),
+    # ):
+        # w = underlinedTkButton(boxKind,frame,
+            # text=text,command=callback)
+        # buttons.append(w)
+        # if text == defaultText:
+            # w.button.configure(width=width-1,bd=4)
+        # elif boxKind != 'check':
+            # w.button.configure(width=width)
+        # w.button.pack(side='top',anchor='w',pady=2,padx=2)
+#@-node:ekr.20081007015817.70:createButtons (does nothing)
+#@+node:ekr.20081007015817.61:<< set find/change widgets >>
+# self.find_ctrl.delete(0,"end")
+# self.change_ctrl.delete(0,"end")
+
+# # Get setting from @settings.
+# for w,setting,defaultText in (
+    # (self.find_ctrl,"find_text",'<find pattern here>'),
+    # (self.change_ctrl,"change_text",''),
+# ):
+    # s = c.config.getString(setting)
+    # if not s: s = defaultText
+    # w.insert("end",s)
+#@-node:ekr.20081007015817.61:<< set find/change widgets >>
+#@+node:ekr.20081007015817.62:<< set radio buttons from ivars >>
+# # In Tk, setting the var also sets the widget.
+# # Here, we do so explicitly.
+# d = self.widgetsDict
+# for ivar,key in (
+    # ("pattern_match","pattern-search"),
+    # #("script_search","script-search")
+# ):
+    # svar = self.svarDict[ivar].get()
+    # if svar:
+        # self.svarDict["radio-find-type"].set(key)
+        # w = d.get(key)
+        # if w: w.SetValue(True)
+        # break
+# else:
+    # self.svarDict["radio-find-type"].set("plain-search")
+
+# for ivar,key in (
+    # ("suboutline_only","suboutline-only"),
+    # ("node_only","node-only"),
+    # # ("selection_only","selection-only")
+# ):
+    # svar = self.svarDict[ivar].get()
+    # if svar:
+        # self.svarDict["radio-search-scope"].set(key)
+        # break
+# else:
+    # key = 'entire-outline'
+    # self.svarDict["radio-search-scope"].set(key)
+    # w = self.widgetsDict.get(key)
+    # if w: w.SetValue(True)
+#@-node:ekr.20081007015817.62:<< set radio buttons from ivars >>
+#@+node:ekr.20081007015817.63:<< set checkboxes from ivars >>
+# for ivar in (
+    # 'ignore_case',
+    # 'mark_changes',
+    # 'mark_finds',
+    # 'pattern_match',
+    # 'reverse',
+    # 'search_body',
+    # 'search_headline',
+    # 'whole_word',
+    # 'wrap',
+# ):
+    # svar = self.svarDict[ivar].get()
+    # if svar:
+        # w = self.widgetsDict.get(ivar)
+        # if w: w.SetValue(True)
+#@-node:ekr.20081007015817.63:<< set checkboxes from ivars >>
+#@-node:ekr.20081018053140.18:unused from qtFindTab
 #@-node:ekr.20081004102201.637: Unused
 #@+node:ekr.20081017015442.15:pylint errors
 
