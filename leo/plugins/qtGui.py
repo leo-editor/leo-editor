@@ -2847,7 +2847,7 @@ class leoQtGui(leoGui.leoGui):
         fd = QtGui.QFileDialog()
         fname = fd.getOpenFileName()
         g.trace(fname)
-        return str(fname)
+        return g.toUnicode(fname,'utf-8')
 
         # self.load_file(fname)
 
@@ -2866,7 +2866,7 @@ class leoQtGui(leoGui.leoGui):
         fd = QtGui.QFileDialog()
         fname = fd.getSaveFileName()
         g.trace(fname)
-        return str(fname)
+        return g.toUnicode(fname,'utf-8')
 
         # return self.runFileDialog(
             # title=title,
@@ -5139,7 +5139,7 @@ class leoQtTree (leoFrame.leoTree):
 
         p = self.itemsDict[id(item)]
         # so far, col is always 0
-        h = str(item.text(col))
+        h = g.toUnicode(item.text(col),'utf-8')
         p.setHeadString(h)
         # g.trace("edited: ",p)
     #@nonl
@@ -5703,7 +5703,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         print "New text", self.ui.lineEdit.text()
         idx = 0
         self.ui.tableWidget.clear()
-        for p in self.match_headlines(str(self.ui.lineEdit.text())):
+        for p in self.match_headlines(g.toUnicode(self.ui.lineEdit.text(),'utf-8')):
             it = QtGui.QTableWidgetItem(p.headString())
             self.ps[idx] = p.copy()
             self.ui.tableWidget.setItem(idx, 0, it)
