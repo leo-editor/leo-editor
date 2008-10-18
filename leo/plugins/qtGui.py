@@ -838,11 +838,11 @@ class leoQtEventFilter(QtCore.QObject):
         eventType = event.type()
 
         if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
-            tkKey,ch = self.toTkKey(event)
+            tkKey,ch,ignore = self.toTkKey(event)
             # if trace and verbose: g.trace(tkKey,ch)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
             if k.inState():
-                override = True # allow all keystroke.
+                override = not ignore # allow all keystroke.
             elif safe_mode:
                 override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
             else:
@@ -905,10 +905,11 @@ class leoQtEventFilter(QtCore.QObject):
     def toTkKey (self,event):
 
         c = self.c ; k = c.k ; trace = False
-        allowShift = True ; isKnown = False
-        keynum = event.key()
+
+        keynum = event.key() ; allowShift = True ; isKnown = False
         try:
             ch = chr(keynum)
+            #g.trace(ch,keynum)
         except ValueError:
             ch = event.text()
             if not ch:
@@ -930,7 +931,7 @@ class leoQtEventFilter(QtCore.QObject):
                 ch = ch2
 
         # Convert to Tk style binding.
-        mods = []
+        mods = [] ; alt,ctrl = False,False
         if event.modifiers() & QtCore.Qt.AltModifier:
             mods.append("Alt")
         if event.modifiers() & QtCore.Qt.ControlModifier:
@@ -946,9 +947,12 @@ class leoQtEventFilter(QtCore.QObject):
         elif len(ch) == 1: ch = ch.lower()
 
         tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
-        if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
+        # If the documentation is to be believed,
+        # this definition of ignore should be portable.
+        ignore = not g.toUnicode(event.text(),'utf-8')
+        if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey),'ignore',ignore)
 
-        return tkKey,ch
+        return tkKey,ch,ignore
     #@-node:ekr.20081008084746.1:toTkKey
     #@+node:ekr.20081013143507.11:traceEvent
     def traceEvent (self,obj,event,tkKey,override):
@@ -1110,21 +1114,10 @@ class leoQtFindTab (leoFind.findTab):
         #@-node:ekr.20081007015817.63:<< set checkboxes from ivars >>
         #@nl
     #@-node:ekr.20081007015817.60:init (qtFindTab)
-    #@-node:ekr.20081007015817.57:Birth
-    #@+node:ekr.20081007015817.64:class svar
-    class svar:
-        '''A class like Tk's IntVar and StringVar classes.'''
-        def __init__(self):
-            self.val = None
-        def get (self):
-            return self.val
-        def set (self,val):
-            self.val = val
-    #@-node:ekr.20081007015817.64:class svar
-    #@+node:ekr.20081007015817.65:createFrame (wxFindTab)
+    #@+node:ekr.20081007015817.65:createFrame (qtFindTab)
     def createFrame (self,parentFrame):
 
-        return
+        pass
 
         # self.parentFrame = self.top = parentFrame
 
@@ -1134,9 +1127,9 @@ class leoQtFindTab (leoFind.findTab):
         # self.layout()
         # self.createBindings()
     #@+node:ekr.20081007015817.66:createFindChangeAreas
-    def createFindChangeAreas (self):
+    # def createFindChangeAreas (self):
 
-        f = self.top
+        # f = self.top
 
         # self.fLabel = wx.StaticText(f,label='Find',  style=wx.ALIGN_RIGHT)
         # self.cLabel = wx.StaticText(f,label='Change',style=wx.ALIGN_RIGHT)
@@ -1145,9 +1138,9 @@ class leoQtFindTab (leoFind.findTab):
         # self.change_ctrl = plainTextWidget(self.c,f,name='change-text',size=(300,-1))
     #@-node:ekr.20081007015817.66:createFindChangeAreas
     #@+node:ekr.20081007015817.67:layout
-    def layout (self):
+    # def layout (self):
 
-        f = self.top
+        # f = self.top
 
         # sizer = wx.BoxSizer(wx.VERTICAL)
         # sizer.AddSpacer(10)
@@ -1322,7 +1315,18 @@ class leoQtFindTab (leoFind.findTab):
                 # w.button.configure(width=width)
             # w.button.pack(side='top',anchor='w',pady=2,padx=2)
     #@-node:ekr.20081007015817.70:createButtons (does nothing)
-    #@-node:ekr.20081007015817.65:createFrame (wxFindTab)
+    #@-node:ekr.20081007015817.65:createFrame (qtFindTab)
+    #@-node:ekr.20081007015817.57:Birth
+    #@+node:ekr.20081007015817.64:class svar
+    class svar:
+        '''A class like Tk's IntVar and StringVar classes.'''
+        def __init__(self):
+            self.val = None
+        def get (self):
+            return self.val
+        def set (self,val):
+            self.val = val
+    #@-node:ekr.20081007015817.64:class svar
     #@+node:ekr.20081007015817.72:Support for minibufferFind class (qtFindTab)
     # This is the same as the Tk code because we simulate Tk svars.
     #@nonl
@@ -3792,6 +3796,7 @@ class leoQtMinibuffer (leoFrame.baseTextWidget):
         # Init the base class.
         leoFrame.baseTextWidget.__init__(self,c,
             baseClassName='leoQtMinibuffer',name='minibuffer',widget=None)
+
         self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
         self.w.installEventFilter(self.ev_filter)
 

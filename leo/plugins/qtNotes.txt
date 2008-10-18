@@ -6,6 +6,7 @@
 
 First:
     - Ctrl-g puts garbage into minibuffer.
+    - Support @data qt-plugin-style-sheet
     - File:Exit doesn't quit the main loop.
     - Integrate find tab with Leo's core.
 
@@ -17,8 +18,7 @@ Next:
 
 Later:
     - Only create visible widgets in the tree.
-        - This won't work: expand or contract doesn't redraw the tree!
-    - Scintilla doesn't know about Leo markup.
+    - Make Scintilla handle Leo markup.
 #@+node:ekr.20081004172422.695:bindings (baseTextWidget)
 # Specify the names of widget-specific methods.
 # These particular names are the names of wx.TextCtrl methods.
@@ -180,11 +180,11 @@ def eventFilter(self, obj, event):
     eventType = event.type()
 
     if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
-        tkKey,ch = self.toTkKey(event)
+        tkKey,ch,ignore = self.toTkKey(event)
         # if trace and verbose: g.trace(tkKey,ch)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
         if k.inState():
-            override = True # allow all keystroke.
+            override = not ignore # allow all keystroke.
         elif safe_mode:
             override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
         else:
@@ -247,10 +247,11 @@ def toStroke (self,tkKey,ch):
 def toTkKey (self,event):
 
     c = self.c ; k = c.k ; trace = False
-    allowShift = True ; isKnown = False
-    keynum = event.key()
+
+    keynum = event.key() ; allowShift = True ; isKnown = False
     try:
         ch = chr(keynum)
+        #g.trace(ch,keynum)
     except ValueError:
         ch = event.text()
         if not ch:
@@ -272,7 +273,7 @@ def toTkKey (self,event):
             ch = ch2
 
     # Convert to Tk style binding.
-    mods = []
+    mods = [] ; alt,ctrl = False,False
     if event.modifiers() & QtCore.Qt.AltModifier:
         mods.append("Alt")
     if event.modifiers() & QtCore.Qt.ControlModifier:
@@ -288,9 +289,12 @@ def toTkKey (self,event):
     elif len(ch) == 1: ch = ch.lower()
 
     tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
-    if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
+    # If the documentation is to be believed,
+    # this definition of ignore should be portable.
+    ignore = not g.toUnicode(event.text(),'utf-8')
+    if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey),'ignore',ignore)
 
-    return tkKey,ch
+    return tkKey,ch,ignore
 #@-node:ekr.20081008084746.1:toTkKey
 #@+node:ekr.20081013143507.11:traceEvent
 def traceEvent (self,obj,event,tkKey,override):
@@ -2410,11 +2414,11 @@ def eventFilter(self, obj, event):
     eventType = event.type()
 
     if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
-        tkKey,ch = self.toTkKey(event)
+        tkKey,ch,ignore = self.toTkKey(event)
         # if trace and verbose: g.trace(tkKey,ch)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
         if k.inState():
-            override = True # allow all keystroke.
+            override = not ignore # allow all keystroke.
         elif safe_mode:
             override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
         else:
@@ -2477,10 +2481,11 @@ def toStroke (self,tkKey,ch):
 def toTkKey (self,event):
 
     c = self.c ; k = c.k ; trace = False
-    allowShift = True ; isKnown = False
-    keynum = event.key()
+
+    keynum = event.key() ; allowShift = True ; isKnown = False
     try:
         ch = chr(keynum)
+        #g.trace(ch,keynum)
     except ValueError:
         ch = event.text()
         if not ch:
@@ -2502,7 +2507,7 @@ def toTkKey (self,event):
             ch = ch2
 
     # Convert to Tk style binding.
-    mods = []
+    mods = [] ; alt,ctrl = False,False
     if event.modifiers() & QtCore.Qt.AltModifier:
         mods.append("Alt")
     if event.modifiers() & QtCore.Qt.ControlModifier:
@@ -2518,9 +2523,12 @@ def toTkKey (self,event):
     elif len(ch) == 1: ch = ch.lower()
 
     tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
-    if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey))
+    # If the documentation is to be believed,
+    # this definition of ignore should be portable.
+    ignore = not g.toUnicode(event.text(),'utf-8')
+    if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey),'ignore',ignore)
 
-    return tkKey,ch
+    return tkKey,ch,ignore
 #@-node:ekr.20081008084746.1:toTkKey
 #@+node:ekr.20081013143507.11:traceEvent
 def traceEvent (self,obj,event,tkKey,override):
