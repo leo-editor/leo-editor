@@ -580,6 +580,9 @@ class baseFileCommands:
         self.tnodesDict = {}
             # keys are gnx strings as returned by canonicalTnodeIndex.
             # Values are gnx's.
+        self.vnodesDict = {}
+            # keys are gnx strings; values are ignored
+    #@nonl
     #@-node:ekr.20031218072017.3019:leoFileCommands._init_
     #@+node:ekr.20031218072017.3020:Reading
     #@+node:ekr.20060919104836: Top-level
@@ -1828,29 +1831,34 @@ class baseFileCommands:
         #@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
         #@nl
         attrs = ''.join(attrs)
-        v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
-        # The string catentation is faster than repeated calls to fc.put.
-        if not self.usingClipboard:
-            #@        << issue informational messages >>
-            #@+node:ekr.20040702085529:<< issue informational messages >>
-            if isOrphan and isThin:
-                g.es("writing erroneous:",p.headString(),color="blue")
-                p.clearOrphan()
-            #@-node:ekr.20040702085529:<< issue informational messages >>
-            #@nl
-        # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
-        if p.hasChildren() and (forceWrite or self.usingClipboard):
-            fc.put('%s\n' % v_head)
-            # This optimization eliminates all "recursive" copies.
-            p.moveToFirstChild()
-            while 1:
-                fc.putVnode(p,isIgnore)
-                if p.hasNext(): p.moveToNext()
-                else:           break
-            p.moveToParent() # Restore p in the caller.
-            fc.put('</v>\n')
+        v_head = '<v t="%s"%s>' % (gnx,attrs)
+        if gnx in fc.vnodesDict:
+            fc.put(v_head+'</v>\n')
         else:
-            fc.put('%s</v>\n' % v_head) # Call put only once.
+            fc.vnodesDict[gnx]=True
+            v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString()or''))
+            # The string catentation is faster than repeated calls to fc.put.
+            if not self.usingClipboard:
+                #@            << issue informational messages >>
+                #@+node:ekr.20040702085529:<< issue informational messages >>
+                if isOrphan and isThin:
+                    g.es("writing erroneous:",p.headString(),color="blue")
+                    p.clearOrphan()
+                #@-node:ekr.20040702085529:<< issue informational messages >>
+                #@nl
+            # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+            if p.hasChildren() and (forceWrite or self.usingClipboard):
+                fc.put('%s\n' % v_head)
+                # This optimization eliminates all "recursive" copies.
+                p.moveToFirstChild()
+                while 1:
+                    fc.putVnode(p,isIgnore)
+                    if p.hasNext(): p.moveToNext()
+                    else:           break
+                p.moveToParent() # Restore p in the caller.
+                fc.put('</v>\n')
+            else:
+                fc.put('%s</v>\n' % v_head) # Call put only once.
     #@-node:ekr.20031218072017.1863:putVnode
     #@+node:ekr.20031218072017.1579:putVnodes
     def putVnodes (self):
@@ -1866,6 +1874,7 @@ class baseFileCommands:
         self.currentPosition = c.currentPosition() 
         self.rootPosition    = c.rootPosition()
         # self.topPosition     = c.topPosition()
+        self.vnodesDict={}
 
         if self.usingClipboard:
             self.putVnode(self.currentPosition) # Write only current tree.
