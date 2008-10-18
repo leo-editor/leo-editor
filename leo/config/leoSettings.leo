@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="172" left="361" height="647" width="776"/>
+	<global_window_position top="93" left="485" height="647" width="776"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="8,2"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,14,12"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -96,7 +96,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -370,7 +370,7 @@
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
 <v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
 </v>
-<v t="ekr.20041213105007" a="E" annotate="7d71002e"><vh>Fonts</vh>
+<v t="ekr.20041213105007" annotate="7d71002e"><vh>Fonts</vh>
 <v t="ekr.20041119034357.45"><vh>@font body text font</vh></v>
 <v t="ekr.20070919125633"><vh>@font button font</vh></v>
 <v t="ekr.20041213105508"><vh>@font log font</vh></v>
@@ -380,7 +380,7 @@
 <v t="ekr.20071214132254"><vh>Import options</vh>
 <v t="ekr.20071214132254.1"><vh>@data import_xml_tags</vh></v>
 </v>
-<v t="ekr.20060122105527.3" a="E"><vh>Keyboard and minibuffer options</vh>
+<v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20060215094146"><vh>@@bool ignore_caps_lock = True</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
 <v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
@@ -397,7 +397,7 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" a="E" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
@@ -435,7 +435,7 @@
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
+<v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20070925144534" a="E"><vh>@menus</vh>
 <v t="ekr.20070925144534.1" a="E"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
@@ -1010,7 +1010,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1072,6 +1072,8 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
+<v t="ekr.20081018053140.11"><vh>qtGui plugin</vh></v>
+<v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
@@ -1435,7 +1437,7 @@
 <v t="TL.20080806084612.145"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
@@ -7578,6 +7580,34 @@ True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080930072519.3"></t>
 <t tx="ekr.20080930072519.4">The number of buttons or widget in any one row of icons in the icon area.
 If there are more than this number, a new row is created.</t>
+<t tx="ekr.20081018053140.11"></t>
+<t tx="ekr.20081018053140.12">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
+
+/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
+
+/* A QWidget: supports only background attributes.*/
+
+QSplitter::handle {
+
+    background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+}
+
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-width: 3px;
+    border-style: solid;
+}
+
+QTreeWidget {
+    background-color: #ffffec; /* Leo's traditional tree color */
+}
+
+/* Not supported. */
+QsciScintilla {
+    background-color: pink;
+}
+</t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to

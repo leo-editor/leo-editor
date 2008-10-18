@@ -158,37 +158,47 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
     #@+node:ekr.20081016072304.14:setStyleSheets (Window)
     def setStyleSheets(self):
 
-        app = g.app.gui.qtApp
+        c = self.c
 
-    # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+        #@    << define default sheet >>
+        #@+node:ekr.20081018053140.10:<< define default sheet >>
 
-        sheet = '''\
+        # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
 
-    /* A QWidget: supports only background attributes.*/
-    QSplitter::handle {
+        default_sheet = '''\
 
-        background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
-    }
+        /* A QWidget: supports only background attributes.*/
+        QSplitter::handle {
 
-    QSplitter {
-        border-color: white;
-        background-color: white;
-        border-width: 3px;
-        border-style: solid;
-    }
+            background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+        }
 
-    QTreeWidget {
-        background-color: #ffffec; /* Leo's traditional tree color */
-    }
+        QSplitter {
+            border-color: white;
+            background-color: white;
+            border-width: 3px;
+            border-style: solid;
+        }
 
-    /* Not supported. */
-    QsciScintilla {
-        background-color: pink;
-    }
+        QTreeWidget {
+            background-color: #ffffec; /* Leo's traditional tree color */
+        }
 
-    '''
+        /* Not supported. */
+        QsciScintilla {
+            background-color: pink;
+        }
 
-        app.setStyleSheet(sheet)
+        '''
+        #@nonl
+        #@-node:ekr.20081018053140.10:<< define default sheet >>
+        #@nl
+
+        sheet = c.config.getData('qt-gui-plugin-style-sheet')
+        if sheet: sheet = '\n'.join(sheet)
+        g.trace(sheet)
+
+        g.app.gui.qtApp.setStyleSheet(sheet or default_sheet)
 
     #@+at
     #@-at
