@@ -5,12 +5,8 @@
 @nocolor-node
 
 First:
-    - Do a redraw and force it to be visible when loading file.
-        The problem is that treeWidget does not exist when redraw_now is called the first time.
-    * Make sure can open a second .leo file:
-        - connect/disconnect problems.
-    - Complete dialogs in leoQtGui.
     - Complete headline handling: make sure characters stick.
+    - Complete dialogs in leoQtGui.
 
 Next:
     - Allow Leo to choose gui from the command line.
@@ -24,7 +20,7 @@ Cleanup:
         - Menu accelerators are not shown and do not work.
         - File:Exit doesn't quit the main loop.
 
-    - Remove config cruft from various classes.
+    - Implement Leo settings in various class. (Don't force people to use stylesheets.)
     - Clean up text classes.
         - Finish leoQtTextWidget class.
         - Add subclasses for QLineEdit, QScintilla, etc.
