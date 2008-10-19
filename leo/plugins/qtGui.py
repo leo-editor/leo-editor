@@ -145,6 +145,8 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.buttons = self.addToolBar("Buttons")
         self.buttons.addAction(self.actionSave)
 
+        # self.stackedWidget.adjustSize()
+
         self.setStyleSheets()
     #@-node:ekr.20081004172422.884: ctor (Window)
     #@+node:ekr.20081016072304.14:setStyleSheets & helper
