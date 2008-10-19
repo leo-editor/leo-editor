@@ -128,8 +128,12 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         self.c = c
 
-        QtGui.QWidget.__init__(self,parent) # Init the base class.
-        self.setupUi(self) # Init the gui.
+        # Init both base classes.
+        QtGui.QMainWindow.__init__(self,parent)
+        qt_main.Ui_MainWindow.__init__(self)
+
+        # Init the QDesigner elements.
+        self.setupUi(self)
 
         # The following ivars (and more) are inherited from UiMainWindow:
             # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
@@ -143,52 +147,46 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         self.setStyleSheets()
     #@-node:ekr.20081004172422.884: ctor (Window)
-    #@+node:ekr.20081016072304.14:setStyleSheets (Window)
+    #@+node:ekr.20081016072304.14:setStyleSheets & helper
+    styleSheet_inited = False
+
     def setStyleSheets(self):
 
         c = self.c
 
-        #@    << define default sheet >>
-        #@+node:ekr.20081018053140.10:<< define default sheet >>
-
-        # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
-
-        default_sheet = '''\
-
-        /* A QWidget: supports only background attributes.*/
-        QSplitter::handle {
-
-            background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
-        }
-
-        QSplitter {
-            border-color: white;
-            background-color: white;
-            border-width: 3px;
-            border-style: solid;
-        }
-
-        QTreeWidget {
-            background-color: #ffffec; /* Leo's traditional tree color */
-        }
-
-        /* Not supported. */
-        QsciScintilla {
-            background-color: pink;
-        }
-
-        '''
-        #@nonl
-        #@-node:ekr.20081018053140.10:<< define default sheet >>
-        #@nl
-
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
         if sheet: sheet = '\n'.join(sheet)
-        g.app.gui.qtApp.setStyleSheet(sheet or default_sheet)
+        self.setStyleSheet(sheet or self.default_sheet())
+    #@nonl
+    #@+node:ekr.20081018053140.10:defaultStyleSheet
+    def defaultStyleSheet (self):
 
-    #@+at
-    #@-at
-    #@-node:ekr.20081016072304.14:setStyleSheets (Window)
+        '''Return a reasonable default style sheet.'''
+
+        # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+        return '''\
+
+    /* A QWidget: supports only background attributes.*/
+    QSplitter::handle {
+
+        background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+    }
+    QSplitter {
+        border-color: white;
+        background-color: white;
+        border-width: 3px;
+        border-style: solid;
+    }
+    QTreeWidget {
+        background-color: #ffffec; /* Leo's traditional tree color */
+    }
+    /* Not supported. */
+    QsciScintilla {
+        background-color: pink;
+    }
+    '''
+    #@-node:ekr.20081018053140.10:defaultStyleSheet
+    #@-node:ekr.20081016072304.14:setStyleSheets & helper
     #@-others
 
 #@-node:ekr.20081004102201.629:class  Window
@@ -1295,6 +1293,8 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f = self ; f.c = c
 
+        # g.trace('***qtFrame')
+
         self.bigTree           = c.config.getBool('big_outline_pane')
         self.trace_status_line = c.config.getBool('trace_status_line')
         self.use_chapters      = c.config.getBool('use_chapters')
@@ -1395,25 +1395,27 @@ class leoQtFrame (leoFrame.leoFrame):
         #@-node:ekr.20081004172422.547:<< clear all vnodes and tnodes in the tree>>
         #@nl
 
-        # Destroy all ivars in subcommanders.
-        g.clearAllIvars(c.atFileCommands)
-        if c.chapterController: # New in Leo 4.4.3 b1.
-            g.clearAllIvars(c.chapterController)
-        g.clearAllIvars(c.fileCommands)
-        g.clearAllIvars(c.keyHandler) # New in Leo 4.4.3 b1.
-        g.clearAllIvars(c.importCommands)
-        g.clearAllIvars(c.tangleCommands)
-        g.clearAllIvars(c.undoer)
-
-        g.clearAllIvars(c)
-        g.clearAllIvars(body.colorizer)
-        g.clearAllIvars(body)
-        g.clearAllIvars(tree)
-
-        # This must be done last.
         frame.destroyAllPanels()
-        g.clearAllIvars(frame)
 
+        if 0:
+            # Destroy all ivars in subcommanders.
+            g.clearAllIvars(c.atFileCommands)
+            if c.chapterController: # New in Leo 4.4.3 b1.
+                g.clearAllIvars(c.chapterController)
+            g.clearAllIvars(c.fileCommands)
+            g.clearAllIvars(c.keyHandler) # New in Leo 4.4.3 b1.
+            g.clearAllIvars(c.importCommands)
+            g.clearAllIvars(c.tangleCommands)
+            g.clearAllIvars(c.undoer)
+
+            g.clearAllIvars(c)
+            g.clearAllIvars(body.colorizer)
+            g.clearAllIvars(body)
+            g.clearAllIvars(tree)
+
+            # This must be done last.
+            frame.destroyAllPanels()
+            g.clearAllIvars(frame)
     #@-node:ekr.20081004172422.546:destroyAllObjects
     #@+node:ekr.20081004172422.548:destroyAllPanels
     def destroyAllPanels (self):
@@ -2850,9 +2852,10 @@ class leoQtGui(leoGui.leoGui):
         """Create and run an Qt open file dialog ."""
 
         fd = QtGui.QFileDialog()
-        fname = fd.getOpenFileName()
-        g.trace(fname)
-        return g.toUnicode(fname,'utf-8')
+        s = fd.getOpenFileName()
+        s = g.toUnicode(s,'utf-8')
+        g.trace(s)
+        return s
 
         # self.load_file(fname)
 
@@ -4754,13 +4757,15 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081004172422.738:__init__ (qtTree)
     def __init__(self,c,frame):
 
+        # g.trace('*****qtTree')
+
         # Init the base class.
         leoFrame.leoTree.__init__(self,frame)
 
         # Components.
         self.c = c
-        self.canvas = None # Used by Leo's core, set in initAfterLoad.
-        self.treeWidget = None # Set in initAfterLoad.
+        self.canvas = self # An official ivar used by Leo's core.
+        self.treeWidget = w = frame.top.treeWidget # An internal ivar.
 
         # Status ivars.
         self.dragging = False
@@ -4784,7 +4789,7 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c ; frame = c.frame
 
         # .canvas is an official ivar.  self.treeWidget is used in this class.
-        self.canvas = self.treeWidget = w = frame.top.treeWidget
+        ### self.canvas = self.treeWidget = w = frame.top.treeWidget
 
         if not leoQtTree.callbacksInjected:
             leoQtTree.callbacksInjected = True
@@ -4903,6 +4908,8 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081010070648.18:do-nothin config stuff
     # These can be do-nothings, replaced by QTree settings.
 
+    def bind (self,*args,**keys):               pass
+
     def setEditLabelState (self,p,selectAll=False): pass
 
     def setSelectedLabelState (self,p):         pass
@@ -5012,6 +5019,7 @@ class leoQtTree (leoFrame.leoTree):
             c.config.defaultTreeFontSize)
 
         if not font:
+            # g.trace('*** no font, using default')
             font = QtGui.QFont("SansSerif",12, QtGui.QFont.Normal)
 
         w.setFont(font)
@@ -5086,9 +5094,15 @@ class leoQtTree (leoFrame.leoTree):
                     w.setCurrentItem(it) ; found_current = it
         finally:
             if found_current is None:
-                g.trace('** no current item: %s' % (p and p.headString()))
+                if self.redrawCount > 1:
+                    g.trace('** no current item: %s' % (p and p.headString()))
             else:
                 w.scrollToItem(found_current, QtGui.QAbstractItemView.PositionAtCenter)
+
+            # Necessary to get the tree drawn initially.
+            if self.redrawCount == 1:
+                # g.trace('***repaint')
+                w.repaint()
 
             self.redrawing = False
 
