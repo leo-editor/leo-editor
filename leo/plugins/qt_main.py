@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt_main.ui'
 #
-# Created: Sat Oct 11 16:42:52 2008
+# Created: Sun Oct 19 07:32:18 2008
 #      by: PyQt4 UI code generator 4.4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,12 +12,10 @@ from PyQt4 import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(849, 750)
+        MainWindow.resize(957, 778)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.centralwidget)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
         self.splitter_2 = QtGui.QSplitter(self.centralwidget)
         self.splitter_2.setOrientation(QtCore.Qt.Vertical)
@@ -93,8 +91,25 @@ class Ui_MainWindow(object):
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName("tab_3")
         self.tabWidget.addTab(self.tab_3, "")
-        self.textEdit = Qsci.QsciScintilla(self.splitter_2)
+        self.stackedWidget = QtGui.QStackedWidget(self.splitter_2)
+        self.stackedWidget.setAcceptDrops(True)
+        self.stackedWidget.setObjectName("stackedWidget")
+        self.page = QtGui.QWidget()
+        self.page.setObjectName("page")
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self.page)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.textEdit = Qsci.QsciScintilla(self.page)
         self.textEdit.setObjectName("textEdit")
+        self.verticalLayout_2.addWidget(self.textEdit)
+        self.stackedWidget.addWidget(self.page)
+        self.page_2 = QtGui.QWidget()
+        self.page_2.setObjectName("page_2")
+        self.verticalLayout_4 = QtGui.QVBoxLayout(self.page_2)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.richTextEdit = QtGui.QTextEdit(self.page_2)
+        self.richTextEdit.setObjectName("richTextEdit")
+        self.verticalLayout_4.addWidget(self.richTextEdit)
+        self.stackedWidget.addWidget(self.page_2)
         self.verticalLayout.addWidget(self.splitter_2)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -105,10 +120,9 @@ class Ui_MainWindow(object):
         self.lineEdit.setObjectName("lineEdit")
         self.horizontalLayout.addWidget(self.lineEdit)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        self.verticalLayout_2.addLayout(self.verticalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 849, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 957, 22))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -123,7 +137,8 @@ class Ui_MainWindow(object):
         self.label.setBuddy(self.lineEdit)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL("itemSelectionChanged()"), MainWindow.showNormal)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
