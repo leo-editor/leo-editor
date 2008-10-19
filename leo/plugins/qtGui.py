@@ -5509,6 +5509,25 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081004172422.834:showPopupMenu
     #@-node:ekr.20081004172422.828:tree.OnPopup & allies
     #@-node:ekr.20081004172422.795:Event handlers... (qtTree)
+    #@+node:ekr.20081019045904.2:Focus (qtTree)
+    def getFocus(self):
+
+        # g.trace('leoQtTree',self.widget,g.callers(4))
+        return g.app.gui.get_focus()
+
+    findFocus = getFocus
+
+    def hasFocus (self):
+
+        val = self.treeWidget == g.app.gui.get_focus(self.c)
+        # g.trace('leoQtTree returns',val,self.widget,g.callers(4))
+        return val
+
+    def setFocus (self):
+
+        # g.trace('leoQtTree',self.treeWidget,g.callers(4))
+        g.app.gui.set_focus(self.c,self.treeWidget)
+    #@-node:ekr.20081019045904.2:Focus (qtTree)
     #@+node:ekr.20081004172422.844:Selecting & editing... (qtTree)
     #@+node:ekr.20081004172422.846:editLabel
     def editLabel (self,p,selectAll=False):
