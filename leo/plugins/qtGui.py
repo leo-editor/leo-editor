@@ -4912,7 +4912,7 @@ class leoQtTree (leoFrame.leoTree):
 
     def bind (self,*args,**keys):               pass
 
-    def setEditLabelState (self,p,selectAll=False): pass
+    def setEditLabelState (self,p,selectAll=False): pass # not called.
 
     def setSelectedLabelState (self,p):         pass
     def setUnselectedLabelState (self,p):       pass
@@ -5008,7 +5008,7 @@ class leoQtTree (leoFrame.leoTree):
         # Assign colors to the single palette.
         palette.setColor(p.Active,p.Background,red)
 
-        w.setPalette(palette)
+        # w.setPalette(palette)
     #@-node:ekr.20081010070648.15:setTreeColors
     #@+node:ekr.20081010070648.17:setTreeFont
     def setTreeFont (self):
@@ -5154,16 +5154,18 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081009055104.8:onTreeSelect
     #@+node:ville.20081014172405.10:sig_itemChanged
     def sig_itemChanged(self, item, col):
+
         # we get tons of item changes when redrawing, ignore
         if self.redrawing:
             return
 
         p = self.itemsDict[id(item)]
+
         # so far, col is always 0
         h = g.toUnicode(item.text(col),'utf-8')
         p.setHeadString(h)
-        # g.trace("edited: ",p)
-    #@nonl
+
+        # g.trace("editing: ",p.headString(),g.callers(4))
     #@-node:ville.20081014172405.10:sig_itemChanged
     #@+node:ekr.20081009055104.11:selectHint
     def selectHint (self,p,old_p):
@@ -5540,7 +5542,12 @@ class leoQtTree (leoFrame.leoTree):
         w = self.treeWidget
         it = self.vnodeDict[p.v][0][1]
 
+        # color = QtGui.QColor('red')
+        # brush =  QtGui.QBrush(color)
+        # it.setBackground(0,brush)
+
         w.editItem(it)
+
 
         # A nice hack: just clear the focus request.
         c.requestedFocusWidget = None

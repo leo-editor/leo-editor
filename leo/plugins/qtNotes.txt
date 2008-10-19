@@ -2266,7 +2266,12 @@ def editLabel (self,p,selectAll=False):
     w = self.treeWidget
     it = self.vnodeDict[p.v][0][1]
 
+    # color = QtGui.QColor('red')
+    # brush =  QtGui.QBrush(color)
+    # it.setBackground(0,brush)
+
     w.editItem(it)
+
 
     # A nice hack: just clear the focus request.
     c.requestedFocusWidget = None

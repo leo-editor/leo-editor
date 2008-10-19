@@ -1455,6 +1455,7 @@
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ekr.20081019054748.10"><vh>NewHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -7607,11 +7608,49 @@ QSplitter {
 }
 
 QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
     background-color: #ffffec; /* Leo's traditional tree color */
+    selection-color: blue;
+    selection-background-color: lightgray;
+}
+
+QTreeWidget QLineEdit {
+    background-color: #ffffec; 
+    selection-color: black;
+    selection-background-color: pink;
+}
+
+</t>
+<t tx="ekr.20081019054748.10">
+QTreeWidget::item {
+    background-color: red; #ffffec;
+}
+
+
+QTreeWidget::item::edit {
+    selection-color: black;
+    selection-background-color: pink;
+}
+
+
+QTreeWidget::item:enabled {
+    selection-color: black;
+    selection-background-color: yellow;
+}
+
+QTreeWidget::item::edit:enabled {
+    selection-color: red;
+    selection-background-color: white;
+}
+
+QTreeWidget::item::edit:focus {
+    selection-color: blue;
+    selection-background-color: pink;
 }
 
 /* Not supported. */
 QsciScintilla {
+    border-width: 0px;
     background-color: pink;
 }
 </t>
