@@ -205,7 +205,8 @@ def createSpecialGui(gui,pymacs,script,windowFlag):
             createNullGuiWithScript(script)
     elif gui == 'qt':
         leoPlugins.loadOnePlugin ('qtGui',verbose=True)
-#@nonl
+    elif gui == 'tk':
+        g.app.createTkGui()
 #@+node:ekr.20031218072017.1938:createNullGuiWithScript
 def createNullGuiWithScript (script):
 
