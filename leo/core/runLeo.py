@@ -98,7 +98,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if not isValidPython(): return
     g.computeStandardDirectories()
     adjustSysPath()
-    script,windowFlag = scanOptions()
+    gui,script,windowFlag = scanOptions()
     if pymacs: script,windowFlag = None,False
     verbose = script is None
     initApp(verbose)
@@ -108,7 +108,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # This means if-gui has effect only in per-file settings.
     g.app.config.readSettingsFiles(fileName,verbose)
     g.app.setEncoding()
-    createSpecialGui(pymacs,script,windowFlag)
+    createSpecialGui(gui,pymacs,script,windowFlag)
     g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
     if g.app.killed: return # Support for g.app.forceShutdown.
     if g.app.gui == None: g.app.createTkGui() # Creates global windows.
@@ -186,7 +186,7 @@ def createFrame (fileName,relativeFileName,script):
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
-def createSpecialGui(pymacs,script,windowFlag):
+def createSpecialGui(gui,pymacs,script,windowFlag):
 
     if g.isPython3:
         # Create the curses gui.
@@ -203,6 +203,9 @@ def createSpecialGui(pymacs,script,windowFlag):
             sys.args = []
         else:
             createNullGuiWithScript(script)
+    elif gui == 'qt':
+        leoPlugins.loadOnePlugin ('qtGui',verbose=True)
+#@nonl
 #@+node:ekr.20031218072017.1938:createNullGuiWithScript
 def createNullGuiWithScript (script):
 
@@ -483,6 +486,7 @@ def scanOptions():
 
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--gui',          dest="gui")
     parser.add_option('--silent',       action="store_true",dest="silent")
     parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
@@ -502,6 +506,13 @@ def scanOptions():
             g.app.oneConfigFilename = path
         else:
             g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # -- gui
+    gui = options.gui
+    if gui: gui = gui.lower()
+    if gui not in ('tk','qt'):
+        gui = None
+    g.trace('gui',gui)
 
     # --script
     script_path = options.script
@@ -532,8 +543,7 @@ def scanOptions():
 
     # Compute the return values.
     windowFlag = script and script_path_w
-    return script, windowFlag
-#@nonl
+    return gui, script, windowFlag
 #@-node:ekr.20080521132317.2:scanOptions
 #@+node:ekr.20040411081633:startPsyco
 def startPsyco ():

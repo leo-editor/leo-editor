@@ -5,15 +5,14 @@
 @nocolor-node
 
 First:
-    - Complete headline handling: make sure characters stick.
-    - Complete dialogs in leoQtGui.
+    - Allow Leo to choose gui from the command line.
+        We don't have to make tkinter a plugin.
+    - print-settings doesn't print to a tab and is very slow.
 
 Next:
-    - Allow Leo to choose gui from the command line.
-        - Make tkinter code a plugin.
-        - If nothing specified, use the first gui that can be imported.
     - Fix all failing unit tests.
         - Do gui-dependent commands (in leoQtFrame)
+    - Complete dialogs in leoQtGui.
 
 Cleanup:
      - Fix Stubborn bugs.
@@ -28,6 +27,8 @@ Later:
     - Only create visible widgets in the tree.
     - Make Scintilla handle Leo markup.
     - Paste of non-ascii characters produces '?' in the body pane.
+    - Make tkinter code a plugin.
+        - If no gui specified on command line, use the first gui that can be imported.
 #@-node:ekr.20081010070648.5:  To do
 #@+node:ekr.20081014095718.13: Recent
 #@+node:ekr.20081013210935.1:Unit tests
@@ -2272,7 +2273,6 @@ def editLabel (self,p,selectAll=False):
         editWidget = w.itemWidget(it,0) # A QLineEdit
         s = editWidget.text()
         editWidget.setSelection(len(s),0)
-
 
     # A nice hack: just clear the focus request.
     c.requestedFocusWidget = None

@@ -5551,7 +5551,6 @@ class leoQtTree (leoFrame.leoTree):
             s = editWidget.text()
             editWidget.setSelection(len(s),0)
 
-
         # A nice hack: just clear the focus request.
         c.requestedFocusWidget = None
 
