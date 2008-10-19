@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>849</width>
-    <height>750</height>
+    <width>957</width>
+    <height>778</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -163,6 +163,9 @@
        </widget>
       </widget>
       <widget class="QStackedWidget" name="stackedWidget" >
+       <property name="acceptDrops" >
+        <bool>true</bool>
+       </property>
        <property name="currentIndex" >
         <number>0</number>
        </property>
@@ -181,16 +184,11 @@
         </layout>
        </widget>
        <widget class="QWidget" name="page_2" >
-        <widget class="QTextEdit" name="richTextEdit" >
-         <property name="geometry" >
-          <rect>
-           <x>40</x>
-           <y>40</y>
-           <width>256</width>
-           <height>192</height>
-          </rect>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_4" >
+         <item>
+          <widget class="QTextEdit" name="richTextEdit" />
+         </item>
+        </layout>
        </widget>
       </widget>
      </widget>
@@ -219,7 +217,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>849</width>
+     <width>957</width>
      <height>22</height>
     </rect>
    </property>

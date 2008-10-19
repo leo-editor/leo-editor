@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt_main.ui'
 #
-# Created: Sun Oct 19 06:51:45 2008
+# Created: Sun Oct 19 07:32:18 2008
 #      by: PyQt4 UI code generator 4.4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(849, 750)
+        MainWindow.resize(957, 778)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
@@ -92,6 +92,7 @@ class Ui_MainWindow(object):
         self.tab_3.setObjectName("tab_3")
         self.tabWidget.addTab(self.tab_3, "")
         self.stackedWidget = QtGui.QStackedWidget(self.splitter_2)
+        self.stackedWidget.setAcceptDrops(True)
         self.stackedWidget.setObjectName("stackedWidget")
         self.page = QtGui.QWidget()
         self.page.setObjectName("page")
@@ -103,9 +104,11 @@ class Ui_MainWindow(object):
         self.stackedWidget.addWidget(self.page)
         self.page_2 = QtGui.QWidget()
         self.page_2.setObjectName("page_2")
+        self.verticalLayout_4 = QtGui.QVBoxLayout(self.page_2)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.richTextEdit = QtGui.QTextEdit(self.page_2)
-        self.richTextEdit.setGeometry(QtCore.QRect(40, 40, 256, 192))
         self.richTextEdit.setObjectName("richTextEdit")
+        self.verticalLayout_4.addWidget(self.richTextEdit)
         self.stackedWidget.addWidget(self.page_2)
         self.verticalLayout.addWidget(self.splitter_2)
         self.horizontalLayout = QtGui.QHBoxLayout()
@@ -119,7 +122,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 849, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 957, 22))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
