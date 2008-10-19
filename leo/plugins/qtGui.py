@@ -4934,26 +4934,26 @@ class leoQtTree (leoFrame.leoTree):
         # self.expanded_click_area        = c.config.getBool('expanded_click_area')
         # self.gc_before_redraw           = c.config.getBool('gc_before_redraw')
 
-        self.headline_text_editing_foreground_color = c.config.getColor(
-            'headline_text_editing_foreground_color')
-        self.headline_text_editing_background_color = c.config.getColor(
-            'headline_text_editing_background_color')
-        self.headline_text_editing_selection_foreground_color = c.config.getColor(
-            'headline_text_editing_selection_foreground_color')
-        self.headline_text_editing_selection_background_color = c.config.getColor(
-            'headline_text_editing_selection_background_color')
-        self.headline_text_selected_foreground_color = c.config.getColor(
-            "headline_text_selected_foreground_color")
-        self.headline_text_selected_background_color = c.config.getColor(
-            "headline_text_selected_background_color")
-        self.headline_text_editing_selection_foreground_color = c.config.getColor(
-            "headline_text_editing_selection_foreground_color")
-        self.headline_text_editing_selection_background_color = c.config.getColor(
-            "headline_text_editing_selection_background_color")
-        self.headline_text_unselected_foreground_color = c.config.getColor(
-            'headline_text_unselected_foreground_color')
-        self.headline_text_unselected_background_color = c.config.getColor(
-            'headline_text_unselected_background_color')
+        # self.headline_text_editing_foreground_color = c.config.getColor(
+            # 'headline_text_editing_foreground_color')
+        # self.headline_text_editing_background_color = c.config.getColor(
+            # 'headline_text_editing_background_color')
+        # self.headline_text_editing_selection_foreground_color = c.config.getColor(
+            # 'headline_text_editing_selection_foreground_color')
+        # self.headline_text_editing_selection_background_color = c.config.getColor(
+            # 'headline_text_editing_selection_background_color')
+        # self.headline_text_selected_foreground_color = c.config.getColor(
+            # "headline_text_selected_foreground_color")
+        # self.headline_text_selected_background_color = c.config.getColor(
+            # "headline_text_selected_background_color")
+        # self.headline_text_editing_selection_foreground_color = c.config.getColor(
+            # "headline_text_editing_selection_foreground_color")
+        # self.headline_text_editing_selection_background_color = c.config.getColor(
+            # "headline_text_editing_selection_background_color")
+        # self.headline_text_unselected_foreground_color = c.config.getColor(
+            # 'headline_text_unselected_foreground_color')
+        # self.headline_text_unselected_background_color = c.config.getColor(
+            # 'headline_text_unselected_background_color')
 
         # self.idle_redraw = c.config.getBool('idle_redraw')
         # self.initialClickExpandsOrContractsNode = c.config.getBool(
@@ -4981,34 +4981,36 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081010070648.15:setTreeColors
     def setTreeColors (self):
 
-        p = QtGui.QPalette ; w = self.treeWidget
-        black = QtGui.QColor('black')
-        red   = QtGui.QColor('red')
-        white = QtGui.QColor('white')
+        pass # Style sheets now work.
 
-        # Create a single palette.
-        palette = p()
+        # p = QtGui.QPalette ; w = self.treeWidget
+        # black = QtGui.QColor('black')
+        # red   = QtGui.QColor('red')
+        # white = QtGui.QColor('white')
 
-        # Selected, not editing.
-        fg    = self.headline_text_selected_foreground_color or black
-        bg    = self.headline_text_selected_background_color or 'grey80'
-        selfg = self.headline_text_editing_selection_foreground_color
-        selbg = self.headline_text_editing_selection_background_color
+        # # Create a single palette.
+        # palette = p()
 
-        # Selected, editing
-        fg    = self.headline_text_editing_foreground_color or black
-        bg    = self.headline_text_editing_background_color or white
-        selfg = self.headline_text_editing_selection_foreground_color or white
-        selbg = self.headline_text_editing_selection_background_color or black
+        # # Selected, not editing.
+        # fg    = self.headline_text_selected_foreground_color or black
+        # bg    = self.headline_text_selected_background_color or 'grey80'
+        # selfg = self.headline_text_editing_selection_foreground_color
+        # selbg = self.headline_text_editing_selection_background_color
 
-        # Not selected.
-        fg = self.headline_text_unselected_foreground_color or black
-        bg = self.headline_text_unselected_background_color or white
+        # # Selected, editing
+        # fg    = self.headline_text_editing_foreground_color or black
+        # bg    = self.headline_text_editing_background_color or white
+        # selfg = self.headline_text_editing_selection_foreground_color or white
+        # selbg = self.headline_text_editing_selection_background_color or black
 
-        # Assign colors to the single palette.
-        palette.setColor(p.Active,p.Background,red)
+        # # Not selected.
+        # fg = self.headline_text_unselected_foreground_color or black
+        # bg = self.headline_text_unselected_background_color or white
 
-        # w.setPalette(palette)
+        # # Assign colors to the single palette.
+        # palette.setColor(p.Active,p.Background,red)
+
+        # # w.setPalette(palette)
     #@-node:ekr.20081010070648.15:setTreeColors
     #@+node:ekr.20081010070648.17:setTreeFont
     def setTreeFont (self):
@@ -5539,14 +5541,15 @@ class leoQtTree (leoFrame.leoTree):
         """Start editing p's headline."""
 
         c = self.c
+        # g.trace(p.headString(),selectAll)
         w = self.treeWidget
         it = self.vnodeDict[p.v][0][1]
 
-        # color = QtGui.QColor('red')
-        # brush =  QtGui.QBrush(color)
-        # it.setBackground(0,brush)
-
         w.editItem(it)
+        if not selectAll:
+            editWidget = w.itemWidget(it,0) # A QLineEdit
+            s = editWidget.text()
+            editWidget.setSelection(len(s),0)
 
 
         # A nice hack: just clear the focus request.

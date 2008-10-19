@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="93" left="485" height="647" width="776"/>
+	<global_window_position top="128" left="489" height="647" width="776"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -132,7 +132,7 @@
 <v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
 <v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
 </v>
-<v t="ekr.20041119051246.1"><vh>Outline pane colors</vh>
+<v t="ekr.20041119051246.1" a="E"><vh>Outline pane colors</vh>
 <v t="ekr.20041119051246.2"><vh>@color headline_text_unselected_background_color = #ffffec</vh></v>
 <v t="ekr.20041119050749.6"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
 <v t="ekr.20041119051246.3"><vh>@color headline_text_selected_background_color = #dbdbdb</vh></v>
@@ -1455,7 +1455,6 @@
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
-<v t="ekr.20081019054748.10"><vh>NewHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -7596,9 +7595,11 @@ QSplitter::handle {
 }
 
 QStackedWidget {
+    /* background-color:lightpink; */
     border-color: red;
+    padding: 0px;
     /* border-width: 0px; */
-    background-color: yellow;
+    /* background-color: yellow; */
 }
 
 QSplitter {
@@ -7615,44 +7616,11 @@ QTreeWidget {
 }
 
 QTreeWidget QLineEdit {
-    background-color: pink; 
+    background-color: cornsilk;
     selection-color: white;
-    selection-background-color: black;
+    selection-background-color: blue;
 }
 
-</t>
-<t tx="ekr.20081019054748.10">
-QTreeWidget::item {
-    background-color: red; #ffffec;
-}
-
-
-QTreeWidget::item::edit {
-    selection-color: black;
-    selection-background-color: pink;
-}
-
-
-QTreeWidget::item:enabled {
-    selection-color: black;
-    selection-background-color: yellow;
-}
-
-QTreeWidget::item::edit:enabled {
-    selection-color: red;
-    selection-background-color: white;
-}
-
-QTreeWidget::item::edit:focus {
-    selection-color: blue;
-    selection-background-color: pink;
-}
-
-/* Not supported. */
-QsciScintilla {
-    border-width: 0px;
-    background-color: pink;
-}
 </t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

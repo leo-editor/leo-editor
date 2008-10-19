@@ -2263,14 +2263,15 @@ def editLabel (self,p,selectAll=False):
     """Start editing p's headline."""
 
     c = self.c
+    # g.trace(p.headString(),selectAll)
     w = self.treeWidget
     it = self.vnodeDict[p.v][0][1]
 
-    # color = QtGui.QColor('red')
-    # brush =  QtGui.QBrush(color)
-    # it.setBackground(0,brush)
-
     w.editItem(it)
+    if not selectAll:
+        editWidget = w.itemWidget(it,0) # A QLineEdit
+        s = editWidget.text()
+        editWidget.setSelection(len(s),0)
 
 
     # A nice hack: just clear the focus request.
