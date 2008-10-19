@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1454,6 +1454,7 @@
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
+<v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -7590,13 +7591,18 @@ If there are more than this number, a new row is created.</t>
 
 QSplitter::handle {
 
-    background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+    background-color: #CAE1FF; /* lightSteelBlue1 */
+}
+
+QStackedWidget {
+    border-color: red;
+    /* border-width: 0px; */
+    background-color: yellow;
 }
 
 QSplitter {
     border-color: white;
     background-color: white;
-    border-width: 3px;
     border-style: solid;
 }
 
