@@ -7615,9 +7615,9 @@ QTreeWidget {
 }
 
 QTreeWidget QLineEdit {
-    background-color: #ffffec; 
-    selection-color: black;
-    selection-background-color: pink;
+    background-color: pink; 
+    selection-color: white;
+    selection-background-color: black;
 }
 
 </t>
