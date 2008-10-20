@@ -163,11 +163,14 @@ default_font_dict = {
 #@+node:ekr.20071010193720.7:init
 def init ():
 
-    leoPlugins.registerHandler('start1',onStart1)
-    g.plugin_signon(__name__)
+    ok = g.app.gui.guiName() == 'tkinter'
 
-    return True
-#@nonl
+    if ok:
+
+        leoPlugins.registerHandler('start1',onStart1)
+        g.plugin_signon(__name__)
+
+    return ok
 #@-node:ekr.20071010193720.7:init
 #@+node:ekr.20071010193720.8:onStart1
 def onStart1 (tag, keywords):

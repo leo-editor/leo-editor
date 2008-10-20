@@ -6,14 +6,15 @@
 
 First:
     - --gui=qt must disable threading colorizer 
+    - Saving a window doesn't properly set its size.
+    - Reading a window doesn't use its size.
     - Fix failing unit tests.
-    - Support @ifgui in settings trees.
+
 Next:
     - print-settings doesn't print to a tab and is very slow.
     - Support Icon area.
     - Do gui-dependent commands (in leoQtFrame)
     - Complete dialogs in leoQtGui.
-    - Support chapters
 
 Cleanup:
      - Fix Stubborn bugs.
@@ -26,12 +27,14 @@ Cleanup:
         - Add subclasses for QLineEdit, QScintilla, etc.
 Later:
     - Support multiple body editors.
+    - Support chapters
     - Handle pane orientation.
     - Only create visible widgets in the tree.
     - Make Scintilla handle Leo markup.
     - Paste of non-ascii characters produces '?' in the body pane.
     - Make tkinter code a plugin.
         - If no gui specified on command line, use the first gui that can be imported.
+    - Support @ifgui in settings trees.
 #@-node:ekr.20081010070648.5: To do
 #@+node:ekr.20081019082316.10:New features in the core
 @nocolor-node
