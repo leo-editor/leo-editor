@@ -353,7 +353,7 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081011035036.10:setBodyConfig
     def setBodyConfig (self):
 
-        w = self.widget
+        c = self.c ; w = self.widget
 
         # To do: make this configurable the leo way
         if 1: # Suppress lexing.
@@ -362,6 +362,10 @@ class leoQtBody (leoFrame.leoBody):
             if lexer:
                 font = QtGui.QFont("SansSerif", 18)
                 lexer.setFont(font)
+            n = c.config.getInt('qt-scintilla-zoom-in')
+            g.trace('n',n)
+            if n not in (None,0):
+                w.zoomIn(n)
         else:
             lexer = Qsci.QsciLexerPython(w)
             w.setLexer(lexer)

@@ -4,22 +4,22 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-First:
-    - Increase the size of (non-existent??) lexer.
-     -Set find handler so unit tests pass.
-     - Add settings for syntax coloring, or honor Leo's old syntax coloring settings.
+Urgent:
+    ** Clicking close box doesn't warn about changed files.
+    ** This file appears to hang during load.
+    ** Outline operations the do redraws are too slow.
+
+ Next:
+    * Tab and space handling are subtly different from traditional Leo way.
+    - Add settings for syntax coloring, or honor Leo's old syntax coloring settings.
     - Make sure to update log, and scroll to bottom.
     - Put the file name in the window title.
     - Don't set the file-changed marker in the window title initially.
     - Saving a window doesn't properly set its size.
     - Reading a window doesn't use its size.
 
-Changes since changeover:
-    - 'space' works in find tab.
-    - Alt-arrow keys work bound to tree-actions even in body.
-
 Next:
-    - print-settings doesn't print to a tab and is very slow.
+    -Set find handler so unit tests pass.    - print-settings doesn't print to a tab and is very slow.
     - Re-enable syntax coloring.
     - Fix failing unit tests. 
     - Support Icon area.
