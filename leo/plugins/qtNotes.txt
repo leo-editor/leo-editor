@@ -5,15 +5,17 @@
 @nocolor-node
 
 First:
-    - Fix crasher when opening this file.
+    - Add settings for syntax coloring, or honor Leo's old syntax coloring settings.
+    - Make sure to update log, and scroll to bottom.
+    - Disable syntax coloring for @nocolor nodes, at least.
     - Put the file name in the window title.
     - Don't set the file-changed marker in the window title initially.
     - Saving a window doesn't properly set its size.
     - Reading a window doesn't use its size.
-    - Fix failing unit tests.
 
 Next:
     - print-settings doesn't print to a tab and is very slow.
+    - Fix failing unit tests. 
     - Support Icon area.
     - Do gui-dependent commands (in leoQtFrame)
     - Complete dialogs in leoQtGui.
