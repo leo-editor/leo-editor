@@ -2302,8 +2302,9 @@ def openWrapperLeoFile (old_c,fileName,gui):
             g.es_print("can not open: ",fileName,color='red')
             return None,None
         p = c.currentPosition()
-        p.setHeadString(fileName)
-        p.setBodyString(s)
+        if p:
+            p.setHeadString(fileName)
+            p.setBodyString(s)
     else:  # Import the file into the new outline.
         junk,ext = g.os_path_splitext(fileName)
         p = c.currentPosition()
