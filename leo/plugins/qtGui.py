@@ -353,12 +353,22 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081011035036.10:setBodyConfig
     def setBodyConfig (self):
 
+        w = self.widget
+
         # To do: make this configurable the leo way
-        lexer = Qsci.QsciLexerPython(self.widget)
-        self.widget.setLexer(lexer)
-        self.widget.setIndentationWidth(4)
-        self.widget.setIndentationsUseTabs(False)
-        self.widget.setAutoIndent(True)
+        if 1: # Suppress lexing.
+            w.setLexer()
+            lexer = w.lexer()
+            if lexer:
+                font = QtGui.QFont("SansSerif", 18)
+                lexer.setFont(font)
+        else:
+            lexer = Qsci.QsciLexerPython(w)
+            w.setLexer(lexer)
+
+        w.setIndentationWidth(4)
+        w.setIndentationsUseTabs(False)
+        w.setAutoIndent(True)
     #@-node:ekr.20081011035036.10:setBodyConfig
     #@+node:ekr.20081004172422.508:setColorFromConfig
     def setColorFromConfig (self,w=None):
@@ -877,7 +887,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         val = (
             key in special or
-            ch in arrows and not inTree or
+            ch in arrows and not inTree and not isAlt or
             key == 'return' and not inTree # Just barely works.
         )
 
@@ -890,6 +900,15 @@ class leoQtEventFilter(QtCore.QObject):
         k = self.c.k
 
         s = tkKey
+
+        # Emergency translations.
+        d = {
+            'space':' '
+        }
+
+        ch2 = d.get(ch)
+        if ch2:
+            s = s.replace(ch,ch2)
 
         # ch2 = k.guiBindNamesInverseDict.get(ch)
         # if ch2:

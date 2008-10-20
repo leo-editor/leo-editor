@@ -5,16 +5,22 @@
 @nocolor-node
 
 First:
-    - Add settings for syntax coloring, or honor Leo's old syntax coloring settings.
+    - Increase the size of (non-existent??) lexer.
+     -Set find handler so unit tests pass.
+     - Add settings for syntax coloring, or honor Leo's old syntax coloring settings.
     - Make sure to update log, and scroll to bottom.
-    - Disable syntax coloring for @nocolor nodes, at least.
     - Put the file name in the window title.
     - Don't set the file-changed marker in the window title initially.
     - Saving a window doesn't properly set its size.
     - Reading a window doesn't use its size.
 
+Changes since changeover:
+    - 'space' works in find tab.
+    - Alt-arrow keys work bound to tree-actions even in body.
+
 Next:
     - print-settings doesn't print to a tab and is very slow.
+    - Re-enable syntax coloring.
     - Fix failing unit tests. 
     - Support Icon area.
     - Do gui-dependent commands (in leoQtFrame)
@@ -296,7 +302,7 @@ def isDangerous (self,tkKey,ch):
 
     val = (
         key in special or
-        ch in arrows and not inTree or
+        ch in arrows and not inTree and not isAlt or
         key == 'return' and not inTree # Just barely works.
     )
 
@@ -309,6 +315,15 @@ def toStroke (self,tkKey,ch):
     k = self.c.k
 
     s = tkKey
+
+    # Emergency translations.
+    d = {
+        'space':' '
+    }
+
+    ch2 = d.get(ch)
+    if ch2:
+        s = s.replace(ch,ch2)
 
     # ch2 = k.guiBindNamesInverseDict.get(ch)
     # if ch2:

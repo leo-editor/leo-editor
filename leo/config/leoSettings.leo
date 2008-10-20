@@ -7591,7 +7591,6 @@ If there are more than this number, a new row is created.</t>
 /* A QWidget: supports only background attributes.*/
 
 QSplitter::handle {
-
     background-color: #CAE1FF; /* lightSteelBlue1 */
 }
 
@@ -7625,6 +7624,7 @@ QTreeWidget QLineEdit {
     selection-color: white;
     selection-background-color: blue;
 }
+
 
 </t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
