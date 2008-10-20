@@ -2245,6 +2245,8 @@ def openWithFileName(fileName,old_c,
     if k:
         k.showStateAndMode()
 
+    c.frame.initCompleteHint()
+
     return True, frame
 #@-node:ekr.20031218072017.2052:g.openWithFileName
 #@+node:ekr.20070412082527:g.openLeoOrZipFile

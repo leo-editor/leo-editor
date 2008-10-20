@@ -121,6 +121,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if not frame: return
     finishInitApp(c)
     p = c.currentPosition()
+    g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)

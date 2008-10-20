@@ -135,6 +135,8 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         # Init the QDesigner elements.
         self.setupUi(self)
 
+        self.noChange = True # Suppresses first call to c.setChanged in onTextChanged.
+
         # The following ivars (and more) are inherited from UiMainWindow:
             # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
             # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
@@ -494,6 +496,8 @@ class leoQtBody (leoFrame.leoBody):
             # self.warningsDict[s] = True
     #@-node:ekr.20081016072304.12: indexWarning
     #@+node:ekr.20081011035036.1: onTextChanged
+    textUpdateCount = 0 # An ugly kludge.
+
     def onTextChanged (self):
 
         '''Update Leo after the body has been changed.'''
@@ -547,7 +551,8 @@ class leoQtBody (leoFrame.leoBody):
 
         # No need to recolor the body.
         # No need to redraw the screen.
-        if not c.changed: c.setChanged(True)
+        if not c.changed and c.frame.initComplete:
+            c.setChanged(True)
         self.updateEditors()
         c.frame.tree.updateIcon(p)
     #@-node:ekr.20081011035036.1: onTextChanged
@@ -778,6 +783,7 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081007015817.92:setAllText
     def setAllText(self,s):
 
+        # g.trace('**** qtBody',g.callers())
         self.widget.setText(s)
     #@-node:ekr.20081007015817.92:setAllText
     #@-node:ekr.20081007015817.99:Text getters/settters
@@ -1280,7 +1286,7 @@ class leoQtFrame (leoFrame.leoFrame):
         leoFrame.leoFrame.__init__(self,gui)
 
         self.title = title
-
+        self.initComplete = False # Set by initCompleteHint().
         leoQtFrame.instances += 1
 
         self.c = None # Set in finishCreate.
@@ -1403,6 +1409,14 @@ class leoQtFrame (leoFrame.leoFrame):
         # f.body.setColorFromConfig()
     #@-node:ekr.20081004172422.530:createSplitterComponents (qtFrame)
     #@-node:ekr.20081004172422.528:qtFrame.finishCreate & helpers
+    #@+node:ekr.20081020075840.20:initCompleteHint
+    def initCompleteHint (self):
+
+        '''A kludge: called to enable text changed events.'''
+
+        self.initComplete = True
+        g.trace()
+    #@-node:ekr.20081020075840.20:initCompleteHint
     #@+node:ekr.20081004172422.545:Destroying the qtFrame
     #@+node:ekr.20081004172422.546:destroyAllObjects
     def destroyAllObjects (self):
@@ -2683,76 +2697,7 @@ class leoQtGui(leoGui.leoGui):
 
     #@-node:ekr.20081004102201.651:Do nothings
     #@+node:ekr.20081004102201.640:Dialogs & panels
-    def runAboutLeoDialog(self,c,version,theCopyright,url,email):
-        """Create and run a qt About Leo dialog."""
-        d = qtAboutLeo(c,version,theCopyright,url,email)
-        return d.run(modal=False)
-
-    def runAskLeoIDDialog(self):
-        """Create and run a dialog to get g.app.LeoID."""
-        d = qtAskLeoID()
-        return d.run(modal=True)
-
-    def runAskYesNoDialog(self,c,title,message=None):
-        """Create and run an askYesNo dialog."""
-        d = qtAskYesNo()
-        return d.run(modal=True)
-
-    def runAskOkDialog(self,c,title,message=None,text="Ok"):
-        """Create and run a qt an askOK dialog ."""
-        d = qtAskOk(c,title,message,text)
-        return d.run(modal=True)
-
-    def runAskOkCancelNumberDialog(self,c,title,message):
-        """Create and run askOkCancelNumber dialog ."""
-        d = qtAskOkCancelNumber(c,title,message)
-        return d.run(modal=True)
-
-    def runAskOkCancelStringDialog(self,c,title,message):
-        """Create and run askOkCancelString dialog ."""
-        d = qtAskOkCancelString(c,title,message)
-        return d.run(modal=True)
-
-    # The compare panel has no run dialog.
-
-    # def runCompareDialog(self,c):
-        # """Create and run an askYesNo dialog."""
-        # if not g.app.unitTesting:
-            # leoGtkCompareDialog(c)
-    #@+node:ekr.20081020075840.12:runAskYesNoCancelDialog
-    # def runAskYesNoCancelDialog(self,c,title,
-        # message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
-        # """Create and run an askYesNoCancel dialog ."""
-        # d = qtAskYesNoCancel(
-            # c,title,message,yesMessage,noMessage,defaultButton)
-        # return d.run(modal=True)
-
-    def runAskYesNoCancelDialog(self,c,title,
-        message=None,
-        yesMessage="Yes",noMessage="No",defaultButton="Yes"
-    ):
-
-        """Create and run an askYesNo dialog."""
-
-        b = QtGui.QMessageBox
-
-        d = b(c.frame.top)
-        if message: d.setText(message)
-        d.setIcon(b.Warning)
-        yes    = d.addButton(yesMessage,b.YesRole)
-        no     = d.addButton(noMessage,b.NoRole)
-        cancel = d.addButton(b.Cancel)
-        if   defaultButton == "Yes": d.setDefaultButton(yes)
-        elif defaultButton == "No": d.setDefaultButton(no)
-        else: d.setDefaultButton(cancel)
-        val = d.exec_()
-
-        if val == 0: val = 'yes'
-        elif val == 1: val = 'no'
-        else: val = 'cancel'
-        return val
-    #@-node:ekr.20081020075840.12:runAskYesNoCancelDialog
-    #@+node:ekr.20081004102201.652:Dialog (optional)
+    #@+node:ekr.20081004102201.652:Dialog utils (optional)
     #@+node:ekr.20081004102201.653:get_window_info
     # WARNING: Call this routine _after_ creating a dialog.
     # (This routine inhibits the grid and pack geometry managers.)
@@ -2835,12 +2780,81 @@ class leoQtGui(leoGui.leoGui):
 
         # return w,f
     #@-node:ekr.20081004102201.655:create_labeled_frame
-    #@-node:ekr.20081004102201.652:Dialog (optional)
-    #@+node:ekr.20081004102201.641:qtGui.createSpellTab
-    def createSpellTab(self,c,spellHandler,tabName):
+    #@-node:ekr.20081004102201.652:Dialog utils (optional)
+    #@+node:ekr.20081020075840.13:Other dialogs
+    #@+node:ekr.20081020075840.14:runAboutLeoDialog (to do)
+    def runAboutLeoDialog(self,c,version,theCopyright,url,email):
 
-        return leoQtSpellTab(c,spellHandler,tabName)
-    #@-node:ekr.20081004102201.641:qtGui.createSpellTab
+        """Create and run a qt About Leo dialog."""
+
+        b = QtGui.QMessageBox
+
+        d = b(c.frame.top)
+        d.setText('%s\n%s\n%s\n%s' % (
+            version,theCopyright,url,email))
+        d.setIcon(b.Information)
+        d.exec_()
+    #@-node:ekr.20081020075840.14:runAboutLeoDialog (to do)
+    #@+node:ekr.20081020075840.15:runAskLeoIDDialog (to do)
+    def runAskLeoIDDialog(self):
+        """Create and run a dialog to get g.app.LeoID."""
+        d = qtAskLeoID()
+        return d.run(modal=True)
+    #@-node:ekr.20081020075840.15:runAskLeoIDDialog (to do)
+    #@+node:ekr.20081020075840.16:runAskNoDialog (to do)
+    def runAskYesNoDialog(self,c,title,message=None):
+        """Create and run an askYesNo dialog."""
+        d = qtAskYesNo()
+        return d.run(modal=True)
+    #@-node:ekr.20081020075840.16:runAskNoDialog (to do)
+    #@+node:ekr.20081020075840.17:runAskOkDialog (to do)
+    def runAskOkDialog(self,c,title,message=None,text="Ok"):
+        """Create and run a qt an askOK dialog ."""
+        d = qtAskOk(c,title,message,text)
+        return d.run(modal=True)
+    #@-node:ekr.20081020075840.17:runAskOkDialog (to do)
+    #@+node:ekr.20081020075840.18:runAskOkCancelNumberDialog (to do)
+    def runAskOkCancelNumberDialog(self,c,title,message):
+        """Create and run askOkCancelNumber dialog ."""
+        d = qtAskOkCancelNumber(c,title,message)
+        return d.run(modal=True)
+
+    #@-node:ekr.20081020075840.18:runAskOkCancelNumberDialog (to do)
+    #@+node:ekr.20081020075840.19:runAskOkCanelStringDialog (to do)
+    def runAskOkCancelStringDialog(self,c,title,message):
+
+        """Create and run askOkCancelString dialog ."""
+
+        d = qtAskOkCancelString(c,title,message)
+        return d.run(modal=True)
+    #@-node:ekr.20081020075840.19:runAskOkCanelStringDialog (to do)
+    #@+node:ekr.20081020075840.12:runAskYesNoCancelDialog
+    def runAskYesNoCancelDialog(self,c,title,
+        message=None,
+        yesMessage="Yes",noMessage="No",defaultButton="Yes"
+    ):
+
+        """Create and run an askYesNo dialog."""
+
+        b = QtGui.QMessageBox
+
+        d = b(c.frame.top)
+        if message: d.setText(message)
+        d.setIcon(b.Warning)
+        yes    = d.addButton(yesMessage,b.YesRole)
+        no     = d.addButton(noMessage,b.NoRole)
+        cancel = d.addButton(b.Cancel)
+        if   defaultButton == "Yes": d.setDefaultButton(yes)
+        elif defaultButton == "No": d.setDefaultButton(no)
+        else: d.setDefaultButton(cancel)
+        val = d.exec_()
+
+        if val == 0: val = 'yes'
+        elif val == 1: val = 'no'
+        else: val = 'cancel'
+        return val
+    #@-node:ekr.20081020075840.12:runAskYesNoCancelDialog
+    #@-node:ekr.20081020075840.13:Other dialogs
     #@+node:ekr.20081004102201.642:qtGui file dialogs
     #@+node:ekr.20081004102201.643:runFileDialog
     def runFileDialog(self,title='Open File',filetypes=None,
@@ -2955,6 +2969,7 @@ class leoQtGui(leoGui.leoGui):
     #@-node:ekr.20081004102201.642:qtGui file dialogs
     #@+node:ekr.20081004102201.646:qtGui panels
     def createComparePanel(self,c):
+
         """Create a qt color picker panel."""
         return None # This window is optional.
         # return leoQtComparePanel(c)
@@ -2968,6 +2983,11 @@ class leoQtGui(leoGui.leoGui):
         gui = self
         return leoQtFrame(title,gui)
     #@-node:ekr.20081004102201.646:qtGui panels
+    #@+node:ekr.20081004102201.641:qtGui.createSpellTab
+    def createSpellTab(self,c,spellHandler,tabName):
+
+        return leoQtSpellTab(c,spellHandler,tabName)
+    #@-node:ekr.20081004102201.641:qtGui.createSpellTab
     #@-node:ekr.20081004102201.640:Dialogs & panels
     #@+node:ekr.20081004102201.657:Focus (qtGui)
     def get_focus(self,c=None):
@@ -4857,9 +4877,6 @@ class leoQtTree (leoFrame.leoTree):
 
         c = self.c ; frame = c.frame
 
-        # .canvas is an official ivar.  self.treeWidget is used in this class.
-        ### self.canvas = self.treeWidget = w = frame.top.treeWidget
-
         if not leoQtTree.callbacksInjected:
             leoQtTree.callbacksInjected = True
             self.injectCallbacks() # A base class method.
@@ -4875,6 +4892,9 @@ class leoQtTree (leoFrame.leoTree):
 
         self.setTreeColors()
         self.setTreeFont()
+
+        c.setChanged(False)
+
     #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
     #@+node:ekr.20081004172422.742:qtTree.setBindings & helper
     def setBindings (self):
@@ -5123,7 +5143,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-        c = self.c ; w = self.treeWidget ; trace = False ; verbose = False
+        c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
         if not w: return
         if self.redrawing:
             return g.trace('already drawing')
@@ -5610,7 +5630,10 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c
         # g.trace(p.headString(),selectAll)
         w = self.treeWidget
-        it = self.vnodeDict[p.v][0][1]
+        data = self.vnodeDict.get(p.v)
+        if not data: return
+
+        it = data [0][1]
 
         w.editItem(it)
         if not selectAll:

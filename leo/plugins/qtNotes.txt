@@ -438,7 +438,10 @@ def editLabel (self,p,selectAll=False):
     c = self.c
     # g.trace(p.headString(),selectAll)
     w = self.treeWidget
-    it = self.vnodeDict[p.v][0][1]
+    data = self.vnodeDict.get(p.v)
+    if not data: return
+
+    it = data [0][1]
 
     w.editItem(it)
     if not selectAll:
@@ -472,7 +475,7 @@ def redraw_now (self,scroll=False,forceDraw=False):
 
     '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-    c = self.c ; w = self.treeWidget ; trace = False ; verbose = False
+    c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
     if not w: return
     if self.redrawing:
         return g.trace('already drawing')
@@ -557,6 +560,8 @@ def __init__(self,c,parent=None):
 
     # Init the QDesigner elements.
     self.setupUi(self)
+
+    self.noChange = True # Suppresses first call to c.setChanged in onTextChanged.
 
     # The following ivars (and more) are inherited from UiMainWindow:
         # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.

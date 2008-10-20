@@ -1493,6 +1493,7 @@ class leoFrame:
         'getNewIconFrame',
         'hideIconBar',
         'initAfterLoad',
+        'initCompleteHint',
         'showIconBar',
     )
     #@nonl
@@ -1990,7 +1991,7 @@ class leoFrame:
     def setTitle (self,title):
         self.title = title
     #@-node:ekr.20031218072017.3688:getTitle & setTitle
-    #@+node:ekr.20081005065934.3:initAfterLoad (leoFrame)
+    #@+node:ekr.20081005065934.3:initAfterLoad  & initCompleteHint (leoFrame)
     def initAfterLoad (self):
 
         '''Provide offical hooks for late inits of components of Leo frames.'''
@@ -2002,7 +2003,11 @@ class leoFrame:
         frame.menu.initAfterLoad()
         # if frame.miniBufferWidget: frame.miniBufferWidget.initAfterLoad()
         frame.tree.initAfterLoad()
-    #@-node:ekr.20081005065934.3:initAfterLoad (leoFrame)
+
+    def initCompleteHint (self):
+        pass
+    #@nonl
+    #@-node:ekr.20081005065934.3:initAfterLoad  & initCompleteHint (leoFrame)
     #@+node:ekr.20031218072017.3687:setTabWidth (leoFrame)
     def setTabWidth (self,w):
 

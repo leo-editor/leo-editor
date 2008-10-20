@@ -547,6 +547,7 @@ class baseCommands:
         # Force a call to c.outerUpdate.
         # This is needed when we execute this command from a menu.
         c.redraw_now()
+        c.frame.initCompleteHint()
 
         return c # For unit test.
     #@nonl

@@ -4117,6 +4117,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if not frame: return
     finishInitApp(c)
     p = c.currentPosition()
+    g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
@@ -4792,6 +4793,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if not frame: return
     finishInitApp(c)
     p = c.currentPosition()
+    g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
@@ -7735,6 +7737,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if not frame: return
     finishInitApp(c)
     p = c.currentPosition()
+    g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
@@ -8373,6 +8376,8 @@ def openWithFileName(fileName,old_c,
     if k:
         k.showStateAndMode()
 
+    c.frame.initCompleteHint()
+
     return True, frame
 #@-node:ekr.20031218072017.2052:g.openWithFileName
 #@+node:ekr.20031218072017.1624:createFrame (runLeo.py)
@@ -9006,6 +9011,8 @@ def openWithFileName(fileName,old_c,
         c.bodyWantsFocusNow()
     if k:
         k.showStateAndMode()
+
+    c.frame.initCompleteHint()
 
     return True, frame
 #@-node:ekr.20031218072017.2052:g.openWithFileName
