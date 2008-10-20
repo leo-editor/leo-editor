@@ -7,14 +7,15 @@
 Urgent:
     ** Clicking close box doesn't warn about changed files.
     ** This file appears to hang during load.
+        - Make sure to update log, and scroll to bottom.
+    - Put the file name in the window title.
+    - Don't set the file-changed marker in the window title initially.
     ** Outline operations the do redraws are too slow.
 
  Next:
     * Tab and space handling are subtly different from traditional Leo way.
     - Add settings for syntax coloring, or honor Leo's old syntax coloring settings.
-    - Make sure to update log, and scroll to bottom.
-    - Put the file name in the window title.
-    - Don't set the file-changed marker in the window title initially.
+
     - Saving a window doesn't properly set its size.
     - Reading a window doesn't use its size.
 
@@ -567,10 +568,25 @@ def __init__(self,c,parent=None):
     self.buttons = self.addToolBar("Buttons")
     self.buttons.addAction(self.actionSave)
 
-    # self.stackedWidget.adjustSize()
-
     self.setStyleSheets()
 #@-node:ekr.20081004172422.884: ctor (Window)
+#@+node:ekr.20081020075840.11:closeEvent
+def closeEvent (self,event):
+
+    # g.trace('Window',event)
+
+    c = self.c
+
+    if c.changed:
+        veto = c.frame.promptForSave()
+        if veto:
+            event.ignore()
+        else:
+            event.accept()
+    else:
+        event.accept()
+
+#@-node:ekr.20081020075840.11:closeEvent
 #@+node:ekr.20081016072304.14:setStyleSheets & helper
 styleSheet_inited = False
 

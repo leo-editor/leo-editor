@@ -145,10 +145,25 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.buttons = self.addToolBar("Buttons")
         self.buttons.addAction(self.actionSave)
 
-        # self.stackedWidget.adjustSize()
-
         self.setStyleSheets()
     #@-node:ekr.20081004172422.884: ctor (Window)
+    #@+node:ekr.20081020075840.11:closeEvent
+    def closeEvent (self,event):
+
+        # g.trace('Window',event)
+
+        c = self.c
+
+        if c.changed:
+            veto = c.frame.promptForSave()
+            if veto:
+                event.ignore()
+            else:
+                event.accept()
+        else:
+            event.accept()
+
+    #@-node:ekr.20081020075840.11:closeEvent
     #@+node:ekr.20081016072304.14:setStyleSheets & helper
     styleSheet_inited = False
 
@@ -363,7 +378,6 @@ class leoQtBody (leoFrame.leoBody):
                 font = QtGui.QFont("SansSerif", 18)
                 lexer.setFont(font)
             n = c.config.getInt('qt-scintilla-zoom-in')
-            g.trace('n',n)
             if n not in (None,0):
                 w.zoomIn(n)
         else:
@@ -2679,6 +2693,11 @@ class leoQtGui(leoGui.leoGui):
         d = qtAskLeoID()
         return d.run(modal=True)
 
+    def runAskYesNoDialog(self,c,title,message=None):
+        """Create and run an askYesNo dialog."""
+        d = qtAskYesNo()
+        return d.run(modal=True)
+
     def runAskOkDialog(self,c,title,message=None,text="Ok"):
         """Create and run a qt an askOK dialog ."""
         d = qtAskOk(c,title,message,text)
@@ -2694,24 +2713,45 @@ class leoQtGui(leoGui.leoGui):
         d = qtAskOkCancelString(c,title,message)
         return d.run(modal=True)
 
-    def runAskYesNoDialog(self,c,title,message=None):
-        """Create and run an askYesNo dialog."""
-        d = qtAskYesNo(c,title,message)
-        return d.run(modal=True)
-
-    def runAskYesNoCancelDialog(self,c,title,
-        message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
-        """Create and run an askYesNoCancel dialog ."""
-        d = qtAskYesNoCancel(
-            c,title,message,yesMessage,noMessage,defaultButton)
-        return d.run(modal=True)
-
     # The compare panel has no run dialog.
 
     # def runCompareDialog(self,c):
         # """Create and run an askYesNo dialog."""
         # if not g.app.unitTesting:
             # leoGtkCompareDialog(c)
+    #@+node:ekr.20081020075840.12:runAskYesNoCancelDialog
+    # def runAskYesNoCancelDialog(self,c,title,
+        # message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
+        # """Create and run an askYesNoCancel dialog ."""
+        # d = qtAskYesNoCancel(
+            # c,title,message,yesMessage,noMessage,defaultButton)
+        # return d.run(modal=True)
+
+    def runAskYesNoCancelDialog(self,c,title,
+        message=None,
+        yesMessage="Yes",noMessage="No",defaultButton="Yes"
+    ):
+
+        """Create and run an askYesNo dialog."""
+
+        b = QtGui.QMessageBox
+
+        d = b(c.frame.top)
+        if message: d.setText(message)
+        d.setIcon(b.Warning)
+        yes    = d.addButton(yesMessage,b.YesRole)
+        no     = d.addButton(noMessage,b.NoRole)
+        cancel = d.addButton(b.Cancel)
+        if   defaultButton == "Yes": d.setDefaultButton(yes)
+        elif defaultButton == "No": d.setDefaultButton(no)
+        else: d.setDefaultButton(cancel)
+        val = d.exec_()
+
+        if val == 0: val = 'yes'
+        elif val == 1: val = 'no'
+        else: val = 'cancel'
+        return val
+    #@-node:ekr.20081020075840.12:runAskYesNoCancelDialog
     #@+node:ekr.20081004102201.652:Dialog (optional)
     #@+node:ekr.20081004102201.653:get_window_info
     # WARNING: Call this routine _after_ creating a dialog.

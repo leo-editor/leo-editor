@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1074,7 +1074,7 @@
 </v>
 <v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
-<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 8</vh></v>
+<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
@@ -1457,7 +1457,7 @@
 </v>
 <v t="ekr.20041119051246.4"><vh>@font outline font</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
-<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 8</vh></v>
+<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
