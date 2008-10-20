@@ -890,24 +890,25 @@ class leoQtEventFilter(QtCore.QObject):
         k = self.c.k
 
         s = tkKey
-        ch2 = k.guiBindNamesInverseDict.get(ch)
-        if ch2: s = s.replace(ch,ch2)
+
+        # ch2 = k.guiBindNamesInverseDict.get(ch)
+        # if ch2:
+            # s = s.replace(ch,ch2)
 
         return (
             s.replace('Alt-','Alt+').
             replace('Control-','Ctrl+').
-            replace('Shift-','Shift+')
-        )
+            replace('Shift-','Shift+'))
     #@-node:ekr.20081011152302.10:toStroke
     #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event):
 
-        c = self.c ; k = c.k ; trace = False
+        c = self.c ; k = c.k ; trace = False ; verbose = True
 
         keynum = event.key() ; allowShift = True ; isKnown = False
         try:
             ch = chr(keynum)
-            #g.trace(ch,keynum)
+            if trace and verbose: g.trace(ch,keynum)
         except ValueError:
             ch = event.text()
             if not ch:
@@ -916,7 +917,7 @@ class leoQtEventFilter(QtCore.QObject):
             if not ch:
                 ch = "<unknown char: %s>" % (keynum)
             ch = g.toUnicode(ch,g.app.tkEncoding)
-            # if trace: g.trace('special',ch) # munge.
+            if trace and verbose: g.trace('special',ch) # munge.
 
         # Convert special characters to Tk Spellings.
         if   ch in ('\r','\n'): ch = 'Return'
@@ -926,6 +927,7 @@ class leoQtEventFilter(QtCore.QObject):
             ch2 = k.guiBindNamesDict.get(ch)
             if ch2:
                 if not isKnown: allowShift = False
+                if trace and verbose: g.trace('ch',ch,'ch2',ch2)
                 ch = ch2
 
         # Convert to Tk style binding.
