@@ -3393,7 +3393,6 @@ class keyHandlerClass:
         keyStatesTuple = ('command','insert','overwrite')
 
         # g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
-        # g.trace('stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
         for key,name in (
             # Order here is similar to bindtags order.
