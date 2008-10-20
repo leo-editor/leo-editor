@@ -5200,6 +5200,19 @@ class leoQtTree (leoFrame.leoTree):
 
     redraw = redraw_now # Compatibility
     #@-node:ekr.20081004172422.767:redraw_now
+    #@+node:ekr.20081020151747.11:redraw_after methods
+    redraw_after_icons_changed  = redraw
+    redraw_after_clone          = redraw
+    redraw_after_contract       = redraw
+    redraw_after_delete         = redraw
+    redraw_after_expand         = redraw
+    redraw_after_insert         = redraw
+    redraw_after_move_down      = redraw
+    redraw_after_move_left      = redraw
+    redraw_after_move_right     = redraw
+    redraw_after_move_up        = redraw
+    redraw_after_select         = redraw
+    #@-node:ekr.20081020151747.11:redraw_after methods
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):
 
