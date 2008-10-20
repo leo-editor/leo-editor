@@ -1415,7 +1415,7 @@ class leoQtFrame (leoFrame.leoFrame):
         '''A kludge: called to enable text changed events.'''
 
         self.initComplete = True
-        g.trace()
+        # g.trace(self.c)
     #@-node:ekr.20081020075840.20:initCompleteHint
     #@+node:ekr.20081004172422.545:Destroying the qtFrame
     #@+node:ekr.20081004172422.546:destroyAllObjects
