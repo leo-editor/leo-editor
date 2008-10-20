@@ -514,7 +514,7 @@ def scanOptions():
     if gui: gui = gui.lower()
     if gui not in ('tk','qt'):
         gui = None
-    g.trace('gui',gui)
+    # g.trace('gui',gui)
 
     # --script
     script_path = options.script

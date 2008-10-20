@@ -5,19 +5,23 @@
 @nocolor-node
 
 Urgent:
-    ** Clicking close box doesn't warn about changed files.
     ** This file appears to hang during load.
         - Make sure to update log, and scroll to bottom.
     - Put the file name in the window title.
     - Don't set the file-changed marker in the window title initially.
     ** Outline operations the do redraws are too slow.
+    - https://bugs.launchpad.net/leo-editor/+bug/286491
+        Minibuffer prompts for a string, I type "# " but get "numbersign ".
 
  Next:
     * Tab and space handling are subtly different from traditional Leo way.
     - Add settings for syntax coloring, or honor Leo's old syntax coloring settings.
-
     - Saving a window doesn't properly set its size.
     - Reading a window doesn't use its size.
+    - https://bugs.launchpad.net/leo-editor/+bug/286493
+       File "qtGui.py", line 745, in delete
+        s = s[:i] + s[j+1:]
+        TypeError: slice indices must be integers or None or have an __index__ method
 
 Next:
     -Set find handler so unit tests pass.    - print-settings doesn't print to a tab and is very slow.
@@ -95,12 +99,14 @@ def getName (self):
 def bringToFront (self):        pass 
 def deiconify (self):           pass
 def getFocus(self):             return g.app.gui.get_focus() 
-def getTitle (self):            return g.toUnicode(self.top.windowTitle(),'utf-8')
 def get_window_info(self):      return 0,0,0,0
 def iconify(self):              pass
 def lift (self):                pass
-def setTitle (self,title):      self.top.setWindowTitle(title)
 def update (self):              pass
+
+def getTitle (self):
+    return g.toUnicode(self.top.windowTitle(),'utf-8')
+
 #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
 #@+node:ekr.20081004172422.865:add_command
 def add_command (self,**keys):
@@ -561,8 +567,6 @@ def __init__(self,c,parent=None):
     # Init the QDesigner elements.
     self.setupUi(self)
 
-    self.noChange = True # Suppresses first call to c.setChanged in onTextChanged.
-
     # The following ivars (and more) are inherited from UiMainWindow:
         # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
         # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
@@ -650,6 +654,77 @@ def setTreeFont (self):
     w.setFont(font)
 #@-node:ekr.20081010070648.17:setTreeFont
 #@-node:ekr.20081018155359.12:Problems with multiple windows
+#@+node:ekr.20081020075840.21:Suppress updates until init complete
+#@+node:ekr.20081020075840.20:initCompleteHint
+def initCompleteHint (self):
+
+    '''A kludge: called to enable text changed events.'''
+
+    self.initComplete = True
+    # g.trace(self.c)
+#@-node:ekr.20081020075840.20:initCompleteHint
+#@+node:ekr.20081011035036.1: onTextChanged
+textUpdateCount = 0 # An ugly kludge.
+
+def onTextChanged (self):
+
+    '''Update Leo after the body has been changed.'''
+
+    c = self.c ; tree = c.frame.tree ; w = self
+    trace = False ; verbose = False
+    old_p,new_p = tree.old_p,tree.new_p
+
+    if tree.selecting:
+        if trace and verbose: g.trace('selecting')
+        return
+    if tree.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+
+    newInsert = w.getInsertPoint()
+    newSel = w.getSelectionRange()
+    newText = w.getAllText() # Converts to unicode.
+
+    select = new_p and new_p != self.body_p
+    if select:
+        if trace and verbose:
+            g.trace('** select',tree.new_p.headString())
+        self.body_p = new_p.copy()
+        return
+
+    p = self.body_p
+    if not p: return g.trace('oops: no p')
+
+    # Get the previous values from the tnode.
+    oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
+    if oldText == newText: return
+
+    if trace: g.trace('****changed',p.headString(),len(oldText),len(newText))
+
+    oldIns  = p.v.t.insertSpot
+    i,j = p.v.t.selectionStart,p.v.t.selectionLength
+    oldSel  = (i,j-i)
+    oldYview = None
+    undoType = 'changed event'
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,
+        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+
+    # Update the tnode.
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = newInsert
+    i,j = newSel
+    if i > j: i,j = j,i
+    new_p.v.t.selectionStart,new_p.v.t.selectionLength = (i,j-i)
+
+    # No need to recolor the body.
+    # No need to redraw the screen.
+    if not c.changed and c.frame.initComplete:
+        c.setChanged(True)
+    self.updateEditors()
+    c.frame.tree.updateIcon(p)
+#@-node:ekr.20081011035036.1: onTextChanged
+#@-node:ekr.20081020075840.21:Suppress updates until init complete
 #@-node:ekr.20081014095718.13:Recent
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor

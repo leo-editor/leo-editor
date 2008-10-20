@@ -135,8 +135,6 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         # Init the QDesigner elements.
         self.setupUi(self)
 
-        self.noChange = True # Suppresses first call to c.setChanged in onTextChanged.
-
         # The following ivars (and more) are inherited from UiMainWindow:
             # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
             # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
@@ -1349,6 +1347,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f.top = Window(c)
         g.app.gui.attachLeoIcon(f.top)
+        f.top.setWindowTitle(self.title)
         f.top.show()
 
         # This must be done after creating the commander.
@@ -2602,12 +2601,14 @@ class leoQtFrame (leoFrame.leoFrame):
     def bringToFront (self):        pass 
     def deiconify (self):           pass
     def getFocus(self):             return g.app.gui.get_focus() 
-    def getTitle (self):            return g.toUnicode(self.top.windowTitle(),'utf-8')
     def get_window_info(self):      return 0,0,0,0
     def iconify(self):              pass
     def lift (self):                pass
-    def setTitle (self,title):      self.top.setWindowTitle(title)
     def update (self):              pass
+
+    def getTitle (self):
+        return g.toUnicode(self.top.windowTitle(),'utf-8')
+
     #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
     #@-others
 #@-node:ekr.20081004172422.523:class leoQtFrame
