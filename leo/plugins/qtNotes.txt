@@ -5,7 +5,7 @@
 @nocolor-node
 
 First:
-    - Shift-Down doesn't work in tree: selectHint message.
+    - --gui=qt must disable threading colorizer 
     - Fix failing unit tests.
     - Support @ifgui in settings trees.
 Next:

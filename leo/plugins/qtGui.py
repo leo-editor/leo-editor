@@ -2579,6 +2579,8 @@ class leoQtGui(leoGui.leoGui):
         self.plainTextWidget = leoQtTextWidget
 
         self.iconimages = {} # Image cache set by getIconImage().
+
+        self.mGuiName = 'qt'
     #@-node:ekr.20081004102201.633: qtGui.__init__
     #@+node:ekr.20081004102201.634:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
