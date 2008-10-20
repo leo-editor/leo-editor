@@ -5,7 +5,6 @@
 @nocolor-node
 
 First:
-    - Ctrl+` gets eaten.
     - Shift-Down doesn't work in tree: selectHint message.
     - Fix failing unit tests.
     - Support @ifgui in settings trees.
@@ -27,6 +26,7 @@ Cleanup:
         - Add subclasses for QLineEdit, QScintilla, etc.
 Later:
     - Support multiple body editors.
+    - Handle pane orientation.
     - Only create visible widgets in the tree.
     - Make Scintilla handle Leo markup.
     - Paste of non-ascii characters produces '?' in the body pane.
@@ -274,6 +274,7 @@ def eventFilter(self, obj, event):
     if trace: self.traceEvent(obj,event,tkKey,override)
 
     return override
+#@-node:ekr.20081013143507.12:eventFilter
 #@+node:ekr.20081015132934.10:isDangerous
 def isDangerous (self,tkKey,ch):
 
@@ -284,18 +285,17 @@ def isDangerous (self,tkKey,ch):
     ch = ch.lower()
     isAlt = key.find('alt') > -1
     w = g.app.gui.get_focus()
-    tree = self.c.frame.tree.treeWidget
+    inTree = w == self.c.frame.tree.treeWidget
 
     val = (
         key in special or
-        ch in arrows and not isAlt or
-        key == 'return' and w != tree # Just barely works.
+        ch in arrows and not inTree or
+        key == 'return' and not inTree # Just barely works.
     )
 
     # g.trace(tkKey,ch,val)
     return val
 #@-node:ekr.20081015132934.10:isDangerous
-#@-node:ekr.20081013143507.12:eventFilter
 #@+node:ekr.20081011152302.10:toStroke
 def toStroke (self,tkKey,ch):
 

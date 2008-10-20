@@ -862,6 +862,7 @@ class leoQtEventFilter(QtCore.QObject):
         if trace: self.traceEvent(obj,event,tkKey,override)
 
         return override
+    #@-node:ekr.20081013143507.12:eventFilter
     #@+node:ekr.20081015132934.10:isDangerous
     def isDangerous (self,tkKey,ch):
 
@@ -872,18 +873,17 @@ class leoQtEventFilter(QtCore.QObject):
         ch = ch.lower()
         isAlt = key.find('alt') > -1
         w = g.app.gui.get_focus()
-        tree = self.c.frame.tree.treeWidget
+        inTree = w == self.c.frame.tree.treeWidget
 
         val = (
             key in special or
-            ch in arrows and not isAlt or
-            key == 'return' and w != tree # Just barely works.
+            ch in arrows and not inTree or
+            key == 'return' and not inTree # Just barely works.
         )
 
         # g.trace(tkKey,ch,val)
         return val
     #@-node:ekr.20081015132934.10:isDangerous
-    #@-node:ekr.20081013143507.12:eventFilter
     #@+node:ekr.20081011152302.10:toStroke
     def toStroke (self,tkKey,ch):
 
@@ -5189,8 +5189,8 @@ class leoQtTree (leoFrame.leoTree):
                 w.setCurrentItem(it)
                 break
         else:
-            # Don't give a warning unless aList exists.
-            if aList:
+            if False and aList:
+                g.trace('redrawing',self.redrawing,g.callers())
                 g.trace('not found %s in %s' % (aList,h))
     #@-node:ekr.20081009055104.11:selectHint
     #@+node:ekr.20081004172422.801:findEditWidget
