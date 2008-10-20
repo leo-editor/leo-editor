@@ -883,7 +883,8 @@ class baseCommands:
                 c.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
 
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed()
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2834:save (commands)
     #@+node:ekr.20031218072017.2835:saveAs
@@ -919,7 +920,8 @@ class baseCommands:
             c.fileCommands.saveAs(c.mFileName)
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
-        c.redraw()
+        ### c.redraw()
+        c.redraw_after_icons_changed()
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2835:saveAs
     #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -973,7 +975,9 @@ class baseCommands:
             c.fileCommands.saveTo(fileName)
             c.updateRecentFiles(fileName)
             g.chdir(fileName)
-        c.redraw()
+
+        # c.redraw()
+        c.redraw_after_icons_changed()
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2836:saveTo
     #@+node:ekr.20031218072017.2837:revert
@@ -2369,7 +2373,9 @@ class baseCommands:
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
         if not g.unitTesting:
             g.es("blanks converted to tabs in",count,"nodes") # Must come before c.redraw().
-        if count > 0: c.redraw()
+        if count > 0:
+            # c.redraw()
+            c.redraw_after_icons_changed()
     #@-node:ekr.20031218072017.1704:convertAllBlanks
     #@+node:ekr.20031218072017.1705:convertAllTabs
     def convertAllTabs (self,event=None):
@@ -2413,7 +2419,9 @@ class baseCommands:
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
         if not g.unitTesting:
             g.es("tabs converted to blanks in",count,"nodes")
-        if count > 0: c.redraw()
+        if count > 0:
+            # c.redraw()
+            c.redraw_after_icons_changed()
     #@-node:ekr.20031218072017.1705:convertAllTabs
     #@+node:ekr.20031218072017.1821:convertBlanks
     def convertBlanks (self,event=None):
@@ -3101,7 +3109,8 @@ class baseCommands:
             dirtyVnodeList = []
         else:
             dirtyVnodeList = p.setDirty()
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed()
 
         # Scroll as necessary.
         if oldYview:
@@ -3354,7 +3363,8 @@ class baseCommands:
             pasted.moveToNthChildOf(back,0)
         c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
         u.afterInsertNode(pasted,undoType,undoData)
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_insert()
         c.recolor()
     #@-node:ekr.20031218072017.1551:pasteOutline
     #@+node:EKR.20040610130943:pasteOutlineRetainingClones
@@ -3487,7 +3497,8 @@ class baseCommands:
         c.selectPosition(newNode)
         c.setChanged(True)
         u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-        c.redraw()
+        ### c.redraw()
+        c.redraw_after_delete()
 
         c.validateOutline()
     #@-node:ekr.20031218072017.1193:c.deleteOutline
@@ -3517,7 +3528,11 @@ class baseCommands:
         c.selectPosition(p)
         c.setChanged(True)
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-        c.redraw_now()
+
+        if 0: # c.editPosition now calls redraw.
+            ### c.redraw_now()
+            c.redraw_after_insert()
+            c.outerUpdate()
 
         c.editPosition(p,selectAll=True)
 
@@ -3547,7 +3562,8 @@ class baseCommands:
         if c.validateOutline():
             u.afterCloneNode(clone,'Clone Node',undoData,dirtyVnodeList=dirtyVnodeList)
             c.selectPosition(clone)
-        c.redraw()
+        ### c.redraw()
+        c.redraw_after_clone()
 
         return clone # For mod_labels and chapters plugins.
     #@-node:ekr.20031218072017.1762:c.clone
@@ -4487,7 +4503,8 @@ class baseCommands:
         # g.trace(p.headString())
 
         p.contract()
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_contract()
         c.treeFocusHelper()
     #@-node:ekr.20031218072017.2901:contractNode
     #@+node:ekr.20040930064232:contractNodeOrGoToParent
@@ -4616,7 +4633,8 @@ class baseCommands:
         c = self ; v = c.currentVnode()
 
         v.expand()
-        c.redraw()
+        ### c.redraw()
+        c.redraw_after_expand()
         c.treeFocusHelper()
     #@-node:ekr.20031218072017.2907:expandNode
     #@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
@@ -4632,7 +4650,8 @@ class baseCommands:
         if not p.isExpanded():
             c.expandNode()
         c.selectVnode(p.firstChild())
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_expand()
         c.treeFocusHelper()
 
     def expandNodeOrGoToFirstChild (self,event=None):
@@ -4643,9 +4662,11 @@ class baseCommands:
         if p.hasChildren():
             if not p.isExpanded():
                 c.expandNode()
+                c.redraw_after_expand()
             else:
                 c.selectVnode(p.firstChild())
-                c.redraw()
+                # c.redraw()
+                c.redraw_after_select()
         c.treeFocusHelper()
     #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
     #@+node:ekr.20060928062431:expandOnlyAncestorsOfNode
@@ -4735,7 +4756,8 @@ class baseCommands:
         u.afterChangeGroup(current,undoType)
         if not g.unitTesting:
             g.es("done",color="blue")
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed()
     #@-node:ekr.20031218072017.2923:markChangedHeadlines
     #@+node:ekr.20031218072017.2924:markChangedRoots
     def markChangedRoots (self,event=None):
@@ -4758,7 +4780,8 @@ class baseCommands:
         u.afterChangeGroup(current,undoType)
         if not g.unitTesting:
             g.es("done",color="blue")
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed()
     #@-node:ekr.20031218072017.2924:markChangedRoots
     #@+node:ekr.20031218072017.2925:markAllAtFileNodesDirty
     def markAllAtFileNodesDirty (self,event=None):
@@ -4774,7 +4797,8 @@ class baseCommands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed()
     #@-node:ekr.20031218072017.2925:markAllAtFileNodesDirty
     #@+node:ekr.20031218072017.2926:markAtFileNodesDirty
     def markAtFileNodesDirty (self,event=None):
@@ -4793,7 +4817,8 @@ class baseCommands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed()
     #@-node:ekr.20031218072017.2926:markAtFileNodesDirty
     #@+node:ekr.20031218072017.2927:markClones
     def markClones (self,event=None):
@@ -4817,7 +4842,8 @@ class baseCommands:
                 dirtyVnodeList.extend(dirtyVnodeList2)
                 u.afterMark(p,undoType,bunch)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed()
     #@-node:ekr.20031218072017.2927:markClones
     #@+node:ekr.20031218072017.2928:markHeadline & est
     def markHeadline (self,event=None):
@@ -4836,7 +4862,8 @@ class baseCommands:
         dirtyVnodeList = p.setDirty()
         c.setChanged(True)
         u.afterMark(p,undoType,bunch,dirtyVnodeList=dirtyVnodeList)
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed()
     #@-node:ekr.20031218072017.2928:markHeadline & est
     #@+node:ekr.20031218072017.2929:markSubheads
     def markSubheads (self,event=None):
@@ -4858,7 +4885,8 @@ class baseCommands:
                 c.setChanged(True)
                 u.afterMark(p,undoType,bunch)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed()
     #@-node:ekr.20031218072017.2929:markSubheads
     #@+node:ekr.20031218072017.2930:unmarkAll
     def unmarkAll (self,event=None):
@@ -4884,7 +4912,8 @@ class baseCommands:
             g.doHook("clear-all-marks",c=c,p=p,v=p)
             c.setChanged(True)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed()
     #@-node:ekr.20031218072017.2930:unmarkAll
     #@-node:ekr.20031218072017.2922:Mark...
     #@+node:ekr.20031218072017.1766:Move... (Commands)
@@ -5001,7 +5030,8 @@ class baseCommands:
             c.setChanged(True)
             u.afterMoveNode(p,'Move Down',undoData,dirtyVnodeList)
         c.selectPosition(p) # Also sets rootPosition.
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_move_down()
         c.treeFocusHelper()
 
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -5039,7 +5069,8 @@ class baseCommands:
         if sparseMove: # New in Leo 4.4.2
             parent.contract()
         c.selectPosition(p) # Also sets rootPosition.
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_move_left()
         c.treeFocusHelper()
 
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -5078,7 +5109,8 @@ class baseCommands:
         c.setChanged(True)
         u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
         c.selectPosition(p) # Also sets root position.
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_move_right()
         c.treeFocusHelper()
 
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -5160,7 +5192,8 @@ class baseCommands:
             c.setChanged(True)
             u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
         c.selectPosition(p) # Also sets root position.
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_move_up()
         c.treeFocusHelper()
 
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -5229,7 +5262,8 @@ class baseCommands:
         if p:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            c.redraw_now()
+            ### c.redraw_now()
+            c.redraw_after_select()
     #@-node:ekr.20031218072017.1628:goNextVisitedNode
     #@+node:ekr.20031218072017.1627:goPrevVisitedNode
     def goPrevVisitedNode (self,event=None):
@@ -5243,7 +5277,8 @@ class baseCommands:
         if p:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            c.redraw_now()
+            ### c.redraw_now()
+            c.redraw_after_select()
     #@-node:ekr.20031218072017.1627:goPrevVisitedNode
     #@+node:ekr.20031218072017.2914:goToFirstNode
     def goToFirstNode (self,event=None):
@@ -5350,7 +5385,8 @@ class baseCommands:
             c.frame.tree.expandAllAncestors(p)
 
         c.selectPosition(p)
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_select()
     #@-node:ekr.20031218072017.2916:goToNextClone
     #@+node:ekr.20071213123942:findNextClone
     def findNextClone (self,event=None):
@@ -5376,7 +5412,8 @@ class baseCommands:
                 cc.selectChapterByName(name)
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            c.redraw()
+            # c.redraw()
+            c.redraw_after_select()
         else:
             g.es('no more clones',color='blue')
     #@-node:ekr.20071213123942:findNextClone
@@ -5543,7 +5580,9 @@ class baseCommands:
         if p:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            if redraw: c.redraw()
+            if redraw:
+                # c.redraw()
+                c.redraw_after_select()
 
         c.treeFocusHelper()
     #@-node:ekr.20070226113916: treeSelectHelper
@@ -6241,6 +6280,30 @@ class baseCommands:
     # Compatibility with old scripts
     force_redraw = redraw_now
     #@-node:ekr.20080514131122.14:c.redraw and c.redraw_now
+    #@+node:ekr.20081020151805.2:c.redraw_after methods (new)
+    def redraw_after_icons_changed(self):
+        return self.frame.tree.redraw_after_icons_changed()
+    def redraw_after_clone(self):
+        return self.frame.tree.redraw_after_clone()
+    def redraw_after_contract(self):
+        return self.frame.tree.redraw_after_contract()
+    def redraw_after_delete(self):
+        return self.frame.tree.redraw_after_delete()
+    def redraw_after_expand(self):
+        return self.frame.tree.redraw_after_expand()
+    def redraw_after_insert(self):
+        return self.frame.tree.redraw_after_insert()
+    def redraw_after_move_down(self):
+        return self.frame.tree.redraw_after_move_down()
+    def redraw_after_move_left(self):
+        return self.frame.tree.redraw_after_move_left()
+    def redraw_after_move_right(self):
+        return self.frame.tree.redraw_after_move_right()
+    def redraw_after_move_up(self):
+        return self.frame.tree.redraw_after_move_up()
+    def redraw_after_select(self):
+        return self.frame.tree.redraw_after_select()
+    #@-node:ekr.20081020151805.2:c.redraw_after methods (new)
     #@+node:ekr.20080514131122.15:c.restoreFocus
     def restoreFocus (self):
 
@@ -6969,7 +7032,8 @@ class baseCommands:
             p.setDirty()
             if not c.isChanged():
                 c.setChanged(True)
-            c.redraw()
+            # c.redraw()
+            c.redraw_after_icons_changed()
     #@-node:ekr.20040305223522:c.setBodyString
     #@+node:ekr.20031218072017.2989:c.setChanged
     def setChanged (self,changedFlag):

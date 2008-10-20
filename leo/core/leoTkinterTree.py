@@ -323,8 +323,7 @@ class leoTkinterTree (leoFrame.leoTree):
         self.freeUserIcons = {}
 
         self._block_canvas_menu = False
-
-
+    #@nonl
     #@-node:ekr.20040803072955.16:__init__ (tkTree)
     #@+node:ekr.20051024102724:tkTtree.setBindings & helper
     def setBindings (self,):
@@ -1213,7 +1212,8 @@ class leoTkinterTree (leoFrame.leoTree):
         self.drag_p = None # Disable drags across redraws.
         self.dragging = False
         if trace:
-            g.trace('redrawCount',self.redrawCount,g.callers()) # 'len(c.hoistStack)',len(c.hoistStack))
+            g.trace('redrawCount',self.redrawCount,g.callers(5))
+                # 'len(c.hoistStack)',len(c.hoistStack))
             if 0:
                 delta = g.app.positions - self.prevPositions
                 g.trace("**** gen: %-3d positions: %5d +%4d" % (
@@ -1499,6 +1499,19 @@ class leoTkinterTree (leoFrame.leoTree):
         return h, False
     #@-node:ekr.20040803072955.70:yoffset (tkTree)
     #@-node:ekr.20040803072955.62:Helpers...
+    #@+node:ekr.20081020151805.8:tree.edraw_after methods (new)
+    redraw_after_icons_changed  = redraw
+    redraw_after_clone          = redraw
+    redraw_after_contract       = redraw
+    redraw_after_delete         = redraw
+    redraw_after_expand         = redraw
+    redraw_after_insert         = redraw
+    redraw_after_move_down      = redraw
+    redraw_after_move_left      = redraw
+    redraw_after_move_right     = redraw
+    redraw_after_move_up        = redraw
+    redraw_after_select         = redraw
+    #@-node:ekr.20081020151805.8:tree.edraw_after methods (new)
     #@-node:ekr.20040803072955.35:Drawing... (tkTree)
     #@+node:ekr.20040803072955.71:Event handlers (tkTree)
     #@+node:ekr.20051105103233:Helpers

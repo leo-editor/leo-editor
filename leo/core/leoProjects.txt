@@ -11825,7 +11825,8 @@ def goPrevVisitedNode (self,event=None):
     if p:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        c.redraw_now()
+        ### c.redraw_now()
+        c.redraw_after_select()
 #@-node:ekr.20031218072017.1627:goPrevVisitedNode
 #@+node:ekr.20031218072017.1628:goNextVisitedNode
 def goNextVisitedNode (self,event=None):
@@ -11839,7 +11840,8 @@ def goNextVisitedNode (self,event=None):
     if p:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        c.redraw_now()
+        ### c.redraw_now()
+        c.redraw_after_select()
 #@-node:ekr.20031218072017.1628:goNextVisitedNode
 #@+node:ekr.20070615131604:class nodeHistory
 class nodeHistory:

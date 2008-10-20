@@ -1441,7 +1441,8 @@ def save (self,event=None):
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
 
-    c.redraw()
+    # c.redraw()
+    c.redraw_after_icons_changed()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -1477,7 +1478,8 @@ def saveAs (self,event=None):
         c.fileCommands.saveAs(c.mFileName)
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
-    c.redraw()
+    ### c.redraw()
+    c.redraw_after_icons_changed()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -1531,7 +1533,9 @@ def saveTo (self,event=None):
         c.fileCommands.saveTo(fileName)
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
-    c.redraw()
+
+    # c.redraw()
+    c.redraw_after_icons_changed()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert
@@ -3228,8 +3232,7 @@ def __init__(self,c,frame,canvas):
     self.freeUserIcons = {}
 
     self._block_canvas_menu = False
-
-
+#@nonl
 #@+node:ekr.20040803072955.17:<< define drawing constants >>
 self.box_padding = 5 # extra padding between box and icon
 self.box_width = 9 + self.box_padding

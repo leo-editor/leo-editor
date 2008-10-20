@@ -1350,7 +1350,9 @@ class leoFind:
         p = self.p
         if not p: g.trace('can not happen: self.p is None')
         c.selectPosition(p)
-        if redraw: c.redraw()
+        if redraw:
+            # c.redraw()
+            c.redraw_after_select()
 
         if self.in_headline:
             c.editPosition(p)

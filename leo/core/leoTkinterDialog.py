@@ -855,7 +855,8 @@ class tkinterListBoxDialog (leoTkinterDialog):
             p = self.positionList[n]
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            c.redraw()
+            # c.redraw()
+            c.redraw_after_select()
     #@-node:ekr.20031218072017.3896:go
     #@-others
 #@-node:ekr.20031218072017.3889:class tkinterListboxDialog

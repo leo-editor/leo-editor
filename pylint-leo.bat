@@ -18,6 +18,9 @@ goto all
 
 :errors
 
+echo leoCommands.py
+call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
+
 echo qtGui.py
 call pylint.bat leo\plugins\qtGui.py            --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -303,6 +306,9 @@ call pylint.bat leo\plugins\plugins_menu.py         --rcfile=leo\test\pylint-leo
 
 echo pluginsTest.py
 call pylint.bat leo\plugins\pluginsTest.py          --rcfile=leo\test\pylint-leo-rc.txt
+
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py                 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo quickMove.py
 call pylint.bat leo\plugins\quickMove.py            --rcfile=leo\test\pylint-leo-rc.txt
