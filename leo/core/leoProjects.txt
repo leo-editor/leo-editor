@@ -11960,6 +11960,106 @@ def visitedPositions (self):
 #@-node:ekr.20081005065934.11:Created qtGui plugin
 #@-node:ekr.20081001140516.16:Plugins
 #@-node:ekr.20080917153158.11:4.6
+#@+node:ekr.20081019140728.1:New in qtGui branch
+#@+node:ekr.20081019081958.2:Support for --gui command-line option
+#@+node:ekr.20080521132317.2:scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+
+    parser = optparse.OptionParser()
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--gui',          dest="gui")
+    parser.add_option('--silent',       action="store_true",dest="silent")
+    parser.add_option('--script',       dest="script")
+    parser.add_option('--script-window',dest="script_window")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    # g.trace(sys.argv)
+
+    # Handle the args...
+
+    # -c or --config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_finalize_join(os.getcwd(),path)
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # -- gui
+    gui = options.gui
+    if gui: gui = gui.lower()
+    if gui not in ('tk','qt'):
+        gui = None
+    g.trace('gui',gui)
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
+        try:
+            f = None
+            try:
+                f = open(script_name,'r')
+                script = f.read()
+                # g.trace("script",script)
+            except IOError:
+                g.es_print("can not open script file:",script_name, color="red")
+                script = None
+        finally:
+            if f: f.close()
+    else:
+        script = None
+
+    # --silent
+    g.app.silentMode = options.silent
+    # g.trace('silentMode',g.app.silentMode)
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    return gui, script, windowFlag
+#@-node:ekr.20080521132317.2:scanOptions
+#@+node:ekr.20080921060401.4:createSpecialGui & helper
+def createSpecialGui(gui,pymacs,script,windowFlag):
+
+    if g.isPython3:
+        # Create the curses gui.
+        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
+    elif pymacs:
+        createNullGuiWithScript(None)
+    # elif jyLeo:
+        # import leo.core.leoSwingGui as leoSwingGui
+        # g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+    elif gui == 'qt':
+        leoPlugins.loadOnePlugin ('qtGui',verbose=True)
+    elif gui == 'tk':
+        g.app.createTkGui()
+#@+node:ekr.20031218072017.1938:createNullGuiWithScript
+def createNullGuiWithScript (script):
+
+    g.app.batchMode = True
+    g.app.gui = leoGui.nullGui("nullGui")
+    g.app.gui.setScript(script)
+#@-node:ekr.20031218072017.1938:createNullGuiWithScript
+#@-node:ekr.20080921060401.4:createSpecialGui & helper
+#@-node:ekr.20081019081958.2:Support for --gui command-line option
+#@-node:ekr.20081019140728.1:New in qtGui branch
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt

@@ -1,36 +1,613 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20081016072304.13:@thin qtNotes.txt
 #@+all
-#@+node:ekr.20081010070648.5:  To do
+#@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
 First:
-    - Allow Leo to choose gui from the command line.
-        We don't have to make tkinter a plugin.
-    - print-settings doesn't print to a tab and is very slow.
-
+    - Ctrl+` gets eaten.
+    - Shift-Down doesn't work in tree: selectHint message.
+    - Fix failing unit tests.
+    - Support @ifgui in settings trees.
 Next:
-    - Fix all failing unit tests.
-        - Do gui-dependent commands (in leoQtFrame)
+    - print-settings doesn't print to a tab and is very slow.
+    - Support Icon area.
+    - Do gui-dependent commands (in leoQtFrame)
     - Complete dialogs in leoQtGui.
+    - Support chapters
 
 Cleanup:
      - Fix Stubborn bugs.
         - Menu accelerators are not shown and do not work.
         - File:Exit doesn't quit the main loop.
-
-    - Implement Leo settings in various class. (Don't force people to use stylesheets.)
+    - Implement Leo settings in various class.
+        (Don't force people to use stylesheets.)
     - Clean up text classes.
         - Finish leoQtTextWidget class.
         - Add subclasses for QLineEdit, QScintilla, etc.
 Later:
+    - Support multiple body editors.
     - Only create visible widgets in the tree.
     - Make Scintilla handle Leo markup.
     - Paste of non-ascii characters produces '?' in the body pane.
     - Make tkinter code a plugin.
         - If no gui specified on command line, use the first gui that can be imported.
-#@-node:ekr.20081010070648.5:  To do
-#@+node:ekr.20081014095718.13: Recent
+#@-node:ekr.20081010070648.5: To do
+#@+node:ekr.20081019082316.10:New features in the core
+@nocolor-node
+
+- Added support for --gui=qt and --gui=tk command-line options.
+#@nonl
+#@-node:ekr.20081019082316.10:New features in the core
+#@+node:ekr.20081017015442.15:pylint errors
+# Hard to fix
+W0221:4426:leoQtMenu.add_command: Arguments number differs from overridden method
+W0221:4607:leoQtMenu.getMenuLabel: Arguments number differs from overridden method
+#@+node:ekr.20081017015442.19:qtGui dialogs
+E0602:2793:leoQtGui.runAboutLeoDialog: Undefined variable 'qtAboutLeo'
+E0602:2798:leoQtGui.runAskLeoIDDialog: Undefined variable 'qtAskLeoID'
+E0602:2803:leoQtGui.runAskOkDialog: Undefined variable 'qtAskOk'
+E0602:2808:leoQtGui.runAskOkCancelNumberDialog: Undefined variable 'qtAskOkCancelNumber'
+E0602:2813:leoQtGui.runAskOkCancelStringDialog: Undefined variable 'qtAskOkCancelString'
+E0602:2818:leoQtGui.runAskYesNoDialog: Undefined variable 'qtAskYesNo'
+E0602:2824:leoQtGui.runAskYesNoCancelDialog: Undefined variable 'qtAskYesNoCancel'
+
+E1101:2955:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'STOCK_CANCEL' member
+E1101:2955:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_CANCEL' member
+E1101:2956:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'TOCK_OPEN' member
+E1101:2956:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
+E1101:2960:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'STOCK_CANCEL' member
+E1101:2960:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_CANCEL' member
+E1101:2961:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'STOCK_SAVE' member
+E1101:2961:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
+E1101:2966:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'FILE_CHOOSER_ACTION_SAVE' member
+E1101:2967:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'FILE_CHOOSER_ACTION_OPEN' member
+E1101:2970:leoQtGui.runFileDialog: Module 'PyQt4.QtGui' has no 'FileChooserDialog' member
+E1101:2974:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
+E1101:2983:leoQtGui.runFileDialog: Module 'PyQt4.QtGui' has no 'FileFilter' member
+E1101:2991:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
+E1101:2998:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_CANCEL' member
+#@nonl
+#@-node:ekr.20081017015442.19:qtGui dialogs
+#@-node:ekr.20081017015442.15:pylint errors
+#@+node:ekr.20081014095718.13:Recent
+#@+node:ekr.20081015062931.10:Focus stuff...
+#@+node:ekr.20081014095718.15:get_name (qtTree)
+def getName (self):
+
+    return 'canvas(tree)' # Must start with 'canvas'
+#@-node:ekr.20081014095718.15:get_name (qtTree)
+#@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
+def bringToFront (self):        pass 
+def deiconify (self):           pass
+def getFocus(self):             return g.app.gui.get_focus() 
+def getTitle (self):            return g.toUnicode(self.top.windowTitle(),'utf-8')
+def get_window_info(self):      return 0,0,0,0
+def iconify(self):              pass
+def lift (self):                pass
+def setTitle (self,title):      self.top.setWindowTitle(title)
+def update (self):              pass
+#@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
+#@+node:ekr.20081004172422.865:add_command
+def add_command (self,**keys):
+
+    """Wrapper for the Tkinter add_command menu method."""
+
+    c = self.c
+    accel = keys.get('accelerator') or ''
+    command = keys.get('command')
+    label = keys.get('label')
+    n = keys.get('underline')
+    menu = keys.get('menu') or self
+    if not label: return
+
+    if n > -1: label = label[:n] + '&' + label[n:]
+    if accel: label = '%s\t%s' % (label,accel)
+    action = menu.addAction(label)
+    if command:
+        def add_command_callback(label=label,command=command):
+            return command()
+
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL("triggered()"),add_command_callback)
+#@-node:ekr.20081004172422.865:add_command
+#@+node:ekr.20081004102201.676:class leoKeyEvent
+class leoKeyEvent:
+
+    '''A gui-independent wrapper for gui events.'''
+
+    def __init__ (self,event,c,w,tkKey):
+
+        # The main ivars.
+        self.actualEvent = event
+        self.c      = c
+        self.char   = tkKey 
+        self.keysym = tkKey
+        self.w = self.widget = w # A leoQtX object
+
+        # Auxiliary info.
+        self.x      = hasattr(event,'x') and event.x or 0
+        self.y      = hasattr(event,'y') and event.y or 0
+        # Support for fastGotoNode plugin
+        self.x_root = hasattr(event,'x_root') and event.x_root or 0
+        self.y_root = hasattr(event,'y_root') and event.y_root or 0
+
+    def __repr__ (self):
+
+        return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
+#@-node:ekr.20081004102201.676:class leoKeyEvent
+#@+node:ekr.20081004172422.510:Focus (qtBody)
+def getFocus(self):
+
+    g.trace('leoQtBody',self.widget,g.callers(4))
+    return g.app.gui.get_focus()
+
+findFocus = getFocus
+
+def hasFocus (self):
+
+    val = self.widget == g.app.gui.get_focus(self.c)
+    # g.trace('leoQtBody returns',val,self.widget,g.callers(4))
+    return val
+
+def setFocus (self):
+
+    # g.trace('leoQtBody',self.widget,g.callers(4))
+    g.app.gui.set_focus(self.c,self.widget)
+#@-node:ekr.20081004172422.510:Focus (qtBody)
+#@+node:ekr.20081004102201.657:Focus (qtGui)
+def get_focus(self,c=None):
+
+    """Returns the widget that has focus."""
+
+    w = QtGui.QApplication.focusWidget()
+    # g.trace('leoQtGui',w)
+    return w
+
+def set_focus(self,c,w):
+
+    """Put the focus on the widget."""
+
+    if w:
+        # g.trace('leoQtGui',w,g.callers(4))
+        w.setFocus()
+#@-node:ekr.20081004102201.657:Focus (qtGui)
+#@+node:ekr.20081015062931.11:widget_name (qtGui
+def widget_name (self,w):
+
+    # First try the widget's getName method.
+    if not 'w':
+        name = '<no widget>'
+    elif hasattr(w,'objectName'):
+        name = str(w.objectName())
+        if name == 'treeWidget':
+            name = 'canvas(treeWidget)'
+    elif hasattr(w,'getName'):
+        name = w.getName()
+    elif hasattr(w,'_name'):
+        name = w._name
+    else:
+        name = repr(w)
+
+    # g.trace(name,w)
+    return name
+#@-node:ekr.20081015062931.11:widget_name (qtGui
+#@+node:ekr.20081004102201.628:class leoQtEventFilter
+class leoQtEventFilter(QtCore.QObject):
+
+    << about internal bindings >>
+
+    @others
+#@+node:ekr.20081007115148.6:<< about internal bindings >>
+@nocolor-node
+@
+
+Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
+
+1.  The case of plain letters is significant:  a is not A.
+
+2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
+warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+significant. Thus, the Shift- prefix is required if you want an upper-case
+letter (with the exception of 'bare' uppercase letters.)
+
+The following table illustrates these rules. In each row, the first entry is the
+key (for k.bindingsDict) and the other entries are equivalents that the user may
+specify in leoSettings.leo:
+
+a, Key-a, Key-A
+A, Shift-A
+Alt-a, Alt-A
+Alt-A, Alt-Shift-a, Alt-Shift-A
+Ctrl-a, Ctrl-A
+Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+!, Key-!,Key-exclam,exclam
+
+This table is consistent with how Leo already works (because it is consistent
+with Tk's key-event specifiers). It is also, I think, the least confusing set of
+rules.
+#@nonl
+#@-node:ekr.20081007115148.6:<< about internal bindings >>
+#@+node:ekr.20081018155359.10: ctor
+def __init__(self,c,w,tag=''):
+
+    # Init the base class.
+    QtCore.QObject.__init__(self)
+
+    self.c = c
+    self.w = w      # A leoQtX object, *not* a Qt object.
+    self.tag = tag
+#@-node:ekr.20081018155359.10: ctor
+#@+node:ekr.20081013143507.12:eventFilter
+def eventFilter(self, obj, event):
+
+    c = self.c ; k = c.k ; e = QtCore.QEvent 
+    trace = False ; verbose = True
+    eventType = event.type()
+
+    if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
+        tkKey,ch,ignore = self.toTkKey(event)
+        # if trace and verbose: g.trace(tkKey,ch)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if k.inState():
+            override = not ignore # allow all keystroke.
+        elif safe_mode:
+            override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+
+    if eventType == e.KeyPress:
+        if override:
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            stroke = self.toStroke(tkKey,ch)
+            leoEvent = leoKeyEvent(event,c,w,stroke)
+            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            if trace: g.trace(self.tag,
+                g.choose(k.inState(),'in-state','bound'),tkKey,'ret',ret)
+        else:
+            if trace and verbose: g.trace(self.tag,'unbound',tkKey)
+
+    if trace: self.traceEvent(obj,event,tkKey,override)
+
+    return override
+#@+node:ekr.20081015132934.10:isDangerous
+def isDangerous (self,tkKey,ch):
+
+    arrows = ('home','end','left','right','up','down')
+    special = ('tab','backspace','period','parenright','parenleft')
+
+    key = tkKey.lower()
+    ch = ch.lower()
+    isAlt = key.find('alt') > -1
+    w = g.app.gui.get_focus()
+    tree = self.c.frame.tree.treeWidget
+
+    val = (
+        key in special or
+        ch in arrows and not isAlt or
+        key == 'return' and w != tree # Just barely works.
+    )
+
+    # g.trace(tkKey,ch,val)
+    return val
+#@-node:ekr.20081015132934.10:isDangerous
+#@-node:ekr.20081013143507.12:eventFilter
+#@+node:ekr.20081011152302.10:toStroke
+def toStroke (self,tkKey,ch):
+
+    k = self.c.k
+
+    s = tkKey
+
+    # ch2 = k.guiBindNamesInverseDict.get(ch)
+    # if ch2:
+        # s = s.replace(ch,ch2)
+
+    return (
+        s.replace('Alt-','Alt+').
+        replace('Control-','Ctrl+').
+        replace('Shift-','Shift+'))
+#@-node:ekr.20081011152302.10:toStroke
+#@+node:ekr.20081008084746.1:toTkKey
+def toTkKey (self,event):
+
+    c = self.c ; k = c.k ; trace = False ; verbose = True
+
+    keynum = event.key() ; allowShift = True ; isKnown = False
+    try:
+        ch = chr(keynum)
+        if trace and verbose: g.trace(ch,keynum)
+    except ValueError:
+        ch = event.text()
+        if not ch:
+            ch = QtGui.QKeySequence(keynum).toString()
+            isKnown = True
+        if not ch:
+            ch = "<unknown char: %s>" % (keynum)
+        ch = g.toUnicode(ch,g.app.tkEncoding)
+        if trace and verbose: g.trace('special',ch) # munge.
+
+    # Convert special characters to Tk Spellings.
+    if   ch in ('\r','\n'): ch = 'Return'
+    elif ch == '\t': ch = 'Tab'
+    elif ch == '\b': ch = 'BackSpace'
+    else:
+        ch2 = k.guiBindNamesDict.get(ch)
+        if ch2:
+            if not isKnown: allowShift = False
+            if trace and verbose: g.trace('ch',ch,'ch2',ch2)
+            ch = ch2
+
+    # Convert to Tk style binding.
+    mods = [] ; alt,ctrl = False,False
+    if event.modifiers() & QtCore.Qt.AltModifier:
+        mods.append("Alt")
+    if event.modifiers() & QtCore.Qt.ControlModifier:
+        mods.append("Control")
+    if event.modifiers() & QtCore.Qt.ShiftModifier:
+        # g.trace('allowShift',allowShift,'ch')
+        if not allowShift:
+            pass
+        elif len(ch) == 1:
+            ch = ch.upper()
+        else:
+            mods.append("Shift")
+    elif len(ch) == 1: ch = ch.lower()
+
+    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+    # If the documentation is to be believed,
+    # this definition of ignore should be portable.
+    ignore = not g.toUnicode(event.text(),'utf-8')
+    if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey),'ignore',ignore)
+
+    return tkKey,ch,ignore
+#@-node:ekr.20081008084746.1:toTkKey
+#@+node:ekr.20081013143507.11:traceEvent
+def traceEvent (self,obj,event,tkKey,override):
+
+    c = self.c ; e = QtCore.QEvent
+
+    eventType = event.type()
+
+    if False and not self.dumped:
+        self.dumped = True
+        g.trace(len(c.k.masterGuiBindingsDict.keys()))
+
+    if 0: # Show focus events.
+        show = (
+            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            (e.Enter,'enter'),(e.Leave,'leave'),
+        )
+
+    else:
+        show = (
+            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
+        )
+
+    ignore = (
+        e.ToolTip,
+        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.Polish,e.PolishRequest,
+    )
+
+    for val,kind in show:
+        if eventType == val:
+            g.trace(
+                # 'val: %-3s' %(val),
+                'kind',kind,'key',tkKey,'override',override)
+            return
+
+    if False and eventType not in ignore:
+        g.trace('%3s:%s' % (eventType,'unknown'))
+#@-node:ekr.20081013143507.11:traceEvent
+#@-node:ekr.20081004102201.628:class leoQtEventFilter
+#@+node:ekr.20081004172422.846:editLabel
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c
+    # g.trace(p.headString(),selectAll)
+    w = self.treeWidget
+    it = self.vnodeDict[p.v][0][1]
+
+    w.editItem(it)
+    if not selectAll:
+        editWidget = w.itemWidget(it,0) # A QLineEdit
+        s = editWidget.text()
+        editWidget.setSelection(len(s),0)
+
+    # A nice hack: just clear the focus request.
+    c.requestedFocusWidget = None
+
+    # g.trace('leoQtTree','it',it,p and p.headString())
+
+    # if p and p != self.editPosition():
+        # self.endEditLabel()
+        # # This redraw *is* required so the c.edit_widget(p) will exist.
+        # c.redraw()
+        # c.outerUpdate()
+
+    # self.setEditPosition(p) # That is, self._editPosition = p
+    # w = c.edit_widget(p)
+    # if p and w:
+        # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+        # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        # c.headlineWantsFocus(p) # Make sure the focus sticks.
+        # c.k.showStateAndMode(w)
+#@-node:ekr.20081004172422.846:editLabel
+#@-node:ekr.20081015062931.10:Focus stuff...
+#@+node:ekr.20081018155359.12:Problems with multiple windows
+#@+node:ekr.20081004172422.767:redraw_now
+def redraw_now (self,scroll=False,forceDraw=False):
+
+    '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
+
+    c = self.c ; w = self.treeWidget ; trace = False ; verbose = False
+    if not w: return
+    if self.redrawing:
+        return g.trace('already drawing')
+
+    # Traces...
+    self.redrawCount += 1
+    current = c.currentPosition()
+    if trace: g.trace(self.redrawCount,current and current.headString())
+
+    # Loop init.
+    found_current = None
+    self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
+    self.itemsDict = {} # keys are items, values are positions
+    parentsDict = {}
+
+    self.redrawing = True
+    try:
+        w.clear()
+        for p in c.allNodes_iter():
+            it = parentsDict.get(p.parent().v,w)
+            it = QtGui.QTreeWidgetItem(it)
+            icon = self.getIcon(p)
+            if icon: it.setIcon(0,icon)
+            it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
+            self.itemsDict[id(it)] = p.copy() # Valid.
+            parentsDict[p.v] = it # Just barely valid for drawing.
+            # More accurate info, for use by selectHint.
+            aList = self.vnodeDict.get(p.v,[])
+            data = p.copy(),it
+            aList.append(data)
+            self.vnodeDict[p.v] = aList
+            it.setText(0,p.headString())
+            if p.hasChildren() and p.isExpanded() and self.allAncestorsExpanded(p):
+                w.expandItem(it)
+            else:
+                w.collapseItem(it)
+
+            if p == current:
+                w.setCurrentItem(it) ; found_current = it
+    finally:
+        if found_current is None:
+            if self.redrawCount > 1:
+                g.trace('** no current item: %s' % (p and p.headString()))
+        else:
+            w.scrollToItem(found_current, QtGui.QAbstractItemView.PositionAtCenter)
+
+        # Necessary to get the tree drawn initially.
+        if self.redrawCount == 1:
+            # g.trace('***repaint')
+            w.repaint()
+
+        self.redrawing = False
+
+redraw = redraw_now # Compatibility
+#@-node:ekr.20081004172422.767:redraw_now
+#@+node:ekr.20081004102201.629:class  Window
+class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
+
+    '''A class representing all parts of the main Qt window
+    as created by Designer.
+
+    c.frame.top is a Window object.
+
+    All leoQtX classes use the ivars of this Window class to
+    support operations requested by Leo's core.
+    '''
+
+    @others
+
+#@+node:ekr.20081004172422.884: ctor (Window)
+# Called from leoQtFrame.finishCreate.
+
+def __init__(self,c,parent=None):
+
+    '''Create Leo's main window, c.frame.top'''
+
+    self.c = c
+
+    # Init both base classes.
+    QtGui.QMainWindow.__init__(self,parent)
+    qt_main.Ui_MainWindow.__init__(self)
+
+    # Init the QDesigner elements.
+    self.setupUi(self)
+
+    # The following ivars (and more) are inherited from UiMainWindow:
+        # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
+        # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
+        # self.tabWidget  = QtGui.QTabWidget(self.splitter)     # The log pane.
+        # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
+        # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
+
+    self.buttons = self.addToolBar("Buttons")
+    self.buttons.addAction(self.actionSave)
+
+    # self.stackedWidget.adjustSize()
+
+    self.setStyleSheets()
+#@-node:ekr.20081004172422.884: ctor (Window)
+#@+node:ekr.20081016072304.14:setStyleSheets & helper
+styleSheet_inited = False
+
+def setStyleSheets(self):
+
+    c = self.c
+
+    sheet = c.config.getData('qt-gui-plugin-style-sheet')
+    if sheet: sheet = '\n'.join(sheet)
+    self.setStyleSheet(sheet or self.default_sheet())
+#@nonl
+#@+node:ekr.20081018053140.10:defaultStyleSheet
+def defaultStyleSheet (self):
+
+    '''Return a reasonable default style sheet.'''
+
+    # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+    return '''\
+
+/* A QWidget: supports only background attributes.*/
+QSplitter::handle {
+
+    background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+}
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-width: 3px;
+    border-style: solid;
+}
+QTreeWidget {
+    background-color: #ffffec; /* Leo's traditional tree color */
+}
+/* Not supported. */
+QsciScintilla {
+    background-color: pink;
+}
+'''
+#@-node:ekr.20081018053140.10:defaultStyleSheet
+#@-node:ekr.20081016072304.14:setStyleSheets & helper
+#@-node:ekr.20081004102201.629:class  Window
+#@+node:ekr.20081010070648.17:setTreeFont
+def setTreeFont (self):
+
+    c = self.c ; w = self.treeWidget
+
+    font = c.config.getFontFromParams(
+        "headline_text_font_family", "headline_text_font_size",
+        "headline_text_font_slant",  "headline_text_font_weight",
+        c.config.defaultTreeFontSize)
+
+    if not font:
+        # g.trace('*** no font, using default')
+        font = QtGui.QFont("SansSerif",12, QtGui.QFont.Normal)
+
+    w.setFont(font)
+#@-node:ekr.20081010070648.17:setTreeFont
+#@-node:ekr.20081018155359.12:Problems with multiple windows
+#@-node:ekr.20081014095718.13:Recent
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor
 
@@ -1329,10 +1906,6 @@ FAILED (failures=2)
 #@nonl
 #@-node:ekr.20081013210935.14:leoFileCommands
 #@+node:ekr.20081013210935.24:leoFind
-creating: dynamicUnitTest.leo
-Using menus from leoSettings.leo
-reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
-@enabled-plugins found in leoSettings.leo
 @enabled-plugins found in leoSettings.leo
 EEEE.
 ======================================================================
@@ -1344,7 +1917,7 @@ Traceback (most recent call last):
     execfile(scriptFile,d)
   File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 14, in <module>
     c.k.simulateCommand(command)
-  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3045, in simulateCommand
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3049, in simulateCommand
     k.masterCommand(event,func,stroke)
   File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 2534, in masterCommand
     c.doCommand(func,commandName,event=event)
@@ -1373,7 +1946,7 @@ Traceback (most recent call last):
     execfile(scriptFile,d)
   File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 13, in <module>
     c.k.simulateCommand(command)
-  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3045, in simulateCommand
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3049, in simulateCommand
     k.masterCommand(event,func,stroke)
   File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 2534, in masterCommand
     c.doCommand(func,commandName,event=event)
@@ -1396,7 +1969,7 @@ Traceback (most recent call last):
     execfile(scriptFile,d)
   File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 3, in <module>
     c.k.simulateCommand('show-find-options')
-  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3045, in simulateCommand
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3049, in simulateCommand
     k.masterCommand(event,func,stroke)
   File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 2534, in masterCommand
     c.doCommand(func,commandName,event=event)
@@ -1419,7 +1992,7 @@ Traceback (most recent call last):
     execfile(scriptFile,d)
   File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 17, in <module>
     c.k.simulateCommand(command)
-  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3045, in simulateCommand
+  File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 3049, in simulateCommand
     k.masterCommand(event,func,stroke)
   File "C:\leo.repo\qt-plugin\leo\core\leoKeys.py", line 2534, in masterCommand
     c.doCommand(func,commandName,event=event)
@@ -1434,9 +2007,10 @@ Traceback (most recent call last):
 AttributeError: 'NoneType' object has no attribute 'toggleOption'
 
 ----------------------------------------------------------------------
-Ran 5 tests in 0.047s
+Ran 5 tests in 0.032s
 
 FAILED (errors=4)
+C:\leo.repo\qt-plugin>
 #@nonl
 #@-node:ekr.20081013210935.24:leoFind
 #@+node:ekr.20081013210935.25:leoFrame **
@@ -1924,579 +2498,8 @@ FAILED (failures=9)
 #@-node:ekr.20081013210935.36:leoUndo
 #@-node:ekr.20081013210935.32:Fail
 #@-node:ekr.20081013210935.1:Unit tests
-#@+node:ekr.20081015062931.10:Focus stuff...
-#@+node:ekr.20081014095718.15:get_name (qtTree)
-def getName (self):
-
-    return 'canvas(tree)' # Must start with 'canvas'
-#@-node:ekr.20081014095718.15:get_name (qtTree)
-#@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
-def bringToFront (self):        pass 
-def deiconify (self):           pass
-def getFocus(self):             return g.app.gui.get_focus() 
-def getTitle (self):            return g.toUnicode(self.top.windowTitle(),'utf-8')
-def get_window_info(self):      return 0,0,0,0
-def iconify(self):              pass
-def lift (self):                pass
-def setTitle (self,title):      self.top.setWindowTitle(title)
-def update (self):              pass
-#@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
-#@+node:ekr.20081004172422.865:add_command
-def add_command (self,**keys):
-
-    """Wrapper for the Tkinter add_command menu method."""
-
-    c = self.c
-    accel = keys.get('accelerator') or ''
-    command = keys.get('command')
-    label = keys.get('label')
-    n = keys.get('underline')
-    menu = keys.get('menu') or self
-    if not label: return
-
-    if n > -1: label = label[:n] + '&' + label[n:]
-    if accel: label = '%s\t%s' % (label,accel)
-    action = menu.addAction(label)
-    if command:
-        def add_command_callback(label=label,command=command):
-            return command()
-
-        QtCore.QObject.connect(action,
-            QtCore.SIGNAL("triggered()"),add_command_callback)
-#@-node:ekr.20081004172422.865:add_command
-#@+node:ekr.20081004102201.676:class leoKeyEvent
-class leoKeyEvent:
-
-    '''A gui-independent wrapper for gui events.'''
-
-    def __init__ (self,event,c,w,tkKey):
-
-        # The main ivars.
-        self.actualEvent = event
-        self.c      = c
-        self.char   = tkKey 
-        self.keysym = tkKey
-        self.w = self.widget = w # A leoQtX object
-
-        # Auxiliary info.
-        self.x      = hasattr(event,'x') and event.x or 0
-        self.y      = hasattr(event,'y') and event.y or 0
-        # Support for fastGotoNode plugin
-        self.x_root = hasattr(event,'x_root') and event.x_root or 0
-        self.y_root = hasattr(event,'y_root') and event.y_root or 0
-
-    def __repr__ (self):
-
-        return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
-#@-node:ekr.20081004102201.676:class leoKeyEvent
-#@+node:ekr.20081004172422.510:Focus (qtBody)
-def getFocus(self):
-
-    g.trace('leoQtBody',self.widget,g.callers(4))
-    return g.app.gui.get_focus()
-
-findFocus = getFocus
-
-def hasFocus (self):
-
-    val = self.widget == g.app.gui.get_focus(self.c)
-    # g.trace('leoQtBody returns',val,self.widget,g.callers(4))
-    return val
-
-def setFocus (self):
-
-    # g.trace('leoQtBody',self.widget,g.callers(4))
-    g.app.gui.set_focus(self.c,self.widget)
-#@-node:ekr.20081004172422.510:Focus (qtBody)
-#@+node:ekr.20081004102201.657:Focus (qtGui)
-def get_focus(self,c=None):
-
-    """Returns the widget that has focus."""
-
-    w = QtGui.QApplication.focusWidget()
-    # g.trace('leoQtGui',w)
-    return w
-
-def set_focus(self,c,w):
-
-    """Put the focus on the widget."""
-
-    if w:
-        # g.trace('leoQtGui',w,g.callers(4))
-        w.setFocus()
-#@-node:ekr.20081004102201.657:Focus (qtGui)
-#@+node:ekr.20081015062931.11:widget_name (qtGui
-def widget_name (self,w):
-
-    # First try the widget's getName method.
-    if not 'w':
-        name = '<no widget>'
-    elif hasattr(w,'objectName'):
-        name = str(w.objectName())
-        if name == 'treeWidget':
-            name = 'canvas(treeWidget)'
-    elif hasattr(w,'getName'):
-        name = w.getName()
-    elif hasattr(w,'_name'):
-        name = w._name
-    else:
-        name = repr(w)
-
-    # g.trace(name,w)
-    return name
-#@-node:ekr.20081015062931.11:widget_name (qtGui
-#@+node:ekr.20081004102201.628:class leoQtEventFilter
-class leoQtEventFilter(QtCore.QObject):
-
-    << about internal bindings >>
-
-    @others
-#@+node:ekr.20081007115148.6:<< about internal bindings >>
-@nocolor-node
-@
-
-Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
-
-1.  The case of plain letters is significant:  a is not A.
-
-2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
-warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
-
-3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
-significant. Thus, the Shift- prefix is required if you want an upper-case
-letter (with the exception of 'bare' uppercase letters.)
-
-The following table illustrates these rules. In each row, the first entry is the
-key (for k.bindingsDict) and the other entries are equivalents that the user may
-specify in leoSettings.leo:
-
-a, Key-a, Key-A
-A, Shift-A
-Alt-a, Alt-A
-Alt-A, Alt-Shift-a, Alt-Shift-A
-Ctrl-a, Ctrl-A
-Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
-!, Key-!,Key-exclam,exclam
-
-This table is consistent with how Leo already works (because it is consistent
-with Tk's key-event specifiers). It is also, I think, the least confusing set of
-rules.
-#@nonl
-#@-node:ekr.20081007115148.6:<< about internal bindings >>
-#@+node:ekr.20081018155359.10: ctor
-def __init__(self,c,w,tag=''):
-
-    # Init the base class.
-    QtCore.QObject.__init__(self)
-
-    self.c = c
-    self.w = w      # A leoQtX object, *not* a Qt object.
-    self.tag = tag
-#@-node:ekr.20081018155359.10: ctor
-#@+node:ekr.20081013143507.12:eventFilter
-def eventFilter(self, obj, event):
-
-    c = self.c ; k = c.k ; e = QtCore.QEvent 
-    trace = False ; verbose = True
-    eventType = event.type()
-
-    if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
-        tkKey,ch,ignore = self.toTkKey(event)
-        # if trace and verbose: g.trace(tkKey,ch)
-        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-        if k.inState():
-            override = not ignore # allow all keystroke.
-        elif safe_mode:
-            override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
-        else:
-            override = len(aList) > 0
-    else:
-        override = False ; tkKey = '<no key>'
-
-    if eventType == e.KeyPress:
-        if override:
-            w = self.w # Pass the wrapper class, not the wrapped widget.
-            stroke = self.toStroke(tkKey,ch)
-            leoEvent = leoKeyEvent(event,c,w,stroke)
-            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-            if trace: g.trace(self.tag,
-                g.choose(k.inState(),'in-state','bound'),tkKey,'ret',ret)
-        else:
-            if trace and verbose: g.trace(self.tag,'unbound',tkKey)
-
-    if trace: self.traceEvent(obj,event,tkKey,override)
-
-    return override
-#@+node:ekr.20081015132934.10:isDangerous
-def isDangerous (self,tkKey,ch):
-
-    arrows = ('home','end','left','right','up','down')
-    special = ('tab','backspace','period','parenright','parenleft')
-
-    key = tkKey.lower()
-    ch = ch.lower()
-    isAlt = key.find('alt') > -1
-    w = g.app.gui.get_focus()
-    tree = self.c.frame.tree.treeWidget
-
-    val = (
-        key in special or
-        ch in arrows and not isAlt or
-        key == 'return' and w != tree # Just barely works.
-    )
-
-    # g.trace(tkKey,ch,val)
-    return val
-#@-node:ekr.20081015132934.10:isDangerous
-#@-node:ekr.20081013143507.12:eventFilter
-#@+node:ekr.20081011152302.10:toStroke
-def toStroke (self,tkKey,ch):
-
-    k = self.c.k
-
-    s = tkKey
-    ch2 = k.guiBindNamesInverseDict.get(ch)
-    if ch2: s = s.replace(ch,ch2)
-
-    return (
-        s.replace('Alt-','Alt+').
-        replace('Control-','Ctrl+').
-        replace('Shift-','Shift+')
-    )
-#@-node:ekr.20081011152302.10:toStroke
-#@+node:ekr.20081008084746.1:toTkKey
-def toTkKey (self,event):
-
-    c = self.c ; k = c.k ; trace = False
-
-    keynum = event.key() ; allowShift = True ; isKnown = False
-    try:
-        ch = chr(keynum)
-        #g.trace(ch,keynum)
-    except ValueError:
-        ch = event.text()
-        if not ch:
-            ch = QtGui.QKeySequence(keynum).toString()
-            isKnown = True
-        if not ch:
-            ch = "<unknown char: %s>" % (keynum)
-        ch = g.toUnicode(ch,g.app.tkEncoding)
-        # if trace: g.trace('special',ch) # munge.
-
-    # Convert special characters to Tk Spellings.
-    if   ch in ('\r','\n'): ch = 'Return'
-    elif ch == '\t': ch = 'Tab'
-    elif ch == '\b': ch = 'BackSpace'
-    else:
-        ch2 = k.guiBindNamesDict.get(ch)
-        if ch2:
-            if not isKnown: allowShift = False
-            ch = ch2
-
-    # Convert to Tk style binding.
-    mods = [] ; alt,ctrl = False,False
-    if event.modifiers() & QtCore.Qt.AltModifier:
-        mods.append("Alt")
-    if event.modifiers() & QtCore.Qt.ControlModifier:
-        mods.append("Control")
-    if event.modifiers() & QtCore.Qt.ShiftModifier:
-        # g.trace('allowShift',allowShift,'ch')
-        if not allowShift:
-            pass
-        elif len(ch) == 1:
-            ch = ch.upper()
-        else:
-            mods.append("Shift")
-    elif len(ch) == 1: ch = ch.lower()
-
-    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
-    # If the documentation is to be believed,
-    # this definition of ignore should be portable.
-    ignore = not g.toUnicode(event.text(),'utf-8')
-    if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey),'ignore',ignore)
-
-    return tkKey,ch,ignore
-#@-node:ekr.20081008084746.1:toTkKey
-#@+node:ekr.20081013143507.11:traceEvent
-def traceEvent (self,obj,event,tkKey,override):
-
-    c = self.c ; e = QtCore.QEvent
-
-    eventType = event.type()
-
-    if False and not self.dumped:
-        self.dumped = True
-        g.trace(len(c.k.masterGuiBindingsDict.keys()))
-
-    if 0: # Show focus events.
-        show = (
-            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-            (e.Enter,'enter'),(e.Leave,'leave'),
-        )
-
-    else:
-        show = (
-            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
-            (e.ShortcutOverride,'shortcut-override'),
-        )
-
-    ignore = (
-        e.ToolTip,
-        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
-        e.MetaCall,e.Move,e.Paint,e.Resize,
-        e.Polish,e.PolishRequest,
-    )
-
-    for val,kind in show:
-        if eventType == val:
-            g.trace(
-                # 'val: %-3s' %(val),
-                'kind',kind,'key',tkKey,'override',override)
-            return
-
-    if False and eventType not in ignore:
-        g.trace('%3s:%s' % (eventType,'unknown'))
-#@-node:ekr.20081013143507.11:traceEvent
-#@-node:ekr.20081004102201.628:class leoQtEventFilter
-#@+node:ekr.20081004172422.846:editLabel
-def editLabel (self,p,selectAll=False):
-
-    """Start editing p's headline."""
-
-    c = self.c
-    # g.trace(p.headString(),selectAll)
-    w = self.treeWidget
-    it = self.vnodeDict[p.v][0][1]
-
-    w.editItem(it)
-    if not selectAll:
-        editWidget = w.itemWidget(it,0) # A QLineEdit
-        s = editWidget.text()
-        editWidget.setSelection(len(s),0)
-
-    # A nice hack: just clear the focus request.
-    c.requestedFocusWidget = None
-
-    # g.trace('leoQtTree','it',it,p and p.headString())
-
-    # if p and p != self.editPosition():
-        # self.endEditLabel()
-        # # This redraw *is* required so the c.edit_widget(p) will exist.
-        # c.redraw()
-        # c.outerUpdate()
-
-    # self.setEditPosition(p) # That is, self._editPosition = p
-    # w = c.edit_widget(p)
-    # if p and w:
-        # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-        # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
-        # c.headlineWantsFocus(p) # Make sure the focus sticks.
-        # c.k.showStateAndMode(w)
-#@-node:ekr.20081004172422.846:editLabel
-#@-node:ekr.20081015062931.10:Focus stuff...
-#@+node:ekr.20081018155359.12:Problems with multiple windows
-#@+node:ekr.20081004172422.767:redraw_now
-def redraw_now (self,scroll=False,forceDraw=False):
-
-    '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
-
-    c = self.c ; w = self.treeWidget ; trace = False ; verbose = False
-    if not w: return
-    if self.redrawing:
-        return g.trace('already drawing')
-
-    # Traces...
-    self.redrawCount += 1
-    current = c.currentPosition()
-    if trace: g.trace(self.redrawCount,current and current.headString())
-
-    # Loop init.
-    found_current = None
-    self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
-    self.itemsDict = {} # keys are items, values are positions
-    parentsDict = {}
-
-    self.redrawing = True
-    try:
-        w.clear()
-        for p in c.allNodes_iter():
-            it = parentsDict.get(p.parent().v,w)
-            it = QtGui.QTreeWidgetItem(it)
-            icon = self.getIcon(p)
-            if icon: it.setIcon(0,icon)
-            it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
-            self.itemsDict[id(it)] = p.copy() # Valid.
-            parentsDict[p.v] = it # Just barely valid for drawing.
-            # More accurate info, for use by selectHint.
-            aList = self.vnodeDict.get(p.v,[])
-            data = p.copy(),it
-            aList.append(data)
-            self.vnodeDict[p.v] = aList
-            it.setText(0,p.headString())
-            if p.hasChildren() and p.isExpanded() and self.allAncestorsExpanded(p):
-                w.expandItem(it)
-            else:
-                w.collapseItem(it)
-
-            if p == current:
-                w.setCurrentItem(it) ; found_current = it
-    finally:
-        if found_current is None:
-            if self.redrawCount > 1:
-                g.trace('** no current item: %s' % (p and p.headString()))
-        else:
-            w.scrollToItem(found_current, QtGui.QAbstractItemView.PositionAtCenter)
-
-        # Necessary to get the tree drawn initially.
-        if self.redrawCount == 1:
-            # g.trace('***repaint')
-            w.repaint()
-
-        self.redrawing = False
-
-redraw = redraw_now # Compatibility
-#@-node:ekr.20081004172422.767:redraw_now
-#@+node:ekr.20081004102201.629:class  Window
-class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
-
-    '''A class representing all parts of the main Qt window
-    as created by Designer.
-
-    c.frame.top is a Window object.
-
-    All leoQtX classes use the ivars of this Window class to
-    support operations requested by Leo's core.
-    '''
-
-    @others
-
-#@+node:ekr.20081004172422.884: ctor (Window)
-# Called from leoQtFrame.finishCreate.
-
-def __init__(self,c,parent=None):
-
-    '''Create Leo's main window, c.frame.top'''
-
-    self.c = c
-
-    # Init both base classes.
-    QtGui.QMainWindow.__init__(self,parent)
-    qt_main.Ui_MainWindow.__init__(self)
-
-    # Init the QDesigner elements.
-    self.setupUi(self)
-
-    # The following ivars (and more) are inherited from UiMainWindow:
-        # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
-        # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
-        # self.tabWidget  = QtGui.QTabWidget(self.splitter)     # The log pane.
-        # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
-        # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
-
-    self.buttons = self.addToolBar("Buttons")
-    self.buttons.addAction(self.actionSave)
-
-    # self.stackedWidget.adjustSize()
-
-    self.setStyleSheets()
-#@-node:ekr.20081004172422.884: ctor (Window)
-#@+node:ekr.20081016072304.14:setStyleSheets & helper
-styleSheet_inited = False
-
-def setStyleSheets(self):
-
-    c = self.c
-
-    sheet = c.config.getData('qt-gui-plugin-style-sheet')
-    if sheet: sheet = '\n'.join(sheet)
-    self.setStyleSheet(sheet or self.default_sheet())
-#@nonl
-#@+node:ekr.20081018053140.10:defaultStyleSheet
-def defaultStyleSheet (self):
-
-    '''Return a reasonable default style sheet.'''
-
-    # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
-    return '''\
-
-/* A QWidget: supports only background attributes.*/
-QSplitter::handle {
-
-    background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
-}
-QSplitter {
-    border-color: white;
-    background-color: white;
-    border-width: 3px;
-    border-style: solid;
-}
-QTreeWidget {
-    background-color: #ffffec; /* Leo's traditional tree color */
-}
-/* Not supported. */
-QsciScintilla {
-    background-color: pink;
-}
-'''
-#@-node:ekr.20081018053140.10:defaultStyleSheet
-#@-node:ekr.20081016072304.14:setStyleSheets & helper
-#@-node:ekr.20081004102201.629:class  Window
-#@+node:ekr.20081010070648.17:setTreeFont
-def setTreeFont (self):
-
-    c = self.c ; w = self.treeWidget
-
-    font = c.config.getFontFromParams(
-        "headline_text_font_family", "headline_text_font_size",
-        "headline_text_font_slant",  "headline_text_font_weight",
-        c.config.defaultTreeFontSize)
-
-    if not font:
-        # g.trace('*** no font, using default')
-        font = QtGui.QFont("SansSerif",12, QtGui.QFont.Normal)
-
-    w.setFont(font)
-#@-node:ekr.20081010070648.17:setTreeFont
-#@-node:ekr.20081018155359.12:Problems with multiple windows
-#@-node:ekr.20081014095718.13: Recent
-#@+node:ekr.20081018155359.11: Unused
-#@-node:ekr.20081018155359.11: Unused
-#@+node:ekr.20081017015442.15:pylint errors
-
-# Probably harmless
-W0233:131:Window.__init__: __init__ method from a non direct base class 'QWidget' is called
-
-# Hard to fix
-W0221:4426:leoQtMenu.add_command: Arguments number differs from overridden method
-W0221:4607:leoQtMenu.getMenuLabel: Arguments number differs from overridden method
-#@+node:ekr.20081017015442.19:qtGui
-E0602:688:leoQtBody.setSelectionRange: Undefined variable 'insert'
-E0602:2793:leoQtGui.runAboutLeoDialog: Undefined variable 'qtAboutLeo'
-E0602:2798:leoQtGui.runAskLeoIDDialog: Undefined variable 'qtAskLeoID'
-E0602:2803:leoQtGui.runAskOkDialog: Undefined variable 'qtAskOk'
-E0602:2808:leoQtGui.runAskOkCancelNumberDialog: Undefined variable 'qtAskOkCancelNumber'
-E0602:2813:leoQtGui.runAskOkCancelStringDialog: Undefined variable 'qtAskOkCancelString'
-E0602:2818:leoQtGui.runAskYesNoDialog: Undefined variable 'qtAskYesNo'
-E0602:2824:leoQtGui.runAskYesNoCancelDialog: Undefined variable 'qtAskYesNoCancel'
-
-E1101:2955:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'STOCK_CANCEL' member
-E1101:2955:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_CANCEL' member
-E1101:2956:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'TOCK_OPEN' member
-E1101:2956:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
-E1101:2960:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'STOCK_CANCEL' member
-E1101:2960:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_CANCEL' member
-E1101:2961:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'STOCK_SAVE' member
-E1101:2961:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
-E1101:2966:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'FILE_CHOOSER_ACTION_SAVE' member
-E1101:2967:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'FILE_CHOOSER_ACTION_OPEN' member
-E1101:2970:leoQtGui.runFileDialog: Module 'PyQt4.QtGui' has no 'FileChooserDialog' member
-E1101:2974:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
-E1101:2983:leoQtGui.runFileDialog: Module 'PyQt4.QtGui' has no 'FileFilter' member
-E1101:2991:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
-E1101:2998:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_CANCEL' member
-#@nonl
-#@-node:ekr.20081017015442.19:qtGui
-#@-node:ekr.20081017015442.15:pylint errors
+#@+node:ekr.20081018155359.11:Unused
+#@-node:ekr.20081018155359.11:Unused
 #@-all
 #@nonl
 #@-node:ekr.20081016072304.13:@thin qtNotes.txt

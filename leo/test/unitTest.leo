@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="101" left="145" height="804" width="896"/>
+	<global_window_position top="0" left="0" height="0" width="0"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -47,6 +47,7 @@
 <v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
 <v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
 </v>
+<v t="ekr.20081019092751.1"><vh>@font outline font (qt)</vh></v>
 <v t="ekr.20070303143951"><vh>unused</vh>
 <v t="ekr.20051018071924"><vh>@@color log_pane_Completion_tab_background_color = yellow</vh></v>
 <v t="ekr.20060325072919"><vh>@@ifgui tkinter</vh>
@@ -2520,6 +2521,16 @@
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20081019093019.1"><vh>Fail</vh>
+<v t="ekr.20071113193527"><vh>leoFind</vh>
+<v t="ekr.20051107115231.29" annotate="7d71002e"><vh>@@test Find keeps focus in body &amp; shows selected text</vh></v>
+<v t="ekr.20060130151716.3"><vh>@test minbuffer find commands</vh></v>
+<v t="ekr.20060130151716.2"><vh>@test set find mode commands</vh></v>
+<v t="ekr.20060130151716.4"><vh>@test show-find-options</vh></v>
+<v t="ekr.20060130151716.1"><vh>@test togle find options commands</vh></v>
+<v t="ekr.20071113202153" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
 </vnodes>
@@ -22073,5 +22084,11 @@ finally:
             root.firstChild().doDelete(newNode = None)
     c.redraw_now()
 </t>
+<t tx="ekr.20081019092751.1">headline_text_font_family = SansSerif
+headline_text_font_size = 10
+headline_text_font_slant = roman
+headline_text_font_weight = bold
+</t>
+<t tx="ekr.20081019093019.1"></t>
 </tnodes>
 </leo_file>
