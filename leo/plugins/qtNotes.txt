@@ -5,7 +5,9 @@
 @nocolor-node
 
 First:
-    - --gui=qt must disable threading colorizer 
+    - Fix crasher when opening this file.
+    - Put the file name in the window title.
+    - Don't set the file-changed marker in the window title initially.
     - Saving a window doesn't properly set its size.
     - Reading a window doesn't use its size.
     - Fix failing unit tests.

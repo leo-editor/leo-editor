@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="128" left="489" height="647" width="776"/>
+	<global_window_position top="0" left="0" height="0" width="0"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,9,4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="10"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -96,7 +96,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -370,7 +370,7 @@
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
 <v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
 </v>
-<v t="ekr.20041213105007" a="E" annotate="7d71002e"><vh>Fonts</vh>
+<v t="ekr.20041213105007" annotate="7d71002e"><vh>Fonts</vh>
 <v t="ekr.20041119034357.45"><vh>@font body text font</vh></v>
 <v t="ekr.20070919125633"><vh>@font button font</vh></v>
 <v t="ekr.20041213105508"><vh>@font log font</vh></v>
@@ -1176,7 +1176,7 @@
 <v t="ekr.20050203090810" annotate="7d71002e"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
-<v t="ekr.20041213105954" a="E" annotate="7d71002e"><vh>Window</vh>
+<v t="ekr.20041213105954" annotate="7d71002e"><vh>Window</vh>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
 <v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
@@ -1454,6 +1454,7 @@
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
+<v t="ekr.20041119051246.4"><vh>@font outline font</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </vnodes>
 <tnodes>
@@ -7613,7 +7614,11 @@ QTreeWidget {
     background-color: #ffffec; /* Leo's traditional tree color */
     selection-color: blue;
     selection-background-color: lightgray;
-}
+    font-family: SansSerif;
+    font-size: 13px;
+    font-weight: bold; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+ }
 
 QTreeWidget QLineEdit {
     background-color: cornsilk;

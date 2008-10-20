@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4,2"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -58,7 +58,6 @@
 <v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
-<v t="ekr.20081010203027.1"><vh>@font outline font</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
@@ -2494,7 +2493,7 @@ leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
 # if you enable the cursesGui plugin it here
 
-qtGui.py
+# qtGui.py # use --qui=qt option
 
 plugins_menu.py
 
@@ -3724,11 +3723,6 @@ aList = c.k.masterGuiBindingsDict.get('&lt;%s&gt;' %tkKey,[])
 for z in aList:
     print '==='
     print z</t>
-<t tx="ekr.20081010203027.1">headline_text_font_family = SansSerif
-headline_text_font_size = 10
-headline_text_font_slant = roman
-headline_text_font_weight = bold
-</t>
 <t tx="ekr.20081016102648.1"></t>
 <t tx="ekr.20081019050559.1">w = c.frame.top
 sw = w.stackedWidget
