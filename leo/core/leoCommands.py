@@ -3530,9 +3530,11 @@ class baseCommands:
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
         if 0: # c.editPosition now calls redraw.
-            ### c.redraw_now()
-            c.redraw_after_insert()
+            c.redraw_now()
             c.outerUpdate()
+
+        # A hook for qt plugin.
+        c.redraw_after_insert()
 
         c.editPosition(p,selectAll=True)
 

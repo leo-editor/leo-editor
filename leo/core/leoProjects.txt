@@ -12244,9 +12244,11 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
     if 0: # c.editPosition now calls redraw.
-        ### c.redraw_now()
-        c.redraw_after_insert()
+        c.redraw_now()
         c.outerUpdate()
+
+    # A hook for qt plugin.
+    c.redraw_after_insert()
 
     c.editPosition(p,selectAll=True)
 
@@ -14731,9 +14733,11 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
     if 0: # c.editPosition now calls redraw.
-        ### c.redraw_now()
-        c.redraw_after_insert()
+        c.redraw_now()
         c.outerUpdate()
+
+    # A hook for qt plugin.
+    c.redraw_after_insert()
 
     c.editPosition(p,selectAll=True)
 
@@ -16526,9 +16530,11 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
     if 0: # c.editPosition now calls redraw.
-        ### c.redraw_now()
-        c.redraw_after_insert()
+        c.redraw_now()
         c.outerUpdate()
+
+    # A hook for qt plugin.
+    c.redraw_after_insert()
 
     c.editPosition(p,selectAll=True)
 
@@ -19190,9 +19196,11 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
     if 0: # c.editPosition now calls redraw.
-        ### c.redraw_now()
-        c.redraw_after_insert()
+        c.redraw_now()
         c.outerUpdate()
+
+    # A hook for qt plugin.
+    c.redraw_after_insert()
 
     c.editPosition(p,selectAll=True)
 
