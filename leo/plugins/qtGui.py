@@ -5164,9 +5164,7 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing: return g.trace('already drawing')
 
         self.redrawCount += 1
-        if trace:
-            if verbose: tstart()
-            g.trace(self.redrawCount)
+        if trace and verbose: tstart()
 
         # Init the data structures.
         self.tnodeDict = {} # keys are tnodes, values are lists of items (p,it)
@@ -5201,7 +5199,7 @@ class leoQtTree (leoFrame.leoTree):
             if trace:
                 if verbose: tstop()
                 g.trace(
-                    'drew %s nodes' % self.nodeDrawCount)
+                    '%s: drew %3s nodes' % (self.redrawCount,self.nodeDrawCount))
 
     redraw = full_redraw # Compatibility
     redraw_now = full_redraw
@@ -5370,6 +5368,7 @@ class leoQtTree (leoFrame.leoTree):
                         child.moveToNext()
                 else:
                     # Don't change anything!
+                    g.trace('no change')
                     w.collapseItem(it)
             finally:
                 w.setCurrentItem(it)
@@ -5378,7 +5377,7 @@ class leoQtTree (leoFrame.leoTree):
                 self.selecting = False
                 c.requestRedrawFlag= False
                 if trace: g.trace(
-                    'drew %s nodes' % self.nodeDrawCount,g.callers(4))
+                    'drew %3s nodes' % self.nodeDrawCount) # ,g.callers(4))
         else:
             g.trace('can not happen: no item for %s' % p.headString())
             self.full_redraw()
