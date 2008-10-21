@@ -7,14 +7,12 @@
 Urgent:
     ** This file appears to hang during load.
         - Make sure to update log, and scroll to bottom.
-    ** Outline operations the do redraws are too slow.
     - https://bugs.launchpad.net/leo-editor/+bug/286491
         Minibuffer prompts for a string, I type "# " but get "numbersign ".
 
  Next:
     * Tab and space handling are subtly different from traditional Leo way.
-    - Add settings for syntax coloring, or honor Leo's old syntax coloring settings.
-    - Saving a window doesn't properly set its size.
+        - Saving a window doesn't properly set its size.
     - Reading a window doesn't use its size.
     - https://bugs.launchpad.net/leo-editor/+bug/286493
        File "qtGui.py", line 745, in delete
@@ -22,7 +20,8 @@ Urgent:
         TypeError: slice indices must be integers or None or have an __index__ method
 
 Next:
-    -Set find handler so unit tests pass.    - print-settings doesn't print to a tab and is very slow.
+    -Set find handler so unit tests pass.
+    - print-settings doesn't print to a tab and is very slow.
     - Re-enable syntax coloring.
     - Fix failing unit tests. 
     - Support Icon area.
@@ -40,6 +39,7 @@ Cleanup:
         - Finish leoQtTextWidget class.
         - Add subclasses for QLineEdit, QScintilla, etc.
 Later:
+    - Add settings for syntax coloring, or honor Leo's old syntax coloring settings.
     - Support multiple body editors.
     - Support chapters
     - Handle pane orientation.
