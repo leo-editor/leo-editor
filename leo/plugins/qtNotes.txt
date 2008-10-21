@@ -734,57 +734,22 @@ def onTextChanged (self):
 def sig_itemExpanded (self,item):
 
     # we get tons of item changes when redrawing, ignore
-    if self.redrawing:
+    if self.redrawing or self.expanding:
         return
 
-    p = self.itemsDict.get(id(item))
+    p = self.itemsDict.get(item)
     if p:
+        g.trace(p.headString())
         self.c.setCurrentPosition(p)
         self.current_item = item # For scrolling.
         p.expand()
-        self.full_redraw()
+        self.redraw_after_expand()
     else:
         g.trace('can not happen: no p')
 
     # g.trace(item,p and p.headString())
 
 #@-node:ekr.20081021043407.26:sig_itemExpanded
-#@+node:ekr.20081004172422.738:__init__ (qtTree)
-def __init__(self,c,frame):
-
-    # g.trace('*****qtTree')
-
-    # Init the base class.
-    leoFrame.leoTree.__init__(self,frame)
-
-    # Components.
-    self.c = c
-    self.canvas = self # An official ivar used by Leo's core.
-    self.treeWidget = w = frame.top.treeWidget # An internal ivar.
-
-    # Status ivars.
-    self.dragging = False
-    self.current_item = None # The tree item of the presently selected node.
-    self.generation = 0
-    self.prev_p = None
-    self.redrawing = False
-    self.redrawCount = 0 # Count for debugging.
-    self.revertHeadline = None # Previous headline text for abortEditLabel.
-    self.selecting = False
-
-    # Debugging.
-    self.trace = False
-    self.verbose = True
-
-    # Drawing ivars.
-    self.itemsDict = {} # keys are items, values are positions
-    self.parentsDict = {} 
-    self.tnodeDict = {} # keys are tnodes, values are lists of (p,it)
-    self.vnodeDict = {} # keys are vnodes, values are lists of (p,it)
-
-    self.setConfigIvars()
-    self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
-#@-node:ekr.20081004172422.738:__init__ (qtTree)
 #@+node:ekr.20081010070648.19:Drawing... (qtTree)
 #@+node:ekr.20081011035036.12:allAncestorsExpanded
 def allAncestorsExpanded (self,p):
@@ -813,7 +778,7 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
     '''Redraw all visible nodes of the tree'''
 
     c = self.c ; w = self.treeWidget
-    trace = False or self.trace; verbose = False
+    trace = True or self.trace; verbose = False
     if not w: return
     if self.redrawing: return g.trace('already drawing')
 
@@ -828,8 +793,9 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
     self.itemsDict = {} # keys are items, values are positions
     self.parentsDict = {}
     self.current_item = None
-
+    self.nodeDrawCount = 0
     self.redrawing = True
+    self.fullDrawing = True # To suppress some traces.
     try:
         w.clear()
         # Draw all top-level nodes and their visible descendants.
@@ -848,20 +814,29 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
         if self.redrawCount == 1:
             pass # w.update() # ; g.trace('***repaint')
 
+        c.requestRedrawFlag= False
         self.redrawing = False
+        self.fullDrawing = False
         if trace:
             if verbose: tstop()
-            g.trace('done')
+            g.trace(
+                'drew %s nodes' % self.nodeDrawCount)
 
 redraw = full_redraw # Compatibility
 redraw_now = full_redraw
 #@+node:ekr.20081021043407.24:drawNode
 def drawNode (self,p):
 
-    w = self.treeWidget
+    w = self.treeWidget ; trace = False
+    self.nodeDrawCount += 1
 
     # Allocate the qt tree item.
-    it = self.parentsDict.get(p.parent().v,w)
+    parent = p.parent()
+    it = self.parentsDict.get(parent and parent.v,w)
+
+    if trace and not self.fullDrawing:
+        g.trace(id(it),parent and parent.headString())
+
     it = QtGui.QTreeWidgetItem(it)
     it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
 
@@ -871,7 +846,7 @@ def drawNode (self,p):
     if icon: it.setIcon(0,icon)
 
     # Remember the associatiation of it with p, and vice versa.
-    self.itemsDict[id(it)] = p.copy()
+    self.itemsDict[it] = p.copy()
     self.parentsDict[p.v] = it 
 
     # Remember the association of p.v with (p,it)
@@ -892,6 +867,10 @@ def drawNode (self,p):
 def drawTree (self,p):
 
     c = self.c ; w = self.treeWidget
+
+    p = p.copy()
+
+    # g.trace(p.headString())
 
     # Draw the (visible) parent node.
     it = self.drawNode(p)
@@ -916,6 +895,31 @@ def drawTree (self,p):
     else:
         w.collapseItem(it)
 #@-node:ekr.20081021043407.25:drawTree
+#@+node:ekr.20081021043407.28:removeFromDicts
+def removeFromDicts (self,p):
+
+    # Important: items do not necessarily exist.
+
+    # Remove item from parentsDict.
+    it = self.parentsDict.get(p.v)
+    if it:
+        self.parentsDict[p.v] = None
+
+    # Remove position from itemsDict.
+    p2 = self.itemsDict.get(it)
+    if p2 == p:
+        del self.itemsDict[it]
+
+    # Remove items from vnodeDict
+    aList = self.vnodeDict.get(p.v,[])
+    aList = [z for z in aList if z[1] != it]
+    self.vnodeDict[p.v] = aList
+
+    # Remove items from tnodeDict
+    aList = self.tnodeDict.get(p.v.t,[])
+    aList = [z for z in aList if z[1] != it]
+    self.tnodeDict[p.v.t] = aList
+#@-node:ekr.20081021043407.28:removeFromDicts
 #@-node:ekr.20081021043407.23:full_redraw & helpers
 #@+node:ekr.20081021043407.4:redraw_after_clone
 def redraw_after_clone (self):
@@ -953,8 +957,50 @@ def redraw_after_delete (self):
 #@+node:ekr.20081021043407.7:redraw_after_expand
 def redraw_after_expand (self):
 
-    if self.trace and self.verbose: g.trace()
-    self.full_redraw()
+    trace = True ; verbose = False
+
+    if self.redrawing: return g.trace('already drawing')
+
+    c = self.c ; p = c.currentPosition()
+    w = self.treeWidget
+    it = self.parentsDict.get(p.v)
+    if it:
+        self.nodeDrawCount = 0
+        self.redrawing = True
+        self.expanding = True
+        self.selecting = True
+        try:
+            if p.hasChildren() and p.isExpanded():
+                w.expandItem(it)
+                # Delete all the children from the tree.
+                items = it.takeChildren()
+                if trace and verbose: g.trace(
+                    id(it),len(items),p.headString(),g.callers(4))
+
+                # Delete all descendant from dictionaries.
+                for child in p.children_iter():
+                    for z in child.self_and_subtree_iter():
+                        self.removeFromDicts(z)
+
+                # Redraw all descendants.
+                child = p.firstChild()
+                while child:
+                    self.drawTree(child)
+                    child.moveToNext()
+            else:
+                # Don't change anything!
+                w.collapseItem(it)
+        finally:
+            w.setCurrentItem(it)
+            self.redrawing = False
+            self.expanding = False
+            self.selecting = False
+            c.requestRedrawFlag= False
+            if trace: g.trace(
+                'drew %s nodes' % self.nodeDrawCount,g.callers(4))
+    else:
+        g.trace('can not happen: no item for %s' % p.headString())
+        self.full_redraw()
 #@-node:ekr.20081021043407.7:redraw_after_expand
 #@+node:ekr.20081021043407.3:redraw_after_icons_changed
 def redraw_after_icons_changed (self,all=False):
@@ -1014,7 +1060,7 @@ def updateIcon (self,p):
     icon = self.getIcon(p)
 
     for p,it in aList:
-        # g.trace(p.headString(),id(it))
+        # g.trace(p.headString(),it)
         it.setIcon(0,icon)
 #@-node:ekr.20081011035036.11:updateIcon
 #@-node:ekr.20081010070648.19:Drawing... (qtTree)

@@ -4632,11 +4632,13 @@ class baseCommands:
 
         '''Expand the presently selected node.'''
 
-        c = self ; v = c.currentVnode()
+        c = self ; p = c.currentPosition()
 
-        v.expand()
         ### c.redraw()
-        c.redraw_after_expand()
+        if not p.isExpanded():
+            p.expand()
+            c.redraw_after_expand()
+
         c.treeFocusHelper()
     #@-node:ekr.20031218072017.2907:expandNode
     #@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
@@ -4650,10 +4652,10 @@ class baseCommands:
             return
 
         if not p.isExpanded():
-            c.expandNode()
+            c.expandNode() # Calls c.redraw_after_expand.
+
         c.selectVnode(p.firstChild())
-        # c.redraw()
-        c.redraw_after_expand()
+        c.redraw_after_select()
         c.treeFocusHelper()
 
     def expandNodeOrGoToFirstChild (self,event=None):
@@ -5553,13 +5555,13 @@ class baseCommands:
 
         p.moveToVisNext(c)
 
-        # g.trace(p)
-
         if p:
             redraw = not p.isVisible(c)
             if not redraw: c.frame.tree.setSelectedLabelState(c.currentPosition())
         else:
             redraw = True
+
+        # g.trace('redraw',redraw,p)
 
         c.treeSelectHelper(p,redraw=redraw)
     #@-node:ekr.20031218072017.2996:selectVisNext

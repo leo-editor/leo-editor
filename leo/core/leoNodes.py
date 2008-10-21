@@ -2690,6 +2690,10 @@ class basePosition (object):
                 return False,None
 
         while p:
+            if trace: g.trace(
+                'hasChildren',p.hasChildren(),
+                'isExpanded',p.isExpanded(),
+                p.headString())
             # Short-circuit if possible.
             if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
                 p.moveToNext()
