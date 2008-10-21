@@ -4897,7 +4897,7 @@ class leoQtTree (leoFrame.leoTree):
             "itemChanged(QTreeWidgetItem*, int)"),self.sig_itemChanged)
 
         w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemExpanded(QTreeWidgetItem*, int)"),self.sig_itemExpanded)
+            "itemExpanded(QTreeWidgetItem*)"),self.sig_itemExpanded)
 
         self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
         self.treeWidget.installEventFilter(self.ev_filter)
@@ -5151,18 +5151,18 @@ class leoQtTree (leoFrame.leoTree):
         return image
     #@-node:ekr.20081010070648.14:getIcon
     #@+node:ekr.20081021043407.23:full_redraw & helpers
-    def full_redraw (self,scroll=False,forceDraw=False):
+    def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
 
         '''Redraw all visible nodes of the tree'''
 
         c = self.c ; w = self.treeWidget
-        trace = True or self.trace
+        trace = False or self.trace; verbose = False
         if not w: return
         if self.redrawing: return g.trace('already drawing')
 
         self.redrawCount += 1
         if trace:
-            tstart()
+            if verbose: tstart()
             g.trace(self.redrawCount)
 
         # Init the data structures.
@@ -5193,7 +5193,7 @@ class leoQtTree (leoFrame.leoTree):
 
             self.redrawing = False
             if trace:
-                tstop()
+                if verbose: tstop()
                 g.trace('done')
 
     redraw = full_redraw # Compatibility
@@ -5407,7 +5407,7 @@ class leoQtTree (leoFrame.leoTree):
             g.trace('can not happen: no p')
     #@-node:ville.20081014172405.10:sig_itemChanged
     #@+node:ekr.20081021043407.26:sig_itemExpanded
-    def sig_itemExpanded (self,item,col):
+    def sig_itemExpanded (self,item):
 
         # we get tons of item changes when redrawing, ignore
         if self.redrawing:
@@ -5415,10 +5415,14 @@ class leoQtTree (leoFrame.leoTree):
 
         p = self.itemsDict.get(id(item))
         if p:
+            self.c.setCurrentPosition(p)
+            self.current_item = item # For scrolling.
+            p.expand()
             self.full_redraw()
         else:
             g.trace('can not happen: no p')
 
+        # g.trace(item,p and p.headString())
 
     #@-node:ekr.20081021043407.26:sig_itemExpanded
     #@+node:ekr.20081009055104.11:selectHint

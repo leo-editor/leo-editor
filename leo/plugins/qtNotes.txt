@@ -731,7 +731,7 @@ def onTextChanged (self):
 #@-node:ekr.20081020075840.21:Suppress updates until init complete
 #@+node:ekr.20081021043407.1:Optimized drawing
 #@+node:ekr.20081021043407.26:sig_itemExpanded
-def sig_itemExpanded (self,item,col):
+def sig_itemExpanded (self,item):
 
     # we get tons of item changes when redrawing, ignore
     if self.redrawing:
@@ -739,10 +739,14 @@ def sig_itemExpanded (self,item,col):
 
     p = self.itemsDict.get(id(item))
     if p:
+        self.c.setCurrentPosition(p)
+        self.current_item = item # For scrolling.
+        p.expand()
         self.full_redraw()
     else:
         g.trace('can not happen: no p')
 
+    # g.trace(item,p and p.headString())
 
 #@-node:ekr.20081021043407.26:sig_itemExpanded
 #@+node:ekr.20081004172422.738:__init__ (qtTree)
@@ -804,18 +808,18 @@ def getIcon(self,p):
     return image
 #@-node:ekr.20081010070648.14:getIcon
 #@+node:ekr.20081021043407.23:full_redraw & helpers
-def full_redraw (self,scroll=False,forceDraw=False):
+def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
 
     '''Redraw all visible nodes of the tree'''
 
     c = self.c ; w = self.treeWidget
-    trace = True or self.trace
+    trace = False or self.trace; verbose = False
     if not w: return
     if self.redrawing: return g.trace('already drawing')
 
     self.redrawCount += 1
     if trace:
-        tstart()
+        if verbose: tstart()
         g.trace(self.redrawCount)
 
     # Init the data structures.
@@ -846,7 +850,7 @@ def full_redraw (self,scroll=False,forceDraw=False):
 
         self.redrawing = False
         if trace:
-            tstop()
+            if verbose: tstop()
             g.trace('done')
 
 redraw = full_redraw # Compatibility
