@@ -493,6 +493,7 @@ def redraw_now (self,scroll=False,forceDraw=False):
 
     # Loop init.
     found_current = None
+    self.tnodeDict = {} # keys are tnodes, values are lists of items (p,it)
     self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
     self.itemsDict = {} # keys are items, values are positions
     parentsDict = {}
@@ -513,6 +514,11 @@ def redraw_now (self,scroll=False,forceDraw=False):
             data = p.copy(),it
             aList.append(data)
             self.vnodeDict[p.v] = aList
+            # The tnodeDict is for icons and other clone-related info.
+            aList = self.tnodeDict.get(p.v.t,[])
+            data = p.copy(),it
+            aList.append(data)
+            self.tnodeDict[p.v.t] = aList
             it.setText(0,p.headString())
             if p.hasChildren() and p.isExpanded() and self.allAncestorsExpanded(p):
                 w.expandItem(it)
@@ -536,6 +542,7 @@ def redraw_now (self,scroll=False,forceDraw=False):
         self.redrawing = False
 
 redraw = redraw_now # Compatibility
+full_redraw = redraw_now
 #@-node:ekr.20081004172422.767:redraw_now
 #@+node:ekr.20081004102201.629:class  Window
 class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
@@ -725,6 +732,276 @@ def onTextChanged (self):
     c.frame.tree.updateIcon(p)
 #@-node:ekr.20081011035036.1: onTextChanged
 #@-node:ekr.20081020075840.21:Suppress updates until init complete
+#@+node:ekr.20081021043407.1:Optimized drawing
+#@+node:ekr.20081021043407.2:OLDredraw_now
+def OLDredraw_now (self,scroll=False,forceDraw=False):
+
+    '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
+
+    c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
+    if not w: return
+    if self.redrawing:
+        return g.trace('already drawing')
+
+    # Traces...
+    self.redrawCount += 1
+    current = c.currentPosition()
+    if trace: g.trace(self.redrawCount,current and current.headString())
+
+    # Loop init.
+    found_current = None
+    self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
+    self.itemsDict = {} # keys are items, values are positions
+    parentsDict = {}
+
+    self.redrawing = True
+    try:
+        w.clear()
+        for p in c.allNodes_iter():
+            it = parentsDict.get(p.parent().v,w)
+            it = QtGui.QTreeWidgetItem(it)
+            icon = self.getIcon(p)
+            if icon: it.setIcon(0,icon)
+            it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
+            self.itemsDict[id(it)] = p.copy() # Valid.
+            parentsDict[p.v] = it # Just barely valid for drawing.
+            # More accurate info, for use by selectHint.
+            aList = self.vnodeDict.get(p.v,[])
+            data = p.copy(),it
+            aList.append(data)
+            self.vnodeDict[p.v] = aList
+            it.setText(0,p.headString())
+            if p.hasChildren() and p.isExpanded() and self.allAncestorsExpanded(p):
+                w.expandItem(it)
+            else:
+                w.collapseItem(it)
+
+            if p == current:
+                w.setCurrentItem(it) ; found_current = it
+    finally:
+        if found_current is None:
+            if self.redrawCount > 1:
+                g.trace('** no current item: %s' % (p and p.headString()))
+        else:
+            w.scrollToItem(found_current, QtGui.QAbstractItemView.PositionAtCenter)
+
+        # Necessary to get the tree drawn initially.
+        if self.redrawCount == 1:
+            # g.trace('***repaint')
+            w.repaint()
+
+        self.redrawing = False
+
+redraw = redraw_now # Compatibility
+#@-node:ekr.20081021043407.2:OLDredraw_now
+#@+node:ekr.20081004172422.738:__init__ (qtTree)
+def __init__(self,c,frame):
+
+    # g.trace('*****qtTree')
+
+    # Init the base class.
+    leoFrame.leoTree.__init__(self,frame)
+
+    # Components.
+    self.c = c
+    self.canvas = self # An official ivar used by Leo's core.
+    self.treeWidget = w = frame.top.treeWidget # An internal ivar.
+
+    # Status ivars.
+    self.dragging = False
+    self.generation = 0
+    self.prev_p = None
+    self.redrawing = False
+    self.redrawCount = 0 # Count for debugging.
+    self.revertHeadline = None # Previous headline text for abortEditLabel.
+    self.selecting = False
+
+    # Drawing ivars.
+    self.vnodeDict = {} # keys are vnodes, values are lists of (p,it)
+    self.tnodeDict = {} # keys are tnodes, values are lists of (p,it)
+    self.itemsDict = {} # keys are items, values are positions
+
+    self.setConfigIvars()
+    self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
+#@-node:ekr.20081004172422.738:__init__ (qtTree)
+#@+node:ekr.20081010070648.19:Drawing... (qtTree)
+#@+node:ekr.20081011035036.12:allAncestorsExpanded
+def allAncestorsExpanded (self,p):
+
+    for p in p.self_and_parents_iter():
+        if not p.isExpanded():
+            return False
+    else:
+        return True
+#@-node:ekr.20081011035036.12:allAncestorsExpanded
+#@+node:ekr.20081010070648.14:getIcon
+def getIcon(self,p):
+
+    '''Return the proper icon for position p.'''
+
+    p.v.iconVal = val = p.v.computeIcon()
+
+    imagename = "box%02d.GIF" % val
+    image = g.app.gui.getIconImage(imagename)
+
+    return image
+#@-node:ekr.20081010070648.14:getIcon
+#@+node:ekr.20081004172422.767:redraw_now
+def redraw_now (self,scroll=False,forceDraw=False):
+
+    '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
+
+    c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
+    if not w: return
+    if self.redrawing:
+        return g.trace('already drawing')
+
+    # Traces...
+    self.redrawCount += 1
+    current = c.currentPosition()
+    if trace: g.trace(self.redrawCount,current and current.headString())
+
+    # Loop init.
+    found_current = None
+    self.tnodeDict = {} # keys are tnodes, values are lists of items (p,it)
+    self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
+    self.itemsDict = {} # keys are items, values are positions
+    parentsDict = {}
+
+    self.redrawing = True
+    try:
+        w.clear()
+        for p in c.allNodes_iter():
+            it = parentsDict.get(p.parent().v,w)
+            it = QtGui.QTreeWidgetItem(it)
+            icon = self.getIcon(p)
+            if icon: it.setIcon(0,icon)
+            it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
+            self.itemsDict[id(it)] = p.copy() # Valid.
+            parentsDict[p.v] = it # Just barely valid for drawing.
+            # More accurate info, for use by selectHint.
+            aList = self.vnodeDict.get(p.v,[])
+            data = p.copy(),it
+            aList.append(data)
+            self.vnodeDict[p.v] = aList
+            # The tnodeDict is for icons and other clone-related info.
+            aList = self.tnodeDict.get(p.v.t,[])
+            data = p.copy(),it
+            aList.append(data)
+            self.tnodeDict[p.v.t] = aList
+            it.setText(0,p.headString())
+            if p.hasChildren() and p.isExpanded() and self.allAncestorsExpanded(p):
+                w.expandItem(it)
+            else:
+                w.collapseItem(it)
+
+            if p == current:
+                w.setCurrentItem(it) ; found_current = it
+    finally:
+        if found_current is None:
+            if self.redrawCount > 1:
+                g.trace('** no current item: %s' % (p and p.headString()))
+        else:
+            w.scrollToItem(found_current, QtGui.QAbstractItemView.PositionAtCenter)
+
+        # Necessary to get the tree drawn initially.
+        if self.redrawCount == 1:
+            # g.trace('***repaint')
+            w.repaint()
+
+        self.redrawing = False
+
+redraw = redraw_now # Compatibility
+full_redraw = redraw_now
+#@-node:ekr.20081004172422.767:redraw_now
+#@+node:ekr.20081021043407.3:redraw_after_icons_changed
+def redraw_after_icons_changed (self,all=False):
+
+    c = self.c ; p = c.currentPosition()
+    g.trace('all',all,p.headString())
+
+    self.updateIcon(p)
+
+
+#@-node:ekr.20081021043407.3:redraw_after_icons_changed
+#@+node:ekr.20081021043407.4:redraw_after_clone
+def redraw_after_clone (self):
+
+    g.trace()
+    self.full_redraw()
+#@-node:ekr.20081021043407.4:redraw_after_clone
+#@+node:ekr.20081021043407.5:redraw_after_contract
+def redraw_after_contract (self):
+
+    g.trace()
+    pass
+#@-node:ekr.20081021043407.5:redraw_after_contract
+#@+node:ekr.20081021043407.6:redraw_after_delete
+def redraw_after_delete (self):
+
+    g.trace()
+    self.full_redraw()
+
+
+#@-node:ekr.20081021043407.6:redraw_after_delete
+#@+node:ekr.20081021043407.7:redraw_after_expand
+def redraw_after_expand (self):
+
+    g.trace()
+    self.full_redraw()
+#@-node:ekr.20081021043407.7:redraw_after_expand
+#@+node:ekr.20081021043407.8:redraw_after_insert
+def redraw_after_insert (self):
+
+    g.trace()
+    self.full_redraw()
+#@-node:ekr.20081021043407.8:redraw_after_insert
+#@+node:ekr.20081021043407.9:redraw_after_move_down
+def redraw_after_move_down (self):
+
+    g.trace()
+    self.full_redraw()
+#@nonl
+#@-node:ekr.20081021043407.9:redraw_after_move_down
+#@+node:ekr.20081021043407.10:redraw_after_move_left
+def redraw_after_move_left (self):
+
+    g.trace()
+    self.full_redraw()
+#@nonl
+#@-node:ekr.20081021043407.10:redraw_after_move_left
+#@+node:ekr.20081021043407.11:redraw_after_move_right
+def redraw_after_move_right (self):
+
+    g.trace()
+    self.full_redraw()
+#@nonl
+#@-node:ekr.20081021043407.11:redraw_after_move_right
+#@+node:ekr.20081021043407.12:redraw_after_move_up
+def redraw_after_move_up (self):
+
+    g.trace()
+    self.full_redraw()
+#@-node:ekr.20081021043407.12:redraw_after_move_up
+#@+node:ekr.20081021043407.13:redraw_after_select
+def redraw_after_select (self):
+
+    g.trace()
+#@-node:ekr.20081021043407.13:redraw_after_select
+#@+node:ekr.20081011035036.11:updateIcon
+def updateIcon (self,p):
+
+    '''Update p's icon in response to a change in the body.'''
+
+    aList = self.tnodeDict.get(p.v.t,[])
+    icon = self.getIcon(p)
+
+    for p,it in aList:
+        # g.trace(p.headString(),id(it))
+        it.setIcon(0,icon)
+#@-node:ekr.20081011035036.11:updateIcon
+#@-node:ekr.20081010070648.19:Drawing... (qtTree)
+#@-node:ekr.20081021043407.1:Optimized drawing
 #@-node:ekr.20081014095718.13:Recent
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor

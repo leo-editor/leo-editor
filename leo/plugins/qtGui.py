@@ -4868,6 +4868,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # Drawing ivars.
         self.vnodeDict = {} # keys are vnodes, values are lists of (p,it)
+        self.tnodeDict = {} # keys are tnodes, values are lists of (p,it)
         self.itemsDict = {} # keys are items, values are positions
 
         self.setConfigIvars()
@@ -5156,6 +5157,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # Loop init.
         found_current = None
+        self.tnodeDict = {} # keys are tnodes, values are lists of items (p,it)
         self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
         self.itemsDict = {} # keys are items, values are positions
         parentsDict = {}
@@ -5176,6 +5178,11 @@ class leoQtTree (leoFrame.leoTree):
                 data = p.copy(),it
                 aList.append(data)
                 self.vnodeDict[p.v] = aList
+                # The tnodeDict is for icons and other clone-related info.
+                aList = self.tnodeDict.get(p.v.t,[])
+                data = p.copy(),it
+                aList.append(data)
+                self.tnodeDict[p.v.t] = aList
                 it.setText(0,p.headString())
                 if p.hasChildren() and p.isExpanded() and self.allAncestorsExpanded(p):
                     w.expandItem(it)
@@ -5199,30 +5206,92 @@ class leoQtTree (leoFrame.leoTree):
             self.redrawing = False
 
     redraw = redraw_now # Compatibility
+    full_redraw = redraw_now
     #@-node:ekr.20081004172422.767:redraw_now
-    #@+node:ekr.20081020151747.11:redraw_after methods
-    redraw_after_icons_changed  = redraw
-    redraw_after_clone          = redraw
-    redraw_after_contract       = redraw
-    redraw_after_delete         = redraw
-    redraw_after_expand         = redraw
-    redraw_after_insert         = redraw
-    redraw_after_move_down      = redraw
-    redraw_after_move_left      = redraw
-    redraw_after_move_right     = redraw
-    redraw_after_move_up        = redraw
-    redraw_after_select         = redraw
-    #@-node:ekr.20081020151747.11:redraw_after methods
+    #@+node:ekr.20081021043407.3:redraw_after_icons_changed
+    def redraw_after_icons_changed (self,all=False):
+
+        c = self.c ; p = c.currentPosition()
+        g.trace('all',all,p.headString())
+
+        self.updateIcon(p)
+
+
+    #@-node:ekr.20081021043407.3:redraw_after_icons_changed
+    #@+node:ekr.20081021043407.4:redraw_after_clone
+    def redraw_after_clone (self):
+
+        g.trace()
+        self.full_redraw()
+    #@-node:ekr.20081021043407.4:redraw_after_clone
+    #@+node:ekr.20081021043407.5:redraw_after_contract
+    def redraw_after_contract (self):
+
+        g.trace()
+        pass
+    #@-node:ekr.20081021043407.5:redraw_after_contract
+    #@+node:ekr.20081021043407.6:redraw_after_delete
+    def redraw_after_delete (self):
+
+        g.trace()
+        self.full_redraw()
+
+
+    #@-node:ekr.20081021043407.6:redraw_after_delete
+    #@+node:ekr.20081021043407.7:redraw_after_expand
+    def redraw_after_expand (self):
+
+        g.trace()
+        self.full_redraw()
+    #@-node:ekr.20081021043407.7:redraw_after_expand
+    #@+node:ekr.20081021043407.8:redraw_after_insert
+    def redraw_after_insert (self):
+
+        g.trace()
+        self.full_redraw()
+    #@-node:ekr.20081021043407.8:redraw_after_insert
+    #@+node:ekr.20081021043407.9:redraw_after_move_down
+    def redraw_after_move_down (self):
+
+        g.trace()
+        self.full_redraw()
+    #@nonl
+    #@-node:ekr.20081021043407.9:redraw_after_move_down
+    #@+node:ekr.20081021043407.10:redraw_after_move_left
+    def redraw_after_move_left (self):
+
+        g.trace()
+        self.full_redraw()
+    #@nonl
+    #@-node:ekr.20081021043407.10:redraw_after_move_left
+    #@+node:ekr.20081021043407.11:redraw_after_move_right
+    def redraw_after_move_right (self):
+
+        g.trace()
+        self.full_redraw()
+    #@nonl
+    #@-node:ekr.20081021043407.11:redraw_after_move_right
+    #@+node:ekr.20081021043407.12:redraw_after_move_up
+    def redraw_after_move_up (self):
+
+        g.trace()
+        self.full_redraw()
+    #@-node:ekr.20081021043407.12:redraw_after_move_up
+    #@+node:ekr.20081021043407.13:redraw_after_select
+    def redraw_after_select (self):
+
+        g.trace()
+    #@-node:ekr.20081021043407.13:redraw_after_select
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):
 
         '''Update p's icon in response to a change in the body.'''
 
-        aList = self.vnodeDict.get(p.v,[])
+        aList = self.tnodeDict.get(p.v.t,[])
         icon = self.getIcon(p)
 
         for p,it in aList:
-            # g.trace(p.headString(),it)
+            # g.trace(p.headString(),id(it))
             it.setIcon(0,icon)
     #@-node:ekr.20081011035036.11:updateIcon
     #@-node:ekr.20081010070648.19:Drawing... (qtTree)
