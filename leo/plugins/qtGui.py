@@ -5141,18 +5141,6 @@ class leoQtTree (leoFrame.leoTree):
         else:
             return True
     #@-node:ekr.20081011035036.12:allAncestorsExpanded
-    #@+node:ekr.20081010070648.14:getIcon
-    def getIcon(self,p):
-
-        '''Return the proper icon for position p.'''
-
-        p.v.iconVal = val = p.v.computeIcon()
-
-        imagename = "box%02d.GIF" % val
-        image = g.app.gui.getIconImage(imagename)
-
-        return image
-    #@-node:ekr.20081010070648.14:getIcon
     #@+node:ekr.20081021043407.23:full_redraw & helpers
     def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
 
@@ -5167,18 +5155,14 @@ class leoQtTree (leoFrame.leoTree):
         if trace and verbose: tstart()
 
         # Init the data structures.
-        self.tnodeDict = {} # keys are tnodes, values are lists of items (p,it)
-        self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
-        self.itemsDict = {} # keys are items, values are positions
-        self.parentsDict = {}
-        self.current_item = None
+        self.initData()
         self.nodeDrawCount = 0
         self.redrawing = True
         self.fullDrawing = True # To suppress some traces.
         try:
             w.clear()
             # Draw all top-level nodes and their visible descendants.
-            p = c.rootPosition() ; found_current = False
+            p = c.rootPosition()
             while p:
                 self.drawTree(p)
                 p.moveToNext()
@@ -5203,6 +5187,15 @@ class leoQtTree (leoFrame.leoTree):
 
     redraw = full_redraw # Compatibility
     redraw_now = full_redraw
+    #@+node:ekr.20081021043407.30:initData
+    def initData (self):
+
+        self.tnodeDict = {} # keys are tnodes, values are lists of items (p,it)
+        self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
+        self.itemsDict = {} # keys are items, values are positions
+        self.parentsDict = {}
+        self.current_item = None
+    #@-node:ekr.20081021043407.30:initData
     #@+node:ekr.20081021043407.24:drawNode
     def drawNode (self,p):
 
@@ -5274,32 +5267,19 @@ class leoQtTree (leoFrame.leoTree):
         else:
             w.collapseItem(it)
     #@-node:ekr.20081021043407.25:drawTree
-    #@+node:ekr.20081021043407.28:removeFromDicts
-    def removeFromDicts (self,p):
-
-        # Important: items do not necessarily exist.
-
-        # Remove item from parentsDict.
-        it = self.parentsDict.get(p.v)
-        if it:
-            self.parentsDict[p.v] = None
-
-        # Remove position from itemsDict.
-        p2 = self.itemsDict.get(it)
-        if p2 == p:
-            del self.itemsDict[it]
-
-        # Remove items from vnodeDict
-        aList = self.vnodeDict.get(p.v,[])
-        aList = [z for z in aList if z[1] != it]
-        self.vnodeDict[p.v] = aList
-
-        # Remove items from tnodeDict
-        aList = self.tnodeDict.get(p.v.t,[])
-        aList = [z for z in aList if z[1] != it]
-        self.tnodeDict[p.v.t] = aList
-    #@-node:ekr.20081021043407.28:removeFromDicts
     #@-node:ekr.20081021043407.23:full_redraw & helpers
+    #@+node:ekr.20081010070648.14:getIcon
+    def getIcon(self,p):
+
+        '''Return the proper icon for position p.'''
+
+        p.v.iconVal = val = p.v.computeIcon()
+
+        imagename = "box%02d.GIF" % val
+        image = g.app.gui.getIconImage(imagename)
+
+        return image
+    #@-node:ekr.20081010070648.14:getIcon
     #@+node:ekr.20081021043407.4:redraw_after_clone
     def redraw_after_clone (self):
 
@@ -5333,55 +5313,75 @@ class leoQtTree (leoFrame.leoTree):
 
 
     #@-node:ekr.20081021043407.6:redraw_after_delete
-    #@+node:ekr.20081021043407.7:redraw_after_expand
+    #@+node:ekr.20081021043407.7:redraw_after_expand & helper
     def redraw_after_expand (self):
 
         trace = True ; verbose = False
+        c = self.c ; p = c.currentPosition() ; w = self.treeWidget
 
-        if self.redrawing: return g.trace('already drawing')
+        if self.redrawing:
+            return g.trace('already drawing')
+        if not p.hasChildren() or not p.isExpanded():
+            return g.trace('nothing to expand')
 
-        c = self.c ; p = c.currentPosition()
-        w = self.treeWidget
         it = self.parentsDict.get(p.v)
-        if it:
+        if not it:
+            g.trace('can not happen: no item for %s' % p.headString())
+            return self.full_redraw()
+
+        if 0: # Works, but is less interesting :-)
+            return self.full_redraw()
+        else:
             self.nodeDrawCount = 0
             self.redrawing = True
             self.expanding = True
             self.selecting = True
             try:
-                if p.hasChildren() and p.isExpanded():
-                    w.expandItem(it)
-                    # Delete all the children from the tree.
-                    items = it.takeChildren()
-                    if trace and verbose: g.trace(
-                        id(it),len(items),p.headString(),g.callers(4))
-
-                    # Delete all descendant from dictionaries.
-                    for child in p.children_iter():
-                        for z in child.self_and_subtree_iter():
-                            self.removeFromDicts(z)
-
-                    # Redraw all descendants.
-                    child = p.firstChild()
-                    while child:
-                        self.drawTree(child)
-                        child.moveToNext()
-                else:
-                    # Don't change anything!
-                    g.trace('no change')
-                    w.collapseItem(it)
+                w.expandItem(it)
+                # Delete all the children from the tree.
+                items = it.takeChildren()
+                if trace and verbose:
+                    g.trace(id(it),len(items),p.headString())
+                # Delete all descendant entries from dictionaries.
+                for child in p.children_iter():
+                    for z in child.self_and_subtree_iter():
+                        self.removeFromDicts(z)
+                # Redraw all descendants.
+                for child in p.children_iter():
+                    self.drawTree(child)
             finally:
                 w.setCurrentItem(it)
                 self.redrawing = False
                 self.expanding = False
                 self.selecting = False
                 c.requestRedrawFlag= False
-                if trace: g.trace(
-                    'drew %3s nodes' % self.nodeDrawCount) # ,g.callers(4))
-        else:
-            g.trace('can not happen: no item for %s' % p.headString())
-            self.full_redraw()
-    #@-node:ekr.20081021043407.7:redraw_after_expand
+                if trace: g.trace('drew %3s nodes' % self.nodeDrawCount)
+    #@+node:ekr.20081021043407.28:removeFromDicts
+    def removeFromDicts (self,p):
+
+        # Important: items do not necessarily exist.
+
+        # Remove item from parentsDict.
+        it = self.parentsDict.get(p.v)
+        if it: del self.parentsDict[p.v]
+
+        # Remove position from itemsDict.
+        p2 = self.itemsDict.get(it)
+        if p2 == p: del self.itemsDict[it]
+
+        # Remove items from vnodeDict
+        aList = self.vnodeDict.get(p.v,[])
+        # aList = [z for z in aList if z[1] != it] # Wrong
+        aList = [z for z in aList if z[0] != p]
+        self.vnodeDict[p.v] = aList
+
+        # Remove items from tnodeDict
+        aList = self.tnodeDict.get(p.v.t,[])
+        # aList = [z for z in aList if z[1] != it] # Wrong
+        aList = [z for z in aList if z[0] != p]
+        self.tnodeDict[p.v.t] = aList
+    #@-node:ekr.20081021043407.28:removeFromDicts
+    #@-node:ekr.20081021043407.7:redraw_after_expand & helper
     #@+node:ekr.20081021043407.3:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
 
