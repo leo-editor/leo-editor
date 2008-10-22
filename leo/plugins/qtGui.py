@@ -3362,6 +3362,7 @@ class leoQtLog (leoFrame.leoLog):
             w.setHtml(contents + '\n')
             # w.append('') does not work, for some reason.
             w.moveCursor(QtGui.QTextCursor.End)
+            w.repaint()
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
@@ -5121,8 +5122,8 @@ class leoQtTree (leoFrame.leoTree):
                 g.trace('** no current item: %s' % (p and p.headString()))
 
             # Necessary to get the tree drawn initially.
-            if self.redrawCount == 1:
-                pass # w.update() # ; g.trace('***repaint')
+            g.trace('***repaint')
+            w.repaint()
 
             c.requestRedrawFlag= False
             self.redrawing = False
