@@ -11,7 +11,6 @@ Urgent:
         Minibuffer prompts for a string, I type "# " but get "numbersign ".
 
  Next:
-    - Change the stylesheet so that edit-headline font matches outline font.
     * Tab and space handling are subtly different from traditional Leo way.
         - Saving a window doesn't properly set its size.
     - Reading a window doesn't use its size.

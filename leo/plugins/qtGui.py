@@ -3357,14 +3357,14 @@ class leoQtLog (leoFrame.leoLog):
             self.selectTab(tabName)
 
         w = self.logCtrl
-
         if w:
             contents = w.toHtml()
             w.setHtml(contents + '\n')
+            # w.append('\n')
+            # w.moveCursor(QtGui.QTextCursor.End)
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
-    #@nonl
     #@-node:ekr.20081004172422.645:putnl
     #@-node:ekr.20081004172422.641:put & putnl (qtLog)
     #@+node:ekr.20081004172422.646:Tab (qtLog)

@@ -110,7 +110,8 @@ class baseCommands:
                 w,h,l,t = self.fixedWindowPosition
                 self.fixedWindowPosition = int(w),int(h),int(l),int(t)
             except Exception:
-                g.es_print('bad @data fixedWindowPosition',repr(self.fixedWindowPosition),color='red')
+                g.es_print('bad @data fixedWindowPosition',
+                    repr(self.fixedWindowPosition),color='red')
         else:
             self.windowPosition = 500,700,50,50 # width,height,left,top.
 
@@ -6759,7 +6760,7 @@ class baseCommands:
 
         c = self
 
-        if c._currentPosition:
+        if hasattr(c,'_currentPosition') and getattr(c,'_currentPosition'):
             # New in Leo 4.4.2: *always* return a copy.
             return c._currentPosition.copy()
         else:
@@ -6960,7 +6961,7 @@ class baseCommands:
 
         c = self
 
-        if self._rootPosition:
+        if hasattr(c,'_rootPosition') and getattr(c,'_rootPosition'):
             return self._rootPosition.copy()
         else:
             return  c.nullPosition()
