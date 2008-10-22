@@ -5,6 +5,7 @@
 @nocolor-node
 
 First:
+    - Move-outline-right doesn't expand the node.
     - https://bugs.launchpad.net/leo-editor/+bug/286491
         Minibuffer prompts for a string, I type "# " but get "numbersign ".
     * Tab and space handling are subtly different from traditional Leo way.
