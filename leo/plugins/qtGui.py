@@ -3332,10 +3332,10 @@ class leoQtLog (leoFrame.leoLog):
         if g.app.quitting or not c or not c.exists:
             return
 
-        if tabName: self.selectTab(tabName)
+        self.selectTab(tabName or 'Lob')
 
         # Note: this must be done after the call to selectTab.
-        w = self.logCtrl
+        w = self.logCtrl # w is a QTextBrowser
         if w:
             if color: s = '<font color="%s">%s</font>' % (color, s)
             w.append(s)
@@ -3360,8 +3360,8 @@ class leoQtLog (leoFrame.leoLog):
         if w:
             contents = w.toHtml()
             w.setHtml(contents + '\n')
-            # w.append('\n')
-            # w.moveCursor(QtGui.QTextCursor.End)
+            # w.append('') does not work, for some reason.
+            w.moveCursor(QtGui.QTextCursor.End)
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
