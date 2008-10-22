@@ -3031,7 +3031,7 @@ class leoQtGui(leoGui.leoGui):
             # g.trace(family,size,slant,weight,'returns',font)
             return font
         except:
-            g.es("exception setting font")
+            g.es("exception setting font",g.callers(4))
             g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
@@ -4905,9 +4905,6 @@ class leoQtTree (leoFrame.leoTree):
         self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
         self.treeWidget.installEventFilter(self.ev_filter)
 
-        self.setTreeColors()
-        self.setTreeFont()
-
         c.setChanged(False)
 
     #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
@@ -5080,56 +5077,6 @@ class leoQtTree (leoFrame.leoTree):
             # self.trace_select   = c.config.getBool('trace_select')
             # self.trace_stats    = c.config.getBool('show_tree_stats')
     #@-node:ekr.20081009055104.7:setConfigIvars
-    #@+node:ekr.20081010070648.15:setTreeColors
-    def setTreeColors (self):
-
-        pass # Style sheets now work.
-
-        # p = QtGui.QPalette ; w = self.treeWidget
-        # black = QtGui.QColor('black')
-        # red   = QtGui.QColor('red')
-        # white = QtGui.QColor('white')
-
-        # # Create a single palette.
-        # palette = p()
-
-        # # Selected, not editing.
-        # fg    = self.headline_text_selected_foreground_color or black
-        # bg    = self.headline_text_selected_background_color or 'grey80'
-        # selfg = self.headline_text_editing_selection_foreground_color
-        # selbg = self.headline_text_editing_selection_background_color
-
-        # # Selected, editing
-        # fg    = self.headline_text_editing_foreground_color or black
-        # bg    = self.headline_text_editing_background_color or white
-        # selfg = self.headline_text_editing_selection_foreground_color or white
-        # selbg = self.headline_text_editing_selection_background_color or black
-
-        # # Not selected.
-        # fg = self.headline_text_unselected_foreground_color or black
-        # bg = self.headline_text_unselected_background_color or white
-
-        # # Assign colors to the single palette.
-        # palette.setColor(p.Active,p.Background,red)
-
-        # # w.setPalette(palette)
-    #@-node:ekr.20081010070648.15:setTreeColors
-    #@+node:ekr.20081010070648.17:setTreeFont
-    def setTreeFont (self):
-
-        c = self.c ; w = self.treeWidget
-
-        font = c.config.getFontFromParams(
-            "headline_text_font_family", "headline_text_font_size",
-            "headline_text_font_slant",  "headline_text_font_weight",
-            c.config.defaultTreeFontSize)
-
-        if not font:
-            # g.trace('*** no font, using default')
-            font = QtGui.QFont("SansSerif",12, QtGui.QFont.Normal)
-
-        w.setFont(font)
-    #@-node:ekr.20081010070648.17:setTreeFont
     #@-node:ekr.20081004172422.758:Config... (qtTree)
     #@+node:ekr.20081010070648.19:Drawing... (qtTree)
     #@+node:ekr.20081011035036.12:allAncestorsExpanded
