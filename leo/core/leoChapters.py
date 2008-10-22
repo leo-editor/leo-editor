@@ -470,6 +470,7 @@ class chapterController:
 
         # Create the node with a postion method
         # so we don't involve the undo logic.
+        # g.trace('root',root)
         p = root.insertAsLastChild()
         p.initHeadString('@chapters')
         p.moveToRoot(oldRoot=root)

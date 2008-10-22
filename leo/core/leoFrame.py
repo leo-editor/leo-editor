@@ -1501,6 +1501,7 @@ class leoFrame:
     #@+node:ekr.20061109120726:leoFrame.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
 
+        'createFirstTreeNode', # New in Leo 4.6: was defined in tkTree.
         'initialRatios',
         'longFileName',
         'oops',
@@ -1572,6 +1573,19 @@ class leoFrame:
     )
     #@nonl
     #@-node:ekr.20061109120704:leoFrame.mustBeDefinedInSubclasses
+    #@+node:ekr.20051009045404:createFirstTreeNode
+    def createFirstTreeNode (self):
+
+        f = self ; c = f.c
+
+        v = leoNodes.vnode(context=c)
+        p = leoNodes.position(v)
+        v.initHeadString("NewHeadline")
+        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        p._linkAsRoot(oldRoot=None)
+        c.setRootPosition(p) # New in 4.4.2.
+        c.editPosition(p)
+    #@-node:ekr.20051009045404:createFirstTreeNode
     #@-node:ekr.20031218072017.3679:  leoFrame.__init__
     #@+node:ekr.20061109125528.1:Must be defined in base class
     #@+node:ekr.20031218072017.3689:initialRatios

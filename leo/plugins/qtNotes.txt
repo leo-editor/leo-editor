@@ -4,14 +4,9 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-Urgent:
-    - Remove 'exception setting font'
-    ** This file appears to hang during load.
-        - Make sure to update log, and scroll to bottom.
+First:
     - https://bugs.launchpad.net/leo-editor/+bug/286491
         Minibuffer prompts for a string, I type "# " but get "numbersign ".
-
- Next:
     * Tab and space handling are subtly different from traditional Leo way.
         - Saving a window doesn't properly set its size.
     - Reading a window doesn't use its size.
@@ -21,7 +16,7 @@ Urgent:
         TypeError: slice indices must be integers or None or have an __index__ method
 
 Next:
-    -Set find handler so unit tests pass.
+    - Set find handler so unit tests pass.
     - print-settings doesn't print to a tab and is very slow.
     - Re-enable syntax coloring.
     - Fix failing unit tests. 
@@ -34,18 +29,16 @@ Cleanup:
         - file-changed marker usually takes two characters to change.
         - Menu accelerators are not shown and do not work.
         - File:Exit doesn't quit the main loop.
-    - Implement Leo settings in various class.
-        (Don't force people to use stylesheets.)
+    - Remove old-style Leo settings.
     - Clean up text classes.
         - Finish leoQtTextWidget class.
         - Add subclasses for QLineEdit, QScintilla, etc.
 Later:
-    - Add settings for syntax coloring, or honor Leo's old syntax coloring settings.
+    - Add settings for syntax coloring.
+         - Make Scintilla handle Leo markup.
     - Support multiple body editors.
     - Support chapters
     - Handle pane orientation.
-    - Only create visible widgets in the tree.
-    - Make Scintilla handle Leo markup.
     - Paste of non-ascii characters produces '?' in the body pane.
     - Make tkinter code a plugin.
         - If no gui specified on command line, use the first gui that can be imported.

@@ -1358,7 +1358,7 @@ class leoQtFrame (leoFrame.leoFrame):
         # # f.createLeoSplitters(f.outerFrame)
         f.createSplitterComponents()
         # # f.createStatusLine()
-        # # f.createFirstTreeNode()
+        f.createFirstTreeNode() # Call the base-class method.
         f.menu = leoQtMenu(f)
         c.setLog()
         g.app.windowList.append(f)
@@ -5095,7 +5095,7 @@ class leoQtTree (leoFrame.leoTree):
         '''Redraw all visible nodes of the tree'''
 
         c = self.c ; w = self.treeWidget
-        trace = True or self.trace; verbose = False
+        trace = False or self.trace; verbose = False
         if not w: return
         if self.redrawing: return g.trace('already drawing')
 
@@ -5122,7 +5122,6 @@ class leoQtTree (leoFrame.leoTree):
                 g.trace('** no current item: %s' % (p and p.headString()))
 
             # Necessary to get the tree drawn initially.
-            g.trace('***repaint')
             w.repaint()
 
             c.requestRedrawFlag= False
@@ -5264,7 +5263,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.7:redraw_after_expand & helper
     def redraw_after_expand (self):
 
-        trace = True ; verbose = False
+        trace = False ; verbose = False
         c = self.c ; p = c.currentPosition() ; w = self.treeWidget
 
         if self.redrawing:
@@ -5383,6 +5382,8 @@ class leoQtTree (leoFrame.leoTree):
     def updateIcon (self,p):
 
         '''Update p's icon in response to a change in the body.'''
+
+        if not p: return
 
         aList = self.tnodeDict.get(p.v.t,[])
         icon = self.getIcon(p)

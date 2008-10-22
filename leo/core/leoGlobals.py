@@ -2233,6 +2233,7 @@ def openWithFileName(fileName,old_c,
     assert frame.c == c and c.frame == frame
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
+    # g.trace('c.chapterController',c.chapterController)
     if c.chapterController:
         c.chapterController.finishCreate()
     k = c.k
