@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="11"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="10"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -7625,6 +7625,10 @@ QTreeWidget QLineEdit {
     background-color: cornsilk;
     selection-color: white;
     selection-background-color: blue;
+    font-family: SansSerif;
+    font-size: 13px;
+    font-weight: bold; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
 }
 
 
