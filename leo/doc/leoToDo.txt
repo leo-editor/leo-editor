@@ -3131,6 +3131,7 @@ state = k.state.kind
 special_keys = (
     'Alt_L','Alt_R',
     'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
     'Num_Lock',
     'Shift_L','Shift_R',
     'Win_L','Win_R',
@@ -3941,6 +3942,7 @@ state = k.state.kind
 special_keys = (
     'Alt_L','Alt_R',
     'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
     'Num_Lock',
     'Shift_L','Shift_R',
     'Win_L','Win_R',
@@ -5136,6 +5138,7 @@ state = k.state.kind
 special_keys = (
     'Alt_L','Alt_R',
     'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
     'Num_Lock',
     'Shift_L','Shift_R',
     'Win_L','Win_R',
@@ -5617,6 +5620,8 @@ def printBindings (self,event=None):
     for prefix in (
         'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
         'Ctrl+Shift', 'Ctrl', 'Shift',
+        'Meta+Ctrl+Shift', 'Meta+Shift', 'Meta+Ctrl', 'Meta+Key','Meta',
+        # Meta support
     ):
         data2 = []
         for item in data:

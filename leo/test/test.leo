@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="2,8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -137,7 +137,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
@@ -372,6 +372,7 @@
 </v>
 <v t="ekr.20081006070847.2"><vh>path convenience methods</vh></v>
 </v>
+<v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3720,6 +3721,20 @@ print c.getNodePath (p)
 
 print c.getNodeFileName(p)
 
+</t>
+<t tx="ekr.20081020082611.1">class baseClass:
+
+    def foo(self):
+        g.trace('baseClass')
+
+class subClass (baseClass):
+
+    def foo(self):
+        g.trace('subClass')
+        baseClass.foo(self)
+
+z = subClass()
+z.foo()
 </t>
 </tnodes>
 </leo_file>
