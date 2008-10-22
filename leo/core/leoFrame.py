@@ -2676,18 +2676,28 @@ class leoTree:
     # These are new in Leo 4.6.
 
     def initAfterLoad (self):
-
         '''Do late initialization.
-
         Called in g.openWithFileName after a successful load.'''
 
-        pass
-
     def selectHint (self,p,old_p):
-
         '''Called at end of tree.select, just after calling c.selectPosition(p).'''
 
-        pass
+    # These are hints for optimization.
+    # The proper default is c.redraw()
+    def redraw_after_icons_changed(self):   self.c.redraw()
+    def redraw_after_clone(self):           self.c.redraw()
+    def redraw_after_contract(self):        self.c.redraw()
+    def redraw_after_delete(self):          self.c.redraw()
+    def redraw_after_expand(self):          self.c.redraw()
+    def redraw_after_insert(self):          self.c.redraw()
+    def redraw_after_move_down(self):       self.c.redraw()
+    def redraw_after_move_left(self):       self.c.redraw()
+    def redraw_after_move_right(self):      self.c.redraw()
+    def redraw_after_move_up(self):         self.c.redraw()
+    def redraw_after_select(self):          self.c.redraw()
+
+
+
     #@-node:ekr.20081005065934.8:May be defined in subclasses
     #@+node:ekr.20040803072955.128:leoTree.select & helper
     tree_select_lockout = False

@@ -18,8 +18,8 @@ goto all
 
 :errors
 
-echo leoCommands.py
-call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
+echo leoFrame.py
+call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
 
 echo qtGui.py
 call pylint.bat leo\plugins\qtGui.py            --rcfile=leo\test\pylint-leo-rc.txt
@@ -115,6 +115,9 @@ call pylint.bat leo\plugins\mod_scripting.py        --disable-msg=E0611 --rcfile
 
 echo open_with.py
 call pylint.bat leo\plugins\open_with.py            --rcfile=leo\test\pylint-leo-rc.txt
+
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py            --rcfile=leo\test\pylint-leo-rc.txt
 
 echo rst3.py
 call pylint.bat leo\plugins\rst3.py                 --rcfile=leo\test\pylint-leo-rc.txt

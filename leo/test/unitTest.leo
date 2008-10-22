@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2523,6 +2523,7 @@
 </v>
 </v>
 <v t="ekr.20081019093019.1" a="E"><vh>Fail</vh>
+<v t="ekr.20051125155134"><vh>@test inserting a new node draws the screen exactly once</vh></v>
 <v t="ekr.20071113193527"><vh>leoFind</vh>
 <v t="ekr.20051107115231.29" annotate="7d71002e"><vh>@@test Find keeps focus in body &amp; shows selected text</vh></v>
 <v t="ekr.20060130151716.3"><vh>@test minbuffer find commands</vh></v>

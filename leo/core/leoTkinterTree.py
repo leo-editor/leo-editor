@@ -1500,17 +1500,19 @@ class leoTkinterTree (leoFrame.leoTree):
     #@-node:ekr.20040803072955.70:yoffset (tkTree)
     #@-node:ekr.20040803072955.62:Helpers...
     #@+node:ekr.20081020151805.8:tree.edraw_after methods (new)
-    redraw_after_icons_changed  = redraw
-    redraw_after_clone          = redraw
-    redraw_after_contract       = redraw
-    redraw_after_delete         = redraw
-    redraw_after_expand         = redraw
-    redraw_after_insert         = redraw
-    redraw_after_move_down      = redraw
-    redraw_after_move_left      = redraw
-    redraw_after_move_right     = redraw
-    redraw_after_move_up        = redraw
-    redraw_after_select         = redraw
+    # We now use the definitions in the base leoTree class.
+
+    # redraw_after_icons_changed  = redraw
+    # redraw_after_clone          = redraw
+    # redraw_after_contract       = redraw
+    # redraw_after_delete         = redraw
+    # redraw_after_expand         = redraw
+    # redraw_after_insert         = redraw
+    # redraw_after_move_down      = redraw
+    # redraw_after_move_left      = redraw
+    # redraw_after_move_right     = redraw
+    # redraw_after_move_up        = redraw
+    # redraw_after_select         = redraw
     #@-node:ekr.20081020151805.8:tree.edraw_after methods (new)
     #@-node:ekr.20040803072955.35:Drawing... (tkTree)
     #@+node:ekr.20040803072955.71:Event handlers (tkTree)
