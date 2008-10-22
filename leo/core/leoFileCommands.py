@@ -1235,7 +1235,7 @@ class baseFileCommands:
             val2 = pickle.loads(binString)
             # g.trace('v.3 val:',val2)
             return val2
-        except (pickle.UnpicklingError,ImportError):
+        except (pickle.UnpicklingError,ImportError,AttributeError):
             g.trace('can not unpickle',val)
             return val
     #@-node:ekr.20061003093021:getSaxUa
