@@ -7659,7 +7659,7 @@ QTextEdit#disabled-richTextEdit {
 }
 
 QTextEdit#richTextEdit {
-    background-color: white; /* #fdf5f5; /* A kind of pink. */
+    background-color: #fdf5f5; /* A kind of pink. */
     selection-color: white;
     selection-background-color: lightgrey;
     /* font-family: DejaVu Sans Mono; */
