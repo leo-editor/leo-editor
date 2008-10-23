@@ -21,11 +21,13 @@ import leo.core.leoPlugins as leoPlugins
 
 Tk =            g.importExtension('Tkinter',   pluginName=__name__,verbose=True)
 subprocess =    g.importExtension('subprocess',pluginName=__name__,verbose=False)
+
+import sys
 #@nonl
 #@-node:ekr.20050101090207.8:<< imports >>
 #@nl
 
-__version__ = '1.12'
+__version__ = '1.13'
 #@<< version history >>
 #@+node:ekr.20050311110052:<< version history >>
 #@@killcolor
@@ -45,7 +47,10 @@ __version__ = '1.12'
 # 1.11 EKR: Get the table from @openwith settings if possible.
 # 1.12 EKR: Installed patch from Terry Brown: support for @bool 
 # open_with_save_on_update setting.
+# 1.13 EKR: Remove hard-coded path from default table.  These are *very* 
+# rarely used.
 #@-at
+#@nonl
 #@-node:ekr.20050311110052:<< version history >>
 #@nl
 
@@ -131,7 +136,9 @@ def on_idle (tag,keywords):
                     if update:
                         g.es("updated from: " + g.shortFileName(path),color="blue")
                         c.setBodyString(p,s,encoding)
-                        c.selectPosition(p)
+                        #TL - 7/2/08 Converted to configurable 'goto node...'
+                        if c.config.getBool('open_with_goto_node_on_update'):
+                            c.selectPosition(p)
                         dict["body"] = s
                         # A patch by Terry Brown.
                         if c.config.getBool('open_with_save_on_update'):
@@ -171,6 +178,8 @@ def create_open_with_menu (tag,keywords):
     aList = c.config.getOpenWith()
     if aList:
         table = doOpenWithSettings(aList)
+    else:
+        table = None
 
     if not table:
         if subprocess:
@@ -183,7 +192,9 @@ def create_open_with_menu (tag,keywords):
 def doDefaultTable ():
 
     if 1: # Default table.
-        idle_arg = "c:/python22/tools/idle/idle.py -e "
+        pythonDir = g.os_path_dirname(sys.executable)
+        idle = g.os_path_abspath(g.os_path_join(pythonDir,'tools','idle','idle.py'))
+        idle_arg = "%s -e" % idle
         table = (
             # Opening idle this way doesn't work so well.
             # ("&Idle",   "Alt+Shift+I",("os.system",idle_arg,".py")),
@@ -211,15 +222,15 @@ def doOpenWithSettings (aList):
         try:
             data = eval(command)
             if 0:
-                print name,shortcut
-                for i in xrange(len(data)):
-                    print i,repr(data[i])
-                print
+                g.pr(name,shortcut)
+                for i in range(len(data)):
+                    g.pr(i,repr(data[i]))
+                g.pr('')
             entry = name,shortcut,data
             table.append(entry)
 
         except SyntaxError:
-            print g.es_exception()
+            g.pr(g.es_exception())
             return None
 
     return table
@@ -228,10 +239,13 @@ def doOpenWithSettings (aList):
 def doSubprocessTable ():
 
     if 1:
+        pythonDir = g.os_path_dirname(sys.executable)
+        idle = g.os_path_abspath(g.os_path_join(pythonDir,'Lib','idlelib','idle.pyw'))
         table = (
             ("Idle", "Alt+Ctrl+I",
                 ("subprocess.Popen",
-                    ["pythonw", "C:/Python24/Lib/idlelib/idle.pyw"], ".py")),
+                    # ["pythonw", "C:/Python24/Lib/idlelib/idle.pyw"], ".py")),
+                    ["pythonw", idle], ".py")),
             ("Word", "Alt+Ctrl+W",
                 ("subprocess.Popen",
                 "C:/Program Files/Microsoft Office/Office/WINWORD.exe",

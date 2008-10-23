@@ -26,7 +26,7 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 #@<< imports >>
 #@+node:mork.20041025113509:<< imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+# import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins
 from xml.dom import minidom
 
@@ -181,7 +181,6 @@ def processDocumentNode( c ):
         proc = Processor()
         stylenode = stylenodes[ c ]
         pos = c.currentPosition()
-        c.beginUpdate()
         c.selectPosition( stylenode )
         sIO = getString( c )
         mdom1 = minidom.parseString( sIO )
@@ -204,13 +203,12 @@ def processDocumentNode( c ):
         p2 = pos.insertAfter() # tnode )
         p2.setBodyString(result)
         p2.setHeadString(nhline)
-        c.endUpdate()
+        c.redraw()
 
     except Exception, x:
         g.es( 'exception ' + str( x ))
-    c.endUpdate()
-
-
+    c.redraw()
+#@nonl
 #@-node:mork.20041010095202.1:processDocumentNode
 #@+node:mork.20041025121608:addXSLTNode
 def addXSLTNode (c):
@@ -226,11 +224,10 @@ def addXSLTNode (c):
 </xsl:transform>'''
 
     # tnode = leoNodes.tnode(body,"xslt stylesheet")
-    c.beginUpdate()
     p2 = pos.insertAfter() # tnode)
     p2.setBodyString(body)
     p2.setHeadString("xslt stylesheet")
-    c.endUpdate()
+    c.redraw()
 #@-node:mork.20041025121608:addXSLTNode
 #@+node:mork.20041010110121:addXSLTElement
 def addXSLTElement( c , element):
@@ -292,9 +289,8 @@ def jumpToStyleNode( c ):
     '''Simple method that jumps us to the current XSLT node'''
     if not styleNodeSelected( c ): return
     pos = stylenodes[ c ]
-    c.beginUpdate()
     c.selectPosition( pos )
-    c.endUpdate()
+    c.redraw()
 
 
 #@-node:mork.20041010125444:jumpToStyleNode
@@ -503,9 +499,9 @@ def addMenu( tag, keywords ):
     n2 = self.rows
     n = self.columns
     data = []
-    for z in xrange( n2 ):
+    for z in range( n2 ):
         ndata = []
-        for z2 in xrange( n ):
+        for z2 in range( n ):
             ndata.append( self.arr.get( "%s,%s" % ( z, z2 ) ) )        
         data.append( ndata )
     cS = cStringIO.StringIO()
@@ -513,7 +509,7 @@ def addMenu( tag, keywords ):
     for z in data:
         csv_write.writerow( z )
     cS.seek( 0 )
-    self.c.beginUpdate() 
+
     if not save:
         # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str( pos.headString() ) )
         p2 = pos.insertAfter() #  tnd )
@@ -522,10 +518,7 @@ def addMenu( tag, keywords ):
     else:
         # pos.setTnodeText( cS.getvalue() )
         pos.setBodyString(cS.getvalue())
-    self.c.endUpdate()
-
-
-
+    self.c.redraw()
 
 
 </t>
@@ -534,7 +527,7 @@ def addMenu( tag, keywords ):
     self.rows = self.rows + 1
     tab.configure( rows = self.rows )
     rc =  '%s,0' % (self.rows -1 )
-    for z in xrange( self.columns ):
+    for z in range( self.columns ):
         self.arr.set( '%s,%s' %( self.rows - 1, z ), "" ) 
     tab.activate( rc )
     tab.focus_set()
@@ -576,7 +569,7 @@ def addMenu( tag, keywords ):
 
     self.columns = self.columns + 1
     tab.configure( cols = self.columns )
-    for z in xrange( self.rows ):
+    for z in range( self.rows ):
         self.arr.set( '%s,%s' %( z , self.columns -1 ), "" ) 
 
 
@@ -594,10 +587,9 @@ def addMenu( tag, keywords ):
 
     # tnd = leoNodes.tnode( "", "New Table" )
     pos = c.currentPosition()
-    c.beginUpdate()
     npos = pos.insertAfter() # tnd )
     npos.setHeadString('New Table')
-    c.endUpdate()
+    c.redraw()
     c.selectPosition( npos )
     viewTable( c , True )
 
@@ -607,8 +599,8 @@ def addMenu( tag, keywords ):
 
     self.rows = rows
     self.columns = columns
-    for z in xrange( rows ):
-        for z1 in xrange( columns ):
+    for z in range( rows ):
+        for z1 in range( columns ):
             self.arr.set( '%s,%s' %( z, z1 ), "" )
 
 </t>
@@ -628,7 +620,7 @@ def addMenu( tag, keywords ):
     dialog = Pmw.Dialog( title = "Table Editor for " + str( pos.headString()),
                          buttons = [ 'Save To Current', 'Write To New', 'Close' ] )
     dbbox = dialog.component( 'buttonbox' )
-    for z in xrange( dbbox.numbuttons() ):
+    for z in range( dbbox.numbuttons() ):
         dbbox.button( z ).configure( background = 'white', foreground = 'blue' )
     return dialog
 

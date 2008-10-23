@@ -35,7 +35,8 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@nl
 
 OKFLAG='OK '  # Space required.
-__version__ = "0.1"
+__version__ = "0.2"
+    # 0.2: EKR: added c arg to setOK: fixes bug reported by pylint.
 
 #@+others
 #@+node:ekr.20040205071616.1:mnstamp
@@ -61,7 +62,7 @@ def onStart (tag,keywords):
 
 #@-node:ekr.20040205071616.3:onStart
 #@+node:ekr.20040205071616.4:setHeadOK
-def setHeadOK(v):
+def setHeadOK(c,v):
 
     s = OKFLAG + v.headString()
     c.setHeadString(v,s)
@@ -107,7 +108,7 @@ def insertOKcmd(self,event=None):
     c=self; v=c.currentVnode()  
 
     if is_subnodesOK(v) :
-        setHeadOK(v)
+        setHeadOK(c,v)
         insertBodystamp(c,v)
     else: 
         g.es('OK in child missing')

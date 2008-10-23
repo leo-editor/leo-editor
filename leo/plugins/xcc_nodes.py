@@ -702,7 +702,7 @@ if 0:
         lines = traceback.format_exception(typ,val,tb)
         for line in lines:
             # g.es(line,color = "red")
-            print line
+            g.pr(line)
 
 TraceBack = g.es_exception
 #@nonl
@@ -1001,12 +1001,11 @@ class controllerClass:
         if not node: return
         cc = self ; c = cc.c ; w = cc.LeoBodyText
 
-        c.beginUpdate()
         if not node.isVisible(c):
             for p in node.parents_iter():
                 p.expand()
         c.selectPosition(node)
-        c.endUpdate()
+        c.redraw()
 
         if index is None: return
         w.mark_set("insert",index)

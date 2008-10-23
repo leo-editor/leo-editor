@@ -122,8 +122,11 @@ class DateNodes:
     }
 
     # Names of settings that have to be read with getBool()
-    boolean_settings = ["datenodes_month_node_omit_saturdays", "datenodes_month_node_omit_sundays", 
-                        "datenodes_year_node_omit_saturdays", "datenodes_year_node_omit_sundays"]
+    boolean_settings = [
+        "datenodes_month_node_omit_saturdays",
+        "datenodes_month_node_omit_sundays", 
+        "datenodes_year_node_omit_saturdays",
+        "datenodes_year_node_omit_sundays"]
 
     ascii_encoder = codecs.getencoder("ASCII")
 
@@ -170,7 +173,8 @@ class DateNodes:
             ascii_fmt = DateNodes.ascii_encoder(fmt)[0]
         except UnicodeError:
             g.es("datenodes plugin: WARNING: The format string " + fmt + " contains non-ASCII characters.")
-            ascii_fmt = DateNodes.ascii_encoder(fmt, replace)[0]
+            # Bug fix: EKR, on orders from pylint.
+            ascii_fmt = DateNodes.ascii_encoder(fmt,'replace')[0]
 
         return date.strftime(ascii_fmt)
 
@@ -242,15 +246,12 @@ class DateNodes:
     #@+node:gfunch.20041208074734:insert_day_node
     def insert_day_node(self, event = None):
 
-        #self.c.beginUpdate()
-
         today = datetime.date.today()
         day_fmt = self.settings["day_node_headline"]
 
         day_node = self._insert_day_node(self.c.currentPosition(), today, day_fmt)
 
         self.c.selectPosition(day_node)
-        #self.c.endUpdate()
 
 
 
@@ -258,25 +259,22 @@ class DateNodes:
     #@+node:dcb.20060806183928:insert_month_node
     def insert_month_node(self, event = None):
 
-        #self.c.beginUpdate()
-
         today = datetime.date.today()
         day_fmt = self.settings["month_node_day_headline"]
         month_fmt = self.settings["month_node_month_headline"]
         omit_saturdays = self.settings["month_node_omit_saturdays"]
         omit_sundays = self.settings["month_node_omit_sundays"]
 
-
-        month_node = self._insert_month_node(self.c.currentPosition(), today, day_fmt, month_fmt, omit_saturdays, omit_sundays)
+        month_node = self._insert_month_node(
+            self.c.currentPosition(), today, day_fmt, month_fmt, omit_saturdays, omit_sundays)
 
         self.c.selectPosition(month_node)
-        #self.c.endUpdate()
+
 
 
     #@-node:dcb.20060806183928:insert_month_node
     #@+node:dcb.20060806184117:insert_year_node
     def insert_year_node(self, event = None):
-        #self.c.beginUpdate()
 
         today = datetime.date.today()
         day_fmt = self.settings["year_node_day_headline"]
@@ -285,10 +283,11 @@ class DateNodes:
         omit_saturdays = self.settings["year_node_omit_saturdays"]
         omit_sundays = self.settings["year_node_omit_sundays"]
 
-        year_node = self._insert_year_node(self.c.currentPosition(), today, day_fmt, month_fmt, year_fmt, omit_saturdays, omit_sundays)
+        year_node = self._insert_year_node(
+            self.c.currentPosition(), today, day_fmt, month_fmt, year_fmt, omit_saturdays, omit_sundays)
 
         self.c.selectPosition(year_node)
-        #self.c.endUpdate()
+
     #@-node:dcb.20060806184117:insert_year_node
     #@-others
 #@-node:gfunch.20041207100416.5:class DateNodes
@@ -299,12 +298,12 @@ def on_create(tag, keywords):
     if not (c and c.exists):
         return
 
-    try:
-        c.theDateNodesController
+    # Rewrite to eliminate a pylint complaint.
+    if hasattr(c,'theDateNodesController'):
         return
-    except AttributeError:
-        # establish a class instance
-        c.theDateNodesController = instance = DateNodes(c)
+
+    # establish a class instance
+    c.theDateNodesController = instance = DateNodes(c)
 
     #@    << Create the plug-in menu. >>
     #@+node:bobjack.20080615065747.3:<< Create the plug-in menu. >>

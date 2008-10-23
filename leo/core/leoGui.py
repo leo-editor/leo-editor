@@ -26,8 +26,6 @@ class leoGui:
 
     Subclasses are expected to override all do-nothing methods of this class."""
 
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
-
     #@    << define leoGui file types >>
     #@+node:ekr.20040131103531:<< define leoGui file types >> (not used yet)
     allFullFiletypes = [
@@ -102,6 +100,8 @@ class leoGui:
         self.plainTextWidget = None
         self.trace = False
 
+        # To keep pylint happy.
+        self.ScriptingControllerClass = nullScriptingControllerClass
     #@-node:ekr.20031218072017.3722: leoGui.__init__
     #@+node:ekr.20061109211054:leoGui.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
@@ -268,6 +268,10 @@ class leoGui:
         self.oops()
     #@-node:ekr.20031218072017.3731:app.gui file dialogs
     #@+node:ekr.20031218072017.3732:app.gui panels
+    def createColorPanel(self,c):
+        """Create a color panel"""
+        self.oops()
+
     def createComparePanel(self,c):
         """Create Compare panel."""
         self.oops()
@@ -278,6 +282,10 @@ class leoGui:
 
     def createFindTab (self,c,parentFrame):
         """Create a Tkinter find tab in the indicated frame."""
+        self.oops()
+
+    def createFontPanel (self,c):
+        """Create a hidden Font panel."""
         self.oops()
 
     def createLeoFrame(self,title):
@@ -333,6 +341,7 @@ class leoGui:
     #@+node:ekr.20061031132907:Events (leoGui)
     def event_generate(self,w,kind,*args,**keys):
         '''Generate an event.'''
+        # g.trace('baseGui','kind',kind,'args,keys',*args,**keys)
         return w.event_generate(kind,*args,**keys)
 
     def eventChar (self,event,c=None):
@@ -377,17 +386,17 @@ class leoGui:
     #@+node:ekr.20031218072017.3739:Idle time
     def setIdleTimeHook (self,idleTimeHookHandler):
 
-        # print 'leoGui:setIdleTimeHook'
+        # g.pr('leoGui:setIdleTimeHook')
         pass # Not an error.
 
     def setIdleTimeHookAfterDelay (self,idleTimeHookHandler):
 
-        # print 'leoGui:setIdleTimeHookAfterDelay'
+        # g.pr('leoGui:setIdleTimeHookAfterDelay')
         pass # Not an error.
     #@-node:ekr.20031218072017.3739:Idle time
     #@+node:ekr.20070212070820:makeScriptButton
-    def makeScriptButton (
-        self,c,
+    def makeScriptButton (self,c,
+        args=None,
         p=None,
         script=None,
         buttonText=None,
@@ -416,7 +425,7 @@ class leoGui:
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 1:
-            print "leoGui oops", g.callers(), "should be overridden in subclass"
+            g.pr("leoGui oops", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3741:oops
     #@+node:ekr.20051206103652:widget_name (leoGui)
     def widget_name (self,w):
@@ -443,6 +452,7 @@ class leoGui:
             self.c      = c # Required to access c.k tables.
             self.char   = hasattr(event,'char') and event.char or ''
             self.keysym = hasattr(event,'keysym') and event.keysym or ''
+            self.state  = hasattr(event,'state') and event.state or 0
             self.w      = hasattr(event,'widget') and event.widget or None
             self.x      = hasattr(event,'x') and event.x or 0
             self.y      = hasattr(event,'y') and event.y or 0
@@ -468,8 +478,6 @@ class leoGui:
 class nullGui(leoGui):
 
     """Null gui class."""
-
-    # __pychecker__ = '--no-argsused' # This class has many unused args.
 
     #@    @+others
     #@+node:ekr.20031218072017.2224:Birth & death
@@ -527,7 +535,7 @@ class nullGui(leoGui):
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 1:
-            g.trace("nullGui",g.callers())
+            g.trace("nullGui",g.callers(4))
     #@-node:ekr.20031218072017.2230:oops
     #@+node:ekr.20070301171901:do nothings
     def attachLeoIcon (self,w):
@@ -617,12 +625,29 @@ class nullGui(leoGui):
         val = self.theDict.get(key,defaultVal)
 
         if self.trace:
-            print key, val
+            g.pr(key, val)
 
         return val
     #@-node:ekr.20031218072017.3747:simulateDialog
     #@-others
 #@-node:ekr.20031218072017.2223:class nullGui (leoGui)
+#@+node:ekr.20080707150137.5:class nullScriptingControllerClass
+class nullScriptingControllerClass:
+
+    '''A default, do-nothing class to be overridden by mod_scripting or other plugins.
+
+    This keeps pylint happy.'''
+
+    def __init__ (self,c,iconBar=None):
+
+        self.c = c
+        self.iconBar = iconBar
+
+    def createAllButtons(self):
+
+        pass
+
+#@-node:ekr.20080707150137.5:class nullScriptingControllerClass
 #@+node:ekr.20031218072017.3742:class unitTestGui (nullGui)
 class unitTestGui(nullGui):
 

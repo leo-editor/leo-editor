@@ -47,7 +47,7 @@ bwm_file = None
 if 0:
     bwm_file = open("bwm_file", "w")
 
-__version__ = '1.22'
+__version__ = '1.23'
 
 #@<< imports >>
 #@+node:ekr.20050805162550.2:<< imports >>
@@ -81,7 +81,7 @@ try:
     import SilverCity
 except ImportError:
     if '--silent' not in sys.argv and not g.unitTesting and not g.app.batchMode:
-        print 'rst3 plugin: SilverCity not loaded'
+        g.pr('rst3 plugin: SilverCity not loaded')
     SilverCity = None
 #@-node:ekr.20050805162550.2:<< imports >>
 #@nl
@@ -106,6 +106,7 @@ except ImportError:
 # 1.20 EKR: Registers the write-restructured-text command.
 # 1.21 EKR: Added rst3-publish-argv-for-missing-stylesheets setting.
 # 1.22 EKR: Fixed bug that caused the plugin not to find default.css.
+# 1.23 EKR: Use g.makeAllNonExistentDirectories instead of os.mkdir.
 #@-at
 #@nonl
 #@-node:ekr.20050805162550.3:<< change log >>
@@ -202,7 +203,7 @@ def init ():
         g.plugin_signon(__name__)
     else:
         s = 'rst3 plugin not loaded: can not load docutils'
-        print s ; g.es(s,color='red')
+        g.es_print(s,color='red')
 
     return ok
 #@-node:ekr.20050805162550.5: init
@@ -420,8 +421,8 @@ class htmlParserClass (linkAnchorParserClass):
                 #@            << trace the unknownAttribute >>
                 #@+node:ekr.20050815164715.1:<< trace the unknownAttribute >>
                 if 0:
-                    print "rst3: unknownAttributes[self.http_attributename]"
-                    print "For:", self.last_position
+                    g.pr("rst3: unknownAttributes[self.http_attributename]")
+                    g.pr("For:", self.last_position)
                     pprint.pprint(mod_http.get_http_attribute(self.last_position))
                 #@nonl
                 #@-node:ekr.20050815164715.1:<< trace the unknownAttribute >>
@@ -772,6 +773,7 @@ class rstClass:
             'rst3_show_organizer_nodes': True,
             'rst3_show_options_nodes': False,
             'rst3_strip_at_file_prefixes': True,
+            'rst3_show_doc_parts_in_rst_mode': True,
             # Formatting options that apply only to code mode.
             'rst3_show_doc_parts_as_paragraphs': False,
             'rst3_show_leo_directives': True,
@@ -799,9 +801,9 @@ class rstClass:
         d = self.optionsDict
         keys = d.keys() ; keys.sort()
 
-        print 'present settings...'
+        g.pr('present settings...')
         for key in keys:
-            print '%20s %s' % (key,d.get(key))
+            g.pr('%20s %s' % (key,d.get(key)))
     #@nonl
     #@-node:ekr.20050812120933:dumpSettings (debugging)
     #@+node:ekr.20050814134351:getOption
@@ -819,7 +821,8 @@ class rstClass:
     def initCodeBlockString(self,p):
 
         # New in Leo 4.4.4: do this here, not in initWrite:
-        d = g.scanDirectives(c=self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         language = d.get('language')
         if language is None: language = 'python'
         else: language = language.lower()
@@ -1117,7 +1120,8 @@ class rstClass:
 
         # Set the encoding from any parent @encoding directive.
         # This can be overridden by @rst-option encoding=whatever.
-        d = g.scanDirectives(c=self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         self.encoding = encoding or d.get('encoding') or self.defaultEncoding
 
     #@-node:ekr.20050809075309:initWrite
@@ -1135,10 +1139,11 @@ class rstClass:
         if not toString:
             # Comput the output file name *after* calling writeTree.
             self.outputFileName = self.computeOutputFileName(self.outputFileName)
-            self.outputFile = file(self.outputFileName,'w')
+            self.outputFile = open(self.outputFileName,'w')
             self.outputFile.write(self.stringOutput)
             self.outputFile.close()
-    #@nonl
+
+        return True
     #@-node:ekr.20050809080925:writeNormalTree
     #@+node:ekr.20051121102358:processTopTree
     def processTopTree (self,p,justOneFile=False):
@@ -1182,15 +1187,15 @@ class rstClass:
                     if self.ext in ('.htm','.html','.tex','.pdf'):
                         ok = self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
                     else:
-                        self.writeNormalTree(p,toString=toString)
+                        ok = self.writeNormalTree(p,toString=toString)
                     self.scanAllOptions(p) # Restore the top-level verbose setting.
                     if toString:
                         return p.copy(),self.stringOutput
                     else:
-                        self.report(self.outputFileName)
+                        if ok: self.report(self.outputFileName)
                     p.moveToNodeAfterTree()
                 else:
-                   p.moveToThreadNext()
+                    p.moveToThreadNext()
             else: p.moveToThreadNext()
         if not found:
             g.es('No @rst nodes in selected tree',color='blue')
@@ -1199,6 +1204,7 @@ class rstClass:
     #@+node:ekr.20050805162550.21:writeSpecialTree
     def writeSpecialTree (self,p,toString,justOneFile):
 
+        c = self.c
         isHtml = self.ext in ('.html','.htm')
         if isHtml and not SilverCity:
             if not self.silverCityWarningGiven:
@@ -1216,13 +1222,20 @@ class rstClass:
             self.outputFileName = self.computeOutputFileName(self.outputFileName)
 
             # Create the directory if it doesn't exist.
-            dir, junk = g.os_path_split(self.outputFileName)
-            if not os.access(dir,os.F_OK):
-                os.mkdir(dir)
+            theDir, junk = g.os_path_split(self.outputFileName)
+            theDir = c.os_path_finalize(theDir)
+            if not g.os_path_exists(theDir):
+                ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+                if not ok:
+                    g.es_print('did not create:',theDir,color='red')
+                    return False
+
+            # if not os.access(theDir,os.F_OK):
+                # os.mkdir(theDir)
 
             if self.getOption('write_intermediate_file'):
                 name = self.outputFileName + '.txt'
-                f = file(name,'w')
+                f = open(name,'w')
                 f.write(self.source)
                 f.close()
                 self.report(name)
@@ -1231,7 +1244,7 @@ class rstClass:
             output = self.writeToDocutils(self.source)
             ok = True
         except Exception:
-            print 'Exception in docutils'
+            g.pr('Exception in docutils')
             g.es_exception()
             ok = False
 
@@ -1254,13 +1267,12 @@ class rstClass:
                 self.stringOutput = output
             else:
                 # Write the file to the directory containing the .leo file.
-                f = file(self.outputFileName,'w')
+                f = open(self.outputFileName,'w')
                 f.write(output)
                 f.close()
                 self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
 
         return ok
-    #@nonl
     #@-node:ekr.20050805162550.21:writeSpecialTree
     #@+node:ekr.20050809082854.1:writeToDocutils (sets argv)
     def writeToDocutils (self,s):
@@ -1302,20 +1314,11 @@ class rstClass:
         rel_stylesheet_path = self.getOption('stylesheet_path') or ''
 
         # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
-        stylesheet_path = g.os_path_abspath(g.os_path_join(
-            self.c.frame.openDirectory,rel_stylesheet_path))
+        stylesheet_path = g.os_path_finalize_join(
+            self.c.frame.openDirectory,rel_stylesheet_path)
 
-        path = g.os_path_abspath(g.os_path_join(
-            stylesheet_path,self.getOption('stylesheet_name')))
-
-        # stylesheet_path = g.os_path_abspath(rel_stylesheet_path)
-
-        # # Allow relative paths.
-        # path = g.os_path_abspath(g.os_path_join(
-            # stylesheet_path,self.getOption('stylesheet_name')))
-
-        # g.trace('stylesheet_path',stylesheet_path)
-        # g.trace('path',path)
+        path = g.os_path_finalize_join(
+            stylesheet_path,self.getOption('stylesheet_name'))
 
         if g.os_path_exists(path):
             if self.ext == '.pdf':
@@ -1433,6 +1436,15 @@ class rstClass:
                 retainContents=False)
             lines = self.handleSpecialDocParts(lines,'@rst-markup',
                 retainContents=self.getOption('generate_rst'))
+            if self.getOption('show_doc_parts_in_rst_mode') is True:
+                pass  # original behaviour, treat as plain text
+            elif self.getOption('show_doc_parts_in_rst_mode'):
+                # use value as class for content
+                lines = self.handleSpecialDocParts(lines,None,
+                    retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+            else:  # option evaluates to false, cut them out
+                lines = self.handleSpecialDocParts(lines,None,
+                    retainContents=False)
             lines = self.removeLeoDirectives(lines)
             if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
                 lines = self.replaceCodeBlockDirectives(lines)
@@ -1610,7 +1622,7 @@ class rstClass:
     #@nonl
     #@-node:ekr.20050811105438:removeLeoDirectives
     #@+node:ekr.20050811105438.1:handleSpecialDocParts
-    def handleSpecialDocParts (self,lines,kind,retainContents):
+    def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
         # g.trace(kind,g.listToString(lines))
 
@@ -1623,7 +1635,15 @@ class rstClass:
             elif self.isSpecialDocPart(s,kind):
                 n, lines2 = self.getDocPart(lines,n)
                 if retainContents:
-                    result.extend(lines2)
+                    result.extend([''])
+                    if asClass:
+                        result.extend(['.. container:: '+asClass, ''])
+                        if 'literal' in asClass.split():
+                            result.extend(['  ::', ''])
+                        for l2 in lines2: result.append('    '+l2)
+                    else:
+                        result.extend(lines2)
+                    result.extend([''])
             else:
                 result.append(s)
 
@@ -1795,16 +1815,16 @@ class rstClass:
         default_path = self.getOption('default_path')
 
         if default_path:
-            default_path = g.os_path_abspath(default_path)
+            default_path = g.os_path_finalize(default_path)
 
         # g.trace('default_path',default_path,'fileName',fileName)
 
         if default_path:
-            path = g.os_path_join(default_path,fileName)
+            path = g.os_path_finalize_join(default_path,fileName)
         elif openDirectory:
-            path = g.os_path_join(openDirectory,fileName)
+            path = g.os_path_finalize_join(openDirectory,fileName)
         else:
-            path = fileName
+            path = g.os_path_finalize(fileName)
 
         # g.trace('path',path)
 
@@ -1822,7 +1842,7 @@ class rstClass:
 
         if self.getOption('verbose'):
 
-            name = g.os_path_abspath(name)
+            name = g.os_path_finalize(name)
 
             g.es_print('wrote: %s' % (name),color="blue")
     #@nonl
@@ -1901,7 +1921,7 @@ class rstClass:
     #@+node:ekr.20050805162550.36:set_initial_http_attributes
     def set_initial_http_attributes (self,filename):
 
-        f = file(filename)
+        f = open(filename)
         parser = htmlParserClass(self)
 
         for line in f.readlines():

@@ -319,7 +319,7 @@ try:
 
     # General imports...
     import StringIO
-    import time
+    # import time
     import types
 except ImportError:
     docutils = None
@@ -467,7 +467,7 @@ if docutils:
                 pagesize=reportlab.lib.pagesizes.A4)
 
             # The 'real' code is doc.build(story)
-            self.buildFromIntermediateFile(s,story,visitor)
+            visitor.buildFromIntermediateFile(s,story,visitor)
 
             return out.getvalue()
         #@nonl
@@ -516,7 +516,7 @@ if docutils:
             if 0: # Not useful: story is a list of reportlab.platypus.para.Para objects.
                 # Use the trace in createParagraph instead.
                 g.trace('story','*'*40)
-                print story        
+                g.pr(story)
 
             # Generate self.output.  Gets sent to reportlab.
             self.output = self.createPDF_usingPlatypus(story)
@@ -592,10 +592,10 @@ if docutils:
             for line in lines:
                 if line:
                     if line.startswith('createParagraph:'):
+                        style = line[len('createParagraph:'):].strip()
                         if para:
                             self.putParaFromIntermediateFile(para,style)
                             para = []
-                        style = line[len('createParagraph:'):].strip()
                     elif line.startswith('starttag:') or line.startswith('..'):
                         pass
                     else:
@@ -949,12 +949,12 @@ if docutils:
             if 0:
                 s = text.split('>')
                 s = '>\n'.join(s)
-                print
+                g.pr('')
                 if 1: # just print the text.
-                    print s
+                    g.pr(s)
                 else:
                     g.trace('%8s\n\n%s' % (style,s))
-                print
+                g.pr('')
 
             style = self.styleSheet [style]
 
@@ -974,12 +974,12 @@ if docutils:
         #@+node:dumpContext
         def dumpContext (self):
 
-            print ; print '-' * 40
-            print 'Dump of context'
+            g.pr('\n','-' * 40)
+            g.pr('Dump of context')
 
             i = 0
             for bunch in self.context:
-                print '%2d %s' % (i,bunch)
+                g.pr('%2d %s' % (i,bunch))
                 i += 1
         #@nonl
         #@-node:dumpContext
@@ -1033,17 +1033,17 @@ if docutils:
 
             nkeys = d.keys() ; nkeys.sort()
 
-            print ; print '-' * 30
-            print 'dump of node %s\n' % (g.choose(tag,'(%s)' % tag,''))
+            g.pr('\n','-' * 30)
+            g.pr('dump of node %s\n' % (g.choose(tag,'(%s)' % tag,'')))
 
-            print 'class',node.__class__
+            g.pr('class',node.__class__)
 
             for nkey in nkeys:
                 if nkey in keys:
                     val = d.get(nkey)
-                    print nkey,':',g.toString(val,verbose=False,indent='\t')
+                    g.pr(nkey,':',g.toString(val,verbose=False,indent='\t'))
 
-            print ; print 'done', '-' * 25
+            g.pr('\ndone', '-' * 25)
         #@nonl
         #@-node:dumpNode
         #@+node:encode

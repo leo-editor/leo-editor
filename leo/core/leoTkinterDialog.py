@@ -5,9 +5,12 @@
 #@@pagewidth 80
 
 import leo.core.leoGlobals as g
-import string
+# import string
 
-import Tkinter as Tk
+try:
+    import tkinter as Tk
+except ImportError:
+    import Tkinter as Tk
 
 Pmw = g.importExtension("Pmw",    pluginName='LeoTkinterDialog',verbose=True,required=True)
 
@@ -210,12 +213,14 @@ class tkinterAboutLeo (leoTkinterDialog):
 
         if g.app.unitTesting: return
 
+        c = self.c
+
         frame = self.frame
         theCopyright = self.copyright ; email = self.email
         url = self.url ; version = self.version
 
         # Calculate the approximate height & width. (There are bugs in Tk here.)
-        lines = string.split(theCopyright,'\n')
+        lines = theCopyright.split('\n')
         height = len(lines) + 8 # Add lines for version,url,email,spacing.
         width = 0
         for line in lines:
@@ -267,8 +272,6 @@ class tkinterAboutLeo (leoTkinterDialog):
 
         """Handle clicks in the email link in an About Leo dialog."""
 
-        # __pychecker__ = '--no-argsused' # the event param must be present.
-
         try:
             import webbrowser
             webbrowser.open("mailto:" + self.email)
@@ -279,8 +282,6 @@ class tkinterAboutLeo (leoTkinterDialog):
     def onAboutLeoUrl(self,event=None):
 
         """Handle clicks in the url link in an About Leo dialog."""
-
-        # __pychecker__ = '--no-argsused' # the event param must be present.
 
         try:
             import webbrowser
@@ -293,15 +294,11 @@ class tkinterAboutLeo (leoTkinterDialog):
 
         """Set the cursor to an arrow in an About Leo dialog."""
 
-        # __pychecker__ = '--no-argsused' # the event param must be present.
-
         self.text.configure(cursor="arrow")
 
     def setDefaultCursor (self,event=None):
 
         """Set the cursor to the default cursor in an About Leo dialog."""
-
-        # __pychecker__ = '--no-argsused' # the event param must be present.
 
         self.text.configure(cursor="xterm")
     #@-node:ekr.20031218072017.3872:tkinterAboutLeo: setArrowCursor, setDefaultCursor
@@ -822,8 +819,6 @@ class tkinterListBoxDialog (leoTkinterDialog):
 
         subclasses may override to really destroy the window"""
 
-        # __pychecker__ = '--no-argsused' # event not used, but must be present.
-
         self.top.withdraw() # Don't allow this window to be destroyed.
     #@-node:ekr.20031218072017.3893:destroy
     #@+node:ekr.20031218072017.3894:hide
@@ -840,16 +835,12 @@ class tkinterListBoxDialog (leoTkinterDialog):
 
         Overridden by subclasses"""
 
-        # __pychecker__ = '--no-argsused' # the event param must be present.
-
         pass
     #@-node:ekr.20031218072017.3895:fillbox
     #@+node:ekr.20031218072017.3896:go
     def go(self,event=None):
 
         """Handle clicks in the "go" button in a list box dialog."""
-
-        # __pychecker__ = '--no-argsused' # the event param must be present.
 
         c = self.c ; box = self.box
 
@@ -862,13 +853,9 @@ class tkinterListBoxDialog (leoTkinterDialog):
         if items:
             n = items[0]
             p = self.positionList[n]
-            c.beginUpdate()
-            try:
-                c.frame.tree.expandAllAncestors(p)
-                c.selectPosition(p,updateBeadList=True)
-                    # A case could be made for updateBeadList=False
-            finally:
-                c.endUpdate()
+            c.frame.tree.expandAllAncestors(p)
+            c.selectPosition(p)
+            c.redraw()
     #@-node:ekr.20031218072017.3896:go
     #@-others
 #@-node:ekr.20031218072017.3889:class tkinterListboxDialog

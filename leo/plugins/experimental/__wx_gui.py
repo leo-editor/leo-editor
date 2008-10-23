@@ -723,10 +723,10 @@ if wx:
             self.svarDict = {} # Keys are ivar names, values are svar objects.
 
             for key in self.intKeys:
-                self.svarDict[key] = self.svar() # Was Tk.IntVar.
+                self.svarDict[key] = self.svar()
 
             for key in self.newStringKeys:
-                self.svarDict[key] = self.svar() # Was Tk.StringVar.
+                self.svarDict[key] = self.svar()
         #@-node:ekr.20061212100034.2:initGui
         #@+node:ekr.20061212100034.10:init (wxFindTab)
         # Called from leoFind.findTab.ctor.
@@ -1282,7 +1282,7 @@ if wx:
             self.wordLabel.configure(text= "Suggestions for: " + word)
             self.listBox.delete(0, "end")
 
-            for i in xrange(len(self.suggestions)):
+            for i in range(len(self.suggestions)):
                 self.listBox.insert(i, self.suggestions[i])
 
             # This doesn't show up because we don't have focus.
@@ -1609,7 +1609,6 @@ if wx:
         This class inherits almost all tkText methods: you call use them as usual.'''
 
         # The signatures of tag_add and insert are different from the Tk.Text signatures.
-        __pychecker__ = '--no-override' # suppress warning about changed signature.
 
         #@    @+others
         #@+node:ekr.20070205140140.1:stcWidget.__init__
@@ -1922,8 +1921,6 @@ if wx:
         #@-node:ekr.20070209080938.21:stc.setInsertPoint
         #@+node:ekr.20070209080938.22:stc.setSelectionRange
         def setSelectionRange (self,i,j,insert=None):
-
-            __pychecker__ = '--no-argsused' #  insert not used.
 
             w = self ; i1,j1,insert1=i,j,insert
             i = w.toGuiIndex(i)
@@ -3207,8 +3204,8 @@ if wx:
 
             try:
                 font = tkFont.Font(family=family,size=size,slant=slant,weight=weight)
-                #print family_name,family,size,slant,weight
-                #print "actual_name:",font.cget("family")
+                #g.pr(family_name,family,size,slant,weight)
+                #g.pr("actual_name:",font.cget("family"))
                 return font
             except:
                 g.es("exception setting font from " + `family_name`)
@@ -4310,9 +4307,13 @@ if wx:
         #@+node:ekr.20061213092105:setCommandForButton
         def setCommandForButton(self,b,command):
 
+            c = self.c
+
             if command:
-                def onClickCallback(event=None,command=command):
+
+                def onClickCallback(event=None,c=c,command=command):
                     command(event=event)
+                    c.outerUpdate()
 
                 self.toolbar.Bind(wx.EVT_BUTTON,onClickCallback,b)
         #@-node:ekr.20061213092105:setCommandForButton
@@ -4470,7 +4471,7 @@ if wx:
             self.tabFrame = self.frameDict.get(tabName)
 
             nb = self.nb
-            for i in xrange(nb.GetPageCount()):
+            for i in range(nb.GetPageCount()):
                 s = nb.GetPageText(i)
                 if s == tabName:
                     nb.SetSelection(i)
@@ -4491,7 +4492,7 @@ if wx:
             c = self.c ; nb = self.nb
 
             if tabName not in ('Log','Find','Spell'):
-                for i in xrange(nb.GetPageCount()):
+                for i in range(nb.GetPageCount()):
                     s = nb.GetPageText(i)
                     if s == tabName:
                         nb.DeletePage(i)
@@ -4511,8 +4512,6 @@ if wx:
         #@-node:ekr.20061211122107.7:getSelectedTab
         #@+node:ekr.20061211122107.6:hideTab
         def hideTab (self,tabName):
-
-            __pychecker__ = '--no-argsused' # tabName
 
             self.selectTab('Log')
         #@-node:ekr.20061211122107.6:hideTab
@@ -4947,7 +4946,7 @@ if wx:
                     g.es("createOpenWithMenuFromTable: invalid data",color="red")
                     return
 
-            # for i in shortcut_table: print i
+            # for i in shortcut_table: g.pr(i)
             self.createMenuItemsFromTable("Open &With...",shortcut_table,openWith=1)
         #@-node:edream.111603112846.1:createOpenWithMenuFromTable (not ready yet)
         #@+node:edream.111303103254:defineMenuCallback
@@ -4966,7 +4965,7 @@ if wx:
             # The first parameter must be event, and it must default to None.
             def wxOpenWithMenuCallback(event=None,command=command):
                 try: self.c.openWith(data=command)
-                except: print traceback.print_exc()
+                except: g.pr(traceback.print_exc())
 
             return wxOpenWithMenuCallback
         #@nonl
@@ -5307,7 +5306,7 @@ if wx:
             self.imageList = imageList = wx.ImageList(21,11)
             theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','Icons'))
 
-            for i in xrange(16):
+            for i in range(16):
 
                 # Get the original bitmap.
                 fileName = g.os_path_join(theDir,'box%02d.bmp' % i)
@@ -5376,11 +5375,7 @@ if wx:
                 dc = wx.PaintDC(self.treeCtrl) # Required, even if not used.
                 dc.DestroyClippingRegion()
                 dc.Clear()
-                c.beginUpdate()
-                try:
-                    self.fullRedraw()
-                finally:
-                    c.endUpdate(False)
+                self.fullRedraw()
             finally:
                 self.paintLockout = False
             event.Skip()
@@ -5850,12 +5845,8 @@ if wx:
             # p will be None while redrawing, so this is the outermost click event.
             # Set the selection before redrawing so the tree is drawn properly.
             c = self.c ; tree = self.treeCtrl
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-                p.contract()
-            finally:
-                c.endUpdate(False)
+            c.selectPosition(p)
+            p.contract()
 
         def onTreeCollapsed(self,event):
 
@@ -5874,12 +5865,8 @@ if wx:
             # p will be None while redrawing, so this is the outermost click event.
             # Set the selection before redrawing so the tree is drawn properly.
             c = self.c ; tree = self.treeCtrl
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-                p.expand()
-            finally:
-                c.endUpdate(False)
+            c.selectPosition(p)
+            p.expand()
 
         def onTreeExpanded (self,event):
 
@@ -5896,11 +5883,8 @@ if wx:
             # p will be None while redrawing, so this is the outermost click event.
             # Set the selection before redrawing so the tree is drawn properly.
             c = self.c
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-            finally:
-                c.endUpdate(False)
+            c.selectPosition(p)
+
         #@-node:edream.110203113231.283:Change selection
         #@+node:ekr.20061211064516:onRightDown/Up
         def onRightDown (self,event):
@@ -6120,11 +6104,8 @@ if wx:
             # Eliminating switchFlag gets rid of most flashes.
             redrawFlag = expandFlag or idFlag
 
-            c.beginUpdate()
-            try:
-                self.endEditLabel()
-            finally:
-                c.endUpdate(redrawFlag)
+            self.endEditLabel()
+            if redrawFlag: c.redraw()
 
             self.setEditPosition(p) # That is, self._editPosition = p
             tree_id = self.getIdDict(p)

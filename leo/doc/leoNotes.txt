@@ -5,12 +5,37 @@
 #@+all
 #@+node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
 #@-node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
-#@+node:ekr.20080225084626:Bzr notes
+#@+node:ekr.20080917153158.10:Bzr notes
 @nocolor
 
-Common
+How to create/use private branches
 
-- No need for aliases for push, pull or commit.  do bzr info to find url.
+===== Do this first: creates a branch directly, **without** having to use launchpad.
+
+bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor-team/leo-editor/whatever  (public)
+
+bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever (private)
+
+===== pushes a branch after it has been created on launchpad
+
+bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+
+====== remembers the push
+
+bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+
+===== creates branch on local machine: do this from leo.repo directory
+
+bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+
+-- OR --
+
+bzr branch lp:leo-editor new-branch-name 
+
+====== To resolve conflicts
+
+kdiff3 file1 file2 file3 -m
+
 
 Docs:
 - http://doc.bazaar-vcs.org/latest/en/user-guide/index.html
@@ -23,16 +48,12 @@ Docs:
 
 Windows
 
-- c:\prog\bzr-leo contains my sandbox.
-- Edward\keys contains the keys
 - Configuration file is .bazaar in XP C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0
-- To open a connection: Open pagent, then select "add key"
 
 Linux:
 
 - Configuration file is bazaar.conf in ~/.bazaar directory
-- BZR automatically 
-#@-node:ekr.20080225084626:Bzr notes
+#@-node:ekr.20080917153158.10:Bzr notes
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
 Downloading http://cheeseshop.python.org/packages/2.5/s/setuptools/setuptools-0.6c6-py2.5.egg
@@ -1308,7 +1329,7 @@ by faking that all IGNORABLE characters before POSITION were removed.
         ignore[character] = None
     counter = 0
     for character in text[:position]:
-        if ignore.has_key(character):
+        if character in ignore:
             counter = counter + 1
     self.position = position - counter
 
@@ -1328,7 +1349,7 @@ If LATEST is true, return the biggest possible value instead of the smallest.
     position = 0
     if latest:
         for character in text:
-            if ignore.has_key(character):
+            if character in ignore:
                 counter = counter + 1
             else:
                 if position == self.position:
@@ -1336,7 +1357,7 @@ If LATEST is true, return the biggest possible value instead of the smallest.
                 position = position + 1
     elif self.position > 0:
         for character in text:
-            if ignore.has_key(character):
+            if character in ignore:
                 counter = counter + 1
             else:
                 position = position + 1
@@ -1370,7 +1391,7 @@ first line of the comment text.  If the third line is shorter, it represents
 an end comment string to be bundled at the end of the comment text, and
 refilled with it.
 """
-    assert not template_registry.has_key(style), \
+    assert style not in template_registry, \
            "Style %d defined more than once" % style
     self.style = style
     self.weight = weight
@@ -2064,9 +2085,8 @@ This will not hurt your ability to use branches, only your ability to automatica
 #@+node:ekr.20031218072017.367:How to add support for a new language
 @nocolor
 
-- Add a new entries in << define global data structures >> app
-
-- Add a new Tk.Radiobutton in <<create the Target Language frame>>
+- Add new entries in the following Python dictionariues in leoApp.py:
+  self.language_delims_dict, self.language_extension_dict and self.extension_dict
 
 - Add an entry to the languages list in <<configure language-specific settings>>
 
@@ -2075,33 +2095,35 @@ This will not hurt your ability to use branches, only your ability to automatica
   N.B.: the name of this list must be x_keywords, where x is the entry in language in step a.
 
 - Add any language-specifig code to leoColor.colorizeAnyLanguage.
-  For most languages nothing need be done in this step.
+  For most languages nothing need be done.
 
 - If the language is case insensitive, add it to the list of
 case_insensitiveLanguages found in  << define global colorizer data >>
 
-- Add the language name to @language default_target_language entry in leoSettings.leo
+- Create the files theLanguage.xml and theLanguage.py file was added to the leo\modes directory.
+  See Chapter 15 of Leo's users guide for full details.
 
 TESTS
 
 - Test the syntax coloring for the new language by using the @language directive.
 
-- Test workings of the Preferences Panel by choosing the language in the panel and by looking at code that is _not_ under control of an @language directive.
-
-- Test the leoConfig.txt by setting default_target_language to the name of the new language.  When you restart Leo, the new language should be selected in the Prefs panel.
-
-- Remove leoConfig.txt, select the new language in the Prefs panel, and save the .leo file.  Open the file with a text editor and check to make sure that the <preferences> tag (near the top) contains an entry like this:
-
-<preferences allow_rich_text="0" defaultTargetLanguage="Python">
-</preferences>
-
-but with the name of your new language instead of "Python".
-
-- Create an @root node and verify that you can Tangle it.
-
 @color
 #@nonl
 #@-node:ekr.20031218072017.367:How to add support for a new language
+#@+node:ekr.20080814134319.1:How to create and push to a private bzr branch
+@nocolor
+
+C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+#@-node:ekr.20080814134319.1:How to create and push to a private bzr branch
+#@+node:ekr.20051203084725:How to expand java .jar files
+- Put whatever.jar in c:\prog
+- cd: c:\prog
+- jar xvf whatever.jar
+#@nonl
+#@-node:ekr.20051203084725:How to expand java .jar files
 #@+node:ekr.20031218072017.384:How to export syntax colored code preserving colors
 Scite has the option to "Export as html" and "export as rtf", and it will be
 full of colour and fonts - and you can define them in properties, so it will be
@@ -2123,26 +2145,6 @@ On Me you set the registry somehow.
 No information on XP.
 #@nonl
 #@-node:ekr.20031218072017.385:How to Increase environment space
-#@+node:ekr.20051203084725:How to expand java .jar files
-- Put whatever.jar in c:\prog
-- cd: c:\prog
-- jar xvf whatever.jar
-#@nonl
-#@-node:ekr.20051203084725:How to expand java .jar files
-#@+node:ekr.20051129084430:How to install jython
-@nocolor
-
-- Download jython_Release_2_2alpha1.jar and put it anywhere (say on the desktop)
-
-- Double-click the file.  This brings up an installer.  Follow the direction.
-  (I installed to c:\jython-2.2a1
-
-- Using the Control Panel, System, Advanced tab, environment variables,
-  add c:\jython-2.2a1\jython.jar to CLASSPATH (in user variables)
-#@nonl
-#@+node:ekr.20051129084430.1:@url http://www.jython.org/install.html
-#@-node:ekr.20051129084430.1:@url http://www.jython.org/install.html
-#@-node:ekr.20051129084430:How to install jython
 #@+node:ekr.20051203084725.1:How to install and run jythonShell
 Install:
 
@@ -2251,6 +2253,20 @@ Works a treat!
 Paul
 #@-node:ekr.20050317153447:jy-Leo install instructions by Paul Paterson
 #@-node:ekr.20050316092232:How to install jyLeo
+#@+node:ekr.20051129084430:How to install jython
+@nocolor
+
+- Download jython_Release_2_2alpha1.jar and put it anywhere (say on the desktop)
+
+- Double-click the file.  This brings up an installer.  Follow the direction.
+  (I installed to c:\jython-2.2a1
+
+- Using the Control Panel, System, Advanced tab, environment variables,
+  add c:\jython-2.2a1\jython.jar to CLASSPATH (in user variables)
+#@nonl
+#@+node:ekr.20051129084430.1:@url http://www.jython.org/install.html
+#@-node:ekr.20051129084430.1:@url http://www.jython.org/install.html
+#@-node:ekr.20051129084430:How to install jython
 #@+node:ekr.20070623150151:How to make Leo commands undoable
 The chapter commands provide a good example.  In this file, see the node:
 
@@ -2765,6 +2781,393 @@ anything, it probably is.
 leouser
 #@nonl
 #@-node:ekr.20060111112513.1:New jyLeo notes
+#@+node:ekr.20071217231348:Pylint docs
+@nocolor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#@+node:ekr.20071217231348.1:options
+General options
+
+rcfile:	Specify a configuration file.
+init-hook:	Python code to execute, usually for sys.path manipulation such as pygtk.require().
+rpython-mode:	enable the rpython checker which is disabled by default
+errors-only:	In debug mode, checkers without error messages are disabled and for others, only the ERROR messages are displayed, and no reports are done by default
+profile:	Profiled execution.
+ignore:	Add <file or directory> to the black list. It should be a base name, not a path. You may set this option multiple times. Default: CVS
+persistent:	Pickle collected data for later comparisons. Default: yes
+cache-size:	Set the cache size for astng objects. Default: 500
+load-plugins:	List of plugins (as comma separated values of python modules names) to load, usually to register additional checkers.
+
+Commands options
+
+help-msg:	Display a help message for the given message id and exit. The value may be a comma separated list of message ids.
+list-msgs:	Generate pylint's full documentation.
+generate-rcfile:
+ 	Generate a sample configuration file according to the current configuration. You can put other options before this one to get them in the generated configuration.
+generate-man:	Generate pylint's man page.
+
+Messages control options
+
+enable-checker:	Enable only checker(s) with the given id(s). This option conflict with the disable-checker option
+disable-checker: Enable all checker(s) except those with the given id(s). This option conflict with the disable-checker option
+enable-msg-cat:	Enable all messages in the listed categories.
+disable-msg-cat: Disable all messages in the listed categories.
+enable-msg:	Enable the message(s) with the given id(s).
+disable-msg:	Disable the message(s) with the given id(s).
+
+Reports options
+
+output-format:	set the output format. Available formats are text, parseable, colorized, msvs (visual studio) and html Default: text
+include-ids:	Include message's id in output
+files-output:	Put messages in a separate file for each module / package specified on the command line instead of printing them on stdout. Reports (if any) will be written in a file name "pylint_global.[txt|html]".
+reports:	Tells wether to display a full report or only the messages Default: yes
+evaluation:	Python expression which should return a note less than 10 (10 is the highest note).You have access to the variables errors warning, statement which respectivly contain the number of errors / warnings messages and the total number of statements analyzed. This is used by the global evaluation report (R0004). Default: 10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
+comment:	Add a comment according to your evaluation note. This is used by the global evaluation report (R0004).
+enable-report:	Enable the report(s) with the given id(s).
+disable-report:	Disable the report(s) with the given id(s).
+#@nonl
+#@-node:ekr.20071217231348.1:options
+#@+node:ekr.20071217231348.2:Main messages and reports
+Main messages
+
+E0001:	Used when a syntax error is raised for a module.
+E0011:	Unrecognized file option %r Used when an unknown inline option is encountered.
+E0012:	Bad option value %r Used when a bad value for an inline option is encountered.
+
+I0001:	Unable to run raw checkers on built-in module %s Used to inform that a built-in module has not been checked using the raw checkers.
+I0010:	Unable to consider inline option %r Used when an inline option is either badly formatted or can't be used inside modules.
+I0011:	Locally disabling %s Used when an inline option disable a message or a messages category.
+I0012:	Locally enabling %s Used when an inline option enable a message or a messages category.
+I0013:	Ignoring entire file Used to inform that the file will not be checked
+F0001:	Used when an error occured preventing the analyzing of a module (unable to find it for instance).
+F0002:	%s: %s Used when an unexpected error occured while building the ASTNG representation. This is usually accomopagned by a traceback. Please report such errors !
+F0003:	ignored builtin module %s Used to indicate that the user asked to analyze a builtin module which has been skipped.
+F0004:	unexpected infered value %s Used to indicate that some value of an unexpected type has been infered.
+
+Main reports
+
+R0001:	Messages by category
+R0002:	% errors / warnings by module
+R0003:	Messages
+R0004:	Global evaluation
+#@nonl
+#@-node:ekr.20071217231348.2:Main messages and reports
+#@+node:ekr.20071217231348.3:Basic
+Basic checker
+
+Options
+
+required-attributes:
+ 	Required attributes for module, separated by a comma
+no-docstring-rgx:
+ 	Regular expression which should only match functions or classes name which do not require a docstring Default: __.*__
+module-rgx:	Regular expression which should only match correct module names Default: (([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+const-rgx:	Regular expression which should only match correct module level names Default: (([A-Z_][A-Z1-9_]*)|(__.*__))$
+class-rgx:	Regular expression which should only match correct class names Default: [A-Z_][a-zA-Z0-9]+$
+function-rgx:	Regular expression which should only match correct function names Default: [a-z_][a-z0-9_]{2,30}$
+method-rgx:	Regular expression which should only match correct method names Default: [a-z_][a-z0-9_]{2,30}$
+attr-rgx:	Regular expression which should only match correct instance attribute names Default: [a-z_][a-z0-9_]{2,30}$
+argument-rgx:	Regular expression which should only match correct argument names Default: [a-z_][a-z0-9_]{2,30}$
+variable-rgx:	Regular expression which should only match correct variable names Default: [a-z_][a-z0-9_]{2,30}$
+inlinevar-rgx:	Regular expression which should only match correct list comprehension / generator expression variable names Default: [A-Za-z_][A-Za-z0-9_]*$
+good-names:	Good variable names which should always be accepted, separated by a comma Default: i,j,k,ex,Run,_
+bad-names:	Bad variable names which should always be refused, separated by a comma Default: foo,bar,baz,toto,tutu,tata
+bad-functions:	List of builtins function names that should not be used, separated by a comma Default: map,filter,apply,input
+
+Messages
+
+E0100:	__init__ method is a generator Used when the special class method __init__ is turned into a generator by a yield in its body.
+E0101:	Explicit return in __init__ Used when the special class method __init__ has an explicit return value.
+E0102:	%s already defined line %s Used when a function / class / method is redefined.
+E0103:	%r not properly in loop Used when break or continue keywords are used outside a loop.
+E0104:	return outside function Used when a "return" statement is found outside a function or method.
+E0105:	yield outside function Used when a "yield" statement is found outside a function or method.
+E0106:	return with argument inside generator Used when a "return" statement with an argument is found outside in a generator function or method (e.g. with some "yield" statements).
+
+W0101:	Unreachable code Used when there is some code behind a "return" or "raise" statement, which will never be accessed.
+W0102:	Dangerous default value %s as argument Used when a mutable value as list or dictionary is detected in a default value for an argument.
+W0104:	Statement seems to have no effect Used when a statement doesn't have (or at least seems to) any effect.
+W0105:	String statement has no effect Used when a string is used as a statement (which of course has no effect). This is a particular case of W0104 with its own message so you can easily disable it if you're using those strings as documentation, instead of comments.
+W0106:	Unnecessary semicolon Used when a statement is endend by a semi-colon (";"), which isn't necessary (that's python, not C ;).
+W0107:	Unnecessary pass statement Used when a "pass" statement that can be avoided is encountered.)
+W0122:	Use of the exec statement Used when you use the "exec" statement, to discourage its usage. That doesn't mean you can not use it !
+W0141:	Used builtin function %r Used when a black listed builtin function is used (see the bad-function option). Usual black listed functions are the ones like map, or filter , where Python offers now some cleaner alternative like list comprehension.
+W0142:	Used * or * magic* Used when a function or method is called using *args or **kwargs to dispatch arguments. This doesn't improve readility and should be used with care.
+
+C0102:	Black listed name "%s" Used when the name is listed in the black list (unauthorized names).
+C0103:	Invalid name "%s" (should match %s) Used when the name doesn't match the regular expression associated to its type (constant, variable, class...).
+C0111:	Missing docstring Used when a module, function, class or method has no docstring. Some special methods like __init__ doesn't necessary require a docstring.
+C0112:	Empty docstring Used when a module, function, class or method has an empty docstring (it would be too easy ;).
+C0121:	Missing required attribute "%s" Used when an attribute required for modules is missing.
+
+Reports
+
+R0101:	Statistics by type
+#@-node:ekr.20071217231348.3:Basic
+#@+node:ekr.20071217231348.4:Type
+Typecheck checker
+
+Options
+
+ignore-mixin-members:
+ 	Tells wether missing members accessed in mixin class should be ignored. A mixin class is detected if its name ends with "mixin" (case insensitive). Default: yes
+zope:	When zope mode is activated, consider the acquired-members option to ignore access to some undefined attributes.
+acquired-members:
+ 	List of members which are usually get through zope's acquisition mecanism and so shouldn't trigger E0201 when accessed (need zope=yes to be considered). Default: REQUEST,acl_users,aq_parent
+
+Messages
+
+E1101:	%s %r has no %r member  A variable is accessed for an unexistant member.
+E1102:	%s is not callable      An object being called has been infered to a non callable object
+E1103:	%s %r has no %r member (but some types could not be inferred) 
+                               A variable is accessed for an unexistant member, but astng was not able to interpret all possible types of this variable.
+E1111:	Assigning to function call which doesn't return     An assigment is done on a function call but the infered function doesn't return anything.
+W1111:	Assigning to function call which only returns None  An assigment is done on a function call but the infered function returns nothing but None.
+#@nonl
+#@-node:ekr.20071217231348.4:Type
+#@+node:ekr.20071217231348.5:Variables
+Variables checker
+
+Options
+
+init-import:	Tells wether we should check for unused import in __init__ files.
+dummy-variables-rgx:
+ 	A regular expression matching names used for dummy variables (i.e. not used). Default: _|dummy
+additional-builtins:
+ 	List of additional names supposed to be defined in builtins. Remember that you should avoid to define new builtins when possible.
+
+Messages
+
+E0601:	Using variable %r before assignment Used when a local variable is accessed before it's assignment.
+E0602:	Undefined variable %r Used when an undefined variable is accessed.
+E0611:	No name %r in module %r Used when a name cannot be found in a module.
+
+W0601:	Global variable %r undefined at the module level Used when a variable is defined through the "global" statement but the variable is not defined in the module scope.
+W0602:	Using global for %r but no assigment is done Used when a variable is defined through the "global" statement but no assigment to this variable is done.
+W0603:	Using the global statement Used when you use the "global" statement to update a global variable.
+PyLint just try to discourage this usage. That doesn't mean you can not use it !
+W0604:	Using the global statement at the module level Used when you use the "global" statement at the module level since it has no effect
+W0611:	Unused import %s Used when an imported module or variable is not used.
+W0612:	Unused variable %r Used when a variable is defined but not used.
+W0613:	Unused argument %r Used when a function or method argument is not used.
+W0614:	Unused import %s from wildcard import Used when an imported module or variable is not used from a 'from X import *' style import.
+
+W????: Inline emphasis start-string without end-string.
+W0621:	Redefining name %r from outer scope (line %s) Used when a variable's name hide a name defined in the outer scope.
+W0622:	Redefining built-in %r Used when a variable or function override a built-in.
+W0631:	Using possibly undefined loop variable %r Used when an loop variable (i.e. defined by a for loop or a list comprehension or a generator expression) is used outside the loop.
+#@nonl
+#@-node:ekr.20071217231348.5:Variables
+#@+node:ekr.20071217231501:Classes
+Classes checker
+
+Options
+
+ignore-iface-methods:
+ 	List of interface methods to ignore, separated by a comma. This is used for instance to not check methods defines in Zope's Interface base class. Default: isImplementedBy,deferred,extends,names,namesAndDescriptions,queryDescriptionFor,getBases,getDescriptionFor,getDoc,getName,getTaggedValue,getTaggedValueTags,isEqualOrExtendedBy,setTaggedValue,isImplementedByInstancesOf,adaptWith,is_implemented_by
+defining-attr-methods:
+ 	List of method names used to declare (i.e. assign) instance attributes. Default: __init__,__new__,setUp
+
+Messages
+
+E0202:	An attribute inherited from %s hide this method Used when a class defines a method which is hiden by an instance attribute from an ancestor class.
+E0203:	Access to member %r before its definition line %s Used when an instance member is accessed before it's actually assigned.
+E0211:	Method has no argument Used when a method which should have the bound instance as first argument has no argument defined.
+E0213:	Method should have "self" as first argument Used when a method has an attribute different the "self" as first argument. This is considered as an error since this is a soooo common convention that you should'nt break it!
+E0221:	Interface resolved to %s is not a class Used when a class claims to implement an interface which is not a class.
+E0222:	Missing method %r from %s interface Used when a method declared in an interface is missing from a class implementing this interface
+
+W0201:	Attribute %r defined outside __init__ Used when an instance attribute is defined outside the __init__ method.
+W0211:	Static method with %r as first argument Used when a static method has "self" or "cls" as first argument.
+W0212:	Access to a protected member %s of a client class Used when a protected member (i.e. class member with a name beginning with an underscore) is access outside the class or a descendant of the class where it's defined.
+W0221:	Arguments number differs from %s method Used when a method has a different number of arguments than in the implemented interface or in an overridden method.
+W0222:	Signature differs from %s method Used when a method signature is different than in the implemented interface or in an overridden method.
+W0223:	Method %r is abstract in class %r but is not overridden Used when an abstract method (ie raise NotImplementedError) is not overridden in concrete class.
+W0231:	__init__ method from base class %r is not called Used when an ancestor class method has an __init__ method which is not called by a derived class.
+W0232:	Class has no __init__ method Used when a class has no __init__ method, neither its parent classes.
+W0233:	__init__ method from a non direct base class %r is called Used when an __init__ method is called on a class which is not in the direct ancestors for the analysed class.
+R0201:	Method could be a function Used when a method doesn't use its bound instance, and so could be written as a function.
+C0202:	Class method should have "cls" as first argument Used when a class method has an attribute different than "cls" as first argument, to easily differentiate them from regular instance methods.
+C0203:	Metaclass method should have "mcs" as first argument Used when a metaclass method has an attribute different the "mcs" as first argument.
+F0202:	Unable to check methods signature (%s / %s) Used when PyLint has been unable to check methods signature compatibility for an unexpected raison. Please report this kind if you don't make sense of it.
+F0220:	failed to resolve interfaces implemented by %s (%s) Used when a PyLint as failed to find interfaces implemented by a class
+#@-node:ekr.20071217231501:Classes
+#@+node:ekr.20071217231501.1:Design
+Design checker
+
+Options
+max-args:	Maximum number of arguments for function / method Default: 5
+max-locals:	Maximum number of locals for function / method body Default: 15
+max-returns:	Maximum number of return / yield for function / method body Default: 6
+max-branchs:	Maximum number of branch for function / method body Default: 12
+max-statements:	Maximum number of statements in function / method body Default: 50
+max-parents:	Maximum number of parents for a class (see R0901). Default: 7
+max-attributes:	Maximum number of attributes for a class (see R0902). Default: 7
+min-public-methods:
+ 	Minimum number of public methods for a class (see R0903). Default: 2
+max-public-methods:
+ 	Maximum number of public methods for a class (see R0904). Default: 20
+
+Messages
+
+R0901:	Too many ancestors (%s/%s) Used when class has too many parent classes, try to reduce this to get a more simple (and so easier to use) class.
+R0902:	Too many instance attributes (%s/%s) Used when class has too many instance attributes, try to reduce this to get a more simple (and so easier to use) class.
+R0903:	Too few public methods (%s/%s) Used when class has too few public methods, so be sure it's really worth it.
+R0904:	Too many public methods (%s/%s) Used when class has too many public methods, try to reduce this to get a more simple (and so easier to use) class.
+R0911:	Too many return statements (%s/%s) Used when a function or method has too many return statement, making it hard to follow.
+R0912:	Too many branches (%s/%s) Used when a function or method has too many branches, making it hard to follow.
+R0913:	Too many arguments (%s/%s) Used when a function or method takes too many arguments.
+R0914:	Too many local variables (%s/%s) Used when a function or method has too many local variables.
+R0915:	Too many statements (%s/%s) Used when a function or method has too many statements. You should then split it in smaller functions / methods.
+R0921:	Abstract class not referenced Used when an abstract class is not used as ancestor anywhere.
+R0922:	Abstract class is only referenced %s times Used when an abstract class is used less than X times as ancestor.
+R0923:	Interface not implemented Used when an interface class is not implemented anywhere.
+#@nonl
+#@-node:ekr.20071217231501.1:Design
+#@+node:ekr.20071217231501.2:Imports
+Imports checker
+
+Options
+
+deprecated-modules:
+ 	Deprecated modules which should not be used, separated by a comma Default: regsub,string,TERMIOS,Bastion,rexec
+import-graph:	Create a graph of every (i.e. internal and external) dependencies in the given file (report R0402 must not be disabled)
+ext-import-graph:
+ 	Create a graph of external dependencies in the given file (report R0402 must not be disabled)
+int-import-graph:
+ 	Create a graph of internal dependencies in the given file (report R0402 must not be disabled)
+
+Messages
+
+W0401:	Wildcard import %s Used when from module import * is detected.
+W0402:	Uses of a deprecated module %r Used a module marked as deprecated is imported.
+W0403:	Relative import %r Used when an import relative to the package directory is detected.
+W0404:	Reimport %r (imported line %s) Used when a module is reimported multiple times.
+W0406:	Module import itself Used when a module is importing itself.
+W0410:	__future__ import is not the first non docstring statement Python 2.5 and greater require __future__ import to be the first non docstring statement in the module.
+R0401:	Cyclic import (%s) Used when a cyclic import between two or more modules is detected.
+F0401:	Unable to import %r (%s) Used when pylint has been unable to import a module.
+
+Reports
+
+R0401:	External dependencies
+R0402:	Modules dependencies graph
+#@nonl
+#@-node:ekr.20071217231501.2:Imports
+#@+node:ekr.20071217231501.3:Newstyle
+Newstyle checker
+
+
+Messages
+
+E1001:	Use __slots__ on an old style class Used when an old style class use the __slots__ attribute.
+E1002:	Use super on an old style class Used when an old style class use the super builtin.
+E1003:	Bad first argument %r given to super class Used when another argument than the current class is given as first argument of the super builtin.
+E1010:	Raising a new style class Used when a new style class is raised since it's not possible with python < 2.5.
+W1001:	Use of "property" on an old style class Used when PyLint detect the use of the builtin "property" on an old style class while this is relying on new style classes 
+features
+W1010:	Exception doesn't inherit from standard "Exception" class Used when a custom exception class is raised but doesn't inherit from the builtin "Exception" class.
+#@nonl
+#@-node:ekr.20071217231501.3:Newstyle
+#@+node:ekr.20071217231828:Exceptions
+Exceptions checker
+
+Messages
+
+E0701:	Bad except clauses order (%s) Used when except clauses are not in the correct order (from the more specific to the more generic). If you don't fix the order, some exceptions may not be catched by the most specific handler.
+E0702:	Raising %s while only classes, instances or string are allowed Used when something which is neither a class, an instance or a string is raised (i.e. a TypeError will be raised).
+W0701:	Raising a string exception Used when a string exception is raised.
+W0702:	No exception's type specified Used when an except clause doesn't specify exceptions type to catch.
+W0703:	Catch "Exception" Used when an except catch Exception instances.
+W0704:	Except doesn't do anything Used when an except clause does nothing but "pass" and there is no "else" clause.
+W0706:	Identifier %s used to raise an exception is assigned to %s Used when a variable used to raise an exception is initially assigned to a value which can't be used as an exception.
+#@nonl
+#@-node:ekr.20071217231828:Exceptions
+#@+node:ekr.20071217231828.1:Format
+Format checker
+
+Options
+
+max-line-length:
+ 	Maximum number of characters on a single line. Default: 80
+max-module-lines:
+ 	Maximum number of lines in a module Default: 1000
+indent-string:	String used as indentation unit. This is usually " " (4 spaces) or "t" (1 tab). Default: ' '
+
+Messages
+
+W0311:	Bad indentation. Found %s %s, expected %s Used when an unexpected number of indentation's tabulations or spaces has been found.
+W0312:	Found indentation with %ss instead of %ss Used when there are some mixed tabs and spaces in a module.
+W0331:	Use of the <> operator Used when the deprecated "<>" operator is used instead of "!=".
+W0332:	Use l as long integer identifier Used when a lower case "l" is used to mark a long integer. You should use a upper case "L" since the letter "l" looks too much like the digit "1"
+C0301:	Line too long (%s/%s) Used when a line is longer than a given number of characters.
+C0302:	Too many lines in module (%s) Used when a module has too much lines, reducing its readibility.
+C0321:	More than one statement on a single line Used when more than on statement are found on the same line.
+C0322:	Operator not preceded by a space Used when one of the following operator (!= | <= | == | >= | < | > | = | += | -= | *= | /= | %) is not preceded by a space.
+C0323:	Operator not followed by a space Used when one of the following operator (!= | <= | == | >= | < | > | = | += | -= | *= | /= | %) is not followed by a space.
+C0324:	Comma not followed by a space Used when a comma (",") is not followed by a space.
+F0321:	Format detection error in %r Used when an unexpected error occured in bad format detection. Please report the error if it occurs.
+#@nonl
+#@-node:ekr.20071217231828.1:Format
+#@+node:ekr.20071217231828.2:Miscellaneous
+Miscellaneous checker
+
+Options
+
+notes:	List of note tags to take in consideration, separated by a comma. Default: FIXME,XXX,TODO
+
+Messages
+
+E0501:	Non ascii characters found but no encoding specified (PEP 263) Used when some non ascii characters are detected but now encoding is specified, as explicited in the PEP 263.
+E0502:	Wrong encoding specified (%s) Used when a known encoding is specified but the file doesn't seem to be actually in this encoding.
+E0503:	Unknown encoding specified (%s) Used when an encoding is specified, but it's unknown to Python.
+W0511:	Used when a warning note as FIXME or XXX is detected.
+#@nonl
+#@-node:ekr.20071217231828.2:Miscellaneous
+#@+node:ekr.20071217231828.3:Metrics
+Metrics checker
+
+
+Reports
+
+R0701:	Raw metrics
+#@-node:ekr.20071217231828.3:Metrics
+#@+node:ekr.20071217231828.4:Simularities
+Similarities checker
+
+min-similarity-lines:
+ 	Minimum lines number of a similarity. Default: 4
+ignore-comments:
+ 	Ignore comments when computing similarities. Default: yes
+ignore-docstrings:
+ 	Ignore docstrings when computing similarities. Default: yes
+
+Messages
+
+R0801:	Similar lines in %s files Indicates that a set of similar lines has been detected among multiple file. This usually means that the code should be refactored to avoid this duplication.
+
+Reports
+
+R0801:	Duplication
+#@-node:ekr.20071217231828.4:Simularities
+#@-node:ekr.20071217231348:Pylint docs
 #@+node:ekr.20031218072017.392:Python Notes...
 #@+node:ekr.20031218072017.398:How to call any Python method from the C API
 In general, everything you can do in Python is accessible through the C API.
@@ -2922,74 +3325,753 @@ Brian Theado
 @language python
 @color
 #@nonl
-#@+node:ekr.20070228074312.43:tkColorToWxColor
-def tkColorToWxColor (self, color):
+#@+node:ekr.20080923070954.8:From at.scanAllDirectives (does not include recent bug fixes!)
+#@+node:ekr.20080923070954.5:<< Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    at.language = "python"
 
-    d = {
-        'black':        wx.BLACK,
-        "red":          wx.RED,
-        "blue":         wx.BLUE,
-        "#00aa00":      wx.GREEN,
-        "firebrick3":   wx.RED,
-        'white':        wx.WHITE,
-    }
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
 
-    return d.get(color)
-#@nonl
-#@-node:ekr.20070228074312.43:tkColorToWxColor
-#@+node:ekr.20080212084648:atFile.scanDefaultAtAutoEncoding (not used)(
-def scanDefaultAtAutoEncoding(self,p):
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@-node:ekr.20080923070954.5:<< Set comment strings from delims >>
+#@+node:ekr.20080923070954.6:<< Set current directory >> (atFile.scanAllDirectives)
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
 
-    '''Set .at_auto_encoding by scanning for @encoding directives.'''
+if c.frame and not self.default_directory:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    self.default_directory = theDir ; break
+                else: # 9/25/02
+                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
 
-    c = self.c
+if not self.default_directory and not scripting and not importing:
+    # This should never happen: c.openDirectory should be a good last resort.
+    g.trace()
+    self.error("No absolute directory specified anywhere.")
+    self.default_directory = ""
+#@-node:ekr.20080923070954.6:<< Set current directory >> (atFile.scanAllDirectives)
+#@-node:ekr.20080923070954.8:From at.scanAllDirectives (does not include recent bug fixes!)
+#@+node:ekr.20031218072017.1377:OLDscanColorDirectives (leoColor) (old)
+def OLDscanColorDirectives(self,p):
+
+    """Scan position p and p's ancestors looking for @comment, @language and @root directives,
+    setting corresponding colorizer ivars.
+    """
+
+    p = p.copy() ; c = self.c
+    if c == None: return # self.c may be None for testing.
+
+    if c.target_language:
+        c.target_language = c.target_language.lower()
+    self.language = language = c.target_language
+    self.comment_string = None
+    self.rootMode = None # None, "code" or "doc"
 
     for p in p.self_and_parents_iter():
-        d = g.get_directives_dict(p)
-        e = g.scanAtEncodingDirective(d)
-        if e: break
+        theDict = g.get_directives_dict(p)
+        << Test for @comment or @language >>
+        << Test for @root, @root-doc or @root-code >>
+
+    # g.trace('self.language',self.language)
+    return self.language # For use by external routines.
+#@+node:ekr.20031218072017.1378:<< Test for @comment or @language >>
+# @comment and @language may coexist in the same node.
+
+if 'comment' in theDict:
+    self.comment_string = theDict["comment"]
+
+if 'language' in theDict:
+    z = theDict["language"]
+    language,junk,junk,junk = g.set_language(z,0)
+    self.language = language
+
+if 'comment' in theDict or 'language' in theDict:
+    break
+#@-node:ekr.20031218072017.1378:<< Test for @comment or @language >>
+#@+node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
+if 'root' in theDict and not self.rootMode:
+
+    root = theDict["root"]
+    if g.match_word(root,0,"@root-code"):
+        self.rootMode = "code"
+    elif g.match_word(root,0,"@root-doc"):
+        self.rootMode = "doc"
     else:
-        # Default to the user setting.
-        e = c.config.default_at_auto_file_encoding
+        doc = c.config.at_root_bodies_start_in_doc_mode
+        self.rootMode = g.choose(doc,"doc","code")
+#@-node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
+#@-node:ekr.20031218072017.1377:OLDscanColorDirectives (leoColor) (old)
+#@+node:ekr.20041005105605.222:atFile.OLDatFileAllDirectives
+@ Once a directive is seen, no other related directives in nodes further up the tree have any effect.  For example, if an @color directive is seen in node p, no @color or @nocolor directives are examined in any ancestor of p.
 
-    # g.trace('returns',e)
-    return e
-#@-node:ekr.20080212084648:atFile.scanDefaultAtAutoEncoding (not used)(
-#@+node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
-#@-node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
-#@+node:ekr.20031218072017.1939:getBatchScript (no longer used)
-def getBatchScript ():
+This code is similar to Commands.scanAllDirectives, but it has been modified for use by the atFile class.
+@c
 
-    import leo.core.leoGlobals as g
-    windowFlag = False
+def OLDscanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+):
 
-    name = None ; i = 1 # Skip the dummy first arg.
-    while i + 1 < len(sys.argv):
-        arg = sys.argv[i].strip().lower()
-        if arg in ("--script","-script"):
-            name = sys.argv[i+1].strip() ; break
-        if arg in ("--script-window","-script-window"):
-            name = sys.argv[i+1].strip() ; windowFlag = True ; break
-        i += 1
+    """Scan position p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.
+    """
 
-    if not name:
-        return None, windowFlag
-    name = g.os_path_join(g.app.loadDir,name)
+    c = self.c
+    << Set ivars >>
+    << Set path from @file node >>
+    old = {}
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << Test for @path >>
+        << Test for @encoding >>
+        << Test for @comment and @language >>
+        << Test for @header and @noheader >>
+        << Test for @lineending >>
+        << Test for @pagewidth >>
+        << Test for @tabwidth >>
+        old.update(theDict)
+    << Set current directory >>
+    if not importing and not reading:
+        # 5/19/04: don't override comment delims when reading!
+        << Set comment strings from delims >>
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.default_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20041005105605.223:<< Set ivars >>
+self.page_width = self.c.page_width
+self.tab_width  = self.c.tab_width
+
+self.default_directory = None # 8/2: will be set later.
+
+# g.trace(c.target_language)
+
+if c.target_language:
+    c.target_language = c.target_language.lower() # 6/20/05
+delim1, delim2, delim3 = g.set_delims_from_language(c.target_language)
+self.language = c.target_language
+
+self.encoding = c.config.default_derived_file_encoding
+self.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+#@-node:ekr.20041005105605.223:<< Set ivars >>
+#@+node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName() # 4/28/04
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+if theDir and len(theDir) > 0 and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        self.default_directory = theDir
+    else: # 9/25/02
+        self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not self.default_directory:
+            self.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20041005105605.224:<< Set path from @file node >> in scanDirectory in leoGlobals.py
+#@+node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
+# We set the current director to a path so future writes will go to that directory.
+
+if not self.default_directory and not 'path' in old and 'path' in theDict:
+
+    path = theDict["path"]
+    path = g.computeRelativePath(path)
+    if path:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
+        if g.os_path_isabs(path):
+            << handle absolute path >>
+        else:
+            self.error("ignoring bad @path: %s" % path)
+    else:
+        self.error("ignoring empty @path")
+#@+node:ekr.20041005105605.227:<< handle absolute path >>
+# path is an absolute path.
+
+if g.os_path_exists(path):
+    self.default_directory = path
+else:
+    self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+    if not self.default_directory:
+        self.error("invalid @path: %s" % path)
+#@-node:ekr.20041005105605.227:<< handle absolute path >>
+#@-node:ekr.20041005105605.225:<< Test for @path >> (atFile.scanAllDirectives)
+#@+node:ekr.20041005105605.228:<< Test for @encoding >>
+if not 'encoding' in old and 'encoding' in theDict:
+
+    e = g.scanAtEncodingDirective(theDict)
+    if e:
+        self.encoding = e
+#@-node:ekr.20041005105605.228:<< Test for @encoding >>
+#@+node:ekr.20041005105605.230:<< Test for @header and @noheader >>
+# EKR: 10/10/02: perform the sames checks done by tangle.scanAllDirectives.
+
+if 'header' in theDict and 'noheader' in theDict:
+    g.es("conflicting @header and @noheader directives")
+#@-node:ekr.20041005105605.230:<< Test for @header and @noheader >>
+#@+node:ekr.20041005105605.229:<< Test for @comment and @language >>
+# 10/17/02: @language and @comment may coexist in @file trees.
+# For this to be effective the @comment directive should follow the @language directive.
+
+# 1/23/05: Any previous @language or @comment prevents processing up the tree.
+# This code is now like the code in tangle.scanAlldirectives.
+
+if 'comment' in old or 'language' in old:
+    pass # Do nothing more.
+
+elif 'comment' in theDict:
+    z = theDict["comment"]
+    delim1, delim2, delim3 = g.set_delims_from_string(z)
+
+elif 'language' in theDict:
+    z = theDict["language"]
+    self.language,delim1,delim2,delim3 = g.set_language(z,0)
+#@-node:ekr.20041005105605.229:<< Test for @comment and @language >>
+#@+node:ekr.20041005105605.231:<< Test for @lineending >>
+if 'lineending' not in old and 'lineending' in theDict:
+
+    lineending = g.scanAtLineendingDirective(theDict)
+    if lineending:
+        self.explicitLineEnding = True
+        self.output_newline = lineending
+        # g.trace(p.headString(),'lineending',repr(lineending))
+#@-node:ekr.20041005105605.231:<< Test for @lineending >>
+#@+node:ekr.20041005105605.232:<< Test for @pagewidth >>
+if 'pagewidth' in theDict and 'pagewidth' not in old:
+
+    w = g.scanAtPagewidthDirective(theDict,issue_error_flag=True)
+    if w and w > 0:
+        self.page_width = w
+#@-node:ekr.20041005105605.232:<< Test for @pagewidth >>
+#@+node:ekr.20041005105605.233:<< Test for @tabwidth >>
+if 'tabwidth' in theDict and 'tabwidth' not in old:
+
+    w = g.scanAtTabwidthDirective(theDict,issue_error_flag=True)
+    if w and w != 0:
+        self.tab_width = w
+#@-node:ekr.20041005105605.233:<< Test for @tabwidth >>
+#@+node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+if c.frame and not self.default_directory:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    self.default_directory = theDir ; break
+                else: # 9/25/02
+                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+
+if not self.default_directory and not scripting and not importing:
+    # This should never happen: c.openDirectory should be a good last resort.
+    self.error("No absolute directory specified anywhere.")
+    g.trace(g.callers())
+    self.default_directory = ""
+#@-node:ekr.20041005105605.234:<< Set current directory >> (atFile.scanAllDirectives)
+#@+node:ekr.20041005105605.235:<< Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    self.language = "python"
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    self.startSentinelComment = delim1
+    self.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    self.startSentinelComment = delim2
+    self.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    self.startSentinelComment = "#" # This should never happen!
+    self.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@-node:ekr.20041005105605.235:<< Set comment strings from delims >>
+#@-node:ekr.20041005105605.222:atFile.OLDatFileAllDirectives
+#@+node:ekr.20080923124254.1:scanForTabWidth (old)
+def scanForTabWidth (self,p):
+
+    c = self.c ; w = c.tab_width
+
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << set w and break on @tabwidth >>
+
+    c.frame.setTabWidth(w)
+#@+node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
+if 'tabwidth' in theDict:
+
+    val = g.scanAtTabwidthDirective(theDict,issue_error_flag=False)
+    if val and val != 0:
+        w = val
+        break
+#@-node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
+#@-node:ekr.20080923124254.1:scanForTabWidth (old)
+#@+node:ekr.20031218072017.1360:tangle.OLDscanAllDirectives (old)
+@ Once a directive is seen, related directives in ancesors have no effect.  For example, if an @color directive is seen in node x, no @color or @nocolor directives are examined in any ancestor of x.
+@c
+
+def OLDscanAllDirectives(self,p,require_path_flag,issue_error_flag):
+
+    """Scan vnode p and p's ancestors looking for directives,
+    setting corresponding tangle ivars and globals.
+    """
+
+    c = self.c
+    # g.trace(p)
+    old = {} ; print_mode_changed = False
+    self.init_directive_ivars()
+    if p:
+        s = p.bodyString()
+        << Collect @first attributes >>
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << Test for @comment and @language >>
+        << Test for @encoding >>
+        << Test for @lineending >>
+        << Test for print modes directives >>
+        << Test for @path >>
+        << Test for @pagewidth >>
+        << Test for @root >>
+        << Test for @tabwidth >>
+        << Test for @header and @noheader >>
+        old.update(theDict)
+    << Set self.tangle_directory >>
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.tangle_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20031218072017.1361:<< Collect @first attributes >>
+@ Stephen P. Schaefer 9/13/2002: Add support for @first.
+Unlike other root attributes, does *NOT* inherit from parent nodes.
+@c
+tag = "@first"
+sizeString = len(s) # DTHEIN 13-OCT-2002: use to detect end-of-string
+i = 0
+while 1:
+    # DTHEIN 13-OCT-2002: directives must start at beginning of a line
+    if not g.match_word(s,i,tag):
+        i = g.skip_line(s,i)
+    else:
+        i = i + len(tag)
+        j = i = g.skip_ws(s,i)
+        i = g.skip_to_end_of_line(s,i)
+        if i>j:
+            self.first_lines += s[j:i] + '\n'
+        i = g.skip_nl(s,i)
+    if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
+        break
+#@-node:ekr.20031218072017.1361:<< Collect @first attributes >>
+#@+node:ekr.20031218072017.1362:<< Test for @comment and @language >>
+if 'comment' in old or 'language' in old:
+    pass # Do nothing more.
+
+elif 'comment' in theDict:
+
+    z = theDict["comment"]
+    delim1,delim2,delim3 = g.set_delims_from_string(z)
+    if delim1 or delim2:
+        self.single_comment_string = delim1
+        self.start_comment_string = delim2
+        self.end_comment_string = delim3
+        # @comment effectively disables Untangle.
+        self.language = "unknown"
+    else:
+        if issue_error_flag:
+            g.es("ignoring: @comment",z)
+
+elif 'language' in theDict:
+
+    z = theDict["language"]
+    language,delim1,delim2,delim3 = g.set_language(z,0)
+    self.language = language
+    self.single_comment_string = delim1
+    self.start_comment_string = delim2
+    self.end_comment_string = delim3
+    if 0:
+        g.trace(self.single_comment_string,
+            self.start_comment_string,
+            self.end_comment_string)
+
+    # 10/30/02: These ivars must be updated here!
+    # g.trace(self.language)
+    self.use_noweb_flag = True
+    self.use_cweb_flag = False # Only raw cweb mode is ever used.
+    self.raw_cweb_flag = self.language == "cweb" # A new ivar.
+#@-node:ekr.20031218072017.1362:<< Test for @comment and @language >>
+#@+node:ekr.20031218072017.1363:<< Test for @encoding >>
+if 'encoding' not in old and 'encoding' in theDict:
+
+    e = g.scanAtEncodingDirective(theDict)
+    if e:
+        self.encoding = e
+#@-node:ekr.20031218072017.1363:<< Test for @encoding >>
+#@+node:ekr.20031218072017.1364:<< Test for @lineending >>
+if 'lineending' not in old and 'lineending' in theDict:
+
+    lineending = g.scanAtLineendingDirective(theDict)
+    if lineending:
+        self.output_newline = lineending
+#@-node:ekr.20031218072017.1364:<< Test for @lineending >>
+#@+node:ekr.20031218072017.1365:<< Test for print modes directives >>
+@ It is valid to have more than one of these directives in the same body text: the more verbose directive takes precedence.
+@c
+
+if not print_mode_changed:
+    for name in ("verbose","terse","quiet","silent"):
+        if name in theDict:
+            self.print_mode = name
+            print_mode_changed = True
+            break
+#@-node:ekr.20031218072017.1365:<< Test for print modes directives >>
+#@+node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
+if require_path_flag and 'path' not in old and 'path' in theDict:
+
+    path = theDict["path"]
+    theDir = relative_path = g.computeRelativePath(path)
+
+    if len(theDir) > 0:
+        base = g.getBaseDirectory(c=c) # May return "".
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir):
+                << handle absolute @path >>
+            elif issue_error_flag and not self.path_warning_given:
+                self.path_warning_given = True # supress future warnings
+                self.error("ignoring relative path in @path:" + theDir)
+    elif issue_error_flag and not self.path_warning_given:
+        self.path_warning_given = True # supress future warnings
+        self.error("ignoring empty @path")
+#@+node:ekr.20031218072017.1368:<< handle absolute @path >>
+if g.os_path_exists(theDir):
+    self.tangle_directory = theDir
+else: # 11/19/02
+    self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+    if not self.tangle_directory:
+        if issue_error_flag and not self.path_warning_given:
+            self.path_warning_given = True # supress future warnings
+            self.error("@path directory does not exist: " + theDir)
+            if base and len(base) > 0:
+                g.es("relative_path_base_directory:",base)
+            if relative_path and len(relative_path) > 0:
+                g.es("relative path in @path directive:",relative_path)
+#@-node:ekr.20031218072017.1368:<< handle absolute @path >>
+#@-node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
+#@+node:ekr.20031218072017.1369:<< Test for @pagewidth >>
+if 'pagewidth' not in old and 'pagewidth' in theDict:
+
+    w = g.scanAtPagewidthDirective(theDict,issue_error_flag)
+    if w and w > 0:
+        self.page_width = w
+#@-node:ekr.20031218072017.1369:<< Test for @pagewidth >>
+#@+node:ekr.20031218072017.1370:<< Test for @root >>
+@ 10/27/02: new code:  self.root may not be defined here, so any relative directory specified in the @root node will have no effect unless we have this code.
+
+@c
+if self.root_name == None and 'root' in theDict:
+
+    z = theDict["root"]
+    self.setRootFromText(z,issue_error_flag)
+#@-node:ekr.20031218072017.1370:<< Test for @root >>
+#@+node:ekr.20031218072017.1371:<< Test for @tabwidth >>
+if 'tabwidth' not in old and 'tabwidth' in theDict:
+
+    w = g.scanAtTabwidthDirective(theDict,issue_error_flag)
+    if w and w != 0:
+        self.tab_width = w
+#@-node:ekr.20031218072017.1371:<< Test for @tabwidth >>
+#@+node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
+if 'header' in old or 'noheader' in old:
+    pass # Do nothing more.
+
+elif 'header' in theDict and 'noheader' in theDict:
+    if issue_error_flag:
+        g.es("conflicting @header and @noheader directives")
+
+elif 'header' in theDict:
+    self.use_header_flag = True
+
+elif 'noheader' in theDict:
+    self.use_header_flag = False
+#@-node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
+#@+node:ekr.20031218072017.1373:<< Set self.tangle_directory >>
+@ This code sets self.tangle_directory if it has not already been set by an @path directive.
+
+An absolute file name in an @root directive will override the directory set here.
+A relative file name gets appended later to the default directory.
+That is, the final file name will be g.os_path_join(self.tangle_directory,fileName)
+@c
+
+if c.frame and require_path_flag and not self.tangle_directory:
+    if self.root_name and len(self.root_name) > 0:
+        root_dir = g.os_path_dirname(self.root_name)
+    else:
+        root_dir = None
+    # g.pr("root_dir:", root_dir)
+
+    table = ( # This is a precedence table.
+        (root_dir,"@root"), 
+        (c.tangle_directory,"default tangle"), # Probably should be eliminated.
+        (c.frame.openDirectory,"open"))
+
+    base = g.getBaseDirectory(c=c) # May return ""
+
+    for dir2, kind in table:
+        if dir2 and len(dir2) > 0:
+            # g.pr("base,theDir:",base,theDir)
+            theDir = g.os_path_join(base,dir2)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                << handle absolute path >>
+
+if not self.tangle_directory and require_path_flag: # issue_error_flag:
+    self.pathError("No absolute directory specified by @root, @path or Preferences.")
+#@+node:ekr.20031218072017.1374:<< handle absolute path >>
+if g.os_path_exists(theDir):
+    if kind == "@root" and not g.os_path_isabs(root_dir):
+        self.tangle_directory = base
+    else:
+        self.tangle_directory = theDir 
+    break
+else: # 9/25/02
+    self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+    if not self.tangle_directory:
+        # 10/27/02: It is an error for this not to exist now.
+        self.error("@root directory does not exist:" + theDir)
+        if base and len(base) > 0:
+            g.es("relative_path_base_directory:",base)
+        if dir2 and len(dir2) > 0:
+            g.es('',kind,"directory:",dir2)
+#@-node:ekr.20031218072017.1374:<< handle absolute path >>
+#@-node:ekr.20031218072017.1373:<< Set self.tangle_directory >>
+#@-node:ekr.20031218072017.1360:tangle.OLDscanAllDirectives (old)
+#@+node:ekr.20081001062423.13:From atFile.scanDefaultDirectory
+#@+node:ekr.20041005105605.237:<< Set path from @file node >>
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName()
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+# g.trace('at.default_directory',at.default_directory)
+# g.trace('theDir',theDir)
+
+if theDir and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        at.default_directory = theDir
+    else:
+        at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not at.default_directory:
+            at.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20041005105605.237:<< Set path from @file node >>
+#@+node:ekr.20041005105605.238:<< handle @path >>
+# Set the default_directory ivar so future writes will go to that directory.
+path = g.computeRelativePath (path)
+
+if path:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    path = c.os_path_finalize_join(base,path) # Bug fix: 2008/9/23
+
+    if g.os_path_isabs(path):
+        if g.os_path_exists(path):
+            at.default_directory = path
+        else:
+            at.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+            if not at.default_directory:
+                at.error("invalid @path: %s" % path)
+            else:
+                at.error("ignoring bad @path: %s" % path)
+else:
+    at.error("ignoring empty @path")
+#@-node:ekr.20041005105605.238:<< handle @path >>
+#@+node:ekr.20041005105605.241:<< Set current directory >>
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+assert(not at.default_directory)
+
+if c.frame :
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    at.default_directory = theDir ; break
+                else:
+                    at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+#@-node:ekr.20041005105605.241:<< Set current directory >>
+#@-node:ekr.20081001062423.13:From atFile.scanDefaultDirectory
+#@+node:ekr.20081001062423.14:From leoImport.scanDefaultDirectory
+#@+node:ekr.20080211085914.1:<< Set path from @file node >>
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName()
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+if theDir and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        self.default_directory = theDir
+    else:
+        self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not self.default_directory:
+            self.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20080211085914.1:<< Set path from @file node >>
+#@+node:ekr.20081001062423.4:<< handle @path >>
+# Set the default_directory ivar so future writes will go to that directory.
+path = g.computeRelativePath (path)
+
+if path:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    path = c.os_path_finalize_join(base,path)
+
+    if g.os_path_isabs(path):
+        if g.os_path_exists(path):
+            self.default_directory = path
+        else:
+            self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+            if not self.default_directory:
+                self.error("invalid @path: %s" % path)
+            else:
+                self.error("ignoring bad @path: %s" % path)
+else:
+    self.error("ignoring empty @path")
+#@-node:ekr.20081001062423.4:<< handle @path >>
+#@+node:ekr.20080211085914.4:<< Set current directory >>
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+assert(not self.default_directory)
+
+if c.frame:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    self.default_directory = theDir ; break
+                else:
+                    self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+#@-node:ekr.20080211085914.4:<< Set current directory >>
+#@-node:ekr.20081001062423.14:From leoImport.scanDefaultDirectory
+#@+node:ekr.20081001140516.17:from nodeHistory
+#@+node:ekr.20040803072955.131:updatePositionList
+def updatePositionList (self,p):
+
+    '''Update the position list used by nav_buttons plugin.'''
+
+    c = self.c ; cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+
+    target = (p.copy(),theChapter)
+
+    self.beadList = [z for z in self.beadList
+                        if c.positionExists(z[0]]
+
     try:
-        f = None
-        try:
-            f = open(name,'r')
-            script = f.read()
-            # g.trace("script",script)
-        except IOError:
-            g.es_print("can not open script file:",name, color="red")
-            script = None
-    finally:
-        if f: f.close()
+        self.beadPointer = self.beadList.index(target)
+    except ValueError:
+        self.beadList.append(target)
+        self.beadPointer = len(self.beadList) -1
 
-    # Bug fix 4/27/07: Don't put a return in a finally clause.
-    return script, windowFlag
-#@-node:ekr.20031218072017.1939:getBatchScript (no longer used)
+    # c = self.c ; root = c.rootPosition()
+    # cc = c.chapterController
+    # theChapter = cc and cc.getSelectedChapter()
+
+    # # Recreate the list, and set found if p is in the list
+    # n = 0       # The number of previous valid entries.
+    # n2 = 0      # The number of previous entries.
+    # aList = []  # The new beadList.
+    # found = -1
+    # for data in self.beadList:
+        # p2,chapter = data
+        # if c.positionExists(p2,root=root):
+            # data = p2,theChapter
+            # aList.append(data)
+            # if p == p2: found = n
+            # n += 1
+        # elif n2 <= self.beadPointer:
+            # self.beadPointer -= 1 # Adjust for missing entries.
+        # n2 += 1
+
+    # if found == -1:
+        # data = p.copy(),theChapter
+        # self.beadList.append(data)
+        # self.beadPointer = len(self.beadList) -1
+    # else:
+        # self.beadPointer = found
+        # self.beadList = aList
+
+    if self.trace:
+        g.trace('bead list',p.headString())
+        g.pr([z[0].headString() for z in self.beadList])
+#@-node:ekr.20040803072955.131:updatePositionList
+#@+node:ekr.20040803072955.132:updateVisitedList
+def updateVisitedList (self,p):
+
+    '''Make p the most recently visited position.'''
+
+    c = self.c ; root=c.rootPosition()
+    cc = c.chapterController
+
+    # Remove non-existent entries.
+    self.visitedList = [z for z in self.visitedList if
+        c.positionExists(z[0],root=root)]
+
+    # Append p to the list only if it is not present.
+    for data in self.visitedList:
+        p2,chapter = data
+        if p2 == p: break
+    else:
+        data = p.copy(),cc and cc.getSelectedChapter()
+        self.visitedList.insert(0,data)
+
+    if self.trace:
+        g.trace('len(c.visitedList)',len(self.visitedList))
+        g.pr([z[0].headString()[:10] for z in self.visitedList]) # don't assign to p!
+#@-node:ekr.20040803072955.132:updateVisitedList
+#@-node:ekr.20081001140516.17:from nodeHistory
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

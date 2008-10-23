@@ -34,6 +34,8 @@
 
 __version__ = "1.2"
 
+# print('at top of hoist.py')
+
 #@<< imports >>
 #@+node:ekr.20040908093511.1:<< imports >>
 import leo.core.leoGlobals as g
@@ -59,6 +61,8 @@ SIZER_WIDTH = 55 # was 70
 #@+node:ekr.20070301070027:init
 def init ():
 
+    # g.trace('hoist.init')
+
     if Tk is None: return False
 
     # OK for unit testing.
@@ -72,18 +76,17 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
 #@-node:ekr.20070301070027:init
 #@+node:ekr.20050104063423:onCreate
 def onCreate (tag,keys):
 
     c = keys.get('c')
+    # g.trace('hoist.py','c',c)
     if not (c and c.exists):
         return
 
-    try:
-        c.theHoistButtonsController
-    except:
+    # Rewritten to avoid pylint complaint.
+    if not hasattr(c,'theHoistButtonsController'):
         c.theHoistButtonsController = hoist = HoistButtons(c)
 
         useTkFrame = g.app.gui.guiName() == 'tkinter' and hasattr(c.frame, 'getIconButton')

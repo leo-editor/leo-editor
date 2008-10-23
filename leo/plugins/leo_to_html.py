@@ -185,7 +185,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import ConfigParser
 import webbrowser
-import re
+# import re
 import tempfile
 import os
 
@@ -194,10 +194,6 @@ import os
 
 
 __version__ = '2.3'
-
-
-pluginController = None
-
 
 #@+others
 #@+node:bob.20080107154936:module level functions
@@ -536,7 +532,7 @@ class Leo_to_HTML(object):
 
         s = p.headString()
         if not self.flagIgnoreFiles or s[:len('@file')] != '@file':
-           return True 
+            return True 
     #@-node:bob.20080107175336:showSubtree
     #@-node:bob.20080107154746.2:do_xhtml
     #@+node:bob.20080107154746.9:main
@@ -590,10 +586,10 @@ class Leo_to_HTML(object):
         g.es('%s%s' % (prefix or self.msgPrefix, msg), color=color or self.reportColor)
 
     def announce_start(self, msg='running ...', prefix=None, color=None):
-           self.announce(msg, prefix, color) 
+        self.announce(msg, prefix, color) 
 
     def announce_end(self, msg='done', prefix=None, color=None):
-            self.announce(msg, prefix, color)
+        self.announce(msg, prefix, color)
 
     def announce_fail(self, msg='failed', prefix=None, color=None):
         self.announce(msg, prefix, color= color or self.errorColor, silent=False) 
@@ -611,9 +607,9 @@ class Leo_to_HTML(object):
             return s.strip()
 
         def flag(s):
-             ss = config(s)
-             if ss:
-                 return ss.lower()[0] in ('y', 't', '1')
+            ss = config(s)
+            if ss:
+                return ss.lower()[0] in ('y', 't', '1')
 
         #g.trace(g.app.loadDir,"..","plugins","leo_to_html.ini")
         fileName = abspath(g.app.loadDir,"..","plugins","leo_to_html.ini")

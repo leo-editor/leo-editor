@@ -59,7 +59,7 @@ if sys.platform == "win32":
     pathToExplorer = 'c:/windows/explorer.exe'
     pathToCmd = 'c:/windows/system32/cmd.exe'
 else:
-    # FIXME: Set these...
+    # Set these as needed...
     pathToExplorer = ''
     pathToCmd = ''
 
@@ -115,7 +115,7 @@ class pluginController:
     def _getpath (self,p):
 
         c = self.c
-        dict = g.scanDirectives(c,p=p)
+        dict = c.scanAllDirectives(p)
         d = dict.get("path")
 
         if p.isAnyAtFileNode():

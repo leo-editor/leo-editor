@@ -56,6 +56,8 @@ import webbrowser
 #@-node:pap.20060703102546.3:<< imports >>
 #@nl
 
+thePluginController = None
+
 #@+others
 #@+node:pap.20060703102546.4:init
 def init ():

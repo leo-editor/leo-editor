@@ -14,7 +14,7 @@ def onKey (tag,keywords):
 
     ch = keywords.get("ch")
     if ch and len(ch) > 0:
-        g.es("key",`ch`)
+        g.es("key",repr(ch))
 #@nonl
 #@-node:edream.110203113231.737:onKey
 #@-others

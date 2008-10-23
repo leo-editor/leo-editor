@@ -151,17 +151,14 @@ class quickMoveButton:
             g.es('Invalid move: %s' % (self.targetHeadString),color='red')
             return
 
-        c.beginUpdate()
-        try:
-            bunch = c.undoer.beforeMoveNode(p)
-            p2.expand()
-            nxt = p.visNext(c) or p.visBack(c)
-            if self.first:  p.moveToFirstChildOf(p2)
-            else:           p.moveToLastChildOf(p2)
-            c.selectPosition(nxt)
-            c.undoer.afterMoveNode(p,'Quick Move', bunch)
-        finally:
-            c.endUpdate()
+        bunch = c.undoer.beforeMoveNode(p)
+        p2.expand()
+        nxt = p.visNext(c) or p.visBack(c)
+        if self.first:  p.moveToFirstChildOf(p2)
+        else:           p.moveToLastChildOf(p2)
+        c.selectPosition(nxt)
+        c.undoer.afterMoveNode(p,'Quick Move', bunch)
+        c.redraw()
     #@-node:ekr.20070117121326.1:moveCurrentNodeToTarget
     #@+node:ekr.20070123061606:checkMove
     def checkMove (self,p,p2):

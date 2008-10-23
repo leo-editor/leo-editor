@@ -62,7 +62,7 @@ import leo.core.leoPlugins as leoPlugins
 
 import os.path
 import shutil
-import sys
+# import sys
 
 try:
     import tkFileDialog
@@ -105,6 +105,7 @@ multiprefix = '@multiprefix'
 multipath = '@multipath'
 haveseen = {}   
 files = {}
+originalOpenFileForWriting = None
 
 #@+others
 #@+node:ekr.20050226115130.1:init & helpers

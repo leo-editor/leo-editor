@@ -245,10 +245,10 @@ def init ():
     if g.app.unitTesting: return None
 
     if g.app.gui is None:
-            g.app.createTkGui(__file__)
+        g.app.createTkGui(__file__)
 
-            if g.app.gui.guiName() != "tkinter":
-                return False
+        if g.app.gui.guiName() != "tkinter":
+            return False
 
     leoPlugins.registerHandler("create-optional-menus",createPluginsMenu)
     g.plugin_signon(__name__)
@@ -355,14 +355,14 @@ class PlugIn:
             #
             self.doc = self.mod.__doc__
             self.version = self.mod.__dict__.get("__version__","<unknown>") # EKR: 3/17/05
-            # if self.version: print self.version,g.shortFileName(filename)
+            # if self.version: g.pr(self.version,g.shortFileName(filename))
         except ImportError:
             # s = 'Can not import %s in plugins_menu plugin' % g.shortFileName(filename)
-            # print s ; g.es(s,color='blue')
+            # g.es_print(s,color='blue')
             return
         except Exception:
             s = 'Unexpected exception in plugins_menu plugin importing %s' % filename
-            print s ; g.es(s,color='red')
+            g.es_print(s,color='red')
             return
 
         #@    << Check if this can be configured >>
@@ -478,7 +478,7 @@ class PlugIn:
         for section in config.sections():
             options = {}
             for option in config.options(section):
-                #print 'config', section, option 
+                #g.pr('config', section, option )
                 options[option] = unicode(config.get(section,option))
             data[section] = options
 

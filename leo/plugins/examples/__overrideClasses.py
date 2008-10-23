@@ -18,7 +18,7 @@ if not g.app.unitTesting: # Not for unit testing: overrides core methods.
     if 0:
         #@        << override the LeoFrame class >>
         #@+node:edream.110203113231.917:<< override the LeoFrame class >>
-        # print "overriding LeoFrame class"
+        # g.pr("overriding LeoFrame class")
 
         import leo.core.leoFrame as leoFrame
 
@@ -30,7 +30,7 @@ if not g.app.unitTesting: # Not for unit testing: overrides core methods.
 
             if 0:
                 def __init__(self,title=None):
-                    print "myLeoFrame ctor",title
+                    g.pr("myLeoFrame ctor",title)
                     leoFrame.leoCoreFrame.__init__(self,title)
 
         leoFrame.LeoFrame = myLeoFrame
@@ -43,7 +43,7 @@ if not g.app.unitTesting: # Not for unit testing: overrides core methods.
         #@+node:edream.110203113231.918:<< override methods of the LeoApp class >>
         import leo.core.leoApp as leoApp
 
-        # print "overriding g.app.closeLeoWindow"
+        # g.pr("overriding g.app.closeLeoWindow")
 
         oldAppCloseLeoWindow = g.app.closeLeoWindow
 
@@ -52,7 +52,7 @@ if not g.app.unitTesting: # Not for unit testing: overrides core methods.
             global oldAppCloseLeoWindow
 
             oldAppCloseLeoWindow(frame)
-            print "after closeLeoWindow"
+            g.pr("after closeLeoWindow")
 
         g.funcToMethod(myAppCloseLeoWindow,leoApp.LeoApp,"closeLeoWindow")
         #@nonl

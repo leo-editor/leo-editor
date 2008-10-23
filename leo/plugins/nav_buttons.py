@@ -59,27 +59,29 @@ rClick menu generator commands
 
         @menu prev
             @item *    body = nav-prev-menu
-
-
-Gui Support
------------
-
-This plugin supplies the gui components for the tkinter gui.
-
-Any non-tkinter gui's wishing to support this plugin should supply:
-
-    a marksDialog class          as g.app.gui.marksDialog
-    a recentSectionsDialog class as g.app.gui.recentSectionsDialog
-
-Obviously these classes should mimic the behavior of the Tk classes for
-the relevant gui.
-
-The dialogs will be automatically detected by the plugin and used if supplied.
-
-
-
-
 """
+
+#@+at 
+#@nonl
+# disabled last part of the docstring.
+# 
+# 
+# Gui Support
+# -----------
+# 
+# This plugin supplies the gui components for the tkinter gui.
+# 
+# Any non-tkinter gui's wishing to support this plugin should supply:
+# 
+#     a marksDialog class          as g.app.gui.marksDialog
+#     a recentSectionsDialog class as g.app.gui.recentSectionsDialog
+# 
+# Obviously these classes should mimic the behavior of the Tk classes for
+# the relevant gui.
+# 
+# The dialogs will be automatically detected by the plugin and used if 
+# supplied.
+#@-at
 #@-node:bob.20080103150617:<< docstring >>
 #@nl
 
@@ -88,15 +90,19 @@ The dialogs will be automatically detected by the plugin and used if supplied.
 
 #@<< imports >>
 #@+node:ekr.20050219114353:<< imports >>
-
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+import leo.core.leoTkinterDialog as leoTkinterDialog
+
+try:
+    import Tkinter as Tk
+except ImportError:
+    Tk = None
 
 import os
-#@nonl
 #@-node:ekr.20050219114353:<< imports >>
 #@nl
-__version__ = "1.12"
+__version__ = "1.14" # EKR: Don't touch this code without my permission!
 #@<< version history >>
 #@+node:ekr.20050219114353.1:<< version history >>
 #@@killcolor
@@ -144,8 +150,11 @@ __version__ = "1.12"
 # - Moved hook registration to init.
 # 1.12 bobjack:
 #     - bind prev and next buttons together if Tk and toolbar plugin enabled
-# 
+# 1.13 EKR: Reverted to organization used in Leo 4.4.5, while retaining latest 
+# code.
+# 1.14 EKR: Added guards for c.nodeHistory.
 #@-at
+#@nonl
 #@-node:ekr.20050219114353.1:<< version history >>
 #@nl
 
@@ -156,710 +165,698 @@ recentInitiallyVisible = False
 #@+node:ekr.20050219114353.2:init
 def init ():
 
-    """Initialize the plugin.
-
-    Initialize the dialog boxes, which also act as per commander
-    plugin controllers, and register hook handlers.
-    """
-
-    global Tk, imageClass
-
-    imageClass = lambda : None
-    Tk = None
+    if Tk is None: return False
 
     if g.app.gui is None:
-
         g.app.createTkGui(__file__)
 
-        if g.app.gui.guiName() != "tkinter":
-            return False
+    ok = g.app.gui.guiName() == "tkinter"
 
-    if g.app.gui.guiName() == 'tkinter':
+    if ok:
+        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        g.plugin_signon(__name__)
+
+    return ok
+#@-node:ekr.20050219114353.2:init
+#@+node:ekr.20050219115116:onCreate
+def onCreate (tag,keywords):
+
+    # Not ok for unit testing: can't use unitTestGui.
+    if g.app.unitTesting or g.app.gui.guiName() != 'tkinter':
+        return
+
+    c = keywords.get("c")
+    r = leoPlugins.registerHandler
+
+    images = imageClass()
+
+    # Create the marks dialog and hooks.
+    marks = marksDialog(c,images)
+    marks.updateMarks()
+    r(('set-mark','clear-mark'),marks.updateMarks)
+
+    # Create the recent nodes dialog.
+    recent = recentSectionsDialog(c,images)
+    recent.updateRecent()
+    r('select2',recent.updateRecent)
+#@-node:ekr.20050219115116:onCreate
+#@+node:ekr.20050219115859:class imageClass
+class imageClass:
+
+    """An image manager class."""
+
+    #@    @+others
+    #@+node:ekr.20050219115859.1:ctor
+    def __init__ (self):
+
+        """Load the images needed for the module."""
+
+        if not Tk:
+            return
+
+        self.path = g.os_path_join(g.app.loadDir,'..','Icons')
+
+        # Create images and set ivars.
+        for ivar,icon in (
+            ('lt_nav_disabled_image','lt_arrow_disabled.gif'),
+            ('lt_nav_enabled_image', 'lt_arrow_enabled.gif'),
+            ('rt_nav_disabled_image','rt_arrow_disabled.gif'),
+            ('rt_nav_enabled_image', 'rt_arrow_enabled.gif'),
+        ):
+            image = self.createImage(icon)
+            setattr(self,ivar,image)
+    #@-node:ekr.20050219115859.1:ctor
+    #@+node:ekr.20050219115859.2:createImage
+    def createImage (self,iconName):
+
+        """Load a single image from a file."""
+
+        path = os.path.normpath(os.path.join(self.path,iconName))
 
         try:
-            import Tkinter as Tk
-            from leo.core.leoTkinterDialog import tkinterListBoxDialog
+            image = Tk.PhotoImage(master=g.app.root,file=path)
+        except:
+            g.es("can not load icon: %s" % iconName)
+            image = None
 
-        except ImportError:
-            Tk = None
+        return image
+    #@-node:ekr.20050219115859.2:createImage
+    #@-others
+#@-node:ekr.20050219115859:class imageClass
+#@+node:edream.110203113231.775:class marksDialog (listBoxDialog)
+class marksDialog (leoTkinterDialog.tkinterListBoxDialog):
 
-        if Tk is None:
-            return False
+    """A class to create the marks dialog."""
 
-        #@        << define Tk dialog classes >>
-        #@+node:bob.20080103142149:<< define Tk dialog classes >>
-        #@+others
-        #@+node:ekr.20050219115859:class imageClass
-        class imageClass:
+    #@    @+others
+    #@+node:edream.110203113231.776: marksDialog.__init__
+    def __init__ (self,c,images):
 
-            """An image manager class."""
+        """Create a Marks listbox dialog."""
 
-            #@    @+others
-            #@+node:ekr.20050219115859.1:ctor
-            def __init__ (self):
+        self.c = c
+        self.images = images
 
-                """Load the images needed for the module."""
+        self.label = None
+        self.title = 'Marks for %s' % g.shortFileName(c.mFileName) # c.frame.title
 
-                if not Tk:
-                    return
+        # Init the base class and call self.createFrame.
+        leoTkinterDialog.tkinterListBoxDialog.__init__(self,c,self.title,self.label)
 
-                self.path = g.os_path_join(g.app.loadDir,'..','Icons')
-
-                # Create images and set ivars.
-                for ivar,icon in (
-                    ('lt_nav_disabled_image','lt_arrow_disabled.gif'),
-                    ('lt_nav_enabled_image', 'lt_arrow_enabled.gif'),
-                    ('rt_nav_disabled_image','rt_arrow_disabled.gif'),
-                    ('rt_nav_enabled_image', 'rt_arrow_enabled.gif'),
-                ):
-                    image = self.createImage(icon)
-                    setattr(self,ivar,image)
-            #@-node:ekr.20050219115859.1:ctor
-            #@+node:ekr.20050219115859.2:createImage
-            def createImage (self,iconName):
-
-                """Load a single image from a file."""
-
-                path = os.path.normpath(os.path.join(self.path,iconName))
-
-                try:
-                    image = Tk.PhotoImage(master=g.app.root,file=path)
-                except:
-                    g.es("can not load icon: %s" % iconName)
-                    image = None
-
-                return image
-            #@-node:ekr.20050219115859.2:createImage
-            #@-others
-        #@-node:ekr.20050219115859:class imageClass
-        #@+node:edream.110203113231.775:class marksDialog (listBoxDialog)
-        class marksDialog (tkinterListBoxDialog):
-
-            """A class to create the marks dialog."""
-
-            #@    @+others
-            #@+node:edream.110203113231.776: marksDialog.__init__
-            def __init__ (self,c,images):
-
-                """Create a Marks listbox dialog."""
-
-                self.c = c
-                self.images = images
-
-                self.label = None
-                self.title = 'Marks for %s' % g.shortFileName(c.mFileName) # c.frame.title
-
-                # Init the base class and call self.createFrame.
-                tkinterListBoxDialog.__init__(self,c,self.title,self.label)
-
-                # Create the show-marks-dialog command.
-                self.addCommand()
+        # Create the show-marks-dialog command.
+        self.addCommand()
 
 
-                if not marksInitiallyVisible:
-                    self.top.withdraw()
+        if not marksInitiallyVisible:
+            self.top.withdraw()
 
-                self.addButtons()
+        self.addButtons()
 
-                # Create the marks menu generator commands.
-                self.addGeneratorCommands()
+        # Create the marks menu generator commands.
+        self.addGeneratorCommands()
 
-                c.bind(self.top,"<Up>",self.up)
-                c.bind(self.top,"<Down>",self.down)
-            #@-node:edream.110203113231.776: marksDialog.__init__
-            #@+node:ekr.20050219131752:addButtons
-            def addButtons (self):
+        c.bind(self.top,"<Up>",self.up)
+        c.bind(self.top,"<Down>",self.down)
+    #@-node:edream.110203113231.776: marksDialog.__init__
+    #@+node:ekr.20050219131752:addButtons
+    def addButtons (self):
 
-                """Add extra buttons to the dialog."""
+        """Add extra buttons to the dialog."""
 
-                c = self.c ; images = self.images
+        c = self.c ; images = self.images
 
-                def marksButtonCallback(*args,**keys):
-                    self.top.deiconify()
-                    # No call to c.outerUpdate is needed here.
+        def marksButtonCallback(*args,**keys):
+            self.top.deiconify()
+            # No call to c.outerUpdate is needed here.
 
-                self.marks_button = btn = c.frame.addIconButton(
-                    text="Marks",command=marksButtonCallback)
+        self.marks_button = btn = c.frame.addIconButton(
+            text="Marks",command=marksButtonCallback)
 
-                c.bind(btn,'<Button-3>', self.rClickMarks)
-            #@-node:ekr.20050219131752:addButtons
-            #@+node:bobjack.20080411192347.2:rClickMarks
-            def rClickMarks(self, event):
+        c.bind(btn,'<Button-3>', self.rClickMarks)
+    #@-node:ekr.20050219131752:addButtons
+    #@+node:bobjack.20080411192347.2:rClickMarks
+    def rClickMarks(self, event):
 
-                """Show a popup menu to select a mark."""
+        """Show a popup menu to select a mark."""
 
-                c = self.c
+        c = self.c
 
-                menu_table = [('*', 'nav-marks-menu')]   
+        menu_table = [('*', 'nav-marks-menu')]   
 
-                g.doHook('rclick-popup', c=c, event=event, context_menu=menu_table)
-            #@-node:bobjack.20080411192347.2:rClickMarks
-            #@+node:ekr.20080311065442.2:addCommand
-            def addCommand (self):
+        g.doHook('rclick-popup', c=c, event=event, context_menu=menu_table)
+    #@-node:bobjack.20080411192347.2:rClickMarks
+    #@+node:ekr.20080311065442.2:addCommand
+    def addCommand (self):
 
-                '''Create the show-marks-dialog command.'''
+        '''Create the show-marks-dialog command.'''
 
-                c = self.c
+        c = self.c
 
-                # The event arg is required to keep a unit test happy.
-                def showMarksDialogCallback(event,*args,**keys):
-                    self.top.deiconify()
+        # The event arg is required to keep a unit test happy.
+        def showMarksDialogCallback(event,*args,**keys):
+            self.top.deiconify()
 
-                c.k.registerCommand('show-marks-dialog',
-                    shortcut=None,func=showMarksDialogCallback)
-            #@-node:ekr.20080311065442.2:addCommand
-            #@+node:bobjack.20080411192347.8:addGeneratorCommands
-            def addGeneratorCommands(self):
+        c.k.registerCommand('show-marks-dialog',
+            shortcut=None,func=showMarksDialogCallback)
+    #@-node:ekr.20080311065442.2:addCommand
+    #@+node:bobjack.20080411192347.8:addGeneratorCommands
+    def addGeneratorCommands(self):
 
-                """Register rClick minibuffer generator commands."""
+        """Register rClick minibuffer generator commands."""
 
-                c = self.c
+        c = self.c
 
-                for command in (
-                    'nav-marks-menu',
-                ):    
-                    cb = getGeneratorCallback(self, c, command)
-                    c.k.registerCommand(command, shortcut=None, func=cb)
-            #@+node:bobjack.20080411192347.9:nav_marks_menu
-            def nav_marks_menu(self, keywords):
+        for command in (
+            'nav-marks-menu',
+        ):    
+            cb = getGeneratorCallback(self, c, command)
+            c.k.registerCommand(command, shortcut=None, func=cb)
+    #@+node:bobjack.20080411192347.9:nav_marks_menu
+    def nav_marks_menu(self, keywords):
 
-                """Generate marks menu and prepend to menu_table."""
+        """Generate marks menu and prepend to menu_table."""
 
-                c = self.c
+        c = self.c
 
-                menu_table = []
-                tnodeList = []
-                for p in c.allNodes_iter():
-                    if p.isMarked() and p.v.t not in tnodeList:
-                        tnodeList.append(p.v.t)
-                        cb = lambda event, keywords, p=p.copy(): self.gotoNode(p)
-                        menu_table.append((p.headString().strip(), cb))
+        menu_table = []
+        tnodeList = []
+        for p in c.allNodes_iter():
+            if p.isMarked() and p.v.t not in tnodeList:
+                tnodeList.append(p.v.t)
+                cb = lambda event, keywords, p=p.copy(): self.gotoNode(p)
+                menu_table.append((p.headString().strip(), cb))
 
-                keywords['rc_menu_table'][:0] = menu_table
+        keywords['rc_menu_table'][:0] = menu_table
 
-            #@-node:bobjack.20080411192347.9:nav_marks_menu
-            #@+node:bobjack.20080411192347.3:gotoNode
-            def gotoNode(self, p):
+    #@-node:bobjack.20080411192347.9:nav_marks_menu
+    #@+node:bobjack.20080411192347.3:gotoNode
+    def gotoNode(self, p):
 
-                """Select node `p`."""
+        """Select node `p`."""
 
-                c = self.c
+        c = self.c
 
-                if c.contractVisitedNodes:
-                   p.contract()
+        if c.contractVisitedNodes:
+           p.contract()
 
-                c.treeSelectHelper(p)
-            #@-node:bobjack.20080411192347.3:gotoNode
-            #@-node:bobjack.20080411192347.8:addGeneratorCommands
-            #@+node:edream.110203113231.777:createFrame
-            def createFrame(self):
+        c.treeSelectHelper(p)
+    #@-node:bobjack.20080411192347.3:gotoNode
+    #@-node:bobjack.20080411192347.8:addGeneratorCommands
+    #@+node:edream.110203113231.777:createFrame
+    def createFrame(self):
 
-                """Create the frame for a Marks listbox dialog."""
+        """Create the frame for a Marks listbox dialog."""
 
-                tkinterListBoxDialog.createFrame(self)
+        leoTkinterDialog.tkinterListBoxDialog.createFrame(self)
 
-                f = Tk.Frame(self.outerFrame)
-                f.pack()
+        f = Tk.Frame(self.outerFrame)
+        f.pack()
 
-                self.addStdButtons(f)
-            #@nonl
-            #@-node:edream.110203113231.777:createFrame
-            #@+node:ekr.20080311065442.3:down/up
-            def down (self,event):
+        self.addStdButtons(f)
+    #@nonl
+    #@-node:edream.110203113231.777:createFrame
+    #@+node:ekr.20080311065442.3:down/up
+    def down (self,event):
 
-                """Handle clicks on the dialogs 'down' button."""
+        """Handle clicks on the dialogs 'down' button."""
 
-                # Work around an old Python bug.  Convert strings to ints.
-                items = self.box.curselection()
-                try: items = map(int, items)
-                except ValueError: pass
+        # Work around an old Python bug.  Convert strings to ints.
+        items = self.box.curselection()
+        try: items = map(int, items)
+        except ValueError: pass
 
-                if items:
-                    n = items[0]
-                    if n + 1 < len(self.positionList):
-                        self.box.selection_clear(n)
-                        self.box.selection_set(n+1)
-                else:
-                    self.box.selection_set(0)
-
-            def up (self,event):
-
-                """Handle clicks on the dialogs 'up' button."""
-
-                # Work around an old Python bug.  Convert strings to ints.
-                items = self.box.curselection()
-                try: items = map(int, items)
-                except ValueError: pass
-
-                if items: n = items[0]
-                else:     n = 0
+        if items:
+            n = items[0]
+            if n + 1 < len(self.positionList):
                 self.box.selection_clear(n)
-                self.box.selection_set(max(0,n-1))
-            #@-node:ekr.20080311065442.3:down/up
-            #@+node:edream.110203113231.779:updateMarks
-            def updateMarks(self,tag,keywords):
+                self.box.selection_set(n+1)
+        else:
+            self.box.selection_set(0)
 
-                '''Recreate the Marks listbox. A hook handler.'''
+    def up (self,event):
 
-                # It is safe to use self.c as the module level dispatcher
-                # ensures we only get events from our own controller.
-                c = self.c
+        """Handle clicks on the dialogs 'up' button."""
 
-                self.box.delete(0,"end")
+        # Work around an old Python bug.  Convert strings to ints.
+        items = self.box.curselection()
+        try: items = map(int, items)
+        except ValueError: pass
 
-                # Bug fix 5/12/05: Set self.positionList for use by tkinterListBoxDialog.go().
-                i = 0 ; self.positionList = [] ; tnodeList = []
+        if items: n = items[0]
+        else:     n = 0
+        self.box.selection_clear(n)
+        self.box.selection_set(max(0,n-1))
+    #@-node:ekr.20080311065442.3:down/up
+    #@+node:edream.110203113231.779:updateMarks
+    def updateMarks(self,tag=None,keywords=None):
 
-                for p in c.allNodes_iter():
-                    if p.isMarked() and p.v.t not in tnodeList:
-                        self.box.insert(i,p.headString().strip())
-                        tnodeList.append(p.v.t)
-                        self.positionList.append(p.copy())
-                        i += 1
+        '''Recreate the Marks listbox. A hook handler.'''
 
-                self.box.selection_set(max(0,len(self.positionList)-1))
-            #@-node:edream.110203113231.779:updateMarks
-            #@-others
-        #@nonl
-        #@-node:edream.110203113231.775:class marksDialog (listBoxDialog)
-        #@+node:edream.110203113231.780:class recentSectionsDialog (tkinterListBoxDialog)
-        class recentSectionsDialog (tkinterListBoxDialog):
+        # It is safe to use self.c as the module level dispatcher
+        # ensures we only get events from our own controller.
+        c = self.c
 
-            """A class to create the recent sections dialog"""
+        self.box.delete(0,"end")
 
-            #@    @+others
-            #@+node:edream.110203113231.781:__init__  recentSectionsDialog
-            def __init__ (self,c,images):
+        # Bug fix 5/12/05: Set self.positionList for use by tkinterListBoxDialog.go().
+        i = 0 ; self.positionList = [] ; tnodeList = []
 
-                """Create a Recent Sections listbox dialog."""
+        for p in c.allNodes_iter():
+            if p.isMarked() and p.v.t not in tnodeList:
+                self.box.insert(i,p.headString().strip())
+                tnodeList.append(p.v.t)
+                self.positionList.append(p.copy())
+                i += 1
 
-                self.c = c
-                self.images = images
-                self.label = None
-                self.title = "Recent nodes for %s" % g.shortFileName(c.mFileName)
-                self.lt_nav_button = self.rt_nav_button = None # Created by createFrame.
+        self.box.selection_set(max(0,len(self.positionList)-1))
+    #@-node:edream.110203113231.779:updateMarks
+    #@-others
+#@nonl
+#@-node:edream.110203113231.775:class marksDialog (listBoxDialog)
+#@+node:edream.110203113231.780:class recentSectionsDialog (tkinterListBoxDialog)
+class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
 
-                # Create the show-recent-sections-dialog command.
-                self.addCommand()
+    """A class to create the recent sections dialog"""
 
-                # Add 'Recent' button to icon bar.
-                self.addIconBarButtons()
+    #@    @+others
+    #@+node:edream.110203113231.781:__init__  recentSectionsDialog
+    def __init__ (self,c,images):
 
-                # Init the base class. (calls createFrame)
-                # N.B.  The base class contains positionList ivar.
-                tkinterListBoxDialog.__init__(self,c,self.title,self.label)
+        """Create a Recent Sections listbox dialog."""
 
-                self.fillbox() # Must be done initially.
+        self.c = c
+        self.images = images
+        self.label = None
+        self.title = "Recent nodes for %s" % g.shortFileName(c.mFileName)
+        self.lt_nav_button = self.rt_nav_button = None # Created by createFrame.
 
-                if not recentInitiallyVisible:
-                    self.top.withdraw()
+        # Create the show-recent-sections-dialog command.
+        self.addCommand()
 
-                self.updateButtons()
+        # Add 'Recent' button to icon bar.
+        self.addIconBarButtons()
 
-                self.addGeneratorCommands()
+        # Init the base class. (calls createFrame)
+        # N.B.  The base class contains positionList ivar.
+        leoTkinterDialog.tkinterListBoxDialog.__init__(self,c,self.title,self.label)
 
+        self.fillbox() # Must be done initially.
 
-                c.bind(self.top,"<Up>",self.up)
-                c.bind(self.top,"<Down>",self.down)
-            #@-node:edream.110203113231.781:__init__  recentSectionsDialog
-            #@+node:ekr.20080311065442.1:addCommand
-            def addCommand (self):
+        if not recentInitiallyVisible:
+            self.top.withdraw()
 
-                '''Create the show-recent-sections-dialog command.'''
+        self.updateButtons()
 
-                c = self.c
+        self.addGeneratorCommands()
 
-                # The event arg is required to keep a unit test happy.
-                def recentSectionsCommandCallback(event,*args,**keys):
-                    self.fillbox(forceUpdate=True)
-                    self.top.deiconify()
+        c.bind(self.top,"<Up>",self.up)
+        c.bind(self.top,"<Down>",self.down)
+    #@-node:edream.110203113231.781:__init__  recentSectionsDialog
+    #@+node:ekr.20080311065442.1:addCommand
+    def addCommand (self):
 
-                c.k.registerCommand('show-recent-sections-dialog',
-                    shortcut=None,func=recentSectionsCommandCallback)
-            #@-node:ekr.20080311065442.1:addCommand
-            #@+node:bobjack.20080411192347.5:addGeneratorCommands
-            def addGeneratorCommands(self):
+        '''Create the show-recent-sections-dialog command.'''
 
-                """Register rClick minibuffer generator commands."""
+        c = self.c
 
-                c = self.c
+        # The event arg is required to keep a unit test happy.
+        def recentSectionsCommandCallback(event,*args,**keys):
+            self.fillbox(forceUpdate=True)
+            self.top.deiconify()
 
-                for command in (
-                    'nav-prev-menu',
-                    'nav-next-menu',
-                    'nav-recent-menu',
-                ):
+        c.k.registerCommand('show-recent-sections-dialog',
+            shortcut=None,func=recentSectionsCommandCallback)
+    #@-node:ekr.20080311065442.1:addCommand
+    #@+node:bobjack.20080411192347.5:addGeneratorCommands
+    def addGeneratorCommands(self):
 
-                    cb = getGeneratorCallback(self, c, command)
-                    c.k.registerCommand(command, shortcut=None, func=cb)
-            #@+node:bobjack.20080411192347.7:nav_prev_menu
-            def nav_prev_menu(self, keywords):
+        """Register rClick minibuffer generator commands."""
 
-                """Handler for minibuffer command nav-prev-menu."""
+        c = self.c
 
-                c = self.c
+        for command in (
+            'nav-prev-menu',
+            'nav-next-menu',
+            'nav-recent-menu',
+        ):
 
-                h = c.nodeHistory
+            cb = getGeneratorCallback(self, c, command)
+            c.k.registerCommand(command, shortcut=None, func=cb)
+    #@+node:bobjack.20080411192347.7:nav_prev_menu
+    def nav_prev_menu(self, keywords):
 
-                menu_table = []
+        """Handler for minibuffer command nav-prev-menu."""
 
-                if h.beadPointer > -1:
-                    count = 0
-                    for p, ch in h.beadList[:h.beadPointer]:
-                        cb = lambda event, keywords, count=count: self.gotoNode(count)
-                        menu_table[:0] = [(p.headString(), cb)]
-                        count += 1
+        c = self.c
 
-                keywords['rc_menu_table'][:0] = menu_table
+        h = c.nodeHistory
+        if not h: return
 
-            #@-node:bobjack.20080411192347.7:nav_prev_menu
-            #@+node:bobjack.20080411192347.11:nav_next_menu
-            def nav_next_menu(self, keywords):
+        menu_table = []
 
-                """Handler for minibuffer command nav-next-menu."""
+        if h.beadPointer > -1:
+            count = 0
+            for p, ch in h.beadList[:h.beadPointer]:
+                cb = lambda event, keywords, count=count: self.gotoNode(count)
+                menu_table[:0] = [(p.headString(), cb)]
+                count += 1
 
-                c = self.c
+        keywords['rc_menu_table'][:0] = menu_table
 
-                h = c.nodeHistory
+    #@-node:bobjack.20080411192347.7:nav_prev_menu
+    #@+node:bobjack.20080411192347.11:nav_next_menu
+    def nav_next_menu(self, keywords):
 
-                menu_table = []
+        """Handler for minibuffer command nav-next-menu."""
 
-                if h.beadPointer + 1 < len(h.beadList):
-                    count = h.beadPointer + 1
-                    for p, ch in h.beadList[h.beadPointer+1:]:
-                        cb = lambda event, keywords, count=count: self.gotoNode(count)
-                        menu_table.append((p.headString(), cb))
-                        count += 1
+        c = self.c
 
-                keywords['rc_menu_table'][:0] = menu_table
-            #@-node:bobjack.20080411192347.11:nav_next_menu
-            #@+node:bobjack.20080411162443.4:gotoNode
-            def gotoNode(self, ptr):
+        h = c.nodeHistory
+        if not h: return
 
-                '''Goto the node in the beadList indexed by ptr.'''
+        menu_table = []
 
-                c = self.c
-                h = self.c.nodeHistory
+        if h.beadPointer + 1 < len(h.beadList):
+            count = h.beadPointer + 1
+            for p, ch in h.beadList[h.beadPointer+1:]:
+                cb = lambda event, keywords, count=count: self.gotoNode(count)
+                menu_table.append((p.headString(), cb))
+                count += 1
 
-                p, chapter = h.beadList[ptr]
-                h.beadPointer = ptr
-                h.selectChapter(chapter)
+        keywords['rc_menu_table'][:0] = menu_table
+    #@-node:bobjack.20080411192347.11:nav_next_menu
+    #@+node:bobjack.20080411162443.4:gotoNode
+    def gotoNode(self, ptr):
 
-                if c.contractVisitedNodes:
-                    g.trace('contracting node')
-                    p.contract()
+        '''Goto the node in the beadList indexed by ptr.'''
 
-                c.treeSelectHelper(p)
+        c = self.c
+        h = self.c.nodeHistory
+        if not h: return
 
-            #@-node:bobjack.20080411162443.4:gotoNode
-            #@-node:bobjack.20080411192347.5:addGeneratorCommands
-            #@+node:edream.110203113231.782:addFrameButtons
-            def addFrameButtons (self):
+        p, chapter = h.beadList[ptr]
+        h.beadPointer = ptr
+        h.selectChapter(chapter)
 
-                """Add buttons to the listbox dialog."""
+        if c.contractVisitedNodes:
+            g.trace('contracting node')
+            p.contract()
 
-                self.buttonFrame = f = Tk.Frame(self.outerFrame)
-                f.pack()
+        c.treeSelectHelper(p)
+    #@-node:bobjack.20080411162443.4:gotoNode
+    #@-node:bobjack.20080411192347.5:addGeneratorCommands
+    #@+node:edream.110203113231.782:addFrameButtons
+    def addFrameButtons (self):
 
-                row1 = Tk.Frame(f)
-                row1.pack()
+        """Add buttons to the listbox dialog."""
 
-                # Create the back and forward buttons, cloning the images & commands of the already existing buttons.
-                image   = self.lt_nav_iconFrame_button.cget("image")
-                command = self.lt_nav_iconFrame_button.cget("command")
+        self.buttonFrame = f = Tk.Frame(self.outerFrame)
+        f.pack()
 
-                self.lt_nav_button = b = Tk.Button(row1,image=image,command=command)
-                b.pack(side="left",pady=2,padx=5)
+        row1 = Tk.Frame(f)
+        row1.pack()
 
-                image   = self.rt_nav_iconFrame_button.cget("image")
-                command = self.rt_nav_iconFrame_button.cget("command")
+        # Create the back and forward buttons, cloning the images & commands of the already existing buttons.
+        image   = self.lt_nav_iconFrame_button.cget("image")
+        command = self.lt_nav_iconFrame_button.cget("command")
 
-                self.rt_nav_button = b = Tk.Button(row1,image=image,command=command)
-                b.pack(side="left",pady=2,padx=5)
+        self.lt_nav_button = b = Tk.Button(row1,image=image,command=command)
+        b.pack(side="left",pady=2,padx=5)
 
-                row2 = Tk.Frame(f)
-                row2.pack()
-                self.addStdButtons(row2)
+        image   = self.rt_nav_iconFrame_button.cget("image")
+        command = self.rt_nav_iconFrame_button.cget("command")
 
-                row3 = Tk.Frame(f)
-                row3.pack()
+        self.rt_nav_button = b = Tk.Button(row1,image=image,command=command)
+        b.pack(side="left",pady=2,padx=5)
 
-                self.clear_button = b =  Tk.Button(row3,text="Clear All",
-                    width=6,command=self.clearAll)
-                b.pack(side="left",pady=2,padx=5)
+        row2 = Tk.Frame(f)
+        row2.pack()
+        self.addStdButtons(row2)
 
-                self.delete_button = b =  Tk.Button(row3,text="Delete",
-                    width=6,command=self.deleteEntry)
-                b.pack(side="left",pady=2,padx=5)
-            #@-node:edream.110203113231.782:addFrameButtons
-            #@+node:ekr.20050219131336:addIconBarButtons
-            def addIconBarButtons (self):
+        row3 = Tk.Frame(f)
+        row3.pack()
 
-                """Create buttons and add them to the icon bar."""
+        self.clear_button = b =  Tk.Button(row3,text="Clear All",
+            width=6,command=self.clearAll)
+        b.pack(side="left",pady=2,padx=5)
 
-                c = self.c ; images = self.images
+        self.delete_button = b =  Tk.Button(row3,text="Delete",
+            width=6,command=self.deleteEntry)
+        b.pack(side="left",pady=2,padx=5)
+    #@-node:edream.110203113231.782:addFrameButtons
+    #@+node:ekr.20050219131336:addIconBarButtons
+    def addIconBarButtons (self):
 
-                # Add 'Recent' button to icon bar.
-                def recentButtonCallback(*args,**keys):
-                    self.fillbox(forceUpdate=True)
-                    self.top.deiconify()
-                    # No call to c.outerUpdate is needed here.
+        """Create buttons and add them to the icon bar."""
 
-                self.sections_button = btn = c.frame.addIconButton(
-                    text="Recent",command=recentButtonCallback)
+        c = self.c ; images = self.images
 
-                #c.bind(btn,'<Button-3>', self.rClickRecent)
+        # Add 'Recent' button to icon bar.
+        def recentButtonCallback(*args,**keys):
+            self.fillbox(forceUpdate=True)
+            self.top.deiconify()
+            # No call to c.outerUpdate is needed here.
 
-                # Add left and right arrows to icon bar.
-                self.lt_nav_disabled_image = images.lt_nav_disabled_image
-                self.lt_nav_enabled_image  = images.lt_nav_enabled_image
-                self.rt_nav_disabled_image = images.rt_nav_disabled_image
-                self.rt_nav_enabled_image  = images.rt_nav_enabled_image
+        self.sections_button = btn = c.frame.addIconButton(
+            text="Recent",command=recentButtonCallback)
 
-                useTkFrame = g.app.gui.guiName() == 'tkinter' and hasattr(c.frame, 'getIconButton')
+        #c.bind(btn,'<Button-3>', self.rClickRecent)
 
-                if useTkFrame:
-                    getButton = c.frame.getIconButton
-                    self.nav_button_frame = bf = Tk.Frame(self.c.frame.top)
-                else:
-                    getButton = c.frame.addIconButton
+        # Add left and right arrows to icon bar.
+        self.lt_nav_disabled_image = images.lt_nav_disabled_image
+        self.lt_nav_enabled_image  = images.lt_nav_enabled_image
+        self.rt_nav_disabled_image = images.rt_nav_disabled_image
+        self.rt_nav_enabled_image  = images.rt_nav_enabled_image
 
-                self.lt_nav_iconFrame_button = btnl = getButton(
-                    image=self.lt_nav_disabled_image,
-                    command=c.goPrevVisitedNode)
+        useTkFrame = g.app.gui.guiName() == 'tkinter' and hasattr(c.frame, 'getIconButton')
 
-                c.bind(btnl,'<Button-3>', self.rClickLeft)
+        if useTkFrame:
+            getButton = c.frame.getIconButton
+            self.nav_button_frame = bf = Tk.Frame(self.c.frame.top)
+        else:
+            getButton = c.frame.addIconButton
 
-                self.rt_nav_iconFrame_button = btnr = getButton(
-                    image=self.rt_nav_disabled_image,
-                    command=c.goNextVisitedNode)
+        self.lt_nav_iconFrame_button = btnl = getButton(
+            image=self.lt_nav_disabled_image,
+            command=c.goPrevVisitedNode)
 
-                c.bind(btnr,'<Button-3>', self.rClickRight)
+        c.bind(btnl,'<Button-3>', self.rClickLeft)
 
-                if useTkFrame:
+        self.rt_nav_iconFrame_button = btnr = getButton(
+            image=self.rt_nav_disabled_image,
+            command=c.goNextVisitedNode)
 
-                    for btn in (btnl, btnr):
-                        btn.pack(in_=bf, side='left')
+        c.bind(btnr,'<Button-3>', self.rClickRight)
 
-                    bf.leoDragHandle = (btnl, btnr)
-                    self.c.frame.addIconWidget(bf)
+        if useTkFrame:
 
+            for btn in (btnl, btnr):
+                btn.pack(in_=bf, side='left')
 
-                # Don't dim the button when it is inactive.
-                for b in (self.lt_nav_iconFrame_button,self.rt_nav_iconFrame_button):
-                    fg = b.cget("foreground")
-                    b.configure(disabledforeground=fg)
+            bf.leoDragHandle = (btnl, btnr)
+            self.c.frame.addIconWidget(bf)
 
-                # Package these buttons for the recentSectionsDialog class in leoTkinterDialog.py
-                self.nav_buttons = (self.lt_nav_iconFrame_button, self.rt_nav_iconFrame_button)
-            #@-node:ekr.20050219131336:addIconBarButtons
-            #@+node:bobjack.20080411162443.2:rClickLeft
-            def rClickLeft(self, event):
+        # Don't dim the button when it is inactive.
+        for b in (self.lt_nav_iconFrame_button,self.rt_nav_iconFrame_button):
+            fg = b.cget("foreground")
+            b.configure(disabledforeground=fg)
 
-                """Show a popup menu to choose a previously visited node."""
+        # Package these buttons for the recentSectionsDialog class in leoTkinterDialog.py
+        self.nav_buttons = (self.lt_nav_iconFrame_button, self.rt_nav_iconFrame_button)
+    #@-node:ekr.20050219131336:addIconBarButtons
+    #@+node:bobjack.20080411162443.2:rClickLeft
+    def rClickLeft(self, event):
 
-                c = self.c
+        """Show a popup menu to choose a previously visited node."""
 
-                menu = [('*', 'nav-prev-menu')]
-                g.doHook('rclick-popup', c=c, event=event, context_menu=menu)
-            #@-node:bobjack.20080411162443.2:rClickLeft
-            #@+node:bobjack.20080411162443.3:rClickRight
-            def rClickRight(self,event):
+        c = self.c
 
-                """Show a popup menu to choose a previously visited node."""
+        menu = [('*', 'nav-prev-menu')]
+        g.doHook('rclick-popup', c=c, event=event, context_menu=menu)
+    #@-node:bobjack.20080411162443.2:rClickLeft
+    #@+node:bobjack.20080411162443.3:rClickRight
+    def rClickRight(self,event):
 
-                c = self.c
+        """Show a popup menu to choose a previously visited node."""
 
-                menu = [('*', 'nav-next-menu')]
-                g.doHook('rclick-popup', c=c, event=event, context_menu=menu)
+        c = self.c
 
-            #@-node:bobjack.20080411162443.3:rClickRight
-            #@+node:bobjack.20080413153103.3:rClickRecent
+        menu = [('*', 'nav-next-menu')]
+        g.doHook('rclick-popup', c=c, event=event, context_menu=menu)
 
-            #@+at
-            # def rClickRecent(self,event):
-            # 
-            #     """Show a popup menu to choose a previously visited node."""
-            # 
-            #     c = self.c
-            # 
-            #     menu = [
-            #         (' Prev ', ''),
-            #         ('*', 'nav-prev-menu'),
-            #         ('|', ''),
-            #         (' Next ', ''),
-            #         ('*', 'nav-next-menu'),
-            #     ]
-            #     g.doHook('rclick-popup', c=c, event=event, 
-            # context_menu=menu)
-            #@-at
-            #@nonl
-            #@-node:bobjack.20080413153103.3:rClickRecent
-            #@+node:edream.110203113231.783:clearAll
-            def clearAll (self,event=None):
+    #@-node:bobjack.20080411162443.3:rClickRight
+    #@+node:bobjack.20080413153103.3:rClickRecent
 
-                """Handle clicks in the "Delete" button of the Recent Sections listbox dialog."""
+    #@+at
+    # def rClickRecent(self,event):
+    # 
+    #     """Show a popup menu to choose a previously visited node."""
+    # 
+    #     c = self.c
+    # 
+    #     menu = [
+    #         (' Prev ', ''),
+    #         ('*', 'nav-prev-menu'),
+    #         ('|', ''),
+    #         (' Next ', ''),
+    #         ('*', 'nav-next-menu'),
+    #     ]
+    #     g.doHook('rclick-popup', c=c, event=event, context_menu=menu)
+    #@-at
+    #@nonl
+    #@-node:bobjack.20080413153103.3:rClickRecent
+    #@+node:edream.110203113231.783:clearAll
+    def clearAll (self,event=None):
 
-                c = self.c
+        """Handle clicks in the "Delete" button of the Recent Sections listbox dialog."""
 
-                self.positionList = []
-                c.nodeHistory.clear()
-                self.fillbox()
-            #@nonl
-            #@-node:edream.110203113231.783:clearAll
-            #@+node:edream.110203113231.784:createFrame
-            def createFrame(self):
+        c = self.c
 
-                """Create the frame of a Recent Sections listbox dialog."""
+        self.positionList = []
+        if c.nodeHistory:
+            c.nodeHistory.clear()
+        self.fillbox()
+        self.updateButtons()
 
-                tkinterListBoxDialog.createFrame(self)
-                self.addFrameButtons()
-            #@nonl
-            #@-node:edream.110203113231.784:createFrame
-            #@+node:edream.110203113231.785:deleteEntry
-            def deleteEntry (self,event=None):
+    #@-node:edream.110203113231.783:clearAll
+    #@+node:edream.110203113231.784:createFrame
+    def createFrame(self):
 
-                """Handle clicks in the "Delete" button of a Recent Sections listbox dialog."""
+        """Create the frame of a Recent Sections listbox dialog."""
 
-                c = self.c ; box = self.box
+        leoTkinterDialog.tkinterListBoxDialog.createFrame(self)
+        self.addFrameButtons()
+    #@nonl
+    #@-node:edream.110203113231.784:createFrame
+    #@+node:edream.110203113231.785:deleteEntry
+    def deleteEntry (self,event=None):
 
-                # Work around an old Python bug.  Convert strings to ints.
-                items = box.curselection()
-                try:
-                    items = map(int, items)
-                except ValueError: pass
+        """Handle clicks in the "Delete" button of a Recent Sections listbox dialog."""
 
-                if items:
-                    n = items[0]
-                    p = self.positionList[n]
-                    del self.positionList[n]
-                    c.nodeHistory.remove(p)
-                    self.fillbox()
-            #@nonl
-            #@-node:edream.110203113231.785:deleteEntry
-            #@+node:edream.110203113231.786:destroy
-            def destroy (self,event=None):
+        c = self.c ; box = self.box
 
-                """Hide a Recent Sections listbox dialog and mark it inactive.
+        # Work around an old Python bug.  Convert strings to ints.
+        items = box.curselection()
+        try:
+            items = map(int, items)
+        except ValueError: pass
 
-                This is an escape from possible performance penalties"""
+        if items:
+            n = items[0]
+            p = self.positionList[n]
+            del self.positionList[n]
+            c.nodeHistory.remove(p)
+            self.fillbox()
+            self.updateButtons()
+    #@nonl
+    #@-node:edream.110203113231.785:deleteEntry
+    #@+node:edream.110203113231.786:destroy
+    def destroy (self,event=None):
 
-                # This is enough to disable fillbox.
-                self.top.withdraw()
-            #@-node:edream.110203113231.786:destroy
-            #@+node:ekr.20080311065442.4:down/up
-            def down (self,event):
+        """Hide a Recent Sections listbox dialog and mark it inactive.
 
-                """Handle clicks on the dialogs 'down' button."""
+        This is an escape from possible performance penalties"""
 
-                # Work around an old Python bug.  Convert strings to ints.
-                items = self.box.curselection()
-                try: items = map(int, items)
-                except ValueError: pass
+        # This is enough to disable fillbox.
+        self.top.withdraw()
+    #@-node:edream.110203113231.786:destroy
+    #@+node:ekr.20080311065442.4:down/up
+    def down (self,event):
 
-                if items:
-                    n = items[0]
-                    if n + 1 < len(self.positionList):
-                        self.box.selection_clear(n)
-                        self.box.selection_set(n+1)
-                else:
-                    self.box.selection_set(0)
+        """Handle clicks on the dialogs 'down' button."""
 
-            def up (self,event):
+        # Work around an old Python bug.  Convert strings to ints.
+        items = self.box.curselection()
+        try: items = map(int, items)
+        except ValueError: pass
 
-                """Handle clicks on the dialogs 'up' button."""
-
-                # Work around an old Python bug.  Convert strings to ints.
-                items = self.box.curselection()
-                try: items = map(int, items)
-                except ValueError: pass
-
-                if items: n = items[0]
-                else:     n = 0
+        if items:
+            n = items[0]
+            if n + 1 < len(self.positionList):
                 self.box.selection_clear(n)
-                self.box.selection_set(max(0,n-1))
-            #@-node:ekr.20080311065442.4:down/up
-            #@+node:edream.110203113231.787:fillbox
-            def fillbox(self,forceUpdate=False):
+                self.box.selection_set(n+1)
+        else:
+            self.box.selection_set(0)
 
-                """Update the Recent Sections listbox."""
+    def up (self,event):
 
-                # Only fill the box if the dialog is visible.
-                # This is an important protection against bad performance.
-                if not forceUpdate and self.top.state() != "normal":
-                    return
+        """Handle clicks on the dialogs 'up' button."""
 
-                self.box.delete(0,"end")
-                c = self.c ; i = 0
-                self.positionList = [] ; tnodeList = []
-                for p in c.nodeHistory.visitedPositions():
-                    if c.positionExists(p) and p.v.t not in tnodeList:
-                        self.box.insert(i,p.headString().strip())
-                        tnodeList.append(p.v.t)
-                        self.positionList.append(p.copy())
-                        i += 1
+        # Work around an old Python bug.  Convert strings to ints.
+        items = self.box.curselection()
+        try: items = map(int, items)
+        except ValueError: pass
 
-                self.box.selection_set(max(0,len(self.positionList)-1))
-            #@nonl
-            #@-node:edream.110203113231.787:fillbox
-            #@+node:ekr.20050219122657:updateButtons
-            def updateButtons (self):
+        if items: n = items[0]
+        else:     n = 0
+        self.box.selection_clear(n)
+        self.box.selection_set(max(0,n-1))
+    #@-node:ekr.20080311065442.4:down/up
+    #@+node:edream.110203113231.787:fillbox
+    def fillbox(self,forceUpdate=False):
 
-                """Update nav buttons to reflect current state."""
+        """Update the Recent Sections listbox."""
 
-                c = self.c
+        # Only fill the box if the dialog is visible.
+        # This is an important protection against bad performance.
+        if not forceUpdate and self.top.state() != "normal":
+            return
 
-                for b,b2,enabled_image,disabled_image,cond in (
-                    (
-                        self.lt_nav_button,self.lt_nav_iconFrame_button,
-                        self.lt_nav_enabled_image,self.lt_nav_disabled_image,
-                        c.nodeHistory.canGoToPrevVisited()),
-                    (
-                        self.rt_nav_button,self.rt_nav_iconFrame_button,
-                        self.rt_nav_enabled_image,self.rt_nav_disabled_image,
-                        c.nodeHistory.canGoToNextVisited()),
-                ):
-                    # Disabled state makes the icon look bad.
-                    image = g.choose(cond,enabled_image,disabled_image)
-                    b.configure(image=image,state='normal')
-                    b2.configure(image=image,state='normal')
-            #@-node:ekr.20050219122657:updateButtons
-            #@+node:ekr.20050219162434:updateRecent
-            def updateRecent(self,tag,keywords):
+        c = self.c
+        if not c.nodeHistory: return
 
-                """Recreate the Recent listbox. A hook handler"""
+        self.box.delete(0,"end")
+        self.positionList = []
+        i = 0
+        for data in c.nodeHistory.beadList:
+            p,theChapter = data
+            self.box.insert(i,p.headString().strip())
+            self.positionList.append(p.copy())
+            i += 1
 
-                # It is safe to use self.c as the module level dispatcher
-                # ensures we only get events from our own controller.
+        n = len(c.nodeHistory.beadList)
+        p = c.nodeHistory.beadPointer
+        self.box.selection_set(max(0,(min(p,n-1))))
+    #@-node:edream.110203113231.787:fillbox
+    #@+node:ekr.20050219122657:updateButtons
+    def updateButtons (self):
 
-                c = self.c
+        """Update nav buttons to reflect current state."""
 
-                forceUpdate = False
-                self.fillbox(forceUpdate)
-                self.updateButtons()
-            #@-node:ekr.20050219162434:updateRecent
-            #@-others
-        #@nonl
-        #@-node:edream.110203113231.780:class recentSectionsDialog (tkinterListBoxDialog)
-        #@-others
-        #@-node:bob.20080103142149:<< define Tk dialog classes >>
-        #@nl
+        c = self.c
+        if not hasattr(c,'nodeHistory') or not c.nodeHistory: return
 
-        g.app.gui.marksDialog = marksDialog
-        g.app.gui.recentSectionsDialog = recentSectionsDialog
+        for b,b2,enabled_image,disabled_image,cond in (
+            (
+                self.lt_nav_button,self.lt_nav_iconFrame_button,
+                self.lt_nav_enabled_image,self.lt_nav_disabled_image,
+                c.nodeHistory.canGoToPrevVisited()),
+            (
+                self.rt_nav_button,self.rt_nav_iconFrame_button,
+                self.rt_nav_enabled_image,self.rt_nav_disabled_image,
+                c.nodeHistory.canGoToNextVisited()),
+        ):
+            # Disabled state makes the icon look bad.
+            image = g.choose(cond,enabled_image,disabled_image)
+            b.configure(image=image,state='normal')
+            b2.configure(image=image,state='normal')
+    #@-node:ekr.20050219122657:updateButtons
+    #@+node:ekr.20050219162434:updateRecent
+    def updateRecent(self,tag=None,keywords=None):
 
-    # print 'navButtons:init','ok',ok,g.app.gui.guiName()
+        """Recreate the Recent listbox. A hook handler"""
 
-    r = leoPlugins.registerHandler          
-    r('after-create-leo-frame',onCreate)
-    r(('after-create-leo-frame', 'set-mark','clear-mark', 'clear-all-marks'), marksHandler)
-    r('select2', recentHandler)
+        # It is safe to use self.c as the module level dispatcher
+        # ensures we only get events from our own controller.
 
-    g.plugin_signon(__name__)
+        c = self.c
 
-    return True
-
-#@-node:ekr.20050219114353.2:init
+        self.fillbox(forceUpdate=False)
+        self.updateButtons()
+    #@-node:ekr.20050219162434:updateRecent
+    #@-others
+#@nonl
+#@-node:edream.110203113231.780:class recentSectionsDialog (tkinterListBoxDialog)
 #@+node:bobjack.20080412173602.2:getGeneratorCallback
 def getGeneratorCallback(obj, c, command):
 
@@ -881,74 +878,6 @@ def getGeneratorCallback(obj, c, command):
 
     return cb
 #@-node:bobjack.20080412173602.2:getGeneratorCallback
-#@+node:ekr.20050219115116:onCreate
-def onCreate (tag,keywords):
-    global moduleBindings
-
-    # Not ok for unit testing: can't use unitTestGui.
-    if g.app.unitTesting:
-        return
-
-    c = keywords.get("c")
-    if not c:
-        return
-
-    images = imageClass()
-
-    # Create the marks dialog.
-    try:
-        c.theNavButtonsMarksController = marks = \
-            g.app.gui.marksDialog(c,images)
-    except Exception:
-        #g.trace('Fail Marks')
-        pass
-
-    # Create the recent nodes.
-    try:
-        c.theNavButtonsRecentController = recent = \
-            g.app.gui.recentSectionsDialog(c,images)
-    except Exception:
-        #g.trace('Fail Recent')
-        pass
-
-
-#@+node:bobjack.20080412180149.7:marksHandler
-def marksHandler(tag, keywords):
-
-    """Global hook handler for marks dialog."""
-
-    c = keywords.get('c')
-    if not c or not c.exists:
-        return
-
-    try:
-        marks = c.theNavButtonsMarksController
-    except Exception:
-        marks = None
-
-    #g.trace(tag, marks)
-    if marks:
-        marks.updateMarks(tag, keywords)
-#@-node:bobjack.20080412180149.7:marksHandler
-#@+node:bobjack.20080412180149.8:recentHandler
-def recentHandler(tag, keywords):
-
-    """Global hook handler for recent dialog."""
-
-    c = keywords.get('c')
-    if not c or not c.exists:
-        return
-
-    try:
-        recent = c.theNavButtonsRecentController
-    except Exception:
-        recent = None
-
-    #g.trace(tag, recent)
-    if recent:
-        recent.updateRecent(tag, keywords)
-#@-node:bobjack.20080412180149.8:recentHandler
-#@-node:ekr.20050219115116:onCreate
 #@-others
 #@nonl
 #@-node:edream.110203113231.758:@thin nav_buttons.py

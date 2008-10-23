@@ -85,7 +85,7 @@ __version__ = "1.8"
 #@nl
 
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+# import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins
 import re
 
@@ -146,7 +146,7 @@ class paramClass:
         if not match: return
 
         sr = sr [match.start(): match.end()]
-        for z in xrange(current.numberOfChildren()):
+        for z in range(current.numberOfChildren()):
             child = current.nthChild(z)
             if child.headString == sr:
                 return
@@ -155,10 +155,10 @@ class paramClass:
         searchline = pieces [0] + ">>"
         pieces [1] = pieces [1].rstrip('>')
         pieces [1] = pieces [1].rstrip(')')
-        sections = pieces [1].split(',') ;
+        sections = pieces [1].split(',')
 
         node = None
-        for z in xrange(self.params.numberOfChildren()):
+        for z in range(self.params.numberOfChildren()):
             child = self.params.nthChild(z)
             if child.matchHeadline(searchline):
                 node = child
@@ -167,20 +167,17 @@ class paramClass:
 
         bodys = node.bodyString()
         # tn = leoNodes.tnode(bodys,sr)
-        c.beginUpdate()
-        try:
-            v = current.insertAsNthChild(0) #,tn)
-            v.setBodyString(bodys)
-            v.setHeadString(sr)
-            for z in xrange(0,len(sections)):
-                head = g.angleBrackets(str(z+1)+"$")
-                bod = sections [z]
-                # t = leoNodes.tnode(bod,head)
-                v.insertAsNthChild(0) #,t)
-                v.setBodyString(bod)
-                v.setHeadString(head)
-        finally:
-            c.endUpdate()
+        v = current.insertAsNthChild(0) #,tn)
+        v.setBodyString(bodys)
+        v.setHeadString(sr)
+        for z in range(0,len(sections)):
+            head = g.angleBrackets(str(z+1)+"$")
+            bod = sections [z]
+            # t = leoNodes.tnode(bod,head)
+            v.insertAsNthChild(0) #,t)
+            v.setBodyString(bod)
+            v.setHeadString(head)
+        c.redraw()
     #@nonl
     #@-node:ekr.20040916084945.1:macros.parameterize
     #@+node:ekr.20040916084945.2:findParameters

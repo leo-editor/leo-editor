@@ -332,6 +332,7 @@ chapter.</p>
 </li>
 <li><a class="reference" href="#creating-script-buttons" id="id40" name="id40">Creating script buttons</a></li>
 <li><a class="reference" href="#running-leo-in-batch-mode" id="id41" name="id41">Running Leo in batch mode</a></li>
+<li><a class="reference" href="#getting-interactive-input-from-scripts" id="id42" name="id42">Getting interactive input from scripts</a></li>
 </ul>
 </li>
 </ul>
@@ -476,6 +477,11 @@ head = p.headString()
 c.setBodyString(p,body) # set body text of p to body.
 c.setHeadString(p,head) # set headline text of p to head.
 </pre>
+<p><strong>Note</strong>: Sometimes you want to use text that <em>looks</em> like a section reference, but isn't.
+In such cases, you can use g.angleBrackets.  For example:</p>
+<pre class="literal-block">
+g.es(g.angleBrackets('abc'))
+</pre>
 </div>
 <div class="section" id="ensuring-that-positions-are-valid">
 <h2><a class="toc-backref" href="#id7">Ensuring that positions are valid</a></h2>
@@ -573,15 +579,15 @@ for p in parent.children_iter():
 <p>The <tt class="docutils literal"><span class="pre">p.parents_iter</span></tt> iterator returns a list of all parents of position <tt class="docutils literal"><span class="pre">p</span></tt>, excluding <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 current = p.copy()
-g.es(&quot;inclusive parents of %s&quot; % current.headString(),color=&quot;purple&quot;)
-for p in current.self_and_parents_iter():
+g.es(&quot;exclusive of %s&quot; % current.headString(),color=&quot;purple&quot;)
+for p in current.parents_iter():
     g.es(p.headString())
 </pre>
 <p>The <tt class="docutils literal"><span class="pre">p.self_and_parents_iter</span></tt> iterator returns a list of all parents of position <tt class="docutils literal"><span class="pre">p</span></tt>, including <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 current = p.copy()
-g.es(&quot;exclusive of %s&quot; % current.headString(),color=&quot;purple&quot;)
-for p in current.parents_iter():
+g.es(&quot;inclusive parents of %s&quot; % current.headString(),color=&quot;purple&quot;)
+for p in current.self_and_parents_iter():
     g.es(p.headString())
 </pre>
 </div>
@@ -664,7 +670,13 @@ headlines of any future node joined to p.v.</p>
 <pre class="literal-block">
 c.redraw_now()
 </pre>
-<p>However, Leo's code redraws the screen using the following pattern:</p>
+<p>However, it is usually better to <em>request</em> a redraw to be done later as follows:</p>
+<pre class="literal-block">
+c.redraw()
+</pre>
+<p>Leo actually redraws the screen in c.outerUpdate, provided that a redraw has been requested.
+Leo will call c.outerUpdate at the end of each script, event handler and Leo command.</p>
+<p>The old (deprecated) way to redraw the screen was with the following pattern:</p>
 <pre class="literal-block">
 c.beginUpdate()
 try:
@@ -672,15 +684,10 @@ try:
 finally:
     c.endUpdate()
 </pre>
-<p>This suppresses redraws inside &lt;&lt;whatever&gt;&gt; that would otherwise be caused by
-<tt class="docutils literal"><span class="pre">c.endUpdate</span></tt>. <tt class="docutils literal"><span class="pre">c.endUpdate</span></tt> takes an optional argument:</p>
-<pre class="literal-block">
-c.endUpdate(flag)
-</pre>
-<p>redraws the screen only if flag is True. This is an important pattern. Leo uses
-<tt class="docutils literal"><span class="pre">c.beginUpdate</span></tt> and <tt class="docutils literal"><span class="pre">c.endUpdate</span></tt> almost everywhere to redraw the screen, so
-provided that &lt;&lt; whatever &gt;&gt; contains no calls to <tt class="docutils literal"><span class="pre">c.redraw_now</span></tt> this pattern
-insures that at most one redraw occurs.</p>
+<p>This pattern is no longer useful: as of Leo 4.5 b2,
+c.beginUpdate() does nothing,
+c.endUpdate() is equivalent to c.redraw(),
+and c.endUpdate(False) does nothing.</p>
 </div>
 <div class="section" id="invoking-commands-from-scripts">
 <h2><a class="toc-backref" href="#id18">Invoking commands from scripts</a></h2>
@@ -1747,6 +1754,57 @@ g.app.log.enable() # re-enable the log.
 for p in newFrame.c.allNodes_iter():
     g.es(g.toEncodedString(p.headString(),&quot;utf-8&quot;))
 </pre>
+</div>
+<div class="section" id="getting-interactive-input-from-scripts">
+<h2><a class="toc-backref" href="#id42">Getting interactive input from scripts</a></h2>
+<p>The following code can be run from a script to get input from the user using the minibuffer:</p>
+<pre class="literal-block">
+def getInput (event=None):
+
+   stateName = 'get-input'
+   k = c.k
+   state = k.getState(stateName)
+
+   if state == 0:
+       k.setLabelBlue('Input: ',protect=True)
+       k.getArg(event,stateName,1,getInput)
+   else:
+       k.clearState()
+       g.es_print('input:',k.arg)
+
+getInput()
+</pre>
+<p>Let's look at this in detail.  The lines:</p>
+<pre class="literal-block">
+stateName = 'get-input'
+k = c.k
+state = k.getState(stateName)
+</pre>
+<p>define a state <em>name</em>, 'get-input', unique to this code.
+k.getState returns the present state (an int) associated with this state.</p>
+<p>When getInput() is first called, the state returned by k.getState will be 0,
+so the following lines are executed:</p>
+<pre class="literal-block">
+if state == 0:
+    k.setLabelBlue('Input: ',protect=True)
+    k.getArg(event,stateName,1,getInput)
+</pre>
+<p>These lines put a protected label in the minibuffer:
+the user can't delete the label by backspacing.
+getArg, and the rest of Leo's key handling code, take care of the extremely
+complex details of handling key strokes in states.
+The call to getArg never returns.
+Instead, when the user has finished entering the input by typing &lt;Return&gt;
+getArg calls getInput so that k.getState will return state 1, the value
+passed as the third argument to k.getArg.
+The following lines handle state 1:</p>
+<pre class="literal-block">
+else:
+    k.clearState()
+    g.es_print('input:',k.arg)
+</pre>
+<p>k.arg is the value returned by k.getArg.
+This example code just prints the value of k.arg and clears the input state.</p>
 <hr class="docutils" />
 <p><a class="reference" href="design.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="customizing.html"><img alt="next" src="arrow_rt.gif" /></a></p>
 </div>

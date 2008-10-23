@@ -28,7 +28,7 @@ def applyConfiguration(config):
         options = config.options(section)
         options.sort()
         for option in options:
-            print section, option, config.get(section, option)
+            g.pr(section, option, config.get(section, option))
 #@-node:EKR.20040517080555.26:applyConfiguration
 #@+node:EKR.20040517080555.27:cmd_fn1/2/3
 def cmd_fn1(event=None):
@@ -94,7 +94,7 @@ def onUnselect (tag,keywords):
             # Erase image if it was previously displayed
             if a.gsimage:
                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                    c.frame.body.bodyCtrl.delete(a.gsimage)
                 except:
                     g.es("info: no image to erase")
 

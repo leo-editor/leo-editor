@@ -61,26 +61,20 @@ def init ():
 class DT(baseLeoPlugin):
 
     """Sends code to the doctest module and reports the result
-    If text is selected, tests only the selection
+    If text is selected, tests only the selection.
+
+    >>> print "hello world"
+    hello world
+    >>> g.es('hello world')
+    >>> print c.currentPosition().headString()
+    Docstring
+    >>> import notfound
+    Traceback (most recent call last):
+        ...
+    ImportError: No module named notfound
+    >>>   
     """
 
-    #@    << docstring >>
-    #@+node:ekr.20070119094733.7:<< docstring >>
-    """
-        >>> print "hello world"
-        hello world
-        >>> g.es('hello world')
-        >>> print c.currentPosition().headString()
-        Docstring
-        >>> import notfound
-        Traceback (most recent call last):
-            ...
-        ImportError: No module named notfound
-        >>>
-    """    
-    #@nonl
-    #@-node:ekr.20070119094733.7:<< docstring >>
-    #@nl
     #@    @+others
     #@+node:ekr.20070119094733.8:__init__
     def __init__(self, tag, keywords):

@@ -114,7 +114,7 @@ __version__ = "0.4" # Set version for the plugin handler.
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-import os
+# import os
 #@nonl
 #@-node:timo.20050213193129:<<imports>>
 #@nl
@@ -240,7 +240,7 @@ def writeTreeAsBibTex(bibFile, vnode, c):
     """Write the tree under vnode to the file bibFile"""
 
     # body text of @bibtex node is ignored
-    dict = g.scanDirectives(c,p=vnode)
+    dict = c.scanAllDirectives(p=vnode)
     encoding = dict.get("encoding",None)
     if encoding == None:
         encoding = g.app.config.default_derived_file_encoding
@@ -261,7 +261,7 @@ def writeTreeAsBibTex(bibFile, vnode, c):
             if h == '@string': # store string declarations in strings
                 for i in s.split('\n'):
                     if i and (not i.isspace()):
-                         strings = strings + '@string{' + i + '}\n'
+                        strings = strings + '@string{' + i + '}\n'
             else:  # store other stuff in entries  
                 entries = entries + typestring + '{' + h[h.find(' ')+1:]+  ',\n' + s + '}\n\n'
     if strings:

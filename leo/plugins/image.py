@@ -26,7 +26,7 @@ except ImportError:
     try:
         from PIL import ImageTk
     except ImportError:
-        print 'image.py: can not import ImageTk'
+        g.pr('image.py: can not import ImageTk')
         ImageTk = None
 
 
@@ -61,7 +61,7 @@ def init ():
 
     ok = g.app.gui.guiName() == "tkinter"
 
-    # print 'image.init'
+    # g.pr('image.init')
 
     if ok:
         leoPlugins.registerHandler("select2", onSelect)
@@ -128,7 +128,7 @@ def onUnselect (tag,keywords):
 
             if a.gsimage:
                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                    c.frame.body.bodyCtrl.delete(a.gsimage)
                 except:
                     g.es("info: no image to erase")
 

@@ -4,8 +4,6 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-# __pychecker__ = '--no-reuseattr' # Suppress warnings about redefining vnode and tnode classes.
-
 use_zodb = False
 
 #@<< imports >>
@@ -23,7 +21,7 @@ else:
 import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
-    # print "enabled psyco classes",__file__
+    # g.pr("enabled psyco classes",__file__)
     try: from psyco.classes import *
     except ImportError: pass
 
@@ -287,8 +285,12 @@ class vnode (baseVnode):
             self.selectionStart = 0 # The start of the selected body text.
 
             # Convert everything to unicode...
-            self._headString = u''
-            self._bodyString = u''
+            if g.isPython3:
+                self._headString = ''
+                self._bodyString = ''
+            else:
+                self._headString = unicode('')
+                self._bodyString = unicode('')
 
             self.children = [] # List of all children of this node.
             self.vnodeList = []
@@ -317,18 +319,18 @@ class vnode (baseVnode):
         v = self
 
         if label:
-            print '-'*10,label,v
+            g.pr('-'*10,label,v)
         else:
-            print "self    ",v.dumpLink(v)
-            print "len(vnodeList)",len(v.t.vnodeList)
-            print 'len(parents)',len(v.parents)
-            print 'len(children)',len(v.t.children)
+            g.pr("self    ",v.dumpLink(v))
+            g.pr("len(vnodeList)",len(v.t.vnodeList))
+            g.pr('len(parents)',len(v.parents))
+            g.pr('len(children)',len(v.t.children))
 
         if 1:
-            print "t",v.dumpLink(v.t)
-            print "vnodeList", g.listToString(v.t.vnodeList)
-            print 'parents',g.listToString(v.parents)
-            print 'children',g.listToString(v.t.children)
+            g.pr("t",v.dumpLink(v.t))
+            g.pr("vnodeList", g.listToString(v.t.vnodeList))
+            g.pr('parents',g.listToString(v.parents))
+            g.pr('children',g.listToString(v.t.children))
     #@-node:ekr.20040312145256:v.dump
     #@+node:ekr.20060910100316:v.__hash__ (only for zodb)
     if use_zodb and ZODB:
@@ -369,7 +371,8 @@ class vnode (baseVnode):
             "@thin",   "@file-thin",   "@thinfile",
             "@asis",   "@file-asis",   "@silentfile",
             "@noref",  "@file-noref",  "@rawfile",
-            "@nosent", "@file-nosent", "@nosentinelsfile")
+            "@nosent", "@file-nosent", "@nosentinelsfile",
+            "@shadow",)
 
         return self.findAtFileName(names)
     #@-node:ekr.20031218072017.3350:anyAtFileNodeName
@@ -394,6 +397,10 @@ class vnode (baseVnode):
 
     def atRawFileNodeName (self):
         names = ("@noref", "@file-noref", "@rawfile")
+        return self.findAtFileName(names)
+
+    def atShadowFileNodeName (self):
+        names = ("@shadow",)
         return self.findAtFileName(names)
 
     def atSilentFileNodeName (self):
@@ -443,6 +450,9 @@ class vnode (baseVnode):
 
     def isAtSilentFileNode (self): # @file-asis
         return g.choose(self.atSilentFileNodeName(),True,False)
+
+    def isAtShadowFileNode (self):
+        return g.choose(self.atShadowFileNodeName(),True,False)
 
     def isAtThinFileNode (self):
         return g.choose(self.atThinFileNodeName(),True,False)
@@ -893,7 +903,7 @@ class nodeIndices (object):
 
         """Create a gnx from its string representation"""
 
-        if type(s) not in (type(""),type(u"")):
+        if not g.isString(s):
             g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
             return None,None,None
 
@@ -990,8 +1000,6 @@ class basePosition (object):
 
         '''Create a new position with the given childIndex and parent stack.'''
 
-        # __pychecker__ = '--no-argsused' # trace not used.
-
         # To support ZODB the code must set v._p_changed = 1
         # whenever any mutable vnode object changes.
 
@@ -1007,36 +1015,33 @@ class basePosition (object):
         g.app.positions += 1
 
         # if g.app.tracePositions and trace: g.trace(g.callers())
+
+        self.txtOffset = None # see self.textOffset()
     #@-node:ekr.20080416161551.190: p.__init__
-    #@+node:ekr.20080416161551.186:p.__cmp__, equal and isEqual
-    def __cmp__(self,p2):
+    #@+node:ekr.20080920052058.3:p.__eq__ & __ne__
+    def __eq__(self,p2):
 
-        """Return 0 if two postions are equivalent."""
-
-        p1 = self
-
-        # g.trace(p1.headString(),p2 and p2.headString())
-
-        if p2 is None or p2.v is None:
-            if p1.v is None: return 0 # equal
-            else:            return 1 # not equal
-        elif p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack:
-            return 0 # equal
-        else:
-            return 1 # not equal
-
-    # isEqual and equal are deprecated.
-
-    def isEqual (self,p2):
+        """Return True if two postions are equivalent."""
 
         p1 = self
+
+        # Don't use g.trace: it might call p.__eq__ or p.__ne__.
+        # print ('p.__eq__: %s %s' % (
+            # p1 and p1.v and p1.headString(),p2 and p2.v and p2.headString()))
+
         if p2 is None or p2.v is None:
             return p1.v is None
         else:
-            return p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack
+            return ( p1.v == p2.v and
+                p1._childIndex == p2._childIndex and
+                p1.stack == p2.stack )
 
-    equal = isEqual
-    #@-node:ekr.20080416161551.186:p.__cmp__, equal and isEqual
+    def __ne__(self,p2):
+
+        """Return True if two postions are not equivalent."""
+
+        return not self.__eq__(p2) # For possible use in Python 2.x.
+    #@-node:ekr.20080920052058.3:p.__eq__ & __ne__
     #@+node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
     if 1: # Good for compatibility, bad for finding conversion problems.
 
@@ -1052,12 +1057,12 @@ class basePosition (object):
                 # New in 4.3: _silently_ raise the attribute error.
                 # This allows plugin code to use hasattr(p,attr) !
                 if 0:
-                    print "unknown position attribute:",attr
+                    g.pr("unknown position attribute:",attr)
                     import traceback ; traceback.print_stack()
-                raise AttributeError,attr
+                raise AttributeError(attr)
     #@nonl
     #@-node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
-    #@+node:ekr.20040117173448:p.__nonzero__
+    #@+node:ekr.20040117173448:p.__nonzero__ & __bool__
     #@+at
     # Tests such as 'if p' or 'if not p' are the _only_ correct ways to test 
     # whether a position p is valid.
@@ -1066,14 +1071,29 @@ class basePosition (object):
     #@-at
     #@@c
 
-    def __nonzero__ ( self):
+    if g.isPython3:
 
-        """Return True if a position is valid."""
+        def __bool__ ( self):
 
-        # if g.app.trace: "__nonzero__",self.v
+            """Return True if a position is valid."""
 
-        return self.v is not None
-    #@-node:ekr.20040117173448:p.__nonzero__
+            # Tracing this appears to cause unbounded prints.
+            # print("__bool__",self.v and self.v.cleanHeadString())
+
+            return self.v is not None
+
+    else:
+
+        def __nonzero__ ( self):
+
+            """Return True if a position is valid."""
+
+            # if g.app.trace: "__nonzero__",self.v
+
+            # g.trace(repr(self))
+
+            return self.v is not None
+    #@-node:ekr.20040117173448:p.__nonzero__ & __bool__
     #@+node:ekr.20040301205720:p.__str__ and p.__repr__
     def __str__ (self):
 
@@ -1088,12 +1108,24 @@ class basePosition (object):
     __repr__ = __str__
     #@-node:ekr.20040301205720:p.__str__ and p.__repr__
     #@+node:ekr.20061006092649:p.archivedPosition
-    def archivedPosition (self):
+    def archivedPosition (self,root_p=None):
 
         '''Return a representation of a position suitable for use in .leo files.'''
 
         p = self
-        aList = [z._childIndex for z in p.self_and_parents_iter()]
+
+        if root_p is None:
+            aList = [z._childIndex for z in p.self_and_parents_iter()]
+        else:
+            aList = []
+            for z in p.self_and_parents_iter():
+                if z == root_p:
+                    aList.append(0)
+                    break
+                else:
+                    aList.append(z._childIndex)
+            # g.trace(aList)
+
         aList.reverse()
         return aList
     #@nonl
@@ -1117,7 +1149,7 @@ class basePosition (object):
     def dump (self,label=""):
 
         p = self
-        print '-'*10,label,p
+        g.pr('-'*10,label,p)
         if p.v:
             p.v.dump() # Don't print a label
 
@@ -1148,6 +1180,7 @@ class basePosition (object):
     def atFileNodeName            (self): return self.v.atFileNodeName()
     def atNoSentinelsFileNodeName (self): return self.v.atNoSentinelsFileNodeName()
     def atRawFileNodeName         (self): return self.v.atRawFileNodeName()
+    def atShadowFileNodeName      (self): return self.v.atShadowFileNodeName()
     def atSilentFileNodeName      (self): return self.v.atSilentFileNodeName()
     def atThinFileNodeName        (self): return self.v.atThinFileNodeName()
 
@@ -1165,6 +1198,7 @@ class basePosition (object):
     def isAtOthersNode          (self): return self.v.isAtOthersNode()
     def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
     def isAtSilentFileNode      (self): return self.v.isAtSilentFileNode()
+    def isAtShadowFileNode      (self): return self.v.isAtShadowFileNode()
     def isAtThinFileNode        (self): return self.v.isAtThinFileNode()
 
     # New names, less confusing:
@@ -1384,11 +1418,60 @@ class basePosition (object):
         return True
     #@-node:ekr.20080416161551.196:p.isVisible
     #@+node:ekr.20080416161551.197:p.level & simpleLevel
-    def level (p):
+    def level (self):
+
+        '''Return the number of p's parents.'''
+
+        p = self
         return p.v and len(p.stack) or 0
 
     simpleLevel = level
     #@-node:ekr.20080416161551.197:p.level & simpleLevel
+    #@+node:shadow.20080825171547.2:p.textOffset
+    def textOffset(self):
+        '''
+            See http://tinyurl.com/5nescw for details
+        '''
+
+        p = self
+
+        # caching of p.textOffset, we need to calculate it only once
+        if p.txtOffset is not None:
+            return p.txtOffset
+
+        p.txtOffset = 0
+        # walk back from the current position
+        for cursor in p.self_and_parents_iter():
+            # we also need the parent, the "text offset" is relative to it
+            parent = cursor.parent()
+            if parent == None: # root reached
+                break
+            parent_bodyString = parent.bodyString()
+            if parent_bodyString == '': # organizer node
+                continue
+            parent_lines = parent_bodyString.split('\n')
+            # check out if the cursor node is a section
+            cursor_is_section = False
+            cursor_headString = cursor.headString()
+            if cursor_headString.startswith('<<'):
+                cursor_is_section = True # section node
+            for line in parent_lines:
+                if cursor_is_section == True:
+                    # find out the section in the bodyString of the parent
+                    pos = line.find(cursor_headString)
+                else:
+                    # otherwise find the "@others" directive in the bodyString of the parent
+                    pos = line.find('@others')
+                if pos > 0:
+                    # break the iteration over lines if something is found 
+                    break
+            if pos > 0:
+                p.txtOffset += pos
+            if parent.v.isAnyAtFileNode(): # do not scan upper
+                break
+
+        return p.txtOffset         
+    #@-node:shadow.20080825171547.2:p.textOffset
     #@-node:ekr.20040306212636:p.Getters
     #@+node:ekr.20040305222924:p.Setters
     #@+node:ekr.20040306220634:p.Vnode proxies
@@ -1565,7 +1648,7 @@ class basePosition (object):
     #@-node:ekr.20040303163330:p.setDirty
     #@-node:ekr.20040305162628:p.Dirty bits
     #@-node:ekr.20040305222924:p.Setters
-    #@+node:ekr.20040315023430:P.File Conversion
+    #@+node:ekr.20040315023430:p.File Conversion
     #@+at
     # - convertTreeToString and moreHead can't be vnode methods because they 
     # uses level().
@@ -1593,7 +1676,6 @@ class basePosition (object):
         """Return the headline string in MORE format."""
 
         # useVerticalBar is unused, but it would be useful in over-ridden methods.
-        # __pychecker__ = '--no-argsused'
 
         p = self
         level = self.level() - firstLevel
@@ -1628,7 +1710,7 @@ class basePosition (object):
             array.append(s)
         return '\n'.join(array)
     #@-node:ekr.20040315023430.3:p.moreBody
-    #@-node:ekr.20040315023430:P.File Conversion
+    #@-node:ekr.20040315023430:p.File Conversion
     #@+node:ekr.20040305162628.1:p.Iterators
     #@+at 
     #@nonl
@@ -1671,6 +1753,9 @@ class basePosition (object):
                 return self.mapping(self.p)
 
             raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:sps.20080331123552.2:next
         #@-others
 
@@ -1689,7 +1774,7 @@ class basePosition (object):
 
         #@    @+others
         #@+node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
-        def __init__(self,p,mapping,unique=lambda p1: p1.v.t):
+        def __init__(self,p,mapping,unique=lambda p: p.v.t):
 
             # g.trace('p.unique_tnodes_iter.__init','p',p,)
 
@@ -1717,6 +1802,8 @@ class basePosition (object):
                 return self.mapping(self.p)
 
             raise StopIteration
+
+        __next__ = next
         #@-node:sps.20080331123552.5:next
         #@+node:sps.20080331123552.7:moveToThreadNextUnique
         def moveToThreadNextUnique (self):
@@ -1804,7 +1891,6 @@ class basePosition (object):
         #@-node:ekr.20040305173559.1:__init__ & __iter__
         #@+node:ekr.20040305173559.2:next
         def next(self):
-
             if self.first:
                 self.p = self.first
                 self.first = None
@@ -1812,11 +1898,14 @@ class basePosition (object):
             elif self.p:
                 self.p.moveToThreadNext()
 
-            if self.p and not self.p.equal(self.after):
+            if self.p and self.p != self.after:
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else:
                 raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305173559.2:next
         #@-others
 
@@ -1868,6 +1957,9 @@ class basePosition (object):
                 self.moveToThreadNextUnique()
 
             return self.mapping(self.p)
+
+        __next__ = next
+        #@nonl
         #@-node:sps.20080331123552.10:next
         #@+node:sps.20080331123552.11:moveToThreadNextUnique
         def moveToThreadNextUnique (self):
@@ -1884,14 +1976,14 @@ class basePosition (object):
                 # First, try to find an unmarked child
                 if p.v.t.children:
                     p.moveToFirstChild()
-                    if p.equal(self.after):
+                    if p == self.after:
                         raise StopIteration
                     while p and self.d.get(u(p)):
                         if p.hasNext():
                             p.moveToNext()
                         else:
                             p.moveToParent()
-                        if p.equal(self.after):
+                        if p == self.after:
                             raise StopIteration
 
                 # If we didn't find an unmarked child,
@@ -1899,7 +1991,7 @@ class basePosition (object):
                 if p and self.d.get(u(p)):
                     while p.hasNext():
                         p.moveToNext()
-                        if p.equal(self.after):
+                        if p == self.after:
                             raise StopIteration
                         if not self.d.get(u(p)):
                             break
@@ -1908,19 +2000,20 @@ class basePosition (object):
                 # find a parent with an unmarked sibling
                 if p and self.d.get(u(p)):
                     p.moveToParent()
-                    if p.equal(self.after):
+                    # if p.equal(self.after):
+                    if p == self.after:
                         raise StopIteration
                     while p:
                         while p.hasNext():
                             p.moveToNext()
-                            if p.equal(self.after):
+                            if p == self.after:
                                 raise StopIteration
                             if not self.d.get(u(p)):
                                 break
                         # if we run out of siblings, go to parent
                         if self.d.get(u(p)):
                             p.moveToParent()
-                            if p.equal(self.after):
+                            if p == self.after:
                                 raise StopIteration
                         else:
                             break # found
@@ -1990,6 +2083,9 @@ class basePosition (object):
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else: raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305172211.3:next
         #@-others
 
@@ -2035,6 +2131,9 @@ class basePosition (object):
                 else:         return self.p
             else:
                 raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305172855.2:next
         #@-others
 
@@ -2086,6 +2185,9 @@ class basePosition (object):
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else: raise StopIteration
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20040305173343.2:next
         #@-others
 
@@ -2240,9 +2342,13 @@ class basePosition (object):
 
         p = self # Do NOT copy the position!
 
+        # g.trace('before','p',p,p.stack,'\na',a,a.stack)
+
         a._adjustPositionBeforeUnlink(p)
         p._unlink()
         p._linkAfter(a)
+
+        # g.trace('before','p',p,p.stack,'\na',a,a.stack)
 
         return p
     #@-node:ekr.20040303175026.10:p.moveAfter
@@ -2615,6 +2721,25 @@ class basePosition (object):
             if sib == p2:
                 p._childIndex -= 1
                 break
+
+        # Major bug fix: 6/26/2008. Adjust p's stack as well.
+        stack = [] ; changed = False ; i = 0
+        while i < len(p.stack):
+            v,childIndex = p.stack[i]
+            p3 = position(v=v,childIndex=childIndex,stack=stack[:i])
+            while p3:
+                if p2.v == p3.v: # A match with the to-be-moved node?
+                    stack.append((v,childIndex-1),)
+                    changed = True
+                    break
+                p3.moveToBack()
+            else:
+                stack.append((v,childIndex),)
+            i += 1
+
+        if changed:
+            # g.trace('***new stack','p',p,'stack',stack)
+            p.stack = stack
     #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
     #@+node:ekr.20040409203454.1:p._deleteLinksInTree
     def _deleteLinksInTree (self):
@@ -2760,6 +2885,7 @@ class basePosition (object):
             # returns None if p.v is None
         assert(p.v)
         assert(parent_v)
+        # g.trace('parent_v',parent_v)
 
         # Remove v from it's tnode's vnodeList.
         if p.v in p.v.t.vnodeList:
@@ -2774,13 +2900,15 @@ class basePosition (object):
             elif trace:
                 g.trace('**can not happen: children[%s] != p.v' % (n))
                 g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
+                g.trace('parent_v',parent_v)
+                g.trace('parent_v.t.children[n]',parent_v.t.children[n])
                 g.trace('p.v',p.v)
                 g.trace('** callers:',g.callers())
                 if g.app.unitTesting: assert False, 'children[%s] != p.v'
         elif trace:
             g.trace('can not happen: bad child index: %s, len(children): %s' % (n,len(parent_v.t.children)))
-            g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
-            g.trace('p.v',p.v)
+            # g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
+            g.trace('parent_v',parent_v,'p.v',p.v)
             g.trace('** callsers:',g.callers())
             if g.app.unitTesting: assert False, 'children[%s] != p.v'
 

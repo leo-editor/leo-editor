@@ -42,8 +42,9 @@ __plugin_group__ = "Test"
 class Test(BaseTreeHandler):
     """A test handler"""
 
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Initialize the tree"""
+        self.c = c
         self.children = [
             TreeNode("one", "this is one"),
             TreeNode("two", "this is two !!!"),

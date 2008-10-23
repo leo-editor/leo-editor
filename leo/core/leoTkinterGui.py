@@ -20,7 +20,7 @@ import leo.core.leoTkinterFrame as leoTkinterFrame
 import tkFont
 import tkFileDialog
 import os
-import string
+# import string
 import sys
 import Tkinter as Tk
 
@@ -124,7 +124,7 @@ class tkinterGui(leoGui.leoGui):
                 else:
                     g.es('','Icons','directory not found:',path, color="red")
         except:
-            print "exception setting bitmap"
+            g.pr("exception setting bitmap")
             import traceback ; traceback.print_exc()
     #@-node:ekr.20031218072017.1856:setDefaultIcon
     #@+node:ekr.20031218072017.2186:tkGui.getDefaultConfigFont
@@ -141,7 +141,7 @@ class tkinterGui(leoGui.leoGui):
             font = tkFont.Font(font=fn) 
             family = font.cget("family")
             self.defaultFontFamily = family[:]
-            # print '***** getDefaultConfigFont',repr(family)
+            # g.pr('***** getDefaultConfigFont',repr(family))
 
         config.defaultFont = None
         config.defaultFontFamily = self.defaultFontFamily
@@ -176,14 +176,18 @@ class tkinterGui(leoGui.leoGui):
 
         """Run tkinter's main loop."""
 
-        if self.script:
+        # Avoid an erroneous pylint complaint.
+        # script = self.script
+        script = getattr(self,'script')
+
+        if script:
             log = g.app.log
             if log:
-                print 'Start of batch script...\n'
-                log.c.executeScript(script=self.script)
-                print 'End of batch script'
+                g.pr('Start of batch script...\n')
+                log.c.executeScript(script=script)
+                g.pr('End of batch script')
             else:
-                print 'no log, no commander for executeScript in tkInterGui.runMainLoop'
+                g.pr('no log, no commander for executeScript in tkInterGui.runMainLoop')
         else:
              # g.trace("tkinterGui")
             self.root.mainloop()
@@ -245,9 +249,7 @@ class tkinterGui(leoGui.leoGui):
 
         """Create and run an Tkinter open file dialog ."""
 
-        # __pychecker__ = '--no-argsused' # defaultextension not used.
-
-        initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
+        initialdir = g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
 
         if multiple:
             # askopenfilenames requires Python 2.3 and Tk 8.4.
@@ -275,9 +277,7 @@ class tkinterGui(leoGui.leoGui):
 
         """Create and run an Tkinter save file dialog ."""
 
-        # __pychecker__ = '--no-argsused' # defaultextension not used.
-
-        initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd()),
+        initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
 
         return tkFileDialog.asksaveasfilename(
             initialdir=initialdir,initialfile=initialfile,
@@ -289,11 +289,11 @@ class tkinterGui(leoGui.leoGui):
         """Create a Tkinter color picker panel."""
         return leoTkinterComparePanel.leoTkinterComparePanel(c)
 
-    def createFindPanel(self,c):
-        """Create a hidden Tkinter find panel."""
-        panel = leoTkinterFind.leoTkinterFind(c)
-        panel.top.withdraw()
-        return panel
+    # def createFindPanel(self,c):
+        # """Create a hidden Tkinter find panel."""
+        # panel = leoTkinterFind.leoTkinterFind(c)
+        # panel.top.withdraw()
+        # return panel
 
     def createFindTab (self,c,parentFrame):
         """Create a Tkinter find tab in the indicated frame."""
@@ -301,7 +301,7 @@ class tkinterGui(leoGui.leoGui):
 
     def createLeoFrame(self,title):
         """Create a new Leo frame."""
-        # print 'tkGui.createLeoFrame'
+        # g.pr('tkGui.createLeoFrame')
         gui = self
         return leoTkinterFrame.leoTkinterFrame(title,gui)
     #@-node:ekr.20031218072017.4058:tkGui panels
@@ -373,8 +373,8 @@ class tkinterGui(leoGui.leoGui):
 
         # Get the information about top and the screen.
         geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-        dim,x,y = string.split(geom,'+')
-        w,h = string.split(dim,'x')
+        dim,x,y = geom.split('+')
+        w,h = dim.split('x')
         w,h,x,y = int(w),int(h),int(x),int(y)
 
         return w,h,x,y
@@ -443,6 +443,8 @@ class tkinterGui(leoGui.leoGui):
     #@+node:ekr.20061109215734:Events (tkGui)
     def event_generate(self,w,kind,*args,**keys):
         '''Generate an event.'''
+        # g.trace('tkGui','kind',kind,'w',w,'args,keys',*args,**keys)
+        # g.trace(g.callers())
         return w.event_generate(kind,*args,**keys)
 
     def eventChar (self,event,c=None):
@@ -480,16 +482,14 @@ class tkinterGui(leoGui.leoGui):
 
     def set_focus(self,c,w):
 
-        # __pychecker__ = '--no-argsused' # c not used at present.
-
         """Put the focus on the widget."""
 
         if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
             self.set_focus_count += 1
             # Do not call trace here: that might affect focus!
-            print 'gui.set_focus: %4d %10s %s' % (
+            g.pr('gui.set_focus: %4d %10s %s' % (
                 self.set_focus_count,c and c.shortFileName(),
-                c and c.widget_name(w)), g.callers(5)
+                c and c.widget_name(w)), g.callers(5))
 
         if w:
             try:
@@ -500,6 +500,10 @@ class tkinterGui(leoGui.leoGui):
 
                 # It's possible that the widget doesn't exist now.
                 w.focus_set()
+
+                # This often fails.  The focus will be delayed until later...
+                # if not w != w.focus_get():
+                    # g.trace('*** can not happen:',repr(w),repr(w.focus_get()))
                 return True
             except Exception:
                 # g.es_exception()
@@ -643,8 +647,9 @@ class tkinterGui(leoGui.leoGui):
 
         return w and isinstance(w,Tk.Text)
     #@-node:ekr.20051220144507:isTextWidget
-    #@+node:ekr.20060621164312:makeScriptButton
+    #@+node:ekr.20060621164312:makeScriptButton (tkGui)
     def makeScriptButton (self,c,
+        args=None,
         p=None, # A node containing the script.
         script=None, # The script itself.
         buttonText=None,
@@ -682,13 +687,13 @@ class tkinterGui(leoGui.leoGui):
             c.bodyWantsFocus()
 
         def executeScriptCallback (event=None,
-            b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
+            args=args,b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
 
             if c.disableCommandsMessage:
                 g.es('',c.disableCommandsMessage,color='blue')
             else:
                 g.app.scriptDict = {}
-                c.executeScript(p=p,script=script,
+                c.executeScript(args=args,p=p,script=script,
                 define_g= define_g,define_name=define_name,silent=silent)
                 # Remove the button if the script asks to be removed.
                 if g.app.scriptDict.get('removeMe'):
@@ -721,7 +726,7 @@ class tkinterGui(leoGui.leoGui):
         k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
         #@-node:ekr.20060621164312.4:<< create press-buttonText-button command >>
         #@nl
-    #@-node:ekr.20060621164312:makeScriptButton
+    #@-node:ekr.20060621164312:makeScriptButton (tkGui)
     #@+node:bobjack.20080427200147.2:killPopupMenu
     def killPopupMenu(self, event=None):
         """If there is a popup menu, destroy it."""
@@ -767,6 +772,7 @@ class tkinterGui(leoGui.leoGui):
             self.c      = c # Required to access c.k tables.
             self.char   = hasattr(event,'char') and event.char or ''
             self.keysym = hasattr(event,'keysym') and event.keysym or ''
+            self.state  = hasattr(event,'state') and event.state or 0
             self.w      = hasattr(event,'widget') and event.widget or None
             self.x      = hasattr(event,'x') and event.x or 0
             self.y      = hasattr(event,'y') and event.y or 0

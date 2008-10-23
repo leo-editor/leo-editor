@@ -88,8 +88,6 @@ class baseLeoCompare:
 
         outputFileName = None ):
 
-        # __pychecker__ = 'maxargs=50'
-
         # It is more convenient for the leoComparePanel to set these directly.
         self.c = commands
 
@@ -247,10 +245,8 @@ class baseLeoCompare:
             ws2 = s2[:k2]
             tail1 = s1[k1:]
             tail2 = s2[k2:]
-            tail1 = string.replace(tail1," ","")
-            tail1 = string.replace(tail1,"\t","")
-            tail2 = string.replace(tail2," ","")
-            tail2 = string.replace(tail2,"\t","")
+            tail1 = tail1.replace(" ","").replace("\t","")
+            tail2 = tail2.replace(" ","").replace("\t","")
             s1 = ws1 + tail1
             s2 = ws2 + tail2
 
@@ -299,14 +295,14 @@ class baseLeoCompare:
             #@+node:ekr.20031218072017.3640:<< ignore blank lines and/or sentinels >>
             # Completely empty strings denotes end-of-file.
             if s1 and len(s1) > 0:
-                if self.ignoreBlankLines and len(string.strip(s1)) == 0:
+                if self.ignoreBlankLines and len(s1.strip()) == 0:
                     s1 = None ; continue
 
                 if self.ignoreSentinelLines and sentinelComment1 and self.isSentinel(s1,sentinelComment1):
                     s1 = None ; continue
 
             if s2 and len(s2) > 0:
-                if self.ignoreBlankLines and len(string.strip(s2)) == 0:
+                if self.ignoreBlankLines and len(s2.strip()) == 0:
                     s2 = None ; continue
 
                 if self.ignoreSentinelLines and sentinelComment2 and self.isSentinel(s2,sentinelComment2):
@@ -326,15 +322,18 @@ class baseLeoCompare:
                 if match and self.printMatches:
 
                     if self.printBothMatches:
-                        self.dump(string.rjust("1." + str(lines1),6) + ' :',s1)
-                        self.dump(string.rjust("2." + str(lines2),6) + ' :',s2)
+                        z1 = "1." + str(lines1)
+                        z2 = "2." + str(lines2)
+                        self.dump(z1.rjust(6) + ' :',s1)
+                        self.dump(z2.rjust(6) + ' :',s2)
                     else:
-                        self.dump(string.rjust(       str(lines1),6) + ' :',s1)
+                        self.dump(str(lines1).rjust(6) + ' :',s1)
 
                 if not match and self.printMismatches:
-
-                    self.dump(string.rjust("1." + str(lines1),6) + '*:',s1)
-                    self.dump(string.rjust("2." + str(lines2),6) + '*:',s2)
+                    z1 = "1." + str(lines1)
+                    z2 = "2." + str(lines2)
+                    self.dump(z1.rjust(6) + '*:',s1)
+                    self.dump(z2.rjust(6) + '*:',s2)
             #@-node:ekr.20031218072017.3641:<< print matches and/or mismatches >>
             #@nl
             #@        << warn if mismatch limit reached >>
@@ -422,7 +421,8 @@ class baseLeoCompare:
             if len(s) == 0: break
             trailingLines += 1
             if self.printTrailingMismatches and printTrailing:
-                tag2 = string.rjust(tag + str(line),6) + "+:"
+                z = tag + str(line)
+                tag2 = z.rjust(6) + "+:"
                 self.dump(tag2,s)
             s = None
 
@@ -442,7 +442,7 @@ class baseLeoCompare:
     def isLeoHeader (self,s):
 
         tag = "@+leo"
-        j = string.find(s,tag)
+        j = s.find(tag)
         if j > 0:
             i = g.skip_ws(s,0)
             if i < j: return s[i:j]
@@ -484,14 +484,14 @@ class baseLeoCompare:
     #@+node:ekr.20031218072017.3650:show
     def show (self,s):
 
-        # print s
+        # g.pr(s)
         if self.outputFile:
             self.outputFile.write(s + '\n')
         elif self.c:
             g.es(s)
         else:
-            print s
-            print
+            g.pr(s)
+            g.pr('')
     #@-node:ekr.20031218072017.3650:show
     #@+node:ekr.20031218072017.3651:showIvars
     def showIvars (self):

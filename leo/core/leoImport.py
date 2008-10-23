@@ -19,7 +19,7 @@ import string
 class leoImportCommands:
 
     #@    @+others
-    #@+node:ekr.20031218072017.3207:import.__init__
+    #@+node:ekr.20031218072017.3207:import.__init__ & helper
     def __init__ (self,c):
 
         self.c = c
@@ -37,7 +37,31 @@ class leoImportCommands:
         self.treeType = "@file" # "@root" or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
-    #@-node:ekr.20031218072017.3207:import.__init__
+
+        self.createImportDispatchDict()
+    #@+node:ekr.20080825131124.3:createImportDispatchDict
+    def createImportDispatchDict (self):
+
+        self.importDispatchDict = {
+            # Keys are file extensions, values are text scanners.
+            # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
+            '.c':       self.scanCText,
+            '.cpp':     self.scanCText,
+            '.cxx':     self.scanCText,
+            '.c#':      self.scanCSharpText,
+            '.el':      self.scanElispText,
+            '.htm':     self.scanXmlText,
+            '.html':    self.scanXmlText,
+            '.java':    self.scanJavaText,
+            '.js':      self.scanJavaScriptText,
+            '.php':     self.scanPHPText,
+            '.pas':     self.scanPascalText,
+            '.py':      self.scanPythonText,
+            '.pyw':     self.scanPythonText,
+            '.xml':     self.scanXmlText,
+        }
+    #@-node:ekr.20080825131124.3:createImportDispatchDict
+    #@-node:ekr.20031218072017.3207:import.__init__ & helper
     #@+node:ekr.20031218072017.3289:Export
     #@+node:ekr.20031218072017.3290:convertCodePartToWeb
     # Headlines not containing a section reference are ignored in noweb and generate index index in cweb.
@@ -48,7 +72,7 @@ class leoImportCommands:
         c = self.c ; nl = self.output_newline
         lb = g.choose(self.webType=="cweb","@<","<<")
         rb = g.choose(self.webType=="cweb","@>",">>")
-        h = string.strip(v.headString())
+        h = v.headString().strip()
         #@    << put v's headline ref in head_ref >>
         #@+node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
         #@+at 
@@ -61,14 +85,14 @@ class leoImportCommands:
         head_ref = None
         j = 0
         if g.match(h,j,"<<"):
-            k = string.find(h,">>",j)
+            k = h.find(">>",j)
         elif g.match(h,j,"<@"):
-            k = string.find(h,"@>",j)
+            k = h.find("@>",j)
         else:
             k = -1
 
         if k > -1:
-            head_ref = string.strip(h[j+2:k])
+            head_ref = h[j+2:k].strip()
             if len(head_ref) == 0:
                 head_ref = None
         #@-node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
@@ -76,23 +100,22 @@ class leoImportCommands:
         #@    << put name following @root or @file in file_name >>
         #@+node:ekr.20031218072017.3292:<< put name following @root or @file in file_name >>
         if g.match(h,0,"@file") or g.match(h,0,"@root"):
-            line = h[5:]
-            line = string.strip(line)
+            line = h[5:].strip()
             #@    << set file_name >>
             #@+node:ekr.20031218072017.3293:<< Set file_name >>
             # set j & k so line[j:k] is the file name.
             # g.trace(line)
 
             if g.match(line,0,"<"):
-                j = 1 ; k = string.find(line,">",1)
+                j = 1 ; k = line.find(">",1)
             elif g.match(line,0,'"'):
-                j = 1 ; k = string.find(line,'"',1)
+                j = 1 ; k = line.find('"',1)
             else:
-                j = 0 ; k = string.find(line," ",0)
+                j = 0 ; k = line.find(" ",0)
             if k == -1:
                 k = len(line)
 
-            file_name = string.strip(line[j:k])
+            file_name = line[j:k].strip()
             if file_name and len(file_name) == 0:
                 file_name = None
             #@-node:ekr.20031218072017.3293:<< Set file_name >>
@@ -125,7 +148,7 @@ class leoImportCommands:
                     result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
                     result += "@c" + nl # @c denotes a new section.
                 else: 
-                    escaped_head_ref = string.replace(head_ref,"@","@@")
+                    escaped_head_ref = head_ref.replace("@","@@")
                     result += "@<" + escaped_head_ref + "@>=" + nl
             else:
                 if not head_ref:
@@ -161,7 +184,7 @@ class leoImportCommands:
                     result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
                     result += "@c" + nl # @c denotes a new section.
                 else: 
-                    escaped_head_ref = string.replace(head_ref,"@","@@")
+                    escaped_head_ref = head_ref.replace("@","@@")
                     result += "@<" + escaped_head_ref + "@>=" + nl
             else:
                 if not head_ref:
@@ -174,7 +197,7 @@ class leoImportCommands:
             #@-node:ekr.20031218072017.3295:<< append head_ref >>
             #@nl
         i,result = self.copyPart(s,i,result)
-        return i, string.strip(result) + nl
+        return i, result.strip() + nl
 
     #@+at 
     #@nonl
@@ -197,9 +220,9 @@ class leoImportCommands:
         i, result2 = self.copyPart(s,i,"")
         if len(result2) > 0:
             # Break lines after periods.
-            result2 = string.replace(result2,".  ","." + nl)
-            result2 = string.replace(result2,". ","." + nl)
-            result += nl+"@"+nl+string.strip(result2)+nl+nl
+            result2 = result2.replace(".  ","." + nl)
+            result2 = result2.replace(". ","." + nl)
+            result += nl+"@"+nl+result2.strip()+nl+nl
         else:
             # All nodes should start with '@', even if the doc part is empty.
             result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
@@ -258,7 +281,7 @@ class leoImportCommands:
                 i,result = self.convertDocPartToWeb(s,i,result)
                 docSeen = True
             assert(progress < i)
-        result = string.strip(result)
+        result = result.strip()
         if len(result) > 0:
             result += nl
         return result
@@ -290,11 +313,11 @@ class leoImportCommands:
                 # Converting @others to < < @ others > >
                 i = g.skip_line(s,j) ; line = s[j:i]
                 if theType == "cweb":
-                    line = string.replace(line,"@","@@")
+                    line = line.replace("@","@@")
                 else:
                     j = g.skip_ws(line,0)
                     if g.match(line,j,"@others"):
-                        line = string.replace(line,"@others",lb + "@others" + rb)
+                        line = line.replace("@others",lb + "@others" + rb)
                     elif g.match(line,0,"@"):
                         # Special case: do not escape @ %defs.
                         k = g.skip_ws(line,1)
@@ -302,7 +325,7 @@ class leoImportCommands:
                             line = "@" + line
                 result += line
             assert(progress < i)
-        return i, string.rstrip(result)
+        return i, result.rstrip()
     #@-node:ekr.20031218072017.3299:copyPart
     #@+node:ekr.20031218072017.1462:exportHeadlines
     def exportHeadlines (self,fileName):
@@ -439,10 +462,10 @@ class leoImportCommands:
             if not ext:
                 ext = ".txt"
             if ext[0] == '.':
-                newFileName = g.os_path_join(path,fileName+ext)
+                newFileName = c.os_path_finalize_join(path,fileName+ext)
             else:
                 head,ext2 = g.os_path_splitext(fileName) 
-                newFileName = g.os_path_join(path,head+ext+ext2)
+                newFileName = c.os_path_finalize_join(path,head+ext+ext2)
             if toString:
                 return s
             else:
@@ -509,7 +532,7 @@ class leoImportCommands:
         #@nl
         for p in p.self_and_subtree_iter():
             s = p.bodyString()
-            s2 = string.strip(s)
+            s2 = s.strip()
             if s2 and len(s2) > 0:
                 f.write("-" * 60) ; f.write(nl)
                 #@            << write the context of p to f >>
@@ -534,7 +557,7 @@ class leoImportCommands:
                 #@nl
                 f.write("-" * 60) ; f.write(nl)
                 s = g.toEncodedString(s,self.encoding,reportErrors=True)
-                f.write(string.rstrip(s) + nl)
+                f.write(s.rstrip() + nl)
         f.flush()
         f.close()
     #@-node:ekr.20031218072017.1464:weave
@@ -559,7 +582,8 @@ class leoImportCommands:
     #@+node:ekr.20041126042730:getTabWidth
     def getTabWidth (self,p=None):
 
-        d = g.scanDirectives(self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         w = d.get("tabwidth")
         if w not in (0,None):
             return w
@@ -592,22 +616,6 @@ class leoImportCommands:
                 g.match(s,i,"@c") or g.match(s,i,"@p") or
                 g.match(s,i,"@d") or g.match(s,i,"@f"))
     #@-node:ekr.20031218072017.3309:isDocStart and isModuleStart
-    #@+node:ekr.20031218072017.3311:massageComment
-    def massageComment (self,s):
-
-        '''Returns s with all runs of whitespace and newlines converted to a single blank.
-
-        Also removes leading and trailing whitespace.'''
-
-        # g.trace(g.get_line(s,0))
-        s = string.strip(s)
-        s = string.replace(s,"\n"," ")
-        s = string.replace(s,"\r"," ")
-        s = string.replace(s,"\t"," ")
-        s = string.replace(s,"  "," ")
-        s = string.strip(s)
-        return s
-    #@-node:ekr.20031218072017.3311:massageComment
     #@+node:ekr.20031218072017.3312:massageWebBody
     def massageWebBody (self,s):
 
@@ -637,9 +645,9 @@ class leoImportCommands:
                     assert (i > progress2)
                 # Remove newlines from start to end.
                 doc = s[start:end]
-                doc = string.replace(doc,"\n"," ")
-                doc = string.replace(doc,"\r","")
-                doc = string.strip(doc)
+                doc = doc.replace("\n"," ")
+                doc = doc.replace("\r","")
+                doc = doc.strip()
                 if doc and len(doc) > 0:
                     if doc == "@":
                         doc = g.choose(self.webType=="cweb", "@ ","@\n")
@@ -672,102 +680,27 @@ class leoImportCommands:
             assert (i > progress)
         #@-node:ekr.20031218072017.3314:<< Replace abbreviated names with full names >>
         #@nl
-        s = string.rstrip(s)
+        s = s.rstrip()
         return s
     #@-node:ekr.20031218072017.3312:massageWebBody
     #@+node:ekr.20080211085914:scanDefaultDirectory (leoImport)
     def scanDefaultDirectory(self,p):
 
-        """Set .default_directory by looking for @path directives."""
+        """Set the default_directory ivar by looking for @path directives."""
 
         c = self.c
-        self.default_directory = None
-        #@    << Set path from @file node >>
-        #@+node:ekr.20080211085914.1:<< Set path from @file node >>
-        # An absolute path in an @file node over-rides everything else.
-        # A relative path gets appended to the relative path by the open logic.
 
-        name = p.anyAtFileNodeName()
+        self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
 
-        theDir = g.choose(name,g.os_path_dirname(name),None)
-
-        if theDir and g.os_path_isabs(theDir):
-            if g.os_path_exists(theDir):
-                self.default_directory = theDir
-            else:
-                self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-                if not self.default_directory:
-                    self.error("Directory \"%s\" does not exist" % theDir)
-        #@-node:ekr.20080211085914.1:<< Set path from @file node >>
-        #@nl
-        if self.default_directory:
-            return
-
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            if theDict.has_key("path"):
-                #@            << handle @path >>
-                #@+node:ekr.20080211085914.2:<< handle @path >>
-                # We set the current director to a path so future writes will go to that directory.
-
-                path = theDict["path"]
-                path = g.computeRelativePath (path)
-
-                if path:
-                    base = g.getBaseDirectory(c) # returns "" on error.
-                    path = g.os_path_join(base,path)
-
-                    if g.os_path_isabs(path):
-                        #@        << handle absolute path >>
-                        #@+node:ekr.20080211085914.3:<< handle absolute path >>
-                        # path is an absolute path.
-
-                        if g.os_path_exists(path):
-                            self.default_directory = path
-                        else:
-                            self.default_directory = g.makeAllNonExistentDirectories(path,c=c)
-                            if not self.default_directory:
-                                self.error("invalid @path: %s" % path)
-                        #@-node:ekr.20080211085914.3:<< handle absolute path >>
-                        #@nl
-                    else:
-                        self.error("ignoring bad @path: %s" % path)
-                else:
-                    self.error("ignoring empty @path")
-                #@-node:ekr.20080211085914.2:<< handle @path >>
-                #@nl
-                return
-
-        #@    << Set current directory >>
-        #@+node:ekr.20080211085914.4:<< Set current directory >>
-        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-        assert(not self.default_directory)
-
-        if c.frame :
-            base = g.getBaseDirectory(c) # returns "" on error.
-            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-                if theDir and len(theDir) > 0:
-                    theDir = g.os_path_join(base,theDir)
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        if g.os_path_exists(theDir):
-                            self.default_directory = theDir ; break
-                        else:
-                            self.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-        #@-node:ekr.20080211085914.4:<< Set current directory >>
-        #@nl
-        if not self.default_directory:
-            # This should never happen: c.openDirectory should be a good last resort.
-            self.error("No absolute directory specified anywhere.")
-            self.default_directory = ""
+        if error: self.error(error)
     #@-node:ekr.20080211085914:scanDefaultDirectory (leoImport)
     #@+node:ekr.20031218072017.1463:setEncoding (leoImport)
     def setEncoding (self,p=None,atAuto=False):
 
-        # scanDirectives checks the encoding: may return None.
+        # c.scanAllDirectives checks the encoding: may return None.
         c = self.c
         if p is None: p = c.currentPosition()
-        theDict = g.scanDirectives(c,p)
+        theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding")
         if encoding and g.isValidEncoding(encoding):
             self.encoding = encoding
@@ -782,14 +715,14 @@ class leoImportCommands:
     #@-node:ekr.20031218072017.3305:Utilities
     #@+node:ekr.20031218072017.3209:Import
     #@+node:ekr.20031218072017.3210:createOutline (leoImport)
-    def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+    def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=None):
 
         c = self.c ; u = c.undoer ; s1 = s
 
         # New in Leo 4.4.7: honor @path directives.
 
         self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-        fileName = g.os_path_join(self.default_directory,fileName)
+        fileName = c.os_path_finalize_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         self.setEncoding(p=parent,atAuto=atAuto)
@@ -801,14 +734,17 @@ class leoImportCommands:
             #@        << Read file into s >>
             #@+node:ekr.20031218072017.3211:<< Read file into s >>
             try:
-                fileName = g.os_path_normpath(fileName)
+                fileName = c.os_path_finalize(fileName)
                 theFile = open(fileName)
                 s = theFile.read()
                 theFile.close()
             except IOError:
-                z = g.choose(atAuto,'@auto ','')
+                if atShadow: kind = '@shadow '
+                elif atAuto: kind = '@auto '
+                else: kind = ''
                 # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-                g.es("can not open", "%s%s" % (z,fileName),color='red')
+                g.es("can not open", "%s%s" % (kind,fileName),color='red')
+                # g.trace(g.callers())
                 leoTest.fail()
                 return None
             #@-node:ekr.20031218072017.3211:<< Read file into s >>
@@ -825,7 +761,7 @@ class leoImportCommands:
             if line1.startswith(tag) and line1.endswith(tag2):
                 e = line1[n1:-n2].strip()
                 if e and g.isValidEncoding(e):
-                    # print 'found',e,'in',line1
+                    # g.pr('found',e,'in',line1)
                     self.encoding = e
 
         s = g.toUnicode(s,self.encoding)
@@ -835,14 +771,11 @@ class leoImportCommands:
         # Create the top-level headline.
         if atAuto:
             p = parent.copy()
-            c.beginUpdate()
-            try:
-                p.setBodyString('')
-            finally:
-                c.endUpdate(False)
+            p.setBodyString('')
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
+
             if self.treeType == "@file":
                 p.initHeadString("@file " + fileName)
             else:
@@ -852,24 +785,9 @@ class leoImportCommands:
 
         self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-        if ext in (".c", ".cpp", ".cxx"):
-            self.scanCText(s,p,atAuto=atAuto)
-        elif ext == '.c#':
-            self.scanCSharpText(s,p,atAuto=atAuto)
-        elif ext == ".el":
-            self.scanElispText(s,p,atAuto=atAuto)
-        elif ext == ".java":
-            self.scanJavaText(s,p,atAuto=atAuto)
-        elif ext == ".js":
-            self.scanJavaScriptText(s,p,atAuto=atAuto)
-        elif ext == ".pas":
-            self.scanPascalText(s,p,atAuto=atAuto)
-        elif ext in (".py", ".pyw"):
-            self.scanPythonText(s,p,atAuto=atAuto)
-        elif ext == ".php":
-            self.scanPHPText(s,p,atAuto=atAuto)
-        elif ext in ('.html','.htm','.xml'):
-            self.scanXmlText(s,p,atAuto=atAuto)
+        func = self.importDispatchDict.get(ext)
+        if func and not c.config.getBool('suppress_import_parsing',default=False):
+            func(s,p,atAuto=atAuto)
         else:
             self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
@@ -882,24 +800,21 @@ class leoImportCommands:
         c = self.c
         p = c.currentPosition() ; after = p.nodeAfterTree()
 
-        c.beginUpdate()
-        try:
-            found = False
-            while p and p != after:
-                if p.isAtAutoNode():
-                    if p.isAtIgnoreNode():
-                        g.es_print('ignoring',p.headString(),color='blue')
-                        p.moveToThreadNext()
-                    else:
-                        self.readOneAtAutoNode(p)
-                        found = True
-                        p.moveToNodeAfterTree()
-                else:
+        found = False
+        while p and p != after:
+            if p.isAtAutoNode():
+                if p.isAtIgnoreNode():
+                    g.es_print('ignoring',p.headString(),color='blue')
                     p.moveToThreadNext()
-            message = g.choose(found,'finished','no @auto nodes in the selected tree')
-            g.es(message,color='blue')
-        finally:
-            c.endUpdate()
+                else:
+                    self.readOneAtAutoNode(p)
+                    found = True
+                    p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        message = g.choose(found,'finished','no @auto nodes in the selected tree')
+        g.es(message,color='blue')
+        c.redraw()
 
     #@+node:ekr.20070807084545:readOneAtAutoNode
     def readOneAtAutoNode(self,p):
@@ -926,40 +841,37 @@ class leoImportCommands:
         at = c.atFileCommands ; current = c.currentPosition()
         self.tab_width = self.getTabWidth()
         if not paths: return
-        c.beginUpdate()
-        try:
-            u.beforeChangeGroup(current,command)
-            for fileName in paths:
-                g.setGlobalOpenDir(fileName)
-                #@            << set isThin if fileName is a thin derived file >>
-                #@+node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
-                fileName = g.os_path_normpath(fileName)
+        u.beforeChangeGroup(current,command)
+        for fileName in paths:
+            g.setGlobalOpenDir(fileName)
+            #@        << set isThin if fileName is a thin derived file >>
+            #@+node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
+            fileName = g.os_path_normpath(fileName)
 
-                try:
-                    theFile = open(fileName,'rb')
-                    isThin = at.scanHeaderForThin(theFile,fileName)
-                    theFile.close()
-                except IOError:
-                    isThin = False
-                #@-node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
-                #@nl
-                undoData = u.beforeInsertNode(parent)
-                p = parent.insertAfter()
-                if isThin:
-                    at.forceGnxOnPosition(p)
-                    p.initHeadString("@thin " + fileName)
-                    at.read(p,thinFile=True)
-                else:
-                    p.initHeadString("Imported @file " + fileName)
-                    at.read(p,importFileName=fileName)
-                p.contract()
-                u.afterInsertNode(p,command,undoData)
-            current.expand()
-            c.selectPosition(current)
-            c.setChanged(True)
-            u.afterChangeGroup(p,command)
-        finally:
-            c.endUpdate()
+            try:
+                theFile = open(fileName,'rb')
+                isThin = at.scanHeaderForThin(theFile,fileName)
+                theFile.close()
+            except IOError:
+                isThin = False
+            #@-node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
+            #@nl
+            undoData = u.beforeInsertNode(parent)
+            p = parent.insertAfter()
+            if isThin:
+                at.forceGnxOnPosition(p)
+                p.initHeadString("@thin " + fileName)
+                at.read(p,thinFile=True)
+            else:
+                p.initHeadString("Imported @file " + fileName)
+                at.read(p,importFileName=fileName)
+            p.contract()
+            u.afterInsertNode(p,command,undoData)
+        current.expand()
+        c.selectPosition(current)
+        c.setChanged(True)
+        u.afterChangeGroup(p,command)
+        c.redraw()
     #@+node:ekr.20051208100903.1:forceGnxOnPosition
     def forceGnxOnPosition (self,p):
 
@@ -977,42 +889,40 @@ class leoImportCommands:
         if len(files) < 1: return
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.treeType = treeType
-        c.beginUpdate()
-        try: # range of update...
-            if len(files) == 2:
-                #@            << Create a parent for two files having a common prefix >>
-                #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
-                #@+at 
-                #@nonl
-                # The two filenames have a common prefix everything before the 
-                # last period is the same.  For example, x.h and x.cpp.
-                #@-at
-                #@@c
+        if len(files) == 2:
+            #@        << Create a parent for two files having a common prefix >>
+            #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
+            #@+at 
+            #@nonl
+            # The two filenames have a common prefix everything before the 
+            # last period is the same.  For example, x.h and x.cpp.
+            #@-at
+            #@@c
 
-                name0 = files[0]
-                name1 = files[1]
-                prefix0, junk = g.os_path_splitext(name0)
-                prefix1, junk = g.os_path_splitext(name1)
-                if len(prefix0) > 0 and prefix0 == prefix1:
-                    current = current.insertAsLastChild()
-                    # junk, nameExt = g.os_path_split(prefix1)
-                    name,junk = g.os_path_splitext(prefix1)
-                    current.initHeadString(name)
-                #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
-                #@nl
-            for fileName in files:
-                g.setGlobalOpenDir(fileName)
-                v = self.createOutline(fileName,current)
-                if v: # createOutline may fail.
-                    if not g.unitTesting:
-                        g.es("imported",fileName,color="blue")
-                    v.contract()
-                    v.setDirty()
-                    c.setChanged(True)
-            c.validateOutline()
-            current.expand()
-        finally:
-            c.endUpdate()
+            name0 = files[0]
+            name1 = files[1]
+            prefix0, junk = g.os_path_splitext(name0)
+            prefix1, junk = g.os_path_splitext(name1)
+            if len(prefix0) > 0 and prefix0 == prefix1:
+                current = current.insertAsLastChild()
+                # junk, nameExt = g.os_path_split(prefix1)
+                name,junk = g.os_path_splitext(prefix1)
+                current.initHeadString(name)
+            #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
+            #@nl
+        for fileName in files:
+            g.setGlobalOpenDir(fileName)
+            v = self.createOutline(fileName,current)
+            if v: # createOutline may fail.
+                if not g.unitTesting:
+                    g.es("imported",fileName,color="blue")
+                v.contract()
+                v.setDirty()
+                c.setChanged(True)
+        c.validateOutline()
+        current.expand()
+        c.redraw()
+
         c.selectVnode(current)
     #@-node:ekr.20031218072017.3212:importFilesCommand
     #@+node:ekr.20031218072017.3214:importFlattenedOutline & allies
@@ -1020,101 +930,97 @@ class leoImportCommands:
     # Used by paste logic.
 
     def convertMoreStringToOutlineAfter (self,s,first_p):
-        s = string.replace(s,"\r","")
-        strings = string.split(s,"\n")
+        s = s.replace("\r","")
+        strings = s.split("\n")
         return self.convertMoreStringsToOutlineAfter(strings,first_p)
 
     # Almost all the time spent in this command is spent here.
 
     def convertMoreStringsToOutlineAfter (self,strings,first_p):
 
-        # __pychecker__ = '--no-objattrs' # suppress bad warnings re last_p.
-
         c = self.c
         if len(strings) == 0: return None
         if not self.stringsAreValidMoreFile(strings): return None
-        c.beginUpdate()
-        try: # range of update...
-            firstLevel, junk = self.moreHeadlineLevel(strings[0])
-            lastLevel = -1 ; theRoot = last_p = None
-            index = 0
-            while index < len(strings):
-                progress = index
-                s = strings[index]
-                level,junk = self.moreHeadlineLevel(s)
-                level -= firstLevel
-                if level >= 0:
-                    #@                << Link a new position p into the outline >>
-                    #@+node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
-                    assert(level >= 0)
-                    if not last_p:
-                        # g.trace(first_p)
-                        theRoot = p = first_p.insertAfter()
-                    elif level == lastLevel:
-                        p = last_p.insertAfter()
-                    elif level == lastLevel + 1:
-                        p = last_p.insertAsNthChild(0)
-                    else:
-                        assert(level < lastLevel)
-                        while level < lastLevel:
-                            lastLevel -= 1
-                            last_p = last_p.parent()
-                            assert(last_p)
-                            assert(lastLevel >= 0)
-                        p = last_p.insertAfter()
-                    last_p = p
-                    lastLevel = level
-                    #@-node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
-                    #@nl
-                    #@                << Set the headline string, skipping over the leader >>
-                    #@+node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
-                    j = 0
-                    while g.match(s,j,'\t'):
-                        j += 1
-                    if g.match(s,j,"+ ") or g.match(s,j,"- "):
-                        j += 2
+        firstLevel, junk = self.moreHeadlineLevel(strings[0])
+        lastLevel = -1 ; theRoot = last_p = None
+        index = 0
+        while index < len(strings):
+            progress = index
+            s = strings[index]
+            level,junk = self.moreHeadlineLevel(s)
+            level -= firstLevel
+            if level >= 0:
+                #@            << Link a new position p into the outline >>
+                #@+node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
+                assert(level >= 0)
+                if not last_p:
+                    # g.trace(first_p)
+                    theRoot = p = first_p.insertAfter()
+                elif level == lastLevel:
+                    p = last_p.insertAfter()
+                elif level == lastLevel + 1:
+                    p = last_p.insertAsNthChild(0)
+                else:
+                    assert(level < lastLevel)
+                    while level < lastLevel:
+                        lastLevel -= 1
+                        last_p = last_p.parent()
+                        assert(last_p)
+                        assert(lastLevel >= 0)
+                    p = last_p.insertAfter()
+                last_p = p
+                lastLevel = level
+                #@-node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
+                #@nl
+                #@            << Set the headline string, skipping over the leader >>
+                #@+node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
+                j = 0
+                while g.match(s,j,'\t'):
+                    j += 1
+                if g.match(s,j,"+ ") or g.match(s,j,"- "):
+                    j += 2
 
-                    p.initHeadString(s[j:])
-                    #@-node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
-                    #@nl
-                    #@                << Count the number of following body lines >>
-                    #@+node:ekr.20031218072017.3218:<< Count the number of following body lines >>
-                    bodyLines = 0
-                    index += 1 # Skip the headline.
-                    while index < len(strings):
-                        s = strings[index]
-                        level, junk = self.moreHeadlineLevel(s)
-                        level -= firstLevel
-                        if level >= 0:
-                            break
-                        # Remove first backslash of the body line.
-                        if g.match(s,0,'\\'):
-                            strings[index] = s[1:]
-                        bodyLines += 1
-                        index += 1
-                    #@-node:ekr.20031218072017.3218:<< Count the number of following body lines >>
-                    #@nl
-                    #@                << Add the lines to the body text of p >>
-                    #@+node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
-                    if bodyLines > 0:
-                        body = ""
-                        n = index - bodyLines
-                        while n < index:
-                            body += strings[n]
-                            if n != index - 1:
-                                body += "\n"
-                            n += 1
-                        p.setBodyString(body)
-                    #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
-                    #@nl
-                    p.setDirty()
-                else: index += 1
-                assert progress < index
-            if theRoot:
-                theRoot.setDirty()
-                c.setChanged(True)
-        finally:
-            c.endUpdate()
+                p.initHeadString(s[j:])
+                #@-node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
+                #@nl
+                #@            << Count the number of following body lines >>
+                #@+node:ekr.20031218072017.3218:<< Count the number of following body lines >>
+                bodyLines = 0
+                index += 1 # Skip the headline.
+                while index < len(strings):
+                    s = strings[index]
+                    level, junk = self.moreHeadlineLevel(s)
+                    level -= firstLevel
+                    if level >= 0:
+                        break
+                    # Remove first backslash of the body line.
+                    if g.match(s,0,'\\'):
+                        strings[index] = s[1:]
+                    bodyLines += 1
+                    index += 1
+                #@-node:ekr.20031218072017.3218:<< Count the number of following body lines >>
+                #@nl
+                #@            << Add the lines to the body text of p >>
+                #@+node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
+                if bodyLines > 0:
+                    body = ""
+                    n = index - bodyLines
+                    while n < index:
+                        body += strings[n]
+                        if n != index - 1:
+                            body += "\n"
+                        n += 1
+                    p.setBodyString(body)
+                #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
+                #@nl
+                p.setDirty()
+            else: index += 1
+            assert progress < index
+        if theRoot:
+            theRoot.setDirty()
+            c.setChanged(True)
+        c.redraw()
+
         return theRoot
     #@-node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
     #@+node:ekr.20031218072017.3220:importFlattenedOutline
@@ -1132,9 +1038,9 @@ class leoImportCommands:
         try:
             theFile = open(fileName)
             s = theFile.read()
-            s = string.replace(s,"\r","")
+            s = s.replace("\r","")
             s = g.toUnicode(s,self.encoding)
-            array = string.split(s,"\n")
+            array = s.split("\n")
             theFile.close()
         except IOError:
             g.es("can not open",fileName, color="blue")
@@ -1175,8 +1081,8 @@ class leoImportCommands:
 
     def stringIsValidMoreFile (self,s):
 
-        s = string.replace(s,"\r","")
-        strings = string.split(s,"\n")
+        s = s.replace("\r","")
+        strings = s.split("\n")
         return self.stringsAreValidMoreFile(strings)
 
     def stringsAreValidMoreFile (self,strings):
@@ -1233,17 +1139,14 @@ class leoImportCommands:
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.webType = webType
 
-        c.beginUpdate()
-        try:
-            for fileName in files:
-                g.setGlobalOpenDir(fileName)
-                v = self.createOutlineFromWeb(fileName,current)
-                v.contract()
-                v.setDirty()
-                c.setChanged(True)
-            c.selectVnode(current)
-        finally:
-            c.endUpdate()
+        for fileName in files:
+            g.setGlobalOpenDir(fileName)
+            v = self.createOutlineFromWeb(fileName,current)
+            v.contract()
+            v.setDirty()
+            c.setChanged(True)
+        c.selectVnode(current)
+        c.redraw()
     #@-node:ekr.20031218072017.3226:importWebCommand
     #@+node:ekr.20031218072017.3227:findFunctionDef
     def findFunctionDef (self,s,i):
@@ -1317,7 +1220,7 @@ class leoImportCommands:
                     k = g.find_on_line(s,i,">>=")
                     if k > -1:
                         ref = s[i:k+2]
-                        name = string.strip(s[i+2:k])
+                        name = s[i+2:k].strip()
                         if name != "@others":
                             return ref
                 else:
@@ -1465,20 +1368,19 @@ class leoImportCommands:
     def cstCanonicalize (self,s,lower=True):
 
         if lower:
-            s = string.lower(s)
-        s = string.replace(s,"\t"," ")
-        s = string.replace(s,"\r","")
-        s = string.replace(s,"\n"," ")
-        s = string.replace(s,"  "," ")
-        s = string.strip(s)
-        return s
+            s = s.lower()
+
+        s = s.replace("\t"," ").replace("\r","")
+        s = s.replace("\n"," ").replace("  "," ")
+
+        return s.strip()
     #@-node:ekr.20031218072017.3237:cstCanonicalize
     #@+node:ekr.20031218072017.3238:cstDump
     def cstDump (self):
 
-        self.web_st.sort()
         s = "Web Symbol Table...\n\n"
-        for name in self.web_st:
+
+        for name in sorted(self.web_st):
             s += name + "\n"
         return s
     #@-node:ekr.20031218072017.3238:cstDump
@@ -1488,14 +1390,14 @@ class leoImportCommands:
     def cstEnter (self,s):
 
         # Don't enter names that end in "..."
-        s = string.rstrip(s)
+        s = s.rstrip()
         if s.endswith("..."): return
 
         # Put the section name in the symbol table, retaining capitalization.
         lower = self.cstCanonicalize(s,True)  # do lower
         upper = self.cstCanonicalize(s,False) # don't lower.
         for name in self.web_st:
-            if string.lower(name) == lower:
+            if name.lower() == lower:
                 return
         self.web_st.append(upper)
     #@-node:ekr.20031218072017.3239:cstEnter
@@ -1505,12 +1407,11 @@ class leoImportCommands:
     def cstLookup (self,target):
 
         # Do nothing if the ... convention is not used.
-        target = string.strip(target)
+        target = target.strip()
         if not target.endswith("..."): return target
         # Canonicalize the target name, and remove the trailing "..."
         ctarget = target[:-3]
-        ctarget = self.cstCanonicalize(ctarget)
-        ctarget = string.strip(ctarget)
+        ctarget = self.cstCanonicalize(ctarget).strip()
         found = False ; result = target
         for s in self.web_st:
             cs = self.cstCanonicalize(s)
@@ -1570,47 +1471,43 @@ class leoImportCommands:
 
         c = self.c ; h = p.headString() ; old_root = p.copy()
         oldChanged = c.changed
-        c.beginUpdate()
-        try:
-            d = g.app.unitTestDict
-            expectedErrors = d.get('expectedErrors')
-            expectedErrorMessage = d.get('expectedErrorMessage')
-            expectedMismatchLine = d.get('expectedMismatchLine')
-            g.app.unitTestDict = {
-                'expectedErrors':expectedErrors,
-                'expectedErrorMessage':expectedErrorMessage,
-                'expectedMismatchLine':expectedMismatchLine,
-            }
-            if not fileName: fileName = p.headString()
-            if not s: s = self.removeSentinelsCommand([fileName],toString=True)
-            title = g.choose(h.startswith('@test'),h[5:],h)
-            self.createOutline(title.strip(),p.copy(),atAuto=atAuto,s=s,ext=ext)
-            d = g.app.unitTestDict
-            ok = ((d.get('result') and expectedErrors in (None,0)) or
-                (
-                    # checkTrialWrite returns *True* if the following match.
-                    # d.get('result') == False and
-                    d.get('actualErrors') == d.get('expectedErrors') and
-                    d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
-                    (expectedErrorMessage is None or d.get('actualErrorMessage') == d.get('expectedErrorMessage'))
-                ))
-            if not ok:
-                g.trace('result',d.get('result'),
-                    'actualErrors',d.get('actualErrors'),
-                    'expectedErrors',d.get('expectedErrors'),
-                    'actualMismatchLine',d.get('actualMismatchLine'),
-                    'expectedMismatchLine', d.get('expectedMismatchLine'),
-                    '\nactualErrorMessage  ',d.get('actualErrorMessage'),
-                    '\nexpectedErrorMessage',d.get('expectedErrorMessage'),
-                )
-            if not showTree and ok:
-                while old_root.hasChildren():
-                    old_root.firstChild().doDelete()
-                c.setChanged(oldChanged)
-
-        finally:
-            c.selectPosition(old_root)
-            c.endUpdate()
+        d = g.app.unitTestDict
+        expectedErrors = d.get('expectedErrors')
+        expectedErrorMessage = d.get('expectedErrorMessage')
+        expectedMismatchLine = d.get('expectedMismatchLine')
+        g.app.unitTestDict = {
+            'expectedErrors':expectedErrors,
+            'expectedErrorMessage':expectedErrorMessage,
+            'expectedMismatchLine':expectedMismatchLine,
+        }
+        if not fileName: fileName = p.headString()
+        if not s: s = self.removeSentinelsCommand([fileName],toString=True)
+        title = g.choose(h.startswith('@test'),h[5:],h)
+        self.createOutline(title.strip(),p.copy(),atAuto=atAuto,s=s,ext=ext)
+        d = g.app.unitTestDict
+        ok = ((d.get('result') and expectedErrors in (None,0)) or
+            (
+                # checkTrialWrite returns *True* if the following match.
+                # d.get('result') == False and
+                d.get('actualErrors') == d.get('expectedErrors') and
+                d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
+                (expectedErrorMessage is None or d.get('actualErrorMessage') == d.get('expectedErrorMessage'))
+            ))
+        if not ok:
+            g.trace('result',d.get('result'),
+                'actualErrors',d.get('actualErrors'),
+                'expectedErrors',d.get('expectedErrors'),
+                'actualMismatchLine',d.get('actualMismatchLine'),
+                'expectedMismatchLine', d.get('expectedMismatchLine'),
+                '\nactualErrorMessage  ',d.get('actualErrorMessage'),
+                '\nexpectedErrorMessage',d.get('expectedErrorMessage'),
+            )
+        if not showTree and ok:
+            while old_root.hasChildren():
+                old_root.firstChild().doDelete()
+            c.setChanged(oldChanged)
+        c.selectPosition(old_root)
+        c.redraw()
 
         if g.app.unitTesting:
             assert ok
@@ -1674,7 +1571,7 @@ class leoImportCommands:
         # else:
             # fileName = scanner.fileName
             # if atAuto:
-                # print('seems to be mixed HTML and PHP:',fileName)
+                # g.pr('seems to be mixed HTML and PHP:',fileName)
             # else:
                 # g.es_print('seems to be mixed HTML and PHP:',fileName)
             # scanner.createHeadline(
@@ -1694,14 +1591,18 @@ class leoImportCommands:
 
         scanner.run(s,parent)
     #@-node:ekr.20071214072145:scanXmlText
-    #@+node:ekr.20070713075352:scanUnknownFileType (default scanner)
+    #@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     def scanUnknownFileType (self,s,p,ext,atAuto=False):
 
         c = self.c
         changed = c.isChanged()
         body = g.choose(atAuto,'','@ignore\n')
-        if ext in ('.html','.htm'): body += '@language html\n'
-        if ext in ('.txt','.text'): body += '@nocolor\n'
+        if ext in ('.html','.htm'):   body += '@language html\n'
+        elif ext in ('.txt','.text'): body += '@nocolor\n'
+        else:
+            language = self.languageForExtension(ext)
+            if language: body += '@language %s\n' % language
+
         c.setBodyString(p,body + self.rootLine + s)
         if atAuto:
             for p in p.self_and_subtree_iter():
@@ -1710,7 +1611,32 @@ class leoImportCommands:
                 c.setChanged(False)
 
         g.app.unitTestDict = {'result':True}
-    #@-node:ekr.20070713075352:scanUnknownFileType (default scanner)
+    #@+node:ekr.20080811174246.1:languageForExtension
+    def languageForExtension (self,ext):
+
+        '''Return the language corresponding to the extensiion ext.'''
+
+        unknown = 'unknown_language'
+
+        if ext.startswith('.'): ext = ext[1:]
+
+        if ext:
+            z = g.app.extra_extension_dict.get(ext)
+            if z not in (None,'none','None'):
+                language = z
+            else:
+                language = g.app.extension_dict.get(ext)
+            if language in (None,'none','None'):
+                language = unknown
+        else:
+            language = unknown
+
+        # g.trace(ext,repr(language))
+
+        # Return the language even if there is no colorizer mode for it.
+        return language
+    #@-node:ekr.20080811174246.1:languageForExtension
+    #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
     #@-node:ekr.20071127175948.1:Import scanners
     #@-others
 #@-node:ekr.20071127175948:<< class leoImportCommands >>
@@ -1847,7 +1773,7 @@ class baseScannerClass:
         # g.trace('lines2',lines2)
 
         ok = True ; bad_i = 0
-        for i in xrange(max(n1,n2)):
+        for i in range(max(n1,n2)):
             ok = self.compareHelper(lines1,lines2,i,self.strict)
             if not ok:
                 bad_i = i + 1
@@ -1858,6 +1784,7 @@ class baseScannerClass:
             # g.trace('expected',d.get('expectedMismatchLine'),'actual',d.get('actualMismatchLine'))
             ok = d.get('expectedMismatchLine') == d.get('actualMismatchLine')
             # Unit tests do not generate errors unless the mismatch line does not match.
+            if not ok: d['fail'] = g.callers() # 2008/10/3
 
         if not ok:
             self.reportMismatch(lines1,lines2,bad_i)
@@ -1965,10 +1892,10 @@ class baseScannerClass:
 
         if len(lines1) < 100:
             pr('input...')
-            for i in xrange(len(lines1)):
+            for i in range(len(lines1)):
                 pr('%3d %s' % (i,lines1[i]),newline=False)
             pr('output...')
-            for i in xrange(len(lines2)):
+            for i in range(len(lines2)):
                 pr('%3d %s' % (i,lines2[i]),newline=False)
 
         return False
@@ -2082,20 +2009,20 @@ class baseScannerClass:
         if not g.unitTesting:
             g.es_print('inserting @ignore',color='blue')
     #@-node:ekr.20070705085335:insertIgnoreDirective
-    #@+node:ekr.20070703122141.81:massageComment
-    def massageComment (self,s):
+    #@+node:ekr.20070703122141.81:massageComment (not used)
+    # def massageComment (self,s):
 
-        '''Return s with leading and trailing whitespace removed and all other
-        runs of whitespace and newlines converted to a single blank.'''
+        # '''Return s with leading and trailing whitespace removed and all other
+        # runs of whitespace and newlines converted to a single blank.'''
 
-        s = s.strip()
-        s = s.replace('\n',' ')
-        s = s.replace('\r',' ')
-        s = s.replace('\t',' ')
-        s = s.replace('  ',' ')
-        s = s.strip()
-        return s
-    #@-node:ekr.20070703122141.81:massageComment
+        # s = s.strip()
+        # s = s.replace('\n',' ')
+        # s = s.replace('\r',' ')
+        # s = s.replace('\t',' ')
+        # s = s.replace('  ',' ')
+        # s = s.strip()
+        # return s
+    #@-node:ekr.20070703122141.81:massageComment (not used)
     #@+node:ekr.20070707113832.1:putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 
@@ -2336,7 +2263,7 @@ class baseScannerClass:
             g.es_print('error:',s,color='red')
 
     def oops (self):
-        print 'baseScannerClass oops: %s must be overridden in subclass' % g.callers()
+        g.pr('baseScannerClass oops: %s must be overridden in subclass' % g.callers())
 
     def report (self,message):
         if self.strict: self.error(message)
@@ -2526,7 +2453,7 @@ class baseScannerClass:
 
         self.error('no block')
         if 1:
-            print '** no block **'
+            g.pr('** no block **')
             i,j = g.getLine(s,start)
             g.trace(i,s[i:j])
         else:
@@ -2585,7 +2512,7 @@ class baseScannerClass:
             assert False
 
         # Find the closing delim.
-        k = string.find(s,delim2,i)
+        k = s.find(delim2,i)
         if k == -1:
             self.error('Run on block comment: ' + s[start:i])
             return len(s)
@@ -3350,7 +3277,7 @@ class pascalScanner (baseScannerClass):
 
         self.error('no interface')
         if 1:
-            print '** no interface **'
+            g.pr('** no interface **')
             i,j = g.getLine(s,start)
             g.trace(i,s[i:j])
         else:
@@ -3445,7 +3372,7 @@ class phpScanner (baseScannerClass):
 
         # The valid characters in an id
         self.chars = list(string.ascii_letters + string.digits)
-        extra = [chr(z) for z in xrange(127,256)]
+        extra = [chr(z) for z in range(127,256)]
         self.chars.extend(extra)
     #@-node:ekr.20070711090052.2: __init__
     #@+node:ekr.20070711094850:isPurePHP
@@ -3553,9 +3480,10 @@ class pythonScanner (baseScannerClass):
     #@+node:ekr.20070712090019.1:skipCodeBlock (python) & helper
     def skipCodeBlock (self,s,i,kind):
 
-        trace = False ; verbose = False
+        trace = False ; verbose = True
         # if trace: g.trace('***',g.callers())
         startIndent = self.startSigIndent
+        if trace: g.trace('startIndent',startIndent)
         assert startIndent is not None
         i = start = g.skip_ws_and_nl(s,i)
         parenCount = 0
@@ -3570,7 +3498,7 @@ class pythonScanner (baseScannerClass):
                     pass # We have already made progress.
                 else:
                     if trace and verbose: g.trace(g.get_line(s,i))
-                    backslashNewline = i > 0 and g.match(s,i-1,'\\\n')
+                    backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
                     if not backslashNewline:
                         i,underIndentedStart,breakFlag = self.pythonNewlineHelper(
                             s,i,parenCount,startIndent,underIndentedStart)
@@ -3598,6 +3526,7 @@ class pythonScanner (baseScannerClass):
             g.trace('Can not happen: Python block does not end in a newline.')
             g.trace(g.get_line(s,i))
             return i,False
+
         if (trace or self.trace) and s[start:i].strip():
             g.trace('%s returns\n' % (kind) + s[start:i])
         return i,True
@@ -3607,10 +3536,12 @@ class pythonScanner (baseScannerClass):
         trace = False
         breakFlag = False
         j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
-        if trace: g.trace('startIndent',startIndent,'indent',indent,'line',repr(g.get_line(s,j)))
+        if trace: g.trace(
+            'startIndent',startIndent,'indent',indent,'parenCount',parenCount,
+            'line',repr(g.get_line(s,j)))
         if indent <= startIndent and parenCount == 0:
             # An underindented line: it ends the block *unless*
-            # it is a blank or comment line.
+            # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
             if g.match(s,j,'#'):
                 if trace: g.trace('underindent: comment')
                 if underIndentedStart is None: underIndentedStart = i
@@ -3645,7 +3576,7 @@ class pythonScanner (baseScannerClass):
                                 self.errorLines.append(j)
                                 self.underindentedComment(line)
                 underIndentedStart = None
-        if trace: g.trace('returns',i,'underIndentedStart',underIndentedStart)
+        if trace: g.trace('breakFlag',breakFlag,'returns',i,'underIndentedStart',underIndentedStart)
         return i,underIndentedStart,breakFlag
     #@-node:ekr.20070801080447:pythonNewlineHelper
     #@-node:ekr.20070712090019.1:skipCodeBlock (python) & helper

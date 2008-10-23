@@ -9,8 +9,6 @@ Modelled after Emacs and Vim commands.'''
 
 #@<< imports >>
 #@+node:ekr.20050710151017:<< imports >>
-# __pychecker__ = '--no-import'
-
 import leo.core.leoGlobals as g
 
 import leo.core.leoFind as leoFind
@@ -18,18 +16,25 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
-import cPickle
+if g.isPython3:
+    import pickle # Note: only pickle exists in Python 3.x
+else:
+    import cPickle as pickle 
+
 import difflib
 import os
 import re
 import string
 import sys
 
-try:
-    import ctypes
-    import ctypes.util
-except ImportError:
+if g.isPython3:
     ctypes = None
+else:
+    try:
+        import ctypes
+        import ctypes.util
+    except ImportError:
+        ctypes = None
 
 subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
 #@-node:ekr.20050710151017:<< imports >>
@@ -91,8 +96,14 @@ class baseEditCommandsClass:
         if name.startswith('body'):
             oldSel =  w.getSelectionRange()
             oldText = p.bodyString()
-            self.undoData = g.Bunch(
-                ch=ch,name=name,oldSel=oldSel,oldText=oldText,w=w,undoType=undoType)
+            self.undoData = b = g.Bunch()
+            # To keep pylint happy.
+            b.ch=ch
+            b.name=name
+            b.oldSel=oldSel
+            b.oldText=oldText
+            b.w=w
+            b.undoType=undoType
         else:
             self.undoData = None
 
@@ -162,7 +173,7 @@ class baseEditCommandsClass:
     #@+node:ekr.20050920084036.7:oops
     def oops (self):
 
-        print("baseEditCommandsClass oops:",
+        g.pr("baseEditCommandsClass oops:",
             g.callers(),
             "must be overridden in subclass")
     #@-node:ekr.20050920084036.7:oops
@@ -253,10 +264,8 @@ def finishCreateEditCommanders (c):
         if d2:
             d.update(d2)
             if 0:
-                keys = d2.keys()
-                keys.sort()
-                print '----- %s' % name
-                for key in keys: print key
+                g.pr('----- %s' % name)
+                for key in sorted(d2): g.pr(key)
 
     return d
 #@-node:ekr.20050922104731:finishCreateEditCommanders (leoEditCommands module)
@@ -602,7 +611,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                     # w.tag_delete('found')
                     # w.tag_add('found','%s wordstart' % i1,'%s wordend' % i1)
                     # w.tag_config('found',background='yellow')
-                    # if self.abbrevs.has_key(word):
+                    # if word in self.abbrevs:
                         # k.setLabel('Replace %s with %s? y/n' % (word,self.abbrevs[word]))
                         # yield None
                         # if k.regXKey == 'y':
@@ -722,18 +731,15 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            c.beginUpdate()
-            try:
-                w = self.w
-                c.selectPosition(p)
-                self.beginCommand('append-to-buffer: %s' % p.headString())
-                w.insert('end',s)
-                w.setInsertPoint('end')
-                w.seeInsertPoint()
-                self.endCommand()
-            finally:
-                c.endUpdate()
-                c.recolor_now()
+            w = self.w
+            c.selectPosition(p)
+            self.beginCommand('append-to-buffer: %s' % p.headString())
+            w.insert('end',s)
+            w.setInsertPoint('end')
+            w.seeInsertPoint()
+            self.endCommand()
+            c.redraw()
+            c.recolor_now()
     #@nonl
     #@-node:ekr.20050920084036.35:appendToBuffer
     #@+node:ekr.20050920084036.36:copyToBuffer
@@ -753,16 +759,13 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-                self.beginCommand('copy-to-buffer: %s' % p.headString())
-                w.insert('end',s)
-                w.setInsertPoint('end')
-                self.endCommand()
-            finally:
-                c.endUpdate()
-                c.recolor_now()
+            c.selectPosition(p)
+            self.beginCommand('copy-to-buffer: %s' % p.headString())
+            w.insert('end',s)
+            w.setInsertPoint('end')
+            self.endCommand()
+            c.redraw()
+            c.recolor_now()
     #@-node:ekr.20050920084036.36:copyToBuffer
     #@+node:ekr.20050920084036.37:insertToBuffer
     def insertToBuffer (self,event):
@@ -781,16 +784,13 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-                self.beginCommand('insert-to-buffer: %s' % p.headString())
-                i = w.getInsertPoint()
-                w.insert(i,s)
-                w.seeInsertPoint()
-                self.endCommand()
-            finally:
-                c.endUpdate()
+            c.selectPosition(p)
+            self.beginCommand('insert-to-buffer: %s' % p.headString())
+            i = w.getInsertPoint()
+            w.insert(i,s)
+            w.seeInsertPoint()
+            self.endCommand()
+            c.redraw()
     #@-node:ekr.20050920084036.37:insertToBuffer
     #@+node:ekr.20050920084036.38:killBuffer
     def killBuffer (self,event):
@@ -855,18 +855,14 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-                self.beginCommand('prepend-to-buffer: %s' % p.headString())
-                w.insert(0,s)
-                w.setInsertPoint(0)
-                w.seeInsertPoint()
-                self.endCommand()
-            finally:
-                c.endUpdate()
-                c.recolor_now()
-
+            c.selectPosition(p)
+            self.beginCommand('prepend-to-buffer: %s' % p.headString())
+            w.insert(0,s)
+            w.setInsertPoint(0)
+            w.seeInsertPoint()
+            self.endCommand()
+            c.redraw()
+            c.recolor_now()
     #@-node:ekr.20050920084036.39:prependToBuffer
     #@+node:ekr.20050920084036.43:renameBuffer
     def renameBuffer (self,event):
@@ -887,9 +883,8 @@ class bufferCommandsClass (baseEditCommandsClass):
         c = self.c ; p = self.findBuffer(self.fromName)
         if p:
             c.endEditing()
-            c.beginUpdate()
             c.setHeadString(p,name)
-            c.endUpdate()
+            c.redraw()
     #@-node:ekr.20050920084036.43:renameBuffer
     #@+node:ekr.20050920084036.40:switchToBuffer
     def switchToBuffer (self,event):
@@ -903,11 +898,8 @@ class bufferCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = self.findBuffer(name)
         if p:
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-            finally:
-                c.endUpdate()
+            c.selectPosition(p)
+            c.redraw()
     #@-node:ekr.20050920084036.40:switchToBuffer
     #@-node:ekr.20050920084036.34:Entry points
     #@+node:ekr.20050927102133.1:Utils
@@ -1063,7 +1055,8 @@ class controlCommandsClass (baseEditCommandsClass):
             ofile.seek(0)
             okout = ofile.read()
             if okout: w.insert('insert',okout)
-        except Exception, x:
+        except Exception:
+            junk, x, junk = sys.exc_info()
             w.insert('insert',x)
 
         k.setLabelGrey('finished shell-command: %s' % command)
@@ -1249,7 +1242,7 @@ class debugCommandsClass (baseEditCommandsClass):
 
         for debugger in debuggers:
             if debugger:
-                debugger = g.os_path_abspath(debugger)
+                debugger = c.os_path_finalize(debugger)
                 if g.os_path_exists(debugger):
                     return debugger
                 else:
@@ -1349,22 +1342,26 @@ class debugCommandsClass (baseEditCommandsClass):
     #@-node:ekr.20060202133313:printStats
     #@+node:ekr.20060328121145:runUnitTest commands
     def runAllUnitTestsLocally (self,event=None):
-        '''Run all unit tests contained in the presently selected outline.'''
+        '''Run all unit tests contained in the presently selected outline.
+        Tests are run in the outline's process, so tests *can* change the outline.'''
         c = self.c
         leoTest.doTests(c,all=True)
 
     def runUnitTestsLocally (self,event=None):
-        '''Run all unit tests contained in the presently selected outline.'''
+        '''Run all unit tests contained in the presently selected outline.
+        Tests are run in the outline's process, so tests *can* change the outline.'''
         c = self.c
         leoTest.doTests(c,all=False)
 
     def runAllUnitTests (self,event=None):
-        '''Run all unit tests contained in the entire outline.'''
+        '''Run all unit tests contained in the entire outline.
+        Tests are run in an external process, so tests *cannot* change the outline.'''
         c = self.c
         leoTest.runTestsExternally(c,all=True)
 
     def runUnitTests(self,event=None):
-        '''Run all unit tests contained in the presently selected outline.'''
+        '''Run all unit tests contained in the presently selected outline
+        Tests are run in an external process, so tests *cannot* change the outline.'''
         c = self.c
         leoTest.runTestsExternally(c,all=False)
     #@-node:ekr.20060328121145:runUnitTest commands
@@ -1714,7 +1711,7 @@ class editCommandsClass (baseEditCommandsClass):
             pane = body
 
         # Warning: traces mess up the focus
-        # print g.app.gui.widget_name(w),g.app.gui.widget_name(pane)
+        # g.pr(g.app.gui.widget_name(w),g.app.gui.widget_name(pane))
 
         # This works from the minibuffer *only* if there is no typing completion.
         c.widgetWantsFocusNow(pane)
@@ -1736,10 +1733,11 @@ class editCommandsClass (baseEditCommandsClass):
 
         pane = None ; w_name = g.app.gui.widget_name
         trace = False
-        if trace: print (
-            '---- w',w_name(w),id(w),
-            '#tabs',c.frame.log.numberOfVisibleTabs(),
-            'bodyCtrl',w_name(c.frame.body.bodyCtrl),id(c.frame.body.bodyCtrl))
+        if trace:
+            g.pr(
+                '---- w',w_name(w),id(w),
+                '#tabs',c.frame.log.numberOfVisibleTabs(),
+                'bodyCtrl',w_name(c.frame.body.bodyCtrl),id(c.frame.body.bodyCtrl))
 
         # w may not be the present body widget, so test its name, not its id.
         if w_name(w).startswith('body'):
@@ -1783,7 +1781,7 @@ class editCommandsClass (baseEditCommandsClass):
             pane = c.frame.body.bodyCtrl
             self.editWidgetCount = 1 ; self.logWidgetCount = 0
 
-        if trace: print 'old: %10s new: %10s' % (w_name(w),w_name(pane))
+        if trace: g.pr('old: %10s new: %10s' % (w_name(w),w_name(pane)))
 
         if pane:
             k.newMinibufferWidget = pane
@@ -2325,7 +2323,7 @@ class editCommandsClass (baseEditCommandsClass):
     def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
 
         c = self.c
-        path = g.os_path_abspath(g.os_path_join(iconDir,path))
+        path = c.os_path_finalize_join(iconDir,path)
         relPath = g.makePathRelativeTo(path,iconDir)
 
         image,image_height = self.getImage(path)
@@ -2398,9 +2396,7 @@ class editCommandsClass (baseEditCommandsClass):
 
     def dHash(self, d):
         """Hash a dictionary"""
-        l = d.keys()
-        l.sort()
-        return ''.join(['%s%s' % (str(k),str(d[k])) for k in l])
+        return ''.join(['%s%s' % (str(k),str(d[k])) for k in sorted(d)])
 
     def setIconList(self, p, l):
         """Set list of icons for position p to l"""
@@ -2473,14 +2469,14 @@ class editCommandsClass (baseEditCommandsClass):
         aList = self.getIconList(p)
         if not aList: return
 
-        basePath = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
-        absRelPath = g.os_path_abspath(g.os_path_normpath(g.os_path_join(basePath,relPath)))
-        name = g.os_path_abspath(name)
+        basePath = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
+        absRelPath = c.os_path_finalize_join(basePath,relPath)
+        name = c.os_path_finalize(name)
 
         newList = []
         for d in aList:
             name2 = d.get('file')
-            name2 = g.os_path_abspath(name2)
+            name2 = c.os_path_finalize(name2)
             name2rel = d.get('relPath')
             # g.trace('name',name,'\nrelPath',relPath,'\nabsRelPath',absRelPath,'\nname2',name2,'\nname2rel',name2rel)
             if not (name == name2 or absRelPath == name2 or relPath == name2rel):
@@ -2530,7 +2526,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = c.currentPosition()
 
-        iconDir = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
+        iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
 
         paths = g.app.gui.runOpenFileDialog(
@@ -2557,7 +2553,7 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c
         if p is None: p = c.currentPosition()
 
-        iconDir = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
+        iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
 
         aList = [] ; xoffset = 2
@@ -2687,7 +2683,7 @@ class editCommandsClass (baseEditCommandsClass):
         if not s: return
 
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
-        d = g.scanDirectives(c) ; width = d.get('tabwidth')
+        d = c.scanAllDirectives() ; width = d.get('tabwidth')
         if ch == '\t' and width < 0: ch = ' ' * abs(width)
 
         self.beginCommand(undoType=undoType)
@@ -2733,7 +2729,7 @@ class editCommandsClass (baseEditCommandsClass):
         if wname.startswith('body'):
             self.beginCommand()
             try:
-                d = g.scanDirectives(c,p)
+                d = c.scanAllDirectives(p)
                 tab_width = d.get("tabwidth",c.tab_width)
                 changed = True
                 if i != j:
@@ -2795,15 +2791,11 @@ class editCommandsClass (baseEditCommandsClass):
         w = c.frame.body.bodyCtrl
         if not w: return
 
-        c.beginUpdate()
-        try:
-            for p in current.self_and_subtree_iter():
-                c.selectPosition(p)
-                w.setSelectionRange(0,0,insert=0)
-                c.editCommands.cleanLines(event)
-            c.selectPosition(current)
-        finally:
-            c.endUpdate(False)
+        for p in current.self_and_subtree_iter():
+            c.selectPosition(p)
+            w.setSelectionRange(0,0,insert=0)
+            c.editCommands.cleanLines(event)
+        c.selectPosition(current)
     #@-node:ekr.20070325094935:cleanAllLines
     #@+node:ekr.20060415112257:cleanLines
     def cleanLines (self,event):
@@ -3115,11 +3107,11 @@ class editCommandsClass (baseEditCommandsClass):
 
         d = {}
         if ch in self.openBracketsList:
-            for z in xrange(len(self.openBracketsList)):
+            for z in range(len(self.openBracketsList)):
                 d [self.openBracketsList[z]] = self.closeBracketsList[z]
             reverse = False # Search forward
         else:
-            for z in xrange(len(self.openBracketsList)):
+            for z in range(len(self.openBracketsList)):
                 d [self.closeBracketsList[z]] = self.openBracketsList[z]
             reverse = True # Search backward
 
@@ -3145,7 +3137,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         # assert ch in ('(',')','[',']','{','}')
 
-        c = self.c ; d = g.scanDirectives(c,p)
+        c = self.c ; d = c.scanAllDirectives(p)
         i,j = oldSel
         language = d.get('language')
         s = w.getAllText()
@@ -3173,7 +3165,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051026171121.1:udpateAutoIndent
     def updateAutoIndent (self,p,w):
 
-        c = self.c ; d = g.scanDirectives(c,p)
+        c = self.c ; d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
         # Get the previous line.
         s = w.getAllText()
@@ -3212,7 +3204,7 @@ class editCommandsClass (baseEditCommandsClass):
     def updateTab (self,p,w):
 
         c = self.c
-        d = g.scanDirectives(c,p)
+        d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
         i,j = w.getSelectionRange()
             # Returns insert point if no selection, with i <= j.
@@ -3375,7 +3367,7 @@ class editCommandsClass (baseEditCommandsClass):
                     keeplines [n] = None
                 elif f:
                     keeplines.append(z)
-        except Exception, x:
+        except Exception:
             return
         if which == 'flush':
             keeplines = [x for x in keeplines if x != None]
@@ -3432,7 +3424,7 @@ class editCommandsClass (baseEditCommandsClass):
                 i2,j2 = g.getLine(s,spot)
                 line = s[i2:j2]
                 row,col = g.convertPythonIndexToRowCol(s,spot)
-                if True: #### j2 < len(s)-1:
+                if True: # was j2 < len(s)-1:
                     n = min(self.moveCol,max(0,len(line)-1))
                 else:
                     n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
@@ -4191,11 +4183,9 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
                 p = p.threadNext()
-                c.beginUpdate()
-                try:
-                    c.selectPosition(p)
-                finally:
-                    c.endUpdate()
+                c.selectPosition(p)
+                c.redraw()
+
                 s = w.getAllText()
                 w.insert(0,lines)
                 if not lines.endswith('\n'): w.insert(len(lines),'\n')
@@ -4240,11 +4230,9 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
                 p = p.threadBack()
-                c.beginUpdate()
-                try:
-                    c.selectPosition(p)
-                finally:
-                    c.endUpdate()
+                c.selectPosition(p)
+                c.redraw()
+
                 s = w.getAllText()
                 if not s.endswith('\n'): w.insert('end','\n')
                 w.insert('end',lines)
@@ -4573,7 +4561,7 @@ class editCommandsClass (baseEditCommandsClass):
             junk,j = g.getLine(s,sel_2)
             txt = s[i:j]
             columns = [w.get('%s.%s' % (z,sint2),'%s.%s' % (z,sint4))
-                for z in xrange(sint1,sint3+1)]
+                for z in range(sint1,sint3+1)]
             aList = g.splitLines(txt)
             zlist = zip(columns,aList)
             zlist.sort()
@@ -4842,17 +4830,17 @@ class editFileCommandsClass (baseEditCommandsClass):
         '''Compute inserted, deleted, changed dictionaries.'''
 
         inserted = {}
-        for key in d2.keys():
+        for key in d2:
             if not d1.get(key):
                 inserted[key] = d2.get(key)
 
         deleted = {}
-        for key in d1.keys():
+        for key in d1:
             if not d2.get(key):
                 deleted[key] = d1.get(key)
 
         changed = {}
-        for key in d1.keys():
+        for key in d1:
             if d2.get(key):
                 p1 = d1.get(key)
                 p2 = d2.get(key)
@@ -4865,36 +4853,32 @@ class editFileCommandsClass (baseEditCommandsClass):
     def createAllCompareClones(self,inserted,deleted,changed):
 
         c = self.c # Always use the visible commander
-        c.beginUpdate()
-        try:
-            # Create parent node at the start of the outline.
-            u = c.undoer ; undoType = 'Compare .leo Files'
-            u.beforeChangeGroup(c.currentPosition(),undoType)
-            undoData = u.beforeInsertNode(c.currentPosition())
-            parent = c.currentPosition().insertAfter()
-            c.setHeadString(parent,undoType)
-            u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
-            for d,kind in (
-                (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
-            ):
-                self.createCompareClones(d,kind,parent)
-            c.selectPosition(parent)
-            u.afterChangeGroup(parent,undoType,reportFlag=True) 
-        finally:
-            c.endUpdate(False)
+        # Create parent node at the start of the outline.
+        u = c.undoer ; undoType = 'Compare .leo Files'
+        u.beforeChangeGroup(c.currentPosition(),undoType)
+        undoData = u.beforeInsertNode(c.currentPosition())
+        parent = c.currentPosition().insertAfter()
+        c.setHeadString(parent,undoType)
+        u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
+        for d,kind in (
+            (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
+        ):
+            self.createCompareClones(d,kind,parent)
+        c.selectPosition(parent)
+        u.afterChangeGroup(parent,undoType,reportFlag=True) 
+
         c.redraw_now()
-        c.outerUpdate()
     #@nonl
     #@+node:ekr.20070921074410:createCompareClones
     def createCompareClones (self,d,kind,parent):
 
         c = self.c # Always use the visible commander.
 
-        if d.keys():
+        if d:
             parent = parent.insertAsLastChild()
             c.setHeadString(parent,kind)
 
-            for key in d.keys():
+            for key in d:
                 p = d.get(key)
                 clone = p.clone()
                 clone.moveToLastChildOf(parent)
@@ -4942,10 +4926,13 @@ class editFileCommandsClass (baseEditCommandsClass):
             (deleted, 'deleted  (only in %s)' % (fileName2)),
             (changed, 'changed'),
         ):
-            print ; print kind
-            for key in d.keys():
+            g.pr('\n',kind)
+            for key in d:
                 p = d.get(key)
-                print '%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii'))
+                if g.isPython3:
+                    g.pr('%-32s %s' % (key,p.headString()))
+                else:
+                    g.pr('%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii')))
     #@-node:ekr.20070921072608.1:dumpCompareNodes
     #@-node:ekr.20070920104110:compareLeoFiles
     #@+node:ekr.20050920084036.164:deleteFile
@@ -5019,10 +5006,14 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         f, name = self.getReadableTextFile()
         if f:
+            self.beginCommand(undoType='insert-file')
+
             txt = f.read()
             f.close()
             w.insert('insert',txt)
             w.seeInsertPoint()
+
+            self.endCommand(changed=True,setLabel=True)
     #@-node:ekr.20050920084036.167:insertFile
     #@+node:ekr.20050920084036.168:makeDirectory
     def makeDirectory (self,event):
@@ -5189,10 +5180,8 @@ class helpCommandsClass (baseEditCommandsClass):
     def getBindingsForCommand(self,commandName):
 
         c = self.c ; k = c.k ; d = k.bindingsDict
-        keys = d.keys() ; keys.sort()
-
         data = [] ; n1 = 4 ; n2 = 20
-        for key in keys:
+        for key in sorted(d):
             bunchList = d.get(key,[])
             for b in bunchList:
                 if b.commandName == commandName:
@@ -5739,6 +5728,9 @@ class killBufferCommandsClass (baseEditCommandsClass):
             val = aList[i]
             self.index = i + 1
             return val
+
+        __next__ = next
+        #@nonl
         #@-node:ekr.20071003160252.2:next
         #@-others
 
@@ -5976,6 +5968,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'clone-node':                   c.clone,
             'contract-node':                c.contractNode,
             'contract-all':                 c.contractAllHeadlines,
+            'contract-all-other-nodes':     c.contractAllOtherNodes,
             'contract-parent':              c.contractParent,
             'convert-all-blanks':           c.convertAllBlanks,
             'convert-all-tabs':             c.convertAllTabs,
@@ -6025,7 +6018,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'goto-last-node':               c.goToLastNode,
             'goto-last-sibling':            c.goToLastSibling,
             'goto-last-visible-node':       c.goToLastVisibleNode,
-            'goto-line-number':             c.goToLineNumber,
+            # 'goto-line-number':           c.goToLineNumber,
             'goto-next-changed':            c.goToNextDirtyHeadline,
             'goto-next-clone':              c.goToNextClone,
             'goto-next-marked':             c.goToNextMarkedHeadline,
@@ -6086,6 +6079,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'promote':                      c.promote,
             'read-at-auto-nodes':           c.readAtAutoNodes,
             'read-at-file-nodes':           c.readAtFileNodes,
+            'read-at-shadow-nodes':         c.readAtShadowNodes,
             'read-outline-only':            c.readOutlineOnly,
             'read-file-into-node':          c.readFileIntoNode,
             'redo':                         c.undoer.redo,
@@ -6121,8 +6115,10 @@ class leoCommandsClass (baseEditCommandsClass):
             'weave':                        c.weave,
             'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
             'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+            'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
             'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
             'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
+            'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
             'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
             'write-outline-only':           c.fileCommands.writeOutlineOnly,
             'write-file-from-node':         c.writeFileFromNode,
@@ -6131,8 +6127,7 @@ class leoCommandsClass (baseEditCommandsClass):
         #@nl
 
         # Create a callback for each item in d.
-        keys = d.keys() ; keys.sort()
-        for name in keys:
+        for name in sorted(d):
             f = d.get(name)
             d2 [name] = f
             k.inverseCommandsDict [f.__name__] = name
@@ -6203,7 +6198,7 @@ class macroCommandsClass (baseEditCommandsClass):
         k = self.k ; c = k.c
 
         if aList is not None:
-            aList = c.commandsDict.keys()
+            aList = c.commandsDict
 
         pmatches = [item for item in aList if item.startswith(s)]
         pmatches.sort()
@@ -6237,7 +6232,7 @@ class macroCommandsClass (baseEditCommandsClass):
         '''Loads a macro file into the macros dictionary.'''
 
         k = self.k
-        macros = cPickle.load(f)
+        macros = pickle.load(f)
         for z in macros:
             k.addToDoAltX(z,macros[z])
     #@-node:ekr.20050920084036.197:_loadMacros
@@ -6272,7 +6267,7 @@ class macroCommandsClass (baseEditCommandsClass):
         if not fileName: return
 
         try:
-            f = file(fileName,'a+')
+            f = open(fileName,'a+')
             f.seek(0)
             if f:
                 self._saveMacros(f,macname)
@@ -6285,14 +6280,15 @@ class macroCommandsClass (baseEditCommandsClass):
 
         fname = f.name
         try:
-            macs = cPickle.load( f )
+            macs = pickle.load( f )
         except Exception:
             macs = {}
         f.close()
-        if self.namedMacros.has_key( name ):
+
+        if name in self.namedMacros:
             macs[ name ] = self.namedMacros[ name ]
-            f = file( fname, 'w' )
-            cPickle.dump( macs, f )
+            f = open( fname, 'w' )
+            pickle.dump( macs, f )
             f.close()
     #@-node:ekr.20050920084036.200:_saveMacros
     #@-node:ekr.20050920084036.199:saveMacros & helper
@@ -6357,7 +6353,7 @@ class macroCommandsClass (baseEditCommandsClass):
                 w.event_generate('<Key>',keycode=z[0],keysym=z[1])
             else:
                 meth = g.stripBrackets(z[0])
-                bunchList = k.bindingsDict.get(meth,[]) ### Probably should not strip < and >
+                bunchList = k.bindingsDict.get(meth,[]) # Probably should not strip < and >
                 if bunchList:
                     b = bunchList [0]
                     # ev = Tk.Event()
@@ -6380,7 +6376,7 @@ class macroCommandsClass (baseEditCommandsClass):
 
         k= self ; c = k.c
 
-        if c.commandsDict.has_key(name):
+        if name in c.commandsDict:
             return False
 
         def func (event,macro=macro):
@@ -6653,7 +6649,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         # Change the text.
         fill = ' ' *(r4-r2)
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             w.insert('%s.%s' % (r,r2),fill)
 
@@ -6672,12 +6668,12 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('close-rectangle')
 
         # Return if any part of the selection contains something other than whitespace.
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             s = w.get('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             if s.strip(): return
 
         # Change the text.
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
 
         i = '%s.%s' % (r1,r2)
@@ -6696,7 +6692,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         w,r1,r2,r3,r4 = self.beginCommand('delete-rectangle')
 
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
 
         i = '%s.%s' % (r1,r2)
@@ -6717,7 +6713,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         self.theKillRectangle = []
 
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             s = w.get('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             self.theKillRectangle.append(s)
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
@@ -6742,7 +6738,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('open-rectangle')
 
         fill = ' ' * (r4-r2)
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             w.insert('%s.%s' % (r,r2),fill)
 
         i = '%s.%s' % (r1,r2)
@@ -6774,7 +6770,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w = self.w
             self.beginCommand('string-rectangle')
             r1, r2, r3, r4 = self.stringRect
-            for r in xrange(r1,r3+1):
+            for r in range(r1,r3+1):
                 w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
                 w.insert('%s.%s' % (r,r2),k.arg)
             w.setSelectionRange('%d.%d' % (r1,r2),'%d.%d' % (r3,r2+len(k.arg)))
@@ -6801,7 +6797,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w,r1,r2,r3,r4 = self.beginCommand('yank-rectangle')
 
         n = 0
-        for r in xrange(r1,r3+1):
+        for r in range(r1,r3+1):
             # g.trace(n,r,killRect[n])
             if n >= len(killRect): break
             w.delete('%s.%s' % (r,r2), '%s.%s' % (r,r4))
@@ -7371,6 +7367,7 @@ class minibufferFind (baseEditCommandsClass):
             k.resetLabel()
             k.showStateAndMode()
             self.generalSearchHelper(k.arg,cloneFindAll=True)
+            c.treeWantsFocus()
     #@-node:ekr.20060128080201:cloneFindAll
     #@+node:ekr.20060204120158:findAgain
     def findAgain (self,event):
@@ -8187,17 +8184,16 @@ class spellCommandsClass (baseEditCommandsClass):
 
         if log.frameDict.get(tabName):
             log.selectTab(tabName)
-        elif self.handler:
-            if self.handler.loaded:
-                self.handler.bringToFront()
         else:
             log.selectTab(tabName)
             self.handler = spellTabHandler(c,tabName)
             if not self.handler.loaded:
                 log.deleteTab(tabName,force=True)
-    #@+node:ekr.20051025080420.1:commands...
+    #@-node:ekr.20051025080633:openSpellTab
+    #@+node:ekr.20051025080420.1:commands...(spellCommandsClass)
     # Just open the Spell tab if it has never been opened.
     # For minibuffer commands, we must also force the Spell tab to be visible.
+    # self.handler is a spellTabHandler object (inited by openSpellTab)
 
     def find (self,event=None):
         '''Simulate pressing the 'Find' button in the Spell tab.'''
@@ -8215,19 +8211,14 @@ class spellCommandsClass (baseEditCommandsClass):
         else:
             self.openSpellTab()
 
-    def changeAll(self,event=None):
-
-        if self.handler:
-            self.openSpellTab()
-            self.handler.changeAll()
-        else:
-            self.openSpellTab()
-
     def changeThenFind (self,event=None):
         '''Simulate pressing the 'Change, Find' button in the Spell tab.'''
         if self.handler:
             self.openSpellTab()
-            self.handler.changeThenFind()
+            # A workaround for a pylint warning:
+            # self.handler.changeThenFind()
+            f = getattr(self.handler,'changeThenFind')
+            f()
         else:
             self.openSpellTab()
 
@@ -8244,8 +8235,7 @@ class spellCommandsClass (baseEditCommandsClass):
             self.handler.ignore()
         else:
             self.openSpellTab()
-    #@-node:ekr.20051025080420.1:commands...
-    #@-node:ekr.20051025080633:openSpellTab
+    #@-node:ekr.20051025080420.1:commands...(spellCommandsClass)
     #@-others
 #@-node:ekr.20051025071455.1:class spellCommandsClass
 #@+node:ekr.20051025071455.18:class spellTabHandler (leoFind.leoFind)
@@ -8372,9 +8362,6 @@ class spellTabHandler (leoFind.leoFind):
     def change(self,event=None):
         """Make the selected change to the text"""
 
-        # __pychecker__ = '--no-override --no-argsused'
-             # event param is not used, required, and different from base class.
-
         c = self.c ; body = self.body ; w = body.bodyCtrl
 
         selection = self.tab.getSuggestion()
@@ -8427,7 +8414,6 @@ class spellTabHandler (leoFind.leoFind):
             # Restore the selection range.
             w.setSelectionRange(i,j,insert=ins)
             w.see(ins)
-            ### w.update() ###
         else:
             g.es("no more misspellings")
             self.tab.fillbox([])
@@ -8463,30 +8449,27 @@ class spellTabHandler (leoFind.leoFind):
                 #@-at
                 #@@c
 
-                if self.dictionary.has_key(word.lower()):
+                if word.lower() in self.dictionary:
                     continue
                 #@-node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
                 #@nl
                 alts = aspell.processWord(word)
                 if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.headString() or 'None')
                 if alts:
-                    c.beginUpdate()
-                    try:
-                        redraw = not p.isVisible(c)
-                        # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-                        if sparseFind and not c.currentPosition().isAncestorOf(p):
-                            for p2 in c.currentPosition().self_and_parents_iter():
-                                p2.contract()
-                                redraw = True
-                        for p2 in p.parents_iter():
-                            if not p2.isExpanded():
-                                p2.expand()
-                                redraw = True
-                        # c.frame.tree.expandAllAncestors(p)
-                        c.selectPosition(p)
-                    finally:
-                        c.endUpdate(redraw)
-                        w.setSelectionRange(i,j,insert=j)
+                    redraw = not p.isVisible(c)
+                    # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+                    if sparseFind and not c.currentPosition().isAncestorOf(p):
+                        for p2 in c.currentPosition().self_and_parents_iter():
+                            p2.contract()
+                            redraw = True
+                    for p2 in p.parents_iter():
+                        if not p2.isExpanded():
+                            p2.expand()
+                            redraw = True
+                    # c.frame.tree.expandAllAncestors(p)
+                    c.selectPosition(p)
+                    if redraw: c.redraw()
+                    w.setSelectionRange(i,j,insert=j)
                     break
         except Exception:
             g.es_exception()
@@ -8576,12 +8559,12 @@ class AspellClass:
 
         self.c = c
 
-        self.aspell_dir = g.os_path_abspath(c.config.getString('aspell_dir'))
-        self.aspell_bin_dir = g.os_path_abspath(c.config.getString('aspell_bin_dir'))
+        self.aspell_dir = c.os_path_finalize(c.config.getString('aspell_dir'))
+        self.aspell_bin_dir = c.os_path_finalize(c.config.getString('aspell_bin_dir'))
         self.diagnose = c.config.getBool('diagnose-aspell-installation')
 
         self.local_language_code = local_language_code or 'en'
-        self.local_dictionary_file = g.os_path_abspath(local_dictionary_file)
+        self.local_dictionary_file = c.os_path_finalize(local_dictionary_file)
         self.local_dictionary = "%s.wl" % os.path.splitext(self.local_dictionary_file) [0]
 
         # g.trace('code',self.local_language_code,'dict',self.local_dictionary_file)
@@ -8655,12 +8638,12 @@ class AspellClass:
 
             sc = new_aspell_config()
             if 0:
-                print sc 
-                print aspell_config_replace(sc, "prefix", self.aspell_dir) #1/0 
-                print 'prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix"))
-                print aspell_config_retrieve(sc, "lang")
-                print aspell_config_replace(sc, "lang",self.local_language_code)
-                print aspell_config_retrieve(sc, "lang")
+                g.pr(sc )
+                g.pr(aspell_config_replace(sc, "prefix", self.aspell_dir)) #1/0
+                g.pr('prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix")))
+                g.pr(aspell_config_retrieve(sc, "lang"))
+                g.pr(aspell_config_replace(sc, "lang",self.local_language_code))
+                g.pr(aspell_config_retrieve(sc, "lang"))
 
             possible_err = aspell.new_aspell_speller(sc)
             aspell.delete_aspell_config(c_int(sc))
@@ -8783,8 +8766,9 @@ class AspellClass:
             os.popen(cmd)
             return True
 
-        except Exception, err:
-            print "unable to update local aspell dictionary:",err
+        except Exception:
+            junk, err, junk = sys.exc_info()
+            g.pr("unable to update local aspell dictionary:",err)
             return False
     #@-node:ekr.20051025071455.11:updateDictionary
     #@-others

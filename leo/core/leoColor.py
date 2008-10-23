@@ -66,9 +66,9 @@ php_re = re.compile("<?(\s[pP][hH][pP])")
 #@+node:ekr.20031218072017.2795:<< define colorizer constants >>
 # These defaults are sure to exist.
 default_colors_dict = {
-    # tag name      :(     option name,           default color),
-    "comment"       :("comment_color",               "red"),
-    "cwebName"      :("cweb_section_name_color",     "red"),
+    # tag name       :(     option name,           default color),
+    "comment"        :("comment_color",               "red"),
+    "cwebName"       :("cweb_section_name_color",     "red"),
     "pp"             :("directive_color",             "blue"),
     "docPart"        :("doc_part_color",              "red"),
     "keyword"        :("keyword_color",               "blue"),
@@ -854,1034 +854,11 @@ getCairo = getColorCairo
 #@-node:bob.20080115072302:getCairo / getColorCairo
 #@-node:bob.20080115070511.3:color database functions
 #@+node:ekr.20031218072017.2796:class colorizer
-class baseColorizer:
-    """The base class for Leo's syntax colorer."""
-    #@    << define colorizer keywords >>
-    #@+node:ekr.20031218072017.371:<< define colorizer keywords >> colorizer
-    #@+others
-    #@+node:ekr.20031218072017.372:actionscript keywords
-    actionscript_keywords = [
-    #Jason 2003-07-03 
-    #Actionscript keywords for Leo adapted from UltraEdit syntax highlighting
-    "break", "call", "continue", "delete", "do", "else", "false", "for", "function", "goto", "if", "in", "new", "null", "return", "true", "typeof", "undefined", "var", "void", "while", "with", "#include", "catch", "constructor", "prototype", "this", "try", "_parent", "_root", "__proto__", "ASnative", "abs", "acos", "appendChild", "asfunction", "asin", "atan", "atan2", "attachMovie", "attachSound", "attributes", "BACKSPACE", "CAPSLOCK", "CONTROL", "ceil", "charAt", "charCodeAt", "childNodes", "chr", "cloneNode", "close", "concat", "connect", "cos", "createElement", "createTextNode", "DELETEKEY", "DOWN", "docTypeDecl", "duplicateMovieClip", "END", "ENTER", "ESCAPE", "enterFrame", "entry", "equal", "eval", "evaluate", "exp", "firstChild", "floor", "fromCharCode", "fscommand", "getAscii", "getBeginIndex", "getBounds", "getBytesLoaded", "getBytesTotal", "getCaretIndex", "getCode", "getDate", "getDay", "getEndIndex", "getFocus", "getFullYear", "getHours", "getMilliseconds", "getMinutes", "getMonth", "getPan", "getProperty", "getRGB", "getSeconds", "getTime", "getTimer", "getTimezoneOffset", "getTransform", "getURL", "getUTCDate", "getUTCDay", "getUTCFullYear", "getUTCHours", "getUTCMilliseconds", "getUTCMinutes", "getUTCMonth", "getUTCSeconds", "getVersion", "getVolume", "getYear", "globalToLocal", "gotoAndPlay", "gotoAndStop", "HOME", "haschildNodes", "hide", "hitTest", "INSERT", "Infinity", "ifFrameLoaded", "ignoreWhite", "indexOf", "insertBefore", "int", "isDown", "isFinite", "isNaN", "isToggled", "join", "keycode", "keyDown", "keyUp", "LEFT", "LN10", "LN2", "LOG10E", "LOG2E", "lastChild", "lastIndexOf", "length", "load", "loaded", "loadMovie", "loadMovieNum", "loadVariables", "loadVariablesNum", "localToGlobal", "log", "MAX_VALUE", "MIN_VALUE", "max", "maxscroll", "mbchr", "mblength", "mbord", "mbsubstring", "min", "NEGATIVE_INFINITY", "NaN", "newline", "nextFrame", "nextScene", "nextSibling", "nodeName", "nodeType", "nodeValue", "on", "onClipEvent", "onClose", "onConnect", "onData", "onLoad", "onXML", "ord", "PGDN", "PGUP", "PI", "POSITIVE_INFINITY", "parentNode", "parseFloat", "parseInt", "parseXML", "play", "pop", "pow", "press", "prevFrame", "previousSibling", "prevScene", "print", "printAsBitmap", "printAsBitmapNum", "printNum", "push", "RIGHT", "random", "release", "removeMovieClip", "removeNode", "reverse", "round", "SPACE", "SQRT1_2", "SQRT2", "scroll", "send", "sendAndLoad", "set", "setDate", "setFocus", "setFullYear", "setHours", "setMilliseconds", "setMinutes", "setMonth", "setPan", "setProperty", "setRGB", "setSeconds", "setSelection", "setTime", "setTransform", "setUTCDate", "setUTCFullYear", "setUTCHours", "setUTCMilliseconds", "setUTCMinutes", "setUTCMonth", "setUTCSeconds", "setVolume", "setYear", "shift", "show", "sin", "slice", "sort", "start", "startDrag", "status", "stop", "stopAllSounds", "stopDrag", "substr", "substring", "swapDepths", "splice", "split", "sqrt", "TAB", "tan", "targetPath", "tellTarget", "toggleHighQuality", "toLowerCase", "toString", "toUpperCase", "trace", "UP", "UTC", "unescape", "unloadMovie", "unLoadMovieNum", "unshift", "updateAfterEvent", "valueOf", "xmlDecl", "_alpha", "_currentframe", "_droptarget", "_focusrect", "_framesloaded", "_height", "_highquality", "_name", "_quality", "_rotation", "_soundbuftime", "_target", "_totalframes", "_url", "_visible", "_width", "_x", "_xmouse", "_xscale", "_y", "_ymouse", "_yscale", "and", "add", "eq", "ge", "gt", "le", "lt", "ne", "not", "or", "Array", "Boolean", "Color", "Date", "Key", "Math", "MovieClip", "Mouse", "Number", "Object", "Selection", "Sound", "String", "XML", "XMLSocket"
-    ]
-    #@-node:ekr.20031218072017.372:actionscript keywords
-    #@+node:bwmulder.20041023131509:ada keywords
-    ada_keywords = [
-        "abort",       "else",       "new",        "return",
-        "abs",         "elsif",      "not",        "reverse",
-        "abstract",    "end",        "null",
-        "accept",      "entry",      "select",
-        "access",      "exception",  "separate",
-        "aliased",     "exit",       "of",         "subtype",
-        "all",                       "or",
-        "and",         "for",        "others",     "tagged",
-        "array",       "function",   "out",        "task",
-        "at",                                      "terminate",
-                       "generic",    "package",    "then",
-        "begin",       "goto",       "pragma",     "type",
-        "body",                      "private",
-                       "if",         "procedure",
-        "case",        "in",         "protected",  "until",
-        "constant",    "is",                       "use",
-                                     "raise",
-        "declare",                   "range",      "when",
-        "delay",       "limited",    "record",     "while",
-        "delta",       "loop",       "rem",        "with",
-        "digits",                    "renames",
-        "do",          "mod",        "requeue",    "xor"
-       ]
-    #@-node:bwmulder.20041023131509:ada keywords
-    #@+node:ekr.20040206072057:c# keywords
-    csharp_keywords = [
-        "abstract","as",
-        "base","bool","break","byte",
-        "case","catch","char","checked","class","const","continue",
-        "decimal","default","delegate","do","double",
-        "else","enum","event","explicit","extern",
-        "false","finally","fixed","float","for","foreach",
-        "get","goto",
-        "if","implicit","in","int","interface","internal","is",
-        "lock","long",
-        "namespace","new","null",
-        "object","operator","out","override",
-        "params","partial","private","protected","public",
-        "readonly","ref","return",
-        "sbyte","sealed","set","short","sizeof","stackalloc",
-        "static","string","struct","switch",
-        "this","throw","true","try","typeof",
-        "uint","ulong","unchecked","unsafe","ushort","using",
-        "value","virtual","void","volatile",
-        "where","while",
-        "yield"]
-    #@-node:ekr.20040206072057:c# keywords
-    #@+node:ekr.20031218072017.373:c/c++ keywords
-    c_keywords = [
-        # C keywords
-        "auto","break","case","char","continue",
-        "default","do","double","else","enum","extern",
-        "float","for","goto","if","int","long","register","return",
-        "short","signed","sizeof","static","struct","switch",
-        "typedef","union","unsigned","void","volatile","while",
-        # C++ keywords
-        "asm","bool","catch","class","const","const_cast",
-        "delete","dynamic_cast","explicit","false","friend",
-        "inline","mutable","namespace","new","operator",
-        "private","protected","public","reinterpret_cast","static_cast",
-        "template","this","throw","true","try",
-        "typeid","typename","using","virtual","wchar_t"]
-    #@-node:ekr.20031218072017.373:c/c++ keywords
-    #@+node:ekr.20040401103539:css keywords
-    css_keywords = [
-    #html tags
-    "address", "applet", "area", "a", "base", "basefont",
-    "big", "blockquote", "body", "br", "b", "caption", "center",
-    "cite", "code", "dd", "dfn", "dir", "div", "dl", "dt", "em", "font",
-    "form", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "img",
-    "input", "isindex", "i", "kbd", "link", "li", "link", "map", "menu",
-    "meta", "ol", "option", "param", "pre", "p", "samp",
-    "select", "small", "span", "strike", "strong", "style", "sub", "sup",
-    "table", "td", "textarea", "th", "title", "tr", "tt", "ul", "u", "var",
-    #units
-    "mm", "cm", "in", "pt", "pc", "em", "ex", "px",
-    #colors
-    "aqua", "black", "blue", "fuchsia", "gray", "green", "lime", "maroon", "navy", "olive", "purple", "red", "silver", "teal", "yellow", "white",
-    #important directive
-    "!important",
-    #font rules
-    "font", "font-family", "font-style", "font-variant", "font-weight", "font-size",
-    #font values
-    "cursive", "fantasy", "monospace", "normal", "italic", "oblique", "small-caps",
-    "bold", "bolder", "lighter", "medium", "larger", "smaller",
-    "serif", "sans-serif",
-    #background rules
-    "background", "background-color", "background-image", "background-repeat", "background-attachment", "background-position",
-    #background values
-    "contained", "none", "top", "center", "bottom", "left", "right", "scroll", "fixed",
-    "repeat", "repeat-x", "repeat-y", "no-repeat",
-    #text rules
-    "word-spacing", "letter-spacing", "text-decoration", "vertical-align", "text-transform", "text-align", "text-indent", "text-transform", "text-shadow", "unicode-bidi", "line-height",
-    #text values
-    "normal", "none", "underline", "overline", "blink", "sub", "super", "middle", "top", "text-top", "text-bottom",
-    "capitalize", "uppercase", "lowercase", "none", "left", "right", "center", "justify",
-    "line-through",
-    #box rules
-    "margin", "margin-top", "margin-bottom", "margin-left", "margin-right",
-    "margin", "padding-top", "padding-bottom", "padding-left", "padding-right",
-    "border", "border-width", "border-style", "border-top", "border-top-width", "border-top-style", "border-bottom", "border-bottom-width", "border-bottom-style", "border-left", "border-left-width", "border-left-style", "border-right", "border-right-width", "border-right-style", "border-color",
-    #box values
-    "width", "height", "float", "clear",
-    "auto", "thin", "medium", "thick", "left", "right", "none", "both",
-    "none", "dotted", "dashed", "solid", "double", "groove", "ridge", "inset", "outset",
-    #display rules
-    "display", "white-space", 
-    "min-width", "max-width", "min-height", "max-height",
-    "outline-color", "outline-style", "outline-width",
-    #display values
-    "run-in", "inline-block", "list-item", "block", "inline", "none", "normal", "pre", "nowrap", "table-cell", "table-row", "table-row-group", "table-header-group", "inline-table", "table-column", "table-column-group", "table-cell", "table-caption"
-    #list rules
-    "list-style", "list-style-type", "list-style-image", "list-style-position",
-    #list values
-    "disc", "circle", "square", "decimal", "decimal-leading-zero", "none",
-    "lower-roman", "upper-roman", "lower-alpha", "upper-alpha", "lower-latin", "upper-latin",
-    #table rules
-    "border-collapse", "caption-side",
-    #table-values
-    "empty-cells", "table-layout",
-    #misc values/rules
-    "counter-increment", "counter-reset",
-    "marker-offset", "z-index",
-    "cursor", "direction", "marks", "quotes",
-    "clip", "content", "orphans", "overflow", "visibility",
-    #aural rules
-    "pitch", "range", "pitch-during", "cue-after", "pause-after", "cue-before", "pause-before", "speak-header", "speak-numeral", "speak-punctuation", "speed-rate", "play-during", "voice-family",
-    #aural values
-    "stress", "azimuth", "elevation", "pitch", "richness", "volume",
-    "page-break", "page-after", "page-inside"]
-    #@-node:ekr.20040401103539:css keywords
-    #@+node:ekr.20031218072017.374:elisp keywords
-    # EKR: needs more work.
-    elisp_keywords = [
-        # Maybe...
-        "error","princ",
-        # More typical of other lisps...
-        "apply","eval",
-        "t","nil",
-        "and","or","not",
-        "cons","car","cdr",
-        "cond",
-        "defconst","defun","defvar",
-        "eq","ne","equal","gt","ge","lt","le",
-        "if",
-        "let",
-        "mapcar",
-        "prog","progn",
-        "set","setq",
-        "type-of",
-        "unless",
-        "when","while"]
-    #@-node:ekr.20031218072017.374:elisp keywords
-    #@+node:ekr.20041107093834:forth keywords
-    # Default forth keywords: extended by leo-forthwords.txt.
-    forth_keywords = [
-        "variable", "constant", "code", "end-code",
-        "dup", "2dup", "swap", "2swap", "drop", "2drop",
-        "r>", ">r", "2r>", "2>r",
-        "if", "else", "then",
-        "begin", "again", "until", "while", "repeat",
-        "v-for", "v-next", "exit",
-        "meta", "host", "target", "picasm", "macro",
-        "needs", "include",
-        "'", "[']",
-        ":", ";",
-        "@", "!", ",", "1+", "+", "-",
-        "<", "<=", "=", ">=", ">",
-        "invert", "and", "or", 
-        ]
-
-    # Forth words which define other words: extended by leo-forthdefwords.txt.
-    forth_definingwords = [
-        ":", "variable", "constant", "code",
-        ]
-
-    # Forth words which start strings: extended by leo-forthstringwords.txt.
-    forth_stringwords = [
-        's"', '."', '"', '."',
-        'abort"',
-        ]
-
-    # Forth words to be rendered in boldface: extended by leo-forthboldwords.txt.
-    forth_boldwords = [ ]
-
-    # Forth words to be rendered in italics: extended by leo-forthitalicwords.txt.
-    forth_italicwords = [ ]
-
-    # Forth bold-italics words: extemded leo-forthbolditalicwords.txt if present
-    # Note: on some boxen, bold italics may show in plain bold.
-    forth_bolditalicwords = [ ]
-    #@-node:ekr.20041107093834:forth keywords
-    #@+node:ekr.20031218072017.375:html keywords
-    # No longer used by syntax colorer.
-    html_keywords = []
-
-    if 0: # Not used at present.
-        unused_keywords = [
-            # html constructs.
-            "a","body","cf",
-            "h1","h2","h3","h4","h5","h6",
-            "head","html","hr",
-            "i","img","li","lu","meta",
-            "p","title","ul",
-            # Common tags
-            "caption","col","colgroup",
-            "table","tbody","td","tfoot","th","thead","tr",
-            "script","style"]
-
-        html_specials = [ "<%","%>" ]
-    #@-node:ekr.20031218072017.375:html keywords
-    #@+node:ekr.20031218072017.376:java keywords
-    java_keywords = [
-        "abstract","boolean","break","byte","byvalue",
-        "case","cast","catch","char","class","const","continue",
-        "default","do","double","else","extends",
-        "false","final","finally","float","for","future",
-        "generic","goto","if","implements","import","inner",
-        "instanceof","int","interface","long","native",
-        "new","null","operator","outer",
-        "package","private","protected","public","rest","return",
-        "short","static","super","switch","synchronized",
-        "this","throw","transient","true","try",
-        "var","void","volatile","while"]
-    #@-node:ekr.20031218072017.376:java keywords
-    #@+node:ekr.20031218072017.377:latex keywords
-    #If you see two idenitical words, with minor capitalization differences
-    #DO NOT ASSUME that they are the same word. For example \vert produces
-    #a single vertical line and \Vert produces a double vertical line
-    #Marcus A. Martin.
-
-    latex_special_keyword_characters = "@(){}%"
-
-    latex_keywords = [
-        #special keyworlds
-        "\\%", # 11/9/03
-        "\\@", "\\(", "\\)", "\\{", "\\}",
-        #A
-        "\\acute", "\\addcontentsline", "\\addtocontents", "\\addtocounter", "\\address",
-        "\\addtolength", "\\addvspace", "\\AE", "\\ae", "\\aleph", "\\alph", "\\angle",
-        "\\appendix", 
-        "\\approx", "\\arabic", "\\arccos", "\\arcsin", "\\arctan", "\\ast", "\\author",
-        #B
-        "\\b", "\\backmatter", "\\backslash", "\\bar", "\\baselineskip", "\\baselinestretch",
-        "\\begin", "\\beta", "\\bezier", "\\bf", "\\bfseries", "\\bibitem", "\\bigcap",
-        "\\bigcup", "\\bigodot", "\\bigoplus", "\\bigotimes", "\\bigskip", "\\biguplus",
-        "\\bigvee", "\\bigwedge", "\\bmod", "\\boldmath", "\\Box", "\\breve", "\\bullet",
-        #C
-        "\\c", "\\cal", "\\caption", "\\cdot", "\\cdots", "\\centering", "\\chapter",
-        "\\check", "\\chi", "\\circ", "\\circle", "\\cite", "\\cleardoublepage", "\\clearpage",
-        "\\cline", "\\closing", "\\clubsuit", "\\coprod", "\\copywright", "\\cos", "\\cosh",
-        "\\cot", "\\coth", "csc",
-        #D
-        "\\d", "\\dag", "\\dashbox", "\\date", "\\ddag", "\\ddot", "\\ddots", "\\decl",
-        "\\deg", "\\Delta", 
-        "\\delta", "\\depthits", "\\det", 
-        "\\DH", "\\dh", "\\Diamond", "\\diamondsuit", "\\dim", "\\div", "\\DJ", "\\dj",
-        "\\documentclass", "\\documentstyle", 
-        "\\dot", "\\dotfil", "\\downarrow",
-        #E
-        "\\ell", "\\em", "\\emph", "\\end", "\\enlargethispage", "\\ensuremath",
-        "\\enumi", "\\enuii", "\\enumiii", "\\enuiv", "\\epsilon", "\\equation", "\\equiv",
-        "\\eta", "\\example", "\\exists", "\\exp",
-        #F
-        "\\fbox", "\\figure", "\\flat", "\\flushbottom", "\\fnsymbol", "\\footnote",
-        "\\footnotemark", "\\fotenotesize", 
-        "\\footnotetext", "\\forall", "\\frac", "\\frame", "\\framebox", "\\frenchspacing",
-        "\\frontmatter",
-        #G
-        "\\Gamma", "\\gamma", "\\gcd", "\\geq", "\\gg", "\\grave", "\\guillemotleft", 
-        "\\guillemotright", "\\guilsinglleft", "\\guilsinglright",
-        #H
-        "\\H", "\\hat", "\\hbar", "\\heartsuit", "\\heightits", "\\hfill", "\\hline", "\\hom",
-        "\\hrulefill", "\\hspace", "\\huge", "\\Huge", "\\hyphenation"
-        #I
-        "\\Im", "\\imath", "\\include", "includeonly", "indent", "\\index", "\\inf", "\\infty", 
-        "\\input", "\\int", "\\iota", "\\it", "\\item", "\\itshape",
-        #J
-        "\\jmath", "\\Join",
-        #K
-        "\\k", "\\kappa", "\\ker", "\\kill",
-        #L
-        "\\label", "\\Lambda", "\\lambda", "\\langle", "\\large", "\\Large", "\\LARGE", 
-        "\\LaTeX", "\\LaTeXe", 
-        "\\ldots", "\\leadsto", "\\left", "\\Leftarrow", "\\leftarrow", "\\lefteqn", "\\leq",
-        "\\lg", "\\lhd", "\\lim", "\\liminf", "\\limsup", "\\line", "\\linebreak", 
-        "\\linethickness", "\\linewidth", "\\listfiles",
-        "\\ll", "\\ln", "\\location", "\\log", "\\Longleftarrow", "\\longleftarrow", 
-        "\\Longrightarrow", "longrightarrow",
-        #M
-        "\\mainmatter", "\\makebox", "\\makeglossary", "\\makeindex","\\maketitle", "\\markboth", "\\markright",
-        "\\mathbf", "\\mathcal", "\\mathit", "\\mathnormal", "\\mathop",
-        "\\mathrm", "\\mathsf", "\\mathtt", "\\max", "\\mbox", "\\mdseries", "\\medskip",
-        "\\mho", "\\min", "\\mp", "\\mpfootnote", "\\mu", "\\multicolumn", "\\multiput",
-        #N
-        "\\nabla", "\\natural", "\\nearrow", "\\neq", "\\newcommand", "\\newcounter", 
-        "\\newenvironment", "\\newfont",
-        "\\newlength", "\\newline", "\\newpage", "\\newsavebox", "\\newtheorem", "\\NG", "\\ng",
-        "\\nocite", "\\noindent", "\\nolinbreak", "\\nopagebreak", "\\normalsize",
-        "\\not", "\\nu", "nwarrow",
-        #O
-        "\\Omega", "\\omega", "\\onecolumn", "\\oint", "\\opening", "\\oval", 
-        "\\overbrace", "\\overline",
-        #P
-        "\\P", "\\page", "\\pagebreak", "\\pagenumbering", "\\pageref", "\\pagestyle", 
-        "\\par", "\\parbox", "\\paragraph", "\\parindent", "\\parskip", "\\part", 
-        "\\partial", "\\per", "\\Phi", "\\phi", "\\Pi", "\\pi", "\\pm", 
-        "\\pmod", "\\pounds", "\\prime", "\\printindex", "\\prod", "\\propto", "\\protext", 
-        "\\providecomamnd", "\\Psi", "\\psi", "\\put",
-        #Q
-        "\\qbezier", "\\quoteblbase", "\\quotesinglbase",
-        #R
-        "\\r", "\\raggedbottom", "\\raggedleft", "\\raggedright", "\\raisebox", "\\rangle", 
-        "\\Re", "\\ref", "\\renewcommand", "\\renewenvironment", "\\rhd", "\\rho", "\\right", 
-        "\\Rightarrow", "\\rightarrow", "\\rm", "\\rmfamily",
-        "\\Roman", "\\roman", "\\rule", 
-        #S
-        "\\s", "\\samepage", "\\savebox", "\\sbox", "\\sc", "\\scriptsize", "\\scshape", 
-        "\\searrow", "\\sec", "\\section",
-        "\\setcounter", "\\setlength", "\\settowidth", "\\settodepth", "\\settoheight", 
-        "\\settowidth", "\\sf", "\\sffamily", "\\sharp", "\\shortstack", "\\Sigma", "\\sigma", 
-        "\\signature", "\\sim", "\\simeq", "\\sin", "\\sinh", "\\sl", "\\SLiTeX",
-        "\\slshape", "\\small", "\\smallskip", "\\spadesuit", "\\sqrt", "\\sqsubset",
-        "\\sqsupset", "\\SS",
-        "\\stackrel", "\\star", "\\subsection", "\\subset", 
-        "\\subsubsection", "\\sum", "\\sup", "\\supressfloats", "\\surd", "\\swarrow",
-        #T
-        "\\t", "\\table", "\\tableofcontents", "\\tabularnewline", "\\tan", "\\tanh", 
-        "\\tau", "\\telephone", "\\TeX", "\\textbf",
-        "\\textbullet", "\\textcircled", "\\textcompworkmark", "\\textemdash", 
-        "\\textendash", "\\textexclamdown", "\\textheight", "\\textquestiondown", 
-        "\\textquoteblleft", "\\textquoteblright", "\\textquoteleft",
-        "\\textperiod", "\\textquotebl", "\\textquoteright", "\\textmd", "\\textit", "\\textrm", 
-        "\\textsc", "\\textsl", "\\textsf", "\\textsuperscript", "\\texttt", "\\textup",
-        "\\textvisiblespace", "\\textwidth", "\\TH", "\\th", "\\thanks", "\\thebibligraphy",
-        "\\Theta", "theta", 
-        "\\tilde", "\\thinlines", 
-        "\\thispagestyle", "\\times", "\\tiny", "\\title", "\\today", "\\totalheightits", 
-        "\\triangle", "\\tt", 
-        "\\ttfamily", "\\twocoloumn", "\\typeout", "\\typein",
-        #U
-        "\\u", "\\underbrace", "\\underline", "\\unitlength", "\\unlhd", "\\unrhd", "\\Uparrow",
-        "\\uparrow", "\\updownarrow", "\\upshape", "\\Upsilon", "\\upsilon", "\\usebox",
-        "\\usecounter", "\\usepackage", 
-        #V
-        "\\v", "\\value", "\\varepsilon", "\\varphi", "\\varpi", "\\varrho", "\\varsigma", 
-        "\\vartheta", "\\vdots", "\\vec", "\\vector", "\\verb", "\\Vert", "\\vert", "\\vfill",
-        "\\vline", "\\vphantom", "\\vspace",
-        #W
-        "\\widehat", "\\widetilde", "\\widthits", "\\wp",
-        #X
-        "\\Xi", "\\xi",
-        #Z
-        "\\zeta" ]
-    #@-node:ekr.20031218072017.377:latex keywords
-    #@+node:ekr.20060328110802:lua keywords
-    # ddm 13/02/06
-    lua_keywords = [
-        "and", "break", "do", "else", "elseif", "end",
-        "false", "for", "function", "if", "in", "local",
-        "nil", "not", "or", "repeat", "return", "then",
-        "true", "until", "while",
-    ]
-    #@-node:ekr.20060328110802:lua keywords
-    #@+node:ekr.20031218072017.378:pascal keywords
-    pascal_keywords = [
-        "and","array","as","begin",
-        "case","const","class","constructor","cdecl"
-        "div","do","downto","destructor","dispid","dynamic",
-        "else","end","except","external",
-        "false","file","for","forward","function","finally",
-        "goto","if","in","is","label","library",
-        "mod","message","nil","not","nodefault""of","or","on",
-        "procedure","program","packed","pascal",
-        "private","protected","public","published",
-        "record","repeat","raise","read","register",
-        "set","string","shl","shr","stdcall",
-        "then","to","true","type","try","until","unit","uses",
-        "var","virtual","while","with","xor"
-        # object pascal
-        "asm","absolute","abstract","assembler","at","automated",
-        "finalization",
-        "implementation","inherited","initialization","inline","interface",
-        "object","override","resident","resourcestring",
-        "threadvar",
-        # limited contexts
-        "exports","property","default","write","stored","index","name" ]
-    #@-node:ekr.20031218072017.378:pascal keywords
-    #@+node:ekr.20031218072017.379:perl keywords
-    perl_keywords = [
-        "continue","do","else","elsif","format","for","format","for","foreach",
-        "if","local","package","sub","tr","unless","until","while","y",
-        # Comparison operators
-        "cmp","eq","ge","gt","le","lt","ne",
-        # Matching ooperators
-        "m","s",
-        # Unary functions
-        "alarm","caller","chdir","cos","chroot","exit","eval","exp",
-        "getpgrp","getprotobyname","gethostbyname","getnetbyname","gmtime",
-        "hex","int","length","localtime","log","ord","oct",
-        "require","reset","rand","rmdir","readlink",
-        "scalar","sin","sleep","sqrt","srand","umask",
-        # Transfer ops
-        "next","last","redo","go","dump",
-        # File operations...
-        "select","open",
-        # FL ops
-        "binmode","close","closedir","eof",
-        "fileno","getc","getpeername","getsockname","lstat",
-        "readdir","rewinddir","stat","tell","telldir","write",
-        # FL2 ops
-        "bind","connect","flock","listen","opendir",
-        "seekdir","shutdown","truncate",
-        # FL32 ops
-        "accept","pipe",
-        # FL3 ops
-        "fcntl","getsockopt","ioctl","read",
-        "seek","send","sysread","syswrite",
-        # FL4 & FL5 ops
-        "recv","setsocket","socket","socketpair",
-        # Array operations
-        "pop","shift","split","delete",
-        # FLIST ops
-        "sprintf","grep","join","pack",
-        # LVAL ops
-        "chop","defined","study","undef",
-        # f0 ops
-        "endhostent","endnetent","endservent","endprotoent",
-        "endpwent","endgrent","fork",
-        "getgrent","gethostent","getlogin","getnetent","getppid",
-        "getprotoent","getpwent","getservent",
-        "setgrent","setpwent","time","times","wait","wantarray",
-        # f1 ops
-        "getgrgid","getgrnam","getprotobynumber","getpwnam","getpwuid",
-        "sethostent","setnetent","setprotoent","setservent",
-        # f2 ops
-        "atan2","crypt",
-        "gethostbyaddr","getnetbyaddr","getpriority","getservbyname","getservbyport",
-        "index","link","mkdir","msgget","rename",
-        "semop","setpgrp","symlink","unpack","waitpid",
-        # f2 or 3 ops
-        "index","rindex","substr",
-        # f3 ops
-        "msgctl","msgsnd","semget","setpriority","shmctl","shmget","vec",
-        # f4 & f5 ops
-        "semctl","shmread","shmwrite","msgrcv",
-        # Assoc ops
-        "dbmclose","each","keys","values",
-        # List ops
-        "chmod","chown","die","exec","kill",
-        "print","printf","return","reverse",
-        "sort","system","syscall","unlink","utime","warn"]
-    #@-node:ekr.20031218072017.379:perl keywords
-    #@+node:ekr.20031218072017.380:php keywords
-    php_keywords = [ # 08-SEP-2002 DTHEIN
-        "__CLASS__", "__FILE__", "__FUNCTION__", "__LINE__",
-        "and", "as", "break",
-        "case", "cfunction", "class", "const", "continue",
-        "declare", "default", "do",
-        "else", "elseif", "enddeclare", "endfor", "endforeach",
-        "endif", "endswitch",  "endwhile", "eval", "extends",
-        "for", "foreach", "function", "global", "if",
-        "new", "old_function", "or", "static", "switch",
-        "use", "var", "while", "xor" ]
-
-    # The following are supposed to be followed by ()
-    php_paren_keywords = [
-        "array", "die", "echo", "empty", "exit",
-        "include", "include_once", "isset", "list",
-        "print", "require", "require_once", "return",
-        "unset" ]
-
-    # The following are handled by special case code:
-    # "<?php", "?>"
-    #@-node:ekr.20031218072017.380:php keywords
-    #@+node:ekr.20050618052653:plsql keywords
-    plsql_keywords = [
-    # reserved keywords
-    "abort",
-    "accept",
-    "access",
-    "add",
-    "admin",
-    "after",
-    "all",
-    "allocate",
-    "alter",
-    "analyze",
-    "and",
-    "any",
-    "archive",
-    "archivelog",
-    "array",
-    "arraylen",
-    "as",
-    "asc",
-    "assert",
-    "assign",
-    "at",
-    "audit",
-    "authorization",
-    "avg",
-    "backup",
-    "base_table",
-    "become",
-    "before",
-    "begin",
-    "between",
-    "binary_integer",
-    "block",
-    "body",
-    "boolean",
-    "by",
-    "cache",
-    "cancel",
-    "cascade",
-    "case",
-    "change",
-    "char",
-    "char_base",
-    "character",
-    "check",
-    "checkpoint",
-    "close",
-    "cluster",
-    "clusters",
-    "cobol",
-    "colauth",
-    "column",
-    "columns",
-    "comment",
-    "commit",
-    "compile",
-    "compress",
-    "connect",
-    "constant",
-    "constraint",
-    "constraints",
-    "contents",
-    "continue",
-    "controlfile",
-    "count",
-    "crash",
-    "create",
-    "current",
-    "currval",
-    "cursor",
-    "cycle",
-    "data_base",
-    "database",
-    "datafile",
-    "date",
-    "dba",
-    "debugoff",
-    "debugon",
-    "dec",
-    "decimal",
-    "declare",
-    "default",
-    "definition",
-    "delay",
-    "delete",
-    "delta",
-    "desc",
-    "digits",
-    "disable",
-    "dismount",
-    "dispose",
-    "distinct",
-    "distinct",
-    "do",
-    "double",
-    "drop",
-    "drop",
-    "dump",
-    "each",
-    "else",
-    "else",
-    "elsif",
-    "enable",
-    "end",
-    "end",
-    "entry",
-    "escape",
-    "events",
-    "except",
-    "exception",
-    "exception_init",
-    "exceptions",
-    "exclusive",
-    "exec",
-    "execute",
-    "exists",
-    "exists",
-    "exit",
-    "explain",
-    "extent",
-    "externally",
-    "false",
-    "fetch",
-    "fetch",
-    "file",
-    "float",
-    "float",
-    "flush",
-    "for",
-    "for",
-    "force",
-    "foreign",
-    "form",
-    "fortran",
-    "found",
-    "freelist",
-    "freelists",
-    "from",
-    "from",
-    "function",
-    "generic",
-    "go",
-    "goto",
-    "grant",
-    "group",
-    "groups",
-    "having",
-    "identified",
-    "if",
-    "immediate",
-    "in",
-    "including",
-    "increment",
-    "index",
-    "indexes",
-    "indicator",
-    "initial",
-    "initrans",
-    "insert",
-    "instance",
-    "int",
-    "integer",
-    "intersect",
-    "into",
-    "is",
-    "key",
-    "language",
-    "layer",
-    "level",
-    "like",
-    "limited",
-    "link",
-    "lists",
-    "lock",
-    "logfile",
-    "long",
-    "loop",
-    "manage",
-    "manual",
-    "max",
-    "maxdatafiles",
-    "maxextents",
-    "maxinstances",
-    "maxlogfiles",
-    "maxloghistory",
-    "maxlogmembers",
-    "maxtrans",
-    "maxvalue",
-    "min",
-    "minextents",
-    "minus",
-    "minvalue",
-    "mlslabel",
-    "mod",
-    "mode",
-    "modify",
-    "module",
-    "mount",
-    "natural",
-    "new",
-    "new",
-    "next",
-    "nextval",
-    "noarchivelog",
-    "noaudit",
-    "nocache",
-    "nocompress",
-    "nocycle",
-    "nomaxvalue",
-    "nominvalue",
-    "none",
-    "noorder",
-    "noresetlogs",
-    "normal",
-    "nosort",
-    "not",
-    "notfound",
-    "nowait",
-    "null",
-    "number",
-    "number_base",
-    "numeric",
-    "of",
-    "off",
-    "offline",
-    "old",
-    "on",
-    "online",
-    "only",
-    "open",
-    "open",
-    "optimal",
-    "option",
-    "or",
-    "order",
-    "others",
-    "out",
-    "own",
-    "package",
-    "package",
-    "parallel",
-    "partition",
-    "pctfree",
-    "pctincrease",
-    "pctused",
-    "plan",
-    "pli",
-    "positive",
-    "pragma",
-    "precision",
-    "primary",
-    "prior",
-    "private",
-    "private",
-    "privileges",
-    "procedure",
-    "procedure",
-    "profile",
-    "public",
-    "quota",
-    "raise",
-    "range",
-    "raw",
-    "read",
-    "real",
-    "record",
-    "recover",
-    "references",
-    "referencing",
-    "release",
-    "remr",
-    "rename",
-    "resetlogs",
-    "resource",
-    "restricted",
-    "return",
-    "reuse",
-    "reverse",
-    "revoke",
-    "role",
-    "roles",
-    "rollback",
-    "row",
-    "rowid",
-    "rowlabel",
-    "rownum",
-    "rows",
-    "rowtype",
-    "run",
-    "savepoint",
-    "schema",
-    "scn",
-    "section",
-    "segment",
-    "select",
-    "select",
-    "separate",
-    "sequence",
-    "session",
-    "set",
-    "set",
-    "share",
-    "shared",
-    "size",
-    "size",
-    "smallint",
-    "smallint",
-    "snapshot",
-    "some",
-    "sort",
-    "space",
-    "sql",
-    "sqlbuf",
-    "sqlcode",
-    "sqlerrm",
-    "sqlerror",
-    "sqlstate",
-    "start",
-    "start",
-    "statement",
-    "statement_id",
-    "statistics",
-    "stddev",
-    "stop",
-    "storage",
-    "subtype",
-    "successful",
-    "sum",
-    "sum",
-    "switch",
-    "synonym",
-    "sysdate",
-    "system",
-    "tabauth",
-    "table",
-    "tables",
-    "tables",
-    "tablespace",
-    "task",
-    "temporary",
-    "terminate",
-    "then",
-    "thread",
-    "time",
-    "to",
-    "tracing",
-    "transaction",
-    "trigger",
-    "triggers",
-    "true",
-    "truncate",
-    "type",
-    "uid",
-    "under",
-    "union",
-    "unique",
-    "unlimited",
-    "until",
-    "update",
-    "use",
-    "user",
-    "using",
-    "validate",
-    "values",
-    "varchar",
-    "varchar2",
-    "variance",
-    "view",
-    "views",
-    "when",
-    "whenever",
-    "where",
-    "while",
-    "with",
-    "work",
-    "write",
-    "xor" ]
-    #@-node:ekr.20050618052653:plsql keywords
-    #@+node:ekr.20031218072017.381:python keywords
-    python_keywords = [
-        "and",       "del",       "for",       "is",        "raise",    
-        "assert",    "elif",      "from",      "lambda",    "return",   
-        "break",     "else",      "global",    "not",       "try",      
-        "class",     "except",    "if",        "or",        "yield",   
-        "continue",  "exec",      "import",    "pass",      "while",
-        "def",       "finally",   "in",        "print"]
-    #@-node:ekr.20031218072017.381:python keywords
-    #@+node:ekr.20040331145826:rapidq keywords
-    rapidq_keywords = [
-    # Syntax file for RapidQ
-    "$APPTYPE","$DEFINE","$ELSE","$ENDIF","$ESCAPECHARS","$IFDEF","$IFNDEF",
-    "$INCLUDE","$MACRO","$OPTIMIZE","$OPTION","$RESOURCE","$TYPECHECK","$UNDEF",
-    "ABS","ACOS","ALIAS","AND","AS","ASC","ASIN","ATAN","ATN","BIN$","BIND","BYTE",
-    "CALL","CALLBACK","CALLFUNC","CASE","CEIL","CHDIR","CHDRIVE","CHR$","CINT",
-    "CLNG","CLS","CODEPTR","COMMAND$","COMMANDCOUNT","CONSOLE","CONST","CONSTRUCTOR",
-    "CONVBASE$","COS","CREATE","CSRLIN","CURDIR$","DATA","DATE$","DEC","DECLARE",
-    "DEFBYTE","DEFDBL","DEFDWORD","DEFINT","DEFLNG","DEFSHORT","DEFSNG","DEFSTR",
-    "DEFWORD","DELETE$","DIM","DIR$","DIREXISTS","DO","DOEVENTS","DOUBLE","DWORD",
-    "ELSE","ELSEIF","END","ENVIRON","ENVIRON$","EVENT","EXIT","EXP","EXTENDS",
-    "EXTRACTRESOURCE","FIELD$","FILEEXISTS","FIX","FLOOR","FOR","FORMAT$","FRAC",
-    "FUNCTION","FUNCTIONI","GET$","GOSUB","GOTO","HEX$","IF","INC","INITARRAY",
-    "INKEY$","INP","INPUT","INPUT$","INPUTHANDLE","INSERT$","INSTR","INT","INTEGER",
-    "INV","IS","ISCONSOLE","KILL","KILLMESSAGE","LBOUND","LCASE$","LEFT$","LEN",
-    "LFLUSH","LIB","LIBRARYINST","LOCATE","LOG","LONG","LOOP","LPRINT","LTRIM$",
-    "MEMCMP","MESSAGEBOX","MESSAGEDLG","MID$","MKDIR","MOD","MOUSEX","MOUSEY",
-    "NEXT","NOT","OFF","ON","OR","OUT","OUTPUTHANDLE","PARAMSTR$","PARAMSTRCOUNT",
-    "PARAMVAL","PARAMVALCOUNT","PCOPY","PEEK","PLAYWAV","POKE","POS","POSTMESSAGE",
-    "PRINT","PROPERTY","QUICKSORT","RANDOMIZE","REDIM","RENAME","REPLACE$",
-    "REPLACESUBSTR$","RESOURCE","RESOURCECOUNT","RESTORE","RESULT","RETURN",
-    "REVERSE$","RGB","RIGHT$","RINSTR","RMDIR","RND","ROUND","RTRIM$","RUN",
-    "SCREEN","SELECT","SENDER","SENDMESSAGE","SETCONSOLETITLE","SGN","SHELL",
-    "SHL","SHORT","SHOWMESSAGE","SHR","SIN","SINGLE","SIZEOF","SLEEP","SOUND",
-    "SPACE$","SQR","STACK","STATIC","STEP","STR$","STRF$","STRING","STRING$",
-    "SUB","SUBI","SWAP","TALLY","TAN","THEN","TIME$","TIMER","TO","TYPE","UBOUND",
-    "UCASE$","UNLOADLIBRARY","UNTIL","VAL","VARIANT","VARPTR","VARPTR$","VARTYPE",
-    "WEND","WHILE","WITH","WORD","XOR"]
-    #@-node:ekr.20040331145826:rapidq keywords
-    #@+node:ekr.20031218072017.382:rebol keywords
-    rebol_keywords = [
-    #Jason 2003-07-03 
-    #based on UltraEdit syntax highlighting
-    "about", "abs", "absolute", "add", "alert", "alias", "all", "alter", "and", "and~", "any", "append", "arccosine", "arcsine", "arctangent", "array", "ask", "at",  
-    "back", "bind", "boot-prefs", "break", "browse", "build-port", "build-tag",  
-    "call", "caret-to-offset", "catch", "center-face", "change", "change-dir", "charset", "checksum", "choose", "clean-path", "clear", "clear-fields", "close", "comment", "complement", "compose", "compress", "confirm", "continue-post", "context", "copy", "cosine", "create-request", "crypt", "cvs-date", "cvs-version",  
-    "debase", "decode-cgi", "decode-url", "decompress", "deflag-face", "dehex", "delete", "demo", "desktop", "detab", "dh-compute-key", "dh-generate-key", "dh-make-key", "difference", "dirize", "disarm", "dispatch", "divide", "do", "do-boot", "do-events", "do-face", "do-face-alt", "does", "dsa-generate-key", "dsa-make-key", "dsa-make-signature", "dsa-verify-signature",  
-    "echo", "editor", "either", "else", "emailer", "enbase", "entab", "exclude", "exit", "exp", "extract", 
-    "fifth", "find", "find-key-face", "find-window", "flag-face", "first", "flash", "focus", "for", "forall", "foreach", "forever", "form", "forskip", "fourth", "free", "func", "function",  
-    "get", "get-modes", "get-net-info", "get-style",  
-    "halt", "has", "head", "help", "hide", "hide-popup",  
-    "if", "import-email", "in", "inform", "input", "insert", "insert-event-func", "intersect", 
-    "join", 
-    "last", "launch", "launch-thru", "layout", "license", "list-dir", "load", "load-image", "load-prefs", "load-thru", "log-10", "log-2", "log-e", "loop", "lowercase",  
-    "make", "make-dir", "make-face", "max", "maximum", "maximum-of", "min", "minimum", "minimum-of", "mold", "multiply",  
-    "negate", "net-error", "next", "not", "now",  
-    "offset-to-caret", "open", "open-events", "or", "or~", 
-    "parse", "parse-email-addrs", "parse-header", "parse-header-date", "parse-xml", "path-thru", "pick", "poke", "power", "prin", "print", "probe", "protect", "protect-system",  
-    "q", "query", "quit",  
-    "random", "read", "read-io", "read-net", "read-thru", "reboot", "recycle", "reduce", "reform", "rejoin", "remainder", "remold", "remove", "remove-event-func", "rename", "repeat", "repend", "replace", "request", "request-color", "request-date", "request-download", "request-file", "request-list", "request-pass", "request-text", "resend", "return", "reverse", "rsa-encrypt", "rsa-generate-key", "rsa-make-key", 
-    "save", "save-prefs", "save-user", "scroll-para", "second", "secure", "select", "send", "send-and-check", "set", "set-modes", "set-font", "set-net", "set-para", "set-style", "set-user", "set-user-name", "show", "show-popup", "sine", "size-text", "skip", "sort", "source", "split-path", "square-root", "stylize", "subtract", "switch",  
-    "tail", "tangent", "textinfo", "third", "throw", "throw-on-error", "to", "to-binary", "to-bitset", "to-block", "to-char", "to-date", "to-decimal", "to-email", "to-event", "to-file", "to-get-word", "to-hash", "to-hex", "to-idate", "to-image", "to-integer", "to-issue", "to-list", "to-lit-path", "to-lit-word", "to-local-file", "to-logic", "to-money", "to-none", "to-pair", "to-paren", "to-path", "to-rebol-file", "to-refinement", "to-set-path", "to-set-word", "to-string", "to-tag", "to-time", "to-tuple", "to-url", "to-word", "trace", "trim", "try",  
-    "unfocus", "union", "unique", "uninstall", "unprotect", "unset", "until", "unview", "update", "upgrade", "uppercase", "usage", "use",  
-    "vbug", "view", "view-install", "view-prefs",  
-    "wait", "what", "what-dir", "while", "write", "write-io",  
-    "xor", "xor~",  
-    "action!", "any-block!", "any-function!", "any-string!", "any-type!", "any-word!",  
-    "binary!", "bitset!", "block!",  
-    "char!",  
-    "datatype!", "date!", "decimal!", 
-    "email!", "error!", "event!",  
-    "file!", "function!",  
-    "get-word!",  
-    "hash!",  
-    "image!", "integer!", "issue!",  
-    "library!", "list!", "lit-path!", "lit-word!", "logic!",  
-    "money!",  
-    "native!", "none!", "number!",  
-    "object!", "op!",  
-    "pair!", "paren!", "path!", "port!",  
-    "refinement!", "routine!",  
-    "series!", "set-path!", "set-word!", "string!", "struct!", "symbol!",  
-    "tag!", "time!", "tuple!",  
-    "unset!", "url!",  
-    "word!",  
-    "any-block?", "any-function?", "any-string?", "any-type?", "any-word?",  
-    "binary?", "bitset?", "block?",  
-    "char?", "connected?", "crypt-strength?", 
-    "datatype?", "date?", "decimal?", "dir?",  
-    "email?", "empty?", "equal?", "error?", "even?", "event?", "exists?", "exists-key?",
-    "file?", "flag-face?", "found?", "function?",  
-    "get-word?", "greater-or-equal?", "greater?",  
-    "hash?", "head?",  
-    "image?", "in-window?", "index?", "info?", "input?", "inside?", "integer?", "issue?",  
-    "length?", "lesser-or-equal?", "lesser?", "library?", "link-app?", "link?", "list?", "lit-path?", "lit-word?", "logic?",  
-    "modified?", "money?",  
-    "native?", "negative?", "none?", "not-equal?", "number?",  
-    "object?", "odd?", "offset?", "op?", "outside?",  
-    "pair?", "paren?", "path?", "port?", "positive?",  
-    "refinement?", "routine?",  
-    "same?", "screen-offset?", "script?", "series?", "set-path?", "set-word?", "size?", "span?", "strict-equal?", "strict-not-equal?", "string?", "struct?",  
-    "tag?", "tail?", "time?", "tuple?", "type?",  
-    "unset?", "url?",  
-    "value?", "view?", 
-    "within?", "word?",  
-    "zero?"
-    ]
-    #@-node:ekr.20031218072017.382:rebol keywords
-    #@+node:ekr.20040401111125:shell keywords
-    shell_keywords = [
-        # reserved keywords
-        "case","do","done","elif","else","esac","fi",
-        "for","if","in","then",
-        "until","while",
-        "break","cd","chdir","continue","eval","exec",
-        "exit","kill","newgrp","pwd","read","readonly",
-        "return","shift","test","trap","ulimit",
-        "umask","wait" ]
-    #@-node:ekr.20040401111125:shell keywords
-    #@+node:ekr.20031218072017.383:tcl/tk keywords
-    tcltk_keywords = [ # Only the tcl keywords are here.
-        "after",     "append",    "array",
-        "bgerror",   "binary",    "break",
-        "catch",     "cd",        "clock",
-        "close",     "concat",    "continue",
-        "dde",
-        "encoding",  "eof",       "eval",
-        "exec",      "exit",      "expr",
-        "fblocked",  "fconfigure","fcopy",     "file",      "fileevent",
-        "filename",  "flush",     "for",       "foreach",   "format",
-        "gets",      "glob",      "global",
-        "history",
-        "if",        "incr",      "info",      "interp",
-        "join",
-        "lappend",   "lindex",    "linsert",   "list",      "llength",
-        "load",      "lrange",    "lreplace",  "lsearch",   "lsort",
-        "memory",    "msgcat",
-        "namespace",
-        "open",
-        "package",   "parray",    "pid",
-        "proc",      "puts",      "pwd",
-        "read",      "regexp",    "registry",   "regsub",
-        "rename",    "resource",  "return",
-        "scan",      "seek",      "set",        "socket",   "source",
-        "split",     "string",    "subst",      "switch",
-        "tell",      "time",      "trace",
-        "unknown",   "unset",     "update",     "uplevel",   "upvar",
-        "variable",  "vwait",
-        "while" ]
-    #@-node:ekr.20031218072017.383:tcl/tk keywords
-    #@-others
-
-    cweb_keywords = c_keywords
-    perlpod_keywords = perl_keywords
-    #@-node:ekr.20031218072017.371:<< define colorizer keywords >> colorizer
-    #@nl
+class colorizer:
+    """Leo's syntax colorer class"""
     def interrupt(self): pass
     #@    @+others
-    #@+node:ekr.20031218072017.1605:color.__init__
+    #@+node:ekr.20031218072017.1605:color.__init__ & helper
     def __init__(self,c):
 
         self.c = c
@@ -1906,6 +883,994 @@ class baseColorizer:
         self.states = []
         self.last_flag = "unknown"
         self.last_language = "unknown"
+        #@    << define colorizer keywords >>
+        #@+node:ekr.20031218072017.371:<< define colorizer keywords >>
+        #@+others
+        #@+node:ekr.20031218072017.372:actionscript keywords
+        self.actionscript_keywords = [
+        #Jason 2003-07-03 
+        #Actionscript keywords for Leo adapted from UltraEdit syntax highlighting
+        "break", "call", "continue", "delete", "do", "else", "false", "for", "function", "goto", "if", "in", "new", "null", "return", "true", "typeof", "undefined", "var", "void", "while", "with", "#include", "catch", "constructor", "prototype", "this", "try", "_parent", "_root", "__proto__", "ASnative", "abs", "acos", "appendChild", "asfunction", "asin", "atan", "atan2", "attachMovie", "attachSound", "attributes", "BACKSPACE", "CAPSLOCK", "CONTROL", "ceil", "charAt", "charCodeAt", "childNodes", "chr", "cloneNode", "close", "concat", "connect", "cos", "createElement", "createTextNode", "DELETEKEY", "DOWN", "docTypeDecl", "duplicateMovieClip", "END", "ENTER", "ESCAPE", "enterFrame", "entry", "equal", "eval", "evaluate", "exp", "firstChild", "floor", "fromCharCode", "fscommand", "getAscii", "getBeginIndex", "getBounds", "getBytesLoaded", "getBytesTotal", "getCaretIndex", "getCode", "getDate", "getDay", "getEndIndex", "getFocus", "getFullYear", "getHours", "getMilliseconds", "getMinutes", "getMonth", "getPan", "getProperty", "getRGB", "getSeconds", "getTime", "getTimer", "getTimezoneOffset", "getTransform", "getURL", "getUTCDate", "getUTCDay", "getUTCFullYear", "getUTCHours", "getUTCMilliseconds", "getUTCMinutes", "getUTCMonth", "getUTCSeconds", "getVersion", "getVolume", "getYear", "globalToLocal", "gotoAndPlay", "gotoAndStop", "HOME", "haschildNodes", "hide", "hitTest", "INSERT", "Infinity", "ifFrameLoaded", "ignoreWhite", "indexOf", "insertBefore", "int", "isDown", "isFinite", "isNaN", "isToggled", "join", "keycode", "keyDown", "keyUp", "LEFT", "LN10", "LN2", "LOG10E", "LOG2E", "lastChild", "lastIndexOf", "length", "load", "loaded", "loadMovie", "loadMovieNum", "loadVariables", "loadVariablesNum", "localToGlobal", "log", "MAX_VALUE", "MIN_VALUE", "max", "maxscroll", "mbchr", "mblength", "mbord", "mbsubstring", "min", "NEGATIVE_INFINITY", "NaN", "newline", "nextFrame", "nextScene", "nextSibling", "nodeName", "nodeType", "nodeValue", "on", "onClipEvent", "onClose", "onConnect", "onData", "onLoad", "onXML", "ord", "PGDN", "PGUP", "PI", "POSITIVE_INFINITY", "parentNode", "parseFloat", "parseInt", "parseXML", "play", "pop", "pow", "press", "prevFrame", "previousSibling", "prevScene", "print", "printAsBitmap", "printAsBitmapNum", "printNum", "push", "RIGHT", "random", "release", "removeMovieClip", "removeNode", "reverse", "round", "SPACE", "SQRT1_2", "SQRT2", "scroll", "send", "sendAndLoad", "set", "setDate", "setFocus", "setFullYear", "setHours", "setMilliseconds", "setMinutes", "setMonth", "setPan", "setProperty", "setRGB", "setSeconds", "setSelection", "setTime", "setTransform", "setUTCDate", "setUTCFullYear", "setUTCHours", "setUTCMilliseconds", "setUTCMinutes", "setUTCMonth", "setUTCSeconds", "setVolume", "setYear", "shift", "show", "sin", "slice", "sort", "start", "startDrag", "status", "stop", "stopAllSounds", "stopDrag", "substr", "substring", "swapDepths", "splice", "split", "sqrt", "TAB", "tan", "targetPath", "tellTarget", "toggleHighQuality", "toLowerCase", "toString", "toUpperCase", "trace", "UP", "UTC", "unescape", "unloadMovie", "unLoadMovieNum", "unshift", "updateAfterEvent", "valueOf", "xmlDecl", "_alpha", "_currentframe", "_droptarget", "_focusrect", "_framesloaded", "_height", "_highquality", "_name", "_quality", "_rotation", "_soundbuftime", "_target", "_totalframes", "_url", "_visible", "_width", "_x", "_xmouse", "_xscale", "_y", "_ymouse", "_yscale", "and", "add", "eq", "ge", "gt", "le", "lt", "ne", "not", "or", "Array", "Boolean", "Color", "Date", "Key", "Math", "MovieClip", "Mouse", "Number", "Object", "Selection", "Sound", "String", "XML", "XMLSocket"
+        ]
+        #@-node:ekr.20031218072017.372:actionscript keywords
+        #@+node:bwmulder.20041023131509:ada keywords
+        self.ada_keywords = [
+            "abort",       "else",       "new",        "return",
+            "abs",         "elsif",      "not",        "reverse",
+            "abstract",    "end",        "null",
+            "accept",      "entry",      "select",
+            "access",      "exception",  "separate",
+            "aliased",     "exit",       "of",         "subtype",
+            "all",                       "or",
+            "and",         "for",        "others",     "tagged",
+            "array",       "function",   "out",        "task",
+            "at",                                      "terminate",
+                           "generic",    "package",    "then",
+            "begin",       "goto",       "pragma",     "type",
+            "body",                      "private",
+                           "if",         "procedure",
+            "case",        "in",         "protected",  "until",
+            "constant",    "is",                       "use",
+                                         "raise",
+            "declare",                   "range",      "when",
+            "delay",       "limited",    "record",     "while",
+            "delta",       "loop",       "rem",        "with",
+            "digits",                    "renames",
+            "do",          "mod",        "requeue",    "xor"
+           ]
+        #@-node:bwmulder.20041023131509:ada keywords
+        #@+node:ekr.20040206072057:c# keywords
+        self.csharp_keywords = [
+            "abstract","as",
+            "base","bool","break","byte",
+            "case","catch","char","checked","class","const","continue",
+            "decimal","default","delegate","do","double",
+            "else","enum","event","explicit","extern",
+            "false","finally","fixed","float","for","foreach",
+            "get","goto",
+            "if","implicit","in","int","interface","internal","is",
+            "lock","long",
+            "namespace","new","null",
+            "object","operator","out","override",
+            "params","partial","private","protected","public",
+            "readonly","ref","return",
+            "sbyte","sealed","set","short","sizeof","stackalloc",
+            "static","string","struct","switch",
+            "this","throw","true","try","typeof",
+            "uint","ulong","unchecked","unsafe","ushort","using",
+            "value","virtual","void","volatile",
+            "where","while",
+            "yield"]
+        #@-node:ekr.20040206072057:c# keywords
+        #@+node:ekr.20031218072017.373:c/c++/cweb keywords
+        self.c_keywords = [
+            # C keywords
+            "auto","break","case","char","continue",
+            "default","do","double","else","enum","extern",
+            "float","for","goto","if","int","long","register","return",
+            "short","signed","sizeof","static","struct","switch",
+            "typedef","union","unsigned","void","volatile","while",
+            # C++ keywords
+            "asm","bool","catch","class","const","const_cast",
+            "delete","dynamic_cast","explicit","false","friend",
+            "inline","mutable","namespace","new","operator",
+            "private","protected","public","reinterpret_cast","static_cast",
+            "template","this","throw","true","try",
+            "typeid","typename","using","virtual","wchar_t",
+        ]
+
+        self.cweb_keywords = self.c_keywords
+        #@-node:ekr.20031218072017.373:c/c++/cweb keywords
+        #@+node:ekr.20040401103539:css keywords
+        self.css_keywords = [
+        #html tags
+        "address", "applet", "area", "a", "base", "basefont",
+        "big", "blockquote", "body", "br", "b", "caption", "center",
+        "cite", "code", "dd", "dfn", "dir", "div", "dl", "dt", "em", "font",
+        "form", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "img",
+        "input", "isindex", "i", "kbd", "link", "li", "link", "map", "menu",
+        "meta", "ol", "option", "param", "pre", "p", "samp",
+        "select", "small", "span", "strike", "strong", "style", "sub", "sup",
+        "table", "td", "textarea", "th", "title", "tr", "tt", "ul", "u", "var",
+        #units
+        "mm", "cm", "in", "pt", "pc", "em", "ex", "px",
+        #colors
+        "aqua", "black", "blue", "fuchsia", "gray", "green", "lime", "maroon", "navy", "olive", "purple", "red", "silver", "teal", "yellow", "white",
+        #important directive
+        "!important",
+        #font rules
+        "font", "font-family", "font-style", "font-variant", "font-weight", "font-size",
+        #font values
+        "cursive", "fantasy", "monospace", "normal", "italic", "oblique", "small-caps",
+        "bold", "bolder", "lighter", "medium", "larger", "smaller",
+        "serif", "sans-serif",
+        #background rules
+        "background", "background-color", "background-image", "background-repeat", "background-attachment", "background-position",
+        #background values
+        "contained", "none", "top", "center", "bottom", "left", "right", "scroll", "fixed",
+        "repeat", "repeat-x", "repeat-y", "no-repeat",
+        #text rules
+        "word-spacing", "letter-spacing", "text-decoration", "vertical-align", "text-transform", "text-align", "text-indent", "text-transform", "text-shadow", "unicode-bidi", "line-height",
+        #text values
+        "normal", "none", "underline", "overline", "blink", "sub", "super", "middle", "top", "text-top", "text-bottom",
+        "capitalize", "uppercase", "lowercase", "none", "left", "right", "center", "justify",
+        "line-through",
+        #box rules
+        "margin", "margin-top", "margin-bottom", "margin-left", "margin-right",
+        "margin", "padding-top", "padding-bottom", "padding-left", "padding-right",
+        "border", "border-width", "border-style", "border-top", "border-top-width", "border-top-style", "border-bottom", "border-bottom-width", "border-bottom-style", "border-left", "border-left-width", "border-left-style", "border-right", "border-right-width", "border-right-style", "border-color",
+        #box values
+        "width", "height", "float", "clear",
+        "auto", "thin", "medium", "thick", "left", "right", "none", "both",
+        "none", "dotted", "dashed", "solid", "double", "groove", "ridge", "inset", "outset",
+        #display rules
+        "display", "white-space", 
+        "min-width", "max-width", "min-height", "max-height",
+        "outline-color", "outline-style", "outline-width",
+        #display values
+        "run-in", "inline-block", "list-item", "block", "inline", "none", "normal", "pre", "nowrap", "table-cell", "table-row", "table-row-group", "table-header-group", "inline-table", "table-column", "table-column-group", "table-cell", "table-caption"
+        #list rules
+        "list-style", "list-style-type", "list-style-image", "list-style-position",
+        #list values
+        "disc", "circle", "square", "decimal", "decimal-leading-zero", "none",
+        "lower-roman", "upper-roman", "lower-alpha", "upper-alpha", "lower-latin", "upper-latin",
+        #table rules
+        "border-collapse", "caption-side",
+        #table-values
+        "empty-cells", "table-layout",
+        #misc values/rules
+        "counter-increment", "counter-reset",
+        "marker-offset", "z-index",
+        "cursor", "direction", "marks", "quotes",
+        "clip", "content", "orphans", "overflow", "visibility",
+        #aural rules
+        "pitch", "range", "pitch-during", "cue-after", "pause-after", "cue-before", "pause-before", "speak-header", "speak-numeral", "speak-punctuation", "speed-rate", "play-during", "voice-family",
+        #aural values
+        "stress", "azimuth", "elevation", "pitch", "richness", "volume",
+        "page-break", "page-after", "page-inside"]
+        #@-node:ekr.20040401103539:css keywords
+        #@+node:ekr.20031218072017.374:elisp keywords
+        # EKR: needs more work.
+        self.elisp_keywords = [
+            # Maybe...
+            "error","princ",
+            # More typical of other lisps...
+            "apply","eval",
+            "t","nil",
+            "and","or","not",
+            "cons","car","cdr",
+            "cond",
+            "defconst","defun","defvar",
+            "eq","ne","equal","gt","ge","lt","le",
+            "if",
+            "let",
+            "mapcar",
+            "prog","progn",
+            "set","setq",
+            "type-of",
+            "unless",
+            "when","while"]
+        #@-node:ekr.20031218072017.374:elisp keywords
+        #@+node:ekr.20031218072017.375:html keywords
+        # No longer used by syntax colorer.
+        self.html_keywords = []
+
+        if 0: # Not used at present.
+            self.unused_keywords = [
+                # html constructs.
+                "a","body","cf",
+                "h1","h2","h3","h4","h5","h6",
+                "head","html","hr",
+                "i","img","li","lu","meta",
+                "p","title","ul",
+                # Common tags
+                "caption","col","colgroup",
+                "table","tbody","td","tfoot","th","thead","tr",
+                "script","style"]
+
+            self.html_specials = [ "<%","%>" ]
+        #@-node:ekr.20031218072017.375:html keywords
+        #@+node:ekr.20031218072017.376:java keywords
+        self.java_keywords = [
+            "abstract","boolean","break","byte","byvalue",
+            "case","cast","catch","char","class","const","continue",
+            "default","do","double","else","extends",
+            "false","final","finally","float","for","future",
+            "generic","goto","if","implements","import","inner",
+            "instanceof","int","interface","long","native",
+            "new","null","operator","outer",
+            "package","private","protected","public","rest","return",
+            "short","static","super","switch","synchronized",
+            "this","throw","transient","true","try",
+            "var","void","volatile","while"]
+        #@-node:ekr.20031218072017.376:java keywords
+        #@+node:ekr.20031218072017.377:latex keywords
+        #If you see two idenitical words, with minor capitalization differences
+        #DO NOT ASSUME that they are the same word. For example \vert produces
+        #a single vertical line and \Vert produces a double vertical line
+        #Marcus A. Martin.
+
+        self.latex_special_keyword_characters = "@(){}%"
+
+        self.latex_keywords = [
+            #special keyworlds
+            "\\%", # 11/9/03
+            "\\@", "\\(", "\\)", "\\{", "\\}",
+            #A
+            "\\acute", "\\addcontentsline", "\\addtocontents", "\\addtocounter", "\\address",
+            "\\addtolength", "\\addvspace", "\\AE", "\\ae", "\\aleph", "\\alph", "\\angle",
+            "\\appendix", 
+            "\\approx", "\\arabic", "\\arccos", "\\arcsin", "\\arctan", "\\ast", "\\author",
+            #B
+            "\\b", "\\backmatter", "\\backslash", "\\bar", "\\baselineskip", "\\baselinestretch",
+            "\\begin", "\\beta", "\\bezier", "\\bf", "\\bfseries", "\\bibitem", "\\bigcap",
+            "\\bigcup", "\\bigodot", "\\bigoplus", "\\bigotimes", "\\bigskip", "\\biguplus",
+            "\\bigvee", "\\bigwedge", "\\bmod", "\\boldmath", "\\Box", "\\breve", "\\bullet",
+            #C
+            "\\c", "\\cal", "\\caption", "\\cdot", "\\cdots", "\\centering", "\\chapter",
+            "\\check", "\\chi", "\\circ", "\\circle", "\\cite", "\\cleardoublepage", "\\clearpage",
+            "\\cline", "\\closing", "\\clubsuit", "\\coprod", "\\copywright", "\\cos", "\\cosh",
+            "\\cot", "\\coth", "csc",
+            #D
+            "\\d", "\\dag", "\\dashbox", "\\date", "\\ddag", "\\ddot", "\\ddots", "\\decl",
+            "\\deg", "\\Delta", 
+            "\\delta", "\\depthits", "\\det", 
+            "\\DH", "\\dh", "\\Diamond", "\\diamondsuit", "\\dim", "\\div", "\\DJ", "\\dj",
+            "\\documentclass", "\\documentstyle", 
+            "\\dot", "\\dotfil", "\\downarrow",
+            #E
+            "\\ell", "\\em", "\\emph", "\\end", "\\enlargethispage", "\\ensuremath",
+            "\\enumi", "\\enuii", "\\enumiii", "\\enuiv", "\\epsilon", "\\equation", "\\equiv",
+            "\\eta", "\\example", "\\exists", "\\exp",
+            #F
+            "\\fbox", "\\figure", "\\flat", "\\flushbottom", "\\fnsymbol", "\\footnote",
+            "\\footnotemark", "\\fotenotesize", 
+            "\\footnotetext", "\\forall", "\\frac", "\\frame", "\\framebox", "\\frenchspacing",
+            "\\frontmatter",
+            #G
+            "\\Gamma", "\\gamma", "\\gcd", "\\geq", "\\gg", "\\grave", "\\guillemotleft", 
+            "\\guillemotright", "\\guilsinglleft", "\\guilsinglright",
+            #H
+            "\\H", "\\hat", "\\hbar", "\\heartsuit", "\\heightits", "\\hfill", "\\hline", "\\hom",
+            "\\hrulefill", "\\hspace", "\\huge", "\\Huge", "\\hyphenation"
+            #I
+            "\\Im", "\\imath", "\\include", "includeonly", "indent", "\\index", "\\inf", "\\infty", 
+            "\\input", "\\int", "\\iota", "\\it", "\\item", "\\itshape",
+            #J
+            "\\jmath", "\\Join",
+            #K
+            "\\k", "\\kappa", "\\ker", "\\kill",
+            #L
+            "\\label", "\\Lambda", "\\lambda", "\\langle", "\\large", "\\Large", "\\LARGE", 
+            "\\LaTeX", "\\LaTeXe", 
+            "\\ldots", "\\leadsto", "\\left", "\\Leftarrow", "\\leftarrow", "\\lefteqn", "\\leq",
+            "\\lg", "\\lhd", "\\lim", "\\liminf", "\\limsup", "\\line", "\\linebreak", 
+            "\\linethickness", "\\linewidth", "\\listfiles",
+            "\\ll", "\\ln", "\\location", "\\log", "\\Longleftarrow", "\\longleftarrow", 
+            "\\Longrightarrow", "longrightarrow",
+            #M
+            "\\mainmatter", "\\makebox", "\\makeglossary", "\\makeindex","\\maketitle", "\\markboth", "\\markright",
+            "\\mathbf", "\\mathcal", "\\mathit", "\\mathnormal", "\\mathop",
+            "\\mathrm", "\\mathsf", "\\mathtt", "\\max", "\\mbox", "\\mdseries", "\\medskip",
+            "\\mho", "\\min", "\\mp", "\\mpfootnote", "\\mu", "\\multicolumn", "\\multiput",
+            #N
+            "\\nabla", "\\natural", "\\nearrow", "\\neq", "\\newcommand", "\\newcounter", 
+            "\\newenvironment", "\\newfont",
+            "\\newlength", "\\newline", "\\newpage", "\\newsavebox", "\\newtheorem", "\\NG", "\\ng",
+            "\\nocite", "\\noindent", "\\nolinbreak", "\\nopagebreak", "\\normalsize",
+            "\\not", "\\nu", "nwarrow",
+            #O
+            "\\Omega", "\\omega", "\\onecolumn", "\\oint", "\\opening", "\\oval", 
+            "\\overbrace", "\\overline",
+            #P
+            "\\P", "\\page", "\\pagebreak", "\\pagenumbering", "\\pageref", "\\pagestyle", 
+            "\\par", "\\parbox", "\\paragraph", "\\parindent", "\\parskip", "\\part", 
+            "\\partial", "\\per", "\\Phi", "\\phi", "\\Pi", "\\pi", "\\pm", 
+            "\\pmod", "\\pounds", "\\prime", "\\printindex", "\\prod", "\\propto", "\\protext", 
+            "\\providecomamnd", "\\Psi", "\\psi", "\\put",
+            #Q
+            "\\qbezier", "\\quoteblbase", "\\quotesinglbase",
+            #R
+            "\\r", "\\raggedbottom", "\\raggedleft", "\\raggedright", "\\raisebox", "\\rangle", 
+            "\\Re", "\\ref", "\\renewcommand", "\\renewenvironment", "\\rhd", "\\rho", "\\right", 
+            "\\Rightarrow", "\\rightarrow", "\\rm", "\\rmfamily",
+            "\\Roman", "\\roman", "\\rule", 
+            #S
+            "\\s", "\\samepage", "\\savebox", "\\sbox", "\\sc", "\\scriptsize", "\\scshape", 
+            "\\searrow", "\\sec", "\\section",
+            "\\setcounter", "\\setlength", "\\settowidth", "\\settodepth", "\\settoheight", 
+            "\\settowidth", "\\sf", "\\sffamily", "\\sharp", "\\shortstack", "\\Sigma", "\\sigma", 
+            "\\signature", "\\sim", "\\simeq", "\\sin", "\\sinh", "\\sl", "\\SLiTeX",
+            "\\slshape", "\\small", "\\smallskip", "\\spadesuit", "\\sqrt", "\\sqsubset",
+            "\\sqsupset", "\\SS",
+            "\\stackrel", "\\star", "\\subsection", "\\subset", 
+            "\\subsubsection", "\\sum", "\\sup", "\\supressfloats", "\\surd", "\\swarrow",
+            #T
+            "\\t", "\\table", "\\tableofcontents", "\\tabularnewline", "\\tan", "\\tanh", 
+            "\\tau", "\\telephone", "\\TeX", "\\textbf",
+            "\\textbullet", "\\textcircled", "\\textcompworkmark", "\\textemdash", 
+            "\\textendash", "\\textexclamdown", "\\textheight", "\\textquestiondown", 
+            "\\textquoteblleft", "\\textquoteblright", "\\textquoteleft",
+            "\\textperiod", "\\textquotebl", "\\textquoteright", "\\textmd", "\\textit", "\\textrm", 
+            "\\textsc", "\\textsl", "\\textsf", "\\textsuperscript", "\\texttt", "\\textup",
+            "\\textvisiblespace", "\\textwidth", "\\TH", "\\th", "\\thanks", "\\thebibligraphy",
+            "\\Theta", "theta", 
+            "\\tilde", "\\thinlines", 
+            "\\thispagestyle", "\\times", "\\tiny", "\\title", "\\today", "\\totalheightits", 
+            "\\triangle", "\\tt", 
+            "\\ttfamily", "\\twocoloumn", "\\typeout", "\\typein",
+            #U
+            "\\u", "\\underbrace", "\\underline", "\\unitlength", "\\unlhd", "\\unrhd", "\\Uparrow",
+            "\\uparrow", "\\updownarrow", "\\upshape", "\\Upsilon", "\\upsilon", "\\usebox",
+            "\\usecounter", "\\usepackage", 
+            #V
+            "\\v", "\\value", "\\varepsilon", "\\varphi", "\\varpi", "\\varrho", "\\varsigma", 
+            "\\vartheta", "\\vdots", "\\vec", "\\vector", "\\verb", "\\Vert", "\\vert", "\\vfill",
+            "\\vline", "\\vphantom", "\\vspace",
+            #W
+            "\\widehat", "\\widetilde", "\\widthits", "\\wp",
+            #X
+            "\\Xi", "\\xi",
+            #Z
+            "\\zeta" ]
+        #@-node:ekr.20031218072017.377:latex keywords
+        #@+node:ekr.20060328110802:lua keywords
+        # ddm 13/02/06
+        self.lua_keywords = [
+            "and", "break", "do", "else", "elseif", "end",
+            "false", "for", "function", "if", "in", "local",
+            "nil", "not", "or", "repeat", "return", "then",
+            "true", "until", "while",
+        ]
+        #@-node:ekr.20060328110802:lua keywords
+        #@+node:ekr.20031218072017.378:pascal keywords
+        self.pascal_keywords = [
+            "and","array","as","begin",
+            "case","const","class","constructor","cdecl"
+            "div","do","downto","destructor","dispid","dynamic",
+            "else","end","except","external",
+            "false","file","for","forward","function","finally",
+            "goto","if","in","is","label","library",
+            "mod","message","nil","not","nodefault""of","or","on",
+            "procedure","program","packed","pascal",
+            "private","protected","public","published",
+            "record","repeat","raise","read","register",
+            "set","string","shl","shr","stdcall",
+            "then","to","true","type","try","until","unit","uses",
+            "var","virtual","while","with","xor"
+            # object pascal
+            "asm","absolute","abstract","assembler","at","automated",
+            "finalization",
+            "implementation","inherited","initialization","inline","interface",
+            "object","override","resident","resourcestring",
+            "threadvar",
+            # limited contexts
+            "exports","property","default","write","stored","index","name" ]
+        #@-node:ekr.20031218072017.378:pascal keywords
+        #@+node:ekr.20031218072017.379:perl/perlpod keywords
+        self.perl_keywords = [
+            "continue","do","else","elsif","format","for","format","for","foreach",
+            "if","local","package","sub","tr","unless","until","while","y",
+            # Comparison operators
+            "cmp","eq","ge","gt","le","lt","ne",
+            # Matching ooperators
+            "m","s",
+            # Unary functions
+            "alarm","caller","chdir","cos","chroot","exit","eval","exp",
+            "getpgrp","getprotobyname","gethostbyname","getnetbyname","gmtime",
+            "hex","int","length","localtime","log","ord","oct",
+            "require","reset","rand","rmdir","readlink",
+            "scalar","sin","sleep","sqrt","srand","umask",
+            # Transfer ops
+            "next","last","redo","go","dump",
+            # File operations...
+            "select","open",
+            # FL ops
+            "binmode","close","closedir","eof",
+            "fileno","getc","getpeername","getsockname","lstat",
+            "readdir","rewinddir","stat","tell","telldir","write",
+            # FL2 ops
+            "bind","connect","flock","listen","opendir",
+            "seekdir","shutdown","truncate",
+            # FL32 ops
+            "accept","pipe",
+            # FL3 ops
+            "fcntl","getsockopt","ioctl","read",
+            "seek","send","sysread","syswrite",
+            # FL4 & FL5 ops
+            "recv","setsocket","socket","socketpair",
+            # Array operations
+            "pop","shift","split","delete",
+            # FLIST ops
+            "sprintf","grep","join","pack",
+            # LVAL ops
+            "chop","defined","study","undef",
+            # f0 ops
+            "endhostent","endnetent","endservent","endprotoent",
+            "endpwent","endgrent","fork",
+            "getgrent","gethostent","getlogin","getnetent","getppid",
+            "getprotoent","getpwent","getservent",
+            "setgrent","setpwent","time","times","wait","wantarray",
+            # f1 ops
+            "getgrgid","getgrnam","getprotobynumber","getpwnam","getpwuid",
+            "sethostent","setnetent","setprotoent","setservent",
+            # f2 ops
+            "atan2","crypt",
+            "gethostbyaddr","getnetbyaddr","getpriority","getservbyname","getservbyport",
+            "index","link","mkdir","msgget","rename",
+            "semop","setpgrp","symlink","unpack","waitpid",
+            # f2 or 3 ops
+            "index","rindex","substr",
+            # f3 ops
+            "msgctl","msgsnd","semget","setpriority","shmctl","shmget","vec",
+            # f4 & f5 ops
+            "semctl","shmread","shmwrite","msgrcv",
+            # Assoc ops
+            "dbmclose","each","keys","values",
+            # List ops
+            "chmod","chown","die","exec","kill",
+            "print","printf","return","reverse",
+            "sort","system","syscall","unlink","utime","warn",
+        ]
+
+        self.perlpod_keywords = self.perl_keywords
+        #@-node:ekr.20031218072017.379:perl/perlpod keywords
+        #@+node:ekr.20031218072017.380:php keywords
+        self.php_keywords = [ # 08-SEP-2002 DTHEIN
+            "__CLASS__", "__FILE__", "__FUNCTION__", "__LINE__",
+            "and", "as", "break",
+            "case", "cfunction", "class", "const", "continue",
+            "declare", "default", "do",
+            "else", "elseif", "enddeclare", "endfor", "endforeach",
+            "endif", "endswitch",  "endwhile", "eval", "extends",
+            "for", "foreach", "function", "global", "if",
+            "new", "old_function", "or", "static", "switch",
+            "use", "var", "while", "xor" ]
+
+        # The following are supposed to be followed by ()
+        self.php_paren_keywords = [
+            "array", "die", "echo", "empty", "exit",
+            "include", "include_once", "isset", "list",
+            "print", "require", "require_once", "return",
+            "unset" ]
+
+        # The following are handled by special case code:
+        # "<?php", "?>"
+        #@-node:ekr.20031218072017.380:php keywords
+        #@+node:ekr.20050618052653:plsql keywords
+        self.plsql_keywords = [
+        # reserved keywords
+        "abort",
+        "accept",
+        "access",
+        "add",
+        "admin",
+        "after",
+        "all",
+        "allocate",
+        "alter",
+        "analyze",
+        "and",
+        "any",
+        "archive",
+        "archivelog",
+        "array",
+        "arraylen",
+        "as",
+        "asc",
+        "assert",
+        "assign",
+        "at",
+        "audit",
+        "authorization",
+        "avg",
+        "backup",
+        "base_table",
+        "become",
+        "before",
+        "begin",
+        "between",
+        "binary_integer",
+        "block",
+        "body",
+        "boolean",
+        "by",
+        "cache",
+        "cancel",
+        "cascade",
+        "case",
+        "change",
+        "char",
+        "char_base",
+        "character",
+        "check",
+        "checkpoint",
+        "close",
+        "cluster",
+        "clusters",
+        "cobol",
+        "colauth",
+        "column",
+        "columns",
+        "comment",
+        "commit",
+        "compile",
+        "compress",
+        "connect",
+        "constant",
+        "constraint",
+        "constraints",
+        "contents",
+        "continue",
+        "controlfile",
+        "count",
+        "crash",
+        "create",
+        "current",
+        "currval",
+        "cursor",
+        "cycle",
+        "data_base",
+        "database",
+        "datafile",
+        "date",
+        "dba",
+        "debugoff",
+        "debugon",
+        "dec",
+        "decimal",
+        "declare",
+        "default",
+        "definition",
+        "delay",
+        "delete",
+        "delta",
+        "desc",
+        "digits",
+        "disable",
+        "dismount",
+        "dispose",
+        "distinct",
+        "distinct",
+        "do",
+        "double",
+        "drop",
+        "drop",
+        "dump",
+        "each",
+        "else",
+        "else",
+        "elsif",
+        "enable",
+        "end",
+        "end",
+        "entry",
+        "escape",
+        "events",
+        "except",
+        "exception",
+        "exception_init",
+        "exceptions",
+        "exclusive",
+        "exec",
+        "execute",
+        "exists",
+        "exists",
+        "exit",
+        "explain",
+        "extent",
+        "externally",
+        "false",
+        "fetch",
+        "fetch",
+        "file",
+        "float",
+        "float",
+        "flush",
+        "for",
+        "for",
+        "force",
+        "foreign",
+        "form",
+        "fortran",
+        "found",
+        "freelist",
+        "freelists",
+        "from",
+        "from",
+        "function",
+        "generic",
+        "go",
+        "goto",
+        "grant",
+        "group",
+        "groups",
+        "having",
+        "identified",
+        "if",
+        "immediate",
+        "in",
+        "including",
+        "increment",
+        "index",
+        "indexes",
+        "indicator",
+        "initial",
+        "initrans",
+        "insert",
+        "instance",
+        "int",
+        "integer",
+        "intersect",
+        "into",
+        "is",
+        "key",
+        "language",
+        "layer",
+        "level",
+        "like",
+        "limited",
+        "link",
+        "lists",
+        "lock",
+        "logfile",
+        "long",
+        "loop",
+        "manage",
+        "manual",
+        "max",
+        "maxdatafiles",
+        "maxextents",
+        "maxinstances",
+        "maxlogfiles",
+        "maxloghistory",
+        "maxlogmembers",
+        "maxtrans",
+        "maxvalue",
+        "min",
+        "minextents",
+        "minus",
+        "minvalue",
+        "mlslabel",
+        "mod",
+        "mode",
+        "modify",
+        "module",
+        "mount",
+        "natural",
+        "new",
+        "new",
+        "next",
+        "nextval",
+        "noarchivelog",
+        "noaudit",
+        "nocache",
+        "nocompress",
+        "nocycle",
+        "nomaxvalue",
+        "nominvalue",
+        "none",
+        "noorder",
+        "noresetlogs",
+        "normal",
+        "nosort",
+        "not",
+        "notfound",
+        "nowait",
+        "null",
+        "number",
+        "number_base",
+        "numeric",
+        "of",
+        "off",
+        "offline",
+        "old",
+        "on",
+        "online",
+        "only",
+        "open",
+        "open",
+        "optimal",
+        "option",
+        "or",
+        "order",
+        "others",
+        "out",
+        "own",
+        "package",
+        "package",
+        "parallel",
+        "partition",
+        "pctfree",
+        "pctincrease",
+        "pctused",
+        "plan",
+        "pli",
+        "positive",
+        "pragma",
+        "precision",
+        "primary",
+        "prior",
+        "private",
+        "private",
+        "privileges",
+        "procedure",
+        "procedure",
+        "profile",
+        "public",
+        "quota",
+        "raise",
+        "range",
+        "raw",
+        "read",
+        "real",
+        "record",
+        "recover",
+        "references",
+        "referencing",
+        "release",
+        "remr",
+        "rename",
+        "resetlogs",
+        "resource",
+        "restricted",
+        "return",
+        "reuse",
+        "reverse",
+        "revoke",
+        "role",
+        "roles",
+        "rollback",
+        "row",
+        "rowid",
+        "rowlabel",
+        "rownum",
+        "rows",
+        "rowtype",
+        "run",
+        "savepoint",
+        "schema",
+        "scn",
+        "section",
+        "segment",
+        "select",
+        "select",
+        "separate",
+        "sequence",
+        "session",
+        "set",
+        "set",
+        "share",
+        "shared",
+        "size",
+        "size",
+        "smallint",
+        "smallint",
+        "snapshot",
+        "some",
+        "sort",
+        "space",
+        "sql",
+        "sqlbuf",
+        "sqlcode",
+        "sqlerrm",
+        "sqlerror",
+        "sqlstate",
+        "start",
+        "start",
+        "statement",
+        "statement_id",
+        "statistics",
+        "stddev",
+        "stop",
+        "storage",
+        "subtype",
+        "successful",
+        "sum",
+        "sum",
+        "switch",
+        "synonym",
+        "sysdate",
+        "system",
+        "tabauth",
+        "table",
+        "tables",
+        "tables",
+        "tablespace",
+        "task",
+        "temporary",
+        "terminate",
+        "then",
+        "thread",
+        "time",
+        "to",
+        "tracing",
+        "transaction",
+        "trigger",
+        "triggers",
+        "true",
+        "truncate",
+        "type",
+        "uid",
+        "under",
+        "union",
+        "unique",
+        "unlimited",
+        "until",
+        "update",
+        "use",
+        "user",
+        "using",
+        "validate",
+        "values",
+        "varchar",
+        "varchar2",
+        "variance",
+        "view",
+        "views",
+        "when",
+        "whenever",
+        "where",
+        "while",
+        "with",
+        "work",
+        "write",
+        "xor" ]
+        #@-node:ekr.20050618052653:plsql keywords
+        #@+node:ekr.20031218072017.381:python keywords
+        self.python_keywords = [
+            "and",       "del",       "for",       "is",        "raise",    
+            "assert",    "elif",      "from",      "lambda",    "return",   
+            "break",     "else",      "global",    "not",       "try",      
+            "class",     "except",    "if",        "or",        "yield",   
+            "continue",  "exec",      "import",    "pass",      "while",
+            "def",       "finally",   "in",        "print"]
+        #@-node:ekr.20031218072017.381:python keywords
+        #@+node:ekr.20040331145826:rapidq keywords
+        self.rapidq_keywords = [
+        # Syntax file for RapidQ
+        "$APPTYPE","$DEFINE","$ELSE","$ENDIF","$ESCAPECHARS","$IFDEF","$IFNDEF",
+        "$INCLUDE","$MACRO","$OPTIMIZE","$OPTION","$RESOURCE","$TYPECHECK","$UNDEF",
+        "ABS","ACOS","ALIAS","AND","AS","ASC","ASIN","ATAN","ATN","BIN$","BIND","BYTE",
+        "CALL","CALLBACK","CALLFUNC","CASE","CEIL","CHDIR","CHDRIVE","CHR$","CINT",
+        "CLNG","CLS","CODEPTR","COMMAND$","COMMANDCOUNT","CONSOLE","CONST","CONSTRUCTOR",
+        "CONVBASE$","COS","CREATE","CSRLIN","CURDIR$","DATA","DATE$","DEC","DECLARE",
+        "DEFBYTE","DEFDBL","DEFDWORD","DEFINT","DEFLNG","DEFSHORT","DEFSNG","DEFSTR",
+        "DEFWORD","DELETE$","DIM","DIR$","DIREXISTS","DO","DOEVENTS","DOUBLE","DWORD",
+        "ELSE","ELSEIF","END","ENVIRON","ENVIRON$","EVENT","EXIT","EXP","EXTENDS",
+        "EXTRACTRESOURCE","FIELD$","FILEEXISTS","FIX","FLOOR","FOR","FORMAT$","FRAC",
+        "FUNCTION","FUNCTIONI","GET$","GOSUB","GOTO","HEX$","IF","INC","INITARRAY",
+        "INKEY$","INP","INPUT","INPUT$","INPUTHANDLE","INSERT$","INSTR","INT","INTEGER",
+        "INV","IS","ISCONSOLE","KILL","KILLMESSAGE","LBOUND","LCASE$","LEFT$","LEN",
+        "LFLUSH","LIB","LIBRARYINST","LOCATE","LOG","LONG","LOOP","LPRINT","LTRIM$",
+        "MEMCMP","MESSAGEBOX","MESSAGEDLG","MID$","MKDIR","MOD","MOUSEX","MOUSEY",
+        "NEXT","NOT","OFF","ON","OR","OUT","OUTPUTHANDLE","PARAMSTR$","PARAMSTRCOUNT",
+        "PARAMVAL","PARAMVALCOUNT","PCOPY","PEEK","PLAYWAV","POKE","POS","POSTMESSAGE",
+        "PRINT","PROPERTY","QUICKSORT","RANDOMIZE","REDIM","RENAME","REPLACE$",
+        "REPLACESUBSTR$","RESOURCE","RESOURCECOUNT","RESTORE","RESULT","RETURN",
+        "REVERSE$","RGB","RIGHT$","RINSTR","RMDIR","RND","ROUND","RTRIM$","RUN",
+        "SCREEN","SELECT","SENDER","SENDMESSAGE","SETCONSOLETITLE","SGN","SHELL",
+        "SHL","SHORT","SHOWMESSAGE","SHR","SIN","SINGLE","SIZEOF","SLEEP","SOUND",
+        "SPACE$","SQR","STACK","STATIC","STEP","STR$","STRF$","STRING","STRING$",
+        "SUB","SUBI","SWAP","TALLY","TAN","THEN","TIME$","TIMER","TO","TYPE","UBOUND",
+        "UCASE$","UNLOADLIBRARY","UNTIL","VAL","VARIANT","VARPTR","VARPTR$","VARTYPE",
+        "WEND","WHILE","WITH","WORD","XOR"]
+        #@-node:ekr.20040331145826:rapidq keywords
+        #@+node:ekr.20031218072017.382:rebol keywords
+        self.rebol_keywords = [
+        #Jason 2003-07-03 
+        #based on UltraEdit syntax highlighting
+        "about", "abs", "absolute", "add", "alert", "alias", "all", "alter", "and", "and~", "any", "append", "arccosine", "arcsine", "arctangent", "array", "ask", "at",  
+        "back", "bind", "boot-prefs", "break", "browse", "build-port", "build-tag",  
+        "call", "caret-to-offset", "catch", "center-face", "change", "change-dir", "charset", "checksum", "choose", "clean-path", "clear", "clear-fields", "close", "comment", "complement", "compose", "compress", "confirm", "continue-post", "context", "copy", "cosine", "create-request", "crypt", "cvs-date", "cvs-version",  
+        "debase", "decode-cgi", "decode-url", "decompress", "deflag-face", "dehex", "delete", "demo", "desktop", "detab", "dh-compute-key", "dh-generate-key", "dh-make-key", "difference", "dirize", "disarm", "dispatch", "divide", "do", "do-boot", "do-events", "do-face", "do-face-alt", "does", "dsa-generate-key", "dsa-make-key", "dsa-make-signature", "dsa-verify-signature",  
+        "echo", "editor", "either", "else", "emailer", "enbase", "entab", "exclude", "exit", "exp", "extract", 
+        "fifth", "find", "find-key-face", "find-window", "flag-face", "first", "flash", "focus", "for", "forall", "foreach", "forever", "form", "forskip", "fourth", "free", "func", "function",  
+        "get", "get-modes", "get-net-info", "get-style",  
+        "halt", "has", "head", "help", "hide", "hide-popup",  
+        "if", "import-email", "in", "inform", "input", "insert", "insert-event-func", "intersect", 
+        "join", 
+        "last", "launch", "launch-thru", "layout", "license", "list-dir", "load", "load-image", "load-prefs", "load-thru", "log-10", "log-2", "log-e", "loop", "lowercase",  
+        "make", "make-dir", "make-face", "max", "maximum", "maximum-of", "min", "minimum", "minimum-of", "mold", "multiply",  
+        "negate", "net-error", "next", "not", "now",  
+        "offset-to-caret", "open", "open-events", "or", "or~", 
+        "parse", "parse-email-addrs", "parse-header", "parse-header-date", "parse-xml", "path-thru", "pick", "poke", "power", "prin", "print", "probe", "protect", "protect-system",  
+        "q", "query", "quit",  
+        "random", "read", "read-io", "read-net", "read-thru", "reboot", "recycle", "reduce", "reform", "rejoin", "remainder", "remold", "remove", "remove-event-func", "rename", "repeat", "repend", "replace", "request", "request-color", "request-date", "request-download", "request-file", "request-list", "request-pass", "request-text", "resend", "return", "reverse", "rsa-encrypt", "rsa-generate-key", "rsa-make-key", 
+        "save", "save-prefs", "save-user", "scroll-para", "second", "secure", "select", "send", "send-and-check", "set", "set-modes", "set-font", "set-net", "set-para", "set-style", "set-user", "set-user-name", "show", "show-popup", "sine", "size-text", "skip", "sort", "source", "split-path", "square-root", "stylize", "subtract", "switch",  
+        "tail", "tangent", "textinfo", "third", "throw", "throw-on-error", "to", "to-binary", "to-bitset", "to-block", "to-char", "to-date", "to-decimal", "to-email", "to-event", "to-file", "to-get-word", "to-hash", "to-hex", "to-idate", "to-image", "to-integer", "to-issue", "to-list", "to-lit-path", "to-lit-word", "to-local-file", "to-logic", "to-money", "to-none", "to-pair", "to-paren", "to-path", "to-rebol-file", "to-refinement", "to-set-path", "to-set-word", "to-string", "to-tag", "to-time", "to-tuple", "to-url", "to-word", "trace", "trim", "try",  
+        "unfocus", "union", "unique", "uninstall", "unprotect", "unset", "until", "unview", "update", "upgrade", "uppercase", "usage", "use",  
+        "vbug", "view", "view-install", "view-prefs",  
+        "wait", "what", "what-dir", "while", "write", "write-io",  
+        "xor", "xor~",  
+        "action!", "any-block!", "any-function!", "any-string!", "any-type!", "any-word!",  
+        "binary!", "bitset!", "block!",  
+        "char!",  
+        "datatype!", "date!", "decimal!", 
+        "email!", "error!", "event!",  
+        "file!", "function!",  
+        "get-word!",  
+        "hash!",  
+        "image!", "integer!", "issue!",  
+        "library!", "list!", "lit-path!", "lit-word!", "logic!",  
+        "money!",  
+        "native!", "none!", "number!",  
+        "object!", "op!",  
+        "pair!", "paren!", "path!", "port!",  
+        "refinement!", "routine!",  
+        "series!", "set-path!", "set-word!", "string!", "struct!", "symbol!",  
+        "tag!", "time!", "tuple!",  
+        "unset!", "url!",  
+        "word!",  
+        "any-block?", "any-function?", "any-string?", "any-type?", "any-word?",  
+        "binary?", "bitset?", "block?",  
+        "char?", "connected?", "crypt-strength?", 
+        "datatype?", "date?", "decimal?", "dir?",  
+        "email?", "empty?", "equal?", "error?", "even?", "event?", "exists?", "exists-key?",
+        "file?", "flag-face?", "found?", "function?",  
+        "get-word?", "greater-or-equal?", "greater?",  
+        "hash?", "head?",  
+        "image?", "in-window?", "index?", "info?", "input?", "inside?", "integer?", "issue?",  
+        "length?", "lesser-or-equal?", "lesser?", "library?", "link-app?", "link?", "list?", "lit-path?", "lit-word?", "logic?",  
+        "modified?", "money?",  
+        "native?", "negative?", "none?", "not-equal?", "number?",  
+        "object?", "odd?", "offset?", "op?", "outside?",  
+        "pair?", "paren?", "path?", "port?", "positive?",  
+        "refinement?", "routine?",  
+        "same?", "screen-offset?", "script?", "series?", "set-path?", "set-word?", "size?", "span?", "strict-equal?", "strict-not-equal?", "string?", "struct?",  
+        "tag?", "tail?", "time?", "tuple?", "type?",  
+        "unset?", "url?",  
+        "value?", "view?", 
+        "within?", "word?",  
+        "zero?"
+        ]
+        #@-node:ekr.20031218072017.382:rebol keywords
+        #@+node:ekr.20040401111125:shell keywords
+        self.shell_keywords = [
+            # reserved keywords
+            "case","do","done","elif","else","esac","fi",
+            "for","if","in","then",
+            "until","while",
+            "break","cd","chdir","continue","eval","exec",
+            "exit","kill","newgrp","pwd","read","readonly",
+            "return","shift","test","trap","ulimit",
+            "umask","wait" ]
+        #@-node:ekr.20040401111125:shell keywords
+        #@+node:ekr.20031218072017.383:tcl/tk keywords
+        self.tcltk_keywords = [ # Only the tcl keywords are here.
+            "after",     "append",    "array",
+            "bgerror",   "binary",    "break",
+            "catch",     "cd",        "clock",
+            "close",     "concat",    "continue",
+            "dde",
+            "encoding",  "eof",       "eval",
+            "exec",      "exit",      "expr",
+            "fblocked",  "fconfigure","fcopy",     "file",      "fileevent",
+            "filename",  "flush",     "for",       "foreach",   "format",
+            "gets",      "glob",      "global",
+            "history",
+            "if",        "incr",      "info",      "interp",
+            "join",
+            "lappend",   "lindex",    "linsert",   "list",      "llength",
+            "load",      "lrange",    "lreplace",  "lsearch",   "lsort",
+            "memory",    "msgcat",
+            "namespace",
+            "open",
+            "package",   "parray",    "pid",
+            "proc",      "puts",      "pwd",
+            "read",      "regexp",    "registry",   "regsub",
+            "rename",    "resource",  "return",
+            "scan",      "seek",      "set",        "socket",   "source",
+            "split",     "string",    "subst",      "switch",
+            "tell",      "time",      "trace",
+            "unknown",   "unset",     "update",     "uplevel",   "upvar",
+            "variable",  "vwait",
+            "while" ]
+        #@-node:ekr.20031218072017.383:tcl/tk keywords
+        #@-others
+        #@nonl
+        #@-node:ekr.20031218072017.371:<< define colorizer keywords >>
+        #@nl
         #@    << ivars for communication between colorizeAnyLanguage and its allies >>
         #@+node:ekr.20031218072017.1606:<< ivars for communication between colorizeAnyLanguage and its allies >>
         # Copies of arguments.
@@ -1930,7 +1895,7 @@ class baseColorizer:
 
         self.latex_cweb_docs     = c.config.getBool("color_cweb_doc_parts_with_latex")
         self.latex_cweb_comments = c.config.getBool("color_cweb_comments_with_latex")
-        # print "docs,comments",self.latex_cweb_docs,self.latex_cweb_comments
+        # g.pr("docs,comments",self.latex_cweb_docs,self.latex_cweb_comments)
         #@-node:ekr.20031218072017.1606:<< ivars for communication between colorizeAnyLanguage and its allies >>
         #@nl
         #@    << define dispatch dicts >>
@@ -1949,38 +1914,36 @@ class baseColorizer:
         #@-node:ekr.20031218072017.1607:<< define dispatch dicts >>
         #@nl
         self.setFontFromConfig()
-        #@    << extend forth words from files >>
-        #@+node:ekr.20041107094252:<< extend forth words from files >>
-        # Associate files with lists: probably no need to edit this.
-        forth_items = (
-            (self.forth_definingwords, "leo-forthdefwords.txt", "defining words"),
-            (self.forth_keywords, "leo-forthwords.txt", "words"),
-            (self.forth_stringwords, "leo-forthstringwords.txt", "string words"),
-            (self.forth_boldwords, "leo-forthboldwords.txt", "bold words"),
-            (self.forth_bolditalicwords, "leo-forthbolditalicwords.txt", "bold-italic words"),
-            (self.forth_italicwords, "leo-forthitalicwords.txt", "italic words"),
-        )
+    #@+node:ekr.20080704085627.3:splitList
+    def splitList (self,ivar,fileName):
 
-        # Add entries from files (if they exist) and to the corresponding wordlists.
-        for (lst, path, typ) in forth_items:
-            try:
-                extras = []
-                path = g.os_path_join(g.app.loadDir,"..","plugins",path) # EKR.
-                for line in file(path).read().strip().split("\n"):
-                    line = line.strip()
-                    if line and line[0] != '\\':
-                        extras.append(line)
-                if extras:
-                    if 0: # I find this annoying.  YMMV.
-                        if not g.app.unitTesting and not g.app.batchMode:
-                            print "Found extra forth %s" % typ + ": " + " ".join(extras)
-                    lst.extend(extras)
-            except IOError:
-                # print "Not found",path
-                pass
-        #@-node:ekr.20041107094252:<< extend forth words from files >>
-        #@nl
-    #@-node:ekr.20031218072017.1605:color.__init__
+        '''Process lines containing pairs of entries 
+        in a list whose *name* is ivar.
+        Put the results in ivars whose names are ivar1 and ivar2.'''
+
+        result1 = [] ; result2 = []
+        aList = getattr(self,ivar)
+
+        # Look for pairs.  Comments have already been removed.
+        for s in aList:
+            pair = s.split(' ')
+            if len(pair) == 2 and pair[0].strip() and pair[1].strip():
+                result1.append(pair[0].strip())
+                result2.append(pair[1].strip())
+            else:
+                g.es_print('%s: ignoring line: %s' % (fileName,s))
+
+        # Set the ivars.
+        name1 = '%s1' % ivar
+        name2 = '%s1' % ivar
+        setattr(self,name1, result1)
+        setattr(self,name2, result2)
+
+        # g.trace(name1,getattr(self,name1))
+        # g.trace(name2,getattr(self,name2))
+    #@nonl
+    #@-node:ekr.20080704085627.3:splitList
+    #@-node:ekr.20031218072017.1605:color.__init__ & helper
     #@+node:ekr.20031218072017.2801:colorize & recolor_range
     # The main colorizer entry point.
 
@@ -2002,10 +1965,6 @@ class baseColorizer:
     def colorizeAnyLanguage (self,p,leading=None,trailing=None):
 
         """Color the body pane either incrementally or non-incrementally"""
-
-        # __pychecker__ = 'maxlines=500'
-
-        # g.trace(p and p.headString())
 
         c = self.c ; w = c.frame.body.bodyCtrl
 
@@ -2038,7 +1997,7 @@ class baseColorizer:
 
             if not self.incremental:
                 self.removeAllTags()
-                ### self.removeAllImages()
+                # self.removeAllImages()
 
             #@<< configure fonts >>
             #@+node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
@@ -2053,7 +2012,7 @@ class baseColorizer:
 
             # Configure fonts.
             w = c.frame.body.bodyCtrl
-            keys = default_font_dict.keys() ; keys.sort()
+            keys = sorted(default_font_dict)
             for key in keys:
                 option_name = default_font_dict[key]
                 # First, look for the language-specific setting, then the general setting.
@@ -2090,7 +2049,7 @@ class baseColorizer:
             #@+node:ekr.20031218072017.1603:<< configure tags >>
             # g.trace('configure tags',self.c.frame.body.bodyCtrl)
 
-            for name in default_colors_dict.keys(): # Python 2.1 support.
+            for name in default_colors_dict:
                 option_name,default_color = default_colors_dict[name]
                 option_color = c.config.getColor(option_name)
                 color = g.choose(option_color,option_color,default_color)
@@ -2185,7 +2144,7 @@ class baseColorizer:
             # The list of languages for which keywords exist.
             # Eventually we might just use language_delims_dict.keys()
             languages = [
-                "actionscript","ada","c","csharp","css","cweb","elisp","forth","html","java","latex","lua",
+                "actionscript","ada","c","csharp","css","cweb","elisp","html","java","latex","lua",
                 "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","shell","tcltk"]
 
             self.keywords = []
@@ -2199,9 +2158,6 @@ class baseColorizer:
                     if self.language==name: 
                         # g.trace("setting keywords for",name)
                         self.keywords = getattr(self, name + "_keywords")
-
-            # For forth.
-            self.nextForthWordIsNew = False
 
             # Color plain text unless we are under the control of @nocolor.
             # state = g.choose(self.flag,"normal","nocolor")
@@ -2218,7 +2174,7 @@ class baseColorizer:
 
             self.hyperCount = 0 # Number of hypertext tags
             self.count += 1
-            lines = string.split(self.allBodyText,'\n')
+            lines = self.allBodyText.split('\n')
             #@nonl
             #@-node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
             #@nl
@@ -2270,7 +2226,7 @@ class baseColorizer:
 
                 # Bug fix: 11/21/02: must test against None.
                 if leading != None and trailing != None:
-                    # print "leading,trailing:",leading,trailing
+                    # g.pr("leading,trailing:",leading,trailing)
                     leading_lines = leading
                     trailing_lines = trailing
                 else:
@@ -2299,7 +2255,7 @@ class baseColorizer:
                         # All lines match, and we must color _everything_.
                         # (several routine delete, then insert the text again,
                         # deleting all tags in the process).
-                        # print "recolor all"
+                        # g.pr("recolor all")
                         leading_lines = trailing_lines = 0
                     else:
                         i = 0
@@ -2312,7 +2268,7 @@ class baseColorizer:
                     #@nl
 
                 middle_lines = new_len - leading_lines - trailing_lines
-                # print "middle lines", middle_lines
+                # g.pr("middle lines", middle_lines)
 
                 #@<< clear leading_lines if middle lines involve @color or @recolor  >>
                 #@+node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
@@ -2443,7 +2399,7 @@ class baseColorizer:
     #@+node:ekr.20031218072017.1892:colorizeLine & allies
     def colorizeLine (self,s,state):
 
-        # print "line,inc,state,s:",self.line_index,self.incremental,state,s
+        # g.pr("line,inc,state,s:",self.line_index,self.incremental,state,s)
 
         s = g.toUnicode(s,g.app.tkEncoding) # 10/28/03
 
@@ -2691,16 +2647,12 @@ class baseColorizer:
     #@+node:ekr.20031218072017.1896:doNormalState
     def doNormalState (self,s,i):
 
-        # __pychecker__ = 'maxlines=500'
-
         ch = s[i] ; state = "normal"
-        assert(type(ch)==type(u""))
 
         if ch in string.ascii_letters or ch == '_' or (
             (ch == '\\' and self.language=="latex") or
             (ch in '/&<>' and self.language=="html") or
-            (ch == '$' and self.language=="rapidq") or
-            (self.language == 'forth' and ch in "`~!@#$%^&*()_+-={}|[];':\",./<>?")
+            (ch == '$' and self.language=="rapidq")
         ):
             #@        << handle possible keyword >>
             #@+middle:ekr.20031218072017.1897:Valid regardless of latex mode
@@ -2748,41 +2700,6 @@ class baseColorizer:
                 else:
                     j = i + 1
                 #@-node:ekr.20031218072017.1900:<< handle possible html keyword >>
-                #@nl
-            elif self.language == "forth":
-                #@    << handle possible forth keyword >>
-                #@+node:ekr.20041107093219.3:<< handle possible forth keyword >>
-                j = self.skip_id(s,i+1,chars="`~!@#$%^&*()-_=+[]{};:'\\\",./<>?")
-                word = s[i:j]
-
-                #print "word=%s" % repr(word)
-
-                if not self.case_sensitiveLanguage:
-                    word = word.lower()
-
-                if self.nextForthWordIsNew:
-                    #print "trying to bold the defined word '%s'" % word
-                    self.tag("bold", i, j)
-                    self.nextForthWordIsNew = False
-                else:
-                    if word in self.forth_definingwords:
-                        self.nextForthWordIsNew = True
-
-                    if word in self.forth_boldwords:
-                        self.tag("bold", i, j)
-                    elif word in self.forth_bolditalicwords:
-                        self.tag("bolditalic", i, j)
-                    elif word in self.forth_italicwords:
-                        self.tag("italic", i, j)
-                    elif word in self.forth_stringwords:
-                        self.tag("keyword", i, j-1)
-                        i = j - 1
-                        j, state = self.skip_string(s,j-1)
-                        self.tag("string",i,j)
-                        word = ''
-                    elif word in self.keywords:
-                        self.tag("keyword",i,j)
-                #@-node:ekr.20041107093219.3:<< handle possible forth keyword >>
                 #@nl
             else:
                 #@    << handle general keyword >>
@@ -2873,7 +2790,7 @@ class baseColorizer:
             #@        << handle single-line comment >>
             #@+middle:ekr.20031218072017.1897:Valid regardless of latex mode
             #@+node:ekr.20031218072017.1617:<< handle single-line comment >>
-            # print "single-line comment i,s:",i,s
+            # g.pr("single-line comment i,s:",i,s)
 
             if self.language == "cweb" and self.latex_cweb_comments:
                 j = i + len(self.single_comment_start)
@@ -3085,7 +3002,7 @@ class baseColorizer:
 
     def removeTagsFromLine (self):
 
-        # print "removeTagsFromLine",self.line_index
+        # g.pr("removeTagsFromLine",self.line_index)
         w = self.c.frame.body
         for tag in self.tags:
             w.tag_remove(tag,self.index(0),self.index("end")) # 10/27/03
@@ -3097,7 +3014,7 @@ class baseColorizer:
     #@+node:ekr.20050420083821:disable & enable
     def disable (self):
 
-        # print "disabling all syntax coloring"
+        # g.pr("disabling all syntax coloring")
         self.enabled=False
 
     def enable (self):
@@ -3144,7 +3061,6 @@ class baseColorizer:
         In Tk, this will cause all images to disappear.'''
 
         # for photo,image,line_index,i in self.image_references:
-            # try:
                 # s = self.allBodyText
                 # w = c.frame.body.bodyCtrl
                 # index = g.convertRowColToPythonIndex(s,line_index,i)
@@ -3155,57 +3071,41 @@ class baseColorizer:
 
         self.image_references = []
     #@-node:ekr.20031218072017.1944:removeAllImages (leoColor)
-    #@+node:ekr.20031218072017.1377:scanColorDirectives (leoColor)
+    #@+node:ekr.20080828103146.8:scanColorDirectives
     def scanColorDirectives(self,p):
 
-        """Scan position p and p's ancestors looking for @comment, @language and @root directives,
-        setting corresponding colorizer ivars.
-        """
+        '''Scan position p and p's ancestors looking for @comment, @language and @root directives,
+        setting corresponding colorizer ivars.'''
 
-        p = p.copy() ; c = self.c
-        if c == None: return # self.c may be None for testing.
+        c = self.c
+        if not c: return # May be None for testing.
 
-        if c.target_language:
-            c.target_language = c.target_language.lower()
-        self.language = language = c.target_language
-        self.comment_string = None
-        self.rootMode = None # None, "code" or "doc"
+        table = (
+            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+            ('root',        c.scanAtRootDirectives),
+        )
 
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            #@        << Test for @comment or @language >>
-            #@+node:ekr.20031218072017.1378:<< Test for @comment or @language >>
-            # @comment and @language may coexist in the same node.
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,func in table:
+            val = func(aList)
+            if val: d[key]=val
 
-            if theDict.has_key("comment"):
-                self.comment_string = theDict["comment"]
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        self.rootMode   = d.get('root') or None
 
-            if theDict.has_key("language"):
-                z = theDict["language"]
-                language,junk,junk,junk = g.set_language(z,0)
-                self.language = language
+        if lang_dict:
+            self.language       = lang_dict.get('language')
+            self.comment_string = lang_dict.get('comment')
+        else:
+            self.language       = c.target_language and c.target_language.lower()
+            self.comment_string = None
 
-            if theDict.has_key("comment") or theDict.has_key("language"):
-                break
-            #@-node:ekr.20031218072017.1378:<< Test for @comment or @language >>
-            #@nl
-            #@        << Test for @root, @root-doc or @root-code >>
-            #@+node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-            if theDict.has_key("root") and not self.rootMode:
-
-                root = theDict["root"]
-                if g.match_word(root,0,"@root-code"):
-                    self.rootMode = "code"
-                elif g.match_word(root,0,"@root-doc"):
-                    self.rootMode = "doc"
-                else:
-                    doc = c.config.at_root_bodies_start_in_doc_mode
-                    self.rootMode = g.choose(doc,"doc","code")
-            #@-node:ekr.20031218072017.1379:<< Test for @root, @root-doc or @root-code >>
-            #@nl
-
+        # g.trace('self.language',self.language)
         return self.language # For use by external routines.
-    #@-node:ekr.20031218072017.1377:scanColorDirectives (leoColor)
+    #@-node:ekr.20080828103146.8:scanColorDirectives
     #@+node:ekr.20041217041016:setFontFromConfig (colorizer)
     def setFontFromConfig (self):
 
@@ -3254,11 +3154,17 @@ class baseColorizer:
 
         p = p.copy() ; first = p.copy()
         self.killFlag = False
+
+        # New in Leo 4.6: @nocolor-node disables one node only.
+        theDict = g.get_directives_dict(p)
+        if 'nocolor-node' in theDict:
+            return False
+
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            no_color = theDict.has_key("nocolor")
-            color = theDict.has_key("color")
-            kill_color = theDict.has_key("killcolor")
+            no_color = 'nocolor' in theDict
+            color = 'color' in theDict
+            kill_color = 'killcolor' in theDict
             # A killcolor anywhere disables coloring.
             if kill_color:
                 self.killFlag = True
@@ -3314,7 +3220,10 @@ class baseColorizer:
     def skip_id(self,s,i,chars=None):
 
         n = len(s)
-        chars = chars and g.toUnicode(chars,encoding='ascii') or u''
+
+        if not g.isPython3:
+            chars = chars and g.toUnicode(chars,encoding='ascii') or unicode('')
+
         while i < n and (g.isWordChar(s[i]) or s[i] in chars):
                 i += 1
         return i
@@ -3356,10 +3265,6 @@ class baseColorizer:
     #@-node:ekr.20031218072017.2809:skip_string
     #@-node:ekr.20031218072017.2806:Utils
     #@-others
-
-class colorizer (baseColorizer):
-    """Leo's syntax colorer class"""
-    pass
 #@-node:ekr.20031218072017.2796:class colorizer
 #@+node:ekr.20031218072017.2218:class nullColorizer
 class nullColorizer (colorizer):

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="119" left="234" height="762" width="841"/>
+	<global_window_position top="64" left="481" height="847" width="696"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -60,7 +60,10 @@
 <v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 <v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
+<v t="ekr.20080619090226.4"><vh>rClick plugin</vh>
 <v t="bobjack.20080321133958.6"><vh>@thin rClick.py</vh></v>
+<v t="bobjack.20080614200920.7"><vh>@thin rClickBasePluginClasses.py</vh></v>
+</v>
 <v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
@@ -287,6 +290,7 @@
 <v t="edream.110203113231.302"><vh>@thin experimental/__wx_gui.py</vh></v>
 <v t="bob.20070910154126.2"><vh>@thin experimental/__wx_alt_gui.py</vh></v>
 <v t="ekr.20080112150934"><vh>@thin experimental/gtkGui.py</vh></v>
+<v t="ekr.20081004102201.679"><vh>@thin experimental/swing_gui.py</vh></v>
 </v>
 <v t="EKR.20040517075715"><vh>External editors &amp; Open With</vh>
 <v t="EKR.20040517075715.1"><vh>@thin mod_tempfname.py</vh></v>
@@ -314,6 +318,8 @@
 <v t="ekr.20070116074730"><vh>Gui plugins</vh>
 <v t="ekr.20061207074949"><vh>@thin cursesGui.py</vh></v>
 <v t="ekr.20070215164948"><vh>@thin ironPythonGui.py</vh></v>
+<v t="ekr.20081004102201.619"
+expanded="ekr.20081004102201.648,ekr.20081004102201.652,ekr.20081004102201.657,ekr.20081004172422.524,ekr.20081004172422.528,ekr.20081004172422.770,"><vh>@thin qtGui.py</vh></v>
 </v>
 <v t="ekr.20040722135402"><vh>Icon and status areas</vh>
 <v t="ekr.20060328125925"><vh>@thin chapter_hoist.py</vh></v>
@@ -349,6 +355,7 @@
 <v t="ekr.20060530091119"><vh>New colorizer</vh>
 <v t="ekr.20071010193720"
 marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
+<v t="ekr.20080707101341.1"><vh>@thin ../modes/forth.py</vh></v>
 </v>
 <v t="edream.110203113231.872"><vh>Nodes...</vh>
 <v t="edream.110203113231.873"><vh>@thin at_folder.py</vh></v>
@@ -704,22 +711,6 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
 </v>
-<v t="ekr.20060715100156"><vh>Shadow files plugin</vh>
-<v t="ekr.20060715100156.1"><vh>test zone</vh>
-<v t="ekr.20060715100156.2"><vh>@@button Do @test</vh>
-<v t="ekr.20060715100156.3"><vh>test propagate_changes_from_lines_without_sentinels_to_lines_with_sentinels</vh>
-<v t="ekr.20060715100156.4"><vh>@test basic replacement test</vh>
-<v t="ekr.20060715100156.5"><vh>before with sentinels</vh></v>
-<v t="ekr.20060715100156.6"><vh>after with sentinels</vh></v>
-<v t="ekr.20060715100156.7"><vh>changed without sentinels</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20060816094306"><vh>Note: @button shadow is in leoPy.leo</vh></v>
-<v t="ekr.20060715100156.8"><vh>@thin mod_shadow_core.py</vh></v>
-<v t="ekr.20060715100156.52"><vh>@thin mod_shadow.py</vh></v>
-</v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
 <v t="ekr.20071113084440.1"><vh>@thin test/syntax_error_plugin.py</vh></v>
 <v t="ekr.20071113085315"><vh>@thin test/failed_to_load_plugin.py</vh></v>
@@ -798,7 +789,6 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20040331071919.37"><vh>&lt;&lt; Indent Leo comments &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20070627132619"><vh>NewHeadline</vh></v>
 </v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
 <v t="ekr.20050817120850.1" tnodeList="ekr.20050817120850.1,ekr.20050817122915,ekr.20050822123348,ekr.20050817124859,ekr.20050817165745,ekr.20050822172321,ekr.20050817124859.1,ekr.20050817165745.1,ekr.20050818033610,ekr.20050818095347,ekr.20050819055746.1,ekr.20050820112549,ekr.20050822065754,ekr.20050822125824,ekr.20050822172321.1,ekr.20050825101903,ekr.20050818103031,ekr.20050817115636.2,ekr.20050825101321,ekr.20050818103441,ekr.20070305092828,ekr.20050817115636.4,ekr.20050817115636.5,ekr.20050817115636.6,ekr.20050820092312,ekr.20050817115636.8,ekr.20050817115636.9,ekr.20050817115636.7,ekr.20050820100547,ekr.20050820101355,ekr.20050820103029,ekr.20050820101522,ekr.20050820101355.1,ekr.20050820094818,ekr.20050820092312.1,ekr.20050817120850.10,ekr.20050817120850.11,ekr.20050818094118.2,ekr.20050818090152,ekr.20050818090152.1,ekr.20050817120850.98,ekr.20050817120850.99,ekr.20050817120850.94,ekr.20050817120850.95,ekr.20050817120850.96,ekr.20050817120850.108,ekr.20050817142135.1,ekr.20050817120850.143,ekr.20050817120850.144,ekr.20050817120850.141,ekr.20050817135706.1,ekr.20050817120850.157,ekr.20050817120850.158,ekr.20050818105023,ekr.20050817120850.15,ekr.20050817120850.12,ekr.20050817120850.14,ekr.20050818081715,ekr.20050819072001,ekr.20050819072001.1,ekr.20050817120850.13,ekr.20050818083045,ekr.20050821153838,ekr.20050818022030,ekr.20050818084920,ekr.20050818130249,ekr.20050818090907,ekr.20050817120850.32,ekr.20050817120850.34,ekr.20050817120850.39,ekr.20050817120850.42,ekr.20050817120850.44,ekr.20050817120850.46,ekr.20050817120850.48,ekr.20050817120850.62,ekr.20050817120850.64,ekr.20050817120850.74,ekr.20050817120850.78,ekr.20050817120850.86,ekr.20050817120850.92,ekr.20050817120850.162,ekr.20050817120850.102,ekr.20050817120850.106,ekr.20050817120850.110,ekr.20050817120850.122,ekr.20050817120850.124,ekr.20050817120850.126,ekr.20050817120850.130,ekr.20050817120850.132,ekr.20050817120850.138,ekr.20050817120850.28,ekr.20050817120850.147,ekr.20050817120850.18,ekr.20050817120850.20,ekr.20050817120850.40,ekr.20050817120850.54,ekr.20050817120850.82,ekr.20050817120850.100,ekr.20050817120850.105,ekr.20050817120850.120,ekr.20050817120850.36,ekr.20050817120850.58,ekr.20050817120850.60,ekr.20050817120850.66,ekr.20050817120850.24,ekr.20050817120850.22,ekr.20050817120850.50,ekr.20050817120850.52,ekr.20050817120850.56,ekr.20050818094118.1,ekr.20050817120850.68,ekr.20050817120850.134,ekr.20050817120850.145,ekr.20050817120850.151,ekr.20050817120850.26,ekr.20050817120850.76,ekr.20050817120850.80,ekr.20050817120850.88,ekr.20050817120850.112,ekr.20050817120850.128,ekr.20050817142135,ekr.20050817120850.153,ekr.20050817120850.155,ekr.20050817120850.30,ekr.20050817135706,ekr.20050817120850.160,ekr.20050818094954,ekr.20050818105023.1,ekr.20050817120850.84,ekr.20050817120850.90,ekr.20050818094954.1,ekr.20050817120850.165,ekr.20050817120850.116,ekr.20050817120850.70,ekr.20050817120850.72,ekr.20050817120850.164,ekr.20050817120850.114,ekr.20050817120850.118,ekr.20050817120850.149,ekr.20050817120850.159,ekr.20050817120850.140"><vh>@file leo_pdf.py</vh>
@@ -1032,6 +1022,137 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 </v>
 </v>
+<v t="ekr.20050805162550"><vh>@thin rst3.py</vh></v>
+<v t="ekr.20081004172422.855"><vh>REF</vh>
+<v t="ekr.20081004102201.1782"><vh>qleolite.py</vh></v>
+<v t="ekr.20081004172422.1"><vh>qllmain.ui</vh></v>
+<v t="ekr.20081004172422.3"><vh>ui_main.py</vh></v>
+<v t="ekr.20081004102201.1171"><vh>COPY gtkGui</vh>
+<v t="ekr.20081004102201.1172"><vh>gtkDialog</vh>
+<v t="ekr.20081004102201.1173"><vh> class leoGtkDialog</vh>
+<v t="ekr.20081004102201.1174"><vh>__init__ (tkDialog)</vh></v>
+<v t="ekr.20081004102201.1175"><vh>cancelButton, noButton, okButton, yesButton</vh></v>
+<v t="ekr.20081004102201.1176"><vh>center</vh></v>
+<v t="ekr.20081004102201.1177"><vh>createButtons</vh></v>
+<v t="ekr.20081004102201.1178"><vh>createMessageFrame</vh></v>
+<v t="ekr.20081004102201.1179"><vh>createTopFrame</vh></v>
+<v t="ekr.20081004102201.1180"><vh>onClose</vh></v>
+<v t="ekr.20081004102201.1181"><vh>run (gtkDialog)</vh></v>
+</v>
+<v t="ekr.20081004102201.1182"><vh>class gtkAboutLeo</vh>
+<v t="ekr.20081004102201.1183"><vh>gtkAboutLeo.__init__</vh></v>
+<v t="ekr.20081004102201.1184"><vh>gtkAboutLeo.createFrame</vh></v>
+<v t="ekr.20081004102201.1185"><vh>gtkAboutLeo.onAboutLeoEmail</vh></v>
+<v t="ekr.20081004102201.1186"><vh>gtkAboutLeo.onAboutLeoUrl</vh></v>
+<v t="ekr.20081004102201.1187"><vh>gtkAboutLeo: setArrowCursor, setDefaultCursor</vh></v>
+</v>
+<v t="ekr.20081004102201.1188"><vh>class gtkAskLeoID</vh>
+<v t="ekr.20081004102201.1189"><vh>gtkAskLeoID.__init__</vh></v>
+<v t="ekr.20081004102201.1190"><vh>gtkAskLeoID.createFrame</vh></v>
+<v t="ekr.20081004102201.1191"><vh>gtkAskLeoID.onButton</vh></v>
+<v t="ekr.20081004102201.1192"><vh>gtkAskLeoID.onKey</vh>
+<v t="ekr.20081004102201.1193"><vh>&lt;&lt; eliminate invalid characters &gt;&gt;</vh></v>
+<v t="ekr.20081004102201.1194"><vh>&lt;&lt; enable the ok button if there are 3 or more valid characters &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20081004102201.1195"><vh>class gtkAskOk</vh>
+<v t="ekr.20081004102201.1196"><vh>class gtkAskOk.__init__</vh></v>
+<v t="ekr.20081004102201.1197"><vh>class gtkAskOk.onKey</vh></v>
+</v>
+<v t="ekr.20081004102201.1198"><vh>class gtkAskOkCancelNumber</vh>
+<v t="ekr.20081004102201.1199"><vh>gtkAskOKCancelNumber.__init__</vh></v>
+<v t="ekr.20081004102201.1200"><vh>gtkAskOKCancelNumber.createFrame</vh></v>
+<v t="ekr.20081004102201.1201"><vh>gtkAskOKCancelNumber.okButton, cancelButton</vh></v>
+<v t="ekr.20081004102201.1202"><vh>gtkAskOKCancelNumber.onKey</vh>
+<v t="ekr.20081004102201.1203"><vh>&lt;&lt; eliminate non-numbers &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20081004102201.1204"><vh>class gtkAskOkCancelString</vh>
+<v t="ekr.20081004102201.1205"><vh>gtkAskOKCancelString.__init__</vh></v>
+<v t="ekr.20081004102201.1206"><vh>gtkAskOkCancelString.createFrame</vh></v>
+<v t="ekr.20081004102201.1207"><vh>gtkAskOkCancelString.okButton, cancelButton</vh></v>
+<v t="ekr.20081004102201.1208"><vh>gtkAskOkCancelString.onKey</vh></v>
+</v>
+<v t="ekr.20081004102201.1209"><vh>class gtkAskYesNo</vh>
+<v t="ekr.20081004102201.1210"><vh>gtkAskYesNo.__init__</vh></v>
+<v t="ekr.20081004102201.1211"><vh>gtkAskYesNo.onKey</vh></v>
+</v>
+<v t="ekr.20081004102201.1212"><vh>class gtkAskYesNoCancel</vh>
+<v t="ekr.20081004102201.1213"><vh>askYesNoCancel.__init__</vh></v>
+<v t="ekr.20081004102201.1214"><vh>askYesNoCancel.onKey</vh></v>
+<v t="ekr.20081004102201.1215"><vh>askYesNoCancel.noButton &amp; yesButton</vh></v>
+</v>
+<v t="ekr.20081004102201.1216"><vh>class gtkListboxDialog</vh>
+<v t="ekr.20081004102201.1217"><vh>gtkListboxDialog.__init__</vh></v>
+<v t="ekr.20081004102201.1218"><vh>addStdButtons</vh></v>
+<v t="ekr.20081004102201.1219"><vh>createFrame</vh></v>
+<v t="ekr.20081004102201.1220"><vh>destroy</vh></v>
+<v t="ekr.20081004102201.1221"><vh>hide</vh></v>
+<v t="ekr.20081004102201.1222"><vh>fillbox</vh></v>
+<v t="ekr.20081004102201.1223"><vh>go</vh></v>
+</v>
+<v t="ekr.20081004102201.1224"><vh>class gtkFileDialog</vh></v>
+</v>
+<v t="ekr.20081004102201.1225"><vh>gtkFind</vh>
+<v t="ekr.20081004102201.1226"><vh>class underlinedGtkButton</vh>
+<v t="ekr.20081004102201.1227"><vh>__init__</vh>
+<v t="ekr.20081004102201.1228"><vh>&lt;&lt; set self.hotKey if '&amp;' is in the string &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20081004102201.1229"><vh>bindHotKey</vh></v>
+<v t="ekr.20081004102201.1230"><vh>buttonCallback</vh></v>
+</v>
+<v t="ekr.20081004102201.1231"><vh>class gtkFindTab (findTab)</vh>
+<v t="ekr.20081004102201.1232"><vh> Birth</vh>
+<v t="ekr.20081004102201.1233"><vh>initGui</vh></v>
+<v t="ekr.20081004102201.1234"><vh>createFrame (tkFindTab)</vh>
+<v t="ekr.20081004102201.1235"><vh>&lt;&lt; Create the outer frames &gt;&gt;</vh></v>
+<v t="ekr.20081004102201.1236"><vh>&lt;&lt; Create the Find and Change panes &gt;&gt;</vh>
+<v t="ekr.20081004102201.1237"><vh>&lt;&lt; Bind Tab and control-tab &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20081004102201.1238"><vh>&lt;&lt; Create two columns of radio and checkboxes &gt;&gt;</vh></v>
+<v t="ekr.20081004102201.1239"><vh>&lt;&lt; Create two columns of buttons &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20081004102201.1240"><vh>createBindings (tkFindTab)</vh></v>
+<v t="ekr.20081004102201.1241"><vh>tkFindTab.init</vh>
+<v t="ekr.20081004102201.1242"><vh>&lt;&lt; set find/change widgets &gt;&gt;</vh></v>
+<v t="ekr.20081004102201.1243"><vh>&lt;&lt; set radio buttons from ivars &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20081004102201.1244"><vh>Support for minibufferFind class (tkFindTab)</vh>
+<v t="ekr.20081004102201.1245"><vh>getOption</vh></v>
+<v t="ekr.20081004102201.1246"><vh>setOption</vh></v>
+<v t="ekr.20081004102201.1247"><vh>toggleOption</vh></v>
+</v>
+</v>
+<v t="ekr.20081004102201.1248"><vh>class gtkSpellTab</vh>
+<v t="ekr.20081004102201.1249"><vh>gtkSpellTab.__init__</vh></v>
+<v t="ekr.20081004102201.1250"><vh>createBindings</vh></v>
+<v t="ekr.20081004102201.1251"><vh>createFrame</vh>
+<v t="ekr.20081004102201.1252"><vh>&lt;&lt; Create the outer frames &gt;&gt;</vh></v>
+<v t="ekr.20081004102201.1253"><vh>&lt;&lt; Create the text and suggestion panes &gt;&gt;</vh></v>
+<v t="ekr.20081004102201.1254"><vh>&lt;&lt; Create the spelling buttons &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20081004102201.1255"><vh>Event handlers</vh>
+<v t="ekr.20081004102201.1256"><vh>onAddButton</vh></v>
+<v t="ekr.20081004102201.1257"><vh>onChangeButton &amp; onChangeThenFindButton</vh></v>
+<v t="ekr.20081004102201.1258"><vh>onFindButton</vh></v>
+<v t="ekr.20081004102201.1259"><vh>onHideButton</vh></v>
+<v t="ekr.20081004102201.1260"><vh>onIgnoreButton</vh></v>
+<v t="ekr.20081004102201.1261"><vh>onMap</vh></v>
+<v t="ekr.20081004102201.1262"><vh>onSelectListBox</vh></v>
+</v>
+<v t="ekr.20081004102201.1263"><vh>Helpers</vh>
+<v t="ekr.20081004102201.1264"><vh>bringToFront</vh></v>
+<v t="ekr.20081004102201.1265"><vh>fillbox</vh></v>
+<v t="ekr.20081004102201.1266"><vh>getSuggestion</vh></v>
+<v t="ekr.20081004102201.1267"><vh>updateButtons (spellTab)</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20081004102201.619"
+expanded="ekr.20081004102201.648,ekr.20081004102201.652,ekr.20081004102201.657,ekr.20081004172422.524,ekr.20081004172422.528,ekr.20081004172422.770,"><vh>@thin qtGui.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040517075715"></t>
@@ -1825,7 +1946,7 @@ def WriteTreeAsAsc(vnode, ascFileN):
             v = v.threadNext()
 
     CleanUp()
-    g.es('Wrote: '+`ascFileN`)
+    g.es('Wrote: '+ repr(ascFileN))
 
 
 
@@ -5015,7 +5136,7 @@ If a plugin catches exceptions during startup it should do one of the following:
             import leo.core.leoGlobals as g
             return g
         except ImportError:
-            print 'can not import leo.core.leoGlobals as leoGlobals from %s' % (plugins_path)
+            g.pr('can not import leo.core.leoGlobals as leoGlobals from %s' % (plugins_path))
             return None</t>
 <t tx="ekr.20050329080427">def setPaths(self):
     """Set paths to the plugin locations"""
@@ -6047,7 +6168,7 @@ try:
 
     # General imports...
     import StringIO
-    import time
+    # import time
     import types
 except ImportError:
     docutils = None
@@ -6117,7 +6238,7 @@ output = None
     if 0: # Not useful: story is a list of reportlab.platypus.para.Para objects.
         # Use the trace in createParagraph instead.
         g.trace('story','*'*40)
-        print story        
+        g.pr(story)
 
     # Generate self.output.  Gets sent to reportlab.
     self.output = self.createPDF_usingPlatypus(story)
@@ -6247,12 +6368,12 @@ if docutils:
     if 0:
         s = text.split('&gt;')
         s = '&gt;\n'.join(s)
-        print
+        g.pr('')
         if 1: # just print the text.
-            print s
+            g.pr(s)
         else:
             g.trace('%8s\n\n%s' % (style,s))
-        print
+        g.pr('')
 
     style = self.styleSheet [style]
 
@@ -7154,12 +7275,12 @@ def peek (self,kind):
 - Almost all the grunt work is done.</t>
 <t tx="ekr.20050818081715">def dumpContext (self):
 
-    print ; print '-' * 40
-    print 'Dump of context'
+    g.pr('\n','-' * 40)
+    g.pr('Dump of context')
 
     i = 0
     for bunch in self.context:
-        print '%2d %s' % (i,bunch)
+        g.pr('%2d %s' % (i,bunch))
         i += 1</t>
 <t tx="ekr.20050818083045">def inContext (self,kind):
 
@@ -7297,17 +7418,17 @@ bunch = Bunch</t>
 
     nkeys = d.keys() ; nkeys.sort()
 
-    print ; print '-' * 30
-    print 'dump of node %s\n' % (g.choose(tag,'(%s)' % tag,''))
+    g.pr('\n','-' * 30)
+    g.pr('dump of node %s\n' % (g.choose(tag,'(%s)' % tag,'')))
 
-    print 'class',node.__class__
+    g.pr('class',node.__class__)
 
     for nkey in nkeys:
         if nkey in keys:
             val = d.get(nkey)
-            print nkey,':',g.toString(val,verbose=False,indent='\t')
+            g.pr(nkey,':',g.toString(val,verbose=False,indent='\t'))
 
-    print ; print 'done', '-' * 25</t>
+    g.pr('\ndone', '-' * 25)</t>
 <t tx="ekr.20050819072001.1">keys = (
     #'anonymous_refs'
     #'anonymous_targets'
@@ -7357,7 +7478,7 @@ bunch = Bunch</t>
         pagesize=reportlab.lib.pagesizes.A4)
 
     # The 'real' code is doc.build(story)
-    self.buildFromIntermediateFile(s,story,visitor)
+    visitor.buildFromIntermediateFile(s,story,visitor)
 
     return out.getvalue()</t>
 <t tx="ekr.20050820092312.1">def putParaFromIntermediateFile (self,lines,style):
@@ -7384,10 +7505,10 @@ bunch = Bunch</t>
     for line in lines:
         if line:
             if line.startswith('createParagraph:'):
+                style = line[len('createParagraph:'):].strip()
                 if para:
                     self.putParaFromIntermediateFile(para,style)
                     para = []
-                style = line[len('createParagraph:'):].strip()
             elif line.startswith('starttag:') or line.startswith('..'):
                 pass
             else:
@@ -10000,42 +10121,6 @@ return(0);
 <t tx="ekr.20060514125256"></t>
 <t tx="ekr.20060530091119"></t>
 <t tx="ekr.20060703162826"></t>
-<t tx="ekr.20060715100156"></t>
-<t tx="ekr.20060715100156.1"></t>
-<t tx="ekr.20060715100156.2">@color
-
-import leo.core.leoTest as leoTest
-
-print "\nStart of Do @test"
-leoTest.doTests(c,all=False)
-print "End of Do @test"</t>
-<t tx="ekr.20060715100156.3">@doc
-This is the most complicated part of the plugin, and needs most testing.
-
-All the tags should be tested at least once (equal, replace, delete, insert).
-
-The replace, delete, insert operations should happen at least once:
-    1. At the beginning of a node.
-    2. In the middle of a node.
-    3. At the end of a node.
-    
-
-For the delete and replace operators we must also test the case that the
-deletion or replacement spans more than one block.</t>
-<t tx="ekr.20060715100156.4">import mod_shadow
-reload(mod_shadow)
-mod_shadow.do_test_propagate_changes_Leo(c)
-</t>
-<t tx="ekr.20060715100156.5">#@string1
-line 1
-line 2
-</t>
-<t tx="ekr.20060715100156.6">#@string2
-xxx
-</t>
-<t tx="ekr.20060715100156.7">xxx
-</t>
-<t tx="ekr.20060816094306"></t>
 <t tx="ekr.20060827163237">name = "scripts.leo"
 fileName = g.os_path_join(g.app.loadDir,"..","scripts",name)
 ok,frame = g.openWithFileName(fileName,c)
@@ -10048,7 +10133,6 @@ if not ok:
 <t tx="ekr.20061023142737.1"></t>
 <t tx="ekr.20070116074730"></t>
 <t tx="ekr.20070305092828">@others</t>
-<t tx="ekr.20070627132619"></t>
 <t tx="ekr.20070718131416"></t>
 <t tx="ekr.20071006112739"></t>
 <t tx="ekr.20071029090815"># This plugins has been disabled until it can be rewritten to handle @enabled-plugins nodes.</t>
@@ -10102,6 +10186,1814 @@ for p in p.self_and_subtree_iter():
         c.setBodyString(p,result)
 
 </t>
+<t tx="ekr.20080619090226.4"></t>
+<t tx="ekr.20081004102201.1171"></t>
+<t tx="ekr.20081004102201.1172"></t>
+<t tx="ekr.20081004102201.1173">class leoGtkDialog:
+    """The base class for all Leo gtk dialogs"""
+    @others
+</t>
+<t tx="ekr.20081004102201.1174">def __init__(self,c,title="",resizeable=True,canClose=True,show=True):
+
+    """Constructor for the leoGtkDialog class."""
+
+    self.answer = None # Value returned from run()
+    self.c = c # For use by delayed focus methods in c.frame.
+    self.resizeable = resizeable
+    self.title = title
+    self.modal = None
+
+    self.buttonsFrame = None # Frame to hold typical dialog buttons.
+    self.defaultButtonCommand = None  # Command to call when user closes the window by clicking the close box.
+    self.frame = None # The outermost frame.
+    self.root = None # g.app.root
+    self.showFlag = show
+    self.top = None # The toplevel widget.
+    self.focus_widget = None # The widget to get the first focus.
+    self.canClose = canClose
+</t>
+<t tx="ekr.20081004102201.1175">def cancelButton(self):
+
+    """Do default click action in cancel button."""
+
+    self.answer="cancel"
+    self.top.destroy()
+
+def noButton(self):
+
+    """Do default click action in no button."""
+
+    self.answer="no"
+    self.top.destroy()
+
+def okButton(self):
+
+    """Do default click action in ok button."""
+
+    self.answer="ok"
+    self.top.destroy()
+
+def yesButton(self):
+
+    """Do default click action in yes button."""
+
+    self.answer="yes"
+    self.top.destroy()
+</t>
+<t tx="ekr.20081004102201.1176">def center(self):
+
+    """Center any leoGtkDialog."""
+
+    g.app.gui.center_dialog(self.top)
+</t>
+<t tx="ekr.20081004102201.1177">def createButtons (self,buttons):
+
+    """Create a row of buttons.
+
+    buttons is a list of dictionaries containing the properties of each button."""
+
+    assert(self.frame)
+    self.buttonsFrame = f = gtk.Frame(self.top)
+    f.pack(side="top",padx=30)
+
+    # Buttons is a list of dictionaries, with an empty dictionary at the end if there is only one entry.
+    buttonList = []
+    for d in buttons:
+        text = d.get("text","&lt;missing button name&gt;")
+        isDefault = d.get("default",False)
+        underline = d.get("underline",0)
+        command = d.get("command",None)
+        bd = g.choose(isDefault,4,2)
+
+        b = gtk.Button(f,width=6,text=text,bd=bd,underline=underline,command=command)
+        b.pack(side="left",padx=5,pady=10)
+        buttonList.append(b)
+
+        if isDefault and command:
+            self.defaultButtonCommand = command
+
+    return buttonList
+</t>
+<t tx="ekr.20081004102201.1178">def createMessageFrame (self,message):
+
+    """Create a frame containing a gtk.Label widget."""
+
+    label = gtk.Label(self.frame,text=message)
+    label.pack(pady=10)
+</t>
+<t tx="ekr.20081004102201.1179">def createTopFrame(self):
+
+    """Create the top-level widget for a leoGtkDialog."""
+
+    if g.app.unitTesting: return
+
+    self.root = g.app.root
+    # g.trace("leoGtkDialog",'root',self.root)
+
+    self.top = gtk.Window() ### Tk.Toplevel(self.root)
+    # self.top.title(self.title)
+
+    if not self.resizeable:
+        self.top.resizable(0,0) # neither height or width is resizable.
+
+    self.frame = get.Frame() ### self.top)
+    self.frame.pack(side="top",expand=1,fill="both")
+
+    if not self.canClose:
+        self.top.protocol("WM_DELETE_WINDOW", self.onClose)
+
+    # Do this at idle time.
+    def attachIconCallback(top=self.top):
+        g.app.gui.attachLeoIcon(top)
+
+    ### self.top.after_idle(attachIconCallback)
+</t>
+<t tx="ekr.20081004102201.1180">def onClose (self):
+
+    """Disable all attempts to close this frame with the close box."""
+
+    pass
+</t>
+<t tx="ekr.20081004102201.1181">def run (self,modal):
+
+    """Run a leoGtkDialog."""
+
+    if g.app.unitTesting: return None
+
+    c = self.c ; self.modal = modal
+
+    self.center() # Do this after all packing complete.
+    if self.showFlag:
+        self.top.lift()
+    else:
+        self.top.withdraw()
+
+    # Get all keystrokes.
+    if self.modal:
+        self.top.grab_set() # Make the dialog a modal dialog.
+
+    if self.focus_widget == None:
+        self.focus_widget = self.top
+
+    if c:
+        c.widgetWantsFocusNow(self.focus_widget)
+        c.outerUpdate()
+
+    self.root.wait_window(self.top)
+
+    if self.modal:
+        return self.answer
+    else:
+        return None
+</t>
+<t tx="ekr.20081004102201.1182">class gtkAboutLeo (leoGtkDialog):
+
+    """A class that creates the gtk About Leo dialog."""
+
+    @others
+</t>
+<t tx="ekr.20081004102201.1183">def __init__ (self,c,version,theCopyright,url,email):
+
+    """Create a gtk About Leo dialog."""
+
+    leoGtkDialog.__init__(self,c,"About Leo",resizeable=True) # Initialize the base class.
+
+    if g.app.unitTesting: return
+
+    self.copyright = theCopyright
+    self.email = email
+    self.url = url
+    self.version = version
+
+    c.inCommand = False # Allow the app to close immediately.
+
+    self.createTopFrame()
+    self.createFrame()
+</t>
+<t tx="ekr.20081004102201.1184">def createFrame (self):
+
+    """Create the frame for an About Leo dialog."""
+
+    if g.app.unitTesting: return
+
+    frame = self.frame
+    theCopyright = self.copyright ; email = self.email
+    url = self.url ; version = self.version
+
+    # Calculate the approximate height &amp; width.
+    lines = theCopyright.split('\n')
+    height = len(lines) + 8 # Add lines for version,url,email,spacing.
+    width = 0
+    for line in lines:
+        width = max(width,len(line))
+    width = max(width,len(url))
+    width += 10 # 9/9/02
+
+    frame.pack(padx=6,pady=4)
+
+    self.text = w = g.app.gui.plainTextWidget(
+        frame,height=height,width=width,bd=0,bg=frame.cget("background"))
+    w.pack(pady=10)
+
+    # try:
+        # bitmap_name = g.os_path_join(g.app.loadDir,"..","Icons","Leoapp.GIF") # 5/12/03
+        # image = Tk.PhotoImage(file=bitmap_name)
+        # w.image_create("1.0",image=image,padx=10)
+    # except Exception:
+        # pass # This can sometimes happen for mysterious reasons.
+
+    w.insert("end",version) #,tag="version")
+    w.tag_add('version','end-%dc' %(len(version)+1),'end-1c')
+    w.insert("end",theCopyright) #,tag="copyright")
+    w.tag_add('copyright','end-%dc' %(len(theCopyright)+1),'end-1c')
+    w.insert("end",'\n')
+    w.insert("end",url)
+    w.tag_add('url','end-%dc' %(len(url)+1),'end-1c')
+    w.insert("end",'\n')
+    w.insert("end",email)
+    w.tag_add('url','end-%dc' %(len(email)+1),'end-1c')
+
+    w.tag_config("version",justify="center")
+    w.tag_config("copyright",justify="center",spacing1="3")
+    w.tag_config("url",underline=1,justify="center",spacing1="10")
+
+    c.tag_bind(w,"url","&lt;Button-1&gt;",self.onAboutLeoUrl)
+    c.tag_bind(w,"url","&lt;Enter&gt;",self.setArrowCursor)
+    c.tag_bind(w,"url","&lt;Leave&gt;",self.setDefaultCursor)
+
+    w.tag_config("email",underline=1,justify="center",spacing1="10")
+    c.tag_bind(w,"email","&lt;Button-1&gt;",self.onAboutLeoEmail)
+    c.tag_bind(w,"email","&lt;Enter&gt;",self.setArrowCursor)
+    c.tag_bind(w,"email","&lt;Leave&gt;",self.setDefaultCursor)
+
+    w.configure(state="disabled")
+</t>
+<t tx="ekr.20081004102201.1185">def onAboutLeoEmail(self,event=None):
+
+    """Handle clicks in the email link in an About Leo dialog."""
+
+    try:
+        import webbrowser
+        webbrowser.open("mailto:" + self.email)
+    except:
+        g.es("not found:",self.email)
+</t>
+<t tx="ekr.20081004102201.1186">def onAboutLeoUrl(self,event=None):
+
+    """Handle clicks in the url link in an About Leo dialog."""
+
+    try:
+        import webbrowser
+        webbrowser.open(self.url)
+    except:
+        g.es("not found:",self.url)
+</t>
+<t tx="ekr.20081004102201.1187">def setArrowCursor (self,event=None):
+
+    """Set the cursor to an arrow in an About Leo dialog."""
+
+    self.text.configure(cursor="arrow")
+
+def setDefaultCursor (self,event=None):
+
+    """Set the cursor to the default cursor in an About Leo dialog."""
+
+    self.text.configure(cursor="xterm")
+</t>
+<t tx="ekr.20081004102201.1188">class gtkAskLeoID (leoGtkDialog):
+
+    """A class that creates the gtk About Leo dialog."""
+
+    @others
+</t>
+<t tx="ekr.20081004102201.1189">def __init__(self,c=None):
+
+    """Create the Leo Id dialog."""
+
+    # Initialize the base class: prevent clicks in the close box from closing.
+    leoGtkDialog.__init__(self,c,"Enter unique id",resizeable=False,canClose=False)
+
+    if g.app.unitTesting: return
+
+    self.id_entry = None
+    self.answer = None
+
+    self.createTopFrame()
+    c.bind(self.top,"&lt;Key&gt;", self.onKey)
+
+    message = (
+        "leoID.txt not found\n\n" +
+        "Please enter an id that identifies you uniquely.\n" +
+        "Your cvs login name is a good choice.\n\n" +
+        "Your id must contain only letters and numbers\n" +
+        "and must be at least 3 characters in length.")
+    self.createFrame(message)
+    self.focus_widget = self.id_entry
+
+    buttons = {"text":"OK","command":self.onButton,"default":True}, # Singleton tuple.
+    buttonList = self.createButtons(buttons)
+    self.ok_button = buttonList[0]
+    self.ok_button.configure(state="disabled")
+</t>
+<t tx="ekr.20081004102201.1190">def createFrame(self,message):
+
+    """Create the frame for the Leo Id dialog."""
+
+    if g.app.unitTesting: return
+
+    f = self.frame
+
+    label = gtk.Label(f,text=message)
+    label.pack(pady=10)
+
+    self.id_entry = text = gtk.Entry(f,width=20)
+    text.pack()
+</t>
+<t tx="ekr.20081004102201.1191">def onButton(self):
+
+    """Handle clicks in the Leo Id close button."""
+
+    s = self.id_entry.get().strip()
+    if len(s) &lt; 3:  # Require at least 3 characters in an id.
+        return
+
+    self.answer = g.app.leoID = s
+
+    self.top.destroy() # terminates wait_window
+    self.top = None
+</t>
+<t tx="ekr.20081004102201.1192">def onKey(self,event):
+
+    """Handle keystrokes in the Leo Id dialog."""
+
+    &lt;&lt; eliminate invalid characters &gt;&gt;
+    &lt;&lt; enable the ok button if there are 3 or more valid characters &gt;&gt;
+
+    ch = event.char.lower()
+    if ch in ('\n','\r'):
+        self.onButton()
+    return "break"
+</t>
+<t tx="ekr.20081004102201.1193">e = self.id_entry
+s = e.get().strip()
+i = 0 ; ok = True
+while i &lt; len(s):
+    ch = s[i]
+    if not ch.isalnum():
+        e.delete(str(i))
+        s = e.get()
+        ok = False
+    else:
+        i += 1
+if not ok: return
+</t>
+<t tx="ekr.20081004102201.1194">e = self.id_entry
+b = self.ok_button
+
+if len(e.get().strip()) &gt;= 3:
+    b.configure(state="normal")
+else:
+    b.configure(state="disabled")
+</t>
+<t tx="ekr.20081004102201.1195">class gtkAskOk(leoGtkDialog):
+
+    """A class that creates a gtk dialog with a single OK button."""
+
+    @others
+</t>
+<t tx="ekr.20081004102201.1196">def __init__ (self,c,title,message=None,text="Ok",resizeable=False):
+
+    """Create a dialog with one button"""
+
+    leoGtkDialog.__init__(self,c,title,resizeable) # Initialize the base class.
+
+    if g.app.unitTesting: return
+
+    self.text = text
+    self.createTopFrame()
+    c.bind(self.top,"&lt;Key&gt;", self.onKey)
+
+    if message:
+        self.createMessageFrame(message)
+
+    buttons = {"text":text,"command":self.okButton,"default":True}, # Singleton tuple.
+    self.createButtons(buttons)
+</t>
+<t tx="ekr.20081004102201.1197">def onKey(self,event):
+
+    """Handle Key events in askOk dialogs."""
+
+    ch = event.char.lower()
+
+    if ch in (self.text[0].lower(),'\n','\r'):
+        self.okButton()
+
+    return "break"
+</t>
+<t tx="ekr.20081004102201.1198">class  gtkAskOkCancelNumber (leoGtkDialog):
+
+    """Create and run a modal gtk dialog to get a number."""
+
+    @others
+</t>
+<t tx="ekr.20081004102201.1199">def __init__ (self,c,title,message):
+
+    """Create a number dialog"""
+
+    leoGtkDialog.__init__(self,c,title,resizeable=False) # Initialize the base class.
+
+    if g.app.unitTesting: return
+
+    self.answer = -1
+    self.number_entry = None
+
+    self.createTopFrame()
+    c.bind(self.top,"&lt;Key&gt;", self.onKey)
+
+    self.createFrame(message)
+    self.focus_widget = self.number_entry
+
+    buttons = (
+            {"text":"Ok",    "command":self.okButton,     "default":True},
+            {"text":"Cancel","command":self.cancelButton} )
+    buttonList = self.createButtons(buttons)
+    self.ok_button = buttonList[0] # Override the default kind of Ok button.
+</t>
+<t tx="ekr.20081004102201.1200">def createFrame (self,message):
+
+    """Create the frame for a number dialog."""
+
+    if g.app.unitTesting: return
+
+    c = self.c
+
+    lab = gtk.Label(self.frame,text=message)
+    lab.pack(pady=10,side="left")
+
+    self.number_entry = w = gtk.Entry(self.frame,width=20)
+    w.pack(side="left")
+
+    c.set_focus(w)
+</t>
+<t tx="ekr.20081004102201.1201">def okButton(self):
+
+    """Handle clicks in the ok button of a number dialog."""
+
+    s = self.number_entry.get().strip()
+
+    try:
+        self.answer=int(s)
+    except:
+        self.answer=-1 # Cancel the operation.
+
+    self.top.destroy()
+
+def cancelButton(self):
+
+    """Handle clicks in the cancel button of a number dialog."""
+
+    self.answer=-1
+    self.top.destroy()
+</t>
+<t tx="ekr.20081004102201.1202">def onKey (self,event):
+
+    &lt;&lt; eliminate non-numbers &gt;&gt;
+
+    ch = event.char.lower()
+
+    if ch in ('o','\n','\r'):
+        self.okButton()
+    elif ch == 'c':
+        self.cancelButton()
+
+    return "break"
+</t>
+<t tx="ekr.20081004102201.1203">e = self.number_entry
+s = e.get().strip()
+
+i = 0
+while i &lt; len(s):
+    ch = s[i]
+    if not ch.isdigit():
+        e.delete(str(i))
+        s = e.get()
+    else:
+        i += 1
+</t>
+<t tx="ekr.20081004102201.1204">class  gtkAskOkCancelString (leoGtkDialog):
+
+    """Create and run a modal gtk dialog to get a string."""
+
+    @others
+</t>
+<t tx="ekr.20081004102201.1205">def __init__ (self,c,title,message):
+
+    """Create a number dialog"""
+
+    leoGtkDialog.__init__(self,c,title,resizeable=False) # Initialize the base class.
+
+    if g.app.unitTesting: return
+
+    self.answer = -1
+    self.number_entry = None
+
+    self.createTopFrame()
+    c.bind(self.top,"&lt;Key&gt;", self.onKey)
+
+    self.createFrame(message)
+    self.focus_widget = self.number_entry
+
+    buttons = (
+            {"text":"Ok",    "command":self.okButton,     "default":True},
+            {"text":"Cancel","command":self.cancelButton} )
+    buttonList = self.createButtons(buttons)
+    self.ok_button = buttonList[0] # Override the default kind of Ok button.
+</t>
+<t tx="ekr.20081004102201.1206">def createFrame (self,message):
+
+    """Create the frame for a number dialog."""
+
+    if g.app.unitTesting: return
+
+    c = self.c
+
+    lab = gtk.Label(self.frame,text=message)
+    lab.pack(pady=10,side="left")
+
+    self.number_entry = w = gtk.Entry(self.frame,width=20)
+    w.pack(side="left")
+
+    c.set_focus(w)
+</t>
+<t tx="ekr.20081004102201.1207">def okButton(self):
+
+    """Handle clicks in the ok button of a string dialog."""
+
+    self.answer = self.number_entry.get().strip()
+    self.top.destroy()
+
+def cancelButton(self):
+
+    """Handle clicks in the cancel button of a string dialog."""
+
+    self.answer=''
+    self.top.destroy()
+</t>
+<t tx="ekr.20081004102201.1208">def onKey (self,event):
+
+    ch = event.char.lower()
+
+    if ch in ('o','\n','\r'):
+        self.okButton()
+    elif ch == 'c':
+        self.cancelButton()
+
+    return "break"
+</t>
+<t tx="ekr.20081004102201.1209">class gtkAskYesNo (leoGtkDialog):
+
+    """A class that creates a gtk dialog with two buttons: Yes and No."""
+
+    @others
+</t>
+<t tx="ekr.20081004102201.1210">def __init__ (self,c,title,message=None,resizeable=False):
+
+    """Create a dialog having yes and no buttons."""
+
+    leoGtkDialog.__init__(self,c,title,resizeable) # Initialize the base class.
+
+    if g.app.unitTesting: return
+
+    self.createTopFrame()
+    c.bind(self.top,"&lt;Key&gt;",self.onKey)
+
+    if message:
+        self.createMessageFrame(message)
+
+    buttons = (
+        {"text":"Yes","command":self.yesButton,  "default":True},
+        {"text":"No", "command":self.noButton} )
+    self.createButtons(buttons)
+</t>
+<t tx="ekr.20081004102201.1211">def onKey(self,event):
+
+    """Handle keystroke events in dialogs having yes and no buttons."""
+
+    ch = event.char.lower()
+
+    if ch in ('y','\n','\r'):
+        self.yesButton()
+    elif ch == 'n':
+        self.noButton()
+
+    return "break"
+</t>
+<t tx="ekr.20081004102201.1212">class gtkAskYesNoCancel(leoGtkDialog):
+
+    """A class to create and run gtk dialogs having three buttons.
+
+    By default, these buttons are labeled Yes, No and Cancel."""
+
+    @others
+</t>
+<t tx="ekr.20081004102201.1213">def __init__ (self,c,title,
+    message=None,
+    yesMessage="Yes",
+    noMessage="No",
+    defaultButton="Yes",
+    resizeable=False):
+
+    """Create a dialog having three buttons."""
+
+    leoGtkDialog.__init__(self,c,title,resizeable,canClose=False) # Initialize the base class.
+
+    if g.app.unitTesting: return
+
+    self.yesMessage,self.noMessage = yesMessage,noMessage
+    self.defaultButton = defaultButton
+
+    self.createTopFrame()
+    c.bind(self.top,"&lt;Key&gt;",self.onKey)
+
+    if message:
+        self.createMessageFrame(message)
+
+    buttons = (
+        {"text":yesMessage,"command":self.yesButton,   "default":yesMessage==defaultButton},
+        {"text":noMessage, "command":self.noButton,    "default":noMessage==defaultButton},
+        {"text":"Cancel",  "command":self.cancelButton,"default":"Cancel"==defaultButton} )
+    self.createButtons(buttons)
+</t>
+<t tx="ekr.20081004102201.1214">def onKey(self,event):
+
+    """Handle keystrokes in dialogs with three buttons."""
+
+    ch = event.char.lower()
+
+    if ch in ('\n','\r'):
+        ch = self.defaultButton[0].lower()
+
+    if ch == self.yesMessage[0].lower():
+        self.yesButton()
+    elif ch == self.noMessage[0].lower():
+        self.noButton()
+    elif ch == 'c':
+        self.cancelButton()
+
+    return "break"
+</t>
+<t tx="ekr.20081004102201.1215">def noButton(self):
+
+    """Handle clicks in the 'no' (second) button in a dialog with three buttons."""
+
+    self.answer=self.noMessage.lower()
+    self.top.destroy()
+
+def yesButton(self):
+
+    """Handle clicks in the 'yes' (first) button in a dialog with three buttons."""
+
+    self.answer=self.yesMessage.lower()
+    self.top.destroy()
+</t>
+<t tx="ekr.20081004102201.1216">class gtkListBoxDialog (leoGtkDialog):
+
+    """A base class for gtk dialogs containing a gtk Listbox"""
+
+    @others
+</t>
+<t tx="ekr.20081004102201.1217">def __init__ (self,c,title,label):
+
+    """Constructor for the base listboxDialog class."""
+
+    leoGtkDialog.__init__(self,c,title,resizeable=True) # Initialize the base class.
+
+    if g.app.unitTesting: return
+
+    self.createTopFrame()
+    self.top.protocol("WM_DELETE_WINDOW", self.destroy)
+
+    # Initialize common ivars.
+    self.label = label
+    self.positionList = []
+    self.buttonFrame = None
+
+    # Fill in the frame.
+    self.createFrame()
+    self.fillbox()
+
+    # Make the common bindings after creating self.box.
+    c.bind(self.box,"&lt;Double-Button-1&gt;",self.go)
+</t>
+<t tx="ekr.20081004102201.1218">def addStdButtons (self,frame):
+
+    """Add stanadard buttons to a listBox dialog."""
+
+    # Create the ok and cancel buttons.
+    self.ok = ok = gtk.Button(frame,text="Go",width=6,command=self.go)
+    self.hide = hide = gtk.Button(frame,text="Hide",width=6,command=self.hide)
+
+    ok.pack(side="left",pady=2,padx=5)
+    hide.pack(side="left",pady=2,padx=5)
+</t>
+<t tx="ekr.20081004102201.1219">def createFrame(self):
+
+    """Create the essentials of a listBoxDialog frame
+
+    Subclasses will add buttons to self.buttonFrame"""
+
+    if g.app.unitTesting: return
+
+    self.outerFrame = f = gtk.Frame(self.frame)
+    f.pack(expand=1,fill="both")
+
+    if self.label:
+        labf = gtk.Frame(f)
+        labf.pack(pady=2)
+        lab = gtk.Label(labf,text=self.label)
+        lab.pack()
+
+    f2 = gtk.Frame(f)
+    f2.pack(expand=1,fill="both")
+
+    self.box = box = gtk.Listbox(f2,height=20,width=30)
+    box.pack(side="left",expand=1,fill="both")
+
+    bar = gtk.Scrollbar(f2)
+    bar.pack(side="left", fill="y")
+
+    bar.config(command=box.yview)
+    box.config(yscrollcommand=bar.set)
+</t>
+<t tx="ekr.20081004102201.1220">def destroy (self,event=None):
+
+    """Hide, do not destroy, a listboxDialog window
+
+    subclasses may override to really destroy the window"""
+
+    self.top.withdraw() # Don't allow this window to be destroyed.
+</t>
+<t tx="ekr.20081004102201.1221">def hide (self):
+
+    """Hide a list box dialog."""
+
+    self.top.withdraw()
+</t>
+<t tx="ekr.20081004102201.1222">def fillbox(self,event=None):
+
+    """Fill a listbox from information.
+
+    Overridden by subclasses"""
+
+    pass
+</t>
+<t tx="ekr.20081004102201.1223">def go(self,event=None):
+
+    """Handle clicks in the "go" button in a list box dialog."""
+
+    c = self.c ; box = self.box
+
+    # Work around an old Python bug.  Convert strings to ints.
+    items = box.curselection()
+    try:
+        items = map(int, items)
+    except ValueError: pass
+
+    if items:
+        n = items[0]
+        p = self.positionList[n]
+        c.frame.tree.expandAllAncestors(p)
+        c.selectPosition(p)
+        c.redraw()
+</t>
+<t tx="ekr.20081004102201.1224"></t>
+<t tx="ekr.20081004102201.1225"></t>
+<t tx="ekr.20081004102201.1226">class underlinedGtkButton:
+
+    @others
+</t>
+<t tx="ekr.20081004102201.1227">def __init__(self,buttonType,parent_widget,**keywords):
+
+    self.buttonType = buttonType
+    self.parent_widget = parent_widget
+    self.hotKey = None
+    text = keywords['text']
+
+    &lt;&lt; set self.hotKey if '&amp;' is in the string &gt;&gt;
+
+    # Create the button...
+    if self.hotKey:
+        keywords['text'] = text
+        keywords['underline'] = index
+
+    if buttonType.lower() == "button":
+        self.button = gtk.Button(parent_widget,keywords)
+    elif buttonType.lower() == "check":
+        self.button = gtk.Checkbutton(parent_widget,keywords)
+    elif buttonType.lower() == "radio":
+        self.button = gtk.Radiobutton(parent_widget,keywords)
+    else:
+        g.trace("bad buttonType")
+
+    self.text = text # for traces
+</t>
+<t tx="ekr.20081004102201.1228">index = text.find('&amp;')
+
+if index &gt; -1:
+
+    if index == len(text)-1:
+        # The word ends in an ampersand.  Ignore it; there is no hot key.
+        text = text[:-1]
+    else:
+        self.hotKey = text [index + 1]
+        text = text[:index] + text[index+1:]
+</t>
+<t tx="ekr.20081004102201.1229">def bindHotKey (self,widget):
+
+    if self.hotKey:
+        for key in (self.hotKey.lower(),self.hotKey.upper()):
+            widget.bind("&lt;Alt-%s&gt;" % key,self.buttonCallback)
+</t>
+<t tx="ekr.20081004102201.1230"># The hot key has been hit.  Call the button's command.
+
+def buttonCallback (self, event=None):
+
+    # g.trace(self.text)
+    self.button.invoke ()
+
+    # See if this helps.
+    return 'break'
+</t>
+<t tx="ekr.20081004102201.1231">class gtkFindTab (leoFind.findTab):
+
+    '''A subclass of the findTab class containing all gtk code.'''
+
+    @others</t>
+<t tx="ekr.20081004102201.1232">if 0: # We can use the base-class ctor.
+
+    def __init__ (self,c,parentFrame):
+
+        leoFind.findTab.__init__(self,c,parentFrame)
+            # Init the base class.
+            # Calls initGui, createFrame, createBindings &amp; init(c), in that order.
+</t>
+<t tx="ekr.20081004102201.1233">def initGui (self):
+
+    self.svarDict = {}
+
+    for key in self.intKeys:
+        self.svarDict[key] = gtk.IntVar()
+
+    for key in self.newStringKeys:
+        self.svarDict[key] = gtk.StringVar()
+
+</t>
+<t tx="ekr.20081004102201.1234">def createFrame (self,parentFrame):
+
+    c = self.c
+
+    # g.trace('findTab')
+
+    &lt;&lt; Create the outer frames &gt;&gt;
+    &lt;&lt; Create the Find and Change panes &gt;&gt;
+    &lt;&lt; Create two columns of radio and checkboxes &gt;&gt;
+
+    if  self.optionsOnly:
+        buttons = []
+    else:
+        &lt;&lt; Create two columns of buttons &gt;&gt;
+
+    # Pack this last so buttons don't get squashed when frame is resized.
+    self.outerScrolledFrame.pack(side='top',expand=1,fill='both',padx=2,pady=2)
+</t>
+<t tx="ekr.20081004102201.1235">configName = 'log_pane_Find_tab_background_color'
+bg = c.config.getColor(configName) or 'MistyRose1'
+
+parentFrame.configure(background=bg)
+
+self.top = gtk.Frame(parentFrame,background=bg)
+self.top.pack(side='top',expand=0,fill='both',pady=5)
+    # Don't expand, so the frame goes to the top.
+
+self.outerScrolledFrame = Pmw.ScrolledFrame(
+    parentFrame,usehullsize = 1)
+
+self.outerFrame = outer = self.outerScrolledFrame.component('frame')
+self.outerFrame.configure(background=bg)
+
+for z in ('borderframe','clipper','frame','hull'):
+    self.outerScrolledFrame.component(z).configure(relief='flat',background=bg)
+</t>
+<t tx="ekr.20081004102201.1236">fc = gtk.Frame(outer, bd="1m",background=bg)
+fc.pack(anchor="n", fill="x", expand=1)
+
+# Removed unused height/width params: using fractions causes problems in some locales!
+fpane = gtk.Frame(fc, bd=1,background=bg)
+cpane = gtk.Frame(fc, bd=1,background=bg)
+
+fpane.pack(anchor="n", expand=1, fill="x")
+cpane.pack(anchor="s", expand=1, fill="x")
+
+# Create the labels and text fields...
+flab = gtk.Label(fpane, width=8, text="Find:",background=bg)
+clab = gtk.Label(cpane, width=8, text="Change:",background=bg)
+
+if self.optionsOnly:
+    # Use one-line boxes.
+    self.find_ctrl = ftxt = g.app.gui.plainTextWidget(
+        fpane,bd=1,relief="groove",height=1,width=25,name='find-text')
+    self.change_ctrl = ctxt = g.app.gui.plainTextWidget(
+        cpane,bd=1,relief="groove",height=1,width=25,name='change-text')
+else:
+    # Use bigger boxes for scripts.
+    self.find_ctrl = ftxt = g.app.gui.plainTextWidget(
+        fpane,bd=1,relief="groove",height=3,width=15,name='find-text')
+    self.change_ctrl = ctxt = g.app.gui.plainTextWidget(
+        cpane,bd=1,relief="groove",height=3,width=15,name='change-text')
+&lt;&lt; Bind Tab and control-tab &gt;&gt;
+
+if 0: # Add scrollbars.
+    fBar = gtk.Scrollbar(fpane,name='findBar')
+    cBar = gtk.Scrollbar(cpane,name='changeBar')
+
+    for bar,txt in ((fBar,ftxt),(cBar,ctxt)):
+        txt['yscrollcommand'] = bar.set
+        bar['command'] = txt.yview
+        bar.pack(side="right", fill="y")
+
+if self.optionsOnly:
+    flab.pack(side="left") ; ftxt.pack(side="left")
+    clab.pack(side="left") ; ctxt.pack(side="left")
+else:
+    flab.pack(side="left") ; ftxt.pack(side="right", expand=1, fill="x")
+    clab.pack(side="left") ; ctxt.pack(side="right", expand=1, fill="x")
+</t>
+<t tx="ekr.20081004102201.1237">def setFocus(w):
+    c = self.c
+    c.widgetWantsFocusNow(w)
+    w.setSelectionRange(0,0)
+    return "break"
+
+def toFind(event,w=ftxt): return setFocus(w)
+def toChange(event,w=ctxt): return setFocus(w)
+
+def insertTab(w):
+    data = w.getSelectionRange()
+    if data: start,end = data
+    else: start = end = w.getInsertPoint()
+    w.replace(start,end,"\t")
+    return "break"
+
+def insertFindTab(event,w=ftxt): return insertTab(w)
+def insertChangeTab(event,w=ctxt): return insertTab(w)
+
+c.bind(ftxt,"&lt;Tab&gt;",toChange)
+c.bind(ctxt,"&lt;Tab&gt;",toFind)
+c.bind(ftxt,"&lt;Control-Tab&gt;",insertFindTab)
+c.bind(ctxt,"&lt;Control-Tab&gt;",insertChangeTab)
+</t>
+<t tx="ekr.20081004102201.1238">columnsFrame = gtk.Frame(outer,relief="groove",bd=2,background=bg)
+
+columnsFrame.pack(expand=0,padx="7p",pady="2p")
+
+numberOfColumns = 2 # Number of columns
+columns = [] ; radioLists = [] ; checkLists = []
+for i in range(numberOfColumns):
+    columns.append(gtk.Frame(columnsFrame,bd=1))
+    radioLists.append([])
+    checkLists.append([])
+
+for i in range(numberOfColumns):
+    columns[i].pack(side="left",padx="1p") # fill="y" Aligns to top. padx expands columns.
+
+radioLists[0] = []
+
+checkLists[0] = [
+    # ("Scrip&amp;t Change",self.svarDict["script_change"]),
+    ("Whole &amp;Word", self.svarDict["whole_word"]),
+    ("&amp;Ignore Case",self.svarDict["ignore_case"]),
+    ("Wrap &amp;Around",self.svarDict["wrap"]),
+    ("&amp;Reverse",    self.svarDict["reverse"]),
+    ('Rege&amp;xp',     self.svarDict['pattern_match']),
+    ("Mark &amp;Finds", self.svarDict["mark_finds"]),
+]
+
+radioLists[1] = [
+    (self.svarDict["radio-search-scope"],"&amp;Entire Outline","entire-outline"),
+    (self.svarDict["radio-search-scope"],"&amp;Suboutline Only","suboutline-only"),  
+    (self.svarDict["radio-search-scope"],"&amp;Node Only","node-only"),
+]
+
+checkLists[1] = [
+    ("Search &amp;Headline", self.svarDict["search_headline"]),
+    ("Search &amp;Body",     self.svarDict["search_body"]),
+    ("Mark &amp;Changes",    self.svarDict["mark_changes"]),
+]
+
+for i in range(numberOfColumns):
+    for var,name,val in radioLists[i]:
+        box = underlinedTkButton(
+            "radio",columns[i],anchor="w",text=name,variable=var,value=val,background=bg)
+        box.button.pack(fill="x")
+        c.bind(box.button,"&lt;Button-1&gt;", self.resetWrap)
+        if val == None: box.button.configure(state="disabled")
+        box.bindHotKey(ftxt)
+        box.bindHotKey(ctxt)
+    for name,var in checkLists[i]:
+        box = underlinedTkButton(
+            "check",columns[i],anchor="w",text=name,variable=var,background=bg)
+        box.button.pack(fill="x")
+        c.bind(box.button,"&lt;Button-1&gt;", self.resetWrap)
+        box.bindHotKey(ftxt)
+        box.bindHotKey(ctxt)
+        if var is None: box.button.configure(state="disabled")
+</t>
+<t tx="ekr.20081004102201.1239"># Create the alignment panes.
+buttons  = gtk.Frame(outer,background=bg)
+buttons1 = gtk.Frame(buttons,bd=1,background=bg)
+buttons2 = gtk.Frame(buttons,bd=1,background=bg)
+buttons.pack(side='top',expand=1)
+buttons1.pack(side='left')
+buttons2.pack(side='right')
+
+width = 15 ; defaultText = 'Find' ; buttons = []
+
+for text,boxKind,frame,callback in (
+    # Column 1...
+    ('Find','button',buttons1,self.findButtonCallback),
+    ('Find All','button',buttons1,self.findAllButton),
+    # Column 2...
+    ('Change','button',buttons2,self.changeButton),
+    ('Change, Then Find','button',buttons2,self.changeThenFindButton),
+    ('Change All','button',buttons2,self.changeAllButton),
+):
+    w = underlinedTkButton(boxKind,frame,
+        text=text,command=callback)
+    buttons.append(w)
+    if text == defaultText:
+        w.button.configure(width=width-1,bd=4)
+    elif boxKind != 'check':
+        w.button.configure(width=width)
+    w.button.pack(side='top',anchor='w',pady=2,padx=2)
+</t>
+<t tx="ekr.20081004102201.1240">def createBindings (self):
+
+    c = self.c ; k = c.k
+
+    def resetWrapCallback(event,self=self,k=k):
+        self.resetWrap(event)
+        return k.masterKeyHandler(event)
+
+    def findButtonBindingCallback(event=None,self=self):
+        self.findButton()
+        return 'break'
+
+    table = (
+        ('&lt;Button-1&gt;',  k.masterClickHandler),
+        ('&lt;Double-1&gt;',  k.masterClickHandler),
+        ('&lt;Button-3&gt;',  k.masterClickHandler),
+        ('&lt;Double-3&gt;',  k.masterClickHandler),
+        ('&lt;Key&gt;',       resetWrapCallback),
+        ('&lt;Return&gt;',    findButtonBindingCallback),
+        ("&lt;Escape&gt;",    self.hideTab),
+    )
+
+    for w in (self.find_ctrl,self.change_ctrl):
+        for event, callback in table:
+            c.bind(w,event,callback)
+</t>
+<t tx="ekr.20081004102201.1241">def init (self,c):
+
+    # g.trace('tkFindTab',g.callers())
+
+    # N.B.: separate c.ivars are much more convenient than a dict.
+    for key in self.intKeys:
+        # New in 4.3: get ivars from @settings.
+        val = c.config.getBool(key)
+        setattr(self,key,val)
+        val = g.choose(val,1,0) # Work around major Tk problem.
+        self.svarDict[key].set(val)
+        # g.trace(key,val)
+
+    &lt;&lt; set find/change widgets &gt;&gt;
+    &lt;&lt; set radio buttons from ivars &gt;&gt;
+</t>
+<t tx="ekr.20081004102201.1242">self.find_ctrl.delete(0,"end")
+self.change_ctrl.delete(0,"end")
+
+# New in 4.3: Get setting from @settings.
+for w,setting,defaultText in (
+    (self.find_ctrl,"find_text",'&lt;find pattern here&gt;'),
+    (self.change_ctrl,"change_text",''),
+):
+    s = c.config.getString(setting)
+    if not s: s = defaultText
+    w.insert("end",s)
+</t>
+<t tx="ekr.20081004102201.1243">found = False
+for var,setting in (
+    ("pattern_match","pattern-search"),
+    ("script_search","script-search")):
+    val = self.svarDict[var].get()
+    if val:
+        self.svarDict["radio-find-type"].set(setting)
+        found = True ; break
+if not found:
+    self.svarDict["radio-find-type"].set("plain-search")
+
+found = False
+for var,setting in (
+    ("suboutline_only","suboutline-only"),
+    ("node_only","node-only"),
+    # ("selection_only","selection-only"),
+):
+    val = self.svarDict[var].get()
+    if val:
+        self.svarDict["radio-search-scope"].set(setting)
+        found = True ; break
+if not found:
+    self.svarDict["radio-search-scope"].set("entire-outline")
+</t>
+<t tx="ekr.20081004102201.1244"></t>
+<t tx="ekr.20081004102201.1245">def getOption (self,ivar):
+
+    var = self.svarDict.get(ivar)
+
+    if var:
+        val = var.get()
+        # g.trace('%s = %s' % (ivar,val))
+        return val
+    else:
+        g.trace('bad ivar name: %s' % ivar)
+        return None
+</t>
+<t tx="ekr.20081004102201.1246">def setOption (self,ivar,val):
+
+    if ivar in self.intKeys:
+        if val is not None:
+            var = self.svarDict.get(ivar)
+            var.set(val)
+            # g.trace('%s = %s' % (ivar,val))
+
+    elif not g.app.unitTesting:
+        g.trace('oops: bad find ivar %s' % ivar)
+</t>
+<t tx="ekr.20081004102201.1247">def toggleOption (self,ivar):
+
+    if ivar in self.intKeys:
+        var = self.svarDict.get(ivar)
+        val = not var.get()
+        var.set(val)
+        # g.trace('%s = %s' % (ivar,val),var)
+    else:
+        g.trace('oops: bad find ivar %s' % ivar)
+</t>
+<t tx="ekr.20081004102201.1248">class gtkSpellTab:
+
+    @others
+</t>
+<t tx="ekr.20081004102201.1249">def __init__ (self,c,handler,tabName):
+
+    self.c = c
+    self.handler = handler
+    self.tabName = tabName
+    self.change_i, change_j = None,None
+    self.createFrame()
+    self.createBindings()
+    self.fillbox([])
+</t>
+<t tx="ekr.20081004102201.1250">def createBindings (self):
+
+    c = self.c ; k = c.k
+    widgets = (self.listBox, self.outerFrame)
+
+    for w in widgets:
+
+        # Bind shortcuts for the following commands...
+        for commandName,func in (
+            ('full-command',            k.fullCommand),
+            ('hide-spell-tab',          self.handler.hide),
+            ('spell-add',               self.handler.add),
+            ('spell-find',              self.handler.find),
+            ('spell-ignore',            self.handler.ignore),
+            ('spell-change-then-find',  self.handler.changeThenFind),
+        ):
+            junk, bunchList = c.config.getShortcut(commandName)
+            for bunch in bunchList:
+                accel = bunch.val
+                shortcut = k.shortcutFromSetting(accel)
+                if shortcut:
+                    # g.trace(shortcut,commandName)
+                    c.bind(w,shortcut,func)
+
+    c.bind(self.listBox,"&lt;Double-1&gt;",self.onChangeThenFindButton)
+    c.bind(self.listBox,"&lt;Button-1&gt;",self.onSelectListBox)
+    c.bind(self.listBox,"&lt;Map&gt;",self.onMap)</t>
+<t tx="ekr.20081004102201.1251">def createFrame (self):
+
+    c = self.c ; log = c.frame.log ; tabName = self.tabName
+    setFont = False
+
+    parentFrame = log.frameDict.get(tabName)
+    w = log.textDict.get(tabName)
+    w.pack_forget()
+
+    # Set the common background color.
+    bg = c.config.getColor('log_pane_Spell_tab_background_color') or 'LightSteelBlue2'
+
+    if setFont:
+        fontSize = g.choose(sys.platform.startswith('win'),9,14)
+
+    &lt;&lt; Create the outer frames &gt;&gt;
+    &lt;&lt; Create the text and suggestion panes &gt;&gt;
+    &lt;&lt; Create the spelling buttons &gt;&gt;
+
+    # Pack last so buttons don't get squished.
+    self.outerScrolledFrame.pack(expand=1,fill='both',padx=2,pady=2)
+</t>
+<t tx="ekr.20081004102201.1252">self.outerScrolledFrame = Pmw.ScrolledFrame(
+    parentFrame,usehullsize = 1)
+
+self.outerFrame = outer = self.outerScrolledFrame.component('frame')
+self.outerFrame.configure(background=bg)
+
+for z in ('borderframe','clipper','frame','hull'):
+    self.outerScrolledFrame.component(z).configure(
+        relief='flat',background=bg)
+</t>
+<t tx="ekr.20081004102201.1253">f2 = gtk.Frame(outer,bg=bg)
+f2.pack(side='top',expand=0,fill='x')
+
+self.wordLabel = gtk.Label(f2,text="Suggestions for:")
+self.wordLabel.pack(side='left')
+
+if setFont:
+    self.wordLabel.configure(font=('verdana',fontSize,'bold'))
+
+fpane = gtk.Frame(outer,bg=bg,bd=2)
+fpane.pack(side='top',expand=1,fill='both')
+
+self.listBox = gtk.Listbox(fpane,height=6,width=10,selectmode="single")
+self.listBox.pack(side='left',expand=1,fill='both')
+if setFont:
+    self.listBox.configure(font=('verdana',fontSize,'normal'))
+
+listBoxBar = gtk.Scrollbar(fpane,name='listBoxBar')
+
+bar, txt = listBoxBar, self.listBox
+txt ['yscrollcommand'] = bar.set
+bar ['command'] = txt.yview
+bar.pack(side='right',fill='y')
+</t>
+<t tx="ekr.20081004102201.1254"># Create the alignment panes
+buttons1 = gtk.Frame(outer,bd=1,bg=bg)
+buttons2 = gtk.Frame(outer,bd=1,bg=bg)
+buttons3 = gtk.Frame(outer,bd=1,bg=bg)
+for w in (buttons1,buttons2,buttons3):
+    w.pack(side='top',expand=0,fill='x')
+
+buttonList = []
+if setFont:
+    font = ('verdana',fontSize,'normal')
+width = 12
+for frame, text, command in (
+    (buttons1,"Find",self.onFindButton),
+    (buttons1,"Add",self.onAddButton),
+    (buttons2,"Change",self.onChangeButton),
+    (buttons2,"Change, Find",self.onChangeThenFindButton),
+    (buttons3,"Ignore",self.onIgnoreButton),
+    (buttons3,"Hide",self.onHideButton),
+):
+    if setFont:
+        b = gtk.Button(frame,font=font,width=width,text=text,command=command)
+    else:
+        b = gtk.Button(frame,width=width,text=text,command=command)
+    b.pack(side='left',expand=0,fill='none')
+    buttonList.append(b)
+
+# Used to enable or disable buttons.
+(self.findButton,self.addButton,
+ self.changeButton, self.changeFindButton,
+ self.ignoreButton, self.hideButton) = buttonList
+</t>
+<t tx="ekr.20081004102201.1255"></t>
+<t tx="ekr.20081004102201.1256">def onAddButton(self):
+    """Handle a click in the Add button in the Check Spelling dialog."""
+
+    self.handler.add()
+    self.change_i, self.change_j = None,None
+</t>
+<t tx="ekr.20081004102201.1257">def onChangeButton(self,event=None):
+
+    """Handle a click in the Change button in the Spell tab."""
+
+    self.handler.change()
+    self.updateButtons()
+    self.change_i, self.change_j = None,None
+
+
+def onChangeThenFindButton(self,event=None):
+
+    """Handle a click in the "Change, Find" button in the Spell tab."""
+
+    if self.handler.change():
+        self.handler.find()
+    self.updateButtons()
+    self.change_i, self.change_j = None,None
+</t>
+<t tx="ekr.20081004102201.1258">def onFindButton(self):
+
+    """Handle a click in the Find button in the Spell tab."""
+
+    c = self.c
+    self.handler.find()
+    self.updateButtons()
+    c.invalidateFocus()
+    c.bodyWantsFocusNow()
+    self.change_i, self.change_j = None,None
+</t>
+<t tx="ekr.20081004102201.1259">def onHideButton(self):
+
+    """Handle a click in the Hide button in the Spell tab."""
+
+    self.handler.hide()
+    self.change_i, self.change_j = None,None
+</t>
+<t tx="ekr.20081004102201.1260">def onIgnoreButton(self,event=None):
+
+    """Handle a click in the Ignore button in the Check Spelling dialog."""
+
+    self.handler.ignore()
+    self.change_i, self.change_j = None,None</t>
+<t tx="ekr.20081004102201.1261">def onMap (self, event=None):
+    """Respond to a gtk &lt;Map&gt; event."""
+
+    # self.update(show= False, fill= False)
+    self.updateButtons()
+</t>
+<t tx="ekr.20081004102201.1262">def onSelectListBox(self, event=None):
+    """Respond to a click in the selection listBox."""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    if self.change_i is None:
+        # A bad hack to get around the fact that only one selection
+        # exists at any one time on Linux.
+        i,j = w.getSelectionRange()
+        # g.trace('setting',i,j)
+        self.change_i,self.change_j = i,j
+
+    self.updateButtons()
+
+    return 'continue'
+</t>
+<t tx="ekr.20081004102201.1263"></t>
+<t tx="ekr.20081004102201.1264">def bringToFront (self):
+
+    # g.trace('tkSpellTab',g.callers())
+    self.c.frame.log.selectTab('Spell')
+</t>
+<t tx="ekr.20081004102201.1265">def fillbox(self, alts, word=None):
+    """Update the suggestions listBox in the Check Spelling dialog."""
+
+    self.suggestions = alts
+
+    if not word:
+        word = ""
+
+    self.wordLabel.configure(text= "Suggestions for: " + word)
+    self.listBox.delete(0, "end")
+
+    for i in range(len(self.suggestions)):
+        self.listBox.insert(i, self.suggestions[i])
+
+    # This doesn't show up because we don't have focus.
+    if len(self.suggestions):
+        self.listBox.select_set(1)
+</t>
+<t tx="ekr.20081004102201.1266">def getSuggestion(self):
+    """Return the selected suggestion from the listBox."""
+
+    # Work around an old Python bug.  Convert strings to ints.
+    items = self.listBox.curselection()
+    try:
+        items = map(int, items)
+    except ValueError: pass
+
+    if items:
+        n = items[0]
+        suggestion = self.suggestions[n]
+        return suggestion
+    else:
+        return None
+</t>
+<t tx="ekr.20081004102201.1267">def updateButtons (self):
+
+    """Enable or disable buttons in the Check Spelling dialog."""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    start, end = w.getSelectionRange()
+    state = g.choose(self.suggestions and start,"normal","disabled")
+
+    self.changeButton.configure(state=state)
+    self.changeFindButton.configure(state=state)
+
+    # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
+    # self.redoButton.configure(state=state)
+    # state = g.choose(self.c.undoer.canUndo(),"normal","disabled")
+    # self.undoButton.configure(state=state)
+
+    self.addButton.configure(state='normal')
+    self.ignoreButton.configure(state='normal')
+</t>
+<t tx="ekr.20081004102201.1782">import sys
+import time
+
+def startleo():
+    global c,g, controller
+    from leo.core import leoBridge
+    controller = leoBridge.controller(gui='nullGui')
+    g = controller.globals()
+    c = None
+
+   
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+from PyQt4 import Qsci
+from ui_main import Ui_MainWindow
+
+  
+startleo()
+
+def tstart():
+    global __timing
+    __timing = time.time()
+
+def tstop():
+    print "Time: %1.2fsec" % (time.time() - __timing)
+
+class LeoQEventFilter(QObject):
+    def __init__(self):
+        QObject.__init__(self)
+        self.bindings = {}
+    def eventFilter(self, obj, event):
+
+        # print "ev",obj, event
+        if event.type() == QEvent.KeyPress:
+            return self.key_pressed(obj, event)
+        return False
+    def key_pressed(self, obj, event):
+        """ Handle key presses (on any window) """
+
+        keynum = event.key()
+        try:
+            char = chr(keynum)
+        except ValueError:
+            char = "&lt;unknown&gt;"
+
+        mods = []
+        if event.modifiers() &amp; Qt.AltModifier:
+            mods.append("Alt")
+        if event.modifiers() &amp; Qt.ControlModifier:
+            mods.append("Ctrl")
+        if event.modifiers() &amp; Qt.ShiftModifier:
+            mods.append("Shift")
+ 
+        txt = "+".join(mods) + (mods and "+" or "") + char
+        print "Keypress: [",txt,"]", event.text(), obj, event.key(), event.modifiers()
+        # key was not consumed
+
+        cmd = self.bindings.get(txt, None)
+        if cmd:
+            cmd()
+            return True
+        
+        return False
+
+
+
+class Window(QMainWindow, Ui_MainWindow):
+    def __init__(self, parent = None):
+        QWidget.__init__(self, parent)
+        self.setupUi(self)
+        self.connect(self.treeWidget, SIGNAL("itemSelectionChanged()"),  self.tree_select )
+        self.connect(self.actionOpen,SIGNAL("activated()"),self.open_file)
+        self.connect(self.actionSave,SIGNAL("activated()"),self.save_file)
+        #self.connect(self.searchButton, SIGNAL("clicked()"), self.search)
+        self.connect(self.textEdit,  SIGNAL("textChanged()"),self.text_changed)
+
+        #self.connect(self.actionIPython,SIGNAL("activated()"),self.embed_ipython)
+        self.selecting = True
+        self.widget_dirty = False
+        lexer = Qsci.QsciLexerPython(self.textEdit)
+        self.textEdit.setLexer(lexer)
+        self.ev_filt = LeoQEventFilter()
+        self.ev_filt.bindings['Ctrl+H'] = self.edit_current_headline
+        self.textEdit.installEventFilter(self.ev_filt)
+        self.treeWidget.installEventFilter(self.ev_filt)
+        self.icon_std = None
+        self.icon_std = QIcon('icons/box00.GIF')
+        self.icon_dirty = QIcon('icons/box01.GIF')
+        
+
+    def open_file(self):
+        #print "file open"
+        
+        fd = QFileDialog(self)
+        fname = fd.getOpenFileName()
+        print `fname`
+        self.load_file(fname)
+        
+    def load_file(self,f):
+        self.clear_model()
+        global c
+        print "Load",f
+        tstart()
+        c = controller.openLeoFile(str(f))
+        tstop()
+        print "Populate tree widget"
+        tstart()
+        self.populate_tree()
+        tstop()
+        class Leox:
+            pass
+        _leox = Leox()
+        _leox.c = c
+        _leox.g = g
+        import ipy_leo
+        ipy_leo.update_commander(_leox)
+
+
+    def save_file(self):
+        c.save()
+        
+    def clear_model(self):
+        global c
+        self.treeWidget.clear()
+        self.items = {}
+        self.treeitems = {}
+        if c is not None:
+            c.close()
+            c = None
+    
+    def populate_tree(self, parent=None):
+        """ Render vnodes in tree """
+                
+        self.items = {}
+        self.treeitems = {}
+
+        self.treeWidget.clear()
+        for p in c.allNodes_iter():
+
+            parent = self.items.get(p.parent().v,  self.treeWidget)
+            it = QTreeWidgetItem(parent)
+            it.setIcon(0, self.icon_std)
+            it.setFlags(it.flags() | Qt.ItemIsEditable)
+            self.items[p.v] = it
+            self.treeitems[id(it)] = p.t
+            it.setText(0, p.headString())
+    
+    def flush_current_tnode(self):
+        text = str(self.textEdit.text())
+        self.cur_tnode.setBodyString(text)
+        
+    def tree_select(self):
+        #print "tree selected!"
+        self.selecting = True
+        
+        if self.widget_dirty:
+            self.flush_current_tnode()
+        
+        self.cur_tnode = self.treeitems[id(self.treeWidget.currentItem())]
+        self.textEdit.setText(self.cur_tnode.bodyString())
+        self.selecting = False
+        self.widget_dirty = False
+
+    def text_changed(self):
+        if self.selecting:
+            return
+        #print "text changed"
+        if not self.widget_dirty:
+            self.treeWidget.currentItem().setIcon(0,self.icon_dirty)
+        self.widget_dirty = True
+        
+    def startup_ops(self):
+        print "startup"
+
+        if len(argv) &gt; 1:
+            self.load_file(argv[1])
+
+    def edit_current_headline(self):
+        #self.treeWidget.openPersistentEditor(self.treeWidget.currentItem())
+
+        self.treeWidget.editItem(self.treeWidget.currentItem())
+
+def embed_ipython():
+    import IPython.ipapi
+    sys.argv = ['ipython', '-p' , 'sh']
+    ses = IPython.ipapi.make_session(dict(w = window))
+
+    ip = ses.IP.getapi()
+    ip.load('ipy_leo')
+    ses.mainloop()
+
+if __name__ == "__main__":
+
+    argv = sys.argv
+    app = QApplication(sys.argv)
+    window = Window()
+    window.show()
+    
+    #timer = QTimer()
+    #timer.setInterval(1)
+    #timer.setSingleShot(True)
+    #timer.connect(timer, SIGNAL("timeout()"), window.startup_ops)
+    QTimer.singleShot(1, window.startup_ops)
+    embed_ipython()
+    
+    sys.exit(app.exec_())
+
+    
+</t>
+<t tx="ekr.20081004172422.1">&lt;ui version="4.0" &gt;
+ &lt;class&gt;MainWindow&lt;/class&gt;
+ &lt;widget class="QMainWindow" name="MainWindow" &gt;
+  &lt;property name="geometry" &gt;
+   &lt;rect&gt;
+    &lt;x&gt;0&lt;/x&gt;
+    &lt;y&gt;0&lt;/y&gt;
+    &lt;width&gt;1339&lt;/width&gt;
+    &lt;height&gt;649&lt;/height&gt;
+   &lt;/rect&gt;
+  &lt;/property&gt;
+  &lt;property name="windowTitle" &gt;
+   &lt;string&gt;QLeoLite&lt;/string&gt;
+  &lt;/property&gt;
+  &lt;widget class="QWidget" name="centralwidget" &gt;
+   &lt;layout class="QHBoxLayout" name="horizontalLayout" &gt;
+    &lt;item&gt;
+     &lt;widget class="QSplitter" name="splitter_2" &gt;
+      &lt;property name="orientation" &gt;
+       &lt;enum&gt;Qt::Vertical&lt;/enum&gt;
+      &lt;/property&gt;
+      &lt;widget class="QSplitter" name="splitter" &gt;
+       &lt;property name="orientation" &gt;
+        &lt;enum&gt;Qt::Horizontal&lt;/enum&gt;
+       &lt;/property&gt;
+       &lt;widget class="QTreeWidget" name="treeWidget" &gt;
+        &lt;column&gt;
+         &lt;property name="text" &gt;
+          &lt;string&gt;1&lt;/string&gt;
+         &lt;/property&gt;
+        &lt;/column&gt;
+       &lt;/widget&gt;
+       &lt;widget class="QTextEdit" name="logView" /&gt;
+      &lt;/widget&gt;
+      &lt;widget class="QsciScintilla" name="textEdit" &gt;
+       &lt;property name="toolTip" &gt;
+        &lt;string/&gt;
+       &lt;/property&gt;
+       &lt;property name="whatsThis" &gt;
+        &lt;string/&gt;
+       &lt;/property&gt;
+      &lt;/widget&gt;
+     &lt;/widget&gt;
+    &lt;/item&gt;
+   &lt;/layout&gt;
+  &lt;/widget&gt;
+  &lt;widget class="QMenuBar" name="menubar" &gt;
+   &lt;property name="geometry" &gt;
+    &lt;rect&gt;
+     &lt;x&gt;0&lt;/x&gt;
+     &lt;y&gt;0&lt;/y&gt;
+     &lt;width&gt;1339&lt;/width&gt;
+     &lt;height&gt;27&lt;/height&gt;
+    &lt;/rect&gt;
+   &lt;/property&gt;
+   &lt;widget class="QMenu" name="menuFile" &gt;
+    &lt;property name="title" &gt;
+     &lt;string&gt;File&lt;/string&gt;
+    &lt;/property&gt;
+    &lt;addaction name="actionOpen" /&gt;
+    &lt;addaction name="actionSave" /&gt;
+    &lt;addaction name="actionIPython" /&gt;
+   &lt;/widget&gt;
+   &lt;addaction name="menuFile" /&gt;
+  &lt;/widget&gt;
+  &lt;widget class="QStatusBar" name="statusbar" /&gt;
+  &lt;action name="actionOpen" &gt;
+   &lt;property name="text" &gt;
+    &lt;string&gt;Open&lt;/string&gt;
+   &lt;/property&gt;
+  &lt;/action&gt;
+  &lt;action name="actionSave" &gt;
+   &lt;property name="text" &gt;
+    &lt;string&gt;Save&lt;/string&gt;
+   &lt;/property&gt;
+  &lt;/action&gt;
+  &lt;action name="actionIPython" &gt;
+   &lt;property name="text" &gt;
+    &lt;string&gt;IPython&lt;/string&gt;
+   &lt;/property&gt;
+  &lt;/action&gt;
+ &lt;/widget&gt;
+ &lt;customwidgets&gt;
+  &lt;customwidget&gt;
+   &lt;class&gt;QsciScintilla&lt;/class&gt;
+   &lt;extends&gt;QFrame&lt;/extends&gt;
+   &lt;header&gt;Qsci/qsciscintilla.h&lt;/header&gt;
+  &lt;/customwidget&gt;
+ &lt;/customwidgets&gt;
+ &lt;resources/&gt;
+ &lt;connections&gt;
+  &lt;connection&gt;
+   &lt;sender&gt;treeWidget&lt;/sender&gt;
+   &lt;signal&gt;itemSelectionChanged()&lt;/signal&gt;
+   &lt;receiver&gt;MainWindow&lt;/receiver&gt;
+   &lt;slot&gt;showNormal()&lt;/slot&gt;
+   &lt;hints&gt;
+    &lt;hint type="sourcelabel" &gt;
+     &lt;x&gt;491&lt;/x&gt;
+     &lt;y&gt;111&lt;/y&gt;
+    &lt;/hint&gt;
+    &lt;hint type="destinationlabel" &gt;
+     &lt;x&gt;669&lt;/x&gt;
+     &lt;y&gt;324&lt;/y&gt;
+    &lt;/hint&gt;
+   &lt;/hints&gt;
+  &lt;/connection&gt;
+ &lt;/connections&gt;
+&lt;/ui&gt;
+</t>
+<t tx="ekr.20081004172422.3"># -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'qllmain.ui'
+#
+# Created: Sat Oct  4 15:18:39 2008
+#      by: PyQt4 UI code generator 4.4.3
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(1339, 649)
+        self.centralwidget = QtGui.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.horizontalLayout = QtGui.QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.splitter_2 = QtGui.QSplitter(self.centralwidget)
+        self.splitter_2.setOrientation(QtCore.Qt.Vertical)
+        self.splitter_2.setObjectName("splitter_2")
+        self.splitter = QtGui.QSplitter(self.splitter_2)
+        self.splitter.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter.setObjectName("splitter")
+        self.treeWidget = QtGui.QTreeWidget(self.splitter)
+        self.treeWidget.setObjectName("treeWidget")
+        self.logView = QtGui.QTextEdit(self.splitter)
+        self.logView.setObjectName("logView")
+        self.textEdit = Qsci.QsciScintilla(self.splitter_2)
+        self.textEdit.setObjectName("textEdit")
+        self.horizontalLayout.addWidget(self.splitter_2)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtGui.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1339, 27))
+        self.menubar.setObjectName("menubar")
+        self.menuFile = QtGui.QMenu(self.menubar)
+        self.menuFile.setObjectName("menuFile")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtGui.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+        self.actionOpen = QtGui.QAction(MainWindow)
+        self.actionOpen.setObjectName("actionOpen")
+        self.actionSave = QtGui.QAction(MainWindow)
+        self.actionSave.setObjectName("actionSave")
+        self.actionIPython = QtGui.QAction(MainWindow)
+        self.actionIPython.setObjectName("actionIPython")
+        self.menuFile.addAction(self.actionOpen)
+        self.menuFile.addAction(self.actionSave)
+        self.menuFile.addAction(self.actionIPython)
+        self.menubar.addAction(self.menuFile.menuAction())
+
+        self.retranslateUi(MainWindow)
+        QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL("itemSelectionChanged()"), MainWindow.showNormal)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "QLeoLite", None, QtGui.QApplication.UnicodeUTF8))
+        self.treeWidget.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionOpen.setText(QtGui.QApplication.translate("MainWindow", "Open", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSave.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionIPython.setText(QtGui.QApplication.translate("MainWindow", "IPython", None, QtGui.QApplication.UnicodeUTF8))
+
+from PyQt4 import Qsci
+</t>
+<t tx="ekr.20081004172422.855"></t>
 <t tx="pap.20041006184225">"""
 A plugin to manage Leo's Plugins:
 
@@ -10234,7 +12126,7 @@ if ok:
     except Exception:
         import sys
         s = 'plugins_manager.py: %s: %s' % (sys.exc_type,sys.exc_value)
-        print s
+        g.pr(s)
         ok = False
 
 #
@@ -10365,7 +12257,7 @@ else:
         text = self.getContents()
         self.getSummary(text)
     except InvalidPlugin, err:
-        print 'InvalidPlugin',str(err)
+        g.pr('InvalidPlugin',str(err))
         self.description = str(err)
     except:
         g.es('Unexpected exception in initFrom')
@@ -10395,7 +12287,7 @@ class InvalidManager(Exception):
         f = file(self.filename, "r")
     except (IOError, OSError), err:
         s = "Unable to open plugin file '%s': %s" % (self.name, err)
-        print s
+        g.pr(s)
         raise InvalidPlugin(s)
     try:
         try:
@@ -10404,7 +12296,7 @@ class InvalidManager(Exception):
             f.close()
     except Exception, err:
         s = "Unable to read plugin file '%s': %s" % (self.name, err)
-        print s
+        g.pr(s)
         raise InvalidPlugin(s)              
 
     self.contents_valid = True

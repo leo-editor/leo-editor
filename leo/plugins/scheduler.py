@@ -30,7 +30,7 @@ out any scheduled commands/messages.
 #@<< imports >>
 #@+node:ekr.20050101090207.7:<< imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+# import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
@@ -75,6 +75,8 @@ __version__ = "0.6"
 #@nonl
 #@-node:ekr.20050311090939:<< version history >>
 #@nl
+
+sc,sd,lk = None,None,None # To remove pylint complaint.
 
 #@+others
 #@+node:ekr.20050311102853.2:init
@@ -143,7 +145,7 @@ def viewQueue(event=None,c=None):
             sc.cancel(x)
             lb.delete(i,i)
         except:
-            print "BOOM!"
+            g.pr("BOOM!")
 
     def close(tl=tl):
 
@@ -258,7 +260,7 @@ def setTime():
     lk.acquire()
     lt = time.localtime()
     priority = 1
-    for i in xrange(len(commands)):
+    for i in range(len(commands)):
         z = commands[i]
         tm = svs[i].get()
         p = tm.split(':')
@@ -350,7 +352,8 @@ def doCommand (command,label,event=None,c=None):
 
     global commands
     if not c or not c.exists: return
-    if label == 'exit': shutdown(None,None)
+    # EKR: shutdown is undefined.
+    # if label == 'exit': shutdown(None,None)
     if record:
         if label == 'endrecording':
             command()

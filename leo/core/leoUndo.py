@@ -69,7 +69,7 @@
 #@nl
 
 import leo.core.leoGlobals as g
-import string
+# import string
 
 #@+others
 #@+node:ekr.20031218072017.3605:class undoer
@@ -111,26 +111,33 @@ class undoer:
         # Set the following ivars to keep pychecker happy.
         self.afterTree = None
         self.beforeTree = None
+        self.children = None
         self.dirtyVnodeList = None
+        self.followingSibs = None
         self.kind = None
         self.newBack = None
         self.newBody = None
+        self.newChildren = None
         self.newHead = None
         self.newMarked = None
         self.newN = None
         self.newP = None
         self.newParent = None
+        self.newParent_v = None
         self.newRecentFiles = None
         self.newTree = None
         self.oldBack = None
         self.oldBody = None
+        self.oldChildren = None
         self.oldHead = None
         self.oldMarked = None
         self.oldN = None
         self.oldParent = None
+        self.oldParent_v = None
         self.oldRecentFiles = None
         self.oldTree = None
         self.pasteAsClone = None
+        self.sortChildren = None
 
     def redoHelper(self):
         pass
@@ -168,8 +175,31 @@ class undoer:
             # g.trace('Cutting undo stack to %d entries' % (n))
             u.beads = u.beads[-n:]
             u.bead = n-1
-            # g.trace('bead:',u.bead,'len(u.beads)',len(u.beads))
+            # g.trace('bead:',u.bead,'len(u.beads)',len(u.beads),g.callers())
     #@-node:ekr.20060127052111.1:cutStack
+    #@+node:ekr.20080623083646.10:dumpBead
+    def dumpBead (self,n):
+
+        u = self
+        if n < 0 or n >= len(u.beads):
+            return 'no bead: n = ',n
+
+        bunch = u.beads[n] ; result = []
+        result.append('-' * 10)
+        result.append('len(u.beads): %s, n: %s' % (len(u.beads),n))
+        for ivar in ('kind','newP','newN','p','oldN','undoHelper'):
+            result.append('%s = %s' % (ivar,getattr(self,ivar)))
+        return '\n'.join(result)
+
+    def dumpTopBead(self):
+
+        u = self
+        n = len(u.beads)
+        if n > 0:
+            return self.dumpBead(n-1)
+        else:
+            return '<no top bead>'
+    #@-node:ekr.20080623083646.10:dumpBead
     #@+node:EKR.20040526150818:getBead
     def getBead (self,n):
 
@@ -210,7 +240,7 @@ class undoer:
             # Push the bunch.
             u.bead += 1
             u.beads[u.bead:] = [bunch]
-            # g.trace('u.bead',u.bead,'len u.beads',len(u.beads))
+            # g.trace('u.bead',u.bead,'len u.beads',len(u.beads),g.callers())
 
             # Recalculate the menu labels.
             u.setUndoTypes()
@@ -223,14 +253,13 @@ class undoer:
         u.clearIvars()
 
         if 0: # Debugging.
-            print '-' * 40
-            keys = bunch.keys()
-            keys.sort()
-            for key in keys:
+            g.pr('-' * 40)
+            for key in sorted(bunch):
                 g.trace(key,bunch.get(key))
-            print '-' * 20
+            g.pr('-' * 20)
 
-        for key in bunch.keys():
+        # bunch is not a dict, so bunch.keys() is required.
+        for key in bunch.keys(): 
             val = bunch.get(key)
             # g.trace(key,val)
             setattr(u,key,val)
@@ -241,8 +270,6 @@ class undoer:
     def recognizeStartOfTypingWord (self,
         old_lines,old_row,old_col,old_ch, 
         new_lines,new_row,new_col,new_ch):
-
-        # __pychecker__ = '--no-argsused' # Ignore all unused arguments here.
 
         ''' A potentially user-modifiable method that should return True if the
         typing indicated by the params starts a new 'word' for the purposes of
@@ -484,7 +511,7 @@ class undoer:
         ivars = ('kind','undoType')
 
         for ivar in ivars:
-            print ivar, getattr(self,ivar)
+            g.pr(ivar, getattr(self,ivar))
     #@-node:ekr.20050525151449:u.trace
     #@+node:ekr.20050410095424:updateMarks
     def updateMarks (self,oldOrNew):
@@ -767,8 +794,7 @@ class undoer:
 
         '''Create an undo node for mark and unmark commands.'''
 
-        # __pychecker__ = '--no-argsused'
-            # 'command' unused, but present for compatibility with similar methods.
+        # 'command' unused, but present for compatibility with similar methods.
 
         u = self
         if u.redoing or u.undoing: return
@@ -1054,28 +1080,8 @@ class undoer:
             frame.menu.enableMenu(menu,u.redoMenuLabel,u.canRedo())
             frame.menu.enableMenu(menu,u.undoMenuLabel,u.canUndo())
     #@-node:ekr.20031218072017.3611:enableMenuItems
-    #@+node:ekr.20050525151217:getMark & rollbackToMark (no longer used)
-    if 0:
-        def getMark (self):
-
-            # __pychecker__ = '--no-classattr' # self.bead does, in fact, exist.
-
-            return self.bead
-
-        def rollbackToMark (self,n):
-
-            u = self
-
-            u.bead = n
-            u.beads = u.beads[:n+1]
-            u.setUndoTypes()
-
-        rollBackToMark = rollbackToMark
-    #@-node:ekr.20050525151217:getMark & rollbackToMark (no longer used)
     #@+node:ekr.20031218072017.1490:setUndoTypingParams
     def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):
-
-        # __pychecker__ = 'maxlines=2000' # Ignore the size of this method.
 
         '''Save enough information so a typing operation can be undone and redone.
 
@@ -1126,8 +1132,8 @@ class undoer:
         #@-at
         #@@c
 
-        old_lines = string.split(oldText,'\n')
-        new_lines = string.split(newText,'\n')
+        old_lines = oldText.split('\n')
+        new_lines = newText.split('\n')
         new_len = len(new_lines)
         old_len = len(old_lines)
         min_len = min(old_len,new_len)
@@ -1171,13 +1177,13 @@ class undoer:
             i -= 1
 
         if trace:
-            print "lead,trail",leading,trailing
-            print "old mid,nls:",len(old_middle_lines),old_newlines,oldText
-            print "new mid,nls:",len(new_middle_lines),new_newlines,newText
-            #print "lead,trail:",leading,trailing
-            #print "old mid:",old_middle_lines
-            #print "new mid:",new_middle_lines
-            print "---------------------"
+            g.pr("lead,trail",leading,trailing)
+            g.pr("old mid,nls:",len(old_middle_lines),old_newlines,oldText)
+            g.pr("new mid,nls:",len(new_middle_lines),new_newlines,newText)
+            #g.pr("lead,trail:",leading,trailing)
+            #g.pr("old mid:",old_middle_lines)
+            #g.pr("new mid:",new_middle_lines)
+            g.pr("---------------------")
         #@-node:ekr.20031218072017.1491:<< compute leading, middle & trailing  lines >>
         #@nl
         #@    << save undo text info >>
@@ -1203,8 +1209,8 @@ class undoer:
             # Compute statistics comparing old and new ways...
             # The old doesn't often store the old text, so don't count it here.
             u.old_mem += len(newText)
-            s1 = string.join(old_middle_lines,'\n')
-            s2 = string.join(new_middle_lines,'\n')
+            s1 = '\n'.join(old_middle_lines)
+            s2 = '\n'.join(new_middle_lines)
             u.new_mem += len(s1) + len(s2)
         else:
             u.oldText = None
@@ -1374,41 +1380,39 @@ class undoer:
 
         '''Redo the operation undone by the last undo.'''
 
-        u = self ; c = u.c
-        # g.trace(g.callers(7))
+        u = self ; c = u.c ; trace = False
 
         if not u.canRedo():
-            # g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
+            if trace: g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
             return
         if not u.getBead(u.bead+1):
             g.trace('no bead') ; return
         if not c.currentPosition():
             g.trace('no current position') ; return
 
-        # g.trace(u.undoType)
-        # g.trace(u.bead+1,len(u.beads),u.peekBead(u.bead+1))
+        if trace: g.trace(u.dumpBead(u.bead))
+
         u.redoing = True 
         u.groupCount = 0
 
-        c.beginUpdate()
-        try:
-            c.endEditing()
-            if u.redoHelper: u.redoHelper()
-            else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
-        finally:
-            c.frame.body.updateEditors() # New in Leo 4.4.8.
-            if 0: # Don't do this: it interferes with selection ranges.
-                # This strange code forces a recomputation of the root position.
-                c.selectPosition(c.currentPosition())
-            else:
-                c.setCurrentPosition(c.currentPosition())
-            c.setChanged(True)
-            c.endUpdate()
-            c.recolor_now()
-            c.bodyWantsFocusNow()
-            u.redoing = False
-            u.bead += 1
-            u.setUndoTypes()
+        c.endEditing()
+        if u.redoHelper: u.redoHelper()
+        else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
+        c.frame.body.updateEditors() # New in Leo 4.4.8.
+        if 0: # Don't do this: it interferes with selection ranges.
+            # This strange code forces a recomputation of the root position.
+            c.selectPosition(c.currentPosition())
+        else:
+            c.setCurrentPosition(c.currentPosition())
+        c.setChanged(True)
+        c.redraw()
+        # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+        c.redraw_now()
+        c.recolor_now()
+        c.bodyWantsFocusNow()
+        u.redoing = False
+        u.bead += 1
+        u.setUndoTypes()
     #@nonl
     #@+node:ekr.20050424170219:redoClearRecentFiles
     def redoClearRecentFiles (self):
@@ -1487,17 +1491,13 @@ class undoer:
         if not hasattr(bunch,'items'):
             g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
         else:
-            c.beginUpdate()
-            try:
-                for z in bunch.items:
-                    self.setIvarsFromBunch(z)
-                    if z.redoHelper:
-                        # g.trace(z.redoHelper)
-                        z.redoHelper() ; count += 1
-                    else:
-                        g.trace('oops: no redo helper for %s' % u.undoType)
-            finally:
-                c.endUpdate(False)
+            for z in bunch.items:
+                self.setIvarsFromBunch(z)
+                if z.redoHelper:
+                    # g.trace(z.redoHelper)
+                    z.redoHelper() ; count += 1
+                else:
+                    g.trace('oops: no redo helper for %s' % u.undoType)
 
         u.groupCount -= 1
 
@@ -1701,41 +1701,39 @@ class undoer:
 
         """Undo the operation described by the undo parameters."""
 
-        u = self ; c = u.c
-        # g.trace(g.callers(7))
+        u = self ; c = u.c ; trace = False
 
         if not u.canUndo():
-            # g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
+            if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
             return
         if not u.getBead(u.bead):
             g.trace('no bead') ; return
         if not c.currentPosition():
             g.trace('no current position') ; return
 
-        # g.trace(u.undoType)
-        # g.trace(len(u.beads),u.bead,u.peekBead(u.bead))
+        if trace: g.trace(u.dumpBead(u.bead))
+
         u.undoing = True
         u.groupCount = 0
 
-        c.beginUpdate()
-        try:
-            c.endEditing()
-            if u.undoHelper: u.undoHelper()
-            else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
-        finally:
-            c.frame.body.updateEditors() # New in Leo 4.4.8.
-            if 0: # Don't do this: it interferes with selection ranges.
-                # This strange code forces a recomputation of the root position.
-                c.selectPosition(c.currentPosition())
-            else:
-                c.setCurrentPosition(c.currentPosition())
-            c.setChanged(True)
-            c.endUpdate()
-            c.recolor_now()
-            c.bodyWantsFocusNow()
-            u.undoing = False
-            u.bead -= 1
-            u.setUndoTypes()
+        c.endEditing()
+        if u.undoHelper: u.undoHelper()
+        else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
+        c.frame.body.updateEditors() # New in Leo 4.4.8.
+        if 0: # Don't do this: it interferes with selection ranges.
+            # This strange code forces a recomputation of the root position.
+            c.selectPosition(c.currentPosition())
+        else:
+            c.setCurrentPosition(c.currentPosition())
+        c.setChanged(True)
+        c.redraw()
+        # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+        c.redraw_now()
+        c.recolor_now()
+        c.bodyWantsFocusNow()
+        u.undoing = False
+        u.bead -= 1
+        u.setUndoTypes()
     #@nonl
     #@+node:ekr.20050424170219.1:undoClearRecentFiles
     def undoClearRecentFiles (self):
@@ -1820,17 +1818,13 @@ class undoer:
             # Important bug fix: 9/8/06: reverse the items first.
             reversedItems = bunch.items[:]
             reversedItems.reverse()
-            c.beginUpdate()
-            try:
-                for z in reversedItems:
-                    self.setIvarsFromBunch(z)
-                    # g.trace(z.undoHelper)
-                    if z.undoHelper:
-                        z.undoHelper() ; count += 1
-                    else:
-                        g.trace('oops: no undo helper for %s' % u.undoType)
-            finally:
-                c.endUpdate(False)
+            for z in reversedItems:
+                self.setIvarsFromBunch(z)
+                # g.trace(z.undoHelper)
+                if z.undoHelper:
+                    z.undoHelper() ; count += 1
+                else:
+                    g.trace('oops: no undo helper for %s' % u.undoType)
 
         u.groupCount -= 1
 
@@ -1867,6 +1861,7 @@ class undoer:
         u = self ; c = u.c
 
         c.selectPosition(u.newP)
+
         c.deleteOutline()
 
         if u.pasteAsClone:
@@ -1970,9 +1965,10 @@ class undoer:
         tag="undo", # "undo" or "redo"
         undoType=None):
 
-        # __pychecker__ = '--no-argsused' # newNewlines is unused, but it has symmetry.
 
         '''Handle text undo and redo: converts _new_ text into _old_ text.'''
+
+        # newNewlines is unused, but it has symmetry.
 
         u = self ; c = u.c ; w = c.frame.body.bodyCtrl
 
@@ -1989,7 +1985,7 @@ class undoer:
             s.extend(oldMidLines)
         if trailing > 0:
             s.extend(body_lines[-trailing:])
-        s = string.join(s,'\n')
+        s = '\n'.join(s)
         # Remove trailing newlines in s.
         while len(s) > 0 and s[-1] == '\n':
             s = s[:-1]
@@ -1999,8 +1995,8 @@ class undoer:
         result = s
 
         if u.debug_print:
-            print "body:  ",body
-            print "result:",result
+            g.pr("body:  ",body)
+            g.pr("result:",result)
         #@-node:ekr.20061106105812.1:<< Compute the result using p's body text >>
         #@nl
         p.setBodyString(result)

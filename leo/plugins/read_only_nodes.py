@@ -309,7 +309,7 @@ def enable_body(body):
     if body.cget("state") == "disabled":
         try:
             g.es("enable")
-            print insertOffTime,insertOnTime
+            g.pr(insertOffTime,insertOnTime)
             body.configure(state="normal")
             body.configure(insertontime=insertOnTime,insertofftime=insertOffTime)
         except: g.es_exception()
@@ -321,7 +321,7 @@ def disable_body(body):
             g.es("disable")
             insertOnTime = body.cget("insertontime")
             insertOffTime = body.cget("insertofftime")
-            print insertOffTime,insertOnTime
+            g.pr(insertOffTime,insertOnTime)
             body.configure(state="disabled")
         except: g.es_exception()
 #@-node:edream.110203113231.893:enable/disable_body
@@ -334,9 +334,8 @@ def insert_read_only_node (c,v,name):
             title="Open",
             filetypes=[("All files", "*")]
             )
-        c.beginUpdate()
         c.setHeadString(v,"@read-only %s" % name)
-        c.endUpdate()
+        c.redraw()
     parse = urlparse.urlparse(name)
     try:
         if parse[0] == 'ftp':
@@ -376,7 +375,7 @@ def insert_read_only_node (c,v,name):
             numlinks = len(hyperlinks)
             if numlinks > 0:
                 hyperlist = ['\n\n--Hyperlink list follows--']
-                for i in xrange(numlinks):
+                for i in range(numlinks):
                     hyperlist.append("\n[%d]: %s" % (i+1,hyperlinks[i])) # 3/26/03: was i.
                 new = new + ''.join(hyperlist)
             #@nonl
@@ -399,7 +398,6 @@ def on_open (tag,keywords):
 
     v = c.rootVnode()
     g.es("scanning for @read-only nodes...",color="blue")
-    c.beginUpdate()
     while v:
         h = v.headString()
         if g.match_word(h,0,"@read-only"):
@@ -411,7 +409,7 @@ def on_open (tag,keywords):
                 if not c.isChanged():
                     c.setChanged(changed)
         v = v.threadNext()
-    c.endUpdate()
+    c.redraw()
 #@nonl
 #@-node:edream.110203113231.896:on_open
 #@+node:edream.110203113231.897:on_bodykey1

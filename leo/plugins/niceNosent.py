@@ -29,7 +29,8 @@ __version__ = "0.3"
 #@+node:ekr.20040909122647.1:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import os
+
+# import os
 #@nonl
 #@-node:ekr.20040909122647.1:<< imports >>
 #@nl

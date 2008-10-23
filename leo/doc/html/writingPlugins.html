@@ -349,7 +349,7 @@ def __init__ (self,c):
     self.c = c
     c.k.registerCommand('print-cp',shortcut=None,func=self.print_cp)
     script = &quot;c.k.simulateCommand('print-cp')&quot;
-    g.makeScriptButton(c,script=script,buttonText='Print c &amp; p',bg='red')
+    g.app.gui.makeScriptButton(c,script=script,buttonText='Print c &amp; p',bg='red')
 </pre>
 <p>This registers the print_cp <em>method</em> of the pluginController class as the print-cp minibuffer command,
 and creates a script button with the following script:</p>

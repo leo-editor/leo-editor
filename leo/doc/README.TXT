@@ -1,25 +1,35 @@
-Leo 4.4.8 final                        April 6, 2008
+Leo 4.5.1 final                                  September 14, 2008
 
-Leo 4.4.8 final is now available at:
+Leo 4.5.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
-This version features a new ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
+
+- Eliminated spurious error messages in the goto-global-line command.
+- @shadow files with unknown file extensions now work properly.
+- Leo's installer now properly finds Python's install directory.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-The highlights of Leo 4.4.8:
-----------------------------
-- Leo's source code is now managed by bzr: see link below.
-- Leo's discussion is now hosted by Google Groups: see link below.
-- Arguments to g.es and g.es_print can be translated using gettext.
-- Completed ILeo: a bridge between IPython and Leo.
-  See http://webpages.charter.net/edreamleo/IPythonBridge.html
-- Minibuffer commands may have arguments.
-- @menu trees can now refer to commands created by
-  @command and @button nodes.
-- Added support for common @commands nodes in settings files.
+The highlights of Leo 4.5:
+--------------------------
+
+- Full support for @shadow files in Leo's core.
+- Major improvements to Leo's key binding code.
+- The beginning of usable vim-like bindings.
+- uA's may now be associated with vnodes in @thin and @shadow files.
+- Several major reorganizations of Leo's code:
+  including sax-based parsing, support for the Graph world (unified nodes),
+  and simplified drawing code.
+- Leo is now an installable package.
+- Prepared code to be ready for Python 3.0.
+- Many small improvements and bug fixes.
+
+Quote of the month:
+-------------------
+Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.
 
 Links:
 ------

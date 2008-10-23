@@ -137,8 +137,8 @@ def export_rtf( c ):
 
     for p in c.allNodes_iter():
         curLevel = p.level() + 1    # Store current level so method doesn't have to be called again
-        if curLevel <> myLevel:
-            if myLevel <> -1:
+        if curLevel != myLevel:
+            if myLevel != -1:
                 f.write("}")                 # If this is not the 1st level written, close the last before begin
             levelIndent = str(720*curLevel) # Generate the pixel indent for the current level
             f.write(levelHeader)            # Output the generic RTF level info

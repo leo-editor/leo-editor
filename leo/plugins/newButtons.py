@@ -212,7 +212,7 @@ class FlatOptionMenu(Tk.OptionMenu):
         if kwargs.has_key('command'):
             del kwargs['command']
         if kwargs:
-            raise TclError, 'unknown option -'+kwargs.keys()[0]
+            raise Tk.TclError, 'unknown option -'+kwargs.keys()[0]
         self["menu"] = menu
         self.__variable = variable
         self.__callback = callback
@@ -363,7 +363,7 @@ class UIHelperClass:
         if USE_FIXED_SIZES:
             sizer = Tk.Frame(parent, height=height, width=width)
             sizer.pack_propagate(0) # don't shrink 
-            sizer.pack(side=pack)
+            sizer.pack(side='pack')
             return sizer
         else:
             return parent
@@ -382,6 +382,9 @@ class HelperForm:
         self.c = c
         self.root = root = g.app.root
         self.callback = callback
+        self.getResult = lambda None:None
+            # Set to a function in subclasses.
+            # This definition removes a pylint complaint.
 
         self.dialog = dialog = Pmw.Dialog(root,
                 buttons = ('OK', 'Cancel'),
@@ -558,28 +561,25 @@ class Template:
     def addNodes (self,c,parent,parameter="",top=False):
         """Add this template to the current"""
 
-        c.beginUpdate()
-        try:
-            # Add this new node
-            c.insertHeadline()
-            c.endEditing()
-            p = c.currentPosition()
-            c.setHeadString(p,self.convert(self.headline,parameter,parent))
-            c.setBodyString(p,self.convert(self.body,parameter,parent))
+        # Add this new node
+        c.insertHeadline()
+        c.endEditing()
+        p = c.currentPosition()
+        c.setHeadString(p,self.convert(self.headline,parameter,parent))
+        c.setBodyString(p,self.convert(self.body,parameter,parent))
 
-            # Move it to the proper place.
-            if top and not parent.isExpanded():
-                p.moveAfter(parent)
-            else:
-                p.moveToNthChildOf(parent,0)
+        # Move it to the proper place.
+        if top and not parent.isExpanded():
+            p.moveAfter(parent)
+        else:
+            p.moveToNthChildOf(parent,0)
 
-            # Now add the children - go in reverse so we can add them as child 0 (above)
-            children = self.children [:]
-            children.reverse()
-            for child in children:
-                child.addNodes(c,p,parameter)
-        finally:
-            c.endUpdate()
+        # Now add the children - go in reverse so we can add them as child 0 (above)
+        children = self.children [:]
+        children.reverse()
+        for child in children:
+            child.addNodes(c,p,parameter)
+        c.redraw()
     #@nonl
     #@-node:pap.20051010184315:addNodes
     #@+node:ekr.20060107131019:getTemplateFromNode

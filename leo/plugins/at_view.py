@@ -186,7 +186,7 @@ class View:
         if currentPath.exists():
             path = currentPath.abspath()
             s = 'currentPath: %s' % path
-            print s ; g.es(s)
+            g.es_print(s)
             filelines = path.lines()
             # Add an @ignore directive.
             lines = ['@ignore\n']
@@ -268,6 +268,8 @@ class View:
         @node is the node to work with
         """
 
+        c = self.c
+
         # delete all nodes before creating, to avoid duplicates
         while node.firstChild():
             node.firstChild().doDelete(node)
@@ -277,8 +279,8 @@ class View:
             c.setHeadString(child,'@view %s' % file.name)
 
         for file in path.dirs():
-           child = node.insertAsLastChild()
-           c.setHeadString(child,'@view %s' % file.name)
+            child = node.insertAsLastChild()
+            c.setHeadString(child,'@view %s' % file.name)
     #@-node:ktenney.20041211072654.14:processDirectory
     #@-others
 #@nonl

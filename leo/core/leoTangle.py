@@ -515,6 +515,8 @@ class baseTangleCommands:
 
     def cleanup (self):
 
+        c = self.c
+
         if self.errors + g.app.scanErrors == 0:
             #@        << call tangle_done.run() or untangle_done.run() >>
             #@+node:ekr.20031218072017.3469:<< call tangle_done.run() or untangle_done.run() >>
@@ -525,7 +527,7 @@ class baseTangleCommands:
             for section in self.root_list:
                 for part in section.parts:
                     if part.is_root:
-                        root_names.append(g.os_path_join(theDir,part.name))
+                        root_names.append(c.os_path_finalize_join(theDir,part.name))
 
             if self.tangling and self.tangle_batch_flag:
                 try:
@@ -583,7 +585,7 @@ class baseTangleCommands:
             g.es("looking for a parent to tangle...")
             while p:
                 d = g.get_directives_dict(p,[self.head_root])
-                if d.has_key("root"):
+                if 'root' in d:
                     g.es("tangling parent")
                     self.tangleTree(p,report_errors)
                     break
@@ -658,7 +660,7 @@ class baseTangleCommands:
             self.p = p
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            is_ignore = theDict.has_key("ignore")
+            is_ignore = 'ignore' in theDict
             if is_ignore:
                 p.moveToNodeAfterTree()
                 continue
@@ -711,9 +713,9 @@ class baseTangleCommands:
         while p and p != next:
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            is_ignore = theDict.has_key("ignore")
-            is_root = theDict.has_key("root")
-            is_unit = theDict.has_key("unit")
+            is_ignore = 'ignore' in theDict
+            is_root = 'root' in theDict
+            is_unit = 'unit' in theDict
             if is_ignore:
                 p.moveToNodeAfterTree()
             elif not is_root and not is_unit:
@@ -738,13 +740,10 @@ class baseTangleCommands:
         c = self.c ; p = c.currentPosition()
         self.initUntangleCommand()
 
-        c.beginUpdate()
-        try:
-            self.untangleTree(p,report_errors)
-            if not g.unitTesting:
-                g.es("untangle complete")
-        finally:
-            c.endUpdate()
+        self.untangleTree(p,report_errors)
+        if not g.unitTesting:
+            g.es("untangle complete")
+        c.redraw()
     #@-node:ekr.20031218072017.3478:untangle
     #@+node:ekr.20031218072017.3479:untangleAll
     def untangleAll(self,event=None):
@@ -753,13 +752,10 @@ class baseTangleCommands:
         self.initUntangleCommand()
         has_roots = False
 
-        c.beginUpdate()
-        try:
-            for p in c.rootPosition().self_and_siblings_iter():
-                ok = self.untangleTree(p,False)
-                if ok: has_roots = True
-        finally:
-            c.endUpdate()
+        for p in c.rootPosition().self_and_siblings_iter():
+            ok = self.untangleTree(p,False)
+            if ok: has_roots = True
+        c.redraw()
 
         self.errors += g.app.scanErrors
 
@@ -778,18 +774,15 @@ class baseTangleCommands:
         self.initUntangleCommand()
         marked_flag = False
 
-        c.beginUpdate()
-        try:
-            while p: # Don't use an iterator.
-                if p.isMarked():
-                    ok = self.untangleTree(p,dont_report_errors)
-                    if ok: marked_flag = True
-                    if self.errors + g.app.scanErrors > 0: break
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
-        finally:
-            c.endUpdate()
+        while p: # Don't use an iterator.
+            if p.isMarked():
+                ok = self.untangleTree(p,dont_report_errors)
+                if ok: marked_flag = True
+                if self.errors + g.app.scanErrors > 0: break
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        c.redraw()
 
         self.errors += g.app.scanErrors
 
@@ -819,6 +812,7 @@ class baseTangleCommands:
     def untangleRoot(self,root,begin,end):
 
         # g.trace("root,begin,end:",root,begin,end)
+        c = self.c
         #@    << Set path & root_name to the file specified in the @root directive >>
         #@+node:ekr.20031218072017.3483:<< Set path & root_name to the file specified in the @root directive >>
         s = root.bodyString()
@@ -852,11 +846,11 @@ class baseTangleCommands:
         #@+node:ekr.20031218072017.3484:<< Read the file into file_buf  >> in untangleRoot
         f = None
         try:
-            path = g.os_path_join(self.tangle_directory,path)
+            path = c.os_path_finalize_join(self.tangle_directory,path)
             f = open(path)
             if f:
                 file_buf = f.read()
-                file_buf = string.replace(file_buf,g.body_ignored_newline,'')
+                file_buf = file_buf.replace(g.body_ignored_newline,'')
         except:
             if f: f.close()
             g.es("error reading:",path)
@@ -909,9 +903,9 @@ class baseTangleCommands:
         while p and p != afterEntireTree and self.errors + g.app.scanErrors == 0:
             self.setRootFromHeadline(p)
             theDict = g.get_directives_dict(p,[self.head_root])
-            ignore = theDict.has_key("ignore")
-            root = theDict.has_key("root")
-            unit = theDict.has_key("unit")
+            ignore = 'ignore' in theDict
+            root = 'root' in theDict
+            unit = 'unit' in theDict
             if ignore:
                 p.moveToNodeAfterTree()
             elif unit:
@@ -922,7 +916,7 @@ class baseTangleCommands:
                 while p and p != afterUnit and self.errors + g.app.scanErrors== 0:
                     self.setRootFromHeadline(p)
                     theDict = g.get_directives_dict(p,[self.head_root])
-                    root = theDict.has_key("root")
+                    root = 'root' in theDict
                     if root:
                         any_root_flag = True
                         end = None
@@ -1352,7 +1346,7 @@ class baseTangleCommands:
         self.output_file.write(s)
 
     def os (self,s):
-        s = string.replace(s,g.body_ignored_newline,g.body_newline)
+        s = s.replace(g.body_ignored_newline,g.body_newline)
         s = g.toEncodedString(s,self.encoding,reportErrors=True)
         self.output_file.write(s)
 
@@ -1384,10 +1378,8 @@ class baseTangleCommands:
         for section in self.root_list:
 
             # g.trace(section.name)
-            file_name = g.os_path_join(self.tangle_directory,section.name)
-            file_name = g.os_path_normpath(file_name)
+            file_name = c.os_path_finalize_join(self.tangle_directory,section.name)
             mode = c.config.output_newline
-            # mode = g.choose(mode=="platform",'w','wb')
             textMode = mode == 'platform'
             if g.unitTesting:
                 self.output_file = g.fileLikeObject()
@@ -1842,7 +1834,7 @@ class baseTangleCommands:
                             self.put_leading_ws(self.tangle_indent)
 
                         # Don't print trailing whitespace
-                        name = string.rstrip(name)
+                        name = name.rstrip()
                         if self.single_comment_string:
                             self.os(self.single_comment_string) ; self.oblank() ; self.os(name)
                             #@    << put (n of m) >>
@@ -1974,10 +1966,8 @@ class baseTangleCommands:
 
         """Checks the given symbol table for defined but never referenced sections."""
 
-        keys = self.tst.keys()
-        keys.sort()
         # g.trace(keys)
-        for name in keys:
+        for name in sorted(self.tst):
             section = self.tst[name]
             if not section.referenced:
                 lp = g.choose(self.use_noweb_flag,"<< ","@< ")
@@ -1990,9 +1980,8 @@ class baseTangleCommands:
     def st_dump(self,verbose_flag=True):
 
         s = "\ndump of symbol table...\n"
-        keys = self.tst.keys()
-        keys.sort()
-        for name in keys:
+
+        for name in sorted(self.tst):
             section = self.tst[name]
             if verbose_flag:
                 s += self.st_dump_node(section)
@@ -2030,12 +2019,12 @@ class baseTangleCommands:
         section = self.st_lookup(name,is_root_flag)
         assert(section)
         if doc:
-            doc = string.rstrip(doc) # remove trailing lines.
+            doc = doc.rstrip() # remove trailing lines.
         if code:
             if self.print_mode != "silent": # @silent supresses newline processing.
                 i = g.skip_blank_lines(code,0) # remove leading lines.
                 if i > 0: code = code[i:] 
-                if code and len(code) > 0: code = string.rstrip(code) # remove trailing lines.
+                if code and len(code) > 0: code = code.rstrip() # remove trailing lines.
             if len(code) == 0: code = None
         if code:
             #@        << check for duplicate code definitions >>
@@ -2099,7 +2088,7 @@ class baseTangleCommands:
         else:
             key = self.standardize_name(name)
 
-        if self.tst.has_key(key):
+        if key in self.tst:
             section = self.tst[key]
             # g.trace("found:" + key)
             return section
@@ -2115,16 +2104,17 @@ class baseTangleCommands:
     def ust_dump (self):
 
         s = "\n---------- Untangle Symbol Table ----------"
-        keys = self.ust.keys()
-        keys.sort()
-        for name in keys:
+
+        for name in sorted(self.ust):
             section = self.ust[name]
             s += "\n\n" + section.name
             for part in section.parts.values():
                 assert(part.of == section.of)
                 s += "\n----- part %d of %d -----\n" % (part.part,part.of)
                 s += repr(g.get_line(part.code,0))
+
         s += "\n--------------------"
+
         return s
     #@-node:ekr.20031218072017.3539:ust_dump
     #@+node:ekr.20031218072017.3540:ust_enter
@@ -2151,12 +2141,12 @@ class baseTangleCommands:
         #@+node:ekr.20031218072017.3541:<< remove blank lines from the start and end of the text >>
         i = g.skip_blank_lines(code,0)
         if i > 0:
-            code = code[i:]
-            code = string.rstrip(code)
+            code = code[i:].rstrip()
+
         #@-node:ekr.20031218072017.3541:<< remove blank lines from the start and end of the text >>
         #@nl
         u = ust_node(name,code,part,of,nl_flag,False) # update_flag
-        if not self.ust.has_key(name):
+        if name not in self.ust:
             self.ust[name] = u
         section = self.ust[name]
         section.parts[part]=u # Parts may be defined in any order.
@@ -2173,9 +2163,9 @@ class baseTangleCommands:
             name = self.standardize_name(name)
 
         if part_number == 0: part_number = 1 # A hack: zero indicates the first part.
-        if self.ust.has_key(name):
+        if name in self.ust:
             section = self.ust[name]
-            if section.parts.has_key(part_number):
+            if part_number in section.parts:
                 part = section.parts[part_number]
                 if update_flag: part.update_flag = True
                 # g.trace("found: %d (%d)...\n" % (name,part_number,g.get_line(part.code,0)))
@@ -2337,9 +2327,6 @@ class baseTangleCommands:
     #@@c
 
     def forgiving_compare (self,name,part,s1,s2):
-
-        # __pychecker__ = 'maxlines=500 maxbranches=100 --no-argsused'
-            # name and part are good for debugging.
 
         if 0:
             g.trace(name,part,
@@ -2663,8 +2650,6 @@ class baseTangleCommands:
 
     def scan_derived_file (self,s):
 
-        # __pychecker__ = 'maxlines=500'
-
         c = self.c
         self.def_stack = []
         #@    << set the private global matching vars >>
@@ -2934,7 +2919,7 @@ class baseTangleCommands:
             if ucode and g.match(ucode,j,self.comment):
                 # Skip to the end of the block comment.
                 i = j + len(self.comment)
-                i = string.find(ucode,self.comment_end,i)
+                i = ucode.find(self.comment_end,i)
                 if i == -1: ucode = None # An unreported problem in the user code.
                 else:
                     i += len(self.comment_end)
@@ -2957,9 +2942,9 @@ class baseTangleCommands:
         g.es("***Updating:",p.headString())
         i = g.skip_blank_lines(ucode,0)
         ucode = ucode[i:]
-        ucode = string.rstrip(ucode)
+        ucode = ucode.rstrip()
         # Add the trailing whitespace of code to ucode.
-        code2 = string.rstrip(code)
+        code2 = code.rstrip()
         trail_ws = code[len(code2):]
         ucode = ucode + trail_ws
         body = head + ucode + tail
@@ -2976,13 +2961,10 @@ class baseTangleCommands:
         assert(self.p)
         c.setBodyString(p,s)
 
-        c.beginUpdate()
-        try:
-            c.setChanged(True)
-            p.setDirty()
-            p.setMarked()
-        finally:
-            c.endUpdate()
+        c.setChanged(True)
+        p.setDirty()
+        p.setMarked()
+        c.redraw()
     #@-node:ekr.20031218072017.3575:update_current_vnode
     #@-node:ekr.20031218072017.3544:untangle
     #@+node:ekr.20031218072017.3576:utility methods
@@ -3008,7 +2990,7 @@ class baseTangleCommands:
                     i2 = g.skip_ws(s2,i2)
                 elif g.match(s1,i1,delim) and g.match(s2,i2,delim):
                     return True
-                elif string.lower(ch1) == string.lower(ch2):
+                elif ch1.lower() == ch2.lower():
                     i1 += 1 ; i2 += 1
                 else: return False
             return False
@@ -3109,8 +3091,6 @@ class baseTangleCommands:
         return result
 
     def is_sentinel_line_with_data (self,s,i):
-
-        # __pychecker__ = 'maxreturns=50'
 
         start_sentinel = self.sentinel
         end_sentinel = self.sentinel_end
@@ -3297,7 +3277,7 @@ class baseTangleCommands:
             if err_flag:
                 g.scanError("bad filename in @root " + s[:i])
         else:
-            self.root_name = string.strip(s[root1:root2])
+            self.root_name = s[root1:root2].strip()
         return i
     #@-node:ekr.20031218072017.1259:setRootFromText
     #@+node:ekr.20031218072017.3595:skip_CWEB_section_name
@@ -3409,47 +3389,36 @@ class baseTangleCommands:
         """Removes leading and trailing brackets, converts white space to a single blank and converts to lower case."""
 
         # Convert to lowercase.
-        name = string.lower(name)
         # Convert whitespace to a single space.
-        name = string.replace(name,'\t',' ')
-        name = string.replace(name,'  ',' ')
+        name = name.lower().name.replace('\t',' ').replace('  ',' ')
+
         # Remove leading '<'
         i = 0 ; n = len(name)
         while i < n and name[i] == '<':
             i += 1
         j = i
+
         # Find the first '>'
         while i < n and name [i] != '>':
             i += 1
         name = string.strip(name[j:i])
-        # g.trace(name)
+
         return name
     #@-node:ekr.20031218072017.3598:standardize_name
-    #@+node:ekr.20031218072017.1360:tangle.scanAllDirectives
-    #@+at 
-    #@nonl
-    # Once a directive is seen, related directives in ancesors have no 
-    # effect.  For example, if an @color directive is seen in node x, no 
-    # @color or @nocolor directives are examined in any ancestor of x.
-    #@-at
-    #@@c
-
+    #@+node:ekr.20080923124254.16:tangle.scanAllDirectives
     def scanAllDirectives(self,p,require_path_flag,issue_error_flag):
 
         """Scan vnode p and p's ancestors looking for directives,
         setting corresponding tangle ivars and globals.
         """
 
-        # __pychecker__ = 'maxlines=500 maxbranches=100'
-
         c = self.c
-        # g.trace(p)
-        old = {} ; print_mode_changed = False
+        print_mode_changed = False
         self.init_directive_ivars()
         if p:
             s = p.bodyString()
             #@        << Collect @first attributes >>
-            #@+node:ekr.20031218072017.1361:<< Collect @first attributes >>
+            #@+node:ekr.20080923124254.17:<< Collect @first attributes >>
             #@+at 
             #@nonl
             # Stephen P. Schaefer 9/13/2002: Add support for @first.
@@ -3473,238 +3442,50 @@ class baseTangleCommands:
                     i = g.skip_nl(s,i)
                 if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
                     break
-            #@-node:ekr.20031218072017.1361:<< Collect @first attributes >>
+            #@-node:ekr.20080923124254.17:<< Collect @first attributes >>
             #@nl
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            #@        << Test for @comment and @language >>
-            #@+node:ekr.20031218072017.1362:<< Test for @comment and @language >>
-            if old.has_key("comment") or old.has_key("language"):
-                pass # Do nothing more.
 
-            elif theDict.has_key("comment"):
+        # delims = (self.single_comment_string,self.start_comment_string,self.end_comment_string)
+        lang_dict = {'language':self.language,'delims':None,} # Delims not used
 
-                z = theDict["comment"]
-                delim1,delim2,delim3 = g.set_delims_from_string(z)
-                if delim1 or delim2:
-                    self.single_comment_string = delim1
-                    self.start_comment_string = delim2
-                    self.end_comment_string = delim3
-                    # @comment effectively disables Untangle.
-                    self.language = "unknown"
-                else:
-                    if issue_error_flag:
-                        g.es("ignoring: @comment",z)
+        table = (
+            ('encoding',    self.encoding,  g.scanAtEncodingDirectives),
+            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lineending',  None,           g.scanAtLineendingDirectives),
+            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+            ('path',        None,           c.scanAtPathDirectives),
+            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        )
 
-            elif theDict.has_key("language"):
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,default,func in table:
+            val = func(aList)
+            d[key] = g.choose(val is None,default,val)
 
-                z = theDict["language"]
-                language,delim1,delim2,delim3 = g.set_language(z,0)
-                self.language = language
-                self.single_comment_string = delim1
-                self.start_comment_string = delim2
-                self.end_comment_string = delim3
-                if 0:
-                    g.trace(self.single_comment_string,
-                        self.start_comment_string,
-                        self.end_comment_string)
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        lineending      = d.get('lineending')
+        if lineending:
+            self.output_newline = lineending
+        self.encoding             = d.get('encoding')
+        self.language             = lang_dict.get('language')
+        self.page_width           = d.get('pagewidth')
+        self.default_directory    = d.get('path')
+        self.tab_width            = d.get('tabwidth')
 
-                # 10/30/02: These ivars must be updated here!
-                # g.trace(self.language)
-                self.use_noweb_flag = True
-                self.use_cweb_flag = False # Only raw cweb mode is ever used.
-                self.raw_cweb_flag = self.language == "cweb" # A new ivar.
-            #@-node:ekr.20031218072017.1362:<< Test for @comment and @language >>
-            #@nl
-            #@        << Test for @encoding >>
-            #@+node:ekr.20031218072017.1363:<< Test for @encoding >>
-            if not old.has_key("encoding") and theDict.has_key("encoding"):
-
-                e = g.scanAtEncodingDirective(theDict)
-                if e:
-                    self.encoding = e
-            #@-node:ekr.20031218072017.1363:<< Test for @encoding >>
-            #@nl
-            #@        << Test for @lineending >>
-            #@+node:ekr.20031218072017.1364:<< Test for @lineending >>
-            if not old.has_key("lineending") and theDict.has_key("lineending"):
-
-                lineending = g.scanAtLineendingDirective(theDict)
-                if lineending:
-                    self.output_newline = lineending
-            #@-node:ekr.20031218072017.1364:<< Test for @lineending >>
-            #@nl
-            #@        << Test for print modes directives >>
-            #@+node:ekr.20031218072017.1365:<< Test for print modes directives >>
-            #@+at 
-            #@nonl
-            # It is valid to have more than one of these directives in the 
-            # same body text: the more verbose directive takes precedence.
-            #@-at
-            #@@c
-
-            if not print_mode_changed:
-                for name in ("verbose","terse","quiet","silent"):
-                    if theDict.has_key(name):
-                        self.print_mode = name
-                        print_mode_changed = True
-                        break
-            #@-node:ekr.20031218072017.1365:<< Test for print modes directives >>
-            #@nl
-            #@        << Test for @path >>
-            #@+node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-            if require_path_flag and not old.has_key("path") and theDict.has_key("path"):
-
-                path = theDict["path"]
-                theDir = relative_path = g.computeRelativePath(path)
-
-                if len(theDir) > 0:
-                    base = g.getBaseDirectory(c=c) # May return "".
-                    if theDir and len(theDir) > 0:
-                        theDir = g.os_path_join(base,theDir)
-                        if g.os_path_isabs(theDir):
-                            #@                << handle absolute @path >>
-                            #@+node:ekr.20031218072017.1368:<< handle absolute @path >>
-                            if g.os_path_exists(theDir):
-                                self.tangle_directory = theDir
-                            else: # 11/19/02
-                                self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-                                if not self.tangle_directory:
-                                    if issue_error_flag and not self.path_warning_given:
-                                        self.path_warning_given = True # supress future warnings
-                                        self.error("@path directory does not exist: " + theDir)
-                                        if base and len(base) > 0:
-                                            g.es("relative_path_base_directory:",base)
-                                        if relative_path and len(relative_path) > 0:
-                                            g.es("relative path in @path directive:",relative_path)
-                            #@-node:ekr.20031218072017.1368:<< handle absolute @path >>
-                            #@nl
-                        elif issue_error_flag and not self.path_warning_given:
-                            self.path_warning_given = True # supress future warnings
-                            self.error("ignoring relative path in @path:" + theDir)
-                elif issue_error_flag and not self.path_warning_given:
-                    self.path_warning_given = True # supress future warnings
-                    self.error("ignoring empty @path")
-            #@-node:ekr.20031218072017.1366:<< Test for @path >> (tangle.scanAllDirectives)
-            #@nl
-            #@        << Test for @pagewidth >>
-            #@+node:ekr.20031218072017.1369:<< Test for @pagewidth >>
-            if not old.has_key("pagewidth") and theDict.has_key("pagewidth"):
-
-                w = g.scanAtPagewidthDirective(theDict,issue_error_flag)
-                if w and w > 0:
-                    self.page_width = w
-            #@-node:ekr.20031218072017.1369:<< Test for @pagewidth >>
-            #@nl
-            #@        << Test for @root >>
-            #@+node:ekr.20031218072017.1370:<< Test for @root >>
-            #@+at 
-            #@nonl
-            # 10/27/02: new code:  self.root may not be defined here, so any 
-            # relative directory specified in the @root node will have no 
-            # effect unless we have this code.
-            # 
-            #@-at
-            #@@c
-            if self.root_name == None and theDict.has_key("root"):
-                z = theDict["root"]
-                self.setRootFromText(z,issue_error_flag)
-            #@-node:ekr.20031218072017.1370:<< Test for @root >>
-            #@nl
-            #@        << Test for @tabwidth >>
-            #@+node:ekr.20031218072017.1371:<< Test for @tabwidth >>
-            if not old.has_key("tabwidth") and theDict.has_key("tabwidth"):
-
-                w = g.scanAtTabwidthDirective(theDict,issue_error_flag)
-                if w and w != 0:
-                    self.tab_width = w
-            #@-node:ekr.20031218072017.1371:<< Test for @tabwidth >>
-            #@nl
-            #@        << Test for @header and @noheader >>
-            #@+node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
-            if old.has_key("header") or old.has_key("noheader"):
-                pass # Do nothing more.
-
-            elif theDict.has_key("header") and theDict.has_key("noheader"):
-                if issue_error_flag:
-                    g.es("conflicting @header and @noheader directives")
-
-            elif theDict.has_key("header"):
-                self.use_header_flag = True
-
-            elif theDict.has_key("noheader"):
-                self.use_header_flag = False
-            #@-node:ekr.20031218072017.1372:<< Test for @header and @noheader >>
-            #@nl
-            old.update(theDict)
-        #@    << Set self.tangle_directory >>
-        #@+node:ekr.20031218072017.1373:<< Set self.tangle_directory >>
-        #@+at 
-        #@nonl
-        # This code sets self.tangle_directory if it has not already been set 
-        # by an @path directive.
-        # 
-        # An absolute file name in an @root directive will override the 
-        # directory set here.
-        # A relative file name gets appended later to the default directory.
-        # That is, the final file name will be 
-        # g.os_path_join(self.tangle_directory,fileName)
-        #@-at
-        #@@c
-
-        if c.frame and require_path_flag and not self.tangle_directory:
-            if self.root_name and len(self.root_name) > 0:
-                root_dir = g.os_path_dirname(self.root_name)
-            else:
-                root_dir = None
-            # print "root_dir:", root_dir
-
-            table = ( # This is a precedence table.
-                (root_dir,"@root"), 
-                (c.tangle_directory,"default tangle"), # Probably should be eliminated.
-                (c.frame.openDirectory,"open"))
-
-            base = g.getBaseDirectory(c=c) # May return ""
-
-            for dir2, kind in table:
-                if dir2 and len(dir2) > 0:
-                    # print "base,theDir:",base,theDir
-                    theDir = g.os_path_join(base,dir2)
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        #@                << handle absolute path >>
-                        #@+node:ekr.20031218072017.1374:<< handle absolute path >>
-                        if g.os_path_exists(theDir):
-                            if kind == "@root" and not g.os_path_isabs(root_dir):
-                                self.tangle_directory = base
-                            else:
-                                self.tangle_directory = theDir 
-                            break
-                        else: # 9/25/02
-                            self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-                            if not self.tangle_directory:
-                                # 10/27/02: It is an error for this not to exist now.
-                                self.error("@root directory does not exist:" + theDir)
-                                if base and len(base) > 0:
-                                    g.es("relative_path_base_directory:",base)
-                                if dir2 and len(dir2) > 0:
-                                    g.es('',kind,"directory:",dir2)
-                        #@-node:ekr.20031218072017.1374:<< handle absolute path >>
-                        #@nl
-
-        if not self.tangle_directory and require_path_flag: # issue_error_flag:
-            self.pathError("No absolute directory specified by @root, @path or Preferences.")
-        #@-node:ekr.20031218072017.1373:<< Set self.tangle_directory >>
-        #@nl
         # For unit testing.
         return {
             "encoding"  : self.encoding,
             "language"  : self.language,
             "lineending": self.output_newline,
             "pagewidth" : self.page_width,
-            "path"      : self.tangle_directory,
+            "path"      : self.default_directory,
             "tabwidth"  : self.tab_width,
         }
-    #@-node:ekr.20031218072017.1360:tangle.scanAllDirectives
+
+    #@-node:ekr.20080923124254.16:tangle.scanAllDirectives
     #@+node:ekr.20031218072017.3599:token_type
     def token_type(self,s,i,err_flag):
 
