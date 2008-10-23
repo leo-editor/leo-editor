@@ -6,31 +6,40 @@
 
 If a node is named '@path path_to_folder', the content (file and folder names)
 of the folder and the children of that node will synchronized whenever
-the node's status-iconbox is clicked.
+the node's status-iconbox is double clicked.
 
 For files not previously seen in a folder a new node will appear on top of
 the children list (with a mark).
 
-Folders appear in the list as /foldername/.  If you click on the icon-box of the
-folder node, it will have children added to it based on the contents of the
-folder on disk.
+Folders appear in the list as /foldername/.  If you double click on the
+icon-box of the folder node, it will have children added to it based on
+the contents of the folder on disk.  These folders have the '@path' directive
+as the first line of their body text.
 
-When files are deleted from the folder they will appear in the list as
-*filename* (or */foldername/*).
+When files are deleted from the folder and the list is updated by double
+clicking the files will appear in the list as *filename* (or */foldername/*).
 
 You can describe files and directories in the body of the nodes.
 
 You can organize files and directories with organizer nodes, an organizer
-node name cannot start with '/'.
+node name cannot contain with '/'.
 
 Files and folders can be created by entering a node with the required name as its headline
-(must start and/or end with "/" for a folder) and then clicking on the node's
+(must start and/or end with "/" for a folder) and then double clicking on the node's
 status-iconbox.
 
-Files can be loaded by clicking on the node's status-iconbox.
+@auto nodes can be set up for existing files can be loaded by
+double clicking on the node's status-iconbox.  If you prefer
+@shadow or something else use the "active_path_attype" setting,
+without the "@".
 
-There are two commands on the Plugins active_path submenu, show path, and set absolute path.
-The latter changes a node "/dirname/" to "@path /absolute/path/to/dirname".
+There are commands on the Plugins active_path submenu:
+
+    - show path - show the current path
+    - set absolute path - changes a node "/dirname/" to "@path /absolute/path/to/dirname".
+    - purge vanished (recursive) - remove *entries*
+    - update recursive - recursive load of directories, use with caution on large
+      file systems
 
 active_path is a rewrite of the at_directory plugin to use @path directives (which influence
 @auto and other @file type directives), and to handle sub-folders more automatically.
@@ -72,7 +81,7 @@ def getPath(p):
 
     while p:
         h = p.headString()
-        # TODO - use leo internal @path code, when it's working
+        # TODO - use leo internal @path code
 
         if g.match_word(h,0,"@path"):  # top of the tree
             path.insert(0,os.path.expanduser(h[6:].strip()))
@@ -109,7 +118,8 @@ def flattenOrganizers(p):
     """    
     for n in p.children_iter():
         yield n
-        if '/' not in n.headString():
+        if ('/' not in n.headString()
+            and not n.headString().startswith('@')):
             for i in flattenOrganizers(n):
                 yield i
 #@nonl
@@ -119,7 +129,10 @@ def sync_node_to_folder(c,parent,d, updateOnly=False):
     """Decide whether we're opening or creating a file or a folder"""
 
     if os.path.isdir(d):
-        openDir(c,parent,d)
+        if ('/' in parent.headString()
+            or parent.headString().startswith('@path')):
+            # no '/' or @path implies organizer
+            openDir(c,parent,d)
         return
 
     if updateOnly: return
@@ -140,18 +153,25 @@ def createDir(c,parent,d):
     if ok == 'no':
         return
     c.setHeadString(parent, '/'+newd+'/')
+    c.setBodyString(parent, '@path '+newd+'\n'+parent.bodyString())
     os.mkdir(d)
 #@nonl
 #@-node:tbrown.20080613095157.7:createDir
 #@+node:tbrown.20080613095157.8:createFile
 def createFile(c,parent,d):
     """Ask if we should create a new file"""
+    directory = os.path.dirname(d)
+    if not os.path.isdir(directory):
+        g.es('Create parent directories first', color='red')
+        return
+
     d = os.path.basename(d)
+    atType = c.config.getString('active_path_attype') or 'auto'
     ok = g.app.gui.runAskYesNoDialog(c, 'Create file?',
-        'Create file @auto '+d+'?')
+        'Create file @'+atType+' '+d+'?')
     if ok == 'no':
         return
-    c.setHeadString(parent, '@auto '+d)
+    c.setHeadString(parent, '@'+atType+' '+d)
     c.bodyWantsFocusNow()
 #@nonl
 #@-node:tbrown.20080613095157.8:createFile
@@ -165,7 +185,7 @@ def openFile(c,parent,d):
 #@-node:tbrown.20080613095157.9:openFile
 #@+node:tbrown.20080613095157.10:openDir
 def openDir(c,parent,d):
-    """Expand / refresh and existing folder"""
+    """Expand / refresh an existing folder"""
 
     # compare folder content to children
     try:
@@ -182,7 +202,12 @@ def openDir(c,parent,d):
 
     # get children info
     for p in flattenOrganizers(parent):
-        oldlist.add(p.headString().strip('/*'))
+        entry = p.headString().strip('/*')
+        if entry.startswith('@'):  # remove only the @part
+            directive = entry.split(None,1)
+            if len(directive) > 1:
+                entry = entry[len(directive[0]):].strip()
+        oldlist.add(entry)
 
     for d in dirs:
         if d in oldlist:
@@ -364,7 +389,7 @@ cmd_DeleteFromTestHierachy = deleteTestHierachy
 #@-others
 
 if 1: # Ok for unit testing.
-    leoPlugins.registerHandler("iconclick1", lambda t,k: onSelect(t,k))
+    leoPlugins.registerHandler("icondclick1", lambda t,k: onSelect(t,k))
     g.plugin_signon(__name__)
 #@-node:tbrown.20080613095157.2:@thin active_path.py
 #@-leo
