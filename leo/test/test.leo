@@ -3723,7 +3723,11 @@ aList = c.k.masterGuiBindingsDict.get('&lt;%s&gt;' %tkKey,[])
 for z in aList:
     print '==='
     print z</t>
-<t tx="ekr.20081016102648.1">g.es('test',color='red')</t>
+<t tx="ekr.20081016102648.1"># Test of syntax coloring.
+'''Triple string.'''
+
+for i in range(10):
+    g.es('test',color='red')</t>
 <t tx="ekr.20081019050559.1">w = c.frame.top
 sw = w.stackedWidget
 rted = w.richTextEdit

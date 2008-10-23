@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="263" left="256" height="650" width="925"/>
+	<global_window_position top="0" left="0" height="0" width="0"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="10,2"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1075,6 +1075,7 @@
 <v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
+<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
@@ -1456,8 +1457,11 @@
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
 <v t="ekr.20041119051246.4"><vh>@font outline font</vh></v>
+<v t="ekr.20081018053140.11" a="E"><vh>qtGui plugin</vh>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
+<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -7635,6 +7639,25 @@ QTreeWidget QLineEdit {
 </t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>
+<t tx="ekr.20081022181056.10"># Lines have the form: color, style
+# color may be any kind of Qt color specifier
+# The valid sytles are as follows: (capitalization is significant).
+# Default Comment Number Keyword
+# DoubleQuotedString SingleQuotedString
+# TripleSingleQuotedString TripleDoubleQuotedString
+# ClassName FunctionMethodName
+# Operator Identifier
+# CommentBlock UnclosedString
+# HighlightedIdentifier Decorator
+
+ red,   Comment
+ green, SingleQuotedString
+ green, DoubleQuotedString
+ green, TripleSingleQuotedString
+ green, TripleDoubleQuotedString
+ green, UnclosedString
+ green, Decorator
+ blue,  Keyword</t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to

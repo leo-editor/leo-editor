@@ -370,24 +370,59 @@ class leoQtBody (leoFrame.leoBody):
     def setBodyConfig (self):
 
         c = self.c ; w = self.widget
+        tag = 'qt-scintilla-styles'
+        qcolor,qfont = QtGui.QColor,QtGui.QFont
+
+        def oops(s): g.trace('bad @data %s: %s' % (tag,s))
 
         # To do: make this configurable the leo way
-        if 1: # Suppress lexing.
+        if 0: # Suppress lexing.
             w.setLexer()
             lexer = w.lexer()
-            if lexer:
-                font = QtGui.QFont("SansSerif", 18)
-                lexer.setFont(font)
-            n = c.config.getInt('qt-scintilla-zoom-in')
-            if n not in (None,0):
-                w.zoomIn(n)
         else:
             lexer = Qsci.QsciLexerPython(w)
-            w.setLexer(lexer)
+            # A small font size, to be magnified.
+            font = qfont("Courier New",8,qfont.Bold)
+            lexer.setFont(font)
+            table = None
+            aList = c.config.getData('qt-scintilla-styles')
+            if aList:
+                aList = [s.split(',') for s in aList]
+                table = []
+                for z in aList:
+                    if len(z) == 2:
+                        color,style = z
+                        table.append((color.strip(),style.strip()),)
+                    else: oops('entry: %s' % z)
+                # g.trace(g.printList(table))
+
+            if not table:
+                table = (
+                    ('red','Comment'),
+                    ('green','SingleQuotedString'),
+                    ('green','DoubleQuotedString'),
+                    ('green','TripleSingleQuotedString'),
+                    ('green','TripleDoubleQuotedString'),
+                    ('green','UnclosedString'),
+                    ('blue','Keyword'),
+                )
+            for color,style in table:
+                if hasattr(lexer,style):
+                    style = getattr(lexer,style)
+                    try:
+                        lexer.setColor(qcolor(color),style)
+                    except Exception:
+                         oops('bad color: %s' % color)
+                else: oops('bad style: %s' % style)
+
+        w.setLexer(lexer)
+        n = c.config.getInt('qt-scintilla-zoom-in')
+        if n not in (None,0): w.zoomIn(n)
 
         w.setIndentationWidth(4)
         w.setIndentationsUseTabs(False)
         w.setAutoIndent(True)
+    #@nonl
     #@-node:ekr.20081011035036.10:setBodyConfig
     #@+node:ekr.20081004172422.508:setColorFromConfig
     def setColorFromConfig (self,w=None):
@@ -5364,8 +5399,11 @@ class leoQtTree (leoFrame.leoTree):
     def redraw_after_move_right (self):
 
         if self.trace and self.verbose: g.trace()
+
+        c = self.c ; p = c.currentPosition()
+        parent = p.parent()
+        if parent: parent.expand()
         self.full_redraw()
-    #@nonl
     #@-node:ekr.20081021043407.11:redraw_after_move_right
     #@+node:ekr.20081021043407.12:redraw_after_move_up
     def redraw_after_move_up (self):

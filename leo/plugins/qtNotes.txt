@@ -4,32 +4,42 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-First:
-    - Move-outline-right doesn't expand the node.
-    - https://bugs.launchpad.net/leo-editor/+bug/286491
-        Minibuffer prompts for a string, I type "# " but get "numbersign ".
+Ask Qt people:
+- How to enable accelerators.
+- How to add an accelerator to file yes,no,cancel dialog, so I can type 'n'.
+- Is it possible to specify QScintilla styles with a stylesheet?
+
+Urgent:
+    - Call setLexer(0) for nocolor nodes.
+    ** Cut and paste should use native widget code
+    - Ctrl-k loses scroll position
+    ** https://bugs.launchpad.net/leo-editor/+bug/286491
+        In minibuffer "#" yields "numbersign".
+        '_' yields underscore, '-' yields minus.
+    - Alt-1, Alt-2 bindings do not work
     * Tab and space handling are subtly different from traditional Leo way.
-        - Saving a window doesn't properly set its size.
-    - Reading a window doesn't use its size.
-    - https://bugs.launchpad.net/leo-editor/+bug/286493
-       File "qtGui.py", line 745, in delete
-        s = s[:i] + s[j+1:]
-        TypeError: slice indices must be integers or None or have an __index__ method
+    - Reading/saving a window does not properly set its size.
 
 Next:
     - Set find handler so unit tests pass.
-    - print-settings doesn't print to a tab and is very slow.
+    - print-settings does not print to a tab and is very slow.
     - Re-enable syntax coloring.
     - Fix failing unit tests. 
     - Support Icon area.
     - Do gui-dependent commands (in leoQtFrame)
     - Complete dialogs in leoQtGui.
 
+Minor bugs:
+- https://bugs.launchpad.net/leo-editor/+bug/286493
+       File "qtGui.py", line 745, in delete
+        s = s[:i] + s[j+1:]
+        TypeError: slice indices must be integers or None or have an __index__ method
+
 Cleanup:
      - Fix Stubborn bugs.
         - file-changed marker usually takes two characters to change.
         - Menu accelerators are not shown and do not work.
-        - File:Exit doesn't quit the main loop.
+        - File:Exit does not quit the main loop.
     - Remove old-style Leo settings.
     - Clean up text classes.
         - Finish leoQtTextWidget class.
@@ -643,6 +653,104 @@ def onTextChanged (self):
     c.frame.tree.updateIcon(p)
 #@-node:ekr.20081011035036.1: onTextChanged
 #@-node:ekr.20081020075840.21:Suppress updates until init complete
+#@+node:ekr.20081022151429.10:Fixed startup crasher
+Traceback (most recent call last):
+ File "launchLeo.py", line 8, in ?
+   leo.core.runLeo.run()
+ File "/transfer/qt-plugin/leo/core/runLeo.py", line 120, in run
+   c,frame = createFrame(fileName,relativeFileName,script)
+ File "/transfer/qt-plugin/leo/core/runLeo.py", line 170, in
+createFrame
+   c.chapterController.finishCreate()
+ File "/transfer/qt-plugin/leo/core/leoChapters.py", line 50, in
+finishCreate
+   cc.createChaptersNode()
+ File "/transfer/qt-plugin/leo/core/leoChapters.py", line 473, in
+createChaptersNode
+   p = root.insertAsLastChild()
+ File "/transfer/qt-plugin/leo/core/leoNodes.py", line 2307, in
+insertAsLastChild
+   n = p.numberOfChildren()
+ File "/transfer/qt-plugin/leo/core/leoNodes.py", line 1263, in
+numberOfChildren
+   return len(p.v.t.children)
+AttributeError: 'NoneType' object has no attribute 't'
+#@+node:ekr.20081004172422.528:qtFrame.finishCreate & helpers
+def finishCreate (self,c):
+
+    f = self ; f.c = c
+
+    # g.trace('***qtFrame')
+
+    self.bigTree           = c.config.getBool('big_outline_pane')
+    self.trace_status_line = c.config.getBool('trace_status_line')
+    self.use_chapters      = c.config.getBool('use_chapters')
+    self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
+
+    f.top = Window(c)
+    g.app.gui.attachLeoIcon(f.top)
+    f.top.setWindowTitle(self.title)
+    f.top.show()
+
+    # This must be done after creating the commander.
+    f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
+    # # f.createOuterFrames()
+    # # f.createIconBar()
+    # # f.createLeoSplitters(f.outerFrame)
+    f.createSplitterComponents()
+    # # f.createStatusLine()
+    f.createFirstTreeNode() # Call the base-class method.
+    f.menu = leoQtMenu(f)
+    c.setLog()
+    g.app.windowList.append(f)
+    c.initVersion()
+    c.signOnWithVersion()
+    f.miniBufferWidget = leoQtMinibuffer(c)
+    c.bodyWantsFocusNow()
+#@+node:ekr.20081004172422.530:createSplitterComponents (qtFrame)
+def createSplitterComponents (self):
+
+    f = self ; c = f.c
+
+    f.tree  = leoQtTree(c,f)
+    f.log   = leoQtLog(f,None)
+    f.body  = leoQtBody(f,None)
+
+    if f.use_chapters:
+        c.chapterController = cc = leoChapters.chapterController(c)
+
+    # # Create the canvas, tree, log and body.
+    # if f.use_chapters:
+        # c.chapterController = cc = leoChapters.chapterController(c)
+
+    # # split1.pane1 is the secondary splitter.
+
+    # if self.bigTree: # Put outline in the main splitter.
+        # if self.use_chapters and self.use_chapter_tabs:
+            # cc.tt = leoQtTreeTab(c,f.split1Pane2,cc)
+        # f.canvas = f.createCanvas(f.split1Pane1)
+        # f.tree  = leoQtTree(c,f,f.canvas)
+        # f.log   = leoQtLog(f,f.split2Pane2)
+        # f.body  = leoQtBody(f,f.split2Pane1)
+    # else:
+        # if self.use_chapters and self.use_chapter_tabs:
+            # cc.tt = leoQtTreeTab(c,f.split2Pane1,cc)
+        # f.canvas = f.createCanvas(f.split2Pane1)
+        # f.tree   = leoQtTree(c,f,f.canvas)
+        # f.log    = leoQtLog(f,f.split2Pane2)
+        # f.body   = leoQtBody(f,f.split1Pane2)
+
+    # # Yes, this an "official" ivar: this is a kludge.
+    # # f.bodyCtrl = f.body.bodyCtrl
+
+    # # Configure.
+    # f.setTabWidth(c.tab_width)
+    # f.reconfigurePanes()
+    # f.body.setFontFromConfig()
+    # f.body.setColorFromConfig()
+#@-node:ekr.20081004172422.530:createSplitterComponents (qtFrame)
+#@-node:ekr.20081004172422.528:qtFrame.finishCreate & helpers
+#@-node:ekr.20081022151429.10:Fixed startup crasher
 #@-node:ekr.20081014095718.13:Recent
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor
@@ -2692,6 +2800,15 @@ def setTreeColors (self):
     # # w.setPalette(palette)
 #@-node:ekr.20081010070648.15:setTreeColors
 #@-node:ekr.20081018155359.11:Unused
+#@+node:ekr.20081022172620.10:Script to display Qt font database
+import PyQt4.QtGui as QtGui
+
+db = QtGui.QFontDatabase()
+for family in db.families():
+    print family
+    for style in db.styles(family):
+        print '\t',style,db.smoothSizes(family,style)
+#@-node:ekr.20081022172620.10:Script to display Qt font database
 #@-all
 #@nonl
 #@-node:ekr.20081016072304.13:@thin qtNotes.txt

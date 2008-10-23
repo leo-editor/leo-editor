@@ -20499,6 +20499,323 @@ def go(self,event=None):
 #@-node:ekr.20081020151805.6: Changed
 #@-node:ekr.20081020151805.4:Found: .redraw
 #@-node:ekr.20081020151805.3:New redraw helpers
+#@+node:ekr.20081022105412.1:Missing _rootPosition
+@nocolor-node
+
+@ This could happen when opening a non-existent file.
+#@nonl
+#@+node:ekr.20051009045404:createFirstTreeNode
+def createFirstTreeNode (self):
+
+    f = self ; c = f.c
+
+    v = leoNodes.vnode(context=c)
+    p = leoNodes.position(v)
+    v.initHeadString("NewHeadline")
+    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+    p._linkAsRoot(oldRoot=None)
+    c.setRootPosition(p) # New in 4.4.2.
+    c.editPosition(p)
+#@-node:ekr.20051009045404:createFirstTreeNode
+#@+node:ekr.20070325101652:cc.createChaptersNode
+def createChaptersNode (self):
+
+    cc = self ; c = cc.c ; root = c.rootPosition()
+
+    # Create the node with a postion method
+    # so we don't involve the undo logic.
+    # g.trace('root',root)
+    p = root.insertAsLastChild()
+    p.initHeadString('@chapters')
+    p.moveToRoot(oldRoot=root)
+    c.setRootPosition(p)
+    cc.chaptersNode = p.copy()
+    t = p.v.t
+    if t.fileIndex:
+        self.error('***** t.fileIndex already exists')
+    else:
+        t.setFileIndex(g.app.nodeIndices.getNewIndex())
+    c.setChanged(True)
+#@-node:ekr.20070325101652:cc.createChaptersNode
+#@+node:ekr.20040803140033.1:c.setCurrentPosition
+def setCurrentPosition (self,p):
+
+    """Set the presently selected position. For internal use only.
+
+    Client code should use c.selectPosition instead."""
+
+    c = self ; cc = c.chapterController
+
+    # g.trace(p.headString(),g.callers())
+
+    if p:
+        # Important: p.equal requires c._currentPosition to be non-None.
+        if c._currentPosition and p == c._currentPosition:
+            pass # We have already made a copy.
+        else: # Must make a copy _now_
+            c._currentPosition = p.copy()
+
+        # New in Leo 4.4.2: always recompute the root position here.
+        # This *guarantees* that c.rootPosition always returns the proper value.
+        newRoot = c.findRootPosition(c._currentPosition)
+        if newRoot:
+            c.setRootPosition(newRoot)
+        # This is *not* an error: newRoot can be None when switching chapters.
+        # else: g.trace('******** no new root')
+    else:
+        c._currentPosition = None
+
+# For compatibiility with old scripts.
+setCurrentVnode = setCurrentPosition
+#@nonl
+#@-node:ekr.20040803140033.1:c.setCurrentPosition
+#@+node:ekr.20040803140033.3:c.setRootPosition
+def setRootPosition(self,p):
+
+    """Set the root positioin."""
+
+    c = self
+
+    # g.trace(p and p.headString(),g.callers())
+
+    if p:
+        # Important: p.equal requires c._rootPosition to be non-None.
+        if c._rootPosition and p == c._rootPosition:
+            pass # We have already made a copy.
+        else:
+            # We must make a copy _now_.
+            c._rootPosition = p.copy()
+    else:
+        c._rootPosition = None
+#@nonl
+#@-node:ekr.20040803140033.3:c.setRootPosition
+#@+node:ekr.20060906131836:c.setRootVnode New in 4.4.2
+def setRootVnode (self, v):
+
+    c = self
+    newRoot = leoNodes.position(v)
+    c.setRootPosition(newRoot)
+#@nonl
+#@-node:ekr.20060906131836:c.setRootVnode New in 4.4.2
+#@-node:ekr.20081022105412.1:Missing _rootPosition
+#@+node:ekr.20081021132739.2:Selection problem with optimized code
+#@+node:ekr.20031218072017.2996:selectVisNext
+def selectVisNext (self,event=None):
+
+    '''Select the visible node following the presently selected node.'''
+
+    c = self ; p = c.currentPosition()
+    if not p: return
+    if not c.canSelectVisNext(): return
+
+    p.moveToVisNext(c)
+
+    if p:
+        redraw = not p.isVisible(c)
+        if not redraw: c.frame.tree.setSelectedLabelState(c.currentPosition())
+    else:
+        redraw = True
+
+    # g.trace('redraw',redraw,p)
+
+    c.treeSelectHelper(p,redraw=redraw)
+#@-node:ekr.20031218072017.2996:selectVisNext
+#@+node:ekr.20070226113916: treeSelectHelper
+def treeSelectHelper (self,p,redraw=True):
+
+    c = self ; current = c.currentPosition()
+
+    if p:
+        c.frame.tree.expandAllAncestors(p)
+        c.selectPosition(p)
+        if redraw:
+            # c.redraw()
+            c.redraw_after_select()
+
+    c.treeFocusHelper()
+#@-node:ekr.20070226113916: treeSelectHelper
+#@+node:ekr.20080416161551.211:p.moveToVisNext
+def moveToVisNext (self,c):
+
+    """Move a position to the position of the next visible node."""
+
+    p = self ; limit,limitIsVisible = c.visLimit() ; trace = False
+
+    def checkLimit (p):
+        '''Return done, return-val'''
+        if limit:
+            # Unlike moveToVisBack, being at the limit does not terminate.
+            if limit == p:
+                return False, None
+            elif limit.isAncestorOf(p):
+                return False,None
+            else:
+                if trace: g.trace('outside limit tree')
+                return True,None
+        else:
+            return False,None
+
+    while p:
+        if trace: g.trace(
+            'hasChildren',p.hasChildren(),
+            'isExpanded',p.isExpanded(),
+            p.headString())
+        # Short-circuit if possible.
+        if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
+            p.moveToNext()
+        else:
+            p.moveToThreadNext()
+        if p:
+            if trace: g.trace('*p',p.headString())
+            done,val = checkLimit(p)
+            if done: return val
+            if p.isVisible(c):
+                return p.copy()
+    else:
+        # assert not p.
+        return p
+#@nonl
+#@-node:ekr.20080416161551.211:p.moveToVisNext
+#@-node:ekr.20081021132739.2:Selection problem with optimized code
+#@+node:ekr.20081021132739.3:Calls to redraw_after_expand
+#@+node:ekr.20031218072017.2907:expandNode
+def expandNode (self,event=None):
+
+    '''Expand the presently selected node.'''
+
+    c = self ; p = c.currentPosition()
+
+    ### c.redraw()
+    if not p.isExpanded():
+        p.expand()
+        c.redraw_after_expand()
+
+    c.treeFocusHelper()
+#@-node:ekr.20031218072017.2907:expandNode
+#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    c = self ; p = c.currentPosition()
+    if not p.hasChildren():
+        c.treeFocusHelper()
+        return
+
+    if not p.isExpanded():
+        c.expandNode() # Calls c.redraw_after_expand.
+
+    c.selectVnode(p.firstChild())
+    c.redraw_after_select()
+    c.treeFocusHelper()
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.currentPosition()
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode()
+            c.redraw_after_expand()
+        else:
+            c.selectVnode(p.firstChild())
+            # c.redraw()
+            c.redraw_after_select()
+    c.treeFocusHelper()
+#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+#@-node:ekr.20081021132739.3:Calls to redraw_after_expand
+#@+node:ekr.20081021132739.1:Editing healdines
+#@+node:ekr.20031218072017.1761:c.insertHeadline
+def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
+
+    '''Insert a node after the presently selected node.'''
+
+    c = self ; u = c.undoer
+    current = c.currentPosition()
+
+    if not current: return
+
+    undoData = c.undoer.beforeInsertNode(current)
+    # Make sure the new node is visible when hoisting.
+    if (as_child or
+        (current.hasChildren() and current.isExpanded()) or
+        (c.hoistStack and current == c.hoistStack[-1].p)
+    ):
+        if c.config.getBool('insert_new_nodes_at_end'):
+            p = current.insertAsLastChild()
+        else:
+            p = current.insertAsNthChild(0)
+    else:
+        p = current.insertAfter()
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    c.selectPosition(p)
+    c.setChanged(True)
+    u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+
+    if 0: # c.editPosition now calls redraw.
+        c.redraw_now()
+        c.outerUpdate()
+
+    # A hook for qt plugin.
+    c.redraw_after_insert()
+
+    c.editPosition(p,selectAll=True)
+
+    return p # for mod_labels plugin.
+#@-node:ekr.20031218072017.1761:c.insertHeadline
+#@+node:ekr.20031218072017.2991:c.editPosition
+# Selects v: sets the focus to p and edits p.
+
+def editPosition(self,p,selectAll=False):
+
+    c = self ; k = c.k
+
+    if p:
+        c.selectPosition(p)
+
+        c.frame.tree.editLabel(p,selectAll=selectAll)
+
+        if k:
+            if selectAll:
+                k.setInputState('insert')
+            else:
+                k.setDefaultInputState()
+
+            k.showStateAndMode()
+#@-node:ekr.20031218072017.2991:c.editPosition
+#@+node:ekr.20040803072955.127:tree.editLabel
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c
+    trace = (False or self.trace_edit)
+
+    if p and p != self.editPosition():
+
+        if trace:
+            g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+
+        self.endEditLabel()
+        # This redraw *is* required so the c.edit_widget(p) will exist.
+        c.redraw()
+        c.outerUpdate()
+
+    self.setEditPosition(p) # That is, self._editPosition = p
+    w = c.edit_widget(p)
+
+    if trace: g.trace('1','w',w,'focus',g.app.gui.get_focus(c))
+
+    if p and w:
+        self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+        self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        c.headlineWantsFocus(p) # Make sure the focus sticks.
+        c.k.showStateAndMode(w)
+
+    if trace: g.trace('w',w,'focus',g.app.gui.get_focus(c))
+#@-node:ekr.20040803072955.127:tree.editLabel
+#@-node:ekr.20081021132739.1:Editing healdines
 #@-node:ekr.20081019140728.1:New in qtGui branch
 #@-all
 #@nonl
