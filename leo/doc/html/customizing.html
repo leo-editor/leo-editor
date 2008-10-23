@@ -299,9 +299,9 @@ node has the headline <tt class="docutils literal"><span class="pre">&#64;settin
 <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees in the following places:</p>
 <ul class="simple">
 <li>The file <tt class="docutils literal"><span class="pre">leoSettings.leo</span></tt> in the leo/config directory.</li>
-<li>The file <tt class="docutils literal"><span class="pre">leoSettings.leo</span></tt> in the user's home directory.</li>
+<li>The file <tt class="docutils literal"><span class="pre">leoSettings.leo</span></tt> in the user's home/.leo directory.</li>
 <li>The file <tt class="docutils literal"><span class="pre">myLeoSettings.leo</span></tt> in the leo/config directory.</li>
-<li>The file <tt class="docutils literal"><span class="pre">myLeoSettings.leo</span></tt> in the user's home directory.</li>
+<li>The file <tt class="docutils literal"><span class="pre">myLeoSettings.leo</span></tt> in the user's home/.leo directory.</li>
 <li>The file being loaded.</li>
 </ul>
 <p>Settings that appear later in the above list override settings found earlier. For
@@ -416,6 +416,9 @@ Example: &#64;strings tk_relief['flat','groove','raised']='groove'</td>
 <tr><td>&#64;commands</td>
 <td>Child &#64;command nodes create global buttons</td>
 </tr>
+<tr><td>&#64;data</td>
+<td>Body text contains a list of strings, one per line.</td>
+</tr>
 <tr><td>&#64;enabled-plugins</td>
 <td>Body text contains a list of enabled plugins</td>
 </tr>
@@ -439,7 +442,7 @@ Example: &#64;strings tk_relief['flat','groove','raised']='groove'</td>
 </tr>
 </tbody>
 </table>
-<p>The actual settings are specified in the body text.  At present, there are nine kinds of complex settings nodes:</p>
+<p>The actual settings are specified in the body text.  At present, there are ten kinds of complex settings nodes:</p>
 <ul>
 <li><p class="first"><tt class="docutils literal"><span class="pre">&#64;buttons</span></tt></p>
 <p>An &#64;buttons tree in a settings file defines global buttons that
@@ -448,7 +451,7 @@ All &#64;button nodes in the &#64;commands tree create global buttons.
 All &#64;button nodes outside the commands tree create buttons local to the settings file.</p>
 </li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">&#64;commands</span></tt></p>
-<p><strong>New in Leo 4.4.8</strong>: An &#64;commands tree in a settings file defines global commands.
+<p>An &#64;commands tree in a settings file defines global commands.
 All &#64;command nodes in the &#64;commands tree create global commands.
 All &#64;command nodes outside the commands tree create commands local to the settings file.</p>
 </li>

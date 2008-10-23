@@ -26,8 +26,6 @@ class leoGui:
 
     Subclasses are expected to override all do-nothing methods of this class."""
 
-    # __pychecker__ = '--no-argsused' # base classes have many unused args.
-
     #@    << define leoGui file types >>
     #@+node:ekr.20040131103531:<< define leoGui file types >> (not used yet)
     allFullFiletypes = [
@@ -427,7 +425,7 @@ class leoGui:
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 1:
-            g.pr("leoGui oops", g.callers(), "should be overridden in subclass")
+            g.pr("leoGui oops", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3741:oops
     #@+node:ekr.20051206103652:widget_name (leoGui)
     def widget_name (self,w):
@@ -480,8 +478,6 @@ class leoGui:
 class nullGui(leoGui):
 
     """Null gui class."""
-
-    # __pychecker__ = '--no-argsused' # This class has many unused args.
 
     #@    @+others
     #@+node:ekr.20031218072017.2224:Birth & death
@@ -539,7 +535,7 @@ class nullGui(leoGui):
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 1:
-            g.trace("nullGui",g.callers())
+            g.trace("nullGui",g.callers(4))
     #@-node:ekr.20031218072017.2230:oops
     #@+node:ekr.20070301171901:do nothings
     def attachLeoIcon (self,w):

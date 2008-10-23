@@ -1,539 +1,316 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080820083933.12:Leo 4.5
-#@+node:ekr.20080822065427.6:Write up trick of creating .exe installer from .zip file
-#@-node:ekr.20080822065427.6:Write up trick of creating .exe installer from .zip file
-#@+node:ekr.20080820083933.13:Before b4
-#@+node:ekr.20080820083933.6:Notes
-@nocolor
+#@+node:ekr.20080814103428.4:4.6 bugs, cleanups
+#@+node:ekr.20080915112342.1:First 6
 
-#@+node:ekr.20080820083933.7:1
-+1 for the following unix-like structure for per user leo settings:
-
-$HOME/.leo
-    leoID.txt
-    myLeoSettings.leo
-    etc..
-
-This is consistent with most other unix/linux apps, and even popular
-python programs such as ipython which places its settings in
-$HOME/.ipython
-
-IMHO, moving / renaming myLeoSettings.leo to the new structure is a
-small price for users to pay... and sure beats the hell out of
-constantly deleting $HOME/myLeoSettings.leo (as I am currently
-doing :-)
-#@nonl
-#@-node:ekr.20080820083933.7:1
-#@+node:ekr.20080820083933.8:2
-> I was under the impression that files starting with '.' are typically
-> hidden in Linux.  Is this not correct?
-
-That's correct, by convention files and dirs starting with . are
-ignored by file selection dialogs and even * as a wildcard.
-
-If you've changed the default setting on file opening preferences etc.
-then you may be seeing . files, but usually you don't.
-
-> I am worried that looking for home/.leo/myLeoSettings.leo is going to
-> break lots of people's installations.  I suppose Leo could continue to
-> look for home/myLeoSettings.leo.
-
-> So please tell me exactly what you want Leo to do...
-
-Someone mentioned something about mySettings.leo being created
-automatically, but I don't think it is, right?  Maybe that's not a key
-point.
-
-I'm all for a .leo directory.  Seems to me there are two choices:
-
-1) Leo tries to be smart and looks for both ~/[my]leoSettings.leo and
-~/.leo/[my]leoSettings.leo, uses which ever it finds and complains very
-loudly if it finds both.
-
-2) Change the default behavior so it always looks in ~/.leo, but for
-some transitional period (a year or two?) check for them in ~ and
-complain loudly telling the user to move them - force the user to move
-them by ignoring them and just explaining the problem.  I.e. "I found
-you config file but I'm not using it because it's in the wrong place".
-
-I favor option (2) because (1) has issues like
-<hostname>LeoSettings.leo. 
-#@nonl
-#@-node:ekr.20080820083933.8:2
-#@+node:ekr.20080820083933.9:3
-One issue though - myLeoSettings.leo in some arbitrary directory.
-Should that be in .leo in that directory (would match .bzr etc.) or
-in .myLeoSettings.leo, or the current myLeoSettings.leo?  I guess I
-lean towards .leo directory. 
-
-reply:
-
-Which would suggest that .leo_shadow should be .leo/shadow... 
-
-reply:
-
-Not sure if that's a good idea. The way it is now, I could add shadow
-directories to a repository. If at at certain point in time one of my
-co-developers wants to try out Leo, everything is already in place in
-his local copy of the tree. This would be difficult if the shadow
-directory were in my home directory. 
-
-reply:
-
-Sure, I wasn't talking about HOME/.leo, but what Kent's been calling
-CWD/myLeoSettings.leo.  I.e. the file that's checked for settings in
-the directory of the file being opened.
-
-I'm suggesting that that could be in a .leo directory in the
-project directory containing main.leo or whatever.  But then rather than
-Leo having .leo_shadow/ and .leo/ in the project directory, it could
-have just .leo/, which contains shadow/ and myLeoSettings.leo
-
-So if I were starting from scratch at this point, locations I'd use
-would be:
-
-INSTALL/ = the directory containing runLeo.py, i.e. core/
-HOME/ = obvious
-PROJECT/ = dir containing some project's leo file, say main.leo
-IRRELEVANT/ = dir which is current when python is started
-
-It doesn't matter whether 'INSTALL/' is core/ or one of its ancestors,
-define it how you want and adjust the relative paths below.
-
-cd IRRELEVANT/
-python INSTALL/../../launchLeo.py main.leo
-
-leo now checks for settings, in this order
-
-INSTALL/../config/leoSettings.leo
-HOME/.leo/leoSettings.leo
-PROJECT/.leo/leoSettings.leo
-INSTALL/../config/myLeoSettings.leo
-HOME/.leo/<hostname>LeoSettings.leo
-HOME/.leo/myLeoSettings.leo
-PROJECT/.leo/myLeoSettings.leo
-PROJECT/main.leo
-
-and if main.leo contains shadow files, leo uses
-
-PROJECT/.leo/shadow
-
-like I said, "if I were starting from scratch at this point".
-
-You could argue there's no need for "HOME/.leo/leoSettings.leo" and
-"PROJECT/.leo/leoSettings.leo".  But rather than remove that, just
-don't use it, unless you have some obscure need to. 
-#@nonl
-#@-node:ekr.20080820083933.9:3
-#@+node:ekr.20080820083933.10:4
-But as it is now, you require write access to the directory where the
-files are. Not optimal for all situations... 
-#@nonl
-#@-node:ekr.20080820083933.10:4
-#@+node:ekr.20080820083933.11:My summary
-@nocolor
-
-The following post summarizes my present plans.  I'll indicates where these may be controversial.
-
-1.  Everyone seems agree that the following structure for settings files is good:
-
-  $HOME/.leo
-    leoID.txt
-    myLeoSettings.leo
-    etc..
-
-2. (controversial?) There is a question of what to do about $HOME/myLeoSettings.leo.  I don't like either of the following suggestions:
-
-    QQQ
-    1) Leo tries to be smart and looks for both ~/[my]leoSettings.leo and
-    ~/.leo/[my]leoSettings.leo, uses which ever it finds and complains very
-    loudly if it finds both.
-
-    2) Change the default behavior so it always looks in ~/.leo, but for
-    some transitional period (a year or two?) check for them in ~ and
-    complain loudly telling the user to move them - force the user to move
-    them by ignoring them and just explaining the problem.  I.e. "I found
-    you config file but I'm not using it because it's in the wrong place". 
-    QQQ
-
-Imo, 1) will just cause more confusion, and 2) just delays the "day of transition" to a time when we've all forgotten the issues involved :-)  So (again, imo) the thing to do is simply to make the transition *now*, and get the pain over with.
-
-3. (controversial?) The present code does create myLeoSettings.leo, but I don't like creating files by default. This should be an options, but it can't be an option because creating myLeoSettings.leo happens too early.  So I'm going to take out this code. A create-my-leo-settings-leo command might be helpful...
-
-So much for configuration settings, per se.
-
-Let us now consider the question of directories for Leo's shadow files.
-
-1. The suggestion was to change .leo_shadow to .leo/shadow.  I suspect that this is possible now using::
-
-   @string shadow_subdir = .leo/shadow
-
-I'll make sure this is possible before Leo b4.
-
-2. Ville makes an important observation re Linux:
-
-    "as it is now, you require write access to the directory
-    where the files are. Not optimal for all situations..."
-
-You could call this a problem with the original @shadow idea.  I don't know of a solution to this problem.  Imo, putting shadow in a centralized location is a wretched idea: it will add complexity, obscurity and bugs not only to the code, but for all users as well.  I will never agree to such a scheme.  So I think the only thing for people to do is to put .leo files that use @shadow in a writable directory.
-
-Please comment now.  I'll probably push revisions based on these remarks later today or tomorrow.
-
-Edward
-#@-node:ekr.20080820083933.11:My summary
-#@-node:ekr.20080820083933.6:Notes
-#@+node:ekr.20080822142201.2:Make sure myLeoSettings.leo can enable plugins and set fonts
-#@-node:ekr.20080822142201.2:Make sure myLeoSettings.leo can enable plugins and set fonts
-#@+node:ekr.20080822142201.3:Put leoID.txt and myLeoSettings.leo in HOME/.leo
-#@-node:ekr.20080822142201.3:Put leoID.txt and myLeoSettings.leo in HOME/.leo
-#@-node:ekr.20080820083933.13:Before b4
-#@+node:ekr.20080819075811.9:Before b5/rc1 (2)
-#@+node:ekr.20080815174457.4:Fix bug in autotrees
-@nocolor
-
-I've been playing around with the rss examples in the autotrees
-plugin. If I click on an @auto-rss node, I get the following:
-
-Handling 'rss' with 'http://news.bbc.co.uk/rss/newsonline_uk_edition/
-world/rss091.xml'
-Starting download
-Done!
-Traceback (most recent call last):
- File "/home/pbienst/source/leo-editor/leo/core/leoGlobals.py", line
-2743, in doHook
-   return f(tag,keywords)
- File "/home/pbienst/source/leo-editor/leo/core/leoPlugins.py", line
-91, in doPlugins
-   return doHandlersForTag(tag,keywords)
- File "/home/pbienst/source/leo-editor/leo/core/leoPlugins.py", line
-70, in doHandlersForTag
-   val = callTagHandler(bunch,tag,keywords)
- File "/home/pbienst/source/leo-editor/leo/core/leoPlugins.py", line
-49, in callTagHandler
-   result = handler(tag,keywords)
- File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
-line 347, in onIconDoubleClick
-   self.handleEvent("icondclick1", tag, keywords)
- File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
-line 374, in handleEvent
-   handler.refresh()
- File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
-line 213, in refresh
-   self.addChildren(self.children, self.node)
- File "/home/pbienst/source/leo-editor/leo/plugins/autotrees.py",
-line 239, in addChildren
-   c.setHeadString(new_node,child.headline)
-NameError: global name 'c' is not defined
-#@nonl
-#@-node:ekr.20080815174457.4:Fix bug in autotrees
-#@+node:ekr.20080820083933.3:Failed Linux tests
-@nocolor
-
-I get a couple of tracebacks when running leo's own tests.
-It's the unaltered r838 of trunk and I'm running tests by launching
-leo, opening leo/test/unitTest.leo and pressing Alt-4.
-
-I attach the full console output:
-
-$ python launchLeo.py
-reading settings in /home/shadow/leo/leo-current/leo/config/
-leoSettings.leo
-Using menus from leoSettings.leo
-reading settings in /home/shadow/myLeoSettings.leo
-reading /home/shadow/.leoRecentFiles.txt
-@enabled-plugins found in myLeoSettings.leo
-This is a fixed window
-@enabled-plugins found in unitTest.leo
-This is a fixed window
-@suite run all doctests (windows only) script did not set
-g.app.scriptDict
-@suite test syntax of all plugins script did not set g.app.scriptDict
-.............
-End of plugins unit tests
-.........Traceback (most recent call last):
- File "/home/shadow/leo/leo-current/leo/core/../core/runLeo.py", line
-440, in <module>
-   run()
- File "/home/shadow/leo/leo-current/leo/core/../core/runLeo.py", line
-64, in run
-   import leo.core.leoGlobals as leoGlobals
-ImportError: No module named leo.core.leoGlobals
-Traceback (most recent call last):
- File "/home/shadow/leo/leo-current/leo/core/../core/runLeo.py", line
-440, in <module>
-   run()
- File "/home/shadow/leo/leo-current/leo/core/../core/runLeo.py", line
-64, in run
-   import leo.core.leoGlobals as leoGlobals
-ImportError: No module named leo.core.leoGlobals
-F..
-End of general unit tests
-.............wrote:     /home/shadow/leo/leo-current/leo/test/xyzzy2
-.unchanged: /home/shadow/leo/leo-current/leo/test/xyzzy2
-.created:   /home/shadow/leo/leo-current/leo/test/xyzzy2
-...
-End of leoAtFile tests
-.....................................\End of leoColor tests
-...................................
-End of leoCommands tests
-....
-End of leoConfig tests
-.........................................................................................................................................
-End of leoEditCommands tests.
-............
-End of leoFileCommands tests.
-.................test of printError: Ᾱ(U+1FB9: Greek Capital Letter
-Alpha With Macron)
-.................................................first mismatched line
-at line 36
-original line:      """
-
-generated line:     """@others
-
-....................................................
-End of leoImport tests.
-..............................................
-End of leoNodes tests.
-...........................................................
-End of leoUndo tests.
-.
-======================================================================
-FAIL: @test batch mode
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
- File "/home/shadow/leo/leo-current/leo/core/leoTest.py", line 182,
-in runTest
-   exec script + '\n' in d
- File "<string>", line 44, in <module>
-AssertionError
-
-----------------------------------------------------------------------
-Ran 492 tests in 588.123s
-
-FAILED (failures=1)
-#@nonl
-#@-node:ekr.20080820083933.3:Failed Linux tests
-#@+node:ekr.20080822065427.3:Create desktop icon or start menu item
-#@-node:ekr.20080822065427.3:Create desktop icon or start menu item
-#@-node:ekr.20080819075811.9:Before b5/rc1 (2)
-#@-node:ekr.20080820083933.12:Leo 4.5
-#@+node:ekr.20080814103428.4:4.5.1 bugs, cleanups
-#@+node:ekr.20080810085333.5:Under two hours 21
-#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@+node:ekr.20080517102922.1:Files stuff 7
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
-
-I'm just getting started learning how to use Leo. Now, I'd like to use
-it for some of my projects, but there's no chance that I can convert
-everyone at work to using it, so putting sentinel-filled files in our
-repository is out of the question. At the same time, my code looks
-awfully bare without sentinels because the documentation ends up in
-the section names, not the comments!
-
-So, I was wondering if there's a convenient way to pull the section
-names into a comment at the start of each section?
-
-===============
-
-Interesting question.  Am I correct in assuming you are using @nosent trees
-to generate your files?  If so, it would be easy to add support for the
-following options:
-
-@bool write_section_comments_in_at_nosent_trees
-@bool write_node_name_comments_in_at_nosent_trees
-
-The first would write a sentinel consisting of only the section name;
-the second would write a sentinel consisting only of the node's headline
-(for nodes whose headline is not a section name).
-
-These seem like they would be useful additions.  One can even imagine
-corresponding Leo directives so that the comments could be turned on or off
-within an @nosent tree.
-
-What do you think?
-
-=====================
-
-> Interesting question.  Am I correct in assuming you are using @nosent trees
-> to generate your files?  If so, it would be easy to add support for the
-> following options:
-
-> @bool write_section_comments_in_at_nosent_trees
-> @bool write_node_name_comments_in_at_nosent_trees
-
-> The first would write a sentinel consisting of only the section name;
-> the second would write a sentinel consisting only of the node's headline
-> (for nodes whose headline is not a section name).
-
-> These seem like they would be useful additions.  One can even imagine
-> corresponding Leo directives so that the comments could be turned on or off
-> within an @nosent tree.
-
-That sounds like an excellent solution. Particularly the last bit --
-if you could turn section-comments on and off as required, it would
-become very convenient to use Leo to produce source that is intended
-to also be read by non Leo users. 
-#@nonl
-#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
-#@+node:ekr.20080412053100.1:Look into undefined-section behavior
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
-
-1) Create an @thin file based outline.
-2) In the @thin file, create an unreferenced section (something like a
-  header <<This Section Is Bogus>>).
-3) Now, File->Exit
-4) A dialog box pops up
-  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
-5) Click "Yes"
-6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
-  and in the console window, you see "undefined section: ..."
-
-However, the application is still running. The only way to really quit
-is to click "No" to the Save dialog.
-
-> Iirc, this is the intended behavior.  It would be possible to build in some
-> state behavior to only ask once, but I'd rather not do that.
-
-The point is that I can't kill Leo if I keep saying "Yes" to the
-"Save change before quitting" dialog. This is definitely not the
-intended behavior. The correct behavior would be to save the file,
-give me the warning about the undefined section, and exit.
-#@nonl
-#@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@+node:ekr.20080330085343.3:Fix bug in atFile.write
-The code should save/restore, just as in the clean_file function (from scripts.leo)
-#@nonl
-#@+node:ekr.20080330085343.1:clean_file
-def clean_file(p):
-
-    at = c.atFileCommands
-
-    if hasattr(p.v.t,'tnodeList'):
-        has_list = True
-        old_list =  p.v.t.tnodeList[:]
-    else:
-        has_list = False
-
-    at.write(
-        root=p,nosentinels=True,
-        thinFile=False,
-        scriptWrite=True,
-        toString=True,
-        write_strips_blank_lines=False)
-
-    if has_list:
-        p.v.t.tnodeList = old_list
-
-    fileName = g.os_path_normpath(g.os_path_join(
-        at.default_directory,
-        'clean',
-        g.os_path_basename(p.anyAtFileNodeName())))
-
-    # g.trace(p.headString(),len(at.stringOutput),fileName)
-
-    # Adapted from at.openFileForWritingHelper
-    path = g.os_path_dirname(fileName)
-    if not g.os_path_exists(path):
-        g.es('clean directory does not exist',path)
-        return
-
-    try:
-        f = file(fileName,'w')
-        f.write(at.stringOutput)
-        f.close()
-        g.es_print('wrote',fileName)
-    except IOError:
-        g.es_print('can not write',fileName,color='red')
-        g.es_exception()
-#@-node:ekr.20080330085343.1:clean_file
-#@-node:ekr.20080330085343.3:Fix bug in atFile.write
 #@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 @nocolor
 
 I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.  Once I saw my
-nodes were overwritten unitTest.leo, I copied somedoc.leo to
-somedoc.leo.bak because I wanted to do a save to see what would
-happen.  The somedoc.leo file ended up with the contents of
-unitTest.leo as I suspected.  To my surprise, I also lost
-somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
-backup copy to revert to.  If leo is making use of a .bak file during
-saving, then should it give a warning if that file already exists?
+get deleted whenever you save a file named somedoc.leo.
 
-To duplicate:
-
-1. Open a leo file that you don't care about losing.
-2. From the file->open menu open leo/test/unitTest.leo
-3. Select a unit test and run it with Alt-4 (I chose the Position
-tests described above)
-4. Switch back to the original leo document and you should see the
-contents of unitTest.leo instead of the original document contents.
-#@nonl
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
-@nocolor
-
-Note: at present the only change is to c.setHeadString.  It's unlikely this will make a difference.
-
-So reading all the file names in my home directory into leo as
-headlines while playing with my active_path plugin, I got some odd
-characters in a filename into leo, it saved the file fine, but wouldn't
-read it:
-
-error parsing /media/usr1/usr1/home/tbrown/files.leo
-Traceback (most recent call last):
-
- File
-"/media/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/active_path/leo/core/leoFileCommands.py",
-line 1240, in parse_leo_file parser.parse(theFile) # expat does not
-support parseString
-
- File "/usr/lib/python2.5/xml/sax/expatreader.py", line 107, in parse
-   xmlreader.IncrementalParser.parse(self, source)
-
- File "/usr/lib/python2.5/xml/sax/xmlreader.py", line 123, in parse
-   self.feed(buffer)
-
- File "/usr/lib/python2.5/xml/sax/expatreader.py", line 211, in feed
-   self._err_handler.fatalError(exc)
-
- File "/usr/lib/python2.5/xml/sax/handler.py", line 38, in fatalError
-   raise exception
-
-SAXParseException: <unknown>:732:58: not well-formed (invalid token)
-
-
-emacs shows the offending line as:
-
-<v t="tbrown.20080618141617.720"
-a="M"><vh>coppertop_mapYI .2006_04_09_14_16_22.0</vh></v>
-
-...of course it looks different in my mail composer window :-) but
-there's a ^H after the I.
-
-So, garbage in, garbage out, I get that, but is it the intent that leo
-save a file without comment and then fail to read it in these cases?
-
-I'm not saying it should do one thing or the other, but just wanted to
-point out the possibility.
-
-Cheers -Terry
+EKR: Either use mkstemp or always write to a string first.
 
 @color
 #@nonl
+#@+node:ekr.20031218072017.3046:write_Leo_file
+def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
+
+    c = self.c
+    self.putCount = 0
+    self.toString = toString
+    theActualFile = None
+    toZip = False
+    atOk = True
+
+    if c.config.getBool('check_outline_before_save'):
+        g.trace('@bool check_outline_before_save = True',color='blue')
+        errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+        if errors > 0:
+            g.es_print('outline not written',color='red')
+            return False
+
+    if not outlineOnlyFlag or toOPML:
+        # Update .leoRecentFiles.txt if possible.
+        g.app.config.writeRecentFilesFile(c)
+        << write all @file nodes >>
+    << return if the .leo file is read-only >>
+    try:
+        << create backup file >>
+        self.mFileName = fileName
+        if toOPML:
+            << ensure that filename ends with .opml >>
+        self.outputFile = StringIO()
+        << create theActualFile >>
+        # t1 = time.clock()
+        if toOPML:
+            self.putToOPML()
+        else:
+            # An important optimization: we have already assign the file indices.
+            self.putLeoFile()
+        # t2 = time.clock()
+        s = self.outputFile.getvalue()
+        # g.trace(self.leo_file_encoding)
+        if toZip:
+            self.writeZipFile(s)
+        elif toString:
+            # For support of chapters plugin.
+            g.app.write_Leo_file_string = s
+        else:
+            theActualFile.write(s)
+            theActualFile.close()
+            << delete backup file >>
+            # t3 = time.clock()
+            # g.es_print('len',len(s),'putCount',self.putCount) # 'put',t2-t1,'write&close',t3-t2)
+        self.outputFile = None
+        self.toString = False
+        return atOk
+    except Exception:
+        g.es("exception writing:",fileName)
+        g.es_exception(full=True)
+        if theActualFile: theActualFile.close()
+        self.outputFile = None
+        if backupName:
+            << delete fileName >>
+            << rename backupName to fileName >>
+        self.toString = False
+        return False
+
+write_LEO_file = write_Leo_file # For compatibility with old plugins.
+#@+node:ekr.20040324080359:<< write all @file nodes >>
+try:
+    # Write all @file nodes and set orphan bits.
+    # An important optimization: we have already assign the file indices.
+    changedFiles,atOk = c.atFileCommands.writeAll()
+except Exception:
+    g.es_error("exception writing derived files")
+    g.es_exception()
+    return False
+#@-node:ekr.20040324080359:<< write all @file nodes >>
+#@+node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
+# self.read_only is not valid for Save As and Save To commands.
+
+if g.os_path_exists(fileName):
+    try:
+        if not os.access(fileName,os.W_OK):
+            g.es("can not write: read only:",fileName,color="red")
+            return False
+    except Exception:
+        pass # os.access() may not exist on all platforms.
+#@-node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
+#@+node:ekr.20031218072017.3047:<< create backup file >>
+backupName = None
+
+# rename fileName to fileName.bak if fileName exists.
+if not toString and g.os_path_exists(fileName):
+
+    backupName = g.os_path_join(g.app.loadDir,fileName)
+    backupName = fileName + ".bak"
+
+    if g.os_path_exists(backupName):
+        g.utils_remove(backupName)
+
+    ok = g.utils_rename(c,fileName,backupName)
+
+    if not ok:
+        if self.read_only:
+            g.es("read only",color="red")
+        return False
+#@nonl
+#@-node:ekr.20031218072017.3047:<< create backup file >>
+#@+node:ekr.20060919070145:<< ensure that filename ends with .opml >>
+if not self.mFileName.endswith('opml'):
+    self.mFileName = self.mFileName + '.opml'
+fileName = self.mFileName
+#@nonl
+#@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
+#@+node:ekr.20060929103258:<< create theActualFile >>
+if toString:
+    theActualFile = None
+elif c.isZipped:
+    self.toString = toString = True
+    theActualFile = None
+    toZip = True
+else:
+    theActualFile = open(fileName, 'wb')
+#@-node:ekr.20060929103258:<< create theActualFile >>
+#@+node:ekr.20031218072017.3048:<< delete backup file >>
+if backupName and g.os_path_exists(backupName):
+
+    self.deleteFileWithMessage(backupName,'backup')
+#@-node:ekr.20031218072017.3048:<< delete backup file >>
+#@+node:ekr.20050405103712:<< delete fileName >>
+if fileName and g.os_path_exists(fileName):
+
+    self.deleteFileWithMessage(fileName,'')
+#@-node:ekr.20050405103712:<< delete fileName >>
+#@+node:ekr.20050405103712.1:<< rename backupName to fileName >>
+if backupName:
+    g.es("restoring",fileName,"from",backupName)
+    g.utils_rename(c,backupName,fileName)
+#@-node:ekr.20050405103712.1:<< rename backupName to fileName >>
+#@+node:ekr.20070412095520:writeZipFile
+def writeZipFile (self,s):
+
+    # The name of the file in the archive.
+    contentsName = g.toEncodedString(
+        g.shortFileName(self.mFileName),
+        self.leo_file_encoding,reportErrors=True)
+
+    # The name of the archive itself.
+    fileName = g.toEncodedString(
+        self.mFileName,
+        self.leo_file_encoding,reportErrors=True)
+
+    # Write the archive.
+    theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
+    theFile.writestr(contentsName,s)
+    theFile.close()
+#@-node:ekr.20070412095520:writeZipFile
+#@-node:ekr.20031218072017.3046:write_Leo_file
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@nonl
+#@+node:ekr.20031218072017.1417:<< define global constants >>
+# self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+
+self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
+self.prolog_postfix_string = "?>"
+self.prolog_namespace_string = 'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
+#@nonl
+#@-node:ekr.20031218072017.1417:<< define global constants >>
+#@+node:ekr.20040324080819.1:putLeoFile & helpers
+def putLeoFile (self):
+
+    self.updateFixedStatus()
+    self.putProlog()
+    self.putHeader()
+    self.putGlobals()
+    self.putPrefs()
+    self.putFindSettings()
+    #start = g.getTime()
+    self.putVnodes()
+    #start = g.printDiffTime("vnodes ",start)
+    self.putTnodes()
+    #start = g.printDiffTime("tnodes ",start)
+    self.putPostlog()
+#@+node:ekr.20031218072017.3035:putFindSettings
+def putFindSettings (self):
+
+    # New in 4.3:  These settings never get written to the .leo file.
+    self.put("<find_panel_settings/>")
+    self.put_nl()
+#@-node:ekr.20031218072017.3035:putFindSettings
+#@+node:ekr.20031218072017.3037:putGlobals
+# Changed for Leo 4.0.
+
+def putGlobals (self):
+
+    c = self.c
+    self.put("<globals")
+    << put the body/outline ratio >>
+    self.put(">") ; self.put_nl()
+    << put the position of this frame >>
+    << put the position of the log window >>
+    self.put("</globals>") ; self.put_nl()
+#@+node:ekr.20031218072017.3038:<< put the body/outline ratio >>
+# Puts an innumerate number of digits
+
+self.put(" body_outline_ratio=")
+
+# New in Leo 4.5: support fixed .leo files.
+self.put_in_dquotes(
+    str(g.choose(c.fixed,0.5,c.frame.ratio)))
+#@-node:ekr.20031218072017.3038:<< put the body/outline ratio >>
+#@+node:ekr.20031218072017.3039:<< put the position of this frame >>
+# New in Leo 4.5: support fixed .leo files.
+
+if c.fixed:
+    width,height,left,top = 700,500,50,50
+        # Put fixed, immutable, reasonable defaults.
+        # Leo 4.5 and later will ignore these when reading.
+        # These should be reasonable defaults so that the
+        # file will be opened properly by older versions
+        # of Leo that do not support fixed .leo files.
+else:
+    width,height,left,top = c.frame.get_window_info()
+
+# g.trace(width,height,left,top)
+
+self.put_tab()
+self.put("<global_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3039:<< put the position of this frame >>
+#@+node:ekr.20031218072017.3040:<< put the position of the log window >>
+top = left = height = width = 0 # no longer used
+
+self.put_tab()
+self.put("<global_log_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3040:<< put the position of the log window >>
+#@-node:ekr.20031218072017.3037:putGlobals
+#@+node:ekr.20031218072017.3041:putHeader
+def putHeader (self):
+
+    tnodes = 0 ; clone_windows = 0 # Always zero in Leo2.
+
+    if 1: # For compatibility with versions before Leo 4.5.
+        self.put("<leo_header")
+        self.put(" file_format=") ; self.put_in_dquotes("2")
+        self.put(" tnodes=") ; self.put_in_dquotes(str(tnodes))
+        self.put(" max_tnode_index=") ; self.put_in_dquotes(str(0))
+        self.put(" clone_windows=") ; self.put_in_dquotes(str(clone_windows))
+        self.put("/>") ; self.put_nl()
+
+    else:
+        self.put('<leo_header file_format="2"/>\n')
+#@-node:ekr.20031218072017.3041:putHeader
+#@+node:ekr.20031218072017.3042:putPostlog
+def putPostlog (self):
+
+    self.put("</leo_file>") ; self.put_nl()
+#@-node:ekr.20031218072017.3042:putPostlog
+#@+node:ekr.20031218072017.2066:putPrefs
+def putPrefs (self):
+
+    # New in 4.3:  These settings never get written to the .leo file.
+    self.put("<preferences/>")
+    self.put_nl()
+#@-node:ekr.20031218072017.2066:putPrefs
+#@+node:ekr.20031218072017.1246:putProlog
+def putProlog (self):
+
+    c = self.c
+
+    self.putXMLLine()
+
+    if c.config.stylesheet or c.frame.stylesheet:
+        self.putStyleSheetLine()
+
+    self.put("<leo_file>") ; self.put_nl()
+#@-node:ekr.20031218072017.1246:putProlog
+#@+node:ekr.20031218072017.1248:putStyleSheetLine
+def putStyleSheetLine (self):
+
+    c = self.c
+
+    # The stylesheet in the .leo file takes precedence over the default stylesheet.
+    self.put("<?xml-stylesheet ")
+    self.put(c.frame.stylesheet or c.config.stylesheet)
+    self.put("?>")
+    self.put_nl()
+#@nonl
+#@-node:ekr.20031218072017.1248:putStyleSheetLine
 #@+node:ekr.20031218072017.1577:putTnode
 def putTnode (self,t):
 
@@ -548,6 +325,43 @@ def putTnode (self,t):
     body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
     self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
 #@-node:ekr.20031218072017.1577:putTnode
+#@+node:ekr.20031218072017.1575:putTnodes
+def putTnodes (self):
+
+    """Puts all tnodes as required for copy or save commands"""
+
+    c = self.c
+
+    self.put("<tnodes>\n")
+    << write only those tnodes that were referenced >>
+    self.put("</tnodes>\n")
+#@+node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
+if self.usingClipboard: # write the current tree.
+    theIter = c.currentPosition().self_and_subtree_iter()
+else: # write everything
+    theIter = c.all_positions_with_unique_tnodes_iter()
+
+# Populate tnodes
+tnodes = {}
+nodeIndices = g.app.nodeIndices
+for p in theIter:
+    # New in Leo 4.4.8: assign file indices here.
+    if not p.v.t.fileIndex:
+        p.v.t.fileIndex = nodeIndices.getNewIndex()
+    tnodes[p.v.t.fileIndex] = p.v.t
+
+# Put all tnodes in index order.
+for index in sorted(tnodes):
+    # g.trace(index)
+    t = tnodes.get(index)
+    if not t:
+        g.trace('can not happen: no tnode for',index)
+    # Write only those tnodes whose vnodes were written.
+    if t.isWriteBit():
+        self.putTnode(t)
+#@nonl
+#@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
+#@-node:ekr.20031218072017.1575:putTnodes
 #@+node:ekr.20031218072017.1863:putVnode
 def putVnode (self,p,isIgnore=False):
 
@@ -669,64 +483,944 @@ if isOrphan and isThin:
     p.clearOrphan()
 #@-node:ekr.20040702085529:<< issue informational messages >>
 #@-node:ekr.20031218072017.1863:putVnode
-#@+node:ekr.20031218072017.1470:put
-def put (self,s):
+#@+node:ekr.20031218072017.1579:putVnodes
+def putVnodes (self):
 
-    '''Put string s to self.outputFile. All output eventually comes here.'''
+    """Puts all <v> elements in the order in which they appear in the outline."""
 
-    # Improved code: self.outputFile (a cStringIO object) always exists.
-    if s:
-        self.putCount += 1
-        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-        self.outputFile.write(s)
+    c = self.c
+    c.clearAllVisited()
 
-def put_dquote (self):
-    self.put('"')
+    self.put("<vnodes>\n")
 
-def put_dquoted_bool (self,b):
-    if b: self.put('"1"')
-    else: self.put('"0"')
+    # Make only one copy for all calls.
+    self.currentPosition = c.currentPosition() 
+    self.rootPosition    = c.rootPosition()
+    # self.topPosition     = c.topPosition()
+    self.vnodesDict={}
 
-def put_flag (self,a,b):
-    if a:
-        self.put(" ") ; self.put(b) ; self.put('="1"')
+    if self.usingClipboard:
+        self.putVnode(self.currentPosition) # Write only current tree.
+    else:
+        for p in c.rootPosition().self_and_siblings_iter():
+            # New in Leo 4.4.2 b2 An optimization:
+            self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
 
-def put_in_dquotes (self,a):
-    self.put('"')
-    if a: self.put(a) # will always be True if we use backquotes.
-    else: self.put('0')
-    self.put('"')
-
-def put_nl (self):
-    self.put("\n")
-
-def put_tab (self):
-    self.put("\t")
-
-def put_tabs (self,n):
-    while n > 0:
-        self.put("\t")
-        n -= 1
+    self.put("</vnodes>\n")
 #@nonl
-#@-node:ekr.20031218072017.1470:put
-#@+node:ekr.20040305223225:c.setHeadString
-def setHeadString (self,p,s,encoding="utf-8"):
+#@-node:ekr.20031218072017.1579:putVnodes
+#@+node:ekr.20031218072017.1247:putXMLLine
+def putXMLLine (self):
+
+    '''Put the **properly encoded** <?xml> element.'''
+
+    # Use self.leo_file_encoding encoding.
+    self.put('%s"%s"%s\n' % (
+        g.app.prolog_prefix_string,
+        self.leo_file_encoding,
+        g.app.prolog_postfix_string))
+#@nonl
+#@-node:ekr.20031218072017.1247:putXMLLine
+#@-node:ekr.20040324080819.1:putLeoFile & helpers
+#@+node:ekr.20031218072017.1246:putProlog
+def putProlog (self):
+
+    c = self.c
+
+    self.putXMLLine()
+
+    if c.config.stylesheet or c.frame.stylesheet:
+        self.putStyleSheetLine()
+
+    self.put("<leo_file>") ; self.put_nl()
+#@-node:ekr.20031218072017.1246:putProlog
+#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+#@+node:ekr.20070624135822:Templates for common code fragments
+@
+Use completion to show fragments.
+Allow settings to create fragments:
+    - @fragments
+        - @fragment name
+            body contains actual fragment.
+
+@c
+
+# Invent a way for simple keystrokes to insert fragments, such as:
+
+Fragment 1:
+
+c.beginUpdate()
+try:
+    pass
+finally:
+    endUpdate()
+
+Fragment 2:
+
+for p in c.allNodes_iter():
+    pass
+#@-node:ekr.20070624135822:Templates for common code fragments
+#@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
+@nocolor
+
+A pretty feeble start for support for goto-global-line for @nosent files.
+
+A better solution would be to create a string file containing sentinels,
+offset the line number by scanned sentinels, then use the existing logic
+to get the correct node and line.
+
+@color
+#@nonl
+#@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+def goToLineNumber (self,n,p=None,scriptData=None):
+
+    '''Place the cursor on the n'th line of a derived file or script.
+    When present scriptData is a dict with 'root' and 'lines' keys.'''
 
     c = self
-    w = c.edit_widget(p) # w only exists for the Tk gui.
+    delim = None ; gnx = None ; vnodeName = None
+    if n < 0: return
 
-    p.initHeadString(s,encoding)
+    fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
 
-    if w:
-        s = g.toUnicode(s,encoding)
-        w.setAllText(s)
-        width = c.frame.tree.headWidth(p=None,s=s)
-        w.setWidth(width)
+    if n==1:
+        p = root ; n2 = 1 ; found = True
+    elif n >= len(lines):
+        p = root ; n2 = root.bodyString().count('\n') ; found = False
+    elif isRaw:
+        p,n2,found = c.goto_countLines(root,n)
+    else:
+        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
+        if delim:
+            p,found = c.goto_findPosition(
+                root,lines,vnodeName,gnx,n,delim)
+        else:
+            p,found = root,False
+    if 0:
+        << trace gotoLineNumber results >>
+    c.goto_showResults(found,p or root,n,n2,lines)
+#@+node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
+g.trace(
+    '\n  found',found,'n2',n2,'gnx',gnx,'delim',repr(delim),
+    '\n  vnodeName',vnodeName,
+    '\n  p        ',p and p.headString(),
+    '\n  root     ',root and root.headString())
+#@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
+#@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
+def goto_applyLineNumberMapping(self, n):
 
-    p.setDirty()
+    c = self ; x = c.shadowController
+
+    if len(x.line_mapping) > n:
+        return x.line_mapping[n]
+    else:
+        return n
+#@-node:ekr.20080708094444.65:goto_applyLineNumberMapping
+#@+node:ekr.20080904071003.12:goto_countLines
+def goto_countLines (self,root,n):
+
+    '''Scan through root's outline, looking for line n.
+    Return (p,n2,found) where p is the found node,
+    n2 is the actural line found, and found is True if the line was found.'''
+
+    p = lastv = root
+    prev = 0 ; found = False
+    isNosent = root.isAtNoSentFileNode()
+    isAuto = root.isAtAutoNode()
+
+    for p in p.self_and_subtree_iter():
+        lastv = p.copy()
+        s = p.bodyString()
+        if isNosent or isAuto:
+            s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
+        n_lines = s.count('\n')
+        if len(s) > 0 and s[-1] != '\n': n_lines += 1
+        # g.trace(n,prev,n_lines,p.headString())
+        if prev + n_lines >= n:
+            found = True ; break
+        prev += n_lines
+
+    p = lastv
+    n2 = max(1,n-prev)
+
+    return p,n2,found
+#@-node:ekr.20080904071003.12:goto_countLines
+#@+node:ekr.20080904071003.4:goto_findPosition & helpers
+def goto_findPosition(self,root,lines,vnodeName,gnx,n,delim):
+
+    c = self
+
+    # if scriptFind:
+        # p,found = c.scanForVnodeName(root,vnodeName
+
+    if gnx:
+        p,found = c.goto_findGnx(root,gnx,vnodeName)
+    else:
+        p,found = c.goto_scanTnodeList(root,delim,lines,n,vnodeName)
+
+    # if not found:
+        # g.es("not found:",vnodeName,color="red")
+
+    return p,found
+#@+node:ekr.20080904071003.18:goto_findGnx
+def goto_findGnx (self,root,gnx,vnodeName):
+
+    '''Scan root's tree for a node with the given gnx and vnodeName.
+
+    return (p,found)'''
+
+    gnx = g.app.nodeIndices.scanGnx(gnx,0)
+
+    for p in root.self_and_subtree_iter():
+        if p.matchHeadline(vnodeName):
+            if p.v.t.fileIndex == gnx:
+                return p.copy(),True
+
+    return None,False
+#@-node:ekr.20080904071003.18:goto_findGnx
+#@+node:ekr.20080904071003.19:goto_scanTnodeList
+def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
+
+    # This is about the best that can be done without replicating the entire atFile write logic.
+    found = False
+    ok = hasattr(root.v.t,"tnodeList")
+
+    if ok:
+        # Use getattr to keep pylint happy.
+        tnodeList = getattr(root.v.t,'tnodeList')
+        << set tnodeIndex to the number of +node sentinels before line n >>
+        tnodeIndex = max(0,tnodeIndex)
+        << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
+    else:
+        g.es_print("no child index for",root.headString(),color="red")
+
+    if not ok:
+        # Fall back to the old logic.
+        << set p to the first node whose headline matches vnodeName >>
+
+    return p,found
+#@+node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
+
+tnodeIndex = -1 # Don't count the @file node.
+scanned = 0 # count of lines scanned.
+
+for s in lines:
+    if scanned >= n:
+        break
+    i = g.skip_ws(s,0)
+    if g.match(s,i,delim):
+        i += len(delim)
+        if g.match(s,i,"+node"):
+            # g.trace(tnodeIndex,s.rstrip())
+            tnodeIndex += 1
+    scanned += 1
+#@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
+#@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+@ We use the tnodeList to find a _tnode_ corresponding to the proper node, so the user will for sure be editing the proper text, even if several nodes happen to have the same headline.  This is really all that we need.
+
+However, this code has no good way of distinguishing between different cloned vnodes in the file: they all have the same tnode.  So this code just picks p = t.vnodeList[0] and leaves it at that.
+
+The only way to do better is to scan the outline, replicating the write logic to determine which vnode created the given line.  That's way too difficult, and it would create an unwanted dependency in this code.
+@c
+
+# g.trace("tnodeIndex",tnodeIndex)
+if tnodeIndex < len(tnodeList):
+    t = tnodeList[tnodeIndex]
+    # Find the first vnode whose tnode is t.
+    for p in root.self_and_subtree_iter():
+        if p.v.t == t:
+            found = True ; break
+    if not found:
+        s = "tnode not found for " + vnodeName
+        g.es_print(s, color="red") ; ok = False
+    elif p.headString().strip() != vnodeName:
+        if 0: # Apparently this error doesn't prevent a later scan for working properly.
+            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
+            g.es_print(s, color="red")
+        ok = False
+else:
+    if root is None: # Kludge: disable this message when called by goToScriptLineNumber.
+        s = "Invalid computed tnodeIndex: %d" % tnodeIndex
+        g.es_print(s, color = "red")
+    ok = False
+#@-node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+#@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
+for p in root.self_and_subtree_iter():
+    if p.matchHeadline(vnodeName):
+        found = True ; break
+#@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
+#@-node:ekr.20080904071003.19:goto_scanTnodeList
+#@-node:ekr.20080904071003.4:goto_findPosition & helpers
+#@+node:ekr.20031218072017.2877:goto_findVnode
+def goto_findVnode (self,root,lines,n,ignoreSentinels):
+
+    '''Search the lines of a derived file containing sentinels for a vnode.
+    return (vnodeName,gnx,offset,delim):
+
+    vnodeName:  the name found in the previous @+body sentinel.
+    gnx:        the gnx of the found node.
+    offset:     the offset within the node of the desired line.
+    delim:      the comment delim from the @+leo sentinel.
+    '''
+
+    c = self ; at = c.atFileCommands
+    # g.trace('lines...\n',g.listToString(lines))
+    gnx = None
+    << set delim, leoLine from the @+leo line >>
+    if not delim:
+        g.es('no sentinels in:',root.headString())
+        return None,None,None,None
+
+    << scan back to @+node, setting offset,nodeSentinelLine >>
+    if nodeSentinelLine == -1:
+        # The line precedes the first @+node sentinel
+        g.trace('no @+node!!')
+        return root.headString(),gnx,1,delim
+
+    s = lines[nodeSentinelLine]
+
+    << set gnx and vnodeName from s >>
+    if delim and vnodeName:
+        # g.trace('offset',offset)
+        return vnodeName,gnx,offset,delim
+    else:
+        g.es("bad @+node sentinel")
+        return None,None,None,None
+#@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
+# Find the @+leo line.
+tag = "@+leo"
+i = 0 
+while i < len(lines) and lines[i].find(tag)==-1:
+    i += 1
+leoLine = i # Index of the line containing the leo sentinel
+
+# Set delim from the @+leo line.
+delim = None
+if leoLine < len(lines):
+    s = lines[leoLine]
+    valid,newDerivedFile,start,end,thinFile = at.parseLeoSentinel(s)
+    # New in Leo 4.5.1: only support 4.x files.
+    if valid and newDerivedFile:
+        delim = start + '@'
+#@-node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
+#@+node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+@
+Scan backwards from the requested line, looking for an @-body line. When found,
+we get the vnode's name from that line and set p to the indicated vnode. This
+will fail if vnode names have been changed, and that can't be helped.
+
+We compute the offset of the requested line **within the found node**.
+@c
+
+offset = 0 # This is essentially the Tk line number.
+nodeSentinelLine = -1
+line = n - 1 # Start with the requested line.
+while line >= 0:
+    progress = line
+    s = lines[line]
+    i = g.skip_ws(s,0)
+    if g.match(s,i,delim):
+        << handle delim while scanning backward >>
+    else:
+        ### offset += 1 # Assume the line is real.  A dubious assumption.
+        line -= 1
+    assert line < progress
+#@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+if line == n:
+    g.es("line",str(n),"is a sentinel line")
+i += len(delim)
+
+if g.match(s,i,"-node"):
+    # The end of a nested section.
+    old_line = line
+    line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
+    assert line < old_line
+    # g.trace('found',repr(lines[line]))
+    nodeSentinelLine = line
+    offset = n-line
+    break
+elif g.match(s,i,"+node"):
+    # g.trace('found',repr(lines[line]))
+    nodeSentinelLine = line
+    offset = n-line
+    break
+elif g.match(s,i,"<<") or g.match(s,i,"@first"):
+    # if not ignoreSentinels:
+        # offset += 1 # Count these as a "real" lines.
+    line -= 1
+else:
+    line -= 1
+#@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+#@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+#@+node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
+i = 0 ; gnx = None ; vnodeName = None
+
+if thinFile:
+    # gnx is lies between the first and second ':':
+    i = s.find(':',i)
+    if i > 0:
+        i += 1
+        j = s.find(':',i)
+        if j > 0:   gnx = s[i:j]
+        else:       i = len(s) # Force an error.
+    else:
+        i = len(s) # Force an error.
+
+# vnode name is everything following the first or second':'
+i = s.find(':',i)
+if i > -1:
+    vnodeName = s[i+1:].strip()
+else:
+    vnodeName = None
+    g.es_print("bad @+node sentinel",color='red')
+#@-node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
+#@-node:ekr.20031218072017.2877:goto_findVnode
+#@+node:ekr.20080904071003.28:goto_setup & helpers
+def goto_setup (self,n,p=None,scriptData=None):
+
+    '''Return (fileName,isRaw,lines,n,p,root) where:
+
+    fileName is the name of the nearest @file node, or None.
+    isRaw is True if there are no sentinels in the file.
+    lines are the lines to be scanned.
+    n is the effective line number (munged for @shadow nodes).
+    root is the nearest @file node, or c.currentPosition.'''
+
+    c = self
+
+    if scriptData:
+        assert p is None
+        lines = scriptData.get('lines')
+        p = scriptData.get('p')
+        root,fileName = c.goto_findRoot(p)
+    else:
+        # p is for unit testing only!
+        if not p: p = c.currentPosition()
+        root,fileName = c.goto_findRoot(p)
+        if root and fileName:
+            c.shadowController.line_mapping = [] # Set by goto_open.
+            lines = c.goto_getFileLines(root,fileName)
+            n = c.goto_applyLineNumberMapping(n)
+        else:
+            lines = c.goto_getScriptLines(p)
+
+    isRaw = not root or (
+        root.isAtAsisFileNode() or root.isAtNoSentFileNode() or root.isAtAutoNode())
+
+    ignoreSentinels = root and root.isAtNoSentFileNode()
+
+    if scriptData:
+        if not root: root = p.copy()
+    else:
+        if not root: root = c.currentPosition()
+
+    return fileName,ignoreSentinels,isRaw,lines,n,root
+#@+node:ekr.20080904071003.25:goto_findRoot
+def goto_findRoot (self,p):
+
+    '''Find the closest ancestor @file node, of any type, except @all nodes.
+
+    return root, fileName.'''
+
+    c = self ; p1 = p.copy()
+
+    # First look for ancestor @file node.
+    for p in p.self_and_parents_iter():
+        fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
+        if fileName:
+            return p.copy(),fileName
+
+    # Search the entire tree for joined nodes.
+    # Bug fix: Leo 4.5.1: *must* search *all* positions.
+    for p in c.all_positions_iter():
+        # if p.v.t == p1.v.t: g.trace('p1',p1,'p',p)
+        if p.v.t == p1.v.t and p != p1:
+            # Found a joined position.
+            for p2 in p.self_and_parents_iter():
+                fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
+                if fileName:
+                    return p2.copy(),fileName
+
+    return None,None
+#@-node:ekr.20080904071003.25:goto_findRoot
+#@+node:ekr.20080904071003.26:goto_getFileLines
+def goto_getFileLines (self,root,fileName):
+
+    '''Read the file into lines.'''
+
+    c = self
+
+    if root.isAtNoSentFileNode():
+        # Write a virtual file containing sentinels.
+        at = c.atFileCommands
+        at.write(root,nosentinels=False,toString=True)
+        lines = g.splitLines(at.stringOutput)
+    else:
+        # Calculate the full path.
+        d = g.scanDirectives(c,p=root)
+        path = d.get("path")
+        # g.trace('path',path,'fileName',fileName)
+        fileName = c.os_path_finalize_join(path,fileName)
+        lines    = c.goto_open(fileName)
+
+    return lines
+#@-node:ekr.20080904071003.26:goto_getFileLines
+#@+node:ekr.20080904071003.27:goto_getScriptLines
+def goto_getScriptLines (self,p):
+
+    c = self
+
+    if not g.unitTesting:
+        g.es("no ancestor @file node: using script line numbers", color="blue")
+
+    lines = g.getScript (c,p,useSelectedText=False)
+    lines = g.splitLines(lines)
+
+    return lines
+#@-node:ekr.20080904071003.27:goto_getScriptLines
+#@+node:ekr.20080708094444.63:goto_open
+def goto_open (self,filename):
+    """
+    Open a file for "goto linenumber" command and check if a shadow file exists.
+    Construct a line mapping. This ivar is empty i no shadow file exists.
+    Otherwise it contains a mapping shadow file number -> real file number.
+    """
+
+    c = self ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        if os.path.exists(shadow_filename):
+            fn = shadow_filename
+            lines = open(shadow_filename).readlines()
+            x.line_mapping = x.push_filter_mapping(
+                lines, x.marker_from_extension(shadow_filename))
+        else:
+            # Just open the original file.  This is not an error!
+            fn = filename
+            c.line_mapping = []
+            lines = open(filename).readlines()
+    except Exception:
+        # Make sure failures to open a file generate clear messages.
+        g.es_print('can not open',fn,color='blue')
+        # g.es_exception()
+        lines = []
+
+    return lines
+#@-node:ekr.20080708094444.63:goto_open
+#@-node:ekr.20080904071003.28:goto_setup & helpers
+#@+node:ekr.20080904071003.14:goto_showResults
+def goto_showResults(self,found,p,n,n2,lines):
+
+    c = self ; w = c.frame.body.bodyCtrl
+
+    # Select p and make it visible.
+    c.frame.tree.expandAllAncestors(p)
+    c.selectPosition(p)
+    c.redraw()
+
+    # Put the cursor on line n2 of the body text.
+    s = w.getAllText()
+    if found:
+        ins = g.convertRowColToPythonIndex(s,n2-1,0)    
+    else:
+        ins = len(s)
+        if len(lines) < n and not g.unitTesting:
+            g.es('only',len(lines),'lines',color="blue")
+
+    # g.trace('n',n,'ins',ins,'p',p.headString())
+
+    w.setInsertPoint(ins)
+    c.bodyWantsFocusNow()
+    w.seeInsertPoint()
+#@-node:ekr.20080904071003.14:goto_showResults
+#@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
+
+    s = lines[n]
+    i = g.skip_ws(s,0)
+    assert(g.match(s,i,delim))
+    i += len(delim)
+    if g.match(s,i,"+node"):
+        start="+node" ; end="-node" ; delta=1
+    else:
+        assert(g.match(s,i,"-node"))
+        start="-node" ; end="+node" ; delta=-1
+    # Scan to matching @+-node delim.
+    n += delta ; level = 0
+    while 0 <= n < len(lines):
+        s = lines[n] ; i = g.skip_ws(s,0)
+        if g.match(s,i,delim):
+            i += len(delim)
+            if g.match(s,i,start):
+                level += 1
+            elif g.match(s,i,end):
+                if level == 0: break
+                else: level -= 1
+        n += delta
+
+    # g.trace(n)
+    return n
+#@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+#@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+#@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
+#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
+#@+node:ekr.20080922115725.1:Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
 #@nonl
-#@-node:ekr.20040305223225:c.setHeadString
-#@-node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
+#@+node:ekr.20081004102201.2:Log file for @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+#@nonl
+#@-node:ekr.20081004102201.2:Log file for @shadow
+#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
+#@nonl
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@nonl
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.headString())
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines
+#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+#@-node:ekr.20080922115725.1:Finish @shadow
+#@+node:ekr.20081015151532.1:Protect against overwriting changed files using timestamps
+@nocolor-node
+
+>> I wonder if there is a way to avoid this problem without relying on
+>> people to reload .leo or derived files?
+>
+> Yes - retaining timestamps of derived files (on read time) and
+> checking them before writing, with a loud complaint if they differ
+> (like many editors do).
+
+I'm convinced.  I'll put this near the top of the list.
+#@nonl
+#@-node:ekr.20081015151532.1:Protect against overwriting changed files using timestamps
+#@+node:ekr.20081016073652.1:Allow gui to be specified on the command line.
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/aba668908d7b5dd
+
+> I think it would be nice to have the option of choosing the GUI from
+> command line, at leo startup.
+
+Thanks for this suggestion.  It comes at a perfect time and solves
+several problems.  I'll definitely do this.
+
+I have been thinking that plugins that require a particular gui should
+reside in leo\plugins\tkinter or leo\plugins\qt, etc and that gui
+plugins should be treated differently because they should be loaded
+first.
+
+The only remaining problem is which gui to use by default if none is
+specified on the command line.  I think this may have to be a
+module-level switch in runLeo.py rather than being a setting.
+(Settings are likely handled too late for this).
+#@nonl
+#@-node:ekr.20081016073652.1:Allow gui to be specified on the command line.
+#@-node:ekr.20080915112342.1:First 6
+#@+node:ekr.20080517102922.1:Files stuff 8
+#@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
+# Remove the old type-specific commands from the default menu.
+#@nonl
+#@-node:ekr.20080918164844.8:Add read/write-any-derived-file commands
+#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
+#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
+#@+node:ekr.20080918164844.14:Protect @shadow and @auto files from overwriting external changes
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bac65cb75484f7cb
+
+BTW, I think we should prevent shadow files from accidentally
+overwriting valuable stuff:
+
+- Store modification time of the file on shadow import
+
+- When you "save", check if modification time has changed and ask the
+user if they really want to overwrite the changes. Or, reuse to do it
+altogether and require explicit save-at-shadow-nodes in those
+occasions. That's considered "good form" in editors in general, and
+since pressing ctrl+S in leo has even more significant implications we
+should be absolutely certain everything happens safely. 
+#@nonl
+#@-node:ekr.20080918164844.14:Protect @shadow and @auto files from overwriting external changes
+#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
+
+I'm just getting started learning how to use Leo. Now, I'd like to use
+it for some of my projects, but there's no chance that I can convert
+everyone at work to using it, so putting sentinel-filled files in our
+repository is out of the question. At the same time, my code looks
+awfully bare without sentinels because the documentation ends up in
+the section names, not the comments!
+
+So, I was wondering if there's a convenient way to pull the section
+names into a comment at the start of each section?
+
+===============
+
+Interesting question.  Am I correct in assuming you are using @nosent trees
+to generate your files?  If so, it would be easy to add support for the
+following options:
+
+@bool write_section_comments_in_at_nosent_trees
+@bool write_node_name_comments_in_at_nosent_trees
+
+The first would write a sentinel consisting of only the section name;
+the second would write a sentinel consisting only of the node's headline
+(for nodes whose headline is not a section name).
+
+These seem like they would be useful additions.  One can even imagine
+corresponding Leo directives so that the comments could be turned on or off
+within an @nosent tree.
+
+What do you think?
+
+=====================
+
+> Interesting question.  Am I correct in assuming you are using @nosent trees
+> to generate your files?  If so, it would be easy to add support for the
+> following options:
+
+> @bool write_section_comments_in_at_nosent_trees
+> @bool write_node_name_comments_in_at_nosent_trees
+
+> The first would write a sentinel consisting of only the section name;
+> the second would write a sentinel consisting only of the node's headline
+> (for nodes whose headline is not a section name).
+
+> These seem like they would be useful additions.  One can even imagine
+> corresponding Leo directives so that the comments could be turned on or off
+> within an @nosent tree.
+
+That sounds like an excellent solution. Particularly the last bit --
+if you could turn section-comments on and off as required, it would
+become very convenient to use Leo to produce source that is intended
+to also be read by non Leo users. 
+#@nonl
+#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
+#@+node:ekr.20080412053100.1:Look into undefined-section behavior
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
+
+1) Create an @thin file based outline.
+2) In the @thin file, create an unreferenced section (something like a
+  header <<This Section Is Bogus>>).
+3) Now, File->Exit
+4) A dialog box pops up
+  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
+5) Click "Yes"
+6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
+  and in the console window, you see "undefined section: ..."
+
+However, the application is still running. The only way to really quit
+is to click "No" to the Save dialog.
+
+> Iirc, this is the intended behavior.  It would be possible to build in some
+> state behavior to only ask once, but I'd rather not do that.
+
+The point is that I can't kill Leo if I keep saying "Yes" to the
+"Save change before quitting" dialog. This is definitely not the
+intended behavior. The correct behavior would be to save the file,
+give me the warning about the undefined section, and exit.
+#@nonl
+#@-node:ekr.20080412053100.1:Look into undefined-section behavior
 #@+node:ekr.20080311135649.2:Allow different .leo formats
 @nocolor
 
@@ -784,573 +1478,12 @@ these provided that headlines appear somewhere.
 So that's clean.  This will happen in Leo 4.5. 
 #@nonl
 #@-node:ekr.20080311135649.2:Allow different .leo formats
-#@-node:ekr.20080517102922.1:Files stuff 7
-#@+node:ekr.20080411091507.10:Minor bugs 4
-#@+node:ekr.20080709161540.1:Fix c colorizer bug
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/707a910f975f3715
-
-Coloring of macro definitions is not extended after '\'.
-
-More than that - refer again to the screenshot and look at the
-comments and #defines at the bottom. The comments after the multi-line
-macro are either not coloured or are coloured incorrectly. At the top,
-the '#define ADDPRIM_CO' macro is only partially coloured. The macros
-below the multi-line macro are incorrectly comment-coloured.
-
-@color
-#@nonl
-#@+node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
-#@-node:ekr.20080729064227.4:@url http://www.freenet.org.nz/misc/leo-c-screenshot.jpg
-#@-node:ekr.20080709161540.1:Fix c colorizer bug
-#@+node:ekr.20080313032655.1:Fix one failed unit test on Linux
-#@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
-#@+node:ekr.20051104075904.78:makeImportExportSuite
-def makeImportExportSuite(c,parentHeadline,doImport):
-
-    """Create an Import/Export test for every descendant of testParentHeadline.."""
-
-    u = testUtils(c)
-    parent = u.findNodeAnywhere(parentHeadline)
-    assert(parent)
-    temp = u.findNodeInTree(parent,"tempNode")
-    assert(temp)
-
-    # Create the suite and add all test cases.
-    suite = unittest.makeSuite(unittest.TestCase)
-
-    for p in parent.children_iter(copy=True):
-        if p == temp: continue
-        dialog = u.findNodeInTree(p,"dialog")
-        assert(dialog)
-        test = importExportTestCase(c,p,dialog,temp,doImport)
-        suite.addTest(test)
-
-    return suite
-#@-node:ekr.20051104075904.78:makeImportExportSuite
-#@+node:ekr.20051104075904.79:class importExportTestCase
-class importExportTestCase(unittest.TestCase):
-
-    """Data-driven unit tests for Leo's edit body commands."""
-
-    @others
-#@+node:ekr.20051104075904.80:__init__
-def __init__ (self,c,p,dialog,temp_p,doImport):
-
-    # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.dialog = dialog
-    self.p = p.copy()
-    self.temp_p = temp_p.copy()
-
-    self.gui = None
-    self.oldGui = None
-    self.wasChanged = c.changed
-    self.fileName = ""
-    self.doImport = doImport
-
-    self.old_p = c.currentPosition()
-#@-node:ekr.20051104075904.80:__init__
-#@+node:ekr.20051104075904.81: fail
-def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    # __pychecker__ = '--no-argsused'
-        #  msg needed so signature matches base class.
-
-    import leo.core.leoGlobals as g
-
-    g.app.unitTestDict["fail"] = g.callers()
-#@-node:ekr.20051104075904.81: fail
-#@+node:ekr.20051104075904.82:importExport
-def importExport (self):
-
-    c = self.c ; p = self.p
-
-    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
-
-    commandName = p.headString()
-    command = getattr(c,commandName) # Will fail if command does not exist.
-    command(event=None)
-
-    failedMethod = g.app.unitTestDict.get("fail")
-    self.failIf(failedMethod,failedMethod)
-#@-node:ekr.20051104075904.82:importExport
-#@+node:ekr.20051104075904.83:runTest
-def runTest(self):
-
-    # """Import Export Test Case"""
-
-    self.importExport()
-#@-node:ekr.20051104075904.83:runTest
-#@+node:ekr.20051104075904.84:setUp
-def setUp(self):
-
-    c = self.c ; temp_p = self.temp_p ; d = self.dialog
-
-    temp_p.setBodyString('',g.app.tkEncoding)
-
-    # Create a node under temp_p.
-    child = temp_p.insertAsLastChild()
-    assert(child)
-    c.setHeadString(child,"import test: " + self.p.headString())
-    c.selectVnode(child)
-
-    assert(d)
-    s = d.bodyString()
-    lines = s.split('\n')
-    name = lines[0]
-    fileName = lines[1]
-
-    # Replace '\\' by os.path.sep in fileName
-    try:
-        # os.path.sep does not exist in Python 2.2.x.
-        sep = os.path.sep
-        fileName = fileName.replace('\\',sep)
-    except AttributeError:
-        fileName = g.os_path_normpath(fileName)
-
-    self.fileName = fileName = g.os_path_join(g.app.loadDir,"..",fileName)
-
-    if self.doImport:
-        theDict = {name: [fileName]}
-    else:
-        theDict = {name: fileName}
-
-    self.oldGui = g.app.gui
-    self.gui = leoGui.unitTestGui(theDict,trace=False)
-#@-node:ekr.20051104075904.84:setUp
-#@+node:ekr.20051104075904.85:shortDescription
-def shortDescription (self):
-
-    try:
-        return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
-    except:
-        return "ImportExportTestCase"
-#@-node:ekr.20051104075904.85:shortDescription
-#@+node:ekr.20051104075904.86:tearDown
-def tearDown (self):
-
-    c = self.c ; temp_p = self.temp_p
-
-    if self.gui:
-        self.gui.destroySelf()
-        self.gui = None
-
-    temp_p.setBodyString("",g.app.tkEncoding)
-    temp_p.clearDirty()
-
-    if not self.wasChanged:
-        c.setChanged (False)
-
-    if 1: # Delete all children of temp node.
-        while temp_p.firstChild():
-            temp_p.firstChild().doDelete()
-
-    g.app.gui = self.oldGui
-    c.selectPosition(self.old_p)
-#@-node:ekr.20051104075904.86:tearDown
-#@-node:ekr.20051104075904.79:class importExportTestCase
-#@-node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
-#@+node:ekr.20031218072017.2853:importAtFile
-def importAtFile (self,event=None):
-
-    '''Import one or more external files, creating @file trees.'''
-
-    c = self
-
-    types = [
-        ("All files","*"),
-        ("C/C++ files","*.c"),
-        ("C/C++ files","*.cpp"),
-        ("C/C++ files","*.h"),
-        ("C/C++ files","*.hpp"),
-        ("Java files","*.java"),
-        ("Lua files", "*.lua"),
-        ("Pascal files","*.pas"),
-        ("Python files","*.py") ]
-
-    names = g.app.gui.runOpenFileDialog(
-        title="Import To @file",
-        filetypes=types,
-        defaultextension=".py",
-        multiple=True)
-    c.bringToFront()
-
-    if names:
-        g.chdir(names[0])
-        c.importCommands.importFilesCommand(names,"@file")
-#@-node:ekr.20031218072017.2853:importAtFile
-#@+node:ekr.20031218072017.3212:importFilesCommand
-def importFilesCommand (self,files=None,treeType=None):
-    # Not a command.  It must *not* have an event arg.
-
-    c = self.c
-    if c == None: return
-    v = current = c.currentVnode()
-    if current == None: return
-    if len(files) < 1: return
-    self.tab_width = self.getTabWidth() # New in 4.3.
-    self.treeType = treeType
-    if len(files) == 2:
-        << Create a parent for two files having a common prefix >>
-    for fileName in files:
-        g.setGlobalOpenDir(fileName)
-        v = self.createOutline(fileName,current)
-        if v: # createOutline may fail.
-            if not g.unitTesting:
-                g.es("imported",fileName,color="blue")
-            v.contract()
-            v.setDirty()
-            c.setChanged(True)
-    c.validateOutline()
-    current.expand()
-    c.redraw()
-
-    c.selectVnode(current)
-#@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
-@ The two filenames have a common prefix everything before the last period is the same.  For example, x.h and x.cpp.
-@c
-
-name0 = files[0]
-name1 = files[1]
-prefix0, junk = g.os_path_splitext(name0)
-prefix1, junk = g.os_path_splitext(name1)
-if len(prefix0) > 0 and prefix0 == prefix1:
-    current = current.insertAsLastChild()
-    # junk, nameExt = g.os_path_split(prefix1)
-    name,junk = g.os_path_splitext(prefix1)
-    current.initHeadString(name)
-#@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
-#@-node:ekr.20031218072017.3212:importFilesCommand
-#@-node:ekr.20080313032655.1:Fix one failed unit test on Linux
-#@+node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
-@nocolor
-
-I was playing around with this and I discovered that if I open
-unitTest.leo from the File->Open menu pick of another leo outline and
-then I run a unit test, then all the nodes from unitTest.leo appear in
-the original document.  If I execute a save on the original document
-(now with the unitTest.leo nodes), then the leo file gets overwritten
-with the contents unitTest.leo.
-
-#@-node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
-#@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
-@nocolor
-
-A pretty feeble start for support for goto-global-line for @nosent files.
-A better solution would be to create a string file containing sentinels,
-offset the line number by scanned sentinels, then use the existing logic
-to get the correct node and line.
-
-@color
-#@nonl
-#@+node:ekr.20031218072017.2864: goToLineNumber
-def goToLineNumber (self,event=None,root=None,lines=None,n=None,scriptFind=False):
-
-    '''Place the cursor on the n'th line of a derived file or script.'''
-
-    # __pychecker__ = 'maxlines=400'
-
-    c = self ; p = c.currentPosition() ; w = c.frame.body.bodyCtrl
-    root1 = root
-    if root is None:
-        << set root >>
-    if lines is None:
-        << read the file into lines >>
-    if n is None:
-        << get n, the line number, from a dialog >>
-    n = self.applyLineNumberMappingIfAny(n) #bwm
-    if n==1:
-        p = root ; n2 = 1 ; found = True
-    elif root.isAtAsisFileNode() or root.isAtNoSentFileNode():
-        << count outline lines, setting p,n2,found >>
-    elif n >= len(lines):
-        p = root ; found = False
-        n2 = p.bodyString().count('\n')
-    else:
-        vnodeName,childIndex,gnx,n2,delim = self.convertLineToVnodeNameIndexLine(lines,n,root,scriptFind)
-        found = True
-        if not vnodeName:
-            g.es("error handling:",root.headString())
-            return
-        << set p to the node given by vnodeName, etc. >>
-    << select p and make it visible >>
-    << put the cursor on line n2 of the body text >>
-#@+node:ekr.20031218072017.2865:<< set root >>
-# First look for ancestor @file node.
-fileName = None
-for p in p.self_and_parents_iter():
-    fileName = p.anyAtFileNodeName()
-    if fileName: break
-
-# New in 4.2: Search the entire tree for joined nodes.
-if not fileName:
-    p1 = c.currentPosition()
-    for p in c.all_positions_with_unique_tnodes_iter():
-        if p.v.t == p1.v.t and p != p1:
-            # Found a joined position.
-            for p in p.self_and_parents_iter():
-                fileName = p.anyAtFileNodeName()
-                # New in 4.2 b3: ignore @all nodes.
-                if fileName and not p.isAtAllNode(): break
-        if fileName: break
-
-if fileName:
-    root = p.copy()
-else:
-    # New in 4.2.1: assume the c.currentPosition is the root of a script.
-    root = c.currentPosition()
-    g.es("no ancestor @file node: using script line numbers", color="blue")
-    scriptFind = True
-    lines = g.getScript (c,root,useSelectedText=False)
-    lines = g.splitLines(lines)
-    if 0:
-        for line in lines:
-            g.pr(line,newline=False)
-#@-node:ekr.20031218072017.2865:<< set root >>
-#@+node:ekr.20031218072017.2866:<< read the file into lines >>
-# 1/26/03: calculate the full path.
-d = g.scanDirectives(c)
-path = d.get("path")
-
-fileName = g.os_path_join(path,fileName)
-
-try:
-    lines=self.gotoLineNumberOpen(fileName) # bwm
-except:
-    g.es("not found:",fileName)
-    return
-#@-node:ekr.20031218072017.2866:<< read the file into lines >>
-#@+node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
-n = g.app.gui.runAskOkCancelNumberDialog(c,"Enter Line Number","Line number:")
-if n == -1:
-    return
-#@-node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
-#@+node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent/asis only)
-p = lastv = root
-prev = 0 ; found = False
-isNosent = root.isAtNoSentFileNode()
-
-for p in p.self_and_subtree_iter():
-    lastv = p.copy()
-    s = p.bodyString()
-    if isNosent:
-        s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
-    n_lines = s.count('\n')
-    if len(s) > 0 and s[-1] != '\n': n_lines += 1
-    # g.trace(n,prev,n_lines,p.headString())
-    if prev + n_lines >= n:
-        found = True ; break
-    prev += n_lines
-
-p = lastv
-n2 = max(1,n-prev)
-#@-node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent/asis only)
-#@+node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
-if scriptFind:
-    << just scan for the node name >>
-elif gnx:
-    << 4.2: get node from gnx >>
-elif childIndex == -1:
-    << 4.x: scan for the node using tnodeList and n >>
-else:
-    << 3.x: scan for the node with the given childIndex >>
-#@+node:ekr.20041111093404:<< just scan for the node name >>
-# This is safe enough because clones are not much of an issue.
-found = False
-for p in root.self_and_subtree_iter():
-    if p.matchHeadline(vnodeName):
-        found = True ; break
-#@-node:ekr.20041111093404:<< just scan for the node name >>
-#@+node:EKR.20040609110138:<< 4.2: get node from gnx >>
-found = False
-gnx = g.app.nodeIndices.scanGnx(gnx,0)
-
-# g.trace(vnodeName)
-# g.trace(gnx)
-
-for p in root.self_and_subtree_iter():
-    if p.matchHeadline(vnodeName):
-        # g.trace(p.v.t.fileIndex)
-        if p.v.t.fileIndex == gnx:
-            found = True ; break
-
-if not found:
-    g.es("not found:",vnodeName,color="red")
-    return
-#@-node:EKR.20040609110138:<< 4.2: get node from gnx >>
-#@+node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
-# This is about the best that can be done without replicating the entire atFile write logic.
-
-ok = hasattr(root.v.t,"tnodeList")
-
-if ok:
-    # Use getattr to keep pylint happy.
-    tnodeList = getattr(root.v.t,'tnodeList')
-    << set tnodeIndex to the number of +node sentinels before line n >>
-    tnodeIndex = max(0,tnodeIndex)
-    << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
-else:
-    g.es_print("no child index for",root.headString(),color="red")
-
-if not ok:
-    # Fall back to the old logic.
-    << set p to the first node whose headline matches vnodeName >>
-#@+node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
-
-tnodeIndex = -1 # Don't count the @file node.
-scanned = 0 # count of lines scanned.
-
-for s in lines:
-    if scanned >= n:
-        break
-    i = g.skip_ws(s,0)
-    if g.match(s,i,delim):
-        i += len(delim)
-        if g.match(s,i,"+node"):
-            # g.trace(tnodeIndex,s.rstrip())
-            tnodeIndex += 1
-    scanned += 1
-#@-node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
-#@+node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-
-@ We use the tnodeList to find a _tnode_ corresponding to the proper node, so the user will for sure be editing the proper text, even if several nodes happen to have the same headline.  This is really all that we need.
-
-However, this code has no good way of distinguishing between different cloned vnodes in the file: they all have the same tnode.  So this code just picks p = t.vnodeList[0] and leaves it at that.
-
-The only way to do better is to scan the outline, replicating the write logic to determine which vnode created the given line.  That's way too difficult, and it would create an unwanted dependency in this code.
-@c
-
-# g.trace("tnodeIndex",tnodeIndex)
-if tnodeIndex < len(tnodeList):
-    t = tnodeList[tnodeIndex]
-    # Find the first vnode whose tnode is t.
-    found = False
-    for p in root.self_and_subtree_iter():
-        if p.v.t == t:
-            found = True ; break
-    if not found:
-        s = "tnode not found for " + vnodeName
-        g.es_print(s, color="red") ; ok = False
-    elif p.headString().strip() != vnodeName:
-        if 0: # Apparently this error doesn't prevent a later scan for working properly.
-            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
-            g.es_print(s, color="red")
-        ok = False
-else:
-    if root1 is None: # Kludge: disable this message when called by goToScriptLineNumber.
-        s = "Invalid computed tnodeIndex: %d" % tnodeIndex
-        g.es_print(s, color = "red")
-    ok = False
-#@-node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-#@+node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
-found = False
-for p in root.self_and_subtree_iter():
-    if p.matchHeadline(vnodeName):
-        found = True ; break
-
-if not found:
-    s = "not found: " + vnodeName
-    g.es_print(s, color="red")
-    return
-#@-node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
-#@-node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
-#@+node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
-found = False
-for p in root.self_and_subtree_iter():
-    if p.matchHeadline(vnodeName):
-        if childIndex <= 0 or p.childIndex() + 1 == childIndex:
-            found = True ; break
-
-if not found:
-    g.es("not found:",vnodeName, color="red")
-    return
-#@-node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
-#@-node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
-#@+node:ekr.20031218072017.2875:<< select p and make it visible >>
-c.frame.tree.expandAllAncestors(p)
-c.selectVnode(p)
-c.redraw()
-#@-node:ekr.20031218072017.2875:<< select p and make it visible >>
-#@+node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
-s = w.getAllText()
-if found:
-    ins = g.convertRowColToPythonIndex(s,n2-1,0)    
-    # c.frame.body.setInsertPointToStartOfLine(n2-1)
-else:
-    #c.frame.body.setInsertionPointToEnd()
-    ins = len(s)
-    g.es('only',len(lines),'lines',color="blue")
-
-w.setInsertPoint(ins)
-c.bodyWantsFocusNow()
-w.seeInsertPoint()
-#@-node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
-#@-node:ekr.20031218072017.2864: goToLineNumber
-#@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
-#@-node:ekr.20080411091507.10:Minor bugs 4
-#@+node:ekr.20080730212711.6:ASAP Features 10 (possibly in Leo 4.5.1)
-#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
-What uA should be used to specify node colors?
-
-if the foreground / background color API uses uAs,
-would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
-#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
-#@+node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
-#@-node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
-#@+node:ekr.20071110071126.2:Better isearch
-#@-node:ekr.20071110071126.2:Better isearch
-#@+node:ekr.20071128094234:Finish scolorizer
-#@+node:ekr.20050920084036.265:scolorizer LATER
-def scolorizer (self,event,pattern=None):
-
-    '''Colorizer for incremental searches.'''
-
-    pass # not ready yet.   
-
-    # k = self.k ; w = self.w
-    # s = pattern or k.getLabel(ignorePrompt=True)
-    # # g.trace(repr(s))
-    # w.tag_delete('color','color1')
-    # if not s: return
-    # if g.app.gui.guiName() != 'tkinter':
-        # return g.es('command not ready yet',color='blue')
-
-    # ind = 0
-    # index = w.getInsertPoint()
-    # index2 = index + len(s)
-    # # g.trace(index,index2)
-    # # Colorize in the forward direction, regardless of the kind of search.
-    # while ind:
-        # try:
-            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
-        # except Exception: break
-        # if ind:
-            # i, d = ind.split('.')
-            # d = str(int(d)+len(s))
-            # # g.trace(ind)
-            # if ind in (index,index2):
-                # w.tag_add('color1',ind,'%s.%s' % (i,d))
-            # w.tag_add('color',ind,'%s.%s' % (i,d))
-            # ind = i + '.' + d
-
-    # w.tag_config('color',foreground='red')
-    # w.tag_config('color1',background='lightblue')
-#@-node:ekr.20050920084036.265:scolorizer LATER
-#@-node:ekr.20071128094234:Finish scolorizer
 #@+node:ekr.20061002093442:Add opml support to new,open, save commands
 #@+node:ekr.20031218072017.2820:top level (file menu)
-#@+node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.1623:c.new
 def new (self,event=None,gui=None):
 
     '''Create a new Leo window.'''
-
-    # g.trace(g.callers())
 
     c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
 
@@ -1390,8 +1523,9 @@ def new (self,event=None,gui=None):
     c.redraw_now()
 
     return c # For unit test.
-#@-node:ekr.20031218072017.1623:new
-#@+node:ekr.20031218072017.2821:open
+#@nonl
+#@-node:ekr.20031218072017.1623:c.new
+#@+node:ekr.20031218072017.2821:c.open
 def open (self,event=None):
 
     '''Open a Leo window containing the contents of a .leo file.'''
@@ -1406,7 +1540,7 @@ def open (self,event=None):
     c.bringToFront()
 
     ok = False
-    if fileName and len(fileName) > 0:
+    if fileName:
         ok, frame = g.openWithFileName(fileName,c)
         if ok:
             g.chdir(fileName)
@@ -1429,7 +1563,7 @@ closeFlag = (
     not c.changed and not c.frame.saved and # The window has never been changed
     g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
 #@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-#@-node:ekr.20031218072017.2821:open
+#@-node:ekr.20031218072017.2821:c.open
 #@+node:ekr.20031218072017.2823:openWith and allies
 def openWith(self,event=None,data=None):
 
@@ -1464,7 +1598,7 @@ def openWith(self,event=None,data=None):
     return "break"
 #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
 if not ext:
-    theDict = g.scanDirectives(c)
+    theDict = c.scanAllDirectives()
     language = theDict.get("language")
     ext = g.app.language_extension_dict.get(language)
     # g.pr(language,ext)
@@ -1559,11 +1693,11 @@ try:
         os.startfile(arg+path)
     elif openType == "exec":
         command = "exec(%s)" % (arg+shortPath)
-        exec arg+path in {}
+        exec(arg+path,{},{})
     elif openType == "os.spawnl":
         filename = g.os_path_basename(arg)
         command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+        os.spawnl(os.P_NOWAIT,arg,filename,path)
     elif openType == "os.spawnv":
         filename = os.path.basename(arg[0]) 
         vtuple = arg[1:]
@@ -1572,7 +1706,7 @@ try:
             # Change suggested by Jim Sizelove.
         vtuple.append(path)
         command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+        os.spawnv(os.P_NOWAIT,arg[0],vtuple)
     # This clause by Jim Sizelove.
     elif openType == "subprocess.Popen":
         if isinstance(arg, basestring):
@@ -1606,7 +1740,7 @@ def createOpenWithTempFile (self,p,ext):
         theFile = open(path,"w")
         # Convert s to whatever encoding is in effect.
         s = p.bodyString()
-        theDict = g.scanDirectives(c,p=p)
+        theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding",None)
         if encoding == None:
             encoding = c.config.default_derived_file_encoding
@@ -1652,7 +1786,7 @@ def openWithTempFilePath (self,p,ext):
 
     name = g.toUnicode(name,g.app.tkEncoding)
 
-    td = g.os_path_abspath(tempfile.gettempdir())
+    td = g.os_path_finalize(tempfile.gettempdir())
 
     path = g.os_path_join(td,name)
 
@@ -1827,26 +1961,51 @@ def revert (self,event=None):
 #@-node:ekr.20031218072017.2837:revert
 #@-node:ekr.20031218072017.2820:top level (file menu)
 #@-node:ekr.20061002093442:Add opml support to new,open, save commands
-#@+node:ekr.20070624135822:Templates for common code fragments
-# How will users be reminded of the fragments?
-#   - A dropdown menu?
-#   - "Completion" in the log pane?
+#@-node:ekr.20080517102922.1:Files stuff 8
+#@+node:ekr.20080730212711.6:ASAP Features 10
+#@+node:ekr.20071110071126.2:Better isearch
+#@-node:ekr.20071110071126.2:Better isearch
+#@+node:ekr.20080918164844.12:Improve headline navigation
+@nocolor
 
-# Invent a way for simple keystrokes to insert fragments:
+http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
 
-Fragment 1:
+Now that the leo is more "modeless" (I'm speaking of switching between
+outline navigation and body editing modes), which btw is a clear improvement
+to how leo used to behave, here are some things that still feel a bit
+un-intuitive:
 
-c.beginUpdate()
-try:
-    pass
-finally:
-    endUpdate()
+- ctrl+H (edit-headline) "locks" the user into the mode way too much.
 
-Fragment 2:
+   * The headline editing mode should be cancelled when the user does:
+      - cursor up/down
+      - ESC
 
-for p in c.allNodes_iter():
-    pass
-#@-node:ekr.20070624135822:Templates for common code fragments
+   * Even better alternative: I find myself constantly thinking that "ok,
+now I need to edit a headline (typically not the current headline), so now
+I'll press ctrl+H". I think perhaps pressing up/down should cancel the
+current headline editing, and select the next/previous headline for editing.
+That is, I wouldn't need to navigate to the headline I want to edit before I
+start editing it.
+
+  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
+intuitive assumption is that cut will select the node that "took the place
+of the
+    current node", instead of starting to travel upwards the set of nodes.
+
+   * Typical use case is the way you usually start deleting a set of items.
+You move to the first item and start cutting repeatedly. This wont work with
+the current behaviour. 
+#@nonl
+#@-node:ekr.20080918164844.12:Improve headline navigation
+#@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
+What uA should be used to specify node colors?
+
+if the foreground / background color API uses uAs,
+would/should the uAs use the reserved "leo_&lt;something&gt;" namespace?
+#@-node:ekr.20080727122007.1:Allow user to set background colors of nodes
+#@+node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
+#@-node:ekr.20080813064908.8:Find a way to limit length of lines in indented nodes
 #@+node:ekr.20080705040925.1:Remember split ratios for vertically split panes
 @nocolor
 
@@ -1875,58 +2034,50 @@ down some data. If the headline string is too long, the cursor goes
 beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
 #@-node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
-#@-node:ekr.20080730212711.6:ASAP Features 10 (possibly in Leo 4.5.1)
-#@-node:ekr.20080810085333.5:Under two hours 21
-#@+node:ekr.20080810085333.7:Under two days 4
-#@+node:ekr.20080124083629.1:Improve @path handling
-@nocolor
+#@+node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20050920084036.265:scolorizer LATER
+def scolorizer (self,event,pattern=None):
 
-[quote]
-nested @paths don't do what I expected: 
+    '''Colorizer for incremental searches.'''
 
-For a leo file in directory foo: 
+    pass # not ready yet.   
 
-@path src 
-....@path tmpl
+    # k = self.k ; w = self.w
+    # s = pattern or k.getLabel(ignorePrompt=True)
+    # # g.trace(repr(s))
+    # w.tag_delete('color','color1')
+    # if not s: return
+    # if g.app.gui.guiName() != 'tkinter':
+        # return g.es('command not ready yet',color='blue')
 
-should refer to foo/src and foo/src/tmpl
+    # ind = 0
+    # index = w.getInsertPoint()
+    # index2 = index + len(s)
+    # # g.trace(index,index2)
+    # # Colorize in the forward direction, regardless of the kind of search.
+    # while ind:
+        # try:
+            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
+        # except Exception: break
+        # if ind:
+            # i, d = ind.split('.')
+            # d = str(int(d)+len(s))
+            # # g.trace(ind)
+            # if ind in (index,index2):
+                # w.tag_add('color1',ind,'%s.%s' % (i,d))
+            # w.tag_add('color',ind,'%s.%s' % (i,d))
+            # ind = i + '.' + d
 
-using @path src/tmpl works fine though.
-[end quote]
-#@+node:ekr.20050121081635:Request:  cumulative @path directives
-@killcolor
-https://sourceforge.net/forum/message.php?msg_id=2936513
-By: ktenney
-
-In the @view plugin is a method, currentPath() which examines the current headline
-and body, and the headlines and bodies of it's parents, looking for @path and
-@view directives. It builds a path from them and checks for validity.
-
-if a top level node contains;
-@path /home/ktenney
-
-and a descendant of that node contains;
-@path projects/myproject
-
-Then a node further down the tree which contains;
-@view readme.txt
-
-will display /home/ktenney/projects/myproject/readme.txt
-
-I like this principle of cumulative paths, and would like other plugins to work
-the same way ... @image, @url etc.
-
-This brings me to my question, would it make sense for Leo to offer a 'Plugin'
-class to inherit from? It seems that there are some operations that are being
-re-written in many plugins.
-#@-node:ekr.20050121081635:Request:  cumulative @path directives
-#@+node:ekr.20050222045210:Better @path conventions
-See g.getBaseDirectory
+    # w.tag_config('color',foreground='red')
+    # w.tag_config('color1',background='lightblue')
+#@-node:ekr.20050920084036.265:scolorizer LATER
+#@-node:ekr.20071128094234:Finish scolorizer
+#@-node:ekr.20080730212711.6:ASAP Features 10
+#@+node:ekr.20080810085333.7:Under two days 5
+#@+node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
+http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
 #@nonl
-#@-node:ekr.20050222045210:Better @path conventions
-#@+node:ekr.20041022083005.3:@path and other directives accept python expressions
-#@-node:ekr.20041022083005.3:@path and other directives accept python expressions
-#@-node:ekr.20080124083629.1:Improve @path handling
+#@-node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
 #@+node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
 #@-node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
 #@+node:ekr.20080519062109.2:Improve how Leo handles long lines
@@ -2051,7 +2202,7 @@ def extendHelper (self,w,extend,spot,upOrDown=False):
             i2,j2 = g.getLine(s,spot)
             line = s[i2:j2]
             row,col = g.convertPythonIndexToRowCol(s,spot)
-            if True: #### j2 < len(s)-1:
+            if True: # was j2 < len(s)-1:
                 n = min(self.moveCol,max(0,len(line)-1))
             else:
                 n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
@@ -2639,7 +2790,20 @@ def moveUpOrDownHelper (self,event,direction,extend):
 #@-node:ekr.20080519062109.2:Improve how Leo handles long lines
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
-#@-node:ekr.20080810085333.7:Under two days 4
+#@+node:ekr.20080826074455.1:Look into ttk for Python 2.6
+@nocolor
+
+I've just became aware of this project to upgrade TK's look and feel
+in python (http://gpolo.ath.cx:81/projects/ttk_to_tkinter/). I presume
+this can only have positive implications on leo (-:
+
+Here's are some screen shots of the newly themed widgets: (http://
+code.google.com/p/python-ttk/wiki/Screenshots)
+
+@color
+#@nonl
+#@-node:ekr.20080826074455.1:Look into ttk for Python 2.6
+#@-node:ekr.20080810085333.7:Under two days 5
 #@+node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode
@@ -2656,14 +2820,9 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
 
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
-
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -2849,7 +3008,7 @@ def reinitMode (self,modeName):
     else:
         # Do not set the status line here.
         k.setLabelBlue(modeName+': ',protect=True)
-        #### c.minibufferWantsFocus()
+
 #@-node:ekr.20061031131434.164:reinitMode
 #@+node:ekr.20061031131434.165:modeHelp & helper
 def modeHelp (self,event):
@@ -2878,10 +3037,8 @@ def modeHelpHelper (self,d):
 
     k = self ; c = k.c ; tabName = 'Mode'
     c.frame.log.clearTab(tabName)
-    keys = d.keys() ; keys.sort()
-
     data = [] ; n = 20
-    for key in keys:
+    for key in sorted(d):
         if key not in ( '*entry-commands*','*command-prompt*'):
             bunchList = d.get(key)
             for bunch in bunchList:
@@ -3085,7 +3242,7 @@ elif k.unboundKeyAction == 'command':
             # key in ('button','all')
         # ):
             # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
             # if d:
                 # b = d.get(stroke)
                 # if b:
@@ -3124,7 +3281,7 @@ for key,name in (
         key in ('button','all')
     ):
         d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
         if d:
             b = d.get(stroke)
             if b:
@@ -3184,7 +3341,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                        k.keyboardQuit(event,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -3335,8 +3492,6 @@ def endCommand (self,event,commandName):
     if commandName:
         bodyCtrl = c.frame.body.bodyCtrl
         if not k.inState():
-            # __pychecker__ = '--no-classattr --no-objattrs'
-                # initAllEditCommanders *does* exist.
             k.commandName = None
 
             # Do the import here to break a circular dependency at the top level.
@@ -3646,14 +3801,9 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
 
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
-
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -3902,7 +4052,7 @@ elif k.unboundKeyAction == 'command':
             # key in ('button','all')
         # ):
             # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
             # if d:
                 # b = d.get(stroke)
                 # if b:
@@ -3941,7 +4091,7 @@ for key,name in (
         key in ('button','all')
     ):
         d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
         if d:
             b = d.get(stroke)
             if b:
@@ -4001,7 +4151,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                        k.keyboardQuit(event,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -4190,7 +4340,7 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
             and not b2.pane.endswith('-mode')]
     for z in redefs:
         g.es_print('redefining','shortcut %20s' % (shortcut),
-            'from',z,'(%s)' % (b2.pane),
+            'from',z,'(%s)' % (pane),
             'to',commandName,'(%s)' % (pane),color='red')
 
 if not modeFlag:
@@ -4238,9 +4388,7 @@ def checkBindings (self):
 
     if not c.config.getBool('warn_about_missing_settings'): return
 
-    names = c.commandsDict.keys() ; names.sort()
-
-    for name in names:
+    for name in sorted(c.commandsDict):
         abbrev = k.abbreviationsDict.get(name)
         key = c.frame.menu.canonicalizeMenuName(abbrev or name)
         key = key.replace('&','')
@@ -4257,14 +4405,11 @@ def dumpMasterBindingsDict (self):
     k = self ; d = k.masterBindingsDict
 
     g.pr('\nk.masterBindingsDict...\n')
-    keys = d.keys()
-    keys.sort()
-    for key in keys:
+
+    for key in sorted(d):
         g.pr(key, '-' * 40)
         d2 = d.get(key)
-        keys2 = d2.keys()
-        keys2.sort()
-        for key2 in keys2:
+        for key2 in sorted(d2):
             b = d2.get(key2)
             g.pr('%20s %s' % (key2,b.commandName))
 #@-node:ekr.20070218130238:dumpMasterBindingsDict
@@ -4273,9 +4418,9 @@ def completeAllBindingsForWidget (self,w):
 
     k = self ; d = k.bindingsDict
 
-    # g.trace('w',w,d.has_key('Alt+Key-4'))
+    # g.trace('w',w,'Alt+Key-4' in d)
 
-    for stroke in d.keys():
+    for stroke in d:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.96:k.completeAllBindingsForWidget
 #@+node:ekr.20061031131434.97:k.completeAllBindings
@@ -4289,7 +4434,7 @@ def completeAllBindings (self,w=None):
     # g.trace(w)
 
     k = self
-    for stroke in k.bindingsDict.keys():
+    for stroke in k.bindingsDict:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.97:k.completeAllBindings
 #@+node:ekr.20061031131434.98:k.makeAllBindings
@@ -4317,7 +4462,7 @@ def initAbbrev (self):
 
     k = self ; c = k.c ; d = c.config.getAbbrevDict()
     if d:
-        for key in d.keys():
+        for key in d:
             commandName = d.get(key)
             if commandName.startswith('press-') and commandName.endswith('-button'):
                 pass # Must be done later in k.registerCommand.
@@ -4346,7 +4491,7 @@ def addModeCommands (self):
     d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
 
     # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-    for key in d.keys():
+    for key in d:
 
         def enterModeCallback (event=None,name=key):
             k.enterNamedMode(event,name)
@@ -4386,9 +4531,8 @@ def makeBindingsFromCommandsDict (self):
     '''Add bindings for all entries in c.commandDict.'''
 
     k = self ; c = k.c ; d = c.commandsDict
-    keys = d.keys() ; keys.sort()
 
-    for commandName in keys:
+    for commandName in sorted(d):
         command = d.get(commandName)
         key, bunchList = c.config.getShortcut(commandName)
         # if commandName == 'keyboard-quit': g.trace(key,bunchList)
@@ -4399,7 +4543,7 @@ def makeBindingsFromCommandsDict (self):
                 shortcut = k.shortcutFromSetting(accel)
                 k.bindKey(pane,shortcut,command,commandName)
 
-    # g.trace(g.listToString(k.bindingsDict.keys(),sort=True))
+    # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
 #@-node:ekr.20061031131434.102:makeBindingsFromCommandsDict
 #@+node:ekr.20061031131434.103:k.makeMasterGuiBinding
@@ -4470,14 +4614,9 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
 
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
-
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -4663,7 +4802,7 @@ def reinitMode (self,modeName):
     else:
         # Do not set the status line here.
         k.setLabelBlue(modeName+': ',protect=True)
-        #### c.minibufferWantsFocus()
+
 #@-node:ekr.20061031131434.164:reinitMode
 #@+node:ekr.20061031131434.165:modeHelp & helper
 def modeHelp (self,event):
@@ -4692,10 +4831,8 @@ def modeHelpHelper (self,d):
 
     k = self ; c = k.c ; tabName = 'Mode'
     c.frame.log.clearTab(tabName)
-    keys = d.keys() ; keys.sort()
-
     data = [] ; n = 20
-    for key in keys:
+    for key in sorted(d):
         if key not in ( '*entry-commands*','*command-prompt*'):
             bunchList = d.get(key)
             for bunch in bunchList:
@@ -5110,7 +5247,7 @@ elif k.unboundKeyAction == 'command':
             # key in ('button','all')
         # ):
             # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
             # if d:
                 # b = d.get(stroke)
                 # if b:
@@ -5149,7 +5286,7 @@ for key,name in (
         key in ('button','all')
     ):
         d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
         if d:
             b = d.get(stroke)
             if b:
@@ -5209,7 +5346,7 @@ def handleMiniBindings (self,event,state,stroke):
                         return False # Let getArg handle it.
                     elif b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                        k.keyboardQuit(event,hideTabs=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -5315,7 +5452,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 command=masterMenuCallback,
                 underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
-if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+if g.isString(data):
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
     ok = True
     s = data
@@ -5423,6 +5560,7 @@ def getShortcut (self,c,shortcutName):
     key = key.replace('&','') # Allow '&' in names.
 
     bunchList = self.get(c,key,"shortcut")
+    # g.trace('bunchList',bunchList)
     if bunchList:
         bunchList = [bunch for bunch in bunchList
             if bunch.val and bunch.val.lower() != 'none']
@@ -5432,10 +5570,6 @@ def getShortcut (self,c,shortcutName):
 #@-node:ekr.20041117062717.14:getShortcut (config)
 #@+node:ekr.20041120105609:doShortcuts (ParserBaseClass)
 def doShortcuts(self,p,kind,name,val,s=None):
-
-    # __pychecker__ = '--no-argsused' # kind,val.
-
-    # g.trace(self.c.fileName(),name)
 
     c = self.c ; d = self.shortcutsDict ; k = c.k
     trace = False or c.config.getBool('trace_bindings_verbose')
@@ -5470,11 +5604,10 @@ def printBindings (self,event=None):
 
     k = self ; c = k.c
     d = k.bindingsDict ; tabName = 'Bindings'
-    keys = d.keys() ; keys.sort()
     c.frame.log.clearTab(tabName)
     data = [] ; n1 = 4 ; n2 = 20
-    if not keys: return g.es('no bindings')
-    for key in keys:
+    if not d: return g.es('no bindings')
+    for key in sorted(d):
         bunchList = d.get(key,[])
         for b in bunchList:
             pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
@@ -5529,14 +5662,9 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    # __pychecker__ = '--no-argsused' # w not used (except for debugging).
-
     k = self ; c = k.c
 
-    # g.trace(w,g.callers())
-    # g.trace(g.dictToString(d))
-
-    for commandName in d.keys():
+    for commandName in d:
         if commandName in ('*entry-commands*','*command-prompt*'):
             # These are special-purpose dictionary entries.
             continue
@@ -5630,7 +5758,7 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
             and not b2.pane.endswith('-mode')]
     for z in redefs:
         g.es_print('redefining','shortcut %20s' % (shortcut),
-            'from',z,'(%s)' % (b2.pane),
+            'from',z,'(%s)' % (pane),
             'to',commandName,'(%s)' % (pane),color='red')
 
 if not modeFlag:
@@ -5678,9 +5806,7 @@ def checkBindings (self):
 
     if not c.config.getBool('warn_about_missing_settings'): return
 
-    names = c.commandsDict.keys() ; names.sort()
-
-    for name in names:
+    for name in sorted(c.commandsDict):
         abbrev = k.abbreviationsDict.get(name)
         key = c.frame.menu.canonicalizeMenuName(abbrev or name)
         key = key.replace('&','')
@@ -5697,14 +5823,11 @@ def dumpMasterBindingsDict (self):
     k = self ; d = k.masterBindingsDict
 
     g.pr('\nk.masterBindingsDict...\n')
-    keys = d.keys()
-    keys.sort()
-    for key in keys:
+
+    for key in sorted(d):
         g.pr(key, '-' * 40)
         d2 = d.get(key)
-        keys2 = d2.keys()
-        keys2.sort()
-        for key2 in keys2:
+        for key2 in sorted(d2):
             b = d2.get(key2)
             g.pr('%20s %s' % (key2,b.commandName))
 #@-node:ekr.20070218130238:dumpMasterBindingsDict
@@ -5713,9 +5836,9 @@ def completeAllBindingsForWidget (self,w):
 
     k = self ; d = k.bindingsDict
 
-    # g.trace('w',w,d.has_key('Alt+Key-4'))
+    # g.trace('w',w,'Alt+Key-4' in d)
 
-    for stroke in d.keys():
+    for stroke in d:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.96:k.completeAllBindingsForWidget
 #@+node:ekr.20061031131434.97:k.completeAllBindings
@@ -5729,7 +5852,7 @@ def completeAllBindings (self,w=None):
     # g.trace(w)
 
     k = self
-    for stroke in k.bindingsDict.keys():
+    for stroke in k.bindingsDict:
         k.makeMasterGuiBinding(stroke,w=w)
 #@-node:ekr.20061031131434.97:k.completeAllBindings
 #@+node:ekr.20061031131434.98:k.makeAllBindings
@@ -5757,7 +5880,7 @@ def initAbbrev (self):
 
     k = self ; c = k.c ; d = c.config.getAbbrevDict()
     if d:
-        for key in d.keys():
+        for key in d:
             commandName = d.get(key)
             if commandName.startswith('press-') and commandName.endswith('-button'):
                 pass # Must be done later in k.registerCommand.
@@ -5786,7 +5909,7 @@ def addModeCommands (self):
     d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
 
     # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-    for key in d.keys():
+    for key in d:
 
         def enterModeCallback (event=None,name=key):
             k.enterNamedMode(event,name)
@@ -5826,9 +5949,8 @@ def makeBindingsFromCommandsDict (self):
     '''Add bindings for all entries in c.commandDict.'''
 
     k = self ; c = k.c ; d = c.commandsDict
-    keys = d.keys() ; keys.sort()
 
-    for commandName in keys:
+    for commandName in sorted(d):
         command = d.get(commandName)
         key, bunchList = c.config.getShortcut(commandName)
         # if commandName == 'keyboard-quit': g.trace(key,bunchList)
@@ -5839,7 +5961,7 @@ def makeBindingsFromCommandsDict (self):
                 shortcut = k.shortcutFromSetting(accel)
                 k.bindKey(pane,shortcut,command,commandName)
 
-    # g.trace(g.listToString(k.bindingsDict.keys(),sort=True))
+    # g.trace(g.listToString(sorted(k.bindingsDict))
     # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
 #@-node:ekr.20061031131434.102:makeBindingsFromCommandsDict
 #@+node:ekr.20061031131434.103:k.makeMasterGuiBinding
@@ -6203,7 +6325,12 @@ key to be re-executed.
 #@nonl
 #@-node:ekr.20080616110054.2:Support vim dot command
 #@-node:ekr.20080603052650.466:Fix vim problems
-#@+node:ekr.20080730212711.7:Plugins 4
+#@+node:ekr.20080730212711.7:Plugins 5
+#@+node:ekr.20080923200153.1:Support scan-directives hook again?
+# This affects the add_directives plugin.
+# Also, the color_markup plugin doesn't work with the threading colorizer.
+#@nonl
+#@-node:ekr.20080923200153.1:Support scan-directives hook again?
 #@+node:ekr.20080604060150.1:Clean up plugins
 Some scripting says the following are in .../plugins/ but not
 leoPluginsRef.leo:
@@ -6256,9 +6383,23 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
 #@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
-#@-node:ekr.20080730212711.7:Plugins 4
-#@-node:ekr.20080814103428.4:4.5.1 bugs, cleanups
-#@+node:ekr.20071211093011:4.6  autocompletion
+#@-node:ekr.20080730212711.7:Plugins 5
+#@-node:ekr.20080814103428.4:4.6 bugs, cleanups
+#@+node:ekr.20071211093011:4.7  autocompletion
+#@+node:ekr.20081005065934.12:Links from Ville re Scintilla
+@nocolor-node
+
+It seems Scintilla relies on externally generated api description
+files to provide autocompletion. Links that may be of interest:
+
+http://www.riverbankcomputing.co.uk/static/Docs/QScintilla2/classQsciAPIs.html#b0f824492bb0f3ca54edb4d46945a3de
+
+http://www.burgaud.com/scite-java-api/
+
+http://scintilla.sourceforge.net/tags2api.py
+
+http://www.koders.com/python/fid7000B9C96CF2C6FB5BCE9DF700365C5B2A1F36A7.aspx?s=gtk#L53
+#@-node:ekr.20081005065934.12:Links from Ville re Scintilla
 #@+node:ekr.20080113165010:About auto completion
 @nocolor
 
@@ -6927,7 +7068,7 @@ could specify autocompleter conventions, say in an @autocompleter node in an
 @settings tree.
 #@nonl
 #@-node:ekr.20071106083149:Recent post
-#@-node:ekr.20071211093011:4.6  autocompletion
+#@-node:ekr.20071211093011:4.7  autocompletion
 #@+node:ekr.20071211091355:Other/Minor
 #@+node:ekr.20071029082025:Improve distribution
 #@+node:ekr.20070929125944:Emulate Orange's download philosophy
@@ -7012,8 +7153,6 @@ Edward
 
 P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
 #@-node:ekr.20080628095358.1:Make each Leo command a class
-#@+node:ekr.20080630093024.2:Remove pychecker stuff (maybe)
-#@-node:ekr.20080630093024.2:Remove pychecker stuff (maybe)
 #@-node:ekr.20071211091355:Other/Minor
 #@+node:ekr.20060306194040:Leo Video
 @nocolor
@@ -7410,8 +7549,6 @@ def onAboutLeoEmail(self,event=None):
 
     """Handle clicks in the email link in an About Leo dialog."""
 
-    # __pychecker__ = '--no-argsused' # the event param must be present.
-
     try:
         import webbrowser
         webbrowser.open("mailto:" + self.email)
@@ -7422,8 +7559,6 @@ def onAboutLeoEmail(self,event=None):
 def onAboutLeoUrl(self,event=None):
 
     """Handle clicks in the url link in an About Leo dialog."""
-
-    # __pychecker__ = '--no-argsused' # the event param must be present.
 
     try:
         import webbrowser
@@ -7436,15 +7571,11 @@ def setArrowCursor (self,event=None):
 
     """Set the cursor to an arrow in an About Leo dialog."""
 
-    # __pychecker__ = '--no-argsused' # the event param must be present.
-
     self.text.configure(cursor="arrow")
 
 def setDefaultCursor (self,event=None):
 
     """Set the cursor to the default cursor in an About Leo dialog."""
-
-    # __pychecker__ = '--no-argsused' # the event param must be present.
 
     self.text.configure(cursor="xterm")
 #@-node:ekr.20071001092721.15:swingAboutLeo: setArrowCursor, setDefaultCursor
@@ -7953,8 +8084,6 @@ def destroy (self,event=None):
 
     subclasses may override to really destroy the window"""
 
-    # __pychecker__ = '--no-argsused' # event not used, but must be present.
-
     self.top.withdraw() # Don't allow this window to be destroyed.
 #@-node:ekr.20071001092721.48:destroy
 #@+node:ekr.20071001092721.49:hide
@@ -7971,16 +8100,12 @@ def fillbox(self,event=None):
 
     Overridden by subclasses"""
 
-    # __pychecker__ = '--no-argsused' # the event param must be present.
-
     pass
 #@-node:ekr.20071001092721.50:fillbox
 #@+node:ekr.20071001092721.51:go
 def go(self,event=None):
 
     """Handle clicks in the "go" button in a list box dialog."""
-
-    # __pychecker__ = '--no-argsused' # the event param must be present.
 
     c = self.c ; box = self.box
 
@@ -7996,8 +8121,7 @@ def go(self,event=None):
         c.beginUpdate()
         try:
             c.frame.tree.expandAllAncestors(p)
-            c.selectPosition(p,updateBeadList=True)
-                # A case could be made for updateBeadList=False
+            c.selectPosition(p)
         finally:
             c.endUpdate()
 #@-node:ekr.20071001092721.51:go
@@ -8032,7 +8156,6 @@ import string
 import sys
 
 # # The following imports _are_ used.
-# __pychecker__ = '--no-import'
 # import threading
 # import time
 #@-node:ekr.20070930105601.1:<< imports >>
@@ -8555,10 +8678,10 @@ for p in c.allNodes_iter():
     vList.append(p.v)
     if p.v.t:
         key = id(p.v.t)
-        if not tDict.has_key(key):
+        if key not in tDict:
             tDict[key] = p.v.t
 
-for key in tDict.keys():
+for key in tDict:
     g.clearAllIvars(tDict[key])
 
 for v in vList:
@@ -9077,7 +9200,7 @@ def setWrap (self,p):
 
     c = self.c ; w = c.frame.body.bodyCtrl
 
-    theDict = g.scanDirectives(c,p)
+    theDict = c.scanAllDirectives(p)
     if not theDict: return
 
     wrap = theDict.get("wrap")
@@ -9157,20 +9280,14 @@ def OnCloseLeoEvent(self):
 #@+node:ekr.20071001091231.89:frame.OnControlKeyUp/Down
 def OnControlKeyDown (self,event=None):
 
-    # __pychecker__ = '--no-argsused' # event not used.
-
     self.controlKeyIsDown = True
 
 def OnControlKeyUp (self,event=None):
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     self.controlKeyIsDown = False
 #@-node:ekr.20071001091231.89:frame.OnControlKeyUp/Down
 #@+node:ekr.20071001091231.90:OnActivateBody (swingFrame)
 def OnActivateBody (self,event=None):
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     try:
         frame = self ; c = frame.c
@@ -9188,8 +9305,6 @@ def OnActivateBody (self,event=None):
 def OnActivateLeoEvent(self,event=None):
 
     '''Handle a click anywhere in the Leo window.'''
-
-    # __pychecker__ = '--no-argsused' # event.
 
     self.c.setLog()
 
@@ -9982,7 +10097,7 @@ def setEditorColors (self,bg,fg):
 
     ###
 
-    # for key in d.keys():
+    # for key in d:
         # w2 = d.get(key)
         # # g.trace(id(w2),bg,fg)
         # try:
@@ -10580,9 +10695,11 @@ def add_command (self,menu,**keys):
 
     self.names_and_commands[ keys[ 'label' ] ] = keys[ 'command' ]
 
-    action = self.MenuRunnable( keys[ 'label' ], keys[ 'command' ], self.c, self.executor )
+    action = self.MenuRunnable(
+        keys[ 'label' ],
+        keys[ 'command' ], self.c, self.executor )
     jmenu = swing.JMenuItem( action )
-    if keys.has_key( 'accelerator' ) and keys[ 'accelerator' ]:
+    if keys.get('accelerator'):
         accel = keys[ 'accelerator' ]
         acc_list = accel.split( '+' )
         changeTo = { 'Alt': 'alt', 'Shift':'shift', #translation table
@@ -10976,7 +11093,7 @@ def restoreAllState (self,d):
 
     # Restore all colors.
     colors = d.get('colors')
-    for color in colors.keys():
+    for color in colors:
         if color not in self.colorTags:
             self.colorTags.append(color)
             logCtrl.tag_config(color,foreground=color)
@@ -11238,8 +11355,6 @@ def deleteTab (self,tabName,force=False):
 #@-node:ekr.20071001091231.147:deleteTab
 #@+node:ekr.20071001091231.148:hideTab
 def hideTab (self,tabName):
-
-    # __pychecker__ = '--no-argsused' # tabName
 
     self.selectTab('Log')
 #@-node:ekr.20071001091231.148:hideTab
@@ -11780,8 +11895,6 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
     This class inherits almost all swingText methods: you call use them as usual.'''
 
     # The signatures of tag_add and insert are different from the Tk.Text signatures.
-    # __pychecker__ = '--no-override' # suppress warning about changed signature.
-
     def __repr__(self):
         name = hasattr(self,'_name') and self._name or '<no name>'
         return 'swingTextWidget id: %s name: %s' % (id(self),name)
@@ -12720,8 +12833,6 @@ def setHeadlineText (self,theId,w,s):
 
     """All changes to text widgets should come here."""
 
-    # __pychecker__ = '--no-argsused' # theId not used.
-
     # if self.trace_alloc: g.trace('%4d %6s %s' % (theId,self.textAddr(w),s),align=-20)
 
     state = w.cget("state")
@@ -12897,9 +13008,7 @@ def traceIds (self,full=False):
     for theDict,tag,flag in ((tree.ids,"ids",True),(tree.iconIds,"icon ids",False)):
         print '=' * 60
         print ; print "%s..." % tag
-        keys = theDict.keys()
-        keys.sort()
-        for key in keys:
+        for key in sorted(theDict):
             p = tree.ids.get(key)
             if p is None: # For lines.
                 print "%3d None" % key
@@ -13387,7 +13496,7 @@ def drawTree(self,p,x,y,h,level,hoistFlag=False):
 def getIconImage (self, name):
 
     # Return the image from the cache if possible.
-    if self.iconimages.has_key(name):
+    if name in self.iconimages:
         return self.iconimages[name]
 
     # g.trace(name)
@@ -13439,9 +13548,6 @@ def numberOfVisibleNodes(self):
 def scrollTo(self,p=None):
 
     """Scrolls the canvas so that p is in view."""
-
-    # __pychecker__ = '--no-argsused' # event not used.
-    # __pychecker__ = '--no-intdivide' # suppress warning about integer division.
 
     c = self.c ; frame = c.frame ; trace = True
     if not p or not c.positionExists(p):
@@ -14121,11 +14227,7 @@ def OnDeactivate (self,event=None):
 
     """Deactivate the tree pane, dimming any headline being edited."""
 
-    # __pychecker__ = '--no-argsused' # event not used.
-
     tree = self ; c = self.c
-
-    # g.trace(g.callers())
 
     c.beginUpdate()
     try:
@@ -14165,14 +14267,10 @@ Aside: though Tk tries to be muli-platform, the interaction with different windo
 
 def OnPopupFocusLost(self,event=None):
 
-    # __pychecker__ = '--no-argsused' # event not used.
-
     self.popupMenu.unpost()
 #@-node:ekr.20071001092453.98:OnPopupFocusLost
 #@+node:ekr.20071001092453.99:createPopupMenu
 def createPopupMenu (self,event):
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     c = self.c ; frame = c.frame
 
@@ -14222,8 +14320,6 @@ table = (
 def enablePopupMenuItems (self,v,event):
 
     """Enable and disable items in the popup menu."""
-
-    # __pychecker__ = '--no-argsused' # event not used.
 
     c = self.c ; menu = self.popupMenu
 
@@ -14781,8 +14877,6 @@ def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 
     """Create and run an swing open file dialog ."""
 
-    # __pychecker__ = '--no-argsused' # defaultextension not used.
-
     initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
 
     if multiple:
@@ -14810,8 +14904,6 @@ def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
 
     """Create and run an swing save file dialog ."""
-
-    # __pychecker__ = '--no-argsused' # defaultextension not used.
 
     initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd()),
 
@@ -15013,8 +15105,6 @@ set_focus_count = 0
 
 def set_focus(self,c,w):
 
-    # __pychecker__ = '--no-argsused' # c not used at present.
-
     """Put the focus on the widget."""
 
     if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
@@ -15042,8 +15132,6 @@ def set_focus(self,c,w):
 #@+node:ekr.20070930102228.34:Font
 #@+node:ekr.20070930102228.35:swingGui.getFontFromParams
 def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
-
-    # __pychecker__ = '--no-argsused' # defaultSize not used.
 
     family_name = family
 

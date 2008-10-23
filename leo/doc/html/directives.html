@@ -278,7 +278,7 @@ I recommend using Leo for two weeks, or longer, before attempting this chapter.<
 <li><a class="reference" href="#asis-and-noref" id="id14" name="id14">&#64;asis and &#64;noref</a></li>
 <li><a class="reference" href="#auto" id="id15" name="id15">&#64;auto</a></li>
 <li><a class="reference" href="#c-and-code" id="id16" name="id16">&#64;c and &#64;code</a></li>
-<li><a class="reference" href="#color-nocolor-and-killcolor" id="id17" name="id17">&#64;color, &#64;nocolor and &#64;killcolor</a></li>
+<li><a class="reference" href="#color-nocolor-nocolor-node-and-killcolor" id="id17" name="id17">&#64;color, &#64;nocolor, &#64;nocolor-node and &#64;killcolor</a></li>
 <li><a class="reference" href="#comment" id="id18" name="id18">&#64;comment</a></li>
 <li><a class="reference" href="#delims" id="id19" name="id19">&#64;delims</a></li>
 <li><a class="reference" href="#encoding" id="id20" name="id20">&#64;encoding</a></li>
@@ -420,7 +420,7 @@ The read-at-auto-nodes and write-at-auto-nodes commands can
 be used to read and write and &#64;auto nodes.</li>
 <li><strong>&#64;c</strong>
 Starts a code part. <tt class="docutils literal"><span class="pre">&#64;code</span></tt> is a deprecated synonym.</li>
-<li><strong>&#64;color</strong>, <strong>&#64;nocolor</strong> and <strong>&#64;killcolor</strong>
+<li><strong>&#64;color</strong>, <strong>&#64;nocolor</strong>, <strong>&#64;nocolor-node</strong> and <strong>&#64;killcolor</strong>
 Control syntax coloring.</li>
 <li><strong>&#64;comment</strong>
 Sets comment delimiters in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> and <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> trees.</li>
@@ -566,8 +566,8 @@ body, head, and div.</li>
 <tt class="docutils literal"><span class="pre">&#64;code</span></tt> is a synonym for <tt class="docutils literal"><span class="pre">&#64;c</span></tt>, but <tt class="docutils literal"><span class="pre">&#64;c</span></tt> is preferred.</p>
 <p>In <tt class="docutils literal"><span class="pre">&#64;root</span></tt> and <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> trees, the headline must contain a valid section name.</p>
 </div>
-<div class="section" id="color-nocolor-and-killcolor">
-<h3><a class="toc-backref" href="#id17">&#64;color, &#64;nocolor and &#64;killcolor</a></h3>
+<div class="section" id="color-nocolor-nocolor-node-and-killcolor">
+<h3><a class="toc-backref" href="#id17">&#64;color, &#64;nocolor, &#64;nocolor-node and &#64;killcolor</a></h3>
 <p>Syntax coloring is on by default in all body text.
 Leo formats comments and documentation parts in red,
 directives and C keywords in blue,
@@ -580,6 +580,8 @@ The nearest ancestor that contains exactly one of the <tt class="docutils litera
 will control the syntax coloring.
 <strong>Ambiguous nodes</strong>, nodes containing both the <tt class="docutils literal"><span class="pre">&#64;color</span></tt> and <tt class="docutils literal"><span class="pre">&#64;nocolor</span></tt> directives,
 never affect the coloring of their offspring.</p>
+<p>The <tt class="docutils literal"><span class="pre">&#64;nocolor-node</span></tt> directive completely disables coloring for that node only.
+Descedant nodes are not affected.</p>
 <p>The <tt class="docutils literal"><span class="pre">&#64;killcolor</span></tt> directive completely disables the colorizer for that node.
 The result much faster syntax coloring of large body text.
 As usual <tt class="docutils literal"><span class="pre">&#64;killcolor</span></tt> may itself be overridden in descendant nodes.
@@ -591,7 +593,7 @@ Any node containing &#64;killcolor is unambiguously a <tt class="docutils litera
 whether that node also contains <tt class="docutils literal"><span class="pre">&#64;color</span></tt> or <tt class="docutils literal"><span class="pre">&#64;nocolor</span></tt> directives.</li>
 </ul>
 <p><strong>Note</strong>:
-the <tt class="docutils literal"><span class="pre">&#64;color</span></tt>, <tt class="docutils literal"><span class="pre">&#64;nocolor</span></tt> and <tt class="docutils literal"><span class="pre">&#64;killcolor</span></tt> directives do not affect the <tt class="docutils literal"><span class="pre">Tangle</span></tt> commands in any way.
+These directives do not affect the <tt class="docutils literal"><span class="pre">Tangle</span></tt> commands in any way.
 In particular, the <tt class="docutils literal"><span class="pre">Tangle</span></tt> commands will recognize section definitions as usual even
 after an <tt class="docutils literal"><span class="pre">&#64;nocolor</span></tt> directive is seen.</p>
 </div>

@@ -80,10 +80,10 @@ class shadowController:
     #@+node:ekr.20080711063656.7:x.baseDirName
     def baseDirName (self):
 
-        x = self ; filename = x.c.fileName()
+        x = self ; c = x.c ; filename = c.fileName()
 
         if filename:
-            return g.os_path_dirname(g.os_path_abspath(filename))
+            return g.os_path_dirname(c.os_path_finalize(filename))
         else:
             self.error('Can not compute shadow path: .leo file has not been saved')
             return None
@@ -102,9 +102,9 @@ class shadowController:
 
         '''Return the full path name of filename.'''
 
-        x = self ; theDir = x.baseDirName()
+        x = self ; c = x.c ; theDir = x.baseDirName()
 
-        return theDir and g.os_path_abspath(g.os_path_join(theDir,filename))
+        return theDir and c.os_path_finalize_join(theDir,filename)
     #@nonl
     #@-node:ekr.20080711063656.4:x.dirName and pathName
     #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
@@ -115,7 +115,7 @@ class shadowController:
         return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
     #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
     #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-    def makeShadowDirectory (self,fn,force=False):
+    def makeShadowDirectory (self,fn):
 
         '''Make a shadow directory for the **public** fn.'''
 
@@ -124,7 +124,7 @@ class shadowController:
         if not g.os_path_exists(path):
 
             # Force the creation of the directories.
-            g.makeAllNonExistentDirectories(path,c=None,force=force)
+            g.makeAllNonExistentDirectories(path,c=None,force=True)
 
         return g.os_path_exists(path) and g.os_path_isdir(path)
     #@-node:ekr.20080710082231.19:x.makeShadowDirectory
@@ -147,13 +147,13 @@ class shadowController:
         Return True if theFile was changed.
         '''
 
-        x = self ; testing = g.app.unitTesting
+        x = self ; testing = g.app.unitTesting ; trace = False
 
         exists = g.os_path_exists(fn)
 
         if exists: # Read the file.  Return if it is the same.
             try:
-                f = file(fn,'rb')
+                f = open(fn,'rb')
                 s2 = f.read()
                 f.close()
             except IOError:
@@ -166,10 +166,14 @@ class shadowController:
 
         # Replace the file.
         try:
-            f = file(fn,'wb')
+            f = open(fn,'wb')
             f.write(s)
+            if trace: g.trace('fn',fn,
+                '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
+                '\ncallers',g.callers(4))
             f.close()
             if not testing:
+                # g.trace('created:',fn,g.callers())
                 if exists:  g.es('wrote:    ',fn)
                 else:       g.es('created:  ',fn)
             return True
@@ -191,18 +195,16 @@ class shadowController:
 
         '''Return the full path name of filename, resolved using c.fileName()'''
 
-        x = self ; baseDir = x.baseDirName()
-        fileDir = g.os_path_dirname(filename)
-        # g.trace(baseDir)
-        # g.trace(x.shadow_subdir)
-        # g.trace(fileDir)
+        x = self ; c = x.c
 
-        return baseDir and g.os_path_abspath(g.os_path_normpath(g.os_path_join(
+        baseDir = x.baseDirName()
+        fileDir = g.os_path_dirname(filename)
+
+        return baseDir and c.os_path_finalize_join(
                 baseDir,
                 fileDir, # Bug fix: honor any directories specified in filename.
                 x.shadow_subdir,
-                x.shadow_prefix + g.shortFileName(filename))))
-    #@nonl
+                x.shadow_prefix + g.shortFileName(filename))
     #@-node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
     #@+node:ekr.20080711063656.3:x.unlink
     def unlink (self, filename,silent=False):
@@ -490,13 +492,20 @@ class shadowController:
         '''Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)'''
 
-        x = self
+        x = self ; trace = False
 
-        # g.trace('old_public_file',old_public_file)
-
-        old_public_lines  = file(old_public_file).readlines()
-        old_private_lines = file(old_private_file).readlines()
+        old_public_lines  = open(old_public_file).readlines()
+        old_private_lines = open(old_private_file).readlines()
         marker = x.marker_from_extension(old_public_file)
+
+        if trace:
+            g.trace(
+                'marker',marker,
+                '\npublic_file',old_public_file,
+                '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
+                '\nprivate_file',old_private_file,
+                '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
+
         if not marker:
             return False
 
@@ -582,7 +591,7 @@ class shadowController:
         if not marker:
             return
 
-        old_lines = file(source_fn).readlines()
+        old_lines = open(source_fn).readlines()
         new_lines, junk = x.separate_sentinels(old_lines,marker)
 
         copy = not os.path.exists(target_fn) or old_lines != new_lines
@@ -628,33 +637,31 @@ class shadowController:
         return line.lstrip().startswith(marker+'verbatim')
     #@-node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
     #@+node:ekr.20080708094444.9:x.marker_from_extension
-    def marker_from_extension (self,filename,suppressErrors=False):
+    def marker_from_extension (self,filename,addAtSign=True):
 
         '''Return the sentinel delimiter comment to be used for filename.'''
 
         x = self
         if not filename: return None
         root,ext = g.os_path_splitext(filename)
-        delims = g.comment_delims_from_extension(filename)
-        for i in (0,1):
-            if delims[i]:
-                # g.trace('ext',ext,'delims',repr(delims[i]+'@'))
-                return delims[i]+'@'
-
         if ext=='.tmp':
             root, ext = os.path.splitext(root)
-        if ext in('.cfg','.ksh','.txt'):
-            marker = '#@'
-        elif ext in ('.bat',):
-            marker = "REM@"
+
+        delims = g.comment_delims_from_extension(filename)
+
+        # New in leo 4.5.1: require a single-line delim.
+        if delims[0]:
+            marker = delims[0]
         else:
             # Yes, we *can* use a special marker for unknown languages,
             # provided we make it impossible to type by mistake,
             # and provided no real language will be the prefix of the comment delim.
-            marker = g.app.language_delims_dict.get('unknown_language') + '@'
-            # g.trace('unknown language marker',marker)
+            marker = g.app.language_delims_dict.get('unknown_language')
 
-        return marker
+        if addAtSign:
+            return marker + '@'
+        else:
+            return marker
     #@-node:ekr.20080708094444.9:x.marker_from_extension
     #@+node:ekr.20080708094444.30:x.push_filter_mapping
     def push_filter_mapping (self,lines, marker):

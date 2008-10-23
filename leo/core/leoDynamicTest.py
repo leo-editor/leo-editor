@@ -24,8 +24,8 @@ def main ():
     bridge = leoBridge.controller(gui='nullGui',verbose=False)
     if bridge.isOpen():
         g = bridge.globals()
-        path = g.os_path_abspath(g.os_path_join(
-            g.app.loadDir,'..','test','dynamicUnitTest.leo'))
+        path = g.os_path_finalize_join(
+            g.app.loadDir,'..','test','dynamicUnitTest.leo')
         c = bridge.openLeoFile(path)
         # g.es('%s %s' % (tag,c.shortFileName()))
         runUnitTests(c,g)

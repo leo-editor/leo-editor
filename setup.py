@@ -1,6 +1,13 @@
 
 from setuptools import setup,find_packages
 
+import sys
+
+if 'install' in sys.argv:
+    print "WARNING: 'setup.py install' is known to not work."
+    print "Either use 'setup.py develop', or run launchLeo.py directly"
+    sys.exit()
+
 setup(
     name = 'leo-editor',
     version = "0.1",

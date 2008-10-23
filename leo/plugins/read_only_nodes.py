@@ -375,7 +375,7 @@ def insert_read_only_node (c,v,name):
             numlinks = len(hyperlinks)
             if numlinks > 0:
                 hyperlist = ['\n\n--Hyperlink list follows--']
-                for i in xrange(numlinks):
+                for i in range(numlinks):
                     hyperlist.append("\n[%d]: %s" % (i+1,hyperlinks[i])) # 3/26/03: was i.
                 new = new + ''.join(hyperlist)
             #@nonl

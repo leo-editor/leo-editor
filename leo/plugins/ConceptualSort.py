@@ -137,7 +137,7 @@ class CSFrontend:
         self.hasparent = 1
         if p:
             nc = p.numberOfChildren()
-            for i in xrange( nc ):
+            for i in range( nc ):
                 children.append( p.nthChild( i ) )
         else:
             p = c.rootVnode()
@@ -273,7 +273,7 @@ def getChildren( v ):
 
     i = v.numberOfChildren()
     children = []
-    for z in xrange( i ):
+    for z in range( i ):
         chi = v.nthChild( z )
         children.append( chi )
     return children

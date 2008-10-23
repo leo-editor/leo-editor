@@ -140,10 +140,10 @@ def onCreate (tag, keys):
 
     if not c:
         return
-    
+
     # Inject the controller into the commander.
     c.ipythonController = ipythonController(c)
-    
+
     try:
         import ipy_leo
     except ImportError:
@@ -154,7 +154,7 @@ def onCreate (tag, keys):
         return
     if st:
         c.ipythonController.startIPython()
-        
+
 #@-node:ekr.20080201143145.5:onCreate
 #@-node:ekr.20080201144219:Module-level functions
 #@+node:ekr.20080201143145.6:class ipythonController

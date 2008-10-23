@@ -163,7 +163,7 @@ def initAnyMarkup (tag,keywords):
     # underline means hyperlinks
     c.frame.body.tag_configure("http",underline=1) # EKR: 11/4/03
     c.frame.body.tag_configure("https",underline=1) # EKR: 11/4/03
-    dict = g.scanDirectives(c,p=v) # v arg is essential.
+    dict = c.scanAllDirectives(p=v) # v arg is essential.
     pluginsList = dict.get("pluginsList")
 
     if pluginsList:
@@ -264,7 +264,7 @@ def colorWikiMarkup (tag,keywords):
     colorer,v,s,i,j,colortag = [keywords.get(key) for key in keys]
     c = colorer.c
 
-    dict = g.scanDirectives(c,p=v) # v arg is essential.
+    dict = c.scanAllDirectives(p=v) # v arg is essential.
     pluginsList = dict.get("pluginsList")
 
     if pluginsList:

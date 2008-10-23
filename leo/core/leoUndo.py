@@ -69,7 +69,7 @@
 #@nl
 
 import leo.core.leoGlobals as g
-import string
+# import string
 
 #@+others
 #@+node:ekr.20031218072017.3605:class undoer
@@ -254,13 +254,12 @@ class undoer:
 
         if 0: # Debugging.
             g.pr('-' * 40)
-            keys = bunch.keys()
-            keys.sort()
-            for key in keys:
+            for key in sorted(bunch):
                 g.trace(key,bunch.get(key))
             g.pr('-' * 20)
 
-        for key in bunch.keys():
+        # bunch is not a dict, so bunch.keys() is required.
+        for key in bunch.keys(): 
             val = bunch.get(key)
             # g.trace(key,val)
             setattr(u,key,val)
@@ -271,8 +270,6 @@ class undoer:
     def recognizeStartOfTypingWord (self,
         old_lines,old_row,old_col,old_ch, 
         new_lines,new_row,new_col,new_ch):
-
-        # __pychecker__ = '--no-argsused' # Ignore all unused arguments here.
 
         ''' A potentially user-modifiable method that should return True if the
         typing indicated by the params starts a new 'word' for the purposes of
@@ -797,8 +794,7 @@ class undoer:
 
         '''Create an undo node for mark and unmark commands.'''
 
-        # __pychecker__ = '--no-argsused'
-            # 'command' unused, but present for compatibility with similar methods.
+        # 'command' unused, but present for compatibility with similar methods.
 
         u = self
         if u.redoing or u.undoing: return
@@ -1084,28 +1080,8 @@ class undoer:
             frame.menu.enableMenu(menu,u.redoMenuLabel,u.canRedo())
             frame.menu.enableMenu(menu,u.undoMenuLabel,u.canUndo())
     #@-node:ekr.20031218072017.3611:enableMenuItems
-    #@+node:ekr.20050525151217:getMark & rollbackToMark (no longer used)
-    if 0:
-        def getMark (self):
-
-            # __pychecker__ = '--no-classattr' # self.bead does, in fact, exist.
-
-            return self.bead
-
-        def rollbackToMark (self,n):
-
-            u = self
-
-            u.bead = n
-            u.beads = u.beads[:n+1]
-            u.setUndoTypes()
-
-        rollBackToMark = rollbackToMark
-    #@-node:ekr.20050525151217:getMark & rollbackToMark (no longer used)
     #@+node:ekr.20031218072017.1490:setUndoTypingParams
     def setUndoTypingParams (self,p,undo_type,oldText,newText,oldSel,newSel,oldYview=None):
-
-        # __pychecker__ = 'maxlines=2000' # Ignore the size of this method.
 
         '''Save enough information so a typing operation can be undone and redone.
 
@@ -1156,8 +1132,8 @@ class undoer:
         #@-at
         #@@c
 
-        old_lines = string.split(oldText,'\n')
-        new_lines = string.split(newText,'\n')
+        old_lines = oldText.split('\n')
+        new_lines = newText.split('\n')
         new_len = len(new_lines)
         old_len = len(old_lines)
         min_len = min(old_len,new_len)
@@ -1233,8 +1209,8 @@ class undoer:
             # Compute statistics comparing old and new ways...
             # The old doesn't often store the old text, so don't count it here.
             u.old_mem += len(newText)
-            s1 = string.join(old_middle_lines,'\n')
-            s2 = string.join(new_middle_lines,'\n')
+            s1 = '\n'.join(old_middle_lines)
+            s2 = '\n'.join(new_middle_lines)
             u.new_mem += len(s1) + len(s2)
         else:
             u.oldText = None
@@ -1989,9 +1965,10 @@ class undoer:
         tag="undo", # "undo" or "redo"
         undoType=None):
 
-        # __pychecker__ = '--no-argsused' # newNewlines is unused, but it has symmetry.
 
         '''Handle text undo and redo: converts _new_ text into _old_ text.'''
+
+        # newNewlines is unused, but it has symmetry.
 
         u = self ; c = u.c ; w = c.frame.body.bodyCtrl
 
@@ -2008,7 +1985,7 @@ class undoer:
             s.extend(oldMidLines)
         if trailing > 0:
             s.extend(body_lines[-trailing:])
-        s = string.join(s,'\n')
+        s = '\n'.join(s)
         # Remove trailing newlines in s.
         while len(s) > 0 and s[-1] == '\n':
             s = s[:-1]

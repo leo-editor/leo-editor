@@ -618,7 +618,6 @@ if wx:
         '''A wrapper for wx.StyledTextCtrl.'''
 
         # The signatures of tag_add and insert are different from the Tk.Text signatures.
-        __pychecker__ = '--no-override' # suppress warning about changed signature.
 
         #@    @+others
         #@+node:bob.20070813163332.8:__init__
@@ -1032,13 +1031,7 @@ if wx:
         #@nonl
         #@-node:bob.20070813163332.156:stc.setInsertPoint
         #@+node:bob.20070813163332.157:stc.setSelectionRange
-
         def setSelectionRange (self,i,j,insert=None):
-
-            __pychecker__ = '--no-argsused' #  insert not used.
-
-
-            #g.trace(g.callers(20))
 
             py = self.toStcIndex
 
@@ -2542,7 +2535,7 @@ if wx:
             self.wordLabel.configure(text= "Suggestions for: " + word)
             self.listBox.delete(0, "end")
 
-            for i in xrange(len(self.suggestions)):
+            for i in range(len(self.suggestions)):
                 self.listBox.insert(i, self.suggestions[i])
 
             # This doesn't show up because we don't have focus.
@@ -6708,7 +6701,7 @@ if wx:
         #@+node:bob.20070907223746.1:indexFromName
         def indexFromName(self, tabName):
 
-            for i in xrange(self.nb.GetPageCount()):
+            for i in range(self.nb.GetPageCount()):
                 s = self.nb.GetPageText(i)
                 if s == tabName:
                     return i
@@ -6831,8 +6824,6 @@ if wx:
         #@-node:bob.20070813163332.320:getSelectedTab
         #@+node:bob.20070813163332.321:hideTab
         def hideTab (self,tabName):
-
-            __pychecker__ = '--no-argsused' # tabName
 
             self.selectTab('Log')
         #@-node:bob.20070813163332.321:hideTab
@@ -7639,447 +7630,6 @@ if wx:
     #@-others
     #@nonl
     #@-node:bob.20080104144147:plugin menu dialogs
-    #@+node:bob.20080105082325:nav_buttons dialogs
-    #@+others
-    #@+node:bob.20080105082325.1:class wxListBoxDialog
-    class wxListBoxDialog(wx.Frame):
-
-        #@    @+others
-        #@+node:bob.20080105082325.2:__init__
-        def __init__(self, c, title, label='', buttons = [], log=None):
-
-            self.c = c
-
-            self.buttonSizer = buttonSizers = []
-            self.buttonCtrls = buttonCtrls = {}
-
-            self.defaultActions = {
-                'Hide': self.hide,
-                'Go': self.go
-            }
-
-            wx.Frame.__init__(self, c.frame.top,
-               title=title, size=(300, 500)
-            )
-
-            if not log:
-                log = lambda s: sys.stdout.write('\n%s'%s)
-            self.log = log
-
-            self.boxSizer = boxSizer = wx.BoxSizer(wx.VERTICAL)
-
-            self.listbox = listbox = wx.ListBox(self, -1,
-                choices=['zero', 'one', 'two', 'three'], style=wx.LB_EXTENDED
-            )
-
-            listbox.Bind(wx.EVT_LISTBOX, self.onClick)
-            listbox.Bind(wx.EVT_LISTBOX_DCLICK, self.onDoubleClick)
-
-            boxSizer.Add(listbox, 1, wx.EXPAND|wx.ALL, 5)
-
-
-            #@    << add buttons >>
-            #@+node:bob.20080105082325.3:<< add buttons >>
-
-
-            for i, items in enumerate(buttons):
-
-                buttonSizers.append(wx.BoxSizer(wx.HORIZONTAL))
-
-                for name, retval, image  in items:
-
-                    if not retval:
-                        retval = name
-                    if image:
-                        b = wx.BitmapButton(self,
-                            bitmap = namedIcons[image]
-                        )
-                    else:
-                        b  = wx.Button(self, -1, name)
-
-                    b.Bind(wx.EVT_BUTTON, lambda event, retval=retval: self.onButton(retval))
-
-                    buttonSizers[i].Add( b, 0,
-                        wx.ALL | wx.ALIGN_CENTER_VERTICAL,
-                        5
-                    )
-                    self.buttonCtrls[name or retval] = b
-
-            for sizer in buttonSizers:
-                self.boxSizer.Add(sizer, 0,
-                    wx.ALIGN_CENTRE | wx.ALIGN_CENTER_VERTICAL,
-                    10
-                )
-            #@-node:bob.20080105082325.3:<< add buttons >>
-            #@nl
-
-            self.SetSizer(boxSizer)
-
-            self.addIconBarButtons()
-
-            self.Bind(wx.EVT_CLOSE, self.hide)
-        #@-node:bob.20080105082325.2:__init__
-        #@+node:bob.20080105082325.4:onDoubleClick
-        def onDoubleClick(self, event):
-            self.go(event)
-
-        #@-node:bob.20080105082325.4:onDoubleClick
-        #@+node:bob.20080105082325.5:onClick
-        def onClick(self, event):
-            print 'click', self.listbox.GetString(event.GetSelection())
-            pass
-        #@-node:bob.20080105082325.5:onClick
-        #@+node:bob.20080105082325.6:onButton
-        def onButton(self,retval):
-
-            if retval in self.actions:
-                return self.actions[retval]()
-
-            if retval in self.defaultActions:
-                return self.defaultActions[retval]()
-
-            g.alert(retval)
-        #@-node:bob.20080105082325.6:onButton
-        #@+node:bob.20080105082325.7:go
-        def go(self, event=None):
-
-            """Handle clicks in the "go" button in a list box dialog."""
-
-            # __pychecker__ = '--no-argsused' # the event param must be present.
-
-            c = self.c ; listbox = self.listbox
-
-            # Work around an old Python bug.  Convert strings to ints.
-            if event:
-                item = event.GetSelection()
-            else:
-                item = -1
-                items = listbox.GetSelections()
-                if len(items):
-                    item = items[0]
-
-            if item > -1:
-                p = self.positionList[item]
-                c.frame.tree.expandAllAncestors(p)
-                c.selectPosition(p,updateBeadList=True)
-                    # A case could be made for updateBeadList=False
-                c.redraw()
-        #@-node:bob.20080105082325.7:go
-        #@+node:bob.20080105082325.8:hide
-        def hide(self, event=None):
-            self.Show(False)
-
-
-
-        #@-node:bob.20080105082325.8:hide
-        #@-others
-
-
-
-        def CloseWindow(self, event):
-            self.Show(False)
-
-    #@-node:bob.20080105082325.1:class wxListBoxDialog
-    #@+node:bob.20080105082325.9:class marksDialog (listBoxDialog)
-    class wxMarksDialog (wxListBoxDialog):
-
-        """A class to create the marks dialog"""
-
-        #@    @+others
-        #@+node:bob.20080105082325.10: __init__
-        def __init__ (self, c, images=None):
-
-            """Create a Marks listbox dialog."""
-
-            self.c = c
-            self.bg = 'old lace'
-
-            self.label = None
-            self.title = 'Marks for %s' % g.shortFileName(c.mFileName) # c.frame.title
-
-            self.actions = []
-
-            buttons = [
-                (
-                    ('Go', '', ''),
-                    ('Hide', '', '')
-                ),
-            ]
-
-            wxListBoxDialog.__init__(self, c,
-                self.title,
-                self.label,
-                buttons=buttons
-            )
-
-            #self.updateMarks()
-            #if not marksInitiallyVisible:
-            #   self.Show(False)
-        #@-node:bob.20080105082325.10: __init__
-        #@+node:bob.20080105082325.11:addIconBarButtons
-        def addIconBarButtons (self):
-
-            c = self.c ;
-
-            # Add 'Marks' button to icon bar.
-
-            def marksButtonCallback(*args,**keys):
-                self.Show()
-                self.Iconize(False)
-                # No call to c.outerUpdate needed.
-
-            self.marks_button = c.frame.addIconButton(
-                text="Marks",
-                command=marksButtonCallback,
-                bg=self.bg,
-                canRemove = False
-            )
-        #@-node:bob.20080105082325.11:addIconBarButtons
-        #@+node:bob.20080105082325.12:updateMarks
-        def updateMarks(self, tag,keywords):
-
-            '''Recreate the Marks listbox.'''
-
-            # Warning: it is not correct to use self.c in hook handlers.
-
-            c = keywords.get('c')
-
-            try:
-                if c != self.c:
-                     return
-            except:
-                c = None
-
-            if not c:
-                return
-
-            self.listbox.Clear()
-
-            # Bug fix 5/12/05: Set self.positionList for use by tkinterListBoxDialog.go().
-            i = 0 ; self.positionList = [] ; tnodeList = []
-
-            items = []
-            for p in c.allNodes_iter():
-                if p.isMarked() and p.v.t not in tnodeList:
-                    items.append(p.headString().strip())
-                    tnodeList.append(p.v.t)
-                    self.positionList.append(p.copy())
-
-            self.listbox.AppendItems(items)
-        #@-node:bob.20080105082325.12:updateMarks
-        #@-others
-    #@nonl
-    #@-node:bob.20080105082325.9:class marksDialog (listBoxDialog)
-    #@+node:bob.20080105082325.13:class wxRecentSectionsDialog (wxListBoxDialog)
-    class wxRecentSectionsDialog (wxListBoxDialog):
-
-        """A class to create the recent sections dialog"""
-
-        #@    @+others
-        #@+node:bob.20080105082325.14:__init__
-        def __init__ (self,c,images=None):
-
-            """Create a Recent Sections listbox dialog."""
-
-            self.c = c
-            self.bg = 'old lace'
-
-            self.label = None
-            self.title = "Recent nodes for %s" % g.shortFileName(c.mFileName)
-            self.lt_nav_button = self.rt_nav_button = None # Created by createFrame.
-
-            # Init the base class.
-            # N.B.  The base class contains positionList ivar.
-
-            self.actions = {
-                'Clear All': self.clearAll,
-                'Delete': self.deleteEntry,
-                'backwards': c.goPrevVisitedNode,
-                'forwards': c.goNextVisitedNode,
-            }
-
-
-            buttons = [
-                (
-                    ('', 'backwards', 'lt_arrow_enabled'),
-                    ('', 'forwards', 'rt_arrow_enabled'),
-                ),
-                (
-                    ('Go', '', ''),
-                    ('Hide', '', '')
-                ),
-                (
-                    ('Clear All', '', ''),
-                    ('Delete', '', '')
-                ),
-            ]
-
-            wxListBoxDialog.__init__(self,c,self.title,self.label, buttons=buttons)
-
-            self.fillbox() # Must be done initially.
-
-            if True or not recentInitiallyVisible:
-                self.Show(False)
-
-            self.updateButtons()
-        #@-node:bob.20080105082325.14:__init__
-        #@+node:bob.20080105082325.15:addIconBarButtons
-        def addIconBarButtons (self):
-
-            c = self.c ;
-
-            # Add 'Recent' button to icon bar.
-
-            def recentButtonCallback(*args,**keys):
-                self.fillbox(forceUpdate=True)
-                self.Show()
-                self.Iconize(False)
-                # No call to c.outerUpdate needed.
-
-            self.sections_button = c.frame.addIconButton(
-                text="Recent",
-                command=recentButtonCallback,
-                bg=self.bg,
-                canRemove=False
-            )
-
-            # Add left and right arrows to icon bar.
-
-            self.lt_nav_iconFrame_button = c.frame.addIconButton(
-                image= 'lt_arrow_disabled',
-                command=c.goPrevVisitedNode,
-                bg=self.bg,
-                canRemove=False
-            )
-            # To do: a callback that calls c.outerUpdate is needed here.
-
-            self.rt_nav_iconFrame_button = c.frame.addIconButton(
-                image = 'rt_arrow_disabled',
-                command=c.goNextVisitedNode,
-                bg=self.bg,
-                canRemove=False
-            )
-            # To do: a callback that calls c.outerUpdate is needed here.
-
-            # Don't dim the button when it is inactive.
-            #for b in (self.lt_nav_iconFrame_button, self.rt_nav_iconFrame_button):
-            #   fg = b.cget("foreground")
-            #   b.configure(disabledforeground=fg)
-
-        #@-node:bob.20080105082325.15:addIconBarButtons
-        #@+node:bob.20080105082325.16:clearAll
-        def clearAll (self,event=None):
-
-            """Handle clicks in the "Clear All" button of the Recent Sections listbox dialog."""
-
-            c = self.c
-
-            self.positionList = []
-            c.nodeHistory.clear()
-            self.fillbox()
-        #@nonl
-        #@-node:bob.20080105082325.16:clearAll
-        #@+node:bob.20080105082325.17:deleteEntry
-        def deleteEntry (self,event=None):
-            """Handle clicks in the "Delete" button of a Recent Sections listbox dialog."""
-
-            c = self.c
-            items = self.listbox.GetSelections()
-            newPositionList = []
-
-            for n, p in enumerate(self.positionList):
-                if n in items:
-                    c.nodeHistory.remove(p)
-                newPositionList.append(p)
-                self.positionList = newPositionList
-                self.fillbox()
-
-
-        #@-node:bob.20080105082325.17:deleteEntry
-        #@+node:bob.20080105082325.18:fillbox
-        def fillbox(self,forceUpdate=False):
-
-            """Update the Recent Sections listbox."""
-
-            # Only fill the box if the dialog is visible.
-            # This is an important protection against bad performance.
-
-            #if not forceUpdate and self.top.state() != "normal":
-            #    return
-
-            self.listbox.Clear()
-            c = self.c
-            self.positionList = []
-            tnodeList = []
-            items = []
-            for p in c.nodeHistory.visitedPositions():
-                if c.positionExists(p) and p.v.t not in tnodeList:
-                    items.append(p.headString().strip())
-                    tnodeList.append(p.v.t)
-                    self.positionList.append(p.copy())
-
-            self.listbox.AppendItems(items)
-
-        #@-node:bob.20080105082325.18:fillbox
-        #@+node:bob.20080105082325.19:updateButtons
-        def updateButtons (self):
-
-            c = self.c
-
-            for b, b2, enabled_image, disabled_image,cond in (
-                (
-                    self.buttonCtrls['backwards'],
-                    self.lt_nav_iconFrame_button,
-
-                    'lt_arrow_enabled',
-                    'lt_arrow_disabled',
-
-                    c.nodeHistory.canGoToPrevVisited()
-                ),
-                (
-                    self.buttonCtrls['forwards'],
-                    self.rt_nav_iconFrame_button,
-
-                    'rt_arrow_enabled',
-                    'rt_arrow_disabled',
-
-                    c.nodeHistory.canGoToNextVisited()
-                ),
-            ):
-                # Disabled state makes the icon look bad.
-
-                if cond:
-                    image = namedIcons[enabled_image]
-                else:
-                    image = namedIcons[disabled_image]
-
-                b.SetBitmapLabel(image)
-                b2.SetBitmapLabel(image)
-        #@-node:bob.20080105082325.19:updateButtons
-        #@+node:bob.20080105082325.20:updateRecent
-        def updateRecent(self,tag,keywords):
-
-            # Warning: it is not correct to use self.c in hook handlers.
-            c = keywords.get('c')
-            try:
-                if c != self.c:
-                    return
-            except:
-                c = None
-
-            if not c:
-                return
-
-            forceUpdate = tag in ('new2','open2')
-            self.fillbox(forceUpdate)
-            self.updateButtons()
-        #@nonl
-        #@-node:bob.20080105082325.20:updateRecent
-        #@-others
-    #@nonl
-    #@-node:bob.20080105082325.13:class wxRecentSectionsDialog (wxListBoxDialog)
-    #@-others
-    #@-node:bob.20080105082325:nav_buttons dialogs
     #@-node:bob.20070902164500:== EXTRA WIDGETS
     #@+node:bob.20070902164500.1:== TREE WIDGETS ==
     #@+node:bob.20070813163332.371:wxLeoTree class (leoFrame.leoTree):
@@ -8368,9 +7918,6 @@ if wx:
 
             Assumes that the canvas is in a valid state.
             """
-
-            __pychecker__ = '--no-argsused' # event not used.
-            __pychecker__ = '--no-intdivide' # suppress warning about integer division.
 
             c = self.c
             tree = self.treeCtrl

@@ -5,7 +5,7 @@
 #@@pagewidth 80
 
 #@<< imports >>
-#@+node:ekr.20050405141130:<< imports >>
+#@+node:ekr.20050405141130:<< imports >> (leoFileCommands)
 import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
@@ -16,11 +16,20 @@ if g.app and g.app.use_psyco:
 import leo.core.leoNodes as leoNodes
 
 import binascii
-import cStringIO
+
+if g.isPython3:
+    import io # Python 3.x
+    StringIO = io.StringIO
+    BytesIO = io.BytesIO
+else:
+    import cStringIO # Python 2.x
+    StringIO = cStringIO.StringIO
+
 import os
 import pickle
-import string
+# import string
 import sys
+import types
 import zipfile
 # import re
 
@@ -32,10 +41,8 @@ except Exception:
     pass
 
 # The following is sometimes used.
-# __pychecker__ = '--no-import'
 # import time
-#@nonl
-#@-node:ekr.20050405141130:<< imports >>
+#@-node:ekr.20050405141130:<< imports >> (leoFileCommands)
 #@nl
 
 #@<< define exception classes >>
@@ -145,11 +152,11 @@ if sys.platform != 'cli':
 
             attrs: an Attributes item passed to startElement.'''
 
-            if 0: # check for non-unicode attributes.
-                for name in attrs.getNames():
-                    val = attrs.getValue(name)
-                    if type(val) != type(u''):
-                        g.trace('Non-unicode attribute',name,val)
+            ### if 0: # check for non-unicode attributes.
+                ### for name in attrs.getNames():
+                    ### val = attrs.getValue(name)
+                    ### if type(val) != type(u''):
+                    ###    g.trace('Non-unicode attribute',name,val)
 
             # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
@@ -220,8 +227,12 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.30:characters
         def characters(self,content):
 
-            if content and type(content) != type(u''):
-                g.trace('Non-unicode content',repr(content))
+            if g.isPython3:
+                if content and type(content) != type('a'):
+                    g.trace('Non-unicode content',repr(content))
+            else:
+                if content and type(content) != types.UnicodeType:
+                    g.trace('Non-unicode content',repr(content))
 
             content = content.replace('\r','')
             if not content: return
@@ -234,7 +245,6 @@ if sys.platform != 'cli':
 
             elif content.strip():
                 g.pr('unexpected content:',elementName,repr(content))
-        #@nonl
         #@-node:ekr.20060919110638.30:characters
         #@+node:ekr.20060919110638.31:endElement & helpers
         def endElement(self,name):
@@ -373,8 +383,6 @@ if sys.platform != 'cli':
         #@-node:ekr.20060919110638.40:startVH
         #@+node:ekr.20060919112118:startVnodes
         def startVnodes (self,unused_attrs):
-
-            # __pychecker__ = '--no-argsused'
 
             if self.inClipboard:
                 return # No need to do anything to the main window.
@@ -605,9 +613,12 @@ class baseFileCommands:
             try:
                 # self.getAllLeoElements(fileName='check-leo-file',silent=False)
                 theFile,isZipped = g.openLeoOrZipFile(c.mFileName)
-                self.readSaxFile(theFile,fileName='check-leo-file',silent=False,inClipboard=False,reassignIndices=False)
+                self.readSaxFile(
+                    theFile,fileName='check-leo-file',
+                    silent=False,inClipboard=False,reassignIndices=False)
                 g.es_print('check-leo-file passed',color='blue')
-            except Exception, message:
+            except Exception:
+                junk, message, junk = sys.exc_info()
                 # g.es_exception()
                 g.es_print('check-leo-file failed:',str(message),color='red')
         finally:
@@ -733,7 +744,8 @@ class baseFileCommands:
                 self.rootVnode = v
                 c.setRootPosition(p)
                 c.changed = False
-        except BadLeoFile, message:
+        except BadLeoFile:
+            junk, message, junk = sys.exc_info()
             if not silent:
                 g.es_exception()
                 g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
@@ -798,14 +810,14 @@ class baseFileCommands:
         if g.unified_nodes: t = leoNodes.vnode(context=c)
         else:               t = leoNodes.tnode()
 
-        if self.tnodesDict.has_key(index):
+        if index in self.tnodesDict:
             g.es("bad tnode index:",str(index),"using empty text.")
             return t
         else:
             # Create the tnode.  Use the _original_ index as the key in tnodesDict.
             self.tnodesDict[index] = t
 
-            if type(index) not in (type(""),type(u"")):
+            if not g.isString(index):
                 g.es("newTnode: unexpected index type:",type(index),index,color="red")
 
             # Convert any pre-4.1 index to a gnx.
@@ -832,29 +844,17 @@ class baseFileCommands:
 
         c = self.c ; frame = c.frame
 
-        #@    << Set the default directory >>
-        #@+node:ekr.20031218072017.2298:<< Set the default directory >>
-        #@+at 
-        #@nonl
-        # The most natural default directory is the directory containing the 
-        # .leo file that we are about to open.  If the user has specified the 
-        # "Default Directory" preference that will over-ride what we are about 
-        # to set.
-        #@-at
-        #@@c
-
+        # Set c.openDirectory
         theDir = g.os_path_dirname(fileName)
-
-        if len(theDir) > 0:
-            c.openDirectory = theDir
-        #@-node:ekr.20031218072017.2298:<< Set the default directory >>
-        #@nl
+        if theDir: c.openDirectory = theDir
 
         ok, ratio = self.getLeoFile(
             theFile,fileName,
             readAtFileNodesFlag=readAtFileNodesFlag,
             silent=silent)
-        frame.resizePanesToRatio(ratio,frame.secondary_ratio)
+
+        if ok:
+            frame.resizePanesToRatio(ratio,frame.secondary_ratio)
 
         return ok
     #@-node:ekr.20031218072017.2297:open (leoFileCommands)
@@ -919,8 +919,6 @@ class baseFileCommands:
         This is used to record marked and expanded nodes.
         '''
 
-        # __pychecker__ = '--no-argsused' # tag used only for debugging.
-
         gnxs = s.split(',')
         result = [gnx for gnx in gnxs if len(gnx) > 0]
         # g.trace(tag,result)
@@ -960,7 +958,7 @@ class baseFileCommands:
 
         for resultDict in self.descendentTnodeUaDictList:
             if trace: g.trace('t.dict',resultDict)
-            for gnx in resultDict.keys():
+            for gnx in resultDict:
                 tref = self.canonicalTnodeIndex(gnx)
                 t = self.tnodesDict.get(tref)
                 if t:
@@ -972,7 +970,7 @@ class baseFileCommands:
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v,resultDict in self.descendentVnodeUaDictList:
             if trace: g.trace('v.dict',resultDict)
-            for key in resultDict.keys():
+            for key in resultDict:
                 v = self.resolveArchivedPosition(key,root_v)
                 if v:
                     v.unknownAttributes = resultDict[key]
@@ -1097,7 +1095,7 @@ class baseFileCommands:
         d = sax_node.tnodeAttributes
 
         aDict = {}
-        for key in d.keys():
+        for key in d:
             val = d.get(key)
             val2 = self.getSaxUa(key,val)
             aDict[key] = val2
@@ -1161,7 +1159,7 @@ class baseFileCommands:
             self.descendentMarksList.extend(aList)
 
         aDict = {}
-        for key in d.keys():
+        for key in d:
             if key in self.nativeVnodeAttributes:
                 if 0: g.trace('****ignoring***',key,d.get(key))
             else:
@@ -1251,12 +1249,15 @@ class baseFileCommands:
         # g.trace('hiddenRootNode',c.hiddenRootNode)
 
         try:
-            # Use cStringIo to avoid a crash in sax when inputFileName has unicode characters.
-            if theFile:
-                s = theFile.read()
-            theFile = cStringIO.StringIO(s)
-            # g.trace(repr(inputFileName))
-            node = None
+            if g.isPython3:
+                if theFile:
+                    pass # Just use the open binary file, opened by g.openLeoOrZipFile.
+                else:
+                    theFile = StringIO(s)
+            else:
+                if theFile:
+                    s = theFile.read()
+                theFile = cStringIO.StringIO(s)
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges,1)
                 # Include external general entities, esp. xml-stylesheet lines.
@@ -1267,6 +1268,7 @@ class baseFileCommands:
             handler = saxContentHandler(c,inputFileName,silent,inClipboard)
             parser.setContentHandler(handler)
             parser.parse(theFile) # expat does not support parseString
+            # g.trace('parsing done')
             sax_node = handler.getRootNode()
         except xml.sax.SAXParseException:
             g.es_print('error parsing',inputFileName,color='red')
@@ -1278,7 +1280,6 @@ class baseFileCommands:
             sax_node = None
 
         return sax_node
-    #@nonl
     #@-node:ekr.20060919110638.14:parse_leo_file
     #@+node:ekr.20060919110638.3:readSaxFile
     def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
@@ -1314,8 +1315,7 @@ class baseFileCommands:
                     if t:
                         # g.trace(tnx,t)
                         result.append(t)
-                    else:
-                        g.trace('No tnode for %s' % tnx)
+                    # else: g.trace('No tnode for %s' % tnx)
                 p.v.t.tnodeList = result
                 delattr(p.v,'tempTnodeList')
     #@nonl
@@ -1721,8 +1721,7 @@ class baseFileCommands:
             tnodes[p.v.t.fileIndex] = p.v.t
 
         # Put all tnodes in index order.
-        keys = tnodes.keys() ; keys.sort()
-        for index in keys:
+        for index in sorted(tnodes):
             # g.trace(index)
             t = tnodes.get(index)
             if not t:
@@ -1982,11 +1981,15 @@ class baseFileCommands:
 
             # rename fileName to fileName.bak if fileName exists.
             if not toString and g.os_path_exists(fileName):
+
                 backupName = g.os_path_join(g.app.loadDir,fileName)
                 backupName = fileName + ".bak"
+
                 if g.os_path_exists(backupName):
                     g.utils_remove(backupName)
+
                 ok = g.utils_rename(c,fileName,backupName)
+
                 if not ok:
                     if self.read_only:
                         g.es("read only",color="red")
@@ -2004,7 +2007,7 @@ class baseFileCommands:
                 #@nonl
                 #@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
                 #@nl
-            self.outputFile = cStringIO.StringIO()
+            self.outputFile = StringIO()
             #@        << create theActualFile >>
             #@+node:ekr.20060929103258:<< create theActualFile >>
             if toString:
@@ -2191,14 +2194,14 @@ class baseFileCommands:
                 # Create a new dict containing only entries that can be pickled.
                 d = dict(torv.unknownAttributes) # Copy the dict.
 
-                for key in d.keys():
+                for key in d:
                     # Just see if val can be pickled.  Suppress any error.
                     ok = self.pickle(torv=torv,val=d.get(key),tag=None)
                     if not ok:
                         del d[key]
                         g.es("ignoring bad unknownAttributes key",key,"in",p.headString(),color="blue")
 
-                if d.keys():
+                if d:
                     result.append((torv,d),)
 
         return result
@@ -2253,7 +2256,7 @@ class baseFileCommands:
                         t.fileIndex = g.app.nodeIndices.getNewIndex()
                     gnx = t.fileIndex
                     sList.append("%s," % nodeIndices.toString(gnx))
-                s = string.join(sList,'')
+                s = ''.join(sList)
                 # g.trace(tag,[str(p.headString()) for p in theList])
                 result.append('\n%s="%s"' % (tag,s))
 
@@ -2292,7 +2295,7 @@ class baseFileCommands:
         if trace: g.trace(g.dictToString(d))
 
         # Pickle and hexlify d.
-        return d.keys() and self.pickle(
+        return d and self.pickle(
             torv=p.t,val=d,tag="descendentTnodeUnknownAttributes") or ''
     #@-node:ekr.20080805071954.1:putDescendentTnodeUas
     #@+node:ekr.20080805071954.2:putDescendentVnodeUas
@@ -2327,7 +2330,7 @@ class baseFileCommands:
         if trace: g.trace(p.headString(),g.dictToString(d))
 
         # Pickle and hexlify d
-        return d.keys() and self.pickle(
+        return d and self.pickle(
             torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
     #@-node:ekr.20080805071954.2:putDescendentVnodeUas
     #@+node:ekr.20031218072017.2002:putTnodeList

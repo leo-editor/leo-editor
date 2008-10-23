@@ -172,8 +172,7 @@ class bridgeController:
         leoDirs = ('config','doc','extensions','modes','plugins','core','test') # 2008/7/30
 
         for theDir in leoDirs:
-            path = g.os_path_abspath(
-                g.os_path_join(g.app.loadDir,'..',theDir))
+            path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
             if path not in sys.path:
                 sys.path.append(path)
     #@-node:ekr.20070302061713:adjustSysPath
@@ -241,7 +240,7 @@ class bridgeController:
         import sys
 
         g = self.g ; tag = ".leoID.txt"
-        homeDir = g.app.homeDir
+        homeDir = g.app.homeLeoDir # Was homeDir.
         globalConfigDir = g.app.globalConfigDir
         loadDir = g.app.loadDir
 
@@ -257,7 +256,8 @@ class bridgeController:
 
         if hasattr(sys,nonConstantAttr):
             g.app.leoID = getattr(sys,nonConstantAttr)
-            if verbose: g.es("leoID=",g.app.leoID,spaces=False,color='red')
+            if verbose and not g.app.silentMode:
+                g.es("leoID=",g.app.leoID,spaces=False,color='red')
         #@nonl
         #@-node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
         #@nl
@@ -274,7 +274,7 @@ class bridgeController:
                         f.close()
                         if s and len(s) > 0:
                             g.app.leoID = s.strip()
-                            if verbose:
+                            if verbose and not g.app.silentMode:
                                 g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
                             break
                         elif verbose:
@@ -354,7 +354,7 @@ class bridgeController:
 
         import os
 
-        fileName = g.os_path_join(os.getcwd(),fileName)
+        fileName = g.os_path_finalize_join(os.getcwd(),fileName)
         head,ext = g.os_path_splitext(fileName)
         if not ext: fileName = fileName + ".leo"
 
@@ -373,7 +373,7 @@ class bridgeController:
                 ok, frame = g.openWithFileName(fileName,None)
                 if ok: return frame.c
             else:
-                g.es('file not found', fileName,'creating new window')
+                g.es_print('file not found', fileName,'creating new window')
         # Create a new frame. Unlike leo.run, this is not a startup window.
         c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
         frame.setInitialWindowGeometry()

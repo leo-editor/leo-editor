@@ -21,7 +21,7 @@ import leo.core.leoTkinterTree as leoTkinterTree
 import Tkinter as Tk
 import tkFont
 import os
-import string
+# import string
 import sys
 
 Pmw = g.importExtension("Pmw",pluginName="leoTkinterFrame.py",verbose=False)
@@ -378,7 +378,7 @@ class leoTkinterBody (leoFrame.leoBody):
 
         c = self.c ; d = self.editorWidgets
 
-        for key in d.keys():
+        for key in d:
             w2 = d.get(key)
             # g.trace(id(w2),bg,fg)
             try:
@@ -663,8 +663,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         Args is a tuple of two floats describing the fraction of the visible area."""
 
         #g.trace(self.tree.redrawCount,args,g.callers())
-
-        apply(self.canvas.leo_treeBar.set,args,keys)
+        self.canvas.leo_treeBar.set(*args,**keys)
 
         if self.tree.allocateOnlyVisibleNodes:
             self.tree.setVisibleArea(args)
@@ -678,7 +677,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         if self.tree.allocateOnlyVisibleNodes:
             self.tree.allocateNodesBeforeScrolling(args)
 
-        apply(self.canvas.yview,args,keys)
+        self.canvas.yview(*args,**keys)
     #@nonl
     #@-node:ekr.20031218072017.998:Scrolling callbacks (tkFrame)
     #@-node:ekr.20041221071131.1:f.createTkTreeCanvas & callbacks
@@ -882,10 +881,10 @@ class leoTkinterFrame (leoFrame.leoFrame):
             vList.append(p.v)
             if p.v.t:
                 key = id(p.v.t)
-                if not tDict.has_key(key):
+                if key not in tDict:
                     tDict[key] = p.v.t
 
-        for key in tDict.keys():
+        for key in tDict:
             g.clearAllIvars(tDict[key])
 
         for v in vList:
@@ -961,7 +960,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         '''A class representing the status line.'''
 
         #@    @+others
-        #@+node:ekr.20031218072017.3961: ctor
+        #@+node:ekr.20031218072017.3961:ctor
         def __init__ (self,c,parentFrame):
 
             self.c = c
@@ -974,7 +973,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             #    self.log.colorTags.append("black")
             self.parentFrame = parentFrame
             self.statusFrame = Tk.Frame(parentFrame,bd=2)
-            text = "line 0, col 0"
+            text = "line 0, col 0, fcol 0"
             width = len(text) + 4
             self.labelWidget = Tk.Label(self.statusFrame,text=text,width=width,anchor="w")
             self.labelWidget.pack(side="left",padx=1)
@@ -990,7 +989,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             c.frame.statusFrame = self.statusFrame
             c.frame.statusLabel = self.labelWidget
             c.frame.statusText  = self.textWidget
-        #@-node:ekr.20031218072017.3961: ctor
+        #@-node:ekr.20031218072017.3961:ctor
         #@+node:ekr.20031218072017.3962:clear
         def clear (self):
 
@@ -1111,11 +1110,14 @@ class leoTkinterFrame (leoFrame.leoFrame):
                 s2 = s[index-col:index]
                 s2 = g.toUnicode(s2,g.app.tkEncoding)
                 col = g.computeWidth (s2,c.tab_width)
+            p = c.currentPosition()
+            fcol = col + p.textOffset()
 
             # Important: this does not change the focus because labels never get focus.
-            self.labelWidget.configure(text="line %d, col %d" % (row,col))
+            self.labelWidget.configure(text="line %d, col %d, fcol %d" % (row,col,fcol))
             self.lastRow = row
             self.lastCol = col
+            self.lastFcol = fcol
         #@-node:ekr.20031218072017.1733:update (statusLine)
         #@-others
     #@-node:ekr.20041223104933:class tkStatusLineClass (tkFrame)
@@ -1131,12 +1133,23 @@ class leoTkinterFrame (leoFrame.leoFrame):
             self.c = c
 
             self.buttons = {}
-            self.iconFrame = w = Tk.Frame(parentFrame,height="5m",bd=2,relief="groove")
-            self.c.frame.iconFrame = self.iconFrame
+
+            # Create a parent frame that will never be unpacked.
+            # This allows us to pack and unpack the container frame without it moving.
+            self.iconFrameParentFrame = Tk.Frame(parentFrame)
+            self.iconFrameParentFrame.pack(fill="x",pady=0)
+
+            # Create a container frame to hold individual row frames.
+            # We hide all icons by doing pack_forget on this one frame.
+            self.iconFrameContainerFrame = Tk.Frame(self.iconFrameParentFrame)
+                # Packed in self.show()
+
+            self.addRow()
             self.font = None
             self.parentFrame = parentFrame
             self.visible = False
-            self.show()
+            self.widgets_per_row = c.config.getInt('icon_bar_widgets_per_row') or 10
+            self.show() # pack the container frame.
         #@-node:ekr.20041223102225.1: ctor
         #@+node:ekr.20031218072017.3958:add
         def add(self,*args,**keys):
@@ -1145,7 +1158,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
             Pictures take precedence over text"""
 
-            c = self.c ; f = self.iconFrame
+            c = self.c
             text = keys.get('text')
             imagefile = keys.get('imagefile')
             image = keys.get('image')
@@ -1154,12 +1167,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
             if not imagefile and not image and not text: return
 
-            # First define n.
-            try:
-                g.app.iconWidgetCount += 1
-                n = g.app.iconWidgetCount
-            except:
-                n = g.app.iconWidgetCount = 1
+            self.addRowIfNeeded()
+            f = self.iconFrame # Bind this after possibly creating a new row.
 
             if command:
                 def commandCallBack(c=c,command=command):
@@ -1169,7 +1178,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
                         c.outerUpdate()
                     return val
             else:
-                def commandCallback():
+                def commandCallback(n=g.app.iconWidgetCount):
                     g.pr("command for widget %s" % (n))
                 command = commandCallback
 
@@ -1215,27 +1224,63 @@ class leoTkinterFrame (leoFrame.leoFrame):
                         "button_text_font_family", "button_text_font_size",
                         "button_text_font_slant",  "button_text_font_weight",)
                 b.configure(font=self.font)
-                # elif sys.platform.startswith('win'):
-                    # width = max(6,len(text))
-                    # b.configure(width=width,font=('verdana',7,'bold'))
                 if bg: b.configure(bg=bg)
                 b.pack(side="left", fill="none")
                 return b
 
             return None
         #@-node:ekr.20031218072017.3958:add
+        #@+node:ekr.20080930072519.2:addRow
+        def addRow(self,height=None):
+
+            if height is None:
+                height = '5m'
+
+            w = Tk.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
+            w.pack(fill="x",pady=2)
+            self.iconFrame = w
+            self.c.frame.iconFrame = w
+            return w
+        #@-node:ekr.20080930072519.2:addRow
+        #@+node:ekr.20080930072519.5:addRowIfNeeded
+        def addRowIfNeeded (self):
+
+            '''Add a new icon row if there are too many widgets.'''
+
+            try:
+                n = g.app.iconWidgetCount
+            except:
+                n = g.app.iconWidgetCount = 0
+
+            if n >= self.widgets_per_row:
+                g.app.iconWidgetCount = 0
+                self.addRow()
+
+            g.app.iconWidgetCount += 1
+        #@-node:ekr.20080930072519.5:addRowIfNeeded
+        #@+node:ekr.20080930072519.6:addWidget
+        def addWidget (self,w):
+
+            self.addRowIfNeeded()
+            w.pack(side="left", fill="none")
+
+
+        #@-node:ekr.20080930072519.6:addWidget
         #@+node:ekr.20031218072017.3956:clear
         def clear(self):
 
             """Destroy all the widgets in the icon bar"""
 
-            f = self.iconFrame
+            f = self.iconFrameContainerFrame
 
             for slave in f.pack_slaves():
-                slave.destroy()
+                slave.pack_forget()
+            f.pack_forget()
+
+            self.addRow(height='0m')
+
             self.visible = False
 
-            f.configure(height="5m") # The default height.
             g.app.iconWidgetCount = 0
             g.app.iconImageRefs = []
         #@-node:ekr.20031218072017.3956:clear
@@ -1246,11 +1291,22 @@ class leoTkinterFrame (leoFrame.leoFrame):
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
         #@-node:ekr.20061213091114.1:deleteButton (new in Leo 4.4.3)
-        #@+node:ekr.20041223114821:getFrame
+        #@+node:ekr.20041223114821:getFrame & getNewFrame
         def getFrame (self):
 
             return self.iconFrame
-        #@-node:ekr.20041223114821:getFrame
+
+        def getNewFrame (self):
+
+            # Pre-check that there is room in the row, but don't bump the count.
+            self.addRowIfNeeded()
+            g.app.iconWidgetCount -= 1
+
+            # Allocate the frame in the possibly new row.
+            frame = Tk.Frame(self.iconFrame)
+            return frame
+
+        #@-node:ekr.20041223114821:getFrame & getNewFrame
         #@+node:ekr.20041223102225.2:pack (show)
         def pack (self):
 
@@ -1258,7 +1314,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
             if not self.visible:
                 self.visible = True
-                self.iconFrame.pack(fill="x",pady=2)
+                self.iconFrameContainerFrame.pack(fill='x',pady=2)
 
         show = pack
         #@-node:ekr.20041223102225.2:pack (show)
@@ -1270,13 +1326,12 @@ class leoTkinterFrame (leoFrame.leoFrame):
         #@+node:ekr.20031218072017.3955:unpack (hide)
         def unpack (self):
 
-            """Hide the icon bar by unpacking it.
-
-            A later call to show will repack it in a new location."""
+            """Hide the icon bar by unpacking it."""
 
             if self.visible:
                 self.visible = False
-                self.iconFrame.pack_forget()
+                w = self.iconFrameContainerFrame
+                w.pack_forget()
 
         hide = unpack
         #@-node:ekr.20031218072017.3955:unpack (hide)
@@ -1466,7 +1521,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
     def setWrap (self,p):
 
         c = self.c
-        theDict = g.scanDirectives(c,p)
+        theDict = c.scanAllDirectives(p)
         if not theDict: return
 
         wrap = theDict.get("wrap")
@@ -1553,20 +1608,14 @@ class leoTkinterFrame (leoFrame.leoFrame):
     #@+node:ekr.20031218072017.3973:frame.OnControlKeyUp/Down
     def OnControlKeyDown (self,event=None):
 
-        # __pychecker__ = '--no-argsused' # event not used.
-
         self.controlKeyIsDown = True
 
     def OnControlKeyUp (self,event=None):
-
-        # __pychecker__ = '--no-argsused' # event not used.
 
         self.controlKeyIsDown = False
     #@-node:ekr.20031218072017.3973:frame.OnControlKeyUp/Down
     #@+node:ekr.20031218072017.3975:OnActivateBody (tkFrame)
     def OnActivateBody (self,event=None):
-
-        # __pychecker__ = '--no-argsused' # event not used.
 
         try:
             frame = self ; c = frame.c
@@ -1584,8 +1633,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
     def OnActivateLeoEvent(self,event=None):
 
         '''Handle a click anywhere in the Leo window.'''
-
-        # __pychecker__ = '--no-argsused' # event.
 
         self.c.setLog()
 
@@ -1835,8 +1882,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
             # Compute w,h
             top.update_idletasks() # Required to get proper info.
             geom = top.geometry() # geom = "WidthxHeight+XOffset+YOffset"
-            dim,junkx,junky = string.split(geom,'+')
-            w,h = string.split(dim,'x')
+            dim,junkx,junky = geom.split('+')
+            w,h = dim.split('x')
             w,h = int(w),int(h)
 
             # Set new x,y and old w,h
@@ -2233,7 +2280,7 @@ class leoTkinterLog (leoFrame.leoLog):
 
         # Restore all colors.
         colors = d.get('colors')
-        for color in colors.keys():
+        for color in colors:
             if color not in self.colorTags:
                 self.colorTags.append(color)
                 logCtrl.tag_config(color,foreground=color)
@@ -2534,8 +2581,6 @@ class leoTkinterLog (leoFrame.leoLog):
     #@-node:ekr.20051018102027:deleteTab
     #@+node:ekr.20060204124347:hideTab
     def hideTab (self,tabName):
-
-        # __pychecker__ = '--no-argsused' # tabName
 
         self.selectTab('Log')
     #@-node:ekr.20060204124347:hideTab
@@ -3037,9 +3082,8 @@ class leoTkinterTreeTab (leoFrame.leoTreeTab):
 
         tt = self ; c = tt.c
 
-        # Create the main container.
-        tt.frame = Tk.Frame(c.frame.iconFrame)
-        tt.frame.pack(side="left")
+        # Create the main container, possibly in a new row.
+        tt.frame = c.frame.getNewIconFrame()
 
         # Create the chapter menu.
         self.chapterVar = var = Tk.StringVar()
@@ -3052,6 +3096,9 @@ class leoTkinterTreeTab (leoFrame.leoTreeTab):
             command = tt.selectTab,
         )
         menu.pack(side='left',padx=5)
+
+        # Actually add tt.frame to the icon row.
+        c.frame.addIconWidget(tt.frame)
     #@nonl
     #@-node:ekr.20070317073819.2:tt.createControl
     #@-node:ekr.20070320090557.1: Birth & death
@@ -3118,7 +3165,6 @@ class leoTkTextWidget (Tk.Text):
     This class inherits almost all tkText methods: you call use them as usual.'''
 
     # The signatures of tag_add and insert are different from the Tk.Text signatures.
-    # __pychecker__ = '--no-override' # suppress warning about changed signature.
 
     def __repr__(self):
         name = hasattr(self,'_name') and self._name or '<no name>'
@@ -3181,6 +3227,7 @@ class leoTkTextWidget (Tk.Text):
         if i is None:
             g.trace('can not happen: i is None')
             return 0
+
         elif type(i) in (type('a'),type(u'a')):
             s = Tk.Text.get(w,'1.0','end') # end-1c does not work.
             i = Tk.Text.index(w,i) # Convert to row/column form.

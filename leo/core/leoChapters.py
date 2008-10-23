@@ -668,7 +668,7 @@ class chapterController:
             if trace: g.trace('in chapter:',theChapter.name)
             return
 
-        for name in cc.chaptersDict.keys():
+        for name in cc.chaptersDict:
             if name not in (firstName,'main'):
                 theChapter = cc.chaptersDict.get(name)
                 if theChapter.positionIsInChapter(p):
@@ -690,7 +690,7 @@ class chapterController:
         if not p or not c.positionExists(p):
             return None
 
-        for name in cc.chaptersDict.keys():
+        for name in cc.chaptersDict:
             if name != 'main':
                 theChapter = cc.chaptersDict.get(name)
                 if theChapter.positionIsInChapter(p):
