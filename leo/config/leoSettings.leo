@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="10,2"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="10,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -132,7 +132,7 @@
 <v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
 <v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
 </v>
-<v t="ekr.20041119051246.1" a="E"><vh>Outline pane colors</vh>
+<v t="ekr.20041119051246.1"><vh>Outline pane colors</vh>
 <v t="ekr.20041119051246.2"><vh>@color headline_text_unselected_background_color = #ffffec</vh></v>
 <v t="ekr.20041119050749.6"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
 <v t="ekr.20041119051246.3"><vh>@color headline_text_selected_background_color = #dbdbdb</vh></v>
@@ -1073,8 +1073,10 @@
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
 <v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
+<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = True</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
+<v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
@@ -1458,8 +1460,10 @@
 </v>
 <v t="ekr.20041119051246.4"><vh>@font outline font</vh></v>
 <v t="ekr.20081018053140.11" a="E"><vh>qtGui plugin</vh>
+<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = True</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
+<v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
 </v>
 </vnodes>
@@ -7620,7 +7624,7 @@ QTreeWidget {
     selection-color: blue;
     selection-background-color: lightgray;
     font-family: SansSerif;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: bold; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
  }
@@ -7629,14 +7633,39 @@ QTreeWidget QLineEdit {
     background-color: cornsilk;
     selection-color: white;
     selection-background-color: blue;
-    font-family: SansSerif;
-    font-size: 13px;
+    font-family: Courier New;
+    font-size: 14px;
     font-weight: bold; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
 
+QTextEdit {
+    background-color: #f2fdff;
+    selection-color: white;
+    selection-background-color: blue;
+    font-family: Courier New;
+    font-size: 14px;
+    font-weight: bold; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
 
-</t>
+QTextEdit#disabled-richTextEdit {
+    background-color: #fdf5f5; /* A kind of pink. */
+    font-family: Courier New;
+    font-size: 24px;
+    font-weight: 900; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+    /* zoom: 6; */ /* zoom-in: 6 */
+}
+
+QTextEdit#richTextEdit {
+    background-color: #fdf5f5; /* A kind of pink. */
+    font-family: DejaVu Sans Mono;
+    font-size: 28px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+    /* zoom: 6; */ /* zoom-in: 6 */
+}</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>
 <t tx="ekr.20081022181056.10"># Lines have the form: color, style
@@ -7658,6 +7687,9 @@ This allows you to increase the font size.</t>
  green, UnclosedString
  green, Decorator
  blue,  Keyword</t>
+<t tx="ekr.20081023060109.13">Argument to QSciScintilla.zoomIn method.
+This allows you to increase the font size.</t>
+<t tx="ekr.20081023060109.14"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to

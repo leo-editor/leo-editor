@@ -8,8 +8,10 @@ Ask Qt people:
 - How to enable accelerators.
 - How to add an accelerator to file yes,no,cancel dialog, so I can type 'n'.
 - Is it possible to specify QScintilla styles with a stylesheet?
+- Can I specify a zoom-in factor for QRichText
 
 Urgent:
+    - Experiment with sending <shift-tab> directly to QScintilla.
     - Call setLexer(0) for nocolor nodes.
     ** Cut and paste should use native widget code
     - Ctrl-k loses scroll position
@@ -20,8 +22,11 @@ Urgent:
     * Tab and space handling are subtly different from traditional Leo way.
     - Reading/saving a window does not properly set its size.
     - Can not open the settings file twice.
+    - Changes to headline do not stick after, e.g., ctrl-r.
+    - Redraw all icons after save (but not save-as or save-to).
 
 Next:
+    - multiline strings to the log pane are not treated properly.
     - Set find handler so unit tests pass.
     - print-settings does not print to a tab and is very slow.
     - Re-enable syntax coloring.
@@ -505,12 +510,21 @@ def __init__(self,c,parent=None):
 
     self.c = c
 
+    # g.trace('Window')
+
     # Init both base classes.
     QtGui.QMainWindow.__init__(self,parent)
     qt_main.Ui_MainWindow.__init__(self)
 
     # Init the QDesigner elements.
     self.setupUi(self)
+
+    if 0:
+        w = self
+        sw = w.stackedWidget
+        r = w.richTextEdit
+        r.setHtml("This is <b>rich text</b>")
+        sw.setCurrentIndex(1)
 
     # The following ivars (and more) are inherited from UiMainWindow:
         # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.

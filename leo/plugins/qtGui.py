@@ -129,12 +129,21 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         self.c = c
 
+        # g.trace('Window')
+
         # Init both base classes.
         QtGui.QMainWindow.__init__(self,parent)
         qt_main.Ui_MainWindow.__init__(self)
 
         # Init the QDesigner elements.
         self.setupUi(self)
+
+        if 0:
+            w = self
+            sw = w.stackedWidget
+            r = w.richTextEdit
+            r.setHtml("This is <b>rich text</b>")
+            sw.setCurrentIndex(1)
 
         # The following ivars (and more) are inherited from UiMainWindow:
             # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
@@ -249,7 +258,19 @@ class leoQtBody (leoFrame.leoBody):
         c = self.c
         assert c.frame == frame and frame.c == c
 
-        self.widget = c.frame.top.textEdit # The actual gui widget.
+        self.useScintilla = c.config.getBool('qt-use-scintilla')
+        # g.trace('leoQtBody',self.useScintilla)
+
+        # Set the actual gui widget.
+        if self.useScintilla:
+            self.widget = c.frame.top.textEdit
+        else:
+            top = c.frame.top ; sw = top.stackedWidget
+            sw.setCurrentIndex(1)
+            self.widget = w = top.richTextEdit # A QTextEdit.
+            w.acceptRichText = False
+        # g.trace('qtBody',self.widget)
+
         self.bodyCtrl = self # The widget as seen from Leo's core.
         self.body_p = None
 
@@ -369,6 +390,14 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081011035036.10:setBodyConfig
     def setBodyConfig (self):
 
+
+        if self.useScintilla:
+            self.setScintillaConfig()
+        else:
+            self.setRichTextConfig()
+    #@+node:ekr.20081023060109.11:setScintillaConfi
+    def setScintillaConfig (self):
+
         c = self.c ; w = self.widget
         tag = 'qt-scintilla-styles'
         qcolor,qfont = QtGui.QColor,QtGui.QFont
@@ -416,13 +445,25 @@ class leoQtBody (leoFrame.leoBody):
                 else: oops('bad style: %s' % style)
 
         w.setLexer(lexer)
+
         n = c.config.getInt('qt-scintilla-zoom-in')
         if n not in (None,0): w.zoomIn(n)
 
         w.setIndentationWidth(4)
         w.setIndentationsUseTabs(False)
         w.setAutoIndent(True)
-    #@nonl
+    #@-node:ekr.20081023060109.11:setScintillaConfi
+    #@+node:ekr.20081023060109.12:setRichTextConfig
+    def setRichTextConfig (self):
+
+        c = self.c ; w = self.widget
+
+        n = c.config.getInt('qt-rich-text-zoom-in')
+        if n not in (None,0):
+            # This only works when there is no style sheet.
+            g.trace('zoom-in',n)
+            w.zoomIn(n)
+    #@-node:ekr.20081023060109.12:setRichTextConfig
     #@-node:ekr.20081011035036.10:setBodyConfig
     #@+node:ekr.20081004172422.508:setColorFromConfig
     def setColorFromConfig (self,w=None):
@@ -674,13 +715,17 @@ class leoQtBody (leoFrame.leoBody):
     def getInsertPoint(self):
 
         w = self.widget
-        s = self.getAllText()
 
-        row,col = w.getCursorPosition()  
-        i = g.convertRowColToPythonIndex(s, row, col)
-
-        if i > 0: self.indexWarning('leoQtBody.getInsertPoint')
-        return i
+        if self.useScintilla:
+            s = self.getAllText()
+            row,col = w.getCursorPosition()  
+            i = g.convertRowColToPythonIndex(s, row, col)
+            if i > 0: self.indexWarning('leoQtBody.getInsertPoint')
+            return i
+        else:
+            i = self.widget.textCursor().position()
+            g.trace(i)
+            return i
     #@-node:ekr.20081007015817.83:getInsertPoint
     #@+node:ekr.20081007015817.84:getLastPosition
     def getLastPosition(self):
@@ -705,17 +750,22 @@ class leoQtBody (leoFrame.leoBody):
 
         w = self.widget
 
-        if w.hasSelectedText():
-            s = self.getAllText()
-            row_i,col_i,row_j,col_j = w.getSelection()
-            i = g.convertRowColToPythonIndex(s, row_i, col_i)
-            j = g.convertRowColToPythonIndex(s, row_j, col_j)
-            if sort and i > j: sel = j,i
+        if self.useScintilla:
+            if w.hasSelectedText():
+                s = self.getAllText()
+                row_i,col_i,row_j,col_j = w.getSelection()
+                i = g.convertRowColToPythonIndex(s, row_i, col_i)
+                j = g.convertRowColToPythonIndex(s, row_j, col_j)
+                if sort and i > j: sel = j,i
+            else:
+                i = j = self.getInsertPoint()
+            if i > 0 or j > 0: self.indexWarning('leoQtBody.getSelectionRange')
+            return i,j
         else:
-            i = j = self.getInsertPoint()
-
-        if i > 0 or j > 0: self.indexWarning('leoQtBody.getSelectionRange')
-        return i,j
+            tc = w.textCursor()
+            i,j = tc.selectionStart(),tc.selectionEnd()
+            g.trace(i,j)
+            return i,j
 
     #@-node:ekr.20081007015817.86:getSelectionRange
     #@+node:ekr.20081008175216.5:selectAllText
@@ -731,28 +781,31 @@ class leoQtBody (leoFrame.leoBody):
     def setInsertPoint(self,i):
 
         w = self.widget
-        w.SendScintilla(w.SCI_SETCURRENTPOS,i)
-        w.SendScintilla(w.SCI_SETANCHOR,i)
 
-        # Works, but is *much* slower, and allocates lots of strings.
+        if self.useScintilla:
+            w.SendScintilla(w.SCI_SETCURRENTPOS,i)
+            w.SendScintilla(w.SCI_SETANCHOR,i)
 
-            # s = self.getAllText()
-            # row,col = g.convertPythonIndexToRowCol(s,i)
-            # w.setCursorPosition(row,col)
+        else:
+            w.textCursor().setPosition(i)
     #@-node:ekr.20081007015817.95:setInsertPoint
     #@+node:ekr.20081007015817.96:setSelectionRange
     def setSelectionRange(self,i,j,insert=None):
 
         w = self.widget
-        if i > j: i,j = j,i
-        if insert in (j,None):
-            self.setInsertPoint(j)
-            w.SendScintilla(w.SCI_SETANCHOR,i)
-        else:
-            self.setInsertPoint(i)
-            w.SendScintilla(w.SCI_SETANCHOR,j)
 
-        # Hurray: we don't need this kind of code:
+        if self.useScintilla:
+            if i > j: i,j = j,i
+            if insert in (j,None):
+                self.setInsertPoint(j)
+                w.SendScintilla(w.SCI_SETANCHOR,i)
+            else:
+                self.setInsertPoint(i)
+                w.SendScintilla(w.SCI_SETANCHOR,j)
+        else:
+            g.trace(i,j)
+            cursor = QtGui.QTextCursor()
+            #  w.setTextCursor(cursor)
 
             # s = self.getAllText()
             # row_i,col_i = g.convertPythonIndexToRowCol(s,i)
@@ -762,7 +815,12 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ville.20081011134505.6:hasSelection
     def hasSelection(self):
 
-        return self.widget.hasSelectedText()
+        w = self.widget
+
+        if self.useScintilla:
+            return w.hasSelectedText()
+        else:
+            return w.textCursor().hasSelection()
     #@-node:ville.20081011134505.6:hasSelection
     #@-node:ekr.20081007015817.76:Insert point and selection
     #@+node:ekr.20081007015817.99:Text getters/settters
@@ -801,7 +859,12 @@ class leoQtBody (leoFrame.leoBody):
     def getAllText(self):
 
         w = self.widget
-        s = w.text()
+
+        if self.useScintilla:
+            s = w.text()
+        else:
+            s = w.toPlainText()
+
         s = g.toUnicode(s,'utf-8')
         return s
     #@-node:ekr.20081007015817.81:getAllText
@@ -817,8 +880,12 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081007015817.92:setAllText
     def setAllText(self,s):
 
-        # g.trace('**** qtBody',g.callers())
-        self.widget.setText(s)
+        w = self.widget
+
+        if self.useScintilla:
+            w.setText(s)
+        else:
+            w.setPlainText(s)
     #@-node:ekr.20081007015817.92:setAllText
     #@-node:ekr.20081007015817.99:Text getters/settters
     #@+node:ekr.20081007015817.91:Visibility
@@ -826,15 +893,20 @@ class leoQtBody (leoFrame.leoBody):
 
         w = self.widget
 
-        # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
-        s = self.getAllText()
-        row,col = g.convertPythonIndexToRowCol(s,i)
-        w.ensureLineVisible(row)
-
+        if self.useScintilla:
+            # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
+            s = self.getAllText()
+            row,col = g.convertPythonIndexToRowCol(s,i)
+            w.ensureLineVisible(row)
+        else:
+            w.ensureCursorVisible()
 
     def seeInsertPoint (self):
 
-        return self.see(self.getInsertPoint())
+        if self.useScintilla:
+            self.see(self.getInsertPoint())
+        else:
+            self.widget.ensureCursorVisible()
     #@-node:ekr.20081007015817.91:Visibility
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
