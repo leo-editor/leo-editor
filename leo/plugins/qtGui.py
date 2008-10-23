@@ -268,6 +268,7 @@ class leoQtBody (leoFrame.leoBody):
         self.body_p = None
 
         # Config stuff.
+        self.tags = {}
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         wrap = c.config.getBool('body_pane_wraps')
         wrap = g.choose(wrap,"word","none")
@@ -561,41 +562,55 @@ class leoQtBody (leoFrame.leoBody):
     def setEditorColors (self,bg,fg):       pass
     def setForegroundColor(self,color):     pass
 
-    def configure (self,*args,**keys):
-        if self.useScintilla:
-            pass # QScintilla handles all recoloring.
-        else:
-            g.trace()
+    def configure (self,*args,**keys):      pass
+    #@-node:ekr.20081023113729.1:Configuration
+    #@+node:ekr.20081023131208.10:Coloring
+    def forceFullRecolor (self):            pass
+    def update_idletasks(self):             pass
 
-    def forceFullRecolor (self):
-        if self.useScintilla:
-            pass
-        else:
-            g.trace()
+    def removeAllTags(self):
+        w = self.widget
+        format = QtGui.QTextCharFormat()
+        color = QtGui.QColor('black')
+        brush = QtGui.QBrush(color)
+        format.setForeground(brush)
+        a,b = self.getSelectionRange()
+        self.selectAllText()
+        w.setCurrentCharFormat(format)
+        self.setSelectionRange(a,b)
 
     def tag_add(self,tag,x1,x2):
-        g.trace(tag,x1,x2)
+        if tag == 'comment1':
+            # g.trace(tag,x1,x2)
+            w = self.widget
+
+            color = QtGui.QColor('red')
+            # format = QtGui.QTextCharFormat()
+            # brush = QtGui.QBrush(color)
+            # format.setForeground(brush)
+            sb = w.verticalScrollBar()
+            pos = sb.sliderPosition()
+            a,b = self.getSelectionRange()
+            ins = self.getInsertPoint()
+            self.setSelectionRange(x1,x2)
+            # w.setCurrentCharFormat(format)
+            w.setTextColor(color)
+            self.setSelectionRange(a,b,insert=ins)
+            sb.setSliderPosition(pos)
 
     def tag_config (self,*args,**keys):
-        g.trace(args,keys)
+        if len(args) == 1:
+            key = args[0]
+            # g.trace(key,keys)
+            self.tags[key] = keys
+        else:
+            g.trace('oops',args,keys)
 
     tag_configure = tag_config
 
-    def after_idle(self,func,threadCount):
-        g.trace(func.__name__,'threadCount',threadCount)
-        return func(threadCount)
-
-    def after(self,n,func,threadCount):
-        g.trace(n,func.__name__,'threadCount',threadCount)
-        return func(threadCount)
-
-
-    def update_idletasks(self):
-        pass
-
     def tag_names (self):
         return []
-    #@-node:ekr.20081023113729.1:Configuration
+    #@-node:ekr.20081023131208.10:Coloring
     #@+node:ekr.20081016072304.12: indexWarning
     warningsDict = {}
 
@@ -616,7 +631,7 @@ class leoQtBody (leoFrame.leoBody):
         '''Update Leo after the body has been changed.'''
 
         c = self.c ; tree = c.frame.tree ; w = self
-        trace = True ; verbose = False
+        trace = False ; verbose = False
         old_p,new_p = tree.old_p,tree.new_p
 
         if tree.selecting:
@@ -720,13 +735,22 @@ class leoQtBody (leoFrame.leoBody):
         # g.trace('leoQtBody',self.widget,g.callers(4))
         g.app.gui.set_focus(self.c,self.widget)
     #@-node:ekr.20081004172422.510:Focus (qtBody)
-    #@+node:ekr.20081004172422.516:Idle time (to do)
-    def scheduleIdleTimeRoutine (self,function,*args,**keys):
+    #@+node:ekr.20081004172422.516:Idle time
+    def after_idle(self,func,threadCount):
+        # g.trace(func.__name__,'threadCount',threadCount)
+        return func(threadCount)
 
-        pass
+    def after(self,n,func,threadCount):
+        def after_callback(func=func,threadCount=threadCount):
+            # g.trace(func.__name__,threadCount)
+            return func(threadCount)
+        QtCore.QTimer.singleShot(n,after_callback)
+
+    def scheduleIdleTimeRoutine (self,function,*args,**keys):
+        g.trace()
         # if not g.app.unitTesting:
             # self.widget.after_idle(function,*args,**keys)
-    #@-node:ekr.20081004172422.516:Idle time (to do)
+    #@-node:ekr.20081004172422.516:Idle time
     #@+node:ekr.20081007115148.7:Indices
     def toPythonIndex (self,index):
 

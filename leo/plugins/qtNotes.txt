@@ -24,12 +24,13 @@ Urgent:
     - Can not open the settings file twice.
     - Changes to headline do not stick after, e.g., ctrl-r.
     - Redraw all icons after save (but not save-as or save-to).
+    - File:Exit does not quit the main loop.
+            Call QCoreApplication::exit().
 
 Next:
     - multiline strings to the log pane are not treated properly.
     - Set find handler so unit tests pass.
     - print-settings does not print to a tab and is very slow.
-    - Re-enable syntax coloring.
     - Fix failing unit tests. 
     - Support Icon area.
     - Do gui-dependent commands (in leoQtFrame)
@@ -45,7 +46,15 @@ Cleanup:
      - Fix Stubborn bugs.
         - file-changed marker usually takes two characters to change.
         - Menu accelerators are not shown and do not work.
-        - File:Exit does not quit the main loop.
+    g.trace(func.__name__,'threadCount',threadCount)
+    return func(threadCount)
+
+def after(self,n,func,threadCount):
+    g.trace(n,func.__name__,'threadCount',threadCount)
+    def after_callback(func=func,threadCount=threadCount):
+        g.trace(func.__name__,threadCount)
+        return func(threadCount)
+    QtCore.QTimer.singleShot(n,after_callback)
     - Remove old-style Leo settings.
     - Clean up text classes.
         - Finish leoQtTextWidget class.
@@ -607,7 +616,7 @@ def onTextChanged (self):
     '''Update Leo after the body has been changed.'''
 
     c = self.c ; tree = c.frame.tree ; w = self
-    trace = True ; verbose = False
+    trace = False ; verbose = False
     old_p,new_p = tree.old_p,tree.new_p
 
     if tree.selecting:
