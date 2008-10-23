@@ -19,6 +19,7 @@ Urgent:
     - Alt-1, Alt-2 bindings do not work
     * Tab and space handling are subtly different from traditional Leo way.
     - Reading/saving a window does not properly set its size.
+    - Can not open the settings file twice.
 
 Next:
     - Set find handler so unit tests pass.
