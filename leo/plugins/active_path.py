@@ -6,31 +6,40 @@
 
 If a node is named '@path path_to_folder', the content (file and folder names)
 of the folder and the children of that node will synchronized whenever
-the node's status-iconbox is clicked.
+the node's status-iconbox is double clicked.
 
 For files not previously seen in a folder a new node will appear on top of
 the children list (with a mark).
 
-Folders appear in the list as /foldername/.  If you click on the icon-box of the
-folder node, it will have children added to it based on the contents of the
-folder on disk.
+Folders appear in the list as /foldername/.  If you double click on the
+icon-box of the folder node, it will have children added to it based on
+the contents of the folder on disk.  These folders have the '@path' directive
+as the first line of their body text.
 
-When files are deleted from the folder they will appear in the list as
-*filename* (or */foldername/*).
+When files are deleted from the folder and the list is updated by double
+clicking the files will appear in the list as *filename* (or */foldername/*).
 
 You can describe files and directories in the body of the nodes.
 
 You can organize files and directories with organizer nodes, an organizer
-node name cannot start with '/'.
+node name cannot contain with '/'.
 
 Files and folders can be created by entering a node with the required name as its headline
-(must start and/or end with "/" for a folder) and then clicking on the node's
+(must start and/or end with "/" for a folder) and then double clicking on the node's
 status-iconbox.
 
-Files can be loaded by clicking on the node's status-iconbox.
+@auto nodes can be set up for existing files can be loaded by
+double clicking on the node's status-iconbox.  If you prefer
+@shadow or something else use the "active_path_attype" setting,
+without the "@".
 
-There are two commands on the Plugins active_path submenu, show path, and set absolute path.
-The latter changes a node "/dirname/" to "@path /absolute/path/to/dirname".
+There are commands on the Plugins active_path submenu:
+
+    - show path - show the current path
+    - set absolute path - changes a node "/dirname/" to "@path /absolute/path/to/dirname".
+    - purge vanished (recursive) - remove *entries*
+    - update recursive - recursive load of directories, use with caution on large
+      file systems
 
 active_path is a rewrite of the at_directory plugin to use @path directives (which influence
 @auto and other @file type directives), and to handle sub-folders more automatically.
@@ -72,7 +81,7 @@ def getPath(p):
 
     while p:
         h = p.headString()
-        # TODO - use leo internal @path code, when it's working
+        # TODO - use leo internal @path code
 
         if g.match_word(h,0,"@path"):  # top of the tree
             path.insert(0,os.path.expanduser(h[6:].strip()))
@@ -109,18 +118,27 @@ def flattenOrganizers(p):
     """    
     for n in p.children_iter():
         yield n
-        if '/' not in n.headString():
+        if ('/' not in n.headString()
+            and not n.headString().startswith('@')):
             for i in flattenOrganizers(n):
                 yield i
 #@nonl
 #@-node:tbrown.20080613095157.5:flattenOrganizers
 #@+node:tbrown.20080613095157.6:sync_node_to_folder
-def sync_node_to_folder(c,parent,d):
+def sync_node_to_folder(c,parent,d, updateOnly=False):
     """Decide whether we're opening or creating a file or a folder"""
+
+    if os.path.isdir(d):
+        if ('/' in parent.headString()
+            or parent.headString().startswith('@path')):
+            # no '/' or @path implies organizer
+            openDir(c,parent,d)
+        return
+
+    if updateOnly: return
+
     if os.path.isfile(d):
         openFile(c,parent,d)
-    elif os.path.isdir(d):
-        openDir(c,parent,d)
     elif '/' in parent.headString():
         createDir(c,parent,d)
     else:
@@ -135,18 +153,25 @@ def createDir(c,parent,d):
     if ok == 'no':
         return
     c.setHeadString(parent, '/'+newd+'/')
+    c.setBodyString(parent, '@path '+newd+'\n'+parent.bodyString())
     os.mkdir(d)
 #@nonl
 #@-node:tbrown.20080613095157.7:createDir
 #@+node:tbrown.20080613095157.8:createFile
 def createFile(c,parent,d):
     """Ask if we should create a new file"""
+    directory = os.path.dirname(d)
+    if not os.path.isdir(directory):
+        g.es('Create parent directories first', color='red')
+        return
+
     d = os.path.basename(d)
+    atType = c.config.getString('active_path_attype') or 'auto'
     ok = g.app.gui.runAskYesNoDialog(c, 'Create file?',
-        'Create file @auto '+d+'?')
+        'Create file @'+atType+' '+d+'?')
     if ok == 'no':
         return
-    c.setHeadString(parent, '@auto '+d)
+    c.setHeadString(parent, '@'+atType+' '+d)
     c.bodyWantsFocusNow()
 #@nonl
 #@-node:tbrown.20080613095157.8:createFile
@@ -160,7 +185,7 @@ def openFile(c,parent,d):
 #@-node:tbrown.20080613095157.9:openFile
 #@+node:tbrown.20080613095157.10:openDir
 def openDir(c,parent,d):
-    """Expand / refresh and existing folder"""
+    """Expand / refresh an existing folder"""
 
     # compare folder content to children
     try:
@@ -177,7 +202,12 @@ def openDir(c,parent,d):
 
     # get children info
     for p in flattenOrganizers(parent):
-        oldlist.add(p.headString().strip('/*'))
+        entry = p.headString().strip('/*')
+        if entry.startswith('@'):  # remove only the @part
+            directive = entry.split(None,1)
+            if len(directive) > 1:
+                entry = entry[len(directive[0]):].strip()
+        oldlist.add(entry)
 
     for d in dirs:
         if d in oldlist:
@@ -204,21 +234,43 @@ def openDir(c,parent,d):
     # warn / mark for orphan oldlist
     for p in flattenOrganizers(parent):
         h = p.headString().strip('/*')  # strip / and *
-        if h not in oldlist or p.hasChildren():  # clears bogus '*' marks
+        if (h not in oldlist 
+            or (p.hasChildren() and '/' not in p.headString())):  # clears bogus '*' marks
             nh = p.headString().strip('*')  # strip only *
         else:
             nh = '*'+p.headString().strip('*')+'*'
+            if '/' in p.headString():
+                for orphan in p.subtree_iter():
+                    c.setHeadString(orphan, '*'+orphan.headString().strip('*')+'*')
         if p.headString() != nh:  # don't dirty node unless we must
             c.setHeadString(p,nh)
 #@nonl
 #@-node:tbrown.20080613095157.10:openDir
-#@+node:tbrown.20080616153649.2:cmd_showPath
-def cmd_showPath(c):
+#@+node:tbrown.20080616153649.2:cmd_ShowCurrentPath
+def cmd_ShowCurrentPath(c):
+    """Just show the path to the current file/directory node in the log pane."""
     g.es(getPath(c.currentPosition()))
-#@-node:tbrown.20080616153649.2:cmd_showPath
-#@+node:tbrown.20080616153649.5:cmd_setPathAbsolute
-def cmd_setPathAbsolute(c):
+#@-node:tbrown.20080616153649.2:cmd_ShowCurrentPath
+#@+node:tbrown.20080619080950.16:cmd_UpdateRecursive
+def cmd_UpdateRecursive(c):
+    """Recursive update, no new expansions."""
+    p = c.currentPosition()
 
+    c.beginUpdate()
+    try:
+        for s in p.self_and_subtree_iter():
+            path = getPath(s)
+
+            if path:
+                sync_node_to_folder(c,s,path,updateOnly=True)
+
+    finally:
+        c.endUpdate()
+
+#@-node:tbrown.20080619080950.16:cmd_UpdateRecursive
+#@+node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
+def cmd_SetNodeToAbsolutePath(c):
+    """Change "/dirname/" to "@path /absolute/path/to/dirname"."""
     p = c.currentPosition()
     if '@' in p.headString():
         g.es('Node should be a "/dirname/" type directory entry')
@@ -227,11 +279,117 @@ def cmd_setPathAbsolute(c):
     c.setBodyString(p, ('@path Created from node "%s"\n\n'
         % p.headString())+p.bodyString())
     c.setHeadString(p, '@path '+path)
-#@-node:tbrown.20080616153649.5:cmd_setPathAbsolute
+#@-node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
+#@+node:tbrown.20080618141617.879:cmd_PurgeVanishedFiles
+def cond(p):
+    return p.headString().startswith('*') and p.headString().endswith('*')
+
+def dtor(p):
+    g.es(p.headString())
+    p.doDelete()
+
+def cmd_PurgeVanishedFilesHere(c):
+    """Remove files no longer present, i.e. "*filename*" entries."""
+    p = c.currentPosition().getParent()
+
+    c.beginUpdate()
+    try:
+        n = deleteChildren(p, cond, dtor=dtor)
+        g.es('Deleted %d nodes' % n)
+    finally:
+        c.endUpdate()
+
+def cmd_PurgeVanishedFilesRecursive(c):
+    """Remove files no longer present, i.e. "*filename*" entries."""
+    p = c.currentPosition()
+
+    c.beginUpdate()
+    try:
+        n = deleteDescendents(p, cond, dtor=dtor)
+        g.es('Deleted at least %d nodes' % n)
+    finally:
+        c.endUpdate()
+
+def deleteChildren(p, cond, dtor=None):
+
+    cull = [child.copy() for child in p.children_iter() if cond(child)]
+
+    if cull:
+        cull.reverse()
+        for child in cull:
+            if dtor:
+                dtor(child)
+            else:
+                child.doDelete()
+        return len(cull)
+
+    return 0
+
+def deleteDescendents(p, cond, dtor=None, descendAnyway=False, _culls=0):
+
+    childs = [child.copy() for child in p.children_iter()]
+    childs.reverse()
+    for child in childs:
+        if descendAnyway or not cond(child):
+            _culls += deleteDescendents(child, cond, dtor=dtor,
+                                        descendAnyway=descendAnyway)
+        if cond(child):
+            _culls += 1
+            if dtor:
+                dtor(child)
+            else:
+                child.doDelete()
+    return _culls
+
+#@-node:tbrown.20080618141617.879:cmd_PurgeVanishedFiles
+#@+node:tbrown.20080619080950.14:testing
+#@+node:tbrown.20080619080950.15:makeTestHierachy
+files="""
+a/
+a/a/
+a/a/1
+a/a/2
+a/a/3
+a/b/
+a/c/
+a/c/1
+a/c/2
+a/c/3
+b/
+c/
+1
+2
+3
+"""
+import os, shutil
+def makeTestHierachy(c):
+
+    shutil.rmtree('active_directory_test')
+    for i in files.strip().split():
+        f = 'active_directory_test/'+i
+        if f.endswith('/'):
+            os.makedirs(os.path.normpath(f))
+        else:
+            file(os.path.normpath(f),'w')
+
+def deleteTestHierachy(c):
+
+    for i in files.strip().split():
+        f = 'active_directory_test/'+i
+        if 'c/' in f and f.endswith('/'):
+            shutil.rmtree(os.path.normpath(f))
+        elif '2' in f:
+            try: os.remove(os.path.normpath(f))
+            except: pass  # already gone
+
+cmd_MakeTestHierachy = makeTestHierachy
+cmd_DeleteFromTestHierachy = deleteTestHierachy
+#@-node:tbrown.20080619080950.15:makeTestHierachy
+#@-node:tbrown.20080619080950.14:testing
 #@-others
 
 if 1: # Ok for unit testing.
-    leoPlugins.registerHandler("iconclick1", lambda t,k: onSelect(t,k))
+    leoPlugins.registerHandler("icondclick1", lambda t,k: onSelect(t,k))
     g.plugin_signon(__name__)
 #@-node:tbrown.20080613095157.2:@thin active_path.py
 #@-leo
