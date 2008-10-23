@@ -383,11 +383,14 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081011035036.10:setBodyConfig
     def setBodyConfig (self):
 
+        c = self.c
 
         if self.useScintilla:
             self.setScintillaConfig()
         else:
             self.setRichTextConfig()
+            self.colorizer = leoColor.colorizer(c)
+    #@nonl
     #@+node:ekr.20081023060109.11:setScintillaConfi
     def setScintillaConfig (self):
 
@@ -551,6 +554,48 @@ class leoQtBody (leoFrame.leoBody):
     def scrollLines(self,n):                pass
     def setYScrollPosition(self,i):         pass
     #@-node:ekr.20081016072304.11: Do-nothings
+    #@+node:ekr.20081023113729.1:Configuration
+    # Configuration will be handled by style sheets.
+    def cget(self,*args,**keys):            return None
+    def setBackgroundColor(self,color):     pass
+    def setEditorColors (self,bg,fg):       pass
+    def setForegroundColor(self,color):     pass
+
+    def configure (self,*args,**keys):
+        if self.useScintilla:
+            pass # QScintilla handles all recoloring.
+        else:
+            g.trace()
+
+    def forceFullRecolor (self):
+        if self.useScintilla:
+            pass
+        else:
+            g.trace()
+
+    def tag_add(self,tag,x1,x2):
+        g.trace(tag,x1,x2)
+
+    def tag_config (self,*args,**keys):
+        g.trace(args,keys)
+
+    tag_configure = tag_config
+
+    def after_idle(self,func,threadCount):
+        g.trace(func.__name__,'threadCount',threadCount)
+        return func(threadCount)
+
+    def after(self,n,func,threadCount):
+        g.trace(n,func.__name__,'threadCount',threadCount)
+        return func(threadCount)
+
+
+    def update_idletasks(self):
+        pass
+
+    def tag_names (self):
+        return []
+    #@-node:ekr.20081023113729.1:Configuration
     #@+node:ekr.20081016072304.12: indexWarning
     warningsDict = {}
 
@@ -571,7 +616,7 @@ class leoQtBody (leoFrame.leoBody):
         '''Update Leo after the body has been changed.'''
 
         c = self.c ; tree = c.frame.tree ; w = self
-        trace = False ; verbose = False
+        trace = True ; verbose = False
         old_p,new_p = tree.old_p,tree.new_p
 
         if tree.selecting:
@@ -617,12 +662,14 @@ class leoQtBody (leoFrame.leoBody):
         if i > j: i,j = j,i
         new_p.v.t.selectionStart,new_p.v.t.selectionLength = (i,j-i)
 
-        # No need to recolor the body.
         # No need to redraw the screen.
+        if not self.useScintilla:
+            c.recolor()
         if not c.changed and c.frame.initComplete:
             c.setChanged(True)
         self.updateEditors()
         c.frame.tree.updateIcon(p)
+        c.outerUpdate() ###
     #@-node:ekr.20081011035036.1: onTextChanged
     #@+node:ekr.20081007015817.78: oops
     def oops (self):
@@ -783,7 +830,15 @@ class leoQtBody (leoFrame.leoBody):
             w.textCursor().setPosition(i)
     #@-node:ekr.20081007015817.95:setInsertPoint
     #@+node:ekr.20081007015817.96:setSelectionRange
-    def setSelectionRange(self,i,j,insert=None):
+    def setSelectionRange(self,*args,**keys):
+        # A kludge to allow a single arg containing i,j
+        if len(args) == 1:
+            i,j = args[0]
+        elif len(args) == 2:
+            i,j = args
+        else:
+            g.trace('can not happen',args)
+        insert = keys.get('insert')
 
         w = self.widget
 

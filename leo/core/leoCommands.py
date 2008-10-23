@@ -6199,7 +6199,7 @@ class baseCommands:
     #@+node:ekr.20080514131122.20:c.outerUpdate
     def outerUpdate (self):
 
-        c = self ; aList = [] ; trace = False ; verbose = False
+        c = self ; aList = [] ; trace = True ; verbose = True
 
         if not c.exists or not c.k:
             return
@@ -6253,6 +6253,7 @@ class baseCommands:
     def requestRecolor (self):
 
         c = self
+        g.trace(g.callers(4))
         c.requestRecolorFlag = True
 
     recolor = requestRecolor

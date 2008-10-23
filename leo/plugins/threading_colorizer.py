@@ -163,7 +163,7 @@ default_font_dict = {
 #@+node:ekr.20071010193720.7:init
 def init ():
 
-    ok = g.app.gui.guiName() == 'tkinter'
+    ok = g.app.gui.guiName() in ('qt','tkinter')
 
     if ok:
 
@@ -413,6 +413,7 @@ class colorizer:
         self.p = None
         self.s = None # The string being colorized.
 
+        self.isQt = g.app.gui.guiName() == 'qt'
         self.fake = bool(w)
 
         if w is None:
@@ -887,6 +888,8 @@ class colorizer:
 
         c = self.c
 
+        g.trace(self.enabled,g.callers(5))
+
         if self.enabled:
             self.updateSyntaxColorer(p) # Sets self.flag.
             self.threadColorizer(p)
@@ -1269,12 +1272,16 @@ class colorizer:
             if tag == 'docPart' or tag.startswith('comment'):
                 if not g.doHook("color-optional-markup",
                     colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag=tag):
-                    # w.tag_add(tag,x1,x2)
-                    self.Tk_Text.tag_add(w,tag,x1,x2)
+                    if self.isQt:
+                        w.tag_add(tag,x1,x2)
+                    else:
+                        self.Tk_Text.tag_add(w,tag,x1,x2)
             else:
-                # g.trace(tag,x1,x2,i,j)
-                # w.tag_add(tag,x1,x2)
-                self.Tk_Text.tag_add(w,tag,x1,x2)
+                g.trace(tag,x1,x2,i,j)
+                if self.isQt:
+                    w.tag_add(tag,x1,x2)
+                else:
+                    self.Tk_Text.tag_add(w,tag,x1,x2)
     #@-node:ekr.20071013085626:putNewTags
     #@+node:ekr.20071010193720.44:removeAllImages
     def removeAllImages (self):
@@ -2054,13 +2061,14 @@ class colorizer:
     def setFontFromConfig (self):
 
         c = self.c
+        isQt = g.app.gui.guiName() == 'qt'
 
         self.bold_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer bold")
 
-        if self.bold_font:
+        if self.bold_font and not isQt:
             self.bold_font.configure(weight="bold")
 
         self.italic_font = c.config.getFontFromParams(
@@ -2068,7 +2076,7 @@ class colorizer:
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer italic")
 
-        if self.italic_font:
+        if self.italic_font and not isQt:
             self.italic_font.configure(slant="italic",weight="normal")
 
         self.bolditalic_font = c.config.getFontFromParams(
@@ -2076,7 +2084,7 @@ class colorizer:
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer bold italic")
 
-        if self.bolditalic_font:
+        if self.bolditalic_font and not isQt:
             self.bolditalic_font.configure(weight="bold",slant="italic")
 
         self.color_tags_list = []

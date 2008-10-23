@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4,1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -2511,7 +2511,7 @@ rClick.py
 
 # add_directives.py # scan-directives hook not ready.
 # color_markup.py # Does not work with threading colorizer.
-### threading_colorizer.py ### problems with fonts: use scintilla colorizer instead.
+threading_colorizer.py
 rst3.py
 UNL.py
 open_with.py
