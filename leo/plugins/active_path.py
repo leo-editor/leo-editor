@@ -118,12 +118,17 @@ def flattenOrganizers(p):
 #@nonl
 #@-node:tbrown.20080613095157.5:flattenOrganizers
 #@+node:tbrown.20080613095157.6:sync_node_to_folder
-def sync_node_to_folder(c,parent,d):
+def sync_node_to_folder(c,parent,d, updateOnly=False):
     """Decide whether we're opening or creating a file or a folder"""
+
+    if os.path.isdir(d):
+        openDir(c,parent,d)
+        return
+
+    if updateOnly: return
+
     if os.path.isfile(d):
         openFile(c,parent,d)
-    elif os.path.isdir(d):
-        openDir(c,parent,d)
     elif '/' in parent.headString():
         createDir(c,parent,d)
     else:
@@ -207,21 +212,43 @@ def openDir(c,parent,d):
     # warn / mark for orphan oldlist
     for p in flattenOrganizers(parent):
         h = p.headString().strip('/*')  # strip / and *
-        if h not in oldlist or p.hasChildren():  # clears bogus '*' marks
+        if (h not in oldlist 
+            or (p.hasChildren() and '/' not in p.headString())):  # clears bogus '*' marks
             nh = p.headString().strip('*')  # strip only *
         else:
             nh = '*'+p.headString().strip('*')+'*'
+            if '/' in p.headString():
+                for orphan in p.subtree_iter():
+                    c.setHeadString(orphan, '*'+orphan.headString().strip('*')+'*')
         if p.headString() != nh:  # don't dirty node unless we must
             c.setHeadString(p,nh)
 #@nonl
 #@-node:tbrown.20080613095157.10:openDir
-#@+node:tbrown.20080616153649.2:cmd_showPath
-def cmd_showPath(c):
+#@+node:tbrown.20080616153649.2:cmd_ShowCurrentPath
+def cmd_ShowCurrentPath(c):
+    """Just show the path to the current file/directory node in the log pane."""
     g.es(getPath(c.currentPosition()))
-#@-node:tbrown.20080616153649.2:cmd_showPath
-#@+node:tbrown.20080616153649.5:cmd_setPathAbsolute
-def cmd_setPathAbsolute(c):
+#@-node:tbrown.20080616153649.2:cmd_ShowCurrentPath
+#@+node:tbrown.20080619080950.16:cmd_UpdateRecursive
+def cmd_UpdateRecursive(c):
+    """Recursive update, no new expansions."""
+    p = c.currentPosition()
 
+    c.beginUpdate()
+    try:
+        for s in p.self_and_subtree_iter():
+            path = getPath(s)
+
+            if path:
+                sync_node_to_folder(c,s,path,updateOnly=True)
+
+    finally:
+        c.endUpdate()
+
+#@-node:tbrown.20080619080950.16:cmd_UpdateRecursive
+#@+node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
+def cmd_SetNodeToAbsolutePath(c):
+    """Change "/dirname/" to "@path /absolute/path/to/dirname"."""
     p = c.currentPosition()
     if '@' in p.headString():
         g.es('Node should be a "/dirname/" type directory entry')
@@ -230,7 +257,113 @@ def cmd_setPathAbsolute(c):
     c.setBodyString(p, ('@path Created from node "%s"\n\n'
         % p.headString())+p.bodyString())
     c.setHeadString(p, '@path '+path)
-#@-node:tbrown.20080616153649.5:cmd_setPathAbsolute
+#@-node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
+#@+node:tbrown.20080618141617.879:cmd_PurgeVanishedFiles
+def cond(p):
+    return p.headString().startswith('*') and p.headString().endswith('*')
+
+def dtor(p):
+    g.es(p.headString())
+    p.doDelete()
+
+def cmd_PurgeVanishedFilesHere(c):
+    """Remove files no longer present, i.e. "*filename*" entries."""
+    p = c.currentPosition().getParent()
+
+    c.beginUpdate()
+    try:
+        n = deleteChildren(p, cond, dtor=dtor)
+        g.es('Deleted %d nodes' % n)
+    finally:
+        c.endUpdate()
+
+def cmd_PurgeVanishedFilesRecursive(c):
+    """Remove files no longer present, i.e. "*filename*" entries."""
+    p = c.currentPosition()
+
+    c.beginUpdate()
+    try:
+        n = deleteDescendents(p, cond, dtor=dtor)
+        g.es('Deleted at least %d nodes' % n)
+    finally:
+        c.endUpdate()
+
+def deleteChildren(p, cond, dtor=None):
+
+    cull = [child.copy() for child in p.children_iter() if cond(child)]
+
+    if cull:
+        cull.reverse()
+        for child in cull:
+            if dtor:
+                dtor(child)
+            else:
+                child.doDelete()
+        return len(cull)
+
+    return 0
+
+def deleteDescendents(p, cond, dtor=None, descendAnyway=False, _culls=0):
+
+    childs = [child.copy() for child in p.children_iter()]
+    childs.reverse()
+    for child in childs:
+        if descendAnyway or not cond(child):
+            _culls += deleteDescendents(child, cond, dtor=dtor,
+                                        descendAnyway=descendAnyway)
+        if cond(child):
+            _culls += 1
+            if dtor:
+                dtor(child)
+            else:
+                child.doDelete()
+    return _culls
+
+#@-node:tbrown.20080618141617.879:cmd_PurgeVanishedFiles
+#@+node:tbrown.20080619080950.14:testing
+#@+node:tbrown.20080619080950.15:makeTestHierachy
+files="""
+a/
+a/a/
+a/a/1
+a/a/2
+a/a/3
+a/b/
+a/c/
+a/c/1
+a/c/2
+a/c/3
+b/
+c/
+1
+2
+3
+"""
+import os, shutil
+def makeTestHierachy(c):
+
+    shutil.rmtree('active_directory_test')
+    for i in files.strip().split():
+        f = 'active_directory_test/'+i
+        if f.endswith('/'):
+            os.makedirs(os.path.normpath(f))
+        else:
+            file(os.path.normpath(f),'w')
+
+def deleteTestHierachy(c):
+
+    for i in files.strip().split():
+        f = 'active_directory_test/'+i
+        if 'c/' in f and f.endswith('/'):
+            shutil.rmtree(os.path.normpath(f))
+        elif '2' in f:
+            try: os.remove(os.path.normpath(f))
+            except: pass  # already gone
+
+cmd_MakeTestHierachy = makeTestHierachy
+cmd_DeleteFromTestHierachy = deleteTestHierachy
+#@-node:tbrown.20080619080950.15:makeTestHierachy
+#@-node:tbrown.20080619080950.14:testing
 #@-others
 
 if 1: # Ok for unit testing.
