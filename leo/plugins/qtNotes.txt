@@ -8,7 +8,7 @@ Ask Qt people:
 - How to enable accelerators.
 - How to add an accelerator to file yes,no,cancel dialog, so I can type 'n'.
 - Is it possible to specify QScintilla styles with a stylesheet?
-- Can I specify a zoom-in factor for QRichText
+- Can I specify a zoom-in factor for QTextEdit?
 
 Urgent:
     - Experiment with sending <shift-tab> directly to QScintilla.
@@ -518,13 +518,6 @@ def __init__(self,c,parent=None):
 
     # Init the QDesigner elements.
     self.setupUi(self)
-
-    if 0:
-        w = self
-        sw = w.stackedWidget
-        r = w.richTextEdit
-        r.setHtml("This is <b>rich text</b>")
-        sw.setCurrentIndex(1)
 
     # The following ivars (and more) are inherited from UiMainWindow:
         # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.

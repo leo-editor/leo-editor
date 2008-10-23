@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="10,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="10,1"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1073,7 +1073,7 @@
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
 <v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
-<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = True</vh></v>
+<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
@@ -1460,7 +1460,7 @@
 </v>
 <v t="ekr.20041119051246.4"><vh>@font outline font</vh></v>
 <v t="ekr.20081018053140.11" a="E"><vh>qtGui plugin</vh>
-<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = True</vh></v>
+<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
@@ -7652,17 +7652,20 @@ QTextEdit {
 QTextEdit#disabled-richTextEdit {
     background-color: #fdf5f5; /* A kind of pink. */
     font-family: Courier New;
-    font-size: 24px;
+    font-size: 14px;
     font-weight: 900; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
     /* zoom: 6; */ /* zoom-in: 6 */
 }
 
 QTextEdit#richTextEdit {
-    background-color: #fdf5f5; /* A kind of pink. */
-    font-family: DejaVu Sans Mono;
-    font-size: 28px;
-    font-weight: normal; /* normal,bold,100,..,900 */
+    background-color: white; /* #fdf5f5; /* A kind of pink. */
+    selection-color: white;
+    selection-background-color: lightgrey;
+    /* font-family: DejaVu Sans Mono; */
+    font-family: Courier New;
+    font-size: 20px;
+    font-weight: bold; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
     /* zoom: 6; */ /* zoom-in: 6 */
 }</t>

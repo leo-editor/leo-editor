@@ -138,13 +138,6 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         # Init the QDesigner elements.
         self.setupUi(self)
 
-        if 0:
-            w = self
-            sw = w.stackedWidget
-            r = w.richTextEdit
-            r.setHtml("This is <b>rich text</b>")
-            sw.setCurrentIndex(1)
-
         # The following ivars (and more) are inherited from UiMainWindow:
             # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
             # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
@@ -461,7 +454,7 @@ class leoQtBody (leoFrame.leoBody):
         n = c.config.getInt('qt-rich-text-zoom-in')
         if n not in (None,0):
             # This only works when there is no style sheet.
-            g.trace('zoom-in',n)
+            # g.trace('zoom-in',n)
             w.zoomIn(n)
     #@-node:ekr.20081023060109.12:setRichTextConfig
     #@-node:ekr.20081011035036.10:setBodyConfig
@@ -724,7 +717,7 @@ class leoQtBody (leoFrame.leoBody):
             return i
         else:
             i = self.widget.textCursor().position()
-            g.trace(i)
+            # g.trace(i)
             return i
     #@-node:ekr.20081007015817.83:getInsertPoint
     #@+node:ekr.20081007015817.84:getLastPosition
@@ -764,7 +757,7 @@ class leoQtBody (leoFrame.leoBody):
         else:
             tc = w.textCursor()
             i,j = tc.selectionStart(),tc.selectionEnd()
-            g.trace(i,j)
+            # g.trace(i,j)
             return i,j
 
     #@-node:ekr.20081007015817.86:getSelectionRange
@@ -803,9 +796,21 @@ class leoQtBody (leoFrame.leoBody):
                 self.setInsertPoint(i)
                 w.SendScintilla(w.SCI_SETANCHOR,j)
         else:
-            g.trace(i,j)
-            cursor = QtGui.QTextCursor()
-            #  w.setTextCursor(cursor)
+            e = QtGui.QTextCursor
+            # g.trace(i,j)
+            if i > j: i,j = j,i
+            cursor = w.textCursor()
+            cursor.setPosition(i)
+            if i == j:
+                cursor.setPosition(i)
+            elif insert in (j,None):
+                cursor.setPosition(i)
+                cursor.movePosition(e.Right,e.KeepAnchor,j-i)
+            else:
+                cursor.setPosition(j)
+                cursor.movePosition(e.Left,e.KeepAnchor,j-i)
+
+            w.setTextCursor(cursor)
 
             # s = self.getAllText()
             # row_i,col_i = g.convertPythonIndexToRowCol(s,i)

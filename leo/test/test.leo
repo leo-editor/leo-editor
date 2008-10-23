@@ -3728,6 +3728,9 @@ for z in aList:
 
 for i in range(10):
     g.es('test',color='red')
+
+QTextEdit /* */
+font-size
 </t>
 <t tx="ekr.20081019050559.1">w = c.frame.top
 sw = w.stackedWidget
