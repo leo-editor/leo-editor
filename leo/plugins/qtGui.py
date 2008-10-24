@@ -983,11 +983,17 @@ class leoQtBody (leoFrame.leoBody):
             w.setText(s)
         else:
             # g.trace('len(s)',len(s))
+            sb = w.verticalScrollBar()
+            pos = sb.sliderPosition()
             w.setPlainText(s)
+            sb.setSliderPosition(pos)
+    #@nonl
     #@-node:ekr.20081007015817.92:setAllText
     #@-node:ekr.20081007015817.99:Text getters/settters
     #@+node:ekr.20081007015817.91:Visibility
     def see(self,i):
+
+        return
 
         w = self.widget
 
@@ -1000,6 +1006,8 @@ class leoQtBody (leoFrame.leoBody):
             w.ensureCursorVisible()
 
     def seeInsertPoint (self):
+
+        return 
 
         if self.useScintilla:
             self.see(self.getInsertPoint())
@@ -5663,7 +5671,7 @@ class leoQtTree (leoFrame.leoTree):
 
         p = self.itemsDict.get(item)
         if p:
-            g.trace(p.headString())
+            # g.trace(p.headString())
             self.c.setCurrentPosition(p)
             self.current_item = item # For scrolling.
             p.expand()

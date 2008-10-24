@@ -7,42 +7,37 @@
 Ask Qt people:
 - How to enable accelerators.
 - How to add an accelerator to file yes,no,cancel dialog, so I can type 'n'.
-- (done) Is it possible to specify QScintilla styles with a stylesheet?
-- (done) Can I specify a zoom-in factor for QTextEdit?
 
 Urgent:
-    *** Fix key handling:
-         - In minibuffer "#" yields "numbersign", '_' yields underscore, '-' yields minus.
-         - Alt-1, Alt-2 bindings do not work.
-         - Make tab and backspace work.
-    *** Retain scroll position:
-        - After cut/paste
-        - After Ctrl-k
+- Alt-1, Alt-2 bindings do not work.
+- Alt arrow keys do not work in the body pane.
+- Paste does not set insert point properly.
 
 Next:
-    - Reading/saving a window does not properly set its size.
-    - Can not open the settings file twice.
-    - Changes to headline do not stick after, e.g., ctrl-r.
-    - Redraw all icons after save (but not save-as or save-to).
-    - File:Exit does not quit the main loop.
-            Call QCoreApplication::exit().
+- do w.flashCharacter
+- Reading/saving a window does not properly set its size.
+- Can not open the settings file twice.
+- Changes to headline do not stick after, e.g., ctrl-r.
+- Redraw all icons after save (but not save-as or save-to).
+- File:Exit does not quit the main loop.
+        Call QCoreApplication::exit().
 
 Next:
-    - Experiment with sending <shift-tab> directly to QScintilla.
-    - multiline strings to the log pane are not treated properly.
-    - Set find handler so unit tests pass.
-    - print-settings does not print to a tab and is very slow.
-    - Fix failing unit tests. 
-    - Support Icon area.
-    - Do gui-dependent commands (in leoQtFrame)
-    - Complete dialogs in leoQtGui.
+- Experiment with sending <shift-tab> directly to QScintilla.
+- multiline strings to the log pane are not treated properly.
+- Set find handler so unit tests pass.
+- print-settings does not print to a tab and is very slow.
+- Fix failing unit tests. 
+- Support Icon area.
+- Do gui-dependent commands (in leoQtFrame)
+- Complete dialogs in leoQtGui.
 
 Minor bugs:
 - https://bugs.launchpad.net/leo-editor/+bug/286493
-       File "qtGui.py", line 745, in delete
-        s = s[:i] + s[j+1:]
-        TypeError: slice indices must be integers or None or have an __index__ method
-
+  File "qtGui.py", line 745, in delete
+    s = s[:i] + s[j+1:]
+    TypeError: slice indices must be integers or None or have an __index__ method
+    (Must convert indices to ints.)
 Cleanup:
      - Fix Stubborn bugs.
         - file-changed marker usually takes two characters to change.
@@ -57,10 +52,16 @@ Later:
     - Support multiple body editors.
     - Support chapters
     - Handle pane orientation.
-    - Paste of non-ascii characters produces '?' in the body pane.
-    - Make tkinter code a plugin.
-        - If no gui specified on command line, use the first gui that can be imported.
+ - Make tkinter code a plugin.
+        - If no gui specified on command line,
+          use the first gui that can be imported.
     - Support @ifgui in settings trees.
+
+
+Done, but not resolved:
+- (done) Is it possible to specify QScintilla styles with a stylesheet?
+- (done) Can I specify a zoom-in factor for QTextEdit?
+#@nonl
 #@-node:ekr.20081010070648.5: To do
 #@+node:ekr.20081019082316.10:New features in the core
 @nocolor-node
