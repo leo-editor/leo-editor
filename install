@@ -1,0 +1,57 @@
+#!/bin/sh
+#@+leo-ver=4-thin
+#@+node:EKR.20040519082027.33:@file-thin ../../install
+#@@first
+
+# This script installs Leo on *nix.
+# Initial version by by Frank Merenda (fmerenda@yahoo.com)
+
+# Variables...
+LEO_PREFIX=${LEO_PREFIX:-/usr/local}
+LEO_RUN_SCRIPT_OUTPUT="${LEO_PREFIX}/bin/leo"
+
+# Bug fix: 2008/4/8: replace /lib/leo by /lib.
+LEO_LIB_DIR="${LEO_PREFIX}/lib"
+
+echo ""
+echo "Prefix directory set to \"$LEO_PREFIX\""
+
+# Make the directory structure
+if [ ! -d $LEO_LIB_DIR ] ; then
+    echo ""
+    echo Making directory structure $LEO_LIB_DIR
+
+    RESULTS=`mkdir -p -m755 $LEO_LIB_DIR 2>&1`
+    if [ $? -ne 0 ]; then
+        echo Failure making directory $LEO_LIB_DIR!
+        exit 1;
+    fi
+fi
+
+if [ ! -d $LEO_PREFIX/bin ] ; then
+    echo ""
+    echo Making directory structure $LEO_PREFIX/bin
+    RESULTS=`mkdir -p -m755 $LEO_PREFIX/bin 2>&1`
+    if [ $? -ne 0 ]; then
+        echo Failure making directory $LEO_PREFIX/bin!
+        exit 1;
+    fi
+fi
+
+# Copy the files
+cp -rp leo $LEO_LIB_DIR
+chown -R root:root $LEO_LIB_DIR
+
+echo "PYTHONPATH=${LEO_PREFIX}/lib python ${LEO_PREFIX}/lib/leo/core/runLeo.py \"\$@\"" > $LEO_RUN_SCRIPT_OUTPUT
+
+RESULTS=`chmod 755 $LEO_RUN_SCRIPT_OUTPUT`   
+
+echo ""
+echo "Leo installed successfully"
+echo "Make sure ${LEO_PREFIX}/bin is in your path then"
+echo "type 'leo filename.leo' to use it."   
+echo ""
+
+exit 0;
+#@-node:EKR.20040519082027.33:@file-thin ../../install
+#@-leo
