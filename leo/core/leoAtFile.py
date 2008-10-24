@@ -2571,8 +2571,9 @@ class atFile:
 
         # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
         #                     what is used in x.propegate changes.
-        junk,ext = g.os_path_splitext(fn)
-        marker = x.marker_from_extension(ext,addAtSign=False)
+        # Note: marker_from_extension takes the file name as the argument, not the
+        # extension itself.
+        marker = x.marker_from_extension(fn,addAtSign=False)
         # g.trace('write marker',marker)
         at.startSentinelComment = marker
         at.endSentinelComment = None
