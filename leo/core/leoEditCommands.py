@@ -2926,7 +2926,8 @@ class editCommandsClass (baseEditCommandsClass):
         name = c.widget_name(w)
         if name.startswith('head'): return
 
-        oldSel =  w.getSelectionRange()
+        oldSel = w.getSelectionRange()
+        # g.trace('oldSel',oldSel)
 
         self.beginCommand(undoType='newline')
 
@@ -3010,6 +3011,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         w = self.editWidget(event)
         if not w: return 'break'
+
+        trace = True
         #@    << set local vars >>
         #@+node:ekr.20061103114242:<< set local vars >>
         c = self.c
@@ -3032,7 +3035,7 @@ class editCommandsClass (baseEditCommandsClass):
         #@nonl
         #@-node:ekr.20061103114242:<< set local vars >>
         #@nl
-        # g.trace('ch',repr(ch))
+        if trace: g.trace('ch',repr(ch))
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
             return "break" # The hook claims to have handled the event.
         if ch == '\t':
@@ -3066,7 +3069,8 @@ class editCommandsClass (baseEditCommandsClass):
         # Update the text and handle undo.
         newText = w.getAllText()
         changed = newText != oldText
-        # g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
+        if trace and verbose:
+            g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
         if changed:
             # g.trace('ins',w.getInsertPoint())
             c.frame.body.onBodyChanged(undoType=undoType,

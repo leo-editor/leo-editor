@@ -341,24 +341,25 @@ def toStroke (self,tkKey,ch):
 
     s = tkKey
 
-    if 0:
+    # if 0:
+        # # Emergency translations.
+        # d = { 'space':' '}
+        # ch2 = d.get(ch)
+        # if ch2:
+            # s = s.replace(ch,ch2)
 
-        # Emergency translations.
-        d = {
-            'space':' '
-        }
-        ch2 = d.get(ch)
-        if ch2:
-            s = s.replace(ch,ch2)
-    else:
-        ch2 = k.guiBindNamesInverseDict.get(ch)
-        if ch2:
+    ch2 = k.guiBindNamesInverseDict.get(ch)
+    if ch2:
             s = s.replace(ch,ch2)
 
-    s = (
-        s.replace('Alt-','Alt+').
-        replace('Control-','Ctrl+').
-        replace('Shift-','Shift+'))
+    for a,b in (
+        ('Alt-','Alt+'),('Control-','Ctrl+'),('Shift-','Shift+')
+    ):
+        s = s.replace(a,b)
+
+    if tkKey != s: g.trace('tkKey',tkKey,'-->',s)
+
+    return s
 #@-node:ekr.20081011152302.10:toStroke
 #@+node:ekr.20081008084746.1:toTkKey
 def toTkKey (self,event):

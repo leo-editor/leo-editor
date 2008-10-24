@@ -2437,7 +2437,7 @@ class keyHandlerClass:
         All commands and keystrokes pass through here.'''
 
         k = self ; c = k.c ; gui = g.app.gui
-        trace = False or k.traceMasterCommand
+        trace = False or k.traceMasterCommand ; verbose = False
         traceGC = False
         if traceGC: g.printNewObjects('masterCom 1')
 

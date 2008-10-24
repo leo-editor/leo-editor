@@ -72,14 +72,14 @@ def init():
             pdb.set_trace()
         g.pdb = qtPdb
 
-        def qtHandleDefaultChar(self,event,stroke):
-            # This is an error.
-            g.trace(stroke,g.callers())
-            return False
-
-        if safe_mode: # Override handleDefaultChar method.
-            h = leoKeys.keyHandlerClass
-            g.funcToMethod(qtHandleDefaultChar,h,"handleDefaultChar")
+        if False: # This will be done, if at all, in leoQtBody.
+            def qtHandleDefaultChar(self,event,stroke):
+                # This is an error.
+                g.trace(stroke,g.callers())
+                return False
+            if safe_mode: # Override handleDefaultChar method.
+                h = leoKeys.keyHandlerClass
+                g.funcToMethod(qtHandleDefaultChar,h,"handleDefaultChar")
 
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
@@ -790,8 +790,8 @@ class leoQtBody (leoFrame.leoBody):
             if i > 0: self.indexWarning('leoQtBody.getInsertPoint')
             return i
         else:
-            i = self.widget.textCursor().position()
-            # g.trace(i)
+            i = w.textCursor().position()
+            # g.trace(i,w)
             return i
     #@-node:ekr.20081007015817.83:getInsertPoint
     #@+node:ekr.20081007015817.84:getLastPosition
@@ -842,6 +842,7 @@ class leoQtBody (leoFrame.leoBody):
         w.selectAll()
         if insert is not None:
             self.setInsertPoint(insert)
+        # g.trace('insert',insert)
 
     #@-node:ekr.20081008175216.5:selectAllText
     #@+node:ekr.20081007015817.95:setInsertPoint
@@ -854,11 +855,17 @@ class leoQtBody (leoFrame.leoBody):
             w.SendScintilla(w.SCI_SETANCHOR,i)
 
         else:
-            w.textCursor().setPosition(i)
+            # g.trace(i,w)
+            cursor =  w.textCursor()
+            cursor.setPosition(i)
+            w.setTextCursor(cursor)
     #@-node:ekr.20081007015817.95:setInsertPoint
     #@+node:ekr.20081007015817.96:setSelectionRange
     def setSelectionRange(self,*args,**keys):
+
         # A kludge to allow a single arg containing i,j
+        w = self.widget
+
         if len(args) == 1:
             i,j = args[0]
         elif len(args) == 2:
@@ -867,7 +874,7 @@ class leoQtBody (leoFrame.leoBody):
             g.trace('can not happen',args)
         insert = keys.get('insert')
 
-        w = self.widget
+        # g.trace('i',i,'j','insert',insert)
 
         if self.useScintilla:
             if i > j: i,j = j,i
@@ -879,7 +886,7 @@ class leoQtBody (leoFrame.leoBody):
                 w.SendScintilla(w.SCI_SETANCHOR,j)
         else:
             e = QtGui.QTextCursor
-            # g.trace(i,j)
+
             if i > j: i,j = j,i
             cursor = w.textCursor()
             cursor.setPosition(i)
@@ -926,8 +933,11 @@ class leoQtBody (leoFrame.leoBody):
 
         if j is None: j = i
         if i > j: i,j = j,i
-        s = s[:i] + s[j+1:]
-        w.setText(s)
+
+        # g.trace('i',i,'j',j)
+
+        s = s[:i] + s[j:]
+        self.setAllText(s)
 
         if i > 0 or j > 0: self.indexWarning('leoQtBody.delete')
         return i
@@ -959,7 +969,7 @@ class leoQtBody (leoFrame.leoBody):
     def insert(self,i,s):
 
         s2 = self.getAllText()
-        self.setAllText(s2[:i] + s + s2[i+1:])
+        self.setAllText(s2[:i] + s + s2[i:])
 
         if i > 0: self.indexWarning('leoQtBody.insert')
         return i
@@ -972,6 +982,7 @@ class leoQtBody (leoFrame.leoBody):
         if self.useScintilla:
             w.setText(s)
         else:
+            # g.trace('len(s)',len(s))
             w.setPlainText(s)
     #@-node:ekr.20081007015817.92:setAllText
     #@-node:ekr.20081007015817.99:Text getters/settters
@@ -1125,24 +1136,25 @@ class leoQtEventFilter(QtCore.QObject):
 
         s = tkKey
 
-        if 0:
+        # if 0:
+            # # Emergency translations.
+            # d = { 'space':' '}
+            # ch2 = d.get(ch)
+            # if ch2:
+                # s = s.replace(ch,ch2)
 
-            # Emergency translations.
-            d = {
-                'space':' '
-            }
-            ch2 = d.get(ch)
-            if ch2:
-                s = s.replace(ch,ch2)
-        else:
-            ch2 = k.guiBindNamesInverseDict.get(ch)
-            if ch2:
+        ch2 = k.guiBindNamesInverseDict.get(ch)
+        if ch2:
                 s = s.replace(ch,ch2)
 
-        s = (
-            s.replace('Alt-','Alt+').
-            replace('Control-','Ctrl+').
-            replace('Shift-','Shift+'))
+        for a,b in (
+            ('Alt-','Alt+'),('Control-','Ctrl+'),('Shift-','Shift+')
+        ):
+            s = s.replace(a,b)
+
+        if tkKey != s: g.trace('tkKey',tkKey,'-->',s)
+
+        return s
     #@-node:ekr.20081011152302.10:toStroke
     #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event):
