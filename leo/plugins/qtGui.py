@@ -27,6 +27,7 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
 
 import os
+import string
 import sys
 import time
 
@@ -1160,6 +1161,8 @@ class leoQtEventFilter(QtCore.QObject):
             ('Alt-','Alt+'),
             ('Ctrl-','Ctrl+'),
             ('Control-','Ctrl+'),
+            # Use Alt+Key-1, etc.  Sheesh.
+            # ('Key-','Key+'),
             ('Shift-','Shift+')
         )
         for a,b in table:
@@ -1171,7 +1174,9 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event):
 
-        c = self.c ; k = c.k ; trace = True ; verbose = True
+        c = self.c ; k = c.k ; trace = False ; verbose = True
+
+        allowShiftList = ('Down','End','Home','Left','Right','Up')
 
         keynum = event.key() ; allowShift = True ; isKnown = False
         try:
@@ -1192,7 +1197,6 @@ class leoQtEventFilter(QtCore.QObject):
         elif ch == '\t': ch = 'Tab'
         elif ch == '\b': ch = 'BackSpace'
         else:
-            allowShiftList = ('Down','End','Home','Left','Right','Up')
             ch2 = k.guiBindNamesDict.get(ch)
             if ch2:
                 if not isKnown:
@@ -1215,6 +1219,9 @@ class leoQtEventFilter(QtCore.QObject):
             else:
                 mods.append("Shift")
         elif len(ch) == 1: ch = ch.lower()
+
+        if 'Alt' in mods and ch in string.digits:
+            mods.append('Key')
 
         tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
 
