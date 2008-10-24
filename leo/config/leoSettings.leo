@@ -7668,7 +7668,7 @@ QTextEdit#richTextEdit {
 /* The mini-buffer */
 QLineEdit#lineEdit {
     /* font-family: DejaVu Sans Mono; */
-    font-size: 18px;
+    font-size: 14px;
     /* font-weight: bold; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }</t>
