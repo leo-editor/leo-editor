@@ -19,8 +19,7 @@ Next:
 - Can not open the settings file twice.
 - Changes to headline do not stick after, e.g., ctrl-r.
 - Redraw all icons after save (but not save-as or save-to).
-- File:Exit does not quit the main loop.
-        Call QCoreApplication::exit().
+- File:Exit does not quit the main loop. Call QCoreApplication::exit().
 
 Next:
 - Experiment with sending <shift-tab> directly to QScintilla.

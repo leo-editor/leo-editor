@@ -7652,6 +7652,7 @@ QTextEdit {
     font-style: normal; /* normal, italic,oblique */
 }
 
+/* The body pane */
 QTextEdit#richTextEdit {
     background-color: #fdf5f5; /* A kind of pink. */
     selection-color: white;
@@ -7662,6 +7663,14 @@ QTextEdit#richTextEdit {
     font-weight: bold; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
     /* zoom: 6; */ /* zoom-in: 6 */
+}
+
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    /* font-family: DejaVu Sans Mono; */
+    font-size: 18px;
+    /* font-weight: bold; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
 }</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>
