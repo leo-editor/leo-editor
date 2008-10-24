@@ -7649,8 +7649,8 @@ QTextEdit {
     selection-background-color: blue;
     /* font-family: Courier New; */
     font-family: DejaVu Sans Mono;
-    font-size: 14px;
-    font-weight: normal; /* normal,bold,100,..,900 */
+    font-size: 16px;
+    font-weight: bold; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
 
@@ -7663,7 +7663,7 @@ QTextEdit#richTextEdit {
     /* font-family: Courier New; */
     font-size: 18px;
     font-weight: bold; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
+    font-style: normal; /* normal,italic,oblique */
     /* zoom: 6; */ /* zoom-in: 6 */
 }
 
@@ -7672,9 +7672,9 @@ QLineEdit#lineEdit {
     selection-color: white;
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
+    font-style: normal; /* normal,italic,oblique */
 }</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>

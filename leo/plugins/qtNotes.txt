@@ -9,13 +9,15 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
-- Ctrl-x does not preserve the cursor.
+- insert/delete should set reasonable (Tk-compatible) default insertion points.
 - Shift-Backspace puts "Shift-Backspace" in text.
 - A find that selects a hidden node crashes Python.
     - Redraw entire screen on select?
 
-Next:
-- Double-clicking headline isn't the same as ctrl-h.
+Most important:
+- Try to enable syntax coloring again.
+- Double-clicking headline sometimes isn't the same as ctrl-h.
+   May be due to QTextCursor::setPosition out of range.
 * Make sure redraw after demote works.
 * Make menu and dialog accelerators work!
 - Reading/saving a window does not properly set its size.
@@ -61,7 +63,6 @@ Later:
         - If no gui specified on command line,
           use the first gui that can be imported.
     - Support @ifgui in settings trees.
-
 
 Done, but not resolved:
 - (done) Is it possible to specify QScintilla styles with a stylesheet?
