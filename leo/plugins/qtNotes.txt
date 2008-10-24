@@ -337,27 +337,27 @@ def isDangerous (self,tkKey,ch):
 #@+node:ekr.20081011152302.10:toStroke
 def toStroke (self,tkKey,ch):
 
-    k = self.c.k
+    k = self.c.k ; s = tkKey
 
-    s = tkKey
+    special = ('Alt','Ctrl','Control',)
+    matches = [True for z in special if s.find(z) > -1]
 
-    # if 0:
-        # # Emergency translations.
-        # d = { 'space':' '}
-        # ch2 = d.get(ch)
-        # if ch2:
-            # s = s.replace(ch,ch2)
+    if not matches:
+        # Keep the Tk spellings for special keys.
+        ch2 = k.guiBindNamesInverseDict.get(ch)
+        if ch2: s = s.replace(ch,ch2)
 
-    ch2 = k.guiBindNamesInverseDict.get(ch)
-    if ch2:
-            s = s.replace(ch,ch2)
+    table = (
+        ('Alt-','Alt+'),
+        ('Ctrl-','Ctrl+'),
+        ('Control-','Ctrl+'),
+        ('Shift-','Shift+')
+    )
 
-    for a,b in (
-        ('Alt-','Alt+'),('Control-','Ctrl+'),('Shift-','Shift+')
-    ):
+    for a,b in table:
         s = s.replace(a,b)
 
-    if tkKey != s: g.trace('tkKey',tkKey,'-->',s)
+    # if tkKey != s: g.trace('tkKey',tkKey,'-->',s)
 
     return s
 #@-node:ekr.20081011152302.10:toStroke
