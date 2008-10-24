@@ -41,6 +41,9 @@ There are commands on the Plugins active_path submenu:
     - update recursive - recursive load of directories, use with caution on large
       file systems
 
+If you want to use an input other than double clicking a node's status-iconbox
+set active_path_event to a value like 'iconrclick1' or 'iconclick1'.
+
 active_path is a rewrite of the at_directory plugin to use @path directives (which influence
 @auto and other @file type directives), and to handle sub-folders more automatically.
 '''
@@ -388,8 +391,14 @@ cmd_DeleteFromTestHierachy = deleteTestHierachy
 #@-node:tbrown.20080619080950.14:testing
 #@-others
 
-if 1: # Ok for unit testing.
-    leoPlugins.registerHandler("icondclick1", lambda t,k: onSelect(t,k))
+# defer binding event until c exists
+def attachToCommander(t,k):
+    c = k.get('c')
+    event = c.config.getString('active_path_event') or "icondclick1"
+    leoPlugins.registerHandler(event, lambda t,k: onSelect(t,k))    
+
+def init():
+    leoPlugins.registerHandler('after-create-leo-frame', attachToCommander)
     g.plugin_signon(__name__)
 #@-node:tbrown.20080613095157.2:@thin active_path.py
 #@-leo
