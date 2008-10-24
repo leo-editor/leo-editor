@@ -74,6 +74,10 @@ def onSelect (tag,keywords):
         sync_node_to_folder(c,pos,path)
         c.requestRedrawFlag = True
         c.redraw()
+        return True
+
+    return None
+#@nonl
 #@-node:tbrown.20080613095157.4:onSelect
 #@+node:tbrown.20080616153649.4:getPath
 def getPath(p):
