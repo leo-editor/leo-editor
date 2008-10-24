@@ -560,15 +560,6 @@ class leoQtBody (leoFrame.leoBody):
     def scrollLines(self,n):                pass
     def setYScrollPosition(self,i):         pass
     #@-node:ekr.20081016072304.11: Do-nothings
-    #@+node:ekr.20081023113729.1:Configuration
-    # Configuration will be handled by style sheets.
-    def cget(self,*args,**keys):            return None
-    def setBackgroundColor(self,color):     pass
-    def setEditorColors (self,bg,fg):       pass
-    def setForegroundColor(self,color):     pass
-
-    def configure (self,*args,**keys):      pass
-    #@-node:ekr.20081023113729.1:Configuration
     #@+node:ekr.20081023131208.10:Coloring
     def forceFullRecolor (self):            pass
     def update_idletasks(self):             pass
@@ -613,19 +604,42 @@ class leoQtBody (leoFrame.leoBody):
     def tag_names (self):
         return []
     #@-node:ekr.20081023131208.10:Coloring
-    #@+node:ekr.20081016072304.12: indexWarning
-    warningsDict = {}
+    #@+node:ekr.20081023113729.1:Configuration
+    # Configuration will be handled by style sheets.
+    def cget(self,*args,**keys):            return None
+    def setBackgroundColor(self,color):     pass
+    def setEditorColors (self,bg,fg):       pass
+    def setForegroundColor(self,color):     pass
 
-    def indexWarning (self,s):
+    def configure (self,*args,**keys):      pass
+    #@-node:ekr.20081023113729.1:Configuration
+    #@+node:ekr.20081004172422.519:Editors (to do)
+    #@+node:ekr.20081004172422.520:createEditorFrame
+    def createEditorFrame (self,pane):
 
-        return
+        # f = qt.Frame(pane)
+        # f.pack(side='top',expand=1,fill='both')
+        # return f
 
-        # if s not in self.warningsDict:
-            # g.es_print('warning: using dubious indices in %s' % (s),color='red')
-            # g.es_print('callers',g.callers(5))
-            # self.warningsDict[s] = True
-    #@-node:ekr.20081016072304.12: indexWarning
-    #@+node:ekr.20081011035036.1: onTextChanged
+        return None
+    #@-node:ekr.20081004172422.520:createEditorFrame
+    #@+node:ekr.20081004172422.521:packEditorLabelWidget
+    def packEditorLabelWidget (self,w):
+
+        '''Create a Qt label widget.'''
+
+        return ###
+
+        # if not hasattr(w,'leo_label') or not w.leo_label:
+            # # g.trace('w.leo_frame',id(w.leo_frame))
+            # w.pack_forget()
+            # w.leo_label = Qt.Label(w.leo_frame)
+            # w.leo_label.pack(side='top')
+            # w.pack(expand=1,fill='both')
+    #@-node:ekr.20081004172422.521:packEditorLabelWidget
+    #@-node:ekr.20081004172422.519:Editors (to do)
+    #@+node:ekr.20081024175359.11:Events
+    #@+node:ekr.20081011035036.1:onTextChanged
     textUpdateCount = 0 # An ugly kludge.
 
     def onTextChanged (self):
@@ -687,37 +701,8 @@ class leoQtBody (leoFrame.leoBody):
         self.updateEditors()
         c.frame.tree.updateIcon(p)
         c.outerUpdate() ###
-    #@-node:ekr.20081011035036.1: onTextChanged
-    #@+node:ekr.20081007015817.78: oops
-    def oops (self):
-        g.trace('qtBody',g.callers(3))
-    #@nonl
-    #@-node:ekr.20081007015817.78: oops
-    #@+node:ekr.20081004172422.519:Editors (to do)
-    #@+node:ekr.20081004172422.520:createEditorFrame
-    def createEditorFrame (self,pane):
-
-        # f = qt.Frame(pane)
-        # f.pack(side='top',expand=1,fill='both')
-        # return f
-
-        return None
-    #@-node:ekr.20081004172422.520:createEditorFrame
-    #@+node:ekr.20081004172422.521:packEditorLabelWidget
-    def packEditorLabelWidget (self,w):
-
-        '''Create a Qt label widget.'''
-
-        return ###
-
-        # if not hasattr(w,'leo_label') or not w.leo_label:
-            # # g.trace('w.leo_frame',id(w.leo_frame))
-            # w.pack_forget()
-            # w.leo_label = Qt.Label(w.leo_frame)
-            # w.leo_label.pack(side='top')
-            # w.pack(expand=1,fill='both')
-    #@-node:ekr.20081004172422.521:packEditorLabelWidget
-    #@-node:ekr.20081004172422.519:Editors (to do)
+    #@-node:ekr.20081011035036.1:onTextChanged
+    #@-node:ekr.20081024175359.11:Events
     #@+node:ekr.20081004172422.510:Focus (qtBody)
     def getFocus(self):
 
@@ -995,6 +980,25 @@ class leoQtBody (leoFrame.leoBody):
     #@nonl
     #@-node:ekr.20081007015817.92:setAllText
     #@-node:ekr.20081007015817.99:Text getters/settters
+    #@+node:ekr.20081024175359.12:Utils
+    #@+node:ekr.20081016072304.12: indexWarning
+    warningsDict = {}
+
+    def indexWarning (self,s):
+
+        return
+
+        # if s not in self.warningsDict:
+            # g.es_print('warning: using dubious indices in %s' % (s),color='red')
+            # g.es_print('callers',g.callers(5))
+            # self.warningsDict[s] = True
+    #@-node:ekr.20081016072304.12: indexWarning
+    #@+node:ekr.20081007015817.78: oops
+    def oops (self):
+        g.trace('qtBody',g.callers(3))
+    #@nonl
+    #@-node:ekr.20081007015817.78: oops
+    #@-node:ekr.20081024175359.12:Utils
     #@+node:ekr.20081007015817.91:Visibility
     #@+node:ekr.20081024163213.10:see
     def see(self,i):
@@ -1019,9 +1023,10 @@ class leoQtBody (leoFrame.leoBody):
             self.widget.ensureCursorVisible()
     #@-node:ekr.20081024163213.11:seeInsertPoint
     #@+node:ekr.20081024163213.12:flashCursor
-    def flashCursor (self,bg,fg,flashes,delay):
+    def flashCharacter (self,i,bg,fg,flashes,delay):
 
-        g.trace()
+        g.trace(g.callers(4))
+
     #@-node:ekr.20081024163213.12:flashCursor
     #@-node:ekr.20081007015817.91:Visibility
     #@-others
@@ -5633,6 +5638,11 @@ class leoQtTree (leoFrame.leoTree):
     def redraw_after_select (self):
 
         if self.trace and self.verbose: g.trace()
+
+        c = self.c ; p = c.currentPosition()
+        g.trace(p.headString(),g.callers(4))
+        # c.frame.tree.expandAllAncestors(p)
+        # self.full_redraw()
     #@-node:ekr.20081021043407.13:redraw_after_select
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):
