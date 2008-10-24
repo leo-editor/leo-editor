@@ -461,7 +461,7 @@ class leoQtBody (leoFrame.leoBody):
         # w.updateMicroFocus()
         if n not in (None,0):
             # This only works when there is no style sheet.
-            g.trace('zoom-in',n)
+            # g.trace('zoom-in',n)
             w.zoomIn(n)
             w.updateMicroFocus()
     #@-node:ekr.20081023060109.12:setRichTextConfig
@@ -1077,7 +1077,10 @@ class leoQtEventFilter(QtCore.QObject):
             tkKey,ch,ignore = self.toTkKey(event)
             # if trace and verbose: g.trace(tkKey,ch)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-            if k.inState():
+
+            if not c.frame.body.useScintilla:
+                override = not ignore # Send all non-ignored keystrokes to the widget.
+            elif k.inState():
                 override = not ignore # allow all keystroke.
             elif safe_mode:
                 override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
@@ -1105,15 +1108,13 @@ class leoQtEventFilter(QtCore.QObject):
     def isDangerous (self,tkKey,ch):
 
 
-        c = self.c ; scintilla = c.frame.body.useScintilla
+        c = self.c
 
-        if not scintilla: return False
+        if not c.frame.body.useScintilla: return False
 
-        if scintilla:
-            arrows = ('home','end','left','right','up','down')
-            special = ('tab','backspace','period','parenright','parenleft')
-        else:
-            arrows = [] ; special = []
+        arrows = ('home','end','left','right','up','down')
+        special = ('tab','backspace','period','parenright','parenleft')
+
         key = tkKey.lower()
         ch = ch.lower()
         isAlt = key.find('alt') > -1
@@ -1135,9 +1136,9 @@ class leoQtEventFilter(QtCore.QObject):
         k = self.c.k ; s = tkKey
 
         special = ('Alt','Ctrl','Control',)
-        matches = [True for z in special if s.find(z) > -1]
+        isSpecial = [True for z in special if s.find(z) > -1]
 
-        if not matches:
+        if not isSpecial:
             # Keep the Tk spellings for special keys.
             ch2 = k.guiBindNamesInverseDict.get(ch)
             if ch2: s = s.replace(ch,ch2)
@@ -1148,12 +1149,10 @@ class leoQtEventFilter(QtCore.QObject):
             ('Control-','Ctrl+'),
             ('Shift-','Shift+')
         )
-
         for a,b in table:
             s = s.replace(a,b)
 
-        # if tkKey != s: g.trace('tkKey',tkKey,'-->',s)
-
+        # g.trace('tkKey',tkKey,'-->',s)
         return s
     #@-node:ekr.20081011152302.10:toStroke
     #@+node:ekr.20081008084746.1:toTkKey
