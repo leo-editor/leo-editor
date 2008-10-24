@@ -982,7 +982,7 @@ class leoQtBody (leoFrame.leoBody):
         if self.useScintilla:
             w.setText(s)
         else:
-            # g.trace('len(s)',len(s))
+            g.trace('len(s)',len(s),g.callers(4))
             sb = w.verticalScrollBar()
             pos = sb.sliderPosition()
             w.setPlainText(s)
@@ -991,9 +991,8 @@ class leoQtBody (leoFrame.leoBody):
     #@-node:ekr.20081007015817.92:setAllText
     #@-node:ekr.20081007015817.99:Text getters/settters
     #@+node:ekr.20081007015817.91:Visibility
+    #@+node:ekr.20081024163213.10:see
     def see(self,i):
-
-        return
 
         w = self.widget
 
@@ -1004,15 +1003,21 @@ class leoQtBody (leoFrame.leoBody):
             w.ensureLineVisible(row)
         else:
             w.ensureCursorVisible()
-
+    #@nonl
+    #@-node:ekr.20081024163213.10:see
+    #@+node:ekr.20081024163213.11:seeInsertPoint
     def seeInsertPoint (self):
-
-        return 
 
         if self.useScintilla:
             self.see(self.getInsertPoint())
         else:
             self.widget.ensureCursorVisible()
+    #@-node:ekr.20081024163213.11:seeInsertPoint
+    #@+node:ekr.20081024163213.12:flashCursor
+    def flashCursor (self,bg,fg,flashes,delay):
+
+        g.trace()
+    #@-node:ekr.20081024163213.12:flashCursor
     #@-node:ekr.20081007015817.91:Visibility
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
@@ -1166,7 +1171,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event):
 
-        c = self.c ; k = c.k ; trace = False ; verbose = True
+        c = self.c ; k = c.k ; trace = True ; verbose = True
 
         keynum = event.key() ; allowShift = True ; isKnown = False
         try:
@@ -1187,9 +1192,11 @@ class leoQtEventFilter(QtCore.QObject):
         elif ch == '\t': ch = 'Tab'
         elif ch == '\b': ch = 'BackSpace'
         else:
+            allowShiftList = ('Down','End','Home','Left','Right','Up')
             ch2 = k.guiBindNamesDict.get(ch)
             if ch2:
-                if not isKnown: allowShift = False
+                if not isKnown:
+                    allowShift = ch in allowShiftList
                 if trace and verbose: g.trace('ch',ch,'ch2',ch2)
                 ch = ch2
 
@@ -1210,9 +1217,13 @@ class leoQtEventFilter(QtCore.QObject):
         elif len(ch) == 1: ch = ch.lower()
 
         tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+
         # If the documentation is to be believed,
         # this definition of ignore should be portable.
-        ignore = not g.toUnicode(event.text(),'utf-8')
+        if ch in allowShiftList:
+            ignore = False
+        else:
+            ignore = not g.toUnicode(event.text(),'utf-8')
         if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey),'ignore',ignore)
 
         return tkKey,ch,ignore

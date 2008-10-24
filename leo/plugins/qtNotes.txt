@@ -10,6 +10,7 @@ Ask Qt people:
 
 Urgent:
 - Alt-1, Alt-2 bindings do not work.
+- Shift arrows do not work in the tree pane.
 - Alt arrow keys do not work in the body pane.
 - Paste does not set insert point properly.
 
@@ -363,7 +364,7 @@ def toStroke (self,tkKey,ch):
 #@+node:ekr.20081008084746.1:toTkKey
 def toTkKey (self,event):
 
-    c = self.c ; k = c.k ; trace = False ; verbose = True
+    c = self.c ; k = c.k ; trace = True ; verbose = True
 
     keynum = event.key() ; allowShift = True ; isKnown = False
     try:
@@ -384,9 +385,11 @@ def toTkKey (self,event):
     elif ch == '\t': ch = 'Tab'
     elif ch == '\b': ch = 'BackSpace'
     else:
+        allowShiftList = ('Down','End','Home','Left','Right','Up')
         ch2 = k.guiBindNamesDict.get(ch)
         if ch2:
-            if not isKnown: allowShift = False
+            if not isKnown:
+                allowShift = ch in allowShiftList
             if trace and verbose: g.trace('ch',ch,'ch2',ch2)
             ch = ch2
 
@@ -407,9 +410,13 @@ def toTkKey (self,event):
     elif len(ch) == 1: ch = ch.lower()
 
     tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+
     # If the documentation is to be believed,
     # this definition of ignore should be portable.
-    ignore = not g.toUnicode(event.text(),'utf-8')
+    if ch in allowShiftList:
+        ignore = False
+    else:
+        ignore = not g.toUnicode(event.text(),'utf-8')
     if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey),'ignore',ignore)
 
     return tkKey,ch,ignore

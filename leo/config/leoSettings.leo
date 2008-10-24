@@ -7621,8 +7621,8 @@ QSplitter {
 QTreeWidget {
     /* These apply to the selected item, but not to editing items.*/
     background-color: #ffffec; /* Leo's traditional tree color */
-    selection-color: blue;
-    selection-background-color: lightgray;
+    selection-color: white;
+    selection-background-color: lightgrey;
     /* font-family: SansSerif; */
     font-family: DejaVu Sans Mono;
     font-size: 16px;
@@ -7630,6 +7630,7 @@ QTreeWidget {
     font-style: normal; /* normal, italic,oblique */
  }
 
+/* Headline edit widgets */
 QTreeWidget QLineEdit {
     background-color: cornsilk;
     selection-color: white;
@@ -7641,6 +7642,7 @@ QTreeWidget QLineEdit {
     font-style: normal; /* normal, italic,oblique */
 }
 
+/* The log panes */
 QTextEdit {
     background-color: #f2fdff;
     selection-color: white;
@@ -7667,9 +7669,11 @@ QTextEdit#richTextEdit {
 
 /* The mini-buffer */
 QLineEdit#lineEdit {
-    /* font-family: DejaVu Sans Mono; */
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: DejaVu Sans Mono;
     font-size: 14px;
-    /* font-weight: bold; /* normal,bold,100,..,900 */
+    font-weight: bold; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
