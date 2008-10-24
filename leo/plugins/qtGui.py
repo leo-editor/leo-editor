@@ -456,10 +456,14 @@ class leoQtBody (leoFrame.leoBody):
         c = self.c ; w = self.widget
 
         n = c.config.getInt('qt-rich-text-zoom-in')
+
+        # w.zoomIn(1)
+        # w.updateMicroFocus()
         if n not in (None,0):
             # This only works when there is no style sheet.
-            # g.trace('zoom-in',n)
+            g.trace('zoom-in',n)
             w.zoomIn(n)
+            w.updateMicroFocus()
     #@-node:ekr.20081023060109.12:setRichTextConfig
     #@-node:ekr.20081011035036.10:setBodyConfig
     #@+node:ekr.20081004172422.508:setColorFromConfig
@@ -569,6 +573,7 @@ class leoQtBody (leoFrame.leoBody):
     def update_idletasks(self):             pass
 
     def removeAllTags(self):
+        return ###
         w = self.widget
         format = QtGui.QTextCharFormat()
         color = QtGui.QColor('black')
@@ -580,20 +585,16 @@ class leoQtBody (leoFrame.leoBody):
         self.setSelectionRange(a,b)
 
     def tag_add(self,tag,x1,x2):
+        return ###
         if tag == 'comment1':
             # g.trace(tag,x1,x2)
             w = self.widget
-
-            color = QtGui.QColor('red')
-            # format = QtGui.QTextCharFormat()
-            # brush = QtGui.QBrush(color)
-            # format.setForeground(brush)
+            color = QtGui.QColor('firebrick')
             sb = w.verticalScrollBar()
             pos = sb.sliderPosition()
             a,b = self.getSelectionRange()
             ins = self.getInsertPoint()
             self.setSelectionRange(x1,x2)
-            # w.setCurrentCharFormat(format)
             w.setTextColor(color)
             self.setSelectionRange(a,b,insert=ins)
             sb.setSliderPosition(pos)
@@ -737,10 +738,12 @@ class leoQtBody (leoFrame.leoBody):
     #@-node:ekr.20081004172422.510:Focus (qtBody)
     #@+node:ekr.20081004172422.516:Idle time
     def after_idle(self,func,threadCount):
+        return ###
         # g.trace(func.__name__,'threadCount',threadCount)
         return func(threadCount)
 
     def after(self,n,func,threadCount):
+        return ###
         def after_callback(func=func,threadCount=threadCount):
             # g.trace(func.__name__,threadCount)
             return func(threadCount)
@@ -1090,9 +1093,16 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081015132934.10:isDangerous
     def isDangerous (self,tkKey,ch):
 
-        arrows = ('home','end','left','right','up','down')
-        special = ('tab','backspace','period','parenright','parenleft')
 
+        c = self.c ; scintilla = c.frame.body.useScintilla
+
+        if not scintilla: return False
+
+        if scintilla:
+            arrows = ('home','end','left','right','up','down')
+            special = ('tab','backspace','period','parenright','parenleft')
+        else:
+            arrows = [] ; special = []
         key = tkKey.lower()
         ch = ch.lower()
         isAlt = key.find('alt') > -1
@@ -1115,20 +1125,21 @@ class leoQtEventFilter(QtCore.QObject):
 
         s = tkKey
 
-        # Emergency translations.
-        d = {
-            'space':' '
-        }
+        if 0:
 
-        ch2 = d.get(ch)
-        if ch2:
-            s = s.replace(ch,ch2)
+            # Emergency translations.
+            d = {
+                'space':' '
+            }
+            ch2 = d.get(ch)
+            if ch2:
+                s = s.replace(ch,ch2)
+        else:
+            ch2 = k.guiBindNamesInverseDict.get(ch)
+            if ch2:
+                s = s.replace(ch,ch2)
 
-        # ch2 = k.guiBindNamesInverseDict.get(ch)
-        # if ch2:
-            # s = s.replace(ch,ch2)
-
-        return (
+        s = (
             s.replace('Alt-','Alt+').
             replace('Control-','Ctrl+').
             replace('Shift-','Shift+'))

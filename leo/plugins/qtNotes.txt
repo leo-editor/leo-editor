@@ -11,15 +11,15 @@ Ask Qt people:
 - (done) Can I specify a zoom-in factor for QTextEdit?
 
 Urgent:
-    - Experiment with sending <shift-tab> directly to QScintilla.
-    - Call setLexer(0) for nocolor nodes.
-    ** Cut and paste should use native widget code
-    - Ctrl-k loses scroll position
-    ** https://bugs.launchpad.net/leo-editor/+bug/286491
-        In minibuffer "#" yields "numbersign".
-        '_' yields underscore, '-' yields minus.
-    - Alt-1, Alt-2 bindings do not work
-    * Tab and space handling are subtly different from traditional Leo way.
+    *** Fix key handling:
+         - In minibuffer "#" yields "numbersign", '_' yields underscore, '-' yields minus.
+         - Alt-1, Alt-2 bindings do not work.
+         - Make tab and backspace work.
+    *** Retain scroll position:
+        - After cut/paste
+        - After Ctrl-k
+
+Next:
     - Reading/saving a window does not properly set its size.
     - Can not open the settings file twice.
     - Changes to headline do not stick after, e.g., ctrl-r.
@@ -28,6 +28,7 @@ Urgent:
             Call QCoreApplication::exit().
 
 Next:
+    - Experiment with sending <shift-tab> directly to QScintilla.
     - multiline strings to the log pane are not treated properly.
     - Set find handler so unit tests pass.
     - print-settings does not print to a tab and is very slow.
@@ -45,21 +46,12 @@ Minor bugs:
 Cleanup:
      - Fix Stubborn bugs.
         - file-changed marker usually takes two characters to change.
-        - Menu accelerators are not shown and do not work.
-    g.trace(func.__name__,'threadCount',threadCount)
-    return func(threadCount)
-
-def after(self,n,func,threadCount):
-    g.trace(n,func.__name__,'threadCount',threadCount)
-    def after_callback(func=func,threadCount=threadCount):
-        g.trace(func.__name__,threadCount)
-        return func(threadCount)
-    QtCore.QTimer.singleShot(n,after_callback)
-    - Remove old-style Leo settings.
+    - Remove old-style Leo settings?
     - Clean up text classes.
         - Finish leoQtTextWidget class.
         - Add subclasses for QLineEdit, QScintilla, etc.
 Later:
+    - Call setLexer(0) for nocolor nodes.
     - Add settings for syntax coloring.
          - Make Scintilla handle Leo markup.
     - Support multiple body editors.
@@ -317,9 +309,16 @@ def eventFilter(self, obj, event):
 #@+node:ekr.20081015132934.10:isDangerous
 def isDangerous (self,tkKey,ch):
 
-    arrows = ('home','end','left','right','up','down')
-    special = ('tab','backspace','period','parenright','parenleft')
 
+    c = self.c ; scintilla = c.frame.body.useScintilla
+
+    if not scintilla: return False
+
+    if scintilla:
+        arrows = ('home','end','left','right','up','down')
+        special = ('tab','backspace','period','parenright','parenleft')
+    else:
+        arrows = [] ; special = []
     key = tkKey.lower()
     ch = ch.lower()
     isAlt = key.find('alt') > -1
@@ -342,20 +341,21 @@ def toStroke (self,tkKey,ch):
 
     s = tkKey
 
-    # Emergency translations.
-    d = {
-        'space':' '
-    }
+    if 0:
 
-    ch2 = d.get(ch)
-    if ch2:
-        s = s.replace(ch,ch2)
+        # Emergency translations.
+        d = {
+            'space':' '
+        }
+        ch2 = d.get(ch)
+        if ch2:
+            s = s.replace(ch,ch2)
+    else:
+        ch2 = k.guiBindNamesInverseDict.get(ch)
+        if ch2:
+            s = s.replace(ch,ch2)
 
-    # ch2 = k.guiBindNamesInverseDict.get(ch)
-    # if ch2:
-        # s = s.replace(ch,ch2)
-
-    return (
+    s = (
         s.replace('Alt-','Alt+').
         replace('Control-','Ctrl+').
         replace('Shift-','Shift+'))

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4,1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -3723,7 +3723,7 @@ aList = c.k.masterGuiBindingsDict.get('&lt;%s&gt;' %tkKey,[])
 for z in aList:
     print '==='
     print z</t>
-<t tx="ekr.20081016102648.1"># Test of syntax coloring.
+<t tx="ekr.20081016102648.1"># test of syntax coloring.
 '''Triple string.'''
 
 for i in range(10):

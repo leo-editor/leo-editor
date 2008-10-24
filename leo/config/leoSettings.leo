@@ -7623,8 +7623,9 @@ QTreeWidget {
     background-color: #ffffec; /* Leo's traditional tree color */
     selection-color: blue;
     selection-background-color: lightgray;
-    font-family: SansSerif;
-    font-size: 14px;
+    /* font-family: SansSerif; */
+    font-family: DejaVu Sans Mono;
+    font-size: 16px;
     font-weight: bold; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
  }
@@ -7633,8 +7634,9 @@ QTreeWidget QLineEdit {
     background-color: cornsilk;
     selection-color: white;
     selection-background-color: blue;
-    font-family: Courier New;
-    font-size: 14px;
+    /* font-family: Courier New; */
+    font-family: DejaVu Sans Mono;
+    font-size: 16px;
     font-weight: bold; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
@@ -7643,28 +7645,20 @@ QTextEdit {
     background-color: #f2fdff;
     selection-color: white;
     selection-background-color: blue;
-    font-family: Courier New;
+    /* font-family: Courier New; */
+    font-family: DejaVu Sans Mono;
     font-size: 14px;
-    font-weight: bold; /* normal,bold,100,..,900 */
+    font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
-}
-
-QTextEdit#disabled-richTextEdit {
-    background-color: #fdf5f5; /* A kind of pink. */
-    font-family: Courier New;
-    font-size: 14px;
-    font-weight: 900; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-    /* zoom: 6; */ /* zoom-in: 6 */
 }
 
 QTextEdit#richTextEdit {
     background-color: #fdf5f5; /* A kind of pink. */
     selection-color: white;
     selection-background-color: lightgrey;
-    /* font-family: DejaVu Sans Mono; */
-    font-family: Courier New;
-    font-size: 20px;
+    font-family: DejaVu Sans Mono;
+    /* font-family: Courier New; */
+    font-size: 18px;
     font-weight: bold; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
     /* zoom: 6; */ /* zoom-in: 6 */
