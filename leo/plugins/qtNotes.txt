@@ -9,12 +9,10 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
-- F-keys do not work.
-- Ctrl-h does not work.
-- Paste does not set insert point properly.
+- w.flashCharacter logic adds extra ')' or '('
 
 Next:
-- w.flashCharacter logic adds extra ')' or '('
+* Make menu and dialog accelerators work!
 - Reading/saving a window does not properly set its size.
 - Can not open the settings file twice.
 - Changes to headline do not stick after, e.g., ctrl-r.
@@ -22,7 +20,8 @@ Next:
 - File:Exit does not quit the main loop. Call QCoreApplication::exit().
 
 Next:
-- Experiment with sending <shift-tab> directly to QScintilla.
+- Ctrl-h sometimes does not work.
+- Shift-tab is Smart home.
 - multiline strings to the log pane are not treated properly.
 - Set find handler so unit tests pass.
 - print-settings does not print to a tab and is very slow.
@@ -45,6 +44,7 @@ Cleanup:
         - Finish leoQtTextWidget class.
         - Add subclasses for QLineEdit, QScintilla, etc.
 Later:
+    - Experiment with sending <shift-tab> directly to QScintilla.
     - Call setLexer(0) for nocolor nodes.
     - Add settings for syntax coloring.
          - Make Scintilla handle Leo markup.
@@ -61,6 +61,19 @@ Done, but not resolved:
 - (done) Is it possible to specify QScintilla styles with a stylesheet?
 - (done) Can I specify a zoom-in factor for QTextEdit?
 #@nonl
+#@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
+def bringToFront (self):        pass 
+def deiconify (self):           pass
+def getFocus(self):             return g.app.gui.get_focus() 
+def get_window_info(self):      return 0,0,0,0
+def iconify(self):              pass
+def lift (self):                pass
+def update (self):              pass
+
+def getTitle (self):
+    return g.toUnicode(self.top.windowTitle(),'utf-8')
+
+#@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
 #@-node:ekr.20081010070648.5: To do
 #@+node:ekr.20081019082316.10:New features in the core
 @nocolor-node
@@ -792,6 +805,252 @@ def createSplitterComponents (self):
 #@-node:ekr.20081004172422.530:createSplitterComponents (qtFrame)
 #@-node:ekr.20081004172422.528:qtFrame.finishCreate & helpers
 #@-node:ekr.20081022151429.10:Fixed startup crasher
+#@+node:ekr.20081023060109.10:Make the body pane a richTextEdit
+I added the stackedWidget and richTextWidget (for demo purposes). The
+layout is not quite optimal yet (the border around the body pane is a
+bit too big). You can test it by running this script (ctrl+b):
+
+w = c.frame.top
+sw = w.stackedWidget
+rted = w.richTextEdit
+rted.setHtml("This is <b>rich text</b>")
+sw.setCurrentIndex(1)
+
+We should not rig widgets like this to the core,
+and notably not install the event filter for these (since the wanted
+behaviour should be dictated by the current widget). 
+#@nonl
+#@+node:ekr.20081004172422.504: ctor (qtBody)
+def __init__ (self,frame,parentFrame):
+
+    # Call the base class constructor.
+    leoFrame.leoBody.__init__(self,frame,parentFrame)
+
+    c = self.c
+    assert c.frame == frame and frame.c == c
+
+    self.useScintilla = c.config.getBool('qt-use-scintilla')
+    # g.trace('leoQtBody',self.useScintilla)
+
+    # Set the actual gui widget.
+    if self.useScintilla:
+        self.widget = c.frame.top.textEdit
+    else:
+        top = c.frame.top ; sw = top.stackedWidget
+        sw.setCurrentIndex(1)
+        self.widget = w = top.richTextEdit # A QTextEdit.
+        w.acceptRichText = False
+    # g.trace('qtBody',self.widget)
+
+    self.bodyCtrl = self # The widget as seen from Leo's core.
+    self.body_p = None
+
+    # Config stuff.
+    self.tags = {}
+    self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
+    wrap = c.config.getBool('body_pane_wraps')
+    wrap = g.choose(wrap,"word","none")
+    self.wrapState = wrap
+    # parentFrame.configure(bg='LightSteelBlue1')
+
+    # For multiple body editors.
+    self.editor_name = None
+    self.editor_v = None
+    self.numberOfEditors = 1
+    self.totalNumberOfEditors = 1
+
+    # Finish initing.
+    self.colorizer = leoColor.nullColorizer(c)
+    self.injectIvars()
+    self.setBodyConfig()
+    self.setFontFromConfig()
+    self.setColorFromConfig()
+
+    # Hook up qt events.
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
+    self.widget.installEventFilter(self.ev_filter)
+
+    self.widget.connect(self.widget,
+        QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+#@-node:ekr.20081004172422.504: ctor (qtBody)
+#@+node:ekr.20081004172422.884: ctor (Window)
+# Called from leoQtFrame.finishCreate.
+
+def __init__(self,c,parent=None):
+
+    '''Create Leo's main window, c.frame.top'''
+
+    self.c = c
+
+    # g.trace('Window')
+
+    # Init both base classes.
+    QtGui.QMainWindow.__init__(self,parent)
+    qt_main.Ui_MainWindow.__init__(self)
+
+    # Init the QDesigner elements.
+    self.setupUi(self)
+
+    # The following ivars (and more) are inherited from UiMainWindow:
+        # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
+        # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
+        # self.tabWidget  = QtGui.QTabWidget(self.splitter)     # The log pane.
+        # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
+        # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
+
+    self.buttons = self.addToolBar("Buttons")
+    self.buttons.addAction(self.actionSave)
+
+    self.setStyleSheets()
+#@-node:ekr.20081004172422.884: ctor (Window)
+#@+node:ekr.20081023131208.10:Coloring
+def forceFullRecolor (self):            pass
+def update_idletasks(self):             pass
+
+def removeAllTags(self):
+    return ###
+    w = self.widget
+    format = QtGui.QTextCharFormat()
+    color = QtGui.QColor('black')
+    brush = QtGui.QBrush(color)
+    format.setForeground(brush)
+    a,b = self.getSelectionRange()
+    self.selectAllText()
+    w.setCurrentCharFormat(format)
+    self.setSelectionRange(a,b)
+
+def tag_add(self,tag,x1,x2):
+    return ###
+    if tag == 'comment1':
+        # g.trace(tag,x1,x2)
+        w = self.widget
+        color = QtGui.QColor('firebrick')
+        sb = w.verticalScrollBar()
+        pos = sb.sliderPosition()
+        a,b = self.getSelectionRange()
+        ins = self.getInsertPoint()
+        self.setSelectionRange(x1,x2)
+        w.setTextColor(color)
+        self.setSelectionRange(a,b,insert=ins)
+        sb.setSliderPosition(pos)
+
+def tag_config (self,*args,**keys):
+    if len(args) == 1:
+        key = args[0]
+        # g.trace(key,keys)
+        self.tags[key] = keys
+    else:
+        g.trace('oops',args,keys)
+
+tag_configure = tag_config
+
+def tag_names (self):
+    return []
+#@-node:ekr.20081023131208.10:Coloring
+#@+node:ekr.20081004172422.516:Idle time
+def after_idle(self,func,threadCount):
+    return ###
+    # g.trace(func.__name__,'threadCount',threadCount)
+    return func(threadCount)
+
+def after(self,n,func,threadCount):
+    return ###
+    def after_callback(func=func,threadCount=threadCount):
+        # g.trace(func.__name__,threadCount)
+        return func(threadCount)
+    QtCore.QTimer.singleShot(n,after_callback)
+
+def scheduleIdleTimeRoutine (self,function,*args,**keys):
+    g.trace()
+    # if not g.app.unitTesting:
+        # self.widget.after_idle(function,*args,**keys)
+#@-node:ekr.20081004172422.516:Idle time
+#@+node:ekr.20081011035036.10:setBodyConfig
+def setBodyConfig (self):
+
+    c = self.c
+
+    if self.useScintilla:
+        self.setScintillaConfig()
+    else:
+        self.setRichTextConfig()
+        self.colorizer = leoColor.colorizer(c)
+#@nonl
+#@+node:ekr.20081023060109.11:setScintillaConfi
+def setScintillaConfig (self):
+
+    c = self.c ; w = self.widget
+    tag = 'qt-scintilla-styles'
+    qcolor,qfont = QtGui.QColor,QtGui.QFont
+
+    def oops(s): g.trace('bad @data %s: %s' % (tag,s))
+
+    # To do: make this configurable the leo way
+    if 0: # Suppress lexing.
+        w.setLexer()
+        lexer = w.lexer()
+    else:
+        lexer = Qsci.QsciLexerPython(w)
+        # A small font size, to be magnified.
+        font = qfont("Courier New",8,qfont.Bold)
+        lexer.setFont(font)
+        table = None
+        aList = c.config.getData('qt-scintilla-styles')
+        if aList:
+            aList = [s.split(',') for s in aList]
+            table = []
+            for z in aList:
+                if len(z) == 2:
+                    color,style = z
+                    table.append((color.strip(),style.strip()),)
+                else: oops('entry: %s' % z)
+            # g.trace(g.printList(table))
+
+        if not table:
+            table = (
+                ('red','Comment'),
+                ('green','SingleQuotedString'),
+                ('green','DoubleQuotedString'),
+                ('green','TripleSingleQuotedString'),
+                ('green','TripleDoubleQuotedString'),
+                ('green','UnclosedString'),
+                ('blue','Keyword'),
+            )
+        for color,style in table:
+            if hasattr(lexer,style):
+                style = getattr(lexer,style)
+                try:
+                    lexer.setColor(qcolor(color),style)
+                except Exception:
+                     oops('bad color: %s' % color)
+            else: oops('bad style: %s' % style)
+
+    w.setLexer(lexer)
+
+    n = c.config.getInt('qt-scintilla-zoom-in')
+    if n not in (None,0): w.zoomIn(n)
+
+    w.setIndentationWidth(4)
+    w.setIndentationsUseTabs(False)
+    w.setAutoIndent(True)
+#@-node:ekr.20081023060109.11:setScintillaConfi
+#@+node:ekr.20081023060109.12:setRichTextConfig
+def setRichTextConfig (self):
+
+    c = self.c ; w = self.widget
+
+    n = c.config.getInt('qt-rich-text-zoom-in')
+
+    # w.zoomIn(1)
+    # w.updateMicroFocus()
+    if n not in (None,0):
+        # This only works when there is no style sheet.
+        # g.trace('zoom-in',n)
+        w.zoomIn(n)
+        w.updateMicroFocus()
+#@-node:ekr.20081023060109.12:setRichTextConfig
+#@-node:ekr.20081011035036.10:setBodyConfig
+#@-node:ekr.20081023060109.10:Make the body pane a richTextEdit
 #@-node:ekr.20081014095718.13:Recent
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor

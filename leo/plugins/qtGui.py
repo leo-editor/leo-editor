@@ -983,10 +983,14 @@ class leoQtBody (leoFrame.leoBody):
         if self.useScintilla:
             w.setText(s)
         else:
-            g.trace('len(s)',len(s),g.callers(4))
+            # g.trace('len(s)',len(s),g.callers(4))
+            # Save everything.
             sb = w.verticalScrollBar()
+            ins = self.getInsertPoint()
+            i,j = self.getSelectionRange()
             pos = sb.sliderPosition()
             w.setPlainText(s)
+            self.setSelectionRange(i,j,insert=ins)
             sb.setSliderPosition(pos)
     #@nonl
     #@-node:ekr.20081007015817.92:setAllText
