@@ -1144,6 +1144,15 @@ class leoQtEventFilter(QtCore.QObject):
         # g.trace(tkKey,ch,val)
         return val
     #@-node:ekr.20081015132934.10:isDangerous
+    #@+node:ekr.20081024164012.10:isFKey
+    def isFKey(self,ch):
+
+        return (
+            ch and len(ch) in (2,3) and
+            ch[0].lower() == 'f' and
+            ch[1:].isdigit()
+        )
+    #@-node:ekr.20081024164012.10:isFKey
     #@+node:ekr.20081011152302.10:toStroke
     def toStroke (self,tkKey,ch):
 
@@ -1190,7 +1199,8 @@ class leoQtEventFilter(QtCore.QObject):
             if not ch:
                 ch = "<unknown char: %s>" % (keynum)
             ch = g.toUnicode(ch,g.app.tkEncoding)
-            if trace and verbose: g.trace('special',ch) # munge.
+            if trace and verbose:
+                g.trace('special',ch) # munge.
 
         # Convert special characters to Tk Spellings.
         if   ch in ('\r','\n'): ch = 'Return'
@@ -1227,7 +1237,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         # If the documentation is to be believed,
         # this definition of ignore should be portable.
-        if ch in allowShiftList:
+        if ch in allowShiftList or self.isFKey(ch):
             ignore = False
         else:
             ignore = not g.toUnicode(event.text(),'utf-8')
