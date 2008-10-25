@@ -9,12 +9,9 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
-- A find that selects a hidden node crashes Python.
-    - Redraw entire screen on select?
+- Ctrl-Shift-9 is the same as Ctrl-(
 - insert/delete should set reasonable (Tk-compatible) default insertion points.
 - Shift-Backspace puts "Shift-Backspace" in text.
-
-
 
 Most important:
 - Try to enable syntax coloring again.

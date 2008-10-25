@@ -5652,20 +5652,20 @@ class leoQtTree (leoFrame.leoTree):
 
         return ###
 
-        trace = True
+        # trace = True
 
-        if self.redrawing:
-            if trace: g.trace('already redrawing',g.callers(4))
-            return
-        if self.selecting:
-            if trace: g.trace('already selecting',g.callers(4))
-            return
+        # if self.redrawing:
+            # if trace: g.trace('already redrawing',g.callers(4))
+            # return
+        # if self.selecting:
+            # if trace: g.trace('already selecting',g.callers(4))
+            # return
 
-        c = self.c ; p = c.currentPosition()
+        # c = self.c ; p = c.currentPosition()
 
-        if trace: g.trace(p.headString(),g.callers(4))
+        # if trace: g.trace(p.headString(),g.callers(4))
 
-        self.full_redraw()
+        # self.full_redraw()
     #@-node:ekr.20081021043407.13:redraw_after_select
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):
