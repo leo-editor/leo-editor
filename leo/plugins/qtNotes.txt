@@ -9,10 +9,12 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
-- insert/delete should set reasonable (Tk-compatible) default insertion points.
-- Shift-Backspace puts "Shift-Backspace" in text.
 - A find that selects a hidden node crashes Python.
     - Redraw entire screen on select?
+- insert/delete should set reasonable (Tk-compatible) default insertion points.
+- Shift-Backspace puts "Shift-Backspace" in text.
+
+
 
 Most important:
 - Try to enable syntax coloring again.

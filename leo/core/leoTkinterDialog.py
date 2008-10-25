@@ -853,7 +853,8 @@ class tkinterListBoxDialog (leoTkinterDialog):
         if items:
             n = items[0]
             p = self.positionList[n]
-            c.frame.tree.expandAllAncestors(p)
+            flag = c.frame.tree.expandAllAncestors(p)
+            if flag: redraw_after_expand()
             c.selectPosition(p)
             # c.redraw()
             c.redraw_after_select()

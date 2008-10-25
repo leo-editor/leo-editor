@@ -885,7 +885,7 @@ class baseCommands:
                 g.chdir(c.mFileName)
 
         # c.redraw()
-        c.redraw_after_icons_changed()
+        c.redraw_after_icons_changed(all=True)
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2834:save (commands)
     #@+node:ekr.20031218072017.2835:saveAs
@@ -922,7 +922,7 @@ class baseCommands:
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
         ### c.redraw()
-        c.redraw_after_icons_changed()
+        c.redraw_after_icons_changed(all=False)
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2835:saveAs
     #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -978,7 +978,7 @@ class baseCommands:
             g.chdir(fileName)
 
         # c.redraw()
-        c.redraw_after_icons_changed()
+        c.redraw_after_icons_changed(all=False)
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2836:saveTo
     #@+node:ekr.20031218072017.2837:revert
@@ -2210,9 +2210,10 @@ class baseCommands:
         c = self ; w = c.frame.body.bodyCtrl
 
         # Select p and make it visible.
-        c.frame.tree.expandAllAncestors(p)
+        flag = c.frame.tree.expandAllAncestors(p)
+        if flag: s.redraw_after_expand()
         c.selectPosition(p)
-        c.redraw()
+        c.redraw_after_select()
 
         # Put the cursor on line n2 of the body text.
         s = w.getAllText()
@@ -4572,6 +4573,7 @@ class baseCommands:
         while child:
             c.expandSubtree(child)
             child = child.next()
+        c.redraw_after_expand()
         c.selectVnode(v)
         c.redraw()
         c.treeFocusHelper()
@@ -4666,8 +4668,7 @@ class baseCommands:
         c = self ; p = c.currentPosition()
         if p.hasChildren():
             if not p.isExpanded():
-                c.expandNode()
-                c.redraw_after_expand()
+                c.expandNode() # Calls c.redraw_after_expand.
             else:
                 c.selectVnode(p.firstChild())
                 # c.redraw()
@@ -4958,12 +4959,13 @@ class baseCommands:
         # Add the moved nodes to p's children
         p.v.t.children.extend(followingSibs)
         p.expand()
+        c.redraw_after_expand()
         # Even if p is an @ignore node there is no need to mark the demoted children dirty.
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         c.setChanged(True)
         u.afterDemote(p,followingSibs,dirtyVnodeList)
         c.selectPosition(p)  # Also sets rootPosition.
-        c.redraw()
+        c.redraw_after_select()
         c.treeFocusHelper()
 
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -5265,7 +5267,8 @@ class baseCommands:
         p = c.nodeHistory.goNext()
 
         if p:
-            c.frame.tree.expandAllAncestors(p)
+            flag = c.frame.tree.expandAllAncestors(p)
+            if flag: c.redraw_after_expand()
             c.selectPosition(p)
             ### c.redraw_now()
             c.redraw_after_select()
@@ -5280,7 +5283,8 @@ class baseCommands:
         p = c.nodeHistory.goPrev()
 
         if p:
-            c.frame.tree.expandAllAncestors(p)
+            flag = c.frame.tree.expandAllAncestors(p)
+            if flag: c.redraw_after_expand()
             c.selectPosition(p)
             ### c.redraw_now()
             c.redraw_after_select()
@@ -5387,7 +5391,8 @@ class baseCommands:
         if cc:
             name = cc.findChapterNameForPosition(p)
             cc.selectChapterByName(name)
-            c.frame.tree.expandAllAncestors(p)
+            flag = c.frame.tree.expandAllAncestors(p)
+            if flag: c.redraw_after_expand()
 
         c.selectPosition(p)
         # c.redraw()
@@ -5415,7 +5420,8 @@ class baseCommands:
             if cc:
                 name = cc.findChapterNameForPosition(p)
                 cc.selectChapterByName(name)
-            c.frame.tree.expandAllAncestors(p)
+            flag = c.frame.tree.expandAllAncestors(p)
+            if flag: c.redraw_after_expand()
             c.selectPosition(p)
             # c.redraw()
             c.redraw_after_select()
@@ -5583,7 +5589,8 @@ class baseCommands:
         c = self ; current = c.currentPosition()
 
         if p:
-            c.frame.tree.expandAllAncestors(p)
+            flag = c.frame.tree.expandAllAncestors(p)
+            if flag: c.redraw_after_expand()
             c.selectPosition(p)
             if redraw:
                 # c.redraw()
@@ -6287,8 +6294,8 @@ class baseCommands:
     force_redraw = redraw_now
     #@-node:ekr.20080514131122.14:c.redraw and c.redraw_now
     #@+node:ekr.20081020151805.2:c.redraw_after methods (new)
-    def redraw_after_icons_changed(self):
-        return self.frame.tree.redraw_after_icons_changed()
+    def redraw_after_icons_changed(self,all=False):
+        return self.frame.tree.redraw_after_icons_changed(all)
     def redraw_after_clone(self):
         return self.frame.tree.redraw_after_clone()
     def redraw_after_contract(self):
@@ -7325,7 +7332,9 @@ class baseCommands:
                     found = True ; break
             if found: break
         if found:
-            if allFlag: c.frame.tree.expandAllAncestors(p)
+            if allFlag:
+                flag = c.frame.tree.expandAllAncestors(p)
+                if flag: c.redraw_after_expand()
             c.selectPosition(p)
             c.navTime = time.clock()
             c.navPrefix = newPrefix
