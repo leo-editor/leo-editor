@@ -2736,9 +2736,10 @@ class leoTree:
 
     def treeSelectHelper (self,p,scroll):
 
-        c = self.c ; frame = c.frame
+        c = self.c ; frame = c.frame ; trace = False
         body = w = frame.body.bodyCtrl
         if not w: return # Defensive.
+
         old_p = c.currentPosition()
 
         if not p:
@@ -2746,8 +2747,9 @@ class leoTree:
             # We may be in the process of changing roots.
             return None # Not an error.
 
-        # g.trace('      ===',id(w),p and p.headString())
-        if self.trace_select and not g.app.unitTesting: g.trace('tree',g.callers())
+        if trace: g.trace(
+            '\nold:',old_p and old_p.headString(),
+            '\nnew:',p and p.headString())
 
         if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
             if old_p:
@@ -2759,13 +2761,13 @@ class leoTree:
                     insertSpot = c.frame.body.getInsertPoint()
                 else:
                     g.trace('no body!','c.frame',c.frame,'old_p',old_p)
-                    yview,insertSpot = 0,0
+                    yview,insertSpot = None,0
 
                 if old_p != p:
                     self.endEditLabel() # sets editPosition = None
-                    self.setUnselectedLabelState(old_p) # 12/17/04
+                    self.setUnselectedLabelState(old_p)
 
-                if c.edit_widget(old_p):
+                if old_p: ### c.edit_widget(old_p):
                     old_p.v.t.scrollBarSpot = yview
                     old_p.v.t.insertSpot = insertSpot
                 #@-node:ekr.20040803072955.129:<< unselect the old node >>

@@ -555,10 +555,9 @@ class leoQtBody (leoFrame.leoBody):
     def forceFullRecolor (self):            pass
 
     # QScintilla handles all scrolling.
-    def getYScrollPosition(self):           return None # A flag
     def hitTest(self,pos):                  pass
     def scrollLines(self,n):                pass
-    def setYScrollPosition(self,i):         pass
+
     #@-node:ekr.20081016072304.11: Do-nothings
     #@+node:ekr.20081023131208.10:Coloring
     def forceFullRecolor (self):            pass
@@ -763,7 +762,7 @@ class leoQtBody (leoFrame.leoBody):
 
     toGuiIndex = toPythonIndex
     #@-node:ekr.20081007115148.7:Indices
-    #@+node:ekr.20081007015817.76:Insert point and selection
+    #@+node:ekr.20081007015817.76:Insert point, selection & scrollbars
     #@+node:ekr.20081007015817.83:getInsertPoint
     def getInsertPoint(self):
 
@@ -777,7 +776,7 @@ class leoQtBody (leoFrame.leoBody):
             return i
         else:
             i = w.textCursor().position()
-            # g.trace(i,w)
+            # g.trace(i) # ,g.callers(4))
             return i
     #@-node:ekr.20081007015817.83:getInsertPoint
     #@+node:ekr.20081007015817.84:getLastPosition
@@ -821,6 +820,28 @@ class leoQtBody (leoFrame.leoBody):
             return i,j
 
     #@-node:ekr.20081007015817.86:getSelectionRange
+    #@+node:ekr.20081025124450.11:getYScrollPosition
+    def getYScrollPosition(self):
+
+        if self.useScintilla:
+            return None # A flag
+        else:
+            w = self.widget
+            sb = w.verticalScrollBar()
+            i = sb.sliderPosition()
+            # g.trace(i,i)
+            return i,i # Return a tuple, only the first of which is used.
+    #@-node:ekr.20081025124450.11:getYScrollPosition
+    #@+node:ville.20081011134505.6:hasSelection
+    def hasSelection(self):
+
+        w = self.widget
+
+        if self.useScintilla:
+            return w.hasSelectedText()
+        else:
+            return w.textCursor().hasSelection()
+    #@-node:ville.20081011134505.6:hasSelection
     #@+node:ekr.20081008175216.5:selectAllText
     def selectAllText(self,insert=None):
 
@@ -841,7 +862,7 @@ class leoQtBody (leoFrame.leoBody):
             w.SendScintilla(w.SCI_SETANCHOR,i)
 
         else:
-            # g.trace(i,w)
+            # g.trace(i) # ,g.callers(4))
             cursor =  w.textCursor()
             cursor.setPosition(i)
             w.setTextCursor(cursor)
@@ -860,7 +881,7 @@ class leoQtBody (leoFrame.leoBody):
             g.trace('can not happen',args)
         insert = keys.get('insert')
 
-        # g.trace('i',i,'j','insert',insert)
+        # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
 
         if self.useScintilla:
             if i > j: i,j = j,i
@@ -892,23 +913,24 @@ class leoQtBody (leoFrame.leoBody):
             # row_j,col_j = g.convertPythonIndexToRowCol(s,j)
             # w.setSelection(row_i,col_i,row_j,col_j)
     #@-node:ekr.20081007015817.96:setSelectionRange
-    #@+node:ville.20081011134505.6:hasSelection
-    def hasSelection(self):
-
-        w = self.widget
+    #@+node:ekr.20081025124450.12:setYScrollPosition
+    def setYScrollPosition(self,pos):
 
         if self.useScintilla:
-            return w.hasSelectedText()
+            pass
         else:
-            return w.textCursor().hasSelection()
-    #@-node:ville.20081011134505.6:hasSelection
-    #@-node:ekr.20081007015817.76:Insert point and selection
+            w = self.widget
+            sb = w.verticalScrollBar()
+            # g.trace(pos)
+            sb.setSliderPosition(pos)
+    #@-node:ekr.20081025124450.12:setYScrollPosition
+    #@-node:ekr.20081007015817.76:Insert point, selection & scrollbars
     #@+node:ekr.20081007015817.99:Text getters/settters
     #@+node:ekr.20081007015817.79:appendText
     def appendText(self,s):
 
         s2 = self.getAllText()
-        self.setAllText(s2+s)
+        self.setAllText(s2+s,insert=len(s2))
 
     #@-node:ekr.20081007015817.79:appendText
     #@+node:ekr.20081008084746.6:delete
@@ -923,7 +945,7 @@ class leoQtBody (leoFrame.leoBody):
         # g.trace('i',i,'j',j)
 
         s = s[:i] + s[j:]
-        self.setAllText(s)
+        self.setAllText(s,insert=i)
 
         if i > 0 or j > 0: self.indexWarning('leoQtBody.delete')
         return i
@@ -955,29 +977,32 @@ class leoQtBody (leoFrame.leoBody):
     def insert(self,i,s):
 
         s2 = self.getAllText()
-        self.setAllText(s2[:i] + s + s2[i:])
+        self.setAllText(s2[:i] + s + s2[i:],insert=i)
 
         if i > 0: self.indexWarning('leoQtBody.insert')
         return i
     #@-node:ekr.20081007015817.89:insert
     #@+node:ekr.20081007015817.92:setAllText
-    def setAllText(self,s):
+    def setAllText(self,s,insert=None):
 
-        w = self.widget
+        '''Set the text of the widget.
+
+        If insert is None, the insert point, selection range and scrollbars are initied.
+        Otherwise, the scrollbars are preserved.'''
+
+
+        w = self.widget ; c = self.c ; p = c.currentPosition()
 
         if self.useScintilla:
             w.setText(s)
         else:
-            # g.trace('len(s)',len(s),g.callers(4))
-            # Save everything.
+            # g.trace('len(s)',len(s),p and p.headString())
             sb = w.verticalScrollBar()
-            ins = self.getInsertPoint()
-            i,j = self.getSelectionRange()
-            pos = sb.sliderPosition()
+            if insert is None: i,pos = 0,0
+            else: i,pos = insert,sb.sliderPosition()
             w.setPlainText(s)
-            self.setSelectionRange(i,j,insert=ins)
+            self.setSelectionRange(i,i,insert=i)
             sb.setSliderPosition(pos)
-    #@nonl
     #@-node:ekr.20081007015817.92:setAllText
     #@-node:ekr.20081007015817.99:Text getters/settters
     #@+node:ekr.20081024175359.12:Utils
@@ -3327,11 +3352,9 @@ class leoQtGui(leoGui.leoGui):
         try:
             fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
 
-            if 1: # Not needed: use QTreeWidget.setIconsize.
+            if 0: # Not needed: use QTreeWidget.setIconsize.
                 pixmap = QtGui.QPixmap()
                 pixmap.load(fullname)
-                pixmap = pixmap.scaled(20,11)
-                # g.trace(pixmap.width(),pixmap.height())
                 image = QtGui.QIcon(pixmap)
             else:
                 image = QtGui.QIcon(fullname)
@@ -5017,6 +5040,7 @@ class leoQtTextWidget:
     def setYScrollPosition (self,i):
 
         w = self
+        g.trace('not ready yet')
         # w.yview('moveto',i)
     #@nonl
     #@-node:ekr.20081004172422.724:setYScrollPosition
@@ -5487,27 +5511,31 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.5:redraw_after_contract
     def redraw_after_contract (self):
 
+        trace = True
+
         if self.redrawing:
             if trace: g.trace('drawing')
             return
 
-        if self.trace and self.verbose: g.trace()
+        self.full_redraw()
 
-        c = self.c ; p = c.currentPosition() ; w = self.treeWidget
-        if not p:
-            g.trace('can not happen: no p')
-            return self.full_redraw()
 
-        it = self.parentsDict.get(p.v)
-        if it is None:
-            g.trace('can not happen: no it for %s' % p.headString())
-            return self.full_redraw()
 
-        try:
-            self.redrawing = True
-            w.collapseItem(it)
-        finally:
-            self.redrawing = False
+        # c = self.c ; p = c.currentPosition() ; w = self.treeWidget
+        # if not p:
+            # g.trace('can not happen: no p')
+            # return self.full_redraw()
+
+        # it = self.parentsDict.get(p.v)
+        # if it is None:
+            # g.trace('can not happen: no it for %s' % p.headString())
+            # return self.full_redraw()
+
+        # try:
+            # self.redrawing = True
+            # w.collapseItem(it)
+        # finally:
+            # self.redrawing = False
     #@-node:ekr.20081021043407.5:redraw_after_contract
     #@+node:ekr.20081021043407.6:redraw_after_delete
     def redraw_after_delete (self):
@@ -5524,13 +5552,15 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c ; p = c.currentPosition()
         w = self.treeWidget
 
-        if self.redrawing:
-            if trace: g.trace('already drawing',p.headString())
-            return
-
-        if 0: # Works, but is less interesting :-)
+        if True: # Works, but is less interesting :-)
             return self.full_redraw()
         else:
+            if self.selecting:
+                if trace: g.trace('already selecting')
+                return
+            if self.redrawing:
+                if trace: g.trace('already drawing',p.headString())
+                return
             self.redrawCount += 1
             if trace: g.trace(self.redrawCount,p.headString())
             it = self.parentsDict.get(p.v)
@@ -5641,25 +5671,13 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.13:redraw_after_select
     def redraw_after_select (self):
 
+
         '''Redraw the screen after selecting a node.
-        This can be a do-nothing.'''
 
-        return ###
+        For the qt plugin, selectHint does the real work,
+        and this method should do nothing.'''
 
-        # trace = True
 
-        # if self.redrawing:
-            # if trace: g.trace('already redrawing',g.callers(4))
-            # return
-        # if self.selecting:
-            # if trace: g.trace('already selecting',g.callers(4))
-            # return
-
-        # c = self.c ; p = c.currentPosition()
-
-        # if trace: g.trace(p.headString(),g.callers(4))
-
-        # self.full_redraw()
     #@-node:ekr.20081021043407.13:redraw_after_select
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):
@@ -5741,44 +5759,6 @@ class leoQtTree (leoFrame.leoTree):
         # g.trace(item,p and p.headString())
 
     #@-node:ekr.20081021043407.26:sig_itemExpanded
-    #@+node:ekr.20081009055104.11:selectHint
-    def selectHint (self,p,old_p):
-
-        w = self.treeWidget ; trace = False
-
-        if self.redrawing:
-            if trace: g.trace('already redrawing')
-            return
-        if self.selecting:
-            if trace: g.trace('already selecting')
-            return
-
-        aList = self.vnodeDict.get(p.v,[])
-        h = p.headString()
-
-        self.new_p = p.copy()
-        self.old_p = old_p.copy()
-
-        if trace: g.trace(
-            p and p.headString(),
-            old_p and old_p.headString())
-
-        for p2,it in aList:
-            if p == p2:
-                if trace:
-                    g.trace('found item: %s for: %s' % (
-                        id(it),h),g.callers())
-                self.selecting = True
-                try:
-                    w.setCurrentItem(it)
-                finally:
-                    self.selecting = False
-                break
-        else:
-            if False and aList:
-                g.trace('redrawing',self.redrawing,g.callers())
-                g.trace('not found %s in %s' % (aList,h))
-    #@-node:ekr.20081009055104.11:selectHint
     #@+node:ekr.20081004172422.801:findEditWidget
     def findEditWidget (self,p):
 
@@ -6123,6 +6103,45 @@ class leoQtTree (leoFrame.leoTree):
         g.app.gui.set_focus(self.c,self.treeWidget)
     #@-node:ekr.20081019045904.2:Focus (qtTree)
     #@+node:ekr.20081004172422.844:Selecting & editing... (qtTree)
+    #@+node:ekr.20081009055104.11:selectHint
+    def selectHint (self,p,old_p):
+
+        w = self.treeWidget ; trace = False
+
+        if self.redrawing:
+            if trace: g.trace('already redrawing')
+            return
+        if self.selecting:
+            if trace: g.trace('already selecting')
+            return
+
+        aList = self.vnodeDict.get(p.v,[])
+        h = p.headString()
+
+        self.new_p = p.copy()
+        self.old_p = old_p.copy()
+
+        if trace: g.trace(
+            p and p.headString(),
+            old_p and old_p.headString())
+
+        for p2,it in aList:
+            if p == p2:
+                if trace:
+                    g.trace('found item: %s for: %s' % (
+                        id(it),h),g.callers())
+                self.selecting = True
+                try:
+                    w.setCurrentItem(it)
+                finally:
+                    self.selecting = False
+                break
+        else:
+            if aList:
+                g.trace('redrawing',self.redrawing,g.callers())
+                g.trace('not found %s in %s' % (aList,h))
+            self.full_redraw() ###
+    #@-node:ekr.20081009055104.11:selectHint
     #@+node:ekr.20081004172422.846:editLabel
     def editLabel (self,p,selectAll=False):
 

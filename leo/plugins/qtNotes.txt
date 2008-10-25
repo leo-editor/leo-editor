@@ -9,7 +9,8 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
-- Make sure to contract nodes during finds.
+*** Guarantee that selecting a node always updates its body text.
+* Make sure redraw after demote works.
 - Fix out-of-range insert point.
 - Ctrl-Shift-9 is the same as Ctrl-(
 - insert/delete should set reasonable (Tk-compatible) default insertion points.
@@ -18,8 +19,7 @@ Urgent:
 Most important:
 - Try to enable syntax coloring again.
 - Double-clicking headline sometimes isn't the same as ctrl-h.
-   May be due to QTextCursor::setPosition out of range.
-* Make sure redraw after demote works.
+
 * Make menu and dialog accelerators work!
 - Reading/saving a window does not properly set its size.
 - Can not open the settings file twice.
