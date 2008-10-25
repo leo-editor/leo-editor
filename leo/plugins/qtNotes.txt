@@ -81,6 +81,8 @@ def update (self):              pass
 def getTitle (self):
     return g.toUnicode(self.top.windowTitle(),'utf-8')
 
+def setTitle (self,s):
+    self.top.setWindowTitle(s)
 #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
 #@-node:ekr.20081010070648.5: To do
 #@+node:ekr.20081019082316.10:New features in the core
@@ -139,6 +141,8 @@ def update (self):              pass
 def getTitle (self):
     return g.toUnicode(self.top.windowTitle(),'utf-8')
 
+def setTitle (self,s):
+    self.top.setWindowTitle(s)
 #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
 #@+node:ekr.20081004172422.865:add_command
 def add_command (self,**keys):
@@ -652,15 +656,18 @@ def initCompleteHint (self):
     # g.trace(self.c)
 #@-node:ekr.20081020075840.20:initCompleteHint
 #@+node:ekr.20081011035036.1:onTextChanged
-textUpdateCount = 0 # An ugly kludge.
-
 def onTextChanged (self):
 
-    '''Update Leo after the body has been changed.'''
+    '''Update Leo after the body has been changed.
 
-    c = self.c ; tree = c.frame.tree ; w = self
-    trace = False ; verbose = False
-    old_p,new_p = tree.old_p,tree.new_p
+    self.selecting is guaranteed to be True during the entire selection process.'''
+
+    ### No need for old_p, new_p logic.
+
+    c = self.c ; p = c.currentPosition()
+    tree = c.frame.tree ; w = self
+    trace = True ; verbose = False
+    ### old_p,new_p = tree.old_p,tree.new_p
 
     if tree.selecting:
         if trace and verbose: g.trace('selecting')
@@ -668,26 +675,29 @@ def onTextChanged (self):
     if tree.redrawing:
         if trace and verbose: g.trace('redrawing')
         return
+    if not p:
+        return g.trace('*** no p')
 
     newInsert = w.getInsertPoint()
     newSel = w.getSelectionRange()
     newText = w.getAllText() # Converts to unicode.
 
-    select = new_p and new_p != self.body_p
-    if select:
-        if trace and verbose:
-            g.trace('** select',tree.new_p.headString())
-        self.body_p = new_p.copy()
-        return
+    # select = new_p and new_p != self.body_p
+    # if select:
+        # if trace and verbose:
+            # g.trace('** select',tree.new_p.headString())
+        # self.body_p = new_p.copy()
+        # return
 
-    p = self.body_p
-    if not p: return g.trace('oops: no p')
+    # p = self.body_p
+    # if not p: return g.trace('***: no p')
 
     # Get the previous values from the tnode.
     oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
-    if oldText == newText: return
+    if oldText == newText:
+        return g.trace('*** unexpected non-change')
 
-    if trace: g.trace('****changed',p.headString(),len(oldText),len(newText))
+    if trace and verbose: g.trace(p.headString(),len(oldText),len(newText))
 
     oldIns  = p.v.t.insertSpot
     i,j = p.v.t.selectionStart,p.v.t.selectionLength
@@ -703,7 +713,7 @@ def onTextChanged (self):
     p.v.t.insertSpot = newInsert
     i,j = newSel
     if i > j: i,j = j,i
-    new_p.v.t.selectionStart,new_p.v.t.selectionLength = (i,j-i)
+    p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
 
     # No need to redraw the screen.
     if not self.useScintilla:
@@ -712,7 +722,7 @@ def onTextChanged (self):
         c.setChanged(True)
     self.updateEditors()
     c.frame.tree.updateIcon(p)
-    c.outerUpdate() ###
+    c.outerUpdate()
 #@-node:ekr.20081011035036.1:onTextChanged
 #@-node:ekr.20081020075840.21:Suppress updates until init complete
 #@+node:ekr.20081022151429.10:Fixed startup crasher
@@ -851,7 +861,7 @@ def __init__ (self,frame,parentFrame):
     # g.trace('qtBody',self.widget)
 
     self.bodyCtrl = self # The widget as seen from Leo's core.
-    self.body_p = None
+    ### self.body_p = None
 
     # Config stuff.
     self.tags = {}
@@ -3107,6 +3117,69 @@ def setTreeColors (self):
 
     # # w.setPalette(palette)
 #@-node:ekr.20081010070648.15:setTreeColors
+#@+node:ekr.20081025124450.16:OLDonTextChanged
+def onTextChanged (self):
+
+    '''Update Leo after the body has been changed.
+
+    self.selecting is guaranteed to be True during the entire selection process.'''
+
+    c = self.c ; tree = c.frame.tree ; w = self
+    trace = True ; verbose = False
+    old_p,new_p = tree.old_p,tree.new_p
+
+    if tree.selecting:
+        if trace and verbose: g.trace('selecting')
+        return
+    if tree.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+
+    newInsert = w.getInsertPoint()
+    newSel = w.getSelectionRange()
+    newText = w.getAllText() # Converts to unicode.
+
+    select = new_p and new_p != self.body_p
+    if select:
+        if trace and verbose:
+            g.trace('** select',tree.new_p.headString())
+        self.body_p = new_p.copy()
+        return
+
+    p = self.body_p
+    if not p: return g.trace('***: no p')
+
+    # Get the previous values from the tnode.
+    oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
+    if oldText == newText: return
+
+    if trace: g.trace('****changed',p.headString(),len(oldText),len(newText))
+
+    oldIns  = p.v.t.insertSpot
+    i,j = p.v.t.selectionStart,p.v.t.selectionLength
+    oldSel  = (i,j-i)
+    oldYview = None
+    undoType = 'changed event'
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,
+        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+
+    # Update the tnode.
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = newInsert
+    i,j = newSel
+    if i > j: i,j = j,i
+    new_p.v.t.selectionStart,new_p.v.t.selectionLength = (i,j-i)
+
+    # No need to redraw the screen.
+    if not self.useScintilla:
+        c.recolor()
+    if not c.changed and c.frame.initComplete:
+        c.setChanged(True)
+    self.updateEditors()
+    c.frame.tree.updateIcon(p)
+    c.outerUpdate()
+#@-node:ekr.20081025124450.16:OLDonTextChanged
 #@-node:ekr.20081018155359.11:Unused
 #@+node:ekr.20081024175359.10:Scripts
 #@+node:ekr.20081022172620.10:Script to display Qt font database

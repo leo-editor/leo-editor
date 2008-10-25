@@ -2695,8 +2695,11 @@ class leoTree:
         '''Do late initialization.
         Called in g.openWithFileName after a successful load.'''
 
-    def selectHint (self,p,old_p):
-        '''Called at end of tree.select, just after calling c.selectPosition(p).'''
+    def afterSelectHint(self,p,old_p):
+        '''Called at end of tree.select.'''
+
+    def beforeSelectHint (self,p,old_p):
+        '''Called at start of tree.select.'''
 
     # These are hints for optimization.
     # The proper default is c.redraw()
@@ -2724,11 +2727,14 @@ class leoTree:
         if g.app.killed or self.tree_select_lockout: return None
 
         try:
+            c = self.c ; old_p = c.currentPosition()
             val = 'break'
             self.tree_select_lockout = True
+            c.frame.tree.beforeSelectHint(p,old_p)
             val = self.treeSelectHelper(p,scroll)
         finally:
             self.tree_select_lockout = False
+            c.frame.tree.afterSelectHint(p,old_p)
 
         return val  # Don't put a return in a finally clause.
     #@+node:ekr.20070423101911:treeSelectHelper
@@ -2774,9 +2780,6 @@ class leoTree:
                 #@nl
 
         g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-
-        c.frame.tree.selectHint(p,old_p)
-            # New in Leo 4.6: warn that the position is about to change.
 
         if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
             #@        << select the new node >>

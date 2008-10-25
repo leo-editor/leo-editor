@@ -20258,9 +20258,6 @@ def treeSelectHelper (self,p,scroll):
 
     g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
 
-    c.frame.tree.selectHint(p,old_p)
-        # New in Leo 4.6: warn that the position is about to change.
-
     if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
         << select the new node >>
         if p and p != old_p: # Suppress duplicate call.
