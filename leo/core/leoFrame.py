@@ -2700,18 +2700,17 @@ class leoTree:
 
     # These are hints for optimization.
     # The proper default is c.redraw()
-    def redraw_after_icons_changed(self):   self.c.redraw()
-    def redraw_after_clone(self):           self.c.redraw()
-    def redraw_after_contract(self):        self.c.redraw()
-    def redraw_after_delete(self):          self.c.redraw()
-    def redraw_after_expand(self):          self.c.redraw()
-    def redraw_after_insert(self):          self.c.redraw()
-    def redraw_after_move_down(self):       self.c.redraw()
-    def redraw_after_move_left(self):       self.c.redraw()
-    def redraw_after_move_right(self):      self.c.redraw()
-    def redraw_after_move_up(self):         self.c.redraw()
-    def redraw_after_select(self):          self.c.redraw()
-
+    def redraw_after_icons_changed(self,all=False): self.c.redraw()
+    def redraw_after_clone(self):                   self.c.redraw()
+    def redraw_after_contract(self):                self.c.redraw()
+    def redraw_after_delete(self):                  self.c.redraw()
+    def redraw_after_expand(self):                  self.c.redraw()
+    def redraw_after_insert(self):                  self.c.redraw()
+    def redraw_after_move_down(self):               self.c.redraw()
+    def redraw_after_move_left(self):               self.c.redraw()
+    def redraw_after_move_right(self):              self.c.redraw()
+    def redraw_after_move_up(self):                 self.c.redraw()
+    def redraw_after_select(self):                  self.c.redraw()
 
 
     #@-node:ekr.20081005065934.8:May be defined in subclasses

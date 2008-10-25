@@ -5378,8 +5378,8 @@ class leoQtTree (leoFrame.leoTree):
             if self.current_item:
                 w.scrollToItem(self.current_item,
                     QtGui.QAbstractItemView.PositionAtCenter)
-            elif self.redrawCount > 1:
-                g.trace('** no current item: %s' % (p and p.headString()))
+            elif p and self.redrawCount > 1:
+                g.trace('** no current item: %s' % (p.headString()))
 
             # Necessary to get the tree drawn initially.
             w.repaint()

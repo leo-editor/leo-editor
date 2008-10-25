@@ -9,6 +9,8 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
+- Make sure to contract nodes during finds.
+- Fix out-of-range insert point.
 - Ctrl-Shift-9 is the same as Ctrl-(
 - insert/delete should set reasonable (Tk-compatible) default insertion points.
 - Shift-Backspace puts "Shift-Backspace" in text.
