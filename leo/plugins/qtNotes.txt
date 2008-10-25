@@ -662,12 +662,9 @@ def onTextChanged (self):
 
     self.selecting is guaranteed to be True during the entire selection process.'''
 
-    ### No need for old_p, new_p logic.
-
     c = self.c ; p = c.currentPosition()
     tree = c.frame.tree ; w = self
     trace = True ; verbose = False
-    ### old_p,new_p = tree.old_p,tree.new_p
 
     if tree.selecting:
         if trace and verbose: g.trace('selecting')
@@ -681,16 +678,6 @@ def onTextChanged (self):
     newInsert = w.getInsertPoint()
     newSel = w.getSelectionRange()
     newText = w.getAllText() # Converts to unicode.
-
-    # select = new_p and new_p != self.body_p
-    # if select:
-        # if trace and verbose:
-            # g.trace('** select',tree.new_p.headString())
-        # self.body_p = new_p.copy()
-        # return
-
-    # p = self.body_p
-    # if not p: return g.trace('***: no p')
 
     # Get the previous values from the tnode.
     oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
@@ -3180,6 +3167,45 @@ def onTextChanged (self):
     c.frame.tree.updateIcon(p)
     c.outerUpdate()
 #@-node:ekr.20081025124450.16:OLDonTextChanged
+#@+node:ekr.20081009055104.11:selectHint (no longer used)
+# def selectHint (self,p,old_p):
+
+    # w = self.treeWidget ; trace = False
+
+    # if self.redrawing:
+        # if trace: g.trace('already redrawing')
+        # return
+    # if self.selecting:
+        # if trace: g.trace('already selecting')
+        # return
+
+    # aList = self.vnodeDict.get(p.v,[])
+    # h = p.headString()
+
+    # self.new_p = p.copy()
+    # self.old_p = old_p.copy()
+
+    # if trace: g.trace(
+        # p and p.headString(),
+        # old_p and old_p.headString())
+
+    # for p2,it in aList:
+        # if p == p2:
+            # if trace:
+                # g.trace('found item: %s for: %s' % (
+                    # id(it),h),g.callers())
+            # self.selecting = True
+            # try:
+                # w.setCurrentItem(it)
+            # finally:
+                # self.selecting = False
+            # break
+    # else:
+        # if aList:
+            # g.trace('redrawing',self.redrawing,g.callers())
+            # g.trace('not found %s in %s' % (aList,h))
+        # self.full_redraw() ###
+#@-node:ekr.20081009055104.11:selectHint (no longer used)
 #@-node:ekr.20081018155359.11:Unused
 #@+node:ekr.20081024175359.10:Scripts
 #@+node:ekr.20081022172620.10:Script to display Qt font database
