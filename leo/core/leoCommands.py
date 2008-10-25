@@ -2211,7 +2211,7 @@ class baseCommands:
 
         # Select p and make it visible.
         flag = c.frame.tree.expandAllAncestors(p)
-        if flag: s.redraw_after_expand()
+        if flag: c.redraw_after_expand()
         c.selectPosition(p)
         c.redraw_after_select()
 

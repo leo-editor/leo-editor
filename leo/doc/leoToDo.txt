@@ -489,7 +489,7 @@ def goto_showResults(self,found,p,n,n2,lines):
 
     # Select p and make it visible.
     flag = c.frame.tree.expandAllAncestors(p)
-    if flag: s.redraw_after_expand()
+    if flag: c.redraw_after_expand()
     c.selectPosition(p)
     c.redraw_after_select()
 
