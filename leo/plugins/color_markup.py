@@ -37,7 +37,7 @@ By default, once the text has been markup up, the actual tags (e.g. __ for bold)
 #@<< example >>
 #@+node:edream.110403140857.5:<< example >>
 #@@color
-#@@markup wiki
+@markup wiki
 #@+doc 
 #@nonl
 # (this turns on a doc section; a '@ ' would do too)

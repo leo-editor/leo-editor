@@ -5719,6 +5719,7 @@ if wx:
 
         def updateIcon(self,p):
             val = p.v.computeIcon()
+            g.trace(val,p.headString())
             tree_id = self.getIdDict(p)
             if tree_id:
                 self.treeCtrl.SetItemImage(tree_id,val)

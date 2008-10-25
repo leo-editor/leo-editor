@@ -1023,9 +1023,9 @@ class leoQtBody (leoFrame.leoBody):
             self.widget.ensureCursorVisible()
     #@-node:ekr.20081024163213.11:seeInsertPoint
     #@+node:ekr.20081024163213.12:flashCursor
-    def flashCharacter (self,i,bg,fg,flashes,delay):
+    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
-        g.trace(g.callers(4))
+        pass
 
     #@-node:ekr.20081024163213.12:flashCursor
     #@-node:ekr.20081007015817.91:Visibility
@@ -3324,10 +3324,18 @@ class leoQtGui(leoGui.leoGui):
         # Return the image from the cache if possible.
         if name in self.iconimages:
             return self.iconimages.get(name)
-
         try:
             fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
-            image = QtGui.QIcon(fullname)
+
+            if 1: # Not needed: use QTreeWidget.setIconsize.
+                pixmap = QtGui.QPixmap()
+                pixmap.load(fullname)
+                pixmap = pixmap.scaled(20,11)
+                # g.trace(pixmap.width(),pixmap.height())
+                image = QtGui.QIcon(pixmap)
+            else:
+                image = QtGui.QIcon(fullname)
+
             self.iconimages[name] = image
             return image
 
@@ -4796,28 +4804,10 @@ class leoQtTextWidget:
             # qt.Text.delete(w,i,j)
     #@-node:ekr.20081004172422.701:delete
     #@+node:ekr.20081004172422.702:flashCharacter
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): # qtTextWidget.
+    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
-        w = self
+        pass
 
-        # def addFlashCallback(w,count,index):
-            # # g.trace(count,index)
-            # i,j = w.toGuiIndex(index),w.toGuiIndex(index+1)
-            # qt.Text.tag_add(w,'flash',i,j)
-            # qt.Text.after(w,delay,removeFlashCallback,w,count-1,index)
-
-        # def removeFlashCallback(w,count,index):
-            # # g.trace(count,index)
-            # qt.Text.tag_remove(w,'flash','1.0','end')
-            # if count > 0:
-                # qt.Text.after(w,delay,addFlashCallback,w,count,index)
-
-        # try:
-            # qt.Text.tag_configure(w,'flash',foreground=fg,background=bg)
-            # addFlashCallback(w,flashes,i)
-        # except Exception:
-            # pass # g.es_exception()
-    #@nonl
     #@-node:ekr.20081004172422.702:flashCharacter
     #@+node:ekr.20081004172422.703:get
     def get(self,i,j=None):
@@ -5146,26 +5136,26 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081005065934.10:qtTree.initAfterLoad
     def initAfterLoad (self):
 
-        c = self.c ; frame = c.frame ; w = c.frame.top
+            c = self.c ; frame = c.frame ; w = c.frame.top
 
-        if not leoQtTree.callbacksInjected:
-            leoQtTree.callbacksInjected = True
-            self.injectCallbacks() # A base class method.
+            if not leoQtTree.callbacksInjected:
+                leoQtTree.callbacksInjected = True
+                self.injectCallbacks() # A base class method.
 
-        w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemSelectionChanged()"), self.onTreeSelect)
+            w.connect(self.treeWidget,QtCore.SIGNAL(
+                "itemSelectionChanged()"), self.onTreeSelect)
 
-        w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemChanged(QTreeWidgetItem*, int)"),self.sig_itemChanged)
+            w.connect(self.treeWidget,QtCore.SIGNAL(
+                "itemChanged(QTreeWidgetItem*, int)"),self.sig_itemChanged)
 
-        w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemExpanded(QTreeWidgetItem*)"),self.sig_itemExpanded)
+            w.connect(self.treeWidget,QtCore.SIGNAL(
+                "itemExpanded(QTreeWidgetItem*)"),self.sig_itemExpanded)
 
-        self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
-        self.treeWidget.installEventFilter(self.ev_filter)
+            self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+            self.treeWidget.installEventFilter(self.ev_filter)
+            self.treeWidget.setIconSize(QtCore.QSize(20,11))
 
-        c.setChanged(False)
-
+            c.setChanged(False)
     #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
     #@+node:ekr.20081004172422.742:qtTree.setBindings & helper
     def setBindings (self):
@@ -5602,9 +5592,13 @@ class leoQtTree (leoFrame.leoTree):
 
         c = self.c ; p = c.currentPosition()
 
-        if self.trace and self.verbose: g.trace('all',all,p.headString())
+        # g.trace('all',all,p.headString())
 
-        self.updateIcon(p)
+        if False and all:
+            for p in c.allNodes_iter():
+                self.updateIcon(p)
+        else:
+            self.updateIcon(p)
 
 
     #@-node:ekr.20081021043407.3:redraw_after_icons_changed
