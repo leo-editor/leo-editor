@@ -977,7 +977,7 @@ class leoQtBody (leoFrame.leoBody):
     def insert(self,i,s):
 
         s2 = self.getAllText()
-        self.setAllText(s2[:i] + s + s2[i:],insert=i)
+        self.setAllText(s2[:i] + s + s2[i:],insert=i+len(s))
 
         if i > 0: self.indexWarning('leoQtBody.insert')
         return i
