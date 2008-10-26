@@ -14,6 +14,7 @@ Urgent:
 - Ctrl-Shift-9 is the same as Ctrl-(
 - insert/delete should set reasonable (Tk-compatible) default insertion points.
 - Shift-Backspace puts "Shift-Backspace" in text.
+- Esc does not terminate minibuffer.
 
 Most important:
 - Re-enable syntax coloring.
@@ -58,7 +59,10 @@ Later:
          - Make Scintilla handle Leo markup.
     - Support multiple body editors.
     - Support chapters
-    - Handle pane orientation.
+    - Handle pane orientation:
+        A popular arrangement would be editor and outline
+        in top pane with the log along the bottom.
+
  - Make tkinter code a plugin.
         - If no gui specified on command line,
           use the first gui that can be imported.
@@ -1045,6 +1049,8 @@ def setRichTextConfig (self):
     c = self.c ; w = self.widget
 
     n = c.config.getInt('qt-rich-text-zoom-in')
+
+    w.setWordWrapMode(QtGui.QTextOption.NoWrap)
 
     # w.zoomIn(1)
     # w.updateMicroFocus()

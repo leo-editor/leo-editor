@@ -743,7 +743,6 @@ self.check_the_final_output(
 #@-node:ekr.20080708094444.45:<< do final correctness check >>
 #@-node:ekr.20080708094444.38:x.propagate_changed_lines
 #@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-#@clone 2
 #@+node:ekr.20081004102201.2:Log file for @shadow
 @nocolor-node
 

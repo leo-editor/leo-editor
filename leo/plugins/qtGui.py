@@ -459,6 +459,8 @@ class leoQtBody (leoFrame.leoBody):
 
         n = c.config.getInt('qt-rich-text-zoom-in')
 
+        w.setWordWrapMode(QtGui.QTextOption.NoWrap)
+
         # w.zoomIn(1)
         # w.updateMicroFocus()
         if n not in (None,0):
@@ -5159,7 +5161,8 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081005065934.10:qtTree.initAfterLoad
     def initAfterLoad (self):
 
-            c = self.c ; frame = c.frame ; w = c.frame.top
+            c = self.c ; frame = c.frame
+            w = c.frame.top ; tw = self.treeWidget
 
             if not leoQtTree.callbacksInjected:
                 leoQtTree.callbacksInjected = True
@@ -5175,7 +5178,7 @@ class leoQtTree (leoFrame.leoTree):
                 "itemExpanded(QTreeWidgetItem*)"),self.sig_itemExpanded)
 
             self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
-            self.treeWidget.installEventFilter(self.ev_filter)
+            tw.installEventFilter(self.ev_filter)
 
             c.setChanged(False)
     #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
