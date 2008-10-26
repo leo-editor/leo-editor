@@ -30,6 +30,7 @@ import os
 import string
 import sys
 import time
+import types
 
 try:
     # import PyQt4.Qt as Qt # Loads all modules of Qt.
@@ -643,7 +644,8 @@ class leoQtBody (leoFrame.leoBody):
 
         '''Update Leo after the body has been changed.
 
-        self.selecting is guaranteed to be True during the entire selection process.'''
+        self.selecting is guaranteed to be True during
+        the entire selection process.'''
 
         c = self.c ; p = c.currentPosition()
         tree = c.frame.tree ; w = self
@@ -915,6 +917,9 @@ class leoQtBody (leoFrame.leoBody):
             w = self.widget
             sb = w.verticalScrollBar()
             # g.trace(pos)
+            if pos is None: pos = 0
+            elif type(pos) == types.TupleType:
+                pos = pos[0]
             sb.setSliderPosition(pos)
     #@-node:ekr.20081025124450.12:setYScrollPosition
     #@-node:ekr.20081007015817.76:Insert point, selection & scrollbars
@@ -5125,6 +5130,7 @@ class leoQtTree (leoFrame.leoTree):
         self.c = c
         self.canvas = self # An official ivar used by Leo's core.
         self.treeWidget = w = frame.top.treeWidget # An internal ivar.
+        self.treeWidget.setIconSize(QtCore.QSize(20,11))
 
         # Status ivars.
         self.dragging = False
@@ -5172,7 +5178,6 @@ class leoQtTree (leoFrame.leoTree):
 
             self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
             self.treeWidget.installEventFilter(self.ev_filter)
-            self.treeWidget.setIconSize(QtCore.QSize(20,11))
 
             c.setChanged(False)
     #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
@@ -5414,7 +5419,7 @@ class leoQtTree (leoFrame.leoTree):
         self.current_item = None
     #@-node:ekr.20081021043407.30:initData
     #@+node:ekr.20081021043407.24:drawNode
-    def drawNode (self,p):
+    def drawNode (self,p,dummy=False):
 
         w = self.treeWidget ; trace = False
         self.nodeDrawCount += 1
@@ -5433,6 +5438,8 @@ class leoQtTree (leoFrame.leoTree):
         it.setText(0,p.headString())
         icon = self.getIcon(p)
         if icon: it.setIcon(0,icon)
+
+        if dummy: return it
 
         # Remember the associatiation of it with p, and vice versa.
         self.itemsDict[it] = p.copy()
@@ -5475,11 +5482,14 @@ class leoQtTree (leoFrame.leoTree):
                     self.drawTree(child)
                     child.moveToNext()
             else:
-                # Draw the hidden children.
-                child = p.firstChild()
-                while child:
-                    self.drawNode(child)
-                    child.moveToNext()
+                if 1: # Just draw one dummy child.
+                    self.drawNode(p.firstChild(),dummy=True)
+                else:
+                    # Draw the hidden children.
+                    child = p.firstChild()
+                    while child:
+                        self.drawNode(child)
+                        child.moveToNext()
                 w.collapseItem(it)
         else:
             w.collapseItem(it)
@@ -5500,42 +5510,16 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.4:redraw_after_clone
     def redraw_after_clone (self):
 
-        if self.trace and self.verbose: g.trace()
         self.full_redraw()
     #@-node:ekr.20081021043407.4:redraw_after_clone
     #@+node:ekr.20081021043407.5:redraw_after_contract
     def redraw_after_contract (self):
 
-        trace = True
-
-        if self.redrawing:
-            if trace: g.trace('drawing')
-            return
-
         self.full_redraw()
-
-
-
-        # c = self.c ; p = c.currentPosition() ; w = self.treeWidget
-        # if not p:
-            # g.trace('can not happen: no p')
-            # return self.full_redraw()
-
-        # it = self.parentsDict.get(p.v)
-        # if it is None:
-            # g.trace('can not happen: no it for %s' % p.headString())
-            # return self.full_redraw()
-
-        # try:
-            # self.redrawing = True
-            # w.collapseItem(it)
-        # finally:
-            # self.redrawing = False
     #@-node:ekr.20081021043407.5:redraw_after_contract
     #@+node:ekr.20081021043407.6:redraw_after_delete
     def redraw_after_delete (self):
 
-        if self.trace and self.verbose: g.trace()
         self.full_redraw()
 
 
@@ -5543,44 +5527,46 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.7:redraw_after_expand & helper
     def redraw_after_expand (self):
 
-        trace = True ; verbose = False
-        c = self.c ; p = c.currentPosition()
-        w = self.treeWidget
+        # This is reasonable now that we only allocate
+        # one dummy node in collapsed trees.
+        return self.full_redraw()
 
-        if True: # Works, but is less interesting :-)
-            return self.full_redraw()
-        else:
-            if self.redrawing:
-                if trace: g.trace('already drawing',p.headString())
-                return
-            self.redrawCount += 1
-            if trace: g.trace(self.redrawCount,p.headString())
-            it = self.parentsDict.get(p.v)
-            if not it:
-                g.trace('can not happen: no item for %s' % p.headString())
-                return self.full_redraw()
-            self.nodeDrawCount = 0
-            self.redrawing = True
-            self.expanding = True
-            try:
-                w.expandItem(it)
-                # Delete all the children from the tree.
-                items = it.takeChildren()
-                if trace and verbose:
-                    g.trace(id(it),len(items),p.headString())
-                # Delete all descendant entries from dictionaries.
-                for child in p.children_iter():
-                    for z in child.self_and_subtree_iter():
-                        self.removeFromDicts(z)
-                # Redraw all descendants.
-                for child in p.children_iter():
-                    self.drawTree(child)
-            finally:
-                w.setCurrentItem(it)
-                self.redrawing = False
-                self.expanding = False
-                c.requestRedrawFlag= False
-                if trace: g.trace('drew %3s nodes' % self.nodeDrawCount)
+        # trace = True ; verbose = False
+        # c = self.c ; p = c.currentPosition()
+        # w = self.treeWidget
+
+        # if self.redrawing:
+            # if trace: g.trace('already drawing',p.headString())
+            # return
+        # self.redrawCount += 1
+        # if trace: g.trace(self.redrawCount,p.headString())
+        # it = self.parentsDict.get(p.v)
+        # if not it:
+            # g.trace('can not happen: no item for %s' % p.headString())
+            # return self.full_redraw()
+        # self.nodeDrawCount = 0
+        # self.redrawing = True
+        # self.expanding = True
+        # try:
+            # w.expandItem(it)
+            # # Delete all the children from the tree.
+            # items = it.takeChildren()
+            # if trace and verbose:
+                # g.trace(id(it),len(items),p.headString())
+            # # Delete all descendant entries from dictionaries.
+            # for child in p.children_iter():
+                # for z in child.self_and_subtree_iter():
+                    # self.removeFromDicts(z)
+            # # Redraw all descendants.
+            # for child in p.children_iter():
+                # self.drawTree(child)
+        # finally:
+            # w.setCurrentItem(it)
+            # self.redrawing = False
+            # self.expanding = False
+            # c.requestRedrawFlag= False
+            # if trace:
+                # g.trace('drew %3s nodes' %self.nodeDrawCount)
     #@+node:ekr.20081021043407.28:removeFromDicts
     def removeFromDicts (self,p):
 
@@ -5625,49 +5611,40 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.8:redraw_after_insert
     def redraw_after_insert (self):
 
-        if self.trace and self.verbose: g.trace()
         self.full_redraw()
     #@-node:ekr.20081021043407.8:redraw_after_insert
     #@+node:ekr.20081021043407.9:redraw_after_move_down
     def redraw_after_move_down (self):
 
-        if self.trace and self.verbose: g.trace()
         self.full_redraw()
     #@nonl
     #@-node:ekr.20081021043407.9:redraw_after_move_down
     #@+node:ekr.20081021043407.10:redraw_after_move_left
     def redraw_after_move_left (self):
 
-        if self.trace and self.verbose: g.trace()
         self.full_redraw()
     #@nonl
     #@-node:ekr.20081021043407.10:redraw_after_move_left
     #@+node:ekr.20081021043407.11:redraw_after_move_right
     def redraw_after_move_right (self):
 
-        if self.trace and self.verbose: g.trace()
-
         c = self.c ; p = c.currentPosition()
         parent = p.parent()
         if parent: parent.expand()
+
         self.full_redraw()
     #@-node:ekr.20081021043407.11:redraw_after_move_right
     #@+node:ekr.20081021043407.12:redraw_after_move_up
     def redraw_after_move_up (self):
 
-        if self.trace and self.verbose: g.trace()
         self.full_redraw()
     #@-node:ekr.20081021043407.12:redraw_after_move_up
     #@+node:ekr.20081021043407.13:redraw_after_select
     def redraw_after_select (self):
 
+        '''Redraw the screen after selecting a node.'''
 
-        '''Redraw the screen after selecting a node.
-
-        For the qt plugin, selectHint does the real work,
-        and this method should do nothing.'''
-
-
+        pass # Should do nothing!
     #@-node:ekr.20081021043407.13:redraw_after_select
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):

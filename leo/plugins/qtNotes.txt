@@ -9,15 +9,14 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
-*** Guarantee that selecting a node always updates its body text.
 * Make sure redraw after demote works.
-- Fix out-of-range insert point.
+- Icons are not marked clean after save.
 - Ctrl-Shift-9 is the same as Ctrl-(
 - insert/delete should set reasonable (Tk-compatible) default insertion points.
 - Shift-Backspace puts "Shift-Backspace" in text.
 
 Most important:
-- Try to enable syntax coloring again.
+- Re-enable syntax coloring.
 - Double-clicking headline sometimes isn't the same as ctrl-h.
 
 * Make menu and dialog accelerators work!
@@ -660,7 +659,8 @@ def onTextChanged (self):
 
     '''Update Leo after the body has been changed.
 
-    self.selecting is guaranteed to be True during the entire selection process.'''
+    self.selecting is guaranteed to be True during
+    the entire selection process.'''
 
     c = self.c ; p = c.currentPosition()
     tree = c.frame.tree ; w = self
