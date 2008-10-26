@@ -682,7 +682,7 @@ def onTextChanged (self):
     # Get the previous values from the tnode.
     oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
     if oldText == newText:
-        return g.trace('*** unexpected non-change')
+        return g.trace('*** unexpected non-change',color=red)
 
     if trace and verbose: g.trace(p.headString(),len(oldText),len(newText))
 

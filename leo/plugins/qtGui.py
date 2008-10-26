@@ -667,7 +667,7 @@ class leoQtBody (leoFrame.leoBody):
         # Get the previous values from the tnode.
         oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
         if oldText == newText:
-            return g.trace('*** unexpected non-change')
+            return g.trace('*** unexpected non-change',color=red)
 
         if trace and verbose: g.trace(p.headString(),len(oldText),len(newText))
 
@@ -5146,8 +5146,6 @@ class leoQtTree (leoFrame.leoTree):
 
         # Debugging.
         self.nodeDrawCount = 0
-        self.trace = False
-        self.verbose = True
 
         # Drawing ivars.
         self.itemsDict = {} # keys are items, values are positions
@@ -5341,7 +5339,6 @@ class leoQtTree (leoFrame.leoTree):
         self.use_chapters   = c.config.getBool('use_chapters')
 
         # Debugging.
-            # self.trace          = c.config.getBool('trace_tree')
             # self.trace_alloc    = c.config.getBool('trace_tree_alloc')
             # self.trace_chapters = c.config.getBool('trace_chapters')
             # self.trace_edit     = c.config.getBool('trace_tree_edit')
@@ -5367,7 +5364,7 @@ class leoQtTree (leoFrame.leoTree):
         '''Redraw all visible nodes of the tree'''
 
         c = self.c ; w = self.treeWidget
-        trace = True or self.trace; verbose = False
+        trace = False; verbose = False
         if not w: return
         if self.redrawing:
             g.trace('***** already drawing',g.callers(5))
@@ -5826,8 +5823,6 @@ class leoQtTree (leoFrame.leoTree):
 
         # c.setLog()
 
-        # if self.trace and self.verbose: g.trace()
-
         # if not g.doHook("iconclick1",c=c,p=p,v=p,event=event):
             # if event:
                 # self.onDrag(event)
@@ -5881,8 +5876,6 @@ class leoQtTree (leoFrame.leoTree):
             # return
 
         # c.setLog()
-
-        # if self.trace and self.verbose: g.trace()
 
         # try:
             # if not g.doHook("icondclick1",c=c,p=p,v=p,event=event):
