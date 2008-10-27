@@ -5,6 +5,7 @@
 @nocolor-node
 
 Urgent:
+- Add accels for top-level menus.
 - Fix key problems:
     - Ctrl-Shift-9 is the same as Ctrl-(
     - Ctrl-tab gets put into text.
@@ -14,12 +15,11 @@ Urgent:
 
 Most important:
 - Re-enable syntax coloring.
-* Make menu and dialog accelerators work!
 - Reading/saving a window does not properly set its size.
 * Can not open the settings file twice.
 - Changes to headline do not stick after, e.g., ctrl-r.
 - Redraw all icons after save (but not save-as or save-to).
-- File:Exit does not quit the main loop. Call QCoreApplication::exit().
+
 
 Next:
 - Shift-tab is Smart home.
@@ -1141,7 +1141,7 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
     '''Redraw all visible nodes of the tree'''
 
     c = self.c ; w = self.treeWidget
-    trace = True; verbose = False
+    trace = False; verbose = False
     if not w: return
     if self.redrawing:
         g.trace('***** already drawing',g.callers(5))
@@ -1603,7 +1603,7 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
     '''Redraw all visible nodes of the tree'''
 
     c = self.c ; w = self.treeWidget
-    trace = True; verbose = False
+    trace = False; verbose = False
     if not w: return
     if self.redrawing:
         g.trace('***** already drawing',g.callers(5))
@@ -1916,6 +1916,36 @@ def setCurrentItem (self):
         return None
 #@-node:ekr.20081027082521.12:setCurrentItem
 #@-node:ekr.20081027082521.11:Redraw crashes & problems
+#@+node:ekr.20081027163149.12:Menu accels
+#@+node:ekr.20081004172422.865:add_command
+def add_command (self,**keys):
+
+    """Wrapper for the Tkinter add_command menu method."""
+
+    c = self.c
+    accel = keys.get('accelerator') or ''
+    command = keys.get('command')
+    label = keys.get('label')
+    n = keys.get('underline')
+    menu = keys.get('menu') or self
+    if not label: return
+
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+    if accel:
+        label = '%s\t%s' % (label,accel)
+
+    action = menu.addAction(label)
+    # if shortcut: action.setShortcut(shortcut)
+
+    if command:
+        def add_command_callback(label=label,command=command):
+            return command()
+
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL("triggered()"),add_command_callback)
+#@-node:ekr.20081004172422.865:add_command
+#@-node:ekr.20081027163149.12:Menu accels
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor

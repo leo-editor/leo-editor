@@ -2947,9 +2947,9 @@ class leoQtGui(leoGui.leoGui):
     #@-node:ekr.20081004102201.635:runMainLoop (qtGui)
     #@+node:ekr.20081004102201.636:destroySelf
     def destroySelf (self):
-        g.trace()
         QtCore.pyqtRemoveInputHook()
-        # self.qtApp.closeAllWindows()
+        self.qtApp.exit()
+    #@nonl
     #@-node:ekr.20081004102201.636:destroySelf
     #@-node:ekr.20081004102201.632:  Birth & death (qtGui)
     #@+node:ekr.20081004102201.648:Clipboard
@@ -5375,7 +5375,7 @@ class leoQtTree (leoFrame.leoTree):
         '''Redraw all visible nodes of the tree'''
 
         c = self.c ; w = self.treeWidget
-        trace = True; verbose = False
+        trace = False; verbose = False
         if not w: return
         if self.redrawing:
             g.trace('***** already drawing',g.callers(5))
