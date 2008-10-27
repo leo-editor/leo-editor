@@ -5514,20 +5514,20 @@ class leoQtTree (leoFrame.leoTree):
             return None
     #@-node:ekr.20081027082521.12:setCurrentItem
     #@-node:ekr.20081021043407.23:full_redraw & helpers
-    #@+node:ekr.20081010070648.14:getIcon
+    #@+node:ekr.20081010070648.14:getIcon & getIconImage
     def getIcon(self,p):
 
         '''Return the proper icon for position p.'''
 
         p.v.iconVal = val = p.v.computeIcon()
+        return self.getIconImage(val)
 
-        imagename = "box%02d.GIF" % val
-        image = g.app.gui.getIconImage(imagename)
+    def getIconImage(self,val):
 
-        # g.trace(val,p and p.headString())
+        return g.app.gui.getIconImage(
+            "box%02d.GIF" % val)
 
-        return image
-    #@-node:ekr.20081010070648.14:getIcon
+    #@-node:ekr.20081010070648.14:getIcon & getIconImage
     #@+node:ekr.20081021043407.4:redraw_after_clone
     def redraw_after_clone (self):
 
@@ -5617,9 +5617,9 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.3:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
 
-        c = self.c ; p = c.currentPosition()
+        g.trace('should not be called',g.callers(4))
 
-        # g.trace('all',all,p.headString())
+        c = self.c ; p = c.currentPosition()
 
         if all:
             self.full_redraw()
@@ -5688,17 +5688,12 @@ class leoQtTree (leoFrame.leoTree):
         if not p: return
 
         val = p.v.computeIcon()
-
         if p.v.iconVal == val: return
 
-        imagename = "box%02d.GIF" % val
-        icon = g.app.gui.getIconImage(imagename)
-
+        icon = self.getIconImage(val)
         aList = self.tnodeDict.get(p.v.t,[])
-        ### icon = self.getIcon(p)
-
         for p,it in aList:
-            g.trace(id(it),p.headString())
+            # g.trace(id(it),p.headString())
             it.setIcon(0,icon)
     #@-node:ekr.20081011035036.11:updateIcon
     #@-node:ekr.20081010070648.19:Drawing... (qtTree)

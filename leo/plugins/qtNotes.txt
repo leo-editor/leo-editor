@@ -9,27 +9,25 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
-- Ctrl-Shift-9 is the same as Ctrl-(
-- Shift-Backspace puts "Shift-Backspace" in text.
-- Esc does not terminate minibuffer.
+- Fix key problems:
+    - Ctrl-Shift-9 is the same as Ctrl-(
+    - Ctrl-tab gets put into text.
+    - Shift-Backspace puts "Shift-Backspace" in text.
+    - Esc does not terminate minibuffer.
 * Hook up undo menu.
 
 Most important:
 - Re-enable syntax coloring.
-- Double-clicking headline sometimes isn't the same as ctrl-h.
-
 * Make menu and dialog accelerators work!
 - Reading/saving a window does not properly set its size.
-- Can not open the settings file twice.
+* Can not open the settings file twice.
 - Changes to headline do not stick after, e.g., ctrl-r.
 - Redraw all icons after save (but not save-as or save-to).
 - File:Exit does not quit the main loop. Call QCoreApplication::exit().
 
 Next:
-- Ctrl-h sometimes does not work.
 - Shift-tab is Smart home.
 - multiline strings to the log pane are not treated properly.
-- Set find handler so unit tests pass.
 - print-settings does not print to a tab and is very slow.
 - Fix failing unit tests. 
 - Support Icon area.
@@ -44,9 +42,6 @@ Minor bugs:
     TypeError: slice indices must be integers or None or have an __index__ method
     (Must convert indices to ints.)
 Cleanup:
-     - Fix Stubborn bugs.
-        - file-changed marker usually takes two characters to change.
-    - Remove old-style Leo settings?
     - Clean up text classes.
         - Finish leoQtTextWidget class.
         - Add subclasses for QLineEdit, QScintilla, etc.
@@ -60,8 +55,8 @@ Later:
     - Handle pane orientation:
         A popular arrangement would be editor and outline
         in top pane with the log along the bottom.
-
- - Make tkinter code a plugin.
+    - Remove old-style Leo settings?
+    - Make tkinter code a plugin.
         - If no gui specified on command line,
           use the first gui that can be imported.
     - Support @ifgui in settings trees.
@@ -1292,20 +1287,20 @@ def setCurrentItem (self):
         return None
 #@-node:ekr.20081027082521.12:setCurrentItem
 #@-node:ekr.20081021043407.23:full_redraw & helpers
-#@+node:ekr.20081010070648.14:getIcon
+#@+node:ekr.20081010070648.14:getIcon & getIconImage
 def getIcon(self,p):
 
     '''Return the proper icon for position p.'''
 
     p.v.iconVal = val = p.v.computeIcon()
+    return self.getIconImage(val)
 
-    imagename = "box%02d.GIF" % val
-    image = g.app.gui.getIconImage(imagename)
+def getIconImage(self,val):
 
-    # g.trace(val,p and p.headString())
+    return g.app.gui.getIconImage(
+        "box%02d.GIF" % val)
 
-    return image
-#@-node:ekr.20081010070648.14:getIcon
+#@-node:ekr.20081010070648.14:getIcon & getIconImage
 #@+node:ekr.20081021043407.4:redraw_after_clone
 def redraw_after_clone (self):
 
@@ -1395,9 +1390,9 @@ def removeFromDicts (self,p):
 #@+node:ekr.20081021043407.3:redraw_after_icons_changed
 def redraw_after_icons_changed (self,all=False):
 
-    c = self.c ; p = c.currentPosition()
+    g.trace('should not be called',g.callers(4))
 
-    # g.trace('all',all,p.headString())
+    c = self.c ; p = c.currentPosition()
 
     if all:
         self.full_redraw()
@@ -1466,17 +1461,12 @@ def updateIcon (self,p):
     if not p: return
 
     val = p.v.computeIcon()
-
     if p.v.iconVal == val: return
 
-    imagename = "box%02d.GIF" % val
-    icon = g.app.gui.getIconImage(imagename)
-
+    icon = self.getIconImage(val)
     aList = self.tnodeDict.get(p.v.t,[])
-    ### icon = self.getIcon(p)
-
     for p,it in aList:
-        g.trace(id(it),p.headString())
+        # g.trace(id(it),p.headString())
         it.setIcon(0,icon)
 #@-node:ekr.20081011035036.11:updateIcon
 #@-node:ekr.20081010070648.19:Drawing... (qtTree)
