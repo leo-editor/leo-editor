@@ -9,7 +9,7 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
-*** Subtree not drawn correctly when expand by hand.
+- Must select node when contracting by hand.
 - Contract-all doesn't seem to work.
     - It looks like ctrl-Right is the culprit.
 - Fix key problems:
@@ -1173,8 +1173,8 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
             elif p and self.redrawCount > 1:
                 g.trace('Error: no current item: %s' % (p.headString()))
 
-            # Necessary to get the tree drawn initially.
-            w.repaint()
+        # Necessary to get the tree drawn initially.
+        w.repaint()
 
         c.requestRedrawFlag= False
         self.redrawing = False
@@ -1278,10 +1278,10 @@ def setCurrentItem (self):
 
     if self.expanding:
         if trace: g.trace('already expanding')
-        return
+        return None
     if self.selecting:
         if trace: g.trace('already selecting')
-        return
+        return None
 
     aList = self.vnodeDict.get(p.v,[])
     h = p and p.headString() or '<no p!>'
@@ -1458,7 +1458,7 @@ def redraw_after_select (self):
 
     '''Redraw the screen after selecting a node.'''
 
-    w = self.treeWidget ; trace = True
+    w = self.treeWidget ; trace = False
     c = self.c ; p = c.currentPosition()
 
     if not p:
@@ -1471,8 +1471,7 @@ def redraw_after_select (self):
 
     if trace: g.trace(p.headString(),g.callers(4))
 
-    # Important: setCurrentItem sets .selecting ivar
-    # and that disables sig_itemExpanded.
+    # setCurrentItem sets .selecting ivar
     self.setCurrentItem()
 #@-node:ekr.20081021043407.13:redraw_after_select
 #@+node:ekr.20081011035036.11:updateIcon
