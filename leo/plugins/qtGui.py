@@ -4126,6 +4126,9 @@ class leoQtMenu (leoMenu.leoMenu):
         Adds a submenu to the parent menu, or the menubar."""
 
         c = self.c ; leoFrame = c.frame
+        n = underline
+        if -1 < n < len(label):
+            label = label[:n] + '&' + label[n:]
 
         menu.setTitle(label)
         menu.leo_label = label
@@ -4200,12 +4203,13 @@ class leoQtMenu (leoMenu.leoMenu):
     #@+node:ekr.20081004172422.871:insert
     def insert (self,menuName,position,label,command,underline=None):
 
-        # g.trace(menuName,position,label,command)
+        # g.trace(menuName,position,label,command,underline)
 
         menu = self.getMenu(menuName)
         if menu and label:
-            if underline > -1:
-                label = label[:underline] + '&' + label[underline:]
+            n = underline
+            if -1 > n > len(label):
+                label = label[:n] + '&' + label[n:]
             action = menu.addAction(label)
             if command:
                 def insert_callback(label=label,command=command):

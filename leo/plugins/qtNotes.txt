@@ -5,7 +5,6 @@
 @nocolor-node
 
 Urgent:
-- Add accels for top-level menus.
 - Fix key problems:
     - Ctrl-Shift-9 is the same as Ctrl-(
     - Ctrl-tab gets put into text.
@@ -1916,36 +1915,6 @@ def setCurrentItem (self):
         return None
 #@-node:ekr.20081027082521.12:setCurrentItem
 #@-node:ekr.20081027082521.11:Redraw crashes & problems
-#@+node:ekr.20081027163149.12:Menu accels
-#@+node:ekr.20081004172422.865:add_command
-def add_command (self,**keys):
-
-    """Wrapper for the Tkinter add_command menu method."""
-
-    c = self.c
-    accel = keys.get('accelerator') or ''
-    command = keys.get('command')
-    label = keys.get('label')
-    n = keys.get('underline')
-    menu = keys.get('menu') or self
-    if not label: return
-
-    if -1 < n < len(label):
-        label = label[:n] + '&' + label[n:]
-    if accel:
-        label = '%s\t%s' % (label,accel)
-
-    action = menu.addAction(label)
-    # if shortcut: action.setShortcut(shortcut)
-
-    if command:
-        def add_command_callback(label=label,command=command):
-            return command()
-
-        QtCore.QObject.connect(action,
-            QtCore.SIGNAL("triggered()"),add_command_callback)
-#@-node:ekr.20081004172422.865:add_command
-#@-node:ekr.20081027163149.12:Menu accels
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor
