@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="240" left="625" height="647" width="776"/>
+	<global_window_position top="24" left="545" height="949" width="841"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,14,5,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -397,7 +397,7 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" a="E" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
@@ -1010,7 +1010,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1018,7 +1018,11 @@
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080328105334.1"><vh>cleo</vh>
+<v t="tbrown.20081024093407.2" a="E"><vh>active_path</vh>
+<v t="tbrown.20081024093407.3"><vh>@string active_path_event = icondclick1</vh></v>
+<v t="tbrown.20081024093407.4"><vh>@string active_path_attype = auto</vh></v>
+</v>
+<v t="ekr.20080328105334.1" a="E"><vh>cleo</vh>
 <v t="ekr.20080602174756.1"><vh>@bool cleo_color_ignore = True</vh></v>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
 <v t="ekr.20080328105334.3"><vh>@color cleo_color_prog_red =</vh></v>
@@ -7641,6 +7645,20 @@ but you can still see where things come from before you load them.
 False: don't use submenus for multiple path entries, unless recent_files_group
 is true (and recent_files_omit_directories is False)
 </t>
+<t tx="tbrown.20081024093407.2"></t>
+<t tx="tbrown.20081024093407.3">Event to which active_path responds.
+
+'iconclick1' 	single click in icon box
+'iconrclick1' right click in icon box
+'icondclick1' double click in icon box
+
+Other choices, most of which make no sense, at:
+    
+    
+</t>
+<t tx="tbrown.20081024093407.4">Type of @file to use for loading files with active_path
+"auto" and "shadow" are the best choices.  Other choices may
+not be safe.</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
