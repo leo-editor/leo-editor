@@ -4,9 +4,6 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-Ask Qt people:
-- How to enable menu accelerators.
-
 Urgent:
 - Fix key problems:
     - Ctrl-Shift-9 is the same as Ctrl-(
@@ -137,9 +134,14 @@ def add_command (self,**keys):
     menu = keys.get('menu') or self
     if not label: return
 
-    if n > -1: label = label[:n] + '&' + label[n:]
-    if accel: label = '%s\t%s' % (label,accel)
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+    if accel:
+        label = '%s\t%s' % (label,accel)
+
     action = menu.addAction(label)
+    # if shortcut: action.setShortcut(shortcut)
+
     if command:
         def add_command_callback(label=label,command=command):
             return command()

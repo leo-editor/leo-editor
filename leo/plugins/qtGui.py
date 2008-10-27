@@ -4150,9 +4150,14 @@ class leoQtMenu (leoMenu.leoMenu):
         menu = keys.get('menu') or self
         if not label: return
 
-        if n > -1: label = label[:n] + '&' + label[n:]
-        if accel: label = '%s\t%s' % (label,accel)
+        if -1 < n < len(label):
+            label = label[:n] + '&' + label[n:]
+        if accel:
+            label = '%s\t%s' % (label,accel)
+
         action = menu.addAction(label)
+        # if shortcut: action.setShortcut(shortcut)
+
         if command:
             def add_command_callback(label=label,command=command):
                 return command()
