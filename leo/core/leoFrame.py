@@ -1040,11 +1040,10 @@ class leoBody:
                 hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
 
         # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
-        flag = c.frame.tree.expandAllAncestors(w.leo_p)
-        if flag: c.redraw_after_expand()
+        c.frame.tree.expandAllAncestors(w.leo_p)
         c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
-        ### c.redraw()
-        c.redraw_after_select()
+        c.redraw()
+        # c.redraw_after_select()
 
         c.recolor_now()
         #@    << restore the selection, insertion point and the scrollbar >>

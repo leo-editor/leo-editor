@@ -488,10 +488,10 @@ def goto_showResults(self,found,p,n,n2,lines):
     c = self ; w = c.frame.body.bodyCtrl
 
     # Select p and make it visible.
-    flag = c.frame.tree.expandAllAncestors(p)
-    if flag: c.redraw_after_expand()
+    c.frame.tree.expandAllAncestors(p)
     c.selectPosition(p)
-    c.redraw_after_select()
+    # c.redraw_after_select()
+    c.redraw()
 
     # Put the cursor on line n2 of the body text.
     s = w.getAllText()
@@ -1441,8 +1441,8 @@ def save (self,event=None):
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
 
-    # c.redraw()
-    c.redraw_after_icons_changed(all=True)
+    c.redraw()
+    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -1478,8 +1478,8 @@ def saveAs (self,event=None):
         c.fileCommands.saveAs(c.mFileName)
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
-    ### c.redraw()
-    c.redraw_after_icons_changed(all=False)
+    c.redraw()
+    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -1534,8 +1534,7 @@ def saveTo (self,event=None):
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
 
-    # c.redraw()
-    c.redraw_after_icons_changed(all=False)
+    c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert

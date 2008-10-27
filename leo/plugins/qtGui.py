@@ -254,7 +254,7 @@ class leoQtBody (leoFrame.leoBody):
         assert c.frame == frame and frame.c == c
 
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        # g.trace('leoQtBody',self.useScintilla)
+        # g.trace('leoQtBody: useScintilla:',self.useScintilla)
 
         # Set the actual gui widget.
         if self.useScintilla:
@@ -669,7 +669,8 @@ class leoQtBody (leoFrame.leoBody):
         # Get the previous values from the tnode.
         oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
         if oldText == newText:
-            return g.trace('*** unexpected non-change',color=red)
+            if trace: g.trace('*** unexpected non-change',color="red")
+            return
 
         if trace and verbose: g.trace(p.headString(),len(oldText),len(newText))
 
@@ -5137,7 +5138,6 @@ class leoQtTree (leoFrame.leoTree):
         # Status ivars.
         self.dragging = False
         self.expanding = False
-        self.current_item = None # The tree item of the presently selected node.
         self.fullDrawing = False
         self.generation = 0
         self.prev_p = None
@@ -5367,7 +5367,7 @@ class leoQtTree (leoFrame.leoTree):
         '''Redraw all visible nodes of the tree'''
 
         c = self.c ; w = self.treeWidget
-        trace = False; verbose = False
+        trace = True; verbose = False
         if not w: return
         if self.redrawing:
             g.trace('***** already drawing',g.callers(5))
@@ -5389,11 +5389,12 @@ class leoQtTree (leoFrame.leoTree):
                 self.drawTree(p)
                 p.moveToNext()
         finally:
-            if self.current_item:
-                w.scrollToItem(self.current_item,
+            item = self.setCurrentItem()
+            if item:
+                w.scrollToItem(item,
                     QtGui.QAbstractItemView.PositionAtCenter)
             elif p and self.redrawCount > 1:
-                g.trace('** no current item: %s' % (p.headString()))
+                g.trace('Error: no current item: %s' % (p.headString()))
 
             # Necessary to get the tree drawn initially.
             w.repaint()
@@ -5416,7 +5417,6 @@ class leoQtTree (leoFrame.leoTree):
         self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
         self.itemsDict = {} # keys are items, values are positions
         self.parentsDict = {}
-        self.current_item = None
     #@-node:ekr.20081021043407.30:initData
     #@+node:ekr.20081021043407.24:drawNode
     def drawNode (self,p,dummy=False):
@@ -5470,9 +5470,6 @@ class leoQtTree (leoFrame.leoTree):
 
         # Draw the (visible) parent node.
         it = self.drawNode(p)
-        if p == c.currentPosition():
-            w.setCurrentItem(it)
-            self.current_item = it
 
         if p.hasChildren():
             if p.isExpanded():
@@ -5482,7 +5479,9 @@ class leoQtTree (leoFrame.leoTree):
                     self.drawTree(child)
                     child.moveToNext()
             else:
-                if 1: # Just draw one dummy child.
+                if 0:
+                    # Just draw one dummy child.
+                    # This doesn't work with the new expansion code.
                     self.drawNode(p.firstChild(),dummy=True)
                 else:
                     # Draw the hidden children.
@@ -5494,6 +5493,27 @@ class leoQtTree (leoFrame.leoTree):
         else:
             w.collapseItem(it)
     #@-node:ekr.20081021043407.25:drawTree
+    #@+node:ekr.20081027082521.12:setCurrentItem
+    def setCurrentItem (self):
+
+        c = self.c ; p = c.currentPosition()
+        trace = False
+        w = self.treeWidget
+        aList = self.vnodeDict.get(p.v,[])
+        h = p and p.headString() or '<no p!>'
+        if trace: g.trace(h)
+        if not p: return False
+
+        for p2,item in aList:
+            if p == p2:
+                if trace:
+                    g.trace('found item: %s for: %s' % (
+                        id(item),h))
+                w.setCurrentItem(item)
+                return item
+        else:
+            return None
+    #@-node:ekr.20081027082521.12:setCurrentItem
     #@-node:ekr.20081021043407.23:full_redraw & helpers
     #@+node:ekr.20081010070648.14:getIcon
     def getIcon(self,p):
@@ -5504,6 +5524,8 @@ class leoQtTree (leoFrame.leoTree):
 
         imagename = "box%02d.GIF" % val
         image = g.app.gui.getIconImage(imagename)
+
+        # g.trace(val,p and p.headString())
 
         return image
     #@-node:ekr.20081010070648.14:getIcon
@@ -5600,9 +5622,8 @@ class leoQtTree (leoFrame.leoTree):
 
         # g.trace('all',all,p.headString())
 
-        if False and all:
-            for p in c.allNodes_iter():
-                self.updateIcon(p)
+        if all:
+            self.full_redraw()
         else:
             self.updateIcon(p)
 
@@ -5628,9 +5649,10 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.11:redraw_after_move_right
     def redraw_after_move_right (self):
 
-        c = self.c ; p = c.currentPosition()
-        parent = p.parent()
-        if parent: parent.expand()
+        if 0: # now done in c.moveOutlineRight.
+            c = self.c ; p = c.currentPosition()
+            parent = p.parent()
+            if parent: parent.expand()
 
         self.full_redraw()
     #@-node:ekr.20081021043407.11:redraw_after_move_right
@@ -5644,20 +5666,40 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw the screen after selecting a node.'''
 
-        pass # Should do nothing!
+        w = self.treeWidget ; trace = False
+        c = self.c ; p = c.currentPosition()
+        if not p:
+            return g.trace('Error: no p')
+
+        if self.redrawing:
+            return g.trace('Error: already redrawing')
+
+        self.setCurrentItem()
+
+        if 0: # The redraw will happen in sig_item_expanded.
+            if not item:
+                # This can happen when a node is expanded.
+                self.full_redraw()
     #@-node:ekr.20081021043407.13:redraw_after_select
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):
 
-        '''Update p's icon in response to a change in the body.'''
+        '''Update p's icon.'''
 
         if not p: return
 
+        val = p.v.computeIcon()
+
+        if p.v.iconVal == val: return
+
+        imagename = "box%02d.GIF" % val
+        icon = g.app.gui.getIconImage(imagename)
+
         aList = self.tnodeDict.get(p.v.t,[])
-        icon = self.getIcon(p)
+        ### icon = self.getIcon(p)
 
         for p,it in aList:
-            # g.trace(p.headString(),it)
+            g.trace(id(it),p.headString())
             it.setIcon(0,icon)
     #@-node:ekr.20081011035036.11:updateIcon
     #@-node:ekr.20081010070648.19:Drawing... (qtTree)
@@ -5706,21 +5748,38 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.26:sig_itemExpanded
     def sig_itemExpanded (self,item):
 
+        c = self.c ; p = c.currentPosition()
+        trace = True ; verbose = False
+
         # we get tons of item changes when redrawing, ignore
-        if self.redrawing or self.expanding:
+        if self.redrawing:
+            if trace and verbose: g.trace('already redrawing',g.callers(4))
             return
 
-        p = self.itemsDict.get(item)
-        if p:
-            # g.trace(p.headString())
-            self.c.setCurrentPosition(p)
-            self.current_item = item # For scrolling.
-            p.expand()
-            self.redraw_after_expand()
-        else:
-            g.trace('can not happen: no p')
+        if self.expanding:
+            if trace and verbose: g.trace('already expanding',g.callers(4))
+            return
 
-        # g.trace(item,p and p.headString())
+        if trace: g.trace(p.headString(),g.callers(4))
+
+        self.expanding = True
+        try:
+            # This is safest, as it uses Leo's core logic.
+            c.expandNode(p)
+        finally:
+            self.expanding = False
+
+        return ###
+
+        p = self.itemsDict.get(item)
+        if not p:
+            return g.trace('Error: no p')
+
+        g.trace(p.headString())
+        self.c.setCurrentPosition(p)
+        self.current_item = item # For scrolling.
+        p.expand()
+        # self.full_redraw()
 
     #@-node:ekr.20081021043407.26:sig_itemExpanded
     #@+node:ekr.20081004172422.801:findEditWidget
@@ -6066,10 +6125,10 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081025124450.14:beforeSelectHint
     def beforeSelectHint (self,p,old_p):
 
-        w = self.treeWidget ; trace = False
+        w = self.treeWidget ; trace = True
 
         if self.selecting:
-            return g.trace('****Error: already selecting',color='red')
+            return g.trace('*** Error: already selecting',g.callers(4))
 
         if self.redrawing:
             if trace: g.trace('already redrawing')
@@ -6081,34 +6140,9 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081025124450.15:afterSelectHint
     def afterSelectHint (self,p,old_p):
 
-        w = self.treeWidget ; trace = False
+        self.selecting = False
 
-        if self.redrawing:
-            if trace: g.trace('already redrawing')
-            return
-
-        try:
-            aList = self.vnodeDict.get(p.v,[])
-            h = p.headString()
-
-            if trace: g.trace(
-                p and p.headString(),
-                old_p and old_p.headString())
-
-            for p2,it in aList:
-                if p == p2:
-                    if trace:
-                        g.trace('found item: %s for: %s' % (
-                            id(it),h),g.callers())
-                    w.setCurrentItem(it)
-                    break
-            else:
-                if aList:
-                    g.trace('***** not found %s in %s' % (aList,h))
-                self.full_redraw() # An emergency.
-        finally:
-            # This must be cleared, not matter what else happens.
-            self.selecting = False
+        self.redraw_after_select()
     #@-node:ekr.20081025124450.15:afterSelectHint
     #@+node:ekr.20081004172422.846:editLabel
     def editLabel (self,p,selectAll=False):

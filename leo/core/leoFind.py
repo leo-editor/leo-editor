@@ -1353,8 +1353,8 @@ class leoFind:
             c.redraw_now() ### Added to help Qt tree.
         c.selectPosition(p)
         if redraw:
-            # c.redraw()
-            c.redraw_after_select()
+            c.redraw()
+            # c.redraw_after_select()
 
         if self.in_headline:
             c.editPosition(p)
