@@ -5367,7 +5367,7 @@ class leoQtTree (leoFrame.leoTree):
         '''Redraw all visible nodes of the tree'''
 
         c = self.c ; w = self.treeWidget
-        trace = True; verbose = False
+        trace = False; verbose = False
         if not w: return
         if self.redrawing:
             g.trace('***** already drawing',g.callers(5))
@@ -5405,8 +5405,7 @@ class leoQtTree (leoFrame.leoTree):
             if trace:
                 if verbose: tstop()
                 g.trace('%s: drew %3s nodes' % (
-                    self.redrawCount,self.nodeDrawCount),
-                    g.callers(4))
+                    self.redrawCount,self.nodeDrawCount))
 
     redraw = full_redraw # Compatibility
     redraw_now = full_redraw
@@ -5771,15 +5770,15 @@ class leoQtTree (leoFrame.leoTree):
 
         return ###
 
-        p = self.itemsDict.get(item)
-        if not p:
-            return g.trace('Error: no p')
+        # p = self.itemsDict.get(item)
+        # if not p:
+            # return g.trace('Error: no p')
 
-        g.trace(p.headString())
-        self.c.setCurrentPosition(p)
-        self.current_item = item # For scrolling.
-        p.expand()
-        # self.full_redraw()
+        # g.trace(p.headString())
+        # self.c.setCurrentPosition(p)
+        # self.current_item = item # For scrolling.
+        # p.expand()
+        # # self.full_redraw()
 
     #@-node:ekr.20081021043407.26:sig_itemExpanded
     #@+node:ekr.20081004172422.801:findEditWidget

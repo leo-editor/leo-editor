@@ -9,7 +9,6 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
-- Icons are not marked clean after save.
 - Ctrl-Shift-9 is the same as Ctrl-(
 - Shift-Backspace puts "Shift-Backspace" in text.
 - Esc does not terminate minibuffer.
@@ -1146,7 +1145,7 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
     '''Redraw all visible nodes of the tree'''
 
     c = self.c ; w = self.treeWidget
-    trace = True; verbose = False
+    trace = False; verbose = False
     if not w: return
     if self.redrawing:
         g.trace('***** already drawing',g.callers(5))
@@ -1184,8 +1183,7 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
         if trace:
             if verbose: tstop()
             g.trace('%s: drew %3s nodes' % (
-                self.redrawCount,self.nodeDrawCount),
-                g.callers(4))
+                self.redrawCount,self.nodeDrawCount))
 
 redraw = full_redraw # Compatibility
 redraw_now = full_redraw
