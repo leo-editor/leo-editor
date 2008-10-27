@@ -5,11 +5,9 @@
 @nocolor-node
 
 Ask Qt people:
-- How to enable accelerators.
-- How to add an accelerator like 'n' to file yes,no,cancel dialog.
+- How to enable menu accelerators.
 
 Urgent:
-- Create tree.error method.
 - Fix key problems:
     - Ctrl-Shift-9 is the same as Ctrl-(
     - Ctrl-tab gets put into text.
@@ -1595,6 +1593,327 @@ def getIconImage(self,val):
 
 #@-node:ekr.20081010070648.14:getIcon & getIconImage
 #@-node:ekr.20081026084658.1:Update icons properly...
+#@+node:ekr.20081027082521.11:Redraw crashes & problems
+#@clone 2
+#@+node:ekr.20081021043407.23:full_redraw & helpers
+def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
+
+    '''Redraw all visible nodes of the tree'''
+
+    c = self.c ; w = self.treeWidget
+    trace = True; verbose = False
+    if not w: return
+    if self.redrawing:
+        g.trace('***** already drawing',g.callers(5))
+        return
+
+    self.redrawCount += 1
+    if trace and verbose: tstart()
+
+    # Init the data structures.
+    self.initData()
+    self.nodeDrawCount = 0
+    self.redrawing = True
+    self.fullDrawing = True # To suppress some traces.
+    try:
+        w.clear()
+        # Draw all top-level nodes and their visible descendants.
+        p = c.rootPosition()
+        while p:
+            self.drawTree(p)
+            p.moveToNext()
+    finally:
+        if not self.selecting:
+            item = self.setCurrentItem()
+            if item:
+                if 0: # Annoying.
+                    w.scrollToItem(item,
+                        QtGui.QAbstractItemView.PositionAtCenter)
+            elif p and self.redrawCount > 1:
+                g.trace('Error: no current item: %s' % (p.headString()))
+
+        # Necessary to get the tree drawn initially.
+        w.repaint()
+
+        c.requestRedrawFlag= False
+        self.redrawing = False
+        self.fullDrawing = False
+        if trace:
+            if verbose: tstop()
+            g.trace('%s: drew %3s nodes' % (
+                self.redrawCount,self.nodeDrawCount))
+
+redraw = full_redraw # Compatibility
+redraw_now = full_redraw
+#@+node:ekr.20081021043407.30:initData
+def initData (self):
+
+    self.tnodeDict = {} # keys are tnodes, values are lists of items (p,it)
+    self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
+    self.itemsDict = {} # keys are items, values are positions
+    self.parentsDict = {}
+#@-node:ekr.20081021043407.30:initData
+#@+node:ekr.20081021043407.24:drawNode
+def drawNode (self,p,dummy=False):
+
+    w = self.treeWidget ; trace = False
+    self.nodeDrawCount += 1
+
+    # Allocate the qt tree item.
+    parent = p.parent()
+    it = self.parentsDict.get(parent and parent.v,w)
+
+    if trace and not self.fullDrawing:
+        g.trace(id(it),parent and parent.headString())
+
+    it = QtGui.QTreeWidgetItem(it)
+    it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
+
+    # Draw the headline and the icon.
+    it.setText(0,p.headString())
+    icon = self.getIcon(p)
+    if icon: it.setIcon(0,icon)
+
+    if dummy: return it
+
+    # Remember the associatiation of it with p, and vice versa.
+    self.itemsDict[it] = p.copy()
+    self.parentsDict[p.v] = it 
+
+    # Remember the association of p.v with (p,it)
+    aList = self.vnodeDict.get(p.v,[])
+    data = p.copy(),it
+    aList.append(data)
+    self.vnodeDict[p.v] = aList
+
+    # Remember the association of p.v.t with (p,it).
+    aList = self.tnodeDict.get(p.v.t,[])
+    data = p.copy(),it
+    aList.append(data)
+    self.tnodeDict[p.v.t] = aList
+
+    return it
+#@-node:ekr.20081021043407.24:drawNode
+#@+node:ekr.20081021043407.25:drawTree
+def drawTree (self,p):
+
+    c = self.c ; w = self.treeWidget
+
+    p = p.copy()
+
+    # g.trace(p.headString())
+
+    # Draw the (visible) parent node.
+    it = self.drawNode(p)
+
+    if p.hasChildren():
+        if p.isExpanded():
+            w.expandItem(it)
+            child = p.firstChild()
+            while child:
+                self.drawTree(child)
+                child.moveToNext()
+        else:
+            if 0:
+                # Just draw one dummy child.
+                # This doesn't work with the new expansion code.
+                self.drawNode(p.firstChild(),dummy=True)
+            else:
+                # Draw the hidden children.
+                child = p.firstChild()
+                while child:
+                    self.drawNode(child)
+                    child.moveToNext()
+            w.collapseItem(it)
+    else:
+        w.collapseItem(it)
+#@-node:ekr.20081021043407.25:drawTree
+#@+node:ekr.20081027082521.12:setCurrentItem
+def setCurrentItem (self):
+
+    c = self.c ; p = c.currentPosition()
+    trace = False
+    w = self.treeWidget
+
+    if self.expanding:
+        if trace: g.trace('already expanding')
+        return None
+    if self.selecting:
+        if trace: g.trace('already selecting')
+        return None
+
+    aList = self.vnodeDict.get(p.v,[])
+    h = p and p.headString() or '<no p!>'
+    if trace: g.trace(h)
+    if not p: return False
+
+    for p2,item in aList:
+        if p == p2:
+            if trace:
+                g.trace('found item: %s for: %s' % (
+                    id(item),h))
+
+            self.selecting = True
+            try:
+                w.setCurrentItem(item)
+            finally:
+                self.selecting = False
+            return item
+    else:
+        return None
+#@-node:ekr.20081027082521.12:setCurrentItem
+#@-node:ekr.20081021043407.23:full_redraw & helpers
+#@+node:ekr.20081025124450.15:afterSelectHint
+def afterSelectHint (self,p,old_p):
+
+    self.selecting = False
+
+    self.redraw_after_select()
+#@-node:ekr.20081025124450.15:afterSelectHint
+#@+node:ekr.20081027124640.10:sig_itemCollapsed
+def sig_itemCollapsed (self,item):
+
+    c = self.c ; p = c.currentPosition() ; w = self.treeWidget
+    trace = False ; verbose = False
+
+    # Ignore events generated by redraws.
+    if self.redrawing:
+        if trace and verbose: g.trace('already redrawing',g.callers(4))
+        return
+    if self.expanding:
+        if trace and verbose: g.trace('already expanding',g.callers(4))
+        return
+    if self.selecting:
+        if trace and verbose: g.trace('already selecting',g.callers(4))
+        return
+
+    if trace: g.trace(p.headString() or "<no p>",g.callers(4))
+
+    p2 = self.itemsDict.get(item)
+    if p2:
+        p2.contract()
+        c.setCurrentPosition(p2)
+        item = self.setCurrentItem()
+        if 0: # Annoying.
+            w.scrollToItem(item,
+                QtGui.QAbstractItemView.PositionAtCenter)
+    else:
+        g.trace('Error no p2')
+#@-node:ekr.20081027124640.10:sig_itemCollapsed
+#@+node:ekr.20081021043407.26:sig_itemExpanded
+def sig_itemExpanded (self,item):
+
+    '''Handle and tree-expansion event.'''
+
+    # The difficult case is when the user clicks the expansion box.
+
+    c = self.c ; p = c.currentPosition() ; w = self.treeWidget
+    trace = False ; verbose = False
+
+    # Ignore events generated by redraws.
+    if self.redrawing:
+        if trace and verbose: g.trace('already redrawing',g.callers(4))
+        return
+    if self.expanding:
+        if trace and verbose: g.trace('already expanding',g.callers(4))
+        return
+    if self.selecting:
+        if trace and verbose: g.trace('already selecting',g.callers(4))
+        return
+
+    if trace: g.trace(p.headString() or "<no p>",g.callers(4))
+
+    self.expanding = True
+    try:
+        redraw = False
+        p2 = self.itemsDict.get(item)
+        if p2:
+            if trace: g.trace(p2)
+            if not p2.isExpanded():
+                p2.expand()
+            c.setCurrentPosition(p2)
+            self.full_redraw()
+            redraw = True
+        else:
+            g.trace('Error no p2')
+
+    finally:
+        self.expanding = False
+        if redraw:
+            item = self.setCurrentItem()
+            if item:
+                w.scrollToItem(item,
+                    QtGui.QAbstractItemView.PositionAtCenter)
+#@-node:ekr.20081021043407.26:sig_itemExpanded
+#@+node:ekr.20081021043407.13:redraw_after_select
+def redraw_after_select (self):
+
+    '''Redraw the screen after selecting a node.'''
+
+    w = self.treeWidget ; trace = False
+    c = self.c ; p = c.currentPosition()
+
+    if not p:
+        return g.trace('Error: no p')
+    if self.selecting:
+        if trace: g.trace('already selecting')
+        return
+    if self.redrawing:
+        return g.trace('Error: already redrawing')
+
+    if trace: g.trace(p.headString(),g.callers(4))
+
+    # setCurrentItem sets .selecting ivar
+    self.setCurrentItem()
+#@-node:ekr.20081021043407.13:redraw_after_select
+#@+node:ekr.20081021043407.11:redraw_after_move_right
+def redraw_after_move_right (self):
+
+    if 0: # now done in c.moveOutlineRight.
+        c = self.c ; p = c.currentPosition()
+        parent = p.parent()
+        if parent: parent.expand()
+
+
+    # g.trace('parent',c.currentPosition().parent() or "non")
+
+    self.full_redraw()
+#@-node:ekr.20081021043407.11:redraw_after_move_right
+#@+node:ekr.20081027082521.12:setCurrentItem
+def setCurrentItem (self):
+
+    c = self.c ; p = c.currentPosition()
+    trace = False
+    w = self.treeWidget
+
+    if self.expanding:
+        if trace: g.trace('already expanding')
+        return None
+    if self.selecting:
+        if trace: g.trace('already selecting')
+        return None
+
+    aList = self.vnodeDict.get(p.v,[])
+    h = p and p.headString() or '<no p!>'
+    if trace: g.trace(h)
+    if not p: return False
+
+    for p2,item in aList:
+        if p == p2:
+            if trace:
+                g.trace('found item: %s for: %s' % (
+                    id(item),h))
+
+            self.selecting = True
+            try:
+                w.setCurrentItem(item)
+            finally:
+                self.selecting = False
+            return item
+    else:
+        return None
+#@-node:ekr.20081027082521.12:setCurrentItem
+#@-node:ekr.20081027082521.11:Redraw crashes & problems
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor

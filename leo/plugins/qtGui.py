@@ -3119,7 +3119,7 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081020075840.12:runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(self,c,title,
         message=None,
-        yesMessage="Yes",noMessage="No",defaultButton="Yes"
+        yesMessage="&Yes",noMessage="&No",defaultButton="Yes"
     ):
 
         """Create and run an askYesNo dialog."""
