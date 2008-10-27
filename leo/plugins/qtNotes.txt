@@ -9,9 +9,7 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
-- Must select node when contracting by hand.
-- Contract-all doesn't seem to work.
-    - It looks like ctrl-Right is the culprit.
+- Create tree.error method.
 - Fix key problems:
     - Ctrl-Shift-9 is the same as Ctrl-(
     - Ctrl-tab gets put into text.
