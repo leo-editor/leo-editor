@@ -5682,7 +5682,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw the screen after selecting a node.'''
 
-        w = self.treeWidget ; trace = False
+        w = self.treeWidget ; trace = True
         c = self.c ; p = c.currentPosition()
 
         if not p:
@@ -5693,7 +5693,7 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing:
             return g.trace('Error: already redrawing')
 
-        if trace: g.trace(p.headString(),g.callers())
+        if trace: g.trace(p.headString(),g.callers(4))
 
         # Important: setCurrentItem sets .selecting ivar
         # and that disables sig_itemExpanded.
@@ -5783,12 +5783,22 @@ class leoQtTree (leoFrame.leoTree):
 
         self.expanding = True
         try:
-            if not p.isExpanded():
-                p.expand()
+            redraw = False
+            p2 = self.itemsDict.get(item)
+            if p2:
+                g.trace(p2)
+                if not p2.isExpanded():
+                    p2.expand()
+                c.setCurrentPosition(p2)
                 self.full_redraw()
+                redraw = True
+            else:
+                g.trace('Error no p2')
+
         finally:
             self.expanding = False
-
+            if redraw:
+                self.setCurrentItem()
     #@-node:ekr.20081021043407.26:sig_itemExpanded
     #@+node:ekr.20081004172422.801:findEditWidget
     def findEditWidget (self,p):

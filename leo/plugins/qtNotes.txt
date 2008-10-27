@@ -1458,7 +1458,7 @@ def redraw_after_select (self):
 
     '''Redraw the screen after selecting a node.'''
 
-    w = self.treeWidget ; trace = False
+    w = self.treeWidget ; trace = True
     c = self.c ; p = c.currentPosition()
 
     if not p:
@@ -1469,7 +1469,7 @@ def redraw_after_select (self):
     if self.redrawing:
         return g.trace('Error: already redrawing')
 
-    if trace: g.trace(p.headString(),g.callers())
+    if trace: g.trace(p.headString(),g.callers(4))
 
     # Important: setCurrentItem sets .selecting ivar
     # and that disables sig_itemExpanded.
