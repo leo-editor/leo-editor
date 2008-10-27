@@ -5781,8 +5781,7 @@ class leoQtTree (leoFrame.leoTree):
 
         p2 = self.itemsDict.get(item)
         if p2:
-            if not p2.isExpanded():
-                p2.contract()
+            p2.contract()
             c.setCurrentPosition(p2)
             item = self.setCurrentItem()
             if 0: # Annoying.
