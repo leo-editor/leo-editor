@@ -5367,7 +5367,7 @@ class leoQtTree (leoFrame.leoTree):
         '''Redraw all visible nodes of the tree'''
 
         c = self.c ; w = self.treeWidget
-        trace = False; verbose = False
+        trace = True; verbose = False
         if not w: return
         if self.redrawing:
             g.trace('***** already drawing',g.callers(5))
@@ -5389,15 +5389,16 @@ class leoQtTree (leoFrame.leoTree):
                 self.drawTree(p)
                 p.moveToNext()
         finally:
-            item = self.setCurrentItem()
-            if item:
-                w.scrollToItem(item,
-                    QtGui.QAbstractItemView.PositionAtCenter)
-            elif p and self.redrawCount > 1:
-                g.trace('Error: no current item: %s' % (p.headString()))
+            if not self.selecting:
+                item = self.setCurrentItem()
+                if item:
+                    w.scrollToItem(item,
+                        QtGui.QAbstractItemView.PositionAtCenter)
+                elif p and self.redrawCount > 1:
+                    g.trace('Error: no current item: %s' % (p.headString()))
 
-            # Necessary to get the tree drawn initially.
-            w.repaint()
+                # Necessary to get the tree drawn initially.
+                w.repaint()
 
             c.requestRedrawFlag= False
             self.redrawing = False
@@ -5498,6 +5499,14 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c ; p = c.currentPosition()
         trace = False
         w = self.treeWidget
+
+        if self.expanding:
+            if trace: g.trace('already expanding')
+            return
+        if self.selecting:
+            if trace: g.trace('already selecting')
+            return
+
         aList = self.vnodeDict.get(p.v,[])
         h = p and p.headString() or '<no p!>'
         if trace: g.trace(h)
@@ -5508,7 +5517,12 @@ class leoQtTree (leoFrame.leoTree):
                 if trace:
                     g.trace('found item: %s for: %s' % (
                         id(item),h))
-                w.setCurrentItem(item)
+
+                self.selecting = True
+                try:
+                    w.setCurrentItem(item)
+                finally:
+                    self.selecting = False
                 return item
         else:
             return None
@@ -5653,6 +5667,9 @@ class leoQtTree (leoFrame.leoTree):
             parent = p.parent()
             if parent: parent.expand()
 
+
+        # g.trace('parent',c.currentPosition().parent() or "non")
+
         self.full_redraw()
     #@-node:ekr.20081021043407.11:redraw_after_move_right
     #@+node:ekr.20081021043407.12:redraw_after_move_up
@@ -5667,18 +5684,20 @@ class leoQtTree (leoFrame.leoTree):
 
         w = self.treeWidget ; trace = False
         c = self.c ; p = c.currentPosition()
+
         if not p:
             return g.trace('Error: no p')
-
+        if self.selecting:
+            if trace: g.trace('already selecting')
+            return
         if self.redrawing:
             return g.trace('Error: already redrawing')
 
-        self.setCurrentItem()
+        if trace: g.trace(p.headString(),g.callers())
 
-        if 0: # The redraw will happen in sig_item_expanded.
-            if not item:
-                # This can happen when a node is expanded.
-                self.full_redraw()
+        # Important: setCurrentItem sets .selecting ivar
+        # and that disables sig_itemExpanded.
+        self.setCurrentItem()
     #@-node:ekr.20081021043407.13:redraw_after_select
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):
@@ -5742,38 +5761,33 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.26:sig_itemExpanded
     def sig_itemExpanded (self,item):
 
-        c = self.c ; p = c.currentPosition()
+        '''Handle and tree-expansion event.'''
+
+        # The difficult case is when the user clicks the expansion box.
+
+        c = self.c ; p = c.currentPosition() ; w = self.treeWidget
         trace = True ; verbose = False
 
         # we get tons of item changes when redrawing, ignore
         if self.redrawing:
             if trace and verbose: g.trace('already redrawing',g.callers(4))
             return
-
         if self.expanding:
             if trace and verbose: g.trace('already expanding',g.callers(4))
             return
+        if self.selecting:
+            if trace and verbose: g.trace('already selecting',g.callers(4))
+            return
 
-        if trace: g.trace(p.headString(),g.callers(4))
+        if trace: g.trace(p.headString() or "<no p>",g.callers(4))
 
         self.expanding = True
         try:
-            # This is safest, as it uses Leo's core logic.
-            c.expandNode(p)
+            if not p.isExpanded():
+                p.expand()
+                self.full_redraw()
         finally:
             self.expanding = False
-
-        return ###
-
-        # p = self.itemsDict.get(item)
-        # if not p:
-            # return g.trace('Error: no p')
-
-        # g.trace(p.headString())
-        # self.c.setCurrentPosition(p)
-        # self.current_item = item # For scrolling.
-        # p.expand()
-        # # self.full_redraw()
 
     #@-node:ekr.20081021043407.26:sig_itemExpanded
     #@+node:ekr.20081004172422.801:findEditWidget

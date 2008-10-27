@@ -9,6 +9,9 @@ Ask Qt people:
 - How to add an accelerator like 'n' to file yes,no,cancel dialog.
 
 Urgent:
+*** Subtree not drawn correctly when expand by hand.
+- Contract-all doesn't seem to work.
+    - It looks like ctrl-Right is the culprit.
 - Fix key problems:
     - Ctrl-Shift-9 is the same as Ctrl-(
     - Ctrl-tab gets put into text.
@@ -1140,7 +1143,7 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
     '''Redraw all visible nodes of the tree'''
 
     c = self.c ; w = self.treeWidget
-    trace = False; verbose = False
+    trace = True; verbose = False
     if not w: return
     if self.redrawing:
         g.trace('***** already drawing',g.callers(5))
@@ -1162,15 +1165,16 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
             self.drawTree(p)
             p.moveToNext()
     finally:
-        item = self.setCurrentItem()
-        if item:
-            w.scrollToItem(item,
-                QtGui.QAbstractItemView.PositionAtCenter)
-        elif p and self.redrawCount > 1:
-            g.trace('Error: no current item: %s' % (p.headString()))
+        if not self.selecting:
+            item = self.setCurrentItem()
+            if item:
+                w.scrollToItem(item,
+                    QtGui.QAbstractItemView.PositionAtCenter)
+            elif p and self.redrawCount > 1:
+                g.trace('Error: no current item: %s' % (p.headString()))
 
-        # Necessary to get the tree drawn initially.
-        w.repaint()
+            # Necessary to get the tree drawn initially.
+            w.repaint()
 
         c.requestRedrawFlag= False
         self.redrawing = False
@@ -1271,6 +1275,14 @@ def setCurrentItem (self):
     c = self.c ; p = c.currentPosition()
     trace = False
     w = self.treeWidget
+
+    if self.expanding:
+        if trace: g.trace('already expanding')
+        return
+    if self.selecting:
+        if trace: g.trace('already selecting')
+        return
+
     aList = self.vnodeDict.get(p.v,[])
     h = p and p.headString() or '<no p!>'
     if trace: g.trace(h)
@@ -1281,7 +1293,12 @@ def setCurrentItem (self):
             if trace:
                 g.trace('found item: %s for: %s' % (
                     id(item),h))
-            w.setCurrentItem(item)
+
+            self.selecting = True
+            try:
+                w.setCurrentItem(item)
+            finally:
+                self.selecting = False
             return item
     else:
         return None
@@ -1426,6 +1443,9 @@ def redraw_after_move_right (self):
         parent = p.parent()
         if parent: parent.expand()
 
+
+    # g.trace('parent',c.currentPosition().parent() or "non")
+
     self.full_redraw()
 #@-node:ekr.20081021043407.11:redraw_after_move_right
 #@+node:ekr.20081021043407.12:redraw_after_move_up
@@ -1440,18 +1460,20 @@ def redraw_after_select (self):
 
     w = self.treeWidget ; trace = False
     c = self.c ; p = c.currentPosition()
+
     if not p:
         return g.trace('Error: no p')
-
+    if self.selecting:
+        if trace: g.trace('already selecting')
+        return
     if self.redrawing:
         return g.trace('Error: already redrawing')
 
-    self.setCurrentItem()
+    if trace: g.trace(p.headString(),g.callers())
 
-    if 0: # The redraw will happen in sig_item_expanded.
-        if not item:
-            # This can happen when a node is expanded.
-            self.full_redraw()
+    # Important: setCurrentItem sets .selecting ivar
+    # and that disables sig_itemExpanded.
+    self.setCurrentItem()
 #@-node:ekr.20081021043407.13:redraw_after_select
 #@+node:ekr.20081011035036.11:updateIcon
 def updateIcon (self,p):
@@ -1529,6 +1551,52 @@ def onTextChanged (self):
     c.outerUpdate()
 #@-node:ekr.20081011035036.1:onTextChanged
 #@-node:ekr.20081025124450.10:Switching nodes reliably
+#@+node:ekr.20081026084658.1:Update icons properly...
+#@+node:ekr.20081021043407.3:redraw_after_icons_changed
+def redraw_after_icons_changed (self,all=False):
+
+    g.trace('should not be called',g.callers(4))
+
+    c = self.c ; p = c.currentPosition()
+
+    if all:
+        self.full_redraw()
+    else:
+        self.updateIcon(p)
+
+
+#@-node:ekr.20081021043407.3:redraw_after_icons_changed
+#@+node:ekr.20081011035036.11:updateIcon
+def updateIcon (self,p):
+
+    '''Update p's icon.'''
+
+    if not p: return
+
+    val = p.v.computeIcon()
+    if p.v.iconVal == val: return
+
+    icon = self.getIconImage(val)
+    aList = self.tnodeDict.get(p.v.t,[])
+    for p,it in aList:
+        # g.trace(id(it),p.headString())
+        it.setIcon(0,icon)
+#@-node:ekr.20081011035036.11:updateIcon
+#@+node:ekr.20081010070648.14:getIcon & getIconImage
+def getIcon(self,p):
+
+    '''Return the proper icon for position p.'''
+
+    p.v.iconVal = val = p.v.computeIcon()
+    return self.getIconImage(val)
+
+def getIconImage(self,val):
+
+    return g.app.gui.getIconImage(
+        "box%02d.GIF" % val)
+
+#@-node:ekr.20081010070648.14:getIcon & getIconImage
+#@-node:ekr.20081026084658.1:Update icons properly...
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor
