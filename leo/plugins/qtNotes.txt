@@ -1166,8 +1166,9 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
         if not self.selecting:
             item = self.setCurrentItem()
             if item:
-                w.scrollToItem(item,
-                    QtGui.QAbstractItemView.PositionAtCenter)
+                if 0: # Annoying.
+                    w.scrollToItem(item,
+                        QtGui.QAbstractItemView.PositionAtCenter)
             elif p and self.redrawCount > 1:
                 g.trace('Error: no current item: %s' % (p.headString()))
 
