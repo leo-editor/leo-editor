@@ -4,12 +4,8 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-Urgent:
-- Fix key problems:
-    - Ctrl-Shift-9 is the same as Ctrl-(
+First:
 - Finish w.flashCharacter.
-
-Most important:
 - Re-enable syntax coloring.
 - Reading/saving a window does not properly set its size.
 * Can not open the settings file twice.
