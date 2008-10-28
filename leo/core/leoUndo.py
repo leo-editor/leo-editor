@@ -329,7 +329,7 @@ class undoer:
             u.realRedoMenuLabel = realLabel
 
     def setUndoType (self,theType):
-        # g.trace(theType,g.callers())
+        # g.trace(theType,g.callers(4))
 
         u = self ; frame = u.c.frame
         if type(theType) != type(''):

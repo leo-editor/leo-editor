@@ -669,16 +669,18 @@ class leoQtBody (leoFrame.leoBody):
         # Get the previous values from the tnode.
         oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
         if oldText == newText:
-            if trace: g.trace('*** unexpected non-change',color="red")
+            # This can happen as the result of undo.
+            # g.trace('*** unexpected non-change',color="red")
             return
 
-        if trace and verbose: g.trace(p.headString(),len(oldText),len(newText))
+        if trace and verbose:
+            g.trace(p.headString(),len(oldText),len(newText))
 
         oldIns  = p.v.t.insertSpot
         i,j = p.v.t.selectionStart,p.v.t.selectionLength
         oldSel  = (i,j-i)
         oldYview = None
-        undoType = 'changed event'
+        undoType = 'Typing'
         c.undoer.setUndoTypingParams(p,undoType,
             oldText=oldText,newText=newText,
             oldSel=oldSel,newSel=newSel,oldYview=oldYview)
@@ -4074,9 +4076,7 @@ class leoQtMenu (leoMenu.leoMenu):
                 'menu_text_font_slant',  'menu_text_font_weight',
                 c.config.defaultMenuFontSize)
     #@-node:ekr.20081004172422.858:leoQtMenu.__init__
-    #@+node:ekr.20081006073635.35:leoQtMenu.__repr__
-    #@-node:ekr.20081006073635.35:leoQtMenu.__repr__
-    #@+node:ekr.20081004172422.859:Activate menu commands
+    #@+node:ekr.20081004172422.859:Activate menu commands (to do)
     #@+node:ekr.20081004172422.860:qtMenu.activateMenu
     def activateMenu (self,menuName):
 
@@ -4114,7 +4114,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         return d
     #@-node:ekr.20081004172422.861:qtMenu.computeMenuPositions
-    #@-node:ekr.20081004172422.859:Activate menu commands
+    #@-node:ekr.20081004172422.859:Activate menu commands (to do)
     #@+node:ekr.20081004172422.862:Tkinter menu bindings
     # See the Tk docs for what these routines are to do
     #@+node:ekr.20081004172422.863:Methods with Tk spellings
@@ -4159,7 +4159,6 @@ class leoQtMenu (leoMenu.leoMenu):
             label = '%s\t%s' % (label,accel)
 
         action = menu.addAction(label)
-        # if shortcut: action.setShortcut(shortcut)
 
         if command:
             def add_command_callback(label=label,command=command):
@@ -4333,6 +4332,12 @@ class leoQtMenu (leoMenu.leoMenu):
         '''Return the index of the menu item whose name (or offset) is given.
         Return None if there is no such menu item.'''
 
+        g.trace('menu',menu,'name',name)
+
+        actions = menu.actions()
+        for z in action:
+            g.trace(action.label())
+
         # try:
             # index = menu.index(name)
         # except:
@@ -4343,25 +4348,24 @@ class leoQtMenu (leoMenu.leoMenu):
     #@+node:ekr.20081004172422.881:setMenuLabel
     def setMenuLabel (self,menu,name,label,underline=-1):
 
-        if not menu:
-            return
+        def munge(s):
+            s = g.toUnicode(s,'utf-8')
+            return s.replace('&','')
 
-        # try:
-            # if type(name) == type(0):
-                # # "name" is actually an index into the menu.
-                # menu.entryconfig(name,label=label,underline=underline)
-            # else:
-                # # Bug fix: 2/16/03: use translated name.
-                # realName = self.getRealMenuName(name)
-                # realName = realName.replace("&","")
-                # # Bug fix: 3/25/03" use tranlasted label.
-                # label = self.getRealMenuName(label)
-                # label = label.replace("&","")
-                # menu.entryconfig(realName,label=label,underline=underline)
-        # except:
-            # if not g.app.unitTesting:
-                # g.pr("setMenuLabel menu,name,label:",menu,name,label)
-                # g.es_exception()
+        # menu is a qtMenuWrapper.
+
+        # g.trace('menu',menu,'name: %20s label: %s' % (name,label))
+
+        if not menu: return
+
+        realName  = munge(self.getRealMenuName(name))
+        realLabel = self.getRealMenuName(label)
+        for action in menu.actions():
+            s = munge(action.text())
+            s = s.split('\t')[0]
+            if s == realName:
+                action.setText(realLabel)
+                break
     #@-node:ekr.20081004172422.881:setMenuLabel
     #@-node:ekr.20081004172422.874:Methods with other spellings (Qtmenu)
     #@-node:ekr.20081004172422.862:Tkinter menu bindings

@@ -139,7 +139,6 @@ def add_command (self,**keys):
         label = '%s\t%s' % (label,accel)
 
     action = menu.addAction(label)
-    # if shortcut: action.setShortcut(shortcut)
 
     if command:
         def add_command_callback(label=label,command=command):
@@ -664,16 +663,18 @@ def onTextChanged (self):
     # Get the previous values from the tnode.
     oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
     if oldText == newText:
-        if trace: g.trace('*** unexpected non-change',color="red")
+        # This can happen as the result of undo.
+        # g.trace('*** unexpected non-change',color="red")
         return
 
-    if trace and verbose: g.trace(p.headString(),len(oldText),len(newText))
+    if trace and verbose:
+        g.trace(p.headString(),len(oldText),len(newText))
 
     oldIns  = p.v.t.insertSpot
     i,j = p.v.t.selectionStart,p.v.t.selectionLength
     oldSel  = (i,j-i)
     oldYview = None
-    undoType = 'changed event'
+    undoType = 'Typing'
     c.undoer.setUndoTypingParams(p,undoType,
         oldText=oldText,newText=newText,
         oldSel=oldSel,newSel=newSel,oldYview=oldYview)
@@ -1517,16 +1518,18 @@ def onTextChanged (self):
     # Get the previous values from the tnode.
     oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
     if oldText == newText:
-        if trace: g.trace('*** unexpected non-change',color="red")
+        # This can happen as the result of undo.
+        # g.trace('*** unexpected non-change',color="red")
         return
 
-    if trace and verbose: g.trace(p.headString(),len(oldText),len(newText))
+    if trace and verbose:
+        g.trace(p.headString(),len(oldText),len(newText))
 
     oldIns  = p.v.t.insertSpot
     i,j = p.v.t.selectionStart,p.v.t.selectionLength
     oldSel  = (i,j-i)
     oldYview = None
-    undoType = 'changed event'
+    undoType = 'Typing'
     c.undoer.setUndoTypingParams(p,undoType,
         oldText=oldText,newText=newText,
         oldSel=oldSel,newSel=newSel,oldYview=oldYview)
@@ -1915,6 +1918,59 @@ def setCurrentItem (self):
         return None
 #@-node:ekr.20081027082521.12:setCurrentItem
 #@-node:ekr.20081027082521.11:Redraw crashes & problems
+#@+node:ekr.20081027163149.12:Menu accels
+# Mystery solved: top-level menu accels only visible when alt key pressed.
+#@nonl
+#@+node:ekr.20081004172422.865:add_command
+def add_command (self,**keys):
+
+    """Wrapper for the Tkinter add_command menu method."""
+
+    c = self.c
+    accel = keys.get('accelerator') or ''
+    command = keys.get('command')
+    label = keys.get('label')
+    n = keys.get('underline')
+    menu = keys.get('menu') or self
+    if not label: return
+
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+    if accel:
+        label = '%s\t%s' % (label,accel)
+
+    action = menu.addAction(label)
+
+    if command:
+        def add_command_callback(label=label,command=command):
+            return command()
+
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL("triggered()"),add_command_callback)
+#@-node:ekr.20081004172422.865:add_command
+#@+node:ekr.20081004172422.864:add_cascade
+def add_cascade (self,parent,label,menu,underline):
+
+    """Wrapper for the Tkinter add_cascade menu method.
+
+    Adds a submenu to the parent menu, or the menubar."""
+
+    c = self.c ; leoFrame = c.frame
+    n = underline
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+
+    menu.setTitle(label)
+    menu.leo_label = label
+
+    if parent:
+        parent.addMenu(menu)
+    else:
+        self.menuBar.addMenu(menu)
+
+    return menu
+#@-node:ekr.20081004172422.864:add_cascade
+#@-node:ekr.20081027163149.12:Menu accels
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor

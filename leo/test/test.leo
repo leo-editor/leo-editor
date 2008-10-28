@@ -1936,7 +1936,7 @@ if 0: # This can not be run locally: leoBridge.controller starts a Tk event loop
         n += 1
     g.pr('%d nodes in %s' % (n,path))
     # g.app.closeLeoWindow(c.frame)</t>
-<t tx="ekr.20070517160058.1">aAlt+F3</t>
+<t tx="ekr.20070517160058.1">Alt+F3</t>
 <t tx="ekr.20070528111805"># FrontWindowCapture.pyw
 # Version 0.1
 # Date    20070526
