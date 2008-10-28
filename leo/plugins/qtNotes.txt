@@ -7,8 +7,6 @@
 Urgent:
 - Fix key problems:
     - Ctrl-Shift-9 is the same as Ctrl-(
-    - Shift-Backspace puts "Shift-Backspace" in text.
-    - Esc does not terminate minibuffer.
 - Finish w.flashCharacter.
 
 Most important:
@@ -278,11 +276,11 @@ def eventFilter(self, obj, event):
 
     if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
         tkKey,ch,ignore = self.toTkKey(event)
-        # if trace and verbose: g.trace(tkKey,ch)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
 
         if not c.frame.body.useScintilla:
-            override = not ignore # Send all non-ignored keystrokes to the widget.
+            # Send *all* non-ignored keystrokes to the widget.
+            override = not ignore
         elif k.inState():
             override = not ignore # allow all keystroke.
         elif safe_mode:
@@ -406,9 +404,14 @@ def qtMods (self,event):
 
     modifiers = event.modifiers()
 
+    # The order of this table is significant.
+    # It must the order of modifiers in bindings
+    # in k.masterGuiBindingsDict
+
     table = (
         (QtCore.Qt.AltModifier,     'Alt'),
         (QtCore.Qt.ControlModifier, 'Control'),
+        (QtCore.Qt.MetaModifier,    'Meta'),
         (QtCore.Qt.ShiftModifier,   'Shift'),
     )
 
@@ -419,19 +422,19 @@ def qtMods (self,event):
 #@+node:ekr.20081028055229.3:tkKey
 def tkKey (self,mods,keynum,text,toString,ch):
 
-    k = self.c.k ; trace = True ; verbose = True
+    '''Carefully convert the Qt key to a 
+    Tk-style binding compatible with Leo's core
+    binding dictionaries.'''
 
-    noShiftList = ('Return',)
+    k = self.c.k ; trace = False ; verbose = True
+
     special = {
         'Backspace':'BackSpace',
         'Esc':'Escape',
     }
 
+    # Convert '&' to 'ampersand', for example.
     ch2 = k.guiBindNamesDict.get(ch or toString)
-
-    if trace and verbose: g.trace(
-        'text: %s, toString: %s, ch: %s, ch2: %s' % (
-        repr(text),toString,repr(ch),repr(ch2)))
 
     if not ch: ch = ch2
     if not ch: ch = ''
@@ -440,15 +443,17 @@ def tkKey (self,mods,keynum,text,toString,ch):
     ch3 = special.get(toString)
     if ch3: ch = ch3
 
-    # Carefully convert to Tk style binding.
-    allowShift = ch not in noShiftList
+    ch4 = k.guiBindNamesDict.get(ch)
+    if ch4: ch = ch4
+
+    if trace and verbose: g.trace(
+'keynum: %s, mods: %s text: %s, toString: %s, '
+'ch: %s, ch2: %s, ch3: %s, ch4: %s' % (
+keynum,mods,repr(text),toString,
+repr(ch),repr(ch2),repr(ch3),repr(ch4)))
+
     if 'Shift' in mods:
-        if allowShift:
-            if len(ch) == 1:
-                ch = ch.upper()
-                mods.remove("Shift")
-            else: pass
-        else: mods.remove("Shift")
+        mods,ch = self.shifted(mods,ch)
     elif len(ch) == 1:
         ch = ch.lower()
 
@@ -464,6 +469,99 @@ def tkKey (self,mods,keynum,text,toString,ch):
 
     return tkKey,ch,ignore
 #@-node:ekr.20081028055229.3:tkKey
+#@+node:ekr.20081028055229.14:shifted & helpers
+def shifted (self,mods,ch):
+    '''
+        A horrible, keyboard-dependent kludge.
+        return the shifted version of the letter.
+        return mods, ch.
+    '''
+
+    # Special tk symbols, like '&' have already
+    # been converted to names like 'ampersand'.
+
+    # These special characters should be handled in Leo's core.
+    noShiftList = ('Return','BackSpace','Tab',)
+
+    special = ('Home','End','Right','Left','Up','Down',)
+
+    if len(ch) == 1:
+        ch2 = self.keyboardUpper1(ch)
+        if ch2:
+            mods.remove('Shift')
+            ch = ch2
+        elif len(ch) == 1:
+            # Correct regardless of alt/ctrl mods.
+            mods.remove('Shift')
+            ch = ch.upper()
+        elif len(mods) == 1: # No alt/ctrl.
+            mods.remove('Shift')
+        else:
+            pass
+    else:
+        ch3 = self.keyboardUpperLong(ch)
+        if ch3: ch = ch3
+
+        if ch in noShiftList:
+            mods.remove('Shift')
+        elif ch in special:
+            pass # Allow the shift.
+        elif len(mods) == 1: # No alt/ctrl.
+            mods.remove('Shift')
+        else:
+            pass # Retain shift modifier for all special keys.
+
+    return mods,ch
+#@+node:ekr.20081028055229.16:keyboardUpper1
+def keyboardUpper1 (self,ch):
+
+    '''A horrible, keyboard-dependent hack.
+
+    Return the upper-case version of the given character
+    whose original spelling has length == 1.'''
+
+    d = {
+        '1':'exclam',
+        '2':'at',
+        '3':'numbersign',
+        '4':'dollar',
+        '5':'percent',
+        '6':'asciicircum',
+        '7':'ampersand',
+        '8':'asterisk',
+        '9':'parenleft',
+        '0':'parenright',
+    }
+
+    # g.trace(ch,d.get(ch))
+    return d.get(ch,ch)
+
+#@-node:ekr.20081028055229.16:keyboardUpper1
+#@+node:ekr.20081028055229.17:keyboardUpperLong
+def keyboardUpperLong (self,ch):
+
+    '''A horrible, keyboard-dependent hack.
+
+    Return the upper-case version of the given character
+    whose original spelling has length > 1.'''
+
+    d = {
+        "quoteleft":    "asciitilde",
+        "minus":        "underscore",
+        "equal":        "plus",
+        "bracketleft":  "braceleft",
+        "bracketright": "braceright",
+        "semicolon":    "colon",
+        "quoteright":   "quotedbl",
+        "backslash":    "bar",
+        "comma":        "less",
+        "period":       "greater",
+        "slash":        "question",
+    }
+    # g.trace(ch,d.get(ch))
+    return d.get(ch,ch)
+#@-node:ekr.20081028055229.17:keyboardUpperLong
+#@-node:ekr.20081028055229.14:shifted & helpers
 #@-node:ekr.20081008084746.1:toTkKey & helpers
 #@+node:ekr.20081013143507.11:traceEvent
 def traceEvent (self,obj,event,tkKey,override):
@@ -3887,112 +3985,6 @@ FAILED (failures=9)
 #@-node:ekr.20081013210935.32:Fail
 #@-node:ekr.20081013210935.1:Unit tests
 #@+node:ekr.20081018155359.11:Unused
-#@+node:ekr.20081021043407.2:OLDredraw_now
-def OLDredraw_now (self,scroll=False,forceDraw=False):
-
-    '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
-
-    c = self.c ; w = self.treeWidget ; trace = True ; verbose = False
-    if not w: return
-    if self.redrawing:
-        return g.trace('already drawing')
-
-    # Traces...
-    self.redrawCount += 1
-    current = c.currentPosition()
-    if trace: g.trace(self.redrawCount,current and current.headString())
-
-    # Loop init.
-    found_current = None
-    self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
-    self.itemsDict = {} # keys are id(it), values are positions
-    parentsDict = {}
-
-    self.redrawing = True
-    try:
-        w.clear()
-        for p in c.allNodes_iter():
-            it = parentsDict.get(p.parent().v,w)
-            it = QtGui.QTreeWidgetItem(it)
-            icon = self.getIcon(p)
-            if icon: it.setIcon(0,icon)
-            it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
-            self.itemsDict[id(it)] = p.copy() # Valid.
-            parentsDict[p.v] = it # Just barely valid for drawing.
-            # More accurate info, for use by selectHint.
-            aList = self.vnodeDict.get(p.v,[])
-            data = p.copy(),it
-            aList.append(data)
-            self.vnodeDict[p.v] = aList
-            it.setText(0,p.headString())
-            if p.hasChildren() and p.isExpanded() and self.allAncestorsExpanded(p):
-                w.expandItem(it)
-            else:
-                w.collapseItem(it)
-
-            if p == current:
-                w.setCurrentItem(it) ; found_current = it
-    finally:
-        if found_current is None:
-            if self.redrawCount > 1:
-                g.trace('** no current item: %s' % (p and p.headString()))
-        else:
-            w.scrollToItem(found_current, QtGui.QAbstractItemView.PositionAtCenter)
-
-        # Necessary to get the tree drawn initially.
-        if self.redrawCount == 1:
-            # g.trace('***repaint')
-            w.repaint()
-
-        self.redrawing = False
-
-redraw = redraw_now # Compatibility
-#@-node:ekr.20081021043407.2:OLDredraw_now
-#@+node:ekr.20081021043407.33:partial_redraw_after_expand & helper
-def partial_redraw_after_expand (self):
-
-    c = self.c ; p = c.currentPosition()
-    w = self.treeWidget ; trace = True ; verbose = True
-    it = self.parentsDict.get(p.v)
-    if it:
-        self.nodeDrawCount = 0
-        self.redrawing = True
-        self.expanding = True
-        self.selecting = True
-        try:
-            if p.hasChildren() and p.isExpanded():
-                w.expandItem(it)
-                # Delete all the children from the tree.
-                items = it.takeChildren()
-                if trace and verbose: g.trace(
-                    id(it),len(items),p.headString(),g.callers(4))
-
-                # Delete all descendant from dictionaries.
-                for child in p.children_iter():
-                    for z in child.self_and_subtree_iter():
-                        self.removeFromDicts(z)
-
-                # Redraw all descendants.
-                child = p.firstChild()
-                while child:
-                    self.drawTree(child)
-                    child.moveToNext()
-            else:
-                # Don't change anything!
-                g.trace('no change')
-                w.collapseItem(it)
-        finally:
-            w.setCurrentItem(it)
-            self.redrawing = False
-            self.expanding = False
-            self.selecting = False
-            c.requestRedrawFlag= False
-            if trace: g.trace(
-                'drew %3s nodes' % self.nodeDrawCount) # ,g.callers(4))
-    else:
-        g.trace('can not happen: no item for %s' % p.headString())
-        self.full_redraw()
-#@-node:ekr.20081021043407.33:partial_redraw_after_expand & helper
 #@+node:ekr.20081010070648.17:setTreeFont
 def setTreeFont (self):
 
@@ -4043,108 +4035,70 @@ def setTreeColors (self):
 
     # # w.setPalette(palette)
 #@-node:ekr.20081010070648.15:setTreeColors
-#@+node:ekr.20081025124450.16:OLDonTextChanged
-def onTextChanged (self):
+#@+node:ekr.20081028055229.4:old keycode
+    allowShiftList = ('Down','End','Home','Left','Right','Up')
 
-    '''Update Leo after the body has been changed.
-
-    self.selecting is guaranteed to be True during the entire selection process.'''
-
-    c = self.c ; tree = c.frame.tree ; w = self
-    trace = True ; verbose = False
-    old_p,new_p = tree.old_p,tree.new_p
-
-    if tree.selecting:
-        if trace and verbose: g.trace('selecting')
-        return
-    if tree.redrawing:
-        if trace and verbose: g.trace('redrawing')
-        return
-
-    newInsert = w.getInsertPoint()
-    newSel = w.getSelectionRange()
-    newText = w.getAllText() # Converts to unicode.
-
-    select = new_p and new_p != self.body_p
-    if select:
+    keynum = event.key() ; allowShift = True ; isKnown = False
+    try:
+        ch = chr(keynum)
+        isKnown = True
+        if trace and verbose: g.trace(ch,keynum)
+    except ValueError:
+        ch = event.text()
+        if not ch:
+            ch = QtGui.QKeySequence(keynum).toString()
+            isKnown = True
+        if not ch:
+            ch = "<unknown char: %s>" % (keynum)
+        ch = g.toUnicode(ch,g.app.tkEncoding)
         if trace and verbose:
-            g.trace('** select',tree.new_p.headString())
-        self.body_p = new_p.copy()
-        return
+            g.trace('special',ch) # munge.
 
-    p = self.body_p
-    if not p: return g.trace('***: no p')
+    # Convert special characters to Tk Spellings.
+    if   ch in ('\r','\n'): ch = 'Return'
+    elif ch == '\t': ch = 'Tab'
+    elif ch == '\b': ch = 'BackSpace'
+    else:
+        ch2 = k.guiBindNamesDict.get(ch)
+        if ch2:
+            if not isKnown:
+                allowShift = ch in allowShiftList
+            if trace and verbose: g.trace('ch',ch,'ch2',ch2)
+            ch = ch2
 
-    # Get the previous values from the tnode.
-    oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
-    if oldText == newText: return
+    # Convert to Tk style binding.
+    mods = [] ; alt,ctrl = False,False
+    if event.modifiers() & QtCore.Qt.AltModifier:
+        mods.append("Alt")
+    if event.modifiers() & QtCore.Qt.ControlModifier:
+        mods.append("Control")
+    if event.modifiers() & QtCore.Qt.ShiftModifier:
+        # g.trace('allowShift',allowShift,'ch')
+        if not allowShift:
+            pass
+        elif len(ch) == 1:
+            ch = ch.upper()
+        else:
+            mods.append("Shift")
+    elif len(ch) == 1: ch = ch.lower()
 
-    if trace: g.trace('****changed',p.headString(),len(oldText),len(newText))
+    if 'Alt' in mods and ch in string.digits:
+        mods.append('Key')
 
-    oldIns  = p.v.t.insertSpot
-    i,j = p.v.t.selectionStart,p.v.t.selectionLength
-    oldSel  = (i,j-i)
-    oldYview = None
-    undoType = 'changed event'
-    c.undoer.setUndoTypingParams(p,undoType,
-        oldText=oldText,newText=newText,
-        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
 
-    # Update the tnode.
-    p.v.setBodyString(newText)
-    p.v.t.insertSpot = newInsert
-    i,j = newSel
-    if i > j: i,j = j,i
-    new_p.v.t.selectionStart,new_p.v.t.selectionLength = (i,j-i)
+    if ch in allowShiftList or self.isFKey(ch):
+        ignore = False
+    elif ch in ('BackSpace','Return','Tab'):
+        ignore = False
+    else:
+        # If the documentation is to be believed,
+        # this definition of ignore should be portable.
+        ignore = not g.toUnicode(event.text(),'utf-8')
+    if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey),'ignore',ignore)
 
-    # No need to redraw the screen.
-    if not self.useScintilla:
-        c.recolor()
-    if not c.changed and c.frame.initComplete:
-        c.setChanged(True)
-    self.updateEditors()
-    c.frame.tree.updateIcon(p)
-    c.outerUpdate()
-#@-node:ekr.20081025124450.16:OLDonTextChanged
-#@+node:ekr.20081009055104.11:selectHint (no longer used)
-# def selectHint (self,p,old_p):
-
-    # w = self.treeWidget ; trace = False
-
-    # if self.redrawing:
-        # if trace: g.trace('already redrawing')
-        # return
-    # if self.selecting:
-        # if trace: g.trace('already selecting')
-        # return
-
-    # aList = self.vnodeDict.get(p.v,[])
-    # h = p.headString()
-
-    # self.new_p = p.copy()
-    # self.old_p = old_p.copy()
-
-    # if trace: g.trace(
-        # p and p.headString(),
-        # old_p and old_p.headString())
-
-    # for p2,it in aList:
-        # if p == p2:
-            # if trace:
-                # g.trace('found item: %s for: %s' % (
-                    # id(it),h),g.callers())
-            # self.selecting = True
-            # try:
-                # w.setCurrentItem(it)
-            # finally:
-                # self.selecting = False
-            # break
-    # else:
-        # if aList:
-            # g.trace('redrawing',self.redrawing,g.callers())
-            # g.trace('not found %s in %s' % (aList,h))
-        # self.full_redraw() ###
-#@-node:ekr.20081009055104.11:selectHint (no longer used)
+    return tkKey,ch,ignore
+#@-node:ekr.20081028055229.4:old keycode
 #@-node:ekr.20081018155359.11:Unused
 #@+node:ekr.20081024175359.10:Scripts
 #@+node:ekr.20081022172620.10:Script to display Qt font database

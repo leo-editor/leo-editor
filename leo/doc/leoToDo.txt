@@ -2979,7 +2979,7 @@ def handleMiniBindings (self,event,state,stroke):
 
     return False
 #@-node:ekr.20061031131434.152:handleMiniBindings
-#@+node:ekr.20080510095819.1:handleUnboudKeys
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
     k = self ; c = k.c
@@ -3016,7 +3016,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     else:
         if trace: g.trace(repr(stroke),'no func')
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
 #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@+node:ekr.20061031131434.162:generalModeHandler
 def generalModeHandler (self,event,
@@ -3757,7 +3757,7 @@ def handleMiniBindings (self,event,state,stroke):
 
     return False
 #@-node:ekr.20061031131434.152:handleMiniBindings
-#@+node:ekr.20080510095819.1:handleUnboudKeys
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
     k = self ; c = k.c
@@ -3794,7 +3794,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     else:
         if trace: g.trace(repr(stroke),'no func')
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
 #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@+node:ekr.20061031131434.162:generalModeHandler
 def generalModeHandler (self,event,
@@ -4921,7 +4921,7 @@ def handleMiniBindings (self,event,state,stroke):
 
     return False
 #@-node:ekr.20061031131434.152:handleMiniBindings
-#@+node:ekr.20080510095819.1:handleUnboudKeys
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
     k = self ; c = k.c
@@ -4958,7 +4958,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     else:
         if trace: g.trace(repr(stroke),'no func')
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
 #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@+node:ekr.20080610085158.2:c.add_command
 def add_command (self,menu,**keys):

@@ -2571,7 +2571,11 @@ class keyHandlerClass:
         name = c.widget_name(w)
         trace = False
 
-        if trace: g.trace('stroke',stroke)
+        if trace: g.trace('widget_name',name,'stroke',stroke)
+
+        if stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1:
+            if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+            return 'break'
 
         if name.startswith('body'):
             action = k.unboundKeyAction
@@ -3495,7 +3499,7 @@ class keyHandlerClass:
 
         return False
     #@-node:ekr.20061031131434.152:handleMiniBindings
-    #@+node:ekr.20080510095819.1:handleUnboudKeys
+    #@+node:ekr.20080510095819.1:k.handleUnboudKeys
     def handleUnboundKeys (self,event,char,keysym,stroke):
 
         k = self ; c = k.c
@@ -3532,7 +3536,7 @@ class keyHandlerClass:
         else:
             if trace: g.trace(repr(stroke),'no func')
             return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    #@-node:ekr.20080510095819.1:handleUnboudKeys
+    #@-node:ekr.20080510095819.1:k.handleUnboudKeys
     #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
     #@+node:ekr.20061031131434.153:masterClickHandler
     # def masterClickHandler (self,event,func=None):

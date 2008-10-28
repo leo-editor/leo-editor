@@ -1126,11 +1126,11 @@ class leoQtEventFilter(QtCore.QObject):
 
         if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
             tkKey,ch,ignore = self.toTkKey(event)
-            # if trace and verbose: g.trace(tkKey,ch)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
 
             if not c.frame.body.useScintilla:
-                override = not ignore # Send all non-ignored keystrokes to the widget.
+                # Send *all* non-ignored keystrokes to the widget.
+                override = not ignore
             elif k.inState():
                 override = not ignore # allow all keystroke.
             elif safe_mode:
@@ -1254,9 +1254,14 @@ class leoQtEventFilter(QtCore.QObject):
 
         modifiers = event.modifiers()
 
+        # The order of this table is significant.
+        # It must the order of modifiers in bindings
+        # in k.masterGuiBindingsDict
+
         table = (
             (QtCore.Qt.AltModifier,     'Alt'),
             (QtCore.Qt.ControlModifier, 'Control'),
+            (QtCore.Qt.MetaModifier,    'Meta'),
             (QtCore.Qt.ShiftModifier,   'Shift'),
         )
 
@@ -1267,19 +1272,19 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081028055229.3:tkKey
     def tkKey (self,mods,keynum,text,toString,ch):
 
-        k = self.c.k ; trace = True ; verbose = True
+        '''Carefully convert the Qt key to a 
+        Tk-style binding compatible with Leo's core
+        binding dictionaries.'''
 
-        noShiftList = ('Return',)
+        k = self.c.k ; trace = False ; verbose = True
+
         special = {
             'Backspace':'BackSpace',
             'Esc':'Escape',
         }
 
+        # Convert '&' to 'ampersand', for example.
         ch2 = k.guiBindNamesDict.get(ch or toString)
-
-        if trace and verbose: g.trace(
-            'text: %s, toString: %s, ch: %s, ch2: %s' % (
-            repr(text),toString,repr(ch),repr(ch2)))
 
         if not ch: ch = ch2
         if not ch: ch = ''
@@ -1288,15 +1293,17 @@ class leoQtEventFilter(QtCore.QObject):
         ch3 = special.get(toString)
         if ch3: ch = ch3
 
-        # Carefully convert to Tk style binding.
-        allowShift = ch not in noShiftList
+        ch4 = k.guiBindNamesDict.get(ch)
+        if ch4: ch = ch4
+
+        if trace and verbose: g.trace(
+    'keynum: %s, mods: %s text: %s, toString: %s, '
+    'ch: %s, ch2: %s, ch3: %s, ch4: %s' % (
+    keynum,mods,repr(text),toString,
+    repr(ch),repr(ch2),repr(ch3),repr(ch4)))
+
         if 'Shift' in mods:
-            if allowShift:
-                if len(ch) == 1:
-                    ch = ch.upper()
-                    mods.remove("Shift")
-                else: pass
-            else: mods.remove("Shift")
+            mods,ch = self.shifted(mods,ch)
         elif len(ch) == 1:
             ch = ch.lower()
 
@@ -1312,6 +1319,99 @@ class leoQtEventFilter(QtCore.QObject):
 
         return tkKey,ch,ignore
     #@-node:ekr.20081028055229.3:tkKey
+    #@+node:ekr.20081028055229.14:shifted & helpers
+    def shifted (self,mods,ch):
+        '''
+            A horrible, keyboard-dependent kludge.
+            return the shifted version of the letter.
+            return mods, ch.
+        '''
+
+        # Special tk symbols, like '&' have already
+        # been converted to names like 'ampersand'.
+
+        # These special characters should be handled in Leo's core.
+        noShiftList = ('Return','BackSpace','Tab',)
+
+        special = ('Home','End','Right','Left','Up','Down',)
+
+        if len(ch) == 1:
+            ch2 = self.keyboardUpper1(ch)
+            if ch2:
+                mods.remove('Shift')
+                ch = ch2
+            elif len(ch) == 1:
+                # Correct regardless of alt/ctrl mods.
+                mods.remove('Shift')
+                ch = ch.upper()
+            elif len(mods) == 1: # No alt/ctrl.
+                mods.remove('Shift')
+            else:
+                pass
+        else:
+            ch3 = self.keyboardUpperLong(ch)
+            if ch3: ch = ch3
+
+            if ch in noShiftList:
+                mods.remove('Shift')
+            elif ch in special:
+                pass # Allow the shift.
+            elif len(mods) == 1: # No alt/ctrl.
+                mods.remove('Shift')
+            else:
+                pass # Retain shift modifier for all special keys.
+
+        return mods,ch
+    #@+node:ekr.20081028055229.16:keyboardUpper1
+    def keyboardUpper1 (self,ch):
+
+        '''A horrible, keyboard-dependent hack.
+
+        Return the upper-case version of the given character
+        whose original spelling has length == 1.'''
+
+        d = {
+            '1':'exclam',
+            '2':'at',
+            '3':'numbersign',
+            '4':'dollar',
+            '5':'percent',
+            '6':'asciicircum',
+            '7':'ampersand',
+            '8':'asterisk',
+            '9':'parenleft',
+            '0':'parenright',
+        }
+
+        # g.trace(ch,d.get(ch))
+        return d.get(ch,ch)
+
+    #@-node:ekr.20081028055229.16:keyboardUpper1
+    #@+node:ekr.20081028055229.17:keyboardUpperLong
+    def keyboardUpperLong (self,ch):
+
+        '''A horrible, keyboard-dependent hack.
+
+        Return the upper-case version of the given character
+        whose original spelling has length > 1.'''
+
+        d = {
+            "quoteleft":    "asciitilde",
+            "minus":        "underscore",
+            "equal":        "plus",
+            "bracketleft":  "braceleft",
+            "bracketright": "braceright",
+            "semicolon":    "colon",
+            "quoteright":   "quotedbl",
+            "backslash":    "bar",
+            "comma":        "less",
+            "period":       "greater",
+            "slash":        "question",
+        }
+        # g.trace(ch,d.get(ch))
+        return d.get(ch,ch)
+    #@-node:ekr.20081028055229.17:keyboardUpperLong
+    #@-node:ekr.20081028055229.14:shifted & helpers
     #@-node:ekr.20081008084746.1:toTkKey & helpers
     #@+node:ekr.20081013143507.11:traceEvent
     def traceEvent (self,obj,event,tkKey,override):
