@@ -1178,18 +1178,9 @@ class leoQtEventFilter(QtCore.QObject):
             key == 'return' and not inTree # Just barely works.
         )
 
-        # g.trace(tkKey,ch,val)
+        g.trace(tkKey,ch,val)
         return val
     #@-node:ekr.20081015132934.10:isDangerous
-    #@+node:ekr.20081024164012.10:isFKey
-    def isFKey(self,ch):
-
-        return (
-            ch and len(ch) in (2,3) and
-            ch[0].lower() == 'f' and
-            ch[1:].isdigit()
-        )
-    #@-node:ekr.20081024164012.10:isFKey
     #@+node:ekr.20081011152302.10:toStroke
     def toStroke (self,tkKey,ch):
 
@@ -1217,71 +1208,111 @@ class leoQtEventFilter(QtCore.QObject):
         # g.trace('tkKey',tkKey,'-->',s)
         return s
     #@-node:ekr.20081011152302.10:toStroke
-    #@+node:ekr.20081008084746.1:toTkKey
+    #@+node:ekr.20081008084746.1:toTkKey & helpers
     def toTkKey (self,event):
 
-        c = self.c ; k = c.k ; trace = False ; verbose = True
+        mods = self.qtMods(event)
 
-        allowShiftList = ('Down','End','Home','Left','Right','Up')
+        keynum,text,toString,ch = self.qtKey(event)
 
-        keynum = event.key() ; allowShift = True ; isKnown = False
+        tkKey,ch,ignore = self.tkKey(
+            mods,keynum,text,toString,ch)
+
+        return tkKey,ch,ignore
+    #@+node:ekr.20081024164012.10:isFKey
+    def isFKey(self,ch):
+
+        return (
+            ch and len(ch) in (2,3) and
+            ch[0].lower() == 'f' and
+            ch[1:].isdigit()
+        )
+    #@-node:ekr.20081024164012.10:isFKey
+    #@+node:ekr.20081028055229.1:qtKey
+    def qtKey (self,event):
+
+        '''Return the components of a Qt key event.'''
+
+        keynum = event.key()
+        text   = event.text()
+        toString = QtGui.QKeySequence(keynum).toString()
         try:
             ch = chr(keynum)
-            if trace and verbose: g.trace(ch,keynum)
         except ValueError:
-            ch = event.text()
-            if not ch:
-                ch = QtGui.QKeySequence(keynum).toString()
-                isKnown = True
-            if not ch:
-                ch = "<unknown char: %s>" % (keynum)
-            ch = g.toUnicode(ch,g.app.tkEncoding)
-            if trace and verbose:
-                g.trace('special',ch) # munge.
+            ch = ''
+        encoding = 'utf-8'
+        ch       = g.toUnicode(ch,encoding)
+        text     = g.toUnicode(text,encoding)
+        toString = g.toUnicode(toString,encoding)
 
-        # Convert special characters to Tk Spellings.
-        if   ch in ('\r','\n'): ch = 'Return'
-        elif ch == '\t': ch = 'Tab'
-        elif ch == '\b': ch = 'BackSpace'
-        else:
-            ch2 = k.guiBindNamesDict.get(ch)
-            if ch2:
-                if not isKnown:
-                    allowShift = ch in allowShiftList
-                if trace and verbose: g.trace('ch',ch,'ch2',ch2)
-                ch = ch2
+        return keynum,text,toString,ch
 
-        # Convert to Tk style binding.
-        mods = [] ; alt,ctrl = False,False
-        if event.modifiers() & QtCore.Qt.AltModifier:
-            mods.append("Alt")
-        if event.modifiers() & QtCore.Qt.ControlModifier:
-            mods.append("Control")
-        if event.modifiers() & QtCore.Qt.ShiftModifier:
-            # g.trace('allowShift',allowShift,'ch')
-            if not allowShift:
-                pass
-            elif len(ch) == 1:
-                ch = ch.upper()
-            else:
-                mods.append("Shift")
-        elif len(ch) == 1: ch = ch.lower()
 
-        if 'Alt' in mods and ch in string.digits:
+    #@-node:ekr.20081028055229.1:qtKey
+    #@+node:ekr.20081028055229.2:qtMods
+    def qtMods (self,event):
+
+        modifiers = event.modifiers()
+
+        table = (
+            (QtCore.Qt.AltModifier,     'Alt'),
+            (QtCore.Qt.ControlModifier, 'Control'),
+            (QtCore.Qt.ShiftModifier,   'Shift'),
+        )
+
+        mods = [b for a,b in table if (modifiers & a)]
+
+        return mods
+    #@-node:ekr.20081028055229.2:qtMods
+    #@+node:ekr.20081028055229.3:tkKey
+    def tkKey (self,mods,keynum,text,toString,ch):
+
+        k = self.c.k ; trace = True ; verbose = True
+
+        noShiftList = ('Return',)
+        special = {
+            'Backspace':'BackSpace',
+            'Esc':'Escape',
+        }
+
+        ch2 = k.guiBindNamesDict.get(ch or toString)
+
+        if trace and verbose: g.trace(
+            'text: %s, toString: %s, ch: %s, ch2: %s' % (
+            repr(text),toString,repr(ch),repr(ch2)))
+
+        if not ch: ch = ch2
+        if not ch: ch = ''
+
+        # Handle special cases.
+        ch3 = special.get(toString)
+        if ch3: ch = ch3
+
+        # Carefully convert to Tk style binding.
+        allowShift = ch not in noShiftList
+        if 'Shift' in mods:
+            if allowShift:
+                if len(ch) == 1:
+                    ch = ch.upper()
+                    mods.remove("Shift")
+                else: pass
+            else: mods.remove("Shift")
+        elif len(ch) == 1:
+            ch = ch.lower()
+
+        if 'Alt' in mods and ch and ch in string.digits:
             mods.append('Key')
 
         tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+        ignore = not ch
 
-        # If the documentation is to be believed,
-        # this definition of ignore should be portable.
-        if ch in allowShiftList or self.isFKey(ch):
-            ignore = False
-        else:
-            ignore = not g.toUnicode(event.text(),'utf-8')
-        if trace: g.trace('ch',repr(ch),'tkKey',repr(tkKey),'ignore',ignore)
+        if trace and (ignore or verbose):
+            g.trace('tkKey: %s, ch: %s, ignore: %s' % (
+                repr(tkKey),repr(ch),ignore))
 
         return tkKey,ch,ignore
-    #@-node:ekr.20081008084746.1:toTkKey
+    #@-node:ekr.20081028055229.3:tkKey
+    #@-node:ekr.20081008084746.1:toTkKey & helpers
     #@+node:ekr.20081013143507.11:traceEvent
     def traceEvent (self,obj,event,tkKey,override):
 

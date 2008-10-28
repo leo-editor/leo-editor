@@ -4,6 +4,55 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First 5
 
+#@+node:ekr.20081028060510.1:Fix @shadow crasher
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
+
+I think Leo crashes when attempting to load a shadow file that starts
+with a line feed character. [EKR: it's the missing file extension]
+
+Here's the stack trace:
+
+Traceback (most recent call last):
+ File "/home/jesse/leo-editor/launchLeo.py", line 8, in <module>
+   leo.core.runLeo.run()
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
+   c,frame = createFrame(fileName,relativeFileName,script)
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
+createFrame
+   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+ File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
+openWithFileName
+   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
+in open
+   silent=silent)
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
+in getLeoFile
+   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
+readAll
+   at.readOneAtShadowNode (fileName,p)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
+readOneAtShadowNode
+   at.writeOneAtShadowNode(p,toString=False,force=True)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
+writeOneAtShadowNode
+   at.writeOpenFile(root,nosentinels=not
+sentinels,toString=False,atAuto=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
+writeOpenFile
+   at.putBody(root,fromString=fromString)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
+putBody
+   at.putCodeLine(s,i)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
+putCodeLine
+   if g.match(s,k,self.startSentinelComment + '@'):
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+#@nonl
+#@-node:ekr.20081028060510.1:Fix @shadow crasher
 #@+node:ekr.20070624135822:Templates for common code fragments
 @
 Use completion to show fragments.
