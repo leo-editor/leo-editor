@@ -1216,7 +1216,7 @@ class leoQtEventFilter(QtCore.QObject):
         keynum,text,toString,ch = self.qtKey(event)
 
         tkKey,ch,ignore = self.tkKey(
-            mods,keynum,text,toString,ch)
+            event,mods,keynum,text,toString,ch)
 
         return tkKey,ch,ignore
     #@+node:ekr.20081024164012.10:isFKey
@@ -1269,8 +1269,8 @@ class leoQtEventFilter(QtCore.QObject):
 
         return mods
     #@-node:ekr.20081028055229.2:qtMods
-    #@+node:ekr.20081028055229.3:tkKey
-    def tkKey (self,mods,keynum,text,toString,ch):
+    #@+node:ekr.20081028055229.3:tkKey & helpers
+    def tkKey (self,event,mods,keynum,text,toString,ch):
 
         '''Carefully convert the Qt key to a 
         Tk-style binding compatible with Leo's core
@@ -1303,6 +1303,7 @@ class leoQtEventFilter(QtCore.QObject):
     repr(ch),repr(ch2),repr(ch3),repr(ch4)))
 
         if 'Shift' in mods:
+            # self.shifted2(event) # For experimentation
             mods,ch = self.shifted(mods,ch)
         elif len(ch) == 1:
             ch = ch.lower()
@@ -1318,8 +1319,7 @@ class leoQtEventFilter(QtCore.QObject):
                 repr(tkKey),repr(ch),ignore))
 
         return tkKey,ch,ignore
-    #@-node:ekr.20081028055229.3:tkKey
-    #@+node:ekr.20081028055229.14:shifted & helpers
+    #@+node:ekr.20081028055229.14:shifted
     def shifted (self,mods,ch):
         '''
             A horrible, keyboard-dependent kludge.
@@ -1352,7 +1352,7 @@ class leoQtEventFilter(QtCore.QObject):
             ch3 = self.keyboardUpperLong(ch)
             if ch3: ch = ch3
 
-            if ch in noShiftList:
+            if ch3 or ch in noShiftList:
                 mods.remove('Shift')
             elif ch in special:
                 pass # Allow the shift.
@@ -1362,6 +1362,7 @@ class leoQtEventFilter(QtCore.QObject):
                 pass # Retain shift modifier for all special keys.
 
         return mods,ch
+    #@-node:ekr.20081028055229.14:shifted
     #@+node:ekr.20081028055229.16:keyboardUpper1
     def keyboardUpper1 (self,ch):
 
@@ -1411,7 +1412,29 @@ class leoQtEventFilter(QtCore.QObject):
         # g.trace(ch,d.get(ch))
         return d.get(ch,ch)
     #@-node:ekr.20081028055229.17:keyboardUpperLong
-    #@-node:ekr.20081028055229.14:shifted & helpers
+    #@+node:ekr.20081028134004.11:shifted2
+    # This idea doesn't work.  The key-code in the ctor overrides everything else.
+
+    def shifted2 (self,event):
+
+        mods = event.modifiers()
+        mods2 = mods & QtCore.Qt.ShiftModifier
+
+        event2 = QtGui.QKeyEvent (
+            QtCore.QEvent.KeyPress,
+            event.key(),mods2,event.text())
+
+        encoding = 'utf-8'
+        keynum = event2.key()
+        text   = g.toUnicode(event2.text(),encoding)
+        toString = g.toUnicode(QtGui.QKeySequence(keynum).toString(),encoding)
+        mods = self.qtMods(event2)
+
+        g.trace(
+            'keynum: %s, mods: %s text: %s, toString: %s' % (
+            keynum,mods,repr(text),toString))
+    #@-node:ekr.20081028134004.11:shifted2
+    #@-node:ekr.20081028055229.3:tkKey & helpers
     #@-node:ekr.20081008084746.1:toTkKey & helpers
     #@+node:ekr.20081013143507.11:traceEvent
     def traceEvent (self,obj,event,tkKey,override):
