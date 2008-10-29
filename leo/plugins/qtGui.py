@@ -1050,12 +1050,31 @@ class leoQtBody (leoFrame.leoBody):
         else:
             self.widget.ensureCursorVisible()
     #@-node:ekr.20081024163213.11:seeInsertPoint
-    #@+node:ekr.20081024163213.12:flashCursor
+    #@+node:ekr.20081024163213.12:flashCursor (qtBody)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
-        pass
+        def after(func):
+            QtCore.QTimer.singleShot(delay,func)
 
-    #@-node:ekr.20081024163213.12:flashCursor
+        def addFlashCallback(self=self):
+            n,i = self.flashCount,self.flashIndex
+            # g.trace(n,i)
+            self.setSelectionRange(i,i+1)
+            self.flashCount -= 1
+            after(removeFlashCallback)
+
+        def removeFlashCallback(self=self):
+            n,i = self.flashCount,self.flashIndex
+            # g.trace(n,i)
+            self.setSelectionRange(i,i)
+            if n > 0: after(addFlashCallback)
+            else: self.setInsertPoint(self.afterFlashIndex)
+
+        self.flashCount = flashes
+        self.flashIndex = i
+        self.afterFlashIndex = self.getInsertPoint()
+        addFlashCallback()
+    #@-node:ekr.20081024163213.12:flashCursor (qtBody)
     #@-node:ekr.20081007015817.91:Visibility
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
