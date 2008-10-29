@@ -1049,7 +1049,7 @@ class leoQtBody (leoFrame.leoBody):
         else:
             self.widget.ensureCursorVisible()
     #@-node:ekr.20081024163213.11:seeInsertPoint
-    #@+node:ekr.20081024163213.12:flashCursor (qtBody)
+    #@+node:ekr.20081024163213.12:flashCharacter (qtBody)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
         w = self.widget
@@ -1066,8 +1066,11 @@ class leoQtBody (leoFrame.leoBody):
         def removeFlashCallback(self=self,w=w):
             n,i = self.flashCount,self.flashIndex
             self.setSelectionRange(i,i)
-            if n > 0: after(addFlashCallback)
+            if n > 0:
+                after(addFlashCallback)
             else:
+                w.setDisabled(False)
+                w.setFocus()
                 self.setInsertPoint(self.afterFlashIndex)
                 if 0: # Doesn't work
                     fg,bg = self.afterColors
@@ -1083,8 +1086,9 @@ class leoQtBody (leoFrame.leoBody):
             bgColor = QtGui.QColor('white')
             w.setTextColor(fgColor)
             w.setTextBackgroundColor(bgColor)
+        w.setDisabled(True)
         addFlashCallback()
-    #@-node:ekr.20081024163213.12:flashCursor (qtBody)
+    #@-node:ekr.20081024163213.12:flashCharacter (qtBody)
     #@-node:ekr.20081007015817.91:Visibility
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
