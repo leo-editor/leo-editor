@@ -5,13 +5,12 @@
 @nocolor-node
 
 First:
-* Can not open the settings file twice.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Support Icon area.
-- Complete dialogs in leoQtGui.
 - Re-enable syntax coloring.
 
 Minor bugs:
+- Complete dialogs in leoQtGui.
 - Changes to headline do not stick after, e.g., ctrl-r.
 - Text not selected after insert-headline.
 - multiline strings to the log pane are not treated properly.
@@ -93,7 +92,6 @@ def getName (self):
 #@-node:ekr.20081014095718.15:get_name (qtTree)
 #@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
 def bringToFront (self):
-    g.trace()
     self.top.showNormal()
 def deiconify (self):
     self.top.showNormal()
@@ -720,23 +718,22 @@ def __init__(self,c,parent=None):
 
     self.setStyleSheets()
 #@-node:ekr.20081004172422.884: ctor (Window)
-#@+node:ekr.20081020075840.11:closeEvent
+#@+node:ekr.20081020075840.11:closeEvent (qtFrame)
 def closeEvent (self,event):
-
-    # g.trace('Window',event)
 
     c = self.c
 
-    if c.changed:
-        veto = c.frame.promptForSave()
-        if veto:
-            event.ignore()
-        else:
-            event.accept()
+    if c.inCommand:
+        # g.trace('requesting window close')
+        c.requestCloseWindow = True
     else:
-        event.accept()
-
-#@-node:ekr.20081020075840.11:closeEvent
+        ok = g.app.closeLeoWindow(c.frame)
+        # g.trace('ok',ok)
+        if ok:
+            event.accept()
+        else:
+            event.ignore()
+#@-node:ekr.20081020075840.11:closeEvent (qtFrame)
 #@+node:ekr.20081016072304.14:setStyleSheets & helper
 styleSheet_inited = False
 
@@ -2271,6 +2268,43 @@ def setMenuLabel (self,menu,name,label,underline=-1):
             break
 #@-node:ekr.20081004172422.881:setMenuLabel
 #@-node:ekr.20081027163149.13:Get undo menu working...
+#@+node:ekr.20081029065805.12:Closing windows properly
+#@+node:ekr.20081020075840.11:closeEvent (qtFrame)
+def closeEvent (self,event):
+
+    c = self.c
+
+    if c.inCommand:
+        # g.trace('requesting window close')
+        c.requestCloseWindow = True
+    else:
+        ok = g.app.closeLeoWindow(c.frame)
+        # g.trace('ok',ok)
+        if ok:
+            event.accept()
+        else:
+            event.ignore()
+#@-node:ekr.20081020075840.11:closeEvent (qtFrame)
+#@+node:ekr.20081004172422.549:destroySelf (qtFrame)
+def destroySelf (self):
+
+    # Remember these: we are about to destroy all of our ivars!
+    c,top = self.c,self.top 
+
+    # Indicate that the commander is no longer valid.
+    c.exists = False
+
+    if 0: # We can't do this unless we unhook the event filter.
+        # Destroys all the objects of the commander.
+        self.destroyAllObjects()
+
+    c.exists = False # Make sure this one ivar has not been destroyed.
+
+    # g.trace('qtFrame',c,g.callers(4))
+    top.close()
+
+#@-node:ekr.20081004172422.549:destroySelf (qtFrame)
+#@-node:ekr.20081029065805.12:Closing windows properly
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor

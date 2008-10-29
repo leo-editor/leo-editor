@@ -152,23 +152,22 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         self.setStyleSheets()
     #@-node:ekr.20081004172422.884: ctor (Window)
-    #@+node:ekr.20081020075840.11:closeEvent
+    #@+node:ekr.20081020075840.11:closeEvent (qtFrame)
     def closeEvent (self,event):
-
-        # g.trace('Window',event)
 
         c = self.c
 
-        if c.changed:
-            veto = c.frame.promptForSave()
-            if veto:
-                event.ignore()
-            else:
-                event.accept()
+        if c.inCommand:
+            # g.trace('requesting window close')
+            c.requestCloseWindow = True
         else:
-            event.accept()
-
-    #@-node:ekr.20081020075840.11:closeEvent
+            ok = g.app.closeLeoWindow(c.frame)
+            # g.trace('ok',ok)
+            if ok:
+                event.accept()
+            else:
+                event.ignore()
+    #@-node:ekr.20081020075840.11:closeEvent (qtFrame)
     #@+node:ekr.20081016072304.14:setStyleSheets & helper
     styleSheet_inited = False
 
@@ -1893,7 +1892,9 @@ class leoQtFrame (leoFrame.leoFrame):
 
         """Clear all links to objects in a Leo window."""
 
-        frame = self ; c = self.c ; tree = frame.tree ; body = self.body
+        frame = self ; c = self.c
+
+        #  ; tree = frame.tree ; body = self.body
 
         # g.printGcAll()
 
@@ -1920,9 +1921,7 @@ class leoQtFrame (leoFrame.leoFrame):
         #@-node:ekr.20081004172422.547:<< clear all vnodes and tnodes in the tree>>
         #@nl
 
-        frame.destroyAllPanels()
-
-        if 0:
+        if 1:
             # Destroy all ivars in subcommanders.
             g.clearAllIvars(c.atFileCommands)
             if c.chapterController: # New in Leo 4.4.3 b1.
@@ -1932,27 +1931,14 @@ class leoQtFrame (leoFrame.leoFrame):
             g.clearAllIvars(c.importCommands)
             g.clearAllIvars(c.tangleCommands)
             g.clearAllIvars(c.undoer)
-
             g.clearAllIvars(c)
+        if 0: # No need.
             g.clearAllIvars(body.colorizer)
             g.clearAllIvars(body)
             g.clearAllIvars(tree)
 
-            # This must be done last.
-            frame.destroyAllPanels()
-            g.clearAllIvars(frame)
+
     #@-node:ekr.20081004172422.546:destroyAllObjects
-    #@+node:ekr.20081004172422.548:destroyAllPanels
-    def destroyAllPanels (self):
-
-        """Destroy all panels attached to this frame."""
-
-        panels = (self.comparePanel, self.colorPanel, self.findPanel, self.fontPanel, self.prefsPanel)
-
-        for panel in panels:
-            if panel:
-                panel.top.destroy()
-    #@-node:ekr.20081004172422.548:destroyAllPanels
     #@+node:ekr.20081004172422.549:destroySelf (qtFrame)
     def destroySelf (self):
 
@@ -1962,14 +1948,15 @@ class leoQtFrame (leoFrame.leoFrame):
         # Indicate that the commander is no longer valid.
         c.exists = False
 
-        # Important: this destroys all the objects of the commander too.
-        if 0:
+        if 0: # We can't do this unless we unhook the event filter.
+            # Destroys all the objects of the commander.
             self.destroyAllObjects()
 
         c.exists = False # Make sure this one ivar has not been destroyed.
 
-        g.trace('qtFrame','top',top)
-        top.destroy()
+        # g.trace('qtFrame',c,g.callers(4))
+        top.close()
+
     #@-node:ekr.20081004172422.549:destroySelf (qtFrame)
     #@-node:ekr.20081004172422.545:Destroying the qtFrame
     #@-node:ekr.20081004172422.524: Birth & Death (qtFrame)
@@ -3070,7 +3057,6 @@ class leoQtFrame (leoFrame.leoFrame):
     #@-node:ekr.20081004172422.599:Gui-dependent commands
     #@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
     def bringToFront (self):
-        g.trace()
         self.top.showNormal()
     def deiconify (self):
         self.top.showNormal()

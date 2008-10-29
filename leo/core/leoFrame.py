@@ -1625,7 +1625,7 @@ class leoFrame:
 
         g.pr("leoFrame oops:", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3691:oops
-    #@+node:ekr.20031218072017.3692:promptForSave
+    #@+node:ekr.20031218072017.3692:promptForSave (leoFrame)
     def promptForSave (self):
 
         """Prompt the user to save changes.
@@ -1666,7 +1666,7 @@ class leoFrame:
                 return not ok # New in 4.2: Veto if the save did not succeed.
             else:
                 return True # Veto.
-    #@-node:ekr.20031218072017.3692:promptForSave
+    #@-node:ekr.20031218072017.3692:promptForSave (leoFrame)
     #@+node:ekr.20031218072017.1375:frame.scanForTabWidth
     def scanForTabWidth (self,p):
 

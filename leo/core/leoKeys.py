@@ -2573,7 +2573,7 @@ class keyHandlerClass:
 
         if trace: g.trace('widget_name',name,'stroke',stroke)
 
-        if stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1:
+        if stroke and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
             if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
             return 'break'
 

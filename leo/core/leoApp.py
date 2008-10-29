@@ -258,6 +258,8 @@ class LeoApp:
 
         c = frame.c
 
+        # g.trace('frame',frame,g.callers(4))
+
         c.endEditing() # Commit any open edits.
 
         if c.promptingForClose:
@@ -358,12 +360,11 @@ class LeoApp:
     def destroyWindow (self,frame):
 
         # g.trace(frame in g.app.windowList,frame)
-
         g.app.destroyOpenWithFilesForFrame(frame)
 
         if frame in g.app.windowList:
-            g.app.windowList.remove(frame)
             # g.trace(g.app.windowList)
+            g.app.windowList.remove(frame)
 
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
