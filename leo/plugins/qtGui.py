@@ -2296,6 +2296,8 @@ class leoQtFrame (leoFrame.leoFrame):
 
             """Destroy all the widgets in the icon bar"""
 
+            g.trace()
+
             # f = self.iconFrameContainerFrame
 
             # for slave in f.pack_slaves():

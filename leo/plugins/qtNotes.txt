@@ -5,13 +5,17 @@
 @nocolor-node
 
 First:
+- Finish colorizer:
+    - Simulate Tk's handling of tags (an optimization)
+    - Use Qt threading.
+    - Handle all colorizer tags.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Support Icon area.
-- Handle all colorizer tags.
 
 Clean up text classes:
 - Finish leoQtTextWidget class.
 - Add subclasses for QLineEdit, QScintilla, etc.
+- Add functional interface classes.
 
 Bugs:
 - Text not selected after insert-headline.
