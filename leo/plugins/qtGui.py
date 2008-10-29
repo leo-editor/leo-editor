@@ -1053,26 +1053,37 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081024163213.12:flashCursor (qtBody)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
+        w = self.widget
+
         def after(func):
             QtCore.QTimer.singleShot(delay,func)
 
-        def addFlashCallback(self=self):
+        def addFlashCallback(self=self,w=w):
             n,i = self.flashCount,self.flashIndex
-            # g.trace(n,i)
             self.setSelectionRange(i,i+1)
             self.flashCount -= 1
             after(removeFlashCallback)
 
-        def removeFlashCallback(self=self):
+        def removeFlashCallback(self=self,w=w):
             n,i = self.flashCount,self.flashIndex
-            # g.trace(n,i)
             self.setSelectionRange(i,i)
             if n > 0: after(addFlashCallback)
-            else: self.setInsertPoint(self.afterFlashIndex)
+            else:
+                self.setInsertPoint(self.afterFlashIndex)
+                if 0: # Doesn't work
+                    fg,bg = self.afterColors
+                    w.setTextColor(fg)
+                    w.setTextBackgroundColor(bg)
 
         self.flashCount = flashes
         self.flashIndex = i
         self.afterFlashIndex = self.getInsertPoint()
+        if 0: # Doesn't work with stylesheets.
+            self.afterColors = w.textColor(),w.textBackgroundColor()
+            fgColor = QtGui.QColor('red')
+            bgColor = QtGui.QColor('white')
+            w.setTextColor(fgColor)
+            w.setTextBackgroundColor(bgColor)
         addFlashCallback()
     #@-node:ekr.20081024163213.12:flashCursor (qtBody)
     #@-node:ekr.20081007015817.91:Visibility
