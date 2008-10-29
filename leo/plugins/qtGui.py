@@ -3039,19 +3039,32 @@ class leoQtFrame (leoFrame.leoFrame):
     #@-node:ekr.20081004172422.616:Help Menu...
     #@-node:ekr.20081004172422.599:Gui-dependent commands
     #@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
-    def bringToFront (self):        pass 
-    def deiconify (self):           pass
-    def getFocus(self):             return g.app.gui.get_focus() 
-    def get_window_info(self):      return 0,0,0,0
-    def iconify(self):              pass
-    def lift (self):                pass
-    def update (self):              pass
-
+    def bringToFront (self):
+        g.trace()
+        self.top.showNormal()
+    def deiconify (self):
+        self.top.showNormal()
+    def getFocus(self):
+        return g.app.gui.get_focus() 
+    def get_window_info(self):
+        rect = self.top.geometry()
+        topLeft = rect.topLeft()
+        x,y = topLeft.x(),topLeft.y()
+        w,h = rect.width(),rect.height()
+        return w,h,x,y
+    def iconify(self):
+        g.trace()
+        self.top.showMinimized()
+    def lift (self):
+        self.top.activateWindow()
+    def update (self):
+        pass
     def getTitle (self):
         return g.toUnicode(self.top.windowTitle(),'utf-8')
-
     def setTitle (self,s):
         self.top.setWindowTitle(s)
+    def setTopGeometry(self,w,h,x,y,adjustSize=True):
+        self.top.setGeometry(QtCore.QRect(x,y,w,h))
     #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
     #@-others
 #@-node:ekr.20081004172422.523:class leoQtFrame

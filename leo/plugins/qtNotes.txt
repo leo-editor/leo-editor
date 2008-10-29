@@ -5,13 +5,11 @@
 @nocolor-node
 
 First:
-- Shift arrows don't work in tree.
-- Do a repaint in the log.
 - Finish w.flashCharacter.
 - Re-enable syntax coloring.
-- Reading/saving a window does not properly set its size.
 * Can not open the settings file twice.
 - Changes to headline do not stick after, e.g., ctrl-r.
+- Text not selected after insert-headline.
 
 Next:
 - Shift-tab is Smart home.
@@ -29,25 +27,28 @@ Minor bugs:
     TypeError: slice indices must be integers or None or have an __index__ method
     (Must convert indices to ints.)
 Cleanup:
-    - Clean up text classes.
-        - Finish leoQtTextWidget class.
-        - Add subclasses for QLineEdit, QScintilla, etc.
+- Clean up text classes.
+    - Finish leoQtTextWidget class.
+    - Add subclasses for QLineEdit, QScintilla, etc.
+#@+node:ekr.20081029050144.10:Later
 Later:
-    - Experiment with sending <shift-tab> directly to QScintilla.
-    - Call setLexer(0) for nocolor nodes.
-    - Add settings for syntax coloring.
-         - Make Scintilla handle Leo markup.
-    - Support multiple body editors.
-    - Support chapters
-    - Handle pane orientation:
-        A popular arrangement would be editor and outline
-        in top pane with the log along the bottom.
-    - Remove old-style Leo settings?
-    - Make tkinter code a plugin.
-        - If no gui specified on command line,
-          use the first gui that can be imported.
-    - Support @ifgui in settings trees.
+
+- Experiment with sending <shift-tab> directly to QScintilla.
+- Call setLexer(0) for nocolor nodes.
+- Add settings for syntax coloring.
+     - Make Scintilla handle Leo markup.
+- Support multiple body editors.
+- Support chapters
+- Handle pane orientation:
+    A popular arrangement would be editor and outline
+    in top pane with the log along the bottom.
+- Remove old-style Leo settings?
+- Make tkinter code a plugin.
+    - If no gui specified on command line,
+      use the first gui that can be imported.
+- Support @ifgui in settings trees.
 #@nonl
+#@-node:ekr.20081029050144.10:Later
 #@-node:ekr.20081010070648.5: To do
 #@+node:ekr.20081019082316.10:New features in the core
 @nocolor-node
@@ -94,19 +95,32 @@ def getName (self):
     return 'canvas(tree)' # Must start with 'canvas'
 #@-node:ekr.20081014095718.15:get_name (qtTree)
 #@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
-def bringToFront (self):        pass 
-def deiconify (self):           pass
-def getFocus(self):             return g.app.gui.get_focus() 
-def get_window_info(self):      return 0,0,0,0
-def iconify(self):              pass
-def lift (self):                pass
-def update (self):              pass
-
+def bringToFront (self):
+    g.trace()
+    self.top.showNormal()
+def deiconify (self):
+    self.top.showNormal()
+def getFocus(self):
+    return g.app.gui.get_focus() 
+def get_window_info(self):
+    rect = self.top.geometry()
+    topLeft = rect.topLeft()
+    x,y = topLeft.x(),topLeft.y()
+    w,h = rect.width(),rect.height()
+    return w,h,x,y
+def iconify(self):
+    g.trace()
+    self.top.showMinimized()
+def lift (self):
+    self.top.activateWindow()
+def update (self):
+    pass
 def getTitle (self):
     return g.toUnicode(self.top.windowTitle(),'utf-8')
-
 def setTitle (self,s):
     self.top.setWindowTitle(s)
+def setTopGeometry(self,w,h,x,y,adjustSize=True):
+    self.top.setGeometry(QtCore.QRect(x,y,w,h))
 #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
 #@+node:ekr.20081004172422.865:add_command
 def add_command (self,**keys):
@@ -2113,6 +2127,153 @@ def add_cascade (self,parent,label,menu,underline):
     return menu
 #@-node:ekr.20081004172422.864:add_cascade
 #@-node:ekr.20081027163149.12:Menu accels
+#@+node:ekr.20081027163149.13:Get undo menu working...
+#@+node:ekr.20081004172422.865:add_command
+def add_command (self,**keys):
+
+    """Wrapper for the Tkinter add_command menu method."""
+
+    c = self.c
+    accel = keys.get('accelerator') or ''
+    command = keys.get('command')
+    label = keys.get('label')
+    n = keys.get('underline')
+    menu = keys.get('menu') or self
+    if not label: return
+
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+    if accel:
+        label = '%s\t%s' % (label,accel)
+
+    action = menu.addAction(label)
+
+    if command:
+        def add_command_callback(label=label,command=command):
+            return command()
+
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL("triggered()"),add_command_callback)
+#@-node:ekr.20081004172422.865:add_command
+#@+node:ekr.20081004172422.872:insert_cascade
+def insert_cascade (self,parent,index,label,menu,underline):
+
+    """Wrapper for the Tkinter insert_cascade menu method."""
+
+    g.trace(label,menu)
+
+    menu.setTitle(label)
+    menu.leo_label = label
+
+    if parent:
+        parent.addMenu(menu)
+    else:
+        self.menuBar.addMenu(menu)
+
+    return menu
+#@-node:ekr.20081004172422.872:insert_cascade
+#@+node:ekr.20081011035036.1:onTextChanged
+def onTextChanged (self):
+
+    '''Update Leo after the body has been changed.
+
+    self.selecting is guaranteed to be True during
+    the entire selection process.'''
+
+    c = self.c ; p = c.currentPosition()
+    tree = c.frame.tree ; w = self
+    trace = True ; verbose = False
+
+    if tree.selecting:
+        if trace and verbose: g.trace('selecting')
+        return
+    if tree.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if not p:
+        return g.trace('*** no p')
+
+    newInsert = w.getInsertPoint()
+    newSel = w.getSelectionRange()
+    newText = w.getAllText() # Converts to unicode.
+
+    # Get the previous values from the tnode.
+    oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
+    if oldText == newText:
+        # This can happen as the result of undo.
+        # g.trace('*** unexpected non-change',color="red")
+        return
+
+    if trace and verbose:
+        g.trace(p.headString(),len(oldText),len(newText))
+
+    oldIns  = p.v.t.insertSpot
+    i,j = p.v.t.selectionStart,p.v.t.selectionLength
+    oldSel  = (i,j-i)
+    oldYview = None
+    undoType = 'Typing'
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,
+        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+
+    # Update the tnode.
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = newInsert
+    i,j = newSel
+    if i > j: i,j = j,i
+    p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
+
+    # No need to redraw the screen.
+    if not self.useScintilla:
+        c.recolor()
+    if not c.changed and c.frame.initComplete:
+        c.setChanged(True)
+    self.updateEditors()
+    c.frame.tree.updateIcon(p)
+    c.outerUpdate()
+#@-node:ekr.20081011035036.1:onTextChanged
+#@+node:ekr.20081004172422.880:getMenuLabel
+def getMenuLabel (self,menu,name):
+
+    '''Return the index of the menu item whose name (or offset) is given.
+    Return None if there is no such menu item.'''
+
+    g.trace('menu',menu,'name',name)
+
+    actions = menu.actions()
+    for z in action:
+        g.trace(action.label())
+
+    # try:
+        # index = menu.index(name)
+    # except:
+        # index = None
+
+    # return index
+#@-node:ekr.20081004172422.880:getMenuLabel
+#@+node:ekr.20081004172422.881:setMenuLabel
+def setMenuLabel (self,menu,name,label,underline=-1):
+
+    def munge(s):
+        s = g.toUnicode(s,'utf-8')
+        return s.replace('&','')
+
+    # menu is a qtMenuWrapper.
+
+    # g.trace('menu',menu,'name: %20s label: %s' % (name,label))
+
+    if not menu: return
+
+    realName  = munge(self.getRealMenuName(name))
+    realLabel = self.getRealMenuName(label)
+    for action in menu.actions():
+        s = munge(action.text())
+        s = s.split('\t')[0]
+        if s == realName:
+            action.setText(realLabel)
+            break
+#@-node:ekr.20081004172422.881:setMenuLabel
+#@-node:ekr.20081027163149.13:Get undo menu working...
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor
