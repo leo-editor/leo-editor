@@ -147,9 +147,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
             # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
             # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
 
-        self.buttons = self.addToolBar("Buttons")
-        self.buttons.addAction(self.actionSave)
-
+        self.iconBar = self.addToolBar("Buttons")
         self.setStyleSheets()
     #@-node:ekr.20081004172422.884: ctor (Window)
     #@+node:ekr.20081020075840.11:closeEvent (qtFrame)
@@ -1820,7 +1818,7 @@ class leoQtFrame (leoFrame.leoFrame):
         # This must be done after creating the commander.
         f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
         # # f.createOuterFrames()
-        # # f.createIconBar()
+        f.createIconBar() # A base class method.
         # # f.createLeoSplitters(f.outerFrame)
         f.createSplitterComponents()
         # # f.createStatusLine()
@@ -2150,26 +2148,8 @@ class leoQtFrame (leoFrame.leoFrame):
         def __init__ (self,c,parentFrame):
 
             self.c = c
-
-
-            # self.buttons = {}
-
-            # # Create a parent frame that will never be unpacked.
-            # # This allows us to pack and unpack the container frame without it moving.
-            # self.iconFrameParentFrame = None ### qt.Frame(parentFrame)
-            # ### self.iconFrameParentFrame.pack(fill="x",pady=0)
-
-            # # Create a container frame to hold individual row frames.
-            # # We hide all icons by doing pack_forget on this one frame.
-            # self.iconFrameContainerFrame = None ### qt.Frame(self.iconFrameParentFrame)
-                # # Packed in self.show()
-
-            # self.addRow()
-            # self.font = None
-            # self.parentFrame = parentFrame
-            # self.visible = False
-            # self.widgets_per_row = c.config.getInt('icon_bar_widgets_per_row') or 10
-            # self.show() # pack the container frame.
+            self.parentFrame = parentFrame
+            self.w = c.frame.top.iconBar # A QToolBar.
         #@-node:ekr.20081004172422.563: ctor
         #@+node:ekr.20081004172422.564:add
         def add(self,*args,**keys):
@@ -2178,193 +2158,115 @@ class leoQtFrame (leoFrame.leoFrame):
 
             Pictures take precedence over text"""
 
-            # c = self.c
-            # text = keys.get('text')
+            c = self.c
+
+            command = keys.get('command')
+            text = keys.get('text')
+            if not text: return
+
             # imagefile = keys.get('imagefile')
             # image = keys.get('image')
-            # command = keys.get('command')
-            # bg = keys.get('bg')
 
-            # if not imagefile and not image and not text: return
+            action = self.w.addAction(text)
 
-            # self.addRowIfNeeded()
-            # f = self.iconFrame # Bind this after possibly creating a new row.
+            if command:
+                def button_callback(c=c,command=command):
+                    val = command()
+                    if c.exists:
+                        c.bodyWantsFocus()
+                        c.outerUpdate()
+                    return val
 
-            # if command:
-                # def commandCallBack(c=c,command=command):
-                    # val = command()
-                    # if c.exists:
-                        # c.bodyWantsFocus()
-                        # c.outerUpdate()
-                    # return val
-            # else:
-                # def commandCallback(n=g.app.iconWidgetCount):
-                    # g.pr("command for widget %s" % (n))
-                # command = commandCallback
+                QtCore.QObject.connect(action,
+                    QtCore.SIGNAL("triggered()"),
+                    button_callback)
 
-            # if imagefile or image:
-                # 
-                #@nonl
-                #@<< create a picture >>
-                #@+node:ekr.20081004172422.565:<< create a picture >>
-                # try:
-                    # if imagefile:
-                        # # Create the image.  Throws an exception if file not found
-                        # imagefile = g.os_path_join(g.app.loadDir,imagefile)
-                        # imagefile = g.os_path_normpath(imagefile)
-                        # image = qt.PhotoImage(master=g.app.root,file=imagefile)
-                        # g.trace(image,imagefile)
-
-                        # # Must keep a reference to the image!
-                        # try:
-                            # refs = g.app.iconImageRefs
-                        # except:
-                            # refs = g.app.iconImageRefs = []
-
-                        # refs.append((imagefile,image),)
-
-                    # if not bg:
-                        # bg = f.cget("bg")
-
-                    # try:
-                        # b = qt.Button(f,image=image,relief="flat",bd=0,command=command,bg=bg)
-                    # except Exception:
-                        # g.es_print('image does not exist',image,color='blue')
-                        # b = qt.Button(f,relief='flat',bd=0,command=command,bg=bg)
-                    # b.pack(side="left",fill="y")
-                    # return b
-
-                # except:
-                    # g.es_exception()
-                    # return None
-                #@-node:ekr.20081004172422.565:<< create a picture >>
-                #@nl
-            # elif text:
-                # b = qt.Button(f,text=text,relief="groove",bd=2,command=command)
-                # if not self.font:
-                    # self.font = c.config.getFontFromParams(
-                        # "button_text_font_family", "button_text_font_size",
-                        # "button_text_font_slant",  "button_text_font_weight",)
-                # b.configure(font=self.font)
-                # if bg: b.configure(bg=bg)
-                # b.pack(side="left", fill="none")
-                # return b
-
-            # return None
+            return action
         #@-node:ekr.20081004172422.564:add
         #@+node:ekr.20081004172422.566:addRow
         def addRow(self,height=None):
 
-            pass
-
-            # if height is None:
-                # height = '5m'
-
-            # ### w = qt.Frame(self.iconFrameContainerFrame,height=height,bd=2,relief="groove")
-            # ### w.pack(fill="x",pady=2)
-            # w = None ###
-            # self.iconFrame = w
-            # self.c.frame.iconFrame = w
-            # return w
+            self.notReady()
         #@-node:ekr.20081004172422.566:addRow
         #@+node:ekr.20081004172422.567:addRowIfNeeded
         def addRowIfNeeded (self):
 
             '''Add a new icon row if there are too many widgets.'''
 
-            # try:
-                # n = g.app.iconWidgetCount
-            # except:
-                # n = g.app.iconWidgetCount = 0
+            try:
+                n = g.app.iconWidgetCount
+            except:
+                n = g.app.iconWidgetCount = 0
 
-            # if n >= self.widgets_per_row:
-                # g.app.iconWidgetCount = 0
-                # self.addRow()
+            if n >= self.widgets_per_row:
+                g.app.iconWidgetCount = 0
+                self.addRow()
 
-            # g.app.iconWidgetCount += 1
+            g.app.iconWidgetCount += 1
         #@-node:ekr.20081004172422.567:addRowIfNeeded
         #@+node:ekr.20081004172422.568:addWidget
         def addWidget (self,w):
 
-            g.trace(w)
-
-            # self.addRowIfNeeded()
-            # w.pack(side="left", fill="none")
+            self.w.addWidget(w)
         #@-node:ekr.20081004172422.568:addWidget
         #@+node:ekr.20081004172422.569:clear
         def clear(self):
 
             """Destroy all the widgets in the icon bar"""
 
-            g.trace()
-
-            # f = self.iconFrameContainerFrame
-
-            # for slave in f.pack_slaves():
-                # slave.pack_forget()
-            # f.pack_forget()
-
-            # self.addRow(height='0m')
-
-            # self.visible = False
-
-            # g.app.iconWidgetCount = 0
-            # g.app.iconImageRefs = []
+            self.w.clear()
+            g.app.iconWidgetCount = 0
         #@-node:ekr.20081004172422.569:clear
-        #@+node:ekr.20081004172422.570:deleteButton (new in Leo 4.4.3)
+        #@+node:ekr.20081004172422.570:deleteButton
         def deleteButton (self,w):
 
-            pass
-
-            # w.pack_forget()
-            # self.c.bodyWantsFocus()
-            # self.c.outerUpdate()
-        #@-node:ekr.20081004172422.570:deleteButton (new in Leo 4.4.3)
+            self.notReady()
+            self.c.bodyWantsFocus()
+            self.c.outerUpdate()
+        #@-node:ekr.20081004172422.570:deleteButton
         #@+node:ekr.20081004172422.571:getFrame & getNewFrame
         def getFrame (self):
 
-            return None # self.iconFrame
+            return None
 
         def getNewFrame (self):
 
             return None
 
-            # # Pre-check that there is room in the row, but don't bump the count.
-            # self.addRowIfNeeded()
-            # g.app.iconWidgetCount -= 1
-
-            # # Allocate the frame in the possibly new row.
-            # frame = qt.Frame(self.iconFrame)
-            # return frame
 
         #@-node:ekr.20081004172422.571:getFrame & getNewFrame
+        #@+node:ekr.20081029110341.11:notReady
+        def notReady (self):
+
+            g.trace('not ready yet',g.callers(4))
+        #@nonl
+        #@-node:ekr.20081029110341.11:notReady
         #@+node:ekr.20081004172422.572:pack (show)
         def pack (self):
 
             """Show the icon bar by repacking it"""
 
-            # if not self.visible:
-                # self.visible = True
-                # self.iconFrameContainerFrame.pack(fill='x',pady=2)
+            self.w.show()
 
         show = pack
         #@-node:ekr.20081004172422.572:pack (show)
-        #@+node:ekr.20081004172422.573:setCommandForButton (new in Leo 4.4.3)
-        def setCommandForButton(self,b,command):
+        #@+node:ekr.20081004172422.573:setCommandForButton
+        def setCommandForButton(self,action,command):
 
-            pass
+            if command:
+                def button_command_callback(command=command):
+                    return command()
 
-            # b.configure(command=command)
-        #@-node:ekr.20081004172422.573:setCommandForButton (new in Leo 4.4.3)
+                QtCore.QObject.connect(action,
+                    QtCore.SIGNAL("triggered()"),
+                    button_command_callback)
+        #@-node:ekr.20081004172422.573:setCommandForButton
         #@+node:ekr.20081004172422.574:unpack (hide)
         def unpack (self):
 
-            """Hide the icon bar by unpacking it."""
+            '''Hide the icon bar.'''
 
-            # if self.visible:
-                # self.visible = False
-                # w = self.iconFrameContainerFrame
-                # w.pack_forget()
+            self.w.hide()
 
         hide = unpack
         #@-node:ekr.20081004172422.574:unpack (hide)

@@ -6,11 +6,14 @@
 
 First:
 - Finish colorizer:
+    - It doesn't get called when clicking on a new node.
     - Simulate Tk's handling of tags (an optimization)
     - Use Qt threading.
     - Handle all colorizer tags.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Support Icon area.
+- Support status line.
+- Ctrl-` does not work when editing headlines.
 
 Clean up text classes:
 - Finish leoQtTextWidget class.
@@ -717,9 +720,7 @@ def __init__(self,c,parent=None):
         # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
         # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
 
-    self.buttons = self.addToolBar("Buttons")
-    self.buttons.addAction(self.actionSave)
-
+    self.iconBar = self.addToolBar("Buttons")
     self.setStyleSheets()
 #@-node:ekr.20081004172422.884: ctor (Window)
 #@+node:ekr.20081020075840.11:closeEvent (qtFrame)
@@ -892,7 +893,7 @@ def finishCreate (self,c):
     # This must be done after creating the commander.
     f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
     # # f.createOuterFrames()
-    # # f.createIconBar()
+    f.createIconBar() # A base class method.
     # # f.createLeoSplitters(f.outerFrame)
     f.createSplitterComponents()
     # # f.createStatusLine()
@@ -1041,9 +1042,7 @@ def __init__(self,c,parent=None):
         # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
         # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
 
-    self.buttons = self.addToolBar("Buttons")
-    self.buttons.addAction(self.actionSave)
-
+    self.iconBar = self.addToolBar("Buttons")
     self.setStyleSheets()
 #@-node:ekr.20081004172422.884: ctor (Window)
 #@+node:ekr.20081023131208.10:Coloring
