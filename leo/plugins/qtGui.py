@@ -566,31 +566,12 @@ class leoQtBody (leoFrame.leoBody):
     def update_idletasks(self):             pass
 
     def removeAllTags(self):
-        return ###
-        w = self.widget
-        format = QtGui.QTextCharFormat()
-        color = QtGui.QColor('black')
-        brush = QtGui.QBrush(color)
-        format.setForeground(brush)
-        a,b = self.getSelectionRange()
-        self.selectAllText()
-        w.setCurrentCharFormat(format)
-        self.setSelectionRange(a,b)
+        s = self.getAllText()
+        self.colorSelection(0,len(s),'black')
 
     def tag_add(self,tag,x1,x2):
-        return ###
         if tag == 'comment1':
-            # g.trace(tag,x1,x2)
-            w = self.widget
-            color = QtGui.QColor('firebrick')
-            sb = w.verticalScrollBar()
-            pos = sb.sliderPosition()
-            a,b = self.getSelectionRange()
-            ins = self.getInsertPoint()
-            self.setSelectionRange(x1,x2)
-            w.setTextColor(color)
-            self.setSelectionRange(a,b,insert=ins)
-            sb.setSliderPosition(pos)
+            self.colorSelection(x1,x2,'firebrick')
 
     def tag_config (self,*args,**keys):
         if len(args) == 1:
@@ -604,6 +585,20 @@ class leoQtBody (leoFrame.leoBody):
 
     def tag_names (self):
         return []
+    #@+node:ekr.20081029084058.10:colorSelection
+    def colorSelection (self,i,j,colorName):
+
+        w = self.widget
+        color = QtGui.QColor(colorName)
+        sb = w.verticalScrollBar()
+        pos = sb.sliderPosition()
+        old_i,old_j = self.getSelectionRange()
+        old_ins = self.getInsertPoint()
+        self.setSelectionRange(i,j)
+        w.setTextColor(color)
+        self.setSelectionRange(old_i,old_j,insert=old_ins)
+        sb.setSliderPosition(pos)
+    #@-node:ekr.20081029084058.10:colorSelection
     #@-node:ekr.20081023131208.10:Coloring
     #@+node:ekr.20081023113729.1:Configuration
     # Configuration will be handled by style sheets.
@@ -722,12 +717,10 @@ class leoQtBody (leoFrame.leoBody):
     #@-node:ekr.20081004172422.510:Focus (qtBody)
     #@+node:ekr.20081004172422.516:Idle time
     def after_idle(self,func,threadCount):
-        return ###
         # g.trace(func.__name__,'threadCount',threadCount)
         return func(threadCount)
 
     def after(self,n,func,threadCount):
-        return ###
         def after_callback(func=func,threadCount=threadCount):
             # g.trace(func.__name__,threadCount)
             return func(threadCount)
@@ -1352,50 +1345,6 @@ class leoQtEventFilter(QtCore.QObject):
                 repr(tkKey),repr(ch),ignore))
 
         return tkKey,ch,ignore
-    #@+node:ekr.20081028055229.14:shifted
-    def shifted (self,mods,ch):
-        '''
-            A horrible, keyboard-dependent kludge.
-            return the shifted version of the letter.
-            return mods, ch.
-        '''
-
-        # Special tk symbols, like '&' have already
-        # been converted to names like 'ampersand'.
-
-        # These special characters should be handled in Leo's core.
-        noShiftList = ('Return','BackSpace','Tab',)
-
-        special = ('Home','End','Right','Left','Up','Down',)
-
-        if len(ch) == 1:
-            ch2 = self.keyboardUpper1(ch)
-            if ch2:
-                mods.remove('Shift')
-                ch = ch2
-            elif len(ch) == 1:
-                # Correct regardless of alt/ctrl mods.
-                mods.remove('Shift')
-                ch = ch.upper()
-            elif len(mods) == 1: # No alt/ctrl.
-                mods.remove('Shift')
-            else:
-                pass
-        else:
-            ch3 = self.keyboardUpperLong(ch)
-            if ch3: ch = ch3
-
-            if ch3 or ch in noShiftList:
-                mods.remove('Shift')
-            elif ch in special:
-                pass # Allow the shift.
-            elif len(mods) == 1: # No alt/ctrl.
-                mods.remove('Shift')
-            else:
-                pass # Retain shift modifier for all special keys.
-
-        return mods,ch
-    #@-node:ekr.20081028055229.14:shifted
     #@+node:ekr.20081028055229.16:keyboardUpper1
     def keyboardUpper1 (self,ch):
 
@@ -1445,6 +1394,50 @@ class leoQtEventFilter(QtCore.QObject):
         # g.trace(ch,d.get(ch))
         return d.get(ch)
     #@-node:ekr.20081028055229.17:keyboardUpperLong
+    #@+node:ekr.20081028055229.14:shifted
+    def shifted (self,mods,ch):
+        '''
+            A horrible, keyboard-dependent kludge.
+            return the shifted version of the letter.
+            return mods, ch.
+        '''
+
+        # Special tk symbols, like '&' have already
+        # been converted to names like 'ampersand'.
+
+        # These special characters should be handled in Leo's core.
+        noShiftList = ('Return','BackSpace','Tab',)
+
+        special = ('Home','End','Right','Left','Up','Down',)
+
+        if len(ch) == 1:
+            ch2 = self.keyboardUpper1(ch)
+            if ch2:
+                mods.remove('Shift')
+                ch = ch2
+            elif len(ch) == 1:
+                # Correct regardless of alt/ctrl mods.
+                mods.remove('Shift')
+                ch = ch.upper()
+            elif len(mods) == 1: # No alt/ctrl.
+                mods.remove('Shift')
+            else:
+                pass
+        else:
+            ch3 = self.keyboardUpperLong(ch)
+            if ch3: ch = ch3
+
+            if ch3 or ch in noShiftList:
+                mods.remove('Shift')
+            elif ch in special:
+                pass # Allow the shift.
+            elif len(mods) == 1: # No alt/ctrl.
+                mods.remove('Shift')
+            else:
+                pass # Retain shift modifier for all special keys.
+
+        return mods,ch
+    #@-node:ekr.20081028055229.14:shifted
     #@+node:ekr.20081028134004.11:shifted2
     # This idea doesn't work.  The key-code in the ctor overrides everything else.
 

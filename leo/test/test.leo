@@ -1936,7 +1936,8 @@ if 0: # This can not be run locally: leoBridge.controller starts a Tk event loop
         n += 1
     g.pr('%d nodes in %s' % (n,path))
     # g.app.closeLeoWindow(c.frame)</t>
-<t tx="ekr.20070517160058.1">aA
+<t tx="ekr.20070517160058.1"># This is a test.
+aA
 `1234567890-=
 ~!@#$%^&amp;*()_+
 ;'
