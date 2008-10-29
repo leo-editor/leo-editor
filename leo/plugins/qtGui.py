@@ -1385,7 +1385,7 @@ class leoQtEventFilter(QtCore.QObject):
         }
 
         # g.trace(ch,d.get(ch))
-        return d.get(ch,ch)
+        return d.get(ch)
 
     #@-node:ekr.20081028055229.16:keyboardUpper1
     #@+node:ekr.20081028055229.17:keyboardUpperLong
@@ -1410,7 +1410,7 @@ class leoQtEventFilter(QtCore.QObject):
             "slash":        "question",
         }
         # g.trace(ch,d.get(ch))
-        return d.get(ch,ch)
+        return d.get(ch)
     #@-node:ekr.20081028055229.17:keyboardUpperLong
     #@+node:ekr.20081028134004.11:shifted2
     # This idea doesn't work.  The key-code in the ctor overrides everything else.
