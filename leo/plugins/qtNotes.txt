@@ -5,31 +5,28 @@
 @nocolor-node
 
 First:
-- Finish w.flashCharacter.
-- Re-enable syntax coloring.
 * Can not open the settings file twice.
+- Shift-tab is Smart home. (Allow shift-tab binding).
+- Support Icon area.
+- Complete dialogs in leoQtGui.
+- Re-enable syntax coloring.
+
+Minor bugs:
 - Changes to headline do not stick after, e.g., ctrl-r.
 - Text not selected after insert-headline.
-
-Next:
-- Shift-tab is Smart home.
 - multiline strings to the log pane are not treated properly.
 - print-settings does not print to a tab and is very slow.
 - Fix failing unit tests. 
-- Support Icon area.
-- Do gui-dependent commands (in leoQtFrame)
-- Complete dialogs in leoQtGui.
-
-Minor bugs:
 - https://bugs.launchpad.net/leo-editor/+bug/286493
   File "qtGui.py", line 745, in delete
     s = s[:i] + s[j+1:]
     TypeError: slice indices must be integers or None or have an __index__ method
     (Must convert indices to ints.)
-Cleanup:
-- Clean up text classes.
+
+Clean up text classes:
     - Finish leoQtTextWidget class.
     - Add subclasses for QLineEdit, QScintilla, etc.
+#@nonl
 #@+node:ekr.20081029050144.10:Later
 Later:
 
