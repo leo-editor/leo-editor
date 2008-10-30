@@ -3586,6 +3586,7 @@ class leoQtLog (leoFrame.leoLog):
         # Note: this must be done after the call to selectTab.
         w = self.logCtrl # w is a QTextBrowser
         if w:
+            s = s.replace('\n','<br>\n')
             if color: s = '<font color="%s">%s</font>' % (color, s)
             w.append(s)
             # w.moveCursor(QtGui.QTextCursor.End)

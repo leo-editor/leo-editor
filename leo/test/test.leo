@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="45" left="322" height="961" width="803"/>
+	<global_window_position top="45" left="322" height="961" width="945"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -3756,6 +3756,6 @@ sw = w.stackedWidget
 r = w.richTextEdit
 r.setHtml("This is &lt;b&gt;rich text&lt;/b&gt;")
 sw.setCurrentIndex(1)</t>
-<t tx="ekr.20081030090840.1">g.es('test')</t>
+<t tx="ekr.20081030090840.1">g.es('line1\nline2')</t>
 </tnodes>
 </leo_file>
