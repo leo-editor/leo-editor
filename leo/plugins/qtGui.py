@@ -147,7 +147,9 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
             # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
             # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
 
-        self.iconBar = self.addToolBar("Buttons")
+        self.iconBar = self.addToolBar("IconBar")
+        self.statusBar = QtGui.QStatusBar()
+        self.setStatusBar(self.statusBar)
         self.setStyleSheets()
     #@-node:ekr.20081004172422.884: ctor (Window)
     #@+node:ekr.20081020075840.11:closeEvent (qtFrame)
@@ -1821,7 +1823,7 @@ class leoQtFrame (leoFrame.leoFrame):
         f.createIconBar() # A base class method.
         # # f.createLeoSplitters(f.outerFrame)
         f.createSplitterComponents()
-        # # f.createStatusLine()
+        f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
         f.menu = leoQtMenu(f)
         c.setLog()
@@ -1965,177 +1967,71 @@ class leoQtFrame (leoFrame.leoFrame):
         def __init__ (self,c,parentFrame):
 
             self.c = c
-            self.colorTags = [] # list of color names used as tags.
-            self.enabled = False
-            self.isVisible = False
-            self.lastRow = self.lastCol = 0
-            self.log = c.frame.log
+            self.statusBar = c.frame.top.statusBar
+            self.lastFcol= 0
+            self.lastRow = 0
+            self.lastCol = 0
 
-            return
-
-            # #if 'black' not in self.log.colorTags:
-            # #    self.log.colorTags.append("black")
-            # self.parentFrame = parentFrame
-            # self.statusFrame = qt.Frame(parentFrame,bd=2)
-            # text = "line 0, col 0, fcol 0"
-            # width = len(text) + 4
-            # self.labelWidget = qt.Label(self.statusFrame,text=text,width=width,anchor="w")
-            # self.labelWidget.pack(side="left",padx=1)
-
-            # bg = self.statusFrame.cget("background")
-            # self.textWidget = w = g.app.gui.bodyTextWidget(
-                # self.statusFrame,
-                # height=1,state="disabled",bg=bg,relief="groove",name='status-line')
-            # self.textWidget.pack(side="left",expand=1,fill="x")
-            # c.bind(w,"<Button-1>", self.onActivate)
-            # self.show()
-
-            # c.frame.statusFrame = self.statusFrame
-            # c.frame.statusLabel = self.labelWidget
-            # c.frame.statusText  = self.textWidget
+            # Create the text widget.
+            self.textWidget1 = QtGui.QLineEdit(self.statusBar)
+            self.textWidget2 = QtGui.QLineEdit(self.statusBar)
+            self.statusBar.addPermanentWidget(self.textWidget1)
+            self.statusBar.addPermanentWidget(self.textWidget2)
+            self.put('')
+            self.update()
         #@-node:ekr.20081004172422.551:ctor
-        #@+node:ekr.20081004172422.552:clear
-        def clear (self):
-
-            pass
-
-            # w = self.textWidget
-            # if not w: return
-
-            # w.configure(state="normal")
-            # w.delete(0,"end")
-            # w.configure(state="disabled")
-        #@-node:ekr.20081004172422.552:clear
-        #@+node:ekr.20081004172422.553:enable, disable & isEnabled
-        def disable (self,background=None):
-
-            c = self.c
-            # w = self.textWidget
-            # if w:
-                # if not background:
-                    # background = self.statusFrame.cget("background")
-                # w.configure(state="disabled",background=background)
-            # self.enabled = False
-            c.bodyWantsFocus()
-
-        def enable (self,background="white"):
-
-            c = self.c
-            # w = self.textWidget
-            # if w:
-                # w.configure(state="normal",background=background)
-                # c.widgetWantsFocus(w)
-            # self.enabled = True
-
-        def isEnabled(self):
-
-            return self.enabled
-        #@nonl
-        #@-node:ekr.20081004172422.553:enable, disable & isEnabled
-        #@+node:ekr.20081004172422.554:get
-        def get (self):
-
-            pass
-            # w = self.textWidget
-            # if w:
-                # return w.getAllText()
-            # else:
-                # return ""
-        #@-node:ekr.20081004172422.554:get
-        #@+node:ekr.20081004172422.555:getFrame
-        def getFrame (self):
-
-            pass
-            # return self.statusFrame
-        #@-node:ekr.20081004172422.555:getFrame
-        #@+node:ekr.20081004172422.556:onActivate
-        def onActivate (self,event=None):
-
-            # Don't change background as the result of simple mouse clicks.
-            pass
-            # background = self.statusFrame.cget("background")
-            # self.enable(background=background)
-        #@-node:ekr.20081004172422.556:onActivate
-        #@+node:ekr.20081004172422.557:pack & show
-        def pack (self):
-
-            if not self.isVisible:
-                self.isVisible = True
-                # self.statusFrame.pack(fill="x",pady=1)
-
-        show = pack
-        #@-node:ekr.20081004172422.557:pack & show
-        #@+node:ekr.20081004172422.558:put (leoQtFrame:statusLineClass)
-        def put(self,s,color=None):
-
-            # g.trace('qtStatusLine',self.textWidget,s)
-
-            g.trace(s)
-
-            # w = self.textWidget
-            # if not w:
-                # g.trace('qtStatusLine','***** disabled')
-                # return
-
-            # w.configure(state="normal")
-            # w.insert("end",s)
-
-            # if color:
-                # if color not in self.colorTags:
-                    # self.colorTags.append(color)
-                    # w.tag_config(color,foreground=color)
-                # w.tag_add(color,"end-%dc" % (len(s)+1),"end-1c")
-                # w.tag_config("black",foreground="black")
-                # w.tag_add("black","end")
-
-            # w.configure(state="disabled")
-        #@-node:ekr.20081004172422.558:put (leoQtFrame:statusLineClass)
-        #@+node:ekr.20081004172422.559:setBindings (qtStatusLine)
-        def setBindings (self):
-
-            return
-
-            # c = self.c ; k = c.keyHandler ; w = self.textWidget
-
-            # c.bind(w,'<Key>',k.masterKeyHandler)
-
-            # k.completeAllBindingsForWidget(w)
-        #@-node:ekr.20081004172422.559:setBindings (qtStatusLine)
-        #@+node:ekr.20081004172422.560:unpack & hide
-        def unpack (self):
-
-            if self.isVisible:
-                self.isVisible = False
-                # self.statusFrame.pack_forget()
+        #@+node:ekr.20081029110341.12: do-nothings
+        def disable (self,background=None): pass
+        def enable(self,background="white"):pass
+        def getFrame (self):                return None
+        def isEnabled(self):                return True
+        def onActivate (self,event=None):   pass
+        def pack (self):                    pass
+        def setBindings (self):             pass
+        def unpack (self):                  pass
 
         hide = unpack
-        #@-node:ekr.20081004172422.560:unpack & hide
-        #@+node:ekr.20081004172422.561:update (statusLine)
+        show = pack
+
+        #@-node:ekr.20081029110341.12: do-nothings
+        #@+node:ekr.20081004172422.554:clear, get & put/1
+        def clear (self):
+            self.put('')
+
+        def get (self):
+            return self.textWidget2.text()
+
+        def put(self,s,color=None):
+            self.put_helper(s,self.textWidget2)
+
+        def put1(self,s,color=None):
+            self.put_helper(s,self.textWidget1)
+
+        def put_helper(self,s,w):
+            w.setEnabled(True)
+            w.setText(s)
+            w.setEnabled(False)
+        #@-node:ekr.20081004172422.554:clear, get & put/1
+        #@+node:ekr.20081004172422.561:update
         def update (self):
 
-            c = self.c
-
-            # bodyCtrl = c.frame.body.bodyCtrl
-
-            # if g.app.killed or not self.isVisible:
-                # return
-
-            # s = bodyCtrl.getAllText()    
-            # index = bodyCtrl.getInsertPoint()
-            # row,col = g.convertPythonIndexToRowCol(s,index)
-            # if col > 0:
-                # s2 = s[index-col:index]
-                # s2 = g.toUnicode(s2,g.app.tkEncoding)
-                # col = g.computeWidth (s2,c.tab_width)
-            # p = c.currentPosition()
-            # fcol = col + p.textOffset()
-
-            # # Important: this does not change the focus because labels never get focus.
-            # self.labelWidget.configure(text="line %d, col %d, fcol %d" % (row,col,fcol))
-            # self.lastRow = row
-            # self.lastCol = col
-            # self.lastFcol = fcol
-        #@-node:ekr.20081004172422.561:update (statusLine)
+            if g.app.killed: return
+            c = self.c ; body = c.frame.body
+            s = body.getAllText()
+            i = body.getInsertPoint()
+            # Compute row,col & fcol
+            row,col = g.convertPythonIndexToRowCol(s,i)
+            if col > 0:
+                s2 = s[i-col:i]
+                s2 = g.toUnicode(s2,g.app.tkEncoding)
+                col = g.computeWidth (s2,c.tab_width)
+            fcol = col + c.currentPosition().textOffset()
+            self.put1(
+                "line: %d, col: %d, fcol: %d" % (row,col,fcol))
+            self.lastRow = row
+            self.lastCol = col
+            self.lastFcol = fcol
+        #@-node:ekr.20081004172422.561:update
         #@-others
     #@-node:ekr.20081004172422.550:class qtStatusLineClass (qtFrame)
     #@+node:ekr.20081004172422.562:class qtIconBarClass
@@ -2150,6 +2046,11 @@ class leoQtFrame (leoFrame.leoFrame):
             self.c = c
             self.parentFrame = parentFrame
             self.w = c.frame.top.iconBar # A QToolBar.
+
+            if 0:
+                def hi():
+                    g.es_print('hi')
+                self.add(text='hi',command=hi)
         #@-node:ekr.20081004172422.563: ctor
         #@+node:ekr.20081004172422.564:add
         def add(self,*args,**keys):
@@ -2167,10 +2068,18 @@ class leoQtFrame (leoFrame.leoFrame):
             # imagefile = keys.get('imagefile')
             # image = keys.get('image')
 
-            action = self.w.addAction(text)
+            if 1:
+                action = b = self.w.addAction(text)
+            else:
+                b = QtGui.QPushButton(self.w)
+                action = QtGui.QAction(b)
+                action.setText(text)
+                b.addAction(action)
+                self.w.addWidget(b)
 
             if command:
                 def button_callback(c=c,command=command):
+                    g.trace('command',command.__name__)
                     val = command()
                     if c.exists:
                         c.bodyWantsFocus()
@@ -2181,7 +2090,7 @@ class leoQtFrame (leoFrame.leoFrame):
                     QtCore.SIGNAL("triggered()"),
                     button_callback)
 
-            return action
+            return b
         #@-node:ekr.20081004172422.564:add
         #@+node:ekr.20081004172422.566:addRow
         def addRow(self,height=None):
@@ -2251,13 +2160,16 @@ class leoQtFrame (leoFrame.leoFrame):
         show = pack
         #@-node:ekr.20081004172422.572:pack (show)
         #@+node:ekr.20081004172422.573:setCommandForButton
-        def setCommandForButton(self,action,command):
+        def setCommandForButton(self,button,command):
+
+            g.trace('button',button,
+                command and command.__name__,g.callers(4))
 
             if command:
                 def button_command_callback(command=command):
                     return command()
 
-                QtCore.QObject.connect(action,
+                QtCore.QObject.connect(button,
                     QtCore.SIGNAL("triggered()"),
                     button_command_callback)
         #@-node:ekr.20081004172422.573:setCommandForButton

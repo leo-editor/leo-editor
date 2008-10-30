@@ -720,7 +720,9 @@ def __init__(self,c,parent=None):
         # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
         # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
 
-    self.iconBar = self.addToolBar("Buttons")
+    self.iconBar = self.addToolBar("IconBar")
+    self.statusBar = QtGui.QStatusBar()
+    self.setStatusBar(self.statusBar)
     self.setStyleSheets()
 #@-node:ekr.20081004172422.884: ctor (Window)
 #@+node:ekr.20081020075840.11:closeEvent (qtFrame)
@@ -896,7 +898,7 @@ def finishCreate (self,c):
     f.createIconBar() # A base class method.
     # # f.createLeoSplitters(f.outerFrame)
     f.createSplitterComponents()
-    # # f.createStatusLine()
+    f.createStatusLine() # A base class method.
     f.createFirstTreeNode() # Call the base-class method.
     f.menu = leoQtMenu(f)
     c.setLog()
@@ -1042,7 +1044,9 @@ def __init__(self,c,parent=None):
         # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
         # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
 
-    self.iconBar = self.addToolBar("Buttons")
+    self.iconBar = self.addToolBar("IconBar")
+    self.statusBar = QtGui.QStatusBar()
+    self.setStatusBar(self.statusBar)
     self.setStyleSheets()
 #@-node:ekr.20081004172422.884: ctor (Window)
 #@+node:ekr.20081023131208.10:Coloring
