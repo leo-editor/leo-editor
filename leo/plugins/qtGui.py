@@ -3692,7 +3692,7 @@ class leoQtLog (leoFrame.leoLog):
 
         '''Create the tab if necessary and make it active.'''
 
-        c = self.c ; w = self.tabWidget ; trace = True
+        c = self.c ; w = self.tabWidget ; trace = False
 
         ok = self.selectHelper(tabName)
         if ok: return
@@ -5497,22 +5497,24 @@ class leoQtTree (leoFrame.leoTree):
 
         aList = self.vnodeDict.get(p.v,[])
         h = p and p.headString() or '<no p!>'
-        if trace: g.trace(h)
         if not p: return False
 
         for p2,item in aList:
             if p == p2:
-                if trace:
-                    g.trace('found item: %s for: %s' % (
-                        id(item),h))
-
-                self.selecting = True
-                try:
-                    w.setCurrentItem(item)
-                finally:
-                    self.selecting = False
+                if trace: g.trace('found: %s, %s' % (id(item),h))
+                # Actually select the item only if necessary.
+                # This prevents any side effects.
+                item2 = w.currentItem()
+                if item != item2:
+                    if trace: g.trace(item==item,'old item',item2)
+                    self.selecting = True
+                    try:
+                        w.setCurrentItem(item)
+                    finally:
+                        self.selecting = False
                 return item
         else:
+            if trace: g.trace('** no item for',p.headString())
             return None
     #@-node:ekr.20081027082521.12:setCurrentItem
     #@-node:ekr.20081021043407.23:full_redraw & helpers
@@ -5734,7 +5736,10 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ville.20081014172405.10:sig_itemChanged
     def sig_itemChanged(self, item, col):
 
-        # we get tons of item changes when redrawing, ignore
+        '''Handle a change event in a headline.
+        This only gets called when the user hits return.'''
+
+        # Ignore changes when redrawing.
         if self.redrawing:
             return
 
@@ -5743,7 +5748,7 @@ class leoQtTree (leoFrame.leoTree):
             # so far, col is always 0
             h = g.toUnicode(item.text(col),'utf-8')
             p.setHeadString(h)
-            # g.trace("editing: ",p.headString(),g.callers(4))
+            g.trace("changed: ",p.headString(),g.callers(4))
         else:
             g.trace('can not happen: no p')
     #@-node:ville.20081014172405.10:sig_itemChanged
@@ -5827,7 +5832,7 @@ class leoQtTree (leoFrame.leoTree):
 
         """Return the Qt.Text item corresponding to p."""
 
-        # g.trace(p)
+        # g.trace(p,g.callers(4))
 
         return None
 
@@ -5854,8 +5859,17 @@ class leoQtTree (leoFrame.leoTree):
 
         """Returns the Qt.Edit widget for position p."""
 
-        return self.findEditWidget(p)
-    #@nonl
+        if 1:
+            # Update p's tnode if we can.
+            w = self.treeWidget
+            item = w.currentItem()
+            if item:
+                column = 0
+                s = item.text(column)
+                # g.trace(repr(s))
+            return None # Disable Leo's core headline code.
+        else:
+            return self.findEditWidget(p)
     #@-node:ekr.20081004172422.799:edit_widget
     #@+node:ekr.20081004172422.803:Click Box...
     #@+node:ekr.20081004172422.804:onClickBoxClick
@@ -6185,28 +6199,50 @@ class leoQtTree (leoFrame.leoTree):
         self.redraw_after_select()
     #@nonl
     #@-node:ekr.20081025124450.15:afterSelectHint
-    #@+node:ekr.20081004172422.846:editLabel
+    #@+node:ekr.20081004172422.846:editLabel (override)
     def editLabel (self,p,selectAll=False):
 
         """Start editing p's headline."""
 
-        c = self.c
+        c = self.c ; trace = False ; verbose = False
 
-        # g.trace(p.headString(),selectAll)
+        if self.redrawing:
+            if trace and verbose: g.trace('redrawing')
+            return
+
+        if trace:
+            g.trace('*** all',selectAll,p.headString(),g.callers(4))
+
         w = self.treeWidget
         data = self.vnodeDict.get(p.v)
-        if not data: return
+        if not data:
+            if trace and verbose:
+                g.trace('No data: redrawing if possible')
+            c.outerUpdate() # Do any scheduled redraw.
+            data = self.vnodeDict.get(p.v)
 
-        it = data [0][1]
+        if data:
+            item = data [0][1]
+        else:
+            return g.trace('*** Can not happen: no data',p and p.headString())
 
-        w.editItem(it)
-        if not selectAll:
-            editWidget = w.itemWidget(it,0) # A QLineEdit
-            s = editWidget.text()
-            editWidget.setSelection(len(s),0)
+        if item:
+            w.setCurrentItem(item) # Must do this first.
+            w.editItem(item)
+            e = w.itemWidget(item,0) # A QLineEdit
+            if e:
+                s = e.text() ; len_s = len(s)
+                start,n = g.choose(selectAll,
+                    tuple([0,len_s]),tuple([len_s,0]))
+                e.setSelection(start,n)
+                e.setFocus()
+            else: g.trace('*** no e')
+        else:
+            e = None
+            g.trace('*** no item')
 
-        # A nice hack: just clear the focus request.
-        c.requestedFocusWidget = None
+        # A nice hack: just set the focus request.
+        c.requestedFocusWidget = e
 
         # g.trace('leoQtTree','it',it,p and p.headString())
 
@@ -6223,7 +6259,7 @@ class leoQtTree (leoFrame.leoTree):
             # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
             # c.headlineWantsFocus(p) # Make sure the focus sticks.
             # c.k.showStateAndMode(w)
-    #@-node:ekr.20081004172422.846:editLabel
+    #@-node:ekr.20081004172422.846:editLabel (override)
     #@+node:ekr.20081004172422.854:setHeadline
     def setHeadline (self,p,s):
 

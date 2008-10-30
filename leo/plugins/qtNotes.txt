@@ -4,12 +4,17 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-- Fix tree bugs:
-    ** Changes to headline do not stick after, e.g., ctrl-r.
-    - Ctrl-` does not work when editing headlines.
-    - Text not selected after insert-headline.
+Fix tree bugs:
+* Changes to headline do not stick after, e.g., ctrl-r.
+- Ctrl-` does not work when editing headlines.
+- Text not selected after insert-headline.
 
 Next:
+- Allow coloring of icon bar buttons.
+- Accumulate keystrokes while flashing brackets.
+    - use w.blockSignals??  use w.setTextInteractionFlags?
+    - Maybe rewrite using
+- Suppress undo in most widgets.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.
 
@@ -26,8 +31,9 @@ Finally:
     - https://bugs.launchpad.net/leo-editor/+bug/286493
       File "qtGui.py", line 745, in delete
         s = s[:i] + s[j+1:]
-        TypeError: slice indices must be integers or None or have an __index__ method
-        (Must convert indices to ints.)
+        TypeError: slice indices must be integers or None or
+        have an __index__ method
+        (Convert indices to ints.)
 - Fix failing unit tests. 
 #@nonl
 #@+node:ekr.20081029050144.10:Later
@@ -637,28 +643,50 @@ def traceEvent (self,obj,event,tkKey,override):
         g.trace('%3s:%s' % (eventType,'unknown'))
 #@-node:ekr.20081013143507.11:traceEvent
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
-#@+node:ekr.20081004172422.846:editLabel
+#@+node:ekr.20081004172422.846:editLabel (override)
 def editLabel (self,p,selectAll=False):
 
     """Start editing p's headline."""
 
-    c = self.c
+    c = self.c ; trace = False ; verbose = False
 
-    # g.trace(p.headString(),selectAll)
+    if self.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+
+    if trace:
+        g.trace('*** all',selectAll,p.headString(),g.callers(4))
+
     w = self.treeWidget
     data = self.vnodeDict.get(p.v)
-    if not data: return
+    if not data:
+        if trace and verbose:
+            g.trace('No data: redrawing if possible')
+        c.outerUpdate() # Do any scheduled redraw.
+        data = self.vnodeDict.get(p.v)
 
-    it = data [0][1]
+    if data:
+        item = data [0][1]
+    else:
+        return g.trace('*** Can not happen: no data',p and p.headString())
 
-    w.editItem(it)
-    if not selectAll:
-        editWidget = w.itemWidget(it,0) # A QLineEdit
-        s = editWidget.text()
-        editWidget.setSelection(len(s),0)
+    if item:
+        w.setCurrentItem(item) # Must do this first.
+        w.editItem(item)
+        e = w.itemWidget(item,0) # A QLineEdit
+        if e:
+            s = e.text() ; len_s = len(s)
+            start,n = g.choose(selectAll,
+                tuple([0,len_s]),tuple([len_s,0]))
+            e.setSelection(start,n)
+            e.setFocus()
+        else: g.trace('*** no e')
+    else:
+        e = None
+        g.trace('*** no item')
 
-    # A nice hack: just clear the focus request.
-    c.requestedFocusWidget = None
+    # A nice hack: just set the focus request.
+    c.requestedFocusWidget = e
 
     # g.trace('leoQtTree','it',it,p and p.headString())
 
@@ -675,7 +703,7 @@ def editLabel (self,p,selectAll=False):
         # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
         # c.headlineWantsFocus(p) # Make sure the focus sticks.
         # c.k.showStateAndMode(w)
-#@-node:ekr.20081004172422.846:editLabel
+#@-node:ekr.20081004172422.846:editLabel (override)
 #@-node:ekr.20081015062931.10:Focus stuff...
 #@+node:ekr.20081018155359.12:Problems with multiple windows
 #@+node:ekr.20081004102201.629:class  Window
@@ -1216,28 +1244,50 @@ def afterSelectHint (self,p,old_p):
     self.redraw_after_select()
 #@nonl
 #@-node:ekr.20081025124450.15:afterSelectHint
-#@+node:ekr.20081004172422.846:editLabel
+#@+node:ekr.20081004172422.846:editLabel (override)
 def editLabel (self,p,selectAll=False):
 
     """Start editing p's headline."""
 
-    c = self.c
+    c = self.c ; trace = False ; verbose = False
 
-    # g.trace(p.headString(),selectAll)
+    if self.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+
+    if trace:
+        g.trace('*** all',selectAll,p.headString(),g.callers(4))
+
     w = self.treeWidget
     data = self.vnodeDict.get(p.v)
-    if not data: return
+    if not data:
+        if trace and verbose:
+            g.trace('No data: redrawing if possible')
+        c.outerUpdate() # Do any scheduled redraw.
+        data = self.vnodeDict.get(p.v)
 
-    it = data [0][1]
+    if data:
+        item = data [0][1]
+    else:
+        return g.trace('*** Can not happen: no data',p and p.headString())
 
-    w.editItem(it)
-    if not selectAll:
-        editWidget = w.itemWidget(it,0) # A QLineEdit
-        s = editWidget.text()
-        editWidget.setSelection(len(s),0)
+    if item:
+        w.setCurrentItem(item) # Must do this first.
+        w.editItem(item)
+        e = w.itemWidget(item,0) # A QLineEdit
+        if e:
+            s = e.text() ; len_s = len(s)
+            start,n = g.choose(selectAll,
+                tuple([0,len_s]),tuple([len_s,0]))
+            e.setSelection(start,n)
+            e.setFocus()
+        else: g.trace('*** no e')
+    else:
+        e = None
+        g.trace('*** no item')
 
-    # A nice hack: just clear the focus request.
-    c.requestedFocusWidget = None
+    # A nice hack: just set the focus request.
+    c.requestedFocusWidget = e
 
     # g.trace('leoQtTree','it',it,p and p.headString())
 
@@ -1254,7 +1304,7 @@ def editLabel (self,p,selectAll=False):
         # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
         # c.headlineWantsFocus(p) # Make sure the focus sticks.
         # c.k.showStateAndMode(w)
-#@-node:ekr.20081004172422.846:editLabel
+#@-node:ekr.20081004172422.846:editLabel (override)
 #@+node:ekr.20081004172422.854:setHeadline
 def setHeadline (self,p,s):
 
@@ -1434,22 +1484,24 @@ def setCurrentItem (self):
 
     aList = self.vnodeDict.get(p.v,[])
     h = p and p.headString() or '<no p!>'
-    if trace: g.trace(h)
     if not p: return False
 
     for p2,item in aList:
         if p == p2:
-            if trace:
-                g.trace('found item: %s for: %s' % (
-                    id(item),h))
-
-            self.selecting = True
-            try:
-                w.setCurrentItem(item)
-            finally:
-                self.selecting = False
+            if trace: g.trace('found: %s, %s' % (id(item),h))
+            # Actually select the item only if necessary.
+            # This prevents any side effects.
+            item2 = w.currentItem()
+            if item != item2:
+                if trace: g.trace(item==item,'old item',item2)
+                self.selecting = True
+                try:
+                    w.setCurrentItem(item)
+                finally:
+                    self.selecting = False
             return item
     else:
+        if trace: g.trace('** no item for',p.headString())
         return None
 #@-node:ekr.20081027082521.12:setCurrentItem
 #@-node:ekr.20081021043407.23:full_redraw & helpers
@@ -1898,22 +1950,24 @@ def setCurrentItem (self):
 
     aList = self.vnodeDict.get(p.v,[])
     h = p and p.headString() or '<no p!>'
-    if trace: g.trace(h)
     if not p: return False
 
     for p2,item in aList:
         if p == p2:
-            if trace:
-                g.trace('found item: %s for: %s' % (
-                    id(item),h))
-
-            self.selecting = True
-            try:
-                w.setCurrentItem(item)
-            finally:
-                self.selecting = False
+            if trace: g.trace('found: %s, %s' % (id(item),h))
+            # Actually select the item only if necessary.
+            # This prevents any side effects.
+            item2 = w.currentItem()
+            if item != item2:
+                if trace: g.trace(item==item,'old item',item2)
+                self.selecting = True
+                try:
+                    w.setCurrentItem(item)
+                finally:
+                    self.selecting = False
             return item
     else:
+        if trace: g.trace('** no item for',p.headString())
         return None
 #@-node:ekr.20081027082521.12:setCurrentItem
 #@-node:ekr.20081021043407.23:full_redraw & helpers
@@ -2050,22 +2104,24 @@ def setCurrentItem (self):
 
     aList = self.vnodeDict.get(p.v,[])
     h = p and p.headString() or '<no p!>'
-    if trace: g.trace(h)
     if not p: return False
 
     for p2,item in aList:
         if p == p2:
-            if trace:
-                g.trace('found item: %s for: %s' % (
-                    id(item),h))
-
-            self.selecting = True
-            try:
-                w.setCurrentItem(item)
-            finally:
-                self.selecting = False
+            if trace: g.trace('found: %s, %s' % (id(item),h))
+            # Actually select the item only if necessary.
+            # This prevents any side effects.
+            item2 = w.currentItem()
+            if item != item2:
+                if trace: g.trace(item==item,'old item',item2)
+                self.selecting = True
+                try:
+                    w.setCurrentItem(item)
+                finally:
+                    self.selecting = False
             return item
     else:
+        if trace: g.trace('** no item for',p.headString())
         return None
 #@-node:ekr.20081027082521.12:setCurrentItem
 #@-node:ekr.20081027082521.11:Redraw crashes & problems

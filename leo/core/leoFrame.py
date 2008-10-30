@@ -1585,7 +1585,7 @@ class leoFrame:
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
         p._linkAsRoot(oldRoot=None)
         c.setRootPosition(p) # New in 4.4.2.
-        c.editPosition(p)
+        # c.editPosition(p)
     #@-node:ekr.20051009045404:createFirstTreeNode
     #@-node:ekr.20031218072017.3679:  leoFrame.__init__
     #@+node:ekr.20061109125528.1:Must be defined in base class
@@ -2475,6 +2475,8 @@ class leoTree:
         '''End editing of a headline and update p.headString().'''
 
         c = self.c ; k = c.k ; p = c.currentPosition()
+
+        # g.trace('leoTree',p and p.headString(),g.callers(4))
 
         self.setEditPosition(None) # That is, self._editPosition = None
 

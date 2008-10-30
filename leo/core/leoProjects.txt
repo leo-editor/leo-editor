@@ -12249,7 +12249,6 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
     c.redraw()
-    # c.redraw_after_insert()
 
     c.editPosition(p,selectAll=True)
 
@@ -14747,7 +14746,6 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
     c.redraw()
-    # c.redraw_after_insert()
 
     c.editPosition(p,selectAll=True)
 
@@ -15189,7 +15187,6 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
     c.redraw()
-    # c.redraw_after_insert()
 
     c.editPosition(p,selectAll=True)
 
@@ -15226,7 +15223,7 @@ def editLabel (self,p,selectAll=False):
     if p and p != self.editPosition():
 
         if trace:
-            g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+            g.trace('leoTree',p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
         self.endEditLabel()
         # This redraw *is* required so the c.edit_widget(p) will exist.
@@ -17859,7 +17856,6 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
     c.redraw()
-    # c.redraw_after_insert()
 
     c.editPosition(p,selectAll=True)
 
@@ -19166,7 +19162,7 @@ def createFirstTreeNode (self):
     # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
     p._linkAsRoot(oldRoot=None)
     c.setRootPosition(p) # New in 4.4.2.
-    c.editPosition(p)
+    # c.editPosition(p)
 #@-node:ekr.20051009045404:createFirstTreeNode
 #@+node:ekr.20070325101652:cc.createChaptersNode
 def createChaptersNode (self):
@@ -19405,7 +19401,6 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
     c.redraw()
-    # c.redraw_after_insert()
 
     c.editPosition(p,selectAll=True)
 
@@ -19442,7 +19437,7 @@ def editLabel (self,p,selectAll=False):
     if p and p != self.editPosition():
 
         if trace:
-            g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+            g.trace('leoTree',p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
         self.endEditLabel()
         # This redraw *is* required so the c.edit_widget(p) will exist.
@@ -20298,7 +20293,6 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
 
     c.redraw()
-    # c.redraw_after_insert()
 
     c.editPosition(p,selectAll=True)
 
@@ -21809,6 +21803,8 @@ def endEditLabel (self):
     '''End editing of a headline and update p.headString().'''
 
     c = self.c ; k = c.k ; p = c.currentPosition()
+
+    # g.trace('leoTree',p and p.headString(),g.callers(4))
 
     self.setEditPosition(None) # That is, self._editPosition = None
 

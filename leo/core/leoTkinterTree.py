@@ -2417,7 +2417,7 @@ class leoTkinterTree (leoFrame.leoTree):
         if p and p != self.editPosition():
 
             if trace:
-                g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+                g.trace('leoTree',p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
             self.endEditLabel()
             # This redraw *is* required so the c.edit_widget(p) will exist.
