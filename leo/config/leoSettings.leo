@@ -7677,6 +7677,29 @@ QLineEdit#lineEdit {
     font-style: normal; /* normal,italic,oblique */
 }
 
+QLineEdit#status1 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+QLineEdit#status2 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+XXQPushButton {
+    background-color: #fdf5f5; /* A kind of pink. */
+    margin: 2px;
+    padding; 4px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
 /* QMenuBar works, but not QMenu... */
 XXQMenuBar {
     font-family: DejaVu Sans Mono;
@@ -7684,17 +7707,7 @@ XXQMenuBar {
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
-
-QToolBar &gt; QPushButton {
-    background-color: #fdf5f5; /* A kind of pink. */
-}
-
-QStatusBar &gt; QLineEdit {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-}</t>
+</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>
 <t tx="ekr.20081022181056.10"># Lines have the form: color, style

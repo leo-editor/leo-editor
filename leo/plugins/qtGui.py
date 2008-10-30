@@ -129,7 +129,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         '''Create Leo's main window, c.frame.top'''
 
-        self.c = c
+        self.c = c ; top = c.frame.top
 
         # g.trace('Window')
 
@@ -150,6 +150,7 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
         self.iconBar = self.addToolBar("IconBar")
         self.statusBar = QtGui.QStatusBar()
         self.setStatusBar(self.statusBar)
+
         self.setStyleSheets()
     #@-node:ekr.20081004172422.884: ctor (Window)
     #@+node:ekr.20081020075840.11:closeEvent (qtFrame)
@@ -1972,13 +1973,16 @@ class leoQtFrame (leoFrame.leoFrame):
             self.lastRow = 0
             self.lastCol = 0
 
-            # Create the text widget.
-            self.textWidget1 = QtGui.QLineEdit(self.statusBar)
-            self.textWidget2 = QtGui.QLineEdit(self.statusBar)
-            self.statusBar.addWidget(self.textWidget1,True)
-            self.statusBar.addWidget(self.textWidget2,True)
+            # Create the text widgets.
+            self.textWidget1 = w1 = QtGui.QLineEdit(self.statusBar)
+            self.textWidget2 = w2 = QtGui.QLineEdit(self.statusBar)
+            w1.setObjectName('status1')
+            w2.setObjectName('status2')
+            self.statusBar.addWidget(w1,True)
+            self.statusBar.addWidget(w2,True)
             self.put('')
             self.update()
+            c.frame.top.setStyleSheets()
         #@-node:ekr.20081004172422.551:ctor
         #@+node:ekr.20081029110341.12: do-nothings
         def disable (self,background=None): pass
@@ -2010,7 +2014,7 @@ class leoQtFrame (leoFrame.leoFrame):
         def put_helper(self,s,w):
             # w.setEnabled(True)
             w.setText(s)
-            # w.setEnabled(False)h
+            # w.setEnabled(False)
         #@-node:ekr.20081004172422.554:clear, get & put/1
         #@+node:ekr.20081004172422.561:update
         def update (self):
@@ -2047,20 +2051,24 @@ class leoQtFrame (leoFrame.leoFrame):
             self.parentFrame = parentFrame
             self.w = c.frame.top.iconBar # A QToolBar.
 
-            if 0:
-                def hi():
-                    g.es_print('hi')
-                self.add(text='hi',command=hi)
+            # g.app.iconWidgetCount = 0
         #@-node:ekr.20081004172422.563: ctor
+        #@+node:ekr.20081029205046.10: do-nothings
+        def addRow(self,height=None):   pass
+        def getFrame (self):            return None
+        def getNewFrame (self):         return None
+        def pack (self):                pass
+        def unpack (self):              pass
+
+        hide = unpack
+        show = pack
+        #@-node:ekr.20081029205046.10: do-nothings
         #@+node:ekr.20081004172422.564:add
         def add(self,*args,**keys):
 
-            """Add a button containing text or a picture to the icon bar.
-
-            Pictures take precedence over text"""
+            '''Add a button to the icon bar.'''
 
             c = self.c
-
             command = keys.get('command')
             text = keys.get('text')
             if not text: return
@@ -2068,14 +2076,8 @@ class leoQtFrame (leoFrame.leoFrame):
             # imagefile = keys.get('imagefile')
             # image = keys.get('image')
 
-            if 1:
-                action = b = self.w.addAction(text)
-            else:
-                b = QtGui.QPushButton(self.w)
-                action = QtGui.QAction(b)
-                action.setText(text)
-                b.addAction(action)
-                self.w.addWidget(b)
+            b = QtGui.QPushButton(text,self.w)
+            self.w.addWidget(b)
 
             if command:
                 def button_callback(c=c,command=command):
@@ -2086,32 +2088,24 @@ class leoQtFrame (leoFrame.leoFrame):
                         c.outerUpdate()
                     return val
 
-                QtCore.QObject.connect(action,
-                    QtCore.SIGNAL("triggered()"),
+                QtCore.QObject.connect(b,
+                    QtCore.SIGNAL("clicked()"),
                     button_callback)
 
             return b
         #@-node:ekr.20081004172422.564:add
-        #@+node:ekr.20081004172422.566:addRow
-        def addRow(self,height=None):
-
-            self.notReady()
-        #@-node:ekr.20081004172422.566:addRow
         #@+node:ekr.20081004172422.567:addRowIfNeeded
         def addRowIfNeeded (self):
 
             '''Add a new icon row if there are too many widgets.'''
 
-            try:
-                n = g.app.iconWidgetCount
-            except:
-                n = g.app.iconWidgetCount = 0
+            # n = g.app.iconWidgetCount
 
-            if n >= self.widgets_per_row:
-                g.app.iconWidgetCount = 0
-                self.addRow()
+            # if n >= self.widgets_per_row:
+                # g.app.iconWidgetCount = 0
+                # self.addRow()
 
-            g.app.iconWidgetCount += 1
+            # g.app.iconWidgetCount += 1
         #@-node:ekr.20081004172422.567:addRowIfNeeded
         #@+node:ekr.20081004172422.568:addWidget
         def addWidget (self,w):
@@ -2124,64 +2118,24 @@ class leoQtFrame (leoFrame.leoFrame):
             """Destroy all the widgets in the icon bar"""
 
             self.w.clear()
+
             g.app.iconWidgetCount = 0
         #@-node:ekr.20081004172422.569:clear
         #@+node:ekr.20081004172422.570:deleteButton
         def deleteButton (self,w):
 
-            self.notReady()
+            g.trace(w)
+            # self.w.deleteWidget(w)
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
         #@-node:ekr.20081004172422.570:deleteButton
-        #@+node:ekr.20081004172422.571:getFrame & getNewFrame
-        def getFrame (self):
-
-            return None
-
-        def getNewFrame (self):
-
-            return None
-
-
-        #@-node:ekr.20081004172422.571:getFrame & getNewFrame
-        #@+node:ekr.20081029110341.11:notReady
-        def notReady (self):
-
-            g.trace('not ready yet',g.callers(4))
-        #@nonl
-        #@-node:ekr.20081029110341.11:notReady
-        #@+node:ekr.20081004172422.572:pack (show)
-        def pack (self):
-
-            """Show the icon bar by repacking it"""
-
-            self.w.show()
-
-        show = pack
-        #@-node:ekr.20081004172422.572:pack (show)
         #@+node:ekr.20081004172422.573:setCommandForButton
         def setCommandForButton(self,button,command):
 
-            g.trace('button',button,
-                command and command.__name__,g.callers(4))
-
             if command:
-                def button_command_callback(command=command):
-                    return command()
-
                 QtCore.QObject.connect(button,
-                    QtCore.SIGNAL("triggered()"),
-                    button_command_callback)
+                    QtCore.SIGNAL("clicked()"),command)
         #@-node:ekr.20081004172422.573:setCommandForButton
-        #@+node:ekr.20081004172422.574:unpack (hide)
-        def unpack (self):
-
-            '''Hide the icon bar.'''
-
-            self.w.hide()
-
-        hide = unpack
-        #@-node:ekr.20081004172422.574:unpack (hide)
         #@-others
     #@-node:ekr.20081004172422.562:class qtIconBarClass
     #@+node:ekr.20081004172422.575:Minibuffer methods

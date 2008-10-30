@@ -702,7 +702,7 @@ def __init__(self,c,parent=None):
 
     '''Create Leo's main window, c.frame.top'''
 
-    self.c = c
+    self.c = c ; top = c.frame.top
 
     # g.trace('Window')
 
@@ -723,6 +723,7 @@ def __init__(self,c,parent=None):
     self.iconBar = self.addToolBar("IconBar")
     self.statusBar = QtGui.QStatusBar()
     self.setStatusBar(self.statusBar)
+
     self.setStyleSheets()
 #@-node:ekr.20081004172422.884: ctor (Window)
 #@+node:ekr.20081020075840.11:closeEvent (qtFrame)
@@ -1026,7 +1027,7 @@ def __init__(self,c,parent=None):
 
     '''Create Leo's main window, c.frame.top'''
 
-    self.c = c
+    self.c = c ; top = c.frame.top
 
     # g.trace('Window')
 
@@ -1047,6 +1048,7 @@ def __init__(self,c,parent=None):
     self.iconBar = self.addToolBar("IconBar")
     self.statusBar = QtGui.QStatusBar()
     self.setStatusBar(self.statusBar)
+
     self.setStyleSheets()
 #@-node:ekr.20081004172422.884: ctor (Window)
 #@+node:ekr.20081023131208.10:Coloring

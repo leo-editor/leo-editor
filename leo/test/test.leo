@@ -298,7 +298,7 @@
 </v>
 <v t="ekr.20080811113441.2"><vh>Running body text as a windows script</vh>
 <v t="ekr.20080807115344.1"><vh>Windows script</vh></v>
-<v t="ekr.20080807114145.2"><vh>@button run-windows-script</vh>
+<v t="ekr.20080807114145.2"><vh>@@button run-windows-script</vh>
 <v t="ekr.20080807115344.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20080807115344.2"><vh>class MySite</vh></v>
 <v t="ekr.20080807115344.3"><vh>class Application</vh></v>
