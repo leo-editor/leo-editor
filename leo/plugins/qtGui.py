@@ -5703,6 +5703,8 @@ class leoQtTree (leoFrame.leoTree):
         if p:
             if trace: g.trace(p and p.headString())
             c.frame.tree.select(p) # The crucial hook.
+            # g.trace(g.callers())
+            c.outerUpdate()
         else:
             # An error: we are not redrawing.
             g.trace('no p for item: %s' % it,g.callers(4))
@@ -6160,6 +6162,7 @@ class leoQtTree (leoFrame.leoTree):
         self.selecting = False
 
         self.redraw_after_select()
+    #@nonl
     #@-node:ekr.20081025124450.15:afterSelectHint
     #@+node:ekr.20081004172422.846:editLabel
     def editLabel (self,p,selectAll=False):

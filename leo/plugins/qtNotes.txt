@@ -5,17 +5,19 @@
 @nocolor-node
 
 First:
-* Handle clicks in body pane.
+* Handle clicks: body pane not being recolored.
+- Shift-tab is Smart home. (Allow shift-tab binding).
+- Fix QTextCursor::SetPosition: Position 'x' out of range.
+
 * Finish hooking up headlines.
     - Ctrl-` does not work when editing headlines.
     - Text not selected after insert-headline.
     ** Changes to headline do not stick after, e.g., ctrl-r.
-- Complete dialogs in leoQtGui.
 
 Next:
+- Complete dialogs in leoQtGui.
 - multiline strings to the log pane are not treated properly.
 - print-settings does not print to a tab and is very slow.
-- Shift-tab is Smart home. (Allow shift-tab binding).
 
 Finally:
 - Finish colorizer:
@@ -1218,6 +1220,7 @@ def afterSelectHint (self,p,old_p):
     self.selecting = False
 
     self.redraw_after_select()
+#@nonl
 #@-node:ekr.20081025124450.15:afterSelectHint
 #@+node:ekr.20081004172422.846:editLabel
 def editLabel (self,p,selectAll=False):
@@ -1926,6 +1929,7 @@ def afterSelectHint (self,p,old_p):
     self.selecting = False
 
     self.redraw_after_select()
+#@nonl
 #@-node:ekr.20081025124450.15:afterSelectHint
 #@+node:ekr.20081027124640.10:sig_itemCollapsed
 def sig_itemCollapsed (self,item):
