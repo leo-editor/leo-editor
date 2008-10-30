@@ -5,14 +5,13 @@
 @nocolor-node
 
 First:
+- Get unl plugin working.
 - Finish colorizer:
     - It doesn't get called when clicking on a new node.
     - Simulate Tk's handling of tags (an optimization)
     - Use Qt threading.
     - Handle all colorizer tags.
 - Shift-tab is Smart home. (Allow shift-tab binding).
-- Support Icon area.
-- Support status line.
 - Ctrl-` does not work when editing headlines.
 
 Clean up text classes:
