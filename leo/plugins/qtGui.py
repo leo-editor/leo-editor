@@ -3586,10 +3586,10 @@ class leoQtLog (leoFrame.leoLog):
         # Note: this must be done after the call to selectTab.
         w = self.logCtrl # w is a QTextBrowser
         if w:
-            s = s.replace('\n','<br>\n')
+            # s = s.replace('\n','<br>\n')
             if color: s = '<font color="%s">%s</font>' % (color, s)
             w.append(s)
-            # w.moveCursor(QtGui.QTextCursor.End)
+            w.moveCursor(QtGui.QTextCursor.End)
         else:
             # put s to logWaiting and print s
             g.app.logWaiting.append((s,color),)
@@ -3635,7 +3635,8 @@ class leoQtLog (leoFrame.leoLog):
             contents = QtGui.QTextBrowser()
             self.logDict[tabName] = contents
             # contents.installEventFilter(self.ev_filter)
-            if tabName == 'Log': self.logCtrl = contents
+            if tabName == 'Log':
+                self.logCtrl = contents
         else:
             contents = QtGui.QWidget()
 
@@ -3698,9 +3699,9 @@ class leoQtLog (leoFrame.leoLog):
         if ok: return
 
         contents = self.createTab(tabName,createText,wrap)
-        if createText:
-            if trace and contents != self.logCtrl:
-                g.trace(tabName,id(contents),g.callers(4))
+
+        if createText and tabName not in ('Spell','Find',):
+            g.trace(tabName,contents,g.callers(4))
             self.logCtrl = contents
 
         self.selectHelper(tabName)
