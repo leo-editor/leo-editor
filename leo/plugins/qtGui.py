@@ -809,7 +809,7 @@ class leoQtBody (leoFrame.leoBody):
         else:
             tc = w.textCursor()
             i,j = tc.selectionStart(),tc.selectionEnd()
-            # g.trace(i,j)
+            # g.trace(i,j,g.callers(4))
             return i,j
 
     #@-node:ekr.20081007015817.86:getSelectionRange
@@ -856,7 +856,9 @@ class leoQtBody (leoFrame.leoBody):
 
         else:
             # g.trace(i) # ,g.callers(4))
-            cursor =  w.textCursor()
+            s = w.toPlainText()
+            cursor = w.textCursor()
+            i = max(0,min(i,len(s)))
             cursor.setPosition(i)
             w.setTextCursor(cursor)
     #@-node:ekr.20081007015817.95:setInsertPoint
@@ -886,25 +888,23 @@ class leoQtBody (leoFrame.leoBody):
                 w.SendScintilla(w.SCI_SETANCHOR,j)
         else:
             e = QtGui.QTextCursor
-
             if i > j: i,j = j,i
+            s = w.toPlainText()
+            i = max(0,min(i,len(s)))
+            j = max(0,min(j,len(s)))
+            k = max(0,min(j-i,len(s)))
             cursor = w.textCursor()
-            cursor.setPosition(i)
             if i == j:
                 cursor.setPosition(i)
             elif insert in (j,None):
                 cursor.setPosition(i)
-                cursor.movePosition(e.Right,e.KeepAnchor,j-i)
+                k = max(0,min(k,len(s)))
+                cursor.movePosition(e.Right,e.KeepAnchor,k)
             else:
                 cursor.setPosition(j)
-                cursor.movePosition(e.Left,e.KeepAnchor,j-i)
+                cursor.movePosition(e.Left,e.KeepAnchor,k)
 
             w.setTextCursor(cursor)
-
-            # s = self.getAllText()
-            # row_i,col_i = g.convertPythonIndexToRowCol(s,i)
-            # row_j,col_j = g.convertPythonIndexToRowCol(s,j)
-            # w.setSelection(row_i,col_i,row_j,col_j)
     #@-node:ekr.20081007015817.96:setSelectionRange
     #@+node:ekr.20081025124450.12:setYScrollPosition
     def setYScrollPosition(self,pos):
@@ -1066,6 +1066,8 @@ class leoQtBody (leoFrame.leoBody):
                 w.setDisabled(False)
                 w.setFocus()
                 self.setInsertPoint(self.afterFlashIndex)
+                # sb = w.verticalScrollBar()
+                # sb.setUpdatesEnabled(True)
                 if 0: # Doesn't work
                     fg,bg = self.afterColors
                     w.setTextColor(fg)
@@ -1074,6 +1076,8 @@ class leoQtBody (leoFrame.leoBody):
         self.flashCount = flashes
         self.flashIndex = i
         self.afterFlashIndex = self.getInsertPoint()
+        # sb = w.verticalScrollBar()
+        # sb.setUpdatesEnabled(False) # Doesn't help.
         if 0: # Doesn't work with stylesheets.
             self.afterColors = w.textColor(),w.textBackgroundColor()
             fgColor = QtGui.QColor('red')
@@ -1082,6 +1086,7 @@ class leoQtBody (leoFrame.leoBody):
             w.setTextBackgroundColor(bgColor)
         w.setDisabled(True)
         addFlashCallback()
+    #@nonl
     #@-node:ekr.20081024163213.12:flashCharacter (qtBody)
     #@-node:ekr.20081007015817.91:Visibility
     #@-others
@@ -3583,7 +3588,7 @@ class leoQtLog (leoFrame.leoLog):
         if w:
             if color: s = '<font color="%s">%s</font>' % (color, s)
             w.append(s)
-            w.moveCursor(QtGui.QTextCursor.End)
+            # w.moveCursor(QtGui.QTextCursor.End)
         else:
             # put s to logWaiting and print s
             g.app.logWaiting.append((s,color),)

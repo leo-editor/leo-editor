@@ -4,17 +4,15 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-First:
-* Handle clicks: body pane not being recolored.
-- Shift-tab is Smart home. (Allow shift-tab binding).
-- Fix QTextCursor::SetPosition: Position 'x' out of range.
+Fix tree bugs:
 
-* Finish hooking up headlines.
-    - Ctrl-` does not work when editing headlines.
-    - Text not selected after insert-headline.
-    ** Changes to headline do not stick after, e.g., ctrl-r.
+- Fix QTextCursor::SetPosition: Position 'x' out of range.
+** Changes to headline do not stick after, e.g., ctrl-r.
+- Ctrl-` does not work when editing headlines.
+- Text not selected after insert-headline.
 
 Next:
+- Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.
 - multiline strings to the log pane are not treated properly.
 - print-settings does not print to a tab and is very slow.
