@@ -1156,7 +1156,13 @@ class leoQtEventFilter(QtCore.QObject):
         trace = False ; verbose = True
         eventType = event.type()
 
-        if eventType in (e.ShortcutOverride,e.KeyPress,e.KeyRelease):
+        # We can't do this unless we wrap all edit widgets.
+        # if eventType == e.KeyRelease and c.frame.tree._editWidget:
+            # eventType = e.KeyPress # Nasty.
+
+        kinds = (e.ShortcutOverride,e.KeyPress,e.KeyRelease)
+
+        if eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
 
@@ -1501,8 +1507,7 @@ class leoQtEventFilter(QtCore.QObject):
         for val,kind in show:
             if eventType == val:
                 g.trace(
-                    # 'val: %-3s' %(val),
-                    'kind',kind,'key',tkKey,'override',override)
+                    'tag',self.tag,'kind',kind,'key',tkKey,'override',override)
                 return
 
         if False and eventType not in ignore:
@@ -3701,7 +3706,7 @@ class leoQtLog (leoFrame.leoLog):
         contents = self.createTab(tabName,createText,wrap)
 
         if createText and tabName not in ('Spell','Find',):
-            g.trace(tabName,contents,g.callers(4))
+            # g.trace(tabName,contents,g.callers(4))
             self.logCtrl = contents
 
         self.selectHelper(tabName)
@@ -5122,6 +5127,8 @@ class leoQtTree (leoFrame.leoTree):
 
         # Status ivars.
         self.dragging = False
+        self._editWidgetPosition = None
+        self._editWidget = None
         self.expanding = False
         self.fullDrawing = False
         self.generation = 0
@@ -5264,7 +5271,17 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081014095718.15:get_name (qtTree)
     def getName (self):
 
-        return 'canvas(tree)' # Must start with 'canvas'
+        c = self.c ; e = self._editWidget
+
+        if e and e == g.app.gui.get_focus():
+            name = 'head(tree)' # Must start with 'head'
+        else:
+            self._editWidget = None
+            self._editWidgetPosition = None
+            name = 'canvas(tree)' # Must start with 'canvas'
+
+        # g.trace(name)
+        return name
     #@-node:ekr.20081014095718.15:get_name (qtTree)
     #@-node:ekr.20081004172422.737: Birth... (qt Tree)
     #@+node:ekr.20081004172422.758:Config... (qtTree)
@@ -5747,9 +5764,11 @@ class leoQtTree (leoFrame.leoTree):
         p = self.itemsDict.get(item)
         if p:
             # so far, col is always 0
-            h = g.toUnicode(item.text(col),'utf-8')
-            p.setHeadString(h)
-            g.trace("changed: ",p.headString(),g.callers(4))
+            s = g.toUnicode(item.text(col),'utf-8')
+            p.setHeadString(s)
+            # g.trace("changed: ",p.headString(),g.callers(4))
+            self._editWidget = None
+            self._editWidgetPosition = None
         else:
             g.trace('can not happen: no p')
     #@-node:ville.20081014172405.10:sig_itemChanged
@@ -5855,23 +5874,6 @@ class leoQtTree (leoFrame.leoTree):
         # if trace: g.trace('not found',p and p.headString())
         # return None
     #@-node:ekr.20081004172422.801:findEditWidget
-    #@+node:ekr.20081004172422.799:edit_widget
-    def edit_widget (self,p):
-
-        """Returns the Qt.Edit widget for position p."""
-
-        if 1:
-            # Update p's tnode if we can.
-            w = self.treeWidget
-            item = w.currentItem()
-            if item:
-                column = 0
-                s = item.text(column)
-                # g.trace(repr(s))
-            return None # Disable Leo's core headline code.
-        else:
-            return self.findEditWidget(p)
-    #@-node:ekr.20081004172422.799:edit_widget
     #@+node:ekr.20081004172422.803:Click Box...
     #@+node:ekr.20081004172422.804:onClickBoxClick
     def onClickBoxClick (self,event,p=None):
@@ -6177,6 +6179,27 @@ class leoQtTree (leoFrame.leoTree):
         g.app.gui.set_focus(self.c,self.treeWidget)
     #@-node:ekr.20081019045904.2:Focus (qtTree)
     #@+node:ekr.20081004172422.844:Selecting & editing... (qtTree)
+    #@+node:ekr.20081004172422.799:edit_widget
+    def edit_widget (self,p):
+
+        """Returns the Qt.Edit widget for position p."""
+
+        # Decouple all of the core's headline code.
+        # Except for over-ridden methods
+        return None
+
+        # if 1:
+            # # Update p's tnode if we can.
+            # w = self.treeWidget
+            # item = w.currentItem()
+            # if item:
+                # column = 0
+                # s = item.text(column)
+                # # g.trace(repr(s))
+            # return None # Disable Leo's core headline code.
+        # else:
+            # return self.findEditWidget(p)
+    #@-node:ekr.20081004172422.799:edit_widget
     #@+node:ekr.20081025124450.14:beforeSelectHint
     def beforeSelectHint (self,p,old_p):
 
@@ -6200,6 +6223,25 @@ class leoQtTree (leoFrame.leoTree):
         self.redraw_after_select()
     #@nonl
     #@-node:ekr.20081025124450.15:afterSelectHint
+    #@+node:ekr.20081004172422.854:setHeadline
+    def setHeadline (self,p,s):
+
+        '''Set the actual text of the headline widget.
+
+        This is called from the undo/redo logic to change the text before redrawing.'''
+
+        # w = self.edit_widget(p)
+        # if w:
+            # w.configure(state='normal')
+            # w.delete(0,'end')
+            # if s.endswith('\n') or s.endswith('\r'):
+                # s = s[:-1]
+            # w.insert(0,s)
+            # self.revertHeadline = s
+            # # g.trace(repr(s),w.getAllText())
+        # else:
+            # g.trace('-'*20,'oops')
+    #@-node:ekr.20081004172422.854:setHeadline
     #@+node:ekr.20081004172422.846:editLabel (override)
     def editLabel (self,p,selectAll=False):
 
@@ -6233,8 +6275,13 @@ class leoQtTree (leoFrame.leoTree):
             e = w.itemWidget(item,0) # A QLineEdit
             if e:
                 s = e.text() ; len_s = len(s)
+                self._editWidgetPosition = p.copy()
+                self._editWidget = e
                 start,n = g.choose(selectAll,
                     tuple([0,len_s]),tuple([len_s,0]))
+                e.setObjectName('headline')
+                # filter = leoQtEventFilter(c,w=e,tag='tree')
+                # e.installEventFilter(filter)
                 e.setSelection(start,n)
                 e.setFocus()
             else: g.trace('*** no e')
@@ -6261,25 +6308,38 @@ class leoQtTree (leoFrame.leoTree):
             # c.headlineWantsFocus(p) # Make sure the focus sticks.
             # c.k.showStateAndMode(w)
     #@-node:ekr.20081004172422.846:editLabel (override)
-    #@+node:ekr.20081004172422.854:setHeadline
-    def setHeadline (self,p,s):
+    #@+node:ekr.20081030120643.11:onHeadChanged
+    # Tricky code: do not change without careful thought and testing.
 
-        '''Set the actual text of the headline widget.
+    def onHeadChanged (self,p,undoType='Typing',s=None):
 
-        This is called from the undo/redo logic to change the text before redrawing.'''
+        '''Officially change a headline.'''
 
-        # w = self.edit_widget(p)
-        # if w:
-            # w.configure(state='normal')
-            # w.delete(0,'end')
-            # if s.endswith('\n') or s.endswith('\r'):
-                # s = s[:-1]
-            # w.insert(0,s)
-            # self.revertHeadline = s
-            # # g.trace(repr(s),w.getAllText())
-        # else:
-            # g.trace('-'*20,'oops')
-    #@-node:ekr.20081004172422.854:setHeadline
+        trace = False ; verbose = True
+        e = self._editWidget
+        p = self._editWidgetPosition
+
+        # These are not errors: sig_itemChanged may
+        # have been called first.
+        if not e:
+            if trace and verbose: g.trace('No widget')
+            return 
+        if e != g.app.gui.get_focus():
+            if trace and verbose: g.trace('Wrong focus')
+            self._editWidget = None
+            self._editWidgetPosition = None
+            return
+        if not p:
+            if trace and verbose: g.trace('No widget position')
+            return
+        s = e.text() ; len_s = len(s)
+        s = g.toUnicode(s,'utf-8')
+        if trace: g.trace(repr(s),g.callers(4))
+        p.setHeadString(s)
+        self._editWidget = None
+        self._editWidgetPosition = None
+    #@nonl
+    #@-node:ekr.20081030120643.11:onHeadChanged
     #@-node:ekr.20081004172422.844:Selecting & editing... (qtTree)
     #@-others
 #@-node:ekr.20081004172422.732:class leoQtTree
