@@ -1975,8 +1975,8 @@ class leoQtFrame (leoFrame.leoFrame):
             # Create the text widget.
             self.textWidget1 = QtGui.QLineEdit(self.statusBar)
             self.textWidget2 = QtGui.QLineEdit(self.statusBar)
-            self.statusBar.addPermanentWidget(self.textWidget1)
-            self.statusBar.addPermanentWidget(self.textWidget2)
+            self.statusBar.addWidget(self.textWidget1,True)
+            self.statusBar.addWidget(self.textWidget2,True)
             self.put('')
             self.update()
         #@-node:ekr.20081004172422.551:ctor
@@ -2008,9 +2008,9 @@ class leoQtFrame (leoFrame.leoFrame):
             self.put_helper(s,self.textWidget1)
 
         def put_helper(self,s,w):
-            w.setEnabled(True)
+            # w.setEnabled(True)
             w.setText(s)
-            w.setEnabled(False)
+            # w.setEnabled(False)h
         #@-node:ekr.20081004172422.554:clear, get & put/1
         #@+node:ekr.20081004172422.561:update
         def update (self):

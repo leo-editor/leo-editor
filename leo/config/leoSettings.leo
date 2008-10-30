@@ -7687,6 +7687,13 @@ XXQMenuBar {
 
 QToolBar &gt; QPushButton {
     background-color: #fdf5f5; /* A kind of pink. */
+}
+
+QStatusBar &gt; QLineEdit {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
 }</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>
