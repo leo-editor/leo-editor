@@ -3756,6 +3756,6 @@ sw = w.stackedWidget
 r = w.richTextEdit
 r.setHtml("This is &lt;b&gt;rich text&lt;/b&gt;")
 sw.setCurrentIndex(1)</t>
-<t tx="ekr.20081030090840.1">g.es('line1\nline2')</t>
+<t tx="ekr.20081030090840.1">g.es('line1\nline2',tabName='Test')</t>
 </tnodes>
 </leo_file>

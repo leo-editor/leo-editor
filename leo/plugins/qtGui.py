@@ -3641,6 +3641,7 @@ class leoQtLog (leoFrame.leoLog):
 
         self.contentsDict[tabName] = contents
         w.addTab(contents,tabName)
+        return contents
 
     #@-node:ekr.20081004172422.649:createTab
     #@+node:ekr.20081004172422.651:cycleTabFocus (to do)
@@ -3686,23 +3687,37 @@ class leoQtLog (leoFrame.leoLog):
 
         return len([val for val in self.frameDict.values() if val != None])
     #@-node:ekr.20081004172422.656:numberOfVisibleTabs
-    #@+node:ekr.20081004172422.658:selectTab
+    #@+node:ekr.20081004172422.658:selectTab & helper
     def selectTab (self,tabName,createText=True,wrap='none'):
 
         '''Create the tab if necessary and make it active.'''
 
-        c = self.c ; w = self.tabWidget
+        c = self.c ; w = self.tabWidget ; trace = True
+
+        ok = self.selectHelper(tabName)
+        if ok: return
+
+        contents = self.createTab(tabName,createText,wrap)
+        if createText:
+            if trace and contents != self.logCtrl:
+                g.trace(tabName,id(contents),g.callers(4))
+            self.logCtrl = contents
+
+        self.selectHelper(tabName)
+
+    #@+node:ekr.20081030092313.11:selectHelper
+    def selectHelper (self,tabName):
+
+        w = self.tabWidget
 
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
-                contents = self.logDict.get(tabName)
-                if contents:
-                    self.logCtrl = contents
-                return
+                return True
         else:
-            self.createTab(tabName,createText,wrap)
-    #@-node:ekr.20081004172422.658:selectTab
+            return False
+    #@-node:ekr.20081030092313.11:selectHelper
+    #@-node:ekr.20081004172422.658:selectTab & helper
     #@-node:ekr.20081004172422.646:Tab (qtLog)
     #@+node:ekr.20081004172422.667:qtLog color tab stuff
     def createColorPicker (self,tabName):
