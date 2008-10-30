@@ -5,32 +5,34 @@
 @nocolor-node
 
 First:
-- Get unl plugin working.
+* Handle clicks in body pane.
+* Finish hooking up headlines.
+    - Ctrl-` does not work when editing headlines.
+    - Text not selected after insert-headline.
+    ** Changes to headline do not stick after, e.g., ctrl-r.
+- Complete dialogs in leoQtGui.
+
+Next:
+- multiline strings to the log pane are not treated properly.
+- print-settings does not print to a tab and is very slow.
+- Shift-tab is Smart home. (Allow shift-tab binding).
+
+Finally:
 - Finish colorizer:
     - It doesn't get called when clicking on a new node.
     - Simulate Tk's handling of tags (an optimization)
     - Use Qt threading.
     - Handle all colorizer tags.
-- Shift-tab is Smart home. (Allow shift-tab binding).
-- Ctrl-` does not work when editing headlines.
-
-Clean up text classes:
-- Finish leoQtTextWidget class.
-- Add subclasses for QLineEdit, QScintilla, etc.
-- Add functional interface classes.
-
-Bugs:
-- Text not selected after insert-headline.
-- Complete dialogs in leoQtGui.
-- Changes to headline do not stick after, e.g., ctrl-r.
-- multiline strings to the log pane are not treated properly.
-- print-settings does not print to a tab and is very slow.
+- Clean up text classes:
+    - Finish leoQtTextWidget class.
+    - Add subclasses for QLineEdit, QScintilla, etc.
+    - Add functional interface classes.
+    - https://bugs.launchpad.net/leo-editor/+bug/286493
+      File "qtGui.py", line 745, in delete
+        s = s[:i] + s[j+1:]
+        TypeError: slice indices must be integers or None or have an __index__ method
+        (Must convert indices to ints.)
 - Fix failing unit tests. 
-- https://bugs.launchpad.net/leo-editor/+bug/286493
-  File "qtGui.py", line 745, in delete
-    s = s[:i] + s[j+1:]
-    TypeError: slice indices must be integers or None or have an __index__ method
-    (Must convert indices to ints.)
 #@nonl
 #@+node:ekr.20081029050144.10:Later
 Later:
