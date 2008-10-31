@@ -4,14 +4,22 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-Fix tree bugs:
-* (Fixed)Changes to headline do not stick after, e.g., ctrl-r.
-- Ctrl-a does not work when editing headlines.
-  No key-pressed event is generated for QLineEdit!
-  This can be worked around, but then we must create a wrapper
-  class for QLineEdit's.
+First: Fix tree bugs & clean up classes:
+
+- Add subclasses for QLineEdit, QScintilla, etc.
+- Finish leoQtTextWidget class.
+- Add functional interface classes.
+- https://bugs.launchpad.net/leo-editor/+bug/286493
+  File "qtGui.py", line 745, in delete
+    s = s[:i] + s[j+1:]
+    TypeError: slice indices must be integers or None or
+    have an __index__ method
+    (Convert indices to ints.)
 
 Next:
+- Ctrl-a does not work when editing headlines.
+  No key-pressed event is generated for QLineEdit!
+- Can we set selection without getting all text? Use the cursor?
 - Allow coloring of icon bar buttons.
 - Accumulate keystrokes while flashing brackets.
     - use w.blockSignals?  use w.setTextInteractionFlags?
@@ -25,16 +33,6 @@ Finally:
     - Simulate Tk's handling of tags (an optimization)
     - Use Qt threading.
     - Handle all colorizer tags.
-- Clean up text classes:
-    - Finish leoQtTextWidget class.
-    - Add subclasses for QLineEdit, QScintilla, etc.
-    - Add functional interface classes.
-    - https://bugs.launchpad.net/leo-editor/+bug/286493
-      File "qtGui.py", line 745, in delete
-        s = s[:i] + s[j+1:]
-        TypeError: slice indices must be integers or None or
-        have an __index__ method
-        (Convert indices to ints.)
 - Can style sheets really do the job?
 - Fix failing unit tests. 
 #@nonl
