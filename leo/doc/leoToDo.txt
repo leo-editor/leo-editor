@@ -2,8 +2,112 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
-#@+node:ekr.20080915112342.1:First 6
+#@+node:ekr.20080915112342.1:First
 
+#@+node:ekr.20081031080719.1:New find-panel options
+@nocolor-node
+
+Small changes to Leo's find command might make it much more pleasant to use:
+
+1. I am always mis-remembering whether a function or ivar is called xY
+or x_Y.  How about having the 'ignore case' option also ignore
+underscores?  So easy, so effective!
+
+2. Dubious? Have any upper case letter in the find pattern turn
+'ignore case' off.  I say this is dubious because I often type upper
+case letters without truly wanting to match cases.  But this, or
+variants, are worth experimenting with.
+
+3. Similarly, regex characters like $, ^, especially if in the
+expected positions, might turn on regular expression matching.  I
+think this is likely to work well.
+#@nonl
+#@-node:ekr.20081031080719.1:New find-panel options
+#@+node:ekr.20081023060725.1:Fix new @shadow bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4d6d0615715d3f61
+
+Using the current trunk (but also some earlier versions, both with and
+without my tinkering):
+
+I've got a pretty trivial outline: an empty @chapters, a node titled
+path that contains "@path /home/sps/Foo" and child of the path node
+with the headline "@shadow CHANGELOG" and no contents.  I then try to
+"File->Read/Write->Read @shadow nodes", and the content of CHANGELOG
+appears in the node, but the .leo_shadow directory does not get
+created, and I get the following traceback:
+
+reading: @shadow CHANGELOG
+exception executing command
+Traceback (most recent call last):
+  File "/usr/local/lib/leo/core/leoCommands.py", line 319, in
+doCommand
+    val = command(event)
+  File "/usr/local/lib/leo/core/leoCommands.py", line 1241, in
+readAtShadowNodes
+    c.atFileCommands.readAtShadowNodes(p)
+  File "/usr/local/lib/leo/core/leoAtFile.py", line 655, in
+readAtShadowNodes
+    at.readOneAtShadowNode (fileName,p)
+  File "/usr/local/lib/leo/core/leoAtFile.py", line 683, in
+readOneAtShadowNode
+    at.writeOneAtShadowNode(p,toString=False,force=True)
+  File "/usr/local/lib/leo/core/leoAtFile.py", line 2587, in
+writeOneAtShadowNode
+    at.writeOpenFile(root,nosentinels=not
+sentinels,toString=False,atAuto=False)
+  File "/usr/local/lib/leo/core/leoAtFile.py", line 2841, in
+writeOpenFile
+    at.putBody(root,fromString=fromString)
+  File "/usr/local/lib/leo/core/leoAtFile.py", line 2913, in putBody
+    at.putCodeLine(s,i)
+  File "/usr/local/lib/leo/core/leoAtFile.py", line 3136, in
+putCodeLine
+    if g.match(s,k,self.startSentinelComment + '@'):
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+
+If I save the outline at that point, it contains the following:
+
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet ekr_test?>
+<leo_file>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0"
+clone_windows="0"/>
+<globals body_outline_ratio="0.4">
+        <global_window_position top="20" left="20" height="600"
+width="800"/>
+        <global_log_window_position top="0" left="0" height="0"
+width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="sps.20081023030401.1" str_leo_pos="1,0"><vh>@chapters</vh></v>
+<v t="sps.20081023030401.3" a="E"><vh>path</vh>
+<v t="sps.20081023030401.2"><vh>@shadow CHANGELOG</vh></v>
+</v>
+</vnodes>
+<tnodes>
+<t tx="sps.20081023030401.1"></t>
+<t tx="sps.20081023030401.3">@path /home/sps/Foo
+</t>
+</tnodes>
+</leo_file>
+
+The contents of the CHANGELOG file are pretty unimpressive after I
+removed all but the top entry during debugging:
+
+0.25.?
+    Fixing #1168 for REST -- all ssl classes downcase their names.
+    This is a much cleaner fix than the xmlrpc version, thankfully. :)
+
+    Added a boolean 'crl' default value.  Now we have a location for
+    the CA CRL and the host CRL, and then a setting for configuring
+    whether we should even use a CRL.  This way we aren't trying to
+    set file paths to 'false' to disable the CRL. 
+#@nonl
+#@-node:ekr.20081023060725.1:Fix new @shadow bug
 #@+node:ekr.20081015151532.1:Protect against overwriting changed files using timestamps
 @nocolor-node
 
@@ -1305,7 +1409,7 @@ self.check_the_final_output(
 #@-node:ekr.20080708094444.38:x.propagate_changed_lines
 #@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
 #@-node:ekr.20080922115725.1:Finish @shadow
-#@-node:ekr.20080915112342.1:First 6
+#@-node:ekr.20080915112342.1:First
 #@+node:ekr.20080517102922.1:Files stuff 8
 #@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
 # Remove the old type-specific commands from the default menu.

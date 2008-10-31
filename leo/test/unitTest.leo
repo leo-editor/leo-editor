@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2522,6 +2522,11 @@
 </v>
 </v>
 </v>
+<v t="ekr.20081026172306.1" a="E"><vh>@mydata</vh>
+<v t="ekr.20081026172306.2"><vh>@run x=a, y=b</vh></v>
+</v>
+<v t="ekr.20081026171313.1"><vh>NewHeadline</vh></v>
+<v t="ekr.20081026172306.3"><vh>@command hi @key=Alt-8</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -16825,6 +16830,7 @@ rst3.py
 UNL.py
 nav_buttons.py
 hoist.py
+ipython.py
 
 image.py
 leo_to_html.py
@@ -22069,5 +22075,13 @@ finally:
             root.firstChild().doDelete(newNode = None)
     c.redraw_now()
 </t>
+<t tx="ekr.20081026171313.1">table = (...)
+
+for data in table:
+    
+    runMyScript(data)</t>
+<t tx="ekr.20081026172306.1"></t>
+<t tx="ekr.20081026172306.2"></t>
+<t tx="ekr.20081026172306.3">print 'Hi'</t>
 </tnodes>
 </leo_file>
