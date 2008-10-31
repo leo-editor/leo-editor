@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2522,7 +2522,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081026172306.1" a="E"><vh>@mydata</vh>
+<v t="ekr.20081026172306.1"><vh>@mydata</vh>
 <v t="ekr.20081026172306.2"><vh>@run x=a, y=b</vh></v>
 </v>
 <v t="ekr.20081026171313.1"><vh>NewHeadline</vh></v>
