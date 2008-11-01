@@ -557,7 +557,7 @@ class leoQtBody (leoFrame.leoBody):
     # QScintilla handles all recoloring.
     def forceFullRecolor (self):            pass
 
-    # QScintilla handles all scrolling.
+    # QScintilla and QTextEdit handle all scrolling.
     def hitTest(self,pos):                  pass
     def scrollLines(self,n):                pass
 

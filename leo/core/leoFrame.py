@@ -63,19 +63,103 @@ class baseTextWidget:
 
     #@    @+others
     #@+node:ekr.20070228074312.1:Birth & special methods (baseText)
-    def __init__ (self,c,baseClassName,name,widget):
+    def __init__ (self,c,baseClassName,name,widget,highLevelInterface=False):
 
         self.baseClassName = baseClassName
         self.c = c
+        self.highLevelInterface = highLevelInterface
         self.name = name
         self.virtualInsertPoint = None
         self.widget = widget # Not used at present.
 
+        # For unit testing.
+        aList = g.choose(highLevelInterface,
+            self.mustBeDefinedInHighLevelSubclasses,
+            self.mustBeDefinedInLowLevelSubclasses)
+        self.mustBeDefinedInSubclasses.extend(aList)
+        # g.trace(g.listToString(self.mustBeDefinedInSubclasses))
+
     def __repr__(self):
         return '%s: %s' % (self.baseClassName,id(self))
+    #@+node:ekr.20081031074455.3:baseTextWidget: must be defined in base class
+    mustBeDefinedOnlyInBaseClass = (
+        'clipboard_append', # uses g.app.gui method.
+        'clipboard_clear', # usesg.app.gui method.
+        'onChar',
+    )
+    #@nonl
+    #@-node:ekr.20081031074455.3:baseTextWidget: must be defined in base class
+    #@+node:ekr.20081031074455.4:baseTextWidget: must be defined in subclasses
+    #@+at
+    # The subclass must implement all high-level wrappers or all low-level 
+    # wrappers,
+    # depending on the highLevelWrapper ivar. The ctor extends 
+    # .mustBeDefinedInSubclasses
+    # by one of the following lists:
+    #@-at
+    #@@c
 
+    mustBeDefinedInSubclasses = [
+        'bind',
+        'flashCharacter',
+    ]
+
+    mustBeDefinedInHighLevelSubclasses = (
+        'appendText',
+        'deleteTextSelection',
+        'get',
+        'getAllText',
+        'getFocus',
+        'getInsertPoint',
+        'getSelectedText',
+        'getSelectionRange',
+        'getYScrollPosition',
+        'insert',
+        'scrollLines',
+        'see',
+        'seeInsertPoint',
+        'setAllText',
+        'setBackgroundColor',
+        'setForegroundColor',
+        'setFocus',
+        'setInsertPoint',
+        'setSelectionRange',
+        'setYScrollPosition',
+    )
+
+    mustBeDefinedInLowLevelSubclasses = (
+        '_appendText',
+        '_get',
+        '_getAllText',
+        '_getFocus',
+        '_getInsertPoint',
+        '_getLastPosition',
+        '_getSelectedText',
+        '_getSelectionRange',
+        '_getYScrollPosition',
+        '_hitTest',
+        '_insertText',
+        '_scrollLines',
+        '_see',
+        '_setAllText',
+        '_setBackgroundColor',
+        '_setFocus',
+        '_setForegroundColor',
+        '_setInsertPoint',
+        '_setSelectionRange',
+        '_setYScrollPosition',
+    )
+    #@nonl
+    #@-node:ekr.20081031074455.4:baseTextWidget: must be defined in subclasses
+    #@+node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
+
+    mustBeDefined = (
+
+    )
+    #@-node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
     #@-node:ekr.20070228074312.1:Birth & special methods (baseText)
-    #@+node:ekr.20070228074312.2:baseTextWidget.onChar
+    #@+node:ekr.20081031074455.6:must be defined in base class
+    #@+node:ekr.20070228074312.2:onChar
     # Don't even think of using key up/down events.
     # They don't work reliably and don't support auto-repeat.
 
@@ -90,12 +174,147 @@ class baseTextWidget:
             c.k.masterKeyHandler(event,stroke=keysym)
             c.outerUpdate()
     #@nonl
-    #@-node:ekr.20070228074312.2:baseTextWidget.onChar
-    #@+node:ekr.20070228074312.3:Do-nothing
+    #@-node:ekr.20070228074312.2:onChar
+    #@+node:ekr.20070228074312.12:clipboard_clear & clipboard_append
+    def clipboard_clear (self):
+
+        g.app.gui.replaceClipboardWith('')
+
+    def clipboard_append(self,s):
+
+        s1 = g.app.gui.getTextFromClipboard()
+
+        g.app.gui.replaceClipboardWith(s1 + s)
+    #@-node:ekr.20070228074312.12:clipboard_clear & clipboard_append
+    #@-node:ekr.20081031074455.6:must be defined in base class
+    #@+node:ekr.20081031074455.7:Must be defined in subclasses
+    #@-node:ekr.20081031074455.7:Must be defined in subclasses
+    #@+node:ekr.20081031074455.8:May be defined in subclasses
+    # These are high-level interface methods that do not call low-level methods.
+    #@nonl
+    #@+node:ekr.20081031074455.13: do-nothings
+    def getWidth (self):                        return 0
+    def indexIsVisible (self,i):                return False
+        # Code will loop if this returns True forever.
+    def mark_set(self,markName,i):              pass
+    def setWidth (self,width):                  pass
+    def tag_add(self,tagName,i,j=None,*args):   pass
+    def tag_configure (self,colorName,**keys):  pass
+    def tag_delete (self,tagName,*args,**keys): pass
+    def tag_names (self, *args):                return []
+    def tag_ranges(self,tagName):               return tuple()
+    def tag_remove(self,tagName,i,j=None,*args):pass
     def update (self,*args,**keys):             pass
     def update_idletasks (self,*args,**keys):   pass
-    #@-node:ekr.20070228074312.3:Do-nothing
-    #@+node:ekr.20070228074312.4:bindings (must be overridden in subclasses)
+    def xyToPythonIndex (self,x,y):             return 0
+    def yview (self,*args):                     return 0,0
+
+    tag_config = tag_configure
+    #@nonl
+    #@-node:ekr.20081031074455.13: do-nothings
+    #@+node:ekr.20070228074312.13:delete
+    def delete(self,i,j=None):
+
+        w = self
+        i = w.toPythonIndex(i)
+        if j is None: j = i+ 1
+        j = w.toPythonIndex(j)
+
+        # g.trace(i,j,len(s),repr(s[:20]))
+        s = w.getAllText()
+        w.setAllText(s[:i] + s[j:])
+    #@-node:ekr.20070228074312.13:delete
+    #@+node:ekr.20070228074312.15:event_generate
+    def event_generate(self,stroke):
+
+        w = self ; c = self.c ; char = stroke
+
+        # Canonicalize the setting.
+        stroke = c.k.shortcutFromSetting(stroke)
+
+        # g.trace('baseTextWidget','char',char,'stroke',stroke)
+
+        class eventGenerateEvent:
+            def __init__ (self,c,w,char,keysym):
+                self.c = c
+                self.char = char
+                self.keysym = keysym
+                self.leoWidget = w
+                self.widget = w
+
+        event = eventGenerateEvent(c,w,char,stroke)
+        c.k.masterKeyHandler(event,stroke=stroke)
+        c.outerUpdate()
+    #@-node:ekr.20070228074312.15:event_generate
+    #@+node:ekr.20070228102413:getName & GetName
+    def GetName(self):
+
+        return self.name
+
+    getName = GetName
+    #@nonl
+    #@-node:ekr.20070228102413:getName & GetName
+    #@+node:ekr.20070228074312.25:hasSelection
+    def hasSelection (self):
+
+        w = self
+        i,j = w.getSelectionRange()
+        return i != j
+    #@-node:ekr.20070228074312.25:hasSelection
+    #@+node:ekr.20070228074312.5:oops
+    def oops (self):
+
+        g.pr('wxGui baseTextWidget oops:',self,g.callers(4),
+            'must be overridden in subclass')
+    #@-node:ekr.20070228074312.5:oops
+    #@+node:ekr.20070228074312.28:replace
+    def replace (self,i,j,s):
+
+        w = self
+        w.delete(i,j)
+        w.insert(i,s)
+    #@-node:ekr.20070228074312.28:replace
+    #@+node:ekr.20070228074312.31:selectAllText
+    def selectAllText (self,insert=None):
+
+        '''Select all text of the widget.'''
+
+        w = self
+        w.setSelectionRange(0,'end',insert=insert)
+    #@-node:ekr.20070228074312.31:selectAllText
+    #@+node:ekr.20070228074312.8:w.rowColToGuiIndex
+    # This method is called only from the colorizer.
+    # It provides a huge speedup over naive code.
+
+    def rowColToGuiIndex (self,s,row,col):
+
+        return g.convertRowColToPythonIndex(s,row,col)    
+    #@-node:ekr.20070228074312.8:w.rowColToGuiIndex
+    #@+node:ekr.20070228074312.7:w.toGuiIndex & toPythonIndex
+    def toPythonIndex (self,index):
+
+        w = self
+
+        if type(index) == type(99):
+            return index
+        elif index == '1.0':
+            return 0
+        elif index == 'end':
+            return w._getLastPosition()
+        else:
+            # g.trace(repr(index))
+            s = w._getAllText()
+            row,col = index.split('.')
+            row,col = int(row),int(col)
+            i = g.convertRowColToPythonIndex(s,row-1,col)
+            # g.trace(index,row,col,i,g.callers(6))
+            return i
+
+    toGuiIndex = toPythonIndex
+    #@nonl
+    #@-node:ekr.20070228074312.7:w.toGuiIndex & toPythonIndex
+    #@-node:ekr.20081031074455.8:May be defined in subclasses
+    #@+node:ekr.20081031074455.9:Must be defined in subclasses (low-level interface)
     # Define these here to keep pylint happy.
 
     def _appendText(self,s):            self.oops()
@@ -120,47 +339,8 @@ class baseTextWidget:
     def _setYScrollPosition(self,i):    self.oops()
 
     _findFocus = _getFocus
-    #@-node:ekr.20070228074312.4:bindings (must be overridden in subclasses)
-    #@+node:ekr.20070228074312.5:oops
-    def oops (self):
-
-        g.pr('wxGui baseTextWidget oops:',self,g.callers(4),
-            'must be overridden in subclass')
-    #@-node:ekr.20070228074312.5:oops
-    #@+node:ekr.20070228074312.6:Index conversion
-    #@+node:ekr.20070228074312.7:w.toGuiIndex & toPythonIndex
-    def toPythonIndex (self,index):
-
-        w = self
-
-        if type(index) == type(99):
-            return index
-        elif index == '1.0':
-            return 0
-        elif index == 'end':
-            return w._getLastPosition()
-        else:
-            # g.trace(repr(index))
-            s = w._getAllText()
-            row,col = index.split('.')
-            row,col = int(row),int(col)
-            i = g.convertRowColToPythonIndex(s,row-1,col)
-            # g.trace(index,row,col,i,g.callers(6))
-            return i
-
-    toGuiIndex = toPythonIndex
-    #@nonl
-    #@-node:ekr.20070228074312.7:w.toGuiIndex & toPythonIndex
-    #@+node:ekr.20070228074312.8:w.rowColToGuiIndex
-    # This method is called only from the colorizer.
-    # It provides a huge speedup over naive code.
-
-    def rowColToGuiIndex (self,s,row,col):
-
-        return g.convertRowColToPythonIndex(s,row,col)    
-    #@-node:ekr.20070228074312.8:w.rowColToGuiIndex
-    #@-node:ekr.20070228074312.6:Index conversion
-    #@+node:ekr.20070228074312.9:Wrapper methods (widget-independent)
+    #@-node:ekr.20081031074455.9:Must be defined in subclasses (low-level interface)
+    #@+node:ekr.20081031074455.2:Must be defined in subclasses (hig-level interface)
     # These methods are widget-independent because they call the corresponding _xxx methods.
     #@nonl
     #@+node:ekr.20070228074312.10:appendText
@@ -169,37 +349,6 @@ class baseTextWidget:
         w = self
         w._appendText(s)
     #@-node:ekr.20070228074312.10:appendText
-    #@+node:ekr.20070228074312.11:bind
-    def bind (self,kind,*args,**keys):
-
-        w = self
-
-        # g.trace('wxLeoText',kind,args[0].__name__)
-    #@nonl
-    #@-node:ekr.20070228074312.11:bind
-    #@+node:ekr.20070228074312.12:clipboard_clear & clipboard_append
-    def clipboard_clear (self):
-
-        g.app.gui.replaceClipboardWith('')
-
-    def clipboard_append(self,s):
-
-        s1 = g.app.gui.getTextFromClipboard()
-
-        g.app.gui.replaceClipboardWith(s1 + s)
-    #@-node:ekr.20070228074312.12:clipboard_clear & clipboard_append
-    #@+node:ekr.20070228074312.13:delete
-    def delete(self,i,j=None):
-
-        w = self
-        i = w.toPythonIndex(i)
-        if j is None: j = i+ 1
-        j = w.toPythonIndex(j)
-
-        # g.trace(i,j,len(s),repr(s[:20]))
-        s = w.getAllText()
-        w.setAllText(s[:i] + s[j:])
-    #@-node:ekr.20070228074312.13:delete
     #@+node:ekr.20070228074312.14:deleteTextSelection
     def deleteTextSelection (self):
 
@@ -213,44 +362,6 @@ class baseTextWidget:
         # g.trace(len(s),repr(s[:20]))
         w._setAllText(s)
     #@-node:ekr.20070228074312.14:deleteTextSelection
-    #@+node:ekr.20070228074312.15:event_generate (baseTextWidget)
-    def event_generate(self,stroke):
-
-        w = self ; c = self.c ; char = stroke
-
-        # Canonicalize the setting.
-        stroke = c.k.shortcutFromSetting(stroke)
-
-        # g.trace('baseTextWidget','char',char,'stroke',stroke)
-
-        class eventGenerateEvent:
-            def __init__ (self,c,w,char,keysym):
-                self.c = c
-                self.char = char
-                self.keysym = keysym
-                self.leoWidget = w
-                self.widget = w
-
-        event = eventGenerateEvent(c,w,char,stroke)
-        c.k.masterKeyHandler(event,stroke=stroke)
-        c.outerUpdate()
-    #@-node:ekr.20070228074312.15:event_generate (baseTextWidget)
-    #@+node:ekr.20070228074312.16:flashCharacter (to do)
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): # tkTextWidget.
-
-        pass
-    #@nonl
-    #@-node:ekr.20070228074312.16:flashCharacter (to do)
-    #@+node:ekr.20070228074312.17:getFocus (baseText)
-    def getFocus (self):
-
-        w = self
-        w2 = w._getFocus()
-        # g.trace('w',w,'focus',w2)
-        return w2
-
-    findFocus = getFocus
-    #@-node:ekr.20070228074312.17:getFocus (baseText)
     #@+node:ekr.20070228074312.18:get
     def get(self,i,j=None):
 
@@ -271,7 +382,17 @@ class baseTextWidget:
         s = w._getAllText()
         return g.toUnicode(s,g.app.tkEncoding)
     #@-node:ekr.20070228074312.19:getAllText
-    #@+node:ekr.20070228074312.20:getInsertPoint (baseText)
+    #@+node:ekr.20070228074312.17:getFocus
+    def getFocus (self):
+
+        w = self
+        w2 = w._getFocus()
+        # g.trace('w',w,'focus',w2)
+        return w2
+
+    findFocus = getFocus
+    #@-node:ekr.20070228074312.17:getFocus
+    #@+node:ekr.20070228074312.20:getInsertPoint
     def getInsertPoint(self):
 
         w = self
@@ -288,14 +409,7 @@ class baseTextWidget:
         w.virtualInsertPoint = i
 
         return i
-    #@-node:ekr.20070228074312.20:getInsertPoint (baseText)
-    #@+node:ekr.20070228102413:getName & GetName
-    def GetName(self):
-        return self.name
-
-    getName = GetName
-    #@nonl
-    #@-node:ekr.20070228102413:getName & GetName
+    #@-node:ekr.20070228074312.20:getInsertPoint
     #@+node:ekr.20070228074312.21:getSelectedText
     def getSelectedText (self):
 
@@ -303,7 +417,7 @@ class baseTextWidget:
         s = w._getSelectedText()
         return g.toUnicode(s,g.app.tkEncoding)
     #@-node:ekr.20070228074312.21:getSelectedText
-    #@+node:ekr.20070228074312.22:getSelectionRange (baseText)
+    #@+node:ekr.20070228074312.22:getSelectionRange
     def getSelectionRange (self,sort=True):
 
         """Return a tuple representing the selected range of the widget.
@@ -323,30 +437,13 @@ class baseTextWidget:
             i =  w._getInsertPoint()
             #g.trace(self,'baseWidget: i',i,g.callers(6))
             return i,i
-    #@-node:ekr.20070228074312.22:getSelectionRange (baseText)
+    #@-node:ekr.20070228074312.22:getSelectionRange
     #@+node:ekr.20070228074312.23:getYScrollPosition
     def getYScrollPosition (self):
 
         w = self
         return w._getYScrollPosition()
     #@-node:ekr.20070228074312.23:getYScrollPosition
-    #@+node:ekr.20070228074312.24:getWidth
-    def getWidth (self):
-
-        '''Return the width of the widget.
-        This is only called for headline widgets,
-        and gui's may choose not to do anything here.'''
-
-        w = self
-        return 0
-    #@-node:ekr.20070228074312.24:getWidth
-    #@+node:ekr.20070228074312.25:hasSelection
-    def hasSelection (self):
-
-        w = self
-        i,j = w.getSelectionRange()
-        return i != j
-    #@-node:ekr.20070228074312.25:hasSelection
     #@+node:ekr.20070228074312.26:insert
     # The signature is more restrictive than the Tk.Text.insert method.
 
@@ -357,19 +454,6 @@ class baseTextWidget:
         # w._setInsertPoint(i)
         w._insertText(i,s)
     #@-node:ekr.20070228074312.26:insert
-    #@+node:ekr.20070228074312.27:indexIsVisible
-    def indexIsVisible (self,i):
-
-        return False # Code will loop if this returns True forever.
-    #@nonl
-    #@-node:ekr.20070228074312.27:indexIsVisible
-    #@+node:ekr.20070228074312.28:replace
-    def replace (self,i,j,s):
-
-        w = self
-        w.delete(i,j)
-        w.insert(i,s)
-    #@-node:ekr.20070228074312.28:replace
     #@+node:ekr.20070228074312.29:scrollLines
     def scrollLines (self,n):
 
@@ -390,14 +474,6 @@ class baseTextWidget:
         i = w._getInsertPoint()
         w._see(i)
     #@-node:ekr.20070228074312.30:see & seeInsertPoint
-    #@+node:ekr.20070228074312.31:selectAllText
-    def selectAllText (self,insert=None):
-
-        '''Select all text of the widget.'''
-
-        w = self
-        w.setSelectionRange(0,'end',insert=insert)
-    #@-node:ekr.20070228074312.31:selectAllText
     #@+node:ekr.20070228074312.32:setAllText
     def setAllText (self,s):
 
@@ -420,6 +496,15 @@ class baseTextWidget:
     SetBackgroundColour = setBackgroundColor
     #@nonl
     #@-node:ekr.20070228074312.33:setBackgroundColor
+    #@+node:ekr.20070228074312.34:setFocus (baseText)
+    def setFocus (self):
+
+        w = self
+        # g.trace('baseText')
+        return w._setFocus()
+
+    SetFocus = setFocus
+    #@-node:ekr.20070228074312.34:setFocus (baseText)
     #@+node:ekr.20080510153327.3:setForegroundColor
     def setForegroundColor (self,color):
 
@@ -435,24 +520,15 @@ class baseTextWidget:
     SetForegroundColour = setForegroundColor
     #@nonl
     #@-node:ekr.20080510153327.3:setForegroundColor
-    #@+node:ekr.20070228074312.34:setFocus (baseText)
-    def setFocus (self):
-
-        w = self
-        # g.trace('baseText')
-        return w._setFocus()
-
-    SetFocus = setFocus
-    #@-node:ekr.20070228074312.34:setFocus (baseText)
-    #@+node:ekr.20070228074312.35:setInsertPoint (baseText)
+    #@+node:ekr.20070228074312.35:setInsertPoint 
     def setInsertPoint (self,pos):
 
         w = self
         w.virtualInsertPoint = i = w.toPythonIndex(pos)
         # g.trace(self,i)
         w._setInsertPoint(i)
-    #@-node:ekr.20070228074312.35:setInsertPoint (baseText)
-    #@+node:ekr.20070228074312.36:setSelectionRange (baseText)
+    #@-node:ekr.20070228074312.35:setInsertPoint 
+    #@+node:ekr.20070228074312.36:setSelectionRange
     def setSelectionRange (self,i,j,insert=None):
 
         w = self
@@ -470,17 +546,7 @@ class baseTextWidget:
             ins = w.toPythonIndex(insert)
             if ins in (i,j):
                 self.virtualInsertPoint = ins
-    #@-node:ekr.20070228074312.36:setSelectionRange (baseText)
-    #@+node:ekr.20070228074312.37:setWidth
-    def setWidth (self,width):
-
-        '''Set the width of the widget.
-        This is only called for headline widgets,
-        and gui's may choose not to do anything here.'''
-
-        w = self
-    #@nonl
-    #@-node:ekr.20070228074312.37:setWidth
+    #@-node:ekr.20070228074312.36:setSelectionRange
     #@+node:ekr.20070228074312.38:setYScrollPosition
     def setYScrollPosition (self,i):
 
@@ -488,100 +554,21 @@ class baseTextWidget:
         w._setYScrollPosition(i)
     #@nonl
     #@-node:ekr.20070228074312.38:setYScrollPosition
-    #@+node:ekr.20070228074312.39:tags (to-do)
-    #@+node:ekr.20070228074312.40:mark_set (to be removed)
-    def mark_set(self,markName,i):
+    #@-node:ekr.20081031074455.2:Must be defined in subclasses (hig-level interface)
+    #@+node:ekr.20081031074455.14:Must be defined in subclasses (both interfaces)
+    #@+node:ekr.20070228074312.11:bind
+    def bind (self,kind,*args,**keys):
 
-        w = self
-        i = self.toPythonIndex(i)
-
-        ### Tk.Text.mark_set(w,markName,i)
-    #@-node:ekr.20070228074312.40:mark_set (to be removed)
-    #@+node:ekr.20070228074312.41:tag_add
-    # The signature is slightly different than the Tk.Text.insert method.
-
-    def tag_add(self,tagName,i,j=None,*args):
-
-        w = self
-        i = self.toPythonIndex(i)
-        if j is None: j = i + 1
-        j = self.toPythonIndex(j)
-
-        # Not ready yet.
-
-        # if not hasattr(w,'leo_styles'):
-            # w.leo_styles = {}
-
-        # style = w.leo_styles.get(tagName)
-
-        # if style is not None:
-            # # g.trace(i,j,tagName)
-            # w.textBaseClass.SetStyle(w,i,j,style)
+        self.oops()
     #@nonl
-    #@-node:ekr.20070228074312.41:tag_add
-    #@+node:ekr.20070228074312.42:tag_configure & helper
-    def tag_configure (self,colorName,**keys):
-        pass
+    #@-node:ekr.20070228074312.11:bind
+    #@+node:ekr.20070228074312.16:flashCharacter
+    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): # tkTextWidget.
 
-    tag_config = tag_configure
+        self.oops()
     #@nonl
-    #@-node:ekr.20070228074312.42:tag_configure & helper
-    #@+node:ekr.20070228074312.44:tag_delete
-    def tag_delete (self,tagName,*args,**keys):
-
-        pass
-
-        # g.trace(tagName,args,keys)
-    #@-node:ekr.20070228074312.44:tag_delete
-    #@+node:ekr.20070228074312.45:tag_names
-    def tag_names (self, *args):
-
-        return []
-    #@-node:ekr.20070228074312.45:tag_names
-    #@+node:ekr.20070228074312.46:tag_ranges
-    def tag_ranges(self,tagName):
-
-        return tuple()
-
-        # w = self
-        # aList = Tk.Text.tag_ranges(w,tagName)
-        # aList = [w.toPythonIndex(z) for z in aList]
-        # return tuple(aList)
-    #@-node:ekr.20070228074312.46:tag_ranges
-    #@+node:ekr.20070228074312.47:tag_remove
-    def tag_remove(self,tagName,i,j=None,*args):
-
-        w = self
-        i = self.toPythonIndex(i)
-        if j is None: j = i + 1
-        j = self.toPythonIndex(j)
-
-        ### Not ready yet.
-
-        # if not hasattr(w,'leo_styles'):
-            # w.leo_styles = {}
-
-        # style = w.leo_styles.get(tagName)
-
-        # if style is not None:
-            # # g.trace(i,j,tagName)
-            # w.textBaseClass.SetStyle(w,i,j,style)
-    #@nonl
-    #@-node:ekr.20070228074312.47:tag_remove
-    #@+node:ekr.20070228074312.48:yview
-    def yview (self,*args):
-
-        '''w.yview('moveto',y) or w.yview()'''
-
-        return 0,0
-    #@nonl
-    #@-node:ekr.20070228074312.48:yview
-    #@-node:ekr.20070228074312.39:tags (to-do)
-    #@+node:ekr.20070228074312.49:xyToGui/PythonIndex
-    def xyToPythonIndex (self,x,y):
-        return 0
-    #@-node:ekr.20070228074312.49:xyToGui/PythonIndex
-    #@-node:ekr.20070228074312.9:Wrapper methods (widget-independent)
+    #@-node:ekr.20070228074312.16:flashCharacter
+    #@-node:ekr.20081031074455.14:Must be defined in subclasses (both interfaces)
     #@-others
 #@-node:ekr.20070228074312:class baseTextWidget
 #@+node:ekr.20070228074228.1:class stringTextWidget (baseTextWidget)

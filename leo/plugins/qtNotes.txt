@@ -4,7 +4,7 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-First: Fix tree bugs & clean up classes:
+First: clean up classes:
 
 - Add subclasses for QLineEdit, QScintilla, etc.
 - Finish leoQtTextWidget class.
@@ -13,8 +13,7 @@ First: Fix tree bugs & clean up classes:
   File "qtGui.py", line 745, in delete
     s = s[:i] + s[j+1:]
     TypeError: slice indices must be integers or None or
-    have an __index__ method
-    (Convert indices to ints.)
+    have an __index__ method (Convert indices to ints.)
 
 Next:
 - Ctrl-a does not work when editing headlines.
@@ -55,7 +54,7 @@ Later:
 - Support @ifgui in settings trees.
 #@nonl
 #@-node:ekr.20081029050144.10:Later
-#@+node:ekr.20081030120643.10:Stategy for merging
+#@+node:ekr.20081030120643.10:Strategy for merging
 What is really different:
 - The plugin files themselves.
 - The stylesheet node in leoSettings.leo.
@@ -65,8 +64,12 @@ What is really different:
 Strategy:
 1. Move the above items into the core.
 2. Run all unit tests w/o plugins enabled.
-#@nonl
-#@-node:ekr.20081030120643.10:Stategy for merging
+
+
+
+
+
+#@-node:ekr.20081030120643.10:Strategy for merging
 #@-node:ekr.20081010070648.5: To do
 #@+node:ekr.20081019082316.10:New features in the core
 @nocolor-node
