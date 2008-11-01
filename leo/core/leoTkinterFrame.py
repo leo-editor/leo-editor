@@ -270,11 +270,6 @@ class leoTkinterBody (leoFrame.leoBody):
 
         self.c.widgetWantsFocus(self.bodyCtrl)
     #@-node:ekr.20031218072017.4003:Focus (tkBody)
-    #@+node:ekr.20031218072017.3999:forceRecolor
-    def forceFullRecolor (self):
-
-        self.forceFullRecolorFlag = True
-    #@-node:ekr.20031218072017.3999:forceRecolor
     #@+node:ekr.20031218072017.4000:Tk bindings (tkBody)
     #@+node:ekr.20031218072017.4002:Color tags (Tk spelling) (tkBody)
     def tag_add (self,tagName,index1,index2):

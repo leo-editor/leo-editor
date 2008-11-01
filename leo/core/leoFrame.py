@@ -187,8 +187,6 @@ class baseTextWidget:
         g.app.gui.replaceClipboardWith(s1 + s)
     #@-node:ekr.20070228074312.12:clipboard_clear & clipboard_append
     #@-node:ekr.20081031074455.6:must be defined in base class
-    #@+node:ekr.20081031074455.7:Must be defined in subclasses
-    #@-node:ekr.20081031074455.7:Must be defined in subclasses
     #@+node:ekr.20081031074455.8:May be defined in subclasses
     # These are high-level interface methods that do not call low-level methods.
     #@nonl
@@ -496,7 +494,7 @@ class baseTextWidget:
     SetBackgroundColour = setBackgroundColor
     #@nonl
     #@-node:ekr.20070228074312.33:setBackgroundColor
-    #@+node:ekr.20070228074312.34:setFocus (baseText)
+    #@+node:ekr.20070228074312.34:setFocus
     def setFocus (self):
 
         w = self
@@ -504,7 +502,7 @@ class baseTextWidget:
         return w._setFocus()
 
     SetFocus = setFocus
-    #@-node:ekr.20070228074312.34:setFocus (baseText)
+    #@-node:ekr.20070228074312.34:setFocus
     #@+node:ekr.20080510153327.3:setForegroundColor
     def setForegroundColor (self,color):
 
@@ -691,7 +689,14 @@ class leoBody:
     # List of methods that must be defined either in the base class or a subclass.
 
     mustBeDefined = (
+        'forceFullRecolor', # The base-class method is usually good enough.
         'initAfterLoad',
+        'tag_add',
+        'tag_bind',
+        'tag_config',
+        'tag_configure',
+        'tag_delete',
+        'tag_remove',
     )
     #@nonl
     #@-node:ekr.20081005065934.9:leoBody.mustBeDefined
@@ -713,15 +718,11 @@ class leoBody:
         'getBodyPaneWidth',
         'hasFocus',
         'setFocus',
-        # 'tag_add',
-        # 'tag_bind',
-        # 'tag_configure',
-        # 'tag_delete',
-        # 'tag_remove',
     )
     #@-node:ekr.20031218072017.3660:leoBody.mustBeDefinedInSubclasses
     #@+node:ekr.20061109102912:define leoBody.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
+        'forceFullRecolor',
         'getAllText',
         'getColorizer',
         'getInsertLines',
@@ -757,12 +758,29 @@ class leoBody:
     #@-node:ekr.20061109102912:define leoBody.mustBeDefinedOnlyInBaseClass
     #@-node:ekr.20031218072017.3657:leoBody.__init__
     #@+node:ekr.20081005065934.5:leoBody.mustBeDefined
-    # List of methods that must be defined either in the base class or a subclass.
+    # All of these are optional.
+    def after_idle (self,idle_handler,thread_count):
+        pass
 
-    mustBeDefined = (
-        'initAfterLoad',
-    )
-    #@nonl
+    def tag_add (self,tagName,index1,index2):
+        pass
+
+    def tag_bind (self,tagName,event,callback):
+        pass
+
+    def tag_configure (self,colorName,**keys):
+        pass
+
+    tag_config = tag_configure
+
+    def tag_delete(self,tagName):
+        pass
+
+    def tag_names(self,*args):
+        return []
+
+    def tag_remove (self,tagName,index1,index2):
+        pass
     #@-node:ekr.20081005065934.5:leoBody.mustBeDefined
     #@+node:ekr.20061109173122:leoBody: must be defined in subclasses
     # Birth, death & config
@@ -783,6 +801,10 @@ class leoBody:
     #@-node:ekr.20061109173122:leoBody: must be defined in subclasses
     #@+node:ekr.20061109173021:leoBody: must be defined in the base class
     #@+node:ekr.20031218072017.3677:Coloring (leoBody)
+    def forceFullRecolor (self):
+
+        self.forceFullRecolorFlag = True
+
     def getColorizer(self):
 
         return self.colorizer
@@ -796,8 +818,6 @@ class leoBody:
         self.c.incrementalRecolorFlag = incremental
 
     recolor_now = recolor
-
-
     #@-node:ekr.20031218072017.3677:Coloring (leoBody)
     #@+node:ekr.20060528100747:Editors (leoBody)
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
@@ -1413,6 +1433,8 @@ class leoBody:
     def setFocus(self):                     return self.bodyCtrl.setFocus()
     def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
     #@-node:ekr.20070228080627:Text Wrappers (base class)
+    #@+node:ekr.20031218072017.3999:forceRecolor
+    #@-node:ekr.20031218072017.3999:forceRecolor
     #@-node:ekr.20061109173021:leoBody: must be defined in the base class
     #@+node:ekr.20081005065934.6:leoBody: may be defined in subclasses
     def initAfterLoad (self):
