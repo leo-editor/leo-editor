@@ -5144,26 +5144,12 @@ class leoQtTree (leoFrame.leoTree):
 
         """Returns the Qt.Edit widget for position p."""
 
-        g.trace('**',repr(self._editWidgetWrapper),p and p.headString(),g.callers(4))
+        # g.trace('**',repr(self._editWidgetWrapper),p and p.headString(),g.callers(4))
 
+        # Decouple all of the core's headline code.
+        # Except for over-ridden methods
         return None
-        return self._editWidgetWrapper
-
-        # # Decouple all of the core's headline code.
-        # # Except for over-ridden methods
-        # # return None
-
-        # if 1:
-            # # Update p's tnode if we can.
-            # w = self.treeWidget
-            # item = w.currentItem()
-            # if item:
-                # column = 0
-                # s = item.text(column)
-                # # g.trace(repr(s))
-            # return None # Disable Leo's core headline code.
-        # else:
-            # return self.findEditWidget(p)
+    #@nonl
     #@-node:ekr.20081004172422.799:edit_widget
     #@+node:ekr.20081025124450.14:beforeSelectHint
     def beforeSelectHint (self,p,old_p):
