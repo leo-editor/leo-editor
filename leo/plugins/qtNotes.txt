@@ -4,10 +4,15 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-- Flash characters without changing the selection?
-- Refactor eventFilter to eliminate duplicate code.
-- Shift-tab is Smart home. (Allow shift-tab binding).
+Ask: can we find the length of QTextEdit without getting the text?
+
+Urgent bugs:
+- Ctrl-i inserts two nodes sometimes.
+- Ctrl-i, Up crashes Leo.
+
+First:
 - Can we set selection without getting all text? Use the cursor?
+- Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.
 - Suppress undo in most widgets.
 - Fix failing unit tests.
@@ -21,6 +26,7 @@ Next:
     - Use Qt threading.
     - Handle all colorizer tags.
 - Can style sheets really do the job?
+- Flash characters without changing the selection?
 #@nonl
 #@+node:ekr.20081029050144.10:Later
 Later:

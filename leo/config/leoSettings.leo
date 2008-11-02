@@ -7625,8 +7625,8 @@ QTreeWidget {
     selection-background-color: lightgrey;
     /* font-family: SansSerif; */
     font-family: DejaVu Sans Mono;
-    font-size: 16px;
-    font-weight: bold; /* normal,bold,100,..,900 */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
  }
 
@@ -7635,10 +7635,9 @@ QTreeWidget QLineEdit {
     background-color: cornsilk;
     selection-color: white;
     selection-background-color: blue;
-    /* font-family: Courier New; */
     font-family: DejaVu Sans Mono;
-    font-size: 16px;
-    font-weight: bold; /* normal,bold,100,..,900 */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
 
@@ -7649,8 +7648,8 @@ QTextEdit {
     selection-background-color: blue;
     /* font-family: Courier New; */
     font-family: DejaVu Sans Mono;
-    font-size: 16px;
-    font-weight: bold; /* normal,bold,100,..,900 */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
 
@@ -7661,10 +7660,9 @@ QTextEdit#richTextEdit {
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
     /* font-family: Courier New; */
-    font-size: 18px;
-    font-weight: bold; /* normal,bold,100,..,900 */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
-    /* zoom: 6; */ /* zoom-in: 6 */
 }
 
 /* The mini-buffer */
@@ -7672,8 +7670,8 @@ QLineEdit#lineEdit {
     selection-color: white;
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
-    font-size: 16px;
-    font-weight: bold; /* normal,bold,100,..,900 */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
