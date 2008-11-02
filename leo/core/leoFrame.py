@@ -722,7 +722,6 @@ class leoBody:
     #@-node:ekr.20031218072017.3660:leoBody.mustBeDefinedInSubclasses
     #@+node:ekr.20061109102912:define leoBody.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
-        'forceFullRecolor',
         'getAllText',
         'getColorizer',
         'getInsertLines',
@@ -801,9 +800,6 @@ class leoBody:
     #@-node:ekr.20061109173122:leoBody: must be defined in subclasses
     #@+node:ekr.20061109173021:leoBody: must be defined in the base class
     #@+node:ekr.20031218072017.3677:Coloring (leoBody)
-    def forceFullRecolor (self):
-
-        self.forceFullRecolorFlag = True
 
     def getColorizer(self):
 
@@ -1437,6 +1433,9 @@ class leoBody:
     #@-node:ekr.20031218072017.3999:forceRecolor
     #@-node:ekr.20061109173021:leoBody: must be defined in the base class
     #@+node:ekr.20081005065934.6:leoBody: may be defined in subclasses
+    def forceFullRecolor (self):
+        self.forceFullRecolorFlag = True
+
     def initAfterLoad (self):
         pass
     #@nonl

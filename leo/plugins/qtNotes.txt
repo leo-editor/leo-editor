@@ -10,8 +10,7 @@ First: Major bugs:
 - Recent crasher:
     File "C:\leo.repo\qt-plugin\leo\plugins\qtGui.py", line 6274, in editLabel
     return '%s.%s' % (row+1,col)
-
-RuntimeError: underlying C/C++ object has been deleted
+    RuntimeError: underlying C/C++ object has been deleted
 
 Next:
 - Ctrl-a does not work when editing headlines.

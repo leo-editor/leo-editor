@@ -168,6 +168,8 @@ except ImportError:
 #@+node:bob.20070813163332.64: init
 def init():
 
+    return False
+
     if g.app.unitTesting: # Not Ok for unit testing!
         return False
 

@@ -102,6 +102,7 @@ except ImportError:
 #@+node:ekr.20050719111045.1: init
 def init ():
 
+    return False
     if not wx: return False
 
     aList = wx.version().split('.')

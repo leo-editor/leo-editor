@@ -5411,6 +5411,104 @@ class qtSearchWidget:
         self.text = None
 #@nonl
 #@-node:ekr.20081007015817.34:class qtSearchWidget
+#@+node:ville.20081011134505.13:Non-essential
+#@+node:ville.20081011134505.11:class LeoQuickSearchWidget
+import qt_quicksearch
+
+def install_qt_quicksearch_tab(c):
+    tabw = c.frame.top.tabWidget
+    wdg = LeoQuickSearchWidget(c,tabw)
+    tabw.addTab(wdg, "QuickSearch")
+
+g.insqs = install_qt_quicksearch_tab
+
+class LeoQuickSearchWidget(QtGui.QWidget):
+    """ Real-time search widget """
+    #@    @+others
+    #@+node:ville.20081011134505.12:methods
+    import qt_quicksearch
+    def __init__(self, c, parent = None):
+        QtGui.QWidget.__init__(self, parent)
+        self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
+        self.ui.setupUi(self)
+
+        self.connect(self.ui.lineEdit,
+                    QtCore.SIGNAL("textChanged(const QString&)"),
+                      self.textChanged)
+        self.connect(self.ui.tableWidget,
+                    QtCore.SIGNAL("cellClicked(int, int)"),
+                      self.cellClicked)
+
+        self.c = c                  
+        self.ps = {} # item=> pos
+
+    def textChanged(self):
+        print "New text", self.ui.lineEdit.text()
+        idx = 0
+        self.ui.tableWidget.clear()
+        for p in self.match_headlines(g.toUnicode(self.ui.lineEdit.text(),'utf-8')):
+            it = QtGui.QTableWidgetItem(p.headString())
+            self.ps[idx] = p.copy()
+            self.ui.tableWidget.setItem(idx, 0, it)
+            idx+=1
+
+        self.ui.tableWidget.setRowCount(idx)
+
+        print "Matches",idx
+
+    def cellClicked (self, row, column ) :
+        p = self.ps[row]
+        print "Go to pos",p
+        self.c.selectPosition(p)
+
+
+    def match_headlines(self, pat):
+
+        c = self.c
+        pat = pat.lower()
+        for p in c.allNodes_iter():
+            if pat in p.headString():
+                yield p
+        return 
+    #@-node:ville.20081011134505.12:methods
+    #@-others
+#@-node:ville.20081011134505.11:class LeoQuickSearchWidget
+#@+node:ville.20081014172405.11:quickheadlines
+def install_qt_quickheadlines_tab(c):
+    global __qh
+    __qh = QuickHeadlines(c)
+
+g.insqh = install_qt_quickheadlines_tab
+
+class QuickHeadlines:
+    def __init__(self, c):
+        self.c = c
+        tabw = c.frame.top.tabWidget
+        self.listWidget = QtGui.QListWidget(tabw)
+        tabw.addTab(self.listWidget, "Headlines")
+        c.frame.top.connect(c.frame.top.treeWidget,
+          QtCore.SIGNAL("itemSelectionChanged()"), self.req_update)
+        self.requested = False
+    def req_update(self):
+        """ prevent too frequent updates (only one/100 msec) """
+        if self.requested:
+            return
+        QtCore.QTimer.singleShot(100, self.update)
+        self.requested = True
+
+    def update(self):
+
+        print "quickheadlines update"
+        self.requested = False
+        self.listWidget.clear()
+        p = self.c.currentPosition()
+        for n in p.children_iter():
+            self.listWidget.addItem(n.headString())
+
+
+
+#@-node:ville.20081014172405.11:quickheadlines
+#@-node:ville.20081011134505.13:Non-essential
 #@+node:ekr.20081031074959.16:Text widget classes
 #@+node:ekr.20081031074959.12: class leoQtBaseTextWidget
 class leoQtBaseTextWidget (leoFrame.baseTextWidget):
@@ -5432,7 +5530,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         # Init ivars.
         self.tags = {}
-        self.useScintilla = False
+        self.useScintilla = False # This is used!
 
         if not c: return ### Can happen.
 
@@ -5947,6 +6045,207 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@-node:ekr.20081004172422.519:Editors (to do)
     #@-others
 #@-node:ekr.20081031074959.12: class leoQtBaseTextWidget
+#@+node:ekr.20081101134906.13:class leoQLineEditWidget
+class leoQLineEditWidget (leoQtBaseTextWidget):
+
+    #@    @+others
+    #@+node:ekr.20081101134906.14:Birth
+    #@+node:ekr.20081101134906.15:ctor
+    def __init__ (self,widget,name,c=None):
+
+        # Init the base class.
+        leoQtBaseTextWidget.__init__(self,widget,
+            name='leoQLineEditWidget',c=c)
+
+        self.setConfig()
+        self.setFontFromConfig()
+        self.setColorFromConfig()
+    #@-node:ekr.20081101134906.15:ctor
+    #@+node:ekr.20081101134906.16:setFontFromConfig
+    def setFontFromConfig (self,w=None):
+
+        '''Set the font in the widget w (a body editor).'''
+
+        c = self.c
+        if not w: w = self.widget
+
+        font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant",  "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+
+        self.fontRef = font # ESSENTIAL: retain a link to font.
+        # w.configure(font=font)
+
+        # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
+    #@-node:ekr.20081101134906.16:setFontFromConfig
+    #@+node:ekr.20081101134906.17:setColorFromConfig
+    def setColorFromConfig (self,w=None):
+
+        '''Set the font in the widget w (a body editor).'''
+
+        c = self.c
+        if w is None: w = self.widget
+
+        bg = c.config.getColor("body_text_background_color") or 'white'
+        try:
+            pass ### w.configure(bg=bg)
+        except:
+            g.es("exception setting body text background color")
+            g.es_exception()
+
+        fg = c.config.getColor("body_text_foreground_color") or 'black'
+        try:
+            pass ### w.configure(fg=fg)
+        except:
+            g.es("exception setting body textforeground color")
+            g.es_exception()
+
+        bg = c.config.getColor("body_insertion_cursor_color")
+        if bg:
+            try:
+                pass ### w.configure(insertbackground=bg)
+            except:
+                g.es("exception setting body pane cursor color")
+                g.es_exception()
+
+        sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
+        try:
+            pass ### w.configure(selectbackground=sel_bg)
+        except Exception:
+            g.es("exception setting body pane text selection background color")
+            g.es_exception()
+
+        sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
+        try:
+            pass ### w.configure(selectforeground=sel_fg)
+        except Exception:
+            g.es("exception setting body pane text selection foreground color")
+            g.es_exception()
+
+        # if sys.platform != "win32": # Maybe a Windows bug.
+            # fg = c.config.getColor("body_cursor_foreground_color")
+            # bg = c.config.getColor("body_cursor_background_color")
+            # if fg and bg:
+                # cursor="xterm" + " " + fg + " " + bg
+                # try:
+                    # pass ### w.configure(cursor=cursor)
+                # except:
+                    # import traceback ; traceback.print_exc()
+    #@-node:ekr.20081101134906.17:setColorFromConfig
+    #@+node:ekr.20081101134906.18:setConfig
+    def setConfig (self):
+
+        c = self.c ; w = self.widget
+
+        n = c.config.getInt('qt-rich-text-zoom-in')
+
+        w.setWordWrapMode(QtGui.QTextOption.NoWrap)
+
+        # w.zoomIn(1)
+        # w.updateMicroFocus()
+        if n not in (None,0):
+            # This only works when there is no style sheet.
+            # g.trace('zoom-in',n)
+            w.zoomIn(n)
+            w.updateMicroFocus()
+    #@-node:ekr.20081101134906.18:setConfig
+    #@-node:ekr.20081101134906.14:Birth
+    #@+node:ekr.20081101134906.19:Widget-specific overrides (QLineEdit)
+    #@+node:ekr.20081101134906.20:getAllText
+    def getAllText(self):
+
+        w = self.widget
+        s = w.text()
+        s = g.toUnicode(s,'utf-8')
+        return s
+    #@-node:ekr.20081101134906.20:getAllText
+    #@+node:ekr.20081101134906.21:getInsertPoint
+    def getInsertPoint(self):
+
+        return self.widget.cursorPosition()
+    #@-node:ekr.20081101134906.21:getInsertPoint
+    #@+node:ekr.20081101134906.22:getSelectionRange
+    def getSelectionRange(self,sort=True):
+
+        w = self.widget
+        if w.hasSelectedText():
+            i = w.selectionStart()
+            s = w.selectedText()
+            j = i + len(s)
+        else:
+            i = j = w.getInsertPoint()
+        return i,j
+    #@nonl
+    #@-node:ekr.20081101134906.22:getSelectionRange
+    #@+node:ekr.20081101134906.23:hasSelection
+    def hasSelection(self):
+
+        return self.widget.hasSelection()
+    #@-node:ekr.20081101134906.23:hasSelection
+    #@+node:ekr.20081101134906.24:see & seeInsertPoint
+    def see(self,i):
+        pass
+
+    def seeInsertPoint (self):
+        pass
+    #@-node:ekr.20081101134906.24:see & seeInsertPoint
+    #@+node:ekr.20081101134906.25:setAllText
+    def setAllText(self,s,insert=None):
+
+        w = self.widget
+        i = g.choose(insert is None,0,insert)
+        w.setText(s)
+        self.setSelectionRange(i,i,insert=i)
+    #@-node:ekr.20081101134906.25:setAllText
+    #@+node:ekr.20081101134906.26:setInsertPoint
+    def setInsertPoint(self,i):
+
+        w = self.widget
+        s = w.toPlainText()
+        cursor = w.textCursor()
+        i = max(0,min(i,len(s)))
+        cursor.setPosition(i)
+        w.setTextCursor(cursor)
+    #@-node:ekr.20081101134906.26:setInsertPoint
+    #@+node:ekr.20081101134906.27:setSelectionRangeHelper
+    def setSelectionRangeHelper(self,i,j,insert):
+
+        w = self.widget
+        # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
+        e = QtGui.QTextCursor
+        if i > j: i,j = j,i
+        s = w.toPlainText()
+        i = max(0,min(i,len(s)))
+        j = max(0,min(j,len(s)))
+        k = max(0,min(j-i,len(s)))
+        cursor = w.textCursor()
+        if i == j:
+            cursor.setPosition(i)
+        elif insert in (j,None):
+            cursor.setPosition(i)
+            k = max(0,min(k,len(s)))
+            cursor.movePosition(e.Right,e.KeepAnchor,k)
+        else:
+            cursor.setPosition(j)
+            cursor.movePosition(e.Left,e.KeepAnchor,k)
+
+        w.setTextCursor(cursor)
+    #@-node:ekr.20081101134906.27:setSelectionRangeHelper
+    #@+node:ekr.20081101134906.28:setYScrollPosition
+    def setYScrollPosition(self,pos):
+
+        w = self.widget
+        sb = w.verticalScrollBar()
+        # g.trace(pos)
+        if pos is None: pos = 0
+        elif type(pos) == types.TupleType:
+            pos = pos[0]
+        sb.setSliderPosition(pos)
+    #@-node:ekr.20081101134906.28:setYScrollPosition
+    #@-node:ekr.20081101134906.19:Widget-specific overrides (QLineEdit)
+    #@-others
+#@-node:ekr.20081101134906.13:class leoQLineEditWidget
 #@+node:ekr.20081031074959.11:class leoQScintillaWidget
 class leoQScintillaWidget (leoQtBaseTextWidget):
 
@@ -6195,7 +6494,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 # except:
                     # import traceback ; traceback.print_exc()
     #@-node:ekr.20081004172422.508:setColorFromConfig
-    #@-node:ekr.20081031074959.23:Birth
     #@+node:ekr.20081023060109.12:setConfig
     def setConfig (self):
 
@@ -6213,6 +6511,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             w.zoomIn(n)
             w.updateMicroFocus()
     #@-node:ekr.20081023060109.12:setConfig
+    #@-node:ekr.20081031074959.23:Birth
     #@+node:ekr.20081031074959.27:Widget-specific overrides (QTextEdit)
     #@+node:ekr.20081024163213.12:flashCharacter
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
@@ -6374,104 +6673,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@-others
 #@-node:ekr.20081031074959.10:class leoQTextEditWidget
 #@-node:ekr.20081031074959.16:Text widget classes
-#@+node:ville.20081011134505.13:Non-essential
-#@+node:ville.20081011134505.11:class LeoQuickSearchWidget
-import qt_quicksearch
-
-def install_qt_quicksearch_tab(c):
-    tabw = c.frame.top.tabWidget
-    wdg = LeoQuickSearchWidget(c,tabw)
-    tabw.addTab(wdg, "QuickSearch")
-
-g.insqs = install_qt_quicksearch_tab
-
-class LeoQuickSearchWidget(QtGui.QWidget):
-    """ Real-time search widget """
-    #@    @+others
-    #@+node:ville.20081011134505.12:methods
-    import qt_quicksearch
-    def __init__(self, c, parent = None):
-        QtGui.QWidget.__init__(self, parent)
-        self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
-        self.ui.setupUi(self)
-
-        self.connect(self.ui.lineEdit,
-                    QtCore.SIGNAL("textChanged(const QString&)"),
-                      self.textChanged)
-        self.connect(self.ui.tableWidget,
-                    QtCore.SIGNAL("cellClicked(int, int)"),
-                      self.cellClicked)
-
-        self.c = c                  
-        self.ps = {} # item=> pos
-
-    def textChanged(self):
-        print "New text", self.ui.lineEdit.text()
-        idx = 0
-        self.ui.tableWidget.clear()
-        for p in self.match_headlines(g.toUnicode(self.ui.lineEdit.text(),'utf-8')):
-            it = QtGui.QTableWidgetItem(p.headString())
-            self.ps[idx] = p.copy()
-            self.ui.tableWidget.setItem(idx, 0, it)
-            idx+=1
-
-        self.ui.tableWidget.setRowCount(idx)
-
-        print "Matches",idx
-
-    def cellClicked (self, row, column ) :
-        p = self.ps[row]
-        print "Go to pos",p
-        self.c.selectPosition(p)
-
-
-    def match_headlines(self, pat):
-
-        c = self.c
-        pat = pat.lower()
-        for p in c.allNodes_iter():
-            if pat in p.headString():
-                yield p
-        return 
-    #@-node:ville.20081011134505.12:methods
-    #@-others
-#@-node:ville.20081011134505.11:class LeoQuickSearchWidget
-#@+node:ville.20081014172405.11:quickheadlines
-def install_qt_quickheadlines_tab(c):
-    global __qh
-    __qh = QuickHeadlines(c)
-
-g.insqh = install_qt_quickheadlines_tab
-
-class QuickHeadlines:
-    def __init__(self, c):
-        self.c = c
-        tabw = c.frame.top.tabWidget
-        self.listWidget = QtGui.QListWidget(tabw)
-        tabw.addTab(self.listWidget, "Headlines")
-        c.frame.top.connect(c.frame.top.treeWidget,
-          QtCore.SIGNAL("itemSelectionChanged()"), self.req_update)
-        self.requested = False
-    def req_update(self):
-        """ prevent too frequent updates (only one/100 msec) """
-        if self.requested:
-            return
-        QtCore.QTimer.singleShot(100, self.update)
-        self.requested = True
-
-    def update(self):
-
-        print "quickheadlines update"
-        self.requested = False
-        self.listWidget.clear()
-        p = self.c.currentPosition()
-        for n in p.children_iter():
-            self.listWidget.addItem(n.headString())
-
-
-
-#@-node:ville.20081014172405.11:quickheadlines
-#@-node:ville.20081011134505.13:Non-essential
 #@-others
 #@-node:ekr.20081004102201.619:@thin qtGui.py
 #@-leo
