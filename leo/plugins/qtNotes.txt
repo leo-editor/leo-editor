@@ -159,6 +159,7 @@ def getName (self):
     else:
         self._editWidget = None
         self._editWidgetPosition = None
+        self._editWidgetWrapper = None
         name = 'canvas(tree)' # Must start with 'canvas'
 
     # g.trace(name)
@@ -353,12 +354,27 @@ def eventFilter(self, obj, event):
     c = self.c ; k = c.k ; e = QtCore.QEvent 
     trace = False ; verbose = True
     eventType = event.type()
-
-    # We can't do this unless we wrap all edit widgets.
-    # if eventType == e.KeyRelease and c.frame.tree._editWidget:
-        # eventType = e.KeyPress # Nasty.
-
     kinds = (e.ShortcutOverride,e.KeyPress,e.KeyRelease)
+
+    # Ugly special case for headline widgets...
+    if c.frame.tree._editWidgetWrapper:
+        w = c.frame.tree._editWidgetWrapper
+        if w and eventType in kinds:
+            tkKey,ch,ignore = self.toTkKey(event)
+            aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+            override = len(aList) > 0
+            if override and eventType == e.KeyRelease:
+                stroke = self.toStroke(tkKey,ch)
+                leoEvent = leoKeyEvent(event,c,w,stroke)
+                ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+                if trace: g.trace(self.tag,
+                    g.choose(k.inState(),'in-state','bound'),tkKey,'ret',ret)
+        else:
+            # if trace: g.trace('headline non-key event')
+            override = False
+            tkKey = None
+        if trace: self.traceEvent(obj,event,tkKey,override)
+        return override
 
     if eventType in kinds:
         tkKey,ch,ignore = self.toTkKey(event)
@@ -722,6 +738,10 @@ def editLabel (self,p,selectAll=False):
     if self.redrawing:
         if trace and verbose: g.trace('redrawing')
         return
+    if self._editWidget:
+        # Not an error, because of key weirdness.
+        if trace and verbose: g.trace('already editing')
+        return
 
     if trace:
         g.trace('*** all',selectAll,p.headString(),g.callers(4))
@@ -745,13 +765,16 @@ def editLabel (self,p,selectAll=False):
         e = w.itemWidget(item,0) # A QLineEdit
         if e:
             s = e.text() ; len_s = len(s)
-            self._editWidgetPosition = p.copy()
-            self._editWidget = e
+            if 1: # Hook up the widget to Leo's core.
+                self._editWidgetPosition = p.copy()
+                self._editWidget = e
+                self._editWidgetWrapper = leoQLineEditWidget(
+                    widget=e,name='head',c=c)
+                # filter = leoQtEventFilter(c,w=self,tag='head')
+                # e.installEventFilter(filter)
             start,n = g.choose(selectAll,
                 tuple([0,len_s]),tuple([len_s,0]))
             e.setObjectName('headline')
-            # filter = leoQtEventFilter(c,w=e,tag='tree')
-            # e.installEventFilter(filter)
             e.setSelection(start,n)
             e.setFocus()
         else: g.trace('*** no e')
@@ -1202,9 +1225,14 @@ def edit_widget (self,p):
 
     """Returns the Qt.Edit widget for position p."""
 
-    # Decouple all of the core's headline code.
-    # Except for over-ridden methods
+    g.trace('**',repr(self._editWidgetWrapper),p and p.headString(),g.callers(4))
+
     return None
+    return self._editWidgetWrapper
+
+    # # Decouple all of the core's headline code.
+    # # Except for over-ridden methods
+    # # return None
 
     # if 1:
         # # Update p's tnode if we can.
@@ -1236,10 +1264,11 @@ def beforeSelectHint (self,p,old_p):
 #@+node:ekr.20081025124450.15:afterSelectHint
 def afterSelectHint (self,p,old_p):
 
+    # g.trace(p and p.headString(),g.callers(4))
+
     self.selecting = False
 
     self.redraw_after_select()
-#@nonl
 #@-node:ekr.20081025124450.15:afterSelectHint
 #@+node:ekr.20081004172422.854:setHeadline
 def setHeadline (self,p,s):
@@ -1270,6 +1299,10 @@ def editLabel (self,p,selectAll=False):
     if self.redrawing:
         if trace and verbose: g.trace('redrawing')
         return
+    if self._editWidget:
+        # Not an error, because of key weirdness.
+        if trace and verbose: g.trace('already editing')
+        return
 
     if trace:
         g.trace('*** all',selectAll,p.headString(),g.callers(4))
@@ -1293,13 +1326,16 @@ def editLabel (self,p,selectAll=False):
         e = w.itemWidget(item,0) # A QLineEdit
         if e:
             s = e.text() ; len_s = len(s)
-            self._editWidgetPosition = p.copy()
-            self._editWidget = e
+            if 1: # Hook up the widget to Leo's core.
+                self._editWidgetPosition = p.copy()
+                self._editWidget = e
+                self._editWidgetWrapper = leoQLineEditWidget(
+                    widget=e,name='head',c=c)
+                # filter = leoQtEventFilter(c,w=self,tag='head')
+                # e.installEventFilter(filter)
             start,n = g.choose(selectAll,
                 tuple([0,len_s]),tuple([len_s,0]))
             e.setObjectName('headline')
-            # filter = leoQtEventFilter(c,w=e,tag='tree')
-            # e.installEventFilter(filter)
             e.setSelection(start,n)
             e.setFocus()
         else: g.trace('*** no e')
@@ -1333,7 +1369,8 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 
     '''Officially change a headline.'''
 
-    trace = False ; verbose = True
+    trace = False ; verbose = False
+    c = self.c
     e = self._editWidget
     p = self._editWidgetPosition
 
@@ -1346,6 +1383,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         if trace and verbose: g.trace('Wrong focus')
         self._editWidget = None
         self._editWidgetPosition = None
+        self._editWidgetWrapper = None
         return
     if not p:
         if trace and verbose: g.trace('No widget position')
@@ -1354,8 +1392,15 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     s = g.toUnicode(s,'utf-8')
     if trace: g.trace(repr(s),g.callers(4))
     p.setHeadString(s)
+    # End the editing!
     self._editWidget = None
     self._editWidgetPosition = None
+    self._editWidgetWrapper = None
+    c.redraw(scroll=False)
+    if self.stayInTree:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
 #@nonl
 #@-node:ekr.20081030120643.11:onHeadChanged
 #@-node:ekr.20081004172422.844:Selecting & editing... (qtTree)
@@ -2008,10 +2053,11 @@ def setCurrentItem (self):
 #@+node:ekr.20081025124450.15:afterSelectHint
 def afterSelectHint (self,p,old_p):
 
+    # g.trace(p and p.headString(),g.callers(4))
+
     self.selecting = False
 
     self.redraw_after_select()
-#@nonl
 #@-node:ekr.20081025124450.15:afterSelectHint
 #@+node:ekr.20081027124640.10:sig_itemCollapsed
 def sig_itemCollapsed (self,item):

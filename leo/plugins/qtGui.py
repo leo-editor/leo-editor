@@ -419,13 +419,12 @@ class leoQtBody (leoFrame.leoBody):
     def scrollLines(self,n):
         return self.widget.scrollLines(n)
 
-    def setSelectionRange (self,i,j,insert=None):
-        return self.widget.setSelectionRange(i,j,insert)
+    def setSelectionRange (self,sel):
+        i,j = sel
+        return self.widget.setSelectionRange(i,j)
 
     def setYScrollPosition (self,i):
         return self.widget.setYScrollPosition(i)
-
-
     #@-node:ekr.20081031074959.13:High-level interface to self.widget
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
@@ -493,12 +492,27 @@ class leoQtEventFilter(QtCore.QObject):
         c = self.c ; k = c.k ; e = QtCore.QEvent 
         trace = False ; verbose = True
         eventType = event.type()
-
-        # We can't do this unless we wrap all edit widgets.
-        # if eventType == e.KeyRelease and c.frame.tree._editWidget:
-            # eventType = e.KeyPress # Nasty.
-
         kinds = (e.ShortcutOverride,e.KeyPress,e.KeyRelease)
+
+        # Ugly special case for headline widgets...
+        if c.frame.tree._editWidgetWrapper:
+            w = c.frame.tree._editWidgetWrapper
+            if w and eventType in kinds:
+                tkKey,ch,ignore = self.toTkKey(event)
+                aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+                override = len(aList) > 0
+                if override and eventType == e.KeyRelease:
+                    stroke = self.toStroke(tkKey,ch)
+                    leoEvent = leoKeyEvent(event,c,w,stroke)
+                    ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+                    if trace: g.trace(self.tag,
+                        g.choose(k.inState(),'in-state','bound'),tkKey,'ret',ret)
+            else:
+                # if trace: g.trace('headline non-key event')
+                override = False
+                tkKey = None
+            if trace: self.traceEvent(obj,event,tkKey,override)
+            return override
 
         if eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
@@ -4072,6 +4086,7 @@ class leoQtTree (leoFrame.leoTree):
         self.dragging = False
         self._editWidgetPosition = None
         self._editWidget = None
+        self._editWidgetWrapper = None
         self.expanding = False
         self.fullDrawing = False
         self.generation = 0
@@ -4221,6 +4236,7 @@ class leoQtTree (leoFrame.leoTree):
         else:
             self._editWidget = None
             self._editWidgetPosition = None
+            self._editWidgetWrapper = None
             name = 'canvas(tree)' # Must start with 'canvas'
 
         # g.trace(name)
@@ -4712,6 +4728,7 @@ class leoQtTree (leoFrame.leoTree):
             # g.trace("changed: ",p.headString(),g.callers(4))
             self._editWidget = None
             self._editWidgetPosition = None
+            self._editWidgetWrapper = None
         else:
             g.trace('can not happen: no p')
     #@-node:ville.20081014172405.10:sig_itemChanged
@@ -5127,9 +5144,14 @@ class leoQtTree (leoFrame.leoTree):
 
         """Returns the Qt.Edit widget for position p."""
 
-        # Decouple all of the core's headline code.
-        # Except for over-ridden methods
+        g.trace('**',repr(self._editWidgetWrapper),p and p.headString(),g.callers(4))
+
         return None
+        return self._editWidgetWrapper
+
+        # # Decouple all of the core's headline code.
+        # # Except for over-ridden methods
+        # # return None
 
         # if 1:
             # # Update p's tnode if we can.
@@ -5161,10 +5183,11 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081025124450.15:afterSelectHint
     def afterSelectHint (self,p,old_p):
 
+        # g.trace(p and p.headString(),g.callers(4))
+
         self.selecting = False
 
         self.redraw_after_select()
-    #@nonl
     #@-node:ekr.20081025124450.15:afterSelectHint
     #@+node:ekr.20081004172422.854:setHeadline
     def setHeadline (self,p,s):
@@ -5195,6 +5218,10 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing:
             if trace and verbose: g.trace('redrawing')
             return
+        if self._editWidget:
+            # Not an error, because of key weirdness.
+            if trace and verbose: g.trace('already editing')
+            return
 
         if trace:
             g.trace('*** all',selectAll,p.headString(),g.callers(4))
@@ -5218,13 +5245,16 @@ class leoQtTree (leoFrame.leoTree):
             e = w.itemWidget(item,0) # A QLineEdit
             if e:
                 s = e.text() ; len_s = len(s)
-                self._editWidgetPosition = p.copy()
-                self._editWidget = e
+                if 1: # Hook up the widget to Leo's core.
+                    self._editWidgetPosition = p.copy()
+                    self._editWidget = e
+                    self._editWidgetWrapper = leoQLineEditWidget(
+                        widget=e,name='head',c=c)
+                    # filter = leoQtEventFilter(c,w=self,tag='head')
+                    # e.installEventFilter(filter)
                 start,n = g.choose(selectAll,
                     tuple([0,len_s]),tuple([len_s,0]))
                 e.setObjectName('headline')
-                # filter = leoQtEventFilter(c,w=e,tag='tree')
-                # e.installEventFilter(filter)
                 e.setSelection(start,n)
                 e.setFocus()
             else: g.trace('*** no e')
@@ -5258,7 +5288,8 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Officially change a headline.'''
 
-        trace = False ; verbose = True
+        trace = False ; verbose = False
+        c = self.c
         e = self._editWidget
         p = self._editWidgetPosition
 
@@ -5271,6 +5302,7 @@ class leoQtTree (leoFrame.leoTree):
             if trace and verbose: g.trace('Wrong focus')
             self._editWidget = None
             self._editWidgetPosition = None
+            self._editWidgetWrapper = None
             return
         if not p:
             if trace and verbose: g.trace('No widget position')
@@ -5279,8 +5311,15 @@ class leoQtTree (leoFrame.leoTree):
         s = g.toUnicode(s,'utf-8')
         if trace: g.trace(repr(s),g.callers(4))
         p.setHeadString(s)
+        # End the editing!
         self._editWidget = None
         self._editWidgetPosition = None
+        self._editWidgetWrapper = None
+        c.redraw(scroll=False)
+        if self.stayInTree:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
     #@nonl
     #@-node:ekr.20081030120643.11:onHeadChanged
     #@-node:ekr.20081004172422.844:Selecting & editing... (qtTree)
@@ -5633,7 +5672,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w = self.widget
         s = self.getAllText()
 
-        if j is None: j = i
+        if j is None: j = i+1
         if i > j: i,j = j,i
 
         # g.trace('i',i,'j',j)
@@ -6054,8 +6093,11 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
     def __init__ (self,widget,name,c=None):
 
         # Init the base class.
-        leoQtBaseTextWidget.__init__(self,widget,
-            name='leoQLineEditWidget',c=c)
+        leoQtBaseTextWidget.__init__(self,widget,name,c=c)
+
+        self.baseClassName='leoQLineEditWidget'
+
+        # g.trace('leoQLineEditWidget',id(widget),g.callers(4))
 
         self.setConfig()
         self.setFontFromConfig()
@@ -6066,89 +6108,81 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         '''Set the font in the widget w (a body editor).'''
 
-        c = self.c
-        if not w: w = self.widget
+        return
 
-        font = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant",  "body_text_font_weight",
-            c.config.defaultBodyFontSize)
+        # c = self.c
+        # if not w: w = self.widget
 
-        self.fontRef = font # ESSENTIAL: retain a link to font.
-        # w.configure(font=font)
+        # font = c.config.getFontFromParams(
+            # "head_text_font_family", "head_text_font_size",
+            # "head_text_font_slant",  "head_text_font_weight",
+            # c.config.defaultBodyFontSize)
 
-        # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
+        # self.fontRef = font # ESSENTIAL: retain a link to font.
+        # # w.configure(font=font)
+
+        # # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
     #@-node:ekr.20081101134906.16:setFontFromConfig
     #@+node:ekr.20081101134906.17:setColorFromConfig
     def setColorFromConfig (self,w=None):
 
         '''Set the font in the widget w (a body editor).'''
 
-        c = self.c
-        if w is None: w = self.widget
+        return
 
-        bg = c.config.getColor("body_text_background_color") or 'white'
-        try:
-            pass ### w.configure(bg=bg)
-        except:
-            g.es("exception setting body text background color")
-            g.es_exception()
+        # c = self.c
+        # if w is None: w = self.widget
 
-        fg = c.config.getColor("body_text_foreground_color") or 'black'
-        try:
-            pass ### w.configure(fg=fg)
-        except:
-            g.es("exception setting body textforeground color")
-            g.es_exception()
+        # bg = c.config.getColor("body_text_background_color") or 'white'
+        # try:
+            # pass ### w.configure(bg=bg)
+        # except:
+            # g.es("exception setting body text background color")
+            # g.es_exception()
 
-        bg = c.config.getColor("body_insertion_cursor_color")
-        if bg:
-            try:
-                pass ### w.configure(insertbackground=bg)
-            except:
-                g.es("exception setting body pane cursor color")
-                g.es_exception()
+        # fg = c.config.getColor("body_text_foreground_color") or 'black'
+        # try:
+            # pass ### w.configure(fg=fg)
+        # except:
+            # g.es("exception setting body textforeground color")
+            # g.es_exception()
 
-        sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
-        try:
-            pass ### w.configure(selectbackground=sel_bg)
-        except Exception:
-            g.es("exception setting body pane text selection background color")
-            g.es_exception()
+        # bg = c.config.getColor("body_insertion_cursor_color")
+        # if bg:
+            # try:
+                # pass ### w.configure(insertbackground=bg)
+            # except:
+                # g.es("exception setting body pane cursor color")
+                # g.es_exception()
 
-        sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
-        try:
-            pass ### w.configure(selectforeground=sel_fg)
-        except Exception:
-            g.es("exception setting body pane text selection foreground color")
-            g.es_exception()
+        # sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
+        # try:
+            # pass ### w.configure(selectbackground=sel_bg)
+        # except Exception:
+            # g.es("exception setting body pane text selection background color")
+            # g.es_exception()
 
-        # if sys.platform != "win32": # Maybe a Windows bug.
-            # fg = c.config.getColor("body_cursor_foreground_color")
-            # bg = c.config.getColor("body_cursor_background_color")
-            # if fg and bg:
-                # cursor="xterm" + " " + fg + " " + bg
-                # try:
-                    # pass ### w.configure(cursor=cursor)
-                # except:
-                    # import traceback ; traceback.print_exc()
+        # sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
+        # try:
+            # pass ### w.configure(selectforeground=sel_fg)
+        # except Exception:
+            # g.es("exception setting body pane text selection foreground color")
+            # g.es_exception()
+
+        # # if sys.platform != "win32": # Maybe a Windows bug.
+            # # fg = c.config.getColor("body_cursor_foreground_color")
+            # # bg = c.config.getColor("body_cursor_background_color")
+            # # if fg and bg:
+                # # cursor="xterm" + " " + fg + " " + bg
+                # # try:
+                    # # pass ### w.configure(cursor=cursor)
+                # # except:
+                    # # import traceback ; traceback.print_exc()
     #@-node:ekr.20081101134906.17:setColorFromConfig
     #@+node:ekr.20081101134906.18:setConfig
     def setConfig (self):
-
-        c = self.c ; w = self.widget
-
-        n = c.config.getInt('qt-rich-text-zoom-in')
-
-        w.setWordWrapMode(QtGui.QTextOption.NoWrap)
-
-        # w.zoomIn(1)
-        # w.updateMicroFocus()
-        if n not in (None,0):
-            # This only works when there is no style sheet.
-            # g.trace('zoom-in',n)
-            w.zoomIn(n)
-            w.updateMicroFocus()
+        pass
+    #@nonl
     #@-node:ekr.20081101134906.18:setConfig
     #@-node:ekr.20081101134906.14:Birth
     #@+node:ekr.20081101134906.19:Widget-specific overrides (QLineEdit)
@@ -6158,25 +6192,31 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         w = self.widget
         s = w.text()
         s = g.toUnicode(s,'utf-8')
+        # g.trace(repr(s))
         return s
     #@-node:ekr.20081101134906.20:getAllText
     #@+node:ekr.20081101134906.21:getInsertPoint
     def getInsertPoint(self):
 
-        return self.widget.cursorPosition()
+        i = self.widget.cursorPosition()
+        # g.trace(i)
+        return i
     #@-node:ekr.20081101134906.21:getInsertPoint
     #@+node:ekr.20081101134906.22:getSelectionRange
     def getSelectionRange(self,sort=True):
 
         w = self.widget
+
         if w.hasSelectedText():
             i = w.selectionStart()
             s = w.selectedText()
+            s = g.toUnicode(s,'utf-8')
             j = i + len(s)
         else:
-            i = j = w.getInsertPoint()
+            i = j = w.cursorPosition()
+
+        # g.trace(i,j)
         return i,j
-    #@nonl
     #@-node:ekr.20081101134906.22:getSelectionRange
     #@+node:ekr.20081101134906.23:hasSelection
     def hasSelection(self):
@@ -6196,53 +6236,36 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         w = self.widget
         i = g.choose(insert is None,0,insert)
         w.setText(s)
-        self.setSelectionRange(i,i,insert=i)
+        if insert is not None:
+            self.setSelectionRange(i,i,insert=i)
+
+        # g.trace(i,repr(s))
     #@-node:ekr.20081101134906.25:setAllText
     #@+node:ekr.20081101134906.26:setInsertPoint
     def setInsertPoint(self,i):
 
         w = self.widget
-        s = w.toPlainText()
-        cursor = w.textCursor()
+        s = w.text()
+        s = g.toUnicode(s,'utf-8')
         i = max(0,min(i,len(s)))
-        cursor.setPosition(i)
-        w.setTextCursor(cursor)
+        w.setCursorPosition(i)
     #@-node:ekr.20081101134906.26:setInsertPoint
     #@+node:ekr.20081101134906.27:setSelectionRangeHelper
     def setSelectionRangeHelper(self,i,j,insert):
 
         w = self.widget
         # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
-        e = QtGui.QTextCursor
         if i > j: i,j = j,i
-        s = w.toPlainText()
+        s = w.text()
+        s = g.toUnicode(s,'utf-8')
         i = max(0,min(i,len(s)))
         j = max(0,min(j,len(s)))
         k = max(0,min(j-i,len(s)))
-        cursor = w.textCursor()
         if i == j:
-            cursor.setPosition(i)
-        elif insert in (j,None):
-            cursor.setPosition(i)
-            k = max(0,min(k,len(s)))
-            cursor.movePosition(e.Right,e.KeepAnchor,k)
+            w.setCursorPosition(i)
         else:
-            cursor.setPosition(j)
-            cursor.movePosition(e.Left,e.KeepAnchor,k)
-
-        w.setTextCursor(cursor)
+            w.setSelection(i,k)
     #@-node:ekr.20081101134906.27:setSelectionRangeHelper
-    #@+node:ekr.20081101134906.28:setYScrollPosition
-    def setYScrollPosition(self,pos):
-
-        w = self.widget
-        sb = w.verticalScrollBar()
-        # g.trace(pos)
-        if pos is None: pos = 0
-        elif type(pos) == types.TupleType:
-            pos = pos[0]
-        sb.setSliderPosition(pos)
-    #@-node:ekr.20081101134906.28:setYScrollPosition
     #@-node:ekr.20081101134906.19:Widget-specific overrides (QLineEdit)
     #@-others
 #@-node:ekr.20081101134906.13:class leoQLineEditWidget
@@ -6256,6 +6279,8 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
 
         # Init the base class.
         leoQtBaseTextWidget.__init__(self,widget,name,c=c)
+
+        self.baseClassName='leoQScintillaWidget'
 
         self.useScintilla = True
         self.setConfig()
@@ -6417,6 +6442,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # Init the base class.
         leoQtBaseTextWidget.__init__(self,widget,name,c=c)
+
+        self.baseClassName='leoQTextEditWidget'
 
         self.setConfig()
         self.setFontFromConfig()
