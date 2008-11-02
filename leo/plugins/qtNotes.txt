@@ -4,23 +4,23 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-First:
-- Can we set selection without getting all text? Use the cursor?
-- Allow coloring of icon bar buttons.
-- Accumulate keystrokes while flashing brackets.
-    - use w.blockSignals?  use w.setTextInteractionFlags?
-- Suppress undo in most widgets.
+- Flash characters without changing the selection?
+- Refactor eventFilter to eliminate duplicate code.
 - Shift-tab is Smart home. (Allow shift-tab binding).
+- Can we set selection without getting all text? Use the cursor?
 - Complete dialogs in leoQtGui.
+- Suppress undo in most widgets.
+- Fix failing unit tests.
 
 Next:
+- Move tk code into a plugin.
+    - Define precedence order if no gui is given.
+- Allow coloring of icon bar buttons.
 - Finish colorizer:
-    - It doesn't get called when clicking on a new node.
     - Simulate Tk's handling of tags (an optimization)
     - Use Qt threading.
     - Handle all colorizer tags.
 - Can style sheets really do the job?
-- Fix failing unit tests. 
 #@nonl
 #@+node:ekr.20081029050144.10:Later
 Later:
@@ -41,22 +41,6 @@ Later:
 - Support @ifgui in settings trees.
 #@nonl
 #@-node:ekr.20081029050144.10:Later
-#@+node:ekr.20081030120643.10:Strategy for merging
-What is really different:
-- The plugin files themselves.
-- The stylesheet node in leoSettings.leo.
-- The top-level tree.select code.
-- Two or three lines of code in the core.
-
-Strategy:
-1. Move the above items into the core.
-2. Run all unit tests w/o plugins enabled.
-
-
-
-
-
-#@-node:ekr.20081030120643.10:Strategy for merging
 #@+node:ekr.20081101124952.11:What I did
 - Add subclasses for QLineEdit, QScintilla, etc.
 - Body methods redirect to component classes.

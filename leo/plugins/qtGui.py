@@ -6529,13 +6529,19 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081024163213.12:flashCharacter
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
-        w = self.widget
+        c = self.c ; w = self.widget
+
+        # Reduce the flash time to the minimum.
+        flashes = max(1,min(2,flashes))
+        flashes = 1
+        delay = max(10,min(50,delay))
 
         def after(func):
             QtCore.QTimer.singleShot(delay,func)
 
         def addFlashCallback(self=self,w=w):
             n,i = self.flashCount,self.flashIndex
+            # g.trace(n)
             self.setSelectionRange(i,i+1)
             self.flashCount -= 1
             after(removeFlashCallback)
@@ -6546,30 +6552,17 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             if n > 0:
                 after(addFlashCallback)
             else:
+                w.blockSignals(False)
                 w.setDisabled(False)
-                w.setFocus()
                 self.setInsertPoint(self.afterFlashIndex)
-                # sb = w.verticalScrollBar()
-                # sb.setUpdatesEnabled(True)
-                if 0: # Doesn't work
-                    fg,bg = self.afterColors
-                    w.setTextColor(fg)
-                    w.setTextBackgroundColor(bg)
+                w.setFocus()
 
         self.flashCount = flashes
         self.flashIndex = i
         self.afterFlashIndex = self.getInsertPoint()
-        # sb = w.verticalScrollBar()
-        # sb.setUpdatesEnabled(False) # Doesn't help.
-        if 0: # Doesn't work with stylesheets.
-            self.afterColors = w.textColor(),w.textBackgroundColor()
-            fgColor = QtGui.QColor('red')
-            bgColor = QtGui.QColor('white')
-            w.setTextColor(fgColor)
-            w.setTextBackgroundColor(bgColor)
         w.setDisabled(True)
+        w.blockSignals(True)
         addFlashCallback()
-    #@nonl
     #@-node:ekr.20081024163213.12:flashCharacter
     #@+node:ekr.20081031074959.42:getAllText
     def getAllText(self):
@@ -6676,7 +6669,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         sb = w.verticalScrollBar()
-        # g.trace(pos)
         if pos is None: pos = 0
         elif type(pos) == types.TupleType:
             pos = pos[0]
