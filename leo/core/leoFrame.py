@@ -104,7 +104,6 @@ class baseTextWidget:
 
     mustBeDefinedInHighLevelSubclasses = (
         'appendText',
-        'deleteTextSelection',
         'get',
         'getAllText',
         'getFocus',
@@ -154,6 +153,7 @@ class baseTextWidget:
     mustBeDefined = (
         'bind',
         'flashCharacter',
+        'deleteTextSelection',
     )
     #@-node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
     #@-node:ekr.20070228074312.1:Birth & special methods (baseText)
@@ -224,6 +224,22 @@ class baseTextWidget:
         s = w.getAllText()
         w.setAllText(s[:i] + s[j:])
     #@-node:ekr.20070228074312.13:delete
+    #@+node:ekr.20070228074312.14:deleteTextSelection
+    def deleteTextSelection (self):
+
+        i,j = self.getSelectionRange()
+        self.delete(i,j)
+
+        # w = self
+        # i,j = w._getSelectionRange()
+        # if i == j: return
+
+        # s = w._getAllText()
+        # s = s[i:] + s[j:]
+
+        # # g.trace(len(s),repr(s[:20]))
+        # w._setAllText(s)
+    #@-node:ekr.20070228074312.14:deleteTextSelection
     #@+node:ekr.20070228074312.15:event_generate
     def event_generate(self,stroke):
 
@@ -264,7 +280,7 @@ class baseTextWidget:
     #@+node:ekr.20070228074312.5:oops
     def oops (self):
 
-        g.pr('wxGui baseTextWidget oops:',self,g.callers(4),
+        g.pr('baseTextWidget oops:',self,g.callers(4),
             'must be overridden in subclass')
     #@-node:ekr.20070228074312.5:oops
     #@+node:ekr.20070228074312.28:replace
@@ -349,19 +365,6 @@ class baseTextWidget:
         w = self
         w._appendText(s)
     #@-node:ekr.20070228074312.10:appendText
-    #@+node:ekr.20070228074312.14:deleteTextSelection
-    def deleteTextSelection (self):
-
-        w = self
-        i,j = w._getSelectionRange()
-        if i == j: return
-
-        s = w._getAllText()
-        s = s[i:] + s[j:]
-
-        # g.trace(len(s),repr(s[:20]))
-        w._setAllText(s)
-    #@-node:ekr.20070228074312.14:deleteTextSelection
     #@+node:ekr.20070228074312.18:get
     def get(self,i,j=None):
 
@@ -1283,6 +1286,12 @@ class leoBody:
         g.trace("leoBody oops:", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3658:oops
     #@+node:ekr.20031218072017.4018:Text (leoBody)
+    #@+node:ekr.20081103102207.2:deleteTextSelection
+    def deleteTextSelection (self):
+
+        i,j = self.getSelectionRange()
+        self.delete(i,j)
+    #@-node:ekr.20081103102207.2:deleteTextSelection
     #@+node:ekr.20031218072017.4030:getInsertLines
     def getInsertLines (self):
 
@@ -1417,8 +1426,6 @@ class leoBody:
     def setFocus(self):                     return self.bodyCtrl.setFocus()
     def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
     #@-node:ekr.20070228080627:Text Wrappers (base class)
-    #@+node:ekr.20031218072017.3999:forceRecolor
-    #@-node:ekr.20031218072017.3999:forceRecolor
     #@-node:ekr.20061109173021:leoBody: must be defined in the base class
     #@+node:ekr.20081005065934.6:leoBody: may be defined in subclasses
     def forceFullRecolor (self):

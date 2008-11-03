@@ -550,6 +550,9 @@ class nullGui(leoGui):
     def finishCreate (self):
         pass
 
+    def getIconImage (self, name):
+        return None
+
     def getTextFromClipboard (self):
         return self.clipboardContents
 

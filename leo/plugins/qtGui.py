@@ -4805,7 +4805,9 @@ class leoQtTree (leoFrame.leoTree):
         if data:
             item = data [0][1]
         else:
-            return g.trace('*** Can not happen: no data',p and p.headString())
+            if trace and not g.app.unitTesting:
+                g.trace('*** Can not happen: no data',p and p.headString())
+            return None
 
         if item:
             w.setCurrentItem(item) # Must do this first.
@@ -5688,7 +5690,9 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w = self.widget
         s = self.getAllText()
 
+        i = self.toGuiIndex(i)
         if j is None: j = i+1
+        j = self.toGuiIndex(j)
         if i > j: i,j = j,i
 
         # g.trace('i',i,'j',j)
@@ -5699,12 +5703,20 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if i > 0 or j > 0: self.indexWarning('leoQtBody.delete')
         return i
     #@-node:ekr.20081008084746.6:delete
+    #@+node:ekr.20081103131824.13:deleteTextSelection
+    def deleteTextSelection (self):
+
+        i,j = self.getSelectionRange()
+        self.delete(i,j)
+    #@-node:ekr.20081103131824.13:deleteTextSelection
     #@+node:ekr.20081007015817.80:get
     def get(self,i,j=None):
 
         w = self.widget
         s = self.getAllText()
+        i = self.toGuiIndex(i)
         if j is None: j = i+1
+        j = self.toGuiIndex(j)
         return s[i:j]
     #@-node:ekr.20081007015817.80:get
     #@+node:ekr.20081007015817.84:getLastPosition
@@ -5729,6 +5741,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def insert(self,i,s):
 
         s2 = self.getAllText()
+        i = self.toGuiIndex(i)
         self.setAllText(s2[:i] + s + s2[i:],insert=i+len(s))
         return i
     #@-node:ekr.20081007015817.89:insert
@@ -5755,6 +5768,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         else:
             g.trace('can not happen',args)
         insert = keys.get('insert')
+        i,j = self.toGuiIndex(i),self.toGuiIndex(j)
         if i > j: i,j = j,i
 
         return self.setSelectionRangeHelper(i,j,insert)
@@ -5845,6 +5859,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         p.v.setBodyString(newText)
         p.v.t.insertSpot = newInsert
         i,j = newSel
+        i,j = self.toGuiIndex(i),self.toGuiIndex(j)
         if i > j: i,j = j,i
         p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
 
@@ -5853,7 +5868,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             c.recolor()
         if not c.changed and c.frame.initComplete:
             c.setChanged(True)
-        self.updateEditors()
+        c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
         c.outerUpdate()
     #@-node:ekr.20081011035036.1:onTextChanged
@@ -6074,37 +6089,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # w.setTextCursor(cursor)
     #@-node:ekr.20081007015817.95:setInsertPoint
     #@-node:ekr.20081031074959.29: Must be overridden in subclasses
-    #@+node:ekr.20081004172422.519:Editors (to do)
-    #@+node:ekr.20081004172422.520:createEditorFrame
-    def createEditorFrame (self,pane):
-
-        # f = qt.Frame(pane)
-        # f.pack(side='top',expand=1,fill='both')
-        # return f
-
-        return None
-    #@-node:ekr.20081004172422.520:createEditorFrame
-    #@+node:ekr.20081004172422.521:packEditorLabelWidget
-    def packEditorLabelWidget (self,w):
-
-        '''Create a Qt label widget.'''
-
-        return ###
-
-        # if not hasattr(w,'leo_label') or not w.leo_label:
-            # # g.trace('w.leo_frame',id(w.leo_frame))
-            # w.pack_forget()
-            # w.leo_label = Qt.Label(w.leo_frame)
-            # w.leo_label.pack(side='top')
-            # w.pack(expand=1,fill='both')
-    #@-node:ekr.20081004172422.521:packEditorLabelWidget
-    #@+node:ekr.20081031074959.19:updateEditors
-    def updateEditors (self):
-
-        pass
-    #@nonl
-    #@-node:ekr.20081031074959.19:updateEditors
-    #@-node:ekr.20081004172422.519:Editors (to do)
     #@-others
 #@-node:ekr.20081031074959.12: class leoQtBaseTextWidget
 #@+node:ekr.20081101134906.13: class leoQLineEditWidget
