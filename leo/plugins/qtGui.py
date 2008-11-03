@@ -2267,8 +2267,8 @@ class leoQtGui(leoGui.leoGui):
             name = w.getName()
         elif hasattr(w,'objectName'):
             name = str(w.objectName())
-            if name == 'treeWidget':
-                name = 'canvas(treeWidget)'
+            # if name == 'treeWidget':
+                # name = 'canvas(treeWidget)'
         elif hasattr(w,'_name'):
             name = w._name
         else:

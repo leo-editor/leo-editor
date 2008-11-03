@@ -4,15 +4,14 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-Ask: can we find the length of QTextEdit without getting the text?
+First: Fix failing unit tests.
 
-First:
+Next:
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.
 - Suppress undo in most widgets.
-- Fix failing unit tests.
 
-Next:
+Finally:
 - Move tk code into a plugin.
     - Define precedence order if no gui is given.
 - Allow coloring of icon bar buttons.
@@ -267,8 +266,8 @@ def widget_name (self,w):
         name = w.getName()
     elif hasattr(w,'objectName'):
         name = str(w.objectName())
-        if name == 'treeWidget':
-            name = 'canvas(treeWidget)'
+        # if name == 'treeWidget':
+            # name = 'canvas(treeWidget)'
     elif hasattr(w,'_name'):
         name = w._name
     else:
@@ -2397,8 +2396,8 @@ def widget_name (self,w):
         name = w.getName()
     elif hasattr(w,'objectName'):
         name = str(w.objectName())
-        if name == 'treeWidget':
-            name = 'canvas(treeWidget)'
+        # if name == 'treeWidget':
+            # name = 'canvas(treeWidget)'
     elif hasattr(w,'_name'):
         name = w._name
     else:
