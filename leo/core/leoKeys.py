@@ -3301,7 +3301,8 @@ class keyHandlerClass:
             return None
         if traceGC: g.printNewObjects('masterKey 1')
         if trace:
-            g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',state)
+            g.trace('stroke:',repr(stroke),'keysym:',
+                repr(event.keysym),'ch:',repr(event.char),'state',state)
             # g.trace('callers',g.callers(5))
                 # 'state.kind:',k.state.kind),'\n',g.callers())
             # if (self.master_key_count % 100) == 0: g.printGcSummary()
@@ -3509,7 +3510,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         modesTuple = ('insert','overwrite')
-        trace = Trace
+        trace = True
 
         if trace:
             # if stroke: g.trace('***unexpected stroke***')

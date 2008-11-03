@@ -6,12 +6,7 @@
 
 Ask: can we find the length of QTextEdit without getting the text?
 
-Urgent bugs:
-- Ctrl-i inserts two nodes sometimes.
-- Ctrl-i, Up crashes Leo.
-
 First:
-- Can we set selection without getting all text? Use the cursor?
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.
 - Suppress undo in most widgets.
@@ -132,17 +127,19 @@ E1101:2998:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_CANCEL
 #@+node:ekr.20081014095718.15:get_name (qtTree)
 def getName (self):
 
-    c = self.c ; e = self._editWidget
+    name = 'canvas(tree)' # Must start with canvas.
 
-    if e and e == g.app.gui.get_focus():
-        name = 'head(tree)' # Must start with 'head'
-    else:
-        self._editWidget = None
-        self._editWidgetPosition = None
-        self._editWidgetWrapper = None
-        name = 'canvas(tree)' # Must start with 'canvas'
+    # c = self.c ; e = self._editWidget
 
-    # g.trace(name)
+    # if e and e == g.app.gui.get_focus():
+        # name = 'head(tree)' # Must start with 'head'
+    # else:
+        # self._editWidget = None
+        # self._editWidgetPosition = None
+        # self._editWidgetWrapper = None
+        # name = 'canvas(tree)' # Must start with 'canvas'
+
+    # g.trace('**tree',name,g.callers(4))
     return name
 #@-node:ekr.20081014095718.15:get_name (qtTree)
 #@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
@@ -260,26 +257,26 @@ def set_focus(self,c,w):
         # g.trace('leoQtGui',w,g.callers(4))
         w.setFocus()
 #@-node:ekr.20081004102201.657:Focus (qtGui)
-#@+node:ekr.20081015062931.11:widget_name (qtGui
+#@+node:ekr.20081015062931.11:widget_name (qtGui)
 def widget_name (self,w):
 
     # First try the widget's getName method.
     if not 'w':
         name = '<no widget>'
+    elif hasattr(w,'getName'):
+        name = w.getName()
     elif hasattr(w,'objectName'):
         name = str(w.objectName())
         if name == 'treeWidget':
             name = 'canvas(treeWidget)'
-    elif hasattr(w,'getName'):
-        name = w.getName()
     elif hasattr(w,'_name'):
         name = w._name
     else:
         name = repr(w)
 
-    # g.trace(name,w)
+    # g.trace(name,w,g.callers(4))
     return name
-#@-node:ekr.20081015062931.11:widget_name (qtGui
+#@-node:ekr.20081015062931.11:widget_name (qtGui)
 #@+node:ekr.20081004102201.628:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
@@ -331,30 +328,11 @@ def __init__(self,c,w,tag=''):
 #@+node:ekr.20081013143507.12:eventFilter
 def eventFilter(self, obj, event):
 
-    c = self.c ; k = c.k ; e = QtCore.QEvent 
+    c = self.c ; k = c.k 
     trace = False ; verbose = True
     eventType = event.type()
-    kinds = (e.ShortcutOverride,e.KeyPress,e.KeyRelease)
-
-    # Ugly special case for headline widgets...
-    if c.frame.tree._editWidgetWrapper:
-        w = c.frame.tree._editWidgetWrapper
-        if w and eventType in kinds:
-            tkKey,ch,ignore = self.toTkKey(event)
-            aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-            override = len(aList) > 0
-            if override and eventType == e.KeyRelease:
-                stroke = self.toStroke(tkKey,ch)
-                leoEvent = leoKeyEvent(event,c,w,stroke)
-                ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-                if trace: g.trace(self.tag,
-                    g.choose(k.inState(),'in-state','bound'),tkKey,'ret',ret)
-        else:
-            # if trace: g.trace('headline non-key event')
-            override = False
-            tkKey = None
-        if trace: self.traceEvent(obj,event,tkKey,override)
-        return override
+    ev = QtCore.QEvent
+    kinds = (ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease)
 
     if eventType in kinds:
         tkKey,ch,ignore = self.toTkKey(event)
@@ -372,14 +350,12 @@ def eventFilter(self, obj, event):
     else:
         override = False ; tkKey = '<no key>'
 
-    if eventType == e.KeyPress:
+    if eventType == ev.KeyPress:
         if override:
             w = self.w # Pass the wrapper class, not the wrapped widget.
             stroke = self.toStroke(tkKey,ch)
             leoEvent = leoKeyEvent(event,c,w,stroke)
             ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-            if trace: g.trace(self.tag,
-                g.choose(k.inState(),'in-state','bound'),tkKey,'ret',ret)
         else:
             if trace and verbose: g.trace(self.tag,'unbound',tkKey)
 
@@ -675,9 +651,6 @@ def traceEvent (self,obj,event,tkKey,override):
 
     eventType = event.type()
 
-    if False and not self.dumped:
-        self.dumped = True
-        g.trace(len(c.k.masterGuiBindingsDict.keys()))
 
     if 0: # Show focus events.
         show = (
@@ -701,8 +674,13 @@ def traceEvent (self,obj,event,tkKey,override):
     for val,kind in show:
         if eventType == val:
             g.trace(
-                'tag',self.tag,'kind',kind,'key',tkKey,'override',override)
+            'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+            self.tag,kind,repr(c.k.inState()),tkKey,override))
             return
+
+    # if trace: g.trace(self.tag,
+        # 'bound in state: %s, key: %s, returns: %s' % (
+        # k.getState(),tkKey,ret))
 
     if False and eventType not in ignore:
         g.trace('%3s:%s' % (eventType,'unknown'))
@@ -720,7 +698,7 @@ def editLabel (self,p,selectAll=False):
         return
     if self._editWidget:
         # Not an error, because of key weirdness.
-        if trace and verbose: g.trace('already editing')
+        g.trace('already editing')
         return
 
     if trace:
@@ -745,13 +723,13 @@ def editLabel (self,p,selectAll=False):
         e = w.itemWidget(item,0) # A QLineEdit
         if e:
             s = e.text() ; len_s = len(s)
-            if 1: # Hook up the widget to Leo's core.
-                self._editWidgetPosition = p.copy()
-                self._editWidget = e
-                self._editWidgetWrapper = leoQLineEditWidget(
-                    widget=e,name='head',c=c)
-                # filter = leoQtEventFilter(c,w=self,tag='head')
-                # e.installEventFilter(filter)
+            # Hook up the widget to Leo's core.
+            self._editWidgetPosition = p.copy()
+            self._editWidget = e
+            self._editWidgetWrapper = leoQtHeadlineWidget(
+                widget=e,name='head',c=c)
+            # filter = leoQtEventFilter(c,w=self,tag='head')
+            # e.installEventFilter(filter)
             start,n = g.choose(selectAll,
                 tuple([0,len_s]),tuple([len_s,0]))
             e.setObjectName('headline')
@@ -884,6 +862,8 @@ QsciScintilla {
 '''
 #@-node:ekr.20081018053140.10:defaultStyleSheet
 #@-node:ekr.20081016072304.14:setStyleSheets & helper
+#@+node:ekr.20081103071436.2:NewHeadline
+#@-node:ekr.20081103071436.2:NewHeadline
 #@-node:ekr.20081004102201.629:class  Window
 #@-node:ekr.20081018155359.12:Problems with multiple windows
 #@+node:ekr.20081020075840.21:Suppress updates until init complete
@@ -1205,8 +1185,6 @@ def edit_widget (self,p):
 
     """Returns the Qt.Edit widget for position p."""
 
-    # g.trace('**',repr(self._editWidgetWrapper),p and p.headString(),g.callers(4))
-
     # Decouple all of the core's headline code.
     # Except for over-ridden methods
     return None
@@ -1267,7 +1245,7 @@ def editLabel (self,p,selectAll=False):
         return
     if self._editWidget:
         # Not an error, because of key weirdness.
-        if trace and verbose: g.trace('already editing')
+        g.trace('already editing')
         return
 
     if trace:
@@ -1292,13 +1270,13 @@ def editLabel (self,p,selectAll=False):
         e = w.itemWidget(item,0) # A QLineEdit
         if e:
             s = e.text() ; len_s = len(s)
-            if 1: # Hook up the widget to Leo's core.
-                self._editWidgetPosition = p.copy()
-                self._editWidget = e
-                self._editWidgetWrapper = leoQLineEditWidget(
-                    widget=e,name='head',c=c)
-                # filter = leoQtEventFilter(c,w=self,tag='head')
-                # e.installEventFilter(filter)
+            # Hook up the widget to Leo's core.
+            self._editWidgetPosition = p.copy()
+            self._editWidget = e
+            self._editWidgetWrapper = leoQtHeadlineWidget(
+                widget=e,name='head',c=c)
+            # filter = leoQtEventFilter(c,w=self,tag='head')
+            # e.installEventFilter(filter)
             start,n = g.choose(selectAll,
                 tuple([0,len_s]),tuple([len_s,0]))
             e.setObjectName('headline')
@@ -2408,6 +2386,53 @@ def destroySelf (self):
 
 #@-node:ekr.20081004172422.549:destroySelf (qtFrame)
 #@-node:ekr.20081029065805.12:Closing windows properly
+#@+node:ekr.20081103092019.12:Widget names...
+#@+node:ekr.20081015062931.11:widget_name (qtGui)
+def widget_name (self,w):
+
+    # First try the widget's getName method.
+    if not 'w':
+        name = '<no widget>'
+    elif hasattr(w,'getName'):
+        name = w.getName()
+    elif hasattr(w,'objectName'):
+        name = str(w.objectName())
+        if name == 'treeWidget':
+            name = 'canvas(treeWidget)'
+    elif hasattr(w,'_name'):
+        name = w._name
+    else:
+        name = repr(w)
+
+    # g.trace(name,w,g.callers(4))
+    return name
+#@-node:ekr.20081015062931.11:widget_name (qtGui)
+#@+node:ekr.20081103092019.10:getName (baseTextWidget)
+def getName (self):
+
+    # g.trace('leoQtBaseTextWidget',self.name,g.callers())
+
+    return self.name
+#@-node:ekr.20081103092019.10:getName (baseTextWidget)
+#@+node:ekr.20081014095718.15:get_name (qtTree)
+def getName (self):
+
+    name = 'canvas(tree)' # Must start with canvas.
+
+    # c = self.c ; e = self._editWidget
+
+    # if e and e == g.app.gui.get_focus():
+        # name = 'head(tree)' # Must start with 'head'
+    # else:
+        # self._editWidget = None
+        # self._editWidgetPosition = None
+        # self._editWidgetWrapper = None
+        # name = 'canvas(tree)' # Must start with 'canvas'
+
+    # g.trace('**tree',name,g.callers(4))
+    return name
+#@-node:ekr.20081014095718.15:get_name (qtTree)
+#@-node:ekr.20081103092019.12:Widget names...
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor
@@ -4820,6 +4845,44 @@ def setBodyConfig (self):
         self.colorizer = leoColor.colorizer(c)
 #@nonl
 #@-node:ekr.20081011035036.10:setBodyConfig
+#@+node:ekr.20081103071436.17:class leoQtHeadlineEventFilter (not used)
+if 0:
+    class leoQtHeadlineEventFilter (leoQtEventFilter):
+
+        def __init__(self,c,w,e):
+
+            __init__(self,c,w,tag='head')
+            self.e = e
+
+        @others
+#@+node:ekr.20081103071436.18:eventFilter (headlines)
+def eventFilter(self, obj, event):
+
+    c = self.c ; e = self.e ; k = c.k
+    trace = True ; verbose = True
+    eventType = event.type()
+    ev = QtCore.QEvent 
+    kinds = (ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease)
+
+    if not eventType in kinds:
+        return False # Use the default event handling.
+
+    if not self.e:
+        if trace: g.trace('no e')
+        return
+
+    tkKey,ch,ignore = self.toTkKey(event)
+    aList = k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+    override = len(aList) > 0
+    if override and eventType == e.KeyRelease:
+        stroke = self.toStroke(tkKey,ch)
+        leoEvent = leoKeyEvent(event,c,w,stroke)
+        ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+
+    if trace: self.traceEvent(obj,event,tkKey,override)
+    return override
+#@-node:ekr.20081103071436.18:eventFilter (headlines)
+#@-node:ekr.20081103071436.17:class leoQtHeadlineEventFilter (not used)
 #@-node:ekr.20081018155359.11:Unused
 #@+node:ekr.20081024175359.10:Scripts
 #@+node:ekr.20081022172620.10:Script to display Qt font database
