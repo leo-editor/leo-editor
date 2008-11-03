@@ -404,6 +404,45 @@ class leoQtBody (leoFrame.leoBody):
     def setYScrollPosition (self,i):
         return self.widget.setYScrollPosition(i)
     #@-node:ekr.20081031074959.13:High-level interface to self.widget
+    #@+node:ekr.20081103095314.32:Editors (qtBody)
+    #@+node:ekr.20081103095314.33:createEditorFrame
+    def createEditorFrame (self,pane):
+
+        return None
+
+        # f = Tk.Frame(pane)
+        # f.pack(side='top',expand=1,fill='both')
+        # return f
+    #@-node:ekr.20081103095314.33:createEditorFrame
+    #@+node:ekr.20081103095314.34:packEditorLabelWidget
+    def packEditorLabelWidget (self,w):
+
+        '''Create a Tk label widget.'''
+
+        # if not hasattr(w,'leo_label') or not w.leo_label:
+            # # g.trace('w.leo_frame',id(w.leo_frame))
+            # w.pack_forget()
+            # w.leo_label = Tk.Label(w.leo_frame)
+            # w.leo_label.pack(side='top')
+            # w.pack(expand=1,fill='both')
+    #@nonl
+    #@-node:ekr.20081103095314.34:packEditorLabelWidget
+    #@+node:ekr.20081103095314.35:setEditorColors
+    def setEditorColors (self,bg,fg):
+
+        pass
+
+        # c = self.c ; d = self.editorWidgets
+
+        # for key in d:
+            # w2 = d.get(key)
+            # # g.trace(id(w2),bg,fg)
+            # try:
+                # w2.configure(bg=bg,fg=fg)
+            # except Exception:
+                # g.es_exception()
+    #@-node:ekr.20081103095314.35:setEditorColors
+    #@-node:ekr.20081103095314.32:Editors (qtBody)
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
 #@+node:ekr.20081007015817.56:class leoQtFindTab (findTab)
