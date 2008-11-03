@@ -100,8 +100,6 @@ class baseTextWidget:
     #@@c
 
     mustBeDefinedInSubclasses = [
-        'bind',
-        'flashCharacter',
     ]
 
     mustBeDefinedInHighLevelSubclasses = (
@@ -154,7 +152,8 @@ class baseTextWidget:
     #@+node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
 
     mustBeDefined = (
-
+        'bind',
+        'flashCharacter',
     )
     #@-node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
     #@-node:ekr.20070228074312.1:Birth & special methods (baseText)
@@ -191,7 +190,10 @@ class baseTextWidget:
     # These are high-level interface methods that do not call low-level methods.
     #@nonl
     #@+node:ekr.20081031074455.13: do-nothings
+    def bind (self,kind,*args,**keys):          pass
     def getWidth (self):                        return 0
+    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+        pass
     def indexIsVisible (self,i):                return False
         # Code will loop if this returns True forever.
     def mark_set(self,markName,i):              pass
@@ -518,14 +520,14 @@ class baseTextWidget:
     SetForegroundColour = setForegroundColor
     #@nonl
     #@-node:ekr.20080510153327.3:setForegroundColor
-    #@+node:ekr.20070228074312.35:setInsertPoint 
+    #@+node:ekr.20070228074312.35:setInsertPoint
     def setInsertPoint (self,pos):
 
         w = self
         w.virtualInsertPoint = i = w.toPythonIndex(pos)
         # g.trace(self,i)
         w._setInsertPoint(i)
-    #@-node:ekr.20070228074312.35:setInsertPoint 
+    #@-node:ekr.20070228074312.35:setInsertPoint
     #@+node:ekr.20070228074312.36:setSelectionRange
     def setSelectionRange (self,i,j,insert=None):
 
@@ -553,20 +555,6 @@ class baseTextWidget:
     #@nonl
     #@-node:ekr.20070228074312.38:setYScrollPosition
     #@-node:ekr.20081031074455.2:Must be defined in subclasses (hig-level interface)
-    #@+node:ekr.20081031074455.14:Must be defined in subclasses (both interfaces)
-    #@+node:ekr.20070228074312.11:bind
-    def bind (self,kind,*args,**keys):
-
-        self.oops()
-    #@nonl
-    #@-node:ekr.20070228074312.11:bind
-    #@+node:ekr.20070228074312.16:flashCharacter
-    def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): # tkTextWidget.
-
-        self.oops()
-    #@nonl
-    #@-node:ekr.20070228074312.16:flashCharacter
-    #@-node:ekr.20081031074455.14:Must be defined in subclasses (both interfaces)
     #@-others
 #@-node:ekr.20070228074312:class baseTextWidget
 #@+node:ekr.20070228074228.1:class stringTextWidget (baseTextWidget)
