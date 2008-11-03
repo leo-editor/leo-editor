@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6,4"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -810,7 +810,7 @@
 <v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -2521,16 +2521,6 @@
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20061109172511"><vh>Check base classes &amp; ivars</vh>
-<v t="ekr.20061109172511.3"><vh>@test leoBody is subset of leoTkBody</vh></v>
-<v t="ekr.20061109172511.1"><vh>@test leoFrame is subset of leoTkFrame</vh></v>
-<v t="ekr.20061109210659"><vh>@test leoGui is subset of leoTkGui</vh></v>
-<v t="ekr.20061109172511.4"><vh>@test leoTree is subset of leoTkTree</vh></v>
-<v t="ekr.20050105082500"><vh>@test official commander ivars</vh></v>
-<v t="ekr.20050105080048.1"><vh>@test official frame ivars</vh></v>
-<v t="ekr.20050105084757"><vh>@test official g.app directories</vh></v>
-<v t="ekr.20050105090632"><vh>@test official g.app ivars</vh></v>
 </v>
 <v t="ekr.20081019093019.1"><vh>Fail</vh>
 <v t="ekr.20051125155134"><vh>@test inserting a new node draws the screen exactly once</vh></v>
