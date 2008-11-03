@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
@@ -72,18 +72,15 @@
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d71002855013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c680675735509302e302e332e342e30710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@thin leoProjects.txt</vh></v>
+<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d71002855013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c680675735509302e302e332e342e30710d7d710e5808000000616e6e6f74617465710f7d711073752e"
+marks="ekr.20080904071003.14,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"
-expanded="ekr.20081004102201.1168,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+marks="ekr.20080904071003.14,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20080915112342.1"><vh>First 7</vh>
-<v t="ekr.20081004102201.1168" a="E"><vh>Create qt plugin</vh>
-<v t="ekr.20081004102201.1"><vh>qleolite.py</vh></v>
-</v>
-<v t="ekr.20081004063955.1"><vh>Begin autocompletion project</vh></v>
 <v t="ekr.20081004102201.2"><vh>Log file for @shadow</vh></v>
 <v t="ekr.20070624135822"><vh>Templates for common code fragments</vh></v>
 <v t="ekr.20071003104917"><vh>Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace</vh></v>
@@ -113,7 +110,7 @@ expanded="ekr.20081004102201.1168,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20080904071003.27"><vh>goto_getScriptLines</vh></v>
 <v t="ekr.20080708094444.63"><vh>goto_open</vh></v>
 </v>
-<v t="ekr.20080904071003.14"><vh>goto_showResults</vh></v>
+<v t="ekr.20080904071003.14" a="M"><vh>goto_showResults</vh></v>
 <v t="ekr.20031218072017.2882"><vh>goto_skipToMatchingNodeSentinel</vh></v>
 </v>
 </v>
@@ -128,7 +125,9 @@ expanded="ekr.20081004102201.1168,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20080708094444.45"><vh>&lt;&lt; do final correctness check &gt;&gt;</vh></v>
 </v>
 </v>
+<v t="ekr.20081004102201.2"><vh>Log file for @shadow</vh></v>
 </v>
+<v t="ekr.20081028060510.1"><vh>Fix @shadow crasher</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20040629121554.1"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
@@ -139,7 +138,8 @@ expanded="ekr.20081004102201.1168,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810"
+marks="ekr.20080904071003.14,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
@@ -1342,6 +1342,7 @@ else:
     # Select p and make it visible.
     c.frame.tree.expandAllAncestors(p)
     c.selectPosition(p)
+    # c.redraw_after_select()
     c.redraw()
 
     # Put the cursor on line n2 of the body text.
@@ -1526,219 +1527,54 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
 
 @color</t>
-<t tx="ekr.20081004063955.1"></t>
-<t tx="ekr.20081004102201.1">import sys
-import time
-
-def startleo():
-    global c,g, controller
-    from leo.core import leoBridge
-    controller = leoBridge.controller(gui='nullGui')
-    g = controller.globals()
-    c = None
-
-   
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from PyQt4 import Qsci
-from ui_main import Ui_MainWindow
-
-  
-startleo()
-
-def tstart():
-    global __timing
-    __timing = time.time()
-
-def tstop():
-    print "Time: %1.2fsec" % (time.time() - __timing)
-
-class LeoQEventFilter(QObject):
-    def __init__(self):
-        QObject.__init__(self)
-        self.bindings = {}
-    def eventFilter(self, obj, event):
-
-        # print "ev",obj, event
-        if event.type() == QEvent.KeyPress:
-            return self.key_pressed(obj, event)
-        return False
-    def key_pressed(self, obj, event):
-        """ Handle key presses (on any window) """
-
-        keynum = event.key()
-        try:
-            char = chr(keynum)
-        except ValueError:
-            char = "&lt;unknown&gt;"
-
-        mods = []
-        if event.modifiers() &amp; Qt.AltModifier:
-            mods.append("Alt")
-        if event.modifiers() &amp; Qt.ControlModifier:
-            mods.append("Ctrl")
-        if event.modifiers() &amp; Qt.ShiftModifier:
-            mods.append("Shift")
- 
-        txt = "+".join(mods) + (mods and "+" or "") + char
-        print "Keypress: [",txt,"]", event.text(), obj, event.key(), event.modifiers()
-        # key was not consumed
-
-        cmd = self.bindings.get(txt, None)
-        if cmd:
-            cmd()
-            return True
-        
-        return False
-
-
-
-class Window(QMainWindow, Ui_MainWindow):
-    def __init__(self, parent = None):
-        QWidget.__init__(self, parent)
-        self.setupUi(self)
-        self.connect(self.treeWidget, SIGNAL("itemSelectionChanged()"),  self.tree_select )
-        self.connect(self.actionOpen,SIGNAL("activated()"),self.open_file)
-        self.connect(self.actionSave,SIGNAL("activated()"),self.save_file)
-        #self.connect(self.searchButton, SIGNAL("clicked()"), self.search)
-        self.connect(self.textEdit,  SIGNAL("textChanged()"),self.text_changed)
-
-        #self.connect(self.actionIPython,SIGNAL("activated()"),self.embed_ipython)
-        self.selecting = True
-        self.widget_dirty = False
-        lexer = Qsci.QsciLexerPython(self.textEdit)
-        self.textEdit.setLexer(lexer)
-        self.ev_filt = LeoQEventFilter()
-        self.ev_filt.bindings['Ctrl+H'] = self.edit_current_headline
-        self.textEdit.installEventFilter(self.ev_filt)
-        self.treeWidget.installEventFilter(self.ev_filt)
-        self.icon_std = None
-        self.icon_std = QIcon('icons/box00.GIF')
-        self.icon_dirty = QIcon('icons/box01.GIF')
-        
-
-    def open_file(self):
-        #print "file open"
-        
-        fd = QFileDialog(self)
-        fname = fd.getOpenFileName()
-        print `fname`
-        self.load_file(fname)
-        
-    def load_file(self,f):
-        self.clear_model()
-        global c
-        print "Load",f
-        tstart()
-        c = controller.openLeoFile(str(f))
-        tstop()
-        print "Populate tree widget"
-        tstart()
-        self.populate_tree()
-        tstop()
-        class Leox:
-            pass
-        _leox = Leox()
-        _leox.c = c
-        _leox.g = g
-        import ipy_leo
-        ipy_leo.update_commander(_leox)
-
-
-    def save_file(self):
-        c.save()
-        
-    def clear_model(self):
-        global c
-        self.treeWidget.clear()
-        self.items = {}
-        self.treeitems = {}
-        if c is not None:
-            c.close()
-            c = None
-    
-    def populate_tree(self, parent=None):
-        """ Render vnodes in tree """
-                
-        self.items = {}
-        self.treeitems = {}
-
-        self.treeWidget.clear()
-        for p in c.allNodes_iter():
-
-            parent = self.items.get(p.parent().v,  self.treeWidget)
-            it = QTreeWidgetItem(parent)
-            it.setIcon(0, self.icon_std)
-            it.setFlags(it.flags() | Qt.ItemIsEditable)
-            self.items[p.v] = it
-            self.treeitems[id(it)] = p.t
-            it.setText(0, p.headString())
-    
-    def flush_current_tnode(self):
-        text = str(self.textEdit.text())
-        self.cur_tnode.setBodyString(text)
-        
-    def tree_select(self):
-        #print "tree selected!"
-        self.selecting = True
-        
-        if self.widget_dirty:
-            self.flush_current_tnode()
-        
-        self.cur_tnode = self.treeitems[id(self.treeWidget.currentItem())]
-        self.textEdit.setText(self.cur_tnode.bodyString())
-        self.selecting = False
-        self.widget_dirty = False
-
-    def text_changed(self):
-        if self.selecting:
-            return
-        #print "text changed"
-        if not self.widget_dirty:
-            self.treeWidget.currentItem().setIcon(0,self.icon_dirty)
-        self.widget_dirty = True
-        
-    def startup_ops(self):
-        print "startup"
-
-        if len(argv) &gt; 1:
-            self.load_file(argv[1])
-
-    def edit_current_headline(self):
-        #self.treeWidget.openPersistentEditor(self.treeWidget.currentItem())
-
-        self.treeWidget.editItem(self.treeWidget.currentItem())
-
-def embed_ipython():
-    import IPython.ipapi
-    sys.argv = ['ipython', '-p' , 'sh']
-    ses = IPython.ipapi.make_session(dict(w = window))
-
-    ip = ses.IP.getapi()
-    ip.load('ipy_leo')
-    ses.mainloop()
-
-if __name__ == "__main__":
-
-    argv = sys.argv
-    app = QApplication(sys.argv)
-    window = Window()
-    window.show()
-    
-    #timer = QTimer()
-    #timer.setInterval(1)
-    #timer.setSingleShot(True)
-    #timer.connect(timer, SIGNAL("timeout()"), window.startup_ops)
-    QTimer.singleShot(1, window.startup_ops)
-    embed_ipython()
-    
-    sys.exit(app.exec_())
-
-    
-</t>
 <t tx="ekr.20081004102201.2">@nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51</t>
-<t tx="ekr.20081004102201.1168"></t>
+<t tx="ekr.20081028060510.1">@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
+
+I think Leo crashes when attempting to load a shadow file that starts
+with a line feed character. [EKR: it's the missing file extension]
+
+Here's the stack trace:
+
+Traceback (most recent call last):
+ File "/home/jesse/leo-editor/launchLeo.py", line 8, in &lt;module&gt;
+   leo.core.runLeo.run()
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
+   c,frame = createFrame(fileName,relativeFileName,script)
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
+createFrame
+   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+ File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
+openWithFileName
+   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
+in open
+   silent=silent)
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
+in getLeoFile
+   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
+readAll
+   at.readOneAtShadowNode (fileName,p)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
+readOneAtShadowNode
+   at.writeOneAtShadowNode(p,toString=False,force=True)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
+writeOneAtShadowNode
+   at.writeOpenFile(root,nosentinels=not
+sentinels,toString=False,atAuto=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
+writeOpenFile
+   at.putBody(root,fromString=fromString)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
+putBody
+   at.putCodeLine(s,i)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
+putCodeLine
+   if g.match(s,k,self.startSentinelComment + '@'):
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'</t>
 </tnodes>
 </leo_file>
