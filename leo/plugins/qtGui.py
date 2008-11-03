@@ -2568,6 +2568,7 @@ class leoQtLog (leoFrame.leoLog):
 
         if createText:
             contents = QtGui.QTextBrowser()
+            contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
             self.logDict[tabName] = contents
             # contents.installEventFilter(self.ev_filter)
             if tabName == 'Log':
