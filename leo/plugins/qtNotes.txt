@@ -6,7 +6,6 @@
 
 First:
 - Make findTextWrapper a subclass of a qt text wrapper.
-- Add @markup to list of official Leo directives.
 - Fix failing unit tests.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.
