@@ -4,24 +4,19 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-turn off horizontal scrolling in Log.
-    sb = w.verticalScrollBar()
-    sb.setSliderPosition(pos)
-
-First:
-- Alt-Left should just contract node if it is expanded.
+Urgent:
 ** Alt-g does not select node properly!
 - Make findTextWrapper a subclass of a qt text wrapper.
-- Fix failing unit tests.
 - Add @markup to list of official Leo directives.
-- Check event handling with QScintilla.
 
 Next:
+- Fix failing unit tests.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.
 - Suppress undo in most widgets.
 
 Finally:
+- Check event handling with QScintilla.
 - Move tk code into a plugin.
     - Define precedence order if no gui is given.
 - Allow coloring of icon bar buttons.
@@ -365,6 +360,7 @@ def eventFilter(self, obj, event):
             stroke = self.toStroke(tkKey,ch)
             leoEvent = leoKeyEvent(event,c,w,stroke)
             ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            c.outerUpdate()
         else:
             if trace and verbose: g.trace(self.tag,'unbound',tkKey)
 
@@ -1421,7 +1417,7 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
         if trace:
             if verbose: tstop()
             g.trace('%s: drew %3s nodes' % (
-                self.redrawCount,self.nodeDrawCount))
+                self.redrawCount,self.nodeDrawCount),g.callers())
 
 redraw = full_redraw # Compatibility
 redraw_now = full_redraw
@@ -1888,7 +1884,7 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
         if trace:
             if verbose: tstop()
             g.trace('%s: drew %3s nodes' % (
-                self.redrawCount,self.nodeDrawCount))
+                self.redrawCount,self.nodeDrawCount),g.callers())
 
 redraw = full_redraw # Compatibility
 redraw_now = full_redraw

@@ -921,7 +921,7 @@ def goto_showResults(self,found,p,n,n2,lines):
         if len(lines) < n and not g.unitTesting:
             g.es('only',len(lines),'lines',color="blue")
 
-    # g.trace('n',n,'ins',ins,'p',p.headString())
+    # g.trace(p.headString(),g.callers())
 
     w.setInsertPoint(ins)
     c.bodyWantsFocusNow()
@@ -19099,8 +19099,7 @@ def showSuccess(self,pos,newpos):
             redraw = True
     p = self.p
     if not p: g.trace('can not happen: self.p is None')
-    if redraw:
-        c.redraw_now() ### Added to help Qt tree.
+    ### if redraw: c.redraw_now() ### Added to help Qt tree.
     c.selectPosition(p)
     if redraw:
         c.redraw()
@@ -20006,7 +20005,7 @@ def goto_showResults(self,found,p,n,n2,lines):
         if len(lines) < n and not g.unitTesting:
             g.es('only',len(lines),'lines',color="blue")
 
-    # g.trace('n',n,'ins',ins,'p',p.headString())
+    # g.trace(p.headString(),g.callers())
 
     w.setInsertPoint(ins)
     c.bodyWantsFocusNow()
@@ -21597,8 +21596,7 @@ def showSuccess(self,pos,newpos):
             redraw = True
     p = self.p
     if not p: g.trace('can not happen: self.p is None')
-    if redraw:
-        c.redraw_now() ### Added to help Qt tree.
+    ### if redraw: c.redraw_now() ### Added to help Qt tree.
     c.selectPosition(p)
     if redraw:
         c.redraw()
@@ -21774,8 +21772,7 @@ def showSuccess(self,pos,newpos):
             redraw = True
     p = self.p
     if not p: g.trace('can not happen: self.p is None')
-    if redraw:
-        c.redraw_now() ### Added to help Qt tree.
+    ### if redraw: c.redraw_now() ### Added to help Qt tree.
     c.selectPosition(p)
     if redraw:
         c.redraw()

@@ -2223,7 +2223,7 @@ class baseCommands:
             if len(lines) < n and not g.unitTesting:
                 g.es('only',len(lines),'lines',color="blue")
 
-        # g.trace('n',n,'ins',ins,'p',p.headString())
+        # g.trace(p.headString(),g.callers())
 
         w.setInsertPoint(ins)
         c.bodyWantsFocusNow()
