@@ -217,7 +217,7 @@ class Window(QtGui.QMainWindow):
 #@+node:ville.20081104152150.2:class  DynamicWindow
 from PyQt4 import uic
 
-class DynamicWindow:
+class DynamicWindow(QtGui.QMainWindow):
 
     '''A class representing all parts of the main Qt window
     as created by Designer.
@@ -241,8 +241,11 @@ class DynamicWindow:
         # g.trace('Window')
 
         # Init both base classes.
-        #QtGui.QMainWindow.__init__(self,parent)
-        self.ui = uic.loadUi("/home/ville/qt-plugin/leo/plugins/qt_main.ui")
+
+        ui_description_file = g.app.loadDir + "/../plugins/qt_main.ui"
+        QtGui.QMainWindow.__init__(self,parent)        
+        self.ui = uic.loadUi(ui_description_file, self)
+
         # Init the QDesigner elements.
         #self.setupUi(self)
 
@@ -260,14 +263,14 @@ class DynamicWindow:
 
         """.strip().split()
 
-        for v in ivars:
-            setattr(self, v, getattr(self.ui, v))
+        #for v in ivars:
+        #    setattr(self, v, getattr(self.ui, v))
 
 
-        self.iconBar = self.ui.addToolBar("IconBar")
-        self.menubar = self.ui.menuBar
+        self.iconBar = self.addToolBar("IconBar")
+        self.menubar = self.menuBar()
         self.statusBar = QtGui.QStatusBar()
-        self.ui.setStatusBar(self.statusBar)
+        self.setStatusBar(self.statusBar)
 
         self.setStyleSheets()
     #@-node:ville.20081104152150.3: ctor (Window)
@@ -868,7 +871,8 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapters      = c.config.getBool('use_chapters')
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
-        f.top = Window(c)
+        # xx todo
+        f.top = DynamicWindow(c)
         g.app.gui.attachLeoIcon(f.top)
         f.top.setWindowTitle(self.title)
         f.top.show()
