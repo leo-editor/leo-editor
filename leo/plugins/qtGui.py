@@ -4082,7 +4082,7 @@ class leoQtTree (leoFrame.leoTree):
             if trace:
                 if verbose: tstop()
                 g.trace('%s: drew %3s nodes' % (
-                    self.redrawCount,self.nodeDrawCount))
+                    self.redrawCount,self.nodeDrawCount),g.callers())
 
     redraw = full_redraw # Compatibility
     redraw_now = full_redraw
@@ -5361,6 +5361,7 @@ class leoQtEventFilter(QtCore.QObject):
                 stroke = self.toStroke(tkKey,ch)
                 leoEvent = leoKeyEvent(event,c,w,stroke)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+                c.outerUpdate()
             else:
                 if trace and verbose: g.trace(self.tag,'unbound',tkKey)
 
