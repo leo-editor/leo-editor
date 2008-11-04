@@ -211,6 +211,8 @@ class Window(QtGui.QMainWindow):
     '''
     #@-node:ekr.20081018053140.10:defaultStyleSheet
     #@-node:ekr.20081016072304.14:setStyleSheets & helper
+    #@+node:ekr.20081103071436.2:NewHeadline
+    #@-node:ekr.20081103071436.2:NewHeadline
     #@-others
 
 #@-node:ekr.20081004102201.629:class  Window
@@ -2642,8 +2644,11 @@ class leoQtLog (leoFrame.leoLog):
         if w:
             # s = s.replace('\n','<br>\n')
             if color: s = '<font color="%s">%s</font>' % (color, s)
+            sb = w.horizontalScrollBar()
+            pos = sb.sliderPosition()
             w.append(s)
             w.moveCursor(QtGui.QTextCursor.End)
+            sb.setSliderPosition(pos)
         else:
             # put s to logWaiting and print s
             g.app.logWaiting.append((s,color),)
@@ -2665,7 +2670,10 @@ class leoQtLog (leoFrame.leoLog):
             contents = w.toHtml()
             w.setHtml(contents + '\n')
             # w.append('') does not work, for some reason.
+            sb = w.horizontalScrollBar()
+            pos = sb.sliderPosition()
             w.moveCursor(QtGui.QTextCursor.End)
+            sb.setSliderPosition(pos)
             w.repaint()
         else:
             # put s to logWaiting and print  a newline
@@ -5312,6 +5320,16 @@ class leoQtEventFilter(QtCore.QObject):
     #@nl
 
     #@    @+others
+    #@+node:ekr.20081018155359.10: ctor
+    def __init__(self,c,w,tag=''):
+
+        # Init the base class.
+        QtCore.QObject.__init__(self)
+
+        self.c = c
+        self.w = w      # A leoQtX object, *not* a Qt object.
+        self.tag = tag
+    #@-node:ekr.20081018155359.10: ctor
     #@+node:ekr.20081013143507.12:eventFilter
     def eventFilter(self, obj, event):
 
@@ -5350,6 +5368,32 @@ class leoQtEventFilter(QtCore.QObject):
 
         return override
     #@-node:ekr.20081013143507.12:eventFilter
+    #@+node:ekr.20081015132934.10:isDangerous
+    def isDangerous (self,tkKey,ch):
+
+
+        c = self.c
+
+        if not c.frame.body.useScintilla: return False
+
+        arrows = ('home','end','left','right','up','down')
+        special = ('tab','backspace','period','parenright','parenleft')
+
+        key = tkKey.lower()
+        ch = ch.lower()
+        isAlt = key.find('alt') > -1
+        w = g.app.gui.get_focus()
+        inTree = w == self.c.frame.tree.treeWidget
+
+        val = (
+            key in special or
+            ch in arrows and not inTree and not isAlt or
+            key == 'return' and not inTree # Just barely works.
+        )
+
+        g.trace(tkKey,ch,val)
+        return val
+    #@-node:ekr.20081015132934.10:isDangerous
     #@+node:ekr.20081011152302.10:toStroke
     def toStroke (self,tkKey,ch):
 
@@ -5377,7 +5421,7 @@ class leoQtEventFilter(QtCore.QObject):
         # g.trace('tkKey',tkKey,'-->',s)
         return s
     #@-node:ekr.20081011152302.10:toStroke
-    #@+node:ekr.20081008084746.1:toTkKey
+    #@+node:ekr.20081008084746.1:toTkKey & helpers
     def toTkKey (self,event):
 
         mods = self.qtMods(event)
@@ -5604,7 +5648,7 @@ class leoQtEventFilter(QtCore.QObject):
             keynum,mods,repr(text),toString))
     #@-node:ekr.20081028134004.11:shifted2
     #@-node:ekr.20081028055229.3:tkKey & helpers
-    #@-node:ekr.20081008084746.1:toTkKey
+    #@-node:ekr.20081008084746.1:toTkKey & helpers
     #@+node:ekr.20081013143507.11:traceEvent
     def traceEvent (self,obj,event,tkKey,override):
 
@@ -5646,42 +5690,6 @@ class leoQtEventFilter(QtCore.QObject):
         if False and eventType not in ignore:
             g.trace('%3s:%s' % (eventType,'unknown'))
     #@-node:ekr.20081013143507.11:traceEvent
-    #@+node:ekr.20081018155359.10: ctor
-    def __init__(self,c,w,tag=''):
-
-        # Init the base class.
-        QtCore.QObject.__init__(self)
-
-        self.c = c
-        self.w = w      # A leoQtX object, *not* a Qt object.
-        self.tag = tag
-    #@-node:ekr.20081018155359.10: ctor
-    #@+node:ekr.20081015132934.10:isDangerous
-    def isDangerous (self,tkKey,ch):
-
-
-        c = self.c
-
-        if not c.frame.body.useScintilla: return False
-
-        arrows = ('home','end','left','right','up','down')
-        special = ('tab','backspace','period','parenright','parenleft')
-
-        key = tkKey.lower()
-        ch = ch.lower()
-        isAlt = key.find('alt') > -1
-        w = g.app.gui.get_focus()
-        inTree = w == self.c.frame.tree.treeWidget
-
-        val = (
-            key in special or
-            ch in arrows and not inTree and not isAlt or
-            key == 'return' and not inTree # Just barely works.
-        )
-
-        g.trace(tkKey,ch,val)
-        return val
-    #@-node:ekr.20081015132934.10:isDangerous
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
 #@-node:ekr.20081103071436.4:Key handling
@@ -6780,30 +6788,53 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         cursor.setPosition(i)
         w.setTextCursor(cursor)
     #@-node:ekr.20081031074959.37:setInsertPoint
-    #@+node:ekr.20081031074959.43:setSelectionRangeHelper
+    #@+node:ekr.20081031074959.43:setSelectionRangeHelper & helper
     def setSelectionRangeHelper(self,i,j,insert):
 
         w = self.widget
         # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
         e = QtGui.QTextCursor
         if i > j: i,j = j,i
-        s = w.toPlainText()
-        i = max(0,min(i,len(s)))
-        j = max(0,min(j,len(s)))
-        k = max(0,min(j-i,len(s)))
+        n = self.lengthHelper()
+        # s = w.toPlainText() ; n = len(s)
+        i = max(0,min(i,n))
+        j = max(0,min(j,n))
+        k = max(0,min(j-i,n))
         cursor = w.textCursor()
         if i == j:
             cursor.setPosition(i)
         elif insert in (j,None):
             cursor.setPosition(i)
-            k = max(0,min(k,len(s)))
             cursor.movePosition(e.Right,e.KeepAnchor,k)
         else:
             cursor.setPosition(j)
             cursor.movePosition(e.Left,e.KeepAnchor,k)
 
         w.setTextCursor(cursor)
-    #@-node:ekr.20081031074959.43:setSelectionRangeHelper
+    #@+node:ekr.20081104103442.1:lengthHelper
+    def lengthHelper(self):
+
+        '''Return the length of the text.'''
+
+        w = self.widget
+        cursor = w.textCursor()
+        cursor.movePosition(QtGui.QTextCursor.End)
+        n = cursor.position()
+
+        # Check.
+        # s = w.toPlainText()
+        # s = g.toUnicode(s,'utf-8')
+        # n2 = len(s)
+        # if n != n2:
+            # g.trace('mismatch',n,n2)
+            # return n2
+
+        return n
+
+
+
+    #@-node:ekr.20081104103442.1:lengthHelper
+    #@-node:ekr.20081031074959.43:setSelectionRangeHelper & helper
     #@+node:ekr.20081025124450.12:setYScrollPosition
     def setYScrollPosition(self,pos):
 

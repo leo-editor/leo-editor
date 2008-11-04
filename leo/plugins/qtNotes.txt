@@ -5,6 +5,8 @@
 @nocolor-node
 
 turn off horizontal scrolling in Log.
+    sb = w.verticalScrollBar()
+    sb.setSliderPosition(pos)
 
 First:
 - Alt-Left should just contract node if it is expanded.
@@ -771,7 +773,7 @@ def editLabel (self,p,selectAll=False):
 #@-node:ekr.20081015062931.10:Focus stuff...
 #@+node:ekr.20081018155359.12:Problems with multiple windows
 #@+node:ekr.20081004102201.629:class  Window
-class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
+class Window(QtGui.QMainWindow):
 
     '''A class representing all parts of the main Qt window
     as created by Designer.
@@ -797,10 +799,11 @@ def __init__(self,c,parent=None):
 
     # Init both base classes.
     QtGui.QMainWindow.__init__(self,parent)
-    qt_main.Ui_MainWindow.__init__(self)
+    #qt_main.Ui_MainWindow.__init__(self)
 
+    self.ui = qt_main.Ui_MainWindow()
     # Init the QDesigner elements.
-    self.setupUi(self)
+    self.ui.setupUi(self)
 
     # The following ivars (and more) are inherited from UiMainWindow:
         # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
@@ -980,7 +983,8 @@ def finishCreate (self,c):
     self.use_chapters      = c.config.getBool('use_chapters')
     self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
-    f.top = Window(c)
+    # xx todo
+    f.top = DynamicWindow(c)
     g.app.gui.attachLeoIcon(f.top)
     f.top.setWindowTitle(self.title)
     f.top.show()
@@ -1078,10 +1082,10 @@ def __init__ (self,frame,parentFrame):
         self.bodyCtrl = w # The widget as seen from Leo's core.
         self.colorizer = leoColor.nullColorizer(c)
     else:
-        top = c.frame.top ; sw = top.stackedWidget
+        top = c.frame.top ; sw = top.ui.stackedWidget
         sw.setCurrentIndex(1)
         self.widget = w = leoQTextEditWidget(
-            top.richTextEdit,
+            top.ui.richTextEdit,
             name = 'body',c=c) # A QTextEdit.
         self.bodyCtrl = w # The widget as seen from Leo's core.
         self.colorizer = leoColor.colorizer(c)
@@ -1113,10 +1117,11 @@ def __init__(self,c,parent=None):
 
     # Init both base classes.
     QtGui.QMainWindow.__init__(self,parent)
-    qt_main.Ui_MainWindow.__init__(self)
+    #qt_main.Ui_MainWindow.__init__(self)
 
+    self.ui = qt_main.Ui_MainWindow()
     # Init the QDesigner elements.
-    self.setupUi(self)
+    self.ui.setupUi(self)
 
     # The following ivars (and more) are inherited from UiMainWindow:
         # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
