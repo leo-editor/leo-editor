@@ -5229,7 +5229,7 @@ def printBindings (self,event=None):
     # Print all plain bindings.
     result.append('%s %s\n' % (sep, 'Plain Keys'))
     self.printBindingsHelper(result,data,n1,n2,prefix=None)
-    g.es(''.join(result),tabName=tabName)
+    g.es('',''.join(result),tabName=tabName)
     state = k.unboundKeyAction 
     k.showStateAndMode()
 #@+node:ekr.20061031131434.120:printBindingsHelper

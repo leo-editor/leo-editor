@@ -5,9 +5,10 @@
 @nocolor-node
 
 First:
+- Leo's core complains (oops) that minibuffer._see is not defined.
 - Make findTextWrapper a subclass of a qt text wrapper.
 - Finish handleUnboundKeys: does it work for F4?
-- Handle spaces properly in (html) log pane?
+- Make sure keys are handled if focus is in log pane.
 - Fix failing unit tests.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.

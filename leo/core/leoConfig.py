@@ -2159,7 +2159,7 @@ class configClass:
             result.append('%s %s = %s\n' % (letter,key,val))
 
         # Use a single g.es statement.
-        g.es(''.join(result),tabName='Settings')
+        g.es('',''.join(result),tabName='Settings')
 
     #@+node:ekr.20070418075804:printSettingsHelper
     def printSettingsHelper(self,settings,d,letter=None):
