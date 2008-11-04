@@ -2642,8 +2642,12 @@ class leoQtLog (leoFrame.leoLog):
         # Note: this must be done after the call to selectTab.
         w = self.logCtrl # w is a QTextBrowser
         if w:
-            # s = s.replace('\n','<br>\n')
-            if color: s = '<font color="%s">%s</font>' % (color, s)
+            # g.trace(repr(s))
+            if s.endswith('\n'): s = s[:-1]
+            s = s.replace(' ','&nbsp;')
+            if color:
+                s = '<font color="%s">%s</font>' % (color, s)
+            s = s.replace('\n','<br>')
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
             w.append(s)
@@ -2667,11 +2671,10 @@ class leoQtLog (leoFrame.leoLog):
 
         w = self.logCtrl
         if w:
-            contents = w.toHtml()
-            w.setHtml(contents + '\n')
-            # w.append('') does not work, for some reason.
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
+            contents = w.toHtml()
+            w.setHtml(contents + '\n')
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(pos)
             w.repaint()
@@ -5347,7 +5350,7 @@ class leoQtEventFilter(QtCore.QObject):
                 # Send *all* non-ignored keystrokes to the widget.
                 override = not ignore
             elif k.inState():
-                override = not ignore # allow all keystroke.
+                override = not ignore # allow all keystrokes.
             elif safe_mode:
                 override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
             else:

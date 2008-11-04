@@ -2876,17 +2876,16 @@ class keyHandlerClass:
                 if s2.startswith(prefix):
                     data2.append(item)
             # g.es('','%s %s' % (sep, prefix),tabName=tabName)
-            result.append('%s %s' % (sep, prefix))
+            result.append('%s %s\n' % (sep, prefix))
             self.printBindingsHelper(result,data2,n1,n2,prefix=prefix)
             # Remove all the items in data2 from data.
             # This must be done outside the iterator on data.
             for item in data2:
                 data.remove(item)
         # Print all plain bindings.
-        # g.es('','%s %s' % (sep, 'Plain Keys',),tabName=tabName)
-        result.append('%s %s' % (sep, 'Plain Keys'))
-        g.es('\n'.join(result)+'\n',tabName=tabName)
+        result.append('%s %s\n' % (sep, 'Plain Keys'))
         self.printBindingsHelper(result,data,n1,n2,prefix=None)
+        g.es(''.join(result),tabName=tabName)
         state = k.unboundKeyAction 
         k.showStateAndMode()
     #@+node:ekr.20061031131434.120:printBindingsHelper
@@ -2904,7 +2903,7 @@ class keyHandlerClass:
             data.sort(lambda x,y: cmp(x[1],y[1]))
             for s1,s2,s3 in data:
                 # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
-                result.append('%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3))
+                result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))
     #@-node:ekr.20061031131434.120:printBindingsHelper
     #@-node:ekr.20061031131434.119:printBindings & helper
     #@+node:ekr.20061031131434.121:printCommands
@@ -2931,8 +2930,8 @@ class keyHandlerClass:
                 data.append((s1,s2,s3),)
 
         # This isn't perfect in variable-width fonts.
-        for s1,s2,s3 in data:
-            g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName=tabName)
+        lines = ['%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3) for s1,s2,s3 in data]
+        g.es(''.join(lines),tabName=tabName)
     #@-node:ekr.20061031131434.121:printCommands
     #@+node:ekr.20061031131434.122:repeatComplexCommand & helper
     def repeatComplexCommand (self,event):

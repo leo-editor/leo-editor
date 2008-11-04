@@ -2155,13 +2155,11 @@ class configClass:
         for key in sorted(settings):
             data = settings.get(key)
             letter,val = data
-            g.pr('%45s = %s %s' % (key,letter,val))
-            # g.es('','%s %s = %s' % (letter,key,val),tabName='Settings')
-            result.append('%s %s = %s' % (letter,key,val))
+            # g.pr('%45s = %s %s' % (key,letter,val))
+            result.append('%s %s = %s\n' % (letter,key,val))
+
         # Use a single g.es statement.
-        tag = 'Settings'
-        g.es('\n'.join(result),tabName=tag)
-        g.es('\n',tabName=tag)
+        g.es(''.join(result),tabName='Settings')
 
     #@+node:ekr.20070418075804:printSettingsHelper
     def printSettingsHelper(self,settings,d,letter=None):

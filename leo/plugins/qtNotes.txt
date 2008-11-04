@@ -6,6 +6,8 @@
 
 First:
 - Make findTextWrapper a subclass of a qt text wrapper.
+- Finish handleUnboundKeys: does it work for F4?
+- Handle spaces properly in (html) log pane?
 - Fix failing unit tests.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.
@@ -342,7 +344,7 @@ def eventFilter(self, obj, event):
             # Send *all* non-ignored keystrokes to the widget.
             override = not ignore
         elif k.inState():
-            override = not ignore # allow all keystroke.
+            override = not ignore # allow all keystrokes.
         elif safe_mode:
             override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
         else:
