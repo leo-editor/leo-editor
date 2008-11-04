@@ -680,6 +680,7 @@ class leoBody:
     # List of methods that must be defined either in the base class or a subclass.
 
     mustBeDefined = (
+        'after_idle',
         'forceFullRecolor', # The base-class method is usually good enough.
         'initAfterLoad',
         'tag_add',
@@ -687,9 +688,9 @@ class leoBody:
         'tag_config',
         'tag_configure',
         'tag_delete',
+        'tag_names',
         'tag_remove',
     )
-    #@nonl
     #@-node:ekr.20081005065934.9:leoBody.mustBeDefined
     #@+node:ekr.20031218072017.3660:leoBody.mustBeDefinedInSubclasses
     mustBeDefinedInSubclasses = (
@@ -758,10 +759,11 @@ class leoBody:
     def tag_bind (self,tagName,event,callback):
         pass
 
-    def tag_configure (self,colorName,**keys):
+    def tag_config (self,colorName,**keys):
         pass
 
-    tag_config = tag_configure
+    def tag_configure (self,colorName,**keys):
+        pass
 
     def tag_delete(self,tagName):
         pass

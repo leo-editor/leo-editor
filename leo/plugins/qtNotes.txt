@@ -12,6 +12,7 @@ First:
 - Make findTextWrapper a subclass of a qt text wrapper.
 - Fix failing unit tests.
 - Add @markup to list of official Leo directives.
+- Check event handling with QScintilla.
 
 Next:
 - Shift-tab is Smart home. (Allow shift-tab binding).
@@ -3774,6 +3775,134 @@ Ran 10 tests in 1.484s
 FAILED (failures=1)
 #@nonl
 #@-node:ekr.20081013210935.14:leoFileCommands (disable/change test)
+#@+node:ekr.20081013210935.34:leoNodes
+...........................F...F.............
+End of leoNodes tests.
+.
+======================================================================
+FAIL: @test delete node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 20, in <module>
+    assert p.headString() == 'A', 'fail 1: got %s' % p.headString()
+AssertionError: fail 1: got leoNodes
+
+======================================================================
+FAIL: @test move-outline-down & undo/redo
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 20, in <module>
+    assert moved.back().headString() == 'C', 'fail 2'
+AssertionError: fail 2
+
+----------------------------------------------------------------------
+Ran 46 tests in 15.438s
+
+FAILED (failures=2)
+#@-node:ekr.20081013210935.34:leoNodes
+#@+node:ekr.20081013210935.36:leoUndo
+compareOutlines failed
+p1 <pos 36587248 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>
+p2 <pos 36586864 childIndex: 1 lvl: 6 [6] after> <vnode 35539536:'after'>
+p1.body
+u'@language python\n\ndef addCommentTest():\n\n    if 1:\n        # a = 2\n        # b = 3\n        \n    pass'
+p2.body
+u'@language python\n\ndef addCommentTest():\n\n    # if 1:\n        # a = 2\n        # b = 3\n        \n    pass'
+F....compareOutlines failed
+p1 <pos 36107344 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>
+p2 <pos 35970000 childIndex: 1 lvl: 6 [6] after> <vnode 35561968:'after'>
+p1.body
+u'line 1\n    line 2\nline 3\nline 4'
+p2.body
+u'line 1\nline 2\nline 3\nline 4'
+FcompareOutlines failed
+p1 <pos 35970000 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>
+p2 <pos 13554544 childIndex: 1 lvl: 6 [6] after> <vnode 35562352:'after'>
+p1.body
+u'@language python\n\ndef deleteCommentTest():\n\n    # if 1:\n        a = 2\n        b = 3\n        \n    pass'
+p2.body
+u'@language python\n\ndef deleteCommentTest():\n\n    if 1:\n        a = 2\n        b = 3\n        \n    pass'
+FcompareOutlines failed
+p1 <pos 35565552 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>
+p2 <pos 13591664 childIndex: 1 lvl: 6 [6] after> <vnode 35562736:'after'>
+p1.body
+u'before\n    << section >>\n'
+p2.body
+u'before\nafter'
+F.selected text should start with a section name
+compareOutlines failed
+p1 <pos 35967568 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>
+p2 <pos 13554544 childIndex: 1 lvl: 6 [6] after> <vnode 35563600:'after'>
+p1.numberOfChildren()=0, p2.numberOfChildren()=1
+p1.body
+u'before\n    << section >>\n    sec line 1\n        sec line 2 indented\nsec line 3\nafter'
+p2.body
+u'before\n    << section >>\nafter'
+Fselected text should start with a section name
+.
+End of leoUndo tests.
+.
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: addComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: dedentBody: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: deleteComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: extract: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
+    self.editBody()
+  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: extractSection: before undo1
+
+----------------------------------------------------------------------
+Ran 12 tests in 3.203s
+
+FAILED (failures=5)
+#@-node:ekr.20081013210935.36:leoUndo
 #@+node:ekr.20081013210935.25:leoFrame (mostly w.leo_label)
 addEditor: can not happen: unexpected editorWidgets {}
 EEEEEEEEE
@@ -3971,134 +4100,6 @@ Traceback (most recent call last):
     w.leo_label.configure(text=s,bg='white')
 AttributeError: 'NoneType' object has no attribute 'configure'
 #@-node:ekr.20081013210935.25:leoFrame (mostly w.leo_label)
-#@+node:ekr.20081013210935.34:leoNodes
-...........................F...F.............
-End of leoNodes tests.
-.
-======================================================================
-FAIL: @test delete node
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 20, in <module>
-    assert p.headString() == 'A', 'fail 1: got %s' % p.headString()
-AssertionError: fail 1: got leoNodes
-
-======================================================================
-FAIL: @test move-outline-down & undo/redo
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 20, in <module>
-    assert moved.back().headString() == 'C', 'fail 2'
-AssertionError: fail 2
-
-----------------------------------------------------------------------
-Ran 46 tests in 15.438s
-
-FAILED (failures=2)
-#@-node:ekr.20081013210935.34:leoNodes
-#@+node:ekr.20081013210935.36:leoUndo
-compareOutlines failed
-p1 <pos 36587248 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>
-p2 <pos 36586864 childIndex: 1 lvl: 6 [6] after> <vnode 35539536:'after'>
-p1.body
-u'@language python\n\ndef addCommentTest():\n\n    if 1:\n        # a = 2\n        # b = 3\n        \n    pass'
-p2.body
-u'@language python\n\ndef addCommentTest():\n\n    # if 1:\n        # a = 2\n        # b = 3\n        \n    pass'
-F....compareOutlines failed
-p1 <pos 36107344 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>
-p2 <pos 35970000 childIndex: 1 lvl: 6 [6] after> <vnode 35561968:'after'>
-p1.body
-u'line 1\n    line 2\nline 3\nline 4'
-p2.body
-u'line 1\nline 2\nline 3\nline 4'
-FcompareOutlines failed
-p1 <pos 35970000 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>
-p2 <pos 13554544 childIndex: 1 lvl: 6 [6] after> <vnode 35562352:'after'>
-p1.body
-u'@language python\n\ndef deleteCommentTest():\n\n    # if 1:\n        a = 2\n        b = 3\n        \n    pass'
-p2.body
-u'@language python\n\ndef deleteCommentTest():\n\n    if 1:\n        a = 2\n        b = 3\n        \n    pass'
-FcompareOutlines failed
-p1 <pos 35565552 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>
-p2 <pos 13591664 childIndex: 1 lvl: 6 [6] after> <vnode 35562736:'after'>
-p1.body
-u'before\n    << section >>\n'
-p2.body
-u'before\nafter'
-F.selected text should start with a section name
-compareOutlines failed
-p1 <pos 35967568 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>
-p2 <pos 13554544 childIndex: 1 lvl: 6 [6] after> <vnode 35563600:'after'>
-p1.numberOfChildren()=0, p2.numberOfChildren()=1
-p1.body
-u'before\n    << section >>\n    sec line 1\n        sec line 2 indented\nsec line 3\nafter'
-p2.body
-u'before\n    << section >>\nafter'
-Fselected text should start with a section name
-.
-End of leoUndo tests.
-.
-======================================================================
-FAIL: runTest (leo.core.leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
-    self.editBody()
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: addComments: before undo1
-
-======================================================================
-FAIL: runTest (leo.core.leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
-    self.editBody()
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: dedentBody: before undo1
-
-======================================================================
-FAIL: runTest (leo.core.leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
-    self.editBody()
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: deleteComments: before undo1
-
-======================================================================
-FAIL: runTest (leo.core.leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
-    self.editBody()
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: extract: before undo1
-
-======================================================================
-FAIL: runTest (leo.core.leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1045, in runTest
-    self.editBody()
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1034, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: extractSection: before undo1
-
-----------------------------------------------------------------------
-Ran 12 tests in 3.203s
-
-FAILED (failures=5)
-#@-node:ekr.20081013210935.36:leoUndo
 #@-node:ekr.20081013210935.32:Fail
 #@-node:ekr.20081013210935.1:Unit tests
 #@+node:ekr.20081018155359.11:Unused
