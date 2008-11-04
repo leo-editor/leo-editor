@@ -72,6 +72,8 @@ body_ignored_newline = '\r'
 
 globalDirectiveList = [
     # New in Leo 4.6:
+    'markup', # Make this an official directive,
+              # even if the color_markup directive is not enabled.
     'nocolor-node',
     # New in Leo 4.4.4: these used to be in leoKeywords.
     'all','c','code','delims','doc','end_raw',
