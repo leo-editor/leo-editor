@@ -1716,12 +1716,12 @@ class baseCommands:
         path = c.config.getString('script_file_path')
         if path:
             parts = path.split('/')
-            path = g.app.loadDir
+            path = g.app.homeLeoDir
             for part in parts:
                 path = c.os_path_finalize_join(path,part)
         else:
             path = c.os_path_finalize_join(
-                g.app.loadDir,'..','test','scriptFile.py')
+                g.app.homeLeoDir,'..','test','scriptFile.py')
 
         # Write the file.
         try:
