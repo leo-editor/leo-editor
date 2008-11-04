@@ -111,7 +111,7 @@ def tstop():
 #@-node:ekr.20081004102201.623: Module level
 #@+node:ekr.20081103071436.3:Frame and component classes...
 #@+node:ekr.20081004102201.629:class  Window
-class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
+class Window(QtGui.QMainWindow):
 
     '''A class representing all parts of the main Qt window
     as created by Designer.
@@ -136,10 +136,11 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
 
         # Init both base classes.
         QtGui.QMainWindow.__init__(self,parent)
-        qt_main.Ui_MainWindow.__init__(self)
+        #qt_main.Ui_MainWindow.__init__(self)
 
+        self.ui = qt_main.Ui_MainWindow()
         # Init the QDesigner elements.
-        self.setupUi(self)
+        self.ui.setupUi(self)
 
         # The following ivars (and more) are inherited from UiMainWindow:
             # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
@@ -210,11 +211,125 @@ class Window(QtGui.QMainWindow, qt_main.Ui_MainWindow):
     '''
     #@-node:ekr.20081018053140.10:defaultStyleSheet
     #@-node:ekr.20081016072304.14:setStyleSheets & helper
-    #@+node:ekr.20081103071436.2:NewHeadline
-    #@-node:ekr.20081103071436.2:NewHeadline
     #@-others
 
 #@-node:ekr.20081004102201.629:class  Window
+#@+node:ville.20081104152150.2:class  DynamicWindow
+from PyQt4 import uic
+
+class DynamicWindow:
+
+    '''A class representing all parts of the main Qt window
+    as created by Designer.
+
+    c.frame.top is a Window object.
+
+    All leoQtX classes use the ivars of this Window class to
+    support operations requested by Leo's core.
+    '''
+
+    #@    @+others
+    #@+node:ville.20081104152150.3: ctor (Window)
+    # Called from leoQtFrame.finishCreate.
+
+    def __init__(self,c,parent=None):
+
+        '''Create Leo's main window, c.frame.top'''
+
+        self.c = c ; top = c.frame.top
+
+        # g.trace('Window')
+
+        # Init both base classes.
+        #QtGui.QMainWindow.__init__(self,parent)
+        self.ui = uic.loadUi("/home/ville/qt-plugin/leo/plugins/qt_main.ui")
+        # Init the QDesigner elements.
+        #self.setupUi(self)
+
+        # The following ivars (and more) are inherited from UiMainWindow:
+            # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
+            # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
+        ivars = """
+        tabWidget treeWidget stackedWidget richTextEdit lineEdit
+        findPattern findChange checkBoxWholeWord checkBoxIgnoreCase
+        checkBoxWrapAround checkBoxReverse checkBoxRexexp checkBoxMarkFinds
+        checkBoxEntireOutline checkBoxSubroutineOnly checkBoxNodeOnly
+        checkBoxSearchHeadline checkBoxSearchBody checkBoxMarkChanges
+        setWindowIcon setWindowTitle show setGeometry windowTitle
+        menuBar
+
+        """.strip().split()
+
+        for v in ivars:
+            setattr(self, v, getattr(self.ui, v))
+
+
+        self.iconBar = self.ui.addToolBar("IconBar")
+        self.menubar = self.ui.menuBar
+        self.statusBar = QtGui.QStatusBar()
+        self.ui.setStatusBar(self.statusBar)
+
+        self.setStyleSheets()
+    #@-node:ville.20081104152150.3: ctor (Window)
+    #@+node:ville.20081104152150.4:closeEvent (qtFrame)
+    def closeEvent (self,event):
+
+        c = self.c
+
+        if c.inCommand:
+            # g.trace('requesting window close')
+            c.requestCloseWindow = True
+        else:
+            ok = g.app.closeLeoWindow(c.frame)
+            # g.trace('ok',ok)
+            if ok:
+                event.accept()
+            else:
+                event.ignore()
+    #@-node:ville.20081104152150.4:closeEvent (qtFrame)
+    #@+node:ville.20081104152150.5:setStyleSheets & helper
+    styleSheet_inited = False
+
+    def setStyleSheets(self):
+
+        c = self.c
+
+        sheet = c.config.getData('qt-gui-plugin-style-sheet')
+        if sheet: sheet = '\n'.join(sheet)
+        self.ui.setStyleSheet(sheet or self.default_sheet())
+    #@nonl
+    #@+node:ville.20081104152150.6:defaultStyleSheet
+    def defaultStyleSheet (self):
+
+        '''Return a reasonable default style sheet.'''
+
+        # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+        return '''\
+
+    /* A QWidget: supports only background attributes.*/
+    QSplitter::handle {
+
+        background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+    }
+    QSplitter {
+        border-color: white;
+        background-color: white;
+        border-width: 3px;
+        border-style: solid;
+    }
+    QTreeWidget {
+        background-color: #ffffec; /* Leo's traditional tree color */
+    }
+    /* Not supported. */
+    QsciScintilla {
+        background-color: pink;
+    }
+    '''
+    #@-node:ville.20081104152150.6:defaultStyleSheet
+    #@-node:ville.20081104152150.5:setStyleSheets & helper
+    #@-others
+
+#@-node:ville.20081104152150.2:class  DynamicWindow
 #@+node:ekr.20081004172422.502:class leoQtBody (leoBody)
 class leoQtBody (leoFrame.leoBody):
 
@@ -241,10 +356,10 @@ class leoQtBody (leoFrame.leoBody):
             self.bodyCtrl = w # The widget as seen from Leo's core.
             self.colorizer = leoColor.nullColorizer(c)
         else:
-            top = c.frame.top ; sw = top.stackedWidget
+            top = c.frame.top ; sw = top.ui.stackedWidget
             sw.setCurrentIndex(1)
             self.widget = w = leoQTextEditWidget(
-                top.richTextEdit,
+                top.ui.richTextEdit,
                 name = 'body',c=c) # A QTextEdit.
             self.bodyCtrl = w # The widget as seen from Leo's core.
             self.colorizer = leoColor.colorizer(c)
@@ -494,7 +609,7 @@ class leoQtFindTab (leoFind.findTab):
     #@+node:ekr.20081018053140.19:createIvars
     def createIvars (self):
 
-        c = self.c ; w = c.frame.top # A Window object.
+        c = self.c ; w = c.frame.top.ui # A Window ui object.
 
         # Bind boxes to Window objects.
         self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
@@ -2410,7 +2525,7 @@ class leoQtLog (leoFrame.leoLog):
         self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
         self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
 
-        self.tabWidget = c.frame.top.tabWidget # The Qt.TabWidget that holds all the tabs.
+        self.tabWidget = c.frame.top.ui.tabWidget # The Qt.TabWidget that holds all the tabs.
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
         self.setFontFromConfig()
@@ -2971,7 +3086,7 @@ class leoQtMenu (leoMenu.leoMenu):
         self.c = c = frame.c
         self.leo_label = '<no leo_label>'
 
-        self.menuBar = c.frame.top.menubar
+        self.menuBar = c.frame.top.menuBar()
         assert self.menuBar
 
         # Inject this dict into the commander.
@@ -3327,7 +3442,7 @@ class leoQtMinibuffer (leoFrame.baseTextWidget):
 
     def __init__ (self,c):
         self.c = c
-        self.w = c.frame.top.lineEdit # QLineEdit
+        self.w = c.frame.top.ui.lineEdit # QLineEdit
         # Init the base class.
         leoFrame.baseTextWidget.__init__(self,c,
             baseClassName='leoQtMinibuffer',name='minibuffer',widget=None)
@@ -3658,7 +3773,7 @@ class leoQtTree (leoFrame.leoTree):
         # Components.
         self.c = c
         self.canvas = self # An official ivar used by Leo's core.
-        self.treeWidget = w = frame.top.treeWidget # An internal ivar.
+        self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
         self.treeWidget.setIconSize(QtCore.QSize(20,11))
 
         # Status ivars.
@@ -5193,16 +5308,6 @@ class leoQtEventFilter(QtCore.QObject):
     #@nl
 
     #@    @+others
-    #@+node:ekr.20081018155359.10: ctor
-    def __init__(self,c,w,tag=''):
-
-        # Init the base class.
-        QtCore.QObject.__init__(self)
-
-        self.c = c
-        self.w = w      # A leoQtX object, *not* a Qt object.
-        self.tag = tag
-    #@-node:ekr.20081018155359.10: ctor
     #@+node:ekr.20081013143507.12:eventFilter
     def eventFilter(self, obj, event):
 
@@ -5241,32 +5346,6 @@ class leoQtEventFilter(QtCore.QObject):
 
         return override
     #@-node:ekr.20081013143507.12:eventFilter
-    #@+node:ekr.20081015132934.10:isDangerous
-    def isDangerous (self,tkKey,ch):
-
-
-        c = self.c
-
-        if not c.frame.body.useScintilla: return False
-
-        arrows = ('home','end','left','right','up','down')
-        special = ('tab','backspace','period','parenright','parenleft')
-
-        key = tkKey.lower()
-        ch = ch.lower()
-        isAlt = key.find('alt') > -1
-        w = g.app.gui.get_focus()
-        inTree = w == self.c.frame.tree.treeWidget
-
-        val = (
-            key in special or
-            ch in arrows and not inTree and not isAlt or
-            key == 'return' and not inTree # Just barely works.
-        )
-
-        g.trace(tkKey,ch,val)
-        return val
-    #@-node:ekr.20081015132934.10:isDangerous
     #@+node:ekr.20081011152302.10:toStroke
     def toStroke (self,tkKey,ch):
 
@@ -5294,7 +5373,7 @@ class leoQtEventFilter(QtCore.QObject):
         # g.trace('tkKey',tkKey,'-->',s)
         return s
     #@-node:ekr.20081011152302.10:toStroke
-    #@+node:ekr.20081008084746.1:toTkKey & helpers
+    #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event):
 
         mods = self.qtMods(event)
@@ -5521,7 +5600,7 @@ class leoQtEventFilter(QtCore.QObject):
             keynum,mods,repr(text),toString))
     #@-node:ekr.20081028134004.11:shifted2
     #@-node:ekr.20081028055229.3:tkKey & helpers
-    #@-node:ekr.20081008084746.1:toTkKey & helpers
+    #@-node:ekr.20081008084746.1:toTkKey
     #@+node:ekr.20081013143507.11:traceEvent
     def traceEvent (self,obj,event,tkKey,override):
 
@@ -5563,6 +5642,42 @@ class leoQtEventFilter(QtCore.QObject):
         if False and eventType not in ignore:
             g.trace('%3s:%s' % (eventType,'unknown'))
     #@-node:ekr.20081013143507.11:traceEvent
+    #@+node:ekr.20081018155359.10: ctor
+    def __init__(self,c,w,tag=''):
+
+        # Init the base class.
+        QtCore.QObject.__init__(self)
+
+        self.c = c
+        self.w = w      # A leoQtX object, *not* a Qt object.
+        self.tag = tag
+    #@-node:ekr.20081018155359.10: ctor
+    #@+node:ekr.20081015132934.10:isDangerous
+    def isDangerous (self,tkKey,ch):
+
+
+        c = self.c
+
+        if not c.frame.body.useScintilla: return False
+
+        arrows = ('home','end','left','right','up','down')
+        special = ('tab','backspace','period','parenright','parenleft')
+
+        key = tkKey.lower()
+        ch = ch.lower()
+        isAlt = key.find('alt') > -1
+        w = g.app.gui.get_focus()
+        inTree = w == self.c.frame.tree.treeWidget
+
+        val = (
+            key in special or
+            ch in arrows and not inTree and not isAlt or
+            key == 'return' and not inTree # Just barely works.
+        )
+
+        g.trace(tkKey,ch,val)
+        return val
+    #@-node:ekr.20081015132934.10:isDangerous
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
 #@-node:ekr.20081103071436.4:Key handling
