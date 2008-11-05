@@ -108,6 +108,10 @@ removed all but the top entry during debugging:
     set file paths to 'false' to disable the CRL. 
 #@nonl
 #@-node:ekr.20081023060725.1:Fix new @shadow bug
+#@+node:ekr.20081105073648.1:Look at quick pysmell integration with Leo
+http://orestis.gr/blog/2008/11/02/pysmell-v07-here-supports-emacs-textmate-and-vim/
+#@nonl
+#@-node:ekr.20081105073648.1:Look at quick pysmell integration with Leo
 #@+node:ekr.20081015151532.1:Protect against overwriting changed files using timestamps
 @nocolor-node
 
