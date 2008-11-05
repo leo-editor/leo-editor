@@ -4,6 +4,36 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
 
+#@+node:ekr.20081105075318.2:Fix tnode list bug
+http://groups.google.com/group/leo-editor/browse_thread/thread/108bd11007133813#
+#@nonl
+#@-node:ekr.20081105075318.2:Fix tnode list bug
+#@+node:ekr.20081105080658.1:Ville's list of needed features
+@nocolor-node
+
+> I won't call this off topic, because the same kind of question could
+> apply to Leo: how to make Leo the default editor of most programmers.
+
+To do that, leo needs to become easy for easy tasks like:
+
+- Quickly edit a single file
+- Quickly edit a large file
+- Do the typical thing for tyical keypresses (tab, shift+tab comes to mind)
+- Drag-and-drop a file from file manager works - now this is easy at least
+
+On a more advanced side (off the top of my head):
+
+- Good "find in files" (grep) feature
+- Easily import project trees
+- Fast for large project trees (lazy loading or caching).
+- Integration with gcc (read - you can run make, and click on the
+resulting colored error messages)
+- Integration with gdb (as with emacs)
+- Integration with ctags
+- Mylyn-like "most interesting nodes" list (count how much time you
+spend with nodes, which nodes you actually edit, etc).
+
+#@-node:ekr.20081105080658.1:Ville's list of needed features
 #@+node:ekr.20081031080719.1:New find-panel options
 @nocolor-node
 
