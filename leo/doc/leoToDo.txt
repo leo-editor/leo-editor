@@ -112,6 +112,9 @@ removed all but the top entry during debugging:
 http://orestis.gr/blog/2008/11/02/pysmell-v07-here-supports-emacs-textmate-and-vim/
 #@nonl
 #@-node:ekr.20081105073648.1:Look at quick pysmell integration with Leo
+#@+node:ekr.20081105075318.1:Look at pydoctor
+http://groups.google.com/group/leo-editor/browse_thread/thread/189cadccc5355890
+#@-node:ekr.20081105075318.1:Look at pydoctor
 #@+node:ekr.20081015151532.1:Protect against overwriting changed files using timestamps
 @nocolor-node
 
