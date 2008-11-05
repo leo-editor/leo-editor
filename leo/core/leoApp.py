@@ -136,6 +136,7 @@ class LeoApp:
             "python"        : "#",
             "rapidq"        : "'", # fil 2004-march-11
             "rebol"         : ";",  # jason 2003-07-03
+            "ruby"          : "#",  # thyrsus 2008-11-05
             "shell"         : "#",  # shell scripts
             "tcltk"         : "#",
             "unknown"       : "#", # Set when @comment is seen.
@@ -175,6 +176,7 @@ class LeoApp:
             "plsql"         : "sql", # qt02537 2005-05-27
             "rapidq"        : "bas", # fil 2004-march-11
             "rebol"         : "r",    # jason 2003-07-03
+            "ruby"          : "rb",   # thyrsus 2008-11-05
             "shell"         : "sh",   # DS 4/1/04
             "tex"           : "tex",
             "tcltk"         : "tcl",
@@ -212,6 +214,7 @@ class LeoApp:
             "py"    : "python",
             "sql"   : "plsql", # qt02537 2005-05-27
             "r"     : "rebol",
+            "rb"    : "ruby", # thyrsus 2008-11-05
             "sh"    : "shell",
             "tex"   : "tex",
             "txt"   : "plain",
