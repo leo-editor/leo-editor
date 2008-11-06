@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="24" left="545" height="949" width="841"/>
+	<global_window_position top="24" left="545" height="941" width="841"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,14,5,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -96,7 +96,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -144,7 +144,7 @@
 <v t="ekr.20041119050749.12"><vh>@color outline_pane_background_color = #ffffec</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
-<v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
+<v t="ekr.20060201111002"></v>
 <v t="ekr.20060828145228"><vh>Options for old colorizer</vh>
 <v t="ekr.20041119034357.73"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
 <v t="ekr.20041119034357.72"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
@@ -219,18 +219,18 @@
 <v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
 <v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
-<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
+<v t="ekr.20060930085532"></v>
 <v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
-<v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
+<v t="ekr.20070615094204"></v>
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
-<v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
+<v t="ekr.20061012122620"></v>
 <v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
 <v t="ekr.20041119041019.2"><vh>@bool save_clears_undo_buffer = False</vh></v>
 <v t="ekr.20061029091403"><vh>@bool show_full_tracebacks_in_scripts = False</vh></v>
-<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
+<v t="ekr.20061007211759"></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
-<v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
+<v t="ekr.20060127050605"></v>
 <v t="ekr.20041119050749.11"><vh>@string headline_gmt_time = None</vh></v>
 <v t="ekr.20041119050749.10"><vh>@string headline_time_format_string = %m/%d</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
@@ -263,14 +263,14 @@
 </v>
 <v t="ekr.20060524151415"><vh>Debugger</vh>
 <v t="ekr.20070115134125"><vh>@bool write_script_file = True</vh></v>
-<v t="ekr.20070115134125.1"><vh>@string script_file_path = ../test/scriptFile.py</vh></v>
+<v t="ekr.20070115134125.1"><vh>@string script_file_path = scriptFile.py</vh></v>
 <v t="ekr.20060524151415.1"><vh>@string debugger_kind = winpdb</vh></v>
 <v t="ekr.20060521132401"><vh>@string debugger_path = None</vh></v>
 </v>
 <v t="ekr.20051126062243" annotate="7d71002e"><vh>Debugging</vh>
 <v t="ekr.20060408090018"><vh>@bool added_setting = True</vh></v>
 <v t="ekr.20060201110016"><vh>@bool allow_idle_time_hook = False</vh></v>
-<v t="ekr.20060212101234"><vh>@bool gc_before_redraw = True</vh></v>
+<v t="ekr.20060212101234"></v>
 <v t="ekr.20060202113731"><vh>@bool show_tree_stats = False</vh></v>
 <v t="ekr.20060216145416"><vh>@bool trace_autocompleter = False</vh></v>
 <v t="ekr.20060114073238"><vh>@bool trace_bindings = False</vh></v>
@@ -320,11 +320,11 @@
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
-<v t="ekr.20061004150211"><vh>@bool use_sax_based_read = False</vh></v>
+<v t="ekr.20061004150211"></v>
 <v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
 </v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
-<v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
+<v t="ekr.20061009190510"></v>
 <v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
 <v t="tbrown.20081003103821.2"><vh>@bool recent_files_group_always = False</vh></v>
 <v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
@@ -338,7 +338,7 @@
 <v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
 </v>
 <v t="ekr.20041119034357.11"><vh>directory options</vh>
-<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
+<v t="ekr.20041119041304"></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
 </v>
@@ -348,25 +348,12 @@
 </v>
 </v>
 <v t="ekr.20041119034357.20" annotate="7d71002e"><vh>Find/Change panel</vh>
-<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
+<v t="ekr.20060930085532"></v>
 <v t="ekr.20060125104049"><vh>@bool show_only_find_tab_options = True</vh></v>
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20041119050105.1"><vh>@string change_text = None</vh></v>
 <v t="ekr.20041119050105.2"><vh>@string find_text = None</vh></v>
-<v t="ekr.20041119050105.3"><vh>Checkboxes in the Find panel</vh>
-<v t="ekr.20041119050105.4"><vh>@bool batch = False</vh></v>
-<v t="ekr.20041119050105.5"><vh>@bool ignore_case = True</vh></v>
-<v t="ekr.20041119050105.6"><vh>@bool mark_changes = False</vh></v>
-<v t="ekr.20041119050105.7"><vh>@bool mark_finds = False</vh></v>
-<v t="ekr.20041119050105.12"><vh>@bool node_only = False</vh></v>
-<v t="ekr.20041119050105.9"><vh>@bool reverse = False</vh></v>
-<v t="ekr.20041119050105.8"><vh>@bool pattern_match = False</vh></v>
-<v t="ekr.20041120152657"><vh>@bool script_change = None</vh></v>
-<v t="ekr.20041119050105.14"><vh>@bool search_body = True</vh></v>
-<v t="ekr.20041119050105.15"><vh>@bool search_headline = True</vh></v>
-<v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
-<v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
-</v>
+<v t="ekr.20041119050105.3"></v>
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
 <v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
 </v>
@@ -383,11 +370,11 @@
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20060215094146"><vh>@@bool ignore_caps_lock = True</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
+<v t="ekr.20060215102141"></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
-<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
-<v t="ekr.20060122105527.7" annotate="7d71002e"><vh>@bool stayInTreeAfterSelect = True</vh></v>
-<v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
+<v t="ekr.20060926160657"></v>
+<v t="ekr.20060122105527.7" annotate="7d71002e"></v>
+<v t="ekr.20060215104345"></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
 <v t="ekr.20060122105527.5" annotate="7d71002e"><vh>@bool useCmdMenu = True</vh></v>
 <v t="ekr.20060122105527.6" annotate="7d71002e"><vh>@bool useMinibuffer = True</vh></v>
@@ -406,13 +393,13 @@
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
 <v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
-<v t="ekr.20060110141538" a="E" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
 <v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1" a="E" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -436,8 +423,8 @@
 </v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
-<v t="ekr.20070925144534.1" a="E"><vh>@menu &amp;File</vh>
+<v t="ekr.20070925144534"><vh>@menus</vh>
+<v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
 <v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
@@ -943,7 +930,7 @@
 <v t="ekr.20070925144534.427"><vh>@item *print-c&amp;ommands</vh></v>
 </v>
 </v>
-<v t="ekr.20080515053412.3" a="E"><vh>@popup_menus</vh>
+<v t="ekr.20080515053412.3"><vh>@popup_menus</vh>
 <v t="ekr.20080515053412.4"><vh>Main Context Menus</vh>
 <v t="ekr.20080515053412.5"><vh>@popup body</vh>
 <v t="ekr.20080515053412.6"><vh>@item &amp;</vh></v>
@@ -980,7 +967,7 @@
 <v t="ekr.20080515053412.31"><vh>@popup iconbox</vh></v>
 <v t="ekr.20080515053412.32"><vh>@popup plusbox</vh></v>
 </v>
-<v t="ekr.20080515053412.33" a="E"><vh>Fragments</vh>
+<v t="ekr.20080515053412.33"><vh>Fragments</vh>
 <v t="ekr.20080515053412.34"><vh>@popup edit-menu</vh>
 <v t="ekr.20080515053412.35"><vh>@item rclick-cut-text</vh></v>
 <v t="ekr.20080515053412.36"><vh>@item rclick-copy-text</vh></v>
@@ -1010,19 +997,19 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
-<v t="ekr.20070417071249"><vh>@bool trace_plugins = False</vh></v>
+<v t="ekr.20070417071249"></v>
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
-<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
-<v t="tbrown.20081024093407.2" a="E"><vh>active_path</vh>
+<v t="ekr.20070224073109.1"></v>
+<v t="tbrown.20081024093407.2"><vh>active_path</vh>
 <v t="tbrown.20081024093407.3"><vh>@string active_path_event = icondclick1</vh></v>
 <v t="tbrown.20081024093407.4"><vh>@string active_path_attype = auto</vh></v>
 </v>
-<v t="ekr.20080328105334.1" a="E"><vh>cleo</vh>
+<v t="ekr.20080328105334.1"><vh>cleo</vh>
 <v t="ekr.20080602174756.1"><vh>@bool cleo_color_ignore = True</vh></v>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
 <v t="ekr.20080328105334.3"><vh>@color cleo_color_prog_red =</vh></v>
@@ -1154,7 +1141,7 @@
 <v t="ekr.20041119034357.28" annotate="7d71002e"><vh>Preferences panel</vh>
 <v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
 <v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
-<v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
+<v t="ekr.20041119034357.31"></v>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
 <v t="ekr.20041119034357.33"><vh>@bool output_doc_chunks = True</vh></v>
 <v t="ekr.20041119034357.34"><vh>@bool tangle_outputs_header = True</vh></v>
@@ -1169,9 +1156,9 @@
 <v t="ekr.20051025085144.1"><vh>@string aspell_bin_dir = c:\aspell\bin</vh></v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
-<v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
-<v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
-<v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
+<v t="ekr.20080212084020"></v>
+<v t="ekr.20041119042929.9"></v>
+<v t="ekr.20041119042929.10"></v>
 <v t="ekr.20041119042929.11"><vh>@string tk_encoding = None</vh></v>
 </v>
 <v t="ekr.20050203090810" annotate="7d71002e"><vh>Unit test</vh>
@@ -1223,9 +1210,9 @@
 <v t="ekr.20061030104734"><vh>@bool invisible_outline_navigation = False</vh></v>
 <v t="ekr.20041119050749.17"><vh>@bool look_for_control_drag_on_mouse_down = True</vh></v>
 <v t="ekr.20041119050749.18"><vh>@bool outline_pane_scrolls_horizontally = True</vh></v>
-<v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
-<v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
+<v t="ekr.20061002115414.1"></v>
+<v t="ekr.20070318065601"></v>
+<v t="ekr.20070604075218"></v>
 </v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
 <v t="ekr.20041119034357.68"><vh>@string split_bar_relief = groove</vh></v>
@@ -1233,44 +1220,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
-<v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
-<v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
-<v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
-</v>
-<v t="ekr.20060117092249"><vh>About modes</vh></v>
-<v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
-<v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
-<v t="ekr.20060110141538" a="E" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
-<v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
-<v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
-<v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
-<v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
-</v>
-<v t="ekr.20060110141538.1" a="E" annotate="7d71002e"><vh>@keys No bindings</vh>
-<v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
-<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
-<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
-</v>
-</v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
-<v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
-<v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
-<v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
-<v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
-<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
-<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
-<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
-<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
-<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
-<v t="ekr.20070613133747"><vh>@shortcuts Menu commands</vh></v>
-<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands</vh></v>
-<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
-<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
-<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-</v>
-</v>
+<v t="ekr.20051007200824"></v>
 <v t="TL.20081021080504.1"><vh>@keys Vim bindings</vh>
 <v t="TL.20081021080504.2"><vh>Vim User Documentation</vh></v>
 <v t="TL.20081021080504.3"><vh>Vim Developer Documentation</vh></v>
@@ -1282,9 +1232,9 @@
 <v t="TL.20081021080504.9"><vh>@mode tree-double-click-node</vh></v>
 <v t="TL.20081021080504.10"><vh>@mode focus-to-tree</vh></v>
 <v t="TL.20081021080504.11"><vh>@mode focus-to-body</vh></v>
-<v t="TL.20081021080504.12" a="E"><vh>@mode body-command-line</vh>
+<v t="TL.20081021080504.12"><vh>@mode body-command-line</vh>
 <v t="TL.20081021080504.13"><vh>@mode body-command-revert</vh></v>
-<v t="TL.20081021080504.14" a="E"><vh>@mode body-command-save</vh>
+<v t="TL.20081021080504.14"><vh>@mode body-command-save</vh>
 <v t="TL.20081021080504.15"><vh>@mode body-command-save-quit</vh>
 <v t="TL.20081021080504.16"><vh>@mode body-command-save-quit-return</vh></v>
 </v>
@@ -1337,7 +1287,7 @@
 <v t="TL.20081021080504.55"><vh>@mode tree-goto-next-marked-node</vh></v>
 <v t="TL.20081021080504.56"><vh>@mode tree-unmark-all-nodes</vh></v>
 </v>
-<v t="TL.20081021080504.57" a="E"><vh>@shortcuts - vi in Body pane</vh>
+<v t="TL.20081021080504.57"><vh>@shortcuts - vi in Body pane</vh>
 <v t="TL.20081021080504.58"><vh>@mode body-search-forward</vh></v>
 <v t="TL.20081021080504.59"><vh>@mode body-search-backward</vh></v>
 <v t="TL.20081021080504.60"><vh>@mode body-search-everywhere</vh></v>
@@ -1345,7 +1295,7 @@
 <v t="TL.20081021080504.62"><vh>@mode body-search-all-nodes</vh></v>
 <v t="TL.20081021080504.63"><vh>@mode body-search-toggle-headline</vh></v>
 <v t="TL.20081021080504.64"><vh>@mode body-search-toggle-body</vh></v>
-<v t="TL.20081021080504.65" a="E"><vh>@mode body-search-toggle-mark</vh>
+<v t="TL.20081021080504.65"><vh>@mode body-search-toggle-mark</vh>
 <v t="TL.20081021080504.66"><vh>@mode body-search-toggle-mark-finds</vh></v>
 <v t="TL.20081021080504.67"><vh>@mode body-search-toggle-mark-changes</vh></v>
 </v>
@@ -1370,7 +1320,7 @@
 <v t="TL.20081021080504.84"><vh>@mode body-delete-to-beginning-of-sentence</vh></v>
 <v t="TL.20081021080504.85"><vh>@mode body-delete-to-end-of-paragraph</vh></v>
 <v t="TL.20081021080504.86"><vh>@mode body-delete-to-beginning-of-paragraph</vh></v>
-<v t="TL.20081021080504.87" a="E"><vh>@mode body-delete-to-g-object</vh>
+<v t="TL.20081021080504.87"><vh>@mode body-delete-to-g-object</vh>
 <v t="TL.20081021080504.88"><vh>@mode body-delete-to-beginning-of-buffer</vh></v>
 </v>
 <v t="TL.20081021080504.89"><vh>@mode body-delete-to-end-of-buffer</vh></v>
