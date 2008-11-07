@@ -3423,47 +3423,6 @@ class leoQtMenu (leoMenu.leoMenu):
     #@-node:ekr.20081004172422.882:getMacHelpMenu
     #@-others
 #@-node:ekr.20081004172422.856:class leoQtMenu (leoMenu)
-#@+node:ekr.20081017015442.12:class leoQtMinibuffer (baseTextWidget)
-class leoQtMinibuffer (leoFrame.baseTextWidget):
-
-    def __init__ (self,c):
-        self.c = c
-        self.w = c.frame.top.ui.lineEdit # QLineEdit
-        # Init the base class.
-        leoFrame.baseTextWidget.__init__(self,c,
-            baseClassName='leoQtMinibuffer',name='minibuffer',widget=None)
-
-        self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
-        self.w.installEventFilter(self.ev_filter)
-
-    def bind (self,kind,*args,**keys):
-        if 0: g.trace(kind,args,keys)
-
-    def setBackgroundColor(self,color):
-        self.w.setStyleSheet('background-color:%s' % color)
-
-    def setForegroundColor(self,color): pass
-
-    def _getAllText(self):          return g.toUnicode(self.w.text(),'utf-8')
-    def _getInsertPoint(self):      return self.w.cursorPosition()
-    def _getLastPosition(self):     return len(self._getAllText())
-    def _getSelectionRange(self):
-        i = self.w.selectionStart()
-        if i == -1:
-            i = self.w.cursorPosition()
-            return i,i
-        else:
-            return i,i+len(self.w.selectedText())
-    def _insertText(self,i,s):
-        s2 = self._getAllText()
-        if i == -1: self.w.setText(s2+s)
-        else:       self.w.setText(s2[:i]+s+s2[i:])
-    def _setAllText(self,s):        self.w.setText(s)
-    def _setFocus(self):            self.w.setFocus()
-    def _setInsertPoint(self,i):    self.w.setSelection(i,0)
-    def _setSelectionRange(self,i,j,insert=None):
-        self.w.setSelection(i,j)
-#@-node:ekr.20081017015442.12:class leoQtMinibuffer (baseTextWidget)
 #@+node:ekr.20081007015817.35:class leoQtSpellTab
 class leoQtSpellTab:
 
@@ -6836,6 +6795,24 @@ class findTextWrapper (leoQLineEditWidget):
 
     pass
 #@-node:ekr.20081018130812.12:class findTextWrapper
+#@+node:ekr.20081017015442.12:class leoQtMinibuffer (leoQLineEditWidget)
+class leoQtMinibuffer (leoQLineEditWidget):
+
+    def __init__ (self,c):
+        self.c = c
+        w = c.frame.top.ui.lineEdit # QLineEdit
+        # Init the base class.
+        leoQLineEditWidget.__init__(self,widget=w,name='minibuffer',c=c)
+
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
+        w.installEventFilter(self.ev_filter)
+
+    def setBackgroundColor(self,color):
+        self.widget.setStyleSheet('background-color:%s' % color)
+
+    def setForegroundColor(self,color):
+        pass
+#@-node:ekr.20081017015442.12:class leoQtMinibuffer (leoQLineEditWidget)
 #@-node:ekr.20081031074959.16:Text widget classes...
 #@-others
 #@-node:ekr.20081004102201.619:@thin qtGui.py
