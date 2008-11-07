@@ -211,8 +211,6 @@ class Window(QtGui.QMainWindow):
     '''
     #@-node:ekr.20081018053140.10:defaultStyleSheet
     #@-node:ekr.20081016072304.14:setStyleSheets & helper
-    #@+node:ekr.20081103071436.2:NewHeadline
-    #@-node:ekr.20081103071436.2:NewHeadline
     #@-others
 
 #@-node:ekr.20081004102201.629:class  Window
@@ -2534,10 +2532,10 @@ class leoQtLog (leoFrame.leoLog):
         self.tabWidget = c.frame.top.ui.tabWidget # The Qt.TabWidget that holds all the tabs.
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
+        self.filter = leoQtEventFilter(c,w=self,tag='tabbed-log')
+
         self.setFontFromConfig()
         self.setColorFromConfig()
-
-
     #@-node:ekr.20081004172422.624:qtLog.__init__
     #@+node:ekr.20081004172422.626:qtLog.finishCreate
     def finishCreate (self):
@@ -2571,6 +2569,7 @@ class leoQtLog (leoFrame.leoLog):
 
         c.searchCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
+    #@nonl
     #@-node:ekr.20081004172422.626:qtLog.finishCreate
     #@-node:ekr.20081004172422.623:qtLog Birth
     #@+node:ekr.20081017015442.30:Do nothings
@@ -2700,7 +2699,7 @@ class leoQtLog (leoFrame.leoLog):
             contents = QtGui.QTextBrowser()
             contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
             self.logDict[tabName] = contents
-            # contents.installEventFilter(self.ev_filter)
+            contents.installEventFilter(self.filter)
             if tabName == 'Log':
                 self.logCtrl = contents
         else:
@@ -4950,8 +4949,6 @@ class leoQtTree (leoFrame.leoTree):
                 self._editWidget = e
                 self._editWidgetWrapper = leoQtHeadlineWidget(
                     widget=e,name='head',c=c)
-                # filter = leoQtEventFilter(c,w=self,tag='head')
-                # e.installEventFilter(filter)
                 start,n = g.choose(selectAll,
                     tuple([0,len_s]),tuple([len_s,0]))
                 e.setObjectName('headline')

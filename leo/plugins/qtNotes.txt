@@ -8,7 +8,6 @@ First:
 - Leo's core complains (oops) that minibuffer._see is not defined.
 - Make findTextWrapper a subclass of a qt text wrapper.
 - Finish handleUnboundKeys: does it work for F4?
-- Make sure keys are handled if focus is in log pane.
 - Fix failing unit tests.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.
@@ -734,8 +733,6 @@ def editLabel (self,p,selectAll=False):
             self._editWidget = e
             self._editWidgetWrapper = leoQtHeadlineWidget(
                 widget=e,name='head',c=c)
-            # filter = leoQtEventFilter(c,w=self,tag='head')
-            # e.installEventFilter(filter)
             start,n = g.choose(selectAll,
                 tuple([0,len_s]),tuple([len_s,0]))
             e.setObjectName('headline')
@@ -869,8 +866,6 @@ QsciScintilla {
 '''
 #@-node:ekr.20081018053140.10:defaultStyleSheet
 #@-node:ekr.20081016072304.14:setStyleSheets & helper
-#@+node:ekr.20081103071436.2:NewHeadline
-#@-node:ekr.20081103071436.2:NewHeadline
 #@-node:ekr.20081004102201.629:class  Window
 #@-node:ekr.20081018155359.12:Problems with multiple windows
 #@+node:ekr.20081020075840.21:Suppress updates until init complete
@@ -1287,8 +1282,6 @@ def editLabel (self,p,selectAll=False):
             self._editWidget = e
             self._editWidgetWrapper = leoQtHeadlineWidget(
                 widget=e,name='head',c=c)
-            # filter = leoQtEventFilter(c,w=self,tag='head')
-            # e.installEventFilter(filter)
             start,n = g.choose(selectAll,
                 tuple([0,len_s]),tuple([len_s,0]))
             e.setObjectName('headline')
@@ -2447,6 +2440,53 @@ def getName (self):
     return name
 #@-node:ekr.20081014095718.15:get_name (qtTree)
 #@-node:ekr.20081103092019.12:Widget names...
+#@+node:ekr.20081107102518.10:Allow commands when focus is in log.
+print 'focus',repr(c.frame.getFocus())
+#@nonl
+#@+node:ekr.20081004172422.624:qtLog.__init__
+def __init__ (self,frame,parentFrame):
+
+    # g.trace("leoQtLog")
+
+    # Call the base class constructor and calls createControl.
+    leoFrame.leoLog.__init__(self,frame,parentFrame)
+
+    self.c = c = frame.c # Also set in the base constructor, but we need it here.
+    self.logCtrl = None # The text area for log messages.
+
+    self.contentsDict = {} # Keys are tab names.  Values are widgets.
+    self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
+    self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
+
+    self.tabWidget = c.frame.top.ui.tabWidget # The Qt.TabWidget that holds all the tabs.
+    self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
+
+    self.filter = leoQtEventFilter(c,w=self,tag='tabbed-log')
+
+    self.setFontFromConfig()
+    self.setColorFromConfig()
+#@-node:ekr.20081004172422.624:qtLog.__init__
+#@+node:ekr.20081004172422.649:createTab
+def createTab (self,tabName,createText=True,wrap='none'):
+
+    c = self.c ; w = self.tabWidget
+
+    if createText:
+        contents = QtGui.QTextBrowser()
+        contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
+        self.logDict[tabName] = contents
+        contents.installEventFilter(self.filter)
+        if tabName == 'Log':
+            self.logCtrl = contents
+    else:
+        contents = QtGui.QWidget()
+
+    self.contentsDict[tabName] = contents
+    w.addTab(contents,tabName)
+    return contents
+
+#@-node:ekr.20081004172422.649:createTab
+#@-node:ekr.20081107102518.10:Allow commands when focus is in log.
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor
