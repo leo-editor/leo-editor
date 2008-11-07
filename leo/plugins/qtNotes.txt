@@ -740,6 +740,9 @@ def editLabel (self,p,selectAll=False):
             e.setFocus()
         else: g.trace('*** no e')
     else:
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
         e = None
         g.trace('*** no item')
 
@@ -1289,6 +1292,9 @@ def editLabel (self,p,selectAll=False):
             e.setFocus()
         else: g.trace('*** no e')
     else:
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
         e = None
         g.trace('*** no item')
 

@@ -4928,6 +4928,9 @@ class leoQtTree (leoFrame.leoTree):
                 e.setFocus()
             else: g.trace('*** no e')
         else:
+            self._editWidgetPosition = None
+            self._editWidget = None
+            self._editWidgetWrapper = None
             e = None
             g.trace('*** no item')
 
