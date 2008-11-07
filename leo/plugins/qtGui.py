@@ -617,8 +617,8 @@ class leoQtFindTab (leoFind.findTab):
         # Bind boxes to Window objects.
         self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
         data = (
-            ('find_ctrl',       self.findTextWrapper(c,w.findPattern)),
-            ('change_ctrl',     self.findTextWrapper(c,w.findChange)),
+            ('find_ctrl',       findTextWrapper(w.findPattern,'find-widget',c)),
+            ('change_ctrl',     findTextWrapper(w.findChange,'change-widget',c)),
             ('whole_world',     w.checkBoxWholeWord),
             ('ignore_case',     w.checkBoxIgnoreCase),
             ('wrap',            w.checkBoxWrapAround),
@@ -726,34 +726,6 @@ class leoQtFindTab (leoFind.findTab):
         def set (self,val):
             self.val = val
     #@-node:ekr.20081007015817.64:class svar
-    #@+node:ekr.20081018130812.12:class findTextWrapper
-    class findTextWrapper:
-
-        '''A wrapper for QLineEdit widgets.'''
-
-        def __init__ (self,c,qtWidget):
-            self.c = c
-            self.w = qtWidget
-
-        def insert(self,i,s):
-            s2 = self.getAllText()
-            self.w.clear()
-            if i == 'end': i = len(s)
-            self.setAllText(s2[:i] + s + s2[i:])
-
-        def delete(self,i,j):
-            s = self.getAllText()
-            self.w.clear()
-            if j == 'end': j = len(s)
-            self.setAllText(s[:i] + s[j:])
-
-        def getAllText (self):
-            return g.toUnicode(self.w.text(),'utf-8')
-
-        def setAllText (self,s):
-            self.w.clear()
-            self.w.setText(s)
-    #@-node:ekr.20081018130812.12:class findTextWrapper
     #@+node:ekr.20081007015817.72:Support for minibufferFind class (qtFindTab)
     # This is the same as the Tk code because we simulate Tk svars.
     #@nonl
@@ -6854,6 +6826,13 @@ class leoQtHeadlineWidget (leoQLineEditWidget):
 
     pass
 #@-node:ekr.20081103092019.11:class leoQtHeadlineWidget
+#@+node:ekr.20081018130812.12:class findTextWrapper
+class findTextWrapper (leoQLineEditWidget):
+
+    '''A class representing the find/change edit widgets.'''
+
+    pass
+#@-node:ekr.20081018130812.12:class findTextWrapper
 #@-node:ekr.20081031074959.16:Text widget classes...
 #@-others
 #@-node:ekr.20081004102201.619:@thin qtGui.py

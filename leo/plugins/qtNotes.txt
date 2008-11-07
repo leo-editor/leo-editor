@@ -5,13 +5,14 @@
 @nocolor-node
 
 First:
+** Fix recent crash
+
 - Leo's core complains (oops) that minibuffer._see is not defined.
-- Make findTextWrapper a subclass of a qt text wrapper.
-- Finish handleUnboundKeys: does it work for F4?
-- Fix failing unit tests.
+- Ignore F-keys in  handleUnboundKeys.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Complete dialogs in leoQtGui.
 - Suppress undo in most widgets.
+- Fix failing unit tests.
 
 Finally:
 - Check event handling with QScintilla.
