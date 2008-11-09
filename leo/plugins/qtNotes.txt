@@ -7,14 +7,16 @@
 * Fix recent crasher
 - Flash no longer works.
 - Cut/copy/paste do not work in log pane.
-- Run pylint.
+- Get auto-completion working. (binding to period?)
+- Add stylesheets for dialogs.
+    - Set font for dummy widget in style sheet, then copy that font.
 
 Next:
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Fix failing unit tests.
 
 Finally:
-- Get auto-completion working.
+- Fix minor pylint stuff.
 - Allow coloring of icon bar buttons.
 - Support multiple body editors.
 - Handle pane orientation:
@@ -2294,7 +2296,7 @@ def getMenuLabel (self,menu,name):
     g.trace('menu',menu,'name',name)
 
     actions = menu.actions()
-    for z in action:
+    for action in actions:
         g.trace(action.label())
 
     # try:

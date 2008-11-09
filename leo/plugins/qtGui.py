@@ -449,7 +449,6 @@ class leoQtBody (leoFrame.leoBody):
 
     def oops (self):
         g.trace('qtBody',g.callers(3))
-
     #@-node:ekr.20081016072304.11:Do-nothings
     #@+node:ekr.20081031074959.13:High-level interface to self.widget
     def appendText (self,s):
@@ -512,9 +511,6 @@ class leoQtBody (leoFrame.leoBody):
     def setInsertPoint (self,pos):
         return self.widget.setInsertPoint(pos)
 
-    def scrollLines(self,n):
-        return self.widget.scrollLines(n)
-
     def setSelectionRange (self,sel):
         i,j = sel
         return self.widget.setSelectionRange(i,j)
@@ -545,21 +541,6 @@ class leoQtBody (leoFrame.leoBody):
             # w.pack(expand=1,fill='both')
     #@nonl
     #@-node:ekr.20081103095314.34:packEditorLabelWidget
-    #@+node:ekr.20081103095314.35:setEditorColors
-    def setEditorColors (self,bg,fg):
-
-        pass
-
-        # c = self.c ; d = self.editorWidgets
-
-        # for key in d:
-            # w2 = d.get(key)
-            # # g.trace(id(w2),bg,fg)
-            # try:
-                # w2.configure(bg=bg,fg=fg)
-            # except Exception:
-                # g.es_exception()
-    #@-node:ekr.20081103095314.35:setEditorColors
     #@-node:ekr.20081103095314.32:Editors (qtBody)
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
@@ -581,11 +562,7 @@ class leoQtFindTab (leoFind.findTab):
 
     #@    @+others
     #@+node:ekr.20081018053140.14: Birth: called from leoFind ctor
-    #@+at
-    # 
-    # leoFind.__init__ calls initGui, createFrame, createBindings & init, in 
-    # that order.
-    #@-at
+    # leoFind.__init__ calls initGui, createFrame, createBindings & init, in that order.
     #@+node:ekr.20081007015817.59:initGui
     def initGui (self):
 
@@ -677,7 +654,7 @@ class leoQtFindTab (leoFind.findTab):
             svar = self.svarDict[ivar].get()
             if svar:
                 self.svarDict["radio-find-type"].set(key)
-                w = widgetsDict.get(key)
+                w = self.widgetsDict.get(key)
                 if w: w.setChecked(True)
                 break
         else:
@@ -923,8 +900,6 @@ class leoQtFrame (leoFrame.leoFrame):
 
         frame = self ; c = self.c
 
-        #  ; tree = frame.tree ; body = self.body
-
         # g.printGcAll()
 
         # Do this first.
@@ -962,10 +937,10 @@ class leoQtFrame (leoFrame.leoFrame):
             g.clearAllIvars(c.undoer)
             g.clearAllIvars(c)
         if 0: # No need.
+            tree = frame.tree ; body = self.body
             g.clearAllIvars(body.colorizer)
             g.clearAllIvars(body)
             g.clearAllIvars(tree)
-
 
     #@-node:ekr.20081004172422.546:destroyAllObjects
     #@+node:ekr.20081004172422.549:destroySelf (qtFrame)
@@ -1357,31 +1332,6 @@ class leoQtFrame (leoFrame.leoFrame):
             # w.leo_bodyXBar.pack(side="bottom", fill="x") # 2007/10/31
             # w.pack(expand=1,fill="both")  # 2007/10/25
     #@-node:ekr.20081004172422.586:setWrap (qtFrame)
-    #@+node:ekr.20081004172422.587:setTopGeometry (qtFrame)
-    def setTopGeometry(self,w,h,x,y,adjustSize=True):
-
-        pass
-
-        # # Put the top-left corner on the screen.
-        # x = max(10,x) ; y = max(10,y)
-
-        # if adjustSize:
-            # top = self.top
-            # sw = top.winfo_screenwidth()
-            # sh = top.winfo_screenheight()
-
-            # # Adjust the size so the whole window fits on the screen.
-            # w = min(sw-10,w)
-            # h = min(sh-10,h)
-
-            # # Adjust position so the whole window fits on the screen.
-            # if x + w > sw: x = 10
-            # if y + h > sh: y = 10
-
-        # geom = "%dx%d%+d%+d" % (w,h,x,y)
-
-        # self.top.geometry(geom)
-    #@-node:ekr.20081004172422.587:setTopGeometry (qtFrame)
     #@+node:ekr.20081004172422.588:reconfigurePanes (use config bar_width) (qtFrame)
     def reconfigurePanes (self):
 
@@ -2747,7 +2697,7 @@ class leoQtMenu (leoMenu.leoMenu):
         g.trace('menu',menu,'name',name)
 
         actions = menu.actions()
-        for z in action:
+        for action in actions:
             g.trace(action.label())
 
         # try:
@@ -3153,29 +3103,29 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081005065934.10:qtTree.initAfterLoad
     def initAfterLoad (self):
 
-            c = self.c ; frame = c.frame
-            w = c.frame.top ; tw = self.treeWidget
+        c = self.c ; frame = c.frame
+        w = c.frame.top ; tw = self.treeWidget
 
-            if not leoQtTree.callbacksInjected:
-                leoQtTree.callbacksInjected = True
-                self.injectCallbacks() # A base class method.
+        if not leoQtTree.callbacksInjected:
+            leoQtTree.callbacksInjected = True
+            self.injectCallbacks() # A base class method.
 
-            w.connect(self.treeWidget,QtCore.SIGNAL(
-                "itemSelectionChanged()"), self.onTreeSelect)
+        w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemSelectionChanged()"), self.onTreeSelect)
 
-            w.connect(self.treeWidget,QtCore.SIGNAL(
-                "itemChanged(QTreeWidgetItem*, int)"),self.sig_itemChanged)
+        w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemChanged(QTreeWidgetItem*, int)"),self.sig_itemChanged)
 
-            w.connect(self.treeWidget,QtCore.SIGNAL(
-                "itemCollapsed(QTreeWidgetItem*)"),self.sig_itemCollapsed)
+        w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemCollapsed(QTreeWidgetItem*)"),self.sig_itemCollapsed)
 
-            w.connect(self.treeWidget,QtCore.SIGNAL(
-                "itemExpanded(QTreeWidgetItem*)"),self.sig_itemExpanded)
+        w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemExpanded(QTreeWidgetItem*)"),self.sig_itemExpanded)
 
-            self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
-            tw.installEventFilter(self.ev_filter)
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+        tw.installEventFilter(self.ev_filter)
 
-            c.setChanged(False)
+        c.setChanged(False)
     #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
     #@+node:ekr.20081004172422.742:qtTree.setBindings & helper
     def setBindings (self):
@@ -4575,17 +4525,11 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081109092601.11:makeFilter
     def makeFilter (self,filetypes):
 
-        # g.trace(filetypes)
-        filters = []
-        for aTuple in filetypes:
-            a,b = aTuple
-            filter = '%s (%s)' % (a,b)
-            filters.append(filter)
+        '''Return the Qt-style dialog filter from filetypes list.'''
 
-        filter = ';;'.join(filters)
-        g.trace(filter)
-        return filter
+        filters = ['%s (%s)' % (z) for z in filetypes]
 
+        return ';;'.join(filters)
     #@-node:ekr.20081109092601.11:makeFilter
     #@+node:ekr.20081020075840.18:not used
     def runAskOkCancelNumberDialog(self,c,title,message):
@@ -6275,7 +6219,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
                     try:
                         lexer.setColor(qcolor(color),style)
                     except Exception:
-                         oops('bad color: %s' % color)
+                        oops('bad color: %s' % color)
                 else: oops('bad style: %s' % style)
 
         w.setLexer(lexer)
