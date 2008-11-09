@@ -4,59 +4,52 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-First:
-- Complete dialogs in leoQtGui.
+* Fix recent crasher
+- Flash no longer works.
+- Cut/copy/paste do not work in log pane.
+- Run pylint.
 
 Next:
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Fix failing unit tests.
 
 Finally:
-- Check event handling with QScintilla.
-- Move tk code into a plugin.
-    - Define precedence order if no gui is given.
+- Get auto-completion working.
 - Allow coloring of icon bar buttons.
-- Finish colorizer:
-    - Simulate Tk's handling of tags (an optimization)
-    - Use Qt threading.
-    - Handle all colorizer tags.
-- Can style sheets really do the job?
-- Flash characters without changing the selection?
+- Support multiple body editors.
+- Handle pane orientation:
+    A popular arrangement would be editor and outline
+    in top pane with the log along the bottom.
 #@nonl
-#@+node:ekr.20081029050144.10:Later
-Later:
-
+#@+node:ekr.20081109123309.13:Finish colorizer
+- Simulate Tk's handling of tags (an optimization)
+- Use Qt threading.
+- Handle all colorizer tags.
+#@nonl
+#@-node:ekr.20081109123309.13:Finish colorizer
+#@+node:ekr.20081109123309.14:QScintilla stuff
+- Check event handling with QScintilla.
 - Experiment with sending <shift-tab> directly to QScintilla.
 - Call setLexer(0) for nocolor nodes.
 - Add settings for syntax coloring.
      - Make Scintilla handle Leo markup.
-- Support multiple body editors.
-- Support chapters
-- Handle pane orientation:
-    A popular arrangement would be editor and outline
-    in top pane with the log along the bottom.
-- Remove old-style Leo settings?
+#@nonl
+#@-node:ekr.20081109123309.14:QScintilla stuff
+#@+node:ekr.20081109123309.15:To do in trunk
 - Make tkinter code a plugin.
     - If no gui specified on command line,
       use the first gui that can be imported.
 - Support @ifgui in settings trees.
 #@nonl
-#@-node:ekr.20081029050144.10:Later
-#@+node:ekr.20081101124952.11:What I did
-- Add subclasses for QLineEdit, QScintilla, etc.
-- Body methods redirect to component classes.
-- Finish leoQtTextWidget class.
-- Add "mustBeDefined" lists to baseLeoText class in the core.
-- https://bugs.launchpad.net/leo-editor/+bug/286493
-  File "qtGui.py", line 745, in delete
-    s = s[:i] + s[j+1:]
-    TypeError: slice indices must be integers or None or
-    have an __index__ method (Convert indices to ints.)
-#@-node:ekr.20081101124952.11:What I did
-#@+node:ekr.20081101124952.1:Recent crasher
-@nocolor-node
+#@-node:ekr.20081109123309.15:To do in trunk
+#@+node:ekr.20081029050144.10:Finally/maybe
+- Can style sheets really do the job?
+- Flash characters without changing the selection?
+- Remove old-style Leo settings?
+#@-node:ekr.20081029050144.10:Finally/maybe
+#@+node:ekr.20081109123309.11:Recent crasher (after find)
 
-edit: editing failed
+wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
 exception executing command
 Traceback (most recent call last):
 
@@ -66,24 +59,23 @@ Traceback (most recent call last):
   File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7803, in findTabFindNext
     self.findTabHandler.findNextCommand()
 
-  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1507, in findNextCommand
+  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1506, in findNextCommand
     self.findNext()
 
   File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 744, in findNext
     self.showSuccess(pos,newpos)
 
-  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1360, in showSuccess
+  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1359, in showSuccess
     c.editPosition(p)
 
   File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 7233, in editPosition
     c.frame.tree.editLabel(p,selectAll=selectAll)
 
-  File "C:\leo.repo\qt-plugin\leo\plugins\qtGui.py", line 6274, in editLabel
-    return '%s.%s' % (row+1,col)
+  File "C:\leo.repo\qt-plugin\leo\plugins\qtGui.py", line 4277, in editLabel
+    w.editItem(item)
 
 RuntimeError: underlying C/C++ object has been deleted
-#@nonl
-#@-node:ekr.20081101124952.1:Recent crasher
+#@-node:ekr.20081109123309.11:Recent crasher (after find)
 #@-node:ekr.20081010070648.5: To do
 #@+node:ekr.20081019082316.10:New features in the core
 @nocolor-node
@@ -95,32 +87,6 @@ RuntimeError: underlying C/C++ object has been deleted
 # Hard to fix
 W0221:4426:leoQtMenu.add_command: Arguments number differs from overridden method
 W0221:4607:leoQtMenu.getMenuLabel: Arguments number differs from overridden method
-#@+node:ekr.20081017015442.19:qtGui dialogs
-E0602:2793:leoQtGui.runAboutLeoDialog: Undefined variable 'qtAboutLeo'
-E0602:2798:leoQtGui.runAskLeoIDDialog: Undefined variable 'qtAskLeoID'
-E0602:2803:leoQtGui.runAskOkDialog: Undefined variable 'qtAskOk'
-E0602:2808:leoQtGui.runAskOkCancelNumberDialog: Undefined variable 'qtAskOkCancelNumber'
-E0602:2813:leoQtGui.runAskOkCancelStringDialog: Undefined variable 'qtAskOkCancelString'
-E0602:2818:leoQtGui.runAskYesNoDialog: Undefined variable 'qtAskYesNo'
-E0602:2824:leoQtGui.runAskYesNoCancelDialog: Undefined variable 'qtAskYesNoCancel'
-
-E1101:2955:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'STOCK_CANCEL' member
-E1101:2955:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_CANCEL' member
-E1101:2956:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'TOCK_OPEN' member
-E1101:2956:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
-E1101:2960:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'STOCK_CANCEL' member
-E1101:2960:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_CANCEL' member
-E1101:2961:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'STOCK_SAVE' member
-E1101:2961:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
-E1101:2966:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'FILE_CHOOSER_ACTION_SAVE' member
-E1101:2967:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'FILE_CHOOSER_ACTION_OPEN' member
-E1101:2970:leoQtGui.runFileDialog: Module 'PyQt4.QtGui' has no 'FileChooserDialog' member
-E1101:2974:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
-E1101:2983:leoQtGui.runFileDialog: Module 'PyQt4.QtGui' has no 'FileFilter' member
-E1101:2991:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_OK' member
-E1101:2998:leoQtGui.runFileDialog: Module 'PyQt4.QtCore' has no 'RESPONSE_CANCEL' member
-#@nonl
-#@-node:ekr.20081017015442.19:qtGui dialogs
 #@-node:ekr.20081017015442.15:pylint errors
 #@+node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081015062931.10:Focus stuff...
@@ -341,6 +307,8 @@ def eventFilter(self, obj, event):
         if 0: ### not c.frame.body.useScintilla:
             # Send *all* non-ignored keystrokes to the widget.
             override = not ignore
+        elif tkKey == 'Tab':
+            override = True
         elif k.inState():
             override = not ignore # allow all keystrokes.
         elif safe_mode:
@@ -5174,6 +5142,151 @@ def updateEditors (self):
 #@nonl
 #@-node:ekr.20081031074959.19:updateEditors
 #@-node:ekr.20081004172422.519:Editors (to do) (was in leoQtBaseTextWidget)
+#@+node:ekr.20081004102201.652:Dialog utils (qtGui: optional)
+#@+node:ekr.20081004102201.653:get_window_info
+def get_window_info (self,top):
+
+    rect = top.geometry()
+    topLeft = rect.topLeft()
+    x,y = topLeft.x(),topLeft.y()
+    w,h = rect.width(),rect.height()
+    return w,h,x,y
+#@-node:ekr.20081004102201.653:get_window_info
+#@+node:ekr.20081004102201.654:center_dialog
+def center_dialog(self,top):
+
+    """Center the dialog on the screen.
+
+    return 0,0,0,0
+
+    # sw = top.winfo_screenwidth()
+    # sh = top.winfo_screenheight()
+    # w,h,x,y = self.get_window_info(top)
+
+    # # Set the new window coordinates, leaving w and h unchanged.
+    # x = (sw - w)/2
+    # y = (sh - h)/2
+    # top.geometry("%dx%d%+d%+d" % (w,h,x,y))
+
+    # return w,h,x,y
+#@-node:ekr.20081004102201.654:center_dialog
+#@+node:ekr.20081004102201.655:create_labeled_frame
+# Returns frames w and f.
+# Typically the caller would pack w into other frames, and pack content into f.
+
+def create_labeled_frame (self,parent,
+    caption=None,relief="groove",bd=2,padx=0,pady=0):
+
+    return
+
+    # # Create w, the master frame.
+    # w = qt.Frame(parent)
+    # w.grid(sticky="news")
+
+    # # Configure w as a grid with 5 rows and columns.
+    # # The middle of this grid will contain f, the expandable content area.
+    # w.columnconfigure(1,minsize=bd)
+    # w.columnconfigure(2,minsize=padx)
+    # w.columnconfigure(3,weight=1)
+    # w.columnconfigure(4,minsize=padx)
+    # w.columnconfigure(5,minsize=bd)
+
+    # w.rowconfigure(1,minsize=bd)
+    # w.rowconfigure(2,minsize=pady)
+    # w.rowconfigure(3,weight=1)
+    # w.rowconfigure(4,minsize=pady)
+    # w.rowconfigure(5,minsize=bd)
+
+    # # Create the border spanning all rows and columns.
+    # border = qt.Frame(w,bd=bd,relief=relief) # padx=padx,pady=pady)
+    # border.grid(row=1,column=1,rowspan=5,columnspan=5,sticky="news")
+
+    # # Create the content frame, f, in the center of the grid.
+    # f = qt.Frame(w,bd=bd)
+    # f.grid(row=3,column=3,sticky="news")
+
+    # # Add the caption.
+    # if caption and len(caption) > 0:
+        # caption = qt.Label(parent,text=caption,highlightthickness=0,bd=0)
+        # # caption.tkraise(w)
+        # caption.grid(in_=w,row=0,column=2,rowspan=2,columnspan=3,padx=4,sticky="w")
+
+    # return w,f
+#@-node:ekr.20081004102201.655:create_labeled_frame
+#@-node:ekr.20081004102201.652:Dialog utils (qtGui: optional)
+#@+node:ekr.20081004102201.643:runFileDialog
+def runFileDialog(self,title='Open File',filetypes=None,
+    action='open',multiple=False,initialFile=None):
+
+    '''Display an open or save file dialog.
+
+    'title': The title to be shown in the dialog window.
+    'filetypes': A list of (name, pattern) tuples.
+    'action': Should be either 'save' or 'open'.
+    'multiple': True if multiple files may be selected.
+    'initialDir': The directory in which the chooser starts.
+    'initialFile': The initial filename for a save dialog.
+    '''
+
+    g.trace()
+
+    initialdir=g.app.globalOpenDir or g.os_path_finalize(os.getcwd())
+
+    if action == 'open':
+        btns = (
+            QtCore.STOCK_CANCEL, QtCore.RESPONSE_CANCEL,
+            QtCore.TOCK_OPEN, QtCore.RESPONSE_OK
+        )
+    else:
+        btns = (
+            QtCore.STOCK_CANCEL, QtCore.RESPONSE_CANCEL,
+            QtCore.STOCK_SAVE, QtCore.RESPONSE_OK
+        )
+
+    qtaction = g.choose(
+        action == 'save',
+        QtCore.FILE_CHOOSER_ACTION_SAVE, 
+        QtCore.FILE_CHOOSER_ACTION_OPEN
+    )
+
+    dialog = QtGui.FileChooserDialog(title,None,qtaction,btns)
+
+    try:
+
+        dialog.set_default_response(QtCore.RESPONSE_OK)
+        dialog.set_do_overwrite_confirmation(True)
+        dialog.set_select_multiple(multiple)
+        if initialdir:
+            dialog.set_current_folder(initialdir)
+
+        if filetypes:
+
+            for name, patern in filetypes:
+                filter = QtGui.FileFilter()
+                filter.set_name(name)
+                filter.add_pattern(patern)
+                dialog.add_filter(filter)
+
+        response = dialog.run()
+        g.pr('dialog response' , response)
+
+        if response == QtCore.RESPONSE_OK:
+
+            if multiple:
+                result = dialog.get_filenames()
+            else:
+                result = dialog.get_filename()
+
+        elif response == QtCore.RESPONSE_CANCEL:
+            result = None
+
+    finally:
+        dialog.destroy()
+
+    g.trace('dialog result' , result)
+
+    return result
+#@-node:ekr.20081004102201.643:runFileDialog
 #@-node:ekr.20081018155359.11:Unused
 #@+node:ekr.20081024175359.10:Scripts
 #@+node:ekr.20081022172620.10:Script to display Qt font database

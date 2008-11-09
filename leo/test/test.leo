@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4,4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -376,6 +376,7 @@
 <v t="ekr.20081016102648.1"><vh>Test node</vh></v>
 <v t="ekr.20081019050559.1"><vh>Show rich text</vh></v>
 <v t="ekr.20081030090840.1"><vh>g.es</vh></v>
+<v t="ekr.20081109131330.1"><vh>Dialog tests</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3758,5 +3759,23 @@ r.setHtml("This is &lt;b&gt;rich text&lt;/b&gt;")
 sw.setCurrentIndex(1)</t>
 <t tx="ekr.20081030090840.1"># g.es(('line1\nline2',tabName='Test'
 print '===='</t>
+<t tx="ekr.20081109131330.1">if 0:
+    g.app.gui.runAskYesNoDialog(c,
+        'Crash and burn?',
+        message='Crash and burn for positive identification?')
+
+if 0: 
+    g.app.gui.runAskYesNoCancelDialog(c,
+        'Crash and burn?',
+        message='Crash and burn for positive identification?')
+
+if 0:
+    g.app.gui.runAskOkDialog(c,
+    'Crashed &amp; burned',
+    message='You have crashed and burned for posititive id')
+
+if 1:
+    s = g.app.gui.runAskLeoIDDialog()
+</t>
 </tnodes>
 </leo_file>
