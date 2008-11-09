@@ -5277,7 +5277,7 @@ class leoQtEventFilter(QtCore.QObject):
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
 
-            if not c.frame.body.useScintilla:
+            if 0: ### not c.frame.body.useScintilla:
                 # Send *all* non-ignored keystrokes to the widget.
                 override = not ignore
             elif k.inState():
@@ -5297,7 +5297,7 @@ class leoQtEventFilter(QtCore.QObject):
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
                 c.outerUpdate()
             else:
-                if trace and verbose: g.trace(self.tag,'unbound',tkKey)
+                if trace: g.trace(self.tag,'unbound',tkKey)
 
         if trace: self.traceEvent(obj,event,tkKey,override)
 
@@ -5451,7 +5451,6 @@ class leoQtEventFilter(QtCore.QObject):
     repr(ch),repr(ch2),repr(ch3),repr(ch4)))
 
         if 'Shift' in mods:
-            # self.shifted2(event) # For experimentation
             mods,ch = self.shifted(mods,ch)
         elif len(ch) == 1:
             ch = ch.lower()

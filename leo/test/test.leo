@@ -3737,7 +3737,7 @@ c.frame.addIconButton(text="New")</t>
 <t tx="ekr.20081003094737.1"></t>
 <t tx="ekr.20081003162730.1">@nocolor-node
 @ test</t>
-<t tx="ekr.20081003162730.2">tkKey = 'Return'
+<t tx="ekr.20081003162730.2">abtkKey = 'Return'
 aList = c.k.masterGuiBindingsDict.get('&lt;%s&gt;' %tkKey,[])
 for z in aList:
     print '==='

@@ -356,7 +356,7 @@ class baseTextWidget:
 
     _findFocus = _getFocus
     #@-node:ekr.20081031074455.9:Must be defined in subclasses (low-level interface)
-    #@+node:ekr.20081031074455.2:Must be defined in subclasses (hig-level interface)
+    #@+node:ekr.20081031074455.2:Must be defined in subclasses (high-level interface)
     # These methods are widget-independent because they call the corresponding _xxx methods.
     #@nonl
     #@+node:ekr.20070228074312.10:appendText
@@ -557,7 +557,7 @@ class baseTextWidget:
         w._setYScrollPosition(i)
     #@nonl
     #@-node:ekr.20070228074312.38:setYScrollPosition
-    #@-node:ekr.20081031074455.2:Must be defined in subclasses (hig-level interface)
+    #@-node:ekr.20081031074455.2:Must be defined in subclasses (high-level interface)
     #@-others
 #@-node:ekr.20070228074312:class baseTextWidget
 #@+node:ekr.20070228074228.1:class stringTextWidget (baseTextWidget)
