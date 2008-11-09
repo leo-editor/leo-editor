@@ -6,7 +6,6 @@
 
 First:
 - Complete dialogs in leoQtGui.
-- Suppress undo in most widgets.
 
 Next:
 - Shift-tab is Smart home. (Allow shift-tab binding).

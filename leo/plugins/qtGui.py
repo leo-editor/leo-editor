@@ -6513,6 +6513,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         self.baseClassName='leoQTextEditWidget'
 
+        widget.setUndoRedoEnabled(False)
+
         self.setConfig()
         self.setFontFromConfig()
         self.setColorFromConfig()
