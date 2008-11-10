@@ -4545,12 +4545,14 @@ class leoQtGui(leoGui.leoGui):
 
         """Create and run askOkCancelNumber dialog ."""
 
+        if g.unitTesting: return None
         g.trace('not ready yet')
 
     def runAskOkCancelStringDialog(self,c,title,message):
 
         """Create and run askOkCancelString dialog ."""
 
+        if g.unitTesting: return None
         g.trace('not ready yet')
 
 
@@ -4580,6 +4582,8 @@ class leoQtGui(leoGui.leoGui):
 
         """Create and run a qt About Leo dialog."""
 
+        if g.unitTesting: return None
+
         b = QtGui.QMessageBox
         d = b(c.frame.top)
 
@@ -4594,6 +4598,8 @@ class leoQtGui(leoGui.leoGui):
     def runAskLeoIDDialog(self):
 
         """Create and run a dialog to get g.app.LeoID."""
+
+        if g.unitTesting: return None
 
         message = (
             "leoID.txt not found\n\n" +
@@ -4612,6 +4618,8 @@ class leoQtGui(leoGui.leoGui):
 
         """Create and run a qt an askOK dialog ."""
 
+        if g.unitTesting: return None
+
         b = QtGui.QMessageBox
         d = b(c.frame.top)
 
@@ -4629,6 +4637,8 @@ class leoQtGui(leoGui.leoGui):
     ):
 
         """Create and run an askYesNo dialog."""
+
+        if g.unitTesting: return None
 
         b = QtGui.QMessageBox
 
@@ -4653,6 +4663,8 @@ class leoQtGui(leoGui.leoGui):
     def runAskYesNoDialog(self,c,title,message=None):
 
         """Create and run an askYesNo dialog."""
+
+        if g.unitTesting: return None
 
         b = QtGui.QMessageBox
         d = b(c.frame.top)

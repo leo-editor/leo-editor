@@ -7,6 +7,8 @@
 - Flash no longer works.
 - Cut/copy/paste do not work in log pane.
 - Get auto-completion working. (binding to period?)
+* Sometimes left-arrow goes too far.
+    - Probably c.outerUpdate is not being called after unit tests.
 - Add stylesheets for dialogs.
     - Set font for dummy widget in style sheet, then copy that font.
 
@@ -48,111 +50,6 @@ Finally:
 - Flash characters without changing the selection?
 - Remove old-style Leo settings?
 #@-node:ekr.20081029050144.10:Finally/maybe
-#@+node:ekr.20081109123309.11:Recent crasher (after find)
-
-wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
-exception executing command
-Traceback (most recent call last):
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 320, in doCommand
-    val = command(event)
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7803, in findTabFindNext
-    self.findTabHandler.findNextCommand()
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1506, in findNextCommand
-    self.findNext()
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 744, in findNext
-    self.showSuccess(pos,newpos)
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1359, in showSuccess
-    c.editPosition(p)
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 7233, in editPosition
-    c.frame.tree.editLabel(p,selectAll=selectAll)
-
-  File "C:\leo.repo\qt-plugin\leo\plugins\qtGui.py", line 4277, in editLabel
-    w.editItem(item)
-
-RuntimeError: underlying C/C++ object has been deleted
-#@+node:ekr.20081004172422.846:editLabel (override)
-def editLabel (self,p,selectAll=False):
-
-    """Start editing p's headline."""
-
-    c = self.c ; trace = False ; verbose = False
-
-    if self.redrawing:
-        if trace and verbose: g.trace('redrawing')
-        return
-    if self._editWidget:
-        # Not an error, because of key weirdness.
-        g.trace('already editing')
-        return
-
-    if trace:
-        g.trace('*** all',selectAll,p.headString(),g.callers(4))
-
-    w = self.treeWidget
-    data = self.vnodeDict.get(p.v)
-    if not data:
-        if trace and verbose:
-            g.trace('No data: redrawing if possible')
-        c.outerUpdate() # Do any scheduled redraw.
-        data = self.vnodeDict.get(p.v)
-
-    if data:
-        item = data [0][1]
-    else:
-        if trace and not g.app.unitTesting:
-            g.trace('*** Can not happen: no data',p and p.headString())
-        return None
-
-    if item:
-        w.setCurrentItem(item) # Must do this first.
-        w.editItem(item)
-        e = w.itemWidget(item,0) # A QLineEdit
-        if e:
-            s = e.text() ; len_s = len(s)
-            # Hook up the widget to Leo's core.
-            self._editWidgetPosition = p.copy()
-            self._editWidget = e
-            self._editWidgetWrapper = leoQtHeadlineWidget(
-                widget=e,name='head',c=c)
-            start,n = g.choose(selectAll,
-                tuple([0,len_s]),tuple([len_s,0]))
-            e.setObjectName('headline')
-            e.setSelection(start,n)
-            e.setFocus()
-        else: g.trace('*** no e')
-    else:
-        self._editWidgetPosition = None
-        self._editWidget = None
-        self._editWidgetWrapper = None
-        e = None
-        g.trace('*** no item')
-
-    # A nice hack: just set the focus request.
-    c.requestedFocusWidget = e
-
-    # g.trace('leoQtTree','it',it,p and p.headString())
-
-    # if p and p != self.editPosition():
-        # self.endEditLabel()
-        # # This redraw *is* required so the c.edit_widget(p) will exist.
-        # c.redraw()
-        # c.outerUpdate()
-
-    # self.setEditPosition(p) # That is, self._editPosition = p
-    # w = c.edit_widget(p)
-    # if p and w:
-        # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-        # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
-        # c.headlineWantsFocus(p) # Make sure the focus sticks.
-        # c.k.showStateAndMode(w)
-#@-node:ekr.20081004172422.846:editLabel (override)
-#@-node:ekr.20081109123309.11:Recent crasher (after find)
 #@-node:ekr.20081010070648.5: To do
 #@+node:ekr.20081019082316.10:New features in the core
 @nocolor-node
@@ -3381,13 +3278,118 @@ class leoQtMinibuffer (leoQLineEditWidget):
         pass
 #@-node:ekr.20081017015442.12:class leoQtMinibuffer (leoQLineEditWidget)
 #@-node:ekr.20081107120516.10:Fixed problems with minibuffer interface
+#@+node:ekr.20081109123309.11:Recent crasher (after find)
+
+wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+exception executing command
+Traceback (most recent call last):
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 320, in doCommand
+    val = command(event)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7803, in findTabFindNext
+    self.findTabHandler.findNextCommand()
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1506, in findNextCommand
+    self.findNext()
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 744, in findNext
+    self.showSuccess(pos,newpos)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1359, in showSuccess
+    c.editPosition(p)
+
+  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 7233, in editPosition
+    c.frame.tree.editLabel(p,selectAll=selectAll)
+
+  File "C:\leo.repo\qt-plugin\leo\plugins\qtGui.py", line 4277, in editLabel
+    w.editItem(item)
+
+RuntimeError: underlying C/C++ object has been deleted
+#@+node:ekr.20081004172422.846:editLabel (override)
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c ; trace = False ; verbose = False
+
+    if self.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if self._editWidget:
+        # Not an error, because of key weirdness.
+        g.trace('already editing')
+        return
+
+    if trace:
+        g.trace('*** all',selectAll,p.headString(),g.callers(4))
+
+    w = self.treeWidget
+    data = self.vnodeDict.get(p.v)
+    if not data:
+        if trace and verbose:
+            g.trace('No data: redrawing if possible')
+        c.outerUpdate() # Do any scheduled redraw.
+        data = self.vnodeDict.get(p.v)
+
+    if data:
+        item = data [0][1]
+    else:
+        if trace and not g.app.unitTesting:
+            g.trace('*** Can not happen: no data',p and p.headString())
+        return None
+
+    if item:
+        w.setCurrentItem(item) # Must do this first.
+        w.editItem(item)
+        e = w.itemWidget(item,0) # A QLineEdit
+        if e:
+            s = e.text() ; len_s = len(s)
+            # Hook up the widget to Leo's core.
+            self._editWidgetPosition = p.copy()
+            self._editWidget = e
+            self._editWidgetWrapper = leoQtHeadlineWidget(
+                widget=e,name='head',c=c)
+            start,n = g.choose(selectAll,
+                tuple([0,len_s]),tuple([len_s,0]))
+            e.setObjectName('headline')
+            e.setSelection(start,n)
+            e.setFocus()
+        else: g.trace('*** no e')
+    else:
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
+        e = None
+        g.trace('*** no item')
+
+    # A nice hack: just set the focus request.
+    c.requestedFocusWidget = e
+
+    # g.trace('leoQtTree','it',it,p and p.headString())
+
+    # if p and p != self.editPosition():
+        # self.endEditLabel()
+        # # This redraw *is* required so the c.edit_widget(p) will exist.
+        # c.redraw()
+        # c.outerUpdate()
+
+    # self.setEditPosition(p) # That is, self._editPosition = p
+    # w = c.edit_widget(p)
+    # if p and w:
+        # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+        # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        # c.headlineWantsFocus(p) # Make sure the focus sticks.
+        # c.k.showStateAndMode(w)
+#@-node:ekr.20081004172422.846:editLabel (override)
+#@-node:ekr.20081109123309.11:Recent crasher (after find)
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081013210935.1:Unit tests
 @killcolor
 
-*** Skipped leoColor
-#@nonl
 #@+node:ekr.20081013210935.2:Pass
+leoColor: exception setting font in configure_tags.
+#@nonl
 #@+node:ekr.20081013210935.5:Check base classes
 #@-node:ekr.20081013210935.5:Check base classes
 #@+node:ekr.20081013210935.3:Doctests
@@ -3406,6 +3408,9 @@ exception setting font in configure_tags.
 #@-node:ekr.20081013210935.12:leoCommands
 #@+node:ekr.20081013210935.8:leoConfig
 #@-node:ekr.20081013210935.8:leoConfig
+#@+node:ekr.20081013210935.9:leoDialog
+
+#@-node:ekr.20081013210935.9:leoDialog
 #@+node:ekr.20081013210935.24:leoFind
 #@-node:ekr.20081013210935.24:leoFind
 #@+node:ekr.20081013210935.26:leoGlobals
@@ -3456,29 +3461,6 @@ Syntax check fails for color_markup.py
 #@-node:ekr.20081013210935.4:Unit tests for .leo files.
 #@-node:ekr.20081013210935.2:Pass
 #@+node:ekr.20081013210935.32:Fail
-#@+node:ekr.20081013210935.9:leoDialog
-wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
-E
-======================================================================
-ERROR: @test ctors for all dialogs
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 14, in <module>
-    gui.runAskLeoIDDialog()
-  File "C:\leo.repo\qt-plugin\leo\plugins\qtGui.py", line 1981, in runAskLeoIDDialog
-    d = qtAskLeoID()
-NameError: global name 'qtAskLeoID' is not defined
-
-----------------------------------------------------------------------
-Ran 1 test in 1.485s
-
-FAILED (errors=1)
-C:\leo.repo\qt-plugin>
-#@nonl
-#@-node:ekr.20081013210935.9:leoDialog
 #@+node:ekr.20081013210935.13:leoEditCommands
 .............FF...FFFFF.FFFF.FF....F..FFF.FFFF.FF..F.F.FFFFFF...FFFFFFFFF.FFFFF..FFFFFFF.FF.FFF..FFFF...FFFF.FF.FFF.........F...FFFFFFF.E.FF
 ......F.
