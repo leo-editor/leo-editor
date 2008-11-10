@@ -2211,7 +2211,6 @@ class baseCommands:
         # Select p and make it visible.
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        # c.redraw_after_select()
         c.redraw()
 
         # Put the cursor on line n2 of the body text.
@@ -3479,6 +3478,8 @@ class baseCommands:
         else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
         if not newNode: return
 
+        # g.trace('newNode',newNode)
+
         c.endEditing() # Make sure we capture the headline for Undo.
 
         if cc: # Special cases for @chapter and @chapters nodes.
@@ -3499,7 +3500,6 @@ class baseCommands:
         c.setChanged(True)
         u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
         c.redraw()
-        # c.redraw_after_delete()
 
         c.validateOutline()
     #@-node:ekr.20031218072017.1193:c.deleteOutline
@@ -5114,7 +5114,6 @@ class baseCommands:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p) # Also sets root position.
         c.redraw()
-        # c.redraw_after_move_right()
         c.treeFocusHelper()
 
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -5266,9 +5265,8 @@ class baseCommands:
         if p:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            # c.redraw_now()
             c.redraw()
-            # c.redraw_after_select()
+
     #@-node:ekr.20031218072017.1628:goNextVisitedNode
     #@+node:ekr.20031218072017.1627:goPrevVisitedNode
     def goPrevVisitedNode (self,event=None):
@@ -5282,9 +5280,8 @@ class baseCommands:
         if p:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            ### c.redraw_now()
             c.redraw()
-            # c.redraw_after_select()
+
     #@-node:ekr.20031218072017.1627:goPrevVisitedNode
     #@+node:ekr.20031218072017.2914:goToFirstNode
     def goToFirstNode (self,event=None):
@@ -5392,7 +5389,6 @@ class baseCommands:
 
         c.selectPosition(p)
         c.redraw()
-        # c.redraw_after_select()
     #@-node:ekr.20031218072017.2916:goToNextClone
     #@+node:ekr.20071213123942:findNextClone
     def findNextClone (self,event=None):
@@ -5419,7 +5415,6 @@ class baseCommands:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
             c.redraw()
-            # c.redraw_after_select()
         else:
             g.es('no more clones',color='blue')
     #@-node:ekr.20071213123942:findNextClone
@@ -5588,8 +5583,8 @@ class baseCommands:
             c.selectPosition(p)
             if redraw or flag:
                 c.redraw()
-            else:
-                c.redraw_after_select() # for qt plugin.
+            # else:
+                # c.redraw_after_select() # for qt plugin.
 
         c.treeFocusHelper()
     #@-node:ekr.20070226113916: treeSelectHelper

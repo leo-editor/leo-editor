@@ -3334,6 +3334,9 @@ class leoQtTree (leoFrame.leoTree):
             g.trace('***** already drawing',g.callers(5))
             return
 
+        # Bug fix: 2008/11/10
+        self.expandAllAncestors(c.currentPosition())
+
         self.redrawCount += 1
         if trace and verbose: tstart()
 
@@ -3665,6 +3668,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # setCurrentItem sets .selecting ivar
         self.setCurrentItem()
+        self.full_redraw()
     #@-node:ekr.20081021043407.13:redraw_after_select
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):

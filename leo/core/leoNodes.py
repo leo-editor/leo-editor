@@ -1389,8 +1389,7 @@ class basePosition (object):
     #@+node:ekr.20080416161551.196:p.isVisible
     def isVisible (self,c):
 
-        p = self
-        trace = False
+        p = self ; trace = False
         limit,limitIsVisible = c.visLimit()
         limit_v = limit and limit.v or None
         if p.v == limit_v:
@@ -2636,6 +2635,8 @@ class basePosition (object):
 
         p = self ; limit,limitIsVisible = c.visLimit() ; trace = False
 
+        if trace: g.trace('limit',limit,'limitIsVisible',limitIsVisible)
+
         def checkLimit (p):
             '''Return done, return-val'''
             if limit:
@@ -2653,6 +2654,9 @@ class basePosition (object):
         while p:
             # Short-circuit if possible.
             back = p.back()
+            if trace: g.trace(
+                'back',back,'hasChildren',bool(back and back.hasChildren()),
+                'isExpanded',bool(back and back.isExpanded()))
             if back and (not back.hasChildren() or not back.isExpanded()):
                 p.moveToBack()
             else:
@@ -2660,13 +2664,15 @@ class basePosition (object):
             if p:
                 if trace: g.trace('*p',p.headString())
                 done,val = checkLimit(p)
-                if done: return val
+                if done:
+                    if trace: g.trace('done')
+                    return val
                 if p.isVisible(c):
+                    if trace: g.trace('isVisible')
                     return p
         else:
             # assert not p.
             return p
-    #@nonl
     #@-node:ekr.20080416161551.210:p.moveToVisBack
     #@+node:ekr.20080416161551.211:p.moveToVisNext
     def moveToVisNext (self,c):

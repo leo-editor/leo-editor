@@ -8488,7 +8488,6 @@ class spellTabHandler (leoFind.leoFind):
                     c.selectPosition(p)
                     if redraw:
                         c.redraw()
-                        # c.redraw_after_select()
                     w.setSelectionRange(i,j,insert=j)
                     break
         except Exception:

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,0"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,3"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2096,15 +2096,15 @@
 <v t="ekr.20071113202410" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194424.1"><vh>leoNodes</vh>
-<v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
+<v t="ekr.20040712101754.181" a="E"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
+<v t="ekr.20040712101754.182" a="E"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
 </v>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
+<v t="ekr.20040712101754.182" a="E"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
 </v>
 </v>
-<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20040712101754.187" a="E" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
 <v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
@@ -2146,7 +2146,7 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" a="E" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>child</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
@@ -2154,7 +2154,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2188,7 +2188,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -3175,108 +3175,6 @@
 <v t="ekr.20071113145804.32"><vh>@test leoBody.getSelectionAreas &amp; test</vh></v>
 <v t="ekr.20061104172236.23"><vh>@test tkBody.onClick</vh></v>
 <v t="ekr.20071113202153.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
-<v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
-</v>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
-</v>
-</v>
-<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
-<v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
-<v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
-<v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
-</v>
-<v t="ekr.20040712101754.99" annotate="7d71002e"><vh>@test c iters</vh>
-<v t="ekr.20040712101754.100"><vh>&lt;&lt; coverage tests &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.101"><vh>&lt;&lt; duplicate tests &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20040712101754.204" annotate="7d71002e"><vh>@test consistency of back/next links</vh></v>
-<v t="ekr.20040712101754.201" annotate="7d71002e"><vh>@test consistency of c.allNodes_iter() and p.ThreadNext()</vh></v>
-<v t="ekr.20040712101754.202" annotate="7d71002e"><vh>@test consistency of firstChild &amp; children_iter()</vh></v>
-<v t="ekr.20040712101754.203" annotate="7d71002e"><vh>@test consistency of level</vh></v>
-<v t="ekr.20040712101754.205" annotate="7d71002e"><vh>@test consistency of parent &amp; parents_iter()</vh></v>
-<v t="ekr.20040712101754.206" annotate="7d71002e"><vh>@test consistency of parent/child links</vh></v>
-<v t="ekr.20040712101754.207" annotate="7d71002e"><vh>@test consistency of threadBack/Next links</vh></v>
-<v t="ekr.20040712101754.209" annotate="7d71002e"><vh>@test hasNextBack</vh></v>
-<v t="ekr.20040712101754.210" annotate="7d71002e"><vh>@test hasParentChild</vh></v>
-<v t="ekr.20040712101754.211" annotate="7d71002e"><vh>@test hasThreadNextBack</vh></v>
-<v t="ekr.20040722055040" annotate="7d71002e"><vh>@test isAncestorOf</vh></v>
-<v t="ekr.20041013062906" annotate="7d71002e"><vh>@test onHyperLinkControlClick</vh></v>
-<v t="ekr.20040712101754.199" annotate="7d71002e"><vh>@test p.comparisons</vh></v>
-<v t="ekr.20060106211922" annotate="7d71002e"><vh>@test p.isCurrentPosition</vh></v>
-<v t="ekr.20060106211922.1" annotate="7d71002e"><vh>@test p.isRootPosition</vh></v>
-<v t="ekr.20040712101754.188" annotate="7d71002e"><vh>@test p.iters and v.iters</vh>
-<v t="ekr.20040712101754.189"><vh>child1</vh>
-<v t="ekr.20040712101754.190"><vh>a</vh>
-<v t="ekr.20040712101754.191"><vh>b</vh></v>
-</v>
-<v t="ekr.20040712101754.192"><vh>c</vh></v>
-<v t="ekr.20040712101754.190"><vh>a</vh>
-<v t="ekr.20040712101754.191"><vh>b</vh></v>
-</v>
-<v t="ekr.20040712101754.193"><vh>d</vh>
-<v t="ekr.20040712101754.194"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20040712101754.195"><vh>child2</vh></v>
-<v t="ekr.20040712101754.196"><vh>&lt;&lt; tests of consistency of p and v iters &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
-<v t="ekr.20040802071519.1"><vh>child</vh></v>
-</v>
-<v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
-<v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
-<v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
-<v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
-</v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
-<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
-<v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
-<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
-<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
-<v t="ekr.20080501121449.3"><vh>@test insert node</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
-<v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
-<v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
-<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
-<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
-<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
-</v>
-<v t="ekr.20080310073711.1"><vh>@test nodeIndices.toString(None) allocates a new index</vh></v>
-<v t="ekr.20070611071101"><vh>@@test visback</vh>
-<v t="ekr.20070611071101.1"><vh>a</vh>
-<v t="ekr.20070611071101.2"><vh>b</vh>
-<v t="ekr.20070611071101.3"><vh>c2</vh></v>
-</v>
-</v>
-<v t="ekr.20070611071101.4"><vh>limit</vh>
-<v t="ekr.20070611071101.5"><vh>d</vh></v>
-</v>
-<v t="ekr.20070611071954"><vh>e</vh></v>
-</v>
-<v t="ekr.20040712101754.177"><vh>@test convertTreeToString and allies</vh>
-<v t="ekr.20040712101754.178"><vh>File Conversion</vh>
-<v t="ekr.20040712101754.179"><vh>moreHead</vh></v>
-<v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
-</v>
-</v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
-<v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
-<v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
-<v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
-<v t="ekr.20081001094920.6"><vh>@test section node</vh></v>
-<v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
-</v>
-<v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
 <v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
@@ -21338,7 +21236,7 @@ try:
     p4 = p.insertAsNthChild(2)
     p4.setHeadString('C')
     p.expand()
-    c.outerUpdate() # This call is required so the expansion actually happens.
+    c.redraw_now()
     c.setCurrentPosition(p3)
     c.deleteOutline()
     c.outerUpdate()

@@ -539,7 +539,6 @@ def goto_showResults(self,found,p,n,n2,lines):
     # Select p and make it visible.
     c.frame.tree.expandAllAncestors(p)
     c.selectPosition(p)
-    # c.redraw_after_select()
     c.redraw()
 
     # Put the cursor on line n2 of the body text.

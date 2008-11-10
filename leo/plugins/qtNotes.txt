@@ -1325,6 +1325,9 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
         g.trace('***** already drawing',g.callers(5))
         return
 
+    # Bug fix: 2008/11/10
+    self.expandAllAncestors(c.currentPosition())
+
     self.redrawCount += 1
     if trace and verbose: tstart()
 
@@ -1656,6 +1659,7 @@ def redraw_after_select (self):
 
     # setCurrentItem sets .selecting ivar
     self.setCurrentItem()
+    self.full_redraw()
 #@-node:ekr.20081021043407.13:redraw_after_select
 #@+node:ekr.20081011035036.11:updateIcon
 def updateIcon (self,p):
@@ -1795,6 +1799,9 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
     if self.redrawing:
         g.trace('***** already drawing',g.callers(5))
         return
+
+    # Bug fix: 2008/11/10
+    self.expandAllAncestors(c.currentPosition())
 
     self.redrawCount += 1
     if trace and verbose: tstart()
@@ -2062,6 +2069,7 @@ def redraw_after_select (self):
 
     # setCurrentItem sets .selecting ivar
     self.setCurrentItem()
+    self.full_redraw()
 #@-node:ekr.20081021043407.13:redraw_after_select
 #@+node:ekr.20081021043407.11:redraw_after_move_right
 def redraw_after_move_right (self):
@@ -3421,6 +3429,8 @@ exception setting font in configure_tags.
 #@-node:ekr.20081013210935.33:leoImport
 #@+node:ekr.20081013210935.28:leoKeys
 #@-node:ekr.20081013210935.28:leoKeys
+#@+node:ekr.20081013210935.34:leoNodes
+#@-node:ekr.20081013210935.34:leoNodes
 #@+node:ekr.20081013210935.29:leoPlugins
 creating: dynamicUnitTest.leo
 Using menus from leoSettings.leo
@@ -4691,37 +4701,6 @@ Ran 10 tests in 1.484s
 FAILED (failures=1)
 #@nonl
 #@-node:ekr.20081013210935.14:leoFileCommands (disable/change test)
-#@+node:ekr.20081013210935.34:leoNodes
-...........................F...F.............
-End of leoNodes tests.
-.
-======================================================================
-FAIL: @test delete node
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 20, in <module>
-    assert p.headString() == 'A', 'fail 1: got %s' % p.headString()
-AssertionError: fail 1: got leoNodes
-
-======================================================================
-FAIL: @test move-outline-down & undo/redo
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 20, in <module>
-    assert moved.back().headString() == 'C', 'fail 2'
-AssertionError: fail 2
-
-----------------------------------------------------------------------
-Ran 46 tests in 15.438s
-
-FAILED (failures=2)
-#@-node:ekr.20081013210935.34:leoNodes
 #@+node:ekr.20081013210935.36:leoUndo
 compareOutlines failed
 p1 <pos 36587248 childIndex: 0 lvl: 5 [5] tempNode> <vnode 35539216:'tempNode'>

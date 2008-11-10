@@ -1039,7 +1039,6 @@ class leoBody:
         c.frame.tree.expandAllAncestors(w.leo_p)
         c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
         c.redraw()
-        # c.redraw_after_select()
 
         c.recolor_now()
         #@    << restore the selection, insertion point and the scrollbar >>

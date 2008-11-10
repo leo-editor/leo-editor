@@ -909,7 +909,6 @@ def goto_showResults(self,found,p,n,n2,lines):
     # Select p and make it visible.
     c.frame.tree.expandAllAncestors(p)
     c.selectPosition(p)
-    # c.redraw_after_select()
     c.redraw()
 
     # Put the cursor on line n2 of the body text.
@@ -11830,9 +11829,8 @@ def goPrevVisitedNode (self,event=None):
     if p:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        ### c.redraw_now()
         c.redraw()
-        # c.redraw_after_select()
+
 #@-node:ekr.20031218072017.1627:goPrevVisitedNode
 #@+node:ekr.20031218072017.1628:goNextVisitedNode
 def goNextVisitedNode (self,event=None):
@@ -11846,9 +11844,8 @@ def goNextVisitedNode (self,event=None):
     if p:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        # c.redraw_now()
         c.redraw()
-        # c.redraw_after_select()
+
 #@-node:ekr.20031218072017.1628:goNextVisitedNode
 #@+node:ekr.20070615131604:class nodeHistory
 class nodeHistory:
@@ -12199,6 +12196,8 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
     if not newNode: return
 
+    # g.trace('newNode',newNode)
+
     c.endEditing() # Make sure we capture the headline for Undo.
 
     if cc: # Special cases for @chapter and @chapters nodes.
@@ -12219,7 +12218,6 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     c.setChanged(True)
     u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_delete()
 
     c.validateOutline()
 #@-node:ekr.20031218072017.1193:c.deleteOutline
@@ -13816,7 +13814,6 @@ def moveOutlineRight (self,event=None):
     c.frame.tree.expandAllAncestors(p)
     c.selectPosition(p) # Also sets root position.
     c.redraw()
-    # c.redraw_after_move_right()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -13967,9 +13964,8 @@ def goNextVisitedNode (self,event=None):
     if p:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        # c.redraw_now()
         c.redraw()
-        # c.redraw_after_select()
+
 #@-node:ekr.20031218072017.1628:goNextVisitedNode
 #@+node:ekr.20031218072017.1627:goPrevVisitedNode
 def goPrevVisitedNode (self,event=None):
@@ -13983,9 +13979,8 @@ def goPrevVisitedNode (self,event=None):
     if p:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        ### c.redraw_now()
         c.redraw()
-        # c.redraw_after_select()
+
 #@-node:ekr.20031218072017.1627:goPrevVisitedNode
 #@+node:ekr.20031218072017.2914:goToFirstNode
 def goToFirstNode (self,event=None):
@@ -14093,7 +14088,6 @@ def goToNextClone (self,event=None):
 
     c.selectPosition(p)
     c.redraw()
-    # c.redraw_after_select()
 #@-node:ekr.20031218072017.2916:goToNextClone
 #@+node:ekr.20071213123942:findNextClone
 def findNextClone (self,event=None):
@@ -14120,7 +14114,6 @@ def findNextClone (self,event=None):
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
         c.redraw()
-        # c.redraw_after_select()
     else:
         g.es('no more clones',color='blue')
 #@-node:ekr.20071213123942:findNextClone
@@ -14289,8 +14282,8 @@ def treeSelectHelper (self,p,redraw=True):
         c.selectPosition(p)
         if redraw or flag:
             c.redraw()
-        else:
-            c.redraw_after_select() # for qt plugin.
+        # else:
+            # c.redraw_after_select() # for qt plugin.
 
     c.treeFocusHelper()
 #@-node:ekr.20070226113916: treeSelectHelper
@@ -14303,6 +14296,8 @@ def moveToVisBack (self,c):
     """Move a position to the position of the previous visible node."""
 
     p = self ; limit,limitIsVisible = c.visLimit() ; trace = False
+
+    if trace: g.trace('limit',limit,'limitIsVisible',limitIsVisible)
 
     def checkLimit (p):
         '''Return done, return-val'''
@@ -14321,6 +14316,9 @@ def moveToVisBack (self,c):
     while p:
         # Short-circuit if possible.
         back = p.back()
+        if trace: g.trace(
+            'back',back,'hasChildren',bool(back and back.hasChildren()),
+            'isExpanded',bool(back and back.isExpanded()))
         if back and (not back.hasChildren() or not back.isExpanded()):
             p.moveToBack()
         else:
@@ -14328,13 +14326,15 @@ def moveToVisBack (self,c):
         if p:
             if trace: g.trace('*p',p.headString())
             done,val = checkLimit(p)
-            if done: return val
+            if done:
+                if trace: g.trace('done')
+                return val
             if p.isVisible(c):
+                if trace: g.trace('isVisible')
                 return p
     else:
         # assert not p.
         return p
-#@nonl
 #@-node:ekr.20080416161551.210:p.moveToVisBack
 #@+node:ekr.20080416161551.211:p.moveToVisNext
 def moveToVisNext (self,c):
@@ -14381,8 +14381,7 @@ def moveToVisNext (self,c):
 #@+node:ekr.20080416161551.196:p.isVisible
 def isVisible (self,c):
 
-    p = self
-    trace = False
+    p = self ; trace = False
     limit,limitIsVisible = c.visLimit()
     limit_v = limit and limit.v or None
     if p.v == limit_v:
@@ -17580,9 +17579,8 @@ def goPrevVisitedNode (self,event=None):
     if p:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        ### c.redraw_now()
         c.redraw()
-        # c.redraw_after_select()
+
 #@-node:ekr.20031218072017.1627:goPrevVisitedNode
 #@+node:ekr.20031218072017.1628:goNextVisitedNode
 def goNextVisitedNode (self,event=None):
@@ -17596,9 +17594,8 @@ def goNextVisitedNode (self,event=None):
     if p:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        # c.redraw_now()
         c.redraw()
-        # c.redraw_after_select()
+
 #@-node:ekr.20031218072017.1628:goNextVisitedNode
 #@+node:ekr.20031218072017.2834:save (commands)
 def save (self,event=None):
@@ -17806,6 +17803,8 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
     if not newNode: return
 
+    # g.trace('newNode',newNode)
+
     c.endEditing() # Make sure we capture the headline for Undo.
 
     if cc: # Special cases for @chapter and @chapters nodes.
@@ -17826,7 +17825,6 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     c.setChanged(True)
     u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_delete()
 
     c.validateOutline()
 #@-node:ekr.20031218072017.1193:c.deleteOutline
@@ -18261,7 +18259,6 @@ def moveOutlineRight (self,event=None):
     c.frame.tree.expandAllAncestors(p)
     c.selectPosition(p) # Also sets root position.
     c.redraw()
-    # c.redraw_after_move_right()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -18382,7 +18379,6 @@ def goToNextClone (self,event=None):
 
     c.selectPosition(p)
     c.redraw()
-    # c.redraw_after_select()
 #@-node:ekr.20031218072017.2916:goToNextClone
 #@+node:ekr.20071213123942:findNextClone
 def findNextClone (self,event=None):
@@ -18409,7 +18405,6 @@ def findNextClone (self,event=None):
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
         c.redraw()
-        # c.redraw_after_select()
     else:
         g.es('no more clones',color='blue')
 #@-node:ekr.20071213123942:findNextClone
@@ -18423,8 +18418,8 @@ def treeSelectHelper (self,p,redraw=True):
         c.selectPosition(p)
         if redraw or flag:
             c.redraw()
-        else:
-            c.redraw_after_select() # for qt plugin.
+        # else:
+            # c.redraw_after_select() # for qt plugin.
 
     c.treeFocusHelper()
 #@-node:ekr.20070226113916: treeSelectHelper
@@ -18994,7 +18989,6 @@ def findNextMisspelledWord(self):
                 c.selectPosition(p)
                 if redraw:
                     c.redraw()
-                    # c.redraw_after_select()
                 w.setSelectionRange(i,j,insert=j)
                 break
     except Exception:
@@ -19140,7 +19134,6 @@ def go(self,event=None):
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
         c.redraw()
-        # c.redraw_after_select()
 #@-node:ekr.20031218072017.3896:go
 #@-node:ekr.20081020151805.6: Changed
 #@-node:ekr.20081020151805.4:Found: .redraw
@@ -19275,8 +19268,8 @@ def treeSelectHelper (self,p,redraw=True):
         c.selectPosition(p)
         if redraw or flag:
             c.redraw()
-        else:
-            c.redraw_after_select() # for qt plugin.
+        # else:
+            # c.redraw_after_select() # for qt plugin.
 
     c.treeFocusHelper()
 #@-node:ekr.20070226113916: treeSelectHelper
@@ -19992,7 +19985,6 @@ def goto_showResults(self,found,p,n,n2,lines):
     # Select p and make it visible.
     c.frame.tree.expandAllAncestors(p)
     c.selectPosition(p)
-    # c.redraw_after_select()
     c.redraw()
 
     # Put the cursor on line n2 of the body text.
@@ -20239,6 +20231,8 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
     if not newNode: return
 
+    # g.trace('newNode',newNode)
+
     c.endEditing() # Make sure we capture the headline for Undo.
 
     if cc: # Special cases for @chapter and @chapters nodes.
@@ -20259,7 +20253,6 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     c.setChanged(True)
     u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_delete()
 
     c.validateOutline()
 #@-node:ekr.20031218072017.1193:c.deleteOutline
@@ -20753,7 +20746,6 @@ def moveOutlineRight (self,event=None):
     c.frame.tree.expandAllAncestors(p)
     c.selectPosition(p) # Also sets root position.
     c.redraw()
-    # c.redraw_after_move_right()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -20852,9 +20844,8 @@ def goNextVisitedNode (self,event=None):
     if p:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        # c.redraw_now()
         c.redraw()
-        # c.redraw_after_select()
+
 #@-node:ekr.20031218072017.1628:goNextVisitedNode
 #@+node:ekr.20031218072017.1627:goPrevVisitedNode
 def goPrevVisitedNode (self,event=None):
@@ -20868,9 +20859,8 @@ def goPrevVisitedNode (self,event=None):
     if p:
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
-        ### c.redraw_now()
         c.redraw()
-        # c.redraw_after_select()
+
 #@-node:ekr.20031218072017.1627:goPrevVisitedNode
 #@+node:ekr.20031218072017.2916:goToNextClone
 def goToNextClone (self,event=None):
@@ -20906,7 +20896,6 @@ def goToNextClone (self,event=None):
 
     c.selectPosition(p)
     c.redraw()
-    # c.redraw_after_select()
 #@-node:ekr.20031218072017.2916:goToNextClone
 #@+node:ekr.20071213123942:findNextClone
 def findNextClone (self,event=None):
@@ -20933,7 +20922,6 @@ def findNextClone (self,event=None):
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
         c.redraw()
-        # c.redraw_after_select()
     else:
         g.es('no more clones',color='blue')
 #@-node:ekr.20071213123942:findNextClone
@@ -20947,8 +20935,8 @@ def treeSelectHelper (self,p,redraw=True):
         c.selectPosition(p)
         if redraw or flag:
             c.redraw()
-        else:
-            c.redraw_after_select() # for qt plugin.
+        # else:
+            # c.redraw_after_select() # for qt plugin.
 
     c.treeFocusHelper()
 #@-node:ekr.20070226113916: treeSelectHelper
@@ -21503,7 +21491,6 @@ def findNextMisspelledWord(self):
                 c.selectPosition(p)
                 if redraw:
                     c.redraw()
-                    # c.redraw_after_select()
                 w.setSelectionRange(i,j,insert=j)
                 break
     except Exception:
@@ -21653,7 +21640,6 @@ def selectEditorHelper (self,w):
     c.frame.tree.expandAllAncestors(w.leo_p)
     c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
     c.redraw()
-    # c.redraw_after_select()
 
     c.recolor_now()
     << restore the selection, insertion point and the scrollbar >>
@@ -21700,7 +21686,6 @@ def go(self,event=None):
         c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
         c.redraw()
-        # c.redraw_after_select()
 #@-node:ekr.20031218072017.3896:go
 #@-node:ekr.20081026160305.3:Found: .redraw_after
 #@+node:ekr.20081025160314.1:Selecting a new node
