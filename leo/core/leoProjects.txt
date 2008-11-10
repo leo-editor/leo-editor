@@ -19101,12 +19101,10 @@ def showSuccess(self,pos,newpos):
             redraw = True
     p = self.p
     if not p: g.trace('can not happen: self.p is None')
-    ### if redraw: c.redraw_now() ### Added to help Qt tree.
+
     c.selectPosition(p)
     if redraw:
-        c.redraw()
-        # c.redraw_after_select()
-
+        c.redraw_now() # was c.redraw.
     if self.in_headline:
         c.editPosition(p)
     # Set the focus and selection after the redraw.
@@ -19163,7 +19161,6 @@ def createFirstTreeNode (self):
     # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
     p._linkAsRoot(oldRoot=None)
     c.setRootPosition(p) # New in 4.4.2.
-    # c.editPosition(p)
 #@-node:ekr.20051009045404:createFirstTreeNode
 #@+node:ekr.20070325101652:cc.createChaptersNode
 def createChaptersNode (self):
@@ -21598,12 +21595,10 @@ def showSuccess(self,pos,newpos):
             redraw = True
     p = self.p
     if not p: g.trace('can not happen: self.p is None')
-    ### if redraw: c.redraw_now() ### Added to help Qt tree.
+
     c.selectPosition(p)
     if redraw:
-        c.redraw()
-        # c.redraw_after_select()
-
+        c.redraw_now() # was c.redraw.
     if self.in_headline:
         c.editPosition(p)
     # Set the focus and selection after the redraw.
@@ -21774,12 +21769,10 @@ def showSuccess(self,pos,newpos):
             redraw = True
     p = self.p
     if not p: g.trace('can not happen: self.p is None')
-    ### if redraw: c.redraw_now() ### Added to help Qt tree.
+
     c.selectPosition(p)
     if redraw:
-        c.redraw()
-        # c.redraw_after_select()
-
+        c.redraw_now() # was c.redraw.
     if self.in_headline:
         c.editPosition(p)
     # Set the focus and selection after the redraw.
@@ -22001,7 +21994,6 @@ else:
 # g.trace("select:",p.headString())
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
-# g.trace('selecting',p,'edit_widget',c.edit_widget(p))
 self.setSelectedLabelState(p)
 
 frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
@@ -22685,7 +22677,6 @@ else:
 # g.trace("select:",p.headString())
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
-# g.trace('selecting',p,'edit_widget',c.edit_widget(p))
 self.setSelectedLabelState(p)
 
 frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
@@ -23769,7 +23760,6 @@ else:
 # g.trace("select:",p.headString())
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
-# g.trace('selecting',p,'edit_widget',c.edit_widget(p))
 self.setSelectedLabelState(p)
 
 frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook

@@ -4,7 +4,6 @@
 #@+node:ekr.20081010070648.5: To do
 @nocolor-node
 
-* Fix recent crasher
 - Flash no longer works.
 - Cut/copy/paste do not work in log pane.
 - Get auto-completion working. (binding to period?)
@@ -77,6 +76,82 @@ Traceback (most recent call last):
     w.editItem(item)
 
 RuntimeError: underlying C/C++ object has been deleted
+#@+node:ekr.20081004172422.846:editLabel (override)
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c ; trace = False ; verbose = False
+
+    if self.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if self._editWidget:
+        # Not an error, because of key weirdness.
+        g.trace('already editing')
+        return
+
+    if trace:
+        g.trace('*** all',selectAll,p.headString(),g.callers(4))
+
+    w = self.treeWidget
+    data = self.vnodeDict.get(p.v)
+    if not data:
+        if trace and verbose:
+            g.trace('No data: redrawing if possible')
+        c.outerUpdate() # Do any scheduled redraw.
+        data = self.vnodeDict.get(p.v)
+
+    if data:
+        item = data [0][1]
+    else:
+        if trace and not g.app.unitTesting:
+            g.trace('*** Can not happen: no data',p and p.headString())
+        return None
+
+    if item:
+        w.setCurrentItem(item) # Must do this first.
+        w.editItem(item)
+        e = w.itemWidget(item,0) # A QLineEdit
+        if e:
+            s = e.text() ; len_s = len(s)
+            # Hook up the widget to Leo's core.
+            self._editWidgetPosition = p.copy()
+            self._editWidget = e
+            self._editWidgetWrapper = leoQtHeadlineWidget(
+                widget=e,name='head',c=c)
+            start,n = g.choose(selectAll,
+                tuple([0,len_s]),tuple([len_s,0]))
+            e.setObjectName('headline')
+            e.setSelection(start,n)
+            e.setFocus()
+        else: g.trace('*** no e')
+    else:
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
+        e = None
+        g.trace('*** no item')
+
+    # A nice hack: just set the focus request.
+    c.requestedFocusWidget = e
+
+    # g.trace('leoQtTree','it',it,p and p.headString())
+
+    # if p and p != self.editPosition():
+        # self.endEditLabel()
+        # # This redraw *is* required so the c.edit_widget(p) will exist.
+        # c.redraw()
+        # c.outerUpdate()
+
+    # self.setEditPosition(p) # That is, self._editPosition = p
+    # w = c.edit_widget(p)
+    # if p and w:
+        # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+        # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        # c.headlineWantsFocus(p) # Make sure the focus sticks.
+        # c.k.showStateAndMode(w)
+#@-node:ekr.20081004172422.846:editLabel (override)
 #@-node:ekr.20081109123309.11:Recent crasher (after find)
 #@-node:ekr.20081010070648.5: To do
 #@+node:ekr.20081019082316.10:New features in the core
@@ -1160,10 +1235,15 @@ def edit_widget (self,p):
 
     """Returns the Qt.Edit widget for position p."""
 
+    w = self._editWidgetWrapper
+
+    if p and p == self._editWidgetPosition:
+        return w
+    else:
+        return None
+
     # Decouple all of the core's headline code.
-    # Except for over-ridden methods
-    return None
-#@nonl
+    # Except for over-ridden methods.
 #@-node:ekr.20081004172422.799:edit_widget
 #@+node:ekr.20081025124450.14:beforeSelectHint
 def beforeSelectHint (self,p,old_p):
@@ -1393,6 +1473,10 @@ def initData (self):
     self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
     self.itemsDict = {} # keys are items, values are positions
     self.parentsDict = {}
+    self._editWidgetPosition = None
+    self._editWidget = None
+    self._editWidgetWrapper = None
+#@nonl
 #@-node:ekr.20081021043407.30:initData
 #@+node:ekr.20081021043407.24:drawNode
 def drawNode (self,p,dummy=False):
@@ -1860,6 +1944,10 @@ def initData (self):
     self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
     self.itemsDict = {} # keys are items, values are positions
     self.parentsDict = {}
+    self._editWidgetPosition = None
+    self._editWidget = None
+    self._editWidgetWrapper = None
+#@nonl
 #@-node:ekr.20081021043407.30:initData
 #@+node:ekr.20081021043407.24:drawNode
 def drawNode (self,p,dummy=False):

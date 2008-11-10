@@ -3379,6 +3379,10 @@ class leoQtTree (leoFrame.leoTree):
         self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
         self.itemsDict = {} # keys are items, values are positions
         self.parentsDict = {}
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
+    #@nonl
     #@-node:ekr.20081021043407.30:initData
     #@+node:ekr.20081021043407.24:drawNode
     def drawNode (self,p,dummy=False):
@@ -4141,10 +4145,15 @@ class leoQtTree (leoFrame.leoTree):
 
         """Returns the Qt.Edit widget for position p."""
 
+        w = self._editWidgetWrapper
+
+        if p and p == self._editWidgetPosition:
+            return w
+        else:
+            return None
+
         # Decouple all of the core's headline code.
-        # Except for over-ridden methods
-        return None
-    #@nonl
+        # Except for over-ridden methods.
     #@-node:ekr.20081004172422.799:edit_widget
     #@+node:ekr.20081025124450.14:beforeSelectHint
     def beforeSelectHint (self,p,old_p):

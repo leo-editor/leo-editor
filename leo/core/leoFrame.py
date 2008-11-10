@@ -1590,7 +1590,6 @@ class leoFrame:
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
         p._linkAsRoot(oldRoot=None)
         c.setRootPosition(p) # New in 4.4.2.
-        # c.editPosition(p)
     #@-node:ekr.20051009045404:createFirstTreeNode
     #@-node:ekr.20031218072017.3679:  leoFrame.__init__
     #@+node:ekr.20061109125528.1:Must be defined in base class
@@ -2835,7 +2834,6 @@ class leoTree:
         c.setCurrentPosition(p)
         #@    << set the current node >>
         #@+node:ekr.20040803072955.133:<< set the current node >>
-        # g.trace('selecting',p,'edit_widget',c.edit_widget(p))
         self.setSelectedLabelState(p)
 
         frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook

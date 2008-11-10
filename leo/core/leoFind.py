@@ -1349,12 +1349,10 @@ class leoFind:
                 redraw = True
         p = self.p
         if not p: g.trace('can not happen: self.p is None')
-        ### if redraw: c.redraw_now() ### Added to help Qt tree.
+
         c.selectPosition(p)
         if redraw:
-            c.redraw()
-            # c.redraw_after_select()
-
+            c.redraw_now() # was c.redraw.
         if self.in_headline:
             c.editPosition(p)
         # Set the focus and selection after the redraw.
