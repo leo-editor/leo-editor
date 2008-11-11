@@ -5,7 +5,9 @@
 @nocolor-node
 
 First:
-- Special case for parens, etc, or all printable?
+
+* Changes to body pane do not stick after alt-4.
+- Make auto-scrolling an option (full_redraw and redraw_after_select)
 - Fix failing unit tests.
 
 Next:
@@ -348,6 +350,8 @@ def isSpecialOverride (self,tkKey,ch):
 
     if tkKey == 'Tab':
         return True
+    elif len(tkKey) == 1:
+        return True # Must process all ascii keys.
     elif ch in self.flashers:
         return True
     else:
@@ -1375,6 +1379,11 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
             elif p and self.redrawCount > 1:
                 g.trace('Error: no current item: %s' % (p.headString()))
 
+        item = w.currentItem()
+        if item:
+            w.scrollToItem(item,
+                QtGui.QAbstractItemView.PositionAtCenter)
+
         # Necessary to get the tree drawn initially.
         w.repaint()
 
@@ -1384,7 +1393,7 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
         if trace:
             if verbose: tstop()
             g.trace('%s: drew %3s nodes' % (
-                self.redrawCount,self.nodeDrawCount),g.callers())
+                self.redrawCount,self.nodeDrawCount),g.callers(5))
 
 redraw = full_redraw # Compatibility
 redraw_now = full_redraw
@@ -1681,7 +1690,12 @@ def redraw_after_select (self):
 
     # setCurrentItem sets .selecting ivar
     self.setCurrentItem()
-    self.full_redraw()
+    ### self.full_redraw()
+
+    item = w.currentItem()
+    if item:
+        w.scrollToItem(item,
+            QtGui.QAbstractItemView.PositionAtCenter)
 #@-node:ekr.20081021043407.13:redraw_after_select
 #@+node:ekr.20081011035036.11:updateIcon
 def updateIcon (self,p):
@@ -1850,6 +1864,11 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
             elif p and self.redrawCount > 1:
                 g.trace('Error: no current item: %s' % (p.headString()))
 
+        item = w.currentItem()
+        if item:
+            w.scrollToItem(item,
+                QtGui.QAbstractItemView.PositionAtCenter)
+
         # Necessary to get the tree drawn initially.
         w.repaint()
 
@@ -1859,7 +1878,7 @@ def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
         if trace:
             if verbose: tstop()
             g.trace('%s: drew %3s nodes' % (
-                self.redrawCount,self.nodeDrawCount),g.callers())
+                self.redrawCount,self.nodeDrawCount),g.callers(5))
 
 redraw = full_redraw # Compatibility
 redraw_now = full_redraw
@@ -2091,7 +2110,12 @@ def redraw_after_select (self):
 
     # setCurrentItem sets .selecting ivar
     self.setCurrentItem()
-    self.full_redraw()
+    ### self.full_redraw()
+
+    item = w.currentItem()
+    if item:
+        w.scrollToItem(item,
+            QtGui.QAbstractItemView.PositionAtCenter)
 #@-node:ekr.20081021043407.13:redraw_after_select
 #@+node:ekr.20081021043407.11:redraw_after_move_right
 def redraw_after_move_right (self):
@@ -2877,127 +2901,13 @@ def colorSelection (self,i,j,colorName):
 #@-node:ekr.20081023131208.10:Coloring
 #@-node:ekr.20081031074959.38: May be overridden in subclasses
 #@+node:ekr.20081031074959.29: Must be overridden in subclasses
-#@+node:ekr.20081007015817.81:getAllText
-def getAllText(self):
-
-    self.oops()
-
-    # w = self.widget
-
-    # if self.useScintilla:
-        # s = w.text()
-    # else:
-        # s = w.toPlainText()
-
-    # s = g.toUnicode(s,'utf-8')
-    # return s
-#@-node:ekr.20081007015817.81:getAllText
-#@+node:ekr.20081007015817.83:getInsertPoint
-def getInsertPoint(self):
-
-    self.oops()
-
-    # w = self.widget
-    # if self.useScintilla:
-        # s = self.getAllText()
-        # row,col = w.getCursorPosition()  
-        # i = g.convertRowColToPythonIndex(s, row, col)
-        # if i > 0: self.indexWarning('leoQtBody.getInsertPoint')
-        # return i
-    # else:
-        # i = w.textCursor().position()
-        # # g.trace(i) # ,g.callers(4))
-        # return i
-#@-node:ekr.20081007015817.83:getInsertPoint
-#@+node:ekr.20081007015817.86:getSelectionRange
-def getSelectionRange(self,sort=True):
-
-    self.oops()
-
-    # w = self.widget
-    # if self.useScintilla:
-        # if w.hasSelectedText():
-            # s = self.getAllText()
-            # row_i,col_i,row_j,col_j = w.getSelection()
-            # i = g.convertRowColToPythonIndex(s, row_i, col_i)
-            # j = g.convertRowColToPythonIndex(s, row_j, col_j)
-            # if sort and i > j: sel = j,i
-        # else:
-            # i = j = self.getInsertPoint()
-        # if i > 0 or j > 0: self.indexWarning('leoQtBody.getSelectionRange')
-        # return i,j
-    # else:
-        # tc = w.textCursor()
-        # i,j = tc.selectionStart(),tc.selectionEnd()
-        # # g.trace(i,j,g.callers(4))
-        # return i,j
-#@-node:ekr.20081007015817.86:getSelectionRange
-#@+node:ville.20081011134505.6:hasSelection
-def hasSelection(self):
-
-    self.oops()
-
-    # w = self.widget
-    # if self.useScintilla:
-        # return w.hasSelectedText()
-    # else:
-        # return w.textCursor().hasSelection()
-#@-node:ville.20081011134505.6:hasSelection
-#@+node:ekr.20081031074959.46:see
-def see(self,i):
-
-    self.oops()
-
-    # w = self.widget
-
-    # if self.useScintilla:
-        # # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
-        # s = self.getAllText()
-        # row,col = g.convertPythonIndexToRowCol(s,i)
-        # w.ensureLineVisible(row)
-    # else:
-        # w.ensureCursorVisible()
-#@-node:ekr.20081031074959.46:see
-#@+node:ekr.20081007015817.92:setAllText
-def setAllText(self,s,insert=None):
-
-    '''Set the text of the widget.
-
-    If insert is None, the insert point, selection range and scrollbars are initied.
-    Otherwise, the scrollbars are preserved.'''
-
-    self.oops()
-
-    # w = self.widget ; c = self.c ; p = c.currentPosition()
-
-    # if self.useScintilla:
-        # w.setText(s)
-    # else:
-        # # g.trace('len(s)',len(s),p and p.headString())
-        # sb = w.verticalScrollBar()
-        # if insert is None: i,pos = 0,0
-        # else: i,pos = insert,sb.sliderPosition()
-        # w.setPlainText(s)
-        # self.setSelectionRange(i,i,insert=i)
-        # sb.setSliderPosition(pos)
-#@-node:ekr.20081007015817.92:setAllText
-#@+node:ekr.20081007015817.95:setInsertPoint
-def setInsertPoint(self,i):
-
-    self.oops()
-
-    # w = self.widget
-    # if self.useScintilla:
-        # w.SendScintilla(w.SCI_SETCURRENTPOS,i)
-        # w.SendScintilla(w.SCI_SETANCHOR,i)
-    # else:
-        # # g.trace(i) # ,g.callers(4))
-        # s = w.toPlainText()
-        # cursor = w.textCursor()
-        # i = max(0,min(i,len(s)))
-        # cursor.setPosition(i)
-        # w.setTextCursor(cursor)
-#@-node:ekr.20081007015817.95:setInsertPoint
+def getAllText(self):                   self.oops()
+def getInsertPoint(self):               self.oops()
+def getSelectionRange(self,sort=True):  self.oops()
+def hasSelection(self):                 self.oops()
+def see(self,i):                        self.oops()
+def setAllText(self,s,insert=None):     self.oops()
+def setInsertPoint(self,i):             self.oops()
 #@-node:ekr.20081031074959.29: Must be overridden in subclasses
 #@-node:ekr.20081031074959.12: class leoQtBaseTextWidget
 #@+node:ekr.20081101134906.13: class leoQLineEditWidget
@@ -3431,16 +3341,11 @@ leoColor: exception setting font in configure_tags.
 #@-node:ekr.20081103131824.10:leoAtFile
 #@+node:ekr.20081013210935.7:leoBridge
 #@-node:ekr.20081013210935.7:leoBridge
-#@+node:ekr.20081103131824.11:leoColor
-exception setting font in configure_tags.
-#@nonl
-#@-node:ekr.20081103131824.11:leoColor
 #@+node:ekr.20081013210935.12:leoCommands
 #@-node:ekr.20081013210935.12:leoCommands
 #@+node:ekr.20081013210935.8:leoConfig
 #@-node:ekr.20081013210935.8:leoConfig
 #@+node:ekr.20081013210935.9:leoDialog
-
 #@-node:ekr.20081013210935.9:leoDialog
 #@+node:ekr.20081013210935.24:leoFind
 #@-node:ekr.20081013210935.24:leoFind
@@ -3455,47 +3360,25 @@ exception setting font in configure_tags.
 #@+node:ekr.20081013210935.34:leoNodes
 #@-node:ekr.20081013210935.34:leoNodes
 #@+node:ekr.20081013210935.29:leoPlugins
-creating: dynamicUnitTest.leo
-Using menus from leoSettings.leo
-reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
-@enabled-plugins found in leoSettings.leo
-@enabled-plugins found in leoSettings.leo
-.
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-#@nonl
 #@-node:ekr.20081013210935.29:leoPlugins
 #@+node:ekr.20081013210935.35:leoShadow
 #@-node:ekr.20081013210935.35:leoShadow
 #@+node:ekr.20081013210935.30:leoTangle
 #@-node:ekr.20081013210935.30:leoTangle
 #@+node:ekr.20081013210935.31:leoTest
-creating: dynamicUnitTest.leo
-Using menus from leoSettings.leo
-reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
-@enabled-plugins found in leoSettings.leo
-@enabled-plugins found in leoSettings.leo
-.
-----------------------------------------------------------------------
-Ran 1 test in 0.015s
-
-OK
-#@nonl
 #@-node:ekr.20081013210935.31:leoTest
 #@+node:ekr.20081013210935.36:leoUndo
 #@-node:ekr.20081013210935.36:leoUndo
 #@+node:ekr.20081013210935.10:plugins
-Syntax check fails for color_markup.py
-
-(Fixed by hand)
-#@nonl
 #@-node:ekr.20081013210935.10:plugins
 #@+node:ekr.20081013210935.4:Unit tests for .leo files.
 #@-node:ekr.20081013210935.4:Unit tests for .leo files.
 #@-node:ekr.20081013210935.2:Pass
 #@+node:ekr.20081013210935.32:Fail
+#@+node:ekr.20081103131824.11:leoColor
+exception setting font in configure_tags.
+#@nonl
+#@-node:ekr.20081103131824.11:leoColor
 #@+node:ekr.20081013210935.13:leoEditCommands
 
 ....................................................................................................F.......................F.....FFFFF....F

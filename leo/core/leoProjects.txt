@@ -13359,7 +13359,6 @@ def expandNodeAndGoToFirstChild (self,event=None):
         c.expandNode()
 
     c.selectVnode(p.firstChild())
-    # c.redraw_after_select()
     c.redraw()
     c.treeFocusHelper()
 
@@ -13374,7 +13373,6 @@ def expandNodeOrGoToFirstChild (self,event=None):
         else:
             c.selectVnode(p.firstChild())
             c.redraw()
-            # c.redraw_after_select()
     c.treeFocusHelper()
 #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
 #@+node:ekr.20060928062431:expandOnlyAncestorsOfNode
@@ -13668,7 +13666,6 @@ def demote (self,event=None):
     u.afterDemote(p,followingSibs,dirtyVnodeList)
     c.selectPosition(p)  # Also sets rootPosition.
     c.redraw()
-    # c.redraw_after_select()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -14282,8 +14279,6 @@ def treeSelectHelper (self,p,redraw=True):
         c.selectPosition(p)
         if redraw or flag:
             c.redraw()
-        # else:
-            # c.redraw_after_select() # for qt plugin.
 
     c.treeFocusHelper()
 #@-node:ekr.20070226113916: treeSelectHelper
@@ -15865,7 +15860,6 @@ def demote (self,event=None):
     u.afterDemote(p,followingSibs,dirtyVnodeList)
     c.selectPosition(p)  # Also sets rootPosition.
     c.redraw()
-    # c.redraw_after_select()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -17923,7 +17917,6 @@ def expandNodeAndGoToFirstChild (self,event=None):
         c.expandNode()
 
     c.selectVnode(p.firstChild())
-    # c.redraw_after_select()
     c.redraw()
     c.treeFocusHelper()
 
@@ -17938,7 +17931,6 @@ def expandNodeOrGoToFirstChild (self,event=None):
         else:
             c.selectVnode(p.firstChild())
             c.redraw()
-            # c.redraw_after_select()
     c.treeFocusHelper()
 #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
 #@+node:ekr.20031218072017.2923:markChangedHeadlines
@@ -18418,8 +18410,6 @@ def treeSelectHelper (self,p,redraw=True):
         c.selectPosition(p)
         if redraw or flag:
             c.redraw()
-        # else:
-            # c.redraw_after_select() # for qt plugin.
 
     c.treeFocusHelper()
 #@-node:ekr.20070226113916: treeSelectHelper
@@ -18731,7 +18721,7 @@ def switchToBufferFinisher (self,name):
     if p:
         c.selectPosition(p)
         c.redraw()
-        # c.redraw_after_select()
+
 #@-node:ekr.20050920084036.40:switchToBuffer
 #@+node:ekr.20071114082418:deleteFirstIcon
 def deleteFirstIcon (self,event=None):
@@ -18895,7 +18885,7 @@ def moveLinesDown (self,event):
             p = p.threadNext()
             c.selectPosition(p)
             c.redraw()
-            # c.redraw_after_select()
+
 
             s = w.getAllText()
             w.insert(0,lines)
@@ -18943,7 +18933,6 @@ def moveLinesUp (self,event):
             p = p.threadBack()
             c.selectPosition(p)
             c.redraw()
-            # c.redraw_after_select()
 
             s = w.getAllText()
             if not s.endswith('\n'): w.insert('end','\n')
@@ -19268,8 +19257,6 @@ def treeSelectHelper (self,p,redraw=True):
         c.selectPosition(p)
         if redraw or flag:
             c.redraw()
-        # else:
-            # c.redraw_after_select() # for qt plugin.
 
     c.treeFocusHelper()
 #@-node:ekr.20070226113916: treeSelectHelper
@@ -19344,7 +19331,6 @@ def expandNodeAndGoToFirstChild (self,event=None):
         c.expandNode()
 
     c.selectVnode(p.firstChild())
-    # c.redraw_after_select()
     c.redraw()
     c.treeFocusHelper()
 
@@ -19359,7 +19345,6 @@ def expandNodeOrGoToFirstChild (self,event=None):
         else:
             c.selectVnode(p.firstChild())
             c.redraw()
-            # c.redraw_after_select()
     c.treeFocusHelper()
 #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
 #@-node:ekr.20081021132739.3:Calls to redraw_after_expand
@@ -20369,7 +20354,6 @@ def expandNodeAndGoToFirstChild (self,event=None):
         c.expandNode()
 
     c.selectVnode(p.firstChild())
-    # c.redraw_after_select()
     c.redraw()
     c.treeFocusHelper()
 
@@ -20384,7 +20368,6 @@ def expandNodeOrGoToFirstChild (self,event=None):
         else:
             c.selectVnode(p.firstChild())
             c.redraw()
-            # c.redraw_after_select()
     c.treeFocusHelper()
 #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
 #@+node:ekr.20031218072017.2923:markChangedHeadlines
@@ -20600,7 +20583,6 @@ def demote (self,event=None):
     u.afterDemote(p,followingSibs,dirtyVnodeList)
     c.selectPosition(p)  # Also sets rootPosition.
     c.redraw()
-    # c.redraw_after_select()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -20935,8 +20917,6 @@ def treeSelectHelper (self,p,redraw=True):
         c.selectPosition(p)
         if redraw or flag:
             c.redraw()
-        # else:
-            # c.redraw_after_select() # for qt plugin.
 
     c.treeFocusHelper()
 #@-node:ekr.20070226113916: treeSelectHelper
@@ -21233,7 +21213,7 @@ def switchToBufferFinisher (self,name):
     if p:
         c.selectPosition(p)
         c.redraw()
-        # c.redraw_after_select()
+
 #@-node:ekr.20050920084036.40:switchToBuffer
 #@+node:ekr.20071114082418:deleteFirstIcon
 def deleteFirstIcon (self,event=None):
@@ -21397,7 +21377,7 @@ def moveLinesDown (self,event):
             p = p.threadNext()
             c.selectPosition(p)
             c.redraw()
-            # c.redraw_after_select()
+
 
             s = w.getAllText()
             w.insert(0,lines)
@@ -21445,7 +21425,6 @@ def moveLinesUp (self,event):
             p = p.threadBack()
             c.selectPosition(p)
             c.redraw()
-            # c.redraw_after_select()
 
             s = w.getAllText()
             if not s.endswith('\n'): w.insert('end','\n')
@@ -22776,7 +22755,6 @@ def insertNewlineHelper (self,w,oldSel,undoType):
             self.updateAutoIndent(p,w)
 
     w.seeInsertPoint()
-#@nonl
 #@-node:ekr.20051026171121:insertNewlineHelper
 #@+node:ekr.20060804095512:initBracketMatcher
 def initBracketMatcher (self,c):

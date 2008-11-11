@@ -905,7 +905,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         if p:
             c.selectPosition(p)
             c.redraw()
-            # c.redraw_after_select()
+
     #@-node:ekr.20050920084036.40:switchToBuffer
     #@-node:ekr.20050920084036.34:Entry points
     #@+node:ekr.20050927102133.1:Utils
@@ -3102,7 +3102,6 @@ class editCommandsClass (baseEditCommandsClass):
                 self.updateAutoIndent(p,w)
 
         w.seeInsertPoint()
-    #@nonl
     #@-node:ekr.20051026171121:insertNewlineHelper
     #@+node:ekr.20060804095512:initBracketMatcher
     def initBracketMatcher (self,c):
@@ -4201,7 +4200,7 @@ class editCommandsClass (baseEditCommandsClass):
                 p = p.threadNext()
                 c.selectPosition(p)
                 c.redraw()
-                # c.redraw_after_select()
+
 
                 s = w.getAllText()
                 w.insert(0,lines)
@@ -4249,7 +4248,6 @@ class editCommandsClass (baseEditCommandsClass):
                 p = p.threadBack()
                 c.selectPosition(p)
                 c.redraw()
-                # c.redraw_after_select()
 
                 s = w.getAllText()
                 if not s.endswith('\n'): w.insert('end','\n')

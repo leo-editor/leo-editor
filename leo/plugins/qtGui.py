@@ -3363,6 +3363,11 @@ class leoQtTree (leoFrame.leoTree):
                 elif p and self.redrawCount > 1:
                     g.trace('Error: no current item: %s' % (p.headString()))
 
+            item = w.currentItem()
+            if item:
+                w.scrollToItem(item,
+                    QtGui.QAbstractItemView.PositionAtCenter)
+
             # Necessary to get the tree drawn initially.
             w.repaint()
 
@@ -3372,7 +3377,7 @@ class leoQtTree (leoFrame.leoTree):
             if trace:
                 if verbose: tstop()
                 g.trace('%s: drew %3s nodes' % (
-                    self.redrawCount,self.nodeDrawCount),g.callers())
+                    self.redrawCount,self.nodeDrawCount),g.callers(5))
 
     redraw = full_redraw # Compatibility
     redraw_now = full_redraw
@@ -3669,7 +3674,12 @@ class leoQtTree (leoFrame.leoTree):
 
         # setCurrentItem sets .selecting ivar
         self.setCurrentItem()
-        self.full_redraw()
+        ### self.full_redraw()
+
+        item = w.currentItem()
+        if item:
+            w.scrollToItem(item,
+                QtGui.QAbstractItemView.PositionAtCenter)
     #@-node:ekr.20081021043407.13:redraw_after_select
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):
@@ -5194,6 +5204,8 @@ class leoQtEventFilter(QtCore.QObject):
 
         if tkKey == 'Tab':
             return True
+        elif len(tkKey) == 1:
+            return True # Must process all ascii keys.
         elif ch in self.flashers:
             return True
         else:
@@ -5899,127 +5911,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@-node:ekr.20081023131208.10:Coloring
     #@-node:ekr.20081031074959.38: May be overridden in subclasses
     #@+node:ekr.20081031074959.29: Must be overridden in subclasses
-    #@+node:ekr.20081007015817.81:getAllText
-    def getAllText(self):
-
-        self.oops()
-
-        # w = self.widget
-
-        # if self.useScintilla:
-            # s = w.text()
-        # else:
-            # s = w.toPlainText()
-
-        # s = g.toUnicode(s,'utf-8')
-        # return s
-    #@-node:ekr.20081007015817.81:getAllText
-    #@+node:ekr.20081007015817.83:getInsertPoint
-    def getInsertPoint(self):
-
-        self.oops()
-
-        # w = self.widget
-        # if self.useScintilla:
-            # s = self.getAllText()
-            # row,col = w.getCursorPosition()  
-            # i = g.convertRowColToPythonIndex(s, row, col)
-            # if i > 0: self.indexWarning('leoQtBody.getInsertPoint')
-            # return i
-        # else:
-            # i = w.textCursor().position()
-            # # g.trace(i) # ,g.callers(4))
-            # return i
-    #@-node:ekr.20081007015817.83:getInsertPoint
-    #@+node:ekr.20081007015817.86:getSelectionRange
-    def getSelectionRange(self,sort=True):
-
-        self.oops()
-
-        # w = self.widget
-        # if self.useScintilla:
-            # if w.hasSelectedText():
-                # s = self.getAllText()
-                # row_i,col_i,row_j,col_j = w.getSelection()
-                # i = g.convertRowColToPythonIndex(s, row_i, col_i)
-                # j = g.convertRowColToPythonIndex(s, row_j, col_j)
-                # if sort and i > j: sel = j,i
-            # else:
-                # i = j = self.getInsertPoint()
-            # if i > 0 or j > 0: self.indexWarning('leoQtBody.getSelectionRange')
-            # return i,j
-        # else:
-            # tc = w.textCursor()
-            # i,j = tc.selectionStart(),tc.selectionEnd()
-            # # g.trace(i,j,g.callers(4))
-            # return i,j
-    #@-node:ekr.20081007015817.86:getSelectionRange
-    #@+node:ville.20081011134505.6:hasSelection
-    def hasSelection(self):
-
-        self.oops()
-
-        # w = self.widget
-        # if self.useScintilla:
-            # return w.hasSelectedText()
-        # else:
-            # return w.textCursor().hasSelection()
-    #@-node:ville.20081011134505.6:hasSelection
-    #@+node:ekr.20081031074959.46:see
-    def see(self,i):
-
-        self.oops()
-
-        # w = self.widget
-
-        # if self.useScintilla:
-            # # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
-            # s = self.getAllText()
-            # row,col = g.convertPythonIndexToRowCol(s,i)
-            # w.ensureLineVisible(row)
-        # else:
-            # w.ensureCursorVisible()
-    #@-node:ekr.20081031074959.46:see
-    #@+node:ekr.20081007015817.92:setAllText
-    def setAllText(self,s,insert=None):
-
-        '''Set the text of the widget.
-
-        If insert is None, the insert point, selection range and scrollbars are initied.
-        Otherwise, the scrollbars are preserved.'''
-
-        self.oops()
-
-        # w = self.widget ; c = self.c ; p = c.currentPosition()
-
-        # if self.useScintilla:
-            # w.setText(s)
-        # else:
-            # # g.trace('len(s)',len(s),p and p.headString())
-            # sb = w.verticalScrollBar()
-            # if insert is None: i,pos = 0,0
-            # else: i,pos = insert,sb.sliderPosition()
-            # w.setPlainText(s)
-            # self.setSelectionRange(i,i,insert=i)
-            # sb.setSliderPosition(pos)
-    #@-node:ekr.20081007015817.92:setAllText
-    #@+node:ekr.20081007015817.95:setInsertPoint
-    def setInsertPoint(self,i):
-
-        self.oops()
-
-        # w = self.widget
-        # if self.useScintilla:
-            # w.SendScintilla(w.SCI_SETCURRENTPOS,i)
-            # w.SendScintilla(w.SCI_SETANCHOR,i)
-        # else:
-            # # g.trace(i) # ,g.callers(4))
-            # s = w.toPlainText()
-            # cursor = w.textCursor()
-            # i = max(0,min(i,len(s)))
-            # cursor.setPosition(i)
-            # w.setTextCursor(cursor)
-    #@-node:ekr.20081007015817.95:setInsertPoint
+    def getAllText(self):                   self.oops()
+    def getInsertPoint(self):               self.oops()
+    def getSelectionRange(self,sort=True):  self.oops()
+    def hasSelection(self):                 self.oops()
+    def see(self,i):                        self.oops()
+    def setAllText(self,s,insert=None):     self.oops()
+    def setInsertPoint(self,i):             self.oops()
     #@-node:ekr.20081031074959.29: Must be overridden in subclasses
     #@-others
 #@-node:ekr.20081031074959.12: class leoQtBaseTextWidget
@@ -6484,6 +6382,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081024163213.12:flashCharacter
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
+        # This causes problems during unit tests.
+        # The selection point isn't restored in time.
+        if g.app.unitTesting: return
+
         c = self.c ; w = self.widget
 
         # Reduce the flash time to the minimum.
@@ -6503,13 +6405,16 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         def removeFlashCallback(self=self,w=w):
             n,i = self.flashCount,self.flashIndex
-            self.setSelectionRange(i,i)
+
             if n > 0:
+                self.setSelectionRange(i,i)
                 after(addFlashCallback)
             else:
                 w.blockSignals(False)
                 w.setDisabled(False)
-                self.setInsertPoint(self.afterFlashIndex)
+                i = self.afterFlashIndex
+                self.setSelectionRange(i,i,insert=i)
+                # g.trace('i',i)
                 w.setFocus()
 
         self.flashCount = flashes

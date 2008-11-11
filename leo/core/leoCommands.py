@@ -4652,7 +4652,6 @@ class baseCommands:
             c.expandNode()
 
         c.selectVnode(p.firstChild())
-        # c.redraw_after_select()
         c.redraw()
         c.treeFocusHelper()
 
@@ -4667,7 +4666,6 @@ class baseCommands:
             else:
                 c.selectVnode(p.firstChild())
                 c.redraw()
-                # c.redraw_after_select()
         c.treeFocusHelper()
     #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
     #@+node:ekr.20060928062431:expandOnlyAncestorsOfNode
@@ -4961,7 +4959,6 @@ class baseCommands:
         u.afterDemote(p,followingSibs,dirtyVnodeList)
         c.selectPosition(p)  # Also sets rootPosition.
         c.redraw()
-        # c.redraw_after_select()
         c.treeFocusHelper()
 
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -5583,8 +5580,6 @@ class baseCommands:
             c.selectPosition(p)
             if redraw or flag:
                 c.redraw()
-            # else:
-                # c.redraw_after_select() # for qt plugin.
 
         c.treeFocusHelper()
     #@-node:ekr.20070226113916: treeSelectHelper
