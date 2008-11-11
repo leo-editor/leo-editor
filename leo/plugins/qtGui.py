@@ -5123,17 +5123,17 @@ class leoQtEventFilter(QtCore.QObject):
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
             override = True # Send all key events to Leo.
 
-            # if 0: # not c.frame.body.useScintilla:
-                # # Send *all* non-ignored keystrokes to the widget.
-                # override = not ignore
-            # elif tkKey == 'Tab':
-                # override = True
-            # elif k.inState():
-                # override = not ignore # allow all keystrokes.
-            # elif safe_mode:
-                # override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
-            # else:
-                # override = len(aList) > 0
+            if 0: # not c.frame.body.useScintilla:
+                # Send *all* non-ignored keystrokes to the widget.
+                override = not ignore
+            elif tkKey == 'Tab':
+                override = True
+            elif k.inState():
+                override = not ignore # allow all keystrokes.
+            elif safe_mode:
+                override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
+            else:
+                override = len(aList) > 0
         else:
             override = False ; tkKey = '<no key>'
 
@@ -5314,7 +5314,8 @@ class leoQtEventFilter(QtCore.QObject):
             g.trace('tkKey: %s, ch: %s, ignore: %s' % (
                 repr(tkKey),repr(ch),ignore))
 
-        return tkKey,text,ignore # text was ch
+        ch = text or toString # was ch
+        return tkKey,ch,ignore
     #@+node:ekr.20081028055229.16:keyboardUpper1
     def keyboardUpper1 (self,ch):
 
