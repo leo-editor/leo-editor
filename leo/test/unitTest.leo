@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,3"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,2"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1270,12 +1270,12 @@
 <v t="ekr.20080904120258.4" annotate="7d71002e"><vh>@test restore the screen</vh></v>
 </v>
 <v t="ekr.20070131175538"><vh> Commands A-E</vh>
-<v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
+<v t="ekr.20061101121602.78" a="E"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
 <v t="ekr.20061101121602.80"><vh>before sel=2.0,4.6</vh></v>
 <v t="ekr.20061101121602.81"><vh>after sel=2.0,4.7</vh></v>
 </v>
-<v t="ekr.20061101121602.82"><vh>@test add-tab-to-lines</vh>
+<v t="ekr.20061101121602.82" a="E"><vh>@test add-tab-to-lines</vh>
 <v t="ekr.20061101121602.83"><vh>work</vh></v>
 <v t="ekr.20061101121602.84"><vh>before sel=2.0,5.6</vh></v>
 <v t="ekr.20061101121602.85"><vh>after sel=2.0,5.10</vh></v>
@@ -1287,27 +1287,27 @@
 <v t="ekr.20061101121602.88"><vh>before sel=3.8,3.8</vh></v>
 <v t="ekr.20061101121602.89"><vh>after sel=3.7,3.7</vh></v>
 </v>
-<v t="ekr.20061101121602.90"><vh>@test back-char-extend-selection</vh>
+<v t="ekr.20061101121602.90" a="E"><vh>@test back-char-extend-selection</vh>
 <v t="ekr.20061101121602.91"><vh>work</vh></v>
 <v t="ekr.20061101121602.92"><vh>before sel=4.12,4.12</vh></v>
 <v t="ekr.20061101121602.93"><vh>after sel=4.11,4.12</vh></v>
 </v>
-<v t="ekr.20061101121602.94"><vh>@test back-paragraph</vh>
+<v t="ekr.20061101121602.94" a="E"><vh>@test back-paragraph</vh>
 <v t="ekr.20061101121602.95"><vh>work</vh></v>
 <v t="ekr.20061101121602.96"><vh>before sel=9.0,9.0</vh></v>
 <v t="ekr.20061101121602.97"><vh>after sel=6.7,6.7</vh></v>
 </v>
-<v t="ekr.20061101121602.98"><vh>@test back-paragraph-extend-selection</vh>
+<v t="ekr.20061101121602.98" a="E"><vh>@test back-paragraph-extend-selection</vh>
 <v t="ekr.20061101121602.99"><vh>work</vh></v>
 <v t="ekr.20061101121602.100"><vh>before sel=9.0,9.5</vh></v>
 <v t="ekr.20061101121602.101"><vh>after sel=6.7,9.5</vh></v>
 </v>
-<v t="ekr.20061101121602.102"><vh>@test back-sentence</vh>
+<v t="ekr.20061101121602.102" a="E"><vh>@test back-sentence</vh>
 <v t="ekr.20061101121602.103"><vh>work</vh></v>
 <v t="ekr.20061101121602.104"><vh>before sel=3.169,3.169</vh></v>
 <v t="ekr.20061101121602.105"><vh>after sel=3.0,3.0</vh></v>
 </v>
-<v t="ekr.20061101121602.106"><vh>@test back-sentence-extend-selection</vh>
+<v t="ekr.20061101121602.106" a="E"><vh>@test back-sentence-extend-selection</vh>
 <v t="ekr.20061101121602.107"><vh>work</vh></v>
 <v t="ekr.20061101121602.108"><vh>before sel=3.208,3.208</vh></v>
 <v t="ekr.20061101121602.109"><vh>after sel=3.0,3.208</vh></v>
@@ -1317,22 +1317,22 @@
 <v t="ekr.20061101121602.112"><vh>before sel=4.13,4.13</vh></v>
 <v t="ekr.20061101121602.113"><vh>after sel=4.8,4.8</vh></v>
 </v>
-<v t="ekr.20061101121602.114"><vh>@test back-word</vh>
+<v t="ekr.20061101121602.114" a="E"><vh>@test back-word</vh>
 <v t="ekr.20061101121602.115"><vh>work</vh></v>
 <v t="ekr.20061101121602.116"><vh>before sel=1.183,1.183</vh></v>
 <v t="ekr.20061101121602.117"><vh>after sel=1.178,1.178</vh></v>
 </v>
-<v t="ekr.20061101121602.118"><vh>@test back-word-extend-selection</vh>
+<v t="ekr.20061101121602.118" a="E"><vh>@test back-word-extend-selection</vh>
 <v t="ekr.20061101121602.119"><vh>work</vh></v>
 <v t="ekr.20061101121602.120"><vh>before sel=3.342,3.342</vh></v>
 <v t="ekr.20061101121602.121"><vh>after sel=3.332,3.342</vh></v>
 </v>
-<v t="ekr.20061101121602.122"><vh>@test backward-delete-char</vh>
+<v t="ekr.20061101121602.122" a="E"><vh>@test backward-delete-char</vh>
 <v t="ekr.20061101121602.123"><vh>work</vh></v>
 <v t="ekr.20061101121602.124"><vh>before sel=1.9,1.9</vh></v>
 <v t="ekr.20061101121602.125"><vh>after sel=1.8,1.8</vh></v>
 </v>
-<v t="ekr.20071007121529"><vh>@test backward-delete-char  (middle of line)</vh>
+<v t="ekr.20071007121529" a="E"><vh>@test backward-delete-char  (middle of line)</vh>
 <v t="ekr.20071007121529.1"><vh>work</vh></v>
 <v t="ekr.20071007121529.2"><vh>before sel=1.6,1.6</vh></v>
 <v t="ekr.20071007121529.3"><vh>after sel=1.5,1.5</vh></v>
@@ -1342,12 +1342,12 @@
 <v t="ekr.20071007120947.7"><vh>before sel=2.9,2.9</vh></v>
 <v t="ekr.20071007120947.8"><vh>after sel=2.8,2.8</vh></v>
 </v>
-<v t="ekr.20061101121602.126"><vh>@test backward-kill-paragraph</vh>
+<v t="ekr.20061101121602.126" a="E"><vh>@test backward-kill-paragraph</vh>
 <v t="ekr.20061101121602.127"><vh>work</vh></v>
 <v t="ekr.20061101121602.128"><vh>before sel=9.0,9.0</vh></v>
 <v t="ekr.20061101121602.129"><vh>after sel=7.0,7.0</vh></v>
 </v>
-<v t="ekr.20070131173932"><vh>@test backward-kill-sentence</vh>
+<v t="ekr.20070131173932" a="E"><vh>@test backward-kill-sentence</vh>
 <v t="ekr.20070131173932.1"><vh>work</vh></v>
 <v t="ekr.20070131173932.2"><vh>before sel=3.2,3.2</vh></v>
 <v t="ekr.20070131173932.3"><vh>after sel=2.23,2.23</vh></v>
@@ -1372,7 +1372,7 @@
 <v t="ekr.20061101121602.144"><vh>before sel=4.10,4.10</vh></v>
 <v t="ekr.20061101121602.145"><vh>after sel=4.0,4.10</vh></v>
 </v>
-<v t="ekr.20061101121602.146"><vh>@test capitalize-word</vh>
+<v t="ekr.20061101121602.146" a="E"><vh>@test capitalize-word</vh>
 <v t="ekr.20061101121602.147"><vh>work</vh></v>
 <v t="ekr.20061101121602.148"><vh>before sel=3.6,3.6</vh></v>
 <v t="ekr.20061101121602.149"><vh>after sel=3.6,3.6</vh></v>
@@ -1387,17 +1387,17 @@
 <v t="ekr.20061101121602.156"><vh>before sel=1.0,7.0</vh></v>
 <v t="ekr.20061101121602.157"><vh>after sel=1.0,7.0</vh></v>
 </v>
-<v t="ekr.20070217071121.1"><vh>@test clear-rectangle</vh>
+<v t="ekr.20070217071121.1" a="E"><vh>@test clear-rectangle</vh>
 <v t="ekr.20070217071121.2"><vh>work</vh></v>
 <v t="ekr.20070217071121.3"><vh>before sel=2.3,5.6</vh></v>
 <v t="ekr.20070217071121.4"><vh>after sel=2.3,5.6</vh></v>
 </v>
-<v t="ekr.20061101121602.158"><vh>@test clear-selected-text</vh>
+<v t="ekr.20061101121602.158" a="E"><vh>@test clear-selected-text</vh>
 <v t="ekr.20061101121602.159"><vh>work</vh></v>
 <v t="ekr.20061101121602.160"><vh>before sel=2.4,4.4</vh></v>
 <v t="ekr.20061101121602.161"><vh>after sel=2.4,2.4</vh></v>
 </v>
-<v t="ekr.20070217071121.5"><vh>@test close-rectangle</vh>
+<v t="ekr.20070217071121.5" a="E"><vh>@test close-rectangle</vh>
 <v t="ekr.20070217071121.6"><vh>work</vh></v>
 <v t="ekr.20070217071121.7"><vh>before sel=2.3,5.6</vh></v>
 <v t="ekr.20070217071121.8"><vh>after sel=2.3,5.3</vh></v>
@@ -1407,22 +1407,22 @@
 <v t="ekr.20061101121602.164"><vh>before sel=2.4,4.8</vh></v>
 <v t="ekr.20061101121602.165"><vh>after sel=2.4,4.8</vh></v>
 </v>
-<v t="ekr.20061101121602.166"><vh>@test delete-char</vh>
+<v t="ekr.20061101121602.166" a="E"><vh>@test delete-char</vh>
 <v t="ekr.20061101121602.167"><vh>work</vh></v>
 <v t="ekr.20061101121602.168"><vh>before sel=1.5,1.5</vh></v>
 <v t="ekr.20061101121602.169"><vh>after sel=1.5,1.5</vh></v>
 </v>
-<v t="ekr.20071007120750.3"><vh>@test delete-indentation</vh>
+<v t="ekr.20071007120750.3" a="E"><vh>@test delete-indentation</vh>
 <v t="ekr.20071007121115.1"><vh>work</vh></v>
 <v t="ekr.20071007121115.2"><vh>before sel=2.8,2.8</vh></v>
 <v t="ekr.20071007121115.3"><vh>after sel=2.4,2.4</vh></v>
 </v>
-<v t="ekr.20070217071121.9"><vh>@test delete-rectangle</vh>
+<v t="ekr.20070217071121.9" a="E"><vh>@test delete-rectangle</vh>
 <v t="ekr.20070217071121.10"><vh>work</vh></v>
 <v t="ekr.20070217071121.11"><vh>before sel=2.3,5.6</vh></v>
 <v t="ekr.20070217071121.12"><vh>after sel=2.3,5.3</vh></v>
 </v>
-<v t="ekr.20070131162935"><vh>@test delete-spaces</vh>
+<v t="ekr.20070131162935" a="E"><vh>@test delete-spaces</vh>
 <v t="ekr.20070131162935.1"><vh>work</vh></v>
 <v t="ekr.20070131162935.2"><vh>before sel=3.2,3.2</vh></v>
 <v t="ekr.20070131162935.3"><vh>after sel=3.0,3.0</vh></v>
@@ -1432,12 +1432,12 @@
 <v t="ekr.20061101121602.172"><vh>before sel=1.0,1.0</vh></v>
 <v t="ekr.20061101121602.173"><vh>after sel=1.0,1.0</vh></v>
 </v>
-<v t="ekr.20061101121602.174"><vh>@test downcase-region</vh>
+<v t="ekr.20061101121602.174" a="E"><vh>@test downcase-region</vh>
 <v t="ekr.20061101121602.175"><vh>work</vh></v>
 <v t="ekr.20061101121602.176"><vh>before sel=3.0,4.0</vh></v>
 <v t="ekr.20061101121602.177"><vh>after sel=3.0,4.0</vh></v>
 </v>
-<v t="ekr.20061101121602.178"><vh>@test downcase-word</vh>
+<v t="ekr.20061101121602.178" a="E"><vh>@test downcase-word</vh>
 <v t="ekr.20061101121602.179"><vh>work</vh></v>
 <v t="ekr.20061101121602.180"><vh>before sel=1.4,1.4</vh></v>
 <v t="ekr.20061101121602.181"><vh>after sel=1.4,1.4</vh></v>
@@ -1452,7 +1452,7 @@
 <v t="ekr.20061101121602.188"><vh>before sel=1.0,1.0</vh></v>
 <v t="ekr.20061101121602.189"><vh>after sel=1.0,7.0</vh></v>
 </v>
-<v t="ekr.20061101121602.190"><vh>@test end-of-line</vh>
+<v t="ekr.20061101121602.190" a="E"><vh>@test end-of-line</vh>
 <v t="ekr.20061101121602.191"><vh>work</vh></v>
 <v t="ekr.20061101121602.192"><vh>before sel=1.0,1.0</vh></v>
 <v t="ekr.20061101121602.193"><vh>after sel=1.10,1.10</vh></v>
@@ -1462,7 +1462,7 @@
 <v t="ekr.20061128082002.2"><vh>before sel=6.0,6.0</vh></v>
 <v t="ekr.20061128082002.3"><vh>after sel=6.9,6.9</vh></v>
 </v>
-<v t="ekr.20061101121602.194"><vh>@test end-of-line-extend-selection</vh>
+<v t="ekr.20061101121602.194" a="E"><vh>@test end-of-line-extend-selection</vh>
 <v t="ekr.20061101121602.195"><vh>work</vh></v>
 <v t="ekr.20061101121602.196"><vh>before sel=3.0,3.0</vh></v>
 <v t="ekr.20061101121602.197"><vh>after sel=3.0,3.10</vh></v>
@@ -1472,34 +1472,34 @@
 <v t="ekr.20061101121602.200"><vh>before sel=1.0,1.10</vh></v>
 <v t="ekr.20061101121602.201"><vh>after sel=1.0,1.10</vh></v>
 </v>
-<v t="ekr.20061101121602.202"><vh>@test extend-to-line</vh>
+<v t="ekr.20061101121602.202" a="E"><vh>@test extend-to-line</vh>
 <v t="ekr.20061101121602.203"><vh>work</vh></v>
 <v t="ekr.20061101121602.204"><vh>before sel=3.3,3.3</vh></v>
 <v t="ekr.20061101121602.205"><vh>after sel=3.0,3.10</vh></v>
 </v>
-<v t="ekr.20061101121602.206"><vh>@test extend-to-paragraph</vh>
+<v t="ekr.20061101121602.206" a="E"><vh>@test extend-to-paragraph</vh>
 <v t="ekr.20061101121602.207"><vh>work</vh></v>
 <v t="ekr.20061101121602.208"><vh>before sel=9.0,9.0</vh></v>
 <v t="ekr.20061101121602.209"><vh>after sel=8.0,13.33</vh></v>
 </v>
-<v t="ekr.20061101121602.210"><vh>@test extend-to-sentence</vh>
+<v t="ekr.20061101121602.210" a="E"><vh>@test extend-to-sentence</vh>
 <v t="ekr.20061101121602.211"><vh>work</vh></v>
 <v t="ekr.20061101121602.212"><vh>before sel=3.5,3.5</vh></v>
 <v t="ekr.20061101121602.213"><vh>after sel=1.395,3.142</vh></v>
 </v>
-<v t="ekr.20061101121602.214"><vh>@test extend-to-word</vh>
+<v t="ekr.20061101121602.214" a="E"><vh>@test extend-to-word</vh>
 <v t="ekr.20061101121602.215"><vh>work</vh></v>
 <v t="ekr.20061101121602.216"><vh>before sel=3.10,3.10</vh></v>
 <v t="ekr.20061101121602.217"><vh>after sel=3.4,3.12</vh></v>
 </v>
 </v>
 <v t="ekr.20070131175538.1"><vh> Commands F-L</vh>
-<v t="ekr.20061101121602.218"><vh>@test fill-paragraph</vh>
+<v t="ekr.20061101121602.218" a="E"><vh>@test fill-paragraph</vh>
 <v t="ekr.20061101121602.219"><vh>work</vh></v>
 <v t="ekr.20061101121602.220"><vh>before sel=3.0,3.7</vh></v>
 <v t="ekr.20061101121602.221"><vh>after sel=10.0,10.0</vh></v>
 </v>
-<v t="ekr.20071007120750.4"><vh>@test fill-region (one paragraph)</vh>
+<v t="ekr.20071007120750.4" a="E"><vh>@test fill-region (one paragraph)</vh>
 <v t="ekr.20071007121312.1"><vh>work</vh></v>
 <v t="ekr.20071007121312.2"><vh>before sel=1.0,9.7</vh></v>
 <v t="ekr.20071007121312.3"><vh>after sel=8.0,8.0</vh></v>
@@ -1519,73 +1519,73 @@
 <v t="ekr.20061101121602.228"><vh>before sel=1.1,1.1</vh></v>
 <v t="ekr.20061101121602.229"><vh>after sel=1.1,1.2</vh></v>
 </v>
-<v t="ekr.20061101121602.230"><vh>@test forward-end-word (end of line)</vh>
+<v t="ekr.20061101121602.230" a="E"><vh>@test forward-end-word (end of line)</vh>
 <v t="ekr.20061101121602.231"><vh>work</vh></v>
 <v t="ekr.20061101121602.232"><vh>before sel=1.395,1.395</vh></v>
 <v t="ekr.20061101121602.233"><vh>after sel=3.4,3.4</vh></v>
 </v>
-<v t="ekr.20061101121602.234"><vh>@test forward-end-word (start of word) </vh>
+<v t="ekr.20061101121602.234" a="E"><vh>@test forward-end-word (start of word) </vh>
 <v t="ekr.20061101121602.235"><vh>work</vh></v>
 <v t="ekr.20061101121602.236"><vh>before sel=1.310,1.310</vh></v>
 <v t="ekr.20061101121602.237"><vh>after sel=1.317,1.317</vh></v>
 </v>
-<v t="ekr.20061101121602.238"><vh>@test forward-end-word-extend-selection</vh>
+<v t="ekr.20061101121602.238" a="E"><vh>@test forward-end-word-extend-selection</vh>
 <v t="ekr.20061101121602.239"><vh>work</vh></v>
 <v t="ekr.20061101121602.240"><vh>before sel=3.20,3.20</vh></v>
 <v t="ekr.20061101121602.241"><vh>after sel=3.20,3.30</vh></v>
 </v>
-<v t="ekr.20061101121602.242"><vh>@test forward-paragraph</vh>
+<v t="ekr.20061101121602.242" a="E"><vh>@test forward-paragraph</vh>
 <v t="ekr.20061101121602.243"><vh>work</vh></v>
 <v t="ekr.20061101121602.244"><vh>before sel=9.0,9.0</vh></v>
 <v t="ekr.20061101121602.245"><vh>after sel=15.0,15.0</vh></v>
 </v>
-<v t="ekr.20061101121602.246"><vh>@test forward-paragraph-extend-selection</vh>
+<v t="ekr.20061101121602.246" a="E"><vh>@test forward-paragraph-extend-selection</vh>
 <v t="ekr.20061101121602.247"><vh>work</vh></v>
 <v t="ekr.20061101121602.248"><vh>before sel=10.0,10.0</vh></v>
 <v t="ekr.20061101121602.249"><vh>after sel=10.0,15.0</vh></v>
 </v>
-<v t="ekr.20061101121602.250"><vh>@test forward-sentence</vh>
+<v t="ekr.20061101121602.250" a="E"><vh>@test forward-sentence</vh>
 <v t="ekr.20061101121602.251"><vh>work</vh></v>
 <v t="ekr.20061101121602.252"><vh>before sel=3.17,3.17</vh></v>
 <v t="ekr.20061101121602.253"><vh>after sel=3.142,3.142</vh></v>
 </v>
-<v t="ekr.20061101121602.254"><vh>@test forward-sentence-extend-selection</vh>
+<v t="ekr.20061101121602.254" a="E"><vh>@test forward-sentence-extend-selection</vh>
 <v t="ekr.20061101121602.255"><vh>work</vh></v>
 <v t="ekr.20061101121602.256"><vh>before sel=1.264,1.264</vh></v>
 <v t="ekr.20061101121602.257"><vh>after sel=1.264,1.395</vh></v>
 </v>
-<v t="ekr.20061101121602.258"><vh>@test forward-word</vh>
+<v t="ekr.20061101121602.258" a="E"><vh>@test forward-word</vh>
 <v t="ekr.20061101121602.259"><vh>work</vh></v>
 <v t="ekr.20061101121602.260"><vh>before sel=1.261,1.261</vh></v>
 <v t="ekr.20061101121602.261"><vh>after sel=1.273,1.273</vh></v>
 </v>
-<v t="ekr.20061101121602.262"><vh>@test forward-word-extend-selection</vh>
+<v t="ekr.20061101121602.262" a="E"><vh>@test forward-word-extend-selection</vh>
 <v t="ekr.20061101121602.263"><vh>work</vh></v>
 <v t="ekr.20061101121602.264"><vh>before sel=1.395,1.395</vh></v>
 <v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
 </v>
 <v t="ekr.20070305095401"><vh>@test goNext/PrevVisitedNode</vh></v>
-<v t="ekr.20061101121602.266"><vh>@test indent-relative</vh>
+<v t="ekr.20061101121602.266" a="E"><vh>@test indent-relative</vh>
 <v t="ekr.20061101121602.267"><vh>work</vh></v>
 <v t="ekr.20061101121602.268"><vh>before sel=5.0,5.0</vh></v>
 <v t="ekr.20061101121602.269"><vh>after sel=5.8,5.8</vh></v>
 </v>
-<v t="ekr.20061101121602.270"><vh>@test indent-rigidly</vh>
+<v t="ekr.20061101121602.270" a="E"><vh>@test indent-rigidly</vh>
 <v t="ekr.20061101121602.271"><vh>work</vh></v>
 <v t="ekr.20061101121602.272"><vh>before sel=2.0,5.0</vh></v>
 <v t="ekr.20061101121602.273"><vh>after sel=2.0,5.1</vh></v>
 </v>
-<v t="ekr.20071007120750.5"><vh>@test indent-to-comment-column</vh>
+<v t="ekr.20071007120750.5" a="E"><vh>@test indent-to-comment-column</vh>
 <v t="ekr.20071007121312.5"><vh>work</vh></v>
 <v t="ekr.20071007121312.6"><vh>before sel=2.0,2.0</vh></v>
 <v t="ekr.20071007121312.7"><vh>after sel=2.4,2.4</vh></v>
 </v>
-<v t="ekr.20061101121602.274"><vh>@test insert-newline</vh>
+<v t="ekr.20061101121602.274" a="E"><vh>@test insert-newline</vh>
 <v t="ekr.20061101121602.275"><vh>work</vh></v>
 <v t="ekr.20061101121602.276"><vh>before sel=1.8,1.8</vh></v>
 <v t="ekr.20061101121602.277"><vh>after sel=2.0,2.0</vh></v>
 </v>
-<v t="ekr.20061101121602.278"><vh>@test insert-parentheses</vh>
+<v t="ekr.20061101121602.278" a="E"><vh>@test insert-parentheses</vh>
 <v t="ekr.20061101121602.279"><vh>work</vh></v>
 <v t="ekr.20061101121602.280"><vh>before sel=1.5,1.5</vh></v>
 <v t="ekr.20061101121602.281"><vh>after sel=1.6,1.6</vh></v>
@@ -1600,27 +1600,27 @@
 <v t="ekr.20061128090441.3"><vh>before sel=3.0,3.0</vh></v>
 <v t="ekr.20061128090441.2"><vh>after sel=2.6,2.6</vh></v>
 </v>
-<v t="ekr.20061128090021"><vh>@test kill-line middle-1</vh>
+<v t="ekr.20061128090021" a="E"><vh>@test kill-line middle-1</vh>
 <v t="ekr.20061128090021.1"><vh>work</vh></v>
 <v t="ekr.20061128090021.2"><vh>before sel=3.0,3.0</vh></v>
 <v t="ekr.20061128090021.3"><vh>after sel=3.0,3.0</vh></v>
 </v>
-<v t="ekr.20061128090147"><vh>@test kill-line middle-2</vh>
+<v t="ekr.20061128090147" a="E"><vh>@test kill-line middle-2</vh>
 <v t="ekr.20061128090147.1"><vh>work</vh></v>
 <v t="ekr.20061128090147.2"><vh>before sel=3.0,3.0</vh></v>
 <v t="ekr.20061128090147.3"><vh>after sel=3.0,3.0</vh></v>
 </v>
-<v t="ekr.20061101121602.282"><vh>@test kill-paragraph</vh>
+<v t="ekr.20061101121602.282" a="E"><vh>@test kill-paragraph</vh>
 <v t="ekr.20061101121602.283"><vh>work</vh></v>
 <v t="ekr.20061101121602.285"><vh>before sel=9.0,9.0</vh></v>
 <v t="ekr.20061101121602.284"><vh>after sel=8.0,8.0</vh></v>
 </v>
-<v t="ekr.20070217071121.17"><vh>@test kill-rectangle</vh>
+<v t="ekr.20070217071121.17" a="E"><vh>@test kill-rectangle</vh>
 <v t="ekr.20070217071121.18"><vh>work</vh></v>
 <v t="ekr.20070217071121.19"><vh>before sel=2.3,5.6</vh></v>
 <v t="ekr.20070217071121.20"><vh>after sel=5.3,5.3</vh></v>
 </v>
-<v t="ekr.20070131172706"><vh>@test kill-sentence</vh>
+<v t="ekr.20070131172706" a="E"><vh>@test kill-sentence</vh>
 <v t="ekr.20070131172706.1"><vh>work</vh></v>
 <v t="ekr.20070131172706.2"><vh>before sel=2.2,2.2</vh></v>
 <v t="ekr.20070131172706.3"><vh>after sel=1.27,1.27</vh></v>
@@ -2096,15 +2096,15 @@
 <v t="ekr.20071113202410" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194424.1"><vh>leoNodes</vh>
-<v t="ekr.20040712101754.181" a="E"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
-<v t="ekr.20040712101754.182" a="E"><vh>parent</vh>
+<v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
+<v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
 </v>
-<v t="ekr.20040712101754.182" a="E"><vh>parent</vh>
+<v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
 </v>
 </v>
-<v t="ekr.20040712101754.187" a="E" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
 <v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
@@ -2146,7 +2146,7 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519" a="E" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>child</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
@@ -2154,7 +2154,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2188,7 +2188,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2454,8 +2454,8 @@
 <v t="ekr.20071113145804.25"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37" a="E" annotate="7d71002e"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" a="E" annotate="7d71002e"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -2570,12 +2570,12 @@
 <v t="ekr.20080904120258.4" annotate="7d71002e"><vh>@test restore the screen</vh></v>
 </v>
 <v t="ekr.20070131175538"><vh> Commands A-E</vh>
-<v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
+<v t="ekr.20061101121602.78" a="E"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
 <v t="ekr.20061101121602.80"><vh>before sel=2.0,4.6</vh></v>
 <v t="ekr.20061101121602.81"><vh>after sel=2.0,4.7</vh></v>
 </v>
-<v t="ekr.20061101121602.82"><vh>@test add-tab-to-lines</vh>
+<v t="ekr.20061101121602.82" a="E"><vh>@test add-tab-to-lines</vh>
 <v t="ekr.20061101121602.83"><vh>work</vh></v>
 <v t="ekr.20061101121602.84"><vh>before sel=2.0,5.6</vh></v>
 <v t="ekr.20061101121602.85"><vh>after sel=2.0,5.10</vh></v>
@@ -2587,27 +2587,27 @@
 <v t="ekr.20061101121602.88"><vh>before sel=3.8,3.8</vh></v>
 <v t="ekr.20061101121602.89"><vh>after sel=3.7,3.7</vh></v>
 </v>
-<v t="ekr.20061101121602.90"><vh>@test back-char-extend-selection</vh>
+<v t="ekr.20061101121602.90" a="E"><vh>@test back-char-extend-selection</vh>
 <v t="ekr.20061101121602.91"><vh>work</vh></v>
 <v t="ekr.20061101121602.92"><vh>before sel=4.12,4.12</vh></v>
 <v t="ekr.20061101121602.93"><vh>after sel=4.11,4.12</vh></v>
 </v>
-<v t="ekr.20061101121602.94"><vh>@test back-paragraph</vh>
+<v t="ekr.20061101121602.94" a="E"><vh>@test back-paragraph</vh>
 <v t="ekr.20061101121602.95"><vh>work</vh></v>
 <v t="ekr.20061101121602.96"><vh>before sel=9.0,9.0</vh></v>
 <v t="ekr.20061101121602.97"><vh>after sel=6.7,6.7</vh></v>
 </v>
-<v t="ekr.20061101121602.98"><vh>@test back-paragraph-extend-selection</vh>
+<v t="ekr.20061101121602.98" a="E"><vh>@test back-paragraph-extend-selection</vh>
 <v t="ekr.20061101121602.99"><vh>work</vh></v>
 <v t="ekr.20061101121602.100"><vh>before sel=9.0,9.5</vh></v>
 <v t="ekr.20061101121602.101"><vh>after sel=6.7,9.5</vh></v>
 </v>
-<v t="ekr.20061101121602.102"><vh>@test back-sentence</vh>
+<v t="ekr.20061101121602.102" a="E"><vh>@test back-sentence</vh>
 <v t="ekr.20061101121602.103"><vh>work</vh></v>
 <v t="ekr.20061101121602.104"><vh>before sel=3.169,3.169</vh></v>
 <v t="ekr.20061101121602.105"><vh>after sel=3.0,3.0</vh></v>
 </v>
-<v t="ekr.20061101121602.106"><vh>@test back-sentence-extend-selection</vh>
+<v t="ekr.20061101121602.106" a="E"><vh>@test back-sentence-extend-selection</vh>
 <v t="ekr.20061101121602.107"><vh>work</vh></v>
 <v t="ekr.20061101121602.108"><vh>before sel=3.208,3.208</vh></v>
 <v t="ekr.20061101121602.109"><vh>after sel=3.0,3.208</vh></v>
@@ -2617,22 +2617,22 @@
 <v t="ekr.20061101121602.112"><vh>before sel=4.13,4.13</vh></v>
 <v t="ekr.20061101121602.113"><vh>after sel=4.8,4.8</vh></v>
 </v>
-<v t="ekr.20061101121602.114"><vh>@test back-word</vh>
+<v t="ekr.20061101121602.114" a="E"><vh>@test back-word</vh>
 <v t="ekr.20061101121602.115"><vh>work</vh></v>
 <v t="ekr.20061101121602.116"><vh>before sel=1.183,1.183</vh></v>
 <v t="ekr.20061101121602.117"><vh>after sel=1.178,1.178</vh></v>
 </v>
-<v t="ekr.20061101121602.118"><vh>@test back-word-extend-selection</vh>
+<v t="ekr.20061101121602.118" a="E"><vh>@test back-word-extend-selection</vh>
 <v t="ekr.20061101121602.119"><vh>work</vh></v>
 <v t="ekr.20061101121602.120"><vh>before sel=3.342,3.342</vh></v>
 <v t="ekr.20061101121602.121"><vh>after sel=3.332,3.342</vh></v>
 </v>
-<v t="ekr.20061101121602.122"><vh>@test backward-delete-char</vh>
+<v t="ekr.20061101121602.122" a="E"><vh>@test backward-delete-char</vh>
 <v t="ekr.20061101121602.123"><vh>work</vh></v>
 <v t="ekr.20061101121602.124"><vh>before sel=1.9,1.9</vh></v>
 <v t="ekr.20061101121602.125"><vh>after sel=1.8,1.8</vh></v>
 </v>
-<v t="ekr.20071007121529"><vh>@test backward-delete-char  (middle of line)</vh>
+<v t="ekr.20071007121529" a="E"><vh>@test backward-delete-char  (middle of line)</vh>
 <v t="ekr.20071007121529.1"><vh>work</vh></v>
 <v t="ekr.20071007121529.2"><vh>before sel=1.6,1.6</vh></v>
 <v t="ekr.20071007121529.3"><vh>after sel=1.5,1.5</vh></v>
@@ -2642,12 +2642,12 @@
 <v t="ekr.20071007120947.7"><vh>before sel=2.9,2.9</vh></v>
 <v t="ekr.20071007120947.8"><vh>after sel=2.8,2.8</vh></v>
 </v>
-<v t="ekr.20061101121602.126"><vh>@test backward-kill-paragraph</vh>
+<v t="ekr.20061101121602.126" a="E"><vh>@test backward-kill-paragraph</vh>
 <v t="ekr.20061101121602.127"><vh>work</vh></v>
 <v t="ekr.20061101121602.128"><vh>before sel=9.0,9.0</vh></v>
 <v t="ekr.20061101121602.129"><vh>after sel=7.0,7.0</vh></v>
 </v>
-<v t="ekr.20070131173932"><vh>@test backward-kill-sentence</vh>
+<v t="ekr.20070131173932" a="E"><vh>@test backward-kill-sentence</vh>
 <v t="ekr.20070131173932.1"><vh>work</vh></v>
 <v t="ekr.20070131173932.2"><vh>before sel=3.2,3.2</vh></v>
 <v t="ekr.20070131173932.3"><vh>after sel=2.23,2.23</vh></v>
@@ -2672,7 +2672,7 @@
 <v t="ekr.20061101121602.144"><vh>before sel=4.10,4.10</vh></v>
 <v t="ekr.20061101121602.145"><vh>after sel=4.0,4.10</vh></v>
 </v>
-<v t="ekr.20061101121602.146"><vh>@test capitalize-word</vh>
+<v t="ekr.20061101121602.146" a="E"><vh>@test capitalize-word</vh>
 <v t="ekr.20061101121602.147"><vh>work</vh></v>
 <v t="ekr.20061101121602.148"><vh>before sel=3.6,3.6</vh></v>
 <v t="ekr.20061101121602.149"><vh>after sel=3.6,3.6</vh></v>
@@ -2687,17 +2687,17 @@
 <v t="ekr.20061101121602.156"><vh>before sel=1.0,7.0</vh></v>
 <v t="ekr.20061101121602.157"><vh>after sel=1.0,7.0</vh></v>
 </v>
-<v t="ekr.20070217071121.1"><vh>@test clear-rectangle</vh>
+<v t="ekr.20070217071121.1" a="E"><vh>@test clear-rectangle</vh>
 <v t="ekr.20070217071121.2"><vh>work</vh></v>
 <v t="ekr.20070217071121.3"><vh>before sel=2.3,5.6</vh></v>
 <v t="ekr.20070217071121.4"><vh>after sel=2.3,5.6</vh></v>
 </v>
-<v t="ekr.20061101121602.158"><vh>@test clear-selected-text</vh>
+<v t="ekr.20061101121602.158" a="E"><vh>@test clear-selected-text</vh>
 <v t="ekr.20061101121602.159"><vh>work</vh></v>
 <v t="ekr.20061101121602.160"><vh>before sel=2.4,4.4</vh></v>
 <v t="ekr.20061101121602.161"><vh>after sel=2.4,2.4</vh></v>
 </v>
-<v t="ekr.20070217071121.5"><vh>@test close-rectangle</vh>
+<v t="ekr.20070217071121.5" a="E"><vh>@test close-rectangle</vh>
 <v t="ekr.20070217071121.6"><vh>work</vh></v>
 <v t="ekr.20070217071121.7"><vh>before sel=2.3,5.6</vh></v>
 <v t="ekr.20070217071121.8"><vh>after sel=2.3,5.3</vh></v>
@@ -2707,22 +2707,22 @@
 <v t="ekr.20061101121602.164"><vh>before sel=2.4,4.8</vh></v>
 <v t="ekr.20061101121602.165"><vh>after sel=2.4,4.8</vh></v>
 </v>
-<v t="ekr.20061101121602.166"><vh>@test delete-char</vh>
+<v t="ekr.20061101121602.166" a="E"><vh>@test delete-char</vh>
 <v t="ekr.20061101121602.167"><vh>work</vh></v>
 <v t="ekr.20061101121602.168"><vh>before sel=1.5,1.5</vh></v>
 <v t="ekr.20061101121602.169"><vh>after sel=1.5,1.5</vh></v>
 </v>
-<v t="ekr.20071007120750.3"><vh>@test delete-indentation</vh>
+<v t="ekr.20071007120750.3" a="E"><vh>@test delete-indentation</vh>
 <v t="ekr.20071007121115.1"><vh>work</vh></v>
 <v t="ekr.20071007121115.2"><vh>before sel=2.8,2.8</vh></v>
 <v t="ekr.20071007121115.3"><vh>after sel=2.4,2.4</vh></v>
 </v>
-<v t="ekr.20070217071121.9"><vh>@test delete-rectangle</vh>
+<v t="ekr.20070217071121.9" a="E"><vh>@test delete-rectangle</vh>
 <v t="ekr.20070217071121.10"><vh>work</vh></v>
 <v t="ekr.20070217071121.11"><vh>before sel=2.3,5.6</vh></v>
 <v t="ekr.20070217071121.12"><vh>after sel=2.3,5.3</vh></v>
 </v>
-<v t="ekr.20070131162935"><vh>@test delete-spaces</vh>
+<v t="ekr.20070131162935" a="E"><vh>@test delete-spaces</vh>
 <v t="ekr.20070131162935.1"><vh>work</vh></v>
 <v t="ekr.20070131162935.2"><vh>before sel=3.2,3.2</vh></v>
 <v t="ekr.20070131162935.3"><vh>after sel=3.0,3.0</vh></v>
@@ -2732,12 +2732,12 @@
 <v t="ekr.20061101121602.172"><vh>before sel=1.0,1.0</vh></v>
 <v t="ekr.20061101121602.173"><vh>after sel=1.0,1.0</vh></v>
 </v>
-<v t="ekr.20061101121602.174"><vh>@test downcase-region</vh>
+<v t="ekr.20061101121602.174" a="E"><vh>@test downcase-region</vh>
 <v t="ekr.20061101121602.175"><vh>work</vh></v>
 <v t="ekr.20061101121602.176"><vh>before sel=3.0,4.0</vh></v>
 <v t="ekr.20061101121602.177"><vh>after sel=3.0,4.0</vh></v>
 </v>
-<v t="ekr.20061101121602.178"><vh>@test downcase-word</vh>
+<v t="ekr.20061101121602.178" a="E"><vh>@test downcase-word</vh>
 <v t="ekr.20061101121602.179"><vh>work</vh></v>
 <v t="ekr.20061101121602.180"><vh>before sel=1.4,1.4</vh></v>
 <v t="ekr.20061101121602.181"><vh>after sel=1.4,1.4</vh></v>
@@ -2752,7 +2752,7 @@
 <v t="ekr.20061101121602.188"><vh>before sel=1.0,1.0</vh></v>
 <v t="ekr.20061101121602.189"><vh>after sel=1.0,7.0</vh></v>
 </v>
-<v t="ekr.20061101121602.190"><vh>@test end-of-line</vh>
+<v t="ekr.20061101121602.190" a="E"><vh>@test end-of-line</vh>
 <v t="ekr.20061101121602.191"><vh>work</vh></v>
 <v t="ekr.20061101121602.192"><vh>before sel=1.0,1.0</vh></v>
 <v t="ekr.20061101121602.193"><vh>after sel=1.10,1.10</vh></v>
@@ -2762,7 +2762,7 @@
 <v t="ekr.20061128082002.2"><vh>before sel=6.0,6.0</vh></v>
 <v t="ekr.20061128082002.3"><vh>after sel=6.9,6.9</vh></v>
 </v>
-<v t="ekr.20061101121602.194"><vh>@test end-of-line-extend-selection</vh>
+<v t="ekr.20061101121602.194" a="E"><vh>@test end-of-line-extend-selection</vh>
 <v t="ekr.20061101121602.195"><vh>work</vh></v>
 <v t="ekr.20061101121602.196"><vh>before sel=3.0,3.0</vh></v>
 <v t="ekr.20061101121602.197"><vh>after sel=3.0,3.10</vh></v>
@@ -2772,34 +2772,34 @@
 <v t="ekr.20061101121602.200"><vh>before sel=1.0,1.10</vh></v>
 <v t="ekr.20061101121602.201"><vh>after sel=1.0,1.10</vh></v>
 </v>
-<v t="ekr.20061101121602.202"><vh>@test extend-to-line</vh>
+<v t="ekr.20061101121602.202" a="E"><vh>@test extend-to-line</vh>
 <v t="ekr.20061101121602.203"><vh>work</vh></v>
 <v t="ekr.20061101121602.204"><vh>before sel=3.3,3.3</vh></v>
 <v t="ekr.20061101121602.205"><vh>after sel=3.0,3.10</vh></v>
 </v>
-<v t="ekr.20061101121602.206"><vh>@test extend-to-paragraph</vh>
+<v t="ekr.20061101121602.206" a="E"><vh>@test extend-to-paragraph</vh>
 <v t="ekr.20061101121602.207"><vh>work</vh></v>
 <v t="ekr.20061101121602.208"><vh>before sel=9.0,9.0</vh></v>
 <v t="ekr.20061101121602.209"><vh>after sel=8.0,13.33</vh></v>
 </v>
-<v t="ekr.20061101121602.210"><vh>@test extend-to-sentence</vh>
+<v t="ekr.20061101121602.210" a="E"><vh>@test extend-to-sentence</vh>
 <v t="ekr.20061101121602.211"><vh>work</vh></v>
 <v t="ekr.20061101121602.212"><vh>before sel=3.5,3.5</vh></v>
 <v t="ekr.20061101121602.213"><vh>after sel=1.395,3.142</vh></v>
 </v>
-<v t="ekr.20061101121602.214"><vh>@test extend-to-word</vh>
+<v t="ekr.20061101121602.214" a="E"><vh>@test extend-to-word</vh>
 <v t="ekr.20061101121602.215"><vh>work</vh></v>
 <v t="ekr.20061101121602.216"><vh>before sel=3.10,3.10</vh></v>
 <v t="ekr.20061101121602.217"><vh>after sel=3.4,3.12</vh></v>
 </v>
 </v>
 <v t="ekr.20070131175538.1"><vh> Commands F-L</vh>
-<v t="ekr.20061101121602.218"><vh>@test fill-paragraph</vh>
+<v t="ekr.20061101121602.218" a="E"><vh>@test fill-paragraph</vh>
 <v t="ekr.20061101121602.219"><vh>work</vh></v>
 <v t="ekr.20061101121602.220"><vh>before sel=3.0,3.7</vh></v>
 <v t="ekr.20061101121602.221"><vh>after sel=10.0,10.0</vh></v>
 </v>
-<v t="ekr.20071007120750.4"><vh>@test fill-region (one paragraph)</vh>
+<v t="ekr.20071007120750.4" a="E"><vh>@test fill-region (one paragraph)</vh>
 <v t="ekr.20071007121312.1"><vh>work</vh></v>
 <v t="ekr.20071007121312.2"><vh>before sel=1.0,9.7</vh></v>
 <v t="ekr.20071007121312.3"><vh>after sel=8.0,8.0</vh></v>
@@ -2819,73 +2819,73 @@
 <v t="ekr.20061101121602.228"><vh>before sel=1.1,1.1</vh></v>
 <v t="ekr.20061101121602.229"><vh>after sel=1.1,1.2</vh></v>
 </v>
-<v t="ekr.20061101121602.230"><vh>@test forward-end-word (end of line)</vh>
+<v t="ekr.20061101121602.230" a="E"><vh>@test forward-end-word (end of line)</vh>
 <v t="ekr.20061101121602.231"><vh>work</vh></v>
 <v t="ekr.20061101121602.232"><vh>before sel=1.395,1.395</vh></v>
 <v t="ekr.20061101121602.233"><vh>after sel=3.4,3.4</vh></v>
 </v>
-<v t="ekr.20061101121602.234"><vh>@test forward-end-word (start of word) </vh>
+<v t="ekr.20061101121602.234" a="E"><vh>@test forward-end-word (start of word) </vh>
 <v t="ekr.20061101121602.235"><vh>work</vh></v>
 <v t="ekr.20061101121602.236"><vh>before sel=1.310,1.310</vh></v>
 <v t="ekr.20061101121602.237"><vh>after sel=1.317,1.317</vh></v>
 </v>
-<v t="ekr.20061101121602.238"><vh>@test forward-end-word-extend-selection</vh>
+<v t="ekr.20061101121602.238" a="E"><vh>@test forward-end-word-extend-selection</vh>
 <v t="ekr.20061101121602.239"><vh>work</vh></v>
 <v t="ekr.20061101121602.240"><vh>before sel=3.20,3.20</vh></v>
 <v t="ekr.20061101121602.241"><vh>after sel=3.20,3.30</vh></v>
 </v>
-<v t="ekr.20061101121602.242"><vh>@test forward-paragraph</vh>
+<v t="ekr.20061101121602.242" a="E"><vh>@test forward-paragraph</vh>
 <v t="ekr.20061101121602.243"><vh>work</vh></v>
 <v t="ekr.20061101121602.244"><vh>before sel=9.0,9.0</vh></v>
 <v t="ekr.20061101121602.245"><vh>after sel=15.0,15.0</vh></v>
 </v>
-<v t="ekr.20061101121602.246"><vh>@test forward-paragraph-extend-selection</vh>
+<v t="ekr.20061101121602.246" a="E"><vh>@test forward-paragraph-extend-selection</vh>
 <v t="ekr.20061101121602.247"><vh>work</vh></v>
 <v t="ekr.20061101121602.248"><vh>before sel=10.0,10.0</vh></v>
 <v t="ekr.20061101121602.249"><vh>after sel=10.0,15.0</vh></v>
 </v>
-<v t="ekr.20061101121602.250"><vh>@test forward-sentence</vh>
+<v t="ekr.20061101121602.250" a="E"><vh>@test forward-sentence</vh>
 <v t="ekr.20061101121602.251"><vh>work</vh></v>
 <v t="ekr.20061101121602.252"><vh>before sel=3.17,3.17</vh></v>
 <v t="ekr.20061101121602.253"><vh>after sel=3.142,3.142</vh></v>
 </v>
-<v t="ekr.20061101121602.254"><vh>@test forward-sentence-extend-selection</vh>
+<v t="ekr.20061101121602.254" a="E"><vh>@test forward-sentence-extend-selection</vh>
 <v t="ekr.20061101121602.255"><vh>work</vh></v>
 <v t="ekr.20061101121602.256"><vh>before sel=1.264,1.264</vh></v>
 <v t="ekr.20061101121602.257"><vh>after sel=1.264,1.395</vh></v>
 </v>
-<v t="ekr.20061101121602.258"><vh>@test forward-word</vh>
+<v t="ekr.20061101121602.258" a="E"><vh>@test forward-word</vh>
 <v t="ekr.20061101121602.259"><vh>work</vh></v>
 <v t="ekr.20061101121602.260"><vh>before sel=1.261,1.261</vh></v>
 <v t="ekr.20061101121602.261"><vh>after sel=1.273,1.273</vh></v>
 </v>
-<v t="ekr.20061101121602.262"><vh>@test forward-word-extend-selection</vh>
+<v t="ekr.20061101121602.262" a="E"><vh>@test forward-word-extend-selection</vh>
 <v t="ekr.20061101121602.263"><vh>work</vh></v>
 <v t="ekr.20061101121602.264"><vh>before sel=1.395,1.395</vh></v>
 <v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
 </v>
 <v t="ekr.20070305095401"><vh>@test goNext/PrevVisitedNode</vh></v>
-<v t="ekr.20061101121602.266"><vh>@test indent-relative</vh>
+<v t="ekr.20061101121602.266" a="E"><vh>@test indent-relative</vh>
 <v t="ekr.20061101121602.267"><vh>work</vh></v>
 <v t="ekr.20061101121602.268"><vh>before sel=5.0,5.0</vh></v>
 <v t="ekr.20061101121602.269"><vh>after sel=5.8,5.8</vh></v>
 </v>
-<v t="ekr.20061101121602.270"><vh>@test indent-rigidly</vh>
+<v t="ekr.20061101121602.270" a="E"><vh>@test indent-rigidly</vh>
 <v t="ekr.20061101121602.271"><vh>work</vh></v>
 <v t="ekr.20061101121602.272"><vh>before sel=2.0,5.0</vh></v>
 <v t="ekr.20061101121602.273"><vh>after sel=2.0,5.1</vh></v>
 </v>
-<v t="ekr.20071007120750.5"><vh>@test indent-to-comment-column</vh>
+<v t="ekr.20071007120750.5" a="E"><vh>@test indent-to-comment-column</vh>
 <v t="ekr.20071007121312.5"><vh>work</vh></v>
 <v t="ekr.20071007121312.6"><vh>before sel=2.0,2.0</vh></v>
 <v t="ekr.20071007121312.7"><vh>after sel=2.4,2.4</vh></v>
 </v>
-<v t="ekr.20061101121602.274"><vh>@test insert-newline</vh>
+<v t="ekr.20061101121602.274" a="E"><vh>@test insert-newline</vh>
 <v t="ekr.20061101121602.275"><vh>work</vh></v>
 <v t="ekr.20061101121602.276"><vh>before sel=1.8,1.8</vh></v>
 <v t="ekr.20061101121602.277"><vh>after sel=2.0,2.0</vh></v>
 </v>
-<v t="ekr.20061101121602.278"><vh>@test insert-parentheses</vh>
+<v t="ekr.20061101121602.278" a="E"><vh>@test insert-parentheses</vh>
 <v t="ekr.20061101121602.279"><vh>work</vh></v>
 <v t="ekr.20061101121602.280"><vh>before sel=1.5,1.5</vh></v>
 <v t="ekr.20061101121602.281"><vh>after sel=1.6,1.6</vh></v>
@@ -2900,27 +2900,27 @@
 <v t="ekr.20061128090441.3"><vh>before sel=3.0,3.0</vh></v>
 <v t="ekr.20061128090441.2"><vh>after sel=2.6,2.6</vh></v>
 </v>
-<v t="ekr.20061128090021"><vh>@test kill-line middle-1</vh>
+<v t="ekr.20061128090021" a="E"><vh>@test kill-line middle-1</vh>
 <v t="ekr.20061128090021.1"><vh>work</vh></v>
 <v t="ekr.20061128090021.2"><vh>before sel=3.0,3.0</vh></v>
 <v t="ekr.20061128090021.3"><vh>after sel=3.0,3.0</vh></v>
 </v>
-<v t="ekr.20061128090147"><vh>@test kill-line middle-2</vh>
+<v t="ekr.20061128090147" a="E"><vh>@test kill-line middle-2</vh>
 <v t="ekr.20061128090147.1"><vh>work</vh></v>
 <v t="ekr.20061128090147.2"><vh>before sel=3.0,3.0</vh></v>
 <v t="ekr.20061128090147.3"><vh>after sel=3.0,3.0</vh></v>
 </v>
-<v t="ekr.20061101121602.282"><vh>@test kill-paragraph</vh>
+<v t="ekr.20061101121602.282" a="E"><vh>@test kill-paragraph</vh>
 <v t="ekr.20061101121602.283"><vh>work</vh></v>
 <v t="ekr.20061101121602.285"><vh>before sel=9.0,9.0</vh></v>
 <v t="ekr.20061101121602.284"><vh>after sel=8.0,8.0</vh></v>
 </v>
-<v t="ekr.20070217071121.17"><vh>@test kill-rectangle</vh>
+<v t="ekr.20070217071121.17" a="E"><vh>@test kill-rectangle</vh>
 <v t="ekr.20070217071121.18"><vh>work</vh></v>
 <v t="ekr.20070217071121.19"><vh>before sel=2.3,5.6</vh></v>
 <v t="ekr.20070217071121.20"><vh>after sel=5.3,5.3</vh></v>
 </v>
-<v t="ekr.20070131172706"><vh>@test kill-sentence</vh>
+<v t="ekr.20070131172706" a="E"><vh>@test kill-sentence</vh>
 <v t="ekr.20070131172706.1"><vh>work</vh></v>
 <v t="ekr.20070131172706.2"><vh>before sel=2.2,2.2</vh></v>
 <v t="ekr.20070131172706.3"><vh>after sel=1.27,1.27</vh></v>
@@ -3107,63 +3107,8 @@
 </v>
 <v t="ekr.20070306091949" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20061001114637"><vh>leoFileCommands</vh>
-<v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
-<v t="ekr.20061001124008"><vh>@test minimal test of putTnodeList</vh>
-<v t="ekr.20061001124008.1"><vh>child</vh>
-<v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
-</v>
-</v>
-<v t="ekr.20061001091616"><vh>@test putDescendentTnodeUas</vh>
-<v t="ekr.20061001091647" unit_test_child="55046162636471002e"><vh>child</vh>
-<v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
-</v>
-</v>
-<v t="ekr.20080805104144.1"><vh>@test putDescendentVnodeUas</vh>
-<v t="ekr.20080805104144.2"><vh>child</vh>
-<v t="ekr.20080805104144.3"><vh>grandChild</vh></v>
-</v>
-</v>
-<v t="ekr.20061001114236" unit_test="55046162636471002e"><vh>@test putUa</vh></v>
-<v t="ekr.20051107115231.9" annotate="7d71002e"><vh>@test Select a node when file is first loaded</vh></v>
-<v t="ekr.20061008162912"><vh>@test write .leo file with @ignore node</vh>
-<v t="ekr.20061008162912.1"><vh>child</vh></v>
-</v>
-<v t="ekr.20080805105541.1"><vh>@test p.archivedPosition</vh>
-<v t="ekr.20080805122315.1"><vh>first child</vh></v>
-<v t="ekr.20080805122315.2" unit_test_child="55046162636471002e"><vh>second child</vh>
-<v t="ekr.20080805122315.3" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
-<v t="ekr.20080805122315.4"><vh>grandChild 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080806072412.1"><vh>@test fc.resolveArchivedPosition</vh>
-<v t="ekr.20080806072412.2"><vh>first child</vh></v>
-<v t="ekr.20080806072412.3" unit_test_child="55046162636471002e"><vh>second child</vh>
-<v t="ekr.20080806072412.4" unit_test_grandchild="55047778797a71002e"><vh>grandChild1</vh>
-<v t="ekr.20080806080425.1"><vh>greatGrandChild11</vh></v>
-<v t="ekr.20080806080425.2"><vh>greatGrandChild12</vh></v>
-</v>
-<v t="ekr.20080806072412.5"><vh>grandChild 2</vh>
-<v t="ekr.20080806080425.3"><vh>greatGrandChild21</vh></v>
-<v t="ekr.20080806080425.4"><vh>greatGrandChild22</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs for @thin</vh>
-<v t="ekr.20080806084924.2" round-trip-u.uA="5815000000407468696e2075415f746573745f66696c652e707971002e"><vh>@@thin uA_test_file.py</vh>
-<v t="ekr.20080806084924.3" round-trip-u.uA="58060000006368696c643171002e"><vh>child1</vh>
-<v t="ekr.20080806084924.4" round-trip-u.uA="580b0000006772616e644368696c643171002e"><vh>grandChild1</vh>
-<v t="ekr.20080806084924.5" round-trip-u.uA="581000000067726561744772616e644368696c643171002e"><vh>greatGrandChild1</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20080806211453.5"><vh>@@test round-trip-uAs for @shadow</vh>
-<v t="ekr.20080806211453.1" round-trip-u.uA="581e00000040736861646f772075415f746573745f736861646f775f66696c652e707971002e"><vh>@@shadow uA_test_shadow_file.py</vh>
-<v t="ekr.20080822160527.1" round-trip-u.uA="58060000006368696c643171002e"><vh>uA_test_shadow_file declarations</vh></v>
-</v>
-</v>
-<v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20081110154257.3"><vh>From leoFileCommands...</vh>
+<v t="ekr.20051107115231.9"><vh>@test Select a node when file is first loaded</vh></v>
 </v>
 <v t="ekr.20071113194424"><vh>leoFrame</vh>
 <v t="ekr.20060912091510.1"><vh>@test Add &amp; Delete editor</vh></v>
@@ -3175,73 +3120,6 @@
 <v t="ekr.20071113145804.32"><vh>@test leoBody.getSelectionAreas &amp; test</vh></v>
 <v t="ekr.20061104172236.23"><vh>@test tkBody.onClick</vh></v>
 <v t="ekr.20071113202153.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
-<v t="ekr.20060127120604"><vh>tempNode</vh></v>
-<v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
-<v t="ekr.20050417202713.1"><vh>before</vh></v>
-<v t="ekr.20050417202713.2"><vh>after</vh></v>
-<v t="ekr.20050417202713.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417204940" annotate="7d71002e"><vh>convertAllBlanks</vh>
-<v t="ekr.20050417204940.1"><vh>before</vh></v>
-<v t="ekr.20050417204940.2"><vh>after</vh></v>
-<v t="ekr.20050417204940.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417205012" annotate="7d71002e"><vh>convertAllTabs</vh>
-<v t="ekr.20050417205012.1"><vh>before</vh></v>
-<v t="ekr.20050417205012.2"><vh>after</vh></v>
-<v t="ekr.20050417205012.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417203114" annotate="7d71002e"><vh>convertBlanks</vh>
-<v t="ekr.20050417203310"><vh>before</vh></v>
-<v t="ekr.20050417203310.1"><vh>after</vh></v>
-<v t="ekr.20050417203336"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417203114.1" annotate="7d71002e"><vh>convertTabs</vh>
-<v t="ekr.20050417204834"><vh>before</vh></v>
-<v t="ekr.20050417204830"><vh>after</vh></v>
-<v t="ekr.20050417204901"><vh>selection</vh></v>
-</v>
-<v t="ekr.20040712101754.49" annotate="7d71002e"><vh>dedentBody</vh>
-<v t="ekr.20040712101754.50"><vh>before</vh></v>
-<v t="ekr.20040712101754.51"><vh>after</vh></v>
-<v t="ekr.20040712101754.52"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417202817" annotate="7d71002e"><vh>deleteComments</vh>
-<v t="ekr.20050417202817.1"><vh>before</vh></v>
-<v t="ekr.20050417202817.2"><vh>after</vh></v>
-<v t="ekr.20050417202817.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417201845" annotate="7d71002e"><vh>extract test1</vh>
-<v t="ekr.20050417201845.1"><vh>before</vh></v>
-<v t="ekr.20050417201845.2"><vh>after</vh>
-<v t="ekr.20050417201845.3"><vh>&lt;&lt; section &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20050417201845.4"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050518070540" annotate="7d71002e"><vh>extract test2</vh>
-<v t="ekr.20050518070540.1"><vh>before</vh></v>
-<v t="ekr.20050518070545"><vh>after</vh></v>
-<v t="ekr.20050518070540.4"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050518070927" annotate="7d71002e"><vh>extractSection test1</vh>
-<v t="ekr.20050518070927.1"><vh>before</vh></v>
-<v t="ekr.20050518070927.2"><vh>after</vh>
-<v t="ekr.20050518070927.3"><vh>&lt;&lt; section &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20050518070927.4"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050518071251" annotate="7d71002e"><vh>extractSection test2</vh>
-<v t="ekr.20050518071251.1"><vh>before</vh></v>
-<v t="ekr.20050518071258"><vh>after</vh></v>
-<v t="ekr.20050518071251.4"><vh>selection</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
 </vnodes>
@@ -14775,10 +14653,10 @@ assert c.commandsDict.get('delete-test-at-button-node-button'), 'no delete-test-
 <t tx="ekr.20061101121602.78">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.79">first line
- line 1
+line 1
      line a
  line b
-last line</t>
+ last line</t>
 <t tx="ekr.20061101121602.80">first line
 line 1
     line a
@@ -14792,11 +14670,11 @@ last line</t>
 <t tx="ekr.20061101121602.82">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.83">first line
-    line 1
+line 1
         line a
             line b
     line c
-last line</t>
+    last line</t>
 <t tx="ekr.20061101121602.84">first line
 line 1
     line a
@@ -15060,9 +14938,8 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
 <t tx="ekr.20061101121602.122">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
-<t tx="ekr.20061101121602.123">first lie
-line 1
-    line a
+<t tx="ekr.20061101121602.123">first line
+line 1    line a
         line b
 line c
 last line
@@ -15089,7 +14966,6 @@ tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
 weather impacts every American. Communities can now rely on the National Weather
 Service’s StormReady program to help them guard against the ravages of Mother
 Nature.
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
 program started in 1999 in Tulsa, OK, helps arm America's communities with the
 communication and safety skills needed to save lives and property– before and
 during the event. StormReady helps community leaders and emergency managers
@@ -15217,7 +15093,7 @@ last line
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.147">first line
 line 1
-    Line a
+    line a
         line b
 line c
 last line
@@ -15297,8 +15173,8 @@ StormReady helps community leaders and emergency managers strengthen local safet
 <t tx="ekr.20061101121602.158">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.159">first line
-line    line b
-line c
+line 1
+     c
 last line
 </t>
 <t tx="ekr.20061101121602.160">first line
@@ -15338,8 +15214,8 @@ last line
 </t>
 <t tx="ekr.20061101121602.166">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
-<t tx="ekr.20061101121602.167">firstline
-line 1
+<t tx="ekr.20061101121602.167">first line
+line 
     line a
         line b
 line c
@@ -15388,7 +15264,7 @@ assert g.app.unitTestDict.get('colorized')
 </t>
 <t tx="ekr.20061101121602.175">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
-some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. stormready, a program started in 1999 in tulsa, ok, helps arm america's communities with the communication and safety skills needed to save lives and property– before and during the event. stormready helps community leaders and emergency managers strengthen local safety programs.
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
@@ -15407,7 +15283,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 <t tx="ekr.20061101121602.178">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 assert g.app.unitTestDict.get('colorized')</t>
-<t tx="ekr.20061101121602.179">xyzzy line
+<t tx="ekr.20061101121602.179">XYZZY line
 line 1
     line a
         line b
@@ -15984,7 +15860,7 @@ leoTest.runEditCommandTest(c,p)</t>
 line 1
     line a
         line b
-        line c
+line c
 last line
 </t>
 <t tx="ekr.20061101121602.268">first line
@@ -16004,11 +15880,11 @@ last line
 <t tx="ekr.20061101121602.270">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.271">first line
-	line 1
+line 1
 	    line a
 	        line b
 	line c
-last line
+	last line
 </t>
 <t tx="ekr.20061101121602.272">first line
 line 1
@@ -16026,9 +15902,9 @@ last line
 </t>
 <t tx="ekr.20061101121602.274">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
-<t tx="ekr.20061101121602.275">first li
-ne
+<t tx="ekr.20061101121602.275">first line
 line 1
+
     line a
         line b
 line c
@@ -16051,8 +15927,8 @@ last line
 </t>
 <t tx="ekr.20061101121602.278">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
-<t tx="ekr.20061101121602.279">first() line
-line 1
+<t tx="ekr.20061101121602.279">first line
+line ()1
     line a
         line b
 line c
@@ -17117,8 +16993,8 @@ last line</t>
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061128090021.1">line 1
 line 2
-
-line 4</t>
+line 3
+</t>
 <t tx="ekr.20061128090021.2">line 1
 line 2
 line 3
@@ -17131,7 +17007,8 @@ line 4</t>
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061128090147.1">line 1
 line 2
-line 4</t>
+
+</t>
 <t tx="ekr.20061128090147.2">line 1
 line 2
 
@@ -17191,8 +17068,8 @@ Important warnings:
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070131162935.1">first line
 line 1
-line a
-        line b
+    line a
+line b
 line c
 last line
 </t>
@@ -17219,8 +17096,8 @@ line c
 last line</t>
 <t tx="ekr.20070131172706">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
-<t tx="ekr.20070131172706.1">This is the first sentence.  And
-this is the last sentence.
+<t tx="ekr.20070131172706.1">This is the first sentence.  This
+is the second sentence.
 </t>
 <t tx="ekr.20070131172706.2">This is the first sentence.  This
 is the second sentence.  And
@@ -17232,7 +17109,8 @@ this is the last sentence.
 <t tx="ekr.20070131173932">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070131173932.1">This is the first sentence.  This
-is the second sentence.
+is the second sentence.  And
+this is the last sentence.
 </t>
 <t tx="ekr.20070131173932.2">This is the first sentence.  This
 is the second sentence.  And
@@ -17388,11 +17266,11 @@ line 3</t>
 <t tx="ekr.20070217071121.1">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.2">before
-aaa   bbb
-aaa   bbb
-aaa   bbb
-aaa   bbb
-after</t>
+aaaxxxbbb
+aaaxxxbbb
+aaa  xbbb
+aaa  xbbb
+aft    </t>
 <t tx="ekr.20070217071121.3">before
 aaaxxxbbb
 aaaxxxbbb
@@ -17408,10 +17286,10 @@ after</t>
 <t tx="ekr.20070217071121.5">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.6">before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
+aaa   bbb
+aaa   bbb
+aaa   bbb
+aaa   bbb
 after</t>
 <t tx="ekr.20070217071121.7">before
 aaa   bbb
@@ -17428,11 +17306,11 @@ after</t>
 <t tx="ekr.20070217071121.9">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.10">before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after</t>
+aaaxxxbbb
+aaaxxxbbb
+aaaxbbb
+aaaxbbb
+aft</t>
 <t tx="ekr.20070217071121.11">before
 aaaxxxbbb
 aaaxxxbbb
@@ -17468,11 +17346,11 @@ after</t>
 <t tx="ekr.20070217071121.17">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.18">before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after</t>
+aaaxxxbbb
+aaaxxxbbb
+aaaxbbb
+aaaxbbb
+aft</t>
 <t tx="ekr.20070217071121.19">before
 aaaxxxbbb
 aaaxxxbbb
@@ -17821,7 +17699,7 @@ last line</t>
 <t tx="ekr.20071007120947.8">first line
 last lin</t>
 <t tx="ekr.20071007121115.1">first line
-line 1
+    line 1
 last line</t>
 <t tx="ekr.20071007121115.2">first line
     line 1
@@ -17899,8 +17777,8 @@ No community is storm proof,
 but
 StormReady can help communities save lives. Does StormReady make a difference?</t>
 <t tx="ekr.20071007121312.5">first line
-    line b
-last line</t>
+line b
+    last line</t>
 <t tx="ekr.20071007121312.6">first line
 line b
 last line</t>
@@ -17909,8 +17787,8 @@ last line</t>
 last line</t>
 <t tx="ekr.20071007121529">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
-<t tx="ekr.20071007121529.1">firstline
-last line</t>
+<t tx="ekr.20071007121529.1">first line
+last ine</t>
 <t tx="ekr.20071007121529.2">first line
 last line</t>
 <t tx="ekr.20071007121529.3">firstline
@@ -22796,5 +22674,6 @@ finally:
     c.redraw_now()
 </t>
 <t tx="ekr.20081110091100.2"></t>
+<t tx="ekr.20081110154257.3"></t>
 </tnodes>
 </leo_file>

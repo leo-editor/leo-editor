@@ -22529,9 +22529,8 @@ def handleMiniBindings (self,event,state,stroke):
 #@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
-    k = self ; c = k.c
+    k = self ; c = k.c ; trace = False
     modesTuple = ('insert','overwrite')
-    trace = True
 
     if trace:
         # if stroke: g.trace('***unexpected stroke***')
@@ -23802,6 +23801,252 @@ def endEditLabel (self):
         c.bodyWantsFocus()
 #@-node:ekr.20040803072955.126:endEditLabel
 #@-node:ekr.20081030074602.2:Tree selection stuff...
+#@+node:ekr.20081110080625.5:Running unit tests
+#@+node:ekr.20051104075904.8:setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p)
+#@-node:ekr.20051104075904.8:setUp
+#@+node:ekr.20031218072017.2997:c.selectPosition
+def selectPosition(self,p):
+
+    """Select a new position."""
+
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+
+    # g.trace(p.headString(),g.callers())
+
+    c.frame.tree.select(p)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@-node:ekr.20031218072017.2997:c.selectPosition
+#@+node:ekr.20040803072955.58:tree.redraw_now & helper
+# New in 4.4b2: suppress scrolling by default.
+
+def redraw_now (self,scroll=False,forceDraw=False):
+
+    '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
+
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
+        return
+
+    c = self.c
+
+    if not g.app.unitTesting:
+        if self.gc_before_redraw:
+            g.collectGarbage()
+        if g.app.trace_gc_verbose:
+            if (self.redrawCount % 5) == 0:
+                g.printGcSummary()
+        if self.trace_redraw or self.trace_alloc:
+            # g.trace(self.redrawCount,g.callers())
+            # g.trace(c.rootPosition().headString(),'canvas:',id(self.canvas),g.callers())
+            if self.trace_stats:
+                g.print_stats()
+                g.clear_stats()
+
+    # New in 4.4b2: Call endEditLabel, but suppress the redraw.
+    self.beginUpdate()
+    try:
+        self.endEditLabel()
+    finally:
+        self.endUpdate(False)
+
+    # Do the actual redraw.
+    self.expandAllAncestors(c.currentPosition())
+    if self.idle_redraw:
+        def idleRedrawCallback(event=None,self=self,scroll=scroll):
+            self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
+        self.canvas.after_idle(idleRedrawCallback)
+    else:
+        self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
+    if g.app.unitTesting:
+        self.canvas.update_idletasks() # Important for unit tests.
+    c.masterFocusHandler()
+
+redraw = redraw_now # Compatibility
+#@+node:ekr.20040803072955.59:redrawHelper
+def redrawHelper (self,scroll=True,forceDraw=False):
+
+    # This can be called at idle time, so there are shutdown issues.
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
+        return
+    if not hasattr(self,'c'):
+        return
+
+    c = self.c ; trace = False
+    oldcursor = self.canvas['cursor']
+    self.canvas['cursor'] = "watch"
+
+    if not g.doHook("redraw-entire-outline",c=c):
+
+        c.setTopVnode(None)
+        self.setVisibleAreaToFullCanvas()
+        self.drawTopTree()
+        # Set up the scroll region after the tree has been redrawn.
+        bbox = self.canvas.bbox('all')
+        if trace: g.trace('bbox',bbox,g.callers())
+        if bbox is None:
+            x0,y0,x1,y1 = 0,0,100,100
+        else:
+            x0, y0, x1, y1 = bbox
+        self.canvas.configure(scrollregion=(0, 0, x1, y1))
+        if scroll:
+            self.canvas.update_idletasks() # Essential.
+            self.scrollTo()
+
+    g.doHook("after-redraw-outline",c=c)
+
+    self.canvas['cursor'] = oldcursor
+#@-node:ekr.20040803072955.59:redrawHelper
+#@-node:ekr.20040803072955.58:tree.redraw_now & helper
+#@+node:ekr.20080416161551.210:p.moveToVisBack
+def moveToVisBack (self,c):
+
+    """Move a position to the position of the previous visible node."""
+
+    p = self ; limit,limitIsVisible = c.visLimit() ; trace = False
+
+    if trace: g.trace('limit',limit,'limitIsVisible',limitIsVisible)
+
+    def checkLimit (p):
+        '''Return done, return-val'''
+        if limit:
+            if limit == p:
+                if trace: g.trace('at limit',p)
+                return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
+            elif limit.isAncestorOf(p):
+                return False,None
+            else:
+                if trace: g.trace('outside limit tree')
+                return True,None
+        else:
+            return False,None
+
+    while p:
+        # Short-circuit if possible.
+        back = p.back()
+        if trace: g.trace(
+            'back',back,'hasChildren',bool(back and back.hasChildren()),
+            'isExpanded',bool(back and back.isExpanded()))
+        if back and (not back.hasChildren() or not back.isExpanded()):
+            p.moveToBack()
+        else:
+            p.moveToThreadBack()
+        if p:
+            if trace: g.trace('*p',p.headString())
+            done,val = checkLimit(p)
+            if done:
+                if trace: g.trace('done')
+                return val
+            if p.isVisible(c):
+                if trace: g.trace('isVisible')
+                return p
+    else:
+        # assert not p.
+        return p
+#@-node:ekr.20080416161551.210:p.moveToVisBack
+#@+node:ekr.20070609122713:c.visLimit
+def visLimit (self):
+
+    '''Return the topmost visible node.
+    This is affected by chapters and hoists.'''
+
+    c = self ; cc = c.chapterController
+
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p
+        limitIsVisible = not cc or not p.headString().startswith('@chapter')
+        return p,limitIsVisible
+    else:
+        return None,None
+#@-node:ekr.20070609122713:c.visLimit
+#@+node:ekr.20080416161551.196:p.isVisible
+def isVisible (self,c):
+
+    p = self ; trace = False
+    limit,limitIsVisible = c.visLimit()
+    limit_v = limit and limit.v or None
+    if p.v == limit_v:
+        if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.v.headString())
+        return limitIsVisible
+
+    # It's much easier with a full stack.
+    n = len(p.stack)-1
+    while n >= 0:
+        progress = n
+        # v,n = p.vParentWithStack(v,p.stack,n)
+        v,junk = p.stack[n]
+        if v == limit_v:  # We are at a descendant of limit.
+            if trace: g.trace('*** descendant of limit',
+                'limitIsVisible',limitIsVisible,
+                'limit.isExpanded()',limit.isExpanded(),'v',v)
+            if limitIsVisible:
+                return limit.isExpanded()
+            else: # Ignore the expansion state of @chapter nodes.
+                return True
+        if not v.isExpanded():
+            if trace: g.trace('*** non-limit parent is not expanded:',v.t._headString,p.headString())
+            return False
+        n -= 1
+        assert progress > n
+
+    return True
+#@-node:ekr.20080416161551.196:p.isVisible
+#@+node:ekr.20031218072017.1193:c.deleteOutline
+def deleteOutline (self,event=None,op_name="Delete Node"):
+
+    """Deletes the selected outline."""
+
+    c = self ; cc = c.chapterController ; u = c.undoer
+    p = c.currentPosition()
+    if not p: return
+
+    if p.hasVisBack(c): newNode = p.visBack(c)
+    else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
+    if not newNode: return
+
+    # g.trace('newNode',newNode)
+
+    c.endEditing() # Make sure we capture the headline for Undo.
+
+    if cc: # Special cases for @chapter and @chapters nodes.
+        chapter = '@chapter ' ; chapters = '@chapters ' 
+        h = p.headString()
+        if h.startswith(chapters):
+            if p.hasChildren():
+                return cc.error('Can not delete @chapters node with children.')
+        elif h.startswith(chapter):
+            name = h[len(chapter):].strip()
+            if name:
+                return cc.removeChapterByName(name)
+
+    undoData = u.beforeDeleteNode(p)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.doDelete(newNode)
+    c.selectPosition(newNode)
+    c.setChanged(True)
+    u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+    c.redraw()
+
+    c.validateOutline()
+#@-node:ekr.20031218072017.1193:c.deleteOutline
+#@-node:ekr.20081110080625.5:Running unit tests
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt

@@ -3507,9 +3507,8 @@ class keyHandlerClass:
     #@+node:ekr.20080510095819.1:k.handleUnboudKeys
     def handleUnboundKeys (self,event,char,keysym,stroke):
 
-        k = self ; c = k.c
+        k = self ; c = k.c ; trace = False
         modesTuple = ('insert','overwrite')
-        trace = True
 
         if trace:
             # if stroke: g.trace('***unexpected stroke***')

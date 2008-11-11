@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="45" left="502" height="961" width="765"/>
+	<global_window_position top="45" left="583" height="961" width="684"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -378,6 +378,8 @@
 <v t="ekr.20081030090840.1"><vh>g.es</vh></v>
 <v t="ekr.20081109131330.1"><vh>Dialog tests</vh></v>
 </v>
+<v t="ekr.20081110142806.1"><vh>bindings for period</vh></v>
+<v t="ekr.20081110145340.1"><vh>NewHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -2548,7 +2550,7 @@ leo_to_html.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
-<t tx="ekr.20071105085941"></t>
+<t tx="ekr.20071105085941">.</t>
 <t tx="ekr.20071128122043">log = c.frame.log ; tag = 'Shell'
 frame1 = log.frameDict.get(tag)
 shellKind = 'text' # in ('plain','text','canvas')
@@ -3777,5 +3779,8 @@ if 0:
 if 1:
     s = g.app.gui.runAskLeoIDDialog()
 </t>
+<t tx="ekr.20081110142806.1">print c.k.guiBindNamesDict.get('period')
+print c.k.guiBindNamesDict.get('.')</t>
+<t tx="ekr.20081110145340.1">g.es_print(*args, **keys)</t>
 </tnodes>
 </leo_file>
