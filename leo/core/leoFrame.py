@@ -958,7 +958,8 @@ class leoBody:
         self.createChapterIvar(w)
         self.packEditorLabelWidget(w)
         s = self.computeLabel(w)
-        w.leo_label.configure(text=s,bg='LightSteelBlue1')
+        if hasattr(w,'leo_label') and w.leo_label:
+            w.leo_label.configure(text=s,bg='LightSteelBlue1')
 
     def selectLabel (self,w):
 
@@ -967,8 +968,9 @@ class leoBody:
             self.packEditorLabelWidget(w)
             s = self.computeLabel(w)
             # g.trace(s,g.callers())
-            w.leo_label.configure(text=s,bg='white')
-        elif w.leo_label:
+            if hasattr(w,'leo_label') and w.leo_label:
+                w.leo_label.configure(text=s,bg='white')
+        elif hasattr(w,'leo_label') and w.leo_label:
             w.leo_label.pack_forget()
             w.leo_label = None
     #@nonl

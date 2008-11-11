@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,2"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6,5"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -810,7 +810,7 @@
 <v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -893,7 +893,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -1223,7 +1223,7 @@
 <v t="ekr.20071113194033.1"><vh>leoDialogs</vh>
 <v t="ekr.20050210085211"><vh>@test ctors for all dialogs</vh></v>
 </v>
-<v t="ekr.20071113192611" a="E"><vh>leoEditCommands</vh>
+<v t="ekr.20071113192611"><vh>leoEditCommands</vh>
 <v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
 <v t="ekr.20080905125317.1"><vh>Unused</vh>
 <v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
@@ -1261,7 +1261,7 @@
 <v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
 <v t="ekr.20080907123324.5"><vh>@test goto_setup n = 3 (@nosent)</vh></v>
 </v>
-<v t="ekr.20080905113550.4"><vh>General tests</vh>
+<v t="ekr.20080905113550.4" a="E"><vh>General tests</vh>
 <v t="ekr.20080905165432.1"><vh>@test goto_findRoot (root in ancestors)</vh></v>
 <v t="ekr.20080905165432.3"><vh>@test goto_findRoot (root not in ancestors)</vh></v>
 <v t="ekr.20080904120258.2"><vh>@test goto_showResults found</vh></v>
@@ -1563,7 +1563,7 @@
 <v t="ekr.20061101121602.260"><vh>before sel=1.261,1.261</vh></v>
 <v t="ekr.20061101121602.261"><vh>after sel=1.273,1.273</vh></v>
 </v>
-<v t="ekr.20061101121602.262"><vh>@test forward-word-extend-selection</vh>
+<v t="ekr.20061101121602.262" a="E"><vh>@test forward-word-extend-selection</vh>
 <v t="ekr.20061101121602.263"><vh>work</vh></v>
 <v t="ekr.20061101121602.264"><vh>before sel=1.395,1.395</vh></v>
 <v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
@@ -1770,7 +1770,7 @@
 </v>
 <v t="ekr.20081111084046.4" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20061104172236.1"><vh> Function tests</vh>
+<v t="ekr.20061104172236.1" a="E"><vh> Function tests</vh>
 <v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
 <v t="ekr.20061104172236.7"><vh>@test crollHelper</vh></v>
 <v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
@@ -1787,7 +1787,7 @@
 <v t="ekr.20051107115231" a="E" annotate="7d71002e"><vh> Typing</vh>
 <v t="ekr.20051122095426" annotate="7d71002e"><vh>@test make sure the window is visible (Make this the first test)</vh></v>
 <v t="ekr.20051216171321" annotate="7d71002e"><vh>Test headline abc</vh></v>
-<v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Typing and undo tests</vh>
+<v t="ekr.20051107115231.13" a="E" annotate="7d71002e"><vh>Typing and undo tests</vh>
 <v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
 <v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
 <v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
@@ -1973,7 +1973,13 @@
 <v t="ekr.20040712101754.7" annotate="7d71002e"><vh> Export tests</vh>
 <v t="ekr.20040712101754.9" annotate="7d71002e"><vh>@suite Export tests</vh></v>
 <v t="ekr.20040712101754.24" annotate="7d71002e"><vh>exportTests</vh>
-<v t="ekr.20040712101754.25"><vh>tempNode</vh></v>
+<v t="ekr.20040712101754.25"><vh>tempNode</vh>
+<v t="ekr.20081111105524.6"><vh>import test: exportHeadlines</vh></v>
+<v t="ekr.20081111105524.7"><vh>import test: flattenOutline</vh></v>
+<v t="ekr.20081111105524.8"><vh>import test: weave</vh></v>
+<v t="ekr.20081111105524.9"><vh>import test: outlineToNoweb</vh></v>
+<v t="ekr.20081111105524.10"><vh>import test: outlineToCWEB</vh></v>
+</v>
 <v t="ekr.20040712101754.26"><vh>exportHeadlines</vh>
 <v t="ekr.20040712101754.27"><vh>dialog</vh></v>
 </v>
@@ -1994,7 +2000,15 @@
 <v t="ekr.20070711063849"><vh> Import tests</vh>
 <v t="ekr.20040712101754.8" annotate="7d71002e"><vh>@suite Import tests</vh></v>
 <v t="ekr.20040712101754.10" annotate="7d71002e"><vh>importTests</vh>
-<v t="ekr.20040712101754.11" annotate="7d71002e"><vh>tempNode</vh></v>
+<v t="ekr.20040712101754.11" annotate="7d71002e"><vh>tempNode</vh>
+<v t="ekr.20081111105524.11"><vh>import test: importAtRoot</vh></v>
+<v t="ekr.20081111105524.12"><vh>import test: importDerivedFile</vh></v>
+<v t="ekr.20081111105524.13"><vh>import test: importNowebFiles</vh></v>
+<v t="ekr.20081111105524.14"><vh>import test: importFlattenedOutline</vh></v>
+<v t="ekr.20081111105524.15"><vh>import test: importCWEBFiles</vh></v>
+<v t="ekr.20081111105524.16"><vh>import test: removeSentinels</vh></v>
+<v t="ekr.20081111105524.17"><vh>import test: importAtFile</vh></v>
+</v>
 <v t="ekr.20040712101754.12" annotate="7d71002e"><vh>importAtRoot</vh>
 <v t="ekr.20040712101754.13"><vh>dialog</vh></v>
 </v>
@@ -2532,7 +2546,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081110091100.2" a="E"><vh>Failing tests</vh>
+<v t="ekr.20081110091100.2"><vh>Failing tests</vh>
 <v t="ekr.20081110154257.3"><vh>From leoFileCommands...</vh>
 <v t="ekr.20051107115231.9"><vh>@test Select a node when file is first loaded</vh></v>
 </v>
@@ -2550,7 +2564,7 @@
 <v t="ekr.20051107115231"><vh> Typing</vh>
 <v t="ekr.20051122095426" annotate="7d71002e"><vh>@test make sure the window is visible (Make this the first test)</vh></v>
 <v t="ekr.20051216171321" annotate="7d71002e"><vh>Test headline abc</vh></v>
-<v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Typing and undo tests</vh>
+<v t="ekr.20051107115231.13" a="E" annotate="7d71002e"><vh>Typing and undo tests</vh>
 <v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
 <v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
 <v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
@@ -13497,8 +13511,7 @@ c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
-    
-# g.pr('\nEnd of typing tests.')</t>
+    </t>
 <t tx="ekr.20051120110335">u = c.undoer
 c.insertHeadline()
 assert u.undoMenuLabel == 'Undo Insert Node',repr(c.undoMenuLabel)
@@ -13560,7 +13573,12 @@ assert g.app.positions == n</t>
 assert c.isRootPosition(None) is False
 assert c.isRootPosition(p) is False
 assert g.app.positions == n</t>
-<t tx="ekr.20060127120604"></t>
+<t tx="ekr.20060127120604">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after</t>
 <t tx="ekr.20060130151716.1">table = (
     # 'toggle-find-clone-find-all-option',
     'toggle-find-ignore-case-option',
@@ -16519,7 +16537,7 @@ if not g.os_path_exists(s):
     g.pr('created chinese file')
     
 </t>
-<t tx="ekr.20070114140212">@
+<t tx="ekr.20070114140212">4@
 
 Important warnings:
     
@@ -22135,8 +22153,7 @@ c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
-    
-g.pr('\nEnd of leoAtFile tests')</t>
+</t>
 <t tx="ekr.20081111084046.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -22144,8 +22161,7 @@ c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
-    
-g.pr('\nEnd of leoAtFile tests')</t>
+    </t>
 <t tx="ekr.20081111084046.2"></t>
 <t tx="ekr.20081111084046.3"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -22154,8 +22170,7 @@ c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
-    
-g.pr('\nEnd of leoAtFile tests')</t>
+</t>
 <t tx="ekr.20081111084046.4"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -22163,8 +22178,7 @@ c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
-    
-g.pr('\nEnd of leoAtFile tests')</t>
+</t>
 <t tx="ekr.20081111084046.6"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -22178,5 +22192,17 @@ g.pr('\nEnd of leoAtFile tests')</t>
 <t tx="ekr.20081111084046.8"></t>
 <t tx="ekr.20081111085124.1"></t>
 <t tx="ekr.20081111085124.2"></t>
+<t tx="ekr.20081111105524.6"></t>
+<t tx="ekr.20081111105524.7"></t>
+<t tx="ekr.20081111105524.8"></t>
+<t tx="ekr.20081111105524.9"></t>
+<t tx="ekr.20081111105524.10"></t>
+<t tx="ekr.20081111105524.11"></t>
+<t tx="ekr.20081111105524.12"></t>
+<t tx="ekr.20081111105524.13"></t>
+<t tx="ekr.20081111105524.14"></t>
+<t tx="ekr.20081111105524.15"></t>
+<t tx="ekr.20081111105524.16"></t>
+<t tx="ekr.20081111105524.17"></t>
 </tnodes>
 </leo_file>
