@@ -5,7 +5,7 @@
 @nocolor-node
 
 First:
-- PageUp/Down do not work.
+- Special case for parens, etc, or all printable?
 - Fix failing unit tests.
 
 Next:
@@ -268,6 +268,13 @@ def __init__(self,c,w,tag=''):
     self.c = c
     self.w = w      # A leoQtX object, *not* a Qt object.
     self.tag = tag
+
+    # Pretend there is a binding for these characters.
+    close_flashers = c.config.getString('close_flash_brackets') or ''
+    open_flashers  = c.config.getString('open_flash_brackets') or ''
+    self.flashers = open_flashers + close_flashers
+
+
 #@-node:ekr.20081018155359.10: ctor
 #@+node:ekr.20081013143507.12:eventFilter
 def eventFilter(self, obj, event):
@@ -281,12 +288,10 @@ def eventFilter(self, obj, event):
     if eventType in kinds:
         tkKey,ch,ignore = self.toTkKey(event)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-        override = True # Send all key events to Leo.
 
-        if 0: # not c.frame.body.useScintilla:
-            # Send *all* non-ignored keystrokes to the widget.
-            override = not ignore
-        elif tkKey == 'Tab':
+        if ignore:
+            override = False
+        elif self.isSpecialOverride(tkKey,ch):
             override = True
         elif k.inState():
             override = not ignore # allow all keystrokes.
@@ -314,7 +319,6 @@ def eventFilter(self, obj, event):
 #@+node:ekr.20081015132934.10:isDangerous
 def isDangerous (self,tkKey,ch):
 
-
     c = self.c
 
     if not c.frame.body.useScintilla: return False
@@ -337,6 +341,18 @@ def isDangerous (self,tkKey,ch):
     # g.trace(tkKey,ch,val)
     return val
 #@-node:ekr.20081015132934.10:isDangerous
+#@+node:ekr.20081111065912.10:isSpecialOverride
+def isSpecialOverride (self,tkKey,ch):
+
+    # g.trace(repr(tkKey),repr(ch))
+
+    if tkKey == 'Tab':
+        return True
+    elif ch in self.flashers:
+        return True
+    else:
+        return False
+#@-node:ekr.20081111065912.10:isSpecialOverride
 #@+node:ekr.20081011152302.10:toStroke
 def toStroke (self,tkKey,ch):
 
@@ -3481,916 +3497,44 @@ Syntax check fails for color_markup.py
 #@-node:ekr.20081013210935.2:Pass
 #@+node:ekr.20081013210935.32:Fail
 #@+node:ekr.20081013210935.13:leoEditCommands
-.............FF...FFFFF.FFFF.FF....F..FFF.FFFF.FF..F.F.FFFFFF...FFFFFFFFF.FFFFF..FFFFFFF.FF.FFF..FFFF...FFFF.FF.FFF.........F...FFFFFFF.E.FF
-......F.
+
+....................................................................................................F.......................F.....FFFFF....F
+..EE....
 End of leoEditCommands tests.
 .
 ======================================================================
-ERROR: @test paste from menu into headline sticks
+ERROR: @test inserting a new node can be undone and redone
 
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
     execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 10, in <module>
-    w.setSelectionRange('end','end',insert='end')
-AttributeError: 'NoneType' object has no attribute 'setSelectionRange'
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 3, in <module>
+    c.insertHeadline()
+  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 3535, in insertHeadline
+    c.editPosition(p,selectAll=True)
+  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 7228, in editPosition
+    c.frame.tree.editLabel(p,selectAll=selectAll)
+  File "C:\leo.repo\qt-plugin\leo\plugins\qtGui.py", line 4241, in editLabel
+    w.editItem(item)
+RuntimeError: underlying C/C++ object has been deleted
 
 ======================================================================
-FAIL: @test add-space-to-lines
+ERROR: @test inserting a new node draws the screen exactly once
 
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
     execfile(scriptFile,d)
   File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\n line 1\n     line a\n line b\nlast line'
-     got: u'first line\nline 1\n     line a\n line b\n last line'
-
-======================================================================
-FAIL: @test add-tab-to-lines
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\n    line 1\n        line a\n            line b\n    line c\nlast line'
-     got: u'first line\nline 1\n        line a\n            line b\n    line c\n    last line'
-
-======================================================================
-FAIL: @test back-char-extend-selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('4.11', '4.12') = (51, 51), got: (50, 51)
-
-======================================================================
-FAIL: @test back-paragraph
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('6.7', '6.7') = (397, 397), got: (395, 395)
-
-======================================================================
-FAIL: @test back-paragraph-extend-selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('6.7', '9.5') = (397, 559), got: (395, 559)
-
-======================================================================
-FAIL: @test back-sentence
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('3.0', '3.0') = (821, 821), got: (729, 729)
-
-======================================================================
-FAIL: @test back-sentence-extend-selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('3.0', '3.208') = (821, 822), got: (729, 822)
-
-======================================================================
-FAIL: @test back-word
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.178', '1.178') = (397, 397), got: (388, 388)
-
-======================================================================
-FAIL: @test back-word-extend-selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('3.332', '3.342') = (822, 822), got: (811, 822)
-
-======================================================================
-FAIL: @test backward-delete-char
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first lie\nline 1\n    line a\n        line b\nline c\nlast line\n'
-     got: u'first line\nline 1    line a\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test backward-delete-char  (middle of line)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'firstline\nlast line'
-     got: u'first line\nlast ine'
-
-======================================================================
-FAIL: @test backward-kill-paragraph
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u"Americans live in the most severe weather-prone country on Earth. Each year,\nAmericans cope with an average of 10,000 thunderst
-orms, 2,500 floods, 1,000\ntornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly\nweather impacts every American. Comm
-unities can now rely on the National Weather\nService\u2019s StormReady program to help them guard against the ravages of Mother\nNature.\nt
-o around 500 deaths per year and nearly $14 billion in damage. StormReady, a\nprogram started in 1999 in Tulsa, OK, helps arm America's comm
-unities with the\ncommunication and safety skills needed to save lives and property\u2013 before and\nduring the event. StormReady helps com
-munity leaders and emergency managers\nstrengthen local safety programs.\n\nStormReady communities are better prepared to save lives from th
-e onslaught of\nsevere weather through better planning, education, and awareness. No community\nis storm proof, but StormReady can help comm
-unities save lives. Does StormReady\nmake a difference?"
-     got: u"Americans live in the most severe weather-prone country on Earth. Each year,\nAmericans cope with an average of 10,000 thunderst
-orms, 2,500 floods, 1,000\ntornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly\nweather impacts every American. Comm
-unities can now rely on the National Weather\nService\u2019s StormReady program to help them guard against the ravages of Mother\nNature.\np
-rogram started in 1999 in Tulsa, OK, helps arm America's communities with the\ncommunication and safety skills needed to save lives and prop
-erty\u2013 before and\nduring the event. StormReady helps community leaders and emergency managers\nstrengthen local safety programs.\n\nSto
-rmReady communities are better prepared to save lives from the onslaught of\nsevere weather through better planning, education, and awarenes
-s. No community\nis storm proof, but StormReady can help communities save lives. Does StormReady\nmake a difference?"
-
-======================================================================
-FAIL: @test backward-kill-sentence
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'This is the first sentence.  This\nis the second sentence.\n'
-     got: u'This is the first sentence.  This\nis the second sentence.  And\nthis is the last sentence.\n'
-
-======================================================================
-FAIL: @test capitalize-word
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\nline 1\n    Line a\n        line b\nline c\nlast line\n'
-     got: u'first line\nline 1\n    line a\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test clear-rectangle
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'before\naaa   bbb\naaa   bbb\naaa   bbb\naaa   bbb\nafter'
-     got: u'before\naaaxxxbbb\naaaxxxbbb\naaa  xbbb\naaa  xbbb\naft    '
-
-======================================================================
-FAIL: @test clear-selected-text
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\nline    line b\nline c\nlast line\n'
-     got: u'first line\nline 1\n     c\nlast line\n'
-
-======================================================================
-FAIL: @test close-rectangle
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'before\naaabbb\naaabbb\naaabbb\naaabbb\nafter'
-     got: u'before\naaa   bbb\naaa   bbb\naaa   bbb\naaa   bbb\nafter'
-
-======================================================================
-FAIL: @test delete-char
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'firstline\nline 1\n    line a\n        line b\nline c\nlast line\n'
-     got: u'first line\nline \n    line a\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test delete-indentation
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\nline 1\nlast line'
-     got: u'first line\n    line 1\nlast line'
-
-======================================================================
-FAIL: @test delete-rectangle
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'before\naaabbb\naaabbb\naaabbb\naaabbb\nafter'
-     got: u'before\naaaxxxbbb\naaaxxxbbb\naaaxbbb\naaaxbbb\naft'
-
-======================================================================
-FAIL: @test delete-spaces
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\nline 1\nline a\n        line b\nline c\nlast line\n'
-     got: u'first line\nline 1\n    line a\nline b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test downcase-region
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u"Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thundersto
-rms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communi
-ties can now rely on the National Weather Service\u2019s StormReady program to help them guard against the ravages of Mother Nature.\n\nsome
- 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. s
-tormready, a program started in 1999 in tulsa, ok, helps arm america's communities with the communication and safety skills needed to save l
-ives and property\u2013 before and during the event. stormready helps community leaders and emergency managers strengthen local safety progr
-ams.\n\nStormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, an
-d awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?\n"
-     got: u"Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thundersto
-rms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communi
-ties can now rely on the National Weather Service\u2019s StormReady program to help them guard against the ravages of Mother Nature.\n\nSome
- 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. S
-tormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save l
-ives and property\u2013 before and during the event. StormReady helps community leaders and emergency managers strengthen local safety progr
-ams.\n\nStormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, an
-d awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?\n"
-
-======================================================================
-FAIL: @test downcase-word
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'xyzzy line\nline 1\n    line a\n        line b\nline c\nlast line\n'
-     got: u'XYZZY line\nline 1\n    line a\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test end-of-line
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.10', '1.10') = (18, 18), got: (10, 10)
-
-======================================================================
-FAIL: @test end-of-line-extend-selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('3.0', '3.10') = (29, 39), got: (29, 43)
-
-======================================================================
-FAIL: @test extend-to-line
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('3.0', '3.10') = (29, 39), got: (29, 43)
-
-======================================================================
-FAIL: @test extend-to-paragraph
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('8.0', '13.33') = (476, 822), got: (397, 820)
-
-======================================================================
-FAIL: @test extend-to-sentence
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.395', '3.142') = (397, 822), got: (820, 966)
-
-======================================================================
-FAIL: @test extend-to-word
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('3.4', '3.12') = (37, 45), got: (41, 45)
-
-======================================================================
-FAIL: @test fill-paragraph
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('10.0', '10.0') = (1079, 1079), got: (822, 822)
-
-======================================================================
-FAIL: @test fill-region (one paragraph)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('8.0', '8.0') = (468, 468), got: (397, 397)
-
-======================================================================
-FAIL: @test forward-end-word (end of line)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('3.4', '3.4') = (822, 822), got: (401, 401)
-
-======================================================================
-FAIL: @test forward-end-word (start of word)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.317', '1.317') = (397, 397), got: (401, 401)
-
-======================================================================
-FAIL: @test forward-end-word-extend-selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('3.20', '3.30') = (822, 822), got: (822, 832)
-
-======================================================================
-FAIL: @test forward-paragraph
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('15.0', '15.0') = (901, 901), got: (822, 822)
-
-======================================================================
-FAIL: @test forward-paragraph-extend-selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('10.0', '15.0') = (633, 901), got: (633, 822)
-
-======================================================================
-FAIL: @test forward-sentence
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('3.142', '3.142') = (822, 822), got: (966, 966)
-
-======================================================================
-FAIL: @test forward-sentence-extend-selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.264', '1.395') = (397, 397), got: (397, 539)
-
-======================================================================
-FAIL: @test forward-word
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.273', '1.273') = (397, 397), got: (402, 402)
-
-======================================================================
-FAIL: @test forward-word-extend-selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.395', '3.0') = (397, 821), got: (397, 402)
-
-======================================================================
-FAIL: @test indent-relative
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\nline 1\n    line a\n        line b\n        line c\nlast line\n'
-     got: u'first line\nline 1\n    line a\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test indent-rigidly
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\n\tline 1\n\t    line a\n\t        line b\n\tline c\nlast line\n'
-     got: u'first line\nline 1\n\t    line a\n\t        line b\n\tline c\n\tlast line\n'
-
-======================================================================
-FAIL: @test indent-to-comment-column
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 5, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\n    line b\nlast line'
-     got: u'first line\nline b\n    last line'
-
-======================================================================
-FAIL: @test insert-newline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first li\nne\nline 1\n    line a\n        line b\nline c\nlast line\n'
-     got: u'first line\nline 1\n\n    line a\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test insert-parentheses
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first() line\nline 1\n    line a\n        line b\nline c\nlast line\n'
-     got: u'first line\nline ()1\n    line a\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test kill-line middle-1
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'line 1\nline 2\n\nline 4'
-     got: u'line 1\nline 2\nline 3\n'
-
-======================================================================
-FAIL: @test kill-line middle-2
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'line 1\nline 2\nline 4'
-     got: u'line 1\nline 2\n\n'
-
-======================================================================
-FAIL: @test kill-paragraph
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('8.0', '8.0') = (398, 398), got: (397, 397)
-
-======================================================================
-FAIL: @test kill-rectangle
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'before\naaabbb\naaabbb\naaabbb\naaabbb\nafter'
-     got: u'before\naaaxxxbbb\naaaxxxbbb\naaaxbbb\naaaxbbb\naft'
-
-======================================================================
-FAIL: @test kill-sentence
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'This is the first sentence.  And\nthis is the last sentence.\n'
-     got: u'This is the first sentence.  This\nis the second sentence.\n'
-
-======================================================================
-FAIL: @test move-lines-down
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\nline 1\nline c\n    line a\n        line b\nlast line\n'
-     got: u'first line\nline 1\n    line a\nlast line\n        line b\nline c\n'
-
-======================================================================
-FAIL: @test move-lines-up
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'line 1\nfirst line\n    line a\n        line b\nline c\nlast line\n'
-     got: u'first line\n    line a\nline 1\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test move-past-close-extend-selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('3.7', '3.11') = (38, 42), got: (38, 38)
-
-======================================================================
-FAIL: @test newline-and-indent
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\nline 1\n    \n    line a\n        line b\nline c\nlast line\n'
-     got: u'first line\nline 1\n    li\n        ne a\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test open-rectangle
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'before\naaa   xxxbbb\naaa   xxxbbb\naaa   xxxbbb\naaa   xxxbbb\nafter'
-     got: u'before\naaaxxxbbb\naaaxxxbbb\naaa  xxxbbb\naaa  xxxbbb\naft  er  '
-
-======================================================================
-FAIL: @test previous-line
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('2.0', '2.0') = (3, 3), got: (2, 2)
-
-======================================================================
-FAIL: @test remove-blank-lines
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.0', '6.9') = (0, 61), got: (0, 60)
-
-======================================================================
-FAIL: @test reverse-region
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('7.10', '7.10') = (62, 62), got: (61, 61)
-
-======================================================================
-FAIL: @test reverse-sort-lines
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.0', '5.1') = (0, 10), got: (0, 9)
-
-======================================================================
-FAIL: @test reverse-sort-lines-ignoring-case
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.0', '6.1') = (0, 12), got: (0, 11)
+    c.insertHeadline()
+  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 3535, in insertHeadline
+    c.editPosition(p,selectAll=True)
+  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 7228, in editPosition
+    c.frame.tree.editLabel(p,selectAll=selectAll)
+  File "C:\leo.repo\qt-plugin\leo\plugins\qtGui.py", line 4241, in editLabel
+    w.editItem(item)
+RuntimeError: underlying C/C++ object has been deleted
 
 ======================================================================
 FAIL: @test selfInsertCommand-1
@@ -4409,154 +3553,6 @@ h(widget=w,char=char,keysym=None)\n        ec.selfInsertCommand(event)\n    resu
 n    # g.trace(repr(s))\n    c.recolor()\n\n# end::\n    pdq)"
 
 ======================================================================
-FAIL: @test sort-lines
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\n        line b\n    line a\nline 1\nline c\nlast line\n'
-     got: u'first line\nline 1\n        line b\n    line a\nlast line\nline c\n'
-
-======================================================================
-FAIL: @test sort-lines-ignoring-case
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1632, in runEditCommandTest
-    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-AssertionError: mismatch in sel
-expected: ('1.0', '5.1') = (0, 10), got: (0, 9)
-
-======================================================================
-FAIL: @test split-line
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first\n line\nline 1\n    line a\n        line b\nline c\nlast line\n'
-     got: u'first line\nline \n1\n    line a\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test string-rectangle
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'before\naaas...sbbb\naaas...sbbb\naaas...sbbb\naaas...sbbb\nafter'
-     got: u'before\naaaxxxbbb\naaaxxxbbb\naaas...sxbbb\naaas...sxbbb\nafts...ss...s'
-
-======================================================================
-FAIL: @test transpose-chars
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'frist line\nline 1\n    line a\n        line b\nline c\nlast line\n'
-     got: u'first line\nlnie 1\n    line a\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test transpose-lines
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'line 1\nfirst line\n    line a\n        line b\nline c\nlast line\n'
-     got: u'first line\n    line a\nline 1\n        line b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test upcase-region
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u"Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thundersto
-rms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communi
-ties can now rely on the National Weather Service\u2019s StormReady program to help them guard against the ravages of Mother Nature.\n\nSOME
- 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. S
-TORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE L
-IVES AND PROPERTY\u2013 BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGR
-AMS.\n\nStormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, an
-d awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?\n"
-     got: u"Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thundersto
-rms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communi
-ties can now rely on the National Weather Service\u2019s StormReady program to help them guard against the ravages of Mother Nature.\n\nSome
- 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. S
-tormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save l
-ives and property\u2013 before and during the event. StormReady helps community leaders and emergency managers strengthen local safety progr
-ams.\n\nStormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, an
-d awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?\n"
-
-======================================================================
-FAIL: @test upcase-word
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'first line\nline 1\n    LINE a\n        line b\nline c\nlast line\n'
-     got: u'first line\nline 1\n    line a\n        LINE b\nline c\nlast line\n'
-
-======================================================================
-FAIL: @test yank-rectangle
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 4, in <module>
-    leoTest.runEditCommandTest(c,p)
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 1621, in runEditCommandTest
-    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-AssertionError: mismatch in body
-expected: u'before\naaaY1Ybbb\naaaY2Ybbb\naaaY3Ybbb\naaaY4Ybbb\nafter'
-     got: u'before\naaaxxxbbb\naaaxxxbbb\naaaY1Yxbbb\naaaY2Yxbbb\naftY3YY4Y'
-
-======================================================================
 FAIL: @test selfInsertCommand-1
 
 ----------------------------------------------------------------------
@@ -4573,28 +3569,6 @@ dswith('    '),'result:%s' % repr(result) # Test of autocompleter.\nfinally:\n  
 \n# end::\n    pdq)"
 
 ======================================================================
-FAIL: @test return ends editing of headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 14, in <module>
-    assert wName.startswith('head'),'w.name:%s' % wName
-AssertionError: w.name:None
-
-======================================================================
-FAIL: @test editLabel selects entire headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 14, in <module>
-    assert w
-AssertionError
-
-======================================================================
 FAIL: @test paste at end of headline
 
 ----------------------------------------------------------------------
@@ -4603,7 +3577,7 @@ Traceback (most recent call last):
     execfile(scriptFile,d)
   File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 19, in <module>
     assert w==w2,'w: %s, w2: %s' % (w,w2)
-AssertionError: w: None, w2: <PyQt4.QtGui.QLineEdit object at 0x01F96978>
+AssertionError: w: leoQLineEditWidget: 23861288, w2: <PyQt4.QtGui.QLineEdit object at 0x01D5B228>
 
 ======================================================================
 FAIL: @test typing and undo in headline - at end
@@ -4612,9 +3586,9 @@ FAIL: @test typing and undo in headline - at end
 Traceback (most recent call last):
   File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
     execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 17, in <module>
-    assert w, 'oops1'
-AssertionError: oops1
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 31, in <module>
+    assert p.headString() == h,'oops5 got: %s' % p.headString()
+AssertionError: oops5 got: Test headline abcXYZ
 
 ======================================================================
 FAIL: @test paste and undo in headline - at end
@@ -4623,9 +3597,9 @@ FAIL: @test paste and undo in headline - at end
 Traceback (most recent call last):
   File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
     execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 14, in <module>
-    assert w,'oops1'
-AssertionError: oops1
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 23, in <module>
+    assert p.headString() == h,'oops3 got: %s' % p.headString()
+AssertionError: oops3 got: Test headline abcABC
 
 ======================================================================
 FAIL: @test paste and undo in headline - with selection
@@ -4634,9 +3608,9 @@ FAIL: @test paste and undo in headline - with selection
 Traceback (most recent call last):
   File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
     execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 14, in <module>
-    assert w, 'Null w'
-AssertionError: Null w
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 22, in <module>
+    assert p.headString() == h, 'head mismatch'
+AssertionError: head mismatch
 
 ======================================================================
 FAIL: @test selecting new node retains typing in headline
@@ -4645,19 +3619,8 @@ FAIL: @test selecting new node retains typing in headline
 Traceback (most recent call last):
   File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
     execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 16, in <module>
-    assert w
-AssertionError
-
-======================================================================
-FAIL: @test typing in headline recomputes width
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 13, in <module>
-    assert w
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 24, in <module>
+    assert p.headString() == h
 AssertionError
 
 ======================================================================
@@ -4667,25 +3630,14 @@ FAIL: @test selecting new node retains paste in headline
 Traceback (most recent call last):
   File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
     execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 14, in <module>
-    assert w
-AssertionError
-
-======================================================================
-FAIL: @test <Delete> key sticks in headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\qt-plugin\leo\core\leoTest.py", line 175, in runTest
-    execfile(scriptFile,d)
-  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 12, in <module>
-    assert w
+  File "C:\leo.repo\qt-plugin\leo\test\scriptFile.py", line 23, in <module>
+    assert p.headString() == h
 AssertionError
 
 ----------------------------------------------------------------------
-Ran 149 tests in 47.000s
+Ran 149 tests in 1397.141s
 
-FAILED (failures=81, errors=1)
+FAILED (failures=8, errors=2)
 C:\leo.repo\qt-plugin>
 #@nonl
 #@-node:ekr.20081013210935.13:leoEditCommands

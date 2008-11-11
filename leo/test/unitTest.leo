@@ -2523,6 +2523,20 @@
 </v>
 </v>
 <v t="ekr.20081110091100.2" a="E"><vh>Failing tests</vh>
+<v t="ekr.20081110154257.3"><vh>From leoFileCommands...</vh>
+<v t="ekr.20051107115231.9"><vh>@test Select a node when file is first loaded</vh></v>
+</v>
+<v t="ekr.20071113194424"><vh>leoFrame</vh>
+<v t="ekr.20060912091510.1"><vh>@test Add &amp; Delete editor</vh></v>
+<v t="ekr.20060912091510.2"><vh>@test Add editor, Delete leftmost editor</vh></v>
+<v t="ekr.20061104172236.22"><vh>@test c.frame.pasteText</vh></v>
+<v t="ekr.20071113145804.33"><vh>@test c.frame.pasteText 2</vh></v>
+<v t="ekr.20061106201509.6"><vh>@test leoBody.getInsertLines</vh></v>
+<v t="ekr.20061106201509.7"><vh>@test leoBody.getSelectionAreas</vh></v>
+<v t="ekr.20071113145804.32"><vh>@test leoBody.getSelectionAreas &amp; test</vh></v>
+<v t="ekr.20061104172236.23"><vh>@test tkBody.onClick</vh></v>
+<v t="ekr.20071113202153.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
 <v t="ekr.20071113192611"><vh>leoEditCommands</vh>
 <v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
 <v t="ekr.20080905125317.1"><vh>Unused</vh>
@@ -3106,20 +3120,6 @@
 <v t="ekr.20051109143831" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20070306091949" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20081110154257.3"><vh>From leoFileCommands...</vh>
-<v t="ekr.20051107115231.9"><vh>@test Select a node when file is first loaded</vh></v>
-</v>
-<v t="ekr.20071113194424"><vh>leoFrame</vh>
-<v t="ekr.20060912091510.1"><vh>@test Add &amp; Delete editor</vh></v>
-<v t="ekr.20060912091510.2"><vh>@test Add editor, Delete leftmost editor</vh></v>
-<v t="ekr.20061104172236.22"><vh>@test c.frame.pasteText</vh></v>
-<v t="ekr.20071113145804.33"><vh>@test c.frame.pasteText 2</vh></v>
-<v t="ekr.20061106201509.6"><vh>@test leoBody.getInsertLines</vh></v>
-<v t="ekr.20061106201509.7"><vh>@test leoBody.getSelectionAreas</vh></v>
-<v t="ekr.20071113145804.32"><vh>@test leoBody.getSelectionAreas &amp; test</vh></v>
-<v t="ekr.20061104172236.23"><vh>@test tkBody.onClick</vh></v>
-<v t="ekr.20071113202153.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
 </vnodes>

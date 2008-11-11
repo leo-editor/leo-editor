@@ -5114,6 +5114,13 @@ class leoQtEventFilter(QtCore.QObject):
         self.c = c
         self.w = w      # A leoQtX object, *not* a Qt object.
         self.tag = tag
+
+        # Pretend there is a binding for these characters.
+        close_flashers = c.config.getString('close_flash_brackets') or ''
+        open_flashers  = c.config.getString('open_flash_brackets') or ''
+        self.flashers = open_flashers + close_flashers
+
+
     #@-node:ekr.20081018155359.10: ctor
     #@+node:ekr.20081013143507.12:eventFilter
     def eventFilter(self, obj, event):
@@ -5127,12 +5134,10 @@ class leoQtEventFilter(QtCore.QObject):
         if eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-            override = True # Send all key events to Leo.
 
-            if 0: # not c.frame.body.useScintilla:
-                # Send *all* non-ignored keystrokes to the widget.
-                override = not ignore
-            elif tkKey == 'Tab':
+            if ignore:
+                override = False
+            elif self.isSpecialOverride(tkKey,ch):
                 override = True
             elif k.inState():
                 override = not ignore # allow all keystrokes.
@@ -5160,7 +5165,6 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081015132934.10:isDangerous
     def isDangerous (self,tkKey,ch):
 
-
         c = self.c
 
         if not c.frame.body.useScintilla: return False
@@ -5183,6 +5187,18 @@ class leoQtEventFilter(QtCore.QObject):
         # g.trace(tkKey,ch,val)
         return val
     #@-node:ekr.20081015132934.10:isDangerous
+    #@+node:ekr.20081111065912.10:isSpecialOverride
+    def isSpecialOverride (self,tkKey,ch):
+
+        # g.trace(repr(tkKey),repr(ch))
+
+        if tkKey == 'Tab':
+            return True
+        elif ch in self.flashers:
+            return True
+        else:
+            return False
+    #@-node:ekr.20081111065912.10:isSpecialOverride
     #@+node:ekr.20081011152302.10:toStroke
     def toStroke (self,tkKey,ch):
 
