@@ -1857,7 +1857,7 @@ class leoQtLog (leoFrame.leoLog):
         self.tabWidget = c.frame.top.ui.tabWidget # The Qt.TabWidget that holds all the tabs.
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
-        self.filter = leoQtEventFilter(c,w=self,tag='tabbed-log')
+        # self.filter = leoQtEventFilter(c,w=self,tag='tabbed-log')
 
         self.setFontFromConfig()
         self.setColorFromConfig()
@@ -2024,9 +2024,10 @@ class leoQtLog (leoFrame.leoLog):
             contents = QtGui.QTextBrowser()
             contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
             self.logDict[tabName] = contents
-            contents.installEventFilter(self.filter)
-            if tabName == 'Log':
-                self.logCtrl = contents
+            # filter = leoQtEventFilter(c,
+                # w=contents,tag='log-%s' % tabName)
+            # contents.installEventFilter(filter)
+            if tabName == 'Log': self.logCtrl = contents
         else:
             contents = QtGui.QWidget()
 
@@ -5034,8 +5035,9 @@ class leoKeyEvent:
         # The main ivars.
         self.actualEvent = event
         self.c      = c
-        self.char   = tkKey 
-        self.keysym = tkKey
+        self.char   = tkKey
+        if tkKey in ('\r','\n'): self.keysym = 'Return'
+        else:                    self.keysym = tkKey
         self.w = self.widget = w # A leoQtX object
 
         # Auxiliary info.
@@ -5119,18 +5121,19 @@ class leoQtEventFilter(QtCore.QObject):
         if eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+            override = True # Send all key events to Leo.
 
-            if 0: ### not c.frame.body.useScintilla:
-                # Send *all* non-ignored keystrokes to the widget.
-                override = not ignore
-            elif tkKey == 'Tab':
-                override = True
-            elif k.inState():
-                override = not ignore # allow all keystrokes.
-            elif safe_mode:
-                override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
-            else:
-                override = len(aList) > 0
+            # if 0: # not c.frame.body.useScintilla:
+                # # Send *all* non-ignored keystrokes to the widget.
+                # override = not ignore
+            # elif tkKey == 'Tab':
+                # override = True
+            # elif k.inState():
+                # override = not ignore # allow all keystrokes.
+            # elif safe_mode:
+                # override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
+            # else:
+                # override = len(aList) > 0
         else:
             override = False ; tkKey = '<no key>'
 
@@ -5138,7 +5141,7 @@ class leoQtEventFilter(QtCore.QObject):
             if override:
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 stroke = self.toStroke(tkKey,ch)
-                leoEvent = leoKeyEvent(event,c,w,stroke)
+                leoEvent = leoKeyEvent(event,c,w,ch) # ch was stroke
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
                 c.outerUpdate()
             else:
@@ -5171,20 +5174,21 @@ class leoQtEventFilter(QtCore.QObject):
             key == 'return' and not inTree # Just barely works.
         )
 
-        g.trace(tkKey,ch,val)
+        # g.trace(tkKey,ch,val)
         return val
     #@-node:ekr.20081015132934.10:isDangerous
     #@+node:ekr.20081011152302.10:toStroke
     def toStroke (self,tkKey,ch):
 
-        k = self.c.k ; s = tkKey
+        k = self.c.k ; s = tkKey ; trace = False
 
         special = ('Alt','Ctrl','Control',)
         isSpecial = [True for z in special if s.find(z) > -1]
 
         if not isSpecial:
             # Keep the Tk spellings for special keys.
-            ch2 = k.guiBindNamesInverseDict.get(ch)
+            ch2 = k.guiBindNamesDict.get(ch) # was inverseDict
+            if trace: g.trace('ch',repr(ch),'ch2',repr(ch2))
             if ch2: s = s.replace(ch,ch2)
 
         table = (
@@ -5198,7 +5202,7 @@ class leoQtEventFilter(QtCore.QObject):
         for a,b in table:
             s = s.replace(a,b)
 
-        # g.trace('tkKey',tkKey,'-->',s)
+        if trace: g.trace('tkKey',tkKey,'-->',s)
         return s
     #@-node:ekr.20081011152302.10:toStroke
     #@+node:ekr.20081008084746.1:toTkKey & helpers
@@ -5310,7 +5314,7 @@ class leoQtEventFilter(QtCore.QObject):
             g.trace('tkKey: %s, ch: %s, ignore: %s' % (
                 repr(tkKey),repr(ch),ignore))
 
-        return tkKey,ch,ignore
+        return tkKey,text,ignore # text was ch
     #@+node:ekr.20081028055229.16:keyboardUpper1
     def keyboardUpper1 (self,ch):
 
@@ -5434,7 +5438,6 @@ class leoQtEventFilter(QtCore.QObject):
         c = self.c ; e = QtCore.QEvent
 
         eventType = event.type()
-
 
         if 0: # Show focus events.
             show = (
@@ -5576,7 +5579,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             s = w.getAllText()
             row,col = index.split('.')
             row,col = int(row),int(col)
-            i = g.convertRowColToPythonIndex(s,row,col)
+            i = g.convertRowColToPythonIndex(s,row-1,col) # Bug fix: 2008/11/11
             # g.trace(index,row,col,i,g.callers(6))
             return i
 
@@ -6461,9 +6464,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         c = self.c ; w = self.widget
 
         # Reduce the flash time to the minimum.
-        flashes = max(1,min(2,flashes))
-        flashes = 1
-        delay = max(10,min(50,delay))
+        # flashes = max(1,min(2,flashes))
+        # flashes = 1
+        # delay = max(10,min(50,delay))
 
         def after(func):
             QtCore.QTimer.singleShot(delay,func)
