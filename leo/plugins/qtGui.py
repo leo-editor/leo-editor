@@ -3468,42 +3468,6 @@ class leoQtTree (leoFrame.leoTree):
         else:
             w.collapseItem(it)
     #@-node:ekr.20081021043407.25:drawTree
-    #@+node:ekr.20081027082521.12:setCurrentItem
-    def setCurrentItem (self):
-
-        c = self.c ; p = c.currentPosition()
-        trace = False
-        w = self.treeWidget
-
-        if self.expanding:
-            if trace: g.trace('already expanding')
-            return None
-        if self.selecting:
-            if trace: g.trace('already selecting')
-            return None
-
-        aList = self.vnodeDict.get(p.v,[])
-        h = p and p.headString() or '<no p!>'
-        if not p: return False
-
-        for p2,item in aList:
-            if p == p2:
-                if trace: g.trace('found: %s, %s' % (id(item),h))
-                # Actually select the item only if necessary.
-                # This prevents any side effects.
-                item2 = w.currentItem()
-                if item != item2:
-                    if trace: g.trace(item==item,'old item',item2)
-                    self.selecting = True
-                    try:
-                        w.setCurrentItem(item)
-                    finally:
-                        self.selecting = False
-                return item
-        else:
-            if trace: g.trace('** no item for',p.headString())
-            return None
-    #@-node:ekr.20081027082521.12:setCurrentItem
     #@-node:ekr.20081021043407.23:full_redraw & helpers
     #@+node:ekr.20081010070648.14:getIcon & getIconImage
     def getIcon(self,p):
@@ -3659,27 +3623,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw the screen after selecting a node.'''
 
-        w = self.treeWidget ; trace = False
-        c = self.c ; p = c.currentPosition()
-
-        if not p:
-            return g.trace('Error: no p')
-        if self.selecting:
-            if trace: g.trace('already selecting')
-            return
-        if self.redrawing:
-            return g.trace('Error: already redrawing')
-
-        if trace: g.trace(p.headString(),g.callers(4))
-
-        # setCurrentItem sets .selecting ivar
-        self.setCurrentItem()
-        ### self.full_redraw()
-
-        item = w.currentItem()
-        if item:
-            w.scrollToItem(item,
-                QtGui.QAbstractItemView.PositionAtCenter)
+        pass # It is quite wrong to do an automatic redraw after select.
     #@-node:ekr.20081021043407.13:redraw_after_select
     #@+node:ekr.20081011035036.11:updateIcon
     def updateIcon (self,p):
@@ -3699,6 +3643,167 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081011035036.11:updateIcon
     #@-node:ekr.20081010070648.19:Drawing... (qtTree)
     #@+node:ekr.20081004172422.795:Event handlers... (qtTree)
+    #@+node:ekr.20081004172422.803:Click Box...
+    #@+node:ekr.20081004172422.804:onClickBoxClick
+    def onClickBoxClick (self,event,p=None):
+
+        c = self.c ; p1 = c.currentPosition()
+
+        # g.trace(p and p.headString())
+
+        # if not p: p = self.eventToPosition(event)
+        # if not p: return
+
+        # c.setLog()
+
+        # if p and not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
+            # c.endEditing()
+            # if p == p1 or self.initialClickExpandsOrContractsNode:
+                # if p.isExpanded(): p.contract()
+                # else:              p.expand()
+            # self.select(p)
+            # if c.frame.findPanel:
+                # c.frame.findPanel.handleUserClick(p)
+            # if self.stayInTree:
+                # c.treeWantsFocus()
+            # else:
+                # c.bodyWantsFocus()
+        # g.doHook("boxclick2",c=c,p=p,v=p,event=event)
+        # c.redraw()
+
+        # c.outerUpdate()
+    #@-node:ekr.20081004172422.804:onClickBoxClick
+    #@+node:ekr.20081004172422.805:onClickBoxRightClick
+    def onClickBoxRightClick(self, event, p=None):
+        #g.trace()
+        return 'break'
+    #@nonl
+    #@-node:ekr.20081004172422.805:onClickBoxRightClick
+    #@+node:ekr.20081004172422.806:onPlusBoxRightClick
+    def onPlusBoxRightClick (self,event,p=None):
+
+        c = self.c
+
+        # self._block_canvas_menu = True
+
+        # if not p: p = self.eventToPosition(event)
+        # if not p: return
+
+        # self.OnActivateHeadline(p)
+        # self.endEditLabel()
+
+        # g.doHook('rclick-popup',c=c,p=p,event=event,context_menu='plusbox')
+
+        # c.outerUpdate()
+
+        # return 'break'
+    #@-node:ekr.20081004172422.806:onPlusBoxRightClick
+    #@-node:ekr.20081004172422.803:Click Box...
+    #@+node:ekr.20081004172422.801:findEditWidget
+    def findEditWidget (self,p):
+
+        """Return the Qt.Text item corresponding to p."""
+
+        # g.trace(p,g.callers(4))
+
+        return None
+
+        # c = self.c ; trace = False
+
+        # # if trace: g.trace(g.callers())
+
+        # if p and c:
+            # # if trace: g.trace('h',p.headString(),'key',p.key())
+            # aTuple = self.visibleText.get(p.key())
+            # if aTuple:
+                # w,theId = aTuple
+                # # if trace: g.trace('id(p.v):',id(p.v),'%4d' % (theId),self.textAddr(w),p.headString())
+                # return w
+            # else:
+                # if trace: g.trace('oops: not found',p,g.callers())
+                # return None
+
+        # if trace: g.trace('not found',p and p.headString())
+        # return None
+    #@-node:ekr.20081004172422.801:findEditWidget
+    #@+node:ekr.20081004172422.816:Icon Box...
+    #@+node:ekr.20081004172422.817:onIconBoxClick
+    def onIconBoxClick (self,event,p=None):
+
+        c = self.c ; tree = self
+
+        # if not p: p = self.eventToPosition(event)
+        # if not p:
+            # return
+
+        # c.setLog()
+
+        # if not g.doHook("iconclick1",c=c,p=p,v=p,event=event):
+            # if event:
+                # self.onDrag(event)
+            # tree.endEditLabel()
+            # tree.select(p,scroll=False)
+            # if c.frame.findPanel:
+                # c.frame.findPanel.handleUserClick(p)
+        # g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+
+        # return "break" # disable expanded box handling.
+    #@-node:ekr.20081004172422.817:onIconBoxClick
+    #@+node:ekr.20081004172422.818:onIconBoxRightClick
+    def onIconBoxRightClick (self,event,p=None):
+
+        """Handle a right click in any outline widget."""
+
+        #g.trace()
+
+        # c = self.c
+
+        # if not p: p = self.eventToPosition(event)
+        # if not p:
+            # c.outerUpdate()
+            # return
+
+        # c.setLog()
+
+        # try:
+            # if not g.doHook("iconrclick1",c=c,p=p,v=p,event=event):
+                # self.OnActivateHeadline(p)
+                # self.endEditLabel()
+                # if not g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='iconbox'):
+                    # self.OnPopup(p,event)
+            # g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
+        # except:
+            # g.es_event_exception("iconrclick")
+
+        # self._block_canvas_menu = True
+
+        # c.outerUpdate()
+        # return 'break'
+    #@-node:ekr.20081004172422.818:onIconBoxRightClick
+    #@+node:ekr.20081004172422.819:onIconBoxDoubleClick
+    def onIconBoxDoubleClick (self,event,p=None):
+
+        c = self.c
+
+        # if not p: p = self.eventToPosition(event)
+        # if not p:
+            # c.outerUpdate()
+            # return
+
+        # c.setLog()
+
+        # try:
+            # if not g.doHook("icondclick1",c=c,p=p,v=p,event=event):
+                # self.endEditLabel() # Bug fix: 11/30/05
+                # self.OnIconDoubleClick(p) # Call the method in the base class.
+            # g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        # except:
+            # g.es_event_exception("icondclick")
+
+        # c.outerUpdate()
+        # return 'break'
+    #@-node:ekr.20081004172422.819:onIconBoxDoubleClick
+    #@-node:ekr.20081004172422.816:Icon Box...
     #@+node:ekr.20081009055104.8:onTreeSelect
     def onTreeSelect(self):
 
@@ -3726,6 +3831,42 @@ class leoQtTree (leoFrame.leoTree):
             g.trace('no p for item: %s' % it,g.callers(4))
     #@nonl
     #@-node:ekr.20081009055104.8:onTreeSelect
+    #@+node:ekr.20081027082521.12:setCurrentItem
+    def setCurrentItem (self):
+
+        c = self.c ; p = c.currentPosition()
+        trace = False
+        w = self.treeWidget
+
+        if self.expanding:
+            if trace: g.trace('already expanding')
+            return None
+        if self.selecting:
+            if trace: g.trace('already selecting')
+            return None
+
+        aList = self.vnodeDict.get(p.v,[])
+        h = p and p.headString() or '<no p!>'
+        if not p: return False
+
+        for p2,item in aList:
+            if p == p2:
+                if trace: g.trace('found: %s, %s' % (id(item),h))
+                # Actually select the item only if necessary.
+                # This prevents any side effects.
+                item2 = w.currentItem()
+                if item != item2:
+                    if trace: g.trace(item==item,'old item',item2)
+                    self.selecting = True
+                    try:
+                        w.setCurrentItem(item)
+                    finally:
+                        self.selecting = False
+                return item
+        else:
+            if trace: g.trace('** no item for',p.headString())
+            return None
+    #@-node:ekr.20081027082521.12:setCurrentItem
     #@+node:ville.20081014172405.10:sig_itemChanged
     def sig_itemChanged(self, item, col):
 
@@ -3823,167 +3964,6 @@ class leoQtTree (leoFrame.leoTree):
                     w.scrollToItem(item,
                         QtGui.QAbstractItemView.PositionAtCenter)
     #@-node:ekr.20081021043407.26:sig_itemExpanded
-    #@+node:ekr.20081004172422.801:findEditWidget
-    def findEditWidget (self,p):
-
-        """Return the Qt.Text item corresponding to p."""
-
-        # g.trace(p,g.callers(4))
-
-        return None
-
-        # c = self.c ; trace = False
-
-        # # if trace: g.trace(g.callers())
-
-        # if p and c:
-            # # if trace: g.trace('h',p.headString(),'key',p.key())
-            # aTuple = self.visibleText.get(p.key())
-            # if aTuple:
-                # w,theId = aTuple
-                # # if trace: g.trace('id(p.v):',id(p.v),'%4d' % (theId),self.textAddr(w),p.headString())
-                # return w
-            # else:
-                # if trace: g.trace('oops: not found',p,g.callers())
-                # return None
-
-        # if trace: g.trace('not found',p and p.headString())
-        # return None
-    #@-node:ekr.20081004172422.801:findEditWidget
-    #@+node:ekr.20081004172422.803:Click Box...
-    #@+node:ekr.20081004172422.804:onClickBoxClick
-    def onClickBoxClick (self,event,p=None):
-
-        c = self.c ; p1 = c.currentPosition()
-
-        # g.trace(p and p.headString())
-
-        # if not p: p = self.eventToPosition(event)
-        # if not p: return
-
-        # c.setLog()
-
-        # if p and not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
-            # c.endEditing()
-            # if p == p1 or self.initialClickExpandsOrContractsNode:
-                # if p.isExpanded(): p.contract()
-                # else:              p.expand()
-            # self.select(p)
-            # if c.frame.findPanel:
-                # c.frame.findPanel.handleUserClick(p)
-            # if self.stayInTree:
-                # c.treeWantsFocus()
-            # else:
-                # c.bodyWantsFocus()
-        # g.doHook("boxclick2",c=c,p=p,v=p,event=event)
-        # c.redraw()
-
-        # c.outerUpdate()
-    #@-node:ekr.20081004172422.804:onClickBoxClick
-    #@+node:ekr.20081004172422.805:onClickBoxRightClick
-    def onClickBoxRightClick(self, event, p=None):
-        #g.trace()
-        return 'break'
-    #@nonl
-    #@-node:ekr.20081004172422.805:onClickBoxRightClick
-    #@+node:ekr.20081004172422.806:onPlusBoxRightClick
-    def onPlusBoxRightClick (self,event,p=None):
-
-        c = self.c
-
-        # self._block_canvas_menu = True
-
-        # if not p: p = self.eventToPosition(event)
-        # if not p: return
-
-        # self.OnActivateHeadline(p)
-        # self.endEditLabel()
-
-        # g.doHook('rclick-popup',c=c,p=p,event=event,context_menu='plusbox')
-
-        # c.outerUpdate()
-
-        # return 'break'
-    #@-node:ekr.20081004172422.806:onPlusBoxRightClick
-    #@-node:ekr.20081004172422.803:Click Box...
-    #@+node:ekr.20081004172422.816:Icon Box...
-    #@+node:ekr.20081004172422.817:onIconBoxClick
-    def onIconBoxClick (self,event,p=None):
-
-        c = self.c ; tree = self
-
-        # if not p: p = self.eventToPosition(event)
-        # if not p:
-            # return
-
-        # c.setLog()
-
-        # if not g.doHook("iconclick1",c=c,p=p,v=p,event=event):
-            # if event:
-                # self.onDrag(event)
-            # tree.endEditLabel()
-            # tree.select(p,scroll=False)
-            # if c.frame.findPanel:
-                # c.frame.findPanel.handleUserClick(p)
-        # g.doHook("iconclick2",c=c,p=p,v=p,event=event)
-
-        # return "break" # disable expanded box handling.
-    #@-node:ekr.20081004172422.817:onIconBoxClick
-    #@+node:ekr.20081004172422.818:onIconBoxRightClick
-    def onIconBoxRightClick (self,event,p=None):
-
-        """Handle a right click in any outline widget."""
-
-        #g.trace()
-
-        # c = self.c
-
-        # if not p: p = self.eventToPosition(event)
-        # if not p:
-            # c.outerUpdate()
-            # return
-
-        # c.setLog()
-
-        # try:
-            # if not g.doHook("iconrclick1",c=c,p=p,v=p,event=event):
-                # self.OnActivateHeadline(p)
-                # self.endEditLabel()
-                # if not g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='iconbox'):
-                    # self.OnPopup(p,event)
-            # g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
-        # except:
-            # g.es_event_exception("iconrclick")
-
-        # self._block_canvas_menu = True
-
-        # c.outerUpdate()
-        # return 'break'
-    #@-node:ekr.20081004172422.818:onIconBoxRightClick
-    #@+node:ekr.20081004172422.819:onIconBoxDoubleClick
-    def onIconBoxDoubleClick (self,event,p=None):
-
-        c = self.c
-
-        # if not p: p = self.eventToPosition(event)
-        # if not p:
-            # c.outerUpdate()
-            # return
-
-        # c.setLog()
-
-        # try:
-            # if not g.doHook("icondclick1",c=c,p=p,v=p,event=event):
-                # self.endEditLabel() # Bug fix: 11/30/05
-                # self.OnIconDoubleClick(p) # Call the method in the base class.
-            # g.doHook("icondclick2",c=c,p=p,v=p,event=event)
-        # except:
-            # g.es_event_exception("icondclick")
-
-        # c.outerUpdate()
-        # return 'break'
-    #@-node:ekr.20081004172422.819:onIconBoxDoubleClick
-    #@-node:ekr.20081004172422.816:Icon Box...
     #@+node:ekr.20081004172422.828:tree.OnPopup & allies
     def OnPopup (self,p,event):
 
@@ -4188,11 +4168,25 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081025124450.15:afterSelectHint
     def afterSelectHint (self,p,old_p):
 
-        # g.trace(p and p.headString(),g.callers(4))
+        c = self.c ; w = self.treeWidget ; trace = False
 
         self.selecting = False
 
-        self.redraw_after_select()
+        if not p:
+            return g.trace('Error: no p')
+        if p != c.currentPosition():
+            return g.trace('Error: p is not c.currentPosition()')
+        if self.redrawing:
+            return g.trace('Error: already redrawing')
+        if trace:
+            g.trace(p.headString(),g.callers(4))
+
+        # setCurrentItem sets & clears .selecting ivar
+        self.setCurrentItem()
+        item = w.currentItem()
+        if item:
+            w.scrollToItem(item,
+                QtGui.QAbstractItemView.PositionAtCenter)
     #@-node:ekr.20081025124450.15:afterSelectHint
     #@+node:ekr.20081004172422.854:setHeadline
     def setHeadline (self,p,s):
@@ -4273,21 +4267,6 @@ class leoQtTree (leoFrame.leoTree):
         # A nice hack: just set the focus request.
         c.requestedFocusWidget = e
 
-        # g.trace('leoQtTree','it',it,p and p.headString())
-
-        # if p and p != self.editPosition():
-            # self.endEditLabel()
-            # # This redraw *is* required so the c.edit_widget(p) will exist.
-            # c.redraw()
-            # c.outerUpdate()
-
-        # self.setEditPosition(p) # That is, self._editPosition = p
-        # w = c.edit_widget(p)
-        # if p and w:
-            # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-            # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
-            # c.headlineWantsFocus(p) # Make sure the focus sticks.
-            # c.k.showStateAndMode(w)
     #@-node:ekr.20081004172422.846:editLabel (override)
     #@+node:ekr.20081030120643.11:onHeadChanged
     # Tricky code: do not change without careful thought and testing.
@@ -4296,8 +4275,8 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Officially change a headline.'''
 
-        trace = False ; verbose = False
-        c = self.c
+        trace = False ; verbose = True
+        c = self.c ; u = c.undoer
         e = self._editWidget
         p = self._editWidgetPosition
 
@@ -4317,8 +4296,19 @@ class leoQtTree (leoFrame.leoTree):
             return
         s = e.text() ; len_s = len(s)
         s = g.toUnicode(s,'utf-8')
-        if trace: g.trace(repr(s),g.callers(4))
-        p.setHeadString(s)
+        oldHead = p.headString()
+        changed = s != oldHead
+        if trace: g.trace('changed',changed,repr(s),g.callers(4))
+        if not changed: return
+        p.initHeadString(s)
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
         # End the editing!
         self._editWidget = None
         self._editWidgetPosition = None
@@ -6563,7 +6553,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 #@+node:ekr.20081103092019.11:class leoQtHeadlineWidget
 class leoQtHeadlineWidget (leoQLineEditWidget):
 
-    pass
+    def __repr__ (self):
+        return 'leoQLineEditWidget: %s' % id(self)
+#@nonl
 #@-node:ekr.20081103092019.11:class leoQtHeadlineWidget
 #@+node:ekr.20081018130812.12:class findTextWrapper
 class findTextWrapper (leoQLineEditWidget):

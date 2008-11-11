@@ -5,23 +5,20 @@
 @nocolor-node
 
 First:
-
-* Changes to body pane do not stick after alt-4.
-- Make auto-scrolling an option (full_redraw and redraw_after_select)
 - Fix failing unit tests.
 
 Next:
+- Make auto-scrolling an option (full_redraw and redraw_after_select)
 - Add stylesheets for dialogs.
     - Set font for dummy widget in style sheet, then copy that font.
 - Shift-tab is Smart home. (Allow shift-tab binding).
-
-Finally:
-- Fix minor pylint stuff.
 - Allow coloring of icon bar buttons.
 - Support multiple body editors.
+- Fix minor pylint stuff.
 - Handle pane orientation:
     A popular arrangement would be editor and outline
     in top pane with the log along the bottom.
+- Finish colorizer.
 #@nonl
 #@+node:ekr.20081109123309.13:Finish colorizer
 - Simulate Tk's handling of tags (an optimization)
@@ -714,21 +711,6 @@ def editLabel (self,p,selectAll=False):
     # A nice hack: just set the focus request.
     c.requestedFocusWidget = e
 
-    # g.trace('leoQtTree','it',it,p and p.headString())
-
-    # if p and p != self.editPosition():
-        # self.endEditLabel()
-        # # This redraw *is* required so the c.edit_widget(p) will exist.
-        # c.redraw()
-        # c.outerUpdate()
-
-    # self.setEditPosition(p) # That is, self._editPosition = p
-    # w = c.edit_widget(p)
-    # if p and w:
-        # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-        # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
-        # c.headlineWantsFocus(p) # Make sure the focus sticks.
-        # c.k.showStateAndMode(w)
 #@-node:ekr.20081004172422.846:editLabel (override)
 #@-node:ekr.20081015062931.10:Focus stuff...
 #@+node:ekr.20081018155359.12:Problems with multiple windows
@@ -1186,11 +1168,25 @@ def beforeSelectHint (self,p,old_p):
 #@+node:ekr.20081025124450.15:afterSelectHint
 def afterSelectHint (self,p,old_p):
 
-    # g.trace(p and p.headString(),g.callers(4))
+    c = self.c ; w = self.treeWidget ; trace = False
 
     self.selecting = False
 
-    self.redraw_after_select()
+    if not p:
+        return g.trace('Error: no p')
+    if p != c.currentPosition():
+        return g.trace('Error: p is not c.currentPosition()')
+    if self.redrawing:
+        return g.trace('Error: already redrawing')
+    if trace:
+        g.trace(p.headString(),g.callers(4))
+
+    # setCurrentItem sets & clears .selecting ivar
+    self.setCurrentItem()
+    item = w.currentItem()
+    if item:
+        w.scrollToItem(item,
+            QtGui.QAbstractItemView.PositionAtCenter)
 #@-node:ekr.20081025124450.15:afterSelectHint
 #@+node:ekr.20081004172422.854:setHeadline
 def setHeadline (self,p,s):
@@ -1271,21 +1267,6 @@ def editLabel (self,p,selectAll=False):
     # A nice hack: just set the focus request.
     c.requestedFocusWidget = e
 
-    # g.trace('leoQtTree','it',it,p and p.headString())
-
-    # if p and p != self.editPosition():
-        # self.endEditLabel()
-        # # This redraw *is* required so the c.edit_widget(p) will exist.
-        # c.redraw()
-        # c.outerUpdate()
-
-    # self.setEditPosition(p) # That is, self._editPosition = p
-    # w = c.edit_widget(p)
-    # if p and w:
-        # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-        # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
-        # c.headlineWantsFocus(p) # Make sure the focus sticks.
-        # c.k.showStateAndMode(w)
 #@-node:ekr.20081004172422.846:editLabel (override)
 #@+node:ekr.20081030120643.11:onHeadChanged
 # Tricky code: do not change without careful thought and testing.
@@ -1294,8 +1275,8 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 
     '''Officially change a headline.'''
 
-    trace = False ; verbose = False
-    c = self.c
+    trace = False ; verbose = True
+    c = self.c ; u = c.undoer
     e = self._editWidget
     p = self._editWidgetPosition
 
@@ -1315,8 +1296,19 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         return
     s = e.text() ; len_s = len(s)
     s = g.toUnicode(s,'utf-8')
-    if trace: g.trace(repr(s),g.callers(4))
-    p.setHeadString(s)
+    oldHead = p.headString()
+    changed = s != oldHead
+    if trace: g.trace('changed',changed,repr(s),g.callers(4))
+    if not changed: return
+    p.initHeadString(s)
+    undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+    if not c.changed: c.setChanged(True)
+    # New in Leo 4.4.5: we must recolor the body because
+    # the headline may contain directives.
+    c.frame.body.recolor(p,incremental=True)
+    dirtyVnodeList = p.setDirty()
+    u.afterChangeNodeContents(p,undoType,undoData,
+        dirtyVnodeList=dirtyVnodeList)
     # End the editing!
     self._editWidget = None
     self._editWidgetPosition = None
@@ -1484,42 +1476,6 @@ def drawTree (self,p):
     else:
         w.collapseItem(it)
 #@-node:ekr.20081021043407.25:drawTree
-#@+node:ekr.20081027082521.12:setCurrentItem
-def setCurrentItem (self):
-
-    c = self.c ; p = c.currentPosition()
-    trace = False
-    w = self.treeWidget
-
-    if self.expanding:
-        if trace: g.trace('already expanding')
-        return None
-    if self.selecting:
-        if trace: g.trace('already selecting')
-        return None
-
-    aList = self.vnodeDict.get(p.v,[])
-    h = p and p.headString() or '<no p!>'
-    if not p: return False
-
-    for p2,item in aList:
-        if p == p2:
-            if trace: g.trace('found: %s, %s' % (id(item),h))
-            # Actually select the item only if necessary.
-            # This prevents any side effects.
-            item2 = w.currentItem()
-            if item != item2:
-                if trace: g.trace(item==item,'old item',item2)
-                self.selecting = True
-                try:
-                    w.setCurrentItem(item)
-                finally:
-                    self.selecting = False
-            return item
-    else:
-        if trace: g.trace('** no item for',p.headString())
-        return None
-#@-node:ekr.20081027082521.12:setCurrentItem
 #@-node:ekr.20081021043407.23:full_redraw & helpers
 #@+node:ekr.20081010070648.14:getIcon & getIconImage
 def getIcon(self,p):
@@ -1675,27 +1631,7 @@ def redraw_after_select (self):
 
     '''Redraw the screen after selecting a node.'''
 
-    w = self.treeWidget ; trace = False
-    c = self.c ; p = c.currentPosition()
-
-    if not p:
-        return g.trace('Error: no p')
-    if self.selecting:
-        if trace: g.trace('already selecting')
-        return
-    if self.redrawing:
-        return g.trace('Error: already redrawing')
-
-    if trace: g.trace(p.headString(),g.callers(4))
-
-    # setCurrentItem sets .selecting ivar
-    self.setCurrentItem()
-    ### self.full_redraw()
-
-    item = w.currentItem()
-    if item:
-        w.scrollToItem(item,
-            QtGui.QAbstractItemView.PositionAtCenter)
+    pass # It is quite wrong to do an automatic redraw after select.
 #@-node:ekr.20081021043407.13:redraw_after_select
 #@+node:ekr.20081011035036.11:updateIcon
 def updateIcon (self,p):
@@ -1969,51 +1905,29 @@ def drawTree (self,p):
     else:
         w.collapseItem(it)
 #@-node:ekr.20081021043407.25:drawTree
-#@+node:ekr.20081027082521.12:setCurrentItem
-def setCurrentItem (self):
-
-    c = self.c ; p = c.currentPosition()
-    trace = False
-    w = self.treeWidget
-
-    if self.expanding:
-        if trace: g.trace('already expanding')
-        return None
-    if self.selecting:
-        if trace: g.trace('already selecting')
-        return None
-
-    aList = self.vnodeDict.get(p.v,[])
-    h = p and p.headString() or '<no p!>'
-    if not p: return False
-
-    for p2,item in aList:
-        if p == p2:
-            if trace: g.trace('found: %s, %s' % (id(item),h))
-            # Actually select the item only if necessary.
-            # This prevents any side effects.
-            item2 = w.currentItem()
-            if item != item2:
-                if trace: g.trace(item==item,'old item',item2)
-                self.selecting = True
-                try:
-                    w.setCurrentItem(item)
-                finally:
-                    self.selecting = False
-            return item
-    else:
-        if trace: g.trace('** no item for',p.headString())
-        return None
-#@-node:ekr.20081027082521.12:setCurrentItem
 #@-node:ekr.20081021043407.23:full_redraw & helpers
 #@+node:ekr.20081025124450.15:afterSelectHint
 def afterSelectHint (self,p,old_p):
 
-    # g.trace(p and p.headString(),g.callers(4))
+    c = self.c ; w = self.treeWidget ; trace = False
 
     self.selecting = False
 
-    self.redraw_after_select()
+    if not p:
+        return g.trace('Error: no p')
+    if p != c.currentPosition():
+        return g.trace('Error: p is not c.currentPosition()')
+    if self.redrawing:
+        return g.trace('Error: already redrawing')
+    if trace:
+        g.trace(p.headString(),g.callers(4))
+
+    # setCurrentItem sets & clears .selecting ivar
+    self.setCurrentItem()
+    item = w.currentItem()
+    if item:
+        w.scrollToItem(item,
+            QtGui.QAbstractItemView.PositionAtCenter)
 #@-node:ekr.20081025124450.15:afterSelectHint
 #@+node:ekr.20081027124640.10:sig_itemCollapsed
 def sig_itemCollapsed (self,item):
@@ -2095,27 +2009,7 @@ def redraw_after_select (self):
 
     '''Redraw the screen after selecting a node.'''
 
-    w = self.treeWidget ; trace = False
-    c = self.c ; p = c.currentPosition()
-
-    if not p:
-        return g.trace('Error: no p')
-    if self.selecting:
-        if trace: g.trace('already selecting')
-        return
-    if self.redrawing:
-        return g.trace('Error: already redrawing')
-
-    if trace: g.trace(p.headString(),g.callers(4))
-
-    # setCurrentItem sets .selecting ivar
-    self.setCurrentItem()
-    ### self.full_redraw()
-
-    item = w.currentItem()
-    if item:
-        w.scrollToItem(item,
-            QtGui.QAbstractItemView.PositionAtCenter)
+    pass # It is quite wrong to do an automatic redraw after select.
 #@-node:ekr.20081021043407.13:redraw_after_select
 #@+node:ekr.20081021043407.11:redraw_after_move_right
 def redraw_after_move_right (self):
@@ -3180,21 +3074,6 @@ def editLabel (self,p,selectAll=False):
     # A nice hack: just set the focus request.
     c.requestedFocusWidget = e
 
-    # g.trace('leoQtTree','it',it,p and p.headString())
-
-    # if p and p != self.editPosition():
-        # self.endEditLabel()
-        # # This redraw *is* required so the c.edit_widget(p) will exist.
-        # c.redraw()
-        # c.outerUpdate()
-
-    # self.setEditPosition(p) # That is, self._editPosition = p
-    # w = c.edit_widget(p)
-    # if p and w:
-        # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-        # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
-        # c.headlineWantsFocus(p) # Make sure the focus sticks.
-        # c.k.showStateAndMode(w)
 #@-node:ekr.20081004172422.846:editLabel (override)
 #@-node:ekr.20081107114035.11:Fixed (??) crash in editLabel
 #@+node:ekr.20081107120516.10:Fixed problems with minibuffer interface
@@ -3307,21 +3186,6 @@ def editLabel (self,p,selectAll=False):
     # A nice hack: just set the focus request.
     c.requestedFocusWidget = e
 
-    # g.trace('leoQtTree','it',it,p and p.headString())
-
-    # if p and p != self.editPosition():
-        # self.endEditLabel()
-        # # This redraw *is* required so the c.edit_widget(p) will exist.
-        # c.redraw()
-        # c.outerUpdate()
-
-    # self.setEditPosition(p) # That is, self._editPosition = p
-    # w = c.edit_widget(p)
-    # if p and w:
-        # self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-        # self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
-        # c.headlineWantsFocus(p) # Make sure the focus sticks.
-        # c.k.showStateAndMode(w)
 #@-node:ekr.20081004172422.846:editLabel (override)
 #@-node:ekr.20081109123309.11:Recent crasher (after find)
 #@-node:ekr.20081014095718.13:Recent projects...

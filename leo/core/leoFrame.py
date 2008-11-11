@@ -248,7 +248,7 @@ class baseTextWidget:
         # Canonicalize the setting.
         stroke = c.k.shortcutFromSetting(stroke)
 
-        # g.trace('baseTextWidget','char',char,'stroke',stroke)
+        # g.trace('baseTextWidget','char',char,'stroke',stroke,'w',w)
 
         class eventGenerateEvent:
             def __init__ (self,c,w,char,keysym):
@@ -1218,13 +1218,12 @@ class leoBody:
         ch = g.choose(insert==0,'',w.get(insert-1))
         ch = g.toUnicode(ch,g.app.tkEncoding)
         newText = w.getAllText() # Note: getAllText converts to unicode.
-        if trace: g.trace('w',w,'newText',repr(newText),g.callers())
         newSel = w.getSelectionRange()
         if not oldText:
             oldText = p.bodyString() ; changed = True
         else:
             changed = oldText != newText
-        if trace: g.trace(repr(ch),'changed:',changed,'newText:',repr(newText))
+        if trace: g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
         if not changed: return
         c.undoer.setUndoTypingParams(p,undoType,
             oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)

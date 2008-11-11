@@ -147,6 +147,7 @@ if not g.unified_nodes:
 
             t = self
             t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+            # g.trace('t',len(s),g.callers(5))
 
         initBodyString = setBodyString
         setTnodeText = setBodyString
@@ -760,6 +761,7 @@ class vnode (baseVnode):
     def setBodyString (self,s,encoding="utf-8"):
         v = self
         v.t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+        # g.trace('v',len(s),g.callers(5))
 
     def setHeadString (self,s,encoding="utf-8"):
         v = self

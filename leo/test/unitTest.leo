@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6,5"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -810,7 +810,7 @@
 <v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -894,7 +894,7 @@
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
-<v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
+<v t="ekr.20050112095306.1" a="E" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
 <v t="ekr.20041021065903"><vh>#@asis</vh>
@@ -1261,7 +1261,7 @@
 <v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
 <v t="ekr.20080907123324.5"><vh>@test goto_setup n = 3 (@nosent)</vh></v>
 </v>
-<v t="ekr.20080905113550.4" a="E"><vh>General tests</vh>
+<v t="ekr.20080905113550.4"><vh>General tests</vh>
 <v t="ekr.20080905165432.1"><vh>@test goto_findRoot (root in ancestors)</vh></v>
 <v t="ekr.20080905165432.3"><vh>@test goto_findRoot (root not in ancestors)</vh></v>
 <v t="ekr.20080904120258.2"><vh>@test goto_showResults found</vh></v>
@@ -1563,7 +1563,7 @@
 <v t="ekr.20061101121602.260"><vh>before sel=1.261,1.261</vh></v>
 <v t="ekr.20061101121602.261"><vh>after sel=1.273,1.273</vh></v>
 </v>
-<v t="ekr.20061101121602.262" a="E"><vh>@test forward-word-extend-selection</vh>
+<v t="ekr.20061101121602.262"><vh>@test forward-word-extend-selection</vh>
 <v t="ekr.20061101121602.263"><vh>work</vh></v>
 <v t="ekr.20061101121602.264"><vh>before sel=1.395,1.395</vh></v>
 <v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
@@ -1770,7 +1770,7 @@
 </v>
 <v t="ekr.20081111084046.4" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20061104172236.1" a="E"><vh> Function tests</vh>
+<v t="ekr.20061104172236.1"><vh> Function tests</vh>
 <v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
 <v t="ekr.20061104172236.7"><vh>@test crollHelper</vh></v>
 <v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
@@ -1784,10 +1784,10 @@
 <v t="ekr.20061107031449"><vh>@test selfInsertCommand-2 (replacing tabs)</vh></v>
 <v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
 </v>
-<v t="ekr.20051107115231" a="E" annotate="7d71002e"><vh> Typing</vh>
+<v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
 <v t="ekr.20051122095426" annotate="7d71002e"><vh>@test make sure the window is visible (Make this the first test)</vh></v>
 <v t="ekr.20051216171321" annotate="7d71002e"><vh>Test headline abc</vh></v>
-<v t="ekr.20051107115231.13" a="E" annotate="7d71002e"><vh>Typing and undo tests</vh>
+<v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Typing and undo tests</vh>
 <v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
 <v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
 <v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
@@ -1803,10 +1803,6 @@
 <v t="ekr.20060208072358" annotate="7d71002e"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
 <v t="ekr.20051109091731" annotate="7d71002e"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
 <v t="ekr.20051120110335" annotate="7d71002e"><vh>@test inserting a new node can be undone and redone</vh></v>
-<v t="ekr.20081111085124.1"><vh>NewHeadline</vh></v>
-<v t="ekr.20081111084046.7"><vh>NewHeadline</vh></v>
-<v t="ekr.20081111084046.8"><vh>NewHeadline</vh></v>
-<v t="ekr.20081111085124.2"><vh>NewHeadline</vh></v>
 <v t="ekr.20051125155134" annotate="7d71002e"><vh>@test inserting a new node draws the screen exactly once</vh></v>
 <v t="ekr.20051120115046" annotate="7d71002e"><vh>@test undoing insert node restores previous node's body text</vh></v>
 <v t="ekr.20060208072415" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
@@ -1973,13 +1969,7 @@
 <v t="ekr.20040712101754.7" annotate="7d71002e"><vh> Export tests</vh>
 <v t="ekr.20040712101754.9" annotate="7d71002e"><vh>@suite Export tests</vh></v>
 <v t="ekr.20040712101754.24" annotate="7d71002e"><vh>exportTests</vh>
-<v t="ekr.20040712101754.25"><vh>tempNode</vh>
-<v t="ekr.20081111105524.6"><vh>import test: exportHeadlines</vh></v>
-<v t="ekr.20081111105524.7"><vh>import test: flattenOutline</vh></v>
-<v t="ekr.20081111105524.8"><vh>import test: weave</vh></v>
-<v t="ekr.20081111105524.9"><vh>import test: outlineToNoweb</vh></v>
-<v t="ekr.20081111105524.10"><vh>import test: outlineToCWEB</vh></v>
-</v>
+<v t="ekr.20040712101754.25"><vh>tempNode</vh></v>
 <v t="ekr.20040712101754.26"><vh>exportHeadlines</vh>
 <v t="ekr.20040712101754.27"><vh>dialog</vh></v>
 </v>
@@ -2000,15 +1990,7 @@
 <v t="ekr.20070711063849"><vh> Import tests</vh>
 <v t="ekr.20040712101754.8" annotate="7d71002e"><vh>@suite Import tests</vh></v>
 <v t="ekr.20040712101754.10" annotate="7d71002e"><vh>importTests</vh>
-<v t="ekr.20040712101754.11" annotate="7d71002e"><vh>tempNode</vh>
-<v t="ekr.20081111105524.11"><vh>import test: importAtRoot</vh></v>
-<v t="ekr.20081111105524.12"><vh>import test: importDerivedFile</vh></v>
-<v t="ekr.20081111105524.13"><vh>import test: importNowebFiles</vh></v>
-<v t="ekr.20081111105524.14"><vh>import test: importFlattenedOutline</vh></v>
-<v t="ekr.20081111105524.15"><vh>import test: importCWEBFiles</vh></v>
-<v t="ekr.20081111105524.16"><vh>import test: removeSentinels</vh></v>
-<v t="ekr.20081111105524.17"><vh>import test: importAtFile</vh></v>
-</v>
+<v t="ekr.20040712101754.11" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20040712101754.12" annotate="7d71002e"><vh>importAtRoot</vh>
 <v t="ekr.20040712101754.13"><vh>dialog</vh></v>
 </v>
@@ -2212,7 +2194,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2478,8 +2460,8 @@
 <v t="ekr.20071113145804.25"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37" a="E" annotate="7d71002e"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" a="E" annotate="7d71002e"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -2544,6 +2526,7 @@
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
 <v t="ekr.20081110091100.2"><vh>Failing tests</vh>
@@ -2561,43 +2544,6 @@
 <v t="ekr.20061104172236.23"><vh>@test tkBody.onClick</vh></v>
 <v t="ekr.20071113202153.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20051107115231"><vh> Typing</vh>
-<v t="ekr.20051122095426" annotate="7d71002e"><vh>@test make sure the window is visible (Make this the first test)</vh></v>
-<v t="ekr.20051216171321" annotate="7d71002e"><vh>Test headline abc</vh></v>
-<v t="ekr.20051107115231.13" a="E" annotate="7d71002e"><vh>Typing and undo tests</vh>
-<v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
-<v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
-<v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20051107115231.17" annotate="7d71002e"><vh>@test typing and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.18" annotate="7d71002e"><vh>@test paste and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.20" annotate="7d71002e"><vh>@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.21" annotate="7d71002e"><vh>@test selecting new node retains typing in headline</vh></v>
-<v t="ekr.20060208072307" annotate="7d71002e"><vh>@test paste from menu into body sticks</vh></v>
-<v t="ekr.20060208072331" annotate="7d71002e"><vh>@test paste from menu into headline sticks</vh></v>
-<v t="ekr.20051107115231.24" annotate="7d71002e"><vh>@test paste from menu to body recolors the body</vh></v>
-<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@test typing in headline recomputes width</vh></v>
-<v t="ekr.20051107115231.28" annotate="7d71002e"><vh>@test selecting new node retains paste in headline</vh></v>
-<v t="ekr.20060208072358" annotate="7d71002e"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
-<v t="ekr.20051109091731" annotate="7d71002e"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
-<v t="ekr.20051120110335" annotate="7d71002e"><vh>@test inserting a new node can be undone and redone</vh></v>
-<v t="ekr.20081111085124.1"><vh>NewHeadline</vh></v>
-<v t="ekr.20081111084046.7"><vh>NewHeadline</vh></v>
-<v t="ekr.20081111084046.8"><vh>NewHeadline</vh></v>
-<v t="ekr.20081111085124.2"><vh>NewHeadline</vh></v>
-<v t="ekr.20051125155134" annotate="7d71002e"><vh>@test inserting a new node draws the screen exactly once</vh></v>
-<v t="ekr.20051120115046" annotate="7d71002e"><vh>@test undoing insert node restores previous node's body text</vh></v>
-<v t="ekr.20060208072415" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
-<v t="ekr.20051125170139" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in headline</vh></v>
-<v t="ekr.20060131102450"><vh>print end of typing and undo tests</vh></v>
-</v>
-<v t="ekr.20051109143831" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20051107115231.20"><vh>@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
-<v t="ekr.20051107115231.18"><vh>@test paste and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.28"><vh>@test selecting new node retains paste in headline</vh></v>
-<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -13126,12 +13072,6 @@ w = c.edit_widget(p)
 guiName = g.app.gui.guiName()
 wName = g.app.gui.widget_name(w)
 assert wName.startswith('head'),'w.name:%s' % wName
-# if guiName == 'tkinter':
-    # c.frame.top.update_idletasks()
-    # w2 = c.get_focus()
-    # assert w == w2, 'oops1 %s != %s' % (w,w2)
-# elif guiName == 'wxPython':
-    # assert repr(w).startswith('headlineWidget')
 w.event_generate('&lt;Return&gt;')
 assert w != c.get_focus(),'oops2: focus in headline'</t>
 <t tx="ekr.20051107115231.15">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
@@ -13157,7 +13097,7 @@ else:
 </t>
 <t tx="ekr.20051107115231.16">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
-trace = True
+trace = False
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -13171,7 +13111,8 @@ if trace: g.pr('2',g.app.gui.get_focus(c))
 w = c.edit_widget(p)
 if trace: g.pr('3',g.app.gui.get_focus(c))
 w2 = g.app.gui.get_focus(c)
-assert w==w2,'w: %s, w2: %s' % (w,w2)
+# For the qt gui w is a wrapper and w.widget is the actual widget.
+assert w==w2 or w.widget==w2,'w: %s, w2: %s' % (w,w2)
 
 try:
     assert w
@@ -13420,7 +13361,7 @@ c.redraw_now() # To make node visible
 tree.editLabel(p)
 w = c.edit_widget(p)
 try:
-    assert w
+    assert w,'oops1'
     w.setSelectionRange('end','end')
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
@@ -13429,7 +13370,8 @@ try:
     c.selectPosition(p.visBack(c))
     assert p.headString() == h + paste
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h
+    assert p.headString() == h,'expected: %s, got: %s' % (
+        h,p.headString())
 finally:
     if 1:
         p.initHeadString(h)
@@ -13493,7 +13435,6 @@ assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.setBodyString(p,'a')
 c.redraw_now() # To make node visible
-c.outerUpdate()
 c.bodyWantsFocusNow()
 n = c.frame.tree.redrawCount
 try:
@@ -13533,8 +13474,7 @@ try:
     assert p.bodyString() == body
 finally:
     c.setBodyString(p,'')</t>
-<t tx="ekr.20051122095426">c.frame.bringToFront()
-c.frame.body.bodyCtrl.update()</t>
+<t tx="ekr.20051122095426"></t>
 <t tx="ekr.20051125155134">n = c.frame.tree.redrawCount
 c.insertHeadline()
 c.outerUpdate()
@@ -13573,12 +13513,7 @@ assert g.app.positions == n</t>
 assert c.isRootPosition(None) is False
 assert c.isRootPosition(p) is False
 assert g.app.positions == n</t>
-<t tx="ekr.20060127120604">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after</t>
+<t tx="ekr.20060127120604"></t>
 <t tx="ekr.20060130151716.1">table = (
     # 'toggle-find-clone-find-all-option',
     'toggle-find-ignore-case-option',
@@ -13758,9 +13693,7 @@ assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocusNow()
 c.redraw_now() # To make node visible
-c.outerUpdate()
 n = c.frame.tree.redrawCount
-
 assert not p.bodyString(), 'oops1'
 try:
     # g.pr('before insert a',c.currentPosition())
@@ -13796,9 +13729,7 @@ try:
 finally:
     if 1:
         c.setBodyString(p,'')
-        c.redraw_now()
-
-</t>
+        c.redraw_now()</t>
 <t tx="ekr.20060208195054"># c.commandsDict: keys are emacs command names, values are functions f.
 # k.inverseCommandsDict: keys are f.__name__, values are emacs command names.
 
@@ -22188,21 +22119,13 @@ g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
 g.pr('\nEnd of leoAtFile tests')</t>
-<t tx="ekr.20081111084046.7"></t>
-<t tx="ekr.20081111084046.8"></t>
-<t tx="ekr.20081111085124.1"></t>
-<t tx="ekr.20081111085124.2"></t>
-<t tx="ekr.20081111105524.6"></t>
-<t tx="ekr.20081111105524.7"></t>
-<t tx="ekr.20081111105524.8"></t>
-<t tx="ekr.20081111105524.9"></t>
-<t tx="ekr.20081111105524.10"></t>
-<t tx="ekr.20081111105524.11"></t>
-<t tx="ekr.20081111105524.12"></t>
-<t tx="ekr.20081111105524.13"></t>
-<t tx="ekr.20081111105524.14"></t>
-<t tx="ekr.20081111105524.15"></t>
-<t tx="ekr.20081111105524.16"></t>
-<t tx="ekr.20081111105524.17"></t>
+<t tx="ekr.20081111150402.11"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
+</t>
 </tnodes>
 </leo_file>
