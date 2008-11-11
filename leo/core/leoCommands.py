@@ -1729,6 +1729,8 @@ class baseCommands:
             f.write(script)
             f.close()
         except Exception:
+            g.es("Failed to write script to %s" % path)
+            g.es("Check your configuration of script_file_path, currently %s" % c.config.getString('script_file_path'))
             path = None
 
         return path
