@@ -140,12 +140,18 @@ class leoKeyEvent:
 
     def __init__ (self,event,c,w,tkKey):
 
+        # Last minute-munges to keysym.
+        d = {
+            '\r':'Return',
+            '\n':'Return',
+            '\t':'Tab',
+        }
+
         # The main ivars.
         self.actualEvent = event
         self.c      = c
         self.char   = tkKey
-        if tkKey in ('\r','\n'): self.keysym = 'Return'
-        else:                    self.keysym = tkKey
+        self.keysym = d.get(tkKey,tkKey)
         self.w = self.widget = w # A leoQtX object
 
         # Auxiliary info.
