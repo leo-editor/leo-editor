@@ -561,23 +561,28 @@ def putVnode (self,p,isIgnore=False):
     << Append attribute bits to attrs >>
     << Append tnodeList and unKnownAttributes to attrs >>
     attrs = ''.join(attrs)
-    v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
-    # The string catentation is faster than repeated calls to fc.put.
-    if not self.usingClipboard:
-        << issue informational messages >>
-    # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
-    if p.hasChildren() and (forceWrite or self.usingClipboard):
-        fc.put('%s\n' % v_head)
-        # This optimization eliminates all "recursive" copies.
-        p.moveToFirstChild()
-        while 1:
-            fc.putVnode(p,isIgnore)
-            if p.hasNext(): p.moveToNext()
-            else:           break
-        p.moveToParent() # Restore p in the caller.
-        fc.put('</v>\n')
+    v_head = '<v t="%s"%s>' % (gnx,attrs)
+    if gnx in fc.vnodesDict:
+        fc.put(v_head+'</v>\n')
     else:
-        fc.put('%s</v>\n' % v_head) # Call put only once.
+        fc.vnodesDict[gnx]=True
+        v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString()or''))
+        # The string catentation is faster than repeated calls to fc.put.
+        if not self.usingClipboard:
+            << issue informational messages >>
+        # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            fc.put('%s\n' % v_head)
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            while 1:
+                fc.putVnode(p,isIgnore)
+                if p.hasNext(): p.moveToNext()
+                else:           break
+            p.moveToParent() # Restore p in the caller.
+            fc.put('</v>\n')
+        else:
+            fc.put('%s</v>\n' % v_head) # Call put only once.
 #@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
 # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
 if not v.t.fileIndex:
@@ -668,6 +673,7 @@ def putVnodes (self):
     self.currentPosition = c.currentPosition() 
     self.rootPosition    = c.rootPosition()
     # self.topPosition     = c.topPosition()
+    self.vnodesDict = {}
 
     if self.usingClipboard:
         self.putVnode(self.currentPosition) # Write only current tree.
@@ -1251,6 +1257,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
   must be descendants of the referencing node (in the @rst tree)
 #@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@+node:ekr.20080922115725.1:Finish @shadow
+# Add warning that clones in @shadow files is a bad idea.
 # Allow block comments in private shadow files.
 # Compute delims using the private shadow file, not the file extension!
 # Can @shadow mark externally changed nodes?
