@@ -5,15 +5,14 @@
 @nocolor-node
 
 First:
-- Fix failing unit tests.
-
-Next:
 - Make auto-scrolling an option (full_redraw and redraw_after_select)
 - Add stylesheets for dialogs.
     - Set font for dummy widget in style sheet, then copy that font.
 - Shift-tab is Smart home. (Allow shift-tab binding).
 - Allow coloring of icon bar buttons.
 - Support multiple body editors.
+
+Next:
 - Fix minor pylint stuff.
 - Handle pane orientation:
     A popular arrangement would be editor and outline
