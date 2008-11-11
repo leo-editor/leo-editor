@@ -519,6 +519,8 @@ class leoQtBody (leoFrame.leoBody):
         return self.widget.setYScrollPosition(i)
     #@-node:ekr.20081031074959.13:High-level interface to self.widget
     #@+node:ekr.20081103095314.32:Editors (qtBody)
+    # This code uses self.pb, a paned body widget,
+    # created by tkBody.finishCreate.
     #@+node:ekr.20081103095314.33:createEditorFrame
     def createEditorFrame (self,pane):
 
@@ -541,6 +543,414 @@ class leoQtBody (leoFrame.leoBody):
             # w.pack(expand=1,fill='both')
     #@nonl
     #@-node:ekr.20081103095314.34:packEditorLabelWidget
+    #@+node:ekr.20081111152240.2:entries
+    if 1:
+        #@    @+others
+        #@+node:ekr.20081111152240.3:addEditor
+        def addEditor (self,event=None):
+
+            '''Add another editor to the body pane.'''
+
+            self.editorWidgets['1'] = self.c.frame.body.bodyCtrl
+
+            # c = self.c ; p = c.currentPosition()
+
+            # self.totalNumberOfEditors += 1
+            # self.numberOfEditors += 1
+
+            # if self.numberOfEditors == 2:
+                # # Inject the ivars into the first editor.
+                # # Bug fix: Leo 4.4.8 rc1: The name of the last editor need not be '1'
+                # d = self.editorWidgets ; keys = d.keys()
+                # if len(keys) == 1:
+                    # w_old = d.get(keys[0])
+                    # self.updateInjectedIvars(w_old,p)
+                    # self.selectLabel(w_old) # Immediately create the label in the old editor.
+                # else:
+                    # g.trace('can not happen: unexpected editorWidgets',d)
+
+            # name = '%d' % self.totalNumberOfEditors
+            # pane = self.pb.add(name)
+            # panes = self.pb.panes()
+            # minSize = float(1.0/float(len(panes)))
+
+            # f = self.createEditorFrame(pane)
+            # 
+            #@nonl
+            #@<< create text widget w >>
+            #@+node:ekr.20081111152240.4:<< create text widget w >>
+            # w = self.createTextWidget(f,name=name,p=p)
+            # w.delete(0,'end')
+            # w.insert('end',p.bodyString())
+            # w.see(0)
+
+            # self.setFontFromConfig(w=w)
+            # self.setColorFromConfig(w=w)
+            # self.createBindings(w=w)
+            # c.k.completeAllBindingsForWidget(w)
+
+            # self.recolorWidget(p,w)
+            #@nonl
+            #@-node:ekr.20081111152240.4:<< create text widget w >>
+            #@nl
+            # self.editorWidgets[name] = w
+
+            # for pane in panes:
+                # self.pb.configurepane(pane,size=minSize)
+
+            # self.pb.updatelayout()
+            # c.frame.body.bodyCtrl = w
+
+            # self.updateInjectedIvars(w,p)
+            # self.selectLabel(w)
+            # self.selectEditor(w)
+            # self.updateEditors()
+            # c.bodyWantsFocusNow()
+        #@-node:ekr.20081111152240.3:addEditor
+        #@+node:ekr.20081111152240.5:assignPositionToEditor
+        def assignPositionToEditor (self,p):
+
+            '''Called *only* from tree.select to select the present body editor.'''
+
+            c = self.c ; cc = c.chapterController ; w = c.frame.body.bodyCtrl
+
+            # self.updateInjectedIvars(w,p)
+            # self.selectLabel(w)
+
+            # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.headString())
+        #@-node:ekr.20081111152240.5:assignPositionToEditor
+        #@+node:ekr.20081111152240.6:cycleEditorFocus
+        def cycleEditorFocus (self,event=None):
+
+            '''Cycle keyboard focus between the body text editors.'''
+
+            # c = self.c ; d = self.editorWidgets ; w = c.frame.body.bodyCtrl
+            # values = d.values()
+            # if len(values) > 1:
+                # i = values.index(w) + 1
+                # if i == len(values): i = 0
+                # w2 = d.values()[i]
+                # assert(w!=w2)
+                # self.selectEditor(w2)
+                # c.frame.body.bodyCtrl = w2
+                # # g.pr('***',g.app.gui.widget_name(w2),id(w2))
+
+            # return 'break'
+        #@-node:ekr.20081111152240.6:cycleEditorFocus
+        #@+node:ekr.20081111152240.7:deleteEditor
+        def deleteEditor (self,event=None):
+
+            '''Delete the presently selected body text editor.'''
+
+            # c = self.c ; w = c.frame.body.bodyCtrl ; d = self.editorWidgets
+
+            # if len(d.keys()) == 1: return
+
+            # name = w.leo_name
+
+            # del d [name] 
+            # self.pb.delete(name)
+            # panes = self.pb.panes()
+            # minSize = float(1.0/float(len(panes)))
+
+            # for pane in panes:
+                # self.pb.configurepane(pane,size=minSize)
+
+            # # Select another editor.
+            # w = d.values()[0]
+            # # c.frame.body.bodyCtrl = w # Don't do this now?
+            # self.numberOfEditors -= 1
+            # self.selectEditor(w)
+        #@-node:ekr.20081111152240.7:deleteEditor
+        #@+node:ekr.20081111152240.8:findEditorForChapter (leoBody)
+        def findEditorForChapter (self,chapter,p):
+
+            '''Return an editor to be assigned to chapter.'''
+
+            return self.c.frame.body.bodyCtrl
+
+            # c = self.c ; d = self.editorWidgets ; values = d.values()
+
+            # # First, try to match both the chapter and position.
+            # if p:
+                # for w in values:
+                    # if (
+                        # hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
+                        # hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
+                    # ):
+                        # # g.trace('***',id(w),'match chapter and p',p.headString())
+                        # return w
+
+            # # Next, try to match just the chapter.
+            # for w in values:
+                # if hasattr(w,'leo_chapter') and w.leo_chapter == chapter:
+                    # # g.trace('***',id(w),'match only chapter',p.headString())
+                    # return w
+
+            # # As a last resort, return the present editor widget.
+            # # g.trace('***',id(self.bodyCtrl),'no match',p.headString())
+            # return c.frame.body.bodyCtrl
+        #@-node:ekr.20081111152240.8:findEditorForChapter (leoBody)
+        #@+node:ekr.20081111152240.9:select/unselectLabel
+        def unselectLabel (self,w):
+
+            pass
+
+            # self.createChapterIvar(w)
+            # self.packEditorLabelWidget(w)
+            # s = self.computeLabel(w)
+            # if hasattr(w,'leo_label') and w.leo_label:
+                # w.leo_label.configure(text=s,bg='LightSteelBlue1')
+
+        def selectLabel (self,w):
+
+            pass
+
+            # if self.numberOfEditors > 1:
+                # self.createChapterIvar(w)
+                # self.packEditorLabelWidget(w)
+                # s = self.computeLabel(w)
+                # # g.trace(s,g.callers())
+                # if hasattr(w,'leo_label') and w.leo_label:
+                    # w.leo_label.configure(text=s,bg='white')
+            # elif hasattr(w,'leo_label') and w.leo_label:
+                # w.leo_label.pack_forget()
+                # w.leo_label = None
+        #@-node:ekr.20081111152240.9:select/unselectLabel
+        #@+node:ekr.20081111152240.10:selectEditor & helpers
+        selectEditorLockout = False
+
+        def selectEditor(self,w):
+
+            '''Select editor w and node w.leo_p.'''
+
+            return self.c.frame.body.bodyCtrl
+
+            #  Called by body.onClick and whenever w must be selected.
+            # trace = False
+            # c = self.c
+            # if not w: return self.c.frame.body.bodyCtrl
+            # if self.selectEditorLockout: return
+
+            # if w and w == self.c.frame.body.bodyCtrl:
+                # if w.leo_p and w.leo_p != c.currentPosition():
+                    # c.selectPosition(w.leo_p)
+                    # c.bodyWantsFocusNow()
+                # return
+
+            # try:
+                # val = None
+                # self.selectEditorLockout = True
+                # val = self.selectEditorHelper(w)
+            # finally:
+                # self.selectEditorLockout = False
+
+            # return val # Don't put a return in a finally clause.
+        #@+node:ekr.20081111152240.11:selectEditorHelper
+        def selectEditorHelper (self,w):
+
+            c = self.c ; cc = c.chapterController ; d = self.editorWidgets
+
+            trace = False
+
+            if not w.leo_p:
+                g.trace('no w.leo_p') 
+                return 'break'
+
+            if trace:
+                g.trace('==1',id(w),
+                    hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
+                    hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
+
+            self.inactivateActiveEditor(w)
+
+            # The actual switch.
+            c.frame.body.bodyCtrl = w
+            w.leo_active = True
+
+            self.switchToChapter(w)
+            self.selectLabel(w)
+
+            if not self.ensurePositionExists(w):
+                g.trace('***** no position editor!')
+                return 'break'
+
+            if trace:
+                g.trace('==2',id(w),
+                    hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
+                    hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
+
+            # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
+            c.frame.tree.expandAllAncestors(w.leo_p)
+            c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
+            c.redraw()
+
+            c.recolor_now()
+            #@    << restore the selection, insertion point and the scrollbar >>
+            #@+node:ekr.20081111152240.12:<< restore the selection, insertion point and the scrollbar >>
+            # g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
+
+            if w.leo_insertSpot:
+                w.setInsertPoint(w.leo_insertSpot)
+            else:
+                w.setInsertPoint(0)
+
+            if w.leo_scrollBarSpot is not None:
+                first,last = w.leo_scrollBarSpot
+                w.yview('moveto',first)
+            else:
+                w.seeInsertPoint()
+
+            if w.leo_selection:
+                try:
+                    start,end = w.leo_selection
+                    w.setSelectionRange(start,end)
+                except Exception:
+                    pass
+            #@-node:ekr.20081111152240.12:<< restore the selection, insertion point and the scrollbar >>
+            #@nl
+            c.bodyWantsFocusNow()
+            return 'break'
+        #@-node:ekr.20081111152240.11:selectEditorHelper
+        #@-node:ekr.20081111152240.10:selectEditor & helpers
+        #@+node:ekr.20081111152240.13:updateEditors
+        # Called from addEditor and assignPositionToEditor
+
+        def updateEditors (self):
+
+            pass
+
+            # c = self.c ; p = c.currentPosition()
+            # d = self.editorWidgets
+            # if len(d.keys()) < 2: return # There is only the main widget.
+
+            # for key in d:
+                # w = d.get(key)
+                # v = w.leo_v
+                # if v and v == p.v and w != c.frame.body.bodyCtrl:
+                    # w.delete(0,'end')
+                    # w.insert('end',p.bodyString())
+                    # # g.trace('update',w,v)
+                    # self.recolorWidget(p,w)
+
+            # c.bodyWantsFocus()
+        #@-node:ekr.20081111152240.13:updateEditors
+        #@-others
+    #@nonl
+    #@-node:ekr.20081111152240.2:entries
+    #@+node:ekr.20081111152240.14:utils
+    #@+node:ekr.20081111152240.15:computeLabel
+    def computeLabel (self,w):
+
+        s = w.leo_label_s
+
+        if hasattr(w,'leo_chapter') and w.leo_chapter:
+            s = '%s: %s' % (w.leo_chapter.name,s)
+
+        return s
+    #@-node:ekr.20081111152240.15:computeLabel
+    #@+node:ekr.20081111152240.16:createChapterIvar
+    def createChapterIvar (self,w):
+
+        c = self.c ; cc = c.chapterController
+
+        if not hasattr(w,'leo_chapter') or not w.leo_chapter:
+            if cc and self.use_chapters:
+                w.leo_chapter = cc.getSelectedChapter()
+            else:
+                w.leo_chapter = None
+    #@-node:ekr.20081111152240.16:createChapterIvar
+    #@+node:ekr.20081111152240.17:ensurePositionExists
+    def ensurePositionExists(self,w):
+
+        '''Return True if w.leo_p exists or can be reconstituted.'''
+
+        c = self.c
+
+        if c.positionExists(w.leo_p):
+            return True
+        else:
+            g.trace('***** does not exist',w.leo_name)
+            for p2 in c.all_positions_with_unique_vnodes_iter():
+                if p2.v and p2.v == w.leo_v:
+                    w.leo_p = p2.copy()
+                    return True
+            else:
+                 # This *can* happen when selecting a deleted node.
+                w.leo_p = c.currentPosition()
+                return False
+    #@-node:ekr.20081111152240.17:ensurePositionExists
+    #@+node:ekr.20081111152240.18:inactivateActiveEditor
+    def inactivateActiveEditor(self,w):
+
+        '''Inactivate the previously active editor.'''
+
+        d = self.editorWidgets
+
+        # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
+        for key in d:
+            w2 = d.get(key)
+            if w2 != w and w2.leo_active:
+                w2.leo_active = False
+                self.unselectLabel(w2)
+                w2.leo_scrollBarSpot = w2.yview()
+                w2.leo_insertSpot = w2.getInsertPoint()
+                w2.leo_selection = w2.getSelectionRange()
+                # g.trace('inactive:',id(w2),'scroll',w2.leo_scrollBarSpot,'ins',w2.leo_insertSpot)
+                # g.trace('inactivate',id(w2))
+                return
+    #@-node:ekr.20081111152240.18:inactivateActiveEditor
+    #@+node:ekr.20081111152240.19:recolorWidget
+    def recolorWidget (self,p,w):
+
+        c = self.c ; old_w = c.frame.body.bodyCtrl
+
+        # g.trace('w',id(w),p.headString(),len(w.getAllText()))
+
+        # Save.
+        c.frame.body.bodyCtrl = w
+        try:
+            # c.recolor_now(interruptable=False) # Force a complete recoloring.
+            c.frame.body.colorizer.colorize(p,incremental=False,interruptable=False)
+        finally:
+            # Restore.
+            c.frame.body.bodyCtrl = old_w
+    #@-node:ekr.20081111152240.19:recolorWidget
+    #@+node:ekr.20081111152240.20:switchToChapter (leoBody)
+    def switchToChapter (self,w):
+
+        '''select w.leo_chapter.'''
+
+        c = self.c ; cc = c.chapterController
+
+        if hasattr(w,'leo_chapter') and w.leo_chapter:
+            chapter = w.leo_chapter
+            name = chapter and chapter.name
+            oldChapter = cc.getSelectedChapter()
+            if chapter != oldChapter:
+                # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
+                cc.selectChapterByName(name)
+                c.bodyWantsFocusNow()
+    #@-node:ekr.20081111152240.20:switchToChapter (leoBody)
+    #@+node:ekr.20081111152240.21:updateInjectedIvars
+    # Called from addEditor and assignPositionToEditor.
+
+    def updateInjectedIvars (self,w,p):
+
+        c = self.c ; cc = c.chapterController
+
+        if cc and self.use_chapters:
+            w.leo_chapter = cc.getSelectedChapter()
+        else:
+            w.leo_chapter = None
+
+        w.leo_p = p.copy()
+        w.leo_v = w.leo_p.v
+        w.leo_label_s = p.headString()
+
+        # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.headString())
+    #@-node:ekr.20081111152240.21:updateInjectedIvars
+    #@-node:ekr.20081111152240.14:utils
     #@-node:ekr.20081103095314.32:Editors (qtBody)
     #@-others
 #@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
