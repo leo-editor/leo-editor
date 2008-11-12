@@ -1545,6 +1545,7 @@ class atFile:
         # Append the next line to the text.
         s = at.readLine(at.inputFile) 
         i = at.skipIndent(s,0,at.indent)
+        at.out.append("@verbatim\n")
         at.out.append(s[i:])
     #@-node:ekr.20041005105605.112:readVerbatim
     #@-node:ekr.20041005105605.100:Unpaired sentinels
@@ -2941,6 +2942,12 @@ class atFile:
                 at.raw = False
                 at.putSentinel("@@end_raw")
                 i = g.skip_line(s,i)
+            elif kind == at.startVerbatim:
+                at.putSentinel("@verbatim")
+                at.putIndent(at.indent)
+                i = next_i
+                next_i = g.skip_line(s,i)
+                at.os(s[i:next_i])
             elif kind == at.miscDirective:
                 # g.trace('miscDirective')
                 at.putDirective(s,i)
@@ -3704,7 +3711,8 @@ class atFile:
             ("@doc",at.docDirective),
             ("@end_raw",at.endRawDirective),
             ("@others",at.othersDirective),
-            ("@raw",at.rawDirective))
+            ("@raw",at.rawDirective),
+            ("@verbatim",at.startVerbatim))
 
         # Rewritten 6/8/2005.
         if i+1 >= n or s[i+1] in (' ','\t','\n'):

@@ -14,9 +14,31 @@ import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 import string
 
+#@<< class scanUtility >>
+#@+node:sps.20081112093624.1:<< class scanUtility >>
+class scanUtility:
+
+    #@    @+others
+    #@+node:sps.20081111154528.5:escapeFalseSectionReferences
+    def escapeFalseSectionReferences(self,s):
+
+        result = []
+        for line in g.splitLines(s):
+            r1 = line.find('<<')
+            r2 = line.find('>>')
+            if r1>=0 and r2>=0 and r1<r2:
+                result.append("@verbatim\n")
+                result.append(line)
+            else:
+                 result.append(line)
+        return ''.join(result)
+    #@-node:sps.20081111154528.5:escapeFalseSectionReferences
+    #@-others
+#@-node:sps.20081112093624.1:<< class scanUtility >>
+#@nl
 #@<< class leoImportCommands >>
 #@+node:ekr.20071127175948:<< class leoImportCommands >>
-class leoImportCommands:
+class leoImportCommands (scanUtility):
 
     #@    @+others
     #@+node:ekr.20031218072017.3207:import.__init__ & helper
@@ -1603,7 +1625,7 @@ class leoImportCommands:
             language = self.languageForExtension(ext)
             if language: body += '@language %s\n' % language
 
-        c.setBodyString(p,body + self.rootLine + s)
+        c.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
         if atAuto:
             for p in p.self_and_subtree_iter():
                 p.clearDirty()
@@ -1643,7 +1665,7 @@ class leoImportCommands:
 #@nl
 #@<< class baseScannerClass >>
 #@+node:ekr.20070703122141.65:<< class baseScannerClass >>
-class baseScannerClass:
+class baseScannerClass (scanUtility):
 
     '''The base class for all import scanner classes.
     This class contains common utility methods.'''
@@ -2848,6 +2870,9 @@ class baseScannerClass:
         self.errorLines = []
         self.mismatchWarningGiven = False
         changed = c.isChanged()
+
+        # Use @verbatim to escape section references
+        s = self.escapeFalseSectionReferences(s)
 
         # Check for intermixed blanks and tabs.
         if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
