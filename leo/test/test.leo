@@ -379,7 +379,7 @@
 <v t="ekr.20081109131330.1"><vh>Dialog tests</vh></v>
 </v>
 <v t="ekr.20081110142806.1"><vh>bindings for period</vh></v>
-<v t="ekr.20081111064709.1"><vh>NewHeadline</vh></v>
+<v t="ekr.20081115142839.1"><vh>a</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3781,6 +3781,6 @@ if 1:
 </t>
 <t tx="ekr.20081110142806.1">print c.k.guiBindNamesDict.get('period')
 print c.k.guiBindNamesDict.get('.')</t>
-<t tx="ekr.20081111064709.1"></t>
+<t tx="ekr.20081115142839.1"></t>
 </tnodes>
 </leo_file>

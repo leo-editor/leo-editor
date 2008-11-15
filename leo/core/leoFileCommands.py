@@ -1418,7 +1418,6 @@ class baseFileCommands:
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
             c.redraw()
-            # c.redraw_after_icons_changed()
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
         return ok
@@ -1435,7 +1434,6 @@ class baseFileCommands:
                 c.setChanged(False) # Clears all dirty bits.
                 self.putSavedMessage(fileName)
             c.redraw()
-            # c.redraw_after_icons_changed()
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     #@-node:ekr.20031218072017.3043:saveAs
@@ -1450,7 +1448,6 @@ class baseFileCommands:
             self.write_Leo_file(fileName,False) # outlineOnlyFlag
             self.putSavedMessage(fileName)
             c.redraw()
-            # c.redraw_after_icons_changed()
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     #@-node:ekr.20031218072017.3044:saveTo

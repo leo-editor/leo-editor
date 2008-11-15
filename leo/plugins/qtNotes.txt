@@ -5,6 +5,10 @@
 @nocolor-node
 
 First:
+* Fix loss-of-data bug
+* Make sure Leo handle's non-ascii characters properly.
+* Disable configure tags in threading colorizer.
+- Finish colorizer.
 - Make auto-scrolling an option (full_redraw and redraw_after_select)
 - Add stylesheets for dialogs.
     - Set font for dummy widget in style sheet, then copy that font.
@@ -13,12 +17,11 @@ First:
 - Support multiple body editors.
 
 Next:
+- Install new Qt version and play with QScintilla.
 - Fix minor pylint stuff.
 - Handle pane orientation:
     A popular arrangement would be editor and outline
     in top pane with the log along the bottom.
-- Finish colorizer.
-#@nonl
 #@+node:ekr.20081109123309.13:Finish colorizer
 - Simulate Tk's handling of tags (an optimization)
 - Use Qt threading.
@@ -1274,24 +1277,25 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 
     '''Officially change a headline.'''
 
-    trace = False ; verbose = True
+    trace = True ; verbose = True
     c = self.c ; u = c.undoer
     e = self._editWidget
     p = self._editWidgetPosition
+    w = g.app.gui.get_focus()
 
     # These are not errors: sig_itemChanged may
     # have been called first.
     if not e:
-        if trace and verbose: g.trace('No widget')
+        if trace: g.trace('No e')
         return 
-    if e != g.app.gui.get_focus():
-        if trace and verbose: g.trace('Wrong focus')
+    if e != w:
+        if trace and verbose: g.trace('e != w')
         self._editWidget = None
         self._editWidgetPosition = None
         self._editWidgetWrapper = None
         return
     if not p:
-        if trace and verbose: g.trace('No widget position')
+        if trace: g.trace('No p')
         return
     s = e.text() ; len_s = len(s)
     s = g.toUnicode(s,'utf-8')

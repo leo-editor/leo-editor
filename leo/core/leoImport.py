@@ -868,7 +868,7 @@ class leoImportCommands:
             p.contract()
             u.afterInsertNode(p,command,undoData)
         current.expand()
-        c.redraw_after_expand()
+        ### c.redraw_after_expand()
         c.selectPosition(current)
         c.setChanged(True)
         u.afterChangeGroup(p,command)

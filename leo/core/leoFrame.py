@@ -2361,9 +2361,12 @@ class leoTree:
         '''Officially change a headline.
         Set the old undo text to the previous revert point.'''
 
-        c = self.c ; u = c.undoer ; w = c.edit_widget(p)
+        c = self.c ; u = c.undoer ; trace = False
+        w = c.edit_widget(p)
         if c.suppressHeadChanged: return
-        if not w: return
+        if not w:
+            if trace: g.trace('no w for p: %s',repr(p))
+            return
 
         ch = '\n' # New in 4.4: we only report the final keystroke.
         if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
@@ -2398,8 +2401,7 @@ class leoTree:
         changed = s != oldRevert
         self.revertHeadline = s
         p.initHeadString(s)
-        # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
-        # g.trace(g.callers())
+        if trace: g.trace('changed',changed,'new',repr(s))
         if changed:
             undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
             if not c.changed: c.setChanged(True)
