@@ -54,6 +54,13 @@ Linux:
 
 - Configuration file is bazaar.conf in ~/.bazaar directory
 #@-node:ekr.20080917153158.10:Bzr notes
+#@+node:ekr.20081113095540.1:Bzr/ubuntu notes
+/etc/apt/sources.list.d is a directory
+It contains, on my machine, files called edgy-universe.list.x
+The prefix doesn't matter, but the contents of these files must contain the proper ubuntu distro name,
+for example, gutsy, hardy, intrepid.
+#@nonl
+#@-node:ekr.20081113095540.1:Bzr/ubuntu notes
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
 Downloading http://cheeseshop.python.org/packages/2.5/s/setuptools/setuptools-0.6c6-py2.5.egg

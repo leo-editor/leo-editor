@@ -366,7 +366,7 @@
 </v>
 <v t="ekr.20040721145258.1"><vh>Run gc</vh></v>
 <v t="ekr.20040804052804"><vh>Set tracing</vh></v>
-<v t="ekr.20040901065642"><vh>test of new timit script</vh></v>
+<v t="ekr.20040901065642" a="M"><vh>test of new timit script</vh></v>
 </v>
 <v t="ekr.20050108110751"><vh>HTMLize scripts</vh>
 <v t="ekr.20041229163210"><vh>dyna htmlize</vh>
@@ -1481,7 +1481,11 @@ c.frame.tree.trace = traceDrawing
 c.frame.tree.verbose = True</t>
 <t tx="ekr.20040901065642">import string
 
+@verbatim
+@verbatim
 #@count 10000
+@verbatim
+@verbatim
 #@setup
 
 s = ''

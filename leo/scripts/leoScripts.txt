@@ -5322,8 +5322,12 @@ c.frame.tree.verbose = True
 #@+node:test of new timit script
 import string
 
+@verbatim
+@verbatim
 #@verbatim
 #@count 10000
+@verbatim
+@verbatim
 #@verbatim
 #@setup
 
