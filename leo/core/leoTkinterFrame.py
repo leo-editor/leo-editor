@@ -867,9 +867,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         """Clear all links to objects in a Leo window."""
 
-        # because of vnode losing its t attribute,
-        return
-
         frame = self ; c = self.c ; tree = frame.tree ; body = self.body
 
         # g.printGcAll()
