@@ -556,7 +556,8 @@ class nullGui(leoGui):
     def getTextFromClipboard (self):
         return self.clipboardContents
 
-    def get_focus(self,frame):
+    def get_focus(self,frame=None):
+        if not frame: return None
         return self.focusWidget or (hasattr(frame,'body') and frame.body.bodyCtrl) or None 
 
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):

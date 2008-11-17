@@ -2267,8 +2267,6 @@ class leoQtLog (leoFrame.leoLog):
         self.tabWidget = c.frame.top.ui.tabWidget # The Qt.TabWidget that holds all the tabs.
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
-        # self.filter = leoQtEventFilter(c,w=self,tag='tabbed-log')
-
         self.setFontFromConfig()
         self.setColorFromConfig()
     #@-node:ekr.20081004172422.624:qtLog.__init__
@@ -3522,16 +3520,24 @@ class leoQtTree (leoFrame.leoTree):
             self.injectCallbacks() # A base class method.
 
         w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemSelectionChanged()"), self.onTreeSelect)
+                "itemDoubleClicked(QTreeWidgetItem*, int)"),
+            self.onItemDoubleClicked)
 
         w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemChanged(QTreeWidgetItem*, int)"),self.sig_itemChanged)
+                "itemSelectionChanged()"),
+            self.onTreeSelect)
 
         w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemCollapsed(QTreeWidgetItem*)"),self.sig_itemCollapsed)
+                "itemChanged(QTreeWidgetItem*, int)"),
+            self.sig_itemChanged)
 
         w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemExpanded(QTreeWidgetItem*)"),self.sig_itemExpanded)
+                "itemCollapsed(QTreeWidgetItem*)"),
+            self.sig_itemCollapsed)
+
+        w.connect(self.treeWidget,QtCore.SIGNAL(
+                "itemExpanded(QTreeWidgetItem*)"),
+            self.sig_itemExpanded)
 
         self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
         tw.installEventFilter(self.ev_filter)
@@ -3634,17 +3640,6 @@ class leoQtTree (leoFrame.leoTree):
 
         name = 'canvas(tree)' # Must start with canvas.
 
-        # c = self.c ; e = self._editWidget
-
-        # if e and e == g.app.gui.get_focus():
-            # name = 'head(tree)' # Must start with 'head'
-        # else:
-            # self._editWidget = None
-            # self._editWidgetPosition = None
-            # self._editWidgetWrapper = None
-            # name = 'canvas(tree)' # Must start with 'canvas'
-
-        # g.trace('**tree',name,g.callers(4))
         return name
     #@-node:ekr.20081014095718.15:get_name (qtTree)
     #@-node:ekr.20081004172422.737: Birth... (qt Tree)
@@ -3806,43 +3801,43 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081021043407.24:drawNode
     def drawNode (self,p,dummy=False):
 
-        w = self.treeWidget ; trace = False
+        c = self.c ; w = self.treeWidget ; trace = False
         self.nodeDrawCount += 1
 
         # Allocate the qt tree item.
         parent = p.parent()
-        it = self.parentsDict.get(parent and parent.v,w)
+        itemOrTree = self.parentsDict.get(parent and parent.v,w)
 
         if trace and not self.fullDrawing:
-            g.trace(id(it),parent and parent.headString())
+            g.trace(id(itemOrTree),parent and parent.headString())
 
-        it = QtGui.QTreeWidgetItem(it)
-        it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
+        item = QtGui.QTreeWidgetItem(itemOrTree)
+        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
 
         # Draw the headline and the icon.
-        it.setText(0,p.headString())
+        item.setText(0,p.headString())
         icon = self.getIcon(p)
-        if icon: it.setIcon(0,icon)
+        if icon: item.setIcon(0,icon)
 
-        if dummy: return it
+        if dummy: return item
 
-        # Remember the associatiation of it with p, and vice versa.
-        self.itemsDict[it] = p.copy()
-        self.parentsDict[p.v] = it 
+        # Remember the associatiation of item with p, and vice versa.
+        self.itemsDict[item] = p.copy()
+        self.parentsDict[p.v] = item 
 
-        # Remember the association of p.v with (p,it)
+        # Remember the association of p.v with (p,item)
         aList = self.vnodeDict.get(p.v,[])
-        data = p.copy(),it
+        data = p.copy(),item
         aList.append(data)
         self.vnodeDict[p.v] = aList
 
-        # Remember the association of p.v.t with (p,it).
+        # Remember the association of p.v.t with (p,item).
         aList = self.tnodeDict.get(p.v.t,[])
-        data = p.copy(),it
+        data = p.copy(),item
         aList.append(data)
         self.tnodeDict[p.v.t] = aList
 
-        return it
+        return item
     #@-node:ekr.20081021043407.24:drawNode
     #@+node:ekr.20081021043407.25:drawTree
     def drawTree (self,p):
@@ -4214,12 +4209,35 @@ class leoQtTree (leoFrame.leoTree):
         # return 'break'
     #@-node:ekr.20081004172422.819:onIconBoxDoubleClick
     #@-node:ekr.20081004172422.816:Icon Box...
+    #@+node:ekr.20081117065611.1:onItemDoubleClicked
+    def onItemDoubleClicked (self,item,col):
+
+        c = self.c ; w = self.treeWidget
+        w.setCurrentItem(item) # Must do this first.
+        w.editItem(item)
+        e = w.itemWidget(item,0)
+        if not e:
+            return g.trace('*** no e')
+        p = self.itemsDict.get(item)
+        if not p:
+            return g.trace('*** no p')
+        # Hook up the widget to Leo's core.
+        e.connect(e,
+            QtCore.SIGNAL("textEdited(QTreeWidgetItem*,int)"),
+            self.onHeadChanged)
+        self._editWidgetPosition = p.copy()
+        self._editWidget = e
+        self._editWidgetWrapper = leoQtHeadlineWidget(
+            widget=e,name='head',c=c)
+        e.setObjectName('headline')
+    #@-node:ekr.20081117065611.1:onItemDoubleClicked
     #@+node:ekr.20081009055104.8:onTreeSelect
     def onTreeSelect(self):
 
         '''Select the proper position when a tree node is selected.'''
 
-        c = self.c ; w = self.treeWidget ; trace = False ; verbose = False
+        trace = False ; verbose = False
+        c = self.c ; w = self.treeWidget 
 
         if self.selecting:
             if trace: g.trace('already selecting')
@@ -4228,9 +4246,9 @@ class leoQtTree (leoFrame.leoTree):
             if trace: g.trace('drawing')
             return
 
-        it = w.currentItem()
-        if trace and verbose: g.trace('it 1',it)
-        p = self.itemsDict.get(it)
+        item = w.currentItem()
+        if trace and verbose: g.trace('item',item)
+        p = self.itemsDict.get(item)
         if p:
             if trace: g.trace(p and p.headString())
             c.frame.tree.select(p) # The crucial hook.
@@ -4238,7 +4256,7 @@ class leoQtTree (leoFrame.leoTree):
             c.outerUpdate()
         else:
             # An error: we are not redrawing.
-            g.trace('no p for item: %s' % it,g.callers(4))
+            g.trace('no p for item: %s' % item,g.callers(4))
     #@nonl
     #@-node:ekr.20081009055104.8:onTreeSelect
     #@+node:ekr.20081027082521.12:setCurrentItem
@@ -4622,7 +4640,7 @@ class leoQtTree (leoFrame.leoTree):
 
         """Start editing p's headline."""
 
-        c = self.c ; trace = False ; verbose = False
+        c = self.c ; trace = True ; verbose = False
 
         if self.redrawing:
             if trace and verbose: g.trace('redrawing')
@@ -4676,8 +4694,12 @@ class leoQtTree (leoFrame.leoTree):
 
         # A nice hack: just set the focus request.
         c.requestedFocusWidget = e
-
     #@-node:ekr.20081004172422.846:editLabel (override)
+    #@+node:ekr.20081117065611.11:editLabelHelper
+    def editLabelHelper (self,item):
+
+        '''A helper shared by editLabel and onItemDoubleClicked.'''
+    #@-node:ekr.20081117065611.11:editLabelHelper
     #@+node:ekr.20081030120643.11:onHeadChanged
     # Tricky code: do not change without careful thought and testing.
 
@@ -4685,7 +4707,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Officially change a headline.'''
 
-        trace = True ; verbose = True
+        trace = False ; verbose = True
         c = self.c ; u = c.undoer
         e = self._editWidget
         p = self._editWidgetPosition
@@ -4697,7 +4719,7 @@ class leoQtTree (leoFrame.leoTree):
             if trace: g.trace('No e')
             return 
         if e != w:
-            if trace and verbose: g.trace('e != w')
+            if trace and verbose: g.trace('e != w',e,w,g.callers(4))
             self._editWidget = None
             self._editWidgetPosition = None
             self._editWidgetWrapper = None
