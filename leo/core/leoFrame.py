@@ -3166,6 +3166,8 @@ class nullIconBarClass:
                 self.text = text
             def __repr__ (self):
                 return self.name
+            def bind(self,*args,**keys):
+                pass
             def cget(self,*args,**keys):
                 pass
             def configure (self,*args,**keys):
