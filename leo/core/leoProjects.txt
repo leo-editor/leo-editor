@@ -12048,7 +12048,6 @@ def pasteOutline(self,event=None,reassignIndices=True):
     c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
     u.afterInsertNode(pasted,undoType,undoData)
     c.redraw()
-    # c.redraw_after_insert()
     c.recolor()
 #@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
 @
@@ -12280,7 +12279,6 @@ def clone (self,event=None):
         c.selectPosition(clone)
 
     c.redraw()
-    # c.redraw_after_clone()
 
     return clone # For mod_labels and chapters plugins.
 #@-node:ekr.20031218072017.1762:c.clone
@@ -13210,7 +13208,6 @@ def contractNode (self,event=None):
 
     p.contract()
     c.redraw()
-    # c.redraw_after_contract()
     c.treeFocusHelper()
 #@-node:ekr.20031218072017.2901:contractNode
 #@+node:ekr.20040930064232:contractNodeOrGoToParent
@@ -13275,7 +13272,6 @@ def expandAllSubheads (self,event=None):
     while child:
         c.expandSubtree(child)
         child = child.next()
-    # c.redraw_after_expand()
     c.selectVnode(v)
     c.redraw()
     c.treeFocusHelper()
@@ -13339,9 +13335,7 @@ def expandNode (self,event=None):
 
     c = self ; p = c.currentPosition()
 
-
     p.expand()
-    # c.redraw_after_expand()
     c.redraw()
     c.treeFocusHelper()
 #@-node:ekr.20031218072017.2907:expandNode
@@ -13463,7 +13457,6 @@ def markChangedHeadlines (self,event=None):
     if not g.unitTesting:
         g.es("done",color="blue")
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
 #@-node:ekr.20031218072017.2923:markChangedHeadlines
 #@+node:ekr.20031218072017.2924:markChangedRoots
 def markChangedRoots (self,event=None):
@@ -13487,7 +13480,7 @@ def markChangedRoots (self,event=None):
     if not g.unitTesting:
         g.es("done",color="blue")
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2924:markChangedRoots
 #@+node:ekr.20031218072017.2925:markAllAtFileNodesDirty
 def markAllAtFileNodesDirty (self,event=None):
@@ -13504,7 +13497,7 @@ def markAllAtFileNodesDirty (self,event=None):
         else:
             p.moveToThreadNext()
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2925:markAllAtFileNodesDirty
 #@+node:ekr.20031218072017.2926:markAtFileNodesDirty
 def markAtFileNodesDirty (self,event=None):
@@ -13524,7 +13517,7 @@ def markAtFileNodesDirty (self,event=None):
         else:
             p.moveToThreadNext()
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2926:markAtFileNodesDirty
 #@+node:ekr.20031218072017.2927:markClones
 def markClones (self,event=None):
@@ -13549,7 +13542,7 @@ def markClones (self,event=None):
             u.afterMark(p,undoType,bunch)
     u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2927:markClones
 #@+node:ekr.20031218072017.2928:markHeadline & est
 def markHeadline (self,event=None):
@@ -13569,7 +13562,7 @@ def markHeadline (self,event=None):
     c.setChanged(True)
     u.afterMark(p,undoType,bunch,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed()
+
 #@-node:ekr.20031218072017.2928:markHeadline & est
 #@+node:ekr.20031218072017.2929:markSubheads
 def markSubheads (self,event=None):
@@ -13592,7 +13585,7 @@ def markSubheads (self,event=None):
             u.afterMark(p,undoType,bunch)
     u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2929:markSubheads
 #@+node:ekr.20031218072017.2930:unmarkAll
 def unmarkAll (self,event=None):
@@ -13619,7 +13612,7 @@ def unmarkAll (self,event=None):
         c.setChanged(True)
     u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2930:unmarkAll
 #@-node:ekr.20031218072017.2922:Mark...
 #@+node:ekr.20031218072017.1766:Move... (Commands)
@@ -13659,7 +13652,6 @@ def demote (self,event=None):
     # Add the moved nodes to p's children
     p.v.t.children.extend(followingSibs)
     p.expand()
-    # c.redraw_after_expand()
     # Even if p is an @ignore node there is no need to mark the demoted children dirty.
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     c.setChanged(True)
@@ -13712,7 +13704,6 @@ def moveOutlineDown (self,event=None):
         u.afterMoveNode(p,'Move Down',undoData,dirtyVnodeList)
     c.selectPosition(p) # Also sets rootPosition.
     c.redraw()
-    # c.redraw_after_move_down()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -13770,7 +13761,6 @@ def moveOutlineLeft (self,event=None):
         parent.contract()
     c.selectPosition(p) # Also sets rootPosition.
     c.redraw()
-    # c.redraw_after_move_left()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -13848,7 +13838,6 @@ def moveOutlineUp (self,event=None):
         u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
     c.selectPosition(p) # Also sets root position.
     c.redraw()
-    # c.redraw_after_move_up()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -15776,7 +15765,6 @@ def expandAllSubheads (self,event=None):
     while child:
         c.expandSubtree(child)
         child = child.next()
-    # c.redraw_after_expand()
     c.selectVnode(v)
     c.redraw()
     c.treeFocusHelper()
@@ -15853,7 +15841,6 @@ def demote (self,event=None):
     # Add the moved nodes to p's children
     p.v.t.children.extend(followingSibs)
     p.expand()
-    # c.redraw_after_expand()
     # Even if p is an @ignore node there is no need to mark the demoted children dirty.
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     c.setChanged(True)
@@ -16504,7 +16491,7 @@ def importDerivedFiles (self,parent=None,paths=None):
         p.contract()
         u.afterInsertNode(p,command,undoData)
     current.expand()
-    c.redraw_after_expand()
+    ### c.redraw_after_expand()
     c.selectPosition(current)
     c.setChanged(True)
     u.afterChangeGroup(p,command)
@@ -17629,7 +17616,6 @@ def save (self,event=None):
             g.chdir(c.mFileName)
 
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -17666,7 +17652,6 @@ def saveAs (self,event=None):
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20031218072017.2836:saveTo
@@ -17747,7 +17732,6 @@ def pasteOutline(self,event=None,reassignIndices=True):
     c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
     u.afterInsertNode(pasted,undoType,undoData)
     c.redraw()
-    # c.redraw_after_insert()
     c.recolor()
 #@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
 @
@@ -17872,7 +17856,6 @@ def clone (self,event=None):
         c.selectPosition(clone)
 
     c.redraw()
-    # c.redraw_after_clone()
 
     return clone # For mod_labels and chapters plugins.
 #@-node:ekr.20031218072017.1762:c.clone
@@ -17887,7 +17870,6 @@ def contractNode (self,event=None):
 
     p.contract()
     c.redraw()
-    # c.redraw_after_contract()
     c.treeFocusHelper()
 #@-node:ekr.20031218072017.2901:contractNode
 #@+node:ekr.20031218072017.2907:expandNode
@@ -17897,9 +17879,7 @@ def expandNode (self,event=None):
 
     c = self ; p = c.currentPosition()
 
-
     p.expand()
-    # c.redraw_after_expand()
     c.redraw()
     c.treeFocusHelper()
 #@-node:ekr.20031218072017.2907:expandNode
@@ -17952,7 +17932,6 @@ def markChangedHeadlines (self,event=None):
     if not g.unitTesting:
         g.es("done",color="blue")
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
 #@-node:ekr.20031218072017.2923:markChangedHeadlines
 #@+node:ekr.20031218072017.2924:markChangedRoots
 def markChangedRoots (self,event=None):
@@ -17976,7 +17955,7 @@ def markChangedRoots (self,event=None):
     if not g.unitTesting:
         g.es("done",color="blue")
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2924:markChangedRoots
 #@+node:ekr.20031218072017.2925:markAllAtFileNodesDirty
 def markAllAtFileNodesDirty (self,event=None):
@@ -17993,7 +17972,7 @@ def markAllAtFileNodesDirty (self,event=None):
         else:
             p.moveToThreadNext()
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2925:markAllAtFileNodesDirty
 #@+node:ekr.20031218072017.2926:markAtFileNodesDirty
 def markAtFileNodesDirty (self,event=None):
@@ -18013,7 +17992,7 @@ def markAtFileNodesDirty (self,event=None):
         else:
             p.moveToThreadNext()
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2926:markAtFileNodesDirty
 #@+node:ekr.20031218072017.2927:markClones
 def markClones (self,event=None):
@@ -18038,7 +18017,7 @@ def markClones (self,event=None):
             u.afterMark(p,undoType,bunch)
     u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2927:markClones
 #@+node:ekr.20031218072017.2928:markHeadline & est
 def markHeadline (self,event=None):
@@ -18058,7 +18037,7 @@ def markHeadline (self,event=None):
     c.setChanged(True)
     u.afterMark(p,undoType,bunch,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed()
+
 #@-node:ekr.20031218072017.2928:markHeadline & est
 #@+node:ekr.20031218072017.2929:markSubheads
 def markSubheads (self,event=None):
@@ -18081,7 +18060,7 @@ def markSubheads (self,event=None):
             u.afterMark(p,undoType,bunch)
     u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2929:markSubheads
 #@+node:ekr.20031218072017.2930:unmarkAll
 def unmarkAll (self,event=None):
@@ -18108,7 +18087,7 @@ def unmarkAll (self,event=None):
         c.setChanged(True)
     u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2930:unmarkAll
 #@+node:ekr.20031218072017.1768:moveOutlineDown
 @ Moving down is more tricky than moving up; we can't move p to be a child of itself.  An important optimization:  we don't have to call checkMoveWithParentWithWarning() if the parent of the moved node remains the same.
@@ -18152,7 +18131,6 @@ def moveOutlineDown (self,event=None):
         u.afterMoveNode(p,'Move Down',undoData,dirtyVnodeList)
     c.selectPosition(p) # Also sets rootPosition.
     c.redraw()
-    # c.redraw_after_move_down()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -18210,7 +18188,6 @@ def moveOutlineLeft (self,event=None):
         parent.contract()
     c.selectPosition(p) # Also sets rootPosition.
     c.redraw()
-    # c.redraw_after_move_left()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -18288,7 +18265,6 @@ def moveOutlineUp (self,event=None):
         u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
     c.selectPosition(p) # Also sets root position.
     c.redraw()
-    # c.redraw_after_move_up()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -18459,7 +18435,6 @@ def convertAllBlanks (self,event=None):
         g.es("blanks converted to tabs in",count,"nodes") # Must come before c.redraw().
     if count > 0:
         c.redraw()
-        # c.redraw_after_icons_changed(all=True)
 #@-node:ekr.20031218072017.1704:convertAllBlanks
 #@+node:ekr.20031218072017.1705:convertAllTabs
 def convertAllTabs (self,event=None):
@@ -18505,7 +18480,6 @@ def convertAllTabs (self,event=None):
         g.es("tabs converted to blanks in",count,"nodes")
     if count > 0:
         c.redraw()
-        # c.redraw_after_icons_changed(all=True)
 #@-node:ekr.20031218072017.1705:convertAllTabs
 #@+node:ekr.20031218072017.1838:updateBodyPane (handles changeNodeContents)
 def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):
@@ -18534,7 +18508,6 @@ def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):
     else:
         dirtyVnodeList = p.setDirty()
     c.redraw()
-    # c.redraw_after_icons_changed()
 
     # Scroll as necessary.
     if oldYview:
@@ -18574,7 +18547,6 @@ def setBodyString (self,p,s,encoding="utf-8"):
         if not c.isChanged():
             c.setChanged(True)
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@-node:ekr.20040305223522:c.setBodyString
 #@+node:ekr.20050920084036.35:appendToBuffer
 def appendToBuffer (self,event):
@@ -18601,7 +18573,6 @@ def appendToBufferFinisher (self,name):
         w.seeInsertPoint()
         self.endCommand()
         c.redraw()
-        # c.redraw_after_icons_changed()
         c.recolor_now()
 #@nonl
 #@-node:ekr.20050920084036.35:appendToBuffer
@@ -18628,7 +18599,6 @@ def copyToBufferFinisher (self,event,name):
         w.setInsertPoint('end')
         self.endCommand()
         c.redraw()
-        # c.redraw_after_icons_changed()
         c.recolor_now()
 #@-node:ekr.20050920084036.36:copyToBuffer
 #@+node:ekr.20050920084036.37:insertToBuffer
@@ -18655,7 +18625,6 @@ def insertToBufferFinisher (self,event,name):
         w.seeInsertPoint()
         self.endCommand()
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@-node:ekr.20050920084036.37:insertToBuffer
 #@+node:ekr.20050920084036.39:prependToBuffer
 def prependToBuffer (self,event):
@@ -18681,7 +18650,6 @@ def prependToBufferFinisher (self,event,name):
         w.seeInsertPoint()
         self.endCommand()
         c.redraw()
-        # c.redraw_after_icons_changed()
         c.recolor_now()
 #@-node:ekr.20050920084036.39:prependToBuffer
 #@+node:ekr.20050920084036.43:renameBuffer
@@ -18705,7 +18673,6 @@ def renameBufferFinisher2 (self,name):
         c.endEditing()
         c.setHeadString(p,name)
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@-node:ekr.20050920084036.43:renameBuffer
 #@+node:ekr.20050920084036.40:switchToBuffer
 def switchToBuffer (self,event):
@@ -18734,7 +18701,6 @@ def deleteFirstIcon (self,event=None):
         self.setIconList(p, aList[1:])
         c.setChanged(True)
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@nonl
 #@-node:ekr.20071114082418:deleteFirstIcon
 #@+node:ekr.20071114092622:deleteIconByName
@@ -18762,7 +18728,6 @@ def deleteIconByName (self,t,name,relPath):
         self.setIconList(p, newList)       
         c.setChanged(True)
         c.redraw()
-        # c.redraw_after_icons_changed()
     else:
         g.trace('not found',name)
 
@@ -18782,7 +18747,6 @@ def deleteLastIcon (self,event=None):
         self.setIconList(p, aList[:-1])
         c.setChanged(True)
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@nonl
 #@-node:ekr.20071114085054:deleteLastIcon
 #@+node:ekr.20071114082418.1:deleteNodeIcons
@@ -18798,7 +18762,6 @@ def deleteNodeIcons (self,event=None):
         p.setDirty()
         c.setChanged(True)
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@-node:ekr.20071114082418.1:deleteNodeIcons
 #@+node:ekr.20071114081313.1:insertIcon
 def insertIcon (self,event=None):
@@ -18825,7 +18788,6 @@ def insertIcon (self,event=None):
     self.setIconList(p, aList2)
     c.setChanged(True)
     c.redraw()
-    # c.redraw_after_icons_changed()
 #@-node:ekr.20071114081313.1:insertIcon
 #@+node:ekr.20080108090719:insertIconFromFile
 def insertIconFromFile (self,path,p=None,pos=None,**kargs):
@@ -18845,7 +18807,6 @@ def insertIconFromFile (self,path,p=None,pos=None,**kargs):
     self.setIconList(p, aList2)
     c.setChanged(True)
     c.redraw()
-    # c.redraw_after_icons_changed()
 #@-node:ekr.20080108090719:insertIconFromFile
 #@+node:ekr.20060417183606:moveLinesDown
 def moveLinesDown (self,event):
@@ -19010,7 +18971,6 @@ def save(self,fileName):
                 g.es("clearing undo")
                 c.undoer.clearUndoState()
         c.redraw()
-        # c.redraw_after_icons_changed()
 
     g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     return ok
@@ -19027,7 +18987,6 @@ def saveAs(self,fileName):
             c.setChanged(False) # Clears all dirty bits.
             self.putSavedMessage(fileName)
         c.redraw()
-        # c.redraw_after_icons_changed()
 
     g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
 #@-node:ekr.20031218072017.3043:saveAs
@@ -19042,7 +19001,6 @@ def saveTo (self,fileName):
         self.write_Leo_file(fileName,False) # outlineOnlyFlag
         self.putSavedMessage(fileName)
         c.redraw()
-        # c.redraw_after_icons_changed()
 
     g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
 #@-node:ekr.20031218072017.3044:saveTo
@@ -19311,9 +19269,7 @@ def expandNode (self,event=None):
 
     c = self ; p = c.currentPosition()
 
-
     p.expand()
-    # c.redraw_after_expand()
     c.redraw()
     c.treeFocusHelper()
 #@-node:ekr.20031218072017.2907:expandNode
@@ -19890,7 +19846,6 @@ def save (self,event=None):
             g.chdir(c.mFileName)
 
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -19927,7 +19882,6 @@ def saveAs (self,event=None):
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20031218072017.2836:saveTo
@@ -20033,7 +19987,6 @@ def convertAllBlanks (self,event=None):
         g.es("blanks converted to tabs in",count,"nodes") # Must come before c.redraw().
     if count > 0:
         c.redraw()
-        # c.redraw_after_icons_changed(all=True)
 #@-node:ekr.20031218072017.1704:convertAllBlanks
 #@+node:ekr.20031218072017.1705:convertAllTabs
 def convertAllTabs (self,event=None):
@@ -20079,7 +20032,6 @@ def convertAllTabs (self,event=None):
         g.es("tabs converted to blanks in",count,"nodes")
     if count > 0:
         c.redraw()
-        # c.redraw_after_icons_changed(all=True)
 #@-node:ekr.20031218072017.1705:convertAllTabs
 #@+node:ekr.20031218072017.1838:updateBodyPane (handles changeNodeContents)
 def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):
@@ -20108,7 +20060,6 @@ def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):
     else:
         dirtyVnodeList = p.setDirty()
     c.redraw()
-    # c.redraw_after_icons_changed()
 
     # Scroll as necessary.
     if oldYview:
@@ -20166,7 +20117,6 @@ def pasteOutline(self,event=None,reassignIndices=True):
     c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
     u.afterInsertNode(pasted,undoType,undoData)
     c.redraw()
-    # c.redraw_after_insert()
     c.recolor()
 #@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
 @
@@ -20291,7 +20241,6 @@ def clone (self,event=None):
         c.selectPosition(clone)
 
     c.redraw()
-    # c.redraw_after_clone()
 
     return clone # For mod_labels and chapters plugins.
 #@-node:ekr.20031218072017.1762:c.clone
@@ -20306,7 +20255,6 @@ def contractNode (self,event=None):
 
     p.contract()
     c.redraw()
-    # c.redraw_after_contract()
     c.treeFocusHelper()
 #@-node:ekr.20031218072017.2901:contractNode
 #@+node:ekr.20031218072017.2904:expandAllSubheads
@@ -20322,7 +20270,6 @@ def expandAllSubheads (self,event=None):
     while child:
         c.expandSubtree(child)
         child = child.next()
-    # c.redraw_after_expand()
     c.selectVnode(v)
     c.redraw()
     c.treeFocusHelper()
@@ -20334,9 +20281,7 @@ def expandNode (self,event=None):
 
     c = self ; p = c.currentPosition()
 
-
     p.expand()
-    # c.redraw_after_expand()
     c.redraw()
     c.treeFocusHelper()
 #@-node:ekr.20031218072017.2907:expandNode
@@ -20389,7 +20334,6 @@ def markChangedHeadlines (self,event=None):
     if not g.unitTesting:
         g.es("done",color="blue")
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
 #@-node:ekr.20031218072017.2923:markChangedHeadlines
 #@+node:ekr.20031218072017.2924:markChangedRoots
 def markChangedRoots (self,event=None):
@@ -20413,7 +20357,7 @@ def markChangedRoots (self,event=None):
     if not g.unitTesting:
         g.es("done",color="blue")
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2924:markChangedRoots
 #@+node:ekr.20031218072017.2925:markAllAtFileNodesDirty
 def markAllAtFileNodesDirty (self,event=None):
@@ -20430,7 +20374,7 @@ def markAllAtFileNodesDirty (self,event=None):
         else:
             p.moveToThreadNext()
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2925:markAllAtFileNodesDirty
 #@+node:ekr.20031218072017.2926:markAtFileNodesDirty
 def markAtFileNodesDirty (self,event=None):
@@ -20450,7 +20394,7 @@ def markAtFileNodesDirty (self,event=None):
         else:
             p.moveToThreadNext()
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2926:markAtFileNodesDirty
 #@+node:ekr.20031218072017.2927:markClones
 def markClones (self,event=None):
@@ -20475,7 +20419,7 @@ def markClones (self,event=None):
             u.afterMark(p,undoType,bunch)
     u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2927:markClones
 #@+node:ekr.20031218072017.2928:markHeadline & est
 def markHeadline (self,event=None):
@@ -20495,7 +20439,7 @@ def markHeadline (self,event=None):
     c.setChanged(True)
     u.afterMark(p,undoType,bunch,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed()
+
 #@-node:ekr.20031218072017.2928:markHeadline & est
 #@+node:ekr.20031218072017.2929:markSubheads
 def markSubheads (self,event=None):
@@ -20518,7 +20462,7 @@ def markSubheads (self,event=None):
             u.afterMark(p,undoType,bunch)
     u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2929:markSubheads
 #@+node:ekr.20031218072017.2930:unmarkAll
 def unmarkAll (self,event=None):
@@ -20545,7 +20489,7 @@ def unmarkAll (self,event=None):
         c.setChanged(True)
     u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
     c.redraw()
-    # c.redraw_after_icons_changed(all=True)
+
 #@-node:ekr.20031218072017.2930:unmarkAll
 #@+node:ekr.20031218072017.1767:demote
 def demote (self,event=None):
@@ -20576,7 +20520,6 @@ def demote (self,event=None):
     # Add the moved nodes to p's children
     p.v.t.children.extend(followingSibs)
     p.expand()
-    # c.redraw_after_expand()
     # Even if p is an @ignore node there is no need to mark the demoted children dirty.
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
     c.setChanged(True)
@@ -20629,7 +20572,6 @@ def moveOutlineDown (self,event=None):
         u.afterMoveNode(p,'Move Down',undoData,dirtyVnodeList)
     c.selectPosition(p) # Also sets rootPosition.
     c.redraw()
-    # c.redraw_after_move_down()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -20687,7 +20629,6 @@ def moveOutlineLeft (self,event=None):
         parent.contract()
     c.selectPosition(p) # Also sets rootPosition.
     c.redraw()
-    # c.redraw_after_move_left()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -20765,7 +20706,6 @@ def moveOutlineUp (self,event=None):
         u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
     c.selectPosition(p) # Also sets root position.
     c.redraw()
-    # c.redraw_after_move_up()
     c.treeFocusHelper()
 
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
@@ -20972,7 +20912,6 @@ def setBodyString (self,p,s,encoding="utf-8"):
         if not c.isChanged():
             c.setChanged(True)
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@-node:ekr.20040305223522:c.setBodyString
 #@+node:ekr.20060923202156:c.onCanvasKey
 def onCanvasKey (self,event):
@@ -21093,7 +21032,6 @@ def appendToBufferFinisher (self,name):
         w.seeInsertPoint()
         self.endCommand()
         c.redraw()
-        # c.redraw_after_icons_changed()
         c.recolor_now()
 #@nonl
 #@-node:ekr.20050920084036.35:appendToBuffer
@@ -21120,7 +21058,6 @@ def copyToBufferFinisher (self,event,name):
         w.setInsertPoint('end')
         self.endCommand()
         c.redraw()
-        # c.redraw_after_icons_changed()
         c.recolor_now()
 #@-node:ekr.20050920084036.36:copyToBuffer
 #@+node:ekr.20050920084036.37:insertToBuffer
@@ -21147,7 +21084,6 @@ def insertToBufferFinisher (self,event,name):
         w.seeInsertPoint()
         self.endCommand()
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@-node:ekr.20050920084036.37:insertToBuffer
 #@+node:ekr.20050920084036.39:prependToBuffer
 def prependToBuffer (self,event):
@@ -21173,7 +21109,6 @@ def prependToBufferFinisher (self,event,name):
         w.seeInsertPoint()
         self.endCommand()
         c.redraw()
-        # c.redraw_after_icons_changed()
         c.recolor_now()
 #@-node:ekr.20050920084036.39:prependToBuffer
 #@+node:ekr.20050920084036.43:renameBuffer
@@ -21197,7 +21132,6 @@ def renameBufferFinisher2 (self,name):
         c.endEditing()
         c.setHeadString(p,name)
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@-node:ekr.20050920084036.43:renameBuffer
 #@+node:ekr.20050920084036.40:switchToBuffer
 def switchToBuffer (self,event):
@@ -21226,7 +21160,6 @@ def deleteFirstIcon (self,event=None):
         self.setIconList(p, aList[1:])
         c.setChanged(True)
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@nonl
 #@-node:ekr.20071114082418:deleteFirstIcon
 #@+node:ekr.20071114092622:deleteIconByName
@@ -21254,7 +21187,6 @@ def deleteIconByName (self,t,name,relPath):
         self.setIconList(p, newList)       
         c.setChanged(True)
         c.redraw()
-        # c.redraw_after_icons_changed()
     else:
         g.trace('not found',name)
 
@@ -21274,7 +21206,6 @@ def deleteLastIcon (self,event=None):
         self.setIconList(p, aList[:-1])
         c.setChanged(True)
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@nonl
 #@-node:ekr.20071114085054:deleteLastIcon
 #@+node:ekr.20071114082418.1:deleteNodeIcons
@@ -21290,7 +21221,6 @@ def deleteNodeIcons (self,event=None):
         p.setDirty()
         c.setChanged(True)
         c.redraw()
-        # c.redraw_after_icons_changed()
 #@-node:ekr.20071114082418.1:deleteNodeIcons
 #@+node:ekr.20071114081313.1:insertIcon
 def insertIcon (self,event=None):
@@ -21317,7 +21247,6 @@ def insertIcon (self,event=None):
     self.setIconList(p, aList2)
     c.setChanged(True)
     c.redraw()
-    # c.redraw_after_icons_changed()
 #@-node:ekr.20071114081313.1:insertIcon
 #@+node:ekr.20080108090719:insertIconFromFile
 def insertIconFromFile (self,path,p=None,pos=None,**kargs):
@@ -21337,7 +21266,6 @@ def insertIconFromFile (self,path,p=None,pos=None,**kargs):
     self.setIconList(p, aList2)
     c.setChanged(True)
     c.redraw()
-    # c.redraw_after_icons_changed()
 #@-node:ekr.20080108090719:insertIconFromFile
 #@+node:ekr.20060417183606:moveLinesDown
 def moveLinesDown (self,event):
@@ -21502,7 +21430,6 @@ def save(self,fileName):
                 g.es("clearing undo")
                 c.undoer.clearUndoState()
         c.redraw()
-        # c.redraw_after_icons_changed()
 
     g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     return ok
@@ -21519,7 +21446,6 @@ def saveAs(self,fileName):
             c.setChanged(False) # Clears all dirty bits.
             self.putSavedMessage(fileName)
         c.redraw()
-        # c.redraw_after_icons_changed()
 
     g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
 #@-node:ekr.20031218072017.3043:saveAs
@@ -21534,7 +21460,6 @@ def saveTo (self,fileName):
         self.write_Leo_file(fileName,False) # outlineOnlyFlag
         self.putSavedMessage(fileName)
         c.redraw()
-        # c.redraw_after_icons_changed()
 
     g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
 #@-node:ekr.20031218072017.3044:saveTo
@@ -21782,9 +21707,12 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     '''Officially change a headline.
     Set the old undo text to the previous revert point.'''
 
-    c = self.c ; u = c.undoer ; w = c.edit_widget(p)
+    c = self.c ; u = c.undoer ; trace = False
+    w = c.edit_widget(p)
     if c.suppressHeadChanged: return
-    if not w: return
+    if not w:
+        if trace: g.trace('no w for p: %s',repr(p))
+        return
 
     ch = '\n' # New in 4.4: we only report the final keystroke.
     if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
@@ -21797,8 +21725,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     changed = s != oldRevert
     self.revertHeadline = s
     p.initHeadString(s)
-    # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
-    # g.trace(g.callers())
+    if trace: g.trace('changed',changed,'new',repr(s))
     if changed:
         undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
         if not c.changed: c.setChanged(True)
@@ -23419,9 +23346,12 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     '''Officially change a headline.
     Set the old undo text to the previous revert point.'''
 
-    c = self.c ; u = c.undoer ; w = c.edit_widget(p)
+    c = self.c ; u = c.undoer ; trace = False
+    w = c.edit_widget(p)
     if c.suppressHeadChanged: return
-    if not w: return
+    if not w:
+        if trace: g.trace('no w for p: %s',repr(p))
+        return
 
     ch = '\n' # New in 4.4: we only report the final keystroke.
     if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
@@ -23434,8 +23364,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     changed = s != oldRevert
     self.revertHeadline = s
     p.initHeadString(s)
-    # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
-    # g.trace(g.callers())
+    if trace: g.trace('changed',changed,'new',repr(s))
     if changed:
         undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
         if not c.changed: c.setChanged(True)

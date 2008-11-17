@@ -4685,24 +4685,25 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Officially change a headline.'''
 
-        trace = False ; verbose = True
+        trace = True ; verbose = True
         c = self.c ; u = c.undoer
         e = self._editWidget
         p = self._editWidgetPosition
+        w = g.app.gui.get_focus()
 
         # These are not errors: sig_itemChanged may
         # have been called first.
         if not e:
-            if trace and verbose: g.trace('No widget')
+            if trace: g.trace('No e')
             return 
-        if e != g.app.gui.get_focus():
-            if trace and verbose: g.trace('Wrong focus')
+        if e != w:
+            if trace and verbose: g.trace('e != w')
             self._editWidget = None
             self._editWidgetPosition = None
             self._editWidgetWrapper = None
             return
         if not p:
-            if trace and verbose: g.trace('No widget position')
+            if trace: g.trace('No p')
             return
         s = e.text() ; len_s = len(s)
         s = g.toUnicode(s,'utf-8')
