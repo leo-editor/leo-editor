@@ -182,7 +182,6 @@ class cleoController:
     }
 
     todo_priorities = 1,2,3,4,5,6,7,19
-    #@nonl
     #@-node:tbrown.20080304230028:priority table
     #@+node:tbrown.20060903121429.15:birth
     def __init__ (self,c):
@@ -218,6 +217,10 @@ class cleoController:
             self.time_name = c.config.getString('cleo_time_name')
 
         self.colorIgnore = c.config.getBool('cleo_color_ignore',default=True)
+
+        self.icon_location = 'beforeIcon'
+        if c.config.getString('cleo_icon_location'):
+            self.icon_location = c.config.getString('cleo_icon_location')
         #@-node:tbrown.20060913151952:<< set / read default values >>
         #@nl
 
@@ -331,8 +334,10 @@ class cleoController:
         if pri in self.priorities:
             com.appendImageDictToList(icons, iconDir,
                 g.os_path_join('cleo',self.priorities[pri]['icon']),
-                2, on='vnode', cleoIcon='1', where = 'beforeIcon')
-                # beforeBox beforeIcon beforeHeadline afterHeadline
+                2, on='vnode', cleoIcon='1', where=self.icon_location)
+                # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
+                # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
+                # Note: 'beforeBox' and 'afterHeadline' collide with other elements on the line.
 
         com.setIconList(p, icons)
     #@-node:tbrown.20080303232514:loadIcons
@@ -706,7 +711,7 @@ class cleoController:
         return None
     #@nonl
     #@-node:tbrown.20060903121429.37:draw
-    #@+node:tbrown.20060903121429.39:draw_box
+    #@+node:tbrown.20060903121429.39:draw_box <1 'hours', 100%>
     def draw_box (self,v,color,canvas):
 
         c = self.c
@@ -716,7 +721,7 @@ class cleoController:
                 canvas.create_rectangle(x,y,x+10,y+10,fill=color)
                 )
     #@nonl
-    #@-node:tbrown.20060903121429.39:draw_box
+    #@-node:tbrown.20060903121429.39:draw_box <1 'hours', 100%>
     #@+node:tbrown.20060903121429.40:draw_arrow
     # If too long can obscure +/- box
 
