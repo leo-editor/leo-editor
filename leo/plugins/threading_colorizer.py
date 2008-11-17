@@ -494,7 +494,10 @@ class colorizer:
             # The helper thread adds to this dict.  idleHandler in the main thread uses these dicts.
         self.oldTagsDict = {}
         self.postPassStarted = False
-    #@nonl
+
+        # New in Leo 4.6: configure tags only once here.
+        # Some changes will be needed for multiple body editors.
+        self.configure_tags() # Must do this every time to support multiple editors.
     #@-node:ekr.20071010193720.21:__init__ (threading colorizer)
     #@+node:ekr.20071010193720.22:addImportedRules
     def addImportedRules (self,mode,rulesDict,rulesetName):
@@ -1178,9 +1181,8 @@ class colorizer:
         self.postPassStarted = False
         self.prev = None
         self.tagsRemoved = False
-
         self.init_mode(self.language)
-        self.configure_tags() # Must do this every time to support multiple editors.
+        # self.configure_tags() # Must do this every time to support multiple editors.
 
         try:
             w.init_colorizer(self)
