@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6,3"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -66,7 +66,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20070303143846.1"></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -85,8 +85,8 @@
 <v t="ekr.20050618061835.10"><vh>output on the console</vh></v>
 </v>
 <v t="ekr.20050618061835.11"><vh>It takes two to tango</vh>
-<v t="ekr.20050618061835.6"><vh>@test my first Leo test</vh></v>
-<v t="ekr.20050618061835.9"><vh>@@test my second Leo test</vh></v>
+<v t="ekr.20050618061835.6"></v>
+<v t="ekr.20050618061835.9"></v>
 <v t="ekr.20050618061835.12"><vh>output on the console</vh></v>
 </v>
 <v t="ekr.20050618061835.13"><vh>Life gets more interesting</vh>
@@ -123,13 +123,10 @@
 <v t="ekr.20051104081502.9"><vh>a</vh></v>
 </v>
 <v t="ekr.20051104081502.10"><vh>d</vh>
-<v t="ekr.20051104081502.5"><vh>c</vh>
-<v t="ekr.20051104081502.6"><vh>firstChild</vh></v>
-<v t="ekr.20051104081502.7"><vh>secondChild</vh></v>
-</v>
+<v t="ekr.20051104081502.5"></v>
 <v t="ekr.20051104081502.11"><vh>sibling 2</vh></v>
 </v>
-<v t="ekr.20051104081502.6"><vh>firstChild</vh></v>
+<v t="ekr.20051104081502.6"></v>
 <v t="ekr.20051104081502.12"><vh>last</vh></v>
 </v>
 <v t="ekr.20051104081502.13"><vh>Cloning headlines</vh>
@@ -139,59 +136,16 @@
 <v t="ekr.20051104081502.17"><vh>d</vh></v>
 <v t="ekr.20051104081502.18"><vh>e</vh></v>
 </v>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
+<v t="ekr.20051104081502.16"></v>
 </v>
 <v t="ekr.20051104081502.19"><vh>g</vh></v>
 </v>
 <v t="ekr.20051104081502.20"><vh>a</vh>
-<v t="ekr.20051104081502.15"><vh>b</vh>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
+<v t="ekr.20051104081502.15"></v>
+<v t="ekr.20051104081502.15"></v>
+<v t="ekr.20051104081502.19"></v>
 </v>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20051104081502.15"><vh>b</vh>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20051104081502.19"><vh>g</vh></v>
-</v>
-<v t="ekr.20051104081502.20"><vh>a</vh>
-<v t="ekr.20051104081502.15"><vh>b</vh>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20051104081502.15"><vh>b</vh>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20051104081502.19"><vh>g</vh></v>
-</v>
+<v t="ekr.20051104081502.20"></v>
 <v t="ekr.20051104081502.21"><vh>f</vh></v>
 </v>
 <v t="ekr.20051104081502.308"><vh>Develop &amp; test g.removeExtraLws</vh>
@@ -266,26 +220,10 @@
 <v t="ekr.20051104081502.125"><vh>Clone test data</vh>
 <v t="ekr.20051104081502.126"><vh>aa</vh></v>
 <v t="ekr.20051104081502.127"><vh>a</vh>
-<v t="ekr.20051104081502.120"><vh>b</vh>
-<v t="ekr.20051104081502.121"><vh>c</vh>
-<v t="ekr.20051104081502.122"><vh>c2</vh>
-<v t="ekr.20051104081502.123"><vh>c3</vh></v>
-<v t="ekr.20051104081502.124"><vh>c4</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20051104081502.120"></v>
 </v>
 <v t="ekr.20051104081502.128"><vh>d</vh>
-<v t="ekr.20051104081502.127"><vh>a</vh>
-<v t="ekr.20051104081502.120"><vh>b</vh>
-<v t="ekr.20051104081502.121"><vh>c</vh>
-<v t="ekr.20051104081502.122"><vh>c2</vh>
-<v t="ekr.20051104081502.123"><vh>c3</vh></v>
-<v t="ekr.20051104081502.124"><vh>c4</vh></v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20051104081502.127"></v>
 </v>
 <v t="ekr.20051104081502.129"><vh>e</vh></v>
 <v t="ekr.20051104081502.130"><vh>z</vh></v>
@@ -806,11 +744,11 @@
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
 </v>
 <v t="ekr.20080703104536.1"><vh>Other tests</vh>
-<v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
-<v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
+<v t="ekr.20051104081502.108"></v>
+<v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -1093,7 +1031,7 @@
 <v t="ekr.20050512083700.1" annotate="7d71002e"><vh>@test markChangedHeadlines</vh></v>
 <v t="ekr.20050512083807" annotate="7d71002e"><vh>@test markChangedRoots</vh></v>
 <v t="ekr.20050512083816" annotate="7d71002e"><vh>@test markClones</vh></v>
-<v t="ekr.20050512083816" annotate="7d71002e"><vh>@test markClones</vh></v>
+<v t="ekr.20050512083816" annotate="7d71002e"></v>
 <v t="ekr.20050512083822" annotate="7d71002e"><vh>@test markHeadline</vh></v>
 <v t="ekr.20050512083822.1" annotate="7d71002e"><vh>@test markSubheads</vh>
 <v t="ekr.20050512084850.1"><vh>child 1</vh></v>
@@ -1241,9 +1179,9 @@
 </v>
 </v>
 <v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
-<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
-<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
+<v t="ekr.20080907123324.3"></v>
 </v>
 <v t="ekr.20080905113550.2"><vh>Tests with @auto as the root</vh>
 <v t="ekr.20080904110148.1"><vh>@test goto_countlines n = 3</vh></v>
@@ -1785,11 +1723,11 @@
 <v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
 <v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
 <v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20051107115231.17" annotate="7d71002e"><vh>@test typing and undo in headline - at end</vh></v>
+<v t="ekr.20051107115231.17" annotate="7d71002e"></v>
 <v t="ekr.20051107115231.18" annotate="7d71002e"><vh>@test paste and undo in headline - at end</vh></v>
 <v t="ekr.20051107115231.20" annotate="7d71002e"><vh>@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.21" annotate="7d71002e"><vh>@test selecting new node retains typing in headline</vh></v>
-<v t="ekr.20060208072307" annotate="7d71002e"><vh>@test paste from menu into body sticks</vh></v>
+<v t="ekr.20051107115231.21" annotate="7d71002e"></v>
+<v t="ekr.20060208072307" annotate="7d71002e"></v>
 <v t="ekr.20060208072331" annotate="7d71002e"><vh>@test paste from menu into headline sticks</vh></v>
 <v t="ekr.20051107115231.24" annotate="7d71002e"><vh>@test paste from menu to body recolors the body</vh></v>
 <v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@test typing in headline recomputes width</vh></v>
@@ -2100,9 +2038,7 @@
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
 </v>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
-</v>
+<v t="ekr.20040712101754.182"></v>
 </v>
 <v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
@@ -2134,9 +2070,7 @@
 <v t="ekr.20040712101754.191"><vh>b</vh></v>
 </v>
 <v t="ekr.20040712101754.192"><vh>c</vh></v>
-<v t="ekr.20040712101754.190"><vh>a</vh>
-<v t="ekr.20040712101754.191"><vh>b</vh></v>
-</v>
+<v t="ekr.20040712101754.190"></v>
 <v t="ekr.20040712101754.193"><vh>d</vh>
 <v t="ekr.20040712101754.194"><vh>e</vh></v>
 </v>
