@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="45" left="583" height="961" width="684"/>
+	<global_window_position top="49" left="588" height="721" width="684"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -3779,7 +3779,7 @@ if 0:
 if 1:
     s = g.app.gui.runAskLeoIDDialog()
 </t>
-<t tx="ekr.20081110142806.1">print c.k.guiBindNamesDict.get('period')
+<t tx="ekr.20081110142806.1"># print c.k.guiBindNamesDict.get('period')
 print c.k.guiBindNamesDict.get('.')</t>
 <t tx="ekr.20081115142839.1"></t>
 </tnodes>
