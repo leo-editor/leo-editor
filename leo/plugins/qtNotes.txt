@@ -5,24 +5,34 @@
 @nocolor-node
 
 First:
-* Fix loss-of-data bug
-* Make sure Leo handle's non-ascii characters properly.
-* Disable configure tags in threading colorizer.
+* (Done?) Make sure Leo handle's non-ascii characters properly.
+- Disable automatic horizontal tree scrolling.
+* Merge into trunk.
+
+Next:
 - Finish colorizer.
-- Make auto-scrolling an option (full_redraw and redraw_after_select)
-- Add stylesheets for dialogs.
-    - Set font for dummy widget in style sheet, then copy that font.
 - Shift-tab is Smart home. (Allow shift-tab binding).
+- Fix minor pylint stuff.
+
+Next:
+- Make auto-scrolling an option (full_redraw and redraw_after_select)
 - Allow coloring of icon bar buttons.
 - Support multiple body editors.
 - Clicks in body text do not update row/column position.
-
-Next:
-- Install new Qt version and play with QScintilla.
-- Fix minor pylint stuff.
 - Handle pane orientation:
     A popular arrangement would be editor and outline
     in top pane with the log along the bottom.
+
+Finally:
+- Install new Qt version and play with QScintilla.
+    From QScintilla change log:
+    2008/10/12 14:32:05  phil
+    QsciScintilla::setSelection() is now implemented using SCI_SETSEL so that the
+    carat can be left at either the start or the end of the selection.
+    Exposed QsciScintilla::positionFromLineIndex() and
+    QsciScintilla::lineIndexFromPosition().
+- Add stylesheets for dialogs.
+    - Set font for dummy widget in style sheet, then copy that font.
 #@+node:ekr.20081109123309.13:Finish colorizer
 - Simulate Tk's handling of tags (an optimization)
 - Use Qt threading.
@@ -3169,6 +3179,285 @@ def editLabel (self,p,selectAll=False):
     c.requestedFocusWidget = e
 #@-node:ekr.20081004172422.846:editLabel (override)
 #@-node:ekr.20081109123309.11:Recent crasher (after find)
+#@+node:ekr.20081115134154.10:Fixed headline data loss bug
+#@+node:ekr.20081113091207.1:Report
+To reproduce:
+
+- open any outline
+- hit Ctrl-I to add a node
+- select the headline so you can edit it
+- change the headline, then press Ctrl-S to save the outline.
+
+Important: press Ctrl-S when the headline is still selected and can be
+modified.
+
+It looks like the change is lost. If I change the focus to another
+headline, then press Ctrl-S after changing focus, the change is saved.
+
+The tk GUI behaves normally, no changes are lost. So I qualify this as
+a bug in the qt GUI.
+
+Slackware Linux 12.1
+Python 2.6
+qt/pyqt 4.4.3
+r1486 of qt-plugin
+#@nonl
+#@-node:ekr.20081113091207.1:Report
+#@+node:ekr.20081005065934.10:qtTree.initAfterLoad
+def initAfterLoad (self):
+
+    c = self.c ; frame = c.frame
+    w = c.frame.top ; tw = self.treeWidget
+
+    if not leoQtTree.callbacksInjected:
+        leoQtTree.callbacksInjected = True
+        self.injectCallbacks() # A base class method.
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemDoubleClicked(QTreeWidgetItem*, int)"),
+        self.onItemDoubleClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemSelectionChanged()"),
+        self.onTreeSelect)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemChanged(QTreeWidgetItem*, int)"),
+        self.sig_itemChanged)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemCollapsed(QTreeWidgetItem*)"),
+        self.sig_itemCollapsed)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemExpanded(QTreeWidgetItem*)"),
+        self.sig_itemExpanded)
+
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+    tw.installEventFilter(self.ev_filter)
+
+    c.setChanged(False)
+#@-node:ekr.20081005065934.10:qtTree.initAfterLoad
+#@+node:ekr.20081004172422.846:editLabel (override)
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c ; trace = True ; verbose = False
+
+    if self.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if self._editWidget:
+        # Not an error, because of key weirdness.
+        g.trace('already editing')
+        return
+
+    if trace:
+        g.trace('*** all',selectAll,p.headString(),g.callers(4))
+
+    w = self.treeWidget
+    data = self.vnodeDict.get(p.v)
+    if not data:
+        if trace and verbose:
+            g.trace('No data: redrawing if possible')
+        c.outerUpdate() # Do any scheduled redraw.
+        data = self.vnodeDict.get(p.v)
+
+    if data:
+        item = data [0][1]
+    else:
+        if trace and not g.app.unitTesting:
+            g.trace('*** Can not happen: no data',p and p.headString())
+        return None
+
+    if item:
+        w.setCurrentItem(item) # Must do this first.
+        w.editItem(item)
+        e = w.itemWidget(item,0) # A QLineEdit
+        if e:
+            s = e.text() ; len_s = len(s)
+            # Hook up the widget to Leo's core.
+            self._editWidgetPosition = p.copy()
+            self._editWidget = e
+            self._editWidgetWrapper = leoQtHeadlineWidget(
+                widget=e,name='head',c=c)
+            start,n = g.choose(selectAll,
+                tuple([0,len_s]),tuple([len_s,0]))
+            e.setObjectName('headline')
+            e.setSelection(start,n)
+            e.setFocus()
+        else: g.trace('*** no e')
+    else:
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
+        e = None
+        g.trace('*** no item')
+
+    # A nice hack: just set the focus request.
+    c.requestedFocusWidget = e
+#@-node:ekr.20081004172422.846:editLabel (override)
+#@+node:ekr.20081004172422.799:edit_widget
+def edit_widget (self,p):
+
+    """Returns the Qt.Edit widget for position p."""
+
+    w = self._editWidgetWrapper
+
+    if p and p == self._editWidgetPosition:
+        return w
+    else:
+        return None
+
+    # Decouple all of the core's headline code.
+    # Except for over-ridden methods.
+#@-node:ekr.20081004172422.799:edit_widget
+#@+node:ekr.20081117065611.1:onItemDoubleClicked
+def onItemDoubleClicked (self,item,col):
+
+    c = self.c ; w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+    e = w.itemWidget(item,0)
+    if not e:
+        return g.trace('*** no e')
+    p = self.itemsDict.get(item)
+    if not p:
+        return g.trace('*** no p')
+    # Hook up the widget to Leo's core.
+    e.connect(e,
+        QtCore.SIGNAL("textEdited(QTreeWidgetItem*,int)"),
+        self.onHeadChanged)
+    self._editWidgetPosition = p.copy()
+    self._editWidget = e
+    self._editWidgetWrapper = leoQtHeadlineWidget(
+        widget=e,name='head',c=c)
+    e.setObjectName('headline')
+#@-node:ekr.20081117065611.1:onItemDoubleClicked
+#@+node:ekr.20081009055104.8:onTreeSelect
+def onTreeSelect(self):
+
+    '''Select the proper position when a tree node is selected.'''
+
+    trace = False ; verbose = False
+    c = self.c ; w = self.treeWidget 
+
+    if self.selecting:
+        if trace: g.trace('already selecting')
+        return
+    if self.redrawing:
+        if trace: g.trace('drawing')
+        return
+
+    item = w.currentItem()
+    if trace and verbose: g.trace('item',item)
+    p = self.itemsDict.get(item)
+    if p:
+        if trace: g.trace(p and p.headString())
+        c.frame.tree.select(p) # The crucial hook.
+        # g.trace(g.callers())
+        c.outerUpdate()
+    else:
+        # An error: we are not redrawing.
+        g.trace('no p for item: %s' % item,g.callers(4))
+#@nonl
+#@-node:ekr.20081009055104.8:onTreeSelect
+#@+node:ekr.20081030120643.11:onHeadChanged
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.'''
+
+    trace = False ; verbose = True
+    c = self.c ; u = c.undoer
+    e = self._editWidget
+    p = self._editWidgetPosition
+    w = g.app.gui.get_focus()
+
+    # These are not errors: sig_itemChanged may
+    # have been called first.
+    if not e:
+        if trace: g.trace('No e')
+        return 
+    if e != w:
+        if trace and verbose: g.trace('e != w',e,w,g.callers(4))
+        self._editWidget = None
+        self._editWidgetPosition = None
+        self._editWidgetWrapper = None
+        return
+    if not p:
+        if trace: g.trace('No p')
+        return
+    s = e.text() ; len_s = len(s)
+    s = g.toUnicode(s,'utf-8')
+    oldHead = p.headString()
+    changed = s != oldHead
+    if trace: g.trace('changed',changed,repr(s),g.callers(4))
+    if not changed: return
+    p.initHeadString(s)
+    undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+    if not c.changed: c.setChanged(True)
+    # New in Leo 4.4.5: we must recolor the body because
+    # the headline may contain directives.
+    c.frame.body.recolor(p,incremental=True)
+    dirtyVnodeList = p.setDirty()
+    u.afterChangeNodeContents(p,undoType,undoData,
+        dirtyVnodeList=dirtyVnodeList)
+    # End the editing!
+    self._editWidget = None
+    self._editWidgetPosition = None
+    self._editWidgetWrapper = None
+    c.redraw(scroll=False)
+    if self.stayInTree:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20081030120643.11:onHeadChanged
+#@+node:ekr.20081021043407.24:drawNode
+def drawNode (self,p,dummy=False):
+
+    c = self.c ; w = self.treeWidget ; trace = False
+    self.nodeDrawCount += 1
+
+    # Allocate the qt tree item.
+    parent = p.parent()
+    itemOrTree = self.parentsDict.get(parent and parent.v,w)
+
+    if trace and not self.fullDrawing:
+        g.trace(id(itemOrTree),parent and parent.headString())
+
+    item = QtGui.QTreeWidgetItem(itemOrTree)
+    item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+
+    # Draw the headline and the icon.
+    item.setText(0,p.headString())
+    icon = self.getIcon(p)
+    if icon: item.setIcon(0,icon)
+
+    if dummy: return item
+
+    # Remember the associatiation of item with p, and vice versa.
+    self.itemsDict[item] = p.copy()
+    self.parentsDict[p.v] = item 
+
+    # Remember the association of p.v with (p,item)
+    aList = self.vnodeDict.get(p.v,[])
+    data = p.copy(),item
+    aList.append(data)
+    self.vnodeDict[p.v] = aList
+
+    # Remember the association of p.v.t with (p,item).
+    aList = self.tnodeDict.get(p.v.t,[])
+    data = p.copy(),item
+    aList.append(data)
+    self.tnodeDict[p.v.t] = aList
+
+    return item
+#@-node:ekr.20081021043407.24:drawNode
+#@-node:ekr.20081115134154.10:Fixed headline data loss bug
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081018155359.11:Unused
 #@+node:ekr.20081010070648.17:setTreeFont
