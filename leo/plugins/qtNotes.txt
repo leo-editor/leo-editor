@@ -5,7 +5,9 @@
 @nocolor-node
 
 First:
+
 * (Done?) Make sure Leo handle's non-ascii characters properly.
+- Illegal move brings up a Tk alert!
 - Disable automatic horizontal tree scrolling.
 * Merge into trunk.
 
