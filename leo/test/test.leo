@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="588" height="721" width="684"/>
+	<global_window_position top="73" left="398" height="913" width="877"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -379,7 +379,6 @@
 <v t="ekr.20081109131330.1"><vh>Dialog tests</vh></v>
 </v>
 <v t="ekr.20081110142806.1"><vh>a</vh></v>
-<v t="ekr.20081115142839.1"><vh>a</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -2550,7 +2549,7 @@ leo_to_html.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
-<t tx="ekr.20071105085941">.</t>
+<t tx="ekr.20071105085941"></t>
 <t tx="ekr.20071128122043">log = c.frame.log ; tag = 'Shell'
 frame1 = log.frameDict.get(tag)
 shellKind = 'text' # in ('plain','text','canvas')
@@ -3779,8 +3778,8 @@ if 0:
 if 1:
     s = g.app.gui.runAskLeoIDDialog()
 </t>
-<t tx="ekr.20081110142806.1"># print c.k.guiBindNamesDict.get('period')
+<t tx="ekr.20081110142806.1">This is a test of unicode chars: ᴓᴂ
+# print c.k.guiBindNamesDict.get('period')
 print c.k.guiBindNamesDict.get('.')</t>
-<t tx="ekr.20081115142839.1"></t>
 </tnodes>
 </leo_file>

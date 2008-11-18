@@ -2234,7 +2234,8 @@ class leoQtFrame (leoFrame.leoFrame):
     def update (self):
         pass
     def getTitle (self):
-        return g.toUnicode(self.top.windowTitle(),'utf-8')
+        return g.app.gui.toUnicode(self.top.windowTitle())
+
     def setTitle (self,s):
         self.top.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
@@ -3120,7 +3121,7 @@ class leoQtMenu (leoMenu.leoMenu):
     def setMenuLabel (self,menu,name,label,underline=-1):
 
         def munge(s):
-            s = g.toUnicode(s,'utf-8')
+            s = g.app.gui.toUnicode(s)
             return s.replace('&','')
 
         # menu is a qtMenuWrapper.
@@ -3481,7 +3482,8 @@ class leoQtTree (leoFrame.leoTree):
         self.c = c
         self.canvas = self # An official ivar used by Leo's core.
         self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
-        self.treeWidget.setIconSize(QtCore.QSize(20,11))
+        w.setIconSize(QtCore.QSize(20,11))
+        # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
         # Status ivars.
         self.dragging = False
@@ -3752,6 +3754,8 @@ class leoQtTree (leoFrame.leoTree):
         self.redrawing = True
         self.fullDrawing = True # To suppress some traces.
         try:
+            # hbar = w.horizontalScrollBar()
+            # hpos = hbar.sliderPosition()
             w.clear()
             # Draw all top-level nodes and their visible descendants.
             p = c.rootPosition()
@@ -3762,16 +3766,17 @@ class leoQtTree (leoFrame.leoTree):
             if not self.selecting:
                 item = self.setCurrentItem()
                 if item:
-                    if 0: # Annoying.
-                        w.scrollToItem(item,
-                            QtGui.QAbstractItemView.PositionAtCenter)
+                    pass
                 elif p and self.redrawCount > 1:
                     g.trace('Error: no current item: %s' % (p.headString()))
 
             item = w.currentItem()
             if item:
-                w.scrollToItem(item,
-                    QtGui.QAbstractItemView.PositionAtCenter)
+                if 0:
+                    w.scrollToItem(item,
+                        QtGui.QAbstractItemView.PositionAtCenter)
+
+            # hbar.setSliderPosition(hpos)
 
             # Necessary to get the tree drawn initially.
             w.repaint()
@@ -3798,6 +3803,20 @@ class leoQtTree (leoFrame.leoTree):
         self._editWidgetWrapper = None
     #@nonl
     #@-node:ekr.20081021043407.30:initData
+    #@+node:edward.20081118075608.1:drawIcon
+    def drawIcon (self,p):
+
+        '''Redraw the icon at p.
+        This is called from leoFind.changeSelection.'''
+
+        w = self.treeWidget
+        parent = p.parent()
+        itemOrTree = self.parentsDict.get(parent and parent.v,w)
+        item = QtGui.QTreeWidgetItem(itemOrTree)
+
+        icon = self.getIcon(p)
+        if icon: item.setIcon(0,icon)
+    #@-node:edward.20081118075608.1:drawIcon
     #@+node:ekr.20081021043407.24:drawNode
     def drawNode (self,p,dummy=False):
 
@@ -4308,7 +4327,7 @@ class leoQtTree (leoFrame.leoTree):
         p = self.itemsDict.get(item)
         if p:
             # so far, col is always 0
-            s = g.toUnicode(item.text(col),'utf-8')
+            s = g.app.gui.toUnicode(item.text(col))
             p.setHeadString(s)
             # g.trace("changed: ",p.headString(),g.callers(4))
             self._editWidget = None
@@ -4388,9 +4407,9 @@ class leoQtTree (leoFrame.leoTree):
             self.expanding = False
             if redraw:
                 item = self.setCurrentItem()
-                if item:
-                    w.scrollToItem(item,
-                        QtGui.QAbstractItemView.PositionAtCenter)
+                # if item:
+                    # w.scrollToItem(item,
+                    #    QtGui.QAbstractItemView.PositionAtCenter)
     #@-node:ekr.20081021043407.26:sig_itemExpanded
     #@+node:ekr.20081004172422.828:tree.OnPopup & allies
     def OnPopup (self,p,event):
@@ -4611,10 +4630,10 @@ class leoQtTree (leoFrame.leoTree):
 
         # setCurrentItem sets & clears .selecting ivar
         self.setCurrentItem()
-        item = w.currentItem()
-        if item:
-            w.scrollToItem(item,
-                QtGui.QAbstractItemView.PositionAtCenter)
+        # item = w.currentItem()
+        # if item:
+        #    w.scrollToItem(item,
+        #        QtGui.QAbstractItemView.PositionAtCenter)
     #@-node:ekr.20081025124450.15:afterSelectHint
     #@+node:ekr.20081004172422.854:setHeadline
     def setHeadline (self,p,s):
@@ -4640,7 +4659,7 @@ class leoQtTree (leoFrame.leoTree):
 
         """Start editing p's headline."""
 
-        c = self.c ; trace = True ; verbose = False
+        c = self.c ; trace = False ; verbose = False
 
         if self.redrawing:
             if trace and verbose: g.trace('redrawing')
@@ -4725,10 +4744,10 @@ class leoQtTree (leoFrame.leoTree):
             self._editWidgetWrapper = None
             return
         if not p:
-            if trace: g.trace('No p')
+            if trace: g.trace('No p') 
             return
         s = e.text() ; len_s = len(s)
-        s = g.toUnicode(s,'utf-8')
+        s = g.app.gui.toUnicode(s)
         oldHead = p.headString()
         changed = s != oldHead
         if trace: g.trace('changed',changed,repr(s),g.callers(4))
@@ -4944,7 +4963,8 @@ class leoQtGui(leoGui.leoGui):
         cb = self.qtApp.clipboard()
         if cb:
             cb.clear()
-            cb.setText(g.toEncodedString(s,'utf-8'))
+            # cb.setText(g.toEncodedString(s,'utf-8'))
+            cb.setText(s)
 
     def getTextFromClipboard (self):
 
@@ -4952,7 +4972,8 @@ class leoQtGui(leoGui.leoGui):
 
         cb = self.qtApp.clipboard()
         s = cb and cb.text() or ''
-        return g.toUnicode(s,'utf-8')
+        return g.app.gui.toUnicode(s)
+    #@nonl
     #@-node:ekr.20081004102201.648:Clipboard
     #@+node:ekr.20081004102201.651:Do nothings
     def color (self,color):         return None
@@ -5048,8 +5069,8 @@ class leoQtGui(leoGui.leoGui):
         parent = None
         title = 'Enter Leo id'
         s,ok = QtGui.QInputDialog.getText(parent,title,message)
-        s = g.toUnicode(s,'utf-8')
-        return s
+        return g.app.gui.toUnicode(s)
+    #@nonl
     #@-node:ekr.20081020075840.15:runAskLeoIDDialog
     #@+node:ekr.20081020075840.17:runAskOkDialog
     def runAskOkDialog(self,c,title,message=None,text="Ok"):
@@ -5125,7 +5146,7 @@ class leoQtGui(leoGui.leoGui):
         parent = None
         filter = self.makeFilter(filetypes)
         s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
-        return g.toUnicode(s,'utf-8')
+        return g.app.gui.toUnicode(s)
     #@nonl
     #@-node:ekr.20081004102201.644:runOpenFileDialog
     #@+node:ekr.20081004102201.645:runSaveFileDialog
@@ -5136,7 +5157,7 @@ class leoQtGui(leoGui.leoGui):
         parent = None
         filter = self.makeFilter(filetypes)
         s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter)
-        return g.toUnicode(s,'utf-8')
+        return g.app.gui.toUnicode(s)
     #@-node:ekr.20081004102201.645:runSaveFileDialog
     #@-node:ekr.20081004102201.640:Dialogs & panels
     #@+node:ekr.20081004102201.657:Focus (qtGui)
@@ -5266,6 +5287,14 @@ class leoQtGui(leoGui.leoGui):
         )
 
     #@-node:ekr.20081004102201.670:isTextWidget
+    #@+node:edward.20081118061156.1:toUnicode
+    def toUnicode (self,s):
+
+        if g.isPython3:
+            return str(s)
+        else:
+            return unicode(s)
+    #@-node:edward.20081118061156.1:toUnicode
     #@+node:ekr.20081015062931.11:widget_name (qtGui)
     def widget_name (self,w):
 
@@ -5394,7 +5423,9 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         print "New text", self.ui.lineEdit.text()
         idx = 0
         self.ui.tableWidget.clear()
-        for p in self.match_headlines(g.toUnicode(self.ui.lineEdit.text(),'utf-8')):
+        for p in self.match_headlines(
+            g.app.gui.toUnicode(self.ui.lineEdit.text())
+        ):
             it = QtGui.QTableWidgetItem(p.headString())
             self.ps[idx] = p.copy()
             self.ui.tableWidget.setItem(idx, 0, it)
@@ -5538,23 +5569,6 @@ class leoQtEventFilter(QtCore.QObject):
     #@nl
 
     #@    @+others
-    #@+node:ekr.20081018155359.10: ctor
-    def __init__(self,c,w,tag=''):
-
-        # Init the base class.
-        QtCore.QObject.__init__(self)
-
-        self.c = c
-        self.w = w      # A leoQtX object, *not* a Qt object.
-        self.tag = tag
-
-        # Pretend there is a binding for these characters.
-        close_flashers = c.config.getString('close_flash_brackets') or ''
-        open_flashers  = c.config.getString('open_flash_brackets') or ''
-        self.flashers = open_flashers + close_flashers
-
-
-    #@-node:ekr.20081018155359.10: ctor
     #@+node:ekr.20081013143507.12:eventFilter
     def eventFilter(self, obj, event):
 
@@ -5595,45 +5609,6 @@ class leoQtEventFilter(QtCore.QObject):
 
         return override
     #@-node:ekr.20081013143507.12:eventFilter
-    #@+node:ekr.20081015132934.10:isDangerous
-    def isDangerous (self,tkKey,ch):
-
-        c = self.c
-
-        if not c.frame.body.useScintilla: return False
-
-        arrows = ('home','end','left','right','up','down')
-        special = ('tab','backspace','period','parenright','parenleft')
-
-        key = tkKey.lower()
-        ch = ch.lower()
-        isAlt = key.find('alt') > -1
-        w = g.app.gui.get_focus()
-        inTree = w == self.c.frame.tree.treeWidget
-
-        val = (
-            key in special or
-            ch in arrows and not inTree and not isAlt or
-            key == 'return' and not inTree # Just barely works.
-        )
-
-        # g.trace(tkKey,ch,val)
-        return val
-    #@-node:ekr.20081015132934.10:isDangerous
-    #@+node:ekr.20081111065912.10:isSpecialOverride
-    def isSpecialOverride (self,tkKey,ch):
-
-        # g.trace(repr(tkKey),repr(ch))
-
-        if tkKey == 'Tab':
-            return True
-        elif len(tkKey) == 1:
-            return True # Must process all ascii keys.
-        elif ch in self.flashers:
-            return True
-        else:
-            return False
-    #@-node:ekr.20081111065912.10:isSpecialOverride
     #@+node:ekr.20081011152302.10:toStroke
     def toStroke (self,tkKey,ch):
 
@@ -5662,7 +5637,7 @@ class leoQtEventFilter(QtCore.QObject):
         if trace: g.trace('tkKey',tkKey,'-->',s)
         return s
     #@-node:ekr.20081011152302.10:toStroke
-    #@+node:ekr.20081008084746.1:toTkKey & helpers
+    #@+node:ekr.20081008084746.1:toTkKey
     def toTkKey (self,event):
 
         mods = self.qtMods(event)
@@ -5694,10 +5669,9 @@ class leoQtEventFilter(QtCore.QObject):
             ch = chr(keynum)
         except ValueError:
             ch = ''
-        encoding = 'utf-8'
-        ch       = g.toUnicode(ch,encoding)
-        text     = g.toUnicode(text,encoding)
-        toString = g.toUnicode(toString,encoding)
+        ch       = g.app.gui.toUnicode(ch)
+        text     = g.app.gui.toUnicode(text)
+        toString = g.app.gui.toUnicode(toString)
 
         return keynum,text,toString,ch
 
@@ -5878,10 +5852,11 @@ class leoQtEventFilter(QtCore.QObject):
             QtCore.QEvent.KeyPress,
             event.key(),mods2,event.text())
 
-        encoding = 'utf-8'
+        # encoding = 'utf-8'
         keynum = event2.key()
-        text   = g.toUnicode(event2.text(),encoding)
-        toString = g.toUnicode(QtGui.QKeySequence(keynum).toString(),encoding)
+        text = g.app.gui.toUnicode(event2.text())
+        toString = g.app.gui.toUnicode(
+            QtGui.QKeySequence(keynum).toString())
         mods = self.qtMods(event2)
 
         g.trace(
@@ -5889,7 +5864,7 @@ class leoQtEventFilter(QtCore.QObject):
             keynum,mods,repr(text),toString))
     #@-node:ekr.20081028134004.11:shifted2
     #@-node:ekr.20081028055229.3:tkKey & helpers
-    #@-node:ekr.20081008084746.1:toTkKey & helpers
+    #@-node:ekr.20081008084746.1:toTkKey
     #@+node:ekr.20081013143507.11:traceEvent
     def traceEvent (self,obj,event,tkKey,override):
 
@@ -5930,6 +5905,62 @@ class leoQtEventFilter(QtCore.QObject):
         if False and eventType not in ignore:
             g.trace('%3s:%s' % (eventType,'unknown'))
     #@-node:ekr.20081013143507.11:traceEvent
+    #@+node:ekr.20081018155359.10: ctor
+    def __init__(self,c,w,tag=''):
+
+        # Init the base class.
+        QtCore.QObject.__init__(self)
+
+        self.c = c
+        self.w = w      # A leoQtX object, *not* a Qt object.
+        self.tag = tag
+
+        # Pretend there is a binding for these characters.
+        close_flashers = c.config.getString('close_flash_brackets') or ''
+        open_flashers  = c.config.getString('open_flash_brackets') or ''
+        self.flashers = open_flashers + close_flashers
+
+
+    #@-node:ekr.20081018155359.10: ctor
+    #@+node:ekr.20081015132934.10:isDangerous
+    def isDangerous (self,tkKey,ch):
+
+        c = self.c
+
+        if not c.frame.body.useScintilla: return False
+
+        arrows = ('home','end','left','right','up','down')
+        special = ('tab','backspace','period','parenright','parenleft')
+
+        key = tkKey.lower()
+        ch = ch.lower()
+        isAlt = key.find('alt') > -1
+        w = g.app.gui.get_focus()
+        inTree = w == self.c.frame.tree.treeWidget
+
+        val = (
+            key in special or
+            ch in arrows and not inTree and not isAlt or
+            key == 'return' and not inTree # Just barely works.
+        )
+
+        # g.trace(tkKey,ch,val)
+        return val
+    #@-node:ekr.20081015132934.10:isDangerous
+    #@+node:ekr.20081111065912.10:isSpecialOverride
+    def isSpecialOverride (self,tkKey,ch):
+
+        # g.trace(repr(tkKey),repr(ch))
+
+        if tkKey == 'Tab':
+            return True
+        elif len(tkKey) == 1:
+            return True # Must process all ascii keys.
+        elif ch in self.flashers:
+            return True
+        else:
+            return False
+    #@-node:ekr.20081111065912.10:isSpecialOverride
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
 #@-node:ekr.20081103071436.4:Key handling
@@ -6204,7 +6235,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         newText = w.getAllText() # Converts to unicode.
 
         # Get the previous values from the tnode.
-        oldText = g.toUnicode(p.v.t._bodyString,"utf-8")
+        oldText = g.app.gui.toUnicode(p.v.t._bodyString)
         if oldText == newText:
             # This can happen as the result of undo.
             # g.trace('*** unexpected non-change',color="red")
@@ -6451,9 +6482,8 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        s = g.toUnicode(s,'utf-8')
-        # g.trace(repr(s))
-        return s
+        return g.app.gui.toUnicode(s)
+    #@nonl
     #@-node:ekr.20081101134906.20:getAllText
     #@+node:ekr.20081101134906.21:getInsertPoint
     def getInsertPoint(self):
@@ -6470,7 +6500,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         if w.hasSelectedText():
             i = w.selectionStart()
             s = w.selectedText()
-            s = g.toUnicode(s,'utf-8')
+            s = g.app.gui.toUnicode(s)
             j = i + len(s)
         else:
             i = j = w.cursorPosition()
@@ -6506,7 +6536,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        s = g.toUnicode(s,'utf-8')
+        s = g.app.gui.toUnicode(s)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@-node:ekr.20081101134906.26:setInsertPoint
@@ -6517,7 +6547,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
         if i > j: i,j = j,i
         s = w.text()
-        s = g.toUnicode(s,'utf-8')
+        s = g.app.gui.toUnicode(s)
         i = max(0,min(i,len(s)))
         j = max(0,min(j,len(s)))
         k = max(0,min(j-i,len(s)))
@@ -6610,7 +6640,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        s = g.toUnicode(s,'utf-8')
+        s = g.app.gui.toUnicode(s)
         return s
     #@-node:ekr.20081031074959.41:getAllText
     #@+node:ekr.20081031074959.26:getInsertPoint
@@ -6852,8 +6882,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.toPlainText()
-        s = g.toUnicode(s,'utf-8')
-        return s
+        return g.app.gui.toUnicode(s)
+    #@nonl
     #@-node:ekr.20081031074959.42:getAllText
     #@+node:ekr.20081031074959.28:getInsertPoint
     def getInsertPoint(self):
@@ -6955,18 +6985,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         cursor = w.textCursor()
         cursor.movePosition(QtGui.QTextCursor.End)
         n = cursor.position()
-
-        # Check.
-        # s = w.toPlainText()
-        # s = g.toUnicode(s,'utf-8')
-        # n2 = len(s)
-        # if n != n2:
-            # g.trace('mismatch',n,n2)
-            # return n2
-
         return n
-
-
 
     #@-node:ekr.20081104103442.1:lengthHelper
     #@-node:ekr.20081031074959.43:setSelectionRangeHelper & helper
