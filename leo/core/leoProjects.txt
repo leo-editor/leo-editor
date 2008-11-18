@@ -5461,31 +5461,25 @@ def toEncodedString (s,encoding,reportErrors=False):
 def toUnicode (s,encoding,reportErrors=False):
 
     if isPython3:
-        if s is None:
-            return ''
-        elif not g.isBytes(s):
-            return s
-        else:
-            try:
-                s = s.decode(encoding)
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = unicode(s,encoding,"replace")
-            return s
+        convert,mustConvert,nullVal = str,g.isBytes,''
     else:
-        if s is None:
-            return unicode('')
-        elif type(s) == types.UnicodeType:
-            return s
-        else:
-            try:
-                s = unicode(s,encoding,"strict")
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = unicode(s,encoding,"replace")
-            return s
+        convert,nullVal = unicode,unicode('')
+        def mustConvert (s):
+            return type(s) != types.UnicodeType
+
+    if not s:
+        s = nullVal
+    elif mustConvert(s):
+        try:
+            s = convert(s,encoding,'strict')
+        except UnicodeError:
+            s = convert(s,encoding,'replace')
+            if reportErrors: g.reportBadChars(s,encoding)
+    else:
+        pass
+
+    return s
+#@nonl
 #@-node:ekr.20050208093800.1:g.toUnicode
 #@+node:ekr.20031218072017.2317:g.trace
 # Convert all args to strings.
