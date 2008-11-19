@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="37" left="401" height="870" width="842"/>
+	<global_window_position top="37" left="527" height="870" width="706"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
@@ -73,56 +73,17 @@
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
 <v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d71002855013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c680675735509302e302e332e342e30710d7d710e5808000000616e6e6f74617465710f7d711073752e"
-marks="ekr.20031218072017.1934,ekr.20080921060401.4,"><vh>@thin leoProjects.txt</vh></v>
+marks="ekr.20080904071003.14,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20040117181936"
+marks="ekr.20080904071003.14,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
-<v t="ekr.20080915112342.1"><vh>First 6</vh>
-<v t="ekr.20080406075855.2"><vh>Fix problem with already-existing .leo.bak files</vh>
-<v t="ekr.20031218072017.3046"><vh>write_Leo_file</vh>
-<v t="ekr.20040324080359"><vh>&lt;&lt; write all @file nodes &gt;&gt;</vh></v>
-<v t="ekr.20040324080359.1"><vh>&lt;&lt; return if the .leo file is read-only &gt;&gt;</vh></v>
-<v t="ekr.20031218072017.3047"><vh>&lt;&lt; create backup file &gt;&gt;</vh></v>
-<v t="ekr.20060919070145"><vh>&lt;&lt; ensure that filename ends with .opml &gt;&gt;</vh></v>
-<v t="ekr.20060929103258"><vh>&lt;&lt; create theActualFile &gt;&gt;</vh></v>
-<v t="ekr.20031218072017.3048"><vh>&lt;&lt; delete backup file &gt;&gt;</vh></v>
-<v t="ekr.20050405103712"><vh>&lt;&lt; delete fileName &gt;&gt;</vh></v>
-<v t="ekr.20050405103712.1"><vh>&lt;&lt; rename backupName to fileName &gt;&gt;</vh></v>
-<v t="ekr.20070412095520"><vh>writeZipFile</vh></v>
-</v>
-</v>
-<v t="ekr.20071003104917"><vh>Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace</vh>
-<v t="ekr.20031218072017.1417"><vh>&lt;&lt; define global constants &gt;&gt;</vh></v>
-<v t="ekr.20040324080819.1"><vh>putLeoFile &amp; helpers</vh>
-<v t="ekr.20031218072017.3035"><vh>putFindSettings</vh></v>
-<v t="ekr.20031218072017.3037"><vh>putGlobals</vh>
-<v t="ekr.20031218072017.3038"><vh>&lt;&lt; put the body/outline ratio &gt;&gt;</vh></v>
-<v t="ekr.20031218072017.3039"><vh>&lt;&lt; put the position of this frame &gt;&gt;</vh></v>
-<v t="ekr.20031218072017.3040"><vh>&lt;&lt; put the position of the log window &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20031218072017.3041"><vh>putHeader</vh></v>
-<v t="ekr.20031218072017.3042"><vh>putPostlog</vh></v>
-<v t="ekr.20031218072017.2066"><vh>putPrefs</vh></v>
-<v t="ekr.20031218072017.1246"><vh>putProlog</vh></v>
-<v t="ekr.20031218072017.1248"><vh>putStyleSheetLine</vh></v>
-<v t="ekr.20031218072017.1577"><vh>putTnode</vh></v>
-<v t="ekr.20031218072017.1575"><vh>putTnodes</vh>
-<v t="ekr.20031218072017.1576"><vh>&lt;&lt; write only those tnodes that were referenced &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20031218072017.1863"><vh>putVnode</vh>
-<v t="ekr.20031218072017.1864"><vh>&lt;&lt; Set gnx = tnode index &gt;&gt;</vh></v>
-<v t="ekr.20031218072017.1865"><vh>&lt;&lt; Append attribute bits to attrs &gt;&gt;</vh></v>
-<v t="ekr.20040324082713"><vh>&lt;&lt; Append tnodeList and unKnownAttributes to attrs&gt;&gt; fc.put</vh></v>
-<v t="ekr.20040702085529"><vh>&lt;&lt; issue informational messages &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20031218072017.1579"><vh>putVnodes</vh></v>
-<v t="ekr.20031218072017.1247"><vh>putXMLLine</vh></v>
-</v>
-<v t="ekr.20031218072017.1246"><vh>putProlog</vh></v>
-</v>
+<v t="ekr.20080915112342.1"><vh>First 7</vh>
+<v t="ekr.20081004102201.2"><vh>Log file for @shadow</vh></v>
 <v t="ekr.20070624135822"><vh>Templates for common code fragments</vh></v>
+<v t="ekr.20071003104917"><vh>Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace</vh></v>
 <v t="ekr.20080812072419.1"><vh>Fix bug: goto-line doesn't work for @nosent files</vh>
 <v t="ekr.20080710082231.10"><vh>c.gotoLineNumber and helpers</vh>
 <v t="ekr.20080905130513.40"><vh>&lt;&lt; trace gotoLineNumber results &gt;&gt;</vh></v>
@@ -149,13 +110,12 @@ marks="ekr.20031218072017.1934,ekr.20080921060401.4,"><vh>@thin leoProjects.txt<
 <v t="ekr.20080904071003.27"><vh>goto_getScriptLines</vh></v>
 <v t="ekr.20080708094444.63"><vh>goto_open</vh></v>
 </v>
-<v t="ekr.20080904071003.14"><vh>goto_showResults</vh></v>
+<v t="ekr.20080904071003.14" a="M"><vh>goto_showResults</vh></v>
 <v t="ekr.20031218072017.2882"><vh>goto_skipToMatchingNodeSentinel</vh></v>
 </v>
 </v>
 <v t="ekr.20080908065235.1"><vh>Add expand_noweb_references for rst3 plugin</vh></v>
 <v t="ekr.20080922115725.1"><vh>Finish @shadow</vh>
-<v t="ekr.20081004102201.2"><vh>Log file for @shadow</vh></v>
 <v t="ekr.20081001062423.1"><vh>Can @shadow mark externally changed nodes?</vh>
 <v t="ekr.20080708094444.38"><vh>x.propagate_changed_lines</vh>
 <v t="ekr.20080708094444.40"><vh>&lt;&lt; init vars &gt;&gt;</vh></v>
@@ -165,10 +125,11 @@ marks="ekr.20031218072017.1934,ekr.20080921060401.4,"><vh>@thin leoProjects.txt<
 <v t="ekr.20080708094444.45"><vh>&lt;&lt; do final correctness check &gt;&gt;</vh></v>
 </v>
 </v>
+<v t="ekr.20081004102201.2"><vh>Log file for @shadow</vh></v>
 </v>
+<v t="ekr.20081028060510.1"><vh>Fix @shadow crasher</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20081013084332.1"><vh>  Leo's MVC architecture</vh></v>
 <v t="ekr.20040629121554.1"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
 <v t="ekr.20031218072017.2606"><vh>&lt;&lt; Import pychecker &gt;&gt;</vh></v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
@@ -177,7 +138,8 @@ marks="ekr.20031218072017.1934,ekr.20080921060401.4,"><vh>@thin leoProjects.txt<
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810"
+marks="ekr.20080904071003.14,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
@@ -189,8 +151,7 @@ marks="ekr.20031218072017.1934,ekr.20080921060401.4,"><vh>@thin leoProjects.txt<
 <v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@thin leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@thin leoUndo.py</vh></v>
-<v t="ekr.20031218072017.2605"
-marks="ekr.20031218072017.1934,ekr.20080921060401.4,"><vh>@thin runLeo.py </vh></v>
+<v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Test classes</vh>
 <v t="ekr.20080730161153.2"><vh>@thin leoBridgeTest.py</vh></v>
@@ -222,195 +183,6 @@ marks="ekr.20031218072017.1934,ekr.20080921060401.4,"><vh>@thin runLeo.py </vh><
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
 <t tx="EKR.20040519090151.3"></t>
-<t tx="ekr.20031218072017.1246">def putProlog (self):
-
-    c = self.c
-
-    self.putXMLLine()
-
-    if c.config.stylesheet or c.frame.stylesheet:
-        self.putStyleSheetLine()
-
-    self.put("&lt;leo_file&gt;") ; self.put_nl()
-</t>
-<t tx="ekr.20031218072017.1247">def putXMLLine (self):
-
-    '''Put the **properly encoded** &lt;?xml&gt; element.'''
-
-    # Use self.leo_file_encoding encoding.
-    self.put('%s"%s"%s\n' % (
-        g.app.prolog_prefix_string,
-        self.leo_file_encoding,
-        g.app.prolog_postfix_string))</t>
-<t tx="ekr.20031218072017.1248">def putStyleSheetLine (self):
-
-    c = self.c
-
-    # The stylesheet in the .leo file takes precedence over the default stylesheet.
-    self.put("&lt;?xml-stylesheet ")
-    self.put(c.frame.stylesheet or c.config.stylesheet)
-    self.put("?&gt;")
-    self.put_nl()</t>
-<t tx="ekr.20031218072017.1417"># self.prolog_string = "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;"
-
-self.prolog_prefix_string = "&lt;?xml version=\"1.0\" encoding="
-self.prolog_postfix_string = "?&gt;"
-self.prolog_namespace_string = 'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'</t>
-<t tx="ekr.20031218072017.1575">def putTnodes (self):
-
-    """Puts all tnodes as required for copy or save commands"""
-
-    c = self.c
-
-    self.put("&lt;tnodes&gt;\n")
-    &lt;&lt; write only those tnodes that were referenced &gt;&gt;
-    self.put("&lt;/tnodes&gt;\n")
-</t>
-<t tx="ekr.20031218072017.1576">if self.usingClipboard: # write the current tree.
-    theIter = c.currentPosition().self_and_subtree_iter()
-else: # write everything
-    theIter = c.all_positions_with_unique_tnodes_iter()
-
-# Populate tnodes
-tnodes = {}
-nodeIndices = g.app.nodeIndices
-for p in theIter:
-    # New in Leo 4.4.8: assign file indices here.
-    if not p.v.t.fileIndex:
-        p.v.t.fileIndex = nodeIndices.getNewIndex()
-    tnodes[p.v.t.fileIndex] = p.v.t
-
-# Put all tnodes in index order.
-for index in sorted(tnodes):
-    # g.trace(index)
-    t = tnodes.get(index)
-    if not t:
-        g.trace('can not happen: no tnode for',index)
-    # Write only those tnodes whose vnodes were written.
-    if t.isWriteBit():
-        self.putTnode(t)</t>
-<t tx="ekr.20031218072017.1577">def putTnode (self,t):
-
-    # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-    if not t.fileIndex:
-        g.trace('can not happen: no index for tnode',t)
-        t.fileIndex = g.app.nodeIndices.getNewIndex()
-
-    # New in Leo 4.4.2 b2: call put just once.
-    gnx = g.app.nodeIndices.toString(t.fileIndex)
-    ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
-    body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
-    self.put('&lt;t tx="%s"%s&gt;%s&lt;/t&gt;\n' % (gnx,ua,body))
-</t>
-<t tx="ekr.20031218072017.1579">def putVnodes (self):
-
-    """Puts all &lt;v&gt; elements in the order in which they appear in the outline."""
-
-    c = self.c
-    c.clearAllVisited()
-
-    self.put("&lt;vnodes&gt;\n")
-
-    # Make only one copy for all calls.
-    self.currentPosition = c.currentPosition() 
-    self.rootPosition    = c.rootPosition()
-    # self.topPosition     = c.topPosition()
-
-    if self.usingClipboard:
-        self.putVnode(self.currentPosition) # Write only current tree.
-    else:
-        for p in c.rootPosition().self_and_siblings_iter():
-            # New in Leo 4.4.2 b2 An optimization:
-            self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
-
-    self.put("&lt;/vnodes&gt;\n")</t>
-<t tx="ekr.20031218072017.1863">def putVnode (self,p,isIgnore=False):
-
-    """Write a &lt;v&gt; element corresponding to a vnode."""
-
-    fc = self ; c = fc.c ; v = p.v
-    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
-    isShadow = p.isAtShadowFileNode()
-    isThin = p.isAtThinFileNode()
-    isOrphan = p.isOrphan()
-    if not isIgnore: isIgnore = p.isAtIgnoreNode()
-
-    if isIgnore:   forceWrite = True      # Always write full @ignore trees.
-    elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
-    elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
-    elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
-    else:          forceWrite = True      # Write all other @file trees.
-
-    &lt;&lt; Set gnx = tnode index &gt;&gt;
-    attrs = []
-    &lt;&lt; Append attribute bits to attrs &gt;&gt;
-    &lt;&lt; Append tnodeList and unKnownAttributes to attrs &gt;&gt;
-    attrs = ''.join(attrs)
-    v_head = '&lt;v t="%s"%s&gt;&lt;vh&gt;%s&lt;/vh&gt;' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
-    # The string catentation is faster than repeated calls to fc.put.
-    if not self.usingClipboard:
-        &lt;&lt; issue informational messages &gt;&gt;
-    # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
-    if p.hasChildren() and (forceWrite or self.usingClipboard):
-        fc.put('%s\n' % v_head)
-        # This optimization eliminates all "recursive" copies.
-        p.moveToFirstChild()
-        while 1:
-            fc.putVnode(p,isIgnore)
-            if p.hasNext(): p.moveToNext()
-            else:           break
-        p.moveToParent() # Restore p in the caller.
-        fc.put('&lt;/v&gt;\n')
-    else:
-        fc.put('%s&lt;/v&gt;\n' % v_head) # Call put only once.
-</t>
-<t tx="ekr.20031218072017.1864"># New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-if not v.t.fileIndex:
-    v.t.fileIndex = g.app.nodeIndices.getNewIndex()
-
-gnx = g.app.nodeIndices.toString(v.t.fileIndex)
-
-if forceWrite or self.usingClipboard:
-    v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
-</t>
-<t tx="ekr.20031218072017.1865"># These string catenations are benign because they rarely happen.
-attr = ""
-# New in Leo 4.5: support fixed .leo files.
-if not c.fixed:
-    if v.isExpanded() and v.hasChildren(): attr += "E"
-    if v.isMarked():   attr += "M"
-    if v.isOrphan():   attr += "O"
-
-    # No longer a bottleneck now that we use p.equal rather than p.__cmp__
-    # Almost 30% of the entire writing time came from here!!!
-    # if not self.use_sax:
-        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
-
-    if attr:
-        attrs.append(' a="%s"' % attr)
-
-# Put the archived *current* position in the *root* positions &lt;v&gt; element.
-if p == self.rootPosition:
-    aList = [str(z) for z in self.currentPosition.archivedPosition()]
-    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
-    if not c.fixed:
-        d['str_leo_pos'] = ','.join(aList)
-    # g.trace(aList,d)
-    v.unknownAttributes = d
-elif hasattr(v,"unknownAttributes"):
-    d = v.unknownAttributes
-    if d and not c.fixed and d.get('str_leo_pos'):
-        # g.trace("clearing str_leo_pos",v)
-        del d['str_leo_pos']
-        v.unknownAttributes = d
-</t>
-<t tx="ekr.20031218072017.2066">def putPrefs (self):
-
-    # New in 4.3:  These settings never get written to the .leo file.
-    self.put("&lt;preferences/&gt;")
-    self.put_nl()
-</t>
 <t tx="ekr.20031218072017.2406">@tabwidth -4
 @pagewidth 80
 
@@ -598,244 +370,12 @@ else:
     # g.trace(n)
     return n
 </t>
-<t tx="ekr.20031218072017.3035">def putFindSettings (self):
-
-    # New in 4.3:  These settings never get written to the .leo file.
-    self.put("&lt;find_panel_settings/&gt;")
-    self.put_nl()
-</t>
-<t tx="ekr.20031218072017.3037"># Changed for Leo 4.0.
-
-def putGlobals (self):
-
-    c = self.c
-    self.put("&lt;globals")
-    &lt;&lt; put the body/outline ratio &gt;&gt;
-    self.put("&gt;") ; self.put_nl()
-    &lt;&lt; put the position of this frame &gt;&gt;
-    &lt;&lt; put the position of the log window &gt;&gt;
-    self.put("&lt;/globals&gt;") ; self.put_nl()
-</t>
-<t tx="ekr.20031218072017.3038"># Puts an innumerate number of digits
-
-self.put(" body_outline_ratio=")
-
-# New in Leo 4.5: support fixed .leo files.
-self.put_in_dquotes(
-    str(g.choose(c.fixed,0.5,c.frame.ratio)))
-</t>
-<t tx="ekr.20031218072017.3039"># New in Leo 4.5: support fixed .leo files.
-
-if c.fixed:
-    width,height,left,top = 700,500,50,50
-        # Put fixed, immutable, reasonable defaults.
-        # Leo 4.5 and later will ignore these when reading.
-        # These should be reasonable defaults so that the
-        # file will be opened properly by older versions
-        # of Leo that do not support fixed .leo files.
-else:
-    width,height,left,top = c.frame.get_window_info()
-
-# g.trace(width,height,left,top)
-
-self.put_tab()
-self.put("&lt;global_window_position")
-self.put(" top=") ; self.put_in_dquotes(str(top))
-self.put(" left=") ; self.put_in_dquotes(str(left))
-self.put(" height=") ; self.put_in_dquotes(str(height))
-self.put(" width=") ; self.put_in_dquotes(str(width))
-self.put("/&gt;") ; self.put_nl()
-</t>
-<t tx="ekr.20031218072017.3040">top = left = height = width = 0 # no longer used
-
-self.put_tab()
-self.put("&lt;global_log_window_position")
-self.put(" top=") ; self.put_in_dquotes(str(top))
-self.put(" left=") ; self.put_in_dquotes(str(left))
-self.put(" height=") ; self.put_in_dquotes(str(height))
-self.put(" width=") ; self.put_in_dquotes(str(width))
-self.put("/&gt;") ; self.put_nl()
-</t>
-<t tx="ekr.20031218072017.3041">def putHeader (self):
-
-    tnodes = 0 ; clone_windows = 0 # Always zero in Leo2.
-
-    if 1: # For compatibility with versions before Leo 4.5.
-        self.put("&lt;leo_header")
-        self.put(" file_format=") ; self.put_in_dquotes("2")
-        self.put(" tnodes=") ; self.put_in_dquotes(str(tnodes))
-        self.put(" max_tnode_index=") ; self.put_in_dquotes(str(0))
-        self.put(" clone_windows=") ; self.put_in_dquotes(str(clone_windows))
-        self.put("/&gt;") ; self.put_nl()
-
-    else:
-        self.put('&lt;leo_header file_format="2"/&gt;\n')
-</t>
-<t tx="ekr.20031218072017.3042">def putPostlog (self):
-
-    self.put("&lt;/leo_file&gt;") ; self.put_nl()
-</t>
-<t tx="ekr.20031218072017.3046">def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
-
-    c = self.c
-    self.putCount = 0
-    self.toString = toString
-    theActualFile = None
-    toZip = False
-    atOk = True
-
-    if c.config.getBool('check_outline_before_save'):
-        g.trace('@bool check_outline_before_save = True',color='blue')
-        errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-        if errors &gt; 0:
-            g.es_print('outline not written',color='red')
-            return False
-
-    if not outlineOnlyFlag or toOPML:
-        # Update .leoRecentFiles.txt if possible.
-        g.app.config.writeRecentFilesFile(c)
-        &lt;&lt; write all @file nodes &gt;&gt;
-    &lt;&lt; return if the .leo file is read-only &gt;&gt;
-    try:
-        &lt;&lt; create backup file &gt;&gt;
-        self.mFileName = fileName
-        if toOPML:
-            &lt;&lt; ensure that filename ends with .opml &gt;&gt;
-        self.outputFile = StringIO()
-        &lt;&lt; create theActualFile &gt;&gt;
-        # t1 = time.clock()
-        if toOPML:
-            self.putToOPML()
-        else:
-            # An important optimization: we have already assign the file indices.
-            self.putLeoFile()
-        # t2 = time.clock()
-        s = self.outputFile.getvalue()
-        # g.trace(self.leo_file_encoding)
-        if toZip:
-            self.writeZipFile(s)
-        elif toString:
-            # For support of chapters plugin.
-            g.app.write_Leo_file_string = s
-        else:
-            theActualFile.write(s)
-            theActualFile.close()
-            &lt;&lt; delete backup file &gt;&gt;
-            # t3 = time.clock()
-            # g.es_print('len',len(s),'putCount',self.putCount) # 'put',t2-t1,'write&amp;close',t3-t2)
-        self.outputFile = None
-        self.toString = False
-        return atOk
-    except Exception:
-        g.es("exception writing:",fileName)
-        g.es_exception(full=True)
-        if theActualFile: theActualFile.close()
-        self.outputFile = None
-        if backupName:
-            &lt;&lt; delete fileName &gt;&gt;
-            &lt;&lt; rename backupName to fileName &gt;&gt;
-        self.toString = False
-        return False
-
-write_LEO_file = write_Leo_file # For compatibility with old plugins.
-</t>
-<t tx="ekr.20031218072017.3047">backupName = None
-
-# rename fileName to fileName.bak if fileName exists.
-if not toString and g.os_path_exists(fileName):
-
-    backupName = g.os_path_join(g.app.loadDir,fileName)
-    backupName = fileName + ".bak"
-
-    if g.os_path_exists(backupName):
-        g.utils_remove(backupName)
-
-    ok = g.utils_rename(c,fileName,backupName)
-
-    if not ok:
-        if self.read_only:
-            g.es("read only",color="red")
-        return False</t>
-<t tx="ekr.20031218072017.3048">if backupName and g.os_path_exists(backupName):
-
-    self.deleteFileWithMessage(backupName,'backup')
-</t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
 </t>
 <t tx="ekr.20031218072017.3821"></t>
-<t tx="ekr.20040324080359">try:
-    # Write all @file nodes and set orphan bits.
-    # An important optimization: we have already assign the file indices.
-    changedFiles,atOk = c.atFileCommands.writeAll()
-except Exception:
-    g.es_error("exception writing derived files")
-    g.es_exception()
-    return False
-</t>
-<t tx="ekr.20040324080359.1"># self.read_only is not valid for Save As and Save To commands.
-
-if g.os_path_exists(fileName):
-    try:
-        if not os.access(fileName,os.W_OK):
-            g.es("can not write: read only:",fileName,color="red")
-            return False
-    except Exception:
-        pass # os.access() may not exist on all platforms.
-</t>
-<t tx="ekr.20040324080819.1">def putLeoFile (self):
-
-    self.updateFixedStatus()
-    self.putProlog()
-    self.putHeader()
-    self.putGlobals()
-    self.putPrefs()
-    self.putFindSettings()
-    #start = g.getTime()
-    self.putVnodes()
-    #start = g.printDiffTime("vnodes ",start)
-    self.putTnodes()
-    #start = g.printDiffTime("tnodes ",start)
-    self.putPostlog()
-</t>
-<t tx="ekr.20040324082713"># Write the tnodeList only for @file nodes.
-# New in 4.2: tnode list is in tnode.
-
-if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) &gt; 0 and v.isAnyAtFileNode():
-    if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
-        if isThin or isShadow: # Never issue warning for @auto.
-            if g.app.unitTesting:
-                g.app.unitTestDict["warning"] = True
-            g.es("deleting tnode list for",p.headString(),color="blue")
-        # This is safe: cloning can't change the type of this node!
-        delattr(v.t,"tnodeList")
-    else:
-        attrs.append(fc.putTnodeList(v)) # New in 4.0
-
-if hasattr(v,"unknownAttributes"): # New in 4.0
-    # g.trace('v',v,'v.uA',v.unknownAttributes)
-    attrs.append(self.putUnknownAttributes(v))
-
-if p.hasChildren() and not forceWrite and not self.usingClipboard:
-    # We put the entire tree when using the clipboard, so no need for this.
-    if not isAuto: # Bug fix: 2008/8/7.
-        attrs.append(self.putDescendentTnodeUas(p))
-        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
-        attrs.append(self.putDescendentAttributes(p))</t>
 <t tx="ekr.20040629121554.1">def getSignOnLine (self):
     c = self
     return "Leo 4.5.1 final, build %s, September 14, 2008" % c.getBuildNumber()
-</t>
-<t tx="ekr.20040702085529">if isOrphan and isThin:
-    g.es("writing erroneous:",p.headString(),color="blue")
-    p.clearOrphan()
-</t>
-<t tx="ekr.20050405103712">if fileName and g.os_path_exists(fileName):
-
-    self.deleteFileWithMessage(fileName,'')
-</t>
-<t tx="ekr.20050405103712.1">if backupName:
-    g.es("restoring",fileName,"from",backupName)
-    g.utils_rename(c,backupName,fileName)
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
@@ -1008,35 +548,6 @@ if g.os_path_exists(path):
     c.zodbCommands.writeFile()
 else:
     g.es_print('not found: %s' % path)</t>
-<t tx="ekr.20060919070145">if not self.mFileName.endswith('opml'):
-    self.mFileName = self.mFileName + '.opml'
-fileName = self.mFileName</t>
-<t tx="ekr.20060929103258">if toString:
-    theActualFile = None
-elif c.isZipped:
-    self.toString = toString = True
-    theActualFile = None
-    toZip = True
-else:
-    theActualFile = open(fileName, 'wb')
-</t>
-<t tx="ekr.20070412095520">def writeZipFile (self,s):
-
-    # The name of the file in the archive.
-    contentsName = g.toEncodedString(
-        g.shortFileName(self.mFileName),
-        self.leo_file_encoding,reportErrors=True)
-
-    # The name of the archive itself.
-    fileName = g.toEncodedString(
-        self.mFileName,
-        self.leo_file_encoding,reportErrors=True)
-
-    # Write the archive.
-    theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
-    theFile.writestr(contentsName,s)
-    theFile.close()
-</t>
 <t tx="ekr.20070605104410"></t>
 <t tx="ekr.20070624135822">@
 Use completion to show fragments.
@@ -1488,14 +999,6 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
 </t>
 <t tx="ekr.20080312060129.5"></t>
 <t tx="ekr.20080312060129.6"></t>
-<t tx="ekr.20080406075855.2">@nocolor
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.
-
-EKR: Either use mkstemp or always write to a string first.
-
-@color</t>
 <t tx="ekr.20080412053100.4"></t>
 <t tx="ekr.20080412053100.5"></t>
 <t tx="ekr.20080708094444.38">def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
@@ -1839,6 +1342,7 @@ else:
     # Select p and make it visible.
     c.frame.tree.expandAllAncestors(p)
     c.selectPosition(p)
+    # c.redraw_after_select()
     c.redraw()
 
     # Put the cursor on line n2 of the body text.
@@ -2026,59 +1530,51 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
 <t tx="ekr.20081004102201.2">@nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51</t>
-<t tx="ekr.20081013084332.1">@nocolor-node
+<t tx="ekr.20081028060510.1">@nocolor-node
 
-I. Background
+http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
 
-Leo has had a robust MVC (Model,View,Controller) architecture from day one.
+I think Leo crashes when attempting to load a shadow file that starts
+with a line feed character. [EKR: it's the missing file extension]
 
-Leo's model are the classes in leoNodes.py. They are completely independent from
-the rest of Leo. Many parts of Leo *use* these classes, but not vice versa!
+Here's the stack trace:
 
-Leo's controller is everything else in 'Code--&gt;Core classes'. This code has *no*
-direct dependencies on Leo's gui code, as will be explained next.
-
-Leo's view has two parts:
-
-1. The classes in the tree 'Code--&gt;Gui Base classes'.
-   These are part of Leo's core.
-
-2. The classes in the tree 'Code--&gt;Gui Tkinter classes'.
-   These are essentailly a gui plugin.
-
-Leo's core consists of the Model, Controller and the gui base classes.
-
-
-II. Why Leo's core is gui-independent
-
-Leo uses a completely standard way of separating gui-dependent code from
-gui-independent code. Base gui classes (part 1 of the view) define an interface
-used by Leo's core. Subclasses (part 2 of the view) implement the interface for
-a particular gui.
-
-** Subclasses can change without affecting Leo's code in any way.**
-
-The essential design rule is: if gui-related code can be made gui- independent,
-it should be part of a base class. Otherwise it must be part of a subclass of a
-base gui class.
-
-The gui base classes are far more than do-nothing interfaces. Examples of
-complex code that reside in base classes:
-
-A. tree.select. I am proud that this method is gui-independent. Switching nodes
-is a very tricky business. Making it gui-independent is a big win.
-
-B. leoFind.py. Finds the next/previous matches, and dealing with an "idealized"
-find tab. Adapter classes exist in leoEditCommands.py.
-
-C. Autocompletion and minibuffer code in leoKeys.py. For comparison, look how
-simple leoTkinterKeys.py is.
-
-D. A generalized, gui-independent interface to Leo's body pane. The commands in
-leoEditCommands.py (part of the controller) use this interface (baseTextWidget)
-rather than calling Tk directly.
-
-**If you want to understand Leo's design, study Leo's base gui classes.**
-</t>
+Traceback (most recent call last):
+ File "/home/jesse/leo-editor/launchLeo.py", line 8, in &lt;module&gt;
+   leo.core.runLeo.run()
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
+   c,frame = createFrame(fileName,relativeFileName,script)
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
+createFrame
+   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+ File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
+openWithFileName
+   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
+in open
+   silent=silent)
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
+in getLeoFile
+   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
+readAll
+   at.readOneAtShadowNode (fileName,p)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
+readOneAtShadowNode
+   at.writeOneAtShadowNode(p,toString=False,force=True)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
+writeOneAtShadowNode
+   at.writeOpenFile(root,nosentinels=not
+sentinels,toString=False,atAuto=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
+writeOpenFile
+   at.putBody(root,fromString=fromString)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
+putBody
+   at.putCodeLine(s,i)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
+putCodeLine
+   if g.match(s,k,self.startSentinelComment + '@'):
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'</t>
 </tnodes>
 </leo_file>

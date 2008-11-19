@@ -1315,7 +1315,7 @@ class leoMenu:
         New in 4.4: this method shows the shortcut in the menu,
         but this method **never** binds any shortcuts.'''
 
-        # g.trace('c',self.c)
+        # g.trace('menu',menu)
 
         c = self.c ; f = c.frame ; k = c.k ; trace = False
         if g.app.unitTesting: return
@@ -1425,7 +1425,7 @@ class leoMenu:
             #@nl
             accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
             accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
-            def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
+            def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
                 #k.clearState()
                 #g.trace(stroke)
                 return k.masterMenuHandler(stroke,command,commandName)

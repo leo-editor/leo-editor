@@ -14,7 +14,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoChapters as leoChapters
 import leo.core.leoColor as leoColor
 import leo.core.leoFrame as leoFrame
-import leo.core.leoNodes as leoNodes
+# import leo.core.leoNodes as leoNodes
 import leo.core.leoTkinterMenu as leoTkinterMenu
 import leo.core.leoTkinterTree as leoTkinterTree
 
@@ -270,11 +270,6 @@ class leoTkinterBody (leoFrame.leoBody):
 
         self.c.widgetWantsFocus(self.bodyCtrl)
     #@-node:ekr.20031218072017.4003:Focus (tkBody)
-    #@+node:ekr.20031218072017.3999:forceRecolor
-    def forceFullRecolor (self):
-
-        self.forceFullRecolorFlag = True
-    #@-node:ekr.20031218072017.3999:forceRecolor
     #@+node:ekr.20031218072017.4000:Tk bindings (tkBody)
     #@+node:ekr.20031218072017.4002:Color tags (Tk spelling) (tkBody)
     def tag_add (self,tagName,index1,index2):
@@ -312,13 +307,13 @@ class leoTkinterBody (leoFrame.leoBody):
         return self.bodyCtrl.configure(*args,**keys)
     #@-node:ekr.20031218072017.2184:Configuration (Tk spelling) (tkBody)
     #@+node:ekr.20031218072017.4004:Height & width
-    def getBodyPaneHeight (self):
+    # def getBodyPaneHeight (self):
 
-        return self.bodyCtrl.winfo_height()
+        # return self.bodyCtrl.winfo_height()
 
-    def getBodyPaneWidth (self):
+    # def getBodyPaneWidth (self):
 
-        return self.bodyCtrl.winfo_width()
+        # return self.bodyCtrl.winfo_width()
     #@-node:ekr.20031218072017.4004:Height & width
     #@+node:ekr.20031218072017.4005:Idle time...
     def scheduleIdleTimeRoutine (self,function,*args,**keys):
@@ -332,25 +327,6 @@ class leoTkinterBody (leoFrame.leoBody):
         c = self.c
         return self.bodyCtrl.bind(*args,**keys)
     #@-node:ekr.20031218072017.4017:Menus (tkBody) (May cause problems)
-    #@+node:ekr.20070228081242:Text (now in base class)
-    # def getAllText (self):              return self.bodyCtrl.getAllText()
-    # def getInsertPoint(self):           return self.bodyCtrl.getInsertPoint()
-    # def getSelectedText (self):         return self.bodyCtrl.getSelectedText()
-    # def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
-    # def hasTextSelection (self):        return self.bodyCtrl.hasSelection()
-    # # def scrollDown (self):            g.app.gui.yscroll(self.bodyCtrl,1,'units')
-    # # def scrollUp (self):              g.app.gui.yscroll(self.bodyCtrl,-1,'units')
-    # def see (self,index):               self.bodyCtrl.see(index)
-    # def seeInsertPoint (self):          self.bodyCtrl.seeInsertPoint()
-    # def selectAllText (self,event=None):
-        # w = g.app.gui.eventWidget(event) or self.bodyCtrl
-        # return w.selectAllText()
-    # def setInsertPoint (self,pos):      return self.bodyCtrl.getInsertPoint(pos)
-    # def setSelectionRange (self,sel):
-        # i,j = sel
-        # self.bodyCtrl.setSelectionRange(i,j)
-    #@nonl
-    #@-node:ekr.20070228081242:Text (now in base class)
     #@-node:ekr.20031218072017.4000:Tk bindings (tkBody)
     #@+node:ekr.20070424053629.2:Editors (tkBody)
     #@+node:ekr.20070424054235:createEditorFrame
@@ -542,19 +518,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
         f.body.setFontFromConfig()
         f.body.setColorFromConfig()
     #@-node:ekr.20051009045208:createSplitterComponents (tkFrame) (removed frame.bodyCtrl ivar)
-    #@+node:ekr.20051009045404:createFirstTreeNode
-    def createFirstTreeNode (self):
-
-        f = self ; c = f.c
-
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        c.setRootPosition(p) # New in 4.4.2.
-        c.editPosition(p)
-    #@-node:ekr.20051009045404:createFirstTreeNode
     #@+node:ekr.20051121092320:f.enableTclTraces
     def enableTclTraces (self):
 
@@ -1337,7 +1300,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         #@-node:ekr.20031218072017.3955:unpack (hide)
         #@-others
     #@-node:ekr.20041223102225:class tkIconBarClass
-    #@+node:ekr.20051014154752:Minibuffer methods
+    #@+node:ekr.20051014154752:Minibuffer methods (tkFrame)
     #@+node:ekr.20060203115311:showMinibuffer
     def showMinibuffer (self):
 
@@ -1411,7 +1374,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
                 # Support Linux middle-button paste easter egg.
                 c.bind(w,"<Button-2>",f.OnPaste)
     #@-node:ekr.20060203114017:f.setMinibufferBindings
-    #@-node:ekr.20051014154752:Minibuffer methods
+    #@-node:ekr.20051014154752:Minibuffer methods (tkFrame)
     #@+node:ekr.20031218072017.3967:Configuration (tkFrame)
     #@+node:ekr.20031218072017.3968:configureBar (tkFrame)
     def configureBar (self,bar,verticalFlag):
@@ -3542,7 +3505,7 @@ class leoTkTextWidget (Tk.Text):
 
 
     #@-node:ekr.20070116073907:tag_remove
-    #@+node:ekr.20061113151148.11:w.deleteTextSelection
+    #@+node:ekr.20061113151148.11:deleteTextSelection
     def deleteTextSelection (self): # tkTextWidget
 
         w = self
@@ -3551,7 +3514,7 @@ class leoTkTextWidget (Tk.Text):
             start,end = sel
             if Tk.Text.compare(w,start,"!=",end):
                 Tk.Text.delete(w,start,end)
-    #@-node:ekr.20061113151148.11:w.deleteTextSelection
+    #@-node:ekr.20061113151148.11:deleteTextSelection
     #@+node:ekr.20061113151148.23:xyToGui/PythonIndex
     def xyToGuiIndex (self,x,y): # tkTextWidget
 

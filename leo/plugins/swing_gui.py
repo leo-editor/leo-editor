@@ -2825,15 +2825,6 @@ class leoSwingBody (leoFrame.leoBody):
         body = self ; w = body.bodyCtrl
         return w.configure(*args,**keys)
     #@-node:ekr.20081004102201.844:Configuration (Tk spelling) (swingBody)
-    #@+node:ekr.20081004102201.845:Height & width (swingBody)
-    def getBodyPaneHeight (self):
-
-        return self.bodyCtrl.winfo_height()
-
-    def getBodyPaneWidth (self):
-
-        return self.bodyCtrl.winfo_width()
-    #@-node:ekr.20081004102201.845:Height & width (swingBody)
     #@+node:ekr.20081004102201.846:Idle time... (swingBody)
     def scheduleIdleTimeRoutine (self,function,*args,**keys):
 

@@ -1,0 +1,44 @@
+<ui version="4.0" >
+ <class>LeoQuickSearchWidget</class>
+ <widget class="QWidget" name="LeoQuickSearchWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" >
+    <widget class="QLineEdit" name="lineEdit" />
+   </item>
+   <item row="0" column="1" >
+    <widget class="QCheckBox" name="checkBox" >
+     <property name="text" >
+      <string>Bodies</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QTableWidget" name="tableWidget" >
+     <column>
+      <property name="text" >
+       <string>Headline</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Match</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

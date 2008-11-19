@@ -5,72 +5,208 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1070</width>
-    <height>750</height>
+    <width>957</width>
+    <height>778</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Leo</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <layout class="QVBoxLayout" name="verticalLayout_2" >
+   <layout class="QVBoxLayout" name="verticalLayout" >
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" >
-      <item>
-       <widget class="QSplitter" name="splitter_2" >
-        <property name="orientation" >
-         <enum>Qt::Vertical</enum>
+     <widget class="QSplitter" name="splitter_2" >
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="QSplitter" name="splitter" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <widget class="QTreeWidget" name="treeWidget" >
+        <column>
+         <property name="text" >
+          <string>1</string>
+         </property>
+        </column>
+       </widget>
+       <widget class="QTabWidget" name="tabWidget" >
+        <property name="currentIndex" >
+         <number>1</number>
         </property>
-        <widget class="QSplitter" name="splitter" >
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <widget class="QTreeWidget" name="treeWidget" >
-          <column>
-           <property name="text" >
-            <string>1</string>
+        <widget class="QWidget" name="tab" >
+         <attribute name="title" >
+          <string>Tab 1</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_3" >
+          <item>
+           <widget class="QTextBrowser" name="textBrowser" />
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2" >
+         <attribute name="title" >
+          <string>Tab 2</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout" >
+          <item row="0" column="1" >
+           <widget class="QLineEdit" name="findPattern" />
+          </item>
+          <item row="1" column="1" >
+           <widget class="QLineEdit" name="findChange" />
+          </item>
+          <item row="2" column="0" >
+           <widget class="QCheckBox" name="checkBoxWholeWord" >
+            <property name="text" >
+             <string>Whole Word</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QCheckBox" name="checkBoxEntireOutline" >
+            <property name="text" >
+             <string>Entire Outline</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QCheckBox" name="checkBoxIgnoreCase" >
+            <property name="text" >
+             <string>Ignore Case</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" >
+           <widget class="QCheckBox" name="checkBoxSubroutineOnly" >
+            <property name="text" >
+             <string>Subroutine Only</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" >
+           <widget class="QCheckBox" name="checkBoxWrapAround" >
+            <property name="text" >
+             <string>Wrap Around</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" >
+           <widget class="QCheckBox" name="checkBoxNodeOnly" >
+            <property name="text" >
+             <string>Node Only</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" >
+           <widget class="QCheckBox" name="checkBoxReverse" >
+            <property name="text" >
+             <string>Reverse</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1" >
+           <widget class="QCheckBox" name="checkBoxSearchHeadline" >
+            <property name="text" >
+             <string>Search Headline</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" >
+           <widget class="QCheckBox" name="checkBoxRexexp" >
+            <property name="text" >
+             <string>Regexp</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1" >
+           <widget class="QCheckBox" name="checkBoxSearchBody" >
+            <property name="text" >
+             <string>Search Body</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0" >
+           <widget class="QCheckBox" name="checkBoxMarkFinds" >
+            <property name="text" >
+             <string>Mark Finds</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1" >
+           <widget class="QCheckBox" name="checkBoxMarkChanges" >
+            <property name="text" >
+             <string>Mark Changes</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label_2" >
+            <property name="text" >
+             <string>Find:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="label_3" >
+            <property name="text" >
+             <string>Change:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_3" >
+         <attribute name="title" >
+          <string>Page</string>
+         </attribute>
+        </widget>
+       </widget>
+      </widget>
+      <widget class="QStackedWidget" name="stackedWidget" >
+       <property name="acceptDrops" >
+        <bool>true</bool>
+       </property>
+       <property name="currentIndex" >
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="page" >
+        <layout class="QVBoxLayout" name="verticalLayout_2" >
+         <item>
+          <widget class="QsciScintilla" name="textEdit" >
+           <property name="toolTip" >
+            <string/>
            </property>
-          </column>
-         </widget>
-         <widget class="QTabWidget" name="tabWidget" >
-          <widget class="QWidget" name="tab" >
-           <attribute name="title" >
-            <string>Tab 1</string>
-           </attribute>
+           <property name="whatsThis" >
+            <string/>
+           </property>
           </widget>
-          <widget class="QWidget" name="tab_2" >
-           <attribute name="title" >
-            <string>Tab 2</string>
-           </attribute>
-          </widget>
-         </widget>
-        </widget>
-        <widget class="QsciScintilla" name="textEdit" >
-         <property name="toolTip" >
-          <string/>
-         </property>
-         <property name="whatsThis" >
-          <string/>
-         </property>
-        </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_2" >
+        <layout class="QVBoxLayout" name="verticalLayout_4" >
+         <item>
+          <widget class="QTextEdit" name="richTextEdit" />
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout" >
+      <item>
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Minibuffer</string>
+        </property>
+        <property name="buddy" >
+         <cstring>lineEdit</cstring>
+        </property>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout" >
-        <item>
-         <widget class="QLabel" name="label" >
-          <property name="text" >
-           <string>Minibuffer</string>
-          </property>
-          <property name="buddy" >
-           <cstring>lineEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit" />
-        </item>
-       </layout>
+       <widget class="QLineEdit" name="lineEdit" />
       </item>
      </layout>
     </item>
@@ -81,19 +217,10 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1070</width>
+     <width>957</width>
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>File</string>
-    </property>
-    <addaction name="actionOpen" />
-    <addaction name="actionSave" />
-    <addaction name="actionIPython" />
-   </widget>
-   <addaction name="menuFile" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
   <action name="actionOpen" >

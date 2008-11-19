@@ -550,10 +550,14 @@ class nullGui(leoGui):
     def finishCreate (self):
         pass
 
+    def getIconImage (self, name):
+        return None
+
     def getTextFromClipboard (self):
         return self.clipboardContents
 
-    def get_focus(self,frame):
+    def get_focus(self,frame=None):
+        if not frame: return None
         return self.focusWidget or (hasattr(frame,'body') and frame.body.bodyCtrl) or None 
 
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
@@ -682,6 +686,14 @@ class unitTestGui(nullGui):
 
         pass # This method keeps pylint happy.
     #@-node:ekr.20071128094234.1:createSpellTab
+    #@+node:ekr.20081119083601.1:toUnicode
+    def toUnicode (self,s):
+
+        if g.isPython3:
+            return s
+        else:
+            return unicode(s)
+    #@-node:ekr.20081119083601.1:toUnicode
     #@-others
 #@-node:ekr.20031218072017.3742:class unitTestGui (nullGui)
 #@-others

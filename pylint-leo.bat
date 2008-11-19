@@ -13,13 +13,16 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-goto recent
+REM goto errors
 goto all
 
-:recent
+:errors
 
-echo leoCommands.py
-call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
+echo leoFrame.py
+call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
+
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
@@ -112,6 +115,9 @@ call pylint.bat leo\plugins\mod_scripting.py        --disable-msg=E0611 --rcfile
 
 echo open_with.py
 call pylint.bat leo\plugins\open_with.py            --rcfile=leo\test\pylint-leo-rc.txt
+
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py                --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo rst3.py
 call pylint.bat leo\plugins\rst3.py                 --rcfile=leo\test\pylint-leo-rc.txt
@@ -303,6 +309,9 @@ call pylint.bat leo\plugins\plugins_menu.py         --rcfile=leo\test\pylint-leo
 
 echo pluginsTest.py
 call pylint.bat leo\plugins\pluginsTest.py          --rcfile=leo\test\pylint-leo-rc.txt
+
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py                 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo quickMove.py
 call pylint.bat leo\plugins\quickMove.py            --rcfile=leo\test\pylint-leo-rc.txt

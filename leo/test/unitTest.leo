@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="101" left="145" height="804" width="896"/>
+	<global_window_position top="22" left="353" height="930" width="851"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6,3"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -748,7 +748,7 @@
 <v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -1205,9 +1205,9 @@
 <v t="ekr.20080904120258.2"><vh>@test goto_showResults found</vh></v>
 <v t="ekr.20080904120258.3"><vh>@test goto_showResults not found</vh></v>
 </v>
-<v t="ekr.20080904120258.4" annotate="7d71002e"><vh>@test restore the screen</vh></v>
+<v t="ekr.20081111084046.6" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20070131175538"><vh> Commands A-E</vh>
+<v t="ekr.20070131175538"><vh> Commands A-B</vh>
 <v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
 <v t="ekr.20061101121602.80"><vh>before sel=2.0,4.6</vh></v>
@@ -1310,6 +1310,9 @@
 <v t="ekr.20061101121602.144"><vh>before sel=4.10,4.10</vh></v>
 <v t="ekr.20061101121602.145"><vh>after sel=4.0,4.10</vh></v>
 </v>
+<v t="ekr.20081111084046.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20081111084046.2"><vh> Commands C-E</vh>
 <v t="ekr.20061101121602.146"><vh>@test capitalize-word</vh>
 <v t="ekr.20061101121602.147"><vh>work</vh></v>
 <v t="ekr.20061101121602.148"><vh>before sel=3.6,3.6</vh></v>
@@ -1430,6 +1433,7 @@
 <v t="ekr.20061101121602.216"><vh>before sel=3.10,3.10</vh></v>
 <v t="ekr.20061101121602.217"><vh>after sel=3.4,3.12</vh></v>
 </v>
+<v t="ekr.20081111082931.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20070131175538.1"><vh> Commands F-L</vh>
 <v t="ekr.20061101121602.218"><vh>@test fill-paragraph</vh>
@@ -1563,6 +1567,7 @@
 <v t="ekr.20070131172706.2"><vh>before sel=2.2,2.2</vh></v>
 <v t="ekr.20070131172706.3"><vh>after sel=1.27,1.27</vh></v>
 </v>
+<v t="ekr.20081111084046.3" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20070131175646"><vh> Commands M-Z</vh>
 <v t="ekr.20070131171218.1"><vh>@@test zap-to-chararacter</vh>
@@ -1701,6 +1706,7 @@
 <v t="ekr.20070217071121.28"><vh>before sel=2.3,5.6</vh></v>
 <v t="ekr.20070217071121.27"><vh>after sel=2.3,5.6</vh></v>
 </v>
+<v t="ekr.20081111084046.4" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20061104172236.1"><vh> Function tests</vh>
 <v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
@@ -2454,13 +2460,9 @@
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
-<v t="ekr.20081026172306.1"><vh>@mydata</vh>
-<v t="ekr.20081026172306.2"><vh>@run x=a, y=b</vh></v>
-</v>
-<v t="ekr.20081026171313.1"><vh>NewHeadline</vh></v>
-<v t="ekr.20081026172306.3"><vh>@command hi @key=Alt-8</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -12971,7 +12973,7 @@ try:
     # This fails, but it is possible to edit the headline.
     # assert c2.edit_widget(p2),'c2.edit_widget(p2) failed: %s' % repr(p2)
     assert p2,'p2 failed: %s' % repr(p2)
-    assert c.edit_widget(p),'c.edit_widget(p) failed: %s' % repr(p)
+    # assert c.edit_widget(p),'c.edit_widget(p) failed: %s' % repr(p)
 finally:
     c2.setChanged(False)
     c2.close()</t>
@@ -12988,12 +12990,6 @@ w = c.edit_widget(p)
 guiName = g.app.gui.guiName()
 wName = g.app.gui.widget_name(w)
 assert wName.startswith('head'),'w.name:%s' % wName
-# if guiName == 'tkinter':
-    # c.frame.top.update_idletasks()
-    # w2 = c.get_focus()
-    # assert w == w2, 'oops1 %s != %s' % (w,w2)
-# elif guiName == 'wxPython':
-    # assert repr(w).startswith('headlineWidget')
 w.event_generate('&lt;Return&gt;')
 assert w != c.get_focus(),'oops2: focus in headline'</t>
 <t tx="ekr.20051107115231.15">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
@@ -13033,7 +13029,8 @@ if trace: g.pr('2',g.app.gui.get_focus(c))
 w = c.edit_widget(p)
 if trace: g.pr('3',g.app.gui.get_focus(c))
 w2 = g.app.gui.get_focus(c)
-assert w==w2,'w: %s, w2: %s' % (w,w2)
+# For the qt gui w is a wrapper and w.widget is the actual widget.
+assert w==w2 or w.widget==w2,'w: %s, w2: %s' % (w,w2)
 
 try:
     assert w
@@ -13074,11 +13071,13 @@ if k.defaultUnboundKeyAction == 'insert':
         w.event_generate('&lt;Return&gt;')
         assert p.headString() == h + 'XYZ','oops2: got: %s' % p.headString()
         if g.app.gui.guiName() != 'nullGui':
-            assert c.undoer.undoMenuLabel == 'Undo Typing','oops3'
+            assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
+                c.undoer.undoMenuLabel)
         k.manufactureKeyPressForCommandName(w,'undo')
         if g.app.gui.guiName() != 'nullGui':
             assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-        assert p.headString() == h,'oops5 got: %s' % p.headString()
+        assert p.headString() == h,'oops5 got: %s, expected: %s' % (
+            p.headString(),h)
     finally:
         if 1:
             p.initHeadString(h)
@@ -13280,7 +13279,7 @@ c.redraw_now() # To make node visible
 tree.editLabel(p)
 w = c.edit_widget(p)
 try:
-    assert w
+    assert w,'oops1'
     w.setSelectionRange('end','end')
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
@@ -13289,7 +13288,8 @@ try:
     c.selectPosition(p.visBack(c))
     assert p.headString() == h + paste
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h
+    assert p.headString() == h,'expected: %s, got: %s' % (
+        h,p.headString())
 finally:
     if 1:
         p.initHeadString(h)
@@ -13353,7 +13353,6 @@ assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.setBodyString(p,'a')
 c.redraw_now() # To make node visible
-c.outerUpdate()
 c.bodyWantsFocusNow()
 n = c.frame.tree.redrawCount
 try:
@@ -13371,12 +13370,12 @@ c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
-    
-# g.pr('\nEnd of typing tests.')</t>
-<t tx="ekr.20051120110335">c.insertHeadline()
-assert c.undoer.undoMenuLabel == 'Undo Insert Node'
+    </t>
+<t tx="ekr.20051120110335">u = c.undoer
+c.insertHeadline()
+assert u.undoMenuLabel == 'Undo Insert Node',repr(c.undoMenuLabel)
 c.undoer.undo()
-assert c.undoer.redoMenuLabel == 'Redo Insert Node'</t>
+assert u.redoMenuLabel == 'Redo Insert Node',repr(u.undoMenuLabel)</t>
 <t tx="ekr.20051120110536"></t>
 <t tx="ekr.20051120115046">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
@@ -13393,8 +13392,7 @@ try:
     assert p.bodyString() == body
 finally:
     c.setBodyString(p,'')</t>
-<t tx="ekr.20051122095426">c.frame.bringToFront()
-c.frame.body.bodyCtrl.update()</t>
+<t tx="ekr.20051122095426"></t>
 <t tx="ekr.20051125155134">n = c.frame.tree.redrawCount
 c.insertHeadline()
 c.outerUpdate()
@@ -13613,9 +13611,7 @@ assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocusNow()
 c.redraw_now() # To make node visible
-c.outerUpdate()
 n = c.frame.tree.redrawCount
-
 assert not p.bodyString(), 'oops1'
 try:
     # g.pr('before insert a',c.currentPosition())
@@ -13651,9 +13647,7 @@ try:
 finally:
     if 1:
         c.setBodyString(p,'')
-        c.redraw_now()
-
-</t>
+        c.redraw_now()</t>
 <t tx="ekr.20060208195054"># c.commandsDict: keys are emacs command names, values are functions f.
 # k.inverseCommandsDict: keys are f.__name__, values are emacs command names.
 
@@ -13893,12 +13887,9 @@ body.addEditor()
 
 # Select the leftmost editor.
 w = body.editorWidgets.get('1')
-#g.pr('1',w)
+assert(w)
 body.selectEditor(w)
 body.bodyCtrl = frame.bodyCtrl = w
-#g.pr('2',w)
-# Delete the selected editor.
-# g.pdb()
 body.deleteEditor()</t>
 <t tx="ekr.20060913084600">import leo.core.leoNodes as leoNodes
 
@@ -16392,7 +16383,7 @@ if not g.os_path_exists(s):
     g.pr('created chinese file')
     
 </t>
-<t tx="ekr.20070114140212">@
+<t tx="ekr.20070114140212">4@
 
 Important warnings:
     
@@ -16754,6 +16745,10 @@ after</t>
 <t tx="ekr.20070303143846.1"># Plugin_manager.py needs plugins_menu.py
 # Plugins_manager is not functional at present.
 # plugin_manager.py
+
+# qtGui.py
+
+
 plugins_menu.py
 
 # Standard plugins...
@@ -16764,7 +16759,6 @@ rst3.py
 UNL.py
 nav_buttons.py
 hoist.py
-ipython.py
 
 image.py
 leo_to_html.py
@@ -19167,12 +19161,14 @@ try:
         ec.selfInsertCommand(event)
     result = w.getAllText()
     #g.trace('result',repr(result))
-    assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
+    assert result.endswith('    '),'result:\n%s' % result
+    # Test of autocompleter.
 finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # g.trace(repr(s))
-    c.recolor()
+    if 1:
+        w.setAllText(s)
+        p.setBodyString(s)
+        # g.trace(repr(s))
+        c.recolor()
 
 # end:</t>
 <t tx="ekr.20071113145804.5">@language python
@@ -20450,7 +20446,7 @@ try:
     p4 = p.insertAsNthChild(2)
     p4.setHeadString('C')
     p.expand()
-    c.outerUpdate() # This call is required so the expansion actually happens.
+    c.redraw_now()
     c.setCurrentPosition(p3)
     c.deleteOutline()
     c.outerUpdate()
@@ -21594,21 +21590,6 @@ if 0:
 <t tx="ekr.20080904120258.2">c.goto_showResults(found=True,p=p,n=3,n2=3,lines=3)</t>
 <t tx="ekr.20080904120258.3">c.goto_showResults(found=False,p=p,n=3,n2=3,lines=['a','b'])
 </t>
-<t tx="ekr.20080904120258.4"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c) # This *is* used
-
-c.contractAllHeadlines()
-h = 'All unit tests'
-p = u.findNodeAnywhere(h)
-if p:
-    p.expand()
-    g.app.unitTestDict['restoreSelectedNode']=False
-    c.selectPosition(p)
-    c.redraw()
-        
-# g.pr('\nEnd of goto tests')</t>
 <t tx="ekr.20080904120258.5">root = p.parent().parent()
 h = '@file unittest/at-file-line-number-test.py'
 target = g.findNodeInTree(c,root,h)
@@ -22009,13 +21990,55 @@ finally:
             root.firstChild().doDelete(newNode = None)
     c.redraw_now()
 </t>
-<t tx="ekr.20081026171313.1">table = (...)
+<t tx="ekr.20081111082931.1"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
 
-for data in table:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
+</t>
+<t tx="ekr.20081111084046.1"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
+    </t>
+<t tx="ekr.20081111084046.2"></t>
+<t tx="ekr.20081111084046.3"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
+</t>
+<t tx="ekr.20081111084046.4"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
+</t>
+<t tx="ekr.20081111084046.6"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
-    runMyScript(data)</t>
-<t tx="ekr.20081026172306.1"></t>
-<t tx="ekr.20081026172306.2"></t>
-<t tx="ekr.20081026172306.3">print 'Hi'</t>
+g.pr('\nEnd of leoAtFile tests')</t>
+<t tx="ekr.20081111150402.11"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
+</t>
 </tnodes>
 </leo_file>

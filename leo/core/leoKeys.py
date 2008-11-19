@@ -2402,7 +2402,7 @@ class keyHandlerClass:
 
         # This is the only real key callback.
         def masterBindKeyCallback (event,k=k,stroke=stroke):
-            # g.trace(stroke)
+            # g.trace(stroke,event.w)
             return k.masterKeyHandler(event,stroke=stroke)
 
         if 0:
@@ -2437,7 +2437,7 @@ class keyHandlerClass:
         All commands and keystrokes pass through here.'''
 
         k = self ; c = k.c ; gui = g.app.gui
-        trace = False or k.traceMasterCommand
+        trace = False or k.traceMasterCommand ; verbose = False
         traceGC = False
         if traceGC: g.printNewObjects('masterCom 1')
 
@@ -2572,7 +2572,11 @@ class keyHandlerClass:
         name = c.widget_name(w)
         trace = False
 
-        if trace: g.trace('stroke',stroke)
+        if trace: g.trace('widget_name',name,'stroke',stroke)
+
+        if stroke and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
+            if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+            return 'break'
 
         if name.startswith('body'):
             action = k.unboundKeyAction
@@ -2603,7 +2607,7 @@ class keyHandlerClass:
         state = k.getState('full-command')
         helpPrompt = 'Help for command: '
         keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-        trace = False or c.config.getBool('trace_modes')
+        trace = False or c.config.getBool('trace_modes') ; verbose = True
         if trace: g.trace('state',state,keysym)
         if state == 0:
             k.mb_event = event # Save the full event for later.
@@ -2619,6 +2623,7 @@ class keyHandlerClass:
         elif keysym == 'Escape':
             k.keyboardQuit(event)
         elif keysym == 'Return':
+            if trace and verbose: g.trace('***Return')
             c.frame.log.deleteTab('Completion')
             if k.mb_help:
                 s = k.getLabel()
@@ -2629,9 +2634,11 @@ class keyHandlerClass:
             else:
                 k.callAltXFunction(k.mb_event)
         elif keysym == 'Tab':
+            if trace and verbose: g.trace('***Tab')
             k.doTabCompletion(c.commandsDict.keys())
             c.minibufferWantsFocus()
         elif keysym == 'BackSpace':
+            if trace and verbose: g.trace('***BackSpace')
             k.doBackSpace(c.commandsDict.keys())
             c.minibufferWantsFocus()
         elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
@@ -2671,6 +2678,7 @@ class keyHandlerClass:
             k.endCommand(event,commandName)
         else:
             if 1: # Useful.
+                g.trace('*** tab completion')
                 k.doTabCompletion(c.commandsDict.keys())
             else: # Annoying.
                 k.keyboardQuit(event)
@@ -2857,6 +2865,7 @@ class keyHandlerClass:
                 data.append((s1,s2,s3),)
 
         # Print keys by type:
+        result = []
         sep = '-' * n1
         for prefix in (
             'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
@@ -2869,19 +2878,21 @@ class keyHandlerClass:
                 s1,s2,s3 = item
                 if s2.startswith(prefix):
                     data2.append(item)
-            g.es('','%s %s' % (sep, prefix),tabName=tabName)
-            self.printBindingsHelper(data2,n1,n2,prefix=prefix)
+            # g.es('','%s %s' % (sep, prefix),tabName=tabName)
+            result.append('%s %s\n' % (sep, prefix))
+            self.printBindingsHelper(result,data2,n1,n2,prefix=prefix)
             # Remove all the items in data2 from data.
             # This must be done outside the iterator on data.
             for item in data2:
                 data.remove(item)
         # Print all plain bindings.
-        g.es('','%s %s' % (sep, 'Plain Keys',),tabName=tabName)
-        self.printBindingsHelper(data,n1,n2,prefix=None)
+        result.append('%s %s\n' % (sep, 'Plain Keys'))
+        self.printBindingsHelper(result,data,n1,n2,prefix=None)
+        g.es('',''.join(result),tabName=tabName)
         state = k.unboundKeyAction 
         k.showStateAndMode()
     #@+node:ekr.20061031131434.120:printBindingsHelper
-    def printBindingsHelper (self,data,n1,n2,prefix):
+    def printBindingsHelper (self,result,data,n1,n2,prefix):
 
         n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
 
@@ -2894,7 +2905,8 @@ class keyHandlerClass:
         for data in (data1,data2):
             data.sort(lambda x,y: cmp(x[1],y[1]))
             for s1,s2,s3 in data:
-                g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+                # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+                result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))
     #@-node:ekr.20061031131434.120:printBindingsHelper
     #@-node:ekr.20061031131434.119:printBindings & helper
     #@+node:ekr.20061031131434.121:printCommands
@@ -2921,8 +2933,8 @@ class keyHandlerClass:
                 data.append((s1,s2,s3),)
 
         # This isn't perfect in variable-width fonts.
-        for s1,s2,s3 in data:
-            g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName=tabName)
+        lines = ['%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3) for s1,s2,s3 in data]
+        g.es('',''.join(lines),tabName=tabName)
     #@-node:ekr.20061031131434.121:printCommands
     #@+node:ekr.20061031131434.122:repeatComplexCommand & helper
     def repeatComplexCommand (self,event):
@@ -3285,14 +3297,16 @@ class keyHandlerClass:
         #@nl
         trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-        verbose = False
+        verbose = True
 
         if keysym in special_keys:
-            if verbose: g.trace('keysym',keysym)
+            if trace and verbose: g.trace('keysym',keysym)
             return None
         if traceGC: g.printNewObjects('masterKey 1')
         if trace:
-            g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
+            g.trace('stroke:',repr(stroke),'keysym:',
+                repr(event.keysym),'ch:',repr(event.char),'state',state)
+            # g.trace('callers',g.callers(5))
                 # 'state.kind:',k.state.kind),'\n',g.callers())
             # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -3371,7 +3385,7 @@ class keyHandlerClass:
                             k.masterCommand(event,b.func,b.stroke,b.commandName)
                             return 'break'
 
-                if trace: g.trace('%s in %s mode' % (stroke,k.unboundKeyAction))
+                if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
                 k.masterCommand(event,func=None,stroke=stroke,commandName=None)
                 return 'break'
 
@@ -3383,38 +3397,6 @@ class keyHandlerClass:
                 if not g.app.gui.isTextWidget(w):
                     c.onCanvasKey(event)
                     return 'break'
-
-            # elif k.unboundKeyAction == 'command':
-                # # In command mode we must disallow all keys except those actually bound in command-state.
-                # # That is, we cannot use general per-pane mode bindings.
-                # for key,name in (
-                    # # Order here is similar to bindtags order.
-                    # ('command',None),
-                    # ('button',None),
-                    # ('body','body'),
-                    # ('text','head'), # Important: text bindings in head before tree bindings.
-                    # ('tree','head'),
-                    # ('tree','canvas'),
-                    # ('log', 'log'),
-                    # ('text','log'),
-                    # ('text',None),
-                    # ('all',None),
-                # ):
-                    # if (
-                        # name and w_name.startswith(name) or
-                        # key in ('text','all') and g.app.gui.isTextWidget(w) or
-                        # key in ('button','all')
-                    # ):
-                        # d = k.masterBindingsDict.get(key,{})
-                        # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-                        # if d:
-                            # b = d.get(stroke)
-                            # if b:
-                                # if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                                # return k.masterCommand(event,b.func,b.stroke,b.commandName)
-                # else:
-                    # if trace: g.trace('ignoring %s in command mode' % b.stroke)
-                    # return 'break' # Disallow all unbound plain keys in command mode.
             #@nonl
             #@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
             #@nl
@@ -3423,8 +3405,7 @@ class keyHandlerClass:
         #@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
         keyStatesTuple = ('command','insert','overwrite')
 
-        # g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
-        # g.trace('button',k.masterBindingsDict.get('button'))
+        # g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
         for key,name in (
             # Order here is similar to bindtags order.
@@ -3449,6 +3430,7 @@ class keyHandlerClass:
             ):
                 d = k.masterBindingsDict.get(key,{})
                 # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
                 if d:
                     b = d.get(stroke)
                     if b:
@@ -3526,12 +3508,11 @@ class keyHandlerClass:
 
         return False
     #@-node:ekr.20061031131434.152:handleMiniBindings
-    #@+node:ekr.20080510095819.1:handleUnboudKeys
+    #@+node:ekr.20080510095819.1:k.handleUnboudKeys
     def handleUnboundKeys (self,event,char,keysym,stroke):
 
-        k = self ; c = k.c
+        k = self ; c = k.c ; trace = False
         modesTuple = ('insert','overwrite')
-        trace = False
 
         if trace:
             # if stroke: g.trace('***unexpected stroke***')
@@ -3563,7 +3544,7 @@ class keyHandlerClass:
         else:
             if trace: g.trace(repr(stroke),'no func')
             return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    #@-node:ekr.20080510095819.1:handleUnboudKeys
+    #@-node:ekr.20080510095819.1:k.handleUnboudKeys
     #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
     #@+node:ekr.20061031131434.153:masterClickHandler
     # def masterClickHandler (self,event,func=None):
@@ -3646,8 +3627,10 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.155:masterMenuHandler
     def masterMenuHandler (self,stroke,func,commandName):
 
-        k = self ; c = k.c ; w = c.frame.getFocus()
+        k = self ; c = k.c
+        w = c.frame.getFocus()
 
+        # g.trace('focus',w)
         # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
 
         # Create a minimal event for commands that require them.
@@ -4334,6 +4317,7 @@ class keyHandlerClass:
         # Step 1: actually delete the character.
         ins = w.getInsertPoint()
         s = w.getAllText()
+        # g.trace('ins',ins,'prefix',k.mb_prefix)
         if ins <= len(k.mb_prefix):
             # g.trace('at start')
             return

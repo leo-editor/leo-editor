@@ -168,6 +168,8 @@ except ImportError:
 #@+node:bob.20070813163332.64: init
 def init():
 
+    return False
+
     if g.app.unitTesting: # Not Ok for unit testing!
         return False
 
@@ -4557,12 +4559,6 @@ if wx:
 
         SetFocus = setFocus
         getFocus = hasFocus
-
-        def getBodyPaneHeight (self):
-            return self.bodyCtrl.GetCharHeight() # widget specific
-
-        def getBodyPaneWidth (self):
-            return self.bodyCtrl.GetCharWidth()  # widget specific
 
         def scheduleIdleTimeRoutine (self,function,*args,**keys):
             wx.CallAfter(function, *args, **keys)

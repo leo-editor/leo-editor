@@ -72,6 +72,8 @@ body_ignored_newline = '\r'
 
 globalDirectiveList = [
     # New in Leo 4.6:
+    'markup', # Make this an official directive,
+              # even if the color_markup directive is not enabled.
     'nocolor-node',
     # New in Leo 4.4.4: these used to be in leoKeywords.
     'all','c','code','delims','doc','end_raw',
@@ -2233,6 +2235,7 @@ def openWithFileName(fileName,old_c,
     assert frame.c == c and c.frame == frame
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
+    # g.trace('c.chapterController',c.chapterController)
     if c.chapterController:
         c.chapterController.finishCreate()
     k = c.k
@@ -2244,6 +2247,8 @@ def openWithFileName(fileName,old_c,
         c.bodyWantsFocusNow()
     if k:
         k.showStateAndMode()
+
+    c.frame.initCompleteHint()
 
     return True, frame
 #@-node:ekr.20031218072017.2052:g.openWithFileName
@@ -2302,8 +2307,9 @@ def openWrapperLeoFile (old_c,fileName,gui):
             g.es_print("can not open: ",fileName,color='red')
             return None,None
         p = c.currentPosition()
-        p.setHeadString(fileName)
-        p.setBodyString(s)
+        if p:
+            p.setHeadString(fileName)
+            p.setBodyString(s)
     else:  # Import the file into the new outline.
         junk,ext = g.os_path_splitext(fileName)
         p = c.currentPosition()
@@ -4567,31 +4573,25 @@ def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
 def toUnicode (s,encoding,reportErrors=False):
 
     if isPython3:
-        if s is None:
-            return ''
-        elif not g.isBytes(s):
-            return s
-        else:
-            try:
-                s = s.decode(encoding)
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = unicode(s,encoding,"replace")
-            return s
+        convert,mustConvert,nullVal = str,g.isBytes,''
     else:
-        if s is None:
-            return unicode('')
-        elif type(s) == types.UnicodeType:
-            return s
-        else:
-            try:
-                s = unicode(s,encoding,"strict")
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = unicode(s,encoding,"replace")
-            return s
+        convert,nullVal = unicode,unicode('')
+        def mustConvert (s):
+            return type(s) != types.UnicodeType
+
+    if not s:
+        s = nullVal
+    elif mustConvert(s):
+        try:
+            s = convert(s,encoding,'strict')
+        except UnicodeError:
+            s = convert(s,encoding,'replace')
+            if reportErrors: g.reportBadChars(s,encoding)
+    else:
+        pass
+
+    return s
+#@nonl
 #@-node:ekr.20050208093800.1:g.toUnicode
 #@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):

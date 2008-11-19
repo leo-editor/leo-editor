@@ -58,7 +58,7 @@ navigate to the nodes 'by hand' by following the arrows in the UNL.
 #@@language python
 #@@tabwidth -4
 
-__version__ = "0.10"
+__version__ = "0.11"
 #@<< version history >>
 #@+node:rogererens.20041014104353:<< version history >>
 #@+at
@@ -76,6 +76,7 @@ __version__ = "0.10"
 # - 0.9 EKR: Fixed bug reported by Terry Brown:
 #     Replaced calls to findNodeInTree by findNodeInChildren.
 # - 0.10 TB: Added recursive search so that the longest match will be found.
+# - 0.11 EKR: This gui is now gui-independent.
 #@-at
 #@nonl
 #@-node:rogererens.20041014104353:<< version history >>
@@ -106,13 +107,13 @@ def init ():
     if g.app.gui is None:
         g.app.createTkGui(__file__)
 
-    if g.app.gui.guiName() in ('tkinter','wxPython'):
-        leoPlugins.registerHandler("after-create-leo-frame", createStatusLine)
-        leoPlugins.registerHandler("select2", onSelect2)    # show UNL
-        leoPlugins.registerHandler("@url1", onUrl1)         # jump to URL or UNL
+    leoPlugins.registerHandler(
+        "after-create-leo-frame", createStatusLine)
+    leoPlugins.registerHandler("select2", onSelect2) # show UNL
+    leoPlugins.registerHandler("@url1", onUrl1) # jump to URL or UNL
 
-        g.plugin_signon(__name__)
-        return True
+    g.plugin_signon(__name__)
+    return True
 #@-node:ekr.20070112173134:init
 #@+node:rogererens.20041013082304.1:createStatusLine
 def createStatusLine(tag,keywords):
