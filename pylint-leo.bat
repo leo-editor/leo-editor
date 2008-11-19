@@ -22,7 +22,7 @@ echo leoFrame.py
 call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
 
 echo qtGui.py
-call pylint.bat leo\plugins\qtGui.py            --rcfile=leo\test\pylint-leo-rc.txt
+call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

@@ -3505,7 +3505,7 @@ class leoTkTextWidget (Tk.Text):
 
 
     #@-node:ekr.20070116073907:tag_remove
-    #@+node:ekr.20061113151148.11:w.deleteTextSelection
+    #@+node:ekr.20061113151148.11:deleteTextSelection
     def deleteTextSelection (self): # tkTextWidget
 
         w = self
@@ -3514,7 +3514,7 @@ class leoTkTextWidget (Tk.Text):
             start,end = sel
             if Tk.Text.compare(w,start,"!=",end):
                 Tk.Text.delete(w,start,end)
-    #@-node:ekr.20061113151148.11:w.deleteTextSelection
+    #@-node:ekr.20061113151148.11:deleteTextSelection
     #@+node:ekr.20061113151148.23:xyToGui/PythonIndex
     def xyToGuiIndex (self,x,y): # tkTextWidget
 

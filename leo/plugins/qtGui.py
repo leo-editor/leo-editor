@@ -3803,20 +3803,6 @@ class leoQtTree (leoFrame.leoTree):
         self._editWidgetWrapper = None
     #@nonl
     #@-node:ekr.20081021043407.30:initData
-    #@+node:edward.20081118075608.1:drawIcon
-    def drawIcon (self,p):
-
-        '''Redraw the icon at p.
-        This is called from leoFind.changeSelection.'''
-
-        w = self.treeWidget
-        parent = p.parent()
-        itemOrTree = self.parentsDict.get(parent and parent.v,w)
-        item = QtGui.QTreeWidgetItem(itemOrTree)
-
-        icon = self.getIcon(p)
-        if icon: item.setIcon(0,icon)
-    #@-node:edward.20081118075608.1:drawIcon
     #@+node:ekr.20081021043407.24:drawNode
     def drawNode (self,p,dummy=False):
 
@@ -3892,6 +3878,20 @@ class leoQtTree (leoFrame.leoTree):
         else:
             w.collapseItem(it)
     #@-node:ekr.20081021043407.25:drawTree
+    #@+node:edward.20081118075608.1:drawIcon
+    def drawIcon (self,p):
+
+        '''Redraw the icon at p.
+        This is called from leoFind.changeSelection.'''
+
+        w = self.treeWidget
+        parent = p.parent()
+        itemOrTree = self.parentsDict.get(parent and parent.v,w)
+        item = QtGui.QTreeWidgetItem(itemOrTree)
+
+        icon = self.getIcon(p)
+        if icon: item.setIcon(0,icon)
+    #@-node:edward.20081118075608.1:drawIcon
     #@-node:ekr.20081021043407.23:full_redraw & helpers
     #@+node:ekr.20081010070648.14:getIcon & getIconImage
     def getIcon(self,p):
@@ -5569,6 +5569,23 @@ class leoQtEventFilter(QtCore.QObject):
     #@nl
 
     #@    @+others
+    #@+node:ekr.20081018155359.10: ctor
+    def __init__(self,c,w,tag=''):
+
+        # Init the base class.
+        QtCore.QObject.__init__(self)
+
+        self.c = c
+        self.w = w      # A leoQtX object, *not* a Qt object.
+        self.tag = tag
+
+        # Pretend there is a binding for these characters.
+        close_flashers = c.config.getString('close_flash_brackets') or ''
+        open_flashers  = c.config.getString('open_flash_brackets') or ''
+        self.flashers = open_flashers + close_flashers
+
+
+    #@-node:ekr.20081018155359.10: ctor
     #@+node:ekr.20081013143507.12:eventFilter
     def eventFilter(self, obj, event):
 
@@ -5609,6 +5626,45 @@ class leoQtEventFilter(QtCore.QObject):
 
         return override
     #@-node:ekr.20081013143507.12:eventFilter
+    #@+node:ekr.20081015132934.10:isDangerous
+    def isDangerous (self,tkKey,ch):
+
+        c = self.c
+
+        if not c.frame.body.useScintilla: return False
+
+        arrows = ('home','end','left','right','up','down')
+        special = ('tab','backspace','period','parenright','parenleft')
+
+        key = tkKey.lower()
+        ch = ch.lower()
+        isAlt = key.find('alt') > -1
+        w = g.app.gui.get_focus()
+        inTree = w == self.c.frame.tree.treeWidget
+
+        val = (
+            key in special or
+            ch in arrows and not inTree and not isAlt or
+            key == 'return' and not inTree # Just barely works.
+        )
+
+        # g.trace(tkKey,ch,val)
+        return val
+    #@-node:ekr.20081015132934.10:isDangerous
+    #@+node:ekr.20081111065912.10:isSpecialOverride
+    def isSpecialOverride (self,tkKey,ch):
+
+        # g.trace(repr(tkKey),repr(ch))
+
+        if tkKey == 'Tab':
+            return True
+        elif len(tkKey) == 1:
+            return True # Must process all ascii keys.
+        elif ch in self.flashers:
+            return True
+        else:
+            return False
+    #@-node:ekr.20081111065912.10:isSpecialOverride
     #@+node:ekr.20081011152302.10:toStroke
     def toStroke (self,tkKey,ch):
 
@@ -5637,7 +5693,7 @@ class leoQtEventFilter(QtCore.QObject):
         if trace: g.trace('tkKey',tkKey,'-->',s)
         return s
     #@-node:ekr.20081011152302.10:toStroke
-    #@+node:ekr.20081008084746.1:toTkKey
+    #@+node:ekr.20081008084746.1:toTkKey & helpers
     def toTkKey (self,event):
 
         mods = self.qtMods(event)
@@ -5864,7 +5920,7 @@ class leoQtEventFilter(QtCore.QObject):
             keynum,mods,repr(text),toString))
     #@-node:ekr.20081028134004.11:shifted2
     #@-node:ekr.20081028055229.3:tkKey & helpers
-    #@-node:ekr.20081008084746.1:toTkKey
+    #@-node:ekr.20081008084746.1:toTkKey & helpers
     #@+node:ekr.20081013143507.11:traceEvent
     def traceEvent (self,obj,event,tkKey,override):
 
@@ -5905,62 +5961,6 @@ class leoQtEventFilter(QtCore.QObject):
         if False and eventType not in ignore:
             g.trace('%3s:%s' % (eventType,'unknown'))
     #@-node:ekr.20081013143507.11:traceEvent
-    #@+node:ekr.20081018155359.10: ctor
-    def __init__(self,c,w,tag=''):
-
-        # Init the base class.
-        QtCore.QObject.__init__(self)
-
-        self.c = c
-        self.w = w      # A leoQtX object, *not* a Qt object.
-        self.tag = tag
-
-        # Pretend there is a binding for these characters.
-        close_flashers = c.config.getString('close_flash_brackets') or ''
-        open_flashers  = c.config.getString('open_flash_brackets') or ''
-        self.flashers = open_flashers + close_flashers
-
-
-    #@-node:ekr.20081018155359.10: ctor
-    #@+node:ekr.20081015132934.10:isDangerous
-    def isDangerous (self,tkKey,ch):
-
-        c = self.c
-
-        if not c.frame.body.useScintilla: return False
-
-        arrows = ('home','end','left','right','up','down')
-        special = ('tab','backspace','period','parenright','parenleft')
-
-        key = tkKey.lower()
-        ch = ch.lower()
-        isAlt = key.find('alt') > -1
-        w = g.app.gui.get_focus()
-        inTree = w == self.c.frame.tree.treeWidget
-
-        val = (
-            key in special or
-            ch in arrows and not inTree and not isAlt or
-            key == 'return' and not inTree # Just barely works.
-        )
-
-        # g.trace(tkKey,ch,val)
-        return val
-    #@-node:ekr.20081015132934.10:isDangerous
-    #@+node:ekr.20081111065912.10:isSpecialOverride
-    def isSpecialOverride (self,tkKey,ch):
-
-        # g.trace(repr(tkKey),repr(ch))
-
-        if tkKey == 'Tab':
-            return True
-        elif len(tkKey) == 1:
-            return True # Must process all ascii keys.
-        elif ch in self.flashers:
-            return True
-        else:
-            return False
-    #@-node:ekr.20081111065912.10:isSpecialOverride
     #@-others
 #@-node:ekr.20081004102201.628:class leoQtEventFilter
 #@-node:ekr.20081103071436.4:Key handling
@@ -6030,7 +6030,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20081031074959.15: Do nothings
     def bind (self,stroke,command,**keys):
         pass # eventFilter handles all keys.
-
     #@-node:ekr.20081031074959.15: Do nothings
     #@+node:ekr.20081031074959.40: Must be defined in base class
     #@+node:ekr.20081004172422.510: Focus
@@ -6153,7 +6152,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # g.trace('insert',insert)
 
     #@-node:ekr.20081008175216.5:selectAllText
-    #@+node:ekr.20081007015817.96:setSelectionRange
+    #@+node:ekr.20081007015817.96:setSelectionRange & dummy helper
     def setSelectionRange(self,*args,**keys):
 
         # A kludge to allow a single arg containing i,j
@@ -6200,7 +6199,12 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 # cursor.movePosition(e.Left,e.KeepAnchor,k)
 
             # w.setTextCursor(cursor)
-    #@-node:ekr.20081007015817.96:setSelectionRange
+    #@+node:ekr.20081119034855.11:setSelectionRangeHelper
+    def setSelectionRangeHelper(self,i,j,insert):
+
+        self.oops()
+    #@-node:ekr.20081119034855.11:setSelectionRangeHelper
+    #@-node:ekr.20081007015817.96:setSelectionRange & dummy helper
     #@-node:ekr.20081007015817.99: Text getters/settters
     #@+node:ekr.20081103092019.10:getName (baseTextWidget)
     def getName (self):
@@ -6324,10 +6328,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # self.widget.after_idle(function,*args,**keys)
     #@-node:ekr.20081004172422.516:Idle time
     #@+node:ekr.20081023131208.10:Coloring
-    # These are body methods.
-    # def forceFullRecolor (self): pass
-    # def update_idletasks(self):  pass
-
     def removeAllTags(self):
         s = self.getAllText()
         self.colorSelection(0,len(s),'black')

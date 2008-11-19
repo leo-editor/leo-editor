@@ -229,16 +229,6 @@ class baseTextWidget:
 
         i,j = self.getSelectionRange()
         self.delete(i,j)
-
-        # w = self
-        # i,j = w._getSelectionRange()
-        # if i == j: return
-
-        # s = w._getAllText()
-        # s = s[i:] + s[j:]
-
-        # # g.trace(len(s),repr(s[:20]))
-        # w._setAllText(s)
     #@-node:ekr.20070228074312.14:deleteTextSelection
     #@+node:ekr.20070228074312.15:event_generate
     def event_generate(self,stroke):
@@ -1288,12 +1278,6 @@ class leoBody:
         g.trace("leoBody oops:", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3658:oops
     #@+node:ekr.20031218072017.4018:Text (leoBody)
-    #@+node:ekr.20081103102207.2:deleteTextSelection
-    def deleteTextSelection (self):
-
-        i,j = self.getSelectionRange()
-        self.delete(i,j)
-    #@-node:ekr.20081103102207.2:deleteTextSelection
     #@+node:ekr.20031218072017.4030:getInsertLines
     def getInsertLines (self):
 
@@ -3000,7 +2984,7 @@ class nullBody (leoBody):
     def unselectLabel (self,w):                 pass
     def updateEditors (self):                   pass
     # Events...
-    def forceFullRecolor (self,*args,**keys):   pass
+    def forceFullRecolor (self):                pass
     def scheduleIdleTimeRoutine (self,function,*args,**keys): pass
     # Low-level gui...
     def hasFocus (self):                        pass
