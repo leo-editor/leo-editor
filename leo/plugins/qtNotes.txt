@@ -6,7 +6,6 @@
 
 First:
 - Allow shift-tab binding & fix Ctrl-( problem.
-- Illegal move brings up a Tk alert!
 - Finish colorizer: see child node for notes.
 
 Next:
