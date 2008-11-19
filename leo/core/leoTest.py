@@ -105,7 +105,9 @@ def doTests(c,all,verbosity=1):
         unittest.TextTestRunner(verbosity=verbosity).run(suite)
     finally:
         c.setChanged(changed) # Restore changed state.
-        c.selectPosition(p1)
+        if g.app.unitTestDict.get('restoreSelectedNode',True):
+            c.selectPosition(p1)
+            c.redraw()
         g.unitTesting = g.app.unitTesting = False
 #@+node:ekr.20051104075904.5:class generalTestCase
 class generalTestCase(unittest.TestCase):
@@ -990,6 +992,7 @@ class editBodyTestCase(unittest.TestCase):
 
         self.u = testUtils(c)
         self.c = c
+        self.failFlag = False
         self.parent = parent.copy()
         self.before = before.copy()
         self.after  = after.copy()
@@ -1010,6 +1013,7 @@ class editBodyTestCase(unittest.TestCase):
         import leo.core.leoGlobals as g
 
         g.app.unitTestDict["fail"] = g.callers()
+        self.failFlag = True
     #@-node:ekr.20051104075904.72: fail
     #@+node:ekr.20051104075904.73:editBody
     def editBody (self):
@@ -1029,15 +1033,20 @@ class editBodyTestCase(unittest.TestCase):
         command = getattr(c,commandName)
         command()
 
-        # Don't call the undoer if we expect no change.
-        if not u.compareOutlines(self.before,self.after,compareHeadlines=False,report=False):
-            assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-            c.undoer.undo()
-            assert u.compareOutlines(self.tempNode,self.before,compareHeadlines=False),'%s: after undo1' % commandName
-            c.undoer.redo()
-            assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: after redo' % commandName
-            c.undoer.undo()
-            assert u.compareOutlines(self.tempNode,self.before,compareHeadlines=False),'%s: after undo2' % commandName
+        try:
+
+            # Don't call the undoer if we expect no change.
+            if not u.compareOutlines(self.before,self.after,compareHeadlines=False,report=False):
+                assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+                c.undoer.undo()
+                assert u.compareOutlines(self.tempNode,self.before,compareHeadlines=False),'%s: after undo1' % commandName
+                c.undoer.redo()
+                assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: after redo' % commandName
+                c.undoer.undo()
+                assert u.compareOutlines(self.tempNode,self.before,compareHeadlines=False),'%s: after undo2' % commandName
+        except Exception:
+            self.fail()
+            raise
     #@-node:ekr.20051104075904.73:editBody
     #@+node:ekr.20051104075904.74:runTest
     def runTest(self):
@@ -1085,11 +1094,13 @@ class editBodyTestCase(unittest.TestCase):
         c = self.c ; tempNode = self.tempNode
 
         c.selectVnode(tempNode)
-        tempNode.setBodyString("",g.app.tkEncoding)
 
-        # Delete all children of temp node.
-        while tempNode.firstChild():
-            tempNode.firstChild().doDelete()
+        if not self.failFlag:
+            tempNode.setBodyString("",g.app.tkEncoding)
+
+            # Delete all children of temp node.
+            while tempNode.firstChild():
+                tempNode.firstChild().doDelete()
 
         tempNode.clearDirty()
 

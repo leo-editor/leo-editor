@@ -102,6 +102,7 @@ except ImportError:
 #@+node:ekr.20050719111045.1: init
 def init ():
 
+    return False
     if not wx: return False
 
     aList = wx.version().split('.')
@@ -3496,9 +3497,6 @@ if wx:
         SetFocus = setFocus
         getFocus = hasFocus
 
-        def getBodyPaneHeight (self):           return self.bodyCtrl.GetCharHeight() # widget specific
-        def getBodyPaneWidth (self):            return self.bodyCtrl.GetCharWidth()  # widget specific
-
         def scheduleIdleTimeRoutine (self,function,*args,**keys):   g.trace()
 
         def tag_add (self,*args,**keys):        return self.bodyCtrl.tag_add(*args,**keys)
@@ -5722,6 +5720,7 @@ if wx:
 
         def updateIcon(self,p):
             val = p.v.computeIcon()
+            g.trace(val,p.headString())
             tree_id = self.getIdDict(p)
             if tree_id:
                 self.treeCtrl.SetItemImage(tree_id,val)

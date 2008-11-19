@@ -110,7 +110,8 @@ class baseCommands:
                 w,h,l,t = self.fixedWindowPosition
                 self.fixedWindowPosition = int(w),int(h),int(l),int(t)
             except Exception:
-                g.es_print('bad @data fixedWindowPosition',repr(self.fixedWindowPosition),color='red')
+                g.es_print('bad @data fixedWindowPosition',
+                    repr(self.fixedWindowPosition),color='red')
         else:
             self.windowPosition = 500,700,50,50 # width,height,left,top.
 
@@ -547,6 +548,7 @@ class baseCommands:
         # Force a call to c.outerUpdate.
         # This is needed when we execute this command from a menu.
         c.redraw_now()
+        c.frame.initCompleteHint()
 
         return c # For unit test.
     #@nonl
@@ -972,6 +974,7 @@ class baseCommands:
             c.fileCommands.saveTo(fileName)
             c.updateRecentFiles(fileName)
             g.chdir(fileName)
+
         c.redraw()
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2836:saveTo
@@ -1716,12 +1719,12 @@ class baseCommands:
         path = c.config.getString('script_file_path')
         if path:
             parts = path.split('/')
-            path = g.app.homeLeoDir
+            path = g.app.loadDir
             for part in parts:
                 path = c.os_path_finalize_join(path,part)
         else:
             path = c.os_path_finalize_join(
-                g.app.homeLeoDir,'scriptFile.py')
+                g.app.loadDir,'..','test','scriptFile.py')
 
         # Write the file.
         try:
@@ -2219,7 +2222,7 @@ class baseCommands:
             if len(lines) < n and not g.unitTesting:
                 g.es('only',len(lines),'lines',color="blue")
 
-        # g.trace('n',n,'ins',ins,'p',p.headString())
+        # g.trace(p.headString(),g.callers())
 
         w.setInsertPoint(ins)
         c.bodyWantsFocusNow()
@@ -2370,7 +2373,8 @@ class baseCommands:
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
         if not g.unitTesting:
             g.es("blanks converted to tabs in",count,"nodes") # Must come before c.redraw().
-        if count > 0: c.redraw()
+        if count > 0:
+            c.redraw()
     #@-node:ekr.20031218072017.1704:convertAllBlanks
     #@+node:ekr.20031218072017.1705:convertAllTabs
     def convertAllTabs (self,event=None):
@@ -2414,7 +2418,8 @@ class baseCommands:
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
         if not g.unitTesting:
             g.es("tabs converted to blanks in",count,"nodes")
-        if count > 0: c.redraw()
+        if count > 0:
+            c.redraw()
     #@-node:ekr.20031218072017.1705:convertAllTabs
     #@+node:ekr.20031218072017.1821:convertBlanks
     def convertBlanks (self,event=None):
@@ -3518,6 +3523,7 @@ class baseCommands:
         c.selectPosition(p)
         c.setChanged(True)
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+
         c.redraw()
 
         c.editPosition(p,selectAll=True)
@@ -3548,6 +3554,7 @@ class baseCommands:
         if c.validateOutline():
             u.afterCloneNode(clone,'Clone Node',undoData,dirtyVnodeList=dirtyVnodeList)
             c.selectPosition(clone)
+
         c.redraw()
 
         return clone # For mod_labels and chapters plugins.
@@ -4614,9 +4621,9 @@ class baseCommands:
 
         '''Expand the presently selected node.'''
 
-        c = self ; v = c.currentVnode()
+        c = self ; p = c.currentPosition()
 
-        v.expand()
+        p.expand()
         c.redraw()
         c.treeFocusHelper()
     #@-node:ekr.20031218072017.2907:expandNode
@@ -4632,6 +4639,7 @@ class baseCommands:
 
         if not p.isExpanded():
             c.expandNode()
+
         c.selectVnode(p.firstChild())
         c.redraw()
         c.treeFocusHelper()
@@ -4760,6 +4768,7 @@ class baseCommands:
         if not g.unitTesting:
             g.es("done",color="blue")
         c.redraw()
+
     #@-node:ekr.20031218072017.2924:markChangedRoots
     #@+node:ekr.20031218072017.2925:markAllAtFileNodesDirty
     def markAllAtFileNodesDirty (self,event=None):
@@ -4776,6 +4785,7 @@ class baseCommands:
             else:
                 p.moveToThreadNext()
         c.redraw()
+
     #@-node:ekr.20031218072017.2925:markAllAtFileNodesDirty
     #@+node:ekr.20031218072017.2926:markAtFileNodesDirty
     def markAtFileNodesDirty (self,event=None):
@@ -4795,6 +4805,7 @@ class baseCommands:
             else:
                 p.moveToThreadNext()
         c.redraw()
+
     #@-node:ekr.20031218072017.2926:markAtFileNodesDirty
     #@+node:ekr.20031218072017.2927:markClones
     def markClones (self,event=None):
@@ -4819,6 +4830,7 @@ class baseCommands:
                 u.afterMark(p,undoType,bunch)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
         c.redraw()
+
     #@-node:ekr.20031218072017.2927:markClones
     #@+node:ekr.20031218072017.2928:markHeadline & est
     def markHeadline (self,event=None):
@@ -4838,6 +4850,7 @@ class baseCommands:
         c.setChanged(True)
         u.afterMark(p,undoType,bunch,dirtyVnodeList=dirtyVnodeList)
         c.redraw()
+
     #@-node:ekr.20031218072017.2928:markHeadline & est
     #@+node:ekr.20031218072017.2929:markSubheads
     def markSubheads (self,event=None):
@@ -4860,6 +4873,7 @@ class baseCommands:
                 u.afterMark(p,undoType,bunch)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
         c.redraw()
+
     #@-node:ekr.20031218072017.2929:markSubheads
     #@+node:ekr.20031218072017.2930:unmarkAll
     def unmarkAll (self,event=None):
@@ -4886,6 +4900,7 @@ class baseCommands:
             c.setChanged(True)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
         c.redraw()
+
     #@-node:ekr.20031218072017.2930:unmarkAll
     #@-node:ekr.20031218072017.2922:Mark...
     #@+node:ekr.20031218072017.1766:Move... (Commands)
@@ -5078,6 +5093,7 @@ class baseCommands:
         dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
+        c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p) # Also sets root position.
         c.redraw()
         c.treeFocusHelper()
@@ -5230,7 +5246,8 @@ class baseCommands:
         if p:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            c.redraw_now()
+            c.redraw()
+
     #@-node:ekr.20031218072017.1628:goNextVisitedNode
     #@+node:ekr.20031218072017.1627:goPrevVisitedNode
     def goPrevVisitedNode (self,event=None):
@@ -5244,7 +5261,8 @@ class baseCommands:
         if p:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            c.redraw_now()
+            c.redraw()
+
     #@-node:ekr.20031218072017.1627:goPrevVisitedNode
     #@+node:ekr.20031218072017.2914:goToFirstNode
     def goToFirstNode (self,event=None):
@@ -5538,9 +5556,10 @@ class baseCommands:
         c = self ; current = c.currentPosition()
 
         if p:
-            c.frame.tree.expandAllAncestors(p)
+            flag = c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
-            if redraw: c.redraw()
+            if redraw or flag:
+                c.redraw()
 
         c.treeFocusHelper()
     #@-node:ekr.20070226113916: treeSelectHelper
@@ -6071,7 +6090,7 @@ class baseCommands:
         c = self ; callers = g.callers()
 
         def bindCallback(event,c=c,func=func,callers=callers):
-            # g.trace('w',w,'binding callers',callers)
+            # g.trace('func',func.__name__)
             val = func(event)
             # Careful: func may destroy c.
             if c.exists: c.outerUpdate()
@@ -6157,7 +6176,7 @@ class baseCommands:
     #@+node:ekr.20080514131122.20:c.outerUpdate
     def outerUpdate (self):
 
-        c = self ; aList = [] ; trace = False ; verbose = False
+        c = self ; aList = [] ; trace = False ; verbose = True
 
         if not c.exists or not c.k:
             return
@@ -6211,6 +6230,7 @@ class baseCommands:
     def requestRecolor (self):
 
         c = self
+        # g.trace(g.callers(4))
         c.requestRecolorFlag = True
 
     recolor = requestRecolor
@@ -6243,6 +6263,30 @@ class baseCommands:
     # Compatibility with old scripts
     force_redraw = redraw_now
     #@-node:ekr.20080514131122.14:c.redraw and c.redraw_now
+    #@+node:ekr.20081020151805.2:c.redraw_after methods (new)
+    def redraw_after_icons_changed(self,all=False):
+        return self.frame.tree.redraw_after_icons_changed(all)
+    def redraw_after_clone(self):
+        return self.frame.tree.redraw_after_clone()
+    def redraw_after_contract(self):
+        return self.frame.tree.redraw_after_contract()
+    def redraw_after_delete(self):
+        return self.frame.tree.redraw_after_delete()
+    def redraw_after_expand(self):
+        return self.frame.tree.redraw_after_expand()
+    def redraw_after_insert(self):
+        return self.frame.tree.redraw_after_insert()
+    def redraw_after_move_down(self):
+        return self.frame.tree.redraw_after_move_down()
+    def redraw_after_move_left(self):
+        return self.frame.tree.redraw_after_move_left()
+    def redraw_after_move_right(self):
+        return self.frame.tree.redraw_after_move_right()
+    def redraw_after_move_up(self):
+        return self.frame.tree.redraw_after_move_up()
+    def redraw_after_select(self):
+        return self.frame.tree.redraw_after_select()
+    #@-node:ekr.20081020151805.2:c.redraw_after methods (new)
     #@+node:ekr.20080514131122.15:c.restoreFocus
     def restoreFocus (self):
 
@@ -6694,7 +6738,7 @@ class baseCommands:
 
         c = self
 
-        if hasattr(c,'_currentPosition') and c._currentPosition:
+        if hasattr(c,'_currentPosition') and getattr(c,'_currentPosition'):
             # New in Leo 4.4.2: *always* return a copy.
             return c._currentPosition.copy()
         else:
@@ -6895,7 +6939,7 @@ class baseCommands:
 
         c = self
 
-        if hasattr(self,'_rootPosition') and self._rootPosition:
+        if hasattr(c,'_rootPosition') and getattr(c,'_rootPosition'):
             return self._rootPosition.copy()
         else:
             return  c.nullPosition()
@@ -7257,7 +7301,8 @@ class baseCommands:
                     found = True ; break
             if found: break
         if found:
-            if allFlag: c.frame.tree.expandAllAncestors(p)
+            if allFlag:
+                c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
             c.navTime = time.clock()
             c.navPrefix = newPrefix

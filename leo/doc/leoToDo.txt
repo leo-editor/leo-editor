@@ -4,712 +4,18 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
 
-#@+node:ekr.20081105075318.2:Fix tnode list bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/108bd11007133813#
-#@nonl
-#@-node:ekr.20081105075318.2:Fix tnode list bug
-#@+node:ekr.20081105080658.1:Ville's list of needed features
-@nocolor-node
-
-> I won't call this off topic, because the same kind of question could
-> apply to Leo: how to make Leo the default editor of most programmers.
-
-To do that, leo needs to become easy for easy tasks like:
-
-- Quickly edit a single file
-- Quickly edit a large file
-- Do the typical thing for tyical keypresses (tab, shift+tab comes to mind)
-- Drag-and-drop a file from file manager works - now this is easy at least
-
-On a more advanced side (off the top of my head):
-
-- Good "find in files" (grep) feature
-- Easily import project trees
-- Fast for large project trees (lazy loading or caching).
-- Integration with gcc (read - you can run make, and click on the
-resulting colored error messages)
-- Integration with gdb (as with emacs)
-- Integration with ctags
-- Mylyn-like "most interesting nodes" list (count how much time you
-spend with nodes, which nodes you actually edit, etc).
-
-#@-node:ekr.20081105080658.1:Ville's list of needed features
-#@+node:ekr.20081031080719.1:New find-panel options
-@nocolor-node
-
-Small changes to Leo's find command might make it much more pleasant to use:
-
-1. I am always mis-remembering whether a function or ivar is called xY
-or x_Y.  How about having the 'ignore case' option also ignore
-underscores?  So easy, so effective!
-
-2. Dubious? Have any upper case letter in the find pattern turn
-'ignore case' off.  I say this is dubious because I often type upper
-case letters without truly wanting to match cases.  But this, or
-variants, are worth experimenting with.
-
-3. Similarly, regex characters like $, ^, especially if in the
-expected positions, might turn on regular expression matching.  I
-think this is likely to work well.
-#@nonl
-#@-node:ekr.20081031080719.1:New find-panel options
-#@+node:ekr.20081023060725.1:Fix new @shadow bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4d6d0615715d3f61
-
-Using the current trunk (but also some earlier versions, both with and
-without my tinkering):
-
-I've got a pretty trivial outline: an empty @chapters, a node titled
-path that contains "@path /home/sps/Foo" and child of the path node
-with the headline "@shadow CHANGELOG" and no contents.  I then try to
-"File->Read/Write->Read @shadow nodes", and the content of CHANGELOG
-appears in the node, but the .leo_shadow directory does not get
-created, and I get the following traceback:
-
-reading: @shadow CHANGELOG
-exception executing command
-Traceback (most recent call last):
-  File "/usr/local/lib/leo/core/leoCommands.py", line 319, in
-doCommand
-    val = command(event)
-  File "/usr/local/lib/leo/core/leoCommands.py", line 1241, in
-readAtShadowNodes
-    c.atFileCommands.readAtShadowNodes(p)
-  File "/usr/local/lib/leo/core/leoAtFile.py", line 655, in
-readAtShadowNodes
-    at.readOneAtShadowNode (fileName,p)
-  File "/usr/local/lib/leo/core/leoAtFile.py", line 683, in
-readOneAtShadowNode
-    at.writeOneAtShadowNode(p,toString=False,force=True)
-  File "/usr/local/lib/leo/core/leoAtFile.py", line 2587, in
-writeOneAtShadowNode
-    at.writeOpenFile(root,nosentinels=not
-sentinels,toString=False,atAuto=False)
-  File "/usr/local/lib/leo/core/leoAtFile.py", line 2841, in
-writeOpenFile
-    at.putBody(root,fromString=fromString)
-  File "/usr/local/lib/leo/core/leoAtFile.py", line 2913, in putBody
-    at.putCodeLine(s,i)
-  File "/usr/local/lib/leo/core/leoAtFile.py", line 3136, in
-putCodeLine
-    if g.match(s,k,self.startSentinelComment + '@'):
-TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
-
-If I save the outline at that point, it contains the following:
-
-<?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet ekr_test?>
-<leo_file>
-<leo_header file_format="2" tnodes="0" max_tnode_index="0"
-clone_windows="0"/>
-<globals body_outline_ratio="0.4">
-        <global_window_position top="20" left="20" height="600"
-width="800"/>
-        <global_log_window_position top="0" left="0" height="0"
-width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="sps.20081023030401.1" str_leo_pos="1,0"><vh>@chapters</vh></v>
-<v t="sps.20081023030401.3" a="E"><vh>path</vh>
-<v t="sps.20081023030401.2"><vh>@shadow CHANGELOG</vh></v>
-</v>
-</vnodes>
-<tnodes>
-<t tx="sps.20081023030401.1"></t>
-<t tx="sps.20081023030401.3">@path /home/sps/Foo
-</t>
-</tnodes>
-</leo_file>
-
-The contents of the CHANGELOG file are pretty unimpressive after I
-removed all but the top entry during debugging:
-
-0.25.?
-    Fixing #1168 for REST -- all ssl classes downcase their names.
-    This is a much cleaner fix than the xmlrpc version, thankfully. :)
-
-    Added a boolean 'crl' default value.  Now we have a location for
-    the CA CRL and the host CRL, and then a setting for configuring
-    whether we should even use a CRL.  This way we aren't trying to
-    set file paths to 'false' to disable the CRL. 
-#@nonl
-#@-node:ekr.20081023060725.1:Fix new @shadow bug
-#@+node:ekr.20081105073648.1:Look at quick pysmell integration with Leo
-http://orestis.gr/blog/2008/11/02/pysmell-v07-here-supports-emacs-textmate-and-vim/
-#@nonl
-#@-node:ekr.20081105073648.1:Look at quick pysmell integration with Leo
-#@+node:ekr.20081105075318.1:Look at pydoctor
-http://groups.google.com/group/leo-editor/browse_thread/thread/189cadccc5355890
-#@-node:ekr.20081105075318.1:Look at pydoctor
-#@+node:ekr.20081015151532.1:Protect against overwriting changed files using timestamps
-@nocolor-node
-
->> I wonder if there is a way to avoid this problem without relying on
->> people to reload .leo or derived files?
->
-> Yes - retaining timestamps of derived files (on read time) and
-> checking them before writing, with a loud complaint if they differ
-> (like many editors do).
-
-I'm convinced.  I'll put this near the top of the list.
-#@nonl
-#@-node:ekr.20081015151532.1:Protect against overwriting changed files using timestamps
-#@+node:ekr.20081016073652.1:Allow gui to be specified on the command line.
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/aba668908d7b5dd
-
-> I think it would be nice to have the option of choosing the GUI from
-> command line, at leo startup.
-
-Thanks for this suggestion.  It comes at a perfect time and solves
-several problems.  I'll definitely do this.
-
-I have been thinking that plugins that require a particular gui should
-reside in leo\plugins\tkinter or leo\plugins\qt, etc and that gui
-plugins should be treated differently because they should be loaded
-first.
-
-The only remaining problem is which gui to use by default if none is
-specified on the command line.  I think this may have to be a
-module-level switch in runLeo.py rather than being a setting.
-(Settings are likely handled too late for this).
-#@nonl
-#@-node:ekr.20081016073652.1:Allow gui to be specified on the command line.
 #@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 @nocolor
 
 I also unhappily discovered that any file named somedoc.leo.bak will
 get deleted whenever you save a file named somedoc.leo.
 
-EKR: Either use mkstemp or always write to a string first.
-
 @color
 #@nonl
-#@+node:ekr.20031218072017.3046:write_Leo_file
-def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
-
-    c = self.c
-    self.putCount = 0
-    self.toString = toString
-    theActualFile = None
-    toZip = False
-    atOk = True
-
-    if c.config.getBool('check_outline_before_save'):
-        g.trace('@bool check_outline_before_save = True',color='blue')
-        errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-        if errors > 0:
-            g.es_print('outline not written',color='red')
-            return False
-
-    if not outlineOnlyFlag or toOPML:
-        # Update .leoRecentFiles.txt if possible.
-        g.app.config.writeRecentFilesFile(c)
-        << write all @file nodes >>
-    << return if the .leo file is read-only >>
-    try:
-        << create backup file >>
-        self.mFileName = fileName
-        if toOPML:
-            << ensure that filename ends with .opml >>
-        self.outputFile = StringIO()
-        << create theActualFile >>
-        # t1 = time.clock()
-        if toOPML:
-            self.putToOPML()
-        else:
-            # An important optimization: we have already assign the file indices.
-            self.putLeoFile()
-        # t2 = time.clock()
-        s = self.outputFile.getvalue()
-        # g.trace(self.leo_file_encoding)
-        if toZip:
-            self.writeZipFile(s)
-        elif toString:
-            # For support of chapters plugin.
-            g.app.write_Leo_file_string = s
-        else:
-            theActualFile.write(s)
-            theActualFile.close()
-            << delete backup file >>
-            # t3 = time.clock()
-            # g.es_print('len',len(s),'putCount',self.putCount) # 'put',t2-t1,'write&close',t3-t2)
-        self.outputFile = None
-        self.toString = False
-        return atOk
-    except Exception:
-        g.es("exception writing:",fileName)
-        g.es_exception(full=True)
-        if theActualFile: theActualFile.close()
-        self.outputFile = None
-        if backupName:
-            << delete fileName >>
-            << rename backupName to fileName >>
-        self.toString = False
-        return False
-
-write_LEO_file = write_Leo_file # For compatibility with old plugins.
-#@+node:ekr.20040324080359:<< write all @file nodes >>
-try:
-    # Write all @file nodes and set orphan bits.
-    # An important optimization: we have already assign the file indices.
-    changedFiles,atOk = c.atFileCommands.writeAll()
-except Exception:
-    g.es_error("exception writing derived files")
-    g.es_exception()
-    return False
-#@-node:ekr.20040324080359:<< write all @file nodes >>
-#@+node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
-# self.read_only is not valid for Save As and Save To commands.
-
-if g.os_path_exists(fileName):
-    try:
-        if not os.access(fileName,os.W_OK):
-            g.es("can not write: read only:",fileName,color="red")
-            return False
-    except Exception:
-        pass # os.access() may not exist on all platforms.
-#@-node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
-#@+node:ekr.20031218072017.3047:<< create backup file >>
-backupName = None
-
-# rename fileName to fileName.bak if fileName exists.
-if not toString and g.os_path_exists(fileName):
-
-    backupName = g.os_path_join(g.app.loadDir,fileName)
-    backupName = fileName + ".bak"
-
-    if g.os_path_exists(backupName):
-        g.utils_remove(backupName)
-
-    ok = g.utils_rename(c,fileName,backupName)
-
-    if not ok:
-        if self.read_only:
-            g.es("read only",color="red")
-        return False
-#@nonl
-#@-node:ekr.20031218072017.3047:<< create backup file >>
-#@+node:ekr.20060919070145:<< ensure that filename ends with .opml >>
-if not self.mFileName.endswith('opml'):
-    self.mFileName = self.mFileName + '.opml'
-fileName = self.mFileName
-#@nonl
-#@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
-#@+node:ekr.20060929103258:<< create theActualFile >>
-if toString:
-    theActualFile = None
-elif c.isZipped:
-    self.toString = toString = True
-    theActualFile = None
-    toZip = True
-else:
-    theActualFile = open(fileName, 'wb')
-#@-node:ekr.20060929103258:<< create theActualFile >>
-#@+node:ekr.20031218072017.3048:<< delete backup file >>
-if backupName and g.os_path_exists(backupName):
-
-    self.deleteFileWithMessage(backupName,'backup')
-#@-node:ekr.20031218072017.3048:<< delete backup file >>
-#@+node:ekr.20050405103712:<< delete fileName >>
-if fileName and g.os_path_exists(fileName):
-
-    self.deleteFileWithMessage(fileName,'')
-#@-node:ekr.20050405103712:<< delete fileName >>
-#@+node:ekr.20050405103712.1:<< rename backupName to fileName >>
-if backupName:
-    g.es("restoring",fileName,"from",backupName)
-    g.utils_rename(c,backupName,fileName)
-#@-node:ekr.20050405103712.1:<< rename backupName to fileName >>
-#@+node:ekr.20070412095520:writeZipFile
-def writeZipFile (self,s):
-
-    # The name of the file in the archive.
-    contentsName = g.toEncodedString(
-        g.shortFileName(self.mFileName),
-        self.leo_file_encoding,reportErrors=True)
-
-    # The name of the archive itself.
-    fileName = g.toEncodedString(
-        self.mFileName,
-        self.leo_file_encoding,reportErrors=True)
-
-    # Write the archive.
-    theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
-    theFile.writestr(contentsName,s)
-    theFile.close()
-#@-node:ekr.20070412095520:writeZipFile
-#@-node:ekr.20031218072017.3046:write_Leo_file
 #@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
 #@nonl
-#@+node:ekr.20031218072017.1417:<< define global constants >>
-# self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-
-self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
-self.prolog_postfix_string = "?>"
-self.prolog_namespace_string = 'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
-#@nonl
-#@-node:ekr.20031218072017.1417:<< define global constants >>
-#@+node:ekr.20040324080819.1:putLeoFile & helpers
-def putLeoFile (self):
-
-    self.updateFixedStatus()
-    self.putProlog()
-    self.putHeader()
-    self.putGlobals()
-    self.putPrefs()
-    self.putFindSettings()
-    #start = g.getTime()
-    self.putVnodes()
-    #start = g.printDiffTime("vnodes ",start)
-    self.putTnodes()
-    #start = g.printDiffTime("tnodes ",start)
-    self.putPostlog()
-#@+node:ekr.20031218072017.3035:putFindSettings
-def putFindSettings (self):
-
-    # New in 4.3:  These settings never get written to the .leo file.
-    self.put("<find_panel_settings/>")
-    self.put_nl()
-#@-node:ekr.20031218072017.3035:putFindSettings
-#@+node:ekr.20031218072017.3037:putGlobals
-# Changed for Leo 4.0.
-
-def putGlobals (self):
-
-    c = self.c
-    self.put("<globals")
-    << put the body/outline ratio >>
-    self.put(">") ; self.put_nl()
-    << put the position of this frame >>
-    << put the position of the log window >>
-    self.put("</globals>") ; self.put_nl()
-#@+node:ekr.20031218072017.3038:<< put the body/outline ratio >>
-# Puts an innumerate number of digits
-
-self.put(" body_outline_ratio=")
-
-# New in Leo 4.5: support fixed .leo files.
-self.put_in_dquotes(
-    str(g.choose(c.fixed,0.5,c.frame.ratio)))
-#@-node:ekr.20031218072017.3038:<< put the body/outline ratio >>
-#@+node:ekr.20031218072017.3039:<< put the position of this frame >>
-# New in Leo 4.5: support fixed .leo files.
-
-if c.fixed:
-    width,height,left,top = 700,500,50,50
-        # Put fixed, immutable, reasonable defaults.
-        # Leo 4.5 and later will ignore these when reading.
-        # These should be reasonable defaults so that the
-        # file will be opened properly by older versions
-        # of Leo that do not support fixed .leo files.
-else:
-    width,height,left,top = c.frame.get_window_info()
-
-# g.trace(width,height,left,top)
-
-self.put_tab()
-self.put("<global_window_position")
-self.put(" top=") ; self.put_in_dquotes(str(top))
-self.put(" left=") ; self.put_in_dquotes(str(left))
-self.put(" height=") ; self.put_in_dquotes(str(height))
-self.put(" width=") ; self.put_in_dquotes(str(width))
-self.put("/>") ; self.put_nl()
-#@-node:ekr.20031218072017.3039:<< put the position of this frame >>
-#@+node:ekr.20031218072017.3040:<< put the position of the log window >>
-top = left = height = width = 0 # no longer used
-
-self.put_tab()
-self.put("<global_log_window_position")
-self.put(" top=") ; self.put_in_dquotes(str(top))
-self.put(" left=") ; self.put_in_dquotes(str(left))
-self.put(" height=") ; self.put_in_dquotes(str(height))
-self.put(" width=") ; self.put_in_dquotes(str(width))
-self.put("/>") ; self.put_nl()
-#@-node:ekr.20031218072017.3040:<< put the position of the log window >>
-#@-node:ekr.20031218072017.3037:putGlobals
-#@+node:ekr.20031218072017.3041:putHeader
-def putHeader (self):
-
-    tnodes = 0 ; clone_windows = 0 # Always zero in Leo2.
-
-    if 1: # For compatibility with versions before Leo 4.5.
-        self.put("<leo_header")
-        self.put(" file_format=") ; self.put_in_dquotes("2")
-        self.put(" tnodes=") ; self.put_in_dquotes(str(tnodes))
-        self.put(" max_tnode_index=") ; self.put_in_dquotes(str(0))
-        self.put(" clone_windows=") ; self.put_in_dquotes(str(clone_windows))
-        self.put("/>") ; self.put_nl()
-
-    else:
-        self.put('<leo_header file_format="2"/>\n')
-#@-node:ekr.20031218072017.3041:putHeader
-#@+node:ekr.20031218072017.3042:putPostlog
-def putPostlog (self):
-
-    self.put("</leo_file>") ; self.put_nl()
-#@-node:ekr.20031218072017.3042:putPostlog
-#@+node:ekr.20031218072017.2066:putPrefs
-def putPrefs (self):
-
-    # New in 4.3:  These settings never get written to the .leo file.
-    self.put("<preferences/>")
-    self.put_nl()
-#@-node:ekr.20031218072017.2066:putPrefs
-#@+node:ekr.20031218072017.1246:putProlog
-def putProlog (self):
-
-    c = self.c
-
-    self.putXMLLine()
-
-    if c.config.stylesheet or c.frame.stylesheet:
-        self.putStyleSheetLine()
-
-    self.put("<leo_file>") ; self.put_nl()
-#@-node:ekr.20031218072017.1246:putProlog
-#@+node:ekr.20031218072017.1248:putStyleSheetLine
-def putStyleSheetLine (self):
-
-    c = self.c
-
-    # The stylesheet in the .leo file takes precedence over the default stylesheet.
-    self.put("<?xml-stylesheet ")
-    self.put(c.frame.stylesheet or c.config.stylesheet)
-    self.put("?>")
-    self.put_nl()
-#@nonl
-#@-node:ekr.20031218072017.1248:putStyleSheetLine
-#@+node:ekr.20031218072017.1577:putTnode
-def putTnode (self,t):
-
-    # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-    if not t.fileIndex:
-        g.trace('can not happen: no index for tnode',t)
-        t.fileIndex = g.app.nodeIndices.getNewIndex()
-
-    # New in Leo 4.4.2 b2: call put just once.
-    gnx = g.app.nodeIndices.toString(t.fileIndex)
-    ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
-    body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
-    self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
-#@-node:ekr.20031218072017.1577:putTnode
-#@+node:ekr.20031218072017.1575:putTnodes
-def putTnodes (self):
-
-    """Puts all tnodes as required for copy or save commands"""
-
-    c = self.c
-
-    self.put("<tnodes>\n")
-    << write only those tnodes that were referenced >>
-    self.put("</tnodes>\n")
-#@+node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
-if self.usingClipboard: # write the current tree.
-    theIter = c.currentPosition().self_and_subtree_iter()
-else: # write everything
-    theIter = c.all_positions_with_unique_tnodes_iter()
-
-# Populate tnodes
-tnodes = {}
-nodeIndices = g.app.nodeIndices
-for p in theIter:
-    # New in Leo 4.4.8: assign file indices here.
-    if not p.v.t.fileIndex:
-        p.v.t.fileIndex = nodeIndices.getNewIndex()
-    tnodes[p.v.t.fileIndex] = p.v.t
-
-# Put all tnodes in index order.
-for index in sorted(tnodes):
-    # g.trace(index)
-    t = tnodes.get(index)
-    if not t:
-        g.trace('can not happen: no tnode for',index)
-    # Write only those tnodes whose vnodes were written.
-    if t.isWriteBit():
-        self.putTnode(t)
-#@nonl
-#@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
-#@-node:ekr.20031218072017.1575:putTnodes
-#@+node:ekr.20031218072017.1863:putVnode
-def putVnode (self,p,isIgnore=False):
-
-    """Write a <v> element corresponding to a vnode."""
-
-    fc = self ; c = fc.c ; v = p.v
-    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
-    isShadow = p.isAtShadowFileNode()
-    isThin = p.isAtThinFileNode()
-    isOrphan = p.isOrphan()
-    if not isIgnore: isIgnore = p.isAtIgnoreNode()
-
-    if isIgnore:   forceWrite = True      # Always write full @ignore trees.
-    elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
-    elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
-    elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
-    else:          forceWrite = True      # Write all other @file trees.
-
-    << Set gnx = tnode index >>
-    attrs = []
-    << Append attribute bits to attrs >>
-    << Append tnodeList and unKnownAttributes to attrs >>
-    attrs = ''.join(attrs)
-    v_head = '<v t="%s"%s>' % (gnx,attrs)
-    if gnx in fc.vnodesDict:
-        fc.put(v_head+'</v>\n')
-    else:
-        fc.vnodesDict[gnx]=True
-        v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString()or''))
-        # The string catentation is faster than repeated calls to fc.put.
-        if not self.usingClipboard:
-            << issue informational messages >>
-        # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
-        if p.hasChildren() and (forceWrite or self.usingClipboard):
-            fc.put('%s\n' % v_head)
-            # This optimization eliminates all "recursive" copies.
-            p.moveToFirstChild()
-            while 1:
-                fc.putVnode(p,isIgnore)
-                if p.hasNext(): p.moveToNext()
-                else:           break
-            p.moveToParent() # Restore p in the caller.
-            fc.put('</v>\n')
-        else:
-            fc.put('%s</v>\n' % v_head) # Call put only once.
-#@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
-# New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-if not v.t.fileIndex:
-    v.t.fileIndex = g.app.nodeIndices.getNewIndex()
-
-gnx = g.app.nodeIndices.toString(v.t.fileIndex)
-
-if forceWrite or self.usingClipboard:
-    v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
-#@-node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
-#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-# These string catenations are benign because they rarely happen.
-attr = ""
-# New in Leo 4.5: support fixed .leo files.
-if not c.fixed:
-    if v.isExpanded() and v.hasChildren(): attr += "E"
-    if v.isMarked():   attr += "M"
-    if v.isOrphan():   attr += "O"
-
-    # No longer a bottleneck now that we use p.equal rather than p.__cmp__
-    # Almost 30% of the entire writing time came from here!!!
-    # if not self.use_sax:
-        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
-
-    if attr:
-        attrs.append(' a="%s"' % attr)
-
-# Put the archived *current* position in the *root* positions <v> element.
-if p == self.rootPosition:
-    aList = [str(z) for z in self.currentPosition.archivedPosition()]
-    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
-    if not c.fixed:
-        d['str_leo_pos'] = ','.join(aList)
-    # g.trace(aList,d)
-    v.unknownAttributes = d
-elif hasattr(v,"unknownAttributes"):
-    d = v.unknownAttributes
-    if d and not c.fixed and d.get('str_leo_pos'):
-        # g.trace("clearing str_leo_pos",v)
-        del d['str_leo_pos']
-        v.unknownAttributes = d
-#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
-#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
-# Write the tnodeList only for @file nodes.
-# New in 4.2: tnode list is in tnode.
-
-if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
-    if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
-        if isThin or isShadow: # Never issue warning for @auto.
-            if g.app.unitTesting:
-                g.app.unitTestDict["warning"] = True
-            g.es("deleting tnode list for",p.headString(),color="blue")
-        # This is safe: cloning can't change the type of this node!
-        delattr(v.t,"tnodeList")
-    else:
-        attrs.append(fc.putTnodeList(v)) # New in 4.0
-
-if hasattr(v,"unknownAttributes"): # New in 4.0
-    # g.trace('v',v,'v.uA',v.unknownAttributes)
-    attrs.append(self.putUnknownAttributes(v))
-
-if p.hasChildren() and not forceWrite and not self.usingClipboard:
-    # We put the entire tree when using the clipboard, so no need for this.
-    if not isAuto: # Bug fix: 2008/8/7.
-        attrs.append(self.putDescendentTnodeUas(p))
-        attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
-        attrs.append(self.putDescendentAttributes(p))
-#@nonl
-#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
-#@+node:ekr.20040702085529:<< issue informational messages >>
-if isOrphan and isThin:
-    g.es("writing erroneous:",p.headString(),color="blue")
-    p.clearOrphan()
-#@-node:ekr.20040702085529:<< issue informational messages >>
-#@-node:ekr.20031218072017.1863:putVnode
-#@+node:ekr.20031218072017.1579:putVnodes
-def putVnodes (self):
-
-    """Puts all <v> elements in the order in which they appear in the outline."""
-
-    c = self.c
-    c.clearAllVisited()
-
-    self.put("<vnodes>\n")
-
-    # Make only one copy for all calls.
-    self.currentPosition = c.currentPosition() 
-    self.rootPosition    = c.rootPosition()
-    # self.topPosition     = c.topPosition()
-    self.vnodesDict = {}
-
-    if self.usingClipboard:
-        self.putVnode(self.currentPosition) # Write only current tree.
-    else:
-        for p in c.rootPosition().self_and_siblings_iter():
-            # New in Leo 4.4.2 b2 An optimization:
-            self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
-
-    self.put("</vnodes>\n")
-#@nonl
-#@-node:ekr.20031218072017.1579:putVnodes
-#@+node:ekr.20031218072017.1247:putXMLLine
-def putXMLLine (self):
-
-    '''Put the **properly encoded** <?xml> element.'''
-
-    # Use self.leo_file_encoding encoding.
-    self.put('%s"%s"%s\n' % (
-        g.app.prolog_prefix_string,
-        self.leo_file_encoding,
-        g.app.prolog_postfix_string))
-#@nonl
-#@-node:ekr.20031218072017.1247:putXMLLine
-#@-node:ekr.20040324080819.1:putLeoFile & helpers
-#@+node:ekr.20031218072017.1246:putProlog
-def putProlog (self):
-
-    c = self.c
-
-    self.putXMLLine()
-
-    if c.config.stylesheet or c.frame.stylesheet:
-        self.putStyleSheetLine()
-
-    self.put("<leo_file>") ; self.put_nl()
-#@-node:ekr.20031218072017.1246:putProlog
 #@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 #@+node:ekr.20070624135822:Templates for common code fragments
 @
@@ -1204,7 +510,7 @@ def goto_showResults(self,found,p,n,n2,lines):
         if len(lines) < n and not g.unitTesting:
             g.es('only',len(lines),'lines',color="blue")
 
-    # g.trace('n',n,'ins',ins,'p',p.headString())
+    # g.trace(p.headString(),g.callers())
 
     w.setInsertPoint(ins)
     c.bodyWantsFocusNow()
@@ -1257,7 +563,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
   must be descendants of the referencing node (in the @rst tree)
 #@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@+node:ekr.20080922115725.1:Finish @shadow
-# Add warning that clones in @shadow files is a bad idea.
 # Allow block comments in private shadow files.
 # Compute delims using the private shadow file, not the file extension!
 # Can @shadow mark externally changed nodes?
@@ -1453,8 +758,72 @@ self.check_the_final_output(
 #@-node:ekr.20080708094444.38:x.propagate_changed_lines
 #@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
 #@-node:ekr.20080922115725.1:Finish @shadow
+#@+node:ekr.20081004102201.2:Log file for @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+#@nonl
+#@-node:ekr.20081004102201.2:Log file for @shadow
+#@+node:ekr.20081028060510.1:Fix @shadow crasher
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
+
+I think Leo crashes when attempting to load a shadow file that starts
+with a line feed character. [EKR: it's the missing file extension]
+
+Here's the stack trace:
+
+Traceback (most recent call last):
+ File "/home/jesse/leo-editor/launchLeo.py", line 8, in <module>
+   leo.core.runLeo.run()
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
+   c,frame = createFrame(fileName,relativeFileName,script)
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
+createFrame
+   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+ File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
+openWithFileName
+   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
+in open
+   silent=silent)
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
+in getLeoFile
+   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
+readAll
+   at.readOneAtShadowNode (fileName,p)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
+readOneAtShadowNode
+   at.writeOneAtShadowNode(p,toString=False,force=True)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
+writeOneAtShadowNode
+   at.writeOpenFile(root,nosentinels=not
+sentinels,toString=False,atAuto=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
+writeOpenFile
+   at.putBody(root,fromString=fromString)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
+putBody
+   at.putCodeLine(s,i)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
+putCodeLine
+   if g.match(s,k,self.startSentinelComment + '@'):
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+#@nonl
+#@-node:ekr.20081028060510.1:Fix @shadow crasher
 #@-node:ekr.20080915112342.1:First
 #@+node:ekr.20080517102922.1:Files stuff 8
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+@nocolor
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.
+
+@color
+#@nonl
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 #@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
 # Remove the old type-specific commands from the default menu.
 #@nonl
@@ -1663,6 +1032,7 @@ def new (self,event=None,gui=None):
     # Force a call to c.outerUpdate.
     # This is needed when we execute this command from a menu.
     c.redraw_now()
+    c.frame.initCompleteHint()
 
     return c # For unit test.
 #@nonl
@@ -2069,6 +1439,7 @@ def saveTo (self,event=None):
         c.fileCommands.saveTo(fileName)
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
+
     c.redraw()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
@@ -3231,14 +2602,16 @@ def masterKeyHandler (self,event,stroke=None):
     << define vars >>
     trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = False
+    verbose = True
 
     if keysym in special_keys:
-        if verbose: g.trace('keysym',keysym)
+        if trace and verbose: g.trace('keysym',keysym)
         return None
     if traceGC: g.printNewObjects('masterKey 1')
     if trace:
-        g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
+        g.trace('stroke:',repr(stroke),'keysym:',
+            repr(event.keysym),'ch:',repr(event.char),'state',state)
+        # g.trace('callers',g.callers(5))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -3350,7 +2723,7 @@ if k.unboundKeyAction in ('insert','overwrite'):
                 k.masterCommand(event,b.func,b.stroke,b.commandName)
                 return 'break'
 
-    if trace: g.trace('%s in %s mode' % (stroke,k.unboundKeyAction))
+    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
     k.masterCommand(event,func=None,stroke=stroke,commandName=None)
     return 'break'
 
@@ -3362,45 +2735,12 @@ elif k.unboundKeyAction == 'command':
     if not g.app.gui.isTextWidget(w):
         c.onCanvasKey(event)
         return 'break'
-
-# elif k.unboundKeyAction == 'command':
-    # # In command mode we must disallow all keys except those actually bound in command-state.
-    # # That is, we cannot use general per-pane mode bindings.
-    # for key,name in (
-        # # Order here is similar to bindtags order.
-        # ('command',None),
-        # ('button',None),
-        # ('body','body'),
-        # ('text','head'), # Important: text bindings in head before tree bindings.
-        # ('tree','head'),
-        # ('tree','canvas'),
-        # ('log', 'log'),
-        # ('text','log'),
-        # ('text',None),
-        # ('all',None),
-    # ):
-        # if (
-            # name and w_name.startswith(name) or
-            # key in ('text','all') and g.app.gui.isTextWidget(w) or
-            # key in ('button','all')
-        # ):
-            # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-            # if d:
-                # b = d.get(stroke)
-                # if b:
-                    # if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                    # return k.masterCommand(event,b.func,b.stroke,b.commandName)
-    # else:
-        # if trace: g.trace('ignoring %s in command mode' % b.stroke)
-        # return 'break' # Disallow all unbound plain keys in command mode.
 #@nonl
 #@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
 #@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
 keyStatesTuple = ('command','insert','overwrite')
 
-# g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
-# g.trace('button',k.masterBindingsDict.get('button'))
+# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
 for key,name in (
     # Order here is similar to bindtags order.
@@ -3425,6 +2765,7 @@ for key,name in (
     ):
         d = k.masterBindingsDict.get(key,{})
         # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
         if d:
             b = d.get(stroke)
             if b:
@@ -3497,12 +2838,11 @@ def handleMiniBindings (self,event,state,stroke):
 
     return False
 #@-node:ekr.20061031131434.152:handleMiniBindings
-#@+node:ekr.20080510095819.1:handleUnboudKeys
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
-    k = self ; c = k.c
+    k = self ; c = k.c ; trace = False
     modesTuple = ('insert','overwrite')
-    trace = False
 
     if trace:
         # if stroke: g.trace('***unexpected stroke***')
@@ -3534,7 +2874,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     else:
         if trace: g.trace(repr(stroke),'no func')
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
 #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@+node:ekr.20061031131434.162:generalModeHandler
 def generalModeHandler (self,event,
@@ -3798,8 +3138,7 @@ def __init__(self,c,frame,canvas):
     self.freeUserIcons = {}
 
     self._block_canvas_menu = False
-
-
+#@nonl
 #@+node:ekr.20040803072955.17:<< define drawing constants >>
 self.box_padding = 5 # extra padding between box and icon
 self.box_width = 9 + self.box_padding
@@ -4006,7 +3345,7 @@ def makeMasterGuiBinding (self,stroke,w=None):
 
     # This is the only real key callback.
     def masterBindKeyCallback (event,k=k,stroke=stroke):
-        # g.trace(stroke)
+        # g.trace(stroke,event.w)
         return k.masterKeyHandler(event,stroke=stroke)
 
     if 0:
@@ -4042,14 +3381,16 @@ def masterKeyHandler (self,event,stroke=None):
     << define vars >>
     trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = False
+    verbose = True
 
     if keysym in special_keys:
-        if verbose: g.trace('keysym',keysym)
+        if trace and verbose: g.trace('keysym',keysym)
         return None
     if traceGC: g.printNewObjects('masterKey 1')
     if trace:
-        g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
+        g.trace('stroke:',repr(stroke),'keysym:',
+            repr(event.keysym),'ch:',repr(event.char),'state',state)
+        # g.trace('callers',g.callers(5))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -4161,7 +3502,7 @@ if k.unboundKeyAction in ('insert','overwrite'):
                 k.masterCommand(event,b.func,b.stroke,b.commandName)
                 return 'break'
 
-    if trace: g.trace('%s in %s mode' % (stroke,k.unboundKeyAction))
+    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
     k.masterCommand(event,func=None,stroke=stroke,commandName=None)
     return 'break'
 
@@ -4173,45 +3514,12 @@ elif k.unboundKeyAction == 'command':
     if not g.app.gui.isTextWidget(w):
         c.onCanvasKey(event)
         return 'break'
-
-# elif k.unboundKeyAction == 'command':
-    # # In command mode we must disallow all keys except those actually bound in command-state.
-    # # That is, we cannot use general per-pane mode bindings.
-    # for key,name in (
-        # # Order here is similar to bindtags order.
-        # ('command',None),
-        # ('button',None),
-        # ('body','body'),
-        # ('text','head'), # Important: text bindings in head before tree bindings.
-        # ('tree','head'),
-        # ('tree','canvas'),
-        # ('log', 'log'),
-        # ('text','log'),
-        # ('text',None),
-        # ('all',None),
-    # ):
-        # if (
-            # name and w_name.startswith(name) or
-            # key in ('text','all') and g.app.gui.isTextWidget(w) or
-            # key in ('button','all')
-        # ):
-            # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-            # if d:
-                # b = d.get(stroke)
-                # if b:
-                    # if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                    # return k.masterCommand(event,b.func,b.stroke,b.commandName)
-    # else:
-        # if trace: g.trace('ignoring %s in command mode' % b.stroke)
-        # return 'break' # Disallow all unbound plain keys in command mode.
 #@nonl
 #@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
 #@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
 keyStatesTuple = ('command','insert','overwrite')
 
-# g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
-# g.trace('button',k.masterBindingsDict.get('button'))
+# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
 for key,name in (
     # Order here is similar to bindtags order.
@@ -4236,6 +3544,7 @@ for key,name in (
     ):
         d = k.masterBindingsDict.get(key,{})
         # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
         if d:
             b = d.get(stroke)
             if b:
@@ -4308,12 +3617,11 @@ def handleMiniBindings (self,event,state,stroke):
 
     return False
 #@-node:ekr.20061031131434.152:handleMiniBindings
-#@+node:ekr.20080510095819.1:handleUnboudKeys
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
-    k = self ; c = k.c
+    k = self ; c = k.c ; trace = False
     modesTuple = ('insert','overwrite')
-    trace = False
 
     if trace:
         # if stroke: g.trace('***unexpected stroke***')
@@ -4345,7 +3653,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     else:
         if trace: g.trace(repr(stroke),'no func')
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
 #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@+node:ekr.20061031131434.162:generalModeHandler
 def generalModeHandler (self,event,
@@ -4716,7 +4024,7 @@ def makeMasterGuiBinding (self,stroke,w=None):
 
     # This is the only real key callback.
     def masterBindKeyCallback (event,k=k,stroke=stroke):
-        # g.trace(stroke)
+        # g.trace(stroke,event.w)
         return k.masterKeyHandler(event,stroke=stroke)
 
     if 0:
@@ -5069,7 +4377,7 @@ def makeMasterGuiBinding (self,stroke,w=None):
 
     # This is the only real key callback.
     def masterBindKeyCallback (event,k=k,stroke=stroke):
-        # g.trace(stroke)
+        # g.trace(stroke,event.w)
         return k.masterKeyHandler(event,stroke=stroke)
 
     if 0:
@@ -5238,14 +4546,16 @@ def masterKeyHandler (self,event,stroke=None):
     << define vars >>
     trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = False
+    verbose = True
 
     if keysym in special_keys:
-        if verbose: g.trace('keysym',keysym)
+        if trace and verbose: g.trace('keysym',keysym)
         return None
     if traceGC: g.printNewObjects('masterKey 1')
     if trace:
-        g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
+        g.trace('stroke:',repr(stroke),'keysym:',
+            repr(event.keysym),'ch:',repr(event.char),'state',state)
+        # g.trace('callers',g.callers(5))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -5357,7 +4667,7 @@ if k.unboundKeyAction in ('insert','overwrite'):
                 k.masterCommand(event,b.func,b.stroke,b.commandName)
                 return 'break'
 
-    if trace: g.trace('%s in %s mode' % (stroke,k.unboundKeyAction))
+    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
     k.masterCommand(event,func=None,stroke=stroke,commandName=None)
     return 'break'
 
@@ -5369,45 +4679,12 @@ elif k.unboundKeyAction == 'command':
     if not g.app.gui.isTextWidget(w):
         c.onCanvasKey(event)
         return 'break'
-
-# elif k.unboundKeyAction == 'command':
-    # # In command mode we must disallow all keys except those actually bound in command-state.
-    # # That is, we cannot use general per-pane mode bindings.
-    # for key,name in (
-        # # Order here is similar to bindtags order.
-        # ('command',None),
-        # ('button',None),
-        # ('body','body'),
-        # ('text','head'), # Important: text bindings in head before tree bindings.
-        # ('tree','head'),
-        # ('tree','canvas'),
-        # ('log', 'log'),
-        # ('text','log'),
-        # ('text',None),
-        # ('all',None),
-    # ):
-        # if (
-            # name and w_name.startswith(name) or
-            # key in ('text','all') and g.app.gui.isTextWidget(w) or
-            # key in ('button','all')
-        # ):
-            # d = k.masterBindingsDict.get(key,{})
-            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-            # if d:
-                # b = d.get(stroke)
-                # if b:
-                    # if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                    # return k.masterCommand(event,b.func,b.stroke,b.commandName)
-    # else:
-        # if trace: g.trace('ignoring %s in command mode' % b.stroke)
-        # return 'break' # Disallow all unbound plain keys in command mode.
 #@nonl
 #@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
 #@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
 keyStatesTuple = ('command','insert','overwrite')
 
-# g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
-# g.trace('button',k.masterBindingsDict.get('button'))
+# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
 for key,name in (
     # Order here is similar to bindtags order.
@@ -5432,6 +4709,7 @@ for key,name in (
     ):
         d = k.masterBindingsDict.get(key,{})
         # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
         if d:
             b = d.get(stroke)
             if b:
@@ -5504,12 +4782,11 @@ def handleMiniBindings (self,event,state,stroke):
 
     return False
 #@-node:ekr.20061031131434.152:handleMiniBindings
-#@+node:ekr.20080510095819.1:handleUnboudKeys
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
-    k = self ; c = k.c
+    k = self ; c = k.c ; trace = False
     modesTuple = ('insert','overwrite')
-    trace = False
 
     if trace:
         # if stroke: g.trace('***unexpected stroke***')
@@ -5541,7 +4818,7 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     else:
         if trace: g.trace(repr(stroke),'no func')
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
 #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@+node:ekr.20080610085158.2:c.add_command
 def add_command (self,menu,**keys):
@@ -5570,7 +4847,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
     New in 4.4: this method shows the shortcut in the menu,
     but this method **never** binds any shortcuts.'''
 
-    # g.trace('c',self.c)
+    # g.trace('menu',menu)
 
     c = self.c ; f = c.frame ; k = c.k ; trace = False
     if g.app.unitTesting: return
@@ -5579,7 +4856,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
         << compute commandName & accel from label & command >>
         accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
         accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
-        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
+        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
             #k.clearState()
             #g.trace(stroke)
             return k.masterMenuHandler(stroke,command,commandName)
@@ -5764,6 +5041,7 @@ def printBindings (self,event=None):
             data.append((s1,s2,s3),)
 
     # Print keys by type:
+    result = []
     sep = '-' * n1
     for prefix in (
         'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
@@ -5776,19 +5054,21 @@ def printBindings (self,event=None):
             s1,s2,s3 = item
             if s2.startswith(prefix):
                 data2.append(item)
-        g.es('','%s %s' % (sep, prefix),tabName=tabName)
-        self.printBindingsHelper(data2,n1,n2,prefix=prefix)
+        # g.es('','%s %s' % (sep, prefix),tabName=tabName)
+        result.append('%s %s\n' % (sep, prefix))
+        self.printBindingsHelper(result,data2,n1,n2,prefix=prefix)
         # Remove all the items in data2 from data.
         # This must be done outside the iterator on data.
         for item in data2:
             data.remove(item)
     # Print all plain bindings.
-    g.es('','%s %s' % (sep, 'Plain Keys',),tabName=tabName)
-    self.printBindingsHelper(data,n1,n2,prefix=None)
+    result.append('%s %s\n' % (sep, 'Plain Keys'))
+    self.printBindingsHelper(result,data,n1,n2,prefix=None)
+    g.es('',''.join(result),tabName=tabName)
     state = k.unboundKeyAction 
     k.showStateAndMode()
 #@+node:ekr.20061031131434.120:printBindingsHelper
-def printBindingsHelper (self,data,n1,n2,prefix):
+def printBindingsHelper (self,result,data,n1,n2,prefix):
 
     n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
 
@@ -5801,7 +5081,8 @@ def printBindingsHelper (self,data,n1,n2,prefix):
     for data in (data1,data2):
         data.sort(lambda x,y: cmp(x[1],y[1]))
         for s1,s2,s3 in data:
-            g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+            # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+            result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))
 #@-node:ekr.20061031131434.120:printBindingsHelper
 #@-node:ekr.20061031131434.119:printBindings & helper
 #@+node:ekr.20061031131434.158:createModeBindings
@@ -6137,7 +5418,7 @@ def makeMasterGuiBinding (self,stroke,w=None):
 
     # This is the only real key callback.
     def masterBindKeyCallback (event,k=k,stroke=stroke):
-        # g.trace(stroke)
+        # g.trace(stroke,event.w)
         return k.masterKeyHandler(event,stroke=stroke)
 
     if 0:
@@ -6190,7 +5471,7 @@ def makeMasterGuiBinding (self,stroke,w=None):
 
     # This is the only real key callback.
     def masterBindKeyCallback (event,k=k,stroke=stroke):
-        # g.trace(stroke)
+        # g.trace(stroke,event.w)
         return k.masterKeyHandler(event,stroke=stroke)
 
     if 0:

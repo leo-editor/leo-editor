@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,14,4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -96,7 +96,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -263,7 +263,7 @@
 </v>
 <v t="ekr.20060524151415"><vh>Debugger</vh>
 <v t="ekr.20070115134125"><vh>@bool write_script_file = True</vh></v>
-<v t="ekr.20070115134125.1"><vh>@string script_file_path = scriptFile.py</vh></v>
+<v t="ekr.20070115134125.1"><vh>@string script_file_path = ../test/scriptFile.py</vh></v>
 <v t="ekr.20060524151415.1"><vh>@string debugger_kind = winpdb</vh></v>
 <v t="ekr.20060521132401"><vh>@string debugger_path = None</vh></v>
 </v>
@@ -393,13 +393,13 @@
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
 <v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
-<v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20060110141538" a="E" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
 <v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" a="E" annotate="7d71002e"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -423,8 +423,8 @@
 </v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20070925144534"><vh>@menus</vh>
-<v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
+<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
+<v t="ekr.20070925144534.1" a="E"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
 <v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
@@ -930,7 +930,7 @@
 <v t="ekr.20070925144534.427"><vh>@item *print-c&amp;ommands</vh></v>
 </v>
 </v>
-<v t="ekr.20080515053412.3"><vh>@popup_menus</vh>
+<v t="ekr.20080515053412.3" a="E"><vh>@popup_menus</vh>
 <v t="ekr.20080515053412.4"><vh>Main Context Menus</vh>
 <v t="ekr.20080515053412.5"><vh>@popup body</vh>
 <v t="ekr.20080515053412.6"><vh>@item &amp;</vh></v>
@@ -967,7 +967,7 @@
 <v t="ekr.20080515053412.31"><vh>@popup iconbox</vh></v>
 <v t="ekr.20080515053412.32"><vh>@popup plusbox</vh></v>
 </v>
-<v t="ekr.20080515053412.33"><vh>Fragments</vh>
+<v t="ekr.20080515053412.33" a="E"><vh>Fragments</vh>
 <v t="ekr.20080515053412.34"><vh>@popup edit-menu</vh>
 <v t="ekr.20080515053412.35"><vh>@item rclick-cut-text</vh></v>
 <v t="ekr.20080515053412.36"><vh>@item rclick-copy-text</vh></v>
@@ -997,7 +997,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1005,10 +1005,6 @@
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
-<v t="tbrown.20081024093407.2"><vh>active_path</vh>
-<v t="tbrown.20081024093407.3"><vh>@string active_path_event = icondclick1</vh></v>
-<v t="tbrown.20081024093407.4"><vh>@string active_path_attype = auto</vh></v>
-</v>
 <v t="ekr.20080328105334.1"><vh>cleo</vh>
 <v t="ekr.20080602174756.1"><vh>@bool cleo_color_ignore = True</vh></v>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
@@ -1062,6 +1058,13 @@
 <v t="ekr.20060919173031.1"><vh>@bool opml_write_leo_globals_attributes = True</vh></v>
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
+</v>
+<v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
+<v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
+<v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
+<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
@@ -1220,176 +1223,176 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051007200824"></v>
-<v t="TL.20081021080504.1"><vh>@keys Vim bindings</vh>
-<v t="TL.20081021080504.2"><vh>Vim User Documentation</vh></v>
-<v t="TL.20081021080504.3"><vh>Vim Developer Documentation</vh></v>
-<v t="TL.20081021080504.4"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="TL.20081021080504.5"><vh>@@shortcuts kill conflicting bindings</vh></v>
-<v t="TL.20081021080504.6"><vh>@shortcuts - vi miscellaneous</vh>
-<v t="TL.20081021080504.7"><vh>@mode tree-undo</vh></v>
-<v t="TL.20081021080504.8"><vh>@mode tree-redo</vh></v>
-<v t="TL.20081021080504.9"><vh>@mode tree-double-click-node</vh></v>
-<v t="TL.20081021080504.10"><vh>@mode focus-to-tree</vh></v>
-<v t="TL.20081021080504.11"><vh>@mode focus-to-body</vh></v>
-<v t="TL.20081021080504.12"><vh>@mode body-command-line</vh>
-<v t="TL.20081021080504.13"><vh>@mode body-command-revert</vh></v>
-<v t="TL.20081021080504.14"><vh>@mode body-command-save</vh>
-<v t="TL.20081021080504.15"><vh>@mode body-command-save-quit</vh>
-<v t="TL.20081021080504.16"><vh>@mode body-command-save-quit-return</vh></v>
+<v t="TL.20080806084612.1"><vh>@keys Vim bindings</vh>
+<v t="TL.20080806084612.2"><vh>Vi Documentation</vh></v>
+<v t="TL.20080806084612.3"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="TL.20080806084612.4"><vh>@@shortcuts kill conflicting bindings</vh></v>
+<v t="TL.20080806084612.5"><vh>@shortcuts - vi miscellaneous</vh>
+<v t="TL.20080806084612.6"><vh>@mode tree-undo</vh></v>
+<v t="TL.20080806084612.7"><vh>@mode tree-redo</vh></v>
+<v t="TL.20080806084612.8"><vh>@mode tree-double-click-node</vh></v>
+<v t="TL.20080806084612.9"><vh>@mode focus-to-tree</vh></v>
+<v t="TL.20080806084612.10"><vh>@mode focus-to-body</vh></v>
+<v t="TL.20080806084612.11"><vh>@mode body-command-line</vh>
+<v t="TL.20080806084612.12"><vh>@mode body-command-revert</vh></v>
+<v t="TL.20080806084612.13"><vh>@mode body-command-save</vh>
+<v t="TL.20080806084612.14"><vh>@mode body-command-save-quit</vh>
+<v t="TL.20080806084612.15"><vh>@mode body-command-save-quit-return</vh></v>
 </v>
 </v>
-<v t="TL.20081021080504.17"><vh>@mode body-command-quit</vh></v>
+<v t="TL.20080806084612.16"><vh>@mode body-command-quit</vh></v>
 </v>
-<v t="TL.20081021080504.18"><vh>@mode tree-command-line</vh>
-<v t="TL.20081021080504.19"><vh>@mode tree-command-revert</vh></v>
-<v t="TL.20081021080504.20"><vh>@mode tree-command-save</vh>
-<v t="TL.20081021080504.21"><vh>@mode tree-command-save-only</vh></v>
-<v t="TL.20081021080504.22"><vh>@mode tree-command-save-quit</vh>
-<v t="TL.20081021080504.23"><vh>@mode tree-command-save-quit-return</vh></v>
-</v>
-</v>
-<v t="TL.20081021080504.24"><vh>@mode tree-command-quit</vh></v>
-</v>
-<v t="TL.20081021080504.25"><vh>@mode body-shift-z</vh>
-<v t="TL.20081021080504.26"><vh>@mode body-shift-z-save-quit</vh></v>
+<v t="TL.20080806084612.17"><vh>@mode tree-command-line</vh>
+<v t="TL.20080806084612.18"><vh>@mode tree-command-revert</vh></v>
+<v t="TL.20080806084612.19"><vh>@mode tree-command-save</vh>
+<v t="TL.20080806084612.20"><vh>@mode tree-command-save-only</vh></v>
+<v t="TL.20080806084612.21"><vh>@mode tree-command-save-quit</vh>
+<v t="TL.20080806084612.22"><vh>@mode tree-command-save-quit-return</vh></v>
 </v>
 </v>
-<v t="TL.20081021080504.27"><vh>@shortcuts - vi in Outline pane</vh>
-<v t="TL.20081021080504.28"><vh>@mode tree-yank-object</vh></v>
-<v t="TL.20081021080504.29"><vh>@mode tree-change-object</vh></v>
-<v t="TL.20081021080504.30"><vh>@mode tree-delete-text-object</vh></v>
-<v t="TL.20081021080504.31"><vh>@mode tree-copy-node</vh></v>
-<v t="TL.20081021080504.32"><vh>@mode tree-paste-node</vh></v>
-<v t="TL.20081021080504.33"><vh>@mode tree-delete-node</vh></v>
-<v t="TL.20081021080504.34"><vh>@mode tree-goto-last-node</vh></v>
-<v t="TL.20081021080504.35"><vh>@mode tree-goto</vh>
-<v t="TL.20081021080504.36"><vh>@mode node-goto-first-node</vh></v>
+<v t="TL.20080806084612.23"><vh>@mode tree-command-quit</vh></v>
 </v>
-<v t="TL.20081021080504.37"><vh>@mode tree-goto-next-visible</vh></v>
-<v t="TL.20081021080504.38"><vh>@mode body-goto-next-visible</vh></v>
-<v t="TL.20081021080504.39"><vh>@mode tree-goto-prev-visible</vh></v>
-<v t="TL.20081021080504.40"><vh>@mode body-goto-prev-visible</vh></v>
-<v t="TL.20081021080504.41"><vh>@mode tree-search-forward</vh></v>
-<v t="TL.20081021080504.42"><vh>@mode tree-replace-string</vh></v>
-<v t="TL.20081021080504.43"><vh>@mode tree-contract-or-go-left</vh></v>
-<v t="TL.20081021080504.44"><vh>@mode body-contract-or-go-left</vh></v>
-<v t="TL.20081021080504.45"><vh>@mode tree-contract-node</vh></v>
-<v t="TL.20081021080504.46"><vh>@mode tree-expand-and-go-right</vh></v>
-<v t="TL.20081021080504.47"><vh>@mode body-expand-and-go-right</vh></v>
-<v t="TL.20081021080504.48"><vh>@mode tree-move-outline-up</vh></v>
-<v t="TL.20081021080504.49"><vh>@mode tree-move-outline-down</vh></v>
-<v t="TL.20081021080504.50"><vh>@mode tree-move-outline-left</vh></v>
-<v t="TL.20081021080504.51"><vh>@mode tree-move-outline-right</vh></v>
-<v t="TL.20081021080504.52"><vh>@mode tree-clone-node</vh></v>
-<v t="TL.20081021080504.53"><vh>@mode tree-goto-next-clone-node</vh></v>
-<v t="TL.20081021080504.54"><vh>@mode tree-mark-node</vh></v>
-<v t="TL.20081021080504.55"><vh>@mode tree-goto-next-marked-node</vh></v>
-<v t="TL.20081021080504.56"><vh>@mode tree-unmark-all-nodes</vh></v>
-</v>
-<v t="TL.20081021080504.57"><vh>@shortcuts - vi in Body pane</vh>
-<v t="TL.20081021080504.58"><vh>@mode body-search-forward</vh></v>
-<v t="TL.20081021080504.59"><vh>@mode body-search-backward</vh></v>
-<v t="TL.20081021080504.60"><vh>@mode body-search-everywhere</vh></v>
-<v t="TL.20081021080504.61"><vh>@mode body-search-options</vh>
-<v t="TL.20081021080504.62"><vh>@mode body-search-all-nodes</vh></v>
-<v t="TL.20081021080504.63"><vh>@mode body-search-toggle-headline</vh></v>
-<v t="TL.20081021080504.64"><vh>@mode body-search-toggle-body</vh></v>
-<v t="TL.20081021080504.65"><vh>@mode body-search-toggle-mark</vh>
-<v t="TL.20081021080504.66"><vh>@mode body-search-toggle-mark-finds</vh></v>
-<v t="TL.20081021080504.67"><vh>@mode body-search-toggle-mark-changes</vh></v>
-</v>
-<v t="TL.20081021080504.68"><vh>@mode body-search-toggle-regex</vh></v>
-</v>
-<v t="TL.20081021080504.69"><vh>@mode body-replace-string</vh></v>
-<v t="TL.20081021080504.70"><vh>@mode body-paste-then-find</vh></v>
-<v t="TL.20081021080504.71"><vh>@mode body-goto-end-of-buffer</vh></v>
-<v t="TL.20081021080504.72"><vh>@mode body-goto</vh>
-<v t="TL.20081021080504.73"><vh>@mode body-goto-beginning-of-buffer</vh></v>
-</v>
-<v t="TL.20081021080504.74"><vh>@mode body-new-line-below</vh></v>
-<v t="TL.20081021080504.75"><vh>@mode body-new-line-above</vh></v>
-<v t="TL.20081021080504.76"><vh>@mode body-append</vh></v>
-<v t="TL.20081021080504.77"><vh>@mode body-insert-at-indent</vh></v>
-<v t="TL.20081021080504.78"><vh>@mode body-delete-to-end-of-line</vh></v>
-<v t="TL.20081021080504.79"><vh>@mode body-delete-object</vh>
-<v t="TL.20081021080504.80"><vh>@mode body-delete-line</vh></v>
-<v t="TL.20081021080504.81"><vh>@mode body-delete-to-end-of-word</vh></v>
-<v t="TL.20081021080504.82"><vh>@mode body-delete-to-begin-of-word</vh></v>
-<v t="TL.20081021080504.83"><vh>@mode body-delete-to-end-of-sentence</vh></v>
-<v t="TL.20081021080504.84"><vh>@mode body-delete-to-beginning-of-sentence</vh></v>
-<v t="TL.20081021080504.85"><vh>@mode body-delete-to-end-of-paragraph</vh></v>
-<v t="TL.20081021080504.86"><vh>@mode body-delete-to-beginning-of-paragraph</vh></v>
-<v t="TL.20081021080504.87"><vh>@mode body-delete-to-g-object</vh>
-<v t="TL.20081021080504.88"><vh>@mode body-delete-to-beginning-of-buffer</vh></v>
-</v>
-<v t="TL.20081021080504.89"><vh>@mode body-delete-to-end-of-buffer</vh></v>
-<v t="TL.20081021080504.90"><vh>@mode body-delete-section</vh></v>
-<v t="TL.20081021080504.91"><vh>@mode body-delete-to-char</vh></v>
-<v t="TL.20081021080504.92"><vh>@mode body-delete-selected</vh></v>
-</v>
-<v t="TL.20081021080504.93"><vh>@mode body-yank-to-end-of-line</vh></v>
-<v t="TL.20081021080504.94"><vh>@mode body-yank-object</vh>
-<v t="TL.20081021080504.95"><vh>@mode body-yank-line</vh></v>
-<v t="TL.20081021080504.96"><vh>@mode body-yank-to-beginning-of-next-word</vh></v>
-<v t="TL.20081021080504.97"><vh>@mode body-yank-to-beginning-of-current-word</vh></v>
-<v t="TL.20081021080504.98"><vh>@mode body-yank-to-end-of-sentence</vh></v>
-<v t="TL.20081021080504.99"><vh>@mode body-yank-to-beginning-of-sentence</vh></v>
-<v t="TL.20081021080504.100"><vh>@mode body-yank-to-end-of-paragraph</vh></v>
-<v t="TL.20081021080504.101"><vh>@mode body-yank-to-beginning-of-paragraph</vh></v>
-<v t="TL.20081021080504.102"><vh>@mode body-yank-to-g-object</vh>
-<v t="TL.20081021080504.103"><vh>@mode body-yank-to-beginning-of-buffer</vh></v>
-</v>
-<v t="TL.20081021080504.104"><vh>@mode body-yank-to-end-of-buffer</vh></v>
-<v t="TL.20081021080504.105"><vh>@mode body-yank-section</vh></v>
-<v t="TL.20081021080504.106"><vh>@mode body-yank-selected</vh></v>
-</v>
-<v t="TL.20081021080504.107"><vh>@mode body-change-to-end-of-line</vh></v>
-<v t="TL.20081021080504.108"><vh>@mode body-change-object</vh>
-<v t="TL.20081021080504.109"><vh>@mode body-Change-line</vh></v>
-<v t="TL.20081021080504.110"><vh>@mode body-change-to-end-of-word</vh></v>
-<v t="TL.20081021080504.111"><vh>@mode body-change-to-beginning-of-word</vh></v>
-<v t="TL.20081021080504.112"><vh>@mode body-change-to-end-of-sentence</vh></v>
-<v t="TL.20081021080504.113"><vh>@mode body-change-to-beginning-of-sentence</vh></v>
-<v t="TL.20081021080504.114"><vh>@mode body-change-to-end-of-paragraph</vh></v>
-<v t="TL.20081021080504.115"><vh>@mode body-change-to-beginning-of-paragraph</vh></v>
-<v t="TL.20081021080504.116"><vh>@mode body-change-to-g-object</vh>
-<v t="TL.20081021080504.117"><vh>@mode body-change-to-beginning-of-buffer</vh></v>
-</v>
-<v t="TL.20081021080504.118"><vh>@mode body-change-to-end-of-buffer</vh></v>
-<v t="TL.20081021080504.119"><vh>@mode body-change-section</vh></v>
-<v t="TL.20081021080504.120"><vh>@mode body-change-selected</vh></v>
-</v>
-<v t="TL.20081021080504.121"><vh>@mode body-substitute-char</vh></v>
-<v t="TL.20081021080504.122"><vh>@mode body-substitute-line</vh></v>
-<v t="TL.20081021080504.123"><vh>@mode body-indent</vh>
-<v t="TL.20081021080504.124"><vh>@mode body-indent-line</vh></v>
-<v t="TL.20081021080504.125"><vh>@mode body-indent-to-end-of-sentence</vh></v>
-<v t="TL.20081021080504.126"><vh>@mode body-indent-to-beginning-of-sentence</vh></v>
-<v t="TL.20081021080504.127"><vh>@mode body-indent-to-end-of-paragraph</vh></v>
-<v t="TL.20081021080504.128"><vh>@mode body-indent-to-beginning-of-paragraph</vh></v>
-<v t="TL.20081021080504.129"><vh>@mode body-indent-to-beginning-of-buffer</vh></v>
-<v t="TL.20081021080504.130"><vh>@mode body-indent-to-end-of-buffer</vh></v>
-</v>
-<v t="TL.20081021080504.131"><vh>@mode body-unindent</vh>
-<v t="TL.20081021080504.132"><vh>@mode body-unindent-less</vh></v>
-<v t="TL.20081021080504.133"><vh>@mode body-unindent-to-end-of-paragraph</vh></v>
-<v t="TL.20081021080504.134"><vh>@mode body-unindent-to-beginning-of-paragraph</vh></v>
-<v t="TL.20081021080504.135"><vh>@mode body-unindent-to-end-of-sentence</vh></v>
-<v t="TL.20081021080504.136"><vh>@mode body-unindent-to-beginning-of-sentence</vh></v>
-<v t="TL.20081021080504.137"><vh>@mode body-unindent-to-end-of-buffer</vh></v>
-<v t="TL.20081021080504.138"><vh>@mode body-unindent-to-beginning-of-buffer</vh></v>
-</v>
-<v t="TL.20081021080504.139" a="M"><vh>@mode body-beginning-of-line</vh></v>
-<v t="TL.20081021080504.140"><vh>@mode body-goto-indent-previous-line</vh></v>
-<v t="TL.20081021080504.141"><vh>@mode body-end-of-line</vh></v>
-<v t="TL.20081021080504.142"><vh>@mode body-goto-after-paragraph</vh></v>
-<v t="TL.20081021080504.143"><vh>@mode body-goto-before-paragraph</vh></v>
-<v t="TL.20081021080504.144"><vh>@mode body-join</vh></v>
-<v t="TL.20081021080504.145"><vh>@mode body-match</vh></v>
-<v t="TL.20081021080504.146"><vh>@mode vim-window-commands</vh></v>
+<v t="TL.20080806084612.24"><vh>@mode body-shift-z</vh>
+<v t="TL.20080806084612.25"><vh>@mode body-shift-z-save-quit</vh></v>
 </v>
 </v>
+<v t="TL.20080806084612.26"><vh>@shortcuts - vi in Outline pane</vh>
+<v t="TL.20080806084612.27"><vh>@mode tree-yank-object</vh></v>
+<v t="TL.20080806084612.28"><vh>@mode tree-change-object</vh></v>
+<v t="TL.20080806084612.29"><vh>@mode tree-delete-text-object</vh></v>
+<v t="TL.20080806084612.30"><vh>@mode tree-copy-node</vh></v>
+<v t="TL.20080806084612.31"><vh>@mode tree-paste-node</vh></v>
+<v t="TL.20080806084612.32"><vh>@mode tree-delete-node</vh></v>
+<v t="TL.20080806084612.33"><vh>@mode tree-goto-last-node</vh></v>
+<v t="TL.20080806084612.34"><vh>@mode tree-goto</vh>
+<v t="TL.20080806084612.35"><vh>@mode node-goto-first-node</vh></v>
+</v>
+<v t="TL.20080806084612.36"><vh>@mode tree-goto-next-visible</vh></v>
+<v t="TL.20080806084612.37"><vh>@mode body-goto-next-visible</vh></v>
+<v t="TL.20080806084612.38"><vh>@mode tree-goto-prev-visible</vh></v>
+<v t="TL.20080806084612.39"><vh>@mode body-goto-prev-visible</vh></v>
+<v t="TL.20080806084612.40"><vh>@mode tree-search-forward</vh></v>
+<v t="TL.20080806084612.41"><vh>@mode tree-replace-string</vh></v>
+<v t="TL.20080806084612.42"><vh>@mode tree-contract-or-go-left</vh></v>
+<v t="TL.20080806084612.43"><vh>@mode body-contract-or-go-left</vh></v>
+<v t="TL.20080806084612.44"><vh>@mode tree-contract-node</vh></v>
+<v t="TL.20080806084612.45"><vh>@mode tree-expand-and-go-right</vh></v>
+<v t="TL.20080806084612.46"><vh>@mode body-expand-and-go-right</vh></v>
+<v t="TL.20080806084612.47"><vh>@mode tree-move-outline-up</vh></v>
+<v t="TL.20080806084612.48"><vh>@mode tree-move-outline-down</vh></v>
+<v t="TL.20080806084612.49"><vh>@mode tree-move-outline-left</vh></v>
+<v t="TL.20080806084612.50"><vh>@mode tree-move-outline-right</vh></v>
+<v t="TL.20080806084612.51"><vh>@mode tree-clone-node</vh></v>
+<v t="TL.20080806084612.52"><vh>@mode tree-goto-next-clone-node</vh></v>
+<v t="TL.20080806084612.53"><vh>@mode tree-mark-node</vh></v>
+<v t="TL.20080806084612.54"><vh>@mode tree-goto-next-marked-node</vh></v>
+<v t="TL.20080806084612.55"><vh>@mode tree-unmark-all-nodes</vh></v>
+</v>
+<v t="TL.20080806084612.56"><vh>@shortcuts - vi in Body pane</vh>
+<v t="TL.20080806084612.57"><vh>@mode body-search-forward</vh></v>
+<v t="TL.20080806084612.58"><vh>@mode body-search-backward</vh></v>
+<v t="TL.20080806084612.59"><vh>@mode body-search-everywhere</vh></v>
+<v t="TL.20080806084612.60"><vh>@mode body-search-options</vh>
+<v t="TL.20080806084612.61"><vh>@mode body-search-all-nodes</vh></v>
+<v t="TL.20080806084612.62"><vh>@mode body-search-toggle-headline</vh></v>
+<v t="TL.20080806084612.63"><vh>@mode body-search-toggle-body</vh></v>
+<v t="TL.20080806084612.64"><vh>@mode body-search-toggle-mark</vh>
+<v t="TL.20080806084612.65"><vh>@mode body-search-toggle-mark-finds</vh></v>
+<v t="TL.20080806084612.66"><vh>@mode body-search-toggle-mark-changes</vh></v>
+</v>
+<v t="TL.20080806084612.67"><vh>@mode body-search-toggle-regex</vh></v>
+</v>
+<v t="TL.20080806084612.68"><vh>@mode body-replace-string</vh></v>
+<v t="TL.20080806084612.69"><vh>@mode body-paste-then-find</vh></v>
+<v t="TL.20080806084612.70"><vh>@mode body-goto-end-of-buffer</vh></v>
+<v t="TL.20080806084612.71"><vh>@mode body-goto</vh>
+<v t="TL.20080806084612.72"><vh>@mode body-goto-beginning-of-buffer</vh></v>
+</v>
+<v t="TL.20080806084612.73"><vh>@mode body-new-line-below</vh></v>
+<v t="TL.20080806084612.74"><vh>@mode body-new-line-above</vh></v>
+<v t="TL.20080806084612.75"><vh>@mode body-append</vh></v>
+<v t="TL.20080806084612.76"><vh>@mode body-insert-at-indent</vh></v>
+<v t="TL.20080806084612.77"><vh>@mode body-delete-to-end-of-line</vh></v>
+<v t="TL.20080806084612.78"><vh>@mode body-delete-object</vh>
+<v t="TL.20080806084612.79"><vh>@mode body-delete-line</vh></v>
+<v t="TL.20080806084612.80"><vh>@mode body-delete-to-end-of-word</vh></v>
+<v t="TL.20080806084612.81"><vh>@mode body-delete-to-begin-of-word</vh></v>
+<v t="TL.20080806084612.82"><vh>@mode body-delete-to-end-of-sentence</vh></v>
+<v t="TL.20080806084612.83"><vh>@mode body-delete-to-beginning-of-sentence</vh></v>
+<v t="TL.20080806084612.84"><vh>@mode body-delete-to-end-of-paragraph</vh></v>
+<v t="TL.20080806084612.85"><vh>@mode body-delete-to-beginning-of-paragraph</vh></v>
+<v t="TL.20080806084612.86"><vh>@mode body-delete-to-g-object</vh>
+<v t="TL.20080806084612.87"><vh>@mode body-delete-to-beginning-of-buffer</vh></v>
+</v>
+<v t="TL.20080806084612.88"><vh>@mode body-delete-to-end-of-buffer</vh></v>
+<v t="TL.20080806084612.89"><vh>@mode body-delete-section</vh></v>
+<v t="TL.20080806084612.90"><vh>@mode body-delete-to-char</vh></v>
+<v t="TL.20080806084612.91"><vh>@mode body-delete-selected</vh></v>
+</v>
+<v t="TL.20080806084612.92"><vh>@mode body-yank-to-end-of-line</vh></v>
+<v t="TL.20080806084612.93"><vh>@mode body-yank-object</vh>
+<v t="TL.20080806084612.94"><vh>@mode body-yank-line</vh></v>
+<v t="TL.20080806084612.95"><vh>@mode body-yank-to-beginning-of-next-word</vh></v>
+<v t="TL.20080806084612.96"><vh>@mode body-yank-to-beginning-of-current-word</vh></v>
+<v t="TL.20080806084612.97"><vh>@mode body-yank-to-end-of-sentence</vh></v>
+<v t="TL.20080806084612.98"><vh>@mode body-yank-to-beginning-of-sentence</vh></v>
+<v t="TL.20080806084612.99"><vh>@mode body-yank-to-end-of-paragraph</vh></v>
+<v t="TL.20080806084612.100"><vh>@mode body-yank-to-beginning-of-paragraph</vh></v>
+<v t="TL.20080806084612.101"><vh>@mode body-yank-to-g-object</vh>
+<v t="TL.20080806084612.102"><vh>@mode body-yank-to-beginning-of-buffer</vh></v>
+</v>
+<v t="TL.20080806084612.103"><vh>@mode body-yank-to-end-of-buffer</vh></v>
+<v t="TL.20080806084612.104"><vh>@mode body-yank-section</vh></v>
+<v t="TL.20080806084612.105"><vh>@mode body-yank-selected</vh></v>
+</v>
+<v t="TL.20080806084612.106"><vh>@mode body-change-to-end-of-line</vh></v>
+<v t="TL.20080806084612.107"><vh>@mode body-change-object</vh>
+<v t="TL.20080806084612.108"><vh>@mode body-Change-line</vh></v>
+<v t="TL.20080806084612.109"><vh>@mode body-change-to-end-of-word</vh></v>
+<v t="TL.20080806084612.110"><vh>@mode body-change-to-beginning-of-word</vh></v>
+<v t="TL.20080806084612.111"><vh>@mode body-change-to-end-of-sentence</vh></v>
+<v t="TL.20080806084612.112"><vh>@mode body-change-to-beginning-of-sentence</vh></v>
+<v t="TL.20080806084612.113"><vh>@mode body-change-to-end-of-paragraph</vh></v>
+<v t="TL.20080806084612.114"><vh>@mode body-change-to-beginning-of-paragraph</vh></v>
+<v t="TL.20080806084612.115"><vh>@mode body-change-to-g-object</vh>
+<v t="TL.20080806084612.116"><vh>@mode body-change-to-beginning-of-buffer</vh></v>
+</v>
+<v t="TL.20080806084612.117"><vh>@mode body-change-to-end-of-buffer</vh></v>
+<v t="TL.20080806084612.118"><vh>@mode body-change-section</vh></v>
+<v t="TL.20080806084612.119"><vh>@mode body-change-selected</vh></v>
+</v>
+<v t="TL.20080806084612.120"><vh>@mode body-substitute-char</vh></v>
+<v t="TL.20080806084612.121"><vh>@mode body-substitute-line</vh></v>
+<v t="TL.20080806084612.122"><vh>@mode body-indent</vh>
+<v t="TL.20080806084612.123"><vh>@mode body-indent-line</vh></v>
+<v t="TL.20080806084612.124"><vh>@mode body-indent-to-end-of-sentence</vh></v>
+<v t="TL.20080806084612.125"><vh>@mode body-indent-to-beginning-of-sentence</vh></v>
+<v t="TL.20080806084612.126"><vh>@mode body-indent-to-end-of-paragraph</vh></v>
+<v t="TL.20080806084612.127"><vh>@mode body-indent-to-beginning-of-paragraph</vh></v>
+<v t="TL.20080806084612.128"><vh>@mode body-indent-to-beginning-of-buffer</vh></v>
+<v t="TL.20080806084612.129"><vh>@mode body-indent-to-end-of-buffer</vh></v>
+</v>
+<v t="TL.20080806084612.130"><vh>@mode body-unindent</vh>
+<v t="TL.20080806084612.131"><vh>@mode body-unindent-less</vh></v>
+<v t="TL.20080806084612.132"><vh>@mode body-unindent-to-end-of-paragraph</vh></v>
+<v t="TL.20080806084612.133"><vh>@mode body-unindent-to-beginning-of-paragraph</vh></v>
+<v t="TL.20080806084612.134"><vh>@mode body-unindent-to-end-of-sentence</vh></v>
+<v t="TL.20080806084612.135"><vh>@mode body-unindent-to-beginning-of-sentence</vh></v>
+<v t="TL.20080806084612.136"><vh>@mode body-unindent-to-end-of-buffer</vh></v>
+<v t="TL.20080806084612.137"><vh>@mode body-unindent-to-beginning-of-buffer</vh></v>
+</v>
+<v t="TL.20080806084612.138"><vh>@mode body-beginning-of-line</vh></v>
+<v t="TL.20080806084612.139"><vh>@mode body-goto-indent-beginning-previous-line</vh></v>
+<v t="TL.20080806084612.140"><vh>@mode body-end-of-line</vh></v>
+<v t="TL.20080806084612.141"><vh>@mode body-goto-after-paragraph</vh></v>
+<v t="TL.20080806084612.142"><vh>@mode body-goto-before-paragraph</vh></v>
+<v t="TL.20080806084612.143"><vh>@mode body-join</vh></v>
+<v t="TL.20080806084612.144"><vh>@mode body-match</vh></v>
+<v t="TL.20080806084612.145"><vh>@mode vim-window-commands</vh></v>
+</v>
+</v>
+<v t="ekr.20060603215208"></v>
+<v t="ekr.20081018053140.11"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -1410,27 +1413,10 @@ if False: The Open-With plugin will store temporary files with an appended uniqu
 If True: The Open-With plugin will use the file extension of the node's derived file for the extension of the temporary file passed to the external editor.  This can be useful for external editors that are providing text highlighting or other file type specific capabilities.
 
 If False or no derived file exists for that node: The Open-With plugin will use the file extension of the node's default language (set by the @language command) or '.txt' if none exists.</t>
-<t tx="TL.20081021080504.1"></t>
-<t tx="TL.20081021080504.2">Vi emulation - User documentation:
-	Commands supported
-	| Documentation of the supported vi commands is provided in Chapter 22 of
-	| Leo's User Guide (http://webpages.charter.net/edreamleo/vimBindings.html).
+<t tx="TL.20080806084612.1"></t>
+<t tx="TL.20080806084612.2">Leo's vi support:
 
-	Vi commands within the Outline pane:
-		Editing the headline text:
-		| Vi commands that operate on a single line of text are supported.  Some
-		| workarounds were required due to the current Leo implementation.
-		| Problems associated with editing a node's headline text are documented
-		| in the "Open issues" section below.
-		Traversing and reorganizing the outline:
-		| Outline navigation and manipulation are mapped to keys based on Vi's
-		| use of the H, J, K, and L key to move left, down, up, and right.  Refer
-		| to Leo's User Guide for details on the operation's supported and their
-		| key mappings.
-		Outline traversing from the Body pane:
-		| Outline navigation commands can also be invoked while in the body
-		| pane's command mode.  This reduces the keystrokes necessary to switch
-		| to another node and edit its body text.
+!!! Refer to the Vim documentaion in Leo's User Guide for the list of commands.
 
 	Installation
 	| Copy the "@keys Vim bindings" node and its sub-nodes from the
@@ -1438,12 +1424,6 @@ If False or no derived file exists for that node: The Open-With plugin will use 
 	| "@settings" node.
 
 	History
-		Version 21-Oct-08
-			Split the "Vim documentation" node into "Vim User Documentation"
-				and "Vim Developer Documentation" nodes.
-			Updated User and Developer documentation.
-			Fixed '|' to not go to previous line if key pressed while at column 1
-			Fixed '-' to go to previous line (Goes to column 1 instead of indent)
 		Version 06-Aug-08
 			Removed mapping of 'Ctrl-v' in the outline to toggle select mode.
 				'Ctrl-v' already assigned to paste a node into the outline.
@@ -1455,6 +1435,7 @@ If False or no derived file exists for that node: The Open-With plugin will use 
 			Added unindent by sentence, paragraph, and buffer support.
 			Removed 'Ctrl-n' and 'Alt-n' as alternatives for 'n'.
 			Removed '' and `` to go to last edit, use Undo/Redo (Leo limitation)
+
 		Version 23-Jul-08
 			Updated Vim documentation in the Users Guide.
 			Added '^' key to move to the first column when in the outline pane.
@@ -1466,8 +1447,8 @@ If False or no derived file exists for that node: The Open-With plugin will use 
 		Version 22-Jul-08
 			Updated Vim documentation in the Users Guide.
 			Added support for vi's Mark and Go To Mark commands in body pane.
-			Added support for deleting selected text in body pane ("d&lt;cr&gt;").
-			Added support for changing selected text in body pane ("c&lt;cr&gt;").
+			Added suport for deleting selected text in body pane ("d&lt;cr&gt;").
+			Added suport for changing selected text in body pane ("c&lt;cr&gt;").
 			Modified yank-selected-text ("y&lt;cr&gt;"), now exits select mode (body pane).
 			Modified searches in outline to limit search to node and its subnodes.
 			Modified searches in node's body to limit search to node's body.
@@ -1476,6 +1457,7 @@ If False or no derived file exists for that node: The Open-With plugin will use 
 			Added command to prompt user for search and replace strings ('Alt-/')
 			Added command to "replace then search" using 'Alt-/' strings ('Alt-p')
 			Fixed ':w' (tree pane) and ':wq' (tree and body panes) commands
+         
 		Version 22-Jun-08
 			Updated Vim documentation in the Users Guide.
 			Improved "dd" command (handles blank lines correctly)
@@ -1514,9 +1496,8 @@ If False or no derived file exists for that node: The Open-With plugin will use 
 			Added vi's Shift-f key mapping to go backwards to a character.
 				| Made possible by the newly found backward-to-character command.
 			Mapped '=' to double-click-icon-box command (Not Vi/Vim)
-				| Use open-with plug-in to invoke external Vim editor without
-				| mouse. Made possible by the newly found double-click-icon-box
-				| command.
+				| Use open-with plugin to invoke external Vim editor without mouse.
+				| Made possible by the newly found double-click-icon-box command.
 			Added vi's Ctrl-y and Ctrl-e to scroll outline up and down by lines.
 				| Made possible by newly found scroll-outline-up/down-line commands
 				| Also mapped vi's Ctrl-d,-u,-f,-b to same (until implemented).
@@ -1538,235 +1519,200 @@ If False or no derived file exists for that node: The Open-With plugin will use 
 		Version 18-May-08
 			Body pane key mappings - Updated
 			non-vi support key mappings - Updated
-
-Vim Modeline (used by Vim for file specific settings)
-	| vim: noet filetype=otl foldcolumn=1
-</t>
-<t tx="TL.20081021080504.3">Vi emulation - Developer documentation:
+		
 	Realization:
 		Leo Configuration:
-		| The following configuration was used for all testing:
-			@strings top_level_unbound_key_action = command
-			@bool stayInTreeAfterEditHeadline = True
-			@bool stayInTreeAfterSelect = True
-			@bool outline_pane_has_initial_focus = True
+			| The following configuration was used for all testing:
+				@strings  top_level_unbound_key_action = command
+				@bool stayInTreeAfterEditHeadline = True
+				@bool stayInTreeAfterSelect = True
+				@bool outline_pane_has_initial_focus = True
 		
 		Leo's Panes:
-		| A "pane" is a area of the screen containing a user interface dedicated
-		| to supporting a common set of tasks.  Vi key mappings are associated
-		| with the Outline pane, the Body pane, or to the Leo program.  See the
-		| no pane (see "General Commands" below). (Outline pane, Body pane)
+			| A "pane" is a area of the screen containing a user interface
+			| dedicated to supporting a common set of tasks.  Vi key mappings are
+			| associated with the Outline pane, the Body pane, or to the Leo
+			| program.  See the no pane (see "General Commands" below). (Outline
+			| pane, Body pane)
 		
 		Leo's Command/Insert States:
 			Command state - Denoted by a blue background color (Outline,Body pane)
-			| Keys are mapped to commands.
+				| Keys are mapped to commands.
 			Insert state - Denoted by a red background color (Outline,Body pane)
-			| Keys pressed are inserted into the text.
+				| Keys pressed are inserted into the text.
 			Grayed state - Denoted by a gray background color (Outline pane)
-			| Keys pressed will cause the next node with a headline starting with
-			| that key to be selected.  This "select node by first character"
-			| feature is built into Leo. It is not part of the vi support.
-			| 
-			| This state is intentionally avoided in the vi based outline key
-			| mappings. If in the "Grayed" state, enter Ctrl-i to switch to the
-			| "Command" state.  The "Grayed" state can be entered from the
-			| outline's "Command" state by pressing the Ctrl-] key.
+				| Keys pressed will cause the next node with a headline starting
+				| with that key to be selected.  This "select node by first
+				| character" feature is built into Leo. It is not part of the vi
+				| support.
+				| 
+				| This state is intentionally avoided in the vi based outline key
+				| mappings. If in the "Grayed" state, enter Ctrl-i to switch to the
+				| "Command" state.  The "Grayed" state can be entered from the
+				| outline's "Command" state by pressing the Ctrl-] key.
 		
-		Leo's @mode nodes:
-		| Most vi commands are implemented using Leo's @mode nodes to execute
-		| macros or to implement Vi's multi-key commands.
-		|
+		Leo's modes:
+		| Most vi commands are implemented using Leo's "mode" functionality.
 		| Modes beginning with "vi-" denote a vi command for the body pane.
 		| Modes beginning with "tree-" denote a vi-like command for the outline.
 		| Modes beginning with "body-" denote outline commands that can be called
 		| from the body pane (and return focus back to the body pane)
-
-			Multi-key Vi commands:
+		| 
+		| Modes are used both for managing multi-key vi commands and for defining
+		| macros.
+			
+			Multi-key command modes:
 			| Vi has many commands that require multiple keys to invoke.  Each key
-			| accept the last in the command are assigned to an @mode node that,
-			| when executed, maps the subsequent allowed keys in the command
-			| sequence.
+			| accept the last in the command are assigned to a mode that, when
+			| executed, maps the subsequent allowed keys in the command sequence.
 			| The last key in the sequence is mapped directly to a Leo command or
 			| to a "Macro" mode (see below). Any modes mapped to a key by another
-			| mode are located in a child node of the @mode node doing the
-			| mapping.
+			| mode are located in a child node of the mode node doing the mapping.
 			| 
-			| Example: dtw = Delete To the 'W' character (note the capital
-			| letters) The 'd' key is mapped to the vi-delete-object @mode node.
-			|   vi-delete-object maps the 't' key to vi-delete-to-char @mode node.
+			| Example:
+			|     dtw = Delete To the 'W' character (note the capital letters)
+			|   The 'd' key is mapped to vi-delete-object
+			|   vi-delete-object maps the 't' key to vi-delete-to-char
 			|   vi-delete-to-char contains Leo commands to perform the vi command.
 
-			Macros
-			| Many vi commands do not have an equivalent Leo command.  Instead, an
-			| @mode node is used to store a macro containing a series of Leo
-			| commands that, when executed, emulates the Vi functionality.
-			|
-			| For example, Leo's beginning-of-line command will go to the first
-			| column of the previous line if called when the cursor is at the
-			| first column.  However, Vi's "go to beginning of line" command
-			| always remains on the same line.  The problem is solved by defining
-			| the following macro in the body-beginning-of-line @Mode node and
-			| mapping it to the key:
-			| 		--&gt; forward-char      #Cursor moved forward one character
-			| 		--&gt; beginning-of-line #Cursor moved to Column 1
+			Macros modes:
+			| Most vi commands do not have an equivalent Leo command.  Instead, a
+			| series of Leo commands must be issued to emulate the vi command.
+			| The Leo commands needed to emulate a vi command are placed in a
+			| single @mode node.
+		
+		Code limitations:
+			Current character:
+			| Vi implementation normally use two different "current character"
+			| designators depending on the current state.
 
-	Open issues
-		Current character:
-		| Vi normally uses two different "current character" designators
-		| depending on the current state.
+				Insert state:
+				| In the Insert state, a vertical bar is placed between two
+				| characters to indicate where the next key will be inserted.
+				| Leo's cursor is of this type.
 
-			Insert state:
-			| In the Insert state, a vertical bar is placed between two
-			| characters to indicate where the next key will be inserted.
-			| Leo's cursor is of this type.
+				Command state: 
+				| In the Command state, vi expects that the cursor is highlighting
+				| a current character and provides commands to enter the insert
+				| state or paste text either before or after that current
+				| character.  Leo's vi emulation currently does not support a
+				| "current character" cursor. As a result, inserting and pasting
+				| before or after is replaced by inserting or pasting "at" the
+				| current cursor location.  For example, the 'i' and 'a' command
+				| are both mapped to enter the insert state at the current cursor
+				| location.
 
-			Command state: 
-			| In the Command state, vi expects that the cursor is highlighting
-			| a current character and provides commands to enter the insert
-			| state or paste text either before or after that current
-			| character.  Leo's vi emulation currently does not support a
-			| "current character" cursor. As a result, inserting and pasting
-			| before or after is replaced by inserting or pasting "at" the
-			| current cursor location.  For example, the 'i' and 'a' command
-			| are both mapped to enter the insert state at the current cursor
-			| location.
+			Conditional code execution:
+			| No conditional command invocation exits.  Instead, conditional
+			| branching is replace by setup commands that insure that, regardless
+			| of current state, the command performs correctly.  For example,
+			| Beginning-of-line command will go to previous line if called when
+			| cursor is at beginning of line.  Vi requires that '|' always goes to
+			| beginning of current line.  Problme is solved by issueing
+			| forward-char command to insure cursor is moved off of the beginning
+			| of the line before beginning-of-line command is issued.
 
-		Commands requesting user input:
-		| Commands requesting user input must be the last command executed within
-		| an @mode node.  This prevents the implementation of commands such as
-		| "yank to &lt;character&gt;" that requires a "copy to clipboard" operation
-		| after the "find-character" command.
+			Commands requesting user input:
+			| Commands getting user input must be the last command within the
+			| mode.  See "Commands getting user input" in Problems section below.
 
-		Editing node headings using @mode nodes:
-		| Commands modifying or selecting headline text do not work correctly
-		| within a @mode node.  This eliminates accurate implementation of
-		| vi's delete/change/substitute/yank object commands.  As a workaround,
-		| the commands are currently written to only select the text.  The user
-		| must perform the subsequent delete, change, substitute, and yank.
+			Edit headings using modes:
+			| Commands modifying or selecting headline text do not work correctly
+			| within a mode.  See "Editing headlines within modes" in Problems
+			| section below.  This eliminates accurate implementation of vi's
+			| delete/change/substitute/yank object commands.  Instead, the
+			| commands are modified to only select text.
 
-		Repeat last editing command:
-		| The ability to repeat the last editing related command by pressing the
-		| period key is not supported and there is no workaround in place.
+Outline Pane
+	Outline Features:
+	| Outline navigation and manipulation are mapped to keys using vi's text
+	| navigation key mapping as a guide.  Outline navigation commands can also
+	| be invoked while in the body pane's command mode.  This reduces the
+	| keystrokes necessary to make changes to the body text of multiple nodes.
+	| Node headline editing uses vi's line editing key mapping (Limited by the
+	| "Headline editing in modes" problem).
 
-		Repeat last cursor movement command:
-		| The ability to repeat the last "To character" or "Find character"
-		| command by selecting the ";" key is not supported and there is no
-		| workaround in place.
+Open issues
 
-		Range prefix to commands:
-		| The ability to specify a numeric range prefix is not supported.  For
-		| example, entering "3dd" will not delete the next three lines and "20G"
-		| will not move the cursor to the 20th line in the file.
+	Binding numeric keys:
+	| Mapping a number to a command or mode prevents the number from being
+	| entered as text while in the insert state.
+    
+    Binding Arrow keys:
+    | Binding arrow keys, with or without Shift, Ctrl, Alt, and their
+    | combinations, to comamnds or modes have no effect. 
 
-		Range prefix to objects:
-		| The ability to specify a numeric range prefix to an object is not
-		| supported.  For example, the "d2fx" command should Delete up to and
-		| including the 2nd Found "x" character.
+	Binding 'bksp' key:
+	| Binding 'bksp' key to back-char to move back a character in command mode
+	| prevents 'bksp' from deleting characters in text edit mode.
 
-		Binding numeric keys:
-		| Mapping a number to a command or an @mode node works but can not be
-		| used as it prevents the number from being entered as text while in Vi's
-		| insert state.
+	Commands getting user input:
+	| Commands requesting user input must be the last command executed.  These
+	| commands include: find-character and zap-to-character.
 
-		Binding Arrow keys:
-		| Binding arrow keys, with or without Shift, Ctrl, Alt, and their
-		| combinations, to commands or @mode nodes have no effect. 
+	Editing headlines within modes:
+	| Text editing commands do not work within modes assigned to outline key
+	| mappings.
 
-		Binding 'bksp' key:
-		| Binding 'bksp' key to back-char to move back a character in command
-		| mode prevents 'bksp' from deleting characters in text edit mode.
+	Undo command:
+	| Using the "undo" command (key 'u') to undo a change to a node's headline
+	| works better if, first, another node is selected and then the edited node
+	| is reselected (key sequence "Ctrl-k, Ctrl-j).
 
-		Undo command:
-		| Using the "undo" command (key 'u') to undo a change to a node's
-		| headline text only works correctly after another node has been
-		| selected.  It appears that changes made to a node's headline text are
-		| not recorded in Leo's change history until the edited node has lost
-		| focus.
+	Matching bracket command:
+	| Performs bracket matching on Body text when in node's headline command
+	| state.
 
-		Functions missing or require changes:
-			Toggle case:
-			| Leo provides support for switching to upper or lower case but no
-			| method exists to toggle between cases (used by Vi's "~" command).
+	Word definition:
+	| Different Leo commands detect word boundries differently.
 
-			Replace current character:
-			| Vi's "r" command allows user to replace the current character with
-			| the next entered character.
+	Toggle case:
+	| Leo provides support for switching to upper or lower case but no method |
+	| exists to toggle between cases.
 
-			Move current line:
-			| Vi has a collection of "z&lt;movement&gt;" commands that will move the
-			| current line to the top, middle, and bottom of the screen.  They are
-			| not supported in Leo.
+	Forward and backward sentences:
+	| Leo's forwardSentenceHelper and backSentenceHelper functions do not stop
+	| at empty lines nor do they skip over periods within words nor do they stop
+	| at sentences ending in non-periods nor do they stop at the end or
+	| beginning of the buffer.
 
-			Move buffer up/down:
-			| Vi maps keys to scroll the text up/down one line and by half the
-			| number of visible lines.  Leo does not support this.
+	Focus to Body pane:
+	| Leo functions exist which unconditionally set focus to the body pane
+	| regardless of the active pane.
 
-			Word related commands:
-			| Vi supports two types of words in its commands: Words that consist
-			| of only a subset of the character set and words that considers all
-			| characters except the space and tab characters as part of a word.
-			|
-			| Leo's always considers a word to consist of a subset of characters
-			| although some word related commands include different characters
-			| than others.
+	Displaying mode help:
+	| The "--&gt; mode-help" command displays all mapped keys using a capitol
+	| letter regardless of the actual binding.
+		Recommendations:
+		| To better support narrow tab cards, display the mode's label without
+		| the "enter-" and "-mode" text and place key label before mode label.
+		| Results in change from:
+		|                enter-vi-delete-line-mode D
+		|    enter-vi-delete-to-begin-of-word-mode B 
+		| to:
+		|    D : vi-delete-line
+		|    B : vi-delete-to-begin-of-word
 
-			Forward and backward by sentences:
-			| Leo's sentence related functions do not stop at empty lines nor do
-			| they skip over periods within words nor do they stop at sentences
-			| ending in non-periods nor do they stop at the end or beginning of
-			| the buffer. Note: see forwardSentenceHelper and backSentenceHelper
-			| functions.
+Notes:
+	Yank vs. Yank:
+	| A vi "yank" operation copies the selected text TO the clipboard.
+	| A Leo "yank" operation inserts text FROM the clipboard.
 
-			Focus to Body pane:
-			| Leo functions exist which unconditionally set focus to the body pane
-			| regardless of the active pane.
-			|
-			| For example, bracket matching commands ("%" key) do not work within
-			| a node's headline text.  Instead, the command is performed on the
-			| node's body text.
+	copy-text in modes:
+	| Leo's copy-text does not work within a mode.  As a result, all "copy to
+	| clipboard" capability is being implemented using kill-&lt;object&gt; command
+	| followed by Leo's "yank" command to put text back.
 
-			Displaying mode help:
-			| The "--&gt; mode-help" command has the following issues related to the
-			| display of the "Help" tab:
-				Key label always capitalized:
-				| Vim commands are mapped to both lower-case and upper-case keys
-				| but always appear mapped to upper-case keys within the "Help"
-				| tab.
-				Layout of tab's contents:
-				| To improve readability and better support narrow tab cards,
-				| display the mode's label without the "enter-" and "-mode" text
-				| and place the key label before the mode label.
-				|
-				| For example, the following entries would change from:
-				| 		enter-vi-delete-line-mode d
-				| 		enter-vi-delete-to-begin-of-word-mode b
-				| to:
-				| 		d : vi-delete-line
-				| 		b : vi-delete-to-begin-of-word
+	paste-text in modes:
+	| paste-text in modes does not work.  Use Leo's "yank" instead.
 
-	Notes:
-		Yank vs. Yank:
-		| Vi's "yank" commands copy the selected text TO the clipboard.
-		| Leo's "yank" commands insert text FROM the clipboard.
-
-		copy-text in modes:
-		| Leo's copy-text command does not work within a mode.  As a result, all
-		| "copy to clipboard" capability is being implemented using the
-		| kill-&lt;object&gt; command followed by Leo's "yank" command to put text
-		| back.
-
-		paste-text in modes:
-		| The paste-text command does not work within an @mode node.  Leo's
-		| "yank" command is used instead.
-
-		delete-node does not copy node to clipboard:
-		| A copy-node command is issued to copy the node to the clipboard
-		| followed by the delete-node command.
+	delete-node does not copy node to clipboard:
+	| Issue copy-node command followed by delete-node
 
 Vim Modeline (used by Vim for file specific settings)
 	| vim: noet filetype=otl foldcolumn=1
 </t>
-<t tx="TL.20081021080504.4">@nocolor
+<t tx="TL.20080806084612.3">@nocolor
 
 This setting determines the initial binding for otherwise-unbound keystrokes
 when no mode is in effect.  Note: the keyboard-quit command exits all modes.
@@ -1776,7 +1722,7 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="TL.20081021080504.5"># Remove default Leo bindings for keys used by the Vim mappings.
+<t tx="TL.20080806084612.4"># Remove default Leo bindings for keys used by the Vim mappings.
 # The "Vim's mapping" column indicates the new key mapping for that function.
 ##########################################################################
 # Leo function                # Leo's default mapping    # Vim's mapping #
@@ -1815,7 +1761,7 @@ unindent-region               ! kill = Ctrl-bracketleft  # &lt;( and &lt;{
 yank                          ! kill = Ctrl-y            # p
  
 </t>
-<t tx="TL.20081021080504.6">#Miscellaneous vi commands
+<t tx="TL.20080806084612.5">#Miscellaneous vi commands
 #---------------------------------
 enter-focus-to-tree-mode          ! body = Tab      #Focus to Outline pane
 enter-focus-to-body-mode          ! tree = Tab
@@ -1837,7 +1783,7 @@ goto-global-line                  = Alt-g           #Goto line (in derived file)
 
 enter-body-shift-z-mode           = Shift-z         #ZZ command - Save file and exit
 </t>
-<t tx="TL.20081021080504.7">#Undo last headline edit
+<t tx="TL.20080806084612.6">#Undo last headline edit
 #Bind: u
 #Note: undo only seems to work from body pane
 --&gt; focus-to-body
@@ -1845,26 +1791,26 @@ enter-body-shift-z-mode           = Shift-z         #ZZ command - Save file and 
 --&gt; edit-headline
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.8">#Redo last headline edit
+<t tx="TL.20080806084612.7">#Redo last headline edit
 #Bind: Ctrl-r
 #Note: redo only seems to work from body pane
 --&gt; focus-to-body
 --&gt; redo
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.9">#Simulate a left mouse button double click on the current node
+<t tx="TL.20080806084612.8">#Simulate a left mouse button double click on the current node
 #Bind: =
 
 --&gt; double-click-icon-box
 --&gt; edit-headline</t>
-<t tx="TL.20081021080504.10">
+<t tx="TL.20080806084612.9">
 --&gt; focus-to-tree
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.11">#--&gt; end-edit-headline
+<t tx="TL.20080806084612.10">#--&gt; end-edit-headline
 --&gt; focus-to-body
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.12">#Enter vi's command line
+<t tx="TL.20080806084612.11">#Enter vi's command line
 #Bind: :
 
 --&gt; set-silent-mode
@@ -1874,13 +1820,13 @@ enter-body-command-revert-mode = e
 enter-body-command-save-mode = w
 enter-body-command-quit-mode = q
 </t>
-<t tx="TL.20081021080504.13">#Reload current file
+<t tx="TL.20080806084612.12">#Reload current file
 #Bind: :e&lt;cr&gt;
 #Note: Vi command is :e!&lt;cr&gt;.
 #      '!' not used since Leo prompts to save file changes.
 
 revert = return</t>
-<t tx="TL.20081021080504.14">#Save current file (and maybe quit)
+<t tx="TL.20080806084612.13">#Save current file (and maybe quit)
 #Bind: :w[q]&lt;cr&gt;
 
 --&gt; set-silent-mode
@@ -1888,22 +1834,22 @@ revert = return</t>
 
 save-file                           = return
 enter-body-command-save-quit-mode   = q</t>
-<t tx="TL.20081021080504.15">#Save file and exit Leo
+<t tx="TL.20080806084612.14">#Save file and exit Leo
 #Bind: :wq&lt;cr&gt;
 
 enter-body-command-save-quit-return-mode = return
 </t>
-<t tx="TL.20081021080504.16">#Save file and exit Leo
+<t tx="TL.20080806084612.15">#Save file and exit Leo
 #Bind: :wq&lt;cr&gt;
 
 --&gt; save-file
 --&gt; exit-leo
 </t>
-<t tx="TL.20081021080504.17">#Exit Leo
+<t tx="TL.20080806084612.16">#Exit Leo
 #Bind: :q&lt;cr&gt;
 
 exit-leo = return</t>
-<t tx="TL.20081021080504.18">#Enter vi's command line
+<t tx="TL.20080806084612.17">#Enter vi's command line
 #Bind: :
 
 --&gt; set-silent-mode
@@ -1914,13 +1860,13 @@ enter-tree-command-revert-mode   = e
 enter-tree-command-save-mode     = w
 enter-tree-command-quit-mode     = q
 </t>
-<t tx="TL.20081021080504.19">#Reload current file
+<t tx="TL.20080806084612.18">#Reload current file
 #Bind: :e&lt;cr&gt;
 #Note: Vi command is :e!&lt;cr&gt;.
 #      '!' not used since Leo prompts to save file changes.
 
 revert = return</t>
-<t tx="TL.20081021080504.20">#Save current file (and maybe quit)
+<t tx="TL.20080806084612.19">#Save current file (and maybe quit)
 #Bind: :w[q]&lt;cr&gt;
 
 --&gt; set-silent-mode
@@ -1929,38 +1875,38 @@ revert = return</t>
 enter-tree-command-save-only-mode      = return
 enter-tree-command-save-quit-mode   = q
 </t>
-<t tx="TL.20081021080504.21">#Not in use, see "@mode tree-comm#Save file
+<t tx="TL.20080806084612.20">#Not in use, see "@mode tree-comm#Save file
 #Bind: :w&lt;cr&gt;
 
 --&gt; save-file
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.22">#Save file and exit Leo
+<t tx="TL.20080806084612.21">#Save file and exit Leo
 #Bind: :wq&lt;cr&gt;
 
 enter-tree-command-save-quit-return-mode = return
 </t>
-<t tx="TL.20081021080504.23">#Save file and exit Leo
+<t tx="TL.20080806084612.22">#Save file and exit Leo
 #Bind: :wq&lt;cr&gt;
 
 --&gt; save-file
 --&gt; exit-leo
 </t>
-<t tx="TL.20081021080504.24">#Exit Leo
+<t tx="TL.20080806084612.23">#Exit Leo
 #Bind: :q&lt;cr&gt;
 
 exit-leo = return</t>
-<t tx="TL.20081021080504.25">#Save buffers and exit Leo
+<t tx="TL.20080806084612.24">#Save buffers and exit Leo
 #Bind: ZZ
 
 enter-body-shift-z-save-quit-mode = Shift-Z</t>
-<t tx="TL.20081021080504.26">#Save file and exit Leo
+<t tx="TL.20080806084612.25">#Save file and exit Leo
 #Bind: ZZ
 
 --&gt; save-file
 --&gt; exit-leo
 </t>
-<t tx="TL.20081021080504.27"># vi key bindings - Outline pane #
+<t tx="TL.20080806084612.26"># vi key bindings - Outline pane #
  ################################
 
 #State change commands
@@ -2123,7 +2069,7 @@ enter-tree-mark-node-mode              ! tree = m
 enter-tree-goto-next-marked-node-mode  ! tree = Ctrl-m
 enter-tree-unmark-all-nodes-mode       ! tree = Alt-m
 </t>
-<t tx="TL.20081021080504.28">#Yank &lt;obj&gt; (vi's yank is the same as Leo's copy-text)
+<t tx="TL.20080806084612.27">#Yank &lt;obj&gt; (vi's yank is the same as Leo's copy-text)
 #Bind: y&lt;obj&gt;
 #Note: Problem, all comamnds that select text switch to body pane.
       
@@ -2132,7 +2078,7 @@ enter-tree-unmark-all-nodes-mode       ! tree = Alt-m
 copy-text   = return
 select-all  = y
 </t>
-<t tx="TL.20081021080504.29">#Change &lt;object&gt;
+<t tx="TL.20080806084612.28">#Change &lt;object&gt;
 #Bind: c&lt;obj&gt;
 #Note: Problem, any select text commands switches focus to body pane.
 
@@ -2140,23 +2086,23 @@ select-all  = y
 
 kill-line = c	   #follow with 'i' to enter text
 </t>
-<t tx="TL.20081021080504.30">--&gt; set-silent-mode
+<t tx="TL.20080806084612.29">--&gt; set-silent-mode
 kill-line = d
 </t>
-<t tx="TL.20081021080504.31">--&gt; end-edit-headline
+<t tx="TL.20080806084612.30">--&gt; end-edit-headline
 --&gt; copy-node
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.32">--&gt; end-edit-headline
+<t tx="TL.20080806084612.31">--&gt; end-edit-headline
 --&gt; paste-node
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.33">--&gt; end-edit-headline
+<t tx="TL.20080806084612.32">--&gt; end-edit-headline
 --&gt; copy-node
 --&gt; delete-node         #Does not copy to clipboard
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.34">#Go to first node
+<t tx="TL.20080806084612.33">#Go to first node
 #Bind: gg 
 
 --&gt; set-silent-mode
@@ -2165,14 +2111,14 @@ kill-line = d
 
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.35">#Go to specified node location
+<t tx="TL.20080806084612.34">#Go to specified node location
 #Bind: g&lt;location&gt;
 
 --&gt; set-silent-mode
 #--&gt; mode-help
 
 enter-node-goto-first-node-mode     = g</t>
-<t tx="TL.20081021080504.36">#Go to first node
+<t tx="TL.20080806084612.35">#Go to first node
 #Bind: gg 
 
 --&gt; set-silent-mode
@@ -2181,108 +2127,108 @@ enter-node-goto-first-node-mode     = g</t>
 
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.37">--&gt; goto-next-visible
+<t tx="TL.20080806084612.36">--&gt; goto-next-visible
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.38">--&gt; focus-to-tree
+<t tx="TL.20080806084612.37">--&gt; focus-to-tree
 --&gt; goto-next-visible
 --&gt; edit-headline
 --&gt; focus-to-body
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.39">--&gt; goto-prev-visible
+<t tx="TL.20080806084612.38">--&gt; goto-prev-visible
 --&gt; edit-headline
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.40">--&gt; focus-to-tree
+<t tx="TL.20080806084612.39">--&gt; focus-to-tree
 --&gt; goto-prev-visible
 --&gt; edit-headline
 --&gt; focus-to-body
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.41">#Search forward within suboutline
+<t tx="TL.20080806084612.40">#Search forward within suboutline
 #Bind: /
 --&gt; set-find-suboutline-only
 --&gt; search-forward</t>
-<t tx="TL.20081021080504.42">#Specify search and replace string
+<t tx="TL.20080806084612.41">#Specify search and replace string
 #  then Search in direction of last '/', '?' command within suboutline
 #  (follow with 'p' to replace or 'Ctrl-p' to replace and search)
 #Bind: Ctrl-/
 
 --&gt; set-find-suboutline-only
 --&gt; replace-string</t>
-<t tx="TL.20081021080504.43">--&gt; contract-or-go-left
+<t tx="TL.20080806084612.42">--&gt; contract-or-go-left
 --&gt; edit-headline
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.44">--&gt; focus-to-tree
+<t tx="TL.20080806084612.43">--&gt; focus-to-tree
 --&gt; contract-or-go-left
 --&gt; edit-headline
 --&gt; focus-to-body
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.45">--&gt; contract-node
+<t tx="TL.20080806084612.44">--&gt; contract-node
 --&gt; edit-headline
 
 --&gt; exit-named-mode 
 </t>
-<t tx="TL.20081021080504.46">--&gt; expand-and-go-right
+<t tx="TL.20080806084612.45">--&gt; expand-and-go-right
 --&gt; edit-headline
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.47">--&gt; focus-to-tree
+<t tx="TL.20080806084612.46">--&gt; focus-to-tree
 --&gt; expand-and-go-right
 --&gt; edit-headline
 --&gt; focus-to-body
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.48">--&gt; move-outline-up
+<t tx="TL.20080806084612.47">--&gt; move-outline-up
 --&gt; edit-headline
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.49">--&gt; move-outline-down
+<t tx="TL.20080806084612.48">--&gt; move-outline-down
 --&gt; edit-headline
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.50">--&gt; move-outline-left
+<t tx="TL.20080806084612.49">--&gt; move-outline-left
 --&gt; edit-headline
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.51">--&gt; move-outline-right
+<t tx="TL.20080806084612.50">--&gt; move-outline-right
 --&gt; edit-headline
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.52">#Clone current node
+<t tx="TL.20080806084612.51">#Clone current node
 #Bind: t
 
 --&gt; clone-node
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.53">#Go to next cloned node
+<t tx="TL.20080806084612.52">#Go to next cloned node
 #Bind: ctrl-t
 
 --&gt; goto-next-clone
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.54">#Mark current node
+<t tx="TL.20080806084612.53">#Mark current node
 #Bind: m
 
 --&gt; mark
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.55">#Go to next marked node
+<t tx="TL.20080806084612.54">#Go to next marked node
 #Bind: ctrl-m
 
 --&gt; goto-next-marked
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.56">#Unmark all nodes
+<t tx="TL.20080806084612.55">#Unmark all nodes
 #Bind: Alt-m
 
 --&gt; unmark-all
 --&gt; edit-headline
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.57"># vi key bindings - body pane #
+<t tx="TL.20080806084612.56"># vi key bindings - body pane #
  ##############################
 
 #State change commands
@@ -2348,7 +2294,7 @@ forward-end-word                 ! body = Shift-e
 enter-body-beginning-of-line-mode  ! body = |
 back-to-indentation                ! body = ^
 enter-body-end-of-line-mode        ! body = $
-enter-body-goto-indent-previous-line-mode   !body = minus
+enter-body-goto-indent-of-previous-line-mode   !body = minus
 
 #Move within buffer commands
 #--------------------------------
@@ -2412,25 +2358,25 @@ jump-to-register     ! body = quoteleft   # `
 #--------------------------------
 enter-vim-window-commands-mode      ! body = Ctrl-w
 </t>
-<t tx="TL.20081021080504.58">#Search forward within node
+<t tx="TL.20080806084612.57">#Search forward within node
 #Bind: /
 
 --&gt; set-find-node-only
 --&gt; search-forward
 </t>
-<t tx="TL.20081021080504.59">#Search forward within node
+<t tx="TL.20080806084612.58">#Search forward within node
 #Bind: /
 
 --&gt; set-find-node-only
 --&gt; search-backward
 </t>
-<t tx="TL.20081021080504.60">#Search forward within node
+<t tx="TL.20080806084612.59">#Search forward within node
 #Bind: /
 
 --&gt; set-find-node-only
 --&gt; search-forward
 </t>
-<t tx="TL.20081021080504.61">#Set search scope to search all nodes in current direction
+<t tx="TL.20080806084612.60">#Set search scope to search all nodes in current direction
 #Bind: Ctrl-/
 
 --&gt; set-silent-mode
@@ -2445,50 +2391,50 @@ enter-body-search-toggle-body-mode        = b
 enter-body-search-toggle-mark-mode        = m
 enter-body-search-toggle-regex-mode       = r
 </t>
-<t tx="TL.20081021080504.62">#Set search scope to search all nodes in current direction
+<t tx="TL.20080806084612.61">#Set search scope to search all nodes in current direction
 #Bind: Ctrl-/ &lt;cr&gt;
 
 --&gt; set-find-everywhere
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.63">#Set search scope to search all nodes in current direction
+<t tx="TL.20080806084612.62">#Set search scope to search all nodes in current direction
 #Bind: Ctrl-/ h
 #      Ctrl-/ o
 
 --&gt; toggle-find-in-headline-option
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.64">#Set search scope to search all nodes in current direction
+<t tx="TL.20080806084612.63">#Set search scope to search all nodes in current direction
 #Bind: Ctrl-/ b
 
 --&gt; toggle-find-in-body-option
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.65">#Set search scope to search all nodes in current direction
+<t tx="TL.20080806084612.64">#Set search scope to search all nodes in current direction
 #Bind: Ctrl-/ m
 
 enter-body-search-toggle-mark-finds-mode   = f
 enter-body-search-toggle-mark-changes-mode = c
 </t>
-<t tx="TL.20081021080504.66">#Set search scope to search all nodes in current direction
+<t tx="TL.20080806084612.65">#Set search scope to search all nodes in current direction
 #Bind: Ctrl-/ m f
 
 --&gt; toggle-find-mark-finds-option
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.67">#Set search scope to search all nodes in current direction
+<t tx="TL.20080806084612.66">#Set search scope to search all nodes in current direction
 #Bind: Ctrl-/ m c
 
 --&gt; toggle-find-mark-changes-option
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.68">#Set search scope to search all nodes in current direction
+<t tx="TL.20080806084612.67">#Set search scope to search all nodes in current direction
 #Bind: Ctrl-/ r
 
 --&gt; toggle-find-regex-option
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.69">#Specify search and replace string
+<t tx="TL.20080806084612.68">#Specify search and replace string
 #  then search in direction of last '/', '?' command within node
 #  (follow with 'p' to replace or 'Ctrl-p' to replace and search)
 #Bind: Alt-/
@@ -2496,7 +2442,7 @@ enter-body-search-toggle-mark-changes-mode = c
 --&gt; set-find-node-only
 --&gt; replace-string
 </t>
-<t tx="TL.20081021080504.70">#Paste then search in current direction
+<t tx="TL.20080806084612.69">#Paste then search in current direction
 #  (Preceeded by '/' or '?' to find first occurance)
 #Bind: Alt-p
 
@@ -2504,7 +2450,7 @@ enter-body-search-toggle-mark-changes-mode = c
 --&gt; find-next
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.71">#Go to end of buffer
+<t tx="TL.20080806084612.70">#Go to end of buffer
 #Bind: G
 
 --&gt; set-silent-mode
@@ -2513,14 +2459,14 @@ enter-body-search-toggle-mark-changes-mode = c
 
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.72">#Go to &lt;object&gt;
+<t tx="TL.20080806084612.71">#Go to &lt;object&gt;
 #Bind: g&lt;obj&gt;
 
 --&gt; set-silent-mode
 #--&gt; mode-help
 
 enter-body-goto-beginning-of-buffer-mode   ! body = g</t>
-<t tx="TL.20081021080504.73">#Go to top of buffer
+<t tx="TL.20080806084612.72">#Go to top of buffer
 #Bind: gg (Vim)
 #Note: Vi key binding of '1G' not used. Bound numbers are not entered when editing.
 #Note: Vim also supports 'gg' to go to top of buffer.
@@ -2529,7 +2475,7 @@ enter-body-goto-beginning-of-buffer-mode   ! body = g</t>
 
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.74">#Open new line below current line
+<t tx="TL.20080806084612.73">#Open new line below current line
 #Bind: o
 
 --&gt; set-silent-mode
@@ -2539,7 +2485,7 @@ enter-body-goto-beginning-of-buffer-mode   ! body = g</t>
 
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.75">#Open new line above current line
+<t tx="TL.20080806084612.74">#Open new line above current line
 #Bind: O
 
 --&gt; set-silent-mode
@@ -2552,7 +2498,7 @@ enter-body-goto-beginning-of-buffer-mode   ! body = g</t>
 
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.76">#Append text to end of current line
+<t tx="TL.20080806084612.75">#Append text to end of current line
 #Bind: A
 
 --&gt; set-silent-mode
@@ -2562,7 +2508,7 @@ enter-body-goto-beginning-of-buffer-mode   ! body = g</t>
 
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.77">#Insert text at first non-blank character in current line
+<t tx="TL.20080806084612.76">#Insert text at first non-blank character in current line
 #Bind: I
 
 --&gt; set-silent-mode
@@ -2573,7 +2519,7 @@ enter-body-goto-beginning-of-buffer-mode   ! body = g</t>
 
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.78">#Delete to the end of the current line
+<t tx="TL.20080806084612.77">#Delete to the end of the current line
 #Bind: D
 #Note: If cursor at end of line, command will delete next line
 
@@ -2582,7 +2528,7 @@ enter-body-goto-beginning-of-buffer-mode   ! body = g</t>
 --&gt; kill-region
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.79">#Delete &lt;obj&gt; command
+<t tx="TL.20080806084612.78">#Delete &lt;obj&gt; command
 #Bind: d&lt;obj&gt;
 
 --&gt; set-silent-mode
@@ -2605,7 +2551,7 @@ enter-body-delete-to-g-object-mode              = g
 enter-body-delete-to-end-of-buffer-mode         = shift-g
 
 enter-body-delete-to-char-mode     = t</t>
-<t tx="TL.20081021080504.80">#Deleted current line
+<t tx="TL.20080806084612.79">#Deleted current line
 #Bind: dd
 #Note: Last line in file will not be deleted.
 
@@ -2619,7 +2565,7 @@ enter-body-delete-to-char-mode     = t</t>
 
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.81">#Deleted to end of word
+<t tx="TL.20080806084612.80">#Deleted to end of word
 #Bind: dw
 #Note: Travels past end of line.
 #Note: Forward-word-extend-selection not used, it consumes all
@@ -2632,7 +2578,7 @@ enter-body-delete-to-char-mode     = t</t>
 --&gt; delete-char      #
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.82">#Delete to beginning of word.i
+<t tx="TL.20080806084612.81">#Delete to beginning of word.i
 #Bind: db
 #Note: Travels past beginning of line.
 
@@ -2643,7 +2589,7 @@ enter-body-delete-to-char-mode     = t</t>
 --&gt; delete-char      #Restore split line
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.83">#Delete to end of sentence
+<t tx="TL.20080806084612.82">#Delete to end of sentence
 #Bind: d)
 
 --&gt; set-silent-mode
@@ -2651,7 +2597,7 @@ enter-body-delete-to-char-mode     = t</t>
 --&gt; kill-region
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.84">#Delete to beginning of sentence
+<t tx="TL.20080806084612.83">#Delete to beginning of sentence
 #Bind: d(
 
 --&gt; set-silent-mode
@@ -2659,7 +2605,7 @@ enter-body-delete-to-char-mode     = t</t>
 --&gt; kill-region
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.85">#Delete to end of paragraph
+<t tx="TL.20080806084612.84">#Delete to end of paragraph
 #Bind: d}
 
 --&gt; set-silent-mode
@@ -2669,7 +2615,7 @@ enter-body-delete-to-char-mode     = t</t>
 --&gt; kill-region
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.86">#Delete to beginning of paragraph
+<t tx="TL.20080806084612.85">#Delete to beginning of paragraph
 #Bind: d{
 
 --&gt; set-silent-mode
@@ -2678,12 +2624,12 @@ enter-body-delete-to-char-mode     = t</t>
 --&gt; kill-region
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.87">#Delete to 'g' type object (ex: gg is 1st line in buffer)
+<t tx="TL.20080806084612.86">#Delete to 'g' type object (ex: gg is 1st line in buffer)
 #Bind: dg
 
 enter-body-delete-to-beginning-of-buffer-mode     = g
 </t>
-<t tx="TL.20081021080504.88">#Delete to beginning of buffer
+<t tx="TL.20080806084612.87">#Delete to beginning of buffer
 #Bind: dgg
 
 --&gt; set-silent-mode
@@ -2697,7 +2643,7 @@ enter-body-delete-to-beginning-of-buffer-mode     = g
 --&gt; kill-region
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.89">#Delete to end of buffer
+<t tx="TL.20080806084612.88">#Delete to end of buffer
 #Bind: dG
 
 --&gt; set-silent-mode
@@ -2711,7 +2657,7 @@ enter-body-delete-to-beginning-of-buffer-mode     = g
 --&gt; beginning-of-line
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.90">#Delete from current bracket type to its apposing bracket
+<t tx="TL.20080806084612.89">#Delete from current bracket type to its apposing bracket
 #Bind: d%
 
 --&gt; set-silent-mode
@@ -2723,7 +2669,7 @@ enter-body-delete-to-beginning-of-buffer-mode     = g
 --&gt; kill-region
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.91">#Delete to character
+<t tx="TL.20080806084612.90">#Delete to character
 #Bind: dt&lt;character&gt;
 #Note: Character search not limited to current line.
 
@@ -2731,7 +2677,7 @@ enter-body-delete-to-beginning-of-buffer-mode     = g
 --&gt; zap-to-character
 
 </t>
-<t tx="TL.20081021080504.92">#Delete selected text
+<t tx="TL.20080806084612.91">#Delete selected text
 #Bind: d&lt;cr&gt;
 
 
@@ -2742,7 +2688,7 @@ enter-body-delete-to-beginning-of-buffer-mode     = g
 --&gt; clear-extend-mode
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.93">#Yank text to the end of the current line
+<t tx="TL.20080806084612.92">#Yank text to the end of the current line
 #Bind: Y
 
 --&gt; set-silent-mode
@@ -2753,7 +2699,7 @@ enter-body-delete-to-beginning-of-buffer-mode     = g
 --&gt; forward-char
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.94">#Yank &lt;obj&gt; (Leo's copy-text)
+<t tx="TL.20080806084612.93">#Yank &lt;obj&gt; (Leo's copy-text)
 #Bind: y&lt;obj&gt;
 #Note: yank-to-character not supported.  Can not issue yank command.
       #Leo's zap-to-character must be last command (needs user input)
@@ -2781,7 +2727,7 @@ enter-body-yank-section-mode                      = %
 find-character-extend-selection                 = t
 backward-find-character-extend-selection        = Shift-t
 </t>
-<t tx="TL.20081021080504.95">#Yank current line
+<t tx="TL.20080806084612.94">#Yank current line
 #Bind: yy
 #Note: Problem yanking empty line. Also yanks line below it.
 #Note: Problem yanking last line.  Does not yank a trailing &lt;cr&gt;
@@ -2804,7 +2750,7 @@ backward-find-character-extend-selection        = Shift-t
 
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.96">#Yank to beginning of next word
+<t tx="TL.20080806084612.95">#Yank to beginning of next word
 #Bind: dw
 #Note: Travels past end of line.
 #Note: Forward-word-extend-selection not used, it consumes all
@@ -2824,7 +2770,7 @@ backward-find-character-extend-selection        = Shift-t
 
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.97">#Yank to beginning of current word.
+<t tx="TL.20080806084612.96">#Yank to beginning of current word.
 #Bind: yb
 #Note: Travels past beginning of line.
 #Note: AlphaNumeric word in contact with a non-alphanumeric word
@@ -2844,7 +2790,7 @@ backward-find-character-extend-selection        = Shift-t
 
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.98">#Yank to end of sentence
+<t tx="TL.20080806084612.97">#Yank to end of sentence
 #Bind: y)
 
 --&gt; set-silent-mode
@@ -2857,7 +2803,7 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; forward-char
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.99">#Yank to beginning of sentence
+<t tx="TL.20080806084612.98">#Yank to beginning of sentence
 #Bind: y(
 
 --&gt; set-silent-mode
@@ -2870,7 +2816,7 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; forward-char
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.100">#Yank to end of paragraph
+<t tx="TL.20080806084612.99">#Yank to end of paragraph
 #Bind: y}
 #Note: Yanking paragraph at end of body will not yank 1 or
 #      two characters (Characters after final cursor position)
@@ -2887,7 +2833,7 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; forward-char
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.101">#Yank to beginning of paragraph
+<t tx="TL.20080806084612.100">#Yank to beginning of paragraph
 #Bind: y{
 
 --&gt; set-silent-mode
@@ -2901,12 +2847,12 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; forward-char
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.102">#Yank to 'g' type object (ex: gg is 1st line in buffer)
+<t tx="TL.20080806084612.101">#Yank to 'g' type object (ex: gg is 1st line in buffer)
 #Bind: yg
 
 enter-body-yank-to-beginning-of-buffer-mode     = g
 </t>
-<t tx="TL.20081021080504.103">#Yank to beginning of buffer
+<t tx="TL.20080806084612.102">#Yank to beginning of buffer
 #Bind: dgg
 
 --&gt; set-silent-mode
@@ -2921,7 +2867,7 @@ enter-body-yank-to-beginning-of-buffer-mode     = g
 --&gt; yank
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.104">#Yank to end of buffer
+<t tx="TL.20080806084612.103">#Yank to end of buffer
 #Bind: yG
 
 --&gt; set-silent-mode
@@ -2936,7 +2882,7 @@ enter-body-yank-to-beginning-of-buffer-mode     = g
 --&gt; beginning-of-line
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.105">#Yank from current bracket type to its opposing bracket
+<t tx="TL.20080806084612.104">#Yank from current bracket type to its opposing bracket
 #Bind: y%
 
 --&gt; set-silent-mode
@@ -2954,7 +2900,7 @@ enter-body-yank-to-beginning-of-buffer-mode     = g
 --&gt; forward-char
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.106">#Yank selected text
+<t tx="TL.20080806084612.105">#Yank selected text
 #Bind: y&lt;cr&gt;
 
 
@@ -2970,7 +2916,7 @@ enter-body-yank-to-beginning-of-buffer-mode     = g
 --&gt; forward-char
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.107">#Change to end of line
+<t tx="TL.20080806084612.106">#Change to end of line
 #Bind: C
 #Note: If cursor at end of line, command will delete next line and enter insert mode
 #      Use 'i' command instead (enter insert mode)
@@ -2980,7 +2926,7 @@ enter-body-yank-to-beginning-of-buffer-mode     = g
 --&gt; kill-region
 
 --&gt; set-insert-state           #Enter insert mode</t>
-<t tx="TL.20081021080504.108">#Change &lt;object&gt;
+<t tx="TL.20080806084612.107">#Change &lt;object&gt;
 #Bind: c&lt;obj&gt;
 #Note: change-to-character not supported.  Can not issue set-insert-state.
       #Leo's zap-to-character must be last command (needs user input)
@@ -3008,7 +2954,7 @@ enter-body-change-section-mode                      = %
 find-character-extend-selection                 = t
 backward-find-character-extend-selection        = Shift-t
 </t>
-<t tx="TL.20081021080504.109">#Change to end of line
+<t tx="TL.20080806084612.108">#Change to end of line
 #Bind: cc
 #Note: Performs body-delete-line followed by a an insert-newline
 
@@ -3025,7 +2971,7 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; kill-region                     #Remove text, place in paste buffer
 
 --&gt; set-insert-state</t>
-<t tx="TL.20081021080504.110">#Change to end of word
+<t tx="TL.20080806084612.109">#Change to end of word
 #Bind: cw
 #Note: Travels past end of line.
 #Note: forward-word-extend-selection not used,
@@ -3038,7 +2984,7 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; delete-char      #
 
 --&gt; set-insert-state</t>
-<t tx="TL.20081021080504.111">#Change to beginning of word
+<t tx="TL.20080806084612.110">#Change to beginning of word
 #Bind: cb
 
 --&gt; set-silent-mode
@@ -3048,7 +2994,7 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; delete-char      #Restore split line
 
 --&gt; set-insert-state</t>
-<t tx="TL.20081021080504.112">#Delete to end of sentence
+<t tx="TL.20080806084612.111">#Delete to end of sentence
 #Bind: d)
 
 --&gt; set-silent-mode
@@ -3057,7 +3003,7 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; set-insert-state
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.113">#Delete to beginning of sentence
+<t tx="TL.20080806084612.112">#Delete to beginning of sentence
 #Bind: d(
 
 --&gt; set-silent-mode
@@ -3066,7 +3012,7 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; set-insert-state
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.114">#Delete to end of paragraph
+<t tx="TL.20080806084612.113">#Delete to end of paragraph
 #Bind: d}
 
 --&gt; set-silent-mode
@@ -3077,7 +3023,7 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; set-insert-state
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.115">#Delete to beginning of paragraph
+<t tx="TL.20080806084612.114">#Delete to beginning of paragraph
 #Bind: d{
 
 --&gt; set-silent-mode
@@ -3087,12 +3033,12 @@ backward-find-character-extend-selection        = Shift-t
 --&gt; set-insert-state
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.116">#Change to 'g' type object (ex: gg is 1st line in buffer)
+<t tx="TL.20080806084612.115">#Change to 'g' type object (ex: gg is 1st line in buffer)
 #Bind: cg
 
 enter-body-change-to-beginning-of-buffer-mode     = g
 </t>
-<t tx="TL.20081021080504.117">#Change to beginning of buffer
+<t tx="TL.20080806084612.116">#Change to beginning of buffer
 #Bind: cgg
 
 --&gt; set-silent-mode
@@ -3107,7 +3053,7 @@ enter-body-change-to-beginning-of-buffer-mode     = g
 --&gt; set-insert-state
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.118">#Delete to end of buffer
+<t tx="TL.20080806084612.117">#Delete to end of buffer
 #Bind: dG
 
 --&gt; set-silent-mode
@@ -3122,7 +3068,7 @@ enter-body-change-to-beginning-of-buffer-mode     = g
 --&gt; insert-newline   #Enter insert mode
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.119">#Change from current bracket type its matching bracket type
+<t tx="TL.20080806084612.118">#Change from current bracket type its matching bracket type
 #Bind: c%
 
 --&gt; set-silent-mode
@@ -3137,7 +3083,7 @@ enter-body-change-to-beginning-of-buffer-mode     = g
 --&gt; set-insert-state
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.120">#Yank selected text
+<t tx="TL.20080806084612.119">#Yank selected text
 #Bind: c&lt;cr&gt;
 
 
@@ -3150,19 +3096,19 @@ enter-body-change-to-beginning-of-buffer-mode     = g
 --&gt; set-insert-state
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.121">#Substitute character
+<t tx="TL.20080806084612.120">#Substitute character
 #Bind: s
 
 --&gt; set-silent-mode
 --&gt; delete-char
 --&gt; set-insert-state           #Enter insert mode</t>
-<t tx="TL.20081021080504.122">#Substitute line
+<t tx="TL.20080806084612.121">#Substitute line
 #Bind: S
 
 --&gt; set-silent-mode
 --&gt; kill-line
 --&gt; set-insert-state           #Enter insert mode</t>
-<t tx="TL.20081021080504.123">#Indent &lt;object&gt;
+<t tx="TL.20080806084612.122">#Indent &lt;object&gt;
 #Bind: &gt;&lt;obj&gt;
 
 --&gt; set-silent-mode
@@ -3175,7 +3121,7 @@ enter-body-indent-to-beginning-of-paragraph-mode = {
 enter-body-indent-to-beginning-of-buffer-mode = g
 enter-body-indent-to-end-of-buffer-mode = Shift-g
 </t>
-<t tx="TL.20081021080504.124">#Indent line
+<t tx="TL.20080806084612.123">#Indent line
 #Bind: &gt;&gt;
 
 --&gt; set-silent-mode
@@ -3186,7 +3132,7 @@ enter-body-indent-to-end-of-buffer-mode = Shift-g
 --&gt; back-char
 --&gt; forward-char
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.125">#Indent to beginning of sentence
+<t tx="TL.20080806084612.124">#Indent to beginning of sentence
 #Bind: &gt;(
 
 --&gt; forward-sentence-extend-selection
@@ -3194,7 +3140,7 @@ enter-body-indent-to-end-of-buffer-mode = Shift-g
 --&gt; back-char
 --&gt; forward-char
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.126">#Indent to beginning of sentence
+<t tx="TL.20080806084612.125">#Indent to beginning of sentence
 #Bind: &gt;)
 
 --&gt; back-sentence-extend-selection
@@ -3202,7 +3148,7 @@ enter-body-indent-to-end-of-buffer-mode = Shift-g
 --&gt; back-char
 --&gt; forward-char
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.127">#Indent to end of paragraph
+<t tx="TL.20080806084612.126">#Indent to end of paragraph
 #Bind: &gt;}
 
 --&gt; forward-paragraph-extend-selection
@@ -3211,7 +3157,7 @@ enter-body-indent-to-end-of-buffer-mode = Shift-g
 --&gt; back-char
 --&gt; forward-char
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.128">#Indent to beginning of paragraph
+<t tx="TL.20080806084612.127">#Indent to beginning of paragraph
 #Bind: &gt;{
 
 --&gt; back-paragraph-extend-selection
@@ -3220,7 +3166,7 @@ enter-body-indent-to-end-of-buffer-mode = Shift-g
 --&gt; back-char
 --&gt; forward-char
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.129">#Indent to end of buffer
+<t tx="TL.20080806084612.128">#Indent to end of buffer
 #Bind: &gt;G
 
 --&gt; set-silent-mode
@@ -3230,7 +3176,7 @@ enter-body-indent-to-end-of-buffer-mode = Shift-g
 --&gt; forward-char
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.130">#Indent to end of buffer
+<t tx="TL.20080806084612.129">#Indent to end of buffer
 #Bind: &gt;G
 
 --&gt; set-silent-mode
@@ -3240,7 +3186,7 @@ enter-body-indent-to-end-of-buffer-mode = Shift-g
 --&gt; forward-char
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.131">#Unindent object
+<t tx="TL.20080806084612.130">#Unindent object
 #Bind: &lt;&lt;obj&gt;
 
 --&gt; set-silent-mode
@@ -3254,7 +3200,7 @@ enter-body-unindent-to-beginning-of-paragraph-mode = {
 enter-body-unindent-to-beginning-of-buffer-mode = g
 enter-body-unindent-to-end-of-buffer-mode = Shift-g
 </t>
-<t tx="TL.20081021080504.132">#Unindent current line
+<t tx="TL.20080806084612.131">#Unindent current line
 #Bind: &lt;&lt;
 #Note: Unindents to first column instead of previous tab stop
 
@@ -3267,7 +3213,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; forward-char
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.133">#Indent to end of paragraph
+<t tx="TL.20080806084612.132">#Indent to end of paragraph
 #Bind: &lt;}
 
 --&gt; forward-paragraph-extend-selection
@@ -3277,7 +3223,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; forward-char
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.134">#Indent to beginning of paragraph
+<t tx="TL.20080806084612.133">#Indent to beginning of paragraph
 #Bind: &lt;{
 
 --&gt; back-paragraph-extend-selection
@@ -3287,7 +3233,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; forward-char
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.135">#Indent to end of sentence
+<t tx="TL.20080806084612.134">#Indent to end of sentence
 #Bind: &lt;)
 
 --&gt; forward-sentence-extend-selection
@@ -3296,7 +3242,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; forward-char
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.136">#Indent to beginning of sentence
+<t tx="TL.20080806084612.135">#Indent to beginning of sentence
 #Bind: &lt;(
 
 --&gt; back-sentence-extend-selection
@@ -3305,7 +3251,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; forward-char
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.137">#Unindent to end of buffer
+<t tx="TL.20080806084612.136">#Unindent to end of buffer
 #Bind: &lt;G
 
 --&gt; set-silent-mode
@@ -3315,7 +3261,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; forward-char
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.138">#Unindent to end of buffer
+<t tx="TL.20080806084612.137">#Unindent to end of buffer
 #Bind: &lt;G
 
 --&gt; set-silent-mode
@@ -3325,34 +3271,29 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; forward-char
 --&gt; exit-named-mode
 </t>
-<t tx="TL.20081021080504.139">#Goto beginning of current line
-#Bind: |
+<t tx="TL.20080806084612.138">#Goto beginning of current line
+#Bind: -
 #Note: Vi binding of '0' not used.  Numbers not inserted during edit if bound to a key.
+#Note: Vim uses '-' to move to beginning of previous line instead of current line first.
 
 --&gt; set-silent-mode
---&gt; forward-char
 --&gt; beginning-of-line
 
 --&gt; exit-named-mode
 
 </t>
-<t tx="TL.20081021080504.140">#Goto first visible charecter on previous line
+<t tx="TL.20080806084612.139">#Goto beginning of current line
 #Bind: -
-#Note: No indent performed, no method available to move to first visible character.
+#Note: Vi binding of '0' not used.  Numbers not inserted during edit if bound to a key.
+#Note: Vim uses '-' to move to beginning of previous line instead of current line first.
 
 --&gt; set-silent-mode
---&gt; forward-char
---&gt; beginning-of-line		#Now at beginning of current line.
-
---&gt; previous-line
-# --&gt; back-char
-# --&gt; forward-word			#Skips over visible non-alpha-numeric characters
-
+--&gt; beginning-of-line
 
 --&gt; exit-named-mode
 
 </t>
-<t tx="TL.20081021080504.141">#Goto end of current line
+<t tx="TL.20080806084612.140">#Goto end of current line
 #Bind: $
 
 --&gt; set-silent-mode
@@ -3360,7 +3301,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; end-of-line
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.142">#Go to end of paragraph
+<t tx="TL.20080806084612.141">#Go to end of paragraph
 #Bind: }
 
 --&gt; set-silent-mode
@@ -3370,7 +3311,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; back-char
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.143">#Go to beginning of paragraph
+<t tx="TL.20080806084612.142">#Go to beginning of paragraph
 #Bind: {
 
 --&gt; set-silent-mode
@@ -3380,7 +3321,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; forward-char
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.144">#Join next line to end of current line
+<t tx="TL.20080806084612.143">#Join next line to end of current line
 #Bind: J
 
 --&gt; set-silent-mode
@@ -3391,7 +3332,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; exit-named-mode
 
 </t>
-<t tx="TL.20081021080504.145">#Goto matching bracket: () [] {}
+<t tx="TL.20080806084612.144">#Goto matching bracket: () [] {}
 #Bind: %
 
 --&gt; set-silent-mode
@@ -3400,7 +3341,7 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 --&gt; back-char
 
 --&gt; exit-named-mode</t>
-<t tx="TL.20081021080504.146">#Window commands
+<t tx="TL.20080806084612.145">#Window commands
 #Bind: Ctrl-w
 
 add-editor           = s   #Open another view to current node
@@ -6274,10 +6215,14 @@ out (appears on a line starting with #), it is disabled, otherwise it is
 enabled. Plugins not appearing here are disabled. File names may be indented as
 desired.</t>
 <t tx="ekr.20070224073109.1"># Leo loads plugins in the order they appear here.
-# Leo loads a plugin if the plugin's file name appears here outside of a comment.
+#
+# The FIRST mention of a plugin controls whether the plugin is enable or not:
+# - If the plugin's name is commented out, it is disabled, otherwise it is enabled.
+# - Plugins not appearing here are disabled.
+# 
 # File names may be indented as desired.
 
-# Standard plugins enabled in official distributions.
+#Standard plugins enabled in official distributions.
 
 # This plugin creates the Plugins menu.
 plugins_menu.py
@@ -7575,6 +7520,143 @@ True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080930072519.3"></t>
 <t tx="ekr.20080930072519.4">The number of buttons or widget in any one row of icons in the icon area.
 If there are more than this number, a new row is created.</t>
+<t tx="ekr.20081018053140.11"></t>
+<t tx="ekr.20081018053140.12">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
+
+/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
+
+/* A QWidget: supports only background attributes.*/
+
+QSplitter::handle {
+    background-color: #CAE1FF; /* lightSteelBlue1 */
+}
+
+QStackedWidget {
+    /* background-color:lightpink; */
+    border-color: red;
+    padding: 0px;
+    /* border-width: 0px; */
+    /* background-color: yellow; */
+}
+
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-style: solid;
+}
+
+QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
+    background-color: #ffffec; /* Leo's traditional tree color */
+    selection-color: white;
+    selection-background-color: lightgrey;
+    /* font-family: SansSerif; */
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+ }
+
+/* Headline edit widgets */
+QTreeWidget QLineEdit {
+    background-color: cornsilk;
+    selection-color: white;
+    selection-background-color: blue;
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/* The log panes */
+QTextEdit {
+    background-color: #f2fdff;
+    selection-color: white;
+    selection-background-color: blue;
+    /* font-family: Courier New; */
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/* The body pane */
+QTextEdit#richTextEdit {
+    background-color: #fdf5f5; /* A kind of pink. */
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: DejaVu Sans Mono;
+    /* font-family: Courier New; */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#status1 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+QLineEdit#status2 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+XXQPushButton {
+    background-color: #fdf5f5; /* A kind of pink. */
+    margin: 2px;
+    padding; 4px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+/* QMenuBar works, but not QMenu... */
+XXQMenuBar {
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+</t>
+<t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
+This allows you to increase the font size.</t>
+<t tx="ekr.20081022181056.10"># Lines have the form: color, style
+# color may be any kind of Qt color specifier
+# The valid sytles are as follows: (capitalization is significant).
+# Default Comment Number Keyword
+# DoubleQuotedString SingleQuotedString
+# TripleSingleQuotedString TripleDoubleQuotedString
+# ClassName FunctionMethodName
+# Operator Identifier
+# CommentBlock UnclosedString
+# HighlightedIdentifier Decorator
+
+ red,   Comment
+ green, SingleQuotedString
+ green, DoubleQuotedString
+ green, TripleSingleQuotedString
+ green, TripleDoubleQuotedString
+ green, UnclosedString
+ green, Decorator
+ blue,  Keyword</t>
+<t tx="ekr.20081023060109.13">Argument to QSciScintilla.zoomIn method.
+This allows you to increase the font size.</t>
+<t tx="ekr.20081023060109.14"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to
@@ -7591,20 +7673,6 @@ but you can still see where things come from before you load them.
 False: don't use submenus for multiple path entries, unless recent_files_group
 is true (and recent_files_omit_directories is False)
 </t>
-<t tx="tbrown.20081024093407.2"></t>
-<t tx="tbrown.20081024093407.3">Event to which active_path responds.
-
-'iconclick1' 	single click in icon box
-'iconrclick1' right click in icon box
-'icondclick1' double click in icon box
-
-Other choices, most of which make no sense, at:
-    
-    
-</t>
-<t tx="tbrown.20081024093407.4">Type of @file to use for loading files with active_path
-"auto" and "shadow" are the best choices.  Other choices may
-not be safe.</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

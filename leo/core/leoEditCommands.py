@@ -900,6 +900,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         if p:
             c.selectPosition(p)
             c.redraw()
+
     #@-node:ekr.20050920084036.40:switchToBuffer
     #@-node:ekr.20050920084036.34:Entry points
     #@+node:ekr.20050927102133.1:Utils
@@ -2914,7 +2915,8 @@ class editCommandsClass (baseEditCommandsClass):
         name = c.widget_name(w)
         if name.startswith('head'): return
 
-        oldSel =  w.getSelectionRange()
+        oldSel = w.getSelectionRange()
+        # g.trace('oldSel',oldSel)
 
         self.beginCommand(undoType='newline')
 
@@ -2998,6 +3000,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         w = self.editWidget(event)
         if not w: return 'break'
+
+        trace = True
         #@    << set local vars >>
         #@+node:ekr.20061103114242:<< set local vars >>
         c = self.c
@@ -3020,7 +3024,7 @@ class editCommandsClass (baseEditCommandsClass):
         #@nonl
         #@-node:ekr.20061103114242:<< set local vars >>
         #@nl
-        #g.trace('ch',repr(ch))
+        if trace: g.trace('ch',repr(ch))
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
             return "break" # The hook claims to have handled the event.
         if ch == '\t':
@@ -3054,7 +3058,8 @@ class editCommandsClass (baseEditCommandsClass):
         # Update the text and handle undo.
         newText = w.getAllText()
         changed = newText != oldText
-        # g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
+        if trace:
+            g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
         if changed:
             # g.trace('ins',w.getInsertPoint())
             c.frame.body.onBodyChanged(undoType=undoType,
@@ -3086,7 +3091,6 @@ class editCommandsClass (baseEditCommandsClass):
                 self.updateAutoIndent(p,w)
 
         w.seeInsertPoint()
-    #@nonl
     #@-node:ekr.20051026171121:insertNewlineHelper
     #@+node:ekr.20060804095512:initBracketMatcher
     def initBracketMatcher (self,c):
@@ -4186,6 +4190,7 @@ class editCommandsClass (baseEditCommandsClass):
                 c.selectPosition(p)
                 c.redraw()
 
+
                 s = w.getAllText()
                 w.insert(0,lines)
                 if not lines.endswith('\n'): w.insert(len(lines),'\n')
@@ -4895,6 +4900,8 @@ class editFileCommandsClass (baseEditCommandsClass):
         nullGui = leoGui.nullGui('nullGui')
         frame = leoFrame.nullFrame('nullFrame',nullGui,useNullUndoer=True)
         c2 = leoCommands.Commands(frame,fileName)
+        frame.c = c2
+        frame.tree.c = c2
         theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
         if theFile:
             c2.fileCommands.open(theFile,fileName,readAtFileNodesFlag=True,silent=True)
@@ -8468,7 +8475,8 @@ class spellTabHandler (leoFind.leoFind):
                             redraw = True
                     # c.frame.tree.expandAllAncestors(p)
                     c.selectPosition(p)
-                    if redraw: c.redraw()
+                    if redraw:
+                        c.redraw()
                     w.setSelectionRange(i,j,insert=j)
                     break
         except Exception:

@@ -166,7 +166,7 @@ def init ():
         g.app.createTkGui(__file__)
 
     # This plugin is now gui-independent.            
-    ok = g.app.gui.guiName() in ('tkinter','wxPython','nullGui')
+    ok = g.app.gui.guiName() in ('qt','tkinter','wxPython','nullGui')
 
     if ok:
 

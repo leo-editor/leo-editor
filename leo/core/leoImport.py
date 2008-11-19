@@ -30,7 +30,7 @@ class scanUtility:
                 result.append("@verbatim\n")
                 result.append(line)
             else:
-                 result.append(line)
+                result.append(line)
         return ''.join(result)
     #@-node:sps.20081111154528.5:escapeFalseSectionReferences
     #@-others
@@ -890,6 +890,7 @@ class leoImportCommands (scanUtility):
             p.contract()
             u.afterInsertNode(p,command,undoData)
         current.expand()
+        ### c.redraw_after_expand()
         c.selectPosition(current)
         c.setChanged(True)
         u.afterChangeGroup(p,command)

@@ -147,6 +147,7 @@ if not g.unified_nodes:
 
             t = self
             t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+            # g.trace('t',len(s),g.callers(5))
 
         initBodyString = setBodyString
         setTnodeText = setBodyString
@@ -602,6 +603,8 @@ class vnode (baseVnode):
     #@+node:ekr.20031218072017.3370:v.isExpanded
     def isExpanded (self):
 
+        # g.trace( ( self.statusBits & self.expandedBit ) != 0, g.callers())
+
         return ( self.statusBits & self.expandedBit ) != 0
     #@-node:ekr.20031218072017.3370:v.isExpanded
     #@+node:ekr.20031218072017.3371:v.isMarked
@@ -681,19 +684,19 @@ class vnode (baseVnode):
     #@+node:ekr.20031218072017.3395:v.contract & expand & initExpandedBit
     def contract(self):
 
-        self.statusBits &= ~ self.expandedBit
+        # g.trace(self,g.callers(4))
 
-        # g.trace(self.statusBits)
+        self.statusBits &= ~ self.expandedBit
 
     def expand(self):
 
+        # g.trace(self,g.callers(4))
+
         self.statusBits |= self.expandedBit
 
-        # g.trace(self,g.callers())
-
-        # g.trace(self.statusBits)
-
     def initExpandedBit (self):
+
+        # g.trace(self.t._headString)
 
         self.statusBits |= self.expandedBit
     #@-node:ekr.20031218072017.3395:v.contract & expand & initExpandedBit
@@ -758,6 +761,7 @@ class vnode (baseVnode):
     def setBodyString (self,s,encoding="utf-8"):
         v = self
         v.t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+        # g.trace('v',len(s),g.callers(5))
 
     def setHeadString (self,s,encoding="utf-8"):
         v = self
@@ -1387,8 +1391,7 @@ class basePosition (object):
     #@+node:ekr.20080416161551.196:p.isVisible
     def isVisible (self,c):
 
-        p = self
-        trace = False
+        p = self ; trace = False
         limit,limitIsVisible = c.visLimit()
         limit_v = limit and limit.v or None
         if p.v == limit_v:
@@ -1410,7 +1413,7 @@ class basePosition (object):
                 else: # Ignore the expansion state of @chapter nodes.
                     return True
             if not v.isExpanded():
-                if trace: g.trace('*** non-limit parent is not expanded',v)
+                if trace: g.trace('*** non-limit parent is not expanded:',v.t._headString,p.headString())
                 return False
             n -= 1
             assert progress > n
@@ -2634,6 +2637,8 @@ class basePosition (object):
 
         p = self ; limit,limitIsVisible = c.visLimit() ; trace = False
 
+        if trace: g.trace('limit',limit,'limitIsVisible',limitIsVisible)
+
         def checkLimit (p):
             '''Return done, return-val'''
             if limit:
@@ -2651,6 +2656,9 @@ class basePosition (object):
         while p:
             # Short-circuit if possible.
             back = p.back()
+            if trace: g.trace(
+                'back',back,'hasChildren',bool(back and back.hasChildren()),
+                'isExpanded',bool(back and back.isExpanded()))
             if back and (not back.hasChildren() or not back.isExpanded()):
                 p.moveToBack()
             else:
@@ -2658,13 +2666,15 @@ class basePosition (object):
             if p:
                 if trace: g.trace('*p',p.headString())
                 done,val = checkLimit(p)
-                if done: return val
+                if done:
+                    if trace: g.trace('done')
+                    return val
                 if p.isVisible(c):
+                    if trace: g.trace('isVisible')
                     return p
         else:
             # assert not p.
             return p
-    #@nonl
     #@-node:ekr.20080416161551.210:p.moveToVisBack
     #@+node:ekr.20080416161551.211:p.moveToVisNext
     def moveToVisNext (self,c):
@@ -2688,6 +2698,10 @@ class basePosition (object):
                 return False,None
 
         while p:
+            if trace: g.trace(
+                'hasChildren',p.hasChildren(),
+                'isExpanded',p.isExpanded(),
+                p.headString())
             # Short-circuit if possible.
             if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
                 p.moveToNext()

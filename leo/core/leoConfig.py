@@ -2151,12 +2151,16 @@ class configClass:
         for d in self.dictList:
             self.printSettingsHelper(settings,d)
 
+        result = []
         for key in sorted(settings):
             data = settings.get(key)
             letter,val = data
-            g.pr('%45s = %s %s' % (key,letter,val))
-            g.es('','%s %s = %s' % (letter,key,val))
-    #@nonl
+            # g.pr('%45s = %s %s' % (key,letter,val))
+            result.append('%s %s = %s\n' % (letter,key,val))
+
+        # Use a single g.es statement.
+        g.es('',''.join(result),tabName='Settings')
+
     #@+node:ekr.20070418075804:printSettingsHelper
     def printSettingsHelper(self,settings,d,letter=None):
 
