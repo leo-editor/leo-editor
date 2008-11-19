@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="68" left="269" height="809" width="867"/>
+	<global_window_position top="60" left="361" height="949" width="867"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -17,7 +17,7 @@
 </v>
 <v t="ekr.20070603190944"><vh>@chapter xyz</vh>
 <v t="ekr.20070603190944.1"><vh>xyz node 1</vh></v>
-<v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
+<v t="ekr.20071206070207"></v>
 </v>
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
@@ -136,7 +136,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
@@ -331,7 +331,7 @@
 <v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
 <v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
 <v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
-<v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
+<v t="ekr.20080922164255.1"></v>
 <v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
 <v t="ekr.20080923073240.2" a="E"><vh>@path {{c.config.getString('test')}}</vh>
 <v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
@@ -3744,10 +3744,8 @@ os.system("dir")</t>
 <t tx="ekr.20081103064258.1">fileName = r'c:\prog\test\test3.leo'
 
 if 0:
-
     def myRun(*args,**keys):
         return fileName
-    
     old = g.app.gui.runSaveFileDialog
     try:
         g.app.gui.runSaveFileDialog = myRun

@@ -5,12 +5,9 @@
 @nocolor-node
 
 First:
-* Merge into trunk.
-
-After merge:
+- Allow shift-tab binding & fix Ctrl-( problem.
 - Illegal move brings up a Tk alert!
-- Finish colorizer.
-- Shift-tab is Smart home. (Allow shift-tab binding).
+- Finish colorizer: see child node for notes.
 
 Next:
 - Allow coloring of icon bar buttons.
@@ -41,16 +38,9 @@ Finally:
 - Experiment with sending <shift-tab> directly to QScintilla.
 - Call setLexer(0) for nocolor nodes.
 - Add settings for syntax coloring.
-     - Make Scintilla handle Leo markup.
+- Make Scintilla handle Leo markup.
 #@nonl
 #@-node:ekr.20081109123309.14:QScintilla stuff
-#@+node:ekr.20081109123309.15:To do in trunk
-- Make tkinter code a plugin.
-    - If no gui specified on command line,
-      use the first gui that can be imported.
-- Support @ifgui in settings trees.
-#@nonl
-#@-node:ekr.20081109123309.15:To do in trunk
 #@+node:ekr.20081029050144.10:Finally/maybe
 - Can style sheets really do the job?
 - Flash characters without changing the selection?
