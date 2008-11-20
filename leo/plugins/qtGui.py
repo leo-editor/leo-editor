@@ -5159,6 +5159,21 @@ class leoQtGui(leoGui.leoGui):
         s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter)
         return g.app.gui.toUnicode(s)
     #@-node:ekr.20081004102201.645:runSaveFileDialog
+    #@+node:ekr.20081120092739.1:runScrolledMessageDialog
+    def runScrolledMessageDialog (self,title,label,msg):
+
+        if g.unitTesting: return None
+
+        b = QtGui.QMessageBox
+        d = b(None,) # c.frame.top)
+        d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.
+
+        d.setWindowTitle(title)
+        if msg: d.setText(msg)
+        d.setIcon(b.Information)
+        yes = d.addButton('Ok',b.YesRole)
+        d.exec_()
+    #@-node:ekr.20081120092739.1:runScrolledMessageDialog
     #@-node:ekr.20081004102201.640:Dialogs & panels
     #@+node:ekr.20081004102201.657:Focus (qtGui)
     def get_focus(self,c=None):
