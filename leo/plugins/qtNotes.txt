@@ -426,6 +426,463 @@ def drawNode (self,p,dummy=False):
     return item
 #@-node:ekr.20081021043407.24:drawNode
 #@-node:ekr.20081115134154.10:Fixed headline data loss bug
+#@+node:ekr.20081121091058.1:Fixed cross-file cut/paste problem
+#@+node:ekr.20081004102201.628:class leoQtEventFilter
+class leoQtEventFilter(QtCore.QObject):
+
+    << about internal bindings >>
+
+    @others
+#@+node:ekr.20081007115148.6:<< about internal bindings >>
+@nocolor-node
+@
+
+Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
+
+1.  The case of plain letters is significant:  a is not A.
+
+2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
+warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+significant. Thus, the Shift- prefix is required if you want an upper-case
+letter (with the exception of 'bare' uppercase letters.)
+
+The following table illustrates these rules. In each row, the first entry is the
+key (for k.bindingsDict) and the other entries are equivalents that the user may
+specify in leoSettings.leo:
+
+a, Key-a, Key-A
+A, Shift-A
+Alt-a, Alt-A
+Alt-A, Alt-Shift-a, Alt-Shift-A
+Ctrl-a, Ctrl-A
+Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+!, Key-!,Key-exclam,exclam
+
+This table is consistent with how Leo already works (because it is consistent
+with Tk's key-event specifiers). It is also, I think, the least confusing set of
+rules.
+#@nonl
+#@-node:ekr.20081007115148.6:<< about internal bindings >>
+#@+node:ekr.20081013143507.12:eventFilter
+def eventFilter(self, obj, event):
+
+    c = self.c ; k = c.k 
+    trace = False ; verbose = True
+    eventType = event.type()
+    ev = QtCore.QEvent
+    kinds = (ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease)
+
+    if eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+
+        if ignore:
+            override = False
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        elif safe_mode:
+            override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+
+    if eventType == ev.KeyPress:
+        if override:
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            stroke = self.toStroke(tkKey,ch)
+            leoEvent = leoKeyEvent(event,c,w,ch) # ch was stroke
+            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            c.outerUpdate()
+        else:
+            if trace: g.trace(self.tag,'unbound',tkKey)
+
+    if trace: self.traceEvent(obj,event,tkKey,override)
+
+    return override
+#@-node:ekr.20081013143507.12:eventFilter
+#@+node:ekr.20081011152302.10:toStroke
+def toStroke (self,tkKey,ch):
+
+    k = self.c.k ; s = tkKey ; trace = False
+
+    special = ('Alt','Ctrl','Control',)
+    isSpecial = [True for z in special if s.find(z) > -1]
+
+    if not isSpecial:
+        # Keep the Tk spellings for special keys.
+        ch2 = k.guiBindNamesDict.get(ch) # was inverseDict
+        if trace: g.trace('ch',repr(ch),'ch2',repr(ch2))
+        if ch2: s = s.replace(ch,ch2)
+
+    table = (
+        ('Alt-','Alt+'),
+        ('Ctrl-','Ctrl+'),
+        ('Control-','Ctrl+'),
+        # Use Alt+Key-1, etc.  Sheesh.
+        # ('Key-','Key+'),
+        ('Shift-','Shift+')
+    )
+    for a,b in table:
+        s = s.replace(a,b)
+
+    if trace: g.trace('tkKey',tkKey,'-->',s)
+    return s
+#@-node:ekr.20081011152302.10:toStroke
+#@+node:ekr.20081008084746.1:toTkKey
+def toTkKey (self,event):
+
+    mods = self.qtMods(event)
+
+    keynum,text,toString,ch = self.qtKey(event)
+
+    tkKey,ch,ignore = self.tkKey(
+        event,mods,keynum,text,toString,ch)
+
+    return tkKey,ch,ignore
+#@+node:ekr.20081024164012.10:isFKey
+def isFKey(self,ch):
+
+    return (
+        ch and len(ch) in (2,3) and
+        ch[0].lower() == 'f' and
+        ch[1:].isdigit()
+    )
+#@-node:ekr.20081024164012.10:isFKey
+#@+node:ekr.20081028055229.1:qtKey
+def qtKey (self,event):
+
+    '''Return the components of a Qt key event.'''
+
+    keynum = event.key()
+    text   = event.text()
+    toString = QtGui.QKeySequence(keynum).toString()
+    try:
+        ch = chr(keynum)
+    except ValueError:
+        ch = ''
+    ch       = g.app.gui.toUnicode(ch)
+    text     = g.app.gui.toUnicode(text)
+    toString = g.app.gui.toUnicode(toString)
+
+    return keynum,text,toString,ch
+
+
+#@-node:ekr.20081028055229.1:qtKey
+#@+node:ekr.20081028055229.2:qtMods
+def qtMods (self,event):
+
+    modifiers = event.modifiers()
+
+    # The order of this table is significant.
+    # It must the order of modifiers in bindings
+    # in k.masterGuiBindingsDict
+
+    table = (
+        (QtCore.Qt.AltModifier,     'Alt'),
+        (QtCore.Qt.ControlModifier, 'Control'),
+        (QtCore.Qt.MetaModifier,    'Meta'),
+        (QtCore.Qt.ShiftModifier,   'Shift'),
+    )
+
+    mods = [b for a,b in table if (modifiers & a)]
+
+    return mods
+#@-node:ekr.20081028055229.2:qtMods
+#@+node:ekr.20081028055229.3:tkKey & helpers
+def tkKey (self,event,mods,keynum,text,toString,ch):
+
+    '''Carefully convert the Qt key to a 
+    Tk-style binding compatible with Leo's core
+    binding dictionaries.'''
+
+    k = self.c.k ; trace = False ; verbose = True
+
+    special = {
+        'Backspace':'BackSpace',
+        'Esc':'Escape',
+    }
+
+    # Convert '&' to 'ampersand', for example.
+    ch2 = k.guiBindNamesDict.get(ch or toString)
+
+    if not ch: ch = ch2
+    if not ch: ch = ''
+
+    # Handle special cases.
+    ch3 = special.get(toString)
+    if ch3: ch = ch3
+
+    ch4 = k.guiBindNamesDict.get(ch)
+    if ch4: ch = ch4
+
+    if trace and verbose: g.trace(
+'keynum: %s, mods: %s text: %s, toString: %s, '
+'ch: %s, ch2: %s, ch3: %s, ch4: %s' % (
+keynum,mods,repr(text),toString,
+repr(ch),repr(ch2),repr(ch3),repr(ch4)))
+
+    if 'Shift' in mods:
+        mods,ch = self.shifted(mods,ch)
+    elif len(ch) == 1:
+        ch = ch.lower()
+
+    if 'Alt' in mods and ch and ch in string.digits:
+        mods.append('Key')
+
+    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+    ignore = not ch
+
+    if trace and (ignore or verbose):
+        g.trace('tkKey: %s, ch: %s, ignore: %s' % (
+            repr(tkKey),repr(ch),ignore))
+
+    ch = text or toString # was ch
+    return tkKey,ch,ignore
+#@+node:ekr.20081028055229.16:keyboardUpper1
+def keyboardUpper1 (self,ch):
+
+    '''A horrible, keyboard-dependent hack.
+
+    Return the upper-case version of the given character
+    whose original spelling has length == 1.'''
+
+    d = {
+        '1':'exclam',
+        '2':'at',
+        '3':'numbersign',
+        '4':'dollar',
+        '5':'percent',
+        '6':'asciicircum',
+        '7':'ampersand',
+        '8':'asterisk',
+        '9':'parenleft',
+        '0':'parenright',
+    }
+
+    # g.trace(ch,d.get(ch))
+    return d.get(ch)
+
+#@-node:ekr.20081028055229.16:keyboardUpper1
+#@+node:ekr.20081028055229.17:keyboardUpperLong
+def keyboardUpperLong (self,ch):
+
+    '''A horrible, keyboard-dependent hack.
+
+    Return the upper-case version of the given character
+    whose original spelling has length > 1.'''
+
+    d = {
+        "quoteleft":    "asciitilde",
+        "minus":        "underscore",
+        "equal":        "plus",
+        "bracketleft":  "braceleft",
+        "bracketright": "braceright",
+        "semicolon":    "colon",
+        "quoteright":   "quotedbl",
+        "backslash":    "bar",
+        "comma":        "less",
+        "period":       "greater",
+        "slash":        "question",
+    }
+    # g.trace(ch,d.get(ch))
+    return d.get(ch)
+#@-node:ekr.20081028055229.17:keyboardUpperLong
+#@+node:ekr.20081028055229.14:shifted
+def shifted (self,mods,ch):
+    '''
+        A horrible, keyboard-dependent kludge.
+        return the shifted version of the letter.
+        return mods, ch.
+    '''
+
+    # Special tk symbols, like '&' have already
+    # been converted to names like 'ampersand'.
+
+    # These special characters should be handled in Leo's core.
+    noShiftList = ('Return','BackSpace','Tab',)
+
+    special = ('Home','End','Right','Left','Up','Down',)
+
+    if len(ch) == 1:
+        ch2 = self.keyboardUpper1(ch)
+        if ch2:
+            mods.remove('Shift')
+            ch = ch2
+        elif len(ch) == 1:
+            # Correct regardless of alt/ctrl mods.
+            mods.remove('Shift')
+            ch = ch.upper()
+        elif len(mods) == 1: # No alt/ctrl.
+            mods.remove('Shift')
+        else:
+            pass
+    else:
+        ch3 = self.keyboardUpperLong(ch)
+        if ch3: ch = ch3
+
+        if ch3 or ch in noShiftList:
+            mods.remove('Shift')
+        elif ch in special:
+            pass # Allow the shift.
+        elif len(mods) == 1: # No alt/ctrl.
+            mods.remove('Shift')
+        else:
+            pass # Retain shift modifier for all special keys.
+
+    return mods,ch
+#@-node:ekr.20081028055229.14:shifted
+#@+node:ekr.20081028134004.11:shifted2
+# This idea doesn't work.  The key-code in the ctor overrides everything else.
+
+def shifted2 (self,event):
+
+    mods = event.modifiers()
+    mods2 = mods & QtCore.Qt.ShiftModifier
+
+    event2 = QtGui.QKeyEvent (
+        QtCore.QEvent.KeyPress,
+        event.key(),mods2,event.text())
+
+    # encoding = 'utf-8'
+    keynum = event2.key()
+    text = g.app.gui.toUnicode(event2.text())
+    toString = g.app.gui.toUnicode(
+        QtGui.QKeySequence(keynum).toString())
+    mods = self.qtMods(event2)
+
+    g.trace(
+        'keynum: %s, mods: %s text: %s, toString: %s' % (
+        keynum,mods,repr(text),toString))
+#@-node:ekr.20081028134004.11:shifted2
+#@-node:ekr.20081028055229.3:tkKey & helpers
+#@-node:ekr.20081008084746.1:toTkKey
+#@+node:ekr.20081013143507.11:traceEvent
+def traceEvent (self,obj,event,tkKey,override):
+
+    c = self.c ; e = QtCore.QEvent
+
+    eventType = event.type()
+
+    if 0: # Show focus events.
+        show = (
+            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            (e.Enter,'enter'),(e.Leave,'leave'),
+        )
+
+    else:
+        show = (
+            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
+        )
+
+    ignore = (
+        e.ToolTip,
+        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.Polish,e.PolishRequest,
+    )
+
+    for val,kind in show:
+        if eventType == val:
+            g.trace(
+            'c',c,
+            'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+            self.tag,kind,repr(c.k.inState()),tkKey,override))
+            return
+
+    # if trace: g.trace(self.tag,
+        # 'bound in state: %s, key: %s, returns: %s' % (
+        # k.getState(),tkKey,ret))
+
+    if False and eventType not in ignore:
+        g.trace('%3s:%s' % (eventType,'unknown'))
+#@-node:ekr.20081013143507.11:traceEvent
+#@+node:ekr.20081018155359.10: ctor
+def __init__(self,c,w,tag=''):
+
+    # Init the base class.
+    QtCore.QObject.__init__(self)
+
+    self.c = c
+    self.w = w      # A leoQtX object, *not* a Qt object.
+    self.tag = tag
+
+    # Pretend there is a binding for these characters.
+    close_flashers = c.config.getString('close_flash_brackets') or ''
+    open_flashers  = c.config.getString('open_flash_brackets') or ''
+    self.flashers = open_flashers + close_flashers
+
+
+#@-node:ekr.20081018155359.10: ctor
+#@+node:ekr.20081015132934.10:isDangerous
+def isDangerous (self,tkKey,ch):
+
+    c = self.c
+
+    if not c.frame.body.useScintilla: return False
+
+    arrows = ('home','end','left','right','up','down')
+    special = ('tab','backspace','period','parenright','parenleft')
+
+    key = tkKey.lower()
+    ch = ch.lower()
+    isAlt = key.find('alt') > -1
+    w = g.app.gui.get_focus()
+    inTree = w == self.c.frame.tree.treeWidget
+
+    val = (
+        key in special or
+        ch in arrows and not inTree and not isAlt or
+        key == 'return' and not inTree # Just barely works.
+    )
+
+    # g.trace(tkKey,ch,val)
+    return val
+#@-node:ekr.20081015132934.10:isDangerous
+#@+node:ekr.20081111065912.10:isSpecialOverride
+def isSpecialOverride (self,tkKey,ch):
+
+    # g.trace(repr(tkKey),repr(ch))
+
+    if tkKey == 'Tab':
+        return True
+    elif len(tkKey) == 1:
+        return True # Must process all ascii keys.
+    elif ch in self.flashers:
+        return True
+    else:
+        return False
+#@-node:ekr.20081111065912.10:isSpecialOverride
+#@-node:ekr.20081004102201.628:class leoQtEventFilter
+#@+node:ekr.20081004102201.648:Clipboard
+def replaceClipboardWith (self,s):
+
+    '''Replace the clipboard with the string s.'''
+
+    cb = self.qtApp.clipboard()
+    if cb:
+        cb.clear()
+        s = g.app.gui.toUnicode(s)
+        cb.setText(s)
+        # g.trace(len(s),type(s))
+
+def getTextFromClipboard (self):
+
+    '''Get a unicode string from the clipboard.'''
+
+    cb = self.qtApp.clipboard()
+    s = cb and cb.text() or ''
+    s = g.app.gui.toUnicode(s)
+    # g.trace (len(s),type(s))
+    return s
+#@nonl
+#@-node:ekr.20081004102201.648:Clipboard
+#@-node:ekr.20081121091058.1:Fixed cross-file cut/paste problem
 #@-node:ekr.20081014095718.13:Recent projects...
 #@+node:ekr.20081018155359.11:Unused
 #@-node:ekr.20081018155359.11:Unused

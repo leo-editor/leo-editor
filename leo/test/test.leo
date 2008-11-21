@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -375,7 +375,7 @@
 <v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
 <v t="ekr.20081025105942.1"><vh>@button dir</vh></v>
 <v t="ekr.20081103064258.1"><vh>saveAs hacks</vh></v>
-<v t="ekr.20081104102617.1"><vh>NewHeadline</vh></v>
+<v t="ekr.20081104102617.1"><vh>print</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3765,7 +3765,6 @@ g.chdir(c.mFileName)
 c.redraw()
 # c.redraw_after_icons_changed(all=True)
 c.widgetWantsFocusNow(w)</t>
-<t tx="ekr.20081104102617.1">c.frame.lift()
-c.bodyWantsFocusNow()</t>
+<t tx="ekr.20081104102617.1">print ; print</t>
 </tnodes>
 </leo_file>

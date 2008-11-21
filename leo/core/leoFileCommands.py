@@ -1055,7 +1055,7 @@ class baseFileCommands:
     #@+node:ekr.20060919110638.7:createSaxVnode & helpers
     def createSaxVnode (self,sax_node,parent_v,t=None):
 
-        c = self.c
+        c = self.c ; trace = False
         h = sax_node.headString
         b = sax_node.bodyString
 
@@ -1081,7 +1081,9 @@ class baseFileCommands:
         index = self.canonicalTnodeIndex(sax_node.tnx)
         self.tnodesDict [index] = t
 
-        # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
+        if trace: g.trace(
+            'tnx','%-22s' % (index),'v',id(v),
+            'v.t',id(v.t),'body','%-4d' % (len(b)),h)
 
         self.handleVnodeSaxAttributes(sax_node,v)
         self.handleTnodeSaxAttributes(sax_node,t)

@@ -548,6 +548,8 @@ class baseCommands:
         # Force a call to c.outerUpdate.
         # This is needed when we execute this command from a menu.
         c.redraw_now()
+        c.frame.tree.initAfterLoad()
+        c.initAfterLoad()
         c.frame.initCompleteHint()
 
         return c # For unit test.
@@ -6176,8 +6178,8 @@ class baseCommands:
     #@+node:ekr.20080514131122.20:c.outerUpdate
     def outerUpdate (self):
 
-        c = self ; aList = [] ; trace = False ; verbose = True
-
+        trace = False ; verbose = True
+        c = self ; aList = []
         if not c.exists or not c.k:
             return
 

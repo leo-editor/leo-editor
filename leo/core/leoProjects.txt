@@ -2026,6 +2026,58 @@ def callTagHandler (bunch,tag,keywords):
     return result
 #@-node:ekr.20050102094729:callTagHandler
 #@-node:ekr.20081003155540.1:Fixed (?) bug in plugins dispatcher
+#@+node:ekr.20081121081651.1:Paste outline problem
+# The problem was missing calls to initAfterLoad in c.new.
+#@nonl
+#@+node:ekr.20031218072017.1623:c.new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+    v = leoNodes.vnode(context=c)
+    p = leoNodes.position(v)
+    v.initHeadString("NewHeadline")
+    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+    p._linkAsRoot(oldRoot=None)
+    c.setRootVnode(v) # New in Leo 4.4.2.
+    c.editPosition(p)
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(fileName=None)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    # Force a call to c.outerUpdate.
+    # This is needed when we execute this command from a menu.
+    c.redraw_now()
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.frame.initCompleteHint()
+
+    return c # For unit test.
+#@nonl
+#@-node:ekr.20031218072017.1623:c.new
+#@-node:ekr.20081121081651.1:Paste outline problem
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs

@@ -8,14 +8,13 @@
 - Illegal move brings up a Tk alert!
 
 - Shift-tab is Smart home.
-
-#@+node:ekr.20081119132758.2:Support @ifgui in settings trees?
-#@-node:ekr.20081119132758.2:Support @ifgui in settings trees?
 #@+node:ekr.20081119132758.3:Make tkinter gui a plugin
 If no gui specified on command line,
 use the first gui that can be imported.
 #@nonl
 #@-node:ekr.20081119132758.3:Make tkinter gui a plugin
+#@+node:ekr.20081119132758.2:Support @ifgui in settings trees
+#@-node:ekr.20081119132758.2:Support @ifgui in settings trees
 #@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 @nocolor
 
@@ -1039,6 +1038,8 @@ def new (self,event=None,gui=None):
     # Force a call to c.outerUpdate.
     # This is needed when we execute this command from a menu.
     c.redraw_now()
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
     c.frame.initCompleteHint()
 
     return c # For unit test.
