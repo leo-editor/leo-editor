@@ -12039,6 +12039,8 @@ def visitedPositions (self):
 This contains all gui plugins.
 #@nonl
 #@-node:ekr.20081121104952.2:Created leoGuiPluginsRef.leo
+#@+node:ekr.20081119132758.3:Created tkGui plugin
+#@-node:ekr.20081119132758.3:Created tkGui plugin
 #@-node:ekr.20081001140516.16:Plugins
 #@-node:ekr.20080917153158.11:4.6
 #@-all
