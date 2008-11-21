@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -371,11 +371,9 @@
 </v>
 </v>
 <v t="ekr.20081006070847.2"><vh>path convenience methods</vh></v>
-</v>
-<v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
 <v t="ekr.20081025105942.1"><vh>@button dir</vh></v>
-<v t="ekr.20081103064258.1"><vh>saveAs hacks</vh></v>
-<v t="ekr.20081104102617.1"><vh>print</vh></v>
+<v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -2493,6 +2491,7 @@ leoTest.doTests (c,all=False)</t>
 # if you enable the cursesGui plugin it here
 
 # qtGui.py
+tkGui.py
 
 plugins_menu.py
 
@@ -3741,30 +3740,5 @@ z.foo()
 </t>
 <t tx="ekr.20081025105942.1">import os
 os.system("dir")</t>
-<t tx="ekr.20081103064258.1">fileName = r'c:\prog\test\test3.leo'
-
-if 0:
-    def myRun(*args,**keys):
-        return fileName
-    old = g.app.gui.runSaveFileDialog
-    try:
-        g.app.gui.runSaveFileDialog = myRun
-        c.saveAs()
-    finally:
-        g.app.gui.runSaveFileDialog = old
-        
-w = g.app.gui.get_focus(c)
-c.mFileName = g.ensure_extension(fileName, ".leo")
-c.frame.title = c.mFileName
-c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-# Calls c.setChanged(False) if no error.
-c.fileCommands.saveAs(c.mFileName)
-c.updateRecentFiles(c.mFileName)
-g.chdir(c.mFileName)
-c.redraw()
-# c.redraw_after_icons_changed(all=True)
-c.widgetWantsFocusNow(w)</t>
-<t tx="ekr.20081104102617.1">print ; print</t>
 </tnodes>
 </leo_file>

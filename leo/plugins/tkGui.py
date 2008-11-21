@@ -21,13 +21,6 @@ import leo.core.leoGui as leoGui
 import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
 
-# import leo.core.leoTkinterComparePanel as leoTkinterComparePanel
-# import leo.core.leoTkinterDialog as leoTkinterDialog
-# import leo.core.leoTkinterFind as leoTkinterFind
-# import leo.core.leoTkinterFrame as leoTkinterFrame
-# import leo.core.leoTkinterMenu as leoTkinterMenu
-# import leo.core.leoTkinterTree as leoTkinterTree
-
 import tkFont
 import tkFileDialog
 import os
@@ -58,7 +51,8 @@ def init():
     if g.app.gui:
         return g.app.gui.guiName() == 'tkinter'
     else:
-        g.app.gui = leoTkinterGui()
+        g.app.gui = tkinterGui()
+        g.app.root = g.app.gui.createRootWindow()
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
@@ -103,8 +97,8 @@ class tkinterGui(leoGui.leoGui):
         self.win32clipboard = None
         self.defaultFont = None
         self.defaultFontFamily = None
-        self.bodyTextWidget =  leoTkinterFrame.leoTkTextWidget
-        self.plainTextWidget = leoTkinterFrame.leoTkTextWidget
+        self.bodyTextWidget =  leoTkTextWidget
+        self.plainTextWidget = leoTkTextWidget
 
         if 0: # This seems both dangerous and non-functional.
             if sys.platform == "win32":
@@ -117,9 +111,9 @@ class tkinterGui(leoGui.leoGui):
     #@+node:ekr.20081121110412.357:createKeyHandlerClass (tkGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
-        import leo.core.leoTkinterKeys as leoTkinterKeys # Do this here to break any circular dependency.
+        ### import leo.core.leoTkinterKeys as leoTkinterKeys # Do this here to break any circular dependency.
 
-        return leoTkinterKeys.tkinterKeyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
+        return tkinterKeyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
     #@nonl
     #@-node:ekr.20081121110412.357:createKeyHandlerClass (tkGui)
     #@+node:ekr.20081121110412.358:createRootWindow & allies
@@ -254,51 +248,45 @@ class tkinterGui(leoGui.leoGui):
     #@+node:ekr.20081121110412.366:tkGui dialogs & panels
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
         """Create and run a Tkinter About Leo dialog."""
-        d = leoTkinterDialog.tkinterAboutLeo(c,version,theCopyright,url,email)
+        d = tkinterAboutLeo(c,version,theCopyright,url,email)
         return d.run(modal=False)
 
     def runAskLeoIDDialog(self):
         """Create and run a dialog to get g.app.LeoID."""
-        d = leoTkinterDialog.tkinterAskLeoID()
+        d = tkinterAskLeoID()
         return d.run(modal=True)
 
     def runAskOkDialog(self,c,title,message=None,text="Ok"):
         """Create and run a Tkinter an askOK dialog ."""
-        d = leoTkinterDialog.tkinterAskOk(c,title,message,text)
+        d = tkinterAskOk(c,title,message,text)
         return d.run(modal=True)
 
     def runAskOkCancelNumberDialog(self,c,title,message):
         """Create and run askOkCancelNumber dialog ."""
-        d = leoTkinterDialog.tkinterAskOkCancelNumber(c,title,message)
+        d = tkinterAskOkCancelNumber(c,title,message)
         return d.run(modal=True)
 
     def runAskOkCancelStringDialog(self,c,title,message):
         """Create and run askOkCancelString dialog ."""
-        d = leoTkinterDialog.tkinterAskOkCancelString(c,title,message)
+        d = tkinterAskOkCancelString(c,title,message)
         return d.run(modal=True)
 
     def runAskYesNoDialog(self,c,title,message=None):
         """Create and run an askYesNo dialog."""
-        d = leoTkinterDialog.tkinterAskYesNo(c,title,message)
+        d = tkinterAskYesNo(c,title,message)
         return d.run(modal=True)
 
     def runAskYesNoCancelDialog(self,c,title,
         message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
         """Create and run an askYesNoCancel dialog ."""
-        d = leoTkinterDialog.tkinterAskYesNoCancel(
+        d = tkinterAskYesNoCancel(
             c,title,message,yesMessage,noMessage,defaultButton)
         return d.run(modal=True)
-
-    # The compare panel has no run dialog.
-
-    # def runCompareDialog(self,c):
-        # """Create and run an askYesNo dialog."""
-        # if not g.app.unitTesting:
-            # leoTkinterCompareDialog(c)
+    #@nonl
     #@+node:ekr.20081121110412.367:tkGui.createSpellTab
     def createSpellTab(self,c,spellHandler,tabName):
 
-        return leoTkinterFind.tkSpellTab(c,spellHandler,tabName)
+        return tkSpellTab(c,spellHandler,tabName)
     #@-node:ekr.20081121110412.367:tkGui.createSpellTab
     #@+node:ekr.20081121110412.368:tkGui file dialogs
     # We no longer specify default extensions so that we can open and save files without extensions.
@@ -349,19 +337,19 @@ class tkinterGui(leoGui.leoGui):
 
     # def createFindPanel(self,c):
         # """Create a hidden Tkinter find panel."""
-        # panel = leoTkinterFind.leoTkinterFind(c)
+        # panel = leoTkinterFind(c)
         # panel.top.withdraw()
         # return panel
 
     def createFindTab (self,c,parentFrame):
         """Create a Tkinter find tab in the indicated frame."""
-        return leoTkinterFind.tkFindTab(c,parentFrame)
+        return tkFindTab(c,parentFrame)
 
     def createLeoFrame(self,title):
         """Create a new Leo frame."""
         # g.pr('tkGui.createLeoFrame')
         gui = self
-        return leoTkinterFrame.leoTkinterFrame(title,gui)
+        return leoTkinterFrame(title,gui)
     #@-node:ekr.20081121110412.371:tkGui panels
     #@-node:ekr.20081121110412.366:tkGui dialogs & panels
     #@+node:ekr.20081121110412.372:tkGui utils
@@ -1046,10 +1034,7 @@ class leoTkinterDialog:
     #@-others
 #@-node:ekr.20081121110412.29: class leoTkinterDialog
 #@+node:ekr.20081121110412.8:class leoTkinterComparePanel
-class leoTkinterComparePanel (
-    leoCompare.leoCompare,
-    leoTkinterDialog.leoTkinterDialog
-):
+class leoTkinterComparePanel (leoCompare.leoCompare,leoTkinterDialog):
 
     """A class that creates Leo's compare panel."""
 
@@ -1060,7 +1045,8 @@ class leoTkinterComparePanel (
 
         # Init the base class.
         leoCompare.leoCompare.__init__ (self,c)
-        leoTkinterDialog.leoTkinterDialog.__init__(self,c,"Compare files and directories",resizeable=False)
+        leoTkinterDialog.__init__(self,c,
+            "Compare files and directories",resizeable=False)
 
         if g.app.unitTesting: return
 
@@ -3367,7 +3353,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         f.createSplitterComponents()
         f.createStatusLine()
         f.createFirstTreeNode()
-        f.menu = leoTkinterMenu.leoTkinterMenu(f)
+        f.menu = leoTkinterMenu(f)
             # c.finishCreate calls f.createMenuBar later.
         c.setLog()
         g.app.windowList.append(f)
@@ -3420,14 +3406,14 @@ class leoTkinterFrame (leoFrame.leoFrame):
             if self.use_chapters and self.use_chapter_tabs:
                 cc.tt = leoTkinterTreeTab(c,f.split1Pane2,cc)
             f.canvas = f.createCanvas(f.split1Pane1)
-            f.tree  = leoTkinterTree.leoTkinterTree(c,f,f.canvas)
+            f.tree  = leoTkinterTree(c,f,f.canvas)
             f.log   = leoTkinterLog(f,f.split2Pane2)
             f.body  = leoTkinterBody(f,f.split2Pane1)
         else:
             if self.use_chapters and self.use_chapter_tabs:
                 cc.tt = leoTkinterTreeTab(c,f.split2Pane1,cc)
             f.canvas = f.createCanvas(f.split2Pane1)
-            f.tree   = leoTkinterTree.leoTkinterTree(c,f,f.canvas)
+            f.tree   = leoTkinterTree(c,f,f.canvas)
             f.log    = leoTkinterLog(f,f.split2Pane2)
             f.body   = leoTkinterBody(f,f.split1Pane2)
 
