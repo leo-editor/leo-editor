@@ -3,8 +3,6 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
-- Create leoGuiPlugins.leo.
-
 - Illegal move brings up a Tk alert!
 
 - Shift-tab is Smart home.
