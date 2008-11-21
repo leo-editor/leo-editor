@@ -8,6 +8,7 @@
 #@@pagewidth 80
 
 import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os
 import sys
 
@@ -302,14 +303,17 @@ class LeoApp:
 
         """A convenience routines for plugins to create the default Tk gui class."""
 
-        import leo.core.leoTkinterGui as leoTkinterGui # Do this import after app module is fully imported.
+        if 1:
+            leoPlugins.loadOnePlugin ('tkGui',verbose=True)
+        else:
+            import leo.core.leoTkinterGui as leoTkinterGui # Do this import after app module is fully imported.
 
-        g.app.gui = leoTkinterGui.tkinterGui()
-        g.app.root = g.app.gui.createRootWindow()
+            g.app.gui = leoTkinterGui.tkinterGui()
+            g.app.root = g.app.gui.createRootWindow()
 
-        # Show a dialog and exit immediately if Pmw can not be imported.
-        g.importExtension("Pmw",pluginName="Leo's core",verbose=False,required=True)
-        g.app.gui.finishCreate()
+            # Show a dialog and exit immediately if Pmw can not be imported.
+            g.importExtension("Pmw",pluginName="Leo's core",verbose=False,required=True)
+            g.app.gui.finishCreate()
 
         if 0:
             if fileName:
