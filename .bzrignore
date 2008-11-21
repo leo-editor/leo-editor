@@ -37,3 +37,4 @@ leo/test/leoProfile.txt
 leo/test/unittest/createdFile.txt
 leo/test/at_ignore_test.txt
 leo/core/scriptFile.py
+leoGuiPlugins.leo

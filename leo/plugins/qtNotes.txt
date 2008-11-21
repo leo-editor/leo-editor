@@ -1,7 +1,7 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20081016072304.13:@thin qtNotes.txt
+#@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
-#@+node:ekr.20081010070648.5: To do
+#@+node:ekr.20081121105001.148: qt To do
 @nocolor-node
 
 First:
@@ -26,39 +26,28 @@ Finally:
     QsciScintilla::lineIndexFromPosition().
 - Add stylesheets for dialogs.
     - Set font for dummy widget in style sheet, then copy that font.
-#@+node:ekr.20081109123309.13:Finish colorizer
+#@+node:ekr.20081121105001.149:Finish colorizer
 - Simulate Tk's handling of tags (an optimization)
 - Use Qt threading.
 - Handle all colorizer tags.
 #@nonl
-#@-node:ekr.20081109123309.13:Finish colorizer
-#@+node:ekr.20081109123309.14:QScintilla stuff
+#@-node:ekr.20081121105001.149:Finish colorizer
+#@+node:ekr.20081121105001.150:QScintilla stuff
 - Check event handling with QScintilla.
 - Experiment with sending <shift-tab> directly to QScintilla.
 - Call setLexer(0) for nocolor nodes.
 - Add settings for syntax coloring.
 - Make Scintilla handle Leo markup.
 #@nonl
-#@-node:ekr.20081109123309.14:QScintilla stuff
-#@+node:ekr.20081029050144.10:Finally/maybe
+#@-node:ekr.20081121105001.150:QScintilla stuff
+#@+node:ekr.20081121105001.151:Finally/maybe
 - Can style sheets really do the job?
 - Flash characters without changing the selection?
 - Remove old-style Leo settings?
-#@-node:ekr.20081029050144.10:Finally/maybe
-#@-node:ekr.20081010070648.5: To do
-#@+node:ekr.20081019082316.10:New features in the core
-@nocolor-node
-
-- Added support for --gui=qt and --gui=tk command-line options.
-#@nonl
-#@-node:ekr.20081019082316.10:New features in the core
-#@+node:ekr.20081017015442.15:pylint errors
-# Hard to fix
-W0221:4426:leoQtMenu.add_command: Arguments number differs from overridden method
-W0221:4607:leoQtMenu.getMenuLabel: Arguments number differs from overridden method
-#@-node:ekr.20081017015442.15:pylint errors
-#@+node:ekr.20081014095718.13:Recent projects...
-#@+node:ekr.20081109123309.11:Recent crasher (after find)
+#@-node:ekr.20081121105001.151:Finally/maybe
+#@-node:ekr.20081121105001.148: qt To do
+#@+node:ekr.20081121105001.154:Recent projects...
+#@+node:ekr.20081121105001.155:Recent crasher (after find)
 
 wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
 exception executing command
@@ -86,7 +75,7 @@ Traceback (most recent call last):
     w.editItem(item)
 
 RuntimeError: underlying C/C++ object has been deleted
-#@+node:ekr.20081004172422.846:editLabel (override)
+#@+node:ekr.20081121105001.156:editLabel (override)
 def editLabel (self,p,selectAll=False):
 
     """Start editing p's headline."""
@@ -145,10 +134,10 @@ def editLabel (self,p,selectAll=False):
 
     # A nice hack: just set the focus request.
     c.requestedFocusWidget = e
-#@-node:ekr.20081004172422.846:editLabel (override)
-#@-node:ekr.20081109123309.11:Recent crasher (after find)
-#@+node:ekr.20081115134154.10:Fixed headline data loss bug
-#@+node:ekr.20081113091207.1:Report
+#@-node:ekr.20081121105001.156:editLabel (override)
+#@-node:ekr.20081121105001.155:Recent crasher (after find)
+#@+node:ekr.20081121105001.157:Fixed headline data loss bug
+#@+node:ekr.20081121105001.158:Report
 To reproduce:
 
 - open any outline
@@ -170,8 +159,8 @@ Python 2.6
 qt/pyqt 4.4.3
 r1486 of qt-plugin
 #@nonl
-#@-node:ekr.20081113091207.1:Report
-#@+node:ekr.20081005065934.10:qtTree.initAfterLoad
+#@-node:ekr.20081121105001.158:Report
+#@+node:ekr.20081121105001.159:qtTree.initAfterLoad
 def initAfterLoad (self):
 
     c = self.c ; frame = c.frame
@@ -205,8 +194,8 @@ def initAfterLoad (self):
     tw.installEventFilter(self.ev_filter)
 
     c.setChanged(False)
-#@-node:ekr.20081005065934.10:qtTree.initAfterLoad
-#@+node:ekr.20081004172422.846:editLabel (override)
+#@-node:ekr.20081121105001.159:qtTree.initAfterLoad
+#@+node:ekr.20081121105001.156:editLabel (override)
 def editLabel (self,p,selectAll=False):
 
     """Start editing p's headline."""
@@ -265,8 +254,8 @@ def editLabel (self,p,selectAll=False):
 
     # A nice hack: just set the focus request.
     c.requestedFocusWidget = e
-#@-node:ekr.20081004172422.846:editLabel (override)
-#@+node:ekr.20081004172422.799:edit_widget
+#@-node:ekr.20081121105001.156:editLabel (override)
+#@+node:ekr.20081121105001.160:edit_widget
 def edit_widget (self,p):
 
     """Returns the Qt.Edit widget for position p."""
@@ -280,8 +269,8 @@ def edit_widget (self,p):
 
     # Decouple all of the core's headline code.
     # Except for over-ridden methods.
-#@-node:ekr.20081004172422.799:edit_widget
-#@+node:ekr.20081117065611.1:onItemDoubleClicked
+#@-node:ekr.20081121105001.160:edit_widget
+#@+node:ekr.20081121105001.161:onItemDoubleClicked
 def onItemDoubleClicked (self,item,col):
 
     c = self.c ; w = self.treeWidget
@@ -302,8 +291,8 @@ def onItemDoubleClicked (self,item,col):
     self._editWidgetWrapper = leoQtHeadlineWidget(
         widget=e,name='head',c=c)
     e.setObjectName('headline')
-#@-node:ekr.20081117065611.1:onItemDoubleClicked
-#@+node:ekr.20081009055104.8:onTreeSelect
+#@-node:ekr.20081121105001.161:onItemDoubleClicked
+#@+node:ekr.20081121105001.162:onTreeSelect
 def onTreeSelect(self):
 
     '''Select the proper position when a tree node is selected.'''
@@ -330,8 +319,8 @@ def onTreeSelect(self):
         # An error: we are not redrawing.
         g.trace('no p for item: %s' % item,g.callers(4))
 #@nonl
-#@-node:ekr.20081009055104.8:onTreeSelect
-#@+node:ekr.20081030120643.11:onHeadChanged
+#@-node:ekr.20081121105001.162:onTreeSelect
+#@+node:ekr.20081121105001.163:onHeadChanged
 # Tricky code: do not change without careful thought and testing.
 
 def onHeadChanged (self,p,undoType='Typing',s=None):
@@ -383,8 +372,8 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     else:
         c.bodyWantsFocus()
 #@nonl
-#@-node:ekr.20081030120643.11:onHeadChanged
-#@+node:ekr.20081021043407.24:drawNode
+#@-node:ekr.20081121105001.163:onHeadChanged
+#@+node:ekr.20081121105001.164:drawNode
 def drawNode (self,p,dummy=False):
 
     c = self.c ; w = self.treeWidget ; trace = False
@@ -424,16 +413,16 @@ def drawNode (self,p,dummy=False):
     self.tnodeDict[p.v.t] = aList
 
     return item
-#@-node:ekr.20081021043407.24:drawNode
-#@-node:ekr.20081115134154.10:Fixed headline data loss bug
-#@+node:ekr.20081121091058.1:Fixed cross-file cut/paste problem
-#@+node:ekr.20081004102201.628:class leoQtEventFilter
+#@-node:ekr.20081121105001.164:drawNode
+#@-node:ekr.20081121105001.157:Fixed headline data loss bug
+#@+node:ekr.20081121105001.165:Fixed cross-file cut/paste problem
+#@+node:ekr.20081121105001.166:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
     << about internal bindings >>
 
     @others
-#@+node:ekr.20081007115148.6:<< about internal bindings >>
+#@+node:ekr.20081121105001.167:<< about internal bindings >>
 @nocolor-node
 @
 
@@ -464,8 +453,8 @@ This table is consistent with how Leo already works (because it is consistent
 with Tk's key-event specifiers). It is also, I think, the least confusing set of
 rules.
 #@nonl
-#@-node:ekr.20081007115148.6:<< about internal bindings >>
-#@+node:ekr.20081013143507.12:eventFilter
+#@-node:ekr.20081121105001.167:<< about internal bindings >>
+#@+node:ekr.20081121105001.168:eventFilter
 def eventFilter(self, obj, event):
 
     c = self.c ; k = c.k 
@@ -504,8 +493,8 @@ def eventFilter(self, obj, event):
     if trace: self.traceEvent(obj,event,tkKey,override)
 
     return override
-#@-node:ekr.20081013143507.12:eventFilter
-#@+node:ekr.20081011152302.10:toStroke
+#@-node:ekr.20081121105001.168:eventFilter
+#@+node:ekr.20081121105001.169:toStroke
 def toStroke (self,tkKey,ch):
 
     k = self.c.k ; s = tkKey ; trace = False
@@ -532,8 +521,8 @@ def toStroke (self,tkKey,ch):
 
     if trace: g.trace('tkKey',tkKey,'-->',s)
     return s
-#@-node:ekr.20081011152302.10:toStroke
-#@+node:ekr.20081008084746.1:toTkKey
+#@-node:ekr.20081121105001.169:toStroke
+#@+node:ekr.20081121105001.170:toTkKey
 def toTkKey (self,event):
 
     mods = self.qtMods(event)
@@ -544,7 +533,7 @@ def toTkKey (self,event):
         event,mods,keynum,text,toString,ch)
 
     return tkKey,ch,ignore
-#@+node:ekr.20081024164012.10:isFKey
+#@+node:ekr.20081121105001.171:isFKey
 def isFKey(self,ch):
 
     return (
@@ -552,8 +541,8 @@ def isFKey(self,ch):
         ch[0].lower() == 'f' and
         ch[1:].isdigit()
     )
-#@-node:ekr.20081024164012.10:isFKey
-#@+node:ekr.20081028055229.1:qtKey
+#@-node:ekr.20081121105001.171:isFKey
+#@+node:ekr.20081121105001.172:qtKey
 def qtKey (self,event):
 
     '''Return the components of a Qt key event.'''
@@ -572,8 +561,8 @@ def qtKey (self,event):
     return keynum,text,toString,ch
 
 
-#@-node:ekr.20081028055229.1:qtKey
-#@+node:ekr.20081028055229.2:qtMods
+#@-node:ekr.20081121105001.172:qtKey
+#@+node:ekr.20081121105001.173:qtMods
 def qtMods (self,event):
 
     modifiers = event.modifiers()
@@ -592,8 +581,8 @@ def qtMods (self,event):
     mods = [b for a,b in table if (modifiers & a)]
 
     return mods
-#@-node:ekr.20081028055229.2:qtMods
-#@+node:ekr.20081028055229.3:tkKey & helpers
+#@-node:ekr.20081121105001.173:qtMods
+#@+node:ekr.20081121105001.174:tkKey & helpers
 def tkKey (self,event,mods,keynum,text,toString,ch):
 
     '''Carefully convert the Qt key to a 
@@ -643,7 +632,7 @@ repr(ch),repr(ch2),repr(ch3),repr(ch4)))
 
     ch = text or toString # was ch
     return tkKey,ch,ignore
-#@+node:ekr.20081028055229.16:keyboardUpper1
+#@+node:ekr.20081121105001.175:keyboardUpper1
 def keyboardUpper1 (self,ch):
 
     '''A horrible, keyboard-dependent hack.
@@ -667,8 +656,8 @@ def keyboardUpper1 (self,ch):
     # g.trace(ch,d.get(ch))
     return d.get(ch)
 
-#@-node:ekr.20081028055229.16:keyboardUpper1
-#@+node:ekr.20081028055229.17:keyboardUpperLong
+#@-node:ekr.20081121105001.175:keyboardUpper1
+#@+node:ekr.20081121105001.176:keyboardUpperLong
 def keyboardUpperLong (self,ch):
 
     '''A horrible, keyboard-dependent hack.
@@ -691,8 +680,8 @@ def keyboardUpperLong (self,ch):
     }
     # g.trace(ch,d.get(ch))
     return d.get(ch)
-#@-node:ekr.20081028055229.17:keyboardUpperLong
-#@+node:ekr.20081028055229.14:shifted
+#@-node:ekr.20081121105001.176:keyboardUpperLong
+#@+node:ekr.20081121105001.177:shifted
 def shifted (self,mods,ch):
     '''
         A horrible, keyboard-dependent kludge.
@@ -735,8 +724,8 @@ def shifted (self,mods,ch):
             pass # Retain shift modifier for all special keys.
 
     return mods,ch
-#@-node:ekr.20081028055229.14:shifted
-#@+node:ekr.20081028134004.11:shifted2
+#@-node:ekr.20081121105001.177:shifted
+#@+node:ekr.20081121105001.178:shifted2
 # This idea doesn't work.  The key-code in the ctor overrides everything else.
 
 def shifted2 (self,event):
@@ -758,10 +747,10 @@ def shifted2 (self,event):
     g.trace(
         'keynum: %s, mods: %s text: %s, toString: %s' % (
         keynum,mods,repr(text),toString))
-#@-node:ekr.20081028134004.11:shifted2
-#@-node:ekr.20081028055229.3:tkKey & helpers
-#@-node:ekr.20081008084746.1:toTkKey
-#@+node:ekr.20081013143507.11:traceEvent
+#@-node:ekr.20081121105001.178:shifted2
+#@-node:ekr.20081121105001.174:tkKey & helpers
+#@-node:ekr.20081121105001.170:toTkKey
+#@+node:ekr.20081121105001.179:traceEvent
 def traceEvent (self,obj,event,tkKey,override):
 
     c = self.c ; e = QtCore.QEvent
@@ -801,8 +790,8 @@ def traceEvent (self,obj,event,tkKey,override):
 
     if False and eventType not in ignore:
         g.trace('%3s:%s' % (eventType,'unknown'))
-#@-node:ekr.20081013143507.11:traceEvent
-#@+node:ekr.20081018155359.10: ctor
+#@-node:ekr.20081121105001.179:traceEvent
+#@+node:ekr.20081121105001.180: ctor
 def __init__(self,c,w,tag=''):
 
     # Init the base class.
@@ -818,8 +807,8 @@ def __init__(self,c,w,tag=''):
     self.flashers = open_flashers + close_flashers
 
 
-#@-node:ekr.20081018155359.10: ctor
-#@+node:ekr.20081015132934.10:isDangerous
+#@-node:ekr.20081121105001.180: ctor
+#@+node:ekr.20081121105001.181:isDangerous
 def isDangerous (self,tkKey,ch):
 
     c = self.c
@@ -843,8 +832,8 @@ def isDangerous (self,tkKey,ch):
 
     # g.trace(tkKey,ch,val)
     return val
-#@-node:ekr.20081015132934.10:isDangerous
-#@+node:ekr.20081111065912.10:isSpecialOverride
+#@-node:ekr.20081121105001.181:isDangerous
+#@+node:ekr.20081121105001.182:isSpecialOverride
 def isSpecialOverride (self,tkKey,ch):
 
     # g.trace(repr(tkKey),repr(ch))
@@ -857,9 +846,9 @@ def isSpecialOverride (self,tkKey,ch):
         return True
     else:
         return False
-#@-node:ekr.20081111065912.10:isSpecialOverride
-#@-node:ekr.20081004102201.628:class leoQtEventFilter
-#@+node:ekr.20081004102201.648:Clipboard
+#@-node:ekr.20081121105001.182:isSpecialOverride
+#@-node:ekr.20081121105001.166:class leoQtEventFilter
+#@+node:ekr.20081121105001.183:Clipboard
 def replaceClipboardWith (self,s):
 
     '''Replace the clipboard with the string s.'''
@@ -881,13 +870,11 @@ def getTextFromClipboard (self):
     # g.trace (len(s),type(s))
     return s
 #@nonl
-#@-node:ekr.20081004102201.648:Clipboard
-#@-node:ekr.20081121091058.1:Fixed cross-file cut/paste problem
-#@-node:ekr.20081014095718.13:Recent projects...
-#@+node:ekr.20081018155359.11:Unused
-#@-node:ekr.20081018155359.11:Unused
-#@+node:ekr.20081024175359.10:Scripts
-#@+node:ekr.20081022172620.10:Script to display Qt font database
+#@-node:ekr.20081121105001.183:Clipboard
+#@-node:ekr.20081121105001.165:Fixed cross-file cut/paste problem
+#@-node:ekr.20081121105001.154:Recent projects...
+#@+node:ekr.20081121105001.185:Scripts
+#@+node:ekr.20081121105001.186:Script to display Qt font database
 import PyQt4.QtGui as QtGui
 
 db = QtGui.QFontDatabase()
@@ -895,8 +882,8 @@ for family in db.families():
     print family
     for style in db.styles(family):
         print '\t',style,db.smoothSizes(family,style)
-#@-node:ekr.20081022172620.10:Script to display Qt font database
-#@+node:ekr.20081020151747.10:dump guiBindNamesInverseDict
+#@-node:ekr.20081121105001.186:Script to display Qt font database
+#@+node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 print g.dictToString(c.k.guiBindNamesInverseDict)
 
 @
@@ -965,9 +952,9 @@ bracketright: ']'
        space: ' '
   underscore: '_'
 #@nonl
-#@-node:ekr.20081020151747.10:dump guiBindNamesInverseDict
-#@-node:ekr.20081024175359.10:Scripts
+#@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
+#@-node:ekr.20081121105001.185:Scripts
 #@-all
 #@nonl
-#@-node:ekr.20081016072304.13:@thin qtNotes.txt
+#@-node:ekr.20081121105001.147:@thin qtNotes.txt
 #@-leo

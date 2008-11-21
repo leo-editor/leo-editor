@@ -12035,6 +12035,10 @@ def visitedPositions (self):
 #@-node:ekr.20081001140516.1:Improved nav_buttons plugin and corresponding nodeHistory class
 #@+node:ekr.20081005065934.11:Created qtGui plugin
 #@-node:ekr.20081005065934.11:Created qtGui plugin
+#@+node:ekr.20081121104952.2:Created leoGuiPluginsRef.leo
+This contains all gui plugins.
+#@nonl
+#@-node:ekr.20081121104952.2:Created leoGuiPluginsRef.leo
 #@-node:ekr.20081001140516.16:Plugins
 #@-node:ekr.20080917153158.11:4.6
 #@-all

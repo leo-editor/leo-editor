@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=4-thin
-#@+node:ekr.20081004102201.619:@thin qtGui.py
+#@+node:ekr.20081121105001.188:@thin qtGui.py
 #@@first
 
 '''qt gui plugin.'''
@@ -16,7 +16,7 @@ __timing = None # For timing stats.
 __qh = None # For quick headlines.
 
 #@<< qt imports >>
-#@+node:ekr.20081004102201.620: << qt imports >>
+#@+node:ekr.20081121105001.189: << qt imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoChapters as leoChapters
 import leo.core.leoColor as leoColor
@@ -41,7 +41,7 @@ try:
 except ImportError:
     QtCore = None
     g.es_print('can not import Qt',color='red')
-#@-node:ekr.20081004102201.620: << qt imports >>
+#@-node:ekr.20081121105001.189: << qt imports >>
 #@nl
 
 #@+at
@@ -51,9 +51,9 @@ except ImportError:
 #@@c
 
 #@+others
-#@+node:ekr.20081004102201.623: Module level
+#@+node:ekr.20081121105001.190: Module level
 
-#@+node:ekr.20081004102201.621:init
+#@+node:ekr.20081121105001.191:init
 def init():
 
     if g.app.unitTesting: # Not Ok for unit testing!
@@ -86,8 +86,8 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
-#@-node:ekr.20081004102201.621:init
-#@+node:ekr.20081004102201.627:embed_ipython
+#@-node:ekr.20081121105001.191:init
+#@+node:ekr.20081121105001.192:embed_ipython
 def embed_ipython():
 
     import IPython.ipapi
@@ -98,8 +98,8 @@ def embed_ipython():
     # ip.load('ipy_leo')
     # ses.mainloop()
 #@nonl
-#@-node:ekr.20081004102201.627:embed_ipython
-#@+node:ekr.20081004102201.626:tstart & tstop
+#@-node:ekr.20081121105001.192:embed_ipython
+#@+node:ekr.20081121105001.193:tstart & tstop
 def tstart():
     global __timing
     __timing = time.time()
@@ -107,10 +107,10 @@ def tstart():
 def tstop():
     g.trace("%s Time: %1.2fsec" % (
         g.callers(1),time.time()-__timing))
-#@-node:ekr.20081004102201.626:tstart & tstop
-#@-node:ekr.20081004102201.623: Module level
-#@+node:ekr.20081103071436.3:Frame and component classes...
-#@+node:ekr.20081004102201.629:class  Window
+#@-node:ekr.20081121105001.193:tstart & tstop
+#@-node:ekr.20081121105001.190: Module level
+#@+node:ekr.20081121105001.194:Frame and component classes...
+#@+node:ekr.20081121105001.195:class  Window
 class Window(QtGui.QMainWindow):
 
     '''A class representing all parts of the main Qt window
@@ -123,7 +123,7 @@ class Window(QtGui.QMainWindow):
     '''
 
     #@    @+others
-    #@+node:ekr.20081004172422.884: ctor (Window)
+    #@+node:ekr.20081121105001.196: ctor (Window)
     # Called from leoQtFrame.finishCreate.
 
     def __init__(self,c,parent=None):
@@ -154,8 +154,8 @@ class Window(QtGui.QMainWindow):
         self.setStatusBar(self.statusBar)
 
         self.setStyleSheets()
-    #@-node:ekr.20081004172422.884: ctor (Window)
-    #@+node:ekr.20081020075840.11:closeEvent (qtFrame)
+    #@-node:ekr.20081121105001.196: ctor (Window)
+    #@+node:ekr.20081121105001.197:closeEvent (qtFrame)
     def closeEvent (self,event):
 
         c = self.c
@@ -170,8 +170,8 @@ class Window(QtGui.QMainWindow):
                 event.accept()
             else:
                 event.ignore()
-    #@-node:ekr.20081020075840.11:closeEvent (qtFrame)
-    #@+node:ekr.20081016072304.14:setStyleSheets & helper
+    #@-node:ekr.20081121105001.197:closeEvent (qtFrame)
+    #@+node:ekr.20081121105001.198:setStyleSheets & helper
     styleSheet_inited = False
 
     def setStyleSheets(self):
@@ -182,7 +182,7 @@ class Window(QtGui.QMainWindow):
         if sheet: sheet = '\n'.join(sheet)
         self.setStyleSheet(sheet or self.default_sheet())
     #@nonl
-    #@+node:ekr.20081018053140.10:defaultStyleSheet
+    #@+node:ekr.20081121105001.199:defaultStyleSheet
     def defaultStyleSheet (self):
 
         '''Return a reasonable default style sheet.'''
@@ -209,12 +209,12 @@ class Window(QtGui.QMainWindow):
         background-color: pink;
     }
     '''
-    #@-node:ekr.20081018053140.10:defaultStyleSheet
-    #@-node:ekr.20081016072304.14:setStyleSheets & helper
+    #@-node:ekr.20081121105001.199:defaultStyleSheet
+    #@-node:ekr.20081121105001.198:setStyleSheets & helper
     #@-others
 
-#@-node:ekr.20081004102201.629:class  Window
-#@+node:ville.20081104152150.2:class  DynamicWindow
+#@-node:ekr.20081121105001.195:class  Window
+#@+node:ekr.20081121105001.200:class  DynamicWindow
 from PyQt4 import uic
 
 class DynamicWindow(QtGui.QMainWindow):
@@ -229,7 +229,7 @@ class DynamicWindow(QtGui.QMainWindow):
     '''
 
     #@    @+others
-    #@+node:ville.20081104152150.3: ctor (Window)
+    #@+node:ekr.20081121105001.201: ctor (Window)
     # Called from leoQtFrame.finishCreate.
 
     def __init__(self,c,parent=None):
@@ -273,8 +273,8 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setStatusBar(self.statusBar)
 
         self.setStyleSheets()
-    #@-node:ville.20081104152150.3: ctor (Window)
-    #@+node:ville.20081104152150.4:closeEvent (qtFrame)
+    #@-node:ekr.20081121105001.201: ctor (Window)
+    #@+node:ekr.20081121105001.202:closeEvent (qtFrame)
     def closeEvent (self,event):
 
         c = self.c
@@ -289,8 +289,8 @@ class DynamicWindow(QtGui.QMainWindow):
                 event.accept()
             else:
                 event.ignore()
-    #@-node:ville.20081104152150.4:closeEvent (qtFrame)
-    #@+node:ville.20081104152150.5:setStyleSheets & helper
+    #@-node:ekr.20081121105001.202:closeEvent (qtFrame)
+    #@+node:ekr.20081121105001.203:setStyleSheets & helper
     styleSheet_inited = False
 
     def setStyleSheets(self):
@@ -301,7 +301,7 @@ class DynamicWindow(QtGui.QMainWindow):
         if sheet: sheet = '\n'.join(sheet)
         self.ui.setStyleSheet(sheet or self.default_sheet())
     #@nonl
-    #@+node:ville.20081104152150.6:defaultStyleSheet
+    #@+node:ekr.20081121105001.204:defaultStyleSheet
     def defaultStyleSheet (self):
 
         '''Return a reasonable default style sheet.'''
@@ -328,19 +328,19 @@ class DynamicWindow(QtGui.QMainWindow):
         background-color: pink;
     }
     '''
-    #@-node:ville.20081104152150.6:defaultStyleSheet
-    #@-node:ville.20081104152150.5:setStyleSheets & helper
+    #@-node:ekr.20081121105001.204:defaultStyleSheet
+    #@-node:ekr.20081121105001.203:setStyleSheets & helper
     #@-others
 
-#@-node:ville.20081104152150.2:class  DynamicWindow
-#@+node:ekr.20081004172422.502:class leoQtBody (leoBody)
+#@-node:ekr.20081121105001.200:class  DynamicWindow
+#@+node:ekr.20081121105001.205:class leoQtBody (leoBody)
 class leoQtBody (leoFrame.leoBody):
 
     """A class that represents the body pane of a Qt window."""
 
     #@    @+others
-    #@+node:ekr.20081004172422.503: Birth
-    #@+node:ekr.20081004172422.504: ctor (qtBody)
+    #@+node:ekr.20081121105001.206: Birth
+    #@+node:ekr.20081121105001.207: ctor (qtBody)
     def __init__ (self,frame,parentFrame):
 
         # Call the base class constructor.
@@ -380,8 +380,8 @@ class leoQtBody (leoFrame.leoBody):
         self.numberOfEditors = 1
         self.totalNumberOfEditors = 1
     #@nonl
-    #@-node:ekr.20081004172422.504: ctor (qtBody)
-    #@+node:ekr.20081004172422.505:createBindings (qtBody)
+    #@-node:ekr.20081121105001.207: ctor (qtBody)
+    #@+node:ekr.20081121105001.208:createBindings (qtBody)
     def createBindings (self,w=None):
 
         '''(qtBody) Create gui-dependent bindings.
@@ -433,14 +433,14 @@ class leoQtBody (leoFrame.leoBody):
                 # return handler(event,func)
 
             # c.bind(w,kind,bodyClickCallback)
-    #@-node:ekr.20081004172422.505:createBindings (qtBody)
-    #@+node:ekr.20081011035036.13:get_name
+    #@-node:ekr.20081121105001.208:createBindings (qtBody)
+    #@+node:ekr.20081121105001.209:get_name
     def getName (self):
 
         return 'body-widget'
-    #@-node:ekr.20081011035036.13:get_name
-    #@-node:ekr.20081004172422.503: Birth
-    #@+node:ekr.20081016072304.11:Do-nothings
+    #@-node:ekr.20081121105001.209:get_name
+    #@-node:ekr.20081121105001.206: Birth
+    #@+node:ekr.20081121105001.210:Do-nothings
 
     # Configuration will be handled by style sheets.
     def cget(self,*args,**keys):        return None
@@ -449,8 +449,8 @@ class leoQtBody (leoFrame.leoBody):
 
     def oops (self):
         g.trace('qtBody',g.callers(3))
-    #@-node:ekr.20081016072304.11:Do-nothings
-    #@+node:ekr.20081031074959.13:High-level interface to self.widget
+    #@-node:ekr.20081121105001.210:Do-nothings
+    #@+node:ekr.20081121105001.211:High-level interface to self.widget
     def appendText (self,s):
         return self.widget.appendText(s)
 
@@ -517,11 +517,11 @@ class leoQtBody (leoFrame.leoBody):
 
     def setYScrollPosition (self,i):
         return self.widget.setYScrollPosition(i)
-    #@-node:ekr.20081031074959.13:High-level interface to self.widget
-    #@+node:ekr.20081103095314.32:Editors (qtBody)
+    #@-node:ekr.20081121105001.211:High-level interface to self.widget
+    #@+node:ekr.20081121105001.212:Editors (qtBody)
     # This code uses self.pb, a paned body widget,
     # created by tkBody.finishCreate.
-    #@+node:ekr.20081103095314.33:createEditorFrame
+    #@+node:ekr.20081121105001.213:createEditorFrame
     def createEditorFrame (self,pane):
 
         return None
@@ -529,8 +529,8 @@ class leoQtBody (leoFrame.leoBody):
         # f = Tk.Frame(pane)
         # f.pack(side='top',expand=1,fill='both')
         # return f
-    #@-node:ekr.20081103095314.33:createEditorFrame
-    #@+node:ekr.20081103095314.34:packEditorLabelWidget
+    #@-node:ekr.20081121105001.213:createEditorFrame
+    #@+node:ekr.20081121105001.214:packEditorLabelWidget
     def packEditorLabelWidget (self,w):
 
         '''Create a Tk label widget.'''
@@ -542,11 +542,11 @@ class leoQtBody (leoFrame.leoBody):
             # w.leo_label.pack(side='top')
             # w.pack(expand=1,fill='both')
     #@nonl
-    #@-node:ekr.20081103095314.34:packEditorLabelWidget
-    #@+node:ekr.20081111152240.2:entries
+    #@-node:ekr.20081121105001.214:packEditorLabelWidget
+    #@+node:ekr.20081121105001.215:entries
     if 1:
         #@    @+others
-        #@+node:ekr.20081111152240.3:addEditor
+        #@+node:ekr.20081121105001.216:addEditor
         def addEditor (self,event=None):
 
             '''Add another editor to the body pane.'''
@@ -578,7 +578,7 @@ class leoQtBody (leoFrame.leoBody):
             # 
             #@nonl
             #@<< create text widget w >>
-            #@+node:ekr.20081111152240.4:<< create text widget w >>
+            #@+node:ekr.20081121105001.217:<< create text widget w >>
             # w = self.createTextWidget(f,name=name,p=p)
             # w.delete(0,'end')
             # w.insert('end',p.bodyString())
@@ -591,7 +591,7 @@ class leoQtBody (leoFrame.leoBody):
 
             # self.recolorWidget(p,w)
             #@nonl
-            #@-node:ekr.20081111152240.4:<< create text widget w >>
+            #@-node:ekr.20081121105001.217:<< create text widget w >>
             #@nl
             # self.editorWidgets[name] = w
 
@@ -606,8 +606,8 @@ class leoQtBody (leoFrame.leoBody):
             # self.selectEditor(w)
             # self.updateEditors()
             # c.bodyWantsFocusNow()
-        #@-node:ekr.20081111152240.3:addEditor
-        #@+node:ekr.20081111152240.5:assignPositionToEditor
+        #@-node:ekr.20081121105001.216:addEditor
+        #@+node:ekr.20081121105001.218:assignPositionToEditor
         def assignPositionToEditor (self,p):
 
             '''Called *only* from tree.select to select the present body editor.'''
@@ -618,8 +618,8 @@ class leoQtBody (leoFrame.leoBody):
             # self.selectLabel(w)
 
             # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.headString())
-        #@-node:ekr.20081111152240.5:assignPositionToEditor
-        #@+node:ekr.20081111152240.6:cycleEditorFocus
+        #@-node:ekr.20081121105001.218:assignPositionToEditor
+        #@+node:ekr.20081121105001.219:cycleEditorFocus
         def cycleEditorFocus (self,event=None):
 
             '''Cycle keyboard focus between the body text editors.'''
@@ -636,8 +636,8 @@ class leoQtBody (leoFrame.leoBody):
                 # # g.pr('***',g.app.gui.widget_name(w2),id(w2))
 
             # return 'break'
-        #@-node:ekr.20081111152240.6:cycleEditorFocus
-        #@+node:ekr.20081111152240.7:deleteEditor
+        #@-node:ekr.20081121105001.219:cycleEditorFocus
+        #@+node:ekr.20081121105001.220:deleteEditor
         def deleteEditor (self,event=None):
 
             '''Delete the presently selected body text editor.'''
@@ -661,8 +661,8 @@ class leoQtBody (leoFrame.leoBody):
             # # c.frame.body.bodyCtrl = w # Don't do this now?
             # self.numberOfEditors -= 1
             # self.selectEditor(w)
-        #@-node:ekr.20081111152240.7:deleteEditor
-        #@+node:ekr.20081111152240.8:findEditorForChapter (leoBody)
+        #@-node:ekr.20081121105001.220:deleteEditor
+        #@+node:ekr.20081121105001.221:findEditorForChapter (leoBody)
         def findEditorForChapter (self,chapter,p):
 
             '''Return an editor to be assigned to chapter.'''
@@ -690,8 +690,8 @@ class leoQtBody (leoFrame.leoBody):
             # # As a last resort, return the present editor widget.
             # # g.trace('***',id(self.bodyCtrl),'no match',p.headString())
             # return c.frame.body.bodyCtrl
-        #@-node:ekr.20081111152240.8:findEditorForChapter (leoBody)
-        #@+node:ekr.20081111152240.9:select/unselectLabel
+        #@-node:ekr.20081121105001.221:findEditorForChapter (leoBody)
+        #@+node:ekr.20081121105001.222:select/unselectLabel
         def unselectLabel (self,w):
 
             pass
@@ -716,8 +716,8 @@ class leoQtBody (leoFrame.leoBody):
             # elif hasattr(w,'leo_label') and w.leo_label:
                 # w.leo_label.pack_forget()
                 # w.leo_label = None
-        #@-node:ekr.20081111152240.9:select/unselectLabel
-        #@+node:ekr.20081111152240.10:selectEditor & helpers
+        #@-node:ekr.20081121105001.222:select/unselectLabel
+        #@+node:ekr.20081121105001.223:selectEditor & helpers
         selectEditorLockout = False
 
         def selectEditor(self,w):
@@ -746,7 +746,7 @@ class leoQtBody (leoFrame.leoBody):
                 # self.selectEditorLockout = False
 
             # return val # Don't put a return in a finally clause.
-        #@+node:ekr.20081111152240.11:selectEditorHelper
+        #@+node:ekr.20081121105001.224:selectEditorHelper
         def selectEditorHelper (self,w):
 
             c = self.c ; cc = c.chapterController ; d = self.editorWidgets
@@ -787,7 +787,7 @@ class leoQtBody (leoFrame.leoBody):
 
             c.recolor_now()
             #@    << restore the selection, insertion point and the scrollbar >>
-            #@+node:ekr.20081111152240.12:<< restore the selection, insertion point and the scrollbar >>
+            #@+node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
             # g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
 
             if w.leo_insertSpot:
@@ -807,13 +807,13 @@ class leoQtBody (leoFrame.leoBody):
                     w.setSelectionRange(start,end)
                 except Exception:
                     pass
-            #@-node:ekr.20081111152240.12:<< restore the selection, insertion point and the scrollbar >>
+            #@-node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
             #@nl
             c.bodyWantsFocusNow()
             return 'break'
-        #@-node:ekr.20081111152240.11:selectEditorHelper
-        #@-node:ekr.20081111152240.10:selectEditor & helpers
-        #@+node:ekr.20081111152240.13:updateEditors
+        #@-node:ekr.20081121105001.224:selectEditorHelper
+        #@-node:ekr.20081121105001.223:selectEditor & helpers
+        #@+node:ekr.20081121105001.226:updateEditors
         # Called from addEditor and assignPositionToEditor
 
         def updateEditors (self):
@@ -834,12 +834,12 @@ class leoQtBody (leoFrame.leoBody):
                     # self.recolorWidget(p,w)
 
             # c.bodyWantsFocus()
-        #@-node:ekr.20081111152240.13:updateEditors
+        #@-node:ekr.20081121105001.226:updateEditors
         #@-others
     #@nonl
-    #@-node:ekr.20081111152240.2:entries
-    #@+node:ekr.20081111152240.14:utils
-    #@+node:ekr.20081111152240.15:computeLabel
+    #@-node:ekr.20081121105001.215:entries
+    #@+node:ekr.20081121105001.227:utils
+    #@+node:ekr.20081121105001.228:computeLabel
     def computeLabel (self,w):
 
         s = w.leo_label_s
@@ -848,8 +848,8 @@ class leoQtBody (leoFrame.leoBody):
             s = '%s: %s' % (w.leo_chapter.name,s)
 
         return s
-    #@-node:ekr.20081111152240.15:computeLabel
-    #@+node:ekr.20081111152240.16:createChapterIvar
+    #@-node:ekr.20081121105001.228:computeLabel
+    #@+node:ekr.20081121105001.229:createChapterIvar
     def createChapterIvar (self,w):
 
         c = self.c ; cc = c.chapterController
@@ -859,8 +859,8 @@ class leoQtBody (leoFrame.leoBody):
                 w.leo_chapter = cc.getSelectedChapter()
             else:
                 w.leo_chapter = None
-    #@-node:ekr.20081111152240.16:createChapterIvar
-    #@+node:ekr.20081111152240.17:ensurePositionExists
+    #@-node:ekr.20081121105001.229:createChapterIvar
+    #@+node:ekr.20081121105001.230:ensurePositionExists
     def ensurePositionExists(self,w):
 
         '''Return True if w.leo_p exists or can be reconstituted.'''
@@ -879,8 +879,8 @@ class leoQtBody (leoFrame.leoBody):
                  # This *can* happen when selecting a deleted node.
                 w.leo_p = c.currentPosition()
                 return False
-    #@-node:ekr.20081111152240.17:ensurePositionExists
-    #@+node:ekr.20081111152240.18:inactivateActiveEditor
+    #@-node:ekr.20081121105001.230:ensurePositionExists
+    #@+node:ekr.20081121105001.231:inactivateActiveEditor
     def inactivateActiveEditor(self,w):
 
         '''Inactivate the previously active editor.'''
@@ -899,8 +899,8 @@ class leoQtBody (leoFrame.leoBody):
                 # g.trace('inactive:',id(w2),'scroll',w2.leo_scrollBarSpot,'ins',w2.leo_insertSpot)
                 # g.trace('inactivate',id(w2))
                 return
-    #@-node:ekr.20081111152240.18:inactivateActiveEditor
-    #@+node:ekr.20081111152240.19:recolorWidget
+    #@-node:ekr.20081121105001.231:inactivateActiveEditor
+    #@+node:ekr.20081121105001.232:recolorWidget
     def recolorWidget (self,p,w):
 
         c = self.c ; old_w = c.frame.body.bodyCtrl
@@ -915,8 +915,8 @@ class leoQtBody (leoFrame.leoBody):
         finally:
             # Restore.
             c.frame.body.bodyCtrl = old_w
-    #@-node:ekr.20081111152240.19:recolorWidget
-    #@+node:ekr.20081111152240.20:switchToChapter (leoBody)
+    #@-node:ekr.20081121105001.232:recolorWidget
+    #@+node:ekr.20081121105001.233:switchToChapter (leoBody)
     def switchToChapter (self,w):
 
         '''select w.leo_chapter.'''
@@ -931,8 +931,8 @@ class leoQtBody (leoFrame.leoBody):
                 # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
                 cc.selectChapterByName(name)
                 c.bodyWantsFocusNow()
-    #@-node:ekr.20081111152240.20:switchToChapter (leoBody)
-    #@+node:ekr.20081111152240.21:updateInjectedIvars
+    #@-node:ekr.20081121105001.233:switchToChapter (leoBody)
+    #@+node:ekr.20081121105001.234:updateInjectedIvars
     # Called from addEditor and assignPositionToEditor.
 
     def updateInjectedIvars (self,w,p):
@@ -949,12 +949,12 @@ class leoQtBody (leoFrame.leoBody):
         w.leo_label_s = p.headString()
 
         # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.headString())
-    #@-node:ekr.20081111152240.21:updateInjectedIvars
-    #@-node:ekr.20081111152240.14:utils
-    #@-node:ekr.20081103095314.32:Editors (qtBody)
+    #@-node:ekr.20081121105001.234:updateInjectedIvars
+    #@-node:ekr.20081121105001.227:utils
+    #@-node:ekr.20081121105001.212:Editors (qtBody)
     #@-others
-#@-node:ekr.20081004172422.502:class leoQtBody (leoBody)
-#@+node:ekr.20081007015817.56:class leoQtFindTab (findTab)
+#@-node:ekr.20081121105001.205:class leoQtBody (leoBody)
+#@+node:ekr.20081121105001.235:class leoQtFindTab (findTab)
 class leoQtFindTab (leoFind.findTab):
 
     '''A subclass of the findTab class containing all Qt Gui code.'''
@@ -971,9 +971,9 @@ class leoQtFindTab (leoFind.findTab):
     def createFrame (self,parentFrame): pass
 
     #@    @+others
-    #@+node:ekr.20081018053140.14: Birth: called from leoFind ctor
+    #@+node:ekr.20081121105001.236: Birth: called from leoFind ctor
     # leoFind.__init__ calls initGui, createFrame, createBindings & init, in that order.
-    #@+node:ekr.20081007015817.59:initGui
+    #@+node:ekr.20081121105001.237:initGui
     def initGui (self):
 
         self.svarDict = {}
@@ -985,8 +985,8 @@ class leoQtFindTab (leoFind.findTab):
         for key in self.newStringKeys:
             self.svarDict[key] = self.svar()
     #@nonl
-    #@-node:ekr.20081007015817.59:initGui
-    #@+node:ekr.20081007015817.60:init (qtFindTab) & helpers
+    #@-node:ekr.20081121105001.237:initGui
+    #@+node:ekr.20081121105001.238:init (qtFindTab) & helpers
     def init (self,c):
 
         '''Init the widgets of the 'Find' tab.'''
@@ -996,7 +996,7 @@ class leoQtFindTab (leoFind.findTab):
         self.initTextWidgets()
         self.initCheckBoxes()
         self.initRadioButtons()
-    #@+node:ekr.20081018053140.19:createIvars
+    #@+node:ekr.20081121105001.239:createIvars
     def createIvars (self):
 
         c = self.c ; w = c.frame.top.ui # A Window ui object.
@@ -1023,8 +1023,8 @@ class leoQtFindTab (leoFind.findTab):
             setattr(self,ivar,widget)
             self.widgetsDict[ivar] = widget
             # g.trace(ivar,widget)
-    #@-node:ekr.20081018053140.19:createIvars
-    #@+node:ekr.20081018053140.16:initIvars
+    #@-node:ekr.20081121105001.239:createIvars
+    #@+node:ekr.20081121105001.240:initIvars
     def initIvars(self):
 
         c = self.c
@@ -1038,8 +1038,8 @@ class leoQtFindTab (leoFind.findTab):
             svar = self.svarDict.get(key)
             if svar: svar.set(val)
             # g.trace('qtFindTab',key,val)
-    #@-node:ekr.20081018053140.16:initIvars
-    #@+node:ekr.20081018130812.10:initTextWidgets
+    #@-node:ekr.20081121105001.240:initIvars
+    #@+node:ekr.20081121105001.241:initTextWidgets
     def initTextWidgets(self):
 
         '''Init the find/change text areas.'''
@@ -1054,8 +1054,8 @@ class leoQtFindTab (leoFind.findTab):
         for w,setting,defaultText in table:
             # w is a textWrapper object
             w.setAllText(c.config.getString(setting) or defaultText)
-    #@-node:ekr.20081018130812.10:initTextWidgets
-    #@+node:ekr.20081018053140.17:initCheckBoxes
+    #@-node:ekr.20081121105001.241:initTextWidgets
+    #@+node:ekr.20081121105001.242:initCheckBoxes
     def initCheckBoxes (self):
 
         for ivar,key in (
@@ -1081,8 +1081,8 @@ class leoQtFindTab (leoFind.findTab):
                 # w is a QCheckBox.
                 w = self.widgetsDict.get(ivar)
                 if w: w.setChecked(True)
-    #@-node:ekr.20081018053140.17:initCheckBoxes
-    #@+node:ekr.20081018130812.11:initRadioButtons
+    #@-node:ekr.20081121105001.242:initCheckBoxes
+    #@+node:ekr.20081121105001.243:initRadioButtons
     def initRadioButtons (self):
 
         for ivar,key in (
@@ -1100,10 +1100,10 @@ class leoQtFindTab (leoFind.findTab):
             # XXX At present w is a QCheckbox, not a QRadioButton.
             w = self.widgetsDict.get(key)
             if w: w.setChecked(True)
-    #@-node:ekr.20081018130812.11:initRadioButtons
-    #@-node:ekr.20081007015817.60:init (qtFindTab) & helpers
-    #@-node:ekr.20081018053140.14: Birth: called from leoFind ctor
-    #@+node:ekr.20081007015817.64:class svar
+    #@-node:ekr.20081121105001.243:initRadioButtons
+    #@-node:ekr.20081121105001.238:init (qtFindTab) & helpers
+    #@-node:ekr.20081121105001.236: Birth: called from leoFind ctor
+    #@+node:ekr.20081121105001.244:class svar
     class svar:
         '''A class like Tk's IntVar and StringVar classes.'''
         def __init__(self):
@@ -1112,11 +1112,11 @@ class leoQtFindTab (leoFind.findTab):
             return self.val
         def set (self,val):
             self.val = val
-    #@-node:ekr.20081007015817.64:class svar
-    #@+node:ekr.20081007015817.72:Support for minibufferFind class (qtFindTab)
+    #@-node:ekr.20081121105001.244:class svar
+    #@+node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
     # This is the same as the Tk code because we simulate Tk svars.
     #@nonl
-    #@+node:ekr.20081007015817.73:getOption
+    #@+node:ekr.20081121105001.246:getOption
     def getOption (self,ivar):
 
         var = self.svarDict.get(ivar)
@@ -1128,8 +1128,8 @@ class leoQtFindTab (leoFind.findTab):
         else:
             g.trace('bad ivar name: %s' % ivar)
             return None
-    #@-node:ekr.20081007015817.73:getOption
-    #@+node:ekr.20081007015817.74:setOption
+    #@-node:ekr.20081121105001.246:getOption
+    #@+node:ekr.20081121105001.247:setOption
     def setOption (self,ivar,val):
 
         if ivar in self.intKeys:
@@ -1140,8 +1140,8 @@ class leoQtFindTab (leoFind.findTab):
 
         elif not g.app.unitTesting:
             g.trace('oops: bad find ivar %s' % ivar)
-    #@-node:ekr.20081007015817.74:setOption
-    #@+node:ekr.20081007015817.75:toggleOption
+    #@-node:ekr.20081121105001.247:setOption
+    #@+node:ekr.20081121105001.248:toggleOption
     def toggleOption (self,ivar):
 
         if ivar in self.intKeys:
@@ -1151,18 +1151,18 @@ class leoQtFindTab (leoFind.findTab):
             # g.trace('%s = %s' % (ivar,val),var)
         else:
             g.trace('oops: bad find ivar %s' % ivar)
-    #@-node:ekr.20081007015817.75:toggleOption
-    #@-node:ekr.20081007015817.72:Support for minibufferFind class (qtFindTab)
+    #@-node:ekr.20081121105001.248:toggleOption
+    #@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
     #@-others
-#@-node:ekr.20081007015817.56:class leoQtFindTab (findTab)
-#@+node:ekr.20081004172422.523:class leoQtFrame
+#@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
+#@+node:ekr.20081121105001.249:class leoQtFrame
 class leoQtFrame (leoFrame.leoFrame):
 
     """A class that represents a Leo window rendered in qt."""
 
     #@    @+others
-    #@+node:ekr.20081004172422.524: Birth & Death (qtFrame)
-    #@+node:ekr.20081004172422.525:__init__ (qtFrame)
+    #@+node:ekr.20081121105001.250: Birth & Death (qtFrame)
+    #@+node:ekr.20081121105001.251:__init__ (qtFrame)
     def __init__(self,title,gui):
 
         # Init the base class.
@@ -1180,7 +1180,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.trace_status_line = None # Set in finishCreate.
 
         #@    << set the leoQtFrame ivars >>
-        #@+node:ekr.20081004172422.526:<< set the leoQtFrame ivars >> (removed frame.bodyCtrl ivar)
+        #@+node:ekr.20081121105001.252:<< set the leoQtFrame ivars >> (removed frame.bodyCtrl ivar)
         # "Official ivars created in createLeoFrame and its allies.
         self.bar1 = None
         self.bar2 = None
@@ -1208,17 +1208,17 @@ class leoQtFrame (leoFrame.leoFrame):
         self.wantedWidget = None
         self.wantedCallbackScheduled = False
         self.scrollWay = None
-        #@-node:ekr.20081004172422.526:<< set the leoQtFrame ivars >> (removed frame.bodyCtrl ivar)
+        #@-node:ekr.20081121105001.252:<< set the leoQtFrame ivars >> (removed frame.bodyCtrl ivar)
         #@nl
 
         self.minibufferVisible = True
-    #@-node:ekr.20081004172422.525:__init__ (qtFrame)
-    #@+node:ekr.20081004172422.527:__repr__ (qtFrame)
+    #@-node:ekr.20081121105001.251:__init__ (qtFrame)
+    #@+node:ekr.20081121105001.253:__repr__ (qtFrame)
     def __repr__ (self):
 
         return "<leoQtFrame: %s>" % self.title
-    #@-node:ekr.20081004172422.527:__repr__ (qtFrame)
-    #@+node:ekr.20081004172422.528:qtFrame.finishCreate & helpers
+    #@-node:ekr.20081121105001.253:__repr__ (qtFrame)
+    #@+node:ekr.20081121105001.254:qtFrame.finishCreate & helpers
     def finishCreate (self,c):
 
         f = self ; f.c = c
@@ -1251,7 +1251,7 @@ class leoQtFrame (leoFrame.leoFrame):
         c.signOnWithVersion()
         f.miniBufferWidget = leoQtMinibuffer(c)
         c.bodyWantsFocusNow()
-    #@+node:ekr.20081004172422.530:createSplitterComponents (qtFrame)
+    #@+node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
     def createSplitterComponents (self):
 
         f = self ; c = f.c
@@ -1292,18 +1292,18 @@ class leoQtFrame (leoFrame.leoFrame):
         # f.reconfigurePanes()
         # f.body.setFontFromConfig()
         # f.body.setColorFromConfig()
-    #@-node:ekr.20081004172422.530:createSplitterComponents (qtFrame)
-    #@-node:ekr.20081004172422.528:qtFrame.finishCreate & helpers
-    #@+node:ekr.20081020075840.20:initCompleteHint
+    #@-node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
+    #@-node:ekr.20081121105001.254:qtFrame.finishCreate & helpers
+    #@+node:ekr.20081121105001.256:initCompleteHint
     def initCompleteHint (self):
 
         '''A kludge: called to enable text changed events.'''
 
         self.initComplete = True
         # g.trace(self.c)
-    #@-node:ekr.20081020075840.20:initCompleteHint
-    #@+node:ekr.20081004172422.545:Destroying the qtFrame
-    #@+node:ekr.20081004172422.546:destroyAllObjects
+    #@-node:ekr.20081121105001.256:initCompleteHint
+    #@+node:ekr.20081121105001.257:Destroying the qtFrame
+    #@+node:ekr.20081121105001.258:destroyAllObjects
     def destroyAllObjects (self):
 
         """Clear all links to objects in a Leo window."""
@@ -1314,7 +1314,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         # Do this first.
         #@    << clear all vnodes and tnodes in the tree >>
-        #@+node:ekr.20081004172422.547:<< clear all vnodes and tnodes in the tree>>
+        #@+node:ekr.20081121105001.259:<< clear all vnodes and tnodes in the tree>>
         # Using a dict here is essential for adequate speed.
         vList = [] ; tDict = {}
 
@@ -1332,7 +1332,7 @@ class leoQtFrame (leoFrame.leoFrame):
             g.clearAllIvars(v)
 
         vList = [] ; tDict = {} # Remove these references immediately.
-        #@-node:ekr.20081004172422.547:<< clear all vnodes and tnodes in the tree>>
+        #@-node:ekr.20081121105001.259:<< clear all vnodes and tnodes in the tree>>
         #@nl
 
         if 1:
@@ -1352,8 +1352,8 @@ class leoQtFrame (leoFrame.leoFrame):
             g.clearAllIvars(body)
             g.clearAllIvars(tree)
 
-    #@-node:ekr.20081004172422.546:destroyAllObjects
-    #@+node:ekr.20081004172422.549:destroySelf (qtFrame)
+    #@-node:ekr.20081121105001.258:destroyAllObjects
+    #@+node:ekr.20081121105001.260:destroySelf (qtFrame)
     def destroySelf (self):
 
         # Remember these: we are about to destroy all of our ivars!
@@ -1371,16 +1371,16 @@ class leoQtFrame (leoFrame.leoFrame):
         # g.trace('qtFrame',c,g.callers(4))
         top.close()
 
-    #@-node:ekr.20081004172422.549:destroySelf (qtFrame)
-    #@-node:ekr.20081004172422.545:Destroying the qtFrame
-    #@-node:ekr.20081004172422.524: Birth & Death (qtFrame)
-    #@+node:ekr.20081004172422.550:class qtStatusLineClass (qtFrame)
+    #@-node:ekr.20081121105001.260:destroySelf (qtFrame)
+    #@-node:ekr.20081121105001.257:Destroying the qtFrame
+    #@-node:ekr.20081121105001.250: Birth & Death (qtFrame)
+    #@+node:ekr.20081121105001.261:class qtStatusLineClass (qtFrame)
     class qtStatusLineClass:
 
         '''A class representing the status line.'''
 
         #@    @+others
-        #@+node:ekr.20081004172422.551:ctor
+        #@+node:ekr.20081121105001.262:ctor
         def __init__ (self,c,parentFrame):
 
             self.c = c
@@ -1399,8 +1399,8 @@ class leoQtFrame (leoFrame.leoFrame):
             self.put('')
             self.update()
             c.frame.top.setStyleSheets()
-        #@-node:ekr.20081004172422.551:ctor
-        #@+node:ekr.20081029110341.12: do-nothings
+        #@-node:ekr.20081121105001.262:ctor
+        #@+node:ekr.20081121105001.263: do-nothings
         def disable (self,background=None): pass
         def enable(self,background="white"):pass
         def getFrame (self):                return None
@@ -1413,8 +1413,8 @@ class leoQtFrame (leoFrame.leoFrame):
         hide = unpack
         show = pack
 
-        #@-node:ekr.20081029110341.12: do-nothings
-        #@+node:ekr.20081004172422.554:clear, get & put/1
+        #@-node:ekr.20081121105001.263: do-nothings
+        #@+node:ekr.20081121105001.264:clear, get & put/1
         def clear (self):
             self.put('')
 
@@ -1431,8 +1431,8 @@ class leoQtFrame (leoFrame.leoFrame):
             # w.setEnabled(True)
             w.setText(s)
             # w.setEnabled(False)
-        #@-node:ekr.20081004172422.554:clear, get & put/1
-        #@+node:ekr.20081004172422.561:update
+        #@-node:ekr.20081121105001.264:clear, get & put/1
+        #@+node:ekr.20081121105001.265:update
         def update (self):
 
             if g.app.killed: return
@@ -1451,16 +1451,16 @@ class leoQtFrame (leoFrame.leoFrame):
             self.lastRow = row
             self.lastCol = col
             self.lastFcol = fcol
-        #@-node:ekr.20081004172422.561:update
+        #@-node:ekr.20081121105001.265:update
         #@-others
-    #@-node:ekr.20081004172422.550:class qtStatusLineClass (qtFrame)
-    #@+node:ekr.20081004172422.562:class qtIconBarClass
+    #@-node:ekr.20081121105001.261:class qtStatusLineClass (qtFrame)
+    #@+node:ekr.20081121105001.266:class qtIconBarClass
     class qtIconBarClass:
 
         '''A class representing the singleton Icon bar'''
 
         #@    @+others
-        #@+node:ekr.20081004172422.563: ctor
+        #@+node:ekr.20081121105001.267: ctor
         def __init__ (self,c,parentFrame):
 
             self.c = c
@@ -1468,8 +1468,8 @@ class leoQtFrame (leoFrame.leoFrame):
             self.w = c.frame.top.iconBar # A QToolBar.
 
             # g.app.iconWidgetCount = 0
-        #@-node:ekr.20081004172422.563: ctor
-        #@+node:ekr.20081029205046.10: do-nothings
+        #@-node:ekr.20081121105001.267: ctor
+        #@+node:ekr.20081121105001.268: do-nothings
         def addRow(self,height=None):   pass
         def getFrame (self):            return None
         def getNewFrame (self):         return None
@@ -1478,8 +1478,8 @@ class leoQtFrame (leoFrame.leoFrame):
 
         hide = unpack
         show = pack
-        #@-node:ekr.20081029205046.10: do-nothings
-        #@+node:ekr.20081004172422.564:add
+        #@-node:ekr.20081121105001.268: do-nothings
+        #@+node:ekr.20081121105001.269:add
         def add(self,*args,**keys):
 
             '''Add a button to the icon bar.'''
@@ -1509,8 +1509,8 @@ class leoQtFrame (leoFrame.leoFrame):
                     button_callback)
 
             return b
-        #@-node:ekr.20081004172422.564:add
-        #@+node:ekr.20081004172422.567:addRowIfNeeded
+        #@-node:ekr.20081121105001.269:add
+        #@+node:ekr.20081121105001.270:addRowIfNeeded
         def addRowIfNeeded (self):
 
             '''Add a new icon row if there are too many widgets.'''
@@ -1522,13 +1522,13 @@ class leoQtFrame (leoFrame.leoFrame):
                 # self.addRow()
 
             # g.app.iconWidgetCount += 1
-        #@-node:ekr.20081004172422.567:addRowIfNeeded
-        #@+node:ekr.20081004172422.568:addWidget
+        #@-node:ekr.20081121105001.270:addRowIfNeeded
+        #@+node:ekr.20081121105001.271:addWidget
         def addWidget (self,w):
 
             self.w.addWidget(w)
-        #@-node:ekr.20081004172422.568:addWidget
-        #@+node:ekr.20081004172422.569:clear
+        #@-node:ekr.20081121105001.271:addWidget
+        #@+node:ekr.20081121105001.272:clear
         def clear(self):
 
             """Destroy all the widgets in the icon bar"""
@@ -1536,26 +1536,26 @@ class leoQtFrame (leoFrame.leoFrame):
             self.w.clear()
 
             g.app.iconWidgetCount = 0
-        #@-node:ekr.20081004172422.569:clear
-        #@+node:ekr.20081004172422.570:deleteButton
+        #@-node:ekr.20081121105001.272:clear
+        #@+node:ekr.20081121105001.273:deleteButton
         def deleteButton (self,w):
 
             g.trace(w)
             # self.w.deleteWidget(w)
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
-        #@-node:ekr.20081004172422.570:deleteButton
-        #@+node:ekr.20081004172422.573:setCommandForButton
+        #@-node:ekr.20081121105001.273:deleteButton
+        #@+node:ekr.20081121105001.274:setCommandForButton
         def setCommandForButton(self,button,command):
 
             if command:
                 QtCore.QObject.connect(button,
                     QtCore.SIGNAL("clicked()"),command)
-        #@-node:ekr.20081004172422.573:setCommandForButton
+        #@-node:ekr.20081121105001.274:setCommandForButton
         #@-others
-    #@-node:ekr.20081004172422.562:class qtIconBarClass
-    #@+node:ekr.20081004172422.575:Minibuffer methods
-    #@+node:ekr.20081004172422.576:showMinibuffer
+    #@-node:ekr.20081121105001.266:class qtIconBarClass
+    #@+node:ekr.20081121105001.275:Minibuffer methods
+    #@+node:ekr.20081121105001.276:showMinibuffer
     def showMinibuffer (self):
 
         '''Make the minibuffer visible.'''
@@ -1565,8 +1565,8 @@ class leoQtFrame (leoFrame.leoFrame):
         # if not frame.minibufferVisible:
             # frame.minibufferFrame.pack(side='bottom',fill='x')
             # frame.minibufferVisible = True
-    #@-node:ekr.20081004172422.576:showMinibuffer
-    #@+node:ekr.20081004172422.577:hideMinibuffer
+    #@-node:ekr.20081121105001.276:showMinibuffer
+    #@+node:ekr.20081121105001.277:hideMinibuffer
     def hideMinibuffer (self):
 
         '''Hide the minibuffer.'''
@@ -1576,8 +1576,8 @@ class leoQtFrame (leoFrame.leoFrame):
         # if frame.minibufferVisible:
             # frame.minibufferFrame.pack_forget()
             # frame.minibufferVisible = False
-    #@-node:ekr.20081004172422.577:hideMinibuffer
-    #@+node:ekr.20081004172422.579:f.setMinibufferBindings
+    #@-node:ekr.20081121105001.277:hideMinibuffer
+    #@+node:ekr.20081121105001.278:f.setMinibufferBindings
     def setMinibufferBindings (self):
 
         '''Create bindings for the minibuffer..'''
@@ -1608,10 +1608,10 @@ class leoQtFrame (leoFrame.leoFrame):
             # if sys.platform.startswith('win'):
                 # # Support Linux middle-button paste easter egg.
                 # c.bind(w,"<Button-2>",f.OnPaste)
-    #@-node:ekr.20081004172422.579:f.setMinibufferBindings
-    #@-node:ekr.20081004172422.575:Minibuffer methods
-    #@+node:ekr.20081004172422.580:Configuration (qtFrame)
-    #@+node:ekr.20081004172422.581:configureBar (qtFrame)
+    #@-node:ekr.20081121105001.278:f.setMinibufferBindings
+    #@-node:ekr.20081121105001.275:Minibuffer methods
+    #@+node:ekr.20081121105001.279:Configuration (qtFrame)
+    #@+node:ekr.20081121105001.280:configureBar (qtFrame)
     def configureBar (self,bar,verticalFlag):
 
         c = self.c
@@ -1640,8 +1640,8 @@ class leoQtFrame (leoFrame.leoFrame):
             else:
                 # Panes arranged horizontally; vertical splitter bar
                 bar.configure(width=7,cursor="sb_h_double_arrow")
-    #@-node:ekr.20081004172422.581:configureBar (qtFrame)
-    #@+node:ekr.20081004172422.582:configureBarsFromConfig (qtFrame)
+    #@-node:ekr.20081121105001.280:configureBar (qtFrame)
+    #@+node:ekr.20081121105001.281:configureBarsFromConfig (qtFrame)
     def configureBarsFromConfig (self):
 
         c = self.c
@@ -1666,8 +1666,8 @@ class leoQtFrame (leoFrame.leoFrame):
         except: # Could be a user error.
             g.es("exception in user configuration for splitbar")
             g.es_exception()
-    #@-node:ekr.20081004172422.582:configureBarsFromConfig (qtFrame)
-    #@+node:ekr.20081004172422.583:reconfigureFromConfig (qtFrame)
+    #@-node:ekr.20081121105001.281:configureBarsFromConfig (qtFrame)
+    #@+node:ekr.20081121105001.282:reconfigureFromConfig (qtFrame)
     def reconfigureFromConfig (self):
 
         frame = self ; c = frame.c
@@ -1683,8 +1683,8 @@ class leoQtFrame (leoFrame.leoFrame):
         frame.log.setColorFromConfig()
 
         c.redraw_now()
-    #@-node:ekr.20081004172422.583:reconfigureFromConfig (qtFrame)
-    #@+node:ekr.20081004172422.584:setInitialWindowGeometry (qtFrame)
+    #@-node:ekr.20081121105001.282:reconfigureFromConfig (qtFrame)
+    #@+node:ekr.20081121105001.283:setInitialWindowGeometry (qtFrame)
     def setInitialWindowGeometry(self):
 
         """Set the position and size of the frame to config params."""
@@ -1698,8 +1698,8 @@ class leoQtFrame (leoFrame.leoFrame):
 
         if h and w and x and y:
             self.setTopGeometry(w,h,x,y)
-    #@-node:ekr.20081004172422.584:setInitialWindowGeometry (qtFrame)
-    #@+node:ekr.20081004172422.585:setTabWidth (qtFrame)
+    #@-node:ekr.20081121105001.283:setInitialWindowGeometry (qtFrame)
+    #@+node:ekr.20081121105001.284:setTabWidth (qtFrame)
     def setTabWidth (self, w):
 
         return
@@ -1715,8 +1715,8 @@ class leoQtFrame (leoFrame.leoFrame):
             # # g.trace(w,tabw)
         # except:
             # g.es_exception()
-    #@-node:ekr.20081004172422.585:setTabWidth (qtFrame)
-    #@+node:ekr.20081004172422.586:setWrap (qtFrame)
+    #@-node:ekr.20081121105001.284:setTabWidth (qtFrame)
+    #@+node:ekr.20081121105001.285:setWrap (qtFrame)
     def setWrap (self,p):
 
         c = self.c
@@ -1741,8 +1741,8 @@ class leoQtFrame (leoFrame.leoFrame):
             # w.pack_forget()  # 2007/10/25
             # w.leo_bodyXBar.pack(side="bottom", fill="x") # 2007/10/31
             # w.pack(expand=1,fill="both")  # 2007/10/25
-    #@-node:ekr.20081004172422.586:setWrap (qtFrame)
-    #@+node:ekr.20081004172422.588:reconfigurePanes (use config bar_width) (qtFrame)
+    #@-node:ekr.20081121105001.285:setWrap (qtFrame)
+    #@+node:ekr.20081121105001.286:reconfigurePanes (use config bar_width) (qtFrame)
     def reconfigurePanes (self):
 
         return
@@ -1759,8 +1759,8 @@ class leoQtFrame (leoFrame.leoFrame):
         # # The log pane needs a slightly bigger border when tiling vertically.
         # border = g.choose(self.splitVerticalFlag,4,2) 
         # self.log.configureBorder(border)
-    #@-node:ekr.20081004172422.588:reconfigurePanes (use config bar_width) (qtFrame)
-    #@+node:ekr.20081004172422.589:resizePanesToRatio (qtFrame)
+    #@-node:ekr.20081121105001.286:reconfigurePanes (use config bar_width) (qtFrame)
+    #@+node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
     def resizePanesToRatio(self,ratio,ratio2):
 
         pass
@@ -1769,10 +1769,10 @@ class leoQtFrame (leoFrame.leoFrame):
 
         # self.divideLeoSplitter(self.splitVerticalFlag,ratio)
         # self.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
-    #@-node:ekr.20081004172422.589:resizePanesToRatio (qtFrame)
-    #@-node:ekr.20081004172422.580:Configuration (qtFrame)
-    #@+node:ekr.20081004172422.590:Event handlers (qtFrame)
-    #@+node:ekr.20081004172422.591:frame.OnCloseLeoEvent
+    #@-node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
+    #@-node:ekr.20081121105001.279:Configuration (qtFrame)
+    #@+node:ekr.20081121105001.288:Event handlers (qtFrame)
+    #@+node:ekr.20081121105001.289:frame.OnCloseLeoEvent
     # Called from quit logic and when user closes the window.
     # Returns True if the close happened.
 
@@ -1785,8 +1785,8 @@ class leoQtFrame (leoFrame.leoFrame):
             c.requestCloseWindow = True
         else:
             g.app.closeLeoWindow(self)
-    #@-node:ekr.20081004172422.591:frame.OnCloseLeoEvent
-    #@+node:ekr.20081004172422.592:frame.OnControlKeyUp/Down
+    #@-node:ekr.20081121105001.289:frame.OnCloseLeoEvent
+    #@+node:ekr.20081121105001.290:frame.OnControlKeyUp/Down
     def OnControlKeyDown (self,event=None):
 
         self.controlKeyIsDown = True
@@ -1794,8 +1794,8 @@ class leoQtFrame (leoFrame.leoFrame):
     def OnControlKeyUp (self,event=None):
 
         self.controlKeyIsDown = False
-    #@-node:ekr.20081004172422.592:frame.OnControlKeyUp/Down
-    #@+node:ekr.20081004172422.593:OnActivateBody (qtFrame)
+    #@-node:ekr.20081121105001.290:frame.OnControlKeyUp/Down
+    #@+node:ekr.20081121105001.291:OnActivateBody (qtFrame)
     def OnActivateBody (self,event=None):
 
         # try:
@@ -1809,8 +1809,8 @@ class leoQtFrame (leoFrame.leoFrame):
             # g.es_event_exception("activate body")
 
         return 'break'
-    #@-node:ekr.20081004172422.593:OnActivateBody (qtFrame)
-    #@+node:ekr.20081004172422.594:OnActivateLeoEvent, OnDeactivateLeoEvent
+    #@-node:ekr.20081121105001.291:OnActivateBody (qtFrame)
+    #@+node:ekr.20081121105001.292:OnActivateLeoEvent, OnDeactivateLeoEvent
     def OnActivateLeoEvent(self,event=None):
 
         '''Handle a click anywhere in the Leo window.'''
@@ -1820,8 +1820,8 @@ class leoQtFrame (leoFrame.leoFrame):
     def OnDeactivateLeoEvent(self,event=None):
 
         pass # This causes problems on the Mac.
-    #@-node:ekr.20081004172422.594:OnActivateLeoEvent, OnDeactivateLeoEvent
-    #@+node:ekr.20081004172422.595:OnActivateTree
+    #@-node:ekr.20081121105001.292:OnActivateLeoEvent, OnDeactivateLeoEvent
+    #@+node:ekr.20081121105001.293:OnActivateTree
     def OnActivateTree (self,event=None):
 
         try:
@@ -1834,8 +1834,8 @@ class leoQtFrame (leoFrame.leoFrame):
 
         except:
             g.es_event_exception("activate tree")
-    #@-node:ekr.20081004172422.595:OnActivateTree
-    #@+node:ekr.20081004172422.596:OnBodyClick, OnBodyRClick (Events)
+    #@-node:ekr.20081121105001.293:OnActivateTree
+    #@+node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (Events)
     def OnBodyClick (self,event=None):
 
         try:
@@ -1856,8 +1856,8 @@ class leoQtFrame (leoFrame.leoFrame):
             g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("iconrclick")
-    #@-node:ekr.20081004172422.596:OnBodyClick, OnBodyRClick (Events)
-    #@+node:ekr.20081004172422.597:OnBodyDoubleClick (Events)
+    #@-node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (Events)
+    #@+node:ekr.20081121105001.295:OnBodyDoubleClick (Events)
     def OnBodyDoubleClick (self,event=None):
 
         try:
@@ -1870,11 +1870,11 @@ class leoQtFrame (leoFrame.leoFrame):
             g.es_event_exception("bodydclick")
 
         return "break" # Restore this to handle proper double-click logic.
-    #@-node:ekr.20081004172422.597:OnBodyDoubleClick (Events)
-    #@-node:ekr.20081004172422.590:Event handlers (qtFrame)
-    #@+node:ekr.20081004172422.599:Gui-dependent commands
-    #@+node:ekr.20081004172422.600:Minibuffer commands... (qtFrame)
-    #@+node:ekr.20081004172422.601:contractPane
+    #@-node:ekr.20081121105001.295:OnBodyDoubleClick (Events)
+    #@-node:ekr.20081121105001.288:Event handlers (qtFrame)
+    #@+node:ekr.20081121105001.296:Gui-dependent commands
+    #@+node:ekr.20081121105001.297:Minibuffer commands... (qtFrame)
+    #@+node:ekr.20081121105001.298:contractPane
     def contractPane (self,event=None):
 
         '''Contract the selected pane.'''
@@ -1892,8 +1892,8 @@ class leoQtFrame (leoFrame.leoFrame):
             # f.contractLogPane()
         # elif wname.startswith('head') or wname.startswith('canvas'):
             # f.contractOutlinePane()
-    #@-node:ekr.20081004172422.601:contractPane
-    #@+node:ekr.20081004172422.602:expandPane
+    #@-node:ekr.20081121105001.298:contractPane
+    #@+node:ekr.20081121105001.299:expandPane
     def expandPane (self,event=None):
 
         '''Expand the selected pane.'''
@@ -1912,8 +1912,8 @@ class leoQtFrame (leoFrame.leoFrame):
             # f.expandLogPane()
         # elif wname.startswith('head') or wname.startswith('canvas'):
             # f.expandOutlinePane()
-    #@-node:ekr.20081004172422.602:expandPane
-    #@+node:ekr.20081004172422.603:fullyExpandPane
+    #@-node:ekr.20081121105001.299:expandPane
+    #@+node:ekr.20081121105001.300:fullyExpandPane
     def fullyExpandPane (self,event=None):
 
         '''Fully expand the selected pane.'''
@@ -1932,8 +1932,8 @@ class leoQtFrame (leoFrame.leoFrame):
             # f.fullyExpandLogPane()
         # elif wname.startswith('head') or wname.startswith('canvas'):
             # f.fullyExpandOutlinePane()
-    #@-node:ekr.20081004172422.603:fullyExpandPane
-    #@+node:ekr.20081004172422.604:hidePane
+    #@-node:ekr.20081121105001.300:fullyExpandPane
+    #@+node:ekr.20081121105001.301:hidePane
     def hidePane (self,event=None):
 
         '''Completely contract the selected pane.'''
@@ -1955,8 +1955,8 @@ class leoQtFrame (leoFrame.leoFrame):
         # elif wname.startswith('head') or wname.startswith('canvas'):
             # f.hideOutlinePane()
             # c.bodyWantsFocusNow()
-    #@-node:ekr.20081004172422.604:hidePane
-    #@+node:ekr.20081004172422.605:expand/contract/hide...Pane
+    #@-node:ekr.20081121105001.301:hidePane
+    #@+node:ekr.20081121105001.302:expand/contract/hide...Pane
     #@+at 
     #@nonl
     # The first arg to divideLeoSplitter means the following:
@@ -1993,8 +1993,8 @@ class leoQtFrame (leoFrame.leoFrame):
     def expandOutlinePane (self,event=None):
         '''Expand the outline pane.'''
         # self.contractBodyPane()
-    #@-node:ekr.20081004172422.605:expand/contract/hide...Pane
-    #@+node:ekr.20081004172422.606:fullyExpand/hide...Pane
+    #@-node:ekr.20081121105001.302:expand/contract/hide...Pane
+    #@+node:ekr.20081121105001.303:fullyExpand/hide...Pane
     def fullyExpandBodyPane (self,event=None):
         '''Fully expand the body pane.'''
         f = self
@@ -2024,10 +2024,10 @@ class leoQtFrame (leoFrame.leoFrame):
         '''Completely contract the outline pane.'''
         f = self
         # f.divideLeoSplitter(f.splitVerticalFlag,0.0)
-    #@-node:ekr.20081004172422.606:fullyExpand/hide...Pane
-    #@-node:ekr.20081004172422.600:Minibuffer commands... (qtFrame)
-    #@+node:ekr.20081004172422.607:Window Menu...
-    #@+node:ekr.20081004172422.608:toggleActivePane (qtFrame)
+    #@-node:ekr.20081121105001.303:fullyExpand/hide...Pane
+    #@-node:ekr.20081121105001.297:Minibuffer commands... (qtFrame)
+    #@+node:ekr.20081121105001.304:Window Menu...
+    #@+node:ekr.20081121105001.305:toggleActivePane (qtFrame)
     def toggleActivePane (self,event=None):
 
         '''Toggle the focus between the outline and body panes.'''
@@ -2039,8 +2039,8 @@ class leoQtFrame (leoFrame.leoFrame):
         else:
             c.endEditing()
             c.bodyWantsFocusNow()
-    #@-node:ekr.20081004172422.608:toggleActivePane (qtFrame)
-    #@+node:ekr.20081004172422.609:cascade
+    #@-node:ekr.20081121105001.305:toggleActivePane (qtFrame)
+    #@+node:ekr.20081121105001.306:cascade
     def cascade (self,event=None):
 
         '''Cascade all Leo windows.'''
@@ -2064,23 +2064,23 @@ class leoQtFrame (leoFrame.leoFrame):
             # if x > 200:
                 # x = 10 + delta ; y = 40 + delta
                 # delta += 10
-    #@-node:ekr.20081004172422.609:cascade
-    #@+node:ekr.20081004172422.610:equalSizedPanes
+    #@-node:ekr.20081121105001.306:cascade
+    #@+node:ekr.20081121105001.307:equalSizedPanes
     def equalSizedPanes (self,event=None):
 
         '''Make the outline and body panes have the same size.'''
 
         frame = self
         frame.resizePanesToRatio(0.5,frame.secondary_ratio)
-    #@-node:ekr.20081004172422.610:equalSizedPanes
-    #@+node:ekr.20081004172422.611:hideLogWindow
+    #@-node:ekr.20081121105001.307:equalSizedPanes
+    #@+node:ekr.20081121105001.308:hideLogWindow
     def hideLogWindow (self,event=None):
 
         frame = self
 
         # frame.divideLeoSplitter2(0.99, not frame.splitVerticalFlag)
-    #@-node:ekr.20081004172422.611:hideLogWindow
-    #@+node:ekr.20081004172422.612:minimizeAll
+    #@-node:ekr.20081121105001.308:hideLogWindow
+    #@+node:ekr.20081121105001.309:minimizeAll
     def minimizeAll (self,event=None):
 
         '''Minimize all Leo's windows.'''
@@ -2096,8 +2096,8 @@ class leoQtFrame (leoFrame.leoFrame):
 
         # if frame and frame.top.state() == "normal":
             # frame.top.iconify()
-    #@-node:ekr.20081004172422.612:minimizeAll
-    #@+node:ekr.20081004172422.613:toggleSplitDirection (qtFrame)
+    #@-node:ekr.20081121105001.309:minimizeAll
+    #@+node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
     # The key invariant: self.splitVerticalFlag tells the alignment of the main splitter.
 
     def toggleSplitDirection (self,event=None):
@@ -2111,7 +2111,7 @@ class leoQtFrame (leoFrame.leoFrame):
         # c.config.set("initial_splitter_orientation","string",orientation)
 
         # self.toggleQtSplitDirection(self.splitVerticalFlag)
-    #@+node:ekr.20081004172422.614:toggleQtSplitDirection
+    #@+node:ekr.20081121105001.311:toggleQtSplitDirection
     def toggleQtSplitDirection (self,verticalFlag):
 
         # Abbreviations.
@@ -2132,9 +2132,9 @@ class leoQtFrame (leoFrame.leoFrame):
         # # Redraw with an appropriate ratio.
         # vflag,ratio,secondary_ratio = frame.initialRatios()
         # self.resizePanesToRatio(ratio,secondary_ratio)
-    #@-node:ekr.20081004172422.614:toggleQtSplitDirection
-    #@-node:ekr.20081004172422.613:toggleSplitDirection (qtFrame)
-    #@+node:ekr.20081004172422.615:resizeToScreen
+    #@-node:ekr.20081121105001.311:toggleQtSplitDirection
+    #@-node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
+    #@+node:ekr.20081121105001.312:resizeToScreen
     def resizeToScreen (self,event=None):
 
         '''Resize the Leo window so it fill the entire screen.'''
@@ -2155,10 +2155,10 @@ class leoQtFrame (leoFrame.leoFrame):
             # # Works on Windows. YMMV for other platforms.
             # geom = "%dx%d%+d%+d" % (w-8,h-46,0,0)
             # top.geometry(geom)
-    #@-node:ekr.20081004172422.615:resizeToScreen
-    #@-node:ekr.20081004172422.607:Window Menu...
-    #@+node:ekr.20081004172422.616:Help Menu...
-    #@+node:ekr.20081004172422.617:leoHelp
+    #@-node:ekr.20081121105001.312:resizeToScreen
+    #@-node:ekr.20081121105001.304:Window Menu...
+    #@+node:ekr.20081121105001.313:Help Menu...
+    #@+node:ekr.20081121105001.314:leoHelp
     def leoHelp (self,event=None):
 
         '''Open Leo's offline tutorial.'''
@@ -2192,28 +2192,28 @@ class leoQtFrame (leoFrame.leoFrame):
                 except:
                     g.es("exception downloading","sbooks.chm")
                     g.es_exception()
-    #@+node:ekr.20081004172422.618:showProgressBar
+    #@+node:ekr.20081121105001.315:showProgressBar
     def showProgressBar (self,count,size,total):
 
         # g.trace("count,size,total:",count,size,total)
         if self.scale == None:
             pass
             #@        << create the scale widget >>
-            #@+node:ekr.20081004172422.619:<< create the scale widget >>
+            #@+node:ekr.20081121105001.316:<< create the scale widget >>
             # top = qt.Toplevel()
             # top.title("Download progress")
             # self.scale = scale = qt.Scale(top,state="normal",orient="horizontal",from_=0,to=total)
             # scale.pack()
             # top.lift()
-            #@-node:ekr.20081004172422.619:<< create the scale widget >>
+            #@-node:ekr.20081121105001.316:<< create the scale widget >>
             #@nl
         # self.scale.set(count*size)
         # self.scale.update_idletasks()
-    #@-node:ekr.20081004172422.618:showProgressBar
-    #@-node:ekr.20081004172422.617:leoHelp
-    #@-node:ekr.20081004172422.616:Help Menu...
-    #@-node:ekr.20081004172422.599:Gui-dependent commands
-    #@+node:ekr.20081004172422.621:Qt bindings... (qtFrame)
+    #@-node:ekr.20081121105001.315:showProgressBar
+    #@-node:ekr.20081121105001.314:leoHelp
+    #@-node:ekr.20081121105001.313:Help Menu...
+    #@-node:ekr.20081121105001.296:Gui-dependent commands
+    #@+node:ekr.20081121105001.317:Qt bindings... (qtFrame)
     def bringToFront (self):
         self.top.showNormal()
     def deiconify (self):
@@ -2240,17 +2240,17 @@ class leoQtFrame (leoFrame.leoFrame):
         self.top.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
         self.top.setGeometry(QtCore.QRect(x,y,w,h))
-    #@-node:ekr.20081004172422.621:Qt bindings... (qtFrame)
+    #@-node:ekr.20081121105001.317:Qt bindings... (qtFrame)
     #@-others
-#@-node:ekr.20081004172422.523:class leoQtFrame
-#@+node:ekr.20081004172422.622:class leoQtLog
+#@-node:ekr.20081121105001.249:class leoQtFrame
+#@+node:ekr.20081121105001.318:class leoQtLog
 class leoQtLog (leoFrame.leoLog):
 
     """A class that represents the log pane of a Qt window."""
 
     #@    @+others
-    #@+node:ekr.20081004172422.623:qtLog Birth
-    #@+node:ekr.20081004172422.624:qtLog.__init__
+    #@+node:ekr.20081121105001.319:qtLog Birth
+    #@+node:ekr.20081121105001.320:qtLog.__init__
     def __init__ (self,frame,parentFrame):
 
         # g.trace("leoQtLog")
@@ -2270,8 +2270,8 @@ class leoQtLog (leoFrame.leoLog):
 
         self.setFontFromConfig()
         self.setColorFromConfig()
-    #@-node:ekr.20081004172422.624:qtLog.__init__
-    #@+node:ekr.20081004172422.626:qtLog.finishCreate
+    #@-node:ekr.20081121105001.320:qtLog.__init__
+    #@+node:ekr.20081121105001.321:qtLog.finishCreate
     def finishCreate (self):
 
         c = self.c ; log = self ; w = self.tabWidget
@@ -2304,9 +2304,9 @@ class leoQtLog (leoFrame.leoLog):
         c.searchCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
     #@nonl
-    #@-node:ekr.20081004172422.626:qtLog.finishCreate
-    #@-node:ekr.20081004172422.623:qtLog Birth
-    #@+node:ekr.20081017015442.30:Do nothings
+    #@-node:ekr.20081121105001.321:qtLog.finishCreate
+    #@-node:ekr.20081121105001.319:qtLog Birth
+    #@+node:ekr.20081121105001.322:Do nothings
     # def createCanvas (self,tabName=None): pass
 
     # def getSelectedTab (self): return self.tabName
@@ -2330,7 +2330,7 @@ class leoQtLog (leoFrame.leoLog):
 
     # def setTabBindings (self,tabName): pass
 
-    #@+node:ekr.20081004172422.630:Config
+    #@+node:ekr.20081121105001.323:Config
     # These will probably be replaced by style sheets.
 
     def configureBorder(self,border):   pass
@@ -2354,15 +2354,15 @@ class leoQtLog (leoFrame.leoLog):
     def restoreAllState (self,d):
         '''Restore the log from a dict created by saveAllState.'''
         # Restore text and colors.
-    #@-node:ekr.20081004172422.630:Config
-    #@+node:ekr.20081004172422.637:Focus & update
+    #@-node:ekr.20081121105001.323:Config
+    #@+node:ekr.20081121105001.324:Focus & update
     def onActivateLog (self,event=None):    pass
     def hasFocus (self):                    return None
     def forceLogUpdate (self,s):            pass
-    #@-node:ekr.20081004172422.637:Focus & update
-    #@-node:ekr.20081017015442.30:Do nothings
-    #@+node:ekr.20081004172422.641:put & putnl (qtLog)
-    #@+node:ekr.20081004172422.642:put
+    #@-node:ekr.20081121105001.324:Focus & update
+    #@-node:ekr.20081121105001.322:Do nothings
+    #@+node:ekr.20081121105001.325:put & putnl (qtLog)
+    #@+node:ekr.20081121105001.326:put
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
 
@@ -2392,8 +2392,8 @@ class leoQtLog (leoFrame.leoLog):
             if type(s) == type(u""):
                 s = g.toEncodedString(s,"ascii")
             print s
-    #@-node:ekr.20081004172422.642:put
-    #@+node:ekr.20081004172422.645:putnl
+    #@-node:ekr.20081121105001.326:put
+    #@+node:ekr.20081121105001.327:putnl
     def putnl (self,tabName='Log'):
 
         if g.app.quitting:
@@ -2414,17 +2414,17 @@ class leoQtLog (leoFrame.leoLog):
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
-    #@-node:ekr.20081004172422.645:putnl
-    #@-node:ekr.20081004172422.641:put & putnl (qtLog)
-    #@+node:ekr.20081004172422.646:Tab (qtLog)
-    #@+node:ekr.20081004172422.647:clearTab
+    #@-node:ekr.20081121105001.327:putnl
+    #@-node:ekr.20081121105001.325:put & putnl (qtLog)
+    #@+node:ekr.20081121105001.328:Tab (qtLog)
+    #@+node:ekr.20081121105001.329:clearTab
     def clearTab (self,tabName,wrap='none'):
 
         w = self.logDict.get(tabName)
         if w:
             w.clear() # w is a QTextBrowser.
-    #@-node:ekr.20081004172422.647:clearTab
-    #@+node:ekr.20081004172422.649:createTab
+    #@-node:ekr.20081121105001.329:clearTab
+    #@+node:ekr.20081121105001.330:createTab
     def createTab (self,tabName,createText=True,wrap='none'):
 
         c = self.c ; w = self.tabWidget
@@ -2441,8 +2441,8 @@ class leoQtLog (leoFrame.leoLog):
         w.addTab(contents,tabName)
         return contents
 
-    #@-node:ekr.20081004172422.649:createTab
-    #@+node:ekr.20081004172422.651:cycleTabFocus (to do)
+    #@-node:ekr.20081121105001.330:createTab
+    #@+node:ekr.20081121105001.331:cycleTabFocus (to do)
     def cycleTabFocus (self,event=None,stop_w = None):
 
         '''Cycle keyboard focus between the tabs in the log pane.'''
@@ -2459,8 +2459,8 @@ class leoQtLog (leoFrame.leoLog):
         log = self.logDict.get(tabName)
         if log: self.logCtrl = log
 
-    #@-node:ekr.20081004172422.651:cycleTabFocus (to do)
-    #@+node:ekr.20081004172422.652:deleteTab
+    #@-node:ekr.20081121105001.331:cycleTabFocus (to do)
+    #@+node:ekr.20081121105001.332:deleteTab
     def deleteTab (self,tabName,force=False):
 
         c = self.c ; w = self.tabWidget
@@ -2474,18 +2474,18 @@ class leoQtLog (leoFrame.leoLog):
         self.selectTab('Log')
         c.invalidateFocus()
         c.bodyWantsFocus()
-    #@-node:ekr.20081004172422.652:deleteTab
-    #@+node:ekr.20081004172422.653:hideTab
+    #@-node:ekr.20081121105001.332:deleteTab
+    #@+node:ekr.20081121105001.333:hideTab
     def hideTab (self,tabName):
 
         self.selectTab('Log')
-    #@-node:ekr.20081004172422.653:hideTab
-    #@+node:ekr.20081004172422.656:numberOfVisibleTabs
+    #@-node:ekr.20081121105001.333:hideTab
+    #@+node:ekr.20081121105001.334:numberOfVisibleTabs
     def numberOfVisibleTabs (self):
 
         return len([val for val in self.frameDict.values() if val != None])
-    #@-node:ekr.20081004172422.656:numberOfVisibleTabs
-    #@+node:ekr.20081004172422.658:selectTab & helper
+    #@-node:ekr.20081121105001.334:numberOfVisibleTabs
+    #@+node:ekr.20081121105001.335:selectTab & helper
     def selectTab (self,tabName,createText=True,wrap='none'):
 
         '''Create the tab if necessary and make it active.'''
@@ -2503,7 +2503,7 @@ class leoQtLog (leoFrame.leoLog):
 
         self.selectHelper(tabName)
 
-    #@+node:ekr.20081030092313.11:selectHelper
+    #@+node:ekr.20081121105001.336:selectHelper
     def selectHelper (self,tabName):
 
         w = self.tabWidget
@@ -2514,10 +2514,10 @@ class leoQtLog (leoFrame.leoLog):
                 return True
         else:
             return False
-    #@-node:ekr.20081030092313.11:selectHelper
-    #@-node:ekr.20081004172422.658:selectTab & helper
-    #@-node:ekr.20081004172422.646:Tab (qtLog)
-    #@+node:ekr.20081004172422.667:qtLog color tab stuff
+    #@-node:ekr.20081121105001.336:selectHelper
+    #@-node:ekr.20081121105001.335:selectTab & helper
+    #@-node:ekr.20081121105001.328:Tab (qtLog)
+    #@+node:ekr.20081121105001.337:qtLog color tab stuff
     def createColorPicker (self,tabName):
 
         return
@@ -2525,7 +2525,7 @@ class leoQtLog (leoFrame.leoLog):
         # log = self
 
         #@    << define colors >>
-        #@+node:ekr.20081004172422.668:<< define colors >>
+        #@+node:ekr.20081121105001.338:<< define colors >>
         # colors = (
             # "gray60", "gray70", "gray80", "gray85", "gray90", "gray95",
             # "snow1", "snow2", "snow3", "snow4", "seashell1", "seashell2",
@@ -2589,7 +2589,7 @@ class leoQtLog (leoFrame.leoLog):
             # "purple2", "purple3", "purple4", "MediumPurple1", "MediumPurple2",
             # "MediumPurple3", "MediumPurple4", "thistle1", "thistle2", "thistle3",
             # "thistle4" )
-        #@-node:ekr.20081004172422.668:<< define colors >>
+        #@-node:ekr.20081121105001.338:<< define colors >>
         #@nl
 
         # parent = log.frameDict.get(tabName)
@@ -2613,7 +2613,7 @@ class leoQtLog (leoFrame.leoLog):
         # label.pack(side='left',pady=6)
 
         #@    << create optionMenu and callback >>
-        #@+node:ekr.20081004172422.669:<< create optionMenu and callback >>
+        #@+node:ekr.20081121105001.339:<< create optionMenu and callback >>
         # colorBox = Pmw.ComboBox(f2,scrolledlist_items=colors)
         # colorBox.pack(side='left',pady=4)
 
@@ -2626,10 +2626,10 @@ class leoQtLog (leoFrame.leoLog):
             # except: pass # Ignore invalid names.
 
         # colorBox.configure(selectioncommand=colorCallback)
-        #@-node:ekr.20081004172422.669:<< create optionMenu and callback >>
+        #@-node:ekr.20081121105001.339:<< create optionMenu and callback >>
         #@nl
         #@    << create picker button and callback >>
-        #@+node:ekr.20081004172422.670:<< create picker button and callback >>
+        #@+node:ekr.20081121105001.340:<< create picker button and callback >>
         # def pickerCallback ():
             # return
 
@@ -2644,11 +2644,11 @@ class leoQtLog (leoFrame.leoLog):
         # b = qt.Button(f3,text="Color Picker...",
             # command=pickerCallback,background=bg)
         # b.pack(side='left',pady=4)
-        #@-node:ekr.20081004172422.670:<< create picker button and callback >>
+        #@-node:ekr.20081121105001.340:<< create picker button and callback >>
         #@nl
-    #@-node:ekr.20081004172422.667:qtLog color tab stuff
-    #@+node:ekr.20081004172422.671:qtLog font tab stuff
-    #@+node:ekr.20081004172422.672:createFontPicker
+    #@-node:ekr.20081121105001.337:qtLog color tab stuff
+    #@+node:ekr.20081121105001.341:qtLog font tab stuff
+    #@+node:ekr.20081121105001.342:createFontPicker
     def createFontPicker (self,tabName):
 
         return
@@ -2662,16 +2662,16 @@ class leoQtLog (leoFrame.leoLog):
         # font = self.getFont()
 
         #@    << create the frames >>
-        #@+node:ekr.20081004172422.673:<< create the frames >>
+        #@+node:ekr.20081121105001.343:<< create the frames >>
         # f = qt.Frame(parent,background=bg) ; f.pack (side='top',expand=0,fill='both')
         # f1 = qt.Frame(f,background=bg)     ; f1.pack(side='top',expand=1,fill='x')
         # f2 = qt.Frame(f,background=bg)     ; f2.pack(side='top',expand=1,fill='x')
         # f3 = qt.Frame(f,background=bg)     ; f3.pack(side='top',expand=1,fill='x')
         # f4 = qt.Frame(f,background=bg)     ; f4.pack(side='top',expand=1,fill='x')
-        #@-node:ekr.20081004172422.673:<< create the frames >>
+        #@-node:ekr.20081121105001.343:<< create the frames >>
         #@nl
         #@    << create the family combo box >>
-        #@+node:ekr.20081004172422.674:<< create the family combo box >>
+        #@+node:ekr.20081121105001.344:<< create the family combo box >>
         # names = tkFont.families()
         # names = list(names)
         # names.sort()
@@ -2685,19 +2685,19 @@ class leoQtLog (leoFrame.leoLog):
 
         # familyBox.selectitem(0)
         # familyBox.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20081004172422.674:<< create the family combo box >>
+        #@-node:ekr.20081121105001.344:<< create the family combo box >>
         #@nl
         #@    << create the size entry >>
-        #@+node:ekr.20081004172422.675:<< create the size entry >>
+        #@+node:ekr.20081121105001.345:<< create the size entry >>
         # qt.Label(f2,text="Size:",width=10,background=bg).pack(side="left")
 
         # sizeEntry = qt.Entry(f2,width=4)
         # sizeEntry.insert(0,'12')
         # sizeEntry.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20081004172422.675:<< create the size entry >>
+        #@-node:ekr.20081121105001.345:<< create the size entry >>
         #@nl
         #@    << create the weight combo box >>
-        #@+node:ekr.20081004172422.676:<< create the weight combo box >>
+        #@+node:ekr.20081121105001.346:<< create the weight combo box >>
         # weightBox = Pmw.ComboBox(f3,
             # labelpos="we",label_text="Weight:",label_width=10,
             # label_background=bg,
@@ -2706,10 +2706,10 @@ class leoQtLog (leoFrame.leoLog):
 
         # weightBox.selectitem(0)
         # weightBox.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20081004172422.676:<< create the weight combo box >>
+        #@-node:ekr.20081121105001.346:<< create the weight combo box >>
         #@nl
         #@    << create the slant combo box >>
-        #@+node:ekr.20081004172422.677:<< create the slant combo box>>
+        #@+node:ekr.20081121105001.347:<< create the slant combo box>>
         # slantBox = Pmw.ComboBox(f4,
             # labelpos="we",label_text="Slant:",label_width=10,
             # label_background=bg,
@@ -2718,19 +2718,19 @@ class leoQtLog (leoFrame.leoLog):
 
         # slantBox.selectitem(0)
         # slantBox.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20081004172422.677:<< create the slant combo box>>
+        #@-node:ekr.20081121105001.347:<< create the slant combo box>>
         #@nl
         #@    << create the sample text widget >>
-        #@+node:ekr.20081004172422.678:<< create the sample text widget >>
+        #@+node:ekr.20081121105001.348:<< create the sample text widget >>
         # self.sampleWidget = sample = g.app.gui.plainTextWidget(f,height=20,width=80,font=font)
         # sample.pack(side='left')
 
         # s = 'The quick brown fox\njumped over the lazy dog.\n0123456789'
         # sample.insert(0,s)
-        #@-node:ekr.20081004172422.678:<< create the sample text widget >>
+        #@-node:ekr.20081121105001.348:<< create the sample text widget >>
         #@nl
         #@    << create and bind the callbacks >>
-        #@+node:ekr.20081004172422.679:<< create and bind the callbacks >>
+        #@+node:ekr.20081121105001.349:<< create and bind the callbacks >>
         # def fontCallback(event=None):
             # self.setFont(familyBox,sizeEntry,slantBox,weightBox,sample)
 
@@ -2738,12 +2738,12 @@ class leoQtLog (leoFrame.leoLog):
             # w.configure(selectioncommand=fontCallback)
 
         # c.bind(sizeEntry,'<Return>',fontCallback)
-        #@-node:ekr.20081004172422.679:<< create and bind the callbacks >>
+        #@-node:ekr.20081121105001.349:<< create and bind the callbacks >>
         #@nl
 
         # self.createBindings()
-    #@-node:ekr.20081004172422.672:createFontPicker
-    #@+node:ekr.20081004172422.680:createBindings (fontPicker)
+    #@-node:ekr.20081121105001.342:createFontPicker
+    #@+node:ekr.20081121105001.350:createBindings (fontPicker)
     def createBindings (self):
 
         c = self.c ; k = c.k
@@ -2762,8 +2762,8 @@ class leoQtLog (leoFrame.leoLog):
             # c.bind(w,event,callback)
 
         # k.completeAllBindingsForWidget(w)
-    #@-node:ekr.20081004172422.680:createBindings (fontPicker)
-    #@+node:ekr.20081004172422.681:getFont
+    #@-node:ekr.20081121105001.350:createBindings (fontPicker)
+    #@+node:ekr.20081121105001.351:getFont
     def getFont(self,family=None,size=12,slant='roman',weight='normal'):
 
         return g.app.config.defaultFont
@@ -2775,8 +2775,8 @@ class leoQtLog (leoFrame.leoLog):
             # g.es('','family,size,slant,weight:','',family,'',size,'',slant,'',weight)
             # # g.es_exception() # This just confuses people.
             # return g.app.config.defaultFont
-    #@-node:ekr.20081004172422.681:getFont
-    #@+node:ekr.20081004172422.682:setFont
+    #@-node:ekr.20081121105001.351:getFont
+    #@+node:ekr.20081121105001.352:setFont
     def setFont(self,familyBox,sizeEntry,slantBox,weightBox,label):
 
         pass
@@ -2802,22 +2802,22 @@ class leoQtLog (leoFrame.leoLog):
         # slant=d.get('slant','roman')
         # font = self.getFont(family,size,slant,weight)
         # label.configure(font=font)
-    #@-node:ekr.20081004172422.682:setFont
-    #@+node:ekr.20081004172422.683:hideFontTab
+    #@-node:ekr.20081121105001.352:setFont
+    #@+node:ekr.20081121105001.353:hideFontTab
     def hideFontTab (self,event=None):
 
         c = self.c
         c.frame.log.selectTab('Log')
         c.bodyWantsFocus()
-    #@-node:ekr.20081004172422.683:hideFontTab
-    #@-node:ekr.20081004172422.671:qtLog font tab stuff
+    #@-node:ekr.20081121105001.353:hideFontTab
+    #@-node:ekr.20081121105001.341:qtLog font tab stuff
     #@-others
-#@-node:ekr.20081004172422.622:class leoQtLog
-#@+node:ekr.20081004172422.856:class leoQtMenu (leoMenu)
+#@-node:ekr.20081121105001.318:class leoQtLog
+#@+node:ekr.20081121105001.354:class leoQtMenu (leoMenu)
 class leoQtMenu (leoMenu.leoMenu):
 
     #@    @+others
-    #@+node:ekr.20081004172422.858:leoQtMenu.__init__
+    #@+node:ekr.20081121105001.355:leoQtMenu.__init__
     def __init__ (self,frame):
 
         assert frame
@@ -2844,9 +2844,9 @@ class leoQtMenu (leoMenu.leoMenu):
                 'menu_text_font_family', 'menu_text_font_size',
                 'menu_text_font_slant',  'menu_text_font_weight',
                 c.config.defaultMenuFontSize)
-    #@-node:ekr.20081004172422.858:leoQtMenu.__init__
-    #@+node:ekr.20081004172422.859:Activate menu commands (to do)
-    #@+node:ekr.20081004172422.860:qtMenu.activateMenu
+    #@-node:ekr.20081121105001.355:leoQtMenu.__init__
+    #@+node:ekr.20081121105001.356:Activate menu commands (to do)
+    #@+node:ekr.20081121105001.357:qtMenu.activateMenu
     def activateMenu (self,menuName):
 
         c = self.c ;  top = c.frame.top
@@ -2862,8 +2862,8 @@ class leoQtMenu (leoMenu.leoMenu):
             # menu.tk_popup(topx+d.get(menuName,0),topy) # Fix by caugm.  Thanks!
         # else:
             # g.trace('oops, no menu: %s' % menuName)
-    #@-node:ekr.20081004172422.860:qtMenu.activateMenu
-    #@+node:ekr.20081004172422.861:qtMenu.computeMenuPositions
+    #@-node:ekr.20081121105001.357:qtMenu.activateMenu
+    #@+node:ekr.20081121105001.358:qtMenu.computeMenuPositions
     def computeMenuPositions (self):
 
         # A hack.  It would be better to set this when creating the menus.
@@ -2882,12 +2882,12 @@ class leoQtMenu (leoMenu.leoMenu):
             # n += font.measure(z+' '*4)+1
 
         return d
-    #@-node:ekr.20081004172422.861:qtMenu.computeMenuPositions
-    #@-node:ekr.20081004172422.859:Activate menu commands (to do)
-    #@+node:ekr.20081004172422.862:Tkinter menu bindings
+    #@-node:ekr.20081121105001.358:qtMenu.computeMenuPositions
+    #@-node:ekr.20081121105001.356:Activate menu commands (to do)
+    #@+node:ekr.20081121105001.359:Tkinter menu bindings
     # See the Tk docs for what these routines are to do
-    #@+node:ekr.20081004172422.863:Methods with Tk spellings
-    #@+node:ekr.20081004172422.864:add_cascade
+    #@+node:ekr.20081121105001.360:Methods with Tk spellings
+    #@+node:ekr.20081121105001.361:add_cascade
     def add_cascade (self,parent,label,menu,underline):
 
         """Wrapper for the Tkinter add_cascade menu method.
@@ -2908,8 +2908,8 @@ class leoQtMenu (leoMenu.leoMenu):
             self.menuBar.addMenu(menu)
 
         return menu
-    #@-node:ekr.20081004172422.864:add_cascade
-    #@+node:ekr.20081004172422.865:add_command
+    #@-node:ekr.20081121105001.361:add_cascade
+    #@+node:ekr.20081121105001.362:add_command
     def add_command (self,**keys):
 
         """Wrapper for the Tkinter add_command menu method."""
@@ -2935,40 +2935,40 @@ class leoQtMenu (leoMenu.leoMenu):
 
             QtCore.QObject.connect(action,
                 QtCore.SIGNAL("triggered()"),add_command_callback)
-    #@-node:ekr.20081004172422.865:add_command
-    #@+node:ekr.20081004172422.866:add_separator
+    #@-node:ekr.20081121105001.362:add_command
+    #@+node:ekr.20081121105001.363:add_separator
     def add_separator(self,menu):
 
         """Wrapper for the Tkinter add_separator menu method."""
 
         if menu:
             menu.addSeparator()
-    #@-node:ekr.20081004172422.866:add_separator
-    #@+node:ekr.20081004172422.868:delete
+    #@-node:ekr.20081121105001.363:add_separator
+    #@+node:ekr.20081121105001.364:delete
     def delete (self,menu,realItemName):
 
         """Wrapper for the Tkinter delete menu method."""
 
         # if menu:
             # return menu.delete(realItemName)
-    #@-node:ekr.20081004172422.868:delete
-    #@+node:ekr.20081004172422.869:delete_range
+    #@-node:ekr.20081121105001.364:delete
+    #@+node:ekr.20081121105001.365:delete_range
     def delete_range (self,menu,n1,n2):
 
         """Wrapper for the Tkinter delete menu method."""
 
         # if menu:
             # return menu.delete(n1,n2)
-    #@-node:ekr.20081004172422.869:delete_range
-    #@+node:ekr.20081004172422.870:destroy
+    #@-node:ekr.20081121105001.365:delete_range
+    #@+node:ekr.20081121105001.366:destroy
     def destroy (self,menu):
 
         """Wrapper for the Tkinter destroy menu method."""
 
         # if menu:
             # return menu.destroy()
-    #@-node:ekr.20081004172422.870:destroy
-    #@+node:ekr.20081004172422.871:insert
+    #@-node:ekr.20081121105001.366:destroy
+    #@+node:ekr.20081121105001.367:insert
     def insert (self,menuName,position,label,command,underline=None):
 
         # g.trace(menuName,position,label,command,underline)
@@ -2984,8 +2984,8 @@ class leoQtMenu (leoMenu.leoMenu):
                     command()
                 QtCore.QObject.connect(
                     action,QtCore.SIGNAL("triggered()"),insert_callback)
-    #@-node:ekr.20081004172422.871:insert
-    #@+node:ekr.20081004172422.872:insert_cascade
+    #@-node:ekr.20081121105001.367:insert
+    #@+node:ekr.20081121105001.368:insert_cascade
     def insert_cascade (self,parent,index,label,menu,underline):
 
         """Wrapper for the Tkinter insert_cascade menu method."""
@@ -3001,8 +3001,8 @@ class leoQtMenu (leoMenu.leoMenu):
             self.menuBar.addMenu(menu)
 
         return menu
-    #@-node:ekr.20081004172422.872:insert_cascade
-    #@+node:ekr.20081004172422.873:new_menu
+    #@-node:ekr.20081121105001.368:insert_cascade
+    #@+node:ekr.20081121105001.369:new_menu
     def new_menu(self,parent,tearoff=False):
 
         """Wrapper for the Tkinter new_menu menu method."""
@@ -3016,10 +3016,10 @@ class leoQtMenu (leoMenu.leoMenu):
 
         return menu
     #@nonl
-    #@-node:ekr.20081004172422.873:new_menu
-    #@-node:ekr.20081004172422.863:Methods with Tk spellings
-    #@+node:ekr.20081004172422.874:Methods with other spellings (Qtmenu)
-    #@+node:ekr.20081004172422.875:clearAccel
+    #@-node:ekr.20081121105001.369:new_menu
+    #@-node:ekr.20081121105001.360:Methods with Tk spellings
+    #@+node:ekr.20081121105001.370:Methods with other spellings (Qtmenu)
+    #@+node:ekr.20081121105001.371:clearAccel
     def clearAccel(self,menu,name):
 
         pass
@@ -3031,16 +3031,16 @@ class leoQtMenu (leoMenu.leoMenu):
         # realName = realName.replace("&","")
 
         # menu.entryconfig(realName,accelerator='')
-    #@-node:ekr.20081004172422.875:clearAccel
-    #@+node:ekr.20081004172422.876:createMenuBar (Qtmenu)
+    #@-node:ekr.20081121105001.371:clearAccel
+    #@+node:ekr.20081121105001.372:createMenuBar (Qtmenu)
     def createMenuBar(self,frame):
 
         '''Create all top-level menus.
         The menuBar itself has already been created.'''
 
         self.createMenusFromTables()
-    #@-node:ekr.20081004172422.876:createMenuBar (Qtmenu)
-    #@+node:ekr.20081004172422.877:createOpenWithMenu
+    #@-node:ekr.20081121105001.372:createMenuBar (Qtmenu)
+    #@+node:ekr.20081121105001.373:createOpenWithMenu
     def createOpenWithMenu(self,parent,label,index,amp_index):
 
         '''Create a submenu.'''
@@ -3056,8 +3056,8 @@ class leoQtMenu (leoMenu.leoMenu):
         # if menu:
             # parent.insert_cascade(index,label=label,menu=menu,underline=amp_index)
         # return menu
-    #@-node:ekr.20081004172422.877:createOpenWithMenu
-    #@+node:ekr.20081004172422.878:disableMenu
+    #@-node:ekr.20081121105001.373:createOpenWithMenu
+    #@+node:ekr.20081121105001.374:disableMenu
     def disableMenu (self,menu,name):
 
         if not menu:
@@ -3073,8 +3073,8 @@ class leoQtMenu (leoMenu.leoMenu):
             # except:
                 # g.pr("disableMenu menu,name:",menu,name)
                 # g.es_exception()
-    #@-node:ekr.20081004172422.878:disableMenu
-    #@+node:ekr.20081004172422.879:enableMenu
+    #@-node:ekr.20081121105001.374:disableMenu
+    #@+node:ekr.20081121105001.375:enableMenu
     # Fail gracefully if the item name does not exist.
 
     def enableMenu (self,menu,name,val):
@@ -3094,8 +3094,8 @@ class leoQtMenu (leoMenu.leoMenu):
                 # g.pr("enableMenu menu,name,val:",menu,name,val)
                 # g.es_exception()
     #@nonl
-    #@-node:ekr.20081004172422.879:enableMenu
-    #@+node:ekr.20081004172422.880:getMenuLabel
+    #@-node:ekr.20081121105001.375:enableMenu
+    #@+node:ekr.20081121105001.376:getMenuLabel
     def getMenuLabel (self,menu,name):
 
         '''Return the index of the menu item whose name (or offset) is given.
@@ -3113,8 +3113,8 @@ class leoQtMenu (leoMenu.leoMenu):
             # index = None
 
         # return index
-    #@-node:ekr.20081004172422.880:getMenuLabel
-    #@+node:ekr.20081004172422.881:setMenuLabel
+    #@-node:ekr.20081121105001.376:getMenuLabel
+    #@+node:ekr.20081121105001.377:setMenuLabel
     def setMenuLabel (self,menu,name,label,underline=-1):
 
         def munge(s):
@@ -3135,10 +3135,10 @@ class leoQtMenu (leoMenu.leoMenu):
             if s == realName:
                 action.setText(realLabel)
                 break
-    #@-node:ekr.20081004172422.881:setMenuLabel
-    #@-node:ekr.20081004172422.874:Methods with other spellings (Qtmenu)
-    #@-node:ekr.20081004172422.862:Tkinter menu bindings
-    #@+node:ekr.20081004172422.882:getMacHelpMenu
+    #@-node:ekr.20081121105001.377:setMenuLabel
+    #@-node:ekr.20081121105001.370:Methods with other spellings (Qtmenu)
+    #@-node:ekr.20081121105001.359:Tkinter menu bindings
+    #@+node:ekr.20081121105001.378:getMacHelpMenu
     def getMacHelpMenu (self,table):
 
         return None
@@ -3180,14 +3180,14 @@ class leoQtMenu (leoMenu.leoMenu):
             # g.trace('Can not get MacOS Help menu')
             # g.es_exception()
             # return None
-    #@-node:ekr.20081004172422.882:getMacHelpMenu
+    #@-node:ekr.20081121105001.378:getMacHelpMenu
     #@-others
-#@-node:ekr.20081004172422.856:class leoQtMenu (leoMenu)
-#@+node:ekr.20081007015817.35:class leoQtSpellTab
+#@-node:ekr.20081121105001.354:class leoQtMenu (leoMenu)
+#@+node:ekr.20081121105001.379:class leoQtSpellTab
 class leoQtSpellTab:
 
     #@    @+others
-    #@+node:ekr.20081007015817.36:leoQtSpellTab.__init__
+    #@+node:ekr.20081121105001.380:leoQtSpellTab.__init__
     def __init__ (self,c,handler,tabName):
 
         self.c = c
@@ -3198,8 +3198,8 @@ class leoQtSpellTab:
         self.createBindings()
 
         ###self.fillbox([])
-    #@-node:ekr.20081007015817.36:leoQtSpellTab.__init__
-    #@+node:ekr.20081007015817.37:createBindings TO DO
+    #@-node:ekr.20081121105001.380:leoQtSpellTab.__init__
+    #@+node:ekr.20081121105001.381:createBindings TO DO
     def createBindings (self):
 
         return
@@ -3230,8 +3230,8 @@ class leoQtSpellTab:
         # self.listBox.bind("<Button-1>",self.onSelectListBox)
         # self.listBox.bind("<Map>",self.onMap)
     #@nonl
-    #@-node:ekr.20081007015817.37:createBindings TO DO
-    #@+node:ekr.20081007015817.38:createFrame (to be done in Qt designer)
+    #@-node:ekr.20081121105001.381:createBindings TO DO
+    #@+node:ekr.20081121105001.382:createFrame (to be done in Qt designer)
     def createFrame (self):
 
         c = self.c ; log = c.frame.log ; tabName = self.tabName
@@ -3244,7 +3244,7 @@ class leoQtSpellTab:
         # bg = c.config.getColor('log_pane_Spell_tab_background_color') or 'LightSteelBlue2'
 
         #@    << Create the outer frames >>
-        #@+node:ekr.20081007015817.39:<< Create the outer frames >>
+        #@+node:ekr.20081121105001.383:<< Create the outer frames >>
         # self.outerScrolledFrame = Pmw.ScrolledFrame(
             # parentFrame,usehullsize = 1)
 
@@ -3254,10 +3254,10 @@ class leoQtSpellTab:
         # for z in ('borderframe','clipper','frame','hull'):
             # self.outerScrolledFrame.component(z).configure(
                 # relief='flat',background=bg)
-        #@-node:ekr.20081007015817.39:<< Create the outer frames >>
+        #@-node:ekr.20081121105001.383:<< Create the outer frames >>
         #@nl
         #@    << Create the text and suggestion panes >>
-        #@+node:ekr.20081007015817.40:<< Create the text and suggestion panes >>
+        #@+node:ekr.20081121105001.384:<< Create the text and suggestion panes >>
         # f2 = Tk.Frame(outer,bg=bg)
         # f2.pack(side='top',expand=0,fill='x')
 
@@ -3278,10 +3278,10 @@ class leoQtSpellTab:
         # txt ['yscrollcommand'] = bar.set
         # bar ['command'] = txt.yview
         # bar.pack(side='right',fill='y')
-        #@-node:ekr.20081007015817.40:<< Create the text and suggestion panes >>
+        #@-node:ekr.20081121105001.384:<< Create the text and suggestion panes >>
         #@nl
         #@    << Create the spelling buttons >>
-        #@+node:ekr.20081007015817.41:<< Create the spelling buttons >>
+        #@+node:ekr.20081121105001.385:<< Create the spelling buttons >>
         # # Create the alignment panes
         # buttons1 = Tk.Frame(outer,bd=1,bg=bg)
         # buttons2 = Tk.Frame(outer,bd=1,bg=bg)
@@ -3306,20 +3306,20 @@ class leoQtSpellTab:
         # (self.findButton,self.addButton,
          # self.changeButton, self.changeFindButton,
          # self.ignoreButton, self.hideButton) = buttonList
-        #@-node:ekr.20081007015817.41:<< Create the spelling buttons >>
+        #@-node:ekr.20081121105001.385:<< Create the spelling buttons >>
         #@nl
 
         # Pack last so buttons don't get squished.
         # self.outerScrolledFrame.pack(expand=1,fill='both',padx=2,pady=2)
-    #@-node:ekr.20081007015817.38:createFrame (to be done in Qt designer)
-    #@+node:ekr.20081007015817.42:Event handlers
-    #@+node:ekr.20081007015817.43:onAddButton
+    #@-node:ekr.20081121105001.382:createFrame (to be done in Qt designer)
+    #@+node:ekr.20081121105001.386:Event handlers
+    #@+node:ekr.20081121105001.387:onAddButton
     def onAddButton(self):
         """Handle a click in the Add button in the Check Spelling dialog."""
 
         self.handler.add()
-    #@-node:ekr.20081007015817.43:onAddButton
-    #@+node:ekr.20081007015817.44:onChangeButton & onChangeThenFindButton
+    #@-node:ekr.20081121105001.387:onAddButton
+    #@+node:ekr.20081121105001.388:onChangeButton & onChangeThenFindButton
     def onChangeButton(self,event=None):
 
         """Handle a click in the Change button in the Spell tab."""
@@ -3335,8 +3335,8 @@ class leoQtSpellTab:
         if self.handler.change():
             self.handler.find()
         self.updateButtons()
-    #@-node:ekr.20081007015817.44:onChangeButton & onChangeThenFindButton
-    #@+node:ekr.20081007015817.45:onFindButton
+    #@-node:ekr.20081121105001.388:onChangeButton & onChangeThenFindButton
+    #@+node:ekr.20081121105001.389:onFindButton
     def onFindButton(self):
 
         """Handle a click in the Find button in the Spell tab."""
@@ -3346,43 +3346,43 @@ class leoQtSpellTab:
         self.updateButtons()
         c.invalidateFocus()
         c.bodyWantsFocusNow()
-    #@-node:ekr.20081007015817.45:onFindButton
-    #@+node:ekr.20081007015817.46:onHideButton
+    #@-node:ekr.20081121105001.389:onFindButton
+    #@+node:ekr.20081121105001.390:onHideButton
     def onHideButton(self):
 
         """Handle a click in the Hide button in the Spell tab."""
 
         self.handler.hide()
-    #@-node:ekr.20081007015817.46:onHideButton
-    #@+node:ekr.20081007015817.47:onIgnoreButton
+    #@-node:ekr.20081121105001.390:onHideButton
+    #@+node:ekr.20081121105001.391:onIgnoreButton
     def onIgnoreButton(self,event=None):
 
         """Handle a click in the Ignore button in the Check Spelling dialog."""
 
         self.handler.ignore()
-    #@-node:ekr.20081007015817.47:onIgnoreButton
-    #@+node:ekr.20081007015817.48:onMap
+    #@-node:ekr.20081121105001.391:onIgnoreButton
+    #@+node:ekr.20081121105001.392:onMap
     def onMap (self, event=None):
         """Respond to a Tk <Map> event."""
 
         self.update(show= False, fill= False)
-    #@-node:ekr.20081007015817.48:onMap
-    #@+node:ekr.20081007015817.49:onSelectListBox
+    #@-node:ekr.20081121105001.392:onMap
+    #@+node:ekr.20081121105001.393:onSelectListBox
     def onSelectListBox(self, event=None):
         """Respond to a click in the selection listBox."""
 
         c = self.c
         self.updateButtons()
         c.bodyWantsFocus()
-    #@-node:ekr.20081007015817.49:onSelectListBox
-    #@-node:ekr.20081007015817.42:Event handlers
-    #@+node:ekr.20081007015817.50:Helpers
-    #@+node:ekr.20081007015817.51:bringToFront
+    #@-node:ekr.20081121105001.393:onSelectListBox
+    #@-node:ekr.20081121105001.386:Event handlers
+    #@+node:ekr.20081121105001.394:Helpers
+    #@+node:ekr.20081121105001.395:bringToFront
     def bringToFront (self):
 
         self.c.frame.log.selectTab('Spell')
-    #@-node:ekr.20081007015817.51:bringToFront
-    #@+node:ekr.20081007015817.52:fillbox
+    #@-node:ekr.20081121105001.395:bringToFront
+    #@+node:ekr.20081121105001.396:fillbox
     def fillbox(self, alts, word=None):
         """Update the suggestions listBox in the Check Spelling dialog."""
 
@@ -3400,8 +3400,8 @@ class leoQtSpellTab:
         # # This doesn't show up because we don't have focus.
         # if len(self.suggestions):
             # self.listBox.select_set(1)
-    #@-node:ekr.20081007015817.52:fillbox
-    #@+node:ekr.20081007015817.53:getSuggestion
+    #@-node:ekr.20081121105001.396:fillbox
+    #@+node:ekr.20081121105001.397:getSuggestion
     def getSuggestion(self):
         """Return the selected suggestion from the listBox."""
 
@@ -3417,8 +3417,8 @@ class leoQtSpellTab:
             # return suggestion
         # else:
             # return None
-    #@-node:ekr.20081007015817.53:getSuggestion
-    #@+node:ekr.20081007015817.54:update
+    #@-node:ekr.20081121105001.397:getSuggestion
+    #@+node:ekr.20081121105001.398:update
     def update(self,show=True,fill=False):
 
         """Update the Spell Check dialog."""
@@ -3433,8 +3433,8 @@ class leoQtSpellTab:
         if show:
             self.bringToFront()
             c.bodyWantsFocus()
-    #@-node:ekr.20081007015817.54:update
-    #@+node:ekr.20081007015817.55:updateButtons (spellTab)
+    #@-node:ekr.20081121105001.398:update
+    #@+node:ekr.20081121105001.399:updateButtons (spellTab)
     def updateButtons (self):
 
         """Enable or disable buttons in the Check Spelling dialog."""
@@ -3454,11 +3454,11 @@ class leoQtSpellTab:
 
         # self.addButton.configure(state='normal')
         # self.ignoreButton.configure(state='normal')
-    #@-node:ekr.20081007015817.55:updateButtons (spellTab)
-    #@-node:ekr.20081007015817.50:Helpers
+    #@-node:ekr.20081121105001.399:updateButtons (spellTab)
+    #@-node:ekr.20081121105001.394:Helpers
     #@-others
-#@-node:ekr.20081007015817.35:class leoQtSpellTab
-#@+node:ekr.20081004172422.732:class leoQtTree
+#@-node:ekr.20081121105001.379:class leoQtSpellTab
+#@+node:ekr.20081121105001.400:class leoQtTree
 class leoQtTree (leoFrame.leoTree):
 
     """Leo qt tree class."""
@@ -3466,8 +3466,8 @@ class leoQtTree (leoFrame.leoTree):
     callbacksInjected = False # A class var.
 
     #@    @+others
-    #@+node:ekr.20081004172422.737: Birth... (qt Tree)
-    #@+node:ekr.20081004172422.738:__init__ (qtTree)
+    #@+node:ekr.20081121105001.401: Birth... (qt Tree)
+    #@+node:ekr.20081121105001.402:__init__ (qtTree)
     def __init__(self,c,frame):
 
         # g.trace('*****qtTree')
@@ -3507,8 +3507,8 @@ class leoQtTree (leoFrame.leoTree):
 
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
-    #@-node:ekr.20081004172422.738:__init__ (qtTree)
-    #@+node:ekr.20081005065934.10:qtTree.initAfterLoad
+    #@-node:ekr.20081121105001.402:__init__ (qtTree)
+    #@+node:ekr.20081121105001.159:qtTree.initAfterLoad
     def initAfterLoad (self):
 
         c = self.c ; frame = c.frame
@@ -3542,8 +3542,8 @@ class leoQtTree (leoFrame.leoTree):
         tw.installEventFilter(self.ev_filter)
 
         c.setChanged(False)
-    #@-node:ekr.20081005065934.10:qtTree.initAfterLoad
-    #@+node:ekr.20081004172422.742:qtTree.setBindings & helper
+    #@-node:ekr.20081121105001.159:qtTree.initAfterLoad
+    #@+node:ekr.20081121105001.403:qtTree.setBindings & helper
     def setBindings (self):
 
         '''Create master bindings for all headlines.'''
@@ -3561,7 +3561,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # k.completeAllBindingsForWidget(self.bindingWidget)
 
-    #@+node:ekr.20081004172422.743:qtTree.setBindingsHelper
+    #@+node:ekr.20081121105001.404:qtTree.setBindingsHelper
     def setBindingsHelper (self):
 
         tree = self ; c = tree.c ; k = c.k
@@ -3585,9 +3585,9 @@ class leoQtTree (leoFrame.leoTree):
             # c.bind(w,a,treeBindingCallback)
 
         # self.textBindings = w.bindtags()
-    #@-node:ekr.20081004172422.743:qtTree.setBindingsHelper
-    #@-node:ekr.20081004172422.742:qtTree.setBindings & helper
-    #@+node:ekr.20081004172422.744:qtTree.setCanvasBindings
+    #@-node:ekr.20081121105001.404:qtTree.setBindingsHelper
+    #@-node:ekr.20081121105001.403:qtTree.setBindings & helper
+    #@+node:ekr.20081121105001.405:qtTree.setCanvasBindings
     def setCanvasBindings (self,canvas):
 
         c = self.c ; k = c.k
@@ -3598,7 +3598,7 @@ class leoQtTree (leoFrame.leoTree):
         # # c.bind(canvas,'<FocusIn>',self.onFocusIn)
 
         #@    << make bindings for tagged items on the canvas >>
-        #@+node:ekr.20081004172422.745:<< make bindings for tagged items on the canvas >>
+        #@+node:ekr.20081121105001.406:<< make bindings for tagged items on the canvas >>
         # where = g.choose(self.expanded_click_area,'clickBox','plusBox')
 
         # table = (
@@ -3616,10 +3616,10 @@ class leoQtTree (leoFrame.leoTree):
         # )
         # for tag,event_kind,callback in table:
             # c.tag_bind(canvas,tag,event_kind,callback)
-        #@-node:ekr.20081004172422.745:<< make bindings for tagged items on the canvas >>
+        #@-node:ekr.20081121105001.406:<< make bindings for tagged items on the canvas >>
         #@nl
         #@    << create baloon bindings for tagged items on the canvas >>
-        #@+node:ekr.20081004172422.746:<< create baloon bindings for tagged items on the canvas >>
+        #@+node:ekr.20081121105001.407:<< create baloon bindings for tagged items on the canvas >>
         # if 0: # I find these very irritating.
             # for tag,text in (
                 # # ('plusBox','plusBox'),
@@ -3631,19 +3631,19 @@ class leoQtTree (leoFrame.leoTree):
                 # # A fairly long wait is best.
                 # balloon = Pmw.Balloon(self.canvas,initwait=700)
                 # balloon.tagbind(self.canvas,tag,balloonHelp=text)
-        #@-node:ekr.20081004172422.746:<< create baloon bindings for tagged items on the canvas >>
+        #@-node:ekr.20081121105001.407:<< create baloon bindings for tagged items on the canvas >>
         #@nl
-    #@-node:ekr.20081004172422.744:qtTree.setCanvasBindings
-    #@+node:ekr.20081014095718.15:get_name (qtTree)
+    #@-node:ekr.20081121105001.405:qtTree.setCanvasBindings
+    #@+node:ekr.20081121105001.408:get_name (qtTree)
     def getName (self):
 
         name = 'canvas(tree)' # Must start with canvas.
 
         return name
-    #@-node:ekr.20081014095718.15:get_name (qtTree)
-    #@-node:ekr.20081004172422.737: Birth... (qt Tree)
-    #@+node:ekr.20081004172422.758:Config... (qtTree)
-    #@+node:ekr.20081010070648.18:do-nothin config stuff
+    #@-node:ekr.20081121105001.408:get_name (qtTree)
+    #@-node:ekr.20081121105001.401: Birth... (qt Tree)
+    #@+node:ekr.20081121105001.409:Config... (qtTree)
+    #@+node:ekr.20081121105001.410:do-nothin config stuff
     # These can be do-nothings, replaced by QTree settings.
 
     def bind (self,*args,**keys):               pass
@@ -3661,8 +3661,8 @@ class leoQtTree (leoFrame.leoTree):
 
     setNormalLabelState = setEditLabelState # For compatibility.
     #@nonl
-    #@-node:ekr.20081010070648.18:do-nothin config stuff
-    #@+node:ekr.20081009055104.7:setConfigIvars
+    #@-node:ekr.20081121105001.410:do-nothin config stuff
+    #@+node:ekr.20081121105001.411:setConfigIvars
     def setConfigIvars (self):
 
         c = self.c
@@ -3715,10 +3715,10 @@ class leoQtTree (leoFrame.leoTree):
             # self.trace_redraw   = c.config.getBool('trace_tree_redraw')
             # self.trace_select   = c.config.getBool('trace_select')
             # self.trace_stats    = c.config.getBool('show_tree_stats')
-    #@-node:ekr.20081009055104.7:setConfigIvars
-    #@-node:ekr.20081004172422.758:Config... (qtTree)
-    #@+node:ekr.20081010070648.19:Drawing... (qtTree)
-    #@+node:ekr.20081011035036.12:allAncestorsExpanded
+    #@-node:ekr.20081121105001.411:setConfigIvars
+    #@-node:ekr.20081121105001.409:Config... (qtTree)
+    #@+node:ekr.20081121105001.412:Drawing... (qtTree)
+    #@+node:ekr.20081121105001.413:allAncestorsExpanded
     def allAncestorsExpanded (self,p):
 
         for p in p.self_and_parents_iter():
@@ -3726,8 +3726,8 @@ class leoQtTree (leoFrame.leoTree):
                 return False
         else:
             return True
-    #@-node:ekr.20081011035036.12:allAncestorsExpanded
-    #@+node:ekr.20081021043407.23:full_redraw & helpers
+    #@-node:ekr.20081121105001.413:allAncestorsExpanded
+    #@+node:ekr.20081121105001.414:full_redraw & helpers
     def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
 
         '''Redraw all visible nodes of the tree'''
@@ -3784,7 +3784,7 @@ class leoQtTree (leoFrame.leoTree):
 
     redraw = full_redraw # Compatibility
     redraw_now = full_redraw
-    #@+node:ekr.20081021043407.30:initData
+    #@+node:ekr.20081121105001.415:initData
     def initData (self):
 
         self.tnodeDict = {} # keys are tnodes, values are lists of items (p,it)
@@ -3795,8 +3795,8 @@ class leoQtTree (leoFrame.leoTree):
         self._editWidget = None
         self._editWidgetWrapper = None
     #@nonl
-    #@-node:ekr.20081021043407.30:initData
-    #@+node:ekr.20081021043407.24:drawNode
+    #@-node:ekr.20081121105001.415:initData
+    #@+node:ekr.20081121105001.164:drawNode
     def drawNode (self,p,dummy=False):
 
         c = self.c ; w = self.treeWidget ; trace = False
@@ -3836,8 +3836,8 @@ class leoQtTree (leoFrame.leoTree):
         self.tnodeDict[p.v.t] = aList
 
         return item
-    #@-node:ekr.20081021043407.24:drawNode
-    #@+node:ekr.20081021043407.25:drawTree
+    #@-node:ekr.20081121105001.164:drawNode
+    #@+node:ekr.20081121105001.416:drawTree
     def drawTree (self,p):
 
         trace = False
@@ -3872,8 +3872,8 @@ class leoQtTree (leoFrame.leoTree):
                 w.collapseItem(it)
         else:
             w.collapseItem(it)
-    #@-node:ekr.20081021043407.25:drawTree
-    #@+node:edward.20081118075608.1:drawIcon
+    #@-node:ekr.20081121105001.416:drawTree
+    #@+node:ekr.20081121105001.417:drawIcon
     def drawIcon (self,p):
 
         '''Redraw the icon at p.
@@ -3886,9 +3886,9 @@ class leoQtTree (leoFrame.leoTree):
 
         icon = self.getIcon(p)
         if icon: item.setIcon(0,icon)
-    #@-node:edward.20081118075608.1:drawIcon
-    #@-node:ekr.20081021043407.23:full_redraw & helpers
-    #@+node:ekr.20081010070648.14:getIcon & getIconImage
+    #@-node:ekr.20081121105001.417:drawIcon
+    #@-node:ekr.20081121105001.414:full_redraw & helpers
+    #@+node:ekr.20081121105001.418:getIcon & getIconImage
     def getIcon(self,p):
 
         '''Return the proper icon for position p.'''
@@ -3901,25 +3901,25 @@ class leoQtTree (leoFrame.leoTree):
         return g.app.gui.getIconImage(
             "box%02d.GIF" % val)
 
-    #@-node:ekr.20081010070648.14:getIcon & getIconImage
-    #@+node:ekr.20081021043407.4:redraw_after_clone
+    #@-node:ekr.20081121105001.418:getIcon & getIconImage
+    #@+node:ekr.20081121105001.419:redraw_after_clone
     def redraw_after_clone (self):
 
         self.full_redraw()
-    #@-node:ekr.20081021043407.4:redraw_after_clone
-    #@+node:ekr.20081021043407.5:redraw_after_contract
+    #@-node:ekr.20081121105001.419:redraw_after_clone
+    #@+node:ekr.20081121105001.420:redraw_after_contract
     def redraw_after_contract (self):
 
         self.full_redraw()
-    #@-node:ekr.20081021043407.5:redraw_after_contract
-    #@+node:ekr.20081021043407.6:redraw_after_delete
+    #@-node:ekr.20081121105001.420:redraw_after_contract
+    #@+node:ekr.20081121105001.421:redraw_after_delete
     def redraw_after_delete (self):
 
         self.full_redraw()
 
 
-    #@-node:ekr.20081021043407.6:redraw_after_delete
-    #@+node:ekr.20081021043407.7:redraw_after_expand & helper
+    #@-node:ekr.20081121105001.421:redraw_after_delete
+    #@+node:ekr.20081121105001.422:redraw_after_expand & helper
     def redraw_after_expand (self):
 
         # This is reasonable now that we only allocate
@@ -3962,7 +3962,7 @@ class leoQtTree (leoFrame.leoTree):
             # c.requestRedrawFlag= False
             # if trace:
                 # g.trace('drew %3s nodes' %self.nodeDrawCount)
-    #@+node:ekr.20081021043407.28:removeFromDicts
+    #@+node:ekr.20081121105001.423:removeFromDicts
     def removeFromDicts (self,p):
 
         # Important: items do not necessarily exist.
@@ -3986,9 +3986,9 @@ class leoQtTree (leoFrame.leoTree):
         # aList = [z for z in aList if z[1] != it] # Wrong
         aList = [z for z in aList if z[0] != p]
         self.tnodeDict[p.v.t] = aList
-    #@-node:ekr.20081021043407.28:removeFromDicts
-    #@-node:ekr.20081021043407.7:redraw_after_expand & helper
-    #@+node:ekr.20081021043407.3:redraw_after_icons_changed
+    #@-node:ekr.20081121105001.423:removeFromDicts
+    #@-node:ekr.20081121105001.422:redraw_after_expand & helper
+    #@+node:ekr.20081121105001.424:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
 
         g.trace('should not be called',g.callers(4))
@@ -4001,25 +4001,25 @@ class leoQtTree (leoFrame.leoTree):
             self.updateIcon(p)
 
 
-    #@-node:ekr.20081021043407.3:redraw_after_icons_changed
-    #@+node:ekr.20081021043407.8:redraw_after_insert
+    #@-node:ekr.20081121105001.424:redraw_after_icons_changed
+    #@+node:ekr.20081121105001.425:redraw_after_insert
     def redraw_after_insert (self):
 
         self.full_redraw()
-    #@-node:ekr.20081021043407.8:redraw_after_insert
-    #@+node:ekr.20081021043407.9:redraw_after_move_down
+    #@-node:ekr.20081121105001.425:redraw_after_insert
+    #@+node:ekr.20081121105001.426:redraw_after_move_down
     def redraw_after_move_down (self):
 
         self.full_redraw()
     #@nonl
-    #@-node:ekr.20081021043407.9:redraw_after_move_down
-    #@+node:ekr.20081021043407.10:redraw_after_move_left
+    #@-node:ekr.20081121105001.426:redraw_after_move_down
+    #@+node:ekr.20081121105001.427:redraw_after_move_left
     def redraw_after_move_left (self):
 
         self.full_redraw()
     #@nonl
-    #@-node:ekr.20081021043407.10:redraw_after_move_left
-    #@+node:ekr.20081021043407.11:redraw_after_move_right
+    #@-node:ekr.20081121105001.427:redraw_after_move_left
+    #@+node:ekr.20081121105001.428:redraw_after_move_right
     def redraw_after_move_right (self):
 
         if 0: # now done in c.moveOutlineRight.
@@ -4031,20 +4031,20 @@ class leoQtTree (leoFrame.leoTree):
         # g.trace('parent',c.currentPosition().parent() or "non")
 
         self.full_redraw()
-    #@-node:ekr.20081021043407.11:redraw_after_move_right
-    #@+node:ekr.20081021043407.12:redraw_after_move_up
+    #@-node:ekr.20081121105001.428:redraw_after_move_right
+    #@+node:ekr.20081121105001.429:redraw_after_move_up
     def redraw_after_move_up (self):
 
         self.full_redraw()
-    #@-node:ekr.20081021043407.12:redraw_after_move_up
-    #@+node:ekr.20081021043407.13:redraw_after_select
+    #@-node:ekr.20081121105001.429:redraw_after_move_up
+    #@+node:ekr.20081121105001.430:redraw_after_select
     def redraw_after_select (self):
 
         '''Redraw the screen after selecting a node.'''
 
         pass # It is quite wrong to do an automatic redraw after select.
-    #@-node:ekr.20081021043407.13:redraw_after_select
-    #@+node:ekr.20081011035036.11:updateIcon
+    #@-node:ekr.20081121105001.430:redraw_after_select
+    #@+node:ekr.20081121105001.431:updateIcon
     def updateIcon (self,p):
 
         '''Update p's icon.'''
@@ -4059,11 +4059,11 @@ class leoQtTree (leoFrame.leoTree):
         for p,it in aList:
             # g.trace(id(it),p.headString())
             it.setIcon(0,icon)
-    #@-node:ekr.20081011035036.11:updateIcon
-    #@-node:ekr.20081010070648.19:Drawing... (qtTree)
-    #@+node:ekr.20081004172422.795:Event handlers... (qtTree)
-    #@+node:ekr.20081004172422.803:Click Box...
-    #@+node:ekr.20081004172422.804:onClickBoxClick
+    #@-node:ekr.20081121105001.431:updateIcon
+    #@-node:ekr.20081121105001.412:Drawing... (qtTree)
+    #@+node:ekr.20081121105001.432:Event handlers... (qtTree)
+    #@+node:ekr.20081121105001.433:Click Box...
+    #@+node:ekr.20081121105001.434:onClickBoxClick
     def onClickBoxClick (self,event,p=None):
 
         c = self.c ; p1 = c.currentPosition()
@@ -4091,14 +4091,14 @@ class leoQtTree (leoFrame.leoTree):
         # c.redraw()
 
         # c.outerUpdate()
-    #@-node:ekr.20081004172422.804:onClickBoxClick
-    #@+node:ekr.20081004172422.805:onClickBoxRightClick
+    #@-node:ekr.20081121105001.434:onClickBoxClick
+    #@+node:ekr.20081121105001.435:onClickBoxRightClick
     def onClickBoxRightClick(self, event, p=None):
         #g.trace()
         return 'break'
     #@nonl
-    #@-node:ekr.20081004172422.805:onClickBoxRightClick
-    #@+node:ekr.20081004172422.806:onPlusBoxRightClick
+    #@-node:ekr.20081121105001.435:onClickBoxRightClick
+    #@+node:ekr.20081121105001.436:onPlusBoxRightClick
     def onPlusBoxRightClick (self,event,p=None):
 
         c = self.c
@@ -4116,9 +4116,9 @@ class leoQtTree (leoFrame.leoTree):
         # c.outerUpdate()
 
         # return 'break'
-    #@-node:ekr.20081004172422.806:onPlusBoxRightClick
-    #@-node:ekr.20081004172422.803:Click Box...
-    #@+node:ekr.20081004172422.801:findEditWidget
+    #@-node:ekr.20081121105001.436:onPlusBoxRightClick
+    #@-node:ekr.20081121105001.433:Click Box...
+    #@+node:ekr.20081121105001.437:findEditWidget
     def findEditWidget (self,p):
 
         """Return the Qt.Text item corresponding to p."""
@@ -4144,9 +4144,9 @@ class leoQtTree (leoFrame.leoTree):
 
         # if trace: g.trace('not found',p and p.headString())
         # return None
-    #@-node:ekr.20081004172422.801:findEditWidget
-    #@+node:ekr.20081004172422.816:Icon Box...
-    #@+node:ekr.20081004172422.817:onIconBoxClick
+    #@-node:ekr.20081121105001.437:findEditWidget
+    #@+node:ekr.20081121105001.438:Icon Box...
+    #@+node:ekr.20081121105001.439:onIconBoxClick
     def onIconBoxClick (self,event,p=None):
 
         c = self.c ; tree = self
@@ -4167,8 +4167,8 @@ class leoQtTree (leoFrame.leoTree):
         # g.doHook("iconclick2",c=c,p=p,v=p,event=event)
 
         # return "break" # disable expanded box handling.
-    #@-node:ekr.20081004172422.817:onIconBoxClick
-    #@+node:ekr.20081004172422.818:onIconBoxRightClick
+    #@-node:ekr.20081121105001.439:onIconBoxClick
+    #@+node:ekr.20081121105001.440:onIconBoxRightClick
     def onIconBoxRightClick (self,event,p=None):
 
         """Handle a right click in any outline widget."""
@@ -4198,8 +4198,8 @@ class leoQtTree (leoFrame.leoTree):
 
         # c.outerUpdate()
         # return 'break'
-    #@-node:ekr.20081004172422.818:onIconBoxRightClick
-    #@+node:ekr.20081004172422.819:onIconBoxDoubleClick
+    #@-node:ekr.20081121105001.440:onIconBoxRightClick
+    #@+node:ekr.20081121105001.441:onIconBoxDoubleClick
     def onIconBoxDoubleClick (self,event,p=None):
 
         c = self.c
@@ -4221,9 +4221,9 @@ class leoQtTree (leoFrame.leoTree):
 
         # c.outerUpdate()
         # return 'break'
-    #@-node:ekr.20081004172422.819:onIconBoxDoubleClick
-    #@-node:ekr.20081004172422.816:Icon Box...
-    #@+node:ekr.20081117065611.1:onItemDoubleClicked
+    #@-node:ekr.20081121105001.441:onIconBoxDoubleClick
+    #@-node:ekr.20081121105001.438:Icon Box...
+    #@+node:ekr.20081121105001.161:onItemDoubleClicked
     def onItemDoubleClicked (self,item,col):
 
         c = self.c ; w = self.treeWidget
@@ -4244,8 +4244,8 @@ class leoQtTree (leoFrame.leoTree):
         self._editWidgetWrapper = leoQtHeadlineWidget(
             widget=e,name='head',c=c)
         e.setObjectName('headline')
-    #@-node:ekr.20081117065611.1:onItemDoubleClicked
-    #@+node:ekr.20081009055104.8:onTreeSelect
+    #@-node:ekr.20081121105001.161:onItemDoubleClicked
+    #@+node:ekr.20081121105001.162:onTreeSelect
     def onTreeSelect(self):
 
         '''Select the proper position when a tree node is selected.'''
@@ -4272,8 +4272,8 @@ class leoQtTree (leoFrame.leoTree):
             # An error: we are not redrawing.
             g.trace('no p for item: %s' % item,g.callers(4))
     #@nonl
-    #@-node:ekr.20081009055104.8:onTreeSelect
-    #@+node:ekr.20081027082521.12:setCurrentItem
+    #@-node:ekr.20081121105001.162:onTreeSelect
+    #@+node:ekr.20081121105001.442:setCurrentItem
     def setCurrentItem (self):
 
         c = self.c ; p = c.currentPosition()
@@ -4308,8 +4308,8 @@ class leoQtTree (leoFrame.leoTree):
         else:
             if trace: g.trace('** no item for',p.headString())
             return None
-    #@-node:ekr.20081027082521.12:setCurrentItem
-    #@+node:ville.20081014172405.10:sig_itemChanged
+    #@-node:ekr.20081121105001.442:setCurrentItem
+    #@+node:ekr.20081121105001.443:sig_itemChanged
     def sig_itemChanged(self, item, col):
 
         '''Handle a change event in a headline.
@@ -4330,8 +4330,8 @@ class leoQtTree (leoFrame.leoTree):
             self._editWidgetWrapper = None
         else:
             g.trace('can not happen: no p')
-    #@-node:ville.20081014172405.10:sig_itemChanged
-    #@+node:ekr.20081027124640.10:sig_itemCollapsed
+    #@-node:ekr.20081121105001.443:sig_itemChanged
+    #@+node:ekr.20081121105001.444:sig_itemCollapsed
     def sig_itemCollapsed (self,item):
 
         c = self.c ; p = c.currentPosition() ; w = self.treeWidget
@@ -4360,8 +4360,8 @@ class leoQtTree (leoFrame.leoTree):
                     QtGui.QAbstractItemView.PositionAtCenter)
         else:
             g.trace('Error no p2')
-    #@-node:ekr.20081027124640.10:sig_itemCollapsed
-    #@+node:ekr.20081021043407.26:sig_itemExpanded
+    #@-node:ekr.20081121105001.444:sig_itemCollapsed
+    #@+node:ekr.20081121105001.445:sig_itemExpanded
     def sig_itemExpanded (self,item):
 
         '''Handle and tree-expansion event.'''
@@ -4408,8 +4408,8 @@ class leoQtTree (leoFrame.leoTree):
             # self.expanding = False
             # if redraw:
                 # item = self.setCurrentItem()
-    #@-node:ekr.20081021043407.26:sig_itemExpanded
-    #@+node:ekr.20081004172422.828:tree.OnPopup & allies
+    #@-node:ekr.20081121105001.445:sig_itemExpanded
+    #@+node:ekr.20081121105001.446:tree.OnPopup & allies
     def OnPopup (self,p,event):
 
         """Handle right-clicks in the outline.
@@ -4430,7 +4430,7 @@ class leoQtTree (leoFrame.leoTree):
                 self.showPopupMenu(event)
 
         return "break"
-    #@+node:ekr.20081004172422.829:OnPopupFocusLost
+    #@+node:ekr.20081121105001.447:OnPopupFocusLost
     #@+at 
     #@nonl
     # On Linux we must do something special to make the popup menu "unpost" if 
@@ -4452,8 +4452,8 @@ class leoQtTree (leoFrame.leoTree):
 
         # self.popupMenu.unpost()
         pass
-    #@-node:ekr.20081004172422.829:OnPopupFocusLost
-    #@+node:ekr.20081004172422.830:createPopupMenu
+    #@-node:ekr.20081121105001.447:OnPopupFocusLost
+    #@+node:ekr.20081121105001.448:createPopupMenu
     def createPopupMenu (self,event):
 
         c = self.c ; frame = c.frame
@@ -4467,7 +4467,7 @@ class leoQtTree (leoFrame.leoTree):
             # frame.menu.createMenuEntries(menu,table)
 
         #@    << Create the menu table >>
-        #@+node:ekr.20081004172422.831:<< Create the menu table >>
+        #@+node:ekr.20081121105001.449:<< Create the menu table >>
         # table = (
             # ("&Read @file Nodes",c.readAtFileNodes),
             # ("&Write @file Nodes",c.fileCommands.writeAtFileNodes),
@@ -4489,14 +4489,14 @@ class leoQtTree (leoFrame.leoTree):
             # ("-",None),
             # ("Contract Parent",c.contractParent),
         # )
-        #@-node:ekr.20081004172422.831:<< Create the menu table >>
+        #@-node:ekr.20081121105001.449:<< Create the menu table >>
         #@nl
 
         # # New in 4.4.  There is no need for a dontBind argument because
         # # Bindings from tables are ignored.
         # frame.menu.createMenuEntries(menu,table)
-    #@-node:ekr.20081004172422.830:createPopupMenu
-    #@+node:ekr.20081004172422.832:enablePopupMenuItems
+    #@-node:ekr.20081121105001.448:createPopupMenu
+    #@+node:ekr.20081121105001.450:enablePopupMenuItems
     def enablePopupMenuItems (self,v,event):
 
         """Enable and disable items in the popup menu."""
@@ -4506,7 +4506,7 @@ class leoQtTree (leoFrame.leoTree):
         # menu = self.popupMenu
 
         #@    << set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
-        #@+node:ekr.20081004172422.833:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
+        #@+node:ekr.20081121105001.451:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
         # isAtFile = False
         # isAtRoot = False
 
@@ -4523,7 +4523,7 @@ class leoQtTree (leoFrame.leoTree):
             # isRoot,junk = g.is_special(v2.bodyString(),0,"@root")
             # if isRoot:
                 # isAtRoot = True
-        #@-node:ekr.20081004172422.833:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
+        #@-node:ekr.20081121105001.451:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
         #@nl
         # isAtFile = g.choose(isAtFile,1,0)
         # isAtRoot = g.choose(isAtRoot,1,0)
@@ -4543,8 +4543,8 @@ class leoQtTree (leoFrame.leoTree):
         # enable(menu,"Sort Children",c.canSortChildren())
         # enable(menu,"Sort Siblings",c.canSortSiblings())
         # enable(menu,"Contract Parent",c.canContractParent())
-    #@-node:ekr.20081004172422.832:enablePopupMenuItems
-    #@+node:ekr.20081004172422.834:showPopupMenu
+    #@-node:ekr.20081121105001.450:enablePopupMenuItems
+    #@+node:ekr.20081121105001.452:showPopupMenu
     def showPopupMenu (self,event):
 
         """Show a popup menu."""
@@ -4557,10 +4557,10 @@ class leoQtTree (leoFrame.leoTree):
 
         # # Set the focus immediately so we know when we lose it.
         # #c.widgetWantsFocus(menu)
-    #@-node:ekr.20081004172422.834:showPopupMenu
-    #@-node:ekr.20081004172422.828:tree.OnPopup & allies
-    #@-node:ekr.20081004172422.795:Event handlers... (qtTree)
-    #@+node:ekr.20081019045904.2:Focus (qtTree)
+    #@-node:ekr.20081121105001.452:showPopupMenu
+    #@-node:ekr.20081121105001.446:tree.OnPopup & allies
+    #@-node:ekr.20081121105001.432:Event handlers... (qtTree)
+    #@+node:ekr.20081121105001.453:Focus (qtTree)
     def getFocus(self):
 
         # g.trace('leoQtTree',self.widget,g.callers(4))
@@ -4578,9 +4578,9 @@ class leoQtTree (leoFrame.leoTree):
 
         # g.trace('leoQtTree',self.treeWidget,g.callers(4))
         g.app.gui.set_focus(self.c,self.treeWidget)
-    #@-node:ekr.20081019045904.2:Focus (qtTree)
-    #@+node:ekr.20081004172422.844:Selecting & editing... (qtTree)
-    #@+node:ekr.20081004172422.799:edit_widget
+    #@-node:ekr.20081121105001.453:Focus (qtTree)
+    #@+node:ekr.20081121105001.454:Selecting & editing... (qtTree)
+    #@+node:ekr.20081121105001.160:edit_widget
     def edit_widget (self,p):
 
         """Returns the Qt.Edit widget for position p."""
@@ -4594,8 +4594,8 @@ class leoQtTree (leoFrame.leoTree):
 
         # Decouple all of the core's headline code.
         # Except for over-ridden methods.
-    #@-node:ekr.20081004172422.799:edit_widget
-    #@+node:ekr.20081025124450.14:beforeSelectHint
+    #@-node:ekr.20081121105001.160:edit_widget
+    #@+node:ekr.20081121105001.455:beforeSelectHint
     def beforeSelectHint (self,p,old_p):
 
         w = self.treeWidget ; trace = True
@@ -4609,8 +4609,8 @@ class leoQtTree (leoFrame.leoTree):
 
         # Disable onTextChanged.
         self.selecting = True
-    #@-node:ekr.20081025124450.14:beforeSelectHint
-    #@+node:ekr.20081025124450.15:afterSelectHint
+    #@-node:ekr.20081121105001.455:beforeSelectHint
+    #@+node:ekr.20081121105001.456:afterSelectHint
     def afterSelectHint (self,p,old_p):
 
         c = self.c ; w = self.treeWidget ; trace = False
@@ -4632,8 +4632,8 @@ class leoQtTree (leoFrame.leoTree):
         # if item:
         #    w.scrollToItem(item,
         #        QtGui.QAbstractItemView.PositionAtCenter)
-    #@-node:ekr.20081025124450.15:afterSelectHint
-    #@+node:ekr.20081004172422.854:setHeadline
+    #@-node:ekr.20081121105001.456:afterSelectHint
+    #@+node:ekr.20081121105001.457:setHeadline
     def setHeadline (self,p,s):
 
         '''Set the actual text of the headline widget.
@@ -4651,8 +4651,8 @@ class leoQtTree (leoFrame.leoTree):
             # # g.trace(repr(s),w.getAllText())
         # else:
             # g.trace('-'*20,'oops')
-    #@-node:ekr.20081004172422.854:setHeadline
-    #@+node:ekr.20081004172422.846:editLabel (override)
+    #@-node:ekr.20081121105001.457:setHeadline
+    #@+node:ekr.20081121105001.156:editLabel (override)
     def editLabel (self,p,selectAll=False):
 
         """Start editing p's headline."""
@@ -4711,13 +4711,13 @@ class leoQtTree (leoFrame.leoTree):
 
         # A nice hack: just set the focus request.
         c.requestedFocusWidget = e
-    #@-node:ekr.20081004172422.846:editLabel (override)
-    #@+node:ekr.20081117065611.11:editLabelHelper
+    #@-node:ekr.20081121105001.156:editLabel (override)
+    #@+node:ekr.20081121105001.458:editLabelHelper
     def editLabelHelper (self,item):
 
         '''A helper shared by editLabel and onItemDoubleClicked.'''
-    #@-node:ekr.20081117065611.11:editLabelHelper
-    #@+node:ekr.20081030120643.11:onHeadChanged
+    #@-node:ekr.20081121105001.458:editLabelHelper
+    #@+node:ekr.20081121105001.163:onHeadChanged
     # Tricky code: do not change without careful thought and testing.
 
     def onHeadChanged (self,p,undoType='Typing',s=None):
@@ -4769,18 +4769,18 @@ class leoQtTree (leoFrame.leoTree):
         else:
             c.bodyWantsFocus()
     #@nonl
-    #@-node:ekr.20081030120643.11:onHeadChanged
-    #@-node:ekr.20081004172422.844:Selecting & editing... (qtTree)
+    #@-node:ekr.20081121105001.163:onHeadChanged
+    #@-node:ekr.20081121105001.454:Selecting & editing... (qtTree)
     #@-others
-#@-node:ekr.20081004172422.732:class leoQtTree
-#@+node:ekr.20081004172422.684:class leoQtTreeTab
+#@-node:ekr.20081121105001.400:class leoQtTree
+#@+node:ekr.20081121105001.459:class leoQtTreeTab
 class leoQtTreeTab (leoFrame.leoTreeTab):
 
     '''A class representing a tabbed outline pane drawn with Qt.'''
 
     #@    @+others
-    #@+node:ekr.20081004172422.685: Birth & death
-    #@+node:ekr.20081004172422.686: ctor (leoTreeTab)
+    #@+node:ekr.20081121105001.460: Birth & death
+    #@+node:ekr.20081121105001.461: ctor (leoTreeTab)
     def __init__ (self,c,parentFrame,chapterController):
 
         leoFrame.leoTreeTab.__init__ (self,c,chapterController,parentFrame)
@@ -4789,8 +4789,8 @@ class leoQtTreeTab (leoFrame.leoTreeTab):
         self.tabNames = [] # The list of tab names.  Changes when tabs are renamed.
 
         self.createControl()
-    #@-node:ekr.20081004172422.686: ctor (leoTreeTab)
-    #@+node:ekr.20081004172422.687:tt.createControl
+    #@-node:ekr.20081121105001.461: ctor (leoTreeTab)
+    #@+node:ekr.20081121105001.462:tt.createControl
     def createControl (self):
 
         return None
@@ -4814,10 +4814,10 @@ class leoQtTreeTab (leoFrame.leoTreeTab):
 
         # # Actually add tt.frame to the icon row.
         # c.frame.addIconWidget(tt.frame)
-    #@-node:ekr.20081004172422.687:tt.createControl
-    #@-node:ekr.20081004172422.685: Birth & death
-    #@+node:ekr.20081004172422.688:Tabs...
-    #@+node:ekr.20081004172422.689:tt.createTab
+    #@-node:ekr.20081121105001.462:tt.createControl
+    #@-node:ekr.20081121105001.460: Birth & death
+    #@+node:ekr.20081121105001.463:Tabs...
+    #@+node:ekr.20081121105001.464:tt.createTab
     def createTab (self,tabName,select=True):
 
         tt = self
@@ -4825,8 +4825,8 @@ class leoQtTreeTab (leoFrame.leoTreeTab):
         # if tabName not in tt.tabNames:
             # tt.tabNames.append(tabName)
             # tt.setNames()
-    #@-node:ekr.20081004172422.689:tt.createTab
-    #@+node:ekr.20081004172422.690:tt.destroyTab
+    #@-node:ekr.20081121105001.464:tt.createTab
+    #@+node:ekr.20081121105001.465:tt.destroyTab
     def destroyTab (self,tabName):
 
         tt = self
@@ -4834,8 +4834,8 @@ class leoQtTreeTab (leoFrame.leoTreeTab):
         # if tabName in tt.tabNames:
             # tt.tabNames.remove(tabName)
             # tt.setNames()
-    #@-node:ekr.20081004172422.690:tt.destroyTab
-    #@+node:ekr.20081004172422.691:tt.selectTab
+    #@-node:ekr.20081121105001.465:tt.destroyTab
+    #@+node:ekr.20081121105001.466:tt.selectTab
     def selectTab (self,tabName):
 
         tt = self
@@ -4847,14 +4847,14 @@ class leoQtTreeTab (leoFrame.leoTreeTab):
 
         # self.c.redraw()
         # self.c.outerUpdate()
-    #@-node:ekr.20081004172422.691:tt.selectTab
-    #@+node:ekr.20081004172422.692:tt.setTabLabel
+    #@-node:ekr.20081121105001.466:tt.selectTab
+    #@+node:ekr.20081121105001.467:tt.setTabLabel
     def setTabLabel (self,tabName):
 
         tt = self
     #     tt.chapterVar.set(tabName)
-    #@-node:ekr.20081004172422.692:tt.setTabLabel
-    #@+node:ekr.20081004172422.693:tt.setNames
+    #@-node:ekr.20081121105001.467:tt.setTabLabel
+    #@+node:ekr.20081121105001.468:tt.setNames
     def setNames (self):
 
         '''Recreate the list of items.'''
@@ -4865,12 +4865,12 @@ class leoQtTreeTab (leoFrame.leoTreeTab):
         # names.sort()
         # names.insert(0,'main')
         # tt.chapterMenu.setitems(names)
-    #@-node:ekr.20081004172422.693:tt.setNames
-    #@-node:ekr.20081004172422.688:Tabs...
+    #@-node:ekr.20081121105001.468:tt.setNames
+    #@-node:ekr.20081121105001.463:Tabs...
     #@-others
 #@nonl
-#@-node:ekr.20081004172422.684:class leoQtTreeTab
-#@+node:ekr.20081006073635.34:class qtMenuWrapper (QtMenu,leoQtMenu)
+#@-node:ekr.20081121105001.459:class leoQtTreeTab
+#@+node:ekr.20081121105001.469:class qtMenuWrapper (QtMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
 
     def __init__ (self,c,frame,parent):
@@ -4883,8 +4883,8 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
     def __repr__(self):
 
         return '<qtMenuWrapper %s>' % self.leo_label or 'unlabeled'
-#@-node:ekr.20081006073635.34:class qtMenuWrapper (QtMenu,leoQtMenu)
-#@+node:ekr.20081007015817.34:class qtSearchWidget
+#@-node:ekr.20081121105001.469:class qtMenuWrapper (QtMenu,leoQtMenu)
+#@+node:ekr.20081121105001.470:class qtSearchWidget
 class qtSearchWidget:
 
     """A dummy widget class to pass to Leo's core find code."""
@@ -4897,17 +4897,17 @@ class qtSearchWidget:
         self.body = self
         self.text = None
 #@nonl
-#@-node:ekr.20081007015817.34:class qtSearchWidget
-#@-node:ekr.20081103071436.3:Frame and component classes...
-#@+node:ekr.20081109092601.10:Gui wrapper
-#@+node:ekr.20081004102201.631:class leoQtGui
+#@-node:ekr.20081121105001.470:class qtSearchWidget
+#@-node:ekr.20081121105001.194:Frame and component classes...
+#@+node:ekr.20081121105001.471:Gui wrapper
+#@+node:ekr.20081121105001.472:class leoQtGui
 class leoQtGui(leoGui.leoGui):
 
     '''A class implementing Leo's Qt gui.'''
 
     #@    @+others
-    #@+node:ekr.20081004102201.632:  Birth & death (qtGui)
-    #@+node:ekr.20081004102201.633: qtGui.__init__
+    #@+node:ekr.20081121105001.473:  Birth & death (qtGui)
+    #@+node:ekr.20081121105001.474: qtGui.__init__
     def __init__ (self):
 
         # Initialize the base class.
@@ -4921,16 +4921,16 @@ class leoQtGui(leoGui.leoGui):
         self.iconimages = {} # Image cache set by getIconImage().
 
         self.mGuiName = 'qt'
-    #@-node:ekr.20081004102201.633: qtGui.__init__
-    #@+node:ekr.20081004102201.634:createKeyHandlerClass (qtGui)
+    #@-node:ekr.20081121105001.474: qtGui.__init__
+    #@+node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
         ### Use the base class
         return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
 
         ### return qtKeyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-    #@-node:ekr.20081004102201.634:createKeyHandlerClass (qtGui)
-    #@+node:ekr.20081004102201.635:runMainLoop (qtGui)
+    #@-node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
+    #@+node:ekr.20081121105001.476:runMainLoop (qtGui)
     def runMainLoop(self):
 
         '''Start the Qt main loop.'''
@@ -4945,15 +4945,15 @@ class leoQtGui(leoGui.leoGui):
                 g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
         else:
             sys.exit(self.qtApp.exec_())
-    #@-node:ekr.20081004102201.635:runMainLoop (qtGui)
-    #@+node:ekr.20081004102201.636:destroySelf
+    #@-node:ekr.20081121105001.476:runMainLoop (qtGui)
+    #@+node:ekr.20081121105001.477:destroySelf
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()
         self.qtApp.exit()
     #@nonl
-    #@-node:ekr.20081004102201.636:destroySelf
-    #@-node:ekr.20081004102201.632:  Birth & death (qtGui)
-    #@+node:ekr.20081004102201.648:Clipboard
+    #@-node:ekr.20081121105001.477:destroySelf
+    #@-node:ekr.20081121105001.473:  Birth & death (qtGui)
+    #@+node:ekr.20081121105001.183:Clipboard
     def replaceClipboardWith (self,s):
 
         '''Replace the clipboard with the string s.'''
@@ -4975,8 +4975,8 @@ class leoQtGui(leoGui.leoGui):
         # g.trace (len(s),type(s))
         return s
     #@nonl
-    #@-node:ekr.20081004102201.648:Clipboard
-    #@+node:ekr.20081004102201.651:Do nothings
+    #@-node:ekr.20081121105001.183:Clipboard
+    #@+node:ekr.20081121105001.478:Do nothings
     def color (self,color):         return None
 
     def createRootWindow(self):     pass
@@ -4989,9 +4989,9 @@ class leoQtGui(leoGui.leoGui):
         after a previous gui has terminated with killGui(False)."""
 
 
-    #@-node:ekr.20081004102201.651:Do nothings
-    #@+node:ekr.20081004102201.640:Dialogs & panels
-    #@+node:ekr.20081109092601.11:makeFilter
+    #@-node:ekr.20081121105001.478:Do nothings
+    #@+node:ekr.20081121105001.479:Dialogs & panels
+    #@+node:ekr.20081121105001.480:makeFilter
     def makeFilter (self,filetypes):
 
         '''Return the Qt-style dialog filter from filetypes list.'''
@@ -4999,8 +4999,8 @@ class leoQtGui(leoGui.leoGui):
         filters = ['%s (%s)' % (z) for z in filetypes]
 
         return ';;'.join(filters)
-    #@-node:ekr.20081109092601.11:makeFilter
-    #@+node:ekr.20081020075840.18:not used
+    #@-node:ekr.20081121105001.480:makeFilter
+    #@+node:ekr.20081121105001.481:not used
     def runAskOkCancelNumberDialog(self,c,title,message):
 
         """Create and run askOkCancelNumber dialog ."""
@@ -5016,8 +5016,8 @@ class leoQtGui(leoGui.leoGui):
         g.trace('not ready yet')
 
 
-    #@-node:ekr.20081020075840.18:not used
-    #@+node:ekr.20081004102201.646:qtGui panels
+    #@-node:ekr.20081121105001.481:not used
+    #@+node:ekr.20081121105001.482:qtGui panels
     def createComparePanel(self,c):
 
         """Create a qt color picker panel."""
@@ -5036,8 +5036,8 @@ class leoQtGui(leoGui.leoGui):
     def createSpellTab(self,c,spellHandler,tabName):
         return leoQtSpellTab(c,spellHandler,tabName)
 
-    #@-node:ekr.20081004102201.646:qtGui panels
-    #@+node:ekr.20081020075840.14:runAboutLeoDialog
+    #@-node:ekr.20081121105001.482:qtGui panels
+    #@+node:ekr.20081121105001.483:runAboutLeoDialog
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
 
         """Create and run a qt About Leo dialog."""
@@ -5053,8 +5053,8 @@ class leoQtGui(leoGui.leoGui):
         yes = d.addButton('Ok',b.YesRole)
         d.setDefaultButton(yes)
         d.exec_()
-    #@-node:ekr.20081020075840.14:runAboutLeoDialog
-    #@+node:ekr.20081020075840.15:runAskLeoIDDialog
+    #@-node:ekr.20081121105001.483:runAboutLeoDialog
+    #@+node:ekr.20081121105001.484:runAskLeoIDDialog
     def runAskLeoIDDialog(self):
 
         """Create and run a dialog to get g.app.LeoID."""
@@ -5072,8 +5072,8 @@ class leoQtGui(leoGui.leoGui):
         s,ok = QtGui.QInputDialog.getText(parent,title,message)
         return g.app.gui.toUnicode(s)
     #@nonl
-    #@-node:ekr.20081020075840.15:runAskLeoIDDialog
-    #@+node:ekr.20081020075840.17:runAskOkDialog
+    #@-node:ekr.20081121105001.484:runAskLeoIDDialog
+    #@+node:ekr.20081121105001.485:runAskOkDialog
     def runAskOkDialog(self,c,title,message=None,text="Ok"):
 
         """Create and run a qt an askOK dialog ."""
@@ -5089,8 +5089,8 @@ class leoQtGui(leoGui.leoGui):
         yes = d.addButton(text,b.YesRole)
         d.exec_()
 
-    #@-node:ekr.20081020075840.17:runAskOkDialog
-    #@+node:ekr.20081020075840.12:runAskYesNoCancelDialog
+    #@-node:ekr.20081121105001.485:runAskOkDialog
+    #@+node:ekr.20081121105001.486:runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(self,c,title,
         message=None,
         yesMessage="&Yes",noMessage="&No",defaultButton="Yes"
@@ -5118,8 +5118,8 @@ class leoQtGui(leoGui.leoGui):
         elif val == 1: val = 'no'
         else:          val = 'cancel'
         return val
-    #@-node:ekr.20081020075840.12:runAskYesNoCancelDialog
-    #@+node:ekr.20081020075840.16:runAskYesNoDialog
+    #@-node:ekr.20081121105001.486:runAskYesNoCancelDialog
+    #@+node:ekr.20081121105001.487:runAskYesNoDialog
     def runAskYesNoDialog(self,c,title,message=None):
 
         """Create and run an askYesNo dialog."""
@@ -5138,8 +5138,8 @@ class leoQtGui(leoGui.leoGui):
         val = d.exec_()
         return g.choose(val == 0,'yes','no')
 
-    #@-node:ekr.20081020075840.16:runAskYesNoDialog
-    #@+node:ekr.20081004102201.644:runOpenFileDialog
+    #@-node:ekr.20081121105001.487:runAskYesNoDialog
+    #@+node:ekr.20081121105001.488:runOpenFileDialog
     def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
 
         """Create and run an Qt open file dialog ."""
@@ -5149,8 +5149,8 @@ class leoQtGui(leoGui.leoGui):
         s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
         return g.app.gui.toUnicode(s)
     #@nonl
-    #@-node:ekr.20081004102201.644:runOpenFileDialog
-    #@+node:ekr.20081004102201.645:runSaveFileDialog
+    #@-node:ekr.20081121105001.488:runOpenFileDialog
+    #@+node:ekr.20081121105001.489:runSaveFileDialog
     def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
 
         """Create and run an Qt save file dialog ."""
@@ -5159,8 +5159,8 @@ class leoQtGui(leoGui.leoGui):
         filter = self.makeFilter(filetypes)
         s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter)
         return g.app.gui.toUnicode(s)
-    #@-node:ekr.20081004102201.645:runSaveFileDialog
-    #@+node:ekr.20081120092739.1:runScrolledMessageDialog
+    #@-node:ekr.20081121105001.489:runSaveFileDialog
+    #@+node:ekr.20081121105001.490:runScrolledMessageDialog
     def runScrolledMessageDialog (self,title,label,msg):
 
         if g.unitTesting: return None
@@ -5174,9 +5174,9 @@ class leoQtGui(leoGui.leoGui):
         d.setIcon(b.Information)
         yes = d.addButton('Ok',b.YesRole)
         d.exec_()
-    #@-node:ekr.20081120092739.1:runScrolledMessageDialog
-    #@-node:ekr.20081004102201.640:Dialogs & panels
-    #@+node:ekr.20081004102201.657:Focus (qtGui)
+    #@-node:ekr.20081121105001.490:runScrolledMessageDialog
+    #@-node:ekr.20081121105001.479:Dialogs & panels
+    #@+node:ekr.20081121105001.491:Focus (qtGui)
     def get_focus(self,c=None):
 
         """Returns the widget that has focus."""
@@ -5192,9 +5192,9 @@ class leoQtGui(leoGui.leoGui):
         if w:
             # g.trace('leoQtGui',w,g.callers(4))
             w.setFocus()
-    #@-node:ekr.20081004102201.657:Focus (qtGui)
-    #@+node:ekr.20081004102201.660:Font
-    #@+node:ekr.20081004102201.661:qtGui.getFontFromParams
+    #@-node:ekr.20081121105001.491:Focus (qtGui)
+    #@+node:ekr.20081121105001.492:Font
+    #@+node:ekr.20081121105001.493:qtGui.getFontFromParams
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
 
         try: size = int(size)
@@ -5220,9 +5220,9 @@ class leoQtGui(leoGui.leoGui):
             g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
-    #@-node:ekr.20081004102201.661:qtGui.getFontFromParams
-    #@-node:ekr.20081004102201.660:Font
-    #@+node:ekr.20081004102201.662:getFullVersion
+    #@-node:ekr.20081121105001.493:qtGui.getFontFromParams
+    #@-node:ekr.20081121105001.492:Font
+    #@+node:ekr.20081121105001.494:getFullVersion
     def getFullVersion (self,c):
 
         try:
@@ -5232,9 +5232,9 @@ class leoQtGui(leoGui.leoGui):
             qtLevel = '<qtLevel>'
 
         return 'qt %s' % (qtLevel)
-    #@-node:ekr.20081004102201.662:getFullVersion
-    #@+node:ekr.20081004102201.663:Icons
-    #@+node:ekr.20081004102201.664:attachLeoIcon
+    #@-node:ekr.20081121105001.494:getFullVersion
+    #@+node:ekr.20081121105001.495:Icons
+    #@+node:ekr.20081121105001.496:attachLeoIcon
     def attachLeoIcon (self,window):
 
         """Attach a Leo icon to the window."""
@@ -5242,8 +5242,8 @@ class leoQtGui(leoGui.leoGui):
         icon = self.getIconImage('leoApp.ico')
 
         window.setWindowIcon(icon)
-    #@-node:ekr.20081004102201.664:attachLeoIcon
-    #@+node:ekr.20081010070648.12:getIconImage
+    #@-node:ekr.20081121105001.496:attachLeoIcon
+    #@+node:ekr.20081121105001.497:getIconImage
     def getIconImage (self,name):
 
         '''Load the icon and return it.'''
@@ -5268,10 +5268,10 @@ class leoQtGui(leoGui.leoGui):
             g.es("exception loading:",fullname)
             g.es_exception()
             return None
-    #@-node:ekr.20081010070648.12:getIconImage
-    #@-node:ekr.20081004102201.663:Icons
-    #@+node:ekr.20081004102201.667:Idle Time (to do)
-    #@+node:ekr.20081004102201.668:qtGui.setIdleTimeHook
+    #@-node:ekr.20081121105001.497:getIconImage
+    #@-node:ekr.20081121105001.495:Icons
+    #@+node:ekr.20081121105001.498:Idle Time (to do)
+    #@+node:ekr.20081121105001.499:qtGui.setIdleTimeHook
     def setIdleTimeHook (self,idleTimeHookHandler):
 
         # if self.root:
@@ -5279,17 +5279,17 @@ class leoQtGui(leoGui.leoGui):
 
         pass
     #@nonl
-    #@-node:ekr.20081004102201.668:qtGui.setIdleTimeHook
-    #@+node:ekr.20081004102201.669:setIdleTimeHookAfterDelay
+    #@-node:ekr.20081121105001.499:qtGui.setIdleTimeHook
+    #@+node:ekr.20081121105001.500:setIdleTimeHookAfterDelay
     def setIdleTimeHookAfterDelay (self,idleTimeHookHandler):
 
         pass
 
         # if self.root:
             # g.app.root.after(g.app.idleTimeDelay,idleTimeHookHandler)
-    #@-node:ekr.20081004102201.669:setIdleTimeHookAfterDelay
-    #@-node:ekr.20081004102201.667:Idle Time (to do)
-    #@+node:ekr.20081004102201.670:isTextWidget
+    #@-node:ekr.20081121105001.500:setIdleTimeHookAfterDelay
+    #@-node:ekr.20081121105001.498:Idle Time (to do)
+    #@+node:ekr.20081121105001.501:isTextWidget
     def isTextWidget (self,w):
 
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
@@ -5302,8 +5302,8 @@ class leoQtGui(leoGui.leoGui):
             isinstance(w,leoQtBaseTextWidget)
         )
 
-    #@-node:ekr.20081004102201.670:isTextWidget
-    #@+node:edward.20081118061156.1:toUnicode
+    #@-node:ekr.20081121105001.501:isTextWidget
+    #@+node:ekr.20081121105001.502:toUnicode
     def toUnicode (self,s):
 
         if g.isPython3:
@@ -5313,8 +5313,8 @@ class leoQtGui(leoGui.leoGui):
                 return g.toUnicode(s,'utf-8',reportErrors=True)
             else:
                 return unicode(s)
-    #@-node:edward.20081118061156.1:toUnicode
-    #@+node:ekr.20081015062931.11:widget_name (qtGui)
+    #@-node:ekr.20081121105001.502:toUnicode
+    #@+node:ekr.20081121105001.503:widget_name (qtGui)
     def widget_name (self,w):
 
         # First try the widget's getName method.
@@ -5333,8 +5333,8 @@ class leoQtGui(leoGui.leoGui):
 
         # g.trace(name,w,g.callers(4))
         return name
-    #@-node:ekr.20081015062931.11:widget_name (qtGui)
-    #@+node:ekr.20081004102201.671:makeScriptButton (to do)
+    #@-node:ekr.20081121105001.503:widget_name (qtGui)
+    #@+node:ekr.20081121105001.504:makeScriptButton (to do)
     def makeScriptButton (self,c,
         args=None,
         p=None, # A node containing the script.
@@ -5352,13 +5352,13 @@ class leoQtGui(leoGui.leoGui):
         if p and not buttonText: buttonText = p.headString().strip()
         if not buttonText: buttonText = 'Unnamed Script Button'
         #@    << create the button b >>
-        #@+node:ekr.20081004102201.672:<< create the button b >>
+        #@+node:ekr.20081121105001.505:<< create the button b >>
         iconBar = c.frame.getIconBarObject()
         b = iconBar.add(text=buttonText)
-        #@-node:ekr.20081004102201.672:<< create the button b >>
+        #@-node:ekr.20081121105001.505:<< create the button b >>
         #@nl
         #@    << define the callbacks for b >>
-        #@+node:ekr.20081004102201.673:<< define the callbacks for b >>
+        #@+node:ekr.20081121105001.506:<< define the callbacks for b >>
         def deleteButtonCallback(event=None,b=b,c=c):
             if b: b.pack_forget()
             c.bodyWantsFocus()
@@ -5377,22 +5377,22 @@ class leoQtGui(leoGui.leoGui):
                     g.es("removing","'%s'" % (buttonText),"button at its request")
                     b.pack_forget()
             # Do not assume the script will want to remain in this commander.
-        #@-node:ekr.20081004102201.673:<< define the callbacks for b >>
+        #@-node:ekr.20081121105001.506:<< define the callbacks for b >>
         #@nl
         b.configure(command=executeScriptCallback)
         c.bind(b,'<3>',deleteButtonCallback)
         if shortcut:
             #@        << bind the shortcut to executeScriptCallback >>
-            #@+node:ekr.20081004102201.674:<< bind the shortcut to executeScriptCallback >>
+            #@+node:ekr.20081121105001.507:<< bind the shortcut to executeScriptCallback >>
             func = executeScriptCallback
             shortcut = k.canonicalizeShortcut(shortcut)
             ok = k.bindKey ('button', shortcut,func,buttonText)
             if ok:
                 g.es_print('bound @button',buttonText,'to',shortcut,color='blue')
-            #@-node:ekr.20081004102201.674:<< bind the shortcut to executeScriptCallback >>
+            #@-node:ekr.20081121105001.507:<< bind the shortcut to executeScriptCallback >>
             #@nl
         #@    << create press-buttonText-button command >>
-        #@+node:ekr.20081004102201.675:<< create press-buttonText-button command >>
+        #@+node:ekr.20081121105001.508:<< create press-buttonText-button command >>
         aList = [g.choose(ch.isalnum(),ch,'-') for ch in buttonText]
 
         buttonCommandName = ''.join(aList)
@@ -5401,14 +5401,14 @@ class leoQtGui(leoGui.leoGui):
 
         # This will use any shortcut defined in an @shortcuts node.
         k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
-        #@-node:ekr.20081004102201.675:<< create press-buttonText-button command >>
+        #@-node:ekr.20081121105001.508:<< create press-buttonText-button command >>
         #@nl
-    #@-node:ekr.20081004102201.671:makeScriptButton (to do)
+    #@-node:ekr.20081121105001.504:makeScriptButton (to do)
     #@-others
-#@-node:ekr.20081004102201.631:class leoQtGui
-#@-node:ekr.20081109092601.10:Gui wrapper
-#@+node:ville.20081011134505.13:Non-essential
-#@+node:ville.20081011134505.11:class LeoQuickSearchWidget
+#@-node:ekr.20081121105001.472:class leoQtGui
+#@-node:ekr.20081121105001.471:Gui wrapper
+#@+node:ekr.20081121105001.509:Non-essential
+#@+node:ekr.20081121105001.510:class LeoQuickSearchWidget
 import qt_quicksearch
 
 def install_qt_quicksearch_tab(c):
@@ -5421,7 +5421,7 @@ g.insqs = install_qt_quicksearch_tab
 class LeoQuickSearchWidget(QtGui.QWidget):
     """ Real-time search widget """
     #@    @+others
-    #@+node:ville.20081011134505.12:methods
+    #@+node:ekr.20081121105001.511:methods
     import qt_quicksearch
     def __init__(self, c, parent = None):
         QtGui.QWidget.__init__(self, parent)
@@ -5468,10 +5468,10 @@ class LeoQuickSearchWidget(QtGui.QWidget):
             if pat in p.headString():
                 yield p
         return 
-    #@-node:ville.20081011134505.12:methods
+    #@-node:ekr.20081121105001.511:methods
     #@-others
-#@-node:ville.20081011134505.11:class LeoQuickSearchWidget
-#@+node:ville.20081014172405.11:quickheadlines
+#@-node:ekr.20081121105001.510:class LeoQuickSearchWidget
+#@+node:ekr.20081121105001.512:quickheadlines
 def install_qt_quickheadlines_tab(c):
     global __qh
     __qh = QuickHeadlines(c)
@@ -5505,10 +5505,10 @@ class QuickHeadlines:
 
 
 
-#@-node:ville.20081014172405.11:quickheadlines
-#@-node:ville.20081011134505.13:Non-essential
-#@+node:ekr.20081103071436.4:Key handling
-#@+node:ekr.20081004102201.676:class leoKeyEvent
+#@-node:ekr.20081121105001.512:quickheadlines
+#@-node:ekr.20081121105001.509:Non-essential
+#@+node:ekr.20081121105001.513:Key handling
+#@+node:ekr.20081121105001.514:class leoKeyEvent
 class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
@@ -5539,12 +5539,12 @@ class leoKeyEvent:
     def __repr__ (self):
 
         return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
-#@-node:ekr.20081004102201.676:class leoKeyEvent
-#@+node:ekr.20081004102201.628:class leoQtEventFilter
+#@-node:ekr.20081121105001.514:class leoKeyEvent
+#@+node:ekr.20081121105001.166:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
     #@    << about internal bindings >>
-    #@+node:ekr.20081007115148.6:<< about internal bindings >>
+    #@+node:ekr.20081121105001.167:<< about internal bindings >>
     #@@nocolor-node
     #@+at
     # 
@@ -5584,11 +5584,11 @@ class leoQtEventFilter(QtCore.QObject):
     # rules.
     #@-at
     #@nonl
-    #@-node:ekr.20081007115148.6:<< about internal bindings >>
+    #@-node:ekr.20081121105001.167:<< about internal bindings >>
     #@nl
 
     #@    @+others
-    #@+node:ekr.20081013143507.12:eventFilter
+    #@+node:ekr.20081121105001.168:eventFilter
     def eventFilter(self, obj, event):
 
         c = self.c ; k = c.k 
@@ -5627,8 +5627,8 @@ class leoQtEventFilter(QtCore.QObject):
         if trace: self.traceEvent(obj,event,tkKey,override)
 
         return override
-    #@-node:ekr.20081013143507.12:eventFilter
-    #@+node:ekr.20081011152302.10:toStroke
+    #@-node:ekr.20081121105001.168:eventFilter
+    #@+node:ekr.20081121105001.169:toStroke
     def toStroke (self,tkKey,ch):
 
         k = self.c.k ; s = tkKey ; trace = False
@@ -5655,8 +5655,8 @@ class leoQtEventFilter(QtCore.QObject):
 
         if trace: g.trace('tkKey',tkKey,'-->',s)
         return s
-    #@-node:ekr.20081011152302.10:toStroke
-    #@+node:ekr.20081008084746.1:toTkKey
+    #@-node:ekr.20081121105001.169:toStroke
+    #@+node:ekr.20081121105001.170:toTkKey
     def toTkKey (self,event):
 
         mods = self.qtMods(event)
@@ -5667,7 +5667,7 @@ class leoQtEventFilter(QtCore.QObject):
             event,mods,keynum,text,toString,ch)
 
         return tkKey,ch,ignore
-    #@+node:ekr.20081024164012.10:isFKey
+    #@+node:ekr.20081121105001.171:isFKey
     def isFKey(self,ch):
 
         return (
@@ -5675,8 +5675,8 @@ class leoQtEventFilter(QtCore.QObject):
             ch[0].lower() == 'f' and
             ch[1:].isdigit()
         )
-    #@-node:ekr.20081024164012.10:isFKey
-    #@+node:ekr.20081028055229.1:qtKey
+    #@-node:ekr.20081121105001.171:isFKey
+    #@+node:ekr.20081121105001.172:qtKey
     def qtKey (self,event):
 
         '''Return the components of a Qt key event.'''
@@ -5695,8 +5695,8 @@ class leoQtEventFilter(QtCore.QObject):
         return keynum,text,toString,ch
 
 
-    #@-node:ekr.20081028055229.1:qtKey
-    #@+node:ekr.20081028055229.2:qtMods
+    #@-node:ekr.20081121105001.172:qtKey
+    #@+node:ekr.20081121105001.173:qtMods
     def qtMods (self,event):
 
         modifiers = event.modifiers()
@@ -5715,8 +5715,8 @@ class leoQtEventFilter(QtCore.QObject):
         mods = [b for a,b in table if (modifiers & a)]
 
         return mods
-    #@-node:ekr.20081028055229.2:qtMods
-    #@+node:ekr.20081028055229.3:tkKey & helpers
+    #@-node:ekr.20081121105001.173:qtMods
+    #@+node:ekr.20081121105001.174:tkKey & helpers
     def tkKey (self,event,mods,keynum,text,toString,ch):
 
         '''Carefully convert the Qt key to a 
@@ -5766,7 +5766,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         ch = text or toString # was ch
         return tkKey,ch,ignore
-    #@+node:ekr.20081028055229.16:keyboardUpper1
+    #@+node:ekr.20081121105001.175:keyboardUpper1
     def keyboardUpper1 (self,ch):
 
         '''A horrible, keyboard-dependent hack.
@@ -5790,8 +5790,8 @@ class leoQtEventFilter(QtCore.QObject):
         # g.trace(ch,d.get(ch))
         return d.get(ch)
 
-    #@-node:ekr.20081028055229.16:keyboardUpper1
-    #@+node:ekr.20081028055229.17:keyboardUpperLong
+    #@-node:ekr.20081121105001.175:keyboardUpper1
+    #@+node:ekr.20081121105001.176:keyboardUpperLong
     def keyboardUpperLong (self,ch):
 
         '''A horrible, keyboard-dependent hack.
@@ -5814,8 +5814,8 @@ class leoQtEventFilter(QtCore.QObject):
         }
         # g.trace(ch,d.get(ch))
         return d.get(ch)
-    #@-node:ekr.20081028055229.17:keyboardUpperLong
-    #@+node:ekr.20081028055229.14:shifted
+    #@-node:ekr.20081121105001.176:keyboardUpperLong
+    #@+node:ekr.20081121105001.177:shifted
     def shifted (self,mods,ch):
         '''
             A horrible, keyboard-dependent kludge.
@@ -5858,8 +5858,8 @@ class leoQtEventFilter(QtCore.QObject):
                 pass # Retain shift modifier for all special keys.
 
         return mods,ch
-    #@-node:ekr.20081028055229.14:shifted
-    #@+node:ekr.20081028134004.11:shifted2
+    #@-node:ekr.20081121105001.177:shifted
+    #@+node:ekr.20081121105001.178:shifted2
     # This idea doesn't work.  The key-code in the ctor overrides everything else.
 
     def shifted2 (self,event):
@@ -5881,10 +5881,10 @@ class leoQtEventFilter(QtCore.QObject):
         g.trace(
             'keynum: %s, mods: %s text: %s, toString: %s' % (
             keynum,mods,repr(text),toString))
-    #@-node:ekr.20081028134004.11:shifted2
-    #@-node:ekr.20081028055229.3:tkKey & helpers
-    #@-node:ekr.20081008084746.1:toTkKey
-    #@+node:ekr.20081013143507.11:traceEvent
+    #@-node:ekr.20081121105001.178:shifted2
+    #@-node:ekr.20081121105001.174:tkKey & helpers
+    #@-node:ekr.20081121105001.170:toTkKey
+    #@+node:ekr.20081121105001.179:traceEvent
     def traceEvent (self,obj,event,tkKey,override):
 
         c = self.c ; e = QtCore.QEvent
@@ -5924,8 +5924,8 @@ class leoQtEventFilter(QtCore.QObject):
 
         if False and eventType not in ignore:
             g.trace('%3s:%s' % (eventType,'unknown'))
-    #@-node:ekr.20081013143507.11:traceEvent
-    #@+node:ekr.20081018155359.10: ctor
+    #@-node:ekr.20081121105001.179:traceEvent
+    #@+node:ekr.20081121105001.180: ctor
     def __init__(self,c,w,tag=''):
 
         # Init the base class.
@@ -5941,8 +5941,8 @@ class leoQtEventFilter(QtCore.QObject):
         self.flashers = open_flashers + close_flashers
 
 
-    #@-node:ekr.20081018155359.10: ctor
-    #@+node:ekr.20081015132934.10:isDangerous
+    #@-node:ekr.20081121105001.180: ctor
+    #@+node:ekr.20081121105001.181:isDangerous
     def isDangerous (self,tkKey,ch):
 
         c = self.c
@@ -5966,8 +5966,8 @@ class leoQtEventFilter(QtCore.QObject):
 
         # g.trace(tkKey,ch,val)
         return val
-    #@-node:ekr.20081015132934.10:isDangerous
-    #@+node:ekr.20081111065912.10:isSpecialOverride
+    #@-node:ekr.20081121105001.181:isDangerous
+    #@+node:ekr.20081121105001.182:isSpecialOverride
     def isSpecialOverride (self,tkKey,ch):
 
         # g.trace(repr(tkKey),repr(ch))
@@ -5980,17 +5980,17 @@ class leoQtEventFilter(QtCore.QObject):
             return True
         else:
             return False
-    #@-node:ekr.20081111065912.10:isSpecialOverride
+    #@-node:ekr.20081121105001.182:isSpecialOverride
     #@-others
-#@-node:ekr.20081004102201.628:class leoQtEventFilter
-#@-node:ekr.20081103071436.4:Key handling
-#@+node:ekr.20081031074959.16:Text widget classes...
-#@+node:ekr.20081031074959.12: class leoQtBaseTextWidget
+#@-node:ekr.20081121105001.166:class leoQtEventFilter
+#@-node:ekr.20081121105001.513:Key handling
+#@+node:ekr.20081121105001.515:Text widget classes...
+#@+node:ekr.20081121105001.516: class leoQtBaseTextWidget
 class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
     #@    @+others
-    #@+node:ekr.20081031074959.20: Birth
-    #@+node:ekr.20081031074959.17:ctor (leoQtBaseTextWidget)
+    #@+node:ekr.20081121105001.517: Birth
+    #@+node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
     def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
 
         self.widget = widget
@@ -6017,8 +6017,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             QtCore.SIGNAL("textChanged()"),self.onTextChanged)
 
         self.injectIvars(c)
-    #@-node:ekr.20081031074959.17:ctor (leoQtBaseTextWidget)
-    #@+node:ekr.20081007015817.77:injectIvars
+    #@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
+    #@+node:ekr.20081121105001.519:injectIvars
     def injectIvars (self,name='1',parentFrame=None):
 
         w = self ; p = self.c.currentPosition()
@@ -6045,14 +6045,14 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w.leo_selection = None
 
         return w
-    #@-node:ekr.20081007015817.77:injectIvars
-    #@-node:ekr.20081031074959.20: Birth
-    #@+node:ekr.20081031074959.15: Do nothings
+    #@-node:ekr.20081121105001.519:injectIvars
+    #@-node:ekr.20081121105001.517: Birth
+    #@+node:ekr.20081121105001.520: Do nothings
     def bind (self,stroke,command,**keys):
         pass # eventFilter handles all keys.
-    #@-node:ekr.20081031074959.15: Do nothings
-    #@+node:ekr.20081031074959.40: Must be defined in base class
-    #@+node:ekr.20081004172422.510: Focus
+    #@-node:ekr.20081121105001.520: Do nothings
+    #@+node:ekr.20081121105001.521: Must be defined in base class
+    #@+node:ekr.20081121105001.522: Focus
     def getFocus(self):
 
         g.trace('leoQtBody',self.widget,g.callers(4))
@@ -6070,8 +6070,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         # g.trace('leoQtBody',self.widget,g.callers(4))
         g.app.gui.set_focus(self.c,self.widget)
-    #@-node:ekr.20081004172422.510: Focus
-    #@+node:ekr.20081007115148.7: Indices
+    #@-node:ekr.20081121105001.522: Focus
+    #@+node:ekr.20081121105001.523: Indices
     def toPythonIndex (self,index):
 
         w = self
@@ -6092,16 +6092,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             return i
 
     toGuiIndex = toPythonIndex
-    #@-node:ekr.20081007115148.7: Indices
-    #@+node:ekr.20081007015817.99: Text getters/settters
-    #@+node:ekr.20081007015817.79:appendText
+    #@-node:ekr.20081121105001.523: Indices
+    #@+node:ekr.20081121105001.524: Text getters/settters
+    #@+node:ekr.20081121105001.525:appendText
     def appendText(self,s):
 
         s2 = self.getAllText()
         self.setAllText(s2+s,insert=len(s2))
 
-    #@-node:ekr.20081007015817.79:appendText
-    #@+node:ekr.20081008084746.6:delete
+    #@-node:ekr.20081121105001.525:appendText
+    #@+node:ekr.20081121105001.526:delete
     def delete (self,i,j=None):
 
         w = self.widget
@@ -6119,14 +6119,14 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         if i > 0 or j > 0: self.indexWarning('leoQtBody.delete')
         return i
-    #@-node:ekr.20081008084746.6:delete
-    #@+node:ekr.20081103131824.13:deleteTextSelection
+    #@-node:ekr.20081121105001.526:delete
+    #@+node:ekr.20081121105001.527:deleteTextSelection
     def deleteTextSelection (self):
 
         i,j = self.getSelectionRange()
         self.delete(i,j)
-    #@-node:ekr.20081103131824.13:deleteTextSelection
-    #@+node:ekr.20081007015817.80:get
+    #@-node:ekr.20081121105001.527:deleteTextSelection
+    #@+node:ekr.20081121105001.528:get
     def get(self,i,j=None):
 
         w = self.widget
@@ -6135,13 +6135,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if j is None: j = i+1
         j = self.toGuiIndex(j)
         return s[i:j]
-    #@-node:ekr.20081007015817.80:get
-    #@+node:ekr.20081007015817.84:getLastPosition
+    #@-node:ekr.20081121105001.528:get
+    #@+node:ekr.20081121105001.529:getLastPosition
     def getLastPosition(self):
 
         return len(self.getAllText())
-    #@-node:ekr.20081007015817.84:getLastPosition
-    #@+node:ekr.20081007015817.85:getSelectedText
+    #@-node:ekr.20081121105001.529:getLastPosition
+    #@+node:ekr.20081121105001.530:getSelectedText
     def getSelectedText(self):
 
         w = self.widget
@@ -6153,16 +6153,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             s = self.getAllText()
             # g.trace(repr(s[i:j]))
             return s[i:j]
-    #@-node:ekr.20081007015817.85:getSelectedText
-    #@+node:ekr.20081007015817.89:insert
+    #@-node:ekr.20081121105001.530:getSelectedText
+    #@+node:ekr.20081121105001.531:insert
     def insert(self,i,s):
 
         s2 = self.getAllText()
         i = self.toGuiIndex(i)
         self.setAllText(s2[:i] + s + s2[i:],insert=i+len(s))
         return i
-    #@-node:ekr.20081007015817.89:insert
-    #@+node:ekr.20081008175216.5:selectAllText
+    #@-node:ekr.20081121105001.531:insert
+    #@+node:ekr.20081121105001.532:selectAllText
     def selectAllText(self,insert=None):
 
         w = self.widget
@@ -6171,8 +6171,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             self.setInsertPoint(insert)
         # g.trace('insert',insert)
 
-    #@-node:ekr.20081008175216.5:selectAllText
-    #@+node:ekr.20081007015817.96:setSelectionRange & dummy helper
+    #@-node:ekr.20081121105001.532:selectAllText
+    #@+node:ekr.20081121105001.533:setSelectionRange & dummy helper
     def setSelectionRange(self,*args,**keys):
 
         # A kludge to allow a single arg containing i,j
@@ -6219,21 +6219,21 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 # cursor.movePosition(e.Left,e.KeepAnchor,k)
 
             # w.setTextCursor(cursor)
-    #@+node:ekr.20081119034855.11:setSelectionRangeHelper
+    #@+node:ekr.20081121105001.534:setSelectionRangeHelper
     def setSelectionRangeHelper(self,i,j,insert):
 
         self.oops()
-    #@-node:ekr.20081119034855.11:setSelectionRangeHelper
-    #@-node:ekr.20081007015817.96:setSelectionRange & dummy helper
-    #@-node:ekr.20081007015817.99: Text getters/settters
-    #@+node:ekr.20081103092019.10:getName (baseTextWidget)
+    #@-node:ekr.20081121105001.534:setSelectionRangeHelper
+    #@-node:ekr.20081121105001.533:setSelectionRange & dummy helper
+    #@-node:ekr.20081121105001.524: Text getters/settters
+    #@+node:ekr.20081121105001.535:getName (baseTextWidget)
     def getName (self):
 
         # g.trace('leoQtBaseTextWidget',self.name,g.callers())
 
         return self.name
-    #@-node:ekr.20081103092019.10:getName (baseTextWidget)
-    #@+node:ekr.20081011035036.1:onTextChanged
+    #@-node:ekr.20081121105001.535:getName (baseTextWidget)
+    #@+node:ekr.20081121105001.536:onTextChanged
     def onTextChanged (self):
 
         '''Update Leo after the body has been changed.
@@ -6293,8 +6293,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
         c.outerUpdate()
-    #@-node:ekr.20081011035036.1:onTextChanged
-    #@+node:ekr.20081016072304.12:indexWarning
+    #@-node:ekr.20081121105001.536:onTextChanged
+    #@+node:ekr.20081121105001.537:indexWarning
     warningsDict = {}
 
     def indexWarning (self,s):
@@ -6305,9 +6305,9 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # g.es_print('warning: using dubious indices in %s' % (s),color='red')
             # g.es_print('callers',g.callers(5))
             # self.warningsDict[s] = True
-    #@-node:ekr.20081016072304.12:indexWarning
-    #@-node:ekr.20081031074959.40: Must be defined in base class
-    #@+node:ekr.20081031074959.38: May be overridden in subclasses
+    #@-node:ekr.20081121105001.537:indexWarning
+    #@-node:ekr.20081121105001.521: Must be defined in base class
+    #@+node:ekr.20081121105001.538: May be overridden in subclasses
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         pass
 
@@ -6323,15 +6323,15 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def scrollLines(self,n):
         pass
 
-    #@+node:ekr.20081023113729.1:Configuration
+    #@+node:ekr.20081121105001.539:Configuration
     # Configuration will be handled by style sheets.
     def cget(self,*args,**keys):            return None
     def configure (self,*args,**keys):      pass
     def setBackgroundColor(self,color):     pass
     def setEditorColors (self,bg,fg):       pass
     def setForegroundColor(self,color):     pass
-    #@-node:ekr.20081023113729.1:Configuration
-    #@+node:ekr.20081004172422.516:Idle time
+    #@-node:ekr.20081121105001.539:Configuration
+    #@+node:ekr.20081121105001.540:Idle time
     def after_idle(self,func,threadCount):
         # g.trace(func.__name__,'threadCount',threadCount)
         return func(threadCount)
@@ -6346,8 +6346,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         g.trace()
         # if not g.app.unitTesting:
             # self.widget.after_idle(function,*args,**keys)
-    #@-node:ekr.20081004172422.516:Idle time
-    #@+node:ekr.20081023131208.10:Coloring
+    #@-node:ekr.20081121105001.540:Idle time
+    #@+node:ekr.20081121105001.541:Coloring
     def removeAllTags(self):
         s = self.getAllText()
         self.colorSelection(0,len(s),'black')
@@ -6368,7 +6368,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
     def tag_names (self):
         return []
-    #@+node:ekr.20081029084058.10:colorSelection
+    #@+node:ekr.20081121105001.542:colorSelection
     def colorSelection (self,i,j,colorName):
 
         w = self.widget
@@ -6381,10 +6381,10 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w.setTextColor(color)
         self.setSelectionRange(old_i,old_j,insert=old_ins)
         sb.setSliderPosition(pos)
-    #@-node:ekr.20081029084058.10:colorSelection
-    #@-node:ekr.20081023131208.10:Coloring
-    #@-node:ekr.20081031074959.38: May be overridden in subclasses
-    #@+node:ekr.20081031074959.29: Must be overridden in subclasses
+    #@-node:ekr.20081121105001.542:colorSelection
+    #@-node:ekr.20081121105001.541:Coloring
+    #@-node:ekr.20081121105001.538: May be overridden in subclasses
+    #@+node:ekr.20081121105001.543: Must be overridden in subclasses
     def getAllText(self):                   self.oops()
     def getInsertPoint(self):               self.oops()
     def getSelectionRange(self,sort=True):  self.oops()
@@ -6392,15 +6392,15 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def see(self,i):                        self.oops()
     def setAllText(self,s,insert=None):     self.oops()
     def setInsertPoint(self,i):             self.oops()
-    #@-node:ekr.20081031074959.29: Must be overridden in subclasses
+    #@-node:ekr.20081121105001.543: Must be overridden in subclasses
     #@-others
-#@-node:ekr.20081031074959.12: class leoQtBaseTextWidget
-#@+node:ekr.20081101134906.13: class leoQLineEditWidget
+#@-node:ekr.20081121105001.516: class leoQtBaseTextWidget
+#@+node:ekr.20081121105001.544: class leoQLineEditWidget
 class leoQLineEditWidget (leoQtBaseTextWidget):
 
     #@    @+others
-    #@+node:ekr.20081101134906.14:Birth
-    #@+node:ekr.20081101134906.15:ctor
+    #@+node:ekr.20081121105001.545:Birth
+    #@+node:ekr.20081121105001.546:ctor
     def __init__ (self,widget,name,c=None):
 
         # Init the base class.
@@ -6413,8 +6413,8 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         self.setConfig()
         self.setFontFromConfig()
         self.setColorFromConfig()
-    #@-node:ekr.20081101134906.15:ctor
-    #@+node:ekr.20081101134906.16:setFontFromConfig
+    #@-node:ekr.20081121105001.546:ctor
+    #@+node:ekr.20081121105001.547:setFontFromConfig
     def setFontFromConfig (self,w=None):
 
         '''Set the font in the widget w (a body editor).'''
@@ -6433,8 +6433,8 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         # # w.configure(font=font)
 
         # # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
-    #@-node:ekr.20081101134906.16:setFontFromConfig
-    #@+node:ekr.20081101134906.17:setColorFromConfig
+    #@-node:ekr.20081121105001.547:setFontFromConfig
+    #@+node:ekr.20081121105001.548:setColorFromConfig
     def setColorFromConfig (self,w=None):
 
         '''Set the font in the widget w (a body editor).'''
@@ -6489,30 +6489,30 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
                     # # pass ### w.configure(cursor=cursor)
                 # # except:
                     # # import traceback ; traceback.print_exc()
-    #@-node:ekr.20081101134906.17:setColorFromConfig
-    #@+node:ekr.20081101134906.18:setConfig
+    #@-node:ekr.20081121105001.548:setColorFromConfig
+    #@+node:ekr.20081121105001.549:setConfig
     def setConfig (self):
         pass
     #@nonl
-    #@-node:ekr.20081101134906.18:setConfig
-    #@-node:ekr.20081101134906.14:Birth
-    #@+node:ekr.20081101134906.19:Widget-specific overrides (QLineEdit)
-    #@+node:ekr.20081101134906.20:getAllText
+    #@-node:ekr.20081121105001.549:setConfig
+    #@-node:ekr.20081121105001.545:Birth
+    #@+node:ekr.20081121105001.550:Widget-specific overrides (QLineEdit)
+    #@+node:ekr.20081121105001.551:getAllText
     def getAllText(self):
 
         w = self.widget
         s = w.text()
         return g.app.gui.toUnicode(s)
     #@nonl
-    #@-node:ekr.20081101134906.20:getAllText
-    #@+node:ekr.20081101134906.21:getInsertPoint
+    #@-node:ekr.20081121105001.551:getAllText
+    #@+node:ekr.20081121105001.552:getInsertPoint
     def getInsertPoint(self):
 
         i = self.widget.cursorPosition()
         # g.trace(i)
         return i
-    #@-node:ekr.20081101134906.21:getInsertPoint
-    #@+node:ekr.20081101134906.22:getSelectionRange
+    #@-node:ekr.20081121105001.552:getInsertPoint
+    #@+node:ekr.20081121105001.553:getSelectionRange
     def getSelectionRange(self,sort=True):
 
         w = self.widget
@@ -6527,20 +6527,20 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         # g.trace(i,j)
         return i,j
-    #@-node:ekr.20081101134906.22:getSelectionRange
-    #@+node:ekr.20081101134906.23:hasSelection
+    #@-node:ekr.20081121105001.553:getSelectionRange
+    #@+node:ekr.20081121105001.554:hasSelection
     def hasSelection(self):
 
         return self.widget.hasSelection()
-    #@-node:ekr.20081101134906.23:hasSelection
-    #@+node:ekr.20081101134906.24:see & seeInsertPoint
+    #@-node:ekr.20081121105001.554:hasSelection
+    #@+node:ekr.20081121105001.555:see & seeInsertPoint
     def see(self,i):
         pass
 
     def seeInsertPoint (self):
         pass
-    #@-node:ekr.20081101134906.24:see & seeInsertPoint
-    #@+node:ekr.20081101134906.25:setAllText
+    #@-node:ekr.20081121105001.555:see & seeInsertPoint
+    #@+node:ekr.20081121105001.556:setAllText
     def setAllText(self,s,insert=None):
 
         w = self.widget
@@ -6550,8 +6550,8 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
             self.setSelectionRange(i,i,insert=i)
 
         # g.trace(i,repr(s))
-    #@-node:ekr.20081101134906.25:setAllText
-    #@+node:ekr.20081101134906.26:setInsertPoint
+    #@-node:ekr.20081121105001.556:setAllText
+    #@+node:ekr.20081121105001.557:setInsertPoint
     def setInsertPoint(self,i):
 
         w = self.widget
@@ -6559,8 +6559,8 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         s = g.app.gui.toUnicode(s)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
-    #@-node:ekr.20081101134906.26:setInsertPoint
-    #@+node:ekr.20081101134906.27:setSelectionRangeHelper
+    #@-node:ekr.20081121105001.557:setInsertPoint
+    #@+node:ekr.20081121105001.558:setSelectionRangeHelper
     def setSelectionRangeHelper(self,i,j,insert):
 
         w = self.widget
@@ -6575,16 +6575,16 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
             w.setCursorPosition(i)
         else:
             w.setSelection(i,k)
-    #@-node:ekr.20081101134906.27:setSelectionRangeHelper
-    #@-node:ekr.20081101134906.19:Widget-specific overrides (QLineEdit)
+    #@-node:ekr.20081121105001.558:setSelectionRangeHelper
+    #@-node:ekr.20081121105001.550:Widget-specific overrides (QLineEdit)
     #@-others
-#@-node:ekr.20081101134906.13: class leoQLineEditWidget
-#@+node:ekr.20081031074959.11: class leoQScintillaWidget
+#@-node:ekr.20081121105001.544: class leoQLineEditWidget
+#@+node:ekr.20081121105001.559: class leoQScintillaWidget
 class leoQScintillaWidget (leoQtBaseTextWidget):
 
     #@    @+others
-    #@+node:ekr.20081031074959.21:Birth
-    #@+node:ekr.20081031074959.22:ctor
+    #@+node:ekr.20081121105001.560:Birth
+    #@+node:ekr.20081121105001.561:ctor
     def __init__ (self,widget,name,c=None):
 
         # Init the base class.
@@ -6594,8 +6594,8 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
 
         self.useScintilla = True
         self.setConfig()
-    #@-node:ekr.20081031074959.22:ctor
-    #@+node:ekr.20081023060109.11:setConfig
+    #@-node:ekr.20081121105001.561:ctor
+    #@+node:ekr.20081121105001.562:setConfig
     def setConfig (self):
 
         c = self.c ; w = self.widget
@@ -6652,18 +6652,18 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
         w.setIndentationWidth(4)
         w.setIndentationsUseTabs(False)
         w.setAutoIndent(True)
-    #@-node:ekr.20081023060109.11:setConfig
-    #@-node:ekr.20081031074959.21:Birth
-    #@+node:ekr.20081031074959.25:Widget-specific overrides (QScintilla)
-    #@+node:ekr.20081031074959.41:getAllText
+    #@-node:ekr.20081121105001.562:setConfig
+    #@-node:ekr.20081121105001.560:Birth
+    #@+node:ekr.20081121105001.563:Widget-specific overrides (QScintilla)
+    #@+node:ekr.20081121105001.564:getAllText
     def getAllText(self):
 
         w = self.widget
         s = w.text()
         s = g.app.gui.toUnicode(s)
         return s
-    #@-node:ekr.20081031074959.41:getAllText
-    #@+node:ekr.20081031074959.26:getInsertPoint
+    #@-node:ekr.20081121105001.564:getAllText
+    #@+node:ekr.20081121105001.565:getInsertPoint
     def getInsertPoint(self):
 
         w = self.widget
@@ -6671,8 +6671,8 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
         row,col = w.getCursorPosition()  
         i = g.convertRowColToPythonIndex(s, row, col)
         return i
-    #@-node:ekr.20081031074959.26:getInsertPoint
-    #@+node:ekr.20081031074959.30:getSelectionRange
+    #@-node:ekr.20081121105001.565:getInsertPoint
+    #@+node:ekr.20081121105001.566:getSelectionRange
     def getSelectionRange(self,sort=True):
 
         w = self.widget
@@ -6688,13 +6688,13 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
 
         return i,j
 
-    #@-node:ekr.20081031074959.30:getSelectionRange
-    #@+node:ekr.20081031074959.32:hasSelection
+    #@-node:ekr.20081121105001.566:getSelectionRange
+    #@+node:ekr.20081121105001.567:hasSelection
     def hasSelection(self):
 
         return self.widget.hasSelectedText()
-    #@-node:ekr.20081031074959.32:hasSelection
-    #@+node:ekr.20081031074959.47:see
+    #@-node:ekr.20081121105001.567:hasSelection
+    #@+node:ekr.20081121105001.568:see
     def see(self,i):
 
         # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
@@ -6705,8 +6705,8 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
 
     # Use base-class method for seeInsertPoint.
     #@nonl
-    #@-node:ekr.20081031074959.47:see
-    #@+node:ekr.20081031074959.44:setAllText
+    #@-node:ekr.20081121105001.568:see
+    #@+node:ekr.20081121105001.569:setAllText
     def setAllText(self,s,insert=None):
 
         '''Set the text of the widget.
@@ -6717,15 +6717,15 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
         w = self.widget
         w.setText(s)
 
-    #@-node:ekr.20081031074959.44:setAllText
-    #@+node:ekr.20081031074959.35:setInsertPoint
+    #@-node:ekr.20081121105001.569:setAllText
+    #@+node:ekr.20081121105001.570:setInsertPoint
     def setInsertPoint(self,i):
 
         w = self.widget
         w.SendScintilla(w.SCI_SETCURRENTPOS,i)
         w.SendScintilla(w.SCI_SETANCHOR,i)
-    #@-node:ekr.20081031074959.35:setInsertPoint
-    #@+node:ekr.20081031074959.39:setSelectionRangeHelper
+    #@-node:ekr.20081121105001.570:setInsertPoint
+    #@+node:ekr.20081121105001.571:setSelectionRangeHelper
     def setSelectionRangeHelper(self,i,j,insert):
 
         w = self.widget
@@ -6738,16 +6738,16 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
         else:
             self.setInsertPoint(i)
             w.SendScintilla(w.SCI_SETANCHOR,j)
-    #@-node:ekr.20081031074959.39:setSelectionRangeHelper
-    #@-node:ekr.20081031074959.25:Widget-specific overrides (QScintilla)
+    #@-node:ekr.20081121105001.571:setSelectionRangeHelper
+    #@-node:ekr.20081121105001.563:Widget-specific overrides (QScintilla)
     #@-others
-#@-node:ekr.20081031074959.11: class leoQScintillaWidget
-#@+node:ekr.20081031074959.10: class leoQTextEditWidget
+#@-node:ekr.20081121105001.559: class leoQScintillaWidget
+#@+node:ekr.20081121105001.572: class leoQTextEditWidget
 class leoQTextEditWidget (leoQtBaseTextWidget):
 
     #@    @+others
-    #@+node:ekr.20081031074959.23:Birth
-    #@+node:ekr.20081031074959.24:ctor
+    #@+node:ekr.20081121105001.573:Birth
+    #@+node:ekr.20081121105001.574:ctor
     def __init__ (self,widget,name,c=None):
 
         # Init the base class.
@@ -6760,8 +6760,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         self.setConfig()
         self.setFontFromConfig()
         self.setColorFromConfig()
-    #@-node:ekr.20081031074959.24:ctor
-    #@+node:ekr.20081004172422.509:setFontFromConfig
+    #@-node:ekr.20081121105001.574:ctor
+    #@+node:ekr.20081121105001.575:setFontFromConfig
     def setFontFromConfig (self,w=None):
 
         '''Set the font in the widget w (a body editor).'''
@@ -6778,8 +6778,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # w.configure(font=font)
 
         # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
-    #@-node:ekr.20081004172422.509:setFontFromConfig
-    #@+node:ekr.20081004172422.508:setColorFromConfig
+    #@-node:ekr.20081121105001.575:setFontFromConfig
+    #@+node:ekr.20081121105001.576:setColorFromConfig
     def setColorFromConfig (self,w=None):
 
         '''Set the font in the widget w (a body editor).'''
@@ -6832,8 +6832,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                     # pass ### w.configure(cursor=cursor)
                 # except:
                     # import traceback ; traceback.print_exc()
-    #@-node:ekr.20081004172422.508:setColorFromConfig
-    #@+node:ekr.20081023060109.12:setConfig
+    #@-node:ekr.20081121105001.576:setColorFromConfig
+    #@+node:ekr.20081121105001.577:setConfig
     def setConfig (self):
 
         c = self.c ; w = self.widget
@@ -6849,10 +6849,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             # g.trace('zoom-in',n)
             w.zoomIn(n)
             w.updateMicroFocus()
-    #@-node:ekr.20081023060109.12:setConfig
-    #@-node:ekr.20081031074959.23:Birth
-    #@+node:ekr.20081031074959.27:Widget-specific overrides (QTextEdit)
-    #@+node:ekr.20081024163213.12:flashCharacter
+    #@-node:ekr.20081121105001.577:setConfig
+    #@-node:ekr.20081121105001.573:Birth
+    #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
+    #@+node:ekr.20081121105001.579:flashCharacter
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
         # This causes problems during unit tests.
@@ -6896,21 +6896,21 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w.setDisabled(True)
         w.blockSignals(True)
         addFlashCallback()
-    #@-node:ekr.20081024163213.12:flashCharacter
-    #@+node:ekr.20081031074959.42:getAllText
+    #@-node:ekr.20081121105001.579:flashCharacter
+    #@+node:ekr.20081121105001.580:getAllText
     def getAllText(self):
 
         w = self.widget
         s = w.toPlainText()
         return g.app.gui.toUnicode(s)
     #@nonl
-    #@-node:ekr.20081031074959.42:getAllText
-    #@+node:ekr.20081031074959.28:getInsertPoint
+    #@-node:ekr.20081121105001.580:getAllText
+    #@+node:ekr.20081121105001.581:getInsertPoint
     def getInsertPoint(self):
 
         return self.widget.textCursor().position()
-    #@-node:ekr.20081031074959.28:getInsertPoint
-    #@+node:ekr.20081031074959.31:getSelectionRange
+    #@-node:ekr.20081121105001.581:getInsertPoint
+    #@+node:ekr.20081121105001.582:getSelectionRange
     def getSelectionRange(self,sort=True):
 
         w = self.widget
@@ -6919,8 +6919,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # g.trace(i,j,g.callers(4))
         return i,j
     #@nonl
-    #@-node:ekr.20081031074959.31:getSelectionRange
-    #@+node:ekr.20081031074959.36:getYScrollPosition
+    #@-node:ekr.20081121105001.582:getSelectionRange
+    #@+node:ekr.20081121105001.583:getYScrollPosition
     def getYScrollPosition(self):
 
         w = self.widget
@@ -6929,24 +6929,24 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # Return a tuple, only the first of which is used.
         return i,i 
-    #@-node:ekr.20081031074959.36:getYScrollPosition
-    #@+node:ekr.20081031074959.33:hasSelection
+    #@-node:ekr.20081121105001.583:getYScrollPosition
+    #@+node:ekr.20081121105001.584:hasSelection
     def hasSelection(self):
 
         return self.widget.textCursor().hasSelection()
-    #@-node:ekr.20081031074959.33:hasSelection
-    #@+node:ekr.20081031074959.48:see
+    #@-node:ekr.20081121105001.584:hasSelection
+    #@+node:ekr.20081121105001.585:see
     def see(self,i):
 
         self.widget.ensureCursorVisible()
     #@nonl
-    #@-node:ekr.20081031074959.48:see
-    #@+node:ekr.20081031074959.50:seeInsertPoint
+    #@-node:ekr.20081121105001.585:see
+    #@+node:ekr.20081121105001.586:seeInsertPoint
     def seeInsertPoint (self):
 
         self.widget.ensureCursorVisible()
-    #@-node:ekr.20081031074959.50:seeInsertPoint
-    #@+node:ekr.20081031074959.45:setAllText
+    #@-node:ekr.20081121105001.586:seeInsertPoint
+    #@+node:ekr.20081121105001.587:setAllText
     def setAllText(self,s,insert=None):
 
         '''Set the text of the widget.
@@ -6962,8 +6962,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w.setPlainText(s)
         self.setSelectionRange(i,i,insert=i)
         sb.setSliderPosition(pos)
-    #@-node:ekr.20081031074959.45:setAllText
-    #@+node:ekr.20081031074959.37:setInsertPoint
+    #@-node:ekr.20081121105001.587:setAllText
+    #@+node:ekr.20081121105001.588:setInsertPoint
     def setInsertPoint(self,i):
 
         w = self.widget
@@ -6972,8 +6972,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         i = max(0,min(i,len(s)))
         cursor.setPosition(i)
         w.setTextCursor(cursor)
-    #@-node:ekr.20081031074959.37:setInsertPoint
-    #@+node:ekr.20081031074959.43:setSelectionRangeHelper & helper
+    #@-node:ekr.20081121105001.588:setInsertPoint
+    #@+node:ekr.20081121105001.589:setSelectionRangeHelper & helper
     def setSelectionRangeHelper(self,i,j,insert):
 
         w = self.widget
@@ -6996,7 +6996,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             cursor.movePosition(e.Left,e.KeepAnchor,k)
 
         w.setTextCursor(cursor)
-    #@+node:ekr.20081104103442.1:lengthHelper
+    #@+node:ekr.20081121105001.590:lengthHelper
     def lengthHelper(self):
 
         '''Return the length of the text.'''
@@ -7007,9 +7007,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         n = cursor.position()
         return n
 
-    #@-node:ekr.20081104103442.1:lengthHelper
-    #@-node:ekr.20081031074959.43:setSelectionRangeHelper & helper
-    #@+node:ekr.20081025124450.12:setYScrollPosition
+    #@-node:ekr.20081121105001.590:lengthHelper
+    #@-node:ekr.20081121105001.589:setSelectionRangeHelper & helper
+    #@+node:ekr.20081121105001.591:setYScrollPosition
     def setYScrollPosition(self,pos):
 
         w = self.widget
@@ -7018,25 +7018,25 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         elif type(pos) == types.TupleType:
             pos = pos[0]
         sb.setSliderPosition(pos)
-    #@-node:ekr.20081025124450.12:setYScrollPosition
-    #@-node:ekr.20081031074959.27:Widget-specific overrides (QTextEdit)
+    #@-node:ekr.20081121105001.591:setYScrollPosition
+    #@-node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@-others
-#@-node:ekr.20081031074959.10: class leoQTextEditWidget
-#@+node:ekr.20081103092019.11:class leoQtHeadlineWidget
+#@-node:ekr.20081121105001.572: class leoQTextEditWidget
+#@+node:ekr.20081121105001.592:class leoQtHeadlineWidget
 class leoQtHeadlineWidget (leoQLineEditWidget):
 
     def __repr__ (self):
         return 'leoQLineEditWidget: %s' % id(self)
 #@nonl
-#@-node:ekr.20081103092019.11:class leoQtHeadlineWidget
-#@+node:ekr.20081018130812.12:class findTextWrapper
+#@-node:ekr.20081121105001.592:class leoQtHeadlineWidget
+#@+node:ekr.20081121105001.593:class findTextWrapper
 class findTextWrapper (leoQLineEditWidget):
 
     '''A class representing the find/change edit widgets.'''
 
     pass
-#@-node:ekr.20081018130812.12:class findTextWrapper
-#@+node:ekr.20081017015442.12:class leoQtMinibuffer (leoQLineEditWidget)
+#@-node:ekr.20081121105001.593:class findTextWrapper
+#@+node:ekr.20081121105001.594:class leoQtMinibuffer (leoQLineEditWidget)
 class leoQtMinibuffer (leoQLineEditWidget):
 
     def __init__ (self,c):
@@ -7053,8 +7053,8 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
     def setForegroundColor(self,color):
         pass
-#@-node:ekr.20081017015442.12:class leoQtMinibuffer (leoQLineEditWidget)
-#@-node:ekr.20081031074959.16:Text widget classes...
+#@-node:ekr.20081121105001.594:class leoQtMinibuffer (leoQLineEditWidget)
+#@-node:ekr.20081121105001.515:Text widget classes...
 #@-others
-#@-node:ekr.20081004102201.619:@thin qtGui.py
+#@-node:ekr.20081121105001.188:@thin qtGui.py
 #@-leo
