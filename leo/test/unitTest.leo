@@ -1199,7 +1199,7 @@
 <v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
 <v t="ekr.20080907123324.5"><vh>@test goto_setup n = 3 (@nosent)</vh></v>
 </v>
-<v t="ekr.20080905113550.4" a="E"><vh>General tests</vh>
+<v t="ekr.20080905113550.4"><vh>General tests</vh>
 <v t="ekr.20080905165432.1"><vh>@test goto_findRoot (root in ancestors)</vh></v>
 <v t="ekr.20080905165432.3"><vh>@test goto_findRoot (root not in ancestors)</vh></v>
 <v t="ekr.20080904120258.2"><vh>@test goto_showResults found</vh></v>
@@ -1501,7 +1501,7 @@
 <v t="ekr.20061101121602.260"><vh>before sel=1.261,1.261</vh></v>
 <v t="ekr.20061101121602.261"><vh>after sel=1.273,1.273</vh></v>
 </v>
-<v t="ekr.20061101121602.262" a="E"><vh>@test forward-word-extend-selection</vh>
+<v t="ekr.20061101121602.262"><vh>@test forward-word-extend-selection</vh>
 <v t="ekr.20061101121602.263"><vh>work</vh></v>
 <v t="ekr.20061101121602.264"><vh>before sel=1.395,1.395</vh></v>
 <v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
@@ -1708,7 +1708,7 @@
 </v>
 <v t="ekr.20081111084046.4" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20061104172236.1" a="E"><vh> Function tests</vh>
+<v t="ekr.20061104172236.1"><vh> Function tests</vh>
 <v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
 <v t="ekr.20061104172236.7"><vh>@test crollHelper</vh></v>
 <v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
@@ -16068,12 +16068,15 @@ finally:
 ###abcdef</t>
 <t tx="ekr.20061109172511"></t>
 <t tx="ekr.20061109172511.1">if g.app.gui.guiName() == 'tkinter':
+    
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    
     import leo.core.leoFrame as leoFrame
-    import leo.core.leoTkinterFrame as leoTkinterFrame
     import inspect
     
     baseClass = leoFrame.leoFrame
-    subClasses  = (leoTkinterFrame.leoTkinterFrame,leoFrame.nullFrame)
+    subClasses  = (tkGui.leoTkinterFrame,leoFrame.nullFrame)
     baseObject = c.frame
     
     methods = inspect.getmembers(baseClass,inspect.ismethod)
@@ -16093,12 +16096,15 @@ finally:
                 assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
 </t>
 <t tx="ekr.20061109172511.3">if g.app.gui.guiName() == 'tkinter':
+    
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    
     import leo.core.leoFrame as leoFrame
-    import leo.core.leoTkinterFrame as leoTkinterFrame
     import inspect,sys
     
     baseClass = leoFrame.leoBody
-    subClasses  = (leoTkinterFrame.leoTkinterBody,leoFrame.nullBody)
+    subClasses  = (tkGui.leoTkinterBody,leoFrame.nullBody)
     baseObject = c.frame.body
     
     methods = inspect.getmembers(baseClass,inspect.ismethod)
@@ -16127,13 +16133,15 @@ finally:
                 exctype, value = sys.exc_info()[:2]
                 g.pr(value)</t>
 <t tx="ekr.20061109172511.4">if g.app.gui.guiName() == 'tkinter':
+    
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    
     import leo.core.leoFrame as leoFrame
-    import leo.core.leoTkinterGui as leoTkinterGui
-    import leo.core.leoTkinterTree as leoTkinterTree
     import inspect
     
     baseClass = leoFrame.leoTree
-    subClasses  = (leoTkinterTree.leoTkinterTree,leoFrame.nullTree)
+    subClasses  = (tkGui.leoTkinterTree,leoFrame.nullTree)
     baseObject = c.frame.tree
     
     methods = inspect.getmembers(baseClass,inspect.ismethod)
@@ -16153,12 +16161,15 @@ finally:
                 assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
 </t>
 <t tx="ekr.20061109210659">if g.app.gui.guiName() == 'tkinter':
+    
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    
     import leo.core.leoGui as leoGui
-    import leo.core.leoTkinterGui as leoTkinterGui
     import inspect
     
     baseClass = leoGui.leoGui
-    subClasses  = (leoTkinterGui.tkinterGui,) # nullGui can inherit almost all leoGui dummy methods.
+    subClasses  = (tkGui.tkinterGui,) # nullGui can inherit almost all leoGui dummy methods.
     baseObject = g.app.gui
     
     methods = inspect.getmembers(baseClass,inspect.ismethod)
@@ -16218,9 +16229,11 @@ controller.parameterize()
     # Not much will happen because there are no children.
     # However, this does test recent changes.</t>
 <t tx="ekr.20061113154104">if g.app.gui.guiName() == 'tkinter':
+    
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
     import Tkinter as Tk
-    import leo.core.leoTkinterFrame as leoTkinterFrame
-    w = leoTkinterFrame.leoTkTextWidget()
+    w = tkGui.leoTkTextWidget()
     w.setAllText('abcdef\n')
     s = w.getAllText()
     assert s == 'abcdef\n'
@@ -16383,7 +16396,7 @@ if not g.os_path_exists(s):
     g.pr('created chinese file')
     
 </t>
-<t tx="ekr.20070114140212">4@
+<t tx="ekr.20070114140212">@
 
 Important warnings:
     
@@ -16747,7 +16760,7 @@ after</t>
 # plugin_manager.py
 
 # qtGui.py
-tkGui.py
+# tkGui.py
 
 plugins_menu.py
 

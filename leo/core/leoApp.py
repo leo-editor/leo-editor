@@ -303,21 +303,17 @@ class LeoApp:
 
         """A convenience routines for plugins to create the default Tk gui class."""
 
-        if 1:
-            leoPlugins.loadOnePlugin ('tkGui',verbose=True)
-        else:
-            import leo.core.leoTkinterGui as leoTkinterGui # Do this import after app module is fully imported.
+        leoPlugins.loadOnePlugin ('tkGui',verbose=True)
 
-            g.app.gui = leoTkinterGui.tkinterGui()
-            g.app.root = g.app.gui.createRootWindow()
+        # Old code.
+            # import leo.core.leoTkinterGui as leoTkinterGui # Do this import after app module is fully imported.
 
-            # Show a dialog and exit immediately if Pmw can not be imported.
-            g.importExtension("Pmw",pluginName="Leo's core",verbose=False,required=True)
-            g.app.gui.finishCreate()
+            # g.app.gui = leoTkinterGui.tkinterGui()
+            # g.app.root = g.app.gui.createRootWindow()
 
-        if 0:
-            if fileName:
-                g.pr("Tk gui created in", g.shortFileName(fileName))
+            # # Show a dialog and exit immediately if Pmw can not be imported.
+            # g.importExtension("Pmw",pluginName="Leo's core",verbose=False,required=True)
+            # g.app.gui.finishCreate()
     #@-node:ekr.20031218072017.2610:app.createTkGui
     #@+node:ekr.20031218072017.2612:app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles (self):

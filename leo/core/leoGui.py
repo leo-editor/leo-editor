@@ -281,7 +281,7 @@ class leoGui:
         self.oops()
 
     def createFindTab (self,c,parentFrame):
-        """Create a Tkinter find tab in the indicated frame."""
+        """Create a find tab in the indicated frame."""
         self.oops()
 
     def createFontPanel (self,c):
@@ -582,7 +582,7 @@ class nullGui(leoGui):
         self.oops()
 
     def createFindTab (self,c,parentFrame):
-        """Create a Tkinter find tab in the indicated frame."""
+        """Create a find tab in the indicated frame."""
         return leoFind.nullFindTab(c,parentFrame)
 
     def createLeoFrame(self,title):

@@ -1409,7 +1409,7 @@ class baseFileCommands:
 
         # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
         ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
-        # redraw_flag = g.app.gui.guiName() == 'tkinter'
+
         if ok is None:
             c.endEditing()# Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)

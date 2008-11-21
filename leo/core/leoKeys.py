@@ -2593,7 +2593,7 @@ class keyHandlerClass:
                 c.onCanvasKey(event) # New in Leo 4.4.2
             return 'break'
         else:
-            # Let tkinter handle the event.
+            # Let the widget handle the event.
             # ch = event and event.char ; g.trace('to tk:',name,repr(ch))
             return None
     #@-node:ekr.20061031131434.110:k.handleDefaultChar
@@ -3017,7 +3017,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.126:manufactureKeyPressForCommandName
     def manufactureKeyPressForCommandName (self,w,commandName):
 
-        '''Implement a command by passing a keypress to Tkinter.'''
+        '''Implement a command by passing a keypress to the gui.'''
 
         k = self ; c = k.c
 
