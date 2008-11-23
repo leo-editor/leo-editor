@@ -2286,7 +2286,6 @@ class leoQtLog (leoFrame.leoLog):
         # Rename the 'Tab 2' tab to 'Find'.
         for i in range(w.count()):
             if w.tabText(i) == 'Tab 2':
-                # g.trace('found Tab 2',w.currentWidget())
                 w.setTabText(i,'Find')
                 self.contentsDict['Find'] = w.currentWidget()
                 break
@@ -2370,12 +2369,12 @@ class leoQtLog (leoFrame.leoLog):
         if g.app.quitting or not c or not c.exists:
             return
 
-        self.selectTab(tabName or 'Lob')
+        self.selectTab(tabName or 'Log')
+        # print('qtLog.put',tabName,'%3s' % (len(s)),self.logCtrl)
 
         # Note: this must be done after the call to selectTab.
         w = self.logCtrl # w is a QTextBrowser
         if w:
-            # g.trace(repr(s))
             if s.endswith('\n'): s = s[:-1]
             s = s.replace(' ','&nbsp;')
             if color:
@@ -2492,25 +2491,22 @@ class leoQtLog (leoFrame.leoLog):
 
         c = self.c ; w = self.tabWidget ; trace = False
 
-        ok = self.selectHelper(tabName)
+        ok = self.selectHelper(tabName,createText)
         if ok: return
 
-        contents = self.createTab(tabName,createText,wrap)
-
-        if createText and tabName not in ('Spell','Find',):
-            # g.trace(tabName,contents,g.callers(4))
-            self.logCtrl = contents
-
-        self.selectHelper(tabName)
+        self.createTab(tabName,createText,wrap)
+        self.selectHelper(tabName,createText)
 
     #@+node:ekr.20081121105001.336:selectHelper
-    def selectHelper (self,tabName):
+    def selectHelper (self,tabName,createText):
 
         w = self.tabWidget
 
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
+                if createText and tabName not in ('Spell','Find',):
+                    self.logCtrl = w.widget(i)
                 return True
         else:
             return False

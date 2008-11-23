@@ -36,6 +36,196 @@ def init():
     loadingModuleNameStack = [] # The stack of module names.  Top is the module being loaded.
 
 #@+others
+#@+node:ktenney.20060628092017.1:baseLeoPlugin
+class baseLeoPlugin(object):
+    #@    <<docstring>>
+    #@+node:ktenney.20060628092017.2:<<docstring>>
+    """A Convenience class to simplify plugin authoring
+
+    .. contents::
+
+    Usage
+    =====
+
+
+    Initialization
+    --------------
+
+    - import the base class::
+
+        from leoPlugins import leo.core.leoBasePlugin as leoBasePlugin
+
+    - create a class which inherits from leoBasePlugin::
+
+        class myPlugin(leoBasePlugin):
+
+    - in the __init__ method of the class, call the parent constructor::
+
+        def __init__(self, tag, keywords):
+            leoBasePlugin.__init__(self, tag, keywords)
+
+    - put the actual plugin code into a method; for this example, the work
+      is done by myPlugin.handler()
+
+    - put the class in a file which lives in the <LeoDir>/plugins directory
+        for this example it is named myPlugin.py
+
+    - add code to register the plugin::
+
+        leoPlugins.registerHandler("after-create-leo-frame", Hello)
+
+    Configuration
+    -------------
+
+    baseLeoPlugins has 3 *methods* for setting commands
+
+    - setCommand::
+
+            def setCommand(self, commandName, handler, 
+                    shortcut = None, pane = 'all', verbose = True):
+
+    - setMenuItem::
+
+            def setMenuItem(self, menu, commandName = None, handler = None):
+
+    - setButton::
+
+            def setButton(self, buttonText = None, commandName = None, color = None):
+
+    *variables*
+
+    :commandName:  the string typed into minibuffer to execute the ``handler``
+
+    :handler:  the method in the class which actually does the work
+
+    :shortcut:  the key combination to activate the command
+
+    :menu:  a string designating on of the menus ('File', Edit', 'Outline', ...)
+
+    :buttonText:  the text to put on the button if one is being created.
+
+    Example
+    =======
+
+    Contents of file ``<LeoDir>/plugins/hello.py``::
+
+        class Hello(baseLeoPlugin):
+            def __init__(self, tag, keywords):
+
+                # call parent __init__
+                baseLeoPlugin.__init__(self, tag, keywords)
+
+                # if the plugin object defines only one command, 
+                # just give it a name. You can then create a button and menu entry
+                self.setCommand('Hello', self.hello)
+                self.setButton()
+                self.setMenuItem('Cmds')
+
+                # create a command with a shortcut
+                self.setCommand('Hola', self.hola, 'Alt-Ctrl-H')
+
+                # create a button using different text than commandName
+                self.setButton('Hello in Spanish')
+
+                # create a menu item with default text
+                self.setMenuItem('Cmds')
+
+                # define a command using setMenuItem 
+                self.setMenuItem('Cmds', 'Ciao baby', self.ciao)
+
+            def hello(self, event):
+                g.pr("hello from node %s" % self.c.currentPosition().headString())
+
+            def hola(self, event):
+                g.pr("hola from node %s" % self.c.currentPosition().headString())
+
+            def ciao(self, event):
+                g.pr("ciao baby (%s)" % self.c.currentPosition().headString())
+
+
+        leoPlugins.registerHandler("after-create-leo-frame", Hello)
+
+    """
+    #@-node:ktenney.20060628092017.2:<<docstring>>
+    #@nl
+    #@    <<baseLeoPlugin declarations>>
+    #@+node:ktenney.20060628092017.3:<<baseLeoPlugin declarations>>
+    import leo.core.leoGlobals as g
+    #@-node:ktenney.20060628092017.3:<<baseLeoPlugin declarations>>
+    #@nl
+    #@    @+others
+    #@+node:ktenney.20060628092017.4:__init__
+    def __init__(self, tag, keywords):
+
+        """Set self.c to be the ``commander`` of the active node
+        """
+
+        self.c = keywords['c']
+        self.commandNames = []
+    #@-node:ktenney.20060628092017.4:__init__
+    #@+node:ktenney.20060628092017.5:setCommand
+    def setCommand(self, commandName, handler, 
+                    shortcut = None, pane = 'all', verbose = True):
+
+        """Associate a command name with handler code, 
+        optionally defining a keystroke shortcut
+        """
+
+        self.commandNames.append(commandName)
+
+        self.commandName = commandName
+        self.shortcut = shortcut
+        self.handler = handler
+        self.c.k.registerCommand (commandName, shortcut, handler, 
+                                pane, verbose)
+    #@-node:ktenney.20060628092017.5:setCommand
+    #@+node:ktenney.20060628092017.6:setMenuItem
+    def setMenuItem(self, menu, commandName = None, handler = None):
+
+        """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
+        if commandName and handler are none, use the most recently defined values
+        """
+
+        # setMenuItem can create a command, or use a previously defined one.
+        if commandName is None:
+            commandName = self.commandName
+        # make sure commandName is in the list of commandNames                        
+        else:
+            if commandName not in self.commandNames:
+                self.commandNames.append(commandName) 
+
+        if handler is None:
+            handler = self.handler
+
+        table = ((commandName, None, handler),)
+        self.c.frame.menu.createMenuItemsFromTable(menu, table)
+    #@-node:ktenney.20060628092017.6:setMenuItem
+    #@+node:ktenney.20060628092017.7:setButton
+    def setButton(self, buttonText = None, commandName = None, color = None):
+
+        """Associate an existing command with a 'button'
+        """
+
+        if buttonText is None:
+            buttonText = self.commandName
+
+        if commandName is None:
+            commandName = self.commandName       
+        else:
+            if commandName not in self.commandNames:
+                raise NameError("setButton error, %s is not a commandName" % commandName)
+
+        if color is None:
+            color = 'grey'
+        script = "c.k.simulateCommand('%s')" % self.commandName
+        g.app.gui.makeScriptButton(
+            self.c,
+            args=None,
+            script=script, 
+            buttonText = buttonText, bg = color)
+    #@-node:ktenney.20060628092017.7:setButton
+    #@-others
+#@-node:ktenney.20060628092017.1:baseLeoPlugin
 #@+node:ekr.20050102094729:callTagHandler
 def callTagHandler (bunch,tag,keywords):
 
@@ -257,13 +447,18 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
     return result
 #@-node:ekr.20041113113140:loadOnePlugin
 #@+node:ekr.20050110191444:printHandlers
-def printHandlers (moduleName=None):
+def printHandlers (c,moduleName=None):
+
+    tabName = 'Plugins'
+    c.frame.log.selectTab(tabName)
 
     if moduleName:
-        g.es_print('handlers for',moduleName,'...')
+        s = 'handlers for %s...\n' % (moduleName)
     else:
-        g.es_print('all plugin handlers...')
+        s = 'all plugin handlers...\n'
+    g.es(s+'\n',tabName=tabName)
 
+    data = []
     modules = {}
     for tag in handlers:
         bunches = handlers.get(tag)
@@ -273,20 +468,57 @@ def printHandlers (moduleName=None):
             tags.append(tag)
             modules[name] = tags
 
+    n = 4
     for key in sorted(modules):
         tags = modules.get(key)
         if moduleName in (None,key):
             for tag in tags:
-                g.es_print('','%25s %s' % (tag,key))
+                n = max(n,len(tag))
+                data.append((tag,key),)
+
+    lines = ['%*s %s\n' % (-n,s1,s2) for (s1,s2) in data]
+    g.es('',''.join(lines),tabName=tabName)
+
 #@-node:ekr.20050110191444:printHandlers
 #@+node:ekr.20070429090122:printPlugins
-def printPlugins ():
+def printPlugins (c):
 
-    g.es_print('enabled plugins...')
+    tabName = 'Plugins'
+    c.frame.log.selectTab(tabName)
 
-    for key in sorted(loadedModules):
-        g.es_print('',key)
+    data = []
+    data.append('enabled plugins...\n')
+    for z in sorted(loadedModules):
+        data.append(z)
+
+    lines = ['%s\n' % (s) for s in data]
+    g.es('',''.join(lines),tabName=tabName)
 #@-node:ekr.20070429090122:printPlugins
+#@+node:ekr.20081123080346.2:printPluginsInfo
+def printPluginsInfo (c):
+
+    '''Print the file name responsible for loading a plugin.
+
+    This is the first .leo file containing an @enabled-plugins node
+    that enables the plugin.'''
+
+    d = loadedModulesFilesDict
+    tabName = 'Plugins'
+    c.frame.log.selectTab(tabName)
+
+    data = []
+    for z in g.app.loadedPlugins:
+        print z, d.get(z)
+
+    data = [] ; n = 4
+    for moduleName in d:
+        fileName = d.get(moduleName)
+        n = max(n,len(moduleName))
+        data.append((moduleName,fileName),)
+
+    lines = ['%*s %s\n' % (-n,s1,s2) for (s1,s2) in data]
+    g.es('',''.join(lines),tabName=tabName)
+#@-node:ekr.20081123080346.2:printPluginsInfo
 #@+node:ekr.20031218072017.3444:registerExclusiveHandler
 def registerExclusiveHandler(tags, fn):
 
@@ -404,196 +636,6 @@ def unregisterOneHandler (tag,fn):
             handlers[tag] = fn_list
             # g.trace(handlers.get(tag))
 #@-node:ekr.20041111123313:unregisterHandler
-#@+node:ktenney.20060628092017.1:baseLeoPlugin
-class baseLeoPlugin(object):
-    #@    <<docstring>>
-    #@+node:ktenney.20060628092017.2:<<docstring>>
-    """A Convenience class to simplify plugin authoring
-
-    .. contents::
-
-    Usage
-    =====
-
-
-    Initialization
-    --------------
-
-    - import the base class::
-
-        from leoPlugins import leo.core.leoBasePlugin as leoBasePlugin
-
-    - create a class which inherits from leoBasePlugin::
-
-        class myPlugin(leoBasePlugin):
-
-    - in the __init__ method of the class, call the parent constructor::
-
-        def __init__(self, tag, keywords):
-            leoBasePlugin.__init__(self, tag, keywords)
-
-    - put the actual plugin code into a method; for this example, the work
-      is done by myPlugin.handler()
-
-    - put the class in a file which lives in the <LeoDir>/plugins directory
-        for this example it is named myPlugin.py
-
-    - add code to register the plugin::
-
-        leoPlugins.registerHandler("after-create-leo-frame", Hello)
-
-    Configuration
-    -------------
-
-    baseLeoPlugins has 3 *methods* for setting commands
-
-    - setCommand::
-
-            def setCommand(self, commandName, handler, 
-                    shortcut = None, pane = 'all', verbose = True):
-
-    - setMenuItem::
-
-            def setMenuItem(self, menu, commandName = None, handler = None):
-
-    - setButton::
-
-            def setButton(self, buttonText = None, commandName = None, color = None):
-
-    *variables*
-
-    :commandName:  the string typed into minibuffer to execute the ``handler``
-
-    :handler:  the method in the class which actually does the work
-
-    :shortcut:  the key combination to activate the command
-
-    :menu:  a string designating on of the menus ('File', Edit', 'Outline', ...)
-
-    :buttonText:  the text to put on the button if one is being created.
-
-    Example
-    =======
-
-    Contents of file ``<LeoDir>/plugins/hello.py``::
-
-        class Hello(baseLeoPlugin):
-            def __init__(self, tag, keywords):
-
-                # call parent __init__
-                baseLeoPlugin.__init__(self, tag, keywords)
-
-                # if the plugin object defines only one command, 
-                # just give it a name. You can then create a button and menu entry
-                self.setCommand('Hello', self.hello)
-                self.setButton()
-                self.setMenuItem('Cmds')
-
-                # create a command with a shortcut
-                self.setCommand('Hola', self.hola, 'Alt-Ctrl-H')
-
-                # create a button using different text than commandName
-                self.setButton('Hello in Spanish')
-
-                # create a menu item with default text
-                self.setMenuItem('Cmds')
-
-                # define a command using setMenuItem 
-                self.setMenuItem('Cmds', 'Ciao baby', self.ciao)
-
-            def hello(self, event):
-                g.pr("hello from node %s" % self.c.currentPosition().headString())
-
-            def hola(self, event):
-                g.pr("hola from node %s" % self.c.currentPosition().headString())
-
-            def ciao(self, event):
-                g.pr("ciao baby (%s)" % self.c.currentPosition().headString())
-
-
-        leoPlugins.registerHandler("after-create-leo-frame", Hello)
-
-    """
-    #@-node:ktenney.20060628092017.2:<<docstring>>
-    #@nl
-    #@    <<baseLeoPlugin declarations>>
-    #@+node:ktenney.20060628092017.3:<<baseLeoPlugin declarations>>
-    import leo.core.leoGlobals as g
-    #@-node:ktenney.20060628092017.3:<<baseLeoPlugin declarations>>
-    #@nl
-    #@    @+others
-    #@+node:ktenney.20060628092017.4:__init__
-    def __init__(self, tag, keywords):
-
-        """Set self.c to be the ``commander`` of the active node
-        """
-
-        self.c = keywords['c']
-        self.commandNames = []
-    #@-node:ktenney.20060628092017.4:__init__
-    #@+node:ktenney.20060628092017.5:setCommand
-    def setCommand(self, commandName, handler, 
-                    shortcut = None, pane = 'all', verbose = True):
-
-        """Associate a command name with handler code, 
-        optionally defining a keystroke shortcut
-        """
-
-        self.commandNames.append(commandName)
-
-        self.commandName = commandName
-        self.shortcut = shortcut
-        self.handler = handler
-        self.c.k.registerCommand (commandName, shortcut, handler, 
-                                pane, verbose)
-    #@-node:ktenney.20060628092017.5:setCommand
-    #@+node:ktenney.20060628092017.6:setMenuItem
-    def setMenuItem(self, menu, commandName = None, handler = None):
-
-        """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
-        if commandName and handler are none, use the most recently defined values
-        """
-
-        # setMenuItem can create a command, or use a previously defined one.
-        if commandName is None:
-            commandName = self.commandName
-        # make sure commandName is in the list of commandNames                        
-        else:
-            if commandName not in self.commandNames:
-                self.commandNames.append(commandName) 
-
-        if handler is None:
-            handler = self.handler
-
-        table = ((commandName, None, handler),)
-        self.c.frame.menu.createMenuItemsFromTable(menu, table)
-    #@-node:ktenney.20060628092017.6:setMenuItem
-    #@+node:ktenney.20060628092017.7:setButton
-    def setButton(self, buttonText = None, commandName = None, color = None):
-
-        """Associate an existing command with a 'button'
-        """
-
-        if buttonText is None:
-            buttonText = self.commandName
-
-        if commandName is None:
-            commandName = self.commandName       
-        else:
-            if commandName not in self.commandNames:
-                raise NameError("setButton error, %s is not a commandName" % commandName)
-
-        if color is None:
-            color = 'grey'
-        script = "c.k.simulateCommand('%s')" % self.commandName
-        g.app.gui.makeScriptButton(
-            self.c,
-            args=None,
-            script=script, 
-            buttonText = buttonText, bg = color)
-    #@-node:ktenney.20060628092017.7:setButton
-    #@-others
-#@-node:ktenney.20060628092017.1:baseLeoPlugin
 #@-others
 #@-node:ekr.20031218072017.3439:@thin leoPlugins.py
 #@-leo

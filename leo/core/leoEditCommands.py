@@ -1020,6 +1020,7 @@ class controlCommandsClass (baseEditCommandsClass):
             'set-silent-mode':              self.setSilentMode,
             'print-plugins':                self.printPlugins,
             'print-plugin-handlers':        self.printPluginHandlers,
+            'print-plugins-info':           self.printPluginsInfo,
             'shell-command':                self.shellCommand,
             'shell-command-on-region':      self.shellCommandOnRegion,
             'suspend':                      self.suspend,
@@ -1062,16 +1063,19 @@ class controlCommandsClass (baseEditCommandsClass):
 
         k.setLabelGrey('finished shell-command: %s' % command)
     #@-node:ekr.20050920084036.160:executeSubprocess
-    #@+node:ekr.20070429090859:print-plugins & print-handlers
+    #@+node:ekr.20070429090859:print plugins info...
     def printPluginHandlers (self,event=None):
 
-        leoPlugins.printHandlers()
+        leoPlugins.printHandlers(self.c)
 
     def printPlugins (self,event=None):
 
-        leoPlugins.printPlugins()
+        leoPlugins.printPlugins(self.c)
 
-    #@-node:ekr.20070429090859:print-plugins & print-handlers
+    def printPluginsInfo (self,event=None):
+
+        leoPlugins.printPluginsInfo(self.c)
+    #@-node:ekr.20070429090859:print plugins info...
     #@+node:ekr.20060603161041:setSilentMode
     def setSilentMode (self,event=None):
 

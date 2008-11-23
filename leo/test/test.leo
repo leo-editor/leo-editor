@@ -3741,9 +3741,14 @@ z.foo()
 </t>
 <t tx="ekr.20081025105942.1">import os
 os.system("dir")</t>
-<t tx="ekr.20081123081842.1">import leo.core.leoPlugins as leoPlugins
-d = leoPlugins.loadedModulesFilesDict
-for z in g.app.loadedPlugins:
-    print z, d.get(z)</t>
+<t tx="ekr.20081123081842.1"># import leo.core.leoPlugins as leoPlugins
+# d = leoPlugins.loadedModulesFilesDict
+# for z in g.app.loadedPlugins:
+    # print z, d.get(z)
+
+c.k.simulateCommand('print-plugins-info')
+c.k.simulateCommand('print-plugins')
+
+g.es('after',tabName='Plugins')</t>
 </tnodes>
 </leo_file>
