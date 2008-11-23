@@ -8,22 +8,6 @@
 #@@language python
 #@@tabwidth -4
 
-#@<< import pychecker >>
-#@+node:ekr.20031218072017.2606:<< Import pychecker >>
-#@@color
-
-# See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.
-
-if 0: # Set to 1 for lint-like testing.
-      # Use t23.bat: only on Python 2.3.
-
-    try:
-        import pychecker.checker
-        print('\npychecker.checker running...')
-    except Exception:
-        print('\nCan not import pychecker\n')
-#@-node:ekr.20031218072017.2606:<< Import pychecker >>
-#@nl
 #@<< imports and inits >>
 #@+node:ekr.20080921091311.1:<< imports and inits >>
 # import pdb ; pdb = pdb.set_trace

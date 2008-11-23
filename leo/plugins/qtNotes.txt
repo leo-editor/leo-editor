@@ -5,7 +5,9 @@
 @nocolor-node
 
 First:
-- Allow shift-tab binding & fix Ctrl-( problem.
+- Fix urgent qt gui problems:
+    - Allow shift-tab binding & fix Ctrl-( problem.
+    - Find/replace doesn't work in headlines for qt gui.
 - Finish colorizer: see child node for notes.
 
 Next:

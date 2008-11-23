@@ -3,29 +3,27 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
-- Illegal move brings up a Tk alert!
-
 - Shift-tab is Smart home.
-#@+node:ekr.20081119132758.3:Make tkinter gui a plugin
-If no gui specified on command line,
-use the first gui that can be imported.
-#@nonl
-#@-node:ekr.20081119132758.3:Make tkinter gui a plugin
-#@+node:ekr.20081119132758.2:Support @ifgui in settings trees
-#@-node:ekr.20081119132758.2:Support @ifgui in settings trees
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+
+- Fix urgent qt gui problems:
+    - Fix qt gui key problems.
+    - Find/replace doesn't work in headlines for qt gui.
+#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 @nocolor
 
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
-@color
-#@nonl
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@+node:ekr.20070624135822:Templates for common code fragments
 @
 Use completion to show fragments.
@@ -51,6 +49,21 @@ Fragment 2:
 for p in c.allNodes_iter():
     pass
 #@-node:ekr.20070624135822:Templates for common code fragments
+#@+node:ekr.20081119132758.2:Support @ifgui in settings trees
+#@-node:ekr.20081119132758.2:Support @ifgui in settings trees
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+@nocolor
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.
+
+@color
+#@nonl
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@nonl
+#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
 @nocolor
 
@@ -555,22 +568,6 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
-#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-- Add support for the following options:
-    - expand_noweb_references: default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@+node:ekr.20080922115725.1:Finish @shadow
 # Allow block comments in private shadow files.
 # Compute delims using the private shadow file, not the file extension!

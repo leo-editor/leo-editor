@@ -9,7 +9,7 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-safe_mode = True # True: Bypass k.masterKeyHandler for problem keys or visible characters.
+safe_mode = False # True: Bypass k.masterKeyHandler for problem keys or visible characters.
 
 # Define these to suppress pylint warnings...
 __timing = None # For timing stats.
@@ -2286,7 +2286,6 @@ class leoQtLog (leoFrame.leoLog):
         # Rename the 'Tab 2' tab to 'Find'.
         for i in range(w.count()):
             if w.tabText(i) == 'Tab 2':
-                # g.trace('found Tab 2',w.currentWidget())
                 w.setTabText(i,'Find')
                 self.contentsDict['Find'] = w.currentWidget()
                 break
@@ -2370,12 +2369,12 @@ class leoQtLog (leoFrame.leoLog):
         if g.app.quitting or not c or not c.exists:
             return
 
-        self.selectTab(tabName or 'Lob')
+        self.selectTab(tabName or 'Log')
+        # print('qtLog.put',tabName,'%3s' % (len(s)),self.logCtrl)
 
         # Note: this must be done after the call to selectTab.
         w = self.logCtrl # w is a QTextBrowser
         if w:
-            # g.trace(repr(s))
             if s.endswith('\n'): s = s[:-1]
             s = s.replace(' ','&nbsp;')
             if color:
@@ -2492,25 +2491,22 @@ class leoQtLog (leoFrame.leoLog):
 
         c = self.c ; w = self.tabWidget ; trace = False
 
-        ok = self.selectHelper(tabName)
+        ok = self.selectHelper(tabName,createText)
         if ok: return
 
-        contents = self.createTab(tabName,createText,wrap)
-
-        if createText and tabName not in ('Spell','Find',):
-            # g.trace(tabName,contents,g.callers(4))
-            self.logCtrl = contents
-
-        self.selectHelper(tabName)
+        self.createTab(tabName,createText,wrap)
+        self.selectHelper(tabName,createText)
 
     #@+node:ekr.20081121105001.336:selectHelper
-    def selectHelper (self,tabName):
+    def selectHelper (self,tabName,createText):
 
         w = self.tabWidget
 
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
+                if createText and tabName not in ('Spell','Find',):
+                    self.logCtrl = w.widget(i)
                 return True
         else:
             return False
@@ -4991,6 +4987,20 @@ class leoQtGui(leoGui.leoGui):
 
     #@-node:ekr.20081121105001.478:Do nothings
     #@+node:ekr.20081121105001.479:Dialogs & panels
+    #@+node:ekr.20081122170423.1:alert (qtGui)
+    def alert (self,message):
+
+        if g.unitTesting: return
+
+        b = QtGui.QMessageBox
+        d = b(None)
+        d.setWindowTitle('Alert')
+        d.setText(message)
+        d.setIcon(b.Warning)
+        yes = d.addButton('Ok',b.YesRole)
+        d.exec_()
+    #@nonl
+    #@-node:ekr.20081122170423.1:alert (qtGui)
     #@+node:ekr.20081121105001.480:makeFilter
     def makeFilter (self,filetypes):
 
@@ -5147,7 +5157,11 @@ class leoQtGui(leoGui.leoGui):
         parent = None
         filter = self.makeFilter(filetypes)
         s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
-        return g.app.gui.toUnicode(s)
+        s = g.app.gui.toUnicode(s)
+        if multiple:
+            return [s]
+        else:
+            return s
     #@nonl
     #@-node:ekr.20081121105001.488:runOpenFileDialog
     #@+node:ekr.20081121105001.489:runSaveFileDialog
@@ -5166,7 +5180,7 @@ class leoQtGui(leoGui.leoGui):
         if g.unitTesting: return None
 
         b = QtGui.QMessageBox
-        d = b(None,) # c.frame.top)
+        d = b(None) # c.frame.top)
         d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.
 
         d.setWindowTitle(title)
@@ -5269,6 +5283,16 @@ class leoQtGui(leoGui.leoGui):
             g.es_exception()
             return None
     #@-node:ekr.20081121105001.497:getIconImage
+    #@+node:ekr.20081123003126.2:getTreeImage (test)
+    def getTreeImage (self,c,path):
+
+        image = QtGui.QPixmap(path)
+
+        if image.height() > 0 and image.width() > 0:
+            return image,image.height()
+        else:
+            return None,None
+    #@-node:ekr.20081123003126.2:getTreeImage (test)
     #@-node:ekr.20081121105001.495:Icons
     #@+node:ekr.20081121105001.498:Idle Time (to do)
     #@+node:ekr.20081121105001.499:qtGui.setIdleTimeHook

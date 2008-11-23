@@ -755,6 +755,7 @@
 <v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
 <v t="ekr.20040803090901"><vh>@test leoDist.leo</vh></v>
+<v t="ekr.20081121164135.1"><vh>@test leoGuiPluginsRef.leo</vh></v>
 <v t="ekr.20040712101754.4"><vh>@test LeoPyRef.leo</vh></v>
 <v t="ekr.20040712101754.5"><vh>@test leoPluginsRef.leo</vh></v>
 <v t="ekr.20040712101754.6"><vh>@test LeoDocs.leo</vh></v>
@@ -22051,6 +22052,11 @@ c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
+</t>
+<t tx="ekr.20081121164135.1">import leo.core.leoTest as leoTest
+
+path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
+leoTest.runLeoTest(c,path,verbose=False,full=True)
 </t>
 </tnodes>
 </leo_file>
