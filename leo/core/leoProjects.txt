@@ -11157,6 +11157,265 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?
 Patches made to leoKeys.py
 #@nonl
 #@-node:ekr.20081022080424.1:Added support for meta keys
+#@+node:ekr.20081123080346.1:Better plugin info
+@nocolor-node
+
+c.config.doEnabledPlugins sets g.app.config.enabledPluginsFileName
+#@nonl
+#@+node:ekr.20041113113140:loadOnePlugin
+def loadOnePlugin (moduleOrFileName, verbose=False):
+
+    global loadedModules,loadingModuleNameStack
+
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    if moduleOrFileName.endswith('.py'):
+        moduleName = moduleOrFileName [:-3]
+    else:
+        moduleName = moduleOrFileName
+    moduleName = g.shortFileName(moduleName)
+
+    if isLoaded(moduleName):
+        module = loadedModules.get(moduleName)
+        if verbose:
+            g.es_print('plugin',moduleName,'already loaded',color="blue")
+        return module
+
+    plugins_path = g.os_path_join(g.app.loadDir,"..","plugins")
+    moduleName = g.toUnicode(moduleName,g.app.tkEncoding)
+
+    # This import will typically result in calls to registerHandler.
+    # if the plugin does _not_ use the init top-level function.
+    loadingModuleNameStack.append(moduleName)
+    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    loadingModuleNameStack.pop()
+
+    if result:
+        loadingModuleNameStack.append(moduleName)
+        if hasattr(result,'init'):
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                # g.trace('result',result,'init_result',init_result)
+                if init_result:
+                    loadedModules[moduleName] = result
+                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    if verbose and not g.app.initing:
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                    result = None
+            except Exception:
+                g.es('exception loading plugin',color='red')
+                g.es_exception()
+                result = None
+        else:
+            # No top-level init function.
+            # Guess that the module was loaded correctly,
+            # but do *not* load the plugin if we are unit testing.
+            g.trace('no init()',moduleName)
+            if g.app.unitTesting:
+                result = None
+                loadedModules[moduleName] = None
+            else:
+                loadedModules[moduleName] = result
+        loadingModuleNameStack.pop()
+
+    if g.unitTesting or g.app.batchMode or g.app.inBridge:
+        pass
+    elif result is None:
+        if warn_on_failure or (verbose and not g.app.initing): # or not g.app.unitTesting:
+            g.es_print('can not load enabled plugin:',moduleName,color="red")
+    elif verbose:
+        g.es_print('loaded plugin:',moduleName,color="blue")
+
+    return result
+#@-node:ekr.20041113113140:loadOnePlugin
+#@+node:ekr.20070429090859:print plugins info...
+def printPluginHandlers (self,event=None):
+
+    leoPlugins.printHandlers(self.c)
+
+def printPlugins (self,event=None):
+
+    leoPlugins.printPlugins(self.c)
+
+def printPluginsInfo (self,event=None):
+
+    leoPlugins.printPluginsInfo(self.c)
+#@-node:ekr.20070429090859:print plugins info...
+#@+node:ekr.20081123080346.2:printPluginsInfo
+def printPluginsInfo (c):
+
+    '''Print the file name responsible for loading a plugin.
+
+    This is the first .leo file containing an @enabled-plugins node
+    that enables the plugin.'''
+
+    d = loadedModulesFilesDict
+    tabName = 'Plugins'
+    c.frame.log.selectTab(tabName)
+
+    data = []
+    for z in g.app.loadedPlugins:
+        print z, d.get(z)
+
+    data = [] ; n = 4
+    for moduleName in d:
+        fileName = d.get(moduleName)
+        n = max(n,len(moduleName))
+        data.append((moduleName,fileName),)
+
+    lines = ['%*s %s\n' % (-n,s1,s2) for (s1,s2) in data]
+    g.es('',''.join(lines),tabName=tabName)
+#@-node:ekr.20081123080346.2:printPluginsInfo
+#@+node:ekr.20050110191444:printHandlers
+def printHandlers (c,moduleName=None):
+
+    tabName = 'Plugins'
+    c.frame.log.selectTab(tabName)
+
+    if moduleName:
+        s = 'handlers for %s...\n' % (moduleName)
+    else:
+        s = 'all plugin handlers...\n'
+    g.es(s+'\n',tabName=tabName)
+
+    data = []
+    modules = {}
+    for tag in handlers:
+        bunches = handlers.get(tag)
+        for bunch in bunches:
+            name = bunch.moduleName
+            tags = modules.get(name,[])
+            tags.append(tag)
+            modules[name] = tags
+
+    n = 4
+    for key in sorted(modules):
+        tags = modules.get(key)
+        if moduleName in (None,key):
+            for tag in tags:
+                n = max(n,len(tag))
+                data.append((tag,key),)
+
+    lines = ['%*s %s\n' % (-n,s1,s2) for (s1,s2) in data]
+    g.es('',''.join(lines),tabName=tabName)
+
+#@-node:ekr.20050110191444:printHandlers
+#@+node:ekr.20070429090122:printPlugins
+def printPlugins (c):
+
+    tabName = 'Plugins'
+    c.frame.log.selectTab(tabName)
+
+    data = []
+    data.append('enabled plugins...\n')
+    for z in sorted(loadedModules):
+        data.append(z)
+
+    lines = ['%s\n' % (s) for s in data]
+    g.es('',''.join(lines),tabName=tabName)
+#@-node:ekr.20070429090122:printPlugins
+#@+node:ekr.20031218072017.2140:c.executeScript & helpers
+def executeScript(self,event=None,args=None,p=None,script=None,
+    useSelectedText=True,define_g=True,define_name='__main__',silent=False):
+
+    """This executes body text as a Python script.
+
+    We execute the selected text, or the entire body text if no text is selected."""
+
+    c = self ; script1 = script
+    writeScriptFile = c.config.getBool('write_script_file')
+    if not script:
+        script = g.getScript(c,p,useSelectedText=useSelectedText)
+    self.redirectScriptOutput()
+    try:
+        log = c.frame.log
+        if script.strip():
+            sys.path.insert(0,c.frame.openDirectory)
+            script += '\n' # Make sure we end the script properly.
+            # g.pr('*** script',script)
+            try:
+                p = c.currentPosition()
+                d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+                if define_name: d['__name__'] = define_name
+                if args:
+                    # g.trace('setting sys.argv',args)
+                    sys.argv = args
+                # A kludge: reset c.inCommand here to handle the case where we *never* return.
+                # (This can happen when there are multiple event loops.)
+                # This does not prevent zombie windows if the script puts up a dialog...
+                c.inCommand = False
+                # g.trace('**** before',writeScriptFile)
+                if writeScriptFile:
+                    scriptFile = self.writeScriptFile(script)
+                    execfile(scriptFile,d)
+                else:
+                    exec(script,d)
+                # g.trace('**** after')
+                if not script1 and not silent:
+                    # Careful: the script may have changed the log tab.
+                    tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+                    g.es("end of script",color="purple",tabName=tabName)
+            except Exception:
+                g.handleScriptException(c,p,script,script1)
+            del sys.path[0]
+        else:
+            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+            g.es("no script selected",color="blue",tabName=tabName)
+    finally:
+        self.unredirectScriptOutput()
+#@+node:ekr.20031218072017.2143:redirectScriptOutput
+def redirectScriptOutput (self):
+
+    c = self
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+#@-node:ekr.20031218072017.2143:redirectScriptOutput
+#@+node:EKR.20040627100424:unredirectScriptOutput
+def unredirectScriptOutput (self):
+
+    c = self
+
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+
+        g.restoreStderr()
+        g.restoreStdout()
+#@-node:EKR.20040627100424:unredirectScriptOutput
+#@+node:ekr.20070115135502:writeScriptFile
+def writeScriptFile (self,script):
+
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        parts = path.split('/')
+        path = g.app.loadDir
+        for part in parts:
+            path = c.os_path_finalize_join(path,part)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.loadDir,'..','test','scriptFile.py')
+
+    # Write the file.
+    try:
+        f = open(path,'w')
+        f.write(script)
+        f.close()
+    except Exception:
+        g.es("Failed to write script to %s" % path)
+        g.es("Check your configuration of script_file_path, currently %s" % c.config.getString('script_file_path'))
+        path = None
+
+    return path
+#@nonl
+#@-node:ekr.20070115135502:writeScriptFile
+#@-node:ekr.20031218072017.2140:c.executeScript & helpers
+#@-node:ekr.20081123080346.1:Better plugin info
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files
