@@ -4991,6 +4991,20 @@ class leoQtGui(leoGui.leoGui):
 
     #@-node:ekr.20081121105001.478:Do nothings
     #@+node:ekr.20081121105001.479:Dialogs & panels
+    #@+node:ekr.20081122170423.1:alert (qtGui)
+    def alert (self,message):
+
+        if g.unitTesting: return
+
+        b = QtGui.QMessageBox
+        d = b(None)
+        d.setWindowTitle('Alert')
+        d.setText(message)
+        d.setIcon(b.Warning)
+        yes = d.addButton('Ok',b.YesRole)
+        d.exec_()
+    #@nonl
+    #@-node:ekr.20081122170423.1:alert (qtGui)
     #@+node:ekr.20081121105001.480:makeFilter
     def makeFilter (self,filetypes):
 
@@ -5147,7 +5161,11 @@ class leoQtGui(leoGui.leoGui):
         parent = None
         filter = self.makeFilter(filetypes)
         s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
-        return g.app.gui.toUnicode(s)
+        s = g.app.gui.toUnicode(s)
+        if multiple:
+            return [s]
+        else:
+            return s
     #@nonl
     #@-node:ekr.20081121105001.488:runOpenFileDialog
     #@+node:ekr.20081121105001.489:runSaveFileDialog
@@ -5166,7 +5184,7 @@ class leoQtGui(leoGui.leoGui):
         if g.unitTesting: return None
 
         b = QtGui.QMessageBox
-        d = b(None,) # c.frame.top)
+        d = b(None) # c.frame.top)
         d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.
 
         d.setWindowTitle(title)
@@ -5269,6 +5287,17 @@ class leoQtGui(leoGui.leoGui):
             g.es_exception()
             return None
     #@-node:ekr.20081121105001.497:getIconImage
+    #@+node:ekr.20081123003126.2:getTreeImage (test)
+    def getTreeImage (self,c,path):
+
+        image = QtGui.QPixmap(path)
+
+        g.trace(image.height(),image.width(),g.callers(4))
+        if image.height() > 0 and image.width() > 0:
+            return image,image.height()
+        else:
+            return None,None
+    #@-node:ekr.20081123003126.2:getTreeImage (test)
     #@-node:ekr.20081121105001.495:Icons
     #@+node:ekr.20081121105001.498:Idle Time (to do)
     #@+node:ekr.20081121105001.499:qtGui.setIdleTimeHook

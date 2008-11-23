@@ -980,10 +980,8 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
 #@+node:ekr.20031218072017.3105:alert
 def alert(message):
 
-    g.es('',message)
-
-    import tkMessageBox
-    tkMessageBox.showwarning("Alert", message)
+    g.es(message)
+    g.app.gui.alert(message)
 #@-node:ekr.20031218072017.3105:alert
 #@+node:ekr.20051023083258:callers & _callerName
 def callers (n=8,excludeCaller=True,files=False):

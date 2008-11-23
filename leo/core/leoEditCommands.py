@@ -2327,7 +2327,7 @@ class editCommandsClass (baseEditCommandsClass):
         path = c.os_path_finalize_join(iconDir,path)
         relPath = g.makePathRelativeTo(path,iconDir)
 
-        image,image_height = self.getImage(path)
+        image,image_height = g.app.gui.getTreeImage(c,path)
         if not image:
             g.es('can not load image:',path)
             return xoffset
@@ -2417,37 +2417,6 @@ class editCommandsClass (baseEditCommandsClass):
         subl = [i for i in l if i.get('on') == 'vnode']
         self._setIconListHelper(p, subl, p.v)
     #@-node:tbrown.20080119085249.1:setIconList
-    #@+node:ekr.20071114083142:getImage
-    def getImage (self,path):
-
-        c = self.c
-
-        try:
-            from PIL import Image
-        except ImportError:
-            Image = None
-            g.es('can not import Image module from PIL',color='blue')
-
-        try:
-            from PIL import ImageTk
-        except ImportError:
-            try:
-                import ImageTk
-            except ImportError:
-                ImageTk = None
-                g.es('can not import ImageTk module',color='blue')
-
-        try:
-            if Image and ImageTk:
-                image1 = Image.open(path)
-                image = ImageTk.PhotoImage(image1)
-            else:
-                import Tkinter as Tk
-                image = Tk.PhotoImage(master=c.frame.tree.canvas,file=path)
-            return image,image.height()
-        except Exception:
-            return None,None
-    #@-node:ekr.20071114083142:getImage
     #@-node:ekr.20080108092811: Helpers
     #@+node:ekr.20071114082418:deleteFirstIcon
     def deleteFirstIcon (self,event=None):

@@ -283,6 +283,14 @@ class tkinterGui(leoGui.leoGui):
             c,title,message,yesMessage,noMessage,defaultButton)
         return d.run(modal=True)
     #@nonl
+    #@+node:ekr.20081122170423.2:tkGui.alert
+    def alert (self,message):
+
+        import tkMessageBox
+
+        tkMessageBox.showwarning("Alert", message)
+    #@nonl
+    #@-node:ekr.20081122170423.2:tkGui.alert
     #@+node:ekr.20081121110412.367:tkGui.createSpellTab
     def createSpellTab(self,c,spellHandler,tabName):
 
@@ -671,6 +679,35 @@ class tkinterGui(leoGui.leoGui):
             return None
     #@-node:ekr.20081121110412.391:createLeoIcon
     #@-node:ekr.20081121110412.389:attachLeoIcon & createLeoIcon
+    #@+node:ekr.20081123003126.1:getTreeImage
+    def getTreeImage (self,c,path):
+
+        try:
+            from PIL import Image
+        except ImportError:
+            Image = None
+            g.es('can not import Image module from PIL',color='blue')
+
+        try:
+            from PIL import ImageTk
+        except ImportError:
+            try:
+                import ImageTk
+            except ImportError:
+                ImageTk = None
+                g.es('can not import ImageTk module',color='blue')
+
+        try:
+            if Image and ImageTk:
+                image1 = Image.open(path)
+                image = ImageTk.PhotoImage(image1)
+            else:
+                import Tkinter as Tk
+                image = Tk.PhotoImage(master=c.frame.tree.canvas,file=path)
+            return image,image.height()
+        except Exception:
+            return None,None
+    #@-node:ekr.20081123003126.1:getTreeImage
     #@-node:ekr.20081121110412.388:Icons
     #@+node:ekr.20081121110412.392:Idle Time
     #@+node:ekr.20081121110412.393:tkinterGui.setIdleTimeHook

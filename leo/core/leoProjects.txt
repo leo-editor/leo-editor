@@ -12033,14 +12033,192 @@ def visitedPositions (self):
 #@-node:ekr.20070615140655:visitedPositions
 #@-node:ekr.20070615131604:class nodeHistory
 #@-node:ekr.20081001140516.1:Improved nav_buttons plugin and corresponding nodeHistory class
-#@+node:ekr.20081005065934.11:Created qtGui plugin
-#@-node:ekr.20081005065934.11:Created qtGui plugin
+#@+node:ekr.20081005065934.11:Created qtGui and tkGui plugins
+#@+node:ekr.20081121150254.1:Put getImage in the gui class
+leoEditCommands.getImage -> g.app.gui.getImage
+#@nonl
+#@+node:ekr.20080108091349:appendImageDictToList
+def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
+
+    c = self.c
+    path = c.os_path_finalize_join(iconDir,path)
+    relPath = g.makePathRelativeTo(path,iconDir)
+
+    image,image_height = g.app.gui.getTreeImage(c,path)
+    if not image:
+        g.es('can not load image:',path)
+        return xoffset
+
+    if image_height is None:
+        yoffset = 0
+    else:
+        yoffset = 0 # (c.frame.tree.line_height-image_height)/2
+        # TNB: I suspect this is being done again in the drawing code
+
+    newEntry = {
+        'type' : 'file',
+        'file' : path,
+        'relPath': relPath,
+        'where' : 'beforeHeadline',
+        'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : 1, # -2,
+        'on' : 'tnode',
+    }
+    newEntry.update(kargs)  # may switch 'on' to 'vnode'
+    aList.append (newEntry)
+    xoffset += 2
+
+    return xoffset
+#@-node:ekr.20080108091349:appendImageDictToList
+#@-node:ekr.20081121150254.1:Put getImage in the gui class
+#@+node:ekr.20081123001429.1:g.alert calls g.app.gui.alert
+#@+node:ekr.20031218072017.3105:alert
+def alert(message):
+
+    g.es(message)
+    g.app.gui.alert(message)
+#@-node:ekr.20031218072017.3105:alert
+#@+node:ekr.20081123001429.2:Found: g.alert
+#@+node:ekr.20031218072017.1553:getLeoFile
+# The caller should follow this with a call to c.redraw().
+
+def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
+
+    c = self.c
+    c.setChanged(False) # May be set when reading @file nodes.
+    << warn on read-only files >>
+    self.checking = False
+    self.mFileName = c.mFileName
+    self.initReadIvars()
+    c.loading = True # disable c.changed
+
+    try:
+        ok = True
+        # t1 = time.clock()
+        v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+        if v: # v is None for minimal .leo files.
+            c.setRootVnode(v)
+            self.rootVnode = v
+        else:
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
+            p = leoNodes.position(v)
+            p._linkAsRoot(oldRoot=None)
+            self.rootVnode = v
+            c.setRootPosition(p)
+            c.changed = False
+    except BadLeoFile:
+        junk, message, junk = sys.exc_info()
+        if not silent:
+            g.es_exception()
+            g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+        ok = False
+
+    # Do this before reading derived files.
+    self.resolveTnodeLists()
+
+    if ok and readAtFileNodesFlag:
+        # Redraw before reading the @file nodes so the screen isn't blank.
+        # This is important for big files like LeoPy.leo.
+        c.redraw_now()
+        c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+
+    # Do this after reading derived files.
+    if readAtFileNodesFlag:
+        # The descendent nodes won't exist unless we have read the @thin nodes!
+        self.restoreDescendentAttributes()
+
+    self.setPositionsFromVnodes()
+    c.selectVnode(c.currentPosition()) # load body pane
+
+    self.initAllParents()
+
+    if c.config.getBool('check_outline_after_read'):
+        g.trace('@bool check_outline_after_read = True',color='blue')
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+
+    c.loading = False # reenable c.changed
+    c.setChanged(c.changed) # Refresh the changed marker.
+    self.initReadIvars()
+    return ok, self.ratio
+#@+node:ekr.20031218072017.1554:<< warn on read-only files >>
+# os.access may not exist on all platforms.
+
+try:
+    self.read_only = not os.access(fileName,os.W_OK)
+except AttributeError:
+    self.read_only = False
+except UnicodeError:
+    self.read_only = False
+
+if self.read_only:
+    g.es("read only:",fileName,color="red")
+#@-node:ekr.20031218072017.1554:<< warn on read-only files >>
+#@-node:ekr.20031218072017.1553:getLeoFile
+#@+node:ekr.20070910105044:checkMoveWithParentWithWarning
+def checkMoveWithParentWithWarning (self,root,parent,warningFlag):
+
+    """Return False if root or any of root's descedents is a clone of
+    parent or any of parents ancestors."""
+
+    message = "Illegal move or drag: no clone may contain a clone of itself"
+
+    # g.trace("root",root,"parent",parent)
+    clonedTnodes = {}
+    for ancestor in parent.self_and_parents_iter():
+        if ancestor.isCloned():
+            t = ancestor.v.t
+            clonedTnodes[t] = t
+
+    if not clonedTnodes:
+        return True
+
+    for p in root.self_and_subtree_iter():
+        if p.isCloned() and clonedTnodes.get(p.v.t):
+            if g.app.unitTesting:
+                g.app.unitTestDict['checkMoveWithParentWithWarning']=True
+            elif warningFlag:
+                g.alert(message)
+            return False
+    return True
+#@-node:ekr.20070910105044:checkMoveWithParentWithWarning
+#@+node:ekr.20070910105044.1:checkDrag
+def checkDrag (self,root,target):
+
+    """Return False if target is any descendant of root."""
+
+    message = "Can not drag a node into its descendant tree."
+
+    # g.trace('root',root.headString(),'target',target.headString())
+
+    for z in root.subtree_iter():
+        if z == target:
+            if g.app.unitTesting:
+                g.app.unitTestDict['checkMoveWithParentWithWarning']=True
+            else:
+                g.alert(message)
+            return False
+    return True
+#@nonl
+#@-node:ekr.20070910105044.1:checkDrag
+#@+node:ekr.20040310062332.1:p.invalidOutline
+def invalidOutline (self, message):
+
+    p = self
+
+    if p.hasParent():
+        node = p.parent()
+    else:
+        node = p
+
+    g.alert("invalid outline: %s\n%s" % (message,node))
+#@-node:ekr.20040310062332.1:p.invalidOutline
+#@-node:ekr.20081123001429.2:Found: g.alert
+#@-node:ekr.20081123001429.1:g.alert calls g.app.gui.alert
+#@-node:ekr.20081005065934.11:Created qtGui and tkGui plugins
 #@+node:ekr.20081121104952.2:Created leoGuiPluginsRef.leo
 This contains all gui plugins.
 #@nonl
 #@-node:ekr.20081121104952.2:Created leoGuiPluginsRef.leo
-#@+node:ekr.20081119132758.3:Created tkGui plugin
-#@-node:ekr.20081119132758.3:Created tkGui plugin
 #@-node:ekr.20081001140516.16:Plugins
 #@-node:ekr.20080917153158.11:4.6
 #@-all
