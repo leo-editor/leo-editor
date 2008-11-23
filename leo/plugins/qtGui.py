@@ -9,7 +9,7 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-safe_mode = True # True: Bypass k.masterKeyHandler for problem keys or visible characters.
+safe_mode = False # True: Bypass k.masterKeyHandler for problem keys or visible characters.
 
 # Define these to suppress pylint warnings...
 __timing = None # For timing stats.
@@ -5288,7 +5288,6 @@ class leoQtGui(leoGui.leoGui):
 
         image = QtGui.QPixmap(path)
 
-        g.trace(image.height(),image.width(),g.callers(4))
         if image.height() > 0 and image.width() > 0:
             return image,image.height()
         else:
