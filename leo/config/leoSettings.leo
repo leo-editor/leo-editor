@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="7,3"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1391,7 +1391,7 @@
 <v t="TL.20080806084612.145"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
+<v t="ekr.20060603215208" a="E"></v>
 <v t="ekr.20081018053140.11"></v>
 </vnodes>
 <tnodes>
@@ -7048,7 +7048,8 @@ end-of-buffer-extend-selection      = Ctrl-Shift-End
 forward-word                        = Ctrl-RtArrow
 forward-word-extend-selection       = Ctrl-Shift-RtArrow
 
-beginning-of-line                   = Home
+# beginning-of-line                   = Home
+back-to-home                        = Home
 beginning-of-line-extend-selection  = Shift-Home
 end-of-line                         = End
 end-of-line-extend-selection        = Shift-End

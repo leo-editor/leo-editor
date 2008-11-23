@@ -3,8 +3,6 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
-- Shift-tab is Smart home.
-
 - Fix urgent qt gui problems:
     - Fix qt gui key problems.
     - Find/replace doesn't work in headlines for qt gui.
