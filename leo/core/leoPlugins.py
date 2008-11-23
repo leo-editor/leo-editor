@@ -22,7 +22,11 @@ import leo.core.leoGlobals as g
 import glob
 
 handlers = {}
-loadedModules = {} # Keys are module names, values are modules.
+loadedModulesFilesDict = {}
+    # Keys are module names, values are the names of .leo files
+    # containing @enabled-plugins nodes that caused the plugin to be loaded
+loadedModules = {}
+    # Keys are module names, values are modules.
 loadingModuleNameStack = [] # The stack of module names.  Top is the module being loaded.
 
 def init():
@@ -221,6 +225,7 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
                 # g.trace('result',result,'init_result',init_result)
                 if init_result:
                     loadedModules[moduleName] = result
+                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
                 else:
                     if verbose and not g.app.initing:
                         g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")

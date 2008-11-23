@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -374,6 +374,7 @@
 <v t="ekr.20081025105942.1"><vh>@button dir</vh></v>
 <v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
 </v>
+<v t="ekr.20081123081842.1"><vh>Plugin info</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3740,5 +3741,9 @@ z.foo()
 </t>
 <t tx="ekr.20081025105942.1">import os
 os.system("dir")</t>
+<t tx="ekr.20081123081842.1">import leo.core.leoPlugins as leoPlugins
+d = leoPlugins.loadedModulesFilesDict
+for z in g.app.loadedPlugins:
+    print z, d.get(z)</t>
 </tnodes>
 </leo_file>
