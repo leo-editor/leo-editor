@@ -13,6 +13,7 @@ First:
 Next:
 - Allow coloring of icon bar buttons.
 - Support multiple body editors.
+- Optimize the Qt colorizer.
 
 Finally:
 - Install new Qt version and play with QScintilla.
@@ -49,6 +50,8 @@ keyboard I get:
 present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081124094918.1:Fix problems with accented characters
 #@+node:ekr.20081121105001.149:Finish colorizer
+@nocolor-node
+
 - Simulate Tk's handling of tags (an optimization)
 - Use Qt threading.
 - Handle all colorizer tags.
