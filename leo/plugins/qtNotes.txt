@@ -679,6 +679,8 @@ def keyboardUpperLong (self,ch):
         "comma":        "less",
         "period":       "greater",
         "slash":        "question",
+        "parenleft":    "parenleft", # Bug fix: 2008/11/24
+        "parenright":   "parenright", # Bug fix: 2008/11/24
     }
     # g.trace(ch,d.get(ch))
     return d.get(ch)
@@ -727,29 +729,6 @@ def shifted (self,mods,ch):
 
     return mods,ch
 #@-node:ekr.20081121105001.177:shifted
-#@+node:ekr.20081121105001.178:shifted2
-# This idea doesn't work.  The key-code in the ctor overrides everything else.
-
-def shifted2 (self,event):
-
-    mods = event.modifiers()
-    mods2 = mods & QtCore.Qt.ShiftModifier
-
-    event2 = QtGui.QKeyEvent (
-        QtCore.QEvent.KeyPress,
-        event.key(),mods2,event.text())
-
-    # encoding = 'utf-8'
-    keynum = event2.key()
-    text = g.app.gui.toUnicode(event2.text())
-    toString = g.app.gui.toUnicode(
-        QtGui.QKeySequence(keynum).toString())
-    mods = self.qtMods(event2)
-
-    g.trace(
-        'keynum: %s, mods: %s text: %s, toString: %s' % (
-        keynum,mods,repr(text),toString))
-#@-node:ekr.20081121105001.178:shifted2
 #@-node:ekr.20081121105001.174:tkKey & helpers
 #@-node:ekr.20081121105001.170:toTkKey
 #@+node:ekr.20081121105001.179:traceEvent
