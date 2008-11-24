@@ -11416,6 +11416,38 @@ def writeScriptFile (self,script):
 #@-node:ekr.20070115135502:writeScriptFile
 #@-node:ekr.20031218072017.2140:c.executeScript & helpers
 #@-node:ekr.20081123080346.1:Better plugin info
+#@+node:ekr.20081123102100.2:Added smart home (back-to-home) command
+#@+node:ekr.20081123102100.1:backToHome
+def backToHome (self,event):
+
+    '''Smart home:
+    Position the point at the first non-blank character on the line,
+    or the start of the line if already at the first-non-blank character,
+    or to the start of the next line if already at the start of a line.'''
+
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    if ins == 0 or not(s): return
+
+    self.beginCommand(undoType='back-to-home')
+
+    i,j = g.getLine(s,ins)
+    if ins == i:
+        i,j = g.getLine(s,i-1)
+    i1 = i
+
+    while i < j and s[i] in (' \t'):
+        i += 1
+
+    if i1 < ins <= i: i = i1
+    w.setInsertPoint(i)
+
+    self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20081123102100.1:backToHome
+#@-node:ekr.20081123102100.2:Added smart home (back-to-home) command
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files
