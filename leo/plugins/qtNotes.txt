@@ -5,7 +5,6 @@
 @nocolor-node
 
 First:
-- Fix problem with accented characters: see child node for notes.
 - Find/replace doesn't work in headlines for qt gui.
 - Finish colorizer: see child node for notes.
 
@@ -25,6 +24,7 @@ Finally:
     carat can be left at either the start or the end of the selection.
     Exposed QsciScintilla::positionFromLineIndex() and
     QsciScintilla::lineIndexFromPosition().
+    - Fix problem with accented characters: see child node for notes.
 - Add stylesheets for dialogs.
     - Set font for dummy widget in style sheet, then copy that font.
 #@+node:ekr.20081124094918.1:Fix problems with accented characters

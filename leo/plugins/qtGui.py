@@ -6008,6 +6008,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         # Init ivars.
         self.tags = {}
+        self.configDict = {} # Keys are tags, values are colors (names or values).
         self.useScintilla = False # This is used!
 
         if not c: return ### Can happen.
@@ -6350,24 +6351,10 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # if not g.app.unitTesting:
             # self.widget.after_idle(function,*args,**keys)
     #@-node:ekr.20081121105001.540:Idle time
-    #@+node:ekr.20081121105001.541:Coloring
+    #@+node:ekr.20081121105001.541:Coloring (baseTextWidget)
     def removeAllTags(self):
         s = self.getAllText()
         self.colorSelection(0,len(s),'black')
-
-    def tag_add(self,tag,x1,x2):
-        if tag == 'comment1':
-            self.colorSelection(x1,x2,'firebrick')
-
-    def tag_config (self,*args,**keys):
-        if len(args) == 1:
-            key = args[0]
-            # g.trace(key,keys)
-            self.tags[key] = keys
-        else:
-            g.trace('oops',args,keys)
-
-    tag_configure = tag_config
 
     def tag_names (self):
         return []
@@ -6375,7 +6362,15 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def colorSelection (self,i,j,colorName):
 
         w = self.widget
+        if not colorName: return
         color = QtGui.QColor(colorName)
+        if not color:
+            # Convert, for example, firebrick3 to firebrick.
+            if isdigit(colorName[-1]):
+                color = QtGui.QColor(colorName[:-1])
+                if not color: return
+            else: return
+
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         old_i,old_j = self.getSelectionRange()
@@ -6385,7 +6380,34 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.setSelectionRange(old_i,old_j,insert=old_ins)
         sb.setSliderPosition(pos)
     #@-node:ekr.20081121105001.542:colorSelection
-    #@-node:ekr.20081121105001.541:Coloring
+    #@+node:ekr.20081124102726.10:tag_add
+    def tag_add(self,tag,x1,x2):
+
+        val = self.configDict.get(tag)
+        if val:
+            self.colorSelection(x1,x2,val)
+
+        # if tag == 'comment1':
+            # self.colorSelection(x1,x2,'firebrick')
+        # else:
+            # g.trace(tag)
+    #@-node:ekr.20081124102726.10:tag_add
+    #@+node:ekr.20081124102726.11:tag_config/ure
+    def tag_config (self,*args,**keys):
+        if len(args) == 1:
+            key = args[0]
+            self.tags[key] = keys
+            val = keys.get('foreground')
+            if val:
+                # g.trace(key,val)
+                self.configDict [key] = val
+        else:
+            g.trace('oops',args,keys)
+
+    tag_configure = tag_config
+    #@nonl
+    #@-node:ekr.20081124102726.11:tag_config/ure
+    #@-node:ekr.20081121105001.541:Coloring (baseTextWidget)
     #@-node:ekr.20081121105001.538: May be overridden in subclasses
     #@+node:ekr.20081121105001.543: Must be overridden in subclasses
     def getAllText(self):                   self.oops()
