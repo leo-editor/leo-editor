@@ -5,9 +5,8 @@
 @nocolor-node
 
 First:
-- Fix urgent qt gui problems:
-    - Allow shift-tab binding & fix Ctrl-( problem.
-    - Find/replace doesn't work in headlines for qt gui.
+- Fix problem with accented characters: see child node for notes.
+- Find/replace doesn't work in headlines for qt gui.
 - Finish colorizer: see child node for notes.
 
 Next:
@@ -28,6 +27,29 @@ Finally:
     QsciScintilla::lineIndexFromPosition().
 - Add stylesheets for dialogs.
     - Set font for dummy widget in style sheet, then copy that font.
+#@+node:ekr.20081124094918.1:Fix problems with accented characters
+http://groups.google.com/group/leo-editor/browse_thread/thread/59c1e5d6acaf4de0
+
+I've some more information about the problems with accent previously
+reported:
+- I can confirm that they are caused by the interaction scim+leo (with
+and without the qt plugin). If scim is not started leo works fine. If
+scim is running the problems appear and are slightly different with
+and without the qt plugin. The workaround is obvious: don't use leo
+and scim at the same time :-)
+- accents are not working in the qt plugin when scintilla is used. If
+qt-use-scintilla=False I can write this:
+
+àáä (the same for the rest of vowels)
+
+but if qt-use-scintilla=True when I enter the same sequence in the
+keyboard I get:
+
+`aaa (the same for the rest of vowels)
+
+- the problem with the ñ character (reported previously too) is only
+present in the qt plugin (both with and without scintilla)
+#@-node:ekr.20081124094918.1:Fix problems with accented characters
 #@+node:ekr.20081121105001.149:Finish colorizer
 - Simulate Tk's handling of tags (an optimization)
 - Use Qt threading.
