@@ -5,7 +5,6 @@
 @nocolor-node
 
 First:
-- Find/replace doesn't work in headlines for qt gui.
 - Handle pane orientation:
     A popular arrangement would be editor and outline
     in top pane with the log along the bottom.
