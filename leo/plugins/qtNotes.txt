@@ -6,15 +6,14 @@
 
 First:
 - Find/replace doesn't work in headlines for qt gui.
-- Finish colorizer: see child node for notes.
+- Handle pane orientation:
+    A popular arrangement would be editor and outline
+    in top pane with the log along the bottom.
+- Clicks in body text do not update row/column position.
 
 Next:
 - Allow coloring of icon bar buttons.
 - Support multiple body editors.
-- Clicks in body text do not update row/column position.
-- Handle pane orientation:
-    A popular arrangement would be editor and outline
-    in top pane with the log along the bottom.
 
 Finally:
 - Install new Qt version and play with QScintilla.
@@ -359,37 +358,36 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 
     # These are not errors: sig_itemChanged may
     # have been called first.
-    if not e:
-        if trace: g.trace('No e')
-        return 
-    if e != w:
-        if trace and verbose: g.trace('e != w',e,w,g.callers(4))
-        self._editWidget = None
-        self._editWidgetPosition = None
-        self._editWidgetWrapper = None
-        return
-    if not p:
-        if trace: g.trace('No p') 
-        return
-    s = e.text() ; len_s = len(s)
-    s = g.app.gui.toUnicode(s)
-    oldHead = p.headString()
-    changed = s != oldHead
-    if trace: g.trace('changed',changed,repr(s),g.callers(4))
-    if not changed: return
-    p.initHeadString(s)
-    undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-    if not c.changed: c.setChanged(True)
-    # New in Leo 4.4.5: we must recolor the body because
-    # the headline may contain directives.
-    c.frame.body.recolor(p,incremental=True)
-    dirtyVnodeList = p.setDirty()
-    u.afterChangeNodeContents(p,undoType,undoData,
-        dirtyVnodeList=dirtyVnodeList)
+    if trace and verbose:
+        if not e:  g.trace('No e',g.callers(4))
+        if e != w: g.trace('e != w',e,w,g.callers(4))
+        if not p:  g.trace('No p')
+
+    if e and e == w and p:
+        s = e.text() ; len_s = len(s)
+        s = g.app.gui.toUnicode(s)
+        oldHead = p.headString()
+        changed = s != oldHead
+        if trace: g.trace('changed',changed,repr(s),g.callers(4))
+        if changed:
+            p.initHeadString(s)
+            undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+            if not c.changed: c.setChanged(True)
+            # New in Leo 4.4.5: we must recolor the body because
+            # the headline may contain directives.
+            c.frame.body.recolor(p,incremental=True)
+            dirtyVnodeList = p.setDirty()
+            u.afterChangeNodeContents(p,undoType,undoData,
+                dirtyVnodeList=dirtyVnodeList)
+
     # End the editing!
     self._editWidget = None
     self._editWidgetPosition = None
     self._editWidgetWrapper = None
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
     c.redraw(scroll=False)
     if self.stayInTree:
         c.treeWantsFocus()
@@ -875,6 +873,70 @@ def getTextFromClipboard (self):
 #@nonl
 #@-node:ekr.20081121105001.183:Clipboard
 #@-node:ekr.20081121105001.165:Fixed cross-file cut/paste problem
+#@+node:ekr.20081124113700.1:Completed syntax coloring for QTextEdit
+#@+node:ekr.20081121105001.541:Coloring (baseTextWidget)
+def removeAllTags(self):
+    s = self.getAllText()
+    self.colorSelection(0,len(s),'black')
+
+def tag_names (self):
+    return []
+#@+node:ekr.20081121105001.542:colorSelection
+def colorSelection (self,i,j,colorName):
+
+    w = self.widget
+    if not colorName: return
+    if g.unitTesting: return
+
+    # Unlike Tk names, Qt names don't end in a digit.
+    if colorName[-1].isdigit() and colorName[0] != '#':
+        color = QtGui.QColor(colorName[:-1])
+    else:
+        color = QtGui.QColor(colorName)
+
+    if not color.isValid():
+        # g.trace('unknown color name',colorName)
+        return
+
+    sb = w.verticalScrollBar()
+    pos = sb.sliderPosition()
+    old_i,old_j = self.getSelectionRange()
+    old_ins = self.getInsertPoint()
+    self.setSelectionRange(i,j)
+    w.setTextColor(color)
+    self.setSelectionRange(old_i,old_j,insert=old_ins)
+    sb.setSliderPosition(pos)
+#@-node:ekr.20081121105001.542:colorSelection
+#@+node:ekr.20081124102726.10:tag_add
+def tag_add(self,tag,x1,x2):
+
+    val = self.configDict.get(tag)
+    if val:
+        self.colorSelection(x1,x2,val)
+
+    # elif tag == 'comment1':
+        # self.colorSelection(x1,x2,'firebrick')
+    # else:
+        # g.trace(tag)
+#@-node:ekr.20081124102726.10:tag_add
+#@+node:ekr.20081124102726.11:tag_config/ure
+def tag_config (self,*args,**keys):
+
+    if len(args) == 1:
+        key = args[0]
+        self.tags[key] = keys
+        val = keys.get('foreground')
+        if val:
+            # g.trace(key,val)
+            self.configDict [key] = val
+    else:
+        g.trace('oops',args,keys)
+
+tag_configure = tag_config
+#@nonl
+#@-node:ekr.20081124102726.11:tag_config/ure
+#@-node:ekr.20081121105001.541:Coloring (baseTextWidget)
+#@-node:ekr.20081124113700.1:Completed syntax coloring for QTextEdit
 #@-node:ekr.20081121105001.154:Recent projects...
 #@+node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081121105001.186:Script to display Qt font database

@@ -4321,11 +4321,12 @@ class leoQtTree (leoFrame.leoTree):
             s = g.app.gui.toUnicode(item.text(col))
             p.setHeadString(s)
             # g.trace("changed: ",p.headString(),g.callers(4))
-            self._editWidget = None
-            self._editWidgetPosition = None
-            self._editWidgetWrapper = None
-        else:
-            g.trace('can not happen: no p')
+
+        # Make sure to end editing.
+        self._editWidget = None
+        self._editWidgetPosition = None
+        self._editWidgetWrapper = None
+
     #@-node:ekr.20081121105001.443:sig_itemChanged
     #@+node:ekr.20081121105001.444:sig_itemCollapsed
     def sig_itemCollapsed (self,item):
@@ -4576,6 +4577,13 @@ class leoQtTree (leoFrame.leoTree):
         g.app.gui.set_focus(self.c,self.treeWidget)
     #@-node:ekr.20081121105001.453:Focus (qtTree)
     #@+node:ekr.20081121105001.454:Selecting & editing... (qtTree)
+    #@+node:ekr.20081124113700.11:editPosition
+    def editPosition(self):
+
+        p = self._editWidgetPosition
+
+        return p
+    #@-node:ekr.20081124113700.11:editPosition
     #@+node:ekr.20081121105001.160:edit_widget
     def edit_widget (self,p):
 
@@ -4602,6 +4610,12 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing:
             if trace: g.trace('already redrawing')
             return
+
+        if 0: # This is too soon: a unit test fails.
+            # Make *sure* we don't access an invalid entry.
+            self._editWidgetPosition = None
+            self._editWidget = None
+            self._editWidgetWrapper = None
 
         # Disable onTextChanged.
         self.selecting = True
@@ -4728,37 +4742,36 @@ class leoQtTree (leoFrame.leoTree):
 
         # These are not errors: sig_itemChanged may
         # have been called first.
-        if not e:
-            if trace: g.trace('No e')
-            return 
-        if e != w:
-            if trace and verbose: g.trace('e != w',e,w,g.callers(4))
-            self._editWidget = None
-            self._editWidgetPosition = None
-            self._editWidgetWrapper = None
-            return
-        if not p:
-            if trace: g.trace('No p') 
-            return
-        s = e.text() ; len_s = len(s)
-        s = g.app.gui.toUnicode(s)
-        oldHead = p.headString()
-        changed = s != oldHead
-        if trace: g.trace('changed',changed,repr(s),g.callers(4))
-        if not changed: return
-        p.initHeadString(s)
-        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-        if not c.changed: c.setChanged(True)
-        # New in Leo 4.4.5: we must recolor the body because
-        # the headline may contain directives.
-        c.frame.body.recolor(p,incremental=True)
-        dirtyVnodeList = p.setDirty()
-        u.afterChangeNodeContents(p,undoType,undoData,
-            dirtyVnodeList=dirtyVnodeList)
+        if trace and verbose:
+            if not e:  g.trace('No e',g.callers(4))
+            if e != w: g.trace('e != w',e,w,g.callers(4))
+            if not p:  g.trace('No p')
+
+        if e and e == w and p:
+            s = e.text() ; len_s = len(s)
+            s = g.app.gui.toUnicode(s)
+            oldHead = p.headString()
+            changed = s != oldHead
+            if trace: g.trace('changed',changed,repr(s),g.callers(4))
+            if changed:
+                p.initHeadString(s)
+                undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+                if not c.changed: c.setChanged(True)
+                # New in Leo 4.4.5: we must recolor the body because
+                # the headline may contain directives.
+                c.frame.body.recolor(p,incremental=True)
+                dirtyVnodeList = p.setDirty()
+                u.afterChangeNodeContents(p,undoType,undoData,
+                    dirtyVnodeList=dirtyVnodeList)
+
         # End the editing!
         self._editWidget = None
         self._editWidgetPosition = None
         self._editWidgetWrapper = None
+
+        # This is a crucial shortcut.
+        if g.unitTesting: return
+
         c.redraw(scroll=False)
         if self.stayInTree:
             c.treeWantsFocus()
@@ -6363,6 +6376,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         w = self.widget
         if not colorName: return
+        if g.unitTesting: return
 
         # Unlike Tk names, Qt names don't end in a digit.
         if colorName[-1].isdigit() and colorName[0] != '#':
