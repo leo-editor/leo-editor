@@ -6363,13 +6363,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         w = self.widget
         if not colorName: return
-        color = QtGui.QColor(colorName)
-        if not color:
-            # Convert, for example, firebrick3 to firebrick.
-            if isdigit(colorName[-1]):
-                color = QtGui.QColor(colorName[:-1])
-                if not color: return
-            else: return
+
+        # Unlike Tk names, Qt names don't end in a digit.
+        if colorName[-1].isdigit() and colorName[0] != '#':
+            color = QtGui.QColor(colorName[:-1])
+        else:
+            color = QtGui.QColor(colorName)
+
+        if not color.isValid():
+            # g.trace('unknown color name',colorName)
+            return
 
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
@@ -6387,13 +6390,14 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if val:
             self.colorSelection(x1,x2,val)
 
-        # if tag == 'comment1':
+        # elif tag == 'comment1':
             # self.colorSelection(x1,x2,'firebrick')
         # else:
             # g.trace(tag)
     #@-node:ekr.20081124102726.10:tag_add
     #@+node:ekr.20081124102726.11:tag_config/ure
     def tag_config (self,*args,**keys):
+
         if len(args) == 1:
             key = args[0]
             self.tags[key] = keys
