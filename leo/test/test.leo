@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="60" left="361" height="949" width="867"/>
+	<global_window_position top="49" left="331" height="721" width="867"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -374,7 +374,7 @@
 <v t="ekr.20081025105942.1"><vh>@button dir</vh></v>
 <v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
 </v>
-<v t="ekr.20081123081842.1"><vh>Plugin info</vh></v>
+<v t="ekr.20081124102740.1"><vh>Accented characters</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -2488,14 +2488,16 @@ row,col = g.convertPythonIndexToRowCol(s,ins)
 g.pr('row',row,'col',col)</t>
 <t tx="ekr.20071025192258">import leoTest
 leoTest.doTests (c,all=False)</t>
-<t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
+<t tx="ekr.20071025193940">
+# Caution: you will have to disable cursesGui in an external editor
 # if you enable the cursesGui plugin it here
 
 # qtGui.py
-tkGui.py
+# tkGui.py
 
 plugins_menu.py
 
+# leoOPML.py
 # base64Packager.py
 # searchbox.py
 
@@ -2505,7 +2507,7 @@ ipython.py
 # cleo.py
 # open_with.py
 rClick.py
-# toolbar.py
+toolbar.py
 # autotrees.py
 
 # add_directives.py # scan-directives hook not ready.
@@ -3741,14 +3743,6 @@ z.foo()
 </t>
 <t tx="ekr.20081025105942.1">import os
 os.system("dir")</t>
-<t tx="ekr.20081123081842.1"># import leo.core.leoPlugins as leoPlugins
-# d = leoPlugins.loadedModulesFilesDict
-# for z in g.app.loadedPlugins:
-    # print z, d.get(z)
-
-c.k.simulateCommand('print-plugins-info')
-c.k.simulateCommand('print-plugins')
-
-g.es('after',tabName='Plugins')</t>
+<t tx="ekr.20081124102740.1">âäåň</t>
 </tnodes>
 </leo_file>

@@ -4321,11 +4321,12 @@ class leoQtTree (leoFrame.leoTree):
             s = g.app.gui.toUnicode(item.text(col))
             p.setHeadString(s)
             # g.trace("changed: ",p.headString(),g.callers(4))
-            self._editWidget = None
-            self._editWidgetPosition = None
-            self._editWidgetWrapper = None
-        else:
-            g.trace('can not happen: no p')
+
+        # Make sure to end editing.
+        self._editWidget = None
+        self._editWidgetPosition = None
+        self._editWidgetWrapper = None
+
     #@-node:ekr.20081121105001.443:sig_itemChanged
     #@+node:ekr.20081121105001.444:sig_itemCollapsed
     def sig_itemCollapsed (self,item):
@@ -4576,6 +4577,13 @@ class leoQtTree (leoFrame.leoTree):
         g.app.gui.set_focus(self.c,self.treeWidget)
     #@-node:ekr.20081121105001.453:Focus (qtTree)
     #@+node:ekr.20081121105001.454:Selecting & editing... (qtTree)
+    #@+node:ekr.20081124113700.11:editPosition
+    def editPosition(self):
+
+        p = self._editWidgetPosition
+
+        return p
+    #@-node:ekr.20081124113700.11:editPosition
     #@+node:ekr.20081121105001.160:edit_widget
     def edit_widget (self,p):
 
@@ -4602,6 +4610,12 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing:
             if trace: g.trace('already redrawing')
             return
+
+        if 0: # This is too soon: a unit test fails.
+            # Make *sure* we don't access an invalid entry.
+            self._editWidgetPosition = None
+            self._editWidget = None
+            self._editWidgetWrapper = None
 
         # Disable onTextChanged.
         self.selecting = True
@@ -4728,37 +4742,36 @@ class leoQtTree (leoFrame.leoTree):
 
         # These are not errors: sig_itemChanged may
         # have been called first.
-        if not e:
-            if trace: g.trace('No e')
-            return 
-        if e != w:
-            if trace and verbose: g.trace('e != w',e,w,g.callers(4))
-            self._editWidget = None
-            self._editWidgetPosition = None
-            self._editWidgetWrapper = None
-            return
-        if not p:
-            if trace: g.trace('No p') 
-            return
-        s = e.text() ; len_s = len(s)
-        s = g.app.gui.toUnicode(s)
-        oldHead = p.headString()
-        changed = s != oldHead
-        if trace: g.trace('changed',changed,repr(s),g.callers(4))
-        if not changed: return
-        p.initHeadString(s)
-        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-        if not c.changed: c.setChanged(True)
-        # New in Leo 4.4.5: we must recolor the body because
-        # the headline may contain directives.
-        c.frame.body.recolor(p,incremental=True)
-        dirtyVnodeList = p.setDirty()
-        u.afterChangeNodeContents(p,undoType,undoData,
-            dirtyVnodeList=dirtyVnodeList)
+        if trace and verbose:
+            if not e:  g.trace('No e',g.callers(4))
+            if e != w: g.trace('e != w',e,w,g.callers(4))
+            if not p:  g.trace('No p')
+
+        if e and e == w and p:
+            s = e.text() ; len_s = len(s)
+            s = g.app.gui.toUnicode(s)
+            oldHead = p.headString()
+            changed = s != oldHead
+            if trace: g.trace('changed',changed,repr(s),g.callers(4))
+            if changed:
+                p.initHeadString(s)
+                undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+                if not c.changed: c.setChanged(True)
+                # New in Leo 4.4.5: we must recolor the body because
+                # the headline may contain directives.
+                c.frame.body.recolor(p,incremental=True)
+                dirtyVnodeList = p.setDirty()
+                u.afterChangeNodeContents(p,undoType,undoData,
+                    dirtyVnodeList=dirtyVnodeList)
+
         # End the editing!
         self._editWidget = None
         self._editWidgetPosition = None
         self._editWidgetWrapper = None
+
+        # This is a crucial shortcut.
+        if g.unitTesting: return
+
         c.redraw(scroll=False)
         if self.stayInTree:
             c.treeWantsFocus()
@@ -6008,6 +6021,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         # Init ivars.
         self.tags = {}
+        self.configDict = {} # Keys are tags, values are colors (names or values).
         self.useScintilla = False # This is used!
 
         if not c: return ### Can happen.
@@ -6350,24 +6364,10 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # if not g.app.unitTesting:
             # self.widget.after_idle(function,*args,**keys)
     #@-node:ekr.20081121105001.540:Idle time
-    #@+node:ekr.20081121105001.541:Coloring
+    #@+node:ekr.20081121105001.541:Coloring (baseTextWidget)
     def removeAllTags(self):
         s = self.getAllText()
         self.colorSelection(0,len(s),'black')
-
-    def tag_add(self,tag,x1,x2):
-        if tag == 'comment1':
-            self.colorSelection(x1,x2,'firebrick')
-
-    def tag_config (self,*args,**keys):
-        if len(args) == 1:
-            key = args[0]
-            # g.trace(key,keys)
-            self.tags[key] = keys
-        else:
-            g.trace('oops',args,keys)
-
-    tag_configure = tag_config
 
     def tag_names (self):
         return []
@@ -6375,7 +6375,19 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def colorSelection (self,i,j,colorName):
 
         w = self.widget
-        color = QtGui.QColor(colorName)
+        if not colorName: return
+        if g.unitTesting: return
+
+        # Unlike Tk names, Qt names don't end in a digit.
+        if colorName[-1].isdigit() and colorName[0] != '#':
+            color = QtGui.QColor(colorName[:-1])
+        else:
+            color = QtGui.QColor(colorName)
+
+        if not color.isValid():
+            # g.trace('unknown color name',colorName)
+            return
+
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         old_i,old_j = self.getSelectionRange()
@@ -6385,7 +6397,35 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.setSelectionRange(old_i,old_j,insert=old_ins)
         sb.setSliderPosition(pos)
     #@-node:ekr.20081121105001.542:colorSelection
-    #@-node:ekr.20081121105001.541:Coloring
+    #@+node:ekr.20081124102726.10:tag_add
+    def tag_add(self,tag,x1,x2):
+
+        val = self.configDict.get(tag)
+        if val:
+            self.colorSelection(x1,x2,val)
+
+        # elif tag == 'comment1':
+            # self.colorSelection(x1,x2,'firebrick')
+        # else:
+            # g.trace(tag)
+    #@-node:ekr.20081124102726.10:tag_add
+    #@+node:ekr.20081124102726.11:tag_config/ure
+    def tag_config (self,*args,**keys):
+
+        if len(args) == 1:
+            key = args[0]
+            self.tags[key] = keys
+            val = keys.get('foreground')
+            if val:
+                # g.trace(key,val)
+                self.configDict [key] = val
+        else:
+            g.trace('oops',args,keys)
+
+    tag_configure = tag_config
+    #@nonl
+    #@-node:ekr.20081124102726.11:tag_config/ure
+    #@-node:ekr.20081121105001.541:Coloring (baseTextWidget)
     #@-node:ekr.20081121105001.538: May be overridden in subclasses
     #@+node:ekr.20081121105001.543: Must be overridden in subclasses
     def getAllText(self):                   self.oops()

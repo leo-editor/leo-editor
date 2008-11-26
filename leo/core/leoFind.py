@@ -1224,6 +1224,7 @@ class leoFind:
 
     def initInHeadline (self):
 
+        trace = False
         c = self.c ; p = self.p
 
         # Do not change this without careful thought and extensive testing!
@@ -1232,12 +1233,18 @@ class leoFind:
             if self.reverse:
                 self.in_headline = False
             else:
+                editPosition = c.frame.tree.editPosition()
+                focus = c.get_focus()
                 # Search headline first.
                 self.in_headline = (
-                    p == c.frame.tree.editPosition() and
-                    c.get_focus() != c.frame.body.bodyCtrl)
+                    p == editPosition and
+                    focus != c.frame.body.bodyCtrl)
+                if trace: g.trace(
+                    '** p: %s, editPosition: %s, focus: %s, bodyCtrl: %s' % (
+                    p and p.headString(),editPosition,focus, c.frame.body.bodyCtrl))
         else:
             self.in_headline = self.search_headline
+    #@nonl
     #@-node:ekr.20031218072017.3086:initInHeadline
     #@+node:ekr.20031218072017.3087:initInteractiveCommands
     def initInteractiveCommands(self):
@@ -1322,7 +1329,7 @@ class leoFind:
             else:
                 start,end = None,None
         else:
-            start,end = None,None
+            insert,start,end = None,None,None
 
         return (self.in_headline,p,w,insert,start,end)
     #@-node:ekr.20031218072017.3090:save

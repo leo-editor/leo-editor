@@ -143,6 +143,8 @@ class baseEditCommandsClass:
 
         c = self.c ; w = event and event.widget
 
+        # g.trace(w,g.app.gui.isTextWidget(w))
+
         # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
         if w and g.app.gui.isTextWidget(w):
             self.w = w
