@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="288" height="676" width="812"/>
+	<global_window_position top="73" left="293" height="676" width="812"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="6,0,12"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="6,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -29659,7 +29659,7 @@ As a result, Leo might be considered an `IPython Notebook`_.
 The bridge between Leo and IPython is powerful because it is simple. Indeed,
 
 1. **You can run any IPython script from Leo**.
-On the Leo side, as single variable::
+On the Leo side, a single statement::
 
     ip = IPython.ipapi.get()
 
