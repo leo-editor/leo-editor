@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="91" left="271" height="800" width="812"/>
+	<global_window_position top="49" left="288" height="676" width="812"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="6,0,12"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -163,11 +163,11 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830115714.17"><vh>I can't write Imported files.  What's going on?</vh></v>
 <v t="edream.110203163054.61"><vh>I don't see the Leo icon in Leo windows</vh></v>
 <v t="ekr.20061021164213.1"><vh>Leo doesn't recognize commands with the caps-lock key down</vh></v>
-<v t="ekr.20050830115714.75"><vh>Leo is hanging on my Linux box.  What should I do?</vh></v>
+<v t="ekr.20050830115714.75"></v>
 <v t="ekr.20060323105214"><vh>Leo's Recent Files menu doesn't work from a cvs shandbox.  What's going on?</vh></v>
-<v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
+<v t="ekr.20060329101442"></v>
 <v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
-<v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
+<v t="ekr.20070623145346.1"></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
 </v>
 <v t="ekr.20071026055929"><vh>Unicode issues</vh>
@@ -294,16 +294,16 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070814090306.2"><vh>Perfect import checks</vh></v>
 <v t="ekr.20070814090306.3"><vh>Commands related to @auto</vh></v>
 </v>
-<v t="ekr.20050828061501.51"><vh>\@file</vh></v>
-<v t="ekr.20050828174453.1"><vh>\@nosent</vh></v>
-<v t="ekr.20050828174453.2"><vh>\@asis and @noref</vh></v>
+<v t="ekr.20050828061501.51"></v>
+<v t="ekr.20050828174453.1"></v>
+<v t="ekr.20050828174453.2"></v>
 <v t="ekr.20050828061501.45"><vh>\@root reference</vh>
 <v t="ekr.20050828061501.47"><vh>Sections and section definitions</vh></v>
 <v t="ekr.20050828061501.48"><vh>Tangling @root trees with the Tangle commands</vh></v>
 <v t="ekr.20050828061501.49"><vh>Untangling @root trees with the Untangle commands</vh></v>
 </v>
-<v t="ekr.20080730212711.44"><vh>\@thin</vh></v>
-<v t="ekr.20080730212711.41"><vh>\@shadow</vh></v>
+<v t="ekr.20080730212711.44"></v>
+<v t="ekr.20080730212711.41"></v>
 <v t="EKR.20040524104904.282"><vh>Converting @root trees to @file trees</vh></v>
 </v>
 <v t="ekr.20050828061501.43"><vh>CWEB mode</vh></v>
@@ -782,7 +782,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
 <v t="vivainio.20080302174639.2"><vh>Installation and startup</vh></v>
@@ -1367,11 +1367,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="edream.110603190322.14"><vh>Added Check Outline command</vh></v>
 <v t="edream.110603190322.15"><vh>Added Hoist/De-Hoist commands</vh></v>
 <v t="edream.111803060152"><vh>Added script-based find/change commands</vh>
-<v t="edream.110603190322.6"><vh> Script Find and Script Change</vh>
-<v t="edream.111803060152.1"><vh>How it works</vh></v>
-<v t="ekr.20040201113232"><vh>Using the initScriptFind script</vh></v>
-<v t="edream.111803060152.2"><vh>Ideas for using scripts</vh></v>
-</v>
+<v t="edream.110603190322.6"></v>
 </v>
 <v t="edream.110303182253.3"><vh>Leo now does an auto-save only if files have actually been changed.</vh></v>
 <v t="edream.111803062437"><vh>Shift commands now shift single line if no selection</vh></v>
@@ -1707,7 +1703,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20050209141626.150"><vh>New features...</vh>
 <v t="ekr.20050126100405.1"><vh>Added undo granularity</vh>
-<v t="EKR.20040524104904.48"><vh>Undoing operations</vh></v>
+<v t="EKR.20040524104904.48"></v>
 </v>
 <v t="ekr.20050209141626.185"><vh>Added support for top-level init function in plugins</vh></v>
 <v t="ekr.20050209141626.190"><vh>Changed name of Paste Retaining Clones to Paste Node As Clone</vh></v>
@@ -1787,12 +1783,9 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="ekr.20050123092834.896"><vh>New or improved features...</vh>
-<v t="ekr.20050123110009"><vh>Using @settings trees and leoSettings.leo</vh>
-<v t="ekr.20050122084954"><vh>Using leoSettings.leo and @settings trees</vh></v>
-<v t="ekr.20050122091036"><vh>Unfinished configuration features</vh></v>
-</v>
+<v t="ekr.20050123110009"></v>
 <v t="ekr.20050123103303.1"><vh>Code</vh>
-<v t="ekr.20050123092834.520"><vh>Rewrote Leo's read/write logic</vh></v>
+<v t="ekr.20050123092834.520"></v>
 <v t="ekr.20050123092834.173"><vh>Added g.cantImport</vh></v>
 <v t="ekr.20050123092834.901"><vh>Added g.fileLikeObject.readline</vh></v>
 <v t="ekr.20050123092834.928"><vh>Added support for g.app.debugSwitch in es_exception</vh></v>
@@ -1811,8 +1804,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050123092834.517"><vh>Removed old-style write commands</vh></v>
 </v>
 <v t="ekr.20050123092834.1044"><vh>Plugins &amp; extensions</vh>
-<v t="ekr.20050123115804"><vh>Added Plugins Manager plugin</vh></v>
-<v t="ekr.20050123115804.1"><vh>You can install third-party extensions in Leo's extensions directory</vh></v>
+<v t="ekr.20050123115804"></v>
+<v t="ekr.20050123115804.1"></v>
 <v t="ekr.20050123112151"><vh>Improved doHandlersForTag</vh></v>
 <v t="ekr.20050123092834.1013"><vh>Leo now associates modules with hook handlers</vh></v>
 </v>
@@ -1985,7 +1978,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060116174906.306"><vh>keyboard-quit restores default input mode</vh></v>
 </v>
 <v t="ekr.20060116174906.257"><vh>Added discusion to FAQ about when deleting a node is 'dangerous'</vh>
-<v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
+<v t="ekr.20060111192108"></v>
 </v>
 </v>
 <v t="ekr.20060206111508"><vh>4.4 beta 2</vh>
@@ -2035,7 +2028,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060214074035.66"><vh>Installed cleo patch</vh></v>
 </v>
 <v t="ekr.20060214083808"><vh>New commands</vh>
-<v t="ekr.20060212102459.4"><vh>Minibuffer-oriented find commands</vh></v>
+<v t="ekr.20060212102459.4"></v>
 </v>
 <v t="ekr.20060214083647"><vh>New settings</vh></v>
 <v t="ekr.20060214092741"><vh>User input modes</vh></v>
@@ -2060,7 +2053,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060227102028.17"><vh>Removed horrible g.app.dialogs hack</vh></v>
 <v t="ekr.20060227102028.18"><vh>Fix crasher in plugin</vh></v>
 </v>
-<v t="ekr.20060227102028.111"><vh>Autocompletion and calltips</vh></v>
+<v t="ekr.20060227102028.111"></v>
 </v>
 <v t="ekr.20060328171518"><vh>4.4 b3</vh>
 <v t="ekr.20060328171518.1"><vh>New features</vh>
@@ -2573,12 +2566,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070806090235.1"><vh>4.4.4 b1</vh>
 <v t="ekr.20070806090226.1"><vh>Added support for @mark-for-unit-tests node</vh></v>
 <v t="ekr.20070806090226.14"><vh>Created threading_colorizer</vh></v>
-<v t="ekr.20070806090226.15"><vh>Added support for @auto files</vh>
-<v t="ekr.20070806095535.1"><vh>What @auto does</vh></v>
-<v t="ekr.20070809141529"><vh>Perfect import checks</vh></v>
-<v t="ekr.20070806101412"><vh>Commands related to @auto</vh></v>
-<v t="ekr.20070806100055"><vh>Extending the code: adding new parsers</vh></v>
-</v>
+<v t="ekr.20070806090226.15"></v>
 </v>
 <v t="ekr.20070915101216"><vh>4.4.4 b2</vh>
 <v t="ekr.20070915101157.1"><vh>Bug fixes</vh>
@@ -2598,7 +2586,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20070915101157.82"><vh>Features</vh>
 <v t="ekr.20070915101157.168"><vh>Read @auto nodes during saves if the node has not been read previously</vh></v>
-<v t="ekr.20070920092716"><vh>New commands for resolving cvs conflicts</vh></v>
+<v t="ekr.20070920092716"></v>
 </v>
 </v>
 <v t="ekr.20071004101349"><vh>4.4.4 b3</vh>
@@ -2615,19 +2603,14 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20071023080957"><vh>Fixed bugs when running unit tests externally</vh></v>
 </v>
 <v t="ekr.20071004101443.29"><vh>New Features</vh>
-<v t="ekr.20071004103659"><vh>The Great Graph Aha</vh></v>
+<v t="ekr.20071004103659"></v>
 <v t="ekr.20071021111856.441"><vh>Rewrote threading colorizer</vh></v>
-<v t="ekr.20070806090226.15"><vh>Added support for @auto files</vh>
-<v t="ekr.20070806095535.1"><vh>What @auto does</vh></v>
-<v t="ekr.20070809141529"><vh>Perfect import checks</vh></v>
-<v t="ekr.20070806101412"><vh>Commands related to @auto</vh></v>
-<v t="ekr.20070806100055"><vh>Extending the code: adding new parsers</vh></v>
-</v>
+<v t="ekr.20070806090226.15"></v>
 <v t="ekr.20071004101443.52"><vh>Added @buttons trees in @settings trees</vh></v>
 <v t="ekr.20071004101443.105"><vh>Added @menus trees in @settings trees</vh></v>
-<v t="ekr.20070920092716"><vh>New commands for resolving cvs conflicts</vh></v>
+<v t="ekr.20070920092716"></v>
 <v t="ekr.20071004105000"><vh>Added the graphed plugin</vh></v>
-<v t="ekr.20071004101443.178"><vh>Added new convenience methods for scripts and plugins</vh></v>
+<v t="ekr.20071004101443.178"></v>
 <v t="ekr.20071004101443.30"><vh>Added button font settings</vh></v>
 <v t="ekr.20071005095907"><vh>Leo's core is now compatible with jython</vh></v>
 <v t="ekr.20071006093614"><vh>Added the insert-child command</vh></v>
@@ -2808,7 +2791,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080304112808"><vh>4.4.8 b1</vh>
 <v t="ekr.20080304112802.1"><vh>Allow arguments to minibuffer commands</vh></v>
 <v t="ekr.20080304112802.25"><vh>Added translation services</vh>
-<v t="ekr.20080310093038.4"><vh>Translating Leo's menus and messages</vh></v>
+<v t="ekr.20080310093038.4"></v>
 </v>
 </v>
 <v t="ekr.20080311060457.1"><vh>4.4.8 b2</vh>
@@ -2924,10 +2907,10 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="ekr.20080730095710.2"><vh>4.5 b2</vh>
-<v t="ekr.20080806211440.188"><vh>Major new features</vh></v>
-<v t="ekr.20080806211440.253"><vh>Major code reorganizations</vh></v>
-<v t="ekr.20080806211440.256"><vh>Minor new features</vh></v>
-<v t="ekr.20080806211440.189"><vh>New settings</vh></v>
+<v t="ekr.20080806211440.188"></v>
+<v t="ekr.20080806211440.253"></v>
+<v t="ekr.20080806211440.256"></v>
+<v t="ekr.20080806211440.189"></v>
 </v>
 <v t="ekr.20080815093141.89"><vh>4.5 b3</vh>
 <v t="ekr.20080815093141.90"><vh>Major new features</vh></v>
@@ -2963,6 +2946,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20080203101507" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -32403,13 +32387,12 @@ Usage
 The simplest use case is probably pushing an existing array to Leo for editing.
 Let's generate a simple array and edit it::
 
-    [c:/ipython]|51&amp;gt; a = arange(12).reshape(3,4)
-    [c:/ipython]|52&amp;gt; a
-                &amp;lt;52&amp;gt;
+    [c:/ipython]|51&gt; a = arange(12).reshape(3,4)
+    [c:/ipython]|52&gt; a
     array([[ 0,  1,  2,  3],
            [ 4,  5,  6,  7],
            [ 8,  9, 10, 11]])
-    [c:/ipython]|53&amp;gt; %lee a
+    [c:/ipython]|53&gt; %lee a
 
 This (the magic command %lee, or 'leo edit') will open variable 'a' for editing
 in Leo, in a convenient pretty-printed format. You can press alt+I on the node
@@ -32417,7 +32400,7 @@ to push it back to IPython.
     
 If you want to store the variable in a node with a different name (myarr), you can do::
 
-    [c:/ipython]|54&amp;gt; wb.myarr.v = a
+    [c:/ipython]|54&gt; wb.myarr.v = a
         
 Then, you can always get the value of this array with wb.myarr.v. E.g. you could
 have a node that plots the array, with content::
@@ -32427,7 +32410,7 @@ have a node that plots the array, with content::
     plot(wb.myarr.v)
 
 And, as per instructions, pressing alt+I will launch a new Tk window with the
-plotted representation of the array!    &lt;/t&gt;</t>
+plotted representation of the array!</t>
 <t tx="vivainio.20080401152121.2">Sometimes you may decide to launch Leo when an IPython session is already
 running. This is typically the case when IPython is launched from/as another
 application (Turbogears/Django shell, Sage, etc.), or you only decide later on

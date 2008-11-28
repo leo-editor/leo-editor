@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="336" height="721" width="867"/>
+	<global_window_position top="49" left="341" height="721" width="867"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -375,6 +375,32 @@
 <v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
 </v>
 <v t="ekr.20081124102740.1"><vh>Accented characters</vh></v>
+<v t="edward.20081127113749.1" a="E"><vh>@commands</vh>
+<v t="edward.20081127113749.2" a="E"><vh>@command complete-previous</vh>
+<v t="edward.20081127113749.3"><vh>WordCompleter</vh>
+<v t="edward.20081127113749.4"><vh>complete_word</vh>
+<v t="edward.20081127113749.5" a="E"><vh>&lt;&lt;backward search&gt;&gt;</vh>
+<v t="edward.20081127113749.6"><vh>&lt;&lt;counter check&gt;&gt;</vh></v>
+</v>
+<v t="edward.20081127113749.7" a="E"><vh>&lt;&lt;forward search&gt;&gt;</vh>
+<v t="edward.20081127113749.6"></v>
+</v>
+<v t="edward.20081127113749.8"><vh>&lt;&lt;clean up and exit&gt;&gt;</vh></v>
+</v>
+<v t="edward.20081127113749.9"><vh>acceptable_word</vh></v>
+<v t="edward.20081127113749.10"><vh>undo_replacement</vh></v>
+<v t="edward.20081127113749.11"><vh>redo_replacement</vh></v>
+<v t="edward.20081127113749.12"><vh>exit</vh></v>
+<v t="edward.20081127113749.13"><vh>run</vh></v>
+<v t="edward.20081127113749.14"><vh>adjust</vh></v>
+</v>
+<v t="edward.20081127113749.15"><vh>getCurrentWord</vh></v>
+</v>
+<v t="edward.20081127113749.16" a="E"><vh>@command complete-next</vh>
+<v t="edward.20081127113749.3"></v>
+<v t="edward.20081127113749.15"></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -1570,6 +1596,162 @@ gtk.main()</t>
     window.connect("delete-event",gtk.main_quit)
     window.show_all()
     return window
+</t>
+<t tx="edward.20081127113749.1"></t>
+<t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
+word_completer_key = 'back_word_completer'
+@others
+completer = g.app.config.get(c,word_completer_key,'WordCompleter')
+if completer is None:
+    completer = WordCompleter(p,c,back=True)
+    g.app.config.set(c,word_completer_key,'WordCompleter',completer)
+    completer.run()
+else:
+    completer.adjust(p, c.frame.body.getInsertPoint())
+    completer.complete_word()
+</t>
+<t tx="edward.20081127113749.3">class WordCompleter:
+    def __init__(self, p, c, back=True):
+        self.p = p.copy()
+        self.c = c
+        self.back = back
+        self.pos = -1
+    @others
+</t>
+<t tx="edward.20081127113749.4">def complete_word(self):
+    txt = self.chunk
+    word = self.word
+    try:
+        if self.back:
+            &lt;&lt;backward search&gt;&gt;
+        else:
+            &lt;&lt;forward search&gt;&gt;
+        &lt;&lt;clean up and exit&gt;&gt;
+    except:
+        self.exit()
+        g.es_exception()</t>
+<t tx="edward.20081127113749.5">p = self.search_pos
+start = -1
+counter = 0
+while p:
+    &lt;&lt;counter check&gt;&gt;
+    i = txt.rfind(word, 0, start)
+    if i == -1:
+        p.moveToThreadBack()
+        if p:self.chunk = txt = p.bodyString()
+        start = -1
+    else:
+        if self.acceptable_word(i, txt, word):
+            self.chunk = txt[:i+len(word)-1]
+            return
+        start = i+len(word)-1</t>
+<t tx="edward.20081127113749.6">counter+=1
+if counter &gt; 10000:
+    g.es_trace("counter max")
+    break</t>
+<t tx="edward.20081127113749.7">p = self.search_pos
+start = 0
+counter = 0
+while p:
+    &lt;&lt;counter check&gt;&gt;
+    i = txt.find(word, start)
+    if i == -1:
+        p.moveToThreadNext()
+        if p:self.chunk = txt = p.bodyString()
+        start = 0
+    else:
+        if self.acceptable_word(i, txt, word):
+            self.chunk = txt[i+1:]
+            return
+        start = i+1</t>
+<t tx="edward.20081127113749.8">if len(self.tried) &gt; 1:
+    # there was some tries so we need to restore
+    self.c.setBodyString(self.p, self.before+self.word+self.after)
+    self.c.frame.body.setInsertPoint(self.pos)
+return self.exit()</t>
+<t tx="edward.20081127113749.9">@ if found word for the first time then try it
+@c
+def acceptable_word(self, i, txt, word):
+    if i == 0 or wordsep.find(txt[i-1]) != -1:
+        j = i+len(word)
+        while j &lt; len(txt) and wordsep.find(txt[j]) &lt; 0:
+            j += 1
+        nword = txt[i:j]
+        if nword not in self.tried:
+            self.tried[nword] = 1
+            u = self.c.undoer
+            bunch = u.createCommonBunch(p)
+            bunch.oldBody = p.bodyString()
+            bunch.insertPos = self.pos
+            # Set the type &amp; helpers.
+            bunch.kind = 'node'
+            bunch.undoType = 'complete word'
+            bunch.undoHelper = self.undo_replacement
+            bunch.redoHelper = self.redo_replacement
+            bunch.newBody = newBody = self.before+nword+self.after
+
+            self.c.setBodyString(self.p, newBody)
+            self.c.frame.body.setInsertPoint(self.pos)
+
+            bunch.dirtyVnodeList = [p.v]
+            bunch.newChanged = u.c.isChanged()
+            bunch.newDirty = p.isDirty()
+            bunch.newMarked = p.isMarked()
+
+            u.pushBead(bunch)
+
+            return True
+    return False
+</t>
+<t tx="edward.20081127113749.10">def undo_replacement(self):
+    u = self.c.undoer; c=self.c; p=u.p
+    bunch = u.getBead(u.bead)
+    c.setBodyString(p, bunch.oldBody)
+    c.frame.body.setInsertPoint(bunch.insertPos)</t>
+<t tx="edward.20081127113749.11">def redo_replacement(self):
+    c = self.c; u=c.undoer; bunch=u.getBead(u.bead+1)
+    c.setBodyString(bunch.p, bunch.newBody)
+    c.frame.body.setInsertPoint(bunch.insertPos)</t>
+<t tx="edward.20081127113749.12">def exit(self):
+    #g.app.config.set(c,word_completer_key,'WordCompleter',None)
+    #g.app.config.set(c,'next_word_completer','WordCompleter',None)
+    self.pos = -1</t>
+<t tx="edward.20081127113749.13">def run(self):
+    self.adjust(self.p, c.frame.body.getInsertPoint())
+    self.complete_word()
+</t>
+<t tx="edward.20081127113749.14">def adjust(self, p, pos):
+    if p != self.p or pos != self.pos:
+        self.p = p.copy()
+        self.pos = pos
+        bs = p.bodyString()
+        word = getCurrentWord(bs, pos)
+        self.word = word
+        self.before = bs[:pos-len(word)]
+        self.after = bs[pos:]
+        self.search_pos = p.copy()
+        if self.back:
+            self.chunk = self.before
+        else:
+            self.chunk = self.after
+        self.tried = {word:1}</t>
+<t tx="edward.20081127113749.15">def getCurrentWord(s, pos):
+    i = pos-1
+    while i&gt;=0 and wordsep.find(s[i]) &lt; 0:
+         i -= 1
+    return s[i+1:pos]</t>
+<t tx="edward.20081127113749.16">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
+word_completer_key = 'next_word_completer'
+@others
+completer = g.app.config.get(c,word_completer_key,'WordCompleter')
+if completer is None:
+    completer = WordCompleter(p, c, back=False)
+    g.app.config.set(c, word_completer_key, 'WordCompleter', completer)
+    completer.run()
+else:
+    completer.adjust(p, c.frame.body.getInsertPoint())
+    completer.complete_word()
+
 </t>
 <t tx="ekr.20041001211817">import os
 
