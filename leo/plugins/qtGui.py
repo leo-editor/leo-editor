@@ -144,9 +144,6 @@ class DynamicWindow(QtGui.QMainWindow):
         # Init the QDesigner elements.
         #self.setupUi(self)
 
-        # The following ivars (and more) are inherited from UiMainWindow:
-            # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
-            # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
         ivars = """
         tabWidget treeWidget stackedWidget richTextEdit lineEdit
         findPattern findChange checkBoxWholeWord checkBoxIgnoreCase
@@ -186,7 +183,7 @@ class DynamicWindow(QtGui.QMainWindow):
             else:
                 event.ignore()
     #@-node:ekr.20081121105001.202:closeEvent (qtFrame)
-    #@+node:edward.20081129091117.1:setSplitDirection
+    #@+node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
     def setSplitDirection (self,orientation='vertical'):
 
         vert = orientation and orientation.lower().startswith('v')
@@ -196,7 +193,7 @@ class DynamicWindow(QtGui.QMainWindow):
         orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
         self.splitter.setOrientation(orientation1)
         self.splitter_2.setOrientation(orientation2)
-    #@-node:edward.20081129091117.1:setSplitDirection
+    #@-node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
     #@+node:ekr.20081121105001.203:setStyleSheets & helper
     styleSheet_inited = False
 
@@ -2017,13 +2014,13 @@ class leoQtFrame (leoFrame.leoFrame):
 
         '''Toggle the split direction in the present Leo window.'''
 
-        # # Switch directions.
-        # c = self.c
-        # self.splitVerticalFlag = not self.splitVerticalFlag
-        # orientation = g.choose(self.splitVerticalFlag,"vertical","horizontal")
-        # c.config.set("initial_splitter_orientation","string",orientation)
+        frame = self ; top = frame.top
 
-        # self.toggleQtSplitDirection(self.splitVerticalFlag)
+        for w in (top.splitter,top.splitter_2):
+            w.setOrientation(
+                g.choose(w.orientation() == QtCore.Qt.Horizontal,
+                    QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
+    #@nonl
     #@+node:ekr.20081121105001.311:toggleQtSplitDirection
     def toggleQtSplitDirection (self,verticalFlag):
 

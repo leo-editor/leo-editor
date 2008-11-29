@@ -938,6 +938,55 @@ tag_configure = tag_config
 #@-node:ekr.20081124102726.11:tag_config/ure
 #@-node:ekr.20081121105001.541:Coloring (baseTextWidget)
 #@-node:ekr.20081124113700.1:Completed syntax coloring for QTextEdit
+#@+node:edward.20081129124834.1:Support different pane orientations
+#@+node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
+def setSplitDirection (self,orientation='vertical'):
+
+    vert = orientation and orientation.lower().startswith('v')
+    # g.trace('vert',vert)
+
+    orientation1 = g.choose(vert,QtCore.Qt.Horizontal, QtCore.Qt.Vertical)
+    orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
+    self.splitter.setOrientation(orientation1)
+    self.splitter_2.setOrientation(orientation2)
+#@-node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
+#@+node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
+# The key invariant: self.splitVerticalFlag tells the alignment of the main splitter.
+
+def toggleSplitDirection (self,event=None):
+
+    '''Toggle the split direction in the present Leo window.'''
+
+    frame = self ; top = frame.top
+
+    for w in (top.splitter,top.splitter_2):
+        w.setOrientation(
+            g.choose(w.orientation() == QtCore.Qt.Horizontal,
+                QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
+#@+node:ekr.20081121105001.311:toggleQtSplitDirection
+def toggleQtSplitDirection (self,verticalFlag):
+
+    # Abbreviations.
+    frame = self
+    # bar1 = self.bar1 ; bar2 = self.bar2
+    # split1Pane1,split1Pane2 = self.split1Pane1,self.split1Pane2
+    # split2Pane1,split2Pane2 = self.split2Pane1,self.split2Pane2
+    # # Reconfigure the bars.
+    # bar1.place_forget()
+    # bar2.place_forget()
+    # self.configureBar(bar1,verticalFlag)
+    # self.configureBar(bar2,not verticalFlag)
+    # # Make the initial placements again.
+    # self.placeSplitter(bar1,split1Pane1,split1Pane2,verticalFlag)
+    # self.placeSplitter(bar2,split2Pane1,split2Pane2,not verticalFlag)
+    # # Adjust the log and body panes to give more room around the bars.
+    # self.reconfigurePanes()
+    # # Redraw with an appropriate ratio.
+    # vflag,ratio,secondary_ratio = frame.initialRatios()
+    # self.resizePanesToRatio(ratio,secondary_ratio)
+#@-node:ekr.20081121105001.311:toggleQtSplitDirection
+#@-node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
+#@-node:edward.20081129124834.1:Support different pane orientations
 #@-node:ekr.20081121105001.154:Recent projects...
 #@+node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081121105001.186:Script to display Qt font database
