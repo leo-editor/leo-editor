@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="15" left="420" height="941" width="841"/>
+	<global_window_position top="49" left="17" height="721" width="1249"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="7,3"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -87,6 +87,7 @@
 <v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
+<v t="edward.20081129091117.12"><vh>@string initial_split_orientation = horizontal</vh></v>
 </v>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
@@ -393,13 +394,13 @@
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
 <v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
-<v t="ekr.20060110141538" a="E" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
 <v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1" a="E" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -423,7 +424,7 @@
 </v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
+<v t="ekr.20070925144534"><vh>@menus</vh>
 <v t="ekr.20070925144534.1" a="E"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
@@ -1168,6 +1169,7 @@
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
 <v t="ekr.20041213105954" annotate="7d71002e"><vh>Window</vh>
+<v t="edward.20081129091117.12"></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
 <v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
@@ -1391,7 +1393,7 @@
 <v t="TL.20080806084612.145"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"></v>
+<v t="ekr.20060603215208"></v>
 <v t="ekr.20081018053140.11"></v>
 </vnodes>
 <tnodes>
@@ -3388,6 +3390,8 @@ master-menu =
 slave-menu = 
 
 </t>
+<t tx="edward.20081129091117.12">horizontal: body pane to the left
+vertical: body pane on the botton</t>
 <t tx="ekr.20041119034357.1">@nocolor
 
 The @settings tree contains all active settings.  Settings outside this tree have no effect.t</t>

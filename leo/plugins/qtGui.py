@@ -110,110 +110,6 @@ def tstop():
 #@-node:ekr.20081121105001.193:tstart & tstop
 #@-node:ekr.20081121105001.190: Module level
 #@+node:ekr.20081121105001.194:Frame and component classes...
-#@+node:ekr.20081121105001.195:class  Window
-class Window(QtGui.QMainWindow):
-
-    '''A class representing all parts of the main Qt window
-    as created by Designer.
-
-    c.frame.top is a Window object.
-
-    All leoQtX classes use the ivars of this Window class to
-    support operations requested by Leo's core.
-    '''
-
-    #@    @+others
-    #@+node:ekr.20081121105001.196: ctor (Window)
-    # Called from leoQtFrame.finishCreate.
-
-    def __init__(self,c,parent=None):
-
-        '''Create Leo's main window, c.frame.top'''
-
-        self.c = c ; top = c.frame.top
-
-        # g.trace('Window')
-
-        # Init both base classes.
-        QtGui.QMainWindow.__init__(self,parent)
-        #qt_main.Ui_MainWindow.__init__(self)
-
-        self.ui = qt_main.Ui_MainWindow()
-        # Init the QDesigner elements.
-        self.ui.setupUi(self)
-
-        # The following ivars (and more) are inherited from UiMainWindow:
-            # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
-            # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
-            # self.tabWidget  = QtGui.QTabWidget(self.splitter)     # The log pane.
-            # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
-            # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
-
-        self.iconBar = self.addToolBar("IconBar")
-        self.statusBar = QtGui.QStatusBar()
-        self.setStatusBar(self.statusBar)
-
-        self.setStyleSheets()
-    #@-node:ekr.20081121105001.196: ctor (Window)
-    #@+node:ekr.20081121105001.197:closeEvent (qtFrame)
-    def closeEvent (self,event):
-
-        c = self.c
-
-        if c.inCommand:
-            # g.trace('requesting window close')
-            c.requestCloseWindow = True
-        else:
-            ok = g.app.closeLeoWindow(c.frame)
-            # g.trace('ok',ok)
-            if ok:
-                event.accept()
-            else:
-                event.ignore()
-    #@-node:ekr.20081121105001.197:closeEvent (qtFrame)
-    #@+node:ekr.20081121105001.198:setStyleSheets & helper
-    styleSheet_inited = False
-
-    def setStyleSheets(self):
-
-        c = self.c
-
-        sheet = c.config.getData('qt-gui-plugin-style-sheet')
-        if sheet: sheet = '\n'.join(sheet)
-        self.setStyleSheet(sheet or self.default_sheet())
-    #@nonl
-    #@+node:ekr.20081121105001.199:defaultStyleSheet
-    def defaultStyleSheet (self):
-
-        '''Return a reasonable default style sheet.'''
-
-        # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
-        return '''\
-
-    /* A QWidget: supports only background attributes.*/
-    QSplitter::handle {
-
-        background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
-    }
-    QSplitter {
-        border-color: white;
-        background-color: white;
-        border-width: 3px;
-        border-style: solid;
-    }
-    QTreeWidget {
-        background-color: #ffffec; /* Leo's traditional tree color */
-    }
-    /* Not supported. */
-    QsciScintilla {
-        background-color: pink;
-    }
-    '''
-    #@-node:ekr.20081121105001.199:defaultStyleSheet
-    #@-node:ekr.20081121105001.198:setStyleSheets & helper
-    #@-others
-
-#@-node:ekr.20081121105001.195:class  Window
 #@+node:ekr.20081121105001.200:class  DynamicWindow
 from PyQt4 import uic
 
@@ -237,8 +133,7 @@ class DynamicWindow(QtGui.QMainWindow):
         '''Create Leo's main window, c.frame.top'''
 
         self.c = c ; top = c.frame.top
-
-        # g.trace('Window')
+        # g.trace('DynamicWindow')
 
         # Init both base classes.
 
@@ -266,12 +161,13 @@ class DynamicWindow(QtGui.QMainWindow):
         #for v in ivars:
         #    setattr(self, v, getattr(self.ui, v))
 
-
         self.iconBar = self.addToolBar("IconBar")
         self.menubar = self.menuBar()
         self.statusBar = QtGui.QStatusBar()
         self.setStatusBar(self.statusBar)
 
+        orientation = c.config.getString('initial_split_orientation')
+        self.setSplitDirection(orientation)
         self.setStyleSheets()
     #@-node:ekr.20081121105001.201: ctor (Window)
     #@+node:ekr.20081121105001.202:closeEvent (qtFrame)
@@ -290,6 +186,17 @@ class DynamicWindow(QtGui.QMainWindow):
             else:
                 event.ignore()
     #@-node:ekr.20081121105001.202:closeEvent (qtFrame)
+    #@+node:edward.20081129091117.1:setSplitDirection
+    def setSplitDirection (self,orientation='vertical'):
+
+        vert = orientation and orientation.lower().startswith('v')
+        # g.trace('vert',vert)
+
+        orientation1 = g.choose(vert,QtCore.Qt.Horizontal, QtCore.Qt.Vertical)
+        orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
+        self.splitter.setOrientation(orientation1)
+        self.splitter_2.setOrientation(orientation2)
+    #@-node:edward.20081129091117.1:setSplitDirection
     #@+node:ekr.20081121105001.203:setStyleSheets & helper
     styleSheet_inited = False
 
@@ -371,6 +278,12 @@ class leoQtBody (leoFrame.leoBody):
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         wrap = c.config.getBool('body_pane_wraps')
+        if self.useScintilla:
+            pass
+        else:
+            self.widget.widget.setWordWrapMode(g.choose(wrap,
+                QtGui.QTextOption.WordWrap,
+                QtGui.QTextOption.NoWrap))
         wrap = g.choose(wrap,"word","none")
         self.wrapState = wrap
 

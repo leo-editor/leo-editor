@@ -5,9 +5,8 @@
 @nocolor-node
 
 First:
-- Handle pane orientation:
-    A popular arrangement would be editor and outline
-    in top pane with the log along the bottom.
+- Support wrap option.
+- Optimize tree updates.
 - Clicks in body text do not update row/column position.
 
 Next:
@@ -1021,6 +1020,112 @@ bracketright: ']'
 #@nonl
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
+#@+node:edward.20081129091117.11:Unused
+#@+node:ekr.20081121105001.195:class  Window
+class Window(QtGui.QMainWindow):
+
+    '''A class representing all parts of the main Qt window
+    as created by Designer.
+
+    c.frame.top is a Window object.
+
+    All leoQtX classes use the ivars of this Window class to
+    support operations requested by Leo's core.
+    '''
+
+    @others
+
+#@+node:ekr.20081121105001.196: ctor (Window)
+# Called from leoQtFrame.finishCreate.
+
+def __init__(self,c,parent=None):
+
+    '''Create Leo's main window, c.frame.top'''
+
+    self.c = c ; top = c.frame.top
+
+    g.trace('Window')
+
+    # Init both base classes.
+    QtGui.QMainWindow.__init__(self,parent)
+    #qt_main.Ui_MainWindow.__init__(self)
+
+    self.ui = qt_main.Ui_MainWindow()
+    # Init the QDesigner elements.
+    self.ui.setupUi(self)
+    self.setSplitDirection()
+
+    # The following ivars (and more) are inherited from UiMainWindow:
+        # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
+        # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
+        # self.tabWidget  = QtGui.QTabWidget(self.splitter)     # The log pane.
+        # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
+        # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
+
+    self.iconBar = self.addToolBar("IconBar")
+    self.statusBar = QtGui.QStatusBar()
+    self.setStatusBar(self.statusBar)
+
+    self.setStyleSheets()
+#@-node:ekr.20081121105001.196: ctor (Window)
+#@+node:ekr.20081121105001.197:closeEvent (qtFrame)
+def closeEvent (self,event):
+
+    c = self.c
+
+    if c.inCommand:
+        # g.trace('requesting window close')
+        c.requestCloseWindow = True
+    else:
+        ok = g.app.closeLeoWindow(c.frame)
+        # g.trace('ok',ok)
+        if ok:
+            event.accept()
+        else:
+            event.ignore()
+#@-node:ekr.20081121105001.197:closeEvent (qtFrame)
+#@+node:ekr.20081121105001.198:setStyleSheets & helper
+styleSheet_inited = False
+
+def setStyleSheets(self):
+
+    c = self.c
+
+    sheet = c.config.getData('qt-gui-plugin-style-sheet')
+    if sheet: sheet = '\n'.join(sheet)
+    self.setStyleSheet(sheet or self.default_sheet())
+#@nonl
+#@+node:ekr.20081121105001.199:defaultStyleSheet
+def defaultStyleSheet (self):
+
+    '''Return a reasonable default style sheet.'''
+
+    # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+    return '''\
+
+/* A QWidget: supports only background attributes.*/
+QSplitter::handle {
+
+    background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+}
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-width: 3px;
+    border-style: solid;
+}
+QTreeWidget {
+    background-color: #ffffec; /* Leo's traditional tree color */
+}
+/* Not supported. */
+QsciScintilla {
+    background-color: pink;
+}
+'''
+#@-node:ekr.20081121105001.199:defaultStyleSheet
+#@-node:ekr.20081121105001.198:setStyleSheets & helper
+#@-node:ekr.20081121105001.195:class  Window
+#@-node:edward.20081129091117.11:Unused
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt
