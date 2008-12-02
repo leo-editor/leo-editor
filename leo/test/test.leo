@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -375,7 +375,7 @@
 <v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
 </v>
 <v t="ekr.20081124102740.1"><vh>Accented characters</vh></v>
-<v t="edward.20081127113749.1" a="E"><vh>@commands</vh>
+<v t="edward.20081127113749.1"><vh>@commands</vh>
 <v t="edward.20081127113749.2" a="E"><vh>@command complete-previous</vh>
 <v t="edward.20081127113749.3"><vh>WordCompleter</vh>
 <v t="edward.20081127113749.4"><vh>complete_word</vh>
@@ -401,6 +401,7 @@
 <v t="edward.20081127113749.15"></v>
 </v>
 </v>
+<v t="ekr.20081202095209.1"><vh>Put minibuffer in a toolbar</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3926,5 +3927,32 @@ z.foo()
 <t tx="ekr.20081025105942.1">import os
 os.system("dir")</t>
 <t tx="ekr.20081124102740.1">âäåň</t>
+<t tx="ekr.20081202095209.1">import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+
+ui = c.frame.top.ui
+
+h =ui.horizontalLayout
+v= ui.verticalLayout
+
+v.removeItem(h)
+
+hh = QtGui.QHBoxLayout()
+hh.setContentsMargins(0,0,0,0)
+hh.expandingDirections = QtCore.Qt.Horizontal
+
+# make the minibuffer area a panel
+p = ui.miniBufferPanel =QtGui.QWidget()
+p.setLayout(hh)
+p.setContentsMargins(0,0,0,0)
+hh.addWidget(ui.label)
+hh.addWidget(ui.lineEdit)
+
+tb = QtGui.QToolBar()
+
+c.frame.top.addToolBar( QtCore.Qt.BottomToolBarArea,tb)
+
+tb.addWidget(p)
+tb.setWindowTitle('Minibuffer')</t>
 </tnodes>
 </leo_file>
