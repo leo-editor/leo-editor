@@ -6080,7 +6080,13 @@ class leoTkinterMenu (leoMenu.leoMenu):
         """Wrapper for the Tkinter delete menu method."""
 
         if menu:
-            return menu.delete(n1,n2)
+            try:
+                return menu.delete(n1,n2)
+            except TypeError:
+                g.es("delete_range failed, printing traceback to stdout", color="red")
+                import traceback
+                traceback.print_exc()
+
     #@-node:ekr.20081121110412.421:delete_range
     #@+node:ekr.20081121110412.422:destroy
     def destroy (self,menu):

@@ -5,9 +5,8 @@
 @nocolor-node
 
 First:
-- Handle pane orientation:
-    A popular arrangement would be editor and outline
-    in top pane with the log along the bottom.
+- Support wrap option.
+- Optimize tree updates.
 - Clicks in body text do not update row/column position.
 
 Next:
@@ -26,6 +25,27 @@ Finally:
     - Fix problem with accented characters: see child node for notes.
 - Add stylesheets for dialogs.
     - Set font for dummy widget in style sheet, then copy that font.
+#@+node:ekr.20081121105001.149:Finish colorizer
+@nocolor-node
+
+- Simulate Tk's handling of tags (an optimization)
+- Use Qt threading.
+- Handle all colorizer tags.
+#@nonl
+#@-node:ekr.20081121105001.149:Finish colorizer
+#@+node:ekr.20081121105001.150:QScintilla stuff
+- Check event handling with QScintilla.
+- Experiment with sending <shift-tab> directly to QScintilla.
+- Call setLexer(0) for nocolor nodes.
+- Add settings for syntax coloring.
+- Make Scintilla handle Leo markup.
+#@nonl
+#@-node:ekr.20081121105001.150:QScintilla stuff
+#@+node:ekr.20081121105001.151:Finally/maybe
+- Can style sheets really do the job?
+- Flash characters without changing the selection?
+- Remove old-style Leo settings?
+#@-node:ekr.20081121105001.151:Finally/maybe
 #@+node:ekr.20081124094918.1:Fix problems with accented characters
 http://groups.google.com/group/leo-editor/browse_thread/thread/59c1e5d6acaf4de0
 
@@ -49,27 +69,6 @@ keyboard I get:
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081124094918.1:Fix problems with accented characters
-#@+node:ekr.20081121105001.149:Finish colorizer
-@nocolor-node
-
-- Simulate Tk's handling of tags (an optimization)
-- Use Qt threading.
-- Handle all colorizer tags.
-#@nonl
-#@-node:ekr.20081121105001.149:Finish colorizer
-#@+node:ekr.20081121105001.150:QScintilla stuff
-- Check event handling with QScintilla.
-- Experiment with sending <shift-tab> directly to QScintilla.
-- Call setLexer(0) for nocolor nodes.
-- Add settings for syntax coloring.
-- Make Scintilla handle Leo markup.
-#@nonl
-#@-node:ekr.20081121105001.150:QScintilla stuff
-#@+node:ekr.20081121105001.151:Finally/maybe
-- Can style sheets really do the job?
-- Flash characters without changing the selection?
-- Remove old-style Leo settings?
-#@-node:ekr.20081121105001.151:Finally/maybe
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.154:Recent projects...
 #@+node:ekr.20081121105001.155:Recent crasher (after find)
@@ -939,6 +938,55 @@ tag_configure = tag_config
 #@-node:ekr.20081124102726.11:tag_config/ure
 #@-node:ekr.20081121105001.541:Coloring (baseTextWidget)
 #@-node:ekr.20081124113700.1:Completed syntax coloring for QTextEdit
+#@+node:edward.20081129124834.1:Support different pane orientations
+#@+node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
+def setSplitDirection (self,orientation='vertical'):
+
+    vert = orientation and orientation.lower().startswith('v')
+    # g.trace('vert',vert)
+
+    orientation1 = g.choose(vert,QtCore.Qt.Horizontal, QtCore.Qt.Vertical)
+    orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
+    self.splitter.setOrientation(orientation1)
+    self.splitter_2.setOrientation(orientation2)
+#@-node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
+#@+node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
+# The key invariant: self.splitVerticalFlag tells the alignment of the main splitter.
+
+def toggleSplitDirection (self,event=None):
+
+    '''Toggle the split direction in the present Leo window.'''
+
+    frame = self ; top = frame.top
+
+    for w in (top.splitter,top.splitter_2):
+        w.setOrientation(
+            g.choose(w.orientation() == QtCore.Qt.Horizontal,
+                QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
+#@+node:ekr.20081121105001.311:toggleQtSplitDirection
+def toggleQtSplitDirection (self,verticalFlag):
+
+    # Abbreviations.
+    frame = self
+    # bar1 = self.bar1 ; bar2 = self.bar2
+    # split1Pane1,split1Pane2 = self.split1Pane1,self.split1Pane2
+    # split2Pane1,split2Pane2 = self.split2Pane1,self.split2Pane2
+    # # Reconfigure the bars.
+    # bar1.place_forget()
+    # bar2.place_forget()
+    # self.configureBar(bar1,verticalFlag)
+    # self.configureBar(bar2,not verticalFlag)
+    # # Make the initial placements again.
+    # self.placeSplitter(bar1,split1Pane1,split1Pane2,verticalFlag)
+    # self.placeSplitter(bar2,split2Pane1,split2Pane2,not verticalFlag)
+    # # Adjust the log and body panes to give more room around the bars.
+    # self.reconfigurePanes()
+    # # Redraw with an appropriate ratio.
+    # vflag,ratio,secondary_ratio = frame.initialRatios()
+    # self.resizePanesToRatio(ratio,secondary_ratio)
+#@-node:ekr.20081121105001.311:toggleQtSplitDirection
+#@-node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
+#@-node:edward.20081129124834.1:Support different pane orientations
 #@-node:ekr.20081121105001.154:Recent projects...
 #@+node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081121105001.186:Script to display Qt font database
@@ -1021,6 +1069,112 @@ bracketright: ']'
 #@nonl
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
+#@+node:edward.20081129091117.11:Unused
+#@+node:ekr.20081121105001.195:class  Window
+class Window(QtGui.QMainWindow):
+
+    '''A class representing all parts of the main Qt window
+    as created by Designer.
+
+    c.frame.top is a Window object.
+
+    All leoQtX classes use the ivars of this Window class to
+    support operations requested by Leo's core.
+    '''
+
+    @others
+
+#@+node:ekr.20081121105001.196: ctor (Window)
+# Called from leoQtFrame.finishCreate.
+
+def __init__(self,c,parent=None):
+
+    '''Create Leo's main window, c.frame.top'''
+
+    self.c = c ; top = c.frame.top
+
+    g.trace('Window')
+
+    # Init both base classes.
+    QtGui.QMainWindow.__init__(self,parent)
+    #qt_main.Ui_MainWindow.__init__(self)
+
+    self.ui = qt_main.Ui_MainWindow()
+    # Init the QDesigner elements.
+    self.ui.setupUi(self)
+    self.setSplitDirection()
+
+    # The following ivars (and more) are inherited from UiMainWindow:
+        # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
+        # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
+        # self.tabWidget  = QtGui.QTabWidget(self.splitter)     # The log pane.
+        # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
+        # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
+
+    self.iconBar = self.addToolBar("IconBar")
+    self.statusBar = QtGui.QStatusBar()
+    self.setStatusBar(self.statusBar)
+
+    self.setStyleSheets()
+#@-node:ekr.20081121105001.196: ctor (Window)
+#@+node:ekr.20081121105001.197:closeEvent (qtFrame)
+def closeEvent (self,event):
+
+    c = self.c
+
+    if c.inCommand:
+        # g.trace('requesting window close')
+        c.requestCloseWindow = True
+    else:
+        ok = g.app.closeLeoWindow(c.frame)
+        # g.trace('ok',ok)
+        if ok:
+            event.accept()
+        else:
+            event.ignore()
+#@-node:ekr.20081121105001.197:closeEvent (qtFrame)
+#@+node:ekr.20081121105001.198:setStyleSheets & helper
+styleSheet_inited = False
+
+def setStyleSheets(self):
+
+    c = self.c
+
+    sheet = c.config.getData('qt-gui-plugin-style-sheet')
+    if sheet: sheet = '\n'.join(sheet)
+    self.setStyleSheet(sheet or self.default_sheet())
+#@nonl
+#@+node:ekr.20081121105001.199:defaultStyleSheet
+def defaultStyleSheet (self):
+
+    '''Return a reasonable default style sheet.'''
+
+    # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+    return '''\
+
+/* A QWidget: supports only background attributes.*/
+QSplitter::handle {
+
+    background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+}
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-width: 3px;
+    border-style: solid;
+}
+QTreeWidget {
+    background-color: #ffffec; /* Leo's traditional tree color */
+}
+/* Not supported. */
+QsciScintilla {
+    background-color: pink;
+}
+'''
+#@-node:ekr.20081121105001.199:defaultStyleSheet
+#@-node:ekr.20081121105001.198:setStyleSheets & helper
+#@-node:ekr.20081121105001.195:class  Window
+#@-node:edward.20081129091117.11:Unused
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt
