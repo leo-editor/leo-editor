@@ -137,16 +137,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # Init both base classes.
 
-
-        ui_file_name = c.config.getString('qt_ui_file_name')
-        for f in (ui_file_name, 'qt_main.ui', None):
-            assert f, "can not find user interface file"
-            ui_description_file = g.app.loadDir + "/../plugins/" + f
-            g.pr(ui_description_file)
-            if g.os_path_exists(ui_description_file): break
-
-
-
+        ui_description_file = g.app.loadDir + "/../plugins/qt_main.ui"
         QtGui.QMainWindow.__init__(self,parent)        
         self.ui = uic.loadUi(ui_description_file, self)
 
@@ -176,26 +167,6 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setSplitDirection(orientation)
         self.setStyleSheets()
     #@-node:ekr.20081121105001.201: ctor (Window)
-    #@+node:leohag.20081203210510.17:do_leo_spell_btn_*
-    def do_leo_spell_btn_Add(self):
-        g.trace()
-
-    def do_leo_spell_btn_Change(self):
-        g.trace()
-
-    def do_leo_spell_btn_Find(self):
-        g.trace()
-
-    def do_leo_spell_btn_FindChange(self):
-        g.trace()
-
-    def do_leo_spell_btn_Hide(self):
-        g.trace()
-
-    def do_leo_spell_btn_Ignore(self):
-        g.trace()
-
-    #@-node:leohag.20081203210510.17:do_leo_spell_btn_*
     #@+node:ekr.20081121105001.202:closeEvent (qtFrame)
     def closeEvent (self,event):
 
@@ -2227,9 +2198,7 @@ class leoQtLog (leoFrame.leoLog):
             if w.tabText(i) == 'Tab 2':
                 w.setTabText(i,'Find')
                 self.contentsDict['Find'] = w.currentWidget()
-            if w.tabText(i) == 'Spell':
-                self.contentsDict['Spell'] = w.widget(i)
-                self.frameDict['Spell'] = w.widget(i)
+                break
 
         # Create the log tab as the leftmost tab.
         log.selectTab('Log')
@@ -2317,7 +2286,6 @@ class leoQtLog (leoFrame.leoLog):
         w = self.logCtrl # w is a QTextBrowser
         if w:
             if s.endswith('\n'): s = s[:-1]
-            s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             s = s.replace(' ','&nbsp;')
             if color:
                 s = '<font color="%s">%s</font>' % (color, s)
@@ -2330,9 +2298,9 @@ class leoQtLog (leoFrame.leoLog):
         else:
             # put s to logWaiting and print s
             g.app.logWaiting.append((s,color),)
-            if type(s) == type(u""):
+            if g.isUnicode(s):
                 s = g.toEncodedString(s,"ascii")
-            print s
+            print (s)
     #@-node:ekr.20081121105001.326:put
     #@+node:ekr.20081121105001.327:putnl
     def putnl (self,tabName='Log'):
@@ -5418,7 +5386,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         self.ps = {} # item=> pos
 
     def textChanged(self):
-        print "New text", self.ui.lineEdit.text()
+        g.trace("New text", self.ui.lineEdit.text())
         idx = 0
         self.ui.tableWidget.clear()
         for p in self.match_headlines(
@@ -5431,13 +5399,12 @@ class LeoQuickSearchWidget(QtGui.QWidget):
 
         self.ui.tableWidget.setRowCount(idx)
 
-        print "Matches",idx
+        g.trace("Matches",idx)
 
     def cellClicked (self, row, column ) :
         p = self.ps[row]
-        print "Go to pos",p
+        g.trace("Go to pos",p)
         self.c.selectPosition(p)
-
 
     def match_headlines(self, pat):
 
@@ -5475,7 +5442,7 @@ class QuickHeadlines:
 
     def update(self):
 
-        print "quickheadlines update"
+        g.trace("quickheadlines update")
         self.requested = False
         self.listWidget.clear()
         p = self.c.currentPosition()
@@ -5942,6 +5909,15 @@ class leoQtEventFilter(QtCore.QObject):
     #@-others
 #@-node:ekr.20081121105001.166:class leoQtEventFilter
 #@-node:ekr.20081121105001.513:Key handling
+#@+node:ekr.20081204090029.1:Syntax coloring
+class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
+
+    '''An adaptor class that interfaces QSyntaxHighligher
+    and the threading_colorizer plugin.'''
+
+    #@    @+others
+    #@-others
+#@-node:ekr.20081204090029.1:Syntax coloring
 #@+node:ekr.20081121105001.515:Text widget classes...
 #@+node:ekr.20081121105001.516: class leoQtBaseTextWidget
 class leoQtBaseTextWidget (leoFrame.baseTextWidget):

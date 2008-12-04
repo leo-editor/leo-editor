@@ -5342,7 +5342,7 @@ class leoTkinterLog (leoFrame.leoLog):
 
             g.pr("Null tkinter log")
 
-            if type(s) == type(u""):
+            if g.isUnicode(s):
                 s = g.toEncodedString(s,"ascii")
 
             g.pr(s)
@@ -8994,7 +8994,7 @@ class leoTkTextWidget (Tk.Text):
             g.trace('can not happen: i is None')
             return 0
 
-        elif type(i) in (type('a'),type(u'a')):
+        elif g.isString(i):
             s = Tk.Text.get(w,'1.0','end') # end-1c does not work.
             i = Tk.Text.index(w,i) # Convert to row/column form.
             row,col = i.split('.')
@@ -9072,7 +9072,7 @@ class leoTkTextWidget (Tk.Text):
         s = Tk.Text.get(w,"1.0","end-1c") # New in 4.4.1: use end-1c.
 
         if s is None:
-            return u""
+            return g.emptyString()
         else:
             return g.toUnicode(s,g.app.tkEncoding)
     #@-node:ekr.20081121110412.327:getAllText
@@ -9101,7 +9101,7 @@ class leoTkTextWidget (Tk.Text):
             s = Tk.Text.get(w,i,j)
             return g.toUnicode(s,g.app.tkEncoding)
         else:
-            return u""
+            return g.emptyString()
     #@-node:ekr.20081121110412.330:getSelectedText
     #@+node:ekr.20081121110412.331:getSelectionRange
     def getSelectionRange (self,sort=True): # tkTextWidget.

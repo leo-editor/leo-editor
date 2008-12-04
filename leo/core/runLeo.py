@@ -173,7 +173,7 @@ def createFrame (fileName,relativeFileName,script):
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    if g.isPython3:
+    if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:

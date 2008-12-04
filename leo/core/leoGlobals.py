@@ -4342,32 +4342,49 @@ def executeFile(filename, options= ''):
 #@-node:ekr.20050503112513.7:g.executeFile
 #@-node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
 #@+node:ekr.20031218072017.1498:Unicode utils...
-#@+node:ekr.20080816125725.2:g.isBytes & g.isString
-def isBytes (s):
+#@+node:ekr.20081204091750.2:g.emptyString
+def emptyString():
 
-    '''Return True if s is Python3k bytes type.
+    '''Return an empty unicode string.'''
 
-    Python 3.x: s must be a unicode string, not bytes.
-    Python 2.x: always returns False.'''
+    if isPython3:
+        return ''
+    else:
+        return unicode('')
+#@nonl
+#@-node:ekr.20081204091750.2:g.emptyString
+#@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+# The syntax of these functions must be valid on Python2K and Python3K.
 
+def isBytes(s):
+    '''Return True if s is Python3k bytes type.'''
     if g.isPython3:
         # Generates a pylint warning, but that can't be helped.
         return type(s) == type(bytes('a','utf-8'))
     else:
         return False
 
-def isString (s):
+def isChar(s):
+    '''Return True if s is a Python2K character type.'''
+    if g.isPython3:
+        return False
+    else:
+        return type(s) == types.StringType
 
-    '''Return True if s is a string.
-
-    Python 3.x: s must be a unicode string, not bytes.
-    Python 2.x: s may be either a unicode string or a regular string.'''
-
+def isString(s):
+    '''Return True if s is any string, but not bytes.'''
     if g.isPython3:
         return type(s) == type('a')
     else:
         return type(s) in types.StringTypes
-#@-node:ekr.20080816125725.2:g.isBytes & g.isString
+
+def isUnicode(s):
+    '''Return True if s is a unicode string.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) == types.UnicodeType
+#@-node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
 #@+node:ekr.20061006152327:g.isWordChar & g.isWordChar1
 def isWordChar (ch):
 
@@ -4444,14 +4461,6 @@ except Exception:
         #@-node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
         #@nl
 #@-node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
-#@+node:ekr.20031218072017.1499:isUnicode
-def isUnicode(s):
-
-    if g.isPython3:
-        return type(s) == type('a')
-    else:
-        return type(s) in types.StringTypes
-#@-node:ekr.20031218072017.1499:isUnicode
 #@+node:ekr.20031218072017.1500:isValidEncoding
 def isValidEncoding (encoding):
 
@@ -4476,10 +4485,8 @@ def isValidEncoding (encoding):
 def reportBadChars (s,encoding):
 
     if g.isPython3:  ### To do
-
         errors = 0
-        ### if type(s) == type(u""):
-        if g.isString(s):
+        if g.isUnicode(s):
             for ch in s:
                 try: ch.encode(encoding,"strict")
                 except UnicodeEncodeError:
@@ -4490,8 +4497,7 @@ def reportBadChars (s,encoding):
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     g.es(s2,color='red')
-        ### elif type(s) == type(""):
-        else:
+        elif g.isChar(s):
             for ch in s:
                 try: unicode(ch,encoding,"strict")
                 except Exception: errors += 1
@@ -4503,8 +4509,7 @@ def reportBadChars (s,encoding):
                     g.es(s2,color='red')
     else:
         errors = 0
-        ### if type(s) == type(u""):
-        if type(s) == types.UnicodeType:
+        if g.isUnicode(s):
             for ch in s:
                 try: ch.encode(encoding,"strict")
                 except UnicodeEncodeError:
@@ -4515,8 +4520,7 @@ def reportBadChars (s,encoding):
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     g.es(s2,color='red')
-        ### elif type(s) == type(""):
-        elif type(s) in types.StringTypes:
+        elif g.isChar(s):
             for ch in s:
                 try: unicode(ch,encoding,"strict")
                 except Exception: errors += 1

@@ -4194,7 +4194,7 @@ def createFrame (fileName,relativeFileName,script):
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    if g.isPython3:
+    if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:
@@ -4870,7 +4870,7 @@ def createFrame (fileName,relativeFileName,script):
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    if g.isPython3:
+    if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:
@@ -5418,32 +5418,38 @@ def write (self,s):
 #@-node:ekr.20040331083824.1:g.fileLikeObject
 #@-node:ekr.20080919153256.1:Problems reading derived files
 #@+node:ekr.20080919153256.2:Unicode problems
-#@+node:ekr.20080816125725.2:g.isBytes & g.isString
-def isBytes (s):
+#@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+# The syntax of these functions must be valid on Python2K and Python3K.
 
-    '''Return True if s is Python3k bytes type.
-
-    Python 3.x: s must be a unicode string, not bytes.
-    Python 2.x: always returns False.'''
-
+def isBytes(s):
+    '''Return True if s is Python3k bytes type.'''
     if g.isPython3:
         # Generates a pylint warning, but that can't be helped.
         return type(s) == type(bytes('a','utf-8'))
     else:
         return False
 
-def isString (s):
+def isChar(s):
+    '''Return True if s is a Python2K character type.'''
+    if g.isPython3:
+        return False
+    else:
+        return type(s) == types.StringType
 
-    '''Return True if s is a string.
-
-    Python 3.x: s must be a unicode string, not bytes.
-    Python 2.x: s may be either a unicode string or a regular string.'''
-
+def isString(s):
+    '''Return True if s is any string, but not bytes.'''
     if g.isPython3:
         return type(s) == type('a')
     else:
         return type(s) in types.StringTypes
-#@-node:ekr.20080816125725.2:g.isBytes & g.isString
+
+def isUnicode(s):
+    '''Return True if s is a unicode string.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) == types.UnicodeType
+#@-node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
 #@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
@@ -7606,7 +7612,7 @@ http://www.youtube.com/watch?v=JJBxajDwmLI
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    if g.isPython3:
+    if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:
@@ -7829,7 +7835,7 @@ def createFrame (fileName,relativeFileName,script):
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    if g.isPython3:
+    if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:
