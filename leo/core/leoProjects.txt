@@ -6888,8 +6888,6 @@ if i < n and s[i] == '*' :
 #@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
 #@-node:ekr.20031218072017.1260:g.get_directives_dict
 #@+node:ekr.20080827175609.1:g.get_directives_dict_list
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
-
 def get_directives_dict_list(p1):
 
     """Scans p and all its ancestors for directives.
@@ -11069,8 +11067,6 @@ if i < n and s[i] == '*' :
 #@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
 #@-node:ekr.20031218072017.1260:g.get_directives_dict
 #@+node:ekr.20080827175609.1:g.get_directives_dict_list
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
-
 def get_directives_dict_list(p1):
 
     """Scans p and all its ancestors for directives.

@@ -453,8 +453,6 @@ def get_directives_dict(p,root=None):
     return d
 #@-node:ekr.20031218072017.1260:g.get_directives_dict
 #@+node:ekr.20080827175609.1:g.get_directives_dict_list
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
-
 def get_directives_dict_list(p1):
 
     """Scans p and all its ancestors for directives.
@@ -4351,7 +4349,6 @@ def emptyString():
         return ''
     else:
         return unicode('')
-#@nonl
 #@-node:ekr.20081204091750.2:g.emptyString
 #@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
 # The syntax of these functions must be valid on Python2K and Python3K.

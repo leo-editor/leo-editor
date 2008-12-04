@@ -11,28 +11,41 @@
 
 #@<< tkGui imports >>
 #@+node:ekr.20081121110412.3:<< tkGui imports >>
+import leo.core.leoGlobals as g
+
 import leo.core.leoChapters as leoChapters
 import leo.core.leoColor as leoColor
 import leo.core.leoCompare as leoCompare
 import leo.core.leoFind as leoFind
 import leo.core.leoFrame as leoFrame
-import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
 
-import tkFont
-import tkFileDialog
 import os
 import sys
 
 try:
+    import tkFont
+except ImportError:
+    print ('tkGui.py: can not import tkFont')
+
+try:
+    import tkFileDialog
+except ImportError:
+    print ('tkGui.py: can not import tkFileDialog')
+
+try:
     import tkinter as Tk
 except ImportError:
-    import Tkinter as Tk
+    try:
+        import Tkinter as Tk
+    except ImportError:
+        print ('tkGui.py: can not import tkinter or Tkinter')
 
-Pmw             = g.importExtension('Pmw',pluginName='tkGui',verbose=True)
-tkColorChooser  = g.importExtension('tkColorChooser',pluginName='tkGui',verbose=False)
+Pmw = g.importExtension('Pmw',pluginName='tkGui',verbose=True)
+tkColorChooser = g.importExtension('tkColorChooser',
+    pluginName='tkGui',verbose=False)
 #@-node:ekr.20081121110412.3:<< tkGui imports >>
 #@nl
 

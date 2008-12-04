@@ -18,6 +18,7 @@ __qh = None # For quick headlines.
 #@<< qt imports >>
 #@+node:ekr.20081121105001.189: << qt imports >>
 import leo.core.leoGlobals as g
+
 import leo.core.leoChapters as leoChapters
 import leo.core.leoColor as leoColor
 import leo.core.leoFrame as leoFrame
@@ -40,7 +41,7 @@ try:
     from PyQt4 import Qsci
 except ImportError:
     QtCore = None
-    g.es_print('can not import Qt',color='red')
+    print('qtGui.py: can not import Qt')
 #@-node:ekr.20081121105001.189: << qt imports >>
 #@nl
 
