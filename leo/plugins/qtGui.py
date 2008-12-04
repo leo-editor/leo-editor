@@ -150,10 +150,6 @@ class DynamicWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self,parent)        
         self.ui = uic.loadUi(ui_description_file, self)
 
-        # redirect slots to main window
-        # self.ui.__getattr__ = lambda uiself, name: self.leoUiSlots(name)
-        print '##ui##', self.ui
-
         # Init the QDesigner elements.
         #self.setupUi(self)
 
@@ -2321,6 +2317,7 @@ class leoQtLog (leoFrame.leoLog):
         w = self.logCtrl # w is a QTextBrowser
         if w:
             if s.endswith('\n'): s = s[:-1]
+            s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             s = s.replace(' ','&nbsp;')
             if color:
                 s = '<font color="%s">%s</font>' % (color, s)

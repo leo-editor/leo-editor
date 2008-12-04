@@ -1,6 +1,6 @@
 
 #@+leo-ver=4-thin
-#@+node:leohag.20081203143921.1:@thin C:\leo\repos\leo-editor\leo\plugins\scrolledmessage.py
+#@+node:leohag.20081204085551.1:@thin scrolledmessage.py
 #@@first
 
 #@<< docstring >>
@@ -80,9 +80,6 @@ def init():
     if ok:
         leoPlugins.registerHandler(('open2','new'), onCreate)
         g.plugin_signon(__name__)
-
-        g.app.gui.runScrolledMessageDialog = runScrolledMessageDialog
-#    g.app.gui.runPropertiesDialog = runPropertiesDialog
 
     return ok
 #@-node:leohag.20081203143921.4:init
@@ -374,5 +371,5 @@ class ScrolledMessageController(object):
         self.c = c
 #@-node:leohag.20081203143921.19:class ScrolledMessageController
 #@-others
-#@-node:leohag.20081203143921.1:@thin C:\leo\repos\leo-editor\leo\plugins\scrolledmessage.py
+#@-node:leohag.20081204085551.1:@thin scrolledmessage.py
 #@-leo

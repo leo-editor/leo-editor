@@ -963,6 +963,7 @@ def toggleSplitDirection (self,event=None):
         w.setOrientation(
             g.choose(w.orientation() == QtCore.Qt.Horizontal,
                 QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
+#@nonl
 #@+node:ekr.20081121105001.311:toggleQtSplitDirection
 def toggleQtSplitDirection (self,verticalFlag):
 
