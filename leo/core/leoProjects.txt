@@ -6790,7 +6790,11 @@ def comment_delims_from_extension(filename):
 
     """
 
-    root, ext = os.path.splitext(filename)
+    if filename.startswith('.'):
+        # Python 2.6 changes how splitext works.
+        root,ext = None,filename
+    else:
+        root, ext = os.path.splitext(filename)
     if ext == '.tmp':
         root, ext = os.path.splitext(root)
 
@@ -6798,7 +6802,8 @@ def comment_delims_from_extension(filename):
     if ext:
         return g.set_delims_from_language(language)
     else:
-        g.trace("unknown extension %s" % ext)
+        g.trace("unknown extension: %s, filename: %s, root: %s" % (
+            repr(ext),repr(filename),repr(root)))
         return None,None,None
 #@-node:EKR.20040504150046.4:g.comment_delims_from_extension
 #@+node:ekr.20071109165315:g.computeRelativePath
