@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="230" height="954" width="1023"/>
+	<global_window_position top="28" left="241" height="987" width="1049"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7,0,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -402,8 +402,9 @@
 </v>
 </v>
 <v t="ekr.20081202095209.1"><vh>Put minibuffer in a toolbar</vh></v>
-<v t="ekr.20081202140932.1" a="E"><vh>pythoscope</vh>
-<v t="ekr.20081202141453.1" a="E"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
+<v t="ekr.20071129103842"></v>
+<v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
+<v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
 <v t="ekr.20081202141210.1"><vh>@@auto\pythoscope\astvisitor.py</vh>
 <v t="ekr.20081202141453.2"><vh>astvisitor declarations</vh></v>
 <v t="ekr.20081202141453.3"><vh>clone</vh></v>
@@ -810,6 +811,230 @@
 <v t="ekr.20081202143139.48"><vh>remove_deleted_points_of_entry</vh></v>
 <v t="ekr.20081202143139.49"><vh>add_and_update_points_of_entry</vh></v>
 <v t="ekr.20081202143139.50"><vh>inspect_project_dynamically</vh></v>
+</v>
+</v>
+<v t="ekr.20081203091734.1"><vh>@path c:\leo.repo\pythoscope\lib2to3</vh>
+<v t="ekr.20081203091734.11"><vh>@@auto patcomp.py</vh>
+<v t="ekr.20081203092030.7"><vh>patcomp declarations</vh></v>
+<v t="ekr.20081203092030.8"><vh>tokenize_wrapper</vh></v>
+<v t="ekr.20081203092030.9"><vh>class PatternCompiler</vh>
+<v t="ekr.20081203092030.10"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.11"><vh>compile_pattern</vh></v>
+<v t="ekr.20081203092030.12"><vh>compile_node</vh></v>
+<v t="ekr.20081203092030.13"><vh>compile_basic</vh></v>
+<v t="ekr.20081203092030.14"><vh>get_int</vh></v>
+</v>
+<v t="ekr.20081203092030.15"><vh>pattern_convert</vh></v>
+<v t="ekr.20081203092030.16"><vh>compile_pattern</vh></v>
+</v>
+<v t="ekr.20081203091734.12"><vh>@@auto pygram.py</vh>
+<v t="ekr.20081203092030.17"><vh>pygram declarations</vh></v>
+<v t="ekr.20081203092030.18"><vh>class Symbols</vh>
+<v t="ekr.20081203092030.19"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20081203092030.20"><vh>parenthesize</vh></v>
+</v>
+<v t="ekr.20081203091734.13"><vh>@@auto pytree.py</vh>
+<v t="ekr.20081203092030.21"><vh>pytree declarations</vh></v>
+<v t="ekr.20081203092030.22"><vh>type_repr</vh></v>
+<v t="ekr.20081203092030.23"><vh>class Base</vh>
+<v t="ekr.20081203092030.24"><vh>__new__</vh></v>
+<v t="ekr.20081203092030.25"><vh>__eq__</vh></v>
+<v t="ekr.20081203092030.26"><vh>__ne__</vh></v>
+<v t="ekr.20081203092030.27"><vh>_eq</vh></v>
+<v t="ekr.20081203092030.28"><vh>clone</vh></v>
+<v t="ekr.20081203092030.29"><vh>post_order</vh></v>
+<v t="ekr.20081203092030.30"><vh>pre_order</vh></v>
+<v t="ekr.20081203092030.31"><vh>set_prefix</vh></v>
+<v t="ekr.20081203092030.32"><vh>get_prefix</vh></v>
+<v t="ekr.20081203092030.33"><vh>replace</vh></v>
+<v t="ekr.20081203092030.34"><vh>get_lineno</vh></v>
+<v t="ekr.20081203092030.35"><vh>changed</vh></v>
+<v t="ekr.20081203092030.36"><vh>remove</vh></v>
+<v t="ekr.20081203092030.37"><vh>get_next_sibling</vh></v>
+<v t="ekr.20081203092030.38"><vh>get_prev_sibling</vh></v>
+<v t="ekr.20081203092030.39"><vh>get_suffix</vh></v>
+</v>
+<v t="ekr.20081203092030.40"><vh>class Node</vh>
+<v t="ekr.20081203092030.41"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.42"><vh>__repr__</vh></v>
+<v t="ekr.20081203092030.43"><vh>__str__</vh></v>
+<v t="ekr.20081203092030.44"><vh>_eq</vh></v>
+<v t="ekr.20081203092030.45"><vh>clone</vh></v>
+<v t="ekr.20081203092030.46"><vh>post_order</vh></v>
+<v t="ekr.20081203092030.47"><vh>pre_order</vh></v>
+<v t="ekr.20081203092030.48"><vh>set_prefix</vh></v>
+<v t="ekr.20081203092030.49"><vh>get_prefix</vh></v>
+<v t="ekr.20081203092030.50"><vh>set_child</vh></v>
+<v t="ekr.20081203092030.51"><vh>insert_child</vh></v>
+<v t="ekr.20081203092030.52"><vh>append_child</vh></v>
+</v>
+<v t="ekr.20081203092030.53"><vh>class Leaf</vh>
+<v t="ekr.20081203092030.54"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.55"><vh>__repr__</vh></v>
+<v t="ekr.20081203092030.56"><vh>__str__</vh></v>
+<v t="ekr.20081203092030.57"><vh>_eq</vh></v>
+<v t="ekr.20081203092030.58"><vh>clone</vh></v>
+<v t="ekr.20081203092030.59"><vh>post_order</vh></v>
+<v t="ekr.20081203092030.60"><vh>pre_order</vh></v>
+<v t="ekr.20081203092030.61"><vh>set_prefix</vh></v>
+<v t="ekr.20081203092030.62"><vh>get_prefix</vh></v>
+</v>
+<v t="ekr.20081203092030.63"><vh>convert</vh></v>
+<v t="ekr.20081203092030.64"><vh>class BasePattern</vh>
+<v t="ekr.20081203092030.65"><vh>__new__</vh></v>
+<v t="ekr.20081203092030.66"><vh>__repr__</vh></v>
+<v t="ekr.20081203092030.67"><vh>optimize</vh></v>
+<v t="ekr.20081203092030.68"><vh>match</vh></v>
+<v t="ekr.20081203092030.69"><vh>match_seq</vh></v>
+<v t="ekr.20081203092030.70"><vh>generate_matches</vh></v>
+</v>
+<v t="ekr.20081203092030.71"><vh>class LeafPattern</vh>
+<v t="ekr.20081203092030.72"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.73"><vh>match</vh></v>
+<v t="ekr.20081203092030.74"><vh>_submatch</vh></v>
+</v>
+<v t="ekr.20081203092030.75"><vh>class NodePattern</vh>
+<v t="ekr.20081203092030.76"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.77"><vh>_submatch</vh></v>
+</v>
+<v t="ekr.20081203092030.78"><vh>class WildcardPattern</vh>
+<v t="ekr.20081203092030.79"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.80"><vh>optimize</vh></v>
+<v t="ekr.20081203092030.81"><vh>match</vh></v>
+<v t="ekr.20081203092030.82"><vh>match_seq</vh></v>
+<v t="ekr.20081203092030.83"><vh>generate_matches</vh></v>
+<v t="ekr.20081203092030.84"><vh>_bare_name_matches</vh></v>
+<v t="ekr.20081203092030.85"><vh>_recursive_matches</vh></v>
+</v>
+<v t="ekr.20081203092030.86"><vh>class NegatedPattern</vh>
+<v t="ekr.20081203092030.87"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.88"><vh>match</vh></v>
+<v t="ekr.20081203092030.89"><vh>match_seq</vh></v>
+<v t="ekr.20081203092030.90"><vh>generate_matches</vh></v>
+</v>
+<v t="ekr.20081203092030.91"><vh>generate_matches</vh></v>
+</v>
+<v t="ekr.20081203091734.14"><vh>@@auto __init__.py</vh></v>
+</v>
+<v t="ekr.20081203091734.15"><vh>@path c:\leo.repo\pythoscope\lib2to3\pgen2</vh>
+<v t="ekr.20081203092326.1"><vh>Comments from parse.c</vh></v>
+<v t="ekr.20081203091734.16"><vh>@@auto conv.py</vh>
+<v t="ekr.20081203092030.92"><vh>conv declarations</vh></v>
+<v t="ekr.20081203092030.93"><vh>class Converter</vh>
+<v t="ekr.20081203092030.94"><vh>run</vh></v>
+<v t="ekr.20081203092030.95"><vh>parse_graminit_h</vh></v>
+<v t="ekr.20081203092030.96"><vh>parse_graminit_c</vh></v>
+<v t="ekr.20081203092030.97"><vh>finish_off</vh></v>
+</v>
+</v>
+<v t="ekr.20081203091734.17"><vh>@@auto driver.py</vh>
+<v t="ekr.20081203092030.98"><vh>driver declarations</vh></v>
+<v t="ekr.20081203092030.99"><vh>class Driver</vh>
+<v t="ekr.20081203092030.100"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.101"><vh>parse_tokens</vh></v>
+<v t="ekr.20081203092030.102"><vh>parse_stream_raw</vh></v>
+<v t="ekr.20081203092030.103"><vh>parse_stream</vh></v>
+<v t="ekr.20081203092030.104"><vh>parse_file</vh></v>
+<v t="ekr.20081203092030.105"><vh>parse_string</vh></v>
+</v>
+<v t="ekr.20081203092030.106"><vh>generate_lines</vh></v>
+<v t="ekr.20081203092030.107"><vh>load_grammar</vh></v>
+<v t="ekr.20081203092030.108"><vh>_newer</vh></v>
+</v>
+<v t="ekr.20081203091734.18"><vh>@@auto grammar.py </vh>
+<v t="ekr.20081203092030.1"><vh>grammar declarations</vh></v>
+<v t="ekr.20081203092030.2"><vh>class Grammar</vh>
+<v t="ekr.20081203092030.3"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.4"><vh>dump</vh></v>
+<v t="ekr.20081203092030.5"><vh>load</vh></v>
+<v t="ekr.20081203092030.6"><vh>report</vh></v>
+</v>
+</v>
+<v t="ekr.20081203091734.19"><vh>@@auto literals.py</vh>
+<v t="ekr.20081203092030.109"><vh>literals declarations</vh></v>
+<v t="ekr.20081203092030.110"><vh>escape</vh></v>
+<v t="ekr.20081203092030.111"><vh>evalString</vh></v>
+<v t="ekr.20081203092030.112"><vh>test</vh></v>
+</v>
+<v t="ekr.20081203091734.20"><vh>@@auto parse.py</vh>
+<v t="ekr.20081203092030.113"><vh>parse declarations</vh></v>
+<v t="ekr.20081203092030.114"><vh>class ParseError</vh>
+<v t="ekr.20081203092030.115"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.116"><vh>__reduce__</vh></v>
+</v>
+<v t="ekr.20081203092030.117"><vh>class Parser</vh>
+<v t="ekr.20081203092030.118"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.119"><vh>setup</vh></v>
+<v t="ekr.20081203092030.120"><vh>addtoken</vh></v>
+<v t="ekr.20081203092030.121"><vh>classify</vh></v>
+<v t="ekr.20081203092030.122"><vh>shift</vh></v>
+<v t="ekr.20081203092030.123"><vh>push</vh></v>
+<v t="ekr.20081203092030.124"><vh>pop</vh></v>
+</v>
+</v>
+<v t="ekr.20081203091734.21"><vh>@@auto pgen.py</vh>
+<v t="ekr.20081203092030.125"><vh>pgen declarations</vh></v>
+<v t="ekr.20081203092030.126"><vh>class PgenGrammar</vh></v>
+<v t="ekr.20081203092030.127"><vh>class ParserGenerator</vh>
+<v t="ekr.20081203092030.128"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.129"><vh>make_grammar</vh></v>
+<v t="ekr.20081203092030.130"><vh>make_first</vh></v>
+<v t="ekr.20081203092030.131"><vh>make_label</vh></v>
+<v t="ekr.20081203092030.132"><vh>addfirstsets</vh></v>
+<v t="ekr.20081203092030.133"><vh>calcfirst</vh></v>
+<v t="ekr.20081203092030.134"><vh>parse</vh></v>
+<v t="ekr.20081203092030.135"><vh>make_dfa</vh></v>
+<v t="ekr.20081203092030.136"><vh>dump_nfa</vh></v>
+<v t="ekr.20081203092030.137"><vh>dump_dfa</vh></v>
+<v t="ekr.20081203092030.138"><vh>simplify_dfa</vh></v>
+<v t="ekr.20081203092030.139"><vh>parse_rhs</vh></v>
+<v t="ekr.20081203092030.140"><vh>parse_alt</vh></v>
+<v t="ekr.20081203092030.141"><vh>parse_item</vh></v>
+<v t="ekr.20081203092030.142"><vh>parse_atom</vh></v>
+<v t="ekr.20081203092030.143"><vh>expect</vh></v>
+<v t="ekr.20081203092030.144"><vh>gettoken</vh></v>
+<v t="ekr.20081203092030.145"><vh>raise_error</vh></v>
+</v>
+<v t="ekr.20081203092030.146"><vh>class NFAState</vh>
+<v t="ekr.20081203092030.147"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.148"><vh>addarc</vh></v>
+</v>
+<v t="ekr.20081203092030.149"><vh>class DFAState</vh>
+<v t="ekr.20081203092030.150"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.151"><vh>addarc</vh></v>
+<v t="ekr.20081203092030.152"><vh>unifystate</vh></v>
+<v t="ekr.20081203092030.153"><vh>__eq__</vh></v>
+</v>
+<v t="ekr.20081203092030.154"><vh>generate_grammar</vh></v>
+</v>
+<v t="ekr.20081203091734.22"><vh>@@auto token.py</vh>
+<v t="ekr.20081203092030.155"><vh>token declarations</vh></v>
+<v t="ekr.20081203092030.156"><vh>ISTERMINAL</vh></v>
+<v t="ekr.20081203092030.157"><vh>ISNONTERMINAL</vh></v>
+<v t="ekr.20081203092030.158"><vh>ISEOF</vh></v>
+</v>
+<v t="ekr.20081203091734.23"><vh>@@auto tokenize.py</vh>
+<v t="ekr.20081203092030.159"><vh>tokenize declarations</vh></v>
+<v t="ekr.20081203092030.160"><vh>group</vh></v>
+<v t="ekr.20081203092030.161"><vh>any</vh></v>
+<v t="ekr.20081203092030.162"><vh>maybe</vh></v>
+<v t="ekr.20081203092030.163"><vh>class TokenError</vh></v>
+<v t="ekr.20081203092030.164"><vh>class StopTokenizing</vh></v>
+<v t="ekr.20081203092030.165"><vh>printtoken</vh></v>
+<v t="ekr.20081203092030.166"><vh>tokenize</vh></v>
+<v t="ekr.20081203092030.167"><vh>tokenize_loop</vh></v>
+<v t="ekr.20081203092030.168"><vh>class Untokenizer</vh>
+<v t="ekr.20081203092030.169"><vh>__init__</vh></v>
+<v t="ekr.20081203092030.170"><vh>add_whitespace</vh></v>
+<v t="ekr.20081203092030.171"><vh>untokenize</vh></v>
+<v t="ekr.20081203092030.172"><vh>compat</vh></v>
+</v>
+<v t="ekr.20081203092030.173"><vh>untokenize</vh></v>
+<v t="ekr.20081203092030.174"><vh>generate_tokens</vh></v>
+</v>
+<v t="ekr.20081203091734.24"><vh>@@auto __init__.py</vh>
+<v t="ekr.20081203092030.175"><vh>__init__ declarations</vh></v>
 </v>
 </v>
 </v>
@@ -3153,8 +3378,8 @@ if frame and not frame1:
 import glob,os
 
 reallyCreate = True
-baseDir = r'c:\leo.repo\pythoscope'
-dirs = ('pythoscope',)
+baseDir = r'c:\leo.repo\pythoscope\lib2to3\pgen2'
+dirs = (r'',)
 g.pr('-----')
 
 for theDir in dirs:
@@ -7796,6 +8021,3006 @@ from pythoscope.util import python_modules_below
             log.warning("Point of entry contains a syntax error: %s" % err)
         except (Exception, KeyboardInterrupt, SystemExit), err:
             log.warning("Point of entry exited with error: %s" % repr(err))
+</t>
+<t tx="ekr.20081203091734.1"></t>
+<t tx="ekr.20081203091734.11">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081203091734.12">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081203091734.13">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081203091734.14">@language python
+@tabwidth -4
+@others
+#empty
+</t>
+<t tx="ekr.20081203091734.15"></t>
+<t tx="ekr.20081203091734.16">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081203091734.17">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081203091734.18">@language python
+@tabwidth -4
+@others
+@ignore
+    # First mismatch at line 140
+    # The @ sign in column 1 confuses Leo's importer.
+# Map from operator to number (since tokenize doesn't do this)
+
+opmap_raw = """
+( LPAR
+) RPAR
+[ LSQB
+] RSQB
+: COLON
+, COMMA
+; SEMI
++ PLUS
+- MINUS
+* STAR
+/ SLASH
+| VBAR
+&amp; AMPER
+&lt; LESS
+&gt; GREATER
+= EQUAL
+. DOT
+% PERCENT
+` BACKQUOTE
+{ LBRACE
+} RBRACE
+@ AT
+== EQEQUAL
+!= NOTEQUAL
+&lt;&gt; NOTEQUAL
+&lt;= LESSEQUAL
+&gt;= GREATEREQUAL
+~ TILDE
+^ CIRCUMFLEX
+&lt;&lt; LEFTSHIFT
+&gt;&gt; RIGHTSHIFT
+** DOUBLESTAR
++= PLUSEQUAL
+-= MINEQUAL
+*= STAREQUAL
+/= SLASHEQUAL
+%= PERCENTEQUAL
+&amp;= AMPEREQUAL
+|= VBAREQUAL
+^= CIRCUMFLEXEQUAL
+&lt;&lt;= LEFTSHIFTEQUAL
+&gt;&gt;= RIGHTSHIFTEQUAL
+**= DOUBLESTAREQUAL
+// DOUBLESLASH
+//= DOUBLESLASHEQUAL
+-&gt; RARROW
+"""
+
+opmap = {}
+for line in opmap_raw.splitlines():
+    if line:
+        op, name = line.split()
+        opmap[op] = getattr(token, name)
+</t>
+<t tx="ekr.20081203091734.19">@language python
+@tabwidth -4
+@others
+if __name__ == "__main__":
+    test()
+</t>
+<t tx="ekr.20081203091734.20">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081203091734.21">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081203091734.22">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081203091734.23">@language python
+@tabwidth -4
+@others
+if __name__ == '__main__':                     # testing
+    import sys
+    if len(sys.argv) &gt; 1: tokenize(open(sys.argv[1]).readline)
+    else: tokenize(sys.stdin.readline)
+</t>
+<t tx="ekr.20081203091734.24">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081203092030.1"># Copyright 2004-2005 Elemental Security, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+"""This module defines the data structures used to represent a grammar.
+
+These are a bit arcane because they are derived from the data
+structures used by Python's 'pgen' parser generator.
+
+There's also a table here mapping operators to their names in the
+token module; the Python tokenize module reports all operators as the
+fallback token code OP, but the parser needs the actual token code.
+
+"""
+
+# Python imports
+import pickle
+
+# Local imports
+import token, tokenize
+
+
+</t>
+<t tx="ekr.20081203092030.2">class Grammar(object):
+    """Pgen parsing tables tables conversion class.
+
+    Once initialized, this class supplies the grammar tables for the
+    parsing engine implemented by parse.py.  The parsing engine
+    accesses the instance variables directly.  The class here does not
+    provide initialization of the tables; several subclasses exist to
+    do this (see the conv and pgen modules).
+
+    The load() method reads the tables from a pickle file, which is
+    much faster than the other ways offered by subclasses.  The pickle
+    file is written by calling dump() (after loading the grammar
+    tables using a subclass).  The report() method prints a readable
+    representation of the tables to stdout, for debugging.
+
+    The instance variables are as follows:
+
+    symbol2number -- a dict mapping symbol names to numbers.  Symbol
+                     numbers are always 256 or higher, to distinguish
+                     them from token numbers, which are between 0 and
+                     255 (inclusive).
+
+    number2symbol -- a dict mapping numbers to symbol names;
+                     these two are each other's inverse.
+
+    states        -- a list of DFAs, where each DFA is a list of
+                     states, each state is is a list of arcs, and each
+                     arc is a (i, j) pair where i is a label and j is
+                     a state number.  The DFA number is the index into
+                     this list.  (This name is slightly confusing.)
+                     Final states are represented by a special arc of
+                     the form (0, j) where j is its own state number.
+
+    dfas          -- a dict mapping symbol numbers to (DFA, first)
+                     pairs, where DFA is an item from the states list
+                     above, and first is a set of tokens that can
+                     begin this grammar rule (represented by a dict
+                     whose values are always 1).
+
+    labels        -- a list of (x, y) pairs where x is either a token
+                     number or a symbol number, and y is either None
+                     or a string; the strings are keywords.  The label
+                     number is the index in this list; label numbers
+                     are used to mark state transitions (arcs) in the
+                     DFAs.
+
+    start         -- the number of the grammar's start symbol.
+
+    keywords      -- a dict mapping keyword strings to arc labels.
+
+    tokens        -- a dict mapping token numbers to arc labels.
+
+    """
+    @others
+</t>
+<t tx="ekr.20081203092030.3">
+def __init__(self):
+    self.symbol2number = {}
+    self.number2symbol = {}
+    self.states = []
+    self.dfas = {}
+    self.labels = [(0, "EMPTY")]
+    self.keywords = {}
+    self.tokens = {}
+    self.symbol2label = {}
+    self.start = 256
+
+</t>
+<t tx="ekr.20081203092030.4">def dump(self, filename):
+    """Dump the grammar tables to a pickle file."""
+    f = open(filename, "wb")
+    pickle.dump(self.__dict__, f, 2)
+    f.close()
+
+</t>
+<t tx="ekr.20081203092030.5">def load(self, filename):
+    """Load the grammar tables from a pickle file."""
+    f = open(filename, "rb")
+    d = pickle.load(f)
+    f.close()
+    self.__dict__.update(d)
+
+</t>
+<t tx="ekr.20081203092030.6">def report(self):
+    """Dump the grammar tables to standard output, for debugging."""
+    from pprint import pprint
+    print "s2n"
+    pprint(self.symbol2number)
+    print "n2s"
+    pprint(self.number2symbol)
+    print "states"
+    pprint(self.states)
+    print "dfas"
+    pprint(self.dfas)
+    print "labels"
+    pprint(self.labels)
+    print "start", self.start
+
+
+</t>
+<t tx="ekr.20081203092030.7"># Copyright 2006 Google, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+"""Pattern compiler.
+
+The grammer is taken from PatternGrammar.txt.
+
+The compiler compiles a pattern to a pytree.*Pattern instance.
+"""
+
+__author__ = "Guido van Rossum &lt;guido@python.org&gt;"
+
+# Python imports
+import os
+
+# Fairly local imports
+from pgen2 import driver
+from pgen2 import literals
+from pgen2 import token
+from pgen2 import tokenize
+
+# Really local imports
+import pytree
+import pygram
+
+# The pattern grammar file
+_PATTERN_GRAMMAR_FILE = os.path.join(os.path.dirname(__file__),
+                                     "PatternGrammar.txt")
+
+
+</t>
+<t tx="ekr.20081203092030.8">def tokenize_wrapper(input):
+    """Tokenizes a string suppressing significant whitespace."""
+    skip = (token.NEWLINE, token.INDENT, token.DEDENT)
+    tokens = tokenize.generate_tokens(driver.generate_lines(input).next)
+    for quintuple in tokens:
+        type, value, start, end, line_text = quintuple
+        if type not in skip:
+            yield quintuple
+
+
+</t>
+<t tx="ekr.20081203092030.9">class PatternCompiler(object):
+    @others
+</t>
+<t tx="ekr.20081203092030.10">
+def __init__(self, grammar_file=_PATTERN_GRAMMAR_FILE):
+    """Initializer.
+
+    Takes an optional alternative filename for the pattern grammar.
+    """
+    self.grammar = driver.load_grammar(grammar_file)
+    self.syms = pygram.Symbols(self.grammar)
+    self.pygrammar = pygram.python_grammar
+    self.pysyms = pygram.python_symbols
+    self.driver = driver.Driver(self.grammar, convert=pattern_convert)
+
+</t>
+<t tx="ekr.20081203092030.11">def compile_pattern(self, input, debug=False):
+    """Compiles a pattern string to a nested pytree.*Pattern object."""
+    tokens = tokenize_wrapper(input)
+    root = self.driver.parse_tokens(tokens, debug=debug)
+    return self.compile_node(root)
+
+</t>
+<t tx="ekr.20081203092030.12">def compile_node(self, node):
+    """Compiles a node, recursively.
+
+    This is one big switch on the node type.
+    """
+    # XXX Optimize certain Wildcard-containing-Wildcard patterns
+    # that can be merged
+    if node.type == self.syms.Matcher:
+        node = node.children[0] # Avoid unneeded recursion
+
+    if node.type == self.syms.Alternatives:
+        # Skip the odd children since they are just '|' tokens
+        alts = [self.compile_node(ch) for ch in node.children[::2]]
+        if len(alts) == 1:
+            return alts[0]
+        p = pytree.WildcardPattern([[a] for a in alts], min=1, max=1)
+        return p.optimize()
+
+    if node.type == self.syms.Alternative:
+        units = [self.compile_node(ch) for ch in node.children]
+        if len(units) == 1:
+            return units[0]
+        p = pytree.WildcardPattern([units], min=1, max=1)
+        return p.optimize()
+
+    if node.type == self.syms.NegatedUnit:
+        pattern = self.compile_basic(node.children[1:])
+        p = pytree.NegatedPattern(pattern)
+        return p.optimize()
+
+    assert node.type == self.syms.Unit
+
+    name = None
+    nodes = node.children
+    if len(nodes) &gt;= 3 and nodes[1].type == token.EQUAL:
+        name = nodes[0].value
+        nodes = nodes[2:]
+    repeat = None
+    if len(nodes) &gt;= 2 and nodes[-1].type == self.syms.Repeater:
+        repeat = nodes[-1]
+        nodes = nodes[:-1]
+
+    # Now we've reduced it to: STRING | NAME [Details] | (...) | [...]
+    pattern = self.compile_basic(nodes, repeat)
+
+    if repeat is not None:
+        assert repeat.type == self.syms.Repeater
+        children = repeat.children
+        child = children[0]
+        if child.type == token.STAR:
+            min = 0
+            max = pytree.HUGE
+        elif child.type == token.PLUS:
+            min = 1
+            max = pytree.HUGE
+        elif child.type == token.LBRACE:
+            assert children[-1].type == token.RBRACE
+            assert  len(children) in (3, 5)
+            min = max = self.get_int(children[1])
+            if len(children) == 5:
+                max = self.get_int(children[3])
+        else:
+            assert False
+        if min != 1 or max != 1:
+            pattern = pattern.optimize()
+            pattern = pytree.WildcardPattern([[pattern]], min=min, max=max)
+
+    if name is not None:
+        pattern.name = name
+    return pattern.optimize()
+
+</t>
+<t tx="ekr.20081203092030.13">def compile_basic(self, nodes, repeat=None):
+    # Compile STRING | NAME [Details] | (...) | [...]
+    assert len(nodes) &gt;= 1
+    node = nodes[0]
+    if node.type == token.STRING:
+        value = literals.evalString(node.value)
+        return pytree.LeafPattern(content=value)
+    elif node.type == token.NAME:
+        value = node.value
+        if value.isupper():
+            if value not in TOKEN_MAP:
+                raise SyntaxError("Invalid token: %r" % value)
+            return pytree.LeafPattern(TOKEN_MAP[value])
+        else:
+            if value == "any":
+                type = None
+            elif not value.startswith("_"):
+                type = getattr(self.pysyms, value, None)
+                if type is None:
+                    raise SyntaxError("Invalid symbol: %r" % value)
+            if nodes[1:]: # Details present
+                content = [self.compile_node(nodes[1].children[1])]
+            else:
+                content = None
+            return pytree.NodePattern(type, content)
+    elif node.value == "(":
+        return self.compile_node(nodes[1])
+    elif node.value == "[":
+        assert repeat is None
+        subpattern = self.compile_node(nodes[1])
+        return pytree.WildcardPattern([[subpattern]], min=0, max=1)
+    assert False, node
+
+</t>
+<t tx="ekr.20081203092030.14">def get_int(self, node):
+    assert node.type == token.NUMBER
+    return int(node.value)
+
+
+</t>
+<t tx="ekr.20081203092030.15"># Map named tokens to the type value for a LeafPattern
+TOKEN_MAP = {"NAME": token.NAME,
+             "STRING": token.STRING,
+             "NUMBER": token.NUMBER,
+             "TOKEN": None}
+
+
+def pattern_convert(grammar, raw_node_info):
+    """Converts raw node information to a Node or Leaf instance."""
+    type, value, context, children = raw_node_info
+    if children or type in grammar.number2symbol:
+        return pytree.Node(type, children, context=context)
+    else:
+        return pytree.Leaf(type, value, context=context)
+
+
+</t>
+<t tx="ekr.20081203092030.16">def compile_pattern(pattern):
+    return PatternCompiler().compile_pattern(pattern)
+</t>
+<t tx="ekr.20081203092030.17"># Copyright 2006 Google, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+"""Export the Python grammar and symbols."""
+
+# Python imports
+import os
+
+# Local imports
+from pgen2 import token
+from pgen2 import driver
+import pytree
+
+# The grammar file
+_GRAMMAR_FILE = os.path.join(os.path.dirname(__file__), "Grammar.txt")
+
+
+</t>
+<t tx="ekr.20081203092030.18">class Symbols(object):
+    @others
+</t>
+<t tx="ekr.20081203092030.19">
+def __init__(self, grammar):
+    """Initializer.
+
+    Creates an attribute for each grammar symbol (nonterminal),
+    whose value is the symbol's type (an int &gt;= 256).
+    """
+    for name, symbol in grammar.symbol2number.iteritems():
+        setattr(self, name, symbol)
+
+
+</t>
+<t tx="ekr.20081203092030.20">python_grammar = driver.load_grammar(_GRAMMAR_FILE)
+python_symbols = Symbols(python_grammar)
+
+
+def parenthesize(node):
+    return pytree.Node(python_symbols.atom,
+                       (pytree.Leaf(token.LPAR, "("),
+                        node,
+                        pytree.Leaf(token.RPAR, ")")))
+</t>
+<t tx="ekr.20081203092030.21"># Copyright 2006 Google, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+"""Python parse tree definitions.
+
+This is a very concrete parse tree; we need to keep every token and
+even the comments and whitespace between tokens.
+
+There's also a pattern matching implementation here.
+"""
+
+__author__ = "Guido van Rossum &lt;guido@python.org&gt;"
+
+
+HUGE = 0x7FFFFFFF  # maximum repeat count, default max
+
+_type_reprs = {}
+</t>
+<t tx="ekr.20081203092030.22">def type_repr(type_num):
+    global _type_reprs
+    if not _type_reprs:
+        from pygram import python_symbols
+        # printing tokens is possible but not as useful
+        # from .pgen2 import token // token.__dict__.items():
+        for name, val in python_symbols.__dict__.items():
+            if type(val) == int: _type_reprs[val] = name
+    return _type_reprs.setdefault(type_num, type_num)
+
+
+</t>
+<t tx="ekr.20081203092030.23">class Base(object):
+
+    """Abstract base class for Node and Leaf.
+
+    This provides some default functionality and boilerplate using the
+    template pattern.
+
+    A node may be a subnode of at most one parent.
+    """
+
+    # Default values for instance variables
+    type = None    # int: token number (&lt; 256) or symbol number (&gt;= 256)
+    parent = None  # Parent node pointer, or None
+    children = ()  # Tuple of subnodes
+    was_changed = False
+
+    @others
+</t>
+<t tx="ekr.20081203092030.24">def __new__(cls, *args, **kwds):
+    """Constructor that prevents Base from being instantiated."""
+    assert cls is not Base, "Cannot instantiate Base"
+    return object.__new__(cls)
+
+</t>
+<t tx="ekr.20081203092030.25">def __eq__(self, other):
+    """Compares two nodes for equality.
+
+    This calls the method _eq().
+    """
+    if self.__class__ is not other.__class__:
+        return NotImplemented
+    return self._eq(other)
+
+</t>
+<t tx="ekr.20081203092030.26">def __ne__(self, other):
+    """Compares two nodes for inequality.
+
+    This calls the method _eq().
+    """
+    if self.__class__ is not other.__class__:
+        return NotImplemented
+    return not self._eq(other)
+
+</t>
+<t tx="ekr.20081203092030.27">def _eq(self, other):
+    """Compares two nodes for equality.
+
+    This is called by __eq__ and __ne__.  It is only called if the
+    two nodes have the same type.  This must be implemented by the
+    concrete subclass.  Nodes should be considered equal if they
+    have the same structure, ignoring the prefix string and other
+    context information.
+    """
+    raise NotImplementedError
+
+</t>
+<t tx="ekr.20081203092030.28">def clone(self):
+    """Returns a cloned (deep) copy of self.
+
+    This must be implemented by the concrete subclass.
+    """
+    raise NotImplementedError
+
+</t>
+<t tx="ekr.20081203092030.29">def post_order(self):
+    """Returns a post-order iterator for the tree.
+
+    This must be implemented by the concrete subclass.
+    """
+    raise NotImplementedError
+
+</t>
+<t tx="ekr.20081203092030.30">def pre_order(self):
+    """Returns a pre-order iterator for the tree.
+
+    This must be implemented by the concrete subclass.
+    """
+    raise NotImplementedError
+
+</t>
+<t tx="ekr.20081203092030.31">def set_prefix(self, prefix):
+    """Sets the prefix for the node (see Leaf class).
+
+    This must be implemented by the concrete subclass.
+    """
+    raise NotImplementedError
+
+</t>
+<t tx="ekr.20081203092030.32">def get_prefix(self):
+    """Returns the prefix for the node (see Leaf class).
+
+    This must be implemented by the concrete subclass.
+    """
+    raise NotImplementedError
+
+</t>
+<t tx="ekr.20081203092030.33">def replace(self, new):
+    """Replaces this node with a new one in the parent."""
+    assert self.parent is not None, str(self)
+    assert new is not None
+    if not isinstance(new, list):
+        new = [new]
+    l_children = []
+    found = False
+    for ch in self.parent.children:
+        if ch is self:
+            assert not found, (self.parent.children, self, new)
+            if new is not None:
+                l_children.extend(new)
+            found = True
+        else:
+            l_children.append(ch)
+    assert found, (self.children, self, new)
+    self.parent.changed()
+    self.parent.children = l_children
+    for x in new:
+        x.parent = self.parent
+    self.parent = None
+
+</t>
+<t tx="ekr.20081203092030.34">def get_lineno(self):
+    """Returns the line number which generated the invocant node."""
+    node = self
+    while not isinstance(node, Leaf):
+        if not node.children:
+            return
+        node = node.children[0]
+    return node.lineno
+
+</t>
+<t tx="ekr.20081203092030.35">def changed(self):
+    if self.parent:
+        self.parent.changed()
+    self.was_changed = True
+
+</t>
+<t tx="ekr.20081203092030.36">def remove(self):
+    """Remove the node from the tree. Returns the position of the node
+    in its parent's children before it was removed."""
+    if self.parent:
+        for i, node in enumerate(self.parent.children):
+            if node is self:
+                self.parent.changed()
+                del self.parent.children[i]
+                self.parent = None
+                return i
+
+</t>
+<t tx="ekr.20081203092030.37">def get_next_sibling(self):
+    """Return the node immediately following the invocant in their
+    parent's children list. If the invocant does not have a next
+    sibling, return None."""
+    if self.parent is None:
+        return None
+
+    # Can't use index(); we need to test by identity
+    for i, child in enumerate(self.parent.children):
+        if child is self:
+            try:
+                return self.parent.children[i+1]
+            except IndexError:
+                return None
+
+</t>
+<t tx="ekr.20081203092030.38">def get_prev_sibling(self):
+    """Return the node immediately preceding the invocant in their
+    parent's children list. If the invocant does not have a previous
+    sibling, return None."""
+    if self.parent is None:
+        return None
+
+    # Can't use index(); we need to test by identity
+    for i, child in enumerate(self.parent.children):
+        if child is self:
+            if i == 0:
+                return None
+            return self.parent.children[i-1]
+
+</t>
+<t tx="ekr.20081203092030.39">def get_suffix(self):
+    """Return the string immediately following the invocant node. This
+    is effectively equivalent to node.get_next_sibling().get_prefix()"""
+    next_sib = self.get_next_sibling()
+    if next_sib is None:
+        return ""
+    return next_sib.get_prefix()
+
+
+</t>
+<t tx="ekr.20081203092030.40">class Node(Base):
+
+    """Concrete implementation for interior nodes."""
+    @others
+</t>
+<t tx="ekr.20081203092030.41">
+def __init__(self, type, children, context=None, prefix=None):
+    """Initializer.
+
+    Takes a type constant (a symbol number &gt;= 256), a sequence of
+    child nodes, and an optional context keyword argument.
+
+    As a side effect, the parent pointers of the children are updated.
+    """
+    assert type &gt;= 256, type
+    self.type = type
+    self.children = list(children)
+    for ch in self.children:
+        assert ch.parent is None, repr(ch)
+        ch.parent = self
+    if prefix is not None:
+        self.set_prefix(prefix)
+
+</t>
+<t tx="ekr.20081203092030.42">def __repr__(self):
+    """Returns a canonical string representation."""
+    return "%s(%s, %r)" % (self.__class__.__name__,
+                           type_repr(self.type),
+                           self.children)
+
+</t>
+<t tx="ekr.20081203092030.43">def __str__(self):
+    """Returns a pretty string representation.
+
+    This reproduces the input source exactly.
+    """
+    return "".join(map(str, self.children))
+
+</t>
+<t tx="ekr.20081203092030.44">def _eq(self, other):
+    """Compares two nodes for equality."""
+    return (self.type, self.children) == (other.type, other.children)
+
+</t>
+<t tx="ekr.20081203092030.45">def clone(self):
+    """Returns a cloned (deep) copy of self."""
+    return Node(self.type, [ch.clone() for ch in self.children])
+
+</t>
+<t tx="ekr.20081203092030.46">def post_order(self):
+    """Returns a post-order iterator for the tree."""
+    for child in self.children:
+        for node in child.post_order():
+            yield node
+    yield self
+
+</t>
+<t tx="ekr.20081203092030.47">def pre_order(self):
+    """Returns a pre-order iterator for the tree."""
+    yield self
+    for child in self.children:
+        for node in child.post_order():
+            yield node
+
+</t>
+<t tx="ekr.20081203092030.48">def set_prefix(self, prefix):
+    """Sets the prefix for the node.
+
+    This passes the responsibility on to the first child.
+    """
+    if self.children:
+        self.children[0].set_prefix(prefix)
+
+</t>
+<t tx="ekr.20081203092030.49">def get_prefix(self):
+    """Returns the prefix for the node.
+
+    This passes the call on to the first child.
+    """
+    if not self.children:
+        return ""
+    return self.children[0].get_prefix()
+
+</t>
+<t tx="ekr.20081203092030.50">def set_child(self, i, child):
+    """Equivalent to 'node.children[i] = child'. This method also sets the
+    child's parent attribute appropriately."""
+    child.parent = self
+    self.children[i].parent = None
+    self.children[i] = child
+
+</t>
+<t tx="ekr.20081203092030.51">def insert_child(self, i, child):
+    """Equivalent to 'node.children.insert(i, child)'. This method also
+    sets the child's parent attribute appropriately."""
+    child.parent = self
+    self.children.insert(i, child)
+
+</t>
+<t tx="ekr.20081203092030.52">def append_child(self, child):
+    """Equivalent to 'node.children.append(child)'. This method also
+    sets the child's parent attribute appropriately."""
+    child.parent = self
+    self.children.append(child)
+
+
+</t>
+<t tx="ekr.20081203092030.53">class Leaf(Base):
+
+    """Concrete implementation for leaf nodes."""
+
+    # Default values for instance variables
+    prefix = ""  # Whitespace and comments preceding this token in the input
+    lineno = 0   # Line where this token starts in the input
+    column = 0   # Column where this token tarts in the input
+
+    @others
+</t>
+<t tx="ekr.20081203092030.54">def __init__(self, type, value, context=None, prefix=None):
+    """Initializer.
+
+    Takes a type constant (a token number &lt; 256), a string value,
+    and an optional context keyword argument.
+    """
+    assert 0 &lt;= type &lt; 256, type
+    if context is not None:
+        self.prefix, (self.lineno, self.column) = context
+    self.type = type
+    self.value = value
+    if prefix is not None:
+        self.prefix = prefix
+
+</t>
+<t tx="ekr.20081203092030.55">def __repr__(self):
+    """Returns a canonical string representation."""
+    return "%s(%r, %r)" % (self.__class__.__name__,
+                           self.type,
+                           self.value)
+
+</t>
+<t tx="ekr.20081203092030.56">def __str__(self):
+    """Returns a pretty string representation.
+
+    This reproduces the input source exactly.
+    """
+    return self.prefix + str(self.value)
+
+</t>
+<t tx="ekr.20081203092030.57">def _eq(self, other):
+    """Compares two nodes for equality."""
+    return (self.type, self.value) == (other.type, other.value)
+
+</t>
+<t tx="ekr.20081203092030.58">def clone(self):
+    """Returns a cloned (deep) copy of self."""
+    return Leaf(self.type, self.value,
+                (self.prefix, (self.lineno, self.column)))
+
+</t>
+<t tx="ekr.20081203092030.59">def post_order(self):
+    """Returns a post-order iterator for the tree."""
+    yield self
+
+</t>
+<t tx="ekr.20081203092030.60">def pre_order(self):
+    """Returns a pre-order iterator for the tree."""
+    yield self
+
+</t>
+<t tx="ekr.20081203092030.61">def set_prefix(self, prefix):
+    """Sets the prefix for the node."""
+    self.changed()
+    self.prefix = prefix
+
+</t>
+<t tx="ekr.20081203092030.62">def get_prefix(self):
+    """Returns the prefix for the node."""
+    return self.prefix
+
+
+</t>
+<t tx="ekr.20081203092030.63">def convert(gr, raw_node):
+    """Converts raw node information to a Node or Leaf instance.
+
+    This is passed to the parser driver which calls it whenever a
+    reduction of a grammar rule produces a new complete node, so that
+    the tree is build strictly bottom-up.
+    """
+    type, value, context, children = raw_node
+    if children or type in gr.number2symbol:
+        # If there's exactly one child, return that child instead of
+        # creating a new node.
+        if len(children) == 1:
+            return children[0]
+        return Node(type, children, context=context)
+    else:
+        return Leaf(type, value, context=context)
+
+
+</t>
+<t tx="ekr.20081203092030.64">class BasePattern(object):
+
+    """A pattern is a tree matching pattern.
+
+    It looks for a specific node type (token or symbol), and
+    optionally for a specific content.
+
+    This is an abstract base class.  There are three concrete
+    subclasses:
+
+    - LeafPattern matches a single leaf node;
+    - NodePattern matches a single node (usually non-leaf);
+    - WildcardPattern matches a sequence of nodes of variable length.
+    """
+
+    # Defaults for instance variables
+    type = None     # Node type (token if &lt; 256, symbol if &gt;= 256)
+    content = None  # Optional content matching pattern
+    name = None     # Optional name used to store match in results dict
+
+    @others
+</t>
+<t tx="ekr.20081203092030.65">def __new__(cls, *args, **kwds):
+    """Constructor that prevents BasePattern from being instantiated."""
+    assert cls is not BasePattern, "Cannot instantiate BasePattern"
+    return object.__new__(cls)
+
+</t>
+<t tx="ekr.20081203092030.66">def __repr__(self):
+    args = [type_repr(self.type), self.content, self.name]
+    while args and args[-1] is None:
+        del args[-1]
+    return "%s(%s)" % (self.__class__.__name__, ", ".join(map(repr, args)))
+
+</t>
+<t tx="ekr.20081203092030.67">def optimize(self):
+    """A subclass can define this as a hook for optimizations.
+
+    Returns either self or another node with the same effect.
+    """
+    return self
+
+</t>
+<t tx="ekr.20081203092030.68">def match(self, node, results=None):
+    """Does this pattern exactly match a node?
+
+    Returns True if it matches, False if not.
+
+    If results is not None, it must be a dict which will be
+    updated with the nodes matching named subpatterns.
+
+    Default implementation for non-wildcard patterns.
+    """
+    if self.type is not None and node.type != self.type:
+        return False
+    if self.content is not None:
+        r = None
+        if results is not None:
+            r = {}
+        if not self._submatch(node, r):
+            return False
+        if r:
+            results.update(r)
+    if results is not None and self.name:
+        results[self.name] = node
+    return True
+
+</t>
+<t tx="ekr.20081203092030.69">def match_seq(self, nodes, results=None):
+    """Does this pattern exactly match a sequence of nodes?
+
+    Default implementation for non-wildcard patterns.
+    """
+    if len(nodes) != 1:
+        return False
+    return self.match(nodes[0], results)
+
+</t>
+<t tx="ekr.20081203092030.70">def generate_matches(self, nodes):
+    """Generator yielding all matches for this pattern.
+
+    Default implementation for non-wildcard patterns.
+    """
+    r = {}
+    if nodes and self.match(nodes[0], r):
+        yield 1, r
+
+
+</t>
+<t tx="ekr.20081203092030.71">class LeafPattern(BasePattern):
+    @others
+</t>
+<t tx="ekr.20081203092030.72">
+def __init__(self, type=None, content=None, name=None):
+    """Initializer.  Takes optional type, content, and name.
+
+    The type, if given must be a token type (&lt; 256).  If not given,
+    this matches any *leaf* node; the content may still be required.
+
+    The content, if given, must be a string.
+
+    If a name is given, the matching node is stored in the results
+    dict under that key.
+    """
+    if type is not None:
+        assert 0 &lt;= type &lt; 256, type
+    if content is not None:
+        assert isinstance(content, basestring), repr(content)
+    self.type = type
+    self.content = content
+    self.name = name
+
+</t>
+<t tx="ekr.20081203092030.73">def match(self, node, results=None):
+    """Override match() to insist on a leaf node."""
+    if not isinstance(node, Leaf):
+        return False
+    return BasePattern.match(self, node, results)
+
+</t>
+<t tx="ekr.20081203092030.74">def _submatch(self, node, results=None):
+    """Match the pattern's content to the node's children.
+
+    This assumes the node type matches and self.content is not None.
+
+    Returns True if it matches, False if not.
+
+    If results is not None, it must be a dict which will be
+    updated with the nodes matching named subpatterns.
+
+    When returning False, the results dict may still be updated.
+    """
+    return self.content == node.value
+
+
+</t>
+<t tx="ekr.20081203092030.75">class NodePattern(BasePattern):
+
+    wildcards = False
+
+    @others
+</t>
+<t tx="ekr.20081203092030.76">def __init__(self, type=None, content=None, name=None):
+    """Initializer.  Takes optional type, content, and name.
+
+    The type, if given, must be a symbol type (&gt;= 256).  If the
+    type is None this matches *any* single node (leaf or not),
+    except if content is not None, in which it only matches
+    non-leaf nodes that also match the content pattern.
+
+    The content, if not None, must be a sequence of Patterns that
+    must match the node's children exactly.  If the content is
+    given, the type must not be None.
+
+    If a name is given, the matching node is stored in the results
+    dict under that key.
+    """
+    if type is not None:
+        assert type &gt;= 256, type
+    if content is not None:
+        assert not isinstance(content, basestring), repr(content)
+        content = list(content)
+        for i, item in enumerate(content):
+            assert isinstance(item, BasePattern), (i, item)
+            if isinstance(item, WildcardPattern):
+                self.wildcards = True
+    self.type = type
+    self.content = content
+    self.name = name
+
+</t>
+<t tx="ekr.20081203092030.77">def _submatch(self, node, results=None):
+    """Match the pattern's content to the node's children.
+
+    This assumes the node type matches and self.content is not None.
+
+    Returns True if it matches, False if not.
+
+    If results is not None, it must be a dict which will be
+    updated with the nodes matching named subpatterns.
+
+    When returning False, the results dict may still be updated.
+    """
+    if self.wildcards:
+        for c, r in generate_matches(self.content, node.children):
+            if c == len(node.children):
+                if results is not None:
+                    results.update(r)
+                return True
+        return False
+    if len(self.content) != len(node.children):
+        return False
+    for subpattern, child in zip(self.content, node.children):
+        if not subpattern.match(child, results):
+            return False
+    return True
+
+
+</t>
+<t tx="ekr.20081203092030.78">class WildcardPattern(BasePattern):
+
+    """A wildcard pattern can match zero or more nodes.
+
+    This has all the flexibility needed to implement patterns like:
+
+    .*      .+      .?      .{m,n}
+    (a b c | d e | f)
+    (...)*  (...)+  (...)?  (...){m,n}
+
+    except it always uses non-greedy matching.
+    """
+    @others
+</t>
+<t tx="ekr.20081203092030.79">
+def __init__(self, content=None, min=0, max=HUGE, name=None):
+    """Initializer.
+
+    Args:
+        content: optional sequence of subsequences of patterns;
+                 if absent, matches one node;
+                 if present, each subsequence is an alternative [*]
+        min: optinal minumum number of times to match, default 0
+        max: optional maximum number of times tro match, default HUGE
+        name: optional name assigned to this match
+
+    [*] Thus, if content is [[a, b, c], [d, e], [f, g, h]] this is
+        equivalent to (a b c | d e | f g h); if content is None,
+        this is equivalent to '.' in regular expression terms.
+        The min and max parameters work as follows:
+            min=0, max=maxint: .*
+            min=1, max=maxint: .+
+            min=0, max=1: .?
+            min=1, max=1: .
+        If content is not None, replace the dot with the parenthesized
+        list of alternatives, e.g. (a b c | d e | f g h)*
+    """
+    assert 0 &lt;= min &lt;= max &lt;= HUGE, (min, max)
+    if content is not None:
+        content = tuple(map(tuple, content))  # Protect against alterations
+        # Check sanity of alternatives
+        assert len(content), repr(content)  # Can't have zero alternatives
+        for alt in content:
+            assert len(alt), repr(alt) # Can have empty alternatives
+    self.content = content
+    self.min = min
+    self.max = max
+    self.name = name
+
+</t>
+<t tx="ekr.20081203092030.80">def optimize(self):
+    """Optimize certain stacked wildcard patterns."""
+    subpattern = None
+    if (self.content is not None and
+        len(self.content) == 1 and len(self.content[0]) == 1):
+        subpattern = self.content[0][0]
+    if self.min == 1 and self.max == 1:
+        if self.content is None:
+            return NodePattern(name=self.name)
+        if subpattern is not None and  self.name == subpattern.name:
+            return subpattern.optimize()
+    if (self.min &lt;= 1 and isinstance(subpattern, WildcardPattern) and
+        subpattern.min &lt;= 1 and self.name == subpattern.name):
+        return WildcardPattern(subpattern.content,
+                               self.min*subpattern.min,
+                               self.max*subpattern.max,
+                               subpattern.name)
+    return self
+
+</t>
+<t tx="ekr.20081203092030.81">def match(self, node, results=None):
+    """Does this pattern exactly match a node?"""
+    return self.match_seq([node], results)
+
+</t>
+<t tx="ekr.20081203092030.82">def match_seq(self, nodes, results=None):
+    """Does this pattern exactly match a sequence of nodes?"""
+    for c, r in self.generate_matches(nodes):
+        if c == len(nodes):
+            if results is not None:
+                results.update(r)
+                if self.name:
+                    results[self.name] = list(nodes)
+            return True
+    return False
+
+</t>
+<t tx="ekr.20081203092030.83">def generate_matches(self, nodes):
+    """Generator yielding matches for a sequence of nodes.
+
+    Args:
+        nodes: sequence of nodes
+
+    Yields:
+        (count, results) tuples where:
+        count: the match comprises nodes[:count];
+        results: dict containing named submatches.
+    """
+    if self.content is None:
+        # Shortcut for special case (see __init__.__doc__)
+        for count in xrange(self.min, 1 + min(len(nodes), self.max)):
+            r = {}
+            if self.name:
+                r[self.name] = nodes[:count]
+            yield count, r
+    elif self.name == "bare_name":
+        yield self._bare_name_matches(nodes)
+    else:
+        for count, r in self._recursive_matches(nodes, 0):
+            if self.name:
+                r[self.name] = nodes[:count]
+            yield count, r
+
+</t>
+<t tx="ekr.20081203092030.84">def _bare_name_matches(self, nodes):
+    """Special optimized matcher for bare_name."""
+    count = 0
+    r = {}
+    done = False
+    max = len(nodes)
+    while not done and count &lt; max:
+        done = True
+        for leaf in self.content:
+            if leaf[0].match(nodes[count], r):
+                count += 1
+                done = False
+                break
+    r[self.name] = nodes[:count]
+    return count, r
+
+</t>
+<t tx="ekr.20081203092030.85">def _recursive_matches(self, nodes, count):
+    """Helper to recursively yield the matches."""
+    assert self.content is not None
+    if count &gt;= self.min:
+        yield 0, {}
+    if count &lt; self.max:
+        for alt in self.content:
+            for c0, r0 in generate_matches(alt, nodes):
+                for c1, r1 in self._recursive_matches(nodes[c0:], count+1):
+                    r = {}
+                    r.update(r0)
+                    r.update(r1)
+                    yield c0 + c1, r
+
+
+</t>
+<t tx="ekr.20081203092030.86">class NegatedPattern(BasePattern):
+    @others
+</t>
+<t tx="ekr.20081203092030.87">
+def __init__(self, content=None):
+    """Initializer.
+
+    The argument is either a pattern or None.  If it is None, this
+    only matches an empty sequence (effectively '$' in regex
+    lingo).  If it is not None, this matches whenever the argument
+    pattern doesn't have any matches.
+    """
+    if content is not None:
+        assert isinstance(content, BasePattern), repr(content)
+    self.content = content
+
+</t>
+<t tx="ekr.20081203092030.88">def match(self, node):
+    # We never match a node in its entirety
+    return False
+
+</t>
+<t tx="ekr.20081203092030.89">def match_seq(self, nodes):
+    # We only match an empty sequence of nodes in its entirety
+    return len(nodes) == 0
+
+</t>
+<t tx="ekr.20081203092030.90">def generate_matches(self, nodes):
+    if self.content is None:
+        # Return a match if there is an empty sequence
+        if len(nodes) == 0:
+            yield 0, {}
+    else:
+        # Return a match if the argument pattern has no matches
+        for c, r in self.content.generate_matches(nodes):
+            return
+        yield 0, {}
+
+
+</t>
+<t tx="ekr.20081203092030.91">def generate_matches(patterns, nodes):
+    """Generator yielding matches for a sequence of patterns and nodes.
+
+    Args:
+        patterns: a sequence of patterns
+        nodes: a sequence of nodes
+
+    Yields:
+        (count, results) tuples where:
+        count: the entire sequence of patterns matches nodes[:count];
+        results: dict containing named submatches.
+        """
+    if not patterns:
+        yield 0, {}
+    else:
+        p, rest = patterns[0], patterns[1:]
+        for c0, r0 in p.generate_matches(nodes):
+            if not rest:
+                yield c0, r0
+            else:
+                for c1, r1 in generate_matches(rest, nodes[c0:]):
+                    r = {}
+                    r.update(r0)
+                    r.update(r1)
+                    yield c0 + c1, r
+</t>
+<t tx="ekr.20081203092030.92"># Copyright 2004-2005 Elemental Security, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+"""Convert graminit.[ch] spit out by pgen to Python code.
+
+Pgen is the Python parser generator.  It is useful to quickly create a
+parser from a grammar file in Python's grammar notation.  But I don't
+want my parsers to be written in C (yet), so I'm translating the
+parsing tables to Python data structures and writing a Python parse
+engine.
+
+Note that the token numbers are constants determined by the standard
+Python tokenizer.  The standard token module defines these numbers and
+their names (the names are not used much).  The token numbers are
+hardcoded into the Python tokenizer and into pgen.  A Python
+implementation of the Python tokenizer is also available, in the
+standard tokenize module.
+
+On the other hand, symbol numbers (representing the grammar's
+non-terminals) are assigned by pgen based on the actual grammar
+input.
+
+Note: this module is pretty much obsolete; the pgen module generates
+equivalent grammar tables directly from the Grammar.txt input file
+without having to invoke the Python pgen C program.
+
+"""
+
+# Python imports
+import re
+
+# Local imports
+import grammar, token
+
+
+</t>
+<t tx="ekr.20081203092030.93">class Converter(grammar.Grammar):
+    """Grammar subclass that reads classic pgen output files.
+
+    The run() method reads the tables as produced by the pgen parser
+    generator, typically contained in two C files, graminit.h and
+    graminit.c.  The other methods are for internal use only.
+
+    See the base class for more documentation.
+
+    """
+    @others
+</t>
+<t tx="ekr.20081203092030.94">
+def run(self, graminit_h, graminit_c):
+    """Load the grammar tables from the text files written by pgen."""
+    self.parse_graminit_h(graminit_h)
+    self.parse_graminit_c(graminit_c)
+    self.finish_off()
+
+</t>
+<t tx="ekr.20081203092030.95">def parse_graminit_h(self, filename):
+    """Parse the .h file writen by pgen.  (Internal)
+
+    This file is a sequence of #define statements defining the
+    nonterminals of the grammar as numbers.  We build two tables
+    mapping the numbers to names and back.
+
+    """
+    try:
+        f = open(filename)
+    except IOError, err:
+        print "Can't open %s: %s" % (filename, err)
+        return False
+    self.symbol2number = {}
+    self.number2symbol = {}
+    lineno = 0
+    for line in f:
+        lineno += 1
+        mo = re.match(r"^#define\s+(\w+)\s+(\d+)$", line)
+        if not mo and line.strip():
+            print "%s(%s): can't parse %s" % (filename, lineno,
+                                              line.strip())
+        else:
+            symbol, number = mo.groups()
+            number = int(number)
+            assert symbol not in self.symbol2number
+            assert number not in self.number2symbol
+            self.symbol2number[symbol] = number
+            self.number2symbol[number] = symbol
+    return True
+
+</t>
+<t tx="ekr.20081203092030.96">def parse_graminit_c(self, filename):
+    """Parse the .c file writen by pgen.  (Internal)
+
+    The file looks as follows.  The first two lines are always this:
+
+    #include "pgenheaders.h"
+    #include "grammar.h"
+
+    After that come four blocks:
+
+    1) one or more state definitions
+    2) a table defining dfas
+    3) a table defining labels
+    4) a struct defining the grammar
+
+    A state definition has the following form:
+    - one or more arc arrays, each of the form:
+      static arc arcs_&lt;n&gt;_&lt;m&gt;[&lt;k&gt;] = {
+              {&lt;i&gt;, &lt;j&gt;},
+              ...
+      };
+    - followed by a state array, of the form:
+      static state states_&lt;s&gt;[&lt;t&gt;] = {
+              {&lt;k&gt;, arcs_&lt;n&gt;_&lt;m&gt;},
+              ...
+      };
+
+    """
+    try:
+        f = open(filename)
+    except IOError, err:
+        print "Can't open %s: %s" % (filename, err)
+        return False
+    # The code below essentially uses f's iterator-ness!
+    lineno = 0
+
+    # Expect the two #include lines
+    lineno, line = lineno+1, f.next()
+    assert line == '#include "pgenheaders.h"\n', (lineno, line)
+    lineno, line = lineno+1, f.next()
+    assert line == '#include "grammar.h"\n', (lineno, line)
+
+    # Parse the state definitions
+    lineno, line = lineno+1, f.next()
+    allarcs = {}
+    states = []
+    while line.startswith("static arc "):
+        while line.startswith("static arc "):
+            mo = re.match(r"static arc arcs_(\d+)_(\d+)\[(\d+)\] = {$",
+                          line)
+            assert mo, (lineno, line)
+            n, m, k = map(int, mo.groups())
+            arcs = []
+            for _ in range(k):
+                lineno, line = lineno+1, f.next()
+                mo = re.match(r"\s+{(\d+), (\d+)},$", line)
+                assert mo, (lineno, line)
+                i, j = map(int, mo.groups())
+                arcs.append((i, j))
+            lineno, line = lineno+1, f.next()
+            assert line == "};\n", (lineno, line)
+            allarcs[(n, m)] = arcs
+            lineno, line = lineno+1, f.next()
+        mo = re.match(r"static state states_(\d+)\[(\d+)\] = {$", line)
+        assert mo, (lineno, line)
+        s, t = map(int, mo.groups())
+        assert s == len(states), (lineno, line)
+        state = []
+        for _ in range(t):
+            lineno, line = lineno+1, f.next()
+            mo = re.match(r"\s+{(\d+), arcs_(\d+)_(\d+)},$", line)
+            assert mo, (lineno, line)
+            k, n, m = map(int, mo.groups())
+            arcs = allarcs[n, m]
+            assert k == len(arcs), (lineno, line)
+            state.append(arcs)
+        states.append(state)
+        lineno, line = lineno+1, f.next()
+        assert line == "};\n", (lineno, line)
+        lineno, line = lineno+1, f.next()
+    self.states = states
+
+    # Parse the dfas
+    dfas = {}
+    mo = re.match(r"static dfa dfas\[(\d+)\] = {$", line)
+    assert mo, (lineno, line)
+    ndfas = int(mo.group(1))
+    for i in range(ndfas):
+        lineno, line = lineno+1, f.next()
+        mo = re.match(r'\s+{(\d+), "(\w+)", (\d+), (\d+), states_(\d+),$',
+                      line)
+        assert mo, (lineno, line)
+        symbol = mo.group(2)
+        number, x, y, z = map(int, mo.group(1, 3, 4, 5))
+        assert self.symbol2number[symbol] == number, (lineno, line)
+        assert self.number2symbol[number] == symbol, (lineno, line)
+        assert x == 0, (lineno, line)
+        state = states[z]
+        assert y == len(state), (lineno, line)
+        lineno, line = lineno+1, f.next()
+        mo = re.match(r'\s+("(?:\\\d\d\d)*")},$', line)
+        assert mo, (lineno, line)
+        first = {}
+        rawbitset = eval(mo.group(1))
+        for i, c in enumerate(rawbitset):
+            byte = ord(c)
+            for j in range(8):
+                if byte &amp; (1&lt;&lt;j):
+                    first[i*8 + j] = 1
+        dfas[number] = (state, first)
+    lineno, line = lineno+1, f.next()
+    assert line == "};\n", (lineno, line)
+    self.dfas = dfas
+
+    # Parse the labels
+    labels = []
+    lineno, line = lineno+1, f.next()
+    mo = re.match(r"static label labels\[(\d+)\] = {$", line)
+    assert mo, (lineno, line)
+    nlabels = int(mo.group(1))
+    for i in range(nlabels):
+        lineno, line = lineno+1, f.next()
+        mo = re.match(r'\s+{(\d+), (0|"\w+")},$', line)
+        assert mo, (lineno, line)
+        x, y = mo.groups()
+        x = int(x)
+        if y == "0":
+            y = None
+        else:
+            y = eval(y)
+        labels.append((x, y))
+    lineno, line = lineno+1, f.next()
+    assert line == "};\n", (lineno, line)
+    self.labels = labels
+
+    # Parse the grammar struct
+    lineno, line = lineno+1, f.next()
+    assert line == "grammar _PyParser_Grammar = {\n", (lineno, line)
+    lineno, line = lineno+1, f.next()
+    mo = re.match(r"\s+(\d+),$", line)
+    assert mo, (lineno, line)
+    ndfas = int(mo.group(1))
+    assert ndfas == len(self.dfas)
+    lineno, line = lineno+1, f.next()
+    assert line == "\tdfas,\n", (lineno, line)
+    lineno, line = lineno+1, f.next()
+    mo = re.match(r"\s+{(\d+), labels},$", line)
+    assert mo, (lineno, line)
+    nlabels = int(mo.group(1))
+    assert nlabels == len(self.labels), (lineno, line)
+    lineno, line = lineno+1, f.next()
+    mo = re.match(r"\s+(\d+)$", line)
+    assert mo, (lineno, line)
+    start = int(mo.group(1))
+    assert start in self.number2symbol, (lineno, line)
+    self.start = start
+    lineno, line = lineno+1, f.next()
+    assert line == "};\n", (lineno, line)
+    try:
+        lineno, line = lineno+1, f.next()
+    except StopIteration:
+        pass
+    else:
+        assert 0, (lineno, line)
+
+</t>
+<t tx="ekr.20081203092030.97">def finish_off(self):
+    """Create additional useful structures.  (Internal)."""
+    self.keywords = {} # map from keyword strings to arc labels
+    self.tokens = {}   # map from numeric token values to arc labels
+    for ilabel, (type, value) in enumerate(self.labels):
+        if type == token.NAME and value is not None:
+            self.keywords[value] = ilabel
+        elif value is None:
+            self.tokens[type] = ilabel
+</t>
+<t tx="ekr.20081203092030.98"># Copyright 2004-2005 Elemental Security, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+# Modifications:
+# Copyright 2006 Google, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+"""Parser driver.
+
+This provides a high-level interface to parse a file into a syntax tree.
+
+"""
+
+__author__ = "Guido van Rossum &lt;guido@python.org&gt;"
+
+__all__ = ["Driver", "load_grammar"]
+
+# Python imports
+import os
+import logging
+import sys
+
+# Pgen imports
+import grammar, parse, token, tokenize, pgen
+
+
+</t>
+<t tx="ekr.20081203092030.99">class Driver(object):
+    @others
+</t>
+<t tx="ekr.20081203092030.100">
+def __init__(self, grammar, convert=None, logger=None):
+    self.grammar = grammar
+    if logger is None:
+        logger = logging.getLogger()
+    self.logger = logger
+    self.convert = convert
+
+</t>
+<t tx="ekr.20081203092030.101">def parse_tokens(self, tokens, debug=False):
+    """Parse a series of tokens and return the syntax tree."""
+    # XXX Move the prefix computation into a wrapper around tokenize.
+    p = parse.Parser(self.grammar, self.convert)
+    p.setup()
+    lineno = 1
+    column = 0
+    type = value = start = end = line_text = None
+    prefix = ""
+    for quintuple in tokens:
+        type, value, start, end, line_text = quintuple
+        if start != (lineno, column):
+            assert (lineno, column) &lt;= start, ((lineno, column), start)
+            s_lineno, s_column = start
+            if lineno &lt; s_lineno:
+                prefix += "\n" * (s_lineno - lineno)
+                lineno = s_lineno
+                column = 0
+            if column &lt; s_column:
+                prefix += line_text[column:s_column]
+                column = s_column
+        if type in (tokenize.COMMENT, tokenize.NL):
+            prefix += value
+            lineno, column = end
+            if value.endswith("\n"):
+                lineno += 1
+                column = 0
+            continue
+        if type == token.OP:
+            type = grammar.opmap[value]
+        if debug:
+            self.logger.debug("%s %r (prefix=%r)",
+                              token.tok_name[type], value, prefix)
+        if p.addtoken(type, value, (prefix, start)):
+            if debug:
+                self.logger.debug("Stop.")
+            break
+        prefix = ""
+        lineno, column = end
+        if value.endswith("\n"):
+            lineno += 1
+            column = 0
+    else:
+        # We never broke out -- EOF is too soon (how can this happen???)
+        raise parse.ParseError("incomplete input", t, v, x)
+    return p.rootnode
+
+</t>
+<t tx="ekr.20081203092030.102">def parse_stream_raw(self, stream, debug=False):
+    """Parse a stream and return the syntax tree."""
+    tokens = tokenize.generate_tokens(stream.readline)
+    return self.parse_tokens(tokens, debug)
+
+</t>
+<t tx="ekr.20081203092030.103">def parse_stream(self, stream, debug=False):
+    """Parse a stream and return the syntax tree."""
+    return self.parse_stream_raw(stream, debug)
+
+</t>
+<t tx="ekr.20081203092030.104">def parse_file(self, filename, debug=False):
+    """Parse a file and return the syntax tree."""
+    stream = open(filename)
+    try:
+        return self.parse_stream(stream, debug)
+    finally:
+        stream.close()
+
+</t>
+<t tx="ekr.20081203092030.105">def parse_string(self, text, debug=False):
+    """Parse a string and return the syntax tree."""
+    tokens = tokenize.generate_tokens(generate_lines(text).next)
+    return self.parse_tokens(tokens, debug)
+
+
+</t>
+<t tx="ekr.20081203092030.106">def generate_lines(text):
+    """Generator that behaves like readline without using StringIO."""
+    for line in text.splitlines(True):
+        yield line
+    while True:
+        yield ""
+
+
+</t>
+<t tx="ekr.20081203092030.107">def load_grammar(gt="Grammar.txt", gp=None,
+                 save=True, force=False, logger=None):
+    """Load the grammar (maybe from a pickle)."""
+    if logger is None:
+        logger = logging.getLogger()
+    if gp is None:
+        head, tail = os.path.splitext(gt)
+        if tail == ".txt":
+            tail = ""
+        gp = head + tail + ".".join(map(str, sys.version_info)) + ".pickle"
+    if force or not _newer(gp, gt):
+        logger.info("Generating grammar tables from %s", gt)
+        g = pgen.generate_grammar(gt)
+        if save:
+            logger.info("Writing grammar tables to %s", gp)
+            try:
+                g.dump(gp)
+            except IOError, e:
+                logger.info("Writing failed:"+str(e))
+    else:
+        g = grammar.Grammar()
+        g.load(gp)
+    return g
+
+
+</t>
+<t tx="ekr.20081203092030.108">def _newer(a, b):
+    """Inquire whether file a was written since file b."""
+    if not os.path.exists(a):
+        return False
+    if not os.path.exists(b):
+        return True
+    return os.path.getmtime(a) &gt;= os.path.getmtime(b)
+</t>
+<t tx="ekr.20081203092030.109"># Copyright 2004-2005 Elemental Security, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+"""Safely evaluate Python string literals without using eval()."""
+
+import re
+
+simple_escapes = {"a": "\a",
+                  "b": "\b",
+                  "f": "\f",
+                  "n": "\n",
+                  "r": "\r",
+                  "t": "\t",
+                  "v": "\v",
+                  "'": "'",
+                  '"': '"',
+                  "\\": "\\"}
+
+</t>
+<t tx="ekr.20081203092030.110">def escape(m):
+    all, tail = m.group(0, 1)
+    assert all.startswith("\\")
+    esc = simple_escapes.get(tail)
+    if esc is not None:
+        return esc
+    if tail.startswith("x"):
+        hexes = tail[1:]
+        if len(hexes) &lt; 2:
+            raise ValueError("invalid hex string escape ('\\%s')" % tail)
+        try:
+            i = int(hexes, 16)
+        except ValueError:
+            raise ValueError("invalid hex string escape ('\\%s')" % tail)
+    else:
+        try:
+            i = int(tail, 8)
+        except ValueError:
+            raise ValueError("invalid octal string escape ('\\%s')" % tail)
+    return chr(i)
+
+</t>
+<t tx="ekr.20081203092030.111">def evalString(s):
+    assert s.startswith("'") or s.startswith('"'), repr(s[:1])
+    q = s[0]
+    if s[:3] == q*3:
+        q = q*3
+    assert s.endswith(q), repr(s[-len(q):])
+    assert len(s) &gt;= 2*len(q)
+    s = s[len(q):-len(q)]
+    return re.sub(r"\\(\'|\"|\\|[abfnrtv]|x.{0,2}|[0-7]{1,3})", escape, s)
+
+</t>
+<t tx="ekr.20081203092030.112">def test():
+    for i in range(256):
+        c = chr(i)
+        s = repr(c)
+        e = evalString(s)
+        if e != c:
+            print i, c, s, e
+
+
+</t>
+<t tx="ekr.20081203092030.113"># Copyright 2004-2005 Elemental Security, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+"""Parser engine for the grammar tables generated by pgen.
+
+The grammar table must be loaded first.
+
+See Parser/parser.c in the Python distribution for additional info on
+how this parsing engine works.
+
+"""
+
+# Get a usable 'set' constructor
+try:
+    set
+except NameError:
+    from sets import Set as set
+
+# Local imports
+import token
+
+</t>
+<t tx="ekr.20081203092030.114">class ParseError(Exception):
+    """Exception to signal the parser is stuck."""
+    @others
+</t>
+<t tx="ekr.20081203092030.115">
+def __init__(self, msg, type, value, context):
+    Exception.__init__(self, "%s: type=%r, value=%r, context=%r" %
+                       (msg, type, value, context))
+    self.msg = msg
+    self.type = type
+    self.value = value
+    self.context = context
+
+</t>
+<t tx="ekr.20081203092030.116">def __reduce__(self):
+    """Implemented so pickle can serialize this object.
+
+    &gt;&gt;&gt; import pickle
+    &gt;&gt;&gt; pickle.loads(pickle.dumps(ParseError(1, 2, 3, 4)))
+    ParseError('1: type=2, value=3, context=4',)
+    """
+    return (ParseError, (self.msg, self.type, self.value, self.context))
+
+</t>
+<t tx="ekr.20081203092030.117">class Parser(object):
+    """Parser engine.
+
+    The proper usage sequence is:
+
+    p = Parser(grammar, [converter])  # create instance
+    p.setup([start])                  # prepare for parsing
+    &lt;for each input token&gt;:
+        if p.addtoken(...):           # parse a token; may raise ParseError
+            break
+    root = p.rootnode                 # root of abstract syntax tree
+
+    A Parser instance may be reused by calling setup() repeatedly.
+
+    A Parser instance contains state pertaining to the current token
+    sequence, and should not be used concurrently by different threads
+    to parse separate token sequences.
+
+    See driver.py for how to get input tokens by tokenizing a file or
+    string.
+
+    Parsing is complete when addtoken() returns True; the root of the
+    abstract syntax tree can then be retrieved from the rootnode
+    instance variable.  When a syntax error occurs, addtoken() raises
+    the ParseError exception.  There is no error recovery; the parser
+    cannot be used after a syntax error was reported (but it can be
+    reinitialized by calling setup()).
+
+    """
+    @others
+</t>
+<t tx="ekr.20081203092030.118">
+def __init__(self, grammar, convert=None):
+    """Constructor.
+
+    The grammar argument is a grammar.Grammar instance; see the
+    grammar module for more information.
+
+    The parser is not ready yet for parsing; you must call the
+    setup() method to get it started.
+
+    The optional convert argument is a function mapping concrete
+    syntax tree nodes to abstract syntax tree nodes.  If not
+    given, no conversion is done and the syntax tree produced is
+    the concrete syntax tree.  If given, it must be a function of
+    two arguments, the first being the grammar (a grammar.Grammar
+    instance), and the second being the concrete syntax tree node
+    to be converted.  The syntax tree is converted from the bottom
+    up.
+
+    A concrete syntax tree node is a (type, value, context, nodes)
+    tuple, where type is the node type (a token or symbol number),
+    value is None for symbols and a string for tokens, context is
+    None or an opaque value used for error reporting (typically a
+    (lineno, offset) pair), and nodes is a list of children for
+    symbols, and None for tokens.
+
+    An abstract syntax tree node may be anything; this is entirely
+    up to the converter function.
+
+    """
+    self.grammar = grammar
+    self.convert = convert or (lambda grammar, node: node)
+
+</t>
+<t tx="ekr.20081203092030.119">def setup(self, start=None):
+    """Prepare for parsing.
+
+    This *must* be called before starting to parse.
+
+    The optional argument is an alternative start symbol; it
+    defaults to the grammar's start symbol.
+
+    You can use a Parser instance to parse any number of programs;
+    each time you call setup() the parser is reset to an initial
+    state determined by the (implicit or explicit) start symbol.
+
+    """
+    if start is None:
+        start = self.grammar.start
+    # Each stack entry is a tuple: (dfa, state, node).
+    # A node is a tuple: (type, value, context, children),
+    # where children is a list of nodes or None, and context may be None.
+    newnode = (start, None, None, [])
+    stackentry = (self.grammar.dfas[start], 0, newnode)
+    self.stack = [stackentry]
+    self.rootnode = None
+    self.used_names = set() # Aliased to self.rootnode.used_names in pop()
+
+</t>
+<t tx="ekr.20081203092030.120">def addtoken(self, type, value, context):
+    """Add a token; return True iff this is the end of the program."""
+    # Map from token to label
+    ilabel = self.classify(type, value, context)
+    # Loop until the token is shifted; may raise exceptions
+    while True:
+        dfa, state, node = self.stack[-1]
+        states, first = dfa
+        arcs = states[state]
+        # Look for a state with this label
+        for i, newstate in arcs:
+            t, v = self.grammar.labels[i]
+            if ilabel == i:
+                # Look it up in the list of labels
+                assert t &lt; 256
+                # Shift a token; we're done with it
+                self.shift(type, value, newstate, context)
+                # Pop while we are in an accept-only state
+                state = newstate
+                while states[state] == [(0, state)]:
+                    self.pop()
+                    if not self.stack:
+                        # Done parsing!
+                        return True
+                    dfa, state, node = self.stack[-1]
+                    states, first = dfa
+                # Done with this token
+                return False
+            elif t &gt;= 256:
+                # See if it's a symbol and if we're in its first set
+                itsdfa = self.grammar.dfas[t]
+                itsstates, itsfirst = itsdfa
+                if ilabel in itsfirst:
+                    # Push a symbol
+                    self.push(t, self.grammar.dfas[t], newstate, context)
+                    break # To continue the outer while loop
+        else:
+            if (0, state) in arcs:
+                # An accepting state, pop it and try something else
+                self.pop()
+                if not self.stack:
+                    # Done parsing, but another token is input
+                    raise ParseError("too much input",
+                                     type, value, context)
+            else:
+                # No success finding a transition
+                raise ParseError("bad input", type, value, context)
+
+</t>
+<t tx="ekr.20081203092030.121">def classify(self, type, value, context):
+    """Turn a token into a label.  (Internal)"""
+    if type == token.NAME:
+        # Keep a listing of all used names
+        self.used_names.add(value)
+        # Check for reserved words
+        ilabel = self.grammar.keywords.get(value)
+        if ilabel is not None:
+            return ilabel
+    ilabel = self.grammar.tokens.get(type)
+    if ilabel is None:
+        raise ParseError("bad token", type, value, context)
+    return ilabel
+
+</t>
+<t tx="ekr.20081203092030.122">def shift(self, type, value, newstate, context):
+    """Shift a token.  (Internal)"""
+    dfa, state, node = self.stack[-1]
+    newnode = (type, value, context, None)
+    newnode = self.convert(self.grammar, newnode)
+    if newnode is not None:
+        node[-1].append(newnode)
+    self.stack[-1] = (dfa, newstate, node)
+
+</t>
+<t tx="ekr.20081203092030.123">def push(self, type, newdfa, newstate, context):
+    """Push a nonterminal.  (Internal)"""
+    dfa, state, node = self.stack[-1]
+    newnode = (type, None, context, [])
+    self.stack[-1] = (dfa, newstate, node)
+    self.stack.append((newdfa, 0, newnode))
+
+</t>
+<t tx="ekr.20081203092030.124">def pop(self):
+    """Pop a nonterminal.  (Internal)"""
+    popdfa, popstate, popnode = self.stack.pop()
+    newnode = self.convert(self.grammar, popnode)
+    if newnode is not None:
+        if self.stack:
+            dfa, state, node = self.stack[-1]
+            node[-1].append(newnode)
+        else:
+            self.rootnode = newnode
+            self.rootnode.used_names = self.used_names
+</t>
+<t tx="ekr.20081203092030.125"># Copyright 2004-2005 Elemental Security, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+# Pgen imports
+import grammar, token, tokenize
+
+</t>
+<t tx="ekr.20081203092030.126">class PgenGrammar(grammar.Grammar):
+    pass
+
+</t>
+<t tx="ekr.20081203092030.127">class ParserGenerator(object):
+    @others
+</t>
+<t tx="ekr.20081203092030.128">
+def __init__(self, filename, stream=None):
+    close_stream = None
+    if stream is None:
+        stream = open(filename)
+        close_stream = stream.close
+    self.filename = filename
+    self.stream = stream
+    self.generator = tokenize.generate_tokens(stream.readline)
+    self.gettoken() # Initialize lookahead
+    self.dfas, self.startsymbol = self.parse()
+    if close_stream is not None:
+        close_stream()
+    self.first = {} # map from symbol name to set of tokens
+    self.addfirstsets()
+
+</t>
+<t tx="ekr.20081203092030.129">def make_grammar(self):
+    c = PgenGrammar()
+    names = self.dfas.keys()
+    names.sort()
+    names.remove(self.startsymbol)
+    names.insert(0, self.startsymbol)
+    for name in names:
+        i = 256 + len(c.symbol2number)
+        c.symbol2number[name] = i
+        c.number2symbol[i] = name
+    for name in names:
+        dfa = self.dfas[name]
+        states = []
+        for state in dfa:
+            arcs = []
+            for label, next in state.arcs.iteritems():
+                arcs.append((self.make_label(c, label), dfa.index(next)))
+            if state.isfinal:
+                arcs.append((0, dfa.index(state)))
+            states.append(arcs)
+        c.states.append(states)
+        c.dfas[c.symbol2number[name]] = (states, self.make_first(c, name))
+    c.start = c.symbol2number[self.startsymbol]
+    return c
+
+</t>
+<t tx="ekr.20081203092030.130">def make_first(self, c, name):
+    rawfirst = self.first[name]
+    first = {}
+    for label in rawfirst:
+        ilabel = self.make_label(c, label)
+        ##assert ilabel not in first # XXX failed on &lt;&gt; ... !=
+        first[ilabel] = 1
+    return first
+
+</t>
+<t tx="ekr.20081203092030.131">def make_label(self, c, label):
+    # XXX Maybe this should be a method on a subclass of converter?
+    ilabel = len(c.labels)
+    if label[0].isalpha():
+        # Either a symbol name or a named token
+        if label in c.symbol2number:
+            # A symbol name (a non-terminal)
+            if label in c.symbol2label:
+                return c.symbol2label[label]
+            else:
+                c.labels.append((c.symbol2number[label], None))
+                c.symbol2label[label] = ilabel
+                return ilabel
+        else:
+            # A named token (NAME, NUMBER, STRING)
+            itoken = getattr(token, label, None)
+            assert isinstance(itoken, int), label
+            assert itoken in token.tok_name, label
+            if itoken in c.tokens:
+                return c.tokens[itoken]
+            else:
+                c.labels.append((itoken, None))
+                c.tokens[itoken] = ilabel
+                return ilabel
+    else:
+        # Either a keyword or an operator
+        assert label[0] in ('"', "'"), label
+        value = eval(label)
+        if value[0].isalpha():
+            # A keyword
+            if value in c.keywords:
+                return c.keywords[value]
+            else:
+                c.labels.append((token.NAME, value))
+                c.keywords[value] = ilabel
+                return ilabel
+        else:
+            # An operator (any non-numeric token)
+            itoken = grammar.opmap[value] # Fails if unknown token
+            if itoken in c.tokens:
+                return c.tokens[itoken]
+            else:
+                c.labels.append((itoken, None))
+                c.tokens[itoken] = ilabel
+                return ilabel
+
+</t>
+<t tx="ekr.20081203092030.132">def addfirstsets(self):
+    names = self.dfas.keys()
+    names.sort()
+    for name in names:
+        if name not in self.first:
+            self.calcfirst(name)
+        #print name, self.first[name].keys()
+
+</t>
+<t tx="ekr.20081203092030.133">def calcfirst(self, name):
+    dfa = self.dfas[name]
+    self.first[name] = None # dummy to detect left recursion
+    state = dfa[0]
+    totalset = {}
+    overlapcheck = {}
+    for label, next in state.arcs.iteritems():
+        if label in self.dfas:
+            if label in self.first:
+                fset = self.first[label]
+                if fset is None:
+                    raise ValueError("recursion for rule %r" % name)
+            else:
+                self.calcfirst(label)
+                fset = self.first[label]
+            totalset.update(fset)
+            overlapcheck[label] = fset
+        else:
+            totalset[label] = 1
+            overlapcheck[label] = {label: 1}
+    inverse = {}
+    for label, itsfirst in overlapcheck.iteritems():
+        for symbol in itsfirst:
+            if symbol in inverse:
+                raise ValueError("rule %s is ambiguous; %s is in the"
+                                 " first sets of %s as well as %s" %
+                                 (name, symbol, label, inverse[symbol]))
+            inverse[symbol] = label
+    self.first[name] = totalset
+
+</t>
+<t tx="ekr.20081203092030.134">def parse(self):
+    dfas = {}
+    startsymbol = None
+    # MSTART: (NEWLINE | RULE)* ENDMARKER
+    while self.type != token.ENDMARKER:
+        while self.type == token.NEWLINE:
+            self.gettoken()
+        # RULE: NAME ':' RHS NEWLINE
+        name = self.expect(token.NAME)
+        self.expect(token.OP, ":")
+        a, z = self.parse_rhs()
+        self.expect(token.NEWLINE)
+        #self.dump_nfa(name, a, z)
+        dfa = self.make_dfa(a, z)
+        #self.dump_dfa(name, dfa)
+        oldlen = len(dfa)
+        self.simplify_dfa(dfa)
+        newlen = len(dfa)
+        dfas[name] = dfa
+        #print name, oldlen, newlen
+        if startsymbol is None:
+            startsymbol = name
+    return dfas, startsymbol
+
+</t>
+<t tx="ekr.20081203092030.135">def make_dfa(self, start, finish):
+    # To turn an NFA into a DFA, we define the states of the DFA
+    # to correspond to *sets* of states of the NFA.  Then do some
+    # state reduction.  Let's represent sets as dicts with 1 for
+    # values.
+    assert isinstance(start, NFAState)
+    assert isinstance(finish, NFAState)
+    def closure(state):
+        base = {}
+        addclosure(state, base)
+        return base
+    def addclosure(state, base):
+        assert isinstance(state, NFAState)
+        if state in base:
+            return
+        base[state] = 1
+        for label, next in state.arcs:
+            if label is None:
+                addclosure(next, base)
+    states = [DFAState(closure(start), finish)]
+    for state in states: # NB states grows while we're iterating
+        arcs = {}
+        for nfastate in state.nfaset:
+            for label, next in nfastate.arcs:
+                if label is not None:
+                    addclosure(next, arcs.setdefault(label, {}))
+        for label, nfaset in arcs.iteritems():
+            for st in states:
+                if st.nfaset == nfaset:
+                    break
+            else:
+                st = DFAState(nfaset, finish)
+                states.append(st)
+            state.addarc(st, label)
+    return states # List of DFAState instances; first one is start
+
+</t>
+<t tx="ekr.20081203092030.136">def dump_nfa(self, name, start, finish):
+    print "Dump of NFA for", name
+    todo = [start]
+    for i, state in enumerate(todo):
+        print "  State", i, state is finish and "(final)" or ""
+        for label, next in state.arcs:
+            if next in todo:
+                j = todo.index(next)
+            else:
+                j = len(todo)
+                todo.append(next)
+            if label is None:
+                print "    -&gt; %d" % j
+            else:
+                print "    %s -&gt; %d" % (label, j)
+
+</t>
+<t tx="ekr.20081203092030.137">def dump_dfa(self, name, dfa):
+    print "Dump of DFA for", name
+    for i, state in enumerate(dfa):
+        print "  State", i, state.isfinal and "(final)" or ""
+        for label, next in state.arcs.iteritems():
+            print "    %s -&gt; %d" % (label, dfa.index(next))
+
+</t>
+<t tx="ekr.20081203092030.138">def simplify_dfa(self, dfa):
+    # This is not theoretically optimal, but works well enough.
+    # Algorithm: repeatedly look for two states that have the same
+    # set of arcs (same labels pointing to the same nodes) and
+    # unify them, until things stop changing.
+
+    # dfa is a list of DFAState instances
+    changes = True
+    while changes:
+        changes = False
+        for i, state_i in enumerate(dfa):
+            for j in range(i+1, len(dfa)):
+                state_j = dfa[j]
+                if state_i == state_j:
+                    #print "  unify", i, j
+                    del dfa[j]
+                    for state in dfa:
+                        state.unifystate(state_j, state_i)
+                    changes = True
+                    break
+
+</t>
+<t tx="ekr.20081203092030.139">def parse_rhs(self):
+    # RHS: ALT ('|' ALT)*
+    a, z = self.parse_alt()
+    if self.value != "|":
+        return a, z
+    else:
+        aa = NFAState()
+        zz = NFAState()
+        aa.addarc(a)
+        z.addarc(zz)
+        while self.value == "|":
+            self.gettoken()
+            a, z = self.parse_alt()
+            aa.addarc(a)
+            z.addarc(zz)
+        return aa, zz
+
+</t>
+<t tx="ekr.20081203092030.140">def parse_alt(self):
+    # ALT: ITEM+
+    a, b = self.parse_item()
+    while (self.value in ("(", "[") or
+           self.type in (token.NAME, token.STRING)):
+        c, d = self.parse_item()
+        b.addarc(c)
+        b = d
+    return a, b
+
+</t>
+<t tx="ekr.20081203092030.141">def parse_item(self):
+    # ITEM: '[' RHS ']' | ATOM ['+' | '*']
+    if self.value == "[":
+        self.gettoken()
+        a, z = self.parse_rhs()
+        self.expect(token.OP, "]")
+        a.addarc(z)
+        return a, z
+    else:
+        a, z = self.parse_atom()
+        value = self.value
+        if value not in ("+", "*"):
+            return a, z
+        self.gettoken()
+        z.addarc(a)
+        if value == "+":
+            return a, z
+        else:
+            return a, a
+
+</t>
+<t tx="ekr.20081203092030.142">def parse_atom(self):
+    # ATOM: '(' RHS ')' | NAME | STRING
+    if self.value == "(":
+        self.gettoken()
+        a, z = self.parse_rhs()
+        self.expect(token.OP, ")")
+        return a, z
+    elif self.type in (token.NAME, token.STRING):
+        a = NFAState()
+        z = NFAState()
+        a.addarc(z, self.value)
+        self.gettoken()
+        return a, z
+    else:
+        self.raise_error("expected (...) or NAME or STRING, got %s/%s",
+                         self.type, self.value)
+
+</t>
+<t tx="ekr.20081203092030.143">def expect(self, type, value=None):
+    if self.type != type or (value is not None and self.value != value):
+        self.raise_error("expected %s/%s, got %s/%s",
+                         type, value, self.type, self.value)
+    value = self.value
+    self.gettoken()
+    return value
+
+</t>
+<t tx="ekr.20081203092030.144">def gettoken(self):
+    tup = self.generator.next()
+    while tup[0] in (tokenize.COMMENT, tokenize.NL):
+        tup = self.generator.next()
+    self.type, self.value, self.begin, self.end, self.line = tup
+    #print token.tok_name[self.type], repr(self.value)
+
+</t>
+<t tx="ekr.20081203092030.145">def raise_error(self, msg, *args):
+    if args:
+        try:
+            msg = msg % args
+        except:
+            msg = " ".join([msg] + map(str, args))
+    raise SyntaxError(msg, (self.filename, self.end[0],
+                            self.end[1], self.line))
+
+</t>
+<t tx="ekr.20081203092030.146">class NFAState(object):
+    @others
+</t>
+<t tx="ekr.20081203092030.147">
+def __init__(self):
+    self.arcs = [] # list of (label, NFAState) pairs
+
+</t>
+<t tx="ekr.20081203092030.148">def addarc(self, next, label=None):
+    assert label is None or isinstance(label, str)
+    assert isinstance(next, NFAState)
+    self.arcs.append((label, next))
+
+</t>
+<t tx="ekr.20081203092030.149">class DFAState(object):
+    @others
+</t>
+<t tx="ekr.20081203092030.150">
+def __init__(self, nfaset, final):
+    assert isinstance(nfaset, dict)
+    assert isinstance(iter(nfaset).next(), NFAState)
+    assert isinstance(final, NFAState)
+    self.nfaset = nfaset
+    self.isfinal = final in nfaset
+    self.arcs = {} # map from label to DFAState
+
+</t>
+<t tx="ekr.20081203092030.151">def addarc(self, next, label):
+    assert isinstance(label, str)
+    assert label not in self.arcs
+    assert isinstance(next, DFAState)
+    self.arcs[label] = next
+
+</t>
+<t tx="ekr.20081203092030.152">def unifystate(self, old, new):
+    for label, next in self.arcs.iteritems():
+        if next is old:
+            self.arcs[label] = new
+
+</t>
+<t tx="ekr.20081203092030.153">def __eq__(self, other):
+    # Equality test -- ignore the nfaset instance variable
+    assert isinstance(other, DFAState)
+    if self.isfinal != other.isfinal:
+        return False
+    # Can't just return self.arcs == other.arcs, because that
+    # would invoke this method recursively, with cycles...
+    if len(self.arcs) != len(other.arcs):
+        return False
+    for label, next in self.arcs.iteritems():
+        if next is not other.arcs.get(label):
+            return False
+    return True
+
+</t>
+<t tx="ekr.20081203092030.154">def generate_grammar(filename="Grammar.txt"):
+    p = ParserGenerator(filename)
+    return p.make_grammar()
+</t>
+<t tx="ekr.20081203092030.155">#! /usr/bin/env python
+
+"""Token constants (from "token.h")."""
+
+#  Taken from Python (r53757) and modified to include some tokens
+#   originally monkeypatched in by pgen2.tokenize
+
+#--start constants--
+ENDMARKER = 0
+NAME = 1
+NUMBER = 2
+STRING = 3
+NEWLINE = 4
+INDENT = 5
+DEDENT = 6
+LPAR = 7
+RPAR = 8
+LSQB = 9
+RSQB = 10
+COLON = 11
+COMMA = 12
+SEMI = 13
+PLUS = 14
+MINUS = 15
+STAR = 16
+SLASH = 17
+VBAR = 18
+AMPER = 19
+LESS = 20
+GREATER = 21
+EQUAL = 22
+DOT = 23
+PERCENT = 24
+BACKQUOTE = 25
+LBRACE = 26
+RBRACE = 27
+EQEQUAL = 28
+NOTEQUAL = 29
+LESSEQUAL = 30
+GREATEREQUAL = 31
+TILDE = 32
+CIRCUMFLEX = 33
+LEFTSHIFT = 34
+RIGHTSHIFT = 35
+DOUBLESTAR = 36
+PLUSEQUAL = 37
+MINEQUAL = 38
+STAREQUAL = 39
+SLASHEQUAL = 40
+PERCENTEQUAL = 41
+AMPEREQUAL = 42
+VBAREQUAL = 43
+CIRCUMFLEXEQUAL = 44
+LEFTSHIFTEQUAL = 45
+RIGHTSHIFTEQUAL = 46
+DOUBLESTAREQUAL = 47
+DOUBLESLASH = 48
+DOUBLESLASHEQUAL = 49
+AT = 50
+OP = 51
+COMMENT = 52
+NL = 53
+RARROW = 54
+ERRORTOKEN = 55
+N_TOKENS = 56
+NT_OFFSET = 256
+#--end constants--
+
+tok_name = {}
+for _name, _value in globals().items():
+    if type(_value) is type(0):
+        tok_name[_value] = _name
+
+
+</t>
+<t tx="ekr.20081203092030.156">def ISTERMINAL(x):
+    return x &lt; NT_OFFSET
+
+</t>
+<t tx="ekr.20081203092030.157">def ISNONTERMINAL(x):
+    return x &gt;= NT_OFFSET
+
+</t>
+<t tx="ekr.20081203092030.158">def ISEOF(x):
+    return x == ENDMARKER
+</t>
+<t tx="ekr.20081203092030.159"># Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation.
+# All rights reserved.
+
+"""Tokenization help for Python programs.
+
+generate_tokens(readline) is a generator that breaks a stream of
+text into Python tokens.  It accepts a readline-like method which is called
+repeatedly to get the next line of input (or "" for EOF).  It generates
+5-tuples with these members:
+
+    the token type (see token.py)
+    the token (a string)
+    the starting (row, column) indices of the token (a 2-tuple of ints)
+    the ending (row, column) indices of the token (a 2-tuple of ints)
+    the original line (string)
+
+It is designed to match the working of the Python tokenizer exactly, except
+that it produces COMMENT tokens for comments and gives type OP for all
+operators
+
+Older entry points
+    tokenize_loop(readline, tokeneater)
+    tokenize(readline, tokeneater=printtoken)
+are the same, except instead of generating tokens, tokeneater is a callback
+function to which the 5 fields described above are passed as 5 arguments,
+each time a new token is found."""
+
+__author__ = 'Ka-Ping Yee &lt;ping@lfw.org&gt;'
+__credits__ = \
+    'GvR, ESR, Tim Peters, Thomas Wouters, Fred Drake, Skip Montanaro'
+
+import string, re
+from token import *
+
+import token
+__all__ = [x for x in dir(token) if x[0] != '_'] + ["tokenize",
+           "generate_tokens", "untokenize"]
+del token
+
+</t>
+<t tx="ekr.20081203092030.160">def group(*choices): return '(' + '|'.join(choices) + ')'
+</t>
+<t tx="ekr.20081203092030.161">def any(*choices): return group(*choices) + '*'
+</t>
+<t tx="ekr.20081203092030.162">def maybe(*choices): return group(*choices) + '?'
+
+</t>
+<t tx="ekr.20081203092030.163">Whitespace = r'[ \f\t]*'
+Comment = r'#[^\r\n]*'
+Ignore = Whitespace + any(r'\\\r?\n' + Whitespace) + maybe(Comment)
+Name = r'[a-zA-Z_]\w*'
+
+Binnumber = r'0[bB][01]*'
+Hexnumber = r'0[xX][\da-fA-F]*[lL]?'
+Octnumber = r'0[oO]?[0-7]*[lL]?'
+Decnumber = r'[1-9]\d*[lL]?'
+Intnumber = group(Binnumber, Hexnumber, Octnumber, Decnumber)
+Exponent = r'[eE][-+]?\d+'
+Pointfloat = group(r'\d+\.\d*', r'\.\d+') + maybe(Exponent)
+Expfloat = r'\d+' + Exponent
+Floatnumber = group(Pointfloat, Expfloat)
+Imagnumber = group(r'\d+[jJ]', Floatnumber + r'[jJ]')
+Number = group(Imagnumber, Floatnumber, Intnumber)
+
+# Tail end of ' string.
+Single = r"[^'\\]*(?:\\.[^'\\]*)*'"
+# Tail end of " string.
+Double = r'[^"\\]*(?:\\.[^"\\]*)*"'
+# Tail end of ''' string.
+Single3 = r"[^'\\]*(?:(?:\\.|'(?!''))[^'\\]*)*'''"
+# Tail end of """ string.
+Double3 = r'[^"\\]*(?:(?:\\.|"(?!""))[^"\\]*)*"""'
+Triple = group("[ubUB]?[rR]?'''", '[ubUB]?[rR]?"""')
+# Single-line ' or " string.
+String = group(r"[uU]?[rR]?'[^\n'\\]*(?:\\.[^\n'\\]*)*'",
+               r'[uU]?[rR]?"[^\n"\\]*(?:\\.[^\n"\\]*)*"')
+
+# Because of leftmost-then-longest match semantics, be sure to put the
+# longest operators first (e.g., if = came before ==, == would get
+# recognized as two instances of =).
+Operator = group(r"\*\*=?", r"&gt;&gt;=?", r"&lt;&lt;=?", r"&lt;&gt;", r"!=",
+                 r"//=?", r"-&gt;",
+                 r"[+\-*/%&amp;|^=&lt;&gt;]=?",
+                 r"~")
+
+Bracket = '[][(){}]'
+Special = group(r'\r?\n', r'[:;.,`@]')
+Funny = group(Operator, Bracket, Special)
+
+PlainToken = group(Number, Funny, String, Name)
+Token = Ignore + PlainToken
+
+# First (or only) line of ' or " string.
+ContStr = group(r"[uUbB]?[rR]?'[^\n'\\]*(?:\\.[^\n'\\]*)*" +
+                group("'", r'\\\r?\n'),
+                r'[uUbB]?[rR]?"[^\n"\\]*(?:\\.[^\n"\\]*)*' +
+                group('"', r'\\\r?\n'))
+PseudoExtras = group(r'\\\r?\n', Comment, Triple)
+PseudoToken = Whitespace + group(PseudoExtras, Number, Funny, ContStr, Name)
+
+tokenprog, pseudoprog, single3prog, double3prog = map(
+    re.compile, (Token, PseudoToken, Single3, Double3))
+endprogs = {"'": re.compile(Single), '"': re.compile(Double),
+            "'''": single3prog, '"""': double3prog,
+            "r'''": single3prog, 'r"""': double3prog,
+            "u'''": single3prog, 'u"""': double3prog,
+            "b'''": single3prog, 'b"""': double3prog,
+            "ur'''": single3prog, 'ur"""': double3prog,
+            "br'''": single3prog, 'br"""': double3prog,
+            "R'''": single3prog, 'R"""': double3prog,
+            "U'''": single3prog, 'U"""': double3prog,
+            "B'''": single3prog, 'B"""': double3prog,
+            "uR'''": single3prog, 'uR"""': double3prog,
+            "Ur'''": single3prog, 'Ur"""': double3prog,
+            "UR'''": single3prog, 'UR"""': double3prog,
+            "bR'''": single3prog, 'bR"""': double3prog,
+            "Br'''": single3prog, 'Br"""': double3prog,
+            "BR'''": single3prog, 'BR"""': double3prog,
+            'r': None, 'R': None,
+            'u': None, 'U': None,
+            'b': None, 'B': None}
+
+triple_quoted = {}
+for t in ("'''", '"""',
+          "r'''", 'r"""', "R'''", 'R"""',
+          "u'''", 'u"""', "U'''", 'U"""',
+          "b'''", 'b"""', "B'''", 'B"""',
+          "ur'''", 'ur"""', "Ur'''", 'Ur"""',
+          "uR'''", 'uR"""', "UR'''", 'UR"""',
+          "br'''", 'br"""', "Br'''", 'Br"""',
+          "bR'''", 'bR"""', "BR'''", 'BR"""',):
+    triple_quoted[t] = t
+single_quoted = {}
+for t in ("'", '"',
+          "r'", 'r"', "R'", 'R"',
+          "u'", 'u"', "U'", 'U"',
+          "b'", 'b"', "B'", 'B"',
+          "ur'", 'ur"', "Ur'", 'Ur"',
+          "uR'", 'uR"', "UR'", 'UR"',
+          "br'", 'br"', "Br'", 'Br"',
+          "bR'", 'bR"', "BR'", 'BR"', ):
+    single_quoted[t] = t
+
+tabsize = 8
+
+class TokenError(Exception): pass
+
+</t>
+<t tx="ekr.20081203092030.164">class StopTokenizing(Exception): pass
+
+</t>
+<t tx="ekr.20081203092030.165">def printtoken(type, token, (srow, scol), (erow, ecol), line): # for testing
+    print "%d,%d-%d,%d:\t%s\t%s" % \
+        (srow, scol, erow, ecol, tok_name[type], repr(token))
+
+</t>
+<t tx="ekr.20081203092030.166">def tokenize(readline, tokeneater=printtoken):
+    """
+    The tokenize() function accepts two parameters: one representing the
+    input stream, and one providing an output mechanism for tokenize().
+
+    The first parameter, readline, must be a callable object which provides
+    the same interface as the readline() method of built-in file objects.
+    Each call to the function should return one line of input as a string.
+
+    The second parameter, tokeneater, must also be a callable object. It is
+    called once for each token, with five arguments, corresponding to the
+    tuples generated by generate_tokens().
+    """
+    try:
+        tokenize_loop(readline, tokeneater)
+    except StopTokenizing:
+        pass
+
+</t>
+<t tx="ekr.20081203092030.167"># backwards compatible interface
+def tokenize_loop(readline, tokeneater):
+    for token_info in generate_tokens(readline):
+        tokeneater(*token_info)
+
+</t>
+<t tx="ekr.20081203092030.168">class Untokenizer:
+    @others
+</t>
+<t tx="ekr.20081203092030.169">
+def __init__(self):
+    self.tokens = []
+    self.prev_row = 1
+    self.prev_col = 0
+
+</t>
+<t tx="ekr.20081203092030.170">def add_whitespace(self, start):
+    row, col = start
+    assert row &lt;= self.prev_row
+    col_offset = col - self.prev_col
+    if col_offset:
+        self.tokens.append(" " * col_offset)
+
+</t>
+<t tx="ekr.20081203092030.171">def untokenize(self, iterable):
+    for t in iterable:
+        if len(t) == 2:
+            self.compat(t, iterable)
+            break
+        tok_type, token, start, end, line = t
+        self.add_whitespace(start)
+        self.tokens.append(token)
+        self.prev_row, self.prev_col = end
+        if tok_type in (NEWLINE, NL):
+            self.prev_row += 1
+            self.prev_col = 0
+    return "".join(self.tokens)
+
+</t>
+<t tx="ekr.20081203092030.172">def compat(self, token, iterable):
+    startline = False
+    indents = []
+    toks_append = self.tokens.append
+    toknum, tokval = token
+    if toknum in (NAME, NUMBER):
+        tokval += ' '
+    if toknum in (NEWLINE, NL):
+        startline = True
+    for tok in iterable:
+        toknum, tokval = tok[:2]
+
+        if toknum in (NAME, NUMBER):
+            tokval += ' '
+
+        if toknum == INDENT:
+            indents.append(tokval)
+            continue
+        elif toknum == DEDENT:
+            indents.pop()
+            continue
+        elif toknum in (NEWLINE, NL):
+            startline = True
+        elif startline and indents:
+            toks_append(indents[-1])
+            startline = False
+        toks_append(tokval)
+
+</t>
+<t tx="ekr.20081203092030.173">def untokenize(iterable):
+    """Transform tokens back into Python source code.
+
+    Each element returned by the iterable must be a token sequence
+    with at least two elements, a token number and token value.  If
+    only two tokens are passed, the resulting output is poor.
+
+    Round-trip invariant for full input:
+        Untokenized source will match input source exactly
+
+    Round-trip invariant for limited intput:
+        # Output text will tokenize the back to the input
+        t1 = [tok[:2] for tok in generate_tokens(f.readline)]
+        newcode = untokenize(t1)
+        readline = iter(newcode.splitlines(1)).next
+        t2 = [tok[:2] for tokin generate_tokens(readline)]
+        assert t1 == t2
+    """
+    ut = Untokenizer()
+    return ut.untokenize(iterable)
+
+</t>
+<t tx="ekr.20081203092030.174">def generate_tokens(readline):
+    """
+    The generate_tokens() generator requires one argment, readline, which
+    must be a callable object which provides the same interface as the
+    readline() method of built-in file objects. Each call to the function
+    should return one line of input as a string.  Alternately, readline
+    can be a callable function terminating with StopIteration:
+        readline = open(myfile).next    # Example of alternate readline
+
+    The generator produces 5-tuples with these members: the token type; the
+    token string; a 2-tuple (srow, scol) of ints specifying the row and
+    column where the token begins in the source; a 2-tuple (erow, ecol) of
+    ints specifying the row and column where the token ends in the source;
+    and the line on which the token was found. The line passed is the
+    logical line; continuation lines are included.
+    """
+    lnum = parenlev = continued = 0
+    namechars, numchars = string.ascii_letters + '_', '0123456789'
+    contstr, needcont = '', 0
+    contline = None
+    indents = [0]
+
+    while 1:                                   # loop over lines in stream
+        try:
+            line = readline()
+        except StopIteration:
+            line = ''
+        lnum = lnum + 1
+        pos, max = 0, len(line)
+
+        if contstr:                            # continued string
+            if not line:
+                raise TokenError, ("EOF in multi-line string", strstart)
+            endmatch = endprog.match(line)
+            if endmatch:
+                pos = end = endmatch.end(0)
+                yield (STRING, contstr + line[:end],
+                       strstart, (lnum, end), contline + line)
+                contstr, needcont = '', 0
+                contline = None
+            elif needcont and line[-2:] != '\\\n' and line[-3:] != '\\\r\n':
+                yield (ERRORTOKEN, contstr + line,
+                           strstart, (lnum, len(line)), contline)
+                contstr = ''
+                contline = None
+                continue
+            else:
+                contstr = contstr + line
+                contline = contline + line
+                continue
+
+        elif parenlev == 0 and not continued:  # new statement
+            if not line: break
+            column = 0
+            while pos &lt; max:                   # measure leading whitespace
+                if line[pos] == ' ': column = column + 1
+                elif line[pos] == '\t': column = (column/tabsize + 1)*tabsize
+                elif line[pos] == '\f': column = 0
+                else: break
+                pos = pos + 1
+            if pos == max: break
+
+            if line[pos] in '#\r\n':           # skip comments or blank lines
+                if line[pos] == '#':
+                    comment_token = line[pos:].rstrip('\r\n')
+                    nl_pos = pos + len(comment_token)
+                    yield (COMMENT, comment_token,
+                           (lnum, pos), (lnum, pos + len(comment_token)), line)
+                    yield (NL, line[nl_pos:],
+                           (lnum, nl_pos), (lnum, len(line)), line)
+                else:
+                    yield ((NL, COMMENT)[line[pos] == '#'], line[pos:],
+                           (lnum, pos), (lnum, len(line)), line)
+                continue
+
+            if column &gt; indents[-1]:           # count indents or dedents
+                indents.append(column)
+                yield (INDENT, line[:pos], (lnum, 0), (lnum, pos), line)
+            while column &lt; indents[-1]:
+                if column not in indents:
+                    raise IndentationError(
+                        "unindent does not match any outer indentation level",
+                        ("&lt;tokenize&gt;", lnum, pos, line))
+                indents = indents[:-1]
+                yield (DEDENT, '', (lnum, pos), (lnum, pos), line)
+
+        else:                                  # continued statement
+            if not line:
+                raise TokenError, ("EOF in multi-line statement", (lnum, 0))
+            continued = 0
+
+        while pos &lt; max:
+            pseudomatch = pseudoprog.match(line, pos)
+            if pseudomatch:                                # scan for tokens
+                start, end = pseudomatch.span(1)
+                spos, epos, pos = (lnum, start), (lnum, end), end
+                token, initial = line[start:end], line[start]
+
+                if initial in numchars or \
+                   (initial == '.' and token != '.'):      # ordinary number
+                    yield (NUMBER, token, spos, epos, line)
+                elif initial in '\r\n':
+                    newline = NEWLINE
+                    if parenlev &gt; 0:
+                        newline = NL
+                    yield (newline, token, spos, epos, line)
+                elif initial == '#':
+                    assert not token.endswith("\n")
+                    yield (COMMENT, token, spos, epos, line)
+                elif token in triple_quoted:
+                    endprog = endprogs[token]
+                    endmatch = endprog.match(line, pos)
+                    if endmatch:                           # all on one line
+                        pos = endmatch.end(0)
+                        token = line[start:pos]
+                        yield (STRING, token, spos, (lnum, pos), line)
+                    else:
+                        strstart = (lnum, start)           # multiple lines
+                        contstr = line[start:]
+                        contline = line
+                        break
+                elif initial in single_quoted or \
+                    token[:2] in single_quoted or \
+                    token[:3] in single_quoted:
+                    if token[-1] == '\n':                  # continued string
+                        strstart = (lnum, start)
+                        endprog = (endprogs[initial] or endprogs[token[1]] or
+                                   endprogs[token[2]])
+                        contstr, needcont = line[start:], 1
+                        contline = line
+                        break
+                    else:                                  # ordinary string
+                        yield (STRING, token, spos, epos, line)
+                elif initial in namechars:                 # ordinary name
+                    yield (NAME, token, spos, epos, line)
+                elif initial == '\\':                      # continued stmt
+                    # This yield is new; needed for better idempotency:
+                    yield (NL, token, spos, (lnum, pos), line)
+                    continued = 1
+                else:
+                    if initial in '([{': parenlev = parenlev + 1
+                    elif initial in ')]}': parenlev = parenlev - 1
+                    yield (OP, token, spos, epos, line)
+            else:
+                yield (ERRORTOKEN, line[pos],
+                           (lnum, pos), (lnum, pos+1), line)
+                pos = pos + 1
+
+    for indent in indents[1:]:                 # pop remaining indent levels
+        yield (DEDENT, '', (lnum, 0), (lnum, 0), '')
+    yield (ENDMARKER, '', (lnum, 0), (lnum, 0), '')
+
+</t>
+<t tx="ekr.20081203092030.175"># Copyright 2004-2005 Elemental Security, Inc. All Rights Reserved.
+# Licensed to PSF under a Contributor Agreement.
+
+"""The pgen2 package."""
+</t>
+<t tx="ekr.20081203092326.1">@nocolor-node
+
+/*
+
+Description
+-----------
+
+The parser's interface is different than usual: the function addtoken()
+must be called for each token in the input.  This makes it possible to
+turn it into an incremental parsing system later.  The parsing system
+constructs a parse tree as it goes.
+
+A parsing rule is represented as a Deterministic Finite-state Automaton
+(DFA).  A node in a DFA represents a state of the parser; an arc represents
+a transition.  Transitions are either labeled with terminal symbols or
+with non-terminals.  When the parser decides to follow an arc labeled
+with a non-terminal, it is invoked recursively with the DFA representing
+the parsing rule for that as its initial state; when that DFA accepts,
+the parser that invoked it continues.  The parse tree constructed by the
+recursively called parser is inserted as a child in the current parse tree.
+
+The DFA's can be constructed automatically from a more conventional
+language description.  An extended LL(1) grammar (ELL(1)) is suitable.
+Certain restrictions make the parser's life easier: rules that can produce
+the empty string should be outlawed (there are other ways to put loops
+or optional parts in the language).  To avoid the need to construct
+FIRST sets, we can require that all but the last alternative of a rule
+(really: arc going out of a DFA's state) must begin with a terminal
+symbol.
+
+As an example, consider this grammar:
+
+expr:	term (OP term)*
+term:	CONSTANT | '(' expr ')'
+
+The DFA corresponding to the rule for expr is:
+
+-------&gt;.---term--&gt;.-------&gt;
+	^          |
+	|          |
+	\----OP----/
+
+The parse tree generated for the input a+b is:
+
+(expr: (term: (NAME: a)), (OP: +), (term: (NAME: b)))
+
+*/
 </t>
 </tnodes>
 </leo_file>
