@@ -1,0 +1,225 @@
+<ui version="4.0" >
+ <class>Form</class>
+ <widget class="QWidget" name="Form" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>336</width>
+    <height>263</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <property name="spacing" >
+    <number>2</number>
+   </property>
+   <property name="leftMargin" >
+    <number>2</number>
+   </property>
+   <property name="topMargin" >
+    <number>3</number>
+   </property>
+   <property name="rightMargin" >
+    <number>3</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>2</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="leo_topLabel" >
+     <property name="frameShape" >
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="lineWidth" >
+      <number>1</number>
+     </property>
+     <property name="midLineWidth" >
+      <number>0</number>
+     </property>
+     <property name="text" >
+      <string>TextLabel</string>
+     </property>
+     <property name="scaledContents" >
+      <bool>false</bool>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="margin" >
+      <number>2</number>
+     </property>
+     <property name="openExternalLinks" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWebView" name="leo_webView" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="baseSize" >
+      <size>
+       <width>300</width>
+       <height>200</height>
+      </size>
+     </property>
+     <property name="url" >
+      <url>
+       <string>about:blank</string>
+      </url>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" native="1" name="leo_panel_buttons" >
+     <layout class="QHBoxLayout" name="horizontalLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="leo_chk_rst" >
+        <property name="text" >
+         <string>rst</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+        <property name="tristate" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="leo_chk_html" >
+        <property name="text" >
+         <string>html</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="leo_chk_text" >
+        <property name="text" >
+         <string>text</string>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="leo_btn_close" >
+        <property name="text" >
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="2" />
+ <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKit/QWebView</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>leo_btn_close</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>353</x>
+     <y>243</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>199</x>
+     <y>132</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leo_chk_text</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>chkBtnChanged()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>123</x>
+     <y>259</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>213</x>
+     <y>140</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leo_chk_rst</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>chkBtnChanged()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>27</x>
+     <y>259</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>213</x>
+     <y>140</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leo_chk_html</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>chkBtnChanged()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>73</x>
+     <y>259</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>213</x>
+     <y>140</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>chkBtnChanged()</slot>
+ </slots>
+</ui>
