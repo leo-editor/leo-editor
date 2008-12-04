@@ -343,7 +343,11 @@ def comment_delims_from_extension(filename):
 
     """
 
-    root, ext = os.path.splitext(filename)
+    if filename.startswith('.'):
+        # Python 2.6 changes how splitext works.
+        root,ext = None,filename
+    else:
+        root, ext = os.path.splitext(filename)
     if ext == '.tmp':
         root, ext = os.path.splitext(root)
 
@@ -351,7 +355,8 @@ def comment_delims_from_extension(filename):
     if ext:
         return g.set_delims_from_language(language)
     else:
-        g.trace("unknown extension %s" % ext)
+        g.trace("unknown extension: %s, filename: %s, root: %s" % (
+            repr(ext),repr(filename),repr(root)))
         return None,None,None
 #@-node:EKR.20040504150046.4:g.comment_delims_from_extension
 #@+node:ekr.20071109165315:g.computeRelativePath
@@ -2086,8 +2091,7 @@ def is_sentinel (line,delims):
         j = line.find(delim3)
         return 0 == i < j
     else:
-        g.pr(repr(delims))
-        g.es("can't happen: is_sentinel",color="red")
+        g.trace("can't happen. delims: %s" % repr(delims),color="red")
         return False
 #@-node:EKR.20040504154039:g.is_sentinel
 #@+node:ekr.20071114113736:g.makePathRelativeTo
