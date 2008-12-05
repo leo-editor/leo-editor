@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>336</width>
-    <height>263</height>
+    <height>269</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -62,15 +62,15 @@
    <item>
     <widget class="QWebView" name="leo_webView" >
      <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Ignored" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="baseSize" >
       <size>
-       <width>300</width>
-       <height>200</height>
+       <width>400</width>
+       <height>600</height>
       </size>
      </property>
      <property name="url" >
@@ -143,6 +143,11 @@
     </widget>
    </item>
   </layout>
+  <action name="leo_action_file_save" >
+   <property name="text" >
+    <string>Save</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="2" />
  <customwidgets>

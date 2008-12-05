@@ -138,7 +138,13 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # Init both base classes.
 
-        ui_description_file = g.app.loadDir + "/../plugins/qt_main.ui"
+        ui_file_name = c.config.getString('qt_ui_file_name')
+        for f in (ui_file_name, 'qt_main.ui', None):
+            assert f, "can not find user interface file"
+            ui_description_file = g.app.loadDir + "/../plugins/" + f
+            g.pr(ui_description_file)
+            if g.os_path_exists(ui_description_file): break
+
         QtGui.QMainWindow.__init__(self,parent)        
         self.ui = uic.loadUi(ui_description_file, self)
 
@@ -168,6 +174,26 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setSplitDirection(orientation)
         self.setStyleSheets()
     #@-node:ekr.20081121105001.201: ctor (Window)
+    #@+node:leohag.20081203210510.17:do_leo_spell_btn_*
+    def do_leo_spell_btn_Add(self):
+        g.trace()
+
+    def do_leo_spell_btn_Change(self):
+        g.trace()
+
+    def do_leo_spell_btn_Find(self):
+        g.trace()
+
+    def do_leo_spell_btn_FindChange(self):
+        g.trace()
+
+    def do_leo_spell_btn_Hide(self):
+        g.trace()
+
+    def do_leo_spell_btn_Ignore(self):
+        g.trace()
+
+    #@-node:leohag.20081203210510.17:do_leo_spell_btn_*
     #@+node:ekr.20081121105001.202:closeEvent (qtFrame)
     def closeEvent (self,event):
 
@@ -2199,7 +2225,9 @@ class leoQtLog (leoFrame.leoLog):
             if w.tabText(i) == 'Tab 2':
                 w.setTabText(i,'Find')
                 self.contentsDict['Find'] = w.currentWidget()
-                break
+            if w.tabText(i) == 'Spell':
+                self.contentsDict['Spell'] = w.widget(i)
+                self.frameDict['Spell'] = w.widget(i)
 
         # Create the log tab as the leftmost tab.
         log.selectTab('Log')
@@ -2287,6 +2315,7 @@ class leoQtLog (leoFrame.leoLog):
         w = self.logCtrl # w is a QTextBrowser
         if w:
             if s.endswith('\n'): s = s[:-1]
+            s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             s = s.replace(' ','&nbsp;')
             if color:
                 s = '<font color="%s">%s</font>' % (color, s)
@@ -5099,9 +5128,46 @@ class leoQtGui(leoGui.leoGui):
         return g.app.gui.toUnicode(s)
     #@-node:ekr.20081121105001.489:runSaveFileDialog
     #@+node:ekr.20081121105001.490:runScrolledMessageDialog
-    def runScrolledMessageDialog (self,title,label,msg):
+    def runScrolledMessageDialog (self, title='Message', label= '', msg='', c=None, **kw):
 
         if g.unitTesting: return None
+
+        def send(title=title, label=label, msg=msg, c=c, kw=kw):
+            return g.doHook('scrolledMessage', title=title, label=label, msg=msg, c=c, **kw)
+
+        if not c or not c.exists:
+            #@        << no c error>>
+            #@+node:leohag.20081205043707.12:<< no c error>>
+            g.es_print_error("The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c' as a keyword argument.\n\t%s"% g,callers())
+            #@nonl
+            #@-node:leohag.20081205043707.12:<< no c error>>
+            #@nl
+        else:        
+            retval = send()
+            if retval: return retval
+            #@        << load scrolledmessage plugin >>
+            #@+node:leohag.20081205043707.14:<< load scrolledmessage plugin >>
+            import leo.core.leoPlugins as leoPlugins
+            sm = leoPlugins.getPluginModule('scrolledmessage')
+
+            if not sm:
+                sm = leoPlugins.loadOnePlugin('scrolledmessage',verbose=True)
+                if sm:
+                    g.es('scrolledmessage plugin loaded.', color='blue')
+                    sm.onCreate('tag',{'c':c})
+            #@-node:leohag.20081205043707.14:<< load scrolledmessage plugin >>
+            #@nl
+            retval = send()
+            if retval: return retval
+            #@        << no dialog error >>
+            #@+node:leohag.20081205043707.11:<< no dialog error >>
+            g.es_print_error('The handler for the "scrolledMessage" hook appears to be missing or not working.\n\t%s'%g.callers())
+            #@nonl
+            #@-node:leohag.20081205043707.11:<< no dialog error >>
+            #@nl
+
+        #@    << emergency fallback >>
+        #@+node:leohag.20081205043707.13:<< emergency fallback >>
 
         b = QtGui.QMessageBox
         d = b(None) # c.frame.top)
@@ -5112,6 +5178,9 @@ class leoQtGui(leoGui.leoGui):
         d.setIcon(b.Information)
         yes = d.addButton('Ok',b.YesRole)
         d.exec_()
+        #@nonl
+        #@-node:leohag.20081205043707.13:<< emergency fallback >>
+        #@nl
     #@-node:ekr.20081121105001.490:runScrolledMessageDialog
     #@-node:ekr.20081121105001.479:Dialogs & panels
     #@+node:ekr.20081121105001.491:Focus (qtGui)
