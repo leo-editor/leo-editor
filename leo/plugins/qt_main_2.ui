@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>921</width>
-    <height>728</height>
+    <width>871</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -37,7 +37,7 @@
          </sizepolicy>
         </property>
         <property name="headerHidden" >
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <column>
          <property name="text" >
@@ -496,7 +496,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>921</width>
+     <width>871</width>
      <height>19</height>
     </rect>
    </property>
