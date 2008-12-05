@@ -60,6 +60,8 @@ To Do
 
     - Add an option to put the dialog in leo's log notebook.
 
+    - Add \@settings to control default behaviour
+
     - Provide a menu of plugins that allows their docstring to be displayed.
 
     - Provide a menu of @rst nodes in the current outline, automatically track changes
