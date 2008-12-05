@@ -5,48 +5,67 @@
 
 #@<< docstring >>
 #@+node:leohag.20081203143921.2:<< docstring >>
-#@+at
-# Provides a scrolled Message Dialog for Qt based guis/plugins.
-# 
-# The plugin provides for the display of rst, html or plain text messages in a 
-# scrolled message dialog.
-# 
-#  Rst messages can be displayed as text or html, as the user likes, by 
-# clicking a check box.
-# 
-# The user interface is provided by a ScrolledMessage.ui file which is 
-# dynamically loaded each time a new dialog is loaded.
-# 
-# The dialog is not modal and many dialogs can exsit. Dialogs can be named and 
-# output directed to a dialog with a specific name
-# 
-# The plugin is invoked like this:
-# 
-#     g.doHook('scrolledMessage', c=c, msg='message', title='title',  
-# ...etc    )
-# 
-# all parameters are optional except c.
-# 
-# Parameters:
-#     msg: The text to be dispayed (html, rst, plain).
-#             If the text starts with 'rst:' it is assumed to be rst text and 
-# is converted to html for display.
-#             If the text starts with '<' it is assumed to be html.
-#             These auto detection features can be overidden.
-# 
-#     label: The text to apear in a label above the display. If it is '', the 
-# label is hidden.
-# 
-#     title: The title to appear on the window or dock.
-# 
-#     flags:  says what kind of message eg: 'rst', 'text', 'html', overides 
-# autodetection.
-# 
-#     Other parameters will be added to control position, size, closing, 
-# hiding etc.
-# 
-# 
-#@-at
+"""
+Scrolled Message Dialog
+=======================
+
+Provides a Scrolled Message Dialog service for Qt based guis/plugins.
+
+The plugin can display messages supplied as plain text or formated as html. In addition the plugin can accept messages in rst format and convert them to be displayed as html.
+
+The displayed format can be controlled by the user via check boxes, so rst messages may be viewed either as text or as html. Html messages can also be viwed as raw text, which will be a good debug feature when creating complex dynamically generated html messages.
+
+The user interface is provided by a ScrolledMessage.ui file which is dynamically loaded each time a new dialog is loaded.
+
+The dialog is not modal and many dialogs can exist at one time. Dialogs can be named and output directed to a dialog with a specific name.  
+
+The plugin is invoked like this:
+
+    g.doHook('scrolledMessage', c=c, msg='message', title='title',  ...etc    )
+
+or
+    g.app.gui.runScrolledMessageDialog(c=c, ...etc)
+
+all parameters are optional except c.
+
+Parameters
+----------
+    msg:
+        The text to be displayed (html, rst, plain).
+
+        If the text starts with 'rst:' it is assumed to be rst text and
+        is converted to html for display, (after the rst: prefix has been removed.
+
+        If the text starts with '<' it is assumed to be html.
+
+        These auto detection features can be overridden by 'flags'.
+
+    label:
+        The text to appear in a label above the display. If it is '', the label is hidden.
+
+    title:
+        The title to appear on the window or dock.
+
+    flags:
+        Says what kind of message eg: 'rst', 'text', 'html'. This overrides auto-detection.
+
+        Flags can be combined, eg 'rst html' causes the message to be interpreted as rst and
+        displayed as html.
+
+To Do
+-----
+    - Add parameters to control position, size, closing, hiding etc.
+
+    - Save or print files from the dialog.
+
+    - Add an option to put the dialog in leo's log notebook.
+
+    - Provide a menu of plugins that allows their docstring to be displayed.
+
+    - Provide a menu of @rst nodes in the current outline, automatically track changes
+      if it is set to display any of these nodes.
+
+"""
 #@-node:leohag.20081203143921.2:<< docstring >>
 #@nl
 
@@ -113,12 +132,16 @@ class ScrolledMessageDialog(object):
         self.c = parent.c
         self.ui = self.getGui()(self)
 
+        #self.menubar = mb = QtGui.QMenuBar(self.ui)
+        #mb.show()
+        #mb.addAction('hello')
+        #self.ui.layout().insertWidget(0, self.menubar)
+
         top = self.c.frame.top
         self.dock = dock = QtGui.QDockWidget("Scrolled Message Dialog", top)
         dock.setAllowedAreas(Qt.AllDockWidgetAreas)
         dock.setWidget(self.ui)
-        dock.resize(300, 200)
-
+        dock.resize(400, 600)
 
         top.addDockWidget(Qt.RightDockWidgetArea, dock)
 
@@ -126,7 +149,6 @@ class ScrolledMessageDialog(object):
 
         self.controls = {}
         self.controlFlags = {}
-
 
         self.findChkControls()
         self.chkBtnChanged(silent=True)
@@ -151,7 +173,6 @@ class ScrolledMessageDialog(object):
             """Class to wrap QDesigner ui object and provide glue code to make it work."""
 
             def __init__(self, parent, *args):
-                print parent, '##'
                 QtGui.QWidget.__init__(self, *args)
                 self.setupUi(self)
                 self.leoParent = parent
@@ -205,7 +226,7 @@ class ScrolledMessageDialog(object):
     def showMessage(self):
         msg = self.msg
         f = self.controlFlags
-        g.trace(self.controlFlags)
+        #g.trace(self.controlFlags)
         if f['html']:
             if f['rst']:
                 msg = self.rstToHtml(msg)
@@ -213,8 +234,6 @@ class ScrolledMessageDialog(object):
                     msg = self.textToHtml(msg)
         else:
             msg = self.textToHtml(msg)
-
-
 
         self.ui.leo_webView.setHtml(msg)
         self.dock.show()
@@ -228,19 +247,23 @@ class ScrolledMessageDialog(object):
         try:
             from docutils import core
         except ImportError:
-            g.es('Can not import docutils', color='red')
-            return rst
+            g.es('scrolledMessage: Can not import docutils', color='blue')
+            return self.textToHtml(rst)
 
         overrides = {
             'doctitle_xform': False,
             'initial_header_level': 1
         }
 
-        parts = core.publish_parts(
-            source= rst,
-            writer_name='html',
-            settings_overrides=overrides
-        )
+        try:
+            parts = core.publish_parts(
+                source= rst,
+                writer_name='html',
+                settings_overrides=overrides
+            )
+        except Exception:
+            g.es('scrolledMessage: rst conversion error', color='blue')
+            return self.textToHtml(rst)
 
         return parts['whole']
 
@@ -249,8 +272,9 @@ class ScrolledMessageDialog(object):
     def textToHtml(self, msg):
 
         msg = msg.replace('&','&amp;').replace('<', '&lt;').replace('>', '&gt;')
-        msg = msg.replace(' ','&nbsp;').replace('\n','<br>');
-        return msg
+        #msg = msg.replace(' ','&nbsp;').replace('\n','<br>');
+        return '<pre>%s<pre>'%msg
+
 
 
     #@-node:leohag.20081203143921.16:textToHtml
@@ -354,8 +378,10 @@ class ScrolledMessageController(object):
             if k not in keywords:
                 keywords[k] = v 
 
-        g.trace(keywords)
+        #g.trace(keywords)
         self.updateDialog(keywords)
+
+        return keywords
 
     #@-node:leohag.20081203143921.26:scrolledMessageHandler
     #@+node:leohag.20081203210510.3:onDialogClosing
