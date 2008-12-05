@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8,1,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -403,7 +403,7 @@
 </v>
 <v t="ekr.20081202095209.1"><vh>Put minibuffer in a toolbar</vh></v>
 <v t="ekr.20071129103842"></v>
-<v t="ekr.20081202140932.1" a="E"><vh>pythoscope &amp; lib2to3</vh>
+<v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
 <v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
 <v t="ekr.20081202141210.1"><vh>@@auto\pythoscope\astvisitor.py</vh>
 <v t="ekr.20081202141453.2"><vh>astvisitor declarations</vh></v>
@@ -813,7 +813,7 @@
 <v t="ekr.20081202143139.50"><vh>inspect_project_dynamically</vh></v>
 </v>
 </v>
-<v t="ekr.20081203091734.1" a="E"><vh>@path c:\leo.repo\pythoscope\lib2to3</vh>
+<v t="ekr.20081203091734.1"><vh>@path c:\leo.repo\pythoscope\lib2to3</vh>
 <v t="ekr.20081204111623.1"><vh>test of path directives</vh></v>
 <v t="ekr.20081203091734.11"><vh>@@auto patcomp.py</vh>
 <v t="ekr.20081203092030.7"><vh>patcomp declarations</vh></v>
