@@ -810,6 +810,480 @@ TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 #@-node:ekr.20081028060510.1:Fix @shadow crasher
 #@-node:ekr.20080922115725.1:Finish @shadow
 #@-node:ekr.20080915112342.1:First
+#@+node:ekr.20081202093528.1:New stuff
+#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
+
+If a @path directive is within the body text of an @thin node then the
+file write uses the @path directive but the file read does not.  Since
+the file read cannot know of the @path directive until after it has
+read the file it has no choice but to not use it.  The @thin file
+write code should not use any @path declarations found in its body
+text.
+#@nonl
+#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
+#@+node:ekr.20081204091750.5:Home doesn't reset column pointer
+#@-node:ekr.20081204091750.5:Home doesn't reset column pointer
+#@+node:ekr.20081203122403.1:Use QSyntaxHighlighter
+#@-node:ekr.20081203122403.1:Use QSyntaxHighlighter
+#@+node:ekr.20081202093528.2:Put new commands in leoEditCommands.py
+#@+node:ekr.20081202093528.19:@command complete-previous
+wordsep = u'., -+\n\r[]{}<>=-+*&%$#@!"\'?/\\|^()~`:;'
+word_completer_key = 'back_word_completer'
+@others
+completer = g.app.config.get(c,word_completer_key,'WordCompleter')
+if completer is None:
+    completer = WordCompleter(p,c,back=True)
+    g.app.config.set(c,word_completer_key,'WordCompleter',completer)
+    completer.run()
+else:
+    completer.adjust(p, c.frame.body.getInsertPoint())
+    completer.complete_word()
+#@+node:ekr.20081202093528.20:WordCompleter
+class WordCompleter:
+    def __init__(self, p, c, back=True):
+        self.p = p.copy()
+        self.c = c
+        self.back = back
+        self.pos = -1
+    @others
+#@+node:ekr.20081202093528.21:complete_word
+def complete_word(self):
+    txt = self.chunk
+    word = self.word
+    try:
+        if self.back:
+            <<backward search>>
+        else:
+            <<forward search>>
+        <<clean up and exit>>
+    except:
+        self.exit()
+        g.es_exception()
+#@nonl
+#@+node:ekr.20081202093528.22:<<backward search>>
+p = self.search_pos
+start = -1
+counter = 0
+while p:
+    <<counter check>>
+    i = txt.rfind(word, 0, start)
+    if i == -1:
+        p.moveToThreadBack()
+        if p:self.chunk = txt = p.bodyString()
+        start = -1
+    else:
+        if self.acceptable_word(i, txt, word):
+            self.chunk = txt[:i+len(word)-1]
+            return
+        start = i+len(word)-1
+#@nonl
+#@+node:ekr.20081202093528.23:<<counter check>>
+counter+=1
+if counter > 10000:
+    g.es_trace("counter max")
+    break
+#@nonl
+#@-node:ekr.20081202093528.23:<<counter check>>
+#@-node:ekr.20081202093528.22:<<backward search>>
+#@+node:ekr.20081202093528.24:<<forward search>>
+p = self.search_pos
+start = 0
+counter = 0
+while p:
+    <<counter check>>
+    i = txt.find(word, start)
+    if i == -1:
+        p.moveToThreadNext()
+        if p:self.chunk = txt = p.bodyString()
+        start = 0
+    else:
+        if self.acceptable_word(i, txt, word):
+            self.chunk = txt[i+1:]
+            return
+        start = i+1
+#@nonl
+#@+node:ekr.20081202093528.23:<<counter check>>
+counter+=1
+if counter > 10000:
+    g.es_trace("counter max")
+    break
+#@nonl
+#@-node:ekr.20081202093528.23:<<counter check>>
+#@-node:ekr.20081202093528.24:<<forward search>>
+#@+node:ekr.20081202093528.25:<<clean up and exit>>
+if len(self.tried) > 1:
+    # there was some tries so we need to restore
+    self.c.setBodyString(self.p, self.before+self.word+self.after)
+    self.c.frame.body.setInsertPoint(self.pos)
+return self.exit()
+#@nonl
+#@-node:ekr.20081202093528.25:<<clean up and exit>>
+#@-node:ekr.20081202093528.21:complete_word
+#@+node:ekr.20081202093528.26:acceptable_word
+@ if found word for the first time then try it
+@c
+def acceptable_word(self, i, txt, word):
+    if i == 0 or wordsep.find(txt[i-1]) != -1:
+        j = i+len(word)
+        while j < len(txt) and wordsep.find(txt[j]) < 0:
+            j += 1
+        nword = txt[i:j]
+        if nword not in self.tried:
+            self.tried[nword] = 1
+            u = self.c.undoer
+            bunch = u.createCommonBunch(p)
+            bunch.oldBody = p.bodyString()
+            bunch.insertPos = self.pos
+            # Set the type & helpers.
+            bunch.kind = 'node'
+            bunch.undoType = 'complete word'
+            bunch.undoHelper = self.undo_replacement
+            bunch.redoHelper = self.redo_replacement
+            bunch.newBody = newBody = self.before+nword+self.after
+
+            self.c.setBodyString(self.p, newBody)
+            self.c.frame.body.setInsertPoint(self.pos)
+
+            bunch.dirtyVnodeList = [p.v]
+            bunch.newChanged = u.c.isChanged()
+            bunch.newDirty = p.isDirty()
+            bunch.newMarked = p.isMarked()
+
+            u.pushBead(bunch)
+
+            return True
+    return False
+#@-node:ekr.20081202093528.26:acceptable_word
+#@+node:ekr.20081202093528.27:undo_replacement
+def undo_replacement(self):
+    u = self.c.undoer; c=self.c; p=u.p
+    bunch = u.getBead(u.bead)
+    c.setBodyString(p, bunch.oldBody)
+    c.frame.body.setInsertPoint(bunch.insertPos)
+#@nonl
+#@-node:ekr.20081202093528.27:undo_replacement
+#@+node:ekr.20081202093528.28:redo_replacement
+def redo_replacement(self):
+    c = self.c; u=c.undoer; bunch=u.getBead(u.bead+1)
+    c.setBodyString(bunch.p, bunch.newBody)
+    c.frame.body.setInsertPoint(bunch.insertPos)
+#@nonl
+#@-node:ekr.20081202093528.28:redo_replacement
+#@+node:ekr.20081202093528.29:exit
+def exit(self):
+    #g.app.config.set(c,word_completer_key,'WordCompleter',None)
+    #g.app.config.set(c,'next_word_completer','WordCompleter',None)
+    self.pos = -1
+#@nonl
+#@-node:ekr.20081202093528.29:exit
+#@+node:ekr.20081202093528.30:run
+def run(self):
+    self.adjust(self.p, c.frame.body.getInsertPoint())
+    self.complete_word()
+#@-node:ekr.20081202093528.30:run
+#@+node:ekr.20081202093528.31:adjust
+def adjust(self, p, pos):
+    if p != self.p or pos != self.pos:
+        self.p = p.copy()
+        self.pos = pos
+        bs = p.bodyString()
+        word = getCurrentWord(bs, pos)
+        self.word = word
+        self.before = bs[:pos-len(word)]
+        self.after = bs[pos:]
+        self.search_pos = p.copy()
+        if self.back:
+            self.chunk = self.before
+        else:
+            self.chunk = self.after
+        self.tried = {word:1}
+#@nonl
+#@-node:ekr.20081202093528.31:adjust
+#@-node:ekr.20081202093528.20:WordCompleter
+#@+node:ekr.20081202093528.32:getCurrentWord
+def getCurrentWord(s, pos):
+    i = pos-1
+    while i>=0 and wordsep.find(s[i]) < 0:
+         i -= 1
+    return s[i+1:pos]
+#@nonl
+#@-node:ekr.20081202093528.32:getCurrentWord
+#@-node:ekr.20081202093528.19:@command complete-previous
+#@+node:ekr.20081202093528.33:@command complete-next
+wordsep = u'., -+\n\r[]{}<>=-+*&%$#@!"\'?/\\|^()~`:;'
+word_completer_key = 'next_word_completer'
+@others
+completer = g.app.config.get(c,word_completer_key,'WordCompleter')
+if completer is None:
+    completer = WordCompleter(p, c, back=False)
+    g.app.config.set(c, word_completer_key, 'WordCompleter', completer)
+    completer.run()
+else:
+    completer.adjust(p, c.frame.body.getInsertPoint())
+    completer.complete_word()
+
+#@+node:ekr.20081202093528.20:WordCompleter
+class WordCompleter:
+    def __init__(self, p, c, back=True):
+        self.p = p.copy()
+        self.c = c
+        self.back = back
+        self.pos = -1
+    @others
+#@+node:ekr.20081202093528.21:complete_word
+def complete_word(self):
+    txt = self.chunk
+    word = self.word
+    try:
+        if self.back:
+            <<backward search>>
+        else:
+            <<forward search>>
+        <<clean up and exit>>
+    except:
+        self.exit()
+        g.es_exception()
+#@nonl
+#@+node:ekr.20081202093528.22:<<backward search>>
+p = self.search_pos
+start = -1
+counter = 0
+while p:
+    <<counter check>>
+    i = txt.rfind(word, 0, start)
+    if i == -1:
+        p.moveToThreadBack()
+        if p:self.chunk = txt = p.bodyString()
+        start = -1
+    else:
+        if self.acceptable_word(i, txt, word):
+            self.chunk = txt[:i+len(word)-1]
+            return
+        start = i+len(word)-1
+#@nonl
+#@+node:ekr.20081202093528.23:<<counter check>>
+counter+=1
+if counter > 10000:
+    g.es_trace("counter max")
+    break
+#@nonl
+#@-node:ekr.20081202093528.23:<<counter check>>
+#@-node:ekr.20081202093528.22:<<backward search>>
+#@+node:ekr.20081202093528.24:<<forward search>>
+p = self.search_pos
+start = 0
+counter = 0
+while p:
+    <<counter check>>
+    i = txt.find(word, start)
+    if i == -1:
+        p.moveToThreadNext()
+        if p:self.chunk = txt = p.bodyString()
+        start = 0
+    else:
+        if self.acceptable_word(i, txt, word):
+            self.chunk = txt[i+1:]
+            return
+        start = i+1
+#@nonl
+#@+node:ekr.20081202093528.23:<<counter check>>
+counter+=1
+if counter > 10000:
+    g.es_trace("counter max")
+    break
+#@nonl
+#@-node:ekr.20081202093528.23:<<counter check>>
+#@-node:ekr.20081202093528.24:<<forward search>>
+#@+node:ekr.20081202093528.25:<<clean up and exit>>
+if len(self.tried) > 1:
+    # there was some tries so we need to restore
+    self.c.setBodyString(self.p, self.before+self.word+self.after)
+    self.c.frame.body.setInsertPoint(self.pos)
+return self.exit()
+#@nonl
+#@-node:ekr.20081202093528.25:<<clean up and exit>>
+#@-node:ekr.20081202093528.21:complete_word
+#@+node:ekr.20081202093528.26:acceptable_word
+@ if found word for the first time then try it
+@c
+def acceptable_word(self, i, txt, word):
+    if i == 0 or wordsep.find(txt[i-1]) != -1:
+        j = i+len(word)
+        while j < len(txt) and wordsep.find(txt[j]) < 0:
+            j += 1
+        nword = txt[i:j]
+        if nword not in self.tried:
+            self.tried[nword] = 1
+            u = self.c.undoer
+            bunch = u.createCommonBunch(p)
+            bunch.oldBody = p.bodyString()
+            bunch.insertPos = self.pos
+            # Set the type & helpers.
+            bunch.kind = 'node'
+            bunch.undoType = 'complete word'
+            bunch.undoHelper = self.undo_replacement
+            bunch.redoHelper = self.redo_replacement
+            bunch.newBody = newBody = self.before+nword+self.after
+
+            self.c.setBodyString(self.p, newBody)
+            self.c.frame.body.setInsertPoint(self.pos)
+
+            bunch.dirtyVnodeList = [p.v]
+            bunch.newChanged = u.c.isChanged()
+            bunch.newDirty = p.isDirty()
+            bunch.newMarked = p.isMarked()
+
+            u.pushBead(bunch)
+
+            return True
+    return False
+#@-node:ekr.20081202093528.26:acceptable_word
+#@+node:ekr.20081202093528.27:undo_replacement
+def undo_replacement(self):
+    u = self.c.undoer; c=self.c; p=u.p
+    bunch = u.getBead(u.bead)
+    c.setBodyString(p, bunch.oldBody)
+    c.frame.body.setInsertPoint(bunch.insertPos)
+#@nonl
+#@-node:ekr.20081202093528.27:undo_replacement
+#@+node:ekr.20081202093528.28:redo_replacement
+def redo_replacement(self):
+    c = self.c; u=c.undoer; bunch=u.getBead(u.bead+1)
+    c.setBodyString(bunch.p, bunch.newBody)
+    c.frame.body.setInsertPoint(bunch.insertPos)
+#@nonl
+#@-node:ekr.20081202093528.28:redo_replacement
+#@+node:ekr.20081202093528.29:exit
+def exit(self):
+    #g.app.config.set(c,word_completer_key,'WordCompleter',None)
+    #g.app.config.set(c,'next_word_completer','WordCompleter',None)
+    self.pos = -1
+#@nonl
+#@-node:ekr.20081202093528.29:exit
+#@+node:ekr.20081202093528.30:run
+def run(self):
+    self.adjust(self.p, c.frame.body.getInsertPoint())
+    self.complete_word()
+#@-node:ekr.20081202093528.30:run
+#@+node:ekr.20081202093528.31:adjust
+def adjust(self, p, pos):
+    if p != self.p or pos != self.pos:
+        self.p = p.copy()
+        self.pos = pos
+        bs = p.bodyString()
+        word = getCurrentWord(bs, pos)
+        self.word = word
+        self.before = bs[:pos-len(word)]
+        self.after = bs[pos:]
+        self.search_pos = p.copy()
+        if self.back:
+            self.chunk = self.before
+        else:
+            self.chunk = self.after
+        self.tried = {word:1}
+#@nonl
+#@-node:ekr.20081202093528.31:adjust
+#@-node:ekr.20081202093528.20:WordCompleter
+#@+node:ekr.20081202093528.32:getCurrentWord
+def getCurrentWord(s, pos):
+    i = pos-1
+    while i>=0 and wordsep.find(s[i]) < 0:
+         i -= 1
+    return s[i+1:pos]
+#@nonl
+#@-node:ekr.20081202093528.32:getCurrentWord
+#@-node:ekr.20081202093528.33:@command complete-next
+#@-node:ekr.20081202093528.2:Put new commands in leoEditCommands.py
+#@+node:ekr.20081202093528.34:Support line wrapping in Qt gui plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/6e319ec69b5d62b4
+#@nonl
+#@-node:ekr.20081202093528.34:Support line wrapping in Qt gui plugin
+#@+node:ekr.20081202095049.1:Mark finds doesn't work in Qt gui plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
+#@nonl
+#@-node:ekr.20081202095049.1:Mark finds doesn't work in Qt gui plugin
+#@+node:ekr.20081202095049.2:Cut/paste work erratically in Qt gui plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/58af715355227ec
+
+I'm observing the following strange behavior when copy and paste text
+using the qt plugin. The behavior is erratic and I cannot reproduce it
+systematically so I'll try to give you a general picture.
+
+When I select and copy text in the body pane of a node SOMETIMES I see
+the following message in the console
+
+QClipboard::setData: Cannot set X11 selection owner for CLIPBOARD
+
+When I try to paste the copied text:
+- sometimes it works fine
+- sometimes nothing happens (and the Paste entry of the body pane
+context menu is disabled)
+- sometimes the pasted text is not the last copied text (i.e. some
+copy operations fail)
+
+I know this is confusing and I've done my best trying to get a pattern
+for these facts but with no luck.
+
+Vicent 
+#@nonl
+#@-node:ekr.20081202095049.2:Cut/paste work erratically in Qt gui plugin
+#@+node:ekr.20081202095049.5:Hook up find-tab widgets
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5098b46abbc98683
+
+Clicking on them by hand probably doesn't inform Leo's core.
+#@nonl
+#@-node:ekr.20081202095049.5:Hook up find-tab widgets
+#@+node:ekr.20081202095049.4:Alt-tab sometimes loses focus
+@nocolor-node
+
+The focus doesn't go to any pane that supports key bindings.
+
+This may be a result of the F-key lock not being down.  Or something.
+#@nonl
+#@-node:ekr.20081202095049.4:Alt-tab sometimes loses focus
+#@+node:ekr.20081203122403.2:Finish qt gui delete_range method
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/51edf3b44d6a587e
+
+revno: 1259.1.10
+revision-id: terry_n_brown@yahoo.com-20081130181632-ci0ioaksewdvc257
+
+I added code so that this no longer derails the initialization process,
+i.e. just catch the exception and continue.  I don't know what's wrong
+except I first noticed it after a tkinter update from Ubuntu.  I
+think.  Anyway, that's my story :)
+
+When I added the "clean recent files" menu option long before this
+traceback showed up I had a heap of trouble deleting just the file
+entries on the recent files menu.  It was originally hardwired that the
+menu have a "Clear list" item, and then the file entries, but I wanted
+to make it get it's command entries from @menu @settings and add the
+files afterward and that was a lot of fiddling.  I.e. originally it
+deleted everything and added the "Clear list" item before rebuilding
+the file list, now it either tries to delete only the file entries, or
+stores the entries before the files (from @menu) and adds them back
+before the files each time, I forget which finally worked.
+
+What's my point?  It would be nice if delete_range "just worked".  It's
+a 'pass' in qt, and I would guess recent files is the only thing in the
+entire code base that uses it.
+
+The menu tree seems to me to be "write only", i.e. not readable, at
+least from the Leo API, of course you can walk it in a gui specific
+way.  Not necessarily a problem, but would be nice if it was more
+robustly dynamic.  Or maybe I'm missing something, but I've only seen
+functions which find a menu based on knowing it exists before hand.
+#@nonl
+#@-node:ekr.20081203122403.2:Finish qt gui delete_range method
+#@-node:ekr.20081202093528.1:New stuff
 #@+node:ekr.20080517102922.1:Files stuff 8
 #@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 @nocolor
