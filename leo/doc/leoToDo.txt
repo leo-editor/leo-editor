@@ -826,8 +826,6 @@ text.
 #@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
 #@+node:ekr.20081204091750.5:Home doesn't reset column pointer
 #@-node:ekr.20081204091750.5:Home doesn't reset column pointer
-#@+node:ekr.20081203122403.1:Use QSyntaxHighlighter
-#@-node:ekr.20081203122403.1:Use QSyntaxHighlighter
 #@+node:ekr.20081202093528.2:Put new commands in leoEditCommands.py
 #@+node:ekr.20081202093528.19:@command complete-previous
 wordsep = u'., -+\n\r[]{}<>=-+*&%$#@!"\'?/\\|^()~`:;'

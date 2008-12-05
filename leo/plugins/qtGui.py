@@ -11,6 +11,8 @@
 
 safe_mode = False # True: Bypass k.masterKeyHandler for problem keys or visible characters.
 
+useQSyntaxHighlighter = True
+
 # Define these to suppress pylint warnings...
 __timing = None # For timing stats.
 __qh = None # For quick headlines.
@@ -296,7 +298,12 @@ class leoQtBody (leoFrame.leoBody):
                 top.ui.richTextEdit,
                 name = 'body',c=c) # A QTextEdit.
             self.bodyCtrl = w # The widget as seen from Leo's core.
-            self.colorizer = leoColor.colorizer(c)
+
+            # Hook up the QSyntaxHighlighter
+            if useQSyntaxHighlighter:
+                self.colorizer = leoQtColorizer(c,w.widget)
+            else:
+                self.colorizer = leoColor.colorizer(c)
             w.acceptRichText = False
 
         # Config stuff.
@@ -316,7 +323,6 @@ class leoQtBody (leoFrame.leoBody):
         self.editor_v = None
         self.numberOfEditors = 1
         self.totalNumberOfEditors = 1
-    #@nonl
     #@-node:ekr.20081121105001.207: ctor (qtBody)
     #@+node:ekr.20081121105001.208:createBindings (qtBody)
     def createBindings (self,w=None):
@@ -5980,13 +5986,201 @@ class leoQtEventFilter(QtCore.QObject):
 #@-node:ekr.20081121105001.166:class leoQtEventFilter
 #@-node:ekr.20081121105001.513:Key handling
 #@+node:ekr.20081204090029.1:Syntax coloring
-class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
+#@+node:ekr.20081205131308.15:leoQtColorizer
+class leoQtColorizer:
 
     '''An adaptor class that interfaces QSyntaxHighligher
     and the threading_colorizer plugin.'''
 
     #@    @+others
+    #@+node:ekr.20081205131308.16:ctor (leoQtColorizer)
+    def __init__ (self,c,w):
+
+        self.c = c
+        self.w = w
+
+        # g.trace(self,c,w)
+
+        self.count = 0
+        self.enabled = True
+
+        self.highlighter = leoQtSyntaxHighlighter(c,w)
+    #@-node:ekr.20081205131308.16:ctor (leoQtColorizer)
+    #@+node:ekr.20081205131308.17:Entry points
+    #@+node:ekr.20081205131308.18:colorize
+    def colorize(self,p,incremental=False,interruptable=True):
+
+        '''The main colorizer entry point.'''
+
+        self.count += 1 # For unit testing.
+
+        self.interruptable = interruptable
+
+        g.trace(p and p.headString())
+
+        if self.enabled:
+            self.highlighter.rehighlight()
+        else:
+            self.highlighter.unhighlight()
+
+        # if self.enabled:
+            # self.updateSyntaxColorer(p) # Sets self.flag.
+            # self.threadColorizer(p)
+        # else:
+            # self.removeAllTags()
+
+        return "ok" # For unit testing.
+    #@-node:ekr.20081205131308.18:colorize
+    #@+node:ekr.20081205131308.19:enable & disable
+    def disable (self):
+
+        self.enabled=False
+
+    def enable (self):
+
+        self.enabled=True
+    #@nonl
+    #@-node:ekr.20081205131308.19:enable & disable
+    #@+node:ekr.20081205131308.20:isSameColorState
+    def isSameColorState (self):
+
+        return False
+    #@nonl
+    #@-node:ekr.20081205131308.20:isSameColorState
+    #@+node:ekr.20081205131308.21:interrupt (does nothing)
+    interrupt_count = 0
+
+    def interrupt(self):
+
+        '''Interrupt colorOneChunk'''
+
+        trace = True
+
+        g.trace()
+    #@-node:ekr.20081205131308.21:interrupt (does nothing)
+    #@+node:ekr.20081205131308.22:kill
+    def kill (self):
+
+        '''Kill all future coloring.'''
+
+        self.killFlag = True
+    #@-node:ekr.20081205131308.22:kill
+    #@+node:ekr.20081205131308.23:useSyntaxColoring
+    def useSyntaxColoring (self,p):
+
+        """Return True unless p is unambiguously under the control of @nocolor."""
+
+        p = p.copy() ; first = p.copy()
+        val = True ; self.killcolorFlag = False
+
+        # New in Leo 4.6: @nocolor-node disables one node only.
+        theDict = g.get_directives_dict(p)
+        if 'nocolor-node' in theDict:
+            # g.trace('nocolor-node',p.headString())
+            return False
+
+        for p in p.self_and_parents_iter():
+            theDict = g.get_directives_dict(p)
+            no_color = 'nocolor' in theDict
+            color = 'color' in theDict
+            kill_color = 'killcolor' in theDict
+            # A killcolor anywhere disables coloring.
+            if kill_color:
+                val = False ; self.killcolorFlag = True ; break
+            # A color anywhere in the target enables coloring.
+            if color and p == first:
+                val = True ; break
+            # Otherwise, the @nocolor specification must be unambiguous.
+            elif no_color and not color:
+                val = False ; break
+            elif color and not no_color:
+                val = True ; break
+
+        # g.trace(first.headString(),val)
+        return val
+    #@-node:ekr.20081205131308.23:useSyntaxColoring
+    #@+node:ekr.20081205131308.24:updateSyntaxColorer
+    def updateSyntaxColorer (self,p):
+
+        p = p.copy()
+
+        # self.flag is True unless an unambiguous @nocolor is seen.
+        self.flag = self.useSyntaxColoring(p)
+        self.scanColorDirectives(p)
+    #@nonl
+    #@-node:ekr.20081205131308.24:updateSyntaxColorer
+    #@-node:ekr.20081205131308.17:Entry points
+    #@+node:ekr.20081205131308.25:Utils
+    #@+node:ekr.20081205131308.26:scanColorDirectives
+    def scanColorDirectives(self,p):
+
+        '''Scan position p and p's ancestors looking for @comment,
+        @language and @root directives,
+        setting corresponding colorizer ivars.'''
+
+        c = self.c
+        if not c: return # May be None for testing.
+
+        table = (
+            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+            ('root',        c.scanAtRootDirectives),
+        )
+
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,func in table:
+            val = func(aList)
+            if val: d[key]=val
+
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        self.rootMode   = d.get('root') or None
+
+        if lang_dict:
+            self.language       = lang_dict.get('language')
+            self.comment_string = lang_dict.get('comment')
+        else:
+            self.language       = c.target_language and c.target_language.lower()
+            self.comment_string = None
+
+        # g.trace('self.language',self.language)
+        return self.language # For use by external routines.
+    #@-node:ekr.20081205131308.26:scanColorDirectives
+    #@-node:ekr.20081205131308.25:Utils
     #@-others
+
+#@-node:ekr.20081205131308.15:leoQtColorizer
+#@+node:ekr.20081205131308.27:leoQtSyntaxHighlighter
+class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
+
+    #@    @+others
+    #@+node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
+    def __init__ (self,c,w):
+
+        self.c = c
+        self.w = w
+
+        # g.trace(self,c,w)
+
+        # Init the base class.
+        QtGui.QSyntaxHighlighter.__init__(self,w)
+    #@-node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
+    #@+node:ekr.20081205131308.11:highlightBlock
+    def highlightBlock (self,s):
+
+        s = unicode(s)
+        g.trace(s)
+    #@-node:ekr.20081205131308.11:highlightBlock
+    #@+node:ekr.20081205131308.28:unhighlight
+    def unhighlight (self):
+
+        '''Remove all highlighting.'''
+
+        g.trace()
+    #@-node:ekr.20081205131308.28:unhighlight
+    #@-others
+#@-node:ekr.20081205131308.27:leoQtSyntaxHighlighter
 #@-node:ekr.20081204090029.1:Syntax coloring
 #@+node:ekr.20081121105001.515:Text widget classes...
 #@+node:ekr.20081121105001.516: class leoQtBaseTextWidget
