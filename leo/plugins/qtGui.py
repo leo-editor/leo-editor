@@ -29,7 +29,11 @@ import leo.core.leoGui as leoGui
 import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
 
+import re
+import string
+
 import os
+import re # For colorizer
 import string
 import sys
 import time
@@ -6054,8 +6058,6 @@ class leoQtColorizer:
 
         '''Interrupt colorOneChunk'''
 
-        trace = True
-
         g.trace()
     #@-node:ekr.20081205131308.21:interrupt (does nothing)
     #@+node:ekr.20081205131308.22:kill
@@ -6064,6 +6066,7 @@ class leoQtColorizer:
         '''Kill all future coloring.'''
 
         self.killFlag = True
+        g.trace()
     #@-node:ekr.20081205131308.22:kill
     #@+node:ekr.20081205131308.23:useSyntaxColoring
     def useSyntaxColoring (self,p):
@@ -6110,7 +6113,6 @@ class leoQtColorizer:
     #@nonl
     #@-node:ekr.20081205131308.24:updateSyntaxColorer
     #@-node:ekr.20081205131308.17:Entry points
-    #@+node:ekr.20081205131308.25:Utils
     #@+node:ekr.20081205131308.26:scanColorDirectives
     def scanColorDirectives(self,p):
 
@@ -6147,7 +6149,6 @@ class leoQtColorizer:
         # g.trace('self.language',self.language)
         return self.language # For use by external routines.
     #@-node:ekr.20081205131308.26:scanColorDirectives
-    #@-node:ekr.20081205131308.25:Utils
     #@-others
 
 #@-node:ekr.20081205131308.15:leoQtColorizer
@@ -6159,19 +6160,47 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
     def __init__ (self,c,w):
 
         self.c = c
+        self.i = 0
+        self.s = ''
         self.w = w
-
-        # g.trace(self,c,w)
+        self.trace_leo_matches = False
 
         # Init the base class.
         QtGui.QSyntaxHighlighter.__init__(self,w)
+
+        self.colorer = jEditColorizer(c,w=c.frame.body.bodyCtrl)
     #@-node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
     #@+node:ekr.20081205131308.11:highlightBlock
     def highlightBlock (self,s):
 
+        i = self.i
         s = unicode(s)
-        g.trace(s)
+        # g.trace(s)
+
+        # self.s is the entire string.
+        # s is the portion to be colored now.
+        self.i = self.colorer.recolor(self.s,i,i+len(s))
     #@-node:ekr.20081205131308.11:highlightBlock
+    #@+node:ekr.20081206062411.15:rehighlight
+    def rehighlight (self):
+
+        '''Override base rehighlight method'''
+
+        # self.colorer.start()
+        c = self.c
+        self.i = 0
+        self.p = p = c.currentPosition()
+        self.s = self.p.bodyString()
+
+        self.colorer.init(p)
+
+        # Call the base class method.
+        QtGui.QSyntaxHighlighter.rehighlight(self)
+
+
+
+
+    #@-node:ekr.20081206062411.15:rehighlight
     #@+node:ekr.20081205131308.28:unhighlight
     def unhighlight (self):
 
@@ -6181,6 +6210,1423 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
     #@-node:ekr.20081205131308.28:unhighlight
     #@-others
 #@-node:ekr.20081205131308.27:leoQtSyntaxHighlighter
+#@+node:ekr.20081205131308.48:class jeditColorizer
+class jEditColorizer:
+
+    #@    @+others
+    #@+node:ekr.20081205131308.49: Birth and init
+    #@+node:ekr.20081205131308.50:__init__ (threading colorizer)
+    def __init__(self,c,w):
+
+        g.trace(self,w)
+        # Basic data...
+        self.c = c
+        self.p = None
+        self.s = None # The string being colorized.
+
+        self.isQt = g.app.gui.guiName() == 'qt'
+        self.fake = bool(w)
+
+        if w is None:
+            self.w = c.frame.body.bodyCtrl
+            # Use hasattr/getattr to keep pylint happy.
+            if hasattr(g.app.gui,'Tk_Text'):
+                self.Tk_Text = getattr(g.app.gui,'Tk_Text')
+                self.fake = True
+            else:
+                self.Tk_Text = Tk.Text
+        else:
+            self.w = w
+            self.Tk_Text = w
+
+        # Attributes dict ivars: defaults are as shown...
+        self.default = 'null'
+        self.digit_re = ''
+        self.escape = ''
+        self.highlight_digits = True
+        self.ignore_case = True
+        self.no_word_sep = ''
+        # Config settings...
+        self.comment_string = None # Set by scanColorDirectives on @comment
+        self.showInvisibles = False # True: show "invisible" characters.
+        self.underline_undefined = c.config.getBool("underline_undefined_section_names")
+        self.use_hyperlinks = c.config.getBool("use_hyperlinks")
+        self.enabled = c.config.getBool('use_syntax_coloring')
+        # Debugging...
+        self.count = 0 # For unit testing.
+        self.allow_mark_prev = True # The new colorizer tolerates this nonsense :-)
+        self.trace = False or c.config.getBool('trace_colorizer')
+        self.trace_match_flag = False # (Useful) True: trace all matching methods.
+        self.trace_tags = False
+        self.verbose = False
+        # Mode data...
+        self.comment_string = None # Can be set by @comment directive.
+        self.defaultRulesList = []
+        self.flag = True # True unless in range of @nocolor
+        self.importedRulesets = {}
+        self.language = 'python' # set by scanColorDirectives.
+        self.prev = None # The previous token.
+        self.fonts = {} # Keys are config names.  Values are actual fonts.
+        self.keywords = {} # Keys are keywords, values are 0..5.
+        self.modes = {} # Keys are languages, values are modes.
+        self.mode = None # The mode object for the present language.
+        self.modeBunch = None # A bunch fully describing a mode.
+        self.modeStack = []
+        # self.defineAndExtendForthWords()
+        self.word_chars = [] # Inited by init_keywords().
+        self.setFontFromConfig()
+        self.tags = [
+            "blank","comment","cwebName","docPart","keyword","leoKeyword",
+            "latexModeBackground","latexModeKeyword",
+            "latexBackground","latexKeyword",
+            "link","name","nameBrackets","pp","string",
+            "elide","bold","bolditalic","italic", # new for wiki styling.
+            "tab",
+            # Leo jEdit tags...
+            '@color', '@nocolor', 'doc_part', 'section_ref',
+            # jEdit tags.
+            'bracketRange',
+            'comment1','comment2','comment3','comment4',
+            'function',
+            'keyword1','keyword2','keyword3','keyword4',
+            'label','literal1','literal2','literal3','literal4',
+            'markup','operator',
+        ]
+        # Threading info...
+        self.threadCount = 0
+        self.helperThread = None # A singleton helper thread.
+        self.interruptable = True
+        self.killFlag = False
+        # Tagging...
+        self.oldTags = [] # Sorted list of all old tags.
+        self.oldTagsDict = {} # Keys are tag names, values are (i,j)
+        self.globalAddList = [] # The tags (i,j,tagName) remaining to be colored.
+        self.newTagsDict = {} # Keys are tag names, values are lists of tuples (i,j)
+            # The helper thread adds to this dict.  idleHandler in the main thread uses these dicts.
+        self.oldTagsDict = {}
+        self.postPassStarted = False
+
+        #@    << define leoKeywordsDict >>
+        #@+node:ekr.20081205131308.35:<< define leoKeywordsDict >>
+        self.leoKeywordsDict = {}
+
+        for key in g.globalDirectiveList:
+            self.leoKeywordsDict [key] = 'leoKeyword'
+        #@nonl
+        #@-node:ekr.20081205131308.35:<< define leoKeywordsDict >>
+        #@nl
+        #@    << define default_colors_dict >>
+        #@+node:ekr.20081205131308.36:<< define default_colors_dict >>
+        # These defaults are sure to exist.
+
+        self.default_colors_dict = {
+            # tag name       :(     option name,           default color),
+            'comment'        :('comment_color',               'red'),
+            'cwebName'       :('cweb_section_name_color',     'red'),
+            'pp'             :('directive_color',             'blue'),
+            'docPart'        :('doc_part_color',              'red'),
+            'keyword'        :('keyword_color',               'blue'),
+            'leoKeyword'     :('leo_keyword_color',           'blue'),
+            'link'           :('section_name_color',          'red'),
+            'nameBrackets'   :('section_name_brackets_color', 'blue'),
+            'string'         :('string_color',                '#00aa00'), # Used by IDLE.
+            'name'           :('undefined_section_name_color','red'),
+            'latexBackground':('latex_background_color',      'white'),
+
+            # Tags used by forth.
+            'keyword5'       :('keyword5_color',              'blue'),
+            'bracketRange'   :('bracket_range_color',         'orange'),
+            # jEdit tags.
+
+            'comment1'       :('comment1_color', 'red'),
+            'comment2'       :('comment2_color', 'red'),
+            'comment3'       :('comment3_color', 'red'),
+            'comment4'       :('comment4_color', 'red'),
+            'function'       :('function_color', 'black'),
+            'keyword1'       :('keyword1_color', 'blue'),
+            'keyword2'       :('keyword2_color', 'blue'),
+            'keyword3'       :('keyword3_color', 'blue'),
+            'keyword4'       :('keyword4_color', 'blue'),
+            'label'          :('label_color',    'black'),
+            'literal1'       :('literal1_color', '#00aa00'),
+            'literal2'       :('literal2_color', '#00aa00'),
+            'literal3'       :('literal3_color', '#00aa00'),
+            'literal4'       :('literal4_color', '#00aa00'),
+            'markup'         :('markup_color',   'red'),
+            'null'           :('null_color',     'black'),
+            'operator'       :('operator_color', 'black'),
+            }
+        #@-node:ekr.20081205131308.36:<< define default_colors_dict >>
+        #@nl
+        #@    << define default_font_dict >>
+        #@+node:ekr.20081205131308.37:<< define default_font_dict >>
+        self.default_font_dict = {
+            # tag name      : option name
+            'comment'       :'comment_font',
+            'cwebName'      :'cweb_section_name_font',
+            'pp'            :'directive_font',
+            'docPart'       :'doc_part_font',
+            'keyword'       :'keyword_font',
+            'leoKeyword'    :'leo_keyword_font',
+            'link'          :'section_name_font',
+            'nameBrackets'  :'section_name_brackets_font',
+            'string'        :'string_font',
+            'name'          :'undefined_section_name_font',
+            'latexBackground':'latex_background_font',
+
+            # Tags used by forth.
+            'bracketRange'   :'bracketRange_font',
+            'keyword5'       :'keyword5_font',
+
+             # jEdit tags.
+            'comment1'      :'comment1_font',
+            'comment2'      :'comment2_font',
+            'comment3'      :'comment3_font',
+            'comment4'      :'comment4_font',
+            'function'      :'function_font',
+            'keyword1'      :'keyword1_font',
+            'keyword2'      :'keyword2_font',
+            'keyword3'      :'keyword3_font',
+            'keyword4'      :'keyword4_font',
+            'keyword5'      :'keyword5_font',
+            'label'         :'label_font',
+            'literal1'      :'literal1_font',
+            'literal2'      :'literal2_font',
+            'literal3'      :'literal3_font',
+            'literal4'      :'literal4_font',
+            'markup'        :'markup_font',
+            # 'nocolor' This tag is used, but never generates code.
+            'null'          :'null_font',
+            'operator'      :'operator_font',
+            }
+        #@-node:ekr.20081205131308.37:<< define default_font_dict >>
+        #@nl
+
+        # New in Leo 4.6: configure tags only once here.
+        # Some changes will be needed for multiple body editors.
+        self.configure_tags() # Must do this every time to support multiple editors.
+    #@-node:ekr.20081205131308.50:__init__ (threading colorizer)
+    #@+node:ekr.20081205131308.51:addImportedRules
+    def addImportedRules (self,mode,rulesDict,rulesetName):
+
+        '''Append any imported rules at the end of the rulesets specified in mode.importDict'''
+
+        if self.importedRulesets.get(rulesetName):
+            return
+        else:
+            self.importedRulesets [rulesetName] = True
+
+        names = hasattr(mode,'importDict') and mode.importDict.get(rulesetName,[]) or []
+
+        for name in names:
+            savedBunch = self.modeBunch
+            ok = self.init_mode(name)
+            if ok:
+                rulesDict2 = self.rulesDict
+                for key in rulesDict2.keys():
+                    aList = self.rulesDict.get(key,[])
+                    aList2 = rulesDict2.get(key)
+                    if aList2:
+                        # Don't add the standard rules again.
+                        rules = [z for z in aList2 if z not in aList]
+                        if rules:
+                            # g.trace([z.__name__ for z in rules])
+                            aList.extend(rules)
+                            self.rulesDict [key] = aList
+            # g.trace('***** added rules for %s from %s' % (name,rulesetName))
+            self.initModeFromBunch(savedBunch)
+    #@nonl
+    #@-node:ekr.20081205131308.51:addImportedRules
+    #@+node:ekr.20081205131308.52:addLeoRules
+    def addLeoRules (self,theDict):
+
+        '''Put Leo-specific rules to theList.'''
+
+        table = (
+            # Rules added at front are added in **reverse** order.
+            ('@',  self.match_leo_keywords,True), # Called after all other Leo matchers.
+                # Debatable: Leo keywords override langauge keywords.
+            ('@',  self.match_at_color,    True),
+            ('@',  self.match_at_nocolor,  True),
+            ('@',  self.match_doc_part,    True), 
+            ('<',  self.match_section_ref, True), # Called **first**.
+            # Rules added at back are added in normal order.
+            (' ',  self.match_blanks,      False),
+            ('\t', self.match_tabs,        False),
+        )
+
+        for ch, rule, atFront, in table:
+
+            # Replace the bound method by an unbound method.
+            rule = rule.im_func
+            # g.trace(rule)
+
+            theList = theDict.get(ch,[])
+            if atFront:
+                theList.insert(0,rule)
+            else:
+                theList.append(rule)
+            theDict [ch] = theList
+
+        # g.trace(g.listToString(theDict.get('@')))
+    #@-node:ekr.20081205131308.52:addLeoRules
+    #@+node:ekr.20081205131308.53:configure_tags
+    def configure_tags (self):
+
+        c = self.c ; w = self.w ; trace = False
+
+        if w and hasattr(w,'start_tag_configure'):
+            w.start_tag_configure()
+
+        # Get the default body font.
+        defaultBodyfont = self.fonts.get('default_body_font')
+        if not defaultBodyfont:
+            defaultBodyfont = c.config.getFontFromParams(
+                "body_text_font_family", "body_text_font_size",
+                "body_text_font_slant",  "body_text_font_weight",
+                c.config.defaultBodyFontSize)
+            self.fonts['default_body_font'] = defaultBodyfont
+
+        # Configure fonts.
+        keys = self.default_font_dict.keys() ; keys.sort()
+        for key in keys:
+            option_name = self.default_font_dict[key]
+            # First, look for the language-specific setting, then the general setting.
+            for name in ('%s_%s' % (self.language,option_name),(option_name)):
+                font = self.fonts.get(name)
+                if font:
+                    if trace: g.trace('found',name,id(font))
+                    w.tag_config(key,font=font)
+                    break
+                else:
+                    family = c.config.get(name + '_family','family')
+                    size   = c.config.get(name + '_size',  'size')   
+                    slant  = c.config.get(name + '_slant', 'slant')
+                    weight = c.config.get(name + '_weight','weight')
+                    if family or slant or weight or size:
+                        family = family or g.app.config.defaultFontFamily
+                        size   = size or c.config.defaultBodyFontSize
+                        slant  = slant or 'roman'
+                        weight = weight or 'normal'
+                        font = g.app.gui.getFontFromParams(family,size,slant,weight)
+                        # Save a reference to the font so it 'sticks'.
+                        self.fonts[name] = font 
+                        if trace: g.trace(key,name,family,size,slant,weight,id(font))
+                        w.tag_config(key,font=font)
+                        break
+            else: # Neither the general setting nor the language-specific setting exists.
+                if self.fonts.keys(): # Restore the default font.
+                    if trace: g.trace('default',key)
+                    w.tag_config(key,font=defaultBodyfont)
+
+        keys = self.default_colors_dict.keys() ; keys.sort()
+        for name in keys:
+            option_name,default_color = self.default_colors_dict[name]
+            color = (
+                c.config.getColor('%s_%s' % (self.language,option_name)) or
+                c.config.getColor(option_name) or
+                default_color
+            )
+            if trace: g.trace(option_name,color)
+
+            # Must use foreground, not fg.
+            try:
+                w.tag_configure(name, foreground=color)
+            except: # Recover after a user error.
+                g.es_exception()
+                w.tag_configure(name, foreground=default_color)
+
+        # underline=var doesn't seem to work.
+        if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
+            w.tag_configure("link",underline=1) # defined
+            w.tag_configure("name",underline=0) # undefined
+        else:
+            w.tag_configure("link",underline=0)
+            if self.underline_undefined:
+                w.tag_configure("name",underline=1)
+            else:
+                w.tag_configure("name",underline=0)
+
+        self.configure_variable_tags()
+
+        # Colors for latex characters.  Should be user options...
+
+        if 1: # Alas, the selection doesn't show if a background color is specified.
+            w.tag_configure("latexModeBackground",foreground="black")
+            w.tag_configure("latexModeKeyword",foreground="blue")
+            w.tag_configure("latexBackground",foreground="black")
+            w.tag_configure("latexKeyword",foreground="blue")
+        else: # Looks cool, and good for debugging.
+            w.tag_configure("latexModeBackground",foreground="black",background="seashell1")
+            w.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
+            w.tag_configure("latexBackground",foreground="black",background="white")
+            w.tag_configure("latexKeyword",foreground="blue",background="white")
+
+        # Tags for wiki coloring.
+        w.tag_configure("bold",font=self.bold_font)
+        w.tag_configure("italic",font=self.italic_font)
+        w.tag_configure("bolditalic",font=self.bolditalic_font)
+        for name in self.color_tags_list:
+            w.tag_configure(name,foreground=name)
+
+        try:
+            w.end_tag_configure()
+        except AttributeError:
+            pass
+    #@nonl
+    #@-node:ekr.20081205131308.53:configure_tags
+    #@+node:ekr.20081205131308.54:configure_variable_tags
+    def configure_variable_tags (self):
+
+        c = self.c ; w = self.w
+
+        # g.trace()
+
+        for name,option_name,default_color in (
+            ("blank","show_invisibles_space_background_color","Gray90"),
+            ("tab",  "show_invisibles_tab_background_color",  "Gray80"),
+            ("elide", None,                                   "yellow"),
+        ):
+            if self.showInvisibles:
+                color = option_name and c.config.getColor(option_name) or default_color
+            else:
+                option_name,default_color = self.default_colors_dict.get(name,(None,None),)
+                color = option_name and c.config.getColor(option_name) or ''
+            try:
+                w.tag_configure(name,background=color)
+            except: # A user error.
+                w.tag_configure(name,background=default_color)
+
+        # Special case:
+        if not self.showInvisibles:
+            w.tag_configure("elide",elide="1")
+    #@-node:ekr.20081205131308.54:configure_variable_tags
+    #@+node:ekr.20081205131308.55:init_mode & helpers
+    def init_mode (self,name):
+
+        '''Name may be a language name or a delegate name.'''
+
+        if not name: return False
+        language,rulesetName = self.nameToRulesetName(name)
+        bunch = self.modes.get(rulesetName)
+        if bunch:
+            # g.trace('found',language,rulesetName)
+            self.initModeFromBunch(bunch)
+            return True
+        else:
+            # g.trace('****',language,rulesetName)
+            path = g.os_path_join(g.app.loadDir,'..','modes')
+            # Bug fix: 2008/2/10: Don't try to import a non-existent language.
+            fileName = g.os_path_join(path,'%s.py' % (language))
+            if g.os_path_exists(fileName):
+                mode = g.importFromPath (language,path)
+            else: mode = None
+
+            if mode:
+                # A hack to give modes/forth.py access to c.
+                if hasattr(mode,'pre_init_mode'):
+                    mode.pre_init_mode(self.c)
+            else:
+                # Create a dummy bunch to limit recursion.
+                self.modes [rulesetName] = self.modeBunch = g.Bunch(
+                    attributesDict  = {},
+                    defaultColor    = None,
+                    keywordsDict    = {},
+                    language        = language,
+                    mode            = mode,
+                    properties      = {},
+                    rulesDict       = {},
+                    rulesetName     = rulesetName)
+                # g.trace('No colorizer file: %s.py' % language)
+                return False
+            self.language = language
+            self.rulesetName = rulesetName
+            self.properties = hasattr(mode,'properties') and mode.properties or {}
+            self.keywordsDict = hasattr(mode,'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName,{}) or {}
+            self.setKeywords()
+            self.attributesDict = hasattr(mode,'attributesDictDict') and mode.attributesDictDict.get(rulesetName) or {}
+            self.setModeAttributes()
+            self.rulesDict = hasattr(mode,'rulesDictDict') and mode.rulesDictDict.get(rulesetName) or {}
+            self.addLeoRules(self.rulesDict)
+
+            self.defaultColor = 'null'
+            self.mode = mode
+            self.modes [rulesetName] = self.modeBunch = g.Bunch(
+                attributesDict  = self.attributesDict,
+                defaultColor    = self.defaultColor,
+                keywordsDict    = self.keywordsDict,
+                language        = self.language,
+                mode            = self.mode,
+                properties      = self.properties,
+                rulesDict       = self.rulesDict,
+                rulesetName     = self.rulesetName)
+            # Do this after 'officially' initing the mode, to limit recursion.
+            self.addImportedRules(mode,self.rulesDict,rulesetName)
+            self.updateDelimsTables()
+
+            initialDelegate = self.properties.get('initialModeDelegate')
+            if initialDelegate:
+                # g.trace('initialDelegate',initialDelegate)
+                # Replace the original mode by the delegate mode.
+                self.init_mode(initialDelegate)
+                language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
+                self.modes[rulesetName] = self.modes.get(rulesetName2)
+            return True
+    #@+node:ekr.20081205131308.56:nameToRulesetName
+    def nameToRulesetName (self,name):
+
+        '''Compute language and rulesetName from name, which is either a language or a delegate name.'''
+
+        if not name: return ''
+
+        i = name.find('::')
+        if i == -1:
+            language = name
+            rulesetName = '%s_main' % (language)
+        else:
+            language = name[:i]
+            delegate = name[i+2:]
+            rulesetName = self.munge('%s_%s' % (language,delegate))
+
+        # g.trace(name,language,rulesetName)
+        return language,rulesetName
+    #@nonl
+    #@-node:ekr.20081205131308.56:nameToRulesetName
+    #@+node:ekr.20081205131308.57:setKeywords
+    def setKeywords (self):
+
+        '''Initialize the keywords for the present language.
+
+         Set self.word_chars ivar to string.letters + string.digits
+         plus any other character appearing in any keyword.'''
+
+        # Add any new user keywords to leoKeywordsDict.
+        d = self.keywordsDict
+        keys = d.keys()
+        for s in g.globalDirectiveList:
+            key = '@' + s
+            if key not in keys:
+                d [key] = 'leoKeyword'
+
+        # Create the word_chars list. 
+        self.word_chars = [g.toUnicode(ch,encoding='UTF-8') for ch in (string.letters + string.digits)]
+
+        for key in d.keys():
+            for ch in key:
+                # if ch == ' ': g.trace('blank in key: %s' % repr (key))
+                if ch not in self.word_chars:
+                    self.word_chars.append(g.toUnicode(ch,encoding='UTF-8'))
+
+        # jEdit2Py now does this check, so this isn't really needed.
+        # But it is needed for forth.py.
+        for ch in (' ', '\t'):
+            if ch in self.word_chars:
+                # g.es_print('removing %s from word_chars' % (repr(ch)))
+                self.word_chars.remove(ch)
+
+        # g.trace(self.language,[str(z) for z in self.word_chars])
+    #@nonl
+    #@-node:ekr.20081205131308.57:setKeywords
+    #@+node:ekr.20081205131308.58:setModeAttributes
+    def setModeAttributes (self):
+
+        '''Set the ivars from self.attributesDict,
+        converting 'true'/'false' to True and False.'''
+
+        d = self.attributesDict
+        aList = (
+            ('default',         'null'),
+    	    ('digit_re',        ''),
+            ('escape',          ''), # New in Leo 4.4.2.
+    	    ('highlight_digits',True),
+    	    ('ignore_case',     True),
+    	    ('no_word_sep',     ''),
+        )
+
+        for key, default in aList:
+            val = d.get(key,default)
+            if val in ('true','True'): val = True
+            if val in ('false','False'): val = False
+            setattr(self,key,val)
+            # g.trace(key,val)
+    #@nonl
+    #@-node:ekr.20081205131308.58:setModeAttributes
+    #@+node:ekr.20081205131308.59:initModeFromBunch
+    def initModeFromBunch (self,bunch):
+
+        self.modeBunch = bunch
+        self.attributesDict = bunch.attributesDict
+        self.setModeAttributes()
+        self.defaultColor   = bunch.defaultColor
+        self.keywordsDict   = bunch.keywordsDict
+        self.language       = bunch.language
+        self.mode           = bunch.mode
+        self.properties     = bunch.properties
+        self.rulesDict      = bunch.rulesDict
+        self.rulesetName    = bunch.rulesetName
+
+        # g.trace(self.rulesetName)
+    #@nonl
+    #@-node:ekr.20081205131308.59:initModeFromBunch
+    #@+node:ekr.20081205131308.60:updateDelimsTables
+    def updateDelimsTables (self):
+
+        '''Update g.app.language_delims_dict if no entry for the language exists.'''
+
+        d = self.properties
+        lineComment = d.get('lineComment')
+        startComment = d.get('commentStart')
+        endComment = d.get('commentEnd')
+
+        if lineComment and startComment and endComment:
+            delims = '%s %s %s' % (lineComment,startComment,endComment)
+        elif startComment and endComment:
+            delims = '%s %s' % (startComment,endComment)
+        elif lineComment:
+            delims = '%s' % lineComment
+        else:
+            delims = None
+
+        if delims:
+            d = g.app.language_delims_dict
+            if not d.get(self.language):
+                d [self.language] = delims
+                # g.trace(self.language,'delims:',repr(delims))
+    #@-node:ekr.20081205131308.60:updateDelimsTables
+    #@-node:ekr.20081205131308.55:init_mode & helpers
+    #@+node:ekr.20081205131308.74:init
+    def init (self,p):
+
+        if not self.fake:
+            self.w = self.c.frame.body.bodyCtrl
+
+        w = self.w
+
+        self.killFlag = False
+        # self.language is set by self.updateSyntaxColorer.
+        self.p = p.copy()
+        self.s = w.getAllText()
+        self.oldTags = []
+        self.globalAddList = []
+        self.newTagsDict = {}
+        self.oldTagsDict = {}
+        self.postPassStarted = False
+        self.prev = None
+        self.tagsRemoved = False
+        self.init_mode(self.language)
+        # self.configure_tags() # Must do this every time to support multiple editors.
+
+        try:
+            w.init_colorizer(self)
+        except:
+            pass
+    #@-node:ekr.20081205131308.74:init
+    #@+node:ekr.20081205131308.106:munge
+    def munge(self,s):
+
+        '''Munge a mode name so that it is a valid python id.'''
+
+        valid = string.ascii_letters + string.digits + '_'
+
+        return ''.join([g.choose(ch in valid,ch.lower(),'_') for ch in s])
+    #@nonl
+    #@-node:ekr.20081205131308.106:munge
+    #@+node:ekr.20081205131308.111:setFontFromConfig
+    def setFontFromConfig (self):
+
+        c = self.c
+        isQt = g.app.gui.guiName() == 'qt'
+
+        self.bold_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant",  "body_text_font_weight",
+            c.config.defaultBodyFontSize) # , tag = "colorer bold")
+
+        if self.bold_font and not isQt:
+            self.bold_font.configure(weight="bold")
+
+        self.italic_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant",  "body_text_font_weight",
+            c.config.defaultBodyFontSize) # , tag = "colorer italic")
+
+        if self.italic_font and not isQt:
+            self.italic_font.configure(slant="italic",weight="normal")
+
+        self.bolditalic_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant",  "body_text_font_weight",
+            c.config.defaultBodyFontSize) # , tag = "colorer bold italic")
+
+        if self.bolditalic_font and not isQt:
+            self.bolditalic_font.configure(weight="bold",slant="italic")
+
+        self.color_tags_list = []
+        self.image_references = []
+    #@nonl
+    #@-node:ekr.20081205131308.111:setFontFromConfig
+    #@-node:ekr.20081205131308.49: Birth and init
+    #@+node:ekr.20081206062411.13:colorRangeWithTag
+    def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
+
+        '''Add an item to the globalAddList if colorizing is enabled.'''
+
+        trace = False
+
+        if self.killFlag:
+            if self.trace and self.verbose: g.trace('*** killed',self.threadCount)
+            return
+
+        if not self.flag: return
+
+        if delegate:
+            if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
+            self.modeStack.append(self.modeBunch)
+            self.init_mode(delegate)
+            # Color everything at once, using the same indices as the caller.
+            while i < j:
+                progress = i
+                assert j >= 0, 'colorRangeWithTag: negative j'
+                for f in self.rulesDict.get(s[i],[]):
+                    n = f(self,s,i)
+                    if n is None:
+                        g.trace('Can not happen: delegate matcher returns None')
+                    elif n > 0:
+                        # if f.__name__ != 'match_blanks': g.trace(delegate,i,f.__name__)
+                        if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
+                        i += n ; break
+                else:
+                    # New in Leo 4.6: Use the default chars for everything else.
+                    self.setTag(tag,i,i+1)
+                    # aList = self.newTagsDict.get(tag,[])
+                    # aList.append((i,i+1),)
+                    # self.newTagsDict[tag] = aList
+                    i += 1
+                assert i > progress
+            bunch = self.modeStack.pop()
+            self.initModeFromBunch(bunch)
+        elif not exclude_match:
+            self.setTag(tag,i,j)
+            # aList = self.newTagsDict.get(tag,[])
+            # aList.append((i,j),)
+            # self.newTagsDict[tag] = aList
+    #@-node:ekr.20081206062411.13:colorRangeWithTag
+    #@+node:ekr.20081206062411.14:setTag
+    def setTag (self,tag,i,j):
+
+        g.trace(tag,i,j)
+    #@-node:ekr.20081206062411.14:setTag
+    #@+node:ekr.20081205131308.87:jEdit matchers
+    #@@nocolor
+    #@+at
+    # 
+    # The following jEdit matcher methods return the length of the matched 
+    # text if the
+    # match succeeds, and zero otherwise.  In most cases, these methods 
+    # colorize all the matched text.
+    # 
+    # The following arguments affect matching:
+    # 
+    # - at_line_start         True: sequence must start the line.
+    # - at_whitespace_end     True: sequence must be first non-whitespace text 
+    # of the line.
+    # - at_word_start         True: sequence must start a word.
+    # - hash_char             The first character that must match in a regular 
+    # expression.
+    # - no_escape:            True: ignore an 'end' string if it is preceded 
+    # by the ruleset's escape character.
+    # - no_line_break         True: the match will not succeed across line 
+    # breaks.
+    # - no_word_break:        True: the match will not cross word breaks.
+    # 
+    # The following arguments affect coloring when a match succeeds:
+    # 
+    # - delegate              A ruleset name. The matched text will be colored 
+    # recursively by the indicated ruleset.
+    # - exclude_match         If True, the actual text that matched will not 
+    # be colored.
+    # - kind                  The color tag to be applied to colored text.
+    #@-at
+    #@@c
+    #@@color
+    #@+node:ekr.20081205131308.105:dump
+    def dump (self,s):
+
+        if s.find('\n') == -1:
+            return s
+        else:
+            return '\n' + s + '\n'
+    #@nonl
+    #@-node:ekr.20081205131308.105:dump
+    #@+node:ekr.20081205131308.38:Leo rule functions
+    # These rule functions recognize noweb syntactic constructions.
+    #@nonl
+    #@+node:ekr.20081205131308.39:match_at_color
+    def match_at_color (self,s,i):
+
+        if self.trace_leo_matches: g.trace()
+
+        seq = '@color'
+
+        # Only matches at start of line.
+        if i != 0 and s[i-1] != '\n': return 0
+
+        if g.match_word(s,i,seq):
+            self.flag = True # Enable coloring.
+            j = i + len(seq)
+            self.colorRangeWithTag(s,i,j,'leoKeyword')
+            return j - i
+        else:
+            return 0
+    #@nonl
+    #@-node:ekr.20081205131308.39:match_at_color
+    #@+node:ekr.20081205131308.40:match_at_nocolor
+    def match_at_nocolor (self,s,i):
+
+        if self.trace_leo_matches: g.trace()
+
+        # Only matches at start of line.
+        if i != 0 and s[i-1] != '\n':
+            return 0
+        if not g.match_word(s,i,'@nocolor'):
+            return 0
+
+        j = i + len('@nocolor')
+        k = s.find('\n@color',j)
+        if k == -1:
+            # No later @color: don't color the @nocolor directive.
+            self.flag = False # Disable coloring.
+            return len(s) - j
+        else:
+            # A later @color: do color the @nocolor directive.
+            self.colorRangeWithTag(s,i,j,'leoKeyword')
+            self.flag = False # Disable coloring.
+            return k+1-j
+
+    #@-node:ekr.20081205131308.40:match_at_nocolor
+    #@+node:ekr.20081205131308.45:match_blanks
+    def match_blanks (self,s,i):
+
+        # g.trace(self,s,i)
+
+        j = i ; n = len(s)
+
+        while j < n and s[j] == ' ':
+            j += 1
+
+        if j > i:
+            # g.trace(i,j)
+            if self.showInvisibles:
+                self.colorRangeWithTag(s,i,j,'blank')
+            return j - i
+        else:
+            return 0
+    #@-node:ekr.20081205131308.45:match_blanks
+    #@+node:ekr.20081205131308.41:match_doc_part
+    def match_doc_part (self,s,i):
+
+        # New in Leo 4.5: only matches at start of line.
+        if i != 0 and s[i-1] != '\n':
+            return 0
+
+        if g.match_word(s,i,'@doc'):
+            j = i+4
+            self.colorRangeWithTag(s,i,j,'leoKeyword')
+        elif g.match(s,i,'@') and (i+1 >= len(s) or s[i+1] in (' ','\t','\n')):
+            j = i + 1
+            self.colorRangeWithTag(s,i,j,'leoKeyword')
+        else: return 0
+
+        i = j ; n = len(s)
+        while j < n:
+            k = s.find('@c',j)
+            if k == -1:
+                # g.trace('i,len(s)',i,len(s))
+                j = n+1 # Bug fix: 2007/12/14
+                self.colorRangeWithTag(s,i,j,'docPart')
+                return j - i
+            if s[k-1] == '\n' and (g.match_word(s,k,'@c') or g.match_word(s,k,'@code')):
+                j = k
+                self.colorRangeWithTag(s,i,j,'docPart')
+                return j - i
+            else:
+                j = k + 2
+        j = n - 1
+        return max(0,j - i) # Bug fix: 2008/2/10
+    #@-node:ekr.20081205131308.41:match_doc_part
+    #@+node:ekr.20081205131308.42:match_leo_keywords
+    def match_leo_keywords(self,s,i):
+
+        '''Succeed if s[i:] is a Leo keyword.'''
+
+        # g.trace(i,g.get_line(s,i))
+
+        # We must be at the start of a word.
+        if i > 0 and s[i-1] in self.word_chars:
+            return 0
+
+        if s[i] != '@':
+            return 0
+
+        # Get the word as quickly as possible.
+        j = i+1
+        while j < len(s) and s[j] in self.word_chars:
+            j += 1
+        word = s[i+1:j] # Bug fix: 10/17/07: entries in leoKeywordsDict do not start with '@'
+
+        if self.leoKeywordsDict.get(word):
+            kind = 'leoKeyword'
+            self.colorRangeWithTag(s,i,j,kind)
+            self.prev = (i,j,kind)
+            result = j-i
+            self.trace_match(kind,s,i,j)
+            return result
+        else:
+            return 0
+    #@-node:ekr.20081205131308.42:match_leo_keywords
+    #@+node:ekr.20081205131308.43:match_section_ref
+    def match_section_ref (self,s,i):
+
+        if self.trace_leo_matches: g.trace()
+        c = self.c ; w = self.w
+
+        if not g.match(s,i,'<<'):
+            return 0
+        k = g.find_on_line(s,i+2,'>>')
+        if k is not None:
+            j = k + 2
+            self.colorRangeWithTag(s,i,i+2,'nameBrackets')
+            ref = g.findReference(c,s[i:j],self.p)
+            if ref:
+                if self.use_hyperlinks:
+                    #@                << set the hyperlink >>
+                    #@+node:ekr.20081205131308.44:<< set the hyperlink >>
+                    # Set the bindings to vnode callbacks.
+                    # Create the tag.
+                    # Create the tag name.
+                    tagName = "hyper" + str(self.hyperCount)
+                    self.hyperCount += 1
+                    w.tag_delete(tagName)
+                    self.tag(tagName,i+2,j)
+
+                    ref.tagName = tagName
+                    c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
+                    c.tag_bind(w,tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
+                    c.tag_bind(w,tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
+                    #@nonl
+                    #@-node:ekr.20081205131308.44:<< set the hyperlink >>
+                    #@nl
+                else:
+                    self.colorRangeWithTag(s,i+2,k,'link')
+            else:
+                self.colorRangeWithTag(s,i+2,k,'name')
+            self.colorRangeWithTag(s,k,j,'nameBrackets')
+            return j - i
+        else:
+            return 0
+    #@nonl
+    #@-node:ekr.20081205131308.43:match_section_ref
+    #@+node:ekr.20081205131308.46:match_tabs
+    def match_tabs (self,s,i):
+
+        if self.trace_leo_matches: g.trace()
+
+        j = i ; n = len(s)
+
+        while j < n and s[j] == '\t':
+            j += 1
+
+        if j > i:
+            # g.trace(i,j)
+            self.colorRangeWithTag(s,i,j,'tab')
+            return j - i
+        else:
+            return 0
+    #@nonl
+    #@-node:ekr.20081205131308.46:match_tabs
+    #@-node:ekr.20081205131308.38:Leo rule functions
+    #@+node:ekr.20081205131308.88:match_eol_span
+    def match_eol_span (self,s,i,
+        kind=None,seq='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate='',exclude_match=False):
+
+        '''Succeed if seq matches s[i:]'''
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(seq) + 1 < len(s) and s[i+len(seq)] in self.word_chars:
+            return 0 # 7/5/2008
+
+        if g.match(s,i,seq):
+            #j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            j = self.skip_line(s,i)
+            self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            return j - i
+        else:
+            return 0
+    #@-node:ekr.20081205131308.88:match_eol_span
+    #@+node:ekr.20081205131308.89:match_eol_span_regexp
+    def match_eol_span_regexp (self,s,i,
+        kind='',regexp='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate='',exclude_match=False):
+
+        '''Succeed if the regular expression regex matches s[i:].'''
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+
+        n = self.match_regexp_helper(s,i,regexp)
+        if n > 0:
+            # j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            j = self.skip_line(s,i)
+            self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            return j - i
+        else:
+            return 0
+    #@nonl
+    #@-node:ekr.20081205131308.89:match_eol_span_regexp
+    #@+node:ekr.20081205131308.90:match_everything
+    # def match_everything (self,s,i,kind,delegate):
+
+        # '''A hack for phpsection mode: match the entire text and color with delegate.'''
+
+        # j = len(s)
+
+        # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+
+        # return j-i
+    #@-node:ekr.20081205131308.90:match_everything
+    #@+node:ekr.20081205131308.91:match_keywords
+    # This is a time-critical method.
+    def match_keywords (self,s,i):
+
+        '''Succeed if s[i:] is a keyword.'''
+
+        # We must be at the start of a word.
+        if i > 0 and s[i-1] in self.word_chars:
+            return 0
+
+        # Get the word as quickly as possible.
+        j = i ; n = len(s) ; chars = self.word_chars
+        while j < n and s[j] in chars:
+            j += 1
+
+        word = s[i:j]
+        if self.ignore_case: word = word.lower()
+        kind = self.keywordsDict.get(word)
+        if kind:
+            self.colorRangeWithTag(s,i,j,kind)
+            self.prev = (i,j,kind)
+            result = j - i
+            # g.trace('success',word,kind,j-i)
+            # g.trace('word in self.keywordsDict.keys()',word in self.keywordsDict.keys())
+            self.trace_match(kind,s,i,j)
+            return result
+        else:
+            # g.trace('fail',word,kind)
+            # g.trace('word in self.keywordsDict.keys()',word in self.keywordsDict.keys())
+            return 0
+    #@-node:ekr.20081205131308.91:match_keywords
+    #@+node:ekr.20081205131308.92:match_mark_following & getNextToken
+    def match_mark_following (self,s,i,
+        kind='',pattern='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        exclude_match=False):
+
+        '''Succeed if s[i:] matches pattern.'''
+
+        if not self.allow_mark_prev: return 0
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
+            return 0 # 7/5/2008
+
+        if g.match(s,i,pattern):
+            j = i + len(pattern)
+            self.colorRangeWithTag(s,i,j,kind,exclude_match=exclude_match)
+            k = self.getNextToken(s,j)
+            if k > j:
+                self.colorRangeWithTag(s,j,k,kind,exclude_match=False)
+                j = k
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            return j - i
+        else:
+            return 0
+    #@+node:ekr.20081205131308.93:getNextToken
+    def getNextToken (self,s,i):
+
+        '''Return the index of the end of the next token for match_mark_following.
+
+        The jEdit docs are not clear about what a 'token' is, but experiments with jEdit
+        show that token means a word, as defined by word_chars.'''
+
+        while i < len(s) and s[i] in self.word_chars:
+            i += 1
+
+        return min(len(s),i+1)
+    #@nonl
+    #@-node:ekr.20081205131308.93:getNextToken
+    #@-node:ekr.20081205131308.92:match_mark_following & getNextToken
+    #@+node:ekr.20081205131308.94:match_mark_previous
+    def match_mark_previous (self,s,i,
+        kind='',pattern='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        exclude_match=False):
+
+        '''Return the length of a matched SEQ or 0 if no match.
+
+        'at_line_start':    True: sequence must start the line.
+        'at_whitespace_end':True: sequence must be first non-whitespace text of the line.
+        'at_word_start':    True: sequence must start a word.'''
+
+        if not self.allow_mark_prev: return 0
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
+            return 0 # 7/5/2008
+
+        if g.match(s,i,pattern):
+            j = i + len(pattern)
+            # Color the previous token.
+            if self.prev:
+                i2,j2,kind2 = self.prev
+                # g.trace(i2,j2,kind2)
+                self.colorRangeWithTag(s,i2,j2,kind2,exclude_match=False)
+            if not exclude_match:
+                self.colorRangeWithTag(s,i,j,kind)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            return j - i
+        else:
+            return 0
+    #@-node:ekr.20081205131308.94:match_mark_previous
+    #@+node:ekr.20081205131308.95:match_regexp_helper
+    def match_regexp_helper (self,s,i,pattern):
+
+        '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]),'pattern',pattern)
+        trace = False
+
+        try:
+            flags = re.MULTILINE
+            if self.ignore_case: flags|= re.IGNORECASE
+            re_obj = re.compile(pattern,flags)
+        except Exception:
+            # Bug fix: 2007/11/07: do not call g.es here!
+            g.trace('Invalid regular expression: %s' % (pattern))
+            return 0
+
+        # Match succeeds or fails more quickly than search.
+        # g.trace('before')
+        self.match_obj = mo = re_obj.match(s,i) # re_obj.search(s,i) 
+        # g.trace('after')
+
+        if mo is None:
+            return 0
+        else:
+            start, end = mo.start(), mo.end()
+            if start != i: # Bug fix 2007-12-18: no match at i
+                return 0
+            if trace:
+                g.trace('pattern',pattern)
+                g.trace('match: %d, %d, %s' % (start,end,repr(s[start: end])))
+                g.trace('groups',mo.groups())
+            return end - start
+    #@-node:ekr.20081205131308.95:match_regexp_helper
+    #@+node:ekr.20081205131308.96:match_seq
+    def match_seq (self,s,i,
+        kind='',seq='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate=''):
+
+        '''Succeed if s[:] mathces seq.'''
+
+        if at_line_start and i != 0 and s[i-1] != '\n':
+            j = i
+        elif at_whitespace_end and i != g.skip_ws(s,0):
+            j = i
+        elif at_word_start and i > 0 and s[i-1] in self.word_chars:  # 7/5/2008
+            j = i
+        if at_word_start and i + len(seq) + 1 < len(s) and s[i+len(seq)] in self.word_chars:
+            j = i # 7/5/2008
+        elif g.match(s,i,seq):
+            j = i + len(seq)
+            self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+        else:
+            j = i
+        return j - i
+    #@nonl
+    #@-node:ekr.20081205131308.96:match_seq
+    #@+node:ekr.20081205131308.97:match_seq_regexp
+    def match_seq_regexp (self,s,i,
+        kind='',regexp='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate=''):
+
+        '''Succeed if the regular expression regexp matches at s[i:].'''
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]),'regexp',regexp)
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+
+        # g.trace('before')
+        n = self.match_regexp_helper(s,i,regexp)
+        # g.trace('after')
+        j = i + n # Bug fix: 2007-12-18
+        assert (j-i == n)
+        self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+        self.prev = (i,j,kind)
+        self.trace_match(kind,s,i,j)
+        return j - i
+    #@nonl
+    #@-node:ekr.20081205131308.97:match_seq_regexp
+    #@+node:ekr.20081205131308.98:match_span & helper
+    def match_span (self,s,i,
+        kind='',begin='',end='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate='',exclude_match=False,
+        no_escape=False,no_line_break=False,no_word_break=False):
+
+        '''Succeed if s[i:] starts with 'begin' and contains a following 'end'.'''
+
+        if at_line_start and i != 0 and s[i-1] != '\n':
+            j = i
+        elif at_whitespace_end and i != g.skip_ws(s,0):
+            j = i
+        elif at_word_start and i > 0 and s[i-1] in self.word_chars: # 7/5/2008
+            j = i
+        elif at_word_start and i + len(begin) + 1 < len(s) and s[i+len(begin)] in self.word_chars:
+            j = i # 7/5/2008
+        elif not g.match(s,i,begin):
+            j = i
+        else:
+            j = self.match_span_helper(s,i+len(begin),end,no_escape,no_line_break,no_word_break=no_word_break)
+            if j == -1:
+                j = i
+            else:
+                i2 = i + len(begin) ; j2 = j + len(end)
+                # g.trace(i,j,s[i:j2],kind)
+                if delegate:
+                    self.colorRangeWithTag(s,i,i2,kind,delegate=None,    exclude_match=exclude_match)
+                    self.colorRangeWithTag(s,i2,j,kind,delegate=delegate,exclude_match=exclude_match)
+                    self.colorRangeWithTag(s,j,j2,kind,delegate=None,    exclude_match=exclude_match)
+                else: # avoid having to merge ranges in addTagsToList.
+                    self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
+                j = j2
+                self.prev = (i,j,kind)
+
+        self.trace_match(kind,s,i,j)
+        return j - i
+    #@+node:ekr.20081205131308.99:match_span_helper
+    def match_span_helper (self,s,i,pattern,no_escape,no_line_break,no_word_break=False):
+
+        '''Return n >= 0 if s[i] ends with a non-escaped 'end' string.'''
+
+        esc = self.escape
+
+        while 1:
+            j = s.find(pattern,i)
+            if j == -1:
+                # Match to end of text if not found and no_line_break is False
+                if no_line_break:
+                    return -1
+                else:
+                    return len(s)
+            elif no_word_break and j > 0 and s[j-1] in self.word_chars:
+                return -1 # New in Leo 4.5.
+            elif no_line_break and '\n' in s[i:j]:
+                return -1
+            elif esc and not no_escape:
+                # Only an odd number of escapes is a 'real' escape.
+                escapes = 0 ; k = 1
+                while j-k >=0 and s[j-k] == esc:
+                    escapes += 1 ; k += 1
+                if (escapes % 2) == 1:
+                    # Continue searching past the escaped pattern string.
+                    i = j + len(pattern) # Bug fix: 7/25/07.
+                    # g.trace('escapes',escapes,repr(s[i:]))
+                else:
+                    return j
+            else:
+                return j
+    #@nonl
+    #@-node:ekr.20081205131308.99:match_span_helper
+    #@-node:ekr.20081205131308.98:match_span & helper
+    #@+node:ekr.20081205131308.100:match_span_regexp
+    def match_span_regexp (self,s,i,
+        kind='',begin='',end='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate='',exclude_match=False,
+        no_escape=False,no_line_break=False, no_word_break=False,
+    ):
+
+        '''Succeed if s[i:] starts with 'begin' (a regular expression) and contains a following 'end'.'''
+
+        if self.verbose: g.trace('begin',repr(begin),'end',repr(end),self.dump(s[i:]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(begin) + 1 < len(s) and s[i+len(begin)] in self.word_chars:
+            return 0 # 7/5/2008
+
+        n = self.match_regexp_helper(s,i,begin)
+        # We may have to allow $n here, in which case we must use a regex object?
+        if n > 0:
+            j = i + n
+            j2 = s.find(end,j)
+            if j2 == -1: return 0
+            if self.escape and not no_escape:
+                # Only an odd number of escapes is a 'real' escape.
+                escapes = 0 ; k = 1
+                while j-k >=0 and s[j-k] == self.escape:
+                    escapes += 1 ; k += 1
+                if (escapes % 2) == 1:
+                    # An escaped end **aborts the entire match**:
+                    # there is no way to 'restart' the regex.
+                    return 0
+            i2 = j2 - len(end)
+            if delegate:
+                self.colorRangeWithTag(s,i,j,kind, delegate=None,     exclude_match=exclude_match)
+                self.colorRangeWithTag(s,j,i2,kind, delegate=delegate,exclude_match=False)
+                self.colorRangeWithTag(s,i2,j2,kind,delegate=None,    exclude_match=exclude_match)
+            else: # avoid having to merge ranges in addTagsToList.
+                self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j2)
+            return j2 - i
+        else: return 0
+    #@-node:ekr.20081205131308.100:match_span_regexp
+    #@+node:ekr.20081205131308.101:match_word_and_regexp
+    def match_word_and_regexp (self,s,i,
+        kind1='',word='',
+        kind2='',pattern='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        exclude_match=False):
+
+        '''Succeed if s[i:] matches pattern.'''
+
+        if not self.allow_mark_prev: return 0
+
+        if (False or self.verbose): g.trace(i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(word) + 1 < len(s) and s[i+len(word)] in self.word_chars:
+            j = i # 7/5/2008
+
+        if not g.match(s,i,word):
+            return 0
+
+        j = i + len(word)
+        n = self.match_regexp_helper(s,j,pattern)
+        # g.trace(j,pattern,n)
+        if n == 0:
+            return 0
+        self.colorRangeWithTag(s,i,j,kind1,exclude_match=exclude_match)
+        k = j + n
+        self.colorRangeWithTag(s,j,k,kind2,exclude_match=False)    
+        self.prev = (j,k,kind2)
+        self.trace_match(kind1,s,i,j)
+        self.trace_match(kind2,s,j,k)
+        return k - i
+    #@-node:ekr.20081205131308.101:match_word_and_regexp
+    #@+node:ekr.20081205131308.102:skip_line
+    def skip_line (self,s,i):
+
+        if self.escape:
+            escape = self.escape + '\n'
+            n = len(escape)
+            while i < len(s):
+                j = g.skip_line(s,i)
+                if not g.match(s,j-n,escape):
+                    return j
+                # g.trace('escape',s[i:j])
+                i = j
+            return i
+        else:
+            return g.skip_line(s,i)
+                # Include the newline so we don't get a flash at the end of the line.
+    #@nonl
+    #@-node:ekr.20081205131308.102:skip_line
+    #@+node:ekr.20081205131308.112:trace_match
+    def trace_match(self,kind,s,i,j):
+
+        if j != i and self.trace_match_flag:
+            g.trace(kind,i,j,g.callers(2),self.dump(s[i:j]))
+    #@nonl
+    #@-node:ekr.20081205131308.112:trace_match
+    #@-node:ekr.20081205131308.87:jEdit matchers
+    #@+node:ekr.20081206062411.12:recolor
+    def recolor (self,s,i,j):
+
+        '''Recolor s from i to j.'''
+
+        trace = False
+        j = min(j,len(s))
+        if trace: g.trace(self.language,'i',i,'j',j)
+
+        while i < j:
+            progress = i
+            if self.c.frame not in g.app.windowList:
+                g.trace('qtGui: window killed')
+                return
+            # if self.killFlag:
+                # if trace: g.trace('*** killed %d' % self.threadCount)
+                # return
+            functions = self.rulesDict.get(s[i],[])
+            for f in functions:
+                if trace: g.trace('i',i,'f',f)
+                n = f(self,s,i)
+                if n is None or n < 0:
+                    g.trace('Can not happen: matcher returns: %s f = %s' % (repr(n),repr(f)))
+                    break
+                elif n > 0:
+                    i += n ; break
+            else:
+                i += 1
+            assert i > progress
+
+        if trace: g.trace('*** done','i',i)
+        return i
+    #@nonl
+    #@-node:ekr.20081206062411.12:recolor
+    #@+node:ekr.20081206062411.16:start
+    def start (self):
+
+        '''Prepare to recolor the entire text.'''
+
+        g.trace(self.c.currentPosition())
+    #@-node:ekr.20081206062411.16:start
+    #@-others
+#@-node:ekr.20081205131308.48:class jeditColorizer
 #@-node:ekr.20081204090029.1:Syntax coloring
 #@+node:ekr.20081121105001.515:Text widget classes...
 #@+node:ekr.20081121105001.516: class leoQtBaseTextWidget
