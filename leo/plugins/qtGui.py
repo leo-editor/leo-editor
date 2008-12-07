@@ -6107,7 +6107,7 @@ class jEditColorizer:
         self.w = w
         assert(w == self.c.frame.body.bodyCtrl)
 
-        # Coloring stuff.
+        # Used by recolor and helpers...
         self.actualColorDict = {} # Used only by setTag.
         self.global_i,self.global_j = 0,0 # The global bounds of colorizing.
         self.nextState = 1 # Dont use 0.
@@ -6132,7 +6132,6 @@ class jEditColorizer:
         self.trace = False or c.config.getBool('trace_colorizer')
         self.trace_leo_matches = False
         self.trace_match_flag = False # (Useful) True: trace all matching methods.
-        self.trace_tags = False
         self.verbose = False
         # Mode data...
         self.comment_string = None # Can be set by @comment directive.
@@ -6168,19 +6167,6 @@ class jEditColorizer:
             'label','literal1','literal2','literal3','literal4',
             'markup','operator',
         ]
-        # Threading info...
-        # self.threadCount = 0
-        # self.helperThread = None # A singleton helper thread.
-        # self.interruptable = True
-        # self.killFlag = False
-        # # Tagging...
-        # self.oldTags = [] # Sorted list of all old tags.
-        # self.oldTagsDict = {} # Keys are tag names, values are (i,j)
-        # self.globalAddList = [] # The tags (i,j,tagName) remaining to be colored.
-        # self.newTagsDict = {} # Keys are tag names, values are lists of tuples (i,j)
-            # # The helper thread adds to this dict.  idleHandler in the main thread uses these dicts.
-        # self.oldTagsDict = {}
-        # self.postPassStarted = False
 
         #@    << define leoKeywordsDict >>
         #@+node:ekr.20081205131308.35:<< define leoKeywordsDict >>
@@ -6760,24 +6746,15 @@ class jEditColorizer:
         self.nextState = 1 # Dont use 0.
         self.stateDict = {}
 
-        self.updateSyntaxColorer(self.p) # Sets self.flag
+        self.updateSyntaxColorer(self.p)
+            # Sets self.flag and self.language.
 
         self.init_mode(self.language)
 
-        # self.killFlag = False
-        # self.language is set by self.updateSyntaxColorer.
-        # self.oldTags = []
-        # self.globalAddList = []
-        # self.newTagsDict = {}
-        # self.oldTagsDict = {}
-        # self.postPassStarted = False
-        # self.prev = None
-        # self.tagsRemoved = False
+        # Used by matchers.
+        self.prev = None
+
         # self.configure_tags() # Must do this every time to support multiple editors.
-        # try:
-            # w.init_colorizer(self)
-        # except:
-            # pass
     #@-node:ekr.20081205131308.74:init
     #@+node:ekr.20081205131308.87:jEdit matchers
     #@+at
