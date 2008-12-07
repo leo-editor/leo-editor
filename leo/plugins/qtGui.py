@@ -5996,8 +5996,12 @@ class leoQtEventFilter(QtCore.QObject):
 #@+node:ekr.20081205131308.15:leoQtColorizer
 class leoQtColorizer:
 
-    '''An adaptor class that interfaces QSyntaxHighligher
-    and the threading_colorizer plugin.'''
+    '''An adaptor class that interfaces Leo's core to two class:
+
+    1. a subclass of QSyntaxHighlighter,
+
+    2. the jEditColorizer class that contains the
+       pattern-matchin code from the threading colorizer plugin.'''
 
     #@    @+others
     #@+node:ekr.20081205131308.16:ctor (leoQtColorizer)
@@ -6057,6 +6061,11 @@ class leoQtColorizer:
 #@+node:ekr.20081205131308.27:leoQtSyntaxHighlighter
 class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 
+    '''A subclass of QSyntaxHighlighter that overrides
+    the highlightBlock and rehighlight methods.
+
+    All actual syntax coloring is done in the jeditColorer class.'''
+
     #@    @+others
     #@+node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
     def __init__ (self,c,w):
@@ -6098,7 +6107,7 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 class jEditColorizer:
 
     #@    @+others
-    #@+node:ekr.20081205131308.49: Birth
+    #@+node:ekr.20081205131308.49: Birth & init
     #@+node:ekr.20081205131308.50:__init__ (threading colorizer)
     def __init__(self,c,highlighter,w):
 
@@ -6465,6 +6474,28 @@ class jEditColorizer:
         if not self.showInvisibles:
             w.tag_configure("elide",elide="1")
     #@-node:ekr.20081205131308.54:configure_variable_tags
+    #@+node:ekr.20081205131308.74:init
+    def init (self):
+
+        self.p = self.c.currentPosition()
+        self.s = self.w.getAllText()
+        # g.trace(self.s)
+
+        # State info.
+        self.global_i,self.global_j = 0,0
+        self.nextState = 1 # Dont use 0.
+        self.stateDict = {}
+
+        self.updateSyntaxColorer(self.p)
+            # Sets self.flag and self.language.
+
+        self.init_mode(self.language)
+
+        # Used by matchers.
+        self.prev = None
+
+        # self.configure_tags() # Must do this every time to support multiple editors.
+    #@-node:ekr.20081205131308.74:init
     #@+node:ekr.20081205131308.55:init_mode & helpers
     def init_mode (self,name):
 
@@ -6702,11 +6733,13 @@ class jEditColorizer:
         # self.image_references = []
     #@nonl
     #@-node:ekr.20081205131308.111:setFontFromConfig
-    #@-node:ekr.20081205131308.49: Birth
+    #@-node:ekr.20081205131308.49: Birth & init
     #@+node:ekr.20081206062411.13:colorRangeWithTag
     def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
-        '''Actually colorize the selected range.'''
+        '''Actually colorize the selected range.
+
+        This is called whenever a pattern matcher succeed.'''
 
         trace = False
         if not self.flag: return
@@ -6737,29 +6770,8 @@ class jEditColorizer:
             self.setTag(tag,i,j)
     #@nonl
     #@-node:ekr.20081206062411.13:colorRangeWithTag
-    #@+node:ekr.20081205131308.74:init
-    def init (self):
-
-        self.p = self.c.currentPosition()
-        self.s = self.w.getAllText()
-        # g.trace(self.s)
-
-        # State info.
-        self.global_i,self.global_j = 0,0
-        self.nextState = 1 # Dont use 0.
-        self.stateDict = {}
-
-        self.updateSyntaxColorer(self.p)
-            # Sets self.flag and self.language.
-
-        self.init_mode(self.language)
-
-        # Used by matchers.
-        self.prev = None
-
-        # self.configure_tags() # Must do this every time to support multiple editors.
-    #@-node:ekr.20081205131308.74:init
-    #@+node:ekr.20081205131308.87:jEdit matchers
+    #@+node:ekr.20081205131308.87:pattern matchers
+    #@@nocolor-node
     #@+at
     # 
     # The following jEdit matcher methods return the length of the matched 
@@ -7423,7 +7435,7 @@ class jEditColorizer:
             g.trace(kind,i,j,g.callers(2),self.dump(s[i:j]))
     #@nonl
     #@-node:ekr.20081205131308.112:trace_match
-    #@-node:ekr.20081205131308.87:jEdit matchers
+    #@-node:ekr.20081205131308.87:pattern matchers
     #@+node:ekr.20081206062411.12:recolor & helpers
     def recolor (self,s):
 
@@ -7503,6 +7515,42 @@ class jEditColorizer:
             lastMatch=lastMatch)
     #@-node:ekr.20081206062411.18:setCurrentState
     #@-node:ekr.20081206062411.12:recolor & helpers
+    #@+node:ekr.20081205131308.26:scanColorDirectives
+    def scanColorDirectives(self,p):
+
+        '''Scan position p and p's ancestors looking for @comment,
+        @language and @root directives,
+        setting corresponding colorizer ivars.'''
+
+        c = self.c
+        if not c: return # May be None for testing.
+
+        table = (
+            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+            ('root',        c.scanAtRootDirectives),
+        )
+
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,func in table:
+            val = func(aList)
+            if val: d[key]=val
+
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        self.rootMode   = d.get('root') or None
+
+        if lang_dict:
+            self.language       = lang_dict.get('language')
+            self.comment_string = lang_dict.get('comment')
+        else:
+            self.language       = c.target_language and c.target_language.lower()
+            self.comment_string = None
+
+        # g.trace('self.language',self.language)
+        return self.language # For use by external routines.
+    #@-node:ekr.20081205131308.26:scanColorDirectives
     #@+node:ekr.20081206062411.14:setTag
     def setTag (self,tag,i,j):
 
@@ -7542,7 +7590,7 @@ class jEditColorizer:
             self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
     #@nonl
     #@-node:ekr.20081206062411.14:setTag
-    #@+node:ekr.20081205131308.24:updateSyntaxColorer & helpers
+    #@+node:ekr.20081205131308.24:updateSyntaxColorer
     def updateSyntaxColorer (self,p):
 
         p = p.copy()
@@ -7551,42 +7599,7 @@ class jEditColorizer:
         self.flag = self.useSyntaxColoring(p)
         self.scanColorDirectives(p)
     #@nonl
-    #@+node:ekr.20081205131308.26:scanColorDirectives
-    def scanColorDirectives(self,p):
-
-        '''Scan position p and p's ancestors looking for @comment,
-        @language and @root directives,
-        setting corresponding colorizer ivars.'''
-
-        c = self.c
-        if not c: return # May be None for testing.
-
-        table = (
-            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
-            ('root',        c.scanAtRootDirectives),
-        )
-
-        # Set d by scanning all directives.
-        aList = g.get_directives_dict_list(p)
-        d = {}
-        for key,func in table:
-            val = func(aList)
-            if val: d[key]=val
-
-        # Post process.
-        lang_dict       = d.get('lang-dict')
-        self.rootMode   = d.get('root') or None
-
-        if lang_dict:
-            self.language       = lang_dict.get('language')
-            self.comment_string = lang_dict.get('comment')
-        else:
-            self.language       = c.target_language and c.target_language.lower()
-            self.comment_string = None
-
-        # g.trace('self.language',self.language)
-        return self.language # For use by external routines.
-    #@-node:ekr.20081205131308.26:scanColorDirectives
+    #@-node:ekr.20081205131308.24:updateSyntaxColorer
     #@+node:ekr.20081205131308.23:useSyntaxColoring
     def useSyntaxColoring (self,p):
 
@@ -7621,7 +7634,6 @@ class jEditColorizer:
         # g.trace(first.headString(),val)
         return val
     #@-node:ekr.20081205131308.23:useSyntaxColoring
-    #@-node:ekr.20081205131308.24:updateSyntaxColorer & helpers
     #@-others
 #@-node:ekr.20081205131308.48:class jeditColorizer
 #@-node:ekr.20081204090029.1:Syntax coloring
