@@ -889,12 +889,14 @@ def colorSelection (self,i,j,colorName):
     if not colorName: return
     if g.unitTesting: return
 
+@
     # Unlike Tk names, Qt names don't end in a digit.
     if colorName[-1].isdigit() and colorName[0] != '#':
         color = QtGui.QColor(colorName[:-1])
     else:
         color = QtGui.QColor(colorName)
-
+@c
+    color = QtGui.QColor(leoColor.getColor(colorName, 'black'))
     if not color.isValid():
         # g.trace('unknown color name',colorName)
         return
