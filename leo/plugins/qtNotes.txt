@@ -6,7 +6,6 @@
 
 First:
 - Fix bug: clicking + button does not always expand the node.
-- @nocolor-node sometimes disables too much.
 - Support wrap option.
 - Optimize tree updates.
 - Clicks in body text do not update row/column position.
