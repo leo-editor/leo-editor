@@ -6106,6 +6106,10 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 #@+node:ekr.20081205131308.48:class jeditColorizer
 class jEditColorizer:
 
+    '''This class contains the pattern matching code
+    from the threading_colorizer plugin, adapted for
+    use with QSyntaxHighlighter.'''
+
     #@    @+others
     #@+node:ekr.20081205131308.49: Birth & init
     #@+node:ekr.20081205131308.50:__init__ (threading colorizer)
