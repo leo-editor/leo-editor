@@ -6020,7 +6020,7 @@ class leoQtColorizer:
 
         self.interruptable = interruptable
 
-        g.trace(p and p.headString())
+        # g.trace(p and p.headString())
 
         if self.enabled:
             self.highlighter.rehighlight()
@@ -6183,7 +6183,7 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 
         '''Override base rehighlight method'''
 
-        g.trace('*****')
+        # g.trace('*****')
 
         self.colorer.init()
 
@@ -6457,8 +6457,6 @@ class jEditColorizer:
     #@-node:ekr.20081205131308.52:addLeoRules
     #@+node:ekr.20081205131308.53:configure_tags
     def configure_tags (self):
-
-        g.trace(self.w)
 
         c = self.c ; w = self.w ; trace = False
 
@@ -6902,7 +6900,7 @@ class jEditColorizer:
     #@+node:ekr.20081206062411.14:setTag
     def setTag (self,tag,i,j):
 
-        trace = True
+        trace = False
         w = self.w
         colorName = w.configDict.get(tag)
 
@@ -7620,7 +7618,6 @@ class jEditColorizer:
         # Calculate the bounds of the scan.
         lastFunc,lastMatch = bunch.lastFunc,bunch.lastMatch
         i = g.choose(lastFunc,lastMatch,offset)
-        ### i = offset ###
         j = offset + len_s
         j = min(j,len(self.s))
         self.global_i,self.global_j = offset,j
