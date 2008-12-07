@@ -6005,12 +6005,12 @@ class leoQtColorizer:
 
         # g.trace(self,c,w)
 
-        self.count = 0
+        self.count = 0 # For unit testing.
         self.enabled = True
 
         self.highlighter = leoQtSyntaxHighlighter(c,w)
+        self.colorer = self.highlighter.colorer
     #@-node:ekr.20081205131308.16:ctor (leoQtColorizer)
-    #@+node:ekr.20081205131308.17:Entry points
     #@+node:ekr.20081205131308.18:colorize
     def colorize(self,p,incremental=False,interruptable=True):
 
@@ -6018,138 +6018,36 @@ class leoQtColorizer:
 
         self.count += 1 # For unit testing.
 
-        self.interruptable = interruptable
-
-        # g.trace(p and p.headString())
-
         if self.enabled:
             self.highlighter.rehighlight()
-        else:
-            self.highlighter.unhighlight()
-
-        # if self.enabled:
-            # self.updateSyntaxColorer(p) # Sets self.flag.
-            # self.threadColorizer(p)
-        # else:
-            # self.removeAllTags()
 
         return "ok" # For unit testing.
     #@-node:ekr.20081205131308.18:colorize
-    #@+node:ekr.20081205131308.19:enable & disable
+    #@+node:ekr.20081207061047.10:entry points
     def disable (self):
-
-        self.enabled=False
+        self.colorer.enabled=False
 
     def enable (self):
-
-        self.enabled=True
-    #@nonl
-    #@-node:ekr.20081205131308.19:enable & disable
-    #@+node:ekr.20081205131308.20:isSameColorState
-    def isSameColorState (self):
-
-        return False
-    #@nonl
-    #@-node:ekr.20081205131308.20:isSameColorState
-    #@+node:ekr.20081205131308.21:interrupt (does nothing)
-    interrupt_count = 0
+        self.colorer.enabled=True
 
     def interrupt(self):
-
-        '''Interrupt colorOneChunk'''
-
-        # g.trace(g.callers(5))
         pass
-    #@-node:ekr.20081205131308.21:interrupt (does nothing)
-    #@+node:ekr.20081205131308.22:kill
+
+    def isSameColorState (self):
+        return False
+
     def kill (self):
+        pass
 
-        '''Kill all future coloring.'''
-
-        # self.killFlag = True
-        g.trace()
-    #@-node:ekr.20081205131308.22:kill
-    #@+node:ekr.20081205131308.23:useSyntaxColoring
-    def useSyntaxColoring (self,p):
-
-        """Return True unless p is unambiguously under the control of @nocolor."""
-
-        p = p.copy() ; first = p.copy()
-        val = True ; self.killcolorFlag = False
-
-        # New in Leo 4.6: @nocolor-node disables one node only.
-        theDict = g.get_directives_dict(p)
-        if 'nocolor-node' in theDict:
-            # g.trace('nocolor-node',p.headString())
-            return False
-
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            no_color = 'nocolor' in theDict
-            color = 'color' in theDict
-            kill_color = 'killcolor' in theDict
-            # A killcolor anywhere disables coloring.
-            if kill_color:
-                val = False ; self.killcolorFlag = True ; break
-            # A color anywhere in the target enables coloring.
-            if color and p == first:
-                val = True ; break
-            # Otherwise, the @nocolor specification must be unambiguous.
-            elif no_color and not color:
-                val = False ; break
-            elif color and not no_color:
-                val = True ; break
-
-        # g.trace(first.headString(),val)
-        return val
-    #@-node:ekr.20081205131308.23:useSyntaxColoring
-    #@+node:ekr.20081205131308.24:updateSyntaxColorer
-    def updateSyntaxColorer (self,p):
-
-        p = p.copy()
-
-        # self.flag is True unless an unambiguous @nocolor is seen.
-        self.flag = self.useSyntaxColoring(p)
-        self.scanColorDirectives(p)
-    #@nonl
-    #@-node:ekr.20081205131308.24:updateSyntaxColorer
-    #@-node:ekr.20081205131308.17:Entry points
-    #@+node:ekr.20081205131308.26:scanColorDirectives
     def scanColorDirectives(self,p):
+        return self.colorer.scanColorDirectives(p)
 
-        '''Scan position p and p's ancestors looking for @comment,
-        @language and @root directives,
-        setting corresponding colorizer ivars.'''
+    def updateSyntaxColorer (self,p):
+        return self.colorer.updateSyntaxColorer(p)
 
-        c = self.c
-        if not c: return # May be None for testing.
-
-        table = (
-            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
-            ('root',        c.scanAtRootDirectives),
-        )
-
-        # Set d by scanning all directives.
-        aList = g.get_directives_dict_list(p)
-        d = {}
-        for key,func in table:
-            val = func(aList)
-            if val: d[key]=val
-
-        # Post process.
-        lang_dict       = d.get('lang-dict')
-        self.rootMode   = d.get('root') or None
-
-        if lang_dict:
-            self.language       = lang_dict.get('language')
-            self.comment_string = lang_dict.get('comment')
-        else:
-            self.language       = c.target_language and c.target_language.lower()
-            self.comment_string = None
-
-        # g.trace('self.language',self.language)
-        return self.language # For use by external routines.
-    #@-node:ekr.20081205131308.26:scanColorDirectives
+    def useSyntaxColoring (self,p):
+        return self.colorer.useSyntaxColoring(p)
+    #@-node:ekr.20081207061047.10:entry points
     #@-others
 
 #@-node:ekr.20081205131308.15:leoQtColorizer
@@ -6191,13 +6089,6 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
         QtGui.QSyntaxHighlighter.rehighlight(self)
 
     #@-node:ekr.20081206062411.15:rehighlight
-    #@+node:ekr.20081205131308.28:unhighlight
-    def unhighlight (self):
-
-        '''Remove all highlighting.'''
-
-        g.trace()
-    #@-node:ekr.20081205131308.28:unhighlight
     #@-others
 #@-node:ekr.20081205131308.27:leoQtSyntaxHighlighter
 #@+node:ekr.20081205131308.48:class jeditColorizer
@@ -6823,6 +6714,40 @@ class jEditColorizer:
     #@nonl
     #@-node:ekr.20081205131308.111:setFontFromConfig
     #@-node:ekr.20081205131308.49: Birth
+    #@+node:ekr.20081206062411.13:colorRangeWithTag
+    def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
+
+        '''Actually colorize the selected range.'''
+
+        trace = False
+        if not self.flag: return
+
+        if delegate:
+            if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
+            self.modeStack.append(self.modeBunch)
+            self.init_mode(delegate)
+            # Color everything now, using the same indices as the caller.
+            while i < j:
+                progress = i
+                assert j >= 0, 'colorRangeWithTag: negative j'
+                for f in self.rulesDict.get(s[i],[]):
+                    n = f(self,s,i)
+                    if n is None:
+                        g.trace('Can not happen: delegate matcher returns None')
+                    elif n > 0:
+                        if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
+                        i += n ; break
+                else:
+                    # New in Leo 4.6: Use the default chars for everything else.
+                    self.setTag(tag,i,i+1)
+                    i += 1
+                assert i > progress
+            bunch = self.modeStack.pop()
+            self.initModeFromBunch(bunch)
+        elif not exclude_match:
+            self.setTag(tag,i,j)
+    #@nonl
+    #@-node:ekr.20081206062411.13:colorRangeWithTag
     #@+node:ekr.20081205131308.74:init
     def init (self):
 
@@ -6834,6 +6759,8 @@ class jEditColorizer:
         self.global_i,self.global_j = 0,0
         self.nextState = 1 # Dont use 0.
         self.stateDict = {}
+
+        self.updateSyntaxColorer(self.p) # Sets self.flag
 
         self.init_mode(self.language)
 
@@ -6852,90 +6779,6 @@ class jEditColorizer:
         # except:
             # pass
     #@-node:ekr.20081205131308.74:init
-    #@+node:ekr.20081206062411.13:colorRangeWithTag
-    def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
-
-        '''Add an item to the globalAddList if colorizing is enabled.'''
-
-        trace = False
-
-        # if self.killFlag:
-            # if self.trace and self.verbose: g.trace('*** killed',self.threadCount)
-            # return
-
-        if not self.flag: return
-
-        if delegate:
-            if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
-            self.modeStack.append(self.modeBunch)
-            self.init_mode(delegate)
-            # Color everything at once, using the same indices as the caller.
-            while i < j:
-                progress = i
-                assert j >= 0, 'colorRangeWithTag: negative j'
-                for f in self.rulesDict.get(s[i],[]):
-                    n = f(self,s,i)
-                    if n is None:
-                        g.trace('Can not happen: delegate matcher returns None')
-                    elif n > 0:
-                        # if f.__name__ != 'match_blanks': g.trace(delegate,i,f.__name__)
-                        if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
-                        i += n ; break
-                else:
-                    # New in Leo 4.6: Use the default chars for everything else.
-                    self.setTag(tag,i,i+1)
-                    # aList = self.newTagsDict.get(tag,[])
-                    # aList.append((i,i+1),)
-                    # self.newTagsDict[tag] = aList
-                    i += 1
-                assert i > progress
-            bunch = self.modeStack.pop()
-            self.initModeFromBunch(bunch)
-        elif not exclude_match:
-            self.setTag(tag,i,j)
-            # aList = self.newTagsDict.get(tag,[])
-            # aList.append((i,j),)
-            # self.newTagsDict[tag] = aList
-    #@-node:ekr.20081206062411.13:colorRangeWithTag
-    #@+node:ekr.20081206062411.14:setTag
-    def setTag (self,tag,i,j):
-
-        trace = False
-        w = self.w
-        colorName = w.configDict.get(tag)
-
-        # Munch the color name.
-        if not colorName or colorName == 'black':
-            return
-        if colorName[-1].isdigit() and colorName[0] != '#':
-            colorName = colorName[:-1]
-
-        # Get the actual color.
-        color = self.actualColorDict.get(colorName)
-        if not color:
-            color = QtGui.QColor(colorName)
-            if color.isValid():
-                self.actualColorDict[colorName] = color
-            else:
-                return g.trace('unknown color name',colorName)
-
-        # Clip the colorizing to the global bounds.
-        offset = self.global_i
-        lim_i,lim_j = self.global_i,self.global_j
-        clip_i = max(i,lim_i)
-        clip_j = min(j,lim_j)
-        ok = clip_i < clip_j
-
-        if trace:
-            kind = g.choose(ok,' ','***')
-            s2 = g.choose(ok,self.s[clip_i:clip_j],self.s[i:j])
-            g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
-                kind,tag,offset,i,j,lim_i,lim_j,s2))
-
-        if ok:
-            self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
-    #@nonl
-    #@-node:ekr.20081206062411.14:setTag
     #@+node:ekr.20081205131308.87:jEdit matchers
     #@+at
     # 
@@ -7680,6 +7523,125 @@ class jEditColorizer:
             lastMatch=lastMatch)
     #@-node:ekr.20081206062411.18:setCurrentState
     #@-node:ekr.20081206062411.12:recolor & helpers
+    #@+node:ekr.20081206062411.14:setTag
+    def setTag (self,tag,i,j):
+
+        trace = False
+        w = self.w
+        colorName = w.configDict.get(tag)
+
+        # Munch the color name.
+        if not colorName or colorName == 'black':
+            return
+        if colorName[-1].isdigit() and colorName[0] != '#':
+            colorName = colorName[:-1]
+
+        # Get the actual color.
+        color = self.actualColorDict.get(colorName)
+        if not color:
+            color = QtGui.QColor(colorName)
+            if color.isValid():
+                self.actualColorDict[colorName] = color
+            else:
+                return g.trace('unknown color name',colorName)
+
+        # Clip the colorizing to the global bounds.
+        offset = self.global_i
+        lim_i,lim_j = self.global_i,self.global_j
+        clip_i = max(i,lim_i)
+        clip_j = min(j,lim_j)
+        ok = clip_i < clip_j
+
+        if trace:
+            kind = g.choose(ok,' ','***')
+            s2 = g.choose(ok,self.s[clip_i:clip_j],self.s[i:j])
+            g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
+                kind,tag,offset,i,j,lim_i,lim_j,s2))
+
+        if ok:
+            self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
+    #@nonl
+    #@-node:ekr.20081206062411.14:setTag
+    #@+node:ekr.20081205131308.24:updateSyntaxColorer & helpers
+    def updateSyntaxColorer (self,p):
+
+        p = p.copy()
+
+        # self.flag is True unless an unambiguous @nocolor is seen.
+        self.flag = self.useSyntaxColoring(p)
+        self.scanColorDirectives(p)
+    #@nonl
+    #@+node:ekr.20081205131308.26:scanColorDirectives
+    def scanColorDirectives(self,p):
+
+        '''Scan position p and p's ancestors looking for @comment,
+        @language and @root directives,
+        setting corresponding colorizer ivars.'''
+
+        c = self.c
+        if not c: return # May be None for testing.
+
+        table = (
+            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+            ('root',        c.scanAtRootDirectives),
+        )
+
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,func in table:
+            val = func(aList)
+            if val: d[key]=val
+
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        self.rootMode   = d.get('root') or None
+
+        if lang_dict:
+            self.language       = lang_dict.get('language')
+            self.comment_string = lang_dict.get('comment')
+        else:
+            self.language       = c.target_language and c.target_language.lower()
+            self.comment_string = None
+
+        # g.trace('self.language',self.language)
+        return self.language # For use by external routines.
+    #@-node:ekr.20081205131308.26:scanColorDirectives
+    #@+node:ekr.20081205131308.23:useSyntaxColoring
+    def useSyntaxColoring (self,p):
+
+        """Return True unless p is unambiguously under the control of @nocolor."""
+
+        p = p.copy() ; first = p.copy()
+        val = True ; self.killcolorFlag = False
+
+        # New in Leo 4.6: @nocolor-node disables one node only.
+        theDict = g.get_directives_dict(p)
+        if 'nocolor-node' in theDict:
+            # g.trace('nocolor-node',p.headString())
+            return False
+
+        for p in p.self_and_parents_iter():
+            theDict = g.get_directives_dict(p)
+            no_color = 'nocolor' in theDict
+            color = 'color' in theDict
+            kill_color = 'killcolor' in theDict
+            # A killcolor anywhere disables coloring.
+            if kill_color:
+                val = False ; self.killcolorFlag = True ; break
+            # A color anywhere in the target enables coloring.
+            if color and p == first:
+                val = True ; break
+            # Otherwise, the @nocolor specification must be unambiguous.
+            elif no_color and not color:
+                val = False ; break
+            elif color and not no_color:
+                val = True ; break
+
+        # g.trace(first.headString(),val)
+        return val
+    #@-node:ekr.20081205131308.23:useSyntaxColoring
+    #@-node:ekr.20081205131308.24:updateSyntaxColorer & helpers
     #@-others
 #@-node:ekr.20081205131308.48:class jeditColorizer
 #@-node:ekr.20081204090029.1:Syntax coloring
