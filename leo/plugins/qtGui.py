@@ -6937,7 +6937,6 @@ class jEditColorizer:
     #@nonl
     #@-node:ekr.20081206062411.14:setTag
     #@+node:ekr.20081205131308.87:jEdit matchers
-    #@@nocolor
     #@+at
     # 
     # The following jEdit matcher methods return the length of the matched 
@@ -6979,8 +6978,6 @@ class jEditColorizer:
     #@nonl
     #@-node:ekr.20081205131308.105:dump
     #@+node:ekr.20081205131308.38:Leo rule functions
-    # These rule functions recognize noweb syntactic constructions.
-    #@nonl
     #@+node:ekr.20081205131308.39:match_at_color
     def match_at_color (self,s,i):
 
