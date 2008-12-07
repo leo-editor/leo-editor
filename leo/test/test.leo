@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -4569,12 +4569,9 @@ os.system("dir")</t>
 import PyQt4.QtGui as QtGui
 
 ui = c.frame.top.ui
-
 h =ui.horizontalLayout
 v= ui.verticalLayout
-
 v.removeItem(h)
-
 hh = QtGui.QHBoxLayout()
 hh.setContentsMargins(0,0,0,0)
 hh.expandingDirections = QtCore.Qt.Horizontal
@@ -11044,7 +11041,7 @@ print name
 if name:
     name = g.os_path_finalize_join(path,name)
     print name</t>
-<t tx="ekr.20081205104320.1">import os
+<t tx="ekr.20081205104320.1"># import os
 tag = '#!/bin/bash\n'
 s = g.getScript(c,p,
     useSelectedText=False,

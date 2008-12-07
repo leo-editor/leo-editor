@@ -6058,14 +6058,15 @@ class leoQtColorizer:
 
         '''Interrupt colorOneChunk'''
 
-        g.trace()
+        # g.trace(g.callers(5))
+        pass
     #@-node:ekr.20081205131308.21:interrupt (does nothing)
     #@+node:ekr.20081205131308.22:kill
     def kill (self):
 
         '''Kill all future coloring.'''
 
-        self.killFlag = True
+        # self.killFlag = True
         g.trace()
     #@-node:ekr.20081205131308.22:kill
     #@+node:ekr.20081205131308.23:useSyntaxColoring
@@ -6160,45 +6161,34 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
     def __init__ (self,c,w):
 
         self.c = c
-        self.i = 0
-        self.s = ''
         self.w = w
-        self.trace_leo_matches = False
 
         # Init the base class.
         QtGui.QSyntaxHighlighter.__init__(self,w)
 
-        self.colorer = jEditColorizer(c,w=c.frame.body.bodyCtrl)
+        self.colorer = jEditColorizer(
+            c,highlighter=self,
+            w=c.frame.body.bodyCtrl)
     #@-node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
     #@+node:ekr.20081205131308.11:highlightBlock
     def highlightBlock (self,s):
 
-        i = self.i
+        colorer = self.colorer
         s = unicode(s)
-        # g.trace(s)
-
-        # self.s is the entire string.
-        # s is the portion to be colored now.
-        self.i = self.colorer.recolor(self.s,i,i+len(s))
+        # g.trace(s) # s does not include a newline.
+        colorer.recolor(s)
     #@-node:ekr.20081205131308.11:highlightBlock
     #@+node:ekr.20081206062411.15:rehighlight
     def rehighlight (self):
 
         '''Override base rehighlight method'''
 
-        # self.colorer.start()
-        c = self.c
-        self.i = 0
-        self.p = p = c.currentPosition()
-        self.s = self.p.bodyString()
+        g.trace('*****')
 
-        self.colorer.init(p)
+        self.colorer.init()
 
         # Call the base class method.
         QtGui.QSyntaxHighlighter.rehighlight(self)
-
-
-
 
     #@-node:ekr.20081206062411.15:rehighlight
     #@+node:ekr.20081205131308.28:unhighlight
@@ -6214,30 +6204,23 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 class jEditColorizer:
 
     #@    @+others
-    #@+node:ekr.20081205131308.49: Birth and init
+    #@+node:ekr.20081205131308.49: Birth
     #@+node:ekr.20081205131308.50:__init__ (threading colorizer)
-    def __init__(self,c,w):
+    def __init__(self,c,highlighter,w):
 
-        g.trace(self,w)
         # Basic data...
         self.c = c
+        self.highlighter = highlighter # a QSyntaxHighlighter
         self.p = None
-        self.s = None # The string being colorized.
+        self.s = '' # The string being colorized.
+        self.w = w
+        assert(w == self.c.frame.body.bodyCtrl)
 
-        self.isQt = g.app.gui.guiName() == 'qt'
-        self.fake = bool(w)
-
-        if w is None:
-            self.w = c.frame.body.bodyCtrl
-            # Use hasattr/getattr to keep pylint happy.
-            if hasattr(g.app.gui,'Tk_Text'):
-                self.Tk_Text = getattr(g.app.gui,'Tk_Text')
-                self.fake = True
-            else:
-                self.Tk_Text = Tk.Text
-        else:
-            self.w = w
-            self.Tk_Text = w
+        # Coloring stuff.
+        self.actualColorDict = {} # Used only by setTag.
+        self.global_i,self.global_j = 0,0 # The global bounds of colorizing.
+        self.nextState = 1 # Dont use 0.
+        self.stateDict = {} # Keys are state numbers, values are data.
 
         # Attributes dict ivars: defaults are as shown...
         self.default = 'null'
@@ -6256,6 +6239,7 @@ class jEditColorizer:
         self.count = 0 # For unit testing.
         self.allow_mark_prev = True # The new colorizer tolerates this nonsense :-)
         self.trace = False or c.config.getBool('trace_colorizer')
+        self.trace_leo_matches = False
         self.trace_match_flag = False # (Useful) True: trace all matching methods.
         self.trace_tags = False
         self.verbose = False
@@ -6272,6 +6256,7 @@ class jEditColorizer:
         self.mode = None # The mode object for the present language.
         self.modeBunch = None # A bunch fully describing a mode.
         self.modeStack = []
+        self.rulesDict = {}
         # self.defineAndExtendForthWords()
         self.word_chars = [] # Inited by init_keywords().
         self.setFontFromConfig()
@@ -6293,18 +6278,18 @@ class jEditColorizer:
             'markup','operator',
         ]
         # Threading info...
-        self.threadCount = 0
-        self.helperThread = None # A singleton helper thread.
-        self.interruptable = True
-        self.killFlag = False
-        # Tagging...
-        self.oldTags = [] # Sorted list of all old tags.
-        self.oldTagsDict = {} # Keys are tag names, values are (i,j)
-        self.globalAddList = [] # The tags (i,j,tagName) remaining to be colored.
-        self.newTagsDict = {} # Keys are tag names, values are lists of tuples (i,j)
-            # The helper thread adds to this dict.  idleHandler in the main thread uses these dicts.
-        self.oldTagsDict = {}
-        self.postPassStarted = False
+        # self.threadCount = 0
+        # self.helperThread = None # A singleton helper thread.
+        # self.interruptable = True
+        # self.killFlag = False
+        # # Tagging...
+        # self.oldTags = [] # Sorted list of all old tags.
+        # self.oldTagsDict = {} # Keys are tag names, values are (i,j)
+        # self.globalAddList = [] # The tags (i,j,tagName) remaining to be colored.
+        # self.newTagsDict = {} # Keys are tag names, values are lists of tuples (i,j)
+            # # The helper thread adds to this dict.  idleHandler in the main thread uses these dicts.
+        # self.oldTagsDict = {}
+        # self.postPassStarted = False
 
         #@    << define leoKeywordsDict >>
         #@+node:ekr.20081205131308.35:<< define leoKeywordsDict >>
@@ -6473,6 +6458,8 @@ class jEditColorizer:
     #@+node:ekr.20081205131308.53:configure_tags
     def configure_tags (self):
 
+        g.trace(self.w)
+
         c = self.c ; w = self.w ; trace = False
 
         if w and hasattr(w,'start_tag_configure'):
@@ -6573,7 +6560,6 @@ class jEditColorizer:
             w.end_tag_configure()
         except AttributeError:
             pass
-    #@nonl
     #@-node:ekr.20081205131308.53:configure_tags
     #@+node:ekr.20081205131308.54:configure_variable_tags
     def configure_variable_tags (self):
@@ -6794,33 +6780,6 @@ class jEditColorizer:
                 # g.trace(self.language,'delims:',repr(delims))
     #@-node:ekr.20081205131308.60:updateDelimsTables
     #@-node:ekr.20081205131308.55:init_mode & helpers
-    #@+node:ekr.20081205131308.74:init
-    def init (self,p):
-
-        if not self.fake:
-            self.w = self.c.frame.body.bodyCtrl
-
-        w = self.w
-
-        self.killFlag = False
-        # self.language is set by self.updateSyntaxColorer.
-        self.p = p.copy()
-        self.s = w.getAllText()
-        self.oldTags = []
-        self.globalAddList = []
-        self.newTagsDict = {}
-        self.oldTagsDict = {}
-        self.postPassStarted = False
-        self.prev = None
-        self.tagsRemoved = False
-        self.init_mode(self.language)
-        # self.configure_tags() # Must do this every time to support multiple editors.
-
-        try:
-            w.init_colorizer(self)
-        except:
-            pass
-    #@-node:ekr.20081205131308.74:init
     #@+node:ekr.20081205131308.106:munge
     def munge(self,s):
 
@@ -6835,37 +6794,66 @@ class jEditColorizer:
     def setFontFromConfig (self):
 
         c = self.c
-        isQt = g.app.gui.guiName() == 'qt'
+        # isQt = g.app.gui.guiName() == 'qt'
 
         self.bold_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer bold")
 
-        if self.bold_font and not isQt:
-            self.bold_font.configure(weight="bold")
+        # if self.bold_font and not isQt:
+            # self.bold_font.configure(weight="bold")
 
         self.italic_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer italic")
 
-        if self.italic_font and not isQt:
-            self.italic_font.configure(slant="italic",weight="normal")
+        # if self.italic_font and not isQt:
+            # self.italic_font.configure(slant="italic",weight="normal")
 
         self.bolditalic_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer bold italic")
 
-        if self.bolditalic_font and not isQt:
-            self.bolditalic_font.configure(weight="bold",slant="italic")
+        # if self.bolditalic_font and not isQt:
+            # self.bolditalic_font.configure(weight="bold",slant="italic")
 
         self.color_tags_list = []
-        self.image_references = []
+        # self.image_references = []
     #@nonl
     #@-node:ekr.20081205131308.111:setFontFromConfig
-    #@-node:ekr.20081205131308.49: Birth and init
+    #@-node:ekr.20081205131308.49: Birth
+    #@+node:ekr.20081205131308.74:init
+    def init (self):
+
+        self.p = self.c.currentPosition()
+        self.s = self.w.getAllText()
+        # g.trace(self.s)
+
+        # State info.
+        self.global_i,self.global_j = 0,0
+        self.nextState = 1 # Dont use 0.
+        self.stateDict = {}
+
+        self.init_mode(self.language)
+
+        # self.killFlag = False
+        # self.language is set by self.updateSyntaxColorer.
+        # self.oldTags = []
+        # self.globalAddList = []
+        # self.newTagsDict = {}
+        # self.oldTagsDict = {}
+        # self.postPassStarted = False
+        # self.prev = None
+        # self.tagsRemoved = False
+        # self.configure_tags() # Must do this every time to support multiple editors.
+        # try:
+            # w.init_colorizer(self)
+        # except:
+            # pass
+    #@-node:ekr.20081205131308.74:init
     #@+node:ekr.20081206062411.13:colorRangeWithTag
     def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
@@ -6873,9 +6861,9 @@ class jEditColorizer:
 
         trace = False
 
-        if self.killFlag:
-            if self.trace and self.verbose: g.trace('*** killed',self.threadCount)
-            return
+        # if self.killFlag:
+            # if self.trace and self.verbose: g.trace('*** killed',self.threadCount)
+            # return
 
         if not self.flag: return
 
@@ -6914,7 +6902,41 @@ class jEditColorizer:
     #@+node:ekr.20081206062411.14:setTag
     def setTag (self,tag,i,j):
 
-        g.trace(tag,i,j)
+        trace = True
+        w = self.w
+        colorName = w.configDict.get(tag)
+
+        # Munch the color name.
+        if not colorName or colorName == 'black':
+            return
+        if colorName[-1].isdigit() and colorName[0] != '#':
+            colorName = colorName[:-1]
+
+        # Get the actual color.
+        color = self.actualColorDict.get(colorName)
+        if not color:
+            color = QtGui.QColor(colorName)
+            if color.isValid():
+                self.actualColorDict[colorName] = color
+            else:
+                return g.trace('unknown color name',colorName)
+
+        # Clip the colorizing to the global bounds.
+        offset = self.global_i
+        lim_i,lim_j = self.global_i,self.global_j
+        clip_i = max(i,lim_i)
+        clip_j = min(j,lim_j)
+        ok = clip_i < clip_j
+
+        if trace:
+            kind = g.choose(ok,' ','***')
+            s2 = g.choose(ok,self.s[clip_i:clip_j],self.s[i:j])
+            g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
+                kind,tag,offset,i,j,lim_i,lim_j,s2))
+
+        if ok:
+            self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
+    #@nonl
     #@-node:ekr.20081206062411.14:setTag
     #@+node:ekr.20081205131308.87:jEdit matchers
     #@@nocolor
@@ -7584,47 +7606,86 @@ class jEditColorizer:
     #@nonl
     #@-node:ekr.20081205131308.112:trace_match
     #@-node:ekr.20081205131308.87:jEdit matchers
-    #@+node:ekr.20081206062411.12:recolor
-    def recolor (self,s,i,j):
+    #@+node:ekr.20081206062411.12:recolor & helpers
+    def recolor (self,s):
 
-        '''Recolor s from i to j.'''
+        '''Recolor the line s from i to j.'''
 
-        trace = False
-        j = min(j,len(s))
-        if trace: g.trace(self.language,'i',i,'j',j)
+        trace = False ; verbose = False
+        if not self.s: return # Must handle empty lines!
+
+        bunch,len_s = self.getPrevState(),len(s)
+        # offset is the index in self.s of the first character of s.
+        offset = bunch.offset + bunch.len_s
+        # Calculate the bounds of the scan.
+        lastFunc,lastMatch = bunch.lastFunc,bunch.lastMatch
+        i = g.choose(lastFunc,lastMatch,offset)
+        ### i = offset ###
+        j = offset + len_s
+        j = min(j,len(self.s))
+        self.global_i,self.global_j = offset,j
+
+        if trace: g.trace(
+            '%s offset: %3s, i:%3s, j:%3s, s: %s' % (
+            self.language,offset,i,j,repr(self.s[i:j])))
 
         while i < j:
             progress = i
-            if self.c.frame not in g.app.windowList:
-                g.trace('qtGui: window killed')
-                return
-            # if self.killFlag:
-                # if trace: g.trace('*** killed %d' % self.threadCount)
-                # return
-            functions = self.rulesDict.get(s[i],[])
+            functions = self.rulesDict.get(self.s[i],[])
             for f in functions:
-                if trace: g.trace('i',i,'f',f)
-                n = f(self,s,i)
+                if trace and verbose: g.trace('i',i,'f',f)
+                n = f(self,self.s,i)
                 if n is None or n < 0:
-                    g.trace('Can not happen: matcher returns: %s f = %s' % (repr(n),repr(f)))
+                    g.trace('Can not happen' % (repr(n),repr(f)))
+                    lastFunc,lastMatch = None,i
                     break
                 elif n > 0:
-                    i += n ; break
+                    lastFunc,lastMatch = f,i
+                    i += n
+                    break # Must break
             else:
                 i += 1
+                lastFunc,lastMatch = None,i
             assert i > progress
 
-        if trace: g.trace('*** done','i',i)
-        return i
-    #@nonl
-    #@-node:ekr.20081206062411.12:recolor
-    #@+node:ekr.20081206062411.16:start
-    def start (self):
+        # Add one for the missing newline.
+        self.setCurrentState(offset,len_s+1,lastFunc,lastMatch)
+    #@+node:ekr.20081206062411.17:getPrevState
+    def getPrevState (self):
 
-        '''Prepare to recolor the entire text.'''
+        h = self.highlighter
+        state = h.previousBlockState()
+        bunch = self.stateDict.get(state)
 
-        g.trace(self.c.currentPosition())
-    #@-node:ekr.20081206062411.16:start
+        # g.trace(bunch)
+
+        if not bunch:
+            bunch = g.bunch(
+                offset=0,len_s=0,
+                lastFunc=None,lastMatch=0)
+
+        return bunch
+    #@-node:ekr.20081206062411.17:getPrevState
+    #@+node:ekr.20081206062411.18:setCurrentState
+    def setCurrentState (self,offset,len_s,lastFunc,lastMatch):
+
+        h = self.highlighter
+        state = h.currentBlockState()
+
+        if state == -1:
+            # Allocate a new state
+            state = self.nextState
+            self.nextState += 1
+            h.setCurrentBlockState(state)
+
+        # Remember this info.
+        self.stateDict[state] = g.bunch(
+            offset=offset,
+            len_s=len_s,
+            lastFunc=lastFunc,
+            lastMatch=lastMatch)
+    #@-node:ekr.20081206062411.18:setCurrentState
+    #@-node:ekr.20081206062411.12:recolor & helpers
     #@-others
 #@-node:ekr.20081205131308.48:class jeditColorizer
 #@-node:ekr.20081204090029.1:Syntax coloring
