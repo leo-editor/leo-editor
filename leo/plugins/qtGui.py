@@ -7641,7 +7641,7 @@ class jEditColorizer:
     #@-others
 #@-node:ekr.20081205131308.48:class jeditColorizer
 #@-node:ekr.20081204090029.1:Syntax coloring
-#@+node:ekr.20081121105001.515:Text widget classes...
+#@+node:ekr.20081121105001.515:Text widget classes
 #@+node:ekr.20081121105001.516: class leoQtBaseTextWidget
 class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
@@ -8741,7 +8741,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
     def setForegroundColor(self,color):
         pass
 #@-node:ekr.20081121105001.594:class leoQtMinibuffer (leoQLineEditWidget)
-#@-node:ekr.20081121105001.515:Text widget classes...
+#@-node:ekr.20081121105001.515:Text widget classes
 #@-others
 #@-node:ekr.20081121105001.188:@thin qtGui.py
 #@-leo
