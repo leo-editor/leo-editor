@@ -2318,6 +2318,9 @@ class leoQtLog (leoFrame.leoLog):
         if g.app.quitting or not c or not c.exists:
             return
 
+        if color:
+            color = leoColor.getColor(color, 'black')
+
         self.selectTab(tabName or 'Log')
         # print('qtLog.put',tabName,'%3s' % (len(s)),self.logCtrl)
 
@@ -5128,13 +5131,13 @@ class leoQtGui(leoGui.leoGui):
     #@nonl
     #@-node:ekr.20081121105001.488:runOpenFileDialog
     #@+node:ekr.20081121105001.489:runSaveFileDialog
-    def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
+    def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
 
         """Create and run an Qt save file dialog ."""
 
         parent = None
-        filter = self.makeFilter(filetypes)
-        s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter)
+        filter_ = self.makeFilter(filetypes)
+        s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
         return g.app.gui.toUnicode(s)
     #@-node:ekr.20081121105001.489:runSaveFileDialog
     #@+node:ekr.20081121105001.490:runScrolledMessageDialog
@@ -8000,12 +8003,15 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if not colorName: return
         if g.unitTesting: return
 
-        # Unlike Tk names, Qt names don't end in a digit.
-        if colorName[-1].isdigit() and colorName[0] != '#':
-            color = QtGui.QColor(colorName[:-1])
-        else:
-            color = QtGui.QColor(colorName)
-
+    #@+at
+    #     # Unlike Tk names, Qt names don't end in a digit.
+    #     if colorName[-1].isdigit() and colorName[0] != '#':
+    #         color = QtGui.QColor(colorName[:-1])
+    #     else:
+    #         color = QtGui.QColor(colorName)
+    #@-at
+    #@@c
+        color = QtGui.QColor(leoColor.getColor(colorName, 'black'))
         if not color.isValid():
             # g.trace('unknown color name',colorName)
             return

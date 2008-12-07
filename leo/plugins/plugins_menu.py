@@ -433,7 +433,7 @@ class PlugIn:
             msg=self.doc,
             c=self.c,
             flags='rst',
-            name='plugins-about'
+            name='leo_system'
         )
 
     #@-node:EKR.20040517080555.8:about
