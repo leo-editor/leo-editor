@@ -7,7 +7,6 @@
 First:
 - Support wrap option.
 - Optimize tree updates.
-- Clicks in body text do not update row/column position.
 
 Next:
 - Allow coloring of icon bar buttons.

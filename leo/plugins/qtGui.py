@@ -11,8 +11,6 @@
 
 safe_mode = False # True: Bypass k.masterKeyHandler for problem keys or visible characters.
 
-useQSyntaxHighlighter = True
-
 # Define these to suppress pylint warnings...
 __timing = None # For timing stats.
 __qh = None # For quick headlines.
@@ -304,10 +302,7 @@ class leoQtBody (leoFrame.leoBody):
             self.bodyCtrl = w # The widget as seen from Leo's core.
 
             # Hook up the QSyntaxHighlighter
-            if useQSyntaxHighlighter:
-                self.colorizer = leoQtColorizer(c,w.widget)
-            else:
-                self.colorizer = leoColor.colorizer(c)
+            self.colorizer = leoQtColorizer(c,w.widget)
             w.acceptRichText = False
 
         # Config stuff.
@@ -4893,12 +4888,17 @@ class leoQtGui(leoGui.leoGui):
     #@nonl
     #@-node:ekr.20081121105001.183:Clipboard
     #@+node:ekr.20081121105001.478:Do nothings
-    def color (self,color):         return None
+    def color (self,color):
+        return None
 
-    def createRootWindow(self):     pass
+    def createRootWindow(self):
+        pass
 
     def killGui(self,exitFlag=True):
         """Destroy a gui and terminate Leo if exitFlag is True."""
+
+    def killPopupMenu(self):
+        pass
 
     def recreateRootWindow(self):
         """Create the hidden root window of a gui
@@ -7628,6 +7628,9 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.widget.connect(self.widget,
             QtCore.SIGNAL("textChanged()"),self.onTextChanged)
 
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+
         self.injectIvars(c)
     #@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
     #@+node:ekr.20081121105001.519:injectIvars
@@ -7845,6 +7848,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         return self.name
     #@-node:ekr.20081121105001.535:getName (baseTextWidget)
+    #@+node:ekr.20081208041503.499:onClick
+    def onClick(self):
+
+        c = self.c
+        name = c.widget_name(self)
+
+        if name.startswith('body'):
+            if hasattr(c.frame,'statusLine'):
+                c.frame.statusLine.update()
+    #@-node:ekr.20081208041503.499:onClick
     #@+node:ekr.20081121105001.536:onTextChanged
     def onTextChanged (self):
 
