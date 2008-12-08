@@ -8,12 +8,16 @@ First:
 
 - Complete support for find tab:
     - update ivars when checkboxes clicked.
-    - update checkboxes when toggle commands executed.
+    - (done)update checkboxes when toggle commands executed.
+
+- Make sure key strokes are handled in log, find panes.
 
 Next:
 - Optimize tree updates.
 
 Finally:
+- Disabling searches of body pane can cause hard crashes.
+    - initInteractiveCommands expects c.edit_widget(p)to exist.
 - Allow coloring of icon bar buttons.
 - Support multiple body editors.
 
