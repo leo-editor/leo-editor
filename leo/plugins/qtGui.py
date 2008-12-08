@@ -3896,6 +3896,7 @@ class leoQtTree (leoFrame.leoTree):
             "box%02d.GIF" % val)
 
     #@-node:ekr.20081121105001.418:getIcon & getIconImage
+    #@+node:ekr.20081208072750.20:redraw_after...
     #@+node:ekr.20081121105001.419:redraw_after_clone
     def redraw_after_clone (self):
 
@@ -3919,31 +3920,6 @@ class leoQtTree (leoFrame.leoTree):
         # This is reasonable now that we only allocate
         # one dummy node in collapsed trees.
         return self.full_redraw()
-    #@+node:ekr.20081121105001.423:removeFromDicts
-    def removeFromDicts (self,p):
-
-        # Important: items do not necessarily exist.
-
-        # Remove item from parentsDict.
-        it = self.parentsDict.get(p.v)
-        if it: del self.parentsDict[p.v]
-
-        # Remove position from itemsDict.
-        p2 = self.itemsDict.get(it)
-        if p2 == p: del self.itemsDict[it]
-
-        # Remove items from vnodeDict
-        aList = self.vnodeDict.get(p.v,[])
-        # aList = [z for z in aList if z[1] != it] # Wrong
-        aList = [z for z in aList if z[0] != p]
-        self.vnodeDict[p.v] = aList
-
-        # Remove items from tnodeDict
-        aList = self.tnodeDict.get(p.v.t,[])
-        # aList = [z for z in aList if z[1] != it] # Wrong
-        aList = [z for z in aList if z[0] != p]
-        self.tnodeDict[p.v.t] = aList
-    #@-node:ekr.20081121105001.423:removeFromDicts
     #@-node:ekr.20081121105001.422:redraw_after_expand & helper
     #@+node:ekr.20081121105001.424:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
@@ -4001,6 +3977,32 @@ class leoQtTree (leoFrame.leoTree):
 
         pass # It is quite wrong to do an automatic redraw after select.
     #@-node:ekr.20081121105001.430:redraw_after_select
+    #@-node:ekr.20081208072750.20:redraw_after...
+    #@+node:ekr.20081121105001.423:removeFromDicts
+    def removeFromDicts (self,p):
+
+        # Important: items do not necessarily exist.
+
+        # Remove item from parentsDict.
+        it = self.parentsDict.get(p.v)
+        if it: del self.parentsDict[p.v]
+
+        # Remove position from itemsDict.
+        p2 = self.itemsDict.get(it)
+        if p2 == p: del self.itemsDict[it]
+
+        # Remove items from vnodeDict
+        aList = self.vnodeDict.get(p.v,[])
+        # aList = [z for z in aList if z[1] != it] # Wrong
+        aList = [z for z in aList if z[0] != p]
+        self.vnodeDict[p.v] = aList
+
+        # Remove items from tnodeDict
+        aList = self.tnodeDict.get(p.v.t,[])
+        # aList = [z for z in aList if z[1] != it] # Wrong
+        aList = [z for z in aList if z[0] != p]
+        self.tnodeDict[p.v.t] = aList
+    #@-node:ekr.20081121105001.423:removeFromDicts
     #@+node:ekr.20081121105001.431:updateIcon
     def updateIcon (self,p):
 

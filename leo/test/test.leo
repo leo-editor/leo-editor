@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="28" left="214" height="987" width="1049"/>
+	<global_window_position top="28" left="214" height="982" width="1049"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1044,6 +1044,8 @@
 </v>
 </v>
 <v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
+<v t="ekr.20081208105234.1"><vh>Test deleting the last top-level node</vh></v>
+<v t="ekr.20081208105234.2"><vh>To be deleted</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3337,7 +3339,7 @@ toolbar.py
 
 # add_directives.py # scan-directives hook not ready.
 # color_markup.py # Does not work with threading colorizer.
-threading_colorizer.py
+#threading_colorizer.py
 rst3.py
 UNL.py
 open_with.py
@@ -11048,5 +11050,26 @@ if not s.startswith(tag):
 print s
 os.system(s)
 </t>
+<t tx="ekr.20081208105234.1">w = c.frame.tree.treeWidget
+
+n = w.topLevelItemCount()
+n = max(0,n-1)
+
+item = w.topLevelItem(n)
+
+print n,item
+
+sibs = [z for z in c.rootPosition().self_and_siblings_iter(copy=True)]
+print '\n'.join([z.headString() for z in sibs])
+
+if 0: # works, but of course does not update Leo's nodes.
+    c.requestRedrawFlag = False
+    w.takeTopLevelItem(n)
+    w.repaint()
+if 0:
+    c.selectPosition(sibs[-1])
+    c.deleteOutline()
+</t>
+<t tx="ekr.20081208105234.2"></t>
 </tnodes>
 </leo_file>
