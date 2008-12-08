@@ -1123,7 +1123,7 @@ class leoQtFindTab (leoFind.findTab):
             if val is not None:
                 svar = self.svarDict.get(ivar)
                 svar.set(val)
-                g.trace('%s = %s' % (ivar,val))
+                # g.trace('%s = %s' % (ivar,val))
 
         elif not g.app.unitTesting:
             g.trace('oops: bad find ivar %s' % ivar)
@@ -1135,7 +1135,7 @@ class leoQtFindTab (leoFind.findTab):
             var = self.svarDict.get(ivar)
             val = not var.get()
             var.set(val)
-            g.trace('%s = %s' % (ivar,val),var)
+            # g.trace('%s = %s' % (ivar,val),var)
         else:
             g.trace('oops: bad find ivar %s' % ivar)
     #@-node:ekr.20081121105001.248:toggleOption
