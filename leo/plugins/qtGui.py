@@ -3496,8 +3496,6 @@ class leoQtTree (leoFrame.leoTree):
         # Drawing ivars.
         self.item2positionDict = {} # keys are items, values are positions
             # Used only to get a postion when a node is double-clicked.
-        ### self.parentsDict = {} # keys are vnodes, values are a *single* item.
-            # **This just barely works. **
         self.tnode2dataDict = {} # keys are tnodes, values are lists of (p,it)
             # Used only to update icons.
         self.vnode2dataDict = {} # keys are vnodes, values are lists of (p,it)
@@ -3788,8 +3786,6 @@ class leoQtTree (leoFrame.leoTree):
         self.tnode2dataDict = {} # keys are tnodes, values are lists of items (p,it)
         self.vnode2dataDict = {} # keys are vnodes, values are lists of items (p,it)
         self.item2positionDict = {} # keys are items, values are positions
-        ### self.parentsDict = {} # keys are vnodes, values are a **single** item.
-            # This just barely works.
         self._editWidgetPosition = None
         self._editWidget = None
         self._editWidgetWrapper = None
@@ -3803,13 +3799,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # Allocate the qt tree item.
         parent = p.parent()
-        ### itemOrTree = self.parentsDict.get(parent and parent.v,w)
-        ### assert parent_item == itemOrTree
         itemOrTree = parent_item
-
-        if trace and not self.fullDrawing:
-            g.trace(id(itemOrTree),parent and parent.headString())
-
         item = QtGui.QTreeWidgetItem(itemOrTree)
         item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
 
@@ -3822,8 +3812,6 @@ class leoQtTree (leoFrame.leoTree):
 
         # Remember the associatiation of item with p, and vice versa.
         self.item2positionDict[item] = p.copy()
-        ### self.parentsDict[p.v] = item
-            # This is used only when drawing the children, so it will (barely) work.
 
         # Remember the association of p.v with (p,item)
         aList = self.vnode2dataDict.get(p.v,[])
@@ -3883,20 +3871,27 @@ class leoQtTree (leoFrame.leoTree):
         This is called from leoFind.changeSelection.'''
 
         w = self.treeWidget
-        parent = p.parent()
-        ### itemOrTree = self.parentsDict.get(parent and parent.v,w)
-        aList = self.vnode2DataDict.get(p.v)
+        itemOrTree = self.position2item(p)or w
+        item = QtGui.QTreeWidgetItem(itemOrTree)
+        icon = self.getIcon(p)
+        if icon and item:
+            item.setIcon(0,icon)
+    #@-node:ekr.20081121105001.417:drawIcon
+    #@+node:ekr.20081208155215.1:position2item
+    def position2item (self,p):
+
+        '''Return the unique item associated with position p.'''
+
+        aList = self.vnode2dataDict.get(p.v,[])
+
         for p2,item2 in aList:
             if p == p2:
-                itemOrTree = item2 ; break
+                item = item2 ; break
         else:
-            itemOrTree = w
+            item = None
 
-        item = QtGui.QTreeWidgetItem(itemOrTree)
-
-        icon = self.getIcon(p)
-        if icon: item.setIcon(0,icon)
-    #@-node:ekr.20081121105001.417:drawIcon
+        return item
+    #@-node:ekr.20081208155215.1:position2item
     #@-node:ekr.20081121105001.414:full_redraw & helpers
     #@+node:ekr.20081121105001.418:getIcon & getIconImage
     def getIcon(self,p):
@@ -4226,8 +4221,8 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.442:setCurrentItem
     def setCurrentItem (self):
 
-        c = self.c ; p = c.currentPosition()
         trace = False
+        c = self.c ; p = c.currentPosition()
         w = self.treeWidget
 
         if self.expanding:
@@ -4236,28 +4231,24 @@ class leoQtTree (leoFrame.leoTree):
         if self.selecting:
             if trace: g.trace('already selecting')
             return None
-
-        aList = self.vnode2dataDict.get(p.v,[])
-        h = p and p.headString() or '<no p!>'
-        if not p: return False
-
-        for p2,item in aList:
-            if p == p2:
-                if trace: g.trace('found: %s, %s' % (id(item),h))
-                # Actually select the item only if necessary.
-                # This prevents any side effects.
-                item2 = w.currentItem()
-                if item != item2:
-                    if trace: g.trace(item==item,'old item',item2)
-                    self.selecting = True
-                    try:
-                        w.setCurrentItem(item)
-                    finally:
-                        self.selecting = False
-                return item
-        else:
-            if trace: g.trace('** no item for',p.headString())
+        if not p:
+            if trace: g.trace('** p')
             return None
+
+        item = self.position2item(p)
+        if not item:
+            if trace: g.trace('** no item for',p)
+            return None
+
+        item2 = w.currentItem()
+        if item != item2:
+            if trace: g.trace(item==item,'old item',item2)
+            self.selecting = True
+            try:
+                w.setCurrentItem(item)
+            finally:
+                self.selecting = False
+        return item
     #@-node:ekr.20081121105001.442:setCurrentItem
     #@+node:ekr.20081121105001.443:sig_itemChanged
     def sig_itemChanged(self, item, col):
@@ -4623,11 +4614,10 @@ class leoQtTree (leoFrame.leoTree):
             return
         if self._editWidget:
             # Not an error, because of key weirdness.
-            g.trace('already editing')
+            if trace: g.trace('already editing')
             return
 
-        if trace:
-            g.trace('*** all',selectAll,p.headString(),g.callers(4))
+        if trace: g.trace('***',p and p.headString(),g.callers(4))
 
         w = self.treeWidget
         data = self.vnode2dataDict.get(p.v)
@@ -4635,16 +4625,8 @@ class leoQtTree (leoFrame.leoTree):
             if trace and verbose:
                 g.trace('No data: redrawing if possible')
             c.outerUpdate() # Do any scheduled redraw.
-            data = self.vnode2dataDict.get(p.v)
 
-        if data:
-            for p2,item2 in data:
-                if p2 == p:
-                    item = item2 ; break
-            else:
-                item = oops('no match: %s' % p)
-        else:
-            item = oops('no data: %s' % p)
+        item = self.position2item(p)
 
         if item:
             w.setCurrentItem(item) # Must do this first.
@@ -4668,6 +4650,7 @@ class leoQtTree (leoFrame.leoTree):
             self._editWidget = None
             self._editWidgetWrapper = None
             e = None
+            oops('no item: %s' % p)
 
         # A nice hack: just set the focus request.
         if e: c.requestedFocusWidget = e
