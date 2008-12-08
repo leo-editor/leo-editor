@@ -3496,7 +3496,7 @@ class leoQtTree (leoFrame.leoTree):
         # Drawing ivars.
         self.item2positionDict = {} # keys are items, values are positions
             # Used only to get a postion when a node is double-clicked.
-        self.parentsDict = {} # keys are vnodes, values are a *single* item.
+        ### self.parentsDict = {} # keys are vnodes, values are a *single* item.
             # **This just barely works. **
         self.tnode2dataDict = {} # keys are tnodes, values are lists of (p,it)
             # Used only to update icons.
@@ -3788,7 +3788,7 @@ class leoQtTree (leoFrame.leoTree):
         self.tnode2dataDict = {} # keys are tnodes, values are lists of items (p,it)
         self.vnode2dataDict = {} # keys are vnodes, values are lists of items (p,it)
         self.item2positionDict = {} # keys are items, values are positions
-        self.parentsDict = {} # keys are vnodes, values are a **single** item.
+        ### self.parentsDict = {} # keys are vnodes, values are a **single** item.
             # This just barely works.
         self._editWidgetPosition = None
         self._editWidget = None
@@ -3796,14 +3796,16 @@ class leoQtTree (leoFrame.leoTree):
     #@nonl
     #@-node:ekr.20081121105001.415:initData
     #@+node:ekr.20081121105001.164:drawNode
-    def drawNode (self,p,dummy=False):
+    def drawNode (self,p,parent_item,dummy=False):
 
         c = self.c ; w = self.treeWidget ; trace = False
         self.nodeDrawCount += 1
 
         # Allocate the qt tree item.
         parent = p.parent()
-        itemOrTree = self.parentsDict.get(parent and parent.v,w)
+        ### itemOrTree = self.parentsDict.get(parent and parent.v,w)
+        ### assert parent_item == itemOrTree
+        itemOrTree = parent_item
 
         if trace and not self.fullDrawing:
             g.trace(id(itemOrTree),parent and parent.headString())
@@ -3820,7 +3822,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # Remember the associatiation of item with p, and vice versa.
         self.item2positionDict[item] = p.copy()
-        self.parentsDict[p.v] = item
+        ### self.parentsDict[p.v] = item
             # This is used only when drawing the children, so it will (barely) work.
 
         # Remember the association of p.v with (p,item)
@@ -3838,10 +3840,11 @@ class leoQtTree (leoFrame.leoTree):
         return item
     #@-node:ekr.20081121105001.164:drawNode
     #@+node:ekr.20081121105001.416:drawTree
-    def drawTree (self,p):
+    def drawTree (self,p,parent_item=None):
 
         trace = False
         c = self.c ; w = self.treeWidget
+        if parent_item is None: parent_item = w
 
         p = p.copy()
 
@@ -3850,14 +3853,14 @@ class leoQtTree (leoFrame.leoTree):
             'expanded?',p.isExpanded(),p.headString())
 
         # Draw the (visible) parent node.
-        item = self.drawNode(p)
+        item = self.drawNode(p,parent_item)
 
         if p.hasChildren():
             if p.isExpanded():
                 w.expandItem(item)
                 child = p.firstChild()
                 while child:
-                    self.drawTree(child)
+                    self.drawTree(child,parent_item=item)
                     child.moveToNext()
             else:
                 if 0: # Requires a full redraw in the expansion code.
@@ -3867,7 +3870,7 @@ class leoQtTree (leoFrame.leoTree):
                     # Draw the hidden children.
                     child = p.firstChild()
                     while child:
-                        self.drawNode(child)
+                        self.drawNode(child,parent_item=item)
                         child.moveToNext()
                 w.collapseItem(item)
         else:
@@ -3881,7 +3884,14 @@ class leoQtTree (leoFrame.leoTree):
 
         w = self.treeWidget
         parent = p.parent()
-        itemOrTree = self.parentsDict.get(parent and parent.v,w)
+        ### itemOrTree = self.parentsDict.get(parent and parent.v,w)
+        aList = self.vnode2DataDict.get(p.v)
+        for p2,item2 in aList:
+            if p == p2:
+                itemOrTree = item2 ; break
+        else:
+            itemOrTree = w
+
         item = QtGui.QTreeWidgetItem(itemOrTree)
 
         icon = self.getIcon(p)

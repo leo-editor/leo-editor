@@ -402,14 +402,16 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 #@nonl
 #@-node:ekr.20081121105001.163:onHeadChanged
 #@+node:ekr.20081121105001.164:drawNode
-def drawNode (self,p,dummy=False):
+def drawNode (self,p,parent_item,dummy=False):
 
     c = self.c ; w = self.treeWidget ; trace = False
     self.nodeDrawCount += 1
 
     # Allocate the qt tree item.
     parent = p.parent()
-    itemOrTree = self.parentsDict.get(parent and parent.v,w)
+    ### itemOrTree = self.parentsDict.get(parent and parent.v,w)
+    ### assert parent_item == itemOrTree
+    itemOrTree = parent_item
 
     if trace and not self.fullDrawing:
         g.trace(id(itemOrTree),parent and parent.headString())
@@ -426,7 +428,7 @@ def drawNode (self,p,dummy=False):
 
     # Remember the associatiation of item with p, and vice versa.
     self.item2positionDict[item] = p.copy()
-    self.parentsDict[p.v] = item
+    ### self.parentsDict[p.v] = item
         # This is used only when drawing the children, so it will (barely) work.
 
     # Remember the association of p.v with (p,item)
