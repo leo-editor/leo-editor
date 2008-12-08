@@ -324,15 +324,16 @@ chapter.</p>
 <li><a class="reference" href="#customizing-the-outine-pane" id="id35" name="id35">Customizing the outine pane</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#summary-of-the-vnode-and-position-classes" id="id36" name="id36">Summary of the vnode and position classes</a><ul>
-<li><a class="reference" href="#iterators" id="id37" name="id37">Iterators</a></li>
-<li><a class="reference" href="#getters" id="id38" name="id38">Getters</a></li>
-<li><a class="reference" href="#setters" id="id39" name="id39">Setters</a></li>
+<li><a class="reference" href="#working-with-directives-and-paths" id="id36" name="id36">Working with directives and paths</a></li>
+<li><a class="reference" href="#summary-of-the-vnode-and-position-classes" id="id37" name="id37">Summary of the vnode and position classes</a><ul>
+<li><a class="reference" href="#iterators" id="id38" name="id38">Iterators</a></li>
+<li><a class="reference" href="#getters" id="id39" name="id39">Getters</a></li>
+<li><a class="reference" href="#setters" id="id40" name="id40">Setters</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#creating-script-buttons" id="id40" name="id40">Creating script buttons</a></li>
-<li><a class="reference" href="#running-leo-in-batch-mode" id="id41" name="id41">Running Leo in batch mode</a></li>
-<li><a class="reference" href="#getting-interactive-input-from-scripts" id="id42" name="id42">Getting interactive input from scripts</a></li>
+<li><a class="reference" href="#creating-script-buttons" id="id41" name="id41">Creating script buttons</a></li>
+<li><a class="reference" href="#running-leo-in-batch-mode" id="id42" name="id42">Running Leo in batch mode</a></li>
+<li><a class="reference" href="#getting-interactive-input-from-scripts" id="id43" name="id43">Getting interactive input from scripts</a></li>
 </ul>
 </li>
 </ul>
@@ -1605,13 +1606,35 @@ c.frame.tree.canvas.pack(side='left',expand=1,fill='both')
 </pre>
 </div>
 </div>
+<div class="section" id="working-with-directives-and-paths">
+<h2><a class="toc-backref" href="#id36">Working with directives and paths</a></h2>
+<p>Scripts can easily determine what directives are in effect at a particular
+position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose
+keys are directive names and whose values are the value in effect at position p.
+For example:</p>
+<pre class="literal-block">
+d = c.scanAllDirectives(p)
+g.es(g.dictToString(d))
+</pre>
+<p>In particular, d.get('path') returns the full, absolute path created by all
+&#64;path directives that are in ancestors of node p. If p is any kind of &#64;file node
+(including &#64;thin, &#64;auto, &#64;nosent, &#64;shadow, etc.), the following script will
+print the full path to the created file:</p>
+<pre class="literal-block">
+path = d.get('path')
+name = p.anyAtFileNodeName()
+if name:
+   name = g.os_path_finalize_join(path,name)
+   g.es(name)
+</pre>
+</div>
 <div class="section" id="summary-of-the-vnode-and-position-classes">
-<h2><a class="toc-backref" href="#id36">Summary of the vnode and position classes</a></h2>
+<h2><a class="toc-backref" href="#id37">Summary of the vnode and position classes</a></h2>
 <p>Most scripts will use methods of the position class to access information in an
 outline. The following sections summarizes the most useful methods that your
 scripts can use. For a complete list, see the <tt class="docutils literal"><span class="pre">leoNodes.py</span></tt> in of <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt>.</p>
 <div class="section" id="iterators">
-<h3><a class="toc-backref" href="#id37">Iterators</a></h3>
+<h3><a class="toc-backref" href="#id38">Iterators</a></h3>
 <p>Iterators exist only in the position class:</p>
 <pre class="literal-block">
 c.allNodes_iter            # returns all positions in c's outline.
@@ -1625,7 +1648,7 @@ p.self_and_subtree_iter    # returns all positions in p's subtree, including p.
 </pre>
 </div>
 <div class="section" id="getters">
-<h3><a class="toc-backref" href="#id38">Getters</a></h3>
+<h3><a class="toc-backref" href="#id39">Getters</a></h3>
 <p>Here are the most useful getters of the <tt class="docutils literal"><span class="pre">vnode</span></tt> and <tt class="docutils literal"><span class="pre">position</span></tt> classes.</p>
 <p>Returning strings:</p>
 <pre class="literal-block">
@@ -1651,7 +1674,7 @@ p.isVisited()
 </pre>
 </div>
 <div class="section" id="setters">
-<h3><a class="toc-backref" href="#id39">Setters</a></h3>
+<h3><a class="toc-backref" href="#id40">Setters</a></h3>
 <p>Here are the most useful setters of the <tt class="docutils literal"><span class="pre">Commands</span></tt> and <tt class="docutils literal"><span class="pre">position</span></tt> classes.
 The following setters of the <tt class="docutils literal"><span class="pre">position</span></tt> class regardless of whether
 <tt class="docutils literal"><span class="pre">p</span></tt> is the presently selected position:</p>
@@ -1676,7 +1699,7 @@ p.setVisited()
 </div>
 </div>
 <div class="section" id="creating-script-buttons">
-<h2><a class="toc-backref" href="#id40">Creating script buttons</a></h2>
+<h2><a class="toc-backref" href="#id41">Creating script buttons</a></h2>
 <p>Creating a script button should be your first thought whenever you want to
 automate any task. The scripting plugin, <tt class="docutils literal"><span class="pre">mod_scripting.py</span></tt>, puts two buttons
 in the icon menu, a pink <tt class="docutils literal"><span class="pre">Run</span> <span class="pre">Script</span></tt> button and a yellow <tt class="docutils literal"><span class="pre">Script</span> <span class="pre">Button</span></tt>
@@ -1730,7 +1753,7 @@ This feature can be disabled by setting <tt class="docutils literal"><span class
 </ul>
 </div>
 <div class="section" id="running-leo-in-batch-mode">
-<h2><a class="toc-backref" href="#id41">Running Leo in batch mode</a></h2>
+<h2><a class="toc-backref" href="#id42">Running Leo in batch mode</a></h2>
 <p>On startup, Leo looks for two arguments of the form:</p>
 <pre class="literal-block">
 --script scriptFile
@@ -1756,7 +1779,7 @@ for p in newFrame.c.allNodes_iter():
 </pre>
 </div>
 <div class="section" id="getting-interactive-input-from-scripts">
-<h2><a class="toc-backref" href="#id42">Getting interactive input from scripts</a></h2>
+<h2><a class="toc-backref" href="#id43">Getting interactive input from scripts</a></h2>
 <p>The following code can be run from a script to get input from the user using the minibuffer:</p>
 <pre class="literal-block">
 def getInput (event=None):

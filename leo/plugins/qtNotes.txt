@@ -5,6 +5,8 @@
 @nocolor-node
 
 First:
+- Fix bug: clicking + button does not always expand the node.
+- @nocolor-node sometimes disables too much.
 - Support wrap option.
 - Optimize tree updates.
 - Clicks in body text do not update row/column position.
@@ -12,40 +14,7 @@ First:
 Next:
 - Allow coloring of icon bar buttons.
 - Support multiple body editors.
-- Optimize the Qt colorizer.
 
-Finally:
-- Install new Qt version and play with QScintilla.
-    From QScintilla change log:
-    2008/10/12 14:32:05  phil
-    QsciScintilla::setSelection() is now implemented using SCI_SETSEL so that the
-    carat can be left at either the start or the end of the selection.
-    Exposed QsciScintilla::positionFromLineIndex() and
-    QsciScintilla::lineIndexFromPosition().
-    - Fix problem with accented characters: see child node for notes.
-- Add stylesheets for dialogs.
-    - Set font for dummy widget in style sheet, then copy that font.
-#@+node:ekr.20081121105001.149:Finish colorizer
-@nocolor-node
-
-- Simulate Tk's handling of tags (an optimization)
-- Use Qt threading.
-- Handle all colorizer tags.
-#@nonl
-#@-node:ekr.20081121105001.149:Finish colorizer
-#@+node:ekr.20081121105001.150:QScintilla stuff
-- Check event handling with QScintilla.
-- Experiment with sending <shift-tab> directly to QScintilla.
-- Call setLexer(0) for nocolor nodes.
-- Add settings for syntax coloring.
-- Make Scintilla handle Leo markup.
-#@nonl
-#@-node:ekr.20081121105001.150:QScintilla stuff
-#@+node:ekr.20081121105001.151:Finally/maybe
-- Can style sheets really do the job?
-- Flash characters without changing the selection?
-- Remove old-style Leo settings?
-#@-node:ekr.20081121105001.151:Finally/maybe
 #@+node:ekr.20081124094918.1:Fix problems with accented characters
 http://groups.google.com/group/leo-editor/browse_thread/thread/59c1e5d6acaf4de0
 
@@ -69,6 +38,37 @@ keyboard I get:
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081124094918.1:Fix problems with accented characters
+#@+node:ekr.20081121105001.149:Finish colorizer
+@nocolor-node
+
+- Simulate Tk's handling of tags (an optimization)
+- Use Qt threading.
+- Handle all colorizer tags.
+#@nonl
+#@-node:ekr.20081121105001.149:Finish colorizer
+#@+node:ekr.20081121105001.150:QScintilla stuff
+- Check event handling with QScintilla.
+- Experiment with sending <shift-tab> directly to QScintilla.
+- Call setLexer(0) for nocolor nodes.
+- Add settings for syntax coloring.
+- Make Scintilla handle Leo markup.
+- Install new Qt version and play with QScintilla.
+    From QScintilla change log:
+    2008/10/12 14:32:05  phil
+    QsciScintilla::setSelection() is now implemented using SCI_SETSEL so that the
+    carat can be left at either the start or the end of the selection.
+    Exposed QsciScintilla::positionFromLineIndex() and
+    QsciScintilla::lineIndexFromPosition().
+    - Fix problem with accented characters: see child node for notes.
+#@nonl
+#@-node:ekr.20081121105001.150:QScintilla stuff
+#@+node:ekr.20081121105001.151:Finally/maybe
+- Can style sheets really do the job?
+- Flash characters without changing the selection?
+- Remove old-style Leo settings?
+- Add stylesheets for dialogs.
+    - Set font for dummy widget in style sheet, then copy that font.
+#@-node:ekr.20081121105001.151:Finally/maybe
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.154:Recent projects...
 #@+node:ekr.20081121105001.155:Recent crasher (after find)
