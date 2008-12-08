@@ -5,6 +5,7 @@
 @nocolor-node
 
 First:
+- Support hoist in redraw code.
 - Optimize tree updates.
 
 Next:
@@ -100,6 +101,10 @@ def editLabel (self,p,selectAll=False):
 
     c = self.c ; trace = False ; verbose = False
 
+    def oops(s):
+        if not g.app.unitTesting:
+            g.trace('*** oops: %s' % s)
+
     if self.redrawing:
         if trace and verbose: g.trace('redrawing')
         return
@@ -112,19 +117,21 @@ def editLabel (self,p,selectAll=False):
         g.trace('*** all',selectAll,p.headString(),g.callers(4))
 
     w = self.treeWidget
-    data = self.vnodeDict.get(p.v)
+    data = self.vnode2dataDict.get(p.v)
     if not data:
         if trace and verbose:
             g.trace('No data: redrawing if possible')
         c.outerUpdate() # Do any scheduled redraw.
-        data = self.vnodeDict.get(p.v)
+        data = self.vnode2dataDict.get(p.v)
 
     if data:
-        item = data [0][1]
+        for p2,item2 in data:
+            if p2 == p:
+                item = item2 ; break
+        else:
+            item = oops('no match: %s' % p)
     else:
-        if trace and not g.app.unitTesting:
-            g.trace('*** Can not happen: no data',p and p.headString())
-        return None
+        item = oops('no data: %s' % p)
 
     if item:
         w.setCurrentItem(item) # Must do this first.
@@ -142,16 +149,15 @@ def editLabel (self,p,selectAll=False):
             e.setObjectName('headline')
             e.setSelection(start,n)
             e.setFocus()
-        else: g.trace('*** no e')
+        else: oops('no edit widget')
     else:
         self._editWidgetPosition = None
         self._editWidget = None
         self._editWidgetWrapper = None
         e = None
-        g.trace('*** no item')
 
     # A nice hack: just set the focus request.
-    c.requestedFocusWidget = e
+    if e: c.requestedFocusWidget = e
 #@-node:ekr.20081121105001.156:editLabel (override)
 #@-node:ekr.20081121105001.155:Recent crasher (after find)
 #@+node:ekr.20081121105001.157:Fixed headline data loss bug
@@ -220,6 +226,10 @@ def editLabel (self,p,selectAll=False):
 
     c = self.c ; trace = False ; verbose = False
 
+    def oops(s):
+        if not g.app.unitTesting:
+            g.trace('*** oops: %s' % s)
+
     if self.redrawing:
         if trace and verbose: g.trace('redrawing')
         return
@@ -232,19 +242,21 @@ def editLabel (self,p,selectAll=False):
         g.trace('*** all',selectAll,p.headString(),g.callers(4))
 
     w = self.treeWidget
-    data = self.vnodeDict.get(p.v)
+    data = self.vnode2dataDict.get(p.v)
     if not data:
         if trace and verbose:
             g.trace('No data: redrawing if possible')
         c.outerUpdate() # Do any scheduled redraw.
-        data = self.vnodeDict.get(p.v)
+        data = self.vnode2dataDict.get(p.v)
 
     if data:
-        item = data [0][1]
+        for p2,item2 in data:
+            if p2 == p:
+                item = item2 ; break
+        else:
+            item = oops('no match: %s' % p)
     else:
-        if trace and not g.app.unitTesting:
-            g.trace('*** Can not happen: no data',p and p.headString())
-        return None
+        item = oops('no data: %s' % p)
 
     if item:
         w.setCurrentItem(item) # Must do this first.
@@ -262,16 +274,15 @@ def editLabel (self,p,selectAll=False):
             e.setObjectName('headline')
             e.setSelection(start,n)
             e.setFocus()
-        else: g.trace('*** no e')
+        else: oops('no edit widget')
     else:
         self._editWidgetPosition = None
         self._editWidget = None
         self._editWidgetWrapper = None
         e = None
-        g.trace('*** no item')
 
     # A nice hack: just set the focus request.
-    c.requestedFocusWidget = e
+    if e: c.requestedFocusWidget = e
 #@-node:ekr.20081121105001.156:editLabel (override)
 #@+node:ekr.20081121105001.160:edit_widget
 def edit_widget (self,p):
@@ -297,7 +308,7 @@ def onItemDoubleClicked (self,item,col):
     e = w.itemWidget(item,0)
     if not e:
         return g.trace('*** no e')
-    p = self.itemsDict.get(item)
+    p = self.item2positionDict.get(item)
     if not p:
         return g.trace('*** no p')
     # Hook up the widget to Leo's core.
@@ -327,7 +338,7 @@ def onTreeSelect(self):
 
     item = w.currentItem()
     if trace and verbose: g.trace('item',item)
-    p = self.itemsDict.get(item)
+    p = self.item2positionDict.get(item)
     if p:
         if trace: g.trace(p and p.headString())
         c.frame.tree.select(p) # The crucial hook.
@@ -414,20 +425,20 @@ def drawNode (self,p,dummy=False):
     if dummy: return item
 
     # Remember the associatiation of item with p, and vice versa.
-    self.itemsDict[item] = p.copy()
+    self.item2positionDict[item] = p.copy()
     self.parentsDict[p.v] = item 
 
     # Remember the association of p.v with (p,item)
-    aList = self.vnodeDict.get(p.v,[])
+    aList = self.vnode2dataDict.get(p.v,[])
     data = p.copy(),item
     aList.append(data)
-    self.vnodeDict[p.v] = aList
+    self.vnode2dataDict[p.v] = aList
 
     # Remember the association of p.v.t with (p,item).
-    aList = self.tnodeDict.get(p.v.t,[])
+    aList = self.tnode2dataDict.get(p.v.t,[])
     data = p.copy(),item
     aList.append(data)
-    self.tnodeDict[p.v.t] = aList
+    self.tnode2dataDict[p.v.t] = aList
 
     return item
 #@-node:ekr.20081121105001.164:drawNode

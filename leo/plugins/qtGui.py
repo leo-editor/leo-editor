@@ -1750,68 +1750,13 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
     def resizePanesToRatio(self,ratio,ratio2):
 
-        #g.trace(ratio,ratio2,g.callers())
+        pass
 
-        self.divideLeoSplitter(self.splitVerticalFlag,ratio)
-        self.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
+        # g.trace(ratio,ratio2,g.callers())
+
+        # self.divideLeoSplitter(self.splitVerticalFlag,ratio)
+        # self.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
     #@-node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
-    #@+node:leohag.20081208130321.12:divideLeoSplitter
-    # Divides the main or secondary splitter, using the key invariant.
-    def divideLeoSplitter (self, verticalFlag, frac):
-
-        if self.splitVerticalFlag == verticalFlag:
-            self.divideLeoSplitter1(frac,verticalFlag)
-            self.ratio = frac # Ratio of body pane to tree pane.
-        else:
-            self.divideLeoSplitter2(frac,verticalFlag)
-            self.secondary_ratio = frac # Ratio of tree pane to log pane.
-
-    # Divides the main splitter.
-    def divideLeoSplitter1 (self, frac, verticalFlag): 
-        self.divideAnySplitter(frac, self.top.splitter_2 )
-
-    # Divides the secondary splitter.
-    def divideLeoSplitter2 (self, frac, verticalFlag): 
-        self.divideAnySplitter (frac, self.top.ui.splitter)
-
-    #@-node:leohag.20081208130321.12:divideLeoSplitter
-    #@+node:leohag.20081208130321.13:divideAnySplitter
-    # This is the general-purpose placer for splitters.
-    # It is the only general-purpose splitter code in Leo.
-
-    def divideAnySplitter (self, frac, splitter ):#verticalFlag, bar, pane1, pane2):
-
-        sizes = splitter.sizes()
-
-        if len(sizes)!=2:
-            g.trace('there must be two and only two widgets in the splitter')
-
-        if frac > 1 or frac < 0:
-            g.trace('split ratio [%s] out of range 0 <= frac <= 1'%frac)
-
-        s1, s2 = sizes
-        s = s1+s2
-        s1 = int(s * frac + 0.5)
-        s2 = s - s1 
-
-        splitter.setSizes([s1,s2])
-
-    #@+at
-    #     # if self.bigTree:
-    #         # pane1,pane2 = pane2,pane1
-    # 
-    #     if verticalFlag:
-    #         # Panes arranged vertically; horizontal splitter bar
-    #         bar.place(rely=frac)
-    #         pane1.place(relheight=frac)
-    #         pane2.place(relheight=1-frac)
-    #     else:
-    #         # Panes arranged horizontally; vertical splitter bar
-    #         bar.place(relx=frac)
-    #         pane1.place(relwidth=frac)
-    #         pane2.place(relwidth=1-frac)
-    #@-at
-    #@-node:leohag.20081208130321.13:divideAnySplitter
     #@-node:ekr.20081121105001.279:Configuration (qtFrame)
     #@+node:ekr.20081121105001.288:Event handlers (qtFrame)
     #@+node:ekr.20081121105001.289:frame.OnCloseLeoEvent
@@ -2010,62 +1955,62 @@ class leoQtFrame (leoFrame.leoFrame):
 
     def contractBodyPane (self,event=None):
         '''Contract the body pane.'''
-        f = self ; r = min(1.0,f.ratio+0.1)
-        f.divideLeoSplitter(f.splitVerticalFlag,r)
+        # f = self ; r = min(1.0,f.ratio+0.1)
+        # f.divideLeoSplitter(f.splitVerticalFlag,r)
 
     def contractLogPane (self,event=None):
         '''Contract the log pane.'''
-        f = self ; r = min(1.0,f.ratio+0.1)
-        f.divideLeoSplitter(not f.splitVerticalFlag,r)
+        # f = self ; r = min(1.0,f.ratio+0.1)
+        # f.divideLeoSplitter(not f.splitVerticalFlag,r)
 
     def contractOutlinePane (self,event=None):
         '''Contract the outline pane.'''
-        f = self ; r = max(0.0,f.ratio-0.1)
-        f.divideLeoSplitter(f.splitVerticalFlag,r)
+        # f = self ; r = max(0.0,f.ratio-0.1)
+        # f.divideLeoSplitter(f.splitVerticalFlag,r)
 
     def expandBodyPane (self,event=None):
         '''Expand the body pane.'''
-        self.contractOutlinePane()
+        # self.contractOutlinePane()
 
     def expandLogPane(self,event=None):
         '''Expand the log pane.'''
-        f = self ; r = max(0.0,f.ratio-0.1)
-        f.divideLeoSplitter(not f.splitVerticalFlag,r)
+        # f = self ; r = max(0.0,f.ratio-0.1)
+        # f.divideLeoSplitter(not f.splitVerticalFlag,r)
 
     def expandOutlinePane (self,event=None):
         '''Expand the outline pane.'''
-        self.contractBodyPane()
+        # self.contractBodyPane()
     #@-node:ekr.20081121105001.302:expand/contract/hide...Pane
     #@+node:ekr.20081121105001.303:fullyExpand/hide...Pane
     def fullyExpandBodyPane (self,event=None):
         '''Fully expand the body pane.'''
         f = self
-        f.divideLeoSplitter(f.splitVerticalFlag,0.0)
+        # f.divideLeoSplitter(f.splitVerticalFlag,0.0)
 
     def fullyExpandLogPane (self,event=None):
         '''Fully expand the log pane.'''
         f = self
-        f.divideLeoSplitter(not f.splitVerticalFlag,0.0)
+        # f.divideLeoSplitter(not f.splitVerticalFlag,0.0)
 
     def fullyExpandOutlinePane (self,event=None):
         '''Fully expand the outline pane.'''
         f = self
-        f.divideLeoSplitter(f.splitVerticalFlag,1.0)
+        # f.divideLeoSplitter(f.splitVerticalFlag,1.0)
 
     def hideBodyPane (self,event=None):
         '''Completely contract the body pane.'''
         f = self
-        f.divideLeoSplitter(f.splitVerticalFlag,1.0)
+        # f.divideLeoSplitter(f.splitVerticalFlag,1.0)
 
     def hideLogPane (self,event=None):
         '''Completely contract the log pane.'''
         f = self
-        f.divideLeoSplitter(not f.splitVerticalFlag,1.0)
+        # f.divideLeoSplitter(not f.splitVerticalFlag,1.0)
 
     def hideOutlinePane (self,event=None):
         '''Completely contract the outline pane.'''
         f = self
-        f.divideLeoSplitter(f.splitVerticalFlag,0.0)
+        # f.divideLeoSplitter(f.splitVerticalFlag,0.0)
     #@-node:ekr.20081121105001.303:fullyExpand/hide...Pane
     #@-node:ekr.20081121105001.297:Minibuffer commands... (qtFrame)
     #@+node:ekr.20081121105001.304:Window Menu...
@@ -2120,7 +2065,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         frame = self
 
-        frame.divideLeoSplitter2(0.99, not frame.splitVerticalFlag)
+        # frame.divideLeoSplitter2(0.99, not frame.splitVerticalFlag)
     #@-node:ekr.20081121105001.308:hideLogWindow
     #@+node:ekr.20081121105001.309:minimizeAll
     def minimizeAll (self,event=None):
@@ -3549,10 +3494,10 @@ class leoQtTree (leoFrame.leoTree):
         self.nodeDrawCount = 0
 
         # Drawing ivars.
-        self.itemsDict = {} # keys are items, values are positions
+        self.item2positionDict = {} # keys are items, values are positions
         self.parentsDict = {} 
-        self.tnodeDict = {} # keys are tnodes, values are lists of (p,it)
-        self.vnodeDict = {} # keys are vnodes, values are lists of (p,it)
+        self.tnode2dataDict = {} # keys are tnodes, values are lists of (p,it)
+        self.vnode2dataDict = {} # keys are vnodes, values are lists of (p,it)
 
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
@@ -3836,9 +3781,9 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.415:initData
     def initData (self):
 
-        self.tnodeDict = {} # keys are tnodes, values are lists of items (p,it)
-        self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
-        self.itemsDict = {} # keys are items, values are positions
+        self.tnode2dataDict = {} # keys are tnodes, values are lists of items (p,it)
+        self.vnode2dataDict = {} # keys are vnodes, values are lists of items (p,it)
+        self.item2positionDict = {} # keys are items, values are positions
         self.parentsDict = {}
         self._editWidgetPosition = None
         self._editWidget = None
@@ -3869,20 +3814,20 @@ class leoQtTree (leoFrame.leoTree):
         if dummy: return item
 
         # Remember the associatiation of item with p, and vice versa.
-        self.itemsDict[item] = p.copy()
+        self.item2positionDict[item] = p.copy()
         self.parentsDict[p.v] = item 
 
         # Remember the association of p.v with (p,item)
-        aList = self.vnodeDict.get(p.v,[])
+        aList = self.vnode2dataDict.get(p.v,[])
         data = p.copy(),item
         aList.append(data)
-        self.vnodeDict[p.v] = aList
+        self.vnode2dataDict[p.v] = aList
 
         # Remember the association of p.v.t with (p,item).
-        aList = self.tnodeDict.get(p.v.t,[])
+        aList = self.tnode2dataDict.get(p.v.t,[])
         data = p.copy(),item
         aList.append(data)
-        self.tnodeDict[p.v.t] = aList
+        self.tnode2dataDict[p.v.t] = aList
 
         return item
     #@-node:ekr.20081121105001.164:drawNode
@@ -4033,31 +3978,6 @@ class leoQtTree (leoFrame.leoTree):
         pass # It is quite wrong to do an automatic redraw after select.
     #@-node:ekr.20081121105001.430:redraw_after_select
     #@-node:ekr.20081208072750.20:redraw_after...
-    #@+node:ekr.20081121105001.423:removeFromDicts
-    def removeFromDicts (self,p):
-
-        # Important: items do not necessarily exist.
-
-        # Remove item from parentsDict.
-        it = self.parentsDict.get(p.v)
-        if it: del self.parentsDict[p.v]
-
-        # Remove position from itemsDict.
-        p2 = self.itemsDict.get(it)
-        if p2 == p: del self.itemsDict[it]
-
-        # Remove items from vnodeDict
-        aList = self.vnodeDict.get(p.v,[])
-        # aList = [z for z in aList if z[1] != it] # Wrong
-        aList = [z for z in aList if z[0] != p]
-        self.vnodeDict[p.v] = aList
-
-        # Remove items from tnodeDict
-        aList = self.tnodeDict.get(p.v.t,[])
-        # aList = [z for z in aList if z[1] != it] # Wrong
-        aList = [z for z in aList if z[0] != p]
-        self.tnodeDict[p.v.t] = aList
-    #@-node:ekr.20081121105001.423:removeFromDicts
     #@+node:ekr.20081121105001.431:updateIcon
     def updateIcon (self,p):
 
@@ -4069,7 +3989,7 @@ class leoQtTree (leoFrame.leoTree):
         if p.v.iconVal == val: return
 
         icon = self.getIconImage(val)
-        aList = self.tnodeDict.get(p.v.t,[])
+        aList = self.tnode2dataDict.get(p.v.t,[])
         for p,it in aList:
             # g.trace(id(it),p.headString())
             it.setIcon(0,icon)
@@ -4246,7 +4166,7 @@ class leoQtTree (leoFrame.leoTree):
         e = w.itemWidget(item,0)
         if not e:
             return g.trace('*** no e')
-        p = self.itemsDict.get(item)
+        p = self.item2positionDict.get(item)
         if not p:
             return g.trace('*** no p')
         # Hook up the widget to Leo's core.
@@ -4276,7 +4196,7 @@ class leoQtTree (leoFrame.leoTree):
 
         item = w.currentItem()
         if trace and verbose: g.trace('item',item)
-        p = self.itemsDict.get(item)
+        p = self.item2positionDict.get(item)
         if p:
             if trace: g.trace(p and p.headString())
             c.frame.tree.select(p) # The crucial hook.
@@ -4301,7 +4221,7 @@ class leoQtTree (leoFrame.leoTree):
             if trace: g.trace('already selecting')
             return None
 
-        aList = self.vnodeDict.get(p.v,[])
+        aList = self.vnode2dataDict.get(p.v,[])
         h = p and p.headString() or '<no p!>'
         if not p: return False
 
@@ -4333,7 +4253,7 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing:
             return
 
-        p = self.itemsDict.get(item)
+        p = self.item2positionDict.get(item)
         if p:
             # so far, col is always 0
             s = g.app.gui.toUnicode(item.text(col))
@@ -4365,7 +4285,7 @@ class leoQtTree (leoFrame.leoTree):
 
         if trace: g.trace(p.headString() or "<no p>",g.callers(4))
 
-        p2 = self.itemsDict.get(item)
+        p2 = self.item2positionDict.get(item)
         if p2:
             p2.contract()
             c.setCurrentPosition(p2)
@@ -4383,7 +4303,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # The difficult case is when the user clicks the expansion box.
 
-        trace = True ; verbose = False
+        trace = False ; verbose = False
         c = self.c ; p = c.currentPosition() ; w = self.treeWidget
 
         # Ignore events generated by redraws.
@@ -4401,7 +4321,7 @@ class leoQtTree (leoFrame.leoTree):
 
         try:
             self.expanding = True
-            p2 = self.itemsDict.get(item)
+            p2 = self.item2positionDict.get(item)
             if p2:
                 if trace: g.trace(p2)
                 if not p2.isExpanded():
@@ -4678,6 +4598,10 @@ class leoQtTree (leoFrame.leoTree):
 
         c = self.c ; trace = False ; verbose = False
 
+        def oops(s):
+            if not g.app.unitTesting:
+                g.trace('*** oops: %s' % s)
+
         if self.redrawing:
             if trace and verbose: g.trace('redrawing')
             return
@@ -4690,19 +4614,21 @@ class leoQtTree (leoFrame.leoTree):
             g.trace('*** all',selectAll,p.headString(),g.callers(4))
 
         w = self.treeWidget
-        data = self.vnodeDict.get(p.v)
+        data = self.vnode2dataDict.get(p.v)
         if not data:
             if trace and verbose:
                 g.trace('No data: redrawing if possible')
             c.outerUpdate() # Do any scheduled redraw.
-            data = self.vnodeDict.get(p.v)
+            data = self.vnode2dataDict.get(p.v)
 
         if data:
-            item = data [0][1]
+            for p2,item2 in data:
+                if p2 == p:
+                    item = item2 ; break
+            else:
+                item = oops('no match: %s' % p)
         else:
-            if trace and not g.app.unitTesting:
-                g.trace('*** Can not happen: no data',p and p.headString())
-            return None
+            item = oops('no data: %s' % p)
 
         if item:
             w.setCurrentItem(item) # Must do this first.
@@ -4720,16 +4646,15 @@ class leoQtTree (leoFrame.leoTree):
                 e.setObjectName('headline')
                 e.setSelection(start,n)
                 e.setFocus()
-            else: g.trace('*** no e')
+            else: oops('no edit widget')
         else:
             self._editWidgetPosition = None
             self._editWidget = None
             self._editWidgetWrapper = None
             e = None
-            g.trace('*** no item')
 
         # A nice hack: just set the focus request.
-        c.requestedFocusWidget = e
+        if e: c.requestedFocusWidget = e
     #@-node:ekr.20081121105001.156:editLabel (override)
     #@+node:ekr.20081121105001.458:editLabelHelper
     def editLabelHelper (self,item):
