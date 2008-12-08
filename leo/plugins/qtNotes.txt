@@ -5,14 +5,22 @@
 @nocolor-node
 
 First:
-- Support wrap option.
-- Optimize tree updates.
+
+- Complete support for find tab:
+    - update ivars when checkboxes clicked.
+    - update checkboxes when toggle commands executed.
 
 Next:
+- Optimize tree updates.
+
+Finally:
 - Allow coloring of icon bar buttons.
 - Support multiple body editors.
 
-#@+node:ekr.20081124094918.1:Fix problems with accented characters
+
+#@+node:ekr.20081124094918.1:Fix problems with scim
+@nocolor-node
+
 http://groups.google.com/group/leo-editor/browse_thread/thread/59c1e5d6acaf4de0
 
 I've some more information about the problems with accent previously
@@ -34,15 +42,13 @@ keyboard I get:
 
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
-#@-node:ekr.20081124094918.1:Fix problems with accented characters
-#@+node:ekr.20081121105001.149:Finish colorizer
-@nocolor-node
-
-- Simulate Tk's handling of tags (an optimization)
-- Use Qt threading.
-- Handle all colorizer tags.
-#@nonl
-#@-node:ekr.20081121105001.149:Finish colorizer
+#@-node:ekr.20081124094918.1:Fix problems with scim
+#@+node:ekr.20081121105001.151:Finally/maybe
+- Can style sheets really do the job?
+- Flash characters without changing the selection?
+- Remove old-style Leo settings?
+- Add stylesheets for dialogs.
+    - Set font for dummy widget in style sheet, then copy that font.
 #@+node:ekr.20081121105001.150:QScintilla stuff
 - Check event handling with QScintilla.
 - Experiment with sending <shift-tab> directly to QScintilla.
@@ -59,12 +65,6 @@ present in the qt plugin (both with and without scintilla)
     - Fix problem with accented characters: see child node for notes.
 #@nonl
 #@-node:ekr.20081121105001.150:QScintilla stuff
-#@+node:ekr.20081121105001.151:Finally/maybe
-- Can style sheets really do the job?
-- Flash characters without changing the selection?
-- Remove old-style Leo settings?
-- Add stylesheets for dialogs.
-    - Set font for dummy widget in style sheet, then copy that font.
 #@-node:ekr.20081121105001.151:Finally/maybe
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.154:Recent projects...

@@ -308,6 +308,7 @@ class leoQtBody (leoFrame.leoBody):
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         wrap = c.config.getBool('body_pane_wraps')
+        # g.trace('wrap',wrap,self.widget.widget)
         if self.useScintilla:
             pass
         else:
