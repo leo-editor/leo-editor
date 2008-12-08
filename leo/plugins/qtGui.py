@@ -11,8 +11,6 @@
 
 safe_mode = False # True: Bypass k.masterKeyHandler for problem keys or visible characters.
 
-useQSyntaxHighlighter = True
-
 # Define these to suppress pylint warnings...
 __timing = None # For timing stats.
 __qh = None # For quick headlines.
@@ -148,7 +146,7 @@ class DynamicWindow(QtGui.QMainWindow):
         for f in (ui_file_name, 'qt_main.ui', None):
             assert f, "can not find user interface file"
             ui_description_file = g.app.loadDir + "/../plugins/" + f
-            g.pr(ui_description_file)
+            # g.pr(ui_description_file)
             if g.os_path_exists(ui_description_file): break
 
         QtGui.QMainWindow.__init__(self,parent)        
@@ -304,15 +302,13 @@ class leoQtBody (leoFrame.leoBody):
             self.bodyCtrl = w # The widget as seen from Leo's core.
 
             # Hook up the QSyntaxHighlighter
-            if useQSyntaxHighlighter:
-                self.colorizer = leoQtColorizer(c,w.widget)
-            else:
-                self.colorizer = leoColor.colorizer(c)
+            self.colorizer = leoQtColorizer(c,w.widget)
             w.acceptRichText = False
 
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         wrap = c.config.getBool('body_pane_wraps')
+        # g.trace('wrap',wrap,self.widget.widget)
         if self.useScintilla:
             pass
         else:
@@ -923,15 +919,20 @@ class leoQtFindTab (leoFind.findTab):
     #@+node:ekr.20081121105001.237:initGui
     def initGui (self):
 
+        owner = self
+
         self.svarDict = {}
             # Keys are ivar names, values are svar objects.
 
-        for key in self.intKeys:
-            self.svarDict[key] = self.svar()
+        for ivar in self.intKeys:
+            self.svarDict[ivar] = self.svar(owner,ivar)
 
-        for key in self.newStringKeys:
-            self.svarDict[key] = self.svar()
-    #@nonl
+        # Add a hack for 'entire_outline' radio button.
+        ivar = 'entire_outline'
+        self.svarDict[ivar] = self.svar(owner,ivar)
+
+        for ivar in self.newStringKeys:
+            self.svarDict[ivar] = self.svar(owner,ivar=None)
     #@-node:ekr.20081121105001.237:initGui
     #@+node:ekr.20081121105001.238:init (qtFindTab) & helpers
     def init (self,c):
@@ -953,15 +954,15 @@ class leoQtFindTab (leoFind.findTab):
         data = (
             ('find_ctrl',       findTextWrapper(w.findPattern,'find-widget',c)),
             ('change_ctrl',     findTextWrapper(w.findChange,'change-widget',c)),
-            ('whole_world',     w.checkBoxWholeWord),
+            ('whole_word',      w.checkBoxWholeWord),
             ('ignore_case',     w.checkBoxIgnoreCase),
             ('wrap',            w.checkBoxWrapAround),
             ('reverse',         w.checkBoxReverse),
             ('pattern_match',   w.checkBoxRexexp),
             ('mark_finds',      w.checkBoxMarkFinds),
-            ('entire-outline',  w.checkBoxEntireOutline),
-            ('suboutline-only', w.checkBoxSubroutineOnly),  
-            ('node-only',       w.checkBoxNodeOnly),
+            ('entire_outline',  w.checkBoxEntireOutline),
+            ('suboutline_only', w.checkBoxSubroutineOnly),  
+            ('node_only',       w.checkBoxNodeOnly),
             ('search_headline', w.checkBoxSearchHeadline),
             ('search_body',     w.checkBoxSearchBody),
             ('mark_changes',    w.checkBoxMarkChanges),
@@ -977,14 +978,16 @@ class leoQtFindTab (leoFind.findTab):
         c = self.c
 
         # Separate c.ivars are much more convenient than a svarDict.
-        for key in self.intKeys:
+        for ivar in self.intKeys:
             # Get ivars from @settings.
-            val = c.config.getBool(key)
-            setattr(self,key,val)
+            val = c.config.getBool(ivar)
+            setattr(self,ivar,val)
             val = g.choose(val,1,0)
-            svar = self.svarDict.get(key)
-            if svar: svar.set(val)
-            # g.trace('qtFindTab',key,val)
+            svar = self.svarDict.get(ivar)
+            if svar:
+                svar.set(val)
+
+            # g.trace(ivar,val)
     #@-node:ekr.20081121105001.240:initIvars
     #@+node:ekr.20081121105001.241:initTextWidgets
     def initTextWidgets(self):
@@ -1020,14 +1023,29 @@ class leoQtFindTab (leoFind.findTab):
         aList = (
             'ignore_case','mark_changes','mark_finds',
             'pattern_match','reverse','search_body','search_headline',
-            'whole_word','wrap')
+            'whole_word','wrap',
+            # Temp: add boxes that should be radio buttons.
+            'node_only','suboutline_only','entire_outline',
+        )
 
         for ivar in aList:
-            svar = self.svarDict[ivar].get()
+            svar = self.svarDict.get(ivar)
             if svar:
                 # w is a QCheckBox.
                 w = self.widgetsDict.get(ivar)
-                if w: w.setChecked(True)
+                if w:
+                    val = svar.get()
+                    svar.setWidget(w)
+                    svar.set(val)
+                    def checkBoxCallback(val,svar=svar):
+                        svar.setVal(val)
+                        # g.trace(ivar,bool(val))
+                    w.connect(w,
+                        QtCore.SIGNAL("stateChanged(int)"),
+                        checkBoxCallback)
+                    # g.trace(ivar,val,w)
+                else: g.trace('*** no w',ivar)
+            else: g.trace('*** no svar',ivar)
     #@-node:ekr.20081121105001.242:initCheckBoxes
     #@+node:ekr.20081121105001.243:initRadioButtons
     def initRadioButtons (self):
@@ -1047,18 +1065,40 @@ class leoQtFindTab (leoFind.findTab):
             # XXX At present w is a QCheckbox, not a QRadioButton.
             w = self.widgetsDict.get(key)
             if w: w.setChecked(True)
+
+        # For entire-outline to be checked.
+        self.svarDict.get('entire_outline').set(True)
+
     #@-node:ekr.20081121105001.243:initRadioButtons
     #@-node:ekr.20081121105001.238:init (qtFindTab) & helpers
     #@-node:ekr.20081121105001.236: Birth: called from leoFind ctor
     #@+node:ekr.20081121105001.244:class svar
     class svar:
         '''A class like Tk's IntVar and StringVar classes.'''
-        def __init__(self):
+        def __init__(self,owner,ivar):
+            self.ivar = ivar
+            self.owner = owner
             self.val = None
+            self.w = None
+        def clearRadioButtons(self):
+            buttons = ['node_only','suboutline_only','entire_outline']
+            if self.ivar in buttons:
+                buttons.remove(self.ivar)
+                for ivar in buttons:
+                    w = self.owner.widgetsDict.get(ivar)
+                    if w: w.setChecked(False)
         def get (self):
-            return self.val
+            return self.w and bool(self.w.isChecked()) or self.val
         def set (self,val):
-            self.val = val
+            self.clearRadioButtons()
+            self.val = bool(val)
+            if self.w: self.w.setChecked(bool(val))
+            # g.trace(val,self.w,g.callers(4))
+        def setVal(self,val):
+            self.clearRadioButtons()
+            self.val = bool(val)
+        def setWidget(self,w):
+            self.w = w
     #@-node:ekr.20081121105001.244:class svar
     #@+node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
     # This is the same as the Tk code because we simulate Tk svars.
@@ -1081,8 +1121,8 @@ class leoQtFindTab (leoFind.findTab):
 
         if ivar in self.intKeys:
             if val is not None:
-                var = self.svarDict.get(ivar)
-                var.set(val)
+                svar = self.svarDict.get(ivar)
+                svar.set(val)
                 # g.trace('%s = %s' % (ivar,val))
 
         elif not g.app.unitTesting:
@@ -2270,6 +2310,10 @@ class leoQtLog (leoFrame.leoLog):
         self.tabWidget = c.frame.top.ui.tabWidget # The Qt.TabWidget that holds all the tabs.
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
+        if 0: # Does not work
+            theFilter = leoQtEventFilter(c,w=c.frame,tag='log')
+            self.tabWidget.installEventFilter(theFilter)
+
         self.setFontFromConfig()
         self.setColorFromConfig()
     #@-node:ekr.20081121105001.320:qtLog.__init__
@@ -2438,6 +2482,7 @@ class leoQtLog (leoFrame.leoLog):
 
         if createText:
             contents = QtGui.QTextBrowser()
+            # contents = QtGui.QTextEdit()
             contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
             self.logDict[tabName] = contents
             if tabName == 'Log': self.logCtrl = contents
@@ -3929,43 +3974,6 @@ class leoQtTree (leoFrame.leoTree):
         # This is reasonable now that we only allocate
         # one dummy node in collapsed trees.
         return self.full_redraw()
-
-        # trace = True ; verbose = False
-        # c = self.c ; p = c.currentPosition()
-        # w = self.treeWidget
-
-        # if self.redrawing:
-            # if trace: g.trace('already drawing',p.headString())
-            # return
-        # self.redrawCount += 1
-        # if trace: g.trace(self.redrawCount,p.headString())
-        # it = self.parentsDict.get(p.v)
-        # if not it:
-            # g.trace('can not happen: no item for %s' % p.headString())
-            # return self.full_redraw()
-        # self.nodeDrawCount = 0
-        # self.redrawing = True
-        # self.expanding = True
-        # try:
-            # w.expandItem(it)
-            # # Delete all the children from the tree.
-            # items = it.takeChildren()
-            # if trace and verbose:
-                # g.trace(id(it),len(items),p.headString())
-            # # Delete all descendant entries from dictionaries.
-            # for child in p.children_iter():
-                # for z in child.self_and_subtree_iter():
-                    # self.removeFromDicts(z)
-            # # Redraw all descendants.
-            # for child in p.children_iter():
-                # self.drawTree(child)
-        # finally:
-            # w.setCurrentItem(it)
-            # self.redrawing = False
-            # self.expanding = False
-            # c.requestRedrawFlag= False
-            # if trace:
-                # g.trace('drew %3s nodes' %self.nodeDrawCount)
     #@+node:ekr.20081121105001.423:removeFromDicts
     def removeFromDicts (self,p):
 
@@ -4373,7 +4381,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # The difficult case is when the user clicks the expansion box.
 
-        trace = False ; verbose = True
+        trace = True ; verbose = False
         c = self.c ; p = c.currentPosition() ; w = self.treeWidget
 
         # Ignore events generated by redraws.
@@ -4389,30 +4397,21 @@ class leoQtTree (leoFrame.leoTree):
 
         if trace: g.trace(p.headString() or "<no p>",g.callers(4))
 
-        self.expanding = True
         try:
-            self.full_redraw()
+            self.expanding = True
+            p2 = self.itemsDict.get(item)
+            if p2:
+                if trace: g.trace(p2)
+                if not p2.isExpanded():
+                    p2.expand()
+                c.setCurrentPosition(p2)
+                self.full_redraw()
+            else:
+                g.trace('Error no p2')
+
         finally:
             self.expanding = False
             self.setCurrentItem()
-
-        # try:
-            # redraw = False
-            # p2 = self.itemsDict.get(item)
-            # if p2:
-                # if trace: g.trace(p2)
-                # if not p2.isExpanded():
-                    # p2.expand()
-                # c.setCurrentPosition(p2)
-                # self.full_redraw()
-                # redraw = True
-            # else:
-                # g.trace('Error no p2')
-
-        # finally:
-            # self.expanding = False
-            # if redraw:
-                # item = self.setCurrentItem()
     #@-node:ekr.20081121105001.445:sig_itemExpanded
     #@+node:ekr.20081121105001.446:tree.OnPopup & allies
     def OnPopup (self,p,event):
@@ -4994,12 +4993,17 @@ class leoQtGui(leoGui.leoGui):
     #@nonl
     #@-node:ekr.20081121105001.183:Clipboard
     #@+node:ekr.20081121105001.478:Do nothings
-    def color (self,color):         return None
+    def color (self,color):
+        return None
 
-    def createRootWindow(self):     pass
+    def createRootWindow(self):
+        pass
 
     def killGui(self,exitFlag=True):
         """Destroy a gui and terminate Leo if exitFlag is True."""
+
+    def killPopupMenu(self):
+        pass
 
     def recreateRootWindow(self):
         """Create the hidden root window of a gui
@@ -6051,8 +6055,12 @@ class leoQtEventFilter(QtCore.QObject):
 #@+node:ekr.20081205131308.15:leoQtColorizer
 class leoQtColorizer:
 
-    '''An adaptor class that interfaces QSyntaxHighligher
-    and the threading_colorizer plugin.'''
+    '''An adaptor class that interfaces Leo's core to two class:
+
+    1. a subclass of QSyntaxHighlighter,
+
+    2. the jEditColorizer class that contains the
+       pattern-matchin code from the threading colorizer plugin.'''
 
     #@    @+others
     #@+node:ekr.20081205131308.16:ctor (leoQtColorizer)
@@ -6063,12 +6071,12 @@ class leoQtColorizer:
 
         # g.trace(self,c,w)
 
-        self.count = 0
+        self.count = 0 # For unit testing.
         self.enabled = True
 
         self.highlighter = leoQtSyntaxHighlighter(c,w)
+        self.colorer = self.highlighter.colorer
     #@-node:ekr.20081205131308.16:ctor (leoQtColorizer)
-    #@+node:ekr.20081205131308.17:Entry points
     #@+node:ekr.20081205131308.18:colorize
     def colorize(self,p,incremental=False,interruptable=True):
 
@@ -6076,143 +6084,46 @@ class leoQtColorizer:
 
         self.count += 1 # For unit testing.
 
-        self.interruptable = interruptable
-
-        # g.trace(p and p.headString())
-
         if self.enabled:
             self.highlighter.rehighlight()
-        else:
-            self.highlighter.unhighlight()
-
-        # if self.enabled:
-            # self.updateSyntaxColorer(p) # Sets self.flag.
-            # self.threadColorizer(p)
-        # else:
-            # self.removeAllTags()
 
         return "ok" # For unit testing.
     #@-node:ekr.20081205131308.18:colorize
-    #@+node:ekr.20081205131308.19:enable & disable
+    #@+node:ekr.20081207061047.10:entry points
     def disable (self):
-
-        self.enabled=False
+        self.colorer.enabled=False
 
     def enable (self):
-
-        self.enabled=True
-    #@nonl
-    #@-node:ekr.20081205131308.19:enable & disable
-    #@+node:ekr.20081205131308.20:isSameColorState
-    def isSameColorState (self):
-
-        return False
-    #@nonl
-    #@-node:ekr.20081205131308.20:isSameColorState
-    #@+node:ekr.20081205131308.21:interrupt (does nothing)
-    interrupt_count = 0
+        self.colorer.enabled=True
 
     def interrupt(self):
-
-        '''Interrupt colorOneChunk'''
-
-        # g.trace(g.callers(5))
         pass
-    #@-node:ekr.20081205131308.21:interrupt (does nothing)
-    #@+node:ekr.20081205131308.22:kill
+
+    def isSameColorState (self):
+        return False
+
     def kill (self):
+        pass
 
-        '''Kill all future coloring.'''
-
-        # self.killFlag = True
-        g.trace()
-    #@-node:ekr.20081205131308.22:kill
-    #@+node:ekr.20081205131308.23:useSyntaxColoring
-    def useSyntaxColoring (self,p):
-
-        """Return True unless p is unambiguously under the control of @nocolor."""
-
-        p = p.copy() ; first = p.copy()
-        val = True ; self.killcolorFlag = False
-
-        # New in Leo 4.6: @nocolor-node disables one node only.
-        theDict = g.get_directives_dict(p)
-        if 'nocolor-node' in theDict:
-            # g.trace('nocolor-node',p.headString())
-            return False
-
-        for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            no_color = 'nocolor' in theDict
-            color = 'color' in theDict
-            kill_color = 'killcolor' in theDict
-            # A killcolor anywhere disables coloring.
-            if kill_color:
-                val = False ; self.killcolorFlag = True ; break
-            # A color anywhere in the target enables coloring.
-            if color and p == first:
-                val = True ; break
-            # Otherwise, the @nocolor specification must be unambiguous.
-            elif no_color and not color:
-                val = False ; break
-            elif color and not no_color:
-                val = True ; break
-
-        # g.trace(first.headString(),val)
-        return val
-    #@-node:ekr.20081205131308.23:useSyntaxColoring
-    #@+node:ekr.20081205131308.24:updateSyntaxColorer
-    def updateSyntaxColorer (self,p):
-
-        p = p.copy()
-
-        # self.flag is True unless an unambiguous @nocolor is seen.
-        self.flag = self.useSyntaxColoring(p)
-        self.scanColorDirectives(p)
-    #@nonl
-    #@-node:ekr.20081205131308.24:updateSyntaxColorer
-    #@-node:ekr.20081205131308.17:Entry points
-    #@+node:ekr.20081205131308.26:scanColorDirectives
     def scanColorDirectives(self,p):
+        return self.colorer.scanColorDirectives(p)
 
-        '''Scan position p and p's ancestors looking for @comment,
-        @language and @root directives,
-        setting corresponding colorizer ivars.'''
+    def updateSyntaxColorer (self,p):
+        return self.colorer.updateSyntaxColorer(p)
 
-        c = self.c
-        if not c: return # May be None for testing.
-
-        table = (
-            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
-            ('root',        c.scanAtRootDirectives),
-        )
-
-        # Set d by scanning all directives.
-        aList = g.get_directives_dict_list(p)
-        d = {}
-        for key,func in table:
-            val = func(aList)
-            if val: d[key]=val
-
-        # Post process.
-        lang_dict       = d.get('lang-dict')
-        self.rootMode   = d.get('root') or None
-
-        if lang_dict:
-            self.language       = lang_dict.get('language')
-            self.comment_string = lang_dict.get('comment')
-        else:
-            self.language       = c.target_language and c.target_language.lower()
-            self.comment_string = None
-
-        # g.trace('self.language',self.language)
-        return self.language # For use by external routines.
-    #@-node:ekr.20081205131308.26:scanColorDirectives
+    def useSyntaxColoring (self,p):
+        return self.colorer.useSyntaxColoring(p)
+    #@-node:ekr.20081207061047.10:entry points
     #@-others
 
 #@-node:ekr.20081205131308.15:leoQtColorizer
 #@+node:ekr.20081205131308.27:leoQtSyntaxHighlighter
 class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
+
+    '''A subclass of QSyntaxHighlighter that overrides
+    the highlightBlock and rehighlight methods.
+
+    All actual syntax coloring is done in the jeditColorer class.'''
 
     #@    @+others
     #@+node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
@@ -6249,20 +6160,17 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
         QtGui.QSyntaxHighlighter.rehighlight(self)
 
     #@-node:ekr.20081206062411.15:rehighlight
-    #@+node:ekr.20081205131308.28:unhighlight
-    def unhighlight (self):
-
-        '''Remove all highlighting.'''
-
-        g.trace()
-    #@-node:ekr.20081205131308.28:unhighlight
     #@-others
 #@-node:ekr.20081205131308.27:leoQtSyntaxHighlighter
 #@+node:ekr.20081205131308.48:class jeditColorizer
 class jEditColorizer:
 
+    '''This class contains the pattern matching code
+    from the threading_colorizer plugin, adapted for
+    use with QSyntaxHighlighter.'''
+
     #@    @+others
-    #@+node:ekr.20081205131308.49: Birth
+    #@+node:ekr.20081205131308.49: Birth & init
     #@+node:ekr.20081205131308.50:__init__ (threading colorizer)
     def __init__(self,c,highlighter,w):
 
@@ -6274,7 +6182,7 @@ class jEditColorizer:
         self.w = w
         assert(w == self.c.frame.body.bodyCtrl)
 
-        # Coloring stuff.
+        # Used by recolor and helpers...
         self.actualColorDict = {} # Used only by setTag.
         self.global_i,self.global_j = 0,0 # The global bounds of colorizing.
         self.nextState = 1 # Dont use 0.
@@ -6299,7 +6207,6 @@ class jEditColorizer:
         self.trace = False or c.config.getBool('trace_colorizer')
         self.trace_leo_matches = False
         self.trace_match_flag = False # (Useful) True: trace all matching methods.
-        self.trace_tags = False
         self.verbose = False
         # Mode data...
         self.comment_string = None # Can be set by @comment directive.
@@ -6335,19 +6242,6 @@ class jEditColorizer:
             'label','literal1','literal2','literal3','literal4',
             'markup','operator',
         ]
-        # Threading info...
-        # self.threadCount = 0
-        # self.helperThread = None # A singleton helper thread.
-        # self.interruptable = True
-        # self.killFlag = False
-        # # Tagging...
-        # self.oldTags = [] # Sorted list of all old tags.
-        # self.oldTagsDict = {} # Keys are tag names, values are (i,j)
-        # self.globalAddList = [] # The tags (i,j,tagName) remaining to be colored.
-        # self.newTagsDict = {} # Keys are tag names, values are lists of tuples (i,j)
-            # # The helper thread adds to this dict.  idleHandler in the main thread uses these dicts.
-        # self.oldTagsDict = {}
-        # self.postPassStarted = False
 
         #@    << define leoKeywordsDict >>
         #@+node:ekr.20081205131308.35:<< define leoKeywordsDict >>
@@ -6643,6 +6537,28 @@ class jEditColorizer:
         if not self.showInvisibles:
             w.tag_configure("elide",elide="1")
     #@-node:ekr.20081205131308.54:configure_variable_tags
+    #@+node:ekr.20081205131308.74:init
+    def init (self):
+
+        self.p = self.c.currentPosition()
+        self.s = self.w.getAllText()
+        # g.trace(self.s)
+
+        # State info.
+        self.global_i,self.global_j = 0,0
+        self.nextState = 1 # Dont use 0.
+        self.stateDict = {}
+
+        self.updateSyntaxColorer(self.p)
+            # Sets self.flag and self.language.
+
+        self.init_mode(self.language)
+
+        # Used by matchers.
+        self.prev = None
+
+        # self.configure_tags() # Must do this every time to support multiple editors.
+    #@-node:ekr.20081205131308.74:init
     #@+node:ekr.20081205131308.55:init_mode & helpers
     def init_mode (self,name):
 
@@ -6880,54 +6796,22 @@ class jEditColorizer:
         # self.image_references = []
     #@nonl
     #@-node:ekr.20081205131308.111:setFontFromConfig
-    #@-node:ekr.20081205131308.49: Birth
-    #@+node:ekr.20081205131308.74:init
-    def init (self):
-
-        self.p = self.c.currentPosition()
-        self.s = self.w.getAllText()
-        # g.trace(self.s)
-
-        # State info.
-        self.global_i,self.global_j = 0,0
-        self.nextState = 1 # Dont use 0.
-        self.stateDict = {}
-
-        self.init_mode(self.language)
-
-        # self.killFlag = False
-        # self.language is set by self.updateSyntaxColorer.
-        # self.oldTags = []
-        # self.globalAddList = []
-        # self.newTagsDict = {}
-        # self.oldTagsDict = {}
-        # self.postPassStarted = False
-        # self.prev = None
-        # self.tagsRemoved = False
-        # self.configure_tags() # Must do this every time to support multiple editors.
-        # try:
-            # w.init_colorizer(self)
-        # except:
-            # pass
-    #@-node:ekr.20081205131308.74:init
+    #@-node:ekr.20081205131308.49: Birth & init
     #@+node:ekr.20081206062411.13:colorRangeWithTag
     def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
-        '''Add an item to the globalAddList if colorizing is enabled.'''
+        '''Actually colorize the selected range.
+
+        This is called whenever a pattern matcher succeed.'''
 
         trace = False
-
-        # if self.killFlag:
-            # if self.trace and self.verbose: g.trace('*** killed',self.threadCount)
-            # return
-
         if not self.flag: return
 
         if delegate:
             if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
-            # Color everything at once, using the same indices as the caller.
+            # Color everything now, using the same indices as the caller.
             while i < j:
                 progress = i
                 assert j >= 0, 'colorRangeWithTag: negative j'
@@ -6936,65 +6820,21 @@ class jEditColorizer:
                     if n is None:
                         g.trace('Can not happen: delegate matcher returns None')
                     elif n > 0:
-                        # if f.__name__ != 'match_blanks': g.trace(delegate,i,f.__name__)
                         if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
                         i += n ; break
                 else:
                     # New in Leo 4.6: Use the default chars for everything else.
                     self.setTag(tag,i,i+1)
-                    # aList = self.newTagsDict.get(tag,[])
-                    # aList.append((i,i+1),)
-                    # self.newTagsDict[tag] = aList
                     i += 1
                 assert i > progress
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
         elif not exclude_match:
             self.setTag(tag,i,j)
-            # aList = self.newTagsDict.get(tag,[])
-            # aList.append((i,j),)
-            # self.newTagsDict[tag] = aList
-    #@-node:ekr.20081206062411.13:colorRangeWithTag
-    #@+node:ekr.20081206062411.14:setTag
-    def setTag (self,tag,i,j):
-
-        trace = False
-        w = self.w
-        colorName = w.configDict.get(tag)
-
-        # Munch the color name.
-        if not colorName or colorName == 'black':
-            return
-        if colorName[-1].isdigit() and colorName[0] != '#':
-            colorName = colorName[:-1]
-
-        # Get the actual color.
-        color = self.actualColorDict.get(colorName)
-        if not color:
-            color = QtGui.QColor(colorName)
-            if color.isValid():
-                self.actualColorDict[colorName] = color
-            else:
-                return g.trace('unknown color name',colorName)
-
-        # Clip the colorizing to the global bounds.
-        offset = self.global_i
-        lim_i,lim_j = self.global_i,self.global_j
-        clip_i = max(i,lim_i)
-        clip_j = min(j,lim_j)
-        ok = clip_i < clip_j
-
-        if trace:
-            kind = g.choose(ok,' ','***')
-            s2 = g.choose(ok,self.s[clip_i:clip_j],self.s[i:j])
-            g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
-                kind,tag,offset,i,j,lim_i,lim_j,s2))
-
-        if ok:
-            self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
     #@nonl
-    #@-node:ekr.20081206062411.14:setTag
-    #@+node:ekr.20081205131308.87:jEdit matchers
+    #@-node:ekr.20081206062411.13:colorRangeWithTag
+    #@+node:ekr.20081205131308.87:pattern matchers
+    #@@nocolor-node
     #@+at
     # 
     # The following jEdit matcher methods return the length of the matched 
@@ -7658,7 +7498,7 @@ class jEditColorizer:
             g.trace(kind,i,j,g.callers(2),self.dump(s[i:j]))
     #@nonl
     #@-node:ekr.20081205131308.112:trace_match
-    #@-node:ekr.20081205131308.87:jEdit matchers
+    #@-node:ekr.20081205131308.87:pattern matchers
     #@+node:ekr.20081206062411.12:recolor & helpers
     def recolor (self,s):
 
@@ -7738,10 +7578,129 @@ class jEditColorizer:
             lastMatch=lastMatch)
     #@-node:ekr.20081206062411.18:setCurrentState
     #@-node:ekr.20081206062411.12:recolor & helpers
+    #@+node:ekr.20081205131308.26:scanColorDirectives
+    def scanColorDirectives(self,p):
+
+        '''Scan position p and p's ancestors looking for @comment,
+        @language and @root directives,
+        setting corresponding colorizer ivars.'''
+
+        c = self.c
+        if not c: return # May be None for testing.
+
+        table = (
+            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+            ('root',        c.scanAtRootDirectives),
+        )
+
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,func in table:
+            val = func(aList)
+            if val: d[key]=val
+
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        self.rootMode   = d.get('root') or None
+
+        if lang_dict:
+            self.language       = lang_dict.get('language')
+            self.comment_string = lang_dict.get('comment')
+        else:
+            self.language       = c.target_language and c.target_language.lower()
+            self.comment_string = None
+
+        # g.trace('self.language',self.language)
+        return self.language # For use by external routines.
+    #@-node:ekr.20081205131308.26:scanColorDirectives
+    #@+node:ekr.20081206062411.14:setTag
+    def setTag (self,tag,i,j):
+
+        trace = False
+        w = self.w
+        colorName = w.configDict.get(tag)
+
+        # Munch the color name.
+        if not colorName or colorName == 'black':
+            return
+        if colorName[-1].isdigit() and colorName[0] != '#':
+            colorName = colorName[:-1]
+
+        # Get the actual color.
+        color = self.actualColorDict.get(colorName)
+        if not color:
+            color = QtGui.QColor(colorName)
+            if color.isValid():
+                self.actualColorDict[colorName] = color
+            else:
+                return g.trace('unknown color name',colorName)
+
+        # Clip the colorizing to the global bounds.
+        offset = self.global_i
+        lim_i,lim_j = self.global_i,self.global_j
+        clip_i = max(i,lim_i)
+        clip_j = min(j,lim_j)
+        ok = clip_i < clip_j
+
+        if trace:
+            kind = g.choose(ok,' ','***')
+            s2 = g.choose(ok,self.s[clip_i:clip_j],self.s[i:j])
+            g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
+                kind,tag,offset,i,j,lim_i,lim_j,s2))
+
+        if ok:
+            self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
+    #@nonl
+    #@-node:ekr.20081206062411.14:setTag
+    #@+node:ekr.20081205131308.24:updateSyntaxColorer
+    def updateSyntaxColorer (self,p):
+
+        p = p.copy()
+
+        # self.flag is True unless an unambiguous @nocolor is seen.
+        self.flag = self.useSyntaxColoring(p)
+        self.scanColorDirectives(p)
+    #@nonl
+    #@-node:ekr.20081205131308.24:updateSyntaxColorer
+    #@+node:ekr.20081205131308.23:useSyntaxColoring
+    def useSyntaxColoring (self,p):
+
+        """Return True unless p is unambiguously under the control of @nocolor."""
+
+        p = p.copy() ; first = p.copy()
+        val = True ; self.killcolorFlag = False
+
+        # New in Leo 4.6: @nocolor-node disables one node only.
+        theDict = g.get_directives_dict(p)
+        if 'nocolor-node' in theDict:
+            # g.trace('nocolor-node',p.headString())
+            return False
+
+        for p in p.self_and_parents_iter():
+            theDict = g.get_directives_dict(p)
+            no_color = 'nocolor' in theDict
+            color = 'color' in theDict
+            kill_color = 'killcolor' in theDict
+            # A killcolor anywhere disables coloring.
+            if kill_color:
+                val = False ; self.killcolorFlag = True ; break
+            # A color anywhere in the target enables coloring.
+            if color and p == first:
+                val = True ; break
+            # Otherwise, the @nocolor specification must be unambiguous.
+            elif no_color and not color:
+                val = False ; break
+            elif color and not no_color:
+                val = True ; break
+
+        # g.trace(first.headString(),val)
+        return val
+    #@-node:ekr.20081205131308.23:useSyntaxColoring
     #@-others
 #@-node:ekr.20081205131308.48:class jeditColorizer
 #@-node:ekr.20081204090029.1:Syntax coloring
-#@+node:ekr.20081121105001.515:Text widget classes...
+#@+node:ekr.20081121105001.515:Text widget classes
 #@+node:ekr.20081121105001.516: class leoQtBaseTextWidget
 class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
@@ -7773,6 +7732,9 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         self.widget.connect(self.widget,
             QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
 
         self.injectIvars(c)
     #@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
@@ -7991,6 +7953,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         return self.name
     #@-node:ekr.20081121105001.535:getName (baseTextWidget)
+    #@+node:ekr.20081208041503.499:onClick
+    def onClick(self):
+
+        c = self.c
+        name = c.widget_name(self)
+
+        if name.startswith('body'):
+            if hasattr(c.frame,'statusLine'):
+                c.frame.statusLine.update()
+    #@-node:ekr.20081208041503.499:onClick
     #@+node:ekr.20081121105001.536:onTextChanged
     def onTextChanged (self):
 
@@ -8841,7 +8813,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
     def setForegroundColor(self,color):
         pass
 #@-node:ekr.20081121105001.594:class leoQtMinibuffer (leoQLineEditWidget)
-#@-node:ekr.20081121105001.515:Text widget classes...
+#@-node:ekr.20081121105001.515:Text widget classes
 #@-others
 #@-node:ekr.20081121105001.188:@thin qtGui.py
 #@-leo

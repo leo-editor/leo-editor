@@ -3547,12 +3547,6 @@ class keyHandlerClass:
     #@-node:ekr.20080510095819.1:k.handleUnboudKeys
     #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
     #@+node:ekr.20061031131434.153:masterClickHandler
-    # def masterClickHandler (self,event,func=None):
-        # k = self ; c = k.c
-        # val = self.masterClickHandlerHelper(event,func)
-        # if c.exists: c.outerUpdate()
-        # return val
-
     def masterClickHandler (self,event,func=None):
 
         g.app.gui.killPopupMenu()

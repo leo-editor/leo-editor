@@ -1251,6 +1251,8 @@ class leoFind:
 
         c = self.c ; p = self.p
         w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
+        if not w: return
+
         self.errors = 0
 
         # We only use the insert point, *never* the selection range.
