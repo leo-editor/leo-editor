@@ -3495,9 +3495,13 @@ class leoQtTree (leoFrame.leoTree):
 
         # Drawing ivars.
         self.item2positionDict = {} # keys are items, values are positions
-        self.parentsDict = {} 
+            # Used only to get a postion when a node is double-clicked.
+        self.parentsDict = {} # keys are vnodes, values are a *single* item.
+            # **This just barely works. **
         self.tnode2dataDict = {} # keys are tnodes, values are lists of (p,it)
+            # Used only to update icons.
         self.vnode2dataDict = {} # keys are vnodes, values are lists of (p,it)
+            # Used only to by editLabel to find the proper edit widget.
 
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
@@ -3784,7 +3788,8 @@ class leoQtTree (leoFrame.leoTree):
         self.tnode2dataDict = {} # keys are tnodes, values are lists of items (p,it)
         self.vnode2dataDict = {} # keys are vnodes, values are lists of items (p,it)
         self.item2positionDict = {} # keys are items, values are positions
-        self.parentsDict = {}
+        self.parentsDict = {} # keys are vnodes, values are a **single** item.
+            # This just barely works.
         self._editWidgetPosition = None
         self._editWidget = None
         self._editWidgetWrapper = None
@@ -3815,7 +3820,8 @@ class leoQtTree (leoFrame.leoTree):
 
         # Remember the associatiation of item with p, and vice versa.
         self.item2positionDict[item] = p.copy()
-        self.parentsDict[p.v] = item 
+        self.parentsDict[p.v] = item
+            # This is used only when drawing the children, so it will (barely) work.
 
         # Remember the association of p.v with (p,item)
         aList = self.vnode2dataDict.get(p.v,[])
@@ -3844,11 +3850,11 @@ class leoQtTree (leoFrame.leoTree):
             'expanded?',p.isExpanded(),p.headString())
 
         # Draw the (visible) parent node.
-        it = self.drawNode(p)
+        item = self.drawNode(p)
 
         if p.hasChildren():
             if p.isExpanded():
-                w.expandItem(it)
+                w.expandItem(item)
                 child = p.firstChild()
                 while child:
                     self.drawTree(child)
@@ -3863,9 +3869,9 @@ class leoQtTree (leoFrame.leoTree):
                     while child:
                         self.drawNode(child)
                         child.moveToNext()
-                w.collapseItem(it)
+                w.collapseItem(item)
         else:
-            w.collapseItem(it)
+            w.collapseItem(item)
     #@-node:ekr.20081121105001.416:drawTree
     #@+node:ekr.20081121105001.417:drawIcon
     def drawIcon (self,p):

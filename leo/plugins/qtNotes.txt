@@ -426,7 +426,8 @@ def drawNode (self,p,dummy=False):
 
     # Remember the associatiation of item with p, and vice versa.
     self.item2positionDict[item] = p.copy()
-    self.parentsDict[p.v] = item 
+    self.parentsDict[p.v] = item
+        # This is used only when drawing the children, so it will (barely) work.
 
     # Remember the association of p.v with (p,item)
     aList = self.vnode2dataDict.get(p.v,[])
