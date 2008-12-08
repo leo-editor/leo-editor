@@ -6,10 +6,6 @@
 
 First:
 
-- Complete support for find tab:
-    - update ivars when checkboxes clicked.
-    - (done)update checkboxes when toggle commands executed.
-
 - Make sure key strokes are handled in log, find panes.
 
 Next:
