@@ -2255,6 +2255,10 @@ class leoQtLog (leoFrame.leoLog):
         self.tabWidget = c.frame.top.ui.tabWidget # The Qt.TabWidget that holds all the tabs.
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
+        if 0: # Does not work
+            theFilter = leoQtEventFilter(c,w=c.frame,tag='log')
+            self.tabWidget.installEventFilter(theFilter)
+
         self.setFontFromConfig()
         self.setColorFromConfig()
     #@-node:ekr.20081121105001.320:qtLog.__init__
@@ -2423,6 +2427,7 @@ class leoQtLog (leoFrame.leoLog):
 
         if createText:
             contents = QtGui.QTextBrowser()
+            # contents = QtGui.QTextEdit()
             contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
             self.logDict[tabName] = contents
             if tabName == 'Log': self.logCtrl = contents

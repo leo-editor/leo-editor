@@ -5,13 +5,10 @@
 @nocolor-node
 
 First:
-
-- Make sure key strokes are handled in log, find panes.
-
-Next:
 - Optimize tree updates.
 
-Finally:
+Next:
+- Can key strokes be handled in log pane?
 - Disabling searches of body pane can cause hard crashes.
     - initInteractiveCommands expects c.edit_widget(p)to exist.
 - Allow coloring of icon bar buttons.
