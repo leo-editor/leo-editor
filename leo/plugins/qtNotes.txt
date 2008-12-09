@@ -5,6 +5,7 @@
 @nocolor-node
 
 First:
+- Support hoist in redraw code.
 - Optimize tree updates.
 
 Next:
@@ -64,927 +65,6 @@ present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081121105001.150:QScintilla stuff
 #@-node:ekr.20081121105001.151:Finally/maybe
 #@-node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20081121105001.154:Recent projects...
-#@+node:ekr.20081121105001.155:Recent crasher (after find)
-
-wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
-exception executing command
-Traceback (most recent call last):
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 320, in doCommand
-    val = command(event)
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoEditCommands.py", line 7803, in findTabFindNext
-    self.findTabHandler.findNextCommand()
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1506, in findNextCommand
-    self.findNext()
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 744, in findNext
-    self.showSuccess(pos,newpos)
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoFind.py", line 1359, in showSuccess
-    c.editPosition(p)
-
-  File "C:\leo.repo\qt-plugin\leo\core\leoCommands.py", line 7233, in editPosition
-    c.frame.tree.editLabel(p,selectAll=selectAll)
-
-  File "C:\leo.repo\qt-plugin\leo\plugins\qtGui.py", line 4277, in editLabel
-    w.editItem(item)
-
-RuntimeError: underlying C/C++ object has been deleted
-#@+node:ekr.20081121105001.156:editLabel (override)
-def editLabel (self,p,selectAll=False):
-
-    """Start editing p's headline."""
-
-    c = self.c ; trace = False ; verbose = False
-
-    if self.redrawing:
-        if trace and verbose: g.trace('redrawing')
-        return
-    if self._editWidget:
-        # Not an error, because of key weirdness.
-        g.trace('already editing')
-        return
-
-    if trace:
-        g.trace('*** all',selectAll,p.headString(),g.callers(4))
-
-    w = self.treeWidget
-    data = self.vnodeDict.get(p.v)
-    if not data:
-        if trace and verbose:
-            g.trace('No data: redrawing if possible')
-        c.outerUpdate() # Do any scheduled redraw.
-        data = self.vnodeDict.get(p.v)
-
-    if data:
-        item = data [0][1]
-    else:
-        if trace and not g.app.unitTesting:
-            g.trace('*** Can not happen: no data',p and p.headString())
-        return None
-
-    if item:
-        w.setCurrentItem(item) # Must do this first.
-        w.editItem(item)
-        e = w.itemWidget(item,0) # A QLineEdit
-        if e:
-            s = e.text() ; len_s = len(s)
-            # Hook up the widget to Leo's core.
-            self._editWidgetPosition = p.copy()
-            self._editWidget = e
-            self._editWidgetWrapper = leoQtHeadlineWidget(
-                widget=e,name='head',c=c)
-            start,n = g.choose(selectAll,
-                tuple([0,len_s]),tuple([len_s,0]))
-            e.setObjectName('headline')
-            e.setSelection(start,n)
-            e.setFocus()
-        else: g.trace('*** no e')
-    else:
-        self._editWidgetPosition = None
-        self._editWidget = None
-        self._editWidgetWrapper = None
-        e = None
-        g.trace('*** no item')
-
-    # A nice hack: just set the focus request.
-    c.requestedFocusWidget = e
-#@-node:ekr.20081121105001.156:editLabel (override)
-#@-node:ekr.20081121105001.155:Recent crasher (after find)
-#@+node:ekr.20081121105001.157:Fixed headline data loss bug
-#@+node:ekr.20081121105001.158:Report
-To reproduce:
-
-- open any outline
-- hit Ctrl-I to add a node
-- select the headline so you can edit it
-- change the headline, then press Ctrl-S to save the outline.
-
-Important: press Ctrl-S when the headline is still selected and can be
-modified.
-
-It looks like the change is lost. If I change the focus to another
-headline, then press Ctrl-S after changing focus, the change is saved.
-
-The tk GUI behaves normally, no changes are lost. So I qualify this as
-a bug in the qt GUI.
-
-Slackware Linux 12.1
-Python 2.6
-qt/pyqt 4.4.3
-r1486 of qt-plugin
-#@nonl
-#@-node:ekr.20081121105001.158:Report
-#@+node:ekr.20081121105001.159:qtTree.initAfterLoad
-def initAfterLoad (self):
-
-    c = self.c ; frame = c.frame
-    w = c.frame.top ; tw = self.treeWidget
-
-    if not leoQtTree.callbacksInjected:
-        leoQtTree.callbacksInjected = True
-        self.injectCallbacks() # A base class method.
-
-    w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemDoubleClicked(QTreeWidgetItem*, int)"),
-        self.onItemDoubleClicked)
-
-    w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemSelectionChanged()"),
-        self.onTreeSelect)
-
-    w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemChanged(QTreeWidgetItem*, int)"),
-        self.sig_itemChanged)
-
-    w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemCollapsed(QTreeWidgetItem*)"),
-        self.sig_itemCollapsed)
-
-    w.connect(self.treeWidget,QtCore.SIGNAL(
-            "itemExpanded(QTreeWidgetItem*)"),
-        self.sig_itemExpanded)
-
-    self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
-    tw.installEventFilter(self.ev_filter)
-
-    c.setChanged(False)
-#@-node:ekr.20081121105001.159:qtTree.initAfterLoad
-#@+node:ekr.20081121105001.156:editLabel (override)
-def editLabel (self,p,selectAll=False):
-
-    """Start editing p's headline."""
-
-    c = self.c ; trace = False ; verbose = False
-
-    if self.redrawing:
-        if trace and verbose: g.trace('redrawing')
-        return
-    if self._editWidget:
-        # Not an error, because of key weirdness.
-        g.trace('already editing')
-        return
-
-    if trace:
-        g.trace('*** all',selectAll,p.headString(),g.callers(4))
-
-    w = self.treeWidget
-    data = self.vnodeDict.get(p.v)
-    if not data:
-        if trace and verbose:
-            g.trace('No data: redrawing if possible')
-        c.outerUpdate() # Do any scheduled redraw.
-        data = self.vnodeDict.get(p.v)
-
-    if data:
-        item = data [0][1]
-    else:
-        if trace and not g.app.unitTesting:
-            g.trace('*** Can not happen: no data',p and p.headString())
-        return None
-
-    if item:
-        w.setCurrentItem(item) # Must do this first.
-        w.editItem(item)
-        e = w.itemWidget(item,0) # A QLineEdit
-        if e:
-            s = e.text() ; len_s = len(s)
-            # Hook up the widget to Leo's core.
-            self._editWidgetPosition = p.copy()
-            self._editWidget = e
-            self._editWidgetWrapper = leoQtHeadlineWidget(
-                widget=e,name='head',c=c)
-            start,n = g.choose(selectAll,
-                tuple([0,len_s]),tuple([len_s,0]))
-            e.setObjectName('headline')
-            e.setSelection(start,n)
-            e.setFocus()
-        else: g.trace('*** no e')
-    else:
-        self._editWidgetPosition = None
-        self._editWidget = None
-        self._editWidgetWrapper = None
-        e = None
-        g.trace('*** no item')
-
-    # A nice hack: just set the focus request.
-    c.requestedFocusWidget = e
-#@-node:ekr.20081121105001.156:editLabel (override)
-#@+node:ekr.20081121105001.160:edit_widget
-def edit_widget (self,p):
-
-    """Returns the Qt.Edit widget for position p."""
-
-    w = self._editWidgetWrapper
-
-    if p and p == self._editWidgetPosition:
-        return w
-    else:
-        return None
-
-    # Decouple all of the core's headline code.
-    # Except for over-ridden methods.
-#@-node:ekr.20081121105001.160:edit_widget
-#@+node:ekr.20081121105001.161:onItemDoubleClicked
-def onItemDoubleClicked (self,item,col):
-
-    c = self.c ; w = self.treeWidget
-    w.setCurrentItem(item) # Must do this first.
-    w.editItem(item)
-    e = w.itemWidget(item,0)
-    if not e:
-        return g.trace('*** no e')
-    p = self.itemsDict.get(item)
-    if not p:
-        return g.trace('*** no p')
-    # Hook up the widget to Leo's core.
-    e.connect(e,
-        QtCore.SIGNAL("textEdited(QTreeWidgetItem*,int)"),
-        self.onHeadChanged)
-    self._editWidgetPosition = p.copy()
-    self._editWidget = e
-    self._editWidgetWrapper = leoQtHeadlineWidget(
-        widget=e,name='head',c=c)
-    e.setObjectName('headline')
-#@-node:ekr.20081121105001.161:onItemDoubleClicked
-#@+node:ekr.20081121105001.162:onTreeSelect
-def onTreeSelect(self):
-
-    '''Select the proper position when a tree node is selected.'''
-
-    trace = False ; verbose = False
-    c = self.c ; w = self.treeWidget 
-
-    if self.selecting:
-        if trace: g.trace('already selecting')
-        return
-    if self.redrawing:
-        if trace: g.trace('drawing')
-        return
-
-    item = w.currentItem()
-    if trace and verbose: g.trace('item',item)
-    p = self.itemsDict.get(item)
-    if p:
-        if trace: g.trace(p and p.headString())
-        c.frame.tree.select(p) # The crucial hook.
-        # g.trace(g.callers())
-        c.outerUpdate()
-    else:
-        # An error: we are not redrawing.
-        g.trace('no p for item: %s' % item,g.callers(4))
-#@nonl
-#@-node:ekr.20081121105001.162:onTreeSelect
-#@+node:ekr.20081121105001.163:onHeadChanged
-# Tricky code: do not change without careful thought and testing.
-
-def onHeadChanged (self,p,undoType='Typing',s=None):
-
-    '''Officially change a headline.'''
-
-    trace = False ; verbose = True
-    c = self.c ; u = c.undoer
-    e = self._editWidget
-    p = self._editWidgetPosition
-    w = g.app.gui.get_focus()
-
-    # These are not errors: sig_itemChanged may
-    # have been called first.
-    if trace and verbose:
-        if not e:  g.trace('No e',g.callers(4))
-        if e != w: g.trace('e != w',e,w,g.callers(4))
-        if not p:  g.trace('No p')
-
-    if e and e == w and p:
-        s = e.text() ; len_s = len(s)
-        s = g.app.gui.toUnicode(s)
-        oldHead = p.headString()
-        changed = s != oldHead
-        if trace: g.trace('changed',changed,repr(s),g.callers(4))
-        if changed:
-            p.initHeadString(s)
-            undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-            if not c.changed: c.setChanged(True)
-            # New in Leo 4.4.5: we must recolor the body because
-            # the headline may contain directives.
-            c.frame.body.recolor(p,incremental=True)
-            dirtyVnodeList = p.setDirty()
-            u.afterChangeNodeContents(p,undoType,undoData,
-                dirtyVnodeList=dirtyVnodeList)
-
-    # End the editing!
-    self._editWidget = None
-    self._editWidgetPosition = None
-    self._editWidgetWrapper = None
-
-    # This is a crucial shortcut.
-    if g.unitTesting: return
-
-    c.redraw(scroll=False)
-    if self.stayInTree:
-        c.treeWantsFocus()
-    else:
-        c.bodyWantsFocus()
-#@nonl
-#@-node:ekr.20081121105001.163:onHeadChanged
-#@+node:ekr.20081121105001.164:drawNode
-def drawNode (self,p,dummy=False):
-
-    c = self.c ; w = self.treeWidget ; trace = False
-    self.nodeDrawCount += 1
-
-    # Allocate the qt tree item.
-    parent = p.parent()
-    itemOrTree = self.parentsDict.get(parent and parent.v,w)
-
-    if trace and not self.fullDrawing:
-        g.trace(id(itemOrTree),parent and parent.headString())
-
-    item = QtGui.QTreeWidgetItem(itemOrTree)
-    item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-
-    # Draw the headline and the icon.
-    item.setText(0,p.headString())
-    icon = self.getIcon(p)
-    if icon: item.setIcon(0,icon)
-
-    if dummy: return item
-
-    # Remember the associatiation of item with p, and vice versa.
-    self.itemsDict[item] = p.copy()
-    self.parentsDict[p.v] = item 
-
-    # Remember the association of p.v with (p,item)
-    aList = self.vnodeDict.get(p.v,[])
-    data = p.copy(),item
-    aList.append(data)
-    self.vnodeDict[p.v] = aList
-
-    # Remember the association of p.v.t with (p,item).
-    aList = self.tnodeDict.get(p.v.t,[])
-    data = p.copy(),item
-    aList.append(data)
-    self.tnodeDict[p.v.t] = aList
-
-    return item
-#@-node:ekr.20081121105001.164:drawNode
-#@-node:ekr.20081121105001.157:Fixed headline data loss bug
-#@+node:ekr.20081121105001.165:Fixed cross-file cut/paste problem
-#@+node:ekr.20081121105001.166:class leoQtEventFilter
-class leoQtEventFilter(QtCore.QObject):
-
-    << about internal bindings >>
-
-    @others
-#@+node:ekr.20081121105001.167:<< about internal bindings >>
-@nocolor-node
-@
-
-Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
-
-1.  The case of plain letters is significant:  a is not A.
-
-2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
-warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
-
-3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
-significant. Thus, the Shift- prefix is required if you want an upper-case
-letter (with the exception of 'bare' uppercase letters.)
-
-The following table illustrates these rules. In each row, the first entry is the
-key (for k.bindingsDict) and the other entries are equivalents that the user may
-specify in leoSettings.leo:
-
-a, Key-a, Key-A
-A, Shift-A
-Alt-a, Alt-A
-Alt-A, Alt-Shift-a, Alt-Shift-A
-Ctrl-a, Ctrl-A
-Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
-!, Key-!,Key-exclam,exclam
-
-This table is consistent with how Leo already works (because it is consistent
-with Tk's key-event specifiers). It is also, I think, the least confusing set of
-rules.
-#@nonl
-#@-node:ekr.20081121105001.167:<< about internal bindings >>
-#@+node:ekr.20081121105001.168:eventFilter
-def eventFilter(self, obj, event):
-
-    c = self.c ; k = c.k 
-    trace = False ; verbose = True
-    eventType = event.type()
-    ev = QtCore.QEvent
-    kinds = (ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease)
-
-    if eventType in kinds:
-        tkKey,ch,ignore = self.toTkKey(event)
-        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-
-        if ignore:
-            override = False
-        elif self.isSpecialOverride(tkKey,ch):
-            override = True
-        elif k.inState():
-            override = not ignore # allow all keystrokes.
-        elif safe_mode:
-            override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
-        else:
-            override = len(aList) > 0
-    else:
-        override = False ; tkKey = '<no key>'
-
-    if eventType == ev.KeyPress:
-        if override:
-            w = self.w # Pass the wrapper class, not the wrapped widget.
-            stroke = self.toStroke(tkKey,ch)
-            leoEvent = leoKeyEvent(event,c,w,ch) # ch was stroke
-            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-            c.outerUpdate()
-        else:
-            if trace: g.trace(self.tag,'unbound',tkKey)
-
-    if trace: self.traceEvent(obj,event,tkKey,override)
-
-    return override
-#@-node:ekr.20081121105001.168:eventFilter
-#@+node:ekr.20081121105001.169:toStroke
-def toStroke (self,tkKey,ch):
-
-    k = self.c.k ; s = tkKey ; trace = False
-
-    special = ('Alt','Ctrl','Control',)
-    isSpecial = [True for z in special if s.find(z) > -1]
-
-    if not isSpecial:
-        # Keep the Tk spellings for special keys.
-        ch2 = k.guiBindNamesDict.get(ch) # was inverseDict
-        if trace: g.trace('ch',repr(ch),'ch2',repr(ch2))
-        if ch2: s = s.replace(ch,ch2)
-
-    table = (
-        ('Alt-','Alt+'),
-        ('Ctrl-','Ctrl+'),
-        ('Control-','Ctrl+'),
-        # Use Alt+Key-1, etc.  Sheesh.
-        # ('Key-','Key+'),
-        ('Shift-','Shift+')
-    )
-    for a,b in table:
-        s = s.replace(a,b)
-
-    if trace: g.trace('tkKey',tkKey,'-->',s)
-    return s
-#@-node:ekr.20081121105001.169:toStroke
-#@+node:ekr.20081121105001.170:toTkKey
-def toTkKey (self,event):
-
-    mods = self.qtMods(event)
-
-    keynum,text,toString,ch = self.qtKey(event)
-
-    tkKey,ch,ignore = self.tkKey(
-        event,mods,keynum,text,toString,ch)
-
-    return tkKey,ch,ignore
-#@+node:ekr.20081121105001.171:isFKey
-def isFKey(self,ch):
-
-    return (
-        ch and len(ch) in (2,3) and
-        ch[0].lower() == 'f' and
-        ch[1:].isdigit()
-    )
-#@-node:ekr.20081121105001.171:isFKey
-#@+node:ekr.20081121105001.172:qtKey
-def qtKey (self,event):
-
-    '''Return the components of a Qt key event.'''
-
-    keynum = event.key()
-    text   = event.text()
-    toString = QtGui.QKeySequence(keynum).toString()
-    try:
-        ch = chr(keynum)
-    except ValueError:
-        ch = ''
-    ch       = g.app.gui.toUnicode(ch)
-    text     = g.app.gui.toUnicode(text)
-    toString = g.app.gui.toUnicode(toString)
-
-    return keynum,text,toString,ch
-
-
-#@-node:ekr.20081121105001.172:qtKey
-#@+node:ekr.20081121105001.173:qtMods
-def qtMods (self,event):
-
-    modifiers = event.modifiers()
-
-    # The order of this table is significant.
-    # It must the order of modifiers in bindings
-    # in k.masterGuiBindingsDict
-
-    table = (
-        (QtCore.Qt.AltModifier,     'Alt'),
-        (QtCore.Qt.ControlModifier, 'Control'),
-        (QtCore.Qt.MetaModifier,    'Meta'),
-        (QtCore.Qt.ShiftModifier,   'Shift'),
-    )
-
-    mods = [b for a,b in table if (modifiers & a)]
-
-    return mods
-#@-node:ekr.20081121105001.173:qtMods
-#@+node:ekr.20081121105001.174:tkKey & helpers
-def tkKey (self,event,mods,keynum,text,toString,ch):
-
-    '''Carefully convert the Qt key to a 
-    Tk-style binding compatible with Leo's core
-    binding dictionaries.'''
-
-    k = self.c.k ; trace = False ; verbose = True
-
-    special = {
-        'Backspace':'BackSpace',
-        'Esc':'Escape',
-    }
-
-    # Convert '&' to 'ampersand', for example.
-    ch2 = k.guiBindNamesDict.get(ch or toString)
-
-    if not ch: ch = ch2
-    if not ch: ch = ''
-
-    # Handle special cases.
-    ch3 = special.get(toString)
-    if ch3: ch = ch3
-
-    ch4 = k.guiBindNamesDict.get(ch)
-    if ch4: ch = ch4
-
-    if trace and verbose: g.trace(
-'keynum: %s, mods: %s text: %s, toString: %s, '
-'ch: %s, ch2: %s, ch3: %s, ch4: %s' % (
-keynum,mods,repr(text),toString,
-repr(ch),repr(ch2),repr(ch3),repr(ch4)))
-
-    if 'Shift' in mods:
-        mods,ch = self.shifted(mods,ch)
-    elif len(ch) == 1:
-        ch = ch.lower()
-
-    if 'Alt' in mods and ch and ch in string.digits:
-        mods.append('Key')
-
-    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
-    ignore = not ch
-
-    if trace and (ignore or verbose):
-        g.trace('tkKey: %s, ch: %s, ignore: %s' % (
-            repr(tkKey),repr(ch),ignore))
-
-    ch = text or toString # was ch
-    return tkKey,ch,ignore
-#@+node:ekr.20081121105001.175:keyboardUpper1
-def keyboardUpper1 (self,ch):
-
-    '''A horrible, keyboard-dependent hack.
-
-    Return the upper-case version of the given character
-    whose original spelling has length == 1.'''
-
-    d = {
-        '1':'exclam',
-        '2':'at',
-        '3':'numbersign',
-        '4':'dollar',
-        '5':'percent',
-        '6':'asciicircum',
-        '7':'ampersand',
-        '8':'asterisk',
-        '9':'parenleft',
-        '0':'parenright',
-    }
-
-    # g.trace(ch,d.get(ch))
-    return d.get(ch)
-
-#@-node:ekr.20081121105001.175:keyboardUpper1
-#@+node:ekr.20081121105001.176:keyboardUpperLong
-def keyboardUpperLong (self,ch):
-
-    '''A horrible, keyboard-dependent hack.
-
-    Return the upper-case version of the given character
-    whose original spelling has length > 1.'''
-
-    d = {
-        "quoteleft":    "asciitilde",
-        "minus":        "underscore",
-        "equal":        "plus",
-        "bracketleft":  "braceleft",
-        "bracketright": "braceright",
-        "semicolon":    "colon",
-        "quoteright":   "quotedbl",
-        "backslash":    "bar",
-        "comma":        "less",
-        "period":       "greater",
-        "slash":        "question",
-        "parenleft":    "parenleft", # Bug fix: 2008/11/24
-        "parenright":   "parenright", # Bug fix: 2008/11/24
-    }
-    # g.trace(ch,d.get(ch))
-    return d.get(ch)
-#@-node:ekr.20081121105001.176:keyboardUpperLong
-#@+node:ekr.20081121105001.177:shifted
-def shifted (self,mods,ch):
-    '''
-        A horrible, keyboard-dependent kludge.
-        return the shifted version of the letter.
-        return mods, ch.
-    '''
-
-    # Special tk symbols, like '&' have already
-    # been converted to names like 'ampersand'.
-
-    # These special characters should be handled in Leo's core.
-    noShiftList = ('Return','BackSpace','Tab',)
-
-    special = ('Home','End','Right','Left','Up','Down',)
-
-    if len(ch) == 1:
-        ch2 = self.keyboardUpper1(ch)
-        if ch2:
-            mods.remove('Shift')
-            ch = ch2
-        elif len(ch) == 1:
-            # Correct regardless of alt/ctrl mods.
-            mods.remove('Shift')
-            ch = ch.upper()
-        elif len(mods) == 1: # No alt/ctrl.
-            mods.remove('Shift')
-        else:
-            pass
-    else:
-        ch3 = self.keyboardUpperLong(ch)
-        if ch3: ch = ch3
-
-        if ch3 or ch in noShiftList:
-            mods.remove('Shift')
-        elif ch in special:
-            pass # Allow the shift.
-        elif len(mods) == 1: # No alt/ctrl.
-            mods.remove('Shift')
-        else:
-            pass # Retain shift modifier for all special keys.
-
-    return mods,ch
-#@-node:ekr.20081121105001.177:shifted
-#@-node:ekr.20081121105001.174:tkKey & helpers
-#@-node:ekr.20081121105001.170:toTkKey
-#@+node:ekr.20081121105001.179:traceEvent
-def traceEvent (self,obj,event,tkKey,override):
-
-    c = self.c ; e = QtCore.QEvent
-
-    eventType = event.type()
-
-    if 0: # Show focus events.
-        show = (
-            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-            (e.Enter,'enter'),(e.Leave,'leave'),
-        )
-
-    else:
-        show = (
-            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
-            (e.ShortcutOverride,'shortcut-override'),
-        )
-
-    ignore = (
-        e.ToolTip,
-        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
-        e.MetaCall,e.Move,e.Paint,e.Resize,
-        e.Polish,e.PolishRequest,
-    )
-
-    for val,kind in show:
-        if eventType == val:
-            g.trace(
-            'c',c,
-            'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
-            self.tag,kind,repr(c.k.inState()),tkKey,override))
-            return
-
-    # if trace: g.trace(self.tag,
-        # 'bound in state: %s, key: %s, returns: %s' % (
-        # k.getState(),tkKey,ret))
-
-    if False and eventType not in ignore:
-        g.trace('%3s:%s' % (eventType,'unknown'))
-#@-node:ekr.20081121105001.179:traceEvent
-#@+node:ekr.20081121105001.180: ctor
-def __init__(self,c,w,tag=''):
-
-    # Init the base class.
-    QtCore.QObject.__init__(self)
-
-    self.c = c
-    self.w = w      # A leoQtX object, *not* a Qt object.
-    self.tag = tag
-
-    # Pretend there is a binding for these characters.
-    close_flashers = c.config.getString('close_flash_brackets') or ''
-    open_flashers  = c.config.getString('open_flash_brackets') or ''
-    self.flashers = open_flashers + close_flashers
-
-
-#@-node:ekr.20081121105001.180: ctor
-#@+node:ekr.20081121105001.181:isDangerous
-def isDangerous (self,tkKey,ch):
-
-    c = self.c
-
-    if not c.frame.body.useScintilla: return False
-
-    arrows = ('home','end','left','right','up','down')
-    special = ('tab','backspace','period','parenright','parenleft')
-
-    key = tkKey.lower()
-    ch = ch.lower()
-    isAlt = key.find('alt') > -1
-    w = g.app.gui.get_focus()
-    inTree = w == self.c.frame.tree.treeWidget
-
-    val = (
-        key in special or
-        ch in arrows and not inTree and not isAlt or
-        key == 'return' and not inTree # Just barely works.
-    )
-
-    # g.trace(tkKey,ch,val)
-    return val
-#@-node:ekr.20081121105001.181:isDangerous
-#@+node:ekr.20081121105001.182:isSpecialOverride
-def isSpecialOverride (self,tkKey,ch):
-
-    # g.trace(repr(tkKey),repr(ch))
-
-    if tkKey == 'Tab':
-        return True
-    elif len(tkKey) == 1:
-        return True # Must process all ascii keys.
-    elif ch in self.flashers:
-        return True
-    else:
-        return False
-#@-node:ekr.20081121105001.182:isSpecialOverride
-#@-node:ekr.20081121105001.166:class leoQtEventFilter
-#@+node:ekr.20081121105001.183:Clipboard
-def replaceClipboardWith (self,s):
-
-    '''Replace the clipboard with the string s.'''
-
-    cb = self.qtApp.clipboard()
-    if cb:
-        cb.clear()
-        s = g.app.gui.toUnicode(s)
-        cb.setText(s)
-        # g.trace(len(s),type(s))
-
-def getTextFromClipboard (self):
-
-    '''Get a unicode string from the clipboard.'''
-
-    cb = self.qtApp.clipboard()
-    s = cb and cb.text() or ''
-    s = g.app.gui.toUnicode(s)
-    # g.trace (len(s),type(s))
-    return s
-#@nonl
-#@-node:ekr.20081121105001.183:Clipboard
-#@-node:ekr.20081121105001.165:Fixed cross-file cut/paste problem
-#@+node:ekr.20081124113700.1:Completed syntax coloring for QTextEdit
-#@+node:ekr.20081121105001.541:Coloring (baseTextWidget)
-def removeAllTags(self):
-    s = self.getAllText()
-    self.colorSelection(0,len(s),'black')
-
-def tag_names (self):
-    return []
-#@+node:ekr.20081121105001.542:colorSelection
-def colorSelection (self,i,j,colorName):
-
-    w = self.widget
-    if not colorName: return
-    if g.unitTesting: return
-
-@
-    # Unlike Tk names, Qt names don't end in a digit.
-    if colorName[-1].isdigit() and colorName[0] != '#':
-        color = QtGui.QColor(colorName[:-1])
-    else:
-        color = QtGui.QColor(colorName)
-@c
-    color = QtGui.QColor(leoColor.getColor(colorName, 'black'))
-    if not color.isValid():
-        # g.trace('unknown color name',colorName)
-        return
-
-    sb = w.verticalScrollBar()
-    pos = sb.sliderPosition()
-    old_i,old_j = self.getSelectionRange()
-    old_ins = self.getInsertPoint()
-    self.setSelectionRange(i,j)
-    w.setTextColor(color)
-    self.setSelectionRange(old_i,old_j,insert=old_ins)
-    sb.setSliderPosition(pos)
-#@-node:ekr.20081121105001.542:colorSelection
-#@+node:ekr.20081124102726.10:tag_add
-def tag_add(self,tag,x1,x2):
-
-    val = self.configDict.get(tag)
-    if val:
-        self.colorSelection(x1,x2,val)
-
-    # elif tag == 'comment1':
-        # self.colorSelection(x1,x2,'firebrick')
-    # else:
-        # g.trace(tag)
-#@-node:ekr.20081124102726.10:tag_add
-#@+node:ekr.20081124102726.11:tag_config/ure
-def tag_config (self,*args,**keys):
-
-    if len(args) == 1:
-        key = args[0]
-        self.tags[key] = keys
-        val = keys.get('foreground')
-        if val:
-            # g.trace(key,val)
-            self.configDict [key] = val
-    else:
-        g.trace('oops',args,keys)
-
-tag_configure = tag_config
-#@nonl
-#@-node:ekr.20081124102726.11:tag_config/ure
-#@-node:ekr.20081121105001.541:Coloring (baseTextWidget)
-#@-node:ekr.20081124113700.1:Completed syntax coloring for QTextEdit
-#@+node:edward.20081129124834.1:Support different pane orientations
-#@+node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
-def setSplitDirection (self,orientation='vertical'):
-
-    vert = orientation and orientation.lower().startswith('v')
-    # g.trace('vert',vert)
-
-    orientation1 = g.choose(vert,QtCore.Qt.Horizontal, QtCore.Qt.Vertical)
-    orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
-    self.splitter.setOrientation(orientation1)
-    self.splitter_2.setOrientation(orientation2)
-#@-node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
-#@+node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
-# The key invariant: self.splitVerticalFlag tells the alignment of the main splitter.
-
-def toggleSplitDirection (self,event=None):
-
-    '''Toggle the split direction in the present Leo window.'''
-
-    frame = self ; top = frame.top
-
-    for w in (top.splitter,top.splitter_2):
-        w.setOrientation(
-            g.choose(w.orientation() == QtCore.Qt.Horizontal,
-                QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
-#@nonl
-#@+node:ekr.20081121105001.311:toggleQtSplitDirection
-def toggleQtSplitDirection (self,verticalFlag):
-
-    # Abbreviations.
-    frame = self
-    # bar1 = self.bar1 ; bar2 = self.bar2
-    # split1Pane1,split1Pane2 = self.split1Pane1,self.split1Pane2
-    # split2Pane1,split2Pane2 = self.split2Pane1,self.split2Pane2
-    # # Reconfigure the bars.
-    # bar1.place_forget()
-    # bar2.place_forget()
-    # self.configureBar(bar1,verticalFlag)
-    # self.configureBar(bar2,not verticalFlag)
-    # # Make the initial placements again.
-    # self.placeSplitter(bar1,split1Pane1,split1Pane2,verticalFlag)
-    # self.placeSplitter(bar2,split2Pane1,split2Pane2,not verticalFlag)
-    # # Adjust the log and body panes to give more room around the bars.
-    # self.reconfigurePanes()
-    # # Redraw with an appropriate ratio.
-    # vflag,ratio,secondary_ratio = frame.initialRatios()
-    # self.resizePanesToRatio(ratio,secondary_ratio)
-#@-node:ekr.20081121105001.311:toggleQtSplitDirection
-#@-node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
-#@-node:edward.20081129124834.1:Support different pane orientations
-#@-node:ekr.20081121105001.154:Recent projects...
 #@+node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081121105001.186:Script to display Qt font database
 import PyQt4.QtGui as QtGui
@@ -1066,112 +146,158 @@ bracketright: ']'
 #@nonl
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
-#@+node:edward.20081129091117.11:Unused
-#@+node:ekr.20081121105001.195:class  Window
-class Window(QtGui.QMainWindow):
+#@+node:ekr.20081208072750.21:New redraw code
+#@+node:ekr.20081208072750.10:partial_redraw & helpers
+def partial_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
 
-    '''A class representing all parts of the main Qt window
-    as created by Designer.
+    '''Redraw the tree, minimizing the actual changes made to the tree.'''
 
-    c.frame.top is a Window object.
+    trace = True; verbose = False
+    c = self.c ; w = self.treeWidget
+    if not w: return
+    if self.redrawing:
+        if trace: g.trace('***** already drawing',g.callers(5))
+        return
 
-    All leoQtX classes use the ivars of this Window class to
-    support operations requested by Leo's core.
-    '''
+    self.redrawCount += 1
+    if trace and verbose: tstart()
 
-    @others
+    # Init the data structures.
+    ### self.initData()
+    self.nodeDrawCount = 0
+    self.redrawing = True
+    try:
+        self.expandAllAncestors(c.currentPosition())
+        p = c.rootPosition()
+        while p:
+            self.updateSibs(p,parentItem=None)
+            p.moveToNext()
+    finally:
+        if not self.selecting:
+            item = self.setCurrentItem()
+            if p and not item:
+                g.trace('Error: no current item: %s' % (p.headString()))
 
-#@+node:ekr.20081121105001.196: ctor (Window)
-# Called from leoQtFrame.finishCreate.
+        ### w.repaint() # To draw the tree initially.
+        c.requestRedrawFlag= False
+        self.redrawing = False
+        if trace and verbose: tstop()
+        if trace: g.trace('%s: drew %3s nodes' % (
+            self.redrawCount,self.nodeDrawCount))
 
-def __init__(self,c,parent=None):
+# redraw = full_redraw # Compatibility
+# redraw_now = full_redraw
+#@-node:ekr.20081208072750.10:partial_redraw & helpers
+#@+node:ekr.20081208072750.15:update_sibs
+def update_sibs (self,p,parent_item)
 
-    '''Create Leo's main window, c.frame.top'''
+    w = self.widget
 
-    self.c = c ; top = c.frame.top
+    data = self.getSibs(p,parent_item)
+    children, child_items, child_vnodes = data
 
-    g.trace('Window')
+#@-node:ekr.20081208072750.15:update_sibs
+#@+node:ekr.20081208072750.19:redraw_after_x
+redraw_after_clone = partial_redraw
+redraw_after_contract = partial_redraw
+redraw_after_delete = partial_redraw
+redraw_after_expand = partial_redraw
+redraw_after_insert = partial_redraw
+redraw_after_move_down = partial_redraw
+redraw_after_move_left = partial_redraw
+redraw_after_move_right = partial_redraw
+redraw_after_move_up = partial_redraw
 
-    # Init both base classes.
-    QtGui.QMainWindow.__init__(self,parent)
-    #qt_main.Ui_MainWindow.__init__(self)
+def redraw_after_icons_changed (self,all=False):
+    g.trace('should not be called',g.callers(4))
 
-    self.ui = qt_main.Ui_MainWindow()
-    # Init the QDesigner elements.
-    self.ui.setupUi(self)
-    self.setSplitDirection()
-
-    # The following ivars (and more) are inherited from UiMainWindow:
-        # self.lineEdit   = QtGui.QLineEdit(self.centralwidget) # The minibuffer.
-        # self.menubar    = QtGui.QMenuBar(MainWindow)          # The menu bar.
-        # self.tabWidget  = QtGui.QTabWidget(self.splitter)     # The log pane.
-        # self.textEdit   = Qsci.QsciScintilla(self.splitter_2) # The body pane.
-        # self.treeWidget = QtGui.QTreeWidget(self.splitter)    # The tree pane.
-
-    self.iconBar = self.addToolBar("IconBar")
-    self.statusBar = QtGui.QStatusBar()
-    self.setStatusBar(self.statusBar)
-
-    self.setStyleSheets()
-#@-node:ekr.20081121105001.196: ctor (Window)
-#@+node:ekr.20081121105001.197:closeEvent (qtFrame)
-def closeEvent (self,event):
-
-    c = self.c
-
-    if c.inCommand:
-        # g.trace('requesting window close')
-        c.requestCloseWindow = True
-    else:
-        ok = g.app.closeLeoWindow(c.frame)
-        # g.trace('ok',ok)
-        if ok:
-            event.accept()
-        else:
-            event.ignore()
-#@-node:ekr.20081121105001.197:closeEvent (qtFrame)
-#@+node:ekr.20081121105001.198:setStyleSheets & helper
-styleSheet_inited = False
-
-def setStyleSheets(self):
-
-    c = self.c
-
-    sheet = c.config.getData('qt-gui-plugin-style-sheet')
-    if sheet: sheet = '\n'.join(sheet)
-    self.setStyleSheet(sheet or self.default_sheet())
+def redraw_after_select (self):
+    pass # Don't redraw!
 #@nonl
-#@+node:ekr.20081121105001.199:defaultStyleSheet
-def defaultStyleSheet (self):
+#@-node:ekr.20081208072750.19:redraw_after_x
+#@+node:ekr.20081208072750.16:getSibs
+def getSibs (self,parent,parent_item):
 
-    '''Return a reasonable default style sheet.'''
+    '''Return (children,items,item_vnodes):
 
-    # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
-    return '''\
+    children:   list of new child positions of the parent position.
+    items:      list of old child items of parent_item.
+    item_vnodes:list of vnodes associated with items.
+    len(items) == len(item_vnodes)
+    len(children) can be greater, less or equal to len(items).'''
 
-/* A QWidget: supports only background attributes.*/
-QSplitter::handle {
+    w = self.widget
 
-    background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
-}
-QSplitter {
-    border-color: white;
-    background-color: white;
-    border-width: 3px;
-    border-style: solid;
-}
-QTreeWidget {
-    background-color: #ffffec; /* Leo's traditional tree color */
-}
-/* Not supported. */
-QsciScintilla {
-    background-color: pink;
-}
-'''
-#@-node:ekr.20081121105001.199:defaultStyleSheet
-#@-node:ekr.20081121105001.198:setStyleSheets & helper
-#@-node:ekr.20081121105001.195:class  Window
-#@-node:edward.20081129091117.11:Unused
+    children = [z for z in p.self_and_siblings_iter()]
+
+    if parent_item:
+        items = parent_item.children()
+    else:
+        n = w.topLevelItemCount()
+        items = [w.topLevelItem(z) for z in range(n)]
+
+    def itemVnode(item)
+        p = self.itemsDict.get(item)
+        return p and p.v or None
+
+    item_vnodes = [itemVnode(z) for z in items]
+
+    # We use vnodes to match children with items.
+    return children, items, item_vnodes
+#@nonl
+#@-node:ekr.20081208072750.16:getSibs
+#@+node:ekr.20081208072750.17:utilities
+def item2vnode (self,item):
+    return self.item2vnodeDict.get(item)
+
+def vnode2item (self,v):
+    return self.vnode2itemDict.get(v)
+
+def isValidItem (self,item):
+    return item in self.item2vnodeDict
+#@nonl
+#@-node:ekr.20081208072750.17:utilities
+#@+node:ekr.20081208072750.18:deleteItemTree
+def deleteItemTree (self,parent_item,item):
+
+    w = self.treeWidget
+
+    while True:
+        child = item.child(0)
+        if child: self.deleteItem(parent_item,n,child)
+        else: break
+
+    if parent
+
+
+    w.delete
+
+def deleteItem (self,item)
+#@nonl
+#@-node:ekr.20081208072750.18:deleteItemTree
+#@-node:ekr.20081208072750.21:New redraw code
+#@+node:ekr.20081208155215.12:Unused
+#@+node:ekr.20081121105001.423:removeFromDicts (not used)
+def removeFromDicts (self,p):
+
+    # Important: items do not necessarily exist.
+
+    # Remove position from item2positionDict.
+    p2 = self.item2positionDict.get(it)
+    if p2 == p: del self.item2positionDict[it]
+
+    # Remove items from vnode2dataDict
+    aList = self.vnode2dataDict.get(p.v,[])
+    aList = [z for z in aList if z[0] != p]
+    self.vnode2dataDict[p.v] = aList
+
+    # Remove items from tnode2dataDict
+    aList = self.tnode2dataDict.get(p.v.t,[])
+    # aList = [z for z in aList if z[1] != it] # Wrong
+    aList = [z for z in aList if z[0] != p]
+    self.tnode2dataDict[p.v.t] = aList
+#@-node:ekr.20081121105001.423:removeFromDicts (not used)
+#@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt
