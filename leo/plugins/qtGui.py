@@ -11,7 +11,7 @@
 
 safe_mode = False
     # True: Bypass k.masterKeyHandler for problem keys or visible characters.
-use_partial_redraw = False
+use_partial_redraw = True
     # True: update the tree incrementally.
 
 # Define these to suppress pylint warnings...
@@ -3497,6 +3497,7 @@ class leoQtTree (leoFrame.leoTree):
         self.nodeDrawCount = 0
 
         # The following *can* be used by the incremental drawing code.
+        self.enable_partial_redraw = False
         self.item2parentItemDict = {}
         self.item2tnodeDict = {}
         self.item2vnodeDict = {}
@@ -4150,7 +4151,7 @@ class leoQtTree (leoFrame.leoTree):
         '''Delete all child items of the parent_item,
         thereby clearing the expansion box.'''
 
-        if use_partial_redraw:
+        if self.enable_partial_redraw:
 
             while True:
                 child = parent_item.child(0)
@@ -4170,7 +4171,8 @@ class leoQtTree (leoFrame.leoTree):
         w = self.treeWidget
 
         if parent_item:
-            items = parent_item.children()
+            n = parent_item.childCount()
+            items = [parent_item.child(z) for z in range(n)]
         else:
             n = w.topLevelItemCount()
             items = [w.topLevelItem(z) for z in range(n)]
@@ -4187,7 +4189,7 @@ class leoQtTree (leoFrame.leoTree):
         h = 'dummy child of %s' % p.headString()
         n = parent_item.childCount()
 
-        if use_partial_redraw:
+        if self.enable_partial_redraw:
             if n == 0:
                 p2 = p.copy()
                 p2.setHeadString(h)
@@ -4223,7 +4225,7 @@ class leoQtTree (leoFrame.leoTree):
             if p.hasChildren():
                 if p.isExpanded():
                     child = p.firstChild()
-                    self.updateSibs(child)
+                    self.updateSibs(child,sib_item)
                 else:
                     # Enable the expansion indicator.
                     self.createDummyChildItem(p,parent_item=sib_item)
