@@ -11,7 +11,7 @@
 
 safe_mode = False
     # True: Bypass k.masterKeyHandler for problem keys or visible characters.
-use_partial_redraw = True
+use_partial_redraw = False
     # True: update the tree incrementally.
 
 # Define these to suppress pylint warnings...
@@ -4098,7 +4098,7 @@ class leoQtTree (leoFrame.leoTree):
             self.expandAllAncestors(c.currentPosition())
             self.initData()
             p = c.rootPosition()
-            self.updateSibs(p,parentItem=None)
+            self.updateTree(p,parentItem=None)
 
         finally:
             if not self.selecting:
@@ -4128,41 +4128,9 @@ class leoQtTree (leoFrame.leoTree):
 
         if not use_partial_redraw: return
 
-        self.updateSibs(p,parent_item=None)
-    #@+node:ekr.20081208072750.18:deleteItemTree (not used)
-    def deleteItemTree (self,parent_item,item):
-
-        w = self.treeWidget
-        p = self.item2position(item)
-        g.trace('delete tree for ',p.headString())
-
-        # while True:
-            # child = item.child(0)
-            # if child: self.deleteItem(parent_item,n,child)
-            # else: break
-
-
-    def deleteItem (self,item):
-        pass
-    #@-node:ekr.20081208072750.18:deleteItemTree (not used)
-    #@+node:ekr.20081209064740.16:deleteChildItems
-    def deleteChildItems(self,p,parent_item):
-
-        '''Delete all child items of the parent_item,
-        thereby clearing the expansion box.'''
-
-        if self.enable_partial_redraw:
-
-            while True:
-                child = parent_item.child(0)
-                if child:
-                    assert(False) # not ready yet.
-                else: break
-
-        else:
-            if self.childItems(parent_item):
-                g.trace('delete all child items of',p)
-    #@-node:ekr.20081209064740.16:deleteChildItems
+        self.updateTree(p,parent_item=None)
+    #@-node:ekr.20081209064740.14:partial_redraw_stub
+    #@+node:ekr.20081209103009.16:partial redraw helpers
     #@+node:ekr.20081208072750.16:childItems
     def childItems (self,parent_item):
 
@@ -4187,6 +4155,7 @@ class leoQtTree (leoFrame.leoTree):
 
         This ensures the parent's expansion box is correctly set.'''
 
+        trace = False
         h = 'dummy child of %s' % p.headString()
         n = parent_item.childCount()
 
@@ -4196,46 +4165,168 @@ class leoQtTree (leoFrame.leoTree):
                 p2.setHeadString(h)
                 self.drawNode(p2,parent_item,dummy=True)
         else:
-            g.trace(h) # '%3s %s' % (n,h))
+            if trace: g.trace(h)
     #@-node:ekr.20081209064740.17:createDummyChildItem
-    #@+node:ekr.20081208072750.15:updateSibs
-    def updateSibs (self,p,parent_item,level=0):
+    #@+node:ekr.20081209064740.16:deleteChildItems
+    def deleteChildItems(self,p,parent_item):
+
+        '''Delete all child items of the parent_item,
+        thereby clearing the expansion box.'''
+
+        if self.enable_partial_redraw:
+
+            while True:
+                child = parent_item.child(0)
+                if child:
+                    assert(False) # not ready yet.
+                else: break
+
+        else:
+            if self.childItems(parent_item):
+                g.trace('delete all child items of',p)
+    #@-node:ekr.20081209064740.16:deleteChildItems
+    #@+node:ekr.20081208072750.18:deleteItem
+    def deleteItem (self,parent_item,item):
+
+        '''Delete the item's entire tree.'''
+
+        w = self.treeWidget
+        p = self.item2position(item)
+        g.trace('*** delete tree for ',p)
+
+        # while True:
+            # child = item.child(0)
+            # if child: self.deleteItem(parent_item,n,child)
+            # else: break
+    #@-node:ekr.20081208072750.18:deleteItem
+    #@+node:ekr.20081209103009.13:deleteNthItem
+    def deleteNthItem(self,p,n,parent_item,item,level):
+
+        g.trace(n,p)
+    #@-node:ekr.20081209103009.13:deleteNthItem
+    #@+node:ekr.20081209103009.17:insertNthChildItem
+    def insertNthChildItem(self,p,n,parent_item,level):
+
+        g.trace(n,p)
+    #@-node:ekr.20081209103009.17:insertNthChildItem
+    #@+node:ekr.20081209103009.15:numberofChildItems
+    def numberOfChildItems (self,parent_item):
+
+        '''Return the number child items of the parent item,
+        or the number of top-level items if parent_item is None.'''
+
+        w = self.treeWidget
+
+        if parent_item:
+            n = parent_item.childCount()
+        else:
+            n = w.topLevelItemCount()
+
+        return n
+    #@-node:ekr.20081209103009.15:numberofChildItems
+    #@+node:ekr.20081209103009.18:replaceNthItem
+    def replaceNthItem(self,p,n,parent_item,item,level):
+
+        g.trace(n,p)
+    #@-node:ekr.20081209103009.18:replaceNthItem
+    #@+node:ekr.20081209103009.19:swapNthItems
+    def swapNthItems(self,p,n,parent_item,level):
+
+        g.trace(n,p)
+
+    #@-node:ekr.20081209103009.19:swapNthItems
+    #@+node:ekr.20081209103009.12:updateNthSib
+    def updateNthSib(self,p,n,sibs,parent_item,level):
+
+        '''Update the pair (p,item), making the result the
+        n'th child item of parent_item.'''
 
         trace = True
+        sib_items = self.childItems(parent_item)
+        item = sib_items[n]
+        assert(p == sibs[n])
+        p_item = self.vnode2item(p.v)
 
+        if self.enable_partial_redraw: # Fails for stub.     
+            if not p_item: return self.oops('no item for %s' % p)
+
+        if item == p_item: return # An exact match.
+
+        if n + 1 < len(sibs) and n + 1 < len(sib_items):
+            next_p, next_p_item = sibs[n+1],sib_items[n+1]
+            next_item = sib_items[n+1]
+            if p_item == next_item and next_p_item == item:
+                self.swapNthItems(p,n,parent_item,level)
+            elif p_item == next_item:
+                self.deleteNthItem(p,n,parent_item,item,level)
+            elif next_p_item == item:
+                self.insertNthChildItem(p,n,parent_item,level)
+            else:
+                self.replaceNthItem(p,n,parent_item,item,level)
+        else:
+            self.replaceNthItem(p,n,parent_item,item,level)
+
+    #@-node:ekr.20081209103009.12:updateNthSib
+    #@+node:ekr.20081209103009.10:updateSibs
+    def updateSibs (self,p,parent_item,level):
+
+        '''Update each sibling in turn.'''
+
+        trace = False
+        sibs = [z for z in p.self_and_siblings_iter(copy=True)]
+
+        # Compare unchaning new nodes with changing tree items.
+        for n,p in zip(range(len(sibs)),sibs):
+            n_items = self.numberOfChildItems(parent_item)
+            if trace: g.trace('n: %s, n_items: %s' % (n,n_items))
+            if self.enable_partial_redraw: # Fails for stub.    
+                assert (n_items >= n)
+
+            if n_items <= n:
+                self.insertNthChildItem(p,n,parent_item,level)
+            else:
+                self.updateNthSib(p,n,sibs,parent_item,level)
+
+        # Delete any trailing items.
+        children = self.childItems(parent_item)
+        tail_items = children[len(sibs):]
+        for item in tail_items:
+            self.deleteItem(parent_item,item)
+    #@-node:ekr.20081209103009.10:updateSibs
+    #@+node:ekr.20081208072750.15:updateTree
+    def updateTree (self,p,parent_item,level=0):
+
+        trace = False
+
+        # Step one: synchonize the tree items with p and it's siblings.
+        self.updateSibs (p,parent_item,level)
         sibs = [z for z in p.self_and_siblings_iter(copy=True)]
         sib_items = self.childItems(parent_item)
-
-        sib_vnodes = [self.item2vnode(z) for z in sibs]
-
-        # len(items) == len(item_vnodes)
-        # len(children) can be greater, less or equal to len(items).'''
 
         if trace:
             g.trace('level: %s, len(sibs): %s, len(sib_items): %s' % (
                 level,len(sibs),len(sib_items)))
-            g.trace('\n' + g.listToString(sibs))
+            g.trace('\n%s' % g.listToString(sibs))
 
-        # Step one: determine if any sibling has changed:
-        # (inserted, deleted, changed or moved.
-
-        new_sib_items = sib_items[:] ### to do.
+        if self.enable_partial_redraw: # Fails for stub.
+            if len(sibs) != len(sib_items):
+                return self.oops('sibs:\n%s\nsib_items:\n%s' % (
+                    g.listToString(sibs),g.listToString(sib_items)))
 
         # Step two: recursively examine all visible child nodes & items.
-        for p,sib_item in zip(sibs,new_sib_items):
+        for p,sib_item in zip(sibs,sib_items):
             if p.hasChildren():
                 if p.isExpanded():
                     child = p.firstChild()
-                    self.updateSibs(child,sib_item,level=level+1)
+                    self.updateTree(child,sib_item,level=level+1)
                 else:
                     # Enable the expansion indicator.
                     self.createDummyChildItem(p,parent_item=sib_item)
             else:
                 # Disable the expansion indicator.
                 self.deleteChildItems(p,parent_item=sib_item)
-
-    #@-node:ekr.20081208072750.15:updateSibs
-    #@-node:ekr.20081209064740.14:partial_redraw_stub
+    #@-node:ekr.20081208072750.15:updateTree
+    #@-node:ekr.20081209103009.16:partial redraw helpers
     #@-node:ekr.20081121105001.412:Drawing... (qtTree)
     #@+node:ekr.20081121105001.432:Event handlers... (qtTree)
     #@+node:ekr.20081121105001.433:Click Box...
@@ -4743,6 +4834,11 @@ class leoQtTree (leoFrame.leoTree):
         # g.trace('leoQtTree',self.treeWidget,g.callers(4))
         g.app.gui.set_focus(self.c,self.treeWidget)
     #@-node:ekr.20081121105001.453:Focus (qtTree)
+    #@+node:ekr.20081209103009.11:oops
+    def oops(self,s):
+        if not g.app.unitTesting:
+            g.trace('*** %s, %s' % (s,g.callers(4)))
+    #@-node:ekr.20081209103009.11:oops
     #@+node:ekr.20081121105001.454:Selecting & editing... (qtTree)
     #@+node:ekr.20081124113700.11:editPosition
     def editPosition(self):
@@ -4836,10 +4932,6 @@ class leoQtTree (leoFrame.leoTree):
 
         c = self.c ; trace = False ; verbose = False
 
-        def oops(s):
-            if not g.app.unitTesting:
-                g.trace('*** oops: %s' % s)
-
         if self.redrawing:
             if trace and verbose: g.trace('redrawing')
             return
@@ -4875,13 +4967,13 @@ class leoQtTree (leoFrame.leoTree):
                 e.setObjectName('headline')
                 e.setSelection(start,n)
                 e.setFocus()
-            else: oops('no edit widget')
+            else: self.oops('no edit widget')
         else:
             self._editWidgetPosition = None
             self._editWidget = None
             self._editWidgetWrapper = None
             e = None
-            oops('no item: %s' % p)
+            self.oops('no item: %s' % p)
 
         # A nice hack: just set the focus request.
         if e: c.requestedFocusWidget = e
