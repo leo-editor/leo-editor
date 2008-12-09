@@ -4160,7 +4160,8 @@ class leoQtTree (leoFrame.leoTree):
                 else: break
 
         else:
-            g.trace('delete all child items of',p)
+            if self.childItems(parent_item):
+                g.trace('delete all child items of',p)
     #@-node:ekr.20081209064740.16:deleteChildItems
     #@+node:ekr.20081208072750.16:childItems
     def childItems (self,parent_item):
@@ -4195,10 +4196,10 @@ class leoQtTree (leoFrame.leoTree):
                 p2.setHeadString(h)
                 self.drawNode(p2,parent_item,dummy=True)
         else:
-            g.trace('%3s %s' % (n,h))
+            g.trace(h) # '%3s %s' % (n,h))
     #@-node:ekr.20081209064740.17:createDummyChildItem
     #@+node:ekr.20081208072750.15:updateSibs
-    def updateSibs (self,p,parent_item):
+    def updateSibs (self,p,parent_item,level=0):
 
         trace = True
 
@@ -4211,8 +4212,8 @@ class leoQtTree (leoFrame.leoTree):
         # len(children) can be greater, less or equal to len(items).'''
 
         if trace:
-            g.trace('len(sibs): %s, len(sib_items): %s' % (
-                len(sibs),len(sib_items)))
+            g.trace('level: %s, len(sibs): %s, len(sib_items): %s' % (
+                level,len(sibs),len(sib_items)))
             g.trace('\n' + g.listToString(sibs))
 
         # Step one: determine if any sibling has changed:
@@ -4225,7 +4226,7 @@ class leoQtTree (leoFrame.leoTree):
             if p.hasChildren():
                 if p.isExpanded():
                     child = p.firstChild()
-                    self.updateSibs(child,sib_item)
+                    self.updateSibs(child,sib_item,level=level+1)
                 else:
                     # Enable the expansion indicator.
                     self.createDummyChildItem(p,parent_item=sib_item)
