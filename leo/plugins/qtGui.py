@@ -4049,13 +4049,12 @@ class leoQtTree (leoFrame.leoTree):
                 self.drawTree(p)
                 p.moveToNext()
         finally:
-            p = c.rootPosition()
             if not self.selecting:
                 item = self.setCurrentItem()
-                if item:
-                    pass
-                elif p and self.redrawCount > 1:
-                    g.trace('Error: no current item: %s' % (p.headString()))
+                p = c.currentPosition()
+                if not item and p and self.redrawCount > 1:
+                    if not g.app.unitTesting:
+                        g.trace('Error: no current item for: %s' % p)
 
             if 0: # This causes horizontal scrolling on Ubuntu.
                 item = w.currentItem()
@@ -4450,7 +4449,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.442:setCurrentItem
     def setCurrentItem (self):
 
-        trace = False
+        trace = False ; verbose = False
         c = self.c ; p = c.currentPosition()
         w = self.treeWidget
 
@@ -4461,7 +4460,7 @@ class leoQtTree (leoFrame.leoTree):
             if trace: g.trace('already selecting')
             return None
         if not p:
-            if trace: g.trace('** p')
+            if trace: g.trace('** no p')
             return None
 
         item = self.position2item(p)
@@ -4471,7 +4470,7 @@ class leoQtTree (leoFrame.leoTree):
 
         item2 = w.currentItem()
         if item != item2:
-            if trace: g.trace(item==item,'old item',item2)
+            if trace and verbose: g.trace(item==item,'old item',item2)
             self.selecting = True
             try:
                 w.setCurrentItem(item)
