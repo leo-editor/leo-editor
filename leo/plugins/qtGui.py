@@ -3714,6 +3714,16 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081121105001.411:setConfigIvars
     #@-node:ekr.20081121105001.409:Config... (qtTree)
     #@+node:ekr.20081121105001.412:Drawing... (qtTree)
+    #@+node:ekr.20081209064740.1: Drawing helpers
+    def item2vnode (self,item):
+        return self.item2vnodeDict.get(item)
+
+    def vnode2item (self,v):
+        return self.vnode2itemDict.get(v)
+
+    def isValidItem (self,item):
+        return item in self.item2vnodeDict
+    #@nonl
     #@+node:ekr.20081121105001.413:allAncestorsExpanded
     def allAncestorsExpanded (self,p):
 
@@ -3723,147 +3733,34 @@ class leoQtTree (leoFrame.leoTree):
         else:
             return True
     #@-node:ekr.20081121105001.413:allAncestorsExpanded
-    #@+node:ekr.20081121105001.414:full_redraw & helpers
-    def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
+    #@+node:ekr.20081208072750.16:getSibs
+    def getSibs (self,parent,parent_item):
 
-        '''Redraw all visible nodes of the tree'''
+        '''Return (children,items,item_vnodes):
 
-        trace = False; verbose = False
-        c = self.c ; w = self.treeWidget
-        if not w: return
-        if self.redrawing:
-            g.trace('***** already drawing',g.callers(5))
-            return
+        children:   list of new child positions of the parent position.
+        items:      list of old child items of parent_item.
+        item_vnodes:list of vnodes associated with items.
+        len(items) == len(item_vnodes)
+        len(children) can be greater, less or equal to len(items).'''
 
-        # Bug fix: 2008/11/10
-        self.expandAllAncestors(c.currentPosition())
+        w = self.widget
 
-        self.redrawCount += 1
-        if trace and verbose: tstart()
+        children = [z for z in p.self_and_siblings_iter()]
 
-        # Init the data structures.
-        self.initData()
-        self.nodeDrawCount = 0
-        self.redrawing = True
-        self.fullDrawing = True # To suppress some traces.
-        try:
-            w.clear()
-            # Draw all top-level nodes and their visible descendants.
-            p = c.rootPosition()
-            while p:
-                self.drawTree(p)
-                p.moveToNext()
-        finally:
-            if not self.selecting:
-                item = self.setCurrentItem()
-                if item:
-                    pass
-                elif p and self.redrawCount > 1:
-                    g.trace('Error: no current item: %s' % (p.headString()))
-
-            if 0: # This causes horizontal scrolling on Ubuntu.
-                item = w.currentItem()
-                if item:
-                    w.scrollToItem(item,
-                        QtGui.QAbstractItemView.PositionAtCenter)
-
-            # Necessary to get the tree drawn initially.
-            w.repaint()
-
-            c.requestRedrawFlag= False
-            self.redrawing = False
-            self.fullDrawing = False
-            if trace:
-                if verbose: tstop()
-                g.trace('%s: drew %3s nodes' % (
-                    self.redrawCount,self.nodeDrawCount),g.callers(5))
-
-    redraw = full_redraw # Compatibility
-    redraw_now = full_redraw
-    #@+node:ekr.20081121105001.415:initData
-    def initData (self):
-
-        self.tnode2dataDict = {} # keys are tnodes, values are lists of items (p,it)
-        self.vnode2dataDict = {} # keys are vnodes, values are lists of items (p,it)
-        self.item2positionDict = {} # keys are items, values are positions
-        self._editWidgetPosition = None
-        self._editWidget = None
-        self._editWidgetWrapper = None
-    #@nonl
-    #@-node:ekr.20081121105001.415:initData
-    #@+node:ekr.20081121105001.164:drawNode
-    def drawNode (self,p,parent_item,dummy=False):
-
-        c = self.c ; w = self.treeWidget ; trace = False
-        self.nodeDrawCount += 1
-
-        # Allocate the qt tree item.
-        parent = p.parent()
-        itemOrTree = parent_item
-        item = QtGui.QTreeWidgetItem(itemOrTree)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-
-        # Draw the headline and the icon.
-        item.setText(0,p.headString())
-        icon = self.getIcon(p)
-        if icon: item.setIcon(0,icon)
-
-        if dummy: return item
-
-        # Remember the associatiation of item with p, and vice versa.
-        self.item2positionDict[item] = p.copy()
-
-        # Remember the association of p.v with (p,item)
-        aList = self.vnode2dataDict.get(p.v,[])
-        data = p.copy(),item
-        aList.append(data)
-        self.vnode2dataDict[p.v] = aList
-
-        # Remember the association of p.v.t with (p,item).
-        aList = self.tnode2dataDict.get(p.v.t,[])
-        data = p.copy(),item
-        aList.append(data)
-        self.tnode2dataDict[p.v.t] = aList
-
-        return item
-    #@-node:ekr.20081121105001.164:drawNode
-    #@+node:ekr.20081121105001.416:drawTree
-    def drawTree (self,p,parent_item=None):
-
-        trace = False
-        c = self.c ; w = self.treeWidget
-        if parent_item is None: parent_item = w
-
-        p = p.copy()
-
-        if trace: g.trace(
-            'children?',p.hasChildren(),
-            'expanded?',p.isExpanded(),p.headString())
-
-        # Draw the (visible) parent node.
-        item = self.drawNode(p,parent_item)
-
-        if p.hasChildren():
-            if p.isExpanded():
-                w.expandItem(item)
-                child = p.firstChild()
-                while child:
-                    self.drawTree(child,parent_item=item)
-                    child.moveToNext()
-            else:
-                if 0: # Requires a full redraw in the expansion code.
-                    # Just draw one dummy child.
-                    self.drawNode(p.firstChild(),dummy=True)
-                else:
-                    # Draw the hidden children.
-                    child = p.firstChild()
-                    while child:
-                        self.drawNode(child,parent_item=item)
-                        child.moveToNext()
-                w.collapseItem(item)
+        if parent_item:
+            items = parent_item.children()
         else:
-            w.collapseItem(item)
-    #@-node:ekr.20081121105001.416:drawTree
+            n = w.topLevelItemCount()
+            items = [w.topLevelItem(z) for z in range(n)]
+
+        item_vnodes = [self.item2vnode(z) for z in items]
+
+        # We use vnodes to match children with items.
+        return children, items, item_vnodes
+    #@nonl
+    #@-node:ekr.20081208072750.16:getSibs
+    #@+node:ekr.20081209064740.2:Icons
     #@+node:ekr.20081121105001.417:drawIcon
     def drawIcon (self,p):
 
@@ -3877,6 +3774,74 @@ class leoQtTree (leoFrame.leoTree):
         if icon and item:
             item.setIcon(0,icon)
     #@-node:ekr.20081121105001.417:drawIcon
+    #@+node:ekr.20081121105001.418:getIcon & getIconImage
+    def getIcon(self,p):
+
+        '''Return the proper icon for position p.'''
+
+        p.v.iconVal = val = p.v.computeIcon()
+        return self.getIconImage(val)
+
+    def getIconImage(self,val):
+
+        return g.app.gui.getIconImage(
+            "box%02d.GIF" % val)
+
+    #@-node:ekr.20081121105001.418:getIcon & getIconImage
+    #@+node:ekr.20081121105001.431:updateIcon
+    def updateIcon (self,p):
+
+        '''Update p's icon.'''
+
+        if not p: return
+
+        val = p.v.computeIcon()
+        if p.v.iconVal == val: return
+
+        icon = self.getIconImage(val)
+        aList = self.tnode2dataDict.get(p.v.t,[])
+        for p,it in aList:
+            # g.trace(id(it),p.headString())
+            it.setIcon(0,icon)
+    #@-node:ekr.20081121105001.431:updateIcon
+    #@-node:ekr.20081209064740.2:Icons
+    #@+node:ekr.20081121105001.415:initData
+    def initData (self):
+
+        self.tnode2dataDict = {} # keys are tnodes, values are lists of items (p,it)
+        self.vnode2dataDict = {} # keys are vnodes, values are lists of items (p,it)
+        self.item2positionDict = {} # keys are items, values are positions
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
+    #@nonl
+    #@-node:ekr.20081121105001.415:initData
+    #@+node:ekr.20081209064740.3:Items
+    #@+node:ekr.20081208072750.15:update_sibs
+    def update_sibs (self,p,parent_item):
+
+        w = self.widget
+
+        data = self.getSibs(p,parent_item)
+        children, child_items, child_vnodes = data
+
+    #@-node:ekr.20081208072750.15:update_sibs
+    #@+node:ekr.20081208072750.18:deleteItemTree
+    def deleteItemTree (self,parent_item,item):
+
+        w = self.treeWidget
+
+        while True:
+            child = item.child(0)
+            if child: self.deleteItem(parent_item,n,child)
+            else: break
+
+
+    def deleteItem (self,item):
+        pass
+    #@nonl
+    #@-node:ekr.20081208072750.18:deleteItemTree
+    #@-node:ekr.20081209064740.3:Items
     #@+node:ekr.20081208155215.1:position2item
     def position2item (self,p):
 
@@ -3892,21 +3857,6 @@ class leoQtTree (leoFrame.leoTree):
 
         return item
     #@-node:ekr.20081208155215.1:position2item
-    #@-node:ekr.20081121105001.414:full_redraw & helpers
-    #@+node:ekr.20081121105001.418:getIcon & getIconImage
-    def getIcon(self,p):
-
-        '''Return the proper icon for position p.'''
-
-        p.v.iconVal = val = p.v.computeIcon()
-        return self.getIconImage(val)
-
-    def getIconImage(self,val):
-
-        return g.app.gui.getIconImage(
-            "box%02d.GIF" % val)
-
-    #@-node:ekr.20081121105001.418:getIcon & getIconImage
     #@+node:ekr.20081208072750.20:redraw_after...
     #@+node:ekr.20081121105001.419:redraw_after_clone
     def redraw_after_clone (self):
@@ -3989,22 +3939,197 @@ class leoQtTree (leoFrame.leoTree):
         pass # It is quite wrong to do an automatic redraw after select.
     #@-node:ekr.20081121105001.430:redraw_after_select
     #@-node:ekr.20081208072750.20:redraw_after...
-    #@+node:ekr.20081121105001.431:updateIcon
-    def updateIcon (self,p):
+    #@+node:ekr.20081208072750.19:redraw_after... (new)
+    if 0:
+        redraw_after_clone = partial_redraw
+        redraw_after_contract = partial_redraw
+        redraw_after_delete = partial_redraw
+        redraw_after_expand = partial_redraw
+        redraw_after_insert = partial_redraw
+        redraw_after_move_down = partial_redraw
+        redraw_after_move_left = partial_redraw
+        redraw_after_move_right = partial_redraw
+        redraw_after_move_up = partial_redraw
 
-        '''Update p's icon.'''
+        def redraw_after_icons_changed (self,all=False):
+            g.trace('should not be called',g.callers(4))
 
-        if not p: return
+        def redraw_after_select (self):
+            pass # Don't redraw!
+    #@-node:ekr.20081208072750.19:redraw_after... (new)
+    #@-node:ekr.20081209064740.1: Drawing helpers
+    #@+node:ekr.20081121105001.164:drawNode
+    def drawNode (self,p,parent_item,dummy=False):
 
-        val = p.v.computeIcon()
-        if p.v.iconVal == val: return
+        c = self.c ; w = self.treeWidget ; trace = False
+        self.nodeDrawCount += 1
 
-        icon = self.getIconImage(val)
+        # Allocate the qt tree item.
+        parent = p.parent()
+        itemOrTree = parent_item
+        item = QtGui.QTreeWidgetItem(itemOrTree)
+        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+
+        # Draw the headline and the icon.
+        item.setText(0,p.headString())
+        icon = self.getIcon(p)
+        if icon: item.setIcon(0,icon)
+
+        if dummy: return item
+
+        # Remember the associatiation of item with p, and vice versa.
+        self.item2positionDict[item] = p.copy()
+
+        # Remember the association of p.v with (p,item)
+        aList = self.vnode2dataDict.get(p.v,[])
+        data = p.copy(),item
+        aList.append(data)
+        self.vnode2dataDict[p.v] = aList
+
+        # Remember the association of p.v.t with (p,item).
         aList = self.tnode2dataDict.get(p.v.t,[])
-        for p,it in aList:
-            # g.trace(id(it),p.headString())
-            it.setIcon(0,icon)
-    #@-node:ekr.20081121105001.431:updateIcon
+        data = p.copy(),item
+        aList.append(data)
+        self.tnode2dataDict[p.v.t] = aList
+
+        return item
+    #@-node:ekr.20081121105001.164:drawNode
+    #@+node:ekr.20081121105001.416:drawTree
+    def drawTree (self,p,parent_item=None):
+
+        trace = False
+        c = self.c ; w = self.treeWidget
+        if parent_item is None: parent_item = w
+
+        p = p.copy()
+
+        if trace: g.trace(
+            'children?',p.hasChildren(),
+            'expanded?',p.isExpanded(),p.headString())
+
+        # Draw the (visible) parent node.
+        item = self.drawNode(p,parent_item)
+
+        if p.hasChildren():
+            if p.isExpanded():
+                w.expandItem(item)
+                child = p.firstChild()
+                while child:
+                    self.drawTree(child,parent_item=item)
+                    child.moveToNext()
+            else:
+                if 0: # Requires a full redraw in the expansion code.
+                    # Just draw one dummy child.
+                    self.drawNode(p.firstChild(),dummy=True)
+                else:
+                    # Draw the hidden children.
+                    child = p.firstChild()
+                    while child:
+                        self.drawNode(child,parent_item=item)
+                        child.moveToNext()
+                w.collapseItem(item)
+        else:
+            w.collapseItem(item)
+    #@-node:ekr.20081121105001.416:drawTree
+    #@+node:ekr.20081121105001.414:full_redraw
+    def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
+
+        '''Redraw all visible nodes of the tree'''
+
+        trace = False; verbose = False
+        c = self.c ; w = self.treeWidget
+        if not w: return
+        if self.redrawing:
+            g.trace('***** already drawing',g.callers(5))
+            return
+
+        # Bug fix: 2008/11/10
+        self.expandAllAncestors(c.currentPosition())
+
+        self.redrawCount += 1
+        if trace and verbose: tstart()
+
+        # Init the data structures.
+        self.initData()
+        self.nodeDrawCount = 0
+        self.redrawing = True
+        self.fullDrawing = True # To suppress some traces.
+        try:
+            w.clear()
+            # Draw all top-level nodes and their visible descendants.
+            p = c.rootPosition()
+            while p:
+                self.drawTree(p)
+                p.moveToNext()
+        finally:
+            if not self.selecting:
+                item = self.setCurrentItem()
+                if item:
+                    pass
+                elif p and self.redrawCount > 1:
+                    g.trace('Error: no current item: %s' % (p.headString()))
+
+            if 0: # This causes horizontal scrolling on Ubuntu.
+                item = w.currentItem()
+                if item:
+                    w.scrollToItem(item,
+                        QtGui.QAbstractItemView.PositionAtCenter)
+
+            # Necessary to get the tree drawn initially.
+            w.repaint()
+
+            c.requestRedrawFlag= False
+            self.redrawing = False
+            self.fullDrawing = False
+            if trace:
+                if verbose: tstop()
+                g.trace('%s: drew %3s nodes' % (
+                    self.redrawCount,self.nodeDrawCount),g.callers(5))
+
+    redraw = full_redraw # Compatibility
+    redraw_now = full_redraw
+    #@-node:ekr.20081121105001.414:full_redraw
+    #@+node:ekr.20081208072750.10:partial_redraw
+    def partial_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
+
+        '''Redraw the tree, minimizing the actual changes made to the tree.'''
+
+        trace = True; verbose = False
+        c = self.c ; w = self.treeWidget
+        if not w: return
+        if self.redrawing:
+            if trace: g.trace('***** already drawing',g.callers(5))
+            return
+
+        self.redrawCount += 1
+        if trace and verbose: tstart()
+
+        # Init the data structures.
+        ### self.initData()
+        self.nodeDrawCount = 0
+        self.redrawing = True
+        try:
+            self.expandAllAncestors(c.currentPosition())
+            p = c.rootPosition()
+            while p:
+                self.updateSibs(p,parentItem=None)
+                p.moveToNext()
+        finally:
+            if not self.selecting:
+                item = self.setCurrentItem()
+                if p and not item:
+                    g.trace('Error: no current item: %s' % (p.headString()))
+
+            ### w.repaint() # To draw the tree initially.
+            c.requestRedrawFlag= False
+            self.redrawing = False
+            if trace and verbose: tstop()
+            if trace: g.trace('%s: drew %3s nodes' % (
+                self.redrawCount,self.nodeDrawCount))
+
+    # redraw = full_redraw # Compatibility
+    # redraw_now = full_redraw
+    #@-node:ekr.20081208072750.10:partial_redraw
     #@-node:ekr.20081121105001.412:Drawing... (qtTree)
     #@+node:ekr.20081121105001.432:Event handlers... (qtTree)
     #@+node:ekr.20081121105001.433:Click Box...
