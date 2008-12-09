@@ -177,27 +177,29 @@ class DynamicWindow(QtGui.QMainWindow):
         orientation = c.config.getString('initial_split_orientation')
         self.setSplitDirection(orientation)
         self.setStyleSheets()
-    #@-node:ekr.20081121105001.201: ctor (Window)
     #@+node:leohag.20081203210510.17:do_leo_spell_btn_*
+    def doSpellBtn(self, btn):
+        getattr(self.c.spellCommands.handler.tab, btn)() 
+
     def do_leo_spell_btn_Add(self):
-        g.trace()
+        self.doSpellBtn('onAddButton')
 
     def do_leo_spell_btn_Change(self):
-        g.trace()
+        self.doSpellBtn('onChangeButton')
 
     def do_leo_spell_btn_Find(self):
-        g.trace()
+        self.doSpellBtn('onFindButton')
 
     def do_leo_spell_btn_FindChange(self):
-        g.trace()
+        self.doSpellBtn('onChangeThenFindButton')
 
     def do_leo_spell_btn_Hide(self):
-        g.trace()
+        self.doSpellBtn('onHideButton')
 
     def do_leo_spell_btn_Ignore(self):
-        g.trace()
-
+        self.doSpellBtn('onIgnoreButton')
     #@-node:leohag.20081203210510.17:do_leo_spell_btn_*
+    #@-node:ekr.20081121105001.201: ctor (Window)
     #@+node:ekr.20081121105001.202:closeEvent (qtFrame)
     def closeEvent (self,event):
 
@@ -2334,9 +2336,7 @@ class leoQtLog (leoFrame.leoLog):
             if w.tabText(i) == 'Tab 2':
                 w.setTabText(i,'Find')
                 self.contentsDict['Find'] = w.currentWidget()
-            if w.tabText(i) == 'Spell':
-                self.contentsDict['Spell'] = w.widget(i)
-                self.frameDict['Spell'] = w.widget(i)
+                break
 
         # Create the log tab as the leftmost tab.
         log.selectTab('Log')
@@ -2350,7 +2350,6 @@ class leoQtLog (leoFrame.leoLog):
 
         c.searchCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
-    #@nonl
     #@-node:ekr.20081121105001.321:qtLog.finishCreate
     #@-node:ekr.20081121105001.319:qtLog Birth
     #@+node:ekr.20081121105001.322:Do nothings
@@ -2517,7 +2516,7 @@ class leoQtLog (leoFrame.leoLog):
 
         c = self.c ; w = self.tabWidget
 
-        if tabName not in ('Log','Find','Spell'):
+        if force or tabName not in ('Log','Find','Spell'):
             for i in range(w.count()):
                 if tabName == w.tabText(i):
                     w.removeTab(i)
@@ -2560,6 +2559,10 @@ class leoQtLog (leoFrame.leoLog):
                 w.setCurrentIndex(i)
                 if createText and tabName not in ('Spell','Find',):
                     self.logCtrl = w.widget(i)
+                if tabName == 'Spell':
+                    # the base class uses this as a flag to see if
+                    # the spell system needs initing
+                    self.frameDict['Spell'] = w.widget(i)
                 return True
         else:
             return False
@@ -3241,125 +3244,35 @@ class leoQtSpellTab:
 
         self.c = c
         self.handler = handler
+
+        # hack:
+        handler.workCtrl = leoFrame.stringTextWidget(c, 'spell-workctrl')
+
         self.tabName = tabName
 
-        self.createFrame()
-        self.createBindings()
+        ui = c.frame.top.ui
 
-        ###self.fillbox([])
+        # self.createFrame()
+
+        if not hasattr(ui, 'leo_spell_label'):
+            self.handler.loaded = False
+            return
+
+        self.wordLabel = ui.leo_spell_label
+        self.listBox = ui.leo_spell_listBox
+
+        #self.createBindings()
+
+        self.fillbox([])
     #@-node:ekr.20081121105001.380:leoQtSpellTab.__init__
     #@+node:ekr.20081121105001.381:createBindings TO DO
     def createBindings (self):
-
-        return
-
-        # c = self.c ; k = c.k
-        # widgets = (self.listBox, self.outerFrame)
-
-        # for w in widgets:
-
-            # # Bind shortcuts for the following commands...
-            # for commandName,func in (
-                # ('full-command',            k.fullCommand),
-                # ('hide-spell-tab',          self.handler.hide),
-                # ('spell-add',               self.handler.add),
-                # ('spell-find',              self.handler.find),
-                # ('spell-ignore',            self.handler.ignore),
-                # ('spell-change-then-find',  self.handler.changeThenFind),
-            # ):
-                # junk, bunchList = c.config.getShortcut(commandName)
-                # for bunch in bunchList:
-                    # accel = bunch.val
-                    # shortcut = k.shortcutFromSetting(accel)
-                    # if shortcut:
-                        # # g.trace(shortcut,commandName)
-                        # w.bind(shortcut,func)
-
-        # self.listBox.bind("<Double-1>",self.onChangeThenFindButton)
-        # self.listBox.bind("<Button-1>",self.onSelectListBox)
-        # self.listBox.bind("<Map>",self.onMap)
-    #@nonl
+        pass
     #@-node:ekr.20081121105001.381:createBindings TO DO
     #@+node:ekr.20081121105001.382:createFrame (to be done in Qt designer)
     def createFrame (self):
+        pass
 
-        c = self.c ; log = c.frame.log ; tabName = self.tabName
-
-        # parentFrame = log.frameDict.get(tabName)
-        # w = log.textDict.get(tabName)
-        # w.pack_forget()
-
-        # # Set the common background color.
-        # bg = c.config.getColor('log_pane_Spell_tab_background_color') or 'LightSteelBlue2'
-
-        #@    << Create the outer frames >>
-        #@+node:ekr.20081121105001.383:<< Create the outer frames >>
-        # self.outerScrolledFrame = Pmw.ScrolledFrame(
-            # parentFrame,usehullsize = 1)
-
-        # self.outerFrame = outer = self.outerScrolledFrame.component('frame')
-        # self.outerFrame.configure(background=bg)
-
-        # for z in ('borderframe','clipper','frame','hull'):
-            # self.outerScrolledFrame.component(z).configure(
-                # relief='flat',background=bg)
-        #@-node:ekr.20081121105001.383:<< Create the outer frames >>
-        #@nl
-        #@    << Create the text and suggestion panes >>
-        #@+node:ekr.20081121105001.384:<< Create the text and suggestion panes >>
-        # f2 = Tk.Frame(outer,bg=bg)
-        # f2.pack(side='top',expand=0,fill='x')
-
-        # self.wordLabel = Tk.Label(f2,text="Suggestions for:")
-        # self.wordLabel.pack(side='left')
-        # self.wordLabel.configure(font=('verdana',10,'bold'))
-
-        # fpane = Tk.Frame(outer,bg=bg,bd=2)
-        # fpane.pack(side='top',expand=1,fill='both')
-
-        # self.listBox = Tk.Listbox(fpane,height=6,width=10,selectmode="single")
-        # self.listBox.pack(side='left',expand=1,fill='both')
-        # self.listBox.configure(font=('verdana',11,'normal'))
-
-        # listBoxBar = Tk.Scrollbar(fpane,name='listBoxBar')
-
-        # bar, txt = listBoxBar, self.listBox
-        # txt ['yscrollcommand'] = bar.set
-        # bar ['command'] = txt.yview
-        # bar.pack(side='right',fill='y')
-        #@-node:ekr.20081121105001.384:<< Create the text and suggestion panes >>
-        #@nl
-        #@    << Create the spelling buttons >>
-        #@+node:ekr.20081121105001.385:<< Create the spelling buttons >>
-        # # Create the alignment panes
-        # buttons1 = Tk.Frame(outer,bd=1,bg=bg)
-        # buttons2 = Tk.Frame(outer,bd=1,bg=bg)
-        # buttons3 = Tk.Frame(outer,bd=1,bg=bg)
-        # for w in (buttons1,buttons2,buttons3):
-            # w.pack(side='top',expand=0,fill='x')
-
-        # buttonList = [] ; font = ('verdana',9,'normal') ; width = 12
-        # for frame, text, command in (
-            # (buttons1,"Find",self.onFindButton),
-            # (buttons1,"Add",self.onAddButton),
-            # (buttons2,"Change",self.onChangeButton),
-            # (buttons2,"Change, Find",self.onChangeThenFindButton),
-            # (buttons3,"Ignore",self.onIgnoreButton),
-            # (buttons3,"Hide",self.onHideButton),
-        # ):
-            # b = Tk.Button(frame,font=font,width=width,text=text,command=command)
-            # b.pack(side='left',expand=0,fill='none')
-            # buttonList.append(b)
-
-        # # Used to enable or disable buttons.
-        # (self.findButton,self.addButton,
-         # self.changeButton, self.changeFindButton,
-         # self.ignoreButton, self.hideButton) = buttonList
-        #@-node:ekr.20081121105001.385:<< Create the spelling buttons >>
-        #@nl
-
-        # Pack last so buttons don't get squished.
-        # self.outerScrolledFrame.pack(expand=1,fill='both',padx=2,pady=2)
     #@-node:ekr.20081121105001.382:createFrame (to be done in Qt designer)
     #@+node:ekr.20081121105001.386:Event handlers
     #@+node:ekr.20081121105001.387:onAddButton
@@ -3373,17 +3286,21 @@ class leoQtSpellTab:
 
         """Handle a click in the Change button in the Spell tab."""
 
-        self.handler.change()
+        state = self.updateButtons()
+        if state:
+            self.handler.change()
         self.updateButtons()
-
 
     def onChangeThenFindButton(self,event=None):
 
         """Handle a click in the "Change, Find" button in the Spell tab."""
 
-        if self.handler.change():
-            self.handler.find()
-        self.updateButtons()
+        state = self.updateButtons()
+        if state:
+            self.handler.change()
+            if self.handler.change():
+                self.handler.find()
+            self.updateButtons()
     #@-node:ekr.20081121105001.388:onChangeButton & onChangeThenFindButton
     #@+node:ekr.20081121105001.389:onFindButton
     def onFindButton(self):
@@ -3435,37 +3352,26 @@ class leoQtSpellTab:
     def fillbox(self, alts, word=None):
         """Update the suggestions listBox in the Check Spelling dialog."""
 
-        # self.suggestions = alts
+        ui = self.c.frame.top.ui
 
-        # if not word:
-            # word = ""
+        self.suggestions = alts
 
-        # self.wordLabel.configure(text= "Suggestions for: " + word)
-        # self.listBox.delete(0, "end")
+        if not word:
+            word = ""
 
-        # for i in range(len(self.suggestions)):
-            # self.listBox.insert(i, self.suggestions[i])
-
-        # # This doesn't show up because we don't have focus.
-        # if len(self.suggestions):
-            # self.listBox.select_set(1)
+        self.wordLabel.setText("Suggestions for: " + word)
+        self.listBox.clear()
+        if len(self.suggestions):
+            self.listBox.addItems(self.suggestions)
+            self.listBox.setCurrentRow(0)
     #@-node:ekr.20081121105001.396:fillbox
     #@+node:ekr.20081121105001.397:getSuggestion
     def getSuggestion(self):
         """Return the selected suggestion from the listBox."""
 
-        # # Work around an old Python bug.  Convert strings to ints.
-        # items = self.listBox.curselection()
-        # try:
-            # items = map(int, items)
-        # except ValueError: pass
-
-        # if items:
-            # n = items[0]
-            # suggestion = self.suggestions[n]
-            # return suggestion
-        # else:
-            # return None
+        idx = self.listBox.currentRow()
+        value = self.suggestions[idx]
+        return value
     #@-node:ekr.20081121105001.397:getSuggestion
     #@+node:ekr.20081121105001.398:update
     def update(self,show=True,fill=False):
@@ -3488,13 +3394,15 @@ class leoQtSpellTab:
 
         """Enable or disable buttons in the Check Spelling dialog."""
 
-        c = self.c ; w = c.frame.body.bodyCtrl
+        c = self.c
 
-        # start, end = w.getSelectionRange()
-        # state = g.choose(self.suggestions and start,"normal","disabled")
+        ui = c.frame.top.ui
 
-        # self.changeButton.configure(state=state)
-        # self.changeFindButton.configure(state=state)
+        w = c.frame.body.bodyCtrl
+        state = self.suggestions and w.hasSelection()
+
+        ui.leo_spell_btn_Change.setDisabled(not state)
+        ui.leo_spell_btn_FindChange.setDisabled(not state)
 
         # # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
         # # self.redoButton.configure(state=state)
@@ -3503,6 +3411,9 @@ class leoQtSpellTab:
 
         # self.addButton.configure(state='normal')
         # self.ignoreButton.configure(state='normal')
+
+        return state
+    #@nonl
     #@-node:ekr.20081121105001.399:updateButtons (spellTab)
     #@-node:ekr.20081121105001.394:Helpers
     #@-others
