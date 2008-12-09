@@ -9,7 +9,10 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-safe_mode = False # True: Bypass k.masterKeyHandler for problem keys or visible characters.
+safe_mode = False
+    # True: Bypass k.masterKeyHandler for problem keys or visible characters.
+use_partial_redraw = False
+    # True: update the tree incrementally.
 
 # Define these to suppress pylint warnings...
 __timing = None # For timing stats.
@@ -3493,13 +3496,19 @@ class leoQtTree (leoFrame.leoTree):
         # Debugging.
         self.nodeDrawCount = 0
 
-        # Drawing ivars.
-        self.item2positionDict = {} # keys are items, values are positions
-            # Used only to get a postion when a node is double-clicked.
-        self.tnode2dataDict = {} # keys are tnodes, values are lists of (p,it)
-            # Used only to update icons.
-        self.vnode2dataDict = {} # keys are vnodes, values are lists of (p,it)
-            # Used only to by editLabel to find the proper edit widget.
+        # The following *can* be used by the incremental drawing code.
+        self.item2parentItemDict = {}
+        self.item2tnodeDict = {}
+        self.item2vnodeDict = {}
+        self.tnode2itemDict = {}
+        self.vnode2itemDict = {}
+
+        # Incremental drawing code must not use postions!
+        # These dicts are used only by event handlers.
+
+        self.item2positionDict = {} # Values are positions
+        self.tnode2dataDict = {} # Values are lists of (p,it)
+        self.vnode2dataDict = {} # Values are lists of (p,it)
 
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
@@ -3714,16 +3723,48 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081121105001.411:setConfigIvars
     #@-node:ekr.20081121105001.409:Config... (qtTree)
     #@+node:ekr.20081121105001.412:Drawing... (qtTree)
+    #@+node:ekr.20081121105001.415:  initData
+    def initData (self):
+
+        # The following *can* be used by the incremental drawing code.
+        self.item2parentItemDict = {}
+        self.item2tnodeDict = {}
+        self.item2vnodeDict = {}
+        self.tnode2itemDict = {}
+        self.vnode2itemDict = {}
+
+        # Incremental drawing code must not use postions!
+        # These dicts are used only by event handlers.
+
+        self.tnode2dataDict = {} # Values are lists of (p,it).
+        self.vnode2dataDict = {} # Values are lists of (p,it).
+        self.item2positionDict = {} # Values are copies of positions.
+
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
+    #@-node:ekr.20081121105001.415:  initData
     #@+node:ekr.20081209064740.1: Drawing helpers
+    def item2parentItem (self,item):
+        return self.item2parentItemDict.get(item)
+
+    def item2position (self,item):
+        return self.item2positionDict.get(item)
+
+    def item2tnode (self,item):
+        return self.item2tnodeDict.get(item)
+
     def item2vnode (self,item):
         return self.item2vnodeDict.get(item)
+
+    def tnode2item (self,t):
+        return self.tnode2itemDict.get(t)
 
     def vnode2item (self,v):
         return self.vnode2itemDict.get(v)
 
     def isValidItem (self,item):
         return item in self.item2vnodeDict
-    #@nonl
     #@+node:ekr.20081121105001.413:allAncestorsExpanded
     def allAncestorsExpanded (self,p):
 
@@ -3733,33 +3774,6 @@ class leoQtTree (leoFrame.leoTree):
         else:
             return True
     #@-node:ekr.20081121105001.413:allAncestorsExpanded
-    #@+node:ekr.20081208072750.16:getSibs
-    def getSibs (self,parent,parent_item):
-
-        '''Return (children,items,item_vnodes):
-
-        children:   list of new child positions of the parent position.
-        items:      list of old child items of parent_item.
-        item_vnodes:list of vnodes associated with items.
-        len(items) == len(item_vnodes)
-        len(children) can be greater, less or equal to len(items).'''
-
-        w = self.widget
-
-        children = [z for z in p.self_and_siblings_iter()]
-
-        if parent_item:
-            items = parent_item.children()
-        else:
-            n = w.topLevelItemCount()
-            items = [w.topLevelItem(z) for z in range(n)]
-
-        item_vnodes = [self.item2vnode(z) for z in items]
-
-        # We use vnodes to match children with items.
-        return children, items, item_vnodes
-    #@nonl
-    #@-node:ekr.20081208072750.16:getSibs
     #@+node:ekr.20081209064740.2:Icons
     #@+node:ekr.20081121105001.417:drawIcon
     def drawIcon (self,p):
@@ -3805,43 +3819,6 @@ class leoQtTree (leoFrame.leoTree):
             it.setIcon(0,icon)
     #@-node:ekr.20081121105001.431:updateIcon
     #@-node:ekr.20081209064740.2:Icons
-    #@+node:ekr.20081121105001.415:initData
-    def initData (self):
-
-        self.tnode2dataDict = {} # keys are tnodes, values are lists of items (p,it)
-        self.vnode2dataDict = {} # keys are vnodes, values are lists of items (p,it)
-        self.item2positionDict = {} # keys are items, values are positions
-        self._editWidgetPosition = None
-        self._editWidget = None
-        self._editWidgetWrapper = None
-    #@nonl
-    #@-node:ekr.20081121105001.415:initData
-    #@+node:ekr.20081209064740.3:Items
-    #@+node:ekr.20081208072750.15:update_sibs
-    def update_sibs (self,p,parent_item):
-
-        w = self.widget
-
-        data = self.getSibs(p,parent_item)
-        children, child_items, child_vnodes = data
-
-    #@-node:ekr.20081208072750.15:update_sibs
-    #@+node:ekr.20081208072750.18:deleteItemTree
-    def deleteItemTree (self,parent_item,item):
-
-        w = self.treeWidget
-
-        while True:
-            child = item.child(0)
-            if child: self.deleteItem(parent_item,n,child)
-            else: break
-
-
-    def deleteItem (self,item):
-        pass
-    #@nonl
-    #@-node:ekr.20081208072750.18:deleteItemTree
-    #@-node:ekr.20081209064740.3:Items
     #@+node:ekr.20081208155215.1:position2item
     def position2item (self,p):
 
@@ -3961,32 +3938,42 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.164:drawNode
     def drawNode (self,p,parent_item,dummy=False):
 
-        c = self.c ; w = self.treeWidget ; trace = False
+        c = self.c ; w = self.treeWidget
         self.nodeDrawCount += 1
 
-        # Allocate the qt tree item.
-        parent = p.parent()
+        # Allocate the QTreeWidget item.
         itemOrTree = parent_item
         item = QtGui.QTreeWidgetItem(itemOrTree)
         item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
 
-        # Draw the headline and the icon.
-        item.setText(0,p.headString())
-        icon = self.getIcon(p)
-        if icon: item.setIcon(0,icon)
+        # Set the headline and maybe the icon.
+        item.setText(0,p and p.headString() or '<dummy headline>')
+        if p:
+            icon = self.getIcon(p)
+            if icon: item.setIcon(0,icon)
 
         if dummy: return item
 
-        # Remember the associatiation of item with p, and vice versa.
+        # The following *can* be used by the incremental drawing code.
+        self.item2parentItemDict[item] = parent_item
+        self.item2tnodeDict[item] = p.v.t
+        self.item2vnodeDict[item] = p.v
+        self.tnode2itemDict[p.v.t] = item
+        self.vnode2itemDict[p.v]= item
+
+        # Important: the following dicts are used only by event handlers.
+        # They are *not* to be used by the incremental drawing code!
+
+        # Remember the position, vnode and tnode of each item.
         self.item2positionDict[item] = p.copy()
 
-        # Remember the association of p.v with (p,item)
+        # Remember list of all (p,item) for each v.
         aList = self.vnode2dataDict.get(p.v,[])
         data = p.copy(),item
         aList.append(data)
         self.vnode2dataDict[p.v] = aList
 
-        # Remember the association of p.v.t with (p,item).
+        # Remember list all (p,item) for each t.
         aList = self.tnode2dataDict.get(p.v.t,[])
         data = p.copy(),item
         aList.append(data)
@@ -4036,14 +4023,13 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Redraw all visible nodes of the tree'''
 
-        trace = False; verbose = False
+        trace = False; verbose = False ; stub = True
         c = self.c ; w = self.treeWidget
         if not w: return
         if self.redrawing:
             g.trace('***** already drawing',g.callers(5))
             return
 
-        # Bug fix: 2008/11/10
         self.expandAllAncestors(c.currentPosition())
 
         self.redrawCount += 1
@@ -4055,6 +4041,7 @@ class leoQtTree (leoFrame.leoTree):
         self.redrawing = True
         self.fullDrawing = True # To suppress some traces.
         try:
+            if stub: self.partial_redraw_stub() # Testing only.
             w.clear()
             # Draw all top-level nodes and their visible descendants.
             p = c.rootPosition()
@@ -4062,6 +4049,7 @@ class leoQtTree (leoFrame.leoTree):
                 self.drawTree(p)
                 p.moveToNext()
         finally:
+            p = c.rootPosition()
             if not self.selecting:
                 item = self.setCurrentItem()
                 if item:
@@ -4098,22 +4086,20 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c ; w = self.treeWidget
         if not w: return
         if self.redrawing:
-            if trace: g.trace('***** already drawing',g.callers(5))
+            if trace: g.trace('***** already drawing',g.callers(4))
             return
 
         self.redrawCount += 1
         if trace and verbose: tstart()
 
-        # Init the data structures.
-        ### self.initData()
         self.nodeDrawCount = 0
         self.redrawing = True
         try:
             self.expandAllAncestors(c.currentPosition())
+            self.initData()
             p = c.rootPosition()
-            while p:
-                self.updateSibs(p,parentItem=None)
-                p.moveToNext()
+            self.updateSibs(p,parentItem=None)
+
         finally:
             if not self.selecting:
                 item = self.setCurrentItem()
@@ -4121,7 +4107,7 @@ class leoQtTree (leoFrame.leoTree):
                     g.trace('Error: no current item: %s' % (p.headString()))
 
             ### w.repaint() # To draw the tree initially.
-            c.requestRedrawFlag= False
+            c.requestRedrawFlag = False
             self.redrawing = False
             if trace and verbose: tstop()
             if trace: g.trace('%s: drew %3s nodes' % (
@@ -4130,6 +4116,124 @@ class leoQtTree (leoFrame.leoTree):
     # redraw = full_redraw # Compatibility
     # redraw_now = full_redraw
     #@-node:ekr.20081208072750.10:partial_redraw
+    #@+node:ekr.20081209064740.14:partial_redraw_stub
+    def partial_redraw_stub (self):
+
+        '''Print what partial_redraw would do if it were functional.'''
+
+        # Called from full_redraw.
+        # initData and expandAllAncestors have already been called.
+
+        c = self.c ; p = c.rootPosition()
+
+        if not use_partial_redraw: return
+
+        self.updateSibs(p,parent_item=None)
+    #@+node:ekr.20081208072750.18:deleteItemTree (not used)
+    def deleteItemTree (self,parent_item,item):
+
+        w = self.treeWidget
+        p = self.item2position(item)
+        g.trace('delete tree for ',p.headString())
+
+        # while True:
+            # child = item.child(0)
+            # if child: self.deleteItem(parent_item,n,child)
+            # else: break
+
+
+    def deleteItem (self,item):
+        pass
+    #@-node:ekr.20081208072750.18:deleteItemTree (not used)
+    #@+node:ekr.20081209064740.16:deleteChildItems
+    def deleteChildItems(self,p,parent_item):
+
+        '''Delete all child items of the parent_item,
+        thereby clearing the expansion box.'''
+
+        if use_partial_redraw:
+
+            while True:
+                child = parent_item.child(0)
+                if child:
+                    assert(False) # not ready yet.
+                else: break
+
+        else:
+            g.trace('delete all child items of',p)
+    #@-node:ekr.20081209064740.16:deleteChildItems
+    #@+node:ekr.20081208072750.16:childItems
+    def childItems (self,parent_item):
+
+        '''Return the list of child items of the parent item,
+        or the top-level items if parent_item is None.'''
+
+        w = self.treeWidget
+
+        if parent_item:
+            items = parent_item.children()
+        else:
+            n = w.topLevelItemCount()
+            items = [w.topLevelItem(z) for z in range(n)]
+
+        return items
+    #@-node:ekr.20081208072750.16:childItems
+    #@+node:ekr.20081209064740.17:createDummyChildItem
+    def createDummyChildItem (self,p,parent_item):
+
+        '''Create a dummy child item if the parent item does not have children.
+
+        This ensures the parent's expansion box is correctly set.'''
+
+        h = 'dummy child of %s' % p.headString()
+        n = parent_item.childCount()
+
+        if use_partial_redraw:
+            if n == 0:
+                p2 = p.copy()
+                p2.setHeadString(h)
+                self.drawNode(p2,parent_item,dummy=True)
+        else:
+            g.trace('%3s %s' % (n,h))
+    #@-node:ekr.20081209064740.17:createDummyChildItem
+    #@+node:ekr.20081208072750.15:updateSibs
+    def updateSibs (self,p,parent_item):
+
+        trace = True
+
+        sibs = [z for z in p.self_and_siblings_iter(copy=True)]
+        sib_items = self.childItems(parent_item)
+
+        sib_vnodes = [self.item2vnode(z) for z in sibs]
+
+        # len(items) == len(item_vnodes)
+        # len(children) can be greater, less or equal to len(items).'''
+
+        if trace:
+            g.trace('len(sibs): %s, len(sib_items): %s' % (
+                len(sibs),len(sib_items)))
+            g.trace('\n' + g.listToString(sibs))
+
+        # Step one: determine if any sibling has changed:
+        # (inserted, deleted, changed or moved.
+
+        new_sib_items = sib_items[:] ### to do.
+
+        # Step two: recursively examine all visible child nodes & items.
+        for p,sib_item in zip(sibs,new_sib_items):
+            if p.hasChildren():
+                if p.isExpanded():
+                    child = p.firstChild()
+                    self.updateSibs(child)
+                else:
+                    # Enable the expansion indicator.
+                    self.createDummyChildItem(p,parent_item=sib_item)
+            else:
+                # Disable the expansion indicator.
+                self.deleteChildItems(p,parent_item=sib_item)
+
+    #@-node:ekr.20081208072750.15:updateSibs
+    #@-node:ekr.20081209064740.14:partial_redraw_stub
     #@-node:ekr.20081121105001.412:Drawing... (qtTree)
     #@+node:ekr.20081121105001.432:Event handlers... (qtTree)
     #@+node:ekr.20081121105001.433:Click Box...
