@@ -3978,13 +3978,15 @@ class leoQtTree (leoFrame.leoTree):
                     g.trace('Error: no current item: %s' % (
                         p.headString()))
 
-            ### w.repaint() # To draw the tree initially.
+            if 0: # Very slow for unit tests.
+                w.repaint()
             c.requestRedrawFlag = False
             self.redrawing = False
             if trace:
                 if verbose: tstop()
-                g.trace('%s: drew %3s nodes' % (
-                    self.redrawCount,self.nodeDrawCount))
+                if self.nodeDrawCount and not g.app.unitTesting:
+                    g.trace('%s: drew %3s nodes' % (
+                        self.redrawCount,self.nodeDrawCount))
 
     # Compatibility
     if use_partial_redraw:
@@ -4005,12 +4007,12 @@ class leoQtTree (leoFrame.leoTree):
         '''Return the list of child items of the parent item,
         or the top-level items if parent_item is None.'''
 
-        w = self.treeWidget
 
         if parent_item:
             n = parent_item.childCount()
             items = [parent_item.child(z) for z in range(n)]
         else:
+            w = self.treeWidget
             n = w.topLevelItemCount()
             items = [w.topLevelItem(z) for z in range(n)]
 
@@ -4022,6 +4024,8 @@ class leoQtTree (leoFrame.leoTree):
         '''Delete all child items of the parent_item,
         thereby clearing the expansion box.'''
 
+        trace = False
+
         child_items = self.childItems(parent_item)
         assert not p.firstChild()
 
@@ -4030,7 +4034,7 @@ class leoQtTree (leoFrame.leoTree):
             parent_item.removeChild(item)
             n += 1
 
-        if n: g.trace(n)
+        if trace and n: g.trace(n)
     #@-node:ekr.20081209064740.16:deleteChildItems
     #@+node:ekr.20081208072750.18:deleteItem
     def deleteItem (self,parent_item,item):
@@ -4054,7 +4058,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081209103009.13:deleteNthItem
     def deleteNthItem(self,n,parent_item,item):
 
-        trace = True
+        trace = False and not g.app.unitTesting
 
         if trace and self.redrawCount > 1:
             g.trace('%3s' % n)
@@ -4085,9 +4089,10 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Insert an item tree as the n'th childe of the parent item.'''
 
-        trace = True
+        trace = False and not g.app.unitTesting
 
-        if trace and self.redrawCount > 1: g.trace(n,p)
+        if trace and self.redrawCount > 1:
+            g.trace(hidden,n,p)
 
         item = self.insertNthChildItem(p,n,parent_item)
 
@@ -4131,26 +4136,27 @@ class leoQtTree (leoFrame.leoTree):
         '''Return the number child items of the parent item,
         or the number of top-level items if parent_item is None.'''
 
-        w = self.treeWidget
-
         if parent_item:
             n = parent_item.childCount()
         else:
+            w = self.treeWidget
             n = w.topLevelItemCount()
 
         return n
     #@-node:ekr.20081209103009.15:numberofChildItems
     #@+node:ekr.20081209103009.18:replaceNthItem
-    def replaceNthItem(self,p,n,parent_item,item):
+    def replaceNthItem(self,p,n,parent_item,item,hidden=False):
 
         trace = True
 
         if trace and self.redrawCount > 1:
-            g.trace('%3s' % (n),p) # ,g.callers(4))
+            g.trace('%3s' % (n),p,g.callers(4))
 
         self.deleteNthItem(n,parent_item,item)
         item = self.insertNthChildItem(p,n,parent_item)
-        self.drawChildren(p,parent_item=item)
+
+        if not hidden:
+            self.drawChildren(p,parent_item=item)
 
 
     #@-node:ekr.20081209103009.18:replaceNthItem
@@ -4159,7 +4165,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Swap the n'th and n+1'st items.'''
 
-        g.trace(n,p)
+        # g.trace(n,p)
 
         child_items = self.childItems(parent_item)
 
@@ -4173,8 +4179,8 @@ class leoQtTree (leoFrame.leoTree):
                 parent_item.insertChild(n+1,child1)
             else:
                 w = self.treeWidget
-                w.takeTopLevelItem(n) # Does not delete the item.
-                w.takeTopLevelItem(n) # Does not delete the item.
+                w.takeTopLevelItem(n)
+                w.takeTopLevelItem(n)
                 w.insertTopLevelItem(n,child2)
                 w.insertTopLevelItem(n+1,child1)
             # Update the dicts for p, not p.next()
@@ -4184,7 +4190,7 @@ class leoQtTree (leoFrame.leoTree):
                 n,len(child_items)))
     #@-node:ekr.20081209103009.19:swapNthItems
     #@+node:ekr.20081209103009.12:updateNthSib
-    def updateNthSib(self,p,n,sibs,parent_item):
+    def updateNthSib(self,p,n,sibs,parent_item,hidden=False):
 
         '''Update the pair (p,item), making the result the
         n'th child item of parent_item.'''
@@ -4213,12 +4219,12 @@ class leoQtTree (leoFrame.leoTree):
                 # Note: no position exists for the deleted node
                 self.deleteNthItem(n,parent_item,item)
             elif item_v == next_p_v:
-                self.insertNthChild(p,n,parent_item)
+                self.insertNthChild(p,n,parent_item,hidden=hidden)
             else:
                 if self.redrawCount > 1: g.pdb()
-                self.replaceNthItem(p,n,parent_item,item)
+                self.replaceNthItem(p,n,parent_item,item,hidden=hidden)
         else:
-            self.replaceNthItem(p,n,parent_item,item)
+            self.replaceNthItem(p,n,parent_item,item,hidden=hidden)
     #@-node:ekr.20081209103009.12:updateNthSib
     #@+node:ekr.20081209103009.10:updateSibs
     def updateSibs (self,p,parent_item,hidden=False):
@@ -4240,7 +4246,7 @@ class leoQtTree (leoFrame.leoTree):
             if n_items <= n:
                 self.insertNthChild(p,n,parent_item,hidden=hidden)
             else:
-                self.updateNthSib(p,n,sibs,parent_item)
+                self.updateNthSib(p,n,sibs,parent_item,hidden=hidden)
 
         # Delete any trailing items.
         children = self.childItems(parent_item)
@@ -4279,11 +4285,9 @@ class leoQtTree (leoFrame.leoTree):
                     if 0: # causes problems.
                         self.createDummyChildItem(p,parent_item=sib_item)
                     else:
-                         # Draw the hidden children.
+                        # Draw the hidden children.
                         child = p.firstChild()
-                        while child:
-                            self.updateSibs(child,parent_item=sib_item,hidden=True)
-                            child.moveToNext()
+                        self.updateSibs(child,parent_item=sib_item,hidden=True)
                     self.contractItem(sib_item)
             else:
                 # Disable the expansion indicator.
