@@ -7,6 +7,7 @@
 First:
 - Support hoist in redraw code.
 - Optimize tree updates.
+    - Hook up partial redraw.
 
 Next:
 - Can key strokes be handled in log pane?

@@ -4188,7 +4188,16 @@ class leoQtTree (leoFrame.leoTree):
         '''Delete the item's entire tree.'''
 
         if self.enable_partial_redraw:
-            parent_item.removeChild(item)
+            if parent_item:
+                parent_item.removeChild(item)
+            else:
+                w = self.treeItem
+                child_items = self.childItems(parent_item)
+                if item in child_items:
+                    n = child_item.index(item)
+                    w.takeTopLevelItem(n)
+                else:
+                    self.oops('item not in top level',item)
         else:
             p = self.item2position(item)
             g.trace('*** delete tree for ',p)
@@ -4198,6 +4207,7 @@ class leoQtTree (leoFrame.leoTree):
     def deleteNthItem(self,p,n,parent_item,item):
 
         if self.enable_partial_redraw:
+            w = self.treeWidget
             child_items = self.childItems(parent_item)
             if n < len(child_items):
                 assert item==child_items[n]
@@ -4215,8 +4225,9 @@ class leoQtTree (leoFrame.leoTree):
         '''Insert an item tree as the n'th childe of the parent item.'''
 
         if self.enable_partial_redraw:
-            item = insertNthChildItem(self,p,n,parent_item)
-            self.drawChilren(p,item)
+            w = self.treeWidget
+            item = self.insertNthChildItem(p,n,parent_item)
+            self.drawChildren(p,item)
         else:
             g.trace(n,p)
     #@-node:ekr.20081209103009.17:insertNthChild (test)
@@ -4236,7 +4247,11 @@ class leoQtTree (leoFrame.leoTree):
         item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
 
         # Insert the item as the n'th child of the parent item.
-        parent_item.insertChild(n,item)
+        g.trace(parent_item,item)
+        if parent_item:
+            parent_item.insertChild(n,item)
+        else:
+            w.insertTopLevelItem(n,item)
 
         # Set the headline and maybe the icon.
         item.setText(0,p and p.headString() or '<dummy headline>')
@@ -4265,6 +4280,8 @@ class leoQtTree (leoFrame.leoTree):
     def replaceNthItem(self,p,n,parent_item,item):
 
         if self.enable_partial_redraw:
+            w = self.treeWidget
+            parent_item = parent_item or w
             self.deleteNthItem(p,n,parent_item,item)
             item = insertNthChildItem(self,p,n,parent_item)
             self.drawChildren(p,parent_item=item)
@@ -4294,7 +4311,7 @@ class leoQtTree (leoFrame.leoTree):
             g.trace(n,p)
 
     #@-node:ekr.20081209103009.19:swapNthItems (Test)
-    #@+node:ekr.20081209103009.12:updateNthSib
+    #@+node:ekr.20081209103009.12:updateNthSib (oops: uses vnode2item)
     def updateNthSib(self,p,n,sibs,parent_item):
 
         '''Update the pair (p,item), making the result the
@@ -4304,7 +4321,7 @@ class leoQtTree (leoFrame.leoTree):
         sib_items = self.childItems(parent_item)
         item = sib_items[n]
         assert(p == sibs[n])
-        p_item = self.vnode2item(p.v)
+        p_item = self.vnode2item(p.v) #### ooops.
 
         if self.enable_partial_redraw: # Fails for stub.     
             if not p_item: return self.oops('no item for %s' % p)
@@ -4329,7 +4346,7 @@ class leoQtTree (leoFrame.leoTree):
                 self.replaceNthItem(p,n,parent_item,item)
         else:
             self.replaceNthItem(p,n,parent_item,item)
-    #@-node:ekr.20081209103009.12:updateNthSib
+    #@-node:ekr.20081209103009.12:updateNthSib (oops: uses vnode2item)
     #@+node:ekr.20081209103009.10:updateSibs
     def updateSibs (self,p,parent_item):
 
