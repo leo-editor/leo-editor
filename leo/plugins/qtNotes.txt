@@ -294,6 +294,25 @@ def partial_redraw_stub (self):
 
     self.updateTree(p,parent_item=None)
 #@-node:ekr.20081209064740.14:partial_redraw_stub
+#@+node:ekr.20081209064740.17:createDummyChildItem (not used)
+def createDummyChildItem (self,p,parent_item):
+
+    '''Create a dummy child item if the parent item does not have children.
+
+    This ensures the parent's expansion box is correctly set.'''
+
+    trace = False
+    h = 'dummy child of %s' % p.headString()
+    n = parent_item.childCount()
+
+    if trace: g.trace(n,h)
+
+    if n == 0:
+        p2 = p.copy()
+        p2.setHeadString(h)
+        self.drawNode(p2,parent_item,dummy=True)
+
+#@-node:ekr.20081209064740.17:createDummyChildItem (not used)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
