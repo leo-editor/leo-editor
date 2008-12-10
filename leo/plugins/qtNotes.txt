@@ -7,7 +7,6 @@
 First:
 - Support hoist in redraw code.
 - Optimize tree updates.
-    - Hook up partial redraw.
 
 Next:
 - Can key strokes be handled in log pane?
@@ -281,6 +280,20 @@ def redraw_after_select (self):
     pass # It is quite wrong to do an automatic redraw after select.
 #@-node:ekr.20081121105001.430:redraw_after_select
 #@-node:ekr.20081208072750.20:redraw_after... (not used)
+#@+node:ekr.20081209064740.14:partial_redraw_stub
+def partial_redraw_stub (self):
+
+    '''Print what partial_redraw would do if it were functional.'''
+
+    # Called from full_redraw.
+    # initData and expandAllAncestors have already been called.
+
+    c = self.c ; p = c.rootPosition()
+
+    if not use_partial_redraw: return
+
+    self.updateTree(p,parent_item=None)
+#@-node:ekr.20081209064740.14:partial_redraw_stub
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
