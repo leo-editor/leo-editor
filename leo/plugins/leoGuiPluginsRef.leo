@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="353" height="866" width="859"/>
+	<global_window_position top="46" left="332" height="943" width="913"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20081121105001.1076" str_leo_pos="4,3"><vh>Startup</vh>
+<v t="ekr.20081121105001.1076" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20081121105001.1077"><vh>@chapters</vh></v>
 <v t="ekr.20081121105001.1078"><vh>@settings</vh>
 <v t="ekr.20081121105001.1079"><vh>@page http plugin</vh>
@@ -29,8 +29,7 @@
 <v t="ekr.20081121105001.1090"><vh>@@button change leo imports</vh></v>
 </v>
 <v t="ekr.20081121105001.1108"><vh>Notes</vh>
-<v t="ekr.20081121105001.147"
-marks="ekr.20081121105001.148,ekr.20081121105001.149,ekr.20081121105001.156,ekr.20081121105001.163,ekr.20081121105001.172,ekr.20081121105001.310,ekr.20081121105001.195,ekr.20081121105001.196,"><vh>@thin qtNotes.txt</vh></v>
+<v t="ekr.20081121105001.147"><vh>@thin qtNotes.txt</vh></v>
 </v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
 <v t="ekr.20081121105001.12"><vh>@thin cursesGui.py</vh></v>
@@ -38,8 +37,7 @@ marks="ekr.20081121105001.148,ekr.20081121105001.149,ekr.20081121105001.156,ekr.
 <v t="ekr.20081121105001.1707"><vh>@thin experimental/__wx_gui.py</vh></v>
 <v t="ekr.20081121105001.80"><vh>@thin ironPythonGui.py</vh></v>
 <v t="ekr.20081121105001.595"><vh>@thin swing_gui.py</vh></v>
-<v t="ekr.20081121110412.2"
-marks="ekr.20081121110412.443,ekr.20081121110412.489,ekr.20081121110412.552,"><vh>@thin tkGui.py</vh></v>
+<v t="ekr.20081121110412.2"><vh>@thin tkGui.py</vh></v>
 </v>
 <v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
 <v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
@@ -49,60 +47,11 @@ marks="ekr.20081121110412.443,ekr.20081121110412.489,ekr.20081121110412.552,"><v
 <v t="ekr.20081121105001.1097"><vh>@auto qt_quicksearch.py</vh></v>
 <v t="ekr.20081121105001.1098"><vh>@auto qt_quicksearch.ui</vh></v>
 </v>
-<v t="leohag.20081204085551.2"><vh>Qt Scrolled Message Dialog</vh>
-<v t="leohag.20081204085551.1" a="E"
-expanded="leohag.20081203143921.9,leohag.20081203143921.19,"><vh>@thin scrolledmessage.py</vh></v>
-</v>
 <v t="ekr.20081121105001.188"
-marks="ekr.20081121105001.207,ekr.20081121105001.254,ekr.20081121105001.310,ekr.20081121105001.317,ekr.20081121105001.377,ekr.20081121105001.402,ekr.20081121105001.414,ekr.20081121105001.443,ekr.20081121105001.445,ekr.20081121105001.456,ekr.20081121105001.156,ekr.20081121105001.163,ekr.20081121105001.172,ekr.20081121105001.536,ekr.20081121105001.551,ekr.20081121105001.553,ekr.20081121105001.557,ekr.20081121105001.558,"
-expanded="ekr.20081121105001.325,"><vh>@thin qtGui.py</vh></v>
-</v>
-<v t="ekr.20081121105001.148" a="EM"><vh> qt To do</vh>
-<v t="ekr.20081121105001.149" a="M"><vh>Finish colorizer</vh></v>
-<v t="ekr.20081121105001.150"><vh>QScintilla stuff</vh></v>
-<v t="ekr.20081121105001.151"><vh>Finally/maybe</vh></v>
-<v t="ekr.20081124094918.1"><vh>Fix problems with accented characters</vh></v>
+marks="ekr.20081209210556.2,"><vh>@thin qtGui.py</vh></v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20081121105001.148">@nocolor-node
-
-First:
-- Support wrap option.
-- Optimize tree updates.
-- Clicks in body text do not update row/column position.
-
-Next:
-- Allow coloring of icon bar buttons.
-- Support multiple body editors.
-- Optimize the Qt colorizer.
-
-Finally:
-- Install new Qt version and play with QScintilla.
-    From QScintilla change log:
-    2008/10/12 14:32:05  phil
-    QsciScintilla::setSelection() is now implemented using SCI_SETSEL so that the
-    carat can be left at either the start or the end of the selection.
-    Exposed QsciScintilla::positionFromLineIndex() and
-    QsciScintilla::lineIndexFromPosition().
-    - Fix problem with accented characters: see child node for notes.
-- Add stylesheets for dialogs.
-    - Set font for dummy widget in style sheet, then copy that font.
-</t>
-<t tx="ekr.20081121105001.149">@nocolor-node
-
-- Simulate Tk's handling of tags (an optimization)
-- Use Qt threading.
-- Handle all colorizer tags.</t>
-<t tx="ekr.20081121105001.150">- Check event handling with QScintilla.
-- Experiment with sending &lt;shift-tab&gt; directly to QScintilla.
-- Call setLexer(0) for nocolor nodes.
-- Add settings for syntax coloring.
-- Make Scintilla handle Leo markup.</t>
-<t tx="ekr.20081121105001.151">- Can style sheets really do the job?
-- Flash characters without changing the selection?
-- Remove old-style Leo settings?
-</t>
 <t tx="ekr.20081121105001.1076"></t>
 <t tx="ekr.20081121105001.1077"></t>
 <t tx="ekr.20081121105001.1078">@nocolor</t>
@@ -174,28 +123,5 @@ for p in p.self_and_subtree_iter():
 <t tx="ekr.20081121105001.1093"></t>
 <t tx="ekr.20081121105001.1108"></t>
 <t tx="ekr.20081121105001.1110"></t>
-<t tx="ekr.20081124094918.1">http://groups.google.com/group/leo-editor/browse_thread/thread/59c1e5d6acaf4de0
-
-I've some more information about the problems with accent previously
-reported:
-- I can confirm that they are caused by the interaction scim+leo (with
-and without the qt plugin). If scim is not started leo works fine. If
-scim is running the problems appear and are slightly different with
-and without the qt plugin. The workaround is obvious: don't use leo
-and scim at the same time :-)
-- accents are not working in the qt plugin when scintilla is used. If
-qt-use-scintilla=False I can write this:
-
-àáä (the same for the rest of vowels)
-
-but if qt-use-scintilla=True when I enter the same sequence in the
-keyboard I get:
-
-`aaa (the same for the rest of vowels)
-
-- the problem with the ñ character (reported previously too) is only
-present in the qt plugin (both with and without scintilla)
-</t>
-<t tx="leohag.20081204085551.2"></t>
 </tnodes>
 </leo_file>
