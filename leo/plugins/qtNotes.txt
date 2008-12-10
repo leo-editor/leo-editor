@@ -147,26 +147,6 @@ bracketright: ']'
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081208155215.12:Unused
-#@+node:ekr.20081121105001.423:removeFromDicts (not used)
-def removeFromDicts (self,p):
-
-    # Important: items do not necessarily exist.
-
-    # Remove position from item2positionDict.
-    p2 = self.item2positionDict.get(it)
-    if p2 == p: del self.item2positionDict[it]
-
-    # Remove items from vnode2dataDict
-    aList = self.vnode2dataDict.get(p.v,[])
-    aList = [z for z in aList if z[0] != p]
-    self.vnode2dataDict[p.v] = aList
-
-    # Remove items from tnode2dataDict
-    aList = self.tnode2dataDict.get(p.v.t,[])
-    # aList = [z for z in aList if z[1] != it] # Wrong
-    aList = [z for z in aList if z[0] != p]
-    self.tnode2dataDict[p.v.t] = aList
-#@-node:ekr.20081121105001.423:removeFromDicts (not used)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl

@@ -3501,8 +3501,6 @@ class leoQtTree (leoFrame.leoTree):
         self.item2parentItemDict = {}
         self.item2tnodeDict = {}
         self.item2vnodeDict = {}
-        self.tnode2itemDict = {}
-        self.vnode2itemDict = {}
 
         # Incremental drawing code must not use postions!
         # These dicts are used only by event handlers.
@@ -3731,8 +3729,6 @@ class leoQtTree (leoFrame.leoTree):
         self.item2parentItemDict = {}
         self.item2tnodeDict = {}
         self.item2vnodeDict = {}
-        self.tnode2itemDict = {}
-        self.vnode2itemDict = {}
 
         # Incremental drawing code must not use postions!
         # These dicts are used only by event handlers.
@@ -3757,12 +3753,6 @@ class leoQtTree (leoFrame.leoTree):
 
     def item2vnode (self,item):
         return self.item2vnodeDict.get(item)
-
-    def tnode2item (self,t):
-        return self.tnode2itemDict.get(t)
-
-    def vnode2item (self,v):
-        return self.vnode2itemDict.get(v)
 
     def isValidItem (self,item):
         return item in self.item2vnodeDict
@@ -3959,8 +3949,6 @@ class leoQtTree (leoFrame.leoTree):
         self.item2parentItemDict[item] = parent_item
         self.item2tnodeDict[item] = p.v.t
         self.item2vnodeDict[item] = p.v
-        self.tnode2itemDict[p.v.t] = item
-        self.vnode2itemDict[p.v]= item
 
         # Important: the following dicts are used only by event handlers.
         # They are *not* to be used by the incremental drawing code!
@@ -4224,6 +4212,33 @@ class leoQtTree (leoFrame.leoTree):
 
         return n
     #@-node:ekr.20081209103009.15:numberofChildItems
+    #@+node:ekr.20081121105001.423:removeFromDicts (test)
+    def removeFromDicts (self,p,item):
+
+        '''Remove all items associated with p from the drawing dicts.'''
+
+        # Remove entries from item dicts.
+        table = (
+            self.item2parentItemDict,
+            self.item2tnodeDict,
+            self.item2vnodeDict,
+            self.item2positionDict)
+
+        for d in table:
+            if item in d:
+                del d[item]
+
+        # Remove positions from vnode/tnode dicts.
+        table = (
+            (p.v.t,self.tnode2dataDict),
+            (p.v  ,self.vnode2dataDict))
+
+        for key,d in table:
+            aList = d.get(key,[])
+            if aList:
+                aList = [z for p2,item in aList if p2 != p]
+                d[key] = aList
+    #@-node:ekr.20081121105001.423:removeFromDicts (test)
     #@+node:ekr.20081209103009.18:replaceNthItem
     def replaceNthItem(self,p,n,parent_item,item,level):
 
@@ -4253,7 +4268,8 @@ class leoQtTree (leoFrame.leoTree):
         if item == p_item: return # An exact match.
 
         if n + 1 < len(sibs) and n + 1 < len(sib_items):
-            next_p, next_p_item = sibs[n+1],sib_items[n+1]
+            next_p = sibs[n+1]
+            next_p_item = sib_items[n+1]
             next_item = sib_items[n+1]
             if p_item == next_item and next_p_item == item:
                 self.swapNthItems(p,n,parent_item,level)
@@ -4275,7 +4291,7 @@ class leoQtTree (leoFrame.leoTree):
         trace = False
         sibs = [z for z in p.self_and_siblings_iter(copy=True)]
 
-        # Compare unchaning new nodes with changing tree items.
+        # Compare unchanging new nodes with changing tree items.
         for n,p in zip(range(len(sibs)),sibs):
             n_items = self.numberOfChildItems(parent_item)
             if trace: g.trace('n: %s, n_items: %s' % (n,n_items))
