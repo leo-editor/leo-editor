@@ -7,7 +7,6 @@
 First:
 - Support hoist in redraw code.
 - Optimize tree updates.
-    - Hook up partial redraw.
 
 Next:
 - Can key strokes be handled in log pane?
@@ -202,6 +201,99 @@ if 0: # Not needed: we never process an entire tree at once.
 
 
 #@-node:ekr.20081209211810.12:updateTreeDicts (not needed!)
+#@+node:ekr.20081208072750.20:redraw_after... (not used)
+if 0:
+    @others
+#@nonl
+#@+node:ekr.20081121105001.419:redraw_after_clone
+def redraw_after_clone (self):
+
+    self.full_redraw()
+#@-node:ekr.20081121105001.419:redraw_after_clone
+#@+node:ekr.20081121105001.420:redraw_after_contract
+def redraw_after_contract (self):
+
+    self.full_redraw()
+#@-node:ekr.20081121105001.420:redraw_after_contract
+#@+node:ekr.20081121105001.421:redraw_after_delete
+def redraw_after_delete (self):
+
+    self.full_redraw()
+
+
+#@-node:ekr.20081121105001.421:redraw_after_delete
+#@+node:ekr.20081121105001.422:redraw_after_expand & helper
+def redraw_after_expand (self):
+
+    # This is reasonable now that we only allocate
+    # one dummy node in collapsed trees.
+    return self.full_redraw()
+#@-node:ekr.20081121105001.422:redraw_after_expand & helper
+#@+node:ekr.20081121105001.424:redraw_after_icons_changed
+def redraw_after_icons_changed (self,all=False):
+
+    g.trace('should not be called',g.callers(4))
+
+    pass
+
+    # c = self.c ; p = c.currentPosition()
+
+    # if all:
+        # self.full_redraw()
+    # else:
+        # self.updateIcon(p)
+
+
+#@-node:ekr.20081121105001.424:redraw_after_icons_changed
+#@+node:ekr.20081121105001.425:redraw_after_insert
+def redraw_after_insert (self):
+
+    self.full_redraw()
+#@-node:ekr.20081121105001.425:redraw_after_insert
+#@+node:ekr.20081121105001.426:redraw_after_move_down
+def redraw_after_move_down (self):
+
+    self.full_redraw()
+#@nonl
+#@-node:ekr.20081121105001.426:redraw_after_move_down
+#@+node:ekr.20081121105001.427:redraw_after_move_left
+def redraw_after_move_left (self):
+
+    self.full_redraw()
+#@nonl
+#@-node:ekr.20081121105001.427:redraw_after_move_left
+#@+node:ekr.20081121105001.428:redraw_after_move_right
+def redraw_after_move_right (self):
+
+    self.full_redraw()
+#@-node:ekr.20081121105001.428:redraw_after_move_right
+#@+node:ekr.20081121105001.429:redraw_after_move_up
+def redraw_after_move_up (self):
+
+    self.full_redraw()
+#@-node:ekr.20081121105001.429:redraw_after_move_up
+#@+node:ekr.20081121105001.430:redraw_after_select
+def redraw_after_select (self):
+
+    '''Redraw the screen after selecting a node.'''
+
+    pass # It is quite wrong to do an automatic redraw after select.
+#@-node:ekr.20081121105001.430:redraw_after_select
+#@-node:ekr.20081208072750.20:redraw_after... (not used)
+#@+node:ekr.20081209064740.14:partial_redraw_stub
+def partial_redraw_stub (self):
+
+    '''Print what partial_redraw would do if it were functional.'''
+
+    # Called from full_redraw.
+    # initData and expandAllAncestors have already been called.
+
+    c = self.c ; p = c.rootPosition()
+
+    if not use_partial_redraw: return
+
+    self.updateTree(p,parent_item=None)
+#@-node:ekr.20081209064740.14:partial_redraw_stub
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
