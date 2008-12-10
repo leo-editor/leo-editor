@@ -147,6 +147,60 @@ bracketright: ']'
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081208155215.12:Unused
+#@+node:ekr.20081121105001.423:removeFromDicts (not needed!)
+if 0: # not needed if we recompute all dicts.
+
+    def removeFromDicts (self,p,item):
+
+        '''Remove all items associated with p from the drawing dicts.'''
+
+        # Remove entries from item dicts.
+        if item:
+            table = (
+                self.item2parentItemDict,
+                self.item2tnodeDict,
+                self.item2vnodeDict,
+                self.item2positionDict)
+
+            for d in table:
+                if item in d:
+                    del d[item]
+
+        # Remove positions from vnode/tnode dicts.
+        if p:
+            table = (
+                (p.v.t,self.tnode2dataDict),
+                (p.v  ,self.vnode2dataDict))
+
+            for key,d in table:
+                aList = d.get(key,[])
+                if aList:
+                    aList = [z for p2,item in aList if p2 != p]
+                    d[key] = aList
+#@-node:ekr.20081121105001.423:removeFromDicts (not needed!)
+#@+node:ekr.20081209211810.12:updateTreeDicts (not needed!)
+if 0: # Not needed: we never process an entire tree at once.
+
+    def updateTreeDicts (self,p,parent_item,item):
+
+        '''Update the dicts for unchanged/moved parts of the tree.'''
+
+        self.updateDicts(p,parent_item,item)
+
+        child_items = self.childItems(parent_item)
+        chilren = [z for z in p.children_iter()]
+
+        if len(child_items)== len(children):
+            for p2,item2 in zip(children,child_items):
+                self.updateTreeDicts(p2,item,item2)
+        else:
+            self.oops('len(child_items): %s, len(chilren): %s' % (
+                len(child_items),len(chilren)))
+
+
+
+
+#@-node:ekr.20081209211810.12:updateTreeDicts (not needed!)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
