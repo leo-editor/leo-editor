@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>644</height>
+    <height>635</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -277,7 +277,7 @@
                 <string>Page</string>
                </attribute>
               </widget>
-              <widget class="QWidget" name="Spell" >
+              <widget class="QWidget" name="leo_spell_tab" >
                <attribute name="title" >
                 <string>Spell</string>
                </attribute>
@@ -372,7 +372,7 @@
                      <item row="3" column="1" >
                       <widget class="QPushButton" name="leo_spell_btn_FindChange" >
                        <property name="text" >
-                        <string>Find, Change</string>
+                        <string>Change, Find</string>
                        </property>
                       </widget>
                      </item>
@@ -407,7 +407,7 @@
                       </spacer>
                      </item>
                      <item row="1" column="0" colspan="2" >
-                      <widget class="QListWidget" name="leo_spell_list" >
+                      <widget class="QListWidget" name="leo_spell_listBox" >
                        <property name="sizePolicy" >
                         <sizepolicy vsizetype="Expanding" hsizetype="MinimumExpanding" >
                          <horstretch>0</horstretch>
@@ -688,7 +688,120 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>leo_spell_btn_Add</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>do_leo_spell_btn_Add()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>467</x>
+     <y>211</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>345</x>
+     <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leo_spell_btn_Change</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>do_leo_spell_btn_Change()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>390</x>
+     <y>237</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>345</x>
+     <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leo_spell_btn_Find</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>do_leo_spell_btn_Find()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>390</x>
+     <y>211</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>345</x>
+     <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leo_spell_btn_FindChange</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>do_leo_spell_btn_FindChange()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>467</x>
+     <y>237</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>345</x>
+     <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leo_spell_btn_Hide</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>do_leo_spell_btn_Hide()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>467</x>
+     <y>263</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>345</x>
+     <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leo_spell_btn_Ignore</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>do_leo_spell_btn_Ignore()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>390</x>
+     <y>263</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>345</x>
+     <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leo_spell_listBox</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>do_leo_spell_btn_FindChange()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>427</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>345</x>
+     <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>do_leo_spell_btn_Add()</slot>
   <slot>do_leo_spell_btn_Change()</slot>
