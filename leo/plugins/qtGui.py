@@ -4092,11 +4092,6 @@ class leoQtTree (leoFrame.leoTree):
 
 
         #@-node:ekr.20081209103009.18:replaceNthItem
-        #@+node:ekr.20081211060950.19:updateHeadline
-        def updateHeadline (self,p,item):
-
-            item.setText(0,p.headString())
-        #@-node:ekr.20081211060950.19:updateHeadline
         #@+node:ekr.20081209103009.12:updateNthSib
         def updateNthSib(self,p,n,sibs,parent_item,hidden=False):
 
@@ -4363,6 +4358,11 @@ class leoQtTree (leoFrame.leoTree):
                 self.oops('bad n: %s,len(child_items): %s' % (
                     n,len(child_items)))
         #@-node:ekr.20081209103009.19:swapNthItems
+        #@+node:ekr.20081211060950.19:updateHeadline
+        def updateHeadline (self,p,item):
+
+            item.setText(0,p.headString())
+        #@-node:ekr.20081211060950.19:updateHeadline
         #@-node:ekr.20081211123349.11:low-level helpers
         #@+node:ekr.20081208072750.10:partial_redraw
         def partial_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
