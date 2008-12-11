@@ -1485,7 +1485,19 @@ class leoQtFrame (leoFrame.leoFrame):
             # image = keys.get('image')
 
             b = QtGui.QPushButton(text,self.w)
-            self.w.addWidget(b)
+            b.leo_buttonAction = self.addWidget(b)
+
+            b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+            def delete_callback(b=b,):
+                a = b.leo_buttonAction
+                self.w.removeAction(a)
+                b.leo_buttonAction = None
+                self.deleteButton(b)
+
+            b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+            b.addAction(rb)
+            rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
 
             if command:
                 def button_callback(c=c,command=command):
@@ -1496,7 +1508,7 @@ class leoQtFrame (leoFrame.leoFrame):
                         c.outerUpdate()
                     return val
 
-                QtCore.QObject.connect(b,
+                b.connect(b,
                     QtCore.SIGNAL("clicked()"),
                     button_callback)
 
@@ -1532,8 +1544,7 @@ class leoQtFrame (leoFrame.leoFrame):
         #@+node:ekr.20081121105001.273:deleteButton
         def deleteButton (self,w):
 
-            g.trace(w)
-            # self.w.deleteWidget(w)
+            #g.trace(w, '##')
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
         #@-node:ekr.20081121105001.273:deleteButton
@@ -3442,6 +3453,12 @@ class leoQtTree (leoFrame.leoTree):
         self.c = c
         self.canvas = self # An official ivar used by Leo's core.
         self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
+
+        try:
+            w.headerItem().setHidden(True)
+        except Exception:
+            pass
+
         w.setIconSize(QtCore.QSize(20,11))
         # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
