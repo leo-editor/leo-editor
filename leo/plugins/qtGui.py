@@ -3735,8 +3735,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.417:drawIcon
     def drawIcon (self,p):
 
-        '''Redraw the icon at p.
-        This is called from leoFind.changeSelection.'''
+        '''Redraw the icon at p.'''
 
         w = self.treeWidget
         itemOrTree = self.position2item(p)or w
@@ -3745,6 +3744,15 @@ class leoQtTree (leoFrame.leoTree):
         if icon and item:
             item.setIcon(0,icon)
     #@-node:ekr.20081121105001.417:drawIcon
+    #@+node:ekr.20081211115412.12:drawItemIcon
+    def drawItemIcon (self,p,item):
+
+        '''Set the item's icon to p's icon.'''
+
+        icon = self.getIcon(p)
+        if icon and item:
+            item.setIcon(0,icon)
+    #@-node:ekr.20081211115412.12:drawItemIcon
     #@+node:ekr.20081121105001.418:getIcon & getIconImage
     def getIcon(self,p):
 
@@ -3771,9 +3779,9 @@ class leoQtTree (leoFrame.leoTree):
 
         icon = self.getIconImage(val)
         aList = self.tnode2dataDict.get(p.v.t,[])
-        for p,it in aList:
+        for p,item in aList:
             # g.trace(id(it),p.headString())
-            it.setIcon(0,icon)
+            item.setIcon(0,icon)
     #@-node:ekr.20081121105001.431:updateIcon
     #@-node:ekr.20081209064740.2:Icons
     #@+node:ekr.20081121105001.415:initData
@@ -4270,6 +4278,7 @@ class leoQtTree (leoFrame.leoTree):
                     'item: %s, p: %s' % (item,p))
 
                 self.updateHeadline(p2,item)
+                self.drawItemIcon(p2,item)
                 self.rememberPosition(p2,item)
 
                 # We remember only visible positions,
@@ -4421,7 +4430,7 @@ class leoQtTree (leoFrame.leoTree):
             for item in tail_items:
                 self.deleteItem(parent_item,item)
         #@-node:ekr.20081209103009.10:updateSibs
-        #@+node:ekr.20081208072750.15:updateTree (*** examines all children)
+        #@+node:ekr.20081208072750.15:updateTree
         def updateTree (self,p,parent_item,level=0):
 
             trace = False
@@ -4456,7 +4465,7 @@ class leoQtTree (leoFrame.leoTree):
                     # Disable the expansion indicator.
                     self.deleteChildItems(p,parent_item=sib_item)
                     self.contractItem(sib_item)
-        #@-node:ekr.20081208072750.15:updateTree (*** examines all children)
+        #@-node:ekr.20081208072750.15:updateTree
         #@-others
     #@-node:ekr.20081211060950.2:Partial redraw
     #@-node:ekr.20081121105001.412:Drawing... (qtTree)

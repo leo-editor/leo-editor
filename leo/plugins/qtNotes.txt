@@ -7,6 +7,7 @@
 First:
 - Support hoist in redraw code.
 - setCurrentItem sometimes returns None
+- Update icons in post pass
 
 Next:
 - Can key strokes be handled in log pane?
