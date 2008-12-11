@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2464,6 +2464,7 @@
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+<v t="ekr.20051107115231"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -13019,7 +13020,7 @@ k = c.keyHandler
 trace = False
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
@@ -13042,7 +13043,8 @@ try:
     if trace: g.pr('before',p.headString())
     w.event_generate('&lt;Return&gt;')
     if trace: g.pr('after',p.headString())
-    assert p.headString() == h + paste,'Expected: %s, got %s' % (h + paste,p.headString())
+    assert p.headString() == h + paste,'Expected: %s, got %s' % (
+        h + paste,p.headString())
 finally:
     if 1:
         p.initHeadString(h)
@@ -13054,7 +13056,7 @@ k = c.k
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
+    p = u.findNodeAnywhere(h,breakOnError=True)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
     c.redraw_now() # To make node visible
@@ -13070,7 +13072,9 @@ if k.defaultUnboundKeyAction == 'insert':
         w.event_generate('Y')
         w.event_generate('Z')
         w.event_generate('&lt;Return&gt;')
-        assert p.headString() == h + 'XYZ','oops2: got: %s' % p.headString()
+        assert p.headString() == h + 'XYZ',(
+            'oops2: expected: %s, got: %s' % (
+                h + 'XYZ',p.headString()))
         if g.app.gui.guiName() != 'nullGui':
             assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
                 c.undoer.undoMenuLabel)
@@ -13089,7 +13093,7 @@ if k.defaultUnboundKeyAction == 'insert':
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
@@ -13147,7 +13151,7 @@ finally:
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
@@ -13174,7 +13178,7 @@ k = c.k
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
+    p = u.findNodeAnywhere(h,breakOnError=True)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
     c.redraw_now() # To make node visible
@@ -13198,7 +13202,7 @@ if k.defaultUnboundKeyAction == 'insert':
 <t tx="ekr.20051107115231.24"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocusNow()
@@ -13226,7 +13230,7 @@ finally:
 <t tx="ekr.20051107115231.25">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
@@ -13273,7 +13277,7 @@ finally:
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
@@ -13577,7 +13581,7 @@ if c.k.defaultUnboundKeyAction == 'insert':
 </t>
 <t tx="ekr.20060208072331">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.frame.tree.editLabel(p)
@@ -13607,7 +13611,7 @@ finally:
 <t tx="ekr.20060208072358">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocusNow()
