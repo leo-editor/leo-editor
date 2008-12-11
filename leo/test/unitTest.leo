@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="22" left="353" height="930" width="851"/>
+	<global_window_position top="24" left="428" height="930" width="851"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,1"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2464,7 +2464,11 @@
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+<v t="ekr.20081211124049.1" a="E"><vh>Failed tests</vh>
 <v t="ekr.20051107115231"></v>
+<v t="ekr.20060208072358"></v>
+<v t="ekr.20051109091731"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -13358,6 +13362,7 @@ assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.setBodyString(p,'a')
 c.redraw_now() # To make node visible
+# print ('after redraw_now')
 c.bodyWantsFocusNow()
 n = c.frame.tree.redrawCount
 try:
@@ -22062,5 +22067,6 @@ c.redraw()
 path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
 </t>
+<t tx="ekr.20081211124049.1"></t>
 </tnodes>
 </leo_file>
