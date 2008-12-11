@@ -4420,26 +4420,37 @@ class leoQtTree (leoFrame.leoTree):
             redraw_after_move_right = partial_redraw
             redraw_after_move_up = partial_redraw
         #@-node:ekr.20081208072750.10:partial_redraw
-        #@+node:ekr.20081211060950.18:postPass
+        #@+node:ekr.20081211060950.18:postPass & helpers
+        testing = True
+            # True: enable internal unit tests in postPass and helpers.
+
         def postPass (self):
 
             c = self.c ; p = c.rootPosition()
+
             self.rememberSibs(p,parent_item=None)
 
-        def rememberSibs (self,p,parent_item):
+            if self.testing:
+                c = self.c
+                p = c.rootPosition()
+                while p:
+                    assert p.v in self.vnode2dataDict
+                    assert p.v.t in self.tnode2dataDict
+                    p.moveToVisNext(c)
 
-            testing = True # Enable internal unit tests.
+        #@+node:ekr.20081211172745.10:rememberSibs
+        def rememberSibs (self,p,parent_item):
 
             sib_items = self.childItems(parent_item)
             sibs = [z for z in p.self_and_siblings_iter(copy=True)]
 
-            if testing: assert len(sib_items) == len(sibs), (
+            if self.testing: assert len(sib_items) == len(sibs), (
                 'items: %s, sibs: %s, p: %s' % (
                     len(sib_items),len(sibs),p))
 
             for p2,item in zip(sibs,sib_items):
 
-                if testing: assert self.isValidItem(item),(
+                if self.testing: assert self.isValidItem(item),(
                     'item: %s, p: %s' % (item,p))
 
                 self.updateHeadline(p2,item)
@@ -4450,6 +4461,8 @@ class leoQtTree (leoFrame.leoTree):
                 # regardless of whether all nodes are drawn or not.
                 if p2.hasChildren() and p2.isExpanded():
                     self.rememberSibs(p2.firstChild(),parent_item=item)
+        #@nonl
+        #@-node:ekr.20081211172745.10:rememberSibs
         #@+node:ekr.20081211060950.17:rememberPosition
         def rememberPosition (self,p,item):
 
@@ -4471,7 +4484,7 @@ class leoQtTree (leoFrame.leoTree):
             aList.append(data)
             self.tnode2dataDict[p.v.t] = aList
         #@-node:ekr.20081211060950.17:rememberPosition
-        #@-node:ekr.20081211060950.18:postPass
+        #@-node:ekr.20081211060950.18:postPass & helpers
         #@-others
     #@-node:ekr.20081211060950.2:Partial redraw
     #@-node:ekr.20081121105001.412:Drawing... (qtTree)
@@ -4803,7 +4816,10 @@ class leoQtTree (leoFrame.leoTree):
                 if not p2.isExpanded():
                     p2.expand()
                 c.setCurrentPosition(p2)
-                self.full_redraw()
+                if use_partial_redraw:
+                    self.partial_redraw()
+                else:
+                    self.full_redraw()
             else:
                 g.trace('Error no p2')
 

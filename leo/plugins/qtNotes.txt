@@ -5,7 +5,9 @@
 @nocolor-node
 
 First:
-** Test on Ubunto
+
+- Add traces for focus.
+    - Is the "cute hack" causing problems?
 - Support hoist in redraw code.
 
 Next:

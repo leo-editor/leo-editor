@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1039,10 +1039,9 @@
 </v>
 </v>
 <v t="ekr.20081205085218.1"><vh>@path c:\leo.repo\trunk</vh>
-<v t="ekr.20081205085218.2"><vh>@path leo</vh>
-<v t="ekr.20081205085218.3"><vh>@@auto core\test-file.py</vh></v>
+<v t="ekr.20081205085218.2"><vh>@path leo</vh></v>
 </v>
-</v>
+<v t="ekr.20081205085218.3"><vh>@auto c:\leo.repo\trunk\leo\core\test-file.py</vh></v>
 <v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
 <v t="ekr.20081208105234.1"><vh>Test deleting the last top-level node</vh></v>
 <v t="ekr.20081208105234.2"><vh>To be deleted</vh></v>
@@ -11031,14 +11030,6 @@ aList = g.get_directives_dict_list(p)
 g.es(c.scanAtPathDirectives(aList))</t>
 <t tx="ekr.20081205085218.1"></t>
 <t tx="ekr.20081205085218.2"></t>
-<t tx="ekr.20081205085218.3">d = c.scanAllDirectives(p)
-path = d.get('path')
-print path
-name = p.anyAtFileNodeName()
-print name
-if name:
-    name = g.os_path_finalize_join(path,name)
-    print name</t>
 <t tx="ekr.20081205104320.1"># import os
 tag = '#!/bin/bash\n'
 s = g.getScript(c,p,
