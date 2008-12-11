@@ -11,7 +11,7 @@
 
 safe_mode = False
     # True: Bypass k.masterKeyHandler for problem keys or visible characters.
-use_partial_redraw = False
+use_partial_redraw = True
     # True: update the tree incrementally.
 
 # Define these to suppress pylint warnings...
@@ -3784,8 +3784,8 @@ class leoQtTree (leoFrame.leoTree):
 
     # Warning: invalid items may appear in item2vnodeDict.
 
-    # def isValidItem (self,item):
-        # return item in self.item2vnodeDict
+    def isValidItem (self,item):
+        return item in self.item2vnodeDict
     #@-node:ekr.20081209064740.1:item dict getters
     #@+node:ekr.20081208155215.1:position2item
     def position2item (self,p):
@@ -4067,24 +4067,6 @@ class leoQtTree (leoFrame.leoTree):
 
 
         #@-node:ekr.20081211060950.14:createTree
-        #@+node:ekr.20081211060950.15:forgetItem
-        def forgetItem (self,item):
-
-            '''Remove the item and all its descendant items
-            from the item2vnodeDict.'''
-
-            d = self.item2vnodeDict
-            if item in d:
-                # g.trace(id(item))
-                del d[item]
-            else:
-                self.oops('not in item2vnodeDict: %s' % item)
-
-            child_items = self.childItems(item)
-
-            for child_item in child_items:
-                self.forgetItem(child_item)
-        #@-node:ekr.20081211060950.15:forgetItem
         #@+node:ekr.20081209064740.16:deleteChildItems
         def deleteChildItems(self,p,parent_item):
 
@@ -4146,6 +4128,24 @@ class leoQtTree (leoFrame.leoTree):
             else:
                 self.oops('bad item',n,item)
         #@-node:ekr.20081209103009.13:deleteNthItem
+        #@+node:ekr.20081211060950.15:forgetItem
+        def forgetItem (self,item):
+
+            '''Remove the item and all its descendant items
+            from the item2vnodeDict.'''
+
+            d = self.item2vnodeDict
+            if item in d:
+                # g.trace(id(item))
+                del d[item]
+            else:
+                self.oops('not in item2vnodeDict: %s' % item)
+
+            child_items = self.childItems(item)
+
+            for child_item in child_items:
+                self.forgetItem(child_item)
+        #@-node:ekr.20081211060950.15:forgetItem
         #@+node:ekr.20081209103009.17:insertNthChild
         def insertNthChild(self,p,n,parent_item,hidden=False):
 
@@ -4197,14 +4197,14 @@ class leoQtTree (leoFrame.leoTree):
                 self.initData()
                 p = c.rootPosition()
                 self.updateTree(p,parent_item=None)
-                self.rememberAllPositions()
-
+                self.postPass()
             finally:
                 if not self.selecting:
                     item = self.setCurrentItem()
                     if p and not item and self.redrawCount > 1:
-                        g.trace('Error: no current item: %s' % (
-                            p.headString()))
+                        if not g.app.unitTesting:
+                            g.trace('Error: no current item: %s' % (
+                                p.headString()))
 
                 if 0: # Very slow for unit tests.
                     w.repaint()
@@ -4230,22 +4230,29 @@ class leoQtTree (leoFrame.leoTree):
             redraw_after_move_right = partial_redraw
             redraw_after_move_up = partial_redraw
         #@-node:ekr.20081208072750.10:partial_redraw
-        #@+node:ekr.20081211060950.18:rememberAllPositions & helper (***)
-        def rememberAllPositions (self):
+        #@+node:ekr.20081211060950.18:postPass
+        def postPass (self):
 
             c = self.c ; p = c.rootPosition()
             self.rememberSibs(p,parent_item=None)
 
         def rememberSibs (self,p,parent_item):
 
+            testing = True # Enable internal unit tests.
+
             sib_items = self.childItems(parent_item)
             sibs = [z for z in p.self_and_siblings_iter(copy=True)]
 
-            # A crucial constraint.
-            assert len(sib_items) == len(sibs), 'items: %s, sibs: %s, p: %s' % (
-                len(sib_items),len(sibs),p)
+            if testing: assert len(sib_items) == len(sibs), (
+                'items: %s, sibs: %s, p: %s' % (
+                    len(sib_items),len(sibs),p))
 
             for p2,item in zip(sibs,sib_items):
+
+                if testing: assert self.isValidItem(item),(
+                    'item: %s, p: %s' % (item,p))
+
+                self.updateHeadline(p2,item)
                 self.rememberPosition(p2,item)
 
                 # We remember only visible positions,
@@ -4273,7 +4280,7 @@ class leoQtTree (leoFrame.leoTree):
             aList.append(data)
             self.tnode2dataDict[p.v.t] = aList
         #@-node:ekr.20081211060950.17:rememberPosition
-        #@-node:ekr.20081211060950.18:rememberAllPositions & helper (***)
+        #@-node:ekr.20081211060950.18:postPass
         #@+node:ekr.20081211060950.16:rememberItem
         def rememberItem (self,p,item):
 
@@ -4285,7 +4292,7 @@ class leoQtTree (leoFrame.leoTree):
         #@+node:ekr.20081209103009.18:replaceNthItem
         def replaceNthItem(self,p,n,parent_item,item,hidden=False):
 
-            trace = True
+            trace = False
 
             if trace and self.redrawCount > 1:
                 g.trace('%3s' % (n),p,g.callers(4))
@@ -4322,12 +4329,15 @@ class leoQtTree (leoFrame.leoTree):
                     w.takeTopLevelItem(n)
                     w.insertTopLevelItem(n,child2)
                     w.insertTopLevelItem(n+1,child1)
-                # Update the dicts for p, not p.next()
-                ### self.updateDicts(p,parent_item,child2)
             else:
                 self.oops('bad n: %s,len(child_items): %s' % (
                     n,len(child_items)))
         #@-node:ekr.20081209103009.19:swapNthItems
+        #@+node:ekr.20081211060950.19:updateHeadline
+        def updateHeadline (self,p,item):
+
+            item.setText(0,p.headString())
+        #@-node:ekr.20081211060950.19:updateHeadline
         #@+node:ekr.20081209103009.12:updateNthSib
         def updateNthSib(self,p,n,sibs,parent_item,hidden=False):
 
@@ -4346,8 +4356,6 @@ class leoQtTree (leoFrame.leoTree):
             next_p_v = next_p and next_p.v
 
             if item_v == p.v: # An exact match.
-                # Update the dicts for this one node.
-                ### self.updateDicts(p,parent_item,item)
                 return
 
             if n + 1 < len(sibs) and n + 1 < len(sib_items):
@@ -4358,7 +4366,6 @@ class leoQtTree (leoFrame.leoTree):
                 if p.v == next_item_v and next_p.v == item_v:
                     self.swapNthItems(p,n,parent_item)
                 elif p.v == next_item_v:
-                    g.trace(self.item2vnode(sib_items[n]))
                     # Note: no position exists for the deleted node
                     self.deleteNthItem(n,parent_item,item)
                 elif item_v == next_p_v:
@@ -5021,7 +5028,7 @@ class leoQtTree (leoFrame.leoTree):
 
         This is called from the undo/redo logic to change the text before redrawing.'''
 
-        g.trace(p,s)
+        # g.trace(p,s)
 
         # w = self.edit_widget(p)
         # if w:

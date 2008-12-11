@@ -6,12 +6,7 @@
 
 First:
 - Support hoist in redraw code.
-- Optimize tree updates.
-    * Make sure item2vodeDict is always correct.
-        - Never delete it.
-        - Update it in low-level methods.
-            - Split updateDicts into rememberItem and rememberPosition.
-        - The vnode of an item never changes.
+- setCurrentItem sometimes returns None
 
 Next:
 - Can key strokes be handled in log pane?

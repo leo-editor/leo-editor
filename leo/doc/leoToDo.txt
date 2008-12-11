@@ -811,6 +811,12 @@ TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 #@-node:ekr.20080922115725.1:Finish @shadow
 #@-node:ekr.20080915112342.1:First
 #@+node:ekr.20081202093528.1:New stuff
+#@+node:ekr.20081211085314.1:Smart Alt-RtArrow/Alt-LtArrow keys
+@nocolor-node
+
+Move up or down if can't move left or right.
+#@nonl
+#@-node:ekr.20081211085314.1:Smart Alt-RtArrow/Alt-LtArrow keys
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
 
