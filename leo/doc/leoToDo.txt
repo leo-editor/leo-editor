@@ -1317,6 +1317,33 @@ can not open: '@file /home/user/a_directory/check-derived-file'
 Clearly the file is not named 'check-derived-file', so there is a bug somewhere.
 #@nonl
 #@-node:ekr.20081208102356.2:Fix check-leo-outline bug
+#@+node:ekr.20081212080741.1:Implement workbook (and @cl?) in Leo's core
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/684797be53127484#
+#@nonl
+#@-node:ekr.20081212080741.1:Implement workbook (and @cl?) in Leo's core
+#@+node:ekr.20081212080741.2:Call docutils in a different way?
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f9d2fdfe38a265fe/a496cec1afabce36?lnk=gst&q=rst3#a496cec1afabce36
+
+The docutils folks responded to an earlier question of mine by suggesting that we needed to be calling docutils in a different way.   I've been trying to work on it, but don't have a working version yet:
+
+Set the "traceback" setting on
+(http://docutils.sourceforge.net/docs/user/config.html#traceback).
+Also potentially useful are the "report_level" and "halt_level"
+settings, to control what gets reported and what triggers an
+exception.
+
+BTW, I recommend using a publisher convenience function; see
+http://docutils.sourceforge.net/docs/api/publisher.html
+You wouldn't have had this problem with them.
+
+Also, it's much better to pass in settings with
+settings_overrides={'stylesheet': path} (not argv=['--stylesheet=%s' %
+path]). See http://docutils.sourceforge.net/docs/api/runtime-settings.html
+#@-node:ekr.20081212080741.2:Call docutils in a different way?
 #@-node:ekr.20081202093528.1:New stuff
 #@+node:ekr.20080517102922.1:Files stuff 8
 #@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files

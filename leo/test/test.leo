@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="14"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1045,6 +1045,7 @@
 <v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
 <v t="ekr.20081208105234.1"><vh>Test deleting the last top-level node</vh></v>
 <v t="ekr.20081208105234.2"><vh>To be deleted</vh></v>
+<v t="ekr.20081212131716.1"><vh>importing leoFindScript</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11062,5 +11063,9 @@ if 0:
     c.deleteOutline()
 </t>
 <t tx="ekr.20081208105234.2"></t>
+<t tx="ekr.20081212131716.1">import leo.scripts.leoFindScript as leoFindScript
+# print leoFindScript
+
+print g.listToString(dir(leoFindScript))</t>
 </tnodes>
 </leo_file>

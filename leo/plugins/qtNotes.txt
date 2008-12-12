@@ -8,9 +8,15 @@ First:
 
 - Add traces for focus.
     - Is the "cute hack" causing problems?
+
 - Support hoist in redraw code.
 
+- Change background color of body pane depending on focus.
+  Set focus in/out events.
+http://groups.google.com/group/leo-editor/browse_thread/thread/1cce885a697d0236/5aea5d0587b47b92?lnk=gst&q=command+and+insert#5aea5d0587b47b92
+
 Next:
+- DnD nodes.
 - Can key strokes be handled in log pane?
 - Disabling searches of body pane can cause hard crashes.
     - initInteractiveCommands expects c.edit_widget(p)to exist.
