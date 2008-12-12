@@ -1529,7 +1529,7 @@ class leoQtFrame (leoFrame.leoFrame):
         #@+node:ekr.20081121105001.271:addWidget
         def addWidget (self,w):
 
-            self.w.addWidget(w)
+            return self.w.addWidget(w)
         #@-node:ekr.20081121105001.271:addWidget
         #@+node:ekr.20081121105001.272:clear
         def clear(self):
