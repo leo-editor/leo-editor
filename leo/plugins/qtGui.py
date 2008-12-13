@@ -3903,7 +3903,7 @@ class leoQtTree (leoFrame.leoTree):
 
             '''Redraw all visible nodes of the tree'''
 
-            trace = True; verbose = False
+            trace = False; verbose = False
             c = self.c ; w = self.treeWidget
             if not w: return
             if self.redrawing:
