@@ -3479,17 +3479,9 @@ class leoQtTree (leoFrame.leoTree):
         # Debugging.
         self.nodeDrawCount = 0
 
-        # The following *can* be used by the incremental drawing code.
-
-        # self.item2tnodeDict = {}
+        # Associating items with vnodes...
         self.item2vnodeDict = {}
-
-        # Incremental drawing code must not use postions!
-        # These dicts are used only by event handlers.
-
-        self.item2positionDict = {} # Values are positions
-        self.tnode2dataDict = {} # Values are lists of (p,it)
-        self.vnode2dataDict = {} # Values are lists of (p,it)
+        self.vnode2itemsDict = {} # values are lists of items.
 
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
@@ -3777,42 +3769,21 @@ class leoQtTree (leoFrame.leoTree):
         if p.v.iconVal == val: return
 
         icon = self.getIconImage(val)
-        aList = self.tnode2dataDict.get(p.v.t,[])
-        for p,item in aList:
-            # g.trace(id(it),p.headString())
+
+        items = self.vnode2items(p.v)
+        for item in items:
             item.setIcon(0,icon)
     #@-node:ekr.20081121105001.431:updateIcon
     #@-node:ekr.20081209064740.2:Icons
     #@+node:ekr.20081121105001.415:initData
     def initData (self):
 
-        # Important: do not clear item2vnodeDict here!
-
-        # Incremental drawing code must not use postions!
-        # These dicts are used only by event handlers.
-
-        self.tnode2dataDict = {} # Values are lists of (p,it).
-        self.vnode2dataDict = {} # Values are lists of (p,it).
-        self.item2positionDict = {} # Values are copies of positions.
+        # Important: do not clear item2vnodeDict or vnode2itemsDict here!
 
         self._editWidgetPosition = None
         self._editWidget = None
         self._editWidgetWrapper = None
     #@-node:ekr.20081121105001.415:initData
-    #@+node:ekr.20081209064740.1:item dict getters
-    if 0: # item2position is now a low-level helper.
-
-        def item2position (self,item):
-            return self.item2positionDict.get(item)
-
-    def item2vnode (self,item):
-        return self.item2vnodeDict.get(item)
-
-    # Warning: invalid items may appear in item2vnodeDict.
-
-    def isValidItem (self,item):
-        return item in self.item2vnodeDict
-    #@-node:ekr.20081209064740.1:item dict getters
     #@-node:ekr.20081209210556.1:Common drawing code
     #@+node:ekr.20081213074504.14:low-level helpers
     #@+node:ekr.20081212123717.23:childIndexOfItem (test)
@@ -3990,8 +3961,14 @@ class leoQtTree (leoFrame.leoTree):
         from the item2vnodeDict.'''
 
         d = self.item2vnodeDict
+
         if item in d:
-            # g.trace(id(item))
+            v = d.get(item)
+            aList = vnode2itemsDict.get(v)
+            if item in aList:
+                aList.remove(item)
+            else:
+                self.oops('not in vnode2itemsDict: %s' % item)
             del d[item]
         else:
             self.oops('not in item2vnodeDict: %s' % item)
@@ -4001,6 +3978,16 @@ class leoQtTree (leoFrame.leoTree):
         for child_item in child_items:
             self.forgetItem(child_item)
     #@-node:ekr.20081211060950.15:forgetItem
+    #@+node:ekr.20081209064740.1:item dict getters
+    def item2vnode (self,item):
+        return self.item2vnodeDict.get(item)
+
+    def vnode2items(self,v):
+        return self.vnode2itemsDict.get(v,[])
+
+    def isValidItem (self,item):
+        return item in self.item2vnodeDict
+    #@-node:ekr.20081209064740.1:item dict getters
     #@+node:ekr.20081212123717.24:item2position (test)
     def item2position (self,item):
 
@@ -4019,6 +4006,10 @@ class leoQtTree (leoFrame.leoTree):
             item = item.parent()
 
         p = leoNodes.position(v,childIndex,stack)
+
+        if not p:
+            self.oops('p: %s, v: %s, stack: %s' % (
+                p,v,childIndex,stack))
 
         return p
     #@-node:ekr.20081212123717.24:item2position (test)
@@ -4050,48 +4041,39 @@ class leoQtTree (leoFrame.leoTree):
         return n
     #@-node:ekr.20081209103009.15:numberofChildItems
     #@+node:ekr.20081213055214.10:position2item (test)
-    if 1:
-        def position2item (self,p):
+    def position2item (self,p):
 
-            '''Return the unique tree item associated with position p.'''
+        '''Return the unique tree item associated with position p.'''
 
-            parent_item = None
+        parent_item = None
 
-            for v,n in p.stack:
-                parent_item = self.nthChildItem(n,parent_item)
+        for v,n in p.stack:
+            parent_item = self.nthChildItem(n,parent_item)
 
-            item = self.nthChildItem(p.childIndex(),parent_item)
+        item = self.nthChildItem(p.childIndex(),parent_item)
 
-            return item
-
-    else: # old code, using the deprecated vnode2dataDict.
-
-        def position2item (self,p):
-            '''Return the unique item associated with position p.'''
-            aList = self.vnode2dataDict.get(p.v,[])
-            for p2,item2 in aList:
-                if p == p2:
-                    item = item2 ; break
-            else:
-                item = None
-            return item
+        return item
     #@-node:ekr.20081213055214.10:position2item (test)
-    #@+node:ekr.20081211060950.16:rememberItem
+    #@+node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
     def rememberItem (self,p,item):
 
-        # Important: this dict is *not* cleared by initData.
-        # Entries in this dict are persistent.
+        rememberVnodeItemDict(p.v)
 
-        self.item2vnodeDict[item] = p.v
-    #@-node:ekr.20081211060950.16:rememberItem
-    #@+node:ekr.20081212123717.15:rememberVnodeItem (done)
-    def rememberItem (self,v,item):
+    def rememberVnodeItem (self,v,item):
 
-        # Important: this dict is *not* cleared by initData.
-        # Entries in this dict are persistent.
-
+        # Update item2vnodeDict.
         self.item2vnodeDict[item] = v
-    #@-node:ekr.20081212123717.15:rememberVnodeItem (done)
+
+        # Update vnode2itemsDict.
+        d = vnode2itemsDict
+        aList = d.get(v)
+
+        if item in aList:
+            self.oops('item already in list: %s, %s' % (item,aList))
+        else:
+            aList.append(item)
+            d[v] = aList
+    #@-node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
     #@+node:ekr.20081209103009.19:swapNthItems
     def swapNthItems(self,n,parent_item):
 
@@ -4171,7 +4153,8 @@ class leoQtTree (leoFrame.leoTree):
                 if icon: item.setIcon(0,icon)
 
             if not dummy:
-                self.updateDicts(p,parent_item,item)
+                self.item2vnodeDict[item] = p.v
+                # self.updateDicts(p,parent_item,item)
 
             return item
         #@-node:ekr.20081121105001.164:drawNode
@@ -4217,17 +4200,7 @@ class leoQtTree (leoFrame.leoTree):
                     p.moveToNext()
             finally:
                 if not self.selecting:
-                    item = self.setCurrentItem()
-                    p = c.currentPosition()
-                    if not item and p and self.redrawCount > 1:
-                        if not g.app.unitTesting:
-                            g.trace('Error: no current item for: %s' % p)
-
-                if 0: # This causes horizontal scrolling on Ubuntu.
-                    item = w.currentItem()
-                    if item:
-                        w.scrollToItem(item,
-                            QtGui.QAbstractItemView.PositionAtCenter)
+                    self.setCurrentItem()
 
                 # Necessary to get the tree drawn initially.
                 w.repaint()
@@ -4255,32 +4228,6 @@ class leoQtTree (leoFrame.leoTree):
             redraw_after_move_right = full_redraw
             redraw_after_move_up = full_redraw
         #@-node:ekr.20081121105001.414:full_redraw
-        #@+node:ekr.20081209210556.2:updateDicts
-        def updateDicts (self,p,parent_item,item):
-
-            # Important: the item2vnodeDict is *not* cleared by initData.
-            # Entries in this dict are persistent.
-
-            self.item2vnodeDict[item] = p.v
-
-            # Important: the following dicts are used only by event handlers.
-            # They are *not* to be used by the incremental drawing code!
-
-            # Remember the position, vnode and tnode of each item.
-            self.item2positionDict[item] = p.copy()
-
-            # Remember list of all (p,item) for each v.
-            aList = self.vnode2dataDict.get(p.v,[])
-            data = p.copy(),item
-            aList.append(data)
-            self.vnode2dataDict[p.v] = aList
-
-            # Remember list all (p,item) for each t.
-            aList = self.tnode2dataDict.get(p.v.t,[])
-            data = p.copy(),item
-            aList.append(data)
-            self.tnode2dataDict[p.v.t] = aList
-        #@-node:ekr.20081209210556.2:updateDicts
         #@-others
     #@-node:ekr.20081211060950.1:Full redraw
     #@+node:ekr.20081211060950.2:Partial redraw
@@ -4560,14 +4507,6 @@ class leoQtTree (leoFrame.leoTree):
 
             self.rememberSibs(p,parent_item=None)
 
-            if self.testing:
-                c = self.c
-                p = c.rootPosition()
-                while p:
-                    assert p.v in self.vnode2dataDict
-                    assert p.v.t in self.tnode2dataDict
-                    p.moveToVisNext(c)
-
         #@+node:ekr.20081211172745.10:rememberSibs
         def rememberSibs (self,p,parent_item):
 
@@ -4593,27 +4532,6 @@ class leoQtTree (leoFrame.leoTree):
                     self.rememberSibs(p2.firstChild(),parent_item=item)
         #@nonl
         #@-node:ekr.20081211172745.10:rememberSibs
-        #@+node:ekr.20081211060950.17:rememberPosition
-        def rememberPosition (self,p,item):
-
-            # The following dicts are used only by event handlers.
-            # They are *not* to be used by the incremental drawing code!
-
-            # Remember the position, vnode and tnode of each item.
-            self.item2positionDict[item] = p.copy()
-
-            # Remember list of all (p,item) for each v.
-            aList = self.vnode2dataDict.get(p.v,[])
-            data = p.copy(),item
-            aList.append(data)
-            self.vnode2dataDict[p.v] = aList
-
-            # Remember list all (p,item) for each t.
-            aList = self.tnode2dataDict.get(p.v.t,[])
-            data = p.copy(),item
-            aList.append(data)
-            self.tnode2dataDict[p.v.t] = aList
-        #@-node:ekr.20081211060950.17:rememberPosition
         #@-node:ekr.20081211060950.18:postPass & helpers
         #@-others
     #@-node:ekr.20081211060950.2:Partial redraw
@@ -4942,7 +4860,7 @@ class leoQtTree (leoFrame.leoTree):
         e = w.itemWidget(item,0)
         if not e:
             return g.trace('*** no e')
-        p = self.item2positionDict.get(item)
+        p = self.item2position(item)
         if not p:
             return g.trace('*** no p')
         # Hook up the widget to Leo's core.
@@ -4972,7 +4890,7 @@ class leoQtTree (leoFrame.leoTree):
 
         item = w.currentItem()
         if trace and verbose: g.trace('item',item)
-        p = self.item2positionDict.get(item)
+        p = self.item2position(item)
         if p:
             if trace: g.trace(p and p.headString())
             c.frame.tree.select(p) # The crucial hook.
@@ -5025,7 +4943,7 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing:
             return
 
-        p = self.item2positionDict.get(item)
+        p = self.item2position(item)
         if p:
             # so far, col is always 0
             s = g.app.gui.toUnicode(item.text(col))
@@ -5057,7 +4975,7 @@ class leoQtTree (leoFrame.leoTree):
 
         if trace: g.trace(p.headString() or "<no p>",g.callers(4))
 
-        p2 = self.item2positionDict.get(item)
+        p2 = self.item2position(item)
         if p2:
             p2.contract()
             c.setCurrentPosition(p2)
@@ -5093,7 +5011,7 @@ class leoQtTree (leoFrame.leoTree):
 
         try:
             self.expanding = True
-            p2 = self.item2positionDict.get(item)
+            p2 = self.item2position(item)
             if p2:
                 if trace: g.trace(p2)
                 if not p2.isExpanded():
@@ -5378,7 +5296,8 @@ class leoQtTree (leoFrame.leoTree):
 
         """Start editing p's headline."""
 
-        c = self.c ; trace = False ; verbose = False
+        trace = False ; verbose = False
+        c = self.c ; w = self.treeWidget
 
         if self.redrawing:
             if trace and verbose: g.trace('redrawing')
@@ -5390,12 +5309,7 @@ class leoQtTree (leoFrame.leoTree):
 
         if trace: g.trace('***',p and p.headString(),g.callers(4))
 
-        w = self.treeWidget
-        data = self.vnode2dataDict.get(p.v)
-        if not data:
-            if trace and verbose:
-                g.trace('No data: redrawing if possible')
-            c.outerUpdate() # Do any scheduled redraw.
+        c.outerUpdate() # Do any scheduled redraw.
 
         item = self.position2item(p)
 

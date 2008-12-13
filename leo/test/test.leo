@@ -9,8 +9,8 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" a="E" str_leo_pos="15,1"><vh>Startup</vh>
-<v t="ekr.20070529172620" a="E"><vh>@chapters</vh>
+<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
+<v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
@@ -1041,12 +1041,10 @@
 <v t="ekr.20081205085218.1"><vh>@path c:\leo.repo\trunk</vh>
 <v t="ekr.20081205085218.2"><vh>@path leo</vh></v>
 </v>
-<v t="ekr.20081205085218.3" a="E"><vh>@auto c:\leo.repo\trunk\leo\core\test-file.py</vh></v>
+<v t="ekr.20081205085218.3"><vh>@auto c:\leo.repo\trunk\leo\core\test-file.py</vh></v>
 <v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
-<v t="ekr.20081208105234.1"><vh>Test deleting the last top-level node</vh></v>
 <v t="ekr.20081208105234.2"><vh>To be deleted</vh></v>
-<v t="ekr.20081212131716.1"><vh>importing leoFindScript</vh></v>
-<v t="ekr.20081213091503.1" a="E"><vh>Unit tests</vh>
+<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
 <v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
 <v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
 </v>
@@ -11074,31 +11072,7 @@ if not s.startswith(tag):
 print s
 os.system(s)
 </t>
-<t tx="ekr.20081208105234.1">w = c.frame.tree.treeWidget
-
-n = w.topLevelItemCount()
-n = max(0,n-1)
-
-item = w.topLevelItem(n)
-
-print n,item
-
-sibs = [z for z in c.rootPosition().self_and_siblings_iter(copy=True)]
-print '\n'.join([z.headString() for z in sibs])
-
-if 0: # works, but of course does not update Leo's nodes.
-    c.requestRedrawFlag = False
-    w.takeTopLevelItem(n)
-    w.repaint()
-if 0:
-    c.selectPosition(sibs[-1])
-    c.deleteOutline()
-</t>
 <t tx="ekr.20081208105234.2"></t>
-<t tx="ekr.20081212131716.1">import leo.scripts.leoFindScript as leoFindScript
-# print leoFindScript
-
-print g.listToString(dir(leoFindScript))</t>
 <t tx="ekr.20081213091503.1">if 0: # Prevent the unit test code from being executed on startup.
     @others</t>
 <t tx="ekr.20081213091503.2">p = c.rootPosition()

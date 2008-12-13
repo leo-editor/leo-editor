@@ -321,6 +321,64 @@ def createDummyChildItem (self,p,parent_item):
         self.drawNode(p2,parent_item,dummy=True)
 
 #@-node:ekr.20081209064740.17:createDummyChildItem (not used)
+#@+node:ekr.20081211060950.17:rememberPosition
+def rememberPosition (self,p,item):
+
+    # The following dicts are used only by event handlers.
+    # They are *not* to be used by the incremental drawing code!
+
+    # Remember the position, vnode and tnode of each item.
+    self.item2positionDict[item] = p.copy()
+
+    # Remember list of all (p,item) for each v.
+    aList = self.vnode2dataDict.get(p.v,[])
+    data = p.copy(),item
+    aList.append(data)
+    self.vnode2dataDict[p.v] = aList
+
+    # Remember list all (p,item) for each t.
+    aList = self.tnode2dataDict.get(p.v.t,[])
+    data = p.copy(),item
+    aList.append(data)
+    self.tnode2dataDict[p.v.t] = aList
+#@-node:ekr.20081211060950.17:rememberPosition
+#@+node:ekr.20081209210556.2:updateDicts (was used in full_redraw)
+def updateDicts (self,p,parent_item,item):
+
+    # Important: the item2vnodeDict is *not* cleared by initData.
+    # Entries in this dict are persistent.
+
+    self.item2vnodeDict[item] = p.v
+
+    # Important: the following dicts are used only by event handlers.
+    # They are *not* to be used by the incremental drawing code!
+
+    # Remember the position, vnode and tnode of each item.
+    self.item2positionDict[item] = p.copy()
+
+    # Remember list of all (p,item) for each v.
+    aList = self.vnode2dataDict.get(p.v,[])
+    data = p.copy(),item
+    aList.append(data)
+    self.vnode2dataDict[p.v] = aList
+
+    # Remember list all (p,item) for each t.
+    aList = self.tnode2dataDict.get(p.v.t,[])
+    data = p.copy(),item
+    aList.append(data)
+    self.tnode2dataDict[p.v.t] = aList
+#@-node:ekr.20081209210556.2:updateDicts (was used in full_redraw)
+#@+node:ekr.20081213093110.17:position2item (old)
+def position2item (self,p):
+    '''Return the unique item associated with position p.'''
+    aList = self.vnode2dataDict.get(p.v,[])
+    for p2,item2 in aList:
+        if p == p2:
+            item = item2 ; break
+    else:
+        item = None
+    return item
+#@-node:ekr.20081213093110.17:position2item (old)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
