@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -305,6 +305,7 @@
 </v>
 </v>
 <v t="ekr.20080929112400.1"><vh>qt proto</vh></v>
+<v t="ekr.20081202095209.1"><vh>Put minibuffer in a toolbar</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
@@ -372,8 +373,8 @@
 <v t="ekr.20081006070847.2"><vh>path convenience methods</vh></v>
 <v t="ekr.20081025105942.1"><vh>@button dir</vh></v>
 <v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
-</v>
 <v t="ekr.20081124102740.1"><vh>Accented characters</vh></v>
+</v>
 <v t="edward.20081127113749.1"><vh>@commands</vh>
 <v t="edward.20081127113749.2"><vh>@command complete-previous</vh>
 <v t="edward.20081127113749.3"><vh>WordCompleter</vh>
@@ -400,8 +401,6 @@
 <v t="edward.20081127113749.15"></v>
 </v>
 </v>
-<v t="ekr.20081202095209.1"><vh>Put minibuffer in a toolbar</vh></v>
-<v t="ekr.20071129103842"></v>
 <v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
 <v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
 <v t="ekr.20081202141210.1"><vh>@@auto\pythoscope\astvisitor.py</vh>
@@ -1043,7 +1042,6 @@
 </v>
 <v t="ekr.20081205085218.3"><vh>@auto c:\leo.repo\trunk\leo\core\test-file.py</vh></v>
 <v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
-<v t="ekr.20081208105234.2"><vh>To be deleted</vh></v>
 <v t="ekr.20081213091503.1"><vh>Unit tests</vh>
 <v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
 <v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
@@ -11072,7 +11070,6 @@ if not s.startswith(tag):
 print s
 os.system(s)
 </t>
-<t tx="ekr.20081208105234.2"></t>
 <t tx="ekr.20081213091503.1">if 0: # Prevent the unit test code from being executed on startup.
     @others</t>
 <t tx="ekr.20081213091503.2">p = c.rootPosition()

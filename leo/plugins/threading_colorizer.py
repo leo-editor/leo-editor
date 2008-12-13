@@ -163,7 +163,8 @@ default_font_dict = {
 #@+node:ekr.20071010193720.7:init
 def init ():
 
-    ok = g.app.gui.guiName() in ('qt','tkinter')
+    # The qt gui plugin now does colorizing.
+    ok = g.app.gui.guiName() in ('tkinter',)
 
     if ok:
 
