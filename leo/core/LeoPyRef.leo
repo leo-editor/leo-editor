@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="34" left="360" height="980" width="912"/>
+	<global_window_position top="6" left="0" height="985" width="1680"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="1,2,7,1"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
@@ -66,10 +66,12 @@
 <v t="ekr.20080412053100.4"><vh>@bool fixedWindow = False</vh></v>
 </v>
 </v>
-<v t="EKR.20040430162943"><vh>Notes</vh>
+<v t="EKR.20040430162943" a="E"><vh>Notes</vh>
 <v t="ekr.20060217111834"><vh>@url http://docs.python.org/lib/re-syntax.html</vh></v>
 <v t="ekr.20060908104329"><vh>@url file:c:/prog/tigris-cvs/leo/doc/leoDocs.leo#Users Guide</vh></v>
-<v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329" a="E"
+marks="ekr.20031218072017.2606,"
+expanded="ekr.20031218072017.365,"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
 <v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d71002855013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c680675735509302e302e342e342e30710d7d710e5808000000616e6e6f74617465710f7d711073752e"
@@ -80,16 +82,17 @@ marks="ekr.20080904071003.14,ekr.20031218072017.1623,ekr.20031218072017.1934,ekr
 marks="ekr.20080406075855.2,ekr.20080904071003.14,ekr.20080922115725.1,ekr.20031218072017.1623,ekr.20031218072017.2836,ekr.20040803072955.16,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406"><vh>Code</vh>
+<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
 <v t="ekr.20081013084332.1"><vh>  Leo's MVC architecture</vh></v>
 <v t="ekr.20040629121554.1"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
 <v t="ekr.20031218072017.2606"><vh>&lt;&lt; Import pychecker &gt;&gt;</vh></v>
-<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
+<v t="ekr.20031218072017.2604" a="E"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
-<v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
+<v t="ekr.20031218072017.2794" a="E"
+expanded="ekr.20031218072017.2796,ekr.20031218072017.1605,ekr.20031218072017.371,ekr.20031218072017.1880,ekr.20031218072017.1602,"><vh>@thin leoColor.py</vh></v>
 <v t="ekr.20031218072017.2810"
 marks="ekr.20031218072017.1623,ekr.20031218072017.2836,ekr.20080904071003.14,ekr.20031218072017.1704,ekr.20031218072017.1705,ekr.20031218072017.1761,ekr.20031218072017.1762,ekr.20031218072017.2907,ekr.20040930064232.1,ekr.20031218072017.2924,ekr.20031218072017.2925,ekr.20031218072017.2926,ekr.20031218072017.2927,ekr.20031218072017.2928,ekr.20031218072017.2929,ekr.20031218072017.2930,ekr.20031218072017.1771,ekr.20031218072017.1628,ekr.20031218072017.1627,ekr.20070226113916,ekr.20080514131122.20,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
@@ -163,6 +166,8 @@ c.frame.log             The log pane.
 c.frame.tree            The tree pane.</t>
 <t tx="ekr.20031218072017.2604"></t>
 <t tx="ekr.20031218072017.2606">@color
+
+# This used to appear in runLeo.py
 
 # See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.
 
