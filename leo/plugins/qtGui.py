@@ -3792,7 +3792,7 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081121105001.415:initData
     #@-node:ekr.20081209210556.1:Common drawing code
     #@+node:ekr.20081213074504.14:low-level helpers
-    #@+node:ekr.20081212123717.23:childIndexOfItem (test)
+    #@+node:ekr.20081212123717.23:childIndexOfItem
     def childIndexOfItem (self,item):
 
         parent = item.parent()
@@ -3805,7 +3805,7 @@ class leoQtTree (leoFrame.leoTree):
 
         return n
 
-    #@-node:ekr.20081212123717.23:childIndexOfItem (test)
+    #@-node:ekr.20081212123717.23:childIndexOfItem
     #@+node:ekr.20081208072750.16:childItems
     def childItems (self,parent_item):
 
@@ -3885,7 +3885,7 @@ class leoQtTree (leoFrame.leoTree):
 
         return item
     #@-node:ekr.20081209211810.2:createNthChildItem
-    #@+node:ekr.20081212123717.18:createNthVnodeChildItem (test)
+    #@+node:ekr.20081212123717.18:createNthVnodeChildItem
     def createNthChildItem(self,v,n,parent_item):
 
         '''Insert an item for v as the n'th child of parent_item.'''
@@ -3917,8 +3917,8 @@ class leoQtTree (leoFrame.leoTree):
         self.rememberVnodeItem(v,item)
 
         return item
-    #@-node:ekr.20081212123717.18:createNthVnodeChildItem (test)
-    #@+node:ekr.20081212123717.14:createVnodeItem (test)
+    #@-node:ekr.20081212123717.18:createNthVnodeChildItem
+    #@+node:ekr.20081212123717.14:createVnodeItem
     def createVnodeItem (self,v,parent_item):
 
         c = self.c ; w = self.treeWidget
@@ -3937,7 +3937,7 @@ class leoQtTree (leoFrame.leoTree):
         self.rememberVnodeItem(v,item)
 
         return item
-    #@-node:ekr.20081212123717.14:createVnodeItem (test)
+    #@-node:ekr.20081212123717.14:createVnodeItem
     #@+node:ekr.20081208072750.18:deleteItem
     def deleteItem (self,parent_item,item):
 
@@ -3995,32 +3995,7 @@ class leoQtTree (leoFrame.leoTree):
     def isValidItem (self,item):
         return item in self.item2vnodeDict
     #@-node:ekr.20081209064740.1:item dict getters
-    #@+node:ekr.20081212123717.24:item2position (test)
-    def item2position (self,item):
-
-        '''Reconstitute a position given an item.'''
-
-        stack = []
-        childIndex = self.childIndexOfItem(item)
-        v = self.item2vnode(item)
-
-        item = item.parent()
-        while item:
-            n2 = self.childIndexOfItem(item)
-            v2 = self.item2vnode(item)
-            data = v2,n2
-            stack.insert(0,data)
-            item = item.parent()
-
-        p = leoNodes.position(v,childIndex,stack)
-
-        if not p:
-            self.oops('p: %s, v: %s, stack: %s' % (
-                p,v,childIndex,stack))
-
-        return p
-    #@-node:ekr.20081212123717.24:item2position (test)
-    #@+node:ekr.20081213055214.11:nthChildItem (test)
+    #@+node:ekr.20081213055214.11:nthChildItem
     def nthChildItem (self,n,parent_item):
 
         children = self.childItems(parent_item)
@@ -4032,7 +4007,7 @@ class leoQtTree (leoFrame.leoTree):
             item = None
 
         return item
-    #@-node:ekr.20081213055214.11:nthChildItem (test)
+    #@-node:ekr.20081213055214.11:nthChildItem
     #@+node:ekr.20081209103009.15:numberofChildItems
     def numberOfChildItems (self,parent_item):
 
@@ -4047,20 +4022,6 @@ class leoQtTree (leoFrame.leoTree):
 
         return n
     #@-node:ekr.20081209103009.15:numberofChildItems
-    #@+node:ekr.20081213055214.10:position2item (test)
-    def position2item (self,p):
-
-        '''Return the unique tree item associated with position p.'''
-
-        parent_item = None
-
-        for v,n in p.stack:
-            parent_item = self.nthChildItem(n,parent_item)
-
-        item = self.nthChildItem(p.childIndex(),parent_item)
-
-        return item
-    #@-node:ekr.20081213055214.10:position2item (test)
     #@+node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
     def rememberItem (self,p,item):
 
@@ -4114,6 +4075,47 @@ class leoQtTree (leoFrame.leoTree):
         item.setText(0,p.headString())
     #@-node:ekr.20081211060950.19:updateHeadline
     #@-node:ekr.20081213074504.14:low-level helpers
+    #@+node:ekr.20081213123819.10:item2position & position2item
+    #@+node:ekr.20081212123717.24:item2position
+    def item2position (self,item):
+
+        '''Reconstitute a position given an item.'''
+
+        stack = []
+        childIndex = self.childIndexOfItem(item)
+        v = self.item2vnode(item)
+
+        item = item.parent()
+        while item:
+            n2 = self.childIndexOfItem(item)
+            v2 = self.item2vnode(item)
+            data = v2,n2
+            stack.insert(0,data)
+            item = item.parent()
+
+        p = leoNodes.position(v,childIndex,stack)
+
+        if not p:
+            self.oops('p: %s, v: %s, stack: %s' % (
+                p,v,childIndex,stack))
+
+        return p
+    #@-node:ekr.20081212123717.24:item2position
+    #@+node:ekr.20081213055214.10:position2item
+    def position2item (self,p):
+
+        '''Return the unique tree item associated with position p.'''
+
+        parent_item = None
+
+        for v,n in p.stack:
+            parent_item = self.nthChildItem(n,parent_item)
+
+        item = self.nthChildItem(p.childIndex(),parent_item)
+
+        return item
+    #@-node:ekr.20081213055214.10:position2item
+    #@-node:ekr.20081213123819.10:item2position & position2item
     #@+node:ekr.20081211060950.1:Full redraw
     if not use_partial_redraw:
 
@@ -4213,7 +4215,7 @@ class leoQtTree (leoFrame.leoTree):
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
 
             # Set the headline and maybe the icon.
-            item.setText(0,p and p.headString() or '<dummy headline>')
+            item.setText(0,p.headString())
             if p:
                 icon = self.getIcon(p)
                 if icon: item.setIcon(0,icon)
