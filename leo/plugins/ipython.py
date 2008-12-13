@@ -87,23 +87,11 @@ import sys
 
 import_ok = True
 
-# try:
-    # import Tkinter as Tk
-# except ImportError:
-    # g.es_print('ipython plugin: can not Tkinter',color='red')
-    # import_ok = False
-
 try:
     import IPython.ipapi
 except ImportError:
     g.es_print('ipython plugin: can not import IPython.ipapi',color='red')
     import_ok = False
-
-# try:
-    # from IPython.Shell import IPShellEmbed
-# except ImportError:
-    # g.es_print('ipython plugin: can not import IPython.Shell.IPShellEmbed')
-    # import_ok = False
 #@-node:ekr.20080201143145.3:<< imports >>
 #@nl
 
@@ -124,7 +112,7 @@ def init ():
     if g.app.gui is None:
         g.app.createTkGui(__file__)
 
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = g.app.gui.guiName() in ("tkinter","qt")
     if ok:
 
         # Call onCreate after the commander and the key handler exist.
