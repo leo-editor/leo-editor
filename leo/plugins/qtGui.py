@@ -4964,6 +4964,8 @@ class leoQtTree (leoFrame.leoTree):
         if trace:
             g.trace(p.headString(),g.callers(4))
 
+        c.outerUpdate() # Bring the tree up to date.
+
         # setCurrentItem sets & clears .selecting ivar
         self.setCurrentItem()
     #@-node:ekr.20081121105001.456:afterSelectHint

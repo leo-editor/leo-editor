@@ -684,6 +684,203 @@ def rememberSibs (self,p,parent_item):
 #@-node:ekr.20081211060950.18:postPass & helpers
 #@-node:ekr.20081211060950.2:Partial redraw
 #@-node:ekr.20081208155215.12:Unused
+#@+node:ekr.20081213093110.16:Removed unused dicts
+#@+node:ekr.20081121105001.402:__init__ (qtTree)
+def __init__(self,c,frame):
+
+    # g.trace('*****qtTree')
+
+    # Init the base class.
+    leoFrame.leoTree.__init__(self,frame)
+
+    # Components.
+    self.c = c
+    self.canvas = self # An official ivar used by Leo's core.
+    self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
+
+    try:
+        w.headerItem().setHidden(True)
+    except Exception:
+        pass
+
+    w.setIconSize(QtCore.QSize(20,11))
+    # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+
+    # Status ivars.
+    self.dragging = False
+    self._editWidgetPosition = None
+    self._editWidget = None
+    self._editWidgetWrapper = None
+    self.expanding = False
+    self.fullDrawing = False
+    self.generation = 0
+    self.prev_p = None
+    self.redrawing = False
+    self.redrawCount = 0 # Count for debugging.
+    self.revertHeadline = None # Previous headline text for abortEditLabel.
+    self.selecting = False
+
+    # Debugging.
+    self.nodeDrawCount = 0
+
+    # Associating items with vnodes...
+    self.item2vnodeDict = {}
+    self.vnode2itemsDict = {} # values are lists of items.
+
+    self.setConfigIvars()
+    self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
+#@-node:ekr.20081121105001.402:__init__ (qtTree)
+#@+node:ekr.20081121105001.162:onTreeSelect
+def onTreeSelect(self):
+
+    '''Select the proper position when a tree node is selected.'''
+
+    trace = False ; verbose = False
+    c = self.c ; w = self.treeWidget 
+
+    if self.selecting:
+        if trace: g.trace('already selecting')
+        return
+    if self.redrawing:
+        if trace: g.trace('drawing')
+        return
+
+    item = w.currentItem()
+    if trace and verbose: g.trace('item',item)
+    p = self.item2position(item)
+    if p:
+        if trace: g.trace(p and p.headString())
+        c.frame.tree.select(p) # The crucial hook.
+        # g.trace(g.callers())
+        c.outerUpdate()
+    else:
+        # An error: we are not redrawing.
+        g.trace('no p for item: %s' % item,g.callers(4))
+#@nonl
+#@-node:ekr.20081121105001.162:onTreeSelect
+#@+node:ekr.20081121105001.431:updateIcon
+def updateIcon (self,p):
+
+    '''Update p's icon.'''
+
+    if not p: return
+
+    val = p.v.computeIcon()
+    if p.v.iconVal == val: return
+
+    icon = self.getIconImage(val)
+
+    items = self.vnode2items(p.v)
+
+    for item in items:
+        if self.isValidItem(item):
+            item.setIcon(0,icon)
+#@-node:ekr.20081121105001.431:updateIcon
+#@+node:ekr.20081121105001.156:editLabel (override)
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    trace = False ; verbose = False
+    c = self.c ; w = self.treeWidget
+
+    if self.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if self._editWidget:
+        # Not an error, because of key weirdness.
+        if trace: g.trace('already editing')
+        return
+
+    if trace: g.trace('***',p and p.headString(),g.callers(4))
+
+    c.outerUpdate() # Do any scheduled redraw.
+
+    item = self.position2item(p)
+
+    if item:
+        w.setCurrentItem(item) # Must do this first.
+        w.editItem(item)
+        e = w.itemWidget(item,0) # A QLineEdit
+        if e:
+            s = e.text() ; len_s = len(s)
+            # Hook up the widget to Leo's core.
+            self._editWidgetPosition = p.copy()
+            self._editWidget = e
+            self._editWidgetWrapper = leoQtHeadlineWidget(
+                widget=e,name='head',c=c)
+            start,n = g.choose(selectAll,
+                tuple([0,len_s]),tuple([len_s,0]))
+            e.setObjectName('headline')
+            e.setSelection(start,n)
+            e.setFocus()
+        else: self.oops('no edit widget')
+    else:
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
+        e = None
+        self.oops('no item: %s' % p)
+
+    # A nice hack: just set the focus request.
+    if e: c.requestedFocusWidget = e
+#@-node:ekr.20081121105001.156:editLabel (override)
+#@+node:ekr.20081211060950.15:forgetItem
+def forgetItem (self,item):
+
+    '''Remove the item and all its descendant items
+    from the item2vnodeDict.'''
+
+    d = self.item2vnodeDict
+
+    if item in d:
+        v = d.get(item)
+        aList = vnode2itemsDict.get(v)
+        if item in aList:
+            aList.remove(item)
+        else:
+            self.oops('not in vnode2itemsDict: %s' % item)
+        del d[item]
+    else:
+        self.oops('not in item2vnodeDict: %s' % item)
+
+    child_items = self.childItems(item)
+
+    for child_item in child_items:
+
+        self.forgetItem(child_item)
+#@-node:ekr.20081211060950.15:forgetItem
+#@+node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
+def rememberItem (self,p,item):
+
+    self.rememberVnodeItem(p.v,item)
+
+def rememberVnodeItem (self,v,item):
+
+    # Update item2vnodeDict.
+    self.item2vnodeDict[item] = v
+
+    # Update vnode2itemsDict.
+    d = self.vnode2itemsDict
+    aList = d.get(v,[])
+
+    if item in aList:
+        self.oops('item already in list: %s, %s' % (item,aList))
+    else:
+        aList.append(item)
+        d[v] = aList
+#@-node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
+#@+node:ekr.20081209064740.1:item dict getters
+def item2vnode (self,item):
+    return self.item2vnodeDict.get(item)
+
+def vnode2items(self,v):
+    return self.vnode2itemsDict.get(v,[])
+
+def isValidItem (self,item):
+    return item in self.item2vnodeDict
+#@-node:ekr.20081209064740.1:item dict getters
+#@-node:ekr.20081213093110.16:Removed unused dicts
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt
