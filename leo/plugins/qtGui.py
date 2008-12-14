@@ -4076,6 +4076,16 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081211060950.19:updateHeadline
     #@-node:ekr.20081213074504.14:low-level helpers
     #@+node:ekr.20081213123819.10:item2position & position2item
+    #@@nocolor-node
+    #@+at
+    # 
+    # These two methods allow the drawing code to avoid storing any positions,
+    # a crucial simplification. Indeed, without the burden of keeping position
+    # up-to-date, or worse, recalculating them all whenever the outline 
+    # changes,
+    # the tree code becomes straightforward.
+    #@-at
+    #@nonl
     #@+node:ekr.20081212123717.24:item2position
     def item2position (self,item):
 
@@ -4135,7 +4145,9 @@ class leoQtTree (leoFrame.leoTree):
             self.expandAllAncestors(c.currentPosition())
 
             self.redrawCount += 1
-            if trace: tstart()
+            if trace:
+                # g.trace(self.redrawCount,g.callers())
+                tstart()
 
             # Init the data structures.
             self.initData()
@@ -4399,7 +4411,7 @@ class leoQtTree (leoFrame.leoTree):
 
         c = self.c ; p1 = c.currentPosition()
 
-        # g.trace(p and p.headString())
+        g.trace(p and p.headString())
 
         # if not p: p = self.eventToPosition(event)
         # if not p: return
@@ -4582,32 +4594,32 @@ class leoQtTree (leoFrame.leoTree):
         '''Select the proper position when a tree node is selected.'''
 
         trace = False ; verbose = False
-        c = self.c ; w = self.treeWidget 
+        c = self.c ; p = c.currentPosition()
+        w = self.treeWidget 
 
         if self.selecting:
-            if trace: g.trace('already selecting')
+            if trace: g.trace('already selecting',p and p.headString())
             return
         if self.redrawing:
-            if trace: g.trace('drawing')
+            if trace: g.trace('already drawing',p and p.headString())
             return
 
         item = w.currentItem()
-        if trace and verbose: g.trace('item',item)
         p = self.item2position(item)
+
         if p:
             if trace: g.trace(p and p.headString())
             c.frame.tree.select(p) # The crucial hook.
-            # g.trace(g.callers())
             c.outerUpdate()
         else:
-            # An error: we are not redrawing.
+            # An error.
             g.trace('no p for item: %s' % item,g.callers(4))
     #@nonl
     #@-node:ekr.20081121105001.162:onTreeSelect
     #@+node:ekr.20081121105001.442:setCurrentItem
     def setCurrentItem (self):
 
-        trace = False ; verbose = True
+        trace = False ; verbose = False
         c = self.c ; p = c.currentPosition()
         w = self.treeWidget
 
@@ -4622,18 +4634,24 @@ class leoQtTree (leoFrame.leoTree):
             return None
 
         item = self.position2item(p)
-        if not item:
-            if trace: g.trace('** no item for',p)
+
+        if item:
+            if trace: g.trace(p and p.headString())
+        else:
+            if not g.app.unitTesting:
+                g.trace('** no item for',p)
             return None
 
         item2 = w.currentItem()
         if item != item2:
             if trace and verbose: g.trace('item',item,'old item',item2)
             self.selecting = True
+            self.traceSelect()
             try:
                 w.setCurrentItem(item)
             finally:
                 self.selecting = False
+                self.traceSelect()
         return item
     #@-node:ekr.20081121105001.442:setCurrentItem
     #@+node:ekr.20081121105001.443:sig_itemChanged
@@ -4651,7 +4669,7 @@ class leoQtTree (leoFrame.leoTree):
             # so far, col is always 0
             s = g.app.gui.toUnicode(item.text(col))
             p.setHeadString(s)
-            # g.trace("changed: ",p.headString(),g.callers(4))
+            # g.trace(p.headString())
 
         # Make sure to end editing.
         self._editWidget = None
@@ -4681,13 +4699,11 @@ class leoQtTree (leoFrame.leoTree):
         p2 = self.item2position(item)
         if p2:
             p2.contract()
-            c.setCurrentPosition(p2)
+            ### c.setCurrentPosition(p2)
+            c.frame.tree.select(p2)
             item = self.setCurrentItem()
-            if 0: # Annoying.
-                w.scrollToItem(item,
-                    QtGui.QAbstractItemView.PositionAtCenter)
         else:
-            g.trace('Error no p2')
+            g.trace('Error: no p2')
     #@-node:ekr.20081121105001.444:sig_itemCollapsed
     #@+node:ekr.20081121105001.445:sig_itemExpanded
     def sig_itemExpanded (self,item):
@@ -4719,7 +4735,8 @@ class leoQtTree (leoFrame.leoTree):
                 if trace: g.trace(p2)
                 if not p2.isExpanded():
                     p2.expand()
-                c.setCurrentPosition(p2)
+                ### c.setCurrentPosition(p2)
+                c.frame.tree.select(p2)
                 if use_partial_redraw:
                     self.partial_redraw()
                 else:
@@ -4932,7 +4949,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.455:beforeSelectHint
     def beforeSelectHint (self,p,old_p):
 
-        w = self.treeWidget ; trace = True
+        trace = False
 
         if self.selecting:
             return g.trace('*** Error: already selecting',g.callers(4))
@@ -4941,21 +4958,20 @@ class leoQtTree (leoFrame.leoTree):
             if trace: g.trace('already redrawing')
             return
 
-        if 0: # This is too soon: a unit test fails.
-            # Make *sure* we don't access an invalid entry.
-            self._editWidgetPosition = None
-            self._editWidget = None
-            self._editWidgetWrapper = None
+        if trace: g.trace(p and p.headString())
 
         # Disable onTextChanged.
         self.selecting = True
+        self.traceSelect()
     #@-node:ekr.20081121105001.455:beforeSelectHint
     #@+node:ekr.20081121105001.456:afterSelectHint
     def afterSelectHint (self,p,old_p):
 
-        c = self.c ; w = self.treeWidget ; trace = False
+        trace = False
+        c = self.c
 
         self.selecting = False
+        self.traceSelect()
 
         if not p:
             return g.trace('Error: no p')
@@ -4963,8 +4979,8 @@ class leoQtTree (leoFrame.leoTree):
             return g.trace('Error: p is not c.currentPosition()')
         if self.redrawing:
             return g.trace('Error: already redrawing')
-        if trace:
-            g.trace(p.headString(),g.callers(4))
+
+        if trace: g.trace(p and p.headString())
 
         c.outerUpdate() # Bring the tree up to date.
 
@@ -5098,6 +5114,12 @@ class leoQtTree (leoFrame.leoTree):
             c.bodyWantsFocus()
     #@nonl
     #@-node:ekr.20081121105001.163:onHeadChanged
+    #@+node:ekr.20081214061352.10:traceSelect
+    def traceSelect (self):
+
+        if 0:
+            g.trace(self.selecting,g.callers(5))
+    #@-node:ekr.20081214061352.10:traceSelect
     #@-node:ekr.20081121105001.454:Selecting & editing... (qtTree)
     #@-others
 #@-node:ekr.20081121105001.400:class leoQtTree

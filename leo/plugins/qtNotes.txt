@@ -6,6 +6,8 @@
 
 First:
 
+** Clicking a +- box expands/contracts a headline but does not select the proper node!
+
 - Add traces for focus.
     - Is the "cute hack" causing problems?
 
@@ -736,25 +738,25 @@ def onTreeSelect(self):
     '''Select the proper position when a tree node is selected.'''
 
     trace = False ; verbose = False
-    c = self.c ; w = self.treeWidget 
+    c = self.c ; p = c.currentPosition()
+    w = self.treeWidget 
 
     if self.selecting:
-        if trace: g.trace('already selecting')
+        if trace: g.trace('already selecting',p and p.headString())
         return
     if self.redrawing:
-        if trace: g.trace('drawing')
+        if trace: g.trace('already drawing',p and p.headString())
         return
 
     item = w.currentItem()
-    if trace and verbose: g.trace('item',item)
     p = self.item2position(item)
+
     if p:
         if trace: g.trace(p and p.headString())
         c.frame.tree.select(p) # The crucial hook.
-        # g.trace(g.callers())
         c.outerUpdate()
     else:
-        # An error: we are not redrawing.
+        # An error.
         g.trace('no p for item: %s' % item,g.callers(4))
 #@nonl
 #@-node:ekr.20081121105001.162:onTreeSelect
