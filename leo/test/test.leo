@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1046,6 +1046,7 @@
 <v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
 <v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
 </v>
+<v t="ekr.20081214161540.1"><vh>Test setHomeDirectory plugin</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3351,6 +3352,8 @@ leoTest.doTests (c,all=False)</t>
 # tkGui.py
 
 plugins_menu.py
+
+setHomeDirectory.py
 
 leoOPML.py
 # base64Packager.py
@@ -11103,6 +11106,8 @@ while p:
 
 print '='*10
 test_sibs(c.rootPosition(),None)
+</t>
+<t tx="ekr.20081214161540.1">print g.app.homeDir
 </t>
 </tnodes>
 </leo_file>
