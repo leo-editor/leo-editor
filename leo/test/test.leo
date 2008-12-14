@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -3353,7 +3353,7 @@ leoTest.doTests (c,all=False)</t>
 
 plugins_menu.py
 
-setHomeDirectory.py
+# setHomeDirectory.py
 
 leoOPML.py
 # base64Packager.py
