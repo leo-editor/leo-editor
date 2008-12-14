@@ -6,8 +6,6 @@
 
 First:
 
-** Clicking a +- box expands/contracts a headline but does not select the proper node!
-
 - Add traces for focus.
     - Is the "cute hack" causing problems?
 
