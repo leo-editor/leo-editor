@@ -6,25 +6,68 @@
 
 First:
 
-- Ctrl-backspace doesn't work.
-* Disable all auto-scrolling in tree.
-* Use myLeoSettings when open leoSettings.leo
-- Add traces for focus.
-    - Is the "cute hack" causing problems?
 - Support hoist in redraw code.
-- Change background color of body pane depending on focus.
-  Set focus in/out events.
-http://groups.google.com/group/leo-editor/browse_thread/thread/1cce885a697d0236/5aea5d0587b47b92?lnk=gst&q=command+and+insert#5aea5d0587b47b92
 
-Next:
-- DnD nodes.
-- Can key strokes be handled in log pane?
-- Disabling searches of body pane can cause hard crashes.
-    - initInteractiveCommands expects c.edit_widget(p)to exist.
+Features:
+
 - Allow coloring of icon bar buttons.
 - Support multiple body editors.
 
+Bugs:  see below.
+#@+node:ekr.20081215074704.13:Bugs 6
+* Disabling searches of body pane can cause hard crashes.
+    - initInteractiveCommands expects c.edit_widget(p)to exist.
+#@nonl
+#@+node:ekr.20081215074704.14:Fix flash characters problems
+Ask Qt people.
+#@nonl
+#@-node:ekr.20081215074704.14:Fix flash characters problems
+#@+node:ekr.20081215074704.15:Cut/paste work erratically in Qt gui plugin
+@nocolor-node
 
+http://groups.google.com/group/leo-editor/browse_thread/thread/58af715355227ec
+
+I'm observing the following strange behavior when copy and paste text
+using the qt plugin. The behavior is erratic and I cannot reproduce it
+systematically so I'll try to give you a general picture.
+
+When I select and copy text in the body pane of a node SOMETIMES I see
+the following message in the console
+
+QClipboard::setData: Cannot set X11 selection owner for CLIPBOARD
+
+When I try to paste the copied text:
+- sometimes it works fine
+- sometimes nothing happens (and the Paste entry of the body pane
+context menu is disabled)
+- sometimes the pasted text is not the last copied text (i.e. some
+copy operations fail)
+
+I know this is confusing and I've done my best trying to get a pattern
+for these facts but with no luck.
+
+Vicent 
+#@nonl
+#@-node:ekr.20081215074704.15:Cut/paste work erratically in Qt gui plugin
+#@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
+#@nonl
+#@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+#@+node:ekr.20081215074704.17:Fix focus problems
+@nocolor-node
+
+- Add traces for focus.
+    - Is the "cute hack" causing problems?
+
+- Can key strokes be handled in log pane?
+
+Alt-tab sometimes loses focus
+
+The focus doesn't go to any pane that supports key bindings.
+
+This may be a result of the F-key lock not being down.  Or something.
+#@nonl
+#@-node:ekr.20081215074704.17:Fix focus problems
 #@+node:ekr.20081124094918.1:Fix problems with scim
 @nocolor-node
 
@@ -50,10 +93,58 @@ keyboard I get:
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081124094918.1:Fix problems with scim
-#@+node:ekr.20081121105001.151:Finally/maybe
+#@+node:ekr.20081215074704.18:Finish qt gui delete_range method
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/51edf3b44d6a587e
+
+revno: 1259.1.10
+revision-id: terry_n_brown@yahoo.com-20081130181632-ci0ioaksewdvc257
+
+I added code so that this no longer derails the initialization process,
+i.e. just catch the exception and continue.  I don't know what's wrong
+except I first noticed it after a tkinter update from Ubuntu.  I
+think.  Anyway, that's my story :)
+
+When I added the "clean recent files" menu option long before this
+traceback showed up I had a heap of trouble deleting just the file
+entries on the recent files menu.  It was originally hardwired that the
+menu have a "Clear list" item, and then the file entries, but I wanted
+to make it get it's command entries from @menu @settings and add the
+files afterward and that was a lot of fiddling.  I.e. originally it
+deleted everything and added the "Clear list" item before rebuilding
+the file list, now it either tries to delete only the file entries, or
+stores the entries before the files (from @menu) and adds them back
+before the files each time, I forget which finally worked.
+
+What's my point?  It would be nice if delete_range "just worked".  It's
+a 'pass' in qt, and I would guess recent files is the only thing in the
+entire code base that uses it.
+
+The menu tree seems to me to be "write only", i.e. not readable, at
+least from the Leo API, of course you can walk it in a gui specific
+way.  Not necessarily a problem, but would be nice if it was more
+robustly dynamic.  Or maybe I'm missing something, but I've only seen
+functions which find a menu based on knowing it exists before hand.
+#@nonl
+#@-node:ekr.20081215074704.18:Finish qt gui delete_range method
+#@-node:ekr.20081215074704.13:Bugs 6
+#@+node:ekr.20081215074704.19:Features 3
+#@+node:ekr.20081215074704.20:Change background color of body pane depending on focus
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/1cce885a697d0236/5aea5d0587b47b92?lnk=gst&q=command+and+insert#5aea5d0587b47b92
+
+Set focus in/out events.
+#@nonl
+#@-node:ekr.20081215074704.20:Change background color of body pane depending on focus
+#@+node:ekr.20081215074704.21:Add drag and drop
+#@-node:ekr.20081215074704.21:Add drag and drop
+#@+node:ekr.20081121105001.151:Clean up settings
 - Can style sheets really do the job?
-- Flash characters without changing the selection?
+
 - Remove old-style Leo settings?
+
 - Add stylesheets for dialogs.
     - Set font for dummy widget in style sheet, then copy that font.
 #@+node:ekr.20081121105001.150:QScintilla stuff
@@ -72,7 +163,8 @@ present in the qt plugin (both with and without scintilla)
     - Fix problem with accented characters: see child node for notes.
 #@nonl
 #@-node:ekr.20081121105001.150:QScintilla stuff
-#@-node:ekr.20081121105001.151:Finally/maybe
+#@-node:ekr.20081121105001.151:Clean up settings
+#@-node:ekr.20081215074704.19:Features 3
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081121105001.186:Script to display Qt font database
