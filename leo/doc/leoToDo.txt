@@ -2365,7 +2365,7 @@ def movePastCloseHelper (self,event,extend):
 #@+node:ekr.20051218121447:moveWordHelper
 def moveWordHelper (self,event,extend,forward,end=False):
 
-    '''Move the cursor to the next word.
+    '''Move the cursor to the next/previous word.
     The cursor is placed at the start of the word unless end=True'''
 
     c = self.c
@@ -2648,7 +2648,7 @@ def extendToSentence (self,event):
 #@nonl
 #@-node:ekr.20061007214835.4:extend-to-sentence
 #@+node:ekr.20060116074839.2:extend-to-word
-def extendToWord (self,event):
+def extendToWord (self,event,direction='forward'):
 
     '''Select the word at the cursor.'''
 
@@ -2659,14 +2659,19 @@ def extendToWord (self,event):
     s = w.getAllText() ; n = len(s)
     i = w.getInsertPoint()
 
-    while 0 <= i < n and not g.isWordChar(s[i]):
-        i -= 1
+    if direction == 'forward':
+        while i < n and not g.isWordChar(s[i]):
+            i += 1
+    else:
+        while 0 <= i < n and not g.isWordChar(s[i]):
+            i -= 1
+
     while 0 <= i < n and g.isWordChar(s[i]):
         i -= 1
     i += 1
+    i1 = i
 
     # Move to the end of the word.
-    i1 = i
     while 0 <= i < n and g.isWordChar(s[i]):
         i += 1
 

@@ -1291,6 +1291,11 @@
 <v t="ekr.20070131173932.2"><vh>before sel=3.2,3.2</vh></v>
 <v t="ekr.20070131173932.3"><vh>after sel=2.23,2.23</vh></v>
 </v>
+<v t="ekr.20081215084144.2"><vh>@test backward-kill-word</vh>
+<v t="ekr.20081215084144.3"><vh>work</vh></v>
+<v t="ekr.20081215084144.4"><vh>before sel=3.7,3.7</vh></v>
+<v t="ekr.20081215084144.5"><vh>after sel=3.5,3.5</vh></v>
+</v>
 <v t="ekr.20061101121602.130"><vh>@test beginning-of-buffer</vh>
 <v t="ekr.20061101121602.131"><vh>work</vh></v>
 <v t="ekr.20061101121602.132"><vh>before sel=5.56,5.56</vh></v>
@@ -1568,9 +1573,14 @@
 <v t="ekr.20070131172706.2"><vh>before sel=2.2,2.2</vh></v>
 <v t="ekr.20070131172706.3"><vh>after sel=1.27,1.27</vh></v>
 </v>
+<v t="ekr.20081215084144.7"><vh>@test kill-word</vh>
+<v t="ekr.20081215084144.8"><vh>work</vh></v>
+<v t="ekr.20081215084144.9"><vh>before sel=2.6,2.6</vh></v>
+<v t="ekr.20081215084144.10"><vh>after sel=2.7,2.7</vh></v>
+</v>
 <v t="ekr.20081111084046.3" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20070131175646"><vh> Commands M-Z</vh>
+<v t="ekr.20070131175646" a="E"><vh> Commands M-Z</vh>
 <v t="ekr.20070131171218.1"><vh>@@test zap-to-chararacter</vh>
 <v t="ekr.20070131171218.2"><vh>work</vh></v>
 </v>
@@ -22068,5 +22078,33 @@ path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
 </t>
 <t tx="ekr.20081211124049.1"></t>
+<t tx="ekr.20081215084144.2">import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)</t>
+<t tx="ekr.20081215084144.3">This is the first sentence.  This
+is the second sentence.  And
+this  the last sentence.
+</t>
+<t tx="ekr.20081215084144.4">This is the first sentence.  This
+is the second sentence.  And
+this is the last sentence.
+</t>
+<t tx="ekr.20081215084144.5">This is the first sentence.  This
+is the second sentence.  And
+this  the last sentence.
+</t>
+<t tx="ekr.20081215084144.7">import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)</t>
+<t tx="ekr.20081215084144.8">This is the first sentence.  This
+is the  sentence.  And
+this is the last sentence.
+</t>
+<t tx="ekr.20081215084144.9">This is the first sentence.  This
+is the second sentence.  And
+this is the last sentence.
+</t>
+<t tx="ekr.20081215084144.10">This is the first sentence.  This
+is the  sentence.  And
+this is the last sentence.
+</t>
 </tnodes>
 </leo_file>

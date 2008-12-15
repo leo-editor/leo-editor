@@ -6,6 +6,7 @@
 
 First:
 
+- Ctrl-backspace doesn't work.
 * Disable all auto-scrolling in tree.
 * Use myLeoSettings when open leoSettings.leo
 - Add traces for focus.

@@ -6053,7 +6053,8 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.169:toStroke
     def toStroke (self,tkKey,ch):
 
-        k = self.c.k ; s = tkKey ; trace = False
+        trace = False
+        k = self.c.k ; s = tkKey
 
         special = ('Alt','Ctrl','Control',)
         isSpecial = [True for z in special if s.find(z) > -1]
@@ -8141,7 +8142,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             s = w.getAllText()
             row,col = index.split('.')
             row,col = int(row),int(col)
-            i = g.convertRowColToPythonIndex(s,row-1,col) # Bug fix: 2008/11/11
+            i = g.convertRowColToPythonIndex(s,row-1,col)
             # g.trace(index,row,col,i,g.callers(6))
             return i
 
