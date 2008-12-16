@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="7,11"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,7,9"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -97,7 +97,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -317,7 +317,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413"><vh>File options</vh>
+<v t="ekr.20061003173413" a="E"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
@@ -332,6 +332,7 @@
 <v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
+<v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
 <v t="ekr.20041119034357.12"><vh>derived files options</vh>
 <v t="ekr.20041119041747"><vh>@string output_newline = nl</vh></v>
 <v t="ekr.20041119041747.1"><vh>@string trailing_body_newlines = one</vh></v>
@@ -1394,7 +1395,7 @@
 <v t="TL.20080806084612.145"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"></v>
+<v t="ekr.20060603215208"></v>
 <v t="ekr.20081018053140.11"></v>
 </vnodes>
 <tnodes>
@@ -7663,6 +7664,7 @@ This allows you to increase the font size.</t>
 <t tx="ekr.20081023060109.13">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>
 <t tx="ekr.20081023060109.14"></t>
+<t tx="ekr.20081216090156.5"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
