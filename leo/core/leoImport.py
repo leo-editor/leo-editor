@@ -2032,20 +2032,6 @@ class baseScannerClass (scanUtility):
         if not g.unitTesting:
             g.es_print('inserting @ignore',color='blue')
     #@-node:ekr.20070705085335:insertIgnoreDirective
-    #@+node:ekr.20070703122141.81:massageComment (not used)
-    # def massageComment (self,s):
-
-        # '''Return s with leading and trailing whitespace removed and all other
-        # runs of whitespace and newlines converted to a single blank.'''
-
-        # s = s.strip()
-        # s = s.replace('\n',' ')
-        # s = s.replace('\r',' ')
-        # s = s.replace('\t',' ')
-        # s = s.replace('  ',' ')
-        # s = s.strip()
-        # return s
-    #@-node:ekr.20070703122141.81:massageComment (not used)
     #@+node:ekr.20070707113832.1:putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 
@@ -2082,7 +2068,8 @@ class baseScannerClass (scanUtility):
         undentVal = self.getLeadingIndent(classHead,0)
 
         # Call the helper to parse the inner part of the class.
-        putRef,bodyIndent,classDelim,decls,trailing = self.putClassHelper(s,i,codeEnd,class_node)
+        putRef,bodyIndent,classDelim,decls,trailing = self.putClassHelper(
+            s,i,codeEnd,class_node)
         # g.trace('bodyIndent',bodyIndent,'undentVal',undentVal)
 
         # Set the body of the class node.
@@ -2230,7 +2217,7 @@ class baseScannerClass (scanUtility):
         c.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
             self.rootLine,self.language,self.tab_width))
     #@-node:ekr.20070705094630:putRootText
-    #@+node:ekr.20070703122141.88:undentBody & undentBy
+    #@+node:ekr.20070703122141.88:undentBody
     def undentBody (self,s,ignoreComments=True):
 
         '''Remove the first line's leading indentation from all lines of s.'''
@@ -2252,12 +2239,36 @@ class baseScannerClass (scanUtility):
             result = self.undentBy(s,undentVal)
             if trace: g.trace('after...\n',g.listToString(g.splitLines(result)))
             return result
-
+    #@nonl
+    #@-node:ekr.20070703122141.88:undentBody
+    #@+node:ekr.20081216090156.1:undentBy
     def undentBy (self,s,undentVal):
-        return ''.join(
-            [g.removeLeadingWhitespace(line,undentVal,self.tab_width)
-                for line in g.splitLines(s)])
-    #@-node:ekr.20070703122141.88:undentBody & undentBy
+
+        '''Remove leading whitespace equivalent to undentVal from each line.
+        add an underindentEscapeString for underindented line.'''
+
+        # return ''.join(
+            # [g.removeLeadingWhitespace(line,undentVal,self.tab_width)
+                # for line in g.splitLines(s)])
+
+        trace = False and not g.app.unitTesting
+        tag = self.c.atFileCommands.underindentEscapeString
+        result = [] ; tab_width = self.tab_width
+        for line in g.splitlines(s):
+            lws_s = g.get_leading_ws(line)
+            lws = g.computeWidth(lws_s,tab_width)
+            s = g.removeLeadingWhitespace(line,undentVal,tab_width)
+            n = lws - undentVal
+            if s.strip() and lws < undentVal:
+                if trace: g.trace('undentVal: %s, lws: %s, %s' % (
+                    undentVal,lws,repr(line)))
+                result.append("%s%s%s" % (tag,undentVal-lws,s.lstrip()))
+            else:
+                result.append(s)
+
+        return ''.join(result)
+
+    #@-node:ekr.20081216090156.1:undentBy
     #@+node:ekr.20070801074524:underindentedComment & underindentedLine
     def underindentedComment (self,line):
 
