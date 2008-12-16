@@ -5970,12 +5970,17 @@ def os (self,s):
 
     All output produced by leoAtFile module goes here."""
 
-    at = self
+    trace = False
+    at = self ; tag = self.underindentEscapeString
+    f = at.outputFile
 
-    if s and at.outputFile:
+    if s and f:
         try:
             s = g.toEncodedString(s,at.encoding,reportErrors=True)
-            at.outputFile.write(s)
+            if trace: g.trace(repr(s),g.callers(4))
+            if s.startswith(tag):
+                junk,s = self.parseUnderindentTag(s)
+            f.write(s)
         except Exception:
             at.exception("exception writing:" + s)
 #@-node:ekr.20041005105605.204:os

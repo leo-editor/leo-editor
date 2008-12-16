@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -80,6 +80,7 @@
 </v>
 <v t="ekr.20070531104646"><vh>@@button da-comp</vh></v>
 <v t="ekr.20070531103315"><vh>@@button da-expand</vh></v>
+<v t="ekr.20081025105942.1"><vh>@@button dir</vh></v>
 <v t="ekr.20070530072113"><vh>@@button hide-ch</vh></v>
 <v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
 <v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
@@ -371,10 +372,9 @@
 </v>
 </v>
 <v t="ekr.20081006070847.2"><vh>path convenience methods</vh></v>
-<v t="ekr.20081025105942.1"><vh>@button dir</vh></v>
 <v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
 <v t="ekr.20081124102740.1"><vh>Accented characters</vh></v>
-</v>
+<v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
 <v t="edward.20081127113749.1"><vh>@commands</vh>
 <v t="edward.20081127113749.2"><vh>@command complete-previous</vh>
 <v t="edward.20081127113749.3"><vh>WordCompleter</vh>
@@ -400,6 +400,16 @@
 <v t="edward.20081127113749.3"></v>
 <v t="edward.20081127113749.15"></v>
 </v>
+</v>
+<v t="ekr.20081216091605.2"><vh>@@auto under_indent.py</vh>
+<v t="ekr.20081216114116.1"><vh>class test</vh>
+<v t="ekr.20081216114116.2"><vh>spam</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
+<v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
+<v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
 </v>
 <v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
 <v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
@@ -1037,16 +1047,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081205085218.1"><vh>@path c:\leo.repo\trunk</vh>
-<v t="ekr.20081205085218.2"><vh>@path leo</vh></v>
-</v>
-<v t="ekr.20081205085218.3"><vh>@auto c:\leo.repo\trunk\leo\core\test-file.py</vh></v>
-<v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
-<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
-<v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
-<v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
-</v>
-<v t="ekr.20081214161540.1"><vh>Test setHomeDirectory plugin</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11059,8 +11059,6 @@ The parse tree generated for the input a+b is:
 
 aList = g.get_directives_dict_list(p)
 g.es(c.scanAtPathDirectives(aList))</t>
-<t tx="ekr.20081205085218.1"></t>
-<t tx="ekr.20081205085218.2"></t>
 <t tx="ekr.20081205104320.1"># import os
 tag = '#!/bin/bash\n'
 s = g.getScript(c,p,
@@ -11106,7 +11104,24 @@ while p:
 print '='*10
 test_sibs(c.rootPosition(),None)
 </t>
-<t tx="ekr.20081214161540.1">print g.app.homeDir
+<t tx="ekr.20081216091605.2">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081216114116.1">
+class test:
+    
+    '''Class docstring
+test line 2'''
+    @others
+</t>
+<t tx="ekr.20081216114116.2">
+def spam (self):
+
+    '''Spam docstring.
+\\-4spam line 2'''
+
+    pass
 </t>
 </tnodes>
 </leo_file>
