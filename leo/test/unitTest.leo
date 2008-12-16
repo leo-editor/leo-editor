@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6,5,12,2,2,20"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -748,7 +748,7 @@
 <v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -832,7 +832,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -1914,7 +1914,7 @@
 <v t="ekr.20061113154104"><vh>@test leoTextWidget</vh></v>
 <v t="ekr.20071113202321" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113193624.1"><vh>leoImport</vh>
+<v t="ekr.20071113193624.1" a="E"><vh>leoImport</vh>
 <v t="ekr.20040712101754.7" annotate="7d71002e"><vh> Export tests</vh>
 <v t="ekr.20040712101754.9" annotate="7d71002e"><vh>@suite Export tests</vh></v>
 <v t="ekr.20040712101754.24" annotate="7d71002e"><vh>exportTests</vh>
@@ -1963,7 +1963,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071020075538"><vh> Tests of @auto</vh>
+<v t="ekr.20071020075538" a="E"><vh> Tests of @auto</vh>
 <v t="ekr.20071020075538.1"><vh>C tests</vh>
 <v t="ekr.20071020075538.2"><vh>@test c class 1</vh></v>
 <v t="ekr.20071020075538.3"><vh>@test c class--underindented line</vh></v>
@@ -1978,7 +1978,7 @@
 <v t="ekr.20080211092326"><vh>Pascal tests</vh>
 <v t="ekr.20080211092326.1"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20071020075538.10"><vh>Python tests</vh>
+<v t="ekr.20071020075538.10" a="E"><vh>Python tests</vh>
 <v t="ekr.20071020075538.31"><vh>@@test nested class</vh></v>
 <v t="ekr.20071020075538.30"><vh>@test comment after dict assign</vh></v>
 <v t="ekr.20071201071535"><vh>@test decorator test</vh></v>
@@ -1999,6 +1999,7 @@
 <v t="ekr.20071020075538.17"><vh>@test python minimal class 1</vh></v>
 <v t="ekr.20071020075538.18"><vh>@test python minimal class 2</vh></v>
 <v t="ekr.20071020075538.19"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20081216113655.2"><vh>@test python underindent method</vh></v>
 <v t="ekr.20071020075538.32"><vh>@test scanPythonText: leoImportNosent.py</vh></v>
 <v t="ekr.20071020075538.22"><vh>@test string test: extra indent</vh></v>
 <v t="ekr.20071020075538.23"><vh>@test string underindent lines</vh></v>
@@ -2473,11 +2474,6 @@
 </v>
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-</v>
-<v t="ekr.20081211124049.1"><vh>Failed tests</vh>
-<v t="ekr.20051107115231"></v>
-<v t="ekr.20060208072358"></v>
-<v t="ekr.20051109091731"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -22077,7 +22073,6 @@ c.redraw()
 path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
 </t>
-<t tx="ekr.20081211124049.1"></t>
 <t tx="ekr.20081215084144.2">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20081215084144.3">This is the first sentence.  This
@@ -22105,6 +22100,22 @@ this is the last sentence.
 <t tx="ekr.20081215084144.10">This is the first sentence.  This
 is the  sentence.  And
 this is the last sentence.
+</t>
+<t tx="ekr.20081216113655.2">s = '''\
+
+class emptyClass: 
+
+    def spam():
+        
+        """docstring line 1
+\-4under-indented docstring line"""
+        pass
+
+def followingDef(): # comment
+    pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 </tnodes>
 </leo_file>
