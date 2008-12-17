@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="22" left="353" height="930" width="851"/>
+	<global_window_position top="24" left="428" height="930" width="851"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2463,6 +2463,11 @@
 </v>
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+</v>
+<v t="ekr.20081211124049.1"><vh>Failed tests</vh>
+<v t="ekr.20051107115231"></v>
+<v t="ekr.20060208072358"></v>
+<v t="ekr.20051109091731"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -13019,7 +13024,7 @@ k = c.keyHandler
 trace = False
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
@@ -13042,7 +13047,8 @@ try:
     if trace: g.pr('before',p.headString())
     w.event_generate('&lt;Return&gt;')
     if trace: g.pr('after',p.headString())
-    assert p.headString() == h + paste,'Expected: %s, got %s' % (h + paste,p.headString())
+    assert p.headString() == h + paste,'Expected: %s, got %s' % (
+        h + paste,p.headString())
 finally:
     if 1:
         p.initHeadString(h)
@@ -13054,7 +13060,7 @@ k = c.k
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
+    p = u.findNodeAnywhere(h,breakOnError=True)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
     c.redraw_now() # To make node visible
@@ -13070,7 +13076,9 @@ if k.defaultUnboundKeyAction == 'insert':
         w.event_generate('Y')
         w.event_generate('Z')
         w.event_generate('&lt;Return&gt;')
-        assert p.headString() == h + 'XYZ','oops2: got: %s' % p.headString()
+        assert p.headString() == h + 'XYZ',(
+            'oops2: expected: %s, got: %s' % (
+                h + 'XYZ',p.headString()))
         if g.app.gui.guiName() != 'nullGui':
             assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
                 c.undoer.undoMenuLabel)
@@ -13089,7 +13097,7 @@ if k.defaultUnboundKeyAction == 'insert':
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
@@ -13147,7 +13155,7 @@ finally:
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
@@ -13174,7 +13182,7 @@ k = c.k
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
+    p = u.findNodeAnywhere(h,breakOnError=True)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
     c.redraw_now() # To make node visible
@@ -13198,7 +13206,7 @@ if k.defaultUnboundKeyAction == 'insert':
 <t tx="ekr.20051107115231.24"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocusNow()
@@ -13226,7 +13234,7 @@ finally:
 <t tx="ekr.20051107115231.25">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
@@ -13273,7 +13281,7 @@ finally:
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
@@ -13354,6 +13362,7 @@ assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.setBodyString(p,'a')
 c.redraw_now() # To make node visible
+# print ('after redraw_now')
 c.bodyWantsFocusNow()
 n = c.frame.tree.redrawCount
 try:
@@ -13577,7 +13586,7 @@ if c.k.defaultUnboundKeyAction == 'insert':
 </t>
 <t tx="ekr.20060208072331">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.frame.tree.editLabel(p)
@@ -13607,7 +13616,7 @@ finally:
 <t tx="ekr.20060208072358">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocusNow()
@@ -22058,5 +22067,6 @@ c.redraw()
 path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
 </t>
+<t tx="ekr.20081211124049.1"></t>
 </tnodes>
 </leo_file>

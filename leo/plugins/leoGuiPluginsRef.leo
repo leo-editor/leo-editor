@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="32" left="353" height="943" width="859"/>
+	<global_window_position top="46" left="332" height="943" width="913"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -29,8 +29,7 @@
 <v t="ekr.20081121105001.1090"><vh>@@button change leo imports</vh></v>
 </v>
 <v t="ekr.20081121105001.1108"><vh>Notes</vh>
-<v t="ekr.20081121105001.147"
-marks="ekr.20081121105001.148,ekr.20081121105001.156,ekr.20081121105001.163,ekr.20081121105001.172,ekr.20081121105001.178,"><vh>@thin qtNotes.txt</vh></v>
+<v t="ekr.20081121105001.147"><vh>@thin qtNotes.txt</vh></v>
 </v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
 <v t="ekr.20081121105001.12"><vh>@thin cursesGui.py</vh></v>
@@ -38,8 +37,7 @@ marks="ekr.20081121105001.148,ekr.20081121105001.156,ekr.20081121105001.163,ekr.
 <v t="ekr.20081121105001.1707"><vh>@thin experimental/__wx_gui.py</vh></v>
 <v t="ekr.20081121105001.80"><vh>@thin ironPythonGui.py</vh></v>
 <v t="ekr.20081121105001.595"><vh>@thin swing_gui.py</vh></v>
-<v t="ekr.20081121110412.2"
-marks="ekr.20081121110412.443,ekr.20081121110412.489,ekr.20081121110412.552,"><vh>@thin tkGui.py</vh></v>
+<v t="ekr.20081121110412.2"><vh>@thin tkGui.py</vh></v>
 </v>
 <v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
 <v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
@@ -50,52 +48,10 @@ marks="ekr.20081121110412.443,ekr.20081121110412.489,ekr.20081121110412.552,"><v
 <v t="ekr.20081121105001.1098"><vh>@auto qt_quicksearch.ui</vh></v>
 </v>
 <v t="ekr.20081121105001.188"
-marks="ekr.20081121105001.195,ekr.20081121105001.196,ekr.20081121105001.207,ekr.20081121105001.254,ekr.20081121105001.317,ekr.20081121105001.377,ekr.20081121105001.402,ekr.20081121105001.414,ekr.20081121105001.443,ekr.20081121105001.445,ekr.20081121105001.456,ekr.20081121105001.156,ekr.20081121105001.163,ekr.20081121105001.172,ekr.20081121105001.178,ekr.20081121105001.536,ekr.20081121105001.551,ekr.20081121105001.553,ekr.20081121105001.557,ekr.20081121105001.558,"><vh>@thin qtGui.py</vh></v>
-</v>
-<v t="ekr.20081121105001.148" a="M"><vh> qt To do</vh>
-<v t="ekr.20081121105001.149"><vh>Finish colorizer</vh></v>
-<v t="ekr.20081121105001.150"><vh>QScintilla stuff</vh></v>
-<v t="ekr.20081121105001.151"><vh>Finally/maybe</vh></v>
+marks="ekr.20081209210556.2,"><vh>@thin qtGui.py</vh></v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20081121105001.148">@nocolor-node
-
-First:
-- Allow shift-tab binding &amp; fix Ctrl-( problem.
-- Finish colorizer: see child node for notes.
-
-Next:
-- Allow coloring of icon bar buttons.
-- Support multiple body editors.
-- Clicks in body text do not update row/column position.
-- Handle pane orientation:
-    A popular arrangement would be editor and outline
-    in top pane with the log along the bottom.
-
-Finally:
-- Install new Qt version and play with QScintilla.
-    From QScintilla change log:
-    2008/10/12 14:32:05  phil
-    QsciScintilla::setSelection() is now implemented using SCI_SETSEL so that the
-    carat can be left at either the start or the end of the selection.
-    Exposed QsciScintilla::positionFromLineIndex() and
-    QsciScintilla::lineIndexFromPosition().
-- Add stylesheets for dialogs.
-    - Set font for dummy widget in style sheet, then copy that font.
-</t>
-<t tx="ekr.20081121105001.149">- Simulate Tk's handling of tags (an optimization)
-- Use Qt threading.
-- Handle all colorizer tags.</t>
-<t tx="ekr.20081121105001.150">- Check event handling with QScintilla.
-- Experiment with sending &lt;shift-tab&gt; directly to QScintilla.
-- Call setLexer(0) for nocolor nodes.
-- Add settings for syntax coloring.
-- Make Scintilla handle Leo markup.</t>
-<t tx="ekr.20081121105001.151">- Can style sheets really do the job?
-- Flash characters without changing the selection?
-- Remove old-style Leo settings?
-</t>
 <t tx="ekr.20081121105001.1076"></t>
 <t tx="ekr.20081121105001.1077"></t>
 <t tx="ekr.20081121105001.1078">@nocolor</t>

@@ -508,7 +508,7 @@ def printPluginsInfo (c):
 
     data = []
     for z in g.app.loadedPlugins:
-        print z, d.get(z)
+        print (z, d.get(z))
 
     data = [] ; n = 4
     for moduleName in d:

@@ -204,7 +204,7 @@ def createPluginsMenu (tag,keywords):
         # Create a list of all active plugins.
         files = glob.glob(os.path.join(path,"*.py"))
         files.sort()
-        plugins = [PlugIn(file) for file in files]
+        plugins = [PlugIn(file, c) for file in files]
         PluginDatabase.storeAllPlugins(files)
         loaded = [z.lower() for z in g.app.loadedPlugins]
         # items = [(p.name,p) for p in plugins if p.version]
@@ -324,9 +324,11 @@ class PlugIn:
 
     #@    @+others
     #@+node:EKR.20040517080555.4:__init__
-    def __init__(self, filename):
+    def __init__(self, filename, c=None):
 
         """Initialize the plug-in"""
+
+        self.c = c
 
         # Import the file to find out some interesting stuff
         # Do not use the imp module: we only want to import these files once!
@@ -428,7 +430,10 @@ class PlugIn:
         g.app.gui.runScrolledMessageDialog(
             title="About Plugin ( " + self.name + " )",
             label="Version: " + self.version,
-            msg=self.doc
+            msg=self.doc,
+            c=self.c,
+            flags='rst',
+            name='leo_system'
         )
 
     #@-node:EKR.20040517080555.8:about
@@ -907,7 +912,7 @@ def runPropertiesDialog(title='Properties', data={}, callback=None, buttons=None
     return dialog.result 
 #@-node:bob.20071208211442.1:runPropertiesDialog
 #@+node:bob.20071209110304:runScrolledMessageDialog
-def runScrolledMessageDialog(title='Message', label= '', msg='', callback=None, buttons=None):
+def runScrolledMessageDialog(title='Message', label= '', msg='', callback=None, buttons=None, **kw):
     """Display a modal TkScrolledMessageDialog."""
 
 

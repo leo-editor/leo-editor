@@ -522,13 +522,20 @@ class testUtils:
 
     #@-node:ekr.20051104075904.30:u.findNodeInTree
     #@+node:ekr.20051104075904.31:findNodeAnywhere
-    def findNodeAnywhere(self,headline):
+    def findNodeAnywhere(self,headline,breakOnError=False):
 
         c = self.c
         for p in c.all_positions_with_unique_tnodes_iter():
             h = headline.strip().lower()
             if p.headString().strip().lower() == h:
                 return p.copy()
+
+        if False and breakOnError: # useful for debugging.
+            aList = [repr(z) for z in c.currentPosition().parent().
+                self_and_siblings_iter(copy=True)]
+            print '\n'.join(aList)
+            g.pdb()
+
         return c.nullPosition()
     #@-node:ekr.20051104075904.31:findNodeAnywhere
     #@-node:ekr.20051104075904.26:Finding nodes...

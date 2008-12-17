@@ -24,7 +24,7 @@ else:
 import difflib
 import os
 import re
-import string
+import string   
 import sys
 
 if g.isPython3:

@@ -4194,7 +4194,7 @@ def createFrame (fileName,relativeFileName,script):
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    if g.isPython3:
+    if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:
@@ -4870,7 +4870,7 @@ def createFrame (fileName,relativeFileName,script):
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    if g.isPython3:
+    if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:
@@ -5418,32 +5418,38 @@ def write (self,s):
 #@-node:ekr.20040331083824.1:g.fileLikeObject
 #@-node:ekr.20080919153256.1:Problems reading derived files
 #@+node:ekr.20080919153256.2:Unicode problems
-#@+node:ekr.20080816125725.2:g.isBytes & g.isString
-def isBytes (s):
+#@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+# The syntax of these functions must be valid on Python2K and Python3K.
 
-    '''Return True if s is Python3k bytes type.
-
-    Python 3.x: s must be a unicode string, not bytes.
-    Python 2.x: always returns False.'''
-
+def isBytes(s):
+    '''Return True if s is Python3k bytes type.'''
     if g.isPython3:
         # Generates a pylint warning, but that can't be helped.
         return type(s) == type(bytes('a','utf-8'))
     else:
         return False
 
-def isString (s):
+def isChar(s):
+    '''Return True if s is a Python2K character type.'''
+    if g.isPython3:
+        return False
+    else:
+        return type(s) == types.StringType
 
-    '''Return True if s is a string.
-
-    Python 3.x: s must be a unicode string, not bytes.
-    Python 2.x: s may be either a unicode string or a regular string.'''
-
+def isString(s):
+    '''Return True if s is any string, but not bytes.'''
     if g.isPython3:
         return type(s) == type('a')
     else:
         return type(s) in types.StringTypes
-#@-node:ekr.20080816125725.2:g.isBytes & g.isString
+
+def isUnicode(s):
+    '''Return True if s is a unicode string.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) == types.UnicodeType
+#@-node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
 #@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
@@ -6784,7 +6790,11 @@ def comment_delims_from_extension(filename):
 
     """
 
-    root, ext = os.path.splitext(filename)
+    if filename.startswith('.'):
+        # Python 2.6 changes how splitext works.
+        root,ext = None,filename
+    else:
+        root, ext = os.path.splitext(filename)
     if ext == '.tmp':
         root, ext = os.path.splitext(root)
 
@@ -6792,7 +6802,8 @@ def comment_delims_from_extension(filename):
     if ext:
         return g.set_delims_from_language(language)
     else:
-        g.trace("unknown extension %s" % ext)
+        g.trace("unknown extension: %s, filename: %s, root: %s" % (
+            repr(ext),repr(filename),repr(root)))
         return None,None,None
 #@-node:EKR.20040504150046.4:g.comment_delims_from_extension
 #@+node:ekr.20071109165315:g.computeRelativePath
@@ -6882,8 +6893,6 @@ if i < n and s[i] == '*' :
 #@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
 #@-node:ekr.20031218072017.1260:g.get_directives_dict
 #@+node:ekr.20080827175609.1:g.get_directives_dict_list
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
-
 def get_directives_dict_list(p1):
 
     """Scans p and all its ancestors for directives.
@@ -7606,7 +7615,7 @@ http://www.youtube.com/watch?v=JJBxajDwmLI
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    if g.isPython3:
+    if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:
@@ -7829,7 +7838,7 @@ def createFrame (fileName,relativeFileName,script):
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    if g.isPython3:
+    if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:
@@ -11063,8 +11072,6 @@ if i < n and s[i] == '*' :
 #@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
 #@-node:ekr.20031218072017.1260:g.get_directives_dict
 #@+node:ekr.20080827175609.1:g.get_directives_dict_list
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
-
 def get_directives_dict_list(p1):
 
     """Scans p and all its ancestors for directives.
@@ -11258,7 +11265,7 @@ def printPluginsInfo (c):
 
     data = []
     for z in g.app.loadedPlugins:
-        print z, d.get(z)
+        print (z, d.get(z))
 
     data = [] ; n = 4
     for moduleName in d:
@@ -12511,6 +12518,89 @@ This contains all gui plugins.
 #@nonl
 #@-node:ekr.20081121104952.2:Created leoGuiPluginsRef.leo
 #@-node:ekr.20081001140516.16:Plugins
+#@+node:ekr.20081205084002.1:Leo and Python 2.6
+#@+node:ekr.20081204112758.1:Failed unit tests with Python 2.6
+#@+node:EKR.20040504150046.4:g.comment_delims_from_extension
+def comment_delims_from_extension(filename):
+
+    """
+    Return the comment delims corresponding to the filename's extension.
+
+    >>> import leo.core.leoGlobals as g
+    >>> g.comment_delims_from_extension(".py")
+    ('#', None, None)
+
+    >>> g.comment_delims_from_extension(".c")
+    ('//', '/*', '*/')
+
+    >>> g.comment_delims_from_extension(".html")
+    (None, '<!--', '-->')
+
+    """
+
+    if filename.startswith('.'):
+        # Python 2.6 changes how splitext works.
+        root,ext = None,filename
+    else:
+        root, ext = os.path.splitext(filename)
+    if ext == '.tmp':
+        root, ext = os.path.splitext(root)
+
+    language = g.app.extension_dict.get(ext[1:])
+    if ext:
+        return g.set_delims_from_language(language)
+    else:
+        g.trace("unknown extension: %s, filename: %s, root: %s" % (
+            repr(ext),repr(filename),repr(root)))
+        return None,None,None
+#@-node:EKR.20040504150046.4:g.comment_delims_from_extension
+#@+node:EKR.20040504154039:g.is_sentinel
+def is_sentinel (line,delims):
+
+    << is_sentinel doc tests >>
+
+    delim1,delim2,delim3 = delims
+
+    line = line.lstrip()
+
+    if delim1:
+        return line.startswith(delim1+'@')
+    elif delim2 and delim3:
+        i = line.find(delim2+'@')
+        j = line.find(delim3)
+        return 0 == i < j
+    else:
+        g.trace("can't happen. delims: %s" % repr(delims),color="red")
+        return False
+#@+node:ekr.20040719161756:<< is_sentinel doc tests >>
+"""
+
+Return True if line starts with a sentinel comment.
+
+>>> import leo.core.leoGlobals as g
+>>> py_delims = g.comment_delims_from_extension('.py')
+>>> g.is_sentinel("#@+node",py_delims)
+True
+>>> g.is_sentinel("#comment",py_delims)
+False
+
+>>> c_delims = g.comment_delims_from_extension('.c')
+>>> g.is_sentinel("//@+node",c_delims)
+True
+>>> g.is_sentinel("//comment",c_delims)
+False
+
+>>> html_delims = g.comment_delims_from_extension('.html')
+>>> g.is_sentinel("<!--@+node-->",html_delims)
+True
+>>> g.is_sentinel("<!--comment-->",html_delims)
+False
+
+"""
+#@-node:ekr.20040719161756:<< is_sentinel doc tests >>
+#@-node:EKR.20040504154039:g.is_sentinel
+#@-node:ekr.20081204112758.1:Failed unit tests with Python 2.6
+#@-node:ekr.20081205084002.1:Leo and Python 2.6
 #@-node:ekr.20080917153158.11:4.6
 #@-all
 #@nonl

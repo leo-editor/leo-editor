@@ -9,7 +9,10 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-safe_mode = False # True: Bypass k.masterKeyHandler for problem keys or visible characters.
+safe_mode = False
+    # True: Bypass k.masterKeyHandler for problem keys or visible characters.
+use_partial_redraw = True
+    # True: update the tree incrementally.
 
 # Define these to suppress pylint warnings...
 __timing = None # For timing stats.
@@ -18,6 +21,7 @@ __qh = None # For quick headlines.
 #@<< qt imports >>
 #@+node:ekr.20081121105001.189: << qt imports >>
 import leo.core.leoGlobals as g
+
 import leo.core.leoChapters as leoChapters
 import leo.core.leoColor as leoColor
 import leo.core.leoFrame as leoFrame
@@ -26,7 +30,11 @@ import leo.core.leoGui as leoGui
 import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
 
+import re
+import string
+
 import os
+import re # For colorizer
 import string
 import sys
 import time
@@ -40,7 +48,7 @@ try:
     from PyQt4 import Qsci
 except ImportError:
     QtCore = None
-    g.es_print('can not import Qt',color='red')
+    print('qtGui.py: can not import Qt')
 #@-node:ekr.20081121105001.189: << qt imports >>
 #@nl
 
@@ -105,8 +113,7 @@ def tstart():
     __timing = time.time()
 
 def tstop():
-    g.trace("%s Time: %1.2fsec" % (
-        g.callers(1),time.time()-__timing))
+    return "%1.2f sec" % (time.time()-__timing)
 #@-node:ekr.20081121105001.193:tstart & tstop
 #@-node:ekr.20081121105001.190: Module level
 #@+node:ekr.20081121105001.194:Frame and component classes...
@@ -137,7 +144,13 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # Init both base classes.
 
-        ui_description_file = g.app.loadDir + "/../plugins/qt_main.ui"
+        ui_file_name = c.config.getString('qt_ui_file_name')
+        for f in (ui_file_name, 'qt_main.ui', None):
+            assert f, "can not find user interface file"
+            ui_description_file = g.app.loadDir + "/../plugins/" + f
+            # g.pr(ui_description_file)
+            if g.os_path_exists(ui_description_file): break
+
         QtGui.QMainWindow.__init__(self,parent)        
         self.ui = uic.loadUi(ui_description_file, self)
 
@@ -166,6 +179,28 @@ class DynamicWindow(QtGui.QMainWindow):
         orientation = c.config.getString('initial_split_orientation')
         self.setSplitDirection(orientation)
         self.setStyleSheets()
+    #@+node:leohag.20081203210510.17:do_leo_spell_btn_*
+    def doSpellBtn(self, btn):
+        getattr(self.c.spellCommands.handler.tab, btn)() 
+
+    def do_leo_spell_btn_Add(self):
+        self.doSpellBtn('onAddButton')
+
+    def do_leo_spell_btn_Change(self):
+        self.doSpellBtn('onChangeButton')
+
+    def do_leo_spell_btn_Find(self):
+        self.doSpellBtn('onFindButton')
+
+    def do_leo_spell_btn_FindChange(self):
+        self.doSpellBtn('onChangeThenFindButton')
+
+    def do_leo_spell_btn_Hide(self):
+        self.doSpellBtn('onHideButton')
+
+    def do_leo_spell_btn_Ignore(self):
+        self.doSpellBtn('onIgnoreButton')
+    #@-node:leohag.20081203210510.17:do_leo_spell_btn_*
     #@-node:ekr.20081121105001.201: ctor (Window)
     #@+node:ekr.20081121105001.202:closeEvent (qtFrame)
     def closeEvent (self,event):
@@ -269,12 +304,15 @@ class leoQtBody (leoFrame.leoBody):
                 top.ui.richTextEdit,
                 name = 'body',c=c) # A QTextEdit.
             self.bodyCtrl = w # The widget as seen from Leo's core.
-            self.colorizer = leoColor.colorizer(c)
+
+            # Hook up the QSyntaxHighlighter
+            self.colorizer = leoQtColorizer(c,w.widget)
             w.acceptRichText = False
 
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         wrap = c.config.getBool('body_pane_wraps')
+        # g.trace('wrap',wrap,self.widget.widget)
         if self.useScintilla:
             pass
         else:
@@ -289,7 +327,6 @@ class leoQtBody (leoFrame.leoBody):
         self.editor_v = None
         self.numberOfEditors = 1
         self.totalNumberOfEditors = 1
-    #@nonl
     #@-node:ekr.20081121105001.207: ctor (qtBody)
     #@+node:ekr.20081121105001.208:createBindings (qtBody)
     def createBindings (self,w=None):
@@ -886,15 +923,20 @@ class leoQtFindTab (leoFind.findTab):
     #@+node:ekr.20081121105001.237:initGui
     def initGui (self):
 
+        owner = self
+
         self.svarDict = {}
             # Keys are ivar names, values are svar objects.
 
-        for key in self.intKeys:
-            self.svarDict[key] = self.svar()
+        for ivar in self.intKeys:
+            self.svarDict[ivar] = self.svar(owner,ivar)
 
-        for key in self.newStringKeys:
-            self.svarDict[key] = self.svar()
-    #@nonl
+        # Add a hack for 'entire_outline' radio button.
+        ivar = 'entire_outline'
+        self.svarDict[ivar] = self.svar(owner,ivar)
+
+        for ivar in self.newStringKeys:
+            self.svarDict[ivar] = self.svar(owner,ivar=None)
     #@-node:ekr.20081121105001.237:initGui
     #@+node:ekr.20081121105001.238:init (qtFindTab) & helpers
     def init (self,c):
@@ -916,15 +958,15 @@ class leoQtFindTab (leoFind.findTab):
         data = (
             ('find_ctrl',       findTextWrapper(w.findPattern,'find-widget',c)),
             ('change_ctrl',     findTextWrapper(w.findChange,'change-widget',c)),
-            ('whole_world',     w.checkBoxWholeWord),
+            ('whole_word',      w.checkBoxWholeWord),
             ('ignore_case',     w.checkBoxIgnoreCase),
             ('wrap',            w.checkBoxWrapAround),
             ('reverse',         w.checkBoxReverse),
             ('pattern_match',   w.checkBoxRexexp),
             ('mark_finds',      w.checkBoxMarkFinds),
-            ('entire-outline',  w.checkBoxEntireOutline),
-            ('suboutline-only', w.checkBoxSubroutineOnly),  
-            ('node-only',       w.checkBoxNodeOnly),
+            ('entire_outline',  w.checkBoxEntireOutline),
+            ('suboutline_only', w.checkBoxSubroutineOnly),  
+            ('node_only',       w.checkBoxNodeOnly),
             ('search_headline', w.checkBoxSearchHeadline),
             ('search_body',     w.checkBoxSearchBody),
             ('mark_changes',    w.checkBoxMarkChanges),
@@ -940,14 +982,16 @@ class leoQtFindTab (leoFind.findTab):
         c = self.c
 
         # Separate c.ivars are much more convenient than a svarDict.
-        for key in self.intKeys:
+        for ivar in self.intKeys:
             # Get ivars from @settings.
-            val = c.config.getBool(key)
-            setattr(self,key,val)
+            val = c.config.getBool(ivar)
+            setattr(self,ivar,val)
             val = g.choose(val,1,0)
-            svar = self.svarDict.get(key)
-            if svar: svar.set(val)
-            # g.trace('qtFindTab',key,val)
+            svar = self.svarDict.get(ivar)
+            if svar:
+                svar.set(val)
+
+            # g.trace(ivar,val)
     #@-node:ekr.20081121105001.240:initIvars
     #@+node:ekr.20081121105001.241:initTextWidgets
     def initTextWidgets(self):
@@ -983,14 +1027,29 @@ class leoQtFindTab (leoFind.findTab):
         aList = (
             'ignore_case','mark_changes','mark_finds',
             'pattern_match','reverse','search_body','search_headline',
-            'whole_word','wrap')
+            'whole_word','wrap',
+            # Temp: add boxes that should be radio buttons.
+            'node_only','suboutline_only','entire_outline',
+        )
 
         for ivar in aList:
-            svar = self.svarDict[ivar].get()
+            svar = self.svarDict.get(ivar)
             if svar:
                 # w is a QCheckBox.
                 w = self.widgetsDict.get(ivar)
-                if w: w.setChecked(True)
+                if w:
+                    val = svar.get()
+                    svar.setWidget(w)
+                    svar.set(val)
+                    def checkBoxCallback(val,svar=svar):
+                        svar.setVal(val)
+                        # g.trace(ivar,bool(val))
+                    w.connect(w,
+                        QtCore.SIGNAL("stateChanged(int)"),
+                        checkBoxCallback)
+                    # g.trace(ivar,val,w)
+                else: g.trace('*** no w',ivar)
+            else: g.trace('*** no svar',ivar)
     #@-node:ekr.20081121105001.242:initCheckBoxes
     #@+node:ekr.20081121105001.243:initRadioButtons
     def initRadioButtons (self):
@@ -1010,18 +1069,40 @@ class leoQtFindTab (leoFind.findTab):
             # XXX At present w is a QCheckbox, not a QRadioButton.
             w = self.widgetsDict.get(key)
             if w: w.setChecked(True)
+
+        # For entire-outline to be checked.
+        self.svarDict.get('entire_outline').set(True)
+
     #@-node:ekr.20081121105001.243:initRadioButtons
     #@-node:ekr.20081121105001.238:init (qtFindTab) & helpers
     #@-node:ekr.20081121105001.236: Birth: called from leoFind ctor
     #@+node:ekr.20081121105001.244:class svar
     class svar:
         '''A class like Tk's IntVar and StringVar classes.'''
-        def __init__(self):
+        def __init__(self,owner,ivar):
+            self.ivar = ivar
+            self.owner = owner
             self.val = None
+            self.w = None
+        def clearRadioButtons(self):
+            buttons = ['node_only','suboutline_only','entire_outline']
+            if self.ivar in buttons:
+                buttons.remove(self.ivar)
+                for ivar in buttons:
+                    w = self.owner.widgetsDict.get(ivar)
+                    if w: w.setChecked(False)
         def get (self):
-            return self.val
+            return self.w and bool(self.w.isChecked()) or self.val
         def set (self,val):
-            self.val = val
+            self.clearRadioButtons()
+            self.val = bool(val)
+            if self.w: self.w.setChecked(bool(val))
+            # g.trace(val,self.w,g.callers(4))
+        def setVal(self,val):
+            self.clearRadioButtons()
+            self.val = bool(val)
+        def setWidget(self,w):
+            self.w = w
     #@-node:ekr.20081121105001.244:class svar
     #@+node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
     # This is the same as the Tk code because we simulate Tk svars.
@@ -1044,8 +1125,8 @@ class leoQtFindTab (leoFind.findTab):
 
         if ivar in self.intKeys:
             if val is not None:
-                var = self.svarDict.get(ivar)
-                var.set(val)
+                svar = self.svarDict.get(ivar)
+                svar.set(val)
                 # g.trace('%s = %s' % (ivar,val))
 
         elif not g.app.unitTesting:
@@ -1403,7 +1484,19 @@ class leoQtFrame (leoFrame.leoFrame):
             # image = keys.get('image')
 
             b = QtGui.QPushButton(text,self.w)
-            self.w.addWidget(b)
+            b.leo_buttonAction = self.addWidget(b)
+
+            b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+            def delete_callback(b=b,):
+                a = b.leo_buttonAction
+                self.w.removeAction(a)
+                b.leo_buttonAction = None
+                self.deleteButton(b)
+
+            b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+            b.addAction(rb)
+            rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
 
             if command:
                 def button_callback(c=c,command=command):
@@ -1414,7 +1507,7 @@ class leoQtFrame (leoFrame.leoFrame):
                         c.outerUpdate()
                     return val
 
-                QtCore.QObject.connect(b,
+                b.connect(b,
                     QtCore.SIGNAL("clicked()"),
                     button_callback)
 
@@ -1450,8 +1543,7 @@ class leoQtFrame (leoFrame.leoFrame):
         #@+node:ekr.20081121105001.273:deleteButton
         def deleteButton (self,w):
 
-            g.trace(w)
-            # self.w.deleteWidget(w)
+            #g.trace(w, '##')
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
         #@-node:ekr.20081121105001.273:deleteButton
@@ -1673,13 +1765,68 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
     def resizePanesToRatio(self,ratio,ratio2):
 
-        pass
+        #g.trace(ratio,ratio2,g.callers())
 
-        # g.trace(ratio,ratio2,g.callers())
-
-        # self.divideLeoSplitter(self.splitVerticalFlag,ratio)
-        # self.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
+        self.divideLeoSplitter(self.splitVerticalFlag,ratio)
+        self.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
     #@-node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
+    #@+node:leohag.20081208130321.12:divideLeoSplitter
+    # Divides the main or secondary splitter, using the key invariant.
+    def divideLeoSplitter (self, verticalFlag, frac):
+
+        if self.splitVerticalFlag == verticalFlag:
+            self.divideLeoSplitter1(frac,verticalFlag)
+            self.ratio = frac # Ratio of body pane to tree pane.
+        else:
+            self.divideLeoSplitter2(frac,verticalFlag)
+            self.secondary_ratio = frac # Ratio of tree pane to log pane.
+
+    # Divides the main splitter.
+    def divideLeoSplitter1 (self, frac, verticalFlag): 
+        self.divideAnySplitter(frac, self.top.splitter_2 )
+
+    # Divides the secondary splitter.
+    def divideLeoSplitter2 (self, frac, verticalFlag): 
+        self.divideAnySplitter (frac, self.top.ui.splitter)
+
+    #@-node:leohag.20081208130321.12:divideLeoSplitter
+    #@+node:leohag.20081208130321.13:divideAnySplitter
+    # This is the general-purpose placer for splitters.
+    # It is the only general-purpose splitter code in Leo.
+
+    def divideAnySplitter (self, frac, splitter ):#verticalFlag, bar, pane1, pane2):
+
+        sizes = splitter.sizes()
+
+        if len(sizes)!=2:
+            g.trace('there must be two and only two widgets in the splitter')
+
+        if frac > 1 or frac < 0:
+            g.trace('split ratio [%s] out of range 0 <= frac <= 1'%frac)
+
+        s1, s2 = sizes
+        s = s1+s2
+        s1 = int(s * frac + 0.5)
+        s2 = s - s1 
+
+        splitter.setSizes([s1,s2])
+
+    #@+at
+    #     # if self.bigTree:
+    #         # pane1,pane2 = pane2,pane1
+    # 
+    #     if verticalFlag:
+    #         # Panes arranged vertically; horizontal splitter bar
+    #         bar.place(rely=frac)
+    #         pane1.place(relheight=frac)
+    #         pane2.place(relheight=1-frac)
+    #     else:
+    #         # Panes arranged horizontally; vertical splitter bar
+    #         bar.place(relx=frac)
+    #         pane1.place(relwidth=frac)
+    #         pane2.place(relwidth=1-frac)
+    #@-at
+    #@-node:leohag.20081208130321.13:divideAnySplitter
     #@-node:ekr.20081121105001.279:Configuration (qtFrame)
     #@+node:ekr.20081121105001.288:Event handlers (qtFrame)
     #@+node:ekr.20081121105001.289:frame.OnCloseLeoEvent
@@ -1878,62 +2025,62 @@ class leoQtFrame (leoFrame.leoFrame):
 
     def contractBodyPane (self,event=None):
         '''Contract the body pane.'''
-        # f = self ; r = min(1.0,f.ratio+0.1)
-        # f.divideLeoSplitter(f.splitVerticalFlag,r)
+        f = self ; r = min(1.0,f.ratio+0.1)
+        f.divideLeoSplitter(f.splitVerticalFlag,r)
 
     def contractLogPane (self,event=None):
         '''Contract the log pane.'''
-        # f = self ; r = min(1.0,f.ratio+0.1)
-        # f.divideLeoSplitter(not f.splitVerticalFlag,r)
+        f = self ; r = min(1.0,f.ratio+0.1)
+        f.divideLeoSplitter(not f.splitVerticalFlag,r)
 
     def contractOutlinePane (self,event=None):
         '''Contract the outline pane.'''
-        # f = self ; r = max(0.0,f.ratio-0.1)
-        # f.divideLeoSplitter(f.splitVerticalFlag,r)
+        f = self ; r = max(0.0,f.ratio-0.1)
+        f.divideLeoSplitter(f.splitVerticalFlag,r)
 
     def expandBodyPane (self,event=None):
         '''Expand the body pane.'''
-        # self.contractOutlinePane()
+        self.contractOutlinePane()
 
     def expandLogPane(self,event=None):
         '''Expand the log pane.'''
-        # f = self ; r = max(0.0,f.ratio-0.1)
-        # f.divideLeoSplitter(not f.splitVerticalFlag,r)
+        f = self ; r = max(0.0,f.ratio-0.1)
+        f.divideLeoSplitter(not f.splitVerticalFlag,r)
 
     def expandOutlinePane (self,event=None):
         '''Expand the outline pane.'''
-        # self.contractBodyPane()
+        self.contractBodyPane()
     #@-node:ekr.20081121105001.302:expand/contract/hide...Pane
     #@+node:ekr.20081121105001.303:fullyExpand/hide...Pane
     def fullyExpandBodyPane (self,event=None):
         '''Fully expand the body pane.'''
         f = self
-        # f.divideLeoSplitter(f.splitVerticalFlag,0.0)
+        f.divideLeoSplitter(f.splitVerticalFlag,0.0)
 
     def fullyExpandLogPane (self,event=None):
         '''Fully expand the log pane.'''
         f = self
-        # f.divideLeoSplitter(not f.splitVerticalFlag,0.0)
+        f.divideLeoSplitter(not f.splitVerticalFlag,0.0)
 
     def fullyExpandOutlinePane (self,event=None):
         '''Fully expand the outline pane.'''
         f = self
-        # f.divideLeoSplitter(f.splitVerticalFlag,1.0)
+        f.divideLeoSplitter(f.splitVerticalFlag,1.0)
 
     def hideBodyPane (self,event=None):
         '''Completely contract the body pane.'''
         f = self
-        # f.divideLeoSplitter(f.splitVerticalFlag,1.0)
+        f.divideLeoSplitter(f.splitVerticalFlag,1.0)
 
     def hideLogPane (self,event=None):
         '''Completely contract the log pane.'''
         f = self
-        # f.divideLeoSplitter(not f.splitVerticalFlag,1.0)
+        f.divideLeoSplitter(not f.splitVerticalFlag,1.0)
 
     def hideOutlinePane (self,event=None):
         '''Completely contract the outline pane.'''
         f = self
-        # f.divideLeoSplitter(f.splitVerticalFlag,0.0)
+        f.divideLeoSplitter(f.splitVerticalFlag,0.0)
     #@-node:ekr.20081121105001.303:fullyExpand/hide...Pane
     #@-node:ekr.20081121105001.297:Minibuffer commands... (qtFrame)
     #@+node:ekr.20081121105001.304:Window Menu...
@@ -1988,7 +2135,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         frame = self
 
-        # frame.divideLeoSplitter2(0.99, not frame.splitVerticalFlag)
+        frame.divideLeoSplitter2(0.99, not frame.splitVerticalFlag)
     #@-node:ekr.20081121105001.308:hideLogWindow
     #@+node:ekr.20081121105001.309:minimizeAll
     def minimizeAll (self,event=None):
@@ -2178,6 +2325,10 @@ class leoQtLog (leoFrame.leoLog):
         self.tabWidget = c.frame.top.ui.tabWidget # The Qt.TabWidget that holds all the tabs.
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
+        if 0: # Does not work
+            theFilter = leoQtEventFilter(c,w=c.frame,tag='log')
+            self.tabWidget.installEventFilter(theFilter)
+
         self.setFontFromConfig()
         self.setColorFromConfig()
     #@-node:ekr.20081121105001.320:qtLog.__init__
@@ -2212,7 +2363,6 @@ class leoQtLog (leoFrame.leoLog):
 
         c.searchCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
-    #@nonl
     #@-node:ekr.20081121105001.321:qtLog.finishCreate
     #@-node:ekr.20081121105001.319:qtLog Birth
     #@+node:ekr.20081121105001.322:Do nothings
@@ -2279,6 +2429,9 @@ class leoQtLog (leoFrame.leoLog):
         if g.app.quitting or not c or not c.exists:
             return
 
+        if color:
+            color = leoColor.getColor(color, 'black')
+
         self.selectTab(tabName or 'Log')
         # print('qtLog.put',tabName,'%3s' % (len(s)),self.logCtrl)
 
@@ -2286,6 +2439,7 @@ class leoQtLog (leoFrame.leoLog):
         w = self.logCtrl # w is a QTextBrowser
         if w:
             if s.endswith('\n'): s = s[:-1]
+            s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             s = s.replace(' ','&nbsp;')
             if color:
                 s = '<font color="%s">%s</font>' % (color, s)
@@ -2298,9 +2452,9 @@ class leoQtLog (leoFrame.leoLog):
         else:
             # put s to logWaiting and print s
             g.app.logWaiting.append((s,color),)
-            if type(s) == type(u""):
+            if g.isUnicode(s):
                 s = g.toEncodedString(s,"ascii")
-            print s
+            print (s)
     #@-node:ekr.20081121105001.326:put
     #@+node:ekr.20081121105001.327:putnl
     def putnl (self,tabName='Log'):
@@ -2340,6 +2494,7 @@ class leoQtLog (leoFrame.leoLog):
 
         if createText:
             contents = QtGui.QTextBrowser()
+            # contents = QtGui.QTextEdit()
             contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
             self.logDict[tabName] = contents
             if tabName == 'Log': self.logCtrl = contents
@@ -2374,7 +2529,7 @@ class leoQtLog (leoFrame.leoLog):
 
         c = self.c ; w = self.tabWidget
 
-        if tabName not in ('Log','Find','Spell'):
+        if force or tabName not in ('Log','Find','Spell'):
             for i in range(w.count()):
                 if tabName == w.tabText(i):
                     w.removeTab(i)
@@ -2417,6 +2572,10 @@ class leoQtLog (leoFrame.leoLog):
                 w.setCurrentIndex(i)
                 if createText and tabName not in ('Spell','Find',):
                     self.logCtrl = w.widget(i)
+                if tabName == 'Spell':
+                    # the base class uses this as a flag to see if
+                    # the spell system needs initing
+                    self.frameDict['Spell'] = w.widget(i)
                 return True
         else:
             return False
@@ -3098,125 +3257,35 @@ class leoQtSpellTab:
 
         self.c = c
         self.handler = handler
+
+        # hack:
+        handler.workCtrl = leoFrame.stringTextWidget(c, 'spell-workctrl')
+
         self.tabName = tabName
 
-        self.createFrame()
-        self.createBindings()
+        ui = c.frame.top.ui
 
-        ###self.fillbox([])
+        # self.createFrame()
+
+        if not hasattr(ui, 'leo_spell_label'):
+            self.handler.loaded = False
+            return
+
+        self.wordLabel = ui.leo_spell_label
+        self.listBox = ui.leo_spell_listBox
+
+        #self.createBindings()
+
+        self.fillbox([])
     #@-node:ekr.20081121105001.380:leoQtSpellTab.__init__
     #@+node:ekr.20081121105001.381:createBindings TO DO
     def createBindings (self):
-
-        return
-
-        # c = self.c ; k = c.k
-        # widgets = (self.listBox, self.outerFrame)
-
-        # for w in widgets:
-
-            # # Bind shortcuts for the following commands...
-            # for commandName,func in (
-                # ('full-command',            k.fullCommand),
-                # ('hide-spell-tab',          self.handler.hide),
-                # ('spell-add',               self.handler.add),
-                # ('spell-find',              self.handler.find),
-                # ('spell-ignore',            self.handler.ignore),
-                # ('spell-change-then-find',  self.handler.changeThenFind),
-            # ):
-                # junk, bunchList = c.config.getShortcut(commandName)
-                # for bunch in bunchList:
-                    # accel = bunch.val
-                    # shortcut = k.shortcutFromSetting(accel)
-                    # if shortcut:
-                        # # g.trace(shortcut,commandName)
-                        # w.bind(shortcut,func)
-
-        # self.listBox.bind("<Double-1>",self.onChangeThenFindButton)
-        # self.listBox.bind("<Button-1>",self.onSelectListBox)
-        # self.listBox.bind("<Map>",self.onMap)
-    #@nonl
+        pass
     #@-node:ekr.20081121105001.381:createBindings TO DO
     #@+node:ekr.20081121105001.382:createFrame (to be done in Qt designer)
     def createFrame (self):
+        pass
 
-        c = self.c ; log = c.frame.log ; tabName = self.tabName
-
-        # parentFrame = log.frameDict.get(tabName)
-        # w = log.textDict.get(tabName)
-        # w.pack_forget()
-
-        # # Set the common background color.
-        # bg = c.config.getColor('log_pane_Spell_tab_background_color') or 'LightSteelBlue2'
-
-        #@    << Create the outer frames >>
-        #@+node:ekr.20081121105001.383:<< Create the outer frames >>
-        # self.outerScrolledFrame = Pmw.ScrolledFrame(
-            # parentFrame,usehullsize = 1)
-
-        # self.outerFrame = outer = self.outerScrolledFrame.component('frame')
-        # self.outerFrame.configure(background=bg)
-
-        # for z in ('borderframe','clipper','frame','hull'):
-            # self.outerScrolledFrame.component(z).configure(
-                # relief='flat',background=bg)
-        #@-node:ekr.20081121105001.383:<< Create the outer frames >>
-        #@nl
-        #@    << Create the text and suggestion panes >>
-        #@+node:ekr.20081121105001.384:<< Create the text and suggestion panes >>
-        # f2 = Tk.Frame(outer,bg=bg)
-        # f2.pack(side='top',expand=0,fill='x')
-
-        # self.wordLabel = Tk.Label(f2,text="Suggestions for:")
-        # self.wordLabel.pack(side='left')
-        # self.wordLabel.configure(font=('verdana',10,'bold'))
-
-        # fpane = Tk.Frame(outer,bg=bg,bd=2)
-        # fpane.pack(side='top',expand=1,fill='both')
-
-        # self.listBox = Tk.Listbox(fpane,height=6,width=10,selectmode="single")
-        # self.listBox.pack(side='left',expand=1,fill='both')
-        # self.listBox.configure(font=('verdana',11,'normal'))
-
-        # listBoxBar = Tk.Scrollbar(fpane,name='listBoxBar')
-
-        # bar, txt = listBoxBar, self.listBox
-        # txt ['yscrollcommand'] = bar.set
-        # bar ['command'] = txt.yview
-        # bar.pack(side='right',fill='y')
-        #@-node:ekr.20081121105001.384:<< Create the text and suggestion panes >>
-        #@nl
-        #@    << Create the spelling buttons >>
-        #@+node:ekr.20081121105001.385:<< Create the spelling buttons >>
-        # # Create the alignment panes
-        # buttons1 = Tk.Frame(outer,bd=1,bg=bg)
-        # buttons2 = Tk.Frame(outer,bd=1,bg=bg)
-        # buttons3 = Tk.Frame(outer,bd=1,bg=bg)
-        # for w in (buttons1,buttons2,buttons3):
-            # w.pack(side='top',expand=0,fill='x')
-
-        # buttonList = [] ; font = ('verdana',9,'normal') ; width = 12
-        # for frame, text, command in (
-            # (buttons1,"Find",self.onFindButton),
-            # (buttons1,"Add",self.onAddButton),
-            # (buttons2,"Change",self.onChangeButton),
-            # (buttons2,"Change, Find",self.onChangeThenFindButton),
-            # (buttons3,"Ignore",self.onIgnoreButton),
-            # (buttons3,"Hide",self.onHideButton),
-        # ):
-            # b = Tk.Button(frame,font=font,width=width,text=text,command=command)
-            # b.pack(side='left',expand=0,fill='none')
-            # buttonList.append(b)
-
-        # # Used to enable or disable buttons.
-        # (self.findButton,self.addButton,
-         # self.changeButton, self.changeFindButton,
-         # self.ignoreButton, self.hideButton) = buttonList
-        #@-node:ekr.20081121105001.385:<< Create the spelling buttons >>
-        #@nl
-
-        # Pack last so buttons don't get squished.
-        # self.outerScrolledFrame.pack(expand=1,fill='both',padx=2,pady=2)
     #@-node:ekr.20081121105001.382:createFrame (to be done in Qt designer)
     #@+node:ekr.20081121105001.386:Event handlers
     #@+node:ekr.20081121105001.387:onAddButton
@@ -3230,17 +3299,21 @@ class leoQtSpellTab:
 
         """Handle a click in the Change button in the Spell tab."""
 
-        self.handler.change()
+        state = self.updateButtons()
+        if state:
+            self.handler.change()
         self.updateButtons()
-
 
     def onChangeThenFindButton(self,event=None):
 
         """Handle a click in the "Change, Find" button in the Spell tab."""
 
-        if self.handler.change():
-            self.handler.find()
-        self.updateButtons()
+        state = self.updateButtons()
+        if state:
+            self.handler.change()
+            if self.handler.change():
+                self.handler.find()
+            self.updateButtons()
     #@-node:ekr.20081121105001.388:onChangeButton & onChangeThenFindButton
     #@+node:ekr.20081121105001.389:onFindButton
     def onFindButton(self):
@@ -3292,37 +3365,26 @@ class leoQtSpellTab:
     def fillbox(self, alts, word=None):
         """Update the suggestions listBox in the Check Spelling dialog."""
 
-        # self.suggestions = alts
+        ui = self.c.frame.top.ui
 
-        # if not word:
-            # word = ""
+        self.suggestions = alts
 
-        # self.wordLabel.configure(text= "Suggestions for: " + word)
-        # self.listBox.delete(0, "end")
+        if not word:
+            word = ""
 
-        # for i in range(len(self.suggestions)):
-            # self.listBox.insert(i, self.suggestions[i])
-
-        # # This doesn't show up because we don't have focus.
-        # if len(self.suggestions):
-            # self.listBox.select_set(1)
+        self.wordLabel.setText("Suggestions for: " + word)
+        self.listBox.clear()
+        if len(self.suggestions):
+            self.listBox.addItems(self.suggestions)
+            self.listBox.setCurrentRow(0)
     #@-node:ekr.20081121105001.396:fillbox
     #@+node:ekr.20081121105001.397:getSuggestion
     def getSuggestion(self):
         """Return the selected suggestion from the listBox."""
 
-        # # Work around an old Python bug.  Convert strings to ints.
-        # items = self.listBox.curselection()
-        # try:
-            # items = map(int, items)
-        # except ValueError: pass
-
-        # if items:
-            # n = items[0]
-            # suggestion = self.suggestions[n]
-            # return suggestion
-        # else:
-            # return None
+        idx = self.listBox.currentRow()
+        value = self.suggestions[idx]
+        return value
     #@-node:ekr.20081121105001.397:getSuggestion
     #@+node:ekr.20081121105001.398:update
     def update(self,show=True,fill=False):
@@ -3345,13 +3407,15 @@ class leoQtSpellTab:
 
         """Enable or disable buttons in the Check Spelling dialog."""
 
-        c = self.c ; w = c.frame.body.bodyCtrl
+        c = self.c
 
-        # start, end = w.getSelectionRange()
-        # state = g.choose(self.suggestions and start,"normal","disabled")
+        ui = c.frame.top.ui
 
-        # self.changeButton.configure(state=state)
-        # self.changeFindButton.configure(state=state)
+        w = c.frame.body.bodyCtrl
+        state = self.suggestions and w.hasSelection()
+
+        ui.leo_spell_btn_Change.setDisabled(not state)
+        ui.leo_spell_btn_FindChange.setDisabled(not state)
 
         # # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
         # # self.redoButton.configure(state=state)
@@ -3360,6 +3424,9 @@ class leoQtSpellTab:
 
         # self.addButton.configure(state='normal')
         # self.ignoreButton.configure(state='normal')
+
+        return state
+    #@nonl
     #@-node:ekr.20081121105001.399:updateButtons (spellTab)
     #@-node:ekr.20081121105001.394:Helpers
     #@-others
@@ -3385,6 +3452,12 @@ class leoQtTree (leoFrame.leoTree):
         self.c = c
         self.canvas = self # An official ivar used by Leo's core.
         self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
+
+        try:
+            w.headerItem().setHidden(True)
+        except Exception:
+            pass
+
         w.setIconSize(QtCore.QSize(20,11))
         # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
@@ -3405,11 +3478,17 @@ class leoQtTree (leoFrame.leoTree):
         # Debugging.
         self.nodeDrawCount = 0
 
-        # Drawing ivars.
-        self.itemsDict = {} # keys are items, values are positions
-        self.parentsDict = {} 
-        self.tnodeDict = {} # keys are tnodes, values are lists of (p,it)
-        self.vnodeDict = {} # keys are vnodes, values are lists of (p,it)
+        # The following *can* be used by the incremental drawing code.
+
+        # self.item2tnodeDict = {}
+        self.item2vnodeDict = {}
+
+        # Incremental drawing code must not use postions!
+        # These dicts are used only by event handlers.
+
+        self.item2positionDict = {} # Values are positions
+        self.tnode2dataDict = {} # Values are lists of (p,it)
+        self.vnode2dataDict = {} # Values are lists of (p,it)
 
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
@@ -3624,6 +3703,8 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081121105001.411:setConfigIvars
     #@-node:ekr.20081121105001.409:Config... (qtTree)
     #@+node:ekr.20081121105001.412:Drawing... (qtTree)
+
+    #@+node:ekr.20081209210556.1:Common drawing code
     #@+node:ekr.20081121105001.413:allAncestorsExpanded
     def allAncestorsExpanded (self,p):
 
@@ -3633,167 +3714,44 @@ class leoQtTree (leoFrame.leoTree):
         else:
             return True
     #@-node:ekr.20081121105001.413:allAncestorsExpanded
-    #@+node:ekr.20081121105001.414:full_redraw & helpers
-    def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
+    #@+node:ekr.20081210075843.10:contractItem & expandItem
+    def contractItem (self,item):
 
-        '''Redraw all visible nodes of the tree'''
+       self.treeWidget.collapseItem(item)
 
-        trace = False; verbose = False
-        c = self.c ; w = self.treeWidget
-        if not w: return
-        if self.redrawing:
-            g.trace('***** already drawing',g.callers(5))
-            return
+    def expandItem (self,item):
 
-        # Bug fix: 2008/11/10
-        self.expandAllAncestors(c.currentPosition())
+        self.treeWidget.expandItem(item)
+    #@-node:ekr.20081210075843.10:contractItem & expandItem
+    #@+node:ekr.20081208072750.19:do-nothing redraw methods
+    def redraw_after_icons_changed (self,all=False):
+        g.trace('should not be called',g.callers(4))
 
-        self.redrawCount += 1
-        if trace and verbose: tstart()
-
-        # Init the data structures.
-        self.initData()
-        self.nodeDrawCount = 0
-        self.redrawing = True
-        self.fullDrawing = True # To suppress some traces.
-        try:
-            w.clear()
-            # Draw all top-level nodes and their visible descendants.
-            p = c.rootPosition()
-            while p:
-                self.drawTree(p)
-                p.moveToNext()
-        finally:
-            if not self.selecting:
-                item = self.setCurrentItem()
-                if item:
-                    pass
-                elif p and self.redrawCount > 1:
-                    g.trace('Error: no current item: %s' % (p.headString()))
-
-            if 0: # This causes horizontal scrolling on Ubuntu.
-                item = w.currentItem()
-                if item:
-                    w.scrollToItem(item,
-                        QtGui.QAbstractItemView.PositionAtCenter)
-
-            # Necessary to get the tree drawn initially.
-            w.repaint()
-
-            c.requestRedrawFlag= False
-            self.redrawing = False
-            self.fullDrawing = False
-            if trace:
-                if verbose: tstop()
-                g.trace('%s: drew %3s nodes' % (
-                    self.redrawCount,self.nodeDrawCount),g.callers(5))
-
-    redraw = full_redraw # Compatibility
-    redraw_now = full_redraw
-    #@+node:ekr.20081121105001.415:initData
-    def initData (self):
-
-        self.tnodeDict = {} # keys are tnodes, values are lists of items (p,it)
-        self.vnodeDict = {} # keys are vnodes, values are lists of items (p,it)
-        self.itemsDict = {} # keys are items, values are positions
-        self.parentsDict = {}
-        self._editWidgetPosition = None
-        self._editWidget = None
-        self._editWidgetWrapper = None
-    #@nonl
-    #@-node:ekr.20081121105001.415:initData
-    #@+node:ekr.20081121105001.164:drawNode
-    def drawNode (self,p,dummy=False):
-
-        c = self.c ; w = self.treeWidget ; trace = False
-        self.nodeDrawCount += 1
-
-        # Allocate the qt tree item.
-        parent = p.parent()
-        itemOrTree = self.parentsDict.get(parent and parent.v,w)
-
-        if trace and not self.fullDrawing:
-            g.trace(id(itemOrTree),parent and parent.headString())
-
-        item = QtGui.QTreeWidgetItem(itemOrTree)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-
-        # Draw the headline and the icon.
-        item.setText(0,p.headString())
-        icon = self.getIcon(p)
-        if icon: item.setIcon(0,icon)
-
-        if dummy: return item
-
-        # Remember the associatiation of item with p, and vice versa.
-        self.itemsDict[item] = p.copy()
-        self.parentsDict[p.v] = item 
-
-        # Remember the association of p.v with (p,item)
-        aList = self.vnodeDict.get(p.v,[])
-        data = p.copy(),item
-        aList.append(data)
-        self.vnodeDict[p.v] = aList
-
-        # Remember the association of p.v.t with (p,item).
-        aList = self.tnodeDict.get(p.v.t,[])
-        data = p.copy(),item
-        aList.append(data)
-        self.tnodeDict[p.v.t] = aList
-
-        return item
-    #@-node:ekr.20081121105001.164:drawNode
-    #@+node:ekr.20081121105001.416:drawTree
-    def drawTree (self,p):
-
-        trace = False
-        c = self.c ; w = self.treeWidget
-
-        p = p.copy()
-
-        if trace: g.trace(
-            'children?',p.hasChildren(),
-            'expanded?',p.isExpanded(),p.headString())
-
-        # Draw the (visible) parent node.
-        it = self.drawNode(p)
-
-        if p.hasChildren():
-            if p.isExpanded():
-                w.expandItem(it)
-                child = p.firstChild()
-                while child:
-                    self.drawTree(child)
-                    child.moveToNext()
-            else:
-                if 0: # Requires a full redraw in the expansion code.
-                    # Just draw one dummy child.
-                    self.drawNode(p.firstChild(),dummy=True)
-                else:
-                    # Draw the hidden children.
-                    child = p.firstChild()
-                    while child:
-                        self.drawNode(child)
-                        child.moveToNext()
-                w.collapseItem(it)
-        else:
-            w.collapseItem(it)
-    #@-node:ekr.20081121105001.416:drawTree
+    def redraw_after_select (self):
+        pass # Don't redraw!
+    #@-node:ekr.20081208072750.19:do-nothing redraw methods
+    #@+node:ekr.20081209064740.2:Icons
     #@+node:ekr.20081121105001.417:drawIcon
     def drawIcon (self,p):
 
-        '''Redraw the icon at p.
-        This is called from leoFind.changeSelection.'''
+        '''Redraw the icon at p.'''
 
         w = self.treeWidget
-        parent = p.parent()
-        itemOrTree = self.parentsDict.get(parent and parent.v,w)
+        itemOrTree = self.position2item(p)or w
         item = QtGui.QTreeWidgetItem(itemOrTree)
+        icon = self.getIcon(p)
+        if icon and item:
+            item.setIcon(0,icon)
+    #@-node:ekr.20081121105001.417:drawIcon
+    #@+node:ekr.20081211115412.12:drawItemIcon
+    def drawItemIcon (self,p,item):
+
+        '''Set the item's icon to p's icon.'''
 
         icon = self.getIcon(p)
-        if icon: item.setIcon(0,icon)
-    #@-node:ekr.20081121105001.417:drawIcon
-    #@-node:ekr.20081121105001.414:full_redraw & helpers
+        if icon and item:
+            item.setIcon(0,icon)
+    #@-node:ekr.20081211115412.12:drawItemIcon
     #@+node:ekr.20081121105001.418:getIcon & getIconImage
     def getIcon(self,p):
 
@@ -3808,148 +3766,6 @@ class leoQtTree (leoFrame.leoTree):
             "box%02d.GIF" % val)
 
     #@-node:ekr.20081121105001.418:getIcon & getIconImage
-    #@+node:ekr.20081121105001.419:redraw_after_clone
-    def redraw_after_clone (self):
-
-        self.full_redraw()
-    #@-node:ekr.20081121105001.419:redraw_after_clone
-    #@+node:ekr.20081121105001.420:redraw_after_contract
-    def redraw_after_contract (self):
-
-        self.full_redraw()
-    #@-node:ekr.20081121105001.420:redraw_after_contract
-    #@+node:ekr.20081121105001.421:redraw_after_delete
-    def redraw_after_delete (self):
-
-        self.full_redraw()
-
-
-    #@-node:ekr.20081121105001.421:redraw_after_delete
-    #@+node:ekr.20081121105001.422:redraw_after_expand & helper
-    def redraw_after_expand (self):
-
-        # This is reasonable now that we only allocate
-        # one dummy node in collapsed trees.
-        return self.full_redraw()
-
-        # trace = True ; verbose = False
-        # c = self.c ; p = c.currentPosition()
-        # w = self.treeWidget
-
-        # if self.redrawing:
-            # if trace: g.trace('already drawing',p.headString())
-            # return
-        # self.redrawCount += 1
-        # if trace: g.trace(self.redrawCount,p.headString())
-        # it = self.parentsDict.get(p.v)
-        # if not it:
-            # g.trace('can not happen: no item for %s' % p.headString())
-            # return self.full_redraw()
-        # self.nodeDrawCount = 0
-        # self.redrawing = True
-        # self.expanding = True
-        # try:
-            # w.expandItem(it)
-            # # Delete all the children from the tree.
-            # items = it.takeChildren()
-            # if trace and verbose:
-                # g.trace(id(it),len(items),p.headString())
-            # # Delete all descendant entries from dictionaries.
-            # for child in p.children_iter():
-                # for z in child.self_and_subtree_iter():
-                    # self.removeFromDicts(z)
-            # # Redraw all descendants.
-            # for child in p.children_iter():
-                # self.drawTree(child)
-        # finally:
-            # w.setCurrentItem(it)
-            # self.redrawing = False
-            # self.expanding = False
-            # c.requestRedrawFlag= False
-            # if trace:
-                # g.trace('drew %3s nodes' %self.nodeDrawCount)
-    #@+node:ekr.20081121105001.423:removeFromDicts
-    def removeFromDicts (self,p):
-
-        # Important: items do not necessarily exist.
-
-        # Remove item from parentsDict.
-        it = self.parentsDict.get(p.v)
-        if it: del self.parentsDict[p.v]
-
-        # Remove position from itemsDict.
-        p2 = self.itemsDict.get(it)
-        if p2 == p: del self.itemsDict[it]
-
-        # Remove items from vnodeDict
-        aList = self.vnodeDict.get(p.v,[])
-        # aList = [z for z in aList if z[1] != it] # Wrong
-        aList = [z for z in aList if z[0] != p]
-        self.vnodeDict[p.v] = aList
-
-        # Remove items from tnodeDict
-        aList = self.tnodeDict.get(p.v.t,[])
-        # aList = [z for z in aList if z[1] != it] # Wrong
-        aList = [z for z in aList if z[0] != p]
-        self.tnodeDict[p.v.t] = aList
-    #@-node:ekr.20081121105001.423:removeFromDicts
-    #@-node:ekr.20081121105001.422:redraw_after_expand & helper
-    #@+node:ekr.20081121105001.424:redraw_after_icons_changed
-    def redraw_after_icons_changed (self,all=False):
-
-        g.trace('should not be called',g.callers(4))
-
-        c = self.c ; p = c.currentPosition()
-
-        if all:
-            self.full_redraw()
-        else:
-            self.updateIcon(p)
-
-
-    #@-node:ekr.20081121105001.424:redraw_after_icons_changed
-    #@+node:ekr.20081121105001.425:redraw_after_insert
-    def redraw_after_insert (self):
-
-        self.full_redraw()
-    #@-node:ekr.20081121105001.425:redraw_after_insert
-    #@+node:ekr.20081121105001.426:redraw_after_move_down
-    def redraw_after_move_down (self):
-
-        self.full_redraw()
-    #@nonl
-    #@-node:ekr.20081121105001.426:redraw_after_move_down
-    #@+node:ekr.20081121105001.427:redraw_after_move_left
-    def redraw_after_move_left (self):
-
-        self.full_redraw()
-    #@nonl
-    #@-node:ekr.20081121105001.427:redraw_after_move_left
-    #@+node:ekr.20081121105001.428:redraw_after_move_right
-    def redraw_after_move_right (self):
-
-        if 0: # now done in c.moveOutlineRight.
-            c = self.c ; p = c.currentPosition()
-            parent = p.parent()
-            if parent: parent.expand()
-
-
-        # g.trace('parent',c.currentPosition().parent() or "non")
-
-        self.full_redraw()
-    #@-node:ekr.20081121105001.428:redraw_after_move_right
-    #@+node:ekr.20081121105001.429:redraw_after_move_up
-    def redraw_after_move_up (self):
-
-        self.full_redraw()
-    #@-node:ekr.20081121105001.429:redraw_after_move_up
-    #@+node:ekr.20081121105001.430:redraw_after_select
-    def redraw_after_select (self):
-
-        '''Redraw the screen after selecting a node.'''
-
-        pass # It is quite wrong to do an automatic redraw after select.
-    #@-node:ekr.20081121105001.430:redraw_after_select
     #@+node:ekr.20081121105001.431:updateIcon
     def updateIcon (self,p):
 
@@ -3961,11 +3777,716 @@ class leoQtTree (leoFrame.leoTree):
         if p.v.iconVal == val: return
 
         icon = self.getIconImage(val)
-        aList = self.tnodeDict.get(p.v.t,[])
-        for p,it in aList:
+        aList = self.tnode2dataDict.get(p.v.t,[])
+        for p,item in aList:
             # g.trace(id(it),p.headString())
-            it.setIcon(0,icon)
+            item.setIcon(0,icon)
     #@-node:ekr.20081121105001.431:updateIcon
+    #@-node:ekr.20081209064740.2:Icons
+    #@+node:ekr.20081121105001.415:initData
+    def initData (self):
+
+        # Important: do not clear item2vnodeDict here!
+
+        # Incremental drawing code must not use postions!
+        # These dicts are used only by event handlers.
+
+        self.tnode2dataDict = {} # Values are lists of (p,it).
+        self.vnode2dataDict = {} # Values are lists of (p,it).
+        self.item2positionDict = {} # Values are copies of positions.
+
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
+    #@-node:ekr.20081121105001.415:initData
+    #@+node:ekr.20081209064740.1:item dict getters
+    def item2position (self,item):
+        return self.item2positionDict.get(item)
+
+    def item2vnode (self,item):
+        return self.item2vnodeDict.get(item)
+
+    # Warning: invalid items may appear in item2vnodeDict.
+
+    def isValidItem (self,item):
+        return item in self.item2vnodeDict
+    #@-node:ekr.20081209064740.1:item dict getters
+    #@+node:ekr.20081208155215.1:position2item
+    def position2item (self,p):
+
+        '''Return the unique item associated with position p.'''
+
+        aList = self.vnode2dataDict.get(p.v,[])
+
+        for p2,item2 in aList:
+            if p == p2:
+                item = item2 ; break
+        else:
+            item = None
+
+        return item
+    #@-node:ekr.20081208155215.1:position2item
+    #@-node:ekr.20081209210556.1:Common drawing code
+    #@+node:ekr.20081211060950.1:Full redraw
+    if not use_partial_redraw:
+
+        #@    @+others
+        #@+node:ekr.20081209211810.1:drawChildren
+        def drawChildren (self,p,parent_item):
+
+            if p.hasChildren():
+                if p.isExpanded():
+                    self.expandItem(parent_item)
+                    child = p.firstChild()
+                    while child:
+                        self.drawTree(child,parent_item)
+                        child.moveToNext()
+                else:
+                    if 0: # Requires a full redraw in the expansion code.
+                        # Just draw one dummy child.
+                        self.drawNode(p.firstChild(),dummy=True)
+                    else:
+                        # Draw the hidden children.
+                        child = p.firstChild()
+                        while child:
+                            self.drawNode(child,parent_item)
+                            child.moveToNext()
+                    self.contractItem(parent_item)
+            else:
+                self.contractItem(parent_item)
+        #@-node:ekr.20081209211810.1:drawChildren
+        #@+node:ekr.20081121105001.164:drawNode
+        def drawNode (self,p,parent_item,dummy=False):
+
+            c = self.c ; w = self.treeWidget
+            self.nodeDrawCount += 1
+
+            # Allocate the QTreeWidget item.
+            itemOrTree = parent_item or w
+            item = QtGui.QTreeWidgetItem(itemOrTree)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+
+            # Set the headline and maybe the icon.
+            item.setText(0,p and p.headString() or '<dummy headline>')
+            if p:
+                icon = self.getIcon(p)
+                if icon: item.setIcon(0,icon)
+
+            if not dummy:
+                self.updateDicts(p,parent_item,item)
+
+            return item
+        #@-node:ekr.20081121105001.164:drawNode
+        #@+node:ekr.20081121105001.416:drawTree
+        def drawTree (self,p,parent_item=None):
+
+            # Draw the (visible) parent node.
+            item = self.drawNode(p,parent_item)
+
+            # Draw all the visible children.
+            self.drawChildren(p,parent_item=item)
+
+
+        #@-node:ekr.20081121105001.416:drawTree
+        #@+node:ekr.20081121105001.414:full_redraw
+        def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
+
+            '''Redraw all visible nodes of the tree'''
+
+            trace = True; verbose = False
+            c = self.c ; w = self.treeWidget
+            if not w: return
+            if self.redrawing:
+                g.trace('***** already drawing',g.callers(5))
+                return
+
+            self.expandAllAncestors(c.currentPosition())
+
+            self.redrawCount += 1
+            if trace: tstart()
+
+            # Init the data structures.
+            self.initData()
+            self.nodeDrawCount = 0
+            self.redrawing = True
+            self.fullDrawing = True # To suppress some traces.
+            try:
+                w.clear()
+                # Draw all top-level nodes and their visible descendants.
+                p = c.rootPosition()
+                while p:
+                    self.drawTree(p)
+                    p.moveToNext()
+            finally:
+                if not self.selecting:
+                    item = self.setCurrentItem()
+                    p = c.currentPosition()
+                    if not item and p and self.redrawCount > 1:
+                        if not g.app.unitTesting:
+                            g.trace('Error: no current item for: %s' % p)
+
+                if 0: # This causes horizontal scrolling on Ubuntu.
+                    item = w.currentItem()
+                    if item:
+                        w.scrollToItem(item,
+                            QtGui.QAbstractItemView.PositionAtCenter)
+
+                # Necessary to get the tree drawn initially.
+                w.repaint()
+
+                c.requestRedrawFlag= False
+                self.redrawing = False
+                self.fullDrawing = False
+                if trace:
+                    theTime = tstop()
+                    g.trace('%s: drew %3s nodes in %s' % (
+                        self.redrawCount,self.nodeDrawCount,theTime))
+
+        # Compatibility
+        if not use_partial_redraw:
+            redraw = full_redraw 
+            redraw_now = full_redraw
+            redraw_after_clone = full_redraw
+            redraw_after_contract = full_redraw
+            redraw_after_delete = full_redraw
+            redraw_after_expand = full_redraw
+            redraw_after_insert = full_redraw
+            redraw_after_move_down = full_redraw
+            redraw_after_move_left = full_redraw
+            redraw_after_move_right = full_redraw
+            redraw_after_move_up = full_redraw
+        #@-node:ekr.20081121105001.414:full_redraw
+        #@+node:ekr.20081209210556.2:updateDicts
+        def updateDicts (self,p,parent_item,item):
+
+            # Important: the item2vnodeDict is *not* cleared by initData.
+            # Entries in this dict are persistent.
+
+            self.item2vnodeDict[item] = p.v
+
+            # Important: the following dicts are used only by event handlers.
+            # They are *not* to be used by the incremental drawing code!
+
+            # Remember the position, vnode and tnode of each item.
+            self.item2positionDict[item] = p.copy()
+
+            # Remember list of all (p,item) for each v.
+            aList = self.vnode2dataDict.get(p.v,[])
+            data = p.copy(),item
+            aList.append(data)
+            self.vnode2dataDict[p.v] = aList
+
+            # Remember list all (p,item) for each t.
+            aList = self.tnode2dataDict.get(p.v.t,[])
+            data = p.copy(),item
+            aList.append(data)
+            self.tnode2dataDict[p.v.t] = aList
+        #@-node:ekr.20081209210556.2:updateDicts
+        #@-others
+    #@-node:ekr.20081211060950.1:Full redraw
+    #@+node:ekr.20081211060950.2:Partial redraw
+    if use_partial_redraw:
+
+        #@    @+others
+        #@+node:ekr.20081211123349.10:high-level helpers
+        #@+node:ekr.20081211060950.12:createChildren
+        def createChildren (self,p,parent_item):
+
+            if p.hasChildren():
+                child = p.firstChild()
+                self.expandItem(parent_item) # May contract later.
+                if p.isExpanded():
+                    while child:
+                        self.createTree(child,parent_item)
+                        child.moveToNext()
+                else:
+                    while child:
+                        if 0: # Create all descendants.
+                            self.createTree(child,parent_item)
+                        else: # Create one level of hidden children.
+                            self.createItem(child,parent_item)
+                        child.moveToNext()
+                    self.contractItem(parent_item)
+            else:
+                self.contractItem(parent_item)
+        #@-node:ekr.20081211060950.12:createChildren
+        #@+node:ekr.20081211060950.14:createTree
+        def createTree (self,p,parent_item=None):
+
+            # Create the (visible) parent node.
+            item = self.createItem(p,parent_item)
+
+            # Create all the visible children.
+            self.createChildren(p,parent_item=item)
+
+
+        #@-node:ekr.20081211060950.14:createTree
+        #@+node:ekr.20081209064740.16:deleteChildItems
+        def deleteChildItems(self,p,parent_item):
+
+            '''Delete all child items of the parent_item,
+            thereby clearing the expansion box.'''
+
+            trace = False
+
+            child_items = self.childItems(parent_item)
+            assert not p.firstChild()
+
+            n = 0
+            for item in child_items:
+                self.deleteItem(parent_item,item)
+                n += 1
+
+            if trace and n:
+                g.trace('deleted %s items' % (n))
+        #@-node:ekr.20081209064740.16:deleteChildItems
+        #@+node:ekr.20081209103009.13:deleteNthItem
+        def deleteNthItem(self,n,parent_item,item):
+
+            trace = False and not g.app.unitTesting
+
+            if trace and self.redrawCount > 1:
+                g.trace('%3s' % n)
+
+            child_items = self.childItems(parent_item)
+
+            if n < len(child_items):
+                # A crucial constraint.
+                assert item==child_items[n], (
+                    'item: %s, n: %s, child_items: %s' % (
+                        item,n,child_items))
+
+                self.deleteItem(parent_item,item)
+            else:
+                self.oops('bad item',n,item)
+        #@-node:ekr.20081209103009.13:deleteNthItem
+        #@+node:ekr.20081209103009.17:insertNthChild
+        def insertNthChild(self,p,n,parent_item,hidden=False):
+
+            '''Insert an item tree as the n'th child of the parent item.'''
+
+            trace = False and not g.app.unitTesting
+
+            if trace and self.redrawCount > 1:
+                g.trace(hidden,n,p)
+
+            item = self.createNthChildItem(p,n,parent_item)
+
+            if not hidden:
+                self.createChildren(p,item)
+        #@-node:ekr.20081209103009.17:insertNthChild
+        #@+node:ekr.20081209103009.18:replaceNthItem
+        def replaceNthItem(self,p,n,parent_item,item,hidden=False):
+
+            trace = False
+
+            if trace and self.redrawCount > 1:
+                g.trace('%3s' % (n),p,g.callers(4))
+
+            self.deleteNthItem(n,parent_item,item)
+
+            item = self.createNthChildItem(p,n,parent_item)
+
+            if not hidden:
+                self.createChildren(p,parent_item=item)
+
+
+        #@-node:ekr.20081209103009.18:replaceNthItem
+        #@+node:ekr.20081209103009.12:updateNthSib
+        def updateNthSib(self,p,n,sibs,parent_item,hidden=False):
+
+            '''Update the pair (p,item), making the result the
+            n'th child item of parent_item.'''
+
+            sib_items = self.childItems(parent_item)
+            item = sib_items[n]
+
+            # A crucial assert
+            assert p == sibs[n],'p: %s, n: %s, sibs: %s' % (
+                p,n,sibs)
+
+            item_v = self.item2vnode(item)
+            next_p = p.next()
+            next_p_v = next_p and next_p.v
+
+            if item_v == p.v: # An exact match.
+                return
+
+            if n + 1 < len(sibs) and n + 1 < len(sib_items):
+                next_p = sibs[n+1]
+                next_p_item = sib_items[n+1]
+                next_item = sib_items[n+1]
+                next_item_v = self.item2vnode(next_item)
+                if p.v == next_item_v and next_p.v == item_v:
+                    self.swapNthItems(p,n,parent_item)
+                elif p.v == next_item_v:
+                    # Note: no position exists for the deleted node
+                    self.deleteNthItem(n,parent_item,item)
+                elif item_v == next_p_v:
+                    self.insertNthChild(p,n,parent_item,hidden=hidden)
+                else:
+                    if self.redrawCount > 1: g.pdb()
+                    self.replaceNthItem(p,n,parent_item,item,hidden=hidden)
+            else:
+                self.replaceNthItem(p,n,parent_item,item,hidden=hidden)
+        #@-node:ekr.20081209103009.12:updateNthSib
+        #@+node:ekr.20081209103009.10:updateSibs
+        def updateSibs (self,p,parent_item,hidden=False):
+
+            '''Update each sibling in turn.'''
+
+            trace = False ; verbose = False
+            sibs = [z for z in p.self_and_siblings_iter(copy=True)]
+
+            # Compare unchanging new nodes with changing tree items.
+            for n,p in zip(range(len(sibs)),sibs):
+                n_items = self.numberOfChildItems(parent_item)
+                if trace:
+                    if verbose:g.trace('n: %s, n_items: %s' % (n,n_items))
+                    else: g.trace(n,p)
+                if n_items < n:
+                    return self.oops('n_items: %s, n: %s' % (n_items,n))
+
+                if n_items <= n:
+                    self.insertNthChild(p,n,parent_item,hidden=hidden)
+                else:
+                    self.updateNthSib(p,n,sibs,parent_item,hidden=hidden)
+
+            # Delete any trailing items.
+            children = self.childItems(parent_item)
+            tail_items = children[len(sibs):]
+            for item in tail_items:
+                self.deleteItem(parent_item,item)
+        #@-node:ekr.20081209103009.10:updateSibs
+        #@+node:ekr.20081208072750.15:updateTree
+        def updateTree (self,p,parent_item,level=0):
+
+            trace = False
+
+            # Step one: synchonize the tree items with p and it's siblings.
+            self.updateSibs (p,parent_item)
+            sibs = [z for z in p.self_and_siblings_iter(copy=True)]
+            sib_items = self.childItems(parent_item)
+
+            if trace:
+                g.trace('level: %s, len(sibs): %s, len(sib_items): %s' % (
+                    level,len(sibs),len(sib_items)))
+                g.trace('\n%s' % g.listToString(sibs))
+
+            if len(sibs) != len(sib_items):
+                return self.oops('sibs:\n%s\nsib_items:\n%s' % (
+                    g.listToString(sibs),g.listToString(sib_items)))
+
+            # Step two: recursively examine all visible child nodes & items.
+            for p,sib_item in zip(sibs,sib_items):
+                if p.hasChildren():
+                    if p.isExpanded():
+                        child = p.firstChild()
+                        self.updateTree(child,sib_item,level=level+1)
+                        self.expandItem(sib_item)
+                    else:
+                        # Update just the hidden direct children.
+                        child = p.firstChild()
+                        self.updateSibs(child,parent_item=sib_item,hidden=True)
+                        self.contractItem(sib_item)
+                else:
+                    # Disable the expansion indicator.
+                    self.deleteChildItems(p,parent_item=sib_item)
+                    self.contractItem(sib_item)
+        #@-node:ekr.20081208072750.15:updateTree
+        #@-node:ekr.20081211123349.10:high-level helpers
+        #@+node:ekr.20081211123349.11:low-level helpers
+        # These hide details of QTreeWidgetItems.
+        #@nonl
+        #@+node:ekr.20081208072750.16:childItems
+        def childItems (self,parent_item):
+
+            '''Return the list of child items of the parent item,
+            or the top-level items if parent_item is None.'''
+
+
+            if parent_item:
+                n = parent_item.childCount()
+                items = [parent_item.child(z) for z in range(n)]
+            else:
+                w = self.treeWidget
+                n = w.topLevelItemCount()
+                items = [w.topLevelItem(z) for z in range(n)]
+
+            return items
+        #@-node:ekr.20081208072750.16:childItems
+        #@+node:ekr.20081211060950.13:createItem
+        def createItem (self,p,parent_item):
+
+            c = self.c ; w = self.treeWidget
+            self.nodeDrawCount += 1
+
+            # Allocate the QTreeWidget item.
+            itemOrTree = parent_item or w
+            item = QtGui.QTreeWidgetItem(itemOrTree)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+
+            # Set the headline and maybe the icon.
+            item.setText(0,p and p.headString() or '<dummy headline>')
+            if p:
+                icon = self.getIcon(p)
+                if icon: item.setIcon(0,icon)
+
+            self.rememberItem(p,item)
+
+            return item
+        #@-node:ekr.20081211060950.13:createItem
+        #@+node:ekr.20081209211810.2:createNthChildItem
+        def createNthChildItem(self,p,n,parent_item):
+
+            '''Insert an item for p as the n'th child of parent_item.'''
+
+            # Similar to createItem
+
+            trace = False
+            c = self.c ; w = self.treeWidget
+            self.nodeDrawCount += 1
+
+            # Allocate the QTreeWidget item.
+            itemOrTree = parent_item or w
+            item = QtGui.QTreeWidgetItem()
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+
+            # Insert the item as the n'th child of the parent item.
+            if trace: g.trace('parent_item: %s, item: %s' % (parent_item,item))
+            if parent_item:
+                parent_item.insertChild(n,item)
+            else:
+                w.insertTopLevelItem(n,item)
+
+            # Set the headline and maybe the icon.
+            item.setText(0,p and p.headString() or '<dummy headline>')
+            if p:
+                icon = self.getIcon(p)
+                if icon: item.setIcon(0,icon)
+
+            self.rememberItem(p,item)
+
+            return item
+        #@-node:ekr.20081209211810.2:createNthChildItem
+        #@+node:ekr.20081208072750.18:deleteItem
+        def deleteItem (self,parent_item,item):
+
+            '''Delete the item and forget all items in the entire tree.'''
+
+            # Important: No p exists for the deleted item.
+            # However an entry in item2vnodeDict does exist.
+
+            # Remove the item and all its descendants from item2vnodeDict.
+            self.forgetItem(item)
+
+            if parent_item:
+                parent_item.removeChild(item)
+            else:
+                child_items = self.childItems(parent_item)
+                if item in child_items:
+                    w = self.treeWidget
+                    n = child_items.index(item)
+                    w.takeTopLevelItem(n)
+                else:
+                    self.oops('item not in top level',item)
+        #@-node:ekr.20081208072750.18:deleteItem
+        #@+node:ekr.20081211060950.15:forgetItem
+        def forgetItem (self,item):
+
+            '''Remove the item and all its descendant items
+            from the item2vnodeDict.'''
+
+            d = self.item2vnodeDict
+            if item in d:
+                # g.trace(id(item))
+                del d[item]
+            else:
+                self.oops('not in item2vnodeDict: %s' % item)
+
+            child_items = self.childItems(item)
+
+            for child_item in child_items:
+                self.forgetItem(child_item)
+        #@-node:ekr.20081211060950.15:forgetItem
+        #@+node:ekr.20081209103009.15:numberofChildItems
+        def numberOfChildItems (self,parent_item):
+
+            '''Return the number child items of the parent item,
+            or the number of top-level items if parent_item is None.'''
+
+            if parent_item:
+                n = parent_item.childCount()
+            else:
+                w = self.treeWidget
+                n = w.topLevelItemCount()
+
+            return n
+        #@-node:ekr.20081209103009.15:numberofChildItems
+        #@+node:ekr.20081211060950.16:rememberItem
+        def rememberItem (self,p,item):
+
+            # Important: this dict is *not* cleared by initData.
+            # Entries in this dict are persistent.
+
+            self.item2vnodeDict[item] = p.v
+        #@-node:ekr.20081211060950.16:rememberItem
+        #@+node:ekr.20081209103009.19:swapNthItems
+        def swapNthItems(self,p,n,parent_item):
+
+            '''Swap the n'th and n+1'st items.'''
+
+            # g.trace(n,p)
+
+            child_items = self.childItems(parent_item)
+
+            if n + 1 < len(child_items):
+                child1 = child_items[n]
+                child2 = child_items[n+1]
+                if parent_item:
+                    parent_item.removeChild(child1)
+                    parent_item.removeChild(child2)
+                    parent_item.insertChild(n,child2)
+                    parent_item.insertChild(n+1,child1)
+                else:
+                    w = self.treeWidget
+                    w.takeTopLevelItem(n)
+                    w.takeTopLevelItem(n)
+                    w.insertTopLevelItem(n,child2)
+                    w.insertTopLevelItem(n+1,child1)
+            else:
+                self.oops('bad n: %s,len(child_items): %s' % (
+                    n,len(child_items)))
+        #@-node:ekr.20081209103009.19:swapNthItems
+        #@+node:ekr.20081211060950.19:updateHeadline
+        def updateHeadline (self,p,item):
+
+            item.setText(0,p.headString())
+        #@-node:ekr.20081211060950.19:updateHeadline
+        #@-node:ekr.20081211123349.11:low-level helpers
+        #@+node:ekr.20081208072750.10:partial_redraw
+        def partial_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
+
+            '''Redraw the tree, minimizing the actual changes made to the tree.'''
+
+            trace = True; verbose = False
+            c = self.c ; w = self.treeWidget
+            if not w: return
+            if self.redrawing:
+                if trace: g.trace('***** already drawing',g.callers(4))
+                return
+
+            self.redrawCount += 1
+            if trace: tstart()
+
+            self.nodeDrawCount = 0
+            self.redrawing = True
+            try:
+                self.expandAllAncestors(c.currentPosition())
+                self.initData()
+                p = c.rootPosition()
+                self.updateTree(p,parent_item=None)
+                self.postPass()
+            finally:
+                if not self.selecting:
+                    item = self.setCurrentItem()
+                    if p and not item and self.redrawCount > 1:
+                        if not g.app.unitTesting:
+                            g.trace('Error: no current item: %s' % (
+                                p.headString()))
+
+                if 0: # Very slow for unit tests.
+                    w.repaint()
+                c.requestRedrawFlag = False
+                self.redrawing = False
+                if trace:
+                    theTime = tstop()
+                    if self.nodeDrawCount and not g.app.unitTesting:
+                        g.trace('%s: drew %3s nodes in %s' % (
+                            self.redrawCount,self.nodeDrawCount,theTime))
+                    # if verbose: g.trace(g.callers(4))
+
+        # Compatibility
+        if use_partial_redraw:
+            redraw = partial_redraw 
+            redraw_now = partial_redraw
+            redraw_after_clone = partial_redraw
+            redraw_after_contract = partial_redraw
+            redraw_after_delete = partial_redraw
+            redraw_after_expand = partial_redraw
+            redraw_after_insert = partial_redraw
+            redraw_after_move_down = partial_redraw
+            redraw_after_move_left = partial_redraw
+            redraw_after_move_right = partial_redraw
+            redraw_after_move_up = partial_redraw
+        #@-node:ekr.20081208072750.10:partial_redraw
+        #@+node:ekr.20081211060950.18:postPass & helpers
+        testing = True
+            # True: enable internal unit tests in postPass and helpers.
+
+        def postPass (self):
+
+            c = self.c ; p = c.rootPosition()
+
+            self.rememberSibs(p,parent_item=None)
+
+            if self.testing:
+                c = self.c
+                p = c.rootPosition()
+                while p:
+                    assert p.v in self.vnode2dataDict
+                    assert p.v.t in self.tnode2dataDict
+                    p.moveToVisNext(c)
+
+        #@+node:ekr.20081211172745.10:rememberSibs
+        def rememberSibs (self,p,parent_item):
+
+            sib_items = self.childItems(parent_item)
+            sibs = [z for z in p.self_and_siblings_iter(copy=True)]
+
+            if self.testing: assert len(sib_items) == len(sibs), (
+                'items: %s, sibs: %s, p: %s' % (
+                    len(sib_items),len(sibs),p))
+
+            for p2,item in zip(sibs,sib_items):
+
+                if self.testing: assert self.isValidItem(item),(
+                    'item: %s, p: %s' % (item,p))
+
+                self.updateHeadline(p2,item)
+                self.drawItemIcon(p2,item)
+                self.rememberPosition(p2,item)
+
+                # We remember only visible positions,
+                # regardless of whether all nodes are drawn or not.
+                if p2.hasChildren() and p2.isExpanded():
+                    self.rememberSibs(p2.firstChild(),parent_item=item)
+        #@nonl
+        #@-node:ekr.20081211172745.10:rememberSibs
+        #@+node:ekr.20081211060950.17:rememberPosition
+        def rememberPosition (self,p,item):
+
+            # The following dicts are used only by event handlers.
+            # They are *not* to be used by the incremental drawing code!
+
+            # Remember the position, vnode and tnode of each item.
+            self.item2positionDict[item] = p.copy()
+
+            # Remember list of all (p,item) for each v.
+            aList = self.vnode2dataDict.get(p.v,[])
+            data = p.copy(),item
+            aList.append(data)
+            self.vnode2dataDict[p.v] = aList
+
+            # Remember list all (p,item) for each t.
+            aList = self.tnode2dataDict.get(p.v.t,[])
+            data = p.copy(),item
+            aList.append(data)
+            self.tnode2dataDict[p.v.t] = aList
+        #@-node:ekr.20081211060950.17:rememberPosition
+        #@-node:ekr.20081211060950.18:postPass & helpers
+        #@-others
+    #@-node:ekr.20081211060950.2:Partial redraw
     #@-node:ekr.20081121105001.412:Drawing... (qtTree)
     #@+node:ekr.20081121105001.432:Event handlers... (qtTree)
     #@+node:ekr.20081121105001.433:Click Box...
@@ -4138,7 +4659,7 @@ class leoQtTree (leoFrame.leoTree):
         e = w.itemWidget(item,0)
         if not e:
             return g.trace('*** no e')
-        p = self.itemsDict.get(item)
+        p = self.item2positionDict.get(item)
         if not p:
             return g.trace('*** no p')
         # Hook up the widget to Leo's core.
@@ -4168,7 +4689,7 @@ class leoQtTree (leoFrame.leoTree):
 
         item = w.currentItem()
         if trace and verbose: g.trace('item',item)
-        p = self.itemsDict.get(item)
+        p = self.item2positionDict.get(item)
         if p:
             if trace: g.trace(p and p.headString())
             c.frame.tree.select(p) # The crucial hook.
@@ -4182,8 +4703,8 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.442:setCurrentItem
     def setCurrentItem (self):
 
+        trace = False ; verbose = True
         c = self.c ; p = c.currentPosition()
-        trace = False
         w = self.treeWidget
 
         if self.expanding:
@@ -4192,28 +4713,24 @@ class leoQtTree (leoFrame.leoTree):
         if self.selecting:
             if trace: g.trace('already selecting')
             return None
-
-        aList = self.vnodeDict.get(p.v,[])
-        h = p and p.headString() or '<no p!>'
-        if not p: return False
-
-        for p2,item in aList:
-            if p == p2:
-                if trace: g.trace('found: %s, %s' % (id(item),h))
-                # Actually select the item only if necessary.
-                # This prevents any side effects.
-                item2 = w.currentItem()
-                if item != item2:
-                    if trace: g.trace(item==item,'old item',item2)
-                    self.selecting = True
-                    try:
-                        w.setCurrentItem(item)
-                    finally:
-                        self.selecting = False
-                return item
-        else:
-            if trace: g.trace('** no item for',p.headString())
+        if not p:
+            if trace: g.trace('** no p')
             return None
+
+        item = self.position2item(p)
+        if not item:
+            if trace: g.trace('** no item for',p)
+            return None
+
+        item2 = w.currentItem()
+        if item != item2:
+            if trace and verbose: g.trace('item',item,'old item',item2)
+            self.selecting = True
+            try:
+                w.setCurrentItem(item)
+            finally:
+                self.selecting = False
+        return item
     #@-node:ekr.20081121105001.442:setCurrentItem
     #@+node:ekr.20081121105001.443:sig_itemChanged
     def sig_itemChanged(self, item, col):
@@ -4225,7 +4742,7 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing:
             return
 
-        p = self.itemsDict.get(item)
+        p = self.item2positionDict.get(item)
         if p:
             # so far, col is always 0
             s = g.app.gui.toUnicode(item.text(col))
@@ -4257,7 +4774,7 @@ class leoQtTree (leoFrame.leoTree):
 
         if trace: g.trace(p.headString() or "<no p>",g.callers(4))
 
-        p2 = self.itemsDict.get(item)
+        p2 = self.item2positionDict.get(item)
         if p2:
             p2.contract()
             c.setCurrentPosition(p2)
@@ -4275,7 +4792,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # The difficult case is when the user clicks the expansion box.
 
-        trace = False ; verbose = True
+        trace = False ; verbose = False
         c = self.c ; p = c.currentPosition() ; w = self.treeWidget
 
         # Ignore events generated by redraws.
@@ -4291,30 +4808,24 @@ class leoQtTree (leoFrame.leoTree):
 
         if trace: g.trace(p.headString() or "<no p>",g.callers(4))
 
-        self.expanding = True
         try:
-            self.full_redraw()
+            self.expanding = True
+            p2 = self.item2positionDict.get(item)
+            if p2:
+                if trace: g.trace(p2)
+                if not p2.isExpanded():
+                    p2.expand()
+                c.setCurrentPosition(p2)
+                if use_partial_redraw:
+                    self.partial_redraw()
+                else:
+                    self.full_redraw()
+            else:
+                g.trace('Error no p2')
+
         finally:
             self.expanding = False
             self.setCurrentItem()
-
-        # try:
-            # redraw = False
-            # p2 = self.itemsDict.get(item)
-            # if p2:
-                # if trace: g.trace(p2)
-                # if not p2.isExpanded():
-                    # p2.expand()
-                # c.setCurrentPosition(p2)
-                # self.full_redraw()
-                # redraw = True
-            # else:
-                # g.trace('Error no p2')
-
-        # finally:
-            # self.expanding = False
-            # if redraw:
-                # item = self.setCurrentItem()
     #@-node:ekr.20081121105001.445:sig_itemExpanded
     #@+node:ekr.20081121105001.446:tree.OnPopup & allies
     def OnPopup (self,p,event):
@@ -4486,6 +4997,11 @@ class leoQtTree (leoFrame.leoTree):
         # g.trace('leoQtTree',self.treeWidget,g.callers(4))
         g.app.gui.set_focus(self.c,self.treeWidget)
     #@-node:ekr.20081121105001.453:Focus (qtTree)
+    #@+node:ekr.20081209103009.11:oops
+    def oops(self,s):
+        if not g.app.unitTesting:
+            g.trace('*** %s, %s' % (s,g.callers(4)))
+    #@-node:ekr.20081209103009.11:oops
     #@+node:ekr.20081121105001.454:Selecting & editing... (qtTree)
     #@+node:ekr.20081124113700.11:editPosition
     def editPosition(self):
@@ -4560,6 +5076,8 @@ class leoQtTree (leoFrame.leoTree):
 
         This is called from the undo/redo logic to change the text before redrawing.'''
 
+        # g.trace(p,s)
+
         # w = self.edit_widget(p)
         # if w:
             # w.configure(state='normal')
@@ -4584,26 +5102,19 @@ class leoQtTree (leoFrame.leoTree):
             return
         if self._editWidget:
             # Not an error, because of key weirdness.
-            g.trace('already editing')
+            if trace: g.trace('already editing')
             return
 
-        if trace:
-            g.trace('*** all',selectAll,p.headString(),g.callers(4))
+        if trace: g.trace('***',p and p.headString(),g.callers(4))
 
         w = self.treeWidget
-        data = self.vnodeDict.get(p.v)
+        data = self.vnode2dataDict.get(p.v)
         if not data:
             if trace and verbose:
                 g.trace('No data: redrawing if possible')
             c.outerUpdate() # Do any scheduled redraw.
-            data = self.vnodeDict.get(p.v)
 
-        if data:
-            item = data [0][1]
-        else:
-            if trace and not g.app.unitTesting:
-                g.trace('*** Can not happen: no data',p and p.headString())
-            return None
+        item = self.position2item(p)
 
         if item:
             w.setCurrentItem(item) # Must do this first.
@@ -4621,16 +5132,16 @@ class leoQtTree (leoFrame.leoTree):
                 e.setObjectName('headline')
                 e.setSelection(start,n)
                 e.setFocus()
-            else: g.trace('*** no e')
+            else: self.oops('no edit widget')
         else:
             self._editWidgetPosition = None
             self._editWidget = None
             self._editWidgetWrapper = None
             e = None
-            g.trace('*** no item')
+            self.oops('no item: %s' % p)
 
         # A nice hack: just set the focus request.
-        c.requestedFocusWidget = e
+        if e: c.requestedFocusWidget = e
     #@-node:ekr.20081121105001.156:editLabel (override)
     #@+node:ekr.20081121105001.458:editLabelHelper
     def editLabelHelper (self,item):
@@ -4896,12 +5407,17 @@ class leoQtGui(leoGui.leoGui):
     #@nonl
     #@-node:ekr.20081121105001.183:Clipboard
     #@+node:ekr.20081121105001.478:Do nothings
-    def color (self,color):         return None
+    def color (self,color):
+        return None
 
-    def createRootWindow(self):     pass
+    def createRootWindow(self):
+        pass
 
     def killGui(self,exitFlag=True):
         """Destroy a gui and terminate Leo if exitFlag is True."""
+
+    def killPopupMenu(self):
+        pass
 
     def recreateRootWindow(self):
         """Create the hidden root window of a gui
@@ -5088,19 +5604,56 @@ class leoQtGui(leoGui.leoGui):
     #@nonl
     #@-node:ekr.20081121105001.488:runOpenFileDialog
     #@+node:ekr.20081121105001.489:runSaveFileDialog
-    def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
+    def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
 
         """Create and run an Qt save file dialog ."""
 
         parent = None
-        filter = self.makeFilter(filetypes)
-        s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter)
+        filter_ = self.makeFilter(filetypes)
+        s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
         return g.app.gui.toUnicode(s)
     #@-node:ekr.20081121105001.489:runSaveFileDialog
     #@+node:ekr.20081121105001.490:runScrolledMessageDialog
-    def runScrolledMessageDialog (self,title,label,msg):
+    def runScrolledMessageDialog (self, title='Message', label= '', msg='', c=None, **kw):
 
         if g.unitTesting: return None
+
+        def send(title=title, label=label, msg=msg, c=c, kw=kw):
+            return g.doHook('scrolledMessage', title=title, label=label, msg=msg, c=c, **kw)
+
+        if not c or not c.exists:
+            #@        << no c error>>
+            #@+node:leohag.20081205043707.12:<< no c error>>
+            g.es_print_error("The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c' as a keyword argument.\n\t%s"% g,callers())
+            #@nonl
+            #@-node:leohag.20081205043707.12:<< no c error>>
+            #@nl
+        else:        
+            retval = send()
+            if retval: return retval
+            #@        << load scrolledmessage plugin >>
+            #@+node:leohag.20081205043707.14:<< load scrolledmessage plugin >>
+            import leo.core.leoPlugins as leoPlugins
+            sm = leoPlugins.getPluginModule('scrolledmessage')
+
+            if not sm:
+                sm = leoPlugins.loadOnePlugin('scrolledmessage',verbose=True)
+                if sm:
+                    g.es('scrolledmessage plugin loaded.', color='blue')
+                    sm.onCreate('tag',{'c':c})
+            #@-node:leohag.20081205043707.14:<< load scrolledmessage plugin >>
+            #@nl
+            retval = send()
+            if retval: return retval
+            #@        << no dialog error >>
+            #@+node:leohag.20081205043707.11:<< no dialog error >>
+            g.es_print_error('The handler for the "scrolledMessage" hook appears to be missing or not working.\n\t%s'%g.callers())
+            #@nonl
+            #@-node:leohag.20081205043707.11:<< no dialog error >>
+            #@nl
+
+        #@    << emergency fallback >>
+        #@+node:leohag.20081205043707.13:<< emergency fallback >>
 
         b = QtGui.QMessageBox
         d = b(None) # c.frame.top)
@@ -5111,6 +5664,9 @@ class leoQtGui(leoGui.leoGui):
         d.setIcon(b.Information)
         yes = d.addButton('Ok',b.YesRole)
         d.exec_()
+        #@nonl
+        #@-node:leohag.20081205043707.13:<< emergency fallback >>
+        #@nl
     #@-node:ekr.20081121105001.490:runScrolledMessageDialog
     #@-node:ekr.20081121105001.479:Dialogs & panels
     #@+node:ekr.20081121105001.491:Focus (qtGui)
@@ -5386,7 +5942,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         self.ps = {} # item=> pos
 
     def textChanged(self):
-        print "New text", self.ui.lineEdit.text()
+        g.trace("New text", self.ui.lineEdit.text())
         idx = 0
         self.ui.tableWidget.clear()
         for p in self.match_headlines(
@@ -5399,13 +5955,12 @@ class LeoQuickSearchWidget(QtGui.QWidget):
 
         self.ui.tableWidget.setRowCount(idx)
 
-        print "Matches",idx
+        g.trace("Matches",idx)
 
     def cellClicked (self, row, column ) :
         p = self.ps[row]
-        print "Go to pos",p
+        g.trace("Go to pos",p)
         self.c.selectPosition(p)
-
 
     def match_headlines(self, pat):
 
@@ -5443,7 +5998,7 @@ class QuickHeadlines:
 
     def update(self):
 
-        print "quickheadlines update"
+        g.trace("quickheadlines update")
         self.requested = False
         self.listWidget.clear()
         p = self.c.currentPosition()
@@ -5910,7 +6465,1656 @@ class leoQtEventFilter(QtCore.QObject):
     #@-others
 #@-node:ekr.20081121105001.166:class leoQtEventFilter
 #@-node:ekr.20081121105001.513:Key handling
-#@+node:ekr.20081121105001.515:Text widget classes...
+#@+node:ekr.20081204090029.1:Syntax coloring
+#@+node:ekr.20081205131308.15:leoQtColorizer
+class leoQtColorizer:
+
+    '''An adaptor class that interfaces Leo's core to two class:
+
+    1. a subclass of QSyntaxHighlighter,
+
+    2. the jEditColorizer class that contains the
+       pattern-matchin code from the threading colorizer plugin.'''
+
+    #@    @+others
+    #@+node:ekr.20081205131308.16:ctor (leoQtColorizer)
+    def __init__ (self,c,w):
+
+        self.c = c
+        self.w = w
+
+        # g.trace(self,c,w)
+
+        self.count = 0 # For unit testing.
+        self.enabled = True
+
+        self.highlighter = leoQtSyntaxHighlighter(c,w)
+        self.colorer = self.highlighter.colorer
+    #@-node:ekr.20081205131308.16:ctor (leoQtColorizer)
+    #@+node:ekr.20081205131308.18:colorize
+    def colorize(self,p,incremental=False,interruptable=True):
+
+        '''The main colorizer entry point.'''
+
+        self.count += 1 # For unit testing.
+
+        if self.enabled:
+            self.highlighter.rehighlight()
+
+        return "ok" # For unit testing.
+    #@-node:ekr.20081205131308.18:colorize
+    #@+node:ekr.20081207061047.10:entry points
+    def disable (self):
+        self.colorer.enabled=False
+
+    def enable (self):
+        self.colorer.enabled=True
+
+    def interrupt(self):
+        pass
+
+    def isSameColorState (self):
+        return False
+
+    def kill (self):
+        pass
+
+    def scanColorDirectives(self,p):
+        return self.colorer.scanColorDirectives(p)
+
+    def updateSyntaxColorer (self,p):
+        return self.colorer.updateSyntaxColorer(p)
+
+    def useSyntaxColoring (self,p):
+        return self.colorer.useSyntaxColoring(p)
+    #@-node:ekr.20081207061047.10:entry points
+    #@-others
+
+#@-node:ekr.20081205131308.15:leoQtColorizer
+#@+node:ekr.20081205131308.27:leoQtSyntaxHighlighter
+class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
+
+    '''A subclass of QSyntaxHighlighter that overrides
+    the highlightBlock and rehighlight methods.
+
+    All actual syntax coloring is done in the jeditColorer class.'''
+
+    #@    @+others
+    #@+node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
+    def __init__ (self,c,w):
+
+        self.c = c
+        self.w = w
+
+        # Init the base class.
+        QtGui.QSyntaxHighlighter.__init__(self,w)
+
+        self.colorer = jEditColorizer(
+            c,highlighter=self,
+            w=c.frame.body.bodyCtrl)
+    #@-node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
+    #@+node:ekr.20081205131308.11:highlightBlock
+    def highlightBlock (self,s):
+
+        colorer = self.colorer
+        s = unicode(s)
+        # g.trace(s) # s does not include a newline.
+        colorer.recolor(s)
+    #@-node:ekr.20081205131308.11:highlightBlock
+    #@+node:ekr.20081206062411.15:rehighlight
+    def rehighlight (self):
+
+        '''Override base rehighlight method'''
+
+        # g.trace('*****')
+
+        self.colorer.init()
+
+        # Call the base class method.
+        QtGui.QSyntaxHighlighter.rehighlight(self)
+
+    #@-node:ekr.20081206062411.15:rehighlight
+    #@-others
+#@-node:ekr.20081205131308.27:leoQtSyntaxHighlighter
+#@+node:ekr.20081205131308.48:class jeditColorizer
+class jEditColorizer:
+
+    '''This class contains the pattern matching code
+    from the threading_colorizer plugin, adapted for
+    use with QSyntaxHighlighter.'''
+
+    #@    @+others
+    #@+node:ekr.20081205131308.49: Birth & init
+    #@+node:ekr.20081205131308.50:__init__ (threading colorizer)
+    def __init__(self,c,highlighter,w):
+
+        # Basic data...
+        self.c = c
+        self.highlighter = highlighter # a QSyntaxHighlighter
+        self.p = None
+        self.s = '' # The string being colorized.
+        self.w = w
+        assert(w == self.c.frame.body.bodyCtrl)
+
+        # Used by recolor and helpers...
+        self.actualColorDict = {} # Used only by setTag.
+        self.global_i,self.global_j = 0,0 # The global bounds of colorizing.
+        self.nextState = 1 # Dont use 0.
+        self.stateDict = {} # Keys are state numbers, values are data.
+
+        # Attributes dict ivars: defaults are as shown...
+        self.default = 'null'
+        self.digit_re = ''
+        self.escape = ''
+        self.highlight_digits = True
+        self.ignore_case = True
+        self.no_word_sep = ''
+        # Config settings...
+        self.comment_string = None # Set by scanColorDirectives on @comment
+        self.showInvisibles = False # True: show "invisible" characters.
+        self.underline_undefined = c.config.getBool("underline_undefined_section_names")
+        self.use_hyperlinks = c.config.getBool("use_hyperlinks")
+        self.enabled = c.config.getBool('use_syntax_coloring')
+        # Debugging...
+        self.count = 0 # For unit testing.
+        self.allow_mark_prev = True # The new colorizer tolerates this nonsense :-)
+        self.trace = False or c.config.getBool('trace_colorizer')
+        self.trace_leo_matches = False
+        self.trace_match_flag = False # (Useful) True: trace all matching methods.
+        self.verbose = False
+        # Mode data...
+        self.comment_string = None # Can be set by @comment directive.
+        self.defaultRulesList = []
+        self.flag = True # True unless in range of @nocolor
+        self.importedRulesets = {}
+        self.language = 'python' # set by scanColorDirectives.
+        self.prev = None # The previous token.
+        self.fonts = {} # Keys are config names.  Values are actual fonts.
+        self.keywords = {} # Keys are keywords, values are 0..5.
+        self.modes = {} # Keys are languages, values are modes.
+        self.mode = None # The mode object for the present language.
+        self.modeBunch = None # A bunch fully describing a mode.
+        self.modeStack = []
+        self.rulesDict = {}
+        # self.defineAndExtendForthWords()
+        self.word_chars = [] # Inited by init_keywords().
+        self.setFontFromConfig()
+        self.tags = [
+            "blank","comment","cwebName","docPart","keyword","leoKeyword",
+            "latexModeBackground","latexModeKeyword",
+            "latexBackground","latexKeyword",
+            "link","name","nameBrackets","pp","string",
+            "elide","bold","bolditalic","italic", # new for wiki styling.
+            "tab",
+            # Leo jEdit tags...
+            '@color', '@nocolor', 'doc_part', 'section_ref',
+            # jEdit tags.
+            'bracketRange',
+            'comment1','comment2','comment3','comment4',
+            'function',
+            'keyword1','keyword2','keyword3','keyword4',
+            'label','literal1','literal2','literal3','literal4',
+            'markup','operator',
+        ]
+
+        #@    << define leoKeywordsDict >>
+        #@+node:ekr.20081205131308.35:<< define leoKeywordsDict >>
+        self.leoKeywordsDict = {}
+
+        for key in g.globalDirectiveList:
+            self.leoKeywordsDict [key] = 'leoKeyword'
+        #@nonl
+        #@-node:ekr.20081205131308.35:<< define leoKeywordsDict >>
+        #@nl
+        #@    << define default_colors_dict >>
+        #@+node:ekr.20081205131308.36:<< define default_colors_dict >>
+        # These defaults are sure to exist.
+
+        self.default_colors_dict = {
+            # tag name       :(     option name,           default color),
+            'comment'        :('comment_color',               'red'),
+            'cwebName'       :('cweb_section_name_color',     'red'),
+            'pp'             :('directive_color',             'blue'),
+            'docPart'        :('doc_part_color',              'red'),
+            'keyword'        :('keyword_color',               'blue'),
+            'leoKeyword'     :('leo_keyword_color',           'blue'),
+            'link'           :('section_name_color',          'red'),
+            'nameBrackets'   :('section_name_brackets_color', 'blue'),
+            'string'         :('string_color',                '#00aa00'), # Used by IDLE.
+            'name'           :('undefined_section_name_color','red'),
+            'latexBackground':('latex_background_color',      'white'),
+
+            # Tags used by forth.
+            'keyword5'       :('keyword5_color',              'blue'),
+            'bracketRange'   :('bracket_range_color',         'orange'),
+            # jEdit tags.
+
+            'comment1'       :('comment1_color', 'red'),
+            'comment2'       :('comment2_color', 'red'),
+            'comment3'       :('comment3_color', 'red'),
+            'comment4'       :('comment4_color', 'red'),
+            'function'       :('function_color', 'black'),
+            'keyword1'       :('keyword1_color', 'blue'),
+            'keyword2'       :('keyword2_color', 'blue'),
+            'keyword3'       :('keyword3_color', 'blue'),
+            'keyword4'       :('keyword4_color', 'blue'),
+            'label'          :('label_color',    'black'),
+            'literal1'       :('literal1_color', '#00aa00'),
+            'literal2'       :('literal2_color', '#00aa00'),
+            'literal3'       :('literal3_color', '#00aa00'),
+            'literal4'       :('literal4_color', '#00aa00'),
+            'markup'         :('markup_color',   'red'),
+            'null'           :('null_color',     'black'),
+            'operator'       :('operator_color', 'black'),
+            }
+        #@-node:ekr.20081205131308.36:<< define default_colors_dict >>
+        #@nl
+        #@    << define default_font_dict >>
+        #@+node:ekr.20081205131308.37:<< define default_font_dict >>
+        self.default_font_dict = {
+            # tag name      : option name
+            'comment'       :'comment_font',
+            'cwebName'      :'cweb_section_name_font',
+            'pp'            :'directive_font',
+            'docPart'       :'doc_part_font',
+            'keyword'       :'keyword_font',
+            'leoKeyword'    :'leo_keyword_font',
+            'link'          :'section_name_font',
+            'nameBrackets'  :'section_name_brackets_font',
+            'string'        :'string_font',
+            'name'          :'undefined_section_name_font',
+            'latexBackground':'latex_background_font',
+
+            # Tags used by forth.
+            'bracketRange'   :'bracketRange_font',
+            'keyword5'       :'keyword5_font',
+
+             # jEdit tags.
+            'comment1'      :'comment1_font',
+            'comment2'      :'comment2_font',
+            'comment3'      :'comment3_font',
+            'comment4'      :'comment4_font',
+            'function'      :'function_font',
+            'keyword1'      :'keyword1_font',
+            'keyword2'      :'keyword2_font',
+            'keyword3'      :'keyword3_font',
+            'keyword4'      :'keyword4_font',
+            'keyword5'      :'keyword5_font',
+            'label'         :'label_font',
+            'literal1'      :'literal1_font',
+            'literal2'      :'literal2_font',
+            'literal3'      :'literal3_font',
+            'literal4'      :'literal4_font',
+            'markup'        :'markup_font',
+            # 'nocolor' This tag is used, but never generates code.
+            'null'          :'null_font',
+            'operator'      :'operator_font',
+            }
+        #@-node:ekr.20081205131308.37:<< define default_font_dict >>
+        #@nl
+
+        # New in Leo 4.6: configure tags only once here.
+        # Some changes will be needed for multiple body editors.
+        self.configure_tags() # Must do this every time to support multiple editors.
+    #@-node:ekr.20081205131308.50:__init__ (threading colorizer)
+    #@+node:ekr.20081205131308.51:addImportedRules
+    def addImportedRules (self,mode,rulesDict,rulesetName):
+
+        '''Append any imported rules at the end of the rulesets specified in mode.importDict'''
+
+        if self.importedRulesets.get(rulesetName):
+            return
+        else:
+            self.importedRulesets [rulesetName] = True
+
+        names = hasattr(mode,'importDict') and mode.importDict.get(rulesetName,[]) or []
+
+        for name in names:
+            savedBunch = self.modeBunch
+            ok = self.init_mode(name)
+            if ok:
+                rulesDict2 = self.rulesDict
+                for key in rulesDict2.keys():
+                    aList = self.rulesDict.get(key,[])
+                    aList2 = rulesDict2.get(key)
+                    if aList2:
+                        # Don't add the standard rules again.
+                        rules = [z for z in aList2 if z not in aList]
+                        if rules:
+                            # g.trace([z.__name__ for z in rules])
+                            aList.extend(rules)
+                            self.rulesDict [key] = aList
+            # g.trace('***** added rules for %s from %s' % (name,rulesetName))
+            self.initModeFromBunch(savedBunch)
+    #@nonl
+    #@-node:ekr.20081205131308.51:addImportedRules
+    #@+node:ekr.20081205131308.52:addLeoRules
+    def addLeoRules (self,theDict):
+
+        '''Put Leo-specific rules to theList.'''
+
+        table = (
+            # Rules added at front are added in **reverse** order.
+            ('@',  self.match_leo_keywords,True), # Called after all other Leo matchers.
+                # Debatable: Leo keywords override langauge keywords.
+            ('@',  self.match_at_color,    True),
+            ('@',  self.match_at_nocolor,  True),
+            ('@',  self.match_doc_part,    True), 
+            ('<',  self.match_section_ref, True), # Called **first**.
+            # Rules added at back are added in normal order.
+            (' ',  self.match_blanks,      False),
+            ('\t', self.match_tabs,        False),
+        )
+
+        for ch, rule, atFront, in table:
+
+            # Replace the bound method by an unbound method.
+            rule = rule.im_func
+            # g.trace(rule)
+
+            theList = theDict.get(ch,[])
+            if atFront:
+                theList.insert(0,rule)
+            else:
+                theList.append(rule)
+            theDict [ch] = theList
+
+        # g.trace(g.listToString(theDict.get('@')))
+    #@-node:ekr.20081205131308.52:addLeoRules
+    #@+node:ekr.20081205131308.53:configure_tags
+    def configure_tags (self):
+
+        c = self.c ; w = self.w ; trace = False
+
+        if w and hasattr(w,'start_tag_configure'):
+            w.start_tag_configure()
+
+        # Get the default body font.
+        defaultBodyfont = self.fonts.get('default_body_font')
+        if not defaultBodyfont:
+            defaultBodyfont = c.config.getFontFromParams(
+                "body_text_font_family", "body_text_font_size",
+                "body_text_font_slant",  "body_text_font_weight",
+                c.config.defaultBodyFontSize)
+            self.fonts['default_body_font'] = defaultBodyfont
+
+        # Configure fonts.
+        keys = self.default_font_dict.keys() ; keys.sort()
+        for key in keys:
+            option_name = self.default_font_dict[key]
+            # First, look for the language-specific setting, then the general setting.
+            for name in ('%s_%s' % (self.language,option_name),(option_name)):
+                font = self.fonts.get(name)
+                if font:
+                    if trace: g.trace('found',name,id(font))
+                    w.tag_config(key,font=font)
+                    break
+                else:
+                    family = c.config.get(name + '_family','family')
+                    size   = c.config.get(name + '_size',  'size')   
+                    slant  = c.config.get(name + '_slant', 'slant')
+                    weight = c.config.get(name + '_weight','weight')
+                    if family or slant or weight or size:
+                        family = family or g.app.config.defaultFontFamily
+                        size   = size or c.config.defaultBodyFontSize
+                        slant  = slant or 'roman'
+                        weight = weight or 'normal'
+                        font = g.app.gui.getFontFromParams(family,size,slant,weight)
+                        # Save a reference to the font so it 'sticks'.
+                        self.fonts[name] = font 
+                        if trace: g.trace(key,name,family,size,slant,weight,id(font))
+                        w.tag_config(key,font=font)
+                        break
+            else: # Neither the general setting nor the language-specific setting exists.
+                if self.fonts.keys(): # Restore the default font.
+                    if trace: g.trace('default',key)
+                    w.tag_config(key,font=defaultBodyfont)
+
+        keys = self.default_colors_dict.keys() ; keys.sort()
+        for name in keys:
+            option_name,default_color = self.default_colors_dict[name]
+            color = (
+                c.config.getColor('%s_%s' % (self.language,option_name)) or
+                c.config.getColor(option_name) or
+                default_color
+            )
+            if trace: g.trace(option_name,color)
+
+            # Must use foreground, not fg.
+            try:
+                w.tag_configure(name, foreground=color)
+            except: # Recover after a user error.
+                g.es_exception()
+                w.tag_configure(name, foreground=default_color)
+
+        # underline=var doesn't seem to work.
+        if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
+            w.tag_configure("link",underline=1) # defined
+            w.tag_configure("name",underline=0) # undefined
+        else:
+            w.tag_configure("link",underline=0)
+            if self.underline_undefined:
+                w.tag_configure("name",underline=1)
+            else:
+                w.tag_configure("name",underline=0)
+
+        self.configure_variable_tags()
+
+        # Colors for latex characters.  Should be user options...
+
+        if 1: # Alas, the selection doesn't show if a background color is specified.
+            w.tag_configure("latexModeBackground",foreground="black")
+            w.tag_configure("latexModeKeyword",foreground="blue")
+            w.tag_configure("latexBackground",foreground="black")
+            w.tag_configure("latexKeyword",foreground="blue")
+        else: # Looks cool, and good for debugging.
+            w.tag_configure("latexModeBackground",foreground="black",background="seashell1")
+            w.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
+            w.tag_configure("latexBackground",foreground="black",background="white")
+            w.tag_configure("latexKeyword",foreground="blue",background="white")
+
+        # Tags for wiki coloring.
+        w.tag_configure("bold",font=self.bold_font)
+        w.tag_configure("italic",font=self.italic_font)
+        w.tag_configure("bolditalic",font=self.bolditalic_font)
+        for name in self.color_tags_list:
+            w.tag_configure(name,foreground=name)
+
+        try:
+            w.end_tag_configure()
+        except AttributeError:
+            pass
+    #@-node:ekr.20081205131308.53:configure_tags
+    #@+node:ekr.20081205131308.54:configure_variable_tags
+    def configure_variable_tags (self):
+
+        c = self.c ; w = self.w
+
+        # g.trace()
+
+        for name,option_name,default_color in (
+            ("blank","show_invisibles_space_background_color","Gray90"),
+            ("tab",  "show_invisibles_tab_background_color",  "Gray80"),
+            ("elide", None,                                   "yellow"),
+        ):
+            if self.showInvisibles:
+                color = option_name and c.config.getColor(option_name) or default_color
+            else:
+                option_name,default_color = self.default_colors_dict.get(name,(None,None),)
+                color = option_name and c.config.getColor(option_name) or ''
+            try:
+                w.tag_configure(name,background=color)
+            except: # A user error.
+                w.tag_configure(name,background=default_color)
+
+        # Special case:
+        if not self.showInvisibles:
+            w.tag_configure("elide",elide="1")
+    #@-node:ekr.20081205131308.54:configure_variable_tags
+    #@+node:ekr.20081205131308.74:init
+    def init (self):
+
+        self.p = self.c.currentPosition()
+        self.s = self.w.getAllText()
+        # g.trace(self.s)
+
+        # State info.
+        self.global_i,self.global_j = 0,0
+        self.nextState = 1 # Dont use 0.
+        self.stateDict = {}
+
+        self.updateSyntaxColorer(self.p)
+            # Sets self.flag and self.language.
+
+        self.init_mode(self.language)
+
+        # Used by matchers.
+        self.prev = None
+
+        # self.configure_tags() # Must do this every time to support multiple editors.
+    #@-node:ekr.20081205131308.74:init
+    #@+node:ekr.20081205131308.55:init_mode & helpers
+    def init_mode (self,name):
+
+        '''Name may be a language name or a delegate name.'''
+
+        if not name: return False
+        language,rulesetName = self.nameToRulesetName(name)
+        bunch = self.modes.get(rulesetName)
+        if bunch:
+            # g.trace('found',language,rulesetName)
+            self.initModeFromBunch(bunch)
+            return True
+        else:
+            # g.trace('****',language,rulesetName)
+            path = g.os_path_join(g.app.loadDir,'..','modes')
+            # Bug fix: 2008/2/10: Don't try to import a non-existent language.
+            fileName = g.os_path_join(path,'%s.py' % (language))
+            if g.os_path_exists(fileName):
+                mode = g.importFromPath (language,path)
+            else: mode = None
+
+            if mode:
+                # A hack to give modes/forth.py access to c.
+                if hasattr(mode,'pre_init_mode'):
+                    mode.pre_init_mode(self.c)
+            else:
+                # Create a dummy bunch to limit recursion.
+                self.modes [rulesetName] = self.modeBunch = g.Bunch(
+                    attributesDict  = {},
+                    defaultColor    = None,
+                    keywordsDict    = {},
+                    language        = language,
+                    mode            = mode,
+                    properties      = {},
+                    rulesDict       = {},
+                    rulesetName     = rulesetName)
+                # g.trace('No colorizer file: %s.py' % language)
+                return False
+            self.language = language
+            self.rulesetName = rulesetName
+            self.properties = hasattr(mode,'properties') and mode.properties or {}
+            self.keywordsDict = hasattr(mode,'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName,{}) or {}
+            self.setKeywords()
+            self.attributesDict = hasattr(mode,'attributesDictDict') and mode.attributesDictDict.get(rulesetName) or {}
+            self.setModeAttributes()
+            self.rulesDict = hasattr(mode,'rulesDictDict') and mode.rulesDictDict.get(rulesetName) or {}
+            self.addLeoRules(self.rulesDict)
+
+            self.defaultColor = 'null'
+            self.mode = mode
+            self.modes [rulesetName] = self.modeBunch = g.Bunch(
+                attributesDict  = self.attributesDict,
+                defaultColor    = self.defaultColor,
+                keywordsDict    = self.keywordsDict,
+                language        = self.language,
+                mode            = self.mode,
+                properties      = self.properties,
+                rulesDict       = self.rulesDict,
+                rulesetName     = self.rulesetName)
+            # Do this after 'officially' initing the mode, to limit recursion.
+            self.addImportedRules(mode,self.rulesDict,rulesetName)
+            self.updateDelimsTables()
+
+            initialDelegate = self.properties.get('initialModeDelegate')
+            if initialDelegate:
+                # g.trace('initialDelegate',initialDelegate)
+                # Replace the original mode by the delegate mode.
+                self.init_mode(initialDelegate)
+                language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
+                self.modes[rulesetName] = self.modes.get(rulesetName2)
+            return True
+    #@+node:ekr.20081205131308.56:nameToRulesetName
+    def nameToRulesetName (self,name):
+
+        '''Compute language and rulesetName from name, which is either a language or a delegate name.'''
+
+        if not name: return ''
+
+        i = name.find('::')
+        if i == -1:
+            language = name
+            rulesetName = '%s_main' % (language)
+        else:
+            language = name[:i]
+            delegate = name[i+2:]
+            rulesetName = self.munge('%s_%s' % (language,delegate))
+
+        # g.trace(name,language,rulesetName)
+        return language,rulesetName
+    #@nonl
+    #@-node:ekr.20081205131308.56:nameToRulesetName
+    #@+node:ekr.20081205131308.57:setKeywords
+    def setKeywords (self):
+
+        '''Initialize the keywords for the present language.
+
+         Set self.word_chars ivar to string.letters + string.digits
+         plus any other character appearing in any keyword.'''
+
+        # Add any new user keywords to leoKeywordsDict.
+        d = self.keywordsDict
+        keys = d.keys()
+        for s in g.globalDirectiveList:
+            key = '@' + s
+            if key not in keys:
+                d [key] = 'leoKeyword'
+
+        # Create the word_chars list. 
+        self.word_chars = [g.toUnicode(ch,encoding='UTF-8') for ch in (string.letters + string.digits)]
+
+        for key in d.keys():
+            for ch in key:
+                # if ch == ' ': g.trace('blank in key: %s' % repr (key))
+                if ch not in self.word_chars:
+                    self.word_chars.append(g.toUnicode(ch,encoding='UTF-8'))
+
+        # jEdit2Py now does this check, so this isn't really needed.
+        # But it is needed for forth.py.
+        for ch in (' ', '\t'):
+            if ch in self.word_chars:
+                # g.es_print('removing %s from word_chars' % (repr(ch)))
+                self.word_chars.remove(ch)
+
+        # g.trace(self.language,[str(z) for z in self.word_chars])
+    #@nonl
+    #@-node:ekr.20081205131308.57:setKeywords
+    #@+node:ekr.20081205131308.58:setModeAttributes
+    def setModeAttributes (self):
+
+        '''Set the ivars from self.attributesDict,
+        converting 'true'/'false' to True and False.'''
+
+        d = self.attributesDict
+        aList = (
+            ('default',         'null'),
+    	    ('digit_re',        ''),
+            ('escape',          ''), # New in Leo 4.4.2.
+    	    ('highlight_digits',True),
+    	    ('ignore_case',     True),
+    	    ('no_word_sep',     ''),
+        )
+
+        for key, default in aList:
+            val = d.get(key,default)
+            if val in ('true','True'): val = True
+            if val in ('false','False'): val = False
+            setattr(self,key,val)
+            # g.trace(key,val)
+    #@nonl
+    #@-node:ekr.20081205131308.58:setModeAttributes
+    #@+node:ekr.20081205131308.59:initModeFromBunch
+    def initModeFromBunch (self,bunch):
+
+        self.modeBunch = bunch
+        self.attributesDict = bunch.attributesDict
+        self.setModeAttributes()
+        self.defaultColor   = bunch.defaultColor
+        self.keywordsDict   = bunch.keywordsDict
+        self.language       = bunch.language
+        self.mode           = bunch.mode
+        self.properties     = bunch.properties
+        self.rulesDict      = bunch.rulesDict
+        self.rulesetName    = bunch.rulesetName
+
+        # g.trace(self.rulesetName)
+    #@nonl
+    #@-node:ekr.20081205131308.59:initModeFromBunch
+    #@+node:ekr.20081205131308.60:updateDelimsTables
+    def updateDelimsTables (self):
+
+        '''Update g.app.language_delims_dict if no entry for the language exists.'''
+
+        d = self.properties
+        lineComment = d.get('lineComment')
+        startComment = d.get('commentStart')
+        endComment = d.get('commentEnd')
+
+        if lineComment and startComment and endComment:
+            delims = '%s %s %s' % (lineComment,startComment,endComment)
+        elif startComment and endComment:
+            delims = '%s %s' % (startComment,endComment)
+        elif lineComment:
+            delims = '%s' % lineComment
+        else:
+            delims = None
+
+        if delims:
+            d = g.app.language_delims_dict
+            if not d.get(self.language):
+                d [self.language] = delims
+                # g.trace(self.language,'delims:',repr(delims))
+    #@-node:ekr.20081205131308.60:updateDelimsTables
+    #@-node:ekr.20081205131308.55:init_mode & helpers
+    #@+node:ekr.20081205131308.106:munge
+    def munge(self,s):
+
+        '''Munge a mode name so that it is a valid python id.'''
+
+        valid = string.ascii_letters + string.digits + '_'
+
+        return ''.join([g.choose(ch in valid,ch.lower(),'_') for ch in s])
+    #@nonl
+    #@-node:ekr.20081205131308.106:munge
+    #@+node:ekr.20081205131308.111:setFontFromConfig
+    def setFontFromConfig (self):
+
+        c = self.c
+        # isQt = g.app.gui.guiName() == 'qt'
+
+        self.bold_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant",  "body_text_font_weight",
+            c.config.defaultBodyFontSize) # , tag = "colorer bold")
+
+        # if self.bold_font and not isQt:
+            # self.bold_font.configure(weight="bold")
+
+        self.italic_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant",  "body_text_font_weight",
+            c.config.defaultBodyFontSize) # , tag = "colorer italic")
+
+        # if self.italic_font and not isQt:
+            # self.italic_font.configure(slant="italic",weight="normal")
+
+        self.bolditalic_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant",  "body_text_font_weight",
+            c.config.defaultBodyFontSize) # , tag = "colorer bold italic")
+
+        # if self.bolditalic_font and not isQt:
+            # self.bolditalic_font.configure(weight="bold",slant="italic")
+
+        self.color_tags_list = []
+        # self.image_references = []
+    #@nonl
+    #@-node:ekr.20081205131308.111:setFontFromConfig
+    #@-node:ekr.20081205131308.49: Birth & init
+    #@+node:ekr.20081206062411.13:colorRangeWithTag
+    def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
+
+        '''Actually colorize the selected range.
+
+        This is called whenever a pattern matcher succeed.'''
+
+        trace = False
+        if not self.flag: return
+
+        if delegate:
+            if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
+            self.modeStack.append(self.modeBunch)
+            self.init_mode(delegate)
+            # Color everything now, using the same indices as the caller.
+            while i < j:
+                progress = i
+                assert j >= 0, 'colorRangeWithTag: negative j'
+                for f in self.rulesDict.get(s[i],[]):
+                    n = f(self,s,i)
+                    if n is None:
+                        g.trace('Can not happen: delegate matcher returns None')
+                    elif n > 0:
+                        if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
+                        i += n ; break
+                else:
+                    # New in Leo 4.6: Use the default chars for everything else.
+                    self.setTag(tag,i,i+1)
+                    i += 1
+                assert i > progress
+            bunch = self.modeStack.pop()
+            self.initModeFromBunch(bunch)
+        elif not exclude_match:
+            self.setTag(tag,i,j)
+    #@nonl
+    #@-node:ekr.20081206062411.13:colorRangeWithTag
+    #@+node:ekr.20081205131308.87:pattern matchers
+    #@@nocolor-node
+    #@+at
+    # 
+    # The following jEdit matcher methods return the length of the matched 
+    # text if the
+    # match succeeds, and zero otherwise.  In most cases, these methods 
+    # colorize all the matched text.
+    # 
+    # The following arguments affect matching:
+    # 
+    # - at_line_start         True: sequence must start the line.
+    # - at_whitespace_end     True: sequence must be first non-whitespace text 
+    # of the line.
+    # - at_word_start         True: sequence must start a word.
+    # - hash_char             The first character that must match in a regular 
+    # expression.
+    # - no_escape:            True: ignore an 'end' string if it is preceded 
+    # by the ruleset's escape character.
+    # - no_line_break         True: the match will not succeed across line 
+    # breaks.
+    # - no_word_break:        True: the match will not cross word breaks.
+    # 
+    # The following arguments affect coloring when a match succeeds:
+    # 
+    # - delegate              A ruleset name. The matched text will be colored 
+    # recursively by the indicated ruleset.
+    # - exclude_match         If True, the actual text that matched will not 
+    # be colored.
+    # - kind                  The color tag to be applied to colored text.
+    #@-at
+    #@@c
+    #@@color
+    #@+node:ekr.20081205131308.105:dump
+    def dump (self,s):
+
+        if s.find('\n') == -1:
+            return s
+        else:
+            return '\n' + s + '\n'
+    #@nonl
+    #@-node:ekr.20081205131308.105:dump
+    #@+node:ekr.20081205131308.38:Leo rule functions
+    #@+node:ekr.20081205131308.39:match_at_color
+    def match_at_color (self,s,i):
+
+        if self.trace_leo_matches: g.trace()
+
+        seq = '@color'
+
+        # Only matches at start of line.
+        if i != 0 and s[i-1] != '\n': return 0
+
+        if g.match_word(s,i,seq):
+            self.flag = True # Enable coloring.
+            j = i + len(seq)
+            self.colorRangeWithTag(s,i,j,'leoKeyword')
+            return j - i
+        else:
+            return 0
+    #@nonl
+    #@-node:ekr.20081205131308.39:match_at_color
+    #@+node:ekr.20081205131308.40:match_at_nocolor
+    def match_at_nocolor (self,s,i):
+
+        if self.trace_leo_matches: g.trace()
+
+        # Only matches at start of line.
+        if i != 0 and s[i-1] != '\n':
+            return 0
+        if not g.match_word(s,i,'@nocolor'):
+            return 0
+
+        j = i + len('@nocolor')
+        k = s.find('\n@color',j)
+        if k == -1:
+            # No later @color: don't color the @nocolor directive.
+            self.flag = False # Disable coloring.
+            return len(s) - j
+        else:
+            # A later @color: do color the @nocolor directive.
+            self.colorRangeWithTag(s,i,j,'leoKeyword')
+            self.flag = False # Disable coloring.
+            return k+1-j
+
+    #@-node:ekr.20081205131308.40:match_at_nocolor
+    #@+node:ekr.20081205131308.45:match_blanks
+    def match_blanks (self,s,i):
+
+        # g.trace(self,s,i)
+
+        j = i ; n = len(s)
+
+        while j < n and s[j] == ' ':
+            j += 1
+
+        if j > i:
+            # g.trace(i,j)
+            if self.showInvisibles:
+                self.colorRangeWithTag(s,i,j,'blank')
+            return j - i
+        else:
+            return 0
+    #@-node:ekr.20081205131308.45:match_blanks
+    #@+node:ekr.20081205131308.41:match_doc_part
+    def match_doc_part (self,s,i):
+
+        # New in Leo 4.5: only matches at start of line.
+        if i != 0 and s[i-1] != '\n':
+            return 0
+
+        if g.match_word(s,i,'@doc'):
+            j = i+4
+            self.colorRangeWithTag(s,i,j,'leoKeyword')
+        elif g.match(s,i,'@') and (i+1 >= len(s) or s[i+1] in (' ','\t','\n')):
+            j = i + 1
+            self.colorRangeWithTag(s,i,j,'leoKeyword')
+        else: return 0
+
+        i = j ; n = len(s)
+        while j < n:
+            k = s.find('@c',j)
+            if k == -1:
+                # g.trace('i,len(s)',i,len(s))
+                j = n+1 # Bug fix: 2007/12/14
+                self.colorRangeWithTag(s,i,j,'docPart')
+                return j - i
+            if s[k-1] == '\n' and (g.match_word(s,k,'@c') or g.match_word(s,k,'@code')):
+                j = k
+                self.colorRangeWithTag(s,i,j,'docPart')
+                return j - i
+            else:
+                j = k + 2
+        j = n - 1
+        return max(0,j - i) # Bug fix: 2008/2/10
+    #@-node:ekr.20081205131308.41:match_doc_part
+    #@+node:ekr.20081205131308.42:match_leo_keywords
+    def match_leo_keywords(self,s,i):
+
+        '''Succeed if s[i:] is a Leo keyword.'''
+
+        # g.trace(i,g.get_line(s,i))
+
+        # We must be at the start of a word.
+        if i > 0 and s[i-1] in self.word_chars:
+            return 0
+
+        if s[i] != '@':
+            return 0
+
+        # Get the word as quickly as possible.
+        j = i+1
+        while j < len(s) and s[j] in self.word_chars:
+            j += 1
+        word = s[i+1:j] # Bug fix: 10/17/07: entries in leoKeywordsDict do not start with '@'
+
+        if self.leoKeywordsDict.get(word):
+            kind = 'leoKeyword'
+            self.colorRangeWithTag(s,i,j,kind)
+            self.prev = (i,j,kind)
+            result = j-i
+            self.trace_match(kind,s,i,j)
+            return result
+        else:
+            return 0
+    #@-node:ekr.20081205131308.42:match_leo_keywords
+    #@+node:ekr.20081205131308.43:match_section_ref
+    def match_section_ref (self,s,i):
+
+        if self.trace_leo_matches: g.trace()
+        c = self.c ; w = self.w
+
+        if not g.match(s,i,'<<'):
+            return 0
+        k = g.find_on_line(s,i+2,'>>')
+        if k is not None:
+            j = k + 2
+            self.colorRangeWithTag(s,i,i+2,'nameBrackets')
+            ref = g.findReference(c,s[i:j],self.p)
+            if ref:
+                if self.use_hyperlinks:
+                    #@                << set the hyperlink >>
+                    #@+node:ekr.20081205131308.44:<< set the hyperlink >>
+                    # Set the bindings to vnode callbacks.
+                    # Create the tag.
+                    # Create the tag name.
+                    tagName = "hyper" + str(self.hyperCount)
+                    self.hyperCount += 1
+                    w.tag_delete(tagName)
+                    self.tag(tagName,i+2,j)
+
+                    ref.tagName = tagName
+                    c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
+                    c.tag_bind(w,tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
+                    c.tag_bind(w,tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
+                    #@nonl
+                    #@-node:ekr.20081205131308.44:<< set the hyperlink >>
+                    #@nl
+                else:
+                    self.colorRangeWithTag(s,i+2,k,'link')
+            else:
+                self.colorRangeWithTag(s,i+2,k,'name')
+            self.colorRangeWithTag(s,k,j,'nameBrackets')
+            return j - i
+        else:
+            return 0
+    #@nonl
+    #@-node:ekr.20081205131308.43:match_section_ref
+    #@+node:ekr.20081205131308.46:match_tabs
+    def match_tabs (self,s,i):
+
+        if self.trace_leo_matches: g.trace()
+
+        j = i ; n = len(s)
+
+        while j < n and s[j] == '\t':
+            j += 1
+
+        if j > i:
+            # g.trace(i,j)
+            self.colorRangeWithTag(s,i,j,'tab')
+            return j - i
+        else:
+            return 0
+    #@nonl
+    #@-node:ekr.20081205131308.46:match_tabs
+    #@-node:ekr.20081205131308.38:Leo rule functions
+    #@+node:ekr.20081205131308.88:match_eol_span
+    def match_eol_span (self,s,i,
+        kind=None,seq='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate='',exclude_match=False):
+
+        '''Succeed if seq matches s[i:]'''
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(seq) + 1 < len(s) and s[i+len(seq)] in self.word_chars:
+            return 0 # 7/5/2008
+
+        if g.match(s,i,seq):
+            #j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            j = self.skip_line(s,i)
+            self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            return j - i
+        else:
+            return 0
+    #@-node:ekr.20081205131308.88:match_eol_span
+    #@+node:ekr.20081205131308.89:match_eol_span_regexp
+    def match_eol_span_regexp (self,s,i,
+        kind='',regexp='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate='',exclude_match=False):
+
+        '''Succeed if the regular expression regex matches s[i:].'''
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+
+        n = self.match_regexp_helper(s,i,regexp)
+        if n > 0:
+            # j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            j = self.skip_line(s,i)
+            self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            return j - i
+        else:
+            return 0
+    #@nonl
+    #@-node:ekr.20081205131308.89:match_eol_span_regexp
+    #@+node:ekr.20081205131308.90:match_everything
+    # def match_everything (self,s,i,kind,delegate):
+
+        # '''A hack for phpsection mode: match the entire text and color with delegate.'''
+
+        # j = len(s)
+
+        # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+
+        # return j-i
+    #@-node:ekr.20081205131308.90:match_everything
+    #@+node:ekr.20081205131308.91:match_keywords
+    # This is a time-critical method.
+    def match_keywords (self,s,i):
+
+        '''Succeed if s[i:] is a keyword.'''
+
+        # We must be at the start of a word.
+        if i > 0 and s[i-1] in self.word_chars:
+            return 0
+
+        # Get the word as quickly as possible.
+        j = i ; n = len(s) ; chars = self.word_chars
+        while j < n and s[j] in chars:
+            j += 1
+
+        word = s[i:j]
+        if self.ignore_case: word = word.lower()
+        kind = self.keywordsDict.get(word)
+        if kind:
+            self.colorRangeWithTag(s,i,j,kind)
+            self.prev = (i,j,kind)
+            result = j - i
+            # g.trace('success',word,kind,j-i)
+            # g.trace('word in self.keywordsDict.keys()',word in self.keywordsDict.keys())
+            self.trace_match(kind,s,i,j)
+            return result
+        else:
+            # g.trace('fail',word,kind)
+            # g.trace('word in self.keywordsDict.keys()',word in self.keywordsDict.keys())
+            return 0
+    #@-node:ekr.20081205131308.91:match_keywords
+    #@+node:ekr.20081205131308.92:match_mark_following & getNextToken
+    def match_mark_following (self,s,i,
+        kind='',pattern='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        exclude_match=False):
+
+        '''Succeed if s[i:] matches pattern.'''
+
+        if not self.allow_mark_prev: return 0
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
+            return 0 # 7/5/2008
+
+        if g.match(s,i,pattern):
+            j = i + len(pattern)
+            self.colorRangeWithTag(s,i,j,kind,exclude_match=exclude_match)
+            k = self.getNextToken(s,j)
+            if k > j:
+                self.colorRangeWithTag(s,j,k,kind,exclude_match=False)
+                j = k
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            return j - i
+        else:
+            return 0
+    #@+node:ekr.20081205131308.93:getNextToken
+    def getNextToken (self,s,i):
+
+        '''Return the index of the end of the next token for match_mark_following.
+
+        The jEdit docs are not clear about what a 'token' is, but experiments with jEdit
+        show that token means a word, as defined by word_chars.'''
+
+        while i < len(s) and s[i] in self.word_chars:
+            i += 1
+
+        return min(len(s),i+1)
+    #@nonl
+    #@-node:ekr.20081205131308.93:getNextToken
+    #@-node:ekr.20081205131308.92:match_mark_following & getNextToken
+    #@+node:ekr.20081205131308.94:match_mark_previous
+    def match_mark_previous (self,s,i,
+        kind='',pattern='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        exclude_match=False):
+
+        '''Return the length of a matched SEQ or 0 if no match.
+
+        'at_line_start':    True: sequence must start the line.
+        'at_whitespace_end':True: sequence must be first non-whitespace text of the line.
+        'at_word_start':    True: sequence must start a word.'''
+
+        if not self.allow_mark_prev: return 0
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
+            return 0 # 7/5/2008
+
+        if g.match(s,i,pattern):
+            j = i + len(pattern)
+            # Color the previous token.
+            if self.prev:
+                i2,j2,kind2 = self.prev
+                # g.trace(i2,j2,kind2)
+                self.colorRangeWithTag(s,i2,j2,kind2,exclude_match=False)
+            if not exclude_match:
+                self.colorRangeWithTag(s,i,j,kind)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+            return j - i
+        else:
+            return 0
+    #@-node:ekr.20081205131308.94:match_mark_previous
+    #@+node:ekr.20081205131308.95:match_regexp_helper
+    def match_regexp_helper (self,s,i,pattern):
+
+        '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]),'pattern',pattern)
+        trace = False
+
+        try:
+            flags = re.MULTILINE
+            if self.ignore_case: flags|= re.IGNORECASE
+            re_obj = re.compile(pattern,flags)
+        except Exception:
+            # Bug fix: 2007/11/07: do not call g.es here!
+            g.trace('Invalid regular expression: %s' % (pattern))
+            return 0
+
+        # Match succeeds or fails more quickly than search.
+        # g.trace('before')
+        self.match_obj = mo = re_obj.match(s,i) # re_obj.search(s,i) 
+        # g.trace('after')
+
+        if mo is None:
+            return 0
+        else:
+            start, end = mo.start(), mo.end()
+            if start != i: # Bug fix 2007-12-18: no match at i
+                return 0
+            if trace:
+                g.trace('pattern',pattern)
+                g.trace('match: %d, %d, %s' % (start,end,repr(s[start: end])))
+                g.trace('groups',mo.groups())
+            return end - start
+    #@-node:ekr.20081205131308.95:match_regexp_helper
+    #@+node:ekr.20081205131308.96:match_seq
+    def match_seq (self,s,i,
+        kind='',seq='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate=''):
+
+        '''Succeed if s[:] mathces seq.'''
+
+        if at_line_start and i != 0 and s[i-1] != '\n':
+            j = i
+        elif at_whitespace_end and i != g.skip_ws(s,0):
+            j = i
+        elif at_word_start and i > 0 and s[i-1] in self.word_chars:  # 7/5/2008
+            j = i
+        if at_word_start and i + len(seq) + 1 < len(s) and s[i+len(seq)] in self.word_chars:
+            j = i # 7/5/2008
+        elif g.match(s,i,seq):
+            j = i + len(seq)
+            self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j)
+        else:
+            j = i
+        return j - i
+    #@nonl
+    #@-node:ekr.20081205131308.96:match_seq
+    #@+node:ekr.20081205131308.97:match_seq_regexp
+    def match_seq_regexp (self,s,i,
+        kind='',regexp='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate=''):
+
+        '''Succeed if the regular expression regexp matches at s[i:].'''
+
+        if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]),'regexp',regexp)
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+
+        # g.trace('before')
+        n = self.match_regexp_helper(s,i,regexp)
+        # g.trace('after')
+        j = i + n # Bug fix: 2007-12-18
+        assert (j-i == n)
+        self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+        self.prev = (i,j,kind)
+        self.trace_match(kind,s,i,j)
+        return j - i
+    #@nonl
+    #@-node:ekr.20081205131308.97:match_seq_regexp
+    #@+node:ekr.20081205131308.98:match_span & helper
+    def match_span (self,s,i,
+        kind='',begin='',end='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate='',exclude_match=False,
+        no_escape=False,no_line_break=False,no_word_break=False):
+
+        '''Succeed if s[i:] starts with 'begin' and contains a following 'end'.'''
+
+        if at_line_start and i != 0 and s[i-1] != '\n':
+            j = i
+        elif at_whitespace_end and i != g.skip_ws(s,0):
+            j = i
+        elif at_word_start and i > 0 and s[i-1] in self.word_chars: # 7/5/2008
+            j = i
+        elif at_word_start and i + len(begin) + 1 < len(s) and s[i+len(begin)] in self.word_chars:
+            j = i # 7/5/2008
+        elif not g.match(s,i,begin):
+            j = i
+        else:
+            j = self.match_span_helper(s,i+len(begin),end,no_escape,no_line_break,no_word_break=no_word_break)
+            if j == -1:
+                j = i
+            else:
+                i2 = i + len(begin) ; j2 = j + len(end)
+                # g.trace(i,j,s[i:j2],kind)
+                if delegate:
+                    self.colorRangeWithTag(s,i,i2,kind,delegate=None,    exclude_match=exclude_match)
+                    self.colorRangeWithTag(s,i2,j,kind,delegate=delegate,exclude_match=exclude_match)
+                    self.colorRangeWithTag(s,j,j2,kind,delegate=None,    exclude_match=exclude_match)
+                else: # avoid having to merge ranges in addTagsToList.
+                    self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
+                j = j2
+                self.prev = (i,j,kind)
+
+        self.trace_match(kind,s,i,j)
+        return j - i
+    #@+node:ekr.20081205131308.99:match_span_helper
+    def match_span_helper (self,s,i,pattern,no_escape,no_line_break,no_word_break=False):
+
+        '''Return n >= 0 if s[i] ends with a non-escaped 'end' string.'''
+
+        esc = self.escape
+
+        while 1:
+            j = s.find(pattern,i)
+            if j == -1:
+                # Match to end of text if not found and no_line_break is False
+                if no_line_break:
+                    return -1
+                else:
+                    return len(s)
+            elif no_word_break and j > 0 and s[j-1] in self.word_chars:
+                return -1 # New in Leo 4.5.
+            elif no_line_break and '\n' in s[i:j]:
+                return -1
+            elif esc and not no_escape:
+                # Only an odd number of escapes is a 'real' escape.
+                escapes = 0 ; k = 1
+                while j-k >=0 and s[j-k] == esc:
+                    escapes += 1 ; k += 1
+                if (escapes % 2) == 1:
+                    # Continue searching past the escaped pattern string.
+                    i = j + len(pattern) # Bug fix: 7/25/07.
+                    # g.trace('escapes',escapes,repr(s[i:]))
+                else:
+                    return j
+            else:
+                return j
+    #@nonl
+    #@-node:ekr.20081205131308.99:match_span_helper
+    #@-node:ekr.20081205131308.98:match_span & helper
+    #@+node:ekr.20081205131308.100:match_span_regexp
+    def match_span_regexp (self,s,i,
+        kind='',begin='',end='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        delegate='',exclude_match=False,
+        no_escape=False,no_line_break=False, no_word_break=False,
+    ):
+
+        '''Succeed if s[i:] starts with 'begin' (a regular expression) and contains a following 'end'.'''
+
+        if self.verbose: g.trace('begin',repr(begin),'end',repr(end),self.dump(s[i:]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(begin) + 1 < len(s) and s[i+len(begin)] in self.word_chars:
+            return 0 # 7/5/2008
+
+        n = self.match_regexp_helper(s,i,begin)
+        # We may have to allow $n here, in which case we must use a regex object?
+        if n > 0:
+            j = i + n
+            j2 = s.find(end,j)
+            if j2 == -1: return 0
+            if self.escape and not no_escape:
+                # Only an odd number of escapes is a 'real' escape.
+                escapes = 0 ; k = 1
+                while j-k >=0 and s[j-k] == self.escape:
+                    escapes += 1 ; k += 1
+                if (escapes % 2) == 1:
+                    # An escaped end **aborts the entire match**:
+                    # there is no way to 'restart' the regex.
+                    return 0
+            i2 = j2 - len(end)
+            if delegate:
+                self.colorRangeWithTag(s,i,j,kind, delegate=None,     exclude_match=exclude_match)
+                self.colorRangeWithTag(s,j,i2,kind, delegate=delegate,exclude_match=False)
+                self.colorRangeWithTag(s,i2,j2,kind,delegate=None,    exclude_match=exclude_match)
+            else: # avoid having to merge ranges in addTagsToList.
+                self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
+            self.prev = (i,j,kind)
+            self.trace_match(kind,s,i,j2)
+            return j2 - i
+        else: return 0
+    #@-node:ekr.20081205131308.100:match_span_regexp
+    #@+node:ekr.20081205131308.101:match_word_and_regexp
+    def match_word_and_regexp (self,s,i,
+        kind1='',word='',
+        kind2='',pattern='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        exclude_match=False):
+
+        '''Succeed if s[i:] matches pattern.'''
+
+        if not self.allow_mark_prev: return 0
+
+        if (False or self.verbose): g.trace(i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(word) + 1 < len(s) and s[i+len(word)] in self.word_chars:
+            j = i # 7/5/2008
+
+        if not g.match(s,i,word):
+            return 0
+
+        j = i + len(word)
+        n = self.match_regexp_helper(s,j,pattern)
+        # g.trace(j,pattern,n)
+        if n == 0:
+            return 0
+        self.colorRangeWithTag(s,i,j,kind1,exclude_match=exclude_match)
+        k = j + n
+        self.colorRangeWithTag(s,j,k,kind2,exclude_match=False)    
+        self.prev = (j,k,kind2)
+        self.trace_match(kind1,s,i,j)
+        self.trace_match(kind2,s,j,k)
+        return k - i
+    #@-node:ekr.20081205131308.101:match_word_and_regexp
+    #@+node:ekr.20081205131308.102:skip_line
+    def skip_line (self,s,i):
+
+        if self.escape:
+            escape = self.escape + '\n'
+            n = len(escape)
+            while i < len(s):
+                j = g.skip_line(s,i)
+                if not g.match(s,j-n,escape):
+                    return j
+                # g.trace('escape',s[i:j])
+                i = j
+            return i
+        else:
+            return g.skip_line(s,i)
+                # Include the newline so we don't get a flash at the end of the line.
+    #@nonl
+    #@-node:ekr.20081205131308.102:skip_line
+    #@+node:ekr.20081205131308.112:trace_match
+    def trace_match(self,kind,s,i,j):
+
+        if j != i and self.trace_match_flag:
+            g.trace(kind,i,j,g.callers(2),self.dump(s[i:j]))
+    #@nonl
+    #@-node:ekr.20081205131308.112:trace_match
+    #@-node:ekr.20081205131308.87:pattern matchers
+    #@+node:ekr.20081206062411.12:recolor & helpers
+    def recolor (self,s):
+
+        '''Recolor the line s from i to j.'''
+
+        trace = False ; verbose = False
+        if not self.s: return # Must handle empty lines!
+
+        bunch,len_s = self.getPrevState(),len(s)
+        # offset is the index in self.s of the first character of s.
+        offset = bunch.offset + bunch.len_s
+        # Calculate the bounds of the scan.
+        lastFunc,lastMatch = bunch.lastFunc,bunch.lastMatch
+        i = g.choose(lastFunc,lastMatch,offset)
+        j = offset + len_s
+        j = min(j,len(self.s))
+        self.global_i,self.global_j = offset,j
+
+        if trace: g.trace(
+            '%s offset: %3s, i:%3s, j:%3s, s: %s' % (
+            self.language,offset,i,j,repr(self.s[i:j])))
+
+        while i < j:
+            progress = i
+            functions = self.rulesDict.get(self.s[i],[])
+            for f in functions:
+                if trace and verbose: g.trace('i',i,'f',f)
+                n = f(self,self.s,i)
+                if n is None or n < 0:
+                    g.trace('Can not happen' % (repr(n),repr(f)))
+                    lastFunc,lastMatch = None,i
+                    break
+                elif n > 0:
+                    lastFunc,lastMatch = f,i
+                    i += n
+                    break # Must break
+            else:
+                i += 1
+                lastFunc,lastMatch = None,i
+            assert i > progress
+
+        # Add one for the missing newline.
+        self.setCurrentState(offset,len_s+1,lastFunc,lastMatch)
+    #@+node:ekr.20081206062411.17:getPrevState
+    def getPrevState (self):
+
+        h = self.highlighter
+        state = h.previousBlockState()
+        bunch = self.stateDict.get(state)
+
+        # g.trace(bunch)
+
+        if not bunch:
+            bunch = g.bunch(
+                offset=0,len_s=0,
+                lastFunc=None,lastMatch=0)
+
+        return bunch
+    #@-node:ekr.20081206062411.17:getPrevState
+    #@+node:ekr.20081206062411.18:setCurrentState
+    def setCurrentState (self,offset,len_s,lastFunc,lastMatch):
+
+        h = self.highlighter
+        state = h.currentBlockState()
+
+        if state == -1:
+            # Allocate a new state
+            state = self.nextState
+            self.nextState += 1
+            h.setCurrentBlockState(state)
+
+        # Remember this info.
+        self.stateDict[state] = g.bunch(
+            offset=offset,
+            len_s=len_s,
+            lastFunc=lastFunc,
+            lastMatch=lastMatch)
+    #@-node:ekr.20081206062411.18:setCurrentState
+    #@-node:ekr.20081206062411.12:recolor & helpers
+    #@+node:ekr.20081205131308.26:scanColorDirectives
+    def scanColorDirectives(self,p):
+
+        '''Scan position p and p's ancestors looking for @comment,
+        @language and @root directives,
+        setting corresponding colorizer ivars.'''
+
+        c = self.c
+        if not c: return # May be None for testing.
+
+        table = (
+            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+            ('root',        c.scanAtRootDirectives),
+        )
+
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,func in table:
+            val = func(aList)
+            if val: d[key]=val
+
+        # Post process.
+        lang_dict       = d.get('lang-dict')
+        self.rootMode   = d.get('root') or None
+
+        if lang_dict:
+            self.language       = lang_dict.get('language')
+            self.comment_string = lang_dict.get('comment')
+        else:
+            self.language       = c.target_language and c.target_language.lower()
+            self.comment_string = None
+
+        # g.trace('self.language',self.language)
+        return self.language # For use by external routines.
+    #@-node:ekr.20081205131308.26:scanColorDirectives
+    #@+node:ekr.20081206062411.14:setTag
+    def setTag (self,tag,i,j):
+
+        trace = False
+        w = self.w
+        colorName = w.configDict.get(tag)
+
+        # Munch the color name.
+        if not colorName or colorName == 'black':
+            return
+        if colorName[-1].isdigit() and colorName[0] != '#':
+            colorName = colorName[:-1]
+
+        # Get the actual color.
+        color = self.actualColorDict.get(colorName)
+        if not color:
+            color = QtGui.QColor(colorName)
+            if color.isValid():
+                self.actualColorDict[colorName] = color
+            else:
+                return g.trace('unknown color name',colorName)
+
+        # Clip the colorizing to the global bounds.
+        offset = self.global_i
+        lim_i,lim_j = self.global_i,self.global_j
+        clip_i = max(i,lim_i)
+        clip_j = min(j,lim_j)
+        ok = clip_i < clip_j
+
+        if trace:
+            kind = g.choose(ok,' ','***')
+            s2 = g.choose(ok,self.s[clip_i:clip_j],self.s[i:j])
+            g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
+                kind,tag,offset,i,j,lim_i,lim_j,s2))
+
+        if ok:
+            self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
+    #@nonl
+    #@-node:ekr.20081206062411.14:setTag
+    #@+node:ekr.20081205131308.24:updateSyntaxColorer
+    def updateSyntaxColorer (self,p):
+
+        p = p.copy()
+
+        # self.flag is True unless an unambiguous @nocolor is seen.
+        self.flag = self.useSyntaxColoring(p)
+        self.scanColorDirectives(p)
+    #@nonl
+    #@-node:ekr.20081205131308.24:updateSyntaxColorer
+    #@+node:ekr.20081205131308.23:useSyntaxColoring
+    def useSyntaxColoring (self,p):
+
+        """Return True unless p is unambiguously under the control of @nocolor."""
+
+        p = p.copy() ; first = p.copy()
+        val = True ; self.killcolorFlag = False
+
+        # New in Leo 4.6: @nocolor-node disables one node only.
+        theDict = g.get_directives_dict(p)
+        if 'nocolor-node' in theDict:
+            # g.trace('nocolor-node',p.headString())
+            return False
+
+        for p in p.self_and_parents_iter():
+            theDict = g.get_directives_dict(p)
+            no_color = 'nocolor' in theDict
+            color = 'color' in theDict
+            kill_color = 'killcolor' in theDict
+            # A killcolor anywhere disables coloring.
+            if kill_color:
+                val = False ; self.killcolorFlag = True ; break
+            # A color anywhere in the target enables coloring.
+            if color and p == first:
+                val = True ; break
+            # Otherwise, the @nocolor specification must be unambiguous.
+            elif no_color and not color:
+                val = False ; break
+            elif color and not no_color:
+                val = True ; break
+
+        # g.trace(first.headString(),val)
+        return val
+    #@-node:ekr.20081205131308.23:useSyntaxColoring
+    #@-others
+#@-node:ekr.20081205131308.48:class jeditColorizer
+#@-node:ekr.20081204090029.1:Syntax coloring
+#@+node:ekr.20081121105001.515:Text widget classes
 #@+node:ekr.20081121105001.516: class leoQtBaseTextWidget
 class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
@@ -5942,6 +8146,9 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         self.widget.connect(self.widget,
             QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
 
         self.injectIvars(c)
     #@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
@@ -6160,6 +8367,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         return self.name
     #@-node:ekr.20081121105001.535:getName (baseTextWidget)
+    #@+node:ekr.20081208041503.499:onClick
+    def onClick(self):
+
+        c = self.c
+        name = c.widget_name(self)
+
+        if name.startswith('body'):
+            if hasattr(c.frame,'statusLine'):
+                c.frame.statusLine.update()
+    #@-node:ekr.20081208041503.499:onClick
     #@+node:ekr.20081121105001.536:onTextChanged
     def onTextChanged (self):
 
@@ -6288,12 +8505,15 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if not colorName: return
         if g.unitTesting: return
 
-        # Unlike Tk names, Qt names don't end in a digit.
-        if colorName[-1].isdigit() and colorName[0] != '#':
-            color = QtGui.QColor(colorName[:-1])
-        else:
-            color = QtGui.QColor(colorName)
-
+    #@+at
+    #     # Unlike Tk names, Qt names don't end in a digit.
+    #     if colorName[-1].isdigit() and colorName[0] != '#':
+    #         color = QtGui.QColor(colorName[:-1])
+    #     else:
+    #         color = QtGui.QColor(colorName)
+    #@-at
+    #@@c
+        color = QtGui.QColor(leoColor.getColor(colorName, 'black'))
         if not color.isValid():
             # g.trace('unknown color name',colorName)
             return
@@ -7007,7 +9227,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
     def setForegroundColor(self,color):
         pass
 #@-node:ekr.20081121105001.594:class leoQtMinibuffer (leoQLineEditWidget)
-#@-node:ekr.20081121105001.515:Text widget classes...
+#@-node:ekr.20081121105001.515:Text widget classes
 #@-others
 #@-node:ekr.20081121105001.188:@thin qtGui.py
 #@-leo
