@@ -218,6 +218,13 @@ class ipythonController:
                 self.message('Creating IPython shell.')
                 ses = api.make_session()
                 gIP = ses.IP.getapi()
+
+                if g.app.gui.guiName() == 'qt':
+                    import ipy_qt.qtipywidget
+                    self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
+                    self.qtwidget.ip = gIP
+                    self.qtwidget.show()
+                    
             else:
                 # To reuse an old IPython session, you need to launch Leo from IPython by doing:
                 #
@@ -235,7 +242,7 @@ class ipythonController:
             ipy_leo_m.update_commander(leox)
             c.inCommand = False # Disable the command lockout logic, just as for scripts.
             # start mainloop only if it's not running already
-            if existing_ip is None:
+            if existing_ip is None and g.app.gui.guiName() != 'qt':
                 # Does not return until IPython closes!
                 ses.mainloop()
 
