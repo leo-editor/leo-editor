@@ -222,7 +222,7 @@ class ipythonController:
                 if g.app.gui.guiName() == 'qt':
                     import ipy_qt.qtipywidget
                     self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
-                    self.qtwidget.ip = gIP
+                    self.qtwidget.set_ipython_session(gIP)
                     self.qtwidget.show()
                     
             else:
