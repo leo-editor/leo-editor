@@ -2373,8 +2373,11 @@ class editCommandsClass (baseEditCommandsClass):
             fromVnode = [dict(i) for i in p.v.unknownAttributes.get('icons',[])]
             for i in fromVnode: i['on'] = 'vnode'
 
-        fromTnode.extend(fromVnode)
-        return fromTnode
+        # if vnode icons are rendered to left of tnode icons
+        # it makes sense to extend fromVnode with fromTnode
+        fromVnode.extend(fromTnode)
+        return fromVnode
+    #@nonl
     #@-node:tbrown.20080119085249:getIconList
     #@+node:tbrown.20080119085249.1:setIconList
     def _setIconListHelper(self, p, subl, uaLoc):
@@ -8731,9 +8734,9 @@ class AspellClass:
         OK: 
         * 
         Suggestions: 
-        & «original» «count» «offset»: «miss», «miss», ... 
+        & <original> <count> <offset>: <miss>, <miss>, ... 
         None: 
-        # «original» «offset» 
+        # <original> <offset> 
         simplifyed to not create the string then make a list from it
         """
 

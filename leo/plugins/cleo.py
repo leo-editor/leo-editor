@@ -1124,6 +1124,7 @@ class cleoController:
         if k['c'] != self.c: return  # not our problem
 
         p = k['p']
+        self.c.selectPosition(p)
         v = k['p'].v ## EKR
 
         self.pickles = {}  # clear dict. of TkPickleVars
