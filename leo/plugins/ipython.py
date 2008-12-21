@@ -213,6 +213,10 @@ class ipythonController:
                 else:
                     # force str instead of unicode
                     argv = [str(s) for s in args.split()] 
+                if g.app.gui.guiName() == 'qt':
+                    # qt ui takes care of the coloring (using scintilla)
+                    if '-colors' not in argv:
+                        argv.extend(['-colors','NoColor'])
                 sys.argv = argv
 
                 self.message('Creating IPython shell.')
