@@ -46,10 +46,17 @@ try:
     import qt_main # Contains Ui_MainWindow class
     import PyQt4.QtCore as QtCore
     import PyQt4.QtGui as QtGui
+except ImportError:
+    QtCore = None
+    print('\nqtGui.py: can not import Qt\n')
+try:
     from PyQt4 import Qsci
 except ImportError:
     QtCore = None
-    print('qtGui.py: can not import Qt')
+    print('\nqtGui.py: can not import scintilla for Qt')
+    print('\nqtGui.py: qt-scintalla may be a separate package on your system')
+    print('\nqtGui.py: e.g. "python-qscintilla2" or similar\n')
+
 #@-node:ekr.20081121105001.189: << qt imports >>
 #@nl
 
