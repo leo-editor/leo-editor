@@ -87,23 +87,11 @@ import sys
 
 import_ok = True
 
-# try:
-    # import Tkinter as Tk
-# except ImportError:
-    # g.es_print('ipython plugin: can not Tkinter',color='red')
-    # import_ok = False
-
 try:
     import IPython.ipapi
 except ImportError:
     g.es_print('ipython plugin: can not import IPython.ipapi',color='red')
     import_ok = False
-
-# try:
-    # from IPython.Shell import IPShellEmbed
-# except ImportError:
-    # g.es_print('ipython plugin: can not import IPython.Shell.IPShellEmbed')
-    # import_ok = False
 #@-node:ekr.20080201143145.3:<< imports >>
 #@nl
 
@@ -124,7 +112,7 @@ def init ():
     if g.app.gui is None:
         g.app.createTkGui(__file__)
 
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = g.app.gui.guiName() in ("tkinter","qt")
     if ok:
 
         # Call onCreate after the commander and the key handler exist.
@@ -225,11 +213,22 @@ class ipythonController:
                 else:
                     # force str instead of unicode
                     argv = [str(s) for s in args.split()] 
+                if g.app.gui.guiName() == 'qt':
+                    # qt ui takes care of the coloring (using scintilla)
+                    if '-colors' not in argv:
+                        argv.extend(['-colors','NoColor'])
                 sys.argv = argv
 
                 self.message('Creating IPython shell.')
                 ses = api.make_session()
                 gIP = ses.IP.getapi()
+
+                if g.app.gui.guiName() == 'qt':
+                    import ipy_qt.qtipywidget
+                    self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
+                    self.qtwidget.set_ipython_session(gIP)
+                    self.qtwidget.show()
+                    
             else:
                 # To reuse an old IPython session, you need to launch Leo from IPython by doing:
                 #
@@ -247,7 +246,7 @@ class ipythonController:
             ipy_leo_m.update_commander(leox)
             c.inCommand = False # Disable the command lockout logic, just as for scripts.
             # start mainloop only if it's not running already
-            if existing_ip is None:
+            if existing_ip is None and g.app.gui.guiName() != 'qt':
                 # Does not return until IPython closes!
                 ses.mainloop()
 

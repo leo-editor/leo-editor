@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -80,6 +80,7 @@
 </v>
 <v t="ekr.20070531104646"><vh>@@button da-comp</vh></v>
 <v t="ekr.20070531103315"><vh>@@button da-expand</vh></v>
+<v t="ekr.20081025105942.1"><vh>@@button dir</vh></v>
 <v t="ekr.20070530072113"><vh>@@button hide-ch</vh></v>
 <v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
 <v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
@@ -305,6 +306,7 @@
 </v>
 </v>
 <v t="ekr.20080929112400.1"><vh>qt proto</vh></v>
+<v t="ekr.20081202095209.1"><vh>Put minibuffer in a toolbar</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
@@ -370,10 +372,9 @@
 </v>
 </v>
 <v t="ekr.20081006070847.2"><vh>path convenience methods</vh></v>
-<v t="ekr.20081025105942.1"><vh>@button dir</vh></v>
 <v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
-</v>
 <v t="ekr.20081124102740.1"><vh>Accented characters</vh></v>
+<v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
 <v t="edward.20081127113749.1"><vh>@commands</vh>
 <v t="edward.20081127113749.2"><vh>@command complete-previous</vh>
 <v t="edward.20081127113749.3"><vh>WordCompleter</vh>
@@ -400,8 +401,16 @@
 <v t="edward.20081127113749.15"></v>
 </v>
 </v>
-<v t="ekr.20081202095209.1"><vh>Put minibuffer in a toolbar</vh></v>
-<v t="ekr.20071129103842"></v>
+<v t="ekr.20081216091605.2"><vh>@@auto under_indent.py</vh>
+<v t="ekr.20081216114116.1"><vh>class test</vh>
+<v t="ekr.20081216114116.2"><vh>spam</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
+<v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
+<v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
+</v>
 <v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
 <v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
 <v t="ekr.20081202141210.1"><vh>@@auto\pythoscope\astvisitor.py</vh>
@@ -1038,13 +1047,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081205085218.1"><vh>@path c:\leo.repo\trunk</vh>
-<v t="ekr.20081205085218.2"><vh>@path leo</vh></v>
-</v>
-<v t="ekr.20081205085218.3"><vh>@auto c:\leo.repo\trunk\leo\core\test-file.py</vh></v>
-<v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
-<v t="ekr.20081208105234.1"><vh>Test deleting the last top-level node</vh></v>
-<v t="ekr.20081208105234.2"><vh>To be deleted</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -2725,7 +2727,35 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20070305085403.1"></t>
 <t tx="ekr.20070305085403.2"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121">g.app.gui.set_focus(c,w)</t>
+<t tx="ekr.20070416075121">def test_sibs(p,parent_item):
+
+    tree = c.frame.tree
+    sib_items = tree.childItems(parent_item)
+    sibs = [z for z in p.self_and_siblings_iter(copy=True)]
+    
+    assert len(sib_items) == len(sibs),(
+        'sib_items:\n%s\n\nsibs: %s' % (
+            g.listToString(child_items),g.listToString(children)))
+    
+    child_items = tree.childItems(parent_item)
+    sibs = [z for z in parent_p.self_and_siblings_iter(copy=True)]
+
+    assert len(child_items) == len(children),(
+        'child_items:\n%s\n\nchildren: %s' % (
+            g.listToString(child_items),g.listToString(children)))
+
+    for item,p in zip(child_items,children):
+        p2 = tree.item2position(item)
+        print id(item),p2 and p2.headString() or not p2 and '**None**'
+        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
+
+        # Recursively test.
+        test_sibs(p,parent_item=item)
+
+sibs = [z for z in c.rootPosition().self_and_siblings_iter(copy=True)]
+for sib in sibs:
+    test_sibs(sib,None)
+</t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070504080933">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
 
@@ -3314,8 +3344,7 @@ row,col = g.convertPythonIndexToRowCol(s,ins)
 g.pr('row',row,'col',col)</t>
 <t tx="ekr.20071025192258">import leoTest
 leoTest.doTests (c,all=False)</t>
-<t tx="ekr.20071025193940">
-# Caution: you will have to disable cursesGui in an external editor
+<t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
 # if you enable the cursesGui plugin it here
 
 # qtGui.py
@@ -3323,13 +3352,15 @@ leoTest.doTests (c,all=False)</t>
 
 plugins_menu.py
 
+# setHomeDirectory.py
+
 leoOPML.py
 # base64Packager.py
 # searchbox.py
 
 # active_path.py
 # open_shell.py
-ipython.py
+# ipython.py
 # cleo.py
 # open_with.py
 rClick.py
@@ -11028,8 +11059,6 @@ The parse tree generated for the input a+b is:
 
 aList = g.get_directives_dict_list(p)
 g.es(c.scanAtPathDirectives(aList))</t>
-<t tx="ekr.20081205085218.1"></t>
-<t tx="ekr.20081205085218.2"></t>
 <t tx="ekr.20081205104320.1"># import os
 tag = '#!/bin/bash\n'
 s = g.getScript(c,p,
@@ -11041,26 +11070,58 @@ if not s.startswith(tag):
 print s
 os.system(s)
 </t>
-<t tx="ekr.20081208105234.1">w = c.frame.tree.treeWidget
+<t tx="ekr.20081213091503.1">if 0: # Prevent the unit test code from being executed on startup.
+    @others</t>
+<t tx="ekr.20081213091503.2">p = c.rootPosition()
+tree = c.frame.tree
 
-n = w.topLevelItemCount()
-n = max(0,n-1)
+while p:
+    item = tree.position2item(p)
+    print item and id(item) or '**none**', p.headString()
+    v = tree.item2vnode(item)
+    assert v == p.v, 'item2: %s, p.v: %s' % (item2,p.v)
+    p.moveToVisNext(c)</t>
+<t tx="ekr.20081213091503.3">def test_sibs(parent_p,parent_item):
 
-item = w.topLevelItem(n)
+    tree = c.frame.tree
+    sib_items = tree.childItems(parent_item)
+    sibs = [z for z in parent_p.self_and_siblings_iter(copy=True)]
 
-print n,item
+    assert len(sib_items) == len(sibs),(
+        'child_items: %s, children: %s' % (
+            g.listToString(sib_items),g.listToString(sibs)))
 
-sibs = [z for z in c.rootPosition().self_and_siblings_iter(copy=True)]
-print '\n'.join([z.headString() for z in sibs])
+    for item,p in zip(sib_items,sibs):
+        p2 = tree.item2position(item)
+        print id(item),p2 and p2.headString() or not p2 and '**None**'
+        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
 
-if 0: # works, but of course does not update Leo's nodes.
-    c.requestRedrawFlag = False
-    w.takeTopLevelItem(n)
-    w.repaint()
-if 0:
-    c.selectPosition(sibs[-1])
-    c.deleteOutline()
+        # Recursively test.
+        child = p.firstChild()
+        if child.isVisible(c):
+            test_sibs(child,parent_item=item)
+
+print '='*10
+test_sibs(c.rootPosition(),None)
 </t>
-<t tx="ekr.20081208105234.2"></t>
+<t tx="ekr.20081216091605.2">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20081216114116.1">
+class test:
+    
+    '''Class docstring
+test line 2'''
+    @others
+</t>
+<t tx="ekr.20081216114116.2">
+def spam (self):
+
+    '''Spam docstring.
+\\-4spam line 2'''
+
+    pass
+</t>
 </tnodes>
 </leo_file>

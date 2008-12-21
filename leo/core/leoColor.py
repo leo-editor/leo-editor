@@ -1756,6 +1756,23 @@ class colorizer:
         "UCASE$","UNLOADLIBRARY","UNTIL","VAL","VARIANT","VARPTR","VARPTR$","VARTYPE",
         "WEND","WHILE","WITH","WORD","XOR"]
         #@-node:ekr.20040331145826:rapidq keywords
+        #@+node:sps.20081213155951.1:ruby keywords
+        self.ruby_keywords = [
+        # ruby keywords
+        # based on "Ruby in a Nutshell"
+        "BEGIN",    "do",     "next",   "then",
+        "END",      "else",   "nil",    "true",
+        "alias",    "elsif",  "not",    "undef",
+        "and",      "end",    "or",     "unless",
+        "begin",    "ensure", "redo",   "until",
+        "break",    "false",  "rescue", "when",
+        "case",     "for",    "retry",  "while",
+        "class",    "if",     "return", "yield",
+        "def",      "in",     "self",   "__FILE__",
+        "defined?", "module", "super",  "__LINE__",
+        ]
+        #@nonl
+        #@-node:sps.20081213155951.1:ruby keywords
         #@+node:ekr.20031218072017.382:rebol keywords
         self.rebol_keywords = [
         #Jason 2003-07-03 
@@ -2145,7 +2162,7 @@ class colorizer:
             # Eventually we might just use language_delims_dict.keys()
             languages = [
                 "actionscript","ada","c","csharp","css","cweb","elisp","html","java","latex","lua",
-                "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","shell","tcltk"]
+                "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","ruby","shell","tcltk"]
 
             self.keywords = []
             if self.language == "cweb":

@@ -2373,8 +2373,11 @@ class editCommandsClass (baseEditCommandsClass):
             fromVnode = [dict(i) for i in p.v.unknownAttributes.get('icons',[])]
             for i in fromVnode: i['on'] = 'vnode'
 
-        fromTnode.extend(fromVnode)
-        return fromTnode
+        # if vnode icons are rendered to left of tnode icons
+        # it makes sense to extend fromVnode with fromTnode
+        fromVnode.extend(fromTnode)
+        return fromVnode
+    #@nonl
     #@-node:tbrown.20080119085249:getIconList
     #@+node:tbrown.20080119085249.1:setIconList
     def _setIconListHelper(self, p, subl, uaLoc):
@@ -3551,7 +3554,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051218121447:moveWordHelper
     def moveWordHelper (self,event,extend,forward,end=False):
 
-        '''Move the cursor to the next word.
+        '''Move the cursor to the next/previous word.
         The cursor is placed at the start of the word unless end=True'''
 
         c = self.c
@@ -3834,7 +3837,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20061007214835.4:extend-to-sentence
     #@+node:ekr.20060116074839.2:extend-to-word
-    def extendToWord (self,event):
+    def extendToWord (self,event,direction='forward'):
 
         '''Select the word at the cursor.'''
 
@@ -3845,14 +3848,19 @@ class editCommandsClass (baseEditCommandsClass):
         s = w.getAllText() ; n = len(s)
         i = w.getInsertPoint()
 
-        while 0 <= i < n and not g.isWordChar(s[i]):
-            i -= 1
+        if direction == 'forward':
+            while i < n and not g.isWordChar(s[i]):
+                i += 1
+        else:
+            while 0 <= i < n and not g.isWordChar(s[i]):
+                i -= 1
+
         while 0 <= i < n and g.isWordChar(s[i]):
             i -= 1
         i += 1
+        i1 = i
 
         # Move to the end of the word.
-        i1 = i
         while 0 <= i < n and g.isWordChar(s[i]):
             i += 1
 
@@ -5660,23 +5668,24 @@ class killBufferCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.180:backwardKillWord & killWord
     def backwardKillWord (self,event):
         '''Kill the previous word.'''
-        c = self.c
+        c = self.c ; e = c.editCommands
         self.beginCommand(undoType='backward-kill-word')
-        c.editCommands.backwardWord(event)
-        # self.killWs(event)
-        self.kill(event,'insert wordstart','insert wordend',undoType=None)
-        c.frame.body.forceFullRecolor()
-        self.endCommand(changed=True,setLabel=True)
+        e.backwardWord(event)
+        self.killWordHelper(event,'back')
 
     def killWord (self,event):
         '''Kill the word containing the cursor.'''
-        c = self.c
         self.beginCommand(undoType='kill-word')
-        self.kill(event,'insert wordstart','insert wordend',undoType=None)
+        self.killWordHelper(event,'forward')
+
+    def killWordHelper(self,event,direction):
+        c = self.c ; e = c.editCommands ; w = e.editWidget(event)
         # self.killWs(event)
+        e.extendToWord(event,direction)
+        i,j = w.getSelectionRange()
+        self.kill(event,i,j,undoType = None)
         c.frame.body.forceFullRecolor()
         self.endCommand(changed=True,setLabel=True)
-
     #@-node:ekr.20050920084036.180:backwardKillWord & killWord
     #@+node:ekr.20051216151811:clearKillRing
     def clearKillRing (self,event=None):
@@ -8725,9 +8734,9 @@ class AspellClass:
         OK: 
         * 
         Suggestions: 
-        & «original» «count» «offset»: «miss», «miss», ... 
+        & <original> <count> <offset>: <miss>, <miss>, ... 
         None: 
-        # «original» «offset» 
+        # <original> <offset> 
         simplifyed to not create the string then make a list from it
         """
 

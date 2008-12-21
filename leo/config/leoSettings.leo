@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="17" height="721" width="1249"/>
+	<global_window_position top="49" left="484" height="721" width="782"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="8,1"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,7,9"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -54,7 +54,7 @@
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
-<v t="ekr.20061011082224" a="E"><vh>Candidates for settings in myLeoSettings.leo</vh>
+<v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
@@ -97,7 +97,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -317,7 +317,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413"><vh>File options</vh>
+<v t="ekr.20061003173413" a="E"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
@@ -332,6 +332,7 @@
 <v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
+<v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
 <v t="ekr.20041119034357.12"><vh>derived files options</vh>
 <v t="ekr.20041119041747"><vh>@string output_newline = nl</vh></v>
 <v t="ekr.20041119041747.1"><vh>@string trailing_body_newlines = one</vh></v>
@@ -425,7 +426,7 @@
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20070925144534"><vh>@menus</vh>
-<v t="ekr.20070925144534.1" a="E"><vh>@menu &amp;File</vh>
+<v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
 <v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
@@ -931,7 +932,7 @@
 <v t="ekr.20070925144534.427"><vh>@item *print-c&amp;ommands</vh></v>
 </v>
 </v>
-<v t="ekr.20080515053412.3" a="E"><vh>@popup_menus</vh>
+<v t="ekr.20080515053412.3"><vh>@popup_menus</vh>
 <v t="ekr.20080515053412.4"><vh>Main Context Menus</vh>
 <v t="ekr.20080515053412.5"><vh>@popup body</vh>
 <v t="ekr.20080515053412.6"><vh>@item &amp;</vh></v>
@@ -968,7 +969,7 @@
 <v t="ekr.20080515053412.31"><vh>@popup iconbox</vh></v>
 <v t="ekr.20080515053412.32"><vh>@popup plusbox</vh></v>
 </v>
-<v t="ekr.20080515053412.33" a="E"><vh>Fragments</vh>
+<v t="ekr.20080515053412.33"><vh>Fragments</vh>
 <v t="ekr.20080515053412.34"><vh>@popup edit-menu</vh>
 <v t="ekr.20080515053412.35"><vh>@item rclick-cut-text</vh></v>
 <v t="ekr.20080515053412.36"><vh>@item rclick-copy-text</vh></v>
@@ -1395,7 +1396,7 @@
 </v>
 </v>
 <v t="ekr.20060603215208"></v>
-<v t="ekr.20081018053140.11" a="E"></v>
+<v t="ekr.20081018053140.11"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6087,7 +6088,7 @@ execute-script              = Ctrl+B
 help-for-command            = F1
 open-spell-tab              = F7
 redo                        = Shift-Ctrl-Z
-run-unit-tests              = None
+run-unit-tests              = Alt-5
 run-unit-tests-locally      = Alt-4
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
@@ -7663,6 +7664,7 @@ This allows you to increase the font size.</t>
 <t tx="ekr.20081023060109.13">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>
 <t tx="ekr.20081023060109.14"></t>
+<t tx="ekr.20081216090156.5"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

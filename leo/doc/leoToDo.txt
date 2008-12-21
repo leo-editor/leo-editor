@@ -3,49 +3,60 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
-#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-@nocolor
+#@+node:ekr.20081215070651.4:Bugs 7
+#@+node:ekr.20081215070651.7:** Use myLeoSettings when opening leoSettings.leo
+#@-node:ekr.20081215070651.7:** Use myLeoSettings when opening leoSettings.leo
+#@+node:ekr.20081204091750.5:* Home doesn't reset column pointer
+#@-node:ekr.20081204091750.5:* Home doesn't reset column pointer
+#@+node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
+@nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+http://groups.google.com/group/leo-editor/browse_thread/thread/346d103641b0bd6a
 
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
+#@-node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
+#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
+@nocolor-node
 
-- Add support for the following options:
-    - expand_noweb_references: default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
+http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
 
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-#@+node:ekr.20070624135822:Templates for common code fragments
-@
-Use completion to show fragments.
-Allow settings to create fragments:
-    - @fragments
-        - @fragment name
-            body contains actual fragment.
+If a @path directive is within the body text of an @thin node then the
+file write uses the @path directive but the file read does not.  Since
+the file read cannot know of the @path directive until after it has
+read the file it has no choice but to not use it.  The @thin file
+write code should not use any @path declarations found in its body
+text.
+#@nonl
+#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
+#@+node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
+@nocolor-node
 
-@c
+http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
 
-# Invent a way for simple keystrokes to insert fragments, such as:
+> Tk only colorizes one body editor, and if you delete that editor it
+> colorizes no editor.
 
-Fragment 1:
+Thanks for this report.  This is a problem, never noticed until now,
+with the threading colorizer.  A workaround is to disable the
+threading colorizer plugin. 
+#@nonl
+#@-node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
+#@+node:ekr.20081208102356.2:Fix check-leo-outline bug
+@nocolor-node
 
-c.beginUpdate()
-try:
-    pass
-finally:
-    endUpdate()
+https://bugs.launchpad.net/leo-editor/+bug/306213
 
-Fragment 2:
+To reproduce (in the latest bzr version, qt-plugin enabled):
 
-for p in c.allNodes_iter():
-    pass
-#@-node:ekr.20070624135822:Templates for common code fragments
-#@+node:ekr.20081119132758.2:Support @ifgui in settings trees
-#@-node:ekr.20081119132758.2:Support @ifgui in settings trees
+create a node "@thin a_directory/a_file" where a_file has some text in it but no sentinels/leo-specific data.
+
+Select File-> read/write -> check derived file. The log window shows:
+
+Bad @+leo sentinel in: check-derived-file
+can not open: '@file /home/user/a_directory/check-derived-file'
+
+Clearly the file is not named 'check-derived-file', so there is a bug somewhere.
+#@nonl
+#@-node:ekr.20081208102356.2:Fix check-leo-outline bug
 #@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 @nocolor
 
@@ -59,7 +70,7 @@ get deleted whenever you save a file named somedoc.leo.
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
 #@nonl
 #@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-#@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
+#@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor
 
 A pretty feeble start for support for goto-global-line for @nosent files.
@@ -562,276 +573,15 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
     return n
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
-#@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent files
-#@+node:ekr.20080922115725.1:Finish @shadow
-# Allow block comments in private shadow files.
-# Compute delims using the private shadow file, not the file extension!
-# Can @shadow mark externally changed nodes?
-#@nonl
-#@clone 2
-#@+node:ekr.20081004102201.2:Log file for @shadow
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
-#@nonl
-#@-node:ekr.20081004102201.2:Log file for @shadow
-#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
-
-@color
-#@nonl
-#@+node:ekr.20080708094444.38:x.propagate_changed_lines
-def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
-
-    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
-
-    We compare the old and new public lines, create diffs and
-    propagate the diffs to the new private lines, copying sentinels as well.
-
-    We have two invariants:
-    1. We *never* delete any sentinels.
-    2. Insertions that happen at the boundary between nodes will be put at
-       the end of a node.  However, insertions must always be done within sentinels.
-    '''
-
-    x = self ; trace = False ; verbose = True
-    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
-
-    << init vars >>
-    << define print_tags >>
-
-    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-    prev_old_j = 0 ; prev_new_j = 0
-
-    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-
-        << About this loop >>
-
-        # Verify that SequenceMatcher never leaves gaps.
-        if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old:',old_i,prev_old_j)
-        if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new:',new_i,prev_new_j)
-
-        << Handle the opcode >>
-
-        # Remember the ends of the previous tag ranges.
-        prev_old_j = old_j
-        prev_new_j = new_j
-
-    # Copy all unwritten sentinels.
-    self.copy_sentinels(
-        old_private_lines_rdr,new_private_lines_wtr,
-        marker, limit = old_private_lines_rdr.size())
-
-    # Get the result.
-    result = new_private_lines_wtr.getlines()
-    if 1:
-        << do final correctness check>>
-    return result
-#@+node:ekr.20080708094444.40:<< init vars >>
-new_private_lines_wtr = sourcewriter(self)
-# collects the contents of the new file.
-
-new_public_lines_rdr = sourcereader(self,new_public_lines)
-    # Contains the changed source code.
-
-old_public_lines_rdr = sourcereader(self,old_public_lines)
-    # this is compared to new_public_lines_rdr to find out the changes.
-
-old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
-    # This is the file which is currently produced by Leo, with sentinels.
-
-# Check that all ranges returned by get_opcodes() are contiguous
-old_old_j, old_i2_modified_lines = -1,-1
-
-tag = old_i = old_j = new_i = new_j = None
-#@nonl
-#@-node:ekr.20080708094444.40:<< init vars >>
-#@+node:ekr.20080708094444.39:<< define print_tags >>
-def print_tags(tag, old_i, old_j, new_i, new_j, message):
-
-    sep1 = '=' * 10 ; sep2 = '-' * 20
-
-    g.pr('\n',sep1,message,sep1,p and p.headString())
-
-    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
-
-    g.pr('\n',sep2)
-
-    table = (
-        (old_private_lines_rdr,'old private lines'),
-        (old_public_lines_rdr,'old public lines'),
-        (new_public_lines_rdr,'new public lines'),
-        (new_private_lines_wtr,'new private lines'),
-    )
-
-    for f,tag in table:
-        f.dump(tag)
-        g.pr(sep2)
-
-
-#@-node:ekr.20080708094444.39:<< define print_tags >>
-#@+node:ekr.20080708192807.2:<< about this loop >>
-@
-
-This loop writes all output lines using a single writer: new_private_lines_wtr.
-
-The output lines come from two, and *only* two readers:
-
-1. old_private_lines_rdr delivers the complete original sources. All
-   sentinels and unchanged regular lines come from this reader.
-
-2. new_public_lines_rdr delivers the new, changed sources. All inserted or
-   replacement text comes from this reader.
-
-Each time through the loop, the following are true:
-
-- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
-
-- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
-
-At the start of the loop, the call to copy_sentinels effectively skips (deletes)
-all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
-less than mapping[old_i].
-
-As a result, the opcode handlers do not need to delete elements from the
-old_private_lines_rdr explicitly. This explains why opcode handlers for the
-'insert' and 'delete' opcodes are identical.
-#@-node:ekr.20080708192807.2:<< about this loop >>
-#@+node:ekr.20080708192807.5:<< Handle the opcode >>
-# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-# In this special case, we must do the insert before the sentinels.
-limit=mapping[old_i]
-
-if trace: g.trace(tag,'old_i',old_i,'limit',limit)
-
-if tag == 'insert' and limit >= old_private_lines_rdr.size():
-    pass
-else:
-    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
-    # Because of this, nothing has to be explicitly deleted below.
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-
-if tag == 'equal':
-    # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index()
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
-        line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
-
-    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-    new_public_lines_rdr.sync(new_j)
-
-elif tag in ('insert','replace'):
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index()
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if x.is_sentinel(line,marker):
-            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag=='delete':
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Leave new_public_lines_rdr unchanged.
-    pass
-
-else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
-
-if trace and verbose:
-    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-#@nonl
-#@-node:ekr.20080708192807.5:<< Handle the opcode >>
-#@+node:ekr.20080708094444.45:<< do final correctness check >>
-t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-    new_private_lines_wtr.lines, marker)
-
-self.check_the_final_output(
-    new_private_lines   = result,
-    new_public_lines    = new_public_lines,
-    sentinel_lines      = t_sentinel_lines,
-    marker              = marker)
-#@-node:ekr.20080708094444.45:<< do final correctness check >>
-#@-node:ekr.20080708094444.38:x.propagate_changed_lines
-#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-#@+node:ekr.20081028060510.1:Fix @shadow crasher
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
-
-I think Leo crashes when attempting to load a shadow file that starts
-with a line feed character. [EKR: it's the missing file extension]
-
-Here's the stack trace:
-
-Traceback (most recent call last):
- File "/home/jesse/leo-editor/launchLeo.py", line 8, in <module>
-   leo.core.runLeo.run()
- File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
-   c,frame = createFrame(fileName,relativeFileName,script)
- File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
-createFrame
-   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
- File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
-openWithFileName
-   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
- File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
-in open
-   silent=silent)
- File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
-in getLeoFile
-   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
-readAll
-   at.readOneAtShadowNode (fileName,p)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
-readOneAtShadowNode
-   at.writeOneAtShadowNode(p,toString=False,force=True)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
-writeOneAtShadowNode
-   at.writeOpenFile(root,nosentinels=not
-sentinels,toString=False,atAuto=False)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
-writeOpenFile
-   at.putBody(root,fromString=fromString)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
-putBody
-   at.putCodeLine(s,i)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
-putCodeLine
-   if g.match(s,k,self.startSentinelComment + '@'):
-TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
-#@nonl
-#@-node:ekr.20081028060510.1:Fix @shadow crasher
-#@-node:ekr.20080922115725.1:Finish @shadow
-#@-node:ekr.20080915112342.1:First
-#@+node:ekr.20081202093528.1:New stuff
+#@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
+#@-node:ekr.20081215070651.4:Bugs 7
+#@+node:ekr.20081215070651.5:Features 6
 #@+node:ekr.20081211085314.1:Smart Alt-RtArrow/Alt-LtArrow keys
 @nocolor-node
 
 Move up or down if can't move left or right.
 #@nonl
 #@-node:ekr.20081211085314.1:Smart Alt-RtArrow/Alt-LtArrow keys
-#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
-
-If a @path directive is within the body text of an @thin node then the
-file write uses the @path directive but the file read does not.  Since
-the file read cannot know of the @path directive until after it has
-read the file it has no choice but to not use it.  The @thin file
-write code should not use any @path declarations found in its body
-text.
-#@nonl
-#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
-#@+node:ekr.20081204091750.5:Home doesn't reset column pointer
-#@-node:ekr.20081204091750.5:Home doesn't reset column pointer
 #@+node:ekr.20081202093528.2:Put new commands in leoEditCommands.py
 #@+node:ekr.20081202093528.19:@command complete-previous
 wordsep = u'., -+\n\r[]{}<>=-+*&%$#@!"\'?/\\|^()~`:;'
@@ -1201,123 +951,303 @@ def getCurrentWord(s, pos):
 #@-node:ekr.20081202093528.32:getCurrentWord
 #@-node:ekr.20081202093528.33:@command complete-next
 #@-node:ekr.20081202093528.2:Put new commands in leoEditCommands.py
-#@+node:ekr.20081202093528.34:Support line wrapping in Qt gui plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/6e319ec69b5d62b4
-#@nonl
-#@-node:ekr.20081202093528.34:Support line wrapping in Qt gui plugin
-#@+node:ekr.20081202095049.1:Mark finds doesn't work in Qt gui plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
-#@nonl
-#@-node:ekr.20081202095049.1:Mark finds doesn't work in Qt gui plugin
-#@+node:ekr.20081202095049.2:Cut/paste work erratically in Qt gui plugin
+#@+node:ekr.20081212080741.1:Implement workbook (and @cl?) in Leo's core
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/58af715355227ec
-
-I'm observing the following strange behavior when copy and paste text
-using the qt plugin. The behavior is erratic and I cannot reproduce it
-systematically so I'll try to give you a general picture.
-
-When I select and copy text in the body pane of a node SOMETIMES I see
-the following message in the console
-
-QClipboard::setData: Cannot set X11 selection owner for CLIPBOARD
-
-When I try to paste the copied text:
-- sometimes it works fine
-- sometimes nothing happens (and the Paste entry of the body pane
-context menu is disabled)
-- sometimes the pasted text is not the last copied text (i.e. some
-copy operations fail)
-
-I know this is confusing and I've done my best trying to get a pattern
-for these facts but with no luck.
-
-Vicent 
+http://groups.google.com/group/leo-editor/browse_thread/thread/684797be53127484#
 #@nonl
-#@-node:ekr.20081202095049.2:Cut/paste work erratically in Qt gui plugin
-#@+node:ekr.20081202095049.5:Hook up find-tab widgets
+#@-node:ekr.20081212080741.1:Implement workbook (and @cl?) in Leo's core
+#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
+#@+node:ekr.20070624135822:Templates for common code fragments
+@
+Use completion to show fragments.
+Allow settings to create fragments:
+    - @fragments
+        - @fragment name
+            body contains actual fragment.
+
+@c
+
+# Invent a way for simple keystrokes to insert fragments, such as:
+
+Fragment 1:
+
+c.beginUpdate()
+try:
+    pass
+finally:
+    endUpdate()
+
+Fragment 2:
+
+for p in c.allNodes_iter():
+    pass
+#@-node:ekr.20070624135822:Templates for common code fragments
+#@+node:ekr.20081119132758.2:Support @ifgui in settings trees
+#@-node:ekr.20081119132758.2:Support @ifgui in settings trees
+#@-node:ekr.20081215070651.5:Features 6
+#@+node:ekr.20080922115725.1:Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@nonl
+#@clone 2
+#@+node:ekr.20081004102201.2:Log file for @shadow
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/5098b46abbc98683
-
-Clicking on them by hand probably doesn't inform Leo's core.
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
 #@nonl
-#@-node:ekr.20081202095049.5:Hook up find-tab widgets
-#@+node:ekr.20081202095049.4:Alt-tab sometimes loses focus
+#@-node:ekr.20081004102201.2:Log file for @shadow
+#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
+#@nonl
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@nonl
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.headString())
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines
+#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+#@+node:ekr.20081028060510.1:Fix @shadow crasher
 @nocolor-node
 
-The focus doesn't go to any pane that supports key bindings.
+http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
 
-This may be a result of the F-key lock not being down.  Or something.
+I think Leo crashes when attempting to load a shadow file that starts
+with a line feed character. [EKR: it's the missing file extension]
+
+Here's the stack trace:
+
+Traceback (most recent call last):
+ File "/home/jesse/leo-editor/launchLeo.py", line 8, in <module>
+   leo.core.runLeo.run()
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
+   c,frame = createFrame(fileName,relativeFileName,script)
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
+createFrame
+   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+ File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
+openWithFileName
+   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
+in open
+   silent=silent)
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
+in getLeoFile
+   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
+readAll
+   at.readOneAtShadowNode (fileName,p)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
+readOneAtShadowNode
+   at.writeOneAtShadowNode(p,toString=False,force=True)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
+writeOneAtShadowNode
+   at.writeOpenFile(root,nosentinels=not
+sentinels,toString=False,atAuto=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
+writeOpenFile
+   at.putBody(root,fromString=fromString)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
+putBody
+   at.putCodeLine(s,i)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
+putCodeLine
+   if g.match(s,k,self.startSentinelComment + '@'):
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 #@nonl
-#@-node:ekr.20081202095049.4:Alt-tab sometimes loses focus
-#@+node:ekr.20081203122403.2:Finish qt gui delete_range method
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/51edf3b44d6a587e
-
-revno: 1259.1.10
-revision-id: terry_n_brown@yahoo.com-20081130181632-ci0ioaksewdvc257
-
-I added code so that this no longer derails the initialization process,
-i.e. just catch the exception and continue.  I don't know what's wrong
-except I first noticed it after a tkinter update from Ubuntu.  I
-think.  Anyway, that's my story :)
-
-When I added the "clean recent files" menu option long before this
-traceback showed up I had a heap of trouble deleting just the file
-entries on the recent files menu.  It was originally hardwired that the
-menu have a "Clear list" item, and then the file entries, but I wanted
-to make it get it's command entries from @menu @settings and add the
-files afterward and that was a lot of fiddling.  I.e. originally it
-deleted everything and added the "Clear list" item before rebuilding
-the file list, now it either tries to delete only the file entries, or
-stores the entries before the files (from @menu) and adds them back
-before the files each time, I forget which finally worked.
-
-What's my point?  It would be nice if delete_range "just worked".  It's
-a 'pass' in qt, and I would guess recent files is the only thing in the
-entire code base that uses it.
-
-The menu tree seems to me to be "write only", i.e. not readable, at
-least from the Leo API, of course you can walk it in a gui specific
-way.  Not necessarily a problem, but would be nice if it was more
-robustly dynamic.  Or maybe I'm missing something, but I've only seen
-functions which find a menu based on knowing it exists before hand.
-#@nonl
-#@-node:ekr.20081203122403.2:Finish qt gui delete_range method
-#@+node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
-
-> Tk only colorizes one body editor, and if you delete that editor it
-> colorizes no editor.
-
-Thanks for this report.  This is a problem, never noticed until now,
-with the threading colorizer.  A workaround is to disable the
-threading colorizer plugin. 
-#@nonl
-#@-node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
-#@+node:ekr.20081208102356.2:Fix check-leo-outline bug
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/306213
-
-To reproduce (in the latest bzr version, qt-plugin enabled):
-
-create a node "@thin a_directory/a_file" where a_file has some text in it but no sentinels/leo-specific data.
-
-Select File-> read/write -> check derived file. The log window shows:
-
-Bad @+leo sentinel in: check-derived-file
-can not open: '@file /home/user/a_directory/check-derived-file'
-
-Clearly the file is not named 'check-derived-file', so there is a bug somewhere.
-#@nonl
-#@-node:ekr.20081208102356.2:Fix check-leo-outline bug
-#@-node:ekr.20081202093528.1:New stuff
+#@-node:ekr.20081028060510.1:Fix @shadow crasher
+#@-node:ekr.20080922115725.1:Finish @shadow
+#@-node:ekr.20080915112342.1:First
 #@+node:ekr.20080517102922.1:Files stuff 8
 #@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 @nocolor
@@ -2338,7 +2268,7 @@ def movePastCloseHelper (self,event,extend):
 #@+node:ekr.20051218121447:moveWordHelper
 def moveWordHelper (self,event,extend,forward,end=False):
 
-    '''Move the cursor to the next word.
+    '''Move the cursor to the next/previous word.
     The cursor is placed at the start of the word unless end=True'''
 
     c = self.c
@@ -2621,7 +2551,7 @@ def extendToSentence (self,event):
 #@nonl
 #@-node:ekr.20061007214835.4:extend-to-sentence
 #@+node:ekr.20060116074839.2:extend-to-word
-def extendToWord (self,event):
+def extendToWord (self,event,direction='forward'):
 
     '''Select the word at the cursor.'''
 
@@ -2632,14 +2562,19 @@ def extendToWord (self,event):
     s = w.getAllText() ; n = len(s)
     i = w.getInsertPoint()
 
-    while 0 <= i < n and not g.isWordChar(s[i]):
-        i -= 1
+    if direction == 'forward':
+        while i < n and not g.isWordChar(s[i]):
+            i += 1
+    else:
+        while 0 <= i < n and not g.isWordChar(s[i]):
+            i -= 1
+
     while 0 <= i < n and g.isWordChar(s[i]):
         i -= 1
     i += 1
+    i1 = i
 
     # Move to the end of the word.
-    i1 = i
     while 0 <= i < n and g.isWordChar(s[i]):
         i += 1
 

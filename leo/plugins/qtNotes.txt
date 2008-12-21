@@ -4,20 +4,70 @@
 #@+node:ekr.20081121105001.148: qt To do
 @nocolor-node
 
-First:
+- Support hoist in redraw code.
+- Get rClick plugin working.
+
+Bugs: See child nodes for details.
+#@+node:ekr.20081215162017.1:Urgent bugs 4
+#@+node:ekr.20081215162017.2:Headline doesn't stick after ctrl-L
+#@-node:ekr.20081215162017.2:Headline doesn't stick after ctrl-L
+#@+node:ekr.20081215074704.17:Fix focus problems
+@nocolor-node
 
 - Add traces for focus.
     - Is the "cute hack" causing problems?
-- Support hoist in redraw code.
 
-Next:
 - Can key strokes be handled in log pane?
-- Disabling searches of body pane can cause hard crashes.
+
+Alt-tab sometimes loses focus
+
+The focus doesn't go to any pane that supports key bindings.
+
+This may be a result of the F-key lock not being down.  Or something.
+#@nonl
+#@-node:ekr.20081215074704.17:Fix focus problems
+#@+node:ekr.20081215162017.3:Find can crash when search-headline is off
+#@-node:ekr.20081215162017.3:Find can crash when search-headline is off
+#@+node:ekr.20081215074704.15:Cut/paste work erratically
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/58af715355227ec
+
+I'm observing the following strange behavior when copy and paste text
+using the qt plugin. The behavior is erratic and I cannot reproduce it
+systematically so I'll try to give you a general picture.
+
+When I select and copy text in the body pane of a node SOMETIMES I see
+the following message in the console
+
+QClipboard::setData: Cannot set X11 selection owner for CLIPBOARD
+
+When I try to paste the copied text:
+- sometimes it works fine
+- sometimes nothing happens (and the Paste entry of the body pane
+context menu is disabled)
+- sometimes the pasted text is not the last copied text (i.e. some
+copy operations fail)
+
+I know this is confusing and I've done my best trying to get a pattern
+for these facts but with no luck.
+
+Vicent 
+#@nonl
+#@-node:ekr.20081215074704.15:Cut/paste work erratically
+#@-node:ekr.20081215162017.1:Urgent bugs 4
+#@+node:ekr.20081215074704.13:Bugs 4
+* Disabling searches of body pane can cause hard crashes.
     - initInteractiveCommands expects c.edit_widget(p)to exist.
-- Allow coloring of icon bar buttons.
-- Support multiple body editors.
-
-
+#@nonl
+#@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
+#@nonl
+#@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+#@+node:ekr.20081215074704.14:Fix flash characters problems
+Ask Qt people.
+#@nonl
+#@-node:ekr.20081215074704.14:Fix flash characters problems
 #@+node:ekr.20081124094918.1:Fix problems with scim
 @nocolor-node
 
@@ -43,10 +93,62 @@ keyboard I get:
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081124094918.1:Fix problems with scim
-#@+node:ekr.20081121105001.151:Finally/maybe
+#@+node:ekr.20081215074704.18:Finish qt gui delete_range method
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/51edf3b44d6a587e
+
+revno: 1259.1.10
+revision-id: terry_n_brown@yahoo.com-20081130181632-ci0ioaksewdvc257
+
+I added code so that this no longer derails the initialization process,
+i.e. just catch the exception and continue.  I don't know what's wrong
+except I first noticed it after a tkinter update from Ubuntu.  I
+think.  Anyway, that's my story :)
+
+When I added the "clean recent files" menu option long before this
+traceback showed up I had a heap of trouble deleting just the file
+entries on the recent files menu.  It was originally hardwired that the
+menu have a "Clear list" item, and then the file entries, but I wanted
+to make it get it's command entries from @menu @settings and add the
+files afterward and that was a lot of fiddling.  I.e. originally it
+deleted everything and added the "Clear list" item before rebuilding
+the file list, now it either tries to delete only the file entries, or
+stores the entries before the files (from @menu) and adds them back
+before the files each time, I forget which finally worked.
+
+What's my point?  It would be nice if delete_range "just worked".  It's
+a 'pass' in qt, and I would guess recent files is the only thing in the
+entire code base that uses it.
+
+The menu tree seems to me to be "write only", i.e. not readable, at
+least from the Leo API, of course you can walk it in a gui specific
+way.  Not necessarily a problem, but would be nice if it was more
+robustly dynamic.  Or maybe I'm missing something, but I've only seen
+functions which find a menu based on knowing it exists before hand.
+#@nonl
+#@-node:ekr.20081215074704.18:Finish qt gui delete_range method
+#@-node:ekr.20081215074704.13:Bugs 4
+#@+node:ekr.20081215074704.19:Features 5
+#@+node:ekr.20081215162017.4:Allow coloring of script buttons
+#@-node:ekr.20081215162017.4:Allow coloring of script buttons
+#@+node:ekr.20081215162017.5:Support multiple body editors
+#@-node:ekr.20081215162017.5:Support multiple body editors
+#@+node:ekr.20081215074704.20:Change background color of body pane depending on focus
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/1cce885a697d0236/5aea5d0587b47b92?lnk=gst&q=command+and+insert#5aea5d0587b47b92
+
+Set focus in/out events.
+#@nonl
+#@-node:ekr.20081215074704.20:Change background color of body pane depending on focus
+#@+node:ekr.20081215074704.21:Add drag and drop
+#@-node:ekr.20081215074704.21:Add drag and drop
+#@+node:ekr.20081121105001.151:Clean up settings
 - Can style sheets really do the job?
-- Flash characters without changing the selection?
+
 - Remove old-style Leo settings?
+
 - Add stylesheets for dialogs.
     - Set font for dummy widget in style sheet, then copy that font.
 #@+node:ekr.20081121105001.150:QScintilla stuff
@@ -65,7 +167,8 @@ present in the qt plugin (both with and without scintilla)
     - Fix problem with accented characters: see child node for notes.
 #@nonl
 #@-node:ekr.20081121105001.150:QScintilla stuff
-#@-node:ekr.20081121105001.151:Finally/maybe
+#@-node:ekr.20081121105001.151:Clean up settings
+#@-node:ekr.20081215074704.19:Features 5
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081121105001.186:Script to display Qt font database
@@ -315,7 +418,566 @@ def createDummyChildItem (self,p,parent_item):
         self.drawNode(p2,parent_item,dummy=True)
 
 #@-node:ekr.20081209064740.17:createDummyChildItem (not used)
+#@+node:ekr.20081211060950.17:rememberPosition
+def rememberPosition (self,p,item):
+
+    # The following dicts are used only by event handlers.
+    # They are *not* to be used by the incremental drawing code!
+
+    # Remember the position, vnode and tnode of each item.
+    self.item2positionDict[item] = p.copy()
+
+    # Remember list of all (p,item) for each v.
+    aList = self.vnode2dataDict.get(p.v,[])
+    data = p.copy(),item
+    aList.append(data)
+    self.vnode2dataDict[p.v] = aList
+
+    # Remember list all (p,item) for each t.
+    aList = self.tnode2dataDict.get(p.v.t,[])
+    data = p.copy(),item
+    aList.append(data)
+    self.tnode2dataDict[p.v.t] = aList
+#@-node:ekr.20081211060950.17:rememberPosition
+#@+node:ekr.20081209210556.2:updateDicts (was used in full_redraw)
+def updateDicts (self,p,parent_item,item):
+
+    # Important: the item2vnodeDict is *not* cleared by initData.
+    # Entries in this dict are persistent.
+
+    self.item2vnodeDict[item] = p.v
+
+    # Important: the following dicts are used only by event handlers.
+    # They are *not* to be used by the incremental drawing code!
+
+    # Remember the position, vnode and tnode of each item.
+    self.item2positionDict[item] = p.copy()
+
+    # Remember list of all (p,item) for each v.
+    aList = self.vnode2dataDict.get(p.v,[])
+    data = p.copy(),item
+    aList.append(data)
+    self.vnode2dataDict[p.v] = aList
+
+    # Remember list all (p,item) for each t.
+    aList = self.tnode2dataDict.get(p.v.t,[])
+    data = p.copy(),item
+    aList.append(data)
+    self.tnode2dataDict[p.v.t] = aList
+#@-node:ekr.20081209210556.2:updateDicts (was used in full_redraw)
+#@+node:ekr.20081213093110.17:position2item (old)
+def position2item (self,p):
+    '''Return the unique item associated with position p.'''
+    aList = self.vnode2dataDict.get(p.v,[])
+    for p2,item2 in aList:
+        if p == p2:
+            item = item2 ; break
+    else:
+        item = None
+    return item
+#@-node:ekr.20081213093110.17:position2item (old)
+#@+node:ekr.20081211060950.2:Partial redraw
+if use_partial_redraw:
+
+    @others
+#@+node:ekr.20081211123349.10:high-level helpers
+#@+node:ekr.20081211060950.12:createChildren
+def createChildren (self,p,parent_item):
+
+    if p.hasChildren():
+        child = p.firstChild()
+        self.expandItem(parent_item) # May contract later.
+        if p.isExpanded():
+            while child:
+                self.createTree(child,parent_item)
+                child.moveToNext()
+        else:
+            while child:
+                if 0: # Create all descendants.
+                    self.createTree(child,parent_item)
+                else: # Create one level of hidden children.
+                    self.createItem(child,parent_item)
+                child.moveToNext()
+            self.contractItem(parent_item)
+    else:
+        self.contractItem(parent_item)
+#@-node:ekr.20081211060950.12:createChildren
+#@+node:ekr.20081211060950.14:createTree
+def createTree (self,p,parent_item=None):
+
+    # Create the (visible) parent node.
+    item = self.createItem(p,parent_item)
+
+    # Create all the visible children.
+    self.createChildren(p,parent_item=item)
+
+
+#@-node:ekr.20081211060950.14:createTree
+#@+node:ekr.20081209064740.16:deleteChildItems
+def deleteChildItems(self,p,parent_item):
+
+    '''Delete all child items of the parent_item,
+    thereby clearing the expansion box.'''
+
+    trace = False
+
+    child_items = self.childItems(parent_item)
+    assert not p.firstChild()
+
+    n = 0
+    for item in child_items:
+        self.deleteItem(parent_item,item)
+        n += 1
+
+    if trace and n:
+        g.trace('deleted %s items' % (n))
+#@-node:ekr.20081209064740.16:deleteChildItems
+#@+node:ekr.20081209103009.13:deleteNthItem
+def deleteNthItem(self,n,parent_item,item):
+
+    trace = False and not g.app.unitTesting
+
+    if trace and self.redrawCount > 1:
+        g.trace('%3s' % n)
+
+    child_items = self.childItems(parent_item)
+
+    if n < len(child_items):
+        # A crucial constraint.
+        assert item==child_items[n], (
+            'item: %s, n: %s, child_items: %s' % (
+                item,n,child_items))
+
+        self.deleteItem(parent_item,item)
+    else:
+        self.oops('bad item',n,item)
+#@-node:ekr.20081209103009.13:deleteNthItem
+#@+node:ekr.20081209103009.17:insertNthChild
+def insertNthChild(self,p,n,parent_item,hidden=False):
+
+    '''Insert an item tree as the n'th child of the parent item.'''
+
+    trace = False and not g.app.unitTesting
+
+    if trace and self.redrawCount > 1:
+        g.trace(hidden,n,p)
+
+    item = self.createNthChildItem(p,n,parent_item)
+
+    if not hidden:
+        self.createChildren(p,item)
+#@-node:ekr.20081209103009.17:insertNthChild
+#@+node:ekr.20081209103009.18:replaceNthItem
+def replaceNthItem(self,p,n,parent_item,item,hidden=False):
+
+    trace = False
+
+    if trace and self.redrawCount > 1:
+        g.trace('%3s' % (n),p,g.callers(4))
+
+    self.deleteNthItem(n,parent_item,item)
+
+    item = self.createNthChildItem(p,n,parent_item)
+
+    if not hidden:
+        self.createChildren(p,parent_item=item)
+
+
+#@-node:ekr.20081209103009.18:replaceNthItem
+#@+node:ekr.20081209103009.12:updateNthSib
+def updateNthSib(self,p,n,sibs,parent_item,hidden=False):
+
+    '''Update the pair (p,item), making the result the
+    n'th child item of parent_item.'''
+
+    sib_items = self.childItems(parent_item)
+    item = sib_items[n]
+
+    # A crucial assert
+    assert p == sibs[n],'p: %s, n: %s, sibs: %s' % (
+        p,n,sibs)
+
+    item_v = self.item2vnode(item)
+    next_p = p.next()
+    next_p_v = next_p and next_p.v
+
+    if item_v == p.v: # An exact match.
+        return
+
+    if n + 1 < len(sibs) and n + 1 < len(sib_items):
+        next_p = sibs[n+1]
+        next_p_item = sib_items[n+1]
+        next_item = sib_items[n+1]
+        next_item_v = self.item2vnode(next_item)
+        if p.v == next_item_v and next_p.v == item_v:
+            self.swapNthItems(n,parent_item)
+        elif p.v == next_item_v:
+            # Note: no position exists for the deleted node
+            self.deleteNthItem(n,parent_item,item)
+        elif item_v == next_p_v:
+            self.insertNthChild(p,n,parent_item,hidden=hidden)
+        else:
+            if self.redrawCount > 1: g.pdb()
+            self.replaceNthItem(p,n,parent_item,item,hidden=hidden)
+    else:
+        self.replaceNthItem(p,n,parent_item,item,hidden=hidden)
+#@-node:ekr.20081209103009.12:updateNthSib
+#@+node:ekr.20081209103009.10:updateSibs
+def updateSibs (self,p,parent_item,hidden=False):
+
+    '''Update each sibling in turn.'''
+
+    trace = False ; verbose = False
+    sibs = [z for z in p.self_and_siblings_iter(copy=True)]
+
+    # Compare unchanging new nodes with changing tree items.
+    for n,p in zip(range(len(sibs)),sibs):
+        n_items = self.numberOfChildItems(parent_item)
+        if trace:
+            if verbose:g.trace('n: %s, n_items: %s' % (n,n_items))
+            else: g.trace(n,p)
+        if n_items < n:
+            return self.oops('n_items: %s, n: %s' % (n_items,n))
+
+        if n_items <= n:
+            self.insertNthChild(p,n,parent_item,hidden=hidden)
+        else:
+            self.updateNthSib(p,n,sibs,parent_item,hidden=hidden)
+
+    # Delete any trailing items.
+    children = self.childItems(parent_item)
+    tail_items = children[len(sibs):]
+    for item in tail_items:
+        self.deleteItem(parent_item,item)
+#@-node:ekr.20081209103009.10:updateSibs
+#@+node:ekr.20081208072750.15:updateTree
+def updateTree (self,p,parent_item,level=0):
+
+    trace = False
+
+    # Step one: synchonize the tree items with p and it's siblings.
+    self.updateSibs (p,parent_item)
+    sibs = [z for z in p.self_and_siblings_iter(copy=True)]
+    sib_items = self.childItems(parent_item)
+
+    if trace:
+        g.trace('level: %s, len(sibs): %s, len(sib_items): %s' % (
+            level,len(sibs),len(sib_items)))
+        g.trace('\n%s' % g.listToString(sibs))
+
+    if len(sibs) != len(sib_items):
+        return self.oops('sibs:\n%s\nsib_items:\n%s' % (
+            g.listToString(sibs),g.listToString(sib_items)))
+
+    # Step two: recursively examine all visible child nodes & items.
+    for p,sib_item in zip(sibs,sib_items):
+        if p.hasChildren():
+            if p.isExpanded():
+                child = p.firstChild()
+                self.updateTree(child,sib_item,level=level+1)
+                self.expandItem(sib_item)
+            else:
+                # Update just the hidden direct children.
+                child = p.firstChild()
+                self.updateSibs(child,parent_item=sib_item,hidden=True)
+                self.contractItem(sib_item)
+        else:
+            # Disable the expansion indicator.
+            self.deleteChildItems(p,parent_item=sib_item)
+            self.contractItem(sib_item)
+#@-node:ekr.20081208072750.15:updateTree
+#@-node:ekr.20081211123349.10:high-level helpers
+#@+node:ekr.20081208072750.10:partial_redraw
+def partial_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
+
+    '''Redraw the tree, minimizing the actual changes made to the tree.'''
+
+    trace = True; verbose = False
+    c = self.c ; w = self.treeWidget
+    if not w: return
+    if self.redrawing:
+        if trace: g.trace('***** already drawing',g.callers(4))
+        return
+
+    self.redrawCount += 1
+    if trace: tstart()
+
+    self.nodeDrawCount = 0
+    self.redrawing = True
+    try:
+        self.expandAllAncestors(c.currentPosition())
+        self.initData()
+        p = c.rootPosition()
+        self.updateTree(p,parent_item=None)
+        self.postPass()
+    finally:
+        if not self.selecting:
+            item = self.setCurrentItem()
+            if p and not item and self.redrawCount > 1:
+                if not g.app.unitTesting:
+                    g.trace('Error: no current item: %s' % (
+                        p.headString()))
+
+        if 0: # Very slow for unit tests.
+            w.repaint()
+        c.requestRedrawFlag = False
+        self.redrawing = False
+        if trace:
+            theTime = tstop()
+            if self.nodeDrawCount and not g.app.unitTesting:
+                g.trace('%s: drew %3s nodes in %s' % (
+                    self.redrawCount,self.nodeDrawCount,theTime))
+            # if verbose: g.trace(g.callers(4))
+
+# Compatibility
+if use_partial_redraw:
+    redraw = partial_redraw 
+    redraw_now = partial_redraw
+    redraw_after_clone = partial_redraw
+    redraw_after_contract = partial_redraw
+    redraw_after_delete = partial_redraw
+    redraw_after_expand = partial_redraw
+    redraw_after_insert = partial_redraw
+    redraw_after_move_down = partial_redraw
+    redraw_after_move_left = partial_redraw
+    redraw_after_move_right = partial_redraw
+    redraw_after_move_up = partial_redraw
+#@-node:ekr.20081208072750.10:partial_redraw
+#@+node:ekr.20081211060950.18:postPass & helpers
+testing = True
+    # True: enable internal unit tests in postPass and helpers.
+
+def postPass (self):
+
+    c = self.c ; p = c.rootPosition()
+
+    self.rememberSibs(p,parent_item=None)
+
+#@+node:ekr.20081211172745.10:rememberSibs
+def rememberSibs (self,p,parent_item):
+
+    sib_items = self.childItems(parent_item)
+    sibs = [z for z in p.self_and_siblings_iter(copy=True)]
+
+    if self.testing: assert len(sib_items) == len(sibs), (
+        'items: %s, sibs: %s, p: %s' % (
+            len(sib_items),len(sibs),p))
+
+    for p2,item in zip(sibs,sib_items):
+
+        if self.testing: assert self.isValidItem(item),(
+            'item: %s, p: %s' % (item,p))
+
+        self.updateHeadline(p2,item)
+        self.drawItemIcon(p2,item)
+        self.rememberPosition(p2,item)
+
+        # We remember only visible positions,
+        # regardless of whether all nodes are drawn or not.
+        if p2.hasChildren() and p2.isExpanded():
+            self.rememberSibs(p2.firstChild(),parent_item=item)
+#@nonl
+#@-node:ekr.20081211172745.10:rememberSibs
+#@-node:ekr.20081211060950.18:postPass & helpers
+#@-node:ekr.20081211060950.2:Partial redraw
 #@-node:ekr.20081208155215.12:Unused
+#@+node:ekr.20081213093110.16:Removed unused dicts
+#@+node:ekr.20081121105001.402:__init__ (qtTree)
+def __init__(self,c,frame):
+
+    # g.trace('*****qtTree')
+
+    # Init the base class.
+    leoFrame.leoTree.__init__(self,frame)
+
+    # Components.
+    self.c = c
+    self.canvas = self # An official ivar used by Leo's core.
+    self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
+
+    try:
+        w.headerItem().setHidden(True)
+    except Exception:
+        pass
+
+    w.setIconSize(QtCore.QSize(20,11))
+    # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+
+    # Status ivars.
+    self.dragging = False
+    self._editWidgetPosition = None
+    self._editWidget = None
+    self._editWidgetWrapper = None
+    self.expanding = False
+    self.fullDrawing = False
+    self.generation = 0
+    self.prev_p = None
+    self.redrawing = False
+    self.redrawCount = 0 # Count for debugging.
+    self.revertHeadline = None # Previous headline text for abortEditLabel.
+    self.selecting = False
+
+    # Debugging.
+    self.nodeDrawCount = 0
+
+    # Associating items with vnodes...
+    self.item2vnodeDict = {}
+    self.vnode2itemsDict = {} # values are lists of items.
+
+    self.setConfigIvars()
+    self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
+#@-node:ekr.20081121105001.402:__init__ (qtTree)
+#@+node:ekr.20081121105001.162:onTreeSelect
+def onTreeSelect(self):
+
+    '''Select the proper position when a tree node is selected.'''
+
+    trace = False ; verbose = False
+    c = self.c ; p = c.currentPosition()
+    w = self.treeWidget 
+
+    if self.selecting:
+        if trace: g.trace('already selecting',p and p.headString())
+        return
+    if self.redrawing:
+        if trace: g.trace('already drawing',p and p.headString())
+        return
+
+    item = w.currentItem()
+    p = self.item2position(item)
+
+    if p:
+        if trace: g.trace(p and p.headString())
+        c.frame.tree.select(p) # The crucial hook.
+        c.outerUpdate()
+    else:
+        # An error.
+        g.trace('no p for item: %s' % item,g.callers(4))
+#@nonl
+#@-node:ekr.20081121105001.162:onTreeSelect
+#@+node:ekr.20081121105001.431:updateIcon
+def updateIcon (self,p):
+
+    '''Update p's icon.'''
+
+    if not p: return
+
+    val = p.v.computeIcon()
+    if p.v.iconVal == val: return
+
+    icon = self.getIconImage(val)
+
+    items = self.vnode2items(p.v)
+
+    for item in items:
+        if self.isValidItem(item):
+            item.setIcon(0,icon)
+#@-node:ekr.20081121105001.431:updateIcon
+#@+node:ekr.20081121105001.156:editLabel (override)
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    trace = False ; verbose = False
+    c = self.c ; w = self.treeWidget
+
+    if self.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if self._editWidget:
+        # Not an error, because of key weirdness.
+        if trace: g.trace('already editing')
+        return
+
+    if trace: g.trace('***',p and p.headString(),g.callers(4))
+
+    c.outerUpdate() # Do any scheduled redraw.
+
+    item = self.position2item(p)
+
+    if item:
+        w.setCurrentItem(item) # Must do this first.
+        w.editItem(item)
+        e = w.itemWidget(item,0) # A QLineEdit
+        if e:
+            s = e.text() ; len_s = len(s)
+            # Hook up the widget to Leo's core.
+            self._editWidgetPosition = p.copy()
+            self._editWidget = e
+            self._editWidgetWrapper = leoQtHeadlineWidget(
+                widget=e,name='head',c=c)
+            start,n = g.choose(selectAll,
+                tuple([0,len_s]),tuple([len_s,0]))
+            e.setObjectName('headline')
+            e.setSelection(start,n)
+            e.setFocus()
+        else: self.oops('no edit widget')
+    else:
+        self._editWidgetPosition = None
+        self._editWidget = None
+        self._editWidgetWrapper = None
+        e = None
+        self.oops('no item: %s' % p)
+
+    # A nice hack: just set the focus request.
+    if e: c.requestedFocusWidget = e
+#@-node:ekr.20081121105001.156:editLabel (override)
+#@+node:ekr.20081211060950.15:forgetItem
+def forgetItem (self,item):
+
+    '''Remove the item and all its descendant items
+    from the item2vnodeDict.'''
+
+    d = self.item2vnodeDict
+
+    if item in d:
+        v = d.get(item)
+        aList = vnode2itemsDict.get(v)
+        if item in aList:
+            aList.remove(item)
+        else:
+            self.oops('not in vnode2itemsDict: %s' % item)
+        del d[item]
+    else:
+        self.oops('not in item2vnodeDict: %s' % item)
+
+    child_items = self.childItems(item)
+
+    for child_item in child_items:
+
+        self.forgetItem(child_item)
+#@-node:ekr.20081211060950.15:forgetItem
+#@+node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
+def rememberItem (self,p,item):
+
+    self.rememberVnodeItem(p.v,item)
+
+def rememberVnodeItem (self,v,item):
+
+    # Update item2vnodeDict.
+    self.item2vnodeDict[item] = v
+
+    # Update vnode2itemsDict.
+    d = self.vnode2itemsDict
+    aList = d.get(v,[])
+
+    if item in aList:
+        self.oops('item already in list: %s, %s' % (item,aList))
+    else:
+        aList.append(item)
+        d[v] = aList
+#@-node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
+#@+node:ekr.20081209064740.1:item dict getters
+def item2vnode (self,item):
+    return self.item2vnodeDict.get(item)
+
+def vnode2items(self,v):
+    return self.vnode2itemsDict.get(v,[])
+
+def isValidItem (self,item):
+    return item in self.item2vnodeDict
+#@-node:ekr.20081209064740.1:item dict getters
+#@-node:ekr.20081213093110.16:Removed unused dicts
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt

@@ -135,6 +135,9 @@ class atFile:
         self._forcedGnxPositionList = []
             # Must be here, putting it in initReadIvars doesn't work.
 
+        self.underindentEscapeString = c.config.getString(
+            'underindent-escape-string') or '\\-'
+
         #@    << define the dispatch dictionary used by scanText4 >>
         #@+node:ekr.20041005105605.9:<< define the dispatch dictionary used by scanText4 >>
         self.dispatch_dict = {
@@ -3153,7 +3156,7 @@ class atFile:
             # Don't put any whitespace in otherwise blank lines.
             if line.strip(): # The line has non-empty content.
                 if not at.raw:
-                    at.putIndent(at.indent)
+                    at.putIndent(at.indent,line)
 
                 if line[-1:]=='\n':
                     at.os(line[:-1])
@@ -3167,7 +3170,7 @@ class atFile:
         else:
             # Don't put leading indent if the line is empty!
             if line.strip() and not at.raw: 
-                at.putIndent(at.indent)
+                at.putIndent(at.indent,line)
 
             if line[-1:]=='\n':
                 at.os(line[:-1])
@@ -3840,12 +3843,17 @@ class atFile:
 
         All output produced by leoAtFile module goes here."""
 
-        at = self
+        trace = False
+        at = self ; tag = self.underindentEscapeString
+        f = at.outputFile
 
-        if s and at.outputFile:
+        if s and f:
             try:
                 s = g.toEncodedString(s,at.encoding,reportErrors=True)
-                at.outputFile.write(s)
+                if trace: g.trace(repr(s),g.callers(4))
+                if s.startswith(tag):
+                    junk,s = self.parseUnderindentTag(s)
+                f.write(s)
             except Exception:
                 at.exception("exception writing:" + s)
     #@-node:ekr.20041005105605.204:os
@@ -4041,9 +4049,21 @@ class atFile:
         return i
     #@-node:ekr.20041005105605.206:putDirective  (handles @delims,@comment,@language) 4.x
     #@+node:ekr.20041005105605.210:putIndent
-    def putIndent(self,n):
+    def putIndent(self,n,s=''):
 
-        """Put tabs and spaces corresponding to n spaces, assuming that we are at the start of a line."""
+        """Put tabs and spaces corresponding to n spaces,
+        assuming that we are at the start of a line.
+
+        Remove extra blanks if the line starts with the underindentEscapeString"""
+
+        # g.trace(repr(s))
+        tag = self.underindentEscapeString
+
+        if s.startswith(tag):
+            n2,s2 = self.parseUnderindentTag(s)
+            if n2 >= n: return
+            elif n > 0: n -= n2
+            else:       n += n2
 
         if n != 0:
             w = self.tab_width
@@ -4514,6 +4534,23 @@ class atFile:
         return g.utils_stat(fileName)
     #@-node:ekr.20050104132026:stat
     #@-node:ekr.20050104131929:file operations...
+    #@+node:ekr.20081216090156.4:parseUnderindentTag
+    def parseUnderindentTag (self,s):
+
+        tag = self.underindentEscapeString
+        s2 = s[len(tag):]
+
+        # To be valid, the escape must be followed by at least one digit.
+        i = 0
+        while i < len(s2) and s2[i].isdigit():
+            i += 1
+
+        if i > 0:
+            n = int(s2[:i])
+            return n,s2[i:]
+        else:
+            return 0,s
+    #@-node:ekr.20081216090156.4:parseUnderindentTag
     #@+node:ekr.20041005105605.242:scanForClonedSibs (reading & writing)
     def scanForClonedSibs (self,parent_v,v):
 

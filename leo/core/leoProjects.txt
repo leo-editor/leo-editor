@@ -2078,6 +2078,643 @@ def new (self,event=None,gui=None):
 #@nonl
 #@-node:ekr.20031218072017.1623:c.new
 #@-node:ekr.20081121081651.1:Paste outline problem
+#@+node:ekr.20081215070651.3:backwardKill word doesn't work w/ qt gui
+#@+node:ekr.20050920084036.180:backwardKillWord & killWord
+def backwardKillWord (self,event):
+    '''Kill the previous word.'''
+    c = self.c ; e = c.editCommands
+    self.beginCommand(undoType='backward-kill-word')
+    e.backwardWord(event)
+    self.killWordHelper(event,'back')
+
+def killWord (self,event):
+    '''Kill the word containing the cursor.'''
+    self.beginCommand(undoType='kill-word')
+    self.killWordHelper(event,'forward')
+
+def killWordHelper(self,event,direction):
+    c = self.c ; e = c.editCommands ; w = e.editWidget(event)
+    # self.killWs(event)
+    e.extendToWord(event,direction)
+    i,j = w.getSelectionRange()
+    self.kill(event,i,j,undoType = None)
+    c.frame.body.forceFullRecolor()
+    self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20050920084036.180:backwardKillWord & killWord
+#@+node:ekr.20060116074839.2:extend-to-word
+def extendToWord (self,event,direction='forward'):
+
+    '''Select the word at the cursor.'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    if direction == 'forward':
+        while i < n and not g.isWordChar(s[i]):
+            i += 1
+    else:
+        while 0 <= i < n and not g.isWordChar(s[i]):
+            i -= 1
+
+    while 0 <= i < n and g.isWordChar(s[i]):
+        i -= 1
+    i += 1
+    i1 = i
+
+    # Move to the end of the word.
+    while 0 <= i < n and g.isWordChar(s[i]):
+        i += 1
+
+    w.setSelectionRange(i1,i)
+#@nonl
+#@-node:ekr.20060116074839.2:extend-to-word
+#@+node:ekr.20050929114218:move cursor... (leoEditCommands)
+#@+node:ekr.20051218170358: helpers
+#@+node:ekr.20060113130510:extendHelper
+def extendHelper (self,w,extend,spot,upOrDown=False):
+    '''Handle the details of extending the selection.
+    This method is called for all cursor moves.
+
+    extend: Clear the selection unless this is True.
+    spot:   The *new* insert point.
+    '''
+    c = self.c ; p = c.currentPosition()
+    extend = extend or self.extendMode
+    ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    # g.trace('extend',extend,'ins',ins,'sel=',i,j,'spot=',spot,'moveSpot',self.moveSpot)
+
+    # Reset the move spot if needed.
+    if self.moveSpot is None or p.v.t != self.moveSpotNode:
+        # g.trace('no spot')
+        self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
+    elif extend:
+        if i == j or self.moveSpot not in (i,j):
+            # g.trace('spot not in sel')
+            self.setMoveCol(w,ins) # sets self.moveSpot.
+    else:
+        if upOrDown:
+            s = w.getAllText()
+            i2,j2 = g.getLine(s,spot)
+            line = s[i2:j2]
+            row,col = g.convertPythonIndexToRowCol(s,spot)
+            if True: # was j2 < len(s)-1:
+                n = min(self.moveCol,max(0,len(line)-1))
+            else:
+                n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
+            # g.trace('using moveCol',self.moveCol,'line',repr(line),'n',n)
+            spot = g.convertRowColToPythonIndex(s,row,n)
+        else:  # Plain move forward or back.
+            # g.trace('plain forward/back move')
+            self.setMoveCol(w,spot) # sets self.moveSpot.
+
+    if extend:
+        if spot < self.moveSpot:
+            w.setSelectionRange(spot,self.moveSpot,insert=spot)
+        else:
+            w.setSelectionRange(self.moveSpot,spot,insert=spot)
+    else:
+        w.setSelectionRange(spot,spot,insert=spot)
+
+    w.seeInsertPoint()
+    c.frame.updateStatusLine()
+#@nonl
+#@-node:ekr.20060113130510:extendHelper
+#@+node:ekr.20060113105246.1:moveUpOrDownHelper
+def moveUpOrDownHelper (self,event,direction,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+    trace = False
+
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    w.seeInsertPoint()
+
+    # Find the start of the next/prev line.
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    if trace:
+        gui_ins = w.toGuiIndex(ins)
+        bbox = w.bbox(gui_ins)
+        if bbox:
+            x,y,width,height = bbox
+            # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
+            g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
+            g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
+            g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
+            g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
+    i,j = g.getLine(s,ins)
+    if direction == 'down':
+        i2,j2 = g.getLine(s,j)
+    else:
+        i2,j2 = g.getLine(s,i-1)
+
+    # The spot is the start of the line plus the column index.
+    n = max(0,j2-i2-1) # The length of the new line.
+    col2 = min(col,n)
+    spot = i2 + col2
+    if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
+
+    self.extendHelper(w,extend,spot,upOrDown=True)
+#@nonl
+#@-node:ekr.20060113105246.1:moveUpOrDownHelper
+#@+node:ekr.20051218122116:moveToHelper
+def moveToHelper (self,event,spot,extend):
+
+    '''Common helper method for commands the move the cursor
+    in a way that can be described by a Tk Text expression.'''
+
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    # Put the request in the proper range.
+    if c.widget_name(w).startswith('mini'):
+        i,j = k.getEditableTextRange()
+        if   spot < i: spot = i
+        elif spot > j: spot = j
+
+    self.extendHelper(w,extend,spot,upOrDown=False)
+#@nonl
+#@-node:ekr.20051218122116:moveToHelper
+#@+node:ekr.20051218171457:movePastCloseHelper
+def movePastCloseHelper (self,event,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    # Scan backwards for i,j.
+    i = ins
+    while i >= 0 and s[i] != '\n':
+        if s[i] == '(': break
+        i -= 1
+    else: return
+    j = ins
+    while j >= 0 and s[j] != '\n':
+        if s[j] == '(': break
+        j -= 1
+    if i < j: return
+    # Scan forward for i2,j2.
+    i2 = ins
+    while i2 < len(s) and s[i2] != '\n':
+        if s[i2] == ')': break
+        i2 += 1
+    else: return
+    j2 = ins
+    while j2 < len(s) and s[j2] != '\n':
+        if s[j2] == ')': break
+        j2 += 1
+    if i2 > j2: return
+
+    self.moveToHelper(event,i2+1,extend)
+#@-node:ekr.20051218171457:movePastCloseHelper
+#@+node:ekr.20051218121447:moveWordHelper
+def moveWordHelper (self,event,extend,forward,end=False):
+
+    '''Move the cursor to the next/previous word.
+    The cursor is placed at the start of the word unless end=True'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    if forward:
+        # Unlike backward-word moves, there are two options...
+        if end:
+            while 0 <= i < n and not g.isWordChar(s[i]):
+                i += 1
+            while 0 <= i < n and g.isWordChar(s[i]):
+                i += 1
+        else:
+            while 0 <= i < n and g.isWordChar(s[i]):
+                i += 1
+            while 0 <= i < n and not g.isWordChar(s[i]):
+                i += 1
+    else:
+        i -= 1
+        while 0 <= i < n and not g.isWordChar(s[i]):
+            i -= 1
+        while 0 <= i < n and g.isWordChar(s[i]):
+            i -= 1
+        i += 1
+
+    self.moveToHelper(event,i,extend)
+#@nonl
+#@-node:ekr.20051218121447:moveWordHelper
+#@+node:ekr.20051213094517:backSentenceHelper
+def backSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+
+    while i >= 0:
+        if s[i] == '.': break
+        i -= 1
+    else: return
+
+    j = i-1
+    while j >= 0:
+        if s[j] == '.':
+            j += 1 ; break
+        j -= 1
+    else: j = 0
+
+    while j < i and s[j].isspace():
+        j += 1
+
+    if j < i:
+        self.moveToHelper(event,j,extend)
+#@-node:ekr.20051213094517:backSentenceHelper
+#@+node:ekr.20050920084036.137:forwardSentenceHelper
+def forwardSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = s.find('.',ins) + 1
+    i = min(i,len(s))
+    self.moveToHelper(event,i,extend)
+#@-node:ekr.20050920084036.137:forwardSentenceHelper
+#@+node:ekr.20051218133207.1:forwardParagraphHelper
+def forwardParagraphHelper (self,event,extend):
+
+    w = self.editWidget(event)
+    if not w: return
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+
+    if line.strip(): # Skip past the present paragraph.
+        self.selectParagraphHelper(w,i)
+        i,j = w.getSelectionRange()
+        j += 1
+
+    # Skip to the next non-blank line.
+    i = j
+    while j < len(s):
+        i,j = g.getLine(s,j)
+        line = s[i:j]
+        if line.strip(): break
+
+    w.setInsertPoint(ins) # Restore the original insert point.
+    self.moveToHelper(event,i,extend)
+#@-node:ekr.20051218133207.1:forwardParagraphHelper
+#@+node:ekr.20051218133207:backwardParagraphHelper
+def backwardParagraphHelper (self,event,extend):
+
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    # A hack for wx gui: set the insertion point to the end of the selection range.
+    if g.app.unitTesting:
+        w.setInsertPoint(j)
+    i,j = g.getLine(s,j)
+    line = s[i:j]
+
+    if line.strip():
+        # Find the start of the present paragraph.
+        while i > 0:
+            i,j = g.getLine(s,i-1)
+            line = s[i:j]
+            if not line.strip(): break
+
+    # Find the end of the previous paragraph.
+    while i > 0:
+        i,j = g.getLine(s,i-1)
+        line = s[i:j]
+        if line.strip():
+            i = j-1 ; break
+
+    self.moveToHelper(event,i,extend)
+#@nonl
+#@-node:ekr.20051218133207:backwardParagraphHelper
+#@+node:ekr.20060209095101:setMoveCol
+def setMoveCol (self,w,spot):
+
+    '''Set the column to which an up or down arrow will attempt to move.'''
+
+    c = self.c ; p = c.currentPosition()
+    s = w.getAllText()
+    i = w.toPythonIndex(spot)
+    junk,col = g.convertPythonIndexToRowCol(s,i)
+    # g.trace('spot,i,col',spot,i,col)
+
+    self.moveSpot = i
+    self.moveCol = col
+    self.moveSpotNode = p.v.t
+#@nonl
+#@-node:ekr.20060209095101:setMoveCol
+#@-node:ekr.20051218170358: helpers
+#@+node:ekr.20050920084036.148:buffers
+def beginningOfBuffer (self,event):
+    '''Move the cursor to the start of the body text.'''
+    self.moveToHelper(event,0,extend=False)
+
+def beginningOfBufferExtendSelection (self,event):
+    '''Extend the text selection by moving the cursor to the start of the body text.'''
+    self.moveToHelper(event,0,extend=True)
+
+def endOfBuffer (self,event):
+    '''Move the cursor to the end of the body text.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    self.moveToHelper(event,len(s),extend=False)
+
+def endOfBufferExtendSelection (self,event):
+    '''Extend the text selection by moving the cursor to the end of the body text.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    self.moveToHelper(event,len(s),extend=True)
+#@-node:ekr.20050920084036.148:buffers
+#@+node:ekr.20051213080533:characters
+def backCharacter (self,event):
+    '''Move the cursor back one character, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    i = w.getInsertPoint()
+    i = max(0,i-1)
+    self.moveToHelper(event,i,extend=False)
+
+def backCharacterExtendSelection (self,event):
+    '''Extend the selection by moving the cursor back one character.'''
+    w = self.editWidget(event)
+    i = w.getInsertPoint()
+    i = max(0,i-1)
+    self.moveToHelper(event,i,extend=True)
+
+def forwardCharacter (self,event):
+    '''Move the cursor forward one character, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+    i = min(i+1,len(s))
+    self.moveToHelper(event,i,extend=False)
+
+def forwardCharacterExtendSelection (self,event):
+    '''Extend the selection by moving the cursor forward one character.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+    i = min(i+1,len(s))
+    self.moveToHelper(event,i,extend=True)
+#@-node:ekr.20051213080533:characters
+#@+node:ekr.20051218174113:clear/set/ToggleExtendMode
+def clearExtendMode (self,event):
+    '''Turn off extend mode: cursor movement commands do not extend the selection.'''
+    self.extendModeHelper(event,False)
+
+def setExtendMode (self,event):
+    '''Turn on extend mode: cursor movement commands do extend the selection.'''
+    self.extendModeHelper(event,True)
+
+def toggleExtendMode (self,event):
+    '''Toggle extend mode, i.e., toggle whether cursor movement commands extend the selections.'''
+    self.extendModeHelper(event,not self.extendMode)
+
+def extendModeHelper (self,event,val):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    self.extendMode = val
+    g.es('extend mode',g.choose(val,'on','off'),color='red')
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20051218174113:clear/set/ToggleExtendMode
+#@+node:ekr.20050920084036.136:exchangePointMark
+def exchangePointMark (self,event):
+
+    '''Exchange the point (insert point) with the mark (the other end of the selected text).'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    i,j = w.getSelectionRange(sort=False)
+    if i == j: return
+
+    ins = w.getInsertPoint()
+    ins = g.choose(ins==i,j,i)
+    w.setInsertPoint(ins)
+    w.setSelectionRange(i,j,insert=None)
+#@-node:ekr.20050920084036.136:exchangePointMark
+#@+node:ekr.20061007082956:extend-to-line
+def extendToLine (self,event):
+
+    '''Select the line at the cursor.'''
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    while 0 <= i < n and not s[i] == '\n':
+        i -= 1
+    i += 1 ; i1 = i
+    while 0 <= i < n and not s[i] == '\n':
+        i += 1
+
+    w.setSelectionRange(i1,i)
+#@-node:ekr.20061007082956:extend-to-line
+#@+node:ekr.20061007214835.4:extend-to-sentence
+def extendToSentence (self,event):
+
+    '''Select the line at the cursor.'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    i2 = 1 + s.find('.',i)
+    if i2 == -1: i2 = n
+    i1 = 1 + s.rfind('.',0,i2-1)
+
+    w.setSelectionRange(i1,i2)
+#@nonl
+#@-node:ekr.20061007214835.4:extend-to-sentence
+#@+node:ekr.20060116074839.2:extend-to-word
+def extendToWord (self,event,direction='forward'):
+
+    '''Select the word at the cursor.'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    if direction == 'forward':
+        while i < n and not g.isWordChar(s[i]):
+            i += 1
+    else:
+        while 0 <= i < n and not g.isWordChar(s[i]):
+            i -= 1
+
+    while 0 <= i < n and g.isWordChar(s[i]):
+        i -= 1
+    i += 1
+    i1 = i
+
+    # Move to the end of the word.
+    while 0 <= i < n and g.isWordChar(s[i]):
+        i += 1
+
+    w.setSelectionRange(i1,i)
+#@nonl
+#@-node:ekr.20060116074839.2:extend-to-word
+#@+node:ekr.20051218141237:lines
+def beginningOfLine (self,event):
+    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    i,junk = g.getLine(s,ins)
+    if i > 0 and i == ins:
+        i,junk = g.getLine(s,i-1)
+    self.moveToHelper(event,i,extend=False)
+
+def beginningOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the start of the line.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    i,junk = g.getLine(s,ins)
+    if i > 0 and i == ins:
+        i,junk = g.getLine(s,i-1)
+    self.moveToHelper(event,i,extend=True)
+
+def endOfLine (self,event): # passed
+    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    junk,i = g.getLine(s,ins)
+    if ins == i-1: junk,i = g.getLine(s,i)
+    if g.match(s,i-1,'\n'): i -= 1
+    self.moveToHelper(event,i,extend=False)
+
+def endOfLineExtendSelection (self,event): # passed
+    '''Extend the selection by moving the cursor to the end of the line.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    junk,i = g.getLine(s,ins)
+    if ins == i-1: junk,i = g.getLine(s,i)
+    if g.match(s,i-1,'\n'): i -= 1
+    self.moveToHelper(event,i,extend=True)
+
+def nextLine (self,event):
+    '''Move the cursor down, extending the selection if in extend mode.'''
+    self.moveUpOrDownHelper(event,'down',extend=False)
+
+def nextLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor down.'''
+    self.moveUpOrDownHelper(event,'down',extend=True)
+
+def prevLine (self,event):
+    '''Move the cursor up, extending the selection if in extend mode.'''
+    self.moveUpOrDownHelper(event,'up',extend=False)
+
+def prevLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor up.'''
+    self.moveUpOrDownHelper(event,'up',extend=True)
+#@-node:ekr.20051218141237:lines
+#@+node:ekr.20050920084036.140:movePastClose
+def movePastClose (self,event):
+    '''Move the cursor past the closing parenthesis.'''
+    self.movePastCloseHelper(event,extend=False)
+
+def movePastCloseExtendSelection (self,event):
+    '''Extend the selection by moving the cursor past the closing parenthesis.'''
+    self.movePastCloseHelper(event,extend=True)
+#@-node:ekr.20050920084036.140:movePastClose
+#@+node:ekr.20050920084036.102:paragraphs
+def backwardParagraph (self,event):
+    '''Move the cursor to the previous paragraph.'''
+    self.backwardParagraphHelper (event,extend=False)
+
+def backwardParagraphExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous paragraph.'''
+    self.backwardParagraphHelper (event,extend=True)
+
+def forwardParagraph (self,event):
+    '''Move the cursor to the next paragraph.'''
+    self.forwardParagraphHelper(event,extend=False)
+
+def forwardParagraphExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next paragraph.'''
+    self.forwardParagraphHelper(event,extend=True)
+#@-node:ekr.20050920084036.102:paragraphs
+#@+node:ekr.20050920084036.131:sentences
+def backSentence (self,event):
+    '''Move the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=False)
+
+def backSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=True)
+
+def forwardSentence (self,event):
+    '''Move the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=False)
+
+def forwardSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=True)
+#@-node:ekr.20050920084036.131:sentences
+#@+node:ekr.20050920084036.149:words
+def backwardWord (self,event):
+    '''Move the cursor to the previous word.'''
+    self.moveWordHelper(event,extend=False,forward=False)
+
+def backwardWordExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next word.'''
+    self.moveWordHelper(event,extend=True,forward=False)
+
+def forwardEndWord (self,event): # New in Leo 4.4.2
+    '''Move the cursor to the next word.'''
+    self.moveWordHelper(event,extend=False,forward=True,end=True)
+
+def forwardEndWordExtendSelection (self,event): # New in Leo 4.4.2
+    '''Extend the selection by moving the cursor to the previous word.'''
+    self.moveWordHelper(event,extend=True,forward=True,end=True)
+
+def forwardWord (self,event):
+    '''Move the cursor to the next word.'''
+    self.moveWordHelper(event,extend=False,forward=True)
+
+def forwardWordExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous word.'''
+    self.moveWordHelper(event,extend=True,forward=True)
+#@-node:ekr.20050920084036.149:words
+#@-node:ekr.20050929114218:move cursor... (leoEditCommands)
+#@-node:ekr.20081215070651.3:backwardKill word doesn't work w/ qt gui
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -5333,12 +5970,17 @@ def os (self,s):
 
     All output produced by leoAtFile module goes here."""
 
-    at = self
+    trace = False
+    at = self ; tag = self.underindentEscapeString
+    f = at.outputFile
 
-    if s and at.outputFile:
+    if s and f:
         try:
             s = g.toEncodedString(s,at.encoding,reportErrors=True)
-            at.outputFile.write(s)
+            if trace: g.trace(repr(s),g.callers(4))
+            if s.startswith(tag):
+                junk,s = self.parseUnderindentTag(s)
+            f.write(s)
         except Exception:
             at.exception("exception writing:" + s)
 #@-node:ekr.20041005105605.204:os
@@ -11455,6 +12097,1328 @@ def backToHome (self,event):
     self.endCommand(changed=True,setLabel=True)
 #@-node:ekr.20081123102100.1:backToHome
 #@-node:ekr.20081123102100.2:Added smart home (back-to-home) command
+#@+node:ekr.20081216090156.2:Added escapes for underindented lines
+#@+node:ekr.20031218072017.3197:Whitespace...
+#@+node:ekr.20051014175117:g.adjustTripleString (same as removeExtraLws)
+def adjustTripleString (s,tab_width):
+
+    '''Remove leading indentation from a triple-quoted string.
+
+    This works around the fact that Leo nodes can't represent underindented strings.
+    '''
+
+    # Compute the minimum leading whitespace of all non-blank lines.
+    lines = g.splitLines(s)
+    w = -1
+    for s in lines:
+        if s.strip():
+            lws = g.get_leading_ws(s)
+            w2 = g.computeWidth(lws,tab_width)
+            if w < 0: w = w2
+            else:     w = min(w,w2)
+            # g.trace('w',w)
+
+    if w <= 0: return s
+
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line,w,tab_width) for line in lines]
+    result = ''.join(result)
+
+    return result
+#@-node:ekr.20051014175117:g.adjustTripleString (same as removeExtraLws)
+#@+node:ekr.20031218072017.3198:computeLeadingWhitespace
+# Returns optimized whitespace corresponding to width with the indicated tab_width.
+
+def computeLeadingWhitespace (width, tab_width):
+
+    if width <= 0:
+        return ""
+    if tab_width > 1:
+        tabs   = width / tab_width
+        blanks = width % tab_width
+        return ('\t' * tabs) + (' ' * blanks)
+    else: # 7/3/02: negative tab width always gets converted to blanks.
+        return (' ' * width)
+#@-node:ekr.20031218072017.3198:computeLeadingWhitespace
+#@+node:ekr.20031218072017.3199:computeWidth
+# Returns the width of s, assuming s starts a line, with indicated tab_width.
+
+def computeWidth (s, tab_width):
+
+    w = 0
+    for ch in s:
+        if ch == '\t':
+            w += (abs(tab_width) - (w % abs(tab_width)))
+        else:
+            w += 1
+    return w
+#@-node:ekr.20031218072017.3199:computeWidth
+#@+node:ekr.20031218072017.3200:get_leading_ws
+def get_leading_ws(s):
+
+    """Returns the leading whitespace of 's'."""
+
+    i = 0 ; n = len(s)
+    while i < n and s[i] in (' ','\t'):
+        i += 1
+    return s[0:i]
+#@-node:ekr.20031218072017.3200:get_leading_ws
+#@+node:ekr.20031218072017.3201:optimizeLeadingWhitespace
+# Optimize leading whitespace in s with the given tab_width.
+
+def optimizeLeadingWhitespace (line,tab_width):
+
+    i, width = g.skip_leading_ws_with_indent(line,0,tab_width)
+    s = g.computeLeadingWhitespace(width,tab_width) + line[i:]
+    return s
+#@-node:ekr.20031218072017.3201:optimizeLeadingWhitespace
+#@+node:ekr.20040723093558:regularizeTrailingNewlines
+@
+
+The caller should call g.stripBlankLines before calling this routine if desired.
+
+This routine does _not_ simply call rstrip(): that would delete all trailing whitespace-only lines, and in some cases that would change the meaning of program or data.
+
+@c
+
+def regularizeTrailingNewlines(s,kind):
+
+    """Kind is 'asis', 'zero' or 'one'."""
+
+    pass
+#@-node:ekr.20040723093558:regularizeTrailingNewlines
+#@+node:ekr.20031218072017.3202:removeLeadingWhitespace
+# Remove whitespace up to first_ws wide in s, given tab_width, the width of a tab.
+
+def removeLeadingWhitespace (s,first_ws,tab_width):
+
+    j = 0 ; ws = 0
+    for ch in s:
+        if ws >= first_ws:
+            break
+        elif ch == ' ':
+            j += 1 ; ws += 1
+        elif ch == '\t':
+            j += 1 ; ws += (abs(tab_width) - (ws % abs(tab_width)))
+        else: break
+    if j > 0:
+        s = s[j:]
+    return s
+#@-node:ekr.20031218072017.3202:removeLeadingWhitespace
+#@+node:ekr.20050211120242.2:g.removeExtraLws
+def removeExtraLws (s,tab_width):
+
+    '''Remove extra indentation from one or more lines.
+
+    Warning: used by getScript.  This is *not* the same as g.adjustTripleString.'''
+
+    lines = g.splitLines(s)
+
+    # Find the first non-blank line and compute w, the width of its leading whitespace.
+    for s in lines:
+        if s.strip():
+            lws = g.get_leading_ws(s)
+            w = g.computeWidth(lws,tab_width)
+            # g.trace('w',w)
+            break
+    else: return s
+
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line,w,tab_width) for line in lines]
+    result = ''.join(result)
+
+    if 0:
+        g.trace('lines...')
+        for line in g.splitLines(result):
+            g.pr(repr(line))
+
+    return result
+#@-node:ekr.20050211120242.2:g.removeExtraLws
+#@+node:ekr.20031218072017.3203:removeTrailingWs
+# Warning: string.rstrip also removes newlines!
+
+def removeTrailingWs(s):
+
+    j = len(s)-1
+    while j >= 0 and (s[j] == ' ' or s[j] == '\t'):
+        j -= 1
+    return s[:j+1]
+#@-node:ekr.20031218072017.3203:removeTrailingWs
+#@+node:ekr.20031218072017.3204:skip_leading_ws
+# Skips leading up to width leading whitespace.
+
+def skip_leading_ws(s,i,ws,tab_width):
+
+    count = 0
+    while count < ws and i < len(s):
+        ch = s[i]
+        if ch == ' ':
+            count += 1
+            i += 1
+        elif ch == '\t':
+            count += (abs(tab_width) - (count % abs(tab_width)))
+            i += 1
+        else: break
+
+    return i
+#@-node:ekr.20031218072017.3204:skip_leading_ws
+#@+node:ekr.20031218072017.3205:skip_leading_ws_with_indent
+def skip_leading_ws_with_indent(s,i,tab_width):
+
+    """Skips leading whitespace and returns (i, indent), 
+
+    - i points after the whitespace
+    - indent is the width of the whitespace, assuming tab_width wide tabs."""
+
+    count = 0 ; n = len(s)
+    while i < n:
+        ch = s[i]
+        if ch == ' ':
+            count += 1
+            i += 1
+        elif ch == '\t':
+            count += (abs(tab_width) - (count % abs(tab_width)))
+            i += 1
+        else: break
+
+    return i, count
+#@-node:ekr.20031218072017.3205:skip_leading_ws_with_indent
+#@+node:ekr.20040723093558.1:stripBlankLines
+def stripBlankLines(s):
+
+    lines = g.splitLines(s)
+
+    for i in range(len(lines)):
+
+        line = lines[i]
+        j = g.skip_ws(line,0)
+        if j >= len(line):
+            lines[i] = ''
+            # g.trace("%4d %s" % (i,repr(lines[i])))
+        elif line[j] == '\n':
+            lines[i] = '\n'
+            # g.trace("%4d %s" % (i,repr(lines[i])))
+
+    return ''.join(lines)
+#@-node:ekr.20040723093558.1:stripBlankLines
+#@-node:ekr.20031218072017.3197:Whitespace...
+#@+node:ekr.20070808115837:Checking
+#@+node:ekr.20070703122141.102:check
+def check (self,unused_s,unused_parent):
+
+    '''Make sure the generated nodes are equivalent to the original file.
+
+    1. Regularize and check leading whitespace.
+    2. Check that a trial write produces the original file.
+
+    Return True if the nodes are equivalent to the original file.
+    '''
+
+    if self.fullChecks and self.treeType == '@file':
+        return self.checkTrialWrite()
+    else:
+        return True
+#@-node:ekr.20070703122141.102:check
+#@+node:ekr.20070703122141.104:checkTrialWrite
+def checkTrialWrite (self,s1=None,s2=None):
+
+    '''Return True if a trial write produces the original file.'''
+
+    # s1 and s2 are for unit testing.
+
+    c = self.c ; at = c.atFileCommands
+
+    if s1 is None and s2 is None:
+        at.write(self.root,
+            nosentinels=True,thinFile=False,
+            scriptWrite=False,toString=True,
+            write_strips_blank_lines=False)
+        s1,s2 = self.file_s, at.stringOutput
+
+    s1 = g.toUnicode(s1,self.encoding)
+    s2 = g.toUnicode(s2,self.encoding)
+
+    # Make sure we have a trailing newline in both strings.
+    s1 = s1.replace('\r','')
+    s2 = s2.replace('\r','')
+    if not s1.endswith('\n'): s1 = s1 + '\n'
+    if not s2.endswith('\n'): s2 = s2 + '\n'
+
+    if s1 == s2: return True
+
+    lines1 = g.splitLines(s1) ; n1 = len(lines1)
+    lines2 = g.splitLines(s2) ; n2 = len(lines2)
+
+    # g.trace('lines1',lines1)
+    # g.trace('lines2',lines2)
+
+    ok = True ; bad_i = 0
+    for i in range(max(n1,n2)):
+        ok = self.compareHelper(lines1,lines2,i,self.strict)
+        if not ok:
+            bad_i = i + 1
+            break
+
+    if g.app.unitTesting:
+        d = g.app.unitTestDict
+        # g.trace('expected',d.get('expectedMismatchLine'),'actual',d.get('actualMismatchLine'))
+        ok = d.get('expectedMismatchLine') == d.get('actualMismatchLine')
+        # Unit tests do not generate errors unless the mismatch line does not match.
+        if not ok: d['fail'] = g.callers() # 2008/10/3
+
+    if not ok:
+        self.reportMismatch(lines1,lines2,bad_i)
+
+    return ok
+#@-node:ekr.20070703122141.104:checkTrialWrite
+#@+node:ekr.20070730093735:compareHelper
+def compareHelper (self,lines1,lines2,i,strict):
+
+    '''Compare lines1[i] and lines2[i].
+    strict is True if leading whitespace is very significant.'''
+
+    def pr(*args,**keys): #compareHelper
+        g.es_print(color='blue',*args,**keys)
+
+    def pr_mismatch(i,line1,line2):
+        g.es_print('first mismatched line at line',str(i+1))
+        g.es_print('original line: ',line1)
+        g.es_print('generated line:',line2)
+
+    d = g.app.unitTestDict
+    expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
+    enableWarning = not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace
+    messageKind = None
+
+    if i >= len(lines1):
+        if i != expectedMismatch or not g.unitTesting:
+            pr('extra lines')
+            for line in lines2[i:]:
+                pr(repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    if i >= len(lines2):
+        if i != expectedMismatch or not g.unitTesting:
+            g.es_print('missing lines')
+            for line in lines2[i:]:
+                g.es_print('',repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    line1,line2 = lines1[i],lines2[i]
+
+    if line1 == line2:
+        return True # An exact match.
+    elif not line1.strip() and not line2.strip():
+        return True # Blank lines compare equal.
+    elif strict:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(
+            s1 == s2 and self.startsComment(s1,0) and self.startsComment(s2,0),
+            'comment','error')
+    else:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(s1==s2,'warning','error')
+
+    if g.unitTesting:
+        d ['actualMismatchLine'] = i+1
+        ok = i+1 == expectedMismatch
+        if not ok:  pr_mismatch(i,line1,line2)
+        return ok
+    elif strict:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            if messageKind == 'comment':
+                self.warning('mismatch in leading whitespace before comment')
+            else:
+                self.error('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind == 'comment' # Only mismatched comment lines are valid.
+    else:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            self.checkLeadingWhitespace(line1)
+            self.warning('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind in ('comment','warning') # Only errors are invalid.
+#@nonl
+#@-node:ekr.20070730093735:compareHelper
+#@+node:ekr.20071110144948:checkLeadingWhitespace
+def checkLeadingWhitespace (self,line):
+
+    tab_width = self.tab_width
+    lws = line[0:g.skip_ws(line,0)]
+    w = g.computeWidth(lws,tab_width)
+    ok = (w % abs(tab_width)) == 0
+
+    if not ok:
+        self.report('leading whitespace not consistent with @tabwidth %d' % tab_width)
+        g.es_print('line:',repr(line),color='red')
+
+    return ok
+#@-node:ekr.20071110144948:checkLeadingWhitespace
+#@+node:ekr.20070911110507:reportMismatch
+def reportMismatch (self,lines1,lines2,bad_i):
+
+    def pr(*args,**keys): # reportMismatch
+        g.es_print(color='blue',*args,**keys)
+
+    kind = g.choose(self.atAuto,'@auto','import command')
+
+    self.error(
+        '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
+            kind,self.root.headString(),bad_i,repr(lines2[bad_i-1])))
+
+    if len(lines1) < 100:
+        pr('input...')
+        for i in range(len(lines1)):
+            pr('%3d %s' % (i,lines1[i]),newline=False)
+        pr('output...')
+        for i in range(len(lines2)):
+            pr('%3d %s' % (i,lines2[i]),newline=False)
+
+    return False
+#@-node:ekr.20070911110507:reportMismatch
+#@-node:ekr.20070808115837:Checking
+#@+node:ekr.20081216090156.3:From base class
+#@+node:ekr.20070801074524:underindentedComment & underindentedLine
+def underindentedComment (self,line):
+
+    if self.atAutoWarnsAboutLeadingWhitespace:
+        self.warning(
+            'underindented python comments.\nExtra leading whitespace will be added\n' + line)
+
+def underindentedLine (self,line):
+
+    self.error(
+        'underindented line.\nExtra leading whitespace will be added\n' + line)
+#@-node:ekr.20070801074524:underindentedComment & underindentedLine
+#@+node:ekr.20070712112008:startsHelper
+def startsHelper(self,s,i,kind,tags):
+    '''return True if s[i:] starts a class or function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    # if not tags: return False
+
+    trace = False or self.trace
+    verbose = False # kind=='function'
+    self.codeEnd = self.sigEnd = self.sigId = None
+    self.sigStart = i
+
+    # Underindented lines can happen in any language, not just Python.
+    # The skipBlock method of the base class checks for such lines.
+    self.startSigIndent = self.getLeadingIndent(s,i)
+
+    # Get the tag that starts the class or function.
+    j = g.skip_ws_and_nl(s,i)
+    i = self.skipId(s,j)
+    self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
+    if not theId: return False
+
+    if tags:
+        if theId not in tags:
+            if trace and verbose: g.trace('**** %s theId: %s not in tags: %s' % (kind,theId,tags))
+            return False
+
+    if trace and verbose: g.trace('kind',kind,'id',theId)
+
+    # Get the class/function id.
+    if kind == 'class' and self.sigId in self.anonymousClasses:
+        # A hack for Delphi Pascal: interfaces have no id's.
+        # g.trace('anonymous',self.sigId)
+        classId = theId
+        sigId = ''
+    else:
+        i, ids, classId = self.skipSigStart(s,j,kind,tags) # Rescan the first id.
+        sigId = self.getSigId(ids)
+        if not sigId:
+            if trace and verbose: g.trace('**no sigId',g.get_line(s,i))
+            return False
+
+    if self.output_indent < self.startSigIndent:
+        if trace: g.trace('**over-indent',sigId)
+            #,'output_indent',self.output_indent,'startSigIndent',self.startSigIndent)
+        return False
+
+    # Skip the argument list.
+    i, ok = self.skipArgs(s,i,kind)
+    if not ok:
+        if trace and verbose: g.trace('no args',g.get_line(s,i))
+        return False
+    i = g.skip_ws_and_nl(s,i)
+
+    # Skip the tail of the signature
+    i, ok = self.skipSigTail(s,i,kind)
+    if not ok:
+        if trace and verbose: g.trace('no tail',g.get_line(s,i))
+        return False
+    sigEnd = i
+
+    # A trick: make sure the signature ends in a newline,
+    # even if it overlaps the start of the block.
+    if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
+        if trace and verbose: g.trace('extending sigEnd')
+        sigEnd = g.skip_line(s,sigEnd)
+
+    if self.blockDelim1:
+        i = g.skip_ws_and_nl(s,i)
+        if kind == 'class' and self.sigId in self.anonymousClasses:
+            pass # Allow weird Pascal unit's.
+        elif not g.match(s,i,self.blockDelim1):
+            if trace and verbose: g.trace('no block',g.get_line(s,i))
+            return False
+
+    i,ok = self.skipCodeBlock(s,i,kind)
+    if not ok: return False
+        # skipCodeBlock skips the trailing delim.
+
+    # Success: set the ivars.
+    self.sigStart = self.adjustDefStart(s,self.sigStart)
+    self.codeEnd = i
+    self.sigEnd = sigEnd
+    self.sigId = sigId
+    self.classId = classId
+
+    # Note: backing up here is safe because
+    # we won't back up past scan's 'start' point.
+    # Thus, characters will never be output twice.
+    k = self.sigStart
+    if not g.match(s,k,'\n'):
+        self.sigStart = g.find_line_start(s,k)
+
+    # Issue this warning only if we have a real class or function.
+    if 0: # wrong.
+        if s[self.sigStart:k].strip():
+            self.error('%s definition does not start a line\n%s' % (
+                kind,g.get_line(s,k)))
+
+    if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+    return True
+#@-node:ekr.20070712112008:startsHelper
+#@+node:ekr.20080211070945:skipInterface
+def skipInterface(self,s,i):
+
+    '''Skip from the opening delim to *past* the matching closing delim.
+
+    If no matching is found i is set to len(s)'''
+
+    trace = False
+    start = i
+    delim2 = 'end.'
+    level = 0 ; start = i
+    startIndent = self.startSigIndent
+    if trace: g.trace('***','startIndent',startIndent,g.callers())
+    while i < len(s):
+        progress = i
+        if g.is_nl(s,i):
+            backslashNewline = i > 0 and g.match(s,i-1,'\\\n')
+            i = g.skip_nl(s,i)
+            if not backslashNewline and not g.is_nl(s,i):
+                j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+                line = g.get_line(s,j)
+                if trace: g.trace('indent',indent,line)
+                if indent < startIndent and line.strip():
+                    # An non-empty underindented line.
+                    # Issue an error unless it contains just the closing bracket.
+                    if level == 1 and g.match(s,j,delim2):
+                        pass
+                    else:
+                        if j not in self.errorLines: # No error yet given.
+                            self.errorLines.append(j)
+                            self.underindentedLine(line)
+        elif s[i] in (' ','\t',):
+            i += 1 # speed up the scan.
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif g.match(s,i,delim2):
+            i += len(delim2)
+            if trace: g.trace('returns\n',repr(s[start:i]))
+            return i
+
+        else: i += 1
+        assert progress < i
+
+    self.error('no interface')
+    if 1:
+        g.pr('** no interface **')
+        i,j = g.getLine(s,start)
+        g.trace(i,s[i:j])
+    else:
+        if trace: g.trace('** no interface')
+    return start
+#@-node:ekr.20080211070945:skipInterface
+#@+node:ekr.20070707073859:skipBlock
+def skipBlock(self,s,i,delim1=None,delim2=None):
+
+    '''Skip from the opening delim to *past* the matching closing delim.
+
+    If no matching is found i is set to len(s)'''
+
+    trace = False
+    start = i
+    if delim1 is None: delim1 = self.blockDelim1
+    if delim2 is None: delim2 = self.blockDelim2
+    match1 = g.choose(len(delim1)==1,g.match,g.match_word)
+    match2 = g.choose(len(delim2)==1,g.match,g.match_word)
+    assert match1(s,i,delim1)
+    level = 0 ; start = i
+    startIndent = self.startSigIndent
+    if trace: g.trace('***','startIndent',startIndent,g.callers())
+    while i < len(s):
+        progress = i
+        if g.is_nl(s,i):
+            backslashNewline = i > 0 and g.match(s,i-1,'\\\n')
+            i = g.skip_nl(s,i)
+            if not backslashNewline and not g.is_nl(s,i):
+                j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+                line = g.get_line(s,j)
+                if trace: g.trace('indent',indent,line)
+                if indent < startIndent and line.strip():
+                    # An non-empty underindented line.
+                    # Issue an error unless it contains just the closing bracket.
+                    if level == 1 and match2(s,j,delim2):
+                        pass
+                    else:
+                        if j not in self.errorLines: # No error yet given.
+                            self.errorLines.append(j)
+                            self.underindentedLine(line)
+        elif s[i] in (' ','\t',):
+            i += 1 # speed up the scan.
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif match1(s,i,delim1):
+            level += 1 ; i += len(delim1)
+        elif match2(s,i,delim2):
+            level -= 1 ; i += len(delim2)
+            # Skip junk following Pascal 'end'
+            for z in self.blockDelim2Cruft:
+                i2 = g.skip_ws(s,i)
+                if g.match(s,i2,z):
+                    i = i2 + len(z)
+                    break
+            if level <= 0:
+                if trace: g.trace('returns\n',repr(s[start:i]))
+                return i
+
+        else: i += 1
+        assert progress < i
+
+    self.error('no block')
+    if 1:
+        g.pr('** no block **')
+        i,j = g.getLine(s,start)
+        g.trace(i,s[i:j])
+    else:
+        if trace: g.trace('** no block')
+    return start
+#@-node:ekr.20070707073859:skipBlock
+#@-node:ekr.20081216090156.3:From base class
+#@+node:ekr.20070703122141.100:class pythonScanner
+class pythonScanner (baseScannerClass):
+
+    @others
+#@+node:ekr.20070703122141.101: __init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='python')
+
+    # Set the parser delims.
+    self.lineCommentDelim = '#'
+    self.classTags = ['class',]
+    self.functionTags = ['def',]
+    self.blockDelim1 = self.blockDelim2 = None
+        # Suppress the check for the block delim.
+        # The check is done in skipSigTail.
+    self.strict = True
+
+#@-node:ekr.20070703122141.101: __init__
+#@+node:ekr.20071201073102.1:adjustDefStart (python)
+def adjustDefStart (self,s,i):
+
+    '''A hook to allow the Python importer to adjust the 
+    start of a class or function to include decorators.'''
+
+    if i == 0 or s[i-1] != '\n':
+        return i
+
+    while i > 0:
+        progress = i
+
+        start = j = g.find_line_start(s,i-2)
+        j = g.skip_ws(s,j)
+        if not g.match(s,j,'@'):
+            return i
+
+        j += 1
+        k = g.skip_id(s,j)
+        word = s[j:k]
+
+        if word and word not in g.globalDirectiveList:
+            # g.trace(repr(word),repr(s[start:i]))
+            i = start
+            assert i < progress
+        else:
+            return i
+#@-node:ekr.20071201073102.1:adjustDefStart (python)
+#@+node:ekr.20070707113839:extendSignature
+def extendSignature(self,s,i):
+
+    '''Extend the text to be added to the class node following the signature.
+
+    The text *must* end with a newline.'''
+
+    # Add a docstring to the class node,
+    # And everything on the line following it
+    j = g.skip_ws_and_nl(s,i)
+    if g.match(s,j,'"""') or g.match(s,j,"'''"):
+        j = g.skip_python_string(s,j)
+        if j < len(s): # No scanning error.
+            # Return the docstring only if nothing but whitespace follows.
+            j = g.skip_ws(s,j)
+            if g.is_nl(s,j):
+                return j + 1
+
+    return i
+#@-node:ekr.20070707113839:extendSignature
+#@+node:ekr.20070707073627.4:skipString
+def skipString (self,s,i):
+
+    # Returns len(s) on unterminated string.
+    return g.skip_python_string(s,i,verbose=False)
+#@-node:ekr.20070707073627.4:skipString
+#@+node:ekr.20070712090019.1:skipCodeBlock (python) & helper
+def skipCodeBlock (self,s,i,kind):
+
+    trace = False ; verbose = True
+    # if trace: g.trace('***',g.callers())
+    startIndent = self.startSigIndent
+    if trace: g.trace('startIndent',startIndent)
+    assert startIndent is not None
+    i = start = g.skip_ws_and_nl(s,i)
+    parenCount = 0
+    underIndentedStart = None # The start of trailing underindented blank or comment lines.
+    while i < len(s):
+        progress = i
+        ch = s[i]
+        if g.is_nl(s,i):
+            i = g.skip_nl(s,i)
+            j = g.skip_ws(s,i)
+            if g.is_nl(s,j):
+                pass # We have already made progress.
+            else:
+                if trace and verbose: g.trace(g.get_line(s,i))
+                backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
+                if not backslashNewline:
+                    i,underIndentedStart,breakFlag = self.pythonNewlineHelper(
+                        s,i,parenCount,startIndent,underIndentedStart)
+                    if breakFlag: break
+        elif ch == '#':
+            i = g.skip_to_end_of_line(s,i)
+        elif ch == '"' or ch == '\'':
+            i = g.skip_python_string(s,i)
+        elif ch in '[{(':
+            i += 1 ; parenCount += 1
+            # g.trace('ch',ch,parenCount)
+        elif ch in ']})':
+            i += 1 ; parenCount -= 1
+            # g.trace('ch',ch,parenCount)
+        else: i += 1
+        assert(progress < i)
+
+    # The actual end of the block.
+    if underIndentedStart is not None:
+        i = underIndentedStart
+        if trace: g.trace('***backtracking to underindent range')
+        if trace: g.trace(g.get_line(s,i))
+
+    if 0 < i < len(s) and not g.match(s,i-1,'\n'):
+        g.trace('Can not happen: Python block does not end in a newline.')
+        g.trace(g.get_line(s,i))
+        return i,False
+
+    if (trace or self.trace) and s[start:i].strip():
+        g.trace('%s returns\n' % (kind) + s[start:i])
+    return i,True
+#@+node:ekr.20070801080447:pythonNewlineHelper
+def pythonNewlineHelper (self,s,i,parenCount,startIndent,underIndentedStart):
+
+    trace = False
+    breakFlag = False
+    j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+    if trace: g.trace(
+        'startIndent',startIndent,'indent',indent,'parenCount',parenCount,
+        'line',repr(g.get_line(s,j)))
+    if indent <= startIndent and parenCount == 0:
+        # An underindented line: it ends the block *unless*
+        # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
+        if g.match(s,j,'#'):
+            if trace: g.trace('underindent: comment')
+            if underIndentedStart is None: underIndentedStart = i
+            i = j
+        elif g.match(s,j,'\n'):
+            if trace: g.trace('underindent: blank line')
+            # Blank lines never start the range of underindented lines.
+            i = j
+        else:
+            if trace: g.trace('underindent: end of block')
+            breakFlag = True # The actual end of the block.
+    else:
+        if underIndentedStart and g.match(s,j,'\n'):
+            # Add the blank line to the underindented range.
+            if trace: g.trace('properly indented blank line extends underindent range')
+        elif underIndentedStart and g.match(s,j,'#'):
+            # Add the (properly indented!) comment line to the underindented range.
+            if trace: g.trace('properly indented comment line extends underindent range')
+        elif underIndentedStart is None:
+            pass
+        else:
+            # A properly indented non-comment line.
+            # Give a message for all underindented comments in underindented range.
+            if trace: g.trace('properly indented line generates underindent errors')
+            s2 = s[underIndentedStart:i]
+            lines = g.splitlines(s2)
+            for line in lines:
+                if line.strip():
+                    junk, indent = g.skip_leading_ws_with_indent(line,0,self.tab_width)
+                    if indent <= startIndent:
+                        if j not in self.errorLines: # No error yet given.
+                            self.errorLines.append(j)
+                            self.underindentedComment(line)
+            underIndentedStart = None
+    if trace: g.trace('breakFlag',breakFlag,'returns',i,'underIndentedStart',underIndentedStart)
+    return i,underIndentedStart,breakFlag
+#@-node:ekr.20070801080447:pythonNewlineHelper
+#@-node:ekr.20070712090019.1:skipCodeBlock (python) & helper
+#@+node:ekr.20070803101619:skipSigTail
+# This must be overridden in order to handle newlines properly.
+
+def skipSigTail(self,s,i,kind):
+
+    '''Skip from the end of the arg list to the start of the block.'''
+
+    while i < len(s):
+        ch = s[i]
+        if ch == '\n':
+            break
+        elif ch in (' ','\t',):
+            i += 1
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        else:
+            break
+
+    return i,g.match(s,i,':')
+#@-node:ekr.20070803101619:skipSigTail
+#@-node:ekr.20070703122141.100:class pythonScanner
+#@+node:ekr.20070706084535:Code generation
+@ None of these methods should ever need to be overridden in subclasses.
+
+#@+node:ekr.20070707073044.1:addRef
+def addRef (self,parent):
+
+    '''Create an unindented @others or section reference in the parent node.'''
+
+    c = self.c
+
+    # g.trace(parent.headString())
+
+    if self.treeType == '@file':
+        c.appendStringToBody(parent,'@others\n')
+
+    if self.treeType == '@root' and self.methodsSeen:
+        c.appendStringToBody(parent,
+            g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
+#@-node:ekr.20070707073044.1:addRef
+#@+node:ekr.20070705144309:createDeclsNode
+def createDeclsNode (self,parent,s):
+
+    '''Create a child node of parent containing s.'''
+
+    # Create the node for the decls.
+    headline = self.methodName + ' declarations'
+    body = self.undentBody(s)
+    self.createHeadline(parent,body,headline)
+#@-node:ekr.20070705144309:createDeclsNode
+#@+node:ekr.20070707085612:createFunctionNode
+def createFunctionNode (self,headline,body,parent):
+
+    # Create the prefix line for @root trees.
+    if self.treeType == '@file':
+        prefix = ''
+    else:
+        prefix = g.angleBrackets(' ' + headline + ' methods ') + '=\n\n'
+        self.methodsSeen = True
+
+    # Create the node.
+    self.createHeadline(parent,prefix + body,headline)
+
+#@-node:ekr.20070707085612:createFunctionNode
+#@+node:ekr.20070703122141.77:createHeadline
+def createHeadline (self,parent,body,headline):
+
+    # g.trace('parent,headline:',parent.headString(),headline)
+
+    # Create the node.
+    p = parent.insertAsLastChild()
+    p.initHeadString(headline,self.encoding)
+
+    # Set the body.
+    if body:
+        self.c.setBodyString(p,body,self.encoding)
+    return p
+#@-node:ekr.20070703122141.77:createHeadline
+#@+node:ekr.20070703122141.79:getLeadingIndent
+def getLeadingIndent (self,s,i,ignoreComments=True):
+
+    '''Return the leading whitespace of a line.
+    Ignore blank and comment lines if ignoreComments is True'''
+
+    width = 0
+    i = g.find_line_start(s,i)
+    if ignoreComments:
+        while i < len(s):
+            # g.trace(g.get_line(s,i))
+            j = g.skip_ws(s,i)
+            if g.is_nl(s,j) or g.match(s,j,self.comment_delim):
+                i = g.skip_line(s,i) # ignore blank lines and comment lines.
+            else:
+                i, width = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+                break      
+    else:
+        i, width = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+
+    # g.trace('returns:',width)
+    return width
+#@-node:ekr.20070703122141.79:getLeadingIndent
+#@+node:ekr.20070709094002:indentBody
+def indentBody (self,s,lws=None):
+
+    '''Add whitespace equivalent to one tab for all non-blank lines of s.'''
+
+    result = []
+    if not lws: lws = self.tab_ws
+
+    for line in g.splitLines(s):
+        if line.strip():
+            result.append(lws + line)
+        elif line.endswith('\n'):
+            result.append('\n')
+
+    result = ''.join(result)
+    return result
+#@-node:ekr.20070709094002:indentBody
+#@+node:ekr.20070705085335:insertIgnoreDirective
+def insertIgnoreDirective (self,parent):
+
+    self.c.appendStringToBody(parent,'@ignore')
+
+    if not g.unitTesting:
+        g.es_print('inserting @ignore',color='blue')
+#@-node:ekr.20070705085335:insertIgnoreDirective
+#@+node:ekr.20070707113832.1:putClass & helpers
+def putClass (self,s,i,sigEnd,codeEnd,start,parent):
+
+    '''Creates a child node c of parent for the class, and a child of c for each def in the class.'''
+
+    # Enter a new class 1: save the old class info.
+    oldMethodName = self.methodName
+    oldStartSigIndent = self.startSigIndent
+
+    # Enter a new class 2: init the new class info.
+    self.indentRefFlag = None
+
+    class_kind = self.classId
+    class_name = self.sigId
+    headline = '%s %s' % (class_kind,class_name)
+    headline = headline.strip()
+    self.methodName = headline
+
+    # Compute the starting lines of the class.
+    prefix = self.createClassNodePrefix()
+    if not self.sigId:
+        g.trace('Can not happen: no sigId')
+        self.sigId = 'Unknown class name'
+    classHead = s[start:sigEnd]
+    i = self.extendSignature(s,sigEnd)
+    extend = s[sigEnd:i]
+    if extend:
+        classHead = classHead + extend
+
+    # Create the class node.
+    class_node = self.createHeadline(parent,'',headline)
+
+    # Remember the indentation of the class line.
+    undentVal = self.getLeadingIndent(classHead,0)
+
+    # Call the helper to parse the inner part of the class.
+    putRef,bodyIndent,classDelim,decls,trailing = self.putClassHelper(
+        s,i,codeEnd,class_node)
+    # g.trace('bodyIndent',bodyIndent,'undentVal',undentVal)
+
+    # Set the body of the class node.
+    ref = putRef and self.getClassNodeRef(class_name) or ''
+
+    # Give ref the same indentation as the body of the class.
+    if ref:
+        bodyWs = g.computeLeadingWhitespace (bodyIndent,self.tab_width)
+        ref = '%s%s' % (bodyWs,ref)
+
+    # Remove the leading whitespace.
+    result = (
+        prefix +
+        self.undentBy(classHead,undentVal) +
+        self.undentBy(classDelim,undentVal) +
+        self.undentBy(decls,undentVal) +
+        self.undentBy(ref,undentVal) +
+        self.undentBy(trailing,undentVal))
+
+    # Append the result to the class node.
+    self.appendTextToClassNode(class_node,result)
+
+    # Exit the new class: restore the previous class info.
+    self.methodName = oldMethodName
+    self.startSigIndent = oldStartSigIndent
+#@+node:ekr.20070707190351:appendTextToClassNode
+def appendTextToClassNode (self,class_node,s):
+
+    c = self.c
+
+    c.appendStringToBody(class_node,s) 
+#@-node:ekr.20070707190351:appendTextToClassNode
+#@+node:ekr.20070703122141.105:createClassNodePrefix
+def createClassNodePrefix (self):
+
+    '''Create the class node prefix.'''
+
+    if  self.treeType == '@file':
+        prefix = ''
+    else:
+        prefix = g.angleBrackets(' ' + self.methodName + ' methods ') + '=\n\n'
+        self.methodsSeen = True
+
+    return prefix
+#@-node:ekr.20070703122141.105:createClassNodePrefix
+#@+node:ekr.20070703122141.106:getClassNodeRef
+def getClassNodeRef (self,class_name):
+
+    '''Insert the proper body text in the class_vnode.'''
+
+    if self.treeType == '@file':
+        s = '@others'
+    else:
+        s = g.angleBrackets(' class %s methods ' % (class_name))
+
+    return '%s\n' % (s)
+#@-node:ekr.20070703122141.106:getClassNodeRef
+#@+node:ekr.20070707171329:putClassHelper
+def putClassHelper(self,s,i,end,class_node):
+
+    '''s contains the body of a class, not including the signature.
+
+    Parse s for inner methods and classes, and create nodes.'''
+
+    # Increase the output indentation (used only in startsHelper).
+    # This allows us to detect over-indented classes and functions.
+    old_output_indent = self.output_indent
+    self.output_indent += abs(self.tab_width)
+
+    # Parse the decls.
+    j = i ; i = self.skipDecls(s,i,end,inClass=True)
+    decls = s[j:i]
+
+    # Set the body indent if there are real decls.
+    bodyIndent = decls.strip() and self.getIndent(s,i) or None
+
+    # Parse the rest of the class.
+    delim1, delim2 = self.outerBlockDelim1, self.outerBlockDelim2
+    if g.match(s,i,delim1):
+        # Do *not* use g.skip_ws_and_nl here!
+        j = g.skip_ws(s,i + len(delim1))
+        if g.is_nl(s,j): j = g.skip_nl(s,j)
+        classDelim = s[i:j]
+        end2 = self.skipBlock(s,i,delim1=delim1,delim2=delim2)
+        start,putRef,bodyIndent2 = self.scanHelper(s,j,end=end2,parent=class_node,kind='class')
+    else:
+        classDelim = ''
+        start,putRef,bodyIndent2 = self.scanHelper(s,i,end=end,parent=class_node,kind='class')
+
+    if bodyIndent is None: bodyIndent = bodyIndent2
+
+    # Restore the output indentation.
+    self.output_indent = old_output_indent
+
+    # Return the results.
+    trailing = s[start:end]
+    return putRef,bodyIndent,classDelim,decls,trailing
+#@-node:ekr.20070707171329:putClassHelper
+#@-node:ekr.20070707113832.1:putClass & helpers
+#@+node:ekr.20070707082432:putFunction
+def putFunction (self,s,sigStart,codeEnd,start,parent):
+
+    '''Create a node of parent for a function defintion.'''
+
+    trace = False and self.trace
+
+    # Enter a new function: save the old function info.
+    oldStartSigIndent = self.startSigIndent
+
+    if self.sigId:
+        headline = self.sigId
+    else:
+        g.trace('Can not happen: no sigId')
+        headline = 'unknown function'
+
+    body1 = s[start:sigStart]
+    # Bug fix: 2007/20/31: adjust start backwards to get a better undent.
+    if body1.strip():
+        while start > 0 and s[start-1] in (' ','\t'):
+            start -= 1
+
+    body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
+
+    body2 = self.undentBody(s[sigStart:codeEnd])
+    body = body1 + body2
+    if trace: g.trace('body\n%s' % body)
+
+    tail = body[len(body.rstrip()):]
+    if not '\n' in tail:
+        self.warning(
+            'function %s does not end with a newline; one will be added\n%s' % (
+                self.sigId,g.get_line(s,codeEnd)))
+        # g.trace(g.callers())
+
+    self.createFunctionNode(headline,body,parent)
+
+    # Exit the function: restore the function info.
+    self.startSigIndent = oldStartSigIndent
+#@-node:ekr.20070707082432:putFunction
+#@+node:ekr.20070705094630:putRootText
+def putRootText (self,p):
+
+    c = self.c
+
+    c.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
+        self.rootLine,self.language,self.tab_width))
+#@-node:ekr.20070705094630:putRootText
+#@+node:ekr.20070703122141.88:undentBody
+def undentBody (self,s,ignoreComments=True):
+
+    '''Remove the first line's leading indentation from all lines of s.'''
+
+    trace = False
+    if trace: g.trace('before...\n',g.listToString(g.splitLines(s)))
+
+    # Copy an @code line as is.
+    # i = 0
+    # if g.match(s,i,'@code'):
+        # j = i ; i = g.skip_line(s,i) # don't use get_line: it is only for dumping.
+        # result += s[j:i]
+
+    # Calculate the amount to be removed from each line.
+    undentVal = self.getLeadingIndent(s,0,ignoreComments=ignoreComments)
+    if undentVal == 0:
+        return s
+    else:
+        result = self.undentBy(s,undentVal)
+        if trace: g.trace('after...\n',g.listToString(g.splitLines(result)))
+        return result
+#@nonl
+#@-node:ekr.20070703122141.88:undentBody
+#@+node:ekr.20081216090156.1:undentBy
+def undentBy (self,s,undentVal):
+
+    '''Remove leading whitespace equivalent to undentVal from each line.
+    add an underindentEscapeString for underindented line.'''
+
+    # return ''.join(
+        # [g.removeLeadingWhitespace(line,undentVal,self.tab_width)
+            # for line in g.splitLines(s)])
+
+    trace = False and not g.app.unitTesting
+    tag = self.c.atFileCommands.underindentEscapeString
+    result = [] ; tab_width = self.tab_width
+    for line in g.splitlines(s):
+        lws_s = g.get_leading_ws(line)
+        lws = g.computeWidth(lws_s,tab_width)
+        s = g.removeLeadingWhitespace(line,undentVal,tab_width)
+        n = lws - undentVal
+        if s.strip() and lws < undentVal:
+            if trace: g.trace('undentVal: %s, lws: %s, %s' % (
+                undentVal,lws,repr(line)))
+            result.append("%s%s%s" % (tag,undentVal-lws,s.lstrip()))
+        else:
+            result.append(s)
+
+    return ''.join(result)
+
+#@-node:ekr.20081216090156.1:undentBy
+#@+node:ekr.20070801074524:underindentedComment & underindentedLine
+def underindentedComment (self,line):
+
+    if self.atAutoWarnsAboutLeadingWhitespace:
+        self.warning(
+            'underindented python comments.\nExtra leading whitespace will be added\n' + line)
+
+def underindentedLine (self,line):
+
+    self.error(
+        'underindented line.\nExtra leading whitespace will be added\n' + line)
+#@-node:ekr.20070801074524:underindentedComment & underindentedLine
+#@-node:ekr.20070706084535:Code generation
+#@+node:ekr.20041005105605.8:atFile.__init__ & initIvars
+def __init__(self,c):
+
+    # Note: Pychecker complains if we assign to at.x instead of self.x.
+
+    # **Warning**: all these ivars must **also** be inited in initCommonIvars.
+    self.c = c
+    self.debug = False
+    self.fileCommands = c.fileCommands
+    self.testing = False # True: enable additional checks.
+    self.errors = 0 # Make sure at.error() works even when not inited.
+    # New in Leo 4.4a5: For createThinChild4 (LeoUser).
+    self._forcedGnxPositionList = []
+        # Must be here, putting it in initReadIvars doesn't work.
+
+    self.underindentEscapeString = c.config.getString(
+        'underindent-escape-string') or '\\-'
+
+    << define the dispatch dictionary used by scanText4 >>
+#@+node:ekr.20041005105605.9:<< define the dispatch dictionary used by scanText4 >>
+self.dispatch_dict = {
+    # Plain line.
+    self.noSentinel: self.readNormalLine,
+    # Starting sentinels...
+    self.startAll:    self.readStartAll,
+    self.startAt:     self.readStartAt,
+    self.startDoc:    self.readStartDoc,
+    self.startLeo:    self.readStartLeo,
+    self.startMiddle: self.readStartMiddle,
+    self.startNode:   self.readStartNode,
+    self.startOthers: self.readStartOthers,
+    # Ending sentinels...
+    self.endAll:    self.readEndAll,
+    self.endAt:     self.readEndAt,
+    self.endDoc:    self.readEndDoc,
+    self.endLeo:    self.readEndLeo,
+    self.endMiddle: self.readEndMiddle,
+    self.endNode:   self.readEndNode,
+    self.endOthers: self.readEndOthers,
+    # Non-paired sentinels.
+    self.startAfterRef:  self.readAfterRef,
+    self.startClone:     self.readClone,
+    self.startComment:   self.readComment,
+    self.startDelims:    self.readDelims,
+    self.startDirective: self.readDirective,
+    self.startNl:        self.readNl,
+    self.startNonl:      self.readNonl,
+    self.startRef:       self.readRef,
+    self.startVerbatim:  self.readVerbatim,
+    # Ignored 3.x sentinels
+    self.endBody:               self.ignoreOldSentinel,
+    self.startBody:             self.ignoreOldSentinel,
+    self.startVerbatimAfterRef: self.ignoreOldSentinel }
+#@-node:ekr.20041005105605.9:<< define the dispatch dictionary used by scanText4 >>
+#@-node:ekr.20041005105605.8:atFile.__init__ & initIvars
+#@+node:ekr.20081216090156.1:undentBy
+def undentBy (self,s,undentVal):
+
+    '''Remove leading whitespace equivalent to undentVal from each line.
+    add an underindentEscapeString for underindented line.'''
+
+    # return ''.join(
+        # [g.removeLeadingWhitespace(line,undentVal,self.tab_width)
+            # for line in g.splitLines(s)])
+
+    trace = False and not g.app.unitTesting
+    tag = self.c.atFileCommands.underindentEscapeString
+    result = [] ; tab_width = self.tab_width
+    for line in g.splitlines(s):
+        lws_s = g.get_leading_ws(line)
+        lws = g.computeWidth(lws_s,tab_width)
+        s = g.removeLeadingWhitespace(line,undentVal,tab_width)
+        n = lws - undentVal
+        if s.strip() and lws < undentVal:
+            if trace: g.trace('undentVal: %s, lws: %s, %s' % (
+                undentVal,lws,repr(line)))
+            result.append("%s%s%s" % (tag,undentVal-lws,s.lstrip()))
+        else:
+            result.append(s)
+
+    return ''.join(result)
+
+#@-node:ekr.20081216090156.1:undentBy
+#@+node:ekr.20081216090156.4:parseUnderindentTag
+def parseUnderindentTag (self,s):
+
+    tag = self.underindentEscapeString
+    s2 = s[len(tag):]
+
+    # To be valid, the escape must be followed by at least one digit.
+    i = 0
+    while i < len(s2) and s2[i].isdigit():
+        i += 1
+
+    if i > 0:
+        n = int(s2[:i])
+        return n,s2[i:]
+    else:
+        return 0,s
+#@-node:ekr.20081216090156.4:parseUnderindentTag
+#@+node:ekr.20041005105605.210:putIndent
+def putIndent(self,n,s=''):
+
+    """Put tabs and spaces corresponding to n spaces,
+    assuming that we are at the start of a line.
+
+    Remove extra blanks if the line starts with the underindentEscapeString"""
+
+    # g.trace(repr(s))
+    tag = self.underindentEscapeString
+
+    if s.startswith(tag):
+        n2,s2 = self.parseUnderindentTag(s)
+        if n2 >= n: return
+        elif n > 0: n -= n2
+        else:       n += n2
+
+    if n != 0:
+        w = self.tab_width
+        if w > 1:
+            q,r = divmod(n,w) 
+            self.otabs(q) 
+            self.oblanks(r)
+        else:
+            self.oblanks(n)
+#@-node:ekr.20041005105605.210:putIndent
+#@+node:ekr.20041005105605.204:os
+def os (self,s):
+
+    """Write a string to the output stream.
+
+    All output produced by leoAtFile module goes here."""
+
+    trace = False
+    at = self ; tag = self.underindentEscapeString
+    f = at.outputFile
+
+    if s and f:
+        try:
+            s = g.toEncodedString(s,at.encoding,reportErrors=True)
+            if trace: g.trace(repr(s),g.callers(4))
+            if s.startswith(tag):
+                junk,s = self.parseUnderindentTag(s)
+            f.write(s)
+        except Exception:
+            at.exception("exception writing:" + s)
+#@-node:ekr.20041005105605.204:os
+#@-node:ekr.20081216090156.2:Added escapes for underindented lines
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files
