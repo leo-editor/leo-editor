@@ -40,44 +40,46 @@ def onCreate (tag, keys):
 class backlinkController:
     
     def __init__ (self,c):
-    
+
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-    
+
         leoPlugins.registerHandler('iconrclick2', self.showMenu)
         leoPlugins.registerHandler('open2', self.loadLinks)
-    
+
         self.initIvars()
-    
     def initIvars(self):
         self.linkDestination = None
         self.linkSource = None
         self.vnode = {}
         self.positions = {}
     def initBacklink(self, v):
-    
+
         if not hasattr(v, 'unknownAttributes'):
             v.unknownAttributes = {}
-    
+
         if '_bklnk' not in v.unknownAttributes:
             vid = g.app.nodeIndices.toString(g.app.nodeIndices.getNewIndex())
             v.unknownAttributes['_bklnk'] = {'id':vid, 'links':[]}
-        
+    
         self.vnode[v.unknownAttributes['_bklnk']['id']] = v
     def loadLinks(self, tag, keywords):
-    
-        c = keywords['c']
-    
-        if self.c != c:
+
+        if self.c != keywords['c']:
             return  # not our problem
+        
+        self.loadLinksInt()
+    def loadLinksInt(self):
     
+        c = self.c  # checked in loadLinks()
+
         self.initIvars()
-    
+
         ids = {}
         idsSeen = set()
-    
+
         # /here id should be a dict of lists of "aliases"
-    
+
         for p in c.allNodes_iter():
             self.positions[p.v] = p
             v = p.v
@@ -88,7 +90,7 @@ class backlinkController:
                 else:
                     ids[vid] = [v]
                 idsSeen.add(vid)
-    
+
         rvid = {}
         for i in ids:
             rvid[i] = [ids[i][0]]
@@ -104,16 +106,21 @@ class backlinkController:
                 rvid[i].append(x)
                 x.unknownAttributes['_bklnk']['id'] = nvid()
                 self.vnode[nvid()] = x
-                
+            
         for vnode in self.vnode:  # just the vnodes with link info.
             links = self.vnode[vnode].unknownAttributes['_bklnk']['links']
             nl = []
             for link in links:
+                if link[1] not in rvid:
+                    lt = ('to', 'from')
+                    if link[0] == 'S':
+                        lt = ('from', 'to')
+                    g.es('backlink: link %s %s %s ??? lost' % (
+                        lt[0], self.vnode[vnode].headString(), lt[1]), color='red')
+                    continue
                 for x in rvid[link[1]]:
                     nl.append((link[0], x.unknownAttributes['_bklnk']['id']))
             self.vnode[vnode].unknownAttributes['_bklnk']['links'] = nl
-        
-            
     def showMenu(self,tag,k):
 
         g.app.gui.killPopupMenu()
@@ -139,6 +146,7 @@ class backlinkController:
             (True, 'Link to source', self.linkSrc),
             (True, 'Link to dest.', self.linkDst),
             (True, 'Undirected link', self.linkUnd),
+            (True, 'Rescan links', self.loadLinksInt),
         ]
 
         for command in commands:
@@ -176,7 +184,7 @@ class backlinkController:
 
         return 'break' # EKR: Prevent other right clicks.
     def vnodePosition(self, v):
-    
+
         if v in self.positions:
             p = self.positions[v]
             if p.v is v and self.c.positionExists(p):
@@ -186,28 +194,28 @@ class backlinkController:
             self.positions[v] = p
             if p.v is v:
                 return p
-            
+        
         return None
     def markSrc(self):
         self.linkSource = self.c.currentPosition().copy()
     def markDst(self):
         self.linkDestination = self.c.currentPosition().copy()
     def linkDst(self):
-    
+
         if not self.linkDestination or not self.c.positionExists(self.linkDestination):
             g.es('Link destination not specified or no longer valid', color='red')
             return
-        
+    
         self.link(self.c.currentPosition(), self.linkDestination)
     def linkSrc(self):
-    
+
         if not self.linkSource or not self.c.positionExists(self.linkSource):
             g.es('Link source not specified or no longer valid', color='red')
             return
-        
+    
         self.link(self.linkSource, self.c.currentPosition())
     def linkUnd(self):
-    
+
         source = None
         if self.linkSource and self.c.positionExists(self.linkSource):
             source = self.linkSource
@@ -216,17 +224,17 @@ class backlinkController:
             return
         else:
             source = self.linkDestination
-        
+    
         self.link(source, self.c.currentPosition(), mode='undirected')
     def link(self, from_, to, mode='directed'):
-    
+
         v0 = from_.v
         v1 = to.v
         self.initBacklink(v0)
         self.initBacklink(v1)
-    
+
         linkType = 'U'
-    
+
         if mode == 'directed':
             linkType = 'S'
         v0.unknownAttributes['_bklnk']['links'].append( (linkType,
