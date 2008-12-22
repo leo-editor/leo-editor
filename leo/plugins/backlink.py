@@ -172,17 +172,53 @@ class backlinkController:
                     dests.append((linkType, otherP))
             if dests:
                 menu.add_separator()
+                smenu = Tk.Menu(menu,tearoff=0,takefocus=1)
                 for i in dests:
                     def goThere(where = i[1]): c.selectPosition(where)
                     c.add_command(menu,label={'S':'->','D':'<-','U':'--'}[i[0]]
                         + i[1].headString(),
                         underline=0,command=goThere)
+                    def delLink(on=v,
+                        to=i[1].v.unknownAttributes['_bklnk']['id'],
+                        type_=i[0]): self.deleteLink(on,to,type_)
+                    c.add_command(smenu,label={'S':'->','D':'<-','U':'--'}[i[0]]
+                        + i[1].headString(),
+                        underline=0,command=delLink)
+                menu.add_cascade(label='Delete link', menu=smenu,underline=1)
+
+                
 
         # Show the menu.
         event = k['event']
         g.app.gui.postPopupMenu(self.c, menu, event.x_root,event.y_root)
 
         return 'break' # EKR: Prevent other right clicks.
+    def deleteLink(self, on, to, type_):
+    
+        vid = on.unknownAttributes['_bklnk']['id']
+        links = on.unknownAttributes['_bklnk']['links']
+    
+        print vid, to, type_
+    
+        for n,link in enumerate(links):
+            if type_ == link[0] and to == link[1]:
+                del links[n]
+                v = self.vnode[to]
+                links = v.unknownAttributes['_bklnk']['links']
+                if type_ == 'S':
+                    type_ = 'D'
+                elif type_ == 'D':
+                    type_ = 'S'
+                for n,link in enumerate(links):
+                    print link
+                    if type_ == link[0] and link[1] == vid:
+                        del links[n]
+                        break
+                else:
+                    g.es("backlink: Note: couldn't find other side of link")
+                break
+        else:
+            g.es("backlink: Error: no such link")
     def vnodePosition(self, v):
 
         if v in self.positions:
