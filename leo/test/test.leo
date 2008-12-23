@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="28" left="441" height="982" width="822"/>
+	<global_window_position top="49" left="453" height="721" width="822"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1047,6 +1047,7 @@
 </v>
 </v>
 </v>
+<v t="edward.20081221145716.1"><vh>decorator tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -2399,6 +2400,23 @@ else:
     completer.complete_word()
 
 </t>
+<t tx="edward.20081221145716.1">def debug(f,*args,**keys):
+    if 1:
+        def debugCallback(*args,**keys):
+            print f.__name__,args,keys
+            f(*args,**keys)
+            print 'after',f.__name__
+        return debugCallback
+    else:
+        print 'in debug'
+        return f
+@debug
+def spam(a=5):
+    g.trace(a,g.callers(4))
+
+spam(3)
+spam(a=4)
+</t>
 <t tx="ekr.20041001211817">import os
 
 g.pr(os.path.exists(os.path.normpath("C:\\Progra~1\\Eclipse")))</t>
@@ -3355,6 +3373,7 @@ plugins_menu.py
 # setHomeDirectory.py
 
 leoOPML.py
+graphed.py
 # base64Packager.py
 # searchbox.py
 
