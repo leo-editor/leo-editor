@@ -52,7 +52,7 @@ def onCreate (tag, keys):
     
     backlinkController(c)
 class backlinkController:
-    
+
     def __init__ (self,c):
 
         self.c = c
@@ -83,7 +83,6 @@ class backlinkController:
                     QtGui.QWidget.__init__(self, *args)
                     self.setupUi(self)
 
-                    self.connect(self.markSource, QtCore.SIGNAL("clicked()"), self, QtCore.SLOT('markSource(self)'))
 
                 def markSource(self):
                     print 'markSource'
@@ -100,8 +99,11 @@ class backlinkController:
                 def undirected(self):
                     print 'undirected'
                     pass
-                def rescanX(self):
+                def rescan(self):
                     print 'rescan'
+                    pass
+                def deleteClicked(self):
+                    print 'deleteClicked'
                     pass
 
             top = c.frame.top
@@ -127,12 +129,12 @@ class backlinkController:
         if 'optional' in kargs:
             optional = kargs['optional']
             del kargs['optional']
-        
+
         if self.messageUsed and optional:
             return
-        
+
         self.messageUsed = not optional
-    
+
         if Tk and hasattr(self, 'message'):
             for i in kargs:
                 if i == 'color':
@@ -149,11 +151,11 @@ class backlinkController:
         c = self.c
         c.frame.log.createTab('Links', createText=False)
         w = c.frame.log.frameDict['Links']
-    
+
         f = Tk.Frame(w)
         scrollbar = Tk.Scrollbar(f, orient=Tk.VERTICAL)
         self.listbox = Tk.Listbox(f, height=4, yscrollcommand=scrollbar.set)
-    
+
         scrollbar.config(command=self.listbox.yview)
         scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y)
 
@@ -237,7 +239,7 @@ class backlinkController:
     def tkListClicked(self, event):
 
         selected = self.listbox.curselection()
-    
+
         if not selected:
             return  # click on empty list of unlinked node
 
@@ -247,7 +249,7 @@ class backlinkController:
             assert self.c.positionExists(self.dests[selected][1])
             self.c.selectPosition(self.dests[selected][1])
             return
-    
+
         if self.delete.get():
             self.deleteLink(
                 self.c.currentPosition().v,
@@ -305,6 +307,7 @@ class backlinkController:
             self.vnode[i] = ids[i][0]
             for x in ids[i][1:]:
                 idx = 1
+            
                 def nvid(): return vid+'.'+str(idx)
                 while nvid() in idsSeen and idx <= 100:
                     idx += 1
@@ -331,7 +334,7 @@ class backlinkController:
                 for x in rvid[link[1]]:
                     nl.append((link[0], x.unknownAttributes['_bklnk']['id']))
             self.vnode[vnode].unknownAttributes['_bklnk']['links'] = nl
-    
+
         self.showMessage('Link info. loaded on %d nodes' % len(self.vnode))
     def showMenu(self,tag,k):
 
@@ -395,7 +398,7 @@ class backlinkController:
                 continue
             c.add_command(menu,label=text,
                 underline=0,command=com)
-    
+
 
         # Show the menu.
         event = k['event']
@@ -403,7 +406,7 @@ class backlinkController:
 
         return None # 'break' # EKR: Prevent other right clicks.
     def showLinksLog(self,tag,k):
-    
+
         # deprecated
 
         if k['c'] != self.c: return  # not our problem
@@ -417,11 +420,11 @@ class backlinkController:
             dests = []
             while i < len(links):
                 linkType, other = links[i]
-    
+
                 if other not in self.vnode:
                     return
                     # called before load hook?
-    
+
                 otherV = self.vnode[other]
                 otherP = self.vnodePosition(otherV)
                 if not otherP:

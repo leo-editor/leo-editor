@@ -25,7 +25,7 @@
       <number>2</number>
      </property>
      <item>
-      <widget class="QListView" name="listView" />
+      <widget class="QListView" name="linkList" />
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2" >
@@ -38,39 +38,26 @@
           <number>2</number>
          </property>
          <item>
-          <widget class="QPushButton" name="markSource" >
+          <widget class="QPushButton" name="markSourceBtn" >
            <property name="text" >
             <string>Mark Source</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="linkSource" >
+          <widget class="QPushButton" name="linkSourceBtn" >
            <property name="text" >
             <string>Link Source</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="undirected" >
+          <widget class="QPushButton" name="undirectedBtn" >
            <property name="text" >
             <string>Undirected Link</string>
            </property>
            <property name="checkable" >
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_7" >
-           <property name="styleSheet" >
-            <string notr="true" >:on { color: red; font-weight: bold;}</string>
-           </property>
-           <property name="text" >
-            <string>Delete link</string>
-           </property>
-           <property name="checkable" >
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -82,40 +69,58 @@
           <number>2</number>
          </property>
          <item>
-          <widget class="QPushButton" name="markDest" >
+          <widget class="QPushButton" name="markDestBtn" >
            <property name="text" >
             <string>Mark Dest.</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="linkDest" >
+          <widget class="QPushButton" name="linkDestBtn" >
            <property name="text" >
             <string>Link Dest.</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="rescan" >
+          <widget class="QPushButton" name="rescanBtn" >
            <property name="text" >
             <string>Rescan links</string>
            </property>
           </widget>
          </item>
-         <item>
-          <spacer name="verticalSpacer" >
-           <property name="orientation" >
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0" >
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
         </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3" >
+       <item>
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string>no msg.</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="deleteBtn" >
+         <property name="text" >
+          <string>Delete link</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -124,7 +129,120 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>markSourceBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>markSource()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>72</x>
+     <y>152</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>142</x>
+     <y>126</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>markDestBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>markDest()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>227</x>
+     <y>153</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>2183</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rescanBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>rescan()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>216</x>
+     <y>211</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>353</x>
+     <y>15</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linkDestBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>linkDest()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>176</x>
+     <y>175</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>287</x>
+     <y>59</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linkSourceBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>linkSource()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>104</x>
+     <y>180</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>undirectedBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>undirected()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>72</x>
+     <y>210</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>287</x>
+     <y>216</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>deleteBtn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Form</receiver>
+   <slot>deleteClicked()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>239</x>
+     <y>239</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>142</x>
+     <y>126</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>markSource()</slot>
   <slot>markDest()</slot>
@@ -132,5 +250,6 @@
   <slot>linkDest()</slot>
   <slot>undirected()</slot>
   <slot>rescan()</slot>
+  <slot>deleteClicked()</slot>
  </slots>
 </ui>
