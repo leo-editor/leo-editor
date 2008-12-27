@@ -2496,18 +2496,21 @@ class leoQtLog (leoFrame.leoLog):
             w.clear() # w is a QTextBrowser.
     #@-node:ekr.20081121105001.329:clearTab
     #@+node:ekr.20081121105001.330:createTab
-    def createTab (self,tabName,createText=True,wrap='none'):
+    def createTab (self,tabName,widget=None,wrap='none'):
+        """ Create a new tab in tab widget
 
+        if widget is None, Create a QTextBrowser,
+        suitable for log functionality.
+        """
         c = self.c ; w = self.tabWidget
 
-        if createText:
+        if widget is None:
             contents = QtGui.QTextBrowser()
-            # contents = QtGui.QTextEdit()
             contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
             self.logDict[tabName] = contents
             if tabName == 'Log': self.logCtrl = contents
         else:
-            contents = QtGui.QWidget()
+            contents = widget
 
         self.contentsDict[tabName] = contents
         w.addTab(contents,tabName)
@@ -2567,7 +2570,7 @@ class leoQtLog (leoFrame.leoLog):
         ok = self.selectHelper(tabName,createText)
         if ok: return
 
-        self.createTab(tabName,createText,wrap)
+        self.createTab(tabName,widget= None,wrap = wrap)
         self.selectHelper(tabName,createText)
 
     #@+node:ekr.20081121105001.336:selectHelper
@@ -5845,9 +5848,11 @@ class leoQtGui(leoGui.leoGui):
 import qt_quicksearch
 
 def install_qt_quicksearch_tab(c):
-    tabw = c.frame.top.tabWidget
-    wdg = LeoQuickSearchWidget(c,tabw)
-    tabw.addTab(wdg, "QuickSearch")
+    #tabw = c.frame.top.tabWidget
+
+    wdg = LeoQuickSearchWidget(c)
+    c.frame.log.createTab('QuickSearch', widget = wdg)
+    #tabw.addTab(wdg, "QuickSearch")
 
 g.insqs = install_qt_quicksearch_tab
 
