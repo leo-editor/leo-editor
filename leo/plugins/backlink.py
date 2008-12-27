@@ -32,12 +32,70 @@ import leo.core.leoPlugins as leoPlugins
 
 Tk = None
 Qt = None
+
+class backlinkUI(object):
+    
+    def loadList(self, lst): pass
+    def showMsg(self, msg, color='black', optional='False'): pass
+    def enableDelete(self, enable): pass
+
 if g.app.gui.guiName() == "tkinter":
     Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
 elif g.app.gui.guiName() == "qt":
     from PyQt4 import QtCore, QtGui, uic
     Qt = QtCore.Qt
 
+    class backlinkQtUI(backlinkUI, QtGui.QWidget):
+    
+        def __init__(self, owner):
+            
+            self.owner = owner
+        
+            QtGui.QWidget.__init__(self)
+            uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
+            form_class, base_class = uic.loadUiType(uiPath)
+            self.owner.c.frame.log.createTab('Links', widget = self) 
+            self.UI = form_class()
+            self.UI.setupUi(self)
+            
+            u = self.UI
+            o = self.owner
+        
+            self.connect(u.markSourceBtn,
+                         QtCore.SIGNAL("clicked()"), o.markSrc)
+            self.connect(u.markDestBtn,
+                         QtCore.SIGNAL("clicked()"), o.markDst)
+            self.connect(u.linkSourceBtn,
+                         QtCore.SIGNAL("clicked()"), o.linkSrc)
+            self.connect(u.linkDestBtn,
+                         QtCore.SIGNAL("clicked()"), o.linkDst)
+            self.connect(u.undirectedBtn,
+                         QtCore.SIGNAL("clicked()"), o.linkUnd)
+            self.connect(u.rescanBtn,
+                         QtCore.SIGNAL("clicked()"), o.loadLinksInt)
+                         
+            self.connect(u.linkList,
+                         QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.listClicked)
+            self.connect(u.deleteBtn,
+                         QtCore.SIGNAL("stateChanged(int)"), o.deleteSet)
+                         
+        def listClicked(self):
+            self.owner.linkClicked(self.UI.linkList.currentRow())
+            
+        def loadList(self, lst): 
+            self.UI.linkList.clear()
+            self.UI.linkList.addItems(lst)
+        def showMessage(self, msg, color='black'):
+            fg = Qt.black
+            if hasattr(Qt, color):
+                fg = getattr(Qt, color)
+            pal = QtGui.QPalette(self.UI.label.palette())
+            pal.setColor(QtGui.QPalette.WindowText, fg)
+            self.UI.label.setPalette(pal)
+            self.UI.label.setText(msg)
+        def enableDelete(self, enable):
+            self.UI.deleteBtn.setChecked(False)
+            self.UI.deleteBtn.setEnabled(enable)
 def init ():
 
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)
@@ -51,15 +109,12 @@ def onCreate (tag, keys):
     if not c: return
     
     backlinkController(c)
-class backlinkController:
+class backlinkController(object):
 
     def __init__ (self,c):
 
         self.c = c
         self.initIvars()
-        leoPlugins.registerHandler('open2', self.loadLinks)
-        # already missed initial 'open2' because of after-create-leo-frame, so
-        self.loadLinksInt()
 
         if Tk:
             self.makeTkTab()
@@ -68,54 +123,13 @@ class backlinkController:
             # leoPlugins.registerHandler('iconrclick2', self.showMenu)
             # leoPlugins.registerHandler('select3', self.showLinksLog)
         if Qt:
-            # for now, remove when Qt UI works
-            leoPlugins.registerHandler('select3', self.showLinksLog)
 
-            uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
-            form_class, base_class = uic.loadUiType(uiPath)
-
-            # define UI class now form_class exists
-            class BacklinkTab(QtGui.QWidget, form_class):
-
-                """Class to wrap QDesigner ui object and provide glue code to make it work."""
-
-                def __init__(self, *args):
-                    QtGui.QWidget.__init__(self, *args)
-                    self.setupUi(self)
-
-
-                def markSource(self):
-                    print 'markSource'
-                    pass
-                def markDest(self):
-                    print 'markDest'
-                    pass
-                def linkSource(self):
-                    print 'linkSource'
-                    pass
-                def linkDest(self):
-                    print 'linkDest'
-                    pass
-                def undirected(self):
-                    print 'undirected'
-                    pass
-                def rescan(self):
-                    print 'rescan'
-                    pass
-                def deleteClicked(self):
-                    print 'deleteClicked'
-                    pass
-
-            top = c.frame.top
-
-            self.form = BacklinkTab()
-
-            dock = QtGui.QDockWidget("Links", top)
-            dock.setAllowedAreas(Qt.AllDockWidgetAreas)
-            dock.setWidget(self.form)
-            top.addDockWidget(Qt.TopDockWidgetArea, dock)
-            dock.setFloating(True) 
-
+            self.ui = backlinkQtUI(self)
+            leoPlugins.registerHandler('select3', self.updateTab)
+    
+        leoPlugins.registerHandler('open2', self.loadLinks)
+        # already missed initial 'open2' because of after-create-leo-frame, so
+        self.loadLinksInt()
     def initIvars(self):
         self.linkDestination = None
         self.linkSource = None
@@ -145,7 +159,7 @@ class backlinkController:
 
             self.message.configure(text = msg, **kargs)
         else:
-            g.es('backlink: '+msg, **kargs)
+            self.ui.showMessage(msg, **kargs)
     def makeTkTab(self):
 
         c = self.c
@@ -238,7 +252,7 @@ class backlinkController:
                 self.dests = dests            
     def tkListClicked(self, event):
 
-        selected = self.listbox.curselection()
+        selected = self.listbox.curselection() # list of selected indexes
 
         if not selected:
             return  # click on empty list of unlinked node
@@ -260,6 +274,72 @@ class backlinkController:
     def tkDeleteClicked(self):
 
         if self.delete.get():
+            self.showMessage('Click a link to DELETE it', color='red')
+        else:
+            self.showMessage('Click a link to follow it')
+    def updateTab(self,tag,k):
+
+        if k['c'] != self.c: return  # not our problem
+
+        self.updateTabInt()
+    def updateTabInt(self):
+
+        c = self.c
+        p = c.currentPosition()
+        v = p.v
+
+        self.positions = {}
+        # throw away the cache because c.positionExists() is broken
+
+        self.messageUsed = False
+
+        self.ui.enableDelete(False)
+        self.deleteMode = False
+        self.showMessage('', optional=True)
+
+        texts = []
+        if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
+            i = 0
+            links = v.unknownAttributes['_bklnk']['links']
+            dests = []
+            self.dests = dests
+            while i < len(links):
+                linkType, other = links[i]
+                otherV = self.vnode[other]
+                otherP = self.vnodePosition(otherV)
+                if not otherP:
+                    self.showMessage('Lost link(s) deleted', color='red')
+                    del links[i]
+                else:
+                    i += 1
+                    dests.append((linkType, otherP))
+            if dests:
+                self.ui.enableDelete(True)
+                self.showMessage('Click a link to follow it', optional=True)
+                for i in dests:
+                    def goThere(where = i[1]): c.selectPosition(where)
+                    txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].headString()
+                    texts.append(txt)
+        self.ui.loadList(texts) 
+              
+    def linkClicked(self, selected):
+
+        if not self.deleteMode:
+            assert self.c.positionExists(self.dests[selected][1])
+            self.c.selectPosition(self.dests[selected][1])
+            return
+
+        elif self.deleteMode:
+            self.deleteLink(
+                self.c.currentPosition().v,
+                self.dests[selected][1].v.unknownAttributes['_bklnk']['id'],
+                self.dests[selected][0]
+            )
+            self.updateTabInt()
+    def deleteSet(self, enabled):
+
+        self.deleteMode = enabled
+        if enabled:
             self.showMessage('Click a link to DELETE it', color='red')
         else:
             self.showMessage('Click a link to follow it')
@@ -307,7 +387,7 @@ class backlinkController:
             self.vnode[i] = ids[i][0]
             for x in ids[i][1:]:
                 idx = 1
-            
+
                 def nvid(): return vid+'.'+str(idx)
                 while nvid() in idsSeen and idx <= 100:
                     idx += 1
@@ -467,7 +547,7 @@ class backlinkController:
         """Return a position for vnode v, if there is one"""
 
         # first check the cache
-        if False and v in self.positions:
+        if v in self.positions:
             p = self.positions[v]
             if p.v is v and self.c.positionExists(p):
                 return p.copy()
@@ -528,3 +608,5 @@ class backlinkController:
 
         if hasattr(self, 'listbox'):
             self.updateTkTabInt()
+        else:
+            self.updateTabInt()
