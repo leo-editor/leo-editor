@@ -1007,6 +1007,57 @@ class cleoController:
             self.loadIcons(p)
         self.c.redraw()
 
+    def showDist(self):
+        """show distribution of priority levels in subtree"""
+        pris = {}
+        for p in self.pickleP.subtree_iter():
+            pri = int(self.getat(p.v, 'priority'))
+            if pri not in pris:
+                pris[pri] = 1
+            else:
+                pris[pri] += 1
+        pris = sorted([(k,v) for k,v in pris.iteritems()]) 
+        for pri in pris:
+            if pri[0] in self.priorities:
+                g.es('%s\t%d\t%s' % (self.priorities[pri[0]]['short'], pri[1],
+                    self.priorities[pri[0]]['long']))
+
+    def reclassify(self):
+        """change priority codes"""
+
+        g.es('\n Current distribution:')
+        self.showDist()
+        dat = {}
+        for end in 'from', 'to':
+            x0 = g.app.gui.runAskOkCancelStringDialog(
+                self.c,'Reclassify priority' ,'%s priorities (1-7,19)' % end.upper())
+            try:
+                x0 = [int(i) for i in x0.replace(',',' ').split()
+                      if int(i) in self.todo_priorities]
+            except:
+                g.es('Not understood, no action')
+                return
+            if not x0:
+                g.es('No action')
+                return
+            dat[end] = x0
+
+        if len(dat['from']) != len(dat['to']):
+            g.es('Unequal list lengths, no action')
+            return
+
+        cnt = 0
+        for p in self.pickleP.subtree_iter():
+            pri = int(self.getat(p.v, 'priority'))
+            if pri in dat['from']:
+                self.setat(p.v, 'priority', dat['to'][dat['from'].index(pri)])
+                self.loadIcons(p)
+                cnt += 1
+        g.es('\n%d priorities reclassified, new distribution:' % cnt)
+        self.showDist()
+        if cnt:
+            self.c.redraw_now()
+
     def priority_menu(self,parent,p):
 
         # done already in left_priority menu
@@ -1031,6 +1082,10 @@ class cleoController:
             command=self.priSort, underline=0)
         c.add_command(menu,label='Children -> To do',
             command=self.childrenTodo, underline=0)
+        c.add_command(menu,label='Show distribution',
+            command=self.showDist, underline=0)
+        c.add_command(menu,label='Reclassify',
+            command=self.reclassify, underline=0)
 
         menu.add_separator()
 
