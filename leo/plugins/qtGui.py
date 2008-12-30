@@ -3469,7 +3469,8 @@ class leoQtTree (leoFrame.leoTree):
         except Exception:
             pass
 
-        w.setIconSize(QtCore.QSize(20,11))
+        # w.setIconSize(QtCore.QSize(20,11))
+        w.setIconSize(QtCore.QSize(160,16))
         # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
         # Status ivars.
@@ -3752,7 +3753,8 @@ class leoQtTree (leoFrame.leoTree):
         '''Return the proper icon for position p.'''
 
         p.v.iconVal = val = p.v.computeIcon()
-        return self.getIconImage(val)
+
+        return self.getCompositeIconImage(p, val)
 
     def getVnodeIcon(self,p):
 
@@ -3761,12 +3763,48 @@ class leoQtTree (leoFrame.leoTree):
         v.iconVal = val = v.computeIcon()
         return self.getIconImage(val)
 
-
     def getIconImage(self,val):
 
         return g.app.gui.getIconImage(
             "box%02d.GIF" % val)
 
+    def getCompositeIconImage(self, p, val):
+
+        userIcons = self.c.editCommands.getIconList(p)
+        statusIcon = self.getIconImage(val)
+
+        if not userIcons:
+            return statusIcon
+
+        hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
+        hash.append(str(val))
+        hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
+        hash = ':'.join(hash)
+
+        if hash in g.app.gui.iconimages:
+            return g.app.gui.iconimages[hash]
+
+        images = [g.app.gui.getImageImage(i['file']) for i in userIcons
+                 if i['where'] == 'beforeIcon']
+        images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
+        images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
+                      if i['where'] == 'beforeHeadline'])
+        width = sum([i.width() for i in images])
+        height = max([i.height() for i in images])
+
+        pix = QtGui.QPixmap(width,height)
+        pix.fill()
+        pix.setAlphaChannel(pix)
+        painter = QtGui.QPainter(pix)
+        x = 0
+        for i in images:
+            painter.drawPixmap(x,(height-i.height())//2,i)
+            x += i.width()
+        painter.end()
+
+        g.app.gui.iconimages[hash] = QtGui.QIcon(pix)
+
+        return g.app.gui.iconimages[hash]
     #@-node:ekr.20081121105001.418:getIcon & getIconImage
     #@+node:ekr.20081121105001.431:updateIcon
     def updateIcon (self,p):
@@ -5695,6 +5733,24 @@ class leoQtGui(leoGui.leoGui):
             g.es_exception()
             return None
     #@-node:ekr.20081121105001.497:getIconImage
+    #@+node:tbrown.20081229204443.10:getImageImage
+    def getImageImage (self,name):
+
+        '''Load the image and return it.'''
+
+        try:
+            fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
+
+            pixmap = QtGui.QPixmap()
+            pixmap.load(fullname)
+
+            return pixmap
+
+        except Exception:
+            g.es("exception loading:",fullname)
+            g.es_exception()
+            return None
+    #@-node:tbrown.20081229204443.10:getImageImage
     #@+node:ekr.20081123003126.2:getTreeImage (test)
     def getTreeImage (self,c,path):
 
