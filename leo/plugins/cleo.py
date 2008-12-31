@@ -323,23 +323,26 @@ class cleoController:
     #@-node:tbrown.20080303214305:loadAllIcons
     #@+node:tbrown.20080303232514:loadIcons
     def loadIcons(self, p):
-        iconDir = g.os_path_abspath(
-          g.os_path_normpath(
-            g.os_path_join(g.app.loadDir,"..","Icons")))
         com = self.c.editCommands
-        icons = [i for i in com.getIconList(p)
-                 if 'cleoIcon' not in i]
+        allIcons = com.getIconList(p)
+        icons = [i for i in allIcons if 'cleoIcon' not in i]
         pri = self.getat(p.v, 'priority')
         if pri: pri = int(pri)
         if pri in self.priorities:
+            iconDir = g.os_path_abspath(
+              g.os_path_normpath(
+                g.os_path_join(g.app.loadDir,"..","Icons")))
             com.appendImageDictToList(icons, iconDir,
                 g.os_path_join('cleo',self.priorities[pri]['icon']),
                 2, on='vnode', cleoIcon='1', where=self.icon_location)
                 # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
                 # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
                 # Note: 'beforeBox' and 'afterHeadline' collide with other elements on the line.
+            com.setIconList(p, icons)
+        else:
+            if len(allIcons) != len(icons):  # something to remove
+                com.setIconList(p, icons)
 
-        com.setIconList(p, icons)
     #@-node:tbrown.20080303232514:loadIcons
     #@+node:tbrown.20060903121429.18:close
     def close(self, tag, key):
