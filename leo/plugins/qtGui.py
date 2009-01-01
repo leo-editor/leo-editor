@@ -46,10 +46,17 @@ try:
     import qt_main # Contains Ui_MainWindow class
     import PyQt4.QtCore as QtCore
     import PyQt4.QtGui as QtGui
+except ImportError:
+    QtCore = None
+    print('\nqtGui.py: can not import Qt\n')
+try:
     from PyQt4 import Qsci
 except ImportError:
     QtCore = None
-    print('qtGui.py: can not import Qt')
+    print('\nqtGui.py: can not import scintilla for Qt')
+    print('\nqtGui.py: qt-scintilla may be a separate package on your system')
+    print('\nqtGui.py: e.g. "python-qscintilla2" or similar\n')
+
 #@-node:ekr.20081121105001.189: << qt imports >>
 #@nl
 
@@ -2489,18 +2496,21 @@ class leoQtLog (leoFrame.leoLog):
             w.clear() # w is a QTextBrowser.
     #@-node:ekr.20081121105001.329:clearTab
     #@+node:ekr.20081121105001.330:createTab
-    def createTab (self,tabName,createText=True,wrap='none'):
+    def createTab (self,tabName,widget=None,wrap='none'):
+        """ Create a new tab in tab widget
 
+        if widget is None, Create a QTextBrowser,
+        suitable for log functionality.
+        """
         c = self.c ; w = self.tabWidget
 
-        if createText:
+        if widget is None:
             contents = QtGui.QTextBrowser()
-            # contents = QtGui.QTextEdit()
             contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
             self.logDict[tabName] = contents
             if tabName == 'Log': self.logCtrl = contents
         else:
-            contents = QtGui.QWidget()
+            contents = widget
 
         self.contentsDict[tabName] = contents
         w.addTab(contents,tabName)
@@ -2560,7 +2570,7 @@ class leoQtLog (leoFrame.leoLog):
         ok = self.selectHelper(tabName,createText)
         if ok: return
 
-        self.createTab(tabName,createText,wrap)
+        self.createTab(tabName,widget= None,wrap = wrap)
         self.selectHelper(tabName,createText)
 
     #@+node:ekr.20081121105001.336:selectHelper
@@ -3459,7 +3469,8 @@ class leoQtTree (leoFrame.leoTree):
         except Exception:
             pass
 
-        w.setIconSize(QtCore.QSize(20,11))
+        # w.setIconSize(QtCore.QSize(20,11))
+        w.setIconSize(QtCore.QSize(160,16))
         # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
         # Status ivars.
@@ -3742,7 +3753,8 @@ class leoQtTree (leoFrame.leoTree):
         '''Return the proper icon for position p.'''
 
         p.v.iconVal = val = p.v.computeIcon()
-        return self.getIconImage(val)
+
+        return self.getCompositeIconImage(p, val)
 
     def getVnodeIcon(self,p):
 
@@ -3751,12 +3763,48 @@ class leoQtTree (leoFrame.leoTree):
         v.iconVal = val = v.computeIcon()
         return self.getIconImage(val)
 
-
     def getIconImage(self,val):
 
         return g.app.gui.getIconImage(
             "box%02d.GIF" % val)
 
+    def getCompositeIconImage(self, p, val):
+
+        userIcons = self.c.editCommands.getIconList(p)
+        statusIcon = self.getIconImage(val)
+
+        if not userIcons:
+            return statusIcon
+
+        hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
+        hash.append(str(val))
+        hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
+        hash = ':'.join(hash)
+
+        if hash in g.app.gui.iconimages:
+            return g.app.gui.iconimages[hash]
+
+        images = [g.app.gui.getImageImage(i['file']) for i in userIcons
+                 if i['where'] == 'beforeIcon']
+        images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
+        images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
+                      if i['where'] == 'beforeHeadline'])
+        width = sum([i.width() for i in images])
+        height = max([i.height() for i in images])
+
+        pix = QtGui.QPixmap(width,height)
+        pix.fill()
+        pix.setAlphaChannel(pix)
+        painter = QtGui.QPainter(pix)
+        x = 0
+        for i in images:
+            painter.drawPixmap(x,(height-i.height())//2,i)
+            x += i.width()
+        painter.end()
+
+        g.app.gui.iconimages[hash] = QtGui.QIcon(pix)
+
+        return g.app.gui.iconimages[hash]
     #@-node:ekr.20081121105001.418:getIcon & getIconImage
     #@+node:ekr.20081121105001.431:updateIcon
     def updateIcon (self,p):
@@ -5685,6 +5733,24 @@ class leoQtGui(leoGui.leoGui):
             g.es_exception()
             return None
     #@-node:ekr.20081121105001.497:getIconImage
+    #@+node:tbrown.20081229204443.10:getImageImage
+    def getImageImage (self,name):
+
+        '''Load the image and return it.'''
+
+        try:
+            fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
+
+            pixmap = QtGui.QPixmap()
+            pixmap.load(fullname)
+
+            return pixmap
+
+        except Exception:
+            g.es("exception loading:",fullname)
+            g.es_exception()
+            return None
+    #@-node:tbrown.20081229204443.10:getImageImage
     #@+node:ekr.20081123003126.2:getTreeImage (test)
     def getTreeImage (self,c,path):
 
@@ -5838,9 +5904,11 @@ class leoQtGui(leoGui.leoGui):
 import qt_quicksearch
 
 def install_qt_quicksearch_tab(c):
-    tabw = c.frame.top.tabWidget
-    wdg = LeoQuickSearchWidget(c,tabw)
-    tabw.addTab(wdg, "QuickSearch")
+    #tabw = c.frame.top.tabWidget
+
+    wdg = LeoQuickSearchWidget(c)
+    c.frame.log.createTab('QuickSearch', widget = wdg)
+    #tabw.addTab(wdg, "QuickSearch")
 
 g.insqs = install_qt_quicksearch_tab
 
