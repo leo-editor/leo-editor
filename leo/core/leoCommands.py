@@ -6928,7 +6928,11 @@ class baseCommands:
             if p == root:
                 return True
             if p.hasParent():
+                v = p.v
                 p.moveToParent()
+                # Major bug fix: 2009/1/2
+                if v not in p.v.t.children:
+                    return False
             else:
                 p.moveToBack()
 

@@ -2715,6 +2715,57 @@ def forwardWordExtendSelection (self,event):
 #@-node:ekr.20050920084036.149:words
 #@-node:ekr.20050929114218:move cursor... (leoEditCommands)
 #@-node:ekr.20081215070651.3:backwardKill word doesn't work w/ qt gui
+#@+node:ekr.20090102055139.1:Fixed positionExists bug
+#@+node:ekr.20040307104131.3:c.positionExists
+def positionExists(self,p,root=None):
+
+    """Return True if a position exists in c's tree"""
+
+    c = self ; p = p.copy()
+
+    # This code must be fast.
+    if not root:
+        root = c.rootPosition()
+
+    while p:
+        if p == root:
+            return True
+        if p.hasParent():
+            v = p.v
+            p.moveToParent()
+            # Major bug fix: 2009/1/2
+            if v not in p.v.t.children:
+                return False
+        else:
+            p.moveToBack()
+
+    return False
+#@-node:ekr.20040307104131.3:c.positionExists
+#@+node:ekr.20040303175026.2:p.doDelete
+@ This is the main delete routine.  It deletes the receiver's entire tree from the screen.  Because of the undo command we never actually delete vnodes or tnodes.
+@c
+
+def doDelete (self,newNode=None):
+
+    """Deletes position p from the outline."""
+
+    p = self
+    p.setDirty() # Mark @file nodes dirty!
+
+    # Adjust newNode._childIndex if newNode is a following sibling of p.
+    sib = p.copy()
+    while sib.hasNext():
+        sib.moveToNext()
+        if sib == newNode:
+            newNode._childIndex -= 1
+            break
+
+    p._unlink()
+    p._deleteLinksInTree()
+    p.v._computeParentsOfChildren()
+    p._parentVnode()._computeParentsOfChildren()
+#@-node:ekr.20040303175026.2:p.doDelete
+#@-node:ekr.20090102055139.1:Fixed positionExists bug
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs

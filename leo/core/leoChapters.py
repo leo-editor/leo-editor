@@ -64,7 +64,6 @@ class chapterController:
                         cc.chaptersDict[tabName] = chapter(c=c,chapterController=cc,name=tabName,root=p)
 
         p = c.currentPosition()
-        # g.trace(c.positionExists(p),p)
         if c.positionExists(p):
             name = cc.findChapterNameForPosition(p) or 'main'
             # g.trace('chapterController',name,c.currentPosition())

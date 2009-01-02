@@ -1580,7 +1580,7 @@
 </v>
 <v t="ekr.20081111084046.3" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20070131175646" a="E"><vh> Commands M-Z</vh>
+<v t="ekr.20070131175646"><vh> Commands M-Z</vh>
 <v t="ekr.20070131171218.1"><vh>@@test zap-to-chararacter</vh>
 <v t="ekr.20070131171218.2"><vh>work</vh></v>
 </v>
@@ -2098,6 +2098,8 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh></v>
+<v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
 <v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>child</vh></v>
 </v>
@@ -2106,7 +2108,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2140,7 +2142,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -22117,5 +22119,13 @@ def followingDef(): # comment
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
+<t tx="ekr.20090102061858.2">child = p.insertAsLastChild()
+assert c.positionExists(child)
+child.doDelete()
+assert not c.positionExists(child)</t>
+<t tx="ekr.20090102062037.2">root = c.rootPosition()
+
+for p in c.allNodes_iter():
+    assert c.positionExists(p,root)</t>
 </tnodes>
 </leo_file>
