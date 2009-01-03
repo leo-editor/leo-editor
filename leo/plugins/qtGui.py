@@ -5916,51 +5916,73 @@ class LeoQuickSearchWidget(QtGui.QWidget):
     """ Real-time search widget """
     #@    @+others
     #@+node:ekr.20081121105001.511:methods
-    import qt_quicksearch
     def __init__(self, c, parent = None):
         QtGui.QWidget.__init__(self, parent)
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)
 
-        self.connect(self.ui.lineEdit,
-                    QtCore.SIGNAL("textChanged(const QString&)"),
-                      self.textChanged)
+        #self.connect(self.ui.lineEdit,
+        #            QtCore.SIGNAL("textChanged(const QString&)"),
+        #              self.textChanged)
         self.connect(self.ui.tableWidget,
                     QtCore.SIGNAL("cellClicked(int, int)"),
                       self.cellClicked)
+        self.connect(self.ui.lineEdit,
+                    QtCore.SIGNAL("returnPressed()"),
+                      self.returnPressed)
+
 
         self.c = c                  
         self.ps = {} # item=> pos
 
-    def textChanged(self):
-        g.trace("New text", self.ui.lineEdit.text())
-        idx = 0
+    def update_matches(self, matches):
         self.ui.tableWidget.clear()
-        for p in self.match_headlines(
-            g.app.gui.toUnicode(self.ui.lineEdit.text())
-        ):
-            it = QtGui.QTableWidgetItem(p.headString())
-            self.ps[idx] = p.copy()
+        matches = list(matches)
+        self.ui.tableWidget.setRowCount(len(matches))
+        for idx,p in enumerate(matches):
+            s = p.headString()
+            it = QtGui.QTableWidgetItem('test')
+            it.setText(QtCore.QString(s))
+            g.trace("Match",s)
+            self.ps[idx] = p.copy(), it
             self.ui.tableWidget.setItem(idx, 0, it)
             idx+=1
 
-        self.ui.tableWidget.setRowCount(idx)
 
-        g.trace("Matches",idx)
+
+    def returnPressed(self):
+        m = self.match_any(unicode(self.ui.lineEdit.text()))
+        self.update_matches(m)
+
+
+    def textChanged(self):
+        g.trace("New text", self.ui.lineEdit.text())
+        m = self.match_headlines(unicode(self.ui.lineEdit.text()))
+        self.update_matches(m)
 
     def cellClicked (self, row, column ) :
-        p = self.ps[row]
+        p = self.ps[row][0]
         g.trace("Go to pos",p)
         self.c.selectPosition(p)
 
     def match_headlines(self, pat):
-
         c = self.c
         pat = pat.lower()
         for p in c.allNodes_iter():
             if pat in p.headString():
                 yield p
         return 
+
+    def match_any(self, pat):
+        c = self.c
+        pat = pat.lower()
+        for p in c.allNodes_iter():
+            if pat in p.headString():
+                yield p.copy()
+            elif pat in p.bodyString():
+                yield p.copy()
+        return 
+
     #@-node:ekr.20081121105001.511:methods
     #@-others
 #@-node:ekr.20081121105001.510:class LeoQuickSearchWidget

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6,5,12,2,2,20"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -748,7 +748,7 @@
 <v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -832,7 +832,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -1580,7 +1580,7 @@
 </v>
 <v t="ekr.20081111084046.3" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20070131175646" a="E"><vh> Commands M-Z</vh>
+<v t="ekr.20070131175646"><vh> Commands M-Z</vh>
 <v t="ekr.20070131171218.1"><vh>@@test zap-to-chararacter</vh>
 <v t="ekr.20070131171218.2"><vh>work</vh></v>
 </v>
@@ -1914,7 +1914,7 @@
 <v t="ekr.20061113154104"><vh>@test leoTextWidget</vh></v>
 <v t="ekr.20071113202321" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113193624.1" a="E"><vh>leoImport</vh>
+<v t="ekr.20071113193624.1"><vh>leoImport</vh>
 <v t="ekr.20040712101754.7" annotate="7d71002e"><vh> Export tests</vh>
 <v t="ekr.20040712101754.9" annotate="7d71002e"><vh>@suite Export tests</vh></v>
 <v t="ekr.20040712101754.24" annotate="7d71002e"><vh>exportTests</vh>
@@ -1963,7 +1963,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071020075538" a="E"><vh> Tests of @auto</vh>
+<v t="ekr.20071020075538"><vh> Tests of @auto</vh>
 <v t="ekr.20071020075538.1"><vh>C tests</vh>
 <v t="ekr.20071020075538.2"><vh>@test c class 1</vh></v>
 <v t="ekr.20071020075538.3"><vh>@test c class--underindented line</vh></v>
@@ -1978,7 +1978,7 @@
 <v t="ekr.20080211092326"><vh>Pascal tests</vh>
 <v t="ekr.20080211092326.1"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20071020075538.10" a="E"><vh>Python tests</vh>
+<v t="ekr.20071020075538.10"><vh>Python tests</vh>
 <v t="ekr.20071020075538.31"><vh>@@test nested class</vh></v>
 <v t="ekr.20071020075538.30"><vh>@test comment after dict assign</vh></v>
 <v t="ekr.20071201071535"><vh>@test decorator test</vh></v>
@@ -2098,6 +2098,8 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh></v>
+<v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
 <v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>child</vh></v>
 </v>
@@ -2106,7 +2108,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2140,7 +2142,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -22117,5 +22119,13 @@ def followingDef(): # comment
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
+<t tx="ekr.20090102061858.2">child = p.insertAsLastChild()
+assert c.positionExists(child)
+child.doDelete()
+assert not c.positionExists(child)</t>
+<t tx="ekr.20090102062037.2">root = c.rootPosition()
+
+for p in c.allNodes_iter():
+    assert c.positionExists(p,root)</t>
 </tnodes>
 </leo_file>

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4,10"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="8,5"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -60,7 +60,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -2949,6 +2949,14 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20050831195331.4"></v>
 <v t="ekr.20081205084002.2"></v>
+<v t="ekr.20090101095717.1" a="E"><vh>Stories</vh>
+<v t="ekr.20090101095717.2"><vh>Introduction (iLeo, revised)</vh></v>
+<v t="ekr.20090101095717.3" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e"><vh>Commonly used classes (scripting intro, revised)</vh></v>
+<v t="ekr.20090101095717.4"><vh>Intro to scripting Leo</vh></v>
+<v t="ekr.20090101095717.5"><vh>@rst-no-head preface</vh></v>
+<v t="ekr.20090101095717.6"><vh>@rst-ignore  @rst-no-head preface (old)</vh></v>
+<v t="ekr.20090101095717.7"><vh>New preface</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -31984,6 +31992,400 @@ print the full path to the created file::
     if name:
        name = g.os_path_finalize_join(path,name)
        g.es(name)
+</t>
+<t tx="ekr.20090101095717.1">@nocolor-node
+
+Who am I? Want the best tools.  Want to know everything about computers.
+
+Who is the typical Leo user?  Me, LeoUser, Ville, Bernhard Mulder.  We have been fascinated with computers our whole lives, we know that computers are still in their infancy, we have ideas for making them better.
+
+Why is Leo fun?  Because I get to express directly what is typically hidden--the deep structure of a program, class or method.  Because this structure is explict, the structure itself is part of what I do.  It's a situation similar to an artist that is given a new color to play with, or even a new medium of expression.
+
+How did I discover Leo?  I created Leo because I had a hard time understanding so-called Literate Programs.  LP was supposed to make programming easier by making it possible to write truly useful documentation.  The thought was that voluminous documentation would clarify the organization of large programs.  LP had other features that were also supposed to help.  Chief among them were so-called sections.  These were like macros, functions or methods in that they could be involked by name.  However, I found that in some ways LP actually made understanding program more difficult.  I couldn't remember the documentation, and mere words did not convey the interrelationships between all the various parts of a program.</t>
+<t tx="ekr.20090101095717.2">@nocolor
+
+New: needs work.
+
+Leo is, among many other things, a super-duper filing cabinet. Not only can Leo
+hold lots of data, but Leo allows you to file information in multiple places.
+You don't have choose one "correct" way of organizing data; you can "file" the
+same datum in multiple places.
+
+These kinds of strengths make Leo ideal for the typical user of IPython who uses
+IPython to run scientific experiments. Leo can hold all kinds of lab notes:
+scripts, parameters to the scripts, output of experiments, notes, ideas,
+whatever. Indeed, Leo offers IPython users an alternative to the command-line
+way of executing scripts: Leo's nodes provide a natural way to create long-lived
+scripts and their variants.
+
+Similarly, IPython offers many features for Leo users, including clever
+enhancements to the Python shell and full integration with tools such as
+mathplotlib.
+
+Several years ago the IPython community started work on what they called an
+IPython Notebook. I immediately saw that Leo would *be* an excellent IPython
+Notebook if Leo and IPython could be made to work together. However, the task of
+integrating IPython into Leo seemed daunting: IPython's shell only *appears*
+simple: it actually is a sophisticated execution environment capable of running
+numerous scripts in separate processes. A little experimention seemed to
+indicate that it would be a major project to make IPython work with Leo's event
+loop.
+
+This is how matters stood until March 2008. In response to a query on the
+IPython newsgroup, Ville Vainio started helping me with the task of embedding
+IPython into Leo. The task turned out to be far easier than I had dared hoped. I
+think Ville too was pleasantly surprised. I kept raising issues, and Ville kept
+saying, "It's not really a problem".
+
+In less than two weeks we had a way for IPython to communicate intimately with
+Leo, and vice versa. Leo's event loop runs simulaniously with IPython's event
+without either interfering with the other. Once this initial bridge was in
+place, Ville improved it in several ways. Leo's ILeo plugin is the result.
+
+Original: still good
+
+
+ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
+and IPython. The level of integration is much deeper than conventional
+integration in IDEs; most notably, you are able to store and manipulate **data**
+in Leo nodes, in addition to mere program code - essentially making ILeo a
+hierarchical spreadsheet, albeit with non-grid view of the data. The
+possibilities of this are endless, and the approach can be applied in wide range
+of problem domains with very little actual coding.
+
+IPython users are accustomed to using things like %edit to produce non-trivial
+functions/classes (i.e. something that they don't want to enter directly on the
+interactive prompt, but creating a proper script/module involves too much
+overhead). In ILeo, this task consists just going to the Leo window, creating a
+node and writing the code there, and pressing alt+I (push-to-ipython).
+
+Obviously, you can save the Leo document as usual - this is a great advantage of
+ILeo over using %edit, you can save your experimental scripts all at one time,
+without having to organize them into script/module files (before you really want
+to, of course!)
+</t>
+<t tx="ekr.20090101095717.3">@nocolor-node
+
+Leo's source code is a collection of classes, along with utility functions in
+``leoGlobals.py``. Here are the classes and objects that scripts will commonly use:
+
+**g.app**
+    The **application object** representing the entire Leo application.
+    The ivars (instance variables) of ``g.app`` represent Leo's global variables.
+    
+**g.app.gui**
+    This is a wrapper class that shields Leo's core code from gui-dependent details.
+    As described below, scripts can invoke dialogs using g.app.gui convenience methods.
+
+**commander**
+    An instance of the ``Commands`` class in ``leoCommands.py``.
+    Commanders represent commands for a *particular* window.
+    Each open Leo window has its own commander.
+    By convention, any variable named ``c`` is a commander.
+
+**frame**
+    An instance of the base ``leoFrame`` class in ``leoFrame.py``.
+    Frames contains all the internal data needed to manage a Leo window.
+    Given a commander ``c``, ``c.frame`` is commanders frame.
+    Given a frame ``f``, ``f.c`` is the frame's commander.
+
+**position**
+    An instance of the ``position`` class in ``leoNodes.py``.
+    A position object represents the location of a particular node *in a tree traversal*.
+    By convention, variables named ``p``, ``p1`` or ``p2`` are positions.
+    For any ``position`` ``p``, ``p.v`` is the vnode at that position and
+    ``p.v.t`` is the tnode at that position.
+    **Positions are the primary way to access data.**
+    ``c.currentPosition`` and ``c.rootPosition`` return positions.
+    From those starting point, it is possible to access the data in any node.
+
+    **Important**:
+    Positions can become *invalid* when the structure of the outline changes.
+    As discussed below, plugins and scripts that store positions for use at a later time should make sure the
+    position p is still valid by calling c.positionExists(p)
+
+    **Important**:
+    For compatibility with old (pre-4.2) scripts, ``c.currentVnode`` and
+    ``c.rootVnode`` methods return *positions* not vnodes. Old scripts appear to
+    be using vnodes; in fact they are using positions. I call such scripts
+    **confused** scripts. Confused scripts work because the ``position`` class
+    is designed to make them work. We'll see how this works in detail in `About
+    copying positions`_.  This section is **supremely important**.
+
+**vnode**
+    An instance of the ``vnode`` class in ``leoNodes.py``.
+    vnodes represent one or more outline nodes on the screen.
+    Normally, scripts access vnodes via the ``position`` class described below. 
+    By convention, variables named ``v``, ``v1`` or ``v2`` refer to vnodes.
+    **Important**: scripts normally should use positions, not vnodes.
+
+**tnode**
+    An instance of the ``tnode`` class in ``leoNodes.py``.
+    tnodes represent the actual data in a vnode, including headline and body text.
+    For any vnode ``v``, ``v.t`` is v's tnode.
+    Cloned vnodes v1 and v2 share the same tnode.  That is ``v1.t == v2``.
+    **Important**: If ``p`` is a ``position``, ``p.v.t`` is the tnode associated with that position.
+    Many positions may share the same tnode.
+    
+**Important**: With the exception of the p.v and v.t ivars, scripts should be
+careful to use only the methods of the position, vnode and tnode classes rather
+than the internal ivars of these classes. Doing so will ensure that the script
+is as simple as possible and that the script will continue to work regardless of
+future changes to the internals of these classes.
+</t>
+<t tx="ekr.20090101095717.4">@nocolor-node
+
+Leo is fun because (among other things) it is *really* easy to write scripts that manipulate data in Leo's outlines. It's dead easy to find nodes, to apply a
+script to some or all of the nodes in a Leo outline to insert and delete nodes, to move nodes, and to change the contents of nodes. This chapter will show you
+how to do all this, and more.
+
+Working on nodes is *much* easier than working on external files. There is no need to open the file or read it; all of Leo's nodes are always available.
+
+So the first thing to understand about scripting with Leo is that scripts can act on nodes.
+
+The second thing to understand about scripting with Leo is that scripts can be composed *from* nodes. That is, you can use Leo's outlines structure to organize
+scripts themselves. In other words, you can use the same features (@others and sections) to organize your scripts that you use to create external files. In
+fact, Leo's execute-script command creates a script the same way Leo's save commands write external files. The only difference is that the created file is written to a string that is then passed to Python's exec function.
+
+After covering these basics, this chapter will discuss two totally cool ways of using these basic features.
+
+The first is, by far, the most clever scripting trick I have ever seen. (I can say that because I didn't invent it :-) The inventor (who goes by the name 'e'),
+calls it "bringing scripts to data". Leo's scripting plugin lets you associate a script (in the outline) with a **script button** in Leo's icon button. Pressing
+the button applies the script **to the presently selected outline node**. We'll see how this works in detail later. BTW, you can invoke script buttons without
+using the mouse using using keyboard shortcuts or minibuffer commands.
+
+The second scripting trick isn't so immediately spectacular, but it too can be used in clever ways. By convention, the headline of a node can tell scripts
+the kind (type) of data in a node. For example, @test indicates that a node (and its descendants) contains a unit test, while @graph might indicate that a nodes represents an arbitrary directed graph.
+
+@test is an excellent example of the power lurking behind this simple idea.  Leo's core supports @test nodes. Leo's run-unit-tests command searches the selected outline looking for @test
+nodes. For each such node, the run-unit-tests command *creates* a valid unit test (subclass of UnitTest.TestCase) by (in effect) wrapping the body text of
+the node in an instance of UnitTest.TestCase. (It doesn't actually work that way, but the idea is the same). So you don't have write::
+    
+    class myTestClass (UnitTest.TestCase): def run(): assert(pi==3) def
+        shortDescription (self): return 'pi'
+    
+Instead you just create a node::
+    
+    - @test pi assert(pi=3)
+    
+This saves a lot of tedious typing.
+
+
+Stories tell what you or I did, or thought. They are based on action, not adjectives.</t>
+<t tx="ekr.20090101095717.5">@nocolor-node
+
+Why, oh why, would anyone be interested in Leo? After all, Emacs and Vim are 
+superb text editors, and Visual Studio and Eclipse are great IDE's. How can Leo possibly compete with such strong competition? What does Leo offer that these other tools don't? 
+
+Leo does have something unique to offer--something missing from Emacs,Vim, Visual Studio and Eclipse. Leo's users often speak of an Aha! moment when they understand what this 'something' is. 
+The Aha! arises from considering programs, design and data in a new light. You might call this 'The Leo Way'. In essence, Leo shows that computer programs, designs and data are *not*, after all, mostly about text. Yes, people usually *express* programs, designs and data as text. Yes, people manipulate programs, designs and data *using* text, but *text is not the whole story*. 
+
+In The Leo Way, text is simply a manifestation (a shadow) of something more 
+fundamental. That 'something else' might be called 'organization' or 'structure' or 'views' or even 'architecture'. However, let us use the term **node** to represent the fundamental unit of structure in Leo. We'll see why in a moment. 
+
+In architectural terms, nodes are bricks that make up a building. In computer
+programming terms, nodes make up methods, classes, files and entire
+applications. So the term 'node' does *not* have a fixed meaning--it is simply a
+unit of organization. Any node can be built from other nodes, and any node can
+be used by any other node. Leo represent nodes directly, as nodes (headlines) in
+an outline. An outline node contains a headline and body text. The **outline
+pane** shows all headlines; the **body pane** shows the body text of the
+presently selected node.
+ 
+**Outline structure is real data**
+ 
+To repeat: the fundamental unit in Leo is *not* text. True, headlines and body *consist* of text, but a node is just not text, it is a true (Python) object. This means several specific things: 
+ 
+1. Because nodes are true objects, Leo commands understand what a node is, and
+   where a node fits into the entire outline. I'll say more about outline
+   organization soon, but let me give an example. Every node has exactly one
+   parent node, (except for top-level nodes that have no parents) and every node
+   has zero or more children and zero or more siblings. A node's parent,
+   children and siblings are real properties of the node, *completely
+   independent* of the node's headline or body text. Furthermore, any of Leo's
+   commands (or user-written scripts or plugins, the big sisters of user
+   scripts.) can *easily* access the all aspects of an outline *without* having
+   to parse any text whatsoever. Commands, scripts and plugins can easily do the
+   following: get the root of the outline, the presently selected node in the
+   outline, the parent, siblings, children or descendants of any node in the
+   outline, etc., etc. Commands, scripts and plugins can easily insert, delete
+   or move nodes, and can alter the headline or body text in any node. All this
+   *without* parsing text.
+ 
+2. Having nodes be true objects means that commands scripts and plugins can
+   treat the headline text as *something truly different from* body text. The
+   natural interpretation of headline text is as a description of the body text.
+   This is important! Headlines often control Leo's commands. For example,
+   headlines that start with @thin, @file, @asis, @auto, etc. serve to guide and
+   control Leo's read and write commands. Headlines that start with @test,
+   @suite and @mark-for-unit-tests guide Leo's unit testing commands. Moreover,
+   it is easy to create new conventions for headlines that control user-written
+   scripts or plugins. For example, plugins define specific meanings for
+   headlines that start with @url, @rst, @bookmark, @slideshow, etc., etc. So
+   the separation of headline and body text, **as true components of a node
+   object**, is a very big deal.
+ 
+3. One application of these ideas deserves special mention. Leo's scripting
+   plugin provides support for @button nodes. The headline is @button
+   &lt;command-name&gt;. The body text contains a script. When Leo opens a Leo
+   outline, each @button node creates a command and an icon. Clicking the icon
+   (or executing the command) applies the script in the @button node **to the
+   presently selected outline**. That is, the script is executed in a context in
+   which it is easy to get access to all aspects of the outline in which the
+   script is embedded. This is a major advance in scripting. It allows you to
+   'bring scripts to data', i.e., any part of an outline. In particular, it is
+   very easy to create **editing scripts** that automate what would otherwise be
+   boring and repetitive editing tasks.
+ 
+**Leo outlines aren't your average outline**
+ 
+Earlier I said that *any* node can be built from other nodes, and *any* node can be used by any other node. It takes a very special kind of outline for this to be possible. In a typical outline, such as Emacs outline mode, for example, nodes appear exactly once in the outline. This makes it impossible to 'reuse' nodes in multiple places. Leo removes that limitation: any outline node can be **cloned**, and clones can appear in as many places in an outline as you like. 
+ 
+Cloned nodes are distinct: they must be distinct so they can be moved throughout the outline, but **cloned nodes share all their information**. That is, changing the headline or body text in a node instantly changes the headline and body text in all the other nodes cloned to it. Furthermore, similar remarks apply to the children and descendants of any node--changing any child (or other descendant) of a node, say node A, instantly makes corresponding changes to all nodes cloned to node A. 
+ 
+Earlier I said that you can think of nodes as representing 'organization' or 
+'structure' or 'views' or even 'architecture'. Clones are the crucial feature that allows this point of view. For example, we can build up multiple 'views' of data in an outline using clones as follows: 
+ 
+- Create a 'view node' that will represent a *user-specified* view. 
+ 
+- Clone all nodes that are to be part of the view, and move them so that each clone is a child of the view node. 
+ 
+That's about all there is to it. The view node, and its children *is* a new view of the outline. This notion of 'view' is so important that Leo supports it directly. Leo's **chapters** are simply views created as I have just described. When you select one chapter, you only see the nodes of that chapter in Leo's outline pane. 
+ 
+**Conclusions &amp; encouragements**
+ 
+So Leo offers a new way to understand, organize and manipulate *any* kind of
+complex data, including computer programs, *designs* of computer programs, web
+sites, personal data, whatever. The Aha that I invite you to experience is this:
+Outlines are more than mere eye candy. Having organization be real data creates
+an entirely new dimension, literally and figuratively, in computer programming,
+computer design and data organization, including web-site design, database
+design, etc. Leo's commands use headline and body text in many creative ways. So
+can you and your scripts. It's easy, it's fun, and it's revolutionary.
+
+That's about it, except for some words of caution and advice: 
+ 
+1. Leo has been under active development for over 10 years. The new world
+   created by nodes is rich and varied. You won't learn it all in a day or so.
+   Please be patient. Start by learning Leo's basic features as explained in the
+   tutorial. You can learn more advanced features later.
+ 
+2. Those of you who are comfortable with Emacs should feel pretty much at home
+   with Leo. Leo has shamelessly stolen the best features of Emacs, including
+   the minibuffer and many Emacs-like commands.
+ 
+3. For those of you who are *not* comfortable with Emacs, please understand that
+   you do *not* need to understand all of Leo's commands in order to use Leo.
+   Start by ignoring the minibuffer. Later, the minibuffer can become your
+   friend, but you can get the Aha! without it.
+ 
+Edward K. Ream
+July, 2007</t>
+<t tx="ekr.20090101095717.6">Leo is not your ordinary text editor, class browser, project manager or database manager,
+though it resembles these programs in some respects.
+Understanding what Leo is does take some work:
+many people have reported an 'Aha!' experience when they first understand what Leo is all about.
+
+Leo is built on simple foundations:
+    
+- Leo is an outliner. All Leo data resides in an `outline`_. Outlines can
+  contain text, computer programs, web sites, pictures, or any other kind of
+  data. Leo can show such information, including pictures and movies, directly
+  in the outline.
+  
+- Using `cloned nodes`_, you can put the same information (outline node) in
+  multiple places. You don't have to decide, once and for all, where the 'right'
+  place to put data: you can 'file' information in as many places as you like.
+  But Leo is more than just the ultimate filing cabinet. Using clones, an
+  outline can, in effect, show multiple views of the data *in that outline*.
+  Again, you do not have to decide, once and for all, which is the 'right' view.
+  You can have as many views as you like. For example, suppose you have an
+  outline that contains all of your slides (or links to them.) Using clones, any
+  of your slides could appear in as many slideshows as you like.
+
+These features allow you to organize personal information such as web links or
+pictures. Other features make Leo a powerful environment for programming and web
+development:
+    
+- Unlike most file and class browsers, Leo has a memory. Leo allows you complete
+  freedom to organizer and reorganize your outline as you like. Leo remembers
+  the organization and expansion state of your outline when you save it, and
+  restores the outline and expansion state when you reload the outline.
+    
+- Leo is a virtual file system and data manager. Leo can generate files based on
+  data contained in outline. Such `derived files`_ can contain anything that the
+  outline contains: text, computer programs, pictures, etc.
+  
+- You can use outlines to organize your programs, data and scripts. Using a
+  markup language based on noweb_, you can easily tell Leo how to assemble
+  programs and scripts from text in a portion of an outline.
+  
+- Leo's import commands convert already-existing programs into Leo pre-organized
+  outlines, much like class browsers do. Unlike class browsers, you are then
+  free to reorganize the outline so that it is easy to understand. This is a
+  great way to study other people's programs.
+  
+- The structure of Leo outlines is directly accessible to Python scripts.
+  Scripts can directly access all nodes (headlines and body text) of an outline.
+  There is no need to 'parse' data into constituent parts. Furthermore scripts
+  can easily insert, delete and move nodes. For example, unit tests can create
+  nodes that represent the expected result of a unit test.
+
+- Any Leo script can easily be applied to a selected part of the outline. This
+  is an incredibly powerful and flexible feature. For example, it is very easy
+  to create 'text editing' scripts that automate tedious, repetitive programming
+  tasks.
+  
+- It is easy to write `plugins`_ to alter any aspect of Leo's operation. Dozens
+  of plugins already exist.
+  
+- Nodes naturally represent both data (body text) and its description or
+  meta-data (headline). By convention, many plugins and commands look for
+  headlines of the form @x. Examples include @test and @suite for unit tests,
+  @url for web links, @slideshow and @slide for groups of slides, @auto for
+  automatically imported files, @folder for nodes created automatically from a
+  folder on the computer's file system, and many others.
+  Two kinds of meta-data deserve special mention. Unit tests can easily define
+  their own meta-data, such as 'before' and 'after'. These data describe the
+  initial conditions of the unit tests and the expected result.
+  The @rst plugin uses various kinds of @rst nodes to organize
+  `reStructuredText`_ and to control how that text is organized. For full
+  details, see `Chapter 14: Using the Rst3 Plugin`_.
+  
+- Leo coexists well with other editors such as Emacs and Vim. Leo has
+  several plugins that allow you easily to switch between Emacs (or Vim) and
+  Leo. Moreover, Leo allows you complete flexibility to use the key bindings you
+  like.
+  
+Several people have asked me, "How can Leo help me with programming?".
+Here is a short answer that summarizes the discussion so far:
+    
+- Leo's outlines allow you to see the organization of complex programs more
+  clearly than with any other tool.
+  
+- Leo's allows you to organize programs and scripts more flexibly than with any
+  other tool. In particular, noweb is a perfect match for outlines.
+  
+- Leo scripts are much more powerful than in other scripting environments
+  because Leo scripts have easy access to headlines and data without having to
+  parse data. **Outline structure is real data**: scripts can easily access the
+  parents and descendants of any node. The practical benefits are almost
+  endless.
+
+- You can do things with Leo that are not possible with Emacs or Vim. In fact,
+  you can do things with Leo that are not even *conceivable or expressible* with
+  Emacs or Vim.
+
+One last word. Leo has a strong and active community of users on `SourceForge`_.
+Working with this community has been a constant source of joy and inspiration.
+Suggestions and plugins from users continue to drive Leo in excellent new
+directions. Who knows what the next plugin will bring? -- Edward K. Ream</t>
+<t tx="ekr.20090101095717.7">@nocolor-node
+
+Leo was born in an attempt to understand a relatively obscure programming technique called Literate Programming.
+
+Using Leo is fun.  Fun because it gives control, and because programming occurs in an expanded context.
+
 </t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
