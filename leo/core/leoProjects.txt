@@ -13475,6 +13475,607 @@ def os (self,s):
             at.exception("exception writing:" + s)
 #@-node:ekr.20041005105605.204:os
 #@-node:ekr.20081216090156.2:Added escapes for underindented lines
+#@+node:ekr.20090103054019.2:Warn when writing an externally changed file
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c80fd8375534afdf
+
+> Given that most of my commits to the Trunk over the last year have
+> been lost and needed to be restored, I suggest anyone who has changed
+> files on the Trunk verify that they have not been lost.
+
+This typically happens because Leo doesn't check whether files have
+been changed behind leo's back (e.g. when leo is open, you do bzr
+merge / bzr pull, then merrily press ctrl+s => leo overwrites the
+derived files without checking first).
+
+This is easy to fix: just have a dict with { filename :
+timestamp_at_time_of_read }, and check those before writing out a
+file.
+
+Another layer of security is studying bzr diff well after merge. 
+#@nonl
+#@+node:ekr.20090104045431.4:New
+#@+node:ekr.20090103070824.9:c.setFileTimeStamp
+def setFileTimeStamp (self,fn):
+
+    c = self
+
+    timeStamp = os.path.getmtime(fn)
+    c.timeStampDict[fn] = timeStamp
+
+    # g.trace('%20s' % (timeStamp),fn)
+
+#@-node:ekr.20090103070824.9:c.setFileTimeStamp
+#@+node:ekr.20090103070824.11:c.checkFileTimeStamp
+def checkFileTimeStamp (self,fn):
+
+    '''
+    Return True if the file given by fn has not been changed
+    since Leo read it or if the user agrees to overwrite it.
+    '''
+
+    c = self
+    timeStamp = c.timeStampDict.get(fn)
+    if not timeStamp:
+        # g.trace('no stamp for %s' % (fn))
+        return True
+
+    timeStamp2 = os.path.getmtime(fn)
+    if timeStamp == timeStamp2:
+        return True
+
+    if g.app.unitTesting:
+        return False
+
+    # g.trace(timeStamp, timeStamp2)
+    message = '%s\n%s\n%s' % (
+        fn,
+        g.tr('has been modified outside of Leo.'),
+        g.tr('Overwrite this file?'))
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite modified file?',
+        message = message)
+    return ok == 'yes'
+#@-node:ekr.20090103070824.11:c.checkFileTimeStamp
+#@-node:ekr.20090104045431.4:New
+#@+node:ekr.20090104045431.3:Changed
+#@+node:ekr.20031218072017.1553:getLeoFile
+# The caller should follow this with a call to c.redraw().
+
+def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
+
+    c = self.c
+    c.setChanged(False) # May be set when reading @file nodes.
+    << warn on read-only files >>
+    self.checking = False
+    self.mFileName = c.mFileName
+    self.initReadIvars()
+    c.loading = True # disable c.changed
+
+    try:
+        ok = True
+        # t1 = time.clock()
+        v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+        if v: # v is None for minimal .leo files.
+            c.setRootVnode(v)
+            self.rootVnode = v
+        else:
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
+            p = leoNodes.position(v)
+            p._linkAsRoot(oldRoot=None)
+            self.rootVnode = v
+            c.setRootPosition(p)
+            c.changed = False
+    except BadLeoFile:
+        junk, message, junk = sys.exc_info()
+        if not silent:
+            g.es_exception()
+            g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+        ok = False
+
+    # Do this before reading derived files.
+    self.resolveTnodeLists()
+
+    if ok and readAtFileNodesFlag:
+        # Redraw before reading the @file nodes so the screen isn't blank.
+        # This is important for big files like LeoPy.leo.
+        c.redraw_now()
+        c.setFileTimeStamp(fileName)
+        c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+
+    # Do this after reading derived files.
+    if readAtFileNodesFlag:
+        # The descendent nodes won't exist unless we have read the @thin nodes!
+        self.restoreDescendentAttributes()
+
+    self.setPositionsFromVnodes()
+    c.selectVnode(c.currentPosition()) # load body pane
+
+    self.initAllParents()
+
+    if c.config.getBool('check_outline_after_read'):
+        g.trace('@bool check_outline_after_read = True',color='blue')
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+
+    c.loading = False # reenable c.changed
+    c.setChanged(c.changed) # Refresh the changed marker.
+    self.initReadIvars()
+    return ok, self.ratio
+#@+node:ekr.20031218072017.1554:<< warn on read-only files >>
+# os.access may not exist on all platforms.
+
+try:
+    self.read_only = not os.access(fileName,os.W_OK)
+except AttributeError:
+    self.read_only = False
+except UnicodeError:
+    self.read_only = False
+
+if self.read_only:
+    g.es("read only:",fileName,color="red")
+#@-node:ekr.20031218072017.1554:<< warn on read-only files >>
+#@-node:ekr.20031218072017.1553:getLeoFile
+#@+node:bwmulder.20050101094804:openForWrite (atFile)
+def openForWrite (self, filename, wb='wb'):
+
+    '''Open a file for writes, handling shadow files.'''
+
+    trace = False # or x.trace
+    at = self ; c = at.c ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+
+        if self.writing_to_shadow_directory:
+            if trace and not g.app.unitTesting: g.trace(filename,shadow_filename)
+            x.message('writing %s' % shadow_filename)
+            return 'shadow',open(open_file_name,wb)
+        else:
+            ok = c.checkFileTimeStamp(at.targetFileName)
+            return 'check',ok and open(open_file_name,wb)
+
+    except IOError:
+        if not g.app.unitTesting:
+            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+            g.es_exception()
+        return 'error',None
+#@-node:bwmulder.20050101094804:openForWrite (atFile)
+#@+node:ekr.20041005105605.21:read (atFile)
+def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName >>
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    if at.errors: return False
+    fileName = at.openFileForReading(fileName,fromString=fromString)
+    if at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+    if not g.unitTesting:
+        g.es("reading:",root.headString())
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+#@-node:ekr.20041005105605.22:<< set fileName >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+resurrected = 0
+for p in root.self_and_subtree_iter():
+
+    if not p.v.t.isVisited():
+        g.es('resurrected node:',p.headString(),color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for t in c.all_unique_tnodes_iter():
+
+    if hasattr(t,"tempBodyString"):
+        delattr(t,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
+def replaceTargetFileIfDifferent (self,root):
+
+    '''Create target file as follows:
+    1. If target file does not exist, rename output file to target file.
+    2. If target file is identical to output file, remove the output file.
+    3. If target file is different from output file,
+       remove target file, then rename output file to be target file.
+
+    Return True if the original file was changed.
+    '''
+
+    c = self.c
+
+    assert(self.outputFile is None)
+
+    if self.toString:
+        # Do *not* change the actual file or set any dirty flag.
+        self.fileChangedFlag = False
+        return False
+
+    if root:
+        # The default: may be changed later.
+        root.clearOrphan()
+        root.clearDirty()
+
+    if g.os_path_exists(self.targetFileName):
+        if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):
+            # Files are identical.
+            ok = self.remove(self.outputFileName)
+            if not ok:
+                # self.remove gives the error.
+                # g.es('error removing temp file',color='red')
+                g.es('unchanged:',self.shortFileName)
+                if root: root.setDirty() # New in 4.4.8.
+            g.es('unchanged:',self.shortFileName)
+
+            self.fileChangedFlag = False
+            return False
+        else:
+            << report if the files differ only in line endings >>
+            mode = self.stat(self.targetFileName)
+            ok = self.rename(self.outputFileName,self.targetFileName,mode)
+            if ok:
+                c.setFileTimeStamp(self.targetFileName)
+                g.es('wrote:    ',self.shortFileName)
+            else:
+                # self.rename gives the error.
+                g.es('unchanged:',self.shortFileName)
+                if root: root.setDirty() # New in 4.4.8.
+
+            self.fileChangedFlag = ok
+            return ok
+    else:
+        # Rename the output file.
+        ok = self.rename(self.outputFileName,self.targetFileName)
+        if ok:
+            c.setFileTimeStamp(self.targetFileName)
+            g.es('created:  ',self.targetFileName)
+        else:
+            # self.rename gives the error.
+            if root: root.setDirty() # New in 4.4.8.
+
+        # No original file to change. Return value tested by a unit test.
+        self.fileChangedFlag = False 
+        return False
+#@+node:ekr.20041019090322:<< report if the files differ only in line endings >>
+if (
+    self.explicitLineEnding and
+    self.compareFiles(
+        self.outputFileName,
+        self.targetFileName,
+        ignoreLineEndings=True)):
+
+    g.es("correcting line endings in:",self.targetFileName,color="blue")
+#@-node:ekr.20041019090322:<< report if the files differ only in line endings >>
+#@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
+#@+node:ekr.20031218072017.1720:save (fileCommands)
+def save(self,fileName):
+
+    c = self.c ; v = c.currentVnode()
+
+    # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
+    ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
+
+    if ok is None:
+        c.endEditing()# Set the current headline text.
+        self.setDefaultDirectoryForNewFiles(fileName)
+        ok = c.checkFileTimeStamp(fileName)
+        if ok:
+            ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
+        if ok:
+            self.putSavedMessage(fileName)
+            c.setChanged(False) # Clears all dirty bits.
+            if c.config.save_clears_undo_buffer:
+                g.es("clearing undo")
+                c.undoer.clearUndoState()
+        c.redraw()
+
+    g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
+    return ok
+#@-node:ekr.20031218072017.1720:save (fileCommands)
+#@+node:ekr.20041005105605.144:write & helper
+# This is the entry point to the write code.  root should be an @file vnode.
+
+def write (self,root,
+    nosentinels = False,
+    thinFile = False,
+    scriptWrite = False,
+    toString = False,
+    write_strips_blank_lines = None,
+):
+
+    """Write a 4.x derived file."""
+
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    # g.trace(root.headString())
+
+    if hasattr(root.v.t,'tnodeList'):# 2008/10/3
+        has_list,old_list = True,root.v.t.tnodeList[:]
+    else:
+        has_list,old_list = False,[]
+
+    << set at.targetFileName >>
+    at.initWriteIvars(root,at.targetFileName,
+        nosentinels = nosentinels, thinFile = thinFile,
+        scriptWrite = scriptWrite, toString = toString,
+        write_strips_blank_lines = write_strips_blank_lines)
+
+    if nosentinels and not scriptWrite and not toString:
+        fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
+        exists = g.os_path_exists(fileName)
+        if not self.shouldWriteAtNosentNode(root,exists):
+            return
+
+    if not at.openFileForWriting(root,at.targetFileName,toString):
+        # openFileForWriting calls root.setDirty() if there are errors.
+        return
+
+    try:
+        at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
+        if toString:
+            at.closeWriteFile() # sets self.stringOutput
+            # Major bug: failure to clear this wipes out headlines!
+            # Minor bug: sometimes this causes slight problems...
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.closeWriteFile()
+            if at.errors > 0 or at.root.isOrphan():
+                << set dirty and orphan bits >>
+                g.es("not written:",at.outputFileName)
+            else:
+                at.replaceTargetFileIfDifferent(root)
+                    # Sets/clears dirty and orphan bits.
+            if has_list: root.v.t.tnodeList = old_list # 2008/10/3
+    except Exception:
+        if toString:
+            at.exception("exception preprocessing script")
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.writeException() # Sets dirty and orphan bits.
+            if has_list: root.v.t.tnodeList = old_list # 2008/10/3
+#@+node:ekr.20041005105605.145:<< set at.targetFileName >>
+if toString:
+    at.targetFileName = "<string-file>"
+elif nosentinels:
+    at.targetFileName = root.atNoSentFileNodeName()
+elif thinFile:
+    at.targetFileName = root.atThinFileNodeName()
+else:
+    at.targetFileName = root.atFileNodeName()
+#@-node:ekr.20041005105605.145:<< set at.targetFileName >>
+#@+node:ekr.20041005105605.146:<< set dirty and orphan bits >>
+# Setting the orphan and dirty flags tells Leo to write the tree..
+root.setOrphan()
+root.setDirty()
+# Delete the temp file.
+self.remove(at.outputFileName) 
+
+#@-node:ekr.20041005105605.146:<< set dirty and orphan bits >>
+#@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.That ' s too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the.leo file is opened.
+- We don ' t want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtNosentNode (self,p,exists):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if not exists: # We can write a non-existent file without danger.
+        return True
+    elif self.isSignificantTree(p):
+        return True # Assume the tree contains what should be written.
+    else:
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
+        return False
+#@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
+#@-node:ekr.20041005105605.144:write & helper
+#@+node:ekr.20031218072017.3046:write_Leo_file
+def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
+
+    c = self.c
+    self.putCount = 0
+    self.toString = toString
+    theActualFile = None
+    toZip = False
+    atOk = True
+
+    if c.config.getBool('check_outline_before_save'):
+        g.trace('@bool check_outline_before_save = True',color='blue')
+        errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+        if errors > 0:
+            g.es_print('outline not written',color='red')
+            return False
+
+    if not outlineOnlyFlag or toOPML:
+        # Update .leoRecentFiles.txt if possible.
+        g.app.config.writeRecentFilesFile(c)
+        << write all @file nodes >>
+    << return if the .leo file is read-only >>
+    try:
+        << create backup file >>
+        self.mFileName = fileName
+        if toOPML:
+            << ensure that filename ends with .opml >>
+        self.outputFile = StringIO()
+        << create theActualFile >>
+        # t1 = time.clock()
+        if toOPML:
+            self.putToOPML()
+        else:
+            # An important optimization: we have already assign the file indices.
+            self.putLeoFile()
+        # t2 = time.clock()
+        s = self.outputFile.getvalue()
+        # g.trace(self.leo_file_encoding)
+        if toZip:
+            self.writeZipFile(s)
+        elif toString:
+            # For support of chapters plugin.
+            g.app.write_Leo_file_string = s
+        else:
+            theActualFile.write(s)
+            theActualFile.close()
+            c.setFileTimeStamp(fileName)
+            << delete backup file >>
+            # t3 = time.clock()
+            # g.es_print('len',len(s),'putCount',self.putCount) # 'put',t2-t1,'write&close',t3-t2)
+        self.outputFile = None
+        self.toString = False
+        return atOk
+    except Exception:
+        g.es("exception writing:",fileName)
+        g.es_exception(full=True)
+        if theActualFile: theActualFile.close()
+        self.outputFile = None
+        if backupName:
+            << delete fileName >>
+            << rename backupName to fileName >>
+        self.toString = False
+        return False
+
+write_LEO_file = write_Leo_file # For compatibility with old plugins.
+#@+node:ekr.20040324080359:<< write all @file nodes >>
+try:
+    # Write all @file nodes and set orphan bits.
+    # An important optimization: we have already assign the file indices.
+    changedFiles,atOk = c.atFileCommands.writeAll()
+except Exception:
+    g.es_error("exception writing derived files")
+    g.es_exception()
+    return False
+#@-node:ekr.20040324080359:<< write all @file nodes >>
+#@+node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
+# self.read_only is not valid for Save As and Save To commands.
+
+if g.os_path_exists(fileName):
+    try:
+        if not os.access(fileName,os.W_OK):
+            g.es("can not write: read only:",fileName,color="red")
+            return False
+    except Exception:
+        pass # os.access() may not exist on all platforms.
+#@-node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
+#@+node:ekr.20031218072017.3047:<< create backup file >>
+backupName = None
+
+# rename fileName to fileName.bak if fileName exists.
+if not toString and g.os_path_exists(fileName):
+
+    backupName = g.os_path_join(g.app.loadDir,fileName)
+    backupName = fileName + ".bak"
+
+    if g.os_path_exists(backupName):
+        g.utils_remove(backupName)
+
+    ok = g.utils_rename(c,fileName,backupName)
+
+    if not ok:
+        if self.read_only:
+            g.es("read only",color="red")
+        return False
+#@nonl
+#@-node:ekr.20031218072017.3047:<< create backup file >>
+#@+node:ekr.20060919070145:<< ensure that filename ends with .opml >>
+if not self.mFileName.endswith('opml'):
+    self.mFileName = self.mFileName + '.opml'
+fileName = self.mFileName
+#@nonl
+#@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
+#@+node:ekr.20060929103258:<< create theActualFile >>
+if toString:
+    theActualFile = None
+elif c.isZipped:
+    self.toString = toString = True
+    theActualFile = None
+    toZip = True
+else:
+    theActualFile = open(fileName, 'wb')
+#@-node:ekr.20060929103258:<< create theActualFile >>
+#@+node:ekr.20031218072017.3048:<< delete backup file >>
+if backupName and g.os_path_exists(backupName):
+
+    self.deleteFileWithMessage(backupName,'backup')
+#@-node:ekr.20031218072017.3048:<< delete backup file >>
+#@+node:ekr.20050405103712:<< delete fileName >>
+if fileName and g.os_path_exists(fileName):
+
+    self.deleteFileWithMessage(fileName,'')
+#@-node:ekr.20050405103712:<< delete fileName >>
+#@+node:ekr.20050405103712.1:<< rename backupName to fileName >>
+if backupName:
+    g.es("restoring",fileName,"from",backupName)
+    g.utils_rename(c,backupName,fileName)
+#@-node:ekr.20050405103712.1:<< rename backupName to fileName >>
+#@+node:ekr.20070412095520:writeZipFile
+def writeZipFile (self,s):
+
+    # The name of the file in the archive.
+    contentsName = g.toEncodedString(
+        g.shortFileName(self.mFileName),
+        self.leo_file_encoding,reportErrors=True)
+
+    # The name of the archive itself.
+    fileName = g.toEncodedString(
+        self.mFileName,
+        self.leo_file_encoding,reportErrors=True)
+
+    # Write the archive.
+    theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
+    theFile.writestr(contentsName,s)
+    theFile.close()
+#@-node:ekr.20070412095520:writeZipFile
+#@-node:ekr.20031218072017.3046:write_Leo_file
+#@-node:ekr.20090104045431.3:Changed
+#@-node:ekr.20090103054019.2:Warn when writing an externally changed file
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files
