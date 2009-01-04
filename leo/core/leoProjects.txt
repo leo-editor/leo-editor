@@ -1864,6 +1864,8 @@ def write (self,root,
     at = self ; c = at.c
     c.endEditing() # Capture the current headline.
 
+    # g.trace(root.headString())
+
     if hasattr(root.v.t,'tnodeList'):# 2008/10/3
         has_list,old_list = True,root.v.t.tnodeList[:]
     else:
@@ -1895,7 +1897,12 @@ def write (self,root,
             at.root.v.t._p_changed = True
         else:
             at.closeWriteFile()
-            << set dirty and orphan bits on error >>
+            if at.errors > 0 or at.root.isOrphan():
+                << set dirty and orphan bits >>
+                g.es("not written:",at.outputFileName)
+            else:
+                at.replaceTargetFileIfDifferent(root)
+                    # Sets/clears dirty and orphan bits.
             if has_list: root.v.t.tnodeList = old_list # 2008/10/3
     except Exception:
         if toString:
@@ -1915,17 +1922,14 @@ elif thinFile:
 else:
     at.targetFileName = root.atFileNodeName()
 #@-node:ekr.20041005105605.145:<< set at.targetFileName >>
-#@+node:ekr.20041005105605.146:<< set dirty and orphan bits on error >>
+#@+node:ekr.20041005105605.146:<< set dirty and orphan bits >>
 # Setting the orphan and dirty flags tells Leo to write the tree..
+root.setOrphan()
+root.setDirty()
+# Delete the temp file.
+self.remove(at.outputFileName) 
 
-if at.errors > 0 or at.root.isOrphan():
-    root.setOrphan()
-    root.setDirty() # Make _sure_ we try to rewrite this file.
-    self.remove(at.outputFileName) # Delete the temp file.
-    g.es("not written:",at.outputFileName)
-else:
-    at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
-#@-node:ekr.20041005105605.146:<< set dirty and orphan bits on error >>
+#@-node:ekr.20041005105605.146:<< set dirty and orphan bits >>
 #@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
 @ Much thought went into this decision tree:
 
@@ -9309,6 +9313,7 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
         # Redraw before reading the @file nodes so the screen isn't blank.
         # This is important for big files like LeoPy.leo.
         c.redraw_now()
+        c.setFileTimeStamp(fileName)
         c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
 
     # Do this after reading derived files.
@@ -14433,6 +14438,7 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
         # Redraw before reading the @file nodes so the screen isn't blank.
         # This is important for big files like LeoPy.leo.
         c.redraw_now()
+        c.setFileTimeStamp(fileName)
         c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
 
     # Do this after reading derived files.

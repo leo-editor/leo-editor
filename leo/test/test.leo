@@ -1048,7 +1048,7 @@
 </v>
 </v>
 <v t="edward.20081221145716.1"><vh>decorator tests</vh></v>
-<v t="ekr.20090102095951.1" a="E"><vh>posList</vh>
+<v t="ekr.20090102095951.1"><vh>posList</vh>
 <v t="ekr.20090102095951.2"><vh>node a</vh></v>
 <v t="ekr.20090102095951.3"><vh>node b</vh></v>
 </v>

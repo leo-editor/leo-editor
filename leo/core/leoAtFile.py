@@ -462,7 +462,10 @@ class atFile:
         at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
         fileName = at.openFileForReading(fileName,fromString=fromString)
-        if not at.inputFile: return False
+        if at.inputFile:
+            c.setFileTimeStamp(fileName)
+        else:
+            return False
         if not g.unitTesting:
             g.es("reading:",root.headString())
         root.clearVisitedInTree()
@@ -2124,9 +2127,11 @@ class atFile:
 
         try:
             at.outputFileName = at.targetFileName + ".tmp"
-            at.outputFile = self.openForWrite(at.outputFileName,'wb') # bwm
+            kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
             if not at.outputFile:
-                at.writeError("can not create " + at.outputFileName)
+                kind = g.choose(kind=='check',
+                    'did not overwrite','can not create')
+                at.writeError("%s %s" % (kind,at.outputFileName))
                 return False
         except Exception:
             at.exception("exception creating:" + at.outputFileName)
@@ -2138,7 +2143,8 @@ class atFile:
 
         '''Open a file for writes, handling shadow files.'''
 
-        c = self.c ; x = c.shadowController ; trace = True or x.trace
+        trace = False # or x.trace
+        at = self ; c = at.c ; x = c.shadowController
 
         try:
             shadow_filename = x.shadowPathName(filename)
@@ -2149,14 +2155,16 @@ class atFile:
             if self.writing_to_shadow_directory:
                 if trace and not g.app.unitTesting: g.trace(filename,shadow_filename)
                 x.message('writing %s' % shadow_filename)
-
-            return open(open_file_name,wb)
+                return 'shadow',open(open_file_name,wb)
+            else:
+                ok = c.checkFileTimeStamp(at.targetFileName)
+                return 'check',ok and open(open_file_name,wb)
 
         except IOError:
             if not g.app.unitTesting:
                 g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
                 g.es_exception()
-            return None
+            return 'error',None
     #@-node:bwmulder.20050101094804:openForWrite (atFile)
     #@-node:ekr.20041005105605.143:openFileForWritingHelper & helper
     #@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
@@ -2175,6 +2183,8 @@ class atFile:
 
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
+
+        # g.trace(root.headString())
 
         if hasattr(root.v.t,'tnodeList'):# 2008/10/3
             has_list,old_list = True,root.v.t.tnodeList[:]
@@ -2218,19 +2228,21 @@ class atFile:
                 at.root.v.t._p_changed = True
             else:
                 at.closeWriteFile()
-                #@            << set dirty and orphan bits on error >>
-                #@+node:ekr.20041005105605.146:<< set dirty and orphan bits on error >>
-                # Setting the orphan and dirty flags tells Leo to write the tree..
-
                 if at.errors > 0 or at.root.isOrphan():
+                    #@                << set dirty and orphan bits >>
+                    #@+node:ekr.20041005105605.146:<< set dirty and orphan bits >>
+                    # Setting the orphan and dirty flags tells Leo to write the tree..
                     root.setOrphan()
-                    root.setDirty() # Make _sure_ we try to rewrite this file.
-                    self.remove(at.outputFileName) # Delete the temp file.
+                    root.setDirty()
+                    # Delete the temp file.
+                    self.remove(at.outputFileName) 
+
+                    #@-node:ekr.20041005105605.146:<< set dirty and orphan bits >>
+                    #@nl
                     g.es("not written:",at.outputFileName)
                 else:
-                    at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
-                #@-node:ekr.20041005105605.146:<< set dirty and orphan bits on error >>
-                #@nl
+                    at.replaceTargetFileIfDifferent(root)
+                        # Sets/clears dirty and orphan bits.
                 if has_list: root.v.t.tnodeList = old_list # 2008/10/3
         except Exception:
             if toString:
@@ -4142,6 +4154,8 @@ class atFile:
         Return True if the original file was changed.
         '''
 
+        c = self.c
+
         assert(self.outputFile is None)
 
         if self.toString:
@@ -4183,10 +4197,10 @@ class atFile:
                 mode = self.stat(self.targetFileName)
                 ok = self.rename(self.outputFileName,self.targetFileName,mode)
                 if ok:
+                    c.setFileTimeStamp(self.targetFileName)
                     g.es('wrote:    ',self.shortFileName)
                 else:
                     # self.rename gives the error.
-                    # g.es('error removing temp file',color='red')
                     g.es('unchanged:',self.shortFileName)
                     if root: root.setDirty() # New in 4.4.8.
 
@@ -4196,18 +4210,15 @@ class atFile:
             # Rename the output file.
             ok = self.rename(self.outputFileName,self.targetFileName)
             if ok:
-                # g.trace('created:',self.targetFileName,g.callers())
+                c.setFileTimeStamp(self.targetFileName)
                 g.es('created:  ',self.targetFileName)
             else:
                 # self.rename gives the error.
-                # g.es('error renaming temp file',color='red')
-                # g.es('unchanged:',self.targetFileName)
                 if root: root.setDirty() # New in 4.4.8.
 
             # No original file to change. Return value tested by a unit test.
             self.fileChangedFlag = False 
             return False
-    #@nonl
     #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     #@-node:ekr.20041005105605.211:putInitialComment
     #@+node:ekr.20041005105605.216:warnAboutOrpanAndIgnoredNodes

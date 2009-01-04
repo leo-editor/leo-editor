@@ -757,6 +757,7 @@ class baseFileCommands:
             # Redraw before reading the @file nodes so the screen isn't blank.
             # This is important for big files like LeoPy.leo.
             c.redraw_now()
+            c.setFileTimeStamp(fileName)
             c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
 
         # Do this after reading derived files.
@@ -1413,9 +1414,11 @@ class baseFileCommands:
         if ok is None:
             c.endEditing()# Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
-            ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
-            self.putSavedMessage(fileName)
+            ok = c.checkFileTimeStamp(fileName)
             if ok:
+                ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
+            if ok:
+                self.putSavedMessage(fileName)
                 c.setChanged(False) # Clears all dirty bits.
                 if c.config.save_clears_undo_buffer:
                     g.es("clearing undo")
@@ -2038,6 +2041,7 @@ class baseFileCommands:
             else:
                 theActualFile.write(s)
                 theActualFile.close()
+                c.setFileTimeStamp(fileName)
                 #@            << delete backup file >>
                 #@+node:ekr.20031218072017.3048:<< delete backup file >>
                 if backupName and g.os_path_exists(backupName):

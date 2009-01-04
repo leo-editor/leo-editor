@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="24" left="428" height="930" width="851"/>
+	<global_window_position top="24" left="480" height="930" width="799"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1141,6 +1141,7 @@
 </v>
 </v>
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
+<v t="ekr.20090104053806.1"><vh>@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20061106114738"><vh>@test c.findMatchingBracket</vh></v>
 <v t="ekr.20060211135917"><vh>@test c.getTime</vh></v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
@@ -2108,7 +2109,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2142,7 +2143,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2477,6 +2478,7 @@
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+<v t="ekr.20090104053806.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -21126,7 +21128,8 @@ filename = x.pathName('xyzzy')
 assert not g.os_path_exists(filename)
 
 try:
-    theFile = at.openForWrite(filename)
+    kind,theFile = at.openForWrite(filename)
+    assert kind == 'check'
     # g.pr(repr(theFile))
     if theFile: theFile.close()
     
@@ -22127,5 +22130,41 @@ assert not c.positionExists(child)</t>
 
 for p in c.allNodes_iter():
     assert c.positionExists(p,root)</t>
+<t tx="ekr.20090104053806.1">import os
+
+path = g.os_path_finalize_join(g.app.testDir,'unittest','errorTest.py')
+assert g.os_path_exists(path),path
+timeStamp = c.timeStampDict.get(path)
+val = c.checkFileTimeStamp(path)
+assert val == True
+
+f = open(path)
+s = f.read()
+lines = g.splitLines(s)
+result = [] ; found = False
+tag = '# timestamp:'
+for line in lines:
+    if line.startswith(tag):
+        timeStamp = os.path.getmtime(path)
+        result.append('%s %s\n' % (tag,timeStamp))
+        found = True
+    else:
+        result.append(line)
+f.close()
+
+assert found,' no line starts with "%s"' % tag
+
+f = open(path,'w')
+f.write(''.join(result))
+f.close()
+
+timeStamp2 = os.path.getmtime(path)
+assert timeStamp != timeStamp2
+val = c.checkFileTimeStamp(path)
+assert not val,repr(val)
+c.setFileTimeStamp(path)
+val = c.checkFileTimeStamp(path)
+assert val,repr(val)
+</t>
 </tnodes>
 </leo_file>

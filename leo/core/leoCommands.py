@@ -176,6 +176,7 @@ class baseCommands:
             # The presence of this message disables all commands.
         self.hookFunction = None
         self.openDirectory = None
+        self.timeStampDict = {} # New in Leo 4.6.
 
         self.expansionLevel = 0  # The expansion level of this outline.
         self.expansionNode = None # The last node we expanded or contracted.
@@ -7377,6 +7378,50 @@ class baseCommands:
         self.frame.body.updateSyntaxColorer(v)
     #@-node:ekr.20031218072017.3000:updateSyntaxColorer
     #@-node:ekr.20031218072017.2999:Syntax coloring interface
+    #@+node:ekr.20090103070824.12:Time stamps
+    #@+node:ekr.20090103070824.11:c.checkFileTimeStamp
+    def checkFileTimeStamp (self,fn):
+
+        '''
+        Return True if the file given by fn has not been changed
+        since Leo read it or if the user agrees to overwrite it.
+        '''
+
+        c = self
+        timeStamp = c.timeStampDict.get(fn)
+        if not timeStamp:
+            # g.trace('no stamp for %s' % (fn))
+            return True
+
+        timeStamp2 = os.path.getmtime(fn)
+        if timeStamp == timeStamp2:
+            return True
+
+        if g.app.unitTesting:
+            return False
+
+        # g.trace(timeStamp, timeStamp2)
+        message = '%s\n%s\n%s' % (
+            fn,
+            g.tr('has been modified outside of Leo.'),
+            g.tr('Overwrite this file?'))
+        ok = g.app.gui.runAskYesNoCancelDialog(c,
+            title = 'Overwrite modified file?',
+            message = message)
+        return ok == 'yes'
+    #@-node:ekr.20090103070824.11:c.checkFileTimeStamp
+    #@+node:ekr.20090103070824.9:c.setFileTimeStamp
+    def setFileTimeStamp (self,fn):
+
+        c = self
+
+        timeStamp = os.path.getmtime(fn)
+        c.timeStampDict[fn] = timeStamp
+
+        # g.trace('%20s' % (timeStamp),fn)
+
+    #@-node:ekr.20090103070824.9:c.setFileTimeStamp
+    #@-node:ekr.20090103070824.12:Time stamps
     #@-others
 
 class Commands (baseCommands):

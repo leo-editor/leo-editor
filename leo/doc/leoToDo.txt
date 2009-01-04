@@ -3,7 +3,80 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
+#@+node:ekr.20090103054019.1:Urgent
+#@+node:ekr.20090103070824.10:Speed up autocompleter prints
+#@-node:ekr.20090103070824.10:Speed up autocompleter prints
+#@+node:ekr.20090103070824.13:Fix setCurrentItem oops
+#@-node:ekr.20090103070824.13:Fix setCurrentItem oops
+#@+node:ekr.20090103070824.8:move match_h into Leo's core
+http://groups.google.com/group/leo-editor/browse_thread/thread/d8362a15c05697ff/0ac35582a28f329a
+#@nonl
+#@-node:ekr.20090103070824.8:move match_h into Leo's core
+#@+node:ekr.20090103070824.3:Find can crash when search-headline is off
+#@-node:ekr.20090103070824.3:Find can crash when search-headline is off
+#@+node:ekr.20090103070824.4:Headline doesn't stick after ctrl-L
+#@-node:ekr.20090103070824.4:Headline doesn't stick after ctrl-L
+#@+node:ekr.20090103070824.5:Handle focus in event??
+#@-node:ekr.20090103070824.5:Handle focus in event??
+#@+node:ekr.20090103070824.6:Cut/paste work erratically
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/58af715355227ec
+
+I'm observing the following strange behavior when copy and paste text
+using the qt plugin. The behavior is erratic and I cannot reproduce it
+systematically so I'll try to give you a general picture.
+
+When I select and copy text in the body pane of a node SOMETIMES I see
+the following message in the console
+
+QClipboard::setData: Cannot set X11 selection owner for CLIPBOARD
+
+When I try to paste the copied text:
+- sometimes it works fine
+- sometimes nothing happens (and the Paste entry of the body pane
+context menu is disabled)
+- sometimes the pasted text is not the last copied text (i.e. some
+copy operations fail)
+
+I know this is confusing and I've done my best trying to get a pattern
+for these facts but with no luck.
+
+Vicent 
+#@nonl
+#@-node:ekr.20090103070824.6:Cut/paste work erratically
+#@-node:ekr.20090103054019.1:Urgent
 #@+node:ekr.20081215070651.4:Bugs 7
+#@+node:ekr.20090103070824.7:Recent files menu is duplicated in qt gui
+Using r1372 and the Qt plugin, I get strange results with the recent-
+files menu item.  To reproduce:
+
+1. open a leo window (call this window 1)
+2. open an existing .leo file using file->open... (this opens a new window, window 2)
+3. go to the file->Recent-files menu item of window 1.  The file-list is duplicated.
+4. repeat step 2.  Now window 1's recent-files list is duplicated twice...
+
+** Affects: leo-editor
+    Importance: Undecided
+        Status: New
+
+--
+recent-files menu item list is duplicated
+https://bugs.launchpad.net/bugs/313320
+You received this bug notification because you are a member of The Leo
+editor team, which is subscribed to leo-editor.
+
+Status in Leo: a programmer's editor and more: New
+
+Bug description:
+Using r1372 and the Qt plugin, I get strange results with the recent-files menu item.  To reproduce:
+
+1. open a leo window (call this window 1)
+2. open an existing .leo file using file->open... (this opens a new window, window 2)
+3. go to the file->Recent-files menu item of window 1.  The file-list is duplicated.
+4. repeat step 2.  Now window 1's recent-files list is duplicated twice...
+#@nonl
+#@-node:ekr.20090103070824.7:Recent files menu is duplicated in qt gui
 #@+node:ekr.20081215070651.7:** Use myLeoSettings when opening leoSettings.leo
 #@-node:ekr.20081215070651.7:** Use myLeoSettings when opening leoSettings.leo
 #@+node:ekr.20081204091750.5:* Home doesn't reset column pointer
