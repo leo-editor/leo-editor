@@ -662,9 +662,7 @@ class autoCompleterClass:
             if self.tabList:
                 self.tabListIndex = -1 # The next item will be item 0.
                 self.setSelection(common_prefix)
-            for name in self.tabList:
-                z = '%s' % (name)
-                g.es('',z,tabName=self.tabName)
+            g.es('','\n'.join(self.tabList),tabName=self.tabName)
     #@-node:ekr.20061031131434.28:computeCompletionList
     #@+node:ekr.20061031131434.29:doBackSpace (autocompleter)
     def doBackSpace (self):
@@ -4115,9 +4113,10 @@ class keyHandlerClass:
                     n1 = max(n1,len(s1))
                     n2 = max(n2,len(s2))
                     data.append((s1,s2,s3),)
-            for s1,s2,s3 in data:
-                g.es('','%*s %*s %s' % (-(min(20,n1)),s1,n2,s2,s3),tabName=tabName)
-
+            aList = '\n'.join(
+                ['%*s %*s %s' % (-(min(20,n1)),s1,n2,s2,s3)
+                    for s1,s2,s3 in data])
+            g.es('',aList,tabName=tabName)
         c.bodyWantsFocus()
     #@-node:ekr.20061031131434.175:k.computeCompletionList
     #@+node:ekr.20061031131434.176:computeInverseBindingDict

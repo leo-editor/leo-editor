@@ -4,10 +4,32 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
 #@+node:ekr.20090103054019.1:Urgent
-#@+node:ekr.20090103070824.10:Speed up autocompleter prints
-#@-node:ekr.20090103070824.10:Speed up autocompleter prints
-#@+node:ekr.20090105083748.2:Handle focus in/out events
-#@-node:ekr.20090105083748.2:Handle focus in/out events
+#@+node:ekr.20090105083748.2:** Handle focus in/out events
+@nocolor-node
+
+Sometimes there is no event filter, so keys are not handled.
+#@nonl
+#@-node:ekr.20090105083748.2:** Handle focus in/out events
+#@+node:ekr.20081204091750.5:* Home doesn't reset column pointer
+#@-node:ekr.20081204091750.5:* Home doesn't reset column pointer
+#@+node:ekr.20090105083748.3:Make sure g.pr never throws unicode exception
+
+sys.stdout.write(s+'\n')
+#@nonl
+#@-node:ekr.20090105083748.3:Make sure g.pr never throws unicode exception
+#@+node:ekr.20090105083748.4:Ask Qt people how to fix the flashing brackets bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/492582912994b65d
+
+leo-qt disables (I think) the text editor widget when it flashes the
+matching bracket / parenthesis.  I'm guessing this is because it moves
+the cursor there while flashing and wants to prevent you from entering
+text there.  However, at least on my slower (1.8 GHz / 1 GB) machine
+when I type "))" the second ")" is lost because of this, ironically
+causing me to attempt to run code with imbalanced parentheses.
+#@nonl
+#@-node:ekr.20090105083748.4:Ask Qt people how to fix the flashing brackets bug
 #@+node:ekr.20090105083748.1:Fix xml write bug
 @nocolor-node
 
@@ -54,18 +76,55 @@ but in larger files it would have been very hard to find because none
 of the nodes would load from the file. 
 #@nonl
 #@-node:ekr.20090105083748.1:Fix xml write bug
+#@+node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/346d103641b0bd6a
+
+#@-node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
+#@+node:ekr.20090105083748.5:Write first draft of new Leo intro using stories
+#@-node:ekr.20090105083748.5:Write first draft of new Leo intro using stories
 #@+node:ekr.20090103070824.13:Fix setCurrentItem oops
 #@-node:ekr.20090103070824.13:Fix setCurrentItem oops
 #@+node:ekr.20090103070824.8:move match_h into Leo's core
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/88ce9e21ffeb6ba1#
 http://groups.google.com/group/leo-editor/browse_thread/thread/d8362a15c05697ff/0ac35582a28f329a
+
+> Ville, how much of ipy_leo.py do you think should migrate to Leo's
+> core?  My naive opinion is that it could all go into either
+> leoNodes.py or leoCommands.py.  What do you think?
+
+Most critical parts are not ipython specific, so they could well go to leo core.
+
+Regarding LeoNode class - most of the methods are probably too
+"special" to actually add to position class. For now, I'd only add .h
+and .b attributes.
+
+> Would moving these methods into Leo's core make it possible to remove
+> them from ipy_leo.py?
+
+The parts that are moved, yes. I can make LeoNode a subclass of
+position and make monkeypatch WorkBook to return those instead of
+standard positions in ipy_leo, to provide for the "special"
+functionality.
+
+> Is this something that you would be willing to do?
+
+Yes. That's something that has been on my mind for a while, since it
+has appeared that ILeo tries to solve a problem that is not IPython
+specific for most parts at all (ILeo and alt+I is just a more
+convenient way to do ctrl+B, if you are looking it from Leo side).
+Moving the stuff to Leo core just makes sense, and there is no reason
+to require people to install IPython (and enable ipython.py plugin) to
+access this functionality.
 #@nonl
 #@-node:ekr.20090103070824.8:move match_h into Leo's core
 #@+node:ekr.20090103070824.3:Find can crash when search-headline is off
 #@-node:ekr.20090103070824.3:Find can crash when search-headline is off
 #@+node:ekr.20090103070824.4:Headline doesn't stick after ctrl-L
 #@-node:ekr.20090103070824.4:Headline doesn't stick after ctrl-L
-#@+node:ekr.20090103070824.5:Handle focus in event??
-#@-node:ekr.20090103070824.5:Handle focus in event??
 #@+node:ekr.20090103070824.6:Cut/paste work erratically
 @nocolor-node
 
@@ -127,14 +186,6 @@ Using r1372 and the Qt plugin, I get strange results with the recent-files menu 
 #@-node:ekr.20090103070824.7:Recent files menu is duplicated in qt gui
 #@+node:ekr.20081215070651.7:** Use myLeoSettings when opening leoSettings.leo
 #@-node:ekr.20081215070651.7:** Use myLeoSettings when opening leoSettings.leo
-#@+node:ekr.20081204091750.5:* Home doesn't reset column pointer
-#@-node:ekr.20081204091750.5:* Home doesn't reset column pointer
-#@+node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/346d103641b0bd6a
-
-#@-node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
 

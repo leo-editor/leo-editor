@@ -2770,6 +2770,76 @@ def doDelete (self,newNode=None):
     p._parentVnode()._computeParentsOfChildren()
 #@-node:ekr.20040303175026.2:p.doDelete
 #@-node:ekr.20090102055139.1:Fixed positionExists bug
+#@+node:ekr.20090103070824.10:Speed up autocompleter prints
+#@+node:ekr.20090105083748.6:changed
+#@+node:ekr.20061031131434.28:computeCompletionList
+def computeCompletionList (self,verbose=False):
+
+    c = self.c ; w = self.widget
+    c.widgetWantsFocus(w)
+    s = w.getSelectedText()
+    self.tabList,common_prefix = g.itemsMatchingPrefixInList(
+        s,self.membersList,matchEmptyPrefix=True)
+
+    if not common_prefix:
+        if verbose or len(self.tabList) < 25 or not self.useTabs:
+            self.tabList,common_prefix = g.itemsMatchingPrefixInList(
+                s,self.membersList,matchEmptyPrefix=True)
+        else: # Show the possible starting letters.
+            d = {}
+            for z in self.tabList:
+                ch = z and z[0] or ''
+                if ch:
+                    n = d.get(ch,0)
+                    d[ch] = n + 1
+            aList = [ch+'...%d' % (d.get(ch)) for ch in sorted(d)]
+            self.tabList = aList
+
+    if self.useTabs:
+        c.frame.log.clearTab(self.tabName) # Creates the tab if necessary.
+        if self.tabList:
+            self.tabListIndex = -1 # The next item will be item 0.
+            self.setSelection(common_prefix)
+        g.es('','\n'.join(self.tabList),tabName=self.tabName)
+#@-node:ekr.20061031131434.28:computeCompletionList
+#@+node:ekr.20061031131434.175:k.computeCompletionList
+# Important: this code must not change mb_tabListPrefix.  Only doBackSpace should do that.
+
+def computeCompletionList (self,defaultTabList,backspace):
+
+    k = self ; c = k.c ; s = k.getLabel() ; tabName = 'Completion'
+    command = s [len(k.mb_prompt):]
+        # s always includes prefix, so command is well defined.
+
+    k.mb_tabList,common_prefix = g.itemsMatchingPrefixInList(command,defaultTabList)
+    c.frame.log.clearTab(tabName)
+
+    if k.mb_tabList:
+        k.mb_tabListIndex = -1 # The next item will be item 0.
+
+        if not backspace:
+            k.setLabel(k.mb_prompt + common_prefix)
+
+        inverseBindingDict = k.computeInverseBindingDict()
+        data = [] ; n1 = 20; n2 = 4
+        for commandName in k.mb_tabList:
+            dataList = inverseBindingDict.get(commandName,[('',''),])
+            for z in dataList:
+                pane,key = z
+                s1 = commandName
+                s2 = pane
+                s3 = k.prettyPrintKey(key)
+                n1 = max(n1,len(s1))
+                n2 = max(n2,len(s2))
+                data.append((s1,s2,s3),)
+        aList = '\n'.join(
+            ['%*s %*s %s' % (-(min(20,n1)),s1,n2,s2,s3)
+                for s1,s2,s3 in data])
+        g.es('',aList,tabName=tabName)
+    c.bodyWantsFocus()
+#@-node:ekr.20061031131434.175:k.computeCompletionList
+#@-node:ekr.20090105083748.6:changed
+#@-node:ekr.20090103070824.10:Speed up autocompleter prints
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -3331,9 +3401,7 @@ def computeCompletionList (self,verbose=False):
         if self.tabList:
             self.tabListIndex = -1 # The next item will be item 0.
             self.setSelection(common_prefix)
-        for name in self.tabList:
-            z = '%s' % (name)
-            g.es('',z,tabName=self.tabName)
+        g.es('','\n'.join(self.tabList),tabName=self.tabName)
 #@-node:ekr.20061031131434.28:computeCompletionList
 #@+node:ekr.20061031131434.29:doBackSpace (autocompleter)
 def doBackSpace (self):
@@ -4340,9 +4408,7 @@ def computeCompletionList (self,verbose=False):
         if self.tabList:
             self.tabListIndex = -1 # The next item will be item 0.
             self.setSelection(common_prefix)
-        for name in self.tabList:
-            z = '%s' % (name)
-            g.es('',z,tabName=self.tabName)
+        g.es('','\n'.join(self.tabList),tabName=self.tabName)
 #@-node:ekr.20061031131434.28:computeCompletionList
 #@-node:ekr.20080924164654.1:Drive Leo's autocompleter from a list
 #@+node:ekr.20080406075855.3:Added warning about running test unitTest.leo when it is opened from another .leo file
@@ -10448,9 +10514,7 @@ def computeCompletionList (self,verbose=False):
         if self.tabList:
             self.tabListIndex = -1 # The next item will be item 0.
             self.setSelection(common_prefix)
-        for name in self.tabList:
-            z = '%s' % (name)
-            g.es('',z,tabName=self.tabName)
+        g.es('','\n'.join(self.tabList),tabName=self.tabName)
 #@-node:ekr.20061031131434.28:computeCompletionList
 #@+node:ekr.20061031131434.29:doBackSpace (autocompleter)
 def doBackSpace (self):
@@ -11599,9 +11663,7 @@ def computeCompletionList (self,verbose=False):
         if self.tabList:
             self.tabListIndex = -1 # The next item will be item 0.
             self.setSelection(common_prefix)
-        for name in self.tabList:
-            z = '%s' % (name)
-            g.es('',z,tabName=self.tabName)
+        g.es('','\n'.join(self.tabList),tabName=self.tabName)
 #@-node:ekr.20061031131434.28:computeCompletionList
 #@+node:ekr.20080924032842.3:getExternalCompletions
 def getExternalCompletions (self,s,p=None,language='python'):
