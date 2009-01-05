@@ -2548,55 +2548,6 @@ class editCommandsClass (baseEditCommandsClass):
     #@-node:ekr.20080108090719:insertIconFromFile
     #@-node:ekr.20071114081313:icons...
     #@+node:ekr.20050920084036.74:indent...
-    #@+node:ekr.20081123102100.1:backToHome
-    def backToHome (self,event):
-
-        '''Smart home:
-        Position the point at the first non-blank character on the line,
-        or the start of the line if already at the first-non-blank character,
-        or to the start of the next line if already at the start of a line.'''
-
-        w = self.editWidget(event)
-        if not w: return
-
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        if ins == 0 or not(s): return
-
-        self.beginCommand(undoType='back-to-home')
-
-        i,j = g.getLine(s,ins)
-        if ins == i:
-            i,j = g.getLine(s,i-1)
-        i1 = i
-
-        while i < j and s[i] in (' \t'):
-            i += 1
-
-        if i1 < ins <= i: i = i1
-        w.setInsertPoint(i)
-
-        self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20081123102100.1:backToHome
-    #@+node:ekr.20050920084036.75:backToIndentation
-    def backToIndentation (self,event):
-
-        '''Position the point at the first non-blank character on the line.'''
-
-        w = self.editWidget(event)
-        if not w: return
-
-        self.beginCommand(undoType='back-to-indentation')
-
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = g.getLine(s,ins)
-        while i < j and s[i] in (' \t'):
-            i += 1
-        w.setInsertPoint(i)
-
-        self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.75:backToIndentation
     #@+node:ekr.20050920084036.76:deleteIndentation
     def deleteIndentation (self,event):
 
@@ -3705,6 +3656,59 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20060209095101:setMoveCol
     #@-node:ekr.20051218170358: helpers
+    #@+node:ekr.20081123102100.1:backToHome
+    def backToHome (self,event):
+
+        '''Smart home:
+        Position the point at the first non-blank character on the line,
+        or the start of the line if already at the first-non-blank character,
+        or to the start of the next line if already at the start of a line.'''
+
+        w = self.editWidget(event)
+        if not w: return
+
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        if ins == 0 or not(s): return
+
+        # None of the other cursor move commands are undoable.
+        # self.beginCommand(undoType='back-to-home')
+
+        i,j = g.getLine(s,ins)
+        if ins == i:
+            i,j = g.getLine(s,i-1)
+        i1 = i
+
+        while i < j and s[i] in (' \t'):
+            i += 1
+
+        if i1 < ins <= i: i = i1
+
+        self.moveToHelper(event,i,extend=False)
+
+        # self.endCommand(changed=True,setLabel=True)
+    #@-node:ekr.20081123102100.1:backToHome
+    #@+node:ekr.20050920084036.75:backToIndentation
+    def backToIndentation (self,event):
+
+        '''Position the point at the first non-blank character on the line.'''
+
+        w = self.editWidget(event)
+        if not w: return
+
+        # None of the other cursor move commands are undoable.
+        # self.beginCommand(undoType='back-to-indentation')
+
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        while i < j and s[i] in (' \t'):
+            i += 1
+
+        self.moveToHelper(event,i,extend=False)
+
+        # self.endCommand(changed=True,setLabel=True)
+    #@-node:ekr.20050920084036.75:backToIndentation
     #@+node:ekr.20050920084036.148:buffers
     def beginningOfBuffer (self,event):
         '''Move the cursor to the start of the body text.'''
