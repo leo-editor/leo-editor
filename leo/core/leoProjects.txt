@@ -2788,10 +2788,12 @@ def positionExists(self,p,root=None):
         if p == root:
             return True
         if p.hasParent():
-            v = p.v
+            old_v = p.v
+            i = p._childIndex
             p.moveToParent()
-            # Major bug fix: 2009/1/2
-            if v not in p.v.t.children:
+            children = p.v.t.children
+            # Major bug fix: 2009/1/2 and 2009/1/5
+            if i >= len(children) or children[i] != old_v:
                 return False
         else:
             p.moveToBack()
@@ -2893,6 +2895,69 @@ def computeCompletionList (self,defaultTabList,backspace):
 #@-node:ekr.20061031131434.175:k.computeCompletionList
 #@-node:ekr.20090105083748.6:changed
 #@-node:ekr.20090103070824.10:Speed up autocompleter prints
+#@+node:ekr.20090105132011.5:Fixed new bug in positionExists
+@nocolor-node
+
+> The fix is on the trunk at rev 1374.  All unit tests pass, including
+> two new unit tests for c.positionExists.  However, this is a major
+> bug fix--as described below this change has the potential to cause
+> subtle problems. Please take care, and please report any further
+> problems immediately.
+
+=== modified file 'leo/core/leoCommands.py'
+--- leo/core/leoCommands.py     2008-11-21 16:43:33 +0000
++++ leo/core/leoCommands.py     2009-01-02 12:32:18 +0000
+@@ -6928,7 +6928,11 @@
+            if p == root:
+                return True
+            if p.hasParent():
++                v = p.v
+                p.moveToParent()
++                # Major bug fix: 2009/1/2
++                if v not in p.v.t.children:
++                    return False
+            else:
+                p.moveToBack()
+
+to be absolutely correct I think that the index of the position (or is
+it the vnode?) in the list of children needs to be the same.  The above
+seems to allow for the position to exist, but not in the same, um,
+position.  p._childIndex is not checked, in other words.
+
+Of course, if you fix it (which you probably should) I'll have to use
+my one positionExists() code for caching positions, as it's better to
+find that the position still exists and update the index (i.e. search
+self_and_siblings_iter), than to search the whole tree again for a
+position containing a particular vnode.
+#@nonl
+#@+node:ekr.20040307104131.3:c.positionExists
+def positionExists(self,p,root=None):
+
+    """Return True if a position exists in c's tree"""
+
+    c = self ; p = p.copy()
+
+    # This code must be fast.
+    if not root:
+        root = c.rootPosition()
+
+    while p:
+        if p == root:
+            return True
+        if p.hasParent():
+            old_v = p.v
+            i = p._childIndex
+            p.moveToParent()
+            children = p.v.t.children
+            # Major bug fix: 2009/1/2 and 2009/1/5
+            if i >= len(children) or children[i] != old_v:
+                return False
+        else:
+            p.moveToBack()
+
+    return False
+#@-node:ekr.20040307104131.3:c.positionExists
+#@-node:ekr.20090105132011.5:Fixed new bug in positionExists
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs

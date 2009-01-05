@@ -3237,6 +3237,38 @@ scripts.
 #@-node:ekr.20031218072017.401:Yet another Python .bat wrapper
 #@-node:ekr.20031218072017.399:How to run Python programs easily on NT,2K,XP
 #@-node:ekr.20031218072017.392:Python Notes...
+#@+node:ekr.20090105132011.6:Regex notes
+@nocolor-node
+
+.  any char
+^  start line
+$  end of line
+\w alphanum: [a-zA-Z0-9_]
+\W non-alphanum
+\s whitespace
+\S non-whitespace
+
+These can be done with regexps:
+
+copy-to-end-of-each-line:   (.)$        -->  \1x
+copy-to-start-of-each-line: ^([ \t]+)   -->  \1x
+remove-leading-ws:  ^[ \t]+             -->  empty
+remove-trailing-ws: [ \t]+$             -->  empty
+paste-at-column:    ^(.{4})             -->  \1x
+paste-after-lws:    ^([ \t]+)           -->  \1x
+
+(?=...)
+    Matches if ... matches next, but doesnt consume any of the string. This is called a lookahead assertion. For example, Isaac (?=Asimov) will match 'Isaac ' only if it's followed by 'Asimov'.
+
+(?!...)
+    Matches if ... doesn't match next. This is a negative lookahead assertion. For example, Isaac (?!Asimov) will match 'Isaac ' only if it is not followed by 'Asimov'.
+
+(?<=...)
+    Matches if the current position in the string is preceded by a match for ... that ends at the current position. This is called a positive lookbehind assertion. The contained pattern must only match strings of some fixed length, meaning that abc or a|b are allowed, but a* and a{3,4} are not
+#@nonl
+#@+node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
+#@-node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
+#@-node:ekr.20090105132011.6:Regex notes
 #@+node:ekr.20070308062440:Thread notes
 #@+node:ekr.20070308062440.1:Posting 2
 On 2/26/07, Edward Ream <edreamleo@charter.net> wrote:
