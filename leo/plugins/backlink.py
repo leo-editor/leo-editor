@@ -586,10 +586,7 @@ class backlinkController(object):
         c = self.c
         p = c.currentPosition()
         v = p.v
-
-        self.positions = {}
-        # throw away the cache because c.positionExists() is broken
-
+    
         self.messageUsed = False
 
         self.ui.enableDelete(False)
@@ -623,16 +620,51 @@ class backlinkController(object):
     def vnodePosition(self, v):
         """Return a position for vnode v, if there is one"""
 
+        search_from = self.c.allNodes_iter
+
         # first check the cache
         if v in self.positions:
             p = self.positions[v]
-            if p.v is v and self.c.positionExists(p):
-                return p.copy()
+            if p.v is v and self.positionExistsSomewhere(p):
+                search_from = p.self_and_siblings_iter
+                # p._childIndex may be out of date, the above is equivalent to but
+                # less ugly than the below
+                # index = [x.v for x in p.self_and_siblings_iter()].index(v)
+                # # assumes this iter runs in child order, not self first then others
+                # if p._childIndex != index:
+                #     p._childIndex = index
+                #     g.es('updating index')
+                # return p.copy()
 
         # else search for one, abort search as soon as it's found
-        for p in self.c.allNodes_iter():
+        for p in search_from():
             self.positions[v] = p.copy()  # update cache
             if p.v is v:
                 return p.copy()
 
         return None
+    def positionExistsSomewhere(self,p,root=None):
+        """A local copy of c.positionExists so that when the
+        failure to check p._childIndex bug is fixed, that fixing
+        doesn't make backlink.py search more of the tree than it
+        needs to"""
+
+        c = self.c ; p = p.copy()
+
+        # This code must be fast.
+        if not root:
+            root = c.rootPosition()
+
+        while p:
+            if p == root:
+                return True
+            if p.hasParent():
+                v = p.v
+                p.moveToParent()
+                # Major bug fix: 2009/1/2
+                if v not in p.v.t.children:
+                    return False
+            else:
+                p.moveToBack()  # ???
+
+        return False
