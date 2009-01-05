@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1048,6 +1048,10 @@
 </v>
 </v>
 <v t="edward.20081221145716.1"><vh>decorator tests</vh></v>
+<v t="ekr.20090102095951.1"><vh>posList</vh>
+<v t="ekr.20090102095951.2"><vh>node a</vh></v>
+<v t="ekr.20090102095951.3"><vh>node b</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11142,5 +11146,23 @@ def spam (self):
 
     pass
 </t>
+<t tx="ekr.20090102095951.1">import re
+
+class PosList(list):
+    def select(self, pat):
+        result = PosList()
+        for p in self:
+            #print "po",p
+            for chi_p in p.children_iter():
+                #print "chi",chi_p
+                if re.match(pat, chi_p.headString()):
+                    result.append(chi_p.copy())
+        return result
+
+pl = PosList([c.currentPosition()])
+print type(pl)
+print pl.select('.*')</t>
+<t tx="ekr.20090102095951.2"></t>
+<t tx="ekr.20090102095951.3"></t>
 </tnodes>
 </leo_file>
