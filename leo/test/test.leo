@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1051,6 +1051,9 @@
 <v t="ekr.20090102095951.1"><vh>posList</vh>
 <v t="ekr.20090102095951.2"><vh>node a</vh></v>
 <v t="ekr.20090102095951.3"><vh>node b</vh></v>
+</v>
+<v t="ekr.20090105152652.2" a="E"><vh>@path ~</vh>
+<v t="ekr.20090105152652.1" tnodeList="ekr.20090105152652.1"><vh>@nosent homeTest.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -11164,5 +11167,9 @@ print type(pl)
 print pl.select('.*')</t>
 <t tx="ekr.20090102095951.2"></t>
 <t tx="ekr.20090102095951.3"></t>
+<t tx="ekr.20090105152652.1"># ----------------- Test 2
+
+</t>
+<t tx="ekr.20090105152652.2"></t>
 </tnodes>
 </leo_file>

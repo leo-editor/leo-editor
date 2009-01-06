@@ -3265,7 +3265,7 @@ def os_path_expanduser(path,encoding=None):
 
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
 
     '''
@@ -3291,7 +3291,7 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
-#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
 

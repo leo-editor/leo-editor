@@ -5801,7 +5801,7 @@ class baseCommands:
 
         '''Scan aList for @path directives.'''
 
-        c = self ; trace = False ; verbose = False
+        c = self ; trace = False ; verbose = True
 
         # Step 1: Compute the starting path.
         # The correct fallback directory is the absolute path to the base.
