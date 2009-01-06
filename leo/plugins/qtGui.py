@@ -4207,10 +4207,21 @@ class leoQtTree (leoFrame.leoTree):
                 pos = vScroll.sliderPosition()
                 w.clear()
                 # Draw all top-level nodes and their visible descendants.
-                p = c.rootPosition()
-                while p:
-                    self.drawTree(p)
-                    p.moveToNext()
+                if c.hoistStack:
+                    bunch = c.hoistStack[-1]
+                    p = bunch.p ; h = p.headString()
+                    if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+                        p = p.firstChild()
+                        while p:
+                            self.drawTree(p)
+                            p.moveToNext()
+                    else:
+                        self.drawTree(p)
+                else:
+                    p = c.rootPosition()
+                    while p:
+                        self.drawTree(p)
+                        p.moveToNext()
             finally:
                 if not self.selecting:
                     self.setCurrentItem()

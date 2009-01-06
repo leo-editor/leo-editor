@@ -2210,6 +2210,7 @@ class atFile:
 
         if nosentinels and not scriptWrite and not toString:
             fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
+            # g.trace('fileName',fileName,'at.targetFileName',at.targetFileName)
             exists = g.os_path_exists(fileName)
             if not self.shouldWriteAtNosentNode(root,exists):
                 return

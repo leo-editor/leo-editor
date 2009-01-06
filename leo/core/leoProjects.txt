@@ -259,7 +259,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
 
-    c = self ; trace = False ; verbose = False
+    c = self ; trace = False ; verbose = True
 
     # Step 1: Compute the starting path.
     # The correct fallback directory is the absolute path to the base.
@@ -367,7 +367,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
 
-    c = self ; trace = False ; verbose = False
+    c = self ; trace = False ; verbose = True
 
     # Step 1: Compute the starting path.
     # The correct fallback directory is the absolute path to the base.
@@ -1879,6 +1879,7 @@ def write (self,root,
 
     if nosentinels and not scriptWrite and not toString:
         fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
+        # g.trace('fileName',fileName,'at.targetFileName',at.targetFileName)
         exists = g.os_path_exists(fileName)
         if not self.shouldWriteAtNosentNode(root,exists):
             return
@@ -2958,6 +2959,427 @@ def positionExists(self,p,root=None):
     return False
 #@-node:ekr.20040307104131.3:c.positionExists
 #@-node:ekr.20090105132011.5:Fixed new bug in positionExists
+#@+node:ekr.20090105132011.4:Made sure $Home works for @nosent
+http://groups.google.com/group/leo-editor/browse_thread/thread/f27e3514310a5c90
+#@nonl
+#@+node:ekr.20041005105605.144:write & helper
+# This is the entry point to the write code.  root should be an @file vnode.
+
+def write (self,root,
+    nosentinels = False,
+    thinFile = False,
+    scriptWrite = False,
+    toString = False,
+    write_strips_blank_lines = None,
+):
+
+    """Write a 4.x derived file."""
+
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    # g.trace(root.headString())
+
+    if hasattr(root.v.t,'tnodeList'):# 2008/10/3
+        has_list,old_list = True,root.v.t.tnodeList[:]
+    else:
+        has_list,old_list = False,[]
+
+    << set at.targetFileName >>
+    at.initWriteIvars(root,at.targetFileName,
+        nosentinels = nosentinels, thinFile = thinFile,
+        scriptWrite = scriptWrite, toString = toString,
+        write_strips_blank_lines = write_strips_blank_lines)
+
+    if nosentinels and not scriptWrite and not toString:
+        fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
+        # g.trace('fileName',fileName,'at.targetFileName',at.targetFileName)
+        exists = g.os_path_exists(fileName)
+        if not self.shouldWriteAtNosentNode(root,exists):
+            return
+
+    if not at.openFileForWriting(root,at.targetFileName,toString):
+        # openFileForWriting calls root.setDirty() if there are errors.
+        return
+
+    try:
+        at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
+        if toString:
+            at.closeWriteFile() # sets self.stringOutput
+            # Major bug: failure to clear this wipes out headlines!
+            # Minor bug: sometimes this causes slight problems...
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.closeWriteFile()
+            if at.errors > 0 or at.root.isOrphan():
+                << set dirty and orphan bits >>
+                g.es("not written:",at.outputFileName)
+            else:
+                at.replaceTargetFileIfDifferent(root)
+                    # Sets/clears dirty and orphan bits.
+            if has_list: root.v.t.tnodeList = old_list # 2008/10/3
+    except Exception:
+        if toString:
+            at.exception("exception preprocessing script")
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.writeException() # Sets dirty and orphan bits.
+            if has_list: root.v.t.tnodeList = old_list # 2008/10/3
+#@+node:ekr.20041005105605.145:<< set at.targetFileName >>
+if toString:
+    at.targetFileName = "<string-file>"
+elif nosentinels:
+    at.targetFileName = root.atNoSentFileNodeName()
+elif thinFile:
+    at.targetFileName = root.atThinFileNodeName()
+else:
+    at.targetFileName = root.atFileNodeName()
+#@-node:ekr.20041005105605.145:<< set at.targetFileName >>
+#@+node:ekr.20041005105605.146:<< set dirty and orphan bits >>
+# Setting the orphan and dirty flags tells Leo to write the tree..
+root.setOrphan()
+root.setDirty()
+# Delete the temp file.
+self.remove(at.outputFileName) 
+
+#@-node:ekr.20041005105605.146:<< set dirty and orphan bits >>
+#@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.That ' s too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the.leo file is opened.
+- We don ' t want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtNosentNode (self,p,exists):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if not exists: # We can write a non-existent file without danger.
+        return True
+    elif self.isSignificantTree(p):
+        return True # Assume the tree contains what should be written.
+    else:
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
+        return False
+#@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
+#@-node:ekr.20041005105605.144:write & helper
+#@+node:ekr.20041005105605.15:initWriteIvars
+def initWriteIvars(self,root,targetFileName,
+    nosentinels=False,
+    thinFile=False,
+    scriptWrite=False,
+    toString=False,
+    forcePythonSentinels=None,
+    write_strips_blank_lines=None,
+):
+
+    self.initCommonIvars()
+    << init ivars for writing >>
+
+    if write_strips_blank_lines is None:
+        self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
+    else:
+        self.write_strips_blank_lines = write_strips_blank_lines
+
+    if forcePythonSentinels is None:
+        forcePythonSentinels = scriptWrite
+
+    if root:
+        self.scanAllDirectives(root,
+            scripting=scriptWrite,
+            forcePythonSentinels=forcePythonSentinels)
+
+    # g.trace(forcePythonSentinels,self.startSentinelComment,self.endSentinelComment)
+
+    if forcePythonSentinels:
+        # Force Python comment delims for g.getScript.
+        self.startSentinelComment = "#"
+        self.endSentinelComment = None
+
+    # Init state from arguments.
+    self.targetFileName = targetFileName
+    self.sentinels = not nosentinels
+    self.thinFile = thinFile
+    self.toString = toString
+    self.root = root
+
+    # Ignore config settings for unit testing.
+    if toString and g.app.unitTesting: self.output_newline = '\n'
+
+    # Init all other ivars even if there is an error.
+    if not self.errors and self.root:
+        self.root.v.t.tnodeList = []
+        self.root.v.t._p_changed = True
+#@+node:ekr.20041005105605.16:<< init ivars for writing >>>
+@
+When tangling, we first write to a temporary output file. After tangling is
+temporary file. Otherwise we delete the old target file and rename the temporary
+file to be the target file.
+@c
+
+self.docKind = None
+self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
+self.fileChangedFlag = False # True: the file has actually been updated.
+self.shortFileName = "" # short version of file name used for messages.
+self.thinFile = False
+self.force_newlines_in_at_nosent_bodies = self.c.config.getBool('force_newlines_in_at_nosent_bodies')
+
+if toString:
+    self.outputFile = g.fileLikeObject()
+    self.stringOutput = ""
+    self.targetFileName = self.outputFileName = "<string-file>"
+else:
+    self.outputFile = None # The temporary output file.
+    self.stringOutput = None
+
+    if g.isPython3:
+        self.targetFileName = self.outputFileName = ''
+    else:
+        self.targetFileName = self.outputFileName = unicode('')
+#@-node:ekr.20041005105605.16:<< init ivars for writing >>>
+#@-node:ekr.20041005105605.15:initWriteIvars
+#@+node:ekr.20080923070954.4:atFile.scanAllDirectives
+def scanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+):
+
+    '''Scan p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.'''
+
+    at = self ; c = self.c
+
+    << set ivars >>
+
+    lang_dict = {'language':at.language,'delims':delims,}
+
+    table = (
+        ('encoding',    at.encoding,    g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    delims          = lang_dict.get('delims')
+    lineending      = d.get('lineending')
+    if lineending:
+        at.explicitLineEnding = True
+        at.output_newline = lineending
+    else:
+        at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
+
+    at.encoding             = d.get('encoding')
+    at.language             = lang_dict.get('language')
+    at.page_width           = d.get('pagewidth')
+    at.default_directory    = d.get('path')
+    at.tab_width            = d.get('tabwidth')
+
+    if not importing and not reading:
+        # Don't override comment delims when reading!
+        << set comment strings from delims >>
+
+    # For unit testing.
+    return {
+        "encoding"  : at.encoding,
+        "language"  : at.language,
+        "lineending": at.output_newline,
+        "pagewidth" : at.page_width,
+        "path"      : at.default_directory,
+        "tabwidth"  : at.tab_width,
+    }
+#@+node:ekr.20080923070954.14:<< Set ivars >>
+self.page_width = self.c.page_width
+self.tab_width  = self.c.tab_width
+
+self.default_directory = None # 8/2: will be set later.
+
+# g.trace(c.target_language)
+
+if c.target_language:
+    c.target_language = c.target_language.lower()
+
+delims = g.set_delims_from_language(c.target_language)
+at.language = c.target_language
+
+at.encoding = c.config.default_derived_file_encoding
+at.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+#@-node:ekr.20080923070954.14:<< Set ivars >>
+#@+node:ekr.20080923070954.13:<< Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    self.language = "python"
+else:
+    delim1,delim2,delim3 = delims ### g.set_delims_from_language(at.language)
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@-node:ekr.20080923070954.13:<< Set comment strings from delims >>
+#@-node:ekr.20080923070954.4:atFile.scanAllDirectives
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+
+def scanAtPathDirectives(self,aList,force=False):
+
+    '''Scan aList for @path directives.'''
+
+    c = self ; trace = False ; verbose = True
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if path:
+            # Convert "path" or <path> to path.
+            path = g.computeRelativePath(path)
+            if path: paths.append(path)
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    if trace and verbose: g.trace('paths',paths)
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+#@+node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+def os_path_finalize (self,path,**keys):
+
+    c = self
+
+    keys['c'] = c
+
+    return g.os_path_finalize(path,**keys)
+
+def os_path_finalize_join (self,*args,**keys):
+
+    c = self
+
+    keys['c'] = c
+
+    return g.os_path_finalize_join(*args,**keys)
+#@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c,encoding = keys.get('c'),keys.get('encoding')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path,encoding=encoding)
+    return os.path.normpath(os.path.abspath(path))
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c,encoding = keys.get('c'),keys.get('encoding')
+
+    if c: args = [g.os_path_expandExpression(path,**keys)
+        for path in args if path]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080922124033.6:os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.currentPosition()
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+#@-node:ekr.20080922124033.6:os_path_expandExpression
+#@-node:ekr.20090105132011.4:Made sure $Home works for @nosent
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -6818,7 +7240,7 @@ def os_path_expanduser(path,encoding=None):
 
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
 
     '''
@@ -6844,7 +7266,7 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
-#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
 
@@ -6967,7 +7389,7 @@ def os_path_expanduser(path,encoding=None):
 
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
 
     '''
@@ -6993,7 +7415,7 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
-#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
 
@@ -7174,7 +7596,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
 
-    c = self ; trace = False ; verbose = False
+    c = self ; trace = False ; verbose = True
 
     # Step 1: Compute the starting path.
     # The correct fallback directory is the absolute path to the base.
@@ -7363,7 +7785,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
                 return None
     return dir1 # All have been created.
 #@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
 
     '''
@@ -7389,7 +7811,7 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
-#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
 
@@ -7537,7 +7959,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
 
-    c = self ; trace = False ; verbose = False
+    c = self ; trace = False ; verbose = True
 
     # Step 1: Compute the starting path.
     # The correct fallback directory is the absolute path to the base.
@@ -14023,6 +14445,7 @@ def write (self,root,
 
     if nosentinels and not scriptWrite and not toString:
         fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
+        # g.trace('fileName',fileName,'at.targetFileName',at.targetFileName)
         exists = g.os_path_exists(fileName)
         if not self.shouldWriteAtNosentNode(root,exists):
             return
