@@ -173,15 +173,19 @@ class cleoController:
       5: {'long': 'Low',       'short': '5', 'icon': 'pri5.png'},
       6: {'long': 'Very Low',  'short': '6', 'icon': 'pri6.png'},
       7: {'long': 'Sometime',  'short': '7', 'icon': 'pri7.png'},
+      8: {'long': 'Level 8',   'short': '8', 'icon': 'pri8.png'},
+      9: {'long': 'Level 9',   'short': '9', 'icon': 'pri9.png'},
+     10: {'long': 'Level 0',   'short': '0', 'icon': 'pri0.png'},
      19: {'long': 'To do',     'short': 'o', 'icon': 'chkboxblk.png'},
      20: {'long': 'Bang',      'short': '!', 'icon': 'bngblk.png'},
      21: {'long': 'Cross',     'short': 'X', 'icon': 'xblk.png'},
      22: {'long': '(cross)',   'short': 'x', 'icon': 'xgry.png'},
      23: {'long': 'Query',     'short': '?', 'icon': 'qryblk.png'},
+     24: {'long': 'Bullet',    'short': '-', 'icon': 'bullet.png'},
     100: {'long': 'Done',      'short': 'D', 'icon': 'chkblk.png'},
     }
 
-    todo_priorities = 1,2,3,4,5,6,7,19
+    todo_priorities = 1,2,3,4,5,6,7,8,9,10,19
     #@-node:tbrown.20080304230028:priority table
     #@+node:tbrown.20060903121429.15:birth
     def __init__ (self,c):
