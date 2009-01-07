@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -11194,28 +11194,28 @@ print('script output now goes to the console')
 <t tx="ekr.20090107091043.1">print 1/0</t>
 <t tx="ekr.20090107111908.1">import leo.core.leoNodes as leoNodes
 
-def vnode2position (self,v):
+# def vnode2position (self,v):
 
-    '''Given a vnode, create a valid position p such that p.v = v.
+    # '''Given a vnode, create a valid position p such that p.v = v.
 
-    Many such positions may exist. The constructed position will be
-    the first such position in the tree.
-    '''
+    # Many such positions may exist. The constructed position will be
+    # the first such position in the tree.
+    # '''
 
-    c = self
-    stack = []
-    while v.parents:
-        parent = v.parents[0]
-        n = parent.t.children.index(v)
-        stack.insert(0,(v,n),)
-        v = parent
+    # c = self
+    # stack = []
+    # while v.parents:
+        # parent = v.parents[0]
+        # n = parent.t.children.index(v)
+        # stack.insert(0,(v,n),)
+        # v = parent
 
-    v,n = stack.pop()
-    p = leoNodes.position(v,n,stack)
-    assert c.positionExists(p)
-    return p
+    # v,n = stack.pop()
+    # p = leoNodes.position(v,n,stack)
+    # assert c.positionExists(p)
+    # return p
 
-print vnode2position(c,p.v)
+print c.vnode2position(p.v)
 </t>
 </tnodes>
 </leo_file>
