@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="453" height="721" width="822"/>
+	<global_window_position top="49" left="453" height="853" width="822"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -407,7 +407,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
+<v t="ekr.20081213091503.1" a="E"><vh>Unit tests</vh>
 <v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
 <v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
 </v>
@@ -1055,6 +1055,9 @@
 <v t="ekr.20090105152652.2" a="E"><vh>@path ~</vh>
 <v t="ekr.20090105152652.1" tnodeList="ekr.20090105152652.1"><vh>@nosent homeTest.txt</vh></v>
 </v>
+<v t="ekr.20090107082739.1"><vh>replace redirectScriptOutput</vh></v>
+<v t="ekr.20090107091043.1"><vh>test redirected output</vh></v>
+<v t="ekr.20090107111908.1"><vh>@button vnode2position</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11171,5 +11174,48 @@ print pl.select('.*')</t>
 
 </t>
 <t tx="ekr.20090105152652.2"></t>
+<t tx="ekr.20090107082739.1">old_g_es = g.es
+
+def g_es (*args,**keys):
+    print ''.join(args)
+
+def redirect():
+    g.es = g_es
+
+def undirect():
+    g.es = old_g_es
+
+g.funcToMethod(redirect,c,name='redirectScriptOutput')
+g.funcToMethod(undirect,c,name='unredirectScriptOutput')
+
+print('script output now goes to the console')
+
+</t>
+<t tx="ekr.20090107091043.1">print 1/0</t>
+<t tx="ekr.20090107111908.1">import leo.core.leoNodes as leoNodes
+
+def vnode2position (self,v):
+
+    '''Given a vnode, create a valid position p such that p.v = v.
+
+    Many such positions may exist. The constructed position will be
+    the first such position in the tree.
+    '''
+
+    c = self
+    stack = []
+    while v.parents:
+        parent = v.parents[0]
+        n = parent.t.children.index(v)
+        stack.insert(0,(v,n),)
+        v = parent
+
+    v,n = stack.pop()
+    p = leoNodes.position(v,n,stack)
+    assert c.positionExists(p)
+    return p
+
+print vnode2position(c,p.v)
+</t>
 </tnodes>
 </leo_file>

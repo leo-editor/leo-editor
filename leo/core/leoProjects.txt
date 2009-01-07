@@ -12678,6 +12678,8 @@ def redirectScriptOutput (self):
 
     c = self
 
+    # g.trace('original')
+
     if c.config.redirect_execute_script_output_to_log_pane:
 
         g.redirectStdout() # Redirect stdout
@@ -12687,6 +12689,8 @@ def redirectScriptOutput (self):
 def unredirectScriptOutput (self):
 
     c = self
+
+    # g.trace('original')
 
     if c.exists and c.config.redirect_execute_script_output_to_log_pane:
 

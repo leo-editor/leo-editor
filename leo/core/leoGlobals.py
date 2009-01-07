@@ -5068,16 +5068,20 @@ class fileLikeObject:
 #@nonl
 # The following is taken from page 188 of the Python Cookbook.
 # 
-# The following method allows you to add a function as a method of any class.  
-# That is, it converts the function to a method of the class.  The method just 
-# added is available instantly to all existing instances of the class, and to 
-# all instances created in the future.
+# The following method allows you to add a function as a method of any class. 
+# That
+# is, it converts the function to a method of the class. The method just added 
+# is
+# available instantly to all existing instances of the class, and to all 
+# instances
+# created in the future.
 # 
 # The function's first argument should be self.
 # 
 # The newly created method has the same name as the function unless the 
-# optional name argument is supplied, in which case that name is used as the 
-# method name.
+# optional
+# name argument is supplied, in which case that name is used as the method 
+# name.
 #@-at
 #@@c
 
