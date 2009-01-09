@@ -6358,7 +6358,7 @@ class baseCommands:
         return self.frame.tree.redraw_after_delete()
     def redraw_after_expand(self):
         return self.frame.tree.redraw_after_expand()
-    def redraw_after_head_changd(self)
+    def redraw_after_head_changed(self):
         return self.frame.tree.redraw_after_head_changed()
     def redraw_after_insert(self):
         return self.frame.tree.redraw_after_insert()
