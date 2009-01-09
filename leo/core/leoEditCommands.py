@@ -8492,7 +8492,6 @@ class spellTabHandler (leoFind.leoFind):
                         if not p2.isExpanded():
                             p2.expand()
                             redraw = True
-                    # c.frame.tree.expandAllAncestors(p)
                     c.selectPosition(p)
                     if redraw:
                         c.redraw()

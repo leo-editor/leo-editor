@@ -3718,13 +3718,6 @@ class leoQtTree (leoFrame.leoTree):
         else:
             return True
     #@-node:ekr.20081121105001.413:allAncestorsExpanded
-    #@+node:ekr.20081208072750.19:do-nothing redraw methods
-    def redraw_after_icons_changed (self,all=False):
-        g.trace('should not be called',g.callers(4))
-
-    def redraw_after_select (self):
-        pass # Don't redraw!
-    #@-node:ekr.20081208072750.19:do-nothing redraw methods
     #@+node:ekr.20081209064740.2:Icons
     #@+node:ekr.20081121105001.417:drawIcon
     def drawIcon (self,p):
@@ -3828,11 +3821,8 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.415:initData
     def initData (self):
 
-        if use_partial_redraw:
-            pass # do not clear item2vnodeDict or vnode2itemsDict
-        else:
-            self.item2vnodeDict = {}
-            self.vnode2itemsDict = {}
+        self.item2vnodeDict = {}
+        self.vnode2itemsDict = {}
 
         self._editWidgetPosition = None
         self._editWidget = None
@@ -4174,252 +4164,172 @@ class leoQtTree (leoFrame.leoTree):
         return item
     #@-node:ekr.20081213055214.10:position2item
     #@-node:ekr.20081213123819.10:item2position & position2item
-    #@+node:ekr.20081211060950.1:Full redraw
-    if not use_partial_redraw:
+    #@+node:ekr.20081121105001.414: full_redraw
+    def full_redraw (self,p=None,edit=None,editAll=None,scroll=False):
 
-        #@    @+others
-        #@+node:ekr.20081121105001.414: full_redraw
-        def full_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
+        '''Redraw all visible nodes of the tree'''
 
-            '''Redraw all visible nodes of the tree'''
+        trace = True
+        c = self.c ; w = self.treeWidget
+        if not w: return
+        if self.redrawing:
+            g.trace('***** already drawing',g.callers(5))
+            return
 
-            trace = False; verbose = False
-            c = self.c ; w = self.treeWidget
-            if not w: return
-            if self.redrawing:
-                g.trace('***** already drawing',g.callers(5))
-                return
+        if p is None:
+            p = c.currentPosition()
+        else:
+            c.setCurrentPosition(p)
 
-            self.expandAllAncestors(c.currentPosition())
+        #### The caller now calls c.expandAllAncestors.
+        #### self.expandAllAncestors(p)
 
-            self.redrawCount += 1
-            if trace:
-                # g.trace(self.redrawCount,g.callers())
-                tstart()
+        self.redrawCount += 1
+        if trace:
+            # g.trace(self.redrawCount,g.callers())
+            tstart()
 
-            # Init the data structures.
-            self.initData()
-            self.nodeDrawCount = 0
-            self.redrawing = True
-            self.fullDrawing = True # To suppress some traces.
-            try:
-                vScroll = w.horizontalScrollBar()
-                pos = vScroll.sliderPosition()
-                w.clear()
-                # Draw all top-level nodes and their visible descendants.
-                if c.hoistStack:
-                    bunch = c.hoistStack[-1]
-                    p = bunch.p ; h = p.headString()
-                    if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
-                        p = p.firstChild()
-                        while p:
-                            self.drawTree(p)
-                            p.moveToNext()
-                    else:
-                        self.drawTree(p)
-                else:
-                    p = c.rootPosition()
+        # Init the data structures.
+        self.initData()
+        self.nodeDrawCount = 0
+        self.redrawing = True
+        self.fullDrawing = True # To suppress some traces.
+        try:
+            vScroll = w.horizontalScrollBar()
+            pos = vScroll.sliderPosition()
+            w.clear()
+            # Draw all top-level nodes and their visible descendants.
+            if c.hoistStack:
+                bunch = c.hoistStack[-1]
+                p = bunch.p ; h = p.headString()
+                if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+                    p = p.firstChild()
                     while p:
                         self.drawTree(p)
                         p.moveToNext()
-            finally:
-                if not self.selecting:
-                    self.setCurrentItem()
-                vScroll.setSliderPosition(pos)
+                else:
+                    self.drawTree(p)
+            else:
+                p = c.rootPosition()
+                while p:
+                    self.drawTree(p)
+                    p.moveToNext()
+        finally:
+            if not self.selecting:
+                self.setCurrentItem()
+            vScroll.setSliderPosition(pos)
 
-                # Necessary to get the tree drawn initially.
-                w.repaint()
+            # Necessary to get the tree drawn initially.
+            w.repaint()
 
-                c.requestRedrawFlag= False
-                self.redrawing = False
-                self.fullDrawing = False
-                if trace:
-                    theTime = tstop()
-                    if not g.app.unitTesting:
-                        g.trace('%s: drew %3s nodes in %s' % (
-                            self.redrawCount,self.nodeDrawCount,theTime))
+            c.requestRedrawFlag= False
+            self.redrawing = False
+            self.fullDrawing = False
+            if trace:
+                theTime = tstop()
+                if not g.app.unitTesting:
+                    g.trace('%s: drew %3s nodes in %s' % (
+                        self.redrawCount,self.nodeDrawCount,theTime),
+                        g.callers(4))
 
-        # Compatibility
-        if not use_partial_redraw:
-            redraw = full_redraw 
-            redraw_now = full_redraw
-            redraw_after_clone = full_redraw
-            redraw_after_contract = full_redraw
-            redraw_after_delete = full_redraw
-            redraw_after_expand = full_redraw
-            redraw_after_insert = full_redraw
-            redraw_after_move_down = full_redraw
-            redraw_after_move_left = full_redraw
-            redraw_after_move_right = full_redraw
-            redraw_after_move_up = full_redraw
-        #@-node:ekr.20081121105001.414: full_redraw
-        #@+node:ekr.20081209211810.1:drawChildren
-        def drawChildren (self,p,parent_item):
+    # Compatibility
+    if not use_partial_redraw:
+        redraw = full_redraw 
+        redraw_now = full_redraw
+        redraw_after_clone = full_redraw
+        redraw_after_contract = full_redraw
+        redraw_after_delete = full_redraw
+        redraw_after_expand = full_redraw
+        redraw_after_insert = full_redraw
+        redraw_after_move_down = full_redraw
+        redraw_after_move_left = full_redraw
+        redraw_after_move_right = full_redraw
+        redraw_after_move_up = full_redraw
+    #@-node:ekr.20081121105001.414: full_redraw
+    #@+node:ekr.20081209211810.1:drawChildren
+    def drawChildren (self,p,parent_item):
 
-            if p.hasChildren():
-                if p.isExpanded():
-                    self.expandItem(parent_item)
+        if p.hasChildren():
+            if p.isExpanded():
+                self.expandItem(parent_item)
+                child = p.firstChild()
+                while child:
+                    self.drawTree(child,parent_item)
+                    child.moveToNext()
+            else:
+                if 0: # Requires a full redraw in the expansion code.
+                    # Just draw one dummy child.
+                    self.drawNode(p.firstChild(),dummy=True)
+                else:
+                    # Draw the hidden children.
                     child = p.firstChild()
                     while child:
-                        self.drawTree(child,parent_item)
+                        self.drawNode(child,parent_item)
                         child.moveToNext()
-                else:
-                    if 0: # Requires a full redraw in the expansion code.
-                        # Just draw one dummy child.
-                        self.drawNode(p.firstChild(),dummy=True)
-                    else:
-                        # Draw the hidden children.
-                        child = p.firstChild()
-                        while child:
-                            self.drawNode(child,parent_item)
-                            child.moveToNext()
-                    self.contractItem(parent_item)
-            else:
                 self.contractItem(parent_item)
-        #@-node:ekr.20081209211810.1:drawChildren
-        #@+node:ekr.20081121105001.164:drawNode
-        def drawNode (self,p,parent_item,dummy=False):
+        else:
+            self.contractItem(parent_item)
+    #@-node:ekr.20081209211810.1:drawChildren
+    #@+node:ekr.20081121105001.164:drawNode
+    def drawNode (self,p,parent_item,dummy=False):
 
-            c = self.c ; w = self.treeWidget
-            self.nodeDrawCount += 1
+        c = self.c ; w = self.treeWidget
+        self.nodeDrawCount += 1
 
-            # Allocate the QTreeWidget item.
-            itemOrTree = parent_item or w
-            item = QtGui.QTreeWidgetItem(itemOrTree)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+        # Allocate the QTreeWidget item.
+        itemOrTree = parent_item or w
+        item = QtGui.QTreeWidgetItem(itemOrTree)
+        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
 
-            # Set the headline and maybe the icon.
-            item.setText(0,p.headString())
-            if p:
-                icon = self.getIcon(p)
-                if icon: item.setIcon(0,icon)
+        # Set the headline and maybe the icon.
+        item.setText(0,p.headString())
+        if p:
+            icon = self.getIcon(p)
+            if icon: item.setIcon(0,icon)
 
-            if not dummy:
-                self.rememberItem(p,item)
+        if not dummy:
+            self.rememberItem(p,item)
 
-            return item
-        #@-node:ekr.20081121105001.164:drawNode
-        #@+node:ekr.20081121105001.416:drawTree
-        def drawTree (self,p,parent_item=None):
+        return item
+    #@-node:ekr.20081121105001.164:drawNode
+    #@+node:ekr.20081121105001.416:drawTree
+    def drawTree (self,p,parent_item=None):
 
-            # Draw the (visible) parent node.
-            item = self.drawNode(p,parent_item)
+        # Draw the (visible) parent node.
+        item = self.drawNode(p,parent_item)
 
-            # Draw all the visible children.
-            self.drawChildren(p,parent_item=item)
+        # Draw all the visible children.
+        self.drawChildren(p,parent_item=item)
 
 
-        #@-node:ekr.20081121105001.416:drawTree
-        #@-others
-    #@-node:ekr.20081211060950.1:Full redraw
-    #@+node:ekr.20081212123717.10:Clever redraw
-    if 0: # Experimental.
+    #@-node:ekr.20081121105001.416:drawTree
+    #@+node:ekr.20090109110752.19:redraw_after_head_changed
+    def redraw_after_head_changed (self):
 
-        #@    @+others
-        #@+node:ekr.20081212123717.22:redrawEntireTree
-        def redrawEntireTree (self):
-
-            '''Redraw the tree, minimizing the actual changes made to the tree.'''
-
-            trace = True; verbose = False
-            c = self.c ; w = self.treeWidget
-            if not w: return
-            if self.redrawing:
-                if trace: g.trace('***** already drawing',g.callers(4))
-                return
-
-            self.redrawCount += 1
-            if trace: tstart()
-
-            self.nodeDrawCount = 0
-            self.redrawing = True
-            try:
-                self.expandAllAncestors(c.currentPosition())
-                self.initData()
-                p = c.rootPosition()
-                sibs = p.v.children
-                for child in children:
-                    self.createVnodeTree(v,parent_item=None)
-            finally:
-                if not self.selecting:
-                    item = self.setCurrentItem()
-                    if p and not item and self.redrawCount > 1:
-                        if not g.app.unitTesting:
-                            g.trace('Error: no current item: %s' % (
-                                p.headString()))
-
-                if 0: # Very slow for unit tests.
-                    w.repaint()
-                c.requestRedrawFlag = False
-                self.redrawing = False
-                if trace:
-                    theTime = tstop()
-                    if self.nodeDrawCount and not g.app.unitTesting:
-                        g.trace('%s: drew %3s nodes in %s' % (
-                            self.redrawCount,self.nodeDrawCount,theTime))
-
-        # Compatibility
-        if use_partial_redraw:
-            redraw = partial_redraw 
-            redraw_now = partial_redraw
-            redraw_after_clone = partial_redraw
-            redraw_after_contract = partial_redraw
-            redraw_after_delete = partial_redraw
-            redraw_after_expand = partial_redraw
-            redraw_after_insert = partial_redraw
-            redraw_after_move_down = partial_redraw
-            redraw_after_move_left = partial_redraw
-            redraw_after_move_right = partial_redraw
-            redraw_after_move_up = partial_redraw
-        #@-node:ekr.20081212123717.22:redrawEntireTree
-        #@+node:ekr.20081212123717.11:redrawAfterInsert
-        def redrawAfterInsert (self,p):
-
-            v = p.v ; childIndex = p.childIndex()
-
-            parent_items = self.vnode2parentItemsDict(v)
-
-            # A crucial constraint.
-            assert len(v.parents) == len(parent_items)
-
-            for parent_item in parent_items:
-
-                item = self.createNthChildItem(v,childIndex,parent_item)
-
-                self.createVnodeChildren(v,parent_item=item)
-        #@-node:ekr.20081212123717.11:redrawAfterInsert
-        #@+node:ekr.20081212123717.16:High-level helpers
-        #@+node:ekr.20081212123717.12:createVnodeTree (test)
-        def createVnodeTree (self,v):
-
-            # Create the parent node.
-            item = self.createVnodeItem(v,parent_item)
-
-            # Create all the children.
-            self.createVnodeChildren(v,parent_item=item)
-
-            return item
-        #@-node:ekr.20081212123717.12:createVnodeTree (test)
-        #@+node:ekr.20081212123717.13:createVnodeChildren (test)
-        def createVnodeChildren (self,v,parent_item):
-
-            children = v.children
-
-            if children:
-                self.expandItem(parent_item)
-                    # Will contract later if v is not expanded.
-
-            # Create each child tree.
-            for child in children:
-                self.createVnodeTree(child,parent_item)
-
-            if not children or not v.isExpanded:
-                self.contractItem(parent_item)
-        #@-node:ekr.20081212123717.13:createVnodeChildren (test)
-        #@-node:ekr.20081212123717.16:High-level helpers
-        #@-others
+        pass # Used only by the Tk gui.
     #@nonl
-    #@-node:ekr.20081212123717.10:Clever redraw
+    #@-node:ekr.20090109110752.19:redraw_after_head_changed
+    #@+node:ekr.20081208072750.19:redraw_after_select
+    def redraw_after_select (self,p,edit=False,editAll=False):
+
+        if self.redrawing: return
+
+        # Call the base select method.
+        # This will call before/after_select_hint.
+        self.select(p)
+
+        ### To do: edit the headline if necessary.
+    #@nonl
+    #@-node:ekr.20081208072750.19:redraw_after_select
+    #@+node:ekr.20090109110752.16:redraw_after_icons_changed
+    def redraw_after_icons_changed (self,all=False):
+
+        self.redrawCount += 1 # To keep a unit test happy.
+
+        if not g.app.unitTesting:
+            g.trace('not ready yet',g.callers(4))
+
+    #@-node:ekr.20090109110752.16:redraw_after_icons_changed
     #@+node:ekr.20081213093110.1:Unit tests
     # These must be run with alt-4, because external unit tests use a null tree.
     # This means that we have to reload this file if a test fails.
@@ -5169,7 +5079,7 @@ class leoQtTree (leoFrame.leoTree):
         # This is a crucial shortcut.
         if g.unitTesting: return
 
-        c.redraw(scroll=False)
+        #### c.redraw(scroll=False)
         if self.stayInTree:
             c.treeWantsFocus()
         else:

@@ -909,9 +909,9 @@ def goto_showResults(self,found,p,n,n2,lines):
     c = self ; w = c.frame.body.bodyCtrl
 
     # Select p and make it visible.
-    c.frame.tree.expandAllAncestors(p)
-    c.selectPosition(p)
-    c.redraw()
+    #### c.expandAllAncestors(p)
+    #### c.selectPosition(p)
+    c.redraw(p)
 
     # Put the cursor on line n2 of the body text.
     s = w.getAllText()
@@ -927,6 +927,7 @@ def goto_showResults(self,found,p,n,n2,lines):
     w.setInsertPoint(ins)
     c.bodyWantsFocusNow()
     w.seeInsertPoint()
+#@nonl
 #@-node:ekr.20080904071003.14:goto_showResults
 #@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
@@ -16108,9 +16109,9 @@ def goPrevVisitedNode (self,event=None):
     p = c.nodeHistory.goPrev()
 
     if p:
-        c.frame.tree.expandAllAncestors(p)
-        c.selectPosition(p)
-        c.redraw()
+        #### c.expandAllAncestors(p)
+        #### c.selectPosition(p)
+        c.redraw(p) # Should be redraw_after_select.
 
 #@-node:ekr.20031218072017.1627:goPrevVisitedNode
 #@+node:ekr.20031218072017.1628:goNextVisitedNode
@@ -16123,9 +16124,9 @@ def goNextVisitedNode (self,event=None):
     p = c.nodeHistory.goNext()
 
     if p:
-        c.frame.tree.expandAllAncestors(p)
-        c.selectPosition(p)
-        c.redraw()
+        #### c.expandAllAncestors(p)
+        #### c.selectPosition(p)
+        c.redraw(p) #### should be redraw_after_select.
 
 #@-node:ekr.20031218072017.1628:goNextVisitedNode
 #@+node:ekr.20070615131604:class nodeHistory

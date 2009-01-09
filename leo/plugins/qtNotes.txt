@@ -252,443 +252,13 @@ bracketright: ']'
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081208155215.12:Unused
-#@+node:ekr.20081121105001.423:removeFromDicts (not needed!)
-if 0: # not needed if we recompute all dicts.
-
-    def removeFromDicts (self,p,item):
-
-        '''Remove all items associated with p from the drawing dicts.'''
-
-        # Remove entries from item dicts.
-        if item:
-            table = (
-                self.item2parentItemDict,
-                self.item2tnodeDict,
-                self.item2vnodeDict,
-                self.item2positionDict)
-
-            for d in table:
-                if item in d:
-                    del d[item]
-
-        # Remove positions from vnode/tnode dicts.
-        if p:
-            table = (
-                (p.v.t,self.tnode2dataDict),
-                (p.v  ,self.vnode2dataDict))
-
-            for key,d in table:
-                aList = d.get(key,[])
-                if aList:
-                    aList = [z for p2,item in aList if p2 != p]
-                    d[key] = aList
-#@-node:ekr.20081121105001.423:removeFromDicts (not needed!)
-#@+node:ekr.20081209211810.12:updateTreeDicts (not needed!)
-if 0: # Not needed: we never process an entire tree at once.
-
-    def updateTreeDicts (self,p,parent_item,item):
-
-        '''Update the dicts for unchanged/moved parts of the tree.'''
-
-        self.updateDicts(p,parent_item,item)
-
-        child_items = self.childItems(parent_item)
-        chilren = [z for z in p.children_iter()]
-
-        if len(child_items)== len(children):
-            for p2,item2 in zip(children,child_items):
-                self.updateTreeDicts(p2,item,item2)
-        else:
-            self.oops('len(child_items): %s, len(chilren): %s' % (
-                len(child_items),len(chilren)))
-
-
-
-
-#@-node:ekr.20081209211810.12:updateTreeDicts (not needed!)
-#@+node:ekr.20081208072750.20:redraw_after... (not used)
-if 0:
-    @others
-#@nonl
-#@+node:ekr.20081121105001.419:redraw_after_clone
-def redraw_after_clone (self):
-
-    self.full_redraw()
-#@-node:ekr.20081121105001.419:redraw_after_clone
-#@+node:ekr.20081121105001.420:redraw_after_contract
-def redraw_after_contract (self):
-
-    self.full_redraw()
-#@-node:ekr.20081121105001.420:redraw_after_contract
-#@+node:ekr.20081121105001.421:redraw_after_delete
-def redraw_after_delete (self):
-
-    self.full_redraw()
-
-
-#@-node:ekr.20081121105001.421:redraw_after_delete
-#@+node:ekr.20081121105001.422:redraw_after_expand & helper
-def redraw_after_expand (self):
-
-    # This is reasonable now that we only allocate
-    # one dummy node in collapsed trees.
-    return self.full_redraw()
-#@-node:ekr.20081121105001.422:redraw_after_expand & helper
-#@+node:ekr.20081121105001.424:redraw_after_icons_changed
-def redraw_after_icons_changed (self,all=False):
-
-    g.trace('should not be called',g.callers(4))
-
-    pass
-
-    # c = self.c ; p = c.currentPosition()
-
-    # if all:
-        # self.full_redraw()
-    # else:
-        # self.updateIcon(p)
-
-
-#@-node:ekr.20081121105001.424:redraw_after_icons_changed
-#@+node:ekr.20081121105001.425:redraw_after_insert
-def redraw_after_insert (self):
-
-    self.full_redraw()
-#@-node:ekr.20081121105001.425:redraw_after_insert
-#@+node:ekr.20081121105001.426:redraw_after_move_down
-def redraw_after_move_down (self):
-
-    self.full_redraw()
-#@nonl
-#@-node:ekr.20081121105001.426:redraw_after_move_down
-#@+node:ekr.20081121105001.427:redraw_after_move_left
-def redraw_after_move_left (self):
-
-    self.full_redraw()
-#@nonl
-#@-node:ekr.20081121105001.427:redraw_after_move_left
-#@+node:ekr.20081121105001.428:redraw_after_move_right
-def redraw_after_move_right (self):
-
-    self.full_redraw()
-#@-node:ekr.20081121105001.428:redraw_after_move_right
-#@+node:ekr.20081121105001.429:redraw_after_move_up
-def redraw_after_move_up (self):
-
-    self.full_redraw()
-#@-node:ekr.20081121105001.429:redraw_after_move_up
-#@+node:ekr.20081121105001.430:redraw_after_select
-def redraw_after_select (self):
-
-    '''Redraw the screen after selecting a node.'''
-
-    pass # It is quite wrong to do an automatic redraw after select.
-#@-node:ekr.20081121105001.430:redraw_after_select
-#@-node:ekr.20081208072750.20:redraw_after... (not used)
-#@+node:ekr.20081209064740.14:partial_redraw_stub
-def partial_redraw_stub (self):
-
-    '''Print what partial_redraw would do if it were functional.'''
-
-    # Called from full_redraw.
-    # initData and expandAllAncestors have already been called.
-
-    c = self.c ; p = c.rootPosition()
-
-    if not use_partial_redraw: return
-
-    self.updateTree(p,parent_item=None)
-#@-node:ekr.20081209064740.14:partial_redraw_stub
-#@+node:ekr.20081209064740.17:createDummyChildItem (not used)
-def createDummyChildItem (self,p,parent_item):
-
-    '''Create a dummy child item if the parent item does not have children.
-
-    This ensures the parent's expansion box is correctly set.'''
-
-    trace = False
-    h = 'dummy child of %s' % p.headString()
-    n = parent_item.childCount()
-
-    if trace: g.trace(n,h)
-
-    if n == 0:
-        p2 = p.copy()
-        p2.setHeadString(h)
-        self.drawNode(p2,parent_item,dummy=True)
-
-#@-node:ekr.20081209064740.17:createDummyChildItem (not used)
-#@+node:ekr.20081211060950.17:rememberPosition
-def rememberPosition (self,p,item):
-
-    # The following dicts are used only by event handlers.
-    # They are *not* to be used by the incremental drawing code!
-
-    # Remember the position, vnode and tnode of each item.
-    self.item2positionDict[item] = p.copy()
-
-    # Remember list of all (p,item) for each v.
-    aList = self.vnode2dataDict.get(p.v,[])
-    data = p.copy(),item
-    aList.append(data)
-    self.vnode2dataDict[p.v] = aList
-
-    # Remember list all (p,item) for each t.
-    aList = self.tnode2dataDict.get(p.v.t,[])
-    data = p.copy(),item
-    aList.append(data)
-    self.tnode2dataDict[p.v.t] = aList
-#@-node:ekr.20081211060950.17:rememberPosition
-#@+node:ekr.20081209210556.2:updateDicts (was used in full_redraw)
-def updateDicts (self,p,parent_item,item):
-
-    # Important: the item2vnodeDict is *not* cleared by initData.
-    # Entries in this dict are persistent.
-
-    self.item2vnodeDict[item] = p.v
-
-    # Important: the following dicts are used only by event handlers.
-    # They are *not* to be used by the incremental drawing code!
-
-    # Remember the position, vnode and tnode of each item.
-    self.item2positionDict[item] = p.copy()
-
-    # Remember list of all (p,item) for each v.
-    aList = self.vnode2dataDict.get(p.v,[])
-    data = p.copy(),item
-    aList.append(data)
-    self.vnode2dataDict[p.v] = aList
-
-    # Remember list all (p,item) for each t.
-    aList = self.tnode2dataDict.get(p.v.t,[])
-    data = p.copy(),item
-    aList.append(data)
-    self.tnode2dataDict[p.v.t] = aList
-#@-node:ekr.20081209210556.2:updateDicts (was used in full_redraw)
-#@+node:ekr.20081213093110.17:position2item (old)
-def position2item (self,p):
-    '''Return the unique item associated with position p.'''
-    aList = self.vnode2dataDict.get(p.v,[])
-    for p2,item2 in aList:
-        if p == p2:
-            item = item2 ; break
-    else:
-        item = None
-    return item
-#@-node:ekr.20081213093110.17:position2item (old)
-#@+node:ekr.20081211060950.2:Partial redraw
-if use_partial_redraw:
+#@+node:ekr.20081212123717.10:Clever redraw
+if 0: # Experimental.
 
     @others
-#@+node:ekr.20081211123349.10:high-level helpers
-#@+node:ekr.20081211060950.12:createChildren
-def createChildren (self,p,parent_item):
-
-    if p.hasChildren():
-        child = p.firstChild()
-        self.expandItem(parent_item) # May contract later.
-        if p.isExpanded():
-            while child:
-                self.createTree(child,parent_item)
-                child.moveToNext()
-        else:
-            while child:
-                if 0: # Create all descendants.
-                    self.createTree(child,parent_item)
-                else: # Create one level of hidden children.
-                    self.createItem(child,parent_item)
-                child.moveToNext()
-            self.contractItem(parent_item)
-    else:
-        self.contractItem(parent_item)
-#@-node:ekr.20081211060950.12:createChildren
-#@+node:ekr.20081211060950.14:createTree
-def createTree (self,p,parent_item=None):
-
-    # Create the (visible) parent node.
-    item = self.createItem(p,parent_item)
-
-    # Create all the visible children.
-    self.createChildren(p,parent_item=item)
-
-
-#@-node:ekr.20081211060950.14:createTree
-#@+node:ekr.20081209064740.16:deleteChildItems
-def deleteChildItems(self,p,parent_item):
-
-    '''Delete all child items of the parent_item,
-    thereby clearing the expansion box.'''
-
-    trace = False
-
-    child_items = self.childItems(parent_item)
-    assert not p.firstChild()
-
-    n = 0
-    for item in child_items:
-        self.deleteItem(parent_item,item)
-        n += 1
-
-    if trace and n:
-        g.trace('deleted %s items' % (n))
-#@-node:ekr.20081209064740.16:deleteChildItems
-#@+node:ekr.20081209103009.13:deleteNthItem
-def deleteNthItem(self,n,parent_item,item):
-
-    trace = False and not g.app.unitTesting
-
-    if trace and self.redrawCount > 1:
-        g.trace('%3s' % n)
-
-    child_items = self.childItems(parent_item)
-
-    if n < len(child_items):
-        # A crucial constraint.
-        assert item==child_items[n], (
-            'item: %s, n: %s, child_items: %s' % (
-                item,n,child_items))
-
-        self.deleteItem(parent_item,item)
-    else:
-        self.oops('bad item',n,item)
-#@-node:ekr.20081209103009.13:deleteNthItem
-#@+node:ekr.20081209103009.17:insertNthChild
-def insertNthChild(self,p,n,parent_item,hidden=False):
-
-    '''Insert an item tree as the n'th child of the parent item.'''
-
-    trace = False and not g.app.unitTesting
-
-    if trace and self.redrawCount > 1:
-        g.trace(hidden,n,p)
-
-    item = self.createNthChildItem(p,n,parent_item)
-
-    if not hidden:
-        self.createChildren(p,item)
-#@-node:ekr.20081209103009.17:insertNthChild
-#@+node:ekr.20081209103009.18:replaceNthItem
-def replaceNthItem(self,p,n,parent_item,item,hidden=False):
-
-    trace = False
-
-    if trace and self.redrawCount > 1:
-        g.trace('%3s' % (n),p,g.callers(4))
-
-    self.deleteNthItem(n,parent_item,item)
-
-    item = self.createNthChildItem(p,n,parent_item)
-
-    if not hidden:
-        self.createChildren(p,parent_item=item)
-
-
-#@-node:ekr.20081209103009.18:replaceNthItem
-#@+node:ekr.20081209103009.12:updateNthSib
-def updateNthSib(self,p,n,sibs,parent_item,hidden=False):
-
-    '''Update the pair (p,item), making the result the
-    n'th child item of parent_item.'''
-
-    sib_items = self.childItems(parent_item)
-    item = sib_items[n]
-
-    # A crucial assert
-    assert p == sibs[n],'p: %s, n: %s, sibs: %s' % (
-        p,n,sibs)
-
-    item_v = self.item2vnode(item)
-    next_p = p.next()
-    next_p_v = next_p and next_p.v
-
-    if item_v == p.v: # An exact match.
-        return
-
-    if n + 1 < len(sibs) and n + 1 < len(sib_items):
-        next_p = sibs[n+1]
-        next_p_item = sib_items[n+1]
-        next_item = sib_items[n+1]
-        next_item_v = self.item2vnode(next_item)
-        if p.v == next_item_v and next_p.v == item_v:
-            self.swapNthItems(n,parent_item)
-        elif p.v == next_item_v:
-            # Note: no position exists for the deleted node
-            self.deleteNthItem(n,parent_item,item)
-        elif item_v == next_p_v:
-            self.insertNthChild(p,n,parent_item,hidden=hidden)
-        else:
-            if self.redrawCount > 1: g.pdb()
-            self.replaceNthItem(p,n,parent_item,item,hidden=hidden)
-    else:
-        self.replaceNthItem(p,n,parent_item,item,hidden=hidden)
-#@-node:ekr.20081209103009.12:updateNthSib
-#@+node:ekr.20081209103009.10:updateSibs
-def updateSibs (self,p,parent_item,hidden=False):
-
-    '''Update each sibling in turn.'''
-
-    trace = False ; verbose = False
-    sibs = [z for z in p.self_and_siblings_iter(copy=True)]
-
-    # Compare unchanging new nodes with changing tree items.
-    for n,p in zip(range(len(sibs)),sibs):
-        n_items = self.numberOfChildItems(parent_item)
-        if trace:
-            if verbose:g.trace('n: %s, n_items: %s' % (n,n_items))
-            else: g.trace(n,p)
-        if n_items < n:
-            return self.oops('n_items: %s, n: %s' % (n_items,n))
-
-        if n_items <= n:
-            self.insertNthChild(p,n,parent_item,hidden=hidden)
-        else:
-            self.updateNthSib(p,n,sibs,parent_item,hidden=hidden)
-
-    # Delete any trailing items.
-    children = self.childItems(parent_item)
-    tail_items = children[len(sibs):]
-    for item in tail_items:
-        self.deleteItem(parent_item,item)
-#@-node:ekr.20081209103009.10:updateSibs
-#@+node:ekr.20081208072750.15:updateTree
-def updateTree (self,p,parent_item,level=0):
-
-    trace = False
-
-    # Step one: synchonize the tree items with p and it's siblings.
-    self.updateSibs (p,parent_item)
-    sibs = [z for z in p.self_and_siblings_iter(copy=True)]
-    sib_items = self.childItems(parent_item)
-
-    if trace:
-        g.trace('level: %s, len(sibs): %s, len(sib_items): %s' % (
-            level,len(sibs),len(sib_items)))
-        g.trace('\n%s' % g.listToString(sibs))
-
-    if len(sibs) != len(sib_items):
-        return self.oops('sibs:\n%s\nsib_items:\n%s' % (
-            g.listToString(sibs),g.listToString(sib_items)))
-
-    # Step two: recursively examine all visible child nodes & items.
-    for p,sib_item in zip(sibs,sib_items):
-        if p.hasChildren():
-            if p.isExpanded():
-                child = p.firstChild()
-                self.updateTree(child,sib_item,level=level+1)
-                self.expandItem(sib_item)
-            else:
-                # Update just the hidden direct children.
-                child = p.firstChild()
-                self.updateSibs(child,parent_item=sib_item,hidden=True)
-                self.contractItem(sib_item)
-        else:
-            # Disable the expansion indicator.
-            self.deleteChildItems(p,parent_item=sib_item)
-            self.contractItem(sib_item)
-#@-node:ekr.20081208072750.15:updateTree
-#@-node:ekr.20081211123349.10:high-level helpers
-#@+node:ekr.20081208072750.10:partial_redraw
-def partial_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
+#@nonl
+#@+node:ekr.20081212123717.22:redrawEntireTree
+def redrawEntireTree (self):
 
     '''Redraw the tree, minimizing the actual changes made to the tree.'''
 
@@ -708,8 +278,9 @@ def partial_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
         self.expandAllAncestors(c.currentPosition())
         self.initData()
         p = c.rootPosition()
-        self.updateTree(p,parent_item=None)
-        self.postPass()
+        sibs = p.v.children
+        for child in children:
+            self.createVnodeTree(v,parent_item=None)
     finally:
         if not self.selecting:
             item = self.setCurrentItem()
@@ -727,7 +298,6 @@ def partial_redraw (self,scroll=False,forceDraw=False): # forceDraw not used.
             if self.nodeDrawCount and not g.app.unitTesting:
                 g.trace('%s: drew %3s nodes in %s' % (
                     self.redrawCount,self.nodeDrawCount,theTime))
-            # if verbose: g.trace(g.callers(4))
 
 # Compatibility
 if use_partial_redraw:
@@ -742,242 +312,54 @@ if use_partial_redraw:
     redraw_after_move_left = partial_redraw
     redraw_after_move_right = partial_redraw
     redraw_after_move_up = partial_redraw
-#@-node:ekr.20081208072750.10:partial_redraw
-#@+node:ekr.20081211060950.18:postPass & helpers
-testing = True
-    # True: enable internal unit tests in postPass and helpers.
+#@-node:ekr.20081212123717.22:redrawEntireTree
+#@+node:ekr.20081212123717.11:redrawAfterInsert
+def redrawAfterInsert (self,p):
 
-def postPass (self):
+    v = p.v ; childIndex = p.childIndex()
 
-    c = self.c ; p = c.rootPosition()
+    parent_items = self.vnode2parentItemsDict(v)
 
-    self.rememberSibs(p,parent_item=None)
+    # A crucial constraint.
+    assert len(v.parents) == len(parent_items)
 
-#@+node:ekr.20081211172745.10:rememberSibs
-def rememberSibs (self,p,parent_item):
+    for parent_item in parent_items:
 
-    sib_items = self.childItems(parent_item)
-    sibs = [z for z in p.self_and_siblings_iter(copy=True)]
+        item = self.createNthChildItem(v,childIndex,parent_item)
 
-    if self.testing: assert len(sib_items) == len(sibs), (
-        'items: %s, sibs: %s, p: %s' % (
-            len(sib_items),len(sibs),p))
+        self.createVnodeChildren(v,parent_item=item)
+#@-node:ekr.20081212123717.11:redrawAfterInsert
+#@+node:ekr.20081212123717.16:High-level helpers
+#@+node:ekr.20081212123717.12:createVnodeTree (test)
+def createVnodeTree (self,v):
 
-    for p2,item in zip(sibs,sib_items):
+    # Create the parent node.
+    item = self.createVnodeItem(v,parent_item)
 
-        if self.testing: assert self.isValidItem(item),(
-            'item: %s, p: %s' % (item,p))
+    # Create all the children.
+    self.createVnodeChildren(v,parent_item=item)
 
-        self.updateHeadline(p2,item)
-        self.drawItemIcon(p2,item)
-        self.rememberPosition(p2,item)
+    return item
+#@-node:ekr.20081212123717.12:createVnodeTree (test)
+#@+node:ekr.20081212123717.13:createVnodeChildren (test)
+def createVnodeChildren (self,v,parent_item):
 
-        # We remember only visible positions,
-        # regardless of whether all nodes are drawn or not.
-        if p2.hasChildren() and p2.isExpanded():
-            self.rememberSibs(p2.firstChild(),parent_item=item)
-#@nonl
-#@-node:ekr.20081211172745.10:rememberSibs
-#@-node:ekr.20081211060950.18:postPass & helpers
-#@-node:ekr.20081211060950.2:Partial redraw
+    children = v.children
+
+    if children:
+        self.expandItem(parent_item)
+            # Will contract later if v is not expanded.
+
+    # Create each child tree.
+    for child in children:
+        self.createVnodeTree(child,parent_item)
+
+    if not children or not v.isExpanded:
+        self.contractItem(parent_item)
+#@-node:ekr.20081212123717.13:createVnodeChildren (test)
+#@-node:ekr.20081212123717.16:High-level helpers
+#@-node:ekr.20081212123717.10:Clever redraw
 #@-node:ekr.20081208155215.12:Unused
-#@+node:ekr.20081213093110.16:Removed unused dicts
-#@+node:ekr.20081121105001.402:__init__ (qtTree)
-def __init__(self,c,frame):
-
-    # g.trace('*****qtTree')
-
-    # Init the base class.
-    leoFrame.leoTree.__init__(self,frame)
-
-    # Components.
-    self.c = c
-    self.canvas = self # An official ivar used by Leo's core.
-    self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
-
-    try:
-        w.headerItem().setHidden(True)
-    except Exception:
-        pass
-
-    w.setIconSize(QtCore.QSize(20,11))
-    # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-
-    # Status ivars.
-    self.dragging = False
-    self._editWidgetPosition = None
-    self._editWidget = None
-    self._editWidgetWrapper = None
-    self.expanding = False
-    self.fullDrawing = False
-    self.generation = 0
-    self.prev_p = None
-    self.redrawing = False
-    self.redrawCount = 0 # Count for debugging.
-    self.revertHeadline = None # Previous headline text for abortEditLabel.
-    self.selecting = False
-
-    # Debugging.
-    self.nodeDrawCount = 0
-
-    # Associating items with vnodes...
-    self.item2vnodeDict = {}
-    self.vnode2itemsDict = {} # values are lists of items.
-
-    self.setConfigIvars()
-    self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
-#@-node:ekr.20081121105001.402:__init__ (qtTree)
-#@+node:ekr.20081121105001.162:onTreeSelect
-def onTreeSelect(self):
-
-    '''Select the proper position when a tree node is selected.'''
-
-    trace = False ; verbose = False
-    c = self.c ; p = c.currentPosition()
-    w = self.treeWidget 
-
-    if self.selecting:
-        if trace: g.trace('already selecting',p and p.headString())
-        return
-    if self.redrawing:
-        if trace: g.trace('already drawing',p and p.headString())
-        return
-
-    item = w.currentItem()
-    p = self.item2position(item)
-
-    if p:
-        if trace: g.trace(p and p.headString())
-        c.frame.tree.select(p) # The crucial hook.
-        c.outerUpdate()
-    else:
-        # An error.
-        g.trace('no p for item: %s' % item,g.callers(4))
-#@nonl
-#@-node:ekr.20081121105001.162:onTreeSelect
-#@+node:ekr.20081121105001.431:updateIcon
-def updateIcon (self,p):
-
-    '''Update p's icon.'''
-
-    if not p: return
-
-    val = p.v.computeIcon()
-    if p.v.iconVal == val: return
-
-    icon = self.getIconImage(val)
-
-    items = self.vnode2items(p.v)
-
-    for item in items:
-        if self.isValidItem(item):
-            item.setIcon(0,icon)
-#@-node:ekr.20081121105001.431:updateIcon
-#@+node:ekr.20081121105001.156:editLabel (override)
-def editLabel (self,p,selectAll=False):
-
-    """Start editing p's headline."""
-
-    trace = False ; verbose = False
-    c = self.c ; w = self.treeWidget
-
-    if self.redrawing:
-        if trace and verbose: g.trace('redrawing')
-        return
-    if self._editWidget:
-        # Not an error, because of key weirdness.
-        if trace: g.trace('already editing')
-        return
-
-    if trace: g.trace('***',p and p.headString(),g.callers(4))
-
-    c.outerUpdate() # Do any scheduled redraw.
-
-    item = self.position2item(p)
-
-    if item:
-        w.setCurrentItem(item) # Must do this first.
-        w.editItem(item)
-        e = w.itemWidget(item,0) # A QLineEdit
-        if e:
-            s = e.text() ; len_s = len(s)
-            # Hook up the widget to Leo's core.
-            self._editWidgetPosition = p.copy()
-            self._editWidget = e
-            self._editWidgetWrapper = leoQtHeadlineWidget(
-                widget=e,name='head',c=c)
-            start,n = g.choose(selectAll,
-                tuple([0,len_s]),tuple([len_s,0]))
-            e.setObjectName('headline')
-            e.setSelection(start,n)
-            e.setFocus()
-        else: self.oops('no edit widget')
-    else:
-        self._editWidgetPosition = None
-        self._editWidget = None
-        self._editWidgetWrapper = None
-        e = None
-        self.oops('no item: %s' % p)
-
-    # A nice hack: just set the focus request.
-    if e: c.requestedFocusWidget = e
-#@-node:ekr.20081121105001.156:editLabel (override)
-#@+node:ekr.20081211060950.15:forgetItem
-def forgetItem (self,item):
-
-    '''Remove the item and all its descendant items
-    from the item2vnodeDict.'''
-
-    d = self.item2vnodeDict
-
-    if item in d:
-        v = d.get(item)
-        aList = vnode2itemsDict.get(v)
-        if item in aList:
-            aList.remove(item)
-        else:
-            self.oops('not in vnode2itemsDict: %s' % item)
-        del d[item]
-    else:
-        self.oops('not in item2vnodeDict: %s' % item)
-
-    child_items = self.childItems(item)
-
-    for child_item in child_items:
-
-        self.forgetItem(child_item)
-#@-node:ekr.20081211060950.15:forgetItem
-#@+node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
-def rememberItem (self,p,item):
-
-    self.rememberVnodeItem(p.v,item)
-
-def rememberVnodeItem (self,v,item):
-
-    # Update item2vnodeDict.
-    self.item2vnodeDict[item] = v
-
-    # Update vnode2itemsDict.
-    d = self.vnode2itemsDict
-    aList = d.get(v,[])
-
-    if item in aList:
-        self.oops('item already in list: %s, %s' % (item,aList))
-    else:
-        aList.append(item)
-        d[v] = aList
-#@-node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
-#@+node:ekr.20081209064740.1:item dict getters
-def item2vnode (self,item):
-    return self.item2vnodeDict.get(item)
-
-def vnode2items(self,v):
-    return self.vnode2itemsDict.get(v,[])
-
-def isValidItem (self,item):
-    return item in self.item2vnodeDict
-#@-node:ekr.20081209064740.1:item dict getters
-#@-node:ekr.20081213093110.16:Removed unused dicts
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt

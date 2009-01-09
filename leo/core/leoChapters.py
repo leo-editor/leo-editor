@@ -914,8 +914,10 @@ class chapter:
         if name == 'main' and cc.chaptersNode:
             cc.chaptersNode.contract()    
         c.hoistStack = self.hoistStack[:]
-        c.selectPosition(p)
-        c.redraw()
+
+        #### c.selectPosition(p)
+        #### c.redraw(p)
+        c.redraw_after_select(p)
         g.doHook('hoist-changed',c=c)
         c.bodyWantsFocusNow()
     #@nonl

@@ -662,9 +662,9 @@ def goto_showResults(self,found,p,n,n2,lines):
     c = self ; w = c.frame.body.bodyCtrl
 
     # Select p and make it visible.
-    c.frame.tree.expandAllAncestors(p)
-    c.selectPosition(p)
-    c.redraw()
+    #### c.expandAllAncestors(p)
+    #### c.selectPosition(p)
+    c.redraw(p)
 
     # Put the cursor on line n2 of the body text.
     s = w.getAllText()
@@ -680,6 +680,7 @@ def goto_showResults(self,found,p,n,n2,lines):
     w.setInsertPoint(ins)
     c.bodyWantsFocusNow()
     w.seeInsertPoint()
+#@nonl
 #@-node:ekr.20080904071003.14:goto_showResults
 #@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
@@ -1922,8 +1923,8 @@ def save (self,event=None):
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
 
-    c.redraw()
-    c.widgetWantsFocusNow(w)
+    c.redraw(w=w)
+    #### c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
 def saveAs (self,event=None):
@@ -1958,8 +1959,9 @@ def saveAs (self,event=None):
         c.fileCommands.saveAs(c.mFileName)
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
-    c.redraw()
-    c.widgetWantsFocusNow(w)
+
+    c.redraw(w=w)
+    #### c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
 def saveAsUnzipped (self,event=None):
@@ -2013,8 +2015,8 @@ def saveTo (self,event=None):
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
 
-    c.redraw()
-    c.widgetWantsFocusNow(w)
+    c.redraw(w=w)
+    #### c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert
 def revert (self,event=None):

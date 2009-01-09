@@ -586,7 +586,7 @@ class backlinkController(object):
         c = self.c
         p = c.currentPosition()
         v = p.v
-    
+
         self.messageUsed = False
 
         self.ui.enableDelete(False)

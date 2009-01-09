@@ -1028,7 +1028,7 @@ class leoBody:
                 hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
 
         # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
-        c.frame.tree.expandAllAncestors(w.leo_p)
+        c.expandAllAncestors(w.leo_p)
         c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
         c.redraw()
 
@@ -1232,8 +1232,8 @@ class leoBody:
         #@nl
         if not c.changed: c.setChanged(True)
         self.updateEditors()
-        #@    << redraw the screen if necessary >>
-        #@+node:ekr.20051026083733.7:<< redraw the screen if necessary >>
+        #@    << update icons if necessary >>
+        #@+node:ekr.20051026083733.7:<< update icons if necessary >>
 
         redraw_flag = False
         # Update dirty bits.
@@ -1247,8 +1247,11 @@ class leoBody:
         if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
             redraw_flag = True
-        if redraw_flag: c.redraw()
-        #@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
+
+        if redraw_flag:
+            ####c.redraw()
+            c.redraw_after_icons_changed(all=False)
+        #@-node:ekr.20051026083733.7:<< update icons if necessary >>
         #@nl
     #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
     #@+node:ekr.20061109095450.8:onClick
@@ -2311,7 +2314,10 @@ class leoTree:
 
     # Drawing & scrolling.
     def drawIcon(self,v,x=None,y=None):             self.oops()
-    def redraw_now(self,scroll=True,forceDraw=False):   self.oops()
+    def redraw(self,edit=False,editAll=False,scroll=True,forceDraw=False):
+        self.oops()
+    def redraw_now(self,edit=False,editAll=False,scroll=True,forceDraw=False):
+        self.oops()
     def scrollTo(self,p):                           self.oops()
     idle_scrollTo = scrollTo # For compatibility.
 
@@ -2397,7 +2403,7 @@ class leoTree:
             u.afterChangeNodeContents(p,undoType,undoData,
                 dirtyVnodeList=dirtyVnodeList)
         if changed:
-            c.redraw(scroll=False)
+            #### c.redraw(scroll=False)
             if self.stayInTree:
                 c.treeWantsFocus()
             else:
@@ -2481,27 +2487,6 @@ class leoTree:
             c.bodyWantsFocus()
     #@-node:ekr.20040803072955.126:endEditLabel
     #@-node:ekr.20040803072955.90:head key handlers (leoTree)
-    #@+node:ekr.20040803072955.143:tree.expandAllAncestors
-    def expandAllAncestors (self,p):
-
-        '''Expand all ancestors without redrawing.
-
-        Return a flag telling whether a redraw is needed.'''
-
-        c = self.c ; cc = c.chapterController ; redraw_flag = False
-        # inChapter = cc and cc.inChapter()
-
-        for p in p.parents_iter():
-            # g.trace('testing',p)
-            if cc and p.headString().startswith('@chapter'):
-                break
-            if not p.isExpanded():
-                # g.trace('inChapter',inChapter,'p',p,g.callers())
-                p.expand()
-                redraw_flag = True
-
-        return redraw_flag
-    #@-node:ekr.20040803072955.143:tree.expandAllAncestors
     #@+node:ekr.20040803072955.21:tree.injectCallbacks
     def injectCallbacks(self):
 
@@ -3377,7 +3362,11 @@ class nullTree (leoTree):
     def drawIcon(self,v,x=None,y=None):
         pass
 
-    def redraw_now(self,scroll=True,forceDraw=False):
+    def redraw(self,p,edit=False,editAll=False,scroll=True,forceDraw=False):
+        self.redrawCount += 1
+        # g.trace('nullTree')
+
+    def redraw_now(self,p,edit=False,editAll=False,scroll=True,forceDraw=False):
         self.redrawCount += 1
         # g.trace('nullTree')
 
