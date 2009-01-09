@@ -2404,6 +2404,7 @@ class leoTree:
                 dirtyVnodeList=dirtyVnodeList)
         if changed:
             #### c.redraw(scroll=False)
+            c.redraw_after_head_changed()
             if self.stayInTree:
                 c.treeWantsFocus()
             else:
