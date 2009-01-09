@@ -5913,11 +5913,17 @@ class baseCommands:
 
         Return None if p is no kind of @file node.'''
 
-        c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        filename = p.isAnyAtFileNode()
-        return filename and g.os_path_finalize_join(path,filename) or None
+        d = self.scanAllDirectives(p)
+        path = d.get('path')
+
+        name = ''
+        for p in p.self_and_parents_iter():
+            name = p.anyAtFileNodeName()
+            if name: break
+
+        if name:
+            name = g.os_path_finalize_join(path,name)
+        return name
     #@-node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
     #@-node:ekr.20080901124540.1:c.Directive scanning
     #@+node:ekr.20031218072017.2945:Dragging (commands)

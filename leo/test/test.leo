@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -58,7 +58,7 @@
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
-<v t="ekr.20041001211817"><vh>Buttons</vh>
+<v t="ekr.20041001211817" a="E"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
 <v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
 </v>
@@ -138,7 +138,7 @@
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
-<v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
+<v t="ekr.20070929062147" a="E"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
 <v t="ekr.20070929072043"><vh>@networkx</vh>
@@ -259,7 +259,7 @@
 </v>
 <v t="ekr.20080806145258.12"><vh>Prototype of Leo in Ajax</vh>
 <v t="ekr.20080806145258.13"><vh>To do</vh></v>
-<v t="ekr.20080806145258.14"><vh>@button Leo2DHTML</vh>
+<v t="ekr.20080806145258.14"><vh>@@button Leo2DHTML</vh>
 <v t="ekr.20080806145258.15"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
 <v t="ekr.20080806145258.16"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
 <v t="ekr.20080806145258.17"><vh>escape</vh></v>
@@ -298,7 +298,7 @@
 </v>
 <v t="ekr.20080811113441.2"><vh>Running body text as a windows script</vh>
 <v t="ekr.20080807115344.1"><vh>Windows script</vh></v>
-<v t="ekr.20080807114145.2"><vh>@button run-windows-script</vh>
+<v t="ekr.20080807114145.2"><vh>@@button run-windows-script</vh>
 <v t="ekr.20080807115344.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20080807115344.2"><vh>class MySite</vh></v>
 <v t="ekr.20080807115344.3"><vh>class Application</vh></v>
@@ -307,37 +307,59 @@
 </v>
 <v t="ekr.20080929112400.1"><vh>qt proto</vh></v>
 <v t="ekr.20081202095209.1"><vh>Put minibuffer in a toolbar</vh></v>
+<v t="ekr.20090107082739.1"><vh>replace redirectScriptOutput</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
-<v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
-<v t="ekr.20080604101239.1"><vh>Test misspelled word at index 0</vh></v>
-<v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
-<v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
+<v t="ekr.20081216091605.2"><vh>@@auto under_indent.py</vh>
+<v t="ekr.20081216114116.1"><vh>class test</vh>
+<v t="ekr.20081216114116.2"><vh>spam</vh></v>
+</v>
+</v>
+<v t="edward.20081127113749.1"><vh>@commands</vh>
+<v t="edward.20081127113749.2"><vh>@command complete-previous</vh>
+<v t="edward.20081127113749.3"><vh>WordCompleter</vh>
+<v t="edward.20081127113749.4"><vh>complete_word</vh>
+<v t="edward.20081127113749.5"><vh>&lt;&lt;backward search&gt;&gt;</vh>
+<v t="edward.20081127113749.6"><vh>&lt;&lt;counter check&gt;&gt;</vh></v>
+</v>
+<v t="edward.20081127113749.7"><vh>&lt;&lt;forward search&gt;&gt;</vh>
+<v t="edward.20081127113749.6"></v>
+</v>
+<v t="edward.20081127113749.8"><vh>&lt;&lt;clean up and exit&gt;&gt;</vh></v>
+</v>
+<v t="edward.20081127113749.9"><vh>acceptable_word</vh></v>
+<v t="edward.20081127113749.10"><vh>undo_replacement</vh></v>
+<v t="edward.20081127113749.11"><vh>redo_replacement</vh></v>
+<v t="edward.20081127113749.12"><vh>exit</vh></v>
+<v t="edward.20081127113749.13"><vh>run</vh></v>
+<v t="edward.20081127113749.14"><vh>adjust</vh></v>
+</v>
+<v t="edward.20081127113749.15"><vh>getCurrentWord</vh></v>
+</v>
+<v t="edward.20081127113749.16"><vh>@command complete-next</vh>
+<v t="edward.20081127113749.3"></v>
+<v t="edward.20081127113749.15"></v>
+</v>
+</v>
+<v t="ekr.20081124102740.1"><vh>Accented characters</vh></v>
+<v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
-<v t="ekr.20080701130406.1"><vh>plugins</vh></v>
+<v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
+<v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
 <v t="ekr.20080920101658.1"><vh>getInput</vh></v>
-<v t="ekr.20080923173133.1"><vh>scan-directives hook</vh></v>
+<v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
 <v t="ekr.20080930114036.1"><vh>icon stuff</vh>
 <v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
 <v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
 <v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
 <v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
 </v>
-<v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
+<v t="ekr.20081006070847.2"><vh>path convenience methods</vh></v>
+<v t="ekr.20080701130406.1"><vh>plugins</vh></v>
+<v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
+<v t="ekr.20080923173133.1"><vh>scan-directives hook</vh></v>
+<v t="ekr.20080604101239.1"><vh>Test misspelled word at index 0</vh></v>
 <v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
-<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
-<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
-<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
-</v>
-<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
-<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
-<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
-<v t="ekr.20080922164255.1"></v>
-<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
-<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
-<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
-</v>
-</v>
 <v t="ekr.20080813080809.1"><vh>Tests for @shadow</vh>
 <v t="ekr.20080807091001.1"><vh>@@shadow python-import-test.py</vh>
 <v t="ekr.20080807091201.7"><vh>python-import-test declarations</vh></v>
@@ -371,43 +393,23 @@
 <v t="ekr.20081001110047.3"><vh>eggs</vh></v>
 </v>
 </v>
-<v t="ekr.20081006070847.2"><vh>path convenience methods</vh></v>
-<v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
-<v t="ekr.20081124102740.1"><vh>Accented characters</vh></v>
-<v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
-<v t="edward.20081127113749.1"><vh>@commands</vh>
-<v t="edward.20081127113749.2"><vh>@command complete-previous</vh>
-<v t="edward.20081127113749.3"><vh>WordCompleter</vh>
-<v t="edward.20081127113749.4"><vh>complete_word</vh>
-<v t="edward.20081127113749.5"><vh>&lt;&lt;backward search&gt;&gt;</vh>
-<v t="edward.20081127113749.6"><vh>&lt;&lt;counter check&gt;&gt;</vh></v>
-</v>
-<v t="edward.20081127113749.7"><vh>&lt;&lt;forward search&gt;&gt;</vh>
-<v t="edward.20081127113749.6"></v>
-</v>
-<v t="edward.20081127113749.8"><vh>&lt;&lt;clean up and exit&gt;&gt;</vh></v>
-</v>
-<v t="edward.20081127113749.9"><vh>acceptable_word</vh></v>
-<v t="edward.20081127113749.10"><vh>undo_replacement</vh></v>
-<v t="edward.20081127113749.11"><vh>redo_replacement</vh></v>
-<v t="edward.20081127113749.12"><vh>exit</vh></v>
-<v t="edward.20081127113749.13"><vh>run</vh></v>
-<v t="edward.20081127113749.14"><vh>adjust</vh></v>
-</v>
-<v t="edward.20081127113749.15"><vh>getCurrentWord</vh></v>
-</v>
-<v t="edward.20081127113749.16"><vh>@command complete-next</vh>
-<v t="edward.20081127113749.3"></v>
-<v t="edward.20081127113749.15"></v>
+<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
+<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
+<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
+<v t="ekr.20080922164255.1"></v>
+<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
+<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
+<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20081216091605.2"><vh>@@auto under_indent.py</vh>
-<v t="ekr.20081216114116.1"><vh>class test</vh>
-<v t="ekr.20081216114116.2"><vh>spam</vh></v>
+<v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
+<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
+<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
+<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
+<v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
 </v>
-</v>
-<v t="ekr.20081213091503.1" a="E"><vh>Unit tests</vh>
+<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
 <v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
 <v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
 </v>
@@ -1047,17 +1049,10 @@
 </v>
 </v>
 </v>
-<v t="edward.20081221145716.1"><vh>decorator tests</vh></v>
 <v t="ekr.20090102095951.1"><vh>posList</vh>
 <v t="ekr.20090102095951.2"><vh>node a</vh></v>
 <v t="ekr.20090102095951.3"><vh>node b</vh></v>
 </v>
-<v t="ekr.20090105152652.2" a="E"><vh>@path ~</vh>
-<v t="ekr.20090105152652.1" tnodeList="ekr.20090105152652.1"><vh>@nosent homeTest.txt</vh></v>
-</v>
-<v t="ekr.20090107082739.1"><vh>replace redirectScriptOutput</vh></v>
-<v t="ekr.20090107091043.1"><vh>test redirected output</vh></v>
-<v t="ekr.20090107111908.1"><vh>@button vnode2position</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11170,10 +11165,6 @@ print type(pl)
 print pl.select('.*')</t>
 <t tx="ekr.20090102095951.2"></t>
 <t tx="ekr.20090102095951.3"></t>
-<t tx="ekr.20090105152652.1"># ----------------- Test 2
-
-</t>
-<t tx="ekr.20090105152652.2"></t>
 <t tx="ekr.20090107082739.1">old_g_es = g.es
 
 def g_es (*args,**keys):
@@ -11190,32 +11181,6 @@ g.funcToMethod(undirect,c,name='unredirectScriptOutput')
 
 print('script output now goes to the console')
 
-</t>
-<t tx="ekr.20090107091043.1">print 1/0</t>
-<t tx="ekr.20090107111908.1">import leo.core.leoNodes as leoNodes
-
-# def vnode2position (self,v):
-
-    # '''Given a vnode, create a valid position p such that p.v = v.
-
-    # Many such positions may exist. The constructed position will be
-    # the first such position in the tree.
-    # '''
-
-    # c = self
-    # stack = []
-    # while v.parents:
-        # parent = v.parents[0]
-        # n = parent.t.children.index(v)
-        # stack.insert(0,(v,n),)
-        # v = parent
-
-    # v,n = stack.pop()
-    # p = leoNodes.position(v,n,stack)
-    # assert c.positionExists(p)
-    # return p
-
-print c.vnode2position(p.v)
 </t>
 </tnodes>
 </leo_file>
