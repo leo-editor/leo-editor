@@ -4628,6 +4628,13 @@ class leoQtTree (leoFrame.leoTree):
         # return 'break'
     #@-node:ekr.20081121105001.441:onIconBoxDoubleClick
     #@-node:ekr.20081121105001.438:Icon Box...
+    #@+node:ekr.20090109104215.1:onItemClicked
+    def onItemClicked (self,item,col):
+
+        c = self.c
+        w = self.treeWidget
+        w.setCurrentItem(item)
+    #@-node:ekr.20090109104215.1:onItemClicked
     #@+node:ekr.20081121105001.161:onItemDoubleClicked
     def onItemDoubleClicked (self,item,col):
 
@@ -4644,6 +4651,12 @@ class leoQtTree (leoFrame.leoTree):
         e.connect(e,
             QtCore.SIGNAL("textEdited(QTreeWidgetItem*,int)"),
             self.onHeadChanged)
+
+        # This appears not to catch right-clicks.
+        # e.connect(e,
+            # QtCore.SIGNAL("itemClicked(QTreeWidgetItem*, int)"),
+            # self.onItemClicked)
+
         self._editWidgetPosition = p.copy()
         self._editWidget = e
         self._editWidgetWrapper = leoQtHeadlineWidget(

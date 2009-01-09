@@ -163,6 +163,8 @@ Using r1372 and the Qt plugin, I get strange results with the recent-files menu 
 4. repeat step 2.  Now window 1's recent-files list is duplicated twice...
 #@nonl
 #@-node:ekr.20090103070824.7:Recent files menu is duplicated in qt gui
+#@+node:ekr.20090109092314.2:Get rClick plugin working with qt gui.
+#@-node:ekr.20090109092314.2:Get rClick plugin working with qt gui.
 #@+node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
 @nocolor-node
 
