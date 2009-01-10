@@ -11,8 +11,6 @@
 
 safe_mode = False
     # True: Bypass k.masterKeyHandler for problem keys or visible characters.
-use_partial_redraw = False
-    # True: update the tree incrementally.
 
 # Define these to suppress pylint warnings...
 __timing = None # For timing stats.
@@ -736,7 +734,7 @@ class leoQtBody (leoFrame.leoBody):
                     hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
 
             # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
-            c.frame.tree.expandAllAncestors(w.leo_p)
+            c.expandAllAncestors(w.leo_p)
             c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
             c.redraw()
 
@@ -3492,6 +3490,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # Associating items with vnodes...
         self.item2vnodeDict = {}
+        self.tnode2itemsDict = {} # values are lists of items.
         self.vnode2itemsDict = {} # values are lists of items.
 
         self.setConfigIvars()
@@ -3708,13 +3707,13 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081121105001.409:Config... (qtTree)
     #@+node:ekr.20081121105001.412:Drawing... (qtTree)
 
-    #@+node:ekr.20090109110752.21:Entry points
+    #@+node:ekr.20090109110752.21:Entry points (qtTree)
     #@+node:ekr.20081121105001.414:full_redraw & helpers
-    def full_redraw (self,p=None,edit=None,editAll=None,scroll=False):
+    def full_redraw (self,p=None,scroll=False):
 
         '''Redraw all visible nodes of the tree'''
 
-        trace = True
+        trace = False
         c = self.c ; w = self.treeWidget
         if not w: return
         if self.redrawing:
@@ -3769,24 +3768,14 @@ class leoQtTree (leoFrame.leoTree):
             self.fullDrawing = False
             if trace:
                 theTime = tstop()
-                if not g.app.unitTesting:
+                if False or not g.app.unitTesting:
                     g.trace('%s: drew %3s nodes in %s' % (
                         self.redrawCount,self.nodeDrawCount,theTime),
                         g.callers(4))
 
     # Compatibility
-    if not use_partial_redraw:
-        redraw = full_redraw 
-        redraw_now = full_redraw
-        # redraw_after_clone = full_redraw
-        # redraw_after_contract = full_redraw
-        # redraw_after_delete = full_redraw
-        # redraw_after_expand = full_redraw
-        # redraw_after_insert = full_redraw
-        # redraw_after_move_down = full_redraw
-        # redraw_after_move_left = full_redraw
-        # redraw_after_move_right = full_redraw
-        # redraw_after_move_up = full_redraw
+    redraw = full_redraw 
+    redraw_now = full_redraw
     #@+node:ekr.20081210075843.10:contractItem & expandItem
     def contractItem (self,item):
 
@@ -3857,13 +3846,14 @@ class leoQtTree (leoFrame.leoTree):
     def initData (self):
 
         self.item2vnodeDict = {}
+        self.tnode2itemsDict = {}
         self.vnode2itemsDict = {}
 
         self._editWidgetPosition = None
         self._editWidget = None
         self._editWidgetWrapper = None
     #@-node:ekr.20081121105001.415:initData
-    #@+node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
+    #@+node:ekr.20090110140239.1:rememberItem & rememberVnodeItem (from clever-redraw)
     def rememberItem (self,p,item):
 
         self.rememberVnodeItem(p.v,item)
@@ -3873,17 +3863,34 @@ class leoQtTree (leoFrame.leoTree):
         # Update item2vnodeDict.
         self.item2vnodeDict[item] = v
 
-        # Update vnode2itemsDict.
-        d = self.vnode2itemsDict
-        aList = d.get(v,[])
+        # Update tnode2itemsDict & vnode2itemsDict.
+        table = (
+            (self.tnode2itemsDict,v.t),
+            (self.vnode2itemsDict,v))
 
-        if item in aList:
-            self.oops('item already in list: %s, %s' % (item,aList))
-        else:
-            aList.append(item)
-            d[v] = aList
-    #@-node:ekr.20081211060950.16:rememberItem & rememberVnodeItem
+        for d,key in table:
+            aList = d.get(key,[])
+            if item in aList:
+                self.error('item already in list: %s, %s' % (item,aList))
+            else:
+                aList.append(item)
+            d[key] = aList
+    #@-node:ekr.20090110140239.1:rememberItem & rememberVnodeItem (from clever-redraw)
     #@-node:ekr.20081121105001.414:full_redraw & helpers
+    #@+node:ekr.20090110133205.1:redraw_after_contract
+    def redraw_after_contract (self,p):
+
+        if self.redrawing:
+            return
+
+        item = self.position2item(p)
+
+        if item:
+            self.contractItem(item)
+        else:
+            g.trace('*** no item for %s' % p)
+            self.full_redraw()
+    #@-node:ekr.20090110133205.1:redraw_after_contract
     #@+node:ekr.20090109110752.19:redraw_after_head_changed
     def redraw_after_head_changed (self):
 
@@ -3894,35 +3901,45 @@ class leoQtTree (leoFrame.leoTree):
 
         self.redrawCount += 1 # To keep a unit test happy.
 
-        if not g.app.unitTesting:
-            g.trace('not ready yet',g.callers(4))
+        # if not g.app.unitTesting:
+            # g.trace('not ready yet',g.callers(4))
 
     #@-node:ekr.20090109110752.16:redraw_after_icons_changed
     #@+node:ekr.20081208072750.19:redraw_after_select
-    def redraw_after_select (self,p,edit=False,editAll=False):
+    def redraw_after_select (self,p):
 
         if self.redrawing: return
 
-        # Call the base select method.
+        item = self.position2item(p)
+
+        # It is not an error for position2item to fail.
+        if not item:
+            self.full_redraw(p)
+
+        # Call the base leoTree.select method.
         # This will call before/after_select_hint.
         self.select(p)
-
-        ### To do: edit the headline if necessary.
-    #@nonl
     #@-node:ekr.20081208072750.19:redraw_after_select
-    #@-node:ekr.20090109110752.21:Entry points
+    #@-node:ekr.20090109110752.21:Entry points (qtTree)
     #@+node:ekr.20090109110752.23:Helpers
     #@+node:ekr.20090109110752.24:Associating items and nodes
-    #@+node:ekr.20081209064740.1:Item dict getters
+    #@+node:ekr.20090110140239.11:item dict getters (from clever redraw)
+    def item2tnode (self,item):
+        v = self.item2vnodeDict.get(item)
+        return v and v.t
+
     def item2vnode (self,item):
         return self.item2vnodeDict.get(item)
+
+    def tnode2items(self,t):
+        return self.tnode2itemsDict.get(t,[])
 
     def vnode2items(self,v):
         return self.vnode2itemsDict.get(v,[])
 
     def isValidItem (self,item):
         return item in self.item2vnodeDict
-    #@-node:ekr.20081209064740.1:Item dict getters
+    #@-node:ekr.20090110140239.11:item dict getters (from clever redraw)
     #@+node:ekr.20081213123819.10:item2position & position2item & helpers
     #@@nocolor-node
     #@+at
@@ -3997,7 +4014,10 @@ class leoQtTree (leoFrame.leoTree):
         if n < len(children):
             item = children[n]
         else:
-            self.oops('itemCount: %s, n: %s' % (len(children),n))
+            # self.oops('itemCount: %s, n: %s' % (len(children),n))
+
+            # This is **not* an error.
+            # It simply means that we need to redraw the tree.
             item = None
 
         return item
@@ -4005,7 +4025,9 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081213055214.10:position2item
     def position2item (self,p):
 
-        '''Return the unique tree item associated with position p.'''
+        '''Return the unique tree item associated with position p.
+
+        Return None if there no such tree item.  This is *not* an error.'''
 
         parent_item = None
 
@@ -4025,7 +4047,7 @@ class leoQtTree (leoFrame.leoTree):
         '''Redraw the icon at p.'''
 
         w = self.treeWidget
-        itemOrTree = self.position2item(p)or w
+        itemOrTree = self.position2item(p) or w
         item = QtGui.QTreeWidgetItem(itemOrTree)
         icon = self.getIcon(p)
         if icon and item:
@@ -4498,10 +4520,7 @@ class leoQtTree (leoFrame.leoTree):
                     p2.expand()
                 ### c.setCurrentPosition(p2)
                 c.frame.tree.select(p2)
-                if use_partial_redraw:
-                    self.partial_redraw()
-                else:
-                    self.full_redraw()
+                self.full_redraw()
             else:
                 g.trace('Error no p2')
 

@@ -7898,7 +7898,7 @@ if wx:
                 cc.chapterSelector.update()
 
             try:
-                self.expandAllAncestors(c.currentPosition())
+                c.expandAllAncestors(c.currentPosition())
                 tree.update()
                 self.scrollTo()
             finally:

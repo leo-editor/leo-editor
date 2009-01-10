@@ -2055,7 +2055,8 @@ def new (self,event=None,gui=None):
     # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
     p._linkAsRoot(oldRoot=None)
     c.setRootVnode(v) # New in Leo 4.4.2.
-    c.editPosition(p)
+    #### c.editPosition(p)
+    c.selectPosition(p) ####
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
     p = c.currentPosition()
     if not g.doHook("menu1",c=c,p=p,v=p):

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="24" left="480" height="930" width="799"/>
+	<global_window_position top="24" left="535" height="930" width="744"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1150,7 +1150,7 @@
 </v>
 <v t="ekr.20070611105423.1"><vh>@test contract all</vh></v>
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
-<v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
+<v t="ekr.20070611105728"><vh>@@@test illegal clone demote FAILS</vh></v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194216"><vh>leoConfig</vh>
@@ -2478,6 +2478,7 @@
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+<v t="ekr.20070611105728"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -16415,17 +16416,31 @@ if not g.os_path_exists(s):
     g.pr('created chinese file')
     
 </t>
-<t tx="ekr.20070114140212">@
+<t tx="ekr.20070114140212"># Remove any previous children.
+while p.hasChildren():
+    p.firstChild().doDelete()
+# Create two cloned children.
+c.selectPosition(p)
+c.insertHeadline()
+p2 = c.currentPosition()
+p2.moveToFirstChildOf(p)
+p2.setHeadString('aClone')
+c.selectPosition(p2)
+c.clone()
+assert 2 == p.numberOfChildren()
 
-Important warnings:
-    
-1. Do not run tests from this file after opening unitTest.leo from another .leo
-   file. The unit tests in this file open and close many .leo files and many
-   strange things can happen if you have opened this file from another file.
-
-2. Some unit tests may fail if you do select other windows or other applications
-   while running these tests. Therefore, you should leave your computer
-   completely alone while running these unit tests.
+try:
+    # Select the first clone and demote (it should be illegal)
+    c.selectPosition(p2)
+    c.demote() # This should do nothing.
+    assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+    assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
+    assert 2 == p.numberOfChildren(), 'fail 3'
+    # Delete the children, but only if there are no errors.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+finally:
+    c.redraw()
 </t>
 <t tx="ekr.20070131162935">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
@@ -16921,7 +16936,8 @@ finally:
 <t tx="ekr.20070611081718.2"></t>
 <t tx="ekr.20070611081718.4"></t>
 <t tx="ekr.20070611105423.1">c.contractAllHeadlines()</t>
-<t tx="ekr.20070611105728"># Remove any previous children.
+<t tx="ekr.20070611105728">g.pdb()
+# Remove any previous children.
 while p.hasChildren():
     p.firstChild().doDelete()
 # Create two cloned children.

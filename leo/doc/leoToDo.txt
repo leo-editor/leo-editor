@@ -1583,7 +1583,8 @@ def new (self,event=None,gui=None):
     # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
     p._linkAsRoot(oldRoot=None)
     c.setRootVnode(v) # New in Leo 4.4.2.
-    c.editPosition(p)
+    #### c.editPosition(p)
+    c.selectPosition(p) ####
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
     p = c.currentPosition()
     if not g.doHook("menu1",c=c,p=p,v=p):
@@ -1923,8 +1924,8 @@ def save (self,event=None):
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
 
-    c.redraw(w=w)
-    #### c.widgetWantsFocusNow(w)
+    c.redraw()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
 def saveAs (self,event=None):
@@ -1960,8 +1961,8 @@ def saveAs (self,event=None):
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
 
-    c.redraw(w=w)
-    #### c.widgetWantsFocusNow(w)
+    c.redraw()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
 def saveAsUnzipped (self,event=None):
@@ -2015,8 +2016,8 @@ def saveTo (self,event=None):
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
 
-    c.redraw(w=w)
-    #### c.widgetWantsFocusNow(w)
+    c.redraw()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert
 def revert (self,event=None):

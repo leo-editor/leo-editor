@@ -2216,7 +2216,7 @@ class tkinterListBoxDialog (leoTkinterDialog):
         if items:
             n = items[0]
             p = self.positionList[n]
-            c.frame.tree.expandAllAncestors(p)
+            c.expandAllAncestors(p)
             c.selectPosition(p)
             c.redraw()
     #@-node:ekr.20081121110412.79:go
@@ -7055,6 +7055,7 @@ class leoTkinterTree (leoFrame.leoTree):
     #@-node:ekr.20081121110412.469:traceIds (Not used)
     #@-node:ekr.20081121110412.467:Debugging...
     #@+node:ekr.20081121110412.470:Drawing... (tkTree)
+    #@+node:ekr.20090110073024.10:Entry points (tkTree)
     #@+node:ekr.20081121110412.471:tree.begin/endUpdate
     def beginUpdate (self):
 
@@ -7075,7 +7076,10 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20081121110412.472:tree.redraw_now & helper
     # New in 4.4b2: suppress scrolling by default.
 
-    def redraw_now (self,scroll=False,forceDraw=False):
+    def redraw_now (self,
+        p=None,edit=None,editAll=None,
+        scroll=False,forceDraw=False
+    ):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
@@ -7084,7 +7088,10 @@ class leoTkinterTree (leoFrame.leoTree):
         if self.drag_p and not forceDraw:
             return
 
+        trace = True
         c = self.c
+
+        if trace: g.trace(self.redrawCount)
 
         if not g.app.unitTesting:
             if self.gc_before_redraw:
@@ -7107,7 +7114,7 @@ class leoTkinterTree (leoFrame.leoTree):
             self.endUpdate(False)
 
         # Do the actual redraw.
-        self.expandAllAncestors(c.currentPosition())
+        c.expandAllAncestors(c.currentPosition())
         if self.idle_redraw:
             def idleRedrawCallback(event=None,self=self,scroll=scroll):
                 self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
@@ -7156,6 +7163,27 @@ class leoTkinterTree (leoFrame.leoTree):
         self.canvas['cursor'] = oldcursor
     #@-node:ekr.20081121110412.473:redrawHelper
     #@-node:ekr.20081121110412.472:tree.redraw_now & helper
+    #@+node:ekr.20090110134111.11:redraw_after_contract
+    def redraw_after_contract (self,p):
+
+        self.redraw_now()
+    #@-node:ekr.20090110134111.11:redraw_after_contract
+    #@+node:ekr.20090110073024.11:redraw_after_head_changed
+    def redraw_after_head_changed (self):
+
+        self.redraw_now()
+    #@-node:ekr.20090110073024.11:redraw_after_head_changed
+    #@+node:ekr.20090110073024.13:redraw_after_icons_changed
+    def redraw_after_icons_changed (self,all=False):
+
+        pass ### Not ready yet.
+    #@-node:ekr.20090110073024.13:redraw_after_icons_changed
+    #@+node:ekr.20090110073024.12:redraw_after_select
+    def redraw_after_select (self,p,edit=False,editAll=False):
+
+        self.redraw_now()
+    #@-node:ekr.20090110073024.12:redraw_after_select
+    #@-node:ekr.20090110073024.10:Entry points (tkTree)
     #@+node:ekr.20081121110412.474:idle_second_redraw
     def idle_second_redraw (self):
 

@@ -528,7 +528,8 @@ class baseCommands:
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
         p._linkAsRoot(oldRoot=None)
         c.setRootVnode(v) # New in Leo 4.4.2.
-        c.editPosition(p)
+        #### c.editPosition(p)
+        c.selectPosition(p) ####
         # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
         p = c.currentPosition()
         if not g.doHook("menu1",c=c,p=p,v=p):
@@ -887,8 +888,8 @@ class baseCommands:
                 c.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
 
-        c.redraw(w=w)
-        #### c.widgetWantsFocusNow(w)
+        c.redraw()
+        c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2834:save (commands)
     #@+node:ekr.20031218072017.2835:saveAs
     def saveAs (self,event=None):
@@ -924,8 +925,8 @@ class baseCommands:
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
 
-        c.redraw(w=w)
-        #### c.widgetWantsFocusNow(w)
+        c.redraw()
+        c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2835:saveAs
     #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
     def saveAsUnzipped (self,event=None):
@@ -979,8 +980,8 @@ class baseCommands:
             c.updateRecentFiles(fileName)
             g.chdir(fileName)
 
-        c.redraw(w=w)
-        #### c.widgetWantsFocusNow(w)
+        c.redraw()
+        c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2836:saveTo
     #@+node:ekr.20031218072017.2837:revert
     def revert (self,event=None):
@@ -3535,9 +3536,8 @@ class baseCommands:
         #### c.selectPosition(p)
         c.setChanged(True)
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-        c.redraw(p,edit=True,editAll=True) ####
-
-        ### c.editPosition(p,selectAll=True)
+        c.redraw(p)
+        c.editPosition(p,selectAll=True)
 
         return p # for mod_labels plugin.
     #@-node:ekr.20031218072017.1761:c.insertHeadline
@@ -3565,10 +3565,12 @@ class baseCommands:
         if c.validateOutline():
             u.afterCloneNode(clone,'Clone Node',undoData,dirtyVnodeList=dirtyVnodeList)
             #### c.selectPosition(clone)
-
-        c.redraw(clone) ####
-
-        return clone # For mod_labels and chapters plugins.
+            c.redraw(clone) ####
+            return clone # For mod_labels and chapters plugins.
+        else:
+            clone.doDelete()
+            c.setCurrentPosition(p)
+            return None
     #@-node:ekr.20031218072017.1762:c.clone
     #@+node:ekr.20031218072017.1765:c.validateOutline
     # Makes sure all nodes are valid.
@@ -4511,8 +4513,9 @@ class baseCommands:
         # g.trace(p.headString())
 
         p.contract()
-        c.redraw(setFocus=True)
-        ### c.treeFocusHelper()
+        #### c.redraw(setFocus=True)
+        #### c.treeFocusHelper()
+        c.redraw_after_contract(setFocus=True)
     #@-node:ekr.20031218072017.2901:contractNode
     #@+node:ekr.20040930064232:contractNodeOrGoToParent
     def contractNodeOrGoToParent (self,event=None):
@@ -5593,6 +5596,7 @@ class baseCommands:
             if redraw or flag:
                 #### c.redraw(p,setFocus=True)
                 c.redraw_after_select(p)
+                c.treeFocusHelper()
             else:
                 c.selectPosition(p) ####
                 c.treeFocusHelper()
@@ -6303,76 +6307,89 @@ class baseCommands:
         c.frame.body.colorizer.colorize(p,
             incremental=incremental,interruptable=interruptable)
     #@-node:ekr.20080514131122.13:c.recolor_now
-    #@+node:ekr.20080514131122.14:c.redraw and c.redraw_after_select
-    if 1: # New api.
+    #@+node:ekr.20080514131122.14:c.redrawing...
+    #@+node:ekr.20090110073010.1:c.redraw
+    def redraw (self,p=None,setFocus=False,scroll=True):
+        '''Redraw the screen immediately.'''
 
-        def redraw (self,p=None,edit=False,editAll=False,setFocus=False,scroll=True,w=None):
-            c = self
-            if not p: p = c.currentPosition()
-            c.expandAllAncestors(p)
-            c.frame.tree.redraw(
-                p,edit=edit,editAll=editAll,scroll=scroll)
-            if setFocus: c.treeFocusHelper()
-            if w: c.set_focus(w)
+        c = self
+        if p:
+            # Update body pane and set c._currentPosition.
+            c.selectPosition(p)
+        else:
+            p = c.currentPosition()
 
-        def redraw_after_select(self,p,edit=False,editAll=False,setFocus=False,w=None):
-            c = self
-            c.expandAllAncestors(p)
-            c.frame.tree.redraw_after_select(p,edit=edit,editAll=editAll)
-            if setFocus: c.treeFocusHelper()
-            if w: c.set_focus(w)
-
-        redraw_now = redraw
-
-    else:
-
-        def redraw (self,scroll=True):
-            c = self
-            c.requestRedrawFlag = True
-            # This makes c.redraw *not quite* the same as c.endUpdate.
-            c.requestRedrawScrollFlag = scroll
-
-        def redraw_now (self):
-            c = self
-            c.requestRedrawFlag = True
-            c.outerUpdate()
-            if c.requestRedrawFlag:
-                g.es_print('redraw_now: can not happen',g.callers())
-            # assert not c.requestRedrawFlag
-
-        def redraw_after_select(self,p,edit=False,editAll=False):
-            return self.frame.tree.redraw_after_select(p,edit=edit,editAll=editAll)
-
+        c.expandAllAncestors(p)
+        c.frame.tree.redraw(p,scroll=scroll)
+        if setFocus: c.treeFocusHelper()
 
     # Compatibility with old scripts
-    force_redraw = redraw_now
-    #@-node:ekr.20080514131122.14:c.redraw and c.redraw_after_select
-    #@+node:ekr.20081020151805.2:c.redraw_after methods (new)
-    def redraw_after_icons_changed(self,all=False):
-        return self.frame.tree.redraw_after_icons_changed(all)
-    def redraw_after_clone(self):
-        return self.frame.tree.redraw_after_clone()
-    def redraw_after_contract(self):
-        return self.frame.tree.redraw_after_contract()
-    def redraw_after_delete(self):
-        return self.frame.tree.redraw_after_delete()
-    def redraw_after_expand(self):
-        return self.frame.tree.redraw_after_expand()
+    force_redraw = redraw
+    redraw_now = redraw
+
+    # Old code
+
+    # def redraw (self,scroll=True):
+        # c = self
+        # c.requestRedrawFlag = True
+        # # This makes c.redraw *not quite* the same as c.endUpdate.
+        # c.requestRedrawScrollFlag = scroll
+
+    # def redraw_now (self):
+        # c = self
+        # c.requestRedrawFlag = True
+        # c.outerUpdate()
+        # if c.requestRedrawFlag:
+            # g.es_print('redraw_now: can not happen',g.callers())
+        # # assert not c.requestRedrawFlag
+    #@nonl
+    #@-node:ekr.20090110073010.1:c.redraw
+    #@+node:ekr.20090110131802.2:c.redraw_after_contract
+    def redraw_after_contract (self,p=None,setFocus=False):
+
+        c = self
+
+        if p:
+            c.setCurrentPosition(p)
+        else:
+            p = c.currentPosition()
+
+        c.frame.tree.redraw_after_contract(p)
+
+        if setFocus:
+            c.treeFocusHelper()
+    #@-node:ekr.20090110131802.2:c.redraw_after_contract
+    #@+node:ekr.20090110073010.2:c.redraw_after_head_changed
     def redraw_after_head_changed(self):
+
+        '''Redraw the screen (if needed) when editing ends.
+        This may be a do-nothing for some gui's.'''
+
         return self.frame.tree.redraw_after_head_changed()
-    def redraw_after_insert(self):
-        return self.frame.tree.redraw_after_insert()
-    def redraw_after_move_down(self):
-        return self.frame.tree.redraw_after_move_down()
-    def redraw_after_move_left(self):
-        return self.frame.tree.redraw_after_move_left()
-    def redraw_after_move_right(self):
-        return self.frame.tree.redraw_after_move_right()
-    def redraw_after_move_up(self):
-        return self.frame.tree.redraw_after_move_up()
-    # def redraw_after_select(self):
-        # return self.frame.tree.redraw_after_select()
-    #@-node:ekr.20081020151805.2:c.redraw_after methods (new)
+    #@-node:ekr.20090110073010.2:c.redraw_after_head_changed
+    #@+node:ekr.20090110073010.3:c.redraw_afer_icons_changed
+    def redraw_after_icons_changed(self,all=False):
+
+        '''Update the icon for the presently selected node,
+        or all icons if the 'all' flag is true.'''
+
+        return self.frame.tree.redraw_after_icons_changed(all)
+    #@-node:ekr.20090110073010.3:c.redraw_afer_icons_changed
+    #@+node:ekr.20090110073010.4:c.redraw_after_select
+    def redraw_after_select(self,p,setFocus=False):
+
+        '''Redraw the screen after node p has been selected.
+
+        The intention is for the gui to just select the node
+        if it is visible, and to completely redraw the screen otherwise.'''
+
+        c = self
+        c.setCurrentPosition(p)
+        c.expandAllAncestors(p)
+        c.frame.tree.redraw_after_select(p)
+        if setFocus: c.treeFocusHelper()
+    #@-node:ekr.20090110073010.4:c.redraw_after_select
+    #@-node:ekr.20080514131122.14:c.redrawing...
     #@+node:ekr.20080514131122.15:c.restoreFocus
     def restoreFocus (self):
 

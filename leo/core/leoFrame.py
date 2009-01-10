@@ -2275,7 +2275,7 @@ class leoTree:
         'setEditPosition',
         # Others.
         'endEditLabel',
-        'expandAllAncestors',
+        # 'expandAllAncestors', # Now defined in Commands class.
         'injectCallbacks',
         'OnIconDoubleClick',
         'onHeadChanged',
@@ -2314,10 +2314,8 @@ class leoTree:
 
     # Drawing & scrolling.
     def drawIcon(self,v,x=None,y=None):             self.oops()
-    def redraw(self,edit=False,editAll=False,scroll=True,forceDraw=False):
-        self.oops()
-    def redraw_now(self,edit=False,editAll=False,scroll=True,forceDraw=False):
-        self.oops()
+    def redraw(self,scroll=True,forceDraw=False):   self.oops()
+    def redraw_now(self,scroll=True,forceDraw=False):self.oops()
     def scrollTo(self,p):                           self.oops()
     idle_scrollTo = scrollTo # For compatibility.
 
@@ -2674,23 +2672,18 @@ class leoTree:
 
     def afterSelectHint(self,p,old_p):
         '''Called at end of tree.select.'''
+        pass
 
     def beforeSelectHint (self,p,old_p):
         '''Called at start of tree.select.'''
+        pass
 
     # These are hints for optimization.
     # The proper default is c.redraw()
-    def redraw_after_icons_changed(self,all=False): self.c.redraw()
-    def redraw_after_clone(self):                   self.c.redraw()
-    def redraw_after_contract(self):                self.c.redraw()
-    def redraw_after_delete(self):                  self.c.redraw()
-    def redraw_after_expand(self):                  self.c.redraw()
-    def redraw_after_insert(self):                  self.c.redraw()
-    def redraw_after_move_down(self):               self.c.redraw()
-    def redraw_after_move_left(self):               self.c.redraw()
-    def redraw_after_move_right(self):              self.c.redraw()
-    def redraw_after_move_up(self):                 self.c.redraw()
-    def redraw_after_select(self):                  self.c.redraw()
+    def redraw_after_icons_changed(self,all=False):         self.c.redraw()
+    def redraw_after_clone(self):                           self.c.redraw()
+    def redraw_after_contract(self,p=None,setFocus=False):  self.c.redraw()
+    def redraw_after_select(self):                          self.c.redraw()
 
 
     #@-node:ekr.20081005065934.8:May be defined in subclasses
@@ -3363,11 +3356,11 @@ class nullTree (leoTree):
     def drawIcon(self,v,x=None,y=None):
         pass
 
-    def redraw(self,p,edit=False,editAll=False,scroll=True,forceDraw=False):
+    def redraw(self,p,scroll=True,forceDraw=False):
         self.redrawCount += 1
         # g.trace('nullTree')
 
-    def redraw_now(self,p,edit=False,editAll=False,scroll=True,forceDraw=False):
+    def redraw_now(self,p,scroll=True,forceDraw=False):
         self.redrawCount += 1
         # g.trace('nullTree')
 

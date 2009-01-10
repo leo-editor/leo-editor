@@ -275,7 +275,7 @@ def redrawEntireTree (self):
     self.nodeDrawCount = 0
     self.redrawing = True
     try:
-        self.expandAllAncestors(c.currentPosition())
+        c.expandAllAncestors(c.currentPosition())
         self.initData()
         p = c.rootPosition()
         sibs = p.v.children
@@ -570,6 +570,36 @@ def allAncestorsExpanded (self,p):
     else:
         return True
 #@-node:ekr.20081121105001.413:allAncestorsExpanded
+#@+node:ekr.20081211060950.16:rememberItem & rememberVnodeItem (OLD)
+# def rememberItem (self,p,item):
+
+    # self.rememberVnodeItem(p.v,item)
+
+# def rememberVnodeItem (self,v,item):
+
+    # # Update item2vnodeDict.
+    # self.item2vnodeDict[item] = v
+
+    # # Update vnode2itemsDict.
+    # d = self.vnode2itemsDict
+    # aList = d.get(v,[])
+
+    # if item in aList:
+        # self.oops('item already in list: %s, %s' % (item,aList))
+    # else:
+        # aList.append(item)
+        # d[v] = aList
+#@-node:ekr.20081211060950.16:rememberItem & rememberVnodeItem (OLD)
+#@+node:ekr.20081209064740.1:Item dict getters (OLD)
+# def item2vnode (self,item):
+    # return self.item2vnodeDict.get(item)
+
+# def vnode2items(self,v):
+    # return self.vnode2itemsDict.get(v,[])
+
+# def isValidItem (self,item):
+    # return item in self.item2vnodeDict
+#@-node:ekr.20081209064740.1:Item dict getters (OLD)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
