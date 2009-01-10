@@ -4154,7 +4154,7 @@ class leoQtTree (leoFrame.leoTree):
         p = leoNodes.position(v,childIndex,stack)
 
         if not p:
-            self.oops('p: %s, v: %s, stack: %s' % (
+            self.oops('p: %s, v: %s, childIndex: %s, stack: %s' % (
                 p,v,childIndex,stack))
 
         return p
