@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="8,5"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -7079,7 +7079,9 @@ future changes to the internals of these classes.
 	p.following_siblings_iter  # returns all siblings following p.
 	p.subtree_iter             # returns all positions in p's subtree, excluding p.
 	p.self_and_subtree_iter    # returns all positions in p's subtree, including p.</t>
-<t tx="ekr.20040414161647">@language rest
+<t tx="ekr.20040414161647">@nocolor-node
+
+@language rest
 
 These are the sources for the html version of Leo's users guide,
 as well as the documentation for the rst3 plugin used to create the actual html files.

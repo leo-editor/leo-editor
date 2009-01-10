@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="1,8"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -23,7 +23,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20041119035137"><vh>About this file</vh>
+<v t="ekr.20041119035137" a="E"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes: @type-name setting-name = value</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
@@ -6276,13 +6276,9 @@ Notes:
 - The path starts at g.app.loadDir, so for example ../test/scriptFile.py is equivalent to leo/test/scriptFile.py
 - The filename should end in .py.</t>
 <t tx="ekr.20070224073109">@enabled-plugins nodes contain the list of enabled plugins,
-just as was formerly contained in pluginsManager.txt files.
+one per line. Comment lines starting with '#' are ignored.
 
-Leo loads plugins in the order they appear. The *first* mention of a plugin in
-controls whether the plugin is enabled or not. If the plugin's name is commented
-out (appears on a line starting with #), it is disabled, otherwise it is
-enabled. Plugins not appearing here are disabled. File names may be indented as
-desired.</t>
+Leo loads plugins in the order they appear.</t>
 <t tx="ekr.20070224073109.1"># Leo loads plugins in the order they appear here.
 #
 # The FIRST mention of a plugin controls whether the plugin is enable or not:
