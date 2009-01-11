@@ -3537,7 +3537,7 @@ class baseCommands:
         c.setChanged(True)
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
         c.redraw(p)
-        c.editPosition(p,selectAll=True)
+        c.editPosition(p,selectAll=True) # Must follow c.redraw(p)
 
         return p # for mod_labels plugin.
     #@-node:ekr.20031218072017.1761:c.insertHeadline
@@ -4948,7 +4948,8 @@ class baseCommands:
         next = p.next()
         while next:
             if not c.checkMoveWithParentWithWarning(next,p,True):
-                c.treeFocusHelper() ; return
+                c.treeFocusHelper()
+                return
             next.moveToNext()
 
         c.endEditing()
@@ -7330,9 +7331,12 @@ class baseCommands:
     #@-node:ekr.20031218072017.2982:Getters & Setters
     #@+node:ekr.20031218072017.2990:Selecting & Updating (commands)
     #@+node:ekr.20031218072017.2991:c.editPosition
-    # Selects v: sets the focus to p and edits p.
+    # Sets the focus to p and edits p.
 
     def editPosition(self,p,selectAll=False):
+
+        '''Select position p and start editing the headline.
+        This method must follow a call to c.redraw(p).'''
 
         c = self ; k = c.k
 
@@ -7387,19 +7391,21 @@ class baseCommands:
 
     selectVnode = selectPosition
     #@-node:ekr.20031218072017.2997:c.selectPosition
-    #@+node:ekr.20031218072017.2998:c.selectVnodeWithEditing
+    #@+node:ekr.20031218072017.2998:c.selectPositioniWithEditing
     # Selects the given node and enables editing of the headline if editFlag is True.
 
-    def selectVnodeWithEditing(self,v,editFlag):
+    # def selectPositionWithEditing(self,p,editFlag):
 
-        c = self
-        if editFlag:
-            c.editPosition(v)
-        else:
-            c.selectVnode(v)
+        # c = self
+        # if editFlag:
+            # c.redraw(p)
+            # c.editPosition(p) # Must follow c.redraw(p)
+        # else:
+            # c.selectPosition(p)
 
-    selectPositionWithEditing = selectVnodeWithEditing
-    #@-node:ekr.20031218072017.2998:c.selectVnodeWithEditing
+    # Deprecated compatibility.
+    # selectVnodeWithEditing = selectPositionWithEditing
+    #@-node:ekr.20031218072017.2998:c.selectPositioniWithEditing
     #@+node:ekr.20060923202156:c.onCanvasKey
     def onCanvasKey (self,event):
 

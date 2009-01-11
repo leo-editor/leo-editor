@@ -7088,10 +7088,10 @@ class leoTkinterTree (leoFrame.leoTree):
         if self.drag_p and not forceDraw:
             return
 
-        trace = True
+        trace = False
         c = self.c
 
-        if trace: g.trace(self.redrawCount)
+        if trace: g.trace(self.redrawCount,g.callers(4))
 
         if not g.app.unitTesting:
             if self.gc_before_redraw:
@@ -7176,7 +7176,7 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20090110073024.13:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
 
-        pass ### Not ready yet.
+        self.redraw_now()
     #@-node:ekr.20090110073024.13:redraw_after_icons_changed
     #@+node:ekr.20090110073024.12:redraw_after_select
     def redraw_after_select (self,p,edit=False,editAll=False):
@@ -8708,7 +8708,7 @@ class leoTkinterTree (leoFrame.leoTree):
         p = self.c.currentPosition()
         self.setSelectedLabelState(p)
     #@-node:ekr.20081121110412.551:dimEditLabel, undimEditLabel
-    #@+node:ekr.20081121110412.552:tree.editLabel
+    #@+node:ekr.20081121110412.552:tree.editLabel (tkTree)
     def editLabel (self,p,selectAll=False):
 
         """Start editing p's headline."""
@@ -8723,8 +8723,8 @@ class leoTkinterTree (leoFrame.leoTree):
 
             self.endEditLabel()
             # This redraw *is* required so the c.edit_widget(p) will exist.
-            c.redraw()
-            c.outerUpdate()
+            # c.redraw()
+            # c.outerUpdate()
 
         self.setEditPosition(p) # That is, self._editPosition = p
         w = c.edit_widget(p)
@@ -8738,7 +8738,7 @@ class leoTkinterTree (leoFrame.leoTree):
             c.k.showStateAndMode(w)
 
         if trace: g.trace('w',w,'focus',g.app.gui.get_focus(c))
-    #@-node:ekr.20081121110412.552:tree.editLabel
+    #@-node:ekr.20081121110412.552:tree.editLabel (tkTree)
     #@+node:ekr.20081121110412.553:tree.set...LabelState
     #@+node:ekr.20081121110412.554:setEditLabelState
     def setEditLabelState (self,p,selectAll=False): # selected, editing

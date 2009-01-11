@@ -1150,7 +1150,7 @@
 </v>
 <v t="ekr.20070611105423.1"><vh>@test contract all</vh></v>
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
-<v t="ekr.20070611105728"><vh>@@@test illegal clone demote FAILS</vh></v>
+<v t="ekr.20070611105728"><vh>@test illegal clone demote LOOPS</vh></v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194216"><vh>leoConfig</vh>
@@ -2478,7 +2478,6 @@
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
-<v t="ekr.20070611105728"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -13414,8 +13413,11 @@ finally:
     c.setBodyString(p,'')</t>
 <t tx="ekr.20051122095426"></t>
 <t tx="ekr.20051125155134">n = c.frame.tree.redrawCount
+# print ('before')
 c.insertHeadline()
 c.outerUpdate()
+# print ('after')
+
 try:
     n2 = c.frame.tree.redrawCount
     assert n2 == n + 1,'redraws: %d' % (n2 - n)
@@ -13623,30 +13625,32 @@ finally:
         c.setHeadString(p,h)
         c.frame.tree.setHeadline(p,h)
         c.redraw_now()</t>
-<t tx="ekr.20060208072358">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20060208072358"># This test is too flaky for Tk.
+if g.app.gui.guiName() != 'tkinter':
 
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.bodyWantsFocusNow()
-c.redraw_now() # To make node visible
-n = c.frame.tree.redrawCount
-assert not p.bodyString(), 'oops1'
-try:
-    # g.pr('before insert a',c.currentPosition())
-    assert p == c.currentPosition(),'position has changed!'
-    c.frame.body.bodyCtrl.event_generate('a')
-    # g.pr('after insert a')
-    assert p.bodyString() == 'a', 'expected "a", got: %s' % repr(p.bodyString())
-    if g.app.gui.guiName() != 'nullGui':
-        n2 = c.frame.tree.redrawCount
-        c.outerUpdate() # Force the coloring before doing the test.
-        assert n2 == n + 1,'too many or too few redraws: expected 1: got: %d' % (n2-n)
-finally:
-    if 1:
-        c.setBodyString(p,'')
-        c.redraw_now()</t>
+    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+    
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h,breakOnError=True)
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.bodyWantsFocusNow()
+    c.redraw_now() # To make node visible
+    n = c.frame.tree.redrawCount
+    assert not p.bodyString(), 'oops1'
+    try:
+        # g.pr('before insert a',c.currentPosition())
+        assert p == c.currentPosition(),'position has changed!'
+        c.frame.body.bodyCtrl.event_generate('a')
+        assert p.bodyString() == 'a', 'expected "a", got: %s' % repr(p.bodyString())
+        if g.app.gui.guiName() != 'nullGui':
+            n2 = c.frame.tree.redrawCount
+            c.outerUpdate() # Force the coloring before doing the test.
+            assert n2 == n + 1,'too many or too few redraws: expected 1: got: %d' % (n2-n)
+    finally:
+        if 1:
+            c.setBodyString(p,'')
+            c.redraw_now()</t>
 <t tx="ekr.20060208072415">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -16312,7 +16316,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-g.pr('\End of leoColor tests')</t>
+g.pr('\nEnd of leoColor tests')</t>
 <t tx="ekr.20061127142311">#ab
 #
 
@@ -16936,8 +16940,7 @@ finally:
 <t tx="ekr.20070611081718.2"></t>
 <t tx="ekr.20070611081718.4"></t>
 <t tx="ekr.20070611105423.1">c.contractAllHeadlines()</t>
-<t tx="ekr.20070611105728">g.pdb()
-# Remove any previous children.
+<t tx="ekr.20070611105728"># Remove any previous children.
 while p.hasChildren():
     p.firstChild().doDelete()
 # Create two cloned children.
@@ -16950,18 +16953,19 @@ c.selectPosition(p2)
 c.clone()
 assert 2 == p.numberOfChildren()
 
-try:
-    # Select the first clone and demote (it should be illegal)
-    c.selectPosition(p2)
-    c.demote() # This should do nothing.
-    assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
-    assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
-    assert 2 == p.numberOfChildren(), 'fail 3'
-    # Delete the children, but only if there are no errors.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-finally:
-    c.redraw()
+if 1:
+    try:
+        # Select the first clone and demote (it should be illegal)
+        c.selectPosition(p2)
+        c.demote() # This should do nothing.
+        assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+        assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
+        assert 2 == p.numberOfChildren(), 'fail 3'
+        # Delete the children, but only if there are no errors.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+    finally:
+        c.redraw()
 </t>
 <t tx="ekr.20070615070259"></t>
 <t tx="ekr.20070626153940">'''

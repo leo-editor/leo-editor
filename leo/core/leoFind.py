@@ -1369,16 +1369,16 @@ class leoFind:
         if not p: g.trace('can not happen: self.p is None')
 
         c.selectPosition(p)
-        if redraw:
-            c.redraw_now() # was c.redraw.
+        if redraw or self.inHeadline:
+            c.redraw(p)
         if self.in_headline:
-            c.editPosition(p)
-        # Set the focus and selection after the redraw.
+            c.editPosition(p) # Must follow c.redraw(p)
+        # Set the focus
         w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
         if not w: return
         c.widgetWantsFocusNow(w)
         c.k.showStateAndMode(w)
-        # New in 4.4a3: a much better way to ensure progress in backward searches.
+        # Ensure progress in backward searches.
         insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
         #g.trace('reverse,pos,newpos,insert',self.reverse,pos,newpos,insert)
         w.setSelectionRange(pos,newpos,insert=insert)

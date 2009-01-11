@@ -1909,7 +1909,8 @@ class leoFrame:
             c.notValidInBatchMode("Insert Headline Time")
             return
 
-        c.editPosition(p)
+        c.redraw(p)
+        c.editPosition(p) # Must follow c.redraw(p)
         c.frame.tree.setEditLabelState(p)
         w = c.edit_widget(p)
         if w:
