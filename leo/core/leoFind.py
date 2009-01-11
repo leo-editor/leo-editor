@@ -1057,7 +1057,8 @@ class leoFind:
 
     def selectNextPosition(self):
 
-        c = self.c ; p = self.p ; trace = False
+        trace = False
+        c = self.c ; p = self.p
 
         # Start suboutline only searches.
         if self.suboutline_only and not self.onlyPosition:
@@ -1133,7 +1134,8 @@ class leoFind:
 
         c = self.c ; w = self.find_ctrl
 
-        # g.trace(g.callers())
+        g.trace(g.callers(4))
+
         c.widgetWantsFocusNow(w)
         # g.app.gui.selectAllText(w)
         w.selectAllText()
@@ -1203,8 +1205,13 @@ class leoFind:
     # Call this routine when moving to the next node when a search fails.
     # Same as above except we don't reset wrapping flag.
     def initNextText(self,ins=None):
-        p = self.p
+        c,p = self.c,self.p
         s = g.choose(self.in_headline,p.headString(), p.bodyString())
+        # g.trace(self.in_headline,len(s),p.headString())
+        if not self.in_headline:
+            tree = c.frame.tree
+            if hasattr(tree,'killEditing'):
+                tree.killEditing() # Support for Qt tree.
         self.init_s_ctrl(s,ins)
 
     def init_s_ctrl (self,s,ins):
@@ -1307,19 +1314,21 @@ class leoFind:
             t.setInsertPoint(insert)
             t.seeInsertPoint()
 
-        #g.trace(c.widget_name(t))
-
         if 1: # I prefer always putting the focus in the body.
             c.invalidateFocus()
             c.bodyWantsFocusNow()
             c.k.showStateAndMode(c.frame.body.bodyCtrl)
         else:
             c.widgetWantsFocusNow(t)
+    #@nonl
     #@-node:ekr.20031218072017.3089:restore
     #@+node:ekr.20031218072017.3090:save
     def save (self):
 
         c = self.c ; p = self.p
+
+        # g.trace(p.headString(),c.edit_widget(p))
+
         w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
 
         # 2007/10/24: defensive programming for unit tests.

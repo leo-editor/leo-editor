@@ -6242,6 +6242,8 @@ class baseCommands:
         if not c.exists or not c.k:
             return
 
+        # g.trace('before')
+
         # Suppress any requested redraw until we have iconified or diconified.
         redrawFlag = c.requestRedrawFlag
         scrollFlag = c.requestRedrawScrollFlag
@@ -6287,6 +6289,8 @@ class baseCommands:
         c.requestedFocusWidget = None
         c.requestedIconify = ''
         c.requestedRedrawScrollFlag = False
+
+        # g.trace('after')
     #@-node:ekr.20080514131122.20:c.outerUpdate
     #@+node:ekr.20080514131122.12:c.recolor & requestRecolor
     def requestRecolor (self):
