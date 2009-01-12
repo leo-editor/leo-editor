@@ -12,7 +12,7 @@ def testIndexError():
     b = a[2]
  
 # The next line is used by @test c.checkFileTimeStamp.   
-# timestamp: 1231781301.2
+# timestamp: 1231790607.36
 #@nonl
 #@-node:ekr.20070627082044.808:@thin ../test/unittest/errorTest.py
 #@-leo

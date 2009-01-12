@@ -3715,7 +3715,7 @@ class leoQtTree (leoFrame.leoTree):
 
         Preserve the vertical scrolling unless scroll is True.'''
 
-        trace = False
+        trace = True
         c = self.c ; w = self.treeWidget
         if not w: return
         if self.redrawing:
@@ -3891,8 +3891,10 @@ class leoQtTree (leoFrame.leoTree):
 
         if item:
             self.contractItem(item)
+            self.killEditing()
         else:
-            g.trace('*** no item for %s' % p)
+            # This is not an error.
+            # We may have contracted a node that was not, in fact, visible.
             self.full_redraw()
     #@-node:ekr.20090110133205.1:redraw_after_contract
     #@+node:ekr.20090112093625.10:redraw_after_expand
@@ -3903,7 +3905,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20090109110752.19:redraw_after_head_changed
     def redraw_after_head_changed (self):
 
-        pass # Used only by the Tk gui.
+        self.killEditing()
     #@-node:ekr.20090109110752.19:redraw_after_head_changed
     #@+node:ekr.20090109110752.16:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
@@ -3923,6 +3925,7 @@ class leoQtTree (leoFrame.leoTree):
             else:
                 p = c.currentPosition()
                 self.updateIcon(p,force=True)
+            self.killEditing()
         finally:
             self.redrawing = False
 
@@ -3945,9 +3948,10 @@ class leoQtTree (leoFrame.leoTree):
         if not item:
             self.full_redraw(p)
 
+        self.killEditing()
+
         # c.redraw_after_select calls tree.select indirectly.
         # Do not call it again here.
-    #@nonl
     #@-node:ekr.20081208072750.19:redraw_after_select
     #@-node:ekr.20090109110752.21:Entry points (qtTree)
     #@+node:ekr.20090109110752.23:Helpers
@@ -4030,7 +4034,7 @@ class leoQtTree (leoFrame.leoTree):
         p = leoNodes.position(v,childIndex,stack)
 
         if not p:
-            self.oops('p: %s, v: %s, stack: %s' % (
+            self.oops('p: %s, v: %s, childIndex: %s stack: %s' % (
                 p,v,childIndex,stack))
 
         return p
@@ -4195,6 +4199,7 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c ; p1 = c.currentPosition()
 
         g.trace(p and p.headString())
+        self.killEditing()
 
         # if not p: p = self.eventToPosition(event)
         # if not p: return
@@ -4221,6 +4226,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.435:onClickBoxRightClick
     def onClickBoxRightClick(self, event, p=None):
         #g.trace()
+        self.killEditing()
         return 'break'
     #@nonl
     #@-node:ekr.20081121105001.435:onClickBoxRightClick
@@ -4228,6 +4234,7 @@ class leoQtTree (leoFrame.leoTree):
     def onPlusBoxRightClick (self,event,p=None):
 
         c = self.c
+        self.killEditing()
 
         # self._block_canvas_menu = True
 
@@ -4259,6 +4266,7 @@ class leoQtTree (leoFrame.leoTree):
     def onIconBoxClick (self,event,p=None):
 
         c = self.c ; tree = self
+        self.killEditing()
 
         # if not p: p = self.eventToPosition(event)
         # if not p:
@@ -4281,6 +4289,8 @@ class leoQtTree (leoFrame.leoTree):
     def onIconBoxRightClick (self,event,p=None):
 
         """Handle a right click in any outline widget."""
+
+        self.killEditing()
 
         #g.trace()
 
@@ -4312,6 +4322,7 @@ class leoQtTree (leoFrame.leoTree):
     def onIconBoxDoubleClick (self,event,p=None):
 
         c = self.c
+        self.killEditing()
 
         # if not p: p = self.eventToPosition(event)
         # if not p:
@@ -4375,6 +4386,7 @@ class leoQtTree (leoFrame.leoTree):
 
         if p:
             if trace: g.trace(p and p.headString())
+            self.killEditing()
             c.frame.tree.select(p) # The crucial hook.
             c.outerUpdate()
         else:
@@ -4435,10 +4447,11 @@ class leoQtTree (leoFrame.leoTree):
             s = g.app.gui.toUnicode(item.text(col))
             p.setHeadString(s)
             p.setDirty()
+            self.killEditing()
             self.redraw_after_icons_changed(all=False)
-
-        # Make sure to end editing.
-        self.killEditing()
+        else:
+            # Make sure to end editing.
+            self.killEditing()
     #@-node:ekr.20081121105001.443:sig_itemChanged
     #@+node:ekr.20081121105001.444:sig_itemCollapsed
     def sig_itemCollapsed (self,item):
@@ -4464,6 +4477,7 @@ class leoQtTree (leoFrame.leoTree):
             p2.contract()
             c.frame.tree.select(p2)
             item = self.setCurrentItem()
+            self.killEditing()
         else:
             g.trace('Error: no p2')
     #@-node:ekr.20081121105001.444:sig_itemCollapsed
@@ -4817,6 +4831,8 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081121105001.458:editLabelHelper
     #@+node:ekr.20090110154843.11:killEditing
     def killEditing (self):
+
+        # g.trace(g.callers(5))
 
         self._editWidgetPosition = None
         self._editWidget = None

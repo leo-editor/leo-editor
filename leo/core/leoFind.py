@@ -1369,16 +1369,17 @@ class leoFind:
         p = self.p
         if not p: g.trace('can not happen: self.p is None')
 
-        # g.trace('redraw2',redraw1,redraw2)
+        g.trace('redraw2',redraw1,redraw2)
 
-        #### c.selectPosition(p)
+        # #### c.selectPosition(p)
         redraw = redraw1 or redraw2
-        if redraw or (self.in_headline and p != current):
+        if self.in_headline:
+            c.redraw(p)
+            c.editPosition(p) # Must follow c.redraw(p)
+        elif redraw:
             c.redraw(p)
         else:
             c.selectPosition(p)
-        if self.in_headline:
-            c.editPosition(p) # Must follow c.redraw(p)
         # Set the focus
         w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
         if not w: return

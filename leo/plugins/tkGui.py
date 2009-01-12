@@ -8269,7 +8269,7 @@ class leoTkinterTree (leoFrame.leoTree):
                 self.active = True
             else:
                 if trace: g.trace("not current")
-                self.select(p,scroll=False)
+                self.select(p)
                 w  = c.frame.body.bodyCtrl
                 if c.frame.findPanel:
                     c.frame.findPanel.handleUserClick(p)
