@@ -1141,7 +1141,7 @@
 </v>
 </v>
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
-<v t="ekr.20090104053806.1"><vh>@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
+<v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20061106114738"><vh>@test c.findMatchingBracket</vh></v>
 <v t="ekr.20060211135917"><vh>@test c.getTime</vh></v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
