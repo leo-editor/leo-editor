@@ -423,7 +423,7 @@ class chapterController:
                     tt.setTabLabel(k.arg)
                     tt.destroyTab(oldChapterName)
                     tt.createTab(k.arg)
-                c.redraw_now()
+                c.redraw()
     #@-node:ekr.20070317085437.41:cc.renameChapter
     #@+node:ekr.20070604165126:cc.selectChapter
     def selectChapter (self,event=None):
@@ -915,8 +915,6 @@ class chapter:
             cc.chaptersNode.contract()    
         c.hoistStack = self.hoistStack[:]
 
-        #### c.selectPosition(p)
-        #### c.redraw(p)
         c.redraw_after_select(p)
         g.doHook('hoist-changed',c=c)
         c.bodyWantsFocusNow()

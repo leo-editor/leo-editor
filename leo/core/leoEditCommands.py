@@ -741,7 +741,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.seeInsertPoint()
             self.endCommand()
             c.redraw()
-            c.recolor_now()
+            c.recolor()
     #@nonl
     #@-node:ekr.20050920084036.35:appendToBuffer
     #@+node:ekr.20050920084036.36:copyToBuffer
@@ -767,7 +767,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.setInsertPoint('end')
             self.endCommand()
             c.redraw()
-            c.recolor_now()
+            c.recolor()
     #@-node:ekr.20050920084036.36:copyToBuffer
     #@+node:ekr.20050920084036.37:insertToBuffer
     def insertToBuffer (self,event):
@@ -864,7 +864,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.seeInsertPoint()
             self.endCommand()
             c.redraw()
-            c.recolor_now()
+            c.recolor()
     #@-node:ekr.20050920084036.39:prependToBuffer
     #@+node:ekr.20050920084036.43:renameBuffer
     def renameBuffer (self,event):
@@ -1316,7 +1316,7 @@ class debugCommandsClass (baseEditCommandsClass):
         c = self.c
 
         c.frame.tree.destroyWidgets()
-        c.redraw_now()
+        c.redraw()
     #@-node:ekr.20060202154734:freeTreeWidgets
     #@+node:ekr.20060210100432:printFocus
     # Doesn't work if the focus isn't in a pane with bindings!
@@ -4890,7 +4890,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         c.selectPosition(parent)
         u.afterChangeGroup(parent,undoType,reportFlag=True) 
 
-        c.redraw_now()
+        c.redraw()
     #@nonl
     #@+node:ekr.20070921074410:createCompareClones
     def createCompareClones (self,d,kind,parent):

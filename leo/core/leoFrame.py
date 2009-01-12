@@ -793,6 +793,7 @@ class leoBody:
         return self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self,p,incremental=False):
+
         self.c.requestRecolorFlag = True
         self.c.incrementalRecolorFlag = incremental
 
@@ -1031,8 +1032,7 @@ class leoBody:
         c.expandAllAncestors(w.leo_p)
         c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
         c.redraw()
-
-        c.recolor_now()
+        c.recolor()
         #@    << restore the selection, insertion point and the scrollbar >>
         #@+node:ekr.20061017083312.1:<< restore the selection, insertion point and the scrollbar >>
         # g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
@@ -1152,7 +1152,6 @@ class leoBody:
         # Save.
         c.frame.body.bodyCtrl = w
         try:
-            # c.recolor_now(interruptable=False) # Force a complete recoloring.
             c.frame.body.colorizer.colorize(p,incremental=False,interruptable=False)
         finally:
             # Restore.
@@ -1223,7 +1222,7 @@ class leoBody:
         #@+node:ekr.20051026083733.6:<< recolor the body >>
         body.colorizer.interrupt()
         c.frame.scanForTabWidth(p)
-        body.recolor_now(p,incremental=not self.forceFullRecolorFlag)
+        body.recolor(p,incremental=not self.forceFullRecolorFlag)
         self.forceFullRecolorFlag = False
 
         if g.app.unitTesting:
@@ -1249,7 +1248,6 @@ class leoBody:
             redraw_flag = True
 
         if redraw_flag:
-            ####c.redraw()
             c.redraw_after_icons_changed(all=False)
         #@-node:ekr.20051026083733.7:<< update icons if necessary >>
         #@nl
@@ -2402,7 +2400,6 @@ class leoTree:
             u.afterChangeNodeContents(p,undoType,undoData,
                 dirtyVnodeList=dirtyVnodeList)
         if changed:
-            #### c.redraw(scroll=False)
             c.redraw_after_head_changed()
             if self.stayInTree:
                 c.treeWantsFocus()
@@ -2769,7 +2766,7 @@ class leoTree:
             else:
                 # This destroys all color tags, so do a full recolor.
                 w.setAllText(s)
-                self.frame.body.recolor_now(p) # recolor now uses p.copy(), so this is safe.
+                self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
 
             if p.v and p.v.t.scrollBarSpot != None:
                 first,last = p.v.t.scrollBarSpot

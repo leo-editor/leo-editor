@@ -1077,7 +1077,7 @@ class autoCompleterClass:
         w.setSelectionRange(i,j,insert=j)
 
         # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
-        c.frame.body.recolor_now(c.currentPosition(),incremental=True)
+        c.frame.body.recolor(c.currentPosition(),incremental=True)
         # Usually this call will have no effect because the body text has not changed.
         c.frame.body.onBodyChanged('Typing')
     #@-node:ekr.20061031131434.45:setSelection

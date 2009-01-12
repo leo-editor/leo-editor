@@ -715,7 +715,7 @@ class leoFind:
             c.setChanged(True)
 
         self.restore(data)
-        c.redraw_now()
+        c.redraw()
         g.es("found",count,"matches")
     #@-node:ekr.20031218072017.3073:findAll
     #@+node:ekr.20031218072017.3074:findNext

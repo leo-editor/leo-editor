@@ -1405,10 +1405,9 @@ class undoer:
         else:
             c.setCurrentPosition(c.currentPosition())
         c.setChanged(True)
-        c.redraw()
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
-        c.redraw_now()
-        c.recolor_now()
+        c.redraw()
+        c.recolor()
         c.bodyWantsFocusNow()
         u.redoing = False
         u.bead += 1
@@ -1649,7 +1648,8 @@ class undoer:
 
         parent_v = u.p._parentVnode()
         parent_v.t.children = u.newChildren
-        c.setPositionAfterSort(u.sortChildren)
+        p = c.setPositionAfterSort(u.sortChildren)
+        c.setCurrentPosition(p)
     #@nonl
     #@-node:ekr.20080425060424.4:redoSort
     #@+node:ekr.20050318085432.8:redoTree
@@ -1726,10 +1726,9 @@ class undoer:
         else:
             c.setCurrentPosition(c.currentPosition())
         c.setChanged(True)
-        c.redraw()
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
-        c.redraw_now()
-        c.recolor_now()
+        c.redraw()
+        c.recolor()
         c.bodyWantsFocusNow()
         u.undoing = False
         u.bead -= 1
@@ -2032,8 +2031,9 @@ class undoer:
 
         parent_v = u.p._parentVnode()
         parent_v.t.children = u.oldChildren
-        c.setPositionAfterSort(u.sortChildren)
-
+        p = c.setPositionAfterSort(u.sortChildren)
+        c.setCurrentPosition(p)
+    #@nonl
     #@-node:ekr.20080425060424.5:undoSort
     #@+node:ekr.20050318085713.2:undoTree
     def undoTree (self):

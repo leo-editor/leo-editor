@@ -662,8 +662,6 @@ def goto_showResults(self,found,p,n,n2,lines):
     c = self ; w = c.frame.body.bodyCtrl
 
     # Select p and make it visible.
-    #### c.expandAllAncestors(p)
-    #### c.selectPosition(p)
     c.redraw(p)
 
     # Put the cursor on line n2 of the body text.
@@ -1583,8 +1581,7 @@ def new (self,event=None,gui=None):
     # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
     p._linkAsRoot(oldRoot=None)
     c.setRootVnode(v) # New in Leo 4.4.2.
-    #### c.editPosition(p)
-    c.selectPosition(p) ####
+    c.selectPosition(p)
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
     p = c.currentPosition()
     if not g.doHook("menu1",c=c,p=p,v=p):
@@ -1604,7 +1601,7 @@ def new (self,event=None,gui=None):
         c.bodyWantsFocusNow()
     # Force a call to c.outerUpdate.
     # This is needed when we execute this command from a menu.
-    c.redraw_now()
+    c.redraw()
     c.frame.tree.initAfterLoad()
     c.initAfterLoad()
     c.frame.initCompleteHint()

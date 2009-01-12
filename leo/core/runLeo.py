@@ -276,7 +276,7 @@ def initFocusAndDraw(c,fileName):
     w = g.app.gui.get_focus(c)
 
     if not fileName:
-        c.redraw_now()
+        c.redraw()
 
     # Respect c's focus wishes if posssible.
     if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:

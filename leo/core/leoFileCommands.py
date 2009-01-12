@@ -756,7 +756,7 @@ class baseFileCommands:
         if ok and readAtFileNodesFlag:
             # Redraw before reading the @file nodes so the screen isn't blank.
             # This is important for big files like LeoPy.leo.
-            c.redraw_now()
+            c.redraw()
             c.setFileTimeStamp(fileName)
             c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
 
