@@ -1825,9 +1825,7 @@ def importFilesCommand (self,files=None,treeType=None):
             c.setChanged(True)
     c.validateOutline()
     current.expand()
-    c.redraw()
-
-    c.selectVnode(current)
+    c.redraw(current)
 #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 @ The two filenames have a common prefix everything before the last period is the same.  For example, x.h and x.cpp.
 @c
@@ -14412,7 +14410,8 @@ def save(self,fileName):
             if c.config.save_clears_undo_buffer:
                 g.es("clearing undo")
                 c.undoer.clearUndoState()
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=True)
 
     g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     return ok
@@ -16107,7 +16106,7 @@ def goPrevVisitedNode (self,event=None):
     p = c.nodeHistory.goPrev()
 
     if p:
-        c.redraw(p) # Should be redraw_after_select.
+        c.redraw(p) #### Should be redraw_after_select.
 
 #@-node:ekr.20031218072017.1627:goPrevVisitedNode
 #@+node:ekr.20031218072017.1628:goNextVisitedNode

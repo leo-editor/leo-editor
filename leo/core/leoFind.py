@@ -523,7 +523,7 @@ class leoFind:
         p = c.currentPosition()
         u.afterChangeGroup(p,undoType,reportFlag=True)
         g.es("changed:",count,"instances")
-        c.redraw()
+        c.redraw(p)
         self.restore(saveData)
     #@-node:ekr.20031218072017.3069:changeAll
     #@+node:ekr.20031218072017.3070:changeSelection

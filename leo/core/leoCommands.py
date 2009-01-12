@@ -330,8 +330,9 @@ class baseCommands:
                 else:
                     g.es_print("exception executing command")
                     g.es_exception(c=c)
-                    if c and c.exists and hasattr(c,'frame'):
-                        c.redraw()
+                    #### This should no longer be done automatically.
+                    #### if c and c.exists and hasattr(c,'frame'):
+                    ####    c.redraw()
 
             if c and c.exists:
                 if c.requestCloseWindow:
@@ -887,7 +888,8 @@ class baseCommands:
                 c.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
 
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=True)
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2834:save (commands)
     #@+node:ekr.20031218072017.2835:saveAs
@@ -924,7 +926,8 @@ class baseCommands:
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
 
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=True)
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2835:saveAs
     #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -979,7 +982,8 @@ class baseCommands:
             c.updateRecentFiles(fileName)
             g.chdir(fileName)
 
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=True)
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2836:saveTo
     #@+node:ekr.20031218072017.2837:revert
@@ -3414,7 +3418,7 @@ class baseCommands:
             bunch = g.Bunch(p=p.copy(),expanded=p.isExpanded())
             c.hoistStack.append(bunch)
             p.expand()
-            c.redraw()
+            c.redraw(p)
 
             c.frame.clearStatusLine()
             c.frame.putStatusLine("Hoist: " + p.headString())
@@ -4499,8 +4503,6 @@ class baseCommands:
 
         c = self ; p = c.currentPosition()
 
-        # g.trace(p.headString())
-
         p.contract()
         c.redraw_after_contract(setFocus=True)
     #@-node:ekr.20031218072017.2901:contractNode
@@ -4630,7 +4632,7 @@ class baseCommands:
 
         p.expand()
 
-        c.redraw(p,setFocus=True)
+        c.redraw(p,setFocus=True)  #### should be redraw_after_expand.
 
     #@-node:ekr.20031218072017.2907:expandNode
     #@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
@@ -4646,7 +4648,7 @@ class baseCommands:
         if not p.isExpanded():
             c.expandNode()
 
-        c.redraw(p.firstChild(),setFocus=True)
+        c.redraw(p.firstChild(),setFocus=True) #### should be redraw_after_expand.
 
     def expandNodeOrGoToFirstChild (self,event=None):
 
@@ -4655,9 +4657,9 @@ class baseCommands:
         c = self ; p = c.currentPosition()
         if p.hasChildren():
             if not p.isExpanded():
-                c.expandNode() # Calls c.redraw.
+                c.expandNode() # Calls c.redraw (or redraw_after_expand)
             else:
-                c.redraw(p.firstChild(),setFocus=True)
+                c.redraw(p.firstChild(),setFocus=True)  #### Should be redraw_after_select.
     #@nonl
     #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
     #@+node:ekr.20060928062431:expandOnlyAncestorsOfNode
@@ -4748,7 +4750,8 @@ class baseCommands:
         u.afterChangeGroup(current,undoType)
         if not g.unitTesting:
             g.es("done",color="blue")
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=True)
     #@-node:ekr.20031218072017.2923:markChangedHeadlines
     #@+node:ekr.20031218072017.2924:markChangedRoots
     def markChangedRoots (self,event=None):
@@ -4771,7 +4774,8 @@ class baseCommands:
         u.afterChangeGroup(current,undoType)
         if not g.unitTesting:
             g.es("done",color="blue")
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=True)
 
     #@-node:ekr.20031218072017.2924:markChangedRoots
     #@+node:ekr.20031218072017.2925:markAllAtFileNodesDirty
@@ -4788,7 +4792,8 @@ class baseCommands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        c.redraw()
+        # c.redraw()
+        c.redraw_after_icons_changed(all=True)
 
     #@-node:ekr.20031218072017.2925:markAllAtFileNodesDirty
     #@+node:ekr.20031218072017.2926:markAtFileNodesDirty
@@ -4808,7 +4813,8 @@ class baseCommands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=True)
 
     #@-node:ekr.20031218072017.2926:markAtFileNodesDirty
     #@+node:ekr.20031218072017.2927:markClones
@@ -4833,10 +4839,11 @@ class baseCommands:
                 dirtyVnodeList.extend(dirtyVnodeList2)
                 u.afterMark(p,undoType,bunch)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=True)
 
     #@-node:ekr.20031218072017.2927:markClones
-    #@+node:ekr.20031218072017.2928:markHeadline & est
+    #@+node:ekr.20031218072017.2928:markHeadline
     def markHeadline (self,event=None):
 
         '''Toggle the mark of the selected node.'''
@@ -4853,9 +4860,10 @@ class baseCommands:
         dirtyVnodeList = p.setDirty()
         c.setChanged(True)
         u.afterMark(p,undoType,bunch,dirtyVnodeList=dirtyVnodeList)
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=False)
 
-    #@-node:ekr.20031218072017.2928:markHeadline & est
+    #@-node:ekr.20031218072017.2928:markHeadline
     #@+node:ekr.20031218072017.2929:markSubheads
     def markSubheads (self,event=None):
 
@@ -4876,7 +4884,8 @@ class baseCommands:
                 c.setChanged(True)
                 u.afterMark(p,undoType,bunch)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=True)
 
     #@-node:ekr.20031218072017.2929:markSubheads
     #@+node:ekr.20031218072017.2930:unmarkAll
@@ -4903,7 +4912,8 @@ class baseCommands:
             g.doHook("clear-all-marks",c=c,p=p,v=p)
             c.setChanged(True)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-        c.redraw()
+        ### c.redraw()
+        c.redraw_after_icons_changed(all=True)
 
     #@-node:ekr.20031218072017.2930:unmarkAll
     #@-node:ekr.20031218072017.2922:Mark...
@@ -5245,7 +5255,7 @@ class baseCommands:
         p = c.nodeHistory.goPrev()
 
         if p:
-            c.redraw(p) # Should be redraw_after_select.
+            c.redraw(p) #### Should be redraw_after_select.
 
     #@-node:ekr.20031218072017.1627:goPrevVisitedNode
     #@+node:ekr.20031218072017.2914:goToFirstNode
@@ -5375,7 +5385,7 @@ class baseCommands:
             if cc:
                 name = cc.findChapterNameForPosition(p)
                 cc.selectChapterByName(name)
-            c.redraw(p) # Should be redraw_after_select.
+            c.redraw(p) #### Should be redraw_after_select.
         else:
             g.es('no more clones',color='blue')
     #@-node:ekr.20071213123942:findNextClone
@@ -5993,8 +6003,8 @@ class baseCommands:
         else:
             # g.trace("invalid clone drag")
             clone.doDelete(newNode=p)
-        c.selectPosition(p) # Also sets root position.
-        c.redraw()
+        #### c.selectPosition(p) # Also sets root position.
+        c.redraw(p)
 
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
     #@nonl

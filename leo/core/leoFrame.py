@@ -1030,8 +1030,8 @@ class leoBody:
 
         # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
         c.expandAllAncestors(w.leo_p)
-        c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
-        c.redraw()
+        #### c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
+        c.redraw(w.leo_p)
         c.recolor()
         #@    << restore the selection, insertion point and the scrollbar >>
         #@+node:ekr.20061017083312.1:<< restore the selection, insertion point and the scrollbar >>
@@ -1872,8 +1872,8 @@ class leoFrame:
             w.insert("end",tree.revertHeadline)
             p.initHeadString(tree.revertHeadline)
             c.endEditing()
-            c.selectPosition(p)
-            c.redraw()
+            #### c.selectPosition(p)
+            c.redraw(p)
     #@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
     #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None):

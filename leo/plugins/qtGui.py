@@ -3899,8 +3899,14 @@ class leoQtTree (leoFrame.leoTree):
 
         self.redrawCount += 1 # To keep a unit test happy.
 
-        # if not g.app.unitTesting:
-            # g.trace('not ready yet',g.callers(4))
+        c = self.c
+
+        if all:
+            for p in c.rootPosition().self_and_siblings_iter():
+                self.updateVisibleIcons(p)
+        else:
+            p = c.currentPosition()
+            self.updateIcon(p,force=True)
 
     #@-node:ekr.20090109110752.16:redraw_after_icons_changed
     #@+node:ekr.20081208072750.19:redraw_after_select
@@ -4120,23 +4126,38 @@ class leoQtTree (leoFrame.leoTree):
         return g.app.gui.iconimages[hash]
     #@-node:ekr.20081121105001.418:getIcon & getIconImage
     #@+node:ekr.20081121105001.431:updateIcon
-    def updateIcon (self,p):
+    def updateIcon (self,p,force=False):
 
         '''Update p's icon.'''
 
         if not p: return
 
         val = p.v.computeIcon()
-        if p.v.iconVal == val: return
+        if p.v.iconVal == val and not force:
+            return
 
         icon = self.getIconImage(val)
 
-        items = self.vnode2items(p.v)
+        items = self.tnode2items(p.v.t)
+
+        # g.trace(len(items),p.headString())
 
         for item in items:
             if self.isValidItem(item):
                 item.setIcon(0,icon)
     #@-node:ekr.20081121105001.431:updateIcon
+    #@+node:ekr.20090112065600.10:updateVisibleIcons
+    def updateVisibleIcons (self,p):
+
+        '''Update the icon for p and the icons
+        for all visible descendants of p.'''
+
+        self.updateIcon(p,force=True)
+
+        if p.hasChildren() and p.isExpanded():
+            for child in p.children_iter():
+                self.updateVisibleIcons(child)
+    #@-node:ekr.20090112065600.10:updateVisibleIcons
     #@-node:ekr.20081209064740.2:Icons
     #@-node:ekr.20090109110752.23:Helpers
     #@+node:ekr.20081213093110.1:Unit tests
@@ -8156,7 +8177,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if not c.changed and c.frame.initComplete:
             c.setChanged(True)
         c.frame.body.updateEditors()
-        c.frame.tree.updateIcon(p)
+        # This will be called by onBodyChanged.
+        # c.frame.tree.updateIcon(p)
         c.outerUpdate()
     #@-node:ekr.20081121105001.536:onTextChanged
     #@+node:ekr.20081121105001.537:indexWarning
