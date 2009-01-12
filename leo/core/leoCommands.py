@@ -5542,7 +5542,7 @@ class baseCommands:
 
         c = self ; current = c.currentPosition()
 
-        g.trace(p and p.headString(),g.callers(4))
+        # g.trace(p and p.headString(),g.callers(4))
 
         if not p: p = current
 

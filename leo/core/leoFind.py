@@ -1369,7 +1369,7 @@ class leoFind:
         p = self.p
         if not p: g.trace('can not happen: self.p is None')
 
-        g.trace('redraw2',redraw1,redraw2)
+        # g.trace('redraw2',redraw1,redraw2)
 
         # #### c.selectPosition(p)
         redraw = redraw1 or redraw2

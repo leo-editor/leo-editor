@@ -3715,7 +3715,7 @@ class leoQtTree (leoFrame.leoTree):
 
         Preserve the vertical scrolling unless scroll is True.'''
 
-        trace = True
+        trace = False
         c = self.c ; w = self.treeWidget
         if not w: return
         if self.redrawing:
@@ -4709,7 +4709,14 @@ class leoQtTree (leoFrame.leoTree):
         w = self._editWidgetWrapper
 
         if p and p == self._editWidgetPosition:
-            return w
+            w2 = g.app.gui.get_focus()
+            # g.trace(w2,w,w and w.widget)
+            if w.widget == w2:
+                return w
+            else:
+                # g.trace('no match.  killing')
+                self.killEditing()
+                return None
         else:
             return None
 
@@ -4832,7 +4839,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20090110154843.11:killEditing
     def killEditing (self):
 
-        # g.trace(g.callers(5))
+        # g.trace(g.callers(4))
 
         self._editWidgetPosition = None
         self._editWidget = None
